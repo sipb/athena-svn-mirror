@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.2 1989-05-22 10:58:39 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.3 1990-04-16 17:07:58 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -39,6 +39,8 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *			[-r]		(don't ever reverse)
  *			-n login
  *			-h host
+ *                      -a account
+ *                      -m mediacost
  *			[accntfile]
  *
  *	environ	== various environment variable effect behavior
@@ -79,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  89/05/22  10:58:39  epeisach
+ * Fixed RT problem in dealing with '\]' which vax does not complain about.
+ * 
  * Revision 1.1  89/05/22  10:51:24  epeisach
  * Initial revision
  * 
@@ -204,6 +209,13 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #define debugp(x)
 #endif BDEBUG
 
+#ifdef SYSLOG
+#include <syslog.h>
+#endif
+#ifdef ZEPHYR
+#include <zephyr/zephyr.h>
+#endif
+
 /*
  * the following string is sent to the printer when we want it to
  * report its current pagecount (for accounting)
@@ -220,6 +232,8 @@ private char	*name;			/* user login name */
 private char	*host;			/* host name */
 private char	*pname;			/* printer name */
 private char	*accountingfile;	/* file for printer accounting */
+private char    *account = NULL;        /* account number - Ilham (2/20/90) */
+private char    *mediacost = "0";	/* media cost     - Ilham (2/20/90 */
 private int	doactng;		/* true if we can do accounting */
 private int	progress, oldprogress;	/* finite progress counts */
 private int	getstatus = FALSE;      /* TRUE = Query printer for status */
@@ -230,6 +244,7 @@ private long	startpagecount;         /* Page count at start of job */
 private long	endpagecount;           /* Page count at end of job */
 private long	starttime;              /* Timer start. For status warnings */
 private int	saveerror;		/* Place to save errno when exiting */
+private int	bannerpages = 0;	/* Count of banner pages printed */
 
 private char *bannerfirst;
 private char *bannerlast;
@@ -370,6 +385,10 @@ main(argc,argv)            /* MAIN ROUTINE */
     VOIDC signal(SIGALRM, GotAlarmSig);
     VOIDC signal(SIGEMT, GotEmtSig);
 
+#ifdef SYSLOG
+	openlog("lpcomm", LOG_PID, LOG_LPR);
+#endif
+
     /* parse command-line arguments */
     /* the argv (see header comments) comes from the spooler daemon */
     /* itself, so it should be canonical, but at least one 4.2-based */
@@ -405,6 +424,16 @@ main(argc,argv)            /* MAIN ROUTINE */
 		case 'r':	/* never reverse */
 		    argc--;
 		    noReverse = 1;
+		    break;
+
+		case 'a':       /* account number */
+		    argc--;
+		    account = *(++av);
+		    break;
+
+		case 'm':       /* media cost */
+		    argc--;
+		    mediacost = *(++av);
 		    break;
 
 		default:	/* unknown */
@@ -727,7 +756,8 @@ main(argc,argv)            /* MAIN ROUTINE */
 	    intstate = synclast;
 	    syncprinter(&endpagecount);    /* Get communications in sync again */
 	    intstate = ending;
-	    if(doactng) VOIDC acctentry(startpagecount,endpagecount);
+	    if(doactng) VOIDC acctentry(startpagecount,endpagecount,
+					account,mediacost);
 	}
 
 	intstate = ending;
@@ -826,6 +856,7 @@ private SendBanner()
     while ((cnt = read(banner,buf,sizeof buf)) > 0) {
 	VOIDC write(fdsend,buf,cnt);
     }
+    bannerpages++;
     VOIDC close(banner);
 }
 
@@ -972,12 +1003,12 @@ register int c;
 			fprintf(stderr,"%s",linebuf);
 			VOIDC fflush(stderr);
 			*(last-6) = 0;
-			Status(match+15);
+			Status(match+15, 2);
 		    }
 		    else {
 			last = index(match,';');
 			*last = '\0';
-			Status(match+15);
+			Status(match+15, 2);
 		    }
 		}
 		/* PrinterError's for certain (rare) printers */
@@ -986,12 +1017,12 @@ register int c;
 			fprintf(stderr,"%s",linebuf);
 			VOIDC fflush(stderr);
 			*(last-6) = 0;
-			Status(match+10);
+			Status(match+10, 2);
 		    }
 		    else {
 			last = index(match,';');
 			*last = '\0';
-			Status(match+10);
+			Status(match+10, 2);
 		    }
 		}
 		else if (match = FindPattern(cp, linebuf, " status: ")) {
@@ -1067,17 +1098,41 @@ private RestoreStatus() {
 }
 
 /* report PrinterError via "status" message file */
-private Status(msg)
+/* The notify flag is set to notify the user. */
+/* 0 - Don't notify user */
+/* 1 - Notify user once */
+/* 2 - Notify all occurances, but filter repeats */
+
+private Status(msg, notify)
 register char *msg;
+int notify;
 {
     register int fd;
     char msgbuf[100];
+    static char lastmsg[100];
+    static int lastnotify=0;
 
     if ((fd = open("status",O_WRONLY|O_CREAT,0664)) < 0) return;
     VOIDC ftruncate(fd,0);
     sprintf(msgbuf,"Printer Error: may need attention! (%s)\n\0",msg);
     VOIDC write(fd,msgbuf,strlen(msgbuf));
     VOIDC close(fd);
+    if(notify) {
+	if(((lastnotify == 1) && (notify==1)) ||
+	   (lastnotify && !strcmp(msgbuf, lastmsg))) {
+	    /* Same notification level, or same message, do nothing */
+	} else {
+	    strcpy(lastmsg, msgbuf);
+#ifdef SYSLOG
+	    syslog(LOG_INFO, "%s:%s", pname, msgbuf);
+#endif
+#ifdef ZEPHYR
+	    NotifyUser(name, msgbuf);
+#endif
+	    lastnotify = notify;
+        }
+    }
+
     newstatmsg = TRUE;		/* Say we changed the status message */
 }
 
@@ -1260,7 +1315,7 @@ private VOID GotAlarmSig() {
 	    if( jobaborted ) dieanyway();   /* If already aborted, just croak */
 	    sprintf(mybuf, "Not Responding for %ld minutes",
 		(time((long*)0)-starttime+30)/60);
-	    Status(mybuf);
+	    Status(mybuf,1);
 	    longjmp(synclabel,1);
 	case sending:
 	    if( progress == oldprogress ) { /* Nothing written since last time */
@@ -1511,16 +1566,66 @@ long    *pagecount;        /* The current page count in the printer */
 }
 
 /* Make an entry in the accounting file */
-private VOID acctentry(start,end)
+private VOID acctentry(start,end,account,mediacost)
 long start,end;         /* Starting and ending page counts for job */
+char *mediacost, account;
 {
+    struct timeval timestamp;
     debugp((stderr,"%s: Make acct entry s=%ld, e=%ld\n",prog,start,end));
+
+    /* The following is cause you might not really print the banner page if
+       the job is aborted and you get a negative number. Ugly.... */
+    if(end-start-bannerpages < 0) bannerpages = 0;
     if( start > end || start < 0 || end < 0 ) {
-	fprintf(stderr,"%s: accounting error 3, %ld %ld\n",start,end);
+	fprintf(stderr,"%s: accounting error 3, %ld %ld\n",prog, start,end);
 	fflush(stderr);
 	}
     else if( freopen(accountingfile,"a",stdout) != NULL ) {
-	printf("%7.2f\t%s:%s\n",(float)(end-start),host,name);
+	gettimeofday(&timestamp, NULL);
+	if (account == NULL) 
+	    printf("%d\t%s:%s\t%ld\t0\t%s\t%d\n",(end-start),host,name,
+		   timestamp.tv_sec,mediacost, (end-start-bannerpages));
+	else if (mediacost == NULL) 
+	    printf("%d\t%s:%s\t%ld\t%s\t0\t%d\n",(end-start),host,name,
+		   timestamp.tv_sec,account, (end-start-bannerpages));
+	else printf("%d\t%s:%s\t%ld\t%s\t%s\t%d\n",(end-start),host,name,
+		    timestamp.tv_sec,account,mediacost, (end-start-bannerpages));
 	VOIDC fclose(stdout);
 	}
 }
+
+#ifdef ZEPHYR
+NotifyUser(user, message)
+     char *user, *message;
+{
+    ZNotice_t notice;
+    char fromprinter[100];
+
+    /* Return if NULL message */
+    if (message[0] == '\0')
+	return;
+
+    bzero((char *)&notice, sizeof(notice));
+    
+    if (ZInitialize() != ZERR_NONE) 
+	return;
+    /* Something wrong, oh well... */
+
+    notice.z_kind = UNACKED;
+    notice.z_port = 0;
+    notice.z_class = "MESSAGE";
+    notice.z_class_inst = "PERSONAL";
+    notice.z_opcode = "";
+    sprintf(fromprinter, "Athena Print Server for printer %s",pname);
+    notice.z_sender = fromprinter;
+    notice.z_recipient = user;
+    notice.z_default_format = "";
+    notice.z_message = message;
+    notice.z_message_len = strlen(notice.z_message)+1;
+
+    if (ZSendNotice(&notice, ZNOAUTH) != ZERR_NONE) {
+	return;
+    }
+    return;
+}
+#endif ZEPHYR
