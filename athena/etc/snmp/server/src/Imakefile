@@ -1,5 +1,5 @@
 #
-#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.5 1997-02-27 06:49:06 ghudson Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.6 1997-03-19 00:38:48 jweiss Exp $
 #
 #  Makefile for SNMPD
 #
@@ -48,7 +48,7 @@ MACHFLAGS= -DRSPOS -DBSD43 -DVFS -DDNS
 MACHOBJS = vm_grp.o ps_grp.o rvd_grp.o 
 
 MACHSRCS = vm_grp.c ps_grp.c rvd_grp.c
-MACHFLAGS= -DSOLARIS  -DBSD43 -DVFS -DAFS
+MACHFLAGS= -DSOLARIS  -DBSD43 -DVFS -DAFS -DRPC
 #endif
 
 #if defined(ultrix) && defined(mips)
