@@ -1,4 +1,4 @@
-/* $Id: gucharmap-block-chapters.c,v 1.1.1.1 2004-10-06 18:46:04 ghudson Exp $ */
+/* $Id: gucharmap-block-chapters.c,v 1.1.1.2 2005-03-10 21:47:59 ghudson Exp $ */
 /*
  * Copyright (c) 2004 Noah Levitt
  *
@@ -162,7 +162,11 @@ go_to_character (GucharmapChapters *chapters,
         {
           selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (parent->tree_view));
           if (!gtk_tree_selection_iter_is_selected (selection, &iter))
-            gtk_tree_selection_select_iter (selection, &iter);
+            {
+              GtkTreePath *path = gtk_tree_model_get_path (parent->tree_model, &iter);
+              gtk_tree_view_set_cursor (GTK_TREE_VIEW (parent->tree_view), path, NULL, FALSE);
+              gtk_tree_path_free (path);
+            }
           return TRUE;
         }
     }
@@ -173,7 +177,11 @@ go_to_character (GucharmapChapters *chapters,
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (parent->tree_view));
   if (!gtk_tree_selection_iter_is_selected (selection, &iter))
-    gtk_tree_selection_select_iter (selection, &iter);
+    {
+      GtkTreePath *path = gtk_tree_model_get_path (parent->tree_model, &iter);
+      gtk_tree_view_set_cursor (GTK_TREE_VIEW (parent->tree_view), path, NULL, FALSE);
+      gtk_tree_path_free (path);
+    }
 
   return TRUE;
 }
