@@ -6,10 +6,10 @@
 
 
 /* etale.c */
-void initialize_ale_error_table P_((int NOARGS));
+void initialize_ale_error_table P_((void));
 
 /* etalw.c */
-void initialize_alw_error_table P_((int NOARGS));
+void initialize_alw_error_table P_((void));
 
 /* setuser.c */
 long ALsetUser P_((ALsession session, char *uname, ALflag_t initial_flags));
@@ -41,5 +41,10 @@ long ALend P_((ALsession session));
 int ALisRemoteDir P_((char *dir));
 int ALhomedirOK P_((char *dir));
 long ALgetHomedir P_((ALsession session));
+
+/* get_phost.c */
+char *krb_get_phost P_((char *alias));
+
+/* getrealm.c */
 
 #undef P_
