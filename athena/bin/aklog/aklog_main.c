@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.23 1992-12-11 13:23:15 probe Exp $
+ * $Id: aklog_main.c,v 1.24 1992-12-11 13:47:38 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.23 1992-12-11 13:23:15 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.24 1992-12-11 13:47:38 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -64,7 +64,7 @@ typedef struct {
 } cellinfo_t;
 
 
-struct afsconf_cell cellconfig; /* General information about the cell */
+struct afsconf_cell ak_cellconfig; /* General information about the cell */
 
 extern int errno;
 extern char *sys_errlist[];
@@ -197,10 +197,10 @@ static int auth_to_cell(cell, realm)
     bzero(realm_of_cell, sizeof(realm_of_cell));
 
     /* NULL or empty cell returns information on local cell */
-    if (status = get_cellconfig(cell, &cellconfig, local_cell))
+    if (status = get_cellconfig(cell, &ak_cellconfig, local_cell))
 	return(status);
 
-    strncpy(cell_to_use, cellconfig.name, MAXCELLCHARS);
+    strncpy(cell_to_use, ak_cellconfig.name, MAXCELLCHARS);
     cell_to_use[MAXCELLCHARS] = 0;
 
     if (ll_string(&authedcells, ll_s_check, cell_to_use)) {
@@ -249,25 +249,9 @@ static int auth_to_cell(cell, realm)
 	
 	if (realm && realm[0])
 	    strcpy(realm_of_cell, realm);
-	else {
-	    char krbhst[MAX_HSTNM];
-	    char *krbrlm =
-		(char *)krb_realmofhost(cellconfig.hostName[0]);
-	
-	    if (krb_get_krbhst(krbhst, krbrlm, 1) != KSUCCESS) {
-		char *s = realm_of_cell;
-		char *t = cell_to_use;
-		int c;
+	else
+	    strcpy(realm_of_cell, afs_realm_of_cell(&ak_cellconfig));
 
-		while (c = *t++) {
-		    if (islower(c)) c=toupper(c);
-		    *s++ = c;
-		}
-		*s++ = 0;
-	    } else
-		strcpy(realm_of_cell, krbrlm);
-	}
-	
 	/* We use the afs.<cellname> convention here... */
 	strcpy(name, AFSKEY);
 	strncpy(instance, cell_to_use, sizeof(instance));
