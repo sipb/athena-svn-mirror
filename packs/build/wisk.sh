@@ -2,7 +2,7 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.35 $
+# $Revision: 1.36 $
 
 umask 2
 
@@ -417,31 +417,6 @@ endif # installonly
 	endif
 	breaksw
 
-	case third/unsupported/top
-	(echo In $package >>& $outfile)
-if ( $installonly == "0" ) then
-	if ( $machine == "sun4" ) then
-	(cd /build/$package ; cp Makefile.sun4 Makefile)
-	(cd /build/$package ; ln -s machine/m_sunos5.c machine.c )
-	(cd /build/$package ; ln -s machine/m_sunos5.man top.1)
-	else if ( $machine == "decmips" ) then
-	(cd /build/$package ; cp Makefile.decmips Makefile)
-	(cd /build/$package ; ln -s machine/m_ultrix4.c machine.c )
-	(cd /build/$package ; ln -s machine/m_ultrix4.man top.1)
-	else
-		echo " No top on this platform"
-	endif
-endif # installonly
-
-	if ($machine != "rsaix" ) then
-if ( $installonly == "0" ) then
-	( cd /build/$package ; make clean >>& $outfile )
-	( cd /build/$package ; make >>& $outfile )
-endif # installonly
-        ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
-	endif
-        breaksw
-
 	case third/supported/tcsh6
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
@@ -606,34 +581,6 @@ endif # installonly
 		echo "We bombed in $package" >>& $outfile
 		exit -1
 	endif
-	breaksw
-
-	case third/supported/emacs-18.59
-	(echo In $package >>& $outfile)
-if ( $installonly == "0" ) then
-# Temporarily create compat symlinks
-	if ($machine == "decmips") then
-		ln -s /usr/athena/include/X11 $SRVD/usr/include/X11
-		ln -s /usr/athena/lib/lib[MWX]* $SRVD/usr/lib
-	endif
-		((cd /build/$package ; xmkmf . >>& $outfile) &&\
-		(cd /build/$package/etc ; xmkmf >> $outfile) &&\
-		(cd /build/$package ; make clean >>& $outfile) &&\
-		(cd /build/$package ; make all >>& $outfile))
-		if ($status == 1) then
-			echo "We bombed in $package" >>& $outfile
-			exit -1
-		endif
-	if ($machine == "decmips") then
-		rm $SRVD/usr/lib/lib[MWX]* $SRVD/usr/include/X11
-	endif
-endif # installonly
-	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
-	if ($status == 1) then
-		echo "We bombed in $package" >>& $outfile
-		exit -1
-	endif
-	rehash
 	breaksw
 
 	case athena/lib/moira.dev
