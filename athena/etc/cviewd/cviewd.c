@@ -17,7 +17,7 @@
  * according to a command line from stdin.
  */
 
-static const char rcsid[] = "$Id: cviewd.c,v 1.2 1998-10-13 17:13:41 ghudson Exp $";
+static const char rcsid[] = "$Id: cviewd.c,v 1.3 1998-10-23 20:47:39 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -175,7 +175,10 @@ static void display_phones(void)
   printf("CLUSTER   PHONE NUMBER\n");
   printf("----------------------\n");
   for (i = 0; i < file.nclusters; i++)
-    printf("%-8.8s  %s\n", file.clusters[i].name, file.clusters[i].phone);
+    {
+      if (file.clusters[i].public)
+	printf("%-8.8s  %s\n", file.clusters[i].name, file.clusters[i].phone);
+    }
 }
 
 /* Display a list of free cluster machines in the format:
