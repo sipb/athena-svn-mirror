@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.11 1991-07-02 23:45:15 probe Exp $
+# $Id: Imakefile,v 1.12 1991-07-04 23:32:25 probe Exp $
 #
 
 #define ISUBDIRS	cleanup netconfig newsyslog nfsc rvd track xdm
@@ -8,9 +8,7 @@
 XSCRIPTS=console-getty
 #endif
 
-SCRIPT= clean_tmp_areas csh_commands_path reactivate \
-	sh_commands_path shutdown_notify \
-	suid_afs_cells rti_users $(XSCRIPTS)
+SCRIPT= clean_tmp_areas reactivate shutdown_notify suid_afs_cells $(XSCRIPTS)
 
 SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
 
