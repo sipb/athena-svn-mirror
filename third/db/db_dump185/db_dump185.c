@@ -1,20 +1,17 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
-
 #ifndef lint
-static const char copyright[] =
-"@(#) Copyright (c) 1996, 1997, 1998\n\
-	Sleepycat Software Inc.  All rights reserved.\n";
-static const char sccsid[] = "@(#)db_dump185.c	10.10 (Sleepycat) 4/10/98";
+static char copyright[] =
+    "Copyright (c) 1996-2000\nSleepycat Software Inc.  All rights reserved.\n";
+static char revid[] =
+    "$Id: db_dump185.c,v 1.1.1.2 2002-02-11 16:28:00 ghudson Exp $";
 #endif
 
-#ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
 #include <ctype.h>
@@ -23,11 +20,8 @@ static const char sccsid[] = "@(#)db_dump185.c	10.10 (Sleepycat) 4/10/98";
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#endif
 
-#include "db_185.h"
-#include "clib_ext.h"
+#include <db.h>
 
 /* Hash Table Information */
 typedef struct hashhdr185 {		/* Disk resident portion */
@@ -50,7 +44,7 @@ typedef struct hashhdr185 {		/* Disk resident portion */
 	int		nkeys;		/* Number of keys in hash table */
 } HASHHDR185;
 typedef struct htab185	 {		/* Memory resident data structure */
-	HASHHDR185 	hdr;		/* Header */
+	HASHHDR185	hdr;		/* Header */
 } HTAB185;
 
 /* Hash Table Information */
@@ -69,12 +63,12 @@ typedef struct hashhdr186 {	/* Disk resident portion */
 	int32_t	nkeys;		/* Number of keys in hash table */
 	int32_t	hdrpages;	/* Size of table header */
 	int32_t	h_charkey;	/* value of hash(CHARKEY) */
-#define NCACHED	32		/* number of bit maps and spare points */
+#define	NCACHED	32		/* number of bit maps and spare points */
 	int32_t	spares[NCACHED];/* spare pages for overflow */
 	u_int16_t	bitmaps[NCACHED];	/* address of overflow page bitmaps */
 } HASHHDR186;
 typedef struct htab186	 {		/* Memory resident data structure */
-	HASHHDR186 	hdr;		/* Header */
+	HASHHDR186	hdr;		/* Header */
 } HTAB186;
 
 typedef struct _epgno {
@@ -127,9 +121,9 @@ typedef struct _btree {
 	EPGNO	  bt_last;		/* last insert */
 
 					/* B: key comparison function */
-	int	(*bt_cmp) __P((const DBT *, const DBT *));
+	int	(*bt_cmp) __P((DBT *, DBT *));
 					/* B: prefix comparison function */
-	size_t	(*bt_pfx) __P((const DBT *, const DBT *));
+	size_t	(*bt_pfx) __P((DBT *, DBT *));
 					/* R: recno input function */
 	int	(*bt_irec) __P((struct _btree *, u_int32_t));
 
@@ -179,9 +173,6 @@ void	dbt_print __P((DBT *));
 int	main __P((int, char *[]));
 void	usage __P((void));
 
-const char
-	*progname = "db_dump185";			/* Program name. */
-
 int
 main(argc, argv)
 	int argc;
@@ -197,8 +188,11 @@ main(argc, argv)
 	while ((ch = getopt(argc, argv, "f:p")) != EOF)
 		switch (ch) {
 		case 'f':
-			if (freopen(optarg, "w", stdout) == NULL)
-				err(1, "%s", optarg);
+			if (freopen(optarg, "w", stdout) == NULL) {
+				fprintf(stderr, "db_dump185: %s: %s\n",
+				    optarg, strerror(errno));
+				exit (1);
+			}
 			break;
 		case 'p':
 			pflag = 1;
@@ -214,8 +208,12 @@ main(argc, argv)
 		usage();
 
 	if ((dbp = dbopen(argv[0], O_RDONLY, 0, DB_BTREE, NULL)) == NULL) {
-		if ((dbp = dbopen(argv[0], O_RDONLY, 0, DB_HASH, NULL)) == NULL)
-			err(1, "%s", argv[0]);
+		if ((dbp =
+		    dbopen(argv[0], O_RDONLY, 0, DB_HASH, NULL)) == NULL) {
+			fprintf(stderr,
+			    "db_dump185: %s: %s\n", argv[0], strerror(errno));
+			exit (1);
+		}
 		db_hash(dbp, pflag);
 	} else
 		db_btree(dbp, pflag);
@@ -236,8 +234,10 @@ main(argc, argv)
 			dbt_dump(&data);
 		}
 
-	if (rval == -1)
-		err(1, "seq");
+	if (rval == -1) {
+		fprintf(stderr, "db_dump185: seq: %s\n", strerror(errno));
+		exit (1);
+	}
 	return (0);
 }
 
@@ -348,6 +348,6 @@ dbt_print(dbtp)
 void
 usage()
 {
-	(void)fprintf(stderr, "usage: db_dump [-p] [-f file] db_file\n");
+	(void)fprintf(stderr, "usage: db_dump185 [-p] [-f file] db_file\n");
 	exit(1);
 }

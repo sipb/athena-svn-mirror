@@ -18,18 +18,10 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_abort
 /*
  * Class:     com_sleepycat_db_DbTxn
  * Method:    commit
- * Signature: ()V
+ * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_commit
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_sleepycat_db_DbTxn
- * Method:    finalize
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_finalize
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_sleepycat_db_DbTxn
@@ -45,6 +37,14 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbTxn_id
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_prepare
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_sleepycat_db_DbTxn
+ * Method:    finalize
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_finalize
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

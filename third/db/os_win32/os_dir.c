@@ -1,26 +1,26 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_dir.c	10.20 (Sleepycat) 10/28/98";
+static const char revid[] = "$Id: os_dir.c,v 1.1.1.2 2002-02-11 16:25:55 ghudson Exp $";
 #endif /* not lint */
 
 #include "db_int.h"
 #include "os_jump.h"
-#include "common_ext.h"
 
 /*
  * __os_dirlist --
  *	Return a list of the files in a directory.
  */
 int
-__os_dirlist(dir, namesp, cntp)
+__os_dirlist(dbenv, dir, namesp, cntp)
+	DB_ENV *dbenv;
 	const char *dir;
 	char ***namesp;
 	int *cntp;
@@ -35,18 +35,18 @@ __os_dirlist(dir, namesp, cntp)
 
 	(void)snprintf(filespec, sizeof(filespec), "%s/*", dir);
 	if ((dirhandle = _findfirst(filespec, &fdata)) == -1)
-		return (errno);
+		return (__os_get_errno());
 
 	names = NULL;
 	finished = 0;
 	for (arraysz = cnt = 0; finished != 1; ++cnt) {
 		if (cnt >= arraysz) {
 			arraysz += 100;
-			if ((ret = __os_realloc(&names,
-			    arraysz * sizeof(names[0]))) != 0)
+			if ((ret = __os_realloc(dbenv,
+			    arraysz * sizeof(names[0]), NULL, &names)) != 0)
 				goto nomem;
 		}
-		if ((ret = __os_strdup(fdata.name, &names[cnt])) != 0)
+		if ((ret = __os_strdup(dbenv, fdata.name, &names[cnt])) != 0)
 			goto nomem;
 		if (_findnext(dirhandle,&fdata) != 0)
 			finished = 1;
@@ -65,8 +65,6 @@ nomem:	if (names != NULL)
 /*
  * __os_dirfree --
  *	Free the list of files.
- *
- * PUBLIC: void __os_dirfree __P((char **, int));
  */
 void
 __os_dirfree(names, cnt)

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -23,11 +23,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -44,10 +40,10 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_open.c	10.39 (Sleepycat) 11/21/98";
+static const char revid[] = "$Id: bt_open.c,v 1.1.1.2 2002-02-11 16:28:39 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -60,251 +56,401 @@ static const char sccsid[] = "@(#)bt_open.c	10.39 (Sleepycat) 11/21/98";
 
 #include "db_int.h"
 #include "db_page.h"
+#include "db_swap.h"
 #include "btree.h"
+#include "db_shash.h"
+#include "lock.h"
+#include "log.h"
+#include "mp.h"
 
 /*
  * __bam_open --
  *	Open a btree.
  *
- * PUBLIC: int __bam_open __P((DB *, DB_INFO *));
+ * PUBLIC: int __bam_open __P((DB *, const char *, db_pgno_t, u_int32_t));
  */
 int
-__bam_open(dbp, dbinfo)
+__bam_open(dbp, name, base_pgno, flags)
 	DB *dbp;
-	DB_INFO *dbinfo;
+	const char *name;
+	db_pgno_t base_pgno;
+	u_int32_t flags;
 {
 	BTREE *t;
-	int ret;
 
-	/* Allocate and initialize the private btree structure. */
-	if ((ret = __os_calloc(1, sizeof(BTREE), &t)) != 0)
-		return (ret);
-	dbp->internal = t;
-
-	/*
-	 * Intention is to make sure all of the user's selections are okay
-	 * here and then use them without checking.
-	 */
-	if (dbinfo == NULL) {
-		t->bt_minkey = DEFMINKEYPAGE;
-		t->bt_compare = __bam_defcmp;
-		t->bt_prefix = __bam_defpfx;
-	} else {
-		/* Minimum number of keys per page. */
-		if (dbinfo->bt_minkey == 0)
-			t->bt_minkey = DEFMINKEYPAGE;
-		else {
-			if (dbinfo->bt_minkey < 2)
-				goto einval;
-			t->bt_minkey = dbinfo->bt_minkey;
-		}
-
-		/* Maximum number of keys per page. */
-		if (dbinfo->bt_maxkey == 0)
-			t->bt_maxkey = 0;
-		else {
-			if (dbinfo->bt_maxkey < 1)
-				goto einval;
-			t->bt_maxkey = dbinfo->bt_maxkey;
-		}
-
-		/*
-		 * If no comparison, use default comparison.  If no comparison
-		 * and no prefix, use default prefix.  (We can't default the
-		 * prefix if the user supplies a comparison routine; shortening
-		 * the keys may break their comparison algorithm.  We don't
-		 * permit the user to specify a prefix routine if they didn't
-		 * also specify a comparison routine, they can't know enough
-		 * about our comparison routine to get it right.)
-		 */
-		if ((t->bt_compare = dbinfo->bt_compare) == NULL) {
-			if (dbinfo->bt_prefix != NULL)
-				goto einval;
-			t->bt_compare = __bam_defcmp;
-			t->bt_prefix = __bam_defpfx;
-		} else
-			t->bt_prefix = dbinfo->bt_prefix;
-	}
+	t = dbp->bt_internal;
 
 	/* Initialize the remaining fields/methods of the DB. */
-	dbp->am_close = __bam_close;
 	dbp->del = __bam_delete;
+	dbp->key_range = __bam_key_range;
 	dbp->stat = __bam_stat;
 
+	/*
+	 * We don't permit the user to specify a prefix routine if they didn't
+	 * also specify a comparison routine, they can't know enough about our
+	 * comparison routine to get it right.
+	 */
+	if (t->bt_compare == __bam_defcmp && t->bt_prefix != __bam_defpfx) {
+		__db_err(dbp->dbenv,
+"prefix comparison may not be specified for default comparison routine");
+		return (EINVAL);
+	}
+
 	/* Start up the tree. */
-	if ((ret = __bam_read_root(dbp)) != 0)
-		goto err;
-
-	/* Set the overflow page size. */
-	__bam_setovflsize(dbp);
-
-	return (0);
-
-einval:	ret = EINVAL;
-
-err:	__os_free(t, sizeof(BTREE));
-	return (ret);
+	return (__bam_read_root(dbp, name, base_pgno, flags));
 }
 
 /*
- * __bam_close --
- *	Close a btree.
+ * __bam_metachk --
  *
- * PUBLIC: int __bam_close __P((DB *));
+ * PUBLIC: int __bam_metachk __P((DB *, const char *, BTMETA *));
  */
 int
-__bam_close(dbp)
+__bam_metachk(dbp, name, btm)
 	DB *dbp;
+	const char *name;
+	BTMETA *btm;
 {
-	__os_free(dbp->internal, sizeof(BTREE));
-	dbp->internal = NULL;
+	DB_ENV *dbenv;
+	u_int32_t vers;
+	int ret;
+
+	dbenv = dbp->dbenv;
+
+	/*
+	 * At this point, all we know is that the magic number is for a Btree.
+	 * Check the version, the database may be out of date.
+	 */
+	vers = btm->dbmeta.version;
+	if (F_ISSET(dbp, DB_AM_SWAP))
+		M_32_SWAP(vers);
+	switch (vers) {
+	case 6:
+	case 7:
+		__db_err(dbenv,
+		    "%s: btree version %lu requires a version upgrade",
+		    name, (u_long)vers);
+		return (DB_OLD_VERSION);
+	case 8:
+		break;
+	default:
+		__db_err(dbenv,
+		    "%s: unsupported btree version: %lu", name, (u_long)vers);
+		return (EINVAL);
+	}
+
+	/* Swap the page if we need to. */
+	if (F_ISSET(dbp, DB_AM_SWAP) && (ret = __bam_mswap((PAGE *)btm)) != 0)
+		return (ret);
+
+	/*
+	 * Check application info against metadata info, and set info, flags,
+	 * and type based on metadata info.
+	 */
+	if ((ret =
+	    __db_fchk(dbenv, "DB->open", btm->dbmeta.flags, BTM_MASK)) != 0)
+		return (ret);
+
+	if (F_ISSET(&btm->dbmeta, BTM_RECNO)) {
+		if (dbp->type == DB_BTREE)
+			goto wrong_type;
+		dbp->type = DB_RECNO;
+		DB_ILLEGAL_METHOD(dbp, DB_OK_RECNO);
+	} else {
+		if (dbp->type == DB_RECNO)
+			goto wrong_type;
+		dbp->type = DB_BTREE;
+		DB_ILLEGAL_METHOD(dbp, DB_OK_BTREE);
+	}
+
+	if (F_ISSET(&btm->dbmeta, BTM_DUP))
+		F_SET(dbp, DB_AM_DUP);
+	else
+		if (F_ISSET(dbp, DB_AM_DUP)) {
+			__db_err(dbenv,
+		"%s: DB_DUP specified to open method but not set in database",
+			    name);
+			return (EINVAL);
+		}
+
+	if (F_ISSET(&btm->dbmeta, BTM_RECNUM)) {
+		if (dbp->type != DB_BTREE)
+			goto wrong_type;
+		F_SET(dbp, DB_BT_RECNUM);
+
+		if ((ret = __db_fcchk(dbenv,
+		    "DB->open", dbp->flags, DB_AM_DUP, DB_BT_RECNUM)) != 0)
+			return (ret);
+	} else
+		if (F_ISSET(dbp, DB_BT_RECNUM)) {
+			__db_err(dbenv,
+	    "%s: DB_RECNUM specified to open method but not set in database",
+			    name);
+			return (EINVAL);
+		}
+
+	if (F_ISSET(&btm->dbmeta, BTM_FIXEDLEN)) {
+		if (dbp->type != DB_RECNO)
+			goto wrong_type;
+		F_SET(dbp, DB_RE_FIXEDLEN);
+	} else
+		if (F_ISSET(dbp, DB_RE_FIXEDLEN)) {
+			__db_err(dbenv,
+	"%s: DB_FIXEDLEN specified to open method but not set in database",
+			    name);
+			return (EINVAL);
+		}
+
+	if (F_ISSET(&btm->dbmeta, BTM_RENUMBER)) {
+		if (dbp->type != DB_RECNO)
+			goto wrong_type;
+		F_SET(dbp, DB_RE_RENUMBER);
+	} else
+		if (F_ISSET(dbp, DB_RE_RENUMBER)) {
+			__db_err(dbenv,
+	    "%s: DB_RENUMBER specified to open method but not set in database",
+			    name);
+			return (EINVAL);
+		}
+
+	if (F_ISSET(&btm->dbmeta, BTM_SUBDB))
+		F_SET(dbp, DB_AM_SUBDB);
+	else
+		if (F_ISSET(dbp, DB_AM_SUBDB)) {
+			__db_err(dbenv,
+	    "%s: multiple databases specified but not supported by file",
+			    name);
+			return (EINVAL);
+		}
+
+	if (F_ISSET(&btm->dbmeta, BTM_DUPSORT)) {
+		if (dbp->dup_compare == NULL)
+			dbp->dup_compare = __bam_defcmp;
+		F_SET(dbp, DB_AM_DUPSORT);
+	} else
+		if (dbp->dup_compare != NULL) {
+			__db_err(dbenv,
+		"%s: duplicate sort specified but not supported in database",
+			    name);
+			return (EINVAL);
+		}
+
+	/* Set the page size. */
+	dbp->pgsize = btm->dbmeta.pagesize;
+
+	/* Copy the file's ID. */
+	memcpy(dbp->fileid, btm->dbmeta.uid, DB_FILE_ID_LEN);
 
 	return (0);
-}
 
-/*
- * __bam_setovflsize --
- *
- * PUBLIC: void __bam_setovflsize __P((DB *));
- */
-void
-__bam_setovflsize(dbp)
-	DB *dbp;
-{
-	BTREE *t;
-
-	t = dbp->internal;
-
-	/*
-	 * !!!
-	 * Correction for recno, which doesn't know anything about minimum
-	 * keys per page.
-	 */
-	if (t->bt_minkey == 0)
-		t->bt_minkey = DEFMINKEYPAGE;
-
-	/*
-	 * The btree data structure requires that at least two key/data pairs
-	 * can fit on a page, but other than that there's no fixed requirement.
-	 * Translate the minimum number of items into the bytes a key/data pair
-	 * can use before being placed on an overflow page.  We calculate for
-	 * the worst possible alignment by assuming every item requires the
-	 * maximum alignment for padding.
-	 *
-	 * Recno uses the btree bt_ovflsize value -- it's close enough.
-	 */
-	t->bt_ovflsize = (dbp->pgsize - P_OVERHEAD) / (t->bt_minkey * P_INDX)
-	    - (BKEYDATA_PSIZE(0) + ALIGN(1, 4));
+wrong_type:
+	if (dbp->type == DB_BTREE)
+		__db_err(dbenv,
+		    "open method type is Btree, database type is Recno");
+	else
+		__db_err(dbenv,
+		    "open method type is Recno, database type is Btree");
+	return (EINVAL);
 }
 
 /*
  * __bam_read_root --
  *	Check (and optionally create) a tree.
  *
- * PUBLIC: int __bam_read_root __P((DB *));
+ * PUBLIC: int __bam_read_root __P((DB *, const char *, db_pgno_t, u_int32_t));
  */
 int
-__bam_read_root(dbp)
+__bam_read_root(dbp, name, base_pgno, flags)
 	DB *dbp;
+	const char *name;
+	db_pgno_t base_pgno;
+	u_int32_t flags;
 {
 	BTMETA *meta;
 	BTREE *t;
 	DBC *dbc;
-	DB_LOCK metalock, rootlock;
+	DB_LSN orig_lsn;
+	DB_LOCK metalock;
 	PAGE *root;
-	db_pgno_t pgno;
-	int ret, t_ret;
+	int locked, ret, t_ret;
 
 	ret = 0;
-	t = dbp->internal;
+	t = dbp->bt_internal;
+	meta = NULL;
+	root = NULL;
+	locked = 0;
 
-	/* Get a cursor. */
-	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+	/* 
+	 * Get a cursor.  If DB_CREATE is specified, we may be creating
+	 * the root page, and to do that safely in CDB we need a write
+	 * cursor.  In STD_LOCKING mode, we'll synchronize using the 
+	 * meta page lock instead.
+	 */
+	if ((ret = dbp->cursor(dbp, dbp->open_txn,
+	    &dbc, LF_ISSET(DB_CREATE) && CDB_LOCKING(dbp->dbenv) ? 
+	    DB_WRITECURSOR : 0)) != 0)
 		return (ret);
 
 	/* Get, and optionally create the metadata page. */
-	pgno = PGNO_METADATA;
 	if ((ret =
-	    __bam_lget(dbc, 0, PGNO_METADATA, DB_LOCK_WRITE, &metalock)) != 0)
+	    __db_lget(dbc, 0, base_pgno, DB_LOCK_READ, 0, &metalock)) != 0)
 		goto err;
-	if ((ret =
-	    memp_fget(dbp->mpf, &pgno, DB_MPOOL_CREATE, (PAGE **)&meta)) != 0) {
-		(void)__BT_LPUT(dbc, metalock);
+	if ((ret = memp_fget(
+	    dbp->mpf, &base_pgno, DB_MPOOL_CREATE, (PAGE **)&meta)) != 0)
 		goto err;
-	}
 
 	/*
 	 * If the magic number is correct, we're not creating the tree.
 	 * Correct any fields that may not be right.  Note, all of the
-	 * local flags were set by db_open(3).
+	 * local flags were set by DB->open.
 	 */
-	if (meta->magic != 0) {
+again:	if (meta->dbmeta.magic != 0) {
 		t->bt_maxkey = meta->maxkey;
 		t->bt_minkey = meta->minkey;
+		t->re_pad = meta->re_pad;
+		t->re_len = meta->re_len;
 
-		(void)memp_fput(dbp->mpf, (PAGE *)meta, 0);
-		(void)__BT_LPUT(dbc, metalock);
+		t->bt_meta = base_pgno;
+		t->bt_root = meta->root;
+
+		(void)memp_fput(dbp->mpf, meta, 0);
+		meta = NULL;
 		goto done;
 	}
 
-	/* Initialize the tree structure metadata information. */
-	memset(meta, 0, sizeof(BTMETA));
-	ZERO_LSN(meta->lsn);
-	meta->pgno = PGNO_METADATA;
-	meta->magic = DB_BTREEMAGIC;
-	meta->version = DB_BTREEVERSION;
-	meta->pagesize = dbp->pgsize;
-	meta->maxkey = t->bt_maxkey;
-	meta->minkey = t->bt_minkey;
-	meta->free = PGNO_INVALID;
-	if (dbp->type == DB_RECNO)
-		F_SET(meta, BTM_RECNO);
-	if (F_ISSET(dbp, DB_AM_DUP))
-		F_SET(meta, BTM_DUP);
-	if (F_ISSET(dbp, DB_RE_FIXEDLEN))
-		F_SET(meta, BTM_FIXEDLEN);
-	if (F_ISSET(dbp, DB_BT_RECNUM))
-		F_SET(meta, BTM_RECNUM);
-	if (F_ISSET(dbp, DB_RE_RENUMBER))
-		F_SET(meta, BTM_RENUMBER);
-	memcpy(meta->uid, dbp->fileid, DB_FILE_ID_LEN);
+	/* In recovery if it's not there it will be created elsewhere.*/
+	if (IS_RECOVERING(dbp->dbenv))
+		goto done;
 
-	/* Create and initialize a root page. */
-	pgno = PGNO_ROOT;
-	if ((ret =
-	    __bam_lget(dbc, 0, PGNO_ROOT, DB_LOCK_WRITE, &rootlock)) != 0)
-		goto err;
-	if ((ret = memp_fget(dbp->mpf, &pgno, DB_MPOOL_CREATE, &root)) != 0) {
-		(void)__BT_LPUT(dbc, rootlock);
-		goto err;
+	/* If we're doing CDB; we now have to get the write lock. */
+	if (CDB_LOCKING(dbp->dbenv)) {
+		/* 
+		 * We'd better have DB_CREATE set if we're actually doing 
+		 * the create. 
+		 */
+		DB_ASSERT(LF_ISSET(DB_CREATE));
+	    	if ((ret = lock_get(dbp->dbenv, dbc->locker, DB_LOCK_UPGRADE,
+	    	    &dbc->lock_dbt, DB_LOCK_WRITE, &dbc->mylock)) != 0)
+			goto err;
 	}
-	P_INIT(root, dbp->pgsize, PGNO_ROOT, PGNO_INVALID,
-	    PGNO_INVALID, 1, dbp->type == DB_RECNO ? P_LRECNO : P_LBTREE);
-	ZERO_LSN(root->lsn);
-
-	/* Release the metadata and root pages. */
-	if ((ret = memp_fput(dbp->mpf, (PAGE *)meta, DB_MPOOL_DIRTY)) != 0)
-		goto err;
-	if ((ret = memp_fput(dbp->mpf, root, DB_MPOOL_DIRTY)) != 0)
-		goto err;
 
 	/*
-	 * Flush the metadata and root pages to disk -- since the user can't
-	 * transaction protect open, the pages have to exist during recovery.
+	 * If we are doing locking, relase the read lock and get a write lock.
+	 * We want to avoid deadlock.
+	 */
+	if (locked == 0 && STD_LOCKING(dbc)) {
+		if ((ret = __LPUT(dbc, metalock)) != 0)
+			goto err;
+		if ((ret = __db_lget(dbc,
+		     0, base_pgno, DB_LOCK_WRITE, 0, &metalock)) != 0)
+			goto err;
+		locked = 1;
+		goto again;
+	}
+
+	/* Initialize the tree structure metadata information. */
+	orig_lsn = meta->dbmeta.lsn;
+	memset(meta, 0, sizeof(BTMETA));
+	meta->dbmeta.lsn = orig_lsn;
+	meta->dbmeta.pgno = base_pgno;
+	meta->dbmeta.magic = DB_BTREEMAGIC;
+	meta->dbmeta.version = DB_BTREEVERSION;
+	meta->dbmeta.pagesize = dbp->pgsize;
+	meta->dbmeta.type = P_BTREEMETA;
+	meta->dbmeta.free = PGNO_INVALID;
+	if (F_ISSET(dbp, DB_AM_DUP))
+		F_SET(&meta->dbmeta, BTM_DUP);
+	if (F_ISSET(dbp, DB_RE_FIXEDLEN))
+		F_SET(&meta->dbmeta, BTM_FIXEDLEN);
+	if (F_ISSET(dbp, DB_BT_RECNUM))
+		F_SET(&meta->dbmeta, BTM_RECNUM);
+	if (F_ISSET(dbp, DB_RE_RENUMBER))
+		F_SET(&meta->dbmeta, BTM_RENUMBER);
+	if (F_ISSET(dbp, DB_AM_SUBDB))
+		F_SET(&meta->dbmeta, BTM_SUBDB);
+	if (dbp->dup_compare != NULL)
+		F_SET(&meta->dbmeta, BTM_DUPSORT);
+	if (dbp->type == DB_RECNO)
+		F_SET(&meta->dbmeta, BTM_RECNO);
+	memcpy(meta->dbmeta.uid, dbp->fileid, DB_FILE_ID_LEN);
+
+	meta->maxkey = t->bt_maxkey;
+	meta->minkey = t->bt_minkey;
+	meta->re_len = t->re_len;
+	meta->re_pad = t->re_pad;
+
+	/* If necessary, log the meta-data and root page creates.  */
+	if ((ret = __db_log_page(dbp,
+	    name, &orig_lsn, base_pgno, (PAGE *)meta)) != 0)
+		goto err;
+
+	/* Create and initialize a root page. */
+	if ((ret = __db_new(dbc,
+	    dbp->type == DB_RECNO ? P_LRECNO : P_LBTREE, &root)) != 0)
+		goto err;
+	root->level = LEAFLEVEL;
+
+	if (dbp->open_txn != NULL && (ret = __bam_root_log(dbp->dbenv,
+	    dbp->open_txn, &meta->dbmeta.lsn, 0, dbp->log_fileid,
+	    meta->dbmeta.pgno, root->pgno, &meta->dbmeta.lsn)) != 0)
+		goto err;
+
+	meta->root = root->pgno;
+
+	DB_TEST_RECOVERY(dbp, DB_TEST_POSTLOGMETA, ret, name);
+	if ((ret = __db_log_page(dbp,
+	    name, &root->lsn, root->pgno, root)) != 0)
+		goto err;
+	DB_TEST_RECOVERY(dbp, DB_TEST_POSTLOG, ret, name);
+
+	t->bt_meta = base_pgno;
+	t->bt_root = root->pgno;
+
+	/* Release the metadata and root pages. */
+	if ((ret = memp_fput(dbp->mpf, meta, DB_MPOOL_DIRTY)) != 0)
+		goto err;
+	meta = NULL;
+	if ((ret = memp_fput(dbp->mpf, root, DB_MPOOL_DIRTY)) != 0)
+		goto err;
+	root = NULL;
+
+	/*
+	 * Flush the metadata and root pages to disk.
 	 *
-	 * XXX
+	 * !!!
 	 * It's not useful to return not-yet-flushed here -- convert it to
 	 * an error.
 	 */
-	if ((ret = memp_fsync(dbp->mpf)) == DB_INCOMPLETE)
+	if ((ret = memp_fsync(dbp->mpf)) == DB_INCOMPLETE) {
+		__db_err(dbp->dbenv, "Metapage flush failed");
 		ret = EINVAL;
+	}
+	DB_TEST_RECOVERY(dbp, DB_TEST_POSTSYNC, ret, name);
 
-	/* Release the locks. */
-	(void)__BT_LPUT(dbc, metalock);
-	(void)__BT_LPUT(dbc, rootlock);
+done:	/*
+	 * !!!
+	 * We already did an insert and so the last-page-inserted has been
+	 * set.  I'm not sure where the *right* place to clear this value
+	 * is, it's not intuitively obvious that it belongs here.
+	 */
+	t->bt_lpgno = PGNO_INVALID;
 
 err:
-done:	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+DB_TEST_RECOVERY_LABEL
+	/* Put any remaining pages back. */
+	if (meta != NULL)
+		if ((t_ret = memp_fput(dbp->mpf, meta, 0)) != 0 &&
+		    ret == 0)
+			ret = t_ret;
+	if (root != NULL)
+		if ((t_ret = memp_fput(dbp->mpf, root, 0)) != 0 &&
+		    ret == 0)
+			ret = t_ret;
+
+	/* We can release the metapage lock when we are done. */
+	(void)__LPUT(dbc, metalock);
+
+	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
 		ret = t_ret;
 	return (ret);
 }

@@ -1,7 +1,7 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 /*
@@ -16,11 +16,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -37,12 +33,13 @@
  * SUCH DAMAGE.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)getcwd.c	10.9 (Sleepycat) 9/17/98";
+static const char revid[] = "$Id: getcwd.c,v 1.1.1.2 2002-02-11 16:25:52 ghudson Exp $";
 #endif /* not lint */
 
+#ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -68,6 +65,7 @@ static const char sccsid[] = "@(#)getcwd.c	10.9 (Sleepycat) 9/17/98";
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#endif
 
 #include "db_int.h"
 
@@ -102,7 +100,7 @@ getcwd(pt, size)
 	dev_t root_dev;
 	ino_t root_ino;
 	size_t ptsize, upsize;
-	int save_errno;
+	int ret, save_errno;
 	char *ept, *eup, *up;
 
 	/*
@@ -113,17 +111,20 @@ getcwd(pt, size)
 	if (pt) {
 		ptsize = 0;
 		if (!size) {
-			errno = EINVAL;
+			__os_set_errno(EINVAL);
 			return (NULL);
 		}
 		if (size == 1) {
-			errno = ERANGE;
+			__os_set_errno(ERANGE);
 			return (NULL);
 		}
 		ept = pt + size;
 	} else {
-		if ((errno = __os_malloc(ptsize = 1024 - 4, NULL, &pt)) != 0)
+		if ((ret =
+		    __os_malloc(NULL, ptsize = 1024 - 4, NULL, &pt)) != 0) {
+			__os_set_errno(ret);
 			return (NULL);
+		}
 		ept = pt + ptsize;
 	}
 	bpt = ept - 1;
@@ -134,7 +135,7 @@ getcwd(pt, size)
 	 * Should always be enough (it's 340 levels).  If it's not, allocate
 	 * as necessary.  Special case the first stat, it's ".", not "..".
 	 */
-	if ((errno = __os_malloc(upsize = 1024 - 4, NULL, &up)) != 0)
+	if ((ret = __os_malloc(NULL, upsize = 1024 - 4, NULL, &up)) != 0)
 		goto err;
 	eup = up + 1024;
 	bup = up;
@@ -147,7 +148,7 @@ getcwd(pt, size)
 	root_dev = s.st_dev;
 	root_ino = s.st_ino;
 
-	errno = 0;			/* XXX readdir has no error return. */
+	__os_set_errno(0);		/* XXX readdir has no error return. */
 
 	for (first = 1;; first = 0) {
 		/* Stat the current level. */
@@ -177,7 +178,7 @@ getcwd(pt, size)
 		 * possible component name, plus a trailing NULL.
 		 */
 		if (bup + 3  + MAXNAMLEN + 1 >= eup) {
-			if (__os_realloc(&up, upsize *= 2) != 0)
+			if (__os_realloc(NULL, upsize *= 2, NULL, &up) != 0)
 				goto err;
 			bup = up;
 			eup = up + upsize;
@@ -216,9 +217,9 @@ getcwd(pt, size)
 
 				/* Save the first error for later. */
 				if (lstat(up, &s)) {
-					if (!save_errno)
-						save_errno = errno;
-					errno = 0;
+					if (save_errno == 0)
+						save_errno = __os_get_errno();
+					__os_set_errno(0);
 					continue;
 				}
 				if (s.st_dev == dev && s.st_ino == ino)
@@ -233,12 +234,12 @@ getcwd(pt, size)
 			size_t len, off;
 
 			if (!ptsize) {
-				errno = ERANGE;
+				__os_set_errno(ERANGE);
 				goto err;
 			}
 			off = bpt - pt;
 			len = ept - bpt;
-			if (__os_realloc(&pt, ptsize *= 2) != 0)
+			if (__os_realloc(NULL, ptsize *= 2, NULL, &pt) != 0)
 				goto err;
 			bpt = pt + off;
 			ept = pt + ptsize;
@@ -261,8 +262,8 @@ notfound:
 	 * didn't find the current directory in its parent directory, set
 	 * errno to ENOENT.
 	 */
-	if (!errno)
-		errno = save_errno ? save_errno : ENOENT;
+	if (__os_get_errno() == 0)
+		__os_set_errno(save_errno == 0 ? ENOENT : save_errno);
 	/* FALLTHROUGH */
 err:
 	if (ptsize)

@@ -1,14 +1,14 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1997, 1998
+ * Copyright (c) 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)os_alloc.c	10.10 (Sleepycat) 10/12/98";
+static const char revid[] = "$Id: os_alloc.c,v 1.1.1.2 2002-02-11 16:29:25 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,6 +21,10 @@ static const char sccsid[] = "@(#)os_alloc.c	10.10 (Sleepycat) 10/12/98";
 
 #include "db_int.h"
 #include "os_jump.h"
+
+#ifdef DIAGNOSTIC
+static void __os_guard __P((void));
+#endif
 
 /*
  * !!!
@@ -43,10 +47,11 @@ static const char sccsid[] = "@(#)os_alloc.c	10.10 (Sleepycat) 10/12/98";
  * __os_strdup --
  *	The strdup(3) function for DB.
  *
- * PUBLIC: int __os_strdup __P((const char *, void *));
+ * PUBLIC: int __os_strdup __P((DB_ENV *, const char *, void *));
  */
 int
-__os_strdup(str, storep)
+__os_strdup(dbenv, str, storep)
+	DB_ENV *dbenv;
 	const char *str;
 	void *storep;
 {
@@ -57,7 +62,7 @@ __os_strdup(str, storep)
 	*(void **)storep = NULL;
 
 	size = strlen(str) + 1;
-	if ((ret = __os_malloc(size, NULL, &p)) != 0)
+	if ((ret = __os_malloc(dbenv, size, NULL, &p)) != 0)
 		return (ret);
 
 	memcpy(p, str, size);
@@ -70,10 +75,11 @@ __os_strdup(str, storep)
  * __os_calloc --
  *	The calloc(3) function for DB.
  *
- * PUBLIC: int __os_calloc __P((size_t, size_t, void *));
+ * PUBLIC: int __os_calloc __P((DB_ENV *, size_t, size_t, void *));
  */
 int
-__os_calloc(num, size, storep)
+__os_calloc(dbenv, num, size, storep)
+	DB_ENV *dbenv;
 	size_t num, size;
 	void *storep;
 {
@@ -81,12 +87,12 @@ __os_calloc(num, size, storep)
 	int ret;
 
 	size *= num;
-	if ((ret = __os_malloc(size, NULL, &p)) != 0)
+	if ((ret = __os_malloc(dbenv, size, NULL, &p)) != 0)
 		return (ret);
 
 	memset(p, 0, size);
-	*(void **)storep = p;
 
+	*(void **)storep = p;
 	return (0);
 }
 
@@ -94,13 +100,15 @@ __os_calloc(num, size, storep)
  * __os_malloc --
  *	The malloc(3) function for DB.
  *
- * PUBLIC: int __os_malloc __P((size_t, void *(*)(size_t), void *));
+ * PUBLIC: int __os_malloc __P((DB_ENV *, size_t, void *(*)(size_t), void *));
  */
 int
-__os_malloc(size, db_malloc, storep)
+__os_malloc(dbenv, size, db_malloc, storep)
+	DB_ENV *dbenv;
 	size_t size;
 	void *(*db_malloc) __P((size_t)), *storep;
 {
+	int ret;
 	void *p;
 
 	*(void **)storep = NULL;
@@ -108,9 +116,13 @@ __os_malloc(size, db_malloc, storep)
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
 		++size;
+#ifdef DIAGNOSTIC
+	else
+		++size;				/* Add room for a guard byte. */
+#endif
 
 	/* Some C libraries don't correctly set errno when malloc(3) fails. */
-	errno = 0;
+	__os_set_errno(0);
 	if (db_malloc != NULL)
 		p = db_malloc(size);
 	else if (__db_jump.j_malloc != NULL)
@@ -118,13 +130,29 @@ __os_malloc(size, db_malloc, storep)
 	else
 		p = malloc(size);
 	if (p == NULL) {
-		if (errno == 0)
-			errno = ENOMEM;
-		return (errno);
+		ret = __os_get_errno();
+		if (ret == 0) {
+			__os_set_errno(ENOMEM);
+			ret = ENOMEM;
+		}
+		__db_err(dbenv,
+		    "malloc: %s: %lu", strerror(ret), (u_long)size);
+		return (ret);
 	}
 
 #ifdef DIAGNOSTIC
-	memset(p, 0xdb, size);
+	/*
+	 * Guard bytes: if #DIAGNOSTIC is defined, we allocate an additional
+	 * byte after the memory and set it to a special value that we check
+	 * for when the memory is free'd.  This is fine for structures, but
+	 * not quite so fine for strings.  There are places in DB where memory
+	 * is allocated sufficient to hold the largest possible string that
+	 * we'll see, and then only some subset of the memory is used.  To
+	 * support this usage, the __os_freestr() function checks the byte
+	 * after the string's nul, which may or may not be the last byte in
+	 * the originally allocated memory.
+	 */
+	memset(p, CLEAR_BYTE, size);		/* Initialize guard byte. */
 #endif
 	*(void **)storep = p;
 
@@ -135,24 +163,31 @@ __os_malloc(size, db_malloc, storep)
  * __os_realloc --
  *	The realloc(3) function for DB.
  *
- * PUBLIC: int __os_realloc __P((void *, size_t));
+ * PUBLIC: int __os_realloc __P((DB_ENV *,
+ * PUBLIC:     size_t, void *(*)(void *, size_t), void *));
  */
 int
-__os_realloc(storep, size)
-	void *storep;
+__os_realloc(dbenv, size, db_realloc, storep)
+	DB_ENV *dbenv;
 	size_t size;
+	void *(*db_realloc) __P((void *, size_t)), *storep;
 {
+	int ret;
 	void *p, *ptr;
 
 	ptr = *(void **)storep;
 
 	/* If we haven't yet allocated anything yet, simply call malloc. */
-	if (ptr == NULL)
-		return (__os_malloc(size, NULL, storep));
+	if (ptr == NULL && db_realloc == NULL)
+		return (__os_malloc(dbenv, size, NULL, storep));
 
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
 		++size;
+#ifdef DIAGNOSTIC
+	else
+		++size;				/* Add room for a guard byte. */
+#endif
 
 	/*
 	 * Some C libraries don't correctly set errno when realloc(3) fails.
@@ -160,16 +195,25 @@ __os_realloc(storep, size)
 	 * Don't overwrite the original pointer, there are places in DB we
 	 * try to continue after realloc fails.
 	 */
-	errno = 0;
-	if (__db_jump.j_realloc != NULL)
+	__os_set_errno(0);
+	if (db_realloc != NULL)
+		p = db_realloc(ptr, size);
+	else if (__db_jump.j_realloc != NULL)
 		p = __db_jump.j_realloc(ptr, size);
 	else
 		p = realloc(ptr, size);
 	if (p == NULL) {
-		if (errno == 0)
-			errno = ENOMEM;
-		return (errno);
+		if ((ret = __os_get_errno()) == 0) {
+			ret = ENOMEM;
+			__os_set_errno(ENOMEM);
+		}
+		__db_err(dbenv,
+		    "realloc: %s: %lu", strerror(ret), (u_long)size);
+		return (ret);
 	}
+#ifdef DIAGNOSTIC
+	((u_int8_t *)p)[size - 1] = CLEAR_BYTE;	/* Initialize guard byte. */
+#endif
 
 	*(void **)storep = p;
 
@@ -188,8 +232,20 @@ __os_free(ptr, size)
 	size_t size;
 {
 #ifdef DIAGNOSTIC
-	if (size != 0)
-		memset(ptr, 0xdb, size);
+	if (size != 0) {
+		/*
+		 * Check that the guard byte (one past the end of the memory) is
+		 * still CLEAR_BYTE.
+		 */
+		if (((u_int8_t *)ptr)[size] != CLEAR_BYTE)
+			 __os_guard();
+
+		/* Clear memory. */
+		if (size != 0)
+			memset(ptr, CLEAR_BYTE, size);
+	}
+#else
+	COMPQUIET(size, 0);
 #endif
 
 	if (__db_jump.j_free != NULL)
@@ -209,11 +265,79 @@ __os_freestr(ptr)
 	void *ptr;
 {
 #ifdef DIAGNOSTIC
-	memset(ptr, 0xdb, strlen(ptr) + 1);
+	size_t size;
+
+	size = strlen(ptr) + 1;
+
+	/*
+	 * Check that the guard byte (one past the end of the memory) is
+	 * still CLEAR_BYTE.
+	 */
+	if (((u_int8_t *)ptr)[size] != CLEAR_BYTE)
+		 __os_guard();
+
+	/* Clear memory. */
+	memset(ptr, CLEAR_BYTE, size);
 #endif
 
 	if (__db_jump.j_free != NULL)
 		__db_jump.j_free(ptr);
 	else
 		free(ptr);
+}
+
+#ifdef DIAGNOSTIC
+/*
+ * __os_guard --
+ *	Complain and abort.
+ */
+static void
+__os_guard()
+{
+	/*
+	 * Eventually, once we push a DB_ENV handle down to these
+	 * routines, we should use the standard output channels.
+	 */
+	fprintf(stderr, "Guard byte incorrect during free.\n");
+	abort();
+	/* NOTREACHED */
+}
+#endif
+
+/*
+ * __ua_memcpy --
+ *	Copy memory to memory without relying on any kind of alignment.
+ *
+ *	There are places in DB that we have unaligned data, for example,
+ *	when we've stored a structure in a log record as a DBT, and now
+ *	we want to look at it.  Unfortunately, if you have code like:
+ *
+ *		struct a {
+ *			int x;
+ *		} *p;
+ *
+ *		void *func_argument;
+ *		int local;
+ *
+ *		p = (struct a *)func_argument;
+ *		memcpy(&local, p->x, sizeof(local));
+ *
+ *	compilers optimize to use inline instructions requiring alignment,
+ *	and records in the log don't have any particular alignment.  (This
+ *	isn't a compiler bug, because it's a structure they're allowed to
+ *	assume alignment.)
+ *
+ *	Casting the memcpy arguments to (u_int8_t *) appears to work most
+ *	of the time, but we've seen examples where it wasn't sufficient
+ *	and there's nothing in ANSI C that requires that work.
+ *
+ * PUBLIC: void *__ua_memcpy __P((void *, const void *, size_t));
+ */
+void *
+__ua_memcpy(dst, src, len)
+	void *dst;
+	const void *src;
+	size_t len;
+{
+	return ((void *)memcpy(dst, src, len));
 }

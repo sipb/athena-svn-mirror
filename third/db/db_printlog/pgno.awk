@@ -1,4 +1,4 @@
-# @(#)pgno.awk	10.1 (Sleepycat) 11/1/98
+# $Id: pgno.awk,v 1.1.1.2 2002-02-11 16:24:32 ghudson Exp $
 #
 # Take a comma-separated list of page numbers and spit out all the
 # log records that affect those page numbers.

@@ -1,9 +1,9 @@
 # See the file LICENSE for redistribution information.
 #
-# Copyright (c) 1996, 1997, 1998
+# Copyright (c) 1996, 1997, 1998, 1999, 2000
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)ndbm.tcl	10.4 (Sleepycat) 4/10/98
+#	$Id: ndbm.tcl,v 1.1.1.2 2002-02-11 16:28:23 ghudson Exp $
 #
 # Historic NDBM interface test.
 # Use the first 1000 entries from the dictionary.
@@ -12,11 +12,9 @@
 # Then reopen the file, re-retrieve everything.
 # Finally, delete everything.
 proc ndbm { { nentries 1000 } } {
-	puts "NDBM interfaces test: $nentries"
-
-	# Get global declarations since tcl doesn't support
-	# any useful equivalent to #defines!
 	source ./include.tcl
+
+	puts "NDBM interfaces test: $nentries"
 
 	# Create the database and open the dictionary
 	set testfile $testdir/ndbmtest
@@ -25,8 +23,7 @@ proc ndbm { { nentries 1000 } } {
 	set t3 $testdir/t3
 	cleanup $testdir
 
-	set flags [expr $DB_TRUNCATE | $DB_CREATE]
-	set db [ndbm_open $testfile $flags 0644]
+	set db [berkdb ndbm_open -create -truncate -mode 0644 $testfile]
 	error_check_good ndbm_open [is_substr $db ndbm] 1
 	set did [open $dict]
 
@@ -35,11 +32,18 @@ proc ndbm { { nentries 1000 } } {
 	set flags 0
 	set txn 0
 	set count 0
+	set skippednullkey 0
 
 	puts "\tNDBM.a: put/get loop"
 	# Here is the loop where we put and get each key/data pair
 	while { [gets $did str] != -1 && $count < $nentries } {
-		set ret [$db store $str $str 0]
+		# NDBM can't handle zero-length keys
+		if { [string length $str] == 0 } {
+			set skippednullkey 1
+			continue
+		}
+
+		set ret [$db store $str $str insert]
 		error_check_good ndbm_store $ret 0
 
 		set d [$db fetch $str]
@@ -58,15 +62,23 @@ proc ndbm { { nentries 1000 } } {
 		set d [$db fetch $key]
 		error_check_good ndbm_refetch $d $key
 	}
+
+	# If we had to skip a zero-length key, juggle things to cover up
+	# this fact in the dump.
+	if { $skippednullkey == 1 } {
+		puts $oid ""
+		incr nentries 1
+	}
 	close $oid
 
 	# Now compare the keys to see if they match the dictionary (or ints)
 	set q q
-	exec $SED $nentries$q $dict > $t2
-	exec $SORT $t1 > $t3
+	filehead $nentries $dict $t3
+	filesort $t3 $t2
+	filesort $t1 $t3
 
 	error_check_good NDBM:diff($t3,$t2) \
-	    [catch { exec $DIFF $t3 $t2 } res] 0
+	    [filecmp $t3 $t2] 0
 
 	puts "\tNDBM.c: pagf/dirf test"
 	set fd [$db pagfno]
@@ -78,11 +90,11 @@ proc ndbm { { nentries 1000 } } {
 
 	# Now, reopen the file and run the last test again.
 	error_check_good ndbm_close [$db close] 0
-	set db [ndbm_open $testfile $DB_RDONLY 0]
+	set db [berkdb ndbm_open -rdonly $testfile]
 	error_check_good ndbm_open2 [is_substr $db ndbm] 1
 	set oid [open $t1 w]
 
-	error_check_good rdonly_true [$db rdonly] 1
+	error_check_good rdonly_true [$db rdonly] "rdonly:not owner"
 
 	for { set key [$db firstkey] } { $key != -1 } {
 	    set key [$db nextkey] } {
@@ -90,19 +102,22 @@ proc ndbm { { nentries 1000 } } {
 		set d [$db fetch $key]
 		error_check_good ndbm_refetch2 $d $key
 	}
+	if { $skippednullkey == 1 } {
+		puts $oid ""
+	}
 	close $oid
 
 	# Now compare the keys to see if they match the dictionary (or ints)
-	exec $SORT $t1 > $t3
+	filesort $t1 $t3
 
 	error_check_good NDBM:diff($t2,$t3) \
-	    [catch { exec $DIFF $t2 $t3 } res] 0
+	    [filecmp $t2 $t3] 0
 
 	# Now, reopen the file and delete each entry
 	puts "\tNDBM.e: sequential scan and delete"
 
 	error_check_good ndbm_close [$db close] 0
-	set db [ndbm_open $testfile 0 0]
+	set db [berkdb ndbm_open $testfile]
 	error_check_good ndbm_open3 [is_substr $db ndbm] 1
 	set oid [open $t1 w]
 
@@ -112,11 +127,15 @@ proc ndbm { { nentries 1000 } } {
 		set ret [$db delete $key]
 		error_check_good ndbm_delete $ret 0
 	}
+	if { $skippednullkey == 1 } {
+		puts $oid ""
+	}
 	close $oid
 
 	# Now compare the keys to see if they match the dictionary (or ints)
-	exec $SORT $t1 > $t3
+	filesort $t1 $t3
 
 	error_check_good NDBM:diff($t2,$t3) \
-	    [catch { exec $DIFF $t2 $t3 } res] 0
+	    [filecmp $t2 $t3] 0
+	error_check_good ndbm_close [$db close] 0
 }

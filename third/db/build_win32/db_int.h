@@ -2,18 +2,43 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  *
- *	@(#)db_int.h	10.77 (Sleepycat) 1/3/99
+ *	$Id: db_int.h,v 1.1.1.2 2002-02-11 16:30:22 ghudson Exp $
  */
 
 #ifndef _DB_INTERNAL_H_
 #define	_DB_INTERNAL_H_
 
-#include "db.h"				/* Standard DB include file. */
+/*******************************************************
+ * General includes.
+ *******************************************************/
+#include "db.h"
+
+#ifndef NO_SYSTEM_INCLUDES
+#if defined(__STDC__) || defined(__cplusplus)
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+#endif
+
+/*
+ * XXX
+ * We need to #undef the following LIST_XXX macros because VxWorks copied
+ * some of them into UnixLib.h -- not all of them though, so we can't use
+ * their versions.
+ */
+#undef LIST_INIT
+#undef LIST_INSERT_HEAD
+#undef LIST_REMOVE
 #include "queue.h"
 #include "shqueue.h"
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /*******************************************************
  * General purpose constants and macros.
@@ -21,38 +46,54 @@
 #define	UINT16_T_MAX	    0xffff	/* Maximum 16 bit unsigned. */
 #define	UINT32_T_MAX	0xffffffff	/* Maximum 32 bit unsigned. */
 
-#define	DB_MIN_PGSIZE	0x000200	/* Minimum page size. */
-#define	DB_MAX_PGSIZE	0x010000	/* Maximum page size. */
-
-#define	DB_MINCACHE	10		/* Minimum cached pages */
-
 #define	MEGABYTE	1048576
+#define	GIGABYTE	1073741824
+
+#define	MS_PER_SEC	1000		/* Milliseconds in a second. */
+#define	USEC_PER_MS	1000		/* Microseconds in a millisecond. */
+
+#define	DB_MIN_PGSIZE	0x000200	/* Minimum page size (512). */
+#define	DB_MAX_PGSIZE	0x010000	/* Maximum page size (65536). */
+
+#define	RECNO_OOB	0		/* Illegal record number. */
 
 /*
  * If we are unable to determine the underlying filesystem block size, use
- * 8K on the grounds that most OS's use less than 8K as their VM page size.
+ * 8K on the grounds that most OS's use less than 8K for a VM page size.
  */
 #define	DB_DEF_IOSIZE	(8 * 1024)
 
 /*
- * Aligning items to particular sizes or in pages or memory.  ALIGNP is a
- * separate macro, as we've had to cast the pointer to different integral
- * types on different architectures.
+ * Aligning items to particular sizes or in pages or memory.
  *
- * We cast pointers into unsigned longs when manipulating them because C89
- * guarantees that u_long is the largest available integral type and further,
- * to never generate overflows.  However, neither C89 or C9X  requires that
- * any integer type be large enough to hold a pointer, although C9X created
- * the intptr_t type, which is guaranteed to hold a pointer but may or may
- * not exist.  At some point in the future, we should test for intptr_t and
- * use it where available.
+ * db_align_t --
+ * Largest integral type, used to align structures in memory.  We don't store
+ * floating point types in structures, so integral types should be sufficient
+ * (and we don't have to worry about systems that store floats in other than
+ * power-of-2 numbers of bytes).  Additionally this fixes compiler that rewrite
+ * structure assignments and ANSI C memcpy calls to be in-line instructions
+ * that happen to require alignment.  Note: this alignment isn't sufficient for
+ * mutexes, which depend on things like cache line alignment.  Mutex alignment
+ * is handled separately, in mutex.h.
+ *
+ * db_alignp_t --
+ * Integral type that's the same size as a pointer.  There are places where
+ * DB modifies pointers by discarding the bottom bits to guarantee alignment.
+ * We can't use db_align_t, it may be larger than the pointer, and compilers
+ * get upset about that.  So far we haven't run on any machine where there
+ * isn't an integral type the same size as a pointer -- here's hoping.
  */
-#undef	ALIGNTYPE
-#define	ALIGNTYPE		u_long
-#undef	ALIGNP
-#define	ALIGNP(value, bound)	ALIGN((ALIGNTYPE)value, bound)
+typedef unsigned long db_align_t;
+typedef unsigned long db_alignp_t;
+
+/* Align an integer to a specific boundary. */
 #undef	ALIGN
-#define	ALIGN(value, bound)	(((value) + (bound) - 1) & ~((bound) - 1))
+#define	ALIGN(value, bound) \
+    (((value) + (bound) - 1) & ~(((u_int)bound) - 1))
+
+/* Align a pointer to a specific boundary. */
+#undef	ALIGNP
+#define	ALIGNP(value, bound)	ALIGN((db_alignp_t)value, bound)
 
 /*
  * There are several on-page structures that are declared to have a number of
@@ -68,16 +109,17 @@
  * an array.
  */
 #undef	SSZ
-#define SSZ(name, field)	((int)&(((name *)0)->field))
+#define	SSZ(name, field)	((int)&(((name *)0)->field))
 
 #undef	SSZA
-#define SSZA(name, field)	((int)&(((name *)0)->field[0]))
+#define	SSZA(name, field)	((int)&(((name *)0)->field[0]))
 
-/* Macros to return per-process address, offsets based on shared regions. */
-#define	R_ADDR(base, offset)	((void *)((u_int8_t *)((base)->addr) + offset))
-#define	R_OFFSET(base, p)	((u_int8_t *)(p) - (u_int8_t *)(base)->addr)
-
-#define	DB_DEFAULT	0x000000	/* No flag was specified. */
+/*
+ * Print an address as a u_long (a u_long is the largest type we can print
+ * portably).  Most 64-bit systems have made longs 64-bits, so this should
+ * work.
+ */
+#define	P_TO_ULONG(p)	((u_long)(db_alignp_t)(p))
 
 /* Structure used to print flag values. */
 typedef struct __fn {
@@ -86,21 +128,15 @@ typedef struct __fn {
 } FN;
 
 /* Set, clear and test flags. */
-#define	F_SET(p, f)	(p)->flags |= (f)
-#define	F_CLR(p, f)	(p)->flags &= ~(f)
-#define	F_ISSET(p, f)	((p)->flags & (f))
-#define	LF_SET(f)	(flags |= (f))
-#define	LF_CLR(f)	(flags &= ~(f))
-#define	LF_ISSET(f)	(flags & (f))
-
-/*
- * Panic check:
- * All interfaces check the panic flag, if it's set, the tree is dead.
- */
-#define	DB_PANIC_CHECK(dbp) {						\
-	if ((dbp)->dbenv != NULL && (dbp)->dbenv->db_panic != 0)	\
-		return (DB_RUNRECOVERY);				\
-}
+#define	FLD_CLR(fld, f)		(fld) &= ~(f)
+#define	FLD_ISSET(fld, f)	((fld) & (f))
+#define	FLD_SET(fld, f)		(fld) |= (f)
+#define	F_CLR(p, f)		(p)->flags &= ~(f)
+#define	F_ISSET(p, f)		((p)->flags & (f))
+#define	F_SET(p, f)		(p)->flags |= (f)
+#define	LF_CLR(f)		(flags &= ~(f))
+#define	LF_ISSET(f)		(flags & (f))
+#define	LF_SET(f)		(flags |= (f))
 
 /* Display separator string. */
 #undef	DB_LINE
@@ -108,19 +144,6 @@ typedef struct __fn {
 
 /* Unused, or not-used-yet variable.  "Shut that bloody compiler up!" */
 #define	COMPQUIET(n, v)	(n) = (v)
-
-/*
- * Purify and similar run-time tools complain about unitialized reads/writes
- * for structure fields whose only purpose is padding.
- */
-#define	UMRW(v)		(v) = 0
-
-/*
- * Win16 needs specific syntax on callback functions.  Nobody else cares.
- */
-#ifndef	DB_CALLBACK
-#define	DB_CALLBACK	/* Nothing. */
-#endif
 
 /*******************************************************
  * Files.
@@ -136,57 +159,25 @@ typedef struct __fn {
 #define	PATH_DOT	"."	/* Current working directory. */
 #define	PATH_SEPARATOR	"\\/"	/* Path separator character. */
 
-/*******************************************************
- * Mutex support.
- *******************************************************/
-typedef unsigned int tsl_t;
+/*
+ * Flags understood by __os_open.
+ */
+#define	DB_OSO_CREATE	0x001		/* POSIX: O_CREAT */
+#define	DB_OSO_EXCL	0x002		/* POSIX: O_EXCL */
+#define	DB_OSO_LOG	0x004		/* Opening a log file. */
+#define	DB_OSO_RDONLY	0x008		/* POSIX: O_RDONLY */
+#define	DB_OSO_SEQ	0x010		/* Expected sequential access. */
+#define	DB_OSO_TEMP	0x020		/* Remove after last close. */
+#define	DB_OSO_TRUNC	0x040		/* POSIX: O_TRUNC */
 
 /*
- * !!!
- * Various systems require different alignments for mutexes (the worst we've
- * seen so far is 16-bytes on some HP architectures).  The mutex (tsl_t) must
- * be first in the db_mutex_t structure, which must itself be first in the
- * region.  This ensures the alignment is as returned by mmap(2), which should
- * be sufficient.  All other mutex users must ensure proper alignment locally.
+ * Seek options understood by __os_seek.
  */
-#define	MUTEX_ALIGNMENT	sizeof(unsigned int)
-
-/*
- * The offset of a mutex in memory.
- *
- * !!!
- * Not an off_t, so backing file offsets MUST be less than 4Gb.  See the
- * off field of the db_mutex_t as well.
- */
-#define	MUTEX_LOCK_OFFSET(a, b)	((u_int32_t)((u_int8_t *)b - (u_int8_t *)a))
-
-typedef struct _db_mutex_t {
-#ifdef HAVE_SPINLOCKS
-	tsl_t	  tsl_resource;		/* Resource test and set. */
-#ifdef DIAGNOSTIC
-	u_int32_t pid;			/* Lock holder: 0 or process pid. */
-#endif
-#else
-	u_int32_t off;			/* Backing file offset. */
-	u_int32_t pid;			/* Lock holder: 0 or process pid. */
-#endif
-	u_int32_t spins;		/* Spins before block. */
-	u_int32_t mutex_set_wait;	/* Granted after wait. */
-	u_int32_t mutex_set_nowait;	/* Granted without waiting. */
-} db_mutex_t;
-
-#include "mutex_ext.h"
-
-/*******************************************************
- * Access methods.
- *******************************************************/
-/* Lock/unlock a DB thread. */
-#define	DB_THREAD_LOCK(dbp)						\
-	if (F_ISSET(dbp, DB_AM_THREAD))					\
-	    (void)__db_mutex_lock((db_mutex_t *)(dbp)->mutexp, -1);
-#define	DB_THREAD_UNLOCK(dbp)						\
-	if (F_ISSET(dbp, DB_AM_THREAD))					\
-	    (void)__db_mutex_unlock((db_mutex_t *)(dbp)->mutexp, -1);
+typedef enum {
+	DB_OS_SEEK_CUR,			/* POSIX: SEEK_CUR */
+	DB_OS_SEEK_END,			/* POSIX: SEEK_END */
+	DB_OS_SEEK_SET			/* POSIX: SEEK_SET */
+} DB_OS_SEEK;
 
 /*******************************************************
  * Environment.
@@ -199,82 +190,89 @@ typedef enum {
 	DB_APP_TMP			/* Temporary file. */
 } APPNAME;
 
+/*
+ * CDB_LOCKING	CDB product locking.
+ * LOCKING_ON	Locking has been configured.
+ * LOGGING_ON	Logging has been configured.
+ * MPOOL_ON	Memory pool has been configured.
+ * TXN_ON	Transactions have been configured.
+ */
+#define	CDB_LOCKING(dbenv)	F_ISSET(dbenv, DB_ENV_CDB)
+#define	LOCKING_ON(dbenv)	((dbenv)->lk_handle != NULL)
+#define	LOGGING_ON(dbenv)	((dbenv)->lg_handle != NULL)
+#define	MPOOL_ON(dbenv)		((dbenv)->mp_handle != NULL)
+#define	TXN_ON(dbenv)		((dbenv)->tx_handle != NULL)
+
+/*
+ * STD_LOCKING	Standard locking, that is, locking was configured and CDB
+ *		was not.  We do not do locking in off-page duplicate trees,
+ *		so we check for that in the cursor first.
+ */
+#define	STD_LOCKING(dbc)						\
+	(!F_ISSET(dbc, DBC_OPD) &&					\
+	    !CDB_LOCKING((dbc)->dbp->dbenv) && LOCKING_ON((dbc)->dbp->dbenv))
+
+/*
+ * IS_RECOVERING The system is running recovery.
+ */
+#define	IS_RECOVERING(dbenv)						\
+	(LOGGING_ON(dbenv) &&						\
+	    F_ISSET((DB_LOG *)(dbenv)->lg_handle, DBLOG_RECOVER))
+
+/* Most initialization methods cannot be called after open is called. */
+#define	ENV_ILLEGAL_AFTER_OPEN(dbenv, name)				\
+	if (F_ISSET((dbenv), DB_ENV_OPEN_CALLED))			\
+		return (__db_mi_open(dbenv, name, 1));
+
+/* We're not actually user hostile, honest. */
+#define	ENV_REQUIRES_CONFIG(dbenv, handle, subsystem)			\
+	if (handle == NULL)						\
+		return (__db_env_config(dbenv, subsystem));
+
 /*******************************************************
- * Shared memory regions.
+ * Database Access Methods.
  *******************************************************/
 /*
- * The shared memory regions share an initial structure so that the general
- * region code can handle races between the region being deleted and other
- * processes waiting on the region mutex.
- *
- * !!!
- * Note, the mutex must be the first entry in the region; see comment above.
+ * DB_IS_THREADED --
+ *	The database handle is free-threaded (was opened with DB_THREAD).
  */
-typedef struct _rlayout {
-	db_mutex_t lock;		/* Region mutex. */
-#define	DB_REGIONMAGIC	0x120897
-	u_int32_t  valid;		/* Valid magic number. */
-	u_int32_t  refcnt;		/* Region reference count. */
-	size_t	   size;		/* Region length. */
-	int	   majver;		/* Major version number. */
-	int	   minver;		/* Minor version number. */
-	int	   patch;		/* Patch version number. */
-	int	   panic;		/* Region is dead. */
-#define	INVALID_SEGID	-1
-	int	   segid;		/* shmget(2) ID, or Win16 segment ID. */
+#define	DB_IS_THREADED(dbp)						\
+	((dbp)->mutexp != NULL)
 
-#define	REGION_ANONYMOUS	0x01	/* Region is/should be in anon mem. */
-	u_int32_t  flags;
-} RLAYOUT;
-
-/*
- * DB creates all regions on 4K boundaries out of sheer paranoia, so that
- * we don't make the underlying VM unhappy.
- */
-#define	DB_VMPAGESIZE	(4 * 1024)
-#define	DB_ROUNDOFF(n, round) {						\
-	(n) += (round) - 1;						\
-	(n) -= (n) % (round);						\
+/* Initialization methods are often illegal before/after open is called. */
+#define	DB_ILLEGAL_AFTER_OPEN(dbp, name)				\
+	if (F_ISSET((dbp), DB_OPEN_CALLED))				\
+		return (__db_mi_open(dbp->dbenv, name, 1));
+#define	DB_ILLEGAL_BEFORE_OPEN(dbp, name)				\
+	if (!F_ISSET((dbp), DB_OPEN_CALLED))				\
+		return (__db_mi_open(dbp->dbenv, name, 0));
+/* Some initialization methods are illegal if environment isn't local. */
+#define	DB_ILLEGAL_IN_ENV(dbp, name)					\
+	if (!F_ISSET(dbp->dbenv, DB_ENV_DBLOCAL))			\
+		return (__db_mi_env(dbp->dbenv, name));
+#define	DB_ILLEGAL_METHOD(dbp, flags) {					\
+	int __ret;							\
+	if ((__ret = __dbh_am_chk(dbp, flags)) != 0)			\
+		return (__ret);						\
 }
 
 /*
- * The interface to region attach is nasty, there is a lot of complex stuff
- * going on, which has to be retained between create/attach and detach.  The
- * REGINFO structure keeps track of it.
+ * Common DBC->internal fields.  Each access method adds additional fields
+ * to this list, but the initial fields are common.
  */
-struct __db_reginfo;	typedef struct __db_reginfo REGINFO;
-struct __db_reginfo {
-					/* Arguments. */
-	DB_ENV	   *dbenv;		/* Region naming info. */
-	APPNAME	    appname;		/* Region naming info. */
-	char	   *path;		/* Region naming info. */
-	const char *file;		/* Region naming info. */
-	int	    mode;		/* Region mode, if a file. */
-	size_t	    size;		/* Region size. */
-	u_int32_t   dbflags;		/* Region file open flags, if a file. */
+#define	__DBC_INTERNAL							\
+	DBC	 *opd;			/* Off-page duplicate cursor. */\
+									\
+	void	 *page;			/* Referenced page. */		\
+	db_pgno_t root;			/* Tree root. */		\
+	db_pgno_t pgno;			/* Referenced page number. */	\
+	db_indx_t indx;			/* Referenced key item index. */\
+									\
+	DB_LOCK		lock;		/* Cursor lock. */		\
+	db_lockmode_t	lock_mode;	/* Lock mode. */
 
-					/* Results. */
-	char	   *name;		/* Region name. */
-	void	   *addr;		/* Region address. */
-	int	    fd;			/* Fcntl(2) locking file descriptor.
-					   NB: this is only valid if a regular
-					   file is backing the shared region,
-					   and mmap(2) is being used to map it
-					   into our address space. */
-	int	    segid;		/* shmget(2) ID, or Win16 segment ID. */
-	void	   *wnt_handle;		/* Win/NT HANDLE. */
-
-					/* Shared flags. */
-/*				0x0001	COMMON MASK with RLAYOUT structure. */
-#define	REGION_CANGROW		0x0002	/* Can grow. */
-#define	REGION_CREATED		0x0004	/* Created. */
-#define	REGION_HOLDINGSYS	0x0008	/* Holding system resources. */
-#define	REGION_LASTDETACH	0x0010	/* Delete on last detach. */
-#define	REGION_MALLOC		0x0020	/* Created in malloc'd memory. */
-#define	REGION_PRIVATE		0x0040	/* Private to thread/process. */
-#define	REGION_REMOVED		0x0080	/* Already deleted. */
-#define	REGION_SIZEDEF		0x0100	/* Use default region size if exists. */
-	u_int32_t   flags;
+struct __dbc_internal {
+	__DBC_INTERNAL
 };
 
 /*******************************************************
@@ -283,8 +281,8 @@ struct __db_reginfo {
 /*
  * File types for DB access methods.  Negative numbers are reserved to DB.
  */
-#define	DB_FTYPE_BTREE		-1	/* Btree. */
-#define	DB_FTYPE_HASH		-2	/* Hash. */
+#define	DB_FTYPE_SET		-1	/* Call pgin/pgout functions. */
+#define	DB_FTYPE_NOTSET		 0	/* Don't call... */
 
 /* Structure used as the DB pgin/pgout pgcookie. */
 typedef struct __dbpginfo {
@@ -296,113 +294,90 @@ typedef struct __dbpginfo {
  * Log.
  *******************************************************/
 /* Initialize an LSN to 'zero'. */
-#define	ZERO_LSN(LSN) {							\
+#define	ZERO_LSN(LSN) do {						\
 	(LSN).file = 0;							\
 	(LSN).offset = 0;						\
-}
+} while (0)
 
 /* Return 1 if LSN is a 'zero' lsn, otherwise return 0. */
 #define	IS_ZERO_LSN(LSN)	((LSN).file == 0)
 
 /* Test if we need to log a change. */
 #define	DB_LOGGING(dbc)							\
-	(F_ISSET((dbc)->dbp, DB_AM_LOGGING) && !F_ISSET(dbc, DBC_RECOVER))
+	(LOGGING_ON((dbc)->dbp->dbenv) && !F_ISSET(dbc, DBC_RECOVER))
 
-#ifdef DIAGNOSTIC
-/*
- * Debugging macro to log operations.
- *	If DEBUG_WOP is defined, log operations that modify the database.
- *	If DEBUG_ROP is defined, log operations that read the database.
- *
- * D dbp
- * T txn
- * O operation (string)
- * K key
- * A data
- * F flags
- */
-#define	LOG_OP(C, T, O, K, A, F) {					\
-	DB_LSN _lsn;							\
-	DBT _op;							\
-	if (DB_LOGGING((C))) {						\
-		memset(&_op, 0, sizeof(_op));				\
-		_op.data = O;						\
-		_op.size = strlen(O) + 1;				\
-		(void)__db_debug_log((C)->dbp->dbenv->lg_info,		\
-		    T, &_lsn, 0, &_op, (C)->dbp->log_fileid, K, A, F);	\
-	}								\
-}
-#ifdef DEBUG_ROP
-#define	DEBUG_LREAD(C, T, O, K, A, F)	LOG_OP(C, T, O, K, A, F)
-#else
-#define	DEBUG_LREAD(C, T, O, K, A, F)
-#endif
-#ifdef DEBUG_WOP
-#define	DEBUG_LWRITE(C, T, O, K, A, F)	LOG_OP(C, T, O, K, A, F)
-#else
-#define	DEBUG_LWRITE(C, T, O, K, A, F)
-#endif
-#else
-#define	DEBUG_LREAD(C, T, O, K, A, F)
-#define	DEBUG_LWRITE(C, T, O, K, A, F)
-#endif /* DIAGNOSTIC */
-
+/* Internal flag for use with internal __log_unregister. */
+#define	DB_LOGONLY	0x01
 /*******************************************************
- * Transactions and recovery.
+ * Txn.
  *******************************************************/
-/*
- * Out of band value for a lock.  The locks are returned to callers as offsets
- * into the lock regions.  Since the RLAYOUT structure begins all regions, an
- * offset of 0 is guaranteed not to be a valid lock.
- */
-#define	LOCK_INVALID	0
-
-/* The structure allocated for every transaction. */
-struct __db_txn {
-	DB_TXNMGR	*mgrp;		/* Pointer to transaction manager. */
-	DB_TXN		*parent;	/* Pointer to transaction's parent. */
-	DB_LSN		last_lsn;	/* Lsn of last log write. */
-	u_int32_t	txnid;		/* Unique transaction id. */
-	size_t		off;		/* Detail structure within region. */
-	TAILQ_ENTRY(__db_txn) links;	/* Links transactions off manager. */
-	TAILQ_HEAD(__kids, __db_txn) kids; /* Child transactions. */
-	TAILQ_ENTRY(__db_txn) klinks;	/* Links child transactions. */
-
-#define	TXN_MALLOC	0x01		/* Structure allocated by TXN system. */
-	u_int32_t	flags;
-};
+#define	DB_NONBLOCK(C)	((C)->txn != NULL && F_ISSET((C)->txn, TXN_NOWAIT))
 
 /*******************************************************
  * Global variables.
  *******************************************************/
+#ifdef HAVE_VXWORKS
+#include "semLib.h"
+#endif
+
 /*
- * !!!
- * Initialized in os/os_config.c, don't change this unless you change it
- * as well.
+ * DB global variables.  Done in a single structure to minimize the name-space
+ * pollution.
  */
-
-struct __rmname {
-	char *dbhome;
-	int rmid;
-	TAILQ_ENTRY(__rmname) links;
-};
-
 typedef struct __db_globals {
-	int db_mutexlocks;		/* DB_MUTEXLOCKS */
-	int db_pageyield;		/* DB_PAGEYIELD */
-	int db_region_anon;		/* DB_REGION_ANON, DB_REGION_NAME */
-	int db_region_init;		/* DB_REGION_INIT */
-	int db_tsl_spins;		/* DB_TSL_SPINS */
+	u_int32_t db_mutexlocks;	/* db_set_mutexlocks */
+	u_int32_t db_pageyield;		/* db_set_pageyield */
+	u_int32_t db_panic;		/* db_set_panic */
+	u_int32_t db_region_init;	/* db_set_region_init */
+	u_int32_t db_tas_spins;		/* db_set_tas_spins */
+#ifdef HAVE_VXWORKS
+	u_int32_t db_global_init;	/* VxWorks: inited */
+	SEM_ID db_global_lock;		/* VxWorks: global semaphore */
+#endif
 					/* XA: list of opened environments. */
 	TAILQ_HEAD(__db_envq, __db_env) db_envq;
-					/* XA: list of id to dbhome mappings. */
-	TAILQ_HEAD(__db_nameq, __rmname) db_nameq;
 } DB_GLOBALS;
 
+#ifdef DB_INITIALIZE_DB_GLOBALS
+DB_GLOBALS __db_global_values = {
+	1,					/* db_set_mutexlocks */
+	0,					/* db_set_pageyield */
+	1,					/* db_set_panic */
+	0,					/* db_set_region_init */
+	0,					/* db_set_tas_spins */
+#ifdef HAVE_VXWORKS
+	0,					/* db_global_init */
+	NULL,					/* db_global_lock */
+#endif
+						/* XA environment queue */
+	{NULL, &__db_global_values.db_envq.tqh_first}
+};
+#else
 extern	DB_GLOBALS	__db_global_values;
+#endif
 #define	DB_GLOBAL(v)	__db_global_values.v
 
+/* Forward structure declarations. */
+struct __db_reginfo_t;	typedef struct __db_reginfo_t REGINFO;
+struct __mutex_t;	typedef struct __mutex_t MUTEX;
+struct __vrfy_childinfo; typedef struct __vrfy_childinfo VRFY_CHILDINFO;
+struct __vrfy_dbinfo;   typedef struct __vrfy_dbinfo VRFY_DBINFO;
+struct __vrfy_pageinfo; typedef struct __vrfy_pageinfo VRFY_PAGEINFO;
+
+#if defined(__cplusplus)
+}
+#endif
+
+/*******************************************************
+ * More general includes.
+ *******************************************************/
+#include "debug.h"
+#include "mutex.h"
+#include "mutex_ext.h"
+#include "region.h"
+#include "env_ext.h"
 #include "os.h"
 #include "os_ext.h"
+#include "common_ext.h"
 
 #endif /* !_DB_INTERNAL_H_ */

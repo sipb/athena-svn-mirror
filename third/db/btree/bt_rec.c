@@ -1,57 +1,59 @@
 /*-
  * See the file LICENSE for redistribution information.
  *
- * Copyright (c) 1996, 1997, 1998
+ * Copyright (c) 1996, 1997, 1998, 1999, 2000
  *	Sleepycat Software.  All rights reserved.
  */
 
-#include "config.h"
+#include "db_config.h"
 
 #ifndef lint
-static const char sccsid[] = "@(#)bt_rec.c	10.28 (Sleepycat) 9/27/98";
+static const char revid[] = "$Id: bt_rec.c,v 1.1.1.2 2002-02-11 16:30:04 ghudson Exp $";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
 #include <sys/types.h>
 
-#include <errno.h>
 #include <string.h>
 #endif
 
 #include "db_int.h"
 #include "db_page.h"
-#include "shqueue.h"
 #include "hash.h"
 #include "btree.h"
 #include "log.h"
-#include "common_ext.h"
+
+#define	IS_BTREE_PAGE(pagep)						\
+	(TYPE(pagep) == P_IBTREE ||					\
+	 TYPE(pagep) == P_LBTREE || TYPE(pagep) == P_LDUP)
 
 /*
  * __bam_pg_alloc_recover --
  *	Recovery function for pg_alloc.
  *
  * PUBLIC: int __bam_pg_alloc_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_pg_alloc_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_pg_alloc_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_pg_alloc_args *argp;
-	BTMETA *meta;
-	DB_MPOOLFILE *mpf;
-	PAGE *pagep;
 	DB *file_dbp;
 	DBC *dbc;
+	DBMETA *meta;
+	DB_MPOOLFILE *mpf;
+	PAGE *pagep;
 	db_pgno_t pgno;
-	int cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, level, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_pg_alloc_print);
-	REC_INTRO(__bam_pg_alloc_read);
+	REC_INTRO(__bam_pg_alloc_read, 0);
 
 	/*
 	 * Fix up the allocated page.  If we're redoing the operation, we have
@@ -64,11 +66,14 @@ __bam_pg_alloc_recover(logp, dbtp, lsnp, redo, info)
 	 * If we're undoing the operation and the page was ever created, we put
 	 * it on the freelist.
 	 */
-	pgno = PGNO_METADATA;
+	pgno = PGNO_BASE_MD;
 	if ((ret = memp_fget(mpf, &pgno, 0, &meta)) != 0) {
-		/* The metadata page must always exist. */
-		(void)__db_pgerr(file_dbp, pgno);
-		goto out;
+		/* The metadata page must always exist on redo. */
+		if (DB_REDO(op)) {
+			(void)__db_pgerr(file_dbp, pgno);
+			goto out;
+		} else
+			goto done;
 	}
 	if ((ret = memp_fget(mpf, &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0) {
 		/*
@@ -86,15 +91,31 @@ __bam_pg_alloc_recover(logp, dbtp, lsnp, redo, info)
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->page_lsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->page_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
+		switch (argp->ptype) {
+		case P_LBTREE:
+		case P_LRECNO:
+		case P_LDUP:
+			level = LEAFLEVEL;
+			break;
+		default:
+			level = 0;
+			break;
+		}
 		P_INIT(pagep, file_dbp->pgsize,
-		    argp->pgno, PGNO_INVALID, PGNO_INVALID, 0, argp->ptype);
+		    argp->pgno, PGNO_INVALID, PGNO_INVALID, level, argp->ptype);
 
 		pagep->lsn = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
-		/* Need to undo update described. */
+	} else if ((cmp_n == 0 && DB_UNDO(op)) || PGNO(pagep) == PGNO_INVALID) {
+		/*
+		 * Undo the allocation.
+		 * If the lsn is zero we created the page and
+		 * must reinit it here because it will be on the
+		 * free list.
+		 */
 		P_INIT(pagep, file_dbp->pgsize,
 		    argp->pgno, PGNO_INVALID, meta->free, 0, P_INVALID);
 
@@ -108,21 +129,38 @@ __bam_pg_alloc_recover(logp, dbtp, lsnp, redo, info)
 
 	/* Fix up the metadata page. */
 	modified = 0;
-	cmp_n = log_compare(lsnp, &LSN(meta));
-	cmp_p = log_compare(&LSN(meta), &argp->meta_lsn);
-	if (cmp_p == 0 && redo) {
+	cmp_n = log_compare(lsnp, &meta->alloc_lsn);
+	cmp_p = log_compare(&meta->alloc_lsn, &argp->alloc_lsn);
+	CHECK_LSN(op, cmp_p, &meta->alloc_lsn, &argp->alloc_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
-		meta->lsn = *lsnp;
+		meta->alloc_lsn = *lsnp;
+		if (log_compare(&LSN(meta), &argp->meta_lsn) == 0)
+			LSN(meta) = *lsnp;
 		meta->free = argp->next;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
-		meta->lsn = argp->meta_lsn;
+		meta->alloc_lsn = argp->alloc_lsn;
+		if (log_compare(lsnp, &LSN(meta)) == 0)
+			LSN(meta) = argp->meta_lsn;
 		meta->free = argp->pgno;
 		modified = 1;
 	}
 	if ((ret = memp_fput(mpf, meta, modified ? DB_MPOOL_DIRTY : 0)) != 0)
 		goto out;
+	/*
+	 * This could be the metapage from a subdb which is read from disk
+	 * to recover its creation.
+	 */
+	if (F_ISSET(file_dbp, DB_AM_SUBDB)) {
+		switch (argp->type) {
+		   case P_HASHMETA:
+		   case P_BTREEMETA:
+		   case P_QAMMETA:
+			file_dbp->sync(file_dbp, 0);
+		}
+	}
 
 done:	*lsnp = argp->prev_lsn;
 	ret = 0;
@@ -135,27 +173,29 @@ out:	REC_CLOSE;
  *	Recovery function for pg_free.
  *
  * PUBLIC: int __bam_pg_free_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_pg_free_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_pg_free_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_pg_free_args *argp;
-	BTMETA *meta;
 	DB *file_dbp;
 	DBC *dbc;
+	DBMETA *meta;
+	DB_LSN copy_lsn;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	db_pgno_t pgno;
+	db_pgno_t nextpgno, pgno;
 	int cmp_n, cmp_p, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_pg_free_print);
-	REC_INTRO(__bam_pg_free_read);
+	REC_INTRO(__bam_pg_free_read, 1);
 
 	/*
 	 * Fix up the freed page.  If we're redoing the operation we get the
@@ -170,23 +210,27 @@ __bam_pg_free_recover(logp, dbtp, lsnp, redo, info)
 		 * are undoing, in which case there's no reason to create the
 		 * page.
 		 */
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
 	}
 	modified = 0;
+	nextpgno = argp->next;
+	__ua_memcpy(&copy_lsn, &LSN(argp->header.data), sizeof(DB_LSN));
 	cmp_n = log_compare(lsnp, &LSN(pagep));
-	cmp_p = log_compare(&LSN(pagep), &LSN(argp->header.data));
-	if (cmp_p == 0 && redo) {
+	cmp_p = log_compare(&LSN(pagep), &copy_lsn);
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &copy_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
 		P_INIT(pagep, file_dbp->pgsize,
 		    pagep->pgno, PGNO_INVALID, argp->next, 0, P_INVALID);
 		pagep->lsn = *lsnp;
 
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
+		nextpgno = NEXT_PGNO(pagep);
 		memcpy(pagep, argp->header.data, argp->header.size);
 
 		modified = 1;
@@ -194,11 +238,33 @@ __bam_pg_free_recover(logp, dbtp, lsnp, redo, info)
 	if ((ret = memp_fput(mpf, pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
 		goto out;
 
+	if (nextpgno != PGNO_INVALID) {
+		if ((ret = memp_fget(mpf,
+		    &nextpgno, DB_MPOOL_CREATE, &pagep)) != 0) {
+			/*
+			 * Try to create the next page in the free list.
+			 * It may have been the result of an aborted pg_alloc.
+			 */
+			(void)__db_pgerr(file_dbp, nextpgno);
+			goto out;
+		}
+
+		modified = 0;
+		if (PGNO(pagep) == PGNO_INVALID) {
+			P_INIT(pagep, file_dbp->pgsize,
+			    nextpgno, PGNO_INVALID, PGNO_INVALID, 0, P_INVALID);
+			modified = 1;
+		}
+		if ((ret = memp_fput(mpf,
+		    pagep, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+			goto out;
+	}
+
 	/*
 	 * Fix up the metadata page.  If we're redoing or undoing the operation
 	 * we get the page and update its LSN and free pointer.
 	 */
-	pgno = PGNO_METADATA;
+	pgno = PGNO_BASE_MD;
 	if ((ret = memp_fget(mpf, &pgno, 0, &meta)) != 0) {
 		/* The metadata page must always exist. */
 		(void)__db_pgerr(file_dbp, pgno);
@@ -206,19 +272,24 @@ __bam_pg_free_recover(logp, dbtp, lsnp, redo, info)
 	}
 
 	modified = 0;
-	cmp_n = log_compare(lsnp, &LSN(meta));
-	cmp_p = log_compare(&LSN(meta), &argp->meta_lsn);
-	if (cmp_p == 0 && redo) {
-		/* Need to redo update described. */
+	cmp_n = log_compare(lsnp, &meta->alloc_lsn);
+	cmp_p = log_compare(&meta->alloc_lsn, &argp->alloc_lsn);
+	CHECK_LSN(op, cmp_p, &meta->alloc_lsn, &argp->alloc_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
+		/* Need to redo the deallocation. */
 		meta->free = argp->pgno;
 
-		meta->lsn = *lsnp;
+		meta->alloc_lsn = *lsnp;
+		if (log_compare(&LSN(meta), &argp->meta_lsn) == 0)
+			LSN(meta) = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
-		/* Need to undo update described. */
-		meta->free = argp->next;
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
+		/* Need to undo the deallocation. */
+		meta->free = nextpgno;
 
-		meta->lsn = argp->meta_lsn;
+		meta->alloc_lsn = argp->alloc_lsn;
+		if (log_compare(lsnp, &LSN(meta)) == 0)
+			LSN(meta) = argp->meta_lsn;
 		modified = 1;
 	}
 	if ((ret = memp_fput(mpf, meta, modified ? DB_MPOOL_DIRTY : 0)) != 0)
@@ -235,14 +306,14 @@ out:	REC_CLOSE;
  *	Recovery function for split.
  *
  * PUBLIC: int __bam_split_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_split_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_split_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_split_args *argp;
@@ -250,15 +321,18 @@ __bam_split_recover(logp, dbtp, lsnp, redo, info)
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *_lp, *lp, *np, *pp, *_rp, *rp, *sp;
-	db_pgno_t pgno;
-	int l_update, p_update, r_update, ret, rootsplit, t_ret;
+	db_pgno_t pgno, root_pgno;
+	u_int32_t ptype;
+	int cmp, l_update, p_update, r_update, rc, ret, rootsplit, t_ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_split_print);
 
 	mpf = NULL;
 	_lp = lp = np = pp = _rp = rp = NULL;
+	sp = NULL;
 
-	REC_INTRO(__bam_split_read);
+	REC_INTRO(__bam_split_read, 1);
 
 	/*
 	 * There are two kinds of splits that we have to recover from.  The
@@ -266,16 +340,27 @@ __bam_split_recover(logp, dbtp, lsnp, redo, info)
 	 * leaf page into an internal page and two new leaf pages are created.
 	 * The second is where a page is split into two pages, and a new key
 	 * is inserted into the parent page.
+	 *
+	 * DBTs are not aligned in log records, so we need to copy the page
+	 * so that we can access fields within it throughout this routine.
+	 * Although we could hardcode the unaligned copies in this routine,
+	 * we will be calling into regular btree functions with this page,
+	 * so it's got to be aligned.  Copying it into allocated memory is
+	 * the only way to guarantee this.
 	 */
-	sp = argp->pg.data;
+	if ((ret = __os_malloc(dbenv, argp->pg.size, NULL, &sp)) != 0)
+		goto out;
+	memcpy(sp, argp->pg.data, argp->pg.size);
+
 	pgno = PGNO(sp);
-	rootsplit = pgno == PGNO_ROOT;
+	root_pgno = argp->root_pgno;
+	rootsplit = pgno == root_pgno;
 	if (memp_fget(mpf, &argp->left, 0, &lp) != 0)
 		lp = NULL;
 	if (memp_fget(mpf, &argp->right, 0, &rp) != 0)
 		rp = NULL;
 
-	if (redo) {
+	if (DB_REDO(op)) {
 		l_update = r_update = p_update = 0;
 		/*
 		 * Decide if we need to resplit the page.
@@ -291,23 +376,37 @@ __bam_split_recover(logp, dbtp, lsnp, redo, info)
 				pp = NULL;
 				goto out;
 			}
-			p_update =
-			    log_compare(&LSN(pp), &LSN(argp->pg.data)) == 0;
+			cmp = log_compare(&LSN(pp), &LSN(argp->pg.data));
+			CHECK_LSN(op, cmp, &LSN(pp), &LSN(argp->pg.data));
+			p_update = cmp  == 0;
+		} else if (lp == NULL) {
+			(void)__db_pgerr(file_dbp, argp->left);
+			goto out;
+		}
+
+		if (lp != NULL) {
+			cmp = log_compare(&LSN(lp), &argp->llsn);
+			CHECK_LSN(op, cmp, &LSN(lp), &argp->llsn);
+			if (cmp == 0)
+				l_update = 1;
 		} else
-			if (lp == NULL) {
-				(void)__db_pgerr(file_dbp, argp->left);
-				goto out;
-			}
-		if (lp == NULL || log_compare(&LSN(lp), &argp->llsn) == 0)
 			l_update = 1;
-		if (rp == NULL || log_compare(&LSN(rp), &argp->rlsn) == 0)
+
+		if (rp != NULL) {
+			cmp = log_compare(&LSN(rp), &argp->rlsn);
+			CHECK_LSN(op, cmp, &LSN(rp), &argp->rlsn);
+			if (cmp == 0)
+				r_update = 1;
+		} else
 			r_update = 1;
 		if (!p_update && !l_update && !r_update)
-			goto done;
+			goto check_next;
 
 		/* Allocate and initialize new left/right child pages. */
-		if ((ret = __os_malloc(file_dbp->pgsize, NULL, &_lp)) != 0 ||
-		    (ret = __os_malloc(file_dbp->pgsize, NULL, &_rp)) != 0)
+		if ((ret =
+		    __os_malloc(dbenv, file_dbp->pgsize, NULL, &_lp)) != 0
+		    || (ret =
+		    __os_malloc(dbenv, file_dbp->pgsize, NULL, &_rp)) != 0)
 			goto out;
 		if (rootsplit) {
 			P_INIT(_lp, file_dbp->pgsize, argp->left,
@@ -371,25 +470,26 @@ __bam_split_recover(logp, dbtp, lsnp, redo, info)
 		 * separately logged and recovered.
 		 */
 		if (rootsplit && p_update) {
-			if (file_dbp->type == DB_BTREE)
-				P_INIT(pp, file_dbp->pgsize,
-				    PGNO_ROOT, PGNO_INVALID, PGNO_INVALID,
-				    _lp->level + 1, P_IBTREE);
-			else
-				P_INIT(pp, file_dbp->pgsize,
-				    PGNO_ROOT, PGNO_INVALID, PGNO_INVALID,
-				    _lp->level + 1, P_IRECNO);
+			if (IS_BTREE_PAGE(sp)) {
+				ptype = P_IBTREE;
+				rc = argp->opflags & SPL_NRECS ? 1 : 0;
+			} else {
+				ptype = P_IRECNO;
+				rc = 1;
+			}
+
+			P_INIT(pp, file_dbp->pgsize, root_pgno,
+			    PGNO_INVALID, PGNO_INVALID, _lp->level + 1, ptype);
 			RE_NREC_SET(pp,
-			    file_dbp->type == DB_RECNO ||
-			    F_ISSET(file_dbp, DB_BT_RECNUM) ?
-			    __bam_total(_lp) + __bam_total(_rp) : 0);
+			    rc ? __bam_total(_lp) + __bam_total(_rp) : 0);
+
 			pp->lsn = *lsnp;
 			if ((ret = memp_fput(mpf, pp, DB_MPOOL_DIRTY)) != 0)
 				goto out;
 			pp = NULL;
 		}
 
-		/*
+check_next:	/*
 		 * Finally, redo the next-page link if necessary.  This is of
 		 * interest only if it wasn't a root split -- inserting a new
 		 * page in the tree requires that any following page have its
@@ -402,7 +502,9 @@ __bam_split_recover(logp, dbtp, lsnp, redo, info)
 				np = NULL;
 				goto out;
 			}
-			if (log_compare(&LSN(np), &argp->nlsn) == 0) {
+			cmp = log_compare(&LSN(np), &argp->nlsn);
+			CHECK_LSN(op, cmp, &LSN(np), &argp->nlsn);
+			if (cmp == 0) {
 				PREV_PGNO(np) = argp->right;
 				np->lsn = *lsnp;
 				if ((ret =
@@ -498,6 +600,8 @@ out:	/* Free any pages that weren't dirtied. */
 		__os_free(_lp, file_dbp->pgsize);
 	if (_rp != NULL)
 		__os_free(_rp, file_dbp->pgsize);
+	if (sp != NULL)
+		__os_free(sp, argp->pg.size);
 
 	REC_CLOSE;
 }
@@ -507,48 +611,58 @@ out:	/* Free any pages that weren't dirtied. */
  *	Recovery function for a reverse split.
  *
  * PUBLIC: int __bam_rsplit_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_rsplit_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_rsplit_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_rsplit_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
+	DB_LSN copy_lsn;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	db_pgno_t pgno;
+	db_pgno_t pgno, root_pgno;
 	int cmp_n, cmp_p, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_rsplit_print);
-	REC_INTRO(__bam_rsplit_read);
+	REC_INTRO(__bam_rsplit_read, 1);
 
 	/* Fix the root page. */
-	pgno = PGNO_ROOT;
+	pgno = root_pgno = argp->root_pgno;
 	if ((ret = memp_fget(mpf, &pgno, 0, &pagep)) != 0) {
-		/* The root page must always exist. */
-		__db_pgerr(file_dbp, pgno);
-		goto out;
+		/* The root page must always exist if we are going forward. */
+		if (DB_REDO(op)) {
+			__db_pgerr(file_dbp, pgno);
+			goto out;
+		}
+		/* This must be the root of an OPD tree. */
+		DB_ASSERT(root_pgno !=
+		    ((BTREE *)file_dbp->bt_internal)->bt_root);
+		ret = 0;
+		goto done;
 	}
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->rootlsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->rootlsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
 		memcpy(pagep, argp->pgdbt.data, argp->pgdbt.size);
-		pagep->pgno = PGNO_ROOT;
+		pagep->pgno = root_pgno;
 		pagep->lsn = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
-		P_INIT(pagep, file_dbp->pgsize, PGNO_ROOT,
+		P_INIT(pagep, file_dbp->pgsize, root_pgno,
 		    argp->nrec, PGNO_INVALID, pagep->level + 1,
-		    file_dbp->type == DB_BTREE ? P_IBTREE : P_IRECNO);
+		    IS_BTREE_PAGE(pagep) ? P_IBTREE : P_IRECNO);
 		if ((ret = __db_pitem(dbc, pagep, 0,
 		    argp->rootent.size, &argp->rootent, NULL)) != 0)
 			goto out;
@@ -564,19 +678,21 @@ __bam_rsplit_recover(logp, dbtp, lsnp, redo, info)
 	 * doesn't exist, it's okay and there's nothing further to do.
 	 */
 	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
 	}
 	modified = 0;
+	__ua_memcpy(&copy_lsn, &LSN(argp->pgdbt.data), sizeof(DB_LSN));
 	cmp_n = log_compare(lsnp, &LSN(pagep));
-	cmp_p = log_compare(&LSN(pagep), &LSN(argp->pgdbt.data));
-	if (cmp_p == 0 && redo) {
+	cmp_p = log_compare(&LSN(pagep), &copy_lsn);
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &copy_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
 		pagep->lsn = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
 		memcpy(pagep, argp->pgdbt.data, argp->pgdbt.size);
 		modified = 1;
@@ -595,14 +711,14 @@ out:	REC_CLOSE;
  *	Recovery function for adj.
  *
  * PUBLIC: int __bam_adj_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_adj_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_adj_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_adj_args *argp;
@@ -612,12 +728,13 @@ __bam_adj_recover(logp, dbtp, lsnp, redo, info)
 	PAGE *pagep;
 	int cmp_n, cmp_p, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_adj_print);
-	REC_INTRO(__bam_adj_read);
+	REC_INTRO(__bam_adj_read, 1);
 
 	/* Get the page; if it never existed and we're undoing, we're done. */
 	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
@@ -626,7 +743,8 @@ __bam_adj_recover(logp, dbtp, lsnp, redo, info)
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->lsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
 		if ((ret = __bam_adjindx(dbc,
 		    pagep, argp->indx, argp->indx_copy, argp->is_insert)) != 0)
@@ -634,7 +752,7 @@ __bam_adj_recover(logp, dbtp, lsnp, redo, info)
 
 		LSN(pagep) = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
 		if ((ret = __bam_adjindx(dbc,
 		    pagep, argp->indx, argp->indx_copy, !argp->is_insert)) != 0)
@@ -661,14 +779,14 @@ out:	REC_CLOSE;
  *	page.
  *
  * PUBLIC: int __bam_cadjust_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_cadjust_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_cadjust_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_cadjust_args *argp;
@@ -678,12 +796,13 @@ __bam_cadjust_recover(logp, dbtp, lsnp, redo, info)
 	PAGE *pagep;
 	int cmp_n, cmp_p, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_cadjust_print);
-	REC_INTRO(__bam_cadjust_read);
+	REC_INTRO(__bam_cadjust_read, 1);
 
 	/* Get the page; if it never existed and we're undoing, we're done. */
 	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
@@ -692,33 +811,30 @@ __bam_cadjust_recover(logp, dbtp, lsnp, redo, info)
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->lsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
-		if (file_dbp->type == DB_BTREE &&
-		    F_ISSET(file_dbp, DB_BT_RECNUM)) {
+		if (IS_BTREE_PAGE(pagep)) {
 			GET_BINTERNAL(pagep, argp->indx)->nrecs += argp->adjust;
-			if (argp->total && PGNO(pagep) == PGNO_ROOT)
+			if (argp->opflags & CAD_UPDATEROOT)
 				RE_NREC_ADJ(pagep, argp->adjust);
-		}
-		if (file_dbp->type == DB_RECNO) {
+		} else {
 			GET_RINTERNAL(pagep, argp->indx)->nrecs += argp->adjust;
-			if (argp->total && PGNO(pagep) == PGNO_ROOT)
+			if (argp->opflags & CAD_UPDATEROOT)
 				RE_NREC_ADJ(pagep, argp->adjust);
 		}
 
 		LSN(pagep) = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
-		if (file_dbp->type == DB_BTREE &&
-		    F_ISSET(file_dbp, DB_BT_RECNUM)) {
+		if (IS_BTREE_PAGE(pagep)) {
 			GET_BINTERNAL(pagep, argp->indx)->nrecs -= argp->adjust;
-			if (argp->total && PGNO(pagep) == PGNO_ROOT)
+			if (argp->opflags & CAD_UPDATEROOT)
 				RE_NREC_ADJ(pagep, argp->adjust);
-		}
-		if (file_dbp->type == DB_RECNO) {
+		} else {
 			GET_RINTERNAL(pagep, argp->indx)->nrecs -= argp->adjust;
-			if (argp->total && PGNO(pagep) == PGNO_ROOT)
+			if (argp->opflags & CAD_UPDATEROOT)
 				RE_NREC_ADJ(pagep, -(argp->adjust));
 		}
 		LSN(pagep) = argp->lsn;
@@ -738,14 +854,14 @@ out:	REC_CLOSE;
  *	Recovery function for the intent-to-delete of a cursor record.
  *
  * PUBLIC: int __bam_cdel_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_cdel_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_cdel_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_cdel_args *argp;
@@ -753,14 +869,16 @@ __bam_cdel_recover(logp, dbtp, lsnp, redo, info)
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
+	u_int32_t indx;
 	int cmp_n, cmp_p, modified, ret;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_cdel_print);
-	REC_INTRO(__bam_cdel_read);
+	REC_INTRO(__bam_cdel_read, 1);
 
 	/* Get the page; if it never existed and we're undoing, we're done. */
 	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
@@ -769,21 +887,20 @@ __bam_cdel_recover(logp, dbtp, lsnp, redo, info)
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->lsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/* Need to redo update described. */
-		if (pagep->type == P_DUPLICATE)
-			B_DSET(GET_BKEYDATA(pagep, argp->indx)->type);
-		else
-			B_DSET(GET_BKEYDATA(pagep, argp->indx + O_INDX)->type);
+		indx = argp->indx + (TYPE(pagep) == P_LBTREE ? O_INDX : 0);
+		B_DSET(GET_BKEYDATA(pagep, indx)->type);
 
 		LSN(pagep) = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/* Need to undo update described. */
-		if (pagep->type == P_DUPLICATE)
-			B_DCLR(GET_BKEYDATA(pagep, argp->indx)->type);
-		else
-			B_DCLR(GET_BKEYDATA(pagep, argp->indx + O_INDX)->type);
+		indx = argp->indx + (TYPE(pagep) == P_LBTREE ? O_INDX : 0);
+		B_DCLR(GET_BKEYDATA(pagep, indx)->type);
+
+		(void)__bam_ca_delete(file_dbp, argp->pgno, argp->indx, 0);
 
 		LSN(pagep) = argp->lsn;
 		modified = 1;
@@ -802,14 +919,14 @@ out:	REC_CLOSE;
  *	Recovery function for page item replacement.
  *
  * PUBLIC: int __bam_repl_recover
- * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
 int
-__bam_repl_recover(logp, dbtp, lsnp, redo, info)
-	DB_LOG *logp;
+__bam_repl_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
-	int redo;
+	db_recops op;
 	void *info;
 {
 	__bam_repl_args *argp;
@@ -822,12 +939,13 @@ __bam_repl_recover(logp, dbtp, lsnp, redo, info)
 	int cmp_n, cmp_p, modified, ret;
 	u_int8_t *p;
 
+	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_repl_print);
-	REC_INTRO(__bam_repl_read);
+	REC_INTRO(__bam_repl_read, 1);
 
 	/* Get the page; if it never existed and we're undoing, we're done. */
 	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
-		if (!redo)
+		if (DB_UNDO(op))
 			goto done;
 		(void)__db_pgerr(file_dbp, argp->pgno);
 		goto out;
@@ -837,7 +955,8 @@ __bam_repl_recover(logp, dbtp, lsnp, redo, info)
 	modified = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));
 	cmp_p = log_compare(&LSN(pagep), &argp->lsn);
-	if (cmp_p == 0 && redo) {
+	CHECK_LSN(op, cmp_p, &LSN(pagep), &argp->lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
 		/*
 		 * Need to redo update described.
 		 *
@@ -845,7 +964,7 @@ __bam_repl_recover(logp, dbtp, lsnp, redo, info)
 		 */
 		memset(&dbt, 0, sizeof(dbt));
 		dbt.size = argp->prefix + argp->suffix + argp->repl.size;
-		if ((ret = __os_malloc(dbt.size, NULL, &dbt.data)) != 0)
+		if ((ret = __os_malloc(dbenv, dbt.size, NULL, &dbt.data)) != 0)
 			goto err;
 		p = dbt.data;
 		memcpy(p, bk->data, argp->prefix);
@@ -861,7 +980,7 @@ __bam_repl_recover(logp, dbtp, lsnp, redo, info)
 
 		LSN(pagep) = *lsnp;
 		modified = 1;
-	} else if (cmp_n == 0 && !redo) {
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
 		/*
 		 * Need to undo update described.
 		 *
@@ -869,7 +988,7 @@ __bam_repl_recover(logp, dbtp, lsnp, redo, info)
 		 */
 		memset(&dbt, 0, sizeof(dbt));
 		dbt.size = argp->prefix + argp->suffix + argp->orig.size;
-		if ((ret = __os_malloc(dbt.size, NULL, &dbt.data)) != 0)
+		if ((ret = __os_malloc(dbenv, dbt.size, NULL, &dbt.data)) != 0)
 			goto err;
 		p = dbt.data;
 		memcpy(p, bk->data, argp->prefix);
@@ -899,5 +1018,123 @@ done:	*lsnp = argp->prev_lsn;
 	if (0) {
 err:		(void)memp_fput(mpf, pagep, 0);
 	}
+out:	REC_CLOSE;
+}
+
+/*
+ * __bam_root_recover --
+ *	Recovery function for setting the root page on the meta-data page.
+ *
+ * PUBLIC: int __bam_root_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ */
+int
+__bam_root_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
+	DBT *dbtp;
+	DB_LSN *lsnp;
+	db_recops op;
+	void *info;
+{
+	__bam_root_args *argp;
+	BTMETA *meta;
+	DB *file_dbp;
+	DBC *dbc;
+	DB_MPOOLFILE *mpf;
+	int cmp_n, cmp_p, modified, ret;
+
+	COMPQUIET(info, NULL);
+	REC_PRINT(__bam_root_print);
+	REC_INTRO(__bam_root_read, 0);
+
+	if ((ret = memp_fget(mpf, &argp->meta_pgno, 0, &meta)) != 0) {
+		/* The metadata page must always exist on redo. */
+		if (DB_REDO(op)) {
+			(void)__db_pgerr(file_dbp, argp->meta_pgno);
+			goto out;
+		} else
+			goto done;
+	}
+
+	modified = 0;
+	cmp_n = log_compare(lsnp, &LSN(meta));
+	cmp_p = log_compare(&LSN(meta), &argp->meta_lsn);
+	CHECK_LSN(op, cmp_p, &LSN(meta), &argp->meta_lsn);
+	if (cmp_p == 0 && DB_REDO(op)) {
+		/* Need to redo update described. */
+		meta->root = argp->root_pgno;
+		meta->dbmeta.lsn = *lsnp;
+		((BTREE *)file_dbp->bt_internal)->bt_root = meta->root;
+		modified = 1;
+	} else if (cmp_n == 0 && DB_UNDO(op)) {
+		/* Nothing to undo except lsn. */
+		meta->dbmeta.lsn = argp->meta_lsn;
+		modified = 1;
+	}
+	if ((ret = memp_fput(mpf, meta, modified ? DB_MPOOL_DIRTY : 0)) != 0)
+		goto out;
+
+done:	*lsnp = argp->prev_lsn;
+	ret = 0;
+
+out:	REC_CLOSE;
+}
+
+/*
+ * __bam_curadj_recover --
+ *	Transaction abort function to undo cursor adjustments.
+ *	This should only be triggered by subtransaction aborts.
+ *
+ * PUBLIC: int __bam_curadj_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ */
+int
+__bam_curadj_recover(dbenv, dbtp, lsnp, op, info)
+	DB_ENV *dbenv;
+	DBT *dbtp;
+	DB_LSN *lsnp;
+	db_recops op;
+	void *info;
+{
+	__bam_curadj_args *argp;
+	DB *file_dbp;
+	DBC *dbc;
+	DB_MPOOLFILE *mpf;
+	int ret;
+
+	COMPQUIET(info, NULL);
+
+	REC_PRINT(__bam_curadj_print);
+	REC_INTRO(__bam_curadj_read, 0);
+
+	ret = 0;
+	if (op != DB_TXN_ABORT)
+		goto done;
+
+	switch(argp->mode) {
+	case DB_CA_DI:
+		if ((ret = __bam_ca_di(dbc, argp->from_pgno,
+		    argp->from_indx, -(int)argp->first_indx)) != 0)
+			goto out;
+		break;
+	case DB_CA_DUP:
+		if ((ret = __bam_ca_undodup(file_dbp, argp->first_indx,
+		     argp->from_pgno, argp->from_indx, argp->to_indx)) != 0)
+			goto out;
+		break;
+
+	case DB_CA_RSPLIT:
+		if ((ret =
+		    __bam_ca_rsplit(dbc, argp->to_pgno, argp->from_pgno)) != 0)
+			goto out;
+		break;
+
+	case DB_CA_SPLIT:
+		__bam_ca_undosplit(file_dbp, argp->from_pgno,
+		    argp->to_pgno, argp->left_pgno, argp->from_indx);
+		break;
+	}
+
+done:	*lsnp = argp->prev_lsn;
 out:	REC_CLOSE;
 }

@@ -1,9 +1,9 @@
 # See the file LICENSE for redistribution information.
 #
-# Copyright (c) 1996, 1997, 1998
+# Copyright (c) 1996, 1997, 1998, 1999, 2000
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)test010.tcl	10.5 (Sleepycat) 4/25/98
+#	$Id: test010.tcl,v 1.1.1.2 2002-02-11 16:27:48 ghudson Exp $
 #
 # DB Test 10 {access method}
 # Use the first 10,000 entries from the dictionary.
@@ -13,59 +13,72 @@
 # Close file, reopen, do retrieve and re-verify.
 # This does not work for recno
 proc test010 { method {nentries 10000} {ndups 5} {tnum 10} args } {
+	source ./include.tcl
+
 	set omethod $method
-	set method [convert_method $method]
 	set args [convert_args $method $args]
-	puts "Test0$tnum: $method ($args) $nentries small dup key/data pairs"
-	if { [string compare $method DB_RECNO] == 0 || \
-	    [is_rbtree $omethod] == 1 } {
-		puts "Test0$tnum skipping for method $omethod"
+	set omethod [convert_method $method]
+
+	if { [is_record_based $method] == 1 || \
+	    [is_rbtree $method] == 1 } {
+		puts "Test0$tnum skipping for method $method"
 		return
 	}
 
-	# Get global declarations since tcl doesn't support
-	# any useful equivalent to #defines!
-	source ./include.tcl
+	puts "Test0$tnum: $method ($args) $nentries small dup key/data pairs"
 
 	# Create the database and open the dictionary
-	set testfile test0$tnum.db
+	set eindex [lsearch -exact $args "-env"]
+	#
+	# If we are using an env, then testfile should just be the db name.
+	# Otherwise it is the test directory and the name.
+	if { $eindex == -1 } {
+		set testfile $testdir/test0$tnum.db
+	} else {
+		set testfile test0$tnum.db
+	}
 	set t1 $testdir/t1
 	set t2 $testdir/t2
 	set t3 $testdir/t3
+
 	cleanup $testdir
-	set args [add_to_args $DB_DUP $args]
-	set db [eval [concat dbopen $testfile \
-	    [expr $DB_CREATE | $DB_TRUNCATE] 0644 $method $args]]
+
+	set db [eval {berkdb_open \
+	     -create -truncate -mode 0644 -dup} $args {$omethod $testfile}]
 	error_check_good dbopen [is_valid_db $db] TRUE
+
 	set did [open $dict]
 
-	set flags 0
-	set txn 0
+	set pflags ""
+	set gflags ""
+	set txn ""
 	set count 0
 
 	# Here is the loop where we put and get each key/data pair
-	set dbc [$db cursor $txn]
+	set dbc [eval {$db cursor} $txn]
 	while { [gets $did str] != -1 && $count < $nentries } {
 		for { set i 1 } { $i <= $ndups } { incr i } {
 			set datastr $i:$str
-			$db put $txn $str $datastr $flags
+			set ret [eval {$db put} \
+			    $txn $pflags {$str [chop_data $method $datastr]}]
+			error_check_good put $ret 0
 		}
 
 		# Now retrieve all the keys matching this key
 		set x 1
-		for {set ret [$dbc get $str $DB_SET]} \
-		    {[string length $ret] != 0} \
-		    {set ret [$dbc get 0 $DB_NEXT] } {
-			set k [lindex $ret 0]
+		for {set ret [$dbc get "-set" $str]} \
+		    {[llength $ret] != 0} \
+		    {set ret [$dbc get "-next"] } {
+			if {[llength $ret] == 0} {
+				break
+			}
+			set k [lindex [lindex $ret 0] 0]
 			if { [string compare $k $str] != 0 } {
 				break
 			}
-			set datastr [lindex $ret 1]
+			set datastr [lindex [lindex $ret 0] 1]
 			set d [data_of $datastr]
-			if {[string length $d] == 0} {
-				break
-			}
-			error_check_good "Test0$tnum:put" $d $str
+			error_check_good "Test0$tnum:get" $d $str
 			set id [ id_of $datastr ]
 			error_check_good "Test0$tnum:dup#" $id $x
 			incr x
@@ -87,23 +100,24 @@ proc test010 { method {nentries 10000} {ndups 5} {tnum 10} args } {
 
 	# Now compare the keys to see if they match the dictionary entries
 	set q q
-	exec $SED $nentries$q $dict > $t2
-	exec $SORT $t1 > $t3
+	filehead $nentries $dict $t3
+	filesort $t3 $t2
+	filesort $t1 $t3
 
 	error_check_good Test0$tnum:diff($t3,$t2) \
-	    [catch { exec $DIFF $t3 $t2 } res] 0
+	    [filecmp $t3 $t2] 0
 
 	error_check_good db_close [$db close] 0
-	set db [dbopen $testfile 0 0 $method]
+	set db [eval {berkdb_open} $args $testfile]
 	error_check_good dbopen [is_valid_db $db] TRUE
 
 	puts "\tTest0$tnum.b: Checking file for correct duplicates after close"
 	dup_check $db $txn $t1 $dlist
 
 	# Now compare the keys to see if they match the dictionary entries
-	exec $SORT $t1 > $t3
+	filesort $t1 $t3
 	error_check_good Test0$tnum:diff($t3,$t2) \
-	    [catch { exec $DIFF $t3 $t2 } res] 0
+	    [filecmp $t3 $t2] 0
 
 	error_check_good db_close [$db close] 0
 }

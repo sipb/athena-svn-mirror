@@ -1,45 +1,48 @@
 # See the file LICENSE for redistribution information.
 #
-# Copyright (c) 1996, 1997, 1998
+# Copyright (c) 1996, 1997, 1998, 1999, 2000
 #	Sleepycat Software.  All rights reserved.
 #
-#	@(#)dead001.tcl	10.3 (Sleepycat) 4/10/98
+#	$Id: dead001.tcl,v 1.1.1.2 2002-02-11 16:28:52 ghudson Exp $
 #
 # Deadlock Test 1.
 # We create various deadlock scenarios for different numbers of lockers
 # and see if we can get the world cleaned up suitably.
 proc dead001 { { procs "2 4 10" } {tests "ring clump" } } {
+	source ./include.tcl
+
 	puts "Dead001: Deadlock detector tests"
 
-	# Get global declarations since tcl doesn't support
-	# any useful equivalent to #defines!
-	source ./include.tcl
 	cleanup $testdir
 
 	# Create the environment.
 	puts "\tDead001.a: creating environment"
-	set lm [lock_open "" $DB_CREATE 0644]
-	error_check_bad lock_open $lm NULL
-	error_check_good lock_open [is_substr $lm lockmgr] 1
-	error_check_good lock_close [$lm close] 0
+	set env [berkdb env -create -mode 0644 -lock -home $testdir]
+	error_check_good lock_env:open [is_valid_env $env] TRUE
 
-	set dpid [exec ./db_deadlock -vw -h $testdir \
-	    >& $testdir/dd.out &]
+	error_check_good lock_env:close [$env close] 0
+
+	set dpid [exec ./db_deadlock -vw -h $testdir >& $testdir/dd.out &]
 
 	foreach t $tests {
 		set pidlist ""
 		foreach n $procs {
+
+			sentinel_init 
+
 			# Fire off the tests
 			puts "\tDead001: $n procs of test $t"
 			for { set i 0 } { $i < $n } { incr i } {
-#				puts "./dbtest ../test/ddscript.tcl $testdir \
-#				    $t $i $i $n >& $testdir/dead001.log.$i"
-				set p [ exec ./dbtest ../test/ddscript.tcl \
-				    $testdir $t $i $i $n >& \
-				    $testdir/dead001.log.$i &]
+				puts "$tclsh_path $test_path/wrap.tcl \
+				    $testdir/dead001.log.$i \
+				    ddscript.tcl $testdir $t $i $i $n"
+				set p [exec $tclsh_path \
+					$test_path/wrap.tcl \
+					ddscript.tcl $testdir/dead001.log.$i \
+					$testdir $t $i $i $n &]
 				lappend pidlist $p
 			}
-			watch_procs $pidlist 5
+			watch_procs 5
 
 			# Now check output
 			set dead 0
@@ -56,15 +59,15 @@ proc dead001 { { procs "2 4 10" } {tests "ring clump" } } {
 				}
 				close $did
 			}
+			puts "dead check..."
 			dead_check $t $n $dead $clean $other
 		}
 	}
 
 	exec $KILL $dpid
-	exec $RM -f $testdir/dd.out
+	fileremove -f $testdir/dd.out
 	# Remove log files
 	for { set i 0 } { $i < $n } { incr i } {
-		exec $RM -f $testdir/dead001.log.$i
+		fileremove -f $testdir/dead001.log.$i
 	}
 }
-
