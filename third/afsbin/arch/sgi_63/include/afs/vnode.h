@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/vnode.h,v 1.1.1.1 1997-10-16 14:40:48 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/vnode.h,v 1.1.2.1 1997-11-04 18:47:55 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/vnode.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/vnode.h,v 1.1.1.1 1997-10-16 14:40:48 ghudson Exp $";
+static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/vnode.h,v 1.1.2.1 1997-11-04 18:47:55 ghudson Exp $";
 #endif
 
 /*

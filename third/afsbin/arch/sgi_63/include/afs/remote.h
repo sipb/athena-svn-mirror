@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/remote.h,v 1.1.1.1 1997-10-16 14:40:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/remote.h,v 1.1.2.1 1997-11-04 18:47:40 ghudson Exp $ */
 /* $ACIS:remote.h 9.1$ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/remote.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE)  && defined(RCS_HDRS)
-static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/remote.h,v 1.1.1.1 1997-10-16 14:40:27 ghudson Exp $";
+static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/remote.h,v 1.1.2.1 1997-11-04 18:47:40 ghudson Exp $";
 #endif
 
 /*

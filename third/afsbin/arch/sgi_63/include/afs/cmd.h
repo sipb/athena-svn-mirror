@@ -4,7 +4,7 @@
  */
 /* Including cmd.p.h at beginning of cmd.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/cmd.h,v 1.1.1.1 1997-10-16 14:40:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/cmd.h,v 1.1.2.1 1997-11-04 18:46:45 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/cmd.h,v $ */
 
 /*

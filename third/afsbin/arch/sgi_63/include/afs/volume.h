@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/volume.h,v 1.1.1.1 1997-10-16 14:40:49 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/volume.h,v 1.1.2.1 1997-11-04 18:48:00 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/volume.h,v $ */
 
 #ifndef __volume_h
 #define	__volume_h  1
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/volume.h,v 1.1.1.1 1997-10-16 14:40:49 ghudson Exp $";
+static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/volume.h,v 1.1.2.1 1997-11-04 18:48:00 ghudson Exp $";
 #endif
 
 /*

@@ -11,9 +11,12 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/kautils.h,v 1.1.1.1 1997-10-16 14:40:33 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/kautils.h,v 1.1.2.1 1997-11-04 18:47:17 ghudson Exp $ */
 
 /* $Log: not supported by cvs2svn $
+ * Revision 1.1  1997/10/16 14:40:33  ghudson
+ * Initial revision
+ *
  * Revision 2.2  1990/09/27  13:51:37  ota
  * Declare (char *) returning function ka_timestr().
  * Cleanups.

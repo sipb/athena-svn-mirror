@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/auth.h,v 1.1.1.1 1997-10-16 14:40:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/auth.h,v 1.1.2.1 1997-11-04 18:46:29 ghudson Exp $ */
 
 #ifndef __AUTH_AFS_INCL_
 #define	__AUTH_AFS_INCL_    1

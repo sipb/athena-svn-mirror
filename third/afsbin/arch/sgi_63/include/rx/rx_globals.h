@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/rx/rx_globals.h,v 1.1.1.1 1997-10-16 14:41:12 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/rx/rx_globals.h,v 1.1.2.1 1997-11-04 18:48:13 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/rx/rx_globals.h,v $ */
 
 /*

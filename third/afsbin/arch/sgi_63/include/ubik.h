@@ -4,14 +4,14 @@
  */
 /* Including ubik.p.h at beginning of ubik.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/ubik.h,v 1.1.1.1 1997-10-16 14:40:19 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/ubik.h,v 1.1.2.1 1997-11-04 18:46:13 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/ubik.h,v $ */
 
 #ifndef UBIK_H
 #define UBIK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/ubik.h,v 1.1.1.1 1997-10-16 14:40:19 ghudson Exp $";
+static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/ubik.h,v 1.1.2.1 1997-11-04 18:46:13 ghudson Exp $";
 #endif
 
 /*

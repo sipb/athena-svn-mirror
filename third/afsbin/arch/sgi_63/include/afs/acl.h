@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/acl.h,v 1.1.1.1 1997-10-16 14:40:34 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/acl.h,v 1.1.2.1 1997-11-04 18:46:17 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/acl.h,v $ */
 
 /*
@@ -17,7 +17,7 @@
 
 
 
-#define ACL_VERSION "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/acl.h,v 1.1.1.1 1997-10-16 14:40:34 ghudson Exp $"
+#define ACL_VERSION "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/acl.h,v 1.1.2.1 1997-11-04 18:46:17 ghudson Exp $"
 
 struct acl_accessEntry {
     int id;         /*internally-used ID of user or group*/

@@ -1,7 +1,7 @@
 #ifndef _RX_MACHDEP_
 #define _RX_MACHDEP_
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/rx/rx_machdep.h,v 1.1.1.1 1997-10-16 14:41:14 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/rx/rx_machdep.h,v 1.1.2.1 1997-11-04 18:48:15 ghudson Exp $ */
 /*
 ****************************************************************************
 *        Copyright IBM Corporation 1988, 1989 - All Rights Reserved        *

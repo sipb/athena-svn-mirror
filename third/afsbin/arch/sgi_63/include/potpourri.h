@@ -26,6 +26,9 @@ Author:  	M.Satyanarayanan
 
 
 $Log: not supported by cvs2svn $
+Revision 1.1  1997/10/16 14:40:08  ghudson
+Initial revision
+
  * Revision 1.2  89/03/30  21:48:33  kazar
  * update copyright notice
  * 

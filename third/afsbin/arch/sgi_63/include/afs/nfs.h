@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/nfs.h,v 1.1.1.1 1997-10-16 14:40:46 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/nfs.h,v 1.1.2.1 1997-11-04 18:47:21 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/nfs.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/nfs.h,v 1.1.1.1 1997-10-16 14:40:46 ghudson Exp $";
+static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/nfs.h,v 1.1.2.1 1997-11-04 18:47:21 ghudson Exp $";
 #endif
 
 #ifndef	AFS_VOL_NFS_H

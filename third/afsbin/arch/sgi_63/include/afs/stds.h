@@ -1,6 +1,6 @@
 /* Copyright (C) 1990 Transarc Corporation - All rights reserved */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/stds.h,v 1.1.1.1 1997-10-16 14:40:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/stds.h,v 1.1.2.1 1997-11-04 18:47:43 ghudson Exp $ */
 
 #ifndef TRANSARC_AFS_CONFIG_STDS_H
 #define TRANSARC_AFS_CONFIG_STDS_H	1

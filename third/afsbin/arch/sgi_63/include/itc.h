@@ -24,10 +24,13 @@
  *
  *	defines a few constants used throughout ITC code
  *
- *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/itc.h,v 1.1.1.1 1997-10-16 14:40:08 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/itc.h,v 1.1.2.1 1997-11-04 18:46:02 ghudson Exp $
  */
 
 /* $Log: not supported by cvs2svn $
+ * Revision 1.1  1997/10/16 14:40:08  ghudson
+ * Initial revision
+ *
  * Revision 1.2  89/03/30  21:48:14  kazar
  * update copyright notice
  * 

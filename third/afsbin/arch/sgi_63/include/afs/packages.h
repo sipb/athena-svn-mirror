@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/packages.h,v 1.1.1.1 1997-10-16 14:40:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/packages.h,v 1.1.2.1 1997-11-04 18:47:24 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_63/include/afs/packages.h,v $ */
 
 /*
@@ -23,6 +23,9 @@
 */
 
 /* $Log: not supported by cvs2svn $
+ * Revision 1.1  1997/10/16 14:40:23  ghudson
+ * Initial revision
+ *
  * Revision 1.3  89/03/30  21:48:21  kazar
  * update copyright notice
  * 
