@@ -357,11 +357,17 @@ migrate_old_nautilus_files (void)
 			close (fd);
 		}
 		
+		/* Athena local mod: don't display this dialog.  We're
+		   already confronting the user with a dialog about
+		   changing from Sawfish to Metacity, and it's pretty
+		   clear what has changed. */
+#if 0		
 		eel_show_info_dialog (_("A link called \"Link To Old Desktop\" has been created on the desktop."),
 				      _("The location of the desktop directory has changed in GNOME 2.4. "
 					"You can open the link and move over the files you want, then delete the link."),
 				      _("Migrated Old Desktop"),
 				      NULL);
+#endif
 	}
 	g_free (old_desktop_dir);
 	g_free (migrated_file);
