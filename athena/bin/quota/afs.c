@@ -15,13 +15,14 @@
 
 /* This contains the AFS quota-checking routines. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.15 1999-03-29 19:14:14 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.16 1999-09-22 22:19:03 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <afs/param.h>
