@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.2 1991-06-13 05:12:21 probe Exp $
+# $Id: Imakefile,v 1.2.8.1 1999-11-10 18:18:50 tb Exp $
 #
 
 all:: rkinit_err.h
@@ -9,6 +9,7 @@ rkinit_err.h:
 
 depend:: rkinit_err.h
 
+create_dir($(ATHINCDIR))
 install_file(rkinit.h,$(ATHINCDIR)/rkinit.h)
 install_file(rkinit_err.h,$(ATHINCDIR)/rkinit_err.h)
 
