@@ -3,7 +3,8 @@ Summary: The Athena Online Consultant system
 Copyright: MIT
 Group: Applications/Communications
 
-Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet athena-motif athena-libMu athena-wcl
+Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet athena-openmotif
+Requires: athena-libMu athena-wcl
 
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
