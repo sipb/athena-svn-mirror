@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Id: dump.c,v 1.1 1999-09-28 22:10:56 danw Exp $
+ * $Id: dump.c,v 1.2 2003-03-20 07:31:35 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Id: dump.c,v 1.1 1999-09-28 22:10:56 danw Exp $";
+static char rcsid_collect_c[] = "$Id: dump.c,v 1.2 2003-03-20 07:31:35 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -20,7 +20,7 @@ static char rcsid_collect_c[] = "$Id: dump.c,v 1.1 1999-09-28 22:10:56 danw Exp 
 #include <fx/memory.h>
 #include <ctype.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>

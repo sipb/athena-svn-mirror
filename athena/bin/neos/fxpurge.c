@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange purge client
  *
- * $Id: fxpurge.c,v 1.1 1999-09-28 22:10:59 danw Exp $
+ * $Id: fxpurge.c,v 1.2 2003-03-20 07:31:35 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,13 +12,13 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxpurge_c[] = "$Id: fxpurge.c,v 1.1 1999-09-28 22:10:59 danw Exp $";
+static char rcsid_fxpurge_c[] = "$Id: fxpurge.c,v 1.2 2003-03-20 07:31:35 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include "fxmain.h"
 
 #define DAY (86400L)		/* number of seconds in one day */
