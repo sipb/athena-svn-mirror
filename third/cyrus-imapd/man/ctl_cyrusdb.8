@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH CTL_CYRUSDB 8
+.TH CTL_CYRUSDB 8 "Project Cyrus" CMU
 .\" 
 .\" Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
 .\"
@@ -39,7 +39,7 @@
 .\" AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 .\" OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\" 
-.\" $Id: ctl_cyrusdb.8,v 1.1.1.1 2002-10-13 18:01:22 ghudson Exp $
+.\" $Id: ctl_cyrusdb.8,v 1.1.1.2 2004-02-23 22:53:56 rbasch Exp $
 .SH NAME
 ctl_cyrusdb \- perform operations common to all Cyrus databases
 .SH SYNOPSIS
@@ -78,7 +78,7 @@ Read configuration options from \fIconfig-file\fR.
 .TP
 .B \-r
 Recover the databases after an application or system failure.  Also performs
-database cleanup like removing mailbox reservations (and any assoiciated
+database cleanup like removing mailbox reservations (and any associated
 mailbox files).
 .TP
 .B \-x

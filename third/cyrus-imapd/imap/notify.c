@@ -1,6 +1,6 @@
 /* notify.c -- Module to notify of new mail
- * $Id: notify.c,v 1.1.1.2 2003-02-14 21:38:20 ghudson Exp $ 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: notify.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $ 
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,8 +56,9 @@
 # include <unistd.h>
 #endif
 
-#include "imapconf.h"
+#include "global.h"
 #include "notify.h"
+#include "xmalloc.h"
 
 #define FNAME_NOTIFY_SOCK "/socket/notify"
 
@@ -79,7 +80,7 @@ static int add_arg(char *buf, int max_size, const char *arg, int *buflen)
 void notify(const char *method,
 	    const char *class, const char *priority,
 	    const char *user, const char *mailbox,
-	    int nopt, char **options,
+	    int nopt, const char **options,
 	    const char *message)
 {
     const char *notify_sock;
@@ -91,19 +92,20 @@ void notify(const char *method,
 
     soc = socket(AF_UNIX, SOCK_DGRAM, 0);
     if (soc == -1) {
-	syslog(LOG_ERR, "unable to open notify socket(): %m");
+	syslog(LOG_ERR, "unable to create notify socket(): %m");
 	return;
     }
 
     memset((char *)&sun_data, 0, sizeof(sun_data));
     sun_data.sun_family = AF_UNIX;
-    notify_sock = config_getstring("notifysocket", NULL);
+    notify_sock = config_getstring(IMAPOPT_NOTIFYSOCKET);
     if (notify_sock) {	
-	strcpy(sun_data.sun_path, notify_sock);
+	strlcpy(sun_data.sun_path, notify_sock, sizeof(sun_data.sun_path));
     }
     else {
-	strcpy(sun_data.sun_path, config_dir);
-	strcat(sun_data.sun_path, FNAME_NOTIFY_SOCK);
+	strlcpy(sun_data.sun_path, config_dir, sizeof(sun_data.sun_path));
+	strlcat(sun_data.sun_path,
+		FNAME_NOTIFY_SOCK, sizeof(sun_data.sun_path));
     }
 
     /*
@@ -113,20 +115,20 @@ void notify(const char *method,
      *   nopt NUL N(option NUL) message NUL
      */
 
-    r = add_arg(buf, NOTIFY_MAXSIZE, method, &buflen);
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, class, &buflen);
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, priority, &buflen);
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, user, &buflen);
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, mailbox, &buflen);
+    r = add_arg(buf, sizeof(buf), method, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), class, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), priority, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), user, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), mailbox, &buflen);
 
     snprintf(noptstr, sizeof(noptstr), "%d", nopt);
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, noptstr, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), noptstr, &buflen);
 
     for (i = 0; !r && i < nopt; i++) {
-	r = add_arg(buf, NOTIFY_MAXSIZE, options[i], &buflen);
+	r = add_arg(buf, sizeof(buf), options[i], &buflen);
     }
 
-    if (!r) r = add_arg(buf, NOTIFY_MAXSIZE, message, &buflen);
+    if (!r) r = add_arg(buf, sizeof(buf), message, &buflen);
 
     if (r) {
         syslog(LOG_ERR, "notify datagram too large");

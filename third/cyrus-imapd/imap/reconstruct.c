@@ -1,6 +1,6 @@
 /* reconstruct.c -- program to reconstruct a mailbox 
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: reconstruct.c,v 1.1.1.2 2003-02-14 21:38:21 ghudson Exp $ */
+/* $Id: reconstruct.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $ */
 
 #include <config.h>
 
@@ -80,20 +80,19 @@
 #include "assert.h"
 #include "bsearch.h"
 #include "imparse.h"
-#include "imapconf.h"
+#include "global.h"
 #include "exitcodes.h"
 #include "imap_err.h"
 #include "mailbox.h"
 #include "message.h"
 #include "xmalloc.h"
-#include "imapconf.h"
+#include "global.h"
 #include "mboxname.h"
 #include "mboxlist.h"
 #include "seen.h"
 #include "retry.h"
 #include "convert_code.h"
 #include "util.h"
-#include "acapmbox.h"
 
 extern int optind;
 extern char *optarg;
@@ -106,16 +105,16 @@ struct discovered {
 /* current namespace */
 static struct namespace recon_namespace;
 
+/* config.c stuff */
+const int config_need_data = CONFIG_NEED_PARTITION_DATA;
+
 /* forward declarations */
 void do_mboxlist(void);
 int do_reconstruct(char *name, int matchlen, int maycreate, void *rock);
 int reconstruct(char *name, struct discovered *l);
 void usage(void);
-void shut_down(int code);
 
 extern cyrus_acl_canonproc_t mboxlist_ensureOwnerRights;
-
-static acapmbox_handle_t *acaphandle = NULL;
 
 int code = 0;
 
@@ -125,22 +124,30 @@ int main(int argc, char **argv)
     int rflag = 0;
     int mflag = 0;
     int fflag = 0;
-    char buf[MAX_MAILBOX_PATH];
+    int xflag = 0;
+    char buf[MAX_MAILBOX_PATH+1];
+    char mbbuf[MAX_MAILBOX_PATH+1];
     struct discovered head;
     char *alt_config = NULL;
+    char *start_part = NULL;
+    const char *start_part_path = NULL;
 
     memset(&head, 0, sizeof(head));
 
     if (geteuid() == 0) fatal("must run as the Cyrus user", EC_USAGE);
 
     /* Ensure we're up-to-date on the index file format */
-    assert(INDEX_HEADER_SIZE == (OFFSET_SPARE3+4));
-    assert(INDEX_RECORD_SIZE == (OFFSET_USER_FLAGS+MAX_USER_FLAGS/8));
+    assert(INDEX_HEADER_SIZE == (OFFSET_SPARE2+4));
+    assert(INDEX_RECORD_SIZE == (OFFSET_CACHE_VERSION+4));
 
-    while ((opt = getopt(argc, argv, "C:rmf")) != EOF) {
+    while ((opt = getopt(argc, argv, "C:p:rmfx")) != EOF) {
 	switch (opt) {
 	case 'C': /* alt config file */
 	    alt_config = optarg;
+	    break;
+
+	case 'p':
+	    start_part = optarg;
 	    break;
 
 	case 'r':
@@ -155,12 +162,16 @@ int main(int argc, char **argv)
 	    fflag = 1;
 	    break;
 
+	case 'x':
+	    xflag = 1;
+	    break;
+	    
 	default:
 	    usage();
 	}
     }
 
-    config_init(alt_config, "reconstruct");
+    cyrus_init(alt_config, "reconstruct");
 
     /* Set namespace -- force standard (internal) */
     if ((r = mboxname_init_namespace(&recon_namespace, 1)) != 0) {
@@ -168,39 +179,124 @@ int main(int argc, char **argv)
 	fatal(error_message(r), EC_CONFIG);
     }
 
+    if(start_part) {
+    	/* Get partition's path */
+	start_part_path = config_partitiondir(start_part);
+	if (!start_part_path) {
+	    fatal(error_message(IMAP_PARTITION_UNKNOWN), EC_USAGE);
+	}
+    }
+
     if (mflag) {
-	if (rflag || fflag || optind != argc) usage();
+	if (rflag || fflag || optind != argc) {
+	    cyrus_done();
+	    usage();
+	}
 	do_mboxlist();
     }
 
     mboxlist_init(0);
     mboxlist_open(NULL);
 
-    signals_set_shutdown(&shut_down);
-    signals_add_handlers();
-
     mailbox_reconstructmode();
 
+    /* Deal with nonexistent mailboxes */
+    if (start_part) {
+	/* We were handed a mailbox that does not exist currently */
+	if(optind == argc) {
+	    fprintf(stderr, "When using -p, you must specify a mailbox to attempt to reconstruct.");
+	    exit(EC_USAGE);
+	}
+
+	/* do any of the mailboxes exist in mboxlist already? */
+	/* Do they look like mailboxes? */
+	for (i = optind; i < argc; i++) {
+	    struct stat sbuf;
+
+	    if(strchr(argv[i],'%') || strchr(argv[i],'*')) {
+		fprintf(stderr, "Using wildcards with -p is not supported.\n");
+		exit(EC_USAGE);
+	    }
+
+	    /* Translate mailboxname */
+	    (*recon_namespace.mboxname_tointernal)(&recon_namespace, argv[i],
+						   NULL, buf);
+
+	    /* Does it exist */
+	    do {
+		r = mboxlist_lookup(buf, NULL, NULL, NULL);
+	    } while (r == IMAP_AGAIN);
+
+	    if(r != IMAP_MAILBOX_NONEXISTENT) {
+		fprintf(stderr,
+			"Mailbox %s already exists.  Cannot specify -p.\n",
+			argv[i]);
+		exit(EC_USAGE);
+	    }
+
+	    /* Does the suspected path *look* like a mailbox? */
+	    mailbox_hash_mbox(mbbuf, sizeof(mbbuf), start_part_path, buf);
+	    strlcat(mbbuf, "/cyrus.header", sizeof(mbbuf));
+	    if(stat(mbbuf, &sbuf) < 0) {
+		fprintf(stderr,
+			"%s does not appear to be a mailbox (no %s).\n",
+			argv[i], mbbuf);
+		exit(EC_USAGE);
+	    }
+	}
+	
+	/* None of them exist.  Create them. */
+	for (i = optind; i < argc; i++) {
+	    /* Translate mailboxname */
+	    (*recon_namespace.mboxname_tointernal)(&recon_namespace, argv[i],
+						   NULL, buf);
+
+	    r = mboxlist_createmailbox(buf, 0, start_part, 1,
+				       "cyrus", NULL, 0, 0, !xflag);
+	    if(r) {
+		fprintf(stderr, "could not create %s\n", argv[i]);
+	    }
+	}
+    }
+
+    /* Normal Operation */
     if (optind == argc) {
 	if (rflag) {
 	    fprintf(stderr, "please specify a mailbox to recurse from\n");
+	    cyrus_done();
 	    exit(EC_USAGE);
 	}
 	assert(!rflag);
-	strcpy(buf, "*");
+	strlcpy(buf, "*", sizeof(buf));
 	(*recon_namespace.mboxlist_findall)(&recon_namespace, buf, 1, 0, 0,
 					    do_reconstruct, NULL);
     }
 
     for (i = optind; i < argc; i++) {
-	strcpy(buf, argv[i]);
+	char *domain = NULL;
+
+	/* save domain */
+	if (config_virtdomains) domain = strchr(argv[i], '@');
+
+	strlcpy(buf, argv[i], sizeof(buf));
 	/* Translate any separators in mailboxname */
-	mboxname_hiersep_tointernal(&recon_namespace, buf);
+	mboxname_hiersep_tointernal(&recon_namespace, buf,
+				    config_virtdomains ?
+				    strcspn(buf, "@") : 0);
+
+	/* reconstruct the first mailbox/pattern */
 	(*recon_namespace.mboxlist_findall)(&recon_namespace, buf, 1, 0,
 					    0, do_reconstruct, 
 					    fflag ? &head : NULL);
 	if (rflag) {
-	    strcat(buf, ".*");
+	    /* build a pattern for submailboxes */
+	    /* XXX mboxlist_findall() is destructive and removes domain */
+	    strlcat(buf, ".*", sizeof(buf));
+
+	    /* append the domain */
+	    if (domain) strlcat(buf, domain, sizeof(buf));
+
+	    /* reconstruct the submailboxes */
 	    (*recon_namespace.mboxlist_findall)(&recon_namespace, buf, 1, 0,
 						0, do_reconstruct, 
 						fflag ? &head : NULL);
@@ -210,17 +306,20 @@ int main(int argc, char **argv)
     /* examine our list to see if we discovered anything */
     while (head.next) {
 	struct discovered *p;
-	int r;
+	int r = 0;
 
 	p = head.next;
 	head.next = p->next;
 
-	/* create p and reconstruct it */
-	r = mboxlist_createmailbox(p->name, 0, NULL, 1, "cyrus", NULL, 0, 0);
+	/* create p (database only) and reconstruct it */
+	/* partition is defined by the parent mailbox */
+	r = mboxlist_createmailbox(p->name, 0, NULL, 1,
+				   "cyrus", NULL, 0, 0, !xflag);
 	if (!r) {
-	    do_reconstruct(p->name, 0, 0, &head);
+	    do_reconstruct(p->name, strlen(p->name), 0, &head);
 	} else {
-	    printf("createmailbox %s: %s\n", p->name, error_message(r));
+	    fprintf(stderr, "createmailbox %s: %s\n",
+		    p->name, error_message(r));
 	}
 	/* may have added more things into our list */
 
@@ -231,13 +330,15 @@ int main(int argc, char **argv)
     mboxlist_close();
     mboxlist_done();
 
-    exit(code);
+    cyrus_done();
+
+    return code;
 }
 
 void usage(void)
 {
     fprintf(stderr,
-	    "usage: reconstruct [-C <alt_config>] [-r] [-f] mailbox...\n");
+	    "usage: reconstruct [-C <alt_config>] [-p partition] [-rfx] mailbox...\n");
     fprintf(stderr, "       reconstruct [-C <alt_config>] -m\n");
     exit(EC_USAGE);
 }    
@@ -260,8 +361,8 @@ do_reconstruct(char *name,
 	       void *rock)
 {
     int r;
-    char buf[MAX_MAILBOX_PATH];
-    static char lastname[MAX_MAILBOX_PATH] = "";
+    char buf[MAX_MAILBOX_PATH+1];
+    static char lastname[MAX_MAILBOX_PATH+1] = "";
 
     signals_poll();
 
@@ -269,6 +370,9 @@ do_reconstruct(char *name,
     if (matchlen == strlen(lastname) &&
 	!strncmp(name, lastname, matchlen)) return 0;
 
+    if(matchlen >= sizeof(lastname))
+	matchlen = sizeof(lastname) - 1;
+    
     strncpy(lastname, name, matchlen);
     lastname[matchlen] = '\0';
 
@@ -276,11 +380,10 @@ do_reconstruct(char *name,
     if (r) {
 	com_err(name, r, (r == IMAP_IOERROR) ? error_message(errno) : NULL);
 	code = convert_code(r);
-    }
-    else {
+    } else {
 	/* Convert internal name to external */
 	(*recon_namespace.mboxname_toexternal)(&recon_namespace, lastname,
-					       "cyrus", buf);
+					       NULL, buf);
 	printf("%s\n", buf);
     }
 
@@ -292,41 +395,49 @@ do_reconstruct(char *name,
  */
 int reconstruct(char *name, struct discovered *found)
 {
-    int r;
-    struct mailbox mailbox;
-    char quota_root[MAX_MAILBOX_PATH];
-    int hasquota;
-    int i, flag;
-    char *p;
-    int format = MAILBOX_FORMAT_NORMAL;
+    char buf[((INDEX_HEADER_SIZE > INDEX_RECORD_SIZE) ?
+	     INDEX_HEADER_SIZE : INDEX_RECORD_SIZE)];
+    char quota_root[MAX_MAILBOX_PATH+1];
     bit32 valid_user_flags[MAX_USER_FLAGS/32];
-    char fnamebuf[MAX_MAILBOX_PATH];
-    FILE *newindex;
-    int newcache_fd;
-    char buf[INDEX_HEADER_SIZE > INDEX_RECORD_SIZE ?
-	     INDEX_HEADER_SIZE : INDEX_RECORD_SIZE];
-    unsigned long *uid;
-    int uid_num, uid_alloc;
+
+    struct mailbox mailbox;
+
+    int r = 0;
+    int i, n, hasquota, flag;
+    int format = MAILBOX_FORMAT_NORMAL;
+
+    char *p;
+
+    char fnamebuf[MAX_MAILBOX_PATH+1];
+    FILE *newindex, *msgfile;
     DIR *dirp;
     struct dirent *dirent;
+    struct stat sbuf;
+    int newcache_fd;
+
+    unsigned long *uid;
+    int uid_num, uid_alloc;
+
     int msg, old_msg = 0;
     int new_exists = 0, 
 	new_answered = 0,
 	new_flagged = 0,
 	new_deleted = 0;
+
+    char *list_acl, *list_part;
+    int list_type;
+
     unsigned long new_quota = 0;
+
     struct index_record message_index, old_index;
     static struct index_record zero_index;
-    char newspath[4096], *end_newspath;
-    FILE *msgfile;
-    struct stat sbuf;
-    int n;
 
     /* Open/lock header */
     r = mailbox_open_header(name, 0, &mailbox);
     if (r) {
 	return r;
     }
+
     if (mailbox.header_fd != -1) {
 	(void) mailbox_lock_header(&mailbox);
     }
@@ -337,7 +448,7 @@ int reconstruct(char *name, struct discovered *found)
     }
 
     /* Fix quota root */
-    hasquota = mailbox_findquota(quota_root, mailbox.name);
+    hasquota = mailbox_findquota(quota_root, sizeof(quota_root), mailbox.name);
     if (mailbox.quota.root) free(mailbox.quota.root);
     if (hasquota) {
 	mailbox.quota.root = xstrdup(quota_root);
@@ -360,6 +471,18 @@ int reconstruct(char *name, struct discovered *found)
 	valid_user_flags[flag/32] |= 1<<(flag&31);
     }
 
+    /* Verify ACL and update mboxlist if needed */
+    r = mailbox_read_header_acl(&mailbox);
+    if (r) return r;
+
+    r = mboxlist_detail(name, &list_type, NULL, &list_part, &list_acl, NULL);
+    if (r) return r;
+
+    if(strcmp(list_acl, mailbox.acl)) {
+	r = mboxlist_update(name, list_type, list_part, mailbox.acl, 0);
+    }
+    if(r) return r;
+
     /* Attempt to open/lock index */
     r = mailbox_open_index(&mailbox);
     if (r) {
@@ -378,16 +501,16 @@ int reconstruct(char *name, struct discovered *found)
     mailbox.pop3_last_login = 0;
 
     /* Create new index/cache files */
-    strcpy(fnamebuf, FNAME_INDEX+1);
-    strcat(fnamebuf, ".NEW");
+    strlcpy(fnamebuf, FNAME_INDEX+1, sizeof(fnamebuf));
+    strlcat(fnamebuf, ".NEW", sizeof(fnamebuf));
     newindex = fopen(fnamebuf, "w+");
     if (!newindex) {
 	mailbox_close(&mailbox);
 	return IMAP_IOERROR;
     }
 
-    strcpy(fnamebuf, FNAME_CACHE+1);
-    strcat(fnamebuf, ".NEW");
+    strlcpy(fnamebuf, FNAME_CACHE+1, sizeof(fnamebuf));
+    strlcat(fnamebuf, ".NEW", sizeof(fnamebuf));
     newcache_fd = open(fnamebuf, O_RDWR|O_TRUNC|O_CREAT, 0666);
     if (newcache_fd == -1) {
 	fclose(newindex);
@@ -396,7 +519,7 @@ int reconstruct(char *name, struct discovered *found)
     }
     
     memset(buf, 0, sizeof(buf));
-    (*(bit32 *)buf) = mailbox.generation_no + 1;
+    *((bit32 *)(buf+OFFSET_GENERATION_NO)) = htonl(mailbox.generation_no + 1);
     fwrite(buf, 1, INDEX_HEADER_SIZE, newindex);
     retry_write(newcache_fd, buf, sizeof(bit32));
 
@@ -405,7 +528,7 @@ int reconstruct(char *name, struct discovered *found)
     uid_num = 0;
     uid_alloc = UIDGROW;
     dirp = opendir(".");
-    end_newspath = newspath;
+
     if (!dirp) {
 	fclose(newindex);
 	close(newcache_fd);
@@ -449,7 +572,7 @@ int reconstruct(char *name, struct discovered *found)
 	message_index = zero_index;
 	message_index.uid = uid[msg];
 	
-	mailbox_message_get_fname(&mailbox, uid[msg], fnamebuf);
+	mailbox_message_get_fname(&mailbox, uid[msg], fnamebuf, sizeof(fnamebuf));
 	msgfile = fopen(fnamebuf, "r");
 	if (!msgfile) continue;
 	if (fstat(fileno(msgfile), &sbuf)) {
@@ -499,18 +622,8 @@ int reconstruct(char *name, struct discovered *found)
 	fclose(msgfile);
 	
 	/* Write out new entry in index file */
-	*((bit32 *)(buf+OFFSET_UID)) = htonl(message_index.uid);
-	*((bit32 *)(buf+OFFSET_INTERNALDATE)) = htonl(message_index.internaldate);
-	*((bit32 *)(buf+OFFSET_SENTDATE)) = htonl(message_index.sentdate);
-	*((bit32 *)(buf+OFFSET_SIZE)) = htonl(message_index.size);
-	*((bit32 *)(buf+OFFSET_HEADER_SIZE)) = htonl(message_index.header_size);
-	*((bit32 *)(buf+OFFSET_CONTENT_OFFSET)) = htonl(message_index.content_offset);
-	*((bit32 *)(buf+OFFSET_CACHE_OFFSET)) = htonl(message_index.cache_offset);
-	*((bit32 *)(buf+OFFSET_LAST_UPDATED)) = htonl(message_index.last_updated);
-	*((bit32 *)(buf+OFFSET_SYSTEM_FLAGS)) = htonl(message_index.system_flags);
-	for (i = 0; i < MAX_USER_FLAGS/32; i++) {
-	    *((bit32 *)(buf+OFFSET_USER_FLAGS+4*i)) = htonl(message_index.user_flags[i]);
-	}
+	mailbox_index_record_to_buf(&message_index, buf);
+
 	n = fwrite(buf, 1, INDEX_RECORD_SIZE, newindex);
 	if (n != INDEX_RECORD_SIZE) {
 	    fclose(newindex);
@@ -538,7 +651,7 @@ int reconstruct(char *name, struct discovered *found)
 	mailbox.uidvalidity = time(0);
     }
     free(uid);
-    *((bit32 *)(buf+OFFSET_GENERATION_NO)) = mailbox.generation_no + 1;
+    *((bit32 *)(buf+OFFSET_GENERATION_NO)) = htonl(mailbox.generation_no + 1);
     *((bit32 *)(buf+OFFSET_FORMAT)) = htonl(mailbox.format);
     *((bit32 *)(buf+OFFSET_MINOR_VERSION)) = htonl(MAILBOX_MINOR_VERSION);
     *((bit32 *)(buf+OFFSET_START_OFFSET)) = htonl(INDEX_HEADER_SIZE);
@@ -553,6 +666,7 @@ int reconstruct(char *name, struct discovered *found)
     *((bit32 *)(buf+OFFSET_ANSWERED)) = htonl(new_answered);
     *((bit32 *)(buf+OFFSET_FLAGGED)) = htonl(new_flagged);
     *((bit32 *)(buf+OFFSET_POP3_NEW_UIDL)) = htonl(mailbox.pop3_new_uidl);
+    *((bit32 *)(buf+OFFSET_LEAKED_CACHE)) = htonl(0);
 
     n = fwrite(buf, 1, INDEX_HEADER_SIZE, newindex);
     fflush(newindex);
@@ -569,7 +683,8 @@ int reconstruct(char *name, struct discovered *found)
 
 	/* this may change uniqueid, but if it does, nothing we can do
            about it */
-	mailbox_make_uniqueid(mailbox.name, mailbox.uidvalidity, buf);
+	mailbox_make_uniqueid(mailbox.name, mailbox.uidvalidity, buf,
+			      sizeof(buf));
 	mailbox.uniqueid = xstrdup(buf);
     }
     
@@ -581,24 +696,21 @@ int reconstruct(char *name, struct discovered *found)
     }
 
     /* Rename new index/cache file in place */
-    strcpy(fnamebuf, FNAME_INDEX+1);
-    strcat(fnamebuf, ".NEW");
+    strlcpy(fnamebuf, FNAME_INDEX+1, sizeof(fnamebuf));
+    strlcat(fnamebuf, ".NEW", sizeof(fnamebuf));
     if (rename(fnamebuf, FNAME_INDEX+1)) {
 	fclose(newindex);
 	mailbox_close(&mailbox);
 	return IMAP_IOERROR;
     }
-    strcpy(fnamebuf, FNAME_CACHE+1);
-    strcat(fnamebuf, ".NEW");
+    strlcpy(fnamebuf, FNAME_CACHE+1, sizeof(fnamebuf));
+    strlcat(fnamebuf, ".NEW", sizeof(fnamebuf));
     if (rename(fnamebuf, FNAME_CACHE+1)) {
 	fclose(newindex);
 	mailbox_close(&mailbox);
 	return IMAP_IOERROR;
     }
     
-    acapmbox_setproperty(acaphandle, mailbox.name, ACAPMBOX_UIDVALIDITY,
-			 mailbox.uidvalidity);
-
     fclose(newindex);
     r = seen_reconstruct(&mailbox, (time_t)0, (time_t)0, (int (*)())0, (void *)0);
     mailbox_close(&mailbox);
@@ -632,7 +744,10 @@ int reconstruct(char *name, struct discovered *found)
 	    } while (r == IMAP_AGAIN);
 	    if (!r) continue; /* mailbox exists; it'll be reconstructed
 			         with a -r */
+
 	    if (r != IMAP_MAILBOX_NONEXISTENT) break; /* erg? */
+	    else r = 0; /* reset error condition */
+
 	    printf("discovered %s\n", fnamebuf);
 	    new = (struct discovered *) xmalloc(sizeof(struct discovered));
 	    new->name = strdup(fnamebuf);
@@ -709,8 +824,8 @@ char *cleanacl(char *acl, char *mboxname)
     char *rights;
 
     /* Rebuild ACL */
-    if (!strncmp(mboxname, "user.", 5)) {
-	strcpy(owner, mboxname+5);
+    if ((p = mboxname_isusermailbox(mboxname, 0))) {
+	strlcpy(owner, p, sizeof(owner));
 	p = strchr(owner, '.');
 	if (p) *p = '\0';
 	aclcanonproc = mboxlist_ensureOwnerRights;
@@ -730,7 +845,8 @@ char *cleanacl(char *acl, char *mboxname)
 	*acl++ = '\0';
 
 	cyrus_acl_set(&newacl, identifier, ACL_MODE_SET,
-		      cyrus_acl_strtomask(rights), aclcanonproc, (void *)owner);
+		      cyrus_acl_strtomask(rights), aclcanonproc,
+		      (void *)owner);
     }
 
     return newacl;
@@ -743,29 +859,4 @@ void do_mboxlist(void)
 {
     fprintf(stderr, "reconstructing mailboxes.db currently not supported\n");
     exit(EC_USAGE);
-}
-
-/*
- * Cleanly shut down and exit
- */
-void shut_down(int code) __attribute__((noreturn));
-void shut_down(int code)
-{
-    mboxlist_close();
-    mboxlist_done();
-    exit(code);
-}
-
-void fatal(const char* s, int code)
-{
-    static int recurse_code = 0;
-    
-    if (recurse_code) {
-	/* We were called recursively. Just give up */
-	exit(recurse_code);
-    }
-    
-    recurse_code = code;
-    fprintf(stderr, "reconstruct: %s\n", s);
-    shut_down(code);
 }

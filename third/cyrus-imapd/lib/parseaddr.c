@@ -1,7 +1,7 @@
 /* parseaddr.c -- RFC 822 address parser
- * $Id: parseaddr.c,v 1.1.1.1 2002-10-13 18:04:34 ghudson Exp $
+ * $Id: parseaddr.c,v 1.1.1.2 2004-02-23 22:53:26 rbasch Exp $
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -292,7 +292,7 @@ char **commentp;
 
     for (;;) {
         c = *src++;
-	if (isalnum(c) || c == '-' || c == '[' || c == ']') {
+	if (isalnum(c) || c == '-' || c == '[' || c == ']' || c == ':') {
 	    *dst++ = c;
 	    if (commentp) *commentp = 0;
 	}

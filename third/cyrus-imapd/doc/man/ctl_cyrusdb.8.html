@@ -1,63 +1,148 @@
 <html>
 <head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
 <meta name="Content-Style" content="text/css">
+<title>CTL_CYRUSDB</title>
 </head>
 <body>
+
+<h1 align=center>CTL_CYRUSDB</h1>
 <a href="#NAME">NAME</a><br>
 <a href="#SYNOPSIS">SYNOPSIS</a><br>
 <a href="#DESCRIPTION">DESCRIPTION</a><br>
 <a href="#OPTIONS">OPTIONS</a><br>
 <a href="#FILES">FILES</a><br>
-<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
 <a href="#SEE ALSO">SEE ALSO</a><br>
-<!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Mon Feb  3 16:31:14 2003
- -->
-<!-- Total number of pages: 1 -->
-<!-- Page: 1 -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
-<a name="NAME"></a><h2>NAME</h2><p><font size=3>ctl_cyrusdb - perform operations common to all Cyrus databases</p>
-<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>ctl_cyrusdb</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] <font size=3><B>-r</B> <font size=3>[ <font size=3><B>-x</B> <font size=3>]<br>
-<B>ctl_cyrusdb</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] <font size=3><B>-c</p>
-</B><a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Ctl_cyrusdb</I> <font size=3>is used to perform various administrative operations on the Cyrus databases.</p>
-<p><font size=3><I>Ctl_cyrusdb</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>. The <font size=3><I>con- figdirectory</I> <font size=3>option is used to determine the default location of the Cyrus databases.</p>
-<a name="OPTIONS"></a><h2>OPTIONS</h2><p><font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
 
-<table width="100%"  rules="none"  frame="none"  cols="3">
+<hr>
+<!-- Creator     : groff version 1.18 -->
+<!-- CreationDate: Thu Jan 15 09:36:52 2004 -->
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="2.4615%">
-<p><font size=3><B>-r</p>
-</B></td>
-<td valign="top" align="left"  width="17.5385%">
+<td width="10%"></td>
+<td width="89%">
+<p>ctl_cyrusdb &minus; perform operations common to all
+Cyrus databases</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>Recover the databases after an application or system failure. Also performs database cleanup like removing mailbox reservations (and any assoiciated mailbox files).</p>
-</td>
-</tr>
+</table></p>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="2.4615%">
-<p><font size=3><B>-x</p>
-</B><p><font size=3><B>-c</p>
-</B></td>
-<td valign="top" align="left"  width="17.5385%">
+<td width="10%"></td>
+<td width="89%">
+<p><b>ctl_cyrusdb</b> [ <b>&minus;C</b> <i>config-file</i> ]
+<b>&minus;r</b> [ <b>&minus;x</b> ]<b><br>
+ctl_cyrusdb</b> [ <b>&minus;C</b> <i>config-file</i> ]
+<b>&minus;c</b></p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>Used with -r to recover the database only. (Prevents database cleanup).</p>
-<p><font size=3>Checkpoint and archive the databases. Changes to the database which are part of commit- ted transactions are written to disk. Also, a <font size=3><I>hot</I> <font size=3>backup of the databases is made and inac- tive log files are removed.</p>
-</td>
-</tr>
+</table></p>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="2.4615%">
+<td width="10%"></td>
+<td width="89%">
+<p><i>Ctl_cyrusdb</i> is used to perform various
+administrative operations on the Cyrus databases.</p>
+<!-- INDENTATION -->
+<p><i>Ctl_cyrusdb</i> reads its configuration options out of
+the <i>imapd.conf</i>(5) file unless specified otherwise by
+<b>-C</b>. The <i>configdirectory</i> option is used to
+determine the default location of the Cyrus databases.</p>
 </td>
-<td valign="top" align="left"  width="17.5385%">
+</table></p>
+<a name="OPTIONS"></a>
+<h2>OPTIONS</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;C</b> <i>config-file</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Read configuration options from <i>config-file</i>.</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-</td>
-</tr>
 </table>
-<br>
-<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2><a name="SEE ALSO"></a><h2>SEE ALSO</h2><p><font size=3><B>imapd.conf(5)</B><font size=3>, <font size=3><B>master(8)</B><br>
-</p>
+<!-- TABS -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="4" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;r</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Recover the databases after an application or system
+failure. Also performs database cleanup like removing
+mailbox reservations (and any associated mailbox files).</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;x</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Used with -r to recover the database only. (Prevents
+database cleanup).</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;c</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Checkpoint and archive the databases. Changes to the
+database which are part of committed transactions are
+written to disk. Also, a <i>hot</i> backup of the databases
+is made and inactive log files are removed.</p>
+</td>
+</table></p>
+<a name="FILES"></a>
+<h2>FILES</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>/etc/imapd.conf</b></p></td>
+</table></p>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>imapd.conf(5)</b>, <b>master(8)</b></p>
+</td>
+</table></p>
+<hr>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,13 +37,15 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: squat.c,v 1.1.1.2 2003-02-14 21:39:17 ghudson Exp $
+ * $Id: squat.c,v 1.1.1.3 2004-02-23 22:53:40 rbasch Exp $
  */
 
 /*
   SQUAT code for searching indexes.
   Robert O'Callahan
 */
+
+#include <config.h>
 
 #include <sys/stat.h>
 #include <sys/mman.h>

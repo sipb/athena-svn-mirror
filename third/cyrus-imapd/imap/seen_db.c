@@ -1,7 +1,7 @@
 /* seen_db.c -- implementation of seen database using per-user berkeley db
-   $Id: seen_db.c,v 1.1.1.1 2002-10-13 18:02:54 ghudson Exp $
- 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: seen_db.c,v 1.1.1.2 2004-02-23 22:55:45 rbasch Exp $
+ * 
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -62,7 +62,7 @@
 #include "bsearch.h"
 #include "util.h"
 
-#include "imapconf.h"
+#include "global.h"
 #include "xmalloc.h"
 #include "mailbox.h"
 #include "imap_err.h"
@@ -87,8 +87,7 @@ struct seen {
 
 static struct seen *lastseen = NULL;
 
-/* choose "flat" or "db3" here */
-#define DB (CONFIG_DB_SEEN)
+#define DB (config_seenstate_db)
 
 static void abortcurrent(struct seen *s)
 {
@@ -104,19 +103,31 @@ static void abortcurrent(struct seen *s)
 
 char *seen_getpath(const char *userid)
 {
-    char *fname = xmalloc(strlen(config_dir) + sizeof(FNAME_USERDIR) +
-		    strlen(userid) + sizeof(FNAME_SEENSUFFIX) + 10);
-    char c;
+    char *fname = xmalloc(strlen(config_dir) + sizeof(FNAME_DOMAINDIR) +
+			  sizeof(FNAME_USERDIR) + strlen(userid) +
+			  sizeof(FNAME_SEENSUFFIX) + 10);
+    char c, *domain;
 
-    c = (char) dir_hash_c(userid);
-    sprintf(fname, "%s%s%c/%s%s", config_dir, FNAME_USERDIR, c, userid,
-	    FNAME_SEENSUFFIX);
+    if (config_virtdomains && (domain = strchr(userid, '@'))) {
+	char d = (char) dir_hash_c(domain+1);
+	*domain = '\0';  /* split user@domain */
+	c = (char) dir_hash_c(userid);
+	sprintf(fname, "%s%s%c/%s%s%c/%s%s", config_dir, FNAME_DOMAINDIR, d,
+		domain+1, FNAME_USERDIR, c, userid, FNAME_SEENSUFFIX);
+	*domain = '@';  /* reassemble user@domain */
+    }
+    else {
+	c = (char) dir_hash_c(userid);
+	sprintf(fname, "%s%s%c/%s%s", config_dir, FNAME_USERDIR, c, userid,
+		FNAME_SEENSUFFIX);
+    }
 
     return fname;
 }
 
 int seen_open(struct mailbox *mailbox, 
-	      const char *user, 
+	      const char *user,
+	      int flags,
 	      struct seen **seendbptr)
 {
     struct seen *seendb;
@@ -157,9 +168,11 @@ int seen_open(struct mailbox *mailbox,
 
     /* open the seendb corresponding to user */
     fname = seen_getpath(user);
-    r = DB->open(fname, &seendb->db);
+    r = DB->open(fname, (flags & SEEN_CREATE) ? CYRUSDB_CREATE : 0,
+		 &seendb->db);
     if (r != 0) {
-	syslog(LOG_ERR, "DBERROR: opening %s: %s", fname, 
+	int level = (flags & SEEN_CREATE) ? LOG_ERR : LOG_DEBUG;
+	syslog(level, "DBERROR: opening %s: %s", fname, 
 	       cyrusdb_strerror(r));
 	r = IMAP_IOERROR;
 	free(seendb);
@@ -182,7 +195,7 @@ static int seen_readold(struct seen *seendb,
 			time_t *lastreadptr, unsigned int *lastuidptr, 
 			time_t *lastchangeptr, char **seenuidsptr)
 {
-    char fnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
     struct stat sbuf;
     int fd;
     const char *base;
@@ -195,8 +208,8 @@ static int seen_readold(struct seen *seendb,
 	       seendb->path, seendb->user);
     }
 
-    strcpy(fnamebuf, seendb->path);
-    strcat(fnamebuf, FNAME_SEEN);
+    strlcpy(fnamebuf, seendb->path, sizeof(fnamebuf));
+    strlcat(fnamebuf, FNAME_SEEN, sizeof(fnamebuf));
 
     fd = open(fnamebuf, O_RDWR, 0);
 
@@ -282,14 +295,14 @@ static int seen_readit(struct seen *seendb,
 	       cyrusdb_strerror(r));
 	return IMAP_IOERROR;
 	break;
-    }
-    if (data == NULL) {
+    case CYRUSDB_NOTFOUND:
 	r = seen_readold(seendb, lastreadptr, lastuidptr,
 			 lastchangeptr, seenuidsptr);
 	if (r) {
 	    abortcurrent(seendb);
 	}
 	return r;
+	break;
     }
 
     /* remember that 'data' may not be null terminated ! */
@@ -301,7 +314,7 @@ static int seen_readit(struct seen *seendb,
     *lastreadptr = strtol(data, &p, 10); data = p;
     *lastuidptr = strtol(data, &p, 10); data = p;
     *lastchangeptr = strtol(data, &p, 10); data = p;
-    while (isspace((int) *p) && p < dend) p++; data = p;
+    while (p < dend && isspace((int) *p)) p++; data = p;
     uidlen = dend - data;
     *seenuidsptr = xmalloc(uidlen + 1);
     memcpy(*seenuidsptr, data, uidlen);
@@ -475,6 +488,25 @@ int seen_delete_user(const char *user)
     return r;
 }
 
+int seen_rename_user(const char *olduser, const char *newuser)
+{
+    char *oldfname = seen_getpath(olduser);
+    char *newfname = seen_getpath(newuser);
+    int r;
+
+    if (SEEN_DEBUG) {
+	syslog(LOG_DEBUG, "seen_db: seen_rename_user(%s, %s)", 
+	       olduser, newuser);
+    }
+
+    r = seen_merge(oldfname, newfname);
+
+    free(oldfname);
+    free(newfname);
+    
+    return r;
+}
+
 int seen_copy(struct mailbox *oldmailbox, struct mailbox *newmailbox)
 {
     if (SEEN_DEBUG) {
@@ -624,10 +656,11 @@ int seen_merge(const char *tmpfile, const char *tgtfile)
     struct db *tmp = NULL, *tgt = NULL;
     struct seen_merge_rock rock;
 
-    r = DB->open(tmpfile, &tmp);
+    /* xxx does this need to be CYRUSDB_CREATE? */
+    r = DB->open(tmpfile, CYRUSDB_CREATE, &tmp);
     if(r) goto done;
 	    
-    r = DB->open(tgtfile, &tgt);
+    r = DB->open(tgtfile, CYRUSDB_CREATE, &tgt);
     if(r) goto done;
 
     rock.db = tgt;

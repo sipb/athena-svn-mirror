@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH RECONSTRUCT 8
+.TH RECONSTRUCT 8 "Project Cyrus" CMU
 .\" 
 .\" Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
 .\"
@@ -39,7 +39,7 @@
 .\" AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 .\" OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\" 
-.\" $Id: reconstruct.8,v 1.1.1.1 2002-10-13 18:02:01 ghudson Exp $
+.\" $Id: reconstruct.8,v 1.1.1.2 2004-02-23 22:54:46 rbasch Exp $
 .SH NAME
 reconstruct \- reconstruct mailboxes
 .SH SYNOPSIS
@@ -47,6 +47,13 @@ reconstruct \- reconstruct mailboxes
 [
 .B \-C
 .I config-file
+]
+[
+.B \-p
+.I partition
+]
+[
+.B \-x
 ]
 [
 .B \-r
@@ -102,6 +109,17 @@ switch in order to fix the quota root files.
 .TP
 .BI \-C " config-file"
 Read configuration options from \fIconfig-file\fR.
+.TP
+.BI \-p " partition"
+Search for the listed (non-existant) mailboxes on the indicated partition.
+Create the mailboxes in the database in addition to reconstructing them.
+(not compatible with the use of wildcards)
+.TP
+.B \-x
+When processing a mailbox which is not in the mailbox list (e.g. via
+the -p or -f options), do not import the metadata from the mailbox,
+instead create it anew (this specifically affects atleast the mailbox's seen
+stat unique identifier, user flags, and ACL).
 .TP
 .B \-r
 Recursively reconstruct all sub-mailboxes of the mailboxes or mailbox

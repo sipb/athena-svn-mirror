@@ -2,7 +2,7 @@
  * Ken Murchison
  */
 /*
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +40,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: notify_mailto.c,v 1.1.1.1 2002-10-13 18:02:03 ghudson Exp $
+ * $Id: notify_mailto.c,v 1.1.1.2 2004-02-23 22:54:49 rbasch Exp $
  */
 
 #include <config.h>
@@ -54,16 +54,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "imapconf.h"
+#include "global.h"
+#include "libconfig.h"
 #include "rfc822date.h"
 #include <sieve_interface.h>
-
-#define DEFAULT_SENDMAIL ("/usr/lib/sendmail")
-#define DEFAULT_POSTMASTER ("postmaster")
-
-#define SENDMAIL (config_getstring("sendmail", DEFAULT_SENDMAIL))
-#define POSTMASTER (config_getstring("postmaster", DEFAULT_POSTMASTER))
-
 
 static int global_outgoing_count = 0;
 
@@ -101,7 +95,7 @@ char* notify_mailto(const char *class __attribute__((unused)),
 	close(fds[1]);
 	/* make the pipe be stdin */
 	dup2(fds[0], 0);
-	execv(SENDMAIL, (char **) smbuf);
+	execv(config_getstring(IMAPOPT_SENDMAIL), (char **) smbuf);
 
 	/* if we're here we suck */
 	return strdup("NO mailto couldn't exec");
@@ -123,7 +117,7 @@ char* notify_mailto(const char *class __attribute__((unused)),
     fprintf(sm, "Date: %s\r\n", datestr);
     
     fprintf(sm, "X-Sieve: %s\r\n", SIEVE_VERSION);
-    fprintf(sm, "From: Mail Sieve Subsystem <%s>\r\n", POSTMASTER);
+    fprintf(sm, "From: Mail Sieve Subsystem <%s>\r\n", config_getstring(IMAPOPT_POSTMASTER));
     fprintf(sm, "To: <%s>\r\n", options[0]);
     fprintf(sm, "Subject: [SIEVE] New mail notification\r\n");
     fprintf(sm, "\r\n");

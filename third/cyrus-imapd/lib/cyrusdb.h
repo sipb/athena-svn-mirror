@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cyrusdb.h,v 1.1.1.1 2002-10-13 18:02:24 ghudson Exp $ */
+/* $Id: cyrusdb.h,v 1.1.1.2 2004-02-23 22:55:48 rbasch Exp $ */
 
 #ifndef INCLUDED_CYRUSDB_H
 #define INCLUDED_CYRUSDB_H
@@ -52,7 +52,8 @@ enum cyrusdb_ret {
     CYRUSDB_IOERROR = -1,
     CYRUSDB_AGAIN = -2,
     CYRUSDB_EXISTS = -3,
-    CYRUSDB_INTERNAL = -4
+    CYRUSDB_INTERNAL = -4,
+    CYRUSDB_NOTFOUND = -5
 };
 
 #define cyrusdb_strerror(c) ("cyrusdb error")
@@ -63,6 +64,10 @@ enum cyrusdb_initflags {
 
 enum cyrusdb_dbflags {
     CYRUSDB_NOSYNC = 0x01	/* durability not a concern */
+};
+
+enum cyrusdb_openflags {
+    CYRUSDB_CREATE = 0x01       /* Create the database if not existant */
 };
 
 typedef int foreach_p(void *rock,
@@ -93,7 +98,7 @@ struct cyrusdb_backend {
     int (*archive)(const char **fnames, const char *dirname);
 
     /* open the specified database in the global environment */
-    int (*open)(const char *fname, struct db **ret);
+    int (*open)(const char *fname, int flags, struct db **ret);
 
     /* close the specified database */
     int (*close)(struct db *db);
@@ -128,6 +133,11 @@ struct cyrusdb_backend {
     /* foreach: iterate through entries that start with 'prefix'
        if 'p' returns true, call 'cb'
 
+       if 'cb' changes the database, these changes will only be visible
+       if they are after the current database cursor.  If other processes
+       change the database (i.e. outside of a transaction) these changes
+       may or may not be visible to the foreach()
+
        'p' should be fast and should avoid blocking it should be safe
        to call other db routines inside of 'cb'.  however, the "flat"
        backend is currently are not reentrant in this way
@@ -138,6 +148,9 @@ struct cyrusdb_backend {
 		   foreach_p *p,
 		   foreach_cb *cb, void *rock, 
 		   struct txn **tid);
+
+    /* Place entries in database create will not overwrite existing
+     * entries */
     int (*create)(struct db *db, 
 		  const char *key, int keylen,
 		  const char *data, int datalen,
@@ -146,6 +159,8 @@ struct cyrusdb_backend {
 		 const char *key, int keylen,
 		 const char *data, int datalen,
 		 struct txn **tid);
+
+    /* Remove entrys from the database */
     int (*delete)(struct db *db, 
 		  const char *key, int keylen,
 		  struct txn **tid,
@@ -164,11 +179,20 @@ struct cyrusdb_backend {
 
 extern struct cyrusdb_backend *cyrusdb_backends[];
 
-extern struct cyrusdb_backend cyrusdb_db3;
-extern struct cyrusdb_backend cyrusdb_db3_nosync;
+/* Note that some of these may be undefined symbols
+ * if libcyrus was not built with support for them */
+extern struct cyrusdb_backend cyrusdb_berkeley;
+extern struct cyrusdb_backend cyrusdb_berkeley_nosync;
 extern struct cyrusdb_backend cyrusdb_flat;
 extern struct cyrusdb_backend cyrusdb_skiplist;
 
 extern int cyrusdb_copyfile(const char *srcname, const char *dstname);
+
+/* Start/Stop the backends */
+void cyrusdb_init();
+void cyrusdb_done();
+
+/* Configuration */
+struct cyrusdb_backend *cyrusdb_fromname(const char *name);
 
 #endif /* INCLUDED_CYRUSDB_H */

@@ -1,6 +1,6 @@
 /* ctl_mboxlist.c -- do DB related operations on mboxlist
  *
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +40,7 @@
  *
  */
 
-/* $Id: ctl_mboxlist.c,v 1.1.1.2 2003-02-14 21:38:18 ghudson Exp $ */
+/* $Id: ctl_mboxlist.c,v 1.1.1.3 2004-02-23 22:55:43 rbasch Exp $ */
 
 /* currently doesn't catch signals; probably SHOULD */
 
@@ -56,13 +56,17 @@
 #include <string.h>
 #include <sasl/sasl.h>
 
-#include "exitcodes.h"
-#include "mboxlist.h"
-#include "imapconf.h"
 #include "assert.h"
-#include "xmalloc.h"
+#include "exitcodes.h"
 #include "imap_err.h"
+#include "global.h"
+#include "libcyr_cfg.h"
+#include "mboxlist.h"
 #include "mupdate-client.h"
+#include "xmalloc.h"
+
+/* config.c stuff */
+const int config_need_data = 0;
 
 extern int optind;
 extern char *optarg;
@@ -75,12 +79,6 @@ enum mboxop { DUMP,
 	      CHECKPOINT,
 	      UNDUMP,
 	      NONE };
-
-void fatal(const char *message, int code)
-{
-    fprintf(stderr, "fatal error: %s\n", message);
-    exit(code);
-}
 
 struct dumprock {
     enum mboxop op;
@@ -104,8 +102,8 @@ static int dump_p(void *rockp __attribute__((unused)),
 
 struct mb_node 
 {
-    char mailbox[MAX_MAILBOX_NAME];
-    char server[MAX_MAILBOX_NAME];
+    char mailbox[MAX_MAILBOX_NAME+1];
+    char server[MAX_MAILBOX_NAME+1];
     char *acl;
     struct mb_node *next;
 };
@@ -131,7 +129,8 @@ static int warn_only = 0;
  * to verify that its info is up to date.
  */
 static int mupdate_list_cb(struct mupdate_mailboxdata *mdata,
-			   const char *cmd, void *context) 
+			   const char *cmd,
+			   void *context __attribute__((unused))) 
 {
     int ret;
 
@@ -141,7 +140,7 @@ static int mupdate_list_cb(struct mupdate_mailboxdata *mdata,
 	struct mb_node *next;
 	
 	next = xzmalloc(sizeof(struct mb_node));
-	strcpy(next->mailbox, mdata->mailbox);
+	strlcpy(next->mailbox, mdata->mailbox, sizeof(next->mailbox));
 	
 	next->next = del_head;
 	del_head = next;
@@ -152,8 +151,8 @@ static int mupdate_list_cb(struct mupdate_mailboxdata *mdata,
 	struct mb_node *next;
 	
 	next = xzmalloc(sizeof(struct mb_node));
-	strcpy(next->mailbox, mdata->mailbox);
-	strcpy(next->server, mdata->server);
+	strlcpy(next->mailbox, mdata->mailbox, sizeof(next->mailbox));
+	strlcpy(next->server, mdata->server, sizeof(next->server));
 	if(!strncmp(cmd, "MAILBOX", 7))
 	    next->acl = xstrdup(mdata->acl);
 
@@ -200,7 +199,7 @@ static int dump_cb(void *rockp,
 	if(!d->partition || !strcmp(d->partition, part)) {
 	    printf("%s\t%s\t%s\n", name, part, acl);
 	    if(d->purge) {
-		CONFIG_DB_MBOX->delete(mbdb, key, keylen, &(d->tid), 0);
+		config_mboxlist_db->delete(mbdb, key, keylen, &(d->tid), 0);
 	    }
 	}
 	break;
@@ -236,7 +235,7 @@ static int dump_cb(void *rockp,
 		    printf("Remove remote flag on: %s\n", name);
 		} else {
 		    next = xzmalloc(sizeof(struct mb_node));
-		    strcpy(next->mailbox, name);
+		    strlcpy(next->mailbox, name, sizeof(next->mailbox));
 		    next->next = unflag_head;
 		    unflag_head = next;
 		}
@@ -278,7 +277,7 @@ static int dump_cb(void *rockp,
 		    printf("Remove Local Mailbox: %s\n", name);
 		} else {
 		    next = xzmalloc(sizeof(struct mb_node));
-		    strcpy(next->mailbox, name);
+		    strlcpy(next->mailbox, name, sizeof(next->mailbox));
 		    next->next = wipe_head;
 		    wipe_head = next;
 		}
@@ -295,7 +294,7 @@ static int dump_cb(void *rockp,
 			printf("Remove remote flag on: %s\n", name);
 		    } else {
 			next = xzmalloc(sizeof(struct mb_node));
-			strcpy(next->mailbox, name);
+			strlcpy(next->mailbox, name, sizeof(next->mailbox));
 			next->next = unflag_head;
 			unflag_head = next;
 		    }
@@ -373,8 +372,6 @@ void do_dump(enum mboxop op, const char *part, int purge)
     d.tid = NULL;
     
     if(op == M_POPULATE) {
-	sasl_client_init(NULL);
-
 	ret = mupdate_connect(NULL, NULL, &(d.h), NULL);
 	if(ret) {
 	    fprintf(stderr, "couldn't connect to mupdate server\n");
@@ -412,10 +409,10 @@ void do_dump(enum mboxop op, const char *part, int purge)
     }
 
     /* Dump Database */
-    CONFIG_DB_MBOX->foreach(mbdb, "", 0, &dump_p, &dump_cb, &d, NULL);
+    config_mboxlist_db->foreach(mbdb, "", 0, &dump_p, &dump_cb, &d, NULL);
 
     if(d.tid) {
-	CONFIG_DB_MBOX->commit(mbdb, d.tid);
+	config_mboxlist_db->commit(mbdb, d.tid);
 	d.tid = NULL;
     }
 
@@ -442,7 +439,7 @@ void do_dump(enum mboxop op, const char *part, int purge)
 	    else newpart++;
 
 	    ret = mboxlist_update(me->mailbox, type & ~MBTYPE_MOVING,
-				  newpart, acl);
+				  newpart, acl, 1);
 	    if(ret) {
 		fprintf(stderr,
 			"couldn't perform update to un-remote-flag %s\n",
@@ -526,7 +523,7 @@ void do_undump(void)
 	for (; *p && *p != '\r' && *p != '\n'; p++) ;
 	*p++ = '\0';
 
-	if (strlen(name) >= MAX_MAILBOX_NAME) {
+	if (strlen(name) > MAX_MAILBOX_NAME) {
 	    fprintf(stderr, "line %d: mailbox name too long\n", line);
 	    continue;
 	}
@@ -540,7 +537,7 @@ void do_undump(void)
 	
 	tries = 0;
     retry:
-	r = CONFIG_DB_MBOX->store(mbdb, key, keylen, data, datalen, &tid);
+	r = config_mboxlist_db->store(mbdb, key, keylen, data, datalen, &tid);
 	switch (r) {
 	case 0:
 	    break;
@@ -560,11 +557,11 @@ void do_undump(void)
 
 	if(--untilCommit == 0) {
 	    /* commit */
-	    r = CONFIG_DB_MBOX->commit(mbdb, tid);
+	    r = config_mboxlist_db->commit(mbdb, tid);
 	    if(r) break;
 	    tid = NULL;
 	    untilCommit = PER_COMMIT;
-	    strncpy(last_commit,key,MAX_MAILBOX_NAME);
+	    strlcpy(last_commit,key,sizeof(last_commit));
 	}
 
 	if (r) break;
@@ -572,11 +569,11 @@ void do_undump(void)
 
     if(!r && tid) {
 	/* commit the last transaction */
-	r=CONFIG_DB_MBOX->commit(mbdb, tid);
+	r=config_mboxlist_db->commit(mbdb, tid);
     }
 
     if (r) {
-	if(tid) CONFIG_DB_MBOX->abort(mbdb, tid);
+	if(tid) config_mboxlist_db->abort(mbdb, tid);
 	fprintf(stderr, "db error: %s\n", cyrusdb_strerror(r));
 	if(key) fprintf(stderr, "was processing mailbox: %s\n", key);
 	if(last_commit[0]) fprintf(stderr, "last commit was at: %s\n",
@@ -621,9 +618,9 @@ int main(int argc, char *argv[])
 	case 'r':
 	    /* deprecated, but we still support it */
 	    fprintf(stderr, "ctl_mboxlist -r is deprecated: "
-		    "use ctl_cyrusdb -r instead\b");
+		    "use ctl_cyrusdb -r instead\n");
 	    syslog(LOG_WARNING, "ctl_mboxlist -r is deprecated: "
-		   "use ctl_cyrusdb -r instead\b");
+		   "use ctl_cyrusdb -r instead");
 	    if (op == NONE) op = RECOVER;
 	    else usage();
 	    break;
@@ -631,9 +628,9 @@ int main(int argc, char *argv[])
 	case 'c':
 	    /* deprecated, but we still support it */
 	    fprintf(stderr, "ctl_mboxlist -c is deprecated: "
-		    "use ctl_cyrusdb -c instead\b");
+		    "use ctl_cyrusdb -c instead\n");
 	    syslog(LOG_WARNING, "ctl_mboxlist -c is deprecated: "
-		   "use ctl_cyrusdb -c instead\b");
+		   "use ctl_cyrusdb -c instead");
 	    if (op == NONE) op = CHECKPOINT;
 	    else usage();
 	    break;
@@ -687,21 +684,25 @@ int main(int argc, char *argv[])
     if(op != DUMP && partition) usage();
     if(op != DUMP && dopurge) usage();
 
-    config_init(alt_config, "ctl_mboxlist");
+    if(op == RECOVER) {
+	syslog(LOG_NOTICE, "running mboxlist recovery");
+	libcyrus_config_setint(CYRUSOPT_DB_INIT_FLAGS, CYRUSDB_RECOVER);
+    }
+    
+    cyrus_init(alt_config, "ctl_mboxlist");
+    global_sasl_init(1,0,NULL);
 
     switch (op) {
     case RECOVER:
-	syslog(LOG_NOTICE, "running mboxlist recovery");
-	mboxlist_init(MBOXLIST_RECOVER);
-	mboxlist_done();
+	/* this was done by the call to cyrus_init via libcyrus */
 	syslog(LOG_NOTICE, "done running mboxlist recovery");
-	return 0;
+	break;
 
     case CHECKPOINT:
 	syslog(LOG_NOTICE, "checkpointing mboxlist");
 	mboxlist_init(MBOXLIST_SYNC);
 	mboxlist_done();
-	return 0;
+	break;
 
     case DUMP:
     case M_POPULATE:
@@ -712,7 +713,7 @@ int main(int argc, char *argv[])
 	
 	mboxlist_close();
 	mboxlist_done();
-	return 0;
+	break;
 
     case UNDUMP:
 	mboxlist_init(0);
@@ -722,12 +723,14 @@ int main(int argc, char *argv[])
 
 	mboxlist_close();
 	mboxlist_done();
-	return 0;
+	break;
 
     default:
 	usage();
+	cyrus_done();
 	return 1;
     }
 
+    cyrus_done();
     return 0;
 }

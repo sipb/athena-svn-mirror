@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cyrusdb.c,v 1.1.1.1 2002-10-13 18:00:34 ghudson Exp $ */
+/* $Id: cyrusdb.c,v 1.1.1.2 2004-02-23 22:56:10 rbasch Exp $ */
 
 #include <config.h>
 #include <stdlib.h>
@@ -54,16 +54,49 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+
 #include "cyrusdb.h"
-#include "xmalloc.h"
+#include "exitcodes.h"
+#include "libcyr_cfg.h"
 #include "retry.h"
+#include "xmalloc.h"
 
 struct cyrusdb_backend *cyrusdb_backends[] = {
-    &cyrusdb_db3,
-    &cyrusdb_db3_nosync,
+#ifdef HAVE_BDB
+    &cyrusdb_berkeley,
+    &cyrusdb_berkeley_nosync,
+#endif
     &cyrusdb_flat,
     &cyrusdb_skiplist,
     NULL };
+
+void cyrusdb_init() 
+{
+    int i, r;
+    char dbdir[1024];
+    const char *confdir = libcyrus_config_getstring(CYRUSOPT_CONFIG_DIR);
+    int initflags = libcyrus_config_getint(CYRUSOPT_DB_INIT_FLAGS);
+    
+    strcpy(dbdir, confdir);
+    strcat(dbdir, FNAME_DBDIR);
+
+    for(i=0; cyrusdb_backends[i]; i++) {
+	r = (cyrusdb_backends[i])->init(dbdir, initflags);
+	if(r) {
+	    syslog(LOG_ERR, "DBERROR: init() on %s",
+		   cyrusdb_backends[i]->name);
+	}
+    }
+}
+
+void cyrusdb_done() 
+{
+    int i;
+    
+    for(i=0; cyrusdb_backends[i]; i++) {
+	(cyrusdb_backends[i])->done();
+    }
+}
 
 int cyrusdb_copyfile(const char *srcname, const char *dstname)
 {
@@ -127,4 +160,24 @@ int cyrusdb_copyfile(const char *srcname, const char *dstname)
     close(srcfd);
     close(dstfd);
     return 0;
+}
+
+struct cyrusdb_backend *cyrusdb_fromname(const char *name)
+{
+    int i;
+    struct cyrusdb_backend *db = NULL;
+
+    for (i = 0; cyrusdb_backends[i]; i++) {
+	if (!strcmp(cyrusdb_backends[i]->name, name)) {
+	    db = cyrusdb_backends[i]; break;
+	}
+    }
+    if (!db) {
+	char errbuf[1024];
+	snprintf(errbuf, sizeof(errbuf),
+		 "cyrusdb backend %s not supported", name);
+	fatal(errbuf, EC_CONFIG);
+    }
+
+    return db;
 }

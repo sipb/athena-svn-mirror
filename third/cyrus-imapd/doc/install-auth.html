@@ -1,4 +1,4 @@
-<!-- $Id: install-auth.html,v 1.1.1.2 2003-02-14 21:38:32 ghudson Exp $ -->
+<!-- $Id: install-auth.html,v 1.1.1.3 2004-02-23 22:53:52 rbasch Exp $ -->
 <HTML>
 <HEAD>
 <TITLE>Authenticating Users
@@ -12,7 +12,8 @@
 
 The Cyrus IMAP Server uses the Cyrus SASL library to authenticate
 users. Please refer to the Cyrus SASL documentation for specific 
-details on SASL. This section focuses specifically on the IMAP server.
+details on SASL. This section focuses specifically on the server processes
+distributed with Cyrus IMAPd.
 
 <h2>Authentication Mechanisms</h2>
 
@@ -29,13 +30,15 @@ side certificates have not been extensively tested.
 also becomes available. This is because one should not pass a clear
 text password over the wire unless the connection is encrypted.
 
-<p>The IMAP protocol also supports a way for users to authenticate
-without using SASL. This is via the 'LOGIN' command (not to be
+<p>The IMAP protocol also supports a way for users to authenticate without
+using SASL (the specification). This is via the 'LOGIN' command (not to be
 confused by the LOGIN SASL mechanism). The IMAP LOGIN command (as with
-PLAIN) will send your password in clear-text to the server.
+PLAIN) will send your password in clear-text to the server.  In this case,
+the password is still verified through the Cyrus SASL library, though no
+SASL mechanism actually performs a negotiation.
 
 <p>The POP server is capable of APOP authentication, but this requries that
-SASL be compiled <tt>--with-checkapop</tt>, and also that you are using
+Cyrus SASL be compiled <tt>--with-checkapop</tt>, and also that you are using
 an auxprop backend for your password store (e.g. the sasldb auxprop plugin).
 
 <h2>Authentication Recommendations</h2>
@@ -80,6 +83,11 @@ the network.
 
 <h2>Configuring Authentication</h2>
 
+<p>Cyrus SASL has a number of options that can be configured by
+the application.  To configure these via imapd.conf, simply prefix
+the appropriate option name with <tt>sasl_</tt> (e.g.
+<tt>pwcheck_method</tt> becomes <tt>sasl_pwcheck_method</tt>).
+
 <h3>/etc/sasldb2</h3>
 	
 <p>The easiest method for authenticating users is to use the libsasl
@@ -92,13 +100,14 @@ installed (it is, by default). Make sure Cyrus can read "<tt>/etc/sasldb2</tt>":
 </kbd></pre>
 
 <h3>Shadow Passwords</h3>
-<p>If you want to authenticate users from "<tt>/etc/shadow</tt>",
-things are considerably more complicated, since the cyrus user cannot
-read the shadow password file.  It is suggested that you configure
-libsasl with <tt>saslauthd</tt> support, and set
-"<tt>sasl_pwcheck_method: saslauthd</tt>".  The SASL library will then
-make calls to an external utility running as root to authenticate
-users.
+
+<p>If you want to authenticate users from "<tt>/etc/shadow</tt>", things
+are considerably more complicated, since the cyrus user cannot read the
+shadow password file.  Additionally, this will not allow you to use shared
+secret mechanisms.  To do this, it is necessary to configure libsasl with
+<tt>saslauthd</tt> support, and set "<tt>sasl_pwcheck_method:
+saslauthd</tt>".  The SASL library will then make calls to an external
+utility running as root to authenticate users.
 
 <h3>Kerberos</h3><a name="kerberos"></a>
 
@@ -188,5 +197,5 @@ current ticket's held.  Override this with the <tt>-u</tt> option.</li>
 </ol>
 
 <HR>
-last modified: $Date: 2003-02-14 21:38:32 $
+last modified: $Date: 2004-02-23 22:53:52 $
 </BODY></HTML>

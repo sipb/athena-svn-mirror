@@ -37,9 +37,9 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Shell.pm,v 1.1.1.2 2003-02-14 21:38:39 ghudson Exp $
+# $Id: Shell.pm,v 1.1.1.3 2004-02-23 22:56:34 rbasch Exp $
 #
-# A shell framework for IMAP::Cyrus::Admin
+# A shell framework for Cyrus::IMAP::Admin
 #
 # run(*FH|'FH')
 #	read commands from the filehandle and pass to exec(); defaults to
@@ -125,8 +125,12 @@ my %builtins = (exit =>
 		info =>
 		  [\&_sc_info, '[mailbox]',
 		   'display mailbox/server metadata'],
+		mboxcfg =>
+		  [\&_sc_mboxcfg, 'mailbox [comment|news2mail|expire|squat] value',
+		   'configure mailbox'],
+		mboxconfig => 'mboxcfg',
 		reconstruct =>
-		  [\&_sc_reconstruct, 'mailbox', 'reconstruct mailbox (if supported'],
+		  [\&_sc_reconstruct, 'mailbox', 'reconstruct mailbox (if supported)'],
 		renamemailbox =>
 		  [\&_sc_rename,
 		   '[--partition partition] oldname newname [partition]',
@@ -139,7 +143,7 @@ my %builtins = (exit =>
 		setacl => 'setaclmailbox',
 		sam => 'setaclmailbox',
 		setinfo =>
-		  [\&_sc_setinfo, '[motd|comment] text',
+		  [\&_sc_setinfo, '[motd|comment|admin|shutdown|expire|squat] text',
 		   'set server metadata'],
 		setquota =>
 		  [\&_sc_setquota,
@@ -150,6 +154,11 @@ my %builtins = (exit =>
 		  [\&_sc_version, '',
 		   'display version info of current server'],
 		ver => 'version',
+		xfermailbox =>
+		  [\&_sc_xfer,
+		   '[--partition partition] mailbox server [partition]',
+		   'transfer (relocate) a mailbox to a different server'],
+		xfer => 'xfermailbox',
 		#? alias
 		#? unalias
 		#? load
@@ -423,14 +432,15 @@ sub shell {
     ('', 143, undef, $ENV{USER} || $ENV{LOGNAME}, '/usr/local/etc/cyradmrc.pl',
      "$ENV{HOME}/.cyradmrc.pl", 1, undef, undef);
   GetOptions('user|u=s' => \$auth,
-	     'authz|u=s' => \$authz,
+	     'authz|z=s' => \$authz,
 	     'rc|r!' => \$dorc,
 	     'systemrc|S=s' => \$systemrc,
 	     'userrc=s' => \$userrc,
 	     'server|s=s' => \$server,
 	     'port|p=i' => \$port,
 	     'auth|a=s' => \$mech,
-	     'password|u=s' => \$pw,
+	     'password|w=s' => \$pw,
+	     'help|h' => sub { cyradm_usage(); exit(0); }
 	    );
   if ($server ne '' && @ARGV) {
     die "cyradm: may not specify server both with --server and bare arg\n";
@@ -465,6 +475,23 @@ sub shell {
 *cyradm = \&shell;
 
 ###############################################################################
+
+# show cyradm command line arguments
+sub cyradm_usage {
+  print <<'END_OF_HELP';
+Usage: cyradm [args] server
+  --user <user>         Connect as <user> (authentication name)
+  --authz <user>        Authorize as <user>
+  --[no]rc              (Do not) load the configuration files
+  --systemrc <file>     Use system-wide configuration <file>
+  --userrc <file>       Use user configuration <file>
+  --port <port>         Connect to server on <port>
+  --auth <mechanism>    Authenticate with <mechanism>
+
+Defaults to interactive mode. Please see man cyradm(1) and the 'help' command
+in the cyradm-shell for details.
+END_OF_HELP
+}
 
 # help display
 sub do_help {
@@ -633,15 +660,41 @@ sub _sc_listacl {
   if (!$cyrref || !$$cyrref) {
     die "listaclmailbox: no connection to server\n";
   }
-  my %acl = $$cyrref->listaclmailbox(@nargv);
-  if (defined $$cyrref->error) {
-    $lfh->[2]->print($$cyrref->error, "\n");
-    return 1;
+
+  sub showacl($@) {
+    my $spaces = shift;
+    my @nargv = shift;
+    my %acl = $$cyrref->listaclmailbox(@nargv);
+    if (defined $$cyrref->error) {
+      $lfh->[2]->print($$cyrref->error, "\n");
+      return 1;
+    }
+    foreach my $acl (keys %acl) {
+      for(my $i = 0; $i < $spaces; $i++) {
+	$lfh->[1]->print(" ");
+      }
+      $lfh->[1]->print($acl, " ", $acl{$acl}, "\n");
+    }
+    return 0;
   }
-  foreach my $acl (keys %acl) {
-    $lfh->[1]->print($acl, " ", $acl{$acl}, "\n");
+  
+  if($nargv[0] =~ /(\*|%)/) {
+    # list operation
+    my @res = $$cyrref->listmailbox(($nargv[0]));
+    foreach my $mbx (@res) {
+      my $name = $mbx->[0];
+      my $flags = $mbx->[1];
+      next if($flags =~ /(\\noselect|\\nonexistent|\\placeholder)/i);
+      $lfh->[1]->print($name,":\n");
+      $nargv[0] = $name;
+      if(showacl(2,@nargv) != 0) {
+	return 1;
+      }
+    }
+  } else {
+    return showacl(0,@nargv);
   }
-  0;
+  return 0;
 }
 
 sub _sc_server {
@@ -921,7 +974,27 @@ sub _sc_delete {
   if (!$cyrref || !$$cyrref) {
     die "deletemailbox: no connection to server\n";
   }
-  $$cyrref->delete(@nargv) || die "deletemailbox: " . $$cyrref->error . "\n";
+
+  if($nargv[0] =~ /(\*|%)/) {
+    # list operation
+    my @res = $$cyrref->listmailbox(($nargv[0]));
+    foreach my $mbx (@res) {
+      my $name = $mbx->[0];
+      my $flags = $mbx->[1];
+      next if($flags =~ /(\\noselect|\\nonexistent|\\placeholder)/i);
+      print "Deleting mailbox $name...";
+      $nargv[0] = $name;
+      my $rc = $$cyrref->delete(@nargv);
+      if(!defined($rc)) {
+	print $$cyrref->error . "\n";
+	last;
+      } else {
+	print "OK.\n";
+      }
+    }
+  } else {
+    $$cyrref->delete(@nargv) || die "deletemailbox: " . $$cyrref->error . "\n";
+  }
   0;
 }
 
@@ -993,6 +1066,44 @@ sub _sc_rename {
   0;
 }
 
+sub _sc_xfer {
+  my ($cyrref, $name, $fh, $lfh, @argv) = @_;
+  my (@nargv, $opt, $want, $part);
+  shift(@argv);
+  while (defined ($opt = shift(@argv))) {
+    if ($want) {
+      $part = $opt;
+      $want = undef;
+      next;
+    }
+    if ($opt ne '' && '-partition' =~ /^\Q$opt/ || $opt eq '--partition') {
+      $want = 1;
+      next;
+    }
+    last if $opt eq '--';
+    if ($opt =~ /^-/) {
+      die "usage: xfermailbox [--partition name] mailbox " .
+	  "server [partition]\n";
+    }
+    else {
+      push(@nargv, $opt);
+      last;
+    }
+  }
+  push(@nargv, @argv);
+  $part = pop(@nargv) if @nargv > 2 && !defined($part);
+  if (@nargv != 2) {
+    die "usage: xfermailbox [--partition name] mailbox " .
+	"server [partition]\n";
+  }
+  if (!$cyrref || !$$cyrref) {
+    die "xfermailbox: no connection to server\n";
+  }
+  $$cyrref->xfer($nargv[0], $nargv[1], $part) ||
+    die "xfermailbox: " . $$cyrref->error . "\n";
+  0;
+}
+
 sub _sc_deleteacl {
   my ($cyrref, $name, $fh, $lfh, @argv) = @_;
   my (@nargv, $opt);
@@ -1014,8 +1125,29 @@ sub _sc_deleteacl {
   if (!$cyrref || !$$cyrref) {
     die "deleteaclmailbox: no connection to server\n";
   }
-  $$cyrref->deleteacl(@nargv) ||
-    die "deleteaclmailbox: " . $$cyrref->error . "\n";
+
+  if($nargv[0] =~ /(\*|%)/) {
+    # list operation
+    my @res = $$cyrref->listmailbox(($nargv[0]));
+    foreach my $mbx (@res) {
+      my $name = $mbx->[0];
+      my $flags = $mbx->[1];
+      next if($flags =~ /(\\noselect|\\nonexistent|\\placeholder)/i);
+      print "Deleting acl on $name...";
+      $nargv[0] = $name;
+      my $rc = $$cyrref->deleteacl(@nargv);
+      if(!defined($rc)) {
+	print $$cyrref->error . "\n";
+	last;
+      } else {
+	print "OK.\n";
+      }
+    }
+  } else {
+    $$cyrref->deleteacl(@nargv) ||
+      die "deleteaclmailbox: " . $$cyrref->error . "\n";
+  }
+
   0;
 }
 
@@ -1026,7 +1158,7 @@ sub _sc_setacl {
   while (defined ($opt = shift(@argv))) {
     last if $opt eq '--';
     if ($opt =~ /^-/) {
-      die "usage: setaclmailbox mailbox id [id ...]\n";
+      die "usage: setaclmailbox mailbox id rights [id rights ...]\n";
     }
     else {
       push(@nargv, $opt);
@@ -1040,7 +1172,27 @@ sub _sc_setacl {
   if (!$cyrref || !$$cyrref) {
     die "setaclmailbox: no connection to server\n";
   }
-  $$cyrref->setacl(@nargv) || die "setaclmailbox: " . $$cyrref->error . "\n";
+
+  if($nargv[0] =~ /(\*|%)/) {
+    # list operation
+    my @res = $$cyrref->listmailbox(($nargv[0]));
+    foreach my $mbx (@res) {
+      my $name = $mbx->[0];
+      my $flags = $mbx->[1];
+      next if($flags =~ /(\\noselect|\\nonexistent|\\placeholder)/i);
+      print "Setting ACL on $name...";
+      $nargv[0] = $name;
+      my $rc = $$cyrref->setacl(@nargv);
+      if(!defined($rc)) {
+	print $$cyrref->error . "\n";
+	last;
+      } else {
+	print "OK.\n";
+      }
+    }
+  } else {
+    $$cyrref->setacl(@nargv) || die "setaclmailbox: " . $$cyrref->error . "\n";
+  }
   0;
 }
 
@@ -1180,14 +1332,14 @@ sub _sc_info {
   0;
 }
 
-sub _sc_setinfo {
+sub _sc_mboxcfg {
   my ($cyrref, $name, $fh, $lfh, @argv) = @_;
   my (@nargv, $opt);
   shift(@argv);
   while (defined ($opt = shift(@argv))) {
     last if $opt eq '--';
     if ($opt =~ /^-/) {
-      die "usage: setinfo [motd|comment] text\n";
+      die "usage: mboxconfig mailbox [comment|news2mail|expire|squat] value\n";
     }
     else {
       push(@nargv, $opt);
@@ -1196,7 +1348,32 @@ sub _sc_setinfo {
   }
   push(@nargv, @argv);
   if (@nargv < 2) {
-    die "usage: setinfo [motd|comment] text\n";
+    die "usage: mboxconfig mailbox [comment|news2mail|expire|squat] value\n";
+  }
+  if (!$cyrref || !$$cyrref) {
+    die "mboxconfig: no connection to server\n";
+  }
+  $$cyrref->mboxconfig(@nargv) || die "mboxconfig: " . $$cyrref->error . "\n";
+  0;
+}
+
+sub _sc_setinfo {
+  my ($cyrref, $name, $fh, $lfh, @argv) = @_;
+  my (@nargv, $opt);
+  shift(@argv);
+  while (defined ($opt = shift(@argv))) {
+    last if $opt eq '--';
+    if ($opt =~ /^-/) {
+      die "usage: setinfo [motd|comment|admin|shutdown|expire|squat] text\n";
+    }
+    else {
+      push(@nargv, $opt);
+      last;
+    }
+  }
+  push(@nargv, @argv);
+  if (@nargv < 2) {
+    die "usage: setinfo [motd|comment|admin|shutdown|expire|squat] text\n";
   }
   if (!$cyrref || !$$cyrref) {
     die "setinfo: no connection to server\n";
@@ -1252,7 +1429,7 @@ but possibly
 
 or even (not recommended)
 
-  use IMAP::Admin::Shell;
+  use Cyrus::IMAP::Admin::Shell;
 
   run('myscriptname');
 
@@ -1389,6 +1566,34 @@ find the quota root for a mailbox.
 
 show quota roots and quotas for mailbox
 
+=item C<mboxconfig> I<mailbox> I<attribute> I<value>
+
+=item C<mboxcfg> I<mailbox> I<attribute> I<value>
+
+Set mailbox metadata.  A value of "none" will remove the attribute.
+The currently supported attributes are: 
+
+=over 4
+
+=item C<comment>
+
+Sets a comment or description associated with the mailbox.
+
+=item C<expire>
+
+Sets the number of days after which messages will be expired from the mailbox.
+
+=item C<squat>
+
+Indicates that the mailbox should have a squat index created for it.
+
+=item C<news2mail>
+
+Sets an email address to which messages injected into the server via NNTP 
+will be sent.
+
+=back 
+
 =item C<renamemailbox> [C<--partition> I<partition>] I<oldname> I<newname>
 
 =item C<rename> [C<--partition> I<partition>] I<oldname> I<newname>
@@ -1470,19 +1675,69 @@ Administer (SETACL)
 
 =back
 
+=item C<setinfo> I<attribute> I<value>
+
+Set server metadata.  A value of "none" will remove the attribute.
+The currently supported attributes are:
+
+=over 4
+
+=item C<motd>
+
+Sets a "message of the day".  The message gets displayed as an ALERT after
+authentication.
+
+=item C<comment>
+
+Sets a comment or description associated with the server.
+
+=item C<admin>
+
+Sets the administrator email address for the server.
+
+=item C<shutdown>
+
+Sets a shutdown message.  The message gets displayed as an ALERT and
+all users are disconnected from the server (subsequent logins are disallowed).
+
+=item C<expire>
+
+Sets the number of days after which messages will be expired from the
+server (unless overridden by a mailbox annotation).
+
+=item C<squat>
+
+Indicates that all mailboxes should have a squat indexes created for
+them (unless overridden by a mailbox annotation).
+
+=back 
+
 =item C<setquota> I<root> I<resource> I<value> [I<resource> I<value> ...]
 
 =item C<sq> I<root> I<resource> I<value> [I<resource> I<value> ...]
 
 Set a quota on the specified root, which may or may not be an actual mailbox.
-The only I<resource> understood by B<Cyrus> is C<STORAGE>.  The I<value> may
-be the special string C<none> which will remove the quota.
+The only I<resource> understood by B<Cyrus> is C<STORAGE>.  The units
+are as defined in RFC 2087, groups of 1024 octets (i.e. Kilobytes).
+The I<value> may be the special string C<none> which will remove the quota.
 
 =item C<version>
 
 =item C<ver>
 
 Display the version info of the current server.
+
+=item C<xfermailbox> [C<--partition> I<partition>] I<mailbox> I<server>
+
+=item C<xfer> [C<--partition> I<partition>] I<mailbox> I<server>
+
+=item C<xfermailbox> I<mailbox> I<server> [I<partition>]
+
+=item C<xfer> I<mailbox> I<server> [I<partition>]
+
+Transfer (relocate) the specified mailbox to a different server.
+Both old-style and getopt-style usages are accepted; combining them will
+produce an error.
 
 =back
 

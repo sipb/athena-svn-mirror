@@ -39,6 +39,7 @@ static const char * const text[] = {
 	"Syntax error in parameters",
 	"Invalid annotation entry",
 	"Invalid annotation attribute",
+	"Invalid annotation value",
 	"Invalid server requested",
 	"Server(s) unavailable to complete operation",
 	"The remote Server(s) denied the operation",
@@ -59,6 +60,7 @@ static const char * const text[] = {
 	"Unable to preserve \\Seen state",
 	"No matching messages",
 	"No matching annotations",
+	"[UNKNOWN-CTE] Can not process the binary data",
 	"LOGOUT received",
 	"Completed",
     0
@@ -75,7 +77,7 @@ struct et_list {
 };
 extern struct et_list *_et_list;
 
-static const struct error_table et = { text, -1904809472L, 51 };
+static const struct error_table et = { text, -1904809472L, 53 };
 
 static struct et_list link = { 0, 0 };
 

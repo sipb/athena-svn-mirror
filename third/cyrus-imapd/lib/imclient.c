@@ -1,8 +1,8 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.1.1.2 2003-02-14 21:38:22 ghudson Exp $
+ * $Id: imclient.c,v 1.1.1.3 2004-02-23 22:54:45 rbasch Exp $
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -52,13 +52,12 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef __STDC__
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #else
 #include <varargs.h>
 #endif
 #include <sys/types.h>
-#include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -223,46 +222,41 @@ int imclient_connect(struct imclient **imclient,
 		     const char *port, 
 		     sasl_callback_t *cbs)
 {
-    int s;
-    struct hostent *hp;
-    struct servent *sp;
-    struct sockaddr_in addr;
+    int s = -1;
+    struct addrinfo hints, *res0 = NULL, *res;
     int saslresult;
     static int didinit;
 
     assert(imclient);
     assert(host);
 
-    hp = gethostbyname(host);
-    if (!hp) return -1;
-
-    addr.sin_family = AF_INET;
-    memcpy(&addr.sin_addr, hp->h_addr, sizeof(addr.sin_addr));
-    if (port && imparse_isnumber(port)) {
-	addr.sin_port = htons(atoi(port));
-    }
-    else if (port) {
-	sp = getservbyname(port, "tcp");
-	if (!sp) return -2;
-	addr.sin_port = sp->s_port;
-    }
-    else {
-	addr.sin_port = htons(143);
-    }
-
-    s = socket(AF_INET, SOCK_STREAM, 0);
-    if (s == -1) return errno;
-
-    if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+    if (!port)
+	port = "143";
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = PF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_CANONNAME;
+    if (getaddrinfo(host, port, &hints, &res0))
+	return -1;
+    for (res = res0; res; res = res->ai_next) {
+	s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	if (s < 0)
+	    continue;
+	if (connect(s, res->ai_addr, res->ai_addrlen) >= 0)
+	    break;
 	close(s);
-	return errno;
+	s = -1;
     }
+    if (s < 0)
+	return errno;
     /*    nonblock(s, 1); */
     *imclient = (struct imclient *)xzmalloc(sizeof(struct imclient));
     (*imclient)->fd = s;
     (*imclient)->saslconn = NULL;
     (*imclient)->saslcompleted = 0;
-    (*imclient)->servername = xstrdup(hp->h_name);
+    (*imclient)->servername = xstrdup(res0->ai_canonname ?
+				      res0->ai_canonname : host);
+    freeaddrinfo(res0);
     (*imclient)->outptr = (*imclient)->outstart = (*imclient)->outbuf;
     (*imclient)->outleft = (*imclient)->maxplain = sizeof((*imclient)->outbuf);
     (*imclient)->interact_results = NULL;
@@ -733,20 +727,23 @@ static void imclient_input(struct imclient *imclient, char *buf, int len)
     /* Copy the data to the buffer and NUL-terminate it */
     memcpy(imclient->replybuf + imclient->replylen, plainbuf, plainlen);
     imclient->replylen += plainlen;
+    imclient->replybuf[imclient->replylen] = '\0';
 
     /* Process the new data (of length 'plainlen') */
     while (parsed < imclient->replylen) {
 	/* If we're reading a literal, skip over it. */
 	if (imclient->replyliteralleft) {
-	    if (plainlen > imclient->replyliteralleft) {
-		plainlen -= imclient->replyliteralleft;
+	    size_t avail;
+
+	    avail = imclient->replylen - parsed;
+
+	    if (avail > imclient->replyliteralleft) {
 		parsed += imclient->replyliteralleft;
 		imclient->replyliteralleft = 0;
 		continue;
-	    }
-	    else {
-		parsed += plainlen;
-		imclient->replyliteralleft -= plainlen;
+	    } else {
+		parsed += avail;
+		imclient->replyliteralleft -= avail;
 		return;
 	    }
 	}
@@ -812,7 +809,7 @@ static void imclient_input(struct imclient *imclient, char *buf, int len)
 	
 	/* parse keyword */
 	reply.keyword = p;
-	while (*p != ' ' && *p != '\n') p++;
+	while (*p && *p != ' ' && *p != '\n') p++;
 	keywordlen = p - reply.keyword;
 	reply.text = p + 1;
 	if (*p == '\n') {
@@ -834,7 +831,8 @@ static void imclient_input(struct imclient *imclient, char *buf, int len)
 
 
 	    /* Scan back and see if the end of the line introduces a literal */
-	    if (!iscompletion && endreply[-1] == '\r' && endreply[-2] == '}' &&
+	    if (!iscompletion && endreply > imclient->replystart+2 &&
+		endreply[-1] == '\r' && endreply[-2] == '}' &&
 		isdigit((unsigned char) endreply[-3])) {
 		p = endreply - 4;
 		while (p > imclient->replystart && 
@@ -907,7 +905,8 @@ static void imclient_input(struct imclient *imclient, char *buf, int len)
 
 	/* Scan back and see if the end of the line introduces a literal */
 	if (!(imclient->callback[keywordindex].flags & CALLBACK_NOLITERAL)) {
-	    if (endreply[-1] == '\r' && endreply[-2] == '}' &&
+	    if (endreply > imclient->replystart+2 &&
+		endreply[-1] == '\r' && endreply[-2] == '}' &&
 		isdigit((unsigned char) endreply[-3])) {
 		p = endreply - 4;
 		while (p > imclient->replystart && 
@@ -1184,9 +1183,9 @@ void interaction (struct imclient *context, sasl_interact_t *t, char *user)
       printf("%s: ", t->prompt);
       if (t->id == SASL_CB_PASS) {
 	  char *ptr = getpass("");
-	  strncpy(result, ptr, sizeof(result));
+	  strlcpy(result, ptr, sizeof(result));
       } else {
-	  fgets(result, sizeof(result), stdin);
+	  fgets(result, sizeof(result)-1, stdin);
 	  result[strlen(result) - 1] = '\0';
       }
 
@@ -1231,8 +1230,8 @@ static int imclient_authenticate_sub(struct imclient *imclient,
   int saslresult;
   sasl_security_properties_t *secprops=NULL;
   socklen_t addrsize;
-  struct sockaddr_in saddr_l;
-  struct sockaddr_in saddr_r;
+  struct sockaddr_storage saddr_l;
+  struct sockaddr_storage saddr_r;
   char localip[60], remoteip[60];
   sasl_interact_t *client_interact=NULL;
   const char *out;
@@ -1253,20 +1252,20 @@ static int imclient_authenticate_sub(struct imclient *imclient,
   if (saslresult!=SASL_OK) return 1;
   free(secprops);
 
-  addrsize=sizeof(struct sockaddr_in);
+  addrsize=sizeof(struct sockaddr_storage);
   if (getpeername(imclient->fd,(struct sockaddr *)&saddr_r,&addrsize)!=0)
       return 1;
 
-  addrsize=sizeof(struct sockaddr_in);
+  addrsize=sizeof(struct sockaddr_storage);
   if (getsockname(imclient->fd,(struct sockaddr *)&saddr_l,&addrsize)!=0)
       return 1;
 
-  if(iptostring((const struct sockaddr *)&saddr_l, sizeof(struct sockaddr_in),
-		localip, 60) != 0)
+  if(iptostring((const struct sockaddr *)&saddr_l, addrsize,
+		localip, sizeof(localip)) != 0)
       return 1;
 
-  if(iptostring((const struct sockaddr *)&saddr_r, sizeof(struct sockaddr_in),
-		remoteip, 60) != 0)
+  if(iptostring((const struct sockaddr *)&saddr_r, addrsize,
+		remoteip, sizeof(remoteip)) != 0)
       return 1;
 
   saslresult=sasl_setprop(imclient->saslconn, SASL_IPREMOTEPORT, remoteip);
@@ -1390,19 +1389,27 @@ int imclient_authenticate(struct imclient *imclient,
 				      &mtried);
 
 	/* eliminate mtried (mechanism tried) from mlist */
-	if (mtried) {
+	if (r != 0 && mtried) {
 	    char *newlist = xmalloc(strlen(mlist)+1);
 	    char *mtr = xstrdup(mtried);
 	    char *tmp;
 
 	    ucase(mtr);
 	    tmp = strstr(mlist,mtr);
+	    if(!tmp) {
+		free(mtr);
+		free(mlist);
+		break;
+	    }
 	    *tmp = '\0';
 	    strcpy(newlist,mlist);
 	    
-	    tmp = strchr(tmp,' ');
+	    /* Use tmp+1 here to skip the \0 we just put in.
+	     * this is safe because even if the mechs are one character
+	     * long there would still be another trailing \0 */
+	    tmp = strchr(tmp+1,' ');
 	    if (tmp) {		
-		tmp++;
+		tmp++; /* skip the space */
 		strcat(newlist,tmp);
 	    }
 
@@ -1598,7 +1605,7 @@ static int verify_callback(int ok, X509_STORE_CTX * ctx)
     err = X509_STORE_CTX_get_error(ctx);
     depth = X509_STORE_CTX_get_error_depth(ctx);
 
-    X509_NAME_oneline(X509_get_subject_name(err_cert), buf, 256);
+    X509_NAME_oneline(X509_get_subject_name(err_cert), buf, sizeof(buf));
 
     /*    if (verbose==1)
 	  printf("Peer cert verify depth=%d %s\n", depth, buf);*/
@@ -1616,7 +1623,8 @@ static int verify_callback(int ok, X509_STORE_CTX * ctx)
     }
     switch (ctx->error) {
     case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
-	X509_NAME_oneline(X509_get_issuer_name(ctx->current_cert), buf, 256);
+	X509_NAME_oneline(X509_get_issuer_name(ctx->current_cert),
+			  buf, sizeof(buf));
 	printf("issuer= %s\n", buf);
 	break;
     case X509_V_ERR_CERT_NOT_YET_VALID:

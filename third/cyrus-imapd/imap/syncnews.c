@@ -1,7 +1,7 @@
 /* syncnews.c -- program to synchronize active file with mailbox list
  *
  * 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@
  */
 
 /*
- * $Id: syncnews.c,v 1.1.1.2 2003-02-14 21:38:21 ghudson Exp $
+ * $Id: syncnews.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $
  */
 #include <config.h>
 
@@ -61,7 +61,7 @@
 #include <com_err.h>
 
 #include "assert.h"
-#include "imapconf.h"
+#include "global.h"
 #include "xmalloc.h"
 #include "exitcodes.h"
 #include "imap_err.h"
@@ -107,14 +107,16 @@ int main(int argc, char **argv)
 	}
     }
 
-    config_init(alt_config, "syncnews");
+    cyrus_init(alt_config, "syncnews");
 
     if (!argv[optind] || argv[optind+1]) usage();
 
     readactive(argv[optind]);
     do_syncnews();
 
-    exit(code);
+    cyrus_done();
+
+    return code;
 }
 
 #define GROUPGROW 300
@@ -151,6 +153,7 @@ void readactive(char *active)
     if (!active_file) {
 	perror(active);
 	syslog(LOG_ERR, "cannot read active file %s: %m", active);
+	cyrus_done();
 	exit(EC_NOINPUT);
     }
 
@@ -192,6 +195,7 @@ void readactive(char *active)
     if (ferror(active_file)) {
 	fprintf(stderr, "syncnews: error reading active file\n");
 	syslog(LOG_ERR, "error reading active file");
+	cyrus_done();
 	exit(EC_DATAERR);
     }
     fclose(active_file);
@@ -199,6 +203,7 @@ void readactive(char *active)
     if (group_num == 0) {
 	fprintf(stderr, "syncnews: no groups in active file\n");
 	syslog(LOG_ERR, "no groups in active file");
+	cyrus_done();
 	exit(EC_DATAERR);
     }
 
@@ -208,6 +213,7 @@ void readactive(char *active)
   badactive:
     fprintf(stderr, "syncnews: bad line %d in active file\n", lineno);
     syslog(LOG_ERR, "bad line %d in active file", lineno);
+    cyrus_done();
     exit(EC_DATAERR);
     
 }
@@ -241,7 +247,7 @@ void do_syncnews(void)
 	if (!group_seen[i]) {
 	    r = mboxlist_createmailbox(group[i],
 				       MBTYPE_NETNEWS, "news",
-				       1, "anonymous", 0);
+				       1, "anonymous", NULL, 0, 0, 0);
 
 	    if (r == IMAP_MAILBOX_BADNAME) {
 		printf("ignored %s\n", group[i]);
@@ -263,6 +269,7 @@ void do_syncnews(void)
 void fatal(const char* s, int code)
 {
     fprintf(stderr, "syncnews: %s\n", s);
+    cyrus_done();
     exit(code);
 }
 

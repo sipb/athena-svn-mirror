@@ -1,12 +1,12 @@
 /*
  * Mar  8, 2000 by Hajimu UMEMOTO <ume@mahoroba.org>
- * $Id: getaddrinfo.c,v 1.1.1.1 2002-10-13 18:00:40 ghudson Exp $
+ * $Id: getaddrinfo.c,v 1.1.1.2 2004-02-23 22:54:45 rbasch Exp $
  *
  * This module is besed on ssh-1.2.27-IPv6-1.5 written by
  * KIKUCHI Takahiro <kick@kyoto.wide.ad.jp>
  */
 /* 
- * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -97,12 +97,12 @@ char *
 gai_strerror(int ecode)
 {
     switch (ecode) {
-    case EAI_NODATA:
-	return "no address associated with hostname.";
     case EAI_MEMORY:
 	return "memory allocation failure.";
     case EAI_FAMILY:
 	return "ai_family not supported.";
+    case EAI_NONAME:
+	return "hostname nor servname provided, or not known.";
     case EAI_SERVICE:
 	return "servname not supported for ai_socktype.";
     default:
@@ -193,7 +193,7 @@ getaddrinfo(const char *hostname, const char *servname,
 	    return EAI_MEMORY;
     }
     if (hints && hints->ai_flags & AI_NUMERICHOST)
-	return EAI_NODATA;
+	return EAI_NONAME;
 #ifndef macintosh
     if ((hp = gethostbyname(hostname)) &&
 	hp->h_name && hp->h_name[0] && hp->h_addr_list[0]) {
@@ -221,5 +221,5 @@ getaddrinfo(const char *hostname, const char *servname,
 	return 0;
     }
 #endif
-    return EAI_NODATA;
+    return EAI_NONAME;
 }

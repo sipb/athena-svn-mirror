@@ -1,5 +1,5 @@
 /* version.h: the version number
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -36,10 +36,11 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- * $Id: version.h,v 1.1.1.2 2003-02-14 21:39:33 ghudson Exp $
+ *
+ * $Id: version.h,v 1.1.1.3 2004-02-23 22:56:30 rbasch Exp $
  */
 
-#define _CYRUS_VERSION "v2.1.12"
+#define _CYRUS_VERSION "v2.2.3"
 
 /* EXTRA_IDENT is a hack to add some version information for which compile
  * was used to build this version (at CMU, but we don't care what you do with
@@ -56,7 +57,10 @@
 #define CAPABILITY_STRING "IMAP4 IMAP4rev1 ACL QUOTA LITERAL+ " \
 	"MAILBOX-REFERRALS NAMESPACE UIDPLUS ID " \
 	"NO_ATOMIC_RENAME UNSELECT " \
-	"CHILDREN MULTIAPPEND SORT THREAD=ORDEREDSUBJECT THREAD=REFERENCES"
+	"CHILDREN MULTIAPPEND BINARY " \
+	"SORT THREAD=ORDEREDSUBJECT THREAD=REFERENCES " \
+	"ANNOTATEMORE"
+
 
 /* Values for ID processing */
 enum {

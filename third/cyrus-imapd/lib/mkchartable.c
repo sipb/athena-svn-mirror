@@ -1,8 +1,8 @@
 /* mkchartable.c -- Generate character set mapping table
  *
- * $Id: mkchartable.c,v 1.1.1.2 2003-02-14 21:39:05 ghudson Exp $
+ * $Id: mkchartable.c,v 1.1.1.3 2004-02-23 22:53:44 rbasch Exp $
  *
- * Copyright (c) 1996-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -191,10 +191,12 @@ main(int argc, char **argv)
     printf("    { \"unicode-1-1-utf-7\", chartables_utf_7 },\n");
     printf("    { \"unicode-2-0-utf-7\", chartables_utf_7 },\n");
     printf("    { \"x-unicode-2-0-utf-7\", chartables_utf_7 },\n");
-    printf("    /* New character sets should only be added to end so that\n");
-    printf("     * cache files stay with valid information */\n");
+    printf("    /* End Compatibility Names */\n");
     printf("    { \"iso-8859-15\", chartables_iso_8859_15 },\n");
     printf("    { \"windows-1252\", chartables_windows_1252 },\n");
+    printf("    { \"windows-1256\", chartables_windows_1256 },\n");
+    printf("    /* New character sets should only be added to end so that\n");
+    printf("     * cache files stay with valid information */\n");
     printf("};\n");
     printf("const int chartables_num_charsets = (sizeof(chartables_charset_table)/sizeof(*chartables_charset_table));\n");
 

@@ -94,23 +94,24 @@ Options to configure
 
     --with-duplicate-db=DB 
             Specifies which database backend to use for the duplicate
-            delivery database. By default, configure uses "db3_nosync"
+            delivery database. By default, configure uses
+            "berkeley_nosync".
 
     --with-mboxlist-db=DB 
             Specifies which database backend to use for the mailbox list.
-            By default, configure uses "db3"
+            By default, configure uses "berkeley".
 
     --with-seen-db=DB 
             Specifies which database backend to use for the seen state. By
-            default, configure uses "flat"
+            default, configure uses "flat".
 
     --with-subs-db=DB 
             Specifies which database backend to use for the subscriptions
-            list. By default, configure uses "flat"
+            list. By default, configure uses "flat".
 
     --with-tls-db=DB 
             Specifies which database backend to use for the TLS cache. By
-            default, configure uses "db3_nosync"
+            default, configure uses "berkeley_nosync".
 
     --with-idle=METHOD 
             Specifies the IMAP IDLE method to use. Currently implemented
@@ -133,8 +134,8 @@ Options to configure
             flock   flock() locking 
             fcntl   fcntl() locking 
 
-            By default, configure uses "flock" if the "flock()" function
-            exists, "fcntl" otherwise. 
+            By default, configure uses "fcntl" if the "fcntl()" function
+            exists, "flock" otherwise.
 
     --with-openssl=PATH 
             Specifies where to find the OpenSSL library.
@@ -144,7 +145,8 @@ Options to configure
             Gathering Daemon.
 
     --with-perl=PATH 
-            Specifies where to find the Perl library.
+            Specifies where to find the Perl binary (full path, including
+            name of binary).
 
     --with-sasl=PATH 
             Specifies the path to the directories containing the library
@@ -166,10 +168,6 @@ Options to configure
     --enable-annotatemore 
             Enables support for ANNOTATEMORE extension (mailbox/server
             annotations).
-
-    --enable-fulldirhash 
-            Enables the improved directory hashing scheme which hashes the
-            entire username instead of using just the first letter.
 
     --enable-listext 
             Enables support for LISTEXT extension.

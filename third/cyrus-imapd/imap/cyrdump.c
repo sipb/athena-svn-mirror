@@ -1,5 +1,5 @@
-/* $Id: cyrdump.c,v 1.1.1.1 2002-10-13 18:02:53 ghudson Exp $
- * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
+/* $Id: cyrdump.c,v 1.1.1.2 2004-02-23 22:54:41 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,18 +50,22 @@
 #include <syslog.h>
 #include <com_err.h>
 #include <string.h>
-#include <time.h>
 
 /* cyrus includes */
-#include "imapconf.h"
-#include "sysexits.h"
-#include "imap_err.h"
-#include "mailbox.h"
-#include "xmalloc.h"
-#include "mboxlist.h"
-#include "imapd.h"
+#include "assert.h"
 #include "exitcodes.h"
+#include "global.h"
+#include "imapd.h"
+#include "imap_err.h"
 #include "imapurl.h"
+#include "mailbox.h"
+#include "mboxlist.h"
+#include "sysexits.h"
+#include "xmalloc.h"
+
+
+/* config.c stuff */
+const int config_need_data = CONFIG_NEED_PARTITION_DATA;
 
 int verbose = 0;
 
@@ -90,14 +94,12 @@ struct incremental_record {
 int main(int argc, char *argv[])
 {
     int option;
-    char buf[MAX_MAILBOX_PATH];
+    char buf[MAX_MAILBOX_PATH+1];
     int i, r;
     char *alt_config = NULL;
     struct incremental_record irec;
 
-    if (geteuid() == 0) {
-	usage(argv[0]);
-    }
+    if (geteuid() == 0) fatal("must run as the Cyrus user", EX_USAGE);
 
     while ((option = getopt(argc, argv, "v")) != EOF) {
 	switch (option) {
@@ -119,7 +121,7 @@ int main(int argc, char *argv[])
 	usage(argv[0]);
     }
 
-    config_init(alt_config, "dump");
+    cyrus_init(alt_config, "dump");
     mboxlist_init(0);
     mboxlist_open(NULL);
 
@@ -131,9 +133,11 @@ int main(int argc, char *argv[])
 
     irec.incruid = 0;
     for (i = optind; i < argc; i++) {
-	strlcpy(buf, argv[optind], sizeof(buf));
+	strlcpy(buf, argv[i], sizeof(buf));
 	/* Translate any separators in mailboxname */
-	mboxname_hiersep_tointernal(&dump_namespace, buf);
+	mboxname_hiersep_tointernal(&dump_namespace, buf,
+				    config_virtdomains ?
+				    strcspn(buf, "@") : 0);
 	(*dump_namespace.mboxlist_findall)(&dump_namespace, buf, 1, 0, 0,
 					   dump_me, &irec);
     }
@@ -141,6 +145,8 @@ int main(int argc, char *argv[])
     mboxlist_close();
     mboxlist_done();
 
+    cyrus_done();
+    
     return 0;
 }
 
@@ -151,24 +157,20 @@ int usage(const char *name)
     exit(EC_USAGE);
 }
 
-void fatal(const char *s, int code) 
+static void generate_boundary(char *boundary, size_t size)
 {
-    fprintf(stderr, "fatal error: %s\n", s);
-    exit(code);
-}
-
-/* 'boundary' must be at least 100 long */
-static void generate_boundary(char *boundary)
-{
-    snprintf(boundary, 100, "dump-%ld-%ld-%ld", 
+    assert(size >= 100);
+    
+    snprintf(boundary, size, "dump-%ld-%ld-%ld", 
 	     (long) getpid(), (long) time(NULL), (long) rand());
 }
 
-static int dump_me(char *name, int matchlen, int maycreate, void *rock)
+static int dump_me(char *name, int matchlen __attribute__((unused)),
+		   int maycreate __attribute__((unused)), void *rock)
 {
     int r;
     struct mailbox m;
-    char boundary[100];
+    char boundary[128];
     char imapurl[MAX_MAILBOX_PATH];
     struct incremental_record *irec = (struct incremental_record *) rock;
     struct searchargs searchargs;
@@ -198,7 +200,7 @@ static int dump_me(char *name, int matchlen, int maycreate, void *rock)
     mailbox_read_index_header(&m);
     index_operatemailbox(&m);
 
-    generate_boundary(boundary);
+    generate_boundary(boundary, sizeof(boundary));
 
     printf("Content-Type: multipart/related; boundary=\"%s\"\n\n", boundary);
 
@@ -343,7 +345,7 @@ static void print_seq(const char *tag, const char *attrib,
 
 #endif
 
-void printastring(const char *s)
+void printastring(const char *s __attribute__((unused)))
 {
-    fatal("not implemented", EC_SOFTWARE);
+    fatal("printastring not implemented in cyrdump", EC_SOFTWARE);
 }

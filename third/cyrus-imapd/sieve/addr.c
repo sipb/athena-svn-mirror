@@ -19,7 +19,7 @@
 /*
  * addr.y -- RFC 822 address parser
  * Ken Murchison
- * $Id: addr.c,v 1.1.1.2 2003-02-14 21:39:36 ghudson Exp $
+ * $Id: addr.c,v 1.1.1.3 2004-02-23 22:56:37 rbasch Exp $
  */
 /***********************************************************
         Copyright 1999 by Carnegie Mellon University
@@ -49,6 +49,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "addr.h"
 #include "script.h"
+#include "xmalloc.h"
     
 int yyerror(char *msg);
 extern int yylex(void);
@@ -123,8 +124,8 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    45,    46,    49,    52,    53,    56,    57,    60,    61,
-      64,    67,    70,    71,    74,    75,    78
+       0,    46,    47,    50,    53,    54,    57,    58,    61,    62,
+      65,    68,    71,    72,    75,    76,    79
 };
 #endif
 
@@ -1141,12 +1142,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 81 "addr.y"
+#line 82 "addr.y"
 
 
 /* copy address error message into buffer provided by sieve parser */
 int yyerror(char *s)
 {
+    extern char addrerr[ADDRERR_SIZE];
+    
     strlcpy(addrerr, s, sizeof(addrerr));
     return 0;
 }

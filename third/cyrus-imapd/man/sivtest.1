@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH SIVTEST 1
+.TH SIVTEST 1 "Project Cyrus" CMU
 .\" 
 .\" Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
 .\"
@@ -39,7 +39,7 @@
 .\" AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 .\" OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\" 
-.\" $Id: sivtest.1,v 1.1.1.1 2002-10-13 18:01:29 ghudson Exp $
+.\" $Id: sivtest.1,v 1.1.1.2 2004-02-23 22:54:46 rbasch Exp $
 .\"
 .SH NAME
 sivtest \- interactive MANAGESIEVE test program
@@ -58,7 +58,7 @@ sivtest \- interactive MANAGESIEVE test program
 .I mechanism
 ]
 .br
-         [
+        [
 .B \-u
 .I user
 ]
@@ -75,7 +75,7 @@ sivtest \- interactive MANAGESIEVE test program
 .I num
 ]
 .br
-         [
+        [
 .B \-r
 .I realm
 ]
@@ -91,7 +91,11 @@ sivtest \- interactive MANAGESIEVE test program
 .B \-c
 ]
 .br
-         [
+        [
+.B \-o
+\fIoption\fB=\fIvalue\fR
+]
+[
 .B \-v
 ]
 \fIhostname\fR
@@ -153,6 +157,9 @@ attempt to do SSL/TLS session reuse and/or fast reauth
 Enable challenge prompt callbacks.  This will cause the OTP mechanism
 to ask for the the one-time password instead of the secret pass-phrase
 (library generates the correct response).
+.TP
+\fB-o \fIoption\fB=\fIvalue\fR
+Set the SASL \fIoption\fR to \fIvalue\fR.
 .TP
 .B -v
 Verbose. Print out more information than usual.

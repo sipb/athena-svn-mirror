@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.1.1.2 2003-02-14 21:38:42 ghudson Exp $ */
+/* $Id: IMAP.xs,v 1.1.1.3 2004-02-23 22:55:30 rbasch Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -143,6 +143,7 @@ void imclient_xs_cb(struct imclient *client, struct xsccb *rock,
   /* invoke Perl */
   perl_call_sv(rock->pcb, G_VOID|G_DISCARD);
   FREETMPS;
+  SPAGAIN;
   LEAVE;
   /* clean up */
   if (rock->autofree) imclient_xs_callback_free(rock);
@@ -195,7 +196,9 @@ static int get_password(sasl_conn_t *conn, void *context, int id,
   if(id != SASL_CB_PASS) return SASL_FAIL;
   if(!text->password) {
 	char *ptr;
-	printf("Password: ");
+	/* Using fprintf because printf won't flush under perl 5.8.0 for some
+	 * reason */ 
+	fprintf(stdout, "Password: ");
 	fflush(stdout);
 	ptr = getpass("");
 	text->password = safemalloc(sizeof(sasl_secret_t) + strlen(ptr));
@@ -219,23 +222,31 @@ PROTOTYPES: ENABLE
 
 int
 CONN_NONSYNCLITERAL()
-PPCODE:
+CODE:
 	RETVAL = IMCLIENT_CONN_NONSYNCLITERAL;
+OUTPUT:
+	RETVAL
 
 int
 CONN_INITIALRESPONSE()
-PPCODE:
+CODE:
 	RETVAL = IMCLIENT_CONN_INITIALRESPONSE;
+OUTPUT:
+	RETVAL
 
 int
 CALLBACK_NUMBERED()
-PPCODE:
+CODE:
 	RETVAL = CALLBACK_NUMBERED;
+OUTPUT:
+	RETVAL
 
 int
 CALLBACK_NOLITERAL()
-PPCODE:
+CODE:
 	RETVAL = CALLBACK_NOLITERAL;
+OUTPUT:
+	RETVAL
 
 MODULE = Cyrus::IMAP	PACKAGE = Cyrus::IMAP	PREFIX=imclient_
 PROTOTYPES: ENABLE
@@ -292,7 +303,7 @@ CODE:
 	  /*FALLTHROUGH*/
 	default:
 	  bang = perl_get_sv("^E", TRUE);
-	  Perl_sv_setiv(aTHX_ bang, rc);
+	  sv_setiv(bang, rc);
 	  XSRETURN_UNDEF;
 	}
 	ST(0) = sv_newmortal();
@@ -590,8 +601,11 @@ PPCODE:
 	/* if there was no Perl callback, spin on events until finished */
 	if (!SvTRUE(pcb)) {
 	  AV *av;
-	  while (SvTYPE(SvRV(prock)) != SVt_PVAV)
+	  while (SvTYPE(SvRV(prock)) != SVt_PVAV) {
+	    PUTBACK;
 	    imclient_processoneevent(client->imclient);
+	    SPAGAIN;
+	  }
 	  /* push the result; if scalar, stuff text in $@ */
 	  av = (AV *) SvRV(prock);
 	  if (GIMME_V == G_SCALAR) {
@@ -602,10 +616,10 @@ PPCODE:
 	    else
 	      PUSHs(&sv_no);
 	    pcb = perl_get_sv("@", TRUE);
-	    Perl_sv_setsv(aTHX_ pcb, av_shift(av));
+	    sv_setsv(pcb, av_shift(av));
 	    if (av_len(av) != -1) {
 	      pcb = perl_get_sv("^E", TRUE);
-	      Perl_sv_setsv(aTHX_ pcb, av_shift(av));
+	      sv_setsv(pcb, av_shift(av));
 	    }
 	  } else {
 	    EXTEND(SP, av_len(av) + 1);

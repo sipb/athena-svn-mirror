@@ -1,5 +1,5 @@
-/* skip-list.c -- generic skip list routines
- * $Id: cyrusdb_skiplist.c,v 1.1.1.1 2002-10-13 18:02:26 ghudson Exp $
+/* cyrusdb_skiplist.c -- cyrusdb skiplist implementation
+ * $Id: cyrusdb_skiplist.c,v 1.1.1.2 2004-02-23 22:55:40 rbasch Exp $
  *
  * Copyright (c) 1998, 2000, 2002 Carnegie Mellon University.
  * All rights reserved.
@@ -51,6 +51,7 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+#include <errno.h>
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -58,14 +59,15 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <time.h>
 #include <netinet/in.h>
 
 #include "cyrusdb.h"
-#include "xmalloc.h"
-#include "map.h"
+#include "libcyr_cfg.h"
 #include "lock.h"
+#include "map.h"
 #include "retry.h"
+#include "util.h"
+#include "xmalloc.h"
 
 #define PROB (0.5)
 
@@ -141,7 +143,7 @@ struct db {
     const char *map_base;
     unsigned long map_len;	/* mapped size */
     unsigned long map_size;	/* actual size */
-    unsigned long map_ino;
+    ino_t map_ino;
 
     /* header info */
     int version;
@@ -165,7 +167,9 @@ struct txn {
 };
 
 static time_t global_recovery = 0;
-static int do_fsync = 2;
+
+/* Perform an FSYNC/FDATASYNC if we are *not* operating in UNSAFE mode */
+#define DO_FSYNC (!libcyrus_config_getswitch(CYRUSOPT_SKIPLIST_UNSAFE))
 
 enum {
     be_paranoid = 0,
@@ -247,10 +251,6 @@ static int myinit(const char *dbdir, int myflags)
 
     srand(time(NULL) * getpid());
 
-    if (getenv("CYRUS_SKIPLIST_UNSAFE")) {
-	do_fsync = 0;
-    }
-    
     return 0;
 }
 
@@ -269,14 +269,17 @@ static int myarchive(const char **fnames, const char *dirname)
     int r;
     const char **fname;
     char dstname[1024], *dp;
-
-    strcpy(dstname, dirname);
-    dp = dstname + strlen(dstname);
-
+    int length, rest;
+    
+    strlcpy(dstname, dirname, sizeof(dstname));
+    length = strlen(dstname);
+    dp = dstname + length;
+    rest = sizeof(dstname) - length;
+    
     /* archive those files specified by the app */
     for (fname = fnames; *fname != NULL; ++fname) {
 	syslog(LOG_DEBUG, "archiving database file: %s", *fname);
-	strcpy(dp, strrchr(*fname, '/'));
+	strlcpy(dp, strrchr(*fname, '/'), rest);
 	r = cyrusdb_copyfile(*fname, dstname);
 	if (r) {
 	    syslog(LOG_ERR,
@@ -621,7 +624,7 @@ static int unlock(struct db *db)
     return 0;
 }
 
-static int myopen(const char *fname, struct db **ret)
+static int myopen(const char *fname, int flags, struct db **ret)
 {
     struct db *db = (struct db *) xzmalloc(sizeof(struct db));
     int r;
@@ -631,12 +634,16 @@ static int myopen(const char *fname, struct db **ret)
     db->fname = xstrdup(fname);
 
     db->fd = open(fname, O_RDWR, 0644);
-    if (db->fd == -1) {
+    if (db->fd == -1 && errno == ENOENT && (flags & CYRUSDB_CREATE)) {
+	if (cyrus_mkdir(fname, 0755) == -1) return CYRUSDB_IOERROR;
+
 	db->fd = open(fname, O_RDWR | O_CREAT, 0644);
 	new = 1;
     }
+
     if (db->fd == -1) {
-	syslog(LOG_ERR, "IOERROR: opening %s: %m", fname);
+	int level = (flags & CYRUSDB_CREATE) ? LOG_ERR : LOG_DEBUG;
+	syslog(level, "IOERROR: opening %s: %m", fname);
 	dispose_db(db);
 	return CYRUSDB_IOERROR;
     }
@@ -696,7 +703,7 @@ static int myopen(const char *fname, struct db **ret)
 	}
 	
 	/* sync the db */
-	if (!r && do_fsync && (fsync(db->fd) < 0)) {
+	if (!r && DO_FSYNC && (fsync(db->fd) < 0)) {
 	    syslog(LOG_ERR, "DBERROR: fsync(%s): %m", db->fname);
 	    r = CYRUSDB_IOERROR;
 	}
@@ -795,10 +802,12 @@ int myfetch(struct db *db,
 {
     const char *ptr;
     struct txn t, *tp;
-    int r;
+    int r = 0;
 
     assert(db != NULL && key != NULL);
-    assert(data != NULL && datalen != NULL);
+
+    if (data) *data = NULL;
+    if (datalen) *datalen = 0;
 
     if (!mytid) {
 	/* grab a r lock */
@@ -826,11 +835,10 @@ int myfetch(struct db *db,
 
     if (ptr == db->map_base || compare(KEY(ptr), KEYLEN(ptr), key, keylen)) {
 	/* failed to find key/keylen */
-	*data = NULL;
-	*datalen = 0;
+	r = CYRUSDB_NOTFOUND;
     } else {
-	*datalen = DATALEN(ptr);
-	*data = DATA(ptr);
+	if (datalen) *datalen = DATALEN(ptr);
+	if (data) *data = DATA(ptr);
     }
 
     if (mytid) {
@@ -843,12 +851,13 @@ int myfetch(struct db *db,
 	}
     } else {
 	/* release read lock */
-	if ((r = unlock(db)) < 0) {
-	    return r;
+	int r1;
+	if ((r1 = unlock(db)) < 0) {
+	    return r1;
 	}
     }
 
-    return 0;
+    return r;
 }
 
 static int fetch(struct db *mydb, 
@@ -915,7 +924,7 @@ int myforeach(struct db *db,
 	if (prefixlen && compare(KEY(ptr), prefixlen, prefix, prefixlen)) break;
 
 	if (goodp(rock, KEY(ptr), KEYLEN(ptr), DATA(ptr), DATALEN(ptr))) {
-	    unsigned long ino = db->map_ino;
+	    ino_t ino = db->map_ino;
 	    unsigned long sz = db->map_size;
 
 	    if (!tid) {
@@ -1281,19 +1290,24 @@ int mycommit(struct db *db, struct txn *tid)
     }
 
     /* fsync if we're not using O_SYNC writes */
-    if (!use_osync && do_fsync && (fdatasync(db->fd) < 0)) {
+    if (!use_osync && DO_FSYNC && (fdatasync(db->fd) < 0)) {
 	syslog(LOG_ERR, "IOERROR: writing %s: %m", db->fname);
 	r = CYRUSDB_IOERROR;
         goto done;
     }
 
+    /* xxx consider unlocking the database here: the transaction isn't
+       yet durable but the file is in a form that is consistent for
+       other transactions to use. releasing the lock here would give
+       ACI properties. */
+    
     /* write a commit record */
     assert(tid->syncfd != -1);
     lseek(tid->syncfd, tid->logend, SEEK_SET);
     retry_write(tid->syncfd, (char *) &commitrectype, 4);
 
     /* fsync if we're not using O_SYNC writes */
-    if (!use_osync && do_fsync && (fdatasync(db->fd) < 0)) {
+    if (!use_osync && DO_FSYNC && (fdatasync(db->fd) < 0)) {
 	syslog(LOG_ERR, "IOERROR: writing %s: %m", db->fname);
 	r = CYRUSDB_IOERROR;
         goto done;
@@ -1579,7 +1593,7 @@ static int mycheckpoint(struct db *db, int locked)
     r = write_header(db);
 
     /* sync new file */
-    if (!r && do_fsync && (fdatasync(db->fd) < 0)) {
+    if (!r && DO_FSYNC && (fdatasync(db->fd) < 0)) {
 	syslog(LOG_ERR, "DBERROR: skiplist checkpoint: fdatasync(%s): %m", fname);
 	r = CYRUSDB_IOERROR;
     }
@@ -1597,7 +1611,7 @@ static int mycheckpoint(struct db *db, int locked)
     }
 
     /* force the new file name to disk */
-    if (!r && do_fsync && (fsync(db->fd) < 0)) {
+    if (!r && DO_FSYNC && (fsync(db->fd) < 0)) {
 	syslog(LOG_ERR, "DBERROR: skiplist checkpoint: fsync(%s): %m", fname);
 	r = CYRUSDB_IOERROR;
     }
@@ -1946,6 +1960,15 @@ static int recovery(struct db *db)
 	q = db->map_base + db->map_size;
 	p = ptr;
 	for (;;) {
+            if (RECSIZE(p) <= 0) {
+                /* hmm, we can't trust this transaction */
+		syslog(LOG_ERR,
+		       "DBERROR: skiplist recovery %s: found a RECSIZE of 0, "
+		       "truncating corrupted file instead of looping forever...",
+		       db->fname);
+                p = q;
+                break;
+            }
 	    p += RECSIZE(p);
 	    if (p >= q) break;
 	    if (TYPE(p) == COMMIT) break;
@@ -2050,7 +2073,7 @@ static int recovery(struct db *db)
     }
 
     /* fsync the recovered database */
-    if (!r && do_fsync && (fdatasync(db->fd) < 0)) {
+    if (!r && DO_FSYNC && (fdatasync(db->fd) < 0)) {
 	syslog(LOG_ERR, 
 	       "DBERROR: skiplist recovery %s: fdatasync: %m", db->fname); 
 	r = CYRUSDB_IOERROR;
@@ -2063,7 +2086,7 @@ static int recovery(struct db *db)
     }
 
     /* fsync the new header */
-    if (!r && do_fsync && (fdatasync(db->fd) < 0)) {
+    if (!r && DO_FSYNC && (fdatasync(db->fd) < 0)) {
 	syslog(LOG_ERR,
 	       "DBERROR: skiplist recovery %s: fdatasync: %m", db->fname); 
 	r = CYRUSDB_IOERROR;

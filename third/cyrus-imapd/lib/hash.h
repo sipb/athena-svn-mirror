@@ -1,10 +1,11 @@
 /* +++Date last modified: 05-Jul-1997 */
-/* $Id: hash.h,v 1.1.1.1 2002-10-13 18:01:49 ghudson Exp $ */
+/* $Id: hash.h,v 1.1.1.2 2004-02-23 22:54:45 rbasch Exp $ */
 
 #ifndef HASH__H
 #define HASH__H
 
 #include <stddef.h>           /* For size_t     */
+#include "strhash.h"
 #include "mpool.h"
 
 /*
@@ -36,13 +37,6 @@ typedef struct hash_table {
 } hash_table;
 
 /*
-** Hashes a string to produce an unsigned short, which should be
-** sufficient for most purposes.
-*/
-
-unsigned hash(const char *string);
-
-/*
 ** This is used to construct the table.  If it doesn't succeed, it sets
 ** the table's size to 0, and the pointer to the table to NULL.
 */
@@ -56,7 +50,7 @@ hash_table *construct_hash_table(hash_table *table, size_t size,
 ** associated data.
 */
 
-void *hash_insert(char *key,void *data,hash_table *table);
+void *hash_insert(const char *key,void *data,hash_table *table);
 
 /*
 ** Returns a pointer to the data associated with a key.  If the key has

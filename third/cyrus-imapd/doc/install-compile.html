@@ -1,4 +1,4 @@
-<!-- $Id: install-compile.html,v 1.1.1.2 2003-02-14 21:38:57 ghudson Exp $ -->
+<!-- $Id: install-compile.html,v 1.1.1.3 2004-02-23 22:54:38 rbasch Exp $ -->
 <HTML>
 <HEAD>
 <TITLE>Compiling the IMAP Server
@@ -111,23 +111,23 @@ default, configure uses "<TT>cyrus</TT>". <P>
 
 <dt><tt>--with-duplicate-db=DB</tt>
 <dd>Specifies which database backend to use for the duplicate delivery
-database.  By default, configure uses "<TT>db3_nosync</TT>"<P>
+database.  By default, configure uses "<TT>berkeley_nosync</TT>".<P>
 
 <dt><tt>--with-mboxlist-db=DB</tt>
 <dd>Specifies which database backend to use for the mailbox list.  By
-default, configure uses "<TT>db3</TT>"<P>
+default, configure uses "<TT>berkeley</TT>".<P>
 
 <dt><tt>--with-seen-db=DB</tt>
 <dd>Specifies which database backend to use for the seen state.  By
-default, configure uses "<TT>flat</TT>"<P>
+default, configure uses "<TT>flat</TT>".<P>
 
 <dt><tt>--with-subs-db=DB</tt>
 <dd>Specifies which database backend to use for the subscriptions
-list.  By default, configure uses "<TT>flat</TT>"<P>
+list.  By default, configure uses "<TT>flat</TT>".<P>
 
 <dt><tt>--with-tls-db=DB</tt>
 <dd>Specifies which database backend to use for the TLS cache.  By
-default, configure uses "<TT>db3_nosync</TT>"<P>
+default, configure uses "<TT>berkeley_nosync</TT>".<P>
 
 <dt><tt>--with-idle=METHOD</tt>
 <dd>Specifies the IMAP IDLE method to use.
@@ -157,8 +157,8 @@ methods are:
 <DD><TT>fcntl()</TT> locking
 </DL>
 
-By default, configure uses "<tt>flock</tt>" if the "<tt>flock()</tt>"
-function exists, "<tt>fcntl</tt>" otherwise. <P>
+By default, configure uses "<tt>fcntl</tt>" if the "<tt>fcntl()</tt>"
+function exists, "<tt>flock</tt>" otherwise.<P>
 
 <dt><tt>--with-openssl=PATH</tt>
 <dd>Specifies where to find the OpenSSL library.<P>
@@ -168,7 +168,8 @@ function exists, "<tt>fcntl</tt>" otherwise. <P>
 Daemon.<P>
 
 <dt><tt>--with-perl=PATH</tt>
-<dd>Specifies where to find the Perl library.<P>
+<dd>Specifies where to find the Perl binary (full path, including
+name of binary).<P>
 
 <dt><tt>--with-sasl=PATH</tt> 
 <dd>Specifies the path to the directories containing the library
@@ -191,10 +192,6 @@ daemons.  By default, configure uses "<TT>/var</TT>". <P>
 <dt><tt>--enable-annotatemore</tt>
 <dd>Enables support for ANNOTATEMORE extension (mailbox/server
 annotations).<p>
-
-<dt><tt>--enable-fulldirhash</tt>
-<dd>Enables the improved directory hashing scheme which hashes the
-entire username instead of using just the first letter.<p>
 
 <dt><tt>--enable-listext</tt>
 <dd>Enables support for LISTEXT extension.<p>
@@ -296,5 +293,5 @@ If you want, you can override the "<tt>make</tt>" variables
 </kbd></pre>
 
 <P><HR>
-last modified: $Date: 2003-02-14 21:38:57 $
+last modified: $Date: 2004-02-23 22:54:38 $
 </BODY></HTML>

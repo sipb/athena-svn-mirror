@@ -1,4 +1,4 @@
-<!-- $Id: install-configure.html,v 1.1.1.2 2003-02-14 21:37:49 ghudson Exp $ -->
+<!-- $Id: install-configure.html,v 1.1.1.3 2004-02-23 22:55:14 rbasch Exp $ -->
 <HTML>
 <HEAD>
 <TITLE>Installing and configuring the IMAP Server
@@ -129,8 +129,7 @@ cyrus user and group and should not permit access to other users.
 The partition directory is similar in concept to
 <tt>/var/spool/news</tt>.  It is where the mailboxes are stored.
 Unlike most netnews systems, Cyrus allows you to have more
-than one partition.  Do not use the string "<tt>news</tt>" as a
-partition name, as it is reserved for netnews.
+than one partition.
 
 <li>If you wish to use Sieve, and you didn't configure deliver to look
 in home directories (see the <tt>imapd.conf</tt> man page), create the
@@ -145,10 +144,8 @@ Sieve directory:
 </kbd></pre>
 
 <li>Change to the Cyrus user and use the tool
-&quot;<tt>tools/mkimap</tt>&quot; to create the rest of the directories
-(subdirectories of the directories you just created).  Note that if
-you compiled cyrus with <tt>--enable-fulldirhash</tt>, you need to use 
-&quot;<tt>tools/rehash</tt>&quot; instead.
+"<tt>tools/mkimap</tt>" to create the rest of the directories
+(subdirectories of the directories you just created).
 
 <pre>
 <kbd>   su cyrus
@@ -188,8 +185,10 @@ aren't already there.
 
 <pre>
    pop3      110/tcp
+   nntp      119/tcp
    imap      143/tcp
    imsp      406/tcp
+   nntps     563/tcp
    acap      674/tcp
    imaps     993/tcp
    pop3s     995/tcp
@@ -292,6 +291,12 @@ add user "<TT>daemon</TT>" to the "<TT>mail</TT>" group.  This will
 permit sendmail to run the "<TT>deliver</TT>" (LMTP client) program to
 deliver mail to the IMAP server.</li>
 </ul>
+
+<p>Cyrus also includes a socket map daemon <tt>smmapd</tt> which can
+be used by Sendmail 8.13 and higher (a patch for 8.12 is available) to
+verify at RCPT TO time that a message can be delivered to the
+particular mailbox.  To use this daemon, add <tt>smmapd</tt> as a
+service in <tt>cyrus.conf</tt> and configure Sendmail accordingly.
 
 <h4>Configuring <a href="http://www.postfix.org/">Postfix</a></h4>
 
@@ -400,50 +405,9 @@ consult the Exim documentation and sample configurations.
 
 <h3>Exporting Netnews via IMAP</h3>
 
-If you want to export netnews newsgroups using IMAP do the following:
+If you wish to use export Netnews via IMAP, consult <a
+href=install-netnews.html>install-netnews.html</a>.
 
-<ol>
- <P><LI>Create a directory for the "news" partition.  This directory
-should be different than the news spool directory.  This document uses
-a news partition directory of "<TT>/var/spool/imap-news</TT>" in the
-following examples:
-
-<pre>
-<kbd>   cd /var/spool
-   mkdir imap-news
-   chown cyrus imap-news
-   chgrp mail imap-news
-   chmod 750 imap-news
-</kbd></pre>
-
- <P>
-<LI> Set the "partition-news" and "newsspool" options to appropriate values:
-
-<pre>
-   partition-news: /var/spool/imap-news
-   newsspool: /var/spool/news
-</pre>
-
- <P> <LI>The cyrus user must be able to write to the out.going
-("<TT>/var/spool/news/out.going</TT>") directory.  This can be done by
-putting the cyrus user into the news group and making the oug.going
-directory group writable.
-
- <P>
-<LI> Add the following line to the <TT>newsfeeds</TT> file
-
-<pre>
-   collectnews!:*:Tf,WO:collectnews
-</pre>
-
- <P> <LI> Add a <TT>cron</TT> job to run
-"<TT>/usr/cyrus/bin/feedcyrus</TT>" every ten minutes as the cyrus
-user.  Also add a <TT>cron</TT> job to run
-"<TT>/usr/cyrus/bin/syncnews /var/news/active &gt;/dev/null
-2&gt;&amp;1</TT>" nightly.  (Using the appropriate path to the
-<TT>active</TT> file.)
-
-</ol>
 <a name="openssl"><h2>SSL, TLS, and OpenSSL</h2></a>
 
 <p>Transport Layer Security (TLS), is a standardized version of the Secure
@@ -579,5 +543,5 @@ convention, consult <a
 href=altnamespace.html#altnameconfig>altnamespace.html</a>.
 
 <P><HR>
-last modified: $Date: 2003-02-14 21:37:49 $
+last modified: $Date: 2004-02-23 22:55:14 $
 </BODY></HTML>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,7 +37,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: squat_build.c,v 1.1.1.2 2003-02-14 21:39:20 ghudson Exp $
+ * $Id: squat_build.c,v 1.1.1.3 2004-02-23 22:53:48 rbasch Exp $
  */
 
 /*
@@ -89,6 +89,8 @@
   IDs containing the word.
 */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -97,6 +99,7 @@
 
 #include "squat_internal.h"
 
+#include "index.h"
 #include "xmalloc.h"
 
 /* A simple write-buffering module which avoids copying of the output data. */
@@ -345,7 +348,7 @@ SquatIndex* squat_index_init(int fd, SquatOptions const* options) {
   }
 
   /* Finish initializing the SquatIndex */
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < VECTOR_SIZE(index->index_buffers); i++) {
     index->index_buffers[i].buf = NULL;
   }
 
@@ -461,8 +464,8 @@ static void delete_doc_word_table(SquatWordTable* t, int depth) {
     int i;
 
     depth--;
-    for (i = 0; i < 256; i++) {
-      SquatWordTableEntry* e = t->entries + i;
+    for (i = 0; i < VECTOR_SIZE(t->entries); i++) {
+      SquatWordTableEntry* e = &(t->entries[i]);
       
       if (e->table != NULL) {
         delete_doc_word_table(e->table, depth);
@@ -473,8 +476,8 @@ static void delete_doc_word_table(SquatWordTable* t, int depth) {
 
     /* this happens to work whether the leaf entries are leaf_presence
        or leaf_docs. This is ugly but acceptable :-) */
-    for (i = 0; i < 256; i++) {
-      SquatWordTableEntry* e = t->entries + i;
+    for (i = 0; i < VECTOR_SIZE(t->entries); i++) {
+      SquatWordTableEntry* e = &(t->entries[i]);
       
       if (e->leaf_presence != NULL && ((int)e->leaf_presence & 1) == 0) {
         free(e->leaf_presence);
@@ -737,7 +740,7 @@ int squat_index_append_document(SquatIndex* index, char const* data,
   }
   /* Copy data from the old runover buffer into its new position in
      the new runover buffer */
-  memcpy(index->runover_buf,
+  memmove(index->runover_buf,
          index->runover_buf + index->runover_len -
            (new_runover - new_runover_data),
          new_runover - new_runover_data);
@@ -801,18 +804,22 @@ static int write_words(SquatIndex* index, SquatWriteBuffer* b,
         int last_byte = p->last_valid_entry >> 3;
 
         for (i = p->first_valid_entry >> 3; i <= last_byte; i++) {
-          int bits = (unsigned char)p->presence[i];
-          int j;
-
-          for (j = 0; bits > 0; j++, bits >>= 1) {
-            if ((bits & 1) != 0) {
-	      /* Output a word for each bit that is set */
-              word[1] = (char)(i*8 + j);
-              if (output_word(b, word - (SQUAT_WORD_SIZE - 3)) != SQUAT_OK) {
-                return SQUAT_ERR;
-              }
-            }
-          }
+	    if(i >= VECTOR_SIZE(p->presence)) {
+		return SQUAT_ERR;
+	    } else {
+		int bits = (unsigned char)p->presence[i];
+		int j;
+		
+		for (j = 0; bits > 0; j++, bits >>= 1) {
+		    if ((bits & 1) != 0) {
+			/* Output a word for each bit that is set */
+			word[1] = (char)(i*8 + j);
+			if (output_word(b, word - (SQUAT_WORD_SIZE - 3)) != SQUAT_OK) {
+			    return SQUAT_ERR;
+			}
+		    }
+		}
+	    }
         }
         free(p);
         e->leaf_presence = NULL;
@@ -867,7 +874,7 @@ int squat_index_close_document(SquatIndex* index) {
   /* For each byte that started a word in the source document, we need
      to dump all the words that occurred starting with that byte to
      the corresponding temporary file. */
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < VECTOR_SIZE(index->doc_words); i++) {
     if (index->doc_words[i] > 0) {
       char* write_ptr;
       char word_buf[SQUAT_WORD_SIZE - 1];
@@ -1332,7 +1339,7 @@ static int index_close_internal(SquatIndex* index, int OK) {
   /* Now write out the trie for every initial byte that we saw. The
      offsets are collected in 'offset_buf'. */
   memset(offset_buf, 0, sizeof(offset_buf));
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < VECTOR_SIZE(index->index_buffers); i++) {
     if (index->stats_callback != NULL) {
       SquatStatsEvent event;
 
@@ -1373,7 +1380,7 @@ static int index_close_internal(SquatIndex* index, int OK) {
   word_list_offset = index->out.total_output_bytes;
 
   /* Relativize the subtrie offsets. */
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < VECTOR_SIZE(offset_buf); i++) {
     if (offset_buf[i] != 0) {
       offset_buf[i] = word_list_offset - offset_buf[i];
 
@@ -1433,7 +1440,7 @@ cleanup:
   delete_doc_word_table(index->doc_word_table, SQUAT_WORD_SIZE - 1);
   /* If we're bailing out because of an error, we might not have
      released all the temporary file resources. */
-  for (i = 0; i < 256; i++) {
+  for (i = 0; i < VECTOR_SIZE(index->index_buffers); i++) {
     if (index->index_buffers[i].buf != NULL) {
       close(index->index_buffers[i].fd);
       free(index->index_buffers[i].buf);

@@ -47,6 +47,8 @@
 
 
 
+#include "index.h"
+
 #include "lmtpstats.h"
 
 
@@ -213,7 +215,7 @@ int snmp_connect(void)
 
     remote.sun_family = AF_UNIX;
 
-    strcpy(remote.sun_path, SOCK_PATH);
+    strlcpy(remote.sun_path, SOCK_PATH, sizeof(remote.sun_path));
 
     sockaddr_len = strlen(remote.sun_path) + sizeof(remote.sun_family);
 

@@ -1,9 +1,12 @@
 Protocol for Sieve script exchange
 
-    Note: This is not a standards track protocol. If you decide to base a
-    program upon it you have been warned. This is a simple text-based
-    protocol for getting user sieve scripts onto the (presumably sealed)
-    IMAP server. The requirements for this process are: 
+    Please note that this document is not authoritative and may well be out
+    of date, you should look at specs.html for the current authoritative
+    document for the MANAGESIEVE protocol. Note: This is not a standards
+    track protocol. If you decide to base a program upon it you have been
+    warned. This is a simple text-based protocol for getting user sieve
+    scripts onto the (presumably sealed) IMAP server. The requirements for
+    this process are: 
 
       * the user must authenticate to gain access, preferably via a secure
         SASL mechanism. 

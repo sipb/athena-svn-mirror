@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH CTL_DELIVER 8
+.TH CTL_DELIVER 8 "Project Cyrus" CMU
 .\" 
 .\" Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
 .\"
@@ -39,17 +39,10 @@
 .\" AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 .\" OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\" 
-.\" $Id: ctl_deliver.8,v 1.1.1.1 2002-10-13 18:01:22 ghudson Exp $
+.\" $Id: ctl_deliver.8,v 1.1.1.2 2004-02-23 22:54:46 rbasch Exp $
 .SH NAME
 ctl_deliver \- perform operations on the duplicate delivery database
 .SH SYNOPSIS
-.B ctl_deliver
-[
-.B \-C
-.I config-file
-]
-.BI \-E " days"
-.br
 .B ctl_deliver
 [
 .B \-C
@@ -72,9 +65,6 @@ file unless specified otherwise by \fB-C\fR.
 .TP
 .BI \-C " config-file"
 Read configuration options from \fIconfig-file\fR.
-.TP
-\fB\-E \fIdays\fR
-Prune the database of entries older than \fIdays\fR.
 .TP
 .B \-d
 Dump the contents of the database to standard output in a portable

@@ -1,6 +1,6 @@
 /* saslserver.c -- shared SASL code for server-side authentication
  *
- * Copyright (c) 2002 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: saslserver.c,v 1.1.1.1 2003-02-14 21:38:11 ghudson Exp $ */
+/* $Id: saslserver.c,v 1.1.1.2 2004-02-23 22:54:35 rbasch Exp $ */
 
 #include <config.h>
 
@@ -54,7 +54,8 @@
 
 
 int saslserver(sasl_conn_t *conn, const char *mech,
-	       const char *init_resp, const char *continuation,
+	       const char *init_resp, const char *resp_prefix,
+	       const char *continuation,
                struct protstream *pin, struct protstream *pout,
 	       int *sasl_result, char **success_data)
 {
@@ -98,8 +99,9 @@ int saslserver(sasl_conn_t *conn, const char *mech,
 	}
 
 	/* get response from the client */
-	if (!prot_fgets(base64, BASE64_BUF_SIZE, pin)) {
-	    if(sasl_result) *sasl_result = SASL_FAIL;
+	if (!prot_fgets(base64, BASE64_BUF_SIZE, pin) ||
+	    strncasecmp(base64, resp_prefix, strlen(resp_prefix))) {
+	    if (sasl_result) *sasl_result = SASL_FAIL;
 	    return IMAP_SASL_PROTERR;
 	}
 
@@ -108,15 +110,18 @@ int saslserver(sasl_conn_t *conn, const char *mech,
 	if (p >= base64 && *p == '\n') *p-- = '\0';
 	if (p >= base64 && *p == '\r') *p-- = '\0';
 
+	/* trim prefix */
+	p = base64 + strlen(resp_prefix);
+
 	/* check if client cancelled */
-	if (base64[0] == '*') {
+	if (p[0] == '*') {
 	    if(sasl_result) *sasl_result = SASL_BADPROT;
 	    return IMAP_SASL_CANCEL;
 	}
 
 	/* decode the response */
 	clientin = base64;
-	r = sasl_decode64(base64, strlen(base64),
+	r = sasl_decode64(p, strlen(p),
 			  clientin, BASE64_BUF_SIZE, &clientinlen);
 	if (r != SASL_OK) break;
 

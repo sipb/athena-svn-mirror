@@ -1,5 +1,5 @@
 /* version.c: versioning functions
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,14 +37,16 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: version.c,v 1.1.1.1 2002-10-13 18:02:10 ghudson Exp $
+ * $Id: version.c,v 1.1.1.2 2004-02-23 22:56:09 rbasch Exp $
  */
 
 #include <config.h>
 
 #include <sasl/sasl.h>
-#include <db.h>
 #include <sys/utsname.h>
+#ifdef HAVE_BDB
+#include <db.h>
+#endif
 #ifdef HAVE_KRB
 #include <krb.h>
 #endif
@@ -87,6 +89,8 @@ void id_getcmdline(int argc, char **argv)
 void id_response(struct protstream *pout)
 {
     struct utsname os;
+    const char *sasl_imp;
+    int sasl_ver;
     char env_buf[MAXIDVALUELEN+1];
 
     prot_printf(pout, "* ID ("
@@ -113,16 +117,29 @@ void id_response(struct protstream *pout)
     }
 #endif
 
-    /* add the environment info */
-    snprintf(env_buf, MAXIDVALUELEN,"Cyrus SASL %d.%d.%d",
+    /* SASL information */
+    snprintf(env_buf, MAXIDVALUELEN,"Built w/Cyrus SASL %d.%d.%d",
 	     SASL_VERSION_MAJOR, SASL_VERSION_MINOR, SASL_VERSION_STEP);
+
+    sasl_version(&sasl_imp, &sasl_ver);
+    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
+	     "; Running w/%s %d.%d.%d", sasl_imp,
+	     (sasl_ver & 0xFF000000) >> 24,
+	     (sasl_ver & 0x00FF0000) >> 16,
+	     (sasl_ver & 0x0000FFFF));
+
+    /* add the environment info */
 #ifdef DB_VERSION_STRING
     snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; %s", DB_VERSION_STRING);
+	     "; Built w/%s", DB_VERSION_STRING);
+    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
+	     "; Running w/%s", db_version(NULL, NULL, NULL));
 #endif
 #ifdef HAVE_SSL
     snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; %s", OPENSSL_VERSION_TEXT);
+	     "; Built w/%s", OPENSSL_VERSION_TEXT);
+    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
+	     "; Running w/%s", SSLeay_version(SSLEAY_VERSION));
 #ifdef EGD_SOCKET
     snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
 	     " (with EGD)");
@@ -155,20 +172,6 @@ void id_response(struct protstream *pout)
     if (idle_method_desc)
 	snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
 		 "; idle = %s", idle_method_desc);
-#ifdef USE_DIR_FULL
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; dirhash = full");
-#endif
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; mboxlist.db = %s", CONFIG_DB_MBOX->name);
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; subs.db = %s", CONFIG_DB_SUBS->name);
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; seen.db = %s", CONFIG_DB_SEEN->name);
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; duplicate.db = %s", CONFIG_DB_DUPLICATE->name);
-    snprintf(env_buf + strlen(env_buf), MAXIDVALUELEN - strlen(env_buf),
-	     "; tls.db = %s", CONFIG_DB_TLS->name);
 
     prot_printf(pout, " \"environment\" \"%s\"", env_buf);
 }

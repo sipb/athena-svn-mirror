@@ -6,7 +6,7 @@
 <!-- warning this is a UTF-8 file. please don't pretend it's ISO-8859. -->
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="revision" 
-content="$Id: internationalization.html,v 1.1.1.1 2003-02-14 21:39:27 ghudson Exp $" />
+content="$Id: internationalization.html,v 1.1.1.2 2004-02-23 22:54:39 rbasch Exp $" />
 <meta name="author" content="Larry Greenfield" />
 
 <title>internationalization</title>
@@ -99,9 +99,9 @@ int bufsz)</tt></dt>
 canonical form in <i>buf</i>. <i>buf</i> must be reallocable and
 currently at least size <i>bufsz</i>.</dd>
 
-<dt><tt>char *charset_decode1522(const char *s, char *buf, int bufsz)</tt></dt>
-<dd> Given a string <i>s</i> containing possible RFC 1522 (revised as RFC
-2047) encoded substrings, decode into canonical form in
+<dt><tt>char *charset_decode_mimeheader(const char *s, char *buf, int
+bufsz)</tt></dt> <dd> Given a string <i>s</i> containing possible MIME
+encoded substrings (per RFC 2047), decode into canonical form in
 <i>buf</i>. <i>buf</i> must be reallocable and currently at least size
 <i>bufsz</i>.</dd>
 
@@ -143,6 +143,16 @@ dynamically unencode and canonicalize the search text looking for
 instead of <tt>\r\n</tt>, but the length assumes that each <tt>\n</tt>
 is dynamically converted to <tt>\r\n</tt>. This feature is deprecated.)
 </dd>
+
+<dt><tt>char *charset_decode_mimebody(const char *msg_base, int len,
+                                     int encoding, char **buf, int *bufsz,
+                                     int *outlen)</tt></dt>
+<dd>
+Decode the MIME body part (per RFC 2045) located in the large buffer
+starting at <i>msg_base</i> of length <i>len</i>. The large buffer is of
+encoding <i>encoding</i>. <tt>charset_decode_mimebody()</tt> will decode 
+into <i>buf</i>. <i>buf</i> must be reallocable and currently at least size
+<i>bufsz</i>.  The number of decoded bytes is returned in <i>outlen</i>.</dd>
 
 <dt><tt>charset_extractfile()</tt></dt>
 <dd> Used by <tt>squatter</tt> and possibly other text indexing engines,

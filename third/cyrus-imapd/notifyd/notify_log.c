@@ -2,7 +2,7 @@
  * Ken Murchison
  */
 /*
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +40,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: notify_log.c,v 1.1.1.1 2002-10-13 18:02:03 ghudson Exp $
+ * $Id: notify_log.c,v 1.1.1.2 2004-02-23 22:54:49 rbasch Exp $
  */
 
 #include <config.h>
@@ -69,7 +69,9 @@ char* notify_log(const char *class, const char *priority,
 	strcat(opt_str, ")");
     }
 
-    openlog("notifyd", LOG_PID, LOG_LOCAL6);
+/*  Not needed, we opened the log file in cyrus_init */
+/*    openlog("notifyd", LOG_PID, SYSLOG_FACILITY); */
+
     syslog(LOG_INFO, "%s, %s, %s, %s, %s \"%s\"",
 	   class, priority, user, mailbox, opt_str, message);
     closelog();

@@ -1,7 +1,7 @@
-/* 
+ /* 
  * annotate.h -- Annotation manipulation routines
  *
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,14 +39,31 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: annotate.h,v 1.1.1.1 2002-10-13 18:01:09 ghudson Exp $
+ * $Id: annotate.h,v 1.1.1.2 2004-02-23 22:55:04 rbasch Exp $
  */
 
 #ifndef ANNOTATE_H
 #define ANNOTATE_H
 
+#include "charset.h" /* for comp_pat */
 #include "imapd.h"
 #include "mboxname.h"
+#include "prot.h"
+#include "cyrusdb.h"
+
+/* List of strings, for fetch and search argument blocks */
+struct strlist {
+    char *s;                   /* String */
+    comp_pat *p;               /* Compiled pattern, for search */
+    struct strlist *next;
+};
+
+/* List of attrib-value pairs */
+struct attvaluelist {
+    char *attrib;
+    char *value;
+    struct attvaluelist *next;
+};
 
 /* entry-attribute(s) struct */
 struct entryattlist {
@@ -55,6 +72,15 @@ struct entryattlist {
     struct entryattlist *next;
 };
 
+/* String List Management */
+void appendstrlist(struct strlist **l, char *s);
+void freestrlist(struct strlist *l);
+
+/* Attribute Management (also used by ID) */
+void appendattvalue(struct attvaluelist **l, char *attrib, const char *value);
+void freeattvalues(struct attvaluelist *l);
+
+/* Entry Management */
 void appendentryatt(struct entryattlist **l, char *entry,
 		    struct attvaluelist *attvalues);
 void freeentryatts(struct entryattlist *l);
@@ -63,22 +89,59 @@ void freeentryatts(struct entryattlist *l);
 #define FNAME_ANNOTATIONS "/annotations.db"
 
 /* initialize database structures */
-#define ANNOTATE_RECOVER 0x01
-#define ANNOTATE_SYNC 0x01
-void annotatemore_init(int flags);
+#define ANNOTATE_SYNC (1 << 1)
+void annotatemore_init(int myflags,
+		       int (*fetch_func)(const char *, const char *,
+					 struct strlist *, struct strlist *),
+		       int (*store_func)(const char *, const char *,
+					 struct entryattlist *));
 
 /* open the annotation db */
 void annotatemore_open(char *name);
 
-/* fetch annotations */
-int annotatemore_fetch(struct strlist *entries, struct strlist *attribs,
+/* 'proc'ess all annotations matching 'mailbox' and 'entry' */
+int annotatemore_findall(const char *mailbox, const char *entry,
+			 int (*proc)(), void *rock, struct txn **tid);
+
+/* fetch annotations and output results */
+int annotatemore_fetch(char *mailbox,
+		       struct strlist *entries, struct strlist *attribs,
 		       struct namespace *namespace, int isadmin, char *userid,
-		       struct auth_state *auth_state, struct entryattlist **l);
+		       struct auth_state *auth_state, struct protstream *pout);
+
+struct annotation_data {
+    const char *value;
+    size_t size;
+    time_t modifiedsince;
+    const char *contenttype;
+};
+
+/* lookup a single annotation and return result */
+int annotatemore_lookup(const char *mboxname, const char *entry,
+			const char *userid, struct annotation_data *attrib);
 
 /* store annotations */
-int annotatemore_store(struct entryattlist *l, struct namespace *namespace,
+int annotatemore_store(char *mailbox,
+		       struct entryattlist *l, struct namespace *namespace,
 		       int isadmin, char *userid,
 		       struct auth_state *auth_state);
+
+/* low-level interface for use by mbdump routines */
+int annotatemore_write_entry(const char *mboxname, const char *entry,
+			     const char *userid,
+			     const char *value, const char *contenttype,
+			     size_t size, time_t modifiedsince,
+			     struct txn **tid);
+
+/* rename the annotations for 'oldmboxname' to 'newmboxname'
+ * if 'olduserid' is non-NULL then the private annotations
+ * for 'olduserid' are renamed to 'newuserid'
+ */
+int annotatemore_rename(const char *oldmboxname, const char *newmboxname,
+			const char *olduserid, const char *newuserid);
+
+/* delete the annotations for 'mboxname' */
+int annotatemore_delete(const char *mboxname);
 
 /* close the database */
 void annotatemore_close(void);

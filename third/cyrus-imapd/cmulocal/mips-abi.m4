@@ -2,9 +2,9 @@ dnl mips-abi.m4--Check for MIPS/IRIX ABI flags. Sets $abi and $abilibdirext
 dnl to some value
 dnl Derrick Brashear
 dnl from KTH krb (from CMU)
-dnl $Id: mips-abi.m4,v 1.1.1.1 2002-10-13 18:01:17 ghudson Exp $
+dnl $Id: mips-abi.m4,v 1.1.1.2 2004-02-23 22:54:00 rbasch Exp $
 
-AC_DEFUN(AC_MIPS_ABI, [
+AC_DEFUN([AC_MIPS_ABI], [
 AC_ARG_WITH(mips_abi,
 [  --with-mips-abi=abi     ABI to use for IRIX (32, n32, or 64)])
 

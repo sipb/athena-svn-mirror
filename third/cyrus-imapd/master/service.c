@@ -1,6 +1,6 @@
 /* service.c -- skeleton for Cyrus service; calls the real main
  *
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: service.c,v 1.1.1.2 2003-02-14 21:38:04 ghudson Exp $ */
+/* $Id: service.c,v 1.1.1.3 2004-02-23 22:56:27 rbasch Exp $ */
 
 #include <config.h>
 
@@ -65,8 +65,10 @@
 #include <stdlib.h>
 #include <sysexits.h>
 #include <string.h>
+#include <limits.h>
 
 #include "service.h"
+#include "xmalloc.h"
 
 extern int optind, opterr;
 extern char *optarg;
@@ -74,13 +76,16 @@ extern char *optarg;
 /* number of times this service has been used */
 static int use_count = 0;
 static int verbose = 0;
-static int gotalrm = 0;
+static volatile int gotalrm = 0;
 static int lockfd = -1;
 
 void notify_master(int fd, int msg)
 {
-    if (verbose) syslog(LOG_DEBUG, "telling master %d", msg);
-    if (write(fd, &msg, sizeof(msg)) != sizeof(msg)) {
+    struct notify_message notifymsg;
+    if (verbose) syslog(LOG_DEBUG, "telling master %x", msg);
+    notifymsg.message = msg;
+    notifymsg.service_pid = getpid();
+    if (write(fd, &notifymsg, sizeof(notifymsg)) != sizeof(notifymsg)) {
 	syslog(LOG_ERR, "unable to tell master %x: %m", msg);
     }
 }
@@ -99,12 +104,12 @@ static void libwrap_init(struct request_info *r, char *service)
 static int libwrap_ask(struct request_info *r, int fd)
 {
     int a;
-    struct sockaddr_in sin;
+    struct sockaddr_storage sin;
     socklen_t len = sizeof(sin);
     
     /* is this a connection from the local host? */
     if (getpeername(fd, (struct sockaddr *) &sin, &len) == 0) {
-	if (sin.sin_family == AF_UNIX) {
+	if (((struct sockaddr *)&sin)->sa_family == AF_UNIX) {
 	    return 1;
 	}
     }
@@ -137,17 +142,17 @@ static int libwrap_ask(struct request_info *r, int fd)
 
 #endif
 
-extern void config_init(const char *, const char *);
+extern void cyrus_init(const char *, const char *);
 extern const char *config_getstring(const char *key, const char *def);
 extern const char *config_dir;
 
-static int getlockfd(char *service)
+static int getlockfd(char *service, int id)
 {
     char lockfile[1024];
     int fd;
 
-    snprintf(lockfile, sizeof(lockfile), "%s/socket/%s.lock", 
-	     config_dir, service);
+    snprintf(lockfile, sizeof(lockfile), "%s/socket/%s-%d.lock", 
+	     config_dir, service, id);
     fd = open(lockfile, O_CREAT | O_RDWR, 0600);
     if (fd < 0) {
 	syslog(LOG_ERR, 
@@ -179,14 +184,16 @@ static int lockaccept(void)
 	    /* noop */;
 	
 	if (rc < 0 && gotalrm) {
-	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	    if (MESSAGE_MASTER_ON_EXIT) 
+		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	    service_abort(0);
 	    return -1;
 	}
 
 	if (rc < 0) {
 	    syslog(LOG_ERR, "fcntl: F_SETLKW: error getting accept lock: %m");
-	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	    if (MESSAGE_MASTER_ON_EXIT) 
+		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	    service_abort(EX_OSERR);
 	    return -1;
 	}
@@ -214,7 +221,8 @@ static int unlockaccept(void)
 	if (rc < 0) {
 	    syslog(LOG_ERR, 
 		   "fcntl: F_SETLKW: error releasing accept lock: %m");
-	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	    if (MESSAGE_MASTER_ON_EXIT) 
+		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	    service_abort(EX_OSERR);
 	    return -1;
 	}
@@ -266,8 +274,14 @@ int main(int argc, char **argv, char **envp)
     int soctype;
     int typelen = sizeof(soctype);
     int newargc = 0;
-    char **newargv = (char **) malloc(ARGV_GROW * sizeof(char *));
-
+    char **newargv = (char **) xmalloc(ARGV_GROW * sizeof(char *));
+    int id;
+    char path[PATH_MAX];
+    struct stat sbuf;
+    ino_t start_ino;
+    off_t start_size;
+    time_t start_mtime;
+    
     opterr = 0; /* disable error reporting,
 		   since we don't know about service-specific options */
 
@@ -298,8 +312,8 @@ int main(int argc, char **argv, char **envp)
 	    break;
 	default:
 	    if (!((newargc+1) % ARGV_GROW)) { /* time to alloc more */
-		newargv = (char **) realloc(newargv, (newargc + ARGV_GROW) * 
-					    sizeof(char *));
+		newargv = (char **) xrealloc(newargv, (newargc + ARGV_GROW) * 
+					     sizeof(char *));
 	    }
 	    newargv[newargc++] = argv[optind-1];
 
@@ -313,8 +327,8 @@ int main(int argc, char **argv, char **envp)
     /* grab the remaining arguments */
     for (; optind < argc; optind++) {
 	if (!(newargc % ARGV_GROW)) { /* time to alloc more */
-	    newargv = (char **) realloc(newargv, (newargc + ARGV_GROW) * 
-					sizeof(char *));
+	    newargv = (char **) xrealloc(newargv, (newargc + ARGV_GROW) * 
+					 sizeof(char *));
 	}
 	newargv[newargc++] = argv[optind];
     }
@@ -335,12 +349,16 @@ int main(int argc, char **argv, char **envp)
 	syslog(LOG_ERR, "could not getenv(CYRUS_SERVICE); exiting");
 	exit(EX_SOFTWARE);
     }
-    service = strdup(p);
-    if (service == NULL) {
-	syslog(LOG_ERR, "couldn't strdup() service: %m");
-	exit(EX_OSERR);
+    service = xstrdup(p);
+
+    p = getenv("CYRUS_ID");
+    if (p == NULL) {
+	syslog(LOG_ERR, "could not getenv(CYRUS_ID); exiting");
+	exit(EX_SOFTWARE);
     }
-    config_init(alt_config, service);
+    id = atoi(p);
+
+    cyrus_init(alt_config, service);
 
     if (call_debugger) {
 	char debugbuf[1024];
@@ -362,7 +380,8 @@ int main(int argc, char **argv, char **envp)
 				       fdflags | FD_CLOEXEC);
     if (fdflags == -1) {
 	syslog(LOG_ERR, "unable to set close on exec: %m");
-	notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	if (MESSAGE_MASTER_ON_EXIT) 
+	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	return 1;
     }
     fdflags = fcntl(STATUS_FD, F_GETFD, 0);
@@ -370,7 +389,8 @@ int main(int argc, char **argv, char **envp)
 				       fdflags | FD_CLOEXEC);
     if (fdflags == -1) {
 	syslog(LOG_ERR, "unable to set close on exec: %m");
-	notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	if (MESSAGE_MASTER_ON_EXIT) 
+	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	return 1;
     }
 
@@ -378,23 +398,37 @@ int main(int argc, char **argv, char **envp)
     if (getsockopt(LISTEN_FD, SOL_SOCKET, SO_TYPE,
 		   (char *) &soctype, &typelen) < 0) {
 	syslog(LOG_ERR, "getsockopt: SOL_SOCKET: failed to get type: %m");
-	notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	if (MESSAGE_MASTER_ON_EXIT) 
+	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	return 1;
     }
 
     if (service_init(newargc, newargv, envp) != 0) {
-	notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	if (MESSAGE_MASTER_ON_EXIT) 
+	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	return 1;
     }
 
-    getlockfd(service);
+    /* determine initial process file inode, size and mtime */
+    if (newargv[0][0] == '/')
+	strlcpy(path, newargv[0], sizeof(path));
+    else
+	snprintf(path, sizeof(path), "%s/%s", SERVICE_PATH, newargv[0]);
+
+    stat(path, &sbuf);
+    start_ino= sbuf.st_ino;
+    start_size = sbuf.st_size;
+    start_mtime = sbuf.st_mtime;
+
+    getlockfd(service, id);
     for (;;) {
 	/* ok, listen to this socket until someone talks to us */
 
 	if (use_count > 0) {
 	    /* we want to time out after 60 seconds, set an alarm */
 	    if (setsigalrm() < 0) {
-		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+		if (MESSAGE_MASTER_ON_EXIT) 
+		    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 		service_abort(EX_OSERR);
 	    }
 	    gotalrm = 0;
@@ -428,13 +462,14 @@ int main(int argc, char **argv, char **envp)
 			
 		    default:
 			syslog(LOG_ERR, "accept failed: %m");
-			notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+			if (MESSAGE_MASTER_ON_EXIT) 
+			    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);	
 			service_abort(EX_OSERR);
 		    }
 		}
 	    } else {
 		/* udp */
-		struct sockaddr_in from;
+		struct sockaddr_storage from;
 		socklen_t fromlen;
 		char ch;
 		int r;
@@ -444,7 +479,8 @@ int main(int argc, char **argv, char **envp)
 			     (struct sockaddr *) &from, &fromlen);
 		if (r == -1) {
 		    syslog(LOG_ERR, "recvfrom failed: %m");
-		    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+		    if (MESSAGE_MASTER_ON_EXIT) 
+			notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 		    service_abort(EX_OSERR);
 		}
 		fd = LISTEN_FD;
@@ -456,13 +492,15 @@ int main(int argc, char **argv, char **envp)
 
 	if (fd < 0 && gotalrm) {
 	    /* timed out */
-	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	    if (MESSAGE_MASTER_ON_EXIT) 
+		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	    service_abort(0);
 	}
 	if (fd < 0) {
-	    /* how did this happen? */
+	    /* how did this happen? - we might have caught a signal. */
 	    syslog(LOG_ERR, "accept() failed but we didn't catch it?");
-	    notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
+	    if (MESSAGE_MASTER_ON_EXIT) 
+		notify_master(STATUS_FD, MASTER_SERVICE_UNAVAILABLE);
 	    service_abort(EX_SOFTWARE);
 	}
 
@@ -476,6 +514,7 @@ int main(int argc, char **argv, char **envp)
 
 	    if (!libwrap_ask(&request, fd)) {
 		/* connection denied! */
+		shutdown(fd, SHUT_RDWR);
 		close(fd);
 		continue;
 	    }
@@ -511,8 +550,17 @@ int main(int argc, char **argv, char **envp)
 	    break;
 	}
 
+	/* check current process file inode, size and mtime */
+	stat(path, &sbuf);
+	if (sbuf.st_ino != start_ino ||sbuf.st_size != start_size ||
+	    sbuf.st_mtime != start_mtime) {
+	    syslog(LOG_INFO, "process file has changed");
+	    break;
+	}
+
 	notify_master(STATUS_FD, MASTER_SERVICE_AVAILABLE);
     }
 
+    service_abort(0);
     return 0;
 }

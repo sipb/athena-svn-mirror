@@ -1,6 +1,6 @@
 /* htmlstrip.c -- HTML to text converter
  *
- * Copyright 1998, Carnegie Mellon University.  All Rights Reserved.
+ * Copyright 1998-2003, Carnegie Mellon University.  All Rights Reserved.
  * 
  * This software is made available for academic and research
  * purposes only.  No commercial license is hereby granted.
@@ -13,7 +13,7 @@
  *
  */
   
-/* $Id: htmlstrip.c,v 1.1.1.2 2003-02-14 21:38:26 ghudson Exp $ */
+/* $Id: htmlstrip.c,v 1.1.1.3 2004-02-23 22:54:40 rbasch Exp $ */
   
 #include <stdio.h>
 #include <string.h>

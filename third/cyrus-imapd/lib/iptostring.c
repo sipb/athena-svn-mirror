@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: iptostring.c,v 1.1.1.1 2002-10-13 18:00:31 ghudson Exp $ */
+/* $Id: iptostring.c,v 1.1.1.2 2004-02-23 22:53:25 rbasch Exp $ */
 
 #include <config.h>
 #include <stdlib.h>

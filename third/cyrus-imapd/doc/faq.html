@@ -4,7 +4,7 @@
 <head>
 <meta name="generator" content="HTML Tidy, see www.w3.org" />
 <title>Cyrus IMAP Server FAQ</title>
-<!-- $Id: faq.html,v 1.1.1.2 2003-02-14 21:38:44 ghudson Exp $ -->
+<!-- $Id: faq.html,v 1.1.1.3 2004-02-23 22:54:38 rbasch Exp $ -->
 </head>
 <body>
 <h1>Cyrus IMAP Server FAQ</h1>
@@ -28,9 +28,10 @@ archives for more information.</li>
 
 <li><b>Using AFS/Coda</b> We don't recommend it. It's even less likely
 to work than NFS. If you want to do it, it may possibly work but you
-may also lose your email or have corrupted <tt>cyrus.*</tt> files. CMU's previous e-mail system, AMS, leveraged AFS extensively for
-storage (and transit) purposes. For various reasons it didn't scale
-particularly well and led to CMU's interest in IMAP.
+may also lose your email or have corrupted <tt>cyrus.*</tt>
+files. CMU's previous e-mail system, AMS, leveraged AFS extensively
+for storage (and transit) purposes. For various reasons it didn't
+scale particularly well and led to CMU's interest in IMAP.
 
 <p>
 Cyrus was designed to use a local filesystem with Unix semantics and a
@@ -38,16 +39,37 @@ working mmap()/write() combination. AFS doesn't provide these
 semantics so won't work correctly.</p>
 </li>
 
-<li><b>Virtual hosting</b> - This will be supported starting in Cyrus 2.2.</li>
+<li><b>Virtual hosting</b> - See <a
+href="install-virtdomains.html">virtual domains configuration</a>.</li>
 
 <li><b>dots in userids</b> - you can have a '.' in your username
 IF, AND ONLY IF, you use the <a
 href="altnamespace.html#unixhiersep">UNIX hierarchy
 convention</a>.</li>
 
-<li><b>renaming users</b> - nope, not supported.</li>
+<li><b>renaming users</b> - Supported, but try to make sure that the
+user is not, and can not login when doing the rename.  Otherwise
+user-meta may get corrupted and/or out of sync.</li>
 
-<li><b>plus addressing</b></li>
+<li><b>plus addressing</b> - Plus addressing allows direct delivery
+to a particular mailbox (other than an INBOX).  This is done in two ways.
+
+<p>The first way allows delviery to a subfolder of a specific user's
+INBOX.  This is done via an address of the form: username+mailfolder@domain,
+which will deliver to the user's INBOX.mailfolder folder (or altnamespace
+equivalent).  This submailbox must allow the posting user the 'p' right
+(generally, this means 'anyone' must have the 'p' right), otherwise the
+message will just be filed into the user's INBOX.
+
+<p>The second way is to form an address like [postuser]+mailfolder@domain.
+This will deliver into the mailbox 'mailfolder'.  [postuser] is the string
+specified in the imapd.conf option of the same name, and may be the
+empty string.  As before, the posting user will need to have the 'p' right on
+the mailbox.
+
+<p>For both methods, if 'mailfolder' is more than one level deep, you will
+need to conform to the hierarchy separator appropriate to your site.
+</li>
 
 <li><b>Performance/Capacity/Scaling</b> - See <a
 href="install-perf.html">the performance guide</a>.</li>
@@ -120,7 +142,7 @@ What's wrong?</dt>
 <dd>
 <p><b>A:</b> Remove all <tt>imap</tt>, <tt>pop</tt>, <tt>lmtp</tt>
 and <tt>sieve</tt> lines from <tt>[x]inetd.conf</tt> and restart
-<tt>[x]inetd</tt>.</p>
+<tt>[x]inetd</tt>.  Cyrus is run out of its own &quot;master&quot; process.</p>
 </dd>
 
 <dt><b>Q:</b> How do I use different SSL/TLS certificates for imap
@@ -189,10 +211,67 @@ volume of e-mail.</p>
 decremented properly, causing this number to be unreliable.</p>
 </dd>
 
+<dt><b>Q:</b> All of the 8bit characters in the headers of messages
+that I receive are being changed to 'X's.  What's going on?</dt>
+
+<dd>
+<p><b>A:</b> 8-bit characters are illegal in message headers.  Following
+the principal of &quot;be liberal in what you accept, and strict in what you
+send&quot; cyrus converts them to Xs.  (Without a character set, having
+the 8-bit characters replaced with Xs is just as good as having them be any
+other 8-bit character, especially for sorting and searching).
+Alternatively, you can set &quot;reject8bit: t&quot; in <tt>imapd.conf</tt> to
+reject the messages outright.  It might
+also be reasonable for cyrus to support the use of a default character set,
+however thus far no one has done the work to do so (it would also involve
+QP-encoding the corrupted headers).
+</p>
+</dd>
+
+<dt><b>Q:</b> Why can't I delete any messages from my over-quota mailbox?
+I'm using a client with a 'trash folder'.</dt>
+
+<dd>
+<p><b>A:</b>
+Trash folders, as they are commonly implemented (as an actual IMAP mailbox),
+do not fit the IMAP delete/expunge model very well.  In fact, naive
+client implementations will get stuck in a situation where they cannot
+delete a message from a mailbox because they try to COPY it to the trash
+folder before deleting the message.  This operation will fail due to the
+mailbox being over quota.  This is separate from the fact that a specific 
+mailbox name is not interoperable between clients (one might call it 'trash',
+another 'Trash', another 'Recycle Bin', etc)
+</p><p>
+Given the lack of protocol support for a trash folder, this is mostly a
+quality-of-implementation issue on the client side.  There
+are a few options here:
+<ul>
+<li>Contact your client vendor to have
+the broken client fixed (one possibility is to have the client ask the user
+if they wish to permanantly delete the message if the COPY operation fails).</li>
+<li>Stop using the 'trash mailbox' feature of your client (if possible).</li>
+<li>Set a separate quota root on the 'trash folders'
+of users.  This last option is significantly harder to do correctly, since
+it assumes that all clients that make use of a trash folder do so with the
+same folder name.</li>
+</ul>
+</p>
+</dd>
+
+<dt><b>Q:</b> How do I stop Cyrus from advertising the DIGEST-MD5 and
+CRAM-MD5 shared secret SASL mechanisms?</dt>
+
+<dd>
+<p><b>A:</b> Not really a Cyrus IMAPd question, this can be fixed by just removing
+the SASL plugins from where Cyrus SASL installed them (if no other applications require them),
+or by using the <tt>sasl_mech_list</tt> <tt>imapd.conf</tt> option to list
+only the mechanisms that you require.</p>
+</dd>
+
 </dl>
 
 <hr />
-last modified: $Date: 2003-02-14 21:38:44 $ <br />
+last modified: $Date: 2004-02-23 22:54:38 $ <br />
 <a href="index.html">Return</a> to the Cyrus IMAP Server Home Page
 </body>
 </html>

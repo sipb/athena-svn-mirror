@@ -1,7 +1,7 @@
 dnl libwrap.m4 --- do we have libwrap, the access control library?
-dnl $Id: libwrap.m4,v 1.1.1.1 2002-10-13 18:03:04 ghudson Exp $
+dnl $Id: libwrap.m4,v 1.1.1.2 2004-02-23 22:54:37 rbasch Exp $
 
-AC_DEFUN(CMU_LIBWRAP, [
+AC_DEFUN([CMU_LIBWRAP], [
   AC_REQUIRE([CMU_SOCKETS])
   AC_ARG_WITH(libwrap, 
               [  --with-libwrap=DIR      use libwrap (rooted in DIR) [yes] ],
@@ -21,7 +21,7 @@ AC_DEFUN(CMU_LIBWRAP, [
   AC_MSG_RESULT($with_libwrap)
   LIB_WRAP=""
   if test "$with_libwrap" != no; then
-    AC_DEFINE(HAVE_LIBWRAP)
+    AC_DEFINE(HAVE_LIBWRAP,[],[Do we have TCP wrappers?])
     LIB_WRAP="-lwrap"
     AC_CHECK_LIB(nsl, yp_get_default_domain, LIB_WRAP="${LIB_WRAP} -lnsl")
   fi

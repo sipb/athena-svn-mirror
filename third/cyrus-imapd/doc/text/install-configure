@@ -99,8 +99,7 @@ Installing and configuring the IMAP Server
 
         The partition directory is similar in concept to /var/spool/news.
         It is where the mailboxes are stored. Unlike most netnews systems,
-        Cyrus allows you to have more than one partition. Do not use the
-        string "news" as a partition name, as it is reserved for netnews. 
+        Cyrus allows you to have more than one partition. 
      7. If you wish to use Sieve, and you didn't configure deliver to look
         in home directories (see the imapd.conf man page), create the Sieve
         directory: 
@@ -113,8 +112,7 @@ Installing and configuring the IMAP Server
 
      8. Change to the Cyrus user and use the tool "tools/mkimap" to create
         the rest of the directories (subdirectories of the directories you
-        just created). Note that if you compiled cyrus with
-        --enable-fulldirhash, you need to use "tools/rehash" instead. 
+        just created). 
 
            su cyrus
            tools/mkimap
@@ -146,8 +144,10 @@ Installing and configuring the IMAP Server
         already there. 
 
            pop3      110/tcp
+           nntp      119/tcp
            imap      143/tcp
            imsp      406/tcp
+           nntps     563/tcp
            acap      674/tcp
            imaps     993/tcp
            pop3s     995/tcp
@@ -234,6 +234,12 @@ Configuring Sendmail
         Edit /etc/group and add user "daemon" to the "mail" group. This
         will permit sendmail to run the "deliver" (LMTP client) program to
         deliver mail to the IMAP server. 
+
+    Cyrus also includes a socket map daemon smmapd which can be used by
+    Sendmail 8.13 and higher (a patch for 8.12 is available) to verify at
+    RCPT TO time that a message can be delivered to the particular mailbox.
+    To use this daemon, add smmapd as a service in cyrus.conf and configure
+    Sendmail accordingly. 
 
 Configuring Postfix
 
@@ -323,38 +329,8 @@ Configuring Exim 4
 
 Exporting Netnews via IMAP
 
-    If you want to export netnews newsgroups using IMAP do the following: 
-
-     1. Create a directory for the "news" partition. This directory should
-        be different than the news spool directory. This document uses a
-        news partition directory of "/var/spool/imap-news" in the following
-        examples: 
-
-           cd /var/spool
-           mkdir imap-news
-           chown cyrus imap-news
-           chgrp mail imap-news
-           chmod 750 imap-news
-
-     2. Set the "partition-news" and "newsspool" options to appropriate
-        values: 
-
-           partition-news: /var/spool/imap-news
-           newsspool: /var/spool/news
-
-     3. The cyrus user must be able to write to the out.going
-        ("/var/spool/news/out.going") directory. This can be done by
-        putting the cyrus user into the news group and making the oug.going
-        directory group writable. 
-
-     4. Add the following line to the newsfeeds file 
-
-           collectnews!:*:Tf,WO:collectnews
-
-     5. Add a cron job to run "/usr/cyrus/bin/feedcyrus" every ten minutes
-        as the cyrus user. Also add a cron job to run
-        "/usr/cyrus/bin/syncnews /var/news/active >/dev/null 2>&1" nightly.
-        (Using the appropriate path to the active file.) 
+    If you wish to use export Netnews via IMAP, consult
+    install-netnews.html. 
 
 SSL, TLS, and OpenSSL
 
