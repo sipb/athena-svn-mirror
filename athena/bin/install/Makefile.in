@@ -1,10 +1,7 @@
-# $Id: Makefile.in,v 1.1 1996-12-16 08:27:20 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1997-01-04 06:07:11 ghudson Exp $
 
 SHELL=/bin/sh
-CC=@CC@
 STRIP=@STRIP@
-CFLAGS=${CDEBUGFLAGS} -DSTRIP=\"${STRIP}\"
-CDEBUGFLAGS=-g
 VPATH=@srcdir@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
@@ -13,10 +10,20 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
 
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-DSTRIP=\"${STRIP}\" ${CPPFLAGS} ${CFLAGS}
+
 all: xinstall
 
 xinstall: install.o
 	${CC} ${LDFLAGS} -o xinstall install.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
 
 check:
 
@@ -30,3 +37,4 @@ clean:
 	rm -f install.o xinstall
 
 distclean: clean
+	rm -f config.cache config.log config.status Makefile
