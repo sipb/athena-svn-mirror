@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.8 1990-08-25 18:09:34 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.9 1990-08-25 18:20:47 epeisach Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.
@@ -73,6 +73,10 @@ DBOBJS          = dump_db.o restore_db.o bill_db.o \
 ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS) dump_logs
 
 all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL} 
+
+Makefile: Imakefile
+	-mv -f Makefile Makefile.bak
+	/lib/cpp -E Imakefile Makefile 
 
 ./ncs/cpp/cpp:
 	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
