@@ -578,7 +578,6 @@ Non-nil third argument means not to show the message."
       (setq mh-previous-seq (mh-get-profile-field "Previous-Sequence:"))
       (if mh-previous-seq
 	  (setq mh-previous-seq (intern mh-previous-seq)))
-      (setq mail-user-agent 'mh-e-user-agent)
       (run-hooks 'mh-find-path-hook)))
   (and mh-auto-folder-collect
        (let ((mh-no-install t))		;only get folders if MH installed
