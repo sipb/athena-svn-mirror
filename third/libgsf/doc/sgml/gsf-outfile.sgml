@@ -1,0 +1,90 @@
+<refentry id="gsf-gsf-outfile">
+<refmeta>
+<refentrytitle>gsf-outfile</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gsf-outfile</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GSF-OUTFILE-TYPE-CAPS">GSF_OUTFILE_TYPE</link>
+#define     <link linkend="GSF-OUTFILE-CAPS">GSF_OUTFILE</link>                     (o)
+<link linkend="GType">GType</link>       <link linkend="gsf-outfile-get-type">gsf_outfile_get_type</link>            (void);
+<link linkend="GQuark">GQuark</link>      <link linkend="gsf-outfile-error">gsf_outfile_error</link>               (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GSF-OUTFILE-TYPE-CAPS">GSF_OUTFILE_TYPE</title>
+<indexterm><primary>GSF_OUTFILE_TYPE</primary></indexterm><programlisting>#define GSF_OUTFILE_TYPE        (gsf_outfile_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GSF-OUTFILE-CAPS">GSF_OUTFILE()</title>
+<indexterm><primary>GSF_OUTFILE</primary></indexterm><programlisting>#define GSF_OUTFILE(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GSF_OUTFILE_TYPE, GsfOutfile))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-outfile-get-type">gsf_outfile_get_type ()</title>
+<indexterm><primary>gsf_outfile_get_type</primary></indexterm><programlisting><link linkend="GType">GType</link>       gsf_outfile_get_type            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-outfile-error">gsf_outfile_error ()</title>
+<indexterm><primary>gsf_outfile_error</primary></indexterm><programlisting><link linkend="GQuark">GQuark</link>      gsf_outfile_error               (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

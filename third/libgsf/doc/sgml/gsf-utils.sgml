@@ -1,0 +1,113 @@
+<refentry id="gsf-gsf-utils">
+<refmeta>
+<refentrytitle>gsf-utils</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GSF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gsf-utils</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        <link linkend="gsf-init">gsf_init</link>                        (void);
+<link linkend="void">void</link>        <link linkend="gsf-shutdown">gsf_shutdown</link>                    (void);
+<link linkend="void">void</link>        <link linkend="gsf-mem-dump">gsf_mem_dump</link>                    (<link linkend="guint8">guint8</link> const *ptr,
+                                             <link linkend="size-t">size_t</link> len);
+<link linkend="void">void</link>        <link linkend="gsf-input-dump">gsf_input_dump</link>                  (<link linkend="GsfInput">GsfInput</link> *input);
+extern      int <link linkend="libgsf-major-version">libgsf_major_version</link>;
+extern      int <link linkend="libgsf-minor-version">libgsf_minor_version</link>;
+extern      int <link linkend="libgsf-micro-version">libgsf_micro_version</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gsf-init">gsf_init ()</title>
+<indexterm><primary>gsf_init</primary></indexterm><programlisting><link linkend="void">void</link>        gsf_init                        (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gsf-shutdown">gsf_shutdown ()</title>
+<indexterm><primary>gsf_shutdown</primary></indexterm><programlisting><link linkend="void">void</link>        gsf_shutdown                    (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gsf-mem-dump">gsf_mem_dump ()</title>
+<indexterm><primary>gsf_mem_dump</primary></indexterm><programlisting><link linkend="void">void</link>        gsf_mem_dump                    (<link linkend="guint8">guint8</link> const *ptr,
+                                             <link linkend="size-t">size_t</link> len);</programlisting>
+<para>
+Dump <parameter>len</parameter> bytes from the memory location given by <parameter>ptr</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ptr</parameter>&nbsp;:</term>
+<listitem><simpara> memory area to be dumped.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>len</parameter>&nbsp;:</term>
+<listitem><simpara> how many bytes will be dumped.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gsf-input-dump">gsf_input_dump ()</title>
+<indexterm><primary>gsf_input_dump</primary></indexterm><programlisting><link linkend="void">void</link>        gsf_input_dump                  (<link linkend="GsfInput">GsfInput</link> *input);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>input</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="libgsf-major-version">libgsf_major_version</title>
+<indexterm><primary>libgsf_major_version</primary></indexterm><programlisting>extern int libgsf_major_version;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="libgsf-minor-version">libgsf_minor_version</title>
+<indexterm><primary>libgsf_minor_version</primary></indexterm><programlisting>extern int libgsf_minor_version;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="libgsf-micro-version">libgsf_micro_version</title>
+<indexterm><primary>libgsf_micro_version</primary></indexterm><programlisting>extern int libgsf_micro_version;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

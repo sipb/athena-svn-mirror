@@ -1,0 +1,590 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AR = @AR@
+AS = @AS@
+BZ2_LIBS = @BZ2_LIBS@
+CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EGREP = @EGREP@
+EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+GTKDOC = @GTKDOC@
+HAVE_LIB = @HAVE_LIB@
+HTML_DIR = @HTML_DIR@
+LIB = @LIB@
+LIBGSF_CFLAGS = @LIBGSF_CFLAGS@
+LIBGSF_GNOME_CFLAGS = @LIBGSF_GNOME_CFLAGS@
+LIBGSF_GNOME_LIBS = @LIBGSF_GNOME_LIBS@
+LIBGSF_LIBS = @LIBGSF_LIBS@
+LIBGSF_MAJOR_VERSION = @LIBGSF_MAJOR_VERSION@
+LIBGSF_MICRO_VERSION = @LIBGSF_MICRO_VERSION@
+LIBGSF_MINOR_VERSION = @LIBGSF_MINOR_VERSION@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTLIB = @LTLIB@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+RANLIB = @RANLIB@
+RC = @RC@
+STRIP = @STRIP@
+VERSION = @VERSION@
+VERSION_INFO = @VERSION_INFO@
+WARN_CFLAGS = @WARN_CFLAGS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
+Z_LIBS = @Z_LIBS@
+
+INCLUDES = -I$(top_srcdir) $(LIBGSF_CFLAGS) $(LIBXML_CFLAGS)
+
+check_PROGRAMS = test-msole1 test-msole2 test-cp-msole test-msvba			 test-zip1 test-input1 test-gzip1					 test-textline test-ls-zip test-cat-zip test-zip2 			 test-cp-zip test-out-printf test-outmem-printf   			 test-msole-printf test-zip-out test-zip-out-subdirs    		 test-out-gzip test-cp test-out-bzip test-bzip # test-xml
+
+
+ldadd = $(top_builddir)/gsf/libgsf-1.la $(LIBGSF_LIBS)
+
+test_cp_LDADD = $(ldadd)
+test_msole1_LDADD = $(ldadd)
+test_msole2_LDADD = $(ldadd)
+test_cp_msole_LDADD = $(ldadd)
+test_msvba_LDADD = $(ldadd)
+test_zip1_LDADD = $(ldadd)
+test_zip2_LDADD = $(ldadd)
+test_input1_LDADD = $(ldadd)
+test_gzip1_LDADD = $(ldadd)
+test_textline_LDADD = $(ldadd)
+test_ls_zip_LDADD = $(ldadd)
+test_cat_zip_LDADD = $(ldadd)
+test_cp_zip_LDADD = $(ldadd)
+test_out_printf_LDADD = $(ldadd)
+test_outmem_printf_LDADD = $(ldadd)
+test_msole_printf_LDADD = $(ldadd)
+test_zip_out_LDADD = $(ldadd)
+test_zip_out_subdirs_LDADD = $(ldadd)
+test_out_gzip_LDADD = $(ldadd)
+test_out_bzip_LDADD = $(ldadd)
+test_bzip_LDADD = $(ldadd)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../gsf-config.h
+CONFIG_CLEAN_FILES = 
+check_PROGRAMS =  test-msole1$(EXEEXT) test-msole2$(EXEEXT) \
+test-cp-msole$(EXEEXT) test-msvba$(EXEEXT) test-zip1$(EXEEXT) \
+test-input1$(EXEEXT) test-gzip1$(EXEEXT) test-textline$(EXEEXT) \
+test-ls-zip$(EXEEXT) test-cat-zip$(EXEEXT) test-zip2$(EXEEXT) \
+test-cp-zip$(EXEEXT) test-out-printf$(EXEEXT) \
+test-outmem-printf$(EXEEXT) test-msole-printf$(EXEEXT) \
+test-zip-out$(EXEEXT) test-zip-out-subdirs$(EXEEXT) \
+test-out-gzip$(EXEEXT) test-cp$(EXEEXT) test-out-bzip$(EXEEXT) \
+test-bzip$(EXEEXT)
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+test_msole1_SOURCES = test-msole1.c
+test_msole1_OBJECTS =  test-msole1.$(OBJEXT)
+test_msole1_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_msole1_LDFLAGS = 
+test_msole2_SOURCES = test-msole2.c
+test_msole2_OBJECTS =  test-msole2.$(OBJEXT)
+test_msole2_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_msole2_LDFLAGS = 
+test_cp_msole_SOURCES = test-cp-msole.c
+test_cp_msole_OBJECTS =  test-cp-msole.$(OBJEXT)
+test_cp_msole_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_cp_msole_LDFLAGS = 
+test_msvba_SOURCES = test-msvba.c
+test_msvba_OBJECTS =  test-msvba.$(OBJEXT)
+test_msvba_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_msvba_LDFLAGS = 
+test_zip1_SOURCES = test-zip1.c
+test_zip1_OBJECTS =  test-zip1.$(OBJEXT)
+test_zip1_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_zip1_LDFLAGS = 
+test_input1_SOURCES = test-input1.c
+test_input1_OBJECTS =  test-input1.$(OBJEXT)
+test_input1_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_input1_LDFLAGS = 
+test_gzip1_SOURCES = test-gzip1.c
+test_gzip1_OBJECTS =  test-gzip1.$(OBJEXT)
+test_gzip1_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_gzip1_LDFLAGS = 
+test_textline_SOURCES = test-textline.c
+test_textline_OBJECTS =  test-textline.$(OBJEXT)
+test_textline_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_textline_LDFLAGS = 
+test_ls_zip_SOURCES = test-ls-zip.c
+test_ls_zip_OBJECTS =  test-ls-zip.$(OBJEXT)
+test_ls_zip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_ls_zip_LDFLAGS = 
+test_cat_zip_SOURCES = test-cat-zip.c
+test_cat_zip_OBJECTS =  test-cat-zip.$(OBJEXT)
+test_cat_zip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_cat_zip_LDFLAGS = 
+test_zip2_SOURCES = test-zip2.c
+test_zip2_OBJECTS =  test-zip2.$(OBJEXT)
+test_zip2_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_zip2_LDFLAGS = 
+test_cp_zip_SOURCES = test-cp-zip.c
+test_cp_zip_OBJECTS =  test-cp-zip.$(OBJEXT)
+test_cp_zip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_cp_zip_LDFLAGS = 
+test_out_printf_SOURCES = test-out-printf.c
+test_out_printf_OBJECTS =  test-out-printf.$(OBJEXT)
+test_out_printf_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_out_printf_LDFLAGS = 
+test_outmem_printf_SOURCES = test-outmem-printf.c
+test_outmem_printf_OBJECTS =  test-outmem-printf.$(OBJEXT)
+test_outmem_printf_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_outmem_printf_LDFLAGS = 
+test_msole_printf_SOURCES = test-msole-printf.c
+test_msole_printf_OBJECTS =  test-msole-printf.$(OBJEXT)
+test_msole_printf_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_msole_printf_LDFLAGS = 
+test_zip_out_SOURCES = test-zip-out.c
+test_zip_out_OBJECTS =  test-zip-out.$(OBJEXT)
+test_zip_out_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_zip_out_LDFLAGS = 
+test_zip_out_subdirs_SOURCES = test-zip-out-subdirs.c
+test_zip_out_subdirs_OBJECTS =  test-zip-out-subdirs.$(OBJEXT)
+test_zip_out_subdirs_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_zip_out_subdirs_LDFLAGS = 
+test_out_gzip_SOURCES = test-out-gzip.c
+test_out_gzip_OBJECTS =  test-out-gzip.$(OBJEXT)
+test_out_gzip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_out_gzip_LDFLAGS = 
+test_cp_SOURCES = test-cp.c
+test_cp_OBJECTS =  test-cp.$(OBJEXT)
+test_cp_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_cp_LDFLAGS = 
+test_out_bzip_SOURCES = test-out-bzip.c
+test_out_bzip_OBJECTS =  test-out-bzip.$(OBJEXT)
+test_out_bzip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_out_bzip_LDFLAGS = 
+test_bzip_SOURCES = test-bzip.c
+test_bzip_OBJECTS =  test-bzip.$(OBJEXT)
+test_bzip_DEPENDENCIES =  $(top_builddir)/gsf/libgsf-1.la
+test_bzip_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = test-msole1.c test-msole2.c test-cp-msole.c test-msvba.c test-zip1.c test-input1.c test-gzip1.c test-textline.c test-ls-zip.c test-cat-zip.c test-zip2.c test-cp-zip.c test-out-printf.c test-outmem-printf.c test-msole-printf.c test-zip-out.c test-zip-out-subdirs.c test-out-gzip.c test-cp.c test-out-bzip.c test-bzip.c
+OBJECTS = test-msole1.$(OBJEXT) test-msole2.$(OBJEXT) test-cp-msole.$(OBJEXT) test-msvba.$(OBJEXT) test-zip1.$(OBJEXT) test-input1.$(OBJEXT) test-gzip1.$(OBJEXT) test-textline.$(OBJEXT) test-ls-zip.$(OBJEXT) test-cat-zip.$(OBJEXT) test-zip2.$(OBJEXT) test-cp-zip.$(OBJEXT) test-out-printf.$(OBJEXT) test-outmem-printf.$(OBJEXT) test-msole-printf.$(OBJEXT) test-zip-out.$(OBJEXT) test-zip-out-subdirs.$(OBJEXT) test-out-gzip.$(OBJEXT) test-cp.$(OBJEXT) test-out-bzip.$(OBJEXT) test-bzip.$(OBJEXT)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps tests/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-checkPROGRAMS:
+
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+
+distclean-checkPROGRAMS:
+
+maintainer-clean-checkPROGRAMS:
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+test-msole1$(EXEEXT): $(test_msole1_OBJECTS) $(test_msole1_DEPENDENCIES)
+	@rm -f test-msole1$(EXEEXT)
+	$(LINK) $(test_msole1_LDFLAGS) $(test_msole1_OBJECTS) $(test_msole1_LDADD) $(LIBS)
+
+test-msole2$(EXEEXT): $(test_msole2_OBJECTS) $(test_msole2_DEPENDENCIES)
+	@rm -f test-msole2$(EXEEXT)
+	$(LINK) $(test_msole2_LDFLAGS) $(test_msole2_OBJECTS) $(test_msole2_LDADD) $(LIBS)
+
+test-cp-msole$(EXEEXT): $(test_cp_msole_OBJECTS) $(test_cp_msole_DEPENDENCIES)
+	@rm -f test-cp-msole$(EXEEXT)
+	$(LINK) $(test_cp_msole_LDFLAGS) $(test_cp_msole_OBJECTS) $(test_cp_msole_LDADD) $(LIBS)
+
+test-msvba$(EXEEXT): $(test_msvba_OBJECTS) $(test_msvba_DEPENDENCIES)
+	@rm -f test-msvba$(EXEEXT)
+	$(LINK) $(test_msvba_LDFLAGS) $(test_msvba_OBJECTS) $(test_msvba_LDADD) $(LIBS)
+
+test-zip1$(EXEEXT): $(test_zip1_OBJECTS) $(test_zip1_DEPENDENCIES)
+	@rm -f test-zip1$(EXEEXT)
+	$(LINK) $(test_zip1_LDFLAGS) $(test_zip1_OBJECTS) $(test_zip1_LDADD) $(LIBS)
+
+test-input1$(EXEEXT): $(test_input1_OBJECTS) $(test_input1_DEPENDENCIES)
+	@rm -f test-input1$(EXEEXT)
+	$(LINK) $(test_input1_LDFLAGS) $(test_input1_OBJECTS) $(test_input1_LDADD) $(LIBS)
+
+test-gzip1$(EXEEXT): $(test_gzip1_OBJECTS) $(test_gzip1_DEPENDENCIES)
+	@rm -f test-gzip1$(EXEEXT)
+	$(LINK) $(test_gzip1_LDFLAGS) $(test_gzip1_OBJECTS) $(test_gzip1_LDADD) $(LIBS)
+
+test-textline$(EXEEXT): $(test_textline_OBJECTS) $(test_textline_DEPENDENCIES)
+	@rm -f test-textline$(EXEEXT)
+	$(LINK) $(test_textline_LDFLAGS) $(test_textline_OBJECTS) $(test_textline_LDADD) $(LIBS)
+
+test-ls-zip$(EXEEXT): $(test_ls_zip_OBJECTS) $(test_ls_zip_DEPENDENCIES)
+	@rm -f test-ls-zip$(EXEEXT)
+	$(LINK) $(test_ls_zip_LDFLAGS) $(test_ls_zip_OBJECTS) $(test_ls_zip_LDADD) $(LIBS)
+
+test-cat-zip$(EXEEXT): $(test_cat_zip_OBJECTS) $(test_cat_zip_DEPENDENCIES)
+	@rm -f test-cat-zip$(EXEEXT)
+	$(LINK) $(test_cat_zip_LDFLAGS) $(test_cat_zip_OBJECTS) $(test_cat_zip_LDADD) $(LIBS)
+
+test-zip2$(EXEEXT): $(test_zip2_OBJECTS) $(test_zip2_DEPENDENCIES)
+	@rm -f test-zip2$(EXEEXT)
+	$(LINK) $(test_zip2_LDFLAGS) $(test_zip2_OBJECTS) $(test_zip2_LDADD) $(LIBS)
+
+test-cp-zip$(EXEEXT): $(test_cp_zip_OBJECTS) $(test_cp_zip_DEPENDENCIES)
+	@rm -f test-cp-zip$(EXEEXT)
+	$(LINK) $(test_cp_zip_LDFLAGS) $(test_cp_zip_OBJECTS) $(test_cp_zip_LDADD) $(LIBS)
+
+test-out-printf$(EXEEXT): $(test_out_printf_OBJECTS) $(test_out_printf_DEPENDENCIES)
+	@rm -f test-out-printf$(EXEEXT)
+	$(LINK) $(test_out_printf_LDFLAGS) $(test_out_printf_OBJECTS) $(test_out_printf_LDADD) $(LIBS)
+
+test-outmem-printf$(EXEEXT): $(test_outmem_printf_OBJECTS) $(test_outmem_printf_DEPENDENCIES)
+	@rm -f test-outmem-printf$(EXEEXT)
+	$(LINK) $(test_outmem_printf_LDFLAGS) $(test_outmem_printf_OBJECTS) $(test_outmem_printf_LDADD) $(LIBS)
+
+test-msole-printf$(EXEEXT): $(test_msole_printf_OBJECTS) $(test_msole_printf_DEPENDENCIES)
+	@rm -f test-msole-printf$(EXEEXT)
+	$(LINK) $(test_msole_printf_LDFLAGS) $(test_msole_printf_OBJECTS) $(test_msole_printf_LDADD) $(LIBS)
+
+test-zip-out$(EXEEXT): $(test_zip_out_OBJECTS) $(test_zip_out_DEPENDENCIES)
+	@rm -f test-zip-out$(EXEEXT)
+	$(LINK) $(test_zip_out_LDFLAGS) $(test_zip_out_OBJECTS) $(test_zip_out_LDADD) $(LIBS)
+
+test-zip-out-subdirs$(EXEEXT): $(test_zip_out_subdirs_OBJECTS) $(test_zip_out_subdirs_DEPENDENCIES)
+	@rm -f test-zip-out-subdirs$(EXEEXT)
+	$(LINK) $(test_zip_out_subdirs_LDFLAGS) $(test_zip_out_subdirs_OBJECTS) $(test_zip_out_subdirs_LDADD) $(LIBS)
+
+test-out-gzip$(EXEEXT): $(test_out_gzip_OBJECTS) $(test_out_gzip_DEPENDENCIES)
+	@rm -f test-out-gzip$(EXEEXT)
+	$(LINK) $(test_out_gzip_LDFLAGS) $(test_out_gzip_OBJECTS) $(test_out_gzip_LDADD) $(LIBS)
+
+test-cp$(EXEEXT): $(test_cp_OBJECTS) $(test_cp_DEPENDENCIES)
+	@rm -f test-cp$(EXEEXT)
+	$(LINK) $(test_cp_LDFLAGS) $(test_cp_OBJECTS) $(test_cp_LDADD) $(LIBS)
+
+test-out-bzip$(EXEEXT): $(test_out_bzip_OBJECTS) $(test_out_bzip_DEPENDENCIES)
+	@rm -f test-out-bzip$(EXEEXT)
+	$(LINK) $(test_out_bzip_LDFLAGS) $(test_out_bzip_OBJECTS) $(test_out_bzip_LDADD) $(LIBS)
+
+test-bzip$(EXEEXT): $(test_bzip_OBJECTS) $(test_bzip_DEPENDENCIES)
+	@rm -f test-bzip$(EXEEXT)
+	$(LINK) $(test_bzip_LDFLAGS) $(test_bzip_OBJECTS) $(test_bzip_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = tests
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+test-bzip.o: test-bzip.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-input-bzip.h ../gsf/gsf-input-memory.h
+test-cat-zip.o: test-cat-zip.c ../gsf/gsf-input-stdio.h \
+	../gsf/gsf-input.h ../gsf/gsf.h ../gsf/gsf-output.h \
+	../gsf/gsf-utils.h ../gsf/gsf-infile.h ../gsf/gsf-infile-zip.h
+test-cp-msole.o: test-cp-msole.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-input-stdio.h ../gsf/gsf-input.h ../gsf/gsf-output.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-msole.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-outfile.h \
+	../gsf/gsf-outfile-msole.h
+test-cp-zip.o: test-cp-zip.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-input-stdio.h ../gsf/gsf-input.h ../gsf/gsf-output.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-zip.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-outfile.h \
+	../gsf/gsf-outfile-zip.h
+test-cp.o: test-cp.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-input-stdio.h ../gsf/gsf-input.h ../gsf/gsf-output.h \
+	../gsf/gsf-infile.h ../gsf/gsf-output-stdio.h \
+	../gsf/gsf-outfile.h
+test-gzip1.o: test-gzip1.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-input-gzip.h
+test-input1.o: test-input1.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-input-stdio.h ../gsf/gsf-input.h ../gsf/gsf-output.h
+test-ls-zip.o: test-ls-zip.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-zip.h
+test-msole-printf.o: test-msole-printf.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-output.h \
+	../gsf/gsf-outfile.h ../gsf/gsf-outfile-msole.h
+test-msole1.o: test-msole1.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-input-memory.h \
+	../gsf/gsf-utils.h ../gsf/gsf-infile.h \
+	../gsf/gsf-infile-msole.h ../gsf/gsf-msole-utils.h
+test-msole2.o: test-msole2.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-msole.h
+test-msvba.o: test-msvba.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-input-memory.h \
+	../gsf/gsf-utils.h ../gsf/gsf-infile.h \
+	../gsf/gsf-infile-msole.h ../gsf/gsf-infile-msvba.h
+test-out-bzip.o: test-out-bzip.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-output.h \
+	../gsf/gsf-output-bzip.h
+test-out-gzip.o: test-out-gzip.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-output.h \
+	../gsf/gsf-output-gzip.h
+test-out-printf.o: test-out-printf.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-output.h
+test-outmem-printf.o: test-outmem-printf.c ../gsf/gsf-utils.h \
+	../gsf/gsf.h ../gsf/gsf-output-memory.h ../gsf/gsf-output.h
+test-textline.o: test-textline.c ../gsf/gsf-input-stdio.h \
+	../gsf/gsf-input.h ../gsf/gsf.h ../gsf/gsf-output.h \
+	../gsf/gsf-utils.h ../gsf/gsf-input-textline.h
+test-zip-out-subdirs.o: test-zip-out-subdirs.c ../gsf/gsf-utils.h \
+	../gsf/gsf.h ../gsf/gsf-output-stdio.h ../gsf/gsf-output.h \
+	../gsf/gsf-outfile.h ../gsf/gsf-outfile-zip.h
+test-zip-out.o: test-zip-out.c ../gsf/gsf-utils.h ../gsf/gsf.h \
+	../gsf/gsf-output-stdio.h ../gsf/gsf-output.h \
+	../gsf/gsf-outfile.h ../gsf/gsf-outfile-zip.h
+test-zip1.o: test-zip1.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-zip.h
+test-zip2.o: test-zip2.c ../gsf/gsf-input-stdio.h ../gsf/gsf-input.h \
+	../gsf/gsf.h ../gsf/gsf-output.h ../gsf/gsf-utils.h \
+	../gsf/gsf-infile.h ../gsf/gsf-infile-zip.h \
+	../gsf/gsf-input-textline.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am:
+uninstall: uninstall-am
+all-am: Makefile
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-checkPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-checkPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-checkPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-checkPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-checkPROGRAMS distclean-checkPROGRAMS \
+clean-checkPROGRAMS maintainer-clean-checkPROGRAMS mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+#test_xml_LDADD			= $(ldadd)
+#test_trans_LDADD		= $(ldadd)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

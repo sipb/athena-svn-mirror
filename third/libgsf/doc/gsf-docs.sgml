@@ -1,0 +1,199 @@
+<!doctype book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!notation PNG system "PNG">
+<!entity % local.notation.class "| PNG">
+
+<!entity hash "#">
+<!entity percent "%">
+<!entity GsfImplUtils	SYSTEM "sgml/gsf-impl-utils.sgml">
+<!entity GsfInfileImpl	SYSTEM "sgml/gsf-infile-impl.sgml">
+<!entity GsfInfileMsole	SYSTEM "sgml/gsf-infile-msole.sgml">
+<!entity GsfInfileZip	SYSTEM "sgml/gsf-infile-zip.sgml">
+<!entity GsfInfile	SYSTEM "sgml/gsf-infile.sgml">
+<!entity GsfInputeGnomevfs	SYSTEM "sgml/gsf-input-gnomevfs.sgml">
+<!entity GsfInputGzip	SYSTEM "sgml/gsf-input-gzip.sgml">
+<!entity GsfInputImpl	SYSTEM "sgml/gsf-input-impl.sgml">
+<!entity GsfInputMemory	SYSTEM "sgml/gsf-input-memory.sgml">
+<!entity GsfInputStdio	SYSTEM "sgml/gsf-input-stdio.sgml">
+<!entity GsfInputTextline	SYSTEM "sgml/gsf-input-textline.sgml">
+<!entity GsfInput	SYSTEM "sgml/gsf-input.sgml">
+<!entity GsfLibxml	SYSTEM "sgml/gsf-libxml.sgml">
+<!entity GsfOutfile	SYSTEM "sgml/gsf-outfile.sgml">
+<!entity GsfOutputImpl	SYSTEM "sgml/gsf-output-impl.sgml">
+<!entity GsfOutput	SYSTEM "sgml/gsf-output.sgml">
+<!entity GsfSharedMemory	SYSTEM "sgml/gsf-shared-memory.sgml">
+<!entity GsfUtils	SYSTEM "sgml/gsf-utils.sgml">
+<!entity Gsf	SYSTEM "sgml/gsf.sgml">
+<!entity ObjectIndex	SYSTEM "sgml/object_index.sgml">
+<!entity TreeIndex	SYSTEM "sgml/tree_index.sgml">
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>GSF Reference Manual</title>
+  </bookinfo>
+
+  <part id="gsf">
+    <title>GSF Overview</title>
+    <partintro>
+    <para>
+The GNOME Structured File Library (GSF) is an I/O abstraction for
+reading/writing compound files.  GSF is released under the GNU Lesser General
+Public License (GNU LGPL), which allows for flexible licensing of client
+applications.
+    </para>
+    <para>
+GSF depends on the following libraries:
+<variablelist>
+
+<varlistentry>
+<term>GLib</term>
+<listitem><para>
+A general-purpose utility library, not specific to graphical user interfaces.
+GLib provides many useful data types, macros, type conversions,
+string utilities, file utilities, a main loop abstraction, and so on.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</partintro>
+
+<reference>
+<title>
+gsf
+</title>
+&Gsf;
+</reference>
+
+<reference>
+<title>
+gsf-impl-utils
+</title>
+&GsfImplUtils;
+</reference>
+
+<reference>
+<title>
+gsf-infile
+</title>
+&GsfInfile;
+</reference>
+
+<reference>
+<title>
+gsf-infile-impl
+</title>
+&GsfInfileImpl;
+</reference>
+
+<reference>
+<title>
+gsf-infile-msole
+</title>
+&GsfInfileMsole;
+</reference>
+
+<reference>
+<title>
+gsf-infile-zip
+</title>
+&GsfInfileZip;
+</reference>
+
+<reference>
+<title>
+gsf-input
+</title>
+&GsfInput;
+</reference>
+
+<reference>
+<title>
+gsf-input-impl
+</title>
+&GsfInputImpl;
+</reference>
+
+<reference>
+<title>
+gsf-input-gnomevfs
+</title>
+&GsfInputeGnomevfs;
+</reference>
+
+<reference>
+<title>
+gsf-input-gzip
+</title>
+&GsfInputGzip;
+</reference>
+
+<reference>
+<title>
+gsf-input-memory
+</title>
+&GsfInputMemory;
+</reference>
+
+<reference>
+<title>
+gsf-input-stdio
+</title>
+&GsfInputStdio;
+</reference>
+
+<reference>
+<title>
+gsf-input-textline
+</title>
+&GsfInputTextline;
+</reference>
+
+<reference>
+<title>
+gsf-out-file
+</title>
+&GsfOutfile;
+</reference>
+
+<reference>
+<title>
+gsf-output-impl
+</title>
+&GsfOutputImpl;
+</reference>
+
+<reference>
+<title>
+gsf-output
+</title>
+&GsfOutput;
+</reference>
+
+<reference>
+<title>
+gsf-libxml
+</title>
+&GsfLibxml;
+</reference>
+
+<reference>
+<title>
+gsf-shared-memory
+</title>
+&GsfSharedMemory;
+</reference>
+
+<reference>
+<title>
+gsf-utils
+</title>
+&GsfUtils;
+</reference>
+
+</part>
+
+<index>
+&ObjectIndex;
+&TreeIndex;
+</index>
+</book>

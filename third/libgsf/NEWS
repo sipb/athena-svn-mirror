@@ -1,0 +1,173 @@
+libgsf 1.8.2
+
+Jody:
+	* Catch invalid OLE2 files that claim there is data in a directory.
+	* Better error handling for Infile::child_by_*
+	* Work harder to restore invalid ole2 files with bad BATs.
+	* Begin an interface for ole2 export with non-default block sizes.
+	* Name the root directory 'Root Entry' to keep libole2 happy.
+
+Stuart Cunningham <stuartc@rd.bbc.co.uk>:
+	* Support CLSIDs for Storages for the AAF project
+	* Test and fix bugs reading ole files with non-default block sizes.
+
+------------------------------------------------------------------------------
+libgsf 1.8.1
+
+Morten:
+	* Plug major gzip output leak.
+
+------------------------------------------------------------------------------
+libgsf 1.8
+
+    2003 Mar 9
+	With the approval off all contributors the library has been
+	relicensed from GPL -> LGPL
+
+Dom:
+	* Some extra casts to make Bloodshed DevC++ happy
+	* IOChannel input work
+	* BZ2 input & output
+	* Return the derived types from constructor functions
+	* Support GObject properties for the inputs and outputs
+	* Start an AR infile
+	* Start Win32 COM IStream input/output
+	
+Jody:
+	* Fix ms ole export bug that would not clip overly long file names.
+	* Fix ms ole import bug with potentially invalid names
+
+Rodrigo:
+	* Added GsfInputIOChannel, a GIOChannel-based input.
+
+Xavier Roche:
+	* Patch some gsize == gunit32 assumptions.
+
+------------------------------------------------------------------------------
+libgsf 1.7
+
+Dom:
+	* Extend gnome-vfs support to handle uris
+	* Transacted output capability
+	* Ensure large reads and writes happen
+
+Jody:
+	* Start work on some simplified xml export utilities.
+	* Extend xml import facilities to support namespaces.
+	* Catch invalid OLE files with cycles.
+	* Fix exporting OLE files larger than 6.8 Meg
+
+Jon Kåre:
+	* Only unset valid GValues when reading msole properties.
+
+Morten:
+	* Fix xml save problem.
+
+Tor Lillqvist:
+	* Tweaks for the win32 build.
+
+------------------------------------------------------------------------------
+libgsf 1.6.0
+
+Jody:
+	* Be more anal about invalid stream names..
+	* Fix documentation install.
+	* Fix a subtle leak that Morten found.
+	* Suppress some warnings in the test suite.
+
+Jon Kåre:
+	* Add printf mechanism.
+	* Fix misc bugs.
+	* Add gzip output.
+
+Morten:
+	* Don't overwrite files we're not supposed to write.
+
+------------------------------------------------------------------------------
+libgsf 1.5.0
+
+Jody:
+	* Adjust sax routines to support recusive structures.
+
+Morten:
+	* Handle file names that are not valid utf8.
+
+Dom:
+	* Port over code page utilities from libwv.
+
+------------------------------------------------------------------------------
+libgsf 1.4.0
+
+Jody:
+	* Move some iconv utility routines here from gnumeric.
+	* More work on reading ole property sets.
+	* Minor tweak directory handling for infile-zip.
+	* Replace test-cat-zip with test-msole2
+	* Add error handling mechanism to GsfOutput
+	* Borrow the temp file handling from gedit
+	* Add some xml SAX parsing utilities (api is tentative)
+	* Add some structured blob utilites for easy in/out of blob trees
+	* Support unicode property values and names in ole files.
+
+Jon Kåre:
+	* sync the directory semantics of infile-zip with infile-msole.
+	* Support seeking within zip streams.
+	* Make dup work properly for gzip and zip children.
+	* Implement Zip export.
+
+------------------------------------------------------------------------------
+libgsf 1.3.0
+
+Jody:
+	* Split gnome-vfs and bonobo into a distinct library
+	* Polish the OLE export so that libole2 is molified.
+	* Add a timestamp object for use with metadata
+	* Some initial work on MS OLE property streams (doc metadata)
+	* Some initial work on doc meta data (expect changes as ole settles)
+
+Jon Kåre:
+	* Work and plan to support big files.
+
+------------------------------------------------------------------------------
+libgsf 1.2.0
+
+Dom:
+	* Read/Write gnome-vfs (untested)
+	* Write to mem buf (untested)
+
+Jody:
+	* Add some safety and utilty to ensure outputs are closed before
+	  finalizing
+	* Add some printf style capabilities for outputs.
+
+Ray:
+	* improve doc generation
+	* Update debian support in preparation for packaging.
+
+Rodrigo:
+	* more work on io_context.
+
+Tambet:
+	* Read zip files
+
+------------------------------------------------------------------------------
+libgsf 1.1.0
+
+Jody:
+	* Initial pass at an api
+	* Read & Write OLE
+	* Read gzip
+	* Read textlines
+	* Read & Write stdio wrapper
+	* Some libxml2 utility wrappers
+	* some test programs to dump or copy ole streams and file structures
+	* Uncompress vba streams
+	* Initial incomplete work on parsing vba3 & vba56 directories
+
+Morten:
+	* mmap/buffer wrapper
+	* testing & purification
+
+Jon Kåre:
+	* Some configure cleanup
+	* Bonobo Stream wrapper

@@ -1,0 +1,252 @@
+<!-- ##### MACRO GSF_INPUT_MMAP ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO GSF_INPUT_MMAP_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GSF_OLE_GET_GUINT16 ##### -->
+<para>
+
+</para>
+
+@p: 
+
+<!-- ##### MACRO GSF_OLE_GET_GUINT32 ##### -->
+<para>
+
+</para>
+
+@p: 
+
+<!-- ##### MACRO GSF_OLE_GET_GUINT8 ##### -->
+<para>
+
+</para>
+
+@p: 
+
+<!-- ##### STRUCT GsfInputGnomeVFS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GsfInputMMap ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GsfMSOleProperty ##### -->
+<para>
+
+</para>
+
+@GSF_MSOLE_PROP_STRING_MASK: 
+@GSF_MSOLE_PROP_TIME_MASK: 
+@GSF_MSOLE_PROP_WORD_MASK: 
+@GSF_MSOLE_PROP_DWORD_MASK: 
+@GSF_MSOLE_PROP_CLIPBOARD_MASK: 
+@GSF_MSOLE_PROP_TYPE_MASK: 
+@GSF_MSOLE_PROP_INDEX_MASK: 
+@GSF_MSOLE_PROP_CODEPAGE: 
+@GSF_MSOLE_PROP_TITLE: 
+@GSF_MSOLE_PROP_SUBJECT: 
+@GSF_MSOLE_PROP_AUTHOR: 
+@GSF_MSOLE_PROP_KEYWORDS: 
+@GSF_MSOLE_PROP_COMMENTS: 
+@GSF_MSOLE_PROP_TEMPLATE: 
+@GSF_MSOLE_PROP_LASTAUTHOR: 
+@GSF_MSOLE_PROP_REVNUMBER: 
+@GSF_MSOLE_PROP_EDITTIME: 
+@GSF_MSOLE_PROP_LASTPRINTED: 
+@GSF_MSOLE_PROP_CREATED: 
+@GSF_MSOLE_PROP_LASTSAVED: 
+@GSF_MSOLE_PROP_PAGECOUNT: 
+@GSF_MSOLE_PROP_WORDCOUNT: 
+@GSF_MSOLE_PROP_CHARCOUNT: 
+@GSF_MSOLE_PROP_THUMBNAIL: 
+@GSF_MSOLE_PROP_APPNAME: 
+@GSF_MSOLE_PROP_SECURITY: 
+
+<!-- ##### ENUM GsfOff_t ##### -->
+<para>
+
+</para>
+
+@GSF_SEEK_SET: 
+@GSF_SEEK_CUR: 
+@GSF_SEEK_END: 
+
+<!-- ##### MACRO IS_GSF_INFILE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INFILE_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+<!-- ##### MACRO IS_GSF_INFILE_MSOLE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INFILE_ZIP ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+<!-- ##### MACRO IS_GSF_INPUT_GZIP ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT_MEMORY ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT_MMAP ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT_STDIO ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_INPUT_TEXTLINE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_OUTFILE ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_OUTPUT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_GSF_OUTPUT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+<!-- ##### MACRO IS_GSF_SHARED_MEMORY ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO IS_MS_OLE_INPUT_GNOMEVFS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO MS_OLE_INPUT_GNOMEVFS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO MS_OLE_INPUT_GNOMEVFS_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gsf_input_gnomevfs_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION gsf_input_gnomevfs_new ##### -->
+<para>
+
+</para>
+
+@uri: 
+@error: 
+@Returns: 
+@filename: 
+
+<!-- ##### FUNCTION gsf_input_mmap_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION gsf_outfile_add_child ##### -->
+<para>
+
+</para>
+
+@outfile: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION gsf_output_error ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
