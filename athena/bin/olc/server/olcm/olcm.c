@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.9 1991-11-06 15:46:40 lwvanels Exp $
+ *      $Id: olcm.c,v 1.10 1992-01-07 18:58:03 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.9 1991-11-06 15:46:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.10 1992-01-07 18:58:03 lwvanels Exp $";
 #endif
 #endif
 
@@ -309,7 +309,7 @@ main(argc,argv)
   case ALREADY_HAVE_QUESTION:
   case HAS_QUESTION:
     syslog(LOG_INFO,"user %s sending reply", username);
-    fprintf(mail, "You are already asking a question; this message will be \n");
+    fprintf(mail, "You are already asking a question; your message will be \n");
     fprintf(mail, "appended to the text of your existing question.\n");
     do_send = 1;
     break;
@@ -335,10 +335,12 @@ main(argc,argv)
     switch(status) {
     case SUCCESS:
     case NOT_CONNECTED:
-      fprintf(mail, "Your question has been received and will be forwarded to the first\navailable consultant.\n");
-      break;
+/*      fprintf(mail, "Your question has been received and will be forwarded */
+/*      to the first\navailable consultant.\n");  */
+/*      break; */
     case CONNECTED:
-      fprintf(mail, "Your question has been received and a consultant is reviewing it now.\n");
+/*      fprintf(mail, "Your question has been received and a consultant is */
+/*      reviewing it now.\n");  */
       break;
     default:
       syslog(LOG_ERR,"OAsk Error status %d\n", status);
@@ -354,6 +356,14 @@ main(argc,argv)
 #ifdef KERBEROS
   dest_tkt();
 #endif
+
+  if ((f = fopen(STOCK_FILE,"r")) != NULL) {
+    while(fgets(buf,BUFSIZ,f) != NULL) {
+      /* Output stock reply */
+      fputs(buf,mail);
+    }
+    fclose(f);
+  }
 
   if (mail) {
     fprintf(mail, "Do not reply directly to this message; it was automatically generated.\n");
