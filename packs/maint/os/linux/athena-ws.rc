@@ -66,9 +66,9 @@ case "$1" in
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
-#		Should also check rpm integrity here
-
-		rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist \
+		/etc/athena/verify || failure "RPM verification and repair"
+		rm -rf /.hushlogin /etc/X0.hosts \
+			&& rm -f /etc/nologin.persist \
 			&& rm -rf /etc/ssh_host_key* \
 			&& rm -f {/etc,/etc/athena,/etc/athena/login}/*.local \
 			&& chmod 600 /etc/shadow \
