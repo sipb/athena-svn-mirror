@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: ldap-setup,v 1.1.1.3 2003-05-01 01:12:55 ghudson Exp $
+# $Id: ldap-setup,v 1.1.1.4 2005-01-26 17:55:53 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -21,7 +21,7 @@
 #   permission of the University of Washington.
 #
 #   Pine, Pico, and Pilot software and its included text are Copyright
-#   1989-2003 by the University of Washington.
+#   1989-2004 by the University of Washington.
 #
 #   The full text of our legal notices is contained in the file called
 #   CPYRIGHT, included with this distribution.
@@ -69,17 +69,21 @@
 #
 # And there is also OpenLDAP. It looks just like the
 # Michigan setup so no changes here for it. Set it up just like you
-# would set up umich.
+# would set up umich. Or, you can set the ldap symlink to point to the
+# installation directory where subdirectories include and lib are expected
+# to be located.
 #
 # And there is also the Solaris 8 setup.
 #
-# The build script is looking for an exit value of 1, 2, 3, or 4 from this
+# The build script is looking for an exit value of
+# 1, 2, 3, 4, 5 or 11 from this
 # script. 1 means this is a UMICH-style setup (with liblber.a) and 2 means
 # there is no liblber.a, just libldap.a. 3 means that the library is in a
 # standard location and so can be accessed with -lldap. 11 is like 1 with
 # two libraries but they are in ldap/libldap/.libs/libldap.a and
 # ldap/liblber/.libs/liblber.a instead. 4 means don't attempt
-# to include LDAP support. Anything else is an error.
+# to include LDAP support. 5 is like 3 but also with -llber
+# Anything else is an error.
 
 exitval=0
 ptarget=xxx
@@ -87,7 +91,7 @@ btarget=xxx
 if [ $# != "2" ]
 then
     echo "Usage: contrib/ldap-setup pinetarget buildtarget"
-    exit 5
+    exit 30
 fi
 
 ptarget=$1
@@ -96,7 +100,7 @@ btarget=$2
 if [ ! -d ldap ]
 then
     # User didn't configure LDAP but
-    # attempt automatic LDAP inclusion on Solaris and MacOS X
+    # attempt automatic LDAP inclusion on some systems
     set `uname -s -r`
     exitval=6
     if [ "$1" = "SunOS" ]; then
@@ -123,6 +127,44 @@ then
       else
 	echo "/usr/lib/libldap.so not found"
       fi
+    elif [ "$1" = "Linux" -a "$btarget" = "ldb" ]; then
+      if [ -f /usr/lib/libldap.so ]; then
+	if [ -f /usr/include/ldap.h ]; then
+	  if [ -f /usr/include/lber.h ]; then
+	    exit 5                             # EXIT successful
+	  else
+	    echo "/usr/include/lber.h not found"
+	  fi
+	else
+	  echo "/usr/include/ldap.h not found"
+	fi
+      else
+	echo "/usr/lib/libldap.so not found"
+      fi
+    elif [ "$1" = "Linux" -a "$btarget" = "lmd" ]; then
+      if [ -f /usr/lib/libldap.so ]; then
+	if [ -f /usr/include/ldap.h ]; then
+	  if [ -f /usr/include/lber.h ]; then
+	    exit 5                             # EXIT successful
+	  else
+	    echo "/usr/include/lber.h not found"
+	  fi
+	else
+	  echo "/usr/include/ldap.h not found"
+	fi
+      else
+	echo "/usr/lib/libldap.so not found"
+      fi
+    elif [ "$btarget" = "cyg" ]; then
+      if [ -f /usr/lib/libldap.a ]; then
+	if [ -f /usr/include/ldap.h ]; then
+	  exit 7				# EXIT successfull
+	else
+	  echo "/usr/include/ldap.h not found"
+	fi
+      else
+	echo "/usr/lib/libldap.a not found"
+      fi
     elif [ "$1" = "Darwin" ]; then
       set `echo $2 | tr "." " "`
       if [ "$1" -ge "6" ]; then
@@ -138,18 +180,18 @@ then
 	fi
       fi
     fi
-elif [ ! -d ldap/libraries ]
+elif [ ! -d ldap/libraries -a ! -d ldap/lib ]
 then
-    echo "Ldap-setup: Expected directory \"ldap/libraries\" is missing."
-    exitval=5
+    echo "Ldap-setup: Expected directory \"ldap/libraries\" or \"ldap/lib\" is missing."
+    exitval=30
 elif [ ! -d ldap/include ]
 then
     echo "Ldap-setup: Expected directory \"ldap/include\" is missing."
-    exitval=5
+    exitval=30
 elif [ ! -f ldap/include/ldap.h ]
 then
     echo "Ldap-setup: Expected file \"ldap/include/ldap.h\" is missing."
-    exitval=5
+    exitval=30
 fi
 
 
@@ -168,6 +210,9 @@ fi
 if [ $exitval -eq 0 -a \( $style -eq 2 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) ]
 then
     style=3
+elif [ $exitval -eq 0 -a \( $style -eq 2 -a -f ldap/lib/liblber.a -a -f ldap/lib/libldap.a \) ]
+then
+    style=23
 elif [ $exitval -eq 0 -a \( $style -eq 1 -a -f ldap/libraries/liblber/.libs/liblber.a -a -f ldap/libraries/libldap/.libs/libldap.a \) ]
 then
     style=11
@@ -175,7 +220,7 @@ fi
 
 # This is a successful exit. The value of style tells build whether to include
 # the liblber.a library or not.
-if [ $exitval -eq 0 -a \( \( $style -eq 1 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) -o \( $style -eq 11 \) -o \( $style -eq 2 -a -f ldap/libraries/libldap.a \) -o \( $style -eq 3 \) \) ]
+if [ $exitval -eq 0 -a \( \( $style -eq 1 -a -f ldap/libraries/liblber.a -a -f ldap/libraries/libldap.a \) -o \( $style -eq 11 \) -o \( $style -eq 2 -a -f ldap/libraries/libldap.a \) -o \( $style -eq 3 \) -o \( $style -eq 23 \) \) ]
 then
     if [ $style -eq 3 ]
     then
@@ -202,13 +247,13 @@ then
     exit 4
 fi
 
-if [ $exitval -eq 5 ]
+if [ $exitval -eq 30 ]
 then
     echo ""
     echo "Read the file contrib/ldap-setup for some help in setting"
     echo "up LDAP."
     echo ""
-    exit 5
+    exit 30
 fi
 
 if [ $style -eq 1 ]
@@ -299,4 +344,4 @@ then
 fi
 
 fi
-exit 5
+exit 30

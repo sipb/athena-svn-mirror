@@ -1,12 +1,12 @@
 
                              Pine Technical Notes
                                        
-   Version 4.58, September 2003
+   Version 4.62, January 2005
    
    _Pine_ and _Pico_ are trademarks of the University of Washington.
    No commercial use of these trademarks may be made without prior
    written permission of the University of Washington.
-   Pine, Pico and Pilot Copyright 1989-2003 University of Washington.
+   Pine, Pico and Pilot Copyright 1989-2005 University of Washington.
    Additional legal notices are at the web URL
    http://www.washington.edu/pine/legal.
    
@@ -73,7 +73,7 @@ Table of Contents
           + Domain Settings
           + Syntax for Collections
           + Syntax for Folder Names
-          + Server Name Syntax for Folders
+          + Server Name Syntax
           + Folder Namespaces
           + What is a Mail Drop?
           + Sorting a Folder
@@ -1232,9 +1232,11 @@ Pine
           _addrbook_ in _sort-order_, which may be _dont-sort_,
           _nickname_, _fullname_, _nickname-with-lists-last_, or
           _fullname-with-lists-last_. Only useful when creating global or
-          shared address books. See Address Book Lookup File for more
-          information, especially the warning about copying the address
-          book after creating the lookup file.
+          shared address books. The settings of the features
+          disable-setlocale-collate and enable-setlocale-ctype have no
+          effect when using the create_lu command. See Address Book
+          Lookup File for more information, especially the warning about
+          copying the address book after creating the lookup file.
    -d _debug-level_
           Debug Level: Sets the level of debugging information written by
           _Pine_. _Debug-level_ can be set to any integer 0-9. A debug
@@ -1303,6 +1305,9 @@ Pine
           Message-Number: When specified, _Pine_ starts up in the FOLDER
           INDEX screen with the current message being the specified
           message number.
+   -nowrite_passfile
+          This tells _Pine_ to use the passfile if there is one, but to
+          never offer writing new passwords to the passfile.
    -o _folder_
           Opens the INBOX (or a folder specified via the -f argument)
           ReadOnly.
@@ -1329,15 +1334,17 @@ Pine
           limited.
    -registry _cmd_
           For _PC-Pine_ only, this option affects the values of _Pine_'s
-          registry entries. Possible values for _cmd_ are set, clear,
-          clearsilent, and dump. _Set_ will always reset _Pine_'s
-          registry entries according to its current settings. _Clear_
-          will clear the registry values. _Clearsilent_ will silently
-          clear the registry values. _Dump_ will display the values of
-          current registry settings. Note that the dump command is
-          currently disabled. Without the -registry option, _PC-Pine_
-          will write values into the registry only if there currently
-          aren't any values set.
+          registry entries. Possible values for _cmd_ are set, noset,
+          clear, clearsilent, and dump. _Set_ will always reset _Pine_'s
+          registry entries according to its current settings. _NoSet_
+          will never set any values in the registry, but it will still
+          use the values already set in the registry. _Clear_ will clear
+          the registry values. _Clearsilent_ will silently clear the
+          registry values. _Dump_ will display the values of current
+          registry settings. Note that the dump command is currently
+          disabled. Without the -registry option, _PC-Pine_ will write
+          values into the registry only if there currently aren't any
+          values set.
    -sort _key_
           Sort-Key: Specifies the order messages will be displayed in for
           the FOLDER INDEX screen. _Key_ can have the following values:
@@ -1609,7 +1616,9 @@ Pine Configuration
    
    References to environment variables may be included in the _Pine_
    configuration files. The format is $variable or ${variable}. The
-   character ~ will be expanded to the $HOME environment variable.
+   character ~ will be expanded to the $HOME environment variable. For a
+   more complete explanation of how environment variables work, see the
+   section Using Environment Variables.
    
    When environment variables are used for _Pine_ settings which take
    lists, you must have an environment variable set for each member of
@@ -1861,8 +1870,10 @@ General Configuration Variables
           compose a message, you must add them to your
           default-composer-hdrs list, otherwise they become part of the
           rich header set which you only see when you press the rich
-          header command. Here's an example which shows how you might set
-          your From address
+          header command. (If you are looking for a way to change which
+          headers are _displayed_ when you view a message, take a look at
+          the viewer-hdrs option instead.) Here's an example which shows
+          how you might set your From address
           
                      From: Full Name <user@example.com>
           and another showing how you might set a Reply-To address
@@ -1906,10 +1917,33 @@ General Configuration Variables
           Customized-Headers, it is not possible to have the value of a
           header contain a comma. Nor is there currently an "escape"
           mechanism provided to make this work.
+   _dead-letter-files_
+          This option affects _Pine_'s behavior when you cancel a message
+          being composed. _Pine_'s usual behavior is to write the
+          canceled message to a file named "dead.letter" in your home
+          directory, or "DEADLETR" when using _PC-Pine_, overwriting any
+          previous message.
+          If you set this option to a value higher than one, then that
+          many copies of dead letter files will be saved. For example, if
+          you set this option to "3" then you may have files named
+          "DEADLETR", "DEADLETR2", and "DEADLETR3"; or "dead.letter",
+          "dead.letter2", and "dead.letter3". In this example, the most
+          recently cancelled message will be in "dead.letter", and the
+          third most recently cancelled message will be in
+          "dead.letter3". The fourth most recently cancelled message will
+          no longer be saved.
+          If you set this option to zero, then NO record of canceled
+          messages is maintained.
+          If the feature Quell-Dead-Letter-On-Cancel is set, that
+          overrides whatever you set for this option. If this option had
+          existed at the time, then the Quell feature would not have been
+          added, but it is still there for backwards compatibility. So,
+          in order for this option to have the desired effect, make sure
+          the Quell feature is turned off.
    _default-composer-hdrs_
-          You can decide which headers you want visible when composing
+          You can control which headers you want visible when composing
           outgoing email using this option. You can specify any of the
-          regular set, any rich header or any custom header which you
+          regular set, any Rich Header, or any Customized-Hdrs which you
           have already defined. If you use this setting at all, you must
           specify all the headers you want to see, you can't just add to
           the regular header set. The default set is To:, Cc:, Attchmnt:,
@@ -2092,6 +2126,8 @@ General Configuration Variables
                 unique to the current _Pine_ session and is only
                 generated once per session.
                 
+          The feature disable-terminal-reset-for-display-filters is
+          related.
           Performance caveat/considerations:
           Testing for the trigger and invoking the filter doesn't come
           for free. There is overhead associated with searching for the
@@ -2550,6 +2586,104 @@ General Configuration Variables
    _keyname-background-color_
    _keyname-foreground-color_
           KeyName Color.
+   _keywords_
+          You may define your own set of keywords and optionally set them
+          on a message by message basis. These are similar to the
+          "Important" flag which the user may set using the Flag command.
+          The difference is that the Important flag is always present for
+          each folder. User-defined keywords are chosen by the user. You
+          may set up the list of possible keywords here. Then you use the
+          Flag command to set or clear the keywords in each message.
+          Keywords may be used when Selecting messages (Select Keyword).
+          You will need to enable the enable-aggregate-command-set option
+          to use Select. Keywords may also be used in the Patterns of
+          Rules (Filters, Indexcolors, etc). Filter rules may be used to
+          set keywords automatically. Keywords may be displayed as part
+          of the Subject of a message by using the SUBJKEY or SUBJKEYINIT
+          tokens in the Index-Format option. The
+          Keyword-Surrounding-Chars option may be used to modify the
+          display of keywords using SUBJKEY and SUBJKEYINIT slightly.
+          Keywords may also be displayed in a column of their own in the
+          MESSAGE INDEX screen by using the KEY or KEYINIT tokens. It is
+          also possible to color keywords in the index using the
+          Setup/Kolor screen (Keyword Colors). Keywords are not supported
+          by all mail servers.
+          You may give keywords nicknames if you wish. If the keyword
+          definition you type in contains a SPACE character, then the
+          actual value of the keyword is everything after the last SPACE
+          and the nickname for that keyword is everything before the last
+          SPACE. For example, suppose you are trying to interoperate with
+          another email program which uses a particular keyword with an
+          unpleasant name. Maybe it uses a keyword called
+          
+                         VendorName.SoftwareName.08
+          but for you that keyword means that the message is
+          work-related. You could define a keyword to have the value
+          
+                      Work VendorName.SoftwareName.08
+          and then you would use the name "Work" when dealing with that
+          keyword in _Pine_. If you defined it as
+          
+                     My Work VendorName.SoftwareName.08
+          the nickname would be everything before the last SPACE, that is
+          the nickname would be "My Work".
+          Some commonly used keywords begin with dollar signs. This
+          presents a slight complication, because the dollar sign is
+          normally used to signify environment variable expansion in the
+          _Pine_ configuration. In order to specify a keyword which
+          begins with a dollar sign you must precede the dollar sign with
+          a second dollar sign to escape its special meaning. For
+          example, if you want to include the keyword
+          
+                                  $Label1
+          as one of your possible keywords, you must enter the text
+          
+                                  $$Label1
+          instead.
+   _keyword-surrounding-chars_
+          This option controls a minor aspect of _Pine_'s MESSAGE INDEX
+          and MESSAGE TEXT screens. If you have modified the Index-Format
+          option so that either the "SUBJKEY" or "SUBJKEYINIT" tokens are
+          used to display keywords or their initials along with the
+          Subject; then this option may be used to modify the resulting
+          display slightly. By default, the keywords or initials
+          displayed for these tokens will be surrounded with curly braces
+          ({ and }) and a trailing space. For example, if keywords "Work"
+          and "Now" are set for a message, the "SUBJKEY" token will
+          normally look like
+          
+                         {Work Now} actual subject
+          and the SUBJKEYINIT token would look like
+          
+                            {WN} actual subject
+          The default character before the keywords is the left brace ({)
+          and the default after the keywords is the right brace followed
+          by a space (} ).
+          This option allows you to change that. You should set it to two
+          values separated by a space. The values may be quoted if they
+          include space characters. So, for example, the default value
+          could be specified explicitly by setting this option to
+          
+                     Keyword-Surrounding-chars="{" "} "
+          The first part wouldn't need to be quoted (but it doesn't
+          hurt). The second part does need the quotes because it includes
+          a space character. If you wanted to change the braces to
+          brackets you could use
+          
+                     Keyword-Surrounding-chars="[" "] "
+          Inside the quotes you can use backslash quote to mean quote, so
+          
+                    Keyword-Surrounding-chars="\"" "\" "
+          would produce
+          
+                         "Work Now" actual subject
+          It is also possible to color keywords in the index using the
+          Setup/Kolor screen (Keyword Colors).
+          It is not possible to change the fact that a space character is
+          used to separate the keywords if more than one keyword is set
+          for a message. It is also not possible to change the fact that
+          there are no separators between the keyword initials if more
+          than one keyword is set.
    _last-time-prune-questioned_
           Personal configuration file only. This variable records the
           month the user was last asked if his or her _sent-mail_ folders
@@ -2623,14 +2757,41 @@ General Configuration Variables
    _mail-check-interval_
           This option specifies, in seconds, how often _Pine_ will check
           for new mail. If set to zero, new-mail checking is disabled.
-          There is a minimum value, normally 15 seconds. The default
-          value is normally 150 seconds. his applies to the INBOX and to
-          the currently open folder if that is different from the INBOX.
+          (You can always manually force a new-mail check by typing ^L
+          (Ctrl-L), which is also the command to refresh the screen, or
+          by typing the Next command when the current message is the last
+          message of the folder.) There is a minimum value for this
+          option, normally 15 seconds. The default value is normally 150
+          seconds. The higher you set this option, the easier it is on
+          the server.
           There are some situations where automatic new-mail checking
           does not work. See the discussion about new-mail checking in
           folder-reopen-rule.
+          The new-mail checking will not happen exactly at the frequency
+          that you specify. For example, _Pine_ may elect to defer a
+          non-INBOX mail check if you are busy typing. Or, it may check
+          more frequently than you have specified if that is thought to
+          be necessary to keep the server from closing the connection to
+          the folder due to inactivity. If _Pine_ checks for new mail as
+          a side effect of another command, it will reset the timer, so
+          that new-mail checking may seem to happen irregularly instead
+          of every X seconds like clockwork.
+          If you are anxious to know about new mail as soon as possible,
+          set the check interval low, and you'll know about the new mail
+          by approximately that amount of time after it arrives. If you
+          aren't so worried about knowing right away, set this option to
+          a higher value. That will save the server some processing time
+          and may save you some of the time you spend waiting for
+          new-mail checks to happen if you are dealing with a slow server
+          or slow network connection.
+          If you suspect that new-mail checking is causing slow downs for
+          you, you may want to look into the options
+          Quell-Mailchecks-Composing-Except-Inbox,
+          Quell-Mailchecks-Composing-Inbox and
+          Mail-Check-Interval-Noncurrent, which refine when mail checking
+          is done.
           If the mailbox being check uses a Mail Drop then there is a
-          minimum time (maildrop-check-minimum) between new mail checks.
+          minimum time (maildrop-check-minimum) between new-mail checks.
           Because of this minimum you may notice that new mail does not
           appear promptly when you expect it. The reason for this is to
           protect the server from over-zealous opening and closing of the
@@ -2639,6 +2800,27 @@ General Configuration Variables
           situations in which the user's IMAP connection will be broken
           due to inactivity timers on the server. Another side effect is
           that the user-input-timeout option won't work.
+   _mail-check-interval-noncurrent_
+          This option is closely related to the Mail-Check-Interval
+          option, as well as the Quell-Mailchecks-Composing-Except-Inbox
+          and Quell-Mailchecks-Composing-Inbox options. If the
+          "Mail-Check-Interval" option is set to zero, then automatic
+          new-mail checking is disabled and this option will have no
+          effect.
+          Normally this option is set to zero, which means that the value
+          used will be the same as the value for the
+          "Mail-Check-Interval". If you set this option to a value
+          different from zero (usually larger than the value for
+          "Mail-Check-Interval") then that is the check interval that
+          will be used for folders which are not the currently open
+          folder or the INBOX. You may not even have any folders that are
+          noncurrent and not the INBOX. If you do, it is likely that they
+          are due to Stay-Open-Folders you have configured. This option
+          also affects the rate of mail checking done on cached
+          connections to folders you previously had open but are no
+          longer actively using. You aren't expected to understand that
+          last sentence, but if you are interested take a look at
+          Max-Remote-Connections, and the related options.
    _mail-directory_
           This variable was more important in previous versions of
           _Pine_. Now it is used only as the default for storing personal
@@ -2650,33 +2832,106 @@ General Configuration Variables
           search path. It takes one or more file names (full paths must
           be specified) in which to look for mail capability data.
    _maildrop-check-minimum_
-          New mail checking for a Mail Drop is a little different from
+          New-mail checking for a Mail Drop is a little different from
           new mail checking for a regular folder. One of the differences
           is that the connection to the Mail Drop is not kept open and so
           the cost of checking (delay for you and additional load for the
           server) may be significant. Because of this additional cost we
           set a minimum time that must pass between checks. This minimum
           only applies to the automatic checking done by _Pine_. If you
-          force a check by typing ^L or by typing the Next command when
-          you are at the end of a folder index, then the check is done
-          right away.
+          force a check by typing ^L (Ctrl-L) or by typing the Next
+          command when you are at the end of a folder index, then the
+          check is done right away.
           This option specifies, in seconds, the _minimum_ time between
-          Mail Drop new mail checks. You may want to set this minimum
+          Mail Drop new-mail checks. You may want to set this minimum
           high in order to avoid experiencing some of the delays
           associated with the checks. Note that the time between checks
           is still controlled by the regular Mail-Check-Interval option.
           When _Pine_ is about to do an automatic check for new mail
           (because the Mail-Check-Interval has expired) then if the time
-          since the last new mail check of any open Mail Drops has been
+          since the last new-mail check of any open Mail Drops has been
           greater than the MailDrop-Check-Minimum, the Mail Drop is
           checked for new mail as well. Therefore, it is only useful to
           set this option to a value that is higher than the
           Mail-Check-Interval.
-          If this option is set to zero, automatic Mail Drop new mail
+          If this option is set to zero, automatic Mail Drop new-mail
           checking is disabled. There is a minimum value, normally 60
           seconds. The default value is normally 60 seconds as well. This
           applies to the INBOX and to the currently open folder if that
           is different from the INBOX.
+   _max-remote-connections_
+          This option affects low-level behavior of Pine. The default
+          value for this option is _2_. If your INBOX is accessed using
+          the IMAP protocol from an IMAP server, that connection is kept
+          open throughout the duration of your _Pine_ session,
+          independent of the value of this option. The same is true of
+          any Stay-Open-Folders you have defined. This option controls
+          _Pine_'s behavior when connecting to remote IMAP folders other
+          than your INBOX or your Stay-Open-Folders. It specifies the
+          maximum number of remote IMAP connections (other than those
+          mentioned above) that _Pine_ will use for accessing the rest of
+          your folders. If you set this option to zero, you will turn off
+          most remote connection re-use. It's difficult to understand
+          exactly what this option does, and it is usually fine to leave
+          it set to its default value. It is probably more likely that
+          you will be interested in setting the Stay-Open-Folders option
+          instead of changing the value of this option. A slightly longer
+          explanation of what is going on with this option is given in
+          the next paragraphs.
+          There are some time costs involved in opening and closing
+          remote IMAP folders, the main costs being the time you have to
+          wait for the connection to the server and the time for the
+          folder to open. Opening a folder may involve not only the time
+          the server takes to do its processing but time that _Pine_ uses
+          to do filtering. These times can vary widely. They depend on
+          how loaded the server is, how large the folder being opened is,
+          and how you set up filtering, among other things. Once _Pine_
+          has opened a connection to a particular folder, it will attempt
+          to keep that connection open in case you use it again. In order
+          to do this, _Pine_ will attempt to use the
+          Max-Remote-Connections (the value of this option) IMAP
+          connections you have alloted for this purpose.
+          For example, suppose the value of this option is set to "2". If
+          your INBOX is accessed on a remote server using the IMAP
+          protocol, that doesn't count as one of the remote connections
+          but it is always kept open. If you then open another IMAP
+          folder, that would be your first remote connection counted as
+          one of the Max-Remote-Connections connections. If you open a
+          third folder the second will be left open, in case you return
+          to it. You won't be able to tell it has been left open. It will
+          appear to be closed when you leave the folder but the
+          connection will remain in the background. Now suppose you go
+          back to the second folder (the first folder after the INBOX). A
+          connection to that folder is still open so you won't have to
+          wait for the startup time to open it. Meanwhile, the connection
+          to the third folder will be left behind. Now, if you open a
+          fourth folder, you will bump into the Max-Remote-Connections
+          limit, because this will be the third folder other than INBOX
+          and you have the option set to "2". The connection that is
+          being used for the third folder will be re-used for this new
+          fourth folder. If you go back to the third folder after this,
+          it is no longer already connected when you get there. You'll
+          still save some time since _Pine_ will re-use the connection to
+          the fourth folder and you have already logged in on that
+          connection, but the folder will have to be re-opened from
+          scratch.
+          If a folder is large and the startup cost is dominated by the
+          time it takes to open that folder or to run filters on it, then
+          it will pay to make the value of this option large enough to
+          keep it open. On the other hand, if you only revisit a handful
+          of folders or if the folders are small, then it might make more
+          sense to keep this number small so that the reconnect time (the
+          time to start up a new connection and authenticate) is
+          eliminated instead.
+          You may also need to consider the impact on the server. On the
+          surface, a larger number here may cause a larger impact on the
+          server, since you will have more connections open to the
+          server. On the other hand, not only will _you_ be avoiding the
+          startup costs associated with reopening a folder, but the
+          _server_ will be avoiding those costs as well.
+          When twenty five minutes pass without any active use of an IMAP
+          connection being saved for possible re-use, that connection
+          will be shut down,
    _mimetype-search-path_
           This variable is used to replace _Pine_'s default mime.types
           file search path. It takes one or more file names (full paths
@@ -2692,6 +2947,60 @@ General Configuration Variables
           the specified value will supress this special screen while
           versions equal to or greater than that specified will behave
           normally.
+   _newmail-fifo-path_
+          This option is only available in UNIX _Pine_. However, there is
+          a very similar feature built in to _PC-Pine_. In _PC-Pine_'s
+          Config menu at the top of the screen is an option called "New
+          Mail Window".
+          You may have _Pine_ create a FIFO special file (also called a
+          named pipe, see mkfifo(3) and fifo(4)) where it will send a
+          one-line message each time a new message is received in the
+          current folder, the INBOX, or any open Stay-Open-Folders. To
+          protect against two different _Pine_s both writing to the same
+          FIFO, _Pine_ will only create the FIFO and write to it if it
+          doesn't already exist.
+          A possible way to use this option would be to have a separate
+          window on your screen running the command
+          
+                                cat filename
+          where "filename" is the name of the file given for this option.
+          Because the file won't exist until after you start _Pine_, you
+          must _first_ start _Pine_ and _then_ run the "cat" command. You
+          may be tempted to use "tail -f filename" to view the new mail
+          log. However, the common implementations of the tail command
+          will not do what you are hoping.
+          The width of the messages produced for the FIFO may be altered
+          with the NewMail-Window-Width option.
+          On some systems, fifos may only be created in a local
+          filesystem. In other words, they may not be in NFS filesystems.
+          This requirement is not universal. If the system you are using
+          supports it, it should work. (It is often the case that your
+          home directory is in an NFS filesystem. If that is the case,
+          you might try using a file in the "/tmp" filesystem, which is
+          usually a local filesytem.) Even when it is possible to use an
+          NFS-mounted filesystem as a place to name the fifo (for
+          example, your home directory), it will still be the case that
+          the reader (probably the "cat" command) and the writer (_Pine_)
+          of the fifo must be running on the same system.
+   _newmail-window-width_
+          UNIX _Pine_ only.
+          This option is only useful if you have turned on the
+          NewMail-FIFO-Path option. That option causes new mail messages
+          to be sent to a fifo file. Those messages will be 80 characters
+          wide by default. You can change the width of the messages by
+          changing this option. For example, if you are reading those
+          messages in another window you might want to set this width to
+          the width of that other window.
+          For UNIX _Pine_, this option is only useful if you have turned
+          on the NewMail-FIFO-Path option. That option causes new mail
+          messages to be sent to a fifo file. Those messages will be 80
+          characters wide by default. You can change the width of those
+          messages by changing this option. For example, if you are
+          reading those messages in another window you might want to set
+          this width to the width of that other window.
+          If you are using _PC-Pine_, it has an option in the Config menu
+          to turn on the "New Mail Window". The present option also
+          controls the width of that window.
    _news-active-file-path_
           This option tells _Pine_ where to look for the "active file"
           for newsgroups when accessing news locally, rather than via
@@ -2753,7 +3062,7 @@ General Configuration Variables
           servers.
    _nntp-server_
           One or more NNTP servers (host name or IP address) which _Pine_
-          will use for reading and sending news. If you read and post
+          will use for reading and posting news. If you read and post
           news to and from a single NNTP server, you can get away with
           only setting the _nntp-server_ variable and leaving the
           _news-collections_ variable unset.
@@ -2762,6 +3071,24 @@ General Configuration Variables
           server and assuming that you will use the NNTP protocol and a
           local newsrc configuration file for reading news. See also
           Configuring News.
+          Your NNTP server may offer NNTP "AUTHINFO SASL" or "AUTHINFO
+          USER" authentication. It may even require it. If your NNTP
+          server does offer such authentication you may specify a user
+          name parameter to cause _Pine_ to attempt to authenticate. The
+          same is true for the server name in a folder collection which
+          uses NNTP. This parameter requires an associated value, the
+          username identifier with which to establish the server
+          connection. An example might be:
+          
+                     nntpserver.example.com/user=katie
+          If authentication is offered by the server, this will cause
+          _Pine_ to attempt to use it. If authentication is not offered
+          by the server, this will cause _Pine_ to fail with an error
+          similar to:
+          
+                  Error: NNTP authentication not available
+          For more details about the server name possibilities see Server
+          Name Syntax.
    _normal-background-color_
    _normal-foreground-color_
           Normal Color.
@@ -2770,7 +3097,7 @@ General Configuration Variables
           root of the tree to which the user is restricted when reading
           and writing folders and files. It is usually used in the _fixed_
           configuration file.
-   _patterns-filters_
+   _patterns-filters2_
           Matching patterns and their corresponding actions are stored in
           this variable. These patterns are used with Filtering. This
           variable is normally maintained through the Setup/Rules/Filters
@@ -2823,7 +3150,7 @@ General Configuration Variables
           the file. This isn't very convenient but it isn't thought that
           many users will need this functionality. The purpose of role
           files is for sharing roles.
-   _patterns-scores_
+   _patterns-scores2_
           Matching patterns and their corresponding actions are stored in
           this variable. These patterns are used with Scoring. This
           variable is normally maintained through the
@@ -2903,8 +3230,10 @@ General Configuration Variables
    _pruning-rule_
           By default, _Pine_ will ask at the beginning of each month
           whether or not you want to rename your sent-mail folder to a
-          name like sent-mail-month-year. It will also ask whether you
-          would like to delete old sent-mail folders. If you have defined
+          name like sent-mail-month-year. (See the feature
+          prune-uses-yyyy-mm to change the format of the folder to
+          sent-mail-yyyy-mm.) It will also ask whether you would like to
+          delete old sent-mail folders. If you have defined
           read-message-folder or pruned-folders _Pine_ will also ask
           about pruning those folders. With this option you may provide
           an automatic answer to the rename questions and you may tell
@@ -2916,6 +3245,64 @@ General Configuration Variables
    _quote3-background-color_
    _quote3-foreground-color_
           Quote Colors.
+   _quote-suppression-threshold_
+          This option should be used with care. It will cause some of the
+          quoted text to be eliminated from the display when viewing a
+          message in the MESSAGE TEXT screen. For example, if you set the
+          Quote-Suppression-Threshold to the value "5", this will cause
+          quoted text that is longer than five lines to be truncated.
+          Quoted text of five or fewer consecutive lines will be
+          displayed in its entirety. Quoted text of more than six lines
+          will have the first five lines displayed followed by a line
+          that looks something like
+          
+                [ 12 lines of quoted text hidden from view ]
+          As a special case, if exactly one line of quoted text would be
+          hidden, the entire quote will be shown instead. So for the
+          above example, quoted text which is exactly six lines long will
+          will be shown in its entirety. (In other words, instead of
+          hiding a single line and adding a line that announces that one
+          line was hidden, the line is just shown.)
+          If the sender of a message has carefully chosen the quotes that
+          he or she includes, hiding those quotes may change the meaning
+          of the message. For that reason, _Pine_ requires that when you
+          want to set the value of this variable to something less than
+          four lines, you actually have to set it to the negative of that
+          number. So if you want to set this option to "3", you actually
+          have to set it to "-3". The only purpose of this is to get you
+          to think about whether or not you really want to do this! If
+          you want to delete all quoted text you set the value of this
+          option to the special value "-10".
+          The legal values for this option are
+          
+        0      Default, don't hide anything
+    -1,-2,-3   Suppress quote lines past 1, 2, or 3 lines
+    4,5,6,...  Suppress if more than that many lines
+      -10      Suppress all quoted lines
+          If you set this option to a non-default value you may sometimes
+          wish to view the quoted text that is not shown. When this is
+          the case, the HdrMode (Header Mode) command may be used to show
+          the hidden text. Typing the "H" command once will show the
+          hidden text. Typing a second "H" will also turn on Full Header
+          mode. The presence or absence of the HdrMode command is
+          determined by the "Enable-Full-Header-Cmd" Feature-List option
+          in your _Pine_ configuration, so you will want to be sure to
+          turn that on if you use quote suppression.
+          For the purposes of this option, a quote is a line that begins
+          with the character ">".
+          Quote suppression happens after long line wrapping in _Pine_.
+          It is done that way so that messages written in the style of
+          one long line per paragraph don't count as a single line as far
+          as quote suppression goes. Quote suppression line counting
+          happens on the lines you see, not the raw lines of the message.
+          For that reason, you may sometimes see unexpected results. For
+          example, if a quoted line is long, it may wrap to the next
+          line. If it isn't labeled flowed that will cause the wrapped
+          text to be on a line by itself. As far as the quote suppression
+          algorithm is concerned, this is now a line that is not part of
+          the quote, so it won't be suppressed. On the other hand, quote
+          coloring happens before line wrapping. So a line may be colored
+          like it is a quote even though it is not suppressed.
    _read-message-folder_
           If set, mail in the _INBOX_ that has been read but not deleted
           is moved here, or rather, the user is asked whether or not he
@@ -2948,9 +3335,9 @@ General Configuration Variables
           opened.
           No matter what the value, the validity check is always done
           when the address book is about to be changed by the user. The
-          check can be initiated manually by typing _^L_ (control-L)
-          while in the address book maintenance screen for the remote
-          address book.
+          check can be initiated manually by typing _^L_ (Ctrl-L) while
+          in the address book maintenance screen for the remote address
+          book.
    _reply-indent-string_
           This variable specifies an aspect of _Pine_'s _Reply_ command.
           When a message is replied to and the text of the message is
@@ -3278,11 +3665,12 @@ General Configuration Variables
           email to the _sendmail_ program on the local machine. _PC-Pine_
           users must have this variable set in order to send mail as they
           have no _sendmail_ program.
-          If the SMTP server offers SMTP AUTH authentication you may
-          specify a user name parameter to cause _Pine_ to attempt to
-          authenticate. This parameter requires an associated value, the
-          username identifier with which to establish the server
-          connection. An example might be:
+          Your SMTP server may offer SMTP AUTH authentication. It may
+          even require it. If your SMTP server offers SMTP AUTH
+          authentication you may specify a user name parameter to cause
+          Pine to attempt to authenticate. This parameter requires an
+          associated value, the username identifier with which to
+          establish the server connection. An example might be:
           
                      smtpserver.example.com/user=katie
           If AUTH authentication is offered by the server, this will
@@ -3291,11 +3679,17 @@ General Configuration Variables
           sending with an error similar to:
           
                   Error: SMTP authentication not available
+          Another type of authentication that is used by some ISPs is
+          called "POP before SMTP" or "IMAP before SMTP", which means
+          that you have to authenticate yourself to the POP or IMAP
+          server by opening a mailbox before you can send mail. To do
+          this, you usually only have to open your INBOX.
           To use a non-standard port number on the SMTP server, follow
           the hostname with colon portnumber.
           
                         smtpserver.example.com:12345
-          See the SMTP Servers section for some more details.
+          See the SMTP Servers section or the Server Name Syntax section
+          for some more details.
    _sort-key_
           This variable sets up the default Message Index sorting. The
           default is to sort by arrival order (the order the messages
@@ -3340,7 +3734,7 @@ General Configuration Variables
           set to zero ssh connections will be completely disabled.
    _ssh-path_
           Sets the name of the command used to open a UNIX secure shell
-          connection. The default is typically /usr/local/bin/ssh.
+          connection. The default is typically /usr/bin/ssh.
    _standard-printer_
           System-wide configuration file only. Specifies a list of
           commands for category 2 of the _Setup/Printer_ screen, the
@@ -3349,12 +3743,122 @@ General Configuration Variables
    _status-foreground-color_
           Status Color.
    _status-message-delay_
-          If this is set to a positive number, it causes the cursor to
-          move to the status line whenever a status message is printed
-          and pause there for this many seconds. It will probably only be
-          useful if the show-cursor feature is also turned on. Most users
-          should leave this set to the default value of zero since its
-          only effect is to slow things down.
+          This option has evolved over time, causing the possible values
+          to be counter-intuitive. Read carefully before you set this
+          option. First we explain what the option does, then there is a
+          longer discussion following that.
+          If this is set to zero, the default value, it has _no_ effect.
+          Positive and negative values serve two similar, but different
+          purposes.
+          If it is set to a positive number, it causes the cursor to move
+          to the status line whenever a status message is printed and
+          pause there for this many seconds. It will probably only be
+          useful if the show-cursor feature is also turned on. Setting
+          this option to a postive number can only be used to _increase_
+          the status message delay. This may be useful for Braille
+          displays, or other non-traditional displays.
+          If it is set to a negative number the interpretation is a bit
+          complicated. Negative numbers are used to _decrease_ the amount
+          of delay _Pine_ uses to allow you to read important status
+          messages. Of course, this may cause you to miss some important
+          messages. If you see a message flash by but miss what it says
+          you can use the Journal command from the Main menu to read it.
+          If you set this option to a negative value, the delay will be
+          no more than one second less than the absolute value of the
+          value you set. So if you set it to -1, the delay will be no
+          more than zero seconds, no delay at all. If you set it to -2,
+          the delay will be no more than 1 second. And so on, -3 is 2
+          seconds, -4 is 3 seconds, ... If the delay that _Pine_ would
+          have used by default is less than this delay, then the smaller
+          delay set by _Pine_ will be used. Setting this option to a
+          negative value can only reduce the amount of delay, never
+          increase it.
+          Here is a more detailed explanation. Status messages are the
+          messages which show up spontaneously in the status message
+          line, the third line from the bottom of the screen. By default,
+          _Pine_ assigns each status message it produces a minimum
+          display time. Some status messages have a minimum display time
+          of zero. You can see an example of such a message by paging up
+          in this help text until you reach the top of the screen. If you
+          try to page past the top you will see the message
+          
+                      [Already at start of help text]
+          in the status line. If there is another more important use of
+          the status message line this message might be replaced quickly,
+          or it even might not be shown at all. However, if there is no
+          reason to get rid of the message, it might stay there for
+          several seconds while you read the help. An example where it is
+          replaced immediately happens when you page up in the help text
+          past the top of the screen, but then type the "WhereIs" command
+          right after paging up. The message will disappear immediately
+          without causing a delay (unless you have set this option to a
+          positive value) to allow you to type input for the "WhereIs"
+          command. Since it isn't a very important message, _Pine_ has
+          set its minimum display time to zero seconds.
+          Other messages have minimum display times of three or more
+          seconds. These are usually error messages that _Pine_ thinks
+          you ought to see. For example, it might be a message about a
+          failed Save or a failed folder open. It is often the case that
+          this minimum display time won't delay you in any way because
+          the status message line is not needed for another reason.
+          However, there are times when _Pine_ has to delay what it is
+          doing in order to display a status message for the minimum
+          display time. This happens when a message is being displayed
+          and _Pine_ wants to ask for input from the keyboard. For
+          example, when you Save a message you use the status message
+          line. You get a prompt there asking for the name of the folder
+          to save to. If there is a status message being displayed that
+          has not yet displayed for its minimum time _Pine_ will display
+          that status message surrounded with the characters > and < to
+          show you that it is delaying. That might happen, for example,
+          if you tried to save to a folder that caused an error, then
+          followed that immediately with another Save command. You might
+          find yourself waiting for a status message like
+          
+         [>Can't get write access to mailbox, access is readonly<]
+          to finish displaying for three seconds. If that is something
+          you find happening to you frequently, you may use negative
+          values of this option to decrease or eliminate that delay, at
+          the risk of missing the message.
+   _stay-open-folders_
+          This option affects low-level behavior of _Pine_. There is no
+          default value for this option. It is related to the options
+          Preopen-Stayopen-Folders, Max-Remote-Connections, and
+          Offer-Expunge-On-Stayopen-Folders.
+          Note: changes made to this list take effect the next time you
+          open a folder in the list.
+          This is a list of folders that will be permanently kept open
+          once they are first opened. The names in this list may be
+          either the nickname of an Incoming folder or the full technical
+          specification of a folder. The folders in this list need not be
+          remote IMAP folders, they could usefully be local folders, as
+          well. If a folder in the list is a newsgroup or is not accessed
+          either locally or via IMAP, then the entry will be ignored. For
+          example, folders accessed via NNTP or POP3 will not be kept
+          open, since the way that new mail is found with those protocols
+          involves closing and reopening the connection.
+          Once a Stay Open folder has been opened, new-mail checking will
+          continue to happen on that folder for the rest of the _Pine_
+          session. Your INBOX is always implicitly included in this
+          Stay-Open list and doesn't need to be added explicitly.
+          Another difference that you may notice between a Stay Open
+          folder and a non-Stay Open folder is which message is selected
+          as the current message when you enter the folder index.
+          Normally, the starting position for an incoming folder (which
+          most Stay Open folders will likely be) is controlled by the
+          Incoming-Startup-Rule. However, if a folder is a Stay Open
+          folder, when you re-enter the folder after the first time the
+          current message will be the same as it was when you left the
+          folder. An exception is made if you use the TAB command to get
+          to the folder. In that case, the message number will be
+          incremented by one from what it was when you left the folder.
+          The above special behavior is thought to be useful. However, it
+          is special and different from what you might at first expect.
+          The feature Use-Regular-Startup-Rule-for-Stayopen-Folders may
+          be used to turn off this special treatment.
+          If the message that was current when you left the folder no
+          longer exists, then the regular startup rule will be used
+          instead.
    _tcp-open-timeout_
           Sets the time in seconds that _Pine_ will attempt to open a
           network connection. The default is 30, the minimum is 5, and
@@ -3396,8 +3900,27 @@ General Configuration Variables
                 This is the same as the option above except that the
                 Subject is suppressed (is blank) if it matches the
                 previous Subject in the thread. The name comes from the
-                email client Mutt.
+                email client Mutt. Here is an example of what a mutt-like
+                index might look like. In this example, the first column
+                represents the message number, the threading-index-style
+                is set to "regular-index-with-expanded-threads", and the
+                Threading-Lastreply-Character is set to a backslash:
                 
+    1    Some topic
+    2  . Subject           original message in thread
+    3    |->               reply to 2
+    4  . |->               another reply to 2
+    5  . | \->             reply to 4
+    6  . |   \->           reply to 5
+    7    |     \->         reply to 6
+    8    |->               another reply to 2
+    9  . |->New subject    another reply to 2 but with a New subject
+   10    | |->             reply to 9
+   11    | \->             another reply to 9
+   12    |   \->           reply to 11
+   13    \->               final reply to 2
+   14    Next topic
+
         _indent-subject-1_
                 Threaded Subjects will be indented one space per level of
                 the conversation. The bars and lines that show up in the
@@ -3538,9 +4061,10 @@ General Configuration Variables
           when there are no more replies directly to the parent of the
           current message. It can be used to "round-off" the bottom of
           the vertical line by setting it to a character such as a
-          backslash. By default, the value of this option is the vertical
-          bar character (|). This option may not be set to the Empty
-          Value. In that case, the default will be used instead.
+          backslash (\) or a backquote (`). By default, the value of this
+          option is the vertical bar character (|). This option may not
+          be set to the Empty Value. In that case, the default will be
+          used instead.
    _tcp-write-warning-timeout_
           Sets the time in seconds that _Pine_ will wait for a network
           write before warning you that things are moving slowly and
@@ -3640,6 +4164,40 @@ General Configuration Variables
           first header in the _viewer-hdrs_ list, then all headers in the
           message except those in the list will be shown. The values are
           all case insensitive.
+   _viewer-margin-left_
+          This variable controls the left-hand vertical margin's width in
+          _Pine_'s Message Viewing screen. Its value is the number of
+          space characters preceding each displayed line. For consistency
+          with Viewer-Margin-Right, you may specify the column number to
+          start in (column numbering begins with number 1) instead of the
+          width of the margin by appending a lower case letter "c" to the
+          number. For example, a value of "2c" means to start the text in
+          column two, which is entirely equivalent to a value of "1",
+          which means to leave a margin of 1 space.
+          The default is a left margin of 0 (zero). Misconfigurations
+          (for example, negative values or values with starting left
+          columns greater than the ending right column) are silently
+          ignored. If the number of columns for text between the
+          Viewer-Margin-Left and the Viewer-Margin-Right is fewer than 8,
+          then margins of zero will be used instead.
+   _viewer-margin-right_
+          This variable controls the right-hand vertical margin's width
+          in _Pine_'s Message Viewing screen. Its value is the number of
+          space characters following each displayed line. You may specify
+          the column number to end the text in (column numbering begins
+          with number 1) instead of the width of the margin by appending
+          a lower case letter "c" to the number. For example, a value of
+          "76c" means to end the text in column 76. If the screen is 80
+          characters wide, this is equivalent to a value of "4", which
+          means to leave a margin of 4 spaces. However, if you use
+          different size screens at different times, then these two
+          values are not equivalent.
+          The default right margin is 4. Misconfigurations (for example,
+          negative values or values with starting left columns greater
+          than the ending right column) are silently ignored. If the
+          number of columns for text between the Viewer-Margin-Left and
+          the Viewer-Margin-Right is fewer than 8, then margins of zero
+          will be used instead.
    _viewer-overlap_
           This option specifies an aspect of _Pine_'s Message Viewing
           screen. When the space bar is used to page forward in a
@@ -3725,6 +4283,21 @@ Configuration Features
           existence for reasons similar to those explained by the
           postponed option.
           setRole, for selecting a role to apply to a composition.
+   _alternate-role-menu_
+          Normally the Role Command allows you to choose a role and
+          compose a new message using that role. When this feature is
+          set, the role command will first ask whether you want to
+          Compose a new message, Forward the current message, Reply to
+          the current message, or Bounce the current message. If you are
+          not in the MESSAGE INDEX and are not viewing a message, then
+          there is no current message and the question will be skipped.
+          After you have chosen to Compose, Forward, Reply or Bounce you
+          will then choose the role to be used.
+          When Bouncing the "Set From" address is used for the
+          Resent-From header, the "Set Fcc" value is used for the Fcc
+          provided that the option "Fcc-On-Bounce" is turned on, and the
+          "Use SMTP Server" value is used for the SMTP server, if set.
+          Other actions of the role are ignored when Bouncing.
    _assume-slow-link_
           This feature affects _Pine_'s display routines. If set, the
           normal inverse-video cursor (used to highlight the current item
@@ -3749,10 +4322,13 @@ Configuration Features
           unseen messages in the current (incoming message or news)
           folder, _Pine_ will search the list of folders in the current
           collection for one containing New or Recent (new since the last
-          time the folder was opened) messages. By default, when such a
-          folder is found, _Pine_ will ask whether you wish to open the
-          folder. If this feature is set, _Pine_ will automatically open
-          the folder without prompting.
+          time the folder was opened) messages. This behavior may be
+          modified slightly with the Tab-Uses-Unseen-For-Next-Folder
+          feature which causes _Pine_ to look for Unseen messages instead
+          of Recent messages. By default, when such a folder is found,
+          _Pine_ will ask whether you wish to open the folder. If this
+          feature is set, _Pine_ will automatically open the folder
+          without prompting.
    _auto-unzoom-after-apply_
           If set, and if you are currently looking at a Zoomed Index view
           of selected messages, the _Apply_ command will do the operation
@@ -3872,19 +4448,20 @@ Configuration Features
           pressing _D_ will both mark the current message deleted and
           advance to the next message that is not marked deleted.
    _disable-2022-jp-conversions_
-          By default, UNIX _Pine_ will convert ISO-2022-JP data into EUC
-          and _PC-Pine_ will convert ISO-2022-JP data into Shift-JIS
-          before displaying it. Conversely, when sending mail UNIX _Pine_
-          will convert EUC into ISO-2022-JP and _PC-Pine_ will convert
-          Shift-JIS into ISO-2022-JP. If this feature is set, those
-          conversions are turned off.
+          By default, UNIX _Pine_ will convert Japanese characters
+          encoded as ISO-2022-JP data into EUC-JP and _PC-Pine_ will
+          convert the ISO-2022-JP data into Shift-JIS before displaying
+          it. Conversely, when sending mail, UNIX _Pine_ will convert
+          EUC-JP into ISO-2022-JP and _PC-Pine_ will convert Shift-JIS
+          into ISO-2022-JP. If this feature is set, those conversions are
+          turned off.
           Most of _Pine_ is not set up to handle multi-byte characters or
           variable width characters. From time to time, your display will
           be garbled because _Pine_'s word wrapping code, which is not
           aware of the possibility that characters may be multi-byte, may
           wrap a line in the middle of a character. _Pico_ is also not
-          able to edit Japanese data so you will need to use an alternate
-          editor when composing or replying to mail.
+          able to edit Japanese data well so you may need to use an
+          alternate editor when composing or replying to mail.
    _disable-busy-alarm_
           If set, the spinning bar that sometimes appears in the status
           line will not appear when _Pine_ is busy. This might be useful
@@ -3892,12 +4469,14 @@ Configuration Features
           uses to implement the busy spinner are suspected of causing a
           problem.
    _disable-charset-conversions_
-          By default, if your "character-set" configuration option is
+          By default, if your Character-Set configuration option is
           different from the character set of the message you are
-          viewing, then _Pine_ will attempt to convert the characters to
-          the character set you have set in the "character-set"
-          configuration option before sending them to your display. This
-          does not work for multi-byte or variable width character sets.
+          viewing, then _Pine_ will attempt to convert the characters in
+          the message to the character set you have set in the
+          Character-Set configuration option before sending them to your
+          display. The currently supported conversions are between 8-bit
+          character sets (e.g. between WINDOWS-1251 and KOI8-R), and from
+          UTF-8 to any other character set.
           If this feature is set, the conversions are turned off.
           Conversion is only possible if the character being converted is
           present in both character sets. Many pairs of character sets
@@ -3905,8 +4484,9 @@ Configuration Features
           attempt any conversion. If there are some characters in common
           then _Pine_ will attempt to convert those and will display the
           unknown characters as question marks.
-          Japanese character set conversions are controlled separately
-          with the disable-2022-jp-conversions feature.
+          The conversion of Japanese character sets from one encoding to
+          another is controlled separately by the
+          Disable-2022-JP-Conversions feature.
    _disable-config-cmd_
           If set, the configuration screen _Setup/Config_ will not be
           available at all.
@@ -3978,6 +4558,31 @@ Configuration Features
    _disable-signature-edit-cmd_
           If set the _Signature_ editing command usually available under
           the _Setup_ command will not be available.
+   _disable-take-fullname-in-addresses_
+          Normally, when TakeAddr is used to copy an address or addresses
+          from a message into an address book entry, _Pine_ will try to
+          preserve the full name associated with each address in the list
+          of addresses. The reason for this is so that if the entry is a
+          list or later becomes a list, then information about the
+          individual addresses in the list is preserved. If you would
+          rather just have the simple addresses in the list of addresses,
+          set this feature. For example, with the default setting you
+          might see something like this in the ADDRESS BOOK editor after
+          you type TakeAddr
+ Nickname  : nick
+ Fullname  : Bedrock Elders
+ Fcc       :
+ Comment   :
+ Addresses : Fred Flintstone <flint@bedrock.org>,
+             Barney Rubble <rubble@bedrock.org>
+          but with this feature set it would look like
+ Nickname  : nick
+ Fullname  : Bedrock Elders
+ Fcc       :
+ Comment   :
+ Addresses : flint@bedrock.org,
+             rubble@bedrock.org
+          instead. Note the difference in the Addresses field.
    _disable-take-last-comma-first_
           Normally, when _TakeAddr_ is used to copy an address from a
           message into an address book, _Pine_ will attempt to rewrite
@@ -3991,6 +4596,36 @@ Configuration Features
           name instead of First name. If this feature is set, then the
           _TakeAddr_ command will not attempt to reverse the name in this
           manner.
+   _disable-terminal-reset-for-display-filters_
+          UNIX Pine only.
+          This feature affects _Pine_'s behavior when using
+          Display-Filters. Normally, before the display filter is run,
+          the terminal mode is reset to what it was before you started
+          _Pine_. This may be necessary if the filter requires the use of
+          the terminal. For example, it may need to interact with you. If
+          you set this feature, then the terminal mode will not be reset.
+          One thing that turning on this feature should fix is the
+          coloring of quoted text in the message view, which breaks
+          because the terminal reset resets the color state of the
+          terminal (Color Configuration).
+   _downgrade-multipart-to-text_
+          This feature affects _Pine_'s behavior when sending mail.
+          Internet standards require _Pine_ to translate all non-ASCII
+          characters in messages that it sends using MIME encoding. This
+          encoding can be ostensibly broken for recipients if any agent
+          between _Pine_ and the recipient, such as an email list
+          expander, appends text to the message, such as list information
+          or advertising. When sending such messages _Pine_ attempts to
+          protect such encoding by placing extra MIME boundaries around
+          the message text.
+          These extra boundaries are invisible to recipients that use
+          MIME-aware email programs (the vast majority). However, if you
+          correspond with users of email programs that are not
+          MIME-aware, or do not handle the extra boundaries gracefully,
+          you can use this feature to prevent _Pine_ from including the
+          extra MIME information. Of course, it will increase the
+          likelihood that non-ASCII text you send may appear corrupt to
+          the recipient.
    _enable-8bit-esmtp-negotiation_
           This feature affects _Pine_'s behavior when sending mail.
           Internet standards require that all electronic mail messages
@@ -4086,13 +4721,13 @@ Configuration Features
           Normally, when the "enable-arrow-navigation" feature is set,
           the left and right arrow keys in the Folder List screen
           strictly track the commands bound to the _<_ and _>_ keys, and
-          the up and down arrow keys move the hilite bar to the previous
-          and next folder or directory name.
+          the up and down arrow keys move the highlite bar to the
+          previous and next folder or directory name.
           When enabled, this feature returns the left, right, up and down
           arrow key's functionality in the FOLDER LIST screen to what it
           was before enabling "enable-arrow-navigation". In other words,
-          left and right arrows move the hilite bar to the left or right,
-          and the up and down arrows move it up or down.
+          left and right arrows move the highlight bar to the left or
+          right, and the up and down arrows move it up or down.
    _enable-background-sending_
           If set, this feature enables a subcommand in the composer's
           _Send?_ confirmation prompt. The subcommand allows you to tell
@@ -4164,14 +4799,21 @@ Configuration Features
           _<_ command, the _<_ key will perform the same function as the
           _Exit_ command.
    _enable-fast-recent-test_
-          If set, the TAB key behavior in Incoming folders or News
-          collections is modified. By default, the TAB will cause each
-          folder in the Incoming folders collection (or in the news
-          collection) to be examined to see how many new messages have
-          been delivered since the last time it was viewed. If this
-          feature is set, the check is for any recent messages instead of
-          the count of recent messages. This is much faster in many
-          cases.
+          This feature controls the behavior of the TAB key when
+          traversing folders in the optional Incoming-Folders collection
+          or in optional News-Collections.
+          When the TAB (NextNew) key is pressed, the default behavior is
+          to explicitly examine the status of the folder for the number
+          of recent messages (messages delivered since the last time it
+          was viewed). Depending on the size and number of messages in
+          the folder, this test can be time consuming.
+          Enabling this feature will cause _Pine_ to only test for the
+          existence of any recent messages rather than to obtain the
+          count. This is much faster in many cases. The downside is that
+          you're not given the number of recent messages when prompted to
+          view the next folder. If the feature
+          Tab-Uses-Unseen-For-Next-Folder is turned on, then the present
+          feature will have no effect.
    _enable-flag-cmd_
           Setting this feature enables the _* Flag_ command, which allows
           you to manipulate the status flags associated with a message.
@@ -4185,7 +4827,50 @@ Configuration Features
           several flags and also offers the option of entering the
           detailed flag manipulation screen via the _^T_ key. Enabling
           this feature causes _Pine_ to immediately enter the detailed
-          flag screen rather than first offer the simple prompt.
+          flag screen rather than first offer the simple prompt. The
+          Enable-Flag-Screen-Keyword-Shortcut option offers a slightly
+          different way of setting keywords.
+   _enable-flag-screen-keyword-shortcut_
+          This feature modifies the behavior of the Flag command
+          (provided it too is enabled). By default, when the "* Flag"
+          command is selected, _Pine_ offers a prompt to set one of
+          several flags and also offers the option of entering the
+          detailed flag manipulation screen via the "^T" key. If you have
+          keywords defined, then enabling this feature adds a shortcut
+          way to set or unset keywords. You use "*" followed by the first
+          letter of a keyword (or the nickname of a keyword if you've
+          given it a nickname) and that will set the keyword.
+          An example is easier to understand than the explanation. The
+          flag command can always be used to set the system flags. For
+          example, to set the Answered flag you would type
+          
+                                    * A
+          Now suppose you have defined a keyword "Work" using the
+          Keywords option in the Config screen. By default, to set a
+          keyword like "Work" you would usually have to go to the Flag
+          Details screen using the "^T To Flag Details" command. Instead,
+          if you have enabled this feature, you may type
+          
+                                    * W
+          to set the Work flag, or
+          
+                                   * ! W
+          to unset it. Just like for the other flag setting commands, the
+          case of the letter does not matter, so "w" or "W" both set the
+          "Work" keyword.
+          Notice that you can only use this trick for one keyword that
+          begins with "W". If you happen to have a "Work" keyword and
+          another keyword that is "WIFI" the "* W" command will set the
+          first one in your list of keywords. Also, there are five
+          letters which are reserved for system flags and the NOT
+          command. If you type "* A" it will always set the Answered
+          flag, not your "Aardvark" keyword. In order to set the
+          "Aardvark" keyword you'll still have to use the Flag Details
+          screen.
+          Because enabling the Enable-Flag-Screen-Implicitly option
+          causes _Pine_ to skip directly to the Flag Details screen when
+          the Flag command is used, setting it will cause this feature to
+          have no effect at all.
    _enable-full-header-cmd_
           This feature enables the _H Full Headers_ command which toggles
           between the display of all headers in the message and the
@@ -4194,6 +4879,22 @@ Configuration Features
           _Print_, _Forward_, and _Reply_ functions. (For _Reply_, the
           _Full Header_ mode will respect the _include-headers-in-reply_
           feature setting.)
+          If Full Header mode has been turned on and you Forward a
+          message, you will be asked if you'd like to forward the message
+          as an attachment, as opposed to including the text of the
+          message in the body of your new message.
+          If you have also turned on the "Quote Suppression" option then
+          the Full Headers command actually rotates through three states
+          instead of just two. The first is the normal view with long
+          quotes suppressed. The second is the normal view but with the
+          long quotes included. The last enables the display of all
+          headers in the message. When using Export, Pipe, Print,
+          Forward, or Reply the quotes are never suppressed, so the first
+          two states are identical.
+          Normally, the Header Mode will reset to the default behavior
+          when moving to a new message. The mode can be made to persist
+          from message to message by setting the feature
+          Quell-Full-Header-Auto-Reset.
    _enable-full-header-and-text_
           This feature affects how the _H Full Headers_ command displays
           message text. If set, the raw message text will be displayed.
@@ -4316,6 +5017,20 @@ Configuration Features
           defined by the url-viewers variable.
           Use the up and down arrow keys to change which of the hostnames
           displayed in boldface is the current selection.
+   _enable-multiple-newsrcs_
+          This feature makes it so Pine can use multiple newsrcs based on
+          the news server being connected to, which allows for separate
+          lists of subscribed-to newsgroups. When this feature is not
+          set, there is only one list of newsgroups.
+          Under this feature, the name of a newsrc is based on the news
+          server. For example, if your newsrc-path is set to ".newsrc",
+          and the news server you are connecting to is news.example.com,
+          then the newsrc to be used is .newsrc-news.example.com. Setting
+          this feature for the first time will allow for the option of
+          using your old newsrc the next time you read news.
+          If this feature is set, then the feature
+          Mult-Newsrc-Hostnames-As-Typed also may affect the name of the
+          newsrc file that is used.
    _enable-newmail-in-xterm-icon_
           This feature controls whether or not _Pine_ will attempt to
           announce new mail arrival when it is running in an X terminal
@@ -4323,7 +5038,18 @@ Configuration Features
           variable indicates that an X terminal is being used, _Pine_
           will send appropriate escape sequences to the X terminal to
           modify the label on _Pine_'s icon to indicate that new mail has
-          arrived.
+          arrived. _Pine_ will also modify the _Pine_ window's title to
+          indicate new mail. See also Enable-Newmail-Short-Text-in-Icon.
+   _enable-newmail-short-text-in-icon_
+          This feature controls the text to be displayed in an icon in
+          the event of a new message arrival. Normally, the message will
+          be the one that is displayed on the screen. This feature
+          shortens the message to a count of the number of new messages
+          in brackets. This may be more useful for those who use the
+          window's title bar in the task bar as a new mail indicator.
+          This feature is only useful if the Enable-Newmail-in-Xterm-Icon
+          is also set. Like the Enable-Newmail-in-Xterm-Icon feature,
+          this feature is only relevant when run in an xterm environment.
    _enable-partial-match-lists_
           This feature affects the subcommands available when _Sav_ing or
           Opening a new folder. If set, the subcommand _^X ListMatches_
@@ -4525,6 +5251,18 @@ John: on a job well done!
           in that a new "^F Fcc Attchmnts" option becomes available which
           allows you to interactively set whether or not attachments are
           saved to the Fcc'd copy.
+   _hide-nntp-path_
+          Normally the Path header that _Pine_ generates when posting to
+          a newsgroup contains the name of the computer from which the
+          message is being sent and the user name. Some believe that this
+          information is used by spammers. If this feature is set, that
+          information will be replaced with the text
+          
+                                not-for-mail
+          instead.
+          It should be noted that many servers being connected to will
+          still reveal the information that this feature attempts to
+          protect.
    _include-attachments-in-reply_
           If set, any MIME attachments that were part of the original
           message will automatically be included in a _Reply_.
@@ -4545,6 +5283,18 @@ John: on a job well done!
           then when an implicit directory lookup is done from the
           composer you will automatically be prompted to add the result
           of the directory lookup to your address book.
+   _maildrops-preserve-state_
+          This feature affects the way Mail Drops work. Normally, when
+          mail is moved from a Mail Drop folder to a destination folder,
+          the state changes that have taken place since the mail was
+          originally delivered are lost. Any Seen/New, Answered,
+          Important/Flagged state that has changed will be ignored. All
+          of the mail will be considered unSeen, unAnswered, and
+          unImportant after it is moved.
+          If this feature is set, then the state changes will not be
+          lost.
+          In any case, messages which are already marked Deleted when the
+          mail is to be copied from the Mail Drop will be ignored.
    _mark-fcc-seen_
           This features controls the way FCCs (File Carbon Copies) are
           made of the messages you send. Normally, when _Pine_ saves a
@@ -4559,6 +5309,28 @@ John: on a job well done!
           addressed directly to you. When this feature is set and the
           message is not addressed to you, then a '-' character is
           displayed if the message is instead Cc'd directly to you.
+   _mult-newsrc-hostnames-as-typed_
+          This feature will be of little use to most users. It has no
+          effect unless the feature Enable-Multiple-Newsrcs is set. When
+          the Enable-Multiple-Newsrcs feature is set then the setting of
+          this feature may have an effect on the names of the newsrc
+          files used. Normally, the name of the news server will be
+          canonicalized before it is used in the newsrc file name. For
+          example, if you type the news server name
+          
+                                 servername
+          it is likely that the canonical name will be something like
+          
+                           servername.example.com
+          Or it may be the case that
+          
+                           servername.example.com
+          is really an alias (a DNS CNAME) for
+          
+                           othername.example.com
+          If this feature is not set, then the canonicalized names will
+          be used. If this feature is set, then the name you typed in (or
+          put in your configuration) will be used.
    _news-approximates-new-status_
           This feature causes certain messages to be marked as _New_ in
           the "Folder Index" of newsgroups.
@@ -4635,6 +5407,47 @@ John: on a job well done!
           you then view a particular message from that screen and press
           the Next command, you will be sent to the next thread without
           being asked, independent of the setting of this feature.
+   _offer-expunge-on-inbox_
+          The INBOX is normally treated differently from regular folders
+          in several ways. One of the differences is that the normal
+          "close" sequence of events is deferred until _Pine_ is exited,
+          instead of happening when you leave the INBOX to view another
+          folder. The "close" sequence normally includes the Expunging of
+          deleted messages (either automatically or after a prompt,
+          controlled by the features Expunge-Without-Confirm,
+          Expunge-Without-Confirm-Everywhere, and Expunge-Only-Manually),
+          and the handling of the Read-Message-Folder.
+          If this feature is set the "close" sequence handling will take
+          place every time you leave the INBOX. The INBOX will still be
+          kept open, but the offer to Expunge and the archiving to the
+          Read-Message-Folder will take place each time you leave the
+          INBOX instead of only once at the end of the session.
+   _offer-expunge-on-stayopen-folders_
+          This feature is related to the option Stay-Open-Folders. Stay
+          Open folders are treated differently from regular folders in
+          several ways. One of the differences is that the normal "close"
+          sequence of events is deferred until _Pine_ is exited, instead
+          of happening when you leave the folder to view another folder.
+          The "close" sequence normally includes the Expunging of deleted
+          messages (either automatically or after a prompt, controlled by
+          the features Expunge-Without-Confirm,
+          Expunge-Without-Confirm-Everywhere, and Expunge-Only-Manually),
+          and the handling of Incoming-Archive-Folders.
+          If this feature is set the "close" sequence handling will take
+          place when you leave the Stay Open folder. The folder will
+          still be kept open, but the offer to Expunge and the archiving
+          will take place each time you leave the folder instead of only
+          once at the end of the session. This feature does not affect
+          the INBOX, which will still only be processed when you exit
+          _Pine_.
+   _pass-c1-control-characters-as-is_
+          UNIX _Pine_ only. If the feature pass-control-characters-as-is
+          is set, then this feature has no effect. However, if you wish
+          to filter out regular control characters but pass the so-called
+          C1 control characters (0x80 <= char < 0xA0) through unchanged,
+          then you may leave pass-control-characters-as-is unset and set
+          this feature. This feature is not available in PC-Pine where
+          control characters are never suppressed.
    _pass-control-characters-as-is_
           UNIX _Pine_ only (this feature is automatically on with
           _PC-Pine_). If set, all characters in a message will be sent to
@@ -4644,16 +5457,41 @@ John: on a job well done!
           two character sequences like
           
                                      ^C
-          for Control-C or
+          for Control-C,
           
                                      ^[
-          for ESCAPE (the three high-order bits are masked off of the
-          control character to get the 2nd character to display).
-          Sometimes, in cases where changing a single control character
-          into a two-character sequence would confuse _Pine_'s display
-          routines, a question mark is substituted for the control
-          character. This feature is not available in _PC-Pine_ where
-          control characters are never suppressed.
+          for ESCAPE,
+          
+                                     ^?
+          for DELETE, and
+          
+                                     ~E
+          for the character with value 133 (0x85). (The DEL character is
+          displayed as ^?, regular control characters are displayed as
+          the character ^ followed by the character obtained by adding
+          the five low-order bits of the character to 0x40, and the C1
+          control characters 0x80 - 0x9F are displayed as the character ~
+          followed by the character obtained by adding the five low-order
+          bits of the character to 0x40.) Sometimes, in cases where
+          changing a single control character into a two-character
+          sequence would confuse Pine's display routines, a question mark
+          is substituted for the control character.
+          If you wish to filter out regular control characters but pass
+          the so-called C1 control characters (0x80 <= char < 0xA0)
+          through unchanged, then you may leave this feature unset and
+          set the feature pass-c1-control-characters-as-is instead. This
+          feature is not available in PC-Pine where control characters
+          are never suppressed.
+   _predict-nntp-server_
+          This feature allows Pine to assume that the open NNTP server at
+          the time of composition is the NNTP server to which the message
+          should be posted. This is especially recommended when there are
+          multiple News collections. If this feature is not set, Pine
+          will try to post to the first server in the nntp-server
+          variable. Setting this feature also negates the need to add
+          News collection servers to the nntp-server variable.
+          This feature can be especially handy when used in conjunction
+          with enable-multiple-newsrcs.
    _prefer-plain-text_
           A message being viewed may contain alternate versions of the
           same content. Those alternate versions are ordered by the
@@ -4666,6 +5504,13 @@ John: on a job well done!
           preferred.
           If this option is set, then any plain text version will be
           preferred to all other versions.
+   _preopen-stayopen-folders_
+          This feature is related to the option Stay-Open-Folders.
+          Normally, Stay Open folders are only opened on demand, when the
+          user asks to open them. From then on they are kept open for the
+          duration of the session. However, if this feature is set, then
+          the Stay Open folders will all be opened at startup, at the
+          same time that the INBOX is opened.
    _preserve-start-stop-characters_
           This feature controls how special control key characters,
           typically _^S_ and _^Q_, are interpreted when input to _Pine_.
@@ -4707,6 +5552,29 @@ John: on a job well done!
           will have the opportunity to enter any system print command,
           instead of being restricted to using those that have been
           previously configured in the _Setup/Printer_ screen.
+   _prune-uses-yyyy-mm_
+          By default, _Pine_ asks monthly whether or not you would like
+          to rename some folders to a new name containing the date. It
+          also asks whether or not you would like to delete some old
+          folders. See the pruning-rule option for an explanation.
+          By default, the name used when renaming a folder looks like
+          
+                        <foldername>-<month>-<year>
+          For example, the first time you run _Pine_ in May of 2004, the
+          folder "sent-mail" might be renamed to
+          
+                             sent-mail-apr-2004
+          If this feature is set, the name used will be of the form
+          
+                          <foldername>-<yyyy>-<mm>
+          where "yyyy" is the year and "mm" is the two-digit month (01,
+          02, ..., 12). For the April, 2004 example above, it would
+          instead be
+          
+                             sent-mail-2004-04
+          because April is the 4th month of the year. A reason you might
+          want to set this feature is so that the folders will sort in
+          chronological order.
    _quell-attachment-extra-prompt_
           By default, when you attempt to view an attachment externally
           from the "Attachment View" screen, you are asked if you really
@@ -4721,6 +5589,19 @@ John: on a job well done!
           Berkeley mail have trouble with this, and don't recognize the
           line as a message delimiter. If this feature is set, the
           timezone will be left off the delimiter line.
+   _quell-charset-warning_
+          By default, if your Character-Set is different from the
+          character set of the message you are viewing, then _Pine_ will
+          add a warning to the start of the displayed text. If this
+          option is set, then that editorial message will be suppressed.
+          Setting this feature also suppresses the comment about the
+          character set in header lines. For example, when viewing a
+          message you might see
+          
+                    From: "[ISO-8859-2] Name" <address>
+          in the From header if your Character-Set is something other
+          than ISO-8859-2. If you set this feature, the comment about the
+          character set will no longer be there.
    _quell-content-id_
           This feature changes the behavior of _Pine_ when sending
           messages. It is intended to work around a bug in Microsoft's
@@ -4757,6 +5638,10 @@ John: on a job well done!
           this can introduce a noticeable delay.
           Setting this feature will cause _Pine_ NOT to write canceled
           compositions into the file called dead.letter.
+          This feature affects the newer option Dead-Letter-Files, which
+          specifies the number of dead letter files to keep around. If
+          this feature is set, then the Dead-Letter-Files option has no
+          effect.
    _quell-empty-directories_
           This feature causes _Pine_ to remove from the display any
           directories that do not contain at least one file or directory.
@@ -4772,6 +5657,53 @@ John: on a job well done!
           This feature causes _Pine_ to skip the extra question about
           posting a message which may go to thousands of readers when you
           are about to post to a newsgroup.
+   _quell-filtering-done-message_
+          This feature causes _Pine_ to suppress the "filtering done"
+          message.
+   _quell-filtering-messages_
+          This feature causes _Pine_ to suppress the messages about
+          moving filtered messages and setting flags in messages, due to
+          Filter Rules.
+   _quell-flowed-text_
+          Beginning with version 4.60, _Pine_ generates flowed text where
+          possible. The method for generating flowed text is defined by
+          RFC 3676, the benefit of doing so is to send message text that
+          can properly be viewed both on normal width displays and on
+          displays with smaller or larger than normal screen widths. With
+          flowed text, a space at the end of a line tells the receiving
+          mail client that the following line belongs to the same
+          paragraph. Quoted text will also be affected, with only the
+          innermost level of ">" quoting being followed by a space.
+          However, if you have changed the "Reply-Indent-String" so that
+          it is not equal to the default value of "> ", then quoted text
+          will not be flowed. For this reason, we recommend that you
+          leave your "Reply-Indent-String" set to the default.
+          This feature turns off the generation of flowed text, as it
+          might be desired to more tightly control how a message is
+          displayed on the receiving end.
+          If this feature is _not_ set, you can control on a message by
+          message basis whether or not flowed text is generated. You do
+          this by typing ^V at the Send confirmation prompt that you get
+          after typing ^X to send a message. ^V is a toggle which turns
+          flowing off and back on if typed again. If for some reason
+          flowing cannot be done on a particular message, then the ^V
+          command will not be available. This would be the case, for
+          example, if this feature was set, or if your
+          "Reply-Indent-String" was set to a non-default value. If the
+          feature Send-Without-Confirm is set, then the opportunity to
+          control on a message by message basis whether or not flowed
+          text is generated is lost.
+          When this feature is not set and you have typed ^V to turn off
+          flowing, the Send confirmation prompt will change to look like
+          
+                         Send message (not flowed)?
+          Strip-Whitespace-Before-Send will also turn off the sending of
+          flowed text messages, but it differs in that it also trims all
+          trailing white space from a message before sending it.
+          If alternate editors are used extensively, be aware that a
+          message will still be sent flowed if this feature is unset. In
+          most cases this will be fine, but if the editor has a "flowed
+          text" mode, it would be best to use that.
    _quell-folder-internal-msg_
           This feature determines whether or not _Pine_ will create
           "pseudo messages" in folders that are in standard Unix or MMDF
@@ -4794,6 +5726,16 @@ John: on a job well done!
           effect on folders that are not in standard Unix or MMDF format,
           as pseudo-messages are not needed in the other formats to
           record mailbox state information.
+   _quell-full-header-auto-reset_
+          The HdrMode Command normally resets to the default state when
+          switching to a new message. For example, if you've used the "H"
+          command to turn on Full Headers for a message you are viewing,
+          and then you type the Next command to look at the next message,
+          the full headers will no longer be shown. Setting this feature
+          disables that reset. Instead, the Header Mode remains the same
+          from message to message.
+          The presence or absence of the HdrMode command is determined by
+          the "Enable-Full-Header-Cmd" Feature-List option.
    _quell-imap-envelope-update_
           In the MESSAGE INDEX screen, if the open folder is being
           accessed using IMAP, _Pine_ normally tries to paint the index
@@ -4824,6 +5766,56 @@ John: on a job well done!
           when more than one program attempts to modify the mail folder.
           This is most likely to occur to one's _INBOX_ or other
           "Incoming Message Folder".
+   _Quell-Mailchecks-Composing-Except-Inbox_
+          This option is closely related to the Mail-Check-Interval
+          option, the Mail-Check-Interval-Noncurrent option, and
+          Quell-Mailchecks-Composing-Inbox.
+          If this option is set, then the normal new-mail checking which
+          happens while you are composing will not happen for folders
+          other than your INBOX (which depends on the setting of
+          "Quell-Mailchecks-Composing-Inbox").
+          You might want to set this option if you are experiencing
+          delays while composing which you think might be related to the
+          speed of the new-mail checks.
+          Even with this option turned on, an occasional new-mail check
+          may be done in order to keep the server from killing the
+          connection to the folder. For example, IMAP servers may remove
+          a connection to a folder if there has been no activity on the
+          connection for 30 minutes or more. Instead of letting that
+          happen, _Pine_ will check for new mail before the 30 minutes is
+          up even though you have turned on this feature to quell those
+          checks.
+          Besides new-mail checks, checkpoint operations on the folders
+          will also be quelled when you set this option. The purpose of
+          checkpointing is to write the changes to a folder out to disk
+          periodically in order to avoid losing those changes when system
+          or software problems occur. New-mail checking and checkpointing
+          while you are not composing are not affected by this option.
+   _Quell-Mailchecks-Composing-Inbox_
+          This option is closely related to the Mail-Check-Interval
+          option, the Mail-Check-Interval-Noncurrent option, and
+          Quell-Mailchecks-Composing-Except-Inbox.
+          If this option is set, then the normal new-mail checking which
+          happens while you are composing will not happen for your INBOX.
+          Checking of other folders is controlled in a similar way with
+          the "Quell-Mailchecks-Composing-Except-Inbox" option.
+          You might want to set this option if you are experiencing
+          delays while composing which you think might be related to the
+          speed of the new-mail checks.
+          Even with this option turned on, an occasional new-mail check
+          may be done in order to keep the server from killing the
+          connection to the folder. For example, IMAP servers may remove
+          a connection to a folder if there has been no activity on the
+          connection for 30 minutes or more. Instead of letting that
+          happen, _Pine_ will check for new mail before the 30 minutes is
+          up even though you have turned on this feature to quell those
+          checks.
+          Besides new-mail checks, checkpoint operations on the INBOX
+          will also be quelled when you set this option. The purpose of
+          checkpointing is to write the changes to a folder out to disk
+          periodically in order to avoid losing those changes when system
+          or software problems occur. New-mail checking and checkpointing
+          while you are not composing are not affected by this option.
    _quell-maildomain-warning_
           When your configuration is set up so that your domain name
           contains no dots, it is usually a configuration error. By
@@ -4948,6 +5940,14 @@ John: on a job well done!
           the folders are on different IMAP servers, or the folders are
           local and in different formats, _Pine_ will copy each message
           individually.
+   _save-partial-msg-without-confirm_
+          This feature controls an aspect of _Pine_'s Save command. By
+          default, when you Save a message that has some deleted parts,
+          you will be asked to confirm that you want to Save with a
+          prompt that looks like:
+          
+           Saved copy will NOT include entire message! Continue?
+          If this feature is set, you will not be asked.
    _save-will-advance_
           If set, _Save_ will (in addition to copying the current message
           to the designated folder) also advance to the next message.
@@ -5010,7 +6010,8 @@ John: on a job well done!
           If this feature is set it disables some possibilities and
           renders some other features meaningless. You will not be able
           to use Sending Filters, Verbose sending mode, Background
-          Sending, or Delivery Status Notifications. These options are
+          Sending, Delivery Status Notifications, or ^V to turn off the
+          generation of flowed text for this message. These options are
           normally available as suboptions in the Send prompt, but with
           no Send prompt the options are gone.
           A somewhat related feature is quell-extra-post-prompt. which
@@ -5029,8 +6030,8 @@ John: on a job well done!
           The feature also alters the command set slightly. By default,
           the right-arrow descends into the directory, while hitting the
           Return key will cause the folder by that name to be opened.
-          With this feature set, the Return key will open the hilited
-          folder, or enter the hilited directory.
+          With this feature set, the Return key will open the highlighted
+          folder, or enter the highlighted directory.
    _show-cursor_
           If set, the system cursor will move to convenient locations in
           the displays. For example, to the beginning of the status field
@@ -5056,6 +6057,39 @@ John: on a job well done!
           message, _Pine_ will attempt to display those index lines in
           boldface. Whether this is preferable to the _X_ will depend on
           personal taste and the type of terminal being used.
+   _show-sort_
+          If this feature is set and there is sufficient space on the
+          screen, a short indication of the current sort order will be
+          added in the titlebar (the top line on the screen), before the
+          name of the folder. For example, with the default Arrival sort
+          in effect, the display would have the characters
+          
+                                    [A]
+          added between the title of the screen and the folder name. The
+          letters are the same as the letters you may type to manually
+          sort a folder with the SortIndex command ($). The letters in
+          the table below are the ones that may show up in the titlebar
+          line.
+          
+   A _A_rrival
+   S _S_ubject
+   F _F_rom
+   T _T_o
+   C _C_c
+   D _D_ate
+   Z si_Z_e
+   O _O_rderedsubject
+   E scor_E_
+   H t_H_read
+          If the sort order is Reversed, the letter above will be
+          preceded by the letter "R", for example
+          
+                                    [RS]
+          means that a Reverse Subject sort is in effect. For the case
+          where the sort is in Reverse Arrival order, the "A" is left
+          out, and just an "R" is shown.
+          
+                                    [R]
    _signature-at-bottom_
           If this feature is set, and a message being _Repl_ied to is
           being included in the reply, then the contents of the signature
@@ -5070,6 +6104,16 @@ John: on a job well done!
           message, if any. If this feature is set, then the slash command
           Collapses or Expands the _entire_ current thread instead of
           just the subthread.
+   _sort-default-fcc-alpha_
+          This feature controls an aspect of _Pine_'s FOLDER LIST screen.
+          If set, the default FCC folder will be sorted alphabetically
+          with the other folders instead of appearing right after the
+          INBOX.
+   _sort-default-save-alpha_
+          This feature controls an aspect of _Pine_'s FOLDER LIST screen.
+          If set, the default save folder will be sorted alphabetically
+          with the other folders instead of appearing right after the
+          INBOX (and default FCC folder).
    _spell-check-before-sending_
           When this feature is set, every composed message will be
           spell-checked before being sent.
@@ -5092,11 +6136,47 @@ John: on a job well done!
           In other words, this is a way to turn on the signature
           stripping behavior without also turning on the dashes-adding
           behavior.
+   _strip-whitespace-before=send_
+          Starting with Pine 4.60, trailing whitespace is no longer
+          stripped from a message before sending. Trailing whitespace
+          should have no effect on an email message, and in flowed text
+          can aid in delimiting paragraphs. However, the old behavior of
+          stripping trailing whitespace was in place to better deal with
+          older clients that couldn't handle certain types of text
+          encodings. This feature restores the old behavior
+          Trailing whitespace is of aid to flowed-text-formatted
+          messages, which are generated by default but can be turned off
+          via the quell-flowed-text feature. strip-whitespace-before-send
+          also has the effect of turning off sending of flowed text.
    _tab-checks-recent_
           In a FOLDER LIST screen, the TAB key usually just changes which
           folder is highlighted. If this feature is set, then the TAB key
           will cause the number of recent messages and the total number
           of messages in the highlighted folder to be displayed instead.
+   _tab-uses-unseen-for-next-folder_
+          This feature affects _Pine_'s behavior when using the TAB
+          NextNew Command to move from one folder to the next. _Pine_'s
+          usual behavior is to search for folders with _Recent_ messages
+          in them. Recent messages are messages which have arrived since
+          the last time the folder was opened.
+          Setting this feature causes _Pine_ to search for _Unseen_
+          messages instead of Recent messages. Unseen messages remain
+          Unseen until you view them (or flag then as Seen with the Flag
+          Command). Setting this feature allows you to locate messages
+          you have not read instead of only recently received messages.
+          When this feature is set, the feature Enable-Fast-Recent-Test
+          will have no effect, so the checking may be slower.
+          Another reason why you might want to use this feature is that
+          _Pine_ sometimes opens folders implicitly behind the scenes,
+          and this clears the Recent status of all messages in the
+          folder. One example where this happens is when Saving or
+          filtering a message to another folder. If that message has some
+          keywords set, then because of some shortcomings in the IMAP
+          specification, the best way to ensure that those keywords are
+          still set in the saved copy of the message is to open the
+          folder and set the keywords explicitly. Because this clears the
+          Recent status of all messages in that folder the folder will
+          not be found by the NextNew command unless this feature is set.
    _tab-visits-next-new-message-only_
           This feature affects _Pine_'s behavior when using the _TAB_ key
           to move from one message to the next. _Pine_'s usual behavior
@@ -5188,6 +6268,21 @@ John: on a job well done!
           keys instead of the normal single-letter commands. In this
           mode, the key menus at the bottom of each screen will show
           function key designations instead of the normal mnemonic key.
+   _use-regular-startup-rule-for-stayopen-folders_
+          This feature affects which message is selected as the current
+          message when you enter a Stay Open folder.
+          Normally, the starting position for an incoming folder (which
+          most Stay Open folders will likely be) is controlled by the
+          Incoming-Startup-Rule. However, if a folder is a Stay Open
+          folder, when you re-enter the folder after the first time the
+          current message will be the same as it was when you left the
+          folder. An exception is made if you use the TAB command to get
+          to the folder. In that case, the message number will be
+          incremented by one from what it was when you left the folder.
+          The above special behavior is thought to be useful. However, it
+          is special and different from what you might at first expect.
+          If this feature is set, then Stay Open folders will not be
+          treated specially as far as the startup rule is concerned.
    _use-sender-not-x-sender_
           Normally _Pine_ on Unix adds a header line labeled
           _X-X-Sender_, if the sender is different from the _From:_ line.
@@ -5283,10 +6378,10 @@ Hidden Config Variables and Features
    usually maintained by _Pine_ and there will usually be no reason to
    edit them by hand.
      * last-version-used
-     * patterns-filters
+     * patterns-filters2
      * patterns-indexcolors
      * patterns-roles
-     * patterns-scores
+     * patterns-scores2
      * remote-abook-metafile
        
    This group is usually correct but may be changed by system managers or
@@ -5375,7 +6470,9 @@ Retired Variables and Features
    _patterns_
           Replaced by four separate patterns variables: _patterns-roles_,
           _patterns-filters_, _patterns-scores_, and
-          _patterns-indexcolors_.
+          _patterns-indexcolors_. Since then, _patterns-filters_ has also
+          become obsolete and is replaced by _patterns-filters2_;
+          _patterns-scores_ is replaced by _patterns-scores2_.
    _save-by-sender_
           Replaced by _saved-msg-name-rule._
    _show-all-characters_
@@ -5384,14 +6481,16 @@ Retired Variables and Features
 Tokens for Index and Replying
 
    This set of special tokens may be used in the index-format option, in
-   the reply-leadin option, in signature files, and in template files
-   used in roles.
+   the reply-leadin option, in signature files, in template files used in
+   roles, and in the folder name that is the target of a Filter Rule.
+   Some of them aren't available in all situations.
    
    The tokens are used as they appear below for the _Index-Format_
    option, but they must be surrounded by underscores for the
-   _Reply-Leadin_ option, and in signature and template files.
+   _Reply-Leadin_ option, in signature and template files, and in the
+   target of Filter Rules.
    
-  _Tokens Available for all Cases_
+  _Tokens Available for all Cases (except Filter Rules)_
   
    SUBJECT
           This token represents the Subject the sender gave the message.
@@ -5729,6 +6828,51 @@ Tokens for Index and Replying
           "Index-Format" could slow down the display a little while _Pine_
           collects the necessary information.
           
+   SUBJKEY
+          This token is the same as the SUBJECT token unless keywords are
+          set for the message. In that case, a list of keywords enclosed
+          in braces will be prepended to the subject of the message.
+          Having this set in the index-format will also cause the
+          keywords to be prepended to the subject in the MESSAGE VIEW
+          screen. If you have given a keyword a nickname (Keywords), that
+          nickname is displayed instead of the actual keyword. The
+          Keyword-Surrounding-Chars option may be used to modify this
+          token slightly. It is also possible to color keywords in the
+          index using the Setup/Kolor screen (Keyword Colors).
+          
+   SUBJKEYINIT
+          This token is the same as the SUBJKEY token except that instead
+          of prepending a list of keywords to the subject, a list of
+          first initials of keywords will be prepended instead. For
+          example, if a message has the keywords _Work_ and _Now_ set (or
+          Work and Now are the Pine nicknames of keywords which are set)
+          then the SUBJKEY token would cause a result like
+          
+                         {Work Now} actual subject
+                                      
+          whereas the SUBJKEYINIT token would give
+          
+                            {WN} actual subject
+                                      
+          The Keyword-Surrounding-Chars option may be used to modify this
+          token slightly. It is also possible to color keywords in the
+          index using the Setup/Kolor screen (Keyword Colors).
+          
+   KEY
+          This is a space-delimited list of keywords that are set for the
+          message. If you have given a keyword a nickname (Keywords),
+          that nickname is displayed instead of the actual keyword. It is
+          also possible to color keywords in the index using the
+          Setup/Kolor screen (Keyword Colors).
+          
+   KEYINIT
+          This is a list of keyword initials that are set for the
+          message. If you have given a keyword a nickname (Keywords), the
+          initial of that nickname is displayed instead of the initial of
+          the actual keyword. It is also possible to color keyword
+          initials in the index using the Setup/Kolor screen (Keyword
+          Colors).
+          
    ATT
           This is a one column wide field which represents the number of
           attachments a message has. It will be blank if there are no
@@ -5792,10 +6936,91 @@ Tokens for Index and Replying
           hour clock. It has the format HH:MMpm. For example, "5:28pm" or
           "11:13am".
           
+   CURDAY
+          This token represents the current day of the month. For
+          example, "23" or "9".
+          
+   CURDAY2DIGIT
+          This token represents the current day of the month. For
+          example, "23" or "09". It is always 2 digits.
+          
+   CURDAYOFWEEK
+          This token represents the current day of the week. For example,
+          "Sunday" or "Wednesday".
+          
+   CURDAYOFWEEKABBREV
+          This token represents the current day of the week. For example,
+          "Sun" or "Wed".
+          
+   CURMONTH
+          This token represents the current month. For example, "10" or
+          "9".
+          
+   CURMONTH2DIGIT
+          This token represents the current month. For example, "10" or
+          "09". It is always 2 digits.
+          
+   CURMONTHLONG
+          This token represents the current month. For example,
+          "October".
+          
+   CURMONTHABBREV
+          This token represents the current month. For example, "Oct".
+          
+   CURYEAR
+          This token represents the current year. For example, "1998" or
+          "2001".
+          
+   CURYEAR2DIGIT
+          This token represents the current year. For example, "98" or
+          "01". It is always 2 digits.
+          
+   LASTMONTH
+          This token represents last month. For example, if this is
+          November (the 11th month), it is equal to "10" or if this is
+          October (the 10th month), it is "9". It is possible that this
+          and the other tokens beginning with LASTMONTH below could be
+          useful when used with a Filtering Rule that has the "Beginning
+          of Month" option set.
+          
+   LASTMONTH2DIGIT
+          This token represents last month. For example, if this is
+          November (the 11th month), it is equal to "10" or if this is
+          October (the 10th month), it is "09". It is always 2 digits.
+          
+   LASTMONTHLONG
+          This token represents last month. For example, if this is
+          November the value is "October".
+          
+   LASTMONTHABBREV
+          This token represents last month. For example, if this is
+          November the value is "Oct".
+          
+   LASTMONTHYEAR
+          This token represents what the year was a month ago. For
+          example, if this is October, 1998, it is "1998". If this is
+          January, 1998, it is "1997".
+          
+   LASTMONTHYEAR2DIGIT
+          This token represents what the year was a month ago. For
+          example, if this is October, 1998, it is "98". If this is
+          January, 1998, it is "97".
+          
+   LASTYEAR
+          This token represents last year. For example, if this is 1998,
+          it equals "1997". It is possible that this could be useful when
+          used with a Filtering Rule that has the "Beginning of Year"
+          option set.
+          
+   LASTYEAR2DIGIT
+          This token represents last year. For example, if this is 1998,
+          it equals "97". It is always 2 digits.
+          
    ROLENICK
           This token represents the nickname of the role currently being
           used. If no role is being used, then no text will be printed
-          for this token.
+          for this token. This token does not work with Filter Rule
+          folder names.
           
   _Token Available Only for Templates and Signatures_
   
@@ -6344,7 +7569,8 @@ Color Configuration
    
    Besides coloring the message status symbols, you may also color the
    entire index line. This is done by using the Index Line Color
-   configuration screen.
+   configuration screen. It is also possible to color (keywords in the
+   index using the Setup/Kolor screen (Keyword Colors).
    
    _Index-to-me Symbol Color_
           The color used for drawing the "+" symbol which signifies a
@@ -6368,7 +7594,7 @@ Color Configuration
    _Index-unseen Symbol Color_
           The color used for drawing the "U" symbol which signifies a
           message is Unseen (only visible if the "IMAPSTATUS" token is
-          part of the index-format option).
+          part of the Index-Format option).
           
   Header Colors
   
@@ -6389,6 +7615,20 @@ Color Configuration
    
    If the pattern you enter is a comma-separated list of patterns, then
    coloring happens if any of those patterns matches.
+   
+  Keyword Colors
+  
+   Sets the colors _Pine_ uses for Keyword fields in the MESSAGE INDEX
+   screen. Keywords may be displayed as part of the Subject of a message
+   by using the "SUBJKEY" or "SUBJKEYINIT" tokens in the Index-Format
+   option. Keywords may also be displayed in a column of their own in the
+   MESSAGE INDEX screen by using the "KEY" or "KEYINIT" tokens.
+   
+   For example, you might have set up a Keyword "Work" using the Keywords
+   option in the Setup/Config screen. You could cause that Keyword to
+   show up as a special color by setting up the Keyword Color using this
+   option, and then including it in the MESSAGE INDEX screen using one of
+   the tokens listed above in the Index-Format.
    
   Index Line Colors
   
@@ -6830,14 +8070,15 @@ Filtering Configuration
    status that you can control. You can set or clear the Important
    status, the New status, the Deleted status, and the Answered status.
    Of course, if the filter is going to delete the message, then there is
-   no point in setting message status.
+   no point in setting message status. You may also set or clear
+   user-defined keywords for a message.
    
    Second, the filter may delete or move the message. Deleting the
    message marks it Deleted and removes it from view. It is effectively
    gone forever (though it technically is still there until the next
    expunge command, which may happen implicitly). Moving the message
-   moves it from the open folder into the folder listed on the "to
-   Folder" line of the filter configuration. If you list more than one
+   moves it from the open folder into the folder listed on the "Folder
+   List" line of the filter configuration. If you list more than one
    folder name (separated by commas) then the message will be copied to
    each of those folders. In any case, if "Delete" or "Move" is set then
    the message is removed from the current folder. If you just want to
@@ -6846,7 +8087,7 @@ Filtering Configuration
    
    (There is no way to do a Copy instead of a Move, due to the
    difficulties involved in keeping track of whether or not a message has
-   already been copied.)
+   already been copied by a previous _Pine_ session.)
    
     Move-only-if-not-deleted option
     
@@ -7011,12 +8252,14 @@ Patterns
    the message being replied to; for Forward, the message used to compare
    the Pattern with is the message being forwarded; and for Compose,
    there is no message, so the parts of the Pattern which depend on a
-   message (everything other than Current Folder Type) are not used. Only
-   the Current Folder Type matters for Compose. For Scoring, the message
-   being scored is compared with all of the Score Patterns, and the Score
-   Values from the ones that match are added together to get the
-   message's score. For Other Rules, there is no message. Only the
-   Current Folder Type is checked for Other Rules.
+   message (everything other than Current Folder Type and the Beginning
+   of Month and Year) are not used. Only the Current Folder Type matters
+   for Compose (plus the Beginning of Month, which you wouldn't usually
+   use for a Role). For Scoring, the message being scored is compared
+   with all of the Score Patterns, and the Score Values from the ones
+   that match are added together to get the message's score. For Other
+   Rules, there is no message. Only the Current Folder Type is checked
+   for Other Rules.
    
    Each Pattern has several possible parts, all of which are optional. In
    order for there to be a match, _ALL_ of the _defined_ parts of the
@@ -7061,15 +8304,30 @@ Patterns
    considered to NOT be a match, and if it does not match it is
    considered to be a match.
    
+   Don't make the mistake of putting the "!" in the data field for a
+   pattern. For example, if you type the characters "!urgent" into the
+   Subject pattern, the pattern will look like:
+   
+ Subject pattern = !urgent
+
+   This means you want to match the 7 character sequence "!urgent". In
+   order to match messages which do not have "urgent" in their Subject
+   field, first type the characters "urgent" followed by carriage return
+   for the value of the Subject pattern, then negate it by typing the "!"
+   command. It should look like
+   
+ ! Subject pattern = urgent
+
    The contents of each of these header patterns (or the AllText or
    BodyText patterns) may be a complete email address, part of an
    address, or a random set of characters to match against. It may also
-   be a comma-separated list of such patterns, which means you are
-   looking for a match against the first pattern in the list _OR_ the
-   second pattern _OR_ the third and so on. For example, a Subject
-   pattern equal to
+   be a list of such patterns, which means you are looking for a match
+   against the first pattern in the list _OR_ the second pattern _OR_ the
+   third and so on. For example, a Subject pattern equal to
    
- Subject pattern = urgent, emergency, alert
+ Subject pattern = urgent
+                   emergency
+                   alert
 
    would match all messages with a subject which contained at least one
    of those words. It would also match subjects containing the words
@@ -7077,27 +8335,33 @@ Patterns
    
    The same example with "NOT" turned on would be
    
- ! Subject pattern = urgent, emergency, alert
+ ! Subject pattern = urgent
+                     emergency
+                     alert
 
    which would match all messages with a subject which did NOT contain
-   any of those words.
+   any of those words. You can use the "Add Value" command to add new
+   words to the list, or you can enter them as a comma-separated list.
    
    (It is not possible to specify two patterns which must _BOTH_ be
    present for a match. It is only possible to specify that _EITHER_
-   pattern1 _OR_ pattern2 must be present, and that is exactly what the
-   comma-separated list does.)
+   pattern1 _OR_ pattern2 must be present, and that is exactly what using
+   a list does.)
    
    The "Current Folder Type" and the "Score Interval" are also part of
    the Pattern, although the "Score Interval" is not used when checking
    for matches for Scoring. There are five similar settings which relate
    to the status of the message. These settings rely on the message being
    New or not, Deleted or not, Answered or not, Important or not, and
-   Recent or not. There are also three more specialized settings. The
-   first is the Age of the message in days. The second is a setting which
-   detects whether or not the Subject of a message contains raw 8-bit
-   characters (unencoded characters with the most significant bit set) .
-   And the third is a setting which detects whether or not the From
-   address of a message appears in your address book.
+   Recent or not. There are also five more specialized settings. The
+   first is the Age of the message in days. The second is the Size of the
+   message in bytes. The third is a setting which detects whether or not
+   the Subject of a message contains raw 8-bit characters (unencoded
+   characters with the most significant bit set). The fourth is a setting
+   which detects whether or not this is the first time _Pine_ has been
+   run this month (doesn't depend on individual messages). And the fifth
+   is a setting which detects whether or not the From address of a
+   message appears in your address book.
    
   Parts of a Pattern
   
@@ -7123,8 +8387,12 @@ Patterns
    
    The meaning of a header pattern may be negated with the "!" "toggle
    NOT" command. You can tell that _NOT_ has been turned on by looking
-   for the character "!" at the beginning of the pattern line. When the
-   "!" is present, it reverses the meaning of the match.
+   for the character "!" at the beginning of the pattern line. It would
+   look something like
+   
+ ! From pattern = susan@example.com
+
+   When the "!" is present, it reverses the meaning of the match.
    
    If you want to check for the presence of a header field but don't care
    about its value, then the empty pattern which you get by entering a
@@ -7146,14 +8414,15 @@ Patterns
    If there is more than one header pattern or AllText pattern or
    BodyText pattern for which you want to take the same action there is a
    shorthand notation which may be used. Any of these patterns may be a
-   comma-separated list of patterns instead of just a single pattern. If
-   any one of the patterns in the list matches the message then it is
-   considered a match. For example, if "company1" and "company2" both
-   required you to use the same role when replying to messages, you might
-   have a To pattern which looks like
+   list of patterns instead of just a single pattern. If any one of the
+   patterns in the list matches the message then it is considered a
+   match. For example, if "company1" and "company2" both required you to
+   use the same role when replying to messages, you might have a To
+   pattern which looks like
    
-                         company1.com,company2.com
-                                      
+ To pattern = company1.com
+              company2.com
+
    This means that if the mail you are replying to was addressed to
    either "anything@company1.com" or "anything@company2.com", then this
    Pattern is a match and the same actions will be taken.
@@ -7164,12 +8433,16 @@ Patterns
    When the "!" is present, it reverses the meaning of the match.
    
    A technicality: Since comma is the character used to separate multiple
-   values in a header, AllText, or BodyText pattern field, you have to
-   escape comma with a backslash (\) if you want to include a literal
-   comma in one of those fields. The same is true for the backslash
-   character itself, which must be escaped with another backslash to make
-   it literal. It's unlikely you'll ever need to enter a literal comma or
-   backslash in any of the patterns.
+   values in any of the fields which may have multiple values (such as
+   header patterns, AllText patterns, BodyText patterns, keywords, folder
+   lists, and so on), you must escape comma with a backslash (\) if you
+   want to include a literal comma in one of those fields. In other
+   words, if you type a backslash followed by a comma it will be
+   interpreted as a comma by _Pine_, instead of as a separator between
+   pattern values. All other backslashes (those not followed by a comma)
+   are literal backslashes and should not be escaped. It's unlikely
+   you'll ever need to enter a literal comma or backslash in any of the
+   patterns.
    
     Current Folder Type
     
@@ -7181,14 +8454,14 @@ Patterns
    "Current Folder Type" is set to "Specific", then you must fill in a
    value for "Folder", which is on the line below the "Specific" line. In
    this case you will only get a match if the currently open folder is
-   the specific folder you list. You may give a comma-separated list of
-   folders instead of just a single folder name, in which case the
-   Pattern will match if the open folder is any one of the folders in the
-   list. The name of each folder in the list may be either "INBOX", the
-   technical specification of the folder (like what appears in your
-   configuration file) or, if the folder is one of your incoming folders,
-   it may be the nickname you've given the folder. Here are some samples
-   of specific folder names:
+   the specific folder you list. You may give a list of folders instead
+   of just a single folder name, in which case the Pattern will match if
+   the open folder is any one of the folders in the list. The name of
+   each folder in the list may be either "INBOX", the technical
+   specification of the folder (like what appears in your configuration
+   file) or, if the folder is one of your incoming folders, it may be the
+   nickname you've given the folder. Here are some samples of specific
+   folder names:
    
                    {monet.art.example.com}mail/art-class
                                       
@@ -7246,6 +8519,28 @@ Patterns
    A value of 0 is today, 1 is yesterday, 2 is the day before yesterday,
    and so on.
    
+  Size Interval
+  
+   The "Size Interval" may be set to an interval of message sizes which
+   should be considered a match. Like the other parts of the Pattern, if
+   it is unset it will be ignored. The Size Interval looks like
+   
+                            (min_size,max_size)
+                                      
+   where "min_size" and "max_size" are integers greater than or equal to
+   zero. The special value "INF" may be used for the max value. It
+   represents infinity.
+   
+   Actually, this option may be defined as a list of intervals instead of
+   just a single interval. The list is separated by commas. It can look
+   like
+   
+              (min_size1,max_size1),(min_size2,max_size2),...
+                                      
+   When there is a Size Interval defined, it is a match if the size, in
+   bytes, of the message is contained in any of the intervals. The
+   intervals include both endpoints.
+   
     Score Interval
     
    The "Score Interval" may be set to an interval of message scores which
@@ -7291,6 +8586,17 @@ Patterns
    which shows an N for such a message. Recent means that the message was
    added to this folder since the last time you opened the folder.
    
+    Message Keywords
+    
+   Keywords are similar to Message Status, but they are chosen by the
+   user. Provided the mail server allows for it, you may add a set of
+   possible keywords to a folder and then you may set those keywords or
+   not for each message in the folder. The syntax of this part of the
+   Pattern is similar to the header patterns. It is a list of keywords.
+   The Keyword part of the Pattern is a match if the message has any of
+   the keywords in the list set. Like other parts of the Pattern, if this
+   is unset it will be ignored.
+   
     Raw 8-bit in Subject
     
    It seems that lots of unwanted email contains unencoded 8-bit
@@ -7301,6 +8607,18 @@ Patterns
    affect performance in large folders because the subject of each
    message in the folder has to be checked.
    
+    Beginning of Month
+    
+   This option gives you a way to take some action once per month. The
+   value "Yes" means that this must be the first time _Pine_ has been run
+   this month in order to count as a match,
+   
+    Beginning of Year
+    
+   This option gives you a way to take some action once per year. The
+   value "Yes" means that this must be the first time _Pine_ has been run
+   this year in order to count as a match,
+   
     From or Reply-To address in Address Books
     
    This option gives you a way to match messages which have a From or a
@@ -7309,6 +8627,31 @@ Patterns
    distribution lists are ignored! Setting this option will affect
    performance in large folders because the From and Reply-To of each
    message in the folder have to be checked.
+   
+    Categorizer Command
+    
+   This is a command that is run with its standard input set to the
+   message being checked and its standard output discarded. The full
+   directory path should be specified. The command will be run and then
+   its exit status will be checked against the Exit Status Interval,
+   which defaults to just the value zero. If the exit status of the
+   command falls in the interval, it is considered a match, otherwise it
+   is not a match.
+   
+   This option may actually be a list of commands. The first one that
+   exists and is executable is used. That makes it possible to use the
+   same configuration with Unix _Pine_ and _PC-Pine_.
+   
+   If none of the commands in the list exists and is executable then the
+   rule is _not_ a match. If it is possible that the command may not
+   exist, you should be careful to structure your rules so that nothing
+   destructive happens when the command does not exist. For example, you
+   might have a filter that filters away spam when there is a match but
+   does nothing when there is not a match. That would continue to work
+   correctly if the command didn't exist. However, if you have a filter
+   which filters away spam when there is not a match and keeps it when
+   there is a match, that would filter everything if the categorizer
+   command didn't exist.
    
   Help Configuring Pattern Fields
   
@@ -7328,16 +8671,29 @@ Patterns
           line of the message being replied to or forwarded must match
           this pattern. In the case of the Compose command, this pattern
           and the other header patterns are ignored. If this pattern is a
-          comma-separated list of patterns, then at least one of the
-          recipients must match at least one of the patterns. (Any other
-          non-blank parts of the Pattern must match, too.) It is possible
-          to add a _NOT_ to the To Pattern meaning with the "!" "toggle
-          NOT" command. This changes the meaning of the To pattern so
-          that it has the opposite meaning. It will be considered a match
-          if there are no matches between the addresses in the To: line
-          and the list of To patterns. If the message being replied to or
-          forwarded has a Resent-To header line, then that is used in
-          place of the To line.
+          list of patterns, then at least one of the recipients must
+          match at least one of the patterns. (Any other non-blank parts
+          of the Pattern must match, too.) If the message being replied
+          to or forwarded has a Resent-To header line, then that is used
+          in place of the To line. (Note that this special Resent rule
+          only applies to the To header. The Resent-From, Resent-Subject,
+          and so on are not consulted.)
+          It is possible to add a _NOT_ to the To Pattern meaning with
+          the "!" "toggle NOT" command. This changes the meaning of the
+          To pattern so that it has the opposite meaning. It will be
+          considered a match if there are no matches between the
+          addresses in the To: line and the list of To patterns.
+          Don't make the mistake of putting the "!" in the data field for
+          the pattern. For example, if you type the characters "!frizzle"
+          into the To pattern, the pattern will look like:
+ To pattern = !frizzle
+          This means you want to match the 8 character sequence
+          "!frizzle". In order to match messages which do not have
+          "frizzle" in their To field, first type the characters
+          "frizzle" followed by carriage return for the value of the To
+          pattern, then negate it by typing the "!" command. It should
+          end up looking like
+ ! To pattern = frizzle
    _From pattern_
           This is just like the To pattern except that it is compared
           with the address from the From header of the message being
@@ -7358,18 +8714,18 @@ Patterns
           If this pattern is non-blank, then for this role to be
           considered a match, at least one of the newsgroups from the
           Newsgroups line of the message must match this pattern. If this
-          pattern is a comma-separated list of patterns, then at least
-          one of the newsgroups must match at least one of the patterns.
-          (Any other non-blank parts of the Pattern must match, too.)
+          pattern is a list of patterns, then at least one of the
+          newsgroups must match at least one of the patterns. (Any other
+          non-blank parts of the Pattern must match, too.)
    _Subject pattern_
           This is similar to the other header patterns. It is compared
           with the contents from the Subject of the message being replied
           to or forwarded.
           If you enter non-ascii characters in this field then the search
           will be done using the character set you have defined with the
-          "character-set" configuration variable. (The truly
-          sophisticated may use an alternate character set for a search
-          by entering the MIME encoding of the header string here.)
+          Character-Set configuration variable. (The truly sophisticated
+          may use an alternate character set for a search by entering the
+          MIME encoding of the header string here.)
    _Extra header patterns_
           There isn't actually a field called Extra header patterns, but
           you may add extra header patterns by moving the cursor to one
@@ -7385,9 +8741,9 @@ Patterns
           highlighted extra header.
           If you enter non-ascii characters in this field then the search
           will be done using the character set you have defined with the
-          "character-set" configuration variable. (The truly
-          sophisticated may use an alternate character set for a search
-          by entering the MIME encoding of the header string here.)
+          Character-Set configuration variable. (The truly sophisticated
+          may use an alternate character set for a search by entering the
+          MIME encoding of the header string here.)
    _Recipient pattern_
           This is just like the To pattern except that it is compared
           with the addresses from both the To header and the Cc header
@@ -7407,17 +8763,17 @@ Patterns
           of the text in the message header and body.
           If you enter non-ascii characters in this field then the search
           will be done using the character set you have defined with the
-          "character-set" configuration variable. (The truly
-          sophisticated may use an alternate character set for a search
-          by entering the MIME encoding of the header string here.)
+          Character-Set configuration variable. (The truly sophisticated
+          may use an alternate character set for a search by entering the
+          MIME encoding of the header string here.)
    _BodyText pattern_
           Just like AllText, except it is compared only with the body of
           the message, not the body and header.
           If you enter non-ascii characters in this field then the search
           will be done using the character set you have defined with the
-          "character-set" configuration variable. (The truly
-          sophisticated may use an alternate character set for a search
-          by entering the MIME encoding of the header string here.)
+          Character-Set configuration variable. (The truly sophisticated
+          may use an alternate character set for a search by entering the
+          MIME encoding of the header string here.)
    _Age Interval_
           The Age Interval, if defined, is part of the Pattern. If you
           use this, it should be set to something like:
@@ -7480,6 +8836,40 @@ Patterns
           intervals include both endpoints. The score for a message is
           calculated by looking at every scoring rule defined and adding
           up the Score Values for the rules which match the message.
+   _Keyword pattern_
+          A folder may have user-defined keywords. These are similar to
+          the Important flag which the user may set using the Flag
+          command. The difference is that the Important flag is always
+          present for each folder. User-defined keywords are picked by
+          the user. You may add new keywords by defining them in the
+          Keywords option in the Setup/Config screen. After you have
+          added a potential keyword with the Keywords option, the Flag
+          command may be used to set or clear the keyword on individual
+          messages. If you have given a keyword a nickname when
+          configuring it, that nickname may be used instead of the actual
+          keyword.
+          When filling in a value for this field, it may be easiest to
+          use the "T" command, which presents you with a list of the
+          keywords you have defined to choose from.
+          This part of the Pattern matches messages with certain keywords
+          set. It will be considered a match if a message has any of the
+          keywords in the list set.
+          It is possible to add a _NOT_ to the Keyword Pattern meaning
+          with the "!" "toggle NOT" command. This changes the meaning of
+          the Keyword pattern so that it has the opposite meaning. It
+          will be considered a match if none of the keywords in the list
+          are set for a message.
+          Don't make the mistake of putting the "!" in the data field for
+          the pattern. For example, if you type the characters "!frizzle"
+          into the Keyword pattern, the pattern will look like:
+ Keyword pattern = !frizzle
+          This means you want to match the 8 character sequence
+          "!frizzle". In order to match messages which do not have the
+          keyword "frizzle" set, first type the characters "frizzle"
+          followed by carriage return for the value of the Keyword
+          pattern, then negate it by typing the "!" command. It should
+          end up looking like
+ ! Keyword pattern = frizzle
    _Current Folder Type_
           The Current Folder Type is part of the Pattern. It refers to
           the type of the currently open folder, which is the folder you
@@ -7494,14 +8884,14 @@ Patterns
           specific folder (not just a specific type of folder), or to a
           list of specific folders. In order to match a specific folder
           you must Select the "Specific" button _AND_ you must fill in
-          the name (or comma-separated list of names) of the folder in
-          the "Folder" field. If the current folder is any of the folders
-          in the list, that is considered a match. The name of each
-          folder in the list may be either "INBOX", the technical
-          specification of the folder (like what appears in your
-          configuration file) or, if the folder is one of your incoming
-          folders, it may be the nickname you've given the folder. Here
-          are a couple samples of specific folder names:
+          the name (or list of names) of the folder in the "Folder"
+          field. If the current folder is any of the folders in the list,
+          that is considered a match. The name of each folder in the list
+          may be either "INBOX", the technical specification of the
+          folder (like what appears in your configuration file) or, if
+          the folder is one of your incoming folders, it may be the
+          nickname you've given the folder. Here are a couple samples of
+          specific folder names:
           
                    {monet.art.example.com}mail/art-class
           
@@ -7583,6 +8973,32 @@ Patterns
           with the most significant bit set) in order to be a match; or
           "No", which means the Subject must _not_ contain unencoded
           8-bit characters in order to be a match.
+   _Beginning of Month_
+          This part of the Pattern may have one of three possible values.
+          The default value is "Don't care", which matches any message.
+          The other two values are "Yes", which means this is the first
+          time _Pine_ has been run this month; or "No", which means this
+          is _not_ the first time _Pine_ has been run this month. The way
+          that _Pine_ decides if it is the beginning of the month or not
+          is to compare today's date with the date stored in the
+          Last-Time-Prune-Questioned variable in the config file. If the
+          month of today's date is later than the month stored in the
+          variable, then this is considered to be the first time you have
+          run Pine this month, and that turns the Beginning of the Month
+          option on.
+   _Beginning of Year_
+          This part of the Pattern may have one of three possible values.
+          The default value is "Don't care", which matches any message.
+          The other two values are "Yes", which means this is the first
+          time _Pine_ has been run this year; or "No", which means this
+          is _not_ the first time _Pine_ has been run this year. The way
+          that _Pine_ decides if it is the beginning of the year or not
+          is to compare today's date with the date stored in the
+          Last-Time-Prune-Questioned variable in the config file. If the
+          year of today's date is later than the year stored in the
+          variable, then this is considered to be the first time you have
+          run Pine this year, and that turns the Beginning of the Year
+          option on.
    _From or Reply-To in Address Book_
           This part of the Pattern may have one of five possible values.
           The default value is "Don't care", which matches any message.
@@ -7596,16 +9012,72 @@ Patterns
           of specific address books" are similar but instead of depending
           on all address books you are allowed to give a list of address
           books to look in. Usually this would be a single address book
-          but it may be a comma-separated list of address books as well.
-          For each of these "specific" address book options you Select
-          which of the Specific options you want (Yes or No) _AND_ fill
-          in the name (or comma-separated list of names) of the address
-          book in the "Abook List" field. The names to be used are those
-          that appear in the ADDRESS BOOK LIST screen. The easiest way to
-          fill in the Abook List field it to use the "T" command which is
-          available when the "Abook List" line is highlighted. Note that
-          you won't be able to edit the "Abook List" line unless the
-          option is set to one of the two "Specific", values.
+          but it may be a list of address books as well. For each of
+          these "specific" address book options you Select which of the
+          Specific options you want (Yes or No) _AND_ fill in the name
+          (or list of names) of the address book in the "Abook List"
+          field. The names to be used are those that appear in the
+          ADDRESS BOOK LIST screen. The easiest way to fill in the Abook
+          List field it to use the "T" command which is available when
+          the "Abook List" line is highlighted. Note that you won't be
+          able to edit the "Abook List" line unless the option is set to
+          one of the two "Specific", values.
+   _Categorizer Command_
+          This is a command that is run with its standard input set to
+          the message being checked and its standard output discarded.
+          The full directory path should be specified. The command will
+          be run and then its exit status will be checked against the
+          _Exit Status Interval_, which defaults to just the value zero.
+          If the exit status of the command falls in the interval, it is
+          considered a match, otherwise it is not a match.
+          This option may actually be a list of commands. The first one
+          that exists and is executable is used. That makes it possible
+          to use the same configuration with Unix _Pine_ and _PC-Pine_.
+          If none of the commands in the list exists and is executable
+          then the rule is _not_ a match. If it is possible that the
+          command may not exist, you should be careful to structure your
+          rules so that nothing destructive happens when the command does
+          not exist. For example, you might have a filter that filters
+          away spam when there is a match but does nothing when there is
+          not a match. That would continue to work correctly if the
+          command didn't exist. However, if you have a filter which
+          filters away spam when there is not a match and keeps it when
+          there is a match, that would filter everything if the
+          categorizer command didn't exist.
+          The categorizer command is run and the result is the exit
+          status of that command. If that exit status falls in the _Exit
+          Status Interval_ then it is considered a match, otherwise it is
+          not a match. Of course for the entire rule to match, it must
+          also be checked against the other defined parts of the Pattern.
+          The _Exit Status Interval_ defaults to the single value 0
+          (zero). If you define it, it should be set to something like:
+          
+                      (min_exit_value,max_exit_value)
+          where "min_exit_value" and "max_exit_value" are integers. The
+          special values "INF" and "-INF" may be used for large positive
+          and negative integers.
+          Actually, a list of intervals may be used if you wish. A list
+          would look like
+          
+   (min_exit_value1,max_exit_value1),(min_exit_value2,max_exit_value2),..
+                                     .
+          When there is an _Exit Status Interval_ defined, it is a match
+          if the exit status of the categorizer command is contained in
+          any of the intervals. The intervals include both endpoints.
+          The default interval is
+          
+                                   (0,0)
+          and it matches only if the command exits with exit status equal
+          to zero.
+          It is also possible to set a _Character Limit_ for the
+          categorizer command. Setting this option makes it possible to
+          limit how much of the message is made available to the
+          categorizer command as input. The default value (-1) means that
+          the entire message is fed to the command. A value of 0 (zero)
+          means that only the headers of the message are made available.
+          A positive integer means that the headers plus that many
+          characters from the body of the message are passed to the
+          categorizer.
           
 Configuring News
 
@@ -7927,10 +9399,10 @@ Syntax for Folder Names
    particular host.
      _________________________________________________________________
    
-Server Name Syntax for Folders
+Server Name Syntax
 
-   This section describes the syntax which may be used for the server
-   name associated with a remote folder.
+   This section describes the syntax which may be used for server names
+   which may be associated with remote folders or SMTP servers.
    
    A server name is the hostname of the server. It's a good idea to use
    the host's fully-qualified network name.
@@ -7958,7 +9430,15 @@ Server Name Syntax for Folders
    User
           This parameter requires an associated value, and is intended to
           provide the username identifier with which to establish the
-          server connection. An example might be:
+          server connection. If your SMTP server offers SMTP AUTH
+          authentication, adding this parameter to the SMTP-Server option
+          will cause _Pine_ to attempt to authenticate to the server
+          using the supplied username. Similarly, if your NNTP server
+          offers NNTP "AUTHINFO SASL" or "AUTHINFO USER" authentication,
+          adding this parameter to the NNTP-Server option (or to the
+          server name for any folder collection using NNTP) will cause
+          _Pine_ to attempt to authenticate to the server using the
+          supplied username. An example might be:
           
                                 /user=katie
                                       
@@ -8184,15 +9664,15 @@ What is a Mail Drop?
    folders that _Pine_ can normally use. They don't have to be a remote
    folder and a local folder, that is simply the most common usage. When
    you use a Mail Drop folder _Pine_ will periodically re-open the Mail
-   Drop to check for new mail. The new mail checks will happen at the
+   Drop to check for new mail. The new-mail checks will happen at the
    frequency set with the Mail-Check-Interval option, but with a minimum
    time (MailDrop-Check-Minimum) between checks. Because of this minimum
    you may notice that new mail does not appear promptly when you expect
    it. The reason for this is to protect the server from over-zealous
    opening and closing of the Mail Drop folder. If the user initiates the
-   check by typing ^L or the Next command when at the end of the folder
-   index, then the check will happen, regardless of how long it has been
-   since the previous check.
+   check by typing ^L (Ctrl-L) or the Next command when at the end of the
+   folder index, then the check will happen, regardless of how long it
+   has been since the previous check.
    
    If there is new mail, that mail will be copied to the destination
    folder and then will be deleted from the Mail Drop. Note that using a
@@ -8200,6 +9680,9 @@ What is a Mail Drop?
    read mail from more than one machine, because the mail is downloaded
    to the destination folder (which is accessible from only one machine)
    and deleted from the Mail Drop.
+   
+   The feature Maildrops-Preserve-State modifies the operation of Mail
+   Drops.
    
    The actual syntax used by _Pine_ for a folder that uses a Mail Drop
    is:
@@ -8218,7 +9701,7 @@ What is a Mail Drop?
    
             #move {popserver.example.com/pop3}inbox localfolder
                                       
-           #move+{nntpserver.example.com/nntp}inbox+local folder
+    #move+{nntpserver.example.com/nntp}#news.comp.mail.pine+local folder
                                       
    A #move folder may only be used as an Incoming folder or an Inbox.
    When you are in the FOLDER LIST of Incoming Message Folders (after
@@ -8534,11 +10017,26 @@ Using Environment Variables
                                       
    appears in the value of a _Pine_ configuration option it is looked up
    in the environent (using getenv("VAR")) and its looked-up value
-   replaces the $VAR part of the option value. That sounds more
-   complicated than it actually is. An example may make it clearer.
-   Unfortunately, the way in which environment variables are set is
-   OS-dependent and command shell-dependent. In some Unix command shells
-   you may use
+   replaces the $VAR part of the option value. To include a literal
+   dollar sign you may precede the dollar sign with another dollar sign.
+   In other words, if the text
+   
+                                   $$text
+                                      
+   is the value of a configuration option, it will be expanded to
+   
+                                   $text
+                                      
+   and no environment lookup will be done. For Unix _Pine_ it will also
+   work to use a backslash character to escape the special meaning of the
+   dollar sign, but $$ is preferable since it works for both _PC-Pine_
+   and Unix _Pine_, allowing the configuration option to be in a shared
+   configuration file.
+   
+   This all sounds more complicated than it actually is. An example may
+   make it clearer. Unfortunately, the way in which environment variables
+   are set is OS-dependent and command shell-dependent. In some Unix
+   command shells you may use
    
                          PERSNAME="Fred Flintstone"
                                       
@@ -8621,7 +10119,7 @@ SMTP Servers
    also be subject to unacceptable delays due to slow DNS lookups and
    other problems.
    
-   It is sometimes desireable to configure an SMTP server on a port other
+   It is sometimes desirable to configure an SMTP server on a port other
    than the default port 25. This may be used to provide an alternate
    service that is optimized for a particular environment or provides
    different features from the port 25 server. An example would be a

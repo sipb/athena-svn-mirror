@@ -1,5 +1,5 @@
 /*
- * $Id: efunc.h,v 1.1.1.3 2003-05-01 01:13:24 ghudson Exp $
+ * $Id: efunc.h,v 1.1.1.4 2005-01-26 17:54:57 ghudson Exp $
  *
  * Program:	Pine's composer and pico's function declarations
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -44,7 +44,7 @@
 
 /*	External function declarations		*/
 /* attach.c */
-extern	int AskAttach PROTO((char *, char *, char *));
+extern	int AskAttach PROTO((char *, LMLIST **));
 extern	int SyncAttach PROTO((void));
 extern	int intag PROTO((char *, int));
 extern	char *prettysz PROTO((off_t));
@@ -82,9 +82,11 @@ extern	void rebindfunc PROTO((int (*)(int, int),int (*)(int, int)));
 extern	int bindtokey PROTO((int c, int (*) PROTO((int, int))));
 
 /* browse.c */
-extern	int FileBrowse PROTO((char *, int, char *, int, char *, int));
+extern	int FileBrowse PROTO((char *, int, char *, int, char *, int,
+			      LMLIST **));
 extern	int ResizeBrowser PROTO((void));
 extern	void set_browser_title PROTO((char *));
+extern  void zotlmlist PROTO((LMLIST *));
 
 /* buffer.c */
 extern	int anycb PROTO((void));
@@ -226,9 +228,7 @@ extern	char *pfnexpand PROTO((char *, size_t));
 extern	int compresspath PROTO((char *, char *, int));
 extern	void tmpname PROTO((char *, char *));
 extern  char *temp_nam PROTO((char *, char *));
-#if defined(DOS) || defined(OS2)
 extern  char *temp_nam_ext PROTO((char *, char *, char *));
-#endif
 extern	void makename PROTO((char *, char *));
 extern	int copy PROTO((char *, char *));
 extern	int ffwopen PROTO((char *, int));
@@ -335,6 +335,7 @@ extern	int wrapword PROTO((void));
 extern	int backword PROTO((int, int));
 extern	int forwword PROTO((int, int));
 extern	int fillpara PROTO((int, int));
+extern	int fillbuf PROTO((int, int));
 extern	int inword PROTO((void));
 extern	int quote_match PROTO((char *, LINE *, char *, int));
 

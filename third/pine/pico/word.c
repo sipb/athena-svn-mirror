@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: word.c,v 1.1.1.3 2003-05-01 01:13:13 ghudson Exp $";
+static char rcsid[] = "$Id: word.c,v 1.1.1.4 2005-01-26 17:54:35 ghudson Exp $";
 #endif
 /*
  * Program:	Word at a time routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: word.c,v 1.1.1.3 2003-05-01 01:13:13 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2003 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -399,6 +399,76 @@ quote_match(q, l, buf, buflen)
 }
 
 
+/* Justify the entire buffer instead of just a paragraph */
+fillbuf(f, n)
+int f, n;
+{
+    int i, lastflagsave;
+    LINE *eobline;
+    REGION region;
+
+    if(curbp->b_mode&MDVIEW){		/* don't allow this command if	*/
+	return(rdonly());		/* we are in read only mode	*/
+    }
+    else if (fillcol == 0) {		/* no fill column set */
+	mlwrite("No fill column set", NULL);
+	return(FALSE);
+    }
+
+    if((lastflag & CFFILL) && (lastflag & CFFLBF)){
+	/* no use doing a full justify twice */
+	thisflag |= (CFFLBF | CFFILL);
+	return(TRUE);
+    }
+
+    /* record the pointer of the last line */
+    if(gotoeob(FALSE, 1) == FALSE)
+      return(FALSE);
+
+    eobline = curwp->w_dotp;		/* last line of buffer */
+    if(!llength(eobline))
+      eobline = lback(eobline);
+
+    /* and back to the beginning of the buffer */
+    gotobob(FALSE, 1);
+
+    thisflag |= CFFLBF; /* CFFILL also gets set in fillpara */
+
+    if(!Pmaster)
+      sgarbk = TRUE;
+    
+    curwp->w_flag |= WFMODE;
+
+    /*
+     * clear the kill buffer, that's where we'll store undo
+     * information, we can't do the fill buffer because
+     * fillpara relies on its contents
+     */
+    kdelete();
+    curwp->w_doto = 0;
+    getregion(&region, eobline, llength(eobline));
+
+    /* Put full message in the kill buffer for undo */
+    if(!ldelete(region.r_size, kinsert))
+      return(FALSE);
+
+    /* before yank'ing, clear lastflag so we don't just unjustify */
+    lastflag &= ~(CFFLBF | CFFILL);
+
+    /* Now in kill buffer, bring back text to use in fillpara */
+    yank(FALSE, 1);
+
+    gotobob(FALSE, 1);
+
+    /* call fillpara until we're at the end of the buffer */
+    while(curwp->w_dotp != curbp->b_linep)
+      if(!(fillpara(FALSE, 1)))
+	return(FALSE);
+    
+    return(TRUE);
+}
+
+
 fillpara(f, n)	/* Fill the current paragraph according to the current
 		   fill column						*/
 
@@ -475,6 +545,10 @@ int f, n;	/* deFault flag and Numeric argument */
 	switch(c){
 	  case '\n' :
 	    i += qlen;				/* skip next quote string */
+	    if(!spaces)
+	      spaces++;
+	    same_word = 0;
+	    break;
 
 	  case TAB :
 	  case ' ' :
@@ -486,6 +560,8 @@ int f, n;	/* deFault flag and Numeric argument */
 	    if(spaces){				/* flush word? */
 		if((line_len - qlen > 0)
 		   && line_len + word_len + 1 > fillcol
+		   && ((isspace((unsigned char)line_last))
+		       || (linsert(1, ' ')))
 		   && (line_len = fpnewline(qstr)))
 		  line_last = ' ';	/* no word-flush space! */
 
@@ -512,8 +588,11 @@ int f, n;	/* deFault flag and Numeric argument */
 
 	    if(word_len + 1 >= NSTRING){
 		/* Magic!  Fake that we output a wrapped word */
-		if((line_len - qlen > 0) && !same_word++)
-		  line_len = fpnewline(qstr);
+		if((line_len - qlen > 0) && !same_word++){
+		    if(!isspace((unsigned char) line_last))
+		      linsert(1, ' ');
+		    line_len = fpnewline(qstr);
+		}
 
 		line_len += word_len;
 		for(j = 0; j < word_len; j++)
@@ -529,8 +608,11 @@ int f, n;	/* deFault flag and Numeric argument */
     }
 
     if(word_len){
-	if((line_len - qlen > 0) && (line_len + word_len + 1 > fillcol))
-	  (void) fpnewline(qstr);
+	if((line_len - qlen > 0) && (line_len + word_len + 1 > fillcol)){
+	    if(!isspace((unsigned char) line_last))
+	      linsert(1, ' ');
+	    (void) fpnewline(qstr);
+	}
 	else if(line_len && !isspace((unsigned char) line_last))
 	  linsert(1, ' ');
 

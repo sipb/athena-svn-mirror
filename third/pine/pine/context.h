@@ -1,6 +1,6 @@
 /*
  *
- * $Id: context.h,v 1.1.1.3 2003-05-01 01:13:03 ghudson Exp $
+ * $Id: context.h,v 1.1.1.4 2005-01-26 17:55:10 ghudson Exp $
  *
  * Program:	Mailbox Context Management
  *
@@ -18,7 +18,7 @@
  * permission of the University of Washington.
  *
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2003 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  *
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -42,7 +42,8 @@ char	   *context_digest PROTO((char *, char *, char *, char *, char *,
 				  size_t));
 char	   *context_apply PROTO((char *, CONTEXT_S *, char *, size_t));
 long	    context_create PROTO((CONTEXT_S *, MAILSTREAM *, char *));
-MAILSTREAM *context_open PROTO((CONTEXT_S *, MAILSTREAM *, char *, long));
+MAILSTREAM *context_open PROTO((CONTEXT_S *, MAILSTREAM *, char *, long,
+				long *));
 long	    context_status PROTO((CONTEXT_S *, MAILSTREAM *, char *, long));
 long	    context_status_full PROTO((CONTEXT_S *, MAILSTREAM *, char *,
 				       long, unsigned long *, unsigned long *));
@@ -58,8 +59,9 @@ long	    context_append PROTO((CONTEXT_S *, MAILSTREAM *, char *, \
 long	    context_append_full PROTO((CONTEXT_S *, MAILSTREAM *, char *, \
 				       char *, char *, STRING *));
 long	    context_append_multiple PROTO((CONTEXT_S *, MAILSTREAM *, char *, \
-					   append_t, void *));
+					   append_t, void *, MAILSTREAM *));
 long	    context_copy PROTO((CONTEXT_S *, MAILSTREAM *, char *, char *));
 MAILSTREAM *context_same_stream PROTO((CONTEXT_S *, char *, MAILSTREAM *));
+MAILSTREAM *context_already_open_stream PROTO((CONTEXT_S *, char *, int));
 
 #endif /* _CONTEXT_INCLUDED */

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: args.c,v 1.1.1.4 2004-03-01 21:15:38 ghudson Exp $";
+static char rcsid[] = "$Id: args.c,v 1.1.1.5 2005-01-26 17:55:52 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -138,6 +138,7 @@ char *args_pine_args[] = {
 #ifdef PASSFILE
 " -passfile <fully_qualified_filename>\tSet the password file to something other",
 "\t\tthan the default",
+" -nowrite_passfile\tRead from a passfile if there is one, but never offer to write a password to the passfile",
 #endif /* PASSFILE */
 " -x <config>\tUse configuration exceptions in <config>.",
 "\t\tExceptions are used to override your default pinerc",
@@ -160,13 +161,15 @@ char *args_pine_args[] = {
 " -convert_sigs -p <pinerc>   convert signatures to literal signatures",
 #if	defined(_WINDOWS)
 " -install \tPrompt for some basic setup information",
-" -registry <cmd>\tWhere cmd is set,clear,clearsilent,dump",
+" -registry <cmd>\tWhere cmd is set,noset,clear,clearsilent,dump",
 #endif
 " -<option>=<value>   Assign <value> to the pinerc option <option>",
 "\t\t     e.g. -signature-file=sig1",
 "\t\t     e.g. -color-style=no-color",
 "\t\t     e.g. -feature-list=enable-sigdashes",
-"\t\t     (Note: feature-list is additive)",
+"\t\t     Note: feature-list is additive.",
+"\t\t     You may leave off the \"feature-list=\" part of that,",
+"\t\t     e.g. -enable-sigdashes",
 NULL
 };
 
@@ -304,6 +307,10 @@ Loop: while(--ac > 0)
 		      ++usage;
 		  }
 
+		  goto Loop;
+	      }
+	      else if(strcmp(*av, "nowrite_passfile") == 0){
+		  ps_global->nowrite_passfile = 1;
 		  goto Loop;
 	      }
 #endif  /* PASSFILE */
@@ -491,7 +498,10 @@ Loop: while(--ac > 0)
 	      else if(strcmp(*av, "registry") == 0){
 		  if(--ac){
 		      if(!strucmp(*++av, "set")){
-			  pine_state->update_registry = 1;
+			  pine_state->update_registry = UREG_ALWAYS_SET;
+		      }
+		      else if(!strucmp(*av, "noset")){
+			  pine_state->update_registry = UREG_NEVER_SET;
 		      }
 		      else if(!strucmp(*av, "clear")){
 			  if(!mswin_reg(MSWR_OP_BLAST, MSWR_NULL, NULL, 0))
@@ -978,9 +988,6 @@ process_debug_str(debug_str)
 
 	    if(debug > 8)
 	      ps_global->debug_flush = 1;
-
-	    if(debug > 7)
-	      ps_global->debug_tcp = 1;
 	}
     }
 

@@ -101,7 +101,7 @@ include(pw_stuff)
 include(chnge_pw)
 
 ; Mime_can_display function.  Only a single version of this now.
-include(mimedisp)
+include(mimedisp.osx)
 
 ; Most systems have the ANSI fgetpos and fsetpos functions.  For those,
 ; use fgetpos.  If a system doesn't have it use fgetpos.non.
@@ -117,7 +117,7 @@ include(sendmail)
 
 ; This function is used to actually spawn the given command (usually dredged
 ; from mailcap) on the given data file (usually on /tmp).
-include(execview)
+include(execview.osx)
 
 ; This includes the various routines to support printing
 include(print)

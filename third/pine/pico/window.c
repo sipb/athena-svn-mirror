@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: window.c,v 1.1.1.2 2003-02-12 08:01:42 ghudson Exp $";
+static char rcsid[] = "$Id: window.c,v 1.1.1.3 2005-01-26 17:54:34 ghudson Exp $";
 #endif
 /*
  * Program:	Window management routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: window.c,v 1.1.1.2 2003-02-12 08:01:42 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.

@@ -1,4 +1,4 @@
-# $Id: makefile.gs5,v 1.1.1.2 2003-02-12 07:58:38 ghudson Exp $
+# $Id: makefile.gs5,v 1.1.1.3 2005-01-26 17:54:06 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -78,7 +78,7 @@ LIBS=        $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
 
 STDCFLAGS=   -DSV4 -DSYSTYPE=\"GSO\" -DMOUSE
 CFLAGS=      $(OPTIMIZE) $(PROFILE) $(DEBUG) $(EXTRACFLAGS) $(LDAPCFLAGS) \
-	     $(STDCFLAGS)
+	     $(LOCALPINECFLAGS) $(STDCFLAGS)
 
 OFILES=	addrbook.o adrbkcmd.o adrbklib.o args.o bldaddr.o context.o filter.o \
 	folder.o help.o helptext.o imap.o init.o mailcap.o mailcmd.o \
@@ -135,13 +135,13 @@ helptext.h:	pine.hlp
 
 osdep/os-so5.c:	osdep/bld_path osdep/canacces osdep/canonicl \
 		osdep/chnge_pw osdep/coredump osdep/creatdir \
-		osdep/diskquot.sv4 osdep/domnames osdep/err_desc \
+		osdep/diskquot.so5 osdep/domnames osdep/err_desc \
 		osdep/expnfldr osdep/fgetpos osdep/filesize osdep/fltrname \
 		osdep/fnexpand osdep/header osdep/hostname.una \
 		osdep/jobcntrl osdep/lstcmpnt osdep/mimedisp osdep/pipe \
 		osdep/print osdep/pw_stuff osdep/readfile osdep/debuging \
 		osdep/rename osdep/tempfile \
-		osdep/writ_dir osdep/sunquota osdep/sendmail osdep/execview \
+		osdep/writ_dir osdep/solquota osdep/sendmail osdep/execview \
 		osdep/termin.unx osdep/termout.unx \
 		osdep/termin.gen osdep/termout.gen \
 		osdep/postreap.wtp osdep/os-so5.ic

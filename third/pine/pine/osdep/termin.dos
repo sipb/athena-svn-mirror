@@ -258,7 +258,7 @@ int tm;
 #endif
 #endif
 	    if(time(0L) >= timein + (time_t) tm){
-		ch = (tm < 15) ? NO_OP_COMMAND : NO_OP_IDLE;
+		ch = (tm < IDLE_TIMEOUT) ? NO_OP_COMMAND : NO_OP_IDLE;
 		goto gotone;
 	    }
 #ifdef _WINDOWS
@@ -292,8 +292,6 @@ int tm;
 	if(checkmouse(&ch,0,0,0))
 	  goto gotone;
 #endif
-
-    ps_global->time_of_last_input = time(0L);
 
 #ifdef _WINDOWS
     ch = mswin_getc_fast();

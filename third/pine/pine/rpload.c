@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: rpload.c,v 1.1.1.1 2003-02-12 08:01:12 ghudson Exp $";
+static char rcsid[] = "$Id: rpload.c,v 1.1.1.2 2005-01-26 17:54:38 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: rpload.c,v 1.1.1.1 2003-02-12 08:01:12 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -56,6 +56,9 @@ int        opt_enter PROTO((char *, int, char *, int *));
 
 int   noshow_error = 0;
 char *ustr = "usage: %s [-s trimSize] [-f] -t Type -l Local_file  -r Remote_folder\n";
+
+/* look for my_timer_period in pico directory for an explanation */
+int my_timer_period = ((IDLE_TIMEOUT + 1)*1000);
 
 #ifdef _WINDOWS
 
@@ -625,7 +628,7 @@ write_fake_headers(where, subject, subtype, special_hdr)
     rfc822_date(date);
 
     fake_env->subject = cpystr(subject);
-    fake_env->date = cpystr(date);
+    fake_env->date = (unsigned char *) cpystr(date);
     fake_from->personal = cpystr("Pine Remote Data");
     fake_from->mailbox = cpystr("nobody");
     fake_from->host = cpystr("nowhere");
@@ -647,11 +650,7 @@ char *
 err_desc(err)
     int err;
 {
-    static char buffer[50];
-
-    strcpy(buffer, sys_errlist[err]);
-
-    return((char *)buffer);
+    return((char *) strerror(err));
 }
 
 

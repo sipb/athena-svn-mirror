@@ -1,5 +1,5 @@
 /*
- * $Id: ebind.h,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $
+ * $Id: ebind.h,v 1.1.1.3 2005-01-26 17:54:31 ghudson Exp $
  *
  * Program:	Default key bindings
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-1998 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.

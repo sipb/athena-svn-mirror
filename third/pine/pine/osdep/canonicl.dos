@@ -12,7 +12,7 @@ canonical_name(host)
 #if	defined(LWP) || defined(PCNFS) || defined(PCTCP)
     struct hostent *hent;
     char tmp[MAILTMPLEN];
-    extern char *lcase();
+
                                 /* domain literal is easy */
     if (host[0] == '[' && host[(strlen (host))-1] == ']')
       return host;

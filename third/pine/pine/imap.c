@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: imap.c,v 1.1.1.4 2004-03-01 21:15:41 ghudson Exp $";
+static char rcsid[] = "$Id: imap.c,v 1.1.1.5 2005-01-26 17:55:51 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: imap.c,v 1.1.1.4 2004-03-01 21:15:41 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -180,7 +180,8 @@ mm_dlog(string)
 #endif
 	dprint((ps_global->debug_imap >= 4 && debug < 4) ? debug : 4,
 	       (debugfile, "IMAP DEBUG %s%s: %s\n",
-		   continued, debug_time(1, ps_global->debug_timestamp), p));
+		   continued ? continued : "",
+		   debug_time(1, ps_global->debug_timestamp), p ? p : "?"));
 #ifdef DEBUGJOURNAL
     }
 #endif
@@ -225,15 +226,15 @@ mm_log(string, errflg)
 	       (errflg == PARSE)    ? "parse"   :
 		(errflg == TCPDEBUG) ? "tcp"     :
 		 (errflg == BYE)      ? "bye"     : "unknown",
-	    string));
+	    string ? string : "?"));
 
     if(errflg == ERROR && !strncmp(string, "[TRYCREATE]", 11)){
 	ps_global->try_to_create = 1;
 	return;
     }
     else if(ps_global->try_to_create
-       || (ps_global->dead_stream
-	   && (!strncmp(string, "[CLOSED]", 8) || strstr(string, "No-op"))))
+       || !strncmp(string, "[CLOSED]", 8)
+       || (sp_dead_stream(ps_global->mail_stream) && strstr(string, "No-op")))
       /*
        * Don't display if creating new folder OR
        * warning about a dead stream ...
@@ -322,7 +323,7 @@ mm_notify(stream, string, errflg)
     if(ps_global->debug_imap || ps_global->debugmem)
       dprint(errflg == TCPDEBUG ? 7 : 2,
 	     (debugfile,
-	      "IMAP %2.2d:%2.2d:%2.2d %d/%d mm_notify %s: %s (%s) : %s\n",
+	      "IMAP %2.2d:%2.2d:%2.2d %d/%d mm_notify %s: %s: %s\n",
 	      tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec,
 	      tm_now->tm_mon+1, tm_now->tm_mday,
               (!errflg)            ? "babble"     : 
@@ -332,10 +333,7 @@ mm_notify(stream, string, errflg)
 		  (errflg == TCPDEBUG) ? "tcp"     :
 		   (errflg == BYE)      ? "bye"     : "unknown",
 	      (stream && stream->mailbox) ? stream->mailbox : "-no folder-",
-	      (stream && stream == ps_global->inbox_stream) ? "inboxstream" :
-	        (stream && stream == ps_global->mail_stream) ? "mailstream" :
-		  (stream) ? "?" : "nostream",
-	      string));
+	      string ? string : "?"));
 #endif
 
     sprintf(ps_global->last_error, "%.50s : %.*s",
@@ -350,12 +348,13 @@ mm_notify(stream, string, errflg)
      * display the message if it's tagged as an "ALERT" or
      * its errflg > NIL (i.e., WARN, or ERROR)
      */
-    if(errflg == BYE){
-	if(stream == ps_global->mail_stream)
-	  ps_global->dead_stream = 1;
-	if(stream && stream == ps_global->inbox_stream)
-	  ps_global->dead_inbox = 1;
-    }
+    if(errflg == BYE)
+      /*
+       * We'd like to sp_mark_stream_dead() here but we can't do that because
+       * that might call mail_close and we are already in a c-client callback.
+       * So just set the dead bit and clean it up later.
+       */
+      sp_set_dead_stream(stream, 1);
     else if(!strncmp(string, "[TRYCREATE]", 11))
       ps_global->try_to_create = 1;
     else if(!strncmp(string, "[REFERRAL ", 10))
@@ -365,8 +364,8 @@ mm_notify(stream, string, errflg)
 		        "Alert received while accessing \"%.200s\":  %.200s",
 			(stream && stream->mailbox)
 			  ? stream->mailbox : "-no folder-",
-			rfc1522_decode((unsigned char *)tmp_20k_buf,
-				       SIZEOF_20KBUF, string, NULL));
+			rfc1522_decode((unsigned char *)(tmp_20k_buf+10000),
+				       SIZEOF_20KBUF-10000, string, NULL));
     else if(!strncmp(string, "[UNSEEN ", 8)){
 	char *p;
 	long  n = 0;
@@ -374,7 +373,7 @@ mm_notify(stream, string, errflg)
 	for(p = string + 8; isdigit(*p); p++)
 	  n = (n * 10) + (*p - '0');
 
-	ps_global->first_unseen = n;
+	sp_set_first_unseen(stream, n);
     }
     else if(!strncmp(string, "[READ-ONLY]", 11)
 	    && !(stream && stream->mailbox && IS_NEWS(stream)))
@@ -382,9 +381,12 @@ mm_notify(stream, string, errflg)
 			(stream && stream->mailbox)
 			  ? stream->mailbox : "-no folder-",
 			string + 11);
-    else if(errflg && errflg != BYE && errflg != PARSE)
+    else if((errflg && errflg != BYE && errflg != PARSE)
+	    && !ps_global->noshow_error
+	    && !(errflg == WARN
+	         && (ps_global->noshow_warn || (stream && stream->unhealthy))))
       q_status_message(SM_ORDER | ((errflg == ERROR) ? SM_DING : 0),
-		       3, 6, ps_global->last_error);
+			   3, 6, ps_global->last_error);
 }
 
 
@@ -412,8 +414,9 @@ mm_exists(stream, number)
     MAILSTREAM    *stream;
     unsigned long  number;
 {
-    long new_this_call, n;
-    int	 exbits = 0, lflags = 0;
+    long     new_this_call, n;
+    int	     exbits = 0, lflags = 0;
+    MSGNO_S *msgmap;
 
 #ifdef DEBUG
     if(ps_global->debug_imap > 1 || ps_global->debugmem)
@@ -422,91 +425,59 @@ mm_exists(stream, number)
      !stream ? "(no stream)" : !stream->mailbox ? "(null)" : stream->mailbox));
 #endif
 
-    if(stream == ps_global->mail_stream){
-	if(mn_get_nmsgs(ps_global->msgmap) != (long) number){
-	    ps_global->mail_box_changed = 1;
-	    ps_global->mangled_header	= 1;
-	}
+    msgmap = sp_msgmap(stream);
+    if(!msgmap)
+      return;
 
-        if(mn_get_nmsgs(ps_global->msgmap) < (long) number){
-	    new_this_call = (long) number - mn_get_nmsgs(ps_global->msgmap);
-	    ps_global->new_mail_count += new_this_call;
-	    mn_add_raw(ps_global->msgmap, new_this_call);
+    if(mn_get_nmsgs(msgmap) != (long) number){
+	sp_set_mail_box_changed(stream, 1);
+	/* titlebar will be affected */
+	if(ps_global->mail_stream == stream)
+	  ps_global->mangled_header = 1;
+    }
 
-	    /*
-	     * Set local "recent" and "hidden" bits...
-	     */
-	    for(n = 0; n < new_this_call; n++, number--){
-		if(msgno_exceptions(stream, number, "0", &exbits, FALSE))
-		  exbits |= MSG_EX_RECENT;
-		else
-		  exbits = MSG_EX_RECENT;
+    if(mn_get_nmsgs(msgmap) < (long) number){
+	new_this_call = (long) number - mn_get_nmsgs(msgmap);
+	sp_set_new_mail_count(stream,
+			      sp_new_mail_count(stream) + new_this_call);
+	if(ps_global->mail_stream != stream)
+	  sp_set_recent_since_visited(stream,
+			      sp_recent_since_visited(stream) + new_this_call);
 
-		msgno_exceptions(stream, number, "0", &exbits, TRUE);
+	mn_add_raw(msgmap, new_this_call);
 
-		if(SORT_IS_THREADED())
-		  lflags |= MN_USOR;
+	/*
+	 * Set local "recent" and "hidden" bits...
+	 */
+	for(n = 0; n < new_this_call; n++, number--){
+	    if(msgno_exceptions(stream, number, "0", &exbits, FALSE))
+	      exbits |= MSG_EX_RECENT;
+	    else
+	      exbits = MSG_EX_RECENT;
 
-		/*
-		 * If we're zoomed, then hide this message too since
-		 * it couldn't have possibly been selected yet...
-		 */
-		lflags |= (any_lflagged(ps_global->msgmap, MN_HIDE)
-							? MN_HIDE : 0);
-		if(lflags)
-		  set_lflag(stream, ps_global->msgmap, 
-			    mn_get_total(ps_global->msgmap) - n, 
-			    lflags, 1);
-	    }
-	}
-    } else if(stream == ps_global->inbox_stream) {
-	if(mn_get_nmsgs(ps_global->inbox_msgmap) != (long) number)
-	  ps_global->inbox_changed = 1;
+	    msgno_exceptions(stream, number, "0", &exbits, TRUE);
 
-        if(mn_get_nmsgs(ps_global->inbox_msgmap) < (long) number){
-	    new_this_call = (long) number
-				      - mn_get_nmsgs(ps_global->inbox_msgmap);
-	    ps_global->inbox_new_mail_count += new_this_call;
-	    mn_add_raw(ps_global->inbox_msgmap, new_this_call);
+	    if(SORT_IS_THREADED(msgmap))
+	      lflags |= MN_USOR;
 
 	    /*
-	     * Set local "recent" and "hidden" bits...
+	     * If we're zoomed, then hide this message too since
+	     * it couldn't have possibly been selected yet...
 	     */
-	    for(n = 0; n < new_this_call; n++, number--){
-		if(msgno_exceptions(stream, number, "0", &exbits, FALSE))
-		  exbits |= MSG_EX_RECENT;
-		else
-		  exbits = MSG_EX_RECENT;
-
-		msgno_exceptions(stream, number, "0", &exbits, TRUE);
-
-		if(SORT_IS_THREADED())
-		  lflags |= MN_USOR;
-
-
-		/*
-		 * If we're zoomed, then hide this message too since
-		 * it couldn't have possibly been selected yet...
-		 */
-		lflags |= (any_lflagged(ps_global->inbox_msgmap, MN_HIDE)
-							? MN_HIDE : 0);
-		if(lflags)
-		  set_lflag(stream, ps_global->inbox_msgmap, 
-			    mn_get_total(ps_global->inbox_msgmap) - n, 
-			    lflags, 1);
-	    }
+	    lflags |= (any_lflagged(msgmap, MN_HIDE) ? MN_HIDE : 0);
+	    if(lflags)
+	      set_lflag(stream, msgmap, mn_get_total(msgmap) - n, lflags, 1);
 	}
     }
-    /* else ignore streams we're not directly interested in */
 }
 
 
 
 /*----------------------------------------------------------------------
-    Receive notification from IMAP that a message has been expunged
+    Receive notification from IMAP that a single message has been expunged
 
    Args: stream -- The stream/folder the message is expunged from
-         number -- The message number that was expunged
+         rawno  -- The raw message number that was expunged
 
 mm_expunged is always called on an expunge.  Simply remove all 
 reference to the expunged message, shifting internal mappings as
@@ -518,7 +489,9 @@ mm_expunged(stream, rawno)
     unsigned long  rawno;
 {
     MESSAGECACHE *mc;
-    long i;
+    long          i;
+    int           is_current = 0;
+    MSGNO_S      *msgmap;
 
 #ifdef DEBUG
     if(ps_global->debug_imap > 1 || ps_global->debugmem)
@@ -531,194 +504,136 @@ mm_expunged(stream, rawno)
 		: "(null)", rawno));
 #endif
 
-    /*
-     * If we ever deal with more than two streams, this'll break
-     */
-    if(stream == ps_global->mail_stream){
-	if(i = mn_raw2m(ps_global->msgmap, (long) rawno)){
-	    dprint(7, (debugfile, "mm_expunged: rawno=%lu msgno=%ld nmsgs=%ld max_msgno=%ld flagged_exld=%ld\n", rawno, i, mn_get_nmsgs(ps_global->msgmap), mn_get_total(ps_global->msgmap), ps_global->msgmap->flagged_exld));
+    msgmap = sp_msgmap(stream);
+    if(!msgmap)
+      return;
+
+    if(ps_global->mail_stream == stream)
+      is_current++;
+
+    if(i = mn_raw2m(msgmap, (long) rawno)){
+	dprint(7, (debugfile, "mm_expunged: rawno=%lu msgno=%ld nmsgs=%ld max_msgno=%ld flagged_exld=%ld\n", rawno, i, mn_get_nmsgs(msgmap), mn_get_total(msgmap), msgmap->flagged_exld));
+
+	sp_set_mail_box_changed(stream, 1);
+	sp_set_expunge_count(stream, sp_expunge_count(stream) + 1);
+
+	if(is_current){
+	    reset_check_point(stream);
+	    ps_global->mangled_header = 1;
 
 	    /* flush invalid cache entries */
-	    while(i <= mn_get_total(ps_global->msgmap))
+	    while(i <= mn_get_total(msgmap))
 	      clear_index_cache_ent(i++);
 
 	    /* expunged something we're viewing? */
 	    if(!ps_global->expunge_in_progress
-	       && (mn_is_cur(ps_global->msgmap,
-			     mn_raw2m(ps_global->msgmap, (long) rawno))
+	       && (mn_is_cur(msgmap, mn_raw2m(msgmap, (long) rawno))
 		   && (ps_global->prev_screen == mail_view_screen
 		       || ps_global->prev_screen == attachment_screen))){
 		ps_global->next_screen = mail_index_screen;
 		q_status_message(SM_ORDER | SM_DING , 3, 3,
 				 "Message you were viewing is gone!");
 	    }
+	}
+    }
+    else{
+	dprint(7, (debugfile,
+	       "mm_expunged: rawno=%lu was excluded, flagged_exld was %d\n",
+	       rawno, msgmap->flagged_exld));
+	dprint(7, (debugfile, "             nmsgs=%ld max_msgno=%ld\n",
+	       mn_get_nmsgs(msgmap), mn_get_total(msgmap)));
+	if(rawno > 0L && rawno <= stream->nmsgs)
+	  mc = mail_elt(stream, rawno);
 
-	    ps_global->mail_box_changed = 1;
-	    ps_global->mangled_header = 1;
-	    ps_global->expunge_count++;
+	if(!mc){
+	    dprint(7, (debugfile, "             cannot get mail_elt(%lu)\n",
+		   rawno));
 	}
 	else{
-	    dprint(7, (debugfile,
-		   "mm_expunged: rawno=%lu was excluded, flagged_exld was %d\n",
-		   rawno, ps_global->msgmap->flagged_exld));
-	    dprint(7, (debugfile, "             nmsgs=%ld max_msgno=%ld\n",
-		   mn_get_nmsgs(ps_global->msgmap),
-		   mn_get_total(ps_global->msgmap)));
-	    if(rawno > 0L)
-	      mc = mail_elt(stream, rawno);
-
-	    if(!mc){
-		dprint(7, (debugfile, "             cannot get mail_elt(%lu)\n",
-		       rawno));
-	    }
-	    else{
-		dprint(7, (debugfile, "             mail_elt(%lu)->spare2=%d\n",
-		       rawno, (int) (mc->spare2)));
-	    }
+	    dprint(7, (debugfile, "             mail_elt(%lu)->spare2=%d\n",
+		   rawno, (int) (mc->spare2)));
 	}
+    }
 
-	if(SORT_IS_THREADED()
-	   && (SEP_THRDINDX()
-	       || ps_global->thread_disp_style != THREAD_NONE)){
-	    long cur;
-
-	    /*
-	     * When we're sorting with a threaded method an expunged
-	     * message may cause the rest of the sort to be wrong. This
-	     * isn't so bad if we're just looking at the index. However,
-	     * it also causes the thread tree (PINETHRD_S) to become
-	     * invalid, so if we're using a threading view we need to
-	     * sort in order to fix the tree and to protect fetch_thread().
-	     */
-	    ps_global->need_to_rethread = 1;
-
-	    /*
-	     * If we expunged the current message which was a member of the
-	     * viewed thread, and the adjustment to current will take us
-	     * out of that thread, fix it if we can, by backing current up
-	     * into the thread. We'd like to just check after mn_flush_raw
-	     * below but the problem is that the elts won't change until
-	     * after we return from mm_expunged. So we have to manually
-	     * check the other messages for CHID2 flags instead of thinking
-	     * that we can expunge the current message and then check. It won't
-	     * work because the elt will still refer to the expunged message.
-	     */
-	    if(ps_global->viewing_a_thread
-	       && get_lflag(stream, NULL, rawno, MN_CHID2)
-	       && mn_total_cur(ps_global->msgmap) == 1
-	       && mn_is_cur(ps_global->msgmap,
-			    mn_raw2m(ps_global->msgmap, (long) rawno))
-	       && (cur = mn_get_cur(ps_global->msgmap)) > 1L
-	       && cur < mn_get_total(ps_global->msgmap)
-	       && !get_lflag(stream, ps_global->msgmap, cur + 1L, MN_CHID2)
-	       && get_lflag(stream, ps_global->msgmap, cur - 1L, MN_CHID2))
-	      mn_set_cur(ps_global->msgmap, cur - 1L);
-	}
+    if(SORT_IS_THREADED(msgmap)
+       && (SEP_THRDINDX()
+	   || ps_global->thread_disp_style != THREAD_NONE)){
+	long cur;
 
 	/*
-	 * Keep on top of our special flag counts.
-	 * 
-	 * NOTE: This is allowed since mail_expunged releases
-	 * data for this message after the callback.
+	 * When we're sorting with a threaded method an expunged
+	 * message may cause the rest of the sort to be wrong. This
+	 * isn't so bad if we're just looking at the index. However,
+	 * it also causes the thread tree (PINETHRD_S) to become
+	 * invalid, so if we're using a threading view we need to
+	 * sort in order to fix the tree and to protect fetch_thread().
 	 */
-	if(rawno > 0L && (mc = mail_elt(stream, rawno))){
-	    if(mc->spare)
-	      ps_global->msgmap->flagged_hid--;
-
-	    if(mc->spare2)
-	      ps_global->msgmap->flagged_exld--;
-
-	    if(mc->spare3)
-	      ps_global->msgmap->flagged_tmp--;
-
-	    if(mc->spare4)
-	      ps_global->msgmap->flagged_chid--;
-
-	    if(mc->spare8)
-	      ps_global->msgmap->flagged_chid2--;
-
-	    if(mc->spare5)
-	      ps_global->msgmap->flagged_coll--;
-
-	    if(mc->spare6)
-	      ps_global->msgmap->flagged_stmp--;
-
-	    if(mc->spare7)
-	      ps_global->msgmap->flagged_usor--;
-
-	    if(mc->spare || mc->spare4)
-	      ps_global->msgmap->flagged_invisible--;
-
-	    free_pine_elt((PINELT_S **) &mc->sparep);
-	}
+	sp_set_need_to_rethread(stream, 1);
 
 	/*
-	 * if it's in the sort array, flush it, otherwise
-	 * decrement raw sequence numbers greater than "rawno"
+	 * If we expunged the current message which was a member of the
+	 * viewed thread, and the adjustment to current will take us
+	 * out of that thread, fix it if we can, by backing current up
+	 * into the thread. We'd like to just check after mn_flush_raw
+	 * below but the problem is that the elts won't change until
+	 * after we return from mm_expunged. So we have to manually
+	 * check the other messages for CHID2 flags instead of thinking
+	 * that we can expunge the current message and then check. It won't
+	 * work because the elt will still refer to the expunged message.
 	 */
-	mn_flush_raw(ps_global->msgmap, (long) rawno);
+	if(sp_viewing_a_thread(stream)
+	   && get_lflag(stream, NULL, rawno, MN_CHID2)
+	   && mn_total_cur(msgmap) == 1
+	   && mn_is_cur(msgmap, mn_raw2m(msgmap, (long) rawno))
+	   && (cur = mn_get_cur(msgmap)) > 1L
+	   && cur < mn_get_total(msgmap)
+	   && !get_lflag(stream, msgmap, cur + 1L, MN_CHID2)
+	   && get_lflag(stream, msgmap, cur - 1L, MN_CHID2))
+	  mn_set_cur(msgmap, cur - 1L);
     }
-    else if(stream == ps_global->inbox_stream){
-	if(i = mn_raw2m(ps_global->inbox_msgmap, (long) rawno)){
-	    dprint(7, (debugfile, "mm_expunged (inbox_stream): rawno=%lu msgno=%ld nmsgs=%ld max_msgno=%ld flagged_exld=%ld\n", rawno, i, mn_get_nmsgs(ps_global->inbox_msgmap), mn_get_total(ps_global->inbox_msgmap), ps_global->inbox_msgmap->flagged_exld));
-	    ps_global->inbox_changed = 1;
-	    ps_global->inbox_expunge_count++;
-	}
-	else{
-	    dprint(7, (debugfile,
-    "mm_expunged (inbox_stream): rawno=%lu was excluded, flagged_exld was %d\n",
-		   rawno, ps_global->inbox_msgmap->flagged_exld));
-	    dprint(7, (debugfile, "             nmsgs=%ld max_msgno=%ld\n",
-		   mn_get_nmsgs(ps_global->inbox_msgmap),
-		   mn_get_total(ps_global->inbox_msgmap)));
-	    if(rawno > 0L)
-	      mc = mail_elt(stream, rawno);
 
-	    if(!mc){
-		dprint(7, (debugfile, "             cannot get mail_elt(%lu)\n",
-		       rawno));
-	    }
-	    else{
-		dprint(7, (debugfile, "             mail_elt(%lu)->spare2=%d\n",
-		       rawno, (int) (mc->spare2)));
-	    }
-	}
+    /*
+     * Keep on top of our special flag counts.
+     * 
+     * NOTE: This is allowed since mail_expunged releases
+     * data for this message after the callback.
+     */
+    if(rawno > 0L && rawno <= stream->nmsgs && (mc = mail_elt(stream, rawno))){
+	if(mc->spare)
+	  msgmap->flagged_hid--;
 
-	if(rawno > 0L && (mc = mail_elt(stream, rawno))){
-	    if(mc->spare)
-	      ps_global->inbox_msgmap->flagged_hid--;
+	if(mc->spare2)
+	  msgmap->flagged_exld--;
 
-	    if(mc->spare2)
-	      ps_global->inbox_msgmap->flagged_exld--;
+	if(mc->spare3)
+	  msgmap->flagged_tmp--;
 
-	    if(mc->spare3)
-	      ps_global->inbox_msgmap->flagged_tmp--;
+	if(mc->spare4)
+	  msgmap->flagged_chid--;
 
-	    if(mc->spare4)
-	      ps_global->inbox_msgmap->flagged_chid--;
+	if(mc->spare8)
+	  msgmap->flagged_chid2--;
 
-	    if(mc->spare8)
-	      ps_global->inbox_msgmap->flagged_chid2--;
+	if(mc->spare5)
+	  msgmap->flagged_coll--;
 
-	    if(mc->spare5)
-	      ps_global->inbox_msgmap->flagged_coll--;
+	if(mc->spare6)
+	  msgmap->flagged_stmp--;
 
-	    if(mc->spare6)
-	      ps_global->inbox_msgmap->flagged_stmp--;
+	if(mc->spare7)
+	  msgmap->flagged_usor--;
 
-	    if(mc->spare7)
-	      ps_global->inbox_msgmap->flagged_usor--;
+	if(mc->spare || mc->spare4)
+	  msgmap->flagged_invisible--;
 
-	    if(mc->spare || mc->spare4)
-	      ps_global->msgmap->flagged_invisible--;
-
-	    /* there isn't a total associated with spare7 */
-
-	    free_pine_elt((PINELT_S **) &mc->sparep);
-	}
-
-	mn_flush_raw(ps_global->inbox_msgmap, (long) rawno);
+	free_pine_elt(&mc->sparep);
     }
+
+    /*
+     * if it's in the sort array, flush it, otherwise
+     * decrement raw sequence numbers greater than "rawno"
+     */
+    mn_flush_raw(msgmap, (long) rawno);
 }
 
 
@@ -735,8 +650,11 @@ mm_searched(stream, rawno)
     MAILSTREAM    *stream;
     unsigned long  rawno;
 {
-    if(rawno > 0L && stream && rawno <= stream->nmsgs){
-	mail_elt(stream, rawno)->searched = 1;
+    MESSAGECACHE *mc;
+
+    if(rawno > 0L && stream && rawno <= stream->nmsgs
+       && (mc = mail_elt(stream, rawno))){
+	mc->searched = 1;
 	if(stream == mm_search_stream)
 	  mm_search_count++;
     }
@@ -798,7 +716,7 @@ mm_login(mb, user, pwd, trial)
        (mb->port != ntohs(sv->s_port))){
 	sprintf(non_def_port, ":%lu", mb->port);
 	dprint(9, (debugfile, "mm_login: using non-default port=%s\n",
-		   non_def_port));
+		   non_def_port ? non_def_port : "?"));
     }
 
     /*
@@ -834,7 +752,8 @@ mm_login(mb, user, pwd, trial)
     }
 
     if(hostlist[0].name){
-	dprint(9, (debugfile, "mm_login: host=%s\n", hostlist[0].name));
+	dprint(9, (debugfile, "mm_login: host=%s\n",
+	       hostlist[0].name ? hostlist[0].name : "?"));
 	if(hostlist[0].next && hostlist[1].name){
 	    dprint(9, (debugfile, "mm_login: orighost=%s\n", hostlist[1].name));
 	}
@@ -888,12 +807,15 @@ mm_login(mb, user, pwd, trial)
 #endif
 								   )){
 	    strncpy(user, last, NETMAXUSER);
-	    dprint(9, (debugfile, "mm_login: found user=%s\n", user));
+	    dprint(9, (debugfile, "mm_login: found user=%s\n",
+		   user ? user : "?"));
 
 	    /* try last working password associated with this host/user. */
 	    if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
 	       (mb->sslflag||mb->tlsflag))){
-		dprint(9, (debugfile, "mm_login: found a password for user=%s to try\n", user));
+		dprint(9, (debugfile,
+		       "mm_login: found a password for user=%s to try\n",
+		       user ? user : "?"));
 		return;
 	    }
 
@@ -905,7 +827,9 @@ mm_login(mb, user, pwd, trial)
 				hostlist, (mb->sslflag||mb->tlsflag), 0, 0);
 		update_passfile_hostlist(ps_global->pinerc, user, hostlist,
 					 (mb->sslflag||mb->tlsflag));
-		dprint(9, (debugfile, "mm_login: found a password for user=%s in passfile to try\n", user));
+		dprint(9, (debugfile,
+		  "mm_login: found a password for user=%s in passfile to try\n",
+		  user ? user : "?"));
 		return;
 	    }
 #endif
@@ -917,7 +841,8 @@ mm_login(mb, user, pwd, trial)
 				    ? ps_global->ui.login : NULL)
 								 ){
 	    strncpy(user, last, NETMAXUSER);
-	    dprint(9, (debugfile, "mm_login: found user=%s\n", user));
+	    dprint(9, (debugfile, "mm_login: found user=%s\n",
+		   user ? user : "?"));
 
 	    /* try last working password associated with this host. */
 	    if(imap_get_passwd(mm_login_list, pwd, user, hostlist,
@@ -1366,7 +1291,7 @@ mm_diskerror (stream, errcode, serious)
 #define	DE_COLS		(ps_global->ttyo->screen_cols)
 #define	DE_LINE		(ps_global->ttyo->screen_rows - 3)
 
-#define	DE_FOLDER(X)	((X) ? (X)->mailbox : "<no folder>")
+#define	DE_FOLDER(X)	(((X) && (X)->mailbox) ? (X)->mailbox : "<no folder>")
 #define	DE_PMT	\
    "Disk error!  Choose Retry, or the File browser or Shell to clean up: "
 #define	DE_STR1		"SERIOUS DISK ERROR WRITING: \"%s\""
@@ -1393,13 +1318,11 @@ mm_diskerror (stream, errcode, serious)
     dprint(0, (debugfile,
        "\n***** DISK ERROR on stream %s. Error code %ld. Error is %sserious\n",
 	       DE_FOLDER(stream), errcode, serious ? "" : "not "));
-    dprint(0, (debugfile, "***** message: \"%s\"\n\n", ps_global->last_error));
+    dprint(0, (debugfile, "***** message: \"%s\"\n\n",
+	   ps_global->last_error ? ps_global->last_error : "?"));
 
     if(!serious) {
-        if(stream == ps_global->mail_stream) {
-            ps_global->io_error_on_stream = 1;
-        }
-
+	sp_set_io_error_on_stream(stream, 1);
         return (1) ;
     }
 
@@ -1518,7 +1441,7 @@ mm_flags(stream, rawno)
 	if(scores_are_used(SCOREUSE_GET) & SCOREUSE_STATEDEP)
 	  clear_msg_score(stream, rawno);
 
-	msgno = mn_raw2m(ps_global->msgmap, (long) rawno);
+	msgno = mn_raw2m(sp_msgmap(stream), (long) rawno);
 
 	/* if in thread index */
 	if(THRD_INDX()){
@@ -1526,7 +1449,7 @@ mm_flags(stream, rawno)
 	       && thrd->top
 	       && (thrd = fetch_thread(stream, thrd->top))
 	       && thrd->rawno
-	       && (t = mn_raw2m(ps_global->msgmap, thrd->rawno)))
+	       && (t = mn_raw2m(sp_msgmap(stream), thrd->rawno)))
 	      clear_index_cache_ent(t);
 	}
 	else if(THREADING()){
@@ -1541,7 +1464,7 @@ mm_flags(stream, rawno)
 		thrd = fetch_thread(stream, thrd->parent);
 		while(thrd){
 		    if(get_lflag(stream, NULL, thrd->rawno, MN_COLL)
-		       && (t = mn_raw2m(ps_global->msgmap, (long) thrd->rawno)))
+		       && (t = mn_raw2m(sp_msgmap(stream), (long) thrd->rawno)))
 		      clear_index_cache_ent(t);
 
 		    if(thrd->parent)
@@ -1554,12 +1477,28 @@ mm_flags(stream, rawno)
 	else if(msgno > 0L)
 	  clear_index_cache_ent(msgno);
 
-	if(msgno){
-	    if(mn_is_cur(ps_global->msgmap, msgno))
-	      ps_global->mangled_header = 1;
+	if(msgno && mn_is_cur(sp_msgmap(stream), msgno))
+	  ps_global->mangled_header = 1;
+    }
 	    
-	    check_point_change();
-	}
+    /*
+     * We count up flag changes here. The
+     * dont_count_flagchanges variable tries to prevent us from
+     * counting when we're just fetching flags.
+     */
+    if(!(ps_global->dont_count_flagchanges
+	 && stream == ps_global->mail_stream)){
+	int exbits;
+
+	check_point_change(stream);
+
+	/* we also note flag changes for filtering purposes */
+	if(msgno_exceptions(stream, rawno, "0", &exbits, FALSE))
+	  exbits |= MSG_EX_STATECHG;
+	else
+	  exbits = MSG_EX_STATECHG;
+
+	msgno_exceptions(stream, rawno, "0", &exbits, TRUE);
     }
 }
 
@@ -1576,15 +1515,15 @@ pine_mail_status(stream, mailbox, flags)
 
 long
 pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
-    MAILSTREAM *stream;
-    char       *mailbox;
-    long        flags;
+    MAILSTREAM    *stream;
+    char          *mailbox;
+    long           flags;
     unsigned long *uidvalidity, *uidnext;
 {
-    char       source[MAILTMPLEN], *target = NULL;
-    long       ret;
-    MAILSTATUS cache, status;
-    MAILSTREAM *origstream = stream;
+    char        source[MAILTMPLEN], *target = NULL;
+    long        ret;
+    MAILSTATUS  cache, status;
+    MAILSTREAM *ourstream = NULL;
 
     if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
 
@@ -1598,12 +1537,7 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 
 	/* do status of destination */
 
-	stream = NULL;
-	if(same_stream(target, ps_global->mail_stream))
-	  stream = ps_global->mail_stream;
-        else if(ps_global->mail_stream != ps_global->inbox_stream
-	        && same_stream(target, ps_global->inbox_stream))
-	  stream = ps_global->inbox_stream;
+	stream = sp_stream_get(target, SP_SAME);
 
 	if((ret = pine_mail_status_full(stream, target, flags, uidvalidity,
 					uidnext))
@@ -1611,29 +1545,20 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 
 	    /* do status of source */
 	    pine_cached_status = &cache;
-	    stream = NULL;
-	    if(same_stream(source, ps_global->mail_stream))
-	      stream = ps_global->mail_stream;
-	    else if(ps_global->mail_stream != ps_global->inbox_stream
-		    && same_stream(target, ps_global->inbox_stream))
-	      stream = ps_global->inbox_stream;
+	    stream = sp_stream_get(source, SP_SAME);
 
 	    if(!stream){
 		DRIVER *d;
 
 		if((d = mail_valid (NIL, source, (char *) NIL))
 		   && !strcmp(d->name, "imap")){
-		    long openflags = (OP_HALFOPEN | OP_SILENT);
+		    long openflags =OP_HALFOPEN|OP_SILENT|SP_USEPOOL|SP_TEMPUSE;
 
 		    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
 		      openflags |= OP_TRYALT;
 
-#ifdef	DEBUG
-		    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-		      openflags |= OP_DEBUG;
-#endif
-
-		    stream = pine_mail_open(NULL, source, openflags);
+		    stream = pine_mail_open(NULL, source, openflags, NULL);
+		    ourstream = stream;
 		}
 	    }
 
@@ -1660,6 +1585,7 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 		 * if we add messages, we could get it wrong. As far as I
 		 * can tell, Pine doesn't ever even use status.unseen, so it
 		 * is currently academic anyway.)  Hubert 2003-03-05
+		 * (Does now 2004-06-02 in next_folder.)
 		 *
 		 * However, we don't want to count all messages as recent if
 		 * the source mailbox is NNTP or NEWS, because we won't be
@@ -1710,26 +1636,27 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 			status.uidnext  += cache.recent;
 		    }
 		    else if(!(cache.flags & SA_MESSAGES) || cache.messages){
-			long openflags = OP_SILENT;
+			long openflags = OP_SILENT | SP_USEPOOL | SP_TEMPUSE;
 			long delete_count, not_deleted = 0L;
 
 			/* Actually open it up and check */
 			if(F_ON(F_PREFER_ALT_AUTH, ps_global))
 			  openflags |= OP_TRYALT;
 
-#ifdef	DEBUG
-			if(ps_global->debug_imap > 3 || ps_global->debugmem)
-			  openflags |= OP_DEBUG;
-#endif
-
-			if(stream
-			   && (stream == ps_global->mail_stream
-			       || stream == ps_global->inbox_stream))
+			if(!ourstream)
 			  stream = NULL;
 
-			if(stream == NULL
-			   || !same_stream_and_mailbox(source, stream))
-			  stream = pine_mail_open(stream, source, openflags);
+			if(ourstream
+			   && !same_stream_and_mailbox(source, ourstream)){
+			    pine_mail_close(ourstream);
+			    ourstream = stream = NULL;
+			}
+
+			if(!stream){
+			    stream = pine_mail_open(stream, source, openflags,
+						    NULL);
+			    ourstream = stream;
+			}
 
 			if(stream){
 			    delete_count = count_flagged(stream, F_DEL);
@@ -1749,10 +1676,6 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 		      *uidnext = cache.uidnext;
 		}
 	    }
-
-	    if(stream && stream != ps_global->mail_stream
-	       && stream != ps_global->inbox_stream)
-	      pine_mail_close(stream);
 	}
 
 	/*
@@ -1764,32 +1687,83 @@ pine_mail_status_full(stream, mailbox, flags, uidvalidity, uidnext)
 	  mm_status(NULL, mailbox, &status);
     }
     else{
-	if(stream == NULL
-	   && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-	       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+	if(!stream){
 	    DRIVER *d;
 
 	    if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	       && !strcmp(d->name, "imap")){
-		long openflags = (OP_HALFOPEN | OP_SILENT);
+		long openflags = OP_HALFOPEN|OP_SILENT|SP_USEPOOL|SP_TEMPUSE;
 
 		if(F_ON(F_PREFER_ALT_AUTH, ps_global))
 		  openflags |= OP_TRYALT;
 
-#ifdef	DEBUG
-		if(ps_global->debug_imap > 3 || ps_global->debugmem)
-		  openflags |= OP_DEBUG;
-#endif
+		/*
+		 * We just use this to find the answer.
+		 * We're asking for trouble if we do a STATUS on a
+		 * selected mailbox. I don't believe this happens in pine.
+		 * It does now (2004-06-02) in next_folder if the
+		 * F_TAB_USES_UNSEEN option is set and the folder was
+		 * already opened.
+		 */
+		stream = sp_stream_get(mailbox, SP_MATCH);
+		if(stream){ 
+		    memset(&status, 0, sizeof(status));
+		    if(flags & SA_MESSAGES){
+			status.flags |= SA_MESSAGES;
+			status.messages = stream->nmsgs;
+		    }
 
-		stream = pine_mail_open(NULL, mailbox, openflags);
+		    if(flags & SA_RECENT){
+			status.flags |= SA_RECENT;
+			status.recent = stream->recent;
+		    }
+
+		    if(flags & SA_UNSEEN){
+		        long i;
+			SEARCHPGM *srchpgm;
+			MESSAGECACHE *mc;
+
+			srchpgm = mail_newsearchpgm();
+			srchpgm->unseen = 1;
+		      
+			pine_mail_search_full(stream, NULL, srchpgm,
+					      SE_NOPREFETCH | SE_FREE);
+			status.flags |= SA_UNSEEN;
+			status.unseen = 0L;
+			for(i = 1L; i <= stream->nmsgs; i++)
+			  if((mc = mail_elt(stream, i)) && mc->searched)
+			    status.unseen++;
+		    }
+
+		    if(flags & SA_UIDVALIDITY){
+			status.flags |= SA_UIDVALIDITY;
+			status.uidvalidity = stream->uid_validity;
+		    }
+
+		    if(flags & SA_UIDNEXT){
+			status.flags |= SA_UIDNEXT;
+			status.uidnext = stream->uid_last + 1L;
+		    }
+
+		    mm_status(NULL, mailbox, &status);
+		    return T;  /* that's what c-client returns when success */
+		}
+
+		if(!stream)
+		  stream = sp_stream_get(mailbox, SP_SAME);
+
+		if(!stream){
+		    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+		    ourstream = stream;
+		}
 	    }
 	}
 
 	ret = mail_status(stream, mailbox, flags);	/* non #move case */
-
-	if(stream && stream != origstream)
-	  pine_mail_close(stream);
     }
+
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return ret;
 }
@@ -1869,7 +1843,8 @@ mm_status(stream, mailbox, status)
 	  dprint(2, (debugfile,
 		 "mm_status: Preliminary pass for #move\n"));
 
-	dprint(2, (debugfile, "mm_status: Mailbox \"%s\"", mailbox));
+	dprint(2, (debugfile, "mm_status: Mailbox \"%s\"",
+	       mailbox ? mailbox : "?"));
 	if(status->flags & SA_MESSAGES)
 	  dprint(2, (debugfile, ", %lu messages", status->messages));
 
@@ -1905,7 +1880,7 @@ mm_list(stream, delimiter, mailbox, attributes)
     if(ps_global->debug_imap > 2 || ps_global->debugmem)
       dprint(5,
               (debugfile, "mm_list \"%s\": delim: '%c', %s%s%s%s%s%s\n",
-	       mailbox, delimiter ? delimiter : 'X',
+	       mailbox ? mailbox : "?", delimiter ? delimiter : 'X',
 	       (attributes & LATT_NOINFERIORS) ? ", no inferiors" : "",
 	       (attributes & LATT_NOSELECT) ? ", no select" : "",
 	       (attributes & LATT_MARKED) ? ", marked" : "",
@@ -1935,7 +1910,7 @@ mm_lsub(stream, delimiter, mailbox, attributes)
     if(ps_global->debug_imap > 2 || ps_global->debugmem)
       dprint(5,
               (debugfile, "LSUB \"%s\": delim: '%c', %s%s%s%s%s%s\n",
-	       mailbox, delimiter ? delimiter : 'X',
+	       mailbox ? mailbox : "?", delimiter ? delimiter : 'X',
 	       (attributes & LATT_NOINFERIORS) ? ", no inferiors" : "",
 	       (attributes & LATT_NOSELECT) ? ", no select" : "",
 	       (attributes & LATT_MARKED) ? ", marked" : "",
@@ -2170,8 +2145,8 @@ pine_sslcertquery(reason, host, cert)
 	gf_filter_init();
 	gf_link_filter(gf_html2plain,
 		       gf_html2plain_opt(NULL,
-			  ps_global->ttyo->screen_cols,
-			  &handles, GFHP_LOCAL_HANDLES));
+					 ps_global->ttyo->screen_cols, NULL,
+					 &handles, GFHP_LOCAL_HANDLES));
 	gf_set_so_readc(&gc, in_store);
 	gf_set_so_writec(&pc, out_store);
 	gf_pipe(gc, pc);
@@ -2337,7 +2312,9 @@ pine_sslfailure(host, reason, flags)
     int       ok_novalidate = 0, warned = 0;
 
 
-    dprint(1, (debugfile, "sslfailure: host=%s reason=%s\n", hst, rsn));
+    dprint(1, (debugfile, "sslfailure: host=%s reason=%s\n",
+	   hst ? hst : "?",
+	   rsn ? rsn : "?"));
 
     if(flags & NET_SILENT)
       return;
@@ -2650,6 +2627,7 @@ imap_seq_exec(stream, sequence, func, args)
     void	*args;
 {
     unsigned long i,j,x;
+    MESSAGECACHE *mc;
 
     while (*sequence) {		/* while there is something to parse */
 	if (*sequence == '*') {	/* maximum message */
@@ -2683,6 +2661,7 @@ imap_seq_exec(stream, sequence, func, args)
 		mm_log ("Sequence range invalid",ERROR);
 		return NIL;
 	    }
+
 	    if (*sequence && *sequence++ != ',') {
 		mm_log ("Sequence range syntax error",ERROR);
 		return NIL;
@@ -2694,7 +2673,10 @@ imap_seq_exec(stream, sequence, func, args)
 				/* mark each item in the sequence */
 	    while (i <= j)
 	      if(!(*func)(stream, j--, args)){
-		  mail_elt (stream,j--)->sequence = T;
+		  if(j > 0L && stream && j <= stream->nmsgs
+		     && (mc = mail_elt(stream, j)))
+		    mc->sequence = T;
+
 		  return(0L);
 	      }
 
@@ -2703,9 +2685,13 @@ imap_seq_exec(stream, sequence, func, args)
 	    ++sequence;		/* skip the delimiter, fall into end case */
 	  case '\0':		/* end of sequence, mark this message */
 	    if(!(*func)(stream, i, args)){
-		mail_elt (stream,i)->sequence = T;
+		if(i > 0L && stream && i <= stream->nmsgs
+		   && (mc = mail_elt(stream, i)))
+		  mc->sequence = T;
+
 		return(0L);
 	    }
+
 	    break;
 	  default:			/* anything else is a syntax error! */
 	    mm_log ("Sequence syntax error",ERROR);
@@ -2739,17 +2725,19 @@ imap_seq_exec_append(stream, msgno, args)
 
     if(so = so_get(CharStar, NULL, WRITE_ACCESS)){
 	/* store flags before the fetch so UNSEEN bit isn't flipped */
-	mc = mail_elt(stream, msgno);
+	mc = (msgno > 0L && stream && msgno <= stream->nmsgs)
+		? mail_elt(stream, msgno) : NULL;
+
 	flag_string(mc, F_ANS|F_FLAG|F_SEEN, flags);
-	if(mc->day)
+	if(mc && mc->day)
 	  mail_date(date, mc);
 	else
 	  *date = '\0';
 
 	rv = save_fetch_append(stream, msgno, NULL,
 			       save_stream, save_folder, NULL,
-			       mc->rfc822_size, flags, date, so);
-	if(rv < 0 || ps_global->expunge_count){
+			       mc ? mc->rfc822_size : 0L, flags, date, so);
+	if(rv < 0 || sp_expunge_count(stream)){
 	    cmd_cancelled("Attached message Save");
 	    rv = 0L;
 	}
@@ -2970,7 +2958,7 @@ imap_get_passwd(m_list, passwd, user, hostlist, altflag)
 	  passwd[NETMAXPASSWD-1] = '\0';
 	  dprint(9, (debugfile, "imap_get_passwd: match\n"));
 	  dprint(10, (debugfile, "imap_get_passwd: trying passwd=\"%s\"\n",
-		      passwd));
+		      passwd ? passwd : "?"));
 	  return(TRUE);
       }
 
@@ -3020,8 +3008,9 @@ imap_set_passwd(l, passwd, user, hostlist, altflag, ok_novalidate, warned)
     if(!(*l)->user)
       (*l)->user = cpystr(user);
 
-    dprint(9, (debugfile, "imap_set_passwd: user=%s altflag=%d\n", (*l)->user,
-	       (*l)->altflag));
+    dprint(9, (debugfile, "imap_set_passwd: user=%s altflag=%d\n",
+	   (*l)->user ? (*l)->user : "?",
+	   (*l)->altflag));
 
     for( ; hostlist; hostlist = hostlist->next){
 	for(listp = &(*l)->hosts;
@@ -3033,12 +3022,13 @@ imap_set_passwd(l, passwd, user, hostlist, altflag, ok_novalidate, warned)
 	    *listp = (STRLIST_S *)fs_get(sizeof(STRLIST_S));
 	    (*listp)->name = cpystr(hostlist->name);
 	    dprint(9, (debugfile, "imap_set_passwd: host=%s\n",
-		       (*listp)->name));
+		       (*listp)->name ? (*listp)->name : "?"));
 	    (*listp)->next = NULL;
 	}
     }
 
-    dprint(10, (debugfile, "imap_set_passwd: passwd=\"%s\"\n", passwd));
+    dprint(10, (debugfile, "imap_set_passwd: passwd=\"%s\"\n",
+	   passwd ? passwd : "?"));
 }
 
 
@@ -3049,6 +3039,8 @@ imap_flush_passwd_cache()
     MMLOGIN_S *l;
 
     memset((void *)private_store, 0, sizeof(private_store));
+    if(panicking)
+      return;
 
     while(l = mm_login_list){
 	mm_login_list = mm_login_list->next;
@@ -3192,7 +3184,8 @@ passfile_name(pinerc, path, len)
 
     path[len-1] = '\0';
 
-    dprint(9, (debugfile, "Looking for passfile \"%s\"\n", path));
+    dprint(9, (debugfile, "Looking for passfile \"%s\"\n",
+	   path ? path : "?"));
 
 #if	defined(DOS) || defined(OS2)
     return((stat(path, &sbuf) == 0
@@ -3249,7 +3242,7 @@ read_passfile(pinerc, l)
 	if(i && tmp[i-1] == '\n')
 	  tmp[i-1] = '\0';			/* blast '\n' */
 
-	dprint(10, (debugfile, "read_passfile: %s\n", tmp));
+	dprint(10, (debugfile, "read_passfile: %s\n", tmp ? tmp : "?"));
 	ui[0] = ui[1] = ui[2] = ui[3] = ui[4] = NULL;
 	for(i = 0, j = 0; tmp[i] && j < 5; j++){
 	    for(ui[j] = &tmp[i]; tmp[i] && tmp[i] != '\t'; i++)
@@ -3305,7 +3298,7 @@ write_passfile(pinerc, l)
 		(l->hosts->next && l->hosts->next->name) ? "\t" : "",
 		(l->hosts->next && l->hosts->next->name) ? l->hosts->next->name
 							 : "");
-	dprint(10, (debugfile, "write_passfile: %s", tmp));
+	dprint(10, (debugfile, "write_passfile: %s", tmp ? tmp : "?"));
 	xlate_key = n;
 	for(i = 0; tmp[i]; i++)
 	  tmp[i] = xlate_in(tmp[i]);
@@ -3371,6 +3364,7 @@ set_passfile_passwd(pinerc, passwd, user, hostlist, altflag)
 {
     dprint(9, (debugfile, "set_passfile_passwd\n"));
     if((passfile_cache || read_passfile(pinerc, &passfile_cache))
+       && !ps_global->nowrite_passfile
        && want_to("Preserve password on DISK for next login", 'y', 'x',
 		  NO_HELP, WT_NORM) == 'y'){
 	imap_set_passwd(&passfile_cache, passwd, user, hostlist, altflag, 0, 0);
@@ -3405,8 +3399,9 @@ update_passfile_hostlist(pinerc, user, hostlist, altflag)
 	  break;
       }
     
-    if(l && l->hosts && hostlist && !l->hosts->next && hostlist->next &&
-       hostlist->next->name){
+    if(l && l->hosts && hostlist && !l->hosts->next && hostlist->next
+       && hostlist->next->name
+       && !ps_global->nowrite_passfile){
 	l->hosts->next = (STRLIST_S *)fs_get(sizeof(STRLIST_S));
 	l->hosts->next->name = cpystr(hostlist->next->name);
 	l->hosts->next->next = NULL;

@@ -1,4 +1,4 @@
-# $Id: makefile,v 1.1.1.1 2001-02-19 06:59:56 ghudson Exp $
+# $Id: makefile,v 1.1.1.2 2005-01-26 17:52:23 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -39,3 +39,6 @@
 all:	
 	@ echo 'Use the "build" command (shell script) to make Pine.'
 	@ echo 'You can say "build help" for details on how it works.'
+
+clean:
+	./build clean

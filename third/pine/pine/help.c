@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: help.c,v 1.1.1.3 2004-03-01 21:16:26 ghudson Exp $";
+static char rcsid[] = "$Id: help.c,v 1.1.1.4 2005-01-26 17:56:04 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: help.c,v 1.1.1.3 2004-03-01 21:16:26 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -124,7 +124,7 @@ HelpType help_name2section PROTO((char *, int));
 int	 help_processor PROTO((int, MSGNO_S *, SCROLL_S *));
 int	 journal_processor PROTO((int, MSGNO_S *, SCROLL_S *));
 void     prune_review_messages PROTO((size_t *, size_t));
-size_t   trim_review PROTO((unsigned long, int));
+size_t   trim_review PROTO((unsigned long, int, size_t));
 void	 help_keymenu_tweek PROTO((SCROLL_S *, int));
 int	 help_bogus_input PROTO((int));
 char   **get_supported_options PROTO((void));
@@ -221,13 +221,13 @@ helper_internal(text, otext, frag, title, flags)
 	    if(!struncmp(shown_text[0], "<html>", 6))
 	      gf_link_filter(gf_html2plain,
 			     gf_html2plain_opt("x-pine-help:",
-					ps_global->ttyo->screen_cols,
-					&handles, GFHP_LOCAL_HANDLES));
+					       ps_global->ttyo->screen_cols, NULL,
+					       &handles, GFHP_LOCAL_HANDLES));
 	    else
 	      gf_link_filter(gf_wrap, gf_wrap_filter_opt(
 						  ps_global->ttyo->screen_cols,
 						  ps_global->ttyo->screen_cols,
-						  0, GFW_HANDLES));
+						  NULL, 0, GFW_HANDLES));
 
 	    error = gf_pipe(helper_getc, pc);
 
@@ -353,7 +353,8 @@ helper_internal(text, otext, frag, title, flags)
 		    clrbitn(HLP_NEXT_HANDLE, sargs.keys.bitmap);
 		}
 
-		if(text != main_menu_tx) /* only main can "print all" */
+		if(text != main_menu_tx
+		   && text != h_mainhelp_pinehelp)
 		  clrbitn(HLP_ALL_KEY, sargs.keys.bitmap);
 
 		if(frag){
@@ -530,7 +531,8 @@ print_help(text)
 	char *p;
 
 	gf_link_filter(gf_html2plain,
-		       gf_html2plain_opt(NULL,80,NULL,GFHP_STRIPPED));
+		       gf_html2plain_opt(NULL,80,NULL,
+					 NULL,GFHP_STRIPPED));
 	for(i = 1; i <= 5 && text[i]; i++)
 	  if(!struncmp(text[i], "<title>", 7)
 	     && (p = srchstr(text[i] + 7, "</title>"))
@@ -541,7 +543,7 @@ print_help(text)
 	  }
     }
     else
-      gf_link_filter(gf_wrap, gf_wrap_filter_opt(80, 80, 0, 0));
+      gf_link_filter(gf_wrap, gf_wrap_filter_opt(80, 80, NULL, 0, 0));
 
     gf_link_filter(gf_line_test,
 		   gf_line_test_opt(print_help_page_break, NULL));
@@ -974,17 +976,30 @@ get_help_text(index)
 #endif	/* HELPFILE */
 
 
+#define RMMSGLEN 120
+#define RMTIMLEN 15
+#define RMJLEN   500
+#define RMLLEN   2000
+#define RMHLEN   2000
 typedef struct _rev_msg {
-    char            *message;
-    char            *timestamp;
-    int              level;	/* -1 for journal, debuglevel for dprint */
-    unsigned long    seq;			/* used for pruning */
-    struct _rev_msg *next;
+    unsigned long    seq;
+    short            level;	/* -1 for journal, debuglevel for dprint */
+    unsigned         continuation:1;
+    char             message[RMMSGLEN+1];
+    char             timestamp[RMTIMLEN+1];
 } REV_MSG_S;
 
-static REV_MSG_S *latest, *firstpruned_marker;
+typedef enum {No, Jo, Lo, Hi} RMCat;
+
+static REV_MSG_S rmjoarray[RMJLEN];	/* For regular journal */
+static REV_MSG_S rmloarray[RMLLEN];	/* debug 0-4 */
+static REV_MSG_S rmhiarray[RMHLEN];	/* debug 5-9 */
+static int       rmjofirst = -1, rmjolast = -1;
+static int       rmlofirst = -1, rmlolast = -1;
+static int       rmhifirst = -1, rmhilast = -1;
+static unsigned long rmseq = 0L;
+
 static int        not_right_now;
-#define PRUNEWARN "**** Some debug prior to this point has been trimmed to save memory. ****"
 
 /*----------------------------------------------------------------------
      Review latest status messages
@@ -992,12 +1007,12 @@ static int        not_right_now;
 void
 review_messages()
 {
-#define INDENT 2
     SCROLL_S	    sargs;
     STORE_S        *in_store = NULL, *out_store = NULL;
     gf_io_t         gc, pc;
-    REV_MSG_S      *p, *next, *marker;
-    int             cmd, timestamps = 0, show_level = -1;
+    int             jo, lo, hi, donejo, donelo, donehi;
+    RMCat           rmcat;
+    int             cmd, timestamps=0, show_level=-1;
     char            debugkeylabel[20];
     char            timestampkeylabel[] = "NoTimestamps";
     static struct key rev_msg_keys[] =
@@ -1017,10 +1032,17 @@ review_messages()
 #define TIMESTAMP_KEY 4
 #define DEBUG_KEY     5
 
-    if(!latest)
+    if((rmjofirst < 0 && rmlofirst < 0 && rmhifirst < 0)
+       || rmjofirst >= RMJLEN || rmjolast >= RMJLEN
+       || rmlofirst >= RMLLEN || rmlolast >= RMLLEN
+       || rmhifirst >= RMHLEN || rmhilast >= RMHLEN
+       || (rmjofirst >= 0 && rmjolast < 0)
+       || (rmlofirst >= 0 && rmlolast < 0)
+       || (rmhifirst >= 0 && rmhilast < 0))
       return;
     
     do{
+
 	if(!(in_store = so_get(CharStar, NULL, EDIT_ACCESS)) ||
 	   !(out_store = so_get(CharStar, NULL, EDIT_ACCESS))){
 	    if(in_store)
@@ -1034,29 +1056,133 @@ review_messages()
 	add_review_message("Turning off new messages while reviewing", 0);
 	not_right_now = 1;
 
-	marker = next = latest->next;
-	do{
-	    p = next;
-	    next = next->next;
-	    if(p->level <= show_level){
-		if(timestamps && p && p->timestamp && p->timestamp[0]){
-		    so_puts(in_store, p->timestamp);
-		    so_puts(in_store, ": ");
-		}
+	donejo = donehi = donelo = 0;
+	jo = rmjofirst;
+	if(jo < 0)
+	  donejo = 1;
 
-		if(p && p->message && p->message[0]){
-		    so_puts(in_store, p->message);
-		    so_puts(in_store, "\n");
+	lo = rmlofirst;
+	if(lo < 0)
+	  donelo = 1;
+
+	hi = rmhifirst;
+	if(hi < 0)
+	  donehi = 1;
+
+	while(!(donejo && donelo && donehi)){
+	    REV_MSG_S *pjo, *plo, *phi, *p;
+
+	    if(!donejo)
+	      pjo = &rmjoarray[jo];
+	    else
+	      pjo = NULL;
+
+	    if(!donelo)
+	      plo = &rmloarray[lo];
+	    else
+	      plo = NULL;
+
+	    if(!donehi)
+	      phi = &rmhiarray[hi];
+	    else
+	      phi = NULL;
+
+	    if(pjo && (!plo || pjo->seq <= plo->seq)
+	       && (!phi || pjo->seq <= phi->seq))
+	      rmcat = Jo;
+	    else if(plo && (!phi || plo->seq <= phi->seq))
+	      rmcat = Lo;
+	    else if(phi)
+	      rmcat = Hi;
+	    else
+	      rmcat = No;
+
+	    switch(rmcat){
+	      case Jo:
+		p = pjo;
+		if(jo == rmjofirst && (((rmjolast + 1) % RMJLEN) == rmjofirst))
+		  so_puts(in_store,
+	"**** Journal entries prior to this point have been trimmed. ****\n");
+		break;
+
+	      case Lo:
+		p = plo;
+		if(show_level >= 0 &&
+		   lo == rmlofirst && (((rmlolast + 1) % RMLLEN) == rmlofirst))
+		  so_puts(in_store,
+	"**** Debug 0-4 entries prior to this point have been trimmed. ****\n");
+		break;
+
+	      case Hi:
+		p = phi;
+		if(show_level >= 5 &&
+		   hi == rmhifirst && (((rmhilast + 1) % RMHLEN) == rmhifirst))
+		  so_puts(in_store,
+	"**** Debug 5-9 entries prior to this point have been trimmed. ****\n");
+		break;
+
+	      default:
+		p = NULL;
+		break;
+	    }
+
+	    if(p){
+		if(p->level <= show_level){
+		    if(timestamps && p->timestamp && p->timestamp[0]){
+			so_puts(in_store, p->timestamp);
+			so_puts(in_store, ": ");
+		    }
+
+		    if(p->message && p->message[0]){
+			if(p->continuation)
+			  so_puts(in_store, ">");
+
+			so_puts(in_store, p->message);
+			so_puts(in_store, "\n");
+		    }
 		}
 	    }
-	}while(next != marker);
+
+	    switch(rmcat){
+	      case Jo:
+		if(jo == rmjolast)
+		  donejo++;
+		else
+		  jo = (jo + 1) % RMJLEN;
+
+		break;
+
+	      case Lo:
+		if(lo == rmlolast)
+		  donelo++;
+		else
+		  lo = (lo + 1) % RMLLEN;
+
+		break;
+
+	      case Hi:
+		if(hi == rmhilast)
+		  donehi++;
+		else
+		  hi = (hi + 1) % RMHLEN;
+
+		break;
+
+	      default:
+		donejo++;
+		donelo++;
+		donehi++;
+		break;
+	    }
+	}
+
 
 	so_seek(in_store, 0L, 0);
 	gf_filter_init();
 	gf_link_filter(gf_wrap,
 		       gf_wrap_filter_opt(ps_global->ttyo->screen_cols - 4,
 					  ps_global->ttyo->screen_cols,
-					  INDENT, 0));
+					  NULL, show_level < 0 ? 2 : 0, 0));
 	gf_set_so_readc(&gc, in_store);
 	gf_set_so_writec(&pc, out_store);
 	gf_pipe(gc, pc);
@@ -1139,6 +1265,137 @@ journal_processor(cmd, msgmap, sparms)
 }
 
 
+#ifdef DEBUG
+void
+debugjournal_to_file(dfile)
+    FILE *dfile;
+{
+    int donejo, donelo, donehi, jo, lo, hi;
+    RMCat rmcat;
+
+    if(dfile && (rmjofirst >= 0 || rmlofirst >= 0 || rmhifirst >= 0)
+       && rmjofirst < RMJLEN && rmjolast < RMJLEN
+       && rmlofirst < RMLLEN && rmlolast < RMLLEN
+       && rmhifirst < RMHLEN && rmhilast < RMHLEN
+       && (rmjofirst < 0 || rmjolast >= 0)
+       && (rmlofirst < 0 || rmlolast >= 0)
+       && (rmhifirst < 0 || rmhilast >= 0)){
+
+	donejo = donehi = donelo = 0;
+	jo = rmjofirst;
+	if(jo < 0)
+	  donejo = 1;
+
+	lo = rmlofirst;
+	if(lo < 0)
+	  donelo = 1;
+
+	hi = rmhifirst;
+	if(hi < 0)
+	  donehi = 1;
+
+	while(!(donejo && donelo && donehi)){
+	    REV_MSG_S *pjo, *plo, *phi, *p;
+
+	    if(!donejo)
+	      pjo = &rmjoarray[jo];
+	    else
+	      pjo = NULL;
+
+	    if(!donelo)
+	      plo = &rmloarray[lo];
+	    else
+	      plo = NULL;
+
+	    if(!donehi)
+	      phi = &rmhiarray[hi];
+	    else
+	      phi = NULL;
+
+	    if(pjo && (!plo || pjo->seq <= plo->seq)
+	       && (!phi || pjo->seq <= phi->seq))
+	      rmcat = Jo;
+	    else if(plo && (!phi || plo->seq <= phi->seq))
+	      rmcat = Lo;
+	    else if(phi)
+	      rmcat = Hi;
+	    else
+	      rmcat = No;
+
+	    if(rmcat == Jo){
+		p = pjo;
+		if(jo == rmjofirst &&
+		   (((rmjolast + 1) % RMJLEN) == rmjofirst) &&
+       fputs("*** Level -1 entries prior to this are deleted", dfile) == EOF)
+		  break;
+	    }
+	    else if(rmcat == Lo){
+		p = plo;
+		if(lo == rmlofirst &&
+		   (((rmlolast + 1) % RMLLEN) == rmlofirst) &&
+       fputs("*** Level 0-4 entries prior to this are deleted", dfile) == EOF)
+		  break;
+	    }
+	    else if(rmcat == Hi){
+		p = phi;
+		if(hi == rmhifirst &&
+		   (((rmhilast + 1) % RMHLEN) == rmhifirst) &&
+       fputs("*** Level 5-9 entries prior to this are deleted", dfile) == EOF)
+		  break;
+	    }
+	    else if(rmcat == No){
+		p = NULL;
+	    }
+
+	    if(p){
+		if(p->timestamp && p->timestamp[0]
+		   && (fputs(p->timestamp, dfile) == EOF
+		       || fputs(": ", dfile) == EOF))
+		  break;
+
+		if(p->message && p->message[0]
+		   && (fputs(p->message, dfile) == EOF
+		       || fputs("\n", dfile) == EOF))
+		  break;
+	    }
+
+	    switch(rmcat){
+	      case Jo:
+		if(jo == rmjolast)
+		  donejo++;
+		else
+		  jo = (jo + 1) % RMJLEN;
+
+		break;
+
+	      case Lo:
+		if(lo == rmlolast)
+		  donelo++;
+		else
+		  lo = (lo + 1) % RMLLEN;
+
+		break;
+
+	      case Hi:
+		if(hi == rmhilast)
+		  donehi++;
+		else
+		  hi = (hi + 1) % RMHLEN;
+
+		break;
+
+	      default:
+		donejo++;
+		donelo++;
+		donehi++;
+		break;
+	    }
+	}
+    }
+}
+#endif /* DEBUG */
+
+
 /*----------------------------------------------------------------------
      Add a message to the circular status message review buffer
 
@@ -1149,11 +1406,8 @@ add_review_message(message, level)
     char *message;
     int   level;
 {
-    REV_MSG_S *new_message;
-    char      *p, *q;
-    static size_t space_used = 0;
-    size_t space_available = (ps_global->debugmem > 0) ? ps_global->debugmem
-						       : 50000;
+    int   next_is_continuation = 0, cur_is_continuation = 0;
+    char *p, *q;
 
     if(not_right_now || !(message && *message))
       return;
@@ -1163,203 +1417,86 @@ add_review_message(message, level)
      * by hand and make them separate messages.
      */
     not_right_now = 1;
-    for(p = message; *p; p = (*q) ? q+1 : q){
-	for(q = p; *q && *q != '\n'; q++)
+    for(p = message; *p; p = (*q && !next_is_continuation) ? q+1 : q){
+	for(q = p; *q && *q != '\n' && (q-p) < RMMSGLEN; q++)
 	  ;
 
 	if(p == q)
 	  continue;
 
-	new_message = (REV_MSG_S *) fs_get(sizeof(*new_message));
-	memset(new_message, 0, sizeof(*new_message));
+	cur_is_continuation = next_is_continuation;
 
-	new_message->message = (char *)fs_get((q-p+1) * sizeof(char));
-	strncpy(new_message->message, p, q-p);
-	new_message->message[q-p] = '\0';
-	new_message->level   = level;
+	if((q-p) == RMMSGLEN && *q && *q != '\n')
+	  next_is_continuation = 1;
+	else
+	  next_is_continuation = 0;
+
+	if(level < 0){
+	    if(rmjofirst < 0){
+		rmjofirst = 0;
+		rmjolast  = 0;
+	    }
+	    else{
+		rmjolast = (rmjolast + 1) % RMJLEN;
+		if(rmjolast == rmjofirst)
+		  rmjofirst = (rmjofirst + 1) % RMJLEN;
+	    }
+
+	    rmjoarray[rmjolast].level = (short) level;
+	    rmjoarray[rmjolast].seq   = rmseq++;
+	    rmjoarray[rmjolast].continuation = cur_is_continuation ? 1 : 0;
+	    memset(rmjoarray[rmjolast].message, 0, (RMMSGLEN+1)*sizeof(char));
+	    strncpy(rmjoarray[rmjolast].message, p, min(q-p,RMMSGLEN));
 #ifdef DEBUG
-	new_message->timestamp = cpystr(debug_time(0,1));
+	    memset(rmjoarray[rmjolast].timestamp, 0, (RMTIMLEN+1)*sizeof(char));
+	    strncpy(rmjoarray[rmjolast].timestamp, debug_time(0,1), RMTIMLEN);
 #endif
-	
-	space_used += sizeof(*new_message) + (q-p+1) * sizeof(char) +
-		(new_message->timestamp ? strlen(new_message->timestamp)+1 : 0);
-	
-	if(!latest)
-	  new_message->next = new_message;
-	else{
-	    new_message->seq  = latest->seq + 1;
-	    new_message->next = latest->next;
-	    latest->next      = new_message;
 	}
+	else if(level <= 4){
+	    if(rmlofirst < 0){
+		rmlofirst = 0;
+		rmlolast  = 0;
+	    }
+	    else{
+		rmlolast = (rmlolast + 1) % RMLLEN;
+		if(rmlolast == rmlofirst)
+		  rmlofirst = (rmlofirst + 1) % RMLLEN;
+	    }
 
-	latest = new_message;
-	if(space_used > space_available)
-	  prune_review_messages(&space_used, (space_available/10)*9);
+	    rmloarray[rmlolast].level = (short) level;
+	    rmloarray[rmlolast].seq   = rmseq++;
+	    rmloarray[rmlolast].continuation = cur_is_continuation ? 1 : 0;
+	    memset(rmloarray[rmlolast].message, 0, (RMMSGLEN+1)*sizeof(char));
+	    strncpy(rmloarray[rmlolast].message, p, min(q-p,RMMSGLEN));
+#ifdef DEBUG
+	    memset(rmloarray[rmlolast].timestamp, 0, (RMTIMLEN+1)*sizeof(char));
+	    strncpy(rmloarray[rmlolast].timestamp, debug_time(0,1), RMTIMLEN);
+#endif
+	}
+	else{
+	    if(rmhifirst < 0){
+		rmhifirst = 0;
+		rmhilast  = 0;
+	    }
+	    else{
+		rmhilast = (rmhilast + 1) % RMHLEN;
+		if(rmhilast == rmhifirst)
+		  rmhifirst = (rmhifirst + 1) % RMHLEN;
+	    }
+
+	    rmhiarray[rmhilast].level = (short) level;
+	    rmhiarray[rmhilast].seq   = rmseq++;
+	    rmhiarray[rmhilast].continuation = cur_is_continuation ? 1 : 0;
+	    memset(rmhiarray[rmhilast].message, 0, (RMMSGLEN+1)*sizeof(char));
+	    strncpy(rmhiarray[rmhilast].message, p, min(q-p,RMMSGLEN));
+#ifdef DEBUG
+	    memset(rmhiarray[rmhilast].timestamp, 0, (RMTIMLEN+1)*sizeof(char));
+	    strncpy(rmhiarray[rmhilast].timestamp, debug_time(0,1), RMTIMLEN);
+#endif
+	}
     }
 
     not_right_now = 0;
-}
-
-
-typedef struct _steps {
-    int sixteenths;
-    int level;
-}STEP_S;
-
-static STEP_S steps[] = {
-    {4, 9},
-    {8, 9},
-    {4, 7},
-    {8, 7},
-    {4, 5},
-    {8, 5},
-    {4, 3},
-    {8, 3},
-    {4, 1},
-    {8, 1},
-    {12, 9},
-    {12, 7},
-    {12, 5},
-    {12, 3},
-    {12, 1},
-    {4, 0},
-    {8, 0},
-    {12, 0},
-    {14, 9},
-    {14, 0},
-    {15, 9},
-    {16, 9},
-    {16, 5},
-    {16, 3},
-    {16, 1},
-    {16, 0},
-    {0, 0}
-};
-
-void
-prune_review_messages(used, pruneto)
-    size_t *used;
-    size_t  pruneto;
-{
-    unsigned long highest; 
-    int           i;
-    REV_MSG_S    *new_message;
-
-    if(!used)
-      return;
-
-    highest = latest->seq;
-
-    for(i = 0; *used > pruneto && steps[i].sixteenths; i++)
-      *used -= trim_review(steps[i].sixteenths * (highest/16), steps[i].level);
-    
-    /* insert informative message if we've trimmed anything */
-    if(firstpruned_marker && latest && firstpruned_marker != latest->next){
-	new_message = (REV_MSG_S *) fs_get(sizeof(*new_message));
-	memset(new_message, 0, sizeof(*new_message));
-
-	new_message->message = cpystr(PRUNEWARN);
-#ifdef DEBUG
-	new_message->timestamp = cpystr(debug_time(0,1));
-#endif
-	new_message->seq         = firstpruned_marker->seq;
-
-	new_message->next        = firstpruned_marker->next;
-	firstpruned_marker->next = new_message;
-	firstpruned_marker       = new_message;
-    }
-}
-
-
-/*
- * Trim level 'level' and above messages out of messages with sequence
- * numbers up through 'up_through'.
- * Returns space recovered.
- */
-size_t
-trim_review(up_through, level)
-    unsigned long up_through;
-    int           level;
-{
-    REV_MSG_S *p, *q;
-    size_t     space = 0;
-    int        found_firstpruned_marker = 0;
-
-    if(!latest)
-      return(0);
-
-    p = latest;
-    while((q=p->next) && q != latest && q->seq <= up_through){
-	if(!found_firstpruned_marker && q == firstpruned_marker){
-	    found_firstpruned_marker++;
-
-	    /* remove the warning message if it is here */
-	    if(q->message && !strcmp(q->message, PRUNEWARN)){
-		if(q->message)
-		  fs_give((void **) &q->message);
-		if(q->timestamp)
-		  fs_give((void **) &q->timestamp);
-		
-		p->next = q->next;
-		firstpruned_marker = p;
-		fs_give((void **) &q);
-		q = NULL;
-	    }
-	}
-
-	if(q){
-	    if(q->level >= level){	/* remove this message */
-		space += sizeof(*q) + (q->message ? strlen(q->message)+1 : 0) +
-			 (q->timestamp ? strlen(q->timestamp)+1 : 0);
-		if(q->message)
-		  fs_give((void **) &q->message);
-		if(q->timestamp)
-		  fs_give((void **) &q->timestamp);
-		
-		p->next = q->next;
-
-		/* mark where we started pruning */
-		if(!firstpruned_marker || found_firstpruned_marker){
-		    firstpruned_marker = p;
-		    found_firstpruned_marker++;
-		}
-
-		fs_give((void **) &q);
-	    }
-	    else
-	      p = p->next;
-	}
-    }
-
-    return(space);
-}
-
-
-/*----------------------------------------------------------------------
-    Free resources associated with the status message review list
-
-    Args: 
-  -----*/
-void
-end_status_review()
-{
-    REV_MSG_S  *p, *next, *marker;
-
-    if(latest){
-	marker = next = latest->next;
-	do{
-	    p = next;
-	    next = next->next;
-	    if(p->message)
-	      fs_give((void **)&p->message);
-	    if(p->timestamp)
-	      fs_give((void **)&p->timestamp);
-	    
-	    fs_give((void **)&p);
-	}while(next != marker);
-    }
-
-    latest = NULL;
 }
 
 
@@ -1589,10 +1726,10 @@ gripe_newbody(ps, body, msgno, flags)
 					 NULL, NULL,
 					 PIPE_READ | PIPE_STDERR | PIPE_USER,
 					 0)){
-		    gf_set_readc(&gc, (void *)syspipe->in.f, 0, FileStar);
+		    gf_set_readc(&gc, (void *)syspipe, 0, PipeStar);
 		    gf_filter_init();
 		    error = gf_pipe(gc, pc);
-		    (void) close_system_pipe(&syspipe);
+		    (void) close_system_pipe(&syspipe, NULL, 0);
 		}
 		else
 		  error = "executing config collector";
@@ -1637,7 +1774,8 @@ gripe_newbody(ps, body, msgno, flags)
 		}
 
 		/* write the header */
-		if((p = mail_fetchheader(ps->mail_stream, msgno)) && *p)
+		if((p = mail_fetch_header(ps->mail_stream, msgno, NIL, NIL,
+					  NIL, FT_PEEK)) && *p)
 		  so_puts(store, p);
 		else
 		  return(-1);

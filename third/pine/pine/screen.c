@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: screen.c,v 1.1.1.2 2003-02-12 08:00:55 ghudson Exp $";
+static char rcsid[] = "$Id: screen.c,v 1.1.1.3 2005-01-26 17:56:09 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: screen.c,v 1.1.1.2 2003-02-12 08:00:55 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -61,6 +61,7 @@ char *percentage PROTO((long, long, int));
 void  output_keymenu PROTO((struct key_menu *, bitmap_t, int, int));
 int   digit_count PROTO((long));
 void  output_titlebar PROTO((TITLE_S *));
+char  sort_letter PROTO((SortOrder));
 #ifdef	MOUSE
 void  print_inverted_label PROTO((int, MENUITEM *));
 #endif
@@ -138,10 +139,12 @@ int		 row,
     off    	  = km->which * 12;
     max_column    = ps_global->ttyo->screen_cols;
 
-    if(ps_global->ttyo->screen_rows < 4 || max_column <= 0){
+    if((ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 0
+       || max_column <= 0){
 	keymenu_is_dirty = 1;
 	return;
     }
+
 
     real_row = row > 0 ? row : ps_global->ttyo->screen_rows + row;
 
@@ -950,7 +953,7 @@ redraw_keymenu()
 #define	MS_NEW			(0x02)
 #define	MS_ANS			(0x04)
 
-#define	STATUS_BITS(X)	(!(X) ? 0					      \
+#define	STATUS_BITS(X)	(!(X && (X)->valid) ? 0				      \
 			   : (X)->deleted ? MS_DEL			      \
 			     : (X)->answered ? MS_ANS			      \
 			       : (as.stream				      \
@@ -1010,9 +1013,12 @@ push_titlebar_state()
 void
 pop_titlebar_state()
 {
-    fs_give((void **)&(as.folder_name)); /* free malloc'd values */
-    fs_give((void **)&(as.context_name));
-    as = titlebar_stack;
+    /* guard against case where push pushed no state */
+    if(titlebar_stack.style != TitleBarNone){
+	fs_give((void **)&(as.folder_name)); /* free malloc'd values */
+	fs_give((void **)&(as.context_name));
+	as = titlebar_stack;
+    }
 }
 
 
@@ -1102,8 +1108,7 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
     as.style	     = style;
     as.title	     = title;
     as.stream	     = stream;
-    as.stream_status = (!as.stream || (as.stream == ps_global->mail_stream
-				       && ps_global->dead_stream))
+    as.stream_status = (!as.stream || (sp_dead_stream(as.stream)))
 			 ? Closed : as.stream->rdonly ? OnlyRead : Normal;
 
     if(color){
@@ -1162,8 +1167,9 @@ set_titlebar(title, stream, cntxt, folder, msgmap, display_on_screen, style,
 	long rawno;
 
 	if((rawno = mn_m2raw(msgmap, as.current_msg)) > 0L
-	   && !(mc = mail_elt(as.stream, rawno))->valid){
-	    mail_fetchflags(as.stream, long2string(rawno));
+	   && rawno <= as.stream->nmsgs
+	   && !((mc = mail_elt(as.stream, rawno)) && mc->valid)){
+	    pine_mail_fetch_flags(as.stream, long2string(rawno), NIL);
 	    mc = mail_elt(as.stream, rawno);
 	}
     }
@@ -1219,6 +1225,12 @@ output_titlebar(tc)
 {
     COLOR_PAIR *lastc = NULL, *newcolor;
 
+    if(ps_global->ttyo
+       && (ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 1){
+	titlebar_is_dirty = 1;
+	return;
+    }
+
     newcolor = tc ? &tc->color : NULL;
 
     if(newcolor)
@@ -1246,20 +1258,12 @@ output_titlebar(tc)
         is positioned two spaces from the right display edge
      3) "Title" which is of fixed length, and is centered if
         there's space
-     4) "Folder" whose existance depends on style and which can
+     4) "Folder" whose existence depends on style and which can
         have it's length adjusted (within limits) so it will
         equally share the space between 1) and 2) with the 
-        "Title".  The rule for existance is that in the
-        space between 1) and 2) there must be two spaces between
+        "Title".  The rule for existence is that in the
+        space between 1) and 2) there must be one space between
         3) and 4) AND at least 50% of 4) must be displayed.
-
-
- The rules for dislay are:
-     a) Show at least some portion of 3)
-     b) If no room for 1) and 3), 3)
-     c) If no room for 1), 2) and 3), show 1) and 2)
-     d) If no room for all and > 50% of 4), show 1), 2), and 3)
-     e) show 1), 2) 3), and some portion of 4)
 
    Returns - Formatted title bar 
  ----*/
@@ -1267,14 +1271,26 @@ TITLE_S *
 format_titlebar()
 {
     char    version[50], fold_tmp[MAXPATH], *titlebar_line,
-           *loc_label, *thd_label, *ss_string;
+           *loc_label, *thd_label, *ss_string, *fmt, sort[10];
     int     sc, tit_len, ver_len, loc_len, fold_len, num_len, ss_len, 
-            is_context;
+            is_context, avail, extra, l1, l2, s;
+    int     so;				/* include sort indicator "[A]" */
+
+    so = F_ON(F_SHOW_SORT, ps_global);
+
+#define LV 2	/* space between Left edge and Version, must be >= 2 */
+#define VT 3	/* space between Version and Title */
+#define TF 1	/* space between Title and Folder */
+#define FL 2	/* space between Folder and Location */
+#define LR 2	/* space between Location and Right edge, >= 2 */
+#define TOT (LV+VT+TF+FL+LR)
+/* half of n but round up */
+#define HRU(n) (((n) <= 0) ? 0 : (((n)%2) ? ((n)+1)/2 : (n)/2))
 
     titlebar_line = as.titlecontainer.titlebar_line;
 
     /* blank the line */
-    memset((void *)titlebar_line, ' ', MAX_SCREEN_COLS*sizeof(char));
+    memset((void *)titlebar_line, ' ', MAX_SCREEN_COLS * sizeof(char));
     sc = min(ps_global->ttyo->screen_cols, MAX_SCREEN_COLS);
     titlebar_line[sc] = '\0';
 
@@ -1284,7 +1300,7 @@ format_titlebar()
     as.percent_column = -1;
     as.page_column    = -1;
     is_context        = strlen(as.context_name);
-    sprintf(version, "PINE %s", pine_version); 
+    sprintf(version, "PINE %.40s", pine_version); 
     ss_string         = as.stream_status == Closed ? "(CLOSED)" :
                         (as.stream_status == OnlyRead
 			 && !IS_NEWS(as.stream))
@@ -1295,7 +1311,7 @@ format_titlebar()
     ver_len = strlen(version);		/* fixed version field width */
 
     /* if only room for title we can get out early... */
-    if(tit_len >= sc || (tit_len + ver_len + 6) > sc){
+    if(tit_len + ver_len + LV + VT + LR > sc){
 	int i = max(0, sc - tit_len)/2;
 	strncpy(titlebar_line + i, as.title, min(sc, tit_len));
 	titlebar_is_dirty = 0;
@@ -1318,7 +1334,8 @@ format_titlebar()
     if(!mn_get_total(as.msgmap)){
 	sprintf(tmp_20k_buf, "No %ss", loc_label);
 	loc_len += 4;
-    }else{
+    }
+    else{
 	switch(as.style){
 	  case FolderName :			/* "x,xxx <loc_label>s" */
 	    loc_len += digit_count(mn_get_total(as.msgmap)) + 3;
@@ -1328,28 +1345,29 @@ format_titlebar()
 	  case MessageNumber :	       	/* "<loc_label> xxx of xxx DEL"  */
 	    num_len	     = digit_count(mn_get_total(as.msgmap));
 	    loc_len	    += (2 * num_len) + 9;    /* add spaces and "DEL" */
-	    as.cur_mess_col  = sc - (2 * num_len) - 10;
+	    as.cur_mess_col  = sc - (2 * num_len) - (8+LR);
 	    as.del_column    = as.cur_mess_col + num_len 
 	      + digit_count(as.current_msg) + 5;
 	    sprintf(tmp_20k_buf, "%s %s of %s %s", loc_label,
-		    strcpy(tmp_20k_buf + 1000, comatose(as.current_msg)),
-		    strcpy(tmp_20k_buf + 1500, comatose(mn_get_total(as.msgmap))),
+		    strcpy(tmp_20k_buf+1000, comatose(as.current_msg)),
+		    strcpy(tmp_20k_buf+1500, comatose(mn_get_total(as.msgmap))),
 		    BAR_STATUS(as.msg_state));
 	    break;
 	  case ThrdIndex :	       	/* "<loc_label> xxx of xxx"  */
 	    num_len	     = digit_count(as.total_lines);
 	    loc_len	    += (2 * num_len) + 5;	/* add spaces */
-	    as.cur_mess_col  = sc - (2 * num_len) - 6;
+	    as.cur_mess_col  = sc - (2 * num_len) - (4+LR);
 	    sprintf(tmp_20k_buf, "%s %s of %s", loc_label,
 		    strcpy(tmp_20k_buf + 1000, comatose(as.current_thrd)),
 		    strcpy(tmp_20k_buf + 1500, comatose(as.total_lines)));
 	    break;
-	  case ThrdMsgNum :	       	/* "<loc_label> xxx of Thd xxx DEL"  */
-	    num_len	     = digit_count(mn_get_total(as.msgmap));
-	    loc_len	    += (2 * num_len) + 10 + strlen(thd_label);
-	    as.cur_mess_col  = sc - (2 * num_len) - 11 - strlen(thd_label);
-	    as.del_column    = as.cur_mess_col + num_len 
-	      + digit_count(as.current_thrd) + 6 + strlen(thd_label);
+	  case ThrdMsgNum :	       	/* "<loc_label> xxx in Thd xxx DEL"  */
+	    l1   	     = digit_count(mn_get_total(as.msgmap));
+	    l2 	             = digit_count(as.current_thrd);
+	    loc_len	    += l1 + l2 + 10 + strlen(thd_label);
+	    as.cur_mess_col  = sc - l1 - l2 - (9+LR) - strlen(thd_label);
+	    as.del_column    = as.cur_mess_col + digit_count(as.current_msg)
+				  + l2 + 6 + strlen(thd_label);
 	    sprintf(tmp_20k_buf, "%s %s in %s %s %s", loc_label,
 		    strcpy(tmp_20k_buf + 1000, comatose(as.current_msg)),
 		    thd_label,
@@ -1359,7 +1377,7 @@ format_titlebar()
 	  case MsgTextPercent :		/* "<loc_label> xxx of xxx xx% DEL" */
 	    num_len	       = digit_count(mn_get_total(as.msgmap));
 	    loc_len	      += (2 * num_len) + 13;
-	    as.cur_mess_col    = sc - (2 * num_len) - 14;
+	    as.cur_mess_col    = sc - (2 * num_len) - (12+LR);
 	    as.percent_column  = as.cur_mess_col + num_len 
 	      + digit_count(as.current_msg) + 5;
 	    as.del_column  = as.percent_column + 4;
@@ -1369,10 +1387,10 @@ format_titlebar()
 		    percentage(as.current_line, as.total_lines, 1),
 		    BAR_STATUS(as.msg_state));
 	    break;
-	  case ThrdMsgPercent :	  /* "<loc_label> xxx of Thrd xxx xx% DEL"  */
+	  case ThrdMsgPercent :	  /* "<loc_label> xxx in Thd xxx xx% DEL"  */
 	    num_len	       = digit_count(mn_get_total(as.msgmap));
 	    loc_len	    += (2 * num_len) + 14 + strlen(thd_label);
-	    as.cur_mess_col  = sc - (2 * num_len) - 15 - strlen(thd_label);
+	    as.cur_mess_col  = sc - (2 * num_len) - (13+LR) - strlen(thd_label);
 	    as.percent_column    = as.cur_mess_col + digit_count(as.current_msg)
 	      + digit_count(as.current_thrd) + 6 + strlen(thd_label);
 	    as.del_column  = as.percent_column + 4;
@@ -1385,8 +1403,9 @@ format_titlebar()
 	    break;
 	  case TextPercent :
 	    /* NOTE: no fold_tmp setup below for TextPercent style */
-	  case FileTextPercent :
-	    as.page_column = sc - (14 + 2*(num_len = digit_count(as.total_lines)));
+	  case FileTextPercent :	/* "Line xxx of xxx xx%    " */
+	    num_len = digit_count(as.total_lines);
+	    as.page_column = sc - ((12+LR) + 2*num_len);
 	    loc_len        = 17 + 2*num_len;
 	    sprintf(tmp_20k_buf, "Line %*ld of %*ld %s    ",
 		    num_len, as.current_line, 
@@ -1397,13 +1416,13 @@ format_titlebar()
     }
 
     /* at least the version will fit */
-    strncpy(titlebar_line + 2, version, ver_len);
+    strncpy(titlebar_line + LV, version, ver_len);
 
     titlebar_is_dirty = 0;
 
     /* if no room for location string, bail early? */
-    if(ver_len + tit_len + loc_len + 10 > sc){
-	strncpy((titlebar_line + sc) - (tit_len + 2), as.title, tit_len);
+    if(ver_len + tit_len + loc_len + LV+VT+TF+LR > sc){
+	strncpy((titlebar_line + sc) - (tit_len + LR), as.title, tit_len);
         as.del_column = as.cur_mess_col = as.percent_column
 	  = as.page_column = -1;
 	return(&as.titlecontainer);
@@ -1413,61 +1432,100 @@ format_titlebar()
     fold_tmp[0] = '\0';
     if(as.style == FileTextPercent || as.style == TextPercent){
 	if(as.style == FileTextPercent){
-	    char *fmt    = "File: %s%s";
-	    int   avail  = sc - (ver_len + tit_len + loc_len + 10);
-	    fold_len     = strlen(as.folder_name);
-	    if(fold_len + 6 < avail) 	/* all of folder fit? */
+	    fmt      = "File: %s%s";
+	    extra    = strlen("File: ");
+	    avail    = sc - (ver_len + tit_len + loc_len + TOT);
+	    fold_len = strlen(as.folder_name);
+	    if(fold_len + extra <= avail) 	/* all of folder fit? */
 	      sprintf(fold_tmp, fmt, "", as.folder_name);
-	    else if((fold_len/2) + 9 < avail)
+	    else if(HRU(fold_len) + extra+3 <= avail)
 	      sprintf(fold_tmp, fmt, "...",
-		      as.folder_name + fold_len - (avail - 9));
+		      as.folder_name + fold_len - (avail - (extra+3)));
 	}
 	/* else leave folder/file name blank */
     }
     else{
-	int    ct_len, avail;
+	int    ct_len;
 	NETMBX mb;
 
-	avail	 = sc - (ver_len + tit_len + loc_len + 10);
+	avail    = sc - (ver_len + tit_len + loc_len + TOT);
 	fold_len = strlen(as.folder_name);
+
+	if(so){
+	    SortOrder current_sort;
+	    int       current_rev;
+	    char      let;
+
+	    current_sort = mn_get_sort(ps_global->msgmap);
+	    current_rev  = mn_get_revsort(ps_global->msgmap);
+
+	    /* turn current_sort into a letter */
+	    let = sort_letter(current_sort);
+	    if(let == 'A' && current_rev){
+		let = 'R';
+		current_rev = 0;
+	    }
+
+	    sprintf(sort, "[%s%c] ", current_rev ? "R" : "", let);
+	}
+	else
+	  sort[0] = '\0';
+
+	s = strlen(sort);
+
 	if(is_context
 	  && as.stream_status != Closed
 	  && (ct_len = strlen(as.context_name))){
-	    char *fmt;
-	    int  extra;
 
-	    fmt = "<%*.*s> %s%s"; extra = 3;
+	    fmt   = "%-*s<%*.*s> %s%s";
+	    extra = 3;		/* length from "<" ">" and SPACE */
 
-	    /*
-	     * below are other formats we'd considered
-	     *
-	     * fmt = "%s - %s%s"; extra = 3;
-	     * fmt = "%s[%s%s]"; extra = 2;
-	     * fmt = "<%s>%s%s"; extra = 2;
-	     * fmt = "%s: %s%s"; extra = 2;
-	     */
-	    if(ct_len + fold_len + ss_len + extra < avail)
-	      sprintf(fold_tmp, fmt, ct_len, ct_len, as.context_name,
-		      as.folder_name, ss_string);
-	    else if((ct_len/2) + fold_len + ss_len + extra < avail)
+	    if(ct_len + fold_len + ss_len + extra + s <= avail)
 	      sprintf(fold_tmp, fmt,
-		      ct_len - (ct_len-(avail-(fold_len+ss_len+extra))),
-		      ct_len - (ct_len-(avail-(fold_len+ss_len+extra))),
+		      s ? (avail - (ct_len + fold_len + ss_len + extra)) : 0,
+		      sort, ct_len, ct_len, as.context_name,
+		      as.folder_name, ss_string);
+	    else if(ct_len + fold_len + ss_len + extra <= avail)
+	      sprintf(fold_tmp, fmt,
+		      0, "",
+		      ct_len, ct_len, as.context_name,
+		      as.folder_name, ss_string);
+	    else if(HRU(ct_len) + fold_len + ss_len + extra <= avail)
+	      sprintf(fold_tmp, fmt,
+		      0, "",
+		      avail-(fold_len+ss_len+extra),
+		      avail-(fold_len+ss_len+extra),
 		      as.context_name,
 		      as.folder_name, ss_string);
-	    else if((ct_len/2) + (fold_len/2) + ss_len + extra < avail)
-	      sprintf(fold_tmp, fmt, (ct_len/2), (ct_len/2), as.context_name,
-		   as.folder_name+(fold_len-(avail-((ct_len/2)+ss_len+extra))),
+	    else if(HRU(ct_len) + HRU(fold_len) + ss_len + extra <= avail)
+	      sprintf(fold_tmp, fmt, 0, "",
+		      HRU(ct_len), HRU(ct_len), as.context_name,
+		   as.folder_name+(fold_len-(avail-(HRU(ct_len)+ss_len+extra))),
 		      ss_string);
 	}
 	else{
-	    char *fmt = "Folder: %s%s";
-	    if(fold_len + ss_len + 8 < avail) 	/* all of folder fit? */
-	      sprintf(fold_tmp, fmt, as.folder_name, ss_string);
-	    else if((fold_len/2) + ss_len + 8 < avail)
-	      sprintf(fold_tmp, fmt, 
-		      as.folder_name + fold_len - (avail - (8 + ss_len)),
-		      ss_string);
+	    fmt  = "%-*sFolder: %s%s";
+	    extra = strlen("Folder: ");
+	    if(fold_len + ss_len + extra + s <= avail)
+	      sprintf(fold_tmp, fmt,
+		      s ? (avail - (fold_len + ss_len + extra)) : 0,
+		      sort, as.folder_name, ss_string);
+	    else{
+		fmt   = "%-*s%s%s";
+		if(fold_len + ss_len + s <= avail)
+		  sprintf(fold_tmp, fmt,
+			  s ? (avail - (fold_len + ss_len)) : 0,
+			  sort, as.folder_name, ss_string);
+		else if(fold_len + ss_len <= avail)
+		  sprintf(fold_tmp, fmt, 0, "", as.folder_name, ss_string);
+		else if(HRU(fold_len) + ss_len <= avail && fold_len/2 >= 3){
+		    fmt = "...%s%s";
+		    sprintf(fold_tmp, fmt,
+			   as.folder_name + fold_len - (avail - (3+ss_len)),
+			   ss_string);
+		}
+		/* else leave it out */
+	    }
 	}
 
 	if(as.stream
@@ -1479,14 +1537,32 @@ format_titlebar()
     
     /* write title, location and, optionally, the folder name */
     fold_len = strlen(fold_tmp);
-    strncpy(titlebar_line + ver_len + 5, as.title, tit_len);
-    strncpy((titlebar_line + sc) - (loc_len + 2), tmp_20k_buf, 
+    strncpy(titlebar_line + ver_len + LV+VT, as.title, tit_len);
+    strncpy((titlebar_line + sc) - (loc_len + LR), tmp_20k_buf, 
 	    strlen(tmp_20k_buf));
     if(fold_len)
-      strncpy((titlebar_line + sc) - (loc_len + fold_len + 4), fold_tmp,
+      strncpy((titlebar_line + sc) - (loc_len + fold_len + FL+LR), fold_tmp,
 	      fold_len);
 
     return(&as.titlecontainer);
+}
+
+
+char
+sort_letter(sort)
+    SortOrder sort;
+{
+    char let = 'A', *p;
+
+    if((p = sort_name(sort)) != NULL && *p){
+	while(*(p+1) && islower((unsigned char) *p))
+	  p++;
+	
+	if(*p)
+	  let = *p;
+    }
+
+    return(let);
 }
 
 
@@ -1506,6 +1582,12 @@ update_titlebar_message()
     long curnum = mn_get_cur(as.msgmap), maxnum;
     long oldnum;
     PINETHRD_S *thrd = NULL;
+
+    if(ps_global->ttyo
+       && (ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 1){
+	titlebar_is_dirty = 1;
+	return;
+    }
 
     if(as.style == ThrdIndex){
 	unsigned long rawno;
@@ -1597,9 +1679,16 @@ update_titlebar_message()
 int
 update_titlebar_status()
 {
+    long rawno;
     MESSAGECACHE *mc;
     COLOR_PAIR *lastc = NULL, *titlecolor;
     
+    if(ps_global->ttyo
+       && (ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 1){
+	titlebar_is_dirty = 1;
+	return(0);
+    }
+
     if(!as.stream || as.current_msg <= 0L || as.del_column < 0)
       return(1);
 
@@ -1608,9 +1697,11 @@ update_titlebar_status()
 	return(1);
     }
 
-    mc = mail_elt(as.stream, mn_m2raw(as.msgmap, as.current_msg));
+    mc = ((rawno = mn_m2raw(as.msgmap, as.current_msg)) > 0L
+	  && rawno <= as.stream->nmsgs)
+	    ? mail_elt(as.stream, rawno) : NULL;
 
-    if(!mc->valid)
+    if(!(mc && mc->valid))
       return(0);			/* indeterminate */
 
     if(mc->deleted){			/* deleted takes precedence */
@@ -1667,6 +1758,12 @@ update_titlebar_percent(new_line_number)
     if(as.percent_column < 0 || new_line_number == as.current_line)
       return;
 
+    if(ps_global->ttyo
+       && (ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 1){
+	titlebar_is_dirty = 1;
+	return;
+    }
+
     as.current_line = new_line_number;
 
     titlecolor = &as.titlecontainer.color;
@@ -1702,6 +1799,12 @@ update_titlebar_lpercent(new_line_number)
 
     if(as.page_column < 0 || new_line_number == as.current_line)
       return;
+
+    if(ps_global->ttyo
+       && (ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global)) < 1){
+	titlebar_is_dirty = 1;
+	return;
+    }
 
     as.current_line = new_line_number;
 

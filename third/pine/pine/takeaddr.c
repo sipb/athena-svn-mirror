@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp $";
+static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.3 2005-01-26 17:56:15 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: takeaddr.c,v 1.1.1.2 2003-02-12 08:01:30 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -66,9 +66,9 @@ typedef struct takeaddr_line {
 } TA_S;
 
 typedef struct takeaddress_screen {
-    TakeAddrScreenMode mode;
-    TA_S              *current,
-                      *top_line;
+    ScreenMode mode;
+    TA_S      *current,
+              *top_line;
 } TA_SCREEN_S;
 
 static TA_SCREEN_S *ta_screen;
@@ -129,7 +129,7 @@ int            take_without_edit PROTO((TA_S *, int, int,
 					    TA_STATE_S **, char *));
 void           takeaddr_bypass PROTO((struct pine *, TA_S *, TA_STATE_S **));
 int            takeaddr_screen PROTO((struct pine *, TA_S *, int,
-				    TakeAddrScreenMode, TA_STATE_S **, char *));
+				      ScreenMode, TA_STATE_S **, char *));
 void           takeaddr_screen_redrawer_list PROTO((void));
 void           takeaddr_screen_redrawer_single PROTO((void));
 int            update_takeaddr_screen PROTO((struct pine *, TA_S *,
@@ -543,6 +543,9 @@ take_to_addrbooks(new_entries, nick, fullname, addr, fcc, comment, command_line,
     size_t        tot_size, new_size, old_size;
     Tag           old_tag;
     char         *tmp_a_string;
+    char         *simple_a = NULL;
+    ADDRESS      *a = NULL;
+
 
     dprint(5, (debugfile, "-- take_to_addrbooks --\n"));
 
@@ -580,9 +583,8 @@ take_to_addrbooks(new_entries, nick, fullname, addr, fcc, comment, command_line,
     exist_nick[0]   = '\0';
 
     if(addr){
-	char    *simple_a = NULL;
-	ADDRESS *a = NULL;
-
+	simple_a = NULL;
+	a = NULL;
 	/* rfc822_parse_adrlist feels free to destroy input so send copy */
 	tmp_a_string = cpystr(addr);
 	rfc822_parse_adrlist(&a, tmp_a_string, fakedomain);
@@ -898,6 +900,30 @@ get_nick:
 
     abe_copy->addr.list[tot_size] = NULL;
 
+    if(F_ON(F_DISABLE_TAKE_FULLNAMES, ps_global)){
+	for(i = 0; abe_copy->addr.list[i]; i++){
+	    simple_a = NULL;
+	    a = NULL;
+	    tmp_a_string = cpystr(abe_copy->addr.list[i]);
+	    rfc822_parse_adrlist(&a, tmp_a_string, fakedomain);
+	    if(tmp_a_string)
+	      fs_give((void **) &tmp_a_string);
+
+	    if(a){
+		simple_a = simple_addr_string(a, tmp_20k_buf, SIZEOF_20KBUF);
+		mail_free_address(&a);
+	    }
+
+	    /* replace the old addr string with one with no full name */
+	    if(simple_a && *simple_a){
+		if(abe_copy->addr.list[i])
+		  fs_give((void **) &abe_copy->addr.list[i]);
+
+		abe_copy->addr.list[i] = cpystr(simple_a);
+	    }
+	}
+    }
+
     edit_entry(abook, abe_copy, (a_c_arg_t)entry_num, old_tag, 0, NULL, cmd);
 
     /* free copy */
@@ -1211,7 +1237,7 @@ takeaddr_screen(ps, ta_list, how_many_selected, mode, tas, command)
     struct pine       *ps;
     TA_S              *ta_list;
     int                how_many_selected;
-    TakeAddrScreenMode mode;
+    ScreenMode         mode;
     TA_STATE_S       **tas;
     char              *command;
 {
@@ -2581,8 +2607,8 @@ cmd_take_addr(ps, msgmap, agg)
      */
     added = 0;
     for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap)){
-	env = mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
-				  &body);
+	env = pine_mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
+				       &body);
 	if(!env){
 	    q_status_message(SM_ORDER | SM_DING, 3, 4,
 	       "Can't take address into address book. Error accessing folder");
@@ -2642,8 +2668,8 @@ cmd_take_addr(ps, msgmap, agg)
 	else
 	  body_h = NULL;
 
-	env = mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
-				  body_h);
+	env = pine_mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
+				       body_h);
 	if(!env){
 	    if(we_cancel)
 	      cancel_busy_alarm(-1);
@@ -2715,8 +2741,8 @@ cmd_take_addr(ps, msgmap, agg)
     for(i = mn_first_cur(msgmap); i > 0L; i = mn_next_cur(msgmap)){
 
 	body = NULL;
-	env = mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
-				  &body);
+	env = pine_mail_fetchstructure(ps->mail_stream, mn_m2raw(msgmap, i),
+				       &body);
 	if(env && body)
 	  added += grab_addrs_from_body(ps->mail_stream,
 				        mn_m2raw(msgmap, i),
@@ -4569,6 +4595,10 @@ detach_vcard_att(stream, msgno, body, partnum)
 }
 
 
+/* from eduardo chappa */
+#define ALLOWED_TYPE(t) (!strucmp((t), "plain") || !strucmp((t), "html") || \
+			 !strucmp((t), "enriched") || !strucmp((t), "richtext"))
+
 /*
  * Look for possible addresses in the first text part of a message for
  * use by TakeAddr command.
@@ -4594,12 +4624,12 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
      * If it is text/plain or it is multipart with a first part of text/plain,
      * we want to continue, else forget it.
      */
-    if(!((body->type == TYPETEXT && body->subtype &&
-		!strucmp(body->subtype, "plain"))
+    if(!((body->type == TYPETEXT && body->subtype
+	  && ALLOWED_TYPE(body->subtype))
 			      ||
          (body->type == TYPEMULTIPART && body->nested.part
-		&& body->nested.part->body.type == TYPETEXT
-		&& !strucmp(body->nested.part->body.subtype, "plain"))))
+	  && body->nested.part->body.type == TYPETEXT
+	  && ALLOWED_TYPE(body->nested.part->body.subtype))))
       return 0;
 
 #ifdef DOS
@@ -4623,70 +4653,16 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
     so_seek(so, 0L, 0);
 
     while(get_line_of_message(so, line, sizeof(line))){
-	char *at, *p, *next_p;
+	ADDRESS *addr;
+	char     save_end, *start, *tmp_a_string, *tmp_personal, *p;
+	int      n;
 
 	/* process each @ in the line */
-	for(p = (char *)line; at = strindex(p, '@'); p = next_p){
-	    ADDRESS *addr;
-	    char     save_end;
-	    char    *start,
-	            *end,
-		    *tmp_a_string,
-		    *tmp_personal;
+	for(p = (char *) line; start = mail_addr_scan(p, &n); p = start + n){
 
-	    next_p = at + 1;
-
-	    /* find start of address */
-	    start = at;
-	    while(start > p &&
-		  !(isspace((unsigned char)*(start-1)) || *(start-1) == ':'))
-	      start--;
-
-	    /* remove parens */
-	    if(*start == '(')
-	      start++;
-
-	    /* find end of address */
-	    end = at;
-	    while(*end != '\0' && !isspace((unsigned char)*end))
-	      end++;
-
-	    save_end = *end;
-	    *end = '\0';
-	    end--;
-
-	    /* remove matching quotes */
-	    if((*start == '"' && *end == '"') ||
-	       (*start == '\'' && *end == '\'')){
-		start++;
-		*(end + 1) = save_end;
-		save_end = *end;
-		*end = '\0';
-		end--;
-	    }
-	    
-	    /*
-	     * remove periods, commas, closing parens, question
-	     * marks, and exclamation marks
-	     */
-	    while(end > at &&
-		       (*end == '.' ||
-		        *end == ',' ||
-			*end == ')' ||
-			*end == '"' ||
-			*end == '\'' ||
-			*end == '!' ||
-			*end == '?')){
-		*(end + 1) = save_end;
-		save_end = *end;
-		*end = '\0';
-		end--;
-	    }
-
-	    end++;
 	    tmp_personal = NULL;
 
-	    if(*start == '<' && end > start && *(end - 1) == '>'){
+	    if(start > line && *(start-1) == '<' && *(start+n) == '>'){
 		int   words, in_quote;
 		char *fn_start;
 
@@ -4701,7 +4677,7 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 		 * Go back until we run into a character that probably
 		 * isn't a fullname character.
 		 */
-		fn_start = start;
+		fn_start = start-1;
 		in_quote = words = 0;
 		while(fn_start > p && (in_quote || !(*(fn_start-1) == ':'
 		      || *(fn_start-1) == ';' || *(fn_start-1) == ','))){
@@ -4724,7 +4700,7 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 
 		/* wasn't a real quote, forget about fullname */
 		if(in_quote)
-		  fn_start = start;
+		  fn_start = start-1;
 
 		/* Skip forward over the white space. */
 		while(isspace((unsigned char)*fn_start) || *fn_start == '(')
@@ -4734,7 +4710,7 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 		 * Make sure the first word is capitalized.
 		 * (just so it is more likely it is a name)
 		 */
-		while(fn_start < start &&
+		while(fn_start < start-1 &&
 		      !(isupper(*fn_start) || *fn_start == '"')){
 		    if(*fn_start == '('){
 			fn_start++;
@@ -4742,20 +4718,20 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 		    }
 
 		    /* skip forward over this word */
-		    while(fn_start < start && 
+		    while(fn_start < start-1 && 
 			  !isspace((unsigned char)*fn_start))
 		      fn_start++;
 
-		    while(fn_start < start && 
+		    while(fn_start < start-1 && 
 			  isspace((unsigned char)*fn_start))
 		      fn_start++;
 		}
 
-		if(fn_start < start){
+		if(fn_start < start-1){
 		    char *fn_end, save_fn_end;
 		    
 		    /* remove white space between fullname and start */
-		    fn_end = start;
+		    fn_end = start-1;
 		    while(fn_end > fn_start
 			  && isspace((unsigned char)*(fn_end - 1)))
 		      fn_end--;
@@ -4781,10 +4757,11 @@ grab_addrs_from_body(stream, msgno, body, ta_list)
 	    }
 
 
+	    save_end = *(start+n);
+	    *(start+n) = '\0';
 	    /* rfc822_parse_adrlist feels free to destroy input so send copy */
 	    tmp_a_string = cpystr(start);
-	    *end = save_end;
-	    next_p = end;
+	    *(start+n) = save_end;
 	    addr = NULL;
 	    ps_global->c_client_error[0] = '\0';
 	    rfc822_parse_adrlist(&addr, tmp_a_string, fakedomain);
@@ -5158,7 +5135,7 @@ save_ldap_entry(ps, e, save)
 	    a != NULL;
 	    a = ldap_next_attribute(e->ld, e->res, ber)){
 
-	    dprint(9, (debugfile, " %s", a));
+	    dprint(9, (debugfile, " %s", a ? a : "?"));
 	    if(strcmp(a, e->info_used->cnattr) == 0){
 		if(!cn)
 		  cn = ldap_get_values(e->ld, e->res, a);

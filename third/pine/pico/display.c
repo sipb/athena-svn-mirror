@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: display.c,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $";
+static char rcsid[] = "$Id: display.c,v 1.1.1.3 2005-01-26 17:54:31 ghudson Exp $";
 #endif
 /*
  * Program:	Display functions
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: display.c,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp 
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2001 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -758,8 +758,10 @@ out:
 
 	    if(lastflag&CFFILL){
 		menu_pico[UNCUT_KEY].label = "UnJustify";
-		emlwrite("Can now UnJustify!", NULL);
-		mpresf = FARAWAY;	/* remove this after next keystroke! */
+		if(!(lastflag&CFFLBF)){
+		    emlwrite("Can now UnJustify!", NULL);
+		    mpresf = FARAWAY;	/* remove this after next keystroke! */
+		}
 	    }
 	    else
 	      menu_pico[UNCUT_KEY].label = "UnCut Text";
@@ -767,6 +769,10 @@ out:
 	    wkeyhelp(menu_pico);
 	    sgarbk = FALSE;
         }
+    }
+    if(lastflag&CFFLBF){
+	emlwrite("Can now UnJustify!", NULL);
+	mpresf = FARAWAY;  /* remove this after next keystroke! */
     }
 
     /* Finally, update the hardware cursor and flush out buffers. */

@@ -6,18 +6,23 @@
 	needsterminal -- does this command want to take over the terminal?
   ----*/
 void
-exec_mailcap_cmd(cmd, image_file, needsterminal)
-char *cmd;
+exec_mailcap_cmd(mc_cmd, image_file, needsterminal)
+MCAP_CMD_S *mc_cmd;
 char *image_file;
 int   needsterminal;
 {
     char   *command = NULL,
 	   *result_file = NULL,
-	   *p;
+	   *p, *cmd;
     char  **r_file_h;
     PIPE_S *syspipe;
     int     mode;
 
+    /* no os-specific command handling */
+    if(mc_cmd)
+      cmd = mc_cmd->command;
+    else
+      return;
     p = command = (char *)fs_get((32 + strlen(cmd) + (2*strlen(image_file)))
 			     * sizeof(char));
     if(!needsterminal)  /* put in background if it doesn't need terminal */
@@ -31,7 +36,8 @@ int   needsterminal;
     }
     *p++ = '\n';
     *p   = '\0';
-    dprint(9, (debugfile, "exec_mailcap_cmd: command=%s\n", command));
+    dprint(9, (debugfile, "exec_mailcap_cmd: command=%s\n",
+	   command ? command : "?"));
 
     mode = PIPE_RESET;
     if(needsterminal == 1)
@@ -43,7 +49,7 @@ int   needsterminal;
     }
 
     if(syspipe = open_system_pipe(command, r_file_h, NULL, mode, 0)){
-	close_system_pipe(&syspipe);
+	close_system_pipe(&syspipe, NULL, 0);
 	if(needsterminal == 1)
 	  q_status_message(SM_ORDER, 0, 4, "VIEWER command completed");
 	else if(needsterminal == 2)
@@ -74,7 +80,32 @@ exec_mailcap_test_cmd(cmd)
     PIPE_S *syspipe;
 
     return((syspipe = open_system_pipe(cmd, NULL, NULL, PIPE_SILENT, 0))
-	     ? close_system_pipe(&syspipe) : -1);
+	     ? close_system_pipe(&syspipe, NULL, 0) : -1);
 }
 
+
+char *
+url_os_specified_browser(url)
+    char *url;
+{
+    /* do nothing here */
+    return(NULL);
+}
+
+/*
+ * Return a pretty command, on some OS's we might do something
+ * different than just display the command.
+ *
+ * free_ret - whether or not to free the return value
+ */
+char *
+execview_pretty_command(mc_cmd, free_ret)
+    MCAP_CMD_S *mc_cmd;
+    int        *free_ret;
+{
+    /* always pretty */
+    if(free_ret)
+      *free_ret = 0;
+    return(mc_cmd->command);
+}
 

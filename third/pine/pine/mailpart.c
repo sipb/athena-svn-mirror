@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailpart.c,v 1.1.1.4 2004-03-01 21:16:31 ghudson Exp $";
+static char rcsid[] = "$Id: mailpart.c,v 1.1.1.5 2005-01-26 17:56:29 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailpart.c,v 1.1.1.4 2004-03-01 21:16:31 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -104,7 +104,6 @@ typedef struct _trigger {
 
 static char	*display_filter;
 static TRGR_S	*df_trigger_list;
-
 
 /*
  * Data used to keep track of partial fetches...
@@ -223,15 +222,6 @@ INST_KEY_MENU(att_view_keymenu, att_view_keys);
 #define	ATV_FORWARD_KEY	23
 
 
-
-/*
- * useful macros
- */
-#define	MIME_MSG(t,s)	((t) == TYPEMESSAGE && (s) && !strucmp((s),"rfc822"))
-#define	MIME_DGST(t,s)	((t) == TYPEMULTIPART && (s) && !strucmp((s),"digest"))
-#define	MIME_MSG_A(a)	MIME_MSG((a)->body->type, (a)->body->subtype)
-#define	MIME_DGST_A(a)	MIME_DGST((a)->body->type, (a)->body->subtype)
-
 /* used to keep track of detached MIME segments total length */
 static long	save_att_length;
 
@@ -272,9 +262,8 @@ void	    fetch_readc_init PROTO((FETCH_READC_S *, MAILSTREAM *, long,
 				    char *, unsigned long, long));
 int	    fetch_readc_cleanup PROTO(());
 char	   *fetch_gets PROTO((readfn_t, void *, unsigned long, GETS_DATA *));
-#ifdef _WINDOWS
-char	   *partial_text_gets PROTO((readfn_t, void *, unsigned long, GETS_DATA *));
-#endif
+char	   *partial_text_gets PROTO((readfn_t, void *,
+				     unsigned long, GETS_DATA *));
 int	    fetch_readc PROTO((unsigned char *));
 ATDISP_S   *new_attline PROTO((ATDISP_S **));
 void	    free_attline PROTO((ATDISP_S **));
@@ -344,6 +333,13 @@ attachment_screen(ps)
 
     ps->prev_screen = attachment_screen;
     ps->next_screen = SCREEN_FUN_NULL;
+
+    if(ps->ttyo->screen_rows - HEADER_ROWS(ps) - FOOTER_ROWS(ps) < 1){
+	q_status_message(SM_ORDER | SM_DING, 0, 3,
+			 "Screen too small to view attachment");
+	ps->next_screen = mail_view_screen;
+	return;
+    }
 
     if(mn_total_cur(ps->msgmap) > 1L){
 	q_status_message(SM_ORDER | SM_DING, 0, 3,
@@ -1398,7 +1394,7 @@ write_attachment(qline, msgno, a, method)
     char	filename[MAXPATH+1], full_filename[MAXPATH+1], *charset,
 	       *l_string, title_buf[64], prompt_buf[256], *att_name, *err,
                *dec_err, *terr;
-    int         r, is_text, over = 0, we_cancel = 0;
+    int         r, is_text, rflags = GER_NONE, we_cancel = 0;
     long        len, orig_size;
     gf_io_t     pc;
     STORE_S    *store;
@@ -1435,7 +1431,8 @@ write_attachment(qline, msgno, a, method)
 	fs_give((void **) &err);
     }
 
-    dprint(9, (debugfile, "export_attachment(name: %s)\n", filename));
+    dprint(9, (debugfile, "export_attachment(name: %s)\n",
+	   filename ? filename : "?"));
 
     r = 0;
 #if	!defined(DOS) && !defined(MAC) && !defined(OS2)
@@ -1458,14 +1455,14 @@ write_attachment(qline, msgno, a, method)
 
     sprintf(title_buf, "%s ATTACHMENT", method);
 
-    r = get_export_filename(ps_global, filename, full_filename,
+    r = get_export_filename(ps_global, filename, NULL, full_filename,
 			    sizeof(filename), "attachment", title_buf,
-			    att_save_opts, &over, qline, GE_SEQ_SENSITIVE);
+			    att_save_opts, &rflags, qline, GE_SEQ_SENSITIVE);
 
     if(r < 0){
 	switch(r){
 	  case -1:
-	    cmd_cancelled(lcase(title_buf + 1) - 1);
+	    cmd_cancelled(lcase((unsigned char *) title_buf + 1) - 1);
 	    break;
 
 	  case -2:
@@ -1501,7 +1498,7 @@ write_attachment(qline, msgno, a, method)
 
 	    gf_set_so_writec(&pc, store);
 	    if(err = detach(ps_global->mail_stream, msgno,
-			    a->number, &len, pc, NULL))
+			    a->number, &len, pc, NULL, 0))
 	      q_status_message2(SM_ORDER | SM_DING, 3, 5,
 			       "%.200s: Error writing attachment to \"%.200s\"",
 				err, tfp);
@@ -1518,7 +1515,7 @@ write_attachment(qline, msgno, a, method)
 				 ps_global->VAR_DOWNLOAD_CMD, tfp);
 		if(syspipe = open_system_pipe(cmd, NULL, NULL,
 					      PIPE_USER | PIPE_RESET, 0))
-		  (void)close_system_pipe(&syspipe);
+		  (void)close_system_pipe(&syspipe, NULL, 0);
 		else
 		  q_status_message(SM_ORDER | SM_DING, 3, 3,
 				   err = "Error running download command");
@@ -1541,21 +1538,59 @@ write_attachment(qline, msgno, a, method)
     }
 #endif	/* !(DOS || MAC) */
 
-    if(over == -1)
-      orig_size = name_file_size(full_filename);
+    (void) write_attachment_to_file(ps_global->mail_stream, msgno, a,
+				    rflags, full_filename);
+}
 
-    if((store = so_get(FileStar, full_filename, WRITE_ACCESS)) == NULL){
+
+/*
+ * Args  stream --
+ *       msgno  -- raw message number
+ *       a      -- attachment struct
+ *       flags  -- comes from get_export_filename
+ *             GER_OVER -- the file was truncated before we wrote
+ *           GER_APPEND -- the file was not truncated prior to our writing,
+ *                         so we were appending
+ *                 else -- the file didn't previously exist
+ *       file   -- the full pathname of the file
+ *
+ * Returns  1 for successful write, 0 for nothing to write, -1 for error
+ */
+int
+write_attachment_to_file(stream, msgno, a, flags, file)
+    MAILSTREAM *stream;
+    long        msgno;
+    ATTACH_S   *a;
+    int         flags;
+    char       *file;
+{
+    char       *l_string, title_buf[64], sbuf[256], *err;
+    int         is_text, we_cancel = 0;
+    long        len, orig_size;
+    gf_io_t     pc;
+    STORE_S    *store;
+
+    if(!(a && a->body && a->number && a->number[0] && file && file[0]
+	 && stream))
+      return 0;
+
+    is_text = a->body->type == TYPETEXT;
+
+    if(flags & GER_APPEND)
+      orig_size = name_file_size(file);
+
+    if((store = so_get(FileStar, file, WRITE_ACCESS)) == NULL){
 	q_status_message2(SM_ORDER | SM_DING, 3, 5,
 			  "Error opening destination %.200s: %.200s",
-			  full_filename, error_description(errno));
-	return;
+			  file, error_description(errno));
+	return -1;
     }
 
-    sprintf(prompt_buf, "Saving to \"%.50s\"", full_filename);
-    we_cancel = init_att_progress(prompt_buf, ps_global->mail_stream, a->body);
+    sprintf(sbuf, "Saving to \"%.50s\"", file);
+    we_cancel = init_att_progress(sbuf, stream, a->body);
 
     gf_set_so_writec(&pc, store);
-    err = detach(ps_global->mail_stream, msgno, a->number, &len, pc, NULL);
+    err = detach(stream, msgno, a->number, &len, pc, NULL, 0);
     gf_clear_so_writec(store);
 
     if(we_cancel)
@@ -1565,14 +1600,15 @@ write_attachment(qline, msgno, a, method)
       err = error_description(errno);
 
     if(err){
-	if(!over)
-	  unlink(full_filename);
+	if(!(flags & (GER_APPEND | GER_OVER)))
+	  unlink(file);
 	else
-	  truncate(full_filename, (over == -1) ? orig_size : 0);
+	  truncate(file, (flags & GER_APPEND) ? (off_t) orig_size : (off_t) 0);
 
 	q_status_message2(SM_ORDER | SM_DING, 3, 5,
 			  "%.200s: Error writing attachment to \"%.200s\"",
-			  err, full_filename);
+			  err, file);
+	return -1;
     }
     else{
         l_string = cpystr(byte_string(len));
@@ -1582,9 +1618,10 @@ write_attachment(qline, msgno, a, method)
 			  is_text
 			    ? comatose(a->body->size.lines) : l_string,
 			  is_text ? " lines" : "",
-			  over==0 ? "written"
-				  : over==1 ? "overwritten" : "appended",
-			  full_filename,
+			  flags & GER_OVER
+			      ? "overwrittten"
+			      : flags & GER_APPEND ? "appended" : "written",
+			  file,
 			  (is_text || len == a->body->size.bytes)
 			    ? "" : "(decoded from ",
                           (is_text || len == a->body->size.bytes)
@@ -1592,6 +1629,7 @@ write_attachment(qline, msgno, a, method)
 			  is_text || len == a->body->size.bytes
 			    ? "" : ")");
         fs_give((void **)&l_string);
+	return 1;
     }
 }
 
@@ -1606,14 +1644,19 @@ write_attached_msg(msgno, ap, store, newfile)
     char      *err = NULL;
     long      start_of_append;
     gf_io_t   pc;
+    MESSAGECACHE *mc;
 
     if((*ap)->body->nested.msg->env){
-	start_of_append = ftell((FILE *) so_text(store));
+	start_of_append = so_tell(store);
 
 	gf_set_so_writec(&pc, store);
+	if(!(ps_global->mail_stream && msgno > 0L
+	   && msgno <= ps_global->mail_stream->nmsgs
+	   && (mc = mail_elt(ps_global->mail_stream, msgno)) && mc->valid))
+	  mc = NULL;
 	
-	if(!bezerk_delimiter((*ap)->body->nested.msg->env, pc, newfile)
-	   || !format_msg_att(msgno, ap, pc, 0))
+	if(!bezerk_delimiter((*ap)->body->nested.msg->env, mc, pc, newfile)
+	   || !format_msg_att(msgno, ap, pc, FM_NOINDENT))
 	  err = error_description(errno);
 
 	gf_clear_so_writec(store);
@@ -1650,17 +1693,23 @@ save_msg_att(msgno, a)
 
     sprintf(nmsgs, "Attached Msg (part %.20s) ", a->number);
     if(save_prompt(ps_global, &cntxt, newfolder, sizeof(newfolder), nmsgs,
-		   a->body->nested.msg->env, msgno, a->number)){
-	save_folder = (strucmp(newfolder, ps_global->inbox_name) == 0)
-			? ps_global->VAR_INBOX_PATH : newfolder;
+		   a->body->nested.msg->env, msgno, a->number, NULL)){
+	if(strucmp(newfolder, ps_global->inbox_name) == 0){
+	    save_folder = ps_global->VAR_INBOX_PATH;
+	    cntxt = NULL;
+	}
+	else
+	  save_folder = newfolder;
 
 	save_stream = save_msg_stream(cntxt, save_folder, &our_stream);
 
 	if(so = so_get(SAVE_TMP_TYPE, NULL, WRITE_ACCESS)){
 	    /* store flags before the fetch so UNSEEN bit isn't flipped */
-	    mc = mail_elt(ps_global->mail_stream, msgno);
+	    mc = (msgno > 0L && ps_global->mail_stream
+		  && msgno <= ps_global->mail_stream->nmsgs)
+		  ? mail_elt(ps_global->mail_stream, msgno) : NULL;
 	    flag_string(mc, F_ANS|F_FLAG|F_SEEN, flags);
-	    if(mc->day)
+	    if(mc && mc->day)
 	      mail_date(date, mc);
 	    else
 	      *date = '\0';
@@ -1719,7 +1768,7 @@ save_digest_att(msgno, a)
     sprintf(nmsgs, "%d Msg Digest (part %.20s) ", cnt, a->number);
 
     if(save_prompt(ps_global, &cntxt, newfolder, sizeof(newfolder),
-		   nmsgs, NULL, 0, NULL)){
+		   nmsgs, NULL, 0, NULL, NULL)){
 	save_folder = (strucmp(newfolder, ps_global->inbox_name) == 0)
 			? ps_global->VAR_INBOX_PATH : newfolder;
 
@@ -1765,27 +1814,21 @@ save_digest_att(msgno, a)
 
 
 MAILSTREAM *
-save_msg_stream(context, folder, ours)
+save_msg_stream(context, folder, we_opened)
     CONTEXT_S *context;
     char      *folder;
-    int	      *ours;
+    int	      *we_opened;
 {
     char	tmp[MAILTMPLEN];
     MAILSTREAM *save_stream = NULL;
 
-	/*
-	 * Compare the current stream (the save's source) and the stream
-	 * the destination folder will need...
-	 */
     if(IS_REMOTE(context_apply(tmp, context, folder, sizeof(tmp)))
-       && !((save_stream = context_same_stream(context, folder,
-					       ps_global->mail_stream))
-	    || ((ps_global->inbox_stream
-		 && ps_global->inbox_stream != ps_global->mail_stream)
-		&& (save_stream = context_same_stream(context, folder,
-						  ps_global->inbox_stream))))){
-	if(save_stream = context_open(context, NULL, folder, OP_HALFOPEN))
-	  *ours = 1;
+       && !(save_stream = sp_stream_get(tmp, SP_MATCH))
+       && !(save_stream = sp_stream_get(tmp, SP_SAME))){
+	if(save_stream = context_open(context, NULL, folder,
+				      OP_HALFOPEN | SP_USEPOOL | SP_TEMPUSE,
+				      NULL))
+	  *we_opened = 1;
     }
 
     return(save_stream);
@@ -1805,7 +1848,7 @@ export_msg_att(msgno, a)
     ATTACH_S *a;
 {
     char      filename[MAXPATH+1], full_filename[MAXPATH+1], *err;
-    int	      rv, over, i = 1;
+    int	      rv, rflags = GER_NONE, i = 1;
     ATTACH_S *ap = a;
     STORE_S  *store;
     static ESCKEY_S opts[] = {
@@ -1822,10 +1865,10 @@ export_msg_att(msgno, a)
 
     filename[0] = full_filename[0] = '\0';
 
-    rv = get_export_filename(ps_global, filename, full_filename,
+    rv = get_export_filename(ps_global, filename, NULL, full_filename,
 			     sizeof(filename), "msg attachment",
 			     "MSG ATTACHMENT", opts,
-			     &over, -FOOTER_ROWS(ps_global),
+			     &rflags, -FOOTER_ROWS(ps_global),
 			     GE_IS_EXPORT | GE_SEQ_SENSITIVE);
 
     if(rv < 0){
@@ -1846,14 +1889,15 @@ export_msg_att(msgno, a)
 
     /* With name in hand, allocate storage object and save away... */
     if(store = so_get(FileStar, full_filename, WRITE_ACCESS)){
-	if(err = write_attached_msg(msgno, &ap, store, over >= 0))
+	if(err = write_attached_msg(msgno, &ap, store, !(rflags & GER_APPEND)))
 	  q_status_message(SM_ORDER | SM_DING, 3, 4, err);
 	else
           q_status_message3(SM_ORDER, 0, 4,
 			  "Attached message (part %.200s) %.200s to \"%.200s\"",
 			    a->number, 
-			    over==0 ? "written"
-				    : over==1 ? "overwritten" : "appended",
+			    rflags & GER_OVER
+			      ? "overwrittten"
+			      : rflags & GER_APPEND ? "appended" : "written",
 			    full_filename);
 
 	if(so_give(&store))
@@ -1881,7 +1925,7 @@ export_digest_att(msgno, a)
     ATTACH_S *a;
 {
     char      filename[MAXPATH+1], full_filename[MAXPATH+1], *err = NULL;
-    int	      rv, over, i = 1;
+    int	      rv, rflags = GER_NONE, i = 1;
     long      count = 0L;
     ATTACH_S *ap;
     STORE_S  *store;
@@ -1899,9 +1943,9 @@ export_digest_att(msgno, a)
 
     filename[0] = full_filename[0] = '\0';
 
-    rv = get_export_filename(ps_global, filename, full_filename,
+    rv = get_export_filename(ps_global, filename, NULL, full_filename,
 			     sizeof(filename), "digest", "DIGEST ATTACHMENT",
-			     opts, &over, -FOOTER_ROWS(ps_global),
+			     opts, &rflags, -FOOTER_ROWS(ps_global),
 			     GE_IS_EXPORT | GE_SEQ_SENSITIVE);
 
     if(rv < 0){
@@ -1942,7 +1986,7 @@ export_digest_att(msgno, a)
 		else{
 		    count++;
 		    err = write_attached_msg(msgno, &ap, store,
-					     !count && over >= 0);
+					     !count && !(rflags & GER_APPEND));
 		}
 	    }
 	    else if(!so_puts(store, "Unknown type in Digest"))
@@ -1963,8 +2007,9 @@ export_digest_att(msgno, a)
 		"%.200s messages in digest (part %.200s) %.200s to \"%.200s\"",
 			    long2string(count),
 			    a->number, 
-			    over==0 ? "written"
-				    : over==1 ? "overwritten" : "appended",
+			    rflags & GER_OVER
+			      ? "overwrittten"
+			      : rflags & GER_APPEND ? "appended" : "written",
 			    full_filename);
     }
     else
@@ -2006,7 +2051,7 @@ print_attachment(qline, msgno, a)
 	else if(MIME_DGST_A(a))
 	  print_digest_att(msgno, a);
 	else
-	  (void) decode_text(a, msgno, print_char, NULL, QStatus, 0);
+	  (void) decode_text(a, msgno, print_char, NULL, QStatus, FM_NOINDENT);
 
 	close_printer();
     }
@@ -2027,13 +2072,19 @@ print_msg_att(msgno, a, next)
     int	      next;
 {
     ATTACH_S *ap = a;
+    MESSAGECACHE *mc;
+
+    if(!(ps_global->mail_stream && msgno > 0L
+       && msgno <= ps_global->mail_stream->nmsgs
+       && (mc = mail_elt(ps_global->mail_stream, msgno)) && mc->valid))
+      mc = NULL;
 
     if(((next && F_ON(F_AGG_PRINT_FF, ps_global)) ? print_char(FORMFEED) : 1)
-       && mail_fetchstructure(ps_global->mail_stream, msgno, NULL)
+       && pine_mail_fetchstructure(ps_global->mail_stream, msgno, NULL)
        && (F_ON(F_FROM_DELIM_IN_PRINT, ps_global)
-	     ? bezerk_delimiter(a->body->nested.msg->env, print_char, next)
+	     ? bezerk_delimiter(a->body->nested.msg->env, mc, print_char, next)
 	     : 1)
-       && format_msg_att(msgno, &ap, print_char, 0))
+       && format_msg_att(msgno, &ap, print_char, FM_NOINDENT))
       return(1);
 
 
@@ -2086,7 +2137,8 @@ print_digest_att(msgno, a)
 	    }
 	}
 	else if(ap->body->type == TYPETEXT
-		&& decode_text(ap, msgno, print_char, NULL, QStatus, 0))
+		&& decode_text(ap, msgno, print_char, NULL, QStatus,
+			       FM_NOINDENT))
 	  break;
 	else if(!gf_puts("Unknown type in Digest", print_char))
 	  break;
@@ -2113,9 +2165,7 @@ display_attachment(msgno, a, flags)
     gf_io_t  pc;
     char    *err;
     int      we_cancel = 0;
-#if !defined(DOS) && !defined(OS2)
     char     prefix[8];
-#endif
 
     /*------- Display the attachment -------*/
     if(dispatch_attachment(a) == MCD_NONE) {
@@ -2160,69 +2210,117 @@ display_attachment(msgno, a, flags)
 	return(0);
     }
 
-    if(F_OFF(F_QUELL_ATTACH_EXTRA_PROMPT, ps_global) 
+    if(F_OFF(F_QUELL_ATTACH_EXTRA_PROMPT, ps_global)
        && (!(flags & DA_DIDPROMPT)))
       if(want_to("View selected Attachment", 'y',
 		 0, NO_HELP, WT_NORM) == 'n'){
 	  cmd_cancelled(NULL);
 	  return(1);
       }
-    if((a->can_display & MCD_EXT_PROMPT)){
-	char prompt[256], *namep = NULL, *ext = NULL;
+    if(F_OFF(F_QUELL_ATTACH_EXT_WARN, ps_global)
+       && (a->can_display & MCD_EXT_PROMPT)){
+	char prompt[256], *namep = NULL, *dec_namep = NULL, *ext = NULL;
 
-	if(namep = rfc2231_get_param(a->body->parameter, "name", NULL, NULL))
-	  mt_get_file_ext((char *) namep, &ext);
+	if(namep = rfc2231_get_param(a->body->parameter, "name", NULL, NULL)){
+	    if(namep[0] == '=' && namep[1] == '?'){
+		if(!(dec_namep = (char *)rfc1522_decode((unsigned char *)tmp_20k_buf,
+							SIZEOF_20KBUF, namep, NULL)))
+		  dec_namep = namep;
+	    }
+	    else
+	      dec_namep = namep;
+
+	    mt_get_file_ext((char *) dec_namep, &ext);
+	}
 	sprintf(prompt, 
 		"Attachment %.12s%s unrecognized. %s%.10s%s", 
 		a->body->subtype, 
 		strlen(a->body->subtype) > 12 ? "..." : "", 
-		ext ? "Try open by file extension (." : "Try opening anyways",
+		ext ? "Try open by file extension (." : "Try opening anyway",
 		ext ? ext : "",
 		ext ? ")" : "");
-	if(namep)
-	  fs_give((void **)&namep);
+	if(namep == dec_namep){
+	    if(namep)
+	      fs_give((void **)&namep);
+	    dec_namep = NULL;
+	}
+	else{
+	    if(namep)
+	      fs_give((void **)&namep);
+	    if(dec_namep)
+	      fs_give((void **)&dec_namep);
+	}
 	if(want_to(prompt, 'n', 0, NO_HELP, WT_NORM) == 'n'){
 	    cmd_cancelled(NULL);
 	    return(1);
 	}
     }
     /*------ Write the image to a temporary file ------*/
-#if defined(DOS) || defined(OS2)
-    /*
-     *  Dos applications are particular about the file name extensions
-     *  Try to look up the expected extension from the mime.types file.
-     */
-    {  char ext[32];
-       char mtype[128];
-       
-     ext[0] = '\0';
-     strcpy (mtype, body_type_names(a->body->type));
-     if (a->body->subtype) {
-	 strcat (mtype, "/");
-	 strcat (mtype, a->body->subtype);
-     }
+    if(mime_os_specific_access()){
+	/*
+	 *  Windows applications are particular about the file name extensions
+	 *  Try to look up the expected extension from the mime.types file.
+	 *
+	 *  This is now general, because now unix-based (Mac OS X)
+	 *  apps are finnicky about extensions.  It's probably ok
+	 *  to do extensions for all platforms, but we'll just do
+	 *  Windows and OSX for now.
+	 *
+	 *  The mime_os_specific_access() call is only to delineate
+	 *  Win and Mac from others.
+	 */
+	char ext[32];
+	char mtype[128];
 
-     if(!set_mime_extension_by_type(ext, mtype)){
-	 char *namep, *dotp, *p;
+	ext[0] = '\0';
+	strcpy (mtype, body_type_names(a->body->type));
+	if (a->body->subtype) {
+	    strcat (mtype, "/");
+	    strcat (mtype, a->body->subtype);
+	}
 
-	 if(namep = rfc2231_get_param(a->body->parameter, "name", NULL, NULL)){
-	     for(dotp = NULL, p = namep; *p; p++)
-	       if(*p == '.')
-		 dotp = p + 1;
+	if(!set_mime_extension_by_type(ext, mtype)){
+	    char *namep, *dec_namep, *dotp, *p;
 
-	     if(dotp && strlen(dotp) < sizeof(ext) - 1)
-	       strcpy(ext, dotp);
+	    if(namep = rfc2231_get_param(a->body->parameter, "name", NULL, NULL)){
+		if(namep[0] == '=' && namep[1] == '?'){
+		    if(!(dec_namep = 
+			 (char *)rfc1522_decode((unsigned char *)tmp_20k_buf,
+						SIZEOF_20KBUF, namep, NULL)))
+		      dec_namep = namep;
+		}
+		else
+		  dec_namep = namep;
 
-	     fs_give((void **) &namep);
-	 }
-     }
+		for(dotp = NULL, p = dec_namep; *p; p++)
+		  if(*p == '.')
+		    dotp = p + 1;
 
-     filename = temp_nam_ext(NULL, "im", ext);
-   }
-#else
-    sprintf(prefix, "img-%.3s", (a->body->subtype) ? a->body->subtype : "unk");
-    filename = temp_nam(NULL, prefix);
-#endif
+		if(dotp && strlen(dotp) < sizeof(ext) - 1)
+		  strcpy(ext, dotp);
+
+		if(dec_namep == namep){
+		    if(namep)
+		      fs_give((void **) &namep);
+		}
+		else{
+		    if(dec_namep)
+		      fs_give((void **) &dec_namep);
+		    if(namep)
+		      fs_give((void **) &namep);
+		}
+	    }
+	}
+
+	filename = temp_nam_ext(NULL, "im", ext);
+	if(!filename) /* just try opening it without extension */
+	  filename = temp_nam(NULL, "im");
+    }
+    else{
+	sprintf(prefix, "img-%.3s", (a->body->subtype)
+		? a->body->subtype : "unk");
+	filename = temp_nam(NULL, prefix);
+    }
 
     if((store = so_get(FileStar, filename, WRITE_ACCESS|OWNER_ONLY)) == NULL){
         q_status_message2(SM_ORDER | SM_DING, 3, 5,
@@ -2265,7 +2363,7 @@ display_attachment(msgno, a, flags)
 
     gf_set_so_writec(&pc, store);
 
-    err = detach(ps_global->mail_stream, msgno, a->number, NULL, pc, NULL);
+    err = detach(ps_global->mail_stream, msgno, a->number, NULL, pc, NULL, 0);
 
     gf_clear_so_writec(store);
 
@@ -2309,18 +2407,21 @@ run_viewer(image_file, body, chk_extension)
      char *image_file;
      BODY *body;
 {
-    char *cmd            = NULL;
+    MCAP_CMD_S *mc_cmd   = NULL;
     int   needs_terminal = 0, we_cancel = 0;
 
     we_cancel = busy_alarm(1, "Displaying attachment", NULL, 1);
 
-    if(cmd = mailcap_build_command(body->type, body->subtype, body->parameter,
-				   image_file, &needs_terminal, chk_extension)){
+    if(mc_cmd = mailcap_build_command(body->type, body->subtype,
+				      body->parameter, image_file,
+				      &needs_terminal, chk_extension)){
 	if(we_cancel)
 	  cancel_busy_alarm(-1);
 
-	exec_mailcap_cmd(cmd, image_file, needs_terminal);
-	fs_give((void **)&cmd);
+	exec_mailcap_cmd(mc_cmd, image_file, needs_terminal);
+	if(mc_cmd->command)
+	  fs_give((void **)&mc_cmd->command);
+	fs_give((void **)&mc_cmd);
     }
     else{
 	if(we_cancel)
@@ -2421,7 +2522,7 @@ display_msg_att(msgno, a, flags)
       clear_index_cache_ent(msgno);
 
     /* BUG, should check this return code */
-    (void) mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
+    (void) pine_mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
 
     /* initialize a storage object */
     if(!(store = so_get(CharStar, NULL, EDIT_ACCESS))){
@@ -2433,7 +2534,7 @@ display_msg_att(msgno, a, flags)
     gf_set_so_writec(&pc, store);
 
     if(format_msg_att(msgno, &ap, pc, FM_DISPLAY)){
-	if(ps_global->full_header)
+	if(ps_global->full_header == 2)
 	  q_status_message(SM_INFO, 0, 3,
 		      "Full header mode ON.  All header text being included");
 
@@ -2473,7 +2574,7 @@ display_digest_att(msgno, a, flags)
       clear_index_cache_ent(msgno);
 
     /* BUG, should check this return code */
-    (void)mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
+    (void) pine_mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
 
     /* initialize a storage object */
 #if	defined(DOS) && !defined(WIN32)
@@ -2536,7 +2637,7 @@ display_digest_att(msgno, a, flags)
     }
 
     if(!bad_news){
-	if(ps_global->full_header)
+	if(ps_global->full_header == 2)
 	  q_status_message(SM_INFO, 0, 3,
 		      "Full header mode ON.  All header text being included");
 
@@ -2747,10 +2848,13 @@ format_msg_att(msgno, a, pc, flags)
     }
     else if((*a)->body->subtype 
 	    && strucmp((*a)->body->subtype, "external-body") == 0) {
-	if(!(gf_puts("This part is not included and ", pc)
-	     && gf_puts("can be fetched as follows:", pc)
-	     && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc)
-	     && gf_puts(display_parameters((*a)->body->parameter), pc)))
+	if(format_editorial("This part is not included and can be fetched as follows:",
+			    ps_global->ttyo->screen_cols,
+			    pc)
+	   || !gf_puts(NEWLINE, pc)
+	   || format_editorial(display_parameters((*a)->body->parameter),
+			       ps_global->ttyo->screen_cols,
+			       pc))
 	  rv = 0;
     }
     else if(decode_text(*a, msgno, pc, NULL, QStatus, flags))
@@ -2834,7 +2938,7 @@ display_vcard_att(msgno, a, flags)
 	    gf_link_filter(gf_wrap,
 			   gf_wrap_filter_opt(ps_global->ttyo->screen_cols - 4,
 					      ps_global->ttyo->screen_cols,
-					      indent, GFW_HANDLES));
+					      NULL, indent, GFW_HANDLES));
 	    gf_link_filter(gf_nvtnl_local, NULL);
 
 	    gf_set_so_readc(&gc, in_store);
@@ -2987,28 +3091,22 @@ display_attach_info(msgno, a)
 	so_puts(store, "Pine's Internal Pager");
     }
     else{
-	int   nt;
-	char *cmd;
+	int   nt, free_pretty_cmd;
+	MCAP_CMD_S *mc_cmd;
+	char *pretty_cmd;
 
-	if(cmd = mailcap_build_command(a->body->type, a->body->subtype,
+	if(mc_cmd = mailcap_build_command(a->body->type, a->body->subtype,
 				       a->body->parameter, "<datafile>", &nt,
 				       a->can_display & MCD_EXT_PROMPT)){
 	    so_puts(store, "\"");
-#ifdef	_WINDOWS
-	    /* Special Windows-specific handling? */
-	    if(*cmd == '*' || (*cmd == '\"' && *(cmd+1) == '*')){
-		if(!strncmp(cmd + ((*cmd == '\"') ? 2 : 1), "DDE*", 4))
-		  so_puts(store, "via app already running");
-		else if(!strncmp(cmd + ((*cmd == '\"') ? 2 : 1),"ShellEx*",8))
-		  so_puts(store, "via Explorer defined app");
-		else
-		  so_puts(store, "via Windows-specific method");
-	    }
-	    else
-#endif
-	    so_puts(store, cmd);
+	    if(pretty_cmd = execview_pretty_command(mc_cmd, &free_pretty_cmd))
+	      so_puts(store, pretty_cmd);
 	    so_puts(store, "\"");
-	    fs_give((void **)&cmd);
+	    if(free_pretty_cmd && pretty_cmd)
+	      fs_give((void **)&pretty_cmd);
+	    if(mc_cmd->command)
+	      fs_give((void **)&mc_cmd->command);
+	    fs_give((void **)&mc_cmd);
 	}
     }
 
@@ -3198,7 +3296,7 @@ forward_msg_att(stream, msgno, a)
 	    PAT_STATE dummy;
 
 	    ret = 'n';
-	    if(ps_global->full_header)
+	    if(ps_global->full_header == 2)
 	       ret = want_to("Forward message as an attachment", 'n', 0,
 			     NO_HELP, WT_SEQ_SENSITIVE);
 	    /* Setup possible role */
@@ -3306,7 +3404,9 @@ forward_msg_att(stream, msgno, a)
 	    if(body){
 		pine_send(outgoing, &body,
 			  "FORWARD MESSAGE",
-			  role, NULL, &reply, redraft_pos, NULL, NULL, FALSE);
+			  role, NULL,
+			  reply.flags ? &reply : NULL,
+			  redraft_pos, NULL, NULL, FALSE);
 
 		ps_global->mangled_screen = 1;
 		pine_free_body(&body);
@@ -3383,12 +3483,12 @@ reply_msg_att(stream, msgno, a)
 			a->body->nested.msg->env, &saved_from,
 			&saved_to, &saved_cc, &saved_resent, &flags)){
 	outgoing->subject = reply_subject(a->body->nested.msg->env->subject,
-					  NULL);
+					  NULL, 0);
 	reply_seed(ps_global, outgoing, a->body->nested.msg->env,
 		   saved_from, saved_to, saved_cc, saved_resent,
 		   &fcc, flags & RSF_FORCE_REPLY_ALL);
 
-	if(ps_global->expunge_count)	/* current msg was expunged */
+	if(sp_expunge_count(stream))	/* current msg was expunged */
 	  goto seeyalater;
 
 	/* Setup possible role */
@@ -3515,7 +3615,7 @@ bounce_msg_att(stream, msgno, part, subject)
 {
     char *errstr;
 
-    if(errstr = bounce_msg(stream, msgno, part, NULL, subject, NULL, NULL))
+    if(errstr = bounce_msg(stream, msgno, part, NULL, NULL, subject, NULL, NULL))
       q_status_message(SM_ORDER | SM_DING, 3, 3, errstr);
 }
 
@@ -3591,7 +3691,7 @@ pipe_attachment(msgno, a)
 				   (flags&PIPE_RESET) ? NULL : &resultfilename,
 				   NULL, flags, 0)){
 		gf_io_t  pc;		/* wire up a generic putchar */
-		gf_set_writec(&pc, syspipe->out.f, 0L, FileStar);
+		gf_set_writec(&pc, syspipe, 0L, PipeStar);
 
 		/*------ Write the image to a temporary file ------*/
 		if(raw){		/* pipe raw text */
@@ -3624,12 +3724,12 @@ pipe_attachment(msgno, a)
 
 		    suspend_busy_alarm();
 		    err = detach(ps_global->mail_stream, msgno,
-				 a->number, (long *)NULL, pc, NULL);
+				 a->number, (long *)NULL, pc, NULL, 0);
 		    ps_global->print = (PRINT_S *) NULL;
 		    resume_busy_alarm(0);
 		}
 
-		(void) close_system_pipe(&syspipe);
+		(void) close_system_pipe(&syspipe, NULL, 0);
 
 		if(err)
 		  q_status_message1(SM_ORDER | SM_DING, 3, 4,
@@ -3757,13 +3857,13 @@ detach_raw(stream, msg_no, part_no, pc, flags)
     frd->section = part_no;
     frd->size    = 0;		        /* wouldn't be here otherwise     */
     frd->readc	 = fetch_readc;
-    frd->chunk   = mail_fetch_text(stream, msg_no, NULL, &frd->read, 0);
+    frd->chunk   = pine_mail_fetch_text(stream, msg_no, NULL, &frd->read, 0);
     frd->endp    = &frd->chunk[frd->read];
     frd->chunkp  = frd->chunk;
 
     gf_filter_init();
     if (!(flags & FM_NOWRAP))
-      gf_link_filter(gf_wrap, gf_wrap_filter_opt(column, column, 0,
+      gf_link_filter(gf_wrap, gf_wrap_filter_opt(column, column, NULL, 0,
 						 (flags & FM_DISPLAY)
 						   ? GFW_HANDLES : 0));
     err = gf_pipe(FETCH_READC, pc);
@@ -3780,13 +3880,14 @@ detach_raw(stream, msg_no, part_no, pc, flags)
   Returns: NULL on success, error message otherwise
   ----*/
 char *
-detach(stream, msg_no, part_no, len, pc, aux_filters)
+detach(stream, msg_no, part_no, len, pc, aux_filters, flags)
      MAILSTREAM *stream;		/* c-client stream to use         */
      long        msg_no;		/* message number to deal with	  */
      char       *part_no;		/* part number of message 	  */
      long       *len;			/* returns bytes read in this arg */
      gf_io_t	 pc;			/* where to put it		  */
      FILTLIST_S *aux_filters;		/* null terminated array of filts */
+     int         flags;		/* not used anymore */
 {
     unsigned long  rv;
     int            we_cancel = 0;
@@ -3803,7 +3904,7 @@ detach(stream, msg_no, part_no, len, pc, aux_filters)
 
     gf_filter_init();			/* prepare for filtering! */
 
-    if(!(body = mail_body(stream, msg_no, part_no)))
+    if(!(body = mail_body(stream, msg_no, (unsigned char *) part_no)))
       return("Can't find body for requested message");
 
     fetch_readc_init(&fetch_part, stream, msg_no, part_no, body->size.bytes,0);
@@ -3826,8 +3927,10 @@ detach(stream, msg_no, part_no, len, pc, aux_filters)
       case ENCOTHER:
       default:
 	dprint(1, (debugfile, "detach: unknown CTE: \"%s\" (%d)\n",
-		   (body->encoding <= ENCMAX) ? body_encodings[body->encoding]
-					      : "BEYOND-KNOWN-TYPES",
+		   (body->encoding <= ENCMAX
+		    && body_encodings[body->encoding])
+		       ? body_encodings[body->encoding]
+		       : "BEYOND-KNOWN-TYPES",
 		   body->encoding));
 	break;
     }
@@ -3990,7 +4093,8 @@ df_static_trigger(body, cmdbuf)
 	get_pair(*l, &test, &cmd, 1, 1);
 
 	dprint(5, (debugfile, "static trigger: \"%s\" --> \"%s\" and \"%s\"",
-		   *l, test ? test : "<NULL>", cmd ? cmd : "<NULL>"));
+		   (l && *l) ? *l : "?",
+		   test ? test : "<NULL>", cmd ? cmd : "<NULL>"));
 
 	if(passed = (df_valid_test(body, test) && valid_filter_command(&cmd)))
 	  strcpy(cmdbuf, cmd);
@@ -4027,7 +4131,8 @@ df_valid_test(body, test)
 	    }
 	    else
 	      dprint(1, (debugfile,
-			 "filter trigger: malformed test: %s\n", test));
+			 "filter trigger: malformed test: %s\n",
+			 test ? test : "?"));
 	}
     }
 
@@ -4286,7 +4391,7 @@ dfilter(rawcmd, input_so, output_pc, aux_filters)
 		    if(filter_pipe = open_system_pipe(cmd, NULL, NULL,
 						      PIPE_USER | PIPE_RESET,
 						      0)){
-			if (close_system_pipe(&filter_pipe) == 0){
+			if (close_system_pipe(&filter_pipe, NULL, 0) == 0){
 			    /* pull result out of tmp file */
 			    if(fp = fopen(tmpfile, READ_MODE)){
 				gf_set_readc(&gc, fp, 0L, FileStar);
@@ -4315,7 +4420,8 @@ dfilter(rawcmd, input_so, output_pc, aux_filters)
 	      status = "Can't open display filter tmp file";
 	}
 	else if(status = gf_filter(cmd, key ? filter_session_key() : NULL,
-				   input_so, output_pc, aux_filters)){
+				   input_so, output_pc, aux_filters,
+				   F_ON(F_DISABLE_TERM_RESET_DISP, ps_global))){
 	    int ch;
 
 	    fprintf(stdout,"\r\n%s  Hit return to continue.", status);
@@ -4700,6 +4806,27 @@ fetch_readc_cleanup()
     return(0);
 }
 
+/*
+ * Wrapper around mail_fetch_body.
+ * Currently only used to turn on partial fetching if trying
+ * to work around the microsoft ssl bug.
+ */
+char *
+pine_mail_fetch_body(stream, msgno, section, len, flags)
+    MAILSTREAM *stream;
+    unsigned long msgno;
+    char *section;
+    unsigned long *len;
+    long flags;
+{
+#ifdef _WINDOWS
+    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global))
+      return(pine_mail_partial_fetch_wrapper(stream, msgno, 
+			     section, len, flags, 0, NULL, 0));
+    else
+#endif
+    return(mail_fetch_body(stream, msgno, section, len, flags));
+}
 
 /*
  * Wrapper around mail_fetch_text.
@@ -4714,25 +4841,76 @@ pine_mail_fetch_text(stream, msgno, section, len, flags)
     unsigned long *len;
     long flags;
 {
-#ifdef   _WINDOWS
+#ifdef _WINDOWS
+    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global))
+      return(pine_mail_partial_fetch_wrapper(stream, msgno,
+					     section, len, flags, 
+					     0, NULL, 1));
+    else
+#endif
+      return(mail_fetch_text(stream, msgno, section, len, flags));
+}
+
+
+/*
+ * Determine whether to do partial-fetching or not, and do it
+ *    args - same as c-client functions being wrapped around
+ *    get_n_bytes - try to partial fetch for the first n bytes.
+ *                  makes no guarantees, might wind up fetching
+ *                  the entire text anyway.
+ *    str_to_free - pointer to string to free if we only get
+ *                  (non-cachable) partial text (required for
+ *                  get_n_bytes).
+ *    is_text_fetch - 
+ *      set, tells us to do mail_fetch_text and mail_partial_text
+ *      unset, tells us to do mail_fetch_body and mail_partial_body
+ */
+char *
+pine_mail_partial_fetch_wrapper(stream, msgno, section, len, flags,
+				get_n_bytes, str_to_free,
+				is_text_fetch)
+    MAILSTREAM *stream;
+    unsigned long msgno;
+    char *section;
+    unsigned long *len;
+    long flags;
+    unsigned long get_n_bytes;
+    char **str_to_free;
+    int is_text_fetch;
+{
     BODY *body;
     unsigned long size, firstbyte, lastbyte;
     void *old_gets;
     FETCH_READC_S *pftc;
     char imap_cache_section[MAILTMPLEN];
     SIZEDTEXT new_text;
+    MESSAGECACHE *mc;
+    char *(*fetch_full)(MAILSTREAM *, unsigned long, char *,
+		       unsigned long *, long);
+    long (*fetch_partial)(MAILSTREAM *, unsigned long, char *,
+			   unsigned long, unsigned long, long);
 
-    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global)){
+    fetch_full = is_text_fetch ? mail_fetch_text : mail_fetch_body;
+    fetch_partial = is_text_fetch ? mail_partial_text : mail_partial_body;
+    if(str_to_free)
+      *str_to_free = NULL;
+#ifdef _WINDOWS
+    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global) || get_n_bytes){
+#else
+    if(get_n_bytes){
+#endif /* _WINDOWS */
 	if(section && *section)
-	  body = mail_body(stream, msgno, section);
+	  body = mail_body(stream, msgno, (unsigned char *) section);
 	else
-	  mail_fetch_structure(stream, msgno, &body, flags);
+	  pine_mail_fetch_structure(stream, msgno, &body, flags);
 	if(!body)
 	  return NULL;
 	if(body->type != TYPEMULTIPART)
 	  size = body->size.bytes;
-	else if(!section || !*section)
-	  size = mail_elt(stream, msgno)->rfc822_size; /* upper bound */
+	else if((!section || !*section) && msgno > 0L
+	        && stream && msgno <= stream->nmsgs
+		&& (mc = mail_elt(stream, msgno)))
+	  size = mc->rfc822_size; /* upper bound */
 	else      /* just a guess, can't get actual size */
 	  size = fcc_size_guess(body) + 2048;
 
@@ -4743,19 +4921,45 @@ pine_mail_fetch_text(stream, msgno, section, len, flags)
 	 * section is NULL, which translates to "TEXT", but in other
 	 * cases we would want to append ".TEXT" to the section
 	 */
-	sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
-		section && *section ? section : "",
-		section && *section ? "." : "");
+	if(is_text_fetch)
+	  sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
+		  section && *section ? section : "",
+		  section && *section ? "." : "");
+	else
+	  sprintf(imap_cache_section, "%.*s", MAILTMPLEN - 10,
+		  section && *section ? section : "");
 
 	if(modern_imap_stream(stream)
-	   && (size > AVOID_MICROSOFT_SSL_CHUNKING_BUG)
+#ifdef _WINDOWS
+	   && ((size > AVOID_MICROSOFT_SSL_CHUNKING_BUG)
+	       || (get_n_bytes && size > get_n_bytes))
+#else
+	   && (get_n_bytes && size > get_n_bytes)
+#endif /* _WINDOWS */
 	   && !imap_cache(stream, msgno, imap_cache_section,
 			  NULL, NULL)){
-	    dprint(8, (debugfile, 
-   "pine_mail_fetch_text: doing partial fetching to work around microsoft bug\n"));
+	    if(get_n_bytes == 0){
+	      dprint(8, (debugfile, 
+    "fetch_wrapper: doing partial fetching to work around microsoft bug\n"));
+	    }
+	    else{
+	      dprint(8, (debugfile,
+    "fetch_wrapper: partial fetching due to %lu get_n_bytes\n", get_n_bytes));
+	    }
 	    pftc = (FETCH_READC_S *)fs_get(sizeof(FETCH_READC_S));
 	    memset(g_pft_desc = pftc, 0, sizeof(FETCH_READC_S));
-	    pftc->chunksize = AVOID_MICROSOFT_SSL_CHUNKING_BUG; 
+#ifdef _WINDOWS
+	    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global)){
+		if(get_n_bytes)
+		  pftc->chunksize = min(get_n_bytes,
+					AVOID_MICROSOFT_SSL_CHUNKING_BUG);
+		else
+		  pftc->chunksize = AVOID_MICROSOFT_SSL_CHUNKING_BUG;
+	    }
+	    else
+#endif /* _WINDOWS */
+	    pftc->chunksize = get_n_bytes;
+
 	    pftc->chunk = (char *) fs_get((pftc->chunksize+1)
 					  * sizeof(char));
 	    pftc->cache = so_get(CharStar, NULL, EDIT_ACCESS);
@@ -4767,24 +4971,47 @@ pine_mail_fetch_text(stream, msgno, section, len, flags)
 	    do{
 		firstbyte = pftc->read ;
 		lastbyte = firstbyte + pftc->chunksize;
-		mail_partial_text(stream, msgno, section, firstbyte,
-				  pftc->chunksize, flags);
+		if(get_n_bytes > firstbyte && get_n_bytes < lastbyte){
+		    pftc->chunksize = get_n_bytes - firstbyte;
+		    lastbyte = get_n_bytes;
+		}
+		(*fetch_partial)(stream, msgno, section, firstbyte,
+				 pftc->chunksize, flags);
+
 		if(pftc->read != lastbyte)
 		  break;
-	    } while(pftc->read ==  lastbyte);
-	    dprint(8, (debugfile, 
-   "pine_mail_fetch_text: anticipated size=%lu read=%lu\n",
+	    } while((pftc->read ==  lastbyte)
+		    && (!get_n_bytes || (pftc->read < get_n_bytes)));
+	    dprint(8, (debugfile,
+		       "fetch_wrapper: anticipated size=%lu read=%lu\n",
 		       size, pftc->read));
 	    mail_parameters(stream, SET_GETS, old_gets);
 	    new_text.size = pftc->read;
 	    new_text.data = (unsigned char *)so_text(pftc->cache);
 
-	    /* ugh, rewrite string in case it got stomped on last call */
-	    sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
-		    section && *section ? section : "",
-		    section && *section ? "." : "");
+	    if(get_n_bytes && pftc->read == get_n_bytes){
+		/* 
+		 * don't write to cache if we're only dealing with
+		 * partial text.
+		 */
+		if(!str_to_free)
+		  panic("Programmer botch: partial fetch attempt w/o string pointer");
+		else
+		  *str_to_free = (char *) new_text.data;
+	    }
+	    else {
+		/* ugh, rewrite string in case it got stomped on last call */
+		if(is_text_fetch)
+		  sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
+			  section && *section ? section : "",
+			  section && *section ? "." : "");
+		else
+		  sprintf(imap_cache_section, "%.*s", MAILTMPLEN - 10,
+			  section && *section ? section : "");
 
-	    imap_cache(stream, msgno, imap_cache_section, NULL, &new_text);
+		imap_cache(stream, msgno, imap_cache_section, NULL, &new_text);
+	    }
+
 	    pftc->cache->txt = (void *)NULL;
 	    so_give(&pftc->cache);
 	    fs_give((void **)&pftc->chunk);
@@ -4794,15 +5021,16 @@ pine_mail_fetch_text(stream, msgno, section, len, flags)
 	      *len = new_text.size;
 	    return ((char *)new_text.data);
 	}
-	else 
-	  return(mail_fetch_text(stream, msgno, section, len, flags));
+	else
+	  return((*fetch_full)(stream, msgno, section, len, flags));
     }
     else
-#endif /* _WINDOWS */
-    return(mail_fetch_text(stream, msgno, section, len, flags));
+      return((*fetch_full)(stream, msgno, section, len, flags));
 }
 
-#ifdef _WINDOWS
+/*
+ * c-client callback that handles getting the text
+ */
 char *
 partial_text_gets(f, stream, size, md)
     readfn_t f;
@@ -4823,7 +5051,7 @@ partial_text_gets(f, stream, size, md)
 
     return(NULL);
 }
-#endif /* _WINDOWS */
+
 
 /*
  *
@@ -5130,7 +5358,7 @@ display_msg_att_window(a)
     msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
 
     /* BUG, should check this return code */
-    (void) mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
+    (void) pine_mail_fetchstructure(ps_global->mail_stream, msgno, NULL);
 
     /* initialize a storage object */
     if(store = so_get(CharStar, NULL, EDIT_ACCESS)){

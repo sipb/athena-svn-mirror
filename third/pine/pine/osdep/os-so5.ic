@@ -48,7 +48,7 @@ include(fltrname)
 ; complicated.  They usually require different include files.  They are
 ; set up to include the file sunquota and prepend include file info to
 ; that.  See diskquot.*.
-include(diskquot.sv4)
+include(diskquot.so5)
 
 ; Read_file function.  All Unixes use readfile and DOS
 ; uses readfile.dos.

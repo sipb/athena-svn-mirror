@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pine.c,v 1.1.1.4 2004-03-01 21:15:40 ghudson Exp $";
+static char rcsid[] = "$Id: pine.c,v 1.1.1.5 2005-01-26 17:56:57 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: pine.c,v 1.1.1.4 2004-03-01 21:15:40 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2005 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -47,7 +47,7 @@ static char rcsid[] = "$Id: pine.c,v 1.1.1.4 2004-03-01 21:15:40 ghudson Exp $";
  * Handy local definitions...
  */
 #define	LEGAL_NOTICE \
-   "Copyright 1989-2003.  PINE is a trademark of the University of Washington."
+   "Copyright 1989-2005.  PINE is a trademark of the University of Washington."
 
 #define	PIPED_FD	5			/* Some innocuous desc	    */
 
@@ -74,6 +74,10 @@ char	    *pine_version = PINE_VERSION;	/* version string */
 char         tmp_20k_buf[SIZEOF_20KBUF];
 
 
+/* look for my_timer_period in pico directory for an explanation */
+int my_timer_period = ((IDLE_TIMEOUT + 1)*1000);
+
+
 /*
  * byte count used by our gets routine to keep track 
  */
@@ -83,6 +87,16 @@ unsigned long gets_bytes;
 /*
  * Internal prototypes
  */
+MAILSTREAM *sp_stream_get_full PROTO((char *, unsigned long, MAILSTREAM *));
+int     sp_add PROTO((MAILSTREAM *, int));
+int     sp_nusepool_notperm PROTO((void));
+void    sp_delete PROTO((MAILSTREAM *));
+void    sp_end PROTO((void));
+void    sp_free PROTO((PER_STREAM_S **));
+void    reset_stream_view_state PROTO((MAILSTREAM *));
+void    carefully_reset_sp_flags PROTO((MAILSTREAM *, unsigned long));
+void    pine_mail_actually_close PROTO((MAILSTREAM *));
+int     recent_activity PROTO((MAILSTREAM *));
 int	setup_menu PROTO((struct pine *));
 void	do_menu PROTO((int, Pos *, struct key_menu *));
 void	main_redrawer PROTO(());
@@ -92,15 +106,17 @@ int     choose_setup_cmd PROTO((int, MSGNO_S *, SCROLL_S *));
 void	queue_init_errors PROTO((struct pine *));
 void	upgrade_old_postponed PROTO(());
 void	goodnight_gracey PROTO((struct pine *, int));
+void    preopen_stayopen_folders PROTO((void));
 int	read_stdin_char PROTO(());
 void	pine_read_progress PROTO((GETS_DATA *, unsigned long));
 void	flag_search PROTO((MAILSTREAM *, int, MsgNo, MSGNO_S *,
 			   long (*) PROTO((MAILSTREAM *))));
 long    flag_search_sequence PROTO((MAILSTREAM *, MSGNO_S *, long, int));
 int	nuov_processor PROTO((int, MSGNO_S *, SCROLL_S *));
-MAILSTREAM *stream_cache PROTO((char *));
-void        cache_stream PROTO((MAILSTREAM *));
-void        end_stream_cache PROTO((void));
+void    pine_imap_cmd_happened PROTO((MAILSTREAM *, char *, long));
+int     same_remote_mailboxes PROTO((char *, char *));
+void    clear_index_cache_for_thread PROTO((MAILSTREAM *, PINETHRD_S *,
+					    MSGNO_S *));
 #ifdef	WIN32
 char   *pine_user_callback PROTO((void));
 #endif
@@ -255,9 +271,8 @@ main(argc, argv)
     ps_global->atmts->description = NULL;
     ps_global->low_speed       = 1;
     ps_global->init_context    = -1;
-    mn_init(&ps_global->msgmap, 0L);
     init_init_vars(ps_global);
-    ps_global->time_of_last_input = time((time_t *)0);
+    time_of_last_input = time(0);
 
 #if !defined(DOS) && !defined(OS2)
     /*
@@ -360,6 +375,10 @@ main(argc, argv)
     /* could be TO_BAIL_THRESHOLD, 15 seems more appropriate for now */
     pine_state->tcp_query_timeout = 15;
 
+    mail_parameters(NULL, SET_SENDCOMMAND, (void *) pine_imap_cmd_happened);
+    mail_parameters(NULL, SET_FREESTREAMSPAREP, (void *) sp_free_callback);
+    mail_parameters(NULL, SET_FREEELTSPAREP,    (void *) free_pine_elt);
+
     init_pinerc(pine_state, &init_pinerc_debugging);
 
 #ifdef DEBUG
@@ -383,7 +402,8 @@ main(argc, argv)
       init_debug();
 
     if(args_for_debug){
-	dprint(0, (debugfile, " %s\n\n", args_for_debug));
+	dprint(0, (debugfile, " %s (PID=%ld)\n\n", args_for_debug,
+	       (long) getpid()));
 	fs_give((void **)&args_for_debug);
     }
 
@@ -424,12 +444,6 @@ main(argc, argv)
 
     /*------- Set up c-client drivers -------*/ 
 #include "../c-client/linkage.c"
-    /*
-     * Lookups of long login names which don't exist are very slow in aix.
-     * This would normally get set in system-wide config if not needed.
-     */
-    if(F_ON(F_DISABLE_SHARED_NAMESPACES, ps_global))
-      mail_parameters(NULL, SET_DISABLEAUTOSHAREDNS, (void *) TRUE);
 
     /*------- ... then tune the drivers just installed -------*/ 
 #ifdef	DOS
@@ -483,7 +497,22 @@ main(argc, argv)
 	fs_give((void **)&init_pinerc_debugging);
     }
 
+    /*
+     * Initial allocation of array of stream pool pointers.
+     * We do this before init_vars so that we can re-use streams used for
+     * remote config files. These sizes may get changed later.
+     */
+    ps_global->s_pool.max_remstream  = 2;
+    dprint(9, (debugfile,
+	"Setting initial max_remstream to %d for remote config re-use\n",
+	ps_global->s_pool.max_remstream));
+
     init_vars(pine_state);
+
+    if(args.action == aaFolder){
+	pine_state->beginning_of_month = first_run_of_month();
+	pine_state->beginning_of_year = first_run_of_year();
+    }
 
     set_collation(F_OFF(F_DISABLE_SETLOCALE_COLLATE, ps_global),
 		  F_ON(F_ENABLE_SETLOCALE_CTYPE, ps_global));
@@ -506,7 +535,7 @@ main(argc, argv)
 
 	if(ps_global->prc){
 	    if(ps_global->prc->outstanding_pinerc_changes)
-	      write_pinerc(ps_global, Main);
+	      write_pinerc(ps_global, Main, WRP_NONE);
 
 	    free_pinerc_s(&pine_state->prc);
 	}
@@ -562,6 +591,19 @@ main(argc, argv)
 	      mail_parameters(NULL, SET_SNARFINTERVAL, (void *) rvl);
 	}
     }
+
+    /*
+     * Lookups of long login names which don't exist are very slow in aix.
+     * This would normally get set in system-wide config if not needed.
+     */
+    if(F_ON(F_DISABLE_SHARED_NAMESPACES, ps_global))
+      mail_parameters(NULL, SET_DISABLEAUTOSHAREDNS, (void *) TRUE);
+
+    if(F_ON(F_HIDE_NNTP_PATH, ps_global))
+      mail_parameters(NULL, SET_NNTPHIDEPATH, (void *) TRUE);
+
+    if(F_ON(F_MAILDROPS_PRESERVE_STATE, ps_global))
+      mail_parameters(NULL, SET_SNARFPRESERVE, (void *) TRUE);
 
     rvl = 0L;
     if(pine_state->VAR_NNTPRANGE){
@@ -707,7 +749,8 @@ main(argc, argv)
 
     init_screen();
     init_keyboard(pine_state->orig_use_fkeys);
-    strcpy(pine_state->inbox_name, INBOX_NAME);
+    strncpy(pine_state->inbox_name, INBOX_NAME,
+	    sizeof(pine_state->inbox_name)-1);
     init_folders(pine_state);		/* digest folder spec's */
 
     pine_state->in_init_seq = 0;	/* so output (& ClearScreen) show up */
@@ -749,7 +792,8 @@ main(argc, argv)
     if(args.action == aaFolder
        && (pine_state->first_time_user || pine_state->show_new_version)){
 	pine_state->mangled_header = 1;
-	show_main_screen(pine_state, 0, FirstMenu, &main_keymenu, 0, (Pos *)NULL);
+	show_main_screen(pine_state, 0, FirstMenu, &main_keymenu, 0,
+			 (Pos *) NULL);
 	new_user_or_version(pine_state);
 	ClearScreen();
     }
@@ -802,7 +846,7 @@ main(argc, argv)
     		}
 
     		if(rv == 1){
-		    q_status_message(SM_ORDER, 0, 2 ,"Cancelled");
+		    q_status_message(SM_ORDER, 0, 2, "Cancelled");
 		    goodnight_gracey(pine_state, -1);
 		} 
 
@@ -925,9 +969,9 @@ main(argc, argv)
 	    }
 
 	    memset((void *)&fcc, 0, sizeof(BUILDER_ARG));
-	    dprint(2, (debugfile, "building addr: -->%s<--\n", to));
+	    dprint(2, (debugfile, "building addr: -->%s<--\n", to ? to : "?"));
 	    good_addr = (build_address(to, &addr, &error, &fcc, NULL) >= 0);
-	    dprint(2, (debugfile, "mailing to: -->%s<--\n", addr));
+	    dprint(2, (debugfile, "mailing to: -->%s<--\n", addr ? addr : "?"));
 	    free_strlist(&args.data.mail.addrlist);
 	}
 	else
@@ -966,7 +1010,6 @@ main(argc, argv)
         /*========== Normal pine mail reading mode ==========*/
             
         pine_state->mail_stream    = NULL;
-        pine_state->inbox_stream   = NULL;
         pine_state->mangled_screen = 1;
 
 	if(args.action == aaURL){
@@ -1045,6 +1088,11 @@ main(argc, argv)
 
         fflush(stdout);
 
+#if !defined(DOS) && !defined(OS2) && !defined(LEAVEOUTFIFO)
+	if(ps_global->VAR_FIFOPATH && ps_global->VAR_FIFOPATH[0])
+	  init_newmailfifo(ps_global->VAR_FIFOPATH);
+#endif
+
 	if(pine_state->in_init_seq){
 	    pine_state->in_init_seq = 0;
 	    clear_cursor_pos();
@@ -1100,7 +1148,7 @@ main(argc, argv)
 		  rv--, cntxt = cntxt->next)
 		;
 
-            if(do_broach_folder(args.data.folder, cntxt, NULL) <= 0){
+            if(do_broach_folder(args.data.folder, cntxt, NULL, 0L) <= 0){
 		q_status_message1(SM_ORDER, 3, 4,
 		    "Unable to open folder \"%.200s\"", args.data.folder);
 
@@ -1170,7 +1218,7 @@ main(argc, argv)
 		    }
 
 		    do_broach_folder(pine_state->inbox_name, 
-				     pine_state->context_list, NULL);
+				     pine_state->context_list, NULL, 0L);
     		}
 		else
 		  q_status_message(SM_ORDER, 0, 2 ,"No folder opened");
@@ -1179,8 +1227,12 @@ main(argc, argv)
 	    else
 
 #endif
+	    if(F_ON(F_PREOPEN_STAYOPENS, ps_global))
+	      preopen_stayopen_folders();
+
+	    /* open inbox */
             do_broach_folder(pine_state->inbox_name,
-			     pine_state->context_list, NULL);
+			     pine_state->context_list, NULL, 0L);
         }
 
         if(pine_state->mangled_footer)
@@ -1240,6 +1292,11 @@ main(argc, argv)
 	  q_status_message(SM_ASYNC, 0, 10,
 "Note: mail-check-interval=0 may cause IMAP server connection to time out");
 
+#ifdef _WINDOWS
+	mswin_setnewmailwidth(ps_global->nmw_width);
+#endif
+
+
         /*-------------------------------------------------------------------
                          Loop executing the commands
     
@@ -1256,6 +1313,18 @@ main(argc, argv)
             (*(pine_state->next_screen))(pine_state);
         }
     }
+}
+
+
+void
+preopen_stayopen_folders()
+{
+    char  **open_these;
+
+    for(open_these = ps_global->VAR_PERMLOCKED;
+	open_these && *open_these; open_these++)
+      (void) do_broach_folder(*open_these, ps_global->context_list,
+			      NULL, DB_NOVISIT);
 }
 
 
@@ -1390,22 +1459,6 @@ main_menu_screen(pine_state)
     if(!pine_state->painted_body_on_startup 
        && !pine_state->painted_footer_on_startup){
 	pine_state->mangled_screen = 1;
-    }
-    else{
-	int len = strlen(mkeys[menu_index].key_and_name);
-	if(F_OFF(F_USE_FK,ps_global))
-	  len += strlen(km->keys[mkeys[menu_index].key_index].name);
-
-	if(ps_global->VAR_NEWS_SPEC && mkeys[menu_index].news_addition)
-	  len += strlen(mkeys[menu_index].news_addition);
-
-	curs_pos.col = max(((ps_global->ttyo->screen_cols - len) / 2) - 1, 0);
-	curs_pos.col += 6;
-	if(F_OFF(F_USE_FK,ps_global))
-	  curs_pos.col++;
-	
-	curs_pos.col = min(ps_global->ttyo->screen_cols-1, curs_pos.col);
-	curs_pos.row = menu_index + 3;
     }
 
     dprint(1, (debugfile, "\n\n    ---- MAIN_MENU_SCREEN ----\n"));
@@ -1755,14 +1808,14 @@ help_case :
 	    }
 #endif
 	    if(new_folder)
-	      visit_folder(ps_global, new_folder, tc, NULL);
+	      visit_folder(ps_global, new_folder, tc, NULL, 0L);
 
 	    return;
 
 
 	    /*---------- Go to index ----------*/
 	  case MC_INDEX :
-	    if(THREADING() && pine_state->viewing_a_thread)
+	    if(THREADING() && sp_viewing_a_thread(pine_state->mail_stream))
 	      unview_thread(pine_state, pine_state->mail_stream,
 			    pine_state->msgmap);
 
@@ -2800,23 +2853,19 @@ new_user_or_version(ps)
 #endif /* HELPFILE */
 
     /*
-     * You may think this is weird.  We're trying to offer sending
-     * the "phone home" message iff there's no evidence we've ever
-     * run pine *or* this is the first time we've run a version
-     * a version of pine >= 3.90.  The check for the existence of a var
-     * new in 3.90, is to compensate for pre 3.90 pine's rewriting their
-     * lower version number.
+     * We've simplified this now that pine 3.90 is sufficiently far in th
+     * past to be insignificant. Just set it if the major revision number
+     * (the first after the dot) has changed.
      */
     ps->phone_home = (ps->first_time_user
-		      || (ps->pre390
-			  && !var_in_pinerc(ps->vars[V_NNTP_SERVER].name))
-		      || !var_in_pinerc(ps->vars[V_MAILCHECK].name)  /* 3.92 */
-		      || !var_in_pinerc(ps->vars[V_BROWSER].name)    /* 4.00 */
-		      || !var_in_pinerc(ps->vars[V_PATTERNS].name)   /* 4.10 */
-								     /*4.20*/
-		      || !var_in_pinerc(ps->vars[V_TITLE_FORE_COLOR].name)
-		      || !var_in_pinerc(ps->vars[V_PAT_ROLES].name));/* 4.30 */
-
+		      || (ps->pine_pre_vers
+			  && isdigit((unsigned char) ps->pine_pre_vers[0])
+			  && ps->pine_pre_vers[1] == '.'
+			  && isdigit((unsigned char) ps->pine_pre_vers[2])
+			  && isdigit((unsigned char) pine_version[0])
+			  && pine_version[1] == '.'
+			  && isdigit((unsigned char) pine_version[2])
+			  && strncmp(ps->pine_pre_vers, pine_version, 3) < 0));
 
     /*
      * At this point, shown_text is a charstarstar with html
@@ -2832,8 +2881,8 @@ new_user_or_version(ps)
 
 	    gf_link_filter(gf_html2plain,
 			   gf_html2plain_opt("x-pine-help:",
-					   ps->ttyo->screen_cols,
-					   &handles, GFHP_LOCAL_HANDLES));
+					     ps->ttyo->screen_cols, NULL,
+					     &handles, GFHP_LOCAL_HANDLES));
 
 	    error = gf_pipe(helper_getc, pc);
 
@@ -2923,7 +2972,10 @@ new_user_or_version(ps)
      * and they have expanded-view set, then silently enable
      * combined-* features...
      */
-    if(!var_in_pinerc(ps->vars[V_BROWSER].name)){	/* 4.00 */
+    if(!var_in_pinerc(ps->vars[V_BROWSER].name)
+       && isdigit((unsigned char) ps->pine_pre_vers[0])
+       && ps->pine_pre_vers[1] == '.'
+       && ps->pine_pre_vers[0] < '4'){
 	char ***alval;
 
 	if(F_ON(F_EXPANDED_FOLDERS, ps_global)){
@@ -2940,7 +2992,7 @@ new_user_or_version(ps)
 
 	if(F_ON(F_CMBND_FOLDER_DISP, ps_global)
 	   || F_ON(F_CMBND_ABOOK_DISP, ps_global))
-	  write_pinerc(ps_global, Main);
+	  write_pinerc(ps_global, Main, WRP_NONE);
     }
 }
 
@@ -3006,8 +3058,11 @@ upgrade_old_postponed()
 	if(strncmp(buf, "From ", 5)){
 	    dprint(1, (debugfile,
 		       "POSTPONED conversion %s --> <%s>%s\n",
-		       file_path,save_cntxt->context,
-		       ps_global->VAR_POSTPONED_FOLDER));
+		       file_path ? file_path : "?",
+		       (save_cntxt && save_cntxt->context)
+		         ? save_cntxt->context : "?",
+		       ps_global->VAR_POSTPONED_FOLDER
+		         ? ps_global->VAR_POSTPONED_FOLDER : "?"));
 	    so_seek(in_so, 0L, 0);
 	    if((out_so = so_get(CharStar, NULL, WRITE_ACCESS))
 	       && ((folder_exists(save_cntxt,
@@ -3039,7 +3094,8 @@ upgrade_old_postponed()
 		else{
 		    q_status_message(SM_ORDER | SM_DING, 3, 5,
 				     "Problem upgrading postponed message");
-		    dprint(1,(debugfile,"Conversion failed: %s\n",status));
+		    dprint(1,(debugfile,"Conversion failed: %s\n",
+			   status ? status : "?"));
 		}
 
 		gf_clear_so_readc(in_so);
@@ -3086,10 +3142,10 @@ quit_screen(pine_state)
     dprint(1, (debugfile, "\n\n    ---- QUIT SCREEN ----\n"));    
 
     if(F_ON(F_CHECK_MAIL_ONQUIT,ps_global)
-       && new_mail(1, VeryBadTime, NM_STATUS_MSG | NM_DEFER_SORT) >= 0
+       && new_mail(1, VeryBadTime, NM_STATUS_MSG | NM_DEFER_SORT) > 0
        && (quit = want_to("Quit even though new mail just arrived", 'y', 0,
 			  NO_HELP, WT_NORM)) != 'y'){
-	refresh_sort(pine_state->msgmap, SRT_VRB);
+	refresh_sort(pine_state->mail_stream, pine_state->msgmap, SRT_VRB);
         pine_state->next_screen = pine_state->prev_screen;
         return;
     }
@@ -3120,41 +3176,70 @@ goodnight_gracey(pine_state, exit_val)
     struct pine *pine_state;
     int		 exit_val;
 {
-    int   i, cur_is_inbox;
+    int   i, cnt_user_streams = 0;
     char *final_msg = NULL;
     char  msg[MAX_SCREEN_COLS+1];
     char *pf = "Pine finished";
+    MAILSTREAM *m;
     extern KBESC_T *kbesc;
 
     dprint(2, (debugfile, "goodnight_gracey:\n"));    
 
-    completely_done_with_adrbks();
-
-    cur_is_inbox = (pine_state->inbox_stream == pine_state->mail_stream);
-
-    /* clean up open streams */
-    dprint(5, (debugfile, "goodnight_gracey: close open streams\n"));    
-    if(pine_state->mail_stream)
-      expunge_and_close(pine_state->mail_stream, pine_state->context_current,
-			pine_state->cur_folder,
-			(!pine_state->inbox_stream || cur_is_inbox)
-			  ? &final_msg : NULL);
-    if(pine_state->msgmap)
-      mn_give(&pine_state->msgmap);
-
-    pine_state->redrawer = (void (*)())NULL;
-
-    if(pine_state->inbox_stream && !cur_is_inbox){
-	pine_state->mail_stream = pine_state->inbox_stream;
-	pine_state->msgmap      = pine_state->inbox_msgmap;
-	pine_state->expunge_count = 0L;
-	pine_state->dead_stream = pine_state->dead_inbox;
-        expunge_and_close(pine_state->inbox_stream, NULL,
-			  pine_state->inbox_name, &final_msg);
-	mn_give(&pine_state->msgmap);
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR))
+	  cnt_user_streams++;
     }
 
-    pine_state->inbox_stream = pine_state->mail_stream = NULL;
+    /* clean up open streams */
+
+    if(pine_state->mail_stream
+       && sp_flagged(pine_state->mail_stream, SP_LOCKED)
+       && sp_flagged(pine_state->mail_stream, SP_USERFLDR)){
+	dprint(5, (debugfile, "goodnight_gracey: close current stream\n"));    
+	expunge_and_close(pine_state->mail_stream,
+			  (cnt_user_streams <= 1) ? &final_msg : NULL, EC_NONE);
+	cnt_user_streams--;
+    }
+
+    pine_state->mail_stream = NULL;
+    pine_state->redrawer = (void (*)())NULL;
+
+    dprint(5, (debugfile,
+	    "goodnight_gracey: close other stream pool streams\n"));    
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+        /* 
+	 * fix global for functions that depend(ed) on it sort_folder.
+	 * Hopefully those will get phased out.
+	 */
+	ps_global->mail_stream = m;
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR)
+	   && !sp_flagged(m, SP_INBOX)){
+	    sp_set_expunge_count(m, 0L);
+	    expunge_and_close(m, (cnt_user_streams <= 1) ? &final_msg : NULL,
+			      EC_NONE);
+	    cnt_user_streams--;
+	}
+    }
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+        /* 
+	 * fix global for functions that depend(ed) on it (sort_folder).
+	 * Hopefully those will get phased out.
+	 */
+	ps_global->mail_stream = m;
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR)
+	   && sp_flagged(m, SP_INBOX)){
+	    dprint(5, (debugfile,
+		    "goodnight_gracey: close inbox stream stream\n"));    
+	    sp_set_expunge_count(m, 0L);
+	    expunge_and_close(m, (cnt_user_streams <= 1) ? &final_msg : NULL,
+			      EC_NONE);
+	    cnt_user_streams--;
+	}
+    }
 
 #ifdef _WINDOWS
     if(ps_global->ttyo)
@@ -3165,7 +3250,7 @@ goodnight_gracey(pine_state, exit_val)
 
     if(pine_state->prc){
 	if(pine_state->prc->outstanding_pinerc_changes)
-	  write_pinerc(pine_state, Main);
+	  write_pinerc(pine_state, Main, WRP_NONE);
 
 	if(pine_state->prc->rd)
 	  rd_close_remdata(&pine_state->prc->rd);
@@ -3178,7 +3263,7 @@ goodnight_gracey(pine_state, exit_val)
 
     if(pine_state->post_prc){
 	if(pine_state->post_prc->outstanding_pinerc_changes)
-	  write_pinerc(pine_state, Post);
+	  write_pinerc(pine_state, Post, WRP_NONE);
 
 	if(pine_state->post_prc->rd)
 	  rd_close_remdata(&pine_state->post_prc->rd);
@@ -3195,15 +3280,29 @@ goodnight_gracey(pine_state, exit_val)
     else
       strcpy(msg, pf);
 
-    end_stream_cache();
+    dprint(7, (debugfile, "goodnight_gracey: sp_end\n"));
+    ps_global->noshow_error = 1;
+    sp_end();
+
+    /* after sp_end, which might call a filter */
+    completely_done_with_adrbks();
+
+    dprint(7, (debugfile, "goodnight_gracey: end_screen\n"));
     end_screen(msg, exit_val);
+    dprint(7, (debugfile, "goodnight_gracey: end_titlebar\n"));
     end_titlebar();
+    dprint(7, (debugfile, "goodnight_gracey: end_keymenu\n"));
     end_keymenu();
 
+    dprint(7, (debugfile, "goodnight_gracey: end_keyboard\n"));
     end_keyboard(F_ON(F_USE_FK,pine_state));
+    dprint(7, (debugfile, "goodnight_gracey: end_ttydriver\n"));
     end_tty_driver(pine_state);
 #if !defined(DOS) && !defined(OS2)
     kbdestroy(kbesc);
+#if !defined(LEAVEOUTFIFO)
+    close_newmailfifo();
+#endif
 #endif
     end_signals(0);
     if(filter_data_file(0))
@@ -3216,8 +3315,6 @@ goodnight_gracey(pine_state, exit_val)
     close_every_pattern();
     free_extra_hdrs();
     free_contexts(&ps_global->context_list);
-    dprint(7, (debugfile, "goodnight_gracey: end_status_review\n"));    
-    end_status_review();
     dprint(7, (debugfile, "goodnight_gracey: free more memory\n"));    
 #ifdef	ENABLE_LDAP
     free_saved_query_parameters();
@@ -3268,7 +3365,13 @@ goodnight_gracey(pine_state, exit_val)
 #endif /* PASSFILE */
 
     if(ps_global->hdr_colors)
-      free_hdr_colors(&ps_global->hdr_colors);
+      free_spec_colors(&ps_global->hdr_colors);
+
+    if(ps_global->keywords)
+      free_keyword_list(&ps_global->keywords);
+
+    if(ps_global->kw_colors)
+      free_spec_colors(&ps_global->kw_colors);
 
     if(ps_global->atmts){
 	for(i = 0; ps_global->atmts[i].description; i++){
@@ -3360,7 +3463,10 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
     MESSAGECACHE       *mc;
     extern  MAILSTREAM *mm_search_stream;
 
-    new = ps_global->new_mail_count;
+    if(!stream)
+      return;
+
+    new = sp_new_mail_count(stream);
 
     /* Anything we don't already have flags for? */
     if(set_start){
@@ -3369,18 +3475,20 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	 * sequence order...
 	 */
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  mail_elt(stream, i)->sequence = 0;
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->sequence = 0;
 
 	for(i = set_start;
 	    (n = flag_search_sequence(stream, set_msgmap, i, MH_ANYTHD)) >= 0L;
 	    (flags & F_SRCHBACK) ? i-- : i++)
-	  if(n > 0L && !(mc = mail_elt(stream, n))->valid)
+	  if(n > 0L && n <= stream->nmsgs
+	     && (mc = mail_elt(stream, n)) && !mc->valid)
 	    mc->sequence = 1;
 
 	/* Unroll searchset in ascending sequence order */
 	set = &full_set;
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  if(mail_elt(stream, i)->sequence){
+	  if((mc = mail_elt(stream, i)) && mc->sequence){
 	      if(*set){
 		  if(((*set)->last ? (*set)->last : (*set)->first)+1L == i)
 		    (*set)->last = i;
@@ -3406,16 +3514,17 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	}
 	else{
 	    for(i = 1L; i <= stream->nmsgs; i++)
-	      mail_elt(stream, i)->searched = 0;
+	      if((mc = mail_elt(stream, i)) != NULL)
+	        mc->searched = 0;
 
 	    if(ping)
 	      (*ping)(stream);	/* prod server for any flag updates */
 
-	    if(new != ps_global->new_mail_count){
-		process_filter_patterns(stream, ps_global->msgmap,
-					ps_global->new_mail_count);
+	    if(new != sp_new_mail_count(stream)){
+		process_filter_patterns(stream, sp_msgmap(stream),
+					sp_new_mail_count(stream));
 
-		refresh_sort(ps_global->msgmap, SRT_NON);
+		refresh_sort(stream, sp_msgmap(stream), SRT_NON);
 		flag_search(stream, flags, set_start, set_msgmap, ping);
 	    }
 
@@ -3537,12 +3646,12 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 
 	pgm->msgno = full_set;
 
-	mail_search_full(mm_search_stream = stream, NULL,
-			 pgm, SE_NOPREFETCH | SE_FREE);
+	pine_mail_search_full(mm_search_stream = stream, NULL,
+			      pgm, SE_NOPREFETCH | SE_FREE);
 
-	if(new != ps_global->new_mail_count){
-	    process_filter_patterns(stream, ps_global->msgmap,
-				    ps_global->new_mail_count);
+	if(new != sp_new_mail_count(stream)){
+	    process_filter_patterns(stream, sp_msgmap(stream),
+				    sp_new_mail_count(stream));
 
 	    flag_search(stream, flags, set_start, set_msgmap, ping);
 	}
@@ -3557,17 +3666,19 @@ flag_search(stream, flags, set_start, set_msgmap, ping)
 	    for(i = 1L;
 		(n = flag_search_sequence(stream, set_msgmap, i, MH_ANYTHD)) >= 0L;
 		i++)
-	      if(n > 0L && !(mc = mail_elt(stream, n))->valid)
+	      if(n > 0L && n <= stream->nmsgs
+		 && (mc = mail_elt(stream, n)) && !mc->valid)
 		mc->sequence = 1;
 	      else
 		mc->sequence = 0;
 	}
 
 	for(i = 1L; i <= stream->nmsgs; i++)
-	  mail_elt(stream, i)->searched = 0;
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->searched = 0;
 
 	if(seq = build_sequence(stream, NULL, NULL)){
-	    mail_fetch_flags(stream, seq, 0L);
+	    pine_mail_fetch_flags(stream, seq, 0L);
 	    fs_give((void **) &seq);
 	}
     }
@@ -3600,12 +3711,15 @@ count_flagged(stream, flags)
     long		n, count;
     MESSAGECACHE       *mc;
 
-    flag_search(stream, flags, 1, NULL, mail_ping);
+    if(!stream)
+      return(0L);
+
+    flag_search(stream, flags, 1, NULL, pine_mail_ping);
 
     /* Paw thru once more since all should be updated */
     for(n = 1L, count = 0L; n <= stream->nmsgs; n++)
-      if(((mc = mail_elt(stream, n))->searched
-	  || (mc->valid && FLAG_MATCH(flags, mc)))
+      if((((mc = mail_elt(stream, n)) && mc->searched)
+	  || (mc && mc->valid && FLAG_MATCH(flags, mc)))
 	 && !get_lflag(stream, NULL, n, MN_EXLD)){	  
 	  mc->searched = 1;	/* caller may be interested! */
 	  count++;
@@ -3635,21 +3749,25 @@ first_sorted_flagged(flags, stream, set_start, opts)
     MsgNo	  i, n, start_with, winner = 0L;
     MESSAGECACHE *mc;
     int		  last;
+    MSGNO_S      *msgmap;
+
+    msgmap = sp_msgmap(stream);
 
     last = (opts & FSF_LAST);
 
     /* set_start only affects which search bits we light */
     start_with = set_start ? set_start
 			   : (flags & F_SRCHBACK)
-			       ? mn_get_total(ps_global->msgmap) : 1L;
-    flag_search(stream, flags, start_with, ps_global->msgmap, NULL);
+			       ? mn_get_total(msgmap) : 1L;
+    flag_search(stream, flags, start_with, msgmap, NULL);
 
     for(i = start_with;
-	(n = flag_search_sequence(stream, ps_global->msgmap, i,
+	(n = flag_search_sequence(stream, msgmap, i,
 				 (opts & FSF_SKIP_CHID) ? 0 : MH_ANYTHD)) >= 0L;
 	(flags & F_SRCHBACK) ? i-- : i++)
-      if(n && ((mc = mail_elt(stream, n))->searched
-	       || (mc->valid && FLAG_MATCH(flags, mc)))){
+      if(n > 0L && n <= stream->nmsgs
+	 && (((mc = mail_elt(stream, n)) && mc->searched)
+	       || (mc && mc->valid && FLAG_MATCH(flags, mc)))){
 	  winner = i;
 	  if(!last)
 	    break;
@@ -3659,21 +3777,21 @@ first_sorted_flagged(flags, stream, set_start, opts)
 	dprint(4, (debugfile,
 	   "First_sorted_flagged didn't find a winner, look for undeleted\n"));
 	winner = first_sorted_flagged(F_UNDEL, stream, 0L,
-		opts | (mn_get_revsort(ps_global->msgmap) ? 0 : FSF_LAST));
+		opts | (mn_get_revsort(msgmap) ? 0 : FSF_LAST));
     }
 
     if(winner == 0L && flags != F_NONE){
 	dprint(4, (debugfile,
           "First_sorted_flagged didn't find an undeleted, look for visible\n"));
 	winner = first_sorted_flagged(F_NONE, stream, 0L,
-		opts | (mn_get_revsort(ps_global->msgmap) ? 0 : FSF_LAST));
+		opts | (mn_get_revsort(msgmap) ? 0 : FSF_LAST));
     }
 
     dprint(4, (debugfile,
 	       "First_sorted_flagged returning winner = %ld\n", winner));
     return(winner ? winner
-		  : (mn_get_revsort(ps_global->msgmap)
-		      ? 1L : mn_get_total(ps_global->msgmap)));
+		  : (mn_get_revsort(msgmap)
+		      ? 1L : mn_get_total(msgmap)));
 }
 
 
@@ -3702,6 +3820,9 @@ next_sorted_flagged(flags, stream, start, opts)
     MsgNo	  i, n, dir;
     MESSAGECACHE *mc;
     int           rev, fss_flags = 0;
+    MSGNO_S      *msgmap;
+
+    msgmap = sp_msgmap(stream);
 
     /*
      * Search for the next thing the caller's interested in...
@@ -3712,15 +3833,16 @@ next_sorted_flagged(flags, stream, start, opts)
     dir = (rev ? -1L : 1L);
 
     flag_search(stream, flags | (rev ? F_SRCHBACK : 0), start + dir,
-		ps_global->msgmap,
-		(opts && ((*opts) & NSF_TRUST_FLAGS)) ? NULL : mail_ping);
+		msgmap,
+		(opts && ((*opts) & NSF_TRUST_FLAGS)) ? NULL : pine_mail_ping);
 
     for(i = start + dir;
-	(n = flag_search_sequence(stream, ps_global->msgmap,
+	(n = flag_search_sequence(stream, msgmap,
 				  i, fss_flags)) >= 0L;
 	i += dir)
-      if(n && ((mc = mail_elt(stream, n))->searched
-	       || (mc->valid && FLAG_MATCH(flags, mc)))){
+      if(n > 0L && n <= stream->nmsgs
+	 && (((mc = mail_elt(stream, n)) && mc->searched)
+	       || (mc && mc->valid && FLAG_MATCH(flags, mc)))){
 	  /* actually found a msg matching the flags */
 	  if(opts)
 	    (*opts) |= NSF_FLAG_MATCH;
@@ -3729,7 +3851,7 @@ next_sorted_flagged(flags, stream, start, opts)
       }
     
 
-    return(min(start, mn_get_total(ps_global->msgmap)));
+    return(min(start, mn_get_total(msgmap)));
 }
 
 
@@ -3799,7 +3921,8 @@ set_lflag(stream, msgs, n, f, v)
     if(n < 1L || n > mn_get_total(msgs))
       return(0L);
 
-    if(mc = mail_elt(stream, (rawno=mn_m2raw(msgs, n)))){
+    if((rawno=mn_m2raw(msgs, n)) > 0L && stream && rawno <= stream->nmsgs
+       && (mc = mail_elt(stream, rawno))){
 	int was_invisible, is_invisible;
 	int chk_thrd_cnt = 0, thrd_was_visible, was_hidden, is_hidden;
 
@@ -3824,6 +3947,12 @@ set_lflag(stream, msgs, n, f, v)
 	if((f & MN_HIDE) && mc->spare != v){
 	    mc->spare = v;
 	    msgs->flagged_hid += (v) ? 1L : -1L;
+
+	    if(mc->spare && THREADING() && !THRD_INDX()
+	       && stream == ps_global->mail_stream
+	       && ps_global->thread_disp_style == THREAD_MUTTLIKE)
+	      clear_index_cache_for_thread(stream, fetch_thread(stream, rawno),
+					   sp_msgmap(stream));
 	}
 
 	if((f & MN_CHID) && mc->spare4 != v){
@@ -3889,6 +4018,31 @@ set_lflag(stream, msgs, n, f, v)
 }
 
 
+void
+clear_index_cache_for_thread(stream, thrd, msgmap)
+    MAILSTREAM *stream;
+    PINETHRD_S *thrd;
+    MSGNO_S    *msgmap;
+{
+    unsigned long msgno;
+
+    if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
+      return;
+
+    msgno = mn_raw2m(msgmap, thrd->rawno);
+
+    clear_index_cache_ent(msgno);
+
+    if(thrd->next)
+      clear_index_cache_for_thread(stream, fetch_thread(stream, thrd->next),
+				   msgmap);
+
+    if(thrd->branch)
+      clear_index_cache_for_thread(stream, fetch_thread(stream, thrd->branch),
+				   msgmap);
+}
+
+
 
 /*----------------------------------------------------------------------
   return whether the given flag is set somewhere in the folder
@@ -3930,7 +4084,23 @@ any_lflagged(msgs, f)
             candidate stream
    Returns: stream if it can be used, else NIL
 
-  This is called to weed out unnecessary use of c-client streams.
+  This is called to weed out unnecessary use of c-client streams. In other
+  words, to help facilitate re-use of streams.
+
+  This code is very similar to the same_remote_mailboxes code below, which
+  is used in pine_mail_open. That code compares to mailbox names. One is
+  usually from the config file and the other is either from the config file
+  or is typed in. Here and in same_stream_and_mailbox below, we're comparing
+  an open stream to a name instead of two names. We could conceivably use
+  same_remote_mailboxes to compare stream->mailbox to name, but it isn't
+  exactly the same and the differences may be important. Some stuff that
+  happens here seems wrong, but it isn't easy to fix.
+  Having !mb_n.port count as a match to any mb_s.port isn't right. It should
+  only match if mb_s.port is equal to the default, but the default isn't
+  something that is available to us. The same thing is done in c-client in
+  the mail_usable_network_stream() routine, and it isn't right there, either.
+  The semantics of a missing user are also suspect, because just like with
+  port, a default is used.
   ----*/
 MAILSTREAM *
 same_stream(name, stream)
@@ -3939,18 +4109,13 @@ same_stream(name, stream)
 {
     NETMBX mb_s, mb_n, mb_o;
 
-    dprint(7, (debugfile, "same_stream: %s == %s\n", name,
-	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
-
     if(stream && stream->mailbox && *stream->mailbox && name && *name
-       && !(stream == ps_global->mail_stream && ps_global->dead_stream)
-       && !(stream != ps_global->mail_stream
-	    && stream == ps_global->inbox_stream && ps_global->dead_inbox)
+       && !(sp_dead_stream(stream))
        && mail_valid_net_parse(stream->mailbox, &mb_s)
        && mail_valid_net_parse(stream->original_mailbox, &mb_o)
        && mail_valid_net_parse(name, &mb_n)
        && !strucmp(mb_n.service, mb_s.service)
-       && (!strucmp(mb_n.host, mb_o.host)
+       && (!strucmp(mb_n.host, mb_o.host)	/* s is already canonical */
 	   || !strucmp(canonical_name(mb_n.host), mb_s.host))
        && (!mb_n.port || mb_n.port == mb_s.port)
        && mb_n.anoflag == stream->anonymous
@@ -3971,11 +4136,15 @@ same_stream(name, stream)
 		   ||
 		   (!((mb_n.user && *mb_n.user) || (mb_s.user && *mb_s.user))
 		    && stream->anonymous))))){
-	dprint(7, (debugfile, "same_stream: yes\n"));
+	dprint(7, (debugfile, "same_stream: name->%s == stream->%s: yes\n",
+	       name ? name : "?",
+	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
 	return(stream);
     }
 
-    dprint(7, (debugfile, "same_stream: no dice\n"));
+    dprint(7, (debugfile, "same_stream: name->%s == stream->%s: no dice\n",
+	   name ? name : "?",
+	   (stream && stream->mailbox) ? stream->mailbox : "NULL"));
     return(NULL);
 }
 
@@ -3994,20 +4163,86 @@ same_stream_and_mailbox(name, stream)
 {
     NETMBX mb_s, mb_n;
 
-    dprint(7, (debugfile, "same_stream_and_mailbox: %s == %s\n", name,
-	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
-
     if(same_stream(name, stream)
        && mail_valid_net_parse(stream->mailbox, &mb_s)
        && mail_valid_net_parse(name, &mb_n)
        && (mb_n.mailbox && mb_s.mailbox
-       &&  !strucmp(mb_n.mailbox,mb_s.mailbox))){
-	dprint(7, (debugfile, "same_stream_and_mailbox: yes\n"));
+       &&  (!strcmp(mb_n.mailbox,mb_s.mailbox)  /* case depend except INBOX */
+            || (!strucmp(mb_n.mailbox,"INBOX")
+	        && !strucmp(mb_s.mailbox,"INBOX"))))){
+	dprint(7, (debugfile,
+	       "same_stream_and_mailbox: name->%s == stream->%s: yes\n",
+	       name ? name : "?",
+	       (stream && stream->mailbox) ? stream->mailbox : "NULL"));
 	return(stream);
     }
 
-    dprint(7, (debugfile, "same_stream_and_mailbox: no dice\n"));
+    dprint(7, (debugfile,
+	   "same_stream_and_mailbox: name->%s == stream->%s: no dice\n",
+	   name ? name : "?",
+	   (stream && stream->mailbox) ? stream->mailbox : "NULL"));
     return(NULL);
+}
+
+
+/*
+ * Args -- name1 and name2 are remote mailbox names.
+ *
+ * Returns --  True  if names refer to same mailbox accessed in same way
+ *             False if not
+ *
+ * This has some very similar code to same_stream_and_mailbox but we're not
+ * quite ready to discard the differences.
+ * The treatment of the port and the user is not quite the same.
+ */
+int
+same_remote_mailboxes(name1, name2)
+    char *name1, *name2;
+{
+    NETMBX mb1, mb2;
+    char *cn1;
+
+    /*
+     * Probably we should allow !port equal to default port, but we don't
+     * know how to get the default port. To match what c-client does we
+     * allow !port to be equal to anything.
+     */
+    return(name1 && IS_REMOTE(name1)
+	   && name2 && IS_REMOTE(name2)
+	   && mail_valid_net_parse(name1, &mb1)
+	   && mail_valid_net_parse(name2, &mb2)
+	   && !strucmp(mb1.service, mb2.service)
+	   && (!strucmp(mb1.host, mb2.host)	/* just to save DNS lookups */
+	       || !strucmp(cn1=canonical_name(mb1.host), mb2.host)
+	       || !strucmp(cn1, canonical_name(mb2.host)))
+	   && (!mb1.port || !mb2.port || mb1.port == mb2.port)
+	   && mb1.anoflag == mb2.anoflag
+	   && mb1.mailbox && mb2.mailbox
+	   && (!strcmp(mb1.mailbox, mb2.mailbox)
+	       || (!strucmp(mb1.mailbox,"INBOX")
+		   && !strucmp(mb2.mailbox,"INBOX")))
+	   && (struncmp(mb1.service, "imap", 4)
+		? 1
+	        : ((mb1.user && *mb1.user && mb2.user && *mb2.user
+		    && !strcmp(mb1.user, mb2.user))
+		   ||
+		   (!(mb1.user && *mb1.user) && !(mb2.user && *mb2.user))
+		   ||
+		   (!(mb1.user && *mb1.user)
+		    && ((ps_global->VAR_USER_ID
+		         && !strcmp(ps_global->VAR_USER_ID, mb2.user))
+		        ||
+		        (!ps_global->VAR_USER_ID
+			 && ps_global->ui.login[0]
+		         && !strcmp(ps_global->ui.login, mb2.user))))
+		   ||
+		   (!(mb2.user && *mb2.user)
+		    && ((ps_global->VAR_USER_ID
+		         && !strcmp(ps_global->VAR_USER_ID, mb1.user))
+		        ||
+		        (!ps_global->VAR_USER_ID
+			 && ps_global->ui.login[0]
+		         && !strcmp(ps_global->ui.login, mb1.user)))))));
 }
 
 
@@ -4049,6 +4284,9 @@ panic(message)
 {
     char buf[256];
 
+    /* global variable in .../pico/edef.h */
+    panicking = 1;
+
     if(ps_global->ttyo){
 	end_screen(NULL, -1);
 	end_keyboard(ps_global != NULL ? F_ON(F_USE_FK,ps_global) : 0);
@@ -4058,7 +4296,9 @@ panic(message)
     if(filter_data_file(0))
       unlink(filter_data_file(0));
 
-    dprint(1, (debugfile, "Pine Panic: %s\n", message));
+    dprint(1, (debugfile, "\n===========================================\n\n"));
+    dprint(1, (debugfile, "   Pine Panic: %s\n\n", message ? message : "?"));
+    dprint(1, (debugfile, "===========================================\n\n"));
 
     /* intercept c-client "free storage" errors */
     if(strstr(message, "free storage"))
@@ -4113,94 +4353,701 @@ panic1(message, arg)
 /*
  * Pine wrapper around mail_open. If we have the PREFER_ALT_AUTH flag turned
  * on, we need to set the TRYALT flag before trying the open.
+ * This routine manages the stream pool, too. It tries to re-use existing
+ * streams instead of opening new ones, or maybe it will leave one open and
+ * use a new one if that seems to make more sense. Pine_mail_close leaves
+ * streams open so that they may be re-used. Each pine_mail_open should have
+ * a matching pine_mail_close (or possible pine_mail_actually_close) somewhere
+ * that goes with it.
+ *
+ * Args:
+ *      stream -- A possible stream for recycling. This isn't usually the
+ *                way recycling happens. Usually it is automatic.
+ *     mailbox -- The mailbox to be opened.
+ *   openflags -- Flags passed here to modify the behavior.
+ *    retflags -- Flags returned from here. SP_MATCH will be lit if that is
+ *                what happened. If SP_MATCH is lit then SP_LOCKED may also
+ *                be lit if the matched stream was already locked when
+ *                we got here.
  */
 MAILSTREAM *
-pine_mail_open(stream, mailbox, flags)
+pine_mail_open(stream, mailbox, openflags, retflags)
     MAILSTREAM *stream;
     char       *mailbox;
-    long	flags;
+    long	openflags;
+    long       *retflags;
 {
-    MAILSTREAM *retstream;
-    DRIVER *d;
+    MAILSTREAM *retstream = NULL;
+    DRIVER     *d;
+    int         permlocked = 0, is_inbox = 0, usepool = 0, tempuse = 0, uf = 0;
+    unsigned long flags;
+    char      **lock_these;
+    static unsigned long streamcounter = 0;
 
     dprint(7, (debugfile,
-	       "pine_mail_open: opening \"%s\"%s flag=0x%x %s%s%s%s\n", 
-	       mailbox ? mailbox : "(NULL)",
-	       stream ? "" : " (stream was NULL)",
-	       flags,
-	       flags & OP_HALFOPEN ? " OP_HALFOPEN" : "",
-	       flags & OP_READONLY ? " OP_READONLY" : "",
-	       flags & OP_SILENT ? " OP_SILENT" : "",
-	       flags & OP_DEBUG ? " OP_DEBUG" : ""));
+    "pine_mail_open: opening \"%s\"%s openflags=0x%x %s%s%s%s%s%s%s%s%s (%s)\n",
+	   mailbox ? mailbox : "(NULL)",
+	   stream ? "" : " (stream was NULL)",
+	   openflags,
+	   openflags & OP_HALFOPEN   ? " OP_HALFOPEN"   : "",
+	   openflags & OP_READONLY   ? " OP_READONLY"   : "",
+	   openflags & OP_SILENT     ? " OP_SILENT"     : "",
+	   openflags & OP_DEBUG      ? " OP_DEBUG"      : "",
+	   openflags & SP_PERMLOCKED ? " SP_PERMLOCKED" : "",
+	   openflags & SP_INBOX      ? " SP_INBOX"      : "",
+	   openflags & SP_USERFLDR   ? " SP_USERFLDR"   : "",
+	   openflags & SP_USEPOOL    ? " SP_USEPOOL"    : "",
+	   openflags & SP_TEMPUSE    ? " SP_TEMPUSE"    : "",
+	   debug_time(1, ps_global->debug_timestamp)));
+    
+    if(retflags)
+      *retflags = 0L;
+
+    is_inbox    = openflags & SP_INBOX;
+    uf          = openflags & SP_USERFLDR;
+
+    /* inbox is still special, assume that we want to permlock it */
+    permlocked  = (is_inbox || openflags & SP_PERMLOCKED) ? 1 : 0;
+
+    /* check to see if user wants this folder permlocked */
+    for(lock_these = ps_global->VAR_PERMLOCKED;
+	uf && !permlocked && lock_these && *lock_these; lock_these++){
+	char *p = NULL, *dummy = NULL, *lt, *lname, *mname;
+	char  tmp1[MAILTMPLEN], tmp2[MAILTMPLEN];
+
+	/* there isn't really a pair, it just dequotes for us */
+	get_pair(*lock_these, &dummy, &p, 0, 0);
+
+	/*
+	 * Check to see if this is an incoming nickname and replace it
+	 * with the full name.
+	 */
+	if(!(p && ps_global->context_list
+	     && ps_global->context_list->use & CNTXT_INCMNG
+	     && (lt=folder_is_nick(p, FOLDERS(ps_global->context_list), 0))))
+	  lt = p;
+
+	if(dummy)
+	  fs_give((void **) &dummy);
+	
+	if(lt && mailbox
+	   && (same_remote_mailboxes(mailbox, lt)
+	       ||
+	       (!IS_REMOTE(mailbox)
+	        && (lname=mailboxfile(tmp1, lt))
+	        && (mname=mailboxfile(tmp2, mailbox))
+	        && !strcmp(lname, mname))))
+	  permlocked++;
+
+	if(p)
+	  fs_give((void **) &p);
+    }
+
+    /*
+     * Only cache if remote, not nntp, not pop, and caller asked us to.
+     * It might make sense to do some caching for nntp and pop, as well, but
+     * we aren't doing it right now. For example, an nntp stream open to
+     * one group could be reused for another group. An open pop stream could
+     * be used for mail_copy_full.
+     *
+     * An implication of doing only imap here is that sp_stream_get will only
+     * be concerned with imap streams.
+     */
+    if((d = mail_valid (NIL, mailbox, (char *) NIL))
+       && !strcmp(d->name, "imap")){
+	usepool = openflags & SP_USEPOOL;
+	tempuse = openflags & SP_TEMPUSE;
+    }
+    else{
+	if(IS_REMOTE(mailbox)){
+	    dprint(9, (debugfile, "pine_mail_open: not cacheable: %s\n", !d ? "no driver?" : d->name ? d->name : "?" ));
+	}
+	else{
+	    if(permlocked){
+		/*
+		 * This is a strange case. We want to allow stay-open local
+		 * folders, but they don't fit into the rest of the framework
+		 * well. So we'll look for it being already open in this case
+		 * and special-case it (the already_open_stream() case
+		 * below).
+		 */
+		dprint(9, (debugfile,
+   "pine_mail_open: not cacheable: not remote, but check for local stream\n"));
+	    }
+	    else{
+		dprint(9, (debugfile,
+		       "pine_mail_open: not cacheable: not remote\n"));
+	    }
+	}
+    }
+
+    /* If driver doesn't support halfopen, just open it. */
+    if(d && (openflags & OP_HALFOPEN) && !(d->flags & DR_HALFOPEN)){
+	openflags &= ~OP_HALFOPEN;
+	dprint(9, (debugfile,
+	       "pine_mail_open: turning off OP_HALFOPEN flag\n"));
+    }
+
+    /*
+     * Some of the flags are pine's, the rest are meant for mail_open.
+     * We've noted the pine flags, now remove them before we call mail_open.
+     */
+    openflags &= ~(SP_USEPOOL | SP_TEMPUSE | SP_INBOX
+		   | SP_PERMLOCKED | SP_USERFLDR);
 
 #ifdef	DEBUG
     if(ps_global->debug_imap > 3 || ps_global->debugmem)
-      flags |= OP_DEBUG;
+      openflags |= OP_DEBUG;
 #endif
     
     if(F_ON(F_PREFER_ALT_AUTH, ps_global)){
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap"))
-	  flags |= OP_TRYALT;
+	  openflags |= OP_TRYALT;
     }
 
     if(F_ON(F_ENABLE_MULNEWSRCS, ps_global)){
-	if((d = mail_valid(NIL, mailbox, (char *) NIL))
+	if(!struncmp(mailbox, "#move", 5) && strlen(mailbox) > 7){
+	    char *mailbox_parse, *p;
+
+	    mailbox_parse = cpystr(mailbox+6);
+	    if(p = strindex(mailbox_parse, *(mailbox+5)))
+	      *p = '\0';
+	    if((d = mail_valid(NIL, mailbox_parse, (char *) NIL))
+	       && !strcmp(d->name, "nntp"))
+	      openflags |= OP_MULNEWSRC;
+	    fs_give((void **)&mailbox_parse);
+	}
+	else if((d = mail_valid(NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "nntp"))
-	  flags |= OP_MULNEWSRC;
+	  openflags |= OP_MULNEWSRC;
     }
 
-    /* try to re-use stream during startup */
-    if(!stream){
-	stream = stream_cache(mailbox);
-	if(stream)
-	  dprint(9,
-		 (debugfile, "pine_mail_open: attempting to re-use stream\n"));
+    /*    
+     * One of the problems is that the new-style stream caching (the
+     * sp_stream_get stuff) may conflict with some of the old-style caching
+     * (the passed in argument stream) that is still in the code. We should
+     * probably eliminate the old-style caching, but some of it is still useful,
+     * especially if it deals with something other than IMAP. We want to prevent
+     * mistakes caused by conflicts between the two styles. In particular, we
+     * don't want to have a new-style cached stream re-opened because of the
+     * old-style caching code. This can happen if a stream is passed in that
+     * is not useable, and then a new stream is opened because the passed in
+     * stream causes us to bypass the new caching code. Play it safe. If it
+     * is an IMAP stream, just close it. This should leave it in the new-style
+     * cache anyway, causing no loss. Maybe not if the cache wasn't large
+     * enough to have it in there in the first place, in which case we get
+     * a possibly unnecessary close and open. If it isn't IMAP we still have
+     * to worry about it because it will cause us to bypass the caching code.
+     * So if the stream isn't IMAP but the mailbox we're opening is, close it.
+     * The immediate alternative would be to try to emulate the code in
+     * mail_open that checks whether it is re-usable or not, but that is
+     * dangerous if that code changes on us.
+     */
+    if(stream){
+	if(is_imap_stream(stream)
+	   || ((d = mail_valid (NIL, mailbox, (char *) NIL))
+	       && !strcmp(d->name, "imap"))){
+	    if(is_imap_stream(stream)){
+		dprint(7, (debugfile,
+		       "pine_mail_open: closing passed in IMAP stream %s\n",
+		       stream->mailbox ? stream->mailbox : "?"));
+	    }
+	    else{
+		dprint(7, (debugfile,
+		       "pine_mail_open: closing passed in non-IMAP stream %s\n",
+		       stream->mailbox ? stream->mailbox : "?"));
+	    }
+
+	    pine_mail_close(stream);
+	    stream = NULL;
+	}
+    }
+
+    if((usepool && !stream && permlocked)
+       || (!usepool && permlocked
+	   && (retstream = already_open_stream(mailbox, AOS_NONE)))){
+	if(retstream)
+	  stream = retstream;
+	else
+	  stream = sp_stream_get(mailbox,
+			SP_MATCH | ((openflags & OP_READONLY) ? SP_RO_OK : 0));
+	if(stream){
+	    flags = SP_LOCKED
+		    | (usepool    ? SP_USEPOOL    : 0)
+		    | (permlocked ? SP_PERMLOCKED : 0)
+		    | (is_inbox   ? SP_INBOX      : 0)
+		    | (uf         ? SP_USERFLDR   : 0)
+		    | (tempuse    ? SP_TEMPUSE    : 0);
+
+	    /*
+	     * If the stream wasn't already locked, then we reset it so it
+	     * looks like we are reopening it. We have to worry about recent
+	     * messages since they will still be recent, if that affects us.
+	     */
+	    if(!(sp_flags(stream) & SP_LOCKED))
+	      reset_stream_view_state(stream);
+
+	    if(retflags){
+		*retflags |= SP_MATCH;
+		if(sp_flags(stream) & SP_LOCKED)
+		  *retflags |= SP_LOCKED;
+	    }
+
+	    if(sp_flags(stream) & SP_LOCKED
+	       && sp_flags(stream) & SP_USERFLDR
+	       && !(flags & SP_USERFLDR)){
+		sp_set_ref_cnt(stream, sp_ref_cnt(stream)+1);
+		dprint(7, (debugfile,
+		       "pine_mail_open: permlocked: ref cnt up to %d\n",
+		       sp_ref_cnt(stream)));
+	    }
+	    else if(sp_ref_cnt(stream) <= 0){
+		sp_set_ref_cnt(stream, 1);
+		dprint(7, (debugfile,
+		       "pine_mail_open: permexact: ref cnt set to %d\n",
+		       sp_ref_cnt(stream)));
+	    }
+
+	    carefully_reset_sp_flags(stream, flags);
+
+	    stream->silent = (openflags & OP_SILENT) ? T : NIL;
+		
+	    dprint(9, (debugfile, "pine_mail_open: stream was already open\n"));
+	    if(stream && stream->dtb && stream->dtb->name
+	       && !strcmp(stream->dtb->name, "imap")){
+		dprint(7, (debugfile, "pine_mail_open: next TAG %08lx\n",
+		       stream->gensym));
+	    }
+
+	    return(stream);
+	}
+    }
+
+    if(usepool && !stream){
+	/*
+	 * First, we look for an exact match, a stream which is already
+	 * open to the mailbox we are trying to re-open, and we use that.
+	 * Skip permlocked only because we did it above already.
+	 */
+	if(!permlocked)
+	  stream = sp_stream_get(mailbox,
+			SP_MATCH | ((openflags & OP_READONLY) ? SP_RO_OK : 0));
+
+	if(stream){
+	    flags = SP_LOCKED
+		    | (usepool    ? SP_USEPOOL    : 0)
+		    | (permlocked ? SP_PERMLOCKED : 0)
+		    | (is_inbox   ? SP_INBOX      : 0)
+		    | (uf         ? SP_USERFLDR   : 0)
+		    | (tempuse    ? SP_TEMPUSE    : 0);
+
+	    /*
+	     * If the stream wasn't already locked, then we reset it so it
+	     * looks like we are reopening it. We have to worry about recent
+	     * messages since they will still be recent, if that affects us.
+	     */
+	    if(!(sp_flags(stream) & SP_LOCKED))
+	      reset_stream_view_state(stream);
+
+	    if(retflags){
+		*retflags |= SP_MATCH;
+		if(sp_flags(stream) & SP_LOCKED)
+		  *retflags |= SP_LOCKED;
+	    }
+
+	    if(sp_flags(stream) & SP_LOCKED
+	       && sp_flags(stream) & SP_USERFLDR
+	       && !(flags & SP_USERFLDR)){
+		sp_set_ref_cnt(stream, sp_ref_cnt(stream)+1);
+		dprint(7, (debugfile,
+		       "pine_mail_open: matched: ref cnt up to %d\n",
+		       sp_ref_cnt(stream)));
+	    }
+	    else if(sp_ref_cnt(stream) <= 0){
+		sp_set_ref_cnt(stream, 1);
+		dprint(7, (debugfile,
+		       "pine_mail_open: exact: ref cnt set to %d\n",
+		       sp_ref_cnt(stream)));
+	    }
+
+	    carefully_reset_sp_flags(stream, flags);
+
+	    /*
+	     * We may be re-using a stream that was previously open
+	     * with OP_SILENT and now we don't want OP_SILENT, or vice
+	     * versa, I suppose. Fix it.
+	     *
+	     * WARNING: we're messing with c-client internals (by necessity).
+	     */
+	    stream->silent = (openflags & OP_SILENT) ? T : NIL;
+
+	    dprint(9, (debugfile, "pine_mail_open: stream already open\n"));
+	    if(stream && stream->dtb && stream->dtb->name
+	       && !strcmp(stream->dtb->name, "imap")){
+		dprint(7, (debugfile, "pine_mail_open: next TAG %08lx\n",
+		       stream->gensym));
+	    }
+
+	    return(stream);
+	}
+
+	/*
+	 * No exact match, look for a stream which is open to the same
+	 * server and marked for TEMPUSE.
+	 */
+	stream = sp_stream_get(mailbox, SP_SAME | SP_TEMPUSE);
+	if(stream){
+	    dprint(9, (debugfile,
+		    "pine_mail_open: attempting to re-use TEMP stream\n"));
+	}
+	/*
+	 * No SAME/TEMPUSE stream so we look to see if there is an
+	 * open slot available (we're not yet at max_remstream). If there
+	 * is an open slot, we'll just open a new stream and put it there.
+	 * If not, we'll go inside this conditional.
+	 */
+	else if(!permlocked
+		&& sp_nusepool_notperm() >= ps_global->s_pool.max_remstream){
+	    dprint(9, (debugfile,
+		    "pine_mail_open: no empty slots\n"));
+	    /*
+	     * No empty remote slots available. See if there is a
+	     * TEMPUSE stream that is open but to the wrong server.
+	     */
+	    stream = sp_stream_get(mailbox, SP_TEMPUSE);
+	    if(stream){
+		/*
+		 * We will close this stream and use the empty slot
+		 * that that creates.
+		 */
+		dprint(9, (debugfile,
+	    "pine_mail_open: close a TEMPUSE stream and re-use that slot\n"));
+		pine_mail_actually_close(stream);
+		stream = NULL;
+	    }
+	    else{
+
+		/*
+		 * Still no luck. Look for a stream open to the same
+		 * server that is just not locked. This would be a
+		 * stream that might be reusable in the future, but we
+		 * need it now instead.
+		 */
+		stream = sp_stream_get(mailbox, SP_SAME | SP_UNLOCKED);
+		if(stream){
+		    dprint(9, (debugfile,
+			    "pine_mail_open: attempting to re-use stream\n"));
+		}
+		else{
+		    /*
+		     * We'll take any UNLOCKED stream and re-use it.
+		     */
+		    stream = sp_stream_get(mailbox, 0);
+		    if(stream){
+			/*
+			 * We will close this stream and use the empty slot
+			 * that that creates.
+			 */
+			dprint(9, (debugfile,
+	    "pine_mail_open: close an UNLOCKED stream and re-use the slot\n"));
+			pine_mail_actually_close(stream);
+			stream = NULL;
+		    }
+		    else{
+			if(ps_global->s_pool.max_remstream){
+			  dprint(9, (debugfile, "pine_mail_open: all USEPOOL slots full of LOCKED streams, nothing to use\n"));
+			}
+			else{
+			  dprint(9, (debugfile, "pine_mail_open: no caching, max_remstream == 0\n"));
+			}
+
+			usepool = 0;
+			tempuse = 0;
+			if(permlocked){
+			    permlocked = 0;
+			    dprint(2, (debugfile,
+		    "pine_mail_open5: Can't mark folder Stay-Open: at max-remote limit\n"));
+			    q_status_message1(SM_ORDER, 3, 5,
+		  "Can't mark folder Stay-Open: reached max-remote limit (%s)",
+		  comatose((long) ps_global->s_pool.max_remstream));
+			}
+		    }
+		}
+	    }
+	}
+	else{
+	    dprint(9, (debugfile,
+		    "pine_mail_open: there is an empty slot to use\n"));
+	}
+
+	/*
+	 * We'll make an assumption here. If we were asked to halfopen a
+	 * stream then we'll assume that the caller doesn't really care if
+	 * the stream is halfopen or if it happens to be open to some mailbox
+	 * already. They are just saying halfopen because they don't need to
+	 * SELECT a mailbox. That's the assumption, anyway.
+	 */
+	if(openflags & OP_HALFOPEN && stream){
+	    dprint(9, (debugfile,
+	     "pine_mail_open: asked for HALFOPEN so returning stream as is\n"));
+	    sp_set_ref_cnt(stream, sp_ref_cnt(stream)+1);
+	    dprint(7, (debugfile,
+		   "pine_mail_open: halfopen: ref cnt up to %d\n",
+		   sp_ref_cnt(stream)));
+	    if(stream && stream->dtb && stream->dtb->name
+	       && !strcmp(stream->dtb->name, "imap")){
+		dprint(7, (debugfile, "pine_mail_open: next TAG %08lx\n",
+		       stream->gensym));
+	    }
+
+	    stream->silent = (openflags & OP_SILENT) ? T : NIL;
+
+	    return(stream);
+	}
+
+	/*
+	 * We're going to SELECT another folder with this open stream.
+	 */
+	if(stream){
+	    /*
+	     * We will have just pinged the stream to make sure it is
+	     * still alive. That ping may have discovered some new mail.
+	     * Before unselecting the folder, we should process the filters
+	     * for that new mail.
+	     */
+	    if(!sp_flagged(stream, SP_LOCKED)
+	       && !sp_flagged(stream, SP_USERFLDR)
+	       && sp_new_mail_count(stream))
+	      process_filter_patterns(stream, sp_msgmap(stream),
+				      sp_new_mail_count(stream));
+
+	    if(stream && stream->dtb && stream->dtb->name
+	       && !strcmp(stream->dtb->name, "imap")){
+		dprint(7, (debugfile,
+		   "pine_mail_open: cancel idle timer: TAG %08lx (%s)\n",
+		   stream->gensym, debug_time(1, ps_global->debug_timestamp)));
+	    }
+
+	    /*
+	     * We need to reset the counters and everything.
+	     * The easiest way to do that is just to delete all of the
+	     * sp_s data and let the open fill it in correctly for
+	     * the new folder.
+	     */
+	    sp_free((PER_STREAM_S **) &stream->sparep);
+	}
     }
 
     /*
      * When we pass a stream to mail_open, it will either re-use it or
      * close it.
      */
-    retstream = mail_open(stream, mailbox, flags);
+    retstream = mail_open(stream, mailbox, openflags);
 
-    /*
-     * When opening a newsgroup, c-client marks the messages up to the
-     * last Deleted as Unseen. If the feature news-approximates-new-status
-     * is on, we'd rather they be treated as Seen. That way, selecting New
-     * messages will give us the ones past the last Deleted. So we're going
-     * to change them to Seen. Since Seen is a session flag for news, making
-     * this change won't have any permanent effect. C-client also marks the
-     * messages after the last deleted Recent, which is the bit of
-     * information we'll use to find the  messages we want to change.
-     */
-    if(F_ON(F_FAKE_NEW_IN_NEWS, ps_global) &&
-       retstream && retstream->nmsgs > 0 && IS_NEWS(retstream)){
-	char         *seq;
-	long          i, mflags = ST_SET;
-	MESSAGECACHE *mc;
+    if(retstream){
+
+	dprint(7, (debugfile, "pine_mail_open: mail_open returns stream:\n  original_mailbox=%s\n  mailbox=%s\n  driver=%s rdonly=%d halfopen=%d secure=%d nmsgs=%ld recent=%ld\n", retstream->original_mailbox ? retstream->original_mailbox : "?", retstream->mailbox ? retstream->mailbox : "?", (retstream->dtb && retstream->dtb->name) ? retstream->dtb->name : "?", retstream->rdonly, retstream->halfopen, retstream->secure, retstream->nmsgs, retstream->recent));
 
 	/*
-	 * Search for !recent messages to set the searched bit for
-	 * those messages we want to change. Then we'll flip the bits.
+	 * So it is easier to figure out which command goes with which
+	 * stream when debugging, change the tag associated with each stream.
+	 * Of course, this will come after the SELECT, so the startup IMAP
+	 * commands will have confusing tags.
 	 */
-	(void)count_flagged(retstream, F_UNRECENT);
+	if(retstream != stream && retstream->dtb && retstream->dtb->name
+	   && !strcmp(retstream->dtb->name, "imap")){
+	    retstream->gensym += (streamcounter * 0x1000000);
+	    streamcounter = (streamcounter + 1) % (8 * 16);
+	}
 
-	for(i = 1L; i <= retstream->nmsgs; i++)
-	  if((mc = mail_elt(retstream,i))->searched)
-	    mc->sequence = 1;
-	  else
-	    mc->sequence = 0;
+	if(retstream && retstream->dtb && retstream->dtb->name
+	   && !strcmp(retstream->dtb->name, "imap")){
+	    dprint(7, (debugfile, "pine_mail_open: next TAG %08lx\n",
+		   retstream->gensym));
+	}
 
-	if(!is_imap_stream(retstream))
-	    mflags |= ST_SILENT;
-	if((seq = build_sequence(retstream, NULL, NULL)) != NULL){
-	    mail_flag(retstream, seq, "\\SEEN", mflags);
-	    fs_give((void **)&seq);
+	/*
+	 * Catch the case where our test up above (where usepool was set)
+	 * did not notice that this was news, but that we can tell once
+	 * we've opened the stream. (One such case would be an imap proxy
+	 * to an nntp server.)  Remove it from being cached here. There was
+	 * a possible penalty for not noticing sooner. If all the usepool
+	 * slots were full, we will have closed one of the UNLOCKED streams
+	 * above, preventing us from future re-use of that stream.
+	 * We could figure out how to do the test better with just the
+	 * name. We could open the stream and then close the other one
+	 * after the fact. Or we could just not worry about it since it is
+	 * rare.
+	 */
+	if(IS_NEWS(retstream)){
+	    usepool = 0;
+	    tempuse = 0;
+	}
+
+	/* make sure the message map has been instantiated */
+	(void) sp_msgmap(retstream);
+
+	flags = SP_LOCKED
+		| (usepool    ? SP_USEPOOL    : 0)
+		| (permlocked ? SP_PERMLOCKED : 0)
+		| (is_inbox   ? SP_INBOX      : 0)
+		| (uf         ? SP_USERFLDR   : 0)
+		| (tempuse    ? SP_TEMPUSE    : 0);
+
+	sp_flag(retstream, flags);
+	sp_set_recent_since_visited(retstream, retstream->recent);
+
+	/* initialize the reference count */
+	sp_set_ref_cnt(retstream, 1);
+	dprint(7, (debugfile, "pine_mail_open: reset: ref cnt set to %d\n",
+		   sp_ref_cnt(retstream)));
+
+	if(sp_add(retstream, usepool) != 0 && usepool){
+	    usepool = 0;
+	    tempuse = 0;
+	    flags = SP_LOCKED
+		    | (usepool    ? SP_USEPOOL    : 0)
+		    | (permlocked ? SP_PERMLOCKED : 0)
+		    | (is_inbox   ? SP_INBOX      : 0)
+		    | (uf         ? SP_USERFLDR   : 0)
+		    | (tempuse    ? SP_TEMPUSE    : 0);
+
+	    sp_flag(retstream, flags);
+	    (void) sp_add(retstream, usepool);
+	}
+
+
+	/*
+	 * When opening a newsgroup, c-client marks the messages up to the
+	 * last Deleted as Unseen. If the feature news-approximates-new-status
+	 * is on, we'd rather they be treated as Seen. That way, selecting New
+	 * messages will give us the ones past the last Deleted. So we're going
+	 * to change them to Seen. Since Seen is a session flag for news, making
+	 * this change won't have any permanent effect. C-client also marks the
+	 * messages after the last deleted Recent, which is the bit of
+	 * information we'll use to find the  messages we want to change.
+	 */
+	if(F_ON(F_FAKE_NEW_IN_NEWS, ps_global) &&
+	   retstream->nmsgs > 0 && IS_NEWS(retstream)){
+	    char         *seq;
+	    long          i, mflags = ST_SET;
+	    MESSAGECACHE *mc;
+
+	    /*
+	     * Search for !recent messages to set the searched bit for
+	     * those messages we want to change. Then we'll flip the bits.
+	     */
+	    (void)count_flagged(retstream, F_UNRECENT);
+
+	    for(i = 1L; i <= retstream->nmsgs; i++)
+	      if((mc = mail_elt(retstream,i)) && mc->searched)
+		mc->sequence = 1;
+	      else
+		mc->sequence = 0;
+
+	    if(!is_imap_stream(retstream))
+		mflags |= ST_SILENT;
+	    if((seq = build_sequence(retstream, NULL, NULL)) != NULL){
+		mail_flag(retstream, seq, "\\SEEN", mflags);
+		fs_give((void **)&seq);
+	    }
 	}
     }
 
     return(retstream);
+}
+
+
+void
+reset_stream_view_state(stream)
+    MAILSTREAM *stream;
+{
+    MSGNO_S *mm;
+
+    if(!stream)
+      return;
+
+    mm = sp_msgmap(stream);
+
+    if(!mm)
+      return;
+
+    sp_set_viewing_a_thread(stream, 0);
+    sp_set_need_to_rethread(stream, 0);
+
+    mn_reset_cur(mm, stream->nmsgs > 0L ? stream->nmsgs : 0L);  /* default */
+
+    mm->visible_threads = -1L;
+    mm->top             = 0L;
+    mm->max_thrdno      = 0L;
+    mm->top_after_thrd  = 0L;
+
+    mn_set_mansort(mm, 0);
+
+    /*
+     * Get rid of zooming and selections, but leave filtering flags. All the
+     * flag counts and everything should still be correct because set_lflag
+     * preserves them correctly.
+     */
+    if(any_lflagged(mm, MN_SLCT | MN_HIDE)){
+	long i;
+
+	for(i = 1L; i <= mn_get_total(mm); i++)
+	  set_lflag(stream, mm, i, MN_SLCT | MN_HIDE, 0);
+    }
+
+    /*
+     * We could try to set up a default sort order, but the caller is going
+     * to re-sort anyway if they are interested in sorting. So we won't do
+     * it here.
+     */
+}
+
+
+/*
+ * We have to be careful when we change the flags of an already
+ * open stream, because there may be more than one section of
+ * code actively using the stream.
+ * We allow turning on (but not off) SP_LOCKED
+ *                                   SP_PERMLOCKED
+ *                                   SP_USERFLDR
+ *                                   SP_INBOX
+ * We allow turning off (but not on) SP_TEMPUSE
+ */
+void
+carefully_reset_sp_flags(stream, flags)
+    MAILSTREAM   *stream;
+    unsigned long flags;
+{
+    if(sp_flags(stream) != flags){
+	/* allow turning on but not off */
+	if(sp_flags(stream) & SP_LOCKED && !(flags & SP_LOCKED))
+	  flags |= SP_LOCKED;
+
+	if(sp_flags(stream) & SP_PERMLOCKED && !(flags & SP_PERMLOCKED))
+	  flags |= SP_PERMLOCKED;
+
+	if(sp_flags(stream) & SP_USERFLDR && !(flags & SP_USERFLDR))
+	  flags |= SP_USERFLDR;
+
+	if(sp_flags(stream) & SP_INBOX && !(flags & SP_INBOX))
+	  flags |= SP_INBOX;
+
+
+	/* allow turning off but not on */
+	if(!(sp_flags(stream) & SP_TEMPUSE) && flags & SP_TEMPUSE)
+	  flags &= ~SP_TEMPUSE;
+	
+
+	/* leave the way they already are */
+	if((sp_flags(stream) & SP_FILTERED) != (flags & SP_FILTERED))
+	  flags = (flags & ~SP_FILTERED) | (sp_flags(stream) & SP_FILTERED);
+
+
+	if(sp_flags(stream) != flags)
+	  sp_flag(stream, flags);
+    }
 }
 
 
@@ -4214,9 +5061,11 @@ pine_mail_create(stream, mailbox)
     MAILSTREAM *stream;
     char       *mailbox;
 {
-    MAILSTREAM *origstream = stream;
+    MAILSTREAM *ourstream = NULL;
     long        return_val;
+    long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
+    DRIVER     *d;
 
     dprint(7, (debugfile, "pine_mail_create: creating \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -4231,33 +5080,40 @@ pine_mail_create(stream, mailbox)
 
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
-     * We'll leave it since it works and since it gives us OP_DEBUG.
+     * We'll leave it since it works.
      */
-    if(stream == NULL
-       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
-	DRIVER *d;
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_SILENT);
 
 	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
-	      flags |= OP_TRYALT;
+	      openflags |= OP_TRYALT;
+	}
+    }
 
-#ifdef	DEBUG
-	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	      flags |= OP_DEBUG;
-#endif
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_MATCH);
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_SAME);
 
-	    stream = pine_mail_open(NULL, mailbox, flags);
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 */
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+	    ourstream = stream;
 	}
     }
 
     return_val = mail_create(stream, mailbox);
 
-    if(stream != origstream)
-      pine_mail_close(stream);
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(return_val);
 }
@@ -4271,9 +5127,11 @@ pine_mail_delete(stream, mailbox)
     MAILSTREAM *stream;
     char       *mailbox;
 {
-    MAILSTREAM *origstream = stream;
+    MAILSTREAM *ourstream = NULL;
     long        return_val;
+    long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
+    DRIVER     *d;
 
     dprint(7, (debugfile, "pine_mail_delete: deleting \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -4288,33 +5146,43 @@ pine_mail_delete(stream, mailbox)
 
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
-     * We'll leave it since it works and since it gives us OP_DEBUG.
      */
-    if(stream == NULL
-       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
-	DRIVER *d;
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_SILENT);
 
 	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
-	      flags |= OP_TRYALT;
+	      openflags |= OP_TRYALT;
+	}
+    }
 
-#ifdef	DEBUG
-	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	      flags |= OP_DEBUG;
-#endif
+    /* oops, we seem to be deleting a selected stream */
+    if(!stream && (stream = sp_stream_get(mailbox, SP_MATCH))){
+	pine_mail_actually_close(stream);
+	stream = NULL;
+    }
 
-	    stream = pine_mail_open(NULL, mailbox, flags);
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_SAME);
+
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 */
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+	    ourstream = stream;
 	}
     }
 
     return_val = mail_delete(stream, mailbox);
 
-    if(stream != origstream)
-      pine_mail_close(stream);
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(return_val);
 }
@@ -4331,9 +5199,11 @@ pine_mail_append_full(stream, mailbox, flags, date, message)
     char       *date;
     STRING     *message;
 {
-    MAILSTREAM *origstream = stream;
+    MAILSTREAM *ourstream = NULL;
     long        return_val;
+    long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
+    DRIVER     *d;
 
     dprint(7, (debugfile, "pine_mail_append_full: appending to \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -4348,33 +5218,39 @@ pine_mail_append_full(stream, mailbox, flags, date, message)
 
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
-     * We'll leave it since it works and since it gives us OP_DEBUG.
      */
-    if(stream == NULL
-       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
-	DRIVER *d;
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_SILENT);
 
 	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
-	      flags |= OP_TRYALT;
+	      openflags |= OP_TRYALT;
+	}
+    }
 
-#ifdef	DEBUG
-	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	      flags |= OP_DEBUG;
-#endif
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_MATCH);
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_SAME);
 
-	    stream = pine_mail_open(NULL, mailbox, flags);
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 */
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+	    ourstream = stream;
 	}
     }
 
     return_val = mail_append_full(stream, mailbox, flags, date, message);
 
-    if(stream != origstream)
-      pine_mail_close(stream);
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(return_val);
 }
@@ -4384,15 +5260,18 @@ pine_mail_append_full(stream, mailbox, flags, date, message)
  * Pine wrapper around mail_append.
  */
 long
-pine_mail_append_multiple(stream, mailbox, af, data)
+pine_mail_append_multiple(stream, mailbox, af, data, not_this_stream)
     MAILSTREAM *stream;
     char       *mailbox;
     append_t    af;
     void       *data;
+    MAILSTREAM *not_this_stream;
 {
-    MAILSTREAM *origstream = stream;
+    MAILSTREAM *ourstream = NULL;
     long        return_val;
+    long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
+    DRIVER     *d;
 
     dprint(7, (debugfile, "pine_mail_append_multiple: appending to \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -4405,31 +5284,51 @@ pine_mail_append_multiple(stream, mailbox, af, data)
 		   mailbox ? mailbox : "(NULL)"));
     }
 
-    if(stream == NULL
-       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
-	DRIVER *d;
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_SILENT);
 
 	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
-	      flags |= OP_TRYALT;
+	      openflags |= OP_TRYALT;
+	}
+    }
 
-#ifdef	DEBUG
-	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	      flags |= OP_DEBUG;
-#endif
+    /*
+     * We have to be careful re-using streams for multiappend, because of
+     * the way it works. We call into c-client below but part of the call
+     * is data containing a callback function to us to supply the data to
+     * be appended. That function may need to get the data from the server.
+     * If that uses the same stream as we're trying to append on, we're
+     * in trouble. We can't call back into c-client from c-client on the same
+     * stream. (Just think about it, we're in the middle of an APPEND command.
+     * We can't issue a FETCH before the APPEND completes in order to complete
+     * the APPEND.) We can re-use a stream if it is a different stream from
+     * the one we are reading from, so that's what the not_this_stream
+     * argument is for.
+     */
+    if(!stream)
+      stream = sp_stream_get_full(mailbox, SP_MATCH, not_this_stream);
+    if(!stream)
+      stream = sp_stream_get_full(mailbox, SP_SAME, not_this_stream);
 
-	    stream = pine_mail_open(NULL, mailbox, flags);
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 */
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+	    ourstream = stream;
 	}
     }
 
     return_val = mail_append_multiple(stream, mailbox, af, data);
 
-    if(stream != origstream)
-      pine_mail_close(stream);
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(return_val);
 }
@@ -4445,9 +5344,11 @@ pine_mail_copy_full(stream, sequence, mailbox, options)
     char       *mailbox;
     long        options;
 {
-    MAILSTREAM *origstream = stream;
+    MAILSTREAM *ourstream = NULL;
     long        return_val;
+    long openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
     char        source[MAILTMPLEN], *target = NULL;
+    DRIVER     *d;
 
     dprint(7, (debugfile, "pine_mail_copy_full: copying to \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
@@ -4462,33 +5363,104 @@ pine_mail_copy_full(stream, sequence, mailbox, options)
 
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
-     * We'll leave it since it works and since it gives us OP_DEBUG.
      */
-    if(stream == NULL
-       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
-           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
-	DRIVER *d;
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_SILENT);
 
 	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
-	      flags |= OP_TRYALT;
+	      openflags |= OP_TRYALT;
+	}
+    }
 
-#ifdef	DEBUG
-	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
-	      flags |= OP_DEBUG;
-#endif
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_MATCH);
+    if(!stream)
+      stream = sp_stream_get(mailbox, SP_SAME);
 
-	    stream = pine_mail_open(NULL, mailbox, flags);
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 * Actually, mail_copy_full is the case where it might also be
+	 * useful to provide a stream in the nntp and pop3 cases. If we
+	 * cache such streams, then we will probably want to open one
+	 * here so that it gets cached.
+	 */
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, mailbox, openflags, NULL);
+	    ourstream = stream;
 	}
     }
 
     return_val = mail_copy_full(stream, sequence, mailbox, options);
 
-    if(stream != origstream)
-      pine_mail_close(stream);
+    if(ourstream)
+      pine_mail_close(ourstream);
+
+    return(return_val);
+}
+
+
+/*
+ * Pine wrapper around mail_rename.
+ */
+long
+pine_mail_rename(stream, old, new)
+    MAILSTREAM *stream;
+    char       *old,
+	       *new;
+{
+    MAILSTREAM *ourstream = NULL;
+    long        return_val;
+    long        openflags = (OP_HALFOPEN | OP_SILENT | SP_USEPOOL | SP_TEMPUSE);
+    DRIVER     *d;
+
+    dprint(7, (debugfile, "pine_mail_rename(%s,%s)\n", old ? old : "",
+		new ? new : ""));
+
+    /*
+     * We don't really need this anymore, since we are now using IMAPTRYALT.
+     */
+    if((F_ON(F_PREFER_ALT_AUTH, ps_global)
+       || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+
+	if((d = mail_valid (NIL, old, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      openflags |= OP_TRYALT;
+	}
+    }
+
+    /* oops, we seem to be renaming a selected stream */
+    if(!stream && (stream = sp_stream_get(old, SP_MATCH))){
+	pine_mail_actually_close(stream);
+	stream = NULL;
+    }
+
+    if(!stream)
+      stream = sp_stream_get(old, SP_SAME);
+
+    if(!stream){
+	/*
+	 * It is only useful to open a stream in the imap case.
+	 */
+	if((d = mail_valid (NIL, old, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+
+	    stream = pine_mail_open(NULL, old, openflags, NULL);
+	    ourstream = stream;
+	}
+    }
+
+    return_val = mail_rename(stream, old, new);
+
+    if(ourstream)
+      pine_mail_close(ourstream);
 
     return(return_val);
 }
@@ -4502,69 +5474,1136 @@ void
 pine_mail_close(stream)
     MAILSTREAM *stream;
 {
-    PARTEX_S **partp;
-    long       n;
+    unsigned long uid_last, last_uid;
+    int refcnt;
 
     if(!stream)
       return;
 
-    for(n = 1L; n <= stream->nmsgs; n++)
-      free_pine_elt((PINELT_S **) &mail_elt(stream, n)->sparep);
+    dprint(7, (debugfile, "pine_mail_close: %s (%s)\n", 
+	       stream && stream->mailbox ? stream->mailbox : "(NULL)",
+	       debug_time(1, ps_global->debug_timestamp)));
 
-    dprint(7, (debugfile, "pine_mail_close: closing \"%s\"\n", 
-	       stream && stream->mailbox ? stream->mailbox : "(NULL)"));
-    
-    cache_stream(stream);
-}
+    if(sp_flagged(stream, SP_USEPOOL) && !sp_dead_stream(stream)){
 
+	refcnt = sp_ref_cnt(stream);
+	dprint(7, (debugfile, "pine_mail_close: ref cnt is %d\n", refcnt));
 
-static MAILSTREAM *streamcache;
+	/*
+	 * Instead of checkpointing here, which takes time that the user
+	 * definitely notices, we checkpoint in new_mail at the next
+	 * opportune time, hopefully when the user is idle.
+	 */
+#if 0
+	if(sp_flagged(stream, SP_LOCKED) && sp_flagged(stream, SP_USERFLDR)
+	   && !stream->halfopen && refcnt <= 1){
+	    if(changes_to_checkpoint(stream))
+	      pine_mail_check(stream);
+	    else{
+	      dprint(7, (debugfile,
+		     "pine_mail_close: dont think we need to checkpoint\n"));
+	    }
+	}
+#endif
 
-MAILSTREAM *
-stream_cache(mailbox)
-    char *mailbox;
-{
-    MAILSTREAM *stream = NULL;
+	/*
+	 * Uid_last is valid when we first open a stream, but not always
+	 * valid after that. So if we know the last uid should be higher
+	 * than uid_last (!#%) use that instead.
+	 */
+	uid_last = stream->uid_last;
+	if(stream->nmsgs > 0L
+	   && (last_uid=mail_uid(stream,stream->nmsgs)) > uid_last)
+	  uid_last = last_uid;
 
-    if(same_stream(mailbox, streamcache)){
-	stream = streamcache;
-	streamcache = NULL;
+	sp_set_saved_uid_validity(stream, stream->uid_validity);
+	sp_set_saved_uid_last(stream, uid_last);
+
+	/*
+	 * If the reference count is down to 0, unlock it.
+	 * In any case, don't actually do any real closing.
+	 */
+	if(refcnt > 0)
+	  sp_set_ref_cnt(stream, refcnt-1);
+
+	refcnt = sp_ref_cnt(stream);
+	dprint(7, (debugfile, "pine_mail_close: ref cnt is %d\n", refcnt));
+	if(refcnt <= 0){
+	    dprint(7, (debugfile,
+	       "pine_mail_close: unlocking: start idle timer: TAG %08lx (%s)\n",
+	       stream->gensym, debug_time(1, ps_global->debug_timestamp)));
+	    sp_set_last_use_time(stream, time(0));
+
+	    /*
+	     * Logically, we ought to be unflagging SP_INBOX, too. However,
+	     * the filtering code uses SP_INBOX when deciding if it should
+	     * filter some things, and we keep filtering after the mailbox
+	     * is closed. So leave SP_INBOX alone. This (the closing of INBOX)
+	     * usually only happens in goodnight_gracey when we're
+	     * shutting everything down.
+	     */
+	    sp_unflag(stream, SP_LOCKED | SP_PERMLOCKED | SP_USERFLDR);
+	}
+	else{
+	    dprint(7, (debugfile, "pine_mail_close: ref cnt is now %d\n", 
+		       refcnt));
+	}
     }
-    else
-      end_stream_cache();
+    else{
+	dprint(7, (debugfile, "pine_mail_close: %s\n", 
+		   sp_flagged(stream, SP_USEPOOL) ? "dead stream" : "no pool"));
 
-    return(stream);
+	pine_mail_actually_close(stream);
+    }
 }
 
 
 void
-cache_stream(stream)
+pine_mail_actually_close(stream)
     MAILSTREAM *stream;
 {
-    /*
-     * stream caching is intended to save serial opening/closing/opening
-     * of folders on the same server as we start up and acquire remote
-     * config and such (that is, until we have an established initial
-     * mail session open). The general case is problematic in that we
-     * don't necessarily want to tie up server resources on the outside chance
-     * we may do some activity, so we add the !mail_stream requirement.
-     */
+    int  i;
+    long n;
 
-    if(!ps_global->mail_stream && !streamcache){
-	streamcache = stream;
-	dprint(9, (debugfile, "    caching stream for possible re-use\n"));
+    if(!stream)
+      return;
+
+    if(!sp_closing(stream)){
+	dprint(7, (debugfile, "pine_mail_actually_close: %s (%s)\n", 
+		   stream && stream->mailbox ? stream->mailbox : "(NULL)",
+		   debug_time(1, ps_global->debug_timestamp)));
+
+	sp_set_closing(stream, 1);
+	
+	if(!sp_flagged(stream, SP_LOCKED)
+	   && !sp_flagged(stream, SP_USERFLDR)
+	   && !sp_dead_stream(stream)
+	   && sp_new_mail_count(stream))
+	  process_filter_patterns(stream, sp_msgmap(stream),
+				  sp_new_mail_count(stream));
+	sp_delete(stream);
+
+	/*
+	 * let sp_free_callback() free the sp_s stuff and the callbacks to
+	 * free_pine_elt free the per-elt pine stuff.
+	 */
+	mail_close(stream);
     }
-    else
-      mail_close(stream);
+}
+
+
+/*
+ * If we haven't used a stream for a while, we may want to logout.
+ */
+void
+maybe_kill_old_stream(stream)
+    MAILSTREAM *stream;
+{
+#define KILL_IF_IDLE_TIME (25 * 60)
+    if(stream
+       && !sp_flagged(stream, SP_LOCKED)
+       && !sp_flagged(stream, SP_USERFLDR)
+       && time(0) - sp_last_use_time(stream) > KILL_IF_IDLE_TIME){
+
+	dprint(7, (debugfile,
+		"killing idle stream: %s (%s): idle timer = %ld secs\n", 
+		stream && stream->mailbox ? stream->mailbox : "(NULL)",
+		debug_time(1, ps_global->debug_timestamp),
+		(long) (time(0)-sp_last_use_time(stream))));
+
+	/*
+	 * Another thing we could do here instead is to unselect the
+	 * mailbox, leaving the stream open to the server.
+	 */
+	pine_mail_actually_close(stream);
+    }
+}
+
+
+/*
+ * Catch searches that don't need to go to the server.
+ * (Not anymore, now c-client does this for us.)
+ */
+long
+pine_mail_search_full(stream, charset, pgm, flags)
+    MAILSTREAM *stream;
+    char       *charset;
+    SEARCHPGM  *pgm;
+    long        flags;
+{
+    return(stream ? mail_search_full(stream, charset, pgm, flags) : NIL);
 }
 
 
 void
-end_stream_cache()
+pine_mail_fetch_flags(stream, sequence, flags)
+    MAILSTREAM *stream;
+    char       *sequence;
+    long        flags;
 {
-    if(streamcache){
-	mail_close(streamcache);
-	streamcache = NULL;
+    ps_global->dont_count_flagchanges = 1;
+    mail_fetch_flags(stream, sequence, flags);
+    ps_global->dont_count_flagchanges = 0;
+}
+
+
+ENVELOPE *
+pine_mail_fetchenvelope(stream, msgno)
+    MAILSTREAM   *stream;
+    unsigned long msgno;
+{
+    ENVELOPE *env = NULL;
+
+    ps_global->dont_count_flagchanges = 1;
+    if(stream && msgno > 0L && msgno <= stream->nmsgs)
+      env = mail_fetchenvelope(stream, msgno);
+
+    ps_global->dont_count_flagchanges = 0;
+    return(env);
+}
+
+
+ENVELOPE *
+pine_mail_fetch_structure(stream, msgno, body, flags)
+    MAILSTREAM   *stream;
+    unsigned long msgno;
+    BODY        **body;
+    long          flags;
+{
+    ENVELOPE *env = NULL;
+
+    ps_global->dont_count_flagchanges = 1;
+    if(stream && msgno > 0L && msgno <= stream->nmsgs)
+      env = mail_fetch_structure(stream, msgno, body, flags);
+
+    ps_global->dont_count_flagchanges = 0;
+    return(env);
+}
+
+
+ENVELOPE *
+pine_mail_fetchstructure(stream, msgno, body)
+    MAILSTREAM   *stream;
+    unsigned long msgno;
+    BODY        **body;
+{
+    ENVELOPE *env = NULL;
+
+    ps_global->dont_count_flagchanges = 1;
+    if(stream && msgno > 0L && msgno <= stream->nmsgs)
+      env = mail_fetchstructure(stream, msgno, body);
+
+    ps_global->dont_count_flagchanges = 0;
+    return(env);
+}
+
+
+/*
+ * Pings the stream. Returns 0 if the stream is dead, non-zero otherwise.
+ */
+long
+pine_mail_ping(stream)
+    MAILSTREAM *stream;
+{
+    time_t now;
+    long   ret = 0L;
+
+    if(!sp_dead_stream(stream)){
+	ret = mail_ping(stream);
+	if(ret && sp_dead_stream(stream))
+	  ret = 0L;
+    }
+
+    if(ret){
+	now = time(0);
+	sp_set_last_ping(stream, now);
+	sp_set_last_expunged_reaper(stream, now);
+    }
+
+    return(ret);
+}
+
+
+void
+pine_mail_check(stream)
+    MAILSTREAM *stream;
+{
+    reset_check_point(stream);
+    mail_check(stream);
+}
+
+
+/*
+ * Checks through stream cache for a stream pointer already open to
+ * this mailbox, read/write. Very similar to sp_stream_get, but we want
+ * to look at all streams, not just imap streams.
+ * Right now it is very specialized. If we want to use it more generally,
+ * generalize it or combine it with sp_stream_get somehow.
+ */
+MAILSTREAM *
+already_open_stream(mailbox, flags)
+    char *mailbox;
+    int   flags;
+{
+    int         i;
+    MAILSTREAM *m;
+
+    if(!mailbox)
+      return(NULL);
+
+    if(*mailbox == '{'){
+	for(i = 0; i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(m && !(flags & AOS_RW_ONLY && m->rdonly)
+	       && (*m->mailbox == '{') && !sp_dead_stream(m)
+	       && same_stream_and_mailbox(mailbox, m))
+	      return(m);
+	}
+    }
+    else{
+	char *cn, tmp[MAILTMPLEN];
+
+	cn = mailboxfile(tmp, mailbox);
+	for(i = 0; i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(m && !(flags & AOS_RW_ONLY && m->rdonly)
+	       && (*m->mailbox != '{') && !sp_dead_stream(m)
+	       && ((cn && *cn && !strcmp(cn, m->mailbox))
+	           || !strcmp(mailbox, m->original_mailbox)
+		   || !strcmp(mailbox, m->mailbox)))
+	      return(m);
+	}
+    }
+    
+    return(NULL);
+}
+
+
+void
+pine_imap_cmd_happened(stream, cmd, flags)
+    MAILSTREAM *stream;
+    char       *cmd;
+    long        flags;
+{
+    dprint(9, (debugfile, "imap_cmd(%s, %s, 0x%lx)\n",
+	    STREAMNAME(stream), cmd ? cmd : "?", flags));
+
+    if(cmd && !strucmp(cmd, "CHECK"))
+      reset_check_point(stream);
+
+    if(is_imap_stream(stream)){
+	time_t now;
+
+	now = time(0);
+	sp_set_last_ping(stream, now);
+	sp_set_last_activity(stream, now);
+	if(!(flags & SC_EXPUNGEDEFERRED))
+	  sp_set_last_expunged_reaper(stream, now);
+    }
+}
+
+
+/*
+ * Tells us whether we ought to check for a dead stream or not.
+ * We assume that we ought to check if it is not IMAP and if it is IMAP we
+ * don't need to check if the last activity was within the last 5 minutes.
+ */
+int
+recent_activity(stream)
+    MAILSTREAM *stream;
+{
+    if(is_imap_stream(stream) && !sp_dead_stream(stream)
+       && (time(0) - sp_last_activity(stream) < 5L * 60L))
+      return 1;
+    else
+      return 0;
+}
+
+
+void
+sp_cleanup_dead_streams()
+{
+    int         i;
+    MAILSTREAM *m;
+
+    (void) streams_died();	/* tell user in case they don't know yet */
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_dead_stream(m))
+	  pine_mail_close(m);
+    }
+}
+
+
+/*
+ * Returns 0 if stream flags not set, non-zero if they are.
+ */
+int
+sp_flagged(stream, flags)
+    MAILSTREAM   *stream;
+    unsigned long flags;
+{
+    return(sp_flags(stream) & flags);
+}
+
+
+void
+sp_set_fldr(stream, folder)
+    MAILSTREAM *stream;
+    char       *folder;
+{
+    PER_STREAM_S **pss;
+
+    pss = sp_data(stream);
+    if(pss && *pss){
+	if((*pss)->fldr)
+	  fs_give((void **) &(*pss)->fldr);
+	
+	if(folder)
+	  (*pss)->fldr = cpystr(folder);
+    }
+}
+
+
+void
+sp_set_saved_cur_msg_id(stream, id)
+    MAILSTREAM *stream;
+    char       *id;
+{
+    PER_STREAM_S **pss;
+
+    pss = sp_data(stream);
+    if(pss && *pss){
+	if((*pss)->saved_cur_msg_id)
+	  fs_give((void **) &(*pss)->saved_cur_msg_id);
+	
+	if(id)
+	  (*pss)->saved_cur_msg_id = cpystr(id);
+    }
+}
+
+
+/*
+ * Sets flags absolutely, erasing old flags.
+ */
+void
+sp_flag(stream, flags)
+    MAILSTREAM   *stream;
+    unsigned long flags;
+{
+    if(!stream)
+      return;
+
+    dprint(9, (debugfile, "sp_flag(%s, 0x%x): %s%s%s%s%s%s%s%s\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?",
+	    flags,
+	    flags ? "set" : "clear",
+	    (flags & SP_LOCKED)     ? " SP_LOCKED" : "",
+	    (flags & SP_PERMLOCKED) ? " SP_PERMLOCKED" : "",
+	    (flags & SP_INBOX)      ? " SP_INBOX"      : "",
+	    (flags & SP_USERFLDR)   ? " SP_USERFLDR"   : "",
+	    (flags & SP_USEPOOL)    ? " SP_USEPOOL"    : "",
+	    (flags & SP_TEMPUSE)    ? " SP_TEMPUSE"    : "",
+	    !flags                  ? " ALL" : ""));
+
+    sp_set_flags(stream, flags);
+}
+
+
+/*
+ * Clear individual stream flags.
+ */
+void
+sp_unflag(stream, flags)
+    MAILSTREAM   *stream;
+    unsigned long flags;
+{
+    if(!stream || !flags)
+      return;
+
+    dprint(9, (debugfile, "sp_unflag(%s, 0x%x): unset%s%s%s%s%s%s\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?",
+	    flags,
+	    (flags & SP_LOCKED)     ? " SP_LOCKED" : "",
+	    (flags & SP_PERMLOCKED) ? " SP_PERMLOCKED" : "",
+	    (flags & SP_INBOX)      ? " SP_INBOX"      : "",
+	    (flags & SP_USERFLDR)   ? " SP_USERFLDR"   : "",
+	    (flags & SP_USEPOOL)    ? " SP_USEPOOL"    : "",
+	    (flags & SP_TEMPUSE)    ? " SP_TEMPUSE"    : ""));
+
+    sp_set_flags(stream, sp_flags(stream) & ~flags);
+
+    flags = sp_flags(stream);
+    dprint(9, (debugfile, "sp_unflag(%s, 0x%x): result:%s%s%s%s%s%s\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?",
+	    flags,
+	    (flags & SP_LOCKED)     ? " SP_LOCKED" : "",
+	    (flags & SP_PERMLOCKED) ? " SP_PERMLOCKED" : "",
+	    (flags & SP_INBOX)      ? " SP_INBOX"      : "",
+	    (flags & SP_USERFLDR)   ? " SP_USERFLDR"   : "",
+	    (flags & SP_USEPOOL)    ? " SP_USEPOOL"    : "",
+	    (flags & SP_TEMPUSE)    ? " SP_TEMPUSE"    : ""));
+}
+
+
+/*
+ * Set dead stream indicator and close if not locked.
+ */
+void
+sp_mark_stream_dead(stream)
+    MAILSTREAM   *stream;
+{
+    if(!stream)
+      return;
+
+    dprint(9, (debugfile, "sp_mark_stream_dead(%s)\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?"));
+
+    /*
+     * If the stream isn't locked, it is no longer useful. Get rid of it.
+     */
+    if(!sp_flagged(stream, SP_LOCKED))
+      pine_mail_actually_close(stream);
+    else{
+	/*
+	 * If it is locked, then we have to worry about references to it
+	 * that still exist. For example, it might be a permlocked stream
+	 * or it might be the current stream. We need to let it be discovered
+	 * by those referencers instead of just eliminating it, so that they
+	 * can clean up the mess they need to clean up.
+	 */
+	sp_set_dead_stream(stream, 1);
+    }
+}
+
+
+/*
+ * Returns the number of streams in the stream pool which are
+ * SP_USEPOOL but not SP_PERMLOCKED.
+ */
+int
+sp_nusepool_notperm()
+{
+    int         i, cnt = 0;
+    MAILSTREAM *m;
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(sp_flagged(m, SP_USEPOOL) && !sp_flagged(m, SP_PERMLOCKED))
+	  cnt++;
+    }
+
+    return(cnt);
+}
+
+
+/*
+ * Returns the number of folders that the user has marked to be PERMLOCKED
+ * folders (plus INBOX) that are remote IMAP folders.
+ *
+ * This routine depends on the fact that VAR_INBOX_PATH, VAR_PERMLOCKED,
+ * and the ps_global->context_list are correctly set.
+ */
+int
+sp_nremote_permlocked()
+{
+    int         cnt = 0;
+    char      **lock_these, *p = NULL, *dummy = NULL, *lt;
+    DRIVER     *d;
+
+    /* first check if INBOX is remote */
+    lt = ps_global->VAR_INBOX_PATH;
+    if(lt && (d=mail_valid(NIL, lt, (char *) NIL))
+       && !strcmp(d->name, "imap"))
+      cnt++;
+
+    /* then count the user-specified permlocked folders */
+    for(lock_these = ps_global->VAR_PERMLOCKED; lock_these && *lock_these;
+	lock_these++){
+
+	/*
+	 * Skip inbox, already done above. Should do this better so that we 
+	 * catch the case where the user puts the technical spec of the inbox
+	 * in the list, or where the user lists one folder twice.
+	 */
+	if(*lock_these && !strucmp(*lock_these, ps_global->inbox_name))
+	  continue;
+
+	/* there isn't really a pair, it just dequotes for us */
+	get_pair(*lock_these, &dummy, &p, 0, 0);
+
+	/*
+	 * Check to see if this is an incoming nickname and replace it
+	 * with the full name.
+	 */
+	if(!(p && ps_global->context_list
+	     && ps_global->context_list->use & CNTXT_INCMNG
+	     && (lt=folder_is_nick(p, FOLDERS(ps_global->context_list),
+				   FN_WHOLE_NAME))))
+	  lt = p;
+
+	if(dummy)
+	  fs_give((void **) &dummy);
+
+	if(lt && (d=mail_valid(NIL, lt, (char *) NIL))
+	   && !strcmp(d->name, "imap"))
+	  cnt++;
+
+	if(p)
+	  fs_give((void **) &p);
+    }
+
+    return(cnt);
+}
+
+
+MAILSTREAM *
+sp_stream_get(mailbox, flags)
+    char         *mailbox;
+    unsigned long flags;
+{
+    return(sp_stream_get_full(mailbox, flags, NULL));
+}
+
+
+/*
+ * Look for an already open stream that can be used for a new purpose.
+ * (Note that we only look through streams flagged SP_USEPOOL.)
+ *
+ * Args:   mailbox
+ *           flags
+ *           not_this_stream   - don't consider this stream a match
+ *
+ * Flags is a set of values or'd together which tells us what the request
+ * is looking for. See pine.h.
+ *
+ *  Returns: a live stream from the stream pool or NULL.
+ */
+MAILSTREAM *
+sp_stream_get_full(mailbox, flags, not_this_stream)
+    char         *mailbox;
+    unsigned long flags;
+    MAILSTREAM *not_this_stream;
+{
+    int         i;
+    MAILSTREAM *m;
+
+    dprint(7, (debugfile, "sp_stream_get(%s):%s%s%s%s%s\n",
+	    mailbox ? mailbox : "?",
+	    (flags & SP_MATCH)    ? " SP_MATCH"    : "",
+	    (flags & SP_RO_OK)    ? " SP_RO_OK"    : "",
+	    (flags & SP_SAME)     ? " SP_SAME"     : "",
+	    (flags & SP_UNLOCKED) ? " SP_UNLOCKED" : "",
+	    (flags & SP_TEMPUSE)  ? " SP_TEMPUSE" : ""));
+
+    /* look for stream already open to this mailbox */
+    if(flags & SP_MATCH){
+	for(i = 0; i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+	       && (!m->rdonly || (flags & SP_RO_OK)) && !sp_dead_stream(m)
+	       && same_stream_and_mailbox(mailbox, m)){
+		if((sp_flagged(m, SP_LOCKED) && recent_activity(m))
+		   || pine_mail_ping(m)){
+		    dprint(7, (debugfile,
+		       "sp_stream_get: found exact match, slot %d\n", i));
+		    if(!sp_flagged(m, SP_LOCKED)){
+			dprint(7, (debugfile,
+			       "reset idle timer1: next TAG %08lx (%s)\n",
+			       m->gensym,
+			       debug_time(1, ps_global->debug_timestamp)));
+			sp_set_last_use_time(m, time(0));
+		    }
+
+		    return(m);
+		}
+
+		sp_mark_stream_dead(m);
+	    }
+	}
+    }
+
+    /*
+     * SP_SAME will not match if an SP_MATCH match would have worked.
+     * If the caller is interested in SP_MATCH streams as well as SP_SAME
+     * streams then the caller should make two separate calls to this
+     * routine.
+     */
+    if(flags & SP_SAME){
+	/*
+	 * If the flags arg does not have either SP_TEMPUSE or SP_UNLOCKED
+	 * set, then we'll accept any stream, even if locked.
+	 * We want to prefer the LOCKED case so that we don't have to ping.
+	 */
+	if(!(flags & SP_UNLOCKED) && !(flags & SP_TEMPUSE)){
+	    for(i = 0; i < ps_global->s_pool.nstream; i++){
+		m = ps_global->s_pool.streams[i];
+		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		   && sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
+		   && same_stream(mailbox, m)
+		   && !same_stream_and_mailbox(mailbox, m)){
+		    if(recent_activity(m) || pine_mail_ping(m)){
+			dprint(7, (debugfile,
+			    "sp_stream_get: found SAME match, slot %d\n", i));
+			return(m);
+		    }
+
+		    sp_mark_stream_dead(m);
+		}
+	    }
+
+	    /* consider the unlocked streams */
+	    for(i = 0; i < ps_global->s_pool.nstream; i++){
+		m = ps_global->s_pool.streams[i];
+		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		   && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
+		   && same_stream(mailbox, m)
+		   && !same_stream_and_mailbox(mailbox, m)){
+		    /* always ping unlocked streams */
+		    if(pine_mail_ping(m)){
+			dprint(7, (debugfile,
+			    "sp_stream_get: found SAME match, slot %d\n", i));
+			dprint(7, (debugfile,
+			   "reset idle timer4: next TAG %08lx (%s)\n",
+			   m->gensym,
+			   debug_time(1, ps_global->debug_timestamp)));
+			sp_set_last_use_time(m, time(0));
+
+			return(m);
+		    }
+
+		    sp_mark_stream_dead(m);
+		}
+	    }
+	}
+
+	/*
+	 * Prefer streams marked SP_TEMPUSE and not LOCKED.
+	 * If SP_TEMPUSE is set in the flags arg then this is the
+	 * only loop we try.
+	 */
+	for(i = 0; i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(m && m != not_this_stream
+	       && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
+	       && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
+	       && same_stream(mailbox, m)
+	       && !same_stream_and_mailbox(mailbox, m)){
+		if(pine_mail_ping(m)){
+		    dprint(7, (debugfile,
+		      "sp_stream_get: found SAME/TEMPUSE match, slot %d\n", i));
+		    dprint(7, (debugfile,
+			   "reset idle timer2: next TAG %08lx (%s)\n",
+			   m->gensym,
+			   debug_time(1, ps_global->debug_timestamp)));
+		    sp_set_last_use_time(m, time(0));
+		    return(m);
+		}
+
+		sp_mark_stream_dead(m);
+	    }
+	}
+
+	/*
+	 * If SP_TEMPUSE is not set in the flags arg but SP_UNLOCKED is,
+	 * then we will consider
+	 * streams which are not marked SP_TEMPUSE (but are still not
+	 * locked). We go through these in reverse order so that we'll get
+	 * the last one added instead of the first one. It's not clear if
+	 * that is a good idea or if a more complex search would somehow
+	 * be better. Maybe we should use a round-robin sort of search
+	 * here so that we don't leave behind unused streams. Or maybe
+	 * we should keep track of when we used it and look for the LRU stream.
+	 */
+	if(!(flags & SP_TEMPUSE)){
+	    for(i = ps_global->s_pool.nstream - 1; i >= 0; i--){
+		m = ps_global->s_pool.streams[i];
+		if(m && m != not_this_stream && sp_flagged(m, SP_USEPOOL)
+		   && !sp_flagged(m, SP_LOCKED) && !sp_dead_stream(m)
+		   && same_stream(mailbox, m)
+		   && !same_stream_and_mailbox(mailbox, m)){
+		    if(pine_mail_ping(m)){
+			dprint(7, (debugfile,
+		    "sp_stream_get: found SAME/UNLOCKED match, slot %d\n", i));
+			dprint(7, (debugfile,
+			   "reset idle timer3: next TAG %08lx (%s)\n",
+			   m->gensym,
+			   debug_time(1, ps_global->debug_timestamp)));
+			sp_set_last_use_time(m, time(0));
+			return(m);
+		    }
+
+		    sp_mark_stream_dead(m);
+		}
+	    }
+	}
+    }
+
+    /*
+     * If we can't find a useful stream to use in pine_mail_open, we may
+     * want to re-use one that is not actively being used even though it
+     * is not on the same server. We'll have to close it and then re-use
+     * the slot.
+     */
+    if(!(flags & (SP_SAME | SP_MATCH))){
+	/*
+	 * Prefer streams marked SP_TEMPUSE and not LOCKED.
+	 * If SP_TEMPUSE is set in the flags arg then this is the
+	 * only loop we try.
+	 */
+	for(i = 0; i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(m && m != not_this_stream
+	       && sp_flagged(m, SP_USEPOOL) && sp_flagged(m, SP_TEMPUSE)
+	       && !sp_flagged(m, SP_LOCKED)){
+		dprint(7, (debugfile,
+    "sp_stream_get: found Not-SAME/TEMPUSE match, slot %d\n", i));
+		/*
+		 * We ping it in case there is new mail that we should
+		 * pass through our filters. Pine_mail_actually_close will
+		 * do that.
+		 */
+		(void) pine_mail_ping(m);
+		return(m);
+	    }
+	}
+
+	/*
+	 * If SP_TEMPUSE is not set in the flags arg, then we will consider
+	 * streams which are not marked SP_TEMPUSE (but are still not
+	 * locked). Maybe we should use a round-robin sort of search
+	 * here so that we don't leave behind unused streams. Or maybe
+	 * we should keep track of when we used it and look for the LRU stream.
+	 */
+	if(!(flags & SP_TEMPUSE)){
+	    for(i = ps_global->s_pool.nstream - 1; i >= 0; i--){
+		m = ps_global->s_pool.streams[i];
+		if(m && m != not_this_stream
+		   && sp_flagged(m, SP_USEPOOL) && !sp_flagged(m, SP_LOCKED)){
+		    dprint(7, (debugfile,
+	"sp_stream_get: found Not-SAME/UNLOCKED match, slot %d\n", i));
+		    /*
+		     * We ping it in case there is new mail that we should
+		     * pass through our filters. Pine_mail_actually_close will
+		     * do that.
+		     */
+		    (void) pine_mail_ping(m);
+		    return(m);
+		}
+	    }
+	}
+    }
+
+    dprint(7, (debugfile, "sp_stream_get: no match found\n"));
+
+    return(NULL);
+}
+
+
+void
+sp_end()
+{
+    int         i;
+    MAILSTREAM *m;
+
+    dprint(7, (debugfile, "sp_end\n"));
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m)
+	  pine_mail_actually_close(m);
+    }
+}
+
+
+/*
+ * Find a vacant slot to put this new stream in.
+ * We are willing to close and kick out another stream as long as it isn't
+ * LOCKED. However, we may find that there is no place to put this one
+ * because all the slots are used and locked. For now, we'll return -1
+ * in that case and leave the new stream out of the pool.
+ */
+int
+sp_add(stream, usepool)
+    MAILSTREAM *stream;
+    int         usepool;
+{
+    int         i, slot = -1;
+    MAILSTREAM *m;
+
+    dprint(7, (debugfile, "sp_add(%s, %d)\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?", usepool));
+
+    if(!stream){
+	dprint(7, (debugfile, "sp_add: NULL stream\n"));
+	return -1;
+    }
+
+    /* If this stream is already there, don't add it again */
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m == stream){
+	    slot = i;
+	    dprint(7, (debugfile,
+		    "sp_add: stream was already in slot %d\n", slot));
+	    return 0;
+	}
+    }
+
+    if(usepool && !sp_flagged(stream, SP_PERMLOCKED)
+       && sp_nusepool_notperm() >= ps_global->s_pool.max_remstream){
+	dprint(7, (debugfile,
+		"sp_add: reached max implicit SP_USEPOOL of %d\n",
+		ps_global->s_pool.max_remstream));
+	return -1;
+    }
+
+    /* Look for an unused slot */
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(!m){
+	    slot = i;
+	    dprint(7, (debugfile,
+		    "sp_add: using empty slot %d\n", slot));
+	    break;
+	}
+    }
+
+    /* else, allocate more space */
+    if(slot < 0){
+	ps_global->s_pool.nstream++;
+	slot = ps_global->s_pool.nstream - 1;
+	if(ps_global->s_pool.streams){
+	    fs_resize((void **) &ps_global->s_pool.streams,
+		      ps_global->s_pool.nstream *
+		        sizeof(*ps_global->s_pool.streams));
+	    ps_global->s_pool.streams[slot] = NULL;
+	}
+	else{
+	    ps_global->s_pool.streams =
+		(MAILSTREAM **) fs_get(ps_global->s_pool.nstream *
+					sizeof(*ps_global->s_pool.streams));
+	    memset(ps_global->s_pool.streams, 0,
+		   ps_global->s_pool.nstream *
+		    sizeof(*ps_global->s_pool.streams));
+	}
+
+	dprint(7, (debugfile,
+	    "sp_add: allocate more space, using new slot %d\n", slot));
+    }
+
+    if(slot >= 0 && slot < ps_global->s_pool.nstream){
+	ps_global->s_pool.streams[slot] = stream;
+	return 0;
+    }
+    else{
+	dprint(7, (debugfile, "sp_add: failed to find a slot!\n"));
+	return -1;
+    }
+}
+
+
+/*
+ * Simply remove this stream from the stream pool.
+ */
+void
+sp_delete(stream)
+    MAILSTREAM *stream;
+{
+    int         i;
+    MAILSTREAM *m;
+
+    if(!stream)
+      return;
+
+    dprint(7, (debugfile, "sp_delete(%s)\n",
+	    (stream && stream->mailbox) ? stream->mailbox : "?"));
+
+    /*
+     * There are some global stream pointers that we have to worry
+     * about before deleting the stream.
+     */
+
+    /* first, mail_stream is the global currently open folder */
+    if(ps_global->mail_stream == stream)
+      ps_global->mail_stream = NULL;
+    
+    /* remote address books may have open stream pointers */
+    note_closed_adrbk_stream(stream);
+
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m == stream){
+	    ps_global->s_pool.streams[i] = NULL;
+	    dprint(7, (debugfile,
+		    "sp_delete: stream removed from slot %d\n", i));
+	    return;
+	}
+    }
+}
+
+
+/*
+ * Returns 1 if any locked userfldr is dead, 0 if all alive.
+ */
+int
+sp_a_locked_stream_is_dead()
+{
+    int         i, ret = 0;
+    MAILSTREAM *m;
+
+    for(i = 0; !ret && i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR)
+	   && sp_dead_stream(m))
+	  ret++;
+    }
+
+    return(ret);
+}
+
+
+/*
+ * Returns 1 if any locked stream is changed, 0 otherwise
+ */
+int
+sp_a_locked_stream_changed()
+{
+    int         i, ret = 0;
+    MAILSTREAM *m;
+
+    for(i = 0; !ret && i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR)
+	   && sp_mail_box_changed(m))
+	  ret++;
+    }
+
+    return(ret);
+}
+
+
+/*
+ * Returns the inbox stream or NULL.
+ */
+MAILSTREAM *
+sp_inbox_stream()
+{
+    int         i;
+    MAILSTREAM *m, *ret = NULL;
+
+    for(i = 0; !ret && i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_flagged(m, SP_INBOX))
+	  ret = m;
+    }
+
+    return(ret);
+}
+
+
+/*
+ * Make sure that the sp_data per-stream data storage area exists.
+ *
+ * Returns a handle to the sp_data data unless stream is NULL,
+ *         in which case NULL is returned
+ */
+PER_STREAM_S **
+sp_data(stream)
+    MAILSTREAM *stream;
+{
+    PER_STREAM_S **pss = NULL;
+
+    if(stream){
+	if(*(pss = (PER_STREAM_S **) &stream->sparep) == NULL){
+	    *pss = (PER_STREAM_S *) fs_get(sizeof(PER_STREAM_S));
+	    memset(*pss, 0, sizeof(PER_STREAM_S));
+	    reset_check_point(stream);
+	}
+    }
+
+    return(pss);
+}
+
+
+/*
+ * Returns a pointer to the msgmap associated with the argument stream.
+ *
+ * If the PER_STREAM_S data or the msgmap does not already exist, it will be
+ * created.
+ */
+MSGNO_S *
+sp_msgmap(stream)
+    MAILSTREAM *stream;
+{
+    MSGNO_S      **msgmap = NULL;
+    PER_STREAM_S **pss    = NULL;
+
+    pss = sp_data(stream);
+
+    if(pss && *pss
+       && (*(msgmap = (MSGNO_S **) &(*pss)->msgmap) == NULL))
+      mn_init(msgmap, stream->nmsgs);
+
+    return(msgmap ? *msgmap : NULL);
+}
+
+
+void
+sp_free_callback(sparep)
+    void **sparep;
+{
+    PER_STREAM_S **pss;
+    MAILSTREAM    *stream = NULL, *m;
+    int            i;
+
+    pss = (PER_STREAM_S **) sparep;
+
+    if(pss && *pss){
+	/*
+	 * It is possible that this has been called from c-client when
+	 * we weren't expecting it. We need to clean up the stream pool
+	 * entries if the stream that goes with this pointer is in the
+	 * stream pool somewhere.
+	 */
+	for(i = 0; !stream && i < ps_global->s_pool.nstream; i++){
+	    m = ps_global->s_pool.streams[i];
+	    if(sparep && *sparep && m && m->sparep == *sparep)
+	      stream = m;
+	}
+
+	if(stream){
+	    if(ps_global->mail_stream == stream)
+	      ps_global->mail_stream = NULL;
+
+	    sp_delete(stream);
+	}
+
+	sp_free(pss);
+    }
+}
+
+
+/*
+ * Free the data but don't mess with the stream pool.
+ */
+void
+sp_free(pss)
+    PER_STREAM_S **pss;
+{
+    if(pss && *pss){
+	if((*pss)->msgmap){
+	    if(ps_global->msgmap == (*pss)->msgmap)
+	      ps_global->msgmap = NULL;
+
+	    mn_give(&(*pss)->msgmap);
+	}
+
+	if((*pss)->fldr)
+	  fs_give((void **) &(*pss)->fldr);
+	
+	fs_give((void **) pss);
     }
 }
 

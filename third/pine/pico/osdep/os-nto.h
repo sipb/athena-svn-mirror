@@ -29,6 +29,7 @@
 
 #define  USE_DIRENT
 #include <dirent.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/

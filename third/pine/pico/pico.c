@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pico.c,v 1.1.1.3 2003-05-01 01:12:15 ghudson Exp $";
+static char rcsid[] = "$Id: pico.c,v 1.1.1.4 2005-01-26 17:55:19 ghudson Exp $";
 #endif
 /*
  * Program:	Main Pine Composer routines
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: pico.c,v 1.1.1.3 2003-05-01 01:12:15 ghudson Exp $";
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -73,7 +73,7 @@ static char rcsid[] = "$Id: pico.c,v 1.1.1.3 2003-05-01 01:12:15 ghudson Exp $";
 void	func_init PROTO((void));
 void	breplace PROTO((void *));
 int	any_header_changes PROTO((void));
-int     stripwhitespace PROTO((void));
+int     cleanwhitespace PROTO((void));
 #ifdef	_WINDOWS
 int	composer_file_drop PROTO((int, int, char *));
 #endif
@@ -219,7 +219,10 @@ PICO *pm;
 	    switch(pico_all_done){	/* prepare for/handle final events */
 	      case COMP_EXIT :		/* already confirmed */
 		packheader();
-		stripwhitespace();
+		if(Pmaster 
+		   && (Pmaster->strip_ws_before_send
+		       || Pmaster->allow_flowed_text))
+		  cleanwhitespace();
 		c |= COMP_EXIT;
 		break;
 
@@ -500,8 +503,10 @@ int c, f, n;
 
 	    thisflag = 0;
 	    status   = (*ktp->k_fp)(f, n);
-	    if((lastflag & CFFILL) && (thisflag ^ CFFILL))
+	    if((lastflag & CFFILL) && !(thisflag & CFFILL))
 	      fdelete();
+	    if((lastflag & CFFLBF) && !(thisflag & CFFLBF))
+	      kdelete();
 
 	    lastflag = thisflag;
 
@@ -521,6 +526,8 @@ int c, f, n;
 
     if(lastflag & CFFILL)		/* blat unusable fill data */
       fdelete();
+    if(lastflag & CFFLBF)
+      kdelete();
 
     if (VALID_KEY(c)) {			/* Self inserting.      */
 
@@ -679,9 +686,11 @@ int f, n;
 	    return(FALSE);
 	}
 
+#ifdef	SPELLER
 	if(Pmaster->always_spell_check)
 	  if(spell(0, 0) == -1)
 	    sleep(3);    /* problem, show error */
+#endif
 	/*
 	 * if we're not in header, show some of it as we verify sending...
 	 */
@@ -690,7 +699,8 @@ int f, n;
 	Pmaster->arm_winch_cleanup++;
 	if((!(Pmaster->pine_flags & MDHDRONLY) || any_header_changes())
 	   && (result = (*Pmaster->exittest)(Pmaster->headents,
-					     redraw_pico_for_callback))){
+					     redraw_pico_for_callback,
+					     Pmaster->allow_flowed_text))){
 	    Pmaster->arm_winch_cleanup--;
 	    if(sgarbf)
 	      update();
@@ -748,6 +758,91 @@ any_header_changes()
 	break;
     
     return(he->name && he->dirty);
+}
+
+/*
+ * This function serves two purposes, 1) to strip white space when
+ * Pmaster asks that the composition have its trailing white space
+ * stripped, or 2) to prepare the text as flowed text, as Pmaster
+ * is telling us that we're working with flowed text.
+ *
+ * What flowed currently means to us is stripping all trailing white
+ * space, except for one space if the following line is a continuation
+ * of the paragraph.  Also, we space-stuff all lines beginning
+ * with white-space, and leave siglines alone.
+ */
+int
+cleanwhitespace()
+{
+    LINE *cur_line = NULL, *cursor_dotp = NULL, **lp = NULL;
+    int i = 0, cursor_doto = 0, is_cursor_line = 0;
+
+    cursor_dotp = curwp->w_dotp;
+    cursor_doto = curwp->w_doto;
+    gotobob(FALSE, 1);
+
+    for(lp = &curwp->w_dotp; (*lp) != curbp->b_linep; (*lp) = lforw(*lp)){
+	if(!(llength(*lp) == 3
+	     && lgetc(*lp, 0).c == '-'
+	     && lgetc(*lp, 1).c == '-'
+	     && lgetc(*lp, 2).c == ' ')
+	   && llength(*lp)){
+	    is_cursor_line = (cursor_dotp == (*lp));
+	    /* trim trailing whitespace, to be added back if flowing */
+	    for(i = llength(*lp); i; i--)
+	      if(!isspace(lgetc(*lp, i - 1).c))
+		break;
+	    if(i != llength(*lp)){
+		int flow_line = 0;
+
+		if(Pmaster && !Pmaster->strip_ws_before_send
+		   && lforw(*lp) != curbp->b_linep
+		   && llength(lforw(*lp))
+		   && !isspace(lgetc(lforw(*lp), 0).c)
+		   && !(llength(lforw(*lp)) == 3
+			&& lgetc(lforw(*lp), 0).c == '-'
+			&& lgetc(lforw(*lp), 1).c == '-'
+			&& lgetc(lforw(*lp), 2).c == ' '))
+		  flow_line = 1;
+		if(flow_line && i && lgetc(*lp, i).c == ' '){
+		    /* flowed line ending with space */
+		    i++;
+		    if(i != llength(*lp)){
+			curwp->w_doto = i;
+			ldelete(llength(*lp) - i, NULL);
+		    }
+		}
+		else if(flow_line && i && isspace(lgetc(*lp, i).c)){
+		    /* flowed line ending with whitespace other than space*/
+		    curwp->w_doto = i;
+		    ldelete(llength(*lp) - i, NULL);
+		    linsert(1, ' ');
+		}
+		else{
+		    curwp->w_doto = i;
+		    ldelete(llength(*lp) - i, NULL);
+		}
+	    }
+	    if(Pmaster && Pmaster->allow_flowed_text
+	       && llength(*lp) && isspace(lgetc(*lp, 0).c)){
+		/* space-stuff only if flowed */
+		curwp->w_doto = 0;
+		if(is_cursor_line && cursor_doto)
+		  cursor_doto++;
+		linsert(1, ' ');
+	    }
+	    if(is_cursor_line)
+	      cursor_dotp = (*lp);
+	}
+    }
+
+    /* put the cursor back where we found it */
+    gotobob(FALSE, 1);
+    curwp->w_dotp = cursor_dotp;
+    curwp->w_doto = (cursor_doto < llength(curwp->w_dotp))
+      ? cursor_doto : llength(curwp->w_dotp) - 1;
+
+    return(0);
 }
 
 /*
@@ -827,6 +922,7 @@ func_init()
     clearcursor();
 
     pat[0] = rpat[0] = '\0';
+    browse_dir[0] = '\0';
 }
 
 

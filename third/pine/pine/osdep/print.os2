@@ -216,7 +216,8 @@ open_printer(desc)
     if (*command == '|') {	/* pipe */
       ps_global->print->ispipe = 1;
       strcpy(command, command+1);
-      dprint(4, (debugfile, "Printing using command \"%s\"\n", command));
+      dprint(4, (debugfile, "Printing using command \"%s\"\n",
+	     command ? command : "?"));
       ps_global->print->result = temp_nam(NULL, "pine_prt");
       if(ps_global->print->pipe = open_system_pipe(command,
 					 &ps_global->print->result, NULL,
@@ -241,7 +242,7 @@ open_printer(desc)
     }
     else{
       ps_global->print->ispipe = 0;
-      dprint(4, (debugfile, "Printing to \"%s\"\n", command));
+      dprint(4, (debugfile, "Printing to \"%s\"\n", command ? command : "?"));
       if ((ps_global->print->fp = fopen(command, "wb")) == NULL) {
 	q_status_message1(SM_ORDER | SM_DING, 3, 4,
 			  "Error opening printer: %s",
@@ -290,7 +291,7 @@ close_printer()
     }
 
     if (ps_global->print->ispipe) {
-      (void) close_system_pipe(&ps_global->print->pipe);
+      (void) close_system_pipe(&ps_global->print->pipe, NULL, 0);
     }
     else{
       (void) fclose(ps_global->print->fp);

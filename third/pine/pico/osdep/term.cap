@@ -152,6 +152,31 @@ setup_dflt_esc_seq()
     kpinsert("\033[1~", KEY_HOME, 1);
     kpinsert("\033[4~", KEY_END, 1);
 
+    /*
+     * konsole, XTerm (XFree 4.x.x) keyboard setting
+     */
+    kpinsert("\033[H", KEY_HOME, 1);
+    kpinsert("\033[F", KEY_END, 1);
+
+    /* 
+     * gnome-terminal 2.6.0, don't know why it
+     * changed from 2.2.1
+     */
+    kpinsert("\033OH", KEY_HOME, 1);
+    kpinsert("\033OF", KEY_END, 1);
+
+    /*
+     * "\033[2~" was common for KEY_HOME in a quick survey
+     *  of terminals (though typically the Insert key).
+     *  Teraterm 2.33 sends the following escape sequences,
+     *  which is quite incompatible with everything
+     *  else:
+     *    Home: "\033[2~" End: "\033[5~" PgUp: "\033[3~"
+     *    PgDn: "\033[6~"
+     *  The best thing to do would be to fix TeraTerm
+     *  keymappings or to tweak terminfo.
+     */
+
     /* 
      * ANSI mode.
      */

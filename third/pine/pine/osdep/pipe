@@ -198,9 +198,13 @@ open_system_pipe(command, outfile, errfile, mode, timeout)
     /*
      * Prepare for demise of child.  Use SIGCHLD if it's available so
      * we can do useful things, like keep the IMAP stream alive, while
-     * we're waiting on the child.
+     * we're waiting on the child. The handler may have been changed by
+     * something in the composer, in particular, by an alt_editor call.
+     * So we need to re-set it to child_signal and then set it back
+     * when we're done.
      */
     child_signalled = child_jump = 0;
+    syspipe->chld   = signal(SIGCHLD, child_signal);
 #endif
 
     if((syspipe->pid = vfork()) == 0){
@@ -295,7 +299,8 @@ open_system_pipe(command, outfile, errfile, mode, timeout)
 	      syspipe->in.f = fdopen(iparentd, "r");
 	}
 
-	dprint(5, (debugfile, "PID: %d, COMMAND: %s\n",syspipe->pid,command));
+	dprint(5, (debugfile, "PID: %d, COMMAND: %s\n", syspipe->pid,
+	       command ? command : "?"));
     }
     else{
 	if(mode & (PIPE_WRITE | PIPE_READ)){
@@ -337,6 +342,102 @@ open_system_pipe(command, outfile, errfile, mode, timeout)
 }
 
 
+/*
+ * pipe_* functions introduced so out.f, in.f don't need to be used
+ * by whatever's setting up the pipe.  
+ * Should be similar on unix and windows, but since we're faking piping
+ * in windows, closing the write pipe would signify that the child
+ * process can start running.  This makes it possible for PIPE_WRITE
+ * and PIPE_READ flags to be simultaneously set across all platforms.
+ * Unix piping should eventually have NON_BLOCKING_IO stuff rolled up
+ * into it.
+ */
+
+int
+pipe_putc(c, syspipe)
+    int     c;
+    PIPE_S *syspipe;
+{
+    if(!syspipe || !syspipe->out.f)
+      return -1;
+    return(fputc(c, syspipe->out.f));
+}
+
+int
+pipe_puts(str, syspipe)
+    char   *str;
+    PIPE_S *syspipe;
+{
+    if(!syspipe || !syspipe->out.f)
+      return -1;
+    return(fputs(str, syspipe->out.f));
+}
+
+char *
+pipe_gets(str, size, syspipe)
+    char   *str;
+    int     size;
+    PIPE_S *syspipe;
+{
+    if(!syspipe || !syspipe->in.f)
+      return NULL;
+    return(fgets(str, size, syspipe->in.f));
+}
+
+int
+pipe_readc(c, syspipe)
+    unsigned char *c;
+    PIPE_S     *syspipe;
+{
+    int rv = 0;
+
+    if(!syspipe || !syspipe->in.f)
+      return -1;
+
+    do {
+	errno = 0;
+	clearerr(syspipe->in.f);
+	rv = fread(c, sizeof(unsigned char), (size_t)1, syspipe->in.f);
+    } while(!rv && ferror(syspipe->in.f) && errno == EINTR);
+
+    return(rv);
+}
+
+int
+pipe_writec(c, syspipe)
+    int        c;
+    PIPE_S *syspipe;
+{
+    unsigned char ch = (unsigned char)c;
+    int rv = 0;
+
+    if(!syspipe || !syspipe->out.f)
+      return -1;
+
+    do
+      rv = fwrite(&ch, sizeof(unsigned char), (size_t)1, syspipe->out.f);
+    while(!rv && ferror(syspipe->out.f) && errno == EINTR);
+
+    return(rv);
+}
+
+/*
+ * Returns: 0 if all went well, -1 otherwise
+ */
+int
+pipe_close_write(syspipe)
+    PIPE_S *syspipe;
+{
+    int rv = 0;
+
+    if(!syspipe || !syspipe->out.f)
+      return -1;
+
+    rv = fclose(syspipe->out.f) ? -1 : 0;
+    syspipe->out.f = NULL;
+    return(rv);
+}
+
 
 /*----------------------------------------------------------------------
     Write appropriate error messages and cleanup after pipe error
@@ -354,7 +455,10 @@ pipe_error_cleanup(syspipe, cmd, op, res)
 {
     q_status_message3(SM_ORDER, 3, 3, "Pipe can't %s \"%.30s\": %s",
 		      op, cmd, res);
-    dprint(1, (debugfile, "* * PIPE CAN'T %s(%s): %s\n", op, cmd, res));
+    dprint(1, (debugfile, "* * PIPE CAN'T %s(%s): %s\n",
+	   op ? op : "?",
+	   cmd ? cmd : "?",
+	   res ? res : "?"));
     zot_pipe(syspipe);
 }
 
@@ -388,17 +492,27 @@ zot_pipe(syspipe)
     Close pipe previously allocated and wait for child's death
 
   Args: syspipe -- address of pointer to struct returned by open_system_pipe
-  Returns: returns exit status of child or -1 if invalid syspipe
+        exitval -- return exit status here.
+
+  Returns:
+    Two modes of return values for backcompat.
+      If exitval == NULL
+	 returns exit status of child or -1 if invalid syspipe
+      If exitval != NULL
+         returns -1 if invalid syspipe or 0 if ok. In that case, exitval
+	 of child is returned in exitval
  ----*/
 int
-close_system_pipe(syspipe)
+close_system_pipe(syspipe, exitval, dontnewmail)
     PIPE_S **syspipe;
+    int     *exitval;
+    int      dontnewmail;
 {
     WaitType stat;
-    int	     status;
+    int	     status, pid;
 
     if(!(syspipe && *syspipe))
-      return(-1);
+      return -1;
 
     if(((*syspipe)->mode) & PIPE_WRITE){
 	if(((*syspipe)->mode) & PIPE_DESC){
@@ -434,7 +548,8 @@ close_system_pipe(syspipe)
 	ps_global->noshow_timeout = 1;
 	while(!child_signalled){
 	    /* wake up and prod server */
-	    new_mail(0, 2, ((*syspipe)->mode & PIPE_RESET)
+	    if(!dontnewmail)
+	      new_mail(0, 2, ((*syspipe)->mode & PIPE_RESET)
 			      ? NM_NONE : NM_DEFER_SORT);
 
 	    if(!child_signalled){
@@ -452,6 +567,7 @@ close_system_pipe(syspipe)
 	ps_global->noshow_timeout = 0;
 	F_SET(F_SHOW_DELAY_CUE, ps_global, old_cue);
 	(void) signal(SIGALRM, alarm_sig);
+	(void) signal(SIGCHLD, (*syspipe)->chld);
     }
 #endif
 
@@ -483,9 +599,20 @@ close_system_pipe(syspipe)
 	ps_global->mangled_screen = 1;
     }
 
+    pid = (*syspipe)->pid;
     zot_pipe(syspipe);
 
-    return(status);
+    if(exitval){
+	*exitval = status;
+	dprint(5, (debugfile, "Closed pipe: PID=%d: exitval=%d\n",
+		pid, status));
+	return 0;
+    }
+    else{
+	dprint(5, (debugfile, "Closed pipe: PID=%d: status=%d\n",
+		pid, status));
+	return(status);
+    }
 }
 
 

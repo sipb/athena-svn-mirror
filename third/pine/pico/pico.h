@@ -1,5 +1,5 @@
 /*
- * $Id: pico.h,v 1.1.1.4 2004-03-01 21:15:58 ghudson Exp $
+ * $Id: pico.h,v 1.1.1.5 2005-01-26 17:56:12 ghudson Exp $
  *
  * Program:	pico.h - definitions for Pine's composer library
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2003 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -198,7 +198,11 @@ typedef struct pico_struct {
     PATMT *attachments;			/* linked list of attachments */
     PCOLORS *colors;                    /* colors for titlebar and keymenu */
     long   pine_flags;			/* entry mode flags */
-    int    always_spell_check;          /* TRUE if always spell-checking upon quit */
+    /* The next few bits are features that don't fit in pine_flags      */
+    /* If we had this to do over, it would probably be one giant bitmap */
+    unsigned always_spell_check:1;      /* always spell-checking upon quit */
+    unsigned strip_ws_before_send:1;    /* don't default strip bc of flowed */
+    unsigned allow_flowed_text:1;    /* clean text when done to keep flowed */
     int   (*helper)();			/* Pine's help function  */
     int   (*showmsg)();			/* Pine's display_message */
     int   (*suspend)();			/* Pine's suspend */
@@ -408,7 +412,7 @@ extern	void	kbdestroy PROTO((KBESC_T *));
  */
 #ifdef	maindef
 PICO	*Pmaster = NULL;		/* composer specific stuff */
-char	*version = "4.6";		/* PICO version number */
+char	*version = "4.9";		/* PICO version number */
 
 #else
 extern	PICO *Pmaster;			/* composer specific stuff */
@@ -423,6 +427,8 @@ extern	char *version;			/* pico version! */
 #define FB_READ		0x0001		/* Looking for a file to read.  */
 #define FB_SAVE		0x0002		/* Looking for a file to save.  */
 #define	FB_ATTACH	0x0004		/* Looking for a file to attach */
+#define	FB_LMODEPOS	0x0008		/* ListMode is a possibility    */
+#define	FB_LMODE	0x0010		/* Using ListMode now           */
 
 
 /*
@@ -467,7 +473,7 @@ extern	char *version;			/* pico version! */
 #define KEY_MASK	0x13FF
 
 /*
- * Don't think we are using the * fact that this is zero anywhere,
+ * Don't think we are using the fact that this is zero anywhere,
  * but just in case we'll leave it.
  */
 #define NO_OP_COMMAND	0x0	/* no-op for short timeouts      */
@@ -477,6 +483,9 @@ extern	char *version;			/* pico version! */
 #define PANIC_NOW	0x0845
 #define READ_INTR	0x0846
 #define NODATA		0x08FF
+
+#define IDLE_TIMEOUT	(8)
+#define FUDGE		(30)	/* better be at least 20 */
  
 /*
  * defines for function keys

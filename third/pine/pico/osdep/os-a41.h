@@ -25,6 +25,7 @@
 #include <sys/dir.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/
@@ -179,12 +180,5 @@ typedef unsigned short usign16_t;
 
 /* memmove() is a built-in for AIX 3.2 xlc. */
 #define bcopy(a,b,s) memmove (b, a, s)
-
-/*
- * Make sys_errlist visible
- */
-extern char *sys_errlist[];
-extern int   sys_nerr;
-
 
 #endif /* _PICO_OS_INCLUDED */

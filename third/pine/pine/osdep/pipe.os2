@@ -195,7 +195,8 @@ open_system_pipe(command, outfile, errfile, mode)
         fs_give((void **)&syspipe);
         if(outfile)
             fs_give((void **)outfile);
-        dprint(1, (debugfile, "CAN'T OPEN PIPE TO COMMAND: %s\n", command));
+        dprint(1, (debugfile, "CAN'T OPEN PIPE TO COMMAND: %s\n",
+	       command ? command : "?"));
     }
 
     return(syspipe);
@@ -210,7 +211,10 @@ pipe_error_cleanup(syspipe, cmd, op, res)
 {
     q_status_message3(SM_ORDER, 3, 3, "Pipe can't %s \"%.20s\": %s",
 		      op, cmd, res);
-    dprint(1, (debugfile, "* * PIPE CAN'T %s(%s): %s\n", op, cmd, res));
+    dprint(1, (debugfile, "* * PIPE CAN'T %s(%s): %s\n",
+	   op ? op : "?",
+	   cmd ? cmd : "?",
+	   res ? res : "?"));
     fs_give((void **)syspipe);
 }
 
@@ -223,8 +227,10 @@ pipe_error_cleanup(syspipe, cmd, op, res)
   Returns: returns exit status of child or -1 if invalid syspipe
  ----*/
 int
-close_system_pipe(syspipe)
+close_system_pipe(syspipe, exitval, dontnewmail)
     PIPE_S **syspipe;
+    int     *exitval;			/* not implemented yet */
+    int      dontnewmail;		/* not implemented yet */
 {
     int	     status = child_status;
 
@@ -243,5 +249,10 @@ close_system_pipe(syspipe)
     ps_global->mangled_screen = 1;
 
     fs_give((void **)syspipe);
-    return(status);
+    if(exitval){
+	*exitval = status;
+	return 0;
+    }
+    else
+      return(status);
 }

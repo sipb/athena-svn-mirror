@@ -1,5 +1,5 @@
 /*
- * $Id: estruct.h,v 1.1.1.2 2003-02-12 08:11:02 ghudson Exp $
+ * $Id: estruct.h,v 1.1.1.3 2005-01-26 17:56:06 ghudson Exp $
  *
  * Program:	Struct and preprocessor definitions
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2000 by the University of Washington.
+ * 1989-2004 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -116,6 +116,7 @@
 #define CFKILL  0x0002                  /* Last command was a kill      */
 #define CFFILL  0x0004                  /* Last command was a kill      */
 #define	CFSRCH	0x0008			/* Last command was WhereIs	*/
+#define CFFLBF  0x0010                  /* Last cmd was full buf fill   */
 
 #define BACKSPACE	'\b'     	/* backspace character  */
 #define TAB		'\t'            /* tab character        */
@@ -228,8 +229,8 @@ typedef struct  WINDOW {
         int	w_marko;                /* Byte offset for "mark"       */
         struct  LINE *w_imarkp;         /* INTERNAL Line with "mark"    */
         int	w_imarko;               /* INTERNAL "mark" byte offset  */
-        char    w_toprow;               /* Origin 0 top row of window   */
-        char    w_ntrows;               /* # of rows of text in window  */
+        signed char w_toprow;           /* Origin 0 top row of window   */
+        signed char w_ntrows;           /* # of rows of text in window  */
         char    w_force;                /* If NZ, forcing row.          */
         char    w_flag;                 /* Flags.                       */
 }       WINDOW;
@@ -403,6 +404,14 @@ typedef struct {
 	int	key;			/* what to watch for and return	*/
 	KS_OSDATAVAR			/* port-specific data */
 }	EXTRAKEYS;
+
+typedef struct lmlist {
+	char *dir;
+	char *fname;
+	char  size[32];
+	struct lmlist *next;
+}	LMLIST;
+
 
 typedef struct	VIDEO {
 	short	v_flag;			/* Flags */

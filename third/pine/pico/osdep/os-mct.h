@@ -24,6 +24,7 @@
 #include <sys/dir.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/
@@ -168,12 +169,5 @@ typedef unsigned short usign16_t;
  * Mode passed chmod() to make tmp files exclusively user read/write-able
  */
 #define	MODE_READONLY	(0600)
-
-/*
- * Make sys_errlist visible
- */
-extern char *sys_errlist[];
-extern int   sys_nerr;
-
 
 #endif /* _PICO_OS_INCLUDED */

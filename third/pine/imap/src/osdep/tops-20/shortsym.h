@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	24 May 1995
- * Last Edited:	25 June 2003
+ * Last Edited:	6 December 2004
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2002 University of Washington.
+ * Copyright 1988-2004 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  */
@@ -82,6 +82,8 @@
 #define imap_anon i_anon
 #define imap_auth i_auth
 #define imap_cache i_cach
+#define imap_cap i_cap
+#define imap_capability i_capa
 #define imap_challenge i_chln
 #define imap_check i_chck
 #define imap_close i_clos
@@ -189,6 +191,8 @@
 #define mail_fetch_message mf_msg
 #define mail_fetch_mime mf_mim
 #define mail_fetch_overview mf_ovr
+#define mail_fetch_overview_sequence mf_ovs
+#define mail_fetch_overview_default mf_ovd
 #define mail_fetch_structure mf_str
 #define mail_fetch_text mf_txt
 #define mail_fetch_text_return mf_txr
@@ -487,11 +491,9 @@
 #define smtp_auth s_auth
 #define smtp_challenge s_chal
 #define smtp_close s_clos
-#define smtp_debug s_dbug
 #define smtp_ehlo s_ehlo
 #define smtp_fake s_fake
 #define smtp_mail s_mail
-#define smtp_nodebug s_nodb
 #define smtp_open_full s_open
 #define smtp_rcpt s_rcpt
 #define smtp_reply s_repl
@@ -523,12 +525,17 @@
 #define textcpy txcopy
 #define textcpystring txcpst
 #define textcpyoffstring txcpos
+#define utf8_cstext u8_cst
+#define utf8_cstocstext u8_cct
+#define utf8_get u8_get
 #define utf8_iso2022text u8_i22
 #define utf8_mime2text u8_mi2
+#define utf8_rmap u8_rmp
 #define utf8_searchpgm u8_spg
 #define utf8_stringlist u8_lst
 #define utf8_text u8_txt
 #define utf8_text_8859_1 u8t_we
+#define utf8_text_1byte0 u8t_10
 #define utf8_text_1byte u8t_1b
 #define utf8_text_1byte8 u8t_18
 #define utf8_text_euc u8t_eu

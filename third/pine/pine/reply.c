@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: reply.c,v 1.1.1.4 2004-03-01 21:16:28 ghudson Exp $";
+static char rcsid[] = "$Id: reply.c,v 1.1.1.5 2005-01-26 17:56:14 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: reply.c,v 1.1.1.4 2004-03-01 21:16:28 ghudson Exp $"
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -82,17 +82,18 @@ void	 forward_delimiter PROTO((gf_io_t));
 BODY	 *forward_multi_alt PROTO((MAILSTREAM *, ENVELOPE *, BODY *,
 				   long, char *, void *, gf_io_t, int));
 void	 bounce_mask_header PROTO((char **, char *));
+int      post_quote_space PROTO((long, char *, LT_INS_S **, void *));
+int	 quote_fold PROTO((long, char *, LT_INS_S **, void *));
+int	 twsp_strip PROTO((long, char *, LT_INS_S **, void *));
 int	 sigdash_strip PROTO((long, char *, LT_INS_S **, void *));
 int      sigdashes_are_present PROTO((char *));
-char	*sigedit_exit_for_pico PROTO((struct headerentry *, void (*)()));
+char	*sigedit_exit_for_pico PROTO((struct headerentry *, void (*)(), int));
 char    *get_reply_data PROTO((ENVELOPE *, ACTION_S *, IndexColType,
 			       char *, size_t));
 void     get_addr_data PROTO((ENVELOPE *, IndexColType, char *, size_t));
 void     get_news_data PROTO((ENVELOPE *, IndexColType, char *, size_t));
 char    *pico_sendexit_for_roles PROTO((struct headerentry *, void(*)()));
 char    *pico_cancelexit_for_roles PROTO((void (*)()));
-char    *detoken_src PROTO((char *, int, ENVELOPE *, ACTION_S *,
-			    REDRAFT_POS_S **, int *));
 char    *detoken_guts PROTO((char *, int, ENVELOPE *, ACTION_S *,
 			     REDRAFT_POS_S **, int, int *));
 char    *get_signature_lit PROTO((char *, int, int, int, int));
@@ -143,22 +144,23 @@ Reply
    - pass off to pine_send()
   ---*/
 void
-reply(pine_state)
+reply(pine_state, role_arg)
      struct pine *pine_state;
+     ACTION_S    *role_arg;
 {
     ADDRESS    *saved_from, *saved_to, *saved_cc, *saved_resent;
     ENVELOPE   *env, *outgoing;
-    BODY       *body, *orig_body;
+    BODY       *body, *orig_body = NULL;
     REPLY_S     reply;
     void       *msgtext = NULL;
     char       *tmpfix = NULL, *prefix = NULL;
-    long        msgno, totalm, rflags, *seq = NULL;
+    long        msgno, j, totalm, rflags, *seq = NULL;
     int         i, include_text = 0, times = -1, warned = 0,
 		flags = RSF_QUERY_REPLY_ALL, reply_raw_body = 0;
     gf_io_t     pc;
     PAT_STATE   dummy;
     REDRAFT_POS_S *redraft_pos = NULL;
-    ACTION_S   *role = NULL;
+    ACTION_S   *role = NULL, *nrole;
     BUILDER_ARG fcc;
 #if	defined(DOS) && !defined(_WINDOWS)
     char *reserve;
@@ -179,7 +181,8 @@ reply(pine_state)
 
     memset((void *)&reply, 0, sizeof(reply));
 
-    if(ps_global->full_header && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
+    if(ps_global->full_header == 2
+       && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
       reply_raw_body = 1;
 
     /*
@@ -193,9 +196,9 @@ reply(pine_state)
 	    msgno > 0L && !tmpfix;
 	    msgno = mn_next_cur(pine_state->msgmap)){
 
-	    env = mail_fetchstructure(pine_state->mail_stream,
-				      mn_m2raw(pine_state->msgmap, msgno),
-				      NULL);
+	    env = pine_mail_fetchstructure(pine_state->mail_stream,
+					   mn_m2raw(pine_state->msgmap, msgno),
+					   NULL);
 	    if(!env) {
 		q_status_message1(SM_ORDER,3,4,
 			    "Error fetching message %.200s. Can't reply to it.",
@@ -236,7 +239,7 @@ reply(pine_state)
 	msgno = mn_next_cur(pine_state->msgmap)){
 
 	/*--- Grab current envelope ---*/
-	env = mail_fetchstructure(pine_state->mail_stream,
+	env = pine_mail_fetchstructure(pine_state->mail_stream,
 			    seq[++times] = mn_m2raw(pine_state->msgmap, msgno),
 			    NULL);
 	if(!env) {
@@ -311,13 +314,13 @@ reply(pine_state)
 	     * match, so be it.  otherwise set it to something generic...
 	     */
 	    if(strucmp(outgoing->subject,
-		       reply_subject(env->subject, tmp_20k_buf))){
+		       reply_subject(env->subject,tmp_20k_buf,SIZEOF_20KBUF))){
 		fs_give((void **)&outgoing->subject);
 		outgoing->subject = cpystr("Re: several messages");
 	    }
 	}
 	else
-	  outgoing->subject = reply_subject(env->subject, NULL);
+	  outgoing->subject = reply_subject(env->subject, NULL, 0);
     }
 
 
@@ -325,22 +328,39 @@ reply(pine_state)
 	       saved_to, saved_cc, saved_resent,
 	       &fcc, flags & RSF_FORCE_REPLY_ALL);
 
-    if(pine_state->expunge_count)	/* somebody expunged current msg */
+    if(sp_expunge_count(pine_state->mail_stream))	/* cur msg expunged */
       goto done_early;
 
     /* Setup possible role */
-    rflags = ROLE_REPLY;
-    if(nonempty_patterns(rflags, &dummy)){
-	if(!times)
-	  /* setup default role */
-	  role = set_role_from_msg(pine_state, rflags, seq[times], NULL);
+    if(role_arg)
+      role = copy_action(role_arg);
 
-	if(confirm_role(rflags, &role))
-	  role = combine_inherited_role(role);
-	else{				/* cancel reply */
-	    role = NULL;
-	    cmd_cancelled("Reply");
-	    goto done_early;
+    if(!role){
+	rflags = ROLE_REPLY;
+	if(nonempty_patterns(rflags, &dummy)){
+	    /* setup default role */
+	    nrole = NULL;
+	    j = mn_first_cur(pine_state->msgmap);
+	    do {
+		role = nrole;
+		nrole = set_role_from_msg(pine_state, rflags,
+					  mn_m2raw(pine_state->msgmap, j),
+					  NULL);
+	    } while(nrole && (!role || nrole == role)
+		    && (j=mn_next_cur(pine_state->msgmap)) > 0L);
+
+	    if(!role || nrole == role)
+	      role = nrole;
+	    else
+	      role = NULL;
+
+	    if(confirm_role(rflags, &role))
+	      role = combine_inherited_role(role);
+	    else{				/* cancel reply */
+		role = NULL;
+		cmd_cancelled("Reply");
+		goto done_early;
+	    }
 	}
     }
 
@@ -349,7 +369,7 @@ reply(pine_state)
      * no longer be valid. Get it again.
      * Similarly for set_role_from_message.
      */
-    env = mail_fetchstructure(pine_state->mail_stream, seq[times], NULL);
+    env = pine_mail_fetchstructure(pine_state->mail_stream, seq[times], NULL);
 
     if(role){
 	q_status_message1(SM_ORDER, 3, 4,
@@ -486,9 +506,9 @@ reply(pine_state)
 	    }
 
 	    /*--- Grab current envelope ---*/
-	    env = mail_fetchstructure(pine_state->mail_stream,
-				      mn_m2raw(pine_state->msgmap, msgno),
-				      &orig_body);
+	    env = pine_mail_fetchstructure(pine_state->mail_stream,
+					   mn_m2raw(pine_state->msgmap, msgno),
+					   &orig_body);
 	    if(!env){
 		q_status_message1(SM_ORDER,3,4,
 			  "Error fetching message %.200s. Can't reply to it.",
@@ -574,7 +594,8 @@ reply(pine_state)
 			 mn_get_cur(pine_state->msgmap));
 
 	/*--- Grab current envelope ---*/
-	env = mail_fetchstructure(pine_state->mail_stream, msgno, &orig_body);
+	env = pine_mail_fetchstructure(pine_state->mail_stream, msgno,
+				       &orig_body);
 
 	/*
 	 * If the charset of the body part is different from ascii and
@@ -835,7 +856,7 @@ set_role_from_msg(ps, rflags, msgno, section)
 
     while(!role && pat){
 	if(match_pattern(pat->patgrp, ps->mail_stream, ss, section,
-			 get_msg_score, 0)){
+			 get_msg_score, SO_NOSERVER|SE_NOPREFETCH)){
 	    if(!pat->action || pat->action->bogus)
 	      break;
 
@@ -1491,20 +1512,24 @@ reply_resent(pine_state, msgno, section)
 
 Args:  subject -- subject to build reply subject for
        buf -- buffer to use for writing.  If non supplied, alloc one.
+       buflen -- length of buf if supplied, else ignored
 
 Returns: with either "Re:" prepended or not, if already there.
          returned string is allocated.
   ---*/
 char *
-reply_subject(subject, buf)
+reply_subject(subject, buf, buflen)
      char *subject;
      char *buf;
+     size_t buflen;
 {
     size_t  l   = (subject && *subject) ? strlen(subject) : 10;
     char   *tmp = fs_get(l + 1), *decoded, *p;
 
-    if(!buf)
-      buf = fs_get(l + 5);
+    if(!buf){
+	buflen = l + 5;
+	buf = fs_get(buflen);
+    }
 
     /* decode any 8bit into tmp buffer */
     decoded = (char *) rfc1522_decode((unsigned char *)tmp, l+1, subject, NULL);
@@ -1515,16 +1540,17 @@ reply_subject(subject, buf)
        && (decoded[1] == 'E' || decoded[1] == 'e')){
 
         if(decoded[2] == ':')
-	  sprintf(buf, "%.200s", subject);
+	  sprintf(buf, "%.*s", buflen-1, subject);
 	else if((decoded[2] == '[') && (p = strchr(decoded, ']'))){
 	    p++;
 	    while(*p && isspace((unsigned char)*p)) p++;
 	    if(p[0] == ':')
-	      sprintf(buf, "%.200s", subject);
+	      sprintf(buf, "%.*s", buflen-1, subject);
 	}
     }
     if(!buf[0])
-      sprintf(buf, "Re: %.200s", (subject && *subject) ? subject : "your mail");
+      sprintf(buf, "Re: %.*s", buflen-1,
+	      (subject && *subject) ? subject : "your mail");
 
     fs_give((void **) &tmp);
     return(buf);
@@ -1808,7 +1834,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
     REDRAFT_POS_S **redraft_pos;
 {
     char     *p, *sig = NULL, *section, sect_buf[256];
-    BODY     *body = NULL, *tmp_body;
+    BODY     *body = NULL, *tmp_body = NULL;
     PART     *part;
     gf_io_t   pc;
     int       impl, template_len = 0, leave_cursor_at_top = 0, reply_raw_body = 0;
@@ -1818,7 +1844,8 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
     else
       section = "1";
 
-    if(ps_global->full_header && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
+    if(ps_global->full_header == 2
+       && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
       reply_raw_body = 1;
 
     gf_set_so_writec(&pc, (STORE_S *) msgtext);
@@ -1904,7 +1931,7 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 				   reply_raw_body ? sect_prefix
 				   : (p = body_partno(stream, msgno, tmp_body)),
 				   pc, prefix);
-		if(!reply_raw_body)
+		if(!reply_raw_body && p)
 		  fs_give((void **) &p);
 	    }
 	    else{
@@ -2073,8 +2100,8 @@ reply_body(stream, env, orig_body, msgno, sect_prefix, msgtext, prefix,
 		append_file = NULL;
 		mail_gc(stream, GC_TEXTS);
 #else
-		if(p = mail_fetchbody(stream, msgno, section,
-				      &part->body.size.bytes)){
+		if(p = pine_mail_fetch_body(stream, msgno, section,
+					    &part->body.size.bytes, NIL)){
 		    so_nputs((STORE_S *)part->body.contents.text.data,
 			     p, part->body.size.bytes);
 		}
@@ -2621,6 +2648,24 @@ get_reply_data(env, role, type, buf, maxlen)
       case iCurDateIsoS:
       case iCurTime24:
       case iCurTime12:
+      case iCurDay:
+      case iCurDay2Digit:
+      case iCurDayOfWeek:
+      case iCurDayOfWeekAbb:
+      case iCurMon:
+      case iCurMon2Digit:
+      case iCurMonLong:
+      case iCurMonAbb:
+      case iCurYear:
+      case iCurYear2Digit:
+      case iLstMon:
+      case iLstMon2Digit:
+      case iLstMonLong:
+      case iLstMonAbb:
+      case iLstMonYear:
+      case iLstMonYear2Digit:
+      case iLstYear:
+      case iLstYear2Digit:
 	if(maxlen >= 20)
 	  date_str(NULL, type, 1, buf);
 
@@ -3218,7 +3263,6 @@ top:
 			}
 		    }
 		}
-		/* these are all from the envelope */
 		else if(pt->what_for & FOR_REPLY_INTRO)
 		  repl = get_reply_data(env, role, pt->ctype,
 					subbuf, sizeof(subbuf)-1);
@@ -3567,7 +3611,8 @@ reply_forward_header(stream, msgno, part, env, pc, prefix)
     }
 
     HD_INIT(&h, list, ps_global->view_all_except, FE_DEFAULT & ~FE_BCC);
-    if(rv = format_header(stream, msgno, part, env, &h, prefix, NULL, 0, pc)){
+    if(rv = format_header(stream, msgno, part, env, &h, prefix, NULL,
+			  FM_NOINDENT, pc)){
 	if(rv == 1)
 	  gf_puts("  [Error fetching message header data]", pc);
     }
@@ -3593,12 +3638,13 @@ of the outgoing message which requires formatting the header from the
 envelope of the original messasge.
   ----------------------------------------------------------------------*/
 void
-forward(ps)
+forward(ps, role_arg)
     struct pine *ps;
+    ACTION_S    *role_arg;
 {
     char	  *sig;
     int		   ret, forward_raw_body = 0;
-    long	   msgno, totalmsgs, rflags;
+    long	   msgno, j, totalmsgs, rflags;
     ENVELOPE	  *env, *outgoing;
     BODY	  *orig_body, *body = NULL;
     REPLY_S        reply;
@@ -3607,7 +3653,7 @@ forward(ps)
     int            impl, template_len = 0;
     PAT_STATE      dummy;
     REDRAFT_POS_S *redraft_pos = NULL;
-    ACTION_S      *role = NULL;
+    ACTION_S      *role = NULL, *nrole;
 #if	defined(DOS) && !defined(_WINDOWS)
     char	  *reserve;
 #endif
@@ -3618,7 +3664,8 @@ forward(ps)
     outgoing              = mail_newenvelope();
     outgoing->message_id  = generate_message_id();
 
-    if(ps_global->full_header && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
+    if(ps_global->full_header == 2
+       && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
       forward_raw_body = 1;
 
     if((totalmsgs = mn_total_cur(ps->msgmap)) > 1L){
@@ -3628,7 +3675,7 @@ forward(ps)
     else{
 	/*---------- Get the envelope of message we're forwarding ------*/
 	msgno = mn_m2raw(ps->msgmap, mn_get_cur(ps->msgmap));
-	if(!((env = mail_fetchstructure(ps->mail_stream, msgno, NULL))
+	if(!((env = pine_mail_fetchstructure(ps->mail_stream, msgno, NULL))
 	     && (outgoing->subject = forward_subject(env, 0)))){
 	    q_status_message1(SM_ORDER,3,4,
 			  "Error fetching message %.200s. Can't forward it.",
@@ -3650,7 +3697,7 @@ forward(ps)
     ret = (totalmsgs > 1L)
 	   ? want_to("Forward messages as a MIME digest", 'y', 'x',
 		     NO_HELP, WT_SEQ_SENSITIVE)
-	   : (ps->full_header)
+	   : (ps->full_header == 2)
 	     ? want_to("Forward message as an attachment", 'n', 'x',
 		       NO_HELP, WT_SEQ_SENSITIVE)
 	     : 0;
@@ -3662,17 +3709,35 @@ forward(ps)
     }
 
     /* Setup possible role */
-    rflags = ROLE_FORWARD;
-    if(nonempty_patterns(rflags, &dummy)){
-	role = (totalmsgs == 1) ? set_role_from_msg(ps, rflags, msgno, NULL)
-				: NULL;
-	if(confirm_role(rflags, &role))
-	  role = combine_inherited_role(role);
-	else{				/* cancel reply */
-	    role = NULL;
-	    cmd_cancelled("Forward");
-	    so_give((STORE_S **)&msgtext);
-	    goto clean;
+    if(role_arg)
+      role = copy_action(role_arg);
+
+    if(!role){
+	rflags = ROLE_FORWARD;
+	if(nonempty_patterns(rflags, &dummy)){
+	    /* setup default role */
+	    nrole = NULL;
+	    j = mn_first_cur(ps->msgmap);
+	    do {
+		role = nrole;
+		nrole = set_role_from_msg(ps, rflags,
+					  mn_m2raw(ps->msgmap, j), NULL);
+	    } while(nrole && (!role || nrole == role)
+		    && (j=mn_next_cur(ps->msgmap)) > 0L);
+
+	    if(!role || nrole == role)
+	      role = nrole;
+	    else
+	      role = NULL;
+
+	    if(confirm_role(rflags, &role))
+	      role = combine_inherited_role(role);
+	    else{				/* cancel reply */
+		role = NULL;
+		cmd_cancelled("Forward");
+		so_give((STORE_S **)&msgtext);
+		goto clean;
+	    }
 	}
     }
 
@@ -3763,7 +3828,7 @@ forward(ps)
 	    msgno = mn_next_cur(ps->msgmap)){
 
 	    msgno = mn_m2raw(ps->msgmap, msgno);
-	    env   = mail_fetchstructure(ps->mail_stream, msgno, NULL);
+	    env   = pine_mail_fetchstructure(ps->mail_stream, msgno, NULL);
 
 	    if(forward_mime_msg(ps->mail_stream,msgno,NULL,env,pp,msgtext)){
 		totalsize += (*pp)->body.size.bytes;
@@ -3793,9 +3858,9 @@ forward(ps)
 	    }
 
 	    /*--- Grab current envelope ---*/
-	    env = mail_fetchstructure(ps->mail_stream,
-				      mn_m2raw(ps->msgmap, msgno),
-				      &orig_body);
+	    env = pine_mail_fetchstructure(ps->mail_stream,
+					   mn_m2raw(ps->msgmap, msgno),
+					   &orig_body);
 	    if(!env || !orig_body){
 		q_status_message1(SM_ORDER,3,4,
 			   "Error fetching message %.200s. Can't forward it.",
@@ -3842,7 +3907,8 @@ forward(ps)
 	    }
 	}
     }
-    else if(!((env = mail_fetchstructure(ps->mail_stream, msgno, &orig_body))
+    else if(!((env = pine_mail_fetchstructure(ps->mail_stream, msgno,
+					      &orig_body))
 	      && (body = forward_body(ps->mail_stream, env, orig_body, msgno,
 				      NULL, msgtext,
 				      FWD_NONE)))){
@@ -3997,9 +4063,10 @@ forward_body(stream, env, orig_body, msgno, sect_prefix, msgtext, flags)
      * include the message as an attachment. Either the message is gone or
      * it might be at a different sequence number. We'd better bail.
      */
-    if(ps_global->full_header && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
+    if(ps_global->full_header == 2
+       && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
       forward_raw_body = 1;
-    if(ps_global->expunge_count)
+    if(sp_expunge_count(stream))
       return(NULL);
 
     if(sect_prefix && forward_raw_body == 0)
@@ -4161,8 +4228,8 @@ forward_body(stream, env, orig_body, msgno, sect_prefix, msgtext, flags)
 	    else
 	      mail_free_body(&body);
 #else
-	    if(tmp_text = mail_fetchbody(stream, msgno, section,
-					 &part->body.size.bytes))
+	    if(tmp_text = pine_mail_fetch_body(stream, msgno, section,
+					 &part->body.size.bytes, NIL))
 	      so_nputs((STORE_S *)part->body.contents.text.data, tmp_text,
 		       part->body.size.bytes);
 	    else
@@ -4415,8 +4482,9 @@ of the outgoing message which requires formatting the header from the
 envelope of the original messasge.
   ----------------------------------------------------------------------*/
 void
-bounce(pine_state)
+bounce(pine_state, role)
     struct pine   *pine_state;
+    ACTION_S      *role;
 {
     ENVELOPE	  *env;
     long           msgno, rawno;
@@ -4440,8 +4508,8 @@ bounce(pine_state)
 	msgno = mn_next_cur(pine_state->msgmap)){
 
 	rawno = mn_m2raw(pine_state->msgmap, msgno);
-	if(env = mail_fetchstructure(pine_state->mail_stream, rawno, NULL))
-	  errstr = bounce_msg(pine_state->mail_stream, rawno, NULL,
+	if(env = pine_mail_fetchstructure(pine_state->mail_stream, rawno, NULL))
+	  errstr = bounce_msg(pine_state->mail_stream, rawno, NULL, role,
 			      save_toptr, env->subject, prmpt_who, prmpt_cnf);
 	else
 	  errstr = "Can't fetch Subject for Bounce";
@@ -4467,10 +4535,11 @@ bounce(pine_state)
 
 
 char *
-bounce_msg(stream, rawno, part, to, subject, pmt_who, pmt_cnf)
+bounce_msg(stream, rawno, part, role, to, subject, pmt_who, pmt_cnf)
     MAILSTREAM	*stream;
     long	 rawno;
     char	*part;
+    ACTION_S    *role;
     char       **to;
     char	*subject;
     char	*pmt_who, *pmt_cnf;
@@ -4555,7 +4624,8 @@ bounce_msg(stream, rawno, part, to, subject, pmt_who, pmt_cnf)
     body->contents.text.data = msgtext;
     gf_set_so_writec(&pc, (STORE_S *) msgtext);
 
-    if(mc = mail_elt(stream,  rawno))
+    if(rawno > 0L && stream && rawno <= stream->nmsgs
+       && (mc = mail_elt(stream,  rawno)))
       was_seen = mc->seen;
 
     /* pass NULL body to force mail_fetchtext */
@@ -4564,11 +4634,13 @@ bounce_msg(stream, rawno, part, to, subject, pmt_who, pmt_cnf)
 
     gf_clear_so_writec((STORE_S *) msgtext);
 
-    if(pine_simple_send(outgoing, &body, pmt_who, pmt_cnf, to,
+    if(pine_simple_send(outgoing, &body, role, pmt_who, pmt_cnf, to,
 			!(to && *to) ? SS_PROMPTFORTO : 0) < 0){
 	errstr = "";		/* p_s_s() better have explained! */
 	/* clear seen flag */
-	if(was_seen == 0 && (mc = mail_elt(stream,  rawno)) && mc->seen)
+	if(was_seen == 0 && rawno > 0L
+	   && stream && rawno <= stream->nmsgs
+	   && (mc = mail_elt(stream,  rawno)) && mc->seen)
 	  mail_flag(stream, long2string(rawno), "\\SEEN", 0);
     }
 
@@ -4588,13 +4660,18 @@ bounce_msg(stream, rawno, part, to, subject, pmt_who, pmt_cnf)
 Args:  d -- destination string pointer pointer
        s -- source string pointer pointer
 
+       Postfix uses Delivered-To to detect loops.
+       Received line counting is also used to detect loops in places.
+
   ----*/
 void
 bounce_mask_header(d, s)
     char **d, *s;
 {
-    if((*s == 'R' || *s == 'r')
-       && (!struncmp(s+1, "esent-", 6) || !struncmp(s+1, "eceived:", 8))){
+    if(((*s == 'R' || *s == 'r')
+        && (!struncmp(s+1, "esent-", 6) || !struncmp(s+1, "eceived:", 8)
+	    || !struncmp(s+1, "eturn-Path", 10)))
+       || !struncmp(s, "Delivered-To:", 13)){
 	*(*d)++ = 'X';				/* write mask */
 	*(*d)++ = '-';
     }
@@ -4632,10 +4709,10 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
     gf_io_t     pc;
     char       *prefix;
 {
-    int		i, we_cancel = 0, dashdata;
-    FILTLIST_S  filters[7];
+    int		i, we_cancel = 0, dashdata, wrapflags = 0, flow_res = 0;
+    FILTLIST_S  filters[10];
     long	len;
-    char       *err, *charset;
+    char       *err, *charset, *prefix_p = NULL;
 #if	defined(DOS) && !defined(WIN32)
     char     *tmpfile_name = NULL;
 #endif
@@ -4656,12 +4733,13 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 	SourceType    src = CharStar;
 	int           rv = 0;
 
-	(void)mail_fetchstructure(stream, msg_no, NULL);
+	(void) pine_mail_fetchstructure(stream, msg_no, NULL);
 
 #if	defined(DOS) && !defined(WIN32)
-	mc = mail_elt(stream,  msg_no);
-	if(mc->rfc822_size > MAX_MSG_INCORE
-	  || (ps_global->context_current->type & FTYPE_BBOARD)){
+	mc = (msgno > 0L && stream && rawno <= stream->nmsgs)
+		? mail_elt(stream, msg_no) : NULL;
+	if((mc && mc->rfc822_size > MAX_MSG_INCORE)
+	   || (ps_global->context_current->type & FTYPE_BBOARD)){
 	    src = FileStar;		/* write fetched text to disk */
 	    if(!(tmpfile_name = temp_nam(NULL, "pt"))
 	       || !(append_file = fopen(tmpfile_name, "w+b"))){
@@ -4732,17 +4810,22 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 
     i = 0;			/* for start of filter list */
 
-    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global))
+    charset = rfc2231_get_param(body->parameter, "charset", NULL, NULL);
+
+    if(F_OFF(F_DISABLE_2022_JP_CONVERSIONS, ps_global)
+       && (!charset
+	   || !strucmp(charset, "US-ASCII")
+	   || !strucmp(charset, "ISO-2022-JP")))
       filters[i++].filter = gf_2022_jp_to_euc;
 
-    if(charset = rfc2231_get_param(body->parameter,"charset",NULL,NULL)){
+    if(charset){
 	if(F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)){
 	    CONV_TABLE *ct;
 
 	    ct = conversion_table(charset, ps_global->VAR_CHAR_SET);
-	    if(ct && ct->table){
-		filters[i].filter = gf_convert_charset;
-		filters[i++].data = gf_convert_charset_opt(ct->table);
+	    if(ct && ct->convert && ct->table){
+		filters[i].filter = ct->convert;
+		filters[i++].data = ct->table;
 	    }
 	}
 
@@ -4753,17 +4836,96 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
      * just use detach, but add an auxiliary filter to insert prefix,
      * and, perhaps, digest richtext
      */
-    if(body->subtype){
+    if(ps_global->full_header != 2
+       && !ps_global->postpone_no_flow
+       && (!body->subtype || !strucmp(body->subtype, "plain"))){
+	char *parmval;
+
+	flow_res = (F_OFF(F_QUELL_FLOWED_TEXT, ps_global)
+		     && F_OFF(F_STRIP_WS_BEFORE_SEND, ps_global)
+		     && (!prefix || (strucmp(prefix,"> ") == 0)
+			 || strucmp(prefix, ">") == 0));
+	if(parmval = rfc2231_get_param(body->parameter,
+				       "format", NULL, NULL)){
+	    if(!strucmp(parmval, "flowed")){
+		wrapflags |= GFW_FLOWED;
+
+		fs_give((void **) &parmval);
+		if(parmval = rfc2231_get_param(body->parameter,
+					       "delsp", NULL, NULL)){
+		    if(!strucmp(parmval, "yes"))
+		      wrapflags |= GFW_DELSP;
+
+		    fs_give((void **) &parmval);
+		}
+
+ 		/*
+ 		 * if there's no prefix we're forwarding text
+ 		 * otherwise it's reply text.  unless the user's
+ 		 * tied our hands, alter the prefix to continue flowed
+ 		 * formatting...
+ 		 */
+ 		if(flow_res)
+		  wrapflags |= GFW_FLOW_RESULT;
+
+		filters[i].filter = gf_wrap;
+		/* 
+		 * The 80 will cause longer lines than what is likely
+		 * set by composer_fillcol, so we'll have longer
+		 * quoted and forwarded lines than the lines we type.
+		 * We're fine with that since the alternative is the
+		 * possible wrapping of lines we shouldn't have, which
+		 * is mitigated by this higher 80 limit.
+		 *
+		 * If we were to go back to using composer_fillcol,
+		 * the correct value is composer_fillcol + 1, pine
+		 * is off-by-one from pico.
+		 */
+		filters[i++].data = gf_wrap_filter_opt(
+		    max(min(ps_global->ttyo->screen_cols
+			    - (prefix ? strlen(prefix) : 0),
+			    80 - (prefix ? strlen(prefix) : 0)),
+			30), /* doesn't have to be 30 */
+		    990, /* 998 is the SMTP limit */
+		    NULL, 0, wrapflags);
+	    }
+	}
+
+ 	/*
+ 	 * if not flowed, remove trailing whitespace to reduce
+ 	 * confusion, since we're sending out as flowed if we
+	 * can.  At some future point, we might try 
+ 	 * plugging in a user-option-controlled heuristic
+ 	 * flowing filter 
+	 *
+	 * We also want to fold "> " quotes so we get the
+	 * attributions correct.
+ 	 */
+	if(flow_res && prefix && !strucmp(prefix, "> "))
+	  *(prefix_p = prefix + 1) = '\0';
+	if(!(wrapflags & GFW_FLOWED)
+	   && flow_res){
+	    filters[i].filter = gf_line_test;
+	    filters[i++].data = gf_line_test_opt(twsp_strip, NULL);
+
+	    filters[i].filter = gf_line_test;
+	    filters[i++].data = gf_line_test_opt(quote_fold, NULL);
+	}
+    }
+    else if(body->subtype){
 	if(strucmp(body->subtype,"richtext") == 0){
 	    filters[i].filter = gf_rich2plain;
 	    filters[i++].data = gf_rich2plain_opt(1);
+	}
+	else if(strucmp(body->subtype,"enriched") == 0){
+	    filters[i].filter = gf_enriched2plain;
+	    filters[i++].data = gf_enriched2plain_opt(1);
 	}
 	else if(strucmp(body->subtype,"html") == 0){
 	    filters[i].filter = gf_html2plain;
 	    filters[i++].data = gf_html2plain_opt(NULL,
 						  ps_global->ttyo->screen_cols,
-						  NULL,
-						  GFHP_STRIPPED);
+						  NULL, NULL, GFHP_STRIPPED);
 	}
     }
 
@@ -4777,10 +4939,19 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 
 	filters[i].filter = gf_prefix;
 	filters[i++].data = gf_prefix_opt(prefix);
+
+	if(wrapflags & GFW_FLOWED || flow_res){
+	    filters[i].filter = gf_line_test;
+	    filters[i++].data = gf_line_test_opt(post_quote_space, NULL);
+	}
     }
 
     err = detach(stream, msg_no, part_no, &len, pc,
-		 filters[0].filter ? filters : NULL);
+		 filters[0].filter ? filters : NULL, 0);
+
+    if(prefix_p)
+      *prefix_p = ' ';
+
     if (err != (char *) NULL)
        q_status_message2(SM_ORDER, 3, 4, "%.200s: message number %ld",
 			 err, (void *) msg_no);
@@ -4791,6 +4962,74 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
     return((int)len);
 }
 
+int
+post_quote_space(linenum, line, ins, local)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *local;
+{
+    char *p;
+
+    for(p = line; *p; p++)
+      if(*p != '>'){
+	  if(p != line && *p != ' ')
+	    ins = gf_line_test_new_ins(ins, p, " ", 1);
+
+	  break;
+      }
+
+    return(0);
+}
+
+int
+quote_fold(linenum, line, ins, local)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *local;
+{
+    char *p;
+
+    if(*line == '>'){
+	for(p = line; *p; p++){
+	    if(isspace((unsigned char) *p)){
+		if(*(p+1) == '>')
+		  ins = gf_line_test_new_ins(ins, p, "", -1);
+	    }
+	    else if(*p != '>')
+	      break;
+	}
+    }
+
+    return(0);
+}
+
+int
+twsp_strip(linenum, line, ins, local)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *local;
+{
+    char *p, *ws = NULL;
+
+    if(line[0] == '-' && line[1] == '-' && line[2] == ' ' && line[3] == '\0')
+      return(0);
+
+    for(p = line; *p; p++)
+      if(isspace((unsigned char) *p)){
+	  if(!ws)
+	    ws = p;
+      }
+      else
+	ws = NULL;
+
+    if(ws)
+      ins = gf_line_test_new_ins(ins, ws, "", -(p - ws));
+
+    return(0);
+}
 
 
 int
@@ -4823,7 +5062,7 @@ body_partno(stream, msgno, end_body)
 {
     BODY *body;
 
-    (void) mail_fetchstructure(stream, msgno, &body);
+    (void) pine_mail_fetchstructure(stream, msgno, &body);
     return(partno(body, end_body));
 }
 
@@ -4955,8 +5194,8 @@ fetch_contents(stream, msgno, section, body)
 	    }
 #else
 	    if(body->contents.text.data
-	       && (tp = mail_fetchbody(stream, msgno, section,
-				       &body->size.bytes))){
+	       && (tp = pine_mail_fetch_body(stream, msgno, section,
+				       &body->size.bytes, NIL))){
 	        so_truncate((STORE_S *)body->contents.text.data, 
 			    body->size.bytes + 2048);
 		so_nputs((STORE_S *)body->contents.text.data, tp,
@@ -4996,7 +5235,8 @@ fetch_contents(stream, msgno, section, body)
 	}
 #else
 	if(body->contents.text.data
-	   && (tp=mail_fetchbody(stream, msgno, section, &body->size.bytes))){
+	   && (tp=pine_mail_fetch_body(stream, msgno, section,
+				       &body->size.bytes, NIL))){
 	    so_truncate((STORE_S *)body->contents.text.data, 
 			    body->size.bytes + 2048);
 	    so_nputs((STORE_S *)body->contents.text.data, tp,
@@ -5138,7 +5378,8 @@ copy_envelope(e)
     e2		    = mail_newenvelope();
     e2->remail      = e->remail	     ? cpystr(e->remail)	      : NULL;
     e2->return_path = e->return_path ? rfc822_cpy_adr(e->return_path) : NULL;
-    e2->date        = e->date	     ? cpystr(e->date)		      : NULL;
+    e2->date        = e->date	     ? (unsigned char *)cpystr((char *) e->date)
+								      : NULL;
     e2->from        = e->from	     ? rfc822_cpy_adr(e->from)	      : NULL;
     e2->sender      = e->sender	     ? rfc822_cpy_adr(e->sender)      : NULL;
     e2->reply_to    = e->reply_to    ? rfc822_cpy_adr(e->reply_to)    : NULL;
@@ -5280,6 +5521,7 @@ get_signature_file(file, prenewlines, postnewlines, is_sig)
     int       len, do_the_pipe_thang = 0;
     long      sigsize = 0L, cntdown;
 
+    sig_path[0] = '\0';
     if(!signature_path(file, sig_path, MAXPATH))
       return(NULL);
 
@@ -5331,11 +5573,11 @@ get_signature_file(file, prenewlines, postnewlines, is_sig)
 			char         *error, *q;
 
 			gf_set_so_writec(&pc, store);
-			gf_set_readc(&gc, (void *)syspipe->in.f, 0, FileStar);
+			gf_set_readc(&gc, (void *)syspipe, 0, PipeStar);
 			gf_filter_init();
 
 			if((error = gf_pipe(gc, pc)) != NULL){
-			    (void)close_system_pipe(&syspipe);
+			    (void)close_system_pipe(&syspipe, NULL, 0);
 			    gf_clear_so_writec(store);
 			    so_give(&store);
 			    q_status_message1(SM_ORDER | SM_DING, 3, 4,
@@ -5343,7 +5585,7 @@ get_signature_file(file, prenewlines, postnewlines, is_sig)
 			    return(NULL);
 			}
 
-			if(close_system_pipe(&syspipe)){
+			if(close_system_pipe(&syspipe, NULL, 0)){
 			    long now;
 
 			    now = time(0);
@@ -5587,7 +5829,7 @@ read_remote_sigfile(name)
 	    else{
 		dprint(7, (debugfile,
 		       "%s: copied remote to local (%ld)\n",
-		       rd->rn, (long)rd->last_use));
+		       rd->rn ? rd->rn : "?", (long)rd->last_use));
 	    }
 	}
 
@@ -5604,7 +5846,8 @@ read_remote_sigfile(name)
 	     "Can't contact remote sig server, using cached copy");
 	    dprint(2, (debugfile,
     "Can't open remote sigfile %s, using local cached copy %s readonly\n",
-		   rd->rn, rd->lf));
+		   rd->rn ? rd->rn : "?",
+		   rd->lf ? rd->lf : "?"));
 	}
 	else{
 	    rd->flags &= ~DO_REMTRIM;
@@ -5713,7 +5956,9 @@ signature_edit(sigfile, title)
     pbf.alt_ed        = (VAR_EDITOR && VAR_EDITOR[0] && VAR_EDITOR[0][0])
 			    ? VAR_EDITOR : NULL;
     pbf.alt_spell     = (VAR_SPELLER && VAR_SPELLER[0]) ? VAR_SPELLER : NULL;
-    pbf.always_spell_check = (F_ON(F_ALWAYS_SPELL_CHECK, ps_global));
+    pbf.always_spell_check = F_ON(F_ALWAYS_SPELL_CHECK, ps_global);
+    pbf.strip_ws_before_send = F_ON(F_STRIP_WS_BEFORE_SEND, ps_global);
+    pbf.allow_flowed_text = 0;
 
     pbf.pine_anchor   = set_titlebar(title,
 				      ps_global->mail_stream,
@@ -5829,7 +6074,7 @@ signature_edit(sigfile, title)
 				rd->lf, error_description(errno));
 			    dprint(1, (debugfile,
 			       "write_remote_sig: error opening temp file %s\n",
-			       rd->lf));
+			       rd->lf ? rd->lf : "?"));
 			}
 			else{
 			    q_status_message2(SM_ORDER | SM_DING, 3, 5,
@@ -5837,7 +6082,7 @@ signature_edit(sigfile, title)
 					    rd->rn, error_description(errno));
 			    dprint(1, (debugfile,
 			      "write_remote_sig: error copying from %s to %s\n",
-			      rd->lf, rd->rn));
+			      rd->lf ? rd->lf : "?", rd->rn ? rd->rn : "?"));
 			}
 			
 			q_status_message(SM_ORDER | SM_DING, 5, 5,
@@ -5899,7 +6144,9 @@ signature_edit_lit(litsig, result, title)
     pbf.alt_ed        = (VAR_EDITOR && VAR_EDITOR[0] && VAR_EDITOR[0][0])
 			    ? VAR_EDITOR : NULL;
     pbf.alt_spell     = (VAR_SPELLER && VAR_SPELLER[0]) ? VAR_SPELLER : NULL;
-    pbf.always_spell_check = (F_ON(F_ALWAYS_SPELL_CHECK, ps_global));
+    pbf.always_spell_check = F_ON(F_ALWAYS_SPELL_CHECK, ps_global);
+    pbf.strip_ws_before_send = F_ON(F_STRIP_WS_BEFORE_SEND, ps_global);
+    pbf.allow_flowed_text = 0;
 
     pbf.pine_anchor   = set_titlebar(title,
 				      ps_global->mail_stream,
@@ -5980,9 +6227,10 @@ signature_edit_lit(litsig, result, title)
  *
  */
 char *
-sigedit_exit_for_pico(he, redraw_pico)
+sigedit_exit_for_pico(he, redraw_pico, allow_flowed)
     struct headerentry *he;
     void (*redraw_pico)();
+    int  allow_flowed;
 {
     int	      rv;
     char     *rstr = NULL;
@@ -6061,7 +6309,8 @@ standard_picobuf_setup(pbf)
        | (F_ON(F_ENABLE_DOT_FILES,ps_global)		? P_DOTFILES	: 0L)
        | (F_ON(F_ALLOW_GOTO,ps_global)			? P_ALLOW_GOTO	: 0L)
        | (F_ON(F_ENABLE_SEARCH_AND_REPL,ps_global)	? P_REPLACE	: 0L)
-       | (!ps_global->pass_ctrl_chars			? P_HICTRL	: 0L)
+       | (!ps_global->pass_ctrl_chars
+          && !ps_global->pass_c1_ctrl_chars		? P_HICTRL	: 0L)
        | ((F_ON(F_ENABLE_ALT_ED,ps_global)
            || F_ON(F_ALT_ED_NOW,ps_global)
 	   || (ps_global->VAR_EDITOR

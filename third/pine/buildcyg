@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: buildcyg,v 1.1.1.1 2003-02-12 08:01:48 ghudson Exp $
+# $Id: buildcyg,v 1.1.1.2 2005-01-26 17:55:40 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -21,7 +21,7 @@
 #   permission of the University of Washington.
 #
 #   Pine, Pico, and Pilot software and its included text are Copyright
-#   1989-2002 by the University of Washington.
+#   1989-2004 by the University of Washington.
 #
 #   The full text of our legal notices is contained in the file called
 #   CPYRIGHT, included with this distribution.
@@ -207,6 +207,7 @@ case $maketarg in
    hxd) ccltarg=$maketarg; picotarg=hpp;       pinetarg=hpx ;;
    lnp) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ;;
    lrh) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/share/ssl ;;
+   lmd) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/lib/ssl ;;
    lsu) ccltarg=$maketarg; picotarg=lnx;       pinetarg=$picotarg ; DEFSSLD=/usr/ssl ;;
    nx3) ccltarg=$maketarg; picotarg=nxt;       pinetarg=$picotarg ;;
    osx) ccltarg=$maketarg; picotarg=$maketarg; pinetarg=$picotarg ; DEFSSLD=/System/Library/OpenSSL ;;
@@ -280,6 +281,17 @@ case $maketarg in
 	       if [ "$LFLAGS" != "1" ]
 	       then
 		 L2="'LDAPCFLAGS=-DENABLE_LDAP'"
+	       fi
+	       echo "Including LDAP functionality"
+	       ;;
+
+	    7) if [ "$LLIBS" != "1" ]
+	       then
+		 L1="'LDAPLIBS=-lldap -llber'"
+	       fi
+	       if [ "$LFLAGS" != "1" ]
+	       then
+		 L2="'LDAPCFLAGS=-DENABLE_LDAP -I/usr/include'"
 	       fi
 	       echo "Including LDAP functionality"
 	       ;;

@@ -54,8 +54,8 @@
 
 
 /*--------------- signal.h ---------------------------------------------*/
-/* #include <signal.h> */   /* sometimes both required, sometimes */
-#include <sys/signal.h>  /* only one or the other */
+#include <signal.h>           /* sometimes both required, sometimes */
+/* #include <sys/signal.h> */ /* only one or the other */
 
 #define SigType void     /* value returned by sig handlers is void */
 /* #define SigType int */   /* value returned by sig handlers is int */

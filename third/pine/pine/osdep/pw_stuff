@@ -13,19 +13,21 @@ gcos_name(gcos_field, logname)
     static char fullname[MAX_FULLNAME+1];
     register char *fncp, *gcoscp, *lncp, *end;
 
-    /* full name is all chars up to first ',' (or whole gcos, if no ',') */
-    /* replace any & with logname in upper case */
+    /*
+     * Full name is all chars up to first ',' (or whole gcos, if no ',').
+     * Replace any & with Logname.
+     */
 
-    for(fncp = fullname, gcoscp= gcos_field, end = fullname + MAX_FULLNAME - 1;
-        (*gcoscp != ',' && *gcoscp != '\0' && fncp != end);
-	gcoscp++) {
+    for(fncp = fullname, gcoscp= gcos_field, end = fullname + MAX_FULLNAME;
+        (*gcoscp != ',' && *gcoscp != '\0' && fncp < end);
+	gcoscp++){
 
-	if(*gcoscp == '&') {
-	    for(lncp = logname; *lncp; fncp++, lncp++)
-		*fncp = toupper((unsigned char)(*lncp));
-	} else {
-	    *fncp++ = *gcoscp;
-	}
+	if(*gcoscp == '&'){
+	    for(lncp = logname; *lncp && fncp < end; fncp++, lncp++)
+	      *fncp = (lncp == logname) ? toupper((unsigned char) (*lncp))
+				        : (*lncp);
+	}else
+	  *fncp++ = *gcoscp;
     }
     
     *fncp = '\0';

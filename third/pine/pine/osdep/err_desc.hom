@@ -67,10 +67,12 @@ error_description(errnumber)
 {
     static char buffer[50];
 
+    buffer[0] = '\0';
+
     if (errnumber < 0 || errnumber > 36) 
       sprintf(buffer,"Unknown error - %d - No description", errnumber);
     else
-      strcpy(buffer, err_name[2*errnumber + 1]);
+      strncpy(buffer, err_name[2*errnumber + 1], sizeof(buffer));
 
     return ( (char *) buffer);
 }

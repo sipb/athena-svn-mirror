@@ -1,4 +1,4 @@
-# $Id: makefile.bso,v 1.1.1.2 2003-02-12 08:01:15 ghudson Exp $
+# $Id: makefile.bso,v 1.1.1.3 2005-01-26 17:52:44 ghudson Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -69,7 +69,7 @@ LIBS=        $(LOCLIBDIR) $(LOCLIBS) $(LDAPLIBS) $(STDLIBS) \
 
 STDCFLAGS=   -DBSDI -DSYSTYPE=\"BSO\" -DMOUSE
 CFLAGS+=     $(OPTIMIZE) $(PROFILE) $(DEBUG) $(EXTRACFLAGS) $(LDAPCFLAGS) \
-	     $(STDCFLAGS)
+	     $(LOCALPINECFLAGS) $(STDCFLAGS)
 
 OFILES=	addrbook.o adrbkcmd.o adrbklib.o args.o bldaddr.o context.o filter.o \
 	folder.o help.o helptext.o imap.o init.o mailcap.o mailcmd.o \

@@ -29,6 +29,7 @@
 #include <dirent.h>
 #include <sys/stream.h>
 #include <sys/ptem.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/
@@ -182,12 +183,5 @@ typedef unsigned short usign16_t;
  * the memmove() in ../c-client
  */
 #define bcopy(a,b,s) memcpy (b, a, s)
-
-/*
- * Make sys_errlist visible
- */
-extern char *sys_errlist[];
-extern int   sys_nerr;
-
 
 #endif /* _PICO_OS_INCLUDED */

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: status.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp $";
+static char rcsid[] = "$Id: status.c,v 1.1.1.3 2005-01-26 17:56:32 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: status.c,v 1.1.1.2 2003-02-12 08:01:29 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -143,6 +143,20 @@ q_status_message(flags, min_time, max_time, message)
     size_t mlen;
 
     /*
+     * By convention, we have min_time equal to zero in messages which we
+     * think are not as important, so-called comfort messages. We have
+     * min_time >= 3 for messages which we think the user should see for
+     * sure. Some users don't like to wait so we've provided a way for them
+     * to live on the edge.
+     *    status_msg_delay == -1  => min time == min(0, min_time)
+     *    status_msg_delay == -2  => min time == min(1, min_time)
+     *    status_msg_delay == -3  => min time == min(2, min_time)
+     *    ...
+     */
+    if(ps_global->status_msg_delay < 0)
+      min_time = min(-1 - ps_global->status_msg_delay, min_time);
+
+    /*
      * The 41 is room for 40 escaped control characters plus a
      * terminating null.
      */
@@ -192,7 +206,8 @@ q_status_message(flags, min_time, max_time, message)
     else
       message_queue = new->next = new->prev = new;
 
-    dprint(9, (debugfile, "q_status_message(%s)\n", clean_msg));
+    dprint(9, (debugfile, "q_status_message(%s)\n",
+	   clean_msg ? clean_msg : "?"));
 }
 
 
@@ -310,6 +325,19 @@ q_status_message5(flags, min_t, max_t, s, a1, a2, a3, a4, a5)
     void *a1, *a2, *a3, *a4, *a5;
 {
     sprintf(tmp_20k_buf, s, a1, a2, a3, a4, a5);
+    q_status_message(flags, min_t, max_t, tmp_20k_buf);
+}
+
+
+/*VARARGS1*/
+void
+q_status_message6(flags, min_t, max_t, s, a1, a2, a3, a4, a5, a6)
+    int   flags;
+    int   min_t, max_t;
+    char *s;
+    void *a1, *a2, *a3, *a4, *a5, *a6;
+{
+    sprintf(tmp_20k_buf, s, a1, a2, a3, a4, a5, a6);
     q_status_message(flags, min_t, max_t, tmp_20k_buf);
 }
 
@@ -512,7 +540,7 @@ display_message(command)
     int command;
 {
     if(ps_global == NULL || ps_global->ttyo == NULL
-       || ps_global->ttyo->screen_rows <= 1 || ps_global->in_init_seq)
+       || ps_global->ttyo->screen_rows < 1 || ps_global->in_init_seq)
       return(0);
 
     /*---- Deal with any previously displayed messages ----*/
@@ -536,7 +564,7 @@ display_message(command)
 			    : message_queue->min_display_time);
             dprint(9, (debugfile,
 		       "STATUS: diff:%d, displayed: %ld, now: %ld\n",
-		       diff, displayed_time, now));
+		       diff, (long) displayed_time, (long) now));
             if(diff > 0)
 	      rv = diff;			/* check again next time  */
 	    else if(LAST_MESSAGE(message_queue)
@@ -589,8 +617,28 @@ display_message(command)
 	  displayed_time = time(0);
 	  output_message(message_queue);
       }
-      else
-	d_q_status_message();
+      else{
+	  if(message_queue->text){
+	      char   buf[1000];
+	      char  *append = " [not actually shown]";
+	      char  *ptr;
+	      size_t len;
+
+	      len = strlen(message_queue->text) + strlen(append);
+	      if(len < sizeof(buf))
+		ptr = buf;
+	      else
+		ptr = (char *) fs_get((len+1) * sizeof(char));
+
+	      strcpy(ptr, message_queue->text);
+	      strcat(ptr, append);
+	      add_review_message(ptr, -1);
+	      if(ptr != buf)
+		fs_give((void **) &ptr);
+	  }
+
+	  d_q_status_message();
+      }
 
     needs_clearing = 0;				/* always cleared or written */
     dprint(9, (debugfile,
@@ -674,7 +722,7 @@ d_q_status_message()
 {
     if(message_queue){
 	dprint(9, (debugfile, "d_q_status_message(%.40s)\n",
-		   message_queue->text));
+	       message_queue->text ? message_queue->text : "?"));
 	if(!LAST_MESSAGE(message_queue)){
 	    SMQ_T *p = message_queue;
 	    p->next->prev = p->prev;
@@ -865,7 +913,8 @@ output_message(mq_entry)
 {
     int rv = 0;
 
-    dprint(9, (debugfile, "output_message(%s)\n", mq_entry->text));
+    dprint(9, (debugfile, "output_message(%s)\n",
+	   (mq_entry && mq_entry->text) ? mq_entry->text : "?"));
 
     if((mq_entry->flags & SM_DING) && F_OFF(F_QUELL_BEEPS, ps_global))
       Writechar(BELL, 0);			/* ring bell */
@@ -873,7 +922,7 @@ output_message(mq_entry)
 
     if(!(mq_entry->flags & SM_MODAL)){
 	rv = status_message_write(mq_entry->text, 0);
-    	if(ps_global->status_msg_delay){
+    	if(ps_global->status_msg_delay > 0){
 	    MoveCursor(ps_global->ttyo->screen_rows-FOOTER_ROWS(ps_global), 0);
 	    fflush(stdout);
 	    sleep(ps_global->status_msg_delay);
@@ -1210,6 +1259,11 @@ Args --  prompt:    The prompt for the question/selection
 				   changes so return on_ctrl_C if an
 				   unsolicited expunge happens while we're
 				   viewing a message.
+		RB_RET_HELP    - Instead of the regular internal handling
+				 way of handling help_text, this just causes
+				 radio_buttons to return 3 when help is
+				 asked for, so that the caller handles it
+				 instead.
 	
 	 Note: If there are enough keys in the esc_list to need a second
 	       screen, and there is no help, then the 13th key will be
@@ -1249,14 +1303,26 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 
 #ifdef _WINDOWS
     if (mswin_usedialog ()) {
-	MDlgButton		button_list[24];
+	MDlgButton		button_list[25];
 	int			b;
 	int			i;
 	int			ret;
 	char			**help;
 
-	memset (&button_list, 0, sizeof (MDlgButton) * 24);
+	memset (&button_list, 0, sizeof (MDlgButton) * 25);
 	b = 0;
+
+	if(flags & RB_RET_HELP){
+	    if(help_text != NO_HELP)
+		panic("RET_HELP and help in radio_buttons!");
+
+	    button_list[b].ch = '?';
+	    button_list[b].rval = 3;
+	    button_list[b].name = "?";
+	    button_list[b].label = "Help";
+	    ++b;
+	}
+
 	for (i = 0; esc_list && esc_list[i].ch != -1 && i < 23; ++i) {
 	  if(esc_list[i].ch != -2){
 	    button_list[b].ch = esc_list[i].ch;
@@ -1312,7 +1378,11 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
     start = 0;
     clrbitmap(bitmap);
     memset(fkey_table, NO_OP_COMMAND, 12 * sizeof(int));
-    if(help_text != NO_HELP){		/* if shown, always at position 0 */
+    if(flags & RB_RET_HELP && help_text != NO_HELP)
+      panic("RET_HELP and help in radio_buttons!");
+
+    /* if shown, always at position 0 */
+    if(help_text != NO_HELP || flags & RB_RET_HELP){
 	rb_keymenu.keys[0].name  = "?";
 	rb_keymenu.keys[0].label = "Help";
 	setbitn(0, bitmap);
@@ -1483,6 +1553,16 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
           case ctrl('M'):
           case ctrl('J'):
             ch = dflt;
+	    for(i = 0; esc_list && esc_list[i].ch != -1; i++)
+	      if(ch == esc_list[i].rval){
+		  int len, n;
+
+		  MoveCursor(real_line, len=min(RAD_BUT_COL+strlen(q),maxcol+1));
+		  for(n = 0, len = ps_global->ttyo->screen_cols - len;
+		      esc_list[i].label[n] && len > 0; n++, len--)
+		    Writechar(esc_list[i].label[n], 0);
+		  break;
+	      }
             goto out_of_loop;
 
           case ctrl('C'):
@@ -1517,7 +1597,11 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 		break;
 	    }
 
-	    if(help_text != NO_HELP && FOOTER_ROWS(ps_global) > 1){
+	    if(flags & RB_RET_HELP){
+		ch = 3;
+		goto out_of_loop;
+	    }
+	    else if(help_text != NO_HELP && FOOTER_ROWS(ps_global) > 1){
 		mark_keymenu_dirty();
 		if(lastc)
 		  (void)pico_set_colorp(lastc, PSC_NONE);
@@ -1549,8 +1633,9 @@ radio_buttons(prompt, line, esc_list, dflt, on_ctrl_C, help_text, flags)
 	    if(flags & RB_NO_NEWMAIL)
 	      goto newcmd;
 
-	    i = new_mail(0, 2, NM_DEFER_SORT);
-	    if(ps_global->expunge_count && flags & RB_SEQ_SENSITIVE){
+	    i = new_mail(0, VeryBadTime, NM_DEFER_SORT);
+	    if(sp_expunge_count(ps_global->mail_stream)
+	       && flags & RB_SEQ_SENSITIVE){
 		if(on_ctrl_C)
 		  ch = on_ctrl_C;
 		else

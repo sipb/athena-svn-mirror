@@ -258,7 +258,8 @@ open_printer(desc)
     }
     else{
         /*----------- Print by forking off a UNIX command ------------*/
-        dprint(4, (debugfile, "Printing using command \"%s\"\n", command));
+        dprint(4, (debugfile, "Printing using command \"%s\"\n",
+	       command ? command : "?"));
 	ps_global->print->result = temp_nam(NULL, "pine_prt");
 	if(ps_global->print->result &&
 	   (ps_global->print->pipe = open_system_pipe(command,
@@ -329,7 +330,7 @@ close_printer()
 
 	crlf_proc(0);				/* turn off CF->LF xlantion */
     } else {
-	(void) close_system_pipe(&ps_global->print->pipe);
+	(void) close_system_pipe(&ps_global->print->pipe, NULL, 0);
 	display_output_file(ps_global->print->result, "PRINT", NULL, 1);
 	fs_give((void **)&ps_global->print->result);
     }

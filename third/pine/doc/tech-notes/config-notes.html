@@ -304,10 +304,10 @@ store incoming mail for you on that particular host.
 
 <HR>
 
-<H2><A NAME="server-name-syntax">Server Name Syntax for Folders</A></H2>
+<H2><A NAME="server-name-syntax">Server Name Syntax</A></H2>
 
-This section describes the syntax which may be used for the server name
-associated with a remote folder.
+This section describes the syntax which may be used for server names
+which may be associated with remote folders or SMTP servers.
 
 <P>
 A server name is the hostname of the server.
@@ -348,6 +348,17 @@ Currently supported parameters include:
 <DD>This parameter requires an associated value, and is intended to
 provide the username identifier with which to establish the server
 connection.
+If your SMTP server offers SMTP AUTH authentication, adding this 
+parameter to the
+<A HREF="config.html#smtp-server"><EM>SMTP-Server</EM></A>
+option will cause <EM>Pine</EM> to attempt to authenticate to the server using the
+supplied username.
+Similarly, if your NNTP server offers NNTP &quot;AUTHINFO SASL&quot;
+or &quot;AUTHINFO USER&quot; authentication, adding this parameter to the
+<A HREF="config.html#nntp-server"><EM>NNTP-Server</EM></A>
+option (or to the server name for any folder collection using NNTP)
+will cause <EM>Pine</EM> to attempt
+to authenticate to the server using the supplied username.
 An example might be:
 
 <P>
@@ -634,7 +645,7 @@ They don't have to be a remote folder and a local folder, that is
 simply the most common usage.
 When you use a Mail Drop folder <EM>Pine</EM> will periodically re-open the Mail
 Drop to check for new mail.
-The new mail checks will happen at the frequency set with the
+The new-mail checks will happen at the frequency set with the
 <A HREF="config.html#mail-check"><EM>Mail-Check-Interval</EM></A> option,
 but with a minimum time
 (<A HREF="config.html#maildrop-check-minimum"><EM>MailDrop-Check-Minimum</EM></A>)
@@ -643,7 +654,7 @@ Because of this minimum you may notice that new mail does not
 appear promptly when you expect it.
 The reason for this is to protect the server from over-zealous opening and
 closing of the Mail Drop folder.
-If the user initiates the check by typing ^L or the Next command when at
+If the user initiates the check by typing ^L (Ctrl-L) or the Next command when at
 the end of the folder index, then the check will happen, regardless of how
 long it has been since the previous check.
 <P>
@@ -653,6 +664,9 @@ Note that using a Mail Drop with a local destination folder does not make
 sense if you read mail from more than one machine, because the mail is
 downloaded to the destination folder (which is accessible from only one
 machine) and deleted from the Mail Drop.
+<P>
+The feature <A HREF="config.html#maildrops-preserve-state"><EM>Maildrops-Preserve-State</EM></A>
+modifies the operation of Mail Drops.
 
 <P>
 The actual syntax used by <EM>Pine</EM> for a folder that uses a Mail Drop is:
@@ -674,7 +688,7 @@ Here are a couple examples to give you an idea what is being talked about:
 <P>
 <CENTER><SAMP>#move&nbsp;{popserver.example.com/pop3}inbox&nbsp;localfolder</SAMP></CENTER>
 <P>
-<CENTER><SAMP>#move+{nntpserver.example.com/nntp}inbox+local&nbsp;folder</SAMP></CENTER>
+<CENTER><SAMP>#move+{nntpserver.example.com/nntp}#news.comp.mail.pine+local&nbsp;folder</SAMP></CENTER>
 <P>
 
 A #move folder may only be used as an
@@ -1074,7 +1088,24 @@ For example, if
 appears in the value of a <EM>Pine</EM> configuration option it is looked up in the
 environent (using getenv(&quot;VAR&quot;)) and its
 looked-up value replaces the <SAMP>$VAR</SAMP> part of the option value.
-That sounds more complicated than it actually is.
+To include a literal dollar sign you may precede the dollar sign with another
+dollar sign.
+In other words, if the text
+
+<P><CENTER><SAMP>$$text</SAMP></CENTER><P>
+
+is the value of a configuration option, it will be expanded to
+
+<P><CENTER><SAMP>$text</SAMP></CENTER><P>
+
+and no environment lookup will be done.
+For Unix <EM>Pine</EM> it will also work to use a backslash character to
+escape the special meaning of the dollar sign, but $$ is preferable since
+it works for both <EM>PC-Pine</EM> and Unix <EM>Pine</EM>, allowing the configuration option
+to be in a shared configuration file.
+<P>
+
+This all sounds more complicated than it actually is.
 An example may make it clearer.
 Unfortunately, the way in which environment variables are set is OS-dependent 
 and command shell-dependent.
@@ -1169,7 +1200,7 @@ negotiate ESMTP options when <EM>sendmail</EM> is invoked with the
 <EM>-t</EM> option.  Sendmail can also be subject to unacceptable delays
 due to slow DNS lookups and other problems. <P>
 
-It is sometimes desireable to configure an SMTP server on a port other
+It is sometimes desirable to configure an SMTP server on a port other
 than the default port 25.  This may be used to provide an alternate
 service that is optimized for a particular environment or provides
 different features from the port 25 server.  An example would be a program

@@ -25,11 +25,26 @@ things.  The duration of the timeout is set in pine.c.
 int
 read_command()
 {
-    int ch, tm = 0;
+    int i, ch, tm = 0, more_freq_timeo;
     long dtime; 
+    MAILSTREAM *m;
+    char *fname;
+
+    /*
+     * timeo is the mail-check-interval. What we want to do (ignoring the
+     * messages_queued part) is timeout more often than timeo but only
+     * check for new mail every timeo or so seconds. The reason we want to
+     * timeout more often is so that we will have a chance to catch the user
+     * in an idle period where we can do a check_point(). Otherwise, with
+     * a default mail-check-interval, we are almost always calling newmail
+     * right after the user presses a key, making it the worst possible
+     * time to do a checkpoint.
+     */
+
+    more_freq_timeo = min(timeo, IDLE_TIMEOUT);
 
     cancel_busy_alarm(-1);
-    tm = (messages_queued(&dtime) > 1) ? (int)dtime : timeo;
+    tm = (messages_queued(&dtime) > 1) ? (int)dtime : more_freq_timeo;
 
     /*
      * Before we sniff at the input queue, make sure no external event's
@@ -37,29 +52,25 @@ read_command()
      * recalculate the dang thing and run thru whatever processing loop
      * we're in again...
      */
-    if(ps_global->expunge_count){
-	q_status_message3(SM_ORDER, 3, 3,
-			  "%s message%s expunged from folder \"%s\"",
-			  long2string(ps_global->expunge_count),
-			  plural(ps_global->expunge_count),
-			  pretty_fn(ps_global->cur_folder));
-	ps_global->expunge_count = 0L;
-	display_message('x');
+    for(i = 0; i < ps_global->s_pool.nstream; i++){
+	m = ps_global->s_pool.streams[i];
+	if(m && sp_flagged(m, SP_LOCKED) && sp_flagged(m, SP_USERFLDR)
+	   && sp_expunge_count(m)){
+	    fname = STREAMNAME(m);
+	    q_status_message3(SM_ORDER, 3, 3,
+			      "%s message%s expunged from folder \"%s\"",
+			      long2string(sp_expunge_count(m)),
+			      plural(sp_expunge_count(m)),
+			      pretty_fn(fname));
+	    sp_set_expunge_count(m, 0L);
+	    display_message('x');
+	}
     }
 
-    if(ps_global->inbox_expunge_count){
-	q_status_message3(SM_ORDER, 3, 3,
-			  "%s message%s expunged from folder \"%s\"",
-			  long2string(ps_global->inbox_expunge_count),
-			  plural(ps_global->inbox_expunge_count),
-			  pretty_fn(ps_global->inbox_name));
-	ps_global->inbox_expunge_count = 0L;
-	display_message('x');
-    }
-
-    if(ps_global->mail_box_changed && ps_global->new_mail_count){
+    if(sp_mail_box_changed(ps_global->mail_stream)
+       && sp_new_mail_count(ps_global->mail_stream)){
         dprint(2, (debugfile, "Noticed %ld new msgs! \n",
-		   ps_global->new_mail_count));
+		   sp_new_mail_count(ps_global->mail_stream)));
 	return(NO_OP_COMMAND);		/* cycle thru so caller can update */
     }
 
@@ -207,12 +218,14 @@ optionally_enter(string, y_base, x_base, field_len,
 
     dprint(5, (debugfile, "=== optionally_enter called ===\n"));
     dprint(9, (debugfile, "string:\"%s\"  y:%d  x:%d  length: %d append: %d\n",
-               string, x_base, y_base, field_len,
+               string ? string : "",
+	       x_base, y_base, field_len,
 	       (flags && *flags & OE_APPEND_CURRENT)));
     dprint(9, (debugfile, "passwd:%d   prompt:\"%s\"   label:\"%s\"\n",
                (flags && *flags & OE_PASSWD),
-	       prompt, (escape_list && escape_list[0].ch != -1)
-				 ? escape_list[0].label: ""));
+	       prompt ? prompt : "",
+	       (escape_list && escape_list[0].ch != -1)
+		 ? escape_list[0].label: ""));
 
     if(!ps_global->ttyo)
       return(pre_screen_config_opt_enter(string, field_len, prompt,
@@ -229,12 +242,11 @@ optionally_enter(string, y_base, x_base, field_len,
     prompt_len = strlen(prompt);
     too_thin   = 0;
     km_popped  = 0;
-    if(y_base > 0) {
-        real_y_base = y_base;
-    } else {
-        real_y_base=  y_base + ps_global->ttyo->screen_rows;
-        if(real_y_base < 2)
-          real_y_base = ps_global->ttyo->screen_rows;
+    if(y_base > 0)
+      real_y_base = y_base;
+    else{
+        real_y_base = y_base + ps_global->ttyo->screen_rows;
+	real_y_base = max(real_y_base, 0);
     }
 
     flush_ordered_messages();
@@ -693,7 +705,7 @@ optionally_enter(string, y_base, x_base, field_len,
           case NO_OP_IDLE:
 	    /* Keep mail stream alive */
 	    i = new_mail(0, 2, NM_DEFER_SORT);
-	    if(ps_global->expunge_count &&
+	    if(sp_expunge_count(ps_global->mail_stream) &&
 	       flags && ((*flags) & OE_SEQ_SENSITIVE))
 	      goto cancel;
 

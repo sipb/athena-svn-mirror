@@ -28,7 +28,7 @@ disk_quota(path, over)
     if(no_quota)
       return(0L); /* If no quota the first time, then none the second. */
 
-    dprint(5, (debugfile, "quota_check path: %s\n", path));
+    dprint(5, (debugfile, "quota_check path: %s\n", path ? path : "?"));
     if(stat(path, &statx) < 0) {
         return(-1L);
     }
@@ -41,7 +41,7 @@ disk_quota(path, over)
       return(-1L);
 
     dprint(7, (debugfile, "Quota check: UID:%d  device: %s\n", 
-           getuid(), dname));
+           getuid(), dname ? dname : "?"));
     if(quotactl(Q_GETQUOTA, dname, getuid(), (char *)&quotax) < 0) {
         dprint(5, (debugfile, "Quota failed : %s\n",
                    error_description(errno)));

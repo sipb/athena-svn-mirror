@@ -28,6 +28,7 @@ typedef long fpos_t;
 #define  USE_DIRENT
 #include <sys/dir.h>
 #include <string.h>
+#include <unistd.h>
 
 
 /*------- Some more includes that should usually be correct ------------*/

@@ -2,6 +2,7 @@ Here is the full list of Pine ports:
 
     AIX
 	a41	IBM RS/6000 running AIX 4.1 or 4.2
+	ga4	IBM RS/6000 running AIX 4.1 or 4.2 using gcc compiler
 	a32	IBM RS/6000 running AIX 3.2 or earlier
 	aix	IBM S/370 AIX
 
@@ -72,13 +73,28 @@ Here is the full list of Pine ports:
 	isc	Interactive Systems Unix
 
     Linux
+	(On some platforms the vsnprintf implementation is apparently not
+	 correct, and pine will crash early on with a SegFault. The only
+	 place where pine uses vsnprintf is in the debugjournal() routine
+	 in .../pine/osdep/debuging.tim. You can exclude this by compiling
+	 without DEBUGJOURNAL defined. Try a build command like
+	   ./build DEBUG="-g -DDEBUG" lnp
+	 to work around this problem. August, 2003)
 	lnx	Linux using crypt from the C library
 	lnp	Linux using Pluggable Authentication Modules (PAM)
 	slx	Linux using -lcrypt to get the crypt function
 	sl4	Linux using -lshadow to get the crypt() function
 	sl5	Linux using shadow passwords, no extra libraries
-	lrh	RedHat 7.2 or later. Same as lnp but with SSLDIR=/usr/share/ssl,
-		  SSLINCLUDE=/usr/include/openssl, SSLLIB=/usr/lib, GSSDIR=/usr/kerberos
+	ldb     Debian Linux. Same as lnp but with SSLDIR=/usr,
+		  SSLINCLUDE=/usr/include/openssl, SSLCERTS=/etc/ssl/certs,
+		  SSLKEYS=/etc/ssl/private. The packages libssl-dev, libpam-dev,
+		  and ncurses-dev are required for building
+	lmd     Mandrakelinux. Same as lnp but with SSLDIR=/usr/lib/ssl,
+		  SSLINCLUDE=/usr/include, SSLLIB=/usr/lib
+	lrh	RedHat Enterprise and RedHat 7.2 or later.
+		  Same as lnp but with SSLDIR=/usr/share/ssl,
+		  SSLINCLUDE=/usr/include/openssl, SSLLIB=/usr/lib,
+		  GSSDIR=/usr/kerberos
 	lsu     SuSE Linux.  Same as lnp but with SSLDIR=/usr/ssl,
 		  SSLINCLUDE=/usr/include/openssl, SSLLIB=/usr/lib
 
@@ -122,15 +138,14 @@ Here is the full list of Pine ports:
 	sgi	Silicon Graphics Irix
 	sg6	Silicon Graphics Irix >= 6.5
 
-    Sun Solaris (Solaris 2.x is the same as SunOS 5.x)
+    Sun Solaris (Solaris 9 is the same as SunOS 5.9)
 	gs5	Sun Solaris >= 2.5 using gcc compiler
-	so5	Sun Solaris >= 2.5    (not sure this works, try gs5 instead)
+	soc	Sun Solaris >= 8 using Sun C compiler
 	gs4	Sun Solaris <= 2.4 using gcc compiler
+	so5	Sun Solaris >= 2.5    (not sure this works, try soc or gs5)
 	so4	Sun Solaris <= 2.4
-	    (Note: If you use so5 or gs5 and the linker can't find the
-	     function srandom, try using so4 or gs4 instead.)
 
-    Sun SunOS
+    Sun SunOS (This is pre-Solaris SunOS)
 	sun	Sun SunOS 4.1
 	ssn	Sun SunOS 4.1 with shadow password security
 	gsu	SunOS 4.1 using gcc compiler

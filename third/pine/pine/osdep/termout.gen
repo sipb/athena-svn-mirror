@@ -45,6 +45,7 @@ PutLine0n8b(x, y, line, length, handles)
     HANDLE_S	  *handles;
 {
     unsigned char c;
+    int is_inv = 0, is_bold = 0, is_uline = 0, is_fg = 0, is_bg = 0;
 #ifdef	_WINDOWS
     int hkey = 0;
 #endif
@@ -62,32 +63,38 @@ PutLine0n8b(x, y, line, length, handles)
 	    switch(*line++){
 	      case TAG_INVON :
 		StartInverse();
+		is_inv = 1;
 		break;
 
 	      case TAG_INVOFF :
 		EndInverse();
+		is_inv = 0;
 		break;
 
 	      case TAG_BOLDON :
 		StartBold();
+		is_bold = 1;
 		break;
 
 	      case TAG_BOLDOFF :
 		EndBold();
+		is_bold = 0;
 		break;
 
 	      case TAG_ULINEON :
 		StartUnderline();
+		is_uline = 1;
 		break;
 
 	      case TAG_ULINEOFF :
 		EndUnderline();
+		is_uline = 0;
 		break;
 
 	      case TAG_HANDLE :
 		length -= *line + 1;	/* key length plus length tag */
 		if(handles){
-		    int  key, n;
+		    int  key, n, current_key = 0;
 
 		    for(key = 0, n = *line++; n; n--) /* forget Horner? */
 		      key = (key * 10) + (*line++ - '0');
@@ -96,7 +103,20 @@ PutLine0n8b(x, y, line, length, handles)
 		    hkey = key;
 #endif
 
-		    if(key == handles->key){
+		    if(handles->using_is_used){
+			HANDLE_S *h;
+
+			for(h = handles; h; h = h->next)
+			  if(h->is_used)
+			    break;
+			
+			if(h)
+			  current_key = h->key;
+		    }
+		    else
+		      current_key = handles->key;
+
+		    if(key == current_key){
 			if(pico_usingcolor() &&
 			   ps_global->VAR_SLCTBL_FORE_COLOR &&
 			   ps_global->VAR_SLCTBL_BACK_COLOR){
@@ -106,6 +126,7 @@ PutLine0n8b(x, y, line, length, handles)
 			  EndBold();
 
 			StartInverse();
+			is_inv = 1;
 		    }
 		}
 		else{
@@ -117,24 +138,28 @@ PutLine0n8b(x, y, line, length, handles)
 
 	      case TAG_FGCOLOR :
 		if(length < RGBLEN){
-		    Writechar(TAG_EMBED, 0);
-		    Writechar(*(line-1), 0);
+		    dprint(9, (debugfile,
+			       "FGCOLOR not proper length, ignoring\n"));
+		    length = 0;
 		    break;
 		}
 
 		(void)pico_set_fg_color(line);
+		is_fg = 1;
 		length -= RGBLEN;
 		line += RGBLEN;
 		break;
 
 	      case TAG_BGCOLOR :
 		if(length < RGBLEN){
-		    Writechar(TAG_EMBED, 0);
-		    Writechar(*(line-1), 0);
+		    dprint(9, (debugfile,
+			       "BGCOLOR not proper length, ignoring\n"));
+		    length = 0;
 		    break;
 		}
 
 		(void)pico_set_bg_color(line);
+		is_bg = 1;
 		length -= RGBLEN;
 		line += RGBLEN;
 		break;
@@ -198,6 +223,24 @@ PutLine0n8b(x, y, line, length, handles)
 	}
     }
 #endif
+    if(is_inv){
+	dprint(9, (debugfile,
+		   "INVERSE left on at end of line, turning off now\n"));
+	EndInverse();
+    }
+    if(is_bold){
+	dprint(9, (debugfile,
+		   "BOLD left on at end of line, turning off now\n"));
+	EndBold();
+    }
+    if(is_uline){
+	dprint(9, (debugfile,
+		   "UNDERLINE left on at end of line, turning off now\n"));
+	EndUnderline();
+    }
+    if(is_fg || is_bg)
+      pico_set_normal_color();
+
 }
 
 

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailindx.c,v 1.1.1.4 2004-03-01 21:16:23 ghudson Exp $";
+static char rcsid[] = "$Id: mailindx.c,v 1.1.1.5 2005-01-26 17:56:20 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailindx.c,v 1.1.1.4 2004-03-01 21:16:23 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2003 by the University of Washington.
+   1989-2004 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -110,8 +110,8 @@ static struct key index_keys[] =
 	{"Z","ZoomMode",{MC_ZOOM,1,{'z'}},KS_ZOOM},
 	LISTFLD_MENU,
 	RCOMPOSE_MENU,
-	NULL_MENU,
-	NULL_MENU,
+	HOMEKEY_MENU,
+	ENDKEY_MENU,
 	NULL_MENU,
 	{"/","Collapse/Expand",{MC_COLLAPSE,1,{'/'}},KS_NONE},
 	NULL_MENU,
@@ -195,8 +195,8 @@ static struct key thread_keys[] =
 	{"Z","ZoomMode",{MC_ZOOM,1,{'z'}},KS_ZOOM},
 	LISTFLD_MENU,
 	RCOMPOSE_MENU,
-	NULL_MENU,
-	NULL_MENU,
+	HOMEKEY_MENU,
+	ENDKEY_MENU,
 	NULL_MENU,
 	{"/","Collapse/Expand",{MC_COLLAPSE,1,{'/'}},KS_NONE},
 	NULL_MENU,
@@ -210,12 +210,7 @@ static OtherMenu what_keymenu = FirstMenu;
  * structures to maintain index line text
  */
 
-typedef struct _offsets {
-    int        offset;		/* the offset into the line */
-    COLOR_PAIR color;		/* color for this offset    */
-} OFFCOLOR_S;
-
-#define OFFS 5
+#define OFFS 20
 
 typedef struct _header_line {
     unsigned long id;				/* header line's hash value */
@@ -293,7 +288,6 @@ struct save_thrdinfo {
     HLINE_S  *(*format_index_line) PROTO((INDEXDATA_S *));
     void      (*setup_header_widths) PROTO((void));
     unsigned  viewing_a_thread:1;
-    unsigned  inbox_viewing_a_thread:1;
 };
 
 
@@ -374,10 +368,14 @@ char	       *fetch_subject PROTO((INDEXDATA_S *));
 char	       *fetch_date PROTO((INDEXDATA_S *));
 long		fetch_size PROTO((INDEXDATA_S *));
 BODY	       *fetch_body PROTO((INDEXDATA_S *));
-void		subj_str PROTO((INDEXDATA_S *, int, char *));
+void		subj_str PROTO((INDEXDATA_S *, int, char *, SubjKW,
+			        OFFCOLOR_S *, int *));
+void		key_str PROTO((INDEXDATA_S *, int, char *, SubjKW,
+			       OFFCOLOR_S *, int *));
 void		from_str PROTO((IndexColType, INDEXDATA_S *, int, char *));
-void            set_msg_score PROTO((MAILSTREAM *, long, int));
-void		load_overview PROTO((MAILSTREAM *, unsigned long, OVERVIEW *));
+void            set_msg_score PROTO((MAILSTREAM *, long, long));
+void		load_overview PROTO((MAILSTREAM *, unsigned long, OVERVIEW *,
+				     unsigned long));
 int		paint_index_line PROTO((long, HLINE_S *, int, int, int,
 					struct entry_state *, int, int));
 void		paint_index_hline PROTO((MAILSTREAM *, long, HLINE_S *));
@@ -480,7 +478,7 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
 		   stream, cntxt, folder, msgmap, 1,
 		   (style == ThreadIndex) ? ThrdIndex
 					  : (THREADING()
-					     && ps_global->viewing_a_thread)
+					     && sp_viewing_a_thread(stream))
 					    ? ThrdMsgNum
 					    : MessageNumber,
 		   0, 0, NULL);
@@ -492,7 +490,7 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
 	setbitmap(bitmap);
 
 	if(km == &index_keymenu){
-	    if(THREADING() && ps_global->viewing_a_thread){
+	    if(THREADING() && sp_viewing_a_thread(stream)){
 		menu_init_binding(km, '<', MC_THRDINDX, "<",
 				  "ThrdIndex", BACK_KEY);
 		menu_add_binding(km, ',', MC_THRDINDX);
@@ -502,9 +500,7 @@ do_index_border(cntxt, folder, stream, msgmap, style, which_keys, flags)
 				  "FldrList", BACK_KEY);
 		menu_add_binding(km, ',', MC_FOLDERS);
 	    }
-#ifndef DOS
 	    if(F_OFF(F_ENABLE_PIPE,ps_global))
-#endif
 	      clrbitn(VIEW_PIPE_KEY, bitmap);  /* always clear for DOS */
 	    if(F_OFF(F_ENABLE_FULL_HDR,ps_global))
 	      clrbitn(VIEW_FULL_HEADERS_KEY, bitmap);
@@ -597,7 +593,7 @@ mail_index_screen(state)
     state->prev_screen = mail_index_screen;
     state->next_screen = SCREEN_FUN_NULL;
 
-    if(THRD_AUTO_VIEW() && state->viewing_a_thread
+    if(THRD_AUTO_VIEW() && sp_viewing_a_thread(state->mail_stream)
        && state->view_skipped_index)
       unview_thread(state, state->mail_stream, state->msgmap);
 
@@ -641,8 +637,6 @@ setup_for_index_index_screen()
 {
     format_index_line = format_index_index_line;
     setup_header_widths = setup_index_header_widths;
-    if(ps_global->mail_stream == ps_global->inbox_stream && THREADING())
-      ps_global->inbox_viewing_a_thread = ps_global->viewing_a_thread;
 }
 
 
@@ -651,8 +645,6 @@ setup_for_thread_index_screen()
 {
     format_index_line = format_thread_index_line;
     setup_header_widths = setup_thread_header_widths;
-    if(ps_global->mail_stream == ps_global->inbox_stream)
-      ps_global->inbox_viewing_a_thread = ps_global->viewing_a_thread;
 }
     
 
@@ -666,8 +658,7 @@ stop_threading_temporarily()
     ti = (struct save_thrdinfo *) fs_get(sizeof(*ti));
     ti->format_index_line = format_index_line;
     ti->setup_header_widths = setup_header_widths;
-    ti->viewing_a_thread = ps_global->viewing_a_thread;
-    ti->inbox_viewing_a_thread = ps_global->inbox_viewing_a_thread;
+    ti->viewing_a_thread = sp_viewing_a_thread(ps_global->mail_stream);
 
     setup_for_index_index_screen();
 
@@ -687,8 +678,7 @@ restore_threading(p)
 	ti = (struct save_thrdinfo *) (*p);
 	format_index_line = ti->format_index_line;
 	setup_header_widths = ti->setup_header_widths;
-	ps_global->viewing_a_thread = ti->viewing_a_thread;
-	ps_global->inbox_viewing_a_thread = ti->inbox_viewing_a_thread;
+	sp_set_viewing_a_thread(ps_global->mail_stream, ti->viewing_a_thread);
 
 	fs_give(p);
     }
@@ -891,13 +881,10 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	}
 
 	if(F_ON(F_SHOW_CURSOR, state) && cur_row < 0){
-	    q_status_message(SM_ORDER,
-		(ch==NO_OP_IDLE || ch==NO_OP_COMMAND) ? 0 : 3, 5,
-		"No messages in folder");
 	    cur_row = state->ttyo->screen_rows - FOOTER_ROWS(state);
-	    display_message(ch);
 	}
 
+	cur_row = min(max(cur_row, 0), state->ttyo->screen_rows-1);
 	MoveCursor(cur_row, cur_col);
 
         /* Let read_command do the fflush(stdout) */
@@ -1083,6 +1070,48 @@ index_lister(state, cntxt, folder, stream, msgmap)
 	    break;
 
 
+            /*---------- Scroll to first page ----------*/
+	  case MC_HOMEKEY :
+	    if((mn_get_total(msgmap) > 0L)
+	       && (mn_total_cur(msgmap) <= 1L)){
+		long cur_msg = mn_get_cur(msgmap), selected;
+
+		if(any_lflagged(msgmap, MN_HIDE | MN_CHID)){
+		    do {
+			selected = cur_msg;
+			mn_dec_cur(stream, msgmap, MH_NONE);
+			cur_msg = mn_get_cur(msgmap);
+		    }
+		    while(selected != cur_msg);
+		}
+		else
+		  cur_msg = (mn_get_total(msgmap) > 0L) ? 1L : 0L;
+		mn_set_cur(msgmap, cur_msg);
+		q_status_message(SM_ORDER, 0, 3, "First Index Page");
+	    }
+	    break;
+
+            /*---------- Scroll to last page ----------*/
+	  case MC_ENDKEY :
+	    if((mn_get_total(msgmap) > 0L)
+	       && (mn_total_cur(msgmap) <= 1L)){
+		long cur_msg = mn_get_cur(msgmap), selected;
+
+		if(any_lflagged(msgmap, MN_HIDE | MN_CHID)){
+		    do {
+			selected = cur_msg;
+			mn_inc_cur(stream, msgmap, MH_NONE);
+			cur_msg = mn_get_cur(msgmap);
+		    }
+		    while(selected != cur_msg);
+		}
+		else
+		  cur_msg = mn_get_total(msgmap);
+		mn_set_cur(msgmap, cur_msg);
+		q_status_message(SM_ORDER, 0, 3, "Last Index Page");
+	    }
+	    break;
+
 	    /*---------- Search (where is command) ----------*/
 	  case MC_WHEREIS :
 	    index_search(state, stream, -FOOTER_ROWS(ps_global), msgmap);
@@ -1148,6 +1177,7 @@ view_a_thread:
 	    }
 
 	    if(view_thread(state, stream, msgmap, 1)){
+		ps_global->next_screen = mail_index_screen;
 		ps_global->redrawer = NULL;
 		current_index_state = NULL;
 		if(id.entry_state)
@@ -1198,9 +1228,7 @@ view_a_thread:
 
 		      if(mp.flags & M_KEY_CONTROL){
 			  if(F_ON(F_ENABLE_AGG_OPS, ps_global)){
-			      (void) individual_select(state, msgmap,
-						       -FOOTER_ROWS(state),
-						       MsgIndx);
+			      (void) individual_select(state, msgmap, MsgIndx);
 			  }
 		      }
 		      else if(!(mp.flags & M_KEY_SHIFT)){
@@ -1427,9 +1455,13 @@ view_a_thread:
 		    {
 			long	      raw, t;
 			int	      del = 0;
+			MESSAGECACHE *mc;
 
 			raw = mn_m2raw(msgmap, mn_get_cur(msgmap));
-			if(!mail_elt(stream, raw)->deleted){
+			if(raw > 0L && stream
+			   && raw <= stream->nmsgs
+			   && (mc = mail_elt(stream, raw))
+			   && !mc->deleted){
 			    if((t = mn_get_cur(msgmap)) > 0L)
 			      clear_index_cache_ent(t);
 
@@ -1452,9 +1484,13 @@ view_a_thread:
 		    {
 			long	      raw, t;
 			int	      del = 0;
+			MESSAGECACHE *mc;
 
 			raw = mn_m2raw(msgmap, mn_get_cur(msgmap));
-			if(mail_elt(stream, raw)->deleted){
+			if(raw > 0L && stream
+			   && raw <= stream->nmsgs
+			   && (mc = mail_elt(stream, raw))
+			   && mc->deleted){
 			    if((t = mn_get_cur(msgmap)) > 0L)
 			      clear_index_cache_ent(t);
 
@@ -1533,7 +1569,7 @@ update_index(state, screen)
 
     if(!screen)
       return(-1);
-
+    
 #ifdef _WINDOWS
     mswin_beginupdate();
 #endif
@@ -1631,7 +1667,7 @@ update_index(state, screen)
      * while scroll position starts at 0.
      */
 
-    if(THREADING() && state->viewing_a_thread
+    if(THREADING() && sp_viewing_a_thread(screen->stream)
        && mn_get_total(screen->msgmap) > 1L){
 	long x = 0L, range = 0L, lowest_numbered_msg;
 
@@ -1818,13 +1854,14 @@ update_index(state, screen)
      * about more than a single message before they can be drawn.
      */
     if(F_OFF(F_QUELL_IMAP_ENV_CB, ps_global) && !THRD_INDX()
-       && !(THREADING() && (state->viewing_a_thread
+       && !(THREADING() && (sp_viewing_a_thread(screen->stream)
+                            || ps_global->thread_disp_style == THREAD_MUTTLIKE
                             || any_lflagged(screen->msgmap, MN_COLL))))
       mail_parameters(NULL, SET_IMAPENVELOPE, (void *) pine_imap_envelope);
 
     if(THRD_INDX())
       visible = screen->msgmap->visible_threads;
-    else if(THREADING() && state->viewing_a_thread){
+    else if(THREADING() && sp_viewing_a_thread(screen->stream)){
 	/*
 	 * We know that all visible messages in the thread are marked
 	 * with MN_CHID2.
@@ -1937,7 +1974,7 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
     int			cur, sel;
 {
     COLOR_PAIR *lastc = NULL, *base_color = NULL;
-    int inverse_hack = 0;
+    int inverse_hack = 0, lim;
     HLINE_S	      *h;
 
     h = (THRD_INDX() && hline) ? hline->tihl : hline;
@@ -2065,7 +2102,8 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 	    for(i = 0; i < OFFS-1; i++){
 		/*
 		 * Switch to color for i, which shouldn't be NULL.
-		 * But don't switch if we drew an X in this column.
+		 * But don't switch if we drew an X in this column,
+		 * because that overwrites the colored thing.
 		 */
 		if(h->offs[i].color.fg[0] && (!drew_X ||
 					      scol != h->offs[i].offset ||
@@ -2074,19 +2112,25 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		}
 
 		if(h->offs[i+1].offset < 0 || h->offs[i+1].offset >= cols){
-		    /* draw single colored character */
-		    save = draw[h->offs[i].offset + 1];
-		    draw[h->offs[i].offset + 1] = '\0';
+		    /* draw this colored section */
+		    if(h->offs[i].len <= 0)
+		      h->offs[i].len = 1;
+
+		    lim = min(h->offs[i].offset + h->offs[i].len, cols);
+		    save = draw[lim];
+		    draw[lim] = '\0';
 		    Write_to_screen(draw + h->offs[i].offset);
-		    draw[h->offs[i].offset + 1] = save;
+		    draw[lim] = save;
 		    (void)pico_set_colorp(base_color, PSC_NORM);
 		    /* draw rest of line */
-		    if(inverse_hack)
-		      StartInverse();
+		    if(lim < cols){
+			if(inverse_hack)
+			  StartInverse();
 
-		    Write_to_screen(draw + h->offs[i].offset + 1);
-		    if(inverse_hack)
-		      EndInverse();
+			Write_to_screen(draw + lim);
+			if(inverse_hack)
+			  EndInverse();
+		    }
 
 		    goto done_drawing;
 		}
@@ -2095,12 +2139,17 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		     * draw offs[i].offset to offs[i+1].offset - 1
 		     */
 
-		    /* draw single colored character */
-		    save = draw[h->offs[i].offset + 1];
-		    draw[h->offs[i].offset + 1] = '\0';
+		    /* draw this colored section */
+		    if(h->offs[i].len <= 0)
+		      h->offs[i].len = 1;
+
+		    lim = min(min(h->offs[i].offset + h->offs[i].len, cols),
+			      h->offs[i+1].offset);
+		    save = draw[lim];
+		    draw[lim] = '\0';
 		    Write_to_screen(draw + h->offs[i].offset);
-		    draw[h->offs[i].offset + 1] = save;
-		    if(h->offs[i+1].offset > h->offs[i].offset + 1){
+		    draw[lim] = save;
+		    if(h->offs[i+1].offset > lim){
 			/* draw to next offset */
 			pico_set_colorp(base_color, PSC_NORM);
 			save = draw[h->offs[i+1].offset];
@@ -2108,7 +2157,7 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 			if(inverse_hack)
 			  StartInverse();
 
-			Write_to_screen(draw + h->offs[i].offset + 1);
+			Write_to_screen(draw + lim);
 			if(inverse_hack)
 			  EndInverse();
 
@@ -2117,26 +2166,30 @@ paint_index_line(msg, hline, line, scol, pcol, entry, cur, sel)
 		}
 	    }
 
-	    /* switch to color for 4, which shouldn't be NULL */
-	    if(h->offs[4].color.fg[0] && (!drew_X ||
-					  scol != h->offs[4].offset ||
+	    /* switch to color for last section, which shouldn't be NULL */
+	    if(h->offs[OFFS-1].color.fg[0] && (!drew_X ||
+					  scol != h->offs[OFFS-1].offset ||
 					  save_schar != '+')){
-		(void)pico_set_colorp(&h->offs[4].color, PSC_NORM);
+		(void)pico_set_colorp(&h->offs[OFFS-1].color, PSC_NORM);
 	    }
 
-	    if(h->offs[4].offset < cols){
-		/* draw single colored character */
-		save = draw[h->offs[4].offset + 1];
-		draw[h->offs[4].offset + 1] = '\0';
-		Write_to_screen(draw + h->offs[4].offset);
-		draw[h->offs[4].offset + 1] = save;
+	    if(h->offs[OFFS-1].offset < cols){
+		/* draw this colored section */
+		if(h->offs[OFFS-1].len <= 0)
+		  h->offs[OFFS-1].len = 1;
+
+		lim = min(h->offs[OFFS-1].offset + h->offs[OFFS-1].len, cols);
+		save = draw[lim];
+		draw[lim] = '\0';
+		Write_to_screen(draw + h->offs[OFFS-1].offset);
+		draw[lim] = save;
 		(void)pico_set_colorp(base_color, PSC_NORM);
 		/* draw rest of line */
-		if(h->offs[4].offset+1 < cols){
+		if(lim < cols){
 		    if(inverse_hack)
 		      StartInverse();
 
-		    Write_to_screen(draw + h->offs[4].offset + 1);
+		    Write_to_screen(draw + lim);
 		    if(inverse_hack)
 		      EndInverse();
 		}
@@ -2192,9 +2245,11 @@ pine_imap_envelope(stream, rawno, env)
     MESSAGECACHE *mc;
 
     dprint(7, (debugfile, "imap_env(%ld)\n", rawno));
-    if(!ps_global->mail_box_changed
+    if(stream && !sp_mail_box_changed(stream)
        && stream == ps_global->mail_stream
-       && (mc = mail_elt(stream,rawno))->valid
+       && rawno > 0L && rawno <= stream->nmsgs
+       && (mc = mail_elt(stream,rawno))
+       && mc->valid
        && mc->rfc822_size
        && !get_lflag(stream, NULL, rawno, MN_HIDE | MN_CHID | MN_EXLD)){
 	INDEXDATA_S  idata;
@@ -2204,7 +2259,7 @@ pine_imap_envelope(stream, rawno, env)
 	idata.no_fetch = 1;
 	idata.size     = mc->rfc822_size;
 	idata.rawno    = rawno;
-	idata.msgno    = mn_raw2m(ps_global->msgmap, rawno);
+	idata.msgno    = mn_raw2m(sp_msgmap(stream), rawno);
 	idata.stream   = stream;
 
 	index_data_env(&idata, env);
@@ -2887,6 +2942,10 @@ static INDEX_PARSE_T itokens[] = {
     {"SUBJECT",		iSubject,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"FULLSTATUS",	iFStatus,	FOR_INDEX},
     {"IMAPSTATUS",	iIStatus,	FOR_INDEX},
+    {"SUBJKEY",		iSubjKey,	FOR_INDEX},
+    {"SUBJKEYINIT",	iSubjKeyInit,	FOR_INDEX},
+    {"KEY",		iKey,		FOR_INDEX},
+    {"KEYINIT",		iKeyInit,	FOR_INDEX},
     {"DESCRIPSIZE",	iDescripSize,	FOR_INDEX},
     {"ATT",		iAtt,		FOR_INDEX},
     {"SCORE",		iScore,		FOR_INDEX},
@@ -2930,11 +2989,31 @@ static INDEX_PARSE_T itokens[] = {
     {"MAILBOX",		iMailbox,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"ROLENICK",       	iRoleNick,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"INIT",		iInit,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"CURDATE",		iCurDate,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"CURDATEISO",	iCurDateIso,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"CURDATEISOS",	iCurDateIsoS,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"CURTIME24",	iCurTime24,	FOR_REPLY_INTRO|FOR_TEMPLATE},
-    {"CURTIME12",	iCurTime12,	FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"CURDATE",		iCurDate,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDATEISO",	iCurDateIso,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDATEISOS",	iCurDateIsoS,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURTIME24",	iCurTime24,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURTIME12",	iCurTime12,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDAY",		iCurDay,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDAY2DIGIT",	iCurDay2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDAYOFWEEK",	iCurDayOfWeek,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURDAYOFWEEKABBREV", iCurDayOfWeekAbb,
+					FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURMONTH",	iCurMon,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURMONTH2DIGIT",	iCurMon2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURMONTHLONG",	iCurMonLong,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURMONTHABBREV",	iCurMonAbb,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURYEAR",		iCurYear,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"CURYEAR2DIGIT",	iCurYear2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTH",	iLstMon,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTH2DIGIT",	iLstMon2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTHLONG",	iLstMonLong,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTHABBREV",	iLstMonAbb,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTHYEAR",	iLstMonYear,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTMONTHYEAR2DIGIT", iLstMonYear2Digit,
+					FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTYEAR",	iLstYear,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
+    {"LASTYEAR2DIGIT",	iLstYear2Digit,	FOR_REPLY_INTRO|FOR_TEMPLATE|FOR_FILT},
     {"CURSORPOS",	iCursorPos,	FOR_TEMPLATE},
     {NULL,		iNothing,	FOR_NOTHING}
 };
@@ -3007,7 +3086,8 @@ INDEX_COL_S **answer;
 	      *p++ = '\0';
 
 	    dprint(1, (debugfile,
-		       "parse_index_format: unrecognized token: %s\n", q));
+		   "parse_index_format: unrecognized token: %s\n",
+		   q ? q : "?"));
 	    q_status_message1(SM_ORDER | SM_DING, 0, 3,
 			      "Unrecognized string in index-format: %.200s", q);
 	    continue;
@@ -3181,6 +3261,9 @@ setup_index_header_widths()
 
     space_left -= (columns - 1); /* space between columns */
 
+    ps_global->display_keywords_in_subject = 0;
+    ps_global->display_keywordinits_in_subject = 0;
+
     /*
      * Set the actual lengths for the fixed width fields and set up
      * the left or right adjustment for everything.
@@ -3192,6 +3275,11 @@ setup_index_header_widths()
 	cdesc++){
 
 	wtype = cdesc->wtype;
+
+	if(cdesc->ctype == iSubjKey)
+	  ps_global->display_keywords_in_subject = 1;
+	else if(cdesc->ctype == iSubjKeyInit)
+	  ps_global->display_keywordinits_in_subject = 1;
 
 	if(wtype == WeCalculate || wtype == Percent || cdesc->width != 0){
 	    if(ctype_is_fixed_length(cdesc->ctype)){
@@ -3315,6 +3403,9 @@ setup_index_header_widths()
 	      cdesc->adjustment = Left;
 	}
     }
+
+    if(ps_global->display_keywords_in_subject)
+      ps_global->display_keywordinits_in_subject = 0;
 
     /* if have reserved unneeded space for size, give it back */
     for(cdesc = ps_global->index_disp_format;
@@ -3446,7 +3537,9 @@ setup_index_header_widths()
 	  keep_going++;
 	  cdesc->width++;
 	  space_left--;
-	  if(space_left > 0 && cdesc->ctype == iSubject){
+	  if(space_left > 0 && (cdesc->ctype == iSubject
+				|| cdesc->ctype == iSubjKey
+				|| cdesc->ctype == iSubjKeyInit)){
 	      cdesc->width++;
 	      space_left--;
 	  }
@@ -3540,7 +3633,9 @@ setup_index_header_widths()
 	if(col > 0)
 	  col++;
 
-	if(cdesc->ctype == iSubject
+	if((cdesc->ctype == iSubject
+	    || cdesc->ctype == iSubjKey
+	    || cdesc->ctype == iSubjKeyInit)
 	   && (ps_global->thread_disp_style == THREAD_STRUCT
 	       || ps_global->thread_disp_style == THREAD_MUTTLIKE
 	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ1
@@ -3609,15 +3704,19 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	hline = get_index_cache(msgno);
 	if(hline->tihl && *hline->tihl->line && hline->tihl->color_lookup_done){
 	    dprint(9, (debugfile, "Hitt: Returning %p -> <%s (%d), 0x%lx>\n",
-		       hline->tihl, hline->tihl->line,
-		       strlen(hline->tihl->line), hline->tihl->id));
+		       hline->tihl,
+		       hline->tihl->line ? hline->tihl->line : "?",
+		       hline->tihl->line ? strlen(hline->tihl->line) : 0,
+		       hline->tihl->id));
 	    return(hline);
 	}
     }
     else{
 	if(*(hline = get_index_cache(msgno))->line && hline->color_lookup_done){
 	    dprint(9, (debugfile, "Hit: Returning %p -> <%s (%d), 0x%lx>\n",
-		       hline, hline->line, strlen(hline->line), hline->id));
+		       hline,
+		       hline->line ? hline->line : "?",
+		       hline->line ? strlen(hline->line) : 0, hline->id));
 	    return(hline);
 	}
     }
@@ -3635,7 +3734,7 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
     if(!(already_fetched && *already_fetched) && index_in_overview(stream)
        && ((THRD_INDX() && !(hline->tihl && *hline->tihl->line))
            || (!THRD_INDX() && !*hline->line))){
-	char	     *uidseq, *p;
+	char	     *seq, *p;
 	long	      uid, next;
 	int	      count;
 	MESSAGECACHE *mc;
@@ -3646,7 +3745,8 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 
 	/* clear sequence bits */
 	for(n = 1L; n <= stream->nmsgs; n++)
-	  mail_elt(stream, n)->sequence = 0;
+	  if((mc = mail_elt(stream, n)) != NULL)
+	    mc->sequence = 0;
 
 	/*
 	 * Light interesting bits
@@ -3660,7 +3760,7 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	 */
 	if(THRD_INDX() && any_lflagged(msgmap, MN_HIDE))
 	  visible = msgmap->visible_threads;
-	else if(THREADING() && state->viewing_a_thread){
+	else if(THREADING() && sp_viewing_a_thread(stream)){
 	    /*
 	     * We know that all visible messages in the thread are marked
 	     * with MN_CHID2.
@@ -3727,20 +3827,23 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 		   && n <= mn_get_total(msgmap)
 		   && !*get_index_cache(n)->line){
 		    rawno = mn_m2raw(msgmap, n);
-		    /*
-		     * When a thread is expanded the msgline_hidden returns
-		     * 0 below and we are counting many of the messages
-		     * in a thread more than once. For example, if the
-		     * thread has 3 members, the first call marks 3,
-		     * then the next call marks the 2nd two, and the third
-		     * call marks the 3rd for the 3rd time. So the count
-		     * would be 6 instead of 3. The only implication is
-		     * that the alloc below is too big, so we just
-		     * don't care.
-		     */
-		    if(thrd = fetch_thread(stream, rawno))
-		      count += mark_msgs_in_thread(stream, thrd, msgmap);
-		    else if(!(mc = mail_elt(stream,rawno))->private.msg.env){
+		    if(thrd = fetch_thread(stream, rawno)){
+			/*
+			 * If we're doing a MUTTLIKE display the index line
+			 * may depend on the thread parent, and grandparent,
+			 * and further back. So just fetch the whole thread
+			 * in that case.
+			 */
+			if(THREADING()
+			   && ps_global->thread_disp_style == THREAD_MUTTLIKE
+			   && thrd->top)
+		          thrd = fetch_thread(stream, thrd->top);
+
+			count += mark_msgs_in_thread(stream, thrd, msgmap);
+		    }
+		    else if(rawno > 0L && rawno <= stream->nmsgs
+			    && (mc = mail_elt(stream,rawno))
+			    && !mc->private.msg.env){
 			mc->sequence = 1;
 			count++;
 		    }
@@ -3757,36 +3860,15 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	}
 
 	if(count){
-	    /* How big a buf do we need?  How about eleven per -- 10 for
-	     * decimal representation of 32bit value plus a trailing
-	     * comma or terminating null...
-	     */
-	    uidseq = (char *) fs_get((count * 11) * sizeof(char));
-
-	    *(p = uidseq) = '\0';
-	    next = 0L;
-	    for(n = 1L; n <= stream->nmsgs; n++)
-	      if(mail_elt(stream, n)->sequence){
-		  if((uid = mail_uid(stream, n)) == next){
-		      *p = ':';
-		      strcpy(p + 1, long2string(uid));
-		      next++;			/* run! */
-		  }
-		  else{
-		      if(p != uidseq){
-			  p += strlen(p);
-			  *p++ = ',';
-		      }
-
-		      sstrcpy(&p, long2string(uid));
-		      next = ++uid;
-		  }
-	      }
-
-	    mail_fetch_overview(stream, uidseq,
-				(!strcmp(stream->dtb->name, "imap"))
-				  ? NULL : load_overview);
-	    fs_give((void **) &uidseq);
+	    seq = build_sequence(stream, NULL, NULL);
+	    if(seq){
+		ps_global->dont_count_flagchanges = 1;
+		mail_fetch_overview_sequence(stream, seq,
+				    (!strcmp(stream->dtb->name, "imap"))
+				      ? NULL : load_overview);
+		ps_global->dont_count_flagchanges = 0;
+		fs_give((void **) &seq);
+	    }
 	}
 
 	/*
@@ -3809,9 +3891,10 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	idata.stream   = stream;
 	idata.msgno    = msgno;
 	idata.rawno    = mn_m2raw(msgmap, msgno);
-	if(mc = mail_elt(stream, idata.rawno)){
+	if(stream && idata.rawno > 0L && idata.rawno <= stream->nmsgs
+	   && (mc = mail_elt(stream, idata.rawno))){
 	    idata.size = mc->rfc822_size;
-	    index_data_env(&idata, mail_fetchenvelope(stream, idata.rawno));
+	    index_data_env(&idata, pine_mail_fetchenvelope(stream,idata.rawno));
 	}
 	else
 	  idata.bogus = 2;
@@ -3837,7 +3920,7 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 
 	if(pico_usingcolor()){
 	    if(limit < 0L){
-		if(THREADING() && state->viewing_a_thread){
+		if(THREADING() && sp_viewing_a_thread(stream)){
 		    for(visible = 0L, n = current_index_state->msg_at_top;
 			visible < (int) current_index_state->lines_per_page
 			&& n <= mn_get_total(msgmap); n++){
@@ -3858,7 +3941,8 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 	    }
 	    /* clear sequence bits */
 	    for(n = 1L; n <= stream->nmsgs; n++)
-	      mail_elt(stream, n)->sequence = 0;
+	      if((mc = mail_elt(stream, n)) != NULL)
+	        mc->sequence = 0;
 
 	    cnt = i = 0;
 	    n = current_index_state->msg_at_top;
@@ -3867,8 +3951,12 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 		   && n <= mn_get_total(msgmap)
 		   && !(h=get_index_cache(n))->color_lookup_done){
 
-		    mail_elt(stream,mn_m2raw(msgmap,n))->sequence = 1;
-		    cnt++;
+		    rawno = mn_m2raw(msgmap, n);
+		    if(rawno >= 1L && rawno <= stream->nmsgs
+		       && (mc = mail_elt(stream, rawno))){
+			mc->sequence = 1;
+			cnt++;
+		    }
 		}
 
 		if(++i >= limit)
@@ -3908,9 +3996,11 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 		    if(colormatch){
 			for(s = ss; s; s = s->next){
 			  for(n = s->first; n <= s->last; n++){
-			    if(mail_elt(stream, n)->searched){
+			    if(n >= 1L && n <= stream->nmsgs
+			       && (mc = mail_elt(stream, n))
+			       && mc->searched){
 				cnt--;
-				mail_elt(stream, n)->sequence = 0;
+				mc->sequence = 0;
 
 				/*
 				 * n is the raw msgno we want to assign
@@ -3947,7 +4037,9 @@ build_header_line(state, stream, msgmap, msgno, already_fetched)
 			/* have to mark the rest of the lookups done */
 			for(s = ss; s && cnt > 0; s = s->next){
 			  for(n = s->first; n <= s->last && cnt > 0; n++){
-			    if(mail_elt(stream, n)->sequence){
+			    if(n >= 1L && n <= stream->nmsgs
+			       && (mc = mail_elt(stream, n))
+			       && mc->sequence){
 				cnt--;
 
 				for(i = current_index_state->msg_at_top;
@@ -3992,9 +4084,14 @@ void
 set_msg_score(stream, rawmsgno, score)
     MAILSTREAM *stream;
     long rawmsgno;
-    int  score;
+    long score;
 {
-    (void)msgno_exceptions(stream, rawmsgno, "S", &score, TRUE);
+    int intscore;
+
+    /* scores are between SCORE_MIN and SCORE_MAX, so ok */
+    intscore = (int) score;
+
+    (void) msgno_exceptions(stream, rawmsgno, "S", &intscore, TRUE);
 }
 
 
@@ -4003,14 +4100,17 @@ set_msg_score(stream, rawmsgno, score)
  * returned will be SCORE_UNDEF, so the caller has to be prepared for that.
  * The caller should calculate the undefined scores before calling this.
  */
-int
+long
 get_msg_score(stream, rawmsgno)
     MAILSTREAM *stream;
     long        rawmsgno;
 {
-    int score;
+    int  s;
+    long score;
 
-    if(!msgno_exceptions(stream, rawmsgno, "S", &score, FALSE))
+    if(msgno_exceptions(stream, rawmsgno, "S", &s, FALSE))
+      score = (long) s;
+    else
       score = SCORE_UNDEF;
 
     return(score);
@@ -4050,39 +4150,30 @@ SEARCHSET *
 build_searchset(stream)
     MAILSTREAM *stream;
 {
-    long       i;
-    SEARCHSET *ret_s = NULL, *s;
+    long          i, run;
+    SEARCHSET    *ret_s = NULL, **set;
+    MESSAGECACHE *mc;
 
-    for(i = 1L; i <= stream->nmsgs; i++){
-	if(mail_elt(stream, i)->sequence){
+    if(!stream)
+      return(NULL);
+
+    for(i = 1L, set = &ret_s, run = 0L; i <= stream->nmsgs; i++){
+	if(!((mc = mail_elt(stream, i)) && mc->sequence)){  /* end of run */
+	    if(run){			/* run in progress */
+		set = &(*set)->next;
+		run = 0L;
+	    }
+	}
+	else if(run++){				/* next in run */
+	    (*set)->last = i;
+	}
+	else{					/* start of new run */
+	    *set = mail_newsearchset();
 	    /*
-	     * Add i to searchset. First check if it can be coalesced into
-	     * an existing set.
+	     * Leave off (*set)->last until we get more than one msg
+	     * in the run, to avoid 607:607 in SEARCH.
 	     */
-	    s = ret_s;
-	    while(s){
-		if(s->first == (unsigned long)(i+1)){
-		    s->first--;
-		    break;
-		}
-		else if(s->last + 1 == (unsigned long)i){
-		    s->last++;
-		    break;
-		}
-
-		s = s->next;
-	    }
-
-	    if(!s){	/* have to add a new range to searchset */
-		s = mail_newsearchset();
-		s->next = ret_s ? ret_s->next : NULL;
-		if(ret_s)
-		  ret_s->next = s;
-		else
-		  ret_s = s;
-
-		s->first = s->last = (unsigned long)i;
-	    }
+	    (*set)->first = (*set)->last = i;
 	}
     }
 
@@ -4152,11 +4243,9 @@ format_index_index_line(idata)
 {
     char          str_buf[MAXIFLDS][MAX_SCREEN_COLS+1], to_us, status, *field,
 		 *buffer, *s_tmp, *p, *str, *newsgroups;
-    int		  width, offsets_set = 0, i, j, smallest, which_array = 0;
-    int           plus_off = -1, imp_off = -1, del_off = -1, ans_off = -1,
-		  new_off = -1, rec_off = -1, uns_off = -1, status_offset = 0,
-		  score, collapsed = 0;
-    long	  l;
+    int		  width, i, j, smallest, which_array = 0, collapsed = 0,
+		  offsets_set = 0, cur_offset = 0, noff = 0, noff_was;
+    long	  l, score;
     HLINE_S	 *hline;
     BODY	 *body = NULL;
     MESSAGECACHE *mc;
@@ -4171,6 +4260,10 @@ format_index_index_line(idata)
     memset(str_buf, 0, sizeof(str_buf));
 
     hline = get_index_cache(idata->msgno);
+    for(i = 0; i < OFFS; i++){
+	hline->offs[i].offset = -1;
+	hline->offs[i].len    =  1;
+    }
 
     /* is this a collapsed thread index line? */
     if(!idata->bogus && THREADING()){
@@ -4187,12 +4280,12 @@ format_index_index_line(idata)
       if(width = cdesc->width){
 	  str	    = str_buf[which_array++];
 	  str[0]    = '\0';
-	  cdesc->string = str;
-	  status_offset += (width + 1);
 	  if(idata->bogus){
 	      if(cdesc->ctype == iMessNo)
 		sprintf(str, "%ld", idata->msgno);
-	      else if(idata->bogus < 2 && cdesc->ctype == iSubject)
+	      else if(idata->bogus < 2 && (cdesc->ctype == iSubject
+					   || cdesc->ctype == iSubjKey
+					   || cdesc->ctype == iSubjKeyInit))
 		sprintf(str, "%-*.*s", width, width,
 			"[ No Message Text Available ]");
 	  }
@@ -4207,7 +4300,7 @@ format_index_index_line(idata)
 						      cdesc->ctype);
 		}
 		else{
-		    if((mc=mail_elt(idata->stream, idata->rawno))->flagged)
+		    if((mc=mail_elt(idata->stream,idata->rawno)) && mc->flagged)
 		      to_us = '*';		/* simple */
 		    else if(!IS_NEWS(idata->stream)){
 			for(addr = fetch_to(idata); addr; addr = addr->next)
@@ -4244,19 +4337,84 @@ format_index_index_line(idata)
 		sprintf(str, "%c %c", to_us, status);
 
 		if(!offsets_set && pico_usingcolor()){
-		    offsets_set = 1;
-		    status_offset -= (width + 1);
-		    if(str[0] == '*')
-		      imp_off = status_offset;
-		    else if(str[0] == '+' || str[0] == '-')
-		      plus_off = status_offset;
+		    offsets_set++;
 
-		    if(str[2] == 'D')
-		      del_off = status_offset + 2;
-		    else if(str[2] == 'A')
-		      ans_off = status_offset + 2;
-		    else if(str[2] == 'N')
-		      new_off = status_offset + 2;
+		    if(str[0] == '*'){
+			if(noff < OFFS && VAR_IND_IMP_FORE_COLOR
+			   && VAR_IND_IMP_BACK_COLOR){
+			    hline->offs[noff].offset = cur_offset;
+			    hline->offs[noff].len    = 1;
+			    strncpy(hline->offs[noff].color.fg,
+				    VAR_IND_IMP_FORE_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			    strncpy(hline->offs[noff].color.bg,
+				    VAR_IND_IMP_BACK_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			}
+		    }
+		    else if(str[0] == '+' || str[0] == '-'){
+			if(noff < OFFS && VAR_IND_PLUS_FORE_COLOR
+			   && VAR_IND_PLUS_BACK_COLOR){
+			    hline->offs[noff].offset = cur_offset;
+			    hline->offs[noff].len    = 1;
+			    strncpy(hline->offs[noff].color.fg,
+				    VAR_IND_PLUS_FORE_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			    strncpy(hline->offs[noff].color.bg,
+				    VAR_IND_PLUS_BACK_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			}
+		    }
+
+		    if(str[2] == 'D'){
+			if(noff < OFFS && VAR_IND_DEL_FORE_COLOR
+			   && VAR_IND_DEL_BACK_COLOR){
+			    hline->offs[noff].offset = cur_offset + 2;
+			    hline->offs[noff].len    = 1;
+			    strncpy(hline->offs[noff].color.fg,
+				    VAR_IND_DEL_FORE_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			    strncpy(hline->offs[noff].color.bg,
+				    VAR_IND_DEL_BACK_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			}
+		    }
+		    else if(str[2] == 'A'){
+			if(noff < OFFS && VAR_IND_ANS_FORE_COLOR
+			   && VAR_IND_ANS_BACK_COLOR){
+			    hline->offs[noff].offset = cur_offset + 2;
+			    hline->offs[noff].len    = 1;
+			    strncpy(hline->offs[noff].color.fg,
+				    VAR_IND_ANS_FORE_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			    strncpy(hline->offs[noff].color.bg,
+				    VAR_IND_ANS_BACK_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			}
+		    }
+		    else if(str[2] == 'N'){
+			if(noff < OFFS && VAR_IND_NEW_FORE_COLOR
+			   && VAR_IND_NEW_BACK_COLOR){
+			    hline->offs[noff].offset = cur_offset + 2;
+			    hline->offs[noff].len    = 1;
+			    strncpy(hline->offs[noff].color.fg,
+				    VAR_IND_NEW_FORE_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			    strncpy(hline->offs[noff].color.bg,
+				    VAR_IND_NEW_BACK_COLOR,
+				    MAXCOLORLEN);
+			    hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			}
+		    }
 		}
 
 		break;
@@ -4324,8 +4482,10 @@ format_index_index_line(idata)
 		      thrd->branch = save_branch;
 		  }
 		  else{
-		      mc = mail_elt(idata->stream, idata->rawno);
-		      if(mc->valid){
+		      mc = (idata->rawno > 0L && idata->stream
+		            && idata->rawno <= idata->stream->nmsgs)
+			    ? mail_elt(idata->stream, idata->rawno) : NULL;
+		      if(mc && mc->valid){
 			  if(cdesc->ctype == iIStatus){
 			      if(mc->recent)
 				new = mc->seen ? 'R' : 'N';
@@ -4353,26 +4513,117 @@ format_index_index_line(idata)
 			  answered, deleted);
 
 		  if(!offsets_set && pico_usingcolor()){
-		      offsets_set = 1;
-		      status_offset -= (width + 1);
-		      if(str[0] == '+' || str[0] == '-')
-			plus_off = status_offset;
+		      offsets_set++;
 
-		      if(str[2] == '*')
-			imp_off = status_offset + 2;
+		      if(str[0] == '+' || str[0] == '-'){
+			  if(noff < OFFS && VAR_IND_PLUS_FORE_COLOR
+			     && VAR_IND_PLUS_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_PLUS_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_PLUS_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
 
-		      if(str[3] == 'N')
-			new_off = status_offset + 3;
-		      else if(str[3] == 'R')
-			rec_off = status_offset + 3;
-		      else if(str[3] == 'U')
-			uns_off = status_offset + 3;
+		      if(str[2] == '*'){
+			  if(noff < OFFS && VAR_IND_IMP_FORE_COLOR
+			     && VAR_IND_IMP_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 2;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_IMP_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_IMP_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
 
-		      if(str[4] == 'A')
-			ans_off = status_offset + 4;
+		      if(str[3] == 'N' || str[3] == 'n'){
+			  if(noff < OFFS && VAR_IND_NEW_FORE_COLOR
+			     && VAR_IND_NEW_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 3;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_NEW_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_NEW_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
+		      else if(str[3] == 'R' || str[3] == 'r'){
+			  if(noff < OFFS && VAR_IND_REC_FORE_COLOR
+			     && VAR_IND_REC_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 3;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_REC_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_REC_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
+		      else if(str[3] == 'U' || str[3] == 'u'){
+			  if(noff < OFFS && VAR_IND_UNS_FORE_COLOR
+			     && VAR_IND_UNS_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 3;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_UNS_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_UNS_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
 
-		      if(str[5] == 'D')
-			del_off = status_offset + 5;
+		      if(str[4] == 'A' || str[4] == 'a'){
+			  if(noff < OFFS && VAR_IND_ANS_FORE_COLOR
+			     && VAR_IND_ANS_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 4;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_ANS_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_ANS_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
+
+		      if(str[5] == 'D' || str[5] == 'd'){
+			  if(noff < OFFS && VAR_IND_DEL_FORE_COLOR
+			     && VAR_IND_DEL_BACK_COLOR){
+			      hline->offs[noff].offset = cur_offset + 5;
+			      hline->offs[noff].len    = 1;
+			      strncpy(hline->offs[noff].color.fg,
+				      VAR_IND_DEL_FORE_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+			      strncpy(hline->offs[noff].color.bg,
+				      VAR_IND_DEL_BACK_COLOR,
+				      MAXCOLORLEN);
+			      hline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
+			  }
+		      }
 		  }
 	      }
 
@@ -4422,7 +4673,7 @@ format_index_index_line(idata)
 		    }
 		}
 
-		sprintf(str, "%d", score != SCORE_UNDEF ? score : 0);
+		sprintf(str, "%ld", score != SCORE_UNDEF ? score : 0L);
 		break;
 
 	      case iDate:
@@ -4649,12 +4900,14 @@ format_index_index_line(idata)
 		  switch(body->type){
 		    case TYPETEXT:
 		    {
-			mc = mail_elt(idata->stream, idata->rawno);
-			if(mc->rfc822_size < 6000)
+		        mc = (idata->rawno > 0L && idata->stream
+		              && idata->rawno <= idata->stream->nmsgs)
+			      ? mail_elt(idata->stream, idata->rawno) : NULL;
+			if(mc && mc->rfc822_size < 6000)
 			  strcpy(str, "(short  )");
-			else if(mc->rfc822_size < 25000)
+			else if(mc && mc->rfc822_size < 25000)
 			  strcpy(str, "(medium )");
-			else if(mc->rfc822_size < 100000)
+			else if(mc && mc->rfc822_size < 100000)
 			  strcpy(str, "(long   )");
 			else
 			  strcpy(str, "(huge   )");
@@ -4750,7 +5003,47 @@ format_index_index_line(idata)
 		break;
 
 	      case iSubject:
-		subj_str(idata, width, str);
+		subj_str(idata, width, str, NoKW, NULL, NULL);
+		break;
+
+	      case iSubjKey:
+		noff_was = noff;
+		subj_str(idata, width, str, KW, hline->offs, &noff);
+		/* fix offsets which are now relative to str */
+		for(i = noff_was; i < noff; i++)
+		  if(hline->offs[i].offset >= 0)
+		    hline->offs[i].offset += cur_offset;
+
+		break;
+
+	      case iSubjKeyInit:
+		noff_was = noff;
+		subj_str(idata, width, str, KWInit, hline->offs, &noff);
+		/* fix offsets which are now relative to str */
+		for(i = noff_was; i < noff; i++)
+		  if(hline->offs[i].offset >= 0)
+		    hline->offs[i].offset += cur_offset;
+
+		break;
+
+	      case iKey:
+		noff_was = noff;
+		key_str(idata, width, str, KW, hline->offs, &noff);
+		/* fix offsets which are now relative to str */
+		for(i = noff_was; i < noff; i++)
+		  if(hline->offs[i].offset >= 0)
+		    hline->offs[i].offset += cur_offset;
+
+		break;
+
+	      case iKeyInit:
+		noff_was = noff;
+		key_str(idata, width, str, KWInit, hline->offs, &noff);
+		/* fix offsets which are now relative to str */
+		for(i = noff_was; i < noff; i++)
+		  if(hline->offs[i].offset >= 0)
+		    hline->offs[i].offset += cur_offset;
+
 		break;
 
 	      case iNews:
@@ -4873,16 +5166,21 @@ format_index_index_line(idata)
 		break;
 
 	    }
+
+	  cur_offset += (width + 1);
       }
 
     *(p = buffer = hline->line) = '\0';
 
     /*--- Put them all together ---*/
+    which_array = 0;
     for(cdesc = ps_global->index_disp_format;
-	cdesc->ctype != iNothing;
+	cdesc->ctype != iNothing && which_array < MAXIFLDS;
 	cdesc++)
       if(width = cdesc->width){
 	  char *q;
+
+	  str = str_buf[which_array++];
 
 	  /* space between columns */
 	  if(p > buffer){
@@ -4891,9 +5189,9 @@ format_index_index_line(idata)
 	  }
 
 	  if(cdesc->adjustment == Left)
-	    sprintf(p, "%-*.*s", width, width, cdesc->string);
+	    sprintf(p, "%-*.*s", width, width, str);
 	  else
-	    sprintf(p, "%*.*s", width, width, cdesc->string);
+	    sprintf(p, "%*.*s", width, width, str);
 
 	  /*
 	   * Make sure there are no nulls in the part we were supposed to
@@ -4921,83 +5219,10 @@ format_index_index_line(idata)
 	  p += width;
       }
 
-    for(i = 0; i < OFFS; i++)
-      hline->offs[i].offset = -1;
 	
     /* sort the color offsets to make it easy to use */
-    if(offsets_set){
-	int i = 0;
+    if(hline->offs[0].offset >= 0){
 	OFFCOLOR_S tmp;
-
-	if(plus_off >= 0 && VAR_IND_PLUS_FORE_COLOR && VAR_IND_PLUS_BACK_COLOR){
-	    hline->offs[i].offset = plus_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_PLUS_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_PLUS_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(imp_off >= 0 && VAR_IND_IMP_FORE_COLOR && VAR_IND_IMP_BACK_COLOR){
-	    hline->offs[i].offset = imp_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_IMP_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_IMP_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(del_off >= 0 && VAR_IND_DEL_FORE_COLOR && VAR_IND_DEL_BACK_COLOR){
-	    hline->offs[i].offset = del_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_DEL_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_DEL_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(ans_off >= 0 && VAR_IND_ANS_FORE_COLOR && VAR_IND_ANS_BACK_COLOR){
-	    hline->offs[i].offset = ans_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_ANS_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_ANS_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(new_off >= 0 && VAR_IND_NEW_FORE_COLOR && VAR_IND_NEW_BACK_COLOR){
-	    hline->offs[i].offset = new_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_NEW_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_NEW_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(uns_off >= 0 && VAR_IND_UNS_FORE_COLOR && VAR_IND_UNS_BACK_COLOR){
-	    hline->offs[i].offset = uns_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_UNS_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_UNS_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
-
-	if(rec_off >= 0 && VAR_IND_REC_FORE_COLOR && VAR_IND_REC_BACK_COLOR){
-	    hline->offs[i].offset = rec_off;
-	    strncpy(hline->offs[i].color.fg, VAR_IND_REC_FORE_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-	    strncpy(hline->offs[i].color.bg, VAR_IND_REC_BACK_COLOR,
-		    MAXCOLORLEN);
-	    hline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
-	}
 
 	/* sort by offsets */
 	for(j = 0; j < OFFS-1; j++){
@@ -5023,7 +5248,9 @@ format_index_index_line(idata)
     buffer[min(ps_global->ttyo->screen_cols, i_cache_width())] = '\0';
     hline->id = line_hash(buffer);
     dprint(9, (debugfile, "INDEX(%p) -->%s<-- (%d), 0x%lx>\n",
-	       hline, hline->line, strlen(hline->line), hline->id));
+	       hline,
+	       hline->line ? hline->line : "?",
+	       hline->line ? strlen(hline->line) : 0, hline->id));
 
     return(hline);
 }
@@ -5034,7 +5261,7 @@ format_thread_index_line(idata)
     INDEXDATA_S	*idata;
 {
     char         *p, *buffer;
-    int           thdlen, space_left, i;
+    int           thdlen, space_left, i, noff = 0;
     HLINE_S	 *hline, *thline = NULL;
     PINETHRD_S   *thrd;
 
@@ -5064,8 +5291,10 @@ format_thread_index_line(idata)
     if(!thline)
       return(hline);
 
-    for(i = 0; i < OFFS; i++)
-      thline->offs[i].offset = -1;
+    for(i = 0; i < OFFS; i++){
+	thline->offs[i].offset = -1;
+	thline->offs[i].len    =  1;
+    }
 
     *(p = buffer = thline->line) = '\0';
 
@@ -5078,16 +5307,15 @@ format_thread_index_line(idata)
 	if(pico_usingcolor()){
 	    struct variable *vars = ps_global->vars;
 
-	    i = 0;
-	    if(to_us == '*'
+	    if(noff < OFFS && to_us == '*'
 	       && VAR_IND_IMP_FORE_COLOR && VAR_IND_PLUS_BACK_COLOR){
-		thline->offs[i].offset = p - buffer;
-		strncpy(thline->offs[i].color.fg, VAR_IND_IMP_FORE_COLOR,
+		thline->offs[noff].offset = p - buffer;
+		strncpy(thline->offs[noff].color.fg, VAR_IND_IMP_FORE_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-		strncpy(thline->offs[i].color.bg, VAR_IND_IMP_BACK_COLOR,
+		thline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[noff].color.bg, VAR_IND_IMP_BACK_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+		thline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
 		if(F_ON(F_COLOR_LINE_IMPORTANT, ps_global)){
 		    strncpy(thline->linecolor.fg, VAR_IND_IMP_FORE_COLOR,
 			    MAXCOLORLEN);
@@ -5095,36 +5323,36 @@ format_thread_index_line(idata)
 			    MAXCOLORLEN);
 		}
 	    }
-	    else if((to_us == '+' || to_us == '-')
+	    else if(noff < OFFS && (to_us == '+' || to_us == '-')
 		    && VAR_IND_PLUS_FORE_COLOR && VAR_IND_PLUS_BACK_COLOR){
-		thline->offs[i].offset = p - buffer;
-		strncpy(thline->offs[i].color.fg, VAR_IND_PLUS_FORE_COLOR,
+		thline->offs[noff].offset = p - buffer;
+		strncpy(thline->offs[noff].color.fg, VAR_IND_PLUS_FORE_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-		strncpy(thline->offs[i].color.bg, VAR_IND_PLUS_BACK_COLOR,
+		thline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[noff].color.bg, VAR_IND_PLUS_BACK_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+		thline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
 	    }
 
-	    if(status == 'D'
+	    if(noff < OFFS && status == 'D'
 	       && VAR_IND_DEL_FORE_COLOR && VAR_IND_DEL_BACK_COLOR){
-		thline->offs[i].offset = p + 2 - buffer;
-		strncpy(thline->offs[i].color.fg, VAR_IND_DEL_FORE_COLOR,
+		thline->offs[noff].offset = p + 2 - buffer;
+		strncpy(thline->offs[noff].color.fg, VAR_IND_DEL_FORE_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-		strncpy(thline->offs[i].color.bg, VAR_IND_DEL_BACK_COLOR,
+		thline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[noff].color.bg, VAR_IND_DEL_BACK_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+		thline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
 	    }
-	    else if(status == 'N'
+	    else if(noff < OFFS && status == 'N'
 		    && VAR_IND_NEW_FORE_COLOR && VAR_IND_NEW_BACK_COLOR){
-		thline->offs[i].offset = p + 2 - buffer;
-		strncpy(thline->offs[i].color.fg, VAR_IND_NEW_FORE_COLOR,
+		thline->offs[noff].offset = p + 2 - buffer;
+		strncpy(thline->offs[noff].color.fg, VAR_IND_NEW_FORE_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i].color.fg[MAXCOLORLEN] = '\0';
-		strncpy(thline->offs[i].color.bg, VAR_IND_NEW_BACK_COLOR,
+		thline->offs[noff].color.fg[MAXCOLORLEN] = '\0';
+		strncpy(thline->offs[noff].color.bg, VAR_IND_NEW_BACK_COLOR,
 			MAXCOLORLEN);
-		thline->offs[i++].color.bg[MAXCOLORLEN] = '\0';
+		thline->offs[noff++].color.bg[MAXCOLORLEN] = '\0';
 	    }
 	}
 
@@ -5220,7 +5448,7 @@ format_thread_index_line(idata)
 		char  subj[MAX_SCREEN_COLS+1];
 
 		subj[0] = '\0';
-		subj_str(idata, subj_width, subj);
+		subj_str(idata, subj_width, subj, NoKW, NULL, NULL);
 		sprintf(subj_start, "%-*.*s", subj_width, subj_width, subj);
 	    }
 	}
@@ -5232,7 +5460,9 @@ format_thread_index_line(idata)
     buffer[min(ps_global->ttyo->screen_cols, i_cache_width())] = '\0';
     thline->id = line_hash(buffer);
     dprint(9, (debugfile, "THDINDEX(%p) -->%s<-- (%d), 0x%lx>\n",
-	       thline, thline->line, strlen(thline->line), thline->id));
+	       thline,
+	       thline->line ? thline->line : "?",
+	       thline->line ? strlen(thline->line) : 0, thline->id));
 
     return(hline);
 }
@@ -5290,7 +5520,7 @@ get_index_line_color(stream, searchset, pstate, returned_color)
 	/* Go through the possible roles one at a time until we get a match. */
 	while(!match && pat){
 	    if(match_pattern(pat->patgrp, stream, searchset, NULL,
-			     get_msg_score, 0)){
+			     get_msg_score, SO_NOSERVER|SE_NOPREFETCH)){
 		if(!pat->action || pat->action->bogus)
 		  break;
 
@@ -5328,14 +5558,17 @@ int
 calculate_some_scores(stream, searchset, no_fetch)
     MAILSTREAM *stream;
     SEARCHSET  *searchset;
+    int         no_fetch;
 {
     PAT_S         *pat = NULL;
     PAT_STATE      pstate;
     char          *savebits;
-    int            newscore, score, error = 0;
+    long           newscore, score;
+    int            error = 0;
     long           rflags = ROLE_SCORE;
     long           n, i;
     SEARCHSET     *s;
+    MESSAGECACHE  *mc;
 
     dprint(7, (debugfile, "calculate_some_scores\n"));
 
@@ -5347,13 +5580,13 @@ calculate_some_scores(stream, searchset, no_fetch)
 	    /* this calls match_pattern which messes up searched bits */
 	    savebits = (char *)fs_get((stream->nmsgs+1) * sizeof(char));
 	    for(i = 1L; i <= stream->nmsgs; i++)
-	      savebits[i] = mail_elt(stream, i)->searched;
+	      savebits[i] = (mc = mail_elt(stream, i)) ? mc->searched : 0;
 
 	    /*
 	     * First set all the scores in the searchset to zero so that they
 	     * will no longer be undefined.
 	     */
-	    score = 0;
+	    score = 0L;
 	    for(s = searchset; s; s = s->next)
 	      for(n = s->first; n <= s->last; n++)
 		set_msg_score(stream, n, score);
@@ -5363,7 +5596,8 @@ calculate_some_scores(stream, searchset, no_fetch)
 		pat = next_pattern(&pstate)){
 
 		switch(match_pattern(pat->patgrp, stream, searchset, NULL, NULL,
-				     no_fetch)){
+				     (no_fetch ? MP_IN_CCLIENT_CB : 0)
+				      | (SO_NOSERVER|SE_NOPREFETCH))){
 		  case 1:
 		    if(!pat->action || pat->action->bogus)
 		      break;
@@ -5372,9 +5606,10 @@ calculate_some_scores(stream, searchset, no_fetch)
 
 		    for(s = searchset; s; s = s->next)
 		      for(n = s->first; n <= s->last; n++)
-			if(mail_elt(stream, n)->searched){
+			if(n > 0L && stream && n <= stream->nmsgs
+			   && (mc = mail_elt(stream, n)) && mc->searched){
 			    if((score = get_msg_score(stream,n)) == SCORE_UNDEF)
-			      score = 0;
+			      score = 0L;
 			    
 			    score += newscore;
 			    set_msg_score(stream, n, score);
@@ -5392,7 +5627,8 @@ calculate_some_scores(stream, searchset, no_fetch)
 	    }
 
 	    for(i = 1L; i <= stream->nmsgs; i++)
-	      mail_elt(stream, i)->searched = savebits[i];
+	      if((mc = mail_elt(stream, i)) != NULL)
+		mc->searched = savebits[i];
 
 	    fs_give((void **)&savebits);
 
@@ -5516,7 +5752,7 @@ fetch_from(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->from);
 
 	idata->bogus = 1;
@@ -5546,7 +5782,7 @@ fetch_to(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->to);
 
 	idata->bogus = 1;
@@ -5576,7 +5812,7 @@ fetch_cc(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->cc);
 
 	idata->bogus = 1;
@@ -5607,7 +5843,7 @@ fetch_sender(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->sender);
 
 	idata->bogus = 1;
@@ -5637,7 +5873,7 @@ fetch_newsgroups(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->newsgroups);
 
 	idata->bogus = 1;
@@ -5662,7 +5898,7 @@ fetch_subject(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
 	  return(env->subject);
 
 	idata->bogus = 1;
@@ -5687,8 +5923,8 @@ fetch_date(idata)
 	ENVELOPE *env;
 
 	/* c-client call's just cache access at this point */
-	if(env = mail_fetchenvelope(idata->stream, idata->rawno))
-	  return(env->date);
+	if(env = pine_mail_fetchenvelope(idata->stream, idata->rawno))
+	  return((char *) env->date);
 
 	idata->bogus = 1;
     }
@@ -5711,7 +5947,9 @@ fetch_size(idata)
     else{
 	MESSAGECACHE *mc;
 
-	if(mc = mail_elt(idata->stream, idata->rawno))
+	if(idata->stream && idata->rawno > 0L
+	   && idata->rawno <= idata->stream->nmsgs
+	   && (mc = mail_elt(idata->stream, idata->rawno)))
 	  return(mc->rfc822_size);
 
 	idata->bogus = 1;
@@ -5735,7 +5973,7 @@ fetch_body(idata)
 	return(NULL);
     }
 
-    if(mail_fetchstructure(idata->stream, idata->rawno, &body))
+    if(pine_mail_fetchstructure(idata->stream, idata->rawno, &body))
       return(body);
 
     idata->bogus = 1;
@@ -5751,12 +5989,13 @@ fetch_body(idata)
  *       if we're passed a zero obuf, mostly bogus overview data
  */
 void
-load_overview(stream, uid, obuf)
+load_overview(stream, uid, obuf, rawno)
     MAILSTREAM	  *stream;
     unsigned long  uid;
     OVERVIEW	  *obuf;
+    unsigned long  rawno;
 {
-    if(obuf && uid){
+    if(obuf && rawno >= 1L && stream && rawno <= stream->nmsgs){
 	INDEXDATA_S  idata;
 	HLINE_S	    *hline;
 
@@ -5770,8 +6009,8 @@ load_overview(stream, uid, obuf)
 	 * in a single RTT.
 	 */
 	idata.stream  = stream;
-	idata.rawno   = mail_msgno(stream, uid);
-	idata.msgno   = mn_raw2m(ps_global->msgmap, idata.rawno);
+	idata.rawno   = rawno;
+	idata.msgno   = mn_raw2m(sp_msgmap(stream), idata.rawno);
 	idata.size    = obuf->optional.octets;
 	idata.from    = obuf->from;
 	idata.date    = obuf->date;
@@ -5788,7 +6027,7 @@ load_overview(stream, uid, obuf)
 	}
 	else if(F_OFF(F_QUELL_NEWS_ENV_CB, ps_global)){
 	    if((!THRD_INDX() || (hline && hline->tihl))
-	       && !msgline_hidden(stream, ps_global->msgmap, idata.msgno, 0))
+	       && !msgline_hidden(stream, sp_msgmap(stream), idata.msgno, 0))
 	      paint_index_hline(stream, idata.msgno, hline);
 	}
     }
@@ -5920,7 +6159,7 @@ index_data_env(idata, env)
     idata->cc	      = env->cc;
     idata->sender     = env->sender;
     idata->subject    = env->subject;
-    idata->date	      = env->date;
+    idata->date	      = (char *) env->date;
     idata->newsgroups = env->newsgroups;
 
     idata->valid_to = 1;	/* signal that everythings here */
@@ -5960,24 +6199,52 @@ date_str(datesrc, type, v, str)
 		minzero[3],	/* zero padded, 2-digit minutes */
 		timezone[6];	/* timezone, like -0800 or +... */
     int		hr12;
-    int         curtype;
+    int         curtype, lastmonthtype, lastyeartype;
     struct	date d;
 #define TODAYSTR "Today"
 
-    curtype = (type == iCurDate ||
-	       type == iCurDateIso ||
-	       type == iCurDateIsoS ||
-	       type == iCurTime24 ||
-	       type == iCurTime12);
+    curtype =       (type == iCurDate ||
+	             type == iCurDateIso ||
+	             type == iCurDateIsoS ||
+	             type == iCurTime24 ||
+	             type == iCurTime12 ||
+	             type == iCurDay ||
+	             type == iCurDay2Digit ||
+	             type == iCurDayOfWeek ||
+	             type == iCurDayOfWeekAbb ||
+	             type == iCurMon ||
+	             type == iCurMon2Digit ||
+	             type == iCurMonLong ||
+	             type == iCurMonAbb ||
+	             type == iCurYear ||
+	             type == iCurYear2Digit);
+    lastmonthtype = (type == iLstMon ||
+	             type == iLstMon2Digit ||
+	             type == iLstMonLong ||
+	             type == iLstMonAbb ||
+	             type == iLstMonYear ||
+	             type == iLstMonYear2Digit);
+    lastyeartype =  (type == iLstYear ||
+	             type == iLstYear2Digit);
     str[0] = '\0';
-    if(!(datesrc && datesrc[0]) && !curtype)
+    if(!(datesrc && datesrc[0]) && !(curtype || lastmonthtype || lastyeartype))
       return;
 
-    if(curtype){
+    if(curtype || lastmonthtype || lastyeartype){
 	char dbuf[200];
 
 	rfc822_date(dbuf);
 	parse_date(dbuf, &d);
+
+	if(lastyeartype)
+	  d.year--;
+	else if(lastmonthtype){
+	    d.month--;
+	    if(d.month <= 0){
+		d.month = 12;
+		d.year--;
+	    }
+	}
     }
     else
       parse_date(datesrc, &d);
@@ -5987,6 +6254,9 @@ date_str(datesrc, type, v, str)
       case iSDateTime:
       case iLDate:
       case iYear:
+      case iCurYear:
+      case iLstMonYear:
+      case iLstYear:
       case iRDate:
 	strcpy(year4, (d.year >= 0 && d.year < 10000)
 			? int2string(d.year) : "");
@@ -5994,7 +6264,10 @@ date_str(datesrc, type, v, str)
       case iDate:
       case iCurDate:
       case iMonAbb:
+      case iCurMonAbb:
+      case iLstMonAbb:
       case iDay:
+      case iCurDay:
       case iDayOrdinal:
 	strcpy(monabb, (d.month > 0 && d.month < 13)
 			? month_abbrev(d.month) : "");
@@ -6020,8 +6293,14 @@ date_str(datesrc, type, v, str)
       case iDateIsoS:
       case iCurDateIsoS:
       case iDay2Digit:
+      case iCurDay2Digit:
       case iMon2Digit:
+      case iCurMon2Digit:
+      case iLstMon2Digit:
       case iYear2Digit:
+      case iCurYear2Digit:
+      case iLstYear2Digit:
+      case iLstMonYear2Digit:
 	if(d.year >= 0){
 	    if((d.year % 100) < 10){
 		yearzero[0] = '0';
@@ -6126,41 +6405,59 @@ date_str(datesrc, type, v, str)
 		day, monabb, year4);
 	break;
       case iDayOfWeekAbb:
+      case iCurDayOfWeekAbb:
 	strcpy(str, (d.wkday >= 0 && d.wkday <= 6) ? week_abbrev(d.wkday) : "");
 	break;
       case iDayOfWeek:
+      case iCurDayOfWeek:
 	strcpy(str, (d.wkday >= 0 && d.wkday <= 6) ? day_name[d.wkday] : "");
 	break;
       case iYear:
+      case iCurYear:
+      case iLstYear:
+      case iLstMonYear:
 	strcpy(str, year4);
 	break;
       case iDay2Digit:
+      case iCurDay2Digit:
 	strcpy(str, dayzero);
 	break;
       case iMon2Digit:
+      case iCurMon2Digit:
+      case iLstMon2Digit:
 	strcpy(str, monzero);
 	break;
       case iYear2Digit:
+      case iCurYear2Digit:
+      case iLstYear2Digit:
+      case iLstMonYear2Digit:
 	strcpy(str, yearzero);
 	break;
       case iTimezone:
 	strcpy(str, timezone);
 	break;
       case iDay:
+      case iCurDay:
 	strcpy(str, day);
 	break;
       case iDayOrdinal:
         sprintf(str, "%s%s", day, dayord);
 	break;
       case iMon:
+      case iCurMon:
+      case iLstMon:
 	if(d.month > 0 && d.month <= 12)
 	  strcpy(str, int2string(d.month));
 
 	break;
       case iMonAbb:
+      case iCurMonAbb:
+      case iLstMonAbb:
 	strcpy(str, monabb);
 	break;
       case iMonLong:
+      case iCurMonLong:
+      case iLstMonLong:
 	strcpy(str, (d.month > 0 && d.month < 13)
 			? month_name(d.month) : "");
 	break;
@@ -6456,25 +6753,146 @@ date_str(datesrc, type, v, str)
 
 
 /*
- * fills subject in for painting index lines
+ * Put a string representing the set keywords into str. Idata tells us which
+ * message we are referring to.
+ *
+ * Args  idata -- which message?
+ *       width -- desired maximum width of resulting string
+ *         str -- destination buffer
+ *      kwtype -- keywords or kw initials
  */
 void
-subj_str(idata, width, str)
+key_str(idata, width, str, kwtype, offs, noff)
     INDEXDATA_S *idata;
     int          width;
     char        *str;
+    SubjKW       kwtype;
+    OFFCOLOR_S   offs[];
+    int         *noff;
 {
-    char          *subject, *sptr = NULL;
-    char          *p, *border, *q = NULL;
+    int         firstone = 1;
+    KEYWORD_S  *kw;
+    char       *begstr = str;
+    COLOR_PAIR *color = NULL;
+    SPEC_COLOR_S *sc = ps_global->kw_colors;
+
+    memset(str, 0, (width+1) * sizeof(*str));
+    if(kwtype == KWInit){
+      for(kw = ps_global->keywords; kw && width > 0; kw = kw->next){
+	if(user_flag_is_set(idata->stream, idata->rawno, kw->kw)){
+	    if(width > 0){
+		if((offs && noff && *noff < OFFS && pico_usingcolor())
+		   && ((kw->nick && kw->nick[0]
+		        && (color=hdr_color(kw->nick,NULL,sc)))
+		       || (kw->kw && kw->kw[0]
+			   && (color=hdr_color(kw->kw,NULL,sc))))){
+		    offs[*noff].offset = str - begstr;
+		    offs[*noff].len    = 1;
+		    strncpy(offs[*noff].color.fg, color->fg, MAXCOLORLEN);
+		    offs[*noff].color.fg[MAXCOLORLEN] = '\0';
+		    strncpy(offs[*noff].color.bg, color->bg, MAXCOLORLEN);
+		    offs[(*noff)++].color.bg[MAXCOLORLEN] = '\0';
+		}
+
+		*str++ = (kw->nick && kw->nick[0]) ? kw->nick[0] :
+			    (kw->kw && kw->kw[0])     ? kw->kw[0] : '\0';
+		width--;
+		if(color)
+		  free_color_pair(&color);
+	    }
+	}
+      }
+    }
+    else if(kwtype == KW){
+      for(kw = ps_global->keywords; kw && width > 0; kw = kw->next){
+	if(user_flag_is_set(idata->stream, idata->rawno, kw->kw)){
+	    if(!firstone){
+		if(width > 0){
+		    *str++ = ' ';
+		    width--;
+		}
+	    }
+
+	    firstone = 0;
+
+	    if(width > 0){
+		char *word;
+		size_t len;
+
+		word = (kw->nick && kw->nick[0]) ? kw->nick :
+			 (kw->kw && kw->kw[0])     ? kw->kw : "";
+		len = strlen(word);
+		strncpy(str, word, width);
+		width -= len;
+		if((offs && noff && *noff < OFFS && pico_usingcolor())
+		   && ((kw->nick && kw->nick[0]
+		        && (color=hdr_color(kw->nick,NULL,sc)))
+		       || (kw->kw && kw->kw[0]
+			   && (color=hdr_color(kw->kw,NULL,sc))))){
+		    offs[*noff].offset = str - begstr;
+		    offs[*noff].len    = len + ((width < 0) ? width : 0);
+		    strncpy(offs[*noff].color.fg, color->fg, MAXCOLORLEN);
+		    offs[*noff].color.fg[MAXCOLORLEN] = '\0';
+		    strncpy(offs[*noff].color.bg, color->bg, MAXCOLORLEN);
+		    offs[(*noff)++].color.bg[MAXCOLORLEN] = '\0';
+		}
+
+		str += len;
+		if(color)
+		  free_color_pair(&color);
+	    }
+	}
+      }
+    }
+}
+
+
+/*
+ * Put a string representing the subject into str. Idata tells us which
+ * message we are referring to.
+ *
+ * Args  idata -- which message?
+ *       width -- desired maximum width of resulting string
+ *         str -- destination buffer
+ *      kwtype -- prepend keywords or kw initials before the subject
+ */
+void
+subj_str(idata, width, str, kwtype, offs, noff)
+    INDEXDATA_S *idata;
+    int          width;
+    char        *str;
+    SubjKW       kwtype;
+    OFFCOLOR_S   offs[];
+    int         *noff;
+{
+    char          *subject, *origsubj, *sptr = NULL, *origstr;
+    char          *p, *border, *q = NULL, *free_subj = NULL;
     unsigned char *tmp;
     size_t         len;
-    int            depth = 0, mult = 2, collapsed;
+    int            depth = 0, mult = 2, collapsed, i, adjust_offsets = 0;
     PINETHRD_S    *thd, *thdorig;
     HLINE_S       *hline;
     unsigned long  rawno;
+    unsigned char  buf[MAILTMPLEN];
+    OFFCOLOR_S     myoffs[OFFS];
+    int            mynoff = 0;
 
     memset(str, 0, (width+1) * sizeof(*str));
-    subject = fetch_subject(idata);
+    origstr = str;
+    origsubj = fetch_subject(idata);
+    if(!origsubj)
+      origsubj = "";
+
+    if(kwtype == KW || kwtype == KWInit){
+	subject = prepend_keyword_subject(idata->stream, idata->rawno,
+					  origsubj, kwtype,
+					  ps_global->VAR_KW_BRACES,
+					  myoffs, &mynoff);
+	free_subj = subject;
+    }
+    else
+      subject = origsubj;
+
     if(!subject)
       subject = "";
 
@@ -6536,8 +6954,11 @@ subj_str(idata, width, str)
 		    sptr = NULL;
 		}
 
-		if(p + 1 < border){
-		    p[0] = p[1] = ' ';
+		if(p < border){
+		    p[0] = ' ';
+		    if(p + 1 < border)
+		      p[1] = ' ';
+
 		    if(ps_global->thread_disp_style == THREAD_STRUCT
 		       || ps_global->thread_disp_style == THREAD_MUTTLIKE){
 			if(thd == thdorig && !thd->branch)
@@ -6545,18 +6966,8 @@ subj_str(idata, width, str)
 			else if(thd == thdorig || thd->branch)
 			  p[0] = '|';
 
-			if(thd == thdorig)
+			if(p + 1 < border && thd == thdorig)
 			  p[1] = '-';
-		    }
-		}
-		else if(p < border){
-		    p[0] = ' ';
-		    if(ps_global->thread_disp_style == THREAD_STRUCT
-		       || ps_global->thread_disp_style == THREAD_MUTTLIKE){
-			if(thd == thdorig && !thd->branch)
-			  p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
-			else if(thd == thdorig || thd->branch)
-			  p[0] = '|';
 		    }
 		}
 	    }
@@ -6569,6 +6980,15 @@ subj_str(idata, width, str)
 	     * Look to see if the subject is the same as the previous
 	     * message in the thread, if any. If it is the same, don't
 	     * reprint the subject.
+	     *
+	     * Note that when we're prepending keywords to the subject,
+	     * and the user changes a keyword, we do invalidate
+	     * the index cache for that message but we don't go to the
+	     * trouble of invalidating the index cache for the the child
+	     * of that node in the thread, so the MUTT subject line
+	     * display for the child may be wrong. That is, it may show
+	     * it is the same as this subject even though it no longer
+	     * is, or vice versa.
 	     */
 	    if(ps_global->thread_disp_style == THREAD_MUTTLIKE){
 		if(depth == 0)
@@ -6577,43 +6997,122 @@ subj_str(idata, width, str)
 		    if(thdorig->parent &&
 		       (thd = fetch_thread(idata->stream, thdorig->parent))
 		       && thd->rawno){
-			char       *s1 = NULL, *s2 = NULL, *free_s2 = NULL;
+			char       *this_orig = NULL,
+				   *prev_orig = NULL,
+				   *free_prev_orig = NULL,
+				   *this_prep = NULL,  /* includes prepend */
+				   *prev_prep = NULL;
 			ENVELOPE   *env;
 			char       *prevsubj = NULL;
 			mailcache_t mc;
 			SORTCACHE  *sc = NULL;
 
 			/* get the stripped subject of previous message */
-			mc = (mailcache_t) mail_parameters(NIL, GET_CACHE,
-							   NIL);
+			mc = (mailcache_t) mail_parameters(NIL, GET_CACHE, NIL);
 			if(mc)
-			  sc = (*mc)(idata->stream, thd->rawno,
-				     CH_SORTCACHE);
+			  sc = (*mc)(idata->stream, thd->rawno, CH_SORTCACHE);
 			
 			if(sc && sc->subject)
-			  s2 = sc->subject;
+			  prev_orig = sc->subject;
 			else{
 			    char *stripthis;
 
-			    env = mail_fetchenvelope(idata->stream,
-						     thd->rawno);
+			    env = pine_mail_fetchenvelope(idata->stream,
+							  thd->rawno);
 			    stripthis = (env && env->subject)
 						    ? env->subject : "";
 
-			    mail_strip_subject(stripthis, &s2);
+			    mail_strip_subject(stripthis, &prev_orig);
 			    
-			    free_s2 = s2;
+			    free_prev_orig = prev_orig;
 			}
 
-			mail_strip_subject(subject, &s1);
-			if((s1 || s2)
-			   && (s1 && !s2 || s2 && !s1 || strucmp(s1, s2)))
-			  do_subj++;
-			
-			if(s1)
-			  fs_give((void **) &s1);
-			if(free_s2)
-			  fs_give((void **) &free_s2);
+			mail_strip_subject(origsubj, &this_orig);
+
+			if(kwtype == KW || kwtype == KWInit){
+			    prev_prep = prepend_keyword_subject(idata->stream,
+								thd->rawno,
+								prev_orig,
+								kwtype,
+						    ps_global->VAR_KW_BRACES,
+								NULL, NULL);
+
+			    this_prep = prepend_keyword_subject(idata->stream,
+								idata->rawno,
+								this_orig,
+								kwtype,
+						    ps_global->VAR_KW_BRACES,
+								NULL, NULL);
+			    if((this_prep || prev_prep)
+			       && (this_prep && !prev_prep
+				   || prev_prep && !this_prep
+				   || strucmp(this_prep, prev_prep)))
+			      do_subj++;
+			}
+			else{
+			    if((this_orig || prev_orig)
+			       && (this_orig && !prev_orig
+				   || prev_orig && !this_orig
+				   || strucmp(this_orig, prev_orig)))
+			      do_subj++;
+			}
+
+			/*
+			 * If some of the thread is zoomed out of view, we
+			 * want to display the subject of the first one that
+			 * is in view. If any of the parents or grandparents
+			 * etc of this message are visible, then we don't
+			 * need to worry about it. If all of the parents have
+			 * been zoomed away, then this is the first one.
+			 *
+			 * When you're looking at a particular case where
+			 * some of the messages of a thread are selected it
+			 * seems like we should look at not only our
+			 * direct parents, but the siblings of the parent
+			 * too. But that's not really correct, because those
+			 * siblings are basically the starts of different
+			 * branches, separate from our branch. They could
+			 * have their own subjects, for example. This will
+			 * give us cases where it looks like we are showing
+			 * the subject too much, but it will be correct!
+			 *
+			 * In zoom_index() we clear_index_cache_ent for
+			 * some lines which have subjects which might become
+			 * visible when we zoom, and also in set_lflags
+			 * where we might change subjects by unselecting
+			 * something when zoomed.
+			 */
+			if(!do_subj){
+			    while(thd){
+				if(!msgline_hidden(idata->stream,
+					     sp_msgmap(idata->stream),
+					     mn_raw2m(sp_msgmap(idata->stream),
+						      (long) thd->rawno),
+					     0)){
+				    break;	/* found a visible parent */
+				}
+
+				if(thd && thd->parent)
+				  thd = fetch_thread(idata->stream,thd->parent);
+				else
+				  thd = NULL;
+			    }
+
+			    if(!thd)		/* none were visible */
+			      do_subj++;
+			}
+
+			if(this_orig)
+			  fs_give((void **) &this_orig);
+
+			if(this_prep)
+			  fs_give((void **) &this_prep);
+
+			if(free_prev_orig)
+			  fs_give((void **) &free_prev_orig);
+
+			if(prev_prep)
+			  fs_give((void **) &prev_prep);
 		    }
 		    else
 		      do_subj++;
@@ -6623,13 +7122,20 @@ subj_str(idata, width, str)
 	      do_subj++;
 
 	    if(do_subj){
+		adjust_offsets = sptr - origstr;
 		width = (str + width) - sptr;
 		len = strlen(subject)+1;
-		tmp = fs_get(len * sizeof(unsigned char));
+		len += 30;			/* for possible charset */
+		if(len > sizeof(buf))
+		  tmp = fs_get(len * sizeof(unsigned char));
+		else
+		  tmp = buf;
+
 		istrncpy(sptr, (char *) rfc1522_decode(tmp, len,
 						       subject, NULL),
 			 width);
-		fs_give((void **) &tmp);
+		if(tmp != buf)
+		  fs_give((void **) &tmp);
 	    }
 	    else if(ps_global->thread_disp_style == THREAD_MUTTLIKE)
 	      sptr[0] = '>';
@@ -6637,12 +7143,186 @@ subj_str(idata, width, str)
     }
     else{
 	len = strlen(subject)+1;
-	tmp = fs_get(len * sizeof(unsigned char));
+	len += 30;				/* for possible charset */
+	if(len > sizeof(buf))
+	  tmp = fs_get(len * sizeof(unsigned char));
+	else
+	  tmp = buf;
+
+	adjust_offsets = str - origstr;
+
 	istrncpy(str,
 		 (char *) rfc1522_decode(tmp, len, subject, NULL),
 		 width);
-	fs_give((void **) &tmp);
+	if(tmp != buf)
+	  fs_give((void **) &tmp);
     }
+
+    if(free_subj)
+      fs_give((void **) &free_subj);
+
+    /* adjust offsets for indents and subject truncation */
+    if(offs && noff && *noff < OFFS && mynoff && pico_usingcolor()){
+	for(i = 0; i < mynoff; i++){
+	    if(*noff < OFFS && myoffs[i].offset < width){
+		offs[*noff] = myoffs[i];
+		offs[*noff].offset += adjust_offsets;
+		offs[*noff].len = min(offs[*noff].len,
+				      width - offs[*noff].offset);
+		(*noff)++;
+	    }
+	}
+    }
+}
+
+
+/*
+ * Returns an allocated string which is the passed in subject with a
+ * list of keywords prepended.
+ *
+ * If kwtype == KW you will end up with
+ *
+ *     {keyword1 keyword2} subject
+ *
+ * (actually, keyword nicknames will be used instead of the actual keywords
+ *  in the case that the user defined nicknames)
+ *
+ * If kwtype == KWInit you get
+ *
+ *     {AB} subject
+ *
+ * where A is the first letter of the first keyword and B is the first letter
+ * of the second defined keyword. No space between them. There could be more
+ * than two.
+ */
+char *
+prepend_keyword_subject(stream, rawno, subject, kwtype, braces, offs, noff)
+    MAILSTREAM *stream;
+    long        rawno;
+    char       *subject;
+    SubjKW      kwtype;
+    char       *braces;
+    OFFCOLOR_S  offs[];
+    int        *noff;
+{
+    char        **t;
+    char         *p, *retsubj = NULL;
+    char         *left_brace = NULL, *right_brace = NULL;
+    size_t        len;
+    int           some_set = 0;
+    KEYWORD_S    *kw;
+    COLOR_PAIR   *color = NULL;
+    SPEC_COLOR_S *sc = ps_global->kw_colors;
+
+    if(!subject)
+      subject = "";
+
+    if(braces && *braces)
+      get_pair(braces, &left_brace, &right_brace, 1, 0);
+
+    len = (left_brace ? strlen(left_brace) : 0) +
+            (right_brace ? strlen(right_brace) : 0);
+
+    if(stream && rawno >= 0L && rawno <= stream->nmsgs){
+	for(kw = ps_global->keywords; kw; kw = kw->next)
+	  if(user_flag_is_set(stream, rawno, kw->kw)){
+	      if(kwtype == KW){
+		  if(some_set)
+		    len++;		/* space between keywords */
+
+		  len += strlen(kw->nick ? kw->nick : kw->kw ? kw->kw : "");
+	      }
+	      else if(kwtype == KWInit){
+		  len++;
+	      }
+
+	      some_set++;
+	  }
+    }
+
+    if((kwtype == KW || kwtype == KWInit) && some_set){
+	len += strlen(subject);
+	retsubj = (char *) fs_get((len + 1) * sizeof(*retsubj));
+	memset(retsubj, 0, (len + 1) * sizeof(*retsubj));
+	p = retsubj;
+
+	for(kw = ps_global->keywords; kw; kw = kw->next){
+	    if(user_flag_is_set(stream, rawno, kw->kw)){
+		if(p == retsubj){
+		    if(left_brace && len > 0)
+		      sstrncpy(&p, left_brace, len);
+		}
+		else if(kwtype == KW)
+		  *p++ = ' ';
+		
+		if(kwtype == KWInit){
+		    char init[2];
+
+		    init[0] = (kw->nick && kw->nick[0]) ? kw->nick[0] :
+				(kw->kw && kw->kw[0])     ? kw->kw[0] : '\0';
+		    init[1] = '\0';
+		    if((offs && noff && *noff < OFFS && pico_usingcolor())
+		       && ((kw->nick && kw->nick[0]
+			    && (color=hdr_color(kw->nick,NULL,sc)))
+			   || (kw->kw && kw->kw[0]
+			       && (color=hdr_color(kw->kw,NULL,sc))))){
+			offs[*noff].offset = p - retsubj;
+			offs[*noff].len    = 1;
+			strncpy(offs[*noff].color.fg, color->fg, MAXCOLORLEN);
+			offs[*noff].color.fg[MAXCOLORLEN] = '\0';
+			strncpy(offs[*noff].color.bg, color->bg, MAXCOLORLEN);
+			offs[(*noff)++].color.bg[MAXCOLORLEN] = '\0';
+		    }
+
+		    if(len-(p-retsubj) > 0)
+		      sstrncpy(&p, init, len-(p-retsubj));
+
+		    if(color)
+		      free_color_pair(&color);
+		}
+		else{
+		    if((offs && noff && *noff < OFFS && pico_usingcolor())
+		       && ((kw->nick && kw->nick[0]
+			    && (color=hdr_color(kw->nick,NULL,sc)))
+			   || (kw->kw && kw->kw[0]
+			       && (color=hdr_color(kw->kw,NULL,sc))))){
+			offs[*noff].offset = p - retsubj;
+			offs[*noff].len    = min(strlen(kw->nick ? kw->nick : kw->kw ? kw->kw : ""), len-(p-retsubj));
+			strncpy(offs[*noff].color.fg, color->fg, MAXCOLORLEN);
+			offs[*noff].color.fg[MAXCOLORLEN] = '\0';
+			strncpy(offs[*noff].color.bg, color->bg, MAXCOLORLEN);
+			offs[(*noff)++].color.bg[MAXCOLORLEN] = '\0';
+		    }
+
+		    if(len-(p-retsubj) > 0)
+		      sstrncpy(&p, kw->nick ? kw->nick : kw->kw ? kw->kw : "",
+			       len-(p-retsubj));
+		    if(color)
+		      free_color_pair(&color);
+		}
+	    }
+	}
+
+	if(len-(p-retsubj) > 0 && right_brace)
+	  sstrncpy(&p, right_brace, len-(p-retsubj));
+
+	if(len-(p-retsubj) > 0 && subject)
+	  strncpy(p, subject, len-(p-retsubj));
+
+	retsubj[len] = '\0';		/* just making sure */
+    }
+    else
+      retsubj = cpystr(subject);
+
+    if(braces){
+	if(left_brace)
+	  fs_give((void **) &left_brace);
+
+	if(right_brace)
+	  fs_give((void **) &right_brace);
+    }
+
+    return(retsubj);
 }
 
 
@@ -6656,9 +7336,10 @@ fetch_thread(stream, rawno)
     PINETHRD_S   *thrd = NULL;
 
     if(stream && rawno > 0L && rawno <= stream->nmsgs
-       && !ps_global->need_to_rethread){
-	mc = mail_elt(stream, rawno);
-	if(pelt = (PINELT_S *)mc->sparep)
+       && !sp_need_to_rethread(stream)){
+	mc = (rawno > 0L && stream && rawno <= stream->nmsgs)
+	        ? mail_elt(stream, rawno) : NULL;
+	if(mc && (pelt = (PINELT_S *) mc->sparep))
 	  thrd = pelt->pthrd;
     }
 
@@ -7138,7 +7819,7 @@ pine_compare_long_rev(a, b)
 }
 
 
-int *g_score_arr;
+long *g_score_arr;
 
 /*
  * This calculate all of the scores and also puts them into a temporary array
@@ -7151,11 +7832,12 @@ build_score_array(stream, msgmap)
 {
     SEARCHSET *searchset;
     long       msgno, cnt, nmsgs, rawmsgno;
-    int        score;
+    long       score;
+    MESSAGECACHE *mc;
 
     nmsgs = mn_get_total(msgmap);
-    g_score_arr = (int *)fs_get((nmsgs+1) * sizeof(int));
-    memset(g_score_arr, 0, (nmsgs+1) * sizeof(int));
+    g_score_arr = (long *) fs_get((nmsgs+1) * sizeof(score));
+    memset(g_score_arr, 0, (nmsgs+1) * sizeof(score));
 
     /*
      * Build a searchset that contains everything except those that have
@@ -7163,11 +7845,15 @@ build_score_array(stream, msgmap)
      */
 
     for(msgno=1L; msgno <= stream->nmsgs; msgno++)
-      mail_elt(stream, msgno)->sequence = 0;
+      if((mc = mail_elt(stream, msgno)) != NULL)
+	mc->sequence = 0;
 
     for(cnt=0L, msgno=1L; msgno <= nmsgs; msgno++){
-	if(get_msg_score(stream, mn_m2raw(msgmap, msgno)) == SCORE_UNDEF){
-	    mail_elt(stream, mn_m2raw(msgmap, msgno))->sequence = 1;
+	rawmsgno = mn_m2raw(msgmap, msgno);
+	if(get_msg_score(stream, rawmsgno) == SCORE_UNDEF
+	   && rawmsgno > 0L && stream && rawmsgno <= stream->nmsgs
+	   && (mc = mail_elt(stream, rawmsgno))){
+	    mc->sequence = 1;
 	    cnt++;
 	}
     }
@@ -7184,7 +7870,7 @@ build_score_array(stream, msgmap)
      */
     for(rawmsgno = 1L; rawmsgno <= nmsgs; rawmsgno++){
 	score = get_msg_score(stream, rawmsgno);
-	g_score_arr[rawmsgno] = (score == SCORE_UNDEF) ? 0 : score;
+	g_score_arr[rawmsgno] = (score == SCORE_UNDEF) ? 0L : score;
     }
 }
 
@@ -7205,10 +7891,10 @@ pine_compare_scores(a, b)
     const QSType *a, *b;
 {
     long *mess_a = (long *)a, *mess_b = (long *)b, mdiff;
-    int   sdiff;
+    long  sdiff;
 
     return((sdiff = g_score_arr[*mess_a] - g_score_arr[*mess_b])
-	    ? ((sdiff > 0) ? 1 : -1)
+	    ? ((sdiff > 0L) ? 1 : -1)
 	    : ((mdiff = *mess_a - *mess_b) ? ((mdiff > 0) ? 1 : -1) : 0));
 }
 
@@ -7227,11 +7913,12 @@ Args: msgmap --
     causes the sort to happen if it is still needed.
   ----*/
 void
-sort_folder(msgmap, new_sort, new_rev, flags)
-    MSGNO_S   *msgmap;
-    SortOrder  new_sort;
-    int	       new_rev;
-    unsigned   flags;
+sort_folder(stream, msgmap, new_sort, new_rev, flags)
+    MAILSTREAM *stream;
+    MSGNO_S    *msgmap;
+    SortOrder   new_sort;
+    int	        new_rev;
+    unsigned    flags;
 {
     long	   raw_current, i, j;
     unsigned long *sort = NULL;
@@ -7239,6 +7926,7 @@ sort_folder(msgmap, new_sort, new_rev, flags)
     char	   sort_msg[MAX_SCREEN_COLS+1];
     SortOrder      current_sort;
     int	           current_rev;
+    MESSAGECACHE  *mc;
 
     dprint(2, (debugfile, "Sorting by %s%s\n",
 	       sort_name(new_sort), new_rev ? "/reverse" : ""));
@@ -7253,9 +7941,9 @@ sort_folder(msgmap, new_sort, new_rev, flags)
      * sorts (other than just a rev switch) then erase the information
      * about the threaded state (collapsed and so forth).
      */
-    if(ps_global->mail_stream && ps_global->mail_stream->spare
+    if(stream && stream->spare
        && (current_sort != new_sort))
-      erase_threading_info(ps_global->mail_stream, msgmap);
+      erase_threading_info(stream, msgmap);
 
     if(mn_get_total(msgmap) <= 1L
        && !(mn_get_total(msgmap) == 1L
@@ -7341,7 +8029,7 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 	 * We do this so that we don't have to lookup the scores with function
 	 * calls for each qsort compare.
 	 */
-	build_score_array(ps_global->mail_stream, msgmap);
+	build_score_array(stream, msgmap);
 
 	qsort(msgmap->sort+1, (size_t) mn_get_total(msgmap),
 	      sizeof(long), pine_compare_scores);
@@ -7405,11 +8093,9 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 	     * so just spin the bar rather than show zero percent
 	     * forever while a slow sort's going on...
 	     */
-	    if(!(ps_global->mail_stream
-		 && ps_global->mail_stream->dtb
-		 && ps_global->mail_stream->dtb->name
-		 && !strucmp(ps_global->mail_stream->dtb->name, "imap")
-		 && LEVELSORT(ps_global->mail_stream)))
+	    if(!(stream && stream->dtb && stream->dtb->name
+		 && !strucmp(stream->dtb->name, "imap")
+		 && LEVELSORT(stream)))
 	      sort_func = percent_sorted;
 
 	    sprintf(sort_msg, "Sorting \"%.*s\"",
@@ -7465,9 +8151,9 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 	 * download the messages and do the SEARCH locally. That is
 	 * controllable by a flag bit.
 	 */
-	for(i = 1L; i <= ps_global->mail_stream->nmsgs; i++)
-	  mail_elt(ps_global->mail_stream, i)->searched
-			= !get_lflag(ps_global->mail_stream, NULL, i, MN_EXLD);
+	for(i = 1L; i <= stream->nmsgs; i++)
+	  if((mc = mail_elt(stream, i)) != NULL)
+	    mc->searched = !get_lflag(stream, NULL, i, MN_EXLD);
 	
 	g_sort.msgmap = msgmap;
 	if(new_sort == SortThread || new_sort == SortSubject2){
@@ -7486,7 +8172,7 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 	    mail_parameters(NULL, SET_THREADRESULTS,
 			    (void *) sort_thread_callback);
 
-	    thread = mail_thread(ps_global->mail_stream,
+	    thread = mail_thread(stream,
 				 (new_sort == SortThread)
 				   ? "REFERENCES" : "ORDEREDSUBJECT",
 				 NULL, NULL, 0L);
@@ -7530,8 +8216,7 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 			    (void *) sort_sort_callback);
 
 	    /* Where the rubber meets the road. */
-	    sort = mail_sort(ps_global->mail_stream, NULL,
-			     NULL, g_sort.prog, 0L);
+	    sort = mail_sort(stream, NULL, NULL, g_sort.prog, 0L);
 
 	    mail_parameters(NULL, SET_SORTRESULTS, (void *) NULL);
 
@@ -7603,12 +8288,12 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 	    if(new_sort == SortThread || new_sort == SortSubject2){
 		PINETHRD_S *thrd;
 
-		thrd = fetch_head_thread(ps_global->mail_stream);
+		thrd = fetch_head_thread(stream);
 		for(j = msgmap->max_thrdno; thrd && j >= 1L; j--){
 		    thrd->thrdno = j;
 
 		    if(thrd->nextthd)
-		      thrd = fetch_thread(ps_global->mail_stream,
+		      thrd = fetch_thread(stream,
 					  thrd->nextthd);
 		    else
 		      thrd = NULL;
@@ -7627,30 +8312,38 @@ sort_folder(msgmap, new_sort, new_rev, flags)
     if(!mn_get_mansort(msgmap))
       mn_set_mansort(msgmap, (flags & SRT_MAN) ? 1 : 0);
     
-    /*
-     * If current is hidden, change current to visible parent.
-     * It can only be hidden if we are threading.
-     */
-    if(THREADING())
-      mn_reset_cur(msgmap, first_sorted_flagged(new_rev ? F_NONE : F_SRCHBACK,
-					        ps_global->mail_stream,
-					        mn_raw2m(msgmap, raw_current),
-					        FSF_SKIP_CHID));
-    else
-      mn_reset_cur(msgmap, mn_raw2m(msgmap, raw_current));
-    
+    if(!msgmap->hilited){
+	/*
+	 * If current is hidden, change current to visible parent.
+	 * It can only be hidden if we are threading.
+	 *
+	 * Don't do this if hilited is set, because it means we're in the
+	 * middle of an aggregate op, and this will mess up our selection.
+	 * "hilited" means we've done a pseudo_selected, which we'll later
+	 * fix with restore_selected.
+	 */
+	if(THREADING())
+	  mn_reset_cur(msgmap, first_sorted_flagged(new_rev ? F_NONE : F_SRCHBACK,
+						    stream,
+						    mn_raw2m(msgmap, raw_current),
+						    FSF_SKIP_CHID));
+	else
+	  mn_reset_cur(msgmap, mn_raw2m(msgmap, raw_current));
+    }
+
     msgmap->top = -1L;
 
-    if(!ps_global->mail_box_changed)
-      ps_global->unsorted_newmail = 0;
+    if(!sp_mail_box_changed(stream))
+      sp_set_unsorted_newmail(stream, 0);
 
     /*
      * Turn off the MN_USOR flag. Don't bother going through the
      * function call and the message number mappings.
      */
     if(THREADING())
-      for(i = 1L; i <= ps_global->mail_stream->nmsgs; i++)
-        mail_elt(ps_global->mail_stream, i)->spare7 = 0;
+      for(i = 1L; i <= stream->nmsgs; i++)
+        if((mc = mail_elt(stream, i)) != NULL)
+          mc->spare7 = 0;
 }
 
 
@@ -7667,9 +8360,7 @@ erase_threading_info(stream, msgmap)
       return;
     
     ps_global->view_skipped_index = 0;
-    ps_global->viewing_a_thread = 0;
-    if(ps_global->inbox_stream == stream)
-      ps_global->inbox_viewing_a_thread = 0;
+    sp_set_viewing_a_thread(stream, 0);
     
     if(THRD_INDX())
       setup_for_thread_index_screen();
@@ -7773,7 +8464,7 @@ sort_thread_callback(stream, tree)
 
     ASSERT_ISORT(g_sort.msgmap, "validity fail in sort_thread_callback\n");
 
-    ps_global->need_to_rethread = 0;
+    sp_set_need_to_rethread(stream, 0);
 
     /*
      * Set appropriate bits to start out collapsed if desired. We use the
@@ -7838,7 +8529,7 @@ sort_thread_callback(stream, tree)
 	    set_lflags(stream, g_sort.msgmap, MN_USOR, 0);
 	}
 
-	if(ps_global->viewing_a_thread){
+	if(sp_viewing_a_thread(stream)){
 	    if(any_lflagged(g_sort.msgmap, MN_CHID2)){
 		/* current should be part of viewed thread */
 		if(get_lflag(stream, NULL, raw_current, MN_CHID2)){
@@ -8165,6 +8856,7 @@ msgno_thread_info(stream, rawno, attached_to_thrd, flags)
     unsigned      flags;
 {
     PINELT_S   **peltp;
+    MESSAGECACHE *mc;
 
     if(!stream || rawno < 1L || rawno > stream->nmsgs)
       return NULL;
@@ -8172,7 +8864,8 @@ msgno_thread_info(stream, rawno, attached_to_thrd, flags)
     /*
      * any private elt data yet?
      */
-    if(*(peltp = (PINELT_S **) &mail_elt(stream, rawno)->sparep) == NULL){
+    if((mc = mail_elt(stream, rawno))
+       && (*(peltp = (PINELT_S **) &mc->sparep) == NULL)){
 	*peltp = (PINELT_S *) fs_get(sizeof(PINELT_S));
 	memset(*peltp, 0, sizeof(PINELT_S));
     }
@@ -8558,9 +9251,13 @@ msgno_give(msgs)
 
 
 void
-free_pine_elt(peltp)
-    PINELT_S **peltp;
+free_pine_elt(sparep)
+    void **sparep;
 {
+    PINELT_S **peltp;
+
+    peltp = (PINELT_S **) sparep;
+
     if(peltp && *peltp){
 	msgno_free_exceptions(&(*peltp)->exceptions);
 	if((*peltp)->pthrd)
@@ -8656,8 +9353,9 @@ msgno_exclude_deleted(stream, msgs)
      MAILSTREAM *stream;
      MSGNO_S     *msgs;
 {
-    long	  i;
+    long	  i, rawno;
     MESSAGECACHE *mc;
+    int           need_isort_reset = 0;
 
     if(!msgs || msgs->max_msgno < 1L)
       return;
@@ -8671,12 +9369,24 @@ msgno_exclude_deleted(stream, msgs)
      */
     (void) count_flagged(stream, F_DEL);
 
-    for(i = 1L; i <= msgs->max_msgno; )
-      if(((mc = mail_elt(stream, mn_m2raw(msgs, i)))->valid && mc->deleted)
-	 || (!mc->valid && mc->searched))
-	msgno_exclude(stream, msgs, i);
-      else
-	i++;
+    /*
+     * Start with the end of the folder and work backwards so that
+     * msgno_exclude doesn't have to shift the entire array each time when
+     * there are lots of deleteds. In fact, if everything is deleted (like
+     * might be the case in a huge newsgroup) then it never has to shift
+     * anything. It is always at the end of the array just eliminating the
+     * last one instead. So instead of an n**2 operation, it is n.
+     */
+    for(i = msgs->max_msgno; i >= 1L; i--)
+      if((rawno = mn_m2raw(msgs, i)) > 0L && stream && rawno <= stream->nmsgs
+	 && (mc = mail_elt(stream, rawno))
+	 && ((mc->valid && mc->deleted) || (!mc->valid && mc->searched))){
+	  msgno_exclude(stream, msgs, i, 0);
+	  need_isort_reset++;
+      }
+    
+    if(need_isort_reset)
+      msgno_reset_isort(msgs);
 
     /*
      * If we excluded away a zoomed display, unhide everything...
@@ -8689,16 +9399,23 @@ msgno_exclude_deleted(stream, msgs)
 
 
 void
-msgno_exclude(stream, msgmap, msgno)
+msgno_exclude(stream, msgmap, msgno, reset_isort)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
     long	msgno;
+    int         reset_isort;
 {
     long i;
     char b[100];
 
-    sprintf(b, "Isort validity: start of msgno_exclude: msgno=%ld\n", msgno);
-    ASSERT_ISORT(msgmap, b);
+#if defined(ISORT_ASSERT)
+    if(reset_isort){
+	sprintf(b,
+		"Isort validity: start of msgno_exclude: msgno=%ld\n", msgno);
+	ASSERT_ISORT(msgmap, b);
+    }
+#endif
+
     /*--- clear all flags to keep our counts consistent  ---*/
     set_lflag(stream, msgmap, msgno, MN_HIDE | MN_CHID | MN_CHID2 | MN_SLCT, 0);
     set_lflag(stream, msgmap, msgno, MN_EXLD, 1); /* mark excluded */
@@ -8708,10 +9425,17 @@ msgno_exclude(stream, msgmap, msgno)
       msgmap->sort[i-1L] = msgmap->sort[i];
 
     msgmap->max_msgno = max(0L, msgmap->max_msgno - 1L);
-    msgno_reset_isort(msgmap);
+    if(reset_isort)
+      msgno_reset_isort(msgmap);
+
     msgno_flush_selected(msgmap, msgno);
-    sprintf(b, "Isort validity: end of msgno_exclude: msgno=%ld\n", msgno);
-    ASSERT_ISORT(msgmap, b);
+
+#if defined(ISORT_ASSERT)
+    if(reset_isort){
+	sprintf(b, "Isort validity: end of msgno_exclude: msgno=%ld\n", msgno);
+	ASSERT_ISORT(msgmap, b);
+    }
+#endif
 }
 
 
@@ -8721,17 +9445,22 @@ msgno_exclude(stream, msgmap, msgno)
 
    Accepts: stream -- mail stream to removed message references from
 	    msgs -- pointer to message manipulation struct
-	    f -- flags to use a purge criteria
+	    flags
+	      MI_REFILTERING  -- do includes appropriate for refiltering
+	      MI_STATECHGONLY -- when refiltering, maybe only re-include
+	                         messages which have had state changes
+				 since they were originally filtered
   ----*/
 void
-msgno_include(stream, msgs, filtered)
+msgno_include(stream, msgs, flags)
      MAILSTREAM	*stream;
      MSGNO_S	*msgs;
-     int	 filtered;
+     int	 flags;
 {
     long   i, slop, old_total, old_size;
     int    exbits;
     size_t len;
+    MESSAGECACHE *mc;
 
     if(!msgs)
       return;
@@ -8740,9 +9469,10 @@ msgno_include(stream, msgs, filtered)
 	if(!msgno_exceptions(stream, i, "0", &exbits, FALSE))
 	  exbits = 0;
 
-	if(((filtered && (exbits & MSG_EX_FILTERED) && 
-	     !(exbits & MSG_EX_FILED))
-	    || (!filtered && !(exbits & MSG_EX_FILTERED)))
+	if((((flags & MI_REFILTERING) && (exbits & MSG_EX_FILTERED)
+	     && !(exbits & MSG_EX_FILED)
+	     && (!(flags & MI_STATECHGONLY) || (exbits & MSG_EX_STATECHG)))
+	    || (!(flags & MI_REFILTERING) && !(exbits & MSG_EX_FILTERED)))
 	   && get_lflag(stream, NULL, i, MN_EXLD)){
 	    old_total	     = msgs->max_msgno;
 	    old_size	     = msgs->sort_size;
@@ -8759,8 +9489,8 @@ msgno_include(stream, msgs, filtered)
 	    msgs->sort[++msgs->max_msgno] = i;
 	    msgs->isort[i] = msgs->max_msgno;
 	    set_lflag(stream, msgs, msgs->max_msgno, MN_EXLD, 0);
-	    if(filtered){
-		exbits ^= MSG_EX_FILTERED;
+	    if(flags & MI_REFILTERING){
+		exbits &= ~(MSG_EX_FILTERED | MSG_EX_TESTED);
 		msgno_exceptions(stream, i, "0", &exbits, TRUE);
 	    }
 
@@ -8776,20 +9506,29 @@ msgno_include(stream, msgs, filtered)
 		msgs->select[0] = 1L;
 	    }
 	}
-	else if(filtered && (exbits & MSG_EX_FILTERED)
+	else if((flags & MI_REFILTERING)
+		&& (exbits & (MSG_EX_FILTERED | MSG_EX_TESTED))
 		&& !(exbits & MSG_EX_FILED)
-		&& !(exbits & MSG_EX_MANFLAGGED)){
+		&& (!(exbits & MSG_EX_MANUNDEL)
+		    || ((mc = mail_elt(stream, i)) && mc->deleted))
+	        && (!(flags & MI_STATECHGONLY) || (exbits & MSG_EX_STATECHG))){
 	    /*
 	     * We get here if the message was filtered by a filter that
-	     * just changes status bits (it wasn't excluded). It has also
-	     * not been manually flagged. If it was manually flagged, we
+	     * just changes status bits (it wasn't excluded), and now also
+	     * if the message was merely tested for filtering. It has also
+	     * not been manually undeleted. If it was manually undeleted, we
 	     * don't want to reprocess the filter, undoing the user's
-	     * manual flagging. Of course, a new pine will re check this
+	     * manual undeleting. Of course, a new pine will re check this
 	     * message anyway, so the user had better be using this
-	     * manual flagging only to temporarily save him or herself
+	     * manual undeleting only to temporarily save him or herself
 	     * from an expunge before Saving or printing or something.
+	     * Also, we want to still try filtering if the message has at
+	     * all been marked deleted, even if the there was any manual
+	     * undeleting, since this directly precedes an expunge, we want
+	     * to make sure the filter does the right thing before getting
+	     * rid of the message forever.
 	     */
-	    exbits ^= MSG_EX_FILTERED;
+	    exbits &= ~(MSG_EX_FILTERED | MSG_EX_TESTED);
 	    msgno_exceptions(stream, i, "0", &exbits, TRUE);
 	}
     }
@@ -9003,6 +9742,7 @@ msgno_exceptions(stream, rawno, part, bits, set)
 {
     PINELT_S **peltp;
     PARTEX_S **partp;
+    MESSAGECACHE *mc;
 
     if(!stream || rawno < 1L || rawno > stream->nmsgs)
       return FALSE;
@@ -9011,7 +9751,7 @@ msgno_exceptions(stream, rawno, part, bits, set)
      * Get pointer to exceptional part list, and scan down it
      * for the requested part...
      */
-    if(*(peltp = (PINELT_S **) &mail_elt(stream, rawno)->sparep))
+    if((mc = mail_elt(stream, rawno)) && (*(peltp = (PINELT_S **) &mc->sparep)))
       for(partp = &(*peltp)->exceptions; *partp; partp = &(*partp)->next){
 	  if(part){
 	      if(!strcmp(part, (*partp)->partno)){
@@ -9077,12 +9817,16 @@ msgno_any_deletedparts(stream, msgmap)
     MAILSTREAM *stream;
     MSGNO_S    *msgmap;
 {
-    long n;
+    long n, rawno;
     PINELT_S  *pelt;
     PARTEX_S **partp;
+    MESSAGECACHE *mc;
 
     for(n = mn_first_cur(msgmap); n > 0L; n = mn_next_cur(msgmap))
-      if(pelt = (PINELT_S *) mail_elt(stream, mn_m2raw(msgmap, n))->sparep)
+      if((rawno = mn_m2raw(msgmap, n)) > 0L
+	 && stream && rawno <= stream->nmsgs
+	 && (mc = mail_elt(stream, rawno))
+	 && (pelt = (PINELT_S *) mc->sparep))
         for(partp = &pelt->exceptions; *partp; partp = &(*partp)->next)
 	  if(((*partp)->handling & MSG_EX_DELETE)
 	     && (*partp)->partno
@@ -9212,7 +9956,7 @@ i_cache_size(indx)
     }
 
     if(SEP_THRDINDX()){
-	if(ps_global->msgmap->max_thrdno > 0L){
+	if(ps_global->msgmap && ps_global->msgmap->max_thrdno > 0L){
 	    if(ticache.size != newsize){
 		clear_tindex_cache();
 		ticache.size = newsize;
@@ -9343,10 +10087,18 @@ void
 clear_index_cache_ent(indx)
     long indx;
 {
-    HLINE_S *hline = get_index_cache(indx);
+    HLINE_S *hline;
 
-    if(indx <= 0L)
+    /*
+     * Invalidating out of range (large) indx number would cause a resize
+     * of the cache in i_cache_size which would pull the icache.cache
+     * memory out from under stuff being used, so don't call get_index_cache
+     * with out of range indx.
+     */
+    if(indx <= 0L || indx > icache.num)
       return;
+
+    hline = get_index_cache(indx);
 
     if(SEP_THRDINDX()){
 	if(!hline->tihl){
@@ -9569,10 +10321,10 @@ index_gettext_callback(title, text, l, style)
        && (so = so_get(CharStar, NULL, WRITE_ACCESS))){
 	gf_set_so_writec(&pc, so);
 
-	if((env = mail_fetchstructure(ps_global->mail_stream,
-				      mn_m2raw(ps_global->msgmap,
+	if((env = pine_mail_fetchstructure(ps_global->mail_stream,
+					   mn_m2raw(ps_global->msgmap,
 					       mn_get_cur(ps_global->msgmap)),
-				      &body))
+					   &body))
 	   && format_message(mn_m2raw(ps_global->msgmap,
 				      mn_get_cur(ps_global->msgmap)),
 			     env, body, NULL, FM_NEW_MESS, pc)){
@@ -9608,7 +10360,8 @@ index_sort_callback(set, order)
     int i = 0;
 
     if(set){
-	sort_folder(ps_global->msgmap, order & 0x000000ff,
+	sort_folder(ps_global->mail_stream, ps_global->msgmap,
+		    order & 0x000000ff,
 		    (order & 0x00000100) != 0, SRT_VRB);
 	mswin_beginupdate();
 	update_titlebar_message();
@@ -9637,6 +10390,7 @@ index_popup(stream,  msgmap, full)
     int		full;
 {
     int		  n;
+    long          rawno;
     MESSAGECACHE *mc;
     MPopup	  view_index_popup[32];
 
@@ -9653,10 +10407,12 @@ index_popup(stream,  msgmap, full)
 	view_index_popup[2].type = tSeparator;
 
 	/* Make "delete/undelete" item sensitive */
-	mc = mail_elt(stream, mn_m2raw(msgmap, mn_get_cur(msgmap)));
+	mc = ((rawno = mn_m2raw(msgmap, mn_get_cur(msgmap))) > 0L
+	      && stream && rawno <= stream->nmsgs)
+	      ? mail_elt(stream, rawno) : NULL;
 	view_index_popup[3].type	  = tQueue;
 	view_index_popup[3].label.style = lNormal;
-	if(mc->deleted){
+	if(mc && mc->deleted){
 	    view_index_popup[3].label.string = "&Undelete";
 	    view_index_popup[3].data.val     = 'U';
 	}
@@ -9891,41 +10647,6 @@ set_flags_for_thread(stream, msgmap, f, thrd, v)
 
 
 /*
- * Set search bit for every message in a thread.
- *
- * Watch out when calling this. The thrd->branch is not part of thrd.
- * Branch is a sibling to thrd, not a child. Zero out branch before calling
- * or call on thrd->next and worry about thrd separately. Top-level threads
- * already have a branch equal to zero.
- */
-void
-set_search_bit_for_thread(stream, thrd)
-    MAILSTREAM  *stream;
-    PINETHRD_S  *thrd;
-{
-    PINETHRD_S *nthrd, *bthrd;
-
-    if(!(stream && thrd))
-      return;
-
-    if(thrd->rawno > 0L && thrd->rawno <= stream->nmsgs)
-      mm_searched(stream, thrd->rawno);
-
-    if(thrd->next){
-	nthrd = fetch_thread(stream, thrd->next);
-	if(nthrd)
-	  set_search_bit_for_thread(stream, nthrd);
-    }
-
-    if(thrd->branch){
-	bthrd = fetch_thread(stream, thrd->branch);
-	if(bthrd)
-	  set_search_bit_for_thread(stream, bthrd);
-    }
-}
-
-
-/*
  * Copy value of flag from to flag to.
  */
 void
@@ -10006,6 +10727,24 @@ collapse_or_expand(state, stream, msgmap, msgno)
 	if(thrd && thrd->top != thrd->rawno){
 	    adjust_current++;
 	    thrd = fetch_thread(stream, thrd->top);
+	    
+	    /*
+	     * Special case. If the user is collapsing the entire thread
+	     * (msgno == 0), and we are in a Zoomed view, and the top of
+	     * the entire thread is not part of the Zoomed view, then watch
+	     * out. If we were to collapse the entire thread it would just
+	     * disappear, because the top is not in the Zoom. Therefore,
+	     * don't allow it. Do what the user probably wants, which is to
+	     * collapse the thread at that point instead of the entire thread,
+	     * leaving behind the top of the subthread to expand if needed.
+	     * In other words, treat it as if they didn't have the
+	     * F_SLASH_COLL_ENTIRE feature set.
+	     */
+	    collapsed = get_lflag(stream, NULL, thrd->rawno, MN_COLL)
+			&& thrd->next;
+
+	    if(!collapsed && get_lflag(stream, NULL, thrd->rawno, MN_HIDE))
+	      thrd = fetch_thread(stream, rawno);
 	}
     }
 
@@ -10135,7 +10874,8 @@ count_flags_in_thread(stream, thrd, flags)
 	  count += count_flags_in_thread(stream, bthrd, flags);
     }
 
-    mc = mail_elt(stream, thrd->rawno);
+    mc = (thrd && thrd->rawno > 0L && stream && thrd->rawno <= stream->nmsgs)
+	  ? mail_elt(stream, thrd->rawno) : NULL;
     if(mc && mc->valid && FLAG_MATCH(flags, mc))
       count++;
 
@@ -10236,12 +10976,12 @@ msgline_hidden(stream, msgmap, msgno, flags)
 	ret = ((any_lflagged(msgmap, MN_HIDE) > 0)
 	       && get_lflag(stream, msgmap, msgno, MN_HIDE));
     }
-    else if(flags & MH_THISTHD && THREADING() && ps_global->viewing_a_thread){
+    else if(flags & MH_THISTHD && THREADING() && sp_viewing_a_thread(stream)){
 	ret = (get_lflag(stream, msgmap, msgno, MN_HIDE)
 	       || !get_lflag(stream, msgmap, msgno, MN_CHID2));
     }
     else{
-	if(THREADING() && ps_global->viewing_a_thread){
+	if(THREADING() && sp_viewing_a_thread(stream)){
 	    ret = (get_lflag(stream, msgmap, msgno, MN_HIDE)
 		   || !get_lflag(stream, msgmap, msgno, MN_CHID2)
 		   || get_lflag(stream, msgmap, msgno, MN_CHID));
@@ -10286,7 +11026,6 @@ mark_msgs_in_thread(stream, thrd, msgmap)
     MSGNO_S    *msgmap;
 {
     int           count = 0;
-    long          n;
     PINETHRD_S   *nthrd, *bthrd;
     MESSAGECACHE *mc;
 
@@ -10305,10 +11044,10 @@ mark_msgs_in_thread(stream, thrd, msgmap)
 	  count += mark_msgs_in_thread(stream, bthrd, msgmap);
     }
 
-    n = mn_raw2m(msgmap, thrd->rawno);
-
-    if(thrd->rawno >= 1L && thrd->rawno <= stream->nmsgs &&
-       !(mc = mail_elt(stream,thrd->rawno))->private.msg.env){
+    if(stream && thrd->rawno >= 1L && thrd->rawno <= stream->nmsgs &&
+       (mc = mail_elt(stream,thrd->rawno))
+       && !mc->sequence
+       && !mc->private.msg.env){
 	mc->sequence = 1;
 	count++;
     }
@@ -10454,6 +11193,7 @@ to_us_symbol_for_thread(stream, thrd, consider_flagged)
 {
     char        to_us = ' ';
     PINETHRD_S *nthrd, *bthrd;
+    MESSAGECACHE *mc;
 
     if(!thrd || !stream || thrd->rawno < 1L || thrd->rawno > stream->nmsgs)
       return to_us;
@@ -10471,7 +11211,10 @@ to_us_symbol_for_thread(stream, thrd, consider_flagged)
     }
 
     if(to_us != '*'){
-	if(consider_flagged && FLAG_MATCH(F_FLAG, mail_elt(stream,thrd->rawno)))
+	if(consider_flagged && thrd && thrd->rawno > 0L
+	   && stream && thrd->rawno <= stream->nmsgs
+	   && (mc = mail_elt(stream, thrd->rawno))
+	   && FLAG_MATCH(F_FLAG, mc))
 	  to_us = '*';
 	else if(to_us != '+' && !IS_NEWS(stream)){
 	    INDEXDATA_S   idata;
@@ -10482,9 +11225,11 @@ to_us_symbol_for_thread(stream, thrd, consider_flagged)
 	    idata.stream   = stream;
 	    idata.rawno    = thrd->rawno;
 	    idata.msgno    = mn_raw2m(current_index_state->msgmap, idata.rawno);
-	    if(mc = mail_elt(stream, idata.rawno)){
+	    if(idata.rawno > 0L && stream && idata.rawno <= stream->nmsgs
+	       && (mc = mail_elt(stream, idata.rawno))){
 		idata.size = mc->rfc822_size;
-		index_data_env(&idata, mail_fetchenvelope(stream, idata.rawno));
+		index_data_env(&idata,
+			       pine_mail_fetchenvelope(stream, idata.rawno));
 	    }
 	    else
 	      idata.bogus = 2;
@@ -10632,9 +11377,7 @@ view_thread(state, stream, msgmap, set_lflags)
     }
 
     msgmap->top = mn_get_cur(msgmap);
-
-    state->next_screen = mail_index_screen;
-    state->viewing_a_thread = 1;
+    sp_set_viewing_a_thread(stream, 1);
 
     state->mangled_screen = 1;
     setup_for_index_index_screen();
@@ -10677,7 +11420,7 @@ unview_thread(state, stream, msgmap)
 
     mn_set_cur(msgmap, mn_raw2m(msgmap, topthrd->rawno));
     state->next_screen = mail_index_screen;
-    state->viewing_a_thread = 0;
+    sp_set_viewing_a_thread(stream, 0);
     state->view_skipped_index = 0;
     state->mangled_screen = 1;
     setup_for_thread_index_screen();
