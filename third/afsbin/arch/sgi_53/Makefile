@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1997-03-11 19:28:51 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-03-12 20:59:29 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -30,6 +30,7 @@ install:
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 afsd ${DESTDIR}${VICE}
 	install -c -m 444 libafs.SP.R4000.nonfs.o ${DESTDIR}${MODULES}
+	install -c -m 444 libafs.SP.R4000.o ${DESTDIR}${MODULES}
 	install -c -m 555 afs.rc ${DESTDIR}${INITD}/afs
 	rm -f ${DESTDIR}${RC0}/K35afs
 	ln -s ../init.d/afs ${DESTDIR}${RC0}/K35afs
@@ -171,13 +172,14 @@ install:
 	install -c -m 444 lib/afs/libnull.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libprot.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libsys.a ${DESTDIR}${WS}/lib/afs
-	install -c -m 444 lib/afs/libtermlib.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libvldb.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libvolser.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libxstat_cm.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/libxstat_fs.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/util.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/vlib.a ${DESTDIR}${WS}/lib/afs
+	rm -f ${DESTDIR}${WS}/lib/afs/libtermlib.a
+	ln -s /usr/lib/libtermlib.a ${DESTDIR}${WS}/lib/afs/libtermlib.a
 
 clean:
 
