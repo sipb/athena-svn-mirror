@@ -297,13 +297,13 @@ echo "done."							>/dev/console
 
 echo  "Fixing noattach, nocreate, noremote, and nologin... \c"	>/dev/console
 if [ "${NOCREATE}" = "true" ]; then
-	echo "" >> /etc/nocreate
+	touch /etc/nocreate
 else
 	rm -f /etc/nocreate
 fi
 
 if [ "${NOATTACH}" = "true" ]; then
-	echo  "" >> /etc/noattach
+	touch /etc/noattach
 else
 	rm -f /etc/noattach
 fi
