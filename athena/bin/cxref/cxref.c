@@ -25,7 +25,9 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+#include <libgen.h>
 
 #define TRUE	1
 #define FALSE	0
@@ -50,17 +52,15 @@ int ancestor;		/* id of this process, used by children */
 #define do_pipe(x)	if (pipe(x) < 0) { fprintf(stderr, "x: pipe failed\n");\
 				fflush(stderr); exit (1); }
 
-void setargs(void);
-void runprogs(void);
-void deltemps(void);
-void idens(void);
-void integers(void);
-void floats(void);
-void usage(void);
-char *filename(char *fname);
-void catchem(void);
-
-#include "basename.c"
+static void setargs(void);
+static void runprogs(void);
+static void deltemps(void);
+static void idens(void);
+static void integers(void);
+static void floats(void);
+static void usage(void);
+static char *filename(char *fname);
+static void catchem(int);
 
 int main(int argc, char **argv)
 {
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 
 	runprogs();		/* set up and run pipelines */
 
-	exit (0);
+	return (0);
 }
 
 /* argv vectors for various commands */
@@ -172,7 +172,7 @@ typedef int PIPE[2];
 
 PIPE pipe1, pipe2, pipe3;
 
-void setargs(void)		/* initialize argv vectors */
+static void setargs(void)		/* initialize argv vectors */
 {
 	static char widthbuf[100];
 	static char pidbuf[100];
@@ -227,7 +227,7 @@ flow of control is:
 	sort3 pipe1 cxrfilt -f pipe2 fmtxref -userargs
 */
 
-void runprogs(void)		/* run the programs, obeying user's options */
+static void runprogs(void)	/* run the programs, obeying user's options */
 {
 	int i;
 
@@ -287,7 +287,7 @@ void runprogs(void)		/* run the programs, obeying user's options */
 	deltemps();
 }
 
-void deltemps(void)	/* delete temp files used for ints and floats */
+static void deltemps(void) /* delete temp files used for ints and floats */
 {
 	char buf[BUFSIZ];
 	int i;
@@ -305,7 +305,7 @@ void deltemps(void)	/* delete temp files used for ints and floats */
 
 int level;	/* how many children down are we */
 
-void idens(void)		/* cross reference identifiers */
+static void idens(void)		/* cross reference identifiers */
 {
 	int status;
 	int pid;
@@ -418,7 +418,7 @@ retest:
 	}
 }
 
-void integers(void)
+static void integers(void)
 {
 	int status;
 	int pid;
@@ -520,7 +520,7 @@ retest:
 	}
 }
 
-void floats(void)
+static void floats(void)
 {
 	int status;
 	int pid;
@@ -622,14 +622,14 @@ retest:
 	}
 }
 
-void usage(void)
+static void usage(void)
 {
 	fprintf(stderr, "usage: %s [-SCcsif] [-w width] [files]\n", name);
 	fflush(stderr);
 	exit (1);
 }
 
-char *filename(char *fname)
+static char *filename(char *fname)
 {
 	char *cp;
 
@@ -638,7 +638,7 @@ char *filename(char *fname)
 	return ( strcmp(cp, "-") == 0 ? "stdin" : cp);
 }
 
-void catchem(void)	/* simple signal catcher */
+static void catchem(int signal)	/* simple signal catcher */
 {
 	struct sigaction act;
 

@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <libgen.h>
 
 #define TRUE	1
 #define FALSE	0
@@ -44,11 +45,9 @@ char line[MAXNUM] = "";
 
 char *name;
 
-int breakup(char *text);
-void output(int val);
-void usage(void);
-
-#include "basename.c"
+static int breakup(char *text);
+static void output(int val);
+static void usage(void);
 
 int main(int argc, char **argv)
 {
@@ -106,7 +105,7 @@ int main(int argc, char **argv)
 	return(0);
 }
 
-int breakup(char *text)
+static int breakup(char *text)
 {
 	int retval;
 	int i, j;
@@ -168,7 +167,7 @@ int breakup(char *text)
 	return(retval);
 }
 
-void output(int val)
+static void output(int val)
 {
 	static int curpos = 1;
 	static int first = TRUE;
@@ -221,7 +220,7 @@ void output(int val)
 	}
 }
 
-void usage(void)
+static void usage(void)
 {
 	fprintf(stderr, "usage: %s [-w width]\n", basename(name));
 	exit (1);

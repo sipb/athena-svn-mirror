@@ -15,7 +15,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
+#include <libgen.h>
 
 #define TRUE	1
 #define FALSE	0
@@ -27,10 +29,7 @@ extern void yylex(void);
 int line_no = 1;	/* current line number */
 char *fname = NULL;	/* current file name */
 
-void outid(void);
-void usage(char *name);
-
-#include "basename.c"
+static void usage(char *name);
 
 int main(int argc, char **argv)
 {
@@ -89,12 +88,7 @@ int main(int argc, char **argv)
 	return(0);
 }
 
-void outid(void)
-{
-	printf("%s\t%s\t%d\n", yytext, basename(fname), line_no);
-}
-
-void usage(char *name)
+static void usage(char *name)
 {
 	fprintf(stderr,"usage: %s [files]\n", name);
 	exit(1);

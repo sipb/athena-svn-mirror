@@ -24,6 +24,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <libgen.h>
 #include "constdefs.h"
 
 #define MAXFILE		120
@@ -34,12 +36,11 @@ int cflag = 0;
 int sflag = 0;
 char *name;
 
-void outint(char *buf);
-void outfloat(char *buf);
-void usage(void);
-void intfilter(void);
-void floatfilter(void);
-#include "basename.c"
+static void outint(char *buf);
+static void outfloat(char *buf);
+static void usage(void);
+static void intfilter(void);
+static void floatfilter(void);
 
 int main(int argc, char **argv)
 {
@@ -103,7 +104,7 @@ int main(int argc, char **argv)
 		exit (3);
 	}
 
-	while (gets(buf) != NULL)
+	while (fgets(buf, sizeof(buf), stdin) != NULL)
 	{
 		if (buf[0] != '~')
 			printf("%s\n", buf);
@@ -144,7 +145,7 @@ int main(int argc, char **argv)
 #define HEX	2
 #define DEC	3
 
-void outint(char *buf)
+static void outint(char *buf)
 {
 	char file[MAXLINE], line[MAXLINE];
 	int val;
@@ -183,7 +184,7 @@ void outint(char *buf)
 	fprintf(fp1, "%d\t%s\t%s\t%d\n", val, file, line, type);
 }
 
-void outfloat(char *buf)
+static void outfloat(char *buf)
 {
 	char file[MAXLINE], line[MAXLINE];
 	char mantissa[MAXLINE], exponent[MAXLINE];
@@ -237,21 +238,21 @@ void outfloat(char *buf)
 		exponent[0] != '\0' ? exponent : "0", file, line);
 }
 
-void usage(void)
+static void usage(void)
 {
 	fprintf(stderr, "usage: %s [-csfi] pid\n", name);
 	exit (1);
 }
 
 
-void intfilter(void)	/* put sorted ints back into their original bases */
+static void intfilter(void)/* put sorted ints back into their original bases */
 {
 	char buf[BUFSIZ];
 	char file[MAXLINE], number[MAXLINE];
 	int val;
 	int type;
 
-	while (gets(buf) != NULL)
+	while (fgets(buf, sizeof(buf), stdin) != NULL)
 	{
 		sscanf(buf, "%d %s %s %d", &val, file, number, &type);
 
@@ -279,13 +280,13 @@ void intfilter(void)	/* put sorted ints back into their original bases */
 	}
 }
 
-void floatfilter(void)	/* put sorted floats back together */
+static void floatfilter(void)	/* put sorted floats back together */
 {
 	char buf[BUFSIZ];
 	char file[MAXLINE], number[MAXLINE];
 	char mantissa[MAXLINE], exponent[MAXLINE];
 
-	while (gets(buf) != NULL)
+	while (fgets(buf, sizeof(buf), stdin) != NULL)
 	{
 		sscanf(buf, "%s %s %s %s", mantissa, exponent, file, number);
 
