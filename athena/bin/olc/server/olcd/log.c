@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.43 1992-01-13 18:59:34 lwvanels Exp $
+ *	$Id: log.c,v 1.44 1992-07-16 15:34:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.43 1992-01-13 18:59:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.44 1992-07-16 15:34:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -576,7 +576,7 @@ char *os;
   static TRANS *mach, *disp;	/* machine and display translations */
   static int n_mach = -1;	/* number of translations loaded */
   static int n_disp = -1;
-  char *memory, *o_mach, *o_disp,*p;
+  char *memory, *o_mach, *o_disp,*p,*q;
   FILE *trans_file;
   int i,size;
   static char stuff[BUF_SIZE];
@@ -673,6 +673,10 @@ char *os;
     }
     while (*o_disp == ' ')
       o_disp++;
+    q = index(o_disp,' ');
+    if (q != NULL)
+      *q = '\0';
+
     size = strlen(o_disp);
     for(i=0;i<n_disp;i++)
       if (strncmp(o_disp,disp[i].orig,size) == 0) {
