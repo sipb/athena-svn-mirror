@@ -4,8 +4,8 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: lwvanels $
- *	$Id: zephyr.h,v 1.47 1992-08-08 23:50:19 lwvanels Exp $
+ *	$Author: probe $
+ *	$Id: zephyr.h,v 1.48 1993-09-24 16:10:34 probe Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology. For copying and distribution information, see the
@@ -14,6 +14,10 @@
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
+
+#ifdef POSIX
+#include <unistd.h>
+#endif
 
 #include <zephyr/zephyr_err.h>
 #include <zephyr/zephyr_conf.h>
