@@ -167,8 +167,17 @@ If, in an
 an item A is preceded by an arrow "->",
 .B track
 will export/import a symbolic-link
-to the librarian's copy of the named item.
-Wild-card patterns may appear in the exception-lists.
+to the librarian's copy of the named item.  If an item is preceded by an
+explanation point "!",
+.B track
+will export/import the file normally, as if it did not appear in the
+exception list.  Wild-card patterns may appear in the exception-lists.
+Literal filenames always supercede wild-card patterns in the
+exception-list; for example, an entry "! filename" would take
+precedence over an entry "-> *".  Wild-card patterns with more literal
+characters supercede wild-card patterns with fewer literal characters;
+for example, an entry "-> a*b" would take precedence over an entry
+"*".
 .RE
 .P
 Because this is a data-description-language, and not a procedural language,
