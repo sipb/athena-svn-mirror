@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.4 1988-05-26 13:59:55 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.5 1988-06-10 14:29:57 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.4  88/05/26  13:59:55  don
+ * cosmetics in sort_entries(): fixed indentation, and added comments.
+ * 
  * Revision 4.3  88/05/25  21:25:02  don
  * fixed a bug in sort_entries: only one descendant was getting added
  * to each entry's exception-list.
@@ -70,7 +73,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.4 1988-05-26 13:59:55 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.5 1988-06-10 14:29:57 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -162,13 +165,15 @@ char **path; struct currentness *c;
 	case S_IFCHR:
 		curr1 = DEV( *s);
 		break;
+	case S_IFSOCK:
+		sprintf( errmsg, "can't track socket %s.\n", path[ ROOT]);
+		do_gripe();
+		return( type);
 	case S_IFMT:
-		sprintf( errmsg,"can't write statline for %s\n", path[ ROOT]);
-		do_panic();
-		break;
 	default:
-		sprintf( errmsg, "bad type for inode %d. apparent type = %c\n",
-		         c->sbuf.st_ino, type);
+		sprintf( errmsg,
+		"bad type for inode %d, pathname %s.\n\tapparent type = %c\n",
+		    c->sbuf.st_ino, path[ ROOT], type_char[ type >> 13]);
 		do_panic();
 	}
 	/* set up name & sortkey:
