@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.5 2003-05-28 22:17:44 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.6 2003-08-16 20:14:02 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -188,6 +188,17 @@ if [ $found_running = false ]; then
         # The profile is locked.  Ask the user how to deal with it.
         dispose_lock $lock
         break
+      fi
+    done
+
+    # Fix up any search engine preference still pointing at infoagents.
+    for prefs in $profdir/????????.slt/prefs.js ; do
+      if grep 'engine:///.*/infoagents/.*/mozilla/searchplugins/' $prefs \
+          > /dev/null 2>&1 ; then
+        rm -f $prefs.new
+        sed -e 's|engine:///.*/infoagents/.*/mozilla/searchplugins/|engine:///usr/athena/lib/mozilla/searchplugins/|' \
+          $prefs > $prefs.new \
+        && mv $prefs.new $prefs
       fi
     done
   fi
