@@ -47,9 +47,9 @@ G_BEGIN_DECLS
 typedef struct {
   gint 		 index_nr;
   gint 		 stream_nr;
-  guint64 	 ts;
+  guint64 	 ts, dur;
   guint32	 flags;
-  guint32	 offset;
+  guint64	 offset;
   gint 		 size;
   guint64	 bytes_before;
   guint32	 frames_before;
@@ -63,6 +63,7 @@ typedef struct {
   GstPad	*pad;
   GstCaps	*caps;
   gst_riff_strh	*strh;
+  gint           blockalign, bitrate;
 
   /* current position (byte, frame, time) */
   guint 	 current_frame;
@@ -77,6 +78,8 @@ typedef struct {
   guint32	 total_frames;
 
   guint32	 skip;
+
+  guint64	*indexes;
 } avi_stream_context;
 
 typedef enum {
@@ -99,6 +102,7 @@ typedef struct _GstAviDemux {
   gst_avi_index_entry *index_entries;
   guint 	 index_size;
   guint64	 index_offset;
+  guint		 current_entry;
 
   /* streams */
   guint 	 num_streams;
@@ -113,9 +117,8 @@ typedef struct _GstAviDemux {
   /* seeking */
   guint64 	 seek_offset;
   guint64	 last_seek;
-
-  /* info */
-  GstCaps	*streaminfo;
+  gint		 seek_entry;
+  gboolean	 seek_flush;
 } GstAviDemux;
 
 typedef struct _GstAviDemuxClass {

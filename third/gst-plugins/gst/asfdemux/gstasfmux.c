@@ -83,38 +83,47 @@ static GstStaticPadTemplate gst_asfmux_videosink_template =
     GST_STATIC_CAPS ("video/x-raw-yuv, "
         "format = (fourcc) { YUY2, I420 }, "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
-        "video/x-jpeg, "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
+        "image/jpeg, "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-divx, "
         "divxversion = (int) [ 3, 5 ], "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-xvid, "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-3ivx, "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-msmpeg, "
         "msmpegversion = (int) [ 41, 43 ], "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/mpeg, "
         "mpegversion = (int) 1,"
         "systemstream = (boolean) false,"
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-h263, "
         "width = (int) [ 1, MAX], "
-        "height = (int) [ 1, MAX]; "
+        "height = (int) [ 1, MAX], "
+        "framerate = (double) [ 1, MAX ]; "
         "video/x-dv, "
         "systemstream = (boolean) false,"
         "width = (int) 720,"
         "height = (int) { 576, 480 };"
         "video/x-huffyuv, "
-        "width = (int) [ 1, MAX], " "height = (int) [ 1, MAX]")
+        "width = (int) [ 1, MAX], "
+        "height = (int) [ 1, MAX], " "framerate = (double) [ 1, MAX ]")
     );
 
 static GstStaticPadTemplate gst_asfmux_audiosink_template =
@@ -316,7 +325,7 @@ gst_asfmux_vidsink_link (GstPad * pad, const GstCaps * caps)
     /* find format */
     if (!strcmp (mimetype, "video/x-huffyuv")) {
       stream->header.video.format.tag = GST_MAKE_FOURCC ('H', 'F', 'Y', 'U');
-    } else if (!strcmp (mimetype, "video/x-jpeg")) {
+    } else if (!strcmp (mimetype, "image/jpeg")) {
       stream->header.video.format.tag = GST_MAKE_FOURCC ('M', 'J', 'P', 'G');
     } else if (!strcmp (mimetype, "video/x-divx")) {
       gint divxversion;
@@ -576,7 +585,6 @@ gst_asfmux_request_new_pad (GstElement * element,
       G_CALLBACK (gst_asfmux_pad_unlink), (gpointer) asfmux);
   gst_pad_set_link_function (newpad, linkfunc);
   gst_element_add_pad (element, newpad);
-  gst_pad_set_event_function (newpad, gst_asfmux_handle_event);
   gst_pad_set_event_mask_function (newpad, gst_asfmux_get_event_masks);
 
   return newpad;

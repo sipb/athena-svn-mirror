@@ -103,7 +103,7 @@ static GstStaticPadTemplate audiosink_templ =
         "endianness = (int) { BIG_ENDIAN, LITTLE_ENDIAN }, "
         "signed = (boolean) { true, false }, "
         COMMON_AUDIO_CAPS ";"
-        "audio/x-raw-tta, "
+        "audio/x-tta, "
         "width = (int) { 8, 16, 24 }, "
         "channels = (int) { 1, 2 }, " "rate = (int) [ 8000, 96000 ]")
     );
@@ -113,6 +113,8 @@ GST_STATIC_PAD_TEMPLATE ("subtitle_%d",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS_ANY);
+
+static GArray *used_uids;
 
 /* gobject magic foo */
 static void gst_matroska_mux_base_init (GstMatroskaMuxClass * klass);
@@ -138,6 +140,9 @@ static void gst_matroska_mux_get_property (GObject * object,
 
 /* reset muxer */
 static void gst_matroska_mux_reset (GstElement * element);
+
+/* uid generation */
+static guint32 gst_matroska_mux_create_uid ();
 
 static GstEbmlWriteClass *parent_class = NULL;
 
@@ -242,6 +247,28 @@ gst_matroska_mux_init (GstMatroskaMux * mux)
   gst_matroska_mux_reset (GST_ELEMENT (mux));
 }
 
+static guint32
+gst_matroska_mux_create_uid ()
+{
+  guint32 uid = 0;
+  GRand *rand = g_rand_new ();
+
+  while (!uid) {
+    guint i;
+
+    uid = g_rand_int (rand);
+    for (i = 0; i < used_uids->len; i++) {
+      if (g_array_index (used_uids, guint32, i) == uid) {
+        uid = 0;
+        break;
+      }
+    }
+    g_array_append_val (used_uids, uid);
+  }
+  g_free (rand);
+  return uid;
+}
+
 static void
 gst_matroska_mux_reset (GstElement * element)
 {
@@ -289,6 +316,23 @@ gst_matroska_mux_reset (GstElement * element)
   /* reset timers */
   mux->time_scale = 1000000;
   mux->duration = 0;
+
+  /* reset uid array */
+  if (used_uids) {
+    g_free (used_uids);
+  }
+  /* arbitrary size, 10 should be enough in most cases */
+  used_uids = g_array_sized_new (FALSE, FALSE, sizeof (guint32), 10);
+
+  /* reset cluster */
+  mux->cluster = 0;
+  mux->cluster_time = 0;
+  mux->cluster_pos = 0;
+
+  /* reset meta-seek index */
+  mux->num_meta_indexes = 0;
+  g_free (mux->meta_index);
+  mux->meta_index = NULL;
 }
 
 static GstPadLinkReturn
@@ -468,6 +512,7 @@ gst_matroska_mux_audio_pad_link (GstPad * pad, const GstCaps * caps)
   audiocontext->samplerate = samplerate;
   audiocontext->channels = channels;
   audiocontext->bitdepth = 0;
+  context->default_duration = 0;
 
   if (!strcmp (mimetype, "audio/mpeg")) {
     gint mpegversion = 0;
@@ -481,12 +526,18 @@ gst_matroska_mux_audio_pad_link (GstPad * pad, const GstCaps * caps)
         switch (layer) {
           case 1:
             context->codec_id = g_strdup (GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L1);
+            context->default_duration =
+                384 * GST_SECOND / audiocontext->samplerate;
             break;
           case 2:
             context->codec_id = g_strdup (GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L2);
+            context->default_duration =
+                1152 * GST_SECOND / audiocontext->samplerate;
             break;
           case 3:
             context->codec_id = g_strdup (GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L3);
+            context->default_duration =
+                1152 * GST_SECOND / audiocontext->samplerate;
             break;
         }
         break;
@@ -527,8 +578,11 @@ gst_matroska_mux_audio_pad_link (GstPad * pad, const GstCaps * caps)
     context->codec_id = g_strdup (GST_MATROSKA_CODEC_ID_AUDIO_AC3);
 
     return GST_PAD_LINK_OK;
-  } else if (!strcmp (mimetype, "audio/x-raw-tta")) {
+  } else if (!strcmp (mimetype, "audio/x-tta")) {
     gint width;
+
+    /* TTA frame duration */
+    context->default_duration = 1.04489795918367346939 * GST_SECOND;
 
     gst_structure_get_int (structure, "width", &width);
     audiocontext->bitdepth = width;
@@ -610,15 +664,18 @@ gst_matroska_mux_track_header (GstMatroskaMux * mux,
   gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKNUMBER, context->num);
   gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKTYPE, context->type);
 
+  gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKUID,
+      gst_matroska_mux_create_uid ());
+  if (context->default_duration) {
+    gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKDEFAULTDURATION,
+        context->default_duration);
+  }
+
   /* type-specific stuff */
   switch (context->type) {
     case GST_MATROSKA_TRACK_TYPE_VIDEO:{
       GstMatroskaTrackVideoContext *videocontext =
           (GstMatroskaTrackVideoContext *) context;
-
-      /* framerate, but not in the video part */
-      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKDEFAULTDURATION,
-          context->default_duration);
 
       master = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_TRACKVIDEO);
       gst_ebml_write_uint (ebml, GST_MATROSKA_ID_VIDEOPIXELWIDTH,
@@ -688,6 +745,7 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   guint32 seekhead_id[] = { GST_MATROSKA_ID_INFO,
     GST_MATROSKA_ID_TRACKS,
     GST_MATROSKA_ID_CUES,
+    GST_MATROSKA_ID_SEEKHEAD,
 #if 0
     GST_MATROSKA_ID_TAGS,
 #endif
@@ -697,6 +755,9 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   gint i;
   guint tracknum = 1;
   gdouble duration = 0;
+  guint32 *segment_uid = (guint32 *) g_malloc (16);
+  GRand *rand = g_rand_new ();
+  GTimeVal time = { 0, 0 };
 
   /* we start with a EBML header */
   gst_ebml_write_header (ebml, "matroska", 1);
@@ -723,6 +784,12 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   /* segment info */
   mux->info_pos = ebml->pos;
   master = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_INFO);
+  for (i = 0; i < 4; i++) {
+    segment_uid[i] = g_rand_int (rand);
+  }
+  g_free (rand);
+  gst_ebml_write_binary (ebml, GST_MATROSKA_ID_SEGMENTUID,
+      (guint8 *) segment_uid, 16);
   gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TIMECODESCALE, mux->time_scale);
   mux->duration_pos = ebml->pos;
   /* get duration */
@@ -752,8 +819,8 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
       gst_ebml_write_utf8 (ebml, GST_MATROSKA_ID_WRITINGAPP, app);
     }
   }
-  /* FIXME: how do I get this? Automatic? Via tags? */
-  /*gst_ebml_write_date (ebml, GST_MATROSKA_ID_DATEUTC, 0); */
+  g_get_current_time (&time);
+  gst_ebml_write_date (ebml, GST_MATROSKA_ID_DATEUTC, time.tv_sec);
   gst_ebml_write_master_finish (ebml, master);
 
   /* tracks */
@@ -781,6 +848,11 @@ gst_matroska_mux_finish (GstMatroskaMux * mux)
   guint64 duration = 0;
   gint i;
 
+  /* finish last cluster */
+  if (mux->cluster) {
+    gst_ebml_write_master_finish (ebml, mux->cluster);
+  }
+
   /* cues */
   if (mux->index != NULL) {
     guint n;
@@ -795,7 +867,7 @@ gst_matroska_mux_finish (GstMatroskaMux * mux)
 
       pointentry_master = gst_ebml_write_master_start (ebml,
           GST_MATROSKA_ID_POINTENTRY);
-      gst_ebml_write_date (ebml, GST_MATROSKA_ID_CUETIME,
+      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_CUETIME,
           idx->time / mux->time_scale);
       trackpos_master = gst_ebml_write_master_start (ebml,
           GST_MATROSKA_ID_CUETRACKPOSITION);
@@ -809,6 +881,28 @@ gst_matroska_mux_finish (GstMatroskaMux * mux)
     gst_ebml_write_master_finish (ebml, master);
     gst_ebml_write_flush_cache (ebml);
   }
+
+  if (mux->meta_index != NULL) {
+    guint n;
+    guint64 master, seekentry_master;
+
+    mux->meta_pos = ebml->pos;
+    gst_ebml_write_set_cache (ebml, 12 + 28 * mux->num_meta_indexes);
+    master = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_SEEKHEAD);
+
+    for (n = 0; n < mux->num_meta_indexes; n++) {
+      GstMatroskaMetaSeekIndex *idx = &mux->meta_index[n];
+
+      seekentry_master = gst_ebml_write_master_start (ebml,
+          GST_MATROSKA_ID_SEEKENTRY);
+      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_SEEKID, idx->id);
+      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_SEEKPOSITION,
+          idx->pos - mux->segment_master);
+      gst_ebml_write_master_finish (ebml, seekentry_master);
+    }
+    gst_ebml_write_master_finish (ebml, master);
+  }
+  gst_ebml_write_flush_cache (ebml);
 
   /* FIXME: tags */
 
@@ -834,6 +928,17 @@ gst_matroska_mux_finish (GstMatroskaMux * mux)
     guint64 my_pos = ebml->pos;
 
     gst_ebml_write_seek (ebml, mux->seekhead_pos + 68);
+    gst_ebml_write_buffer_header (ebml, GST_EBML_ID_VOID, 26);
+    gst_ebml_write_seek (ebml, my_pos);
+  }
+  if (mux->meta_index != NULL) {
+    gst_ebml_replace_uint (ebml, mux->seekhead_pos + 116,
+        mux->meta_pos - mux->segment_master);
+  } else {
+    /* void'ify */
+    guint64 my_pos = ebml->pos;
+
+    gst_ebml_write_seek (ebml, mux->seekhead_pos + 96);
     gst_ebml_write_buffer_header (ebml, GST_EBML_ID_VOID, 26);
     gst_ebml_write_seek (ebml, my_pos);
   }
@@ -914,15 +1019,56 @@ gst_matroska_mux_write_data (GstMatroskaMux * mux)
   buf = mux->sink[i].buffer;
   mux->sink[i].buffer = NULL;
 
+  if (mux->cluster) {
+    /* start a new cluster every two seconds */
+    if (mux->cluster_time + GST_SECOND * 2 < GST_BUFFER_TIMESTAMP (buf)) {
+      GstMatroskaMetaSeekIndex *idx;
+
+      gst_ebml_write_master_finish (ebml, mux->cluster);
+      mux->cluster_pos = ebml->pos;
+      mux->cluster =
+          gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_CLUSTER);
+      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_CLUSTERTIMECODE,
+          GST_BUFFER_TIMESTAMP (buf) / mux->time_scale);
+      mux->cluster_time = GST_BUFFER_TIMESTAMP (buf);
+
+      if (mux->num_meta_indexes % 32 == 0) {
+        mux->meta_index = g_renew (GstMatroskaMetaSeekIndex, mux->meta_index,
+            mux->num_meta_indexes + 32);
+      }
+      idx = &mux->meta_index[mux->num_meta_indexes++];
+      idx->id = GST_MATROSKA_ID_CLUSTER;
+      idx->pos = mux->cluster_pos;
+    }
+  } else {
+    /* first cluster */
+    GstMatroskaMetaSeekIndex *idx;
+
+    mux->cluster_pos = ebml->pos;
+    mux->cluster = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_CLUSTER);
+    gst_ebml_write_uint (ebml, GST_MATROSKA_ID_CLUSTERTIMECODE,
+        GST_BUFFER_TIMESTAMP (buf) / mux->time_scale);
+    mux->cluster_time = GST_BUFFER_TIMESTAMP (buf);
+
+    if (mux->num_meta_indexes % 32 == 0) {
+      mux->meta_index = g_renew (GstMatroskaMetaSeekIndex, mux->meta_index,
+          mux->num_meta_indexes + 32);
+    }
+    idx = &mux->meta_index[mux->num_meta_indexes++];
+    idx->id = GST_MATROSKA_ID_CLUSTER;
+    idx->pos = mux->cluster_pos;
+  }
+  cluster = mux->cluster;
+
   /* update duration of this track */
   if (GST_BUFFER_DURATION_IS_VALID (buf))
     mux->sink[i].duration += GST_BUFFER_DURATION (buf);
 
   /* We currently write an index entry for each keyframe in a
-   * video track. This can be largely improved, such as doing
+   * video track or one entry for each cluster in an audio track
+   * for audio only files. This can be largely improved, such as doing
    * one for each keyframe or each second (for all-keyframe
-   * streams), only the *first* video track or the audio track
-   * if we have no video tracks. But that'll come later... */
+   * streams), only the *first* video track. But that'll come later... */
   if (mux->sink[i].track->type == GST_MATROSKA_TRACK_TYPE_VIDEO &&
       GST_BUFFER_FLAG_IS_SET (buf, GST_BUFFER_KEY_UNIT)) {
     GstMatroskaIndex *idx;
@@ -933,31 +1079,49 @@ gst_matroska_mux_write_data (GstMatroskaMux * mux)
     }
     idx = &mux->index[mux->num_indexes++];
 
-    idx->pos = ebml->pos;
+    idx->pos = mux->cluster_pos;
+    idx->time = GST_BUFFER_TIMESTAMP (buf);
+    idx->track = mux->sink[i].track->num;
+  } else if ((mux->sink[i].track->type == GST_MATROSKA_TRACK_TYPE_AUDIO) &&
+      (mux->num_streams == 1)) {
+    GstMatroskaIndex *idx;
+
+    if (mux->num_indexes % 32 == 0) {
+      mux->index = g_renew (GstMatroskaIndex, mux->index,
+          mux->num_indexes + 32);
+    }
+    idx = &mux->index[mux->num_indexes++];
+
+    idx->pos = mux->cluster_pos;
     idx->time = GST_BUFFER_TIMESTAMP (buf);
     idx->track = mux->sink[i].track->num;
   }
 
-  /* write one cluster with one blockgroup with one block with
+  /* write one blockgroup with one block with
    * one slice (*breath*).
-   * FIXME: lacing, multiple frames/cluster, etc. */
-  cluster = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_CLUSTER);
-  gst_ebml_write_uint (ebml, GST_MATROSKA_ID_CLUSTERTIMECODE,
-      GST_BUFFER_TIMESTAMP (buf) / mux->time_scale);
+   * FIXME: lacing, etc. */
   blockgroup = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_BLOCKGROUP);
   gst_ebml_write_buffer_header (ebml, GST_MATROSKA_ID_BLOCK,
       GST_BUFFER_SIZE (buf) + 4);
   hdr = gst_buffer_new_and_alloc (4);
   /* track num - FIXME: what if num >= 0x80 (unlikely)? */
   GST_BUFFER_DATA (hdr)[0] = mux->sink[i].track->num | 0x80;
-  /* time relative to clustertime - we don't use this yet */
-  *(guint16 *) & GST_BUFFER_DATA (hdr)[1] = GUINT16_TO_BE (0);
+  /* time relative to clustertime */
+  *(guint16 *) & GST_BUFFER_DATA (hdr)[1] = GUINT16_TO_BE (
+      (GST_BUFFER_TIMESTAMP (buf) - mux->cluster_time) / mux->time_scale);
   /* flags - no lacing (yet) */
   GST_BUFFER_DATA (hdr)[3] = 0;
   gst_ebml_write_buffer (ebml, hdr);
   gst_ebml_write_buffer (ebml, buf);
+  if (GST_BUFFER_DURATION_IS_VALID (buf)) {
+    guint64 block_duration = GST_BUFFER_DURATION (buf);
+
+    if (block_duration != mux->sink[i].track->default_duration) {
+      gst_ebml_write_uint (ebml, GST_MATROSKA_ID_BLOCKDURATION,
+          block_duration / mux->time_scale);
+    }
+  }
   gst_ebml_write_master_finish (ebml, blockgroup);
-  gst_ebml_write_master_finish (ebml, cluster);
 }
 
 static void

@@ -74,8 +74,9 @@ struct _GstMad
   GstTagList *tags;
 
   /* negotiated format */
-  gint rate;
-  gint channels;
+  gint rate, pending_rate;
+  gint channels, pending_channels;
+  gint times_pending;
 
   gboolean caps_set;            /* used to keep track of whether to change/update caps */
   GstIndex *index;
@@ -1007,7 +1008,7 @@ is_xhead (unsigned char *buf)
 
 
 #undef LOG
-//#define LOG
+/*#define LOG*/
 #ifdef LOG
 #define lprintf(x...) g_print(x)
 #else
@@ -1024,23 +1025,18 @@ mpg123_parse_xing_header (struct mad_header *header,
   int xflags, xframes, xbytes, xvbr_scale;
   int abr;
   guint8 xtoc[XING_TOC_LENGTH];
-
-  /* This should be the MPEG Audio version ID 
-   * (version 2.5, 2 or 1) least significant byte, but mad doesn't 
-   * provide that, so assume it's always MPEG 1
-   */
-  int lsf_bit = 1;
+  int lsf_bit = !(header->flags & MAD_FLAG_LSF_EXT);
 
   xframes = xbytes = 0;
 
   /* offset of the Xing header */
   if (lsf_bit) {
-    if (header->mode != MAD_MODE_STEREO)
+    if (header->mode != MAD_MODE_SINGLE_CHANNEL)
       ptr += (32 + 4);
     else
       ptr += (17 + 4);
   } else {
-    if (header->mode != MAD_MODE_STEREO)
+    if (header->mode != MAD_MODE_SINGLE_CHANNEL)
       ptr += (17 + 4);
     else
       ptr += (9 + 4);
@@ -1153,7 +1149,16 @@ gst_mad_check_caps_reset (GstMad * mad)
       GST_DEBUG
           ("Header changed from %d Hz/%d ch to %d Hz/%d ch, failed sync after seek ?",
           mad->rate, mad->channels, rate, nchannels);
-      return;
+      /* we're conservative on stream changes. However, our *initial* caps
+       * might have been wrong as well - mad ain't perfect in syncing. So,
+       * we count caps changes and change if we pass a limit treshold (3). */
+      if (nchannels != mad->pending_channels || rate != mad->pending_rate) {
+        mad->times_pending = 0;
+        mad->pending_channels = nchannels;
+        mad->pending_rate = rate;
+      }
+      if (++mad->times_pending < 3)
+        return;
     }
   }
   gst_mad_update_info (mad);
@@ -1173,11 +1178,12 @@ gst_mad_check_caps_reset (GstMad * mad)
         "depth", G_TYPE_INT, 16,
         "rate", G_TYPE_INT, rate, "channels", G_TYPE_INT, nchannels, NULL);
 
-    gst_pad_set_explicit_caps (mad->srcpad, caps);
+    if (gst_pad_set_explicit_caps (mad->srcpad, caps)) {
+      mad->caps_set = TRUE;     /* set back to FALSE on discont */
+      mad->channels = nchannels;
+      mad->rate = rate;
+    }
     gst_caps_free (caps);
-    mad->caps_set = TRUE;       /* set back to FALSE on discont */
-    mad->channels = nchannels;
-    mad->rate = rate;
   }
 }
 
@@ -1235,7 +1241,15 @@ gst_mad_chain (GstPad * pad, GstData * _data)
     gint tocopy;
     guchar *mad_input_buffer;   /* convenience pointer to tempbuffer */
 
-    tocopy = MIN (MAD_BUFFER_MDLEN, size);
+    tocopy =
+        MIN (MAD_BUFFER_MDLEN, MIN (size,
+            MAD_BUFFER_MDLEN * 3 - mad->tempsize));
+    if (tocopy == 0) {
+      GST_ELEMENT_ERROR (mad, STREAM, DECODE, (NULL),
+          ("mad claims to need more data than %u bytes, we don't have that much",
+              MAD_BUFFER_MDLEN * 3));
+      return;
+    }
 
     /* append the chunk to process to our internal temporary buffer */
     GST_LOG ("tempbuffer size %d, copying %d bytes from incoming buffer",
@@ -1258,14 +1272,32 @@ gst_mad_chain (GstPad * pad, GstData * _data)
       unsigned char const *before_sync, *after_sync;
 
       mad->in_error = FALSE;
+
       mad_stream_buffer (&mad->stream, mad_input_buffer, mad->tempsize);
 
+      /* added separate header decoding to catch errors earlier, also fixes
+       * some weird decoding errors... */
+      GST_LOG ("decoding the header now");
+      if (mad_header_decode (&mad->frame.header, &mad->stream) == -1) {
+        GST_DEBUG ("mad_frame_decode had an error: %s",
+            mad_stream_errorstr (&mad->stream));
+      }
+
+      GST_LOG ("decoding one frame now");
+
       if (mad_frame_decode (&mad->frame, &mad->stream) == -1) {
+        GST_LOG ("got error %d", mad->stream.error);
+
         /* not enough data, need to wait for next buffer? */
         if (mad->stream.error == MAD_ERROR_BUFLEN) {
-          GST_LOG ("not enough data in tempbuffer (%d), breaking to get more",
-              mad->tempsize);
-          break;
+          if (mad->stream.next_frame == mad_input_buffer) {
+            GST_LOG ("not enough data in tempbuffer (%d), breaking to get more",
+                mad->tempsize);
+            break;
+          } else {
+            GST_LOG ("sync error, flushing unneeded data");
+            goto next;
+          }
         }
         /* we are in an error state */
         mad->in_error = TRUE;
@@ -1493,6 +1525,7 @@ gst_mad_change_state (GstElement * element)
       mad->rate = 0;
       mad->channels = 0;
       mad->caps_set = FALSE;
+      mad->times_pending = mad->pending_rate = mad->pending_channels = 0;
       mad->vbr_average = 0;
       mad->segment_start = 0;
       mad->new_header = TRUE;

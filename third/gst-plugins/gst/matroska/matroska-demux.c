@@ -944,9 +944,6 @@ gst_matroska_demux_handle_src_query (GstPad * pad,
   switch (type) {
     case GST_QUERY_TOTAL:
       switch (*format) {
-        case GST_FORMAT_DEFAULT:
-          *format = GST_FORMAT_TIME;
-          /* fall through */
         case GST_FORMAT_TIME:
           *value = demux->duration;
           break;
@@ -958,9 +955,6 @@ gst_matroska_demux_handle_src_query (GstPad * pad,
 
     case GST_QUERY_POSITION:
       switch (*format) {
-        case GST_FORMAT_DEFAULT:
-          *format = GST_FORMAT_TIME;
-          /* fall through */
         case GST_FORMAT_TIME:
           *value = demux->pos;
           break;
@@ -1491,8 +1485,7 @@ gst_matroska_demux_parse_metadata (GstMatroskaDemux * demux,
     gchar *matroska_tagname;
     gchar *gstreamer_tagname;
   }
-  tag_conv[] =
-  {
+  tag_conv[] = {
     {
     GST_MATROSKA_TAG_ID_TITLE, GST_TAG_TITLE}
     , {
@@ -1611,8 +1604,7 @@ gst_matroska_demux_parse_metadata (GstMatroskaDemux * demux,
                 for (i = 0; tag_conv[i].matroska_tagname != NULL; i++) {
                   if (!strcmp (tag_conv[i].matroska_tagname, tag)) {
                     GValue src = { 0 }
-                    , dest =
-                    {
+                    , dest = {
                     0};
                     const gchar *type = tag_conv[i].gstreamer_tagname;
                     GType dest_type = gst_tag_get_type (type);
@@ -1721,10 +1713,7 @@ gst_matroska_ebmlnum_uint (guint8 * data, guint size, guint64 * num)
     n++;
   }
 
-  if (!total)
-    return -1;
-
-  if (read == num_ffs)
+  if (read == num_ffs && total != 0)
     *num = G_MAXUINT64;
   else
     *num = total;
@@ -1893,7 +1882,8 @@ gst_matroska_demux_parse_blockgroup (GstMatroskaDemux * demux,
                   lace_size[n] = lace_size[n - 1] + snum;
                   total += lace_size[n];
                 }
-                lace_size[n] = size - total;
+                if (n < laces)
+                  lace_size[n] = size - total;
                 break;
               }
             }
@@ -1976,9 +1966,13 @@ gst_matroska_demux_parse_blockgroup (GstMatroskaDemux * demux,
       duration = demux->src[stream]->default_duration;
     }
     for (n = 0; n < laces; n++) {
-      GstBuffer *sub = gst_buffer_create_sub (buf,
-          GST_BUFFER_SIZE (buf) - size,
-          lace_size[n]);
+      GstBuffer *sub;
+
+      if (lace_size[n] == 0)
+        continue;
+
+      sub = gst_buffer_create_sub (buf,
+          GST_BUFFER_SIZE (buf) - size, lace_size[n]);
 
       if (cluster_time != GST_CLOCK_TIME_NONE) {
         if (time < 0 && (-time) > cluster_time)
@@ -2144,6 +2138,7 @@ gst_matroska_demux_parse_contents (GstMatroskaDemux * demux)
           case GST_MATROSKA_ID_TAGS:{
             guint level_up = demux->level_up;
             guint64 before_pos, length;
+            guint32 id_cache = ebml->id_cache;
             GstEbmlLevel *level;
             GstEvent *event;
 
@@ -2176,7 +2171,8 @@ gst_matroska_demux_parse_contents (GstMatroskaDemux * demux)
               break;
             }
             if (id != seek_id) {
-              g_warning ("We looked for ID=0x%x but got ID=0x%x (pos=%llu)",
+              g_warning ("We looked for ID=0x%x but got ID=0x%x (pos=%"
+                  G_GUINT64_FORMAT ")",
                   seek_id, id, seek_pos + demux->segment_start);
               goto finish;
             }
@@ -2225,6 +2221,7 @@ gst_matroska_demux_parse_contents (GstMatroskaDemux * demux)
               return FALSE;
             gst_event_unref (event);
             demux->level_up = level_up;
+            ebml->id_cache = id_cache;
             break;
           }
 
@@ -2329,23 +2326,30 @@ gst_matroska_demux_loop_stream (GstMatroskaDemux * demux)
         break;
       }
 
-      case GST_MATROSKA_ID_CLUSTER:{
-        if (!gst_ebml_read_master (ebml, &id)) {
+      case GST_MATROSKA_ID_CLUSTER:
+        if (demux->state != GST_MATROSKA_DEMUX_STATE_DATA) {
+          demux->state = GST_MATROSKA_DEMUX_STATE_DATA;
+          gst_element_no_more_pads (GST_ELEMENT (demux));
+        } else {
+          if (!gst_ebml_read_reserve (ebml)) {
+            res = FALSE;
+            break;
+          }
+          if (!gst_ebml_read_master (ebml, &id)) {
+            res = FALSE;
+            break;
+          }
+          /* The idea is that we parse one cluster per loop and
+           * then break out of the loop here. In the next call
+           * of the loopfunc, we will get back here with the
+           * next cluster. If an error occurs, we didn't
+           * actually push a buffer, but we still want to break
+           * out of the loop to handle a possible error. We'll
+           * get back here if it's recoverable. */
+          gst_matroska_demux_parse_cluster (demux);
           res = FALSE;
-          break;
         }
-        /* The idea is that we parse one cluster per loop and
-         * then break out of the loop here. In the next call
-         * of the loopfunc, we will get back here with the
-         * next cluster. If an error occurs, we didn't
-         * actually push a buffer, but we still want to break
-         * out of the loop to handle a possible error. We'll
-         * get back here if it's recoverable. */
-        gst_matroska_demux_parse_cluster (demux);
-        demux->state = GST_MATROSKA_DEMUX_STATE_DATA;
-        res = FALSE;
         break;
-      }
 
       default:
         GST_WARNING ("Unknown matroska file header ID 0x%x", id);
@@ -2552,6 +2556,60 @@ gst_matroska_demux_video_caps (GstMatroskaTrackVideoContext * videocontext,
   return caps;
 }
 
+/*
+ * Some AAC specific code... *sigh*
+ */
+
+static gint
+aac_rate_idx (gint rate)
+{
+  if (92017 <= rate)
+    return 0;
+  else if (75132 <= rate)
+    return 1;
+  else if (55426 <= rate)
+    return 2;
+  else if (46009 <= rate)
+    return 3;
+  else if (37566 <= rate)
+    return 4;
+  else if (27713 <= rate)
+    return 5;
+  else if (23004 <= rate)
+    return 6;
+  else if (18783 <= rate)
+    return 7;
+  else if (13856 <= rate)
+    return 8;
+  else if (11502 <= rate)
+    return 9;
+  else if (9391 <= rate)
+    return 10;
+  else
+    return 11;
+}
+
+static gint
+aac_profile_idx (const gchar * codec_id)
+{
+  gint profile;
+
+  if (strlen (codec_id) <= 12)
+    profile = 3;
+  else if (!strncmp (&codec_id[12], "MAIN", 4))
+    profile = 0;
+  else if (!strncmp (&codec_id[12], "LC", 2))
+    profile = 1;
+  else if (!strncmp (&codec_id[12], "SSR", 3))
+    profile = 2;
+  else
+    profile = 3;
+
+  return profile;
+}
+
+#define AAC_SYNC_EXTENSION_TYPE 0x02b7
+
 static GstCaps *
 gst_matroska_demux_audio_caps (GstMatroskaTrackAudioContext * audiocontext,
     const gchar * codec_id, gpointer data, guint size, GstMatroskaDemux * demux)
@@ -2646,29 +2704,57 @@ gst_matroska_demux_audio_caps (GstMatroskaTrackAudioContext * audiocontext,
       !strncmp (codec_id, GST_MATROSKA_CODEC_ID_AUDIO_MPEG4,
           strlen (GST_MATROSKA_CODEC_ID_AUDIO_MPEG4))) {
     gint mpegversion = -1;
+    GstBuffer *priv = NULL;
 
     if (!strncmp (codec_id, GST_MATROSKA_CODEC_ID_AUDIO_MPEG2,
             strlen (GST_MATROSKA_CODEC_ID_AUDIO_MPEG2)))
       mpegversion = 2;
     else if (!strncmp (codec_id, GST_MATROSKA_CODEC_ID_AUDIO_MPEG4,
-            strlen (GST_MATROSKA_CODEC_ID_AUDIO_MPEG4)))
+            strlen (GST_MATROSKA_CODEC_ID_AUDIO_MPEG4))) {
+      gint rate_idx, profile;
+      guint8 *data;
+
       mpegversion = 4;
-    else
+
+      if (audiocontext) {
+        /* make up decoderspecificdata */
+        priv = gst_buffer_new_and_alloc (5);
+        data = GST_BUFFER_DATA (priv);
+        rate_idx = aac_rate_idx (audiocontext->samplerate);
+        profile = aac_profile_idx (codec_id);
+
+        data[0] = ((profile + 1) << 3) | ((rate_idx & 0xE) >> 1);
+        data[1] = ((rate_idx & 0x1) << 7) | (audiocontext->channels << 3);
+
+        if (g_strrstr (codec_id, "SBR")) {
+          /* HE-AAC (aka SBR AAC) */
+          audiocontext->samplerate *= 2;
+          rate_idx = aac_rate_idx (audiocontext->samplerate);
+          data[2] = AAC_SYNC_EXTENSION_TYPE >> 3;
+          data[3] = ((AAC_SYNC_EXTENSION_TYPE & 0x07) << 5) | 5;
+          data[4] = (1 << 7) | (rate_idx << 3);
+        } else {
+          GST_BUFFER_SIZE (priv) = 2;
+        }
+      }
+    } else
       g_assert (0);
 
     caps = gst_caps_new_simple ("audio/mpeg",
         "mpegversion", G_TYPE_INT, mpegversion, NULL);
+    if (priv) {
+      gst_caps_set_simple (caps, "codec_data", GST_TYPE_BUFFER, priv, NULL);
+    }
   } else if (!strcmp (codec_id, GST_MATROSKA_CODEC_ID_AUDIO_TTA)) {
     if (audiocontext != NULL) {
-      caps = gst_caps_new_simple ("audio/x-raw-tta",
+      caps = gst_caps_new_simple ("audio/x-tta",
           "width", G_TYPE_INT, audiocontext->bitdepth, NULL);
     } else {
-      caps = gst_caps_from_string ("audio/x-raw-tta, "
+      caps = gst_caps_from_string ("audio/x-tta, "
           "width = (int) { 8, 16, 24 }");
     }
   } else {
     GST_WARNING ("Unknown codec '%s', cannot build Caps", codec_id);
-    g_print ("Codec=%s\n", codec_id);
     return NULL;
   }
 
@@ -2753,8 +2839,7 @@ gst_matroska_demux_plugin_init (GstPlugin * plugin)
     /* TODO: Real/Quicktime */
     /* FILLME */
     NULL,
-  }, *audio_id[] =
-  {
+  }, *audio_id[] = {
     GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L1,
         GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L2,
         GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L3,

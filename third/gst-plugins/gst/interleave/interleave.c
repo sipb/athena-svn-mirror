@@ -51,6 +51,7 @@ struct _InterleaveInputChannel
 {
   GstPad *sinkpad;
   GstBuffer *buffer;
+  gboolean new_media;
 };
 
 struct _Interleave
@@ -126,11 +127,13 @@ static void interleave_init (Interleave * this);
 
 static GstPad *interleave_request_new_pad (GstElement * element,
     GstPadTemplate * temp, const gchar * unused);
+static void interleave_release_pad (GstElement * element, GstPad * pad);
 static void interleave_pad_removed (GstElement * element, GstPad * pad);
 static GstElementStateReturn interleave_change_state (GstElement * element);
 
 static GstCaps *interleave_getcaps (GstPad * pad);
 static GstPadLinkReturn interleave_link (GstPad * pad, const GstCaps * caps);
+static void interleave_unlink (GstPad * pad);
 
 static void interleave_buffered_loop (GstElement * element);
 static void interleave_bytestream_loop (GstElement * element);
@@ -189,6 +192,7 @@ interleave_class_init (InterleaveClass * klass)
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
   eclass->request_new_pad = interleave_request_new_pad;
+  eclass->release_pad = interleave_release_pad;
   eclass->pad_removed = interleave_pad_removed;
   eclass->change_state = interleave_change_state;
 }
@@ -234,6 +238,7 @@ interleave_request_new_pad (GstElement * element, GstPadTemplate * templ,
   channel->sinkpad = gst_pad_new_from_template (templ, name);
   gst_element_add_pad (GST_ELEMENT (this), channel->sinkpad);
   gst_pad_set_link_function (channel->sinkpad, interleave_link);
+  gst_pad_set_unlink_function (channel->sinkpad, interleave_unlink);
   gst_pad_set_getcaps_function (channel->sinkpad, interleave_getcaps);
 
   this->channels = g_list_append (this->channels, channel);
@@ -246,6 +251,12 @@ interleave_request_new_pad (GstElement * element, GstPadTemplate * templ,
 
   g_free (name);
   return channel->sinkpad;
+}
+
+static void
+interleave_release_pad (GstElement * element, GstPad * pad)
+{
+  gst_element_remove_pad (element, pad);
 }
 
 static void
@@ -390,6 +401,8 @@ interleave_link (GstPad * pad, const GstCaps * caps)
       return ret;
   }
 
+  g_print ("Interleave has %d channels\n", this->numchannels);
+
   /* it's ok, let's record our data */
   structure = gst_caps_get_structure (caps, 0);
   this->is_int =
@@ -410,6 +423,45 @@ interleave_link (GstPad * pad, const GstCaps * caps)
         interleave_buffered_loop);
 
   return GST_PAD_LINK_OK;
+}
+
+static void
+interleave_unlink (GstPad * pad)
+{
+  Interleave *this;
+  GstCaps *caps;
+
+  this = INTERLEAVE (GST_OBJECT_PARENT (pad));
+
+  if (GST_IS_PAD (this->srcpad)) {
+    gboolean ret;
+
+    caps = gst_pad_get_caps (this->srcpad);
+    gst_caps_set_simple (caps, "channels", G_TYPE_INT, this->numchannels - 1,
+        NULL);
+    ret = gst_pad_try_set_caps (this->srcpad, caps);
+    if (ret == FALSE) {
+      g_print ("TSC failed\n");
+    }
+    gst_pad_renegotiate (this->srcpad);
+    gst_caps_free (caps);
+  }
+}
+
+static gboolean
+all_channels_new_media (GList * channels)
+{
+  GList *p;
+
+  for (p = channels; p; p = p->next) {
+    InterleaveInputChannel *c = INTERLEAVE_CHANNEL (p);
+
+    if (c->new_media == FALSE) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
 }
 
 static void
@@ -438,6 +490,10 @@ interleave_buffered_loop (GstElement * element)
   for (l = this->channels, i = 0; l; l = l->next, i++) {
     channel = INTERLEAVE_CHANNEL (l);
 
+    if (channel->new_media) {
+      continue;
+    }
+
   get_buffer:
     channel->buffer = GST_BUFFER (gst_pad_pull (channel->sinkpad));
 
@@ -454,6 +510,33 @@ interleave_buffered_loop (GstElement * element)
           gst_pad_push (this->srcpad, GST_DATA (e));
           gst_element_set_eos (GST_ELEMENT (this));
           return;
+
+        case GST_EVENT_DISCONTINUOUS:
+          GST_DEBUG ("its a discont");
+
+          if (GST_EVENT_DISCONT_NEW_MEDIA (e)) {
+            channel->new_media = TRUE;
+            if (all_channels_new_media (this->channels)) {
+              GList *t;
+
+              /* Reset new media */
+              for (t = this->channels; t; t = t->next) {
+                InterleaveInputChannel *c = INTERLEAVE_CHANNEL (t);
+
+                c->new_media = FALSE;
+              }
+
+              /* Push event */
+              gst_pad_event_default (channel->sinkpad, e);
+              goto get_buffer;
+            } else {
+              GST_DEBUG ("Not all channels have received a new-media yet");
+              gst_event_unref (e);
+              goto get_buffer;
+            }
+          }
+          break;
+
         default:
           GST_DEBUG ("doing default action for event");
           gst_pad_event_default (channel->sinkpad, e);

@@ -137,7 +137,7 @@ gst_ximagesink_check_xshm_calls (GstXContext * xcontext)
   }
 
   ximage->SHMInfo.shmaddr = shmat (ximage->SHMInfo.shmid, 0, 0);
-  if ((int) ximage->SHMInfo.shmaddr == -1) {
+  if (ximage->SHMInfo.shmaddr == ((void *) -1)) {
     GST_WARNING ("Failed to shmat: %s", g_strerror (errno));
     goto beach;
   }
@@ -153,8 +153,13 @@ gst_ximagesink_check_xshm_calls (GstXContext * xcontext)
   XSync (xcontext->disp, 0);
 
   XShmDetach (xcontext->disp, &ximage->SHMInfo);
+  XSync (xcontext->disp, FALSE);
+
   shmdt (ximage->SHMInfo.shmaddr);
   shmctl (ximage->SHMInfo.shmid, IPC_RMID, 0);
+
+  /* To be sure, reset the SHMInfo entry */
+  ximage->SHMInfo.shmaddr = ((void *) -1);
 
   /* store whether we succeeded in result and reset error_caught */
   result = !error_caught;
@@ -214,7 +219,7 @@ gst_ximagesink_ximage_new (GstXImageSink * ximagesink, gint width, gint height)
     }
 
     ximage->SHMInfo.shmaddr = shmat (ximage->SHMInfo.shmid, 0, 0);
-    if ((int) ximage->SHMInfo.shmaddr == -1) {
+    if (ximage->SHMInfo.shmaddr == ((void *) -1)) {
       GST_ELEMENT_ERROR (ximagesink, RESOURCE, WRITE, (NULL),
           ("Failed to shmat: %s", g_strerror (errno)));
       goto beach;
@@ -277,8 +282,9 @@ gst_ximagesink_ximage_destroy (GstXImageSink * ximagesink, GstXImage * ximage)
 
 #ifdef HAVE_XSHM
   if (ximagesink->xcontext->use_xshm) {
-    if ((int) ximage->SHMInfo.shmaddr != -1) {
+    if (ximage->SHMInfo.shmaddr != ((void *) -1)) {
       XShmDetach (ximagesink->xcontext->disp, &ximage->SHMInfo);
+      XSync (ximagesink->xcontext->disp, 0);
       shmdt (ximage->SHMInfo.shmaddr);
     }
     if (ximage->SHMInfo.shmid > 0)
@@ -290,9 +296,6 @@ gst_ximagesink_ximage_destroy (GstXImageSink * ximagesink, GstXImage * ximage)
 #endif /* HAVE_XSHM */
   {
     if (ximage->ximage) {
-      if (ximage->ximage->data) {
-        g_free (ximage->ximage->data);
-      }
       XDestroyImage (ximage->ximage);
     }
   }
@@ -817,6 +820,12 @@ gst_ximagesink_xcontext_get (GstXImageSink * ximagesink)
     }
   }
 
+  /* update object's par with calculated one if not set yet */
+  if (!ximagesink->par) {
+    ximagesink->par = g_new0 (GValue, 1);
+    gst_value_init_and_copy (ximagesink->par, xcontext->par);
+    GST_DEBUG_OBJECT (ximagesink, "set calculated PAR on object's PAR");
+  }
   xcontext->caps = gst_caps_new_simple ("video/x-raw-rgb",
       "bpp", G_TYPE_INT, xcontext->bpp,
       "depth", G_TYPE_INT, xcontext->depth,
@@ -847,9 +856,12 @@ static void
 gst_ximagesink_xcontext_clear (GstXImageSink * ximagesink)
 {
   g_return_if_fail (GST_IS_XIMAGESINK (ximagesink));
+  g_return_if_fail (ximagesink->xcontext != NULL);
 
   gst_caps_free (ximagesink->xcontext->caps);
   g_free (ximagesink->xcontext->par);
+  g_free (ximagesink->par);
+  ximagesink->par = NULL;
 
   g_mutex_lock (ximagesink->x_lock);
 
@@ -857,6 +869,7 @@ gst_ximagesink_xcontext_clear (GstXImageSink * ximagesink)
 
   g_mutex_unlock (ximagesink->x_lock);
 
+  g_free (ximagesink->xcontext);
   ximagesink->xcontext = NULL;
 }
 
@@ -1015,12 +1028,6 @@ gst_ximagesink_change_state (GstElement * element)
         ximagesink->xcontext = gst_ximagesink_xcontext_get (ximagesink);
       if (!ximagesink->xcontext)
         return GST_STATE_FAILURE;
-      /* update object's par with calculated one if not set yet */
-      if (!ximagesink->par) {
-        ximagesink->par = g_new0 (GValue, 1);
-        gst_value_init_and_copy (ximagesink->par, ximagesink->xcontext->par);
-        GST_DEBUG_OBJECT (ximagesink, "set calculated PAR on object's PAR");
-      }
       /* call XSynchronize with the current value of synchronous */
       GST_DEBUG_OBJECT (ximagesink, "XSynchronize called with %s",
           ximagesink->synchronous ? "TRUE" : "FALSE");
@@ -1059,8 +1066,6 @@ gst_ximagesink_change_state (GstElement * element)
         gst_ximagesink_xcontext_clear (ximagesink);
         ximagesink->xcontext = NULL;
       }
-      g_free (ximagesink->par);
-      ximagesink->par = NULL;
       break;
   }
 
@@ -1503,8 +1508,18 @@ gst_ximagesink_finalize (GObject * object)
     ximagesink->display_name = NULL;
   }
 
-  g_mutex_free (ximagesink->x_lock);
-  g_mutex_free (ximagesink->pool_lock);
+  if (ximagesink->par) {
+    g_free (ximagesink->par);
+    ximagesink->par = NULL;
+  }
+  if (ximagesink->x_lock) {
+    g_mutex_free (ximagesink->x_lock);
+    ximagesink->x_lock = NULL;
+  }
+  if (ximagesink->pool_lock) {
+    g_mutex_free (ximagesink->pool_lock);
+    ximagesink->pool_lock = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

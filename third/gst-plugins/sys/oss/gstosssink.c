@@ -152,7 +152,10 @@ gst_osssink_dispose (GObject * object)
 {
   GstOssSink *osssink = (GstOssSink *) object;
 
-  gst_object_unparent (GST_OBJECT (osssink->provided_clock));
+  if (osssink->provided_clock) {
+    gst_object_unparent (GST_OBJECT (osssink->provided_clock));
+    osssink->provided_clock = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -339,7 +342,7 @@ gst_osssink_get_time (GstClock * clock, gpointer data)
 {
   GstOssSink *osssink = GST_OSSSINK (data);
   gint delay;
-  GstClockTimeDiff res;
+  GstClockTime res;
 
   if (!GST_OSSELEMENT (osssink)->bps)
     return 0;

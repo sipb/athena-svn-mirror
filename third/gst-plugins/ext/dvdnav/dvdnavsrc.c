@@ -183,6 +183,7 @@ enum
 {
   ARG_0,
   ARG_LOCATION,
+  ARG_DEVICE,
   ARG_STREAMINFO,
   ARG_BUTTONINFO,
   ARG_TITLE_STRING,
@@ -323,8 +324,12 @@ dvdnavsrc_class_init (DVDNavSrcClass * klass)
   klass->user_op = dvdnavsrc_user_op;
 
   g_object_class_install_property (gobject_class, ARG_LOCATION,
-      g_param_spec_string ("location", "location", "location",
+      g_param_spec_string ("location", "Location",
+          "DVD device location (deprecated; use device)",
           NULL, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, ARG_DEVICE,
+      g_param_spec_string ("device", "Device",
+          "DVD device location", NULL, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_TITLE_STRING,
       g_param_spec_string ("title_string", "title string", "DVD title string",
           NULL, G_PARAM_READABLE));
@@ -440,11 +445,11 @@ dvdnavsrc_set_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case ARG_LOCATION:
+    case ARG_DEVICE:
       /* the element must be stopped in order to do this */
       /*g_return_if_fail(!GST_FLAG_IS_SET(src,GST_STATE_RUNNING)); */
 
-      if (src->location)
-        g_free (src->location);
+      g_free (src->location);
       /* clear the filename if we get a NULL (is that possible?) */
       if (g_value_get_string (value) == NULL)
         src->location = g_strdup ("/dev/dvd");
@@ -507,6 +512,7 @@ dvdnavsrc_get_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case ARG_LOCATION:
+    case ARG_DEVICE:
       g_value_set_string (value, src->location);
       break;
     case ARG_STREAMINFO:
@@ -1190,8 +1196,7 @@ dvdnavsrc_make_dvd_nav_packet_event (DVDNavSrc * src, const pci_t * pci)
 {
   GstEvent *event;
   GstStructure *structure;
-  GValue start_ptm = { 0 }, end_ptm =
-  {
+  GValue start_ptm = { 0 }, end_ptm = {
   0};
 
   /* Store the time values in GValues. */
@@ -1631,7 +1636,7 @@ dvdnav_handle_navigation_event (DVDNavSrc * src, GstEvent * event)
     const char *key = gst_structure_get_string (structure, "key");
 
     g_assert (key != NULL);
-    g_print ("dvdnavsrc got a keypress: %s", key);
+    GST_DEBUG ("dvdnavsrc got a keypress: %s", key);
   } else if (strcmp (event_type, "mouse-move") == 0) {
     double x, y;
 

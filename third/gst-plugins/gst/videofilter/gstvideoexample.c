@@ -22,7 +22,7 @@
  * This file was (probably) generated from
  * gstvideotemplate.c,v 1.15 2004/05/21 22:39:29 leroutier Exp 
  * and
- * $Id: gstvideoexample.c,v 1.1.1.1 2004-10-06 18:29:39 ghudson Exp $
+ * $Id: gstvideoexample.c,v 1.1.1.2 2005-03-10 20:50:23 ghudson Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -73,7 +73,8 @@ enum
 };
 
 static void gst_videoexample_base_init (gpointer g_class);
-static void gst_videoexample_class_init (gpointer g_class, gpointer class_data);
+static void gst_videoexample_class_init (gpointer g_class,
+    gpointer class_data);
 static void gst_videoexample_init (GTypeInstance * instance, gpointer g_class);
 
 static void gst_videoexample_set_property (GObject * object, guint prop_id,
@@ -243,7 +244,8 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
 }
 
 static void
-gst_videoexample_planar411 (GstVideofilter * videofilter, void *dest, void *src)
+gst_videoexample_planar411 (GstVideofilter * videofilter,
+    void *dest, void *src)
 {
   GstVideoexample *videoexample;
   int width = gst_videofilter_get_input_width (videofilter);

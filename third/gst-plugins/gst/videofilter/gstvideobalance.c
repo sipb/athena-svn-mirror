@@ -153,20 +153,31 @@ gst_videobalance_dispose (GObject * object)
 
   balance = GST_VIDEOBALANCE (object);
 
-  for (i = 0; i < 256; i++) {
-    g_free (balance->tableu[i]);
-    g_free (balance->tablev[i]);
+  if (balance->tableu) {
+    for (i = 0; i < 256; i++)
+      g_free (balance->tableu[i]);
+    g_free (balance->tableu);
+    balance->tableu = NULL;
   }
-  g_free (balance->tabley);
-  g_free (balance->tableu);
-  g_free (balance->tablev);
+
+  if (balance->tablev) {
+    for (i = 0; i < 256; i++)
+      g_free (balance->tablev[i]);
+    g_free (balance->tablev);
+    balance->tablev = NULL;
+  }
+
+  if (balance->tabley) {
+    g_free (balance->tabley);
+    balance->tabley = NULL;
+  }
 
   channels = balance->channels;
-
   while (channels) {
     GstColorBalanceChannel *channel = channels->data;
 
     g_object_unref (channel);
+    channels->data = NULL;
     channels = g_list_next (channels);
   }
 
@@ -487,7 +498,7 @@ gst_videobalance_update_tables_planar411 (GstVideobalance * vb)
 
 #ifndef HAVE_LIBOIL
 void
-tablelookup_u8 (guint8 * dest, int dstr, guint8 * src, int sstr,
+oil_tablelookup_u8 (guint8 * dest, int dstr, guint8 * src, int sstr,
     guint8 * table, int tstr, int n)
 {
   int i;
@@ -524,7 +535,7 @@ gst_videobalance_planar411 (GstVideofilter * videofilter, void *dest, void *src)
     guint8 *csrc = src;
 
     for (y = 0; y < height; y++) {
-      tablelookup_u8 (cdest + y * width, 1, csrc + y * width, 1,
+      oil_tablelookup_u8 (cdest + y * width, 1, csrc + y * width, 1,
           videobalance->tabley, 1, width);
     }
   }

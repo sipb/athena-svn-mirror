@@ -34,6 +34,24 @@ else
 AUDIOFILE_DIR=
 endif
 
+if USE_AUDIORESAMPLE
+AUDIORESAMPLE_DIR=audioresample
+else
+AUDIORESAMPLE_DIR=
+endif
+
+if USE_CAIRO
+CAIRO_DIR=cairo
+else
+CAIRO_DIR=
+endif
+
+if USE_CDAUDIO
+CDAUDIO_DIR=cdaudio
+else
+CDAUDIO_DIR=
+endif
+
 if USE_CDPARANOIA
 CDPARANOIA_DIR=cdparanoia
 else
@@ -44,6 +62,12 @@ if USE_DIRAC
 DIRAC_DIR=dirac
 else
 DIRAC_DIR=
+endif
+
+if USE_DIRECTFB
+DIRECTFB_DIR=directfb
+else
+DIRECTFB_DIR=
 endif
 
 if USE_DIVX
@@ -136,12 +160,6 @@ else
 JPEG_DIR=
 endif
 
-if USE_KIO
-KIO_DIR=kio
-else
-KIO_DIR=
-endif
-
 if USE_LADSPA
 LADSPA_DIR=ladspa
 else
@@ -178,10 +196,22 @@ else
 LIBFAME_DIR=
 endif
 
+if USE_LIBMNG
+LIBMNG_DIR=libmng
+else
+LIBMNG_DIR=
+endif
+
 if USE_LIBPNG
 LIBPNG_DIR=libpng
 else
 LIBPNG_DIR=
+endif
+
+if USE_POLYP
+POLYP_DIR=polyp
+else
+POLYP_DIR=
 endif
 
 if USE_LIBRFB
@@ -194,6 +224,12 @@ if USE_LIBVISUAL
 LIBVISUAL_DIR=libvisual
 else
 LIBVISUAL_DIR=
+endif
+
+if USE_LIBMMS
+LIBMMS_DIR=libmms
+else 
+LIBMMS_DIR=
 endif
 
 if USE_MAD
@@ -226,6 +262,18 @@ else
 MPLEX_DIR=
 endif
 
+#if USE_MAS
+#MAS_DIR=mas
+#else
+#MAS_DIR=
+#endif
+
+if USE_MUSEPACK
+MUSEPACK_DIR=musepack
+else
+MUSEPACK_DIR=
+endif
+
 if USE_MUSICBRAINZ
 MUSICBRAINZ_DIR=musicbrainz
 else
@@ -250,10 +298,10 @@ else
 PANGO_DIR=
 endif
 
-if USE_RAW1394
-RAW1394_DIR=raw1394
+if USE_DV1394
+DV1394_DIR=raw1394
 else
-RAW1394_DIR=
+DV1394_DIR=
 endif
 
 if USE_SDL
@@ -353,10 +401,15 @@ SUBDIRS=\
 	$(ARTS_DIR) \
 	$(ARTSC_DIR) \
 	$(AUDIOFILE_DIR) \
+	$(AUDIORESAMPLE_DIR) \
+	$(CAIRO_DIR) \
+	$(CDAUDIO_DIR) \
 	$(CDPARANOIA_DIR) \
 	$(DIRAC_DIR) \
+	$(DIRECTFB_DIR) \
 	$(DIVX_DIR) \
 	$(DTS_DIR) \
+	$(DV1394_DIR) \
 	$(DVDREAD_DIR) \
 	$(DVDNAV_DIR) \
 	$(ESD_DIR) \
@@ -368,15 +421,16 @@ SUBDIRS=\
 	$(GNOMEVFS_DIR) \
 	$(GSM_DIR) \
 	$(HERMES_DIR) \
+	$(LIBMMS_DIR) \
 	$(JACK_DIR) \
 	$(JPEG_DIR) \
-	$(KIO_DIR) \
 	$(LADSPA_DIR) \
 	$(LAME_DIR) \
 	$(LCS_DIR) \
 	$(LIBCACA_DIR) \
 	$(LIBDV_DIR) \
 	$(LIBFAME_DIR) \
+	$(LIBMNG_DIR) \
 	$(LIBPNG_DIR) \
 	$(LIBRFB_DIR) \
 	$(LIBVISUAL_DIR) \
@@ -385,10 +439,11 @@ SUBDIRS=\
 	$(MPEG2DEC_DIR) \
 	$(MPEG2ENC_DIR) \
 	$(MPLEX_DIR) \
+	$(MUSEPACK_DIR) \
 	$(MUSICBRAINZ_DIR) \
 	$(OGG_DIR) \
 	$(PANGO_DIR) \
-	$(RAW1394_DIR) \
+	$(POLYP_DIR) \
 	$(SDL_DIR) \
 	$(SHOUT_DIR) \
 	$(SHOUT2_DIR) \
@@ -412,14 +467,19 @@ DIST_SUBDIRS=\
 	arts \
 	artsd \
 	audiofile \
+	audioresample \
+	cairo \
+	cdaudio \
 	cdparanoia \
 	dirac \
+	directfb \
 	divx \
 	dts \
 	dv \
 	dvdread \
 	dvdnav \
 	esd \
+	libmms \
 	faac \
 	faad \
 	flac \
@@ -430,12 +490,12 @@ DIST_SUBDIRS=\
 	ivorbis \
 	jack \
 	jpeg \
-	kio \
 	ladspa \
 	lame \
 	lcs \
 	libcaca \
 	libfame \
+	libmng \
 	libpng \
 	librfb \
 	libvisual \
@@ -444,10 +504,12 @@ DIST_SUBDIRS=\
 	mpeg2dec \
 	mpeg2enc \
 	mplex \
+	musepack \
 	musicbrainz \
 	nas \
 	ogg \
 	pango \
+	polyp \
 	raw1394 \
 	sdl \
 	snapshot \

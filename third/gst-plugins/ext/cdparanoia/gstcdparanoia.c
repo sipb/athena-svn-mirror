@@ -36,6 +36,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include "gst/gst-i18n-plugin.h"
+#include <gst/gst.h>
 
 /* taken from linux/cdrom.h */
 #define CD_MSF_OFFSET       150 /* MSF numbering offset of first frame */
@@ -60,11 +61,7 @@ GST_STATIC_PAD_TEMPLATE ("src",
         "endianness = (int) BYTE_ORDER, "
         "signed = (boolean) true, "
         "width = (int) 16, "
-        "depth = (int) 16, "
-        "rate = (int) 44100, "
-        "channels = (int) 2, "
-        "chunksize = (int) " G_STRINGIFY (CD_FRAMESIZE_RAW)
-    )
+        "depth = (int) 16, " "rate = (int) 44100, " "channels = (int) 2")
     );
 
 
@@ -120,6 +117,7 @@ enum
 {
   ARG_0,
   ARG_LOCATION,
+  ARG_DEVICE,
   ARG_GENERIC_DEVICE,
   ARG_DEFAULT_SECTORS,
   ARG_SEARCH_OVERLAP,
@@ -137,6 +135,7 @@ enum
 static void cdparanoia_base_init (gpointer g_class);
 static void cdparanoia_class_init (CDParanoiaClass * klass);
 static void cdparanoia_init (CDParanoia * cdparanoia);
+static void cdparanoia_finalize (GObject * obj);
 
 static void cdparanoia_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -157,43 +156,31 @@ static void cdparanoia_set_index (GstElement * element, GstIndex * index);
 static GstIndex *cdparanoia_get_index (GstElement * element);
 
 
+static void cdparanoia_uri_handler_init (gpointer g_iface, gpointer iface_data);
+
+static void
+_do_init (GType cdparanoia_type)
+{
+  static const GInterfaceInfo urihandler_info = {
+    cdparanoia_uri_handler_init,
+    NULL,
+    NULL,
+  };
+
+  g_type_add_interface_static (cdparanoia_type, GST_TYPE_URI_HANDLER,
+      &urihandler_info);
+}
+
+GST_BOILERPLATE_FULL (CDParanoia, cdparanoia, GstElement, GST_TYPE_ELEMENT,
+    _do_init);
+
 static GstElementStateReturn cdparanoia_change_state (GstElement * element);
 
-
-static GstElementClass *parent_class = NULL;
 static guint cdparanoia_signals[LAST_SIGNAL] = { 0 };
 
+/* our two formats */
 static GstFormat track_format;
 static GstFormat sector_format;
-
-GType
-cdparanoia_get_type (void)
-{
-  static GType cdparanoia_type = 0;
-
-  if (!cdparanoia_type) {
-    static const GTypeInfo cdparanoia_info = {
-      sizeof (CDParanoiaClass),
-      cdparanoia_base_init,
-      NULL,
-      (GClassInitFunc) cdparanoia_class_init,
-      NULL,
-      NULL,
-      sizeof (CDParanoia),
-      0,
-      (GInstanceInitFunc) cdparanoia_init,
-    };
-
-    cdparanoia_type =
-        g_type_register_static (GST_TYPE_ELEMENT, "CDParanoia",
-        &cdparanoia_info, 0);
-
-    /* Register the track format */
-    track_format = gst_format_register ("track", "CD track");
-    sector_format = gst_format_register ("sector", "CD sector");
-  }
-  return cdparanoia_type;
-}
 
 static void
 cdparanoia_base_init (gpointer g_class)
@@ -204,6 +191,9 @@ cdparanoia_base_init (gpointer g_class)
       gst_static_pad_template_get (&cdparanoia_src_template));
   gst_element_class_set_details (element_class, &cdparanoia_details);
 
+  /* Register the track and sector format */
+  track_format = gst_format_register ("track", "CD track");
+  sector_format = gst_format_register ("sector", "CD sector");
 }
 
 static void
@@ -234,8 +224,12 @@ cdparanoia_class_init (CDParanoiaClass * klass)
       NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LOCATION,
-      g_param_spec_string ("location", "location", "location",
+      g_param_spec_string ("location", "Location",
+          "CD device location (deprecated; use device)",
           NULL, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DEVICE,
+      g_param_spec_string ("device", "Device",
+          "CD device location", NULL, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GENERIC_DEVICE,
       g_param_spec_string ("generic_device", "Generic device",
           "Use specified generic scsi device", NULL, G_PARAM_READWRITE));
@@ -279,8 +273,14 @@ cdparanoia_class_init (CDParanoiaClass * klass)
       g_param_spec_string ("discid", "discid", "The dics id", NULL,
           G_PARAM_READABLE));
 
+  /* tags */
+  gst_tag_register ("discid", GST_TAG_FLAG_META, G_TYPE_STRING,
+      _("discid"), _("CDDA discid for metadata retrieval"),
+      gst_tag_merge_use_first);
+
   gobject_class->set_property = cdparanoia_set_property;
   gobject_class->get_property = cdparanoia_get_property;
+  gobject_class->finalize = cdparanoia_finalize;
 
   gstelement_class->change_state = cdparanoia_change_state;
   gstelement_class->set_index = cdparanoia_set_index;
@@ -319,8 +319,21 @@ cdparanoia_init (CDParanoia * cdparanoia)
 
   cdparanoia->total_seconds = 0;
   cdparanoia->discont_sent = FALSE;
+  cdparanoia->uri = NULL;
+  cdparanoia->uri_track = -1;
+  cdparanoia->seek_request = -1;
 }
 
+static void
+cdparanoia_finalize (GObject * obj)
+{
+  CDParanoia *cdparanoia = CDPARANOIA (obj);
+
+  g_free (cdparanoia->uri);
+  cdparanoia->uri = NULL;
+
+  G_OBJECT_CLASS (parent_class)->finalize (obj);
+}
 
 static void
 cdparanoia_set_property (GObject * object, guint prop_id, const GValue * value,
@@ -334,9 +347,9 @@ cdparanoia_set_property (GObject * object, guint prop_id, const GValue * value,
   src = CDPARANOIA (object);
 
   switch (prop_id) {
+    case ARG_DEVICE:
     case ARG_LOCATION:
-      if (src->device)
-        g_free (src->device);
+      g_free (src->device);
       /* clear the filename if we get a NULL (is that possible?) */
       if (!g_ascii_strcasecmp (g_value_get_string (value), ""))
         src->device = NULL;
@@ -399,6 +412,7 @@ cdparanoia_get_property (GObject * object, guint prop_id, GValue * value,
   src = CDPARANOIA (object);
 
   switch (prop_id) {
+    case ARG_DEVICE:
     case ARG_LOCATION:
       g_value_set_string (value, src->device);
       break;
@@ -465,6 +479,14 @@ cdparanoia_get (GstPad * pad)
 
   g_return_val_if_fail (GST_FLAG_IS_SET (src, CDPARANOIA_OPEN), NULL);
 
+  if (src->seek_request != -1) {
+    gst_pad_send_event (src->srcpad,
+        gst_event_new_segment_seek (track_format |
+            GST_SEEK_METHOD_SET |
+            GST_SEEK_FLAG_FLUSH, src->seek_request - 1, src->seek_request));
+    src->seek_request = -1;
+  }
+
   /* stop things apropriatly */
   if (src->cur_sector > src->segment_end_sector) {
     GST_DEBUG ("setting EOS");
@@ -503,6 +525,9 @@ cdparanoia_get (GstPad * pad)
     buf = gst_buffer_new_and_alloc (CD_FRAMESIZE_RAW);
     memcpy (GST_BUFFER_DATA (buf), cdda_buf, CD_FRAMESIZE_RAW);
     GST_BUFFER_TIMESTAMP (buf) = timestamp;
+    gst_pad_convert (pad, GST_FORMAT_BYTES, CD_FRAMESIZE_RAW,
+        &format, &timestamp);
+    GST_BUFFER_DURATION (buf) = timestamp;
 
     /* update current sector */
     src->cur_sector++;
@@ -633,6 +658,7 @@ add_index_associations (CDParanoia * src)
 static gboolean
 cdparanoia_open (CDParanoia * src)
 {
+  GstTagList *taglist;
   gint i;
   gint paranoia_mode;
 
@@ -687,6 +713,11 @@ cdparanoia_open (CDParanoia * src)
   g_object_notify (G_OBJECT (src), "discid");
   g_object_thaw_notify (G_OBJECT (src));
 
+  taglist = gst_tag_list_new ();
+  gst_tag_list_add (taglist, GST_TAG_MERGE_APPEND, "discid", src->discid, NULL);
+  gst_element_found_tags (GST_ELEMENT (src), taglist);
+  /* no need to forward, because discid is useless to other elements */
+
   if (src->toc_bias) {
     src->toc_offset -= cdda_track_firstsector (src->d, 1);
   }
@@ -698,8 +729,8 @@ cdparanoia_open (CDParanoia * src)
     cdda_speed_set (src->d, src->read_speed);
   }
 
-  /* save thse ones */
-  src->first_sector = cdda_disc_firstsector (src->d);
+  /* save thse ones - skip lead-in */
+  src->first_sector = cdda_track_firstsector (src->d, 1);
   src->last_sector = cdda_disc_lastsector (src->d);
 
   /* this is the default segment we will play */
@@ -774,6 +805,9 @@ cdparanoia_change_state (GstElement * element)
       }
       break;
     case GST_STATE_READY_TO_PAUSED:
+      if (cdparanoia->uri_track > 0) {
+        cdparanoia->seek_request = cdparanoia->uri_track;
+      }
       break;
     case GST_STATE_PAUSED_TO_PLAYING:
       break;
@@ -784,6 +818,7 @@ cdparanoia_change_state (GstElement * element)
       break;
     case GST_STATE_READY_TO_NULL:
       cdparanoia_close (CDPARANOIA (element));
+      cdparanoia->seek_request = -1;
       break;
     default:
       break;
@@ -876,6 +911,7 @@ cdparanoia_event (GstPad * pad, GstEvent * event)
       }
       /* do we need to update the start sector? */
       if (seg_start_sector != -1) {
+        seg_start_sector += src->first_sector;
         seg_start_sector = CLAMP (seg_start_sector,
             src->first_sector, src->last_sector);
 
@@ -889,6 +925,7 @@ cdparanoia_event (GstPad * pad, GstEvent * event)
         }
       }
       if (seg_end_sector != -1) {
+        seg_end_sector += src->first_sector;
         seg_end_sector = CLAMP (seg_end_sector,
             src->first_sector, src->last_sector);
         src->segment_end_sector = seg_end_sector;
@@ -990,7 +1027,7 @@ cdparanoia_convert (GstPad * pad,
       break;
     default:
     {
-      gint sector;
+      gint64 sector;
 
       if (src_format == track_format) {
         /* some sanity checks */
@@ -1066,20 +1103,23 @@ cdparanoia_query (GstPad * pad, GstQueryType type,
       /* we take the last sector + 1 so that we also have the full
        * size of that last sector */
       res = gst_pad_convert (src->srcpad,
-          sector_format, src->last_sector + 1, format, value);
+          sector_format, src->last_sector + 1 - src->first_sector,
+          format, value);
       break;
     case GST_QUERY_POSITION:
       /* bring our current sector to the requested format */
       res = gst_pad_convert (src->srcpad,
-          sector_format, src->cur_sector, format, value);
+          sector_format, src->cur_sector - src->first_sector, format, value);
       break;
     case GST_QUERY_START:
       res = gst_pad_convert (src->srcpad,
-          sector_format, src->segment_start_sector, format, value);
+          sector_format, src->segment_start_sector - src->first_sector,
+          format, value);
       break;
     case GST_QUERY_SEGMENT_END:
       res = gst_pad_convert (src->srcpad,
-          sector_format, src->segment_end_sector, format, value);
+          sector_format, src->segment_end_sector - src->first_sector,
+          format, value);
       break;
     default:
       res = FALSE;
@@ -1121,6 +1161,65 @@ plugin_init (GstPlugin * plugin)
     return FALSE;
 
   return TRUE;
+}
+
+/*** GSTURIHANDLER INTERFACE *************************************************/
+
+static guint
+cdparanoia_uri_get_type (void)
+{
+  return GST_URI_SRC;
+}
+static gchar **
+cdparanoia_uri_get_protocols (void)
+{
+  static gchar *protocols[] = { "cdda", NULL };
+
+  return protocols;
+}
+static const gchar *
+cdparanoia_uri_get_uri (GstURIHandler * handler)
+{
+  CDParanoia *cdparanoia = CDPARANOIA (handler);
+
+  return cdparanoia->uri;
+}
+
+static gboolean
+cdparanoia_uri_set_uri (GstURIHandler * handler, const gchar * uri)
+{
+  gchar *protocol, *location;
+  gboolean ret;
+
+  CDParanoia *cdparanoia = CDPARANOIA (handler);
+
+  ret = TRUE;
+
+  protocol = gst_uri_get_protocol (uri);
+  if (strcmp (protocol, "cdda") != 0) {
+    g_free (protocol);
+    return FALSE;
+  }
+  g_free (protocol);
+  location = gst_uri_get_location (uri);
+  cdparanoia->uri_track = strtol (location, NULL, 10);
+  if (cdparanoia->uri_track > 0) {
+    cdparanoia->seek_request = cdparanoia->uri_track;
+  }
+  g_free (location);
+
+  return ret;
+}
+
+static void
+cdparanoia_uri_handler_init (gpointer g_iface, gpointer iface_data)
+{
+  GstURIHandlerInterface *iface = (GstURIHandlerInterface *) g_iface;
+
+  iface->get_type = cdparanoia_uri_get_type;
+  iface->get_protocols = cdparanoia_uri_get_protocols;
+  iface->get_uri = cdparanoia_uri_get_uri;
+  iface->set_uri = cdparanoia_uri_set_uri;
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,

@@ -64,7 +64,8 @@ mulawenc_getcaps (GstPad * pad)
     otherpad = mulawenc->srcpad;
     base_caps = gst_caps_new_simple ("audio/x-raw-int",
         "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
-        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+        "endianness", G_TYPE_INT, G_BYTE_ORDER,
+        "signed", G_TYPE_BOOLEAN, TRUE, NULL);
   }
   othercaps = gst_pad_get_allowed_caps (otherpad);
 
@@ -107,7 +108,8 @@ mulawenc_link (GstPad * pad, const GstCaps * caps)
     otherpad = mulawenc->sinkpad;
     base_caps = gst_caps_new_simple ("audio/x-raw-int",
         "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
-        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
+        "endianness", G_TYPE_INT, G_BYTE_ORDER,
+        "signed", G_TYPE_BOOLEAN, TRUE, NULL);
   }
 
   structure = gst_caps_get_structure (base_caps, 0);
@@ -150,7 +152,7 @@ gst_mulawenc_base_init (GstMuLawEncClass * klass)
     "PCM to Mu Law conversion",
     "Codec/Encoder/Audio",
     "Convert 16bit PCM to 8bit mu law",
-    "Zaheer Merali <zaheer@bellworldwide.net>"
+    "Zaheer Abbas Merali <zaheerabbas at merali dot org>"
   };
 
   gst_element_class_add_pad_template (element_class, mulawenc_src_template);

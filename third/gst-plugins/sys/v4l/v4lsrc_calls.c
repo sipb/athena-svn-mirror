@@ -49,7 +49,7 @@ GST_DEBUG_CATEGORY_EXTERN (v4l_debug);
 
 #ifndef GST_DISABLE_GST_DEBUG
 /* palette names */
-static const char *palette_name[] = {
+const char *v4l_palette_name[] = {
   "",                           /* 0 */
   "grayscale",                  /* VIDEO_PALETTE_GREY */
   "Hi-420",                     /* VIDEO_PALETTE_HI420 */
@@ -65,7 +65,7 @@ static const char *palette_name[] = {
   "Raw",                        /* VIDEO_PALETTE_RAW */
   "YUV-4:2:2 (planar)",         /* VIDEO_PALETTE_YUV422P */
   "YUV-4:1:1 (planar)",         /* VIDEO_PALETTE_YUV411P */
-  "YUV-4:2:0 (planar)",         /* VIDEO_PALETTE_YUV420P */
+  "YUV-4:2:0 (planar)/I420",    /* VIDEO_PALETTE_YUV420P */
   "YUV-4:1:0 (planar)"          /* VIDEO_PALETTE_YUV410P */
 };
 #endif
@@ -194,7 +194,7 @@ gst_v4lsrc_capture_init (GstV4lSrc * v4lsrc)
   }
 
   GST_INFO_OBJECT (v4lsrc, "Got %d buffers (\'%s\') with total size %d KB",
-      v4lsrc->mbuf.frames, palette_name[v4lsrc->mmap.format],
+      v4lsrc->mbuf.frames, v4l_palette_name[v4lsrc->mmap.format],
       v4lsrc->mbuf.size / (v4lsrc->mbuf.frames * 1024));
 
   /* keep track of queued buffers */
@@ -272,7 +272,7 @@ gst_v4lsrc_capture_start (GstV4lSrc * v4lsrc)
 gboolean
 gst_v4lsrc_grab_frame (GstV4lSrc * v4lsrc, gint * num)
 {
-  GST_LOG_OBJECT (v4lsrc, "grabbing frame %d", num);
+  GST_LOG_OBJECT (v4lsrc, "grabbing frame %d", *num);
   GST_V4L_CHECK_OPEN (GST_V4LELEMENT (v4lsrc));
   GST_V4L_CHECK_ACTIVE (GST_V4LELEMENT (v4lsrc));
 
@@ -285,7 +285,7 @@ gst_v4lsrc_grab_frame (GstV4lSrc * v4lsrc, gint * num)
     while (v4lsrc->frame_queue_state[v4lsrc->queue_frame] !=
         QUEUE_STATE_READY_FOR_QUEUE && !v4lsrc->quit) {
       GST_DEBUG_OBJECT (v4lsrc,
-          "Waiting for frames to become available (%d < %d)",
+          "Waiting for frames to become available (queued %d < minimum %d)",
           v4lsrc->num_queued, MIN_BUFFERS_QUEUED);
       g_cond_wait (v4lsrc->cond_queue_state, v4lsrc->mutex_queue_state);
     }
@@ -468,7 +468,7 @@ gst_v4lsrc_try_capture (GstV4lSrc * v4lsrc, gint width, gint height,
   struct video_mmap vmmap;
 
   GST_DEBUG_OBJECT (v4lsrc, "try out %dx%d, palette format %d (%s)",
-      width, height, palette, palette_name[palette]);
+      width, height, palette, v4l_palette_name[palette]);
   GST_V4L_CHECK_OPEN (GST_V4LELEMENT (v4lsrc));
   GST_V4L_CHECK_NOT_ACTIVE (GST_V4LELEMENT (v4lsrc));
 
@@ -494,8 +494,8 @@ gst_v4lsrc_try_capture (GstV4lSrc * v4lsrc, gint width, gint height,
   vmmap.frame = frame;
   if (ioctl (GST_V4LELEMENT (v4lsrc)->video_fd, VIDIOCMCAPTURE, &vmmap) < 0) {
     if (errno != EINVAL)        /* our format failed! */
-      GST_ELEMENT_ERROR (v4lsrc, RESOURCE, OPEN_READ_WRITE, (NULL),
-          ("Error queueing our try-out buffer: %s", g_strerror (errno)));
+      GST_ERROR_OBJECT (v4lsrc,
+          "Error queueing our try-out buffer: %s", g_strerror (errno));
     munmap (buffer, vmbuf.size);
     return FALSE;
   }

@@ -29,11 +29,10 @@
 #include <sys/filio.h>
 #endif
 
+#include "gsttcp.h"
 #include "gsttcpserversink.h"
 #include "gsttcp-marshal.h"
 
-#define TCP_DEFAULT_HOST	"127.0.0.1"
-#define TCP_DEFAULT_PORT	4953
 #define TCP_BACKLOG		5
 
 /* elementfactory information */
@@ -61,6 +60,7 @@ static gboolean gst_tcpserversink_handle_wait (GstMultiFdSink * sink,
     GstFDSet * set);
 static gboolean gst_tcpserversink_init_send (GstMultiFdSink * this);
 static gboolean gst_tcpserversink_close (GstMultiFdSink * this);
+static void gst_tcpserversink_removed (GstMultiFdSink * sink, int fd);
 
 static void gst_tcpserversink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -123,7 +123,7 @@ gst_tcpserversink_class_init (GstTCPServerSink * klass)
           TCP_DEFAULT_HOST, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PORT,
       g_param_spec_int ("port", "port", "The port to send the packets to",
-          0, 32768, TCP_DEFAULT_PORT, G_PARAM_READWRITE));
+          0, TCP_HIGHEST_PORT, TCP_DEFAULT_PORT, G_PARAM_READWRITE));
 
   gobject_class->set_property = gst_tcpserversink_set_property;
   gobject_class->get_property = gst_tcpserversink_get_property;
@@ -131,6 +131,7 @@ gst_tcpserversink_class_init (GstTCPServerSink * klass)
   gstmultifdsink_class->init = gst_tcpserversink_init_send;
   gstmultifdsink_class->wait = gst_tcpserversink_handle_wait;
   gstmultifdsink_class->close = gst_tcpserversink_close;
+  gstmultifdsink_class->removed = gst_tcpserversink_removed;
 
   GST_DEBUG_CATEGORY_INIT (tcpserversink_debug, "tcpserversink", 0, "TCP sink");
 }
@@ -155,12 +156,18 @@ gst_tcpserversink_handle_server_read (GstTCPServerSink * sink)
   struct sockaddr_in client_address;
   int client_address_len;
 
+  /* For some stupid reason, client_address and client_address_len has to be
+   * zeroed */
+  memset (&client_address, 0, sizeof (client_address));
+  client_address_len = 0;
+
   client_sock_fd =
       accept (sink->server_sock.fd, (struct sockaddr *) &client_address,
       &client_address_len);
   if (client_sock_fd == -1) {
     GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE, (NULL),
-        ("Could not accept client on server socket: %s", g_strerror (errno)));
+        ("Could not accept client on server socket %d: %s (%d)",
+            sink->server_sock.fd, g_strerror (errno), errno));
     return FALSE;
   }
 
@@ -170,6 +177,18 @@ gst_tcpserversink_handle_server_read (GstTCPServerSink * sink)
       inet_ntoa (client_address.sin_addr), client_sock_fd);
 
   return TRUE;
+}
+
+static void
+gst_tcpserversink_removed (GstMultiFdSink * sink, int fd)
+{
+  GstTCPServerSink *this = GST_TCPSERVERSINK (sink);
+
+  GST_LOG_OBJECT (this, "closing fd %d", fd);
+  if (close (fd) < 0) {
+    GST_WARNING_OBJECT (this, "error closing fd %d: %s", fd,
+        g_strerror (errno));
+  }
 }
 
 static gboolean
@@ -281,7 +300,8 @@ gst_tcpserversink_init_send (GstMultiFdSink * parent)
     switch (errno) {
       default:
         GST_ELEMENT_ERROR (this, RESOURCE, OPEN_READ, (NULL),
-            ("bind failed: %s", g_strerror (errno)));
+            ("bind on port %d failed: %s", this->server_port,
+            g_strerror (errno)));
         return FALSE;
         break;
     }
@@ -304,8 +324,6 @@ gst_tcpserversink_init_send (GstMultiFdSink * parent)
   gst_fdset_add_fd (parent->fdset, &this->server_sock);
   gst_fdset_fd_ctl_read (parent->fdset, &this->server_sock, TRUE);
 
-  //FD_SET (this->server_sock_fd, &parent->readfds);
-
   return TRUE;
 }
 
@@ -315,10 +333,10 @@ gst_tcpserversink_close (GstMultiFdSink * parent)
   GstTCPServerSink *this = GST_TCPSERVERSINK (parent);
 
   if (this->server_sock.fd != -1) {
+    gst_fdset_remove_fd (parent->fdset, &this->server_sock);
+
     close (this->server_sock.fd);
     this->server_sock.fd = -1;
-
-    gst_fdset_remove_fd (parent->fdset, &this->server_sock);
   }
   return TRUE;
 }

@@ -35,9 +35,9 @@ static GstPadTemplate *gst_oggvorbisenc_src_template,
 
 /* elementfactory information */
 GstElementDetails oggvorbisenc_details = {
-  "Ogg Vorbis encoder",
+  "Ogg Vorbis encoder (deprecated)",
   "Codec/Encoder/Audio",
-  "Encodes audio in OGG Vorbis format",
+  "Encodes audio in Vorbis format for Ogg containers",
   "Monty <monty@xiph.org>, " "Wim Taymans <wim.taymans@chello.be>",
 };
 
@@ -149,7 +149,7 @@ raw_caps_factory (void)
       "signed", G_TYPE_BOOLEAN, TRUE,
       "width", G_TYPE_INT, 16,
       "depth", G_TYPE_INT, 16,
-      "rate", GST_TYPE_INT_RANGE, 11025, 48000,
+      "rate", GST_TYPE_INT_RANGE, 8000, 50000,
       "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
 }
 

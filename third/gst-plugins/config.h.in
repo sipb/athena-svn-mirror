@@ -58,8 +58,17 @@
 /* support for features: afsink afsrc */
 #undef HAVE_AUDIOFILE
 
+/* support for features: audioresample */
+#undef HAVE_AUDIORESAMPLE
+
 /* support for features: */
 #undef HAVE_BROKEN
+
+/* support for features: cairo */
+#undef HAVE_CAIRO
+
+/* support for features: cdaudio */
+#undef HAVE_CDAUDIO
 
 /* support for features: cdparanoia */
 #undef HAVE_CDPARANOIA
@@ -119,6 +128,9 @@
 /* support for features: dirac */
 #undef HAVE_DIRAC
 
+/* support for features: directfbvideosink */
+#undef HAVE_DIRECTFB
+
 /* support for features: divx */
 #undef HAVE_DIVX
 
@@ -127,6 +139,9 @@
 
 /* support for features: dtsdec */
 #undef HAVE_DTS
+
+/* support for features: dv1394src */
+#undef HAVE_DV1394
 
 /* support for features: dvdnavsrc */
 #undef HAVE_DVDNAV
@@ -185,6 +200,9 @@
 /* support for features: gsmenc gsmdec */
 #undef HAVE_GSM
 
+/* support for features: v4lsrc v4lmjpegsrc v4lmjpegsink */
+#undef HAVE_GST_V4L
+
 /* support for features: v4l2src */
 #undef HAVE_GST_V4L2
 
@@ -205,9 +223,6 @@
 
 /* support for features: jpegenc jpegdec */
 #undef HAVE_JPEG
-
-/* support for features: kio */
-#undef HAVE_KIO
 
 /* support for features: ladspa */
 #undef HAVE_LADSPA
@@ -239,8 +254,11 @@
 /* support for features: libfame */
 #undef HAVE_LIBFAME
 
-/* Define if libmmx is available */
-#undef HAVE_LIBMMX
+/* support for features: libmms */
+#undef HAVE_LIBMMS
+
+/* support for features: mngdec */
+#undef HAVE_LIBMNG
 
 /* support for features: snapshot */
 #undef HAVE_LIBPNG
@@ -281,14 +299,14 @@
 /* support for features: mplex */
 #undef HAVE_MPLEX
 
+/* support for features: musepack */
+#undef HAVE_MUSEPACK
+
 /* support for features: musicbrainz */
 #undef HAVE_MUSICBRAINZ
 
 /* support for features: nassink */
 #undef HAVE_NAS
-
-/* Define if NASM, the netwide assembler, is available */
-#undef HAVE_NASM
 
 /* support for features: oggdemux oggmux */
 #undef HAVE_OGG
@@ -317,14 +335,14 @@
 /* support for features: pango */
 #undef HAVE_PANGO
 
+/* support for features: polyp */
+#undef HAVE_POLYP
+
 /* defined if the compiler implements __PRETTY_FUNCTION__ */
 #undef HAVE_PRETTY_FUNCTION
 
 /* support for features: qcamsrc */
 #undef HAVE_QCAM
-
-/* support for features: dv1394src */
-#undef HAVE_RAW1394
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
@@ -386,9 +404,6 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* support for features: v4lsrc v4lmjpegsrc v4lmjpegsink */
-#undef HAVE_V4L
-
 /* support for features: vcdsrc */
 #undef HAVE_VCD
 
@@ -448,6 +463,9 @@
 
 /* The size of a `void*', as computed by sizeof. */
 #undef SIZEOF_VOIDP
+
+/* defined if speex 1.0.x API detected */
+#undef SPEEX_1_0
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

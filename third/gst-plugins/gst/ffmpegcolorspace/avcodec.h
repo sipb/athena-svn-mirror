@@ -11,12 +11,13 @@
 extern "C" {
 #endif
 
-#include "common.h"
+#include <stdint.h>
+
 #include <sys/types.h> /* size_t */
 
-#define FFMPEG_VERSION_INT     0x000408
-#define FFMPEG_VERSION         "0.4.8"
-#define LIBAVCODEC_BUILD       4707
+#define FFMPEG_VERSION_INT     0x000409
+#define FFMPEG_VERSION         "0.4.9-pre1"
+#define LIBAVCODEC_BUILD       4728
 
 #define LIBAVCODEC_VERSION_INT FFMPEG_VERSION_INT
 #define LIBAVCODEC_VERSION     FFMPEG_VERSION
@@ -25,14 +26,11 @@ extern "C" {
 #define AV_TOSTRING(s) #s
 #define LIBAVCODEC_IDENT	"FFmpeg" LIBAVCODEC_VERSION "b" AV_STRINGIFY(LIBAVCODEC_BUILD)
 
-#define AV_NOPTS_VALUE int64_t_C(0x8000000000000000)
-#define AV_TIME_BASE 1000000
-
 enum CodecType {
     CODEC_TYPE_UNKNOWN = -1,
     CODEC_TYPE_VIDEO,
     CODEC_TYPE_AUDIO,
-    CODEC_TYPE_DATA
+    CODEC_TYPE_DATA,
 };
 
 /**
@@ -55,12 +53,13 @@ enum CodecType {
  */
 enum PixelFormat {
     PIX_FMT_YUV420P,   ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
-    PIX_FMT_YUV422,    
+    PIX_FMT_YUV422,    ///< Packed pixel, Y0 Cb Y1 Cr 
     PIX_FMT_RGB24,     ///< Packed pixel, 3 bytes per pixel, RGBRGB...
     PIX_FMT_BGR24,     ///< Packed pixel, 3 bytes per pixel, BGRBGR...
     PIX_FMT_YUV422P,   ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
     PIX_FMT_YUV444P,   ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
     PIX_FMT_RGBA32,    ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
+    PIX_FMT_RGB32,     ///< Packed pixel, 4 bytes per pixel, BGRXBGRX..., stored in cpu endianness
     PIX_FMT_YUV410P,   ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
     PIX_FMT_YUV411P,   ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
     PIX_FMT_RGB565,    ///< always stored in cpu endianness 
@@ -74,8 +73,106 @@ enum PixelFormat {
     PIX_FMT_YUVJ444P,  ///< Planar YUV 4:4:4 full scale (jpeg)
     PIX_FMT_XVMC_MPEG2_MC,///< XVideo Motion Acceleration via common packet passing(xvmc_render.h)
     PIX_FMT_XVMC_MPEG2_IDCT,
-    PIX_FMT_NB
+    PIX_FMT_UYVY422,   ///< Packed pixel, Cb Y0 Cr Y1 
+    PIX_FMT_UYVY411,   ///< Packed pixel, Cb Y0 Y1 Cr Y2 Y3
+
+    PIX_FMT_AYUV4444,  ///< Packed pixel, A0 Y0 Cb Cr
+    PIX_FMT_NB,
 };
+
+/* currently unused, may be used if 24/32 bits samples ever supported */
+enum SampleFormat {
+    SAMPLE_FMT_S16 = 0,         ///< signed 16 bits
+};
+
+#define DEFAULT_FRAME_RATE_BASE 1001000
+
+
+/* thomas: extracted from imgconvert.c since it's also used in
+ * gstffmpegcodecmap.c */
+
+/* start of extract */
+
+#define FF_COLOR_RGB      0     /* RGB color space */
+#define FF_COLOR_GRAY     1     /* gray color space */
+#define FF_COLOR_YUV      2     /* YUV color space. 16 <= Y <= 235, 16 <= U, V <= 240 */
+#define FF_COLOR_YUV_JPEG 3     /* YUV color space. 0 <= Y <= 255, 0 <= U, V <= 255 */
+
+#define FF_PIXEL_PLANAR   0     /* each channel has one component in AVPicture */
+#define FF_PIXEL_PACKED   1     /* only one components containing all the channels */
+#define FF_PIXEL_PALETTE  2     /* one components containing indexes for a palette */
+
+typedef struct PixFmtInfo
+{
+  enum PixelFormat format;
+  const char *name;
+  uint8_t nb_channels;          /* number of channels (including alpha) */
+  uint8_t color_type;           /* color type (see FF_COLOR_xxx constants) */
+  uint8_t pixel_type;           /* pixel storage type (see FF_PIXEL_xxx constants) */
+  uint8_t is_alpha:1;           /* true if alpha can be specified */
+  uint8_t x_chroma_shift;       /* X chroma subsampling factor is 2 ^ shift */
+  uint8_t y_chroma_shift;       /* Y chroma subsampling factor is 2 ^ shift */
+  uint8_t depth;                /* bit depth of the color components */
+} PixFmtInfo;
+
+PixFmtInfo * get_pix_fmt_info (enum PixelFormat format);
+/* end of extract */
+
+/**
+ * main external api structure.
+ */
+typedef struct AVCodecContext {
+    /* video only */
+    /**
+     * frames per sec multiplied by frame_rate_base.
+     * for variable fps this is the precission, so if the timestamps 
+     * can be specified in msec precssion then this is 1000*frame_rate_base
+     * - encoding: MUST be set by user
+     * - decoding: set by lavc. 0 or the frame_rate if available
+     */
+    int frame_rate;
+    
+    /**
+     * picture width / height.
+     * - encoding: MUST be set by user. 
+     * - decoding: set by lavc.
+     * Note, for compatibility its possible to set this instead of 
+     * coded_width/height before decoding
+     */
+    int width, height;
+
+    /**
+     * pixel format, see PIX_FMT_xxx.
+     * - encoding: FIXME: used by ffmpeg to decide whether an pix_fmt
+     *                    conversion is in order. This only works for
+     *                    codecs with one supported pix_fmt, we should
+     *                    do something for a generic case as well.
+     * - decoding: set by lavc.
+     */
+    enum PixelFormat pix_fmt;
+
+    /* audio only */
+    int sample_rate; ///< samples per sec 
+    int channels;
+    int sample_fmt;  ///< sample format, currenly unused 
+
+    /**
+     * Palette control structure
+     * - encoding: ??? (no palette-enabled encoder yet)
+     * - decoding: set by user.
+     */
+    struct AVPaletteControl *palctrl;
+
+    /**
+     * frame_rate_base.
+     * for variable fps this is 1
+     * - encoding: set by user.
+     * - decoding: set by lavc.
+     * @todo move this after frame_rate
+     */
+
+    int frame_rate_base;
+} AVCodecContext;
 
 /**
  * four components are given, that's all.
@@ -87,26 +184,31 @@ typedef struct AVPicture {
 } AVPicture;
 
 /**
- * Allocate memory for a picture.  Call avpicture_free to free it.
- *
- * @param picture the picture to be filled in.
- * @param pix_fmt the format of the picture.
- * @param width the width of the picture.
- * @param height the height of the picture.
- * @return 0 if successful, -1 if not.
+ * AVPaletteControl
+ * This structure defines a method for communicating palette changes
+ * between and demuxer and a decoder.
  */
-int avpicture_alloc(AVPicture *picture, int pix_fmt, int width, int height);
+#define AVPALETTE_SIZE 1024
+#define AVPALETTE_COUNT 256
+typedef struct AVPaletteControl {
 
-/* Free a picture previously allocated by avpicture_alloc. */
-void avpicture_free(AVPicture *picture);
+    /* demuxer sets this to 1 to indicate the palette has changed;
+     * decoder resets to 0 */
+    int palette_changed;
 
-int avpicture_fill(AVPicture *picture, uint8_t *ptr,
-                   int pix_fmt, int width, int height);
-int avpicture_layout(const AVPicture* src, int pix_fmt, int width, int height,
-                     unsigned char *dest, int dest_size);
+    /* 4-byte ARGB palette entries, stored in native byte order; note that
+     * the individual palette components should be on a 8-bit scale; if
+     * the palette data comes from a IBM VGA native format, the component
+     * data is probably 6 bits in size and needs to be scaled */
+    unsigned int palette[AVPALETTE_COUNT];
+
+} AVPaletteControl;
+
 int avpicture_get_size(int pix_fmt, int width, int height);
+
 void avcodec_get_chroma_sub_sample(int pix_fmt, int *h_shift, int *v_shift);
 const char *avcodec_get_pix_fmt_name(int pix_fmt);
+void avcodec_set_dimensions(AVCodecContext *s, int width, int height);
 enum PixelFormat avcodec_get_pix_fmt(const char* name);
 
 #define FF_LOSS_RESOLUTION  0x0001 /* loss due to resolution change */
@@ -131,11 +233,10 @@ int img_convert(AVPicture *dst, int dst_pix_fmt,
                 const AVPicture *src, int pix_fmt, 
                 int width, int height);
 
-/* deinterlace a picture */
-int avpicture_deinterlace(AVPicture *dst, const AVPicture *src,
-                          int pix_fmt, int width, int height);
-
 void avcodec_init(void);
+
+void avcodec_get_context_defaults(AVCodecContext *s);
+AVCodecContext *avcodec_alloc_context(void);
 
 /* memory */
 void *av_malloc(unsigned int size);
@@ -148,14 +249,21 @@ void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size);
 /* for static data only */
 /* call av_free_static to release all staticaly allocated tables */
 void av_free_static(void);
-void *__av_mallocz_static(void** location, unsigned int size);
-#define av_mallocz_static(p, s) __av_mallocz_static((void **)(p), s)
+void *av_mallocz_static(unsigned int size);
 
-/* add by bero : in adx.c */
-int is_adx(const unsigned char *buf,size_t bufsize);
-
-void img_copy(AVPicture *dst, const AVPicture *src,
-              int pix_fmt, int width, int height);
+/* endian macros */
+#if !defined(BE_16) || !defined(BE_32) || !defined(LE_16) || !defined(LE_32)
+#define BE_16(x)  ((((uint8_t*)(x))[0] << 8) | ((uint8_t*)(x))[1])
+#define BE_32(x)  ((((uint8_t*)(x))[0] << 24) | \
+                   (((uint8_t*)(x))[1] << 16) | \
+                   (((uint8_t*)(x))[2] << 8) | \
+                    ((uint8_t*)(x))[3])
+#define LE_16(x)  ((((uint8_t*)(x))[1] << 8) | ((uint8_t*)(x))[0])
+#define LE_32(x)  ((((uint8_t*)(x))[3] << 24) | \
+                   (((uint8_t*)(x))[2] << 16) | \
+                   (((uint8_t*)(x))[1] << 8) | \
+                    ((uint8_t*)(x))[0])
+#endif
 
 #ifdef __cplusplus
 }

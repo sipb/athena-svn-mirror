@@ -26,6 +26,7 @@
 #include <sys/time.h>
 
 #include "gst/gst-i18n-plugin.h"
+#include <gst/audio/multichannel.h>
 #include "gst/propertyprobe/propertyprobe.h"
 #include "gstalsa.h"
 #include "gstalsaclock.h"
@@ -51,6 +52,7 @@
 static void gst_alsa_class_init (gpointer g_class, gpointer class_data);
 static void gst_alsa_init (GstAlsa * this);
 static void gst_alsa_dispose (GObject * object);
+static void gst_alsa_finalize (GObject * object);
 static void gst_alsa_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 static void gst_alsa_get_property (GObject * object,
@@ -161,6 +163,7 @@ gst_alsa_class_init (gpointer g_class, gpointer class_data)
     parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
   object_class->dispose = gst_alsa_dispose;
+  object_class->finalize = gst_alsa_finalize;
   object_class->get_property = gst_alsa_get_property;
   object_class->set_property = gst_alsa_set_property;
 
@@ -218,12 +221,21 @@ gst_alsa_dispose (GObject * object)
 {
   GstAlsa *this = GST_ALSA (object);
 
-  g_free (this->device);
-
-  if (this->clock)
+  if (this->clock) {
     gst_object_unparent (GST_OBJECT (this->clock));
+    this->clock = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
+gst_alsa_finalize (GObject * object)
+{
+  GstAlsa *this = GST_ALSA (object);
+
+  g_free (this->device);
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -695,6 +707,7 @@ gst_alsa_get_caps_internal (snd_pcm_format_t format)
       return NULL;
 
     return gst_caps_new_simple ("audio/x-raw-float",
+        "buffer-frames", GST_TYPE_INT_RANGE, 0, G_MAXINT,
         "width", G_TYPE_INT, (gint) snd_pcm_format_width (format),
         "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
   }
@@ -808,6 +821,8 @@ gst_alsa_get_caps (GstPad * pad)
 
   if (!GST_FLAG_IS_SET (this, GST_ALSA_OPEN))
     return gst_caps_copy (GST_PAD_TEMPLATE_CAPS (GST_PAD_PAD_TEMPLATE (pad)));
+  if (this->cached_caps)
+    return gst_caps_copy (this->cached_caps);
 
   snd_pcm_hw_params_alloca (&hw_params);
   ERROR_CHECK (snd_pcm_hw_params_any (this->handle, hw_params),
@@ -841,30 +856,71 @@ gst_alsa_get_caps (GstPad * pad)
 
       /* we can never use a format we can't set caps for */
       if (caps != NULL) {
+        gint n;
+
         g_assert (gst_caps_get_size (caps) == 1);
         add_channels (gst_caps_get_structure (caps, 0), min_rate, max_rate,
             min_channels, max_channels);
-        if (ret) {
-          gst_caps_append (ret, caps);
-        } else {
-          ret = caps;
+
+        /* channel configuration */
+        /* MIN used to spped up because we don't support more than 8 channels */
+        for (n = min_channels; n <= MIN (8, max_channels); n++) {
+          if (snd_pcm_hw_params_test_channels (this->handle, hw_params, n) == 0) {
+            GstStructure *str;
+            GstAudioChannelPosition pos[8] = {
+              GST_AUDIO_CHANNEL_POSITION_FRONT_LEFT,
+              GST_AUDIO_CHANNEL_POSITION_FRONT_RIGHT,
+              GST_AUDIO_CHANNEL_POSITION_REAR_LEFT,
+              GST_AUDIO_CHANNEL_POSITION_REAR_RIGHT,
+              GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER,
+              GST_AUDIO_CHANNEL_POSITION_LFE,
+              GST_AUDIO_CHANNEL_POSITION_SIDE_LEFT,
+              GST_AUDIO_CHANNEL_POSITION_SIDE_RIGHT
+            };
+
+            switch (n) {
+              case 1:
+                pos[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
+                break;
+              case 2:
+              case 4:
+              case 6:
+              case 8:
+                /* keep above */
+                break;
+              default:
+                /* unsupported */
+                pos[0] = GST_AUDIO_CHANNEL_POSITION_INVALID;
+                break;
+            }
+
+            if (pos[0] != GST_AUDIO_CHANNEL_POSITION_INVALID) {
+              str = gst_structure_copy (gst_caps_get_structure (caps, 0));
+              gst_structure_set (str, "channels", G_TYPE_INT, n, NULL);
+              if (n > 2) {
+                gst_audio_set_channel_positions (str, pos);
+              }
+              if (!ret) {
+                ret = gst_caps_new_empty ();
+              }
+              gst_caps_append_structure (ret, str);
+            }
+          }
         }
+        gst_caps_free (caps);
       }
     }
   }
 
   if (ret == NULL) {
     GST_WARNING_OBJECT (this, "no supported caps found, returning empty caps");
-    return gst_caps_new_empty ();
-  } else {
-    G_GNUC_UNUSED gchar *str;
-
-    gst_caps_do_simplify (ret);
-    str = gst_caps_to_string (ret);
-    GST_LOG_OBJECT (this, "get_caps returns %s", str);
-    g_free (str);
-    return ret;
+    ret = gst_caps_new_empty ();
   }
+  gst_caps_do_simplify (ret);
+  GST_LOG_OBJECT (this, "get_caps returns %P", ret);
+
+  this->cached_caps = gst_caps_copy (ret);
+  return ret;
 }
 
 static GstCaps *
@@ -1088,9 +1144,6 @@ gst_alsa_change_state (GstElement * element)
         return GST_STATE_FAILURE;
       break;
     case GST_STATE_READY_TO_PAUSED:
-      if (!(GST_FLAG_IS_SET (element, GST_ALSA_RUNNING) ||
-              gst_alsa_start_audio (this)))
-        return GST_STATE_FAILURE;
       this->played = 0;
       this->captured = 0;
       break;
@@ -1101,8 +1154,14 @@ gst_alsa_change_state (GstElement * element)
               snd_strerror (err));
           return GST_STATE_FAILURE;
         }
-      } else if (!(GST_FLAG_IS_SET (element, GST_ALSA_RUNNING) ||
-              gst_alsa_start_audio (this))) {
+      }
+      /* If we were already negotiated, but we are not running, then
+       * we stopped (probably because we paused), so re-start. If
+       * there's no format, we didn't negotiate yet so don't do
+       * anything because ALSA will crash (#151288, #153227, etc.). */
+      else if (this->format != NULL &&
+          !GST_FLAG_IS_SET (element, GST_ALSA_RUNNING) &&
+          !gst_alsa_start_audio (this)) {
         return GST_STATE_FAILURE;
       }
       gst_alsa_clock_start (this->clock);
@@ -1154,7 +1213,9 @@ gst_alsa_get_clock (GstElement * element)
 
 static void
 gst_alsa_set_clock (GstElement * element, GstClock * clock)
-{                               /* we need this function just so everybody knows we use a clock */
+{
+  /* we need this function just so everybody knows we use a clock */
+  GST_ALSA (element)->ext_clock = clock;
 }
 
 /*** AUDIO PROCESSING *********************************************************/
@@ -1180,8 +1241,9 @@ inline gboolean
 gst_alsa_pcm_wait (GstAlsa * this)
 {
   int err;
+  snd_pcm_state_t state = snd_pcm_state (this->handle);
 
-  if (snd_pcm_state (this->handle) == SND_PCM_STATE_RUNNING) {
+  if (state == SND_PCM_STATE_RUNNING) {
     if ((err = snd_pcm_wait (this->handle, 1000)) < 0) {
       if (err == EINTR) {
         /* happens mostly when run under gdb, or when exiting due to a signal */
@@ -1198,6 +1260,9 @@ gst_alsa_pcm_wait (GstAlsa * this)
         return FALSE;
       }
     }
+  } else {
+    GST_INFO_OBJECT (this, "in state %s, not waiting",
+        snd_pcm_state_name (state));
   }
   return TRUE;
 }
@@ -1652,6 +1717,10 @@ gst_alsa_close_audio (GstAlsa * this)
   GST_ALSA_CAPS_SET (this, GST_ALSA_CAPS_RESUME, 0);
   GST_ALSA_CAPS_SET (this, GST_ALSA_CAPS_SYNC_START, 0);
   GST_FLAG_UNSET (this, GST_ALSA_OPEN);
+  if (this->cached_caps) {
+    gst_caps_free (this->cached_caps);
+    this->cached_caps = NULL;
+  }
 
   return TRUE;
 }

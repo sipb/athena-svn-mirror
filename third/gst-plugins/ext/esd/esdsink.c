@@ -68,6 +68,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
 static void gst_esdsink_base_init (gpointer g_class);
 static void gst_esdsink_class_init (gpointer g_class, gpointer class_data);
 static void gst_esdsink_init (GTypeInstance * instance, gpointer g_class);
+static void gst_esdsink_finalize (GObject * object);
 
 static gboolean gst_esdsink_open_audio (GstEsdsink * sink);
 static void gst_esdsink_close_audio (GstEsdsink * sink);
@@ -145,6 +146,7 @@ gst_esdsink_class_init (gpointer g_class, gpointer class_data)
 
   gobject_class->set_property = gst_esdsink_set_property;
   gobject_class->get_property = gst_esdsink_get_property;
+  gobject_class->finalize = gst_esdsink_finalize;
 
   gstelement_class->change_state = gst_esdsink_change_state;
   gstelement_class->set_clock = gst_esdsink_set_clock;
@@ -176,7 +178,7 @@ gst_esdsink_init (GTypeInstance * instance, gpointer g_class)
   esdsink->channels = 2;
   esdsink->frequency = 44100;
   esdsink->bytes_per_sample = esdsink->channels * (esdsink->depth / 8);
-  esdsink->host = getenv ("ESPEAKER");
+  esdsink->host = g_strdup (getenv ("ESPEAKER"));
   esdsink->provided_clock =
       gst_audio_clock_new ("esdclock", gst_esdsink_get_time, esdsink);
   gst_object_set_parent (GST_OBJECT (esdsink->provided_clock),
@@ -186,12 +188,25 @@ gst_esdsink_init (GTypeInstance * instance, gpointer g_class)
   esdsink->link_open = FALSE;
 }
 
+static void
+gst_esdsink_finalize (GObject * object)
+{
+  GstEsdsink *esdsink = GST_ESDSINK (object);
+
+  g_free (esdsink->host);
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
 #ifdef unused
 static GstPadLinkReturn
 gst_esdsink_link (GstPad * pad, const GstCaps * caps)
 {
   GstEsdsink *esdsink;
   GstStructure *structure;
+
+  g_return_val_if_fail (caps != NULL, GST_PAD_LINK_REFUSED);
+  g_return_val_if_fail (pad != NULL, GST_PAD_LINK_REFUSED);
 
   esdsink = GST_ESDSINK (gst_pad_get_parent (pad));
 
@@ -301,8 +316,8 @@ gst_esdsink_chain (GstPad * pad, GstData * _data)
             goto done;
           }
           /* connection closed? */
-          GST_ELEMENT_ERROR (esdsink, RESOURCE, WRITE, (NULL),
-              ("communication with ESD failed"));
+          GST_ELEMENT_ERROR (esdsink, RESOURCE, WRITE,
+              ("Failed to write data to the esound daemon"), GST_ERROR_SYSTEM);
           return;
         }
 

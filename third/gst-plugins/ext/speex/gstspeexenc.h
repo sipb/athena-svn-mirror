@@ -23,9 +23,10 @@
 
 
 #include <gst/gst.h>
+#include <gst/bytestream/adapter.h>
 
-#include <speex.h>
-#include <speex_header.h>
+#include <speex/speex.h>
+#include <speex/speex_header.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,29 +44,73 @@ extern "C" {
 #define GST_IS_SPEEXENC_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SPEEXENC))
 
+#define MAX_FRAME_SIZE 2000*2
+#define MAX_FRAME_BYTES 2000
+
+typedef enum
+{
+  GST_SPEEXENC_MODE_AUTO,
+  GST_SPEEXENC_MODE_UWB,
+  GST_SPEEXENC_MODE_WB,
+  GST_SPEEXENC_MODE_NB,
+} GstSpeexMode;
+
 typedef struct _GstSpeexEnc GstSpeexEnc;
 typedef struct _GstSpeexEncClass GstSpeexEncClass;
 
 struct _GstSpeexEnc {
-  GstElement 	element;
+  GstElement		element;
 
   /* pads */
-  GstPad 	*sinkpad,
-  		*srcpad;
+  GstPad		*sinkpad,
+			*srcpad;
 
-  gint		 packet_count;
-  gint		 n_packets;
+  gint			packet_count;
+  gint			n_packets;
 
-  SpeexBits 	 bits;
-  SpeexHeader 	 header;
-  SpeexMode 	*mode;
-  void 		*state;
-  gint		 frame_size;
-  gint16	 buffer[2000];
-  gint		 bufsize;
-  guint64	 next_ts;
+  SpeexBits		bits;
+  SpeexHeader		header;
+#if SPEEX_1_0
+  SpeexMode		*speex_mode;
+#else
+  const SpeexMode	*speex_mode;
+#endif
+  void			*state;
+  GstSpeexMode		mode;
+  GstAdapter		*adapter;
 
-  gint		 rate;
+  gfloat		quality;
+  gint			bitrate;
+  gboolean		vbr;
+  gint			abr;
+  gboolean		vad;
+  gboolean		dtx;
+  gint			complexity;
+  gint			nframes;
+
+  gint			lookahead;
+
+  gint			channels;
+  gint			rate;
+
+  gboolean		setup;
+  gboolean		header_sent;
+  gboolean		eos;
+
+  guint64		samples_in;
+  guint64		bytes_out;
+
+  GstTagList		*tags;
+
+  gchar			*last_message;
+
+  gint			frame_size;
+  guint64		frameno;
+
+  gchar			*comments;
+  gint			comment_len;
+
+  gfloat		input[MAX_FRAME_SIZE];
 };
 
 struct _GstSpeexEncClass {

@@ -147,7 +147,7 @@ gst_xvimagesink_check_xshm_calls (GstXContext * xcontext)
   }
 
   xvimage->SHMInfo.shmaddr = shmat (xvimage->SHMInfo.shmid, 0, 0);
-  if ((int) xvimage->SHMInfo.shmaddr == -1) {
+  if (xvimage->SHMInfo.shmaddr == ((void *) -1)) {
     GST_WARNING ("Failed to shmat: %s", g_strerror (errno));
     goto beach;
   }
@@ -163,8 +163,13 @@ gst_xvimagesink_check_xshm_calls (GstXContext * xcontext)
   XSync (xcontext->disp, 0);
 
   XShmDetach (xcontext->disp, &xvimage->SHMInfo);
+  XSync (xcontext->disp, FALSE);
+
   shmdt (xvimage->SHMInfo.shmaddr);
   shmctl (xvimage->SHMInfo.shmid, IPC_RMID, 0);
+
+  /* To be sure, reset the SHMInfo entry */
+  xvimage->SHMInfo.shmaddr = ((void *) -1);
 
   /* store whether we succeeded in result and reset error_caught */
   result = !error_caught;
@@ -225,7 +230,7 @@ gst_xvimagesink_xvimage_new (GstXvImageSink * xvimagesink,
     }
 
     xvimage->SHMInfo.shmaddr = shmat (xvimage->SHMInfo.shmid, 0, 0);
-    if ((int) xvimage->SHMInfo.shmaddr == -1) {
+    if (xvimage->SHMInfo.shmaddr == ((void *) -1)) {
       GST_ELEMENT_ERROR (xvimagesink, RESOURCE, WRITE, (NULL),
           ("Failed to shmat: %s", g_strerror (errno)));
       goto beach;
@@ -287,8 +292,9 @@ gst_xvimagesink_xvimage_destroy (GstXvImageSink * xvimagesink,
 
 #ifdef HAVE_XSHM
   if (xvimagesink->xcontext->use_xshm) {
-    if ((int) xvimage->SHMInfo.shmaddr != -1) {
+    if (xvimage->SHMInfo.shmaddr != ((void *) -1)) {
       XShmDetach (xvimagesink->xcontext->disp, &xvimage->SHMInfo);
+      XSync (xvimagesink->xcontext->disp, FALSE);
       shmdt (xvimage->SHMInfo.shmaddr);
     }
     if (xvimage->SHMInfo.shmid > 0)
@@ -730,7 +736,7 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
   /* Set XV_AUTOPAINT_COLORKEY */
   {
     int count;
-    const XvAttribute *const attr = XvQueryPortAttributes (xcontext->disp,
+    XvAttribute *const attr = XvQueryPortAttributes (xcontext->disp,
         xcontext->xv_port_id, &count);
     static const char autopaint[] = "XV_AUTOPAINT_COLORKEY";
 
@@ -741,6 +747,8 @@ gst_xvimagesink_get_xv_support (GstXvImageSink * xvimagesink,
         XvSetPortAttribute (xcontext->disp, xcontext->xv_port_id, atom, 1);
         break;
       }
+
+    XFree (attr);
   }
 
   /* We get all image formats supported by our port */
@@ -1046,6 +1054,7 @@ gst_xvimagesink_xcontext_clear (GstXvImageSink * xvimagesink)
   GList *formats_list, *channels_list;
 
   g_return_if_fail (GST_IS_XVIMAGESINK (xvimagesink));
+  g_return_if_fail (xvimagesink->xcontext != NULL);
 
   formats_list = xvimagesink->xcontext->formats_list;
 
@@ -1084,6 +1093,7 @@ gst_xvimagesink_xcontext_clear (GstXvImageSink * xvimagesink)
 
   g_mutex_unlock (xvimagesink->x_lock);
 
+  g_free (xvimagesink->xcontext);
   xvimagesink->xcontext = NULL;
 }
 
@@ -1881,8 +1891,18 @@ gst_xvimagesink_finalize (GObject * object)
     xvimagesink->display_name = NULL;
   }
 
-  g_mutex_free (xvimagesink->x_lock);
-  g_mutex_free (xvimagesink->pool_lock);
+  if (xvimagesink->par) {
+    g_free (xvimagesink->par);
+    xvimagesink->par = NULL;
+  }
+  if (xvimagesink->x_lock) {
+    g_mutex_free (xvimagesink->x_lock);
+    xvimagesink->x_lock = NULL;
+  }
+  if (xvimagesink->pool_lock) {
+    g_mutex_free (xvimagesink->pool_lock);
+    xvimagesink->pool_lock = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1919,6 +1939,8 @@ gst_xvimagesink_init (GstXvImageSink * xvimagesink)
   xvimagesink->cb_changed = FALSE;
 
   xvimagesink->framerate = 0;
+  xvimagesink->video_width = 0;
+  xvimagesink->video_height = 0;
 
   xvimagesink->x_lock = g_mutex_new ();
 

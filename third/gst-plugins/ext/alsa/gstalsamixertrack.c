@@ -21,6 +21,8 @@
 #include "config.h"
 #endif
 
+#include <gst/gst-i18n-plugin.h>
+
 #include "gstalsamixertrack.h"
 
 static void gst_alsa_mixer_track_init (GstAlsaMixerTrack * alsa_track);
@@ -69,16 +71,52 @@ gst_alsa_mixer_track_init (GstAlsaMixerTrack * alsa_track)
 
 GstMixerTrack *
 gst_alsa_mixer_track_new (snd_mixer_elem_t * element,
-    gint track_num, gint channels, gint flags, gint alsa_flags)
+    gint num, gint track_num, gint channels, gint flags, gint alsa_flags)
 {
   gint i;
   long min = 0, max = 0;
+  struct
+  {
+    gchar *orig, *trans;
+  } alsa_track_labels[] = {
+    {
+    "Master", _("Master")}, {
+    "Bass", _("Bass")}, {
+    "Treble", _("Treble")}, {
+    "PCM", _("PCM")}, {
+    "Synth", _("Synth")}, {
+    "Line", _("Line-in")}, {
+    "CD", _("CD")}, {
+    "Mic", _("Microphone")}, {
+    "PC Speaker", _("PC Speaker")}, {
+    "Playback", _("Playback")}, {
+    "Capture", _("Capture")}, {
+    NULL, NULL}
+  };
 
   GstMixerTrack *track = g_object_new (GST_ALSA_MIXER_TRACK_TYPE, NULL);
   GstAlsaMixerTrack *alsa_track = (GstAlsaMixerTrack *) track;
 
   /* set basic information */
-  track->label = g_strdup_printf ("%s", snd_mixer_selem_get_name (element));
+  if (num == 0)
+    track->label = g_strdup (snd_mixer_selem_get_name (element));
+  else
+    track->label = g_strdup_printf ("%s %d",
+        snd_mixer_selem_get_name (element), num + 1);
+  i = 0;
+  while (alsa_track_labels[i].orig != NULL) {
+    if (!g_utf8_collate (snd_mixer_selem_get_name (element),
+            alsa_track_labels[i].orig)) {
+      g_free (track->label);
+      if (num == 0)
+        track->label = g_strdup (alsa_track_labels[i].trans);
+      else
+        track->label = g_strdup_printf ("%s %d",
+            alsa_track_labels[i].trans, num);
+      break;
+    }
+    i++;
+  }
   track->num_channels = channels;
   track->flags = flags;
   alsa_track->element = element;
@@ -86,10 +124,12 @@ gst_alsa_mixer_track_new (snd_mixer_elem_t * element,
   alsa_track->track_num = track_num;
 
   /* set volume information */
-  if (alsa_flags & GST_ALSA_MIXER_TRACK_PLAYBACK) {
-    snd_mixer_selem_get_playback_volume_range (element, &min, &max);
-  } else if (alsa_flags & GST_ALSA_MIXER_TRACK_CAPTURE) {
-    snd_mixer_selem_get_capture_volume_range (element, &min, &max);
+  if (channels) {
+    if (alsa_flags & GST_ALSA_MIXER_TRACK_PLAYBACK) {
+      snd_mixer_selem_get_playback_volume_range (element, &min, &max);
+    } else if (alsa_flags & GST_ALSA_MIXER_TRACK_CAPTURE) {
+      snd_mixer_selem_get_capture_volume_range (element, &min, &max);
+    }
   }
   track->min_volume = (gint) min;
   track->max_volume = (gint) max;

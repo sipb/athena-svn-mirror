@@ -70,38 +70,52 @@ static GstStaticPadTemplate video_sink_factory =
     GST_STATIC_CAPS ("video/x-raw-yuv, "
         "format = (fourcc) { YUY2, I420 }, "
         "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ]; "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
         "image/jpeg, "
         "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ]; "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
         "video/x-divx, "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ], "
         "divxversion = (int) [ 3, 5 ]; "
         "video/x-xvid, "
         "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ]; "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
         "video/x-3ivx, "
         "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ]; "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
         "video/x-msmpeg, "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ], "
         "msmpegversion = (int) [ 41, 43 ]; "
         "video/mpeg, "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ], "
         "mpegversion = (int) 1, "
         "systemstream = (boolean) FALSE; "
         "video/x-h263, "
         "width = (int) [ 16, 4096 ], "
-        "height = (int) [ 16, 4096 ]; "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
+        "video/x-h264, "
+        "width = (int) [ 16, 4096 ], "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) [ 0, MAX ]; "
         "video/x-dv, "
         "width = (int) 720, "
         "height = (int) { 576, 480 }, "
+        "framerate = (double) [ 0, MAX ], "
         "systemstream = (boolean) FALSE; "
         "video/x-huffyuv, "
-        "width = (int) [ 16, 4096 ], " "height = (int) [ 16, 4096 ]")
+        "width = (int) [ 16, 4096 ], "
+        "height = (int) [ 16, 4096 ], " "framerate = (double) [ 0, MAX ]")
     );
 
 static GstStaticPadTemplate audio_sink_factory =
@@ -443,7 +457,7 @@ gst_avimux_audsinkconnect (GstPad * pad, const GstCaps * vscaps)
 
   avimux->auds_hdr.rate = avimux->auds.blockalign * avimux->auds.rate;
   avimux->auds_hdr.samplesize = avimux->auds.blockalign;
-  avimux->auds_hdr.scale = avimux->auds.blockalign;
+  avimux->auds_hdr.scale = 1;
   return GST_PAD_LINK_OK;
 }
 
@@ -1029,6 +1043,29 @@ gst_avimux_stop_file (GstAviMux * avimux)
     }
   }
 
+  /* set rate and everything having to do with that */
+  avimux->avi_hdr.max_bps = 0;
+  if (avimux->audio_pad_connected) {
+    /* calculate bps if needed */
+    if (!avimux->auds.av_bps) {
+      if (avimux->audio_time) {
+        avimux->auds.av_bps =
+            (GST_SECOND * avimux->audio_size) / avimux->audio_time;
+      } else {
+        GST_ELEMENT_ERROR (avimux, STREAM, MUX,
+            (_("No or invalid input audio, AVI stream will be corrupt.")),
+            (NULL));
+        avimux->auds.av_bps = 0;
+      }
+      avimux->auds_hdr.rate = avimux->auds.av_bps * avimux->auds_hdr.scale;
+    }
+    avimux->avi_hdr.max_bps += avimux->auds.av_bps;
+  }
+  if (avimux->video_pad_connected) {
+    avimux->avi_hdr.max_bps += ((avimux->vids.bit_cnt + 7) / 8) *
+        (1000000. / avimux->avi_hdr.us_frame) * avimux->vids.image_size;
+  }
+
   /* statistics/total_frames/... */
   avimux->avi_hdr.tot_frames = avimux->num_frames;
   if (avimux->video_pad_connected) {
@@ -1036,30 +1073,7 @@ gst_avimux_stop_file (GstAviMux * avimux)
   }
   if (avimux->audio_pad_connected) {
     avimux->auds_hdr.length =
-        (avimux->audio_time * avimux->auds.rate) / GST_SECOND;
-  }
-
-  /* set rate and everything having to do with that */
-  avimux->avi_hdr.max_bps = 0;
-  if (avimux->audio_pad_connected) {
-    /* calculate bps if needed */
-    if (!avimux->auds.av_bps) {
-      if (avimux->audio_time) {
-        avimux->auds_hdr.rate =
-            (GST_SECOND * avimux->audio_size) / avimux->audio_time;
-      } else {
-        GST_ELEMENT_ERROR (avimux, STREAM, MUX,
-            (_("No or invalid input audio, AVI stream will be corrupt.")),
-            (NULL));
-        avimux->auds_hdr.rate = 0;
-      }
-      avimux->auds.av_bps = avimux->auds_hdr.rate * avimux->auds_hdr.scale;
-    }
-    avimux->avi_hdr.max_bps += avimux->auds.av_bps;
-  }
-  if (avimux->video_pad_connected) {
-    avimux->avi_hdr.max_bps += ((avimux->vids.bit_cnt + 7) / 8) *
-        (1000000. / avimux->avi_hdr.us_frame) * avimux->vids.image_size;
+        (avimux->audio_time * avimux->auds_hdr.rate) / GST_SECOND;
   }
 
   /* seek and rewrite the header */
