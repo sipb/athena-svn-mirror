@@ -188,7 +188,8 @@ install-program: $(EXES)
 	done
 
 install-scripts: $(SCRIPTS) munge-scripts
-	@for program in $(SCRIPTS); do					\
+	@scripts="$(SCRIPTS)" ;						\
+	[ -z "$$scripts" ] || for program in $$scripts; do		\
 	  if [ -r $$program ] ; then					\
 	    p=$$program ;						\
 	  else								\
@@ -203,7 +204,8 @@ install-scripts: $(SCRIPTS) munge-scripts
 munge-scripts: $(SCRIPTS)
 	@tmp=/tmp/mf.$$$$ ;						\
 	perl="${PERL}" ;						\
-	for program in $(SCRIPTS); do					\
+	scripts="$(SCRIPTS)" ;						\
+	[ -z "$$scripts" ] || for program in $$scripts; do		\
 	  echo "adjusting location of perl in $$program..." ;		\
 	  sed "s@^\(#!\)\(/[^ ]*/perl[^ ]*\)\(.*\)\$$@\1$$perl\3@"	\
 	      < $(srcdir)/$$program > $$tmp ;				\
