@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: psbanner.c,v 1.1 1993-10-12 05:28:12 probe Exp $";
+_NOTICE RCSID[]="$Id: psbanner.c,v 1.2 1995-07-11 21:15:13 miki Exp $";
 #endif
 
 /* psbanner.c
@@ -63,6 +63,13 @@ adobe:shore  Job: test.data  Date: Tue Sep 18 16:22:33 1984
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  93/11/19  17:10:24  probe
+ * POSIX signal handling
+ * Use memset on all platforms
+ * 
+ * Revision 1.1  93/11/14  12:51:43  probe
+ * Initial revision
+ * 
  * Revision 1.1  93/08/23  16:32:21  probe
  * Initial revision
  * 
@@ -139,10 +146,19 @@ main(argc,argv)
     register int c;
     register char *bp;
     register FILE *in = stdin;
+
+
     int done = 0;
     char  *p;
-
+#if defined(POSIX) && !defined(ultrix)
+    struct sigaction sa;
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = on_int;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+#else
     VOIDC signal(SIGINT, on_int);
+#endif
 
     VOIDC fclose(stdout); /* we don't talk to the printer */
     prog = *argv; /* argv[0] == program name */
@@ -231,20 +247,13 @@ private DoBanner() {
     char host[STRSIZE];
     char jname[STRSIZE];
     char command[256];
-    char *laps_cmd;
     char *date;
     register char *cp;
     register int i;
 
-#if defined(_AIX) || defined(SOLARIS)
     memset(user, 0, 9);
     memset(host, 0, STRSIZE);
     memset(jname, 0, STRSIZE);
-#else
-    bzero(user, 9);
-    bzero(host, STRSIZE);
-    bzero(jname, STRSIZE);
-#endif
 
     for (i = 0, cp = bannerbuf; (i < STRSIZE) && (*cp != ':'); i++, cp++)
 	host[i] = *cp;
@@ -309,21 +318,17 @@ dooutput:
        printq 	(queue printed on) (printer name)
 
        */
-    fprintf(out, "()(%s)(%s)(%s)(%s@%s)(%s)(%s) do_flagpage end\n",
+/*    fprintf(out, "()(%s)(%s)(%s)(%s@%s)(%s)(%s) do_flagpage end\n",
 	    user,
 	    jname,
 	    jname,
 	    user,
 	    host,
 	    date,
-	    pname);
+	    pname); */
+    fprintf(out, "(%s)(%s)Banner\n", pname, bannerbuf);
     VOIDC fclose(out);	/* this does a flush */
 
-    laps_cmd = envget("LAPS");
-    if (laps_cmd) {
-	sprintf(command, "%s %s <.banner", laps_cmd, pname);
-	system(command);
-    }
 }
 
 private VOID on_int() {
