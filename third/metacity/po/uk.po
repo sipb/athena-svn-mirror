@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metacity\n"
-"POT-Creation-Date: 2003-01-20 22:01-0500\n"
-"PO-Revision-Date: 2002-12-24 06:25--500\n"
+"POT-Creation-Date: 2003-02-04 23:36-0500\n"
+"PO-Revision-Date: 2003-01-28 07:36--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr "Використання: %s\n"
 
 #: src/tools/metacity-message.c:174 src/util.c:128
 msgid "Metacity was compiled without support for verbose mode\n"
-msgstr ""
+msgstr "\"Метаситі\" було зібрано без підтримки режиму детальних повідомлень\n"
 
 #: src/delete.c:60 src/delete.c:87 src/metacity-dialog.c:46
 #: src/theme-parser.c:467
@@ -31,28 +31,31 @@ msgstr "Не вдалось проаналізувати як ціле \"%s\""
 #: src/theme-parser.c:476 src/theme-parser.c:530
 #, c-format
 msgid "Did not understand trailing characters \"%s\" in string \"%s\""
-msgstr ""
+msgstr "Не вдалось розпізнати заключні символи \"%s\" в рядку \"%s\""
 
 #: src/delete.c:125
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to parse message \"%s\" from dialog process\n"
-msgstr "Збій аналізування збереженого файлу сеансу: %s\n"
+msgstr ""
+"Стався збій під час аналізу повідомлення \"%s\" з діалогового процесу\n"
 
 #: src/delete.c:260
 #, c-format
 msgid "Error reading from dialog display process: %s\n"
-msgstr ""
+msgstr "Сталася помилка зчитування з процесу відображення діалога: %s\n"
 
 #: src/delete.c:331
 #, c-format
 msgid ""
 "Error launching metacity-dialog to ask about killing an application: %s\n"
 msgstr ""
+"Сталася помилка завантаження діалога \"Метаситі\" для запиту на знищення "
+"додатка: %s\n"
 
 #: src/delete.c:429
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to get hostname: %s\n"
-msgstr "Збій аналізування збереженого файлу сеансу: %s\n"
+msgstr "Стався збій під час отримання назви хоста: %s\n"
 
 #: src/display.c:279
 #, c-format
@@ -104,21 +107,25 @@ msgstr ""
 "Якась програма вже використовує клавішу %s з модифікатором %x в якості "
 "прив'язки\n"
 
-#: src/keybindings.c:2246
+#: src/keybindings.c:2317
 #, c-format
 msgid "Error launching metacity-dialog to print an error about a command: %s\n"
 msgstr ""
+"Сталася помилка завантаження діалога \"Метаситі\" для виводу повідомлення "
+"про помилку команди: %s\n"
 
-#: src/keybindings.c:2277
-#, fuzzy, c-format
+#: src/keybindings.c:2348
+#, c-format
 msgid "No command %d has been defined.\n"
-msgstr "Стилю \"%s\" не визначено"
+msgstr "Команду %d не визначено.\n"
 
 #: src/main.c:64
 msgid ""
 "metacity [--disable-sm] [--sm-save-file=FILENAME] [--display=DISPLAY] [--"
 "replace] [--version]\n"
 msgstr ""
+"metacity [--disable-sm] [--sm-save-file=ФАЙЛ] [--display=ДИСПЛЕЙ] [--"
+"replace] [--version]\n"
 
 #: src/main.c:71
 #, c-format
@@ -129,12 +136,19 @@ msgid ""
 "There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A "
 "PARTICULAR PURPOSE.\n"
 msgstr ""
+"metacity %sАвторські права (C) 2001-2002 Havoc Pennington, Red Hat, Inc. та "
+"інші\n"
+"Це вільне програмне забезпечення, дивіться вихідний код, щоб довідатися "
+"умови копіювання.\n"
+"Гарантії не існує, навіть безумовної гарантії комерційної придатності будь-"
+"якому застосуванню.\n"
 
 #: src/main.c:326
 #, c-format
 msgid ""
 "Could not find a theme! Be sure %s exists and contains the usual themes."
 msgstr ""
+"Не вдалось знайти тему! Переконайтесь, що %s існує і містить звичайні теми."
 
 #: src/main.c:374
 #, c-format
@@ -304,6 +318,9 @@ msgid ""
 "Force this application to exit?\n"
 "(Any open documents will be lost.)"
 msgstr ""
+"Вікно \"%s\" не відповідає.\n"
+"Завершити роботу цього додатка?\n"
+"(Всі незбережені дані буде втрачено.)"
 
 #: src/metacity-dialog.c:94
 msgid "Kill application"
@@ -322,6 +339,8 @@ msgid ""
 "These windows do not support \"save current setup\" and will have to be "
 "restarted manually next time you log in."
 msgstr ""
+"Ці вікна не підтримують команди \"save current setup\", під час наступного "
+"входу їх доведеться перезапустити вручну."
 
 #: src/metacity-dialog.c:276
 #, c-format
@@ -329,14 +348,16 @@ msgid ""
 "There was an error running \"%s\":\n"
 "%s."
 msgstr ""
+"Сталася помилка виконання \"%s\":\n"
+"%s."
 
 #: src/metacity.desktop.in.h:1
 msgid "Metacity"
-msgstr ""
+msgstr "Метаситі"
 
 #: src/metacity.schemas.in.h:1
 msgid "(Not implemented) Navigation works in terms of applications not windows"
-msgstr ""
+msgstr "(Не реалізовано) Навігація ведеться по додаткам, а не по вікнам"
 
 #: src/metacity.schemas.in.h:2
 msgid ""
@@ -347,10 +368,17 @@ msgid ""
 "is unset, causing Metacity to fall back to the desktop font even if "
 "titlebar_uses_desktop_font is false."
 msgstr ""
+"Рядок опису шрифта для заголовка вікна. Розмір з опису "
+"використовуватиметься, лише якщо значення параметра titlebar_font_size "
+"встановлено в 0. Також цей параметр буде проігноровано, якщо для параметра "
+"titlebar_uses_desktop_font встановлено значення Істина. В початковій "
+"конфігурації параметр titlebar_font не встановлено. Це призводить до того, "
+"що Метаситі повертається до шрифта стільниці, навіть якщо для параметра "
+"titlebar_uses_desktop_font встановлено значення Хибність."
 
 #: src/metacity.schemas.in.h:3
 msgid "Action on title bar double-click"
-msgstr ""
+msgstr "Дія на подвійне клацання по заголовку вікна"
 
 #: src/metacity.schemas.in.h:4
 msgid "Activate window menu"
@@ -358,7 +386,7 @@ msgstr "Активувати меню вікна"
 
 #: src/metacity.schemas.in.h:5
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Вирівнювання кнопок у заголовку вікна"
 
 #: src/metacity.schemas.in.h:6
 msgid ""
@@ -369,10 +397,15 @@ msgid ""
 "so that buttons can be added in future metacity versions without breaking "
 "older versions."
 msgstr ""
+"Вирівнювання кнопок у заголовку вікна. Значення має бути рядком, наприклад, "
+"\"menu:minimize,maximize,close\"; двокрапка розділяє півий і правий кути "
+"вікна, назви кнопок розділяються комами. Дублювати кнопки не дозволяється. "
+"Невідомі назви кнопок завжди ігноруються без сповіщення, так що кнопки може "
+"бути додано в наступних версіях, не порушуючи попередніх."
 
 #: src/metacity.schemas.in.h:7
 msgid "Automatically raises the focused window"
-msgstr ""
+msgstr "Автоматично вікривати активне вікно"
 
 #: src/metacity.schemas.in.h:8
 msgid ""
@@ -381,6 +414,10 @@ msgid ""
 "(right click). Modifier is expressed as \"&lt;Alt&gt;\" or \"&lt;Super&gt;\" "
 "for example."
 msgstr ""
+"Клацання по вікну, коли натиснуто клавішу-модифікатор, перенесе вікно (ліва "
+"кнопка), змінить розмір (середня кнопка) чи покаже меню вікна (права "
+"кнопка). Модифікатор визначається як \"&lt;Alt&gt;\" чи \"&lt;Super&gt;\", "
+"для наприкладу."
 
 #: src/metacity.schemas.in.h:9
 msgid "Close a window"
@@ -388,7 +425,7 @@ msgstr "Закрити вікно"
 
 #: src/metacity.schemas.in.h:10
 msgid "Commands to run in response to keybindings"
-msgstr ""
+msgstr "Команди для запуску крмбінаціями клавіш"
 
 #: src/metacity.schemas.in.h:11
 msgid "Current theme"
@@ -396,15 +433,16 @@ msgstr "Поточна тема"
 
 #: src/metacity.schemas.in.h:12
 msgid "Delay in milliseconds for the auto raise option"
-msgstr ""
+msgstr "Затримка в мілісекундах для параметра автоматичного відкриття вікна"
 
 #: src/metacity.schemas.in.h:13
 msgid "Disable misfeatures that are required by old or broken applications"
 msgstr ""
+"Вимикати неправильні властивості, що потрібно старим чи пошкодженим програмам"
 
 #: src/metacity.schemas.in.h:14
 msgid "Hide all windows and focus desktop"
-msgstr ""
+msgstr "Сховати всі вікна і активувати стільницю"
 
 #: src/metacity.schemas.in.h:15
 msgid ""
@@ -412,12 +450,17 @@ msgid ""
 "focused window will be automatically raised after a delay (the delay is "
 "specified by the auto_raise_delay key)."
 msgstr ""
+"Якщо Істина, а для режиму активації вибрано значення \"sloppy\" чи \"mouse"
+"\", то з невеликою затримкою активне вікно буде піднято (час затримки "
+"визначається ключем auto_raise_delay)."
 
 #: src/metacity.schemas.in.h:16
 msgid ""
 "If true, ignore the titlebar_font option, and use the standard application "
 "font for window titles."
 msgstr ""
+"Якщо Істина, ігнорується параметр titlebar_font, і використовується "
+"стандартний шрифт додатка для заголовків вікна."
 
 #: src/metacity.schemas.in.h:17
 msgid ""
@@ -431,10 +474,20 @@ msgid ""
 "details of application-based vs. window-based, e.g. whether to pass through "
 "clicks. Also, application-based mode is largely unimplemented at the moment."
 msgstr ""
+"Якщо Істина, \"Метаситі\" працює з додатками, а не з вікнами. Підхід, що "
+"ґрунтується на додатках, більше схожа на системи Mac, ніж на Windows, хоча "
+"таке формулювання досить нечітке. Коли активується вікно в режимі, що "
+"ґрунтується на додатках, відкриваються всі вікна додатка. Крім того, в цьому "
+"режимі клацання мишою не передаются вікнам інших додатків. Раціональність "
+"такого підходу знаходиться під питанням. Але це все ж таки краще, ніж "
+"вписувати в налаштуваннях всі відмінності режимів один від одного "
+"(наприклад, чи потрібно передавати клацання мишою). Крім того, реалізація "
+"режиму, що ґрунтується на додатках, в даний момент ще досить далека від "
+"завершення."
 
 #: src/metacity.schemas.in.h:18
 msgid "Lower window below other windows"
-msgstr ""
+msgstr "Розмістити вікно під всіма вікнами"
 
 #: src/metacity.schemas.in.h:19
 msgid "Maximize a window"
@@ -454,7 +507,7 @@ msgstr "Мінінізувати вікно"
 
 #: src/metacity.schemas.in.h:23
 msgid "Modifier to use for modified window click actions"
-msgstr ""
+msgstr "Модифікатор для дій з клацанням мишою"
 
 #: src/metacity.schemas.in.h:24
 msgid "Move a window"
@@ -570,6 +623,9 @@ msgid ""
 "prevent accidentally destroying your desktop by asking for 34 million "
 "workspaces)."
 msgstr ""
+"Кількість робочих областей. Має бути більше нуля і мати фіксований максимум "
+"(для пнедопущення знищення стільниці запитом на 34 мільйони робочих "
+"областей)."
 
 #: src/metacity.schemas.in.h:52
 msgid "Raise obscured window, otherwise lower"
@@ -1259,7 +1315,7 @@ msgstr ""
 
 #: src/metacity.schemas.in.h:137
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "Перемикнути повноекранний режим"
 
 #: src/metacity.schemas.in.h:138
 msgid "Toggle maximization state"
@@ -1267,12 +1323,11 @@ msgstr "Перемикнути стан максимізації"
 
 #: src/metacity.schemas.in.h:139
 msgid "Toggle shaded state"
-msgstr ""
+msgstr "Перемикнути режим зрортання"
 
 #: src/metacity.schemas.in.h:140
-#, fuzzy
 msgid "Toggle window on all workspaces"
-msgstr "Перемістити на робоче місце %s%d"
+msgstr "Чи буде його розміщено на усіх робочих областях"
 
 #: src/metacity.schemas.in.h:141
 msgid "Unmaximize a window"
@@ -1280,11 +1335,11 @@ msgstr "Демаксимізувати вікно"
 
 #: src/metacity.schemas.in.h:142
 msgid "Use standard system font in window titles"
-msgstr ""
+msgstr "Використовувати стандартний системний шрифт в заголовках вікон"
 
 #: src/metacity.schemas.in.h:143
 msgid "Window focus mode"
-msgstr ""
+msgstr "Оежим активації вікна"
 
 #: src/metacity.schemas.in.h:144
 msgid "Window title font"
@@ -1296,7 +1351,7 @@ msgstr "Шрифт заголовка вікна"
 #: src/prefs.c:618 src/prefs.c:635 src/prefs.c:651 src/prefs.c:667
 #, c-format
 msgid "GConf key \"%s\" is set to an invalid type\n"
-msgstr ""
+msgstr "Ключ GConf \"%s\" має неправильний тип\n"
 
 #: src/prefs.c:712
 #, c-format
@@ -1304,16 +1359,18 @@ msgid ""
 "\"%s\" found in configuration database is not a valid value for mouse button "
 "modifier\n"
 msgstr ""
+"Значення \"%s\" з бази даних конфігурації не є правильним для модифікатора "
+"кнопки миші\n"
 
 #: src/prefs.c:736 src/prefs.c:1103
 #, c-format
 msgid "GConf key '%s' is set to an invalid value\n"
-msgstr ""
+msgstr "Ключ GConf \"%s\" має неправильне значення\n"
 
 #: src/prefs.c:820
 #, c-format
 msgid "Could not parse font description \"%s\" from GConf key %s\n"
-msgstr ""
+msgstr "Не вдалося проаналізувати опис шрифта \"%s\" з ключа GConf \"%s\"\n"
 
 #: src/prefs.c:1005
 #, c-format
@@ -1336,7 +1393,7 @@ msgstr ""
 #: src/prefs.c:1222
 #, c-format
 msgid "Error setting number of workspaces to %d: %s\n"
-msgstr ""
+msgstr "Сталася помилка встановлення кількості робочих місць рівною %d: %s\n"
 
 #: src/prefs.c:1460
 #, c-format
@@ -1344,11 +1401,13 @@ msgid ""
 "\"%s\" found in configuration database is not a valid value for keybinding "
 "\"%s\"\n"
 msgstr ""
+"Значення \"%s\" з бази даних конфігурації не є правильним значенням для "
+"комбінації клавіш \"%s\"\n"
 
 #: src/prefs.c:1750
 #, c-format
 msgid "Error setting name for workspace %d to \"%s\": %s\n"
-msgstr ""
+msgstr "Помилка встановлення назви для робочої області %d у \"%s\": %s\n"
 
 #: src/resizepopup.c:127
 #, c-format
@@ -1389,6 +1448,8 @@ msgid ""
 "Failed to a open connection to a session manager, so window positions will "
 "not be saved: %s\n"
 msgstr ""
+"Стався збій на відкритті з'єднання з менеджером сеансу, позицію вікна не "
+"буде збережено: %s\n"
 
 #: src/session.c:881 src/session.c:888
 #, c-format
@@ -1422,7 +1483,7 @@ msgstr "Збій аналізування збереженого файлу се
 
 #: src/session.c:1221
 msgid "<metacity_session> attribute seen but we already have the session ID"
-msgstr ""
+msgstr "Вказано ознаку <metacity_session>, аде ідентифікатор сеансу вже є"
 
 #: src/session.c:1234
 #, c-format
@@ -1439,9 +1500,9 @@ msgid "Unknown attribute %s on <window> element"
 msgstr "Невідома ознака %s у елементі <window>"
 
 #: src/session.c:1413
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown attribute %s on <maximized> element"
-msgstr "Невідома ознака %s у елементі <window>"
+msgstr "Невідома ознака %s у елементі <maximized>"
 
 #: src/session.c:1473
 #, c-format
@@ -1498,12 +1559,14 @@ msgstr ""
 #: src/theme-parser.c:572
 #, c-format
 msgid "Angle must be between 0.0 and 360.0, was %g\n"
-msgstr ""
+msgstr "Кут має бути в діапазоні від 0,0 до 360,0, а був %g\n"
 
 #: src/theme-parser.c:638
 #, c-format
 msgid "Alpha must be between 0.0 (invisible) and 1.0 (fully opaque), was %g\n"
 msgstr ""
+"Альфа-канал має бути в діапазоні від 0,0 (невидимість) до 1,0 (повна "
+"непрозорість), а був %g\n"
 
 #: src/theme-parser.c:684
 #, c-format
@@ -1529,22 +1592,24 @@ msgstr "Немає ознаки \"%s\" елементі <%s>"
 #: src/theme-parser.c:1020
 #, c-format
 msgid "<%s> name \"%s\" used a second time"
-msgstr ""
+msgstr "Назва \"%s\" елемента <%s> було використано вдруге"
 
 #: src/theme-parser.c:849 src/theme-parser.c:955 src/theme-parser.c:1032
 #, c-format
 msgid "<%s> parent \"%s\" has not been defined"
-msgstr ""
+msgstr "Батьківський об'єкт \"%s\" елемента <%s> не визначено"
 
 #: src/theme-parser.c:968
 #, c-format
 msgid "<%s> geometry \"%s\" has not been defined"
-msgstr ""
+msgstr "Геометрію \"%s\" об'єкта <%s> не визначено"
 
 #: src/theme-parser.c:981
 #, c-format
 msgid "<%s> must specify either a geometry or a parent that has a geometry"
 msgstr ""
+"В <%s> має бути визначено або геометрію, або батьківський об'єкт, що міє "
+"геометрію"
 
 #: src/theme-parser.c:1080
 #, c-format
@@ -1552,24 +1617,24 @@ msgid "Unknown type \"%s\" on <%s> element"
 msgstr "Невідомий тип \"%s\" у елементі <%s>"
 
 #: src/theme-parser.c:1091
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown style_set \"%s\" on <%s> element"
-msgstr "Невідома ознака %s у елементі <window>"
+msgstr "Невідомий параметр style_set \"%s\" для елемента <%s>"
 
 #: src/theme-parser.c:1099
 #, c-format
 msgid "Window type \"%s\" has already been assigned a style set"
-msgstr ""
+msgstr "Типу вікна \"%s\" вже було присвоєно набір стилів"
 
 #: src/theme-parser.c:1143
 #, c-format
 msgid "Unknown function \"%s\" for menu icon"
-msgstr ""
+msgstr "Невідома функція \"%s\" для піктограми меню"
 
 #: src/theme-parser.c:1152
 #, c-format
 msgid "Unknown state \"%s\" for menu icon"
-msgstr ""
+msgstr "Невідомий стан \"%s\" для піктограми меню"
 
 #: src/theme-parser.c:1160
 #, c-format
@@ -1587,7 +1652,7 @@ msgstr ""
 #: src/theme-parser.c:3629
 #, c-format
 msgid "Element <%s> is not allowed below <%s>"
-msgstr ""
+msgstr "Не можна використовувати елемент <%s> під <%s>"
 
 #: src/theme-parser.c:1282 src/theme-parser.c:1369 src/theme-parser.c:1439
 #, c-format
@@ -1610,9 +1675,9 @@ msgid "Distance \"%s\" is unknown"
 msgstr "Не відома відстань \"%s\""
 
 #: src/theme-parser.c:1402
-#, fuzzy, c-format
+#, c-format
 msgid "Aspect ratio \"%s\" is unknown"
-msgstr "Не відома відстань \"%s\""
+msgstr "Невідомий кофіцієнт пропорційності \"%s\""
 
 #: src/theme-parser.c:1446
 #, c-format
@@ -1718,7 +1783,7 @@ msgstr "Немає ознаки \"type\" у елементі <%s>"
 #: src/theme-parser.c:2209
 #, c-format
 msgid "Did not understand value \"%s\" for type of gradient"
-msgstr ""
+msgstr "Не вдалось розпізнати значення \"%s\" для типу градієнта"
 
 #: src/theme-parser.c:2294
 #, c-format
@@ -1748,27 +1813,27 @@ msgstr "Немає ознаки \"arrow\" елементі <%s>"
 #: src/theme-parser.c:2529 src/theme-parser.c:2651 src/theme-parser.c:2739
 #, c-format
 msgid "Did not understand state \"%s\" for <%s> element"
-msgstr ""
+msgstr "Не вдалось розпізнати стан \"%s\" для елемента <%s>"
 
 #: src/theme-parser.c:2539 src/theme-parser.c:2661
 #, c-format
 msgid "Did not understand shadow \"%s\" for <%s> element"
-msgstr ""
+msgstr "Не вдалось розпізнати тінь \"%s\" для елемента <%s>"
 
 #: src/theme-parser.c:2549
 #, c-format
 msgid "Did not understand arrow \"%s\" for <%s> element"
-msgstr ""
+msgstr "Не вдалось розпізнати стрілку \"%s\" для елемента <%s>"
 
 #: src/theme-parser.c:2962 src/theme-parser.c:3078
 #, c-format
 msgid "No <draw_ops> called \"%s\" has been defined"
-msgstr ""
+msgstr "Не визначено <draw_ops> з назвою \"%s\""
 
 #: src/theme-parser.c:2974 src/theme-parser.c:3090
 #, c-format
 msgid "Including draw_ops \"%s\" here would create a circular reference"
-msgstr ""
+msgstr "Введення сюди параметра draw_ops \"%s\" створить ціклічне посилання"
 
 #: src/theme-parser.c:3153
 #, c-format
@@ -1783,12 +1848,12 @@ msgstr "Немає ознаки \"position\" елементі <%s>"
 #: src/theme-parser.c:3219
 #, c-format
 msgid "Unknown position \"%s\" for frame piece"
-msgstr ""
+msgstr "Невідома позиція \"%s\" для ділянки рамки"
 
 #: src/theme-parser.c:3227
 #, c-format
 msgid "Frame style already has a piece at position %s"
-msgstr ""
+msgstr "В стилю рамки вже є ділянка в позиції %s"
 
 #: src/theme-parser.c:3272
 #, c-format
@@ -1813,7 +1878,7 @@ msgstr "Невідомий стан кнопки – \"%s\""
 #: src/theme-parser.c:3306
 #, c-format
 msgid "Frame style already has a button for function %s state %s"
-msgstr ""
+msgstr "В стилю рамки вже є кнопка для режиму %s функції %s"
 
 #: src/theme-parser.c:3376
 #, c-format
@@ -1828,12 +1893,12 @@ msgstr "Немає ознаки \"style\" елементі <%s>"
 #: src/theme-parser.c:3401
 #, c-format
 msgid "\"%s\" is not a valid value for focus attribute"
-msgstr ""
+msgstr "\"%s\" – неправильне значення для атрибута \"focus\""
 
 #: src/theme-parser.c:3410
 #, c-format
 msgid "\"%s\" is not a valid value for state attribute"
-msgstr ""
+msgstr "\"%s\" – неправильне значення для атрибута \"state\""
 
 #: src/theme-parser.c:3420
 #, c-format
@@ -1848,7 +1913,7 @@ msgstr "Немає ознаки \"resize\" у елементі <%s>"
 #: src/theme-parser.c:3440
 #, c-format
 msgid "\"%s\" is not a valid value for resize attribute"
-msgstr ""
+msgstr "\"%s\" – неправильне значення для атрибута \"resize\""
 
 #: src/theme-parser.c:3450
 #, c-format
@@ -1904,10 +1969,12 @@ msgid "Element <%s> is not allowed inside a <constant> element"
 msgstr "Елемент <%s> не дозволяється у елементі <constant>"
 
 #: src/theme-parser.c:3696
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Element <%s> is not allowed inside a distance/border/aspect_ratio element"
-msgstr "Елемент <%s> не дозволяється у елементах <distance> і border"
+msgstr ""
+"Елемент <%s> не дозволяється у елементах <distance>, <border> і "
+"<aspect_ratio>"
 
 #: src/theme-parser.c:3718
 #, c-format
@@ -1932,9 +1999,9 @@ msgid "No draw_ops provided for menu icon"
 msgstr ""
 
 #: src/theme-parser.c:4054
-#, fuzzy, c-format
+#, c-format
 msgid "No text is allowed inside element <%s>"
-msgstr "Елемент <%s> не дозволяється у елементі <%s>"
+msgstr "Не дозволяється розміщувати текст у елементі <%s>"
 
 #: src/theme-parser.c:4109
 msgid "<name> specified twice for this theme"
@@ -2022,12 +2089,12 @@ msgstr ""
 #: src/theme.c:1000
 #, c-format
 msgid "Did not understand state \"%s\" in color specification"
-msgstr ""
+msgstr "Не вдалось розпізнати режим \"%s\" в специфікації кольору"
 
 #: src/theme.c:1013
 #, c-format
 msgid "Did not understand color component \"%s\" in color specification"
-msgstr ""
+msgstr "Не вдалося розпізнати компонент кольору \"%s\" у визначенні кольору"
 
 #: src/theme.c:1043
 #, c-format
@@ -2035,32 +2102,39 @@ msgid ""
 "Blend format is \"blend/bg_color/fg_color/alpha\", \"%s\" does not fit the "
 "format"
 msgstr ""
+"Формат визначення змішаного кольору — \"blend/колр_тла/"
+"колір_переднього_плану/альфа\", \"%s\" не відповідає формату"
 
 #: src/theme.c:1054
 #, c-format
 msgid "Could not parse alpha value \"%s\" in blended color"
 msgstr ""
+"Не вдалося проаналізувати значення альфа-каналу \"%s\" в змішаному кольорі"
 
 #: src/theme.c:1064
 #, c-format
 msgid "Alpha value \"%s\" in blended color is not between 0.0 and 1.0"
 msgstr ""
+"Значення альфа-каналу \"%s\" в змішаному кольорі не входить в діапазон між "
+"0.0 і 1.0"
 
 #: src/theme.c:1111
 #, c-format
 msgid ""
 "Shade format is \"shade/base_color/factor\", \"%s\" does not fit the format"
 msgstr ""
+"Формат тіні — \"shade/основний_колір/компонент\", \"%s\" не відповідає "
+"формату"
 
 #: src/theme.c:1122
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse shade factor \"%s\" in shaded color"
-msgstr "Не вдалось проаналізувати колір \"%s\""
+msgstr "Не вдалось проаналізувати компонент тіні \"%s\" в затіненому кольорі"
 
 #: src/theme.c:1132
 #, c-format
 msgid "Shade factor \"%s\" in shaded color is negative"
-msgstr ""
+msgstr "Компонент тіні \"%s\" в затіненому кольорі від'ємний"
 
 #: src/theme.c:1161
 #, c-format
@@ -2071,6 +2145,7 @@ msgstr "Не вдалось проаналізувати колір \"%s\""
 #, c-format
 msgid "Coordinate expression contains character '%s' which is not allowed"
 msgstr ""
+"Вираз координати містить символ \"%s\", який заборонено використовувати"
 
 #: src/theme.c:1450
 #, c-format
@@ -2078,11 +2153,13 @@ msgid ""
 "Coordinate expression contains floating point number '%s' which could not be "
 "parsed"
 msgstr ""
+"Вираз координати містить дійсне число \"%s\", яке не вдалося розпізнати"
 
 #: src/theme.c:1464
 #, c-format
 msgid "Coordinate expression contains integer '%s' which could not be parsed"
 msgstr ""
+"Вираз координати містить ціле число \"%s\", який не вдалося проаналізувати"
 
 #: src/theme.c:1531
 #, c-format
@@ -2090,33 +2167,37 @@ msgid ""
 "Coordinate expression contained unknown operator at the start of this text: "
 "\"%s\""
 msgstr ""
+"Вираз координати містить невідомий оператор в початку такого тексту: \"%s\""
 
 #: src/theme.c:1588
 msgid "Coordinate expression was empty or not understood"
-msgstr ""
+msgstr "Вираз координати порожній, чи його не вдалось розпізнати"
 
 #: src/theme.c:1727 src/theme.c:1737 src/theme.c:1771
 msgid "Coordinate expression results in division by zero"
-msgstr ""
+msgstr "Розрахунок виразу координати призвів до ділення на нуль"
 
 #: src/theme.c:1779
 msgid ""
 "Coordinate expression tries to use mod operator on a floating-point number"
 msgstr ""
+"Вираз координати намагається використати оператор взяття остачі від ділення "
+"для дійсного числа"
 
 #: src/theme.c:1836
 #, c-format
 msgid ""
 "Coordinate expression has an operator \"%s\" where an operand was expected"
 msgstr ""
+"У виразі координати використано оператор \"%s\", там де має бути операнд"
 
 #: src/theme.c:1845
 msgid "Coordinate expression had an operand where an operator was expected"
-msgstr ""
+msgstr "У виразі координати використано операнд, там де має бути оператор"
 
 #: src/theme.c:1853
 msgid "Coordinate expression ended with an operator instead of an operand"
-msgstr ""
+msgstr "Вираз координати закінчується оператором, а не операндом"
 
 #: src/theme.c:1863
 #, c-format
@@ -2124,34 +2205,42 @@ msgid ""
 "Coordinate expression has operator \"%c\" following operator \"%c\" with no "
 "operand in between"
 msgstr ""
+"У виразі координати за оператором \"%c\" йде оператор \"%c\", між ними немає "
+"операнда"
 
 #: src/theme.c:1982
 msgid ""
 "Coordinate expression parser overflowed its buffer, this is really a "
 "Metacity bug, but are you sure you need a huge expression like that?"
 msgstr ""
+"Буфер аналізатора виразу координати переповнено, це помилка \"Метаситі\", "
+"але навіщо вам такий великий вираз?"
 
 #: src/theme.c:2011
 msgid "Coordinate expression had a close parenthesis with no open parenthesis"
 msgstr ""
+"У виразі координати використано вікдривні дужки, але немає відповідних "
+"закривних"
 
 #: src/theme.c:2074
 #, c-format
 msgid "Coordinate expression had unknown variable or constant \"%s\""
-msgstr ""
+msgstr "У виразі координати є невідома змінна чи константа \"%s\""
 
 #: src/theme.c:2131
 msgid "Coordinate expression had an open parenthesis with no close parenthesis"
 msgstr ""
+"У виразі координати використано відкривні дужки, але немає відповідних "
+"закривних"
 
 #: src/theme.c:2142
 msgid "Coordinate expression doesn't seem to have any operators or operands"
-msgstr ""
+msgstr "У виразі координати немає ні операторів, ні операндів"
 
 #: src/theme.c:2386 src/theme.c:2408 src/theme.c:2429
 #, c-format
 msgid "Theme contained an expression \"%s\" that resulted in an error: %s\n"
-msgstr ""
+msgstr "В темі був вираз \"%s\", що спричинив помилку: \"%s\"\n"
 
 #: src/theme.c:3912
 #, c-format
@@ -2159,12 +2248,16 @@ msgid ""
 "<button function=\"%s\" state=\"%s\" draw_ops=\"whatever\"/> must be "
 "specified for this frame style"
 msgstr ""
+"для цього стилю рамки потрібно вказати <button function=\"%s\" state=\"%s\" "
+"draw_ops=\"що-небудь\"/>"
 
 #: src/theme.c:4362 src/theme.c:4394
 #, c-format
 msgid ""
 "Missing <frame state=\"%s\" resize=\"%s\" focus=\"%s\" style=\"whatever\"/>"
 msgstr ""
+"Відсутній <frame state=\"%s\" resize=\"%s\" focus=\"%s\" style=\"що-небудь\"/"
+">"
 
 #: src/theme.c:4445
 #, c-format
@@ -2173,9 +2266,9 @@ msgstr "Збій завантаження схеми \"%s\": %s\n"
 
 #: src/theme.c:4591 src/theme.c:4598 src/theme.c:4605 src/theme.c:4612
 #: src/theme.c:4619
-#, fuzzy, c-format
+#, c-format
 msgid "No <%s> set for theme \"%s\""
-msgstr "Не встановлено <name> для теми \"%s\""
+msgstr "Не встановлено <%s> для теми \"%s\""
 
 #: src/theme.c:4629
 #, c-format
@@ -2183,6 +2276,8 @@ msgid ""
 "No frame style set for window type \"%s\" in theme \"%s\", add a <window "
 "type=\"%s\" style_set=\"whatever\"/> element"
 msgstr ""
+"Немає стилю рамки для типу вікна \"%s\" в темі \"%s\", додайте елемент "
+"<window type=\"%s\" style_set=\"що-небудь\"/>"
 
 #: src/theme.c:4651
 #, c-format
@@ -2190,12 +2285,16 @@ msgid ""
 "<menu_icon function=\"%s\" state=\"%s\" draw_ops=\"whatever\"/> must be "
 "specified for this theme"
 msgstr ""
+"для цієї теми потрібно вказати <menu_icon function=\"%s\" state=\"%s\" "
+"draw_ops=\"що-небудь\"/>"
 
 #: src/theme.c:5038 src/theme.c:5100
 #, c-format
 msgid ""
 "User-defined constants must begin with a capital letter; \"%s\" does not"
 msgstr ""
+"Користувацькі константи мають починатися з великої літери; \"%s\" не "
+"починається з великої літери"
 
 #: src/theme.c:5046 src/theme.c:5108
 #, c-format
@@ -2204,7 +2303,7 @@ msgstr "Константа \"%s\" вже визначена"
 
 #: src/tools/metacity-properties.desktop.in.h:1
 msgid "Select how to give focus to windows"
-msgstr ""
+msgstr "Налаштування перемикання фокусу вводу між вікнами"
 
 #: src/tools/metacity-properties.desktop.in.h:2
 msgid "Window Focus"
@@ -2212,23 +2311,23 @@ msgstr "Фокус вікна"
 
 #: src/tools/metacity-properties.glade.h:1
 msgid "Clic_k to give focus"
-msgstr ""
+msgstr "_Клацнути для активації"
 
 #: src/tools/metacity-properties.glade.h:2
 msgid "Focus behavior:"
-msgstr ""
+msgstr "Правила активації:"
 
 #: src/tools/metacity-properties.glade.h:3
 msgid "Window Focus Preferences"
-msgstr ""
+msgstr "Властивості активації вікна"
 
 #: src/tools/metacity-properties.glade.h:4
 msgid "_Point to give focus"
-msgstr ""
+msgstr "На_вести курсор для активації"
 
 #: src/tools/metacity-properties.glade.h:5
 msgid "_Raise window on focus"
-msgstr ""
+msgstr "Розміщувати _над всіма вікнами на активації"
 
 #: src/util.c:93
 #, c-format
@@ -2264,7 +2363,7 @@ msgstr "Помилка віконного менеджера:"
 #: src/window-props.c:161
 #, c-format
 msgid "Application set a bogus _NET_WM_PID %ld\n"
-msgstr ""
+msgstr "Додаток встановив неправильне значення параметра _NET_WM_PID %ld\n"
 
 #. first time through
 #: src/window.c:4897
@@ -2281,7 +2380,7 @@ msgstr ""
 #. * MWM but not WM_NORMAL_HINTS are basically broken. We complain
 #. * about these apps but make them work.
 #.
-#: src/window.c:5457
+#: src/window.c:5471
 #, c-format
 msgid ""
 "Window %s sets an MWM hint indicating it isn't resizable, but sets min size %"

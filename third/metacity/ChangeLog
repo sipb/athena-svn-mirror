@@ -1,3 +1,127 @@
+2003-02-04  Havoc Pennington  <hp@redhat.com>
+
+	* NEWS: updated
+
+	* configure.in: 2.4.34
+
+2003-02-04  Havoc Pennington  <hp@redhat.com>
+
+	* src/metacity.schemas.in: default to Simple instead of Atlanta
+
+	* src/themes/Makefile.am (THEMES): add Simple theme
+
+2003-01-30  Havoc Pennington  <hp@redhat.com>
+
+	* src/keybindings.c (process_event): match handlers to key events 
+	using key codes, not key syms
+
+2003-02-03  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* configure.in: Added et to ALL_LINGUAS
+
+2003-01-29  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added en_GB nl to ALL_LINGUAS
+
+2003-01-29  Havoc Pennington  <hp@pobox.com>
+
+	* src/menu.c (meta_window_menu_new): don't create workspaces
+	menu items if only 1 workspace. Fix for #101952 from 
+	Orien Vandenbergh
+
+2003-01-25  Havoc Pennington  <hp@pobox.com>
+
+        (not for 2.2.0)
+	
+	* src/stack.c (window_is_fullscreen_size): When checking if a
+	window is fullscreen size, only require it to be at the origin 
+	of the work area, not at the origin of the screen/xinerama.
+	Still require it to be full screen in width x height.
+	May fix xine in the case where the user has a top panel.
+
+	* src/window.c (constrain_position): restore the ability for
+	undecorated windows to position themselves overlapping the top
+	panel, but don't let decorated windows do so. Oh the hacks...
+	
+2003-01-08  Havoc Pennington  <hp@pobox.com>
+
+        (not for 2.2.0)
+	
+	* src/screen.c (meta_screen_apply_startup_properties): small code
+	snippet to fix startup sequences that set legacy class/name
+
+2003-01-22  Havoc Pennington  <hp@redhat.com>
+
+        (not for 2.2.0)
+	
+	* src/async-getprop.c (async_get_property_handler): do not read 
+	sizeof(long) off the X connection. The X protocol does not vary 
+	by architecture. Fixes longstanding hang on all 64-bit platforms.
+
+2003-01-22  Havoc Pennington  <hp@redhat.com>
+
+        (not for 2.2.0)
+	
+	* src/tools/Makefile.am: fix conditional so we get
+	metacity-properties.c in the distribution #103071
+
+2003-01-22  Havoc Pennington  <hp@pobox.com>
+
+        (not for 2.2.0)
+	
+	* src/window.c (update_struts): be robust against the panel's 
+	lame "set a negative number for struts" thing, even though 
+	we'll also fix the panel.
+
+2003-01-21  Havoc Pennington  <hp@pobox.com>
+
+        (not for 2.2.0)
+	
+        Fix for the "mangles focus window when switching workspaces 
+	and using mouse focus" bug
+	
+	* src/stack.c (meta_stack_get_default_focus_window_at_point): new
+	function
+
+	* src/screen.c (meta_screen_focus_mouse_window): new function
+	(meta_screen_focus_default_window): new function
+	
+	* src/workspace.c (meta_workspace_activate): use the 
+	new meta_screen_focus_default_window()
+
+2003-01-17  Havoc Pennington  <hp@pobox.com>
+
+        (not for 2.2.0)
+	
+	* src/window.c (meta_window_handle_mouse_grab_op_event): fix event
+	compression code to use GDK algorithm suggested by Owen, should be 
+	more efficient.
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-21  Havoc Pennington  <hp@redhat.com>
+
+	* src/display.c (event_callback): only hop window to the current
+	workspace if the window was previously minimized. Should keep
+	mozilla from popping windows over to your current workspace.
+
+	(change will not be in 2.2.0)
+	
+2003-01-20  Havoc Pennington  <hp@redhat.com>
+
+        Attempt to fix #85916 (change will not be in 2.2.0)
+	
+	* src/keybindings.c (primary_modifier_still_pressed): new function
+	(handle_workspace_switch): handle modifier release prior to
+	getting the grab
+	(do_choose_window): handle modifier release prior to getting the 
+	grab
+
+	* src/keybindings.c (grab_keyboard): properly return failure
+	if the GrabKeyboard doesn't work
+	
 2003-01-20  Havoc Pennington  <hp@pobox.com>
 
 	* NEWS: update
@@ -73,7 +197,7 @@
 	default.
 
 2003-01-08  Havoc Pennington  <hp@pobox.com>
-
+	
 	* src/metacity.schemas.in: assign Alt+F12 to shade window, 
 	per #102658
 

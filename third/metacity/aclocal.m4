@@ -1700,30 +1700,6 @@ EOF
     hardcode_shlibpath_var=no
     ;;
 
-  linux*)
-    if $LD --help 2>&1 | egrep ': supported targets:.* elf' > /dev/null; then
-      archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
-      supports_anon_versioning=no
-      case `$LD -v 2>/dev/null` in
-        *\ [01].* | *\ 2.[[0-9]].* | *\ 2.10.*) ;; # catch versions < 2.11
-        *\ 2.11.93.0.2\ *) supports_anon_versioning=yes ;; # RH7.3 ...
-        *\ 2.11.92.0.12\ *) supports_anon_versioning=yes ;; # Mandrake 8.2 ...
-        *\ 2.11.*) ;; # other 2.11 versions
-        *) supports_anon_versioning=yes ;;
-      esac
-      if test $supports_anon_versioning = yes; then
-        archive_expsym_cmds='$echo "{ global:" > $output_objdir/$libname.ver~
-cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $output_objdir/$libname.ver~
-$echo "local: *; };" >> $output_objdir/$libname.ver~
-        $CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname ${wl}-version-script ${wl}$output_objdir/$libname.ver -o $lib'
-      else
-        $archive_expsym_cmds="$archive_cmds"
-      fi
-    else
-      ld_shlibs=no
-    fi
-    ;;
-
   *)
     if $LD --help 2>&1 | egrep ': supported targets:.* elf' > /dev/null; then
       archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname $wl$soname -o $lib'
@@ -2499,6 +2475,26 @@ linux-gnu*)
   # people can always --disable-shared, the test was removed, and we
   # assume the GNU/Linux dynamic linker is in use.
   dynamic_linker='GNU/Linux ld.so'
+
+  # Find out which ABI we are using (multilib Linux x86_64 hack).
+  libsuff=
+  case "$host_cpu" in
+  x86_64*|s390x*)
+    echo '[#]line __oline__ "configure"' > conftest.$ac_ext
+    if AC_TRY_EVAL(ac_compile); then
+      case `/usr/bin/file conftest.$ac_objext` in
+      *64-bit*)
+        libsuff=64
+        ;;
+      esac
+    fi
+    rm -rf conftest*
+    ;;
+  *)
+    ;;
+  esac
+  sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
+  sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
   ;;
 
 netbsd*)
@@ -3692,7 +3688,7 @@ irix5* | irix6* | nonstopux*)
 # This must be Linux ELF.
 linux-gnu*)
   case $host_cpu in
-  alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64*)
+  alpha* | hppa* | i*86 | mips | mipsel | powerpc* | sparc* | ia64* | s390* | x86_64*)
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM
