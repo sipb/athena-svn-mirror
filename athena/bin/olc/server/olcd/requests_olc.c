@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.62 2000-11-19 05:35:30 zacheiss Exp $
+ *	$Id: requests_olc.c,v 1.63 2001-03-30 22:01:58 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.62 2000-11-19 05:35:30 zacheiss Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.63 2001-03-30 22:01:58 zacheiss Exp $";
 #endif
 #endif
 
@@ -1322,7 +1322,10 @@ olc_send(fd, request)
     {
       sprintf(mesg,"%s %s [%d] has sent a message.\n", target->title,
 	      target->user->username, target->instance);
-      olc_broadcast_message("lonely_hearts", mesg, target->question->topic);
+      if (target->question)
+	olc_broadcast_message("lonely_hearts", mesg, target->question->topic);
+      else
+	olc_broadcast_message("lonely_hearts", mesg, "unknown");
     }
 
   if (owns_question(requester))
