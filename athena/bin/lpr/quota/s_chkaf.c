@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.8 1990-11-15 13:54:59 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.9 1990-12-10 13:03:54 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.8 1990-11-15 13:54:59 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.9 1990-12-10 13:03:54 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -76,7 +76,7 @@ main(argc,argv)
 int argc;
 char *argv[];
 {
-#ifdef ultrix
+#if defined(ultrix) || defined(_IBMR2)
     void (* savealarm)();
     void cleanup();
 #else
@@ -575,7 +575,7 @@ again:
     ret = QuotaReport(rpqauth[i].handle, &auth, &qid, &qrep, &chk);
     pfm_$rls_cleanup(crec, st);
     if(ret) {
-	syslog(LOG_ERR, "Problem contacting quota server %s: %d", rpqauth[i].hostname, error_message(ret));
+	syslog(LOG_ERR, "Problem contacting quota server %s: %s", rpqauth[i].hostname, error_message(ret));
 	return 1;
     }
 
@@ -677,7 +677,7 @@ mkreq:
 
 
 /* Cleans up before exiting when a signal is trapped */
-#ifdef ultrix
+#if defined(ultrix) || defined(_IBMR2)
 void 
 #endif
 cleanup()
