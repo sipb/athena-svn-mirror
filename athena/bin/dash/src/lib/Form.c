@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.1 1991-09-03 11:06:39 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Form.c,v 1.2 1991-12-17 10:28:32 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -367,7 +367,7 @@ static void resize(me, mysize)
 }
 
 static void realize(me)
-     FormJet me;
+     FormJet me;		/* ARGSUSED */
 {
 /*
   XjSize size;
@@ -382,7 +382,7 @@ static void realize(me)
 }
 
 static void expose(me, event)
-     FormJet me;
+     Jet me;
      XEvent *event;
 {
   Jet child;
