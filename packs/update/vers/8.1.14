@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	# Unfortunately, the boot script munched everyone's NETDEV values
+	# to NODEV if they were a public 8.1 sun.  Fix it.
+	if [ "$NETDEV" = NODEV ]; then
+		echo "Fixing NETDEV value in rc.conf"
+		if=`ifconfig -au | awk -F: \
+			'/^[a-z]/ { if ($1 != "lo0") { print $1; exit; } }'`
+		ed -s /etc/athena/rc.conf << EOS
+/^NETDEV/s/NODEV/$if/
+w
+q
+EOS
+	fi
+	;;
+
+sgi)
+	;;
+esac
