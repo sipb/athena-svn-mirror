@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: checkcode.c,v 1.3 2000-03-01 21:49:19 ghudson Exp $";
+static char *const _id = "$Id: checkcode.c,v 1.4 2003-02-28 20:41:20 zacheiss Exp $";
 
 #include "ifhp.h"
 #include <zephyr/zephyr.h>
@@ -324,7 +324,7 @@ static void send_zephyr(char *error)
 	notice.z_port = 0;
 	notice.z_class = "MESSAGE";
 	notice.z_class_inst = "PERSONAL";
-	notice.z_opcode = "";
+	notice.z_opcode = "AUTO";
 	notice.z_sender = "daemon";
 	notice.z_recipient = Loweropts['n' - 'a'];
 	notice.z_default_format = "";

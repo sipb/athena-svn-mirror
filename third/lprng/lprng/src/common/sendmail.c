@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.13 2001-06-05 23:28:50 zacheiss Exp $";
+"$Id: sendmail.c,v 1.14 2003-02-28 20:41:03 zacheiss Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -91,7 +91,7 @@ void Sendmail_to_user( int retval, struct job *job )
 		}
 
 		if( plp_snprintf( zbuf, sizeof(zbuf),
-			"%s -n -q -d -l -s %s %s",
+			"%s -n -q -d -l -s %s -O AUTO %s",
 			Zwrite_DYN, Printer_DYN,
 			mailname ) >= SMALLBUFFER - 1 )
 			logerr_die( LOG_ERR, "buffer overrun sending zephyr" );
