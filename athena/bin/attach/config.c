@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
  *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.3 1990-04-19 13:14:33 jfc Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.4 1990-07-16 07:30:02 jfc Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.3 1990-04-19 13:14:33 jfc Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.4 1990-07-16 07:30:02 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -62,7 +62,6 @@ struct key_def {
 	{"attachtab",	parse_string,	(caddr_t) &attachtab_fn, 0 },
 	{"mtab",	parse_string,	(caddr_t) &mtab_fn, 0 },
 #ifdef AFS
-	{"aklog",	parse_string,	(caddr_t) &aklog_fn, 0 },
 	{"afs-mount-dir", parse_string,	(caddr_t) &afs_mount_dir, 0 },
 #endif
 	{"fsck",	parse_string,	(caddr_t) &fsck_fn, 0 },
