@@ -1,0 +1,11 @@
+/* 
+ * Imakefile for turnin and related clients; Athena release
+ *
+ * $Author: probe $
+ * $Id: Imakefile,v 1.1 1991-06-30 15:29:10 probe Exp $
+ *
+ * Copyright (c) 1990, Massachusetts Institute of Technology
+ *
+ */
+
+#define ISUBDIRS rpc3.9 ets protocol lib clients man
