@@ -1,4 +1,4 @@
-.TH RENEW 1 "9 August 1991"
+.TH RENEW 1 "15 August 1991"
 .ds ]W MIT Project Athena
 .SH NAME
 renew - get kerberos tickets, tokens, mappings, zephyr authentication
@@ -8,7 +8,8 @@ renew
 \fIrenew\fR is an alias provided by the standard Athena dotfiles.  It is
 intended to make the process of getting new kerberos tickets,
 re-authenticating yourself to any fileservers from which you may have
-filesystems attached, and reloading your zephyr suscriptions easier.
+filesystems attached, and re-authenticating yourself to the zephyr
+servers easier.
 
 Typing "alias renew" will reveal that renew simply executes the series
 of commands:
@@ -27,8 +28,8 @@ required to write (and sometimes read) files from remote filesystems.
 Mappings and tokens automatically expire after 10 hours.
 
 \fIzctl load /dev/null\fR reauthenticates you to the zephyr servers.
-Valid authentication is necessary to send authentic zephyrgrams;
-otherwise, your zephyrgrams will be marked unauthentic.
+Valid authentication is necessary to receive authentic zephyrgrams;
+otherwise, any zephyrgrams you receive will be marked "forged".
 
 The "&&" between the commands means that the command is only executed if
 the previous command was successful.  This eliminates error messages
