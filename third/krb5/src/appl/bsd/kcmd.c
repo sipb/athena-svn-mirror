@@ -343,10 +343,12 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
 			   authopts, &cksumdat, ret_cred, 0,	&error, &rep_ret, NULL);
 	krb5_xfree(cksumdat.data);
     if (status) {
-	printf("Couldn't authenticate to server: %s\n", error_message(status));
+	fprintf(stderr, "Couldn't authenticate to server: %s\n",
+		error_message(status));
 	if (error) {
-	    printf("Server returned error code %d (%s)\n", error->error,
-		   error_message(ERROR_TABLE_BASE_krb5 + error->error));
+	    fprintf(stderr, "Server returned error code %d (%s)\n",
+		    error->error,
+		    error_message(ERROR_TABLE_BASE_krb5 + error->error));
 	    if (error->text.length) {
 		fprintf(stderr, "Error text sent from server: %s\n",
 			error->text.data);
