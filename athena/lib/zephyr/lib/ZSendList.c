@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.1 1987-06-10 12:35:34 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.2 1987-06-12 18:45:01 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -25,12 +25,12 @@ Code_t ZSendList(notice,list,nitems)
 	char *buffer;
 	int len;
 
-	buffer = (char *)malloc(BUFSIZ);
+	buffer = (char *)malloc(Z_MAXPKTLEN);
 	if (!buffer)
 		return (ZERR_NOMEM);
 
 	if ((retval = ZFormatNoticeList(notice,list,nitems,buffer,
-					 BUFSIZ,&len)) < 0) {
+					Z_MAXPKTLEN,&len)) != ZERR_NONE) {
 		free(buffer);
 		return (retval);
 	}
