@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v $
- * $Author: cfields $ 
+ * $Author: lwvanels $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,8 +11,8 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.4 1992-04-29 14:09:35 cfields Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.5 1992-05-07 14:53:39 lwvanels Exp $";
+#endif	/* lint */
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -119,7 +119,7 @@ static XjResource appResources[] =
 int div;
 int xleft = 0, yleft = 0;
 struct cluster *circled = NULL;
-Pixmap pixmap_on = NULL, pixmap_off = NULL;
+Pixmap pixmap_on = (Pixmap) NULL, pixmap_off = (Pixmap) NULL;
 
 int resize(draw, foo, data)
      DrawingJet draw;
@@ -147,9 +147,9 @@ int resize(draw, foo, data)
     }
   XClearWindow(XjDisplay(draw), XjWindow(draw));
 
-  if (pixmap_on != NULL)
+  if (pixmap_on != (Pixmap) NULL)
     XFreePixmap(XjDisplay(map), pixmap_on);
-  if (pixmap_off != NULL)
+  if (pixmap_off != (Pixmap) NULL)
     XFreePixmap(XjDisplay(map), pixmap_off);
   pixmap_on = XCreatePixmap(XjDisplay(map), 
 			    XjWindow(map),
