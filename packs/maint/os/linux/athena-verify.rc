@@ -5,6 +5,9 @@
 # chkconfig: 2345 80 30
 # description: Public workstation integrity verification.
 
+# "daemon".  There.  I said it.  This makes the Red Hat boot process not
+# mess with my output.
+
 # Source function library
 . /etc/rc.d/init.d/functions
 . /etc/athena/rc.conf
@@ -16,9 +19,8 @@ PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 case "$1" in
   start)
 	if [ "$PUBLIC" = true ]; then
-		echo -n Public workstation integrity check
-		/etc/athena/verify && success "RPM verification and repair" \
-				   || failure "RPM verification and repair"
+		echo "Starting public workstation integrity check"
+		/etc/athena/verify
 	fi
 	;;
   stop)
