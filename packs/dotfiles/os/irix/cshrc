@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.5 1999-04-09 19:14:13 ghudson Exp $
+# $Id: cshrc,v 1.6 1999-05-05 17:01:30 danw Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -44,7 +44,7 @@ if (! $?ENV_SET) then
 	setenv MORE -se				# Default "more" behavior
 	setenv EDITOR emacs			# Set default editor
 	setenv VISUAL emacs			# Set default screen editor
-	setenv NOMHNPROC			# Disable mh MIME support
+	setenv MM_CHARSET iso-8859-1
 	setenv MANPATH "$athena_manpath"
 
 	# Default man pager is ul -b | more -s -f.  Remove the ul -b part
