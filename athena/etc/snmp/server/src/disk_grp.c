@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.5  90/05/30  10:29:10  tom
+ * SNMPMXSID should be SNMPMXID
+ * 
  * Revision 1.4  90/05/26  13:36:31  tom
  * instances are now set to device name in ascii
  * and a variable to query mount point has been added
@@ -29,7 +32,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 1.5 1990-05-30 10:29:10 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 1.6 1990-06-05 16:07:31 tom Exp $";
 #endif
 
 #include "include.h"
@@ -268,8 +271,8 @@ lu_disk(varnode, repl, instptr, reqflg)
   cnt = 0;
   ch = &(mnt->mnt_fsname[0]);
   len = strlen(mnt->mnt_fsname);
-  if(len > SNMPMXID)
-    len = SNMPMXID;
+  if((len + repl->name.ncmp) > SNMPMXID)
+    len = SNMPMXID - repl->name.ncmp;
 
   while (cnt < len)
     {
