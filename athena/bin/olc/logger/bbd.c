@@ -3,22 +3,22 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.3 1991-04-10 09:30:58 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.4 1991-04-10 15:32:13 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.3 1991-04-10 09:30:58 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.4 1991-04-10 15:32:13 lwvanels Exp $";
 #endif
 #endif
 
 #include <syslog.h>
+#include <sys/types.h>
 #include <sys/errno.h>
 #include <sys/file.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
