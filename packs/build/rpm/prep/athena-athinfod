@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cp $1/packs/config/athinfo.access $2
+cp $1/packs/config/os/linux/athinfo.defs $2
