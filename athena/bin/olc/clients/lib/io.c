@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.14 1991-03-29 00:12:02 lwvanels Exp $
+ *	$Id: io.c,v 1.15 1991-04-08 20:47:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.14 1991-03-29 00:12:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.15 1991-04-08 20:47:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -80,9 +80,7 @@ send_request(fd, request)
   IO_REQUEST net_req;
   long i;
 
-#ifdef KERBEROS
   int klength;
-#endif /* KERBEROS */
 
 #ifdef TEST
   printf("%d %d\n",request->requester.uid,CURRENT_VERSION);
@@ -145,19 +143,28 @@ send_request(fd, request)
 #endif /* TEST */
 
   klength     = htonl((u_long) request->kticket.length);
-  if (write(fd, &klength, sizeof(int)) != sizeof(int)) 
+  if (swrite(fd, (char *) &klength, sizeof(int)) != sizeof(int)) 
     {
       fprintf(stderr, "Error in sending ticket length. \n");
       return(ERROR);
     }
 
-  if (write(fd, request->kticket.dat,
+  if (swrite(fd, (char *)request->kticket.dat,
 	    sizeof(unsigned char)*request->kticket.length) 
       != sizeof(unsigned char)*request->kticket.length) 
     {
       fprintf(stderr, "Error in sending ticket. \n");
           return(ERROR);
     }
+#else
+
+  klength = htonl((u_long) 0);
+  if (swrite(fd, &klength, sizeof(int)) != sizeof(int)) 
+    {
+      fprintf(stderr, "Error telling server we don't use kerberos.. \n");
+      return(ERROR);
+    }
+
 #endif /* KERBEROS */
 
   return(SUCCESS);
@@ -341,12 +348,12 @@ open_connection_to_nl_daemon(fd)
   }
 
   if ((*fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-    perror("socket");
+    olc_perror("socket");
     return(ERROR);
   }
   
   if (connect(*fd,(struct sockaddr *)&sin,sizeof(sin)) < 0) {
-    perror("connect");
+    olc_perror("connect");
     close(*fd);
     return(ERROR);
   }
