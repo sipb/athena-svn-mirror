@@ -123,7 +123,7 @@ EOF
 fi
 
 grep -q NETDEV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-NETDEV=eth0;		export NETDEV		# Network interface
+NETDEV=eth0;		export NETDEV		#* Network interface
 EOF
 
 if grep -q MACHINE /etc/athena/rc.conf ; then true ; else
