@@ -1,8 +1,0 @@
-case "$OS" in
-linux)
-	logindir=/bin
-	;;
-*)
-	logindir=/usr/bin
-	;;
-esac
