@@ -1,8 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.0 1988-04-14 16:43:30 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.1 1988-05-25 21:42:09 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.0  88/04/14  16:43:30  don
+ * this version is not compatible with prior versions.
+ * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
+ * it also offers sped-up exception-checking, via hash-tables.
+ * a bug remains in -nopullflag support: if the entry's to-name top-level
+ * dir doesn't exist, update_file doesn't get over it.
+ * the fix should be put into the updated() routine, or possibly dec_entry().
+ * 
  * Revision 3.0  88/03/09  13:17:18  don
  * this version is incompatible with prior versions. it offers:
  * 1) checksum-handling for regular files, to detect filesystem corruption.
@@ -41,7 +49,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.0 1988-04-14 16:43:30 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.1 1988-05-25 21:42:09 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -69,13 +77,15 @@ currency_diff( l, r) struct currentness *l, *r; {
 	 */
 	s = &d.sbuf;
 
-	d.sbuf.st_mode =
-		   DIFF( *l, *r, st_mode & ~S_IFMT) |		/* prot bits */
-		   DIFF( *l, *r, st_mode &  S_IFMT) << 12;	/* type bits */
-	UID( *s) = DIFF( *l, *r, st_uid);
-	GID( *s) = DIFF( *l, *r, st_gid);
+	if ( ignore_prots) s->st_mode = UID( *s) = GID( *s) = 0;
+	else {
+	    s->st_mode	= DIFF( *l, *r, st_mode & ~S_IFMT);	/* prot bits */
+	    UID( *s)	= DIFF( *l, *r, st_uid);
+	    GID( *s)	= DIFF( *l, *r, st_gid);
+	}
+	s->st_mode |= DIFF( *l, *r, st_mode & S_IFMT) << 12;	/* type bits */
 
-	diff = UID( *s) || GID( *s) || d.sbuf.st_mode;
+	diff = UID( *s) || GID( *s) || s->st_mode;
 
 	TIME( *s) = 0;
 	DEV( *s) = 0;
@@ -259,11 +269,16 @@ struct currentness *r, *l;
 		r->sbuf.st_atime = TIME( r->sbuf);
 		timevec = (struct timeval *) &r->sbuf.st_atime; /* XXX */
 
-		/* it's important to call utimes before set_prots:
+		/* only transfer the file if the contents seem to differ.
+		 * only call utimes() if copy_file() succeeds.
+		 * it's important to call utimes before set_prots.
+		 * if the file doesn't exist, always use remote protections.
 		 */
-		if ( copy_file(   remotename, localname)) return( -1);
-		else    utimes(    localname, timevec);
-		return( set_prots( localname, &r->sbuf));
+		if ( !( diff->cksum || TIME( diff->sbuf)));
+		else if ( copy_file( remotename, localname)) return( -1);
+		else      utimes(    localname, timevec);
+		return( exists && ignore_prots ? 0 :
+			set_prots( localname, &r->sbuf));
 
 	case S_IFLNK:
                 if ( exists && removeit( localname, S_IFLNK))
@@ -281,8 +296,9 @@ struct currentness *r, *l;
 		return( 0);
 
 	case S_IFDIR:
-		return( exists	? set_prots( localname, &r->sbuf)
-				: makepath(  localname, &r->sbuf));
+		return(   ! exists ?	   makepath(  localname, &r->sbuf)
+			: ! ignore_prots ? set_prots( localname, &r->sbuf)
+			: 0 );
 	case S_IFBLK:
 	case S_IFCHR:
 		if ( !exists && mknod( localname, remote_type, DEV( r->sbuf))) {
@@ -290,7 +306,7 @@ struct currentness *r, *l;
 			do_gripe();
 			return(-1);
 		}
-		return( set_prots( localname, &r->sbuf));
+		return( ignore_prots ? 0 : set_prots( localname, &r->sbuf));
 
 	case S_IFMT: /* should have been caught already. */
 		sprintf( errmsg, "fromfile %s doesn't exist.\n", remotename);
