@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.25 1990-08-24 03:24:28 lwvanels Exp $
+ *	$Id: log.c,v 1.26 1990-08-26 15:57:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.25 1990-08-24 03:24:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.26 1990-08-26 15:57:02 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -170,16 +170,19 @@ vfmt (format, pvar) char *format; va_list pvar;
 {
     static char buf[BUFSIZ];
     FILE strbuf;
+#if 0
     int len;
-
+#endif
     /* copied from sprintf.c, BSD */
     strbuf._flag = _IOWRT + _IOSTRG;
     strbuf._ptr = buf;
     strbuf._cnt = 32767;
     bzero (buf, sizeof (buf));
-    len = _doprnt (format, pvar, &strbuf);
 #if 0
+    len = _doprnt (format, pvar, &strbuf);
     buf[len] = '\0';
+#else
+    _doprnt (format, pvar, &strbuf);
 #endif
     return buf;
 }
@@ -586,7 +589,7 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
 	  question->topic, question->owner->user->username);
   fclose(fp);
       
-  if ((pid = fork()) == -1) 
+  if ((pid = vfork()) == -1) 
     {
       perror("dispose_of_log: fork");
       log_error("Can't fork to dispose of log.");
@@ -601,7 +604,7 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
       execl("/usr/local/lumberjack", "lumberjack", 0);
       perror("dispose_of_log: /usr/local/lumberjack");
       log_error("dispose_of_log: cannot exec /usr/local/lumberjack.\n");
-      exit(0);
+      _exit(0);
     }
   return(SUCCESS);
 }
