@@ -24,6 +24,10 @@ static GtkWidget *fatal_error_dialog;
 /* If this is TRUE, then we use the custom font */
 static gboolean initial_font_cbox;
 static gchar *initial_font;
+static gint
+find_custom(gconstpointer a, gconstpointer b);
+static void
+for_each(gpointer data, gpointer user_data);
 static void
 click_preview(GtkWidget *widget, gpointer data);
 static void
@@ -73,17 +77,44 @@ use_theme_font_callback (GtkWidget *widget, gpointer data)
 	  gtk_widget_set_sensitive (font_sel, TRUE);
   }
 }
+
+static gint
+find_custom (gconstpointer a, gconstpointer b)
+{
+	return g_strcasecmp (GTK_LABEL (GTK_BIN (a)->child)->label, 
+			     GTK_LABEL (b)->label);
+}
+
+static void
+for_each (gpointer data, gpointer user_data)
+{
+	GtkWidget *item;
+
+	if (g_list_find_custom (user_data, GTK_BIN (data)->child, find_custom)
+	    == NULL)
+	{
+		item = data;
+		gtk_list_item_select (GTK_LIST_ITEM (item));
+	}
+}
+
 static void
 browse_dialog_ok (GtkWidget *widget, gpointer data)
 {
   GtkWidget *filesel = gtk_widget_get_toplevel (widget);
   gchar *filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
   gchar *error;
-
+  GtkWidget *orig_list = gtk_list_new();
+  
+  update_theme_entries (orig_list);
   error = install_theme (filename);
   
-  if (!error)
-    update_theme_entries (theme_list);
+  if (!error) 
+    {
+	    update_theme_entries (theme_list);
+	    g_list_foreach (GTK_LIST (theme_list)->children, for_each, 
+			    GTK_LIST (orig_list)->children);
+    }
   else
     {
       char *msg = g_strdup_printf (_("Error installing theme:\n'%s'\n%s"),
@@ -96,6 +127,9 @@ browse_dialog_ok (GtkWidget *widget, gpointer data)
       g_free (msg);
       g_free (error);
     }
+  gtk_list_clear_items (GTK_LIST (orig_list), 0, -1);
+  gtk_object_unref (GTK_OBJECT (orig_list));
+
   gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
   gtk_widget_destroy (filesel);
 }
@@ -564,8 +598,8 @@ static gint sort_alpha(const void *a, const void *b)
 
   A = GTK_BIN (a);
   B = GTK_BIN (b);
-  
-  return strcmp((char *)GTK_LABEL (A->child)->label, (char *)GTK_LABEL (B->child)->label);
+
+  return g_strcasecmp((gchar *)GTK_LABEL (A->child)->label, (gchar *)GTK_LABEL (B->child)->label);
 }
 
 void

@@ -2083,7 +2083,7 @@ gdk_font_get_bold (const GdkFont *plain_font)
 		return NULL;
 	}
 	
-	result = gdk_font_load (bold_name);
+	result = gdk_fontset_load (bold_name);
 	g_free (bold_name);
 
 	return result;

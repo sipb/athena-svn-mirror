@@ -1,25 +1,15 @@
 [Desktop Entry]
 Name=MDI
-Name[ca]=Multidocument
+Name[ca]=Document múltiple
 Name[da]=Multidokument
-Name[de]=MDI
-Name[es]=MDI
 Name[et]=Multidokument
-Name[fi]=Usean asiakirjan käyttö
 Name[fr]=Multi-document
 Name[gl]=Multi-Documento
-Name[hu]=MDI
-Name[ja]=MDI
 Name[ko]=¿©·¯¹®¼­
-Name[lt]=MDI
-Name[no]=MDI
-Name[pl]=MDI
-Name[pt]=MDI
 Name[ru]=ïäé
-Name[sk]=MDI
 Name[sl]=MDI (veèdokumetni vmesnik)
-Name[sv]=MDI
-Name[wa]=MDI
+Name[tr]=Çoklu Belge Arayüzü
+Name[uk]=íä¶
 Exec=ui-properties --cap-id=2
 Icon=gnome-mdi.png
 Terminal=0

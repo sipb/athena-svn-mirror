@@ -34,7 +34,7 @@ exit_callback(GtkWidget *widget, gpointer data)
 		gnome_dialog_close (GNOME_DIALOG (exit_dialog));
 	}
 
-        g_list_foreach (capplet_list, create_templist, &templist);
+        g_list_foreach (capplet_list, (GFunc)create_templist, &templist);
 
         if (!templist) {
                 gtk_widget_destroy (main_window);

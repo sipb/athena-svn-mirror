@@ -31,7 +31,7 @@ enum {
 
 enum {
 	BACKGROUND_SIMPLE,
-	BACKGROUND_WALLPAPER,
+	BACKGROUND_WALLPAPER
 };
 
 struct _BGState {

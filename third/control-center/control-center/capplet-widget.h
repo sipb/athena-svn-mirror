@@ -43,7 +43,7 @@ struct _CappletWidgetClass
 };
 
 guint           capplet_widget_get_type       	(void);
-GtkWidget*      capplet_widget_new            	();
+GtkWidget*      capplet_widget_new            	(void);
 GtkWidget*      capplet_widget_multi_new       	(gint capid);
 
         

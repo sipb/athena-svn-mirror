@@ -1,3 +1,92 @@
+2002-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/theme-switcher/lister.c: Apply patch from Owen Taylor
+	<otaylor@redhat.com> to make this work with empty gtkrc files.
+	Based on a patch from Nils Nordman <nino@nforced.com>. Fixes #64183.
+	
+2002-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/screensaver-properties/callbacks.c: Apply patch from Juha 
+	Ylitalo <juha.ylitalo@iki.fi> to only support *.desktop files in the
+	data directory (not *desktop*). Fixes #68679.
+	
+2002-02-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_CN.GB2312 -> zh_CN
+
+2002-01-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in, man/Makefile.am: Hook up man pages.
+	* man/*.1: Add man-pages.
+	* capplets/file-type/Makefile.am: Use $(PIXBUF_[CFLAGS|LIBS]).
+	* capplets/theme-switcher/lister.c: When specified user-font by 
+	theme-selector-capplet, theme-selector-capplet have generated 'font' 
+	in .gtkrc. but GTK+ already has 'fontset' in /etc/gtk/gtkrc*, and GTK+ 
+	gives priority to 'fontset' over 'font'. so that GTK+ has ignored 
+	user-font in .gtkrc. (Akira TAGOH) Fixes bug #66556
+		
+2002-01-19  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* configure.in: Added nn to ALL_LINGUAS
+
+2001-12-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Up version.
+	* capplets/file-types/file-types-capplet.c: s/font/fontset/g
+	* capplets/theme-switcher/lister.c: Apply a patch from
+	Laszlo PETER <Laszlo.Peter@ireland.sun.com> to fix a crash
+	on Solaris.
+	
+2001-11-09  Bradford Hovinen  <hovinen@ximian.com>
+
+	Courtesy of Gregory Leblanc <gleblanc@linuxweasel.com>
+	* configure.in: Make sure gdk_pixbuf compile flags get included in
+	compile command line. Fixes #64082
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/theme-switcher/main.c: Fix warnings.
+	* capplets/wm-properties/wm-exec.c: Fix warnings
+	* capplets/wm-properties/wm-list.c: Same here.
+	
+2001-07-24  Stanislav Brabec  <utx@penguin.cz>
+
+	* capplets/sound-properties/sound-properties.c: Allow to restore
+	gmix mixer levels on startup. Does not depend on esd (but
+	compiles only if esd is present), does not checks for gmix (you
+	can install it later).
+
+2001-07-16  Marius Andreiana  <mandreiana@yahoo.com>
+
+        * capplets/theme-switcher/gui.c: new theme is selected after being 
+        installed (#1945) (patch from <geor@ihug.co.nz>)
+
+2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/wm-properties/wm-properties-capplet.c:
+	Remove const to make things compile on AIX.
+	* capplets/background-capplet/render-background.h: Remove
+	commas after the last enum entry.
+	* capplets/background-capplet/property-background.c: Include
+	<math.h> and remove trailing comma in enum.
+	
+2001-05-31  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* capplets/screensaver-properties/callbacks.c,
+	capplets/screensaver-properties/callbacks.h,
+	capplets/screensaver-properties/screensaver-properties-capplet.c:
+	added Preview button for all screensavers
+	* capplets/theme-switcher/gui.c: theme selector capplet sorts 
+	themes case-insensitively now (bug #13539)
+	
+2001-04-22  Jason Leach  <jasonleach@usa.net>
+
+	* configure.in: Correct a typo.
+
 2001-03-28  Dan Mueth  <dan@eazel.com>
 
 	Fixing every capplet in control-center, since none of them

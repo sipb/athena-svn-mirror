@@ -27,6 +27,10 @@ GnomeAppBar *status_bar;
 GtkWidget *hack_widget;
 gchar *init_cap = NULL;
 
+/* Prototypes */
+
+GtkWidget * create_exit_dialog (GList *apps);
+
 static GnomeUIInfo mainMenu[] = {
         GNOMEUIINFO_MENU_EXIT_ITEM(exit_callback, NULL), 
         GNOMEUIINFO_END

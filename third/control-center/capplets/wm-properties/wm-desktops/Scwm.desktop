@@ -1,22 +1,7 @@
 [Desktop Entry]
 Name=Scwm
-Name[da]=Scwm
-Name[de]=Scwm
-Name[es]=Scwm
-Name[fi]=Scwm
-Name[fr]=Scwm
-Name[gl]=Scwm
-Name[hu]=Scwm
-Name[ja]=Scwm
 Name[ko]=scwm
-Name[no]=Scwm
-Name[pl]=Scwm
-Name[ru]=Scwm
-Name[sk]=Scwm
-Name[sl]=Scwm
-Name[sv]=Scwm
-Name[uk]=Scwm
-Name[wa]=Scwm
+Name[nl]=SCwm
 Exec=scwm
 TryExec=scwm
 

@@ -107,11 +107,11 @@ static void get_linux_info()
   /* Identify distribution (really this could be compiled in) */
   if (g_file_exists("/etc/debian_version")) {
     FILE * f;
-    gchar buf[10];
+    gchar buf[20];
 
     f = fopen("/etc/debian_version", "r");
     if (f) { 
-      fscanf(f, "%8s", buf);
+      fscanf(f, "%16s", buf);
       info[si_distribution] = g_strdup(buf);
       fclose(f);
     }

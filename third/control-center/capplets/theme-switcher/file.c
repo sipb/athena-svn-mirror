@@ -15,6 +15,10 @@
 #include <sys/stat.h>
 #include "da.h"
 
+/* Function prototype */
+int ls_compare_func(const void *a, const void *b);
+
+
 void 
 md(char *s)
 {

@@ -23,7 +23,6 @@ wm_is_running (void)
 {
         gboolean result;
         gboolean old_warnings = gdk_error_warnings;
-        guint old_mask;
         XWindowAttributes attrs;
         
         gdk_error_warnings = FALSE;

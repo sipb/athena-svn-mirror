@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.2.2\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
 "PO-Revision-Date: 2000-10-09 23:40+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -22,12 +22,12 @@ msgstr "PLIK-Z-OBRAZEM"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
-"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania "
-"'background-properties-capplet'.\n"
+"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania 'background-properties-"
+"capplet'.\n"
 "Rezygnacja...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
@@ -38,139 +38,141 @@ msgstr "T³o"
 msgid "Configuration of the desktop's background"
 msgstr "Konfiguracja t³a"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "Nieaktywny"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
 msgstr "Kolor"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
 msgstr "Jednolity"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
 msgstr "Poziomy gradient"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
 msgstr "Pionowy gradient"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr "Pierwszy kolor"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
 msgstr "Drugi kolor"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Wybór tapety"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Nie mo¿na odnale¼æ widgetu hbox, wywo³anie zwyk³ego wyboru pliku"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
 msgstr "Podgl±d"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Tapeta"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
 msgstr " Przegl±daj... "
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "brak"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr "Logo w postaci p³askorze¼by"
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "Skalowana"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr "Skalowana (z zachowaniem proporcji)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Wy¶rodkowana"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Kafelka"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
 msgstr "Ustawianie t³a przez GNOME"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr "Ustaw parametry z zapisnego stanu i zakoñcz"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "OBRAZ"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr "Ustawia tapetê na okre¶lon± wrto¶æ"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "KOLOR"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "Okre¶la kolor t³a"
 
-#: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr "Okre¶la koñcowy kolor t³a dla gradientu"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "ORIENT"
 msgstr "KIERUNEK"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Kierunek gradientu: pionowo lub poziomo"
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a solid fill for the background"
 msgstr "U¿yj jednolitego wype³nienia dla t³a"
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
 msgstr "U¿yj gradientu dla t³a"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "TRYB"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Wy¶wietlanie tapety: kafelka, wycentrowana, skalowana, proporcjonalna"
 
@@ -188,7 +190,7 @@ msgid "Document Handlers"
 msgstr "Obs³uga dokumentów"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Centrum Sterowania GNOME"
@@ -566,19 +568,19 @@ msgstr ""
 "siê, ¿e zainstalowano w systemie Podrêcznik U¿ytkownika GNOME."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Zamknij"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
-"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania "
-"'keyboard-properties-capplet'.\n"
+"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania 'keyboard-properties-"
+"capplet'.\n"
 "Rezygnacja...\n"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
@@ -648,8 +650,8 @@ msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
-"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania "
-"'mouse-properties-capplet'.\n"
+"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania 'mouse-properties-"
+"capplet'.\n"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
 msgid "Mouse"
@@ -659,33 +661,33 @@ msgstr "Mysz"
 msgid "Mouse Properties"
 msgstr "Ustawienia myszy"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr "Wymaganie has³a"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
 msgstr "Aktywacja funkcji oszczêdzania energii."
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
 msgstr "Brak"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
 msgstr "Losowy"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "Ustawienia..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "Losowe ustawienia"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "%s - ustawienia..."
@@ -2627,11 +2629,8 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
@@ -3402,15 +3401,22 @@ msgstr "Autor: NIEZNANY"
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "LOSOWY WYGASZACZ"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "Wygaszacz ekranu"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+#, fuzzy
+msgid "Pressing this button will preview current screensaver."
+msgstr ""
+"Wci¶niêcie przycisku otworzy okno, które pomo¿e w ustawieniu aktualnego "
+"wygaszacza ekranu."
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
@@ -3419,39 +3425,39 @@ msgstr ""
 "wygaszacza ekranu."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
 msgstr "Ustawienia wygaszacza ekranu"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "Uruchamianie po "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
 msgstr " min."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
 msgstr "Priorytet:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "Niski "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " Zwyk³y"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr "Wy³±czanie monitora "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr " min. po uruchomieniu wygaszacza."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
 msgstr "Demonstracja wygaszacza ekranu"
 
@@ -3467,57 +3473,66 @@ msgstr "Wygaszacz ekranu"
 msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr ""
-"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania "
-"'sound-properties-capplet'."
+"Wyst±pi³ b³±d inicjalizacji w trakcie uruchamiania 'sound-properties-"
+"capplet'."
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "Zdarzenie"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "Plik z d¼wiêkiem"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "D¼wiêk"
-
 #: capplets/sound-properties/sound-properties.c:250
+#, fuzzy
+msgid "Sound server"
+msgstr "D¼wiêki zdarzeñ"
+
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr "Uruchamianie serwera d¼wiêku"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr "D¼wiêki dla zdarzeñ"
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr ""
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr ""
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Ogólne"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "Wybierz plik z d¼wiêkiem"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "Odtwarzaj"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr "D¼wiêki zdarzeñ"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 "Wykorzystywana kopia Centrum Sterowania GNOME nie zosta³a skompilowana z "
 "obs³ug± d¼wiêku"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr "Plik z d¼wiêkiem dla tego zdarzenia nie istnieje."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3612,7 +3627,7 @@ msgstr "Przycisk opcji 1"
 msgid "Radio Button 2"
 msgstr "Przycisk opcji 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3623,15 +3638,15 @@ msgstr ""
 "'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
 msgstr "Wybierz motyw do zainstalowania"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "Dostêpne motywy"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
@@ -3639,7 +3654,7 @@ msgstr ""
 "Automatyczny\n"
 "podgl±d"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
@@ -3649,17 +3664,17 @@ msgstr ""
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
 msgstr "Czcionka u¿ytkownika"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-2"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr "Wykorzystanie wybranej czcionki."
 
@@ -4142,57 +4157,57 @@ msgstr "Cofnij"
 msgid "Help with '%s' settings"
 msgstr "Pomoc na temat ustawieñ '%s'"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr "identyfikator c-apletu -- przypisane przez Centrum Sterowania"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr "Identyfikator Multi-c-apletu"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr "XID soketu, do którego jest pod³±czony"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr "IOR Panelu Sterowania"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr "Inicjuje ustawienia sesji"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
-"Ignoruje domy¶ln± akcjê. Wykorzystywane dla specjalnych przypadków "
-"init-session"
+"Ignoruje domy¶ln± akcjê. Wykorzystywane dla specjalnych przypadków init-"
+"session"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "Niestety, pomoc na temat tych ustawieñ nie jest dostêpna."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr "polecenie - c-aplet do uruchomienia."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr "CAPLET"
 
@@ -4200,37 +4215,37 @@ msgstr "CAPLET"
 msgid "The GNOME configuration tool"
 msgstr "Narzêdzie do konfiguracji GNOME"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
 msgstr "Pomoc na temat Centrum Sterowania"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "Pomoc na temat Centrum Sterowania GNOME."
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr "Pomoc na temat bie¿±cej strony konfiguracji."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "Informacje o"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "Informacje o Centrum Sterowania GNOME."
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "Ostrze¿enie:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr "Porzuæ wszystkie zmiany"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4263,6 +4278,9 @@ msgstr "Nazwa komputera:"
 #: control-center/splash.c:178
 msgid "Unknown"
 msgstr "Nieznany"
+
+#~ msgid "Enable"
+#~ msgstr "D¼wiêk"
 
 #~ msgid "Mime Type: "
 #~ msgstr "Typy MIME: "
@@ -4410,8 +4428,8 @@ msgstr "Nieznany"
 #~ "Settings programs are always started on every login."
 #~ msgstr ""
 #~ "Przycisk ten ustala sposób odtwarzania wybranych programów:\n"
-#~ "Zwyk³e programy nie podlegaj± zmianom podczas wylogowania, ale mog± zostaæ "
-#~ "zamkniête\n"
+#~ "Zwyk³e programy nie podlegaj± zmianom podczas wylogowania, ale mog± "
+#~ "zostaæ zamkniête\n"
 #~ "Programom typu \"odtwarzanego\" nie pozwala siê na zamkniêcie\n"
 #~ "Programy typu \"usuwane\" s± porzucane przy wylogowaniu i mog± zostaæ "
 #~ "zamkniête\n"
@@ -4430,8 +4448,8 @@ msgstr "Nieznany"
 #~ "Programy uruchamiane uzyska³y czas na rozpoczêcie dzia³ania;\n"
 #~ "Programy dzia³aj±ce s± zwyk³ymi elementami sesji;\n"
 #~ "Programy zapisywane s± w trakcie zapisywania szczegó³ów swoich sesji;\n"
-#~ "Programy, które nie pozwalaj± na nawi±zanie kontaktu maj± stan "
-#~ "\"nieznany\".\n"
+#~ "Programy, które nie pozwalaj± na nawi±zanie kontaktu maj± stan \"nieznany"
+#~ "\".\n"
 
 #~ msgid "This column gives the command used to start a program."
 #~ msgstr "Kolumna ta podaje polecenie u¿yte do uruchomienia programu."
@@ -4510,11 +4528,11 @@ msgstr "Nieznany"
 #~ msgstr "Polecenie autostartu"
 
 #~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
+#~ "Programs with smaller values are started before programs with higher "
+#~ "values. The default value should be OK"
 #~ msgstr ""
-#~ "Programy z przypisanymi mniejszymi warto¶ciami s± uruchamiane przed tymi z "
-#~ "wiêkszymi. Domy¶lna warto¶æ zwykle jest odpowiednia."
+#~ "Programy z przypisanymi mniejszymi warto¶ciami s± uruchamiane przed tymi "
+#~ "z wiêkszymi. Domy¶lna warto¶æ zwykle jest odpowiednia."
 
 #~ msgid "The startup command cannot be empty"
 #~ msgstr "Polecenie autostartu nie mo¿e byæ puste"

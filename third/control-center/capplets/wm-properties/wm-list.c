@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <string.h>
 #include <libgnome/libgnome.h>
 #include "wm-properties.h"
 

@@ -7,10 +7,12 @@
 #include <gdk/gdkx.h>
 
 /* prototypes */
+#if 0
 static void orb_add_connection(GIOPConnection *cnx);
 static void orb_remove_connection(GIOPConnection *cnx);
-void control_center_corba_gtk_init(gint *argc, char **argv);
 static void orb_handle_connection(GIOPConnection *cnx, gint source, GdkInputCondition cond);
+#endif
+void control_center_corba_gtk_init(gint *argc, char **argv);
 int server_register_capplet(PortableServer_Servant servant,
                         CORBA_long id,
                         GNOME_capplet cap,
@@ -51,6 +53,7 @@ POA_GNOME_control_center__epv control_center_epv =
 POA_GNOME_control_center__vepv poa_control_center_vepv = { &base_epv, &control_center_epv };
 POA_GNOME_control_center poa_control_center_servant = { NULL, &poa_control_center_vepv };
 
+#if 0
 static void
 orb_add_connection(GIOPConnection *cnx)
 {
@@ -66,6 +69,8 @@ orb_remove_connection(GIOPConnection *cnx)
         gtk_input_remove((guint)cnx->user_data);
         cnx->user_data = (gpointer)-1;
 }
+#endif
+
 void
 control_center_corba_gtk_main_quit(void)
 {
@@ -86,7 +91,7 @@ control_center_corba_gtk_init(gint *argc, char **argv)
         CORBA_exception_init(&ev);
         orb = gnome_CORBA_init_with_popt_table (g_basename(argv[0]), VERSION, argc, argv, cap_options, 0, NULL, GNORBA_INIT_SERVER_FUNC, &ev);
 
-        poa = CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
+        poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
         POA_GNOME_control_center__init(&poa_control_center_servant, &ev);
 
         PortableServer_POA_activate_object_with_id(poa, 
@@ -128,6 +133,7 @@ control_center_corba_gtk_main (gint *argc, char **argv)
         gtk_main();
 }
 
+#if 0
 static void
 orb_handle_connection(GIOPConnection *cnx, gint source, GdkInputCondition cond)
 {
@@ -139,6 +145,8 @@ orb_handle_connection(GIOPConnection *cnx, gint source, GdkInputCondition cond)
                 giop_main_handle_connection(cnx);
         }
 }
+#endif
+
 int
 server_register_capplet(PortableServer_Servant servant,
                         CORBA_long id,
@@ -226,7 +234,7 @@ static void
 show_self ()
 {
         gint workspace;
-        gint x, y, height, width;
+        gint x, y;
 
         workspace = gnome_win_hints_get_current_workspace ();
         if (workspace != gnome_win_hints_get_workspace (main_window))
@@ -246,7 +254,7 @@ void server_register_capplet_new (PortableServer_Servant servant,
                                   const CORBA_long capid,
                                   CORBA_unsigned_long * xid,
                                   CORBA_long * newid,
-                                  CORBA_Environment * ev)
+                                  CORBA_Environment *ev)
 {
         node_data *nd = NULL;
         GSList *ugly_list = NULL;
@@ -264,7 +272,7 @@ void server_register_capplet_new (PortableServer_Servant servant,
 
                 return;
         }
-        nd->capplet = CORBA_Object_duplicate (cap, &ev);
+        nd->capplet = CORBA_Object_duplicate (cap, ev);
         launch_capplet (nd, FALSE);
         *xid = GDK_WINDOW_XWINDOW (nd->socket->window);
         *newid = nd->id;

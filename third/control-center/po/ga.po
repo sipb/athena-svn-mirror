@@ -1,180 +1,187 @@
-# gnome-core ga.po
+# Irish (Gaeilge) translations for control-center (Gnome)
 # Copyright (C) 1998 Free Software Foundation, Inc.
-# Alastair McKinstry <alastair@ilo.dec.com>, 1998.
+# Alastair McKinstry <mckinstry@computer.org>
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-core VERSION\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
-"PO-Revision-Date: 1998-05-07 11:00+0100\n"
-"Last-Translator:Alastair McKinstry <alastair@ilo.dec.com>\n"
-"Language-Team: Alastair McKinstry <alastair@ilo.dec.com>\n"
+"Project-Id-Version: control-center1 1.4.0\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
+"PO-Revision-Date: 2000-03-11 01:02+0000\n"
+"Last-Translator:Alastair McKinstry <mckinstry@computer.org>\n"
+"Language-Team: Alastair McKinstry <mckinstry@computer.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: capplets/background-properties/app-background.c:15
-#, fuzzy
 msgid "Set background image."
-msgstr " Czlra "
+msgstr "Cuir pictiúr culra."
 
 #: capplets/background-properties/app-background.c:15
 msgid "IMAGE-FILE"
-msgstr ""
+msgstr "COMHAD-IOMHA"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 #, fuzzy
 msgid "Background"
-msgstr " Czlra "
+msgstr "Cúlraí"
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:116
-#, fuzzy
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
-msgstr "Leacaithe"
+msgstr "Míchumasach"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
+#, fuzzy
 msgid "Color"
+msgstr "Dathanna:"
+
+#: capplets/background-properties/property-background.c:331
+#: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
+#, fuzzy
+msgid "Solid"
 msgstr "Dath"
 
-#: capplets/background-properties/property-background.c:330
-#: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
-msgid "Solid"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 #, fuzzy
 msgid "Horizontal Gradient"
 msgstr "Cothromanach"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 #, fuzzy
 msgid "Vertical Gradient"
-msgstr "Gradan"
+msgstr "Ingearach"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
+#, fuzzy
 msgid "Secondary Color"
-msgstr ""
+msgstr "Dath"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Rogha Paipiar balla"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
-msgstr ""
+msgstr "Réamhradharc"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Paipiar balla"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
-msgstr " Dearcadh.."
+msgstr "Dearcadh..."
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
+#, fuzzy
 msgid "none"
-msgstr "tada"
+msgstr "(Ar bith)"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
+#, fuzzy
 msgid "Scaled"
-msgstr ""
+msgstr "Beag"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Sa Lar"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Leacaithe"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 #, fuzzy
 msgid "Use GNOME to set background"
-msgstr " Czlra "
+msgstr "Gan cúlra"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
-msgstr ""
+msgstr "ÍOMHA"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
-msgstr ""
-
-#: capplets/background-properties/property-background.c:1142
-msgid "Specifies the background color"
-msgstr ""
+msgstr "DATH"
 
 #: capplets/background-properties/property-background.c:1143
+#, fuzzy
+msgid "Specifies the background color"
+msgstr "Dath Cúlra"
+
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
+#, fuzzy
 msgid "ORIENT"
-msgstr ""
+msgstr "TREOSHUIOMH"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a solid fill for the background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
-msgstr ""
+msgstr "MÓD"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr ""
 
@@ -192,16 +199,14 @@ msgid "Document Handlers"
 msgstr ""
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
-#, fuzzy
 msgid "Control Center"
-msgstr "Albaltachtam Miarchlar"
+msgstr ""
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
-#, fuzzy
 msgid "Control Center Menu"
-msgstr "Albaltachtam Miarchlar"
+msgstr ""
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
@@ -220,28 +225,27 @@ msgid "Peripherals"
 msgstr ""
 
 #: capplets/desktop-links/Session.directory.in.h:1
+#, fuzzy
 msgid "Session"
-msgstr ""
+msgstr "Tóg dealbh..."
 
 #: capplets/desktop-links/Session.directory.in.h:2
 #, fuzzy
 msgid "Session Management Settings"
-msgstr "Cur Szil"
+msgstr "Cumriagh"
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
 msgid "Configure the global settings of your GNOME applications"
 msgstr ""
 
-# FIXME Check
 #: capplets/desktop-links/UIOptions.directory.in.h:2
 #, fuzzy
 msgid "User Interface"
-msgstr "Claireanna"
+msgstr "Cló Úsáideoir"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
-#, fuzzy
 msgid "Edit Applications List"
-msgstr "Fograiocht"
+msgstr ""
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
@@ -250,19 +254,16 @@ msgid "Select applications to appear in menu for MIME type \"%s\""
 msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
-#, fuzzy
 msgid "Add Application..."
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
-#, fuzzy
 msgid "Edit Application..."
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
-#, fuzzy
 msgid "Delete Application"
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
@@ -349,42 +350,36 @@ msgid ""
 msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
-#, fuzzy
 msgid "Bad Application Name"
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
-#, fuzzy
 msgid "Bad Application Command"
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
 #, fuzzy
 msgid "Add Application"
-msgstr "Fograiocht."
+msgstr "Bog mionuirlis"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
-#, fuzzy
 msgid "Edit Application"
-msgstr "Fograiocht."
+msgstr ""
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
-#, fuzzy
 msgid "Application Name:"
-msgstr "Fograiocht."
+msgstr ""
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
-#, fuzzy
 msgid "Application Command:"
-msgstr "Fograiocht."
+msgstr ""
 
 #. Open Behavior frame
 #: capplets/file-types/file-types-capplet-dialogs.c:1293
-#, fuzzy
 msgid "Open Behavior"
-msgstr "Position"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
 msgid "Can open multiple files"
@@ -397,35 +392,37 @@ msgstr ""
 
 #: capplets/file-types/file-types-capplet.c:745
 #: capplets/file-types/file-types-capplet.c:1890
+#, fuzzy
 msgid "MIME Type"
-msgstr ""
+msgstr "Saghas MIME:"
 
 #: capplets/file-types/file-types-capplet.c:752
 #, fuzzy
 msgid "Change Icon"
-msgstr "Painial"
+msgstr "Cealaigh Logann"
 
 #: capplets/file-types/file-types-capplet.c:759
 msgid "Change File Extensions"
 msgstr ""
 
 #: capplets/file-types/file-types-capplet.c:767
+#, fuzzy
 msgid "Default Action:"
-msgstr ""
+msgstr "Luach gnáth"
 
 #: capplets/file-types/file-types-capplet.c:779
 #, fuzzy
 msgid "Use Viewer"
-msgstr "Albaltachtam Luch"
+msgstr "Tóg comhad..."
 
 #: capplets/file-types/file-types-capplet.c:785
-#, fuzzy
 msgid "Open With Application"
-msgstr "Fograiocht."
+msgstr ""
 
 #: capplets/file-types/file-types-capplet.c:796
+#, fuzzy
 msgid "Edit List"
-msgstr ""
+msgstr "Eagar"
 
 #: capplets/file-types/file-types-capplet.c:821
 #, fuzzy
@@ -444,7 +441,7 @@ msgstr ""
 #: capplets/file-types/file-types-capplet.c:1226
 #, fuzzy
 msgid "None"
-msgstr "tada"
+msgstr "(Ar bith)"
 
 #: capplets/file-types/file-types-capplet.c:1331
 msgid ""
@@ -463,15 +460,16 @@ msgstr ""
 #: capplets/file-types/file-types-capplet.c:1889
 #, fuzzy
 msgid "Description"
-msgstr "Position"
+msgstr "Áit"
 
 #: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr ""
 
 #: capplets/file-types/file-types-capplet.c:1892
+#, fuzzy
 msgid "Default Action"
-msgstr ""
+msgstr "Tóg dealbh..."
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
@@ -482,25 +480,28 @@ msgid "Specify which programs are used to open or view each file type"
 msgstr ""
 
 #: capplets/file-types/file-types-icon-entry.c:381
+#, fuzzy
 msgid "Select an icon"
-msgstr ""
+msgstr "Tóg Eagathoóir"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:226
+#, fuzzy
 msgid "Gnome editor"
-msgstr ""
+msgstr "Eagathóir Gnome"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 #, fuzzy
 msgid "Run In Terminal"
-msgstr "Ingearach"
+msgstr "Triall ina bhfuinneog fiin"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
 msgstr ""
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
+#, fuzzy
 msgid "Default Editor"
-msgstr ""
+msgstr "Eagathóir Gnome"
 
 #: capplets/keyboard-properties/keyboard-properties.c:250
 #, fuzzy
@@ -516,9 +517,8 @@ msgid "Pitch (Hz)"
 msgstr ""
 
 #: capplets/keyboard-properties/keyboard-properties.c:264
-#, fuzzy
 msgid "Duration (ms)"
-msgstr "Caipiis"
+msgstr ""
 
 #: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
@@ -530,10 +530,12 @@ msgid "Keyboard repeat rate"
 msgstr "Rata atriallach"
 
 #: capplets/keyboard-properties/keyboard-properties.c:304
+#, fuzzy
 msgid "Enable auto-repeat"
 msgstr "Uath-atriall"
 
 #: capplets/keyboard-properties/keyboard-properties.c:313
+#, fuzzy
 msgid "Repeat rate"
 msgstr "Rata atriallach"
 
@@ -555,8 +557,9 @@ msgid "Click volume"
 msgstr "Laine Cnioga"
 
 #: capplets/keyboard-properties/keyboard-properties.c:347
+#, fuzzy
 msgid "Test settings"
-msgstr ""
+msgstr "Cumraigh %s..."
 
 #: capplets/keyboard-properties/keyboard-properties.c:410
 msgid ""
@@ -565,15 +568,15 @@ msgid ""
 msgstr ""
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
-msgstr "Dzn"
+msgstr "Dún"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 
@@ -585,11 +588,12 @@ msgstr " Miarchlar "
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
 #, fuzzy
 msgid "Keyboard Properties"
-msgstr "Rata atriallach"
+msgstr "Ábaltachtaí Cniog"
 
 #: capplets/mouse-properties/mouse-properties.c:254
+#, fuzzy
 msgid "Mouse buttons"
-msgstr ""
+msgstr "Gluaiseacht"
 
 #: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
@@ -606,7 +610,7 @@ msgstr "Gluaiseacht"
 
 #: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
-msgstr "Brostz"
+msgstr "Brostú"
 
 #: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
@@ -631,8 +635,9 @@ msgstr "Tairseach"
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
+#, fuzzy
 msgid "Large"
-msgstr "Msr"
+msgstr "Mór"
 
 #: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
@@ -650,49 +655,51 @@ msgstr ""
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
 #, fuzzy
 msgid "Mouse"
-msgstr "Luch"
+msgstr "Claireanna"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
 #, fuzzy
 msgid "Mouse Properties"
-msgstr "Albaltachtam Luch"
+msgstr "Ábaltachtaí Cniog"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr ""
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
 msgstr ""
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
+#, fuzzy
 msgid "No Screensaver"
-msgstr ""
+msgstr "Rogha Paipiar balla"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
+#, fuzzy
 msgid "Random Screensaver"
-msgstr ""
+msgstr "Rogha Paipiar balla"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
-msgstr ""
+msgstr "Cumasaí..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 #, fuzzy
 msgid "Random Settings"
-msgstr "Cur Szil"
+msgstr "Cumriagh"
 
-#: capplets/screensaver-properties/callbacks.c:501
-#, fuzzy, c-format
+#: capplets/screensaver-properties/callbacks.c:510
+#, c-format
 msgid "%s Settings..."
-msgstr "Cur Szil"
+msgstr "Cumraigh %s..."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:1
 #, fuzzy
 msgid "3D Clock"
-msgstr "Cniog"
+msgstr "Clog 3d"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:2
 msgid "Bernd Paysan"
@@ -730,20 +737,21 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:21
+#, fuzzy
 msgid "Size"
-msgstr ""
+msgstr "Méid:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:19
 msgid "Size:"
-msgstr ""
+msgstr "Méid:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:24
 msgid "Speed"
-msgstr ""
+msgstr "Luas"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:16
 msgid ""
@@ -767,9 +775,8 @@ msgid "Twist speed:"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:20
-#, fuzzy
 msgid "Twist:"
-msgstr "Triail"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:21
 msgid "Wobble"
@@ -791,8 +798,9 @@ msgid "Ant"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:3
+#, fuzzy
 msgid "Ants:"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:4
 msgid "Changes the number of ants marching across the screen."
@@ -839,8 +847,9 @@ msgid "Little Ants walk around, leaving colored trails."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:11
+#, fuzzy
 msgid "Number of ants."
-msgstr ""
+msgstr "Uimhir do Dathanna."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:12
 msgid "Print the path that the ant took in the trail."
@@ -852,9 +861,8 @@ msgid "Truchet"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:1
-#, fuzzy
 msgid "Atlantis"
-msgstr "Fograiocht"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:2
 msgid "Whales, dolphins and sharks swimming around, in 3D"
@@ -867,7 +875,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:2
 #, fuzzy
 msgid "Attraction"
-msgstr "Brostz"
+msgstr "Tsg iomha"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:3
 msgid ""
@@ -925,7 +933,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:5
 #, fuzzy
 msgid "Closer"
-msgstr "Dzn"
+msgstr "Dún"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:12
@@ -942,8 +950,9 @@ msgstr "Dzn"
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:9
+#, fuzzy
 msgid "Count:"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:6
@@ -1046,11 +1055,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:11
 #, fuzzy
 msgid "Larger"
-msgstr "Msr"
+msgstr "Gluaisigh"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:22
+#, fuzzy
 msgid "Number of points to use."
-msgstr ""
+msgstr "Uimhir do Dathanna."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:23
 msgid "Orbit"
@@ -1300,7 +1310,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:3
 msgid "Bouboule"
-msgstr ""
+msgstr "Bouboule"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:4
 msgid "Bouboule changes shape and size in a blob like form."
@@ -1359,8 +1369,9 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:3
+#, fuzzy
 msgid "Colors"
-msgstr "Dath"
+msgstr "Dathanna:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:5
@@ -1385,7 +1396,7 @@ msgstr "Dath"
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:4
 msgid "Colors:"
-msgstr "Dath"
+msgstr "Dathanna:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:16
 msgid "Jeremie Petit <jpetit@essi.fr>"
@@ -1409,7 +1420,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:16
 msgid "Number of Colors."
-msgstr ""
+msgstr "Uimhir do Dathanna."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:16
@@ -1462,17 +1473,17 @@ msgid "Change the delay."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:1
+#, fuzzy
 msgid "Bubble3d"
-msgstr ""
+msgstr "Bouboule"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubble3d.desktop.in.h:2
 msgid "Lots of bubbles floating around, in 3d"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:2
-#, fuzzy
 msgid "Broken"
-msgstr " Dearcadh.."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:3
 msgid "Bubbles"
@@ -1505,7 +1516,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:16
 #, fuzzy
 msgid "Simple"
-msgstr "Leacaithe"
+msgstr "Beag"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:1
 msgid "Bumps"
@@ -1523,7 +1534,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:1
 #, fuzzy
 msgid "Cage"
-msgstr "Msr"
+msgstr "Mór"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cage.desktop.in.h:2
 msgid "The famous, M.C. Escher, impossible cage"
@@ -1548,7 +1559,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
 #, fuzzy
 msgid "Coral"
-msgstr "Nml rmomhphost agat."
+msgstr "Gnáth"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
 #, fuzzy
@@ -1568,8 +1579,9 @@ msgid "Number of seeds"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:11
+#, fuzzy
 msgid "Seeds"
-msgstr ""
+msgstr "Luas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:12
 msgid "Simulates coral growth"
@@ -1580,14 +1592,13 @@ msgid "Simulates coral growth."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:16
-#, fuzzy
 msgid "Thinner"
-msgstr "Leacaithe"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:1
 #, fuzzy
 msgid "Critical"
-msgstr "Rm-lag!"
+msgstr "Ingearach"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:2
 msgid "Display coloured polylines"
@@ -1596,7 +1607,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
 #, fuzzy
 msgid "Cell"
-msgstr "Painial"
+msgstr "Cealaigh"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
 #, fuzzy
@@ -1643,7 +1654,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:7
 #, fuzzy
 msgid "Cynosure"
-msgstr "Dzn"
+msgstr "Dún"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:8
 msgid "Cynosure franticly displays colored rectangles."
@@ -1656,7 +1667,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:13
 #, fuzzy
 msgid "Iterations"
-msgstr "Brostz"
+msgstr "Brostú"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:14
@@ -1676,7 +1687,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:11
 #, fuzzy
 msgid "More"
-msgstr "Luch"
+msgstr "Claireanna"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:18
 msgid "Number of iterations."
@@ -1687,9 +1698,8 @@ msgid "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:3
-#, fuzzy
 msgid "Decayscreen"
-msgstr "Glasal an scathan"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Decayscreen.desktop.in.h:4
 msgid "Decayscreen makes a screen look like its melting down."
@@ -1713,8 +1723,9 @@ msgid "Cycle through colors."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:3
+#, fuzzy
 msgid "Deco"
-msgstr ""
+msgstr "Scríos"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:4
 msgid "Deco draws tacky 70s basement wall panelling."
@@ -1750,7 +1761,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:11
 #, fuzzy
 msgid "color"
-msgstr "Dath"
+msgstr "Dath 2"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:12
 msgid "color-cycle"
@@ -1766,8 +1777,9 @@ msgid "seconds"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:1
+#, fuzzy
 msgid "Deluxe"
-msgstr ""
+msgstr "Dealaigh"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:2
 msgid "Display nice stuff "
@@ -1782,7 +1794,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
 #, fuzzy
 msgid "Demon"
-msgstr "tada"
+msgstr "Scríos"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:3
@@ -1849,9 +1861,8 @@ msgid "Fractals should grow."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:18
-#, fuzzy
 msgid "Grow"
-msgstr " Dearcadh.."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:19
 msgid "Lissajous"
@@ -1874,9 +1885,8 @@ msgid "Draws a point moving around a circle which moves around a circle."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:6
-#, fuzzy
 msgid "Epicycle"
-msgstr "Dzn"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:7
 msgid ""
@@ -1896,8 +1906,9 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:17
+#, fuzzy
 msgid "Seconds"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:15
 msgid "Time finished product is shown."
@@ -2025,7 +2036,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
 #, fuzzy
 msgid "Forest"
-msgstr "Gluaisigh"
+msgstr "Triail"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
@@ -2054,7 +2065,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:1
 #, fuzzy
 msgid "Gears"
-msgstr "Ainm"
+msgstr "Cluichí"
 
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:2
 msgid "The 3d mesa demo, of gears"
@@ -2116,8 +2127,9 @@ msgid "Change whether orbit should decay."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:10
+#, fuzzy
 msgid "Decay"
-msgstr ""
+msgstr "Scríos"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:12
 msgid "Draws a simple orbital simulation."
@@ -2150,7 +2162,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:21
 #, fuzzy
 msgid "Trail"
-msgstr "Leacaithe"
+msgstr "Triall ina bhfuinneog fiin"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
 msgid "Draws random color rectangles."
@@ -2165,14 +2177,12 @@ msgid "Greynetic draws random rectangles."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:1
-#, fuzzy
 msgid "Animate"
-msgstr "Cuir le Prmomhchlair"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:2
-#, fuzzy
 msgid "Animate circles."
-msgstr "Cuir le Prmomhchlair"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:4
 msgid "Change the number of circles to use."
@@ -2194,7 +2204,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
 #, fuzzy
 msgid "Cycle"
-msgstr "Dzn"
+msgstr "Stíl"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
 msgid "Cycle through colormap."
@@ -2215,7 +2225,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:23
 #, fuzzy
 msgid "Mode"
-msgstr "Luch"
+msgstr "_Mód:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:26
 msgid "Number of circles to use."
@@ -2230,9 +2240,8 @@ msgid "Draws helical string-art patterns"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:7
-#, fuzzy
 msgid "Helix"
-msgstr "Cznamh"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:8
 msgid "Helix draws patterns composed of line segments."
@@ -2281,7 +2290,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:8
 #, fuzzy
 msgid "Distance"
-msgstr "Leacaithe"
+msgstr "Míchumasach"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:9
 msgid "Distance from center of cube"
@@ -2387,8 +2396,9 @@ msgid "Segments"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:20
+#, fuzzy
 msgid "Trails"
-msgstr ""
+msgstr "Bruscar"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kumppa.desktop.in.h:1
 msgid "Kumppa"
@@ -2401,7 +2411,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:2
 #, fuzzy
 msgid "Lament"
-msgstr "Links"
+msgstr "Clé"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:4
 msgid ""
@@ -2417,7 +2427,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:9
 #, fuzzy
 msgid "Duration"
-msgstr "Caipiis"
+msgstr "Cumramocht painial go leor"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:7
 msgid "Duration of laser burst."
@@ -2458,8 +2468,9 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:18
+#, fuzzy
 msgid "Shorter"
-msgstr ""
+msgstr "Mallaigh"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:16
 msgid "Size of burst."
@@ -2546,16 +2557,19 @@ msgid "Open figures."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:19
+#, fuzzy
 msgid "Points"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:20
+#, fuzzy
 msgid "Points:"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
+#, fuzzy
 msgid "Steps"
-msgstr ""
+msgstr "Stíl"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
@@ -2590,7 +2604,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:5
 #, fuzzy
 msgid "Color of path"
-msgstr "Dath"
+msgstr "Xterm Dath"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:6
 msgid "Color of surrounded area"
@@ -2605,9 +2619,8 @@ msgid "Copyright (C) 1988 by Sun Microsystems, Inc."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:9
-#, fuzzy
 msgid "Dead Color"
-msgstr "Dath"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:10
 msgid "Delay between drawing the maze and starting the solution."
@@ -2622,31 +2635,25 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr ""
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
-#, fuzzy
 msgid "Less Delay"
-msgstr "Moill atriallach"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:15
-#, fuzzy
 msgid "Live Color"
-msgstr "Dath"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:16
 msgid "Maze"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:17
-#, fuzzy
 msgid "More Delay"
-msgstr "Moill atriallach"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:18
 msgid "Post-Solving Delay"
@@ -2672,12 +2679,12 @@ msgstr "Dath"
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:23
 #, fuzzy
 msgid "Speed Delay"
-msgstr "Moill atriallach"
+msgstr "Luas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:24
 #, fuzzy
 msgid "Surround Color"
-msgstr " Czlra "
+msgstr "Dath Cúlra:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:26
 #, no-c-format
@@ -2714,7 +2721,6 @@ msgstr ""
 msgid "M.C. Escher inspired ants.. in 3d"
 msgstr ""
 
-# FIXME Check
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:2
 #, fuzzy
 msgid "Moebius"
@@ -2735,20 +2741,20 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:13
 #, fuzzy
 msgid "Moire"
-msgstr "Luch"
+msgstr "Claireanna"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:14
 msgid "Moire draws circular interference patterns."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:17
+#, fuzzy
 msgid "Offset"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire2.desktop.in.h:1
-#, fuzzy
 msgid "Moire2"
-msgstr "Luch"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:1
 msgid "A 3d flower morphs into a sphear"
@@ -2761,7 +2767,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Mountain.desktop.in.h:1
 #, fuzzy
 msgid "Mountain"
-msgstr "Gluaiseacht"
+msgstr "ag Sábháil"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:3
 msgid "Change to draw square at weird starting points."
@@ -2800,8 +2806,9 @@ msgid "Use XOR drawing function."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:18
+#, fuzzy
 msgid "XOR"
-msgstr ""
+msgstr "IOR"
 
 #: capplets/screensaver-properties/screensaver-desktops/Noseguy.desktop.in.h:1
 msgid "Noseguy"
@@ -2832,8 +2839,9 @@ msgid "Maximum number of lines."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:12
+#, fuzzy
 msgid "Maxlines"
-msgstr ""
+msgstr "ag Sábháil"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:15
 msgid "Pedal"
@@ -2860,14 +2868,13 @@ msgid "Display an arcade game"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:2
-#, fuzzy
 msgid "Penetrate"
-msgstr "Rata atriallach"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Penrose.desktop.in.h:1
 #, fuzzy
 msgid "Penrose"
-msgstr " Dearcadh.."
+msgstr "tada"
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:1
 msgid ""
@@ -2963,8 +2970,9 @@ msgid "Length of the Trail:"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:12
+#, fuzzy
 msgid "Number of Qix:"
-msgstr ""
+msgstr "Uimhir do Dathanna."
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:13
 msgid "Qix"
@@ -2997,12 +3005,14 @@ msgid "Sets the number of line segments to be drawn."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:25
+#, fuzzy
 msgid "Speed:"
-msgstr ""
+msgstr "Luas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:26
+#, fuzzy
 msgid "Spread"
-msgstr ""
+msgstr "Luas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:27
 msgid "Width of segment:"
@@ -3031,7 +3041,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:6
 #, fuzzy
 msgid "Ripples"
-msgstr "Dian"
+msgstr "Uirlisîn"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:7
 msgid "Stir"
@@ -3052,16 +3062,15 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Rocks.desktop.in.h:1
 #, fuzzy
 msgid "Rocks"
-msgstr "Cniog"
+msgstr "Clog"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rorschach.desktop.in.h:1
 msgid "Rorschach"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rotor.desktop.in.h:1
-#, fuzzy
 msgid "Rotor"
-msgstr "Dath"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
@@ -3105,8 +3114,9 @@ msgid "Display a Sonar scope."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:2
+#, fuzzy
 msgid "Sonar"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sphere.desktop.in.h:1
 msgid "Sphere"
@@ -3246,9 +3256,8 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:9
-#, fuzzy
 msgid "Random mountain ranges"
-msgstr "Cur Szil"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:10
 msgid "Tobias Gloth"
@@ -3257,7 +3266,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:11
 #, fuzzy
 msgid "Triangle"
-msgstr "Leacaithe"
+msgstr "Triall ina bhfuinneog fiin"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:8
 msgid ""
@@ -3273,7 +3282,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:10
 #, fuzzy
 msgid "Vines"
-msgstr "Leacaithe"
+msgstr "Radharc"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:11
 msgid "draws pseudo-fractal geometric patterns"
@@ -3282,7 +3291,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Worm.desktop.in.h:1
 #, fuzzy
 msgid "Worm"
-msgstr "Nml rmomhphost agat."
+msgstr "Gnáth"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
 msgid "Display flames at the bottom of the screen"
@@ -3319,13 +3328,14 @@ msgid "The  xroger  program displays a replacement for the X logo."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
+#, fuzzy
 msgid "Xroger"
-msgstr ""
+msgstr "Mór"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
 #, fuzzy
 msgid "Bars"
-msgstr " Dearcadh.."
+msgstr "Cluichí"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
@@ -3375,134 +3385,152 @@ msgid "Xteevee"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-dialog.c:46
+#, fuzzy
 msgid "About:"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:51
 msgid "Author:"
-msgstr ""
+msgstr "Údar:"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:61
 msgid "Author: UNKNOWN"
-msgstr ""
+msgstr "Údar: anathníd"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:78
 msgid "Settings"
-msgstr ""
+msgstr "Cumriagh"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr ""
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
+#, fuzzy
 msgid "Screen Saver"
+msgstr "Rogha Paipiar balla"
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
 msgstr ""
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
 msgstr ""
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
+#, fuzzy
 msgid "Screen Saver Settings"
-msgstr ""
+msgstr "Rogha Paipiar balla"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr ""
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
+#, fuzzy
 msgid " Minutes."
-msgstr ""
+msgstr "noimeáid"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
+#, fuzzy
 msgid "Priority:"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 #, fuzzy
 msgid "Low "
 msgstr "Lag."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
-#, fuzzy
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
-msgstr "Nml rmomhphost agat."
+msgstr "Gnáth"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr ""
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr ""
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
+#, fuzzy
 msgid "Screen Saver Demo"
-msgstr ""
+msgstr "Rogha Paipiar balla"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
 msgid "Configure the settings of the screensaver"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
+#, fuzzy
 msgid "Screensaver"
-msgstr ""
+msgstr "Rogha Paipiar balla"
 
 #: capplets/sound-properties/sound-properties.c:97
 msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:188
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "Tuairim"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
+#: capplets/sound-properties/sound-properties.c:250
+msgid "Sound server"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:250
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr ""
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr ""
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr ""
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
+#, fuzzy
 msgid "Select sound file"
-msgstr ""
+msgstr "Tóg comhad..."
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3514,36 +3542,37 @@ msgid "Configure GNOME's use of sound"
 msgstr ""
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
+#, fuzzy
 msgid "Sound"
-msgstr ""
+msgstr "Tuairim"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "One"
-msgstr ""
+msgstr "Aon"
 
 #: capplets/theme-switcher/demo.c:50
-#, fuzzy
 msgid "Two"
-msgstr "Oben"
+msgstr "Do"
 
 #. just 8 short names that will serve as samples for titles in demo
 #: capplets/theme-switcher/demo.c:52
-#, fuzzy
 msgid "Eenie"
-msgstr "Tuairim"
+msgstr "Eenie"
 
 #: capplets/theme-switcher/demo.c:52
+#, fuzzy
 msgid "Meenie"
-msgstr ""
+msgstr "Eenie"
 
 #: capplets/theme-switcher/demo.c:53
+#, fuzzy
 msgid "Mynie"
-msgstr ""
+msgstr "Eenie"
 
 #: capplets/theme-switcher/demo.c:53
 #, fuzzy
 msgid "Moe"
-msgstr "Luch"
+msgstr "Claireanna"
 
 #: capplets/theme-switcher/demo.c:54
 msgid "Catcha"
@@ -3552,7 +3581,7 @@ msgstr ""
 #: capplets/theme-switcher/demo.c:54
 #, fuzzy
 msgid "Tiger"
-msgstr "Leacaithe"
+msgstr "Triall ina bhfuinneog fiin"
 
 #: capplets/theme-switcher/demo.c:55
 msgid "By Its"
@@ -3561,7 +3590,7 @@ msgstr ""
 #: capplets/theme-switcher/demo.c:55
 #, fuzzy
 msgid "Toe"
-msgstr "Oben"
+msgstr "Barr"
 
 #: capplets/theme-switcher/demo.c:114
 msgid "Selected themes from above will be tested by previewing here."
@@ -3569,8 +3598,9 @@ msgstr ""
 
 #. column one
 #: capplets/theme-switcher/demo.c:119
+#, fuzzy
 msgid "Sample Button"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/theme-switcher/demo.c:123
 msgid "Sample Check Button"
@@ -3582,7 +3612,7 @@ msgstr ""
 
 #: capplets/theme-switcher/demo.c:139
 msgid "Submenu"
-msgstr ""
+msgstr "Fóchlár"
 
 #: capplets/theme-switcher/demo.c:146
 msgid "Item 1"
@@ -3593,14 +3623,16 @@ msgid "Another item"
 msgstr ""
 
 #: capplets/theme-switcher/demo.c:154
+#, fuzzy
 msgid "Radio Button 1"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/theme-switcher/demo.c:160
+#, fuzzy
 msgid "Radio Button 2"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3608,42 +3640,40 @@ msgid ""
 "%s"
 msgstr ""
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
+#, fuzzy
 msgid "Select a theme to install"
-msgstr ""
+msgstr "Tóg comhad..."
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr ""
 
-#: capplets/theme-switcher/gui.c:221
-#, fuzzy
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
 msgstr "Uath-atriall"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
 msgstr ""
 
-# FIXME Check
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
-#, fuzzy
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
-msgstr "Claireanna"
+msgstr "Cló Úsáideoir"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr ""
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr ""
 
@@ -3661,20 +3691,23 @@ msgid "Command '%s' failed"
 msgstr ""
 
 #: capplets/theme-switcher/install.c:73
+#, fuzzy
 msgid "Unknown file format"
-msgstr ""
+msgstr "Gan aithne"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:1
 msgid "Select which desktop theme to use"
 msgstr ""
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:2
+#, fuzzy
 msgid "Theme Selector"
-msgstr ""
+msgstr "Tóg dealbh..."
 
 #: capplets/ui-properties/application.desktop.in.h:1
+#, fuzzy
 msgid "Applications"
-msgstr "Fograiocht"
+msgstr "Uirlisîn"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
@@ -3683,7 +3716,7 @@ msgstr ""
 #: capplets/ui-properties/dialogs.desktop.in.h:1
 #, fuzzy
 msgid "Dialogs"
-msgstr "Position"
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/mdi.desktop.in.h:1
 msgid "MDI"
@@ -3722,8 +3755,9 @@ msgid "Submenus can be torn off"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:116
+#, fuzzy
 msgid "Menu items have icons"
-msgstr ""
+msgstr "Cumraigh Chlar"
 
 #: capplets/ui-properties/ui-properties.c:140
 msgid "Statusbar is interactive when possible"
@@ -3735,24 +3769,26 @@ msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:162
 msgid "Menu Options"
-msgstr ""
+msgstr "Cumraigh Chlar"
 
 #: capplets/ui-properties/ui-properties.c:163
+#, fuzzy
 msgid "Statusbar Options"
-msgstr ""
+msgstr "Cumraigh Toolbar"
 
 #: capplets/ui-properties/ui-properties.c:164
-#, fuzzy
 msgid "Toolbar Options"
-msgstr "Tooltips Iomhanna"
+msgstr "Cumraigh Toolbar"
 
 #: capplets/ui-properties/ui-properties.c:170
+#, fuzzy
 msgid "Dialog buttons"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:171
+#, fuzzy
 msgid "Default value"
-msgstr ""
+msgstr "Luach gnáth"
 
 #: capplets/ui-properties/ui-properties.c:172
 msgid "Spread buttons out"
@@ -3773,15 +3809,16 @@ msgstr ""
 #: capplets/ui-properties/ui-properties.c:180
 #, fuzzy
 msgid "Dialog buttons have icons"
-msgstr "Position"
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:185
 msgid "Use statusbar instead of dialog when possible"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:207
+#, fuzzy
 msgid "Dialog position"
-msgstr "Position"
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:208
 msgid "Let window manager decide"
@@ -3796,8 +3833,9 @@ msgid "At the mouse pointer"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:215
+#, fuzzy
 msgid "Dialog hints"
-msgstr ""
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:216
 msgid "Dialogs are like other windows"
@@ -3814,16 +3852,17 @@ msgstr ""
 #: capplets/ui-properties/ui-properties.c:243
 #, fuzzy
 msgid "Dialog Layout"
-msgstr "Position"
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:244
 #, fuzzy
 msgid "Dialog Behavior"
-msgstr "Position"
+msgstr "Leathfhocail Dialog"
 
 #: capplets/ui-properties/ui-properties.c:250
+#, fuzzy
 msgid "Default MDI Mode"
-msgstr ""
+msgstr "Luach gnáth"
 
 #: capplets/ui-properties/ui-properties.c:251
 msgid "Notebook"
@@ -3834,42 +3873,45 @@ msgid "Toplevel"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:253
+#, fuzzy
 msgid "Modal"
-msgstr ""
+msgstr "Gnáth"
 
 #: capplets/ui-properties/ui-properties.c:258
 msgid "MDI notebook tab position"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:259
+#, fuzzy
 msgid "Left"
-msgstr "Links"
+msgstr "Clé"
 
 #: capplets/ui-properties/ui-properties.c:260
 msgid "Right"
-msgstr "Rechts"
+msgstr "Deis"
 
 #: capplets/ui-properties/ui-properties.c:261
 msgid "Top"
-msgstr "Oben"
+msgstr "Barr"
 
 #: capplets/ui-properties/ui-properties.c:262
 msgid "Bottom"
-msgstr "Unten"
+msgstr "Bun"
 
 #: capplets/ui-properties/ui-properties.c:277
+#, fuzzy
 msgid "GNOME MDI Options"
-msgstr ""
+msgstr "Cumraigh Chlar"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:1
 #, fuzzy
 msgid "Look and Feel"
-msgstr "Albaltachtam Miarchlar"
+msgstr "Albaltachtaí"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:2
 #, fuzzy
 msgid "Look and Feel Properties"
-msgstr "Albaltachtam Miarchlar"
+msgstr "Albaltachtaí"
 
 #: capplets/url-properties/url-properties.c:51
 msgid "Error initializing the `url-properties' capplet."
@@ -3881,36 +3923,40 @@ msgstr ""
 
 #: capplets/url-properties/url-properties.c:76
 msgid "Command"
-msgstr ""
+msgstr "Ordú"
 
 #: capplets/url-properties/url-properties.c:93
+#, fuzzy
 msgid "handler:"
-msgstr ""
+msgstr "Fan"
 
 #. set some commonly used handlers
 #: capplets/url-properties/url-properties.c:103
 msgid "Netscape"
-msgstr ""
+msgstr "Netscape"
 
 #: capplets/url-properties/url-properties.c:108
 msgid "Netscape (new window)"
-msgstr ""
+msgstr "Netscape (fuinneog nua)"
 
 #: capplets/url-properties/url-properties.c:121
+#, fuzzy
 msgid "Help browser"
-msgstr ""
+msgstr " Dearcadh.."
 
 #: capplets/url-properties/url-properties.c:127
+#, fuzzy
 msgid "Help browser (new window)"
-msgstr ""
+msgstr "Netscape (fuinneog nua)"
 
 #: capplets/url-properties/url-properties.c:140
 msgid "Set"
-msgstr ""
+msgstr "Cuir"
 
 #: capplets/url-properties/url-properties.c:148
+#, fuzzy
 msgid "Remove"
-msgstr ""
+msgstr "Scríos"
 
 #: capplets/url-properties/url-properties.desktop.in.h:1
 msgid "Configure which programs are used to display URLs"
@@ -3953,9 +3999,9 @@ msgid "%s (Current)"
 msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:306
-#, c-format
+#, fuzzy, c-format
 msgid "Run Configuration Tool for %s"
-msgstr ""
+msgstr "Cumramocht painial go leor"
 
 #: capplets/wm-properties/wm-properties-capplet.c:317
 msgid " (Not found)"
@@ -3998,7 +4044,7 @@ msgstr ""
 #: capplets/wm-properties/wm-properties-capplet.c:863
 #: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
-msgstr ""
+msgstr "Ceart go Leor"
 
 #: capplets/wm-properties/wm-properties-capplet.c:520
 msgid ""
@@ -4033,17 +4079,17 @@ msgid "Add New Window Manager"
 msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:759
-#, fuzzy
 msgid "Name:"
 msgstr "Ainm"
 
 #: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
-msgstr ""
+msgstr "Ordú:"
 
 #: capplets/wm-properties/wm-properties-capplet.c:785
+#, fuzzy
 msgid "Configuration Command:"
-msgstr ""
+msgstr "Cumramocht painial go leor"
 
 #: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
@@ -4068,11 +4114,12 @@ msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
-msgstr ""
+msgstr "Eagar..."
 
 #: capplets/wm-properties/wm-properties-capplet.c:1086
+#, fuzzy
 msgid "Delete"
-msgstr ""
+msgstr "Dealaigh"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
@@ -4098,11 +4145,12 @@ msgstr ""
 
 #: control-center/capplet-manager.c:179
 msgid "Try"
-msgstr ""
+msgstr "Tastail"
 
 #: control-center/capplet-manager.c:185
+#, fuzzy
 msgid "Revert"
-msgstr ""
+msgstr "Scríos"
 
 #. set the help item
 #: control-center/capplet-manager.c:208
@@ -4110,95 +4158,94 @@ msgstr ""
 msgid "Help with '%s' settings"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
-msgstr ""
+msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
-msgstr ""
+msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
-msgstr ""
+msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr ""
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr ""
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
-msgstr ""
+msgstr "CAPPLET"
 
 #: control-center/gnomecc.desktop.in.h:2
 msgid "The GNOME configuration tool"
 msgstr ""
 
-#: control-center/main.c:36
-#, fuzzy
+#: control-center/main.c:40
 msgid "Help on control-center"
-msgstr "Albaltachtam Miarchlar"
+msgstr ""
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr ""
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr ""
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 #, fuzzy
 msgid "About"
-msgstr "Tuairim"
+msgstr "Faoi:"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr ""
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
-msgstr ""
+msgstr "Rabhadh:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr ""
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4230,37 +4277,209 @@ msgstr "Ainm"
 #. of simply not showing the info.
 #: control-center/splash.c:178
 msgid "Unknown"
-msgstr ""
+msgstr "Gan aithne"
 
 #, fuzzy
-#~ msgid "Add"
-#~ msgstr "Cuir le Painial"
+#~ msgid "Roll back all configuration items"
+#~ msgstr "Cumramocht painial go leor"
 
 #, fuzzy
-#~ msgid "Remove Program"
-#~ msgstr "Cuir as Painial"
+#~ msgid "Global archiver options"
+#~ msgstr "Cumramocht painial go leor"
 
 #, fuzzy
-#~ msgid "Priority"
-#~ msgstr "Gradan"
+#~ msgid "Background picture"
+#~ msgstr "Dath Cúlra"
 
 #, fuzzy
-#~ msgid "Keyboard Bell"
+#~ msgid "Image:"
+#~ msgstr "Formôid Íomha:"
+
+#~ msgid "Style:"
+#~ msgstr "Stíl:"
+
+#, fuzzy
+#~ msgid "Custom Editor"
+#~ msgstr "Eagathóir Gnome"
+
+#, fuzzy
+#~ msgid "Text Editor"
+#~ msgstr "Eagathóir Gnome"
+
+#, fuzzy
+#~ msgid "Bell"
+#~ msgstr "Cealaigh"
+
+#, fuzzy
+#~ msgid "Enable Keyboard Click"
 #~ msgstr " Miarchlar "
 
 #, fuzzy
-#~ msgid "Color 2"
-#~ msgstr "Dath"
+#~ msgid "Demo"
+#~ msgstr "Scríos"
 
 #, fuzzy
-#~ msgid "Disable background selection"
-#~ msgstr "Tsg iomha"
+#~ msgid "%s properties"
+#~ msgstr "Ábaltachtaí Cniog"
+
+#~ msgid " Configure..."
+#~ msgstr "Cumraigh..."
+
+#~ msgid "About \"<Screensaver name>\""
+#~ msgstr "Faoi \"<Screensaver name>\""
+
+#~ msgid "Black screen only"
+#~ msgstr "Scathán dubh amhain"
+
+#~ msgid "_Add"
+#~ msgstr "_Suim"
+
+#, fuzzy
+#~ msgid "_Settings"
+#~ msgstr "Cumriagh"
+
+#, fuzzy
+#~ msgid "Color Contrast"
+#~ msgstr "Xterm Dath"
+
+#, fuzzy
+#~ msgid "Blaster"
+#~ msgstr "Gluaisigh"
+
+#~ msgid "Cosmos"
+#~ msgstr "Cosmos"
+
+#, fuzzy
+#~ msgid "Flame"
+#~ msgstr "Cothrom"
+
+#, fuzzy
+#~ msgid "GLText"
+#~ msgstr "Clé"
+
+#, fuzzy
+#~ msgid "Molecule"
+#~ msgstr "Claireanna"
+
+#, fuzzy
+#~ msgid "XDaliClock"
+#~ msgstr "Clog"
+
+#, fuzzy
+#~ msgid "Browse with single window"
+#~ msgstr "Dûn Fhuinneog"
+
+#, fuzzy
+#~ msgid "Configure window properties"
+#~ msgstr "Ábaltachtaí Printéir"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Teibi."
+
+#, fuzzy
+#~ msgid "Effect"
+#~ msgstr "Tuairim"
+
+#~ msgid "File"
+#~ msgstr "Comhad"
+
+#, fuzzy
+#~ msgid "...a"
+#~ msgstr "Suimigh..."
+
+#, fuzzy
+#~ msgid "Type here to test setting"
+#~ msgstr "Cumriagh"
+
+#, fuzzy
+#~ msgid "Restore earlier configuration"
+#~ msgstr "Cumramocht painial go leor"
+
+#, fuzzy
+#~ msgid "Advanced..."
+#~ msgstr "Suimigh..."
+
+#, fuzzy
+#~ msgid "Create..."
+#~ msgstr "Abaltachtaí..."
+
+#, fuzzy
+#~ msgid "Restore configuration from"
+#~ msgstr "Cumramocht painial go leor"
+
+#, fuzzy
+#~ msgid "Restore old configuration"
+#~ msgstr "Cumramocht painial go leor"
+
+#, fuzzy
+#~ msgid "Icon List"
+#~ msgstr "Iomha"
+
+#, fuzzy
+#~ msgid "Unknown user."
+#~ msgstr "Gan aithne"
+
+#~ msgid "Example: emacs %f"
+#~ msgstr "Sampla: emacs %f"
+
+#~ msgid "Open"
+#~ msgstr "Oscail"
+
+#, fuzzy
+#~ msgid "Demo Previous"
+#~ msgstr "Albaltachtam Luch"
+
+#~ msgid "General Properties"
+#~ msgstr "Albaltachtaí"
+
+#, fuzzy
+#~ msgid "Be verbose"
+#~ msgstr " Dearcadh.."
+
+#, fuzzy
+#~ msgid "Effects"
+#~ msgstr "Tuairim"
+
+#, fuzzy
+#~ msgid "Advanced Properties"
+#~ msgstr "Ábaltachtaí Panail"
+
+#, fuzzy
+#~ msgid "Dialogs open"
+#~ msgstr "Leathfhocail Dialog"
+
+#, fuzzy
+#~ msgid "Left aligned"
+#~ msgstr "Ciotach"
+
+#, fuzzy
+#~ msgid "Right aligned"
+#~ msgstr "Deasach"
+
+#, fuzzy
+#~ msgid "The same window"
+#~ msgstr "Netscape (fuinneog nua)"
+
+#~ msgid "Program"
+#~ msgstr "Riomhchlár"
+
+#~ msgid "Running"
+#~ msgstr "Ag rith"
+
+#~ msgid "Remove Program"
+#~ msgstr "Scríos Ríomhchlar"
+
+#~ msgid "Options"
+#~ msgstr "Roghnachais"
+
+#~ msgid "Cancel"
+#~ msgstr "Cealaigh"
+
+#~ msgid "Color 1"
+#~ msgstr "Dath 1"
 
 #~ msgid "Auto-repeat"
 #~ msgstr "Uath-atriall"
-
-#~ msgid "Global Panel Configuration"
-#~ msgstr "Cumraiochtam gach Painiail"
 
 #~ msgid "Log Out"
 #~ msgstr "Ealu as"
@@ -4269,37 +4488,25 @@ msgstr ""
 #~ msgstr "Taispeain Iomhanna beag"
 
 #~ msgid "Tooltips enabled"
-#~ msgstr "Usaid Tooltips"
-
-#~ msgid "Panel properties"
-#~ msgstr "Cumas seoltsra"
-
-#~ msgid "Global properties..."
-#~ msgstr "Abaltachtam go liir..."
+#~ msgstr "Úsáid Tooltips"
 
 #~ msgid "This panel properties..."
-#~ msgstr "Abaltachtam painial seo..."
-
-#~ msgid "Add applet"
-#~ msgstr "Bog mionuirlis"
+#~ msgstr "Ábaltachtaí painial seo..."
 
 #~ msgid "Remove this panel"
-#~ msgstr "Cuir as Painial"
-
-#~ msgid "Edge Panel"
-#~ msgstr "Painial"
+#~ msgstr "Scríos an painial seo"
 
 #~ msgid "Properties ..."
-#~ msgstr "Abaltachtam go liir..."
+#~ msgstr "Abaltachtaí go liir..."
 
 #~ msgid "Add this launcher to panel"
 #~ msgstr "Cuir le Painial"
 
 #~ msgid "Log out"
-#~ msgstr "Ealu as"
+#~ msgstr "Éirigh as"
 
 #~ msgid "Launcher properties"
-#~ msgstr "Cumas seoltsra"
+#~ msgstr "Ábaltachtaí seoltsra"
 
 #~ msgid "App"
 #~ msgstr "Uirlis"
@@ -4307,89 +4514,56 @@ msgstr ""
 #~ msgid "Drawer"
 #~ msgstr "Cuir isteach Taisceadan"
 
-#~ msgid "Icon"
-#~ msgstr "Iomha"
-
 #~ msgid "Show Documentation Index"
 #~ msgstr "Caipiis"
 
-#~ msgid "Gnome Help Configure"
-#~ msgstr "Cumramocht painial"
+#~ msgid "Last"
+#~ msgstr "Deireadh"
 
 #~ msgid "Gnome Session Properties"
-#~ msgstr "Albaltachtam Luch"
-
-#~ msgid "New terminal"
-#~ msgstr "Triall ina bhfuinneog fiin"
-
-#~ msgid "Background color:"
-#~ msgstr " Czlra "
-
-#~ msgid "Color Xterm"
-#~ msgstr "Dath"
+#~ msgstr "Albachtaî Seisiûn Gnome"
 
 #~ msgid " Folder"
-#~ msgstr " Msd "
+#~ msgstr " Fillteán"
 
 #~ msgid "Background Properties"
-#~ msgstr "Albaltachtam Czlra"
-
-#~ msgid "Printer properties"
-#~ msgstr "Cumas seoltsra"
-
-#~ msgid "Mail check Applet"
-#~ msgstr "Cumasam phoist"
-
-#~ msgid "Mail check"
-#~ msgstr "Cumasam phoist"
+#~ msgstr "Ábaltachtaí Cúlra"
 
 #~ msgid "Mail check properties"
-#~ msgstr "Cumasam phoist"
+#~ msgstr "Ábaltachtaí phoist"
 
 #~ msgid "You have mail."
-#~ msgstr "Ta rmomhphost agat."
+#~ msgstr "Ta ríomhphost agat."
 
 #~ msgid "You have new mail."
 #~ msgstr "Ta rmomhphost nua agat."
 
-#~ msgid "Clock properties"
-#~ msgstr "Cumasam phoist"
-
 #~ msgid "GNOME Fish Properties"
-#~ msgstr "Albaltachtam Luch"
+#~ msgstr "Albachtaí Iasc go GNOME"
 
 #~ msgid "Icon:"
-#~ msgstr "Iomha"
-
-#~ msgid "Eject"
-#~ msgstr "Dian"
+#~ msgstr "Dealbh:"
 
 #~ msgid "Backgroundcolor"
-#~ msgstr " Czlra "
-
-#~ msgid "Properties..."
-#~ msgstr "Abaltachtam go liir..."
+#~ msgstr "Dath Cúlra"
 
 #~ msgid "Cannot open /dev/apm; can't get data."
-#~ msgstr "Nml oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
-
-#~ msgid "General Properties"
-#~ msgstr "Albaltachtam Luch"
+#~ msgstr "Nîl oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
 
 #~ msgid "Battery Monitor Settings"
-#~ msgstr "Staid batairm:"
+#~ msgstr "Staid batairí:"
 
 #~ msgid "Battery Status:"
-#~ msgstr "Staid batairm:"
+#~ msgstr "Staid batairí:"
 
 #~ msgid "APM BIOS Version:"
 #~ msgstr "Leagan BIOS APM:"
 
 #~ msgid "Linux APM Driver Version:"
-#~ msgstr "Linux APM Leagan Tionanam:"
+#~ msgstr "Linux APM Leagan Tionanaí:"
 
 #~ msgid "APM Stats"
-#~ msgstr "APM Sonram"
+#~ msgstr "Sonraí APM"
 
 #~ msgid "More than 100,000,000 minutes of battery life?!?"
 #~ msgstr "Nmos mo na 100,000,000 noimead beatha fagtha?!?"
@@ -4398,16 +4572,13 @@ msgstr ""
 #~ msgstr "%d noimead batairm"
 
 #~ msgid "%d minutes of battery"
-#~ msgstr "%d noimead batairm"
+#~ msgstr "%d noimead batairí"
 
 #~ msgid "unknown minutes of battery (%d%%)"
 #~ msgstr "%d noimead batairm"
 
-#~ msgid "unknown minutes of battery."
-#~ msgstr "%d noimead batairm"
-
 #~ msgid "Critical and charging."
-#~ msgstr "Fmor-lag agus ag luchtu."
+#~ msgstr "For-lag agus ag luchtu."
 
 #~ msgid "Low and charging."
 #~ msgstr "Lag agus ag luchtu."
@@ -4416,100 +4587,37 @@ msgstr ""
 #~ msgstr "Ard agus ag luchtu."
 
 #~ msgid "There is no battery?!?"
-#~ msgstr "Nach bhfuil batairm  ann."
+#~ msgstr "Nach bhfuil batairí  ann."
 
 #~ msgid "Can't open /dev/apm; can't get data."
-#~ msgstr "Nml oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
+#~ msgstr "Nîl oscailt ar fail \"proc/apm\"; Níl sonraí ar fáil."
 
 #~ msgid "Something wrong with /proc/apm; can't get data."
-#~ msgstr "Rud eigin  cearr le \"proc/apm\"; Nml sonram ar fail."
+#~ msgstr "Rud eigin  cearr le \"proc/apm\"; Níl sonraí ar fáil."
 
 #~ msgid "Can't open /proc/apm; can't get data."
-#~ msgstr "Nml oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
+#~ msgstr "Níl oscailt ar fail \"proc/apm\"; Níl sonraí ar fáil."
 
-#, fuzzy
 #~ msgid "_Help"
-#~ msgstr "Cznamh"
+#~ msgstr "_Cúidiú"
 
-#, fuzzy
-#~ msgid "Theme Information"
-#~ msgstr "Tsg iomha"
-
-#, fuzzy
-#~ msgid "Image Information"
-#~ msgstr "Tsg iomha"
-
-#, fuzzy
-#~ msgid "Page Settings"
-#~ msgstr "Cur Szil"
-
-#, fuzzy
-#~ msgid "Quality Settings"
-#~ msgstr "Cur Szil"
-
-#, fuzzy
-#~ msgid "Image Format:"
-#~ msgstr "Tsg iomha"
-
-#, fuzzy
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "Albaltachtam Miarchlar"
-
-#, fuzzy
-#~ msgid "Themes"
-#~ msgstr "Triail"
-
-#, fuzzy
-#~ msgid "Change..."
-#~ msgstr "Ag Luchtz."
-
-#, fuzzy
 #~ msgid "Left middle"
 #~ msgstr "Ciotach"
 
-#, fuzzy
-#~ msgid "Bottom left"
-#~ msgstr "Unten"
-
-#, fuzzy
-#~ msgid "Bottom middle"
-#~ msgstr "Unten"
-
-#, fuzzy
-#~ msgid "Bottom right"
-#~ msgstr "Unten"
-
-#, fuzzy
 #~ msgid "Right middle"
 #~ msgstr "Deasach"
 
-#~ msgid "Miscellaneous"
-#~ msgstr "Teibi."
-
-#, fuzzy
-#~ msgid "Enable Enlightenments background selection"
-#~ msgstr "Tsg iomha"
-
-#, fuzzy
-#~ msgid "Keyboard focus follows"
-#~ msgstr " Miarchlar "
-
-#, fuzzy
 #~ msgid "Resize Methods"
 #~ msgstr "Bog mionuirlis"
 
-#, fuzzy
 #~ msgid "Move Methods"
 #~ msgstr "Bog mionuirlis"
 
-#, fuzzy
-#~ msgid "Mouse Pointer"
-#~ msgstr "Gluaiseacht"
+#~ msgid "Gradient"
+#~ msgstr "Gradan"
 
-#, fuzzy
-#~ msgid "Remember all Window settings"
-#~ msgstr "Cur Szil"
+#~ msgid "Image Information"
+#~ msgstr "Tsg iomha"
 
-#, fuzzy
 #~ msgid "Close Window"
-#~ msgstr "Triall ina bhfuinneog fiin"
+#~ msgstr "Dûn Fhuinneog"

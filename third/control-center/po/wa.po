@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.0\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
 "PO-Revision-Date: 1999-03-18 23:11+0100\n"
 "Last-Translator: Pablo Saratxaga <srtxg@chanae.alphanet.ch>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
@@ -29,8 +29,8 @@ msgstr "FITCHÎ-IMÅDJE"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 
@@ -42,145 +42,143 @@ msgstr "Fond"
 msgid "Configuration of the desktop's background"
 msgstr "Apontiaedje do fond do scribanne"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "Dismetou"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
 msgstr "Coleur"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
 msgstr "Solide"
 
-#: capplets/background-properties/property-background.c:336
-#, fuzzy
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
-msgstr "Adjinçmint di coûtchî"
+msgstr "Degradé di coûtchî"
 
-#: capplets/background-properties/property-background.c:342
-#, fuzzy
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
-msgstr "Adjinçmint d' astampé"
+msgstr "Degradé d' astampé"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr "Coleur primaire"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
 msgstr "Coleur secondaire"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Tchwezi li tapisreye"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Dji n' trove nou hbox; dji prind ene tchûze di fitchîs normåle"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
 msgstr "Vey divant"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Tapisreye"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
 msgstr " Foyter... "
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "nouk"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "Al schåle"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr "Al schåle (wårder les proporcions)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Å mitan"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Å schaeyes"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
 msgstr "Eployî GNOME po defini l' fond"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "IMÅDJE"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "COLEUR"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "Diner li coleur di fond"
 
-#: capplets/background-properties/property-background.c:1143
-#, fuzzy
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
-msgstr "Diner li coleur di fond"
-
-#: capplets/background-properties/property-background.c:1144
-#, fuzzy
-msgid "ORIENT"
-msgstr "PARINT"
-
-#: capplets/background-properties/property-background.c:1144
-msgid "Gradient orientation: vertical or horizontal"
-msgstr ""
+msgstr "Diner li coleur di fén pol fond des degradés"
 
 #: capplets/background-properties/property-background.c:1145
-#, fuzzy
-msgid "Use a solid fill for the background"
-msgstr "Eployî GNOME po defini l' fond"
+msgid "ORIENT"
+msgstr "ORYINT"
+
+#: capplets/background-properties/property-background.c:1145
+msgid "Gradient orientation: vertical or horizontal"
+msgstr "Oryintåcion do degradé: d' astampé ou di coûtchî"
 
 #: capplets/background-properties/property-background.c:1146
 #, fuzzy
-msgid "Use a gradient fill for the background"
-msgstr "Eployî GNOME po defini l' fond"
+msgid "Use a solid fill for the background"
+msgstr "Eployî l' imådje come imådje di fond pol sicribanne"
 
 #: capplets/background-properties/property-background.c:1147
+#, fuzzy
+msgid "Use a gradient fill for the background"
+msgstr "Eployî l' imådje come imådje di fond pol sicribanne"
+
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "MÔDE"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr ""
 
@@ -190,8 +188,9 @@ msgid "Desktop"
 msgstr "Sicribanne"
 
 #: capplets/desktop-links/Documents.directory.in.h:1
+#, fuzzy
 msgid "Configure how document types are handled"
-msgstr ""
+msgstr "Apontyî li rivnance des purneas"
 
 #: capplets/desktop-links/Documents.directory.in.h:2
 #, fuzzy
@@ -199,7 +198,7 @@ msgid "Document Handlers"
 msgstr "_Etiketes des documints"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Cente di Contrôle"
@@ -280,15 +279,15 @@ msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:723
 msgid "Add New MIME Type"
-msgstr "Radjouter ene novele sôrte MIME"
+msgstr "Radjouter ene novele sôre MIME"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:769
 msgid "Add MIME Type"
-msgstr "Radjouter sôrte MIME"
+msgstr "Radjouter sôre MIME"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:773
 msgid "New MIME type (e.g. image/x-thumper):"
-msgstr "Novele sôrte MIME (eg: image/x-thumper):"
+msgstr "Novele sôre MIME (eg: image/x-thumper):"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:780
 msgid "Description (e.g. Thumper image):"
@@ -416,15 +415,15 @@ msgstr "Candjî li djîvéye"
 
 #: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
-msgstr "Radjouter ene novele sôrte MIME..."
+msgstr "Radjouter ene novele sôre MIME..."
 
 #: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
-msgstr "Disfacer cisse sôrte MIME chal"
+msgstr "Disfacer cisse sôre MIME chal"
 
 #: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
-msgstr ""
+msgstr "Rimete les prémetowès valixhances do sistinme"
 
 #: capplets/file-types/file-types-capplet.c:1082
 #: capplets/file-types/file-types-capplet.c:1226
@@ -437,6 +436,10 @@ msgid ""
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
+"Rimete les prémetowès valixhances do sistinme frè ki\n"
+"les candjmints ki vos avoz fwait po les sôres di fitchîs\n"
+"eyet les programes vont esse pierdous po do bon.\n"
+"Volez ve rimete cwand minme les prémetowès valixhances?"
 
 #: capplets/file-types/file-types-capplet.c:1441
 #: capplets/file-types/file-types-capplet.c:1627
@@ -464,7 +467,7 @@ msgstr "Sôres di fitchîs èt programes"
 #: capplets/file-types/file-types-capplet.desktop.in.h:2
 msgid "Specify which programs are used to open or view each file type"
 msgstr ""
-"Specifyî les programes ki sront eployîs po drovî ou vey tchaeke sôrte di "
+"Specifyî les programes ki sront eployîs po drovî ou vey tchaeke sôre di "
 "fitchî"
 
 #: capplets/file-types/file-types-icon-entry.c:381
@@ -497,7 +500,7 @@ msgstr "Volume"
 
 #: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
-msgstr ""
+msgstr "Ton (Hz)"
 
 #: capplets/keyboard-properties/keyboard-properties.c:264
 #, fuzzy
@@ -509,24 +512,20 @@ msgid "Test"
 msgstr "Sayî"
 
 #: capplets/keyboard-properties/keyboard-properties.c:294
-#, fuzzy
 msgid "Keyboard repeat rate"
-msgstr "Prôpietés del taprece"
+msgstr "Frécwénce di repeticion del taprece"
 
 #: capplets/keyboard-properties/keyboard-properties.c:304
-#, fuzzy
 msgid "Enable auto-repeat"
-msgstr "Mete l' i_ndintåcion åtomatike èn alaedje"
+msgstr "Mete li repeticion otomatike en alaedje"
 
 #: capplets/keyboard-properties/keyboard-properties.c:313
-#, fuzzy
 msgid "Repeat rate"
-msgstr "Repeter tofer"
+msgstr "Frécwénce di repeticion"
 
 #: capplets/keyboard-properties/keyboard-properties.c:316
-#, fuzzy
 msgid "Repeat Delay"
-msgstr "Ripeter"
+msgstr "Tårdjaedje di repeticion"
 
 #: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
@@ -549,17 +548,19 @@ msgid ""
 "No help is available/installed for these settings. Please make sure you\n"
 "have the GNOME User's Guide installed on your system."
 msgstr ""
+"I gn a pont d' aidance astalêye po ces apontiaedjes la. Acertinoz ve\n"
+"ki vos avoz li Guide di l' Ûzeu di Gnome astalé so vosse sistinme."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Clôre"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 
@@ -576,14 +577,12 @@ msgid "Mouse buttons"
 msgstr "Botons del sori"
 
 #: capplets/mouse-properties/mouse-properties.c:263
-#, fuzzy
 msgid "Left handed"
-msgstr "plaeçmint candjî"
+msgstr "Hintche mwin"
 
 #: capplets/mouse-properties/mouse-properties.c:265
-#, fuzzy
 msgid "Right handed"
-msgstr " &Droete "
+msgstr "Droete mwin"
 
 #. Mouse motion
 #: capplets/mouse-properties/mouse-properties.c:291
@@ -643,34 +642,34 @@ msgstr "Sori"
 msgid "Mouse Properties"
 msgstr "Prôprietés del sori"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr "Eployî on sicret"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 #, fuzzy
 msgid "Use power management."
 msgstr "Manaedjeu d' ûzeus èt gropes"
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
 msgstr "Nou spårgneu di waitroûle"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
 msgstr "Sipårgneu di waitroûle a l' astcheyance"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "Apontiaedjes..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "Apontiaedjes a l' astcheyance"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "Apontiaedjes di %s..."
@@ -744,7 +743,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
 #, fuzzy
 msgid "Twist"
-msgstr "Djîveye"
+msgstr "Sayî"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:19
 #, fuzzy
@@ -1044,7 +1043,7 @@ msgstr "Orbite"
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:24
 #, fuzzy
 msgid "Radius"
-msgstr "Ploûve"
+msgstr "Hôteu"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:26
 msgid "Size of point."
@@ -1269,7 +1268,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:14
 #, fuzzy
 msgid "Speed of rotation"
-msgstr "Roedeu di l' animåcion"
+msgstr "Roedeu do mouvmint"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:15
 #, fuzzy
@@ -1521,7 +1520,7 @@ msgstr "L' impossibe gayole da M.C. Eschers"
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:1
 #, fuzzy
 msgid "Compass"
-msgstr "Compak"
+msgstr "Encompass"
 
 #: capplets/screensaver-properties/screensaver-desktops/Compass.desktop.in.h:2
 msgid "Display a spinning compass "
@@ -1538,14 +1537,13 @@ msgid "Change the number of seeds."
 msgstr "Candjî li nombe a eployî."
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
-#, fuzzy
 msgid "Coral"
-msgstr "Normå"
+msgstr "Corå"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
 #, fuzzy
 msgid "Denser"
-msgstr "Risponse"
+msgstr "cente"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:7
 #, fuzzy
@@ -1591,7 +1589,7 @@ msgstr "Håyneyès colones"
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
 #, fuzzy
 msgid "Cell"
-msgstr "Mobilofone"
+msgstr "Xhuflet"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
 msgid "Center image."
@@ -1743,7 +1741,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:10
 msgid "Use color when drawing."
-msgstr "È coleurs"
+msgstr "E coleurs"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:11
 msgid "color"
@@ -1766,7 +1764,7 @@ msgstr "segondes"
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:1
 #, fuzzy
 msgid "Deluxe"
-msgstr "Disf."
+msgstr "exe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:2
 #, fuzzy
@@ -1782,7 +1780,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
 #, fuzzy
 msgid "Demon"
-msgstr "Fwait"
+msgstr "Bas"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:3
@@ -1944,7 +1942,7 @@ msgstr "Candjî imådjete"
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:10
 #, fuzzy
 msgid "Cycles"
-msgstr "Cilindes"
+msgstr "oyi"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:15
 msgid "Draws what looks like a waving ribbon following a sinusoidal path."
@@ -2012,8 +2010,9 @@ msgid "Size of pixels"
 msgstr "Grandeu des picsels"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:1
+#, fuzzy
 msgid "Draws a flow of colored points"
-msgstr ""
+msgstr "Dessine on boes avou des åbes fractås."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:2
 #, fuzzy
@@ -2037,8 +2036,9 @@ msgid "Forest"
 msgstr "Boes"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
+#, fuzzy
 msgid "Fractal draws a fractal forest."
-msgstr ""
+msgstr "Dessine on boes avou des åbes fractås."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:18
 msgid "Number of trees to use."
@@ -2058,9 +2058,8 @@ msgid "GLPlanet"
 msgstr "Paint"
 
 #: capplets/screensaver-properties/screensaver-desktops/Galaxy.desktop.in.h:1
-#, fuzzy
 msgid "Galaxy"
-msgstr "Pasrele"
+msgstr "Galacseye"
 
 #: capplets/screensaver-properties/screensaver-desktops/Gears.desktop.in.h:1
 #, fuzzy
@@ -2116,9 +2115,8 @@ msgid "squishy transparent oil and bubbles"
 msgstr "Des gotes d' ôle ki bodjèt"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:2
-#, fuzzy
 msgid "Change the number of planets to use."
-msgstr "Candjî li nombe di ponts a-z eployî."
+msgstr "Candjî li nombe di planetes a-z eployî."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:4
 msgid "Change whether objects should leave a trail."
@@ -2135,8 +2133,9 @@ msgid "Decay"
 msgstr "Tårdjaedje"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:12
+#, fuzzy
 msgid "Draws a simple orbital simulation."
-msgstr ""
+msgstr "Grav dessine ene simpe simulåcion orbitåle"
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:13
 msgid "Grav"
@@ -2168,8 +2167,9 @@ msgid "Trail"
 msgstr "Tamile"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
+#, fuzzy
 msgid "Draws random color rectangles."
-msgstr ""
+msgstr "Dessine on boes avou des åbes fractås."
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:7
 #, fuzzy
@@ -2211,7 +2211,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
 #, fuzzy
 msgid "Cycle"
-msgstr "Muchete"
+msgstr "netyî"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
 msgid "Cycle through colormap."
@@ -2261,15 +2261,16 @@ msgstr "Jamie  Zawinski  <jwz@jwz.org>"
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:12
 msgid "Time between redraws."
-msgstr ""
+msgstr "Tins inte deus dessinaedjes."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:3
 msgid "Change the number of pixels before a color change."
 msgstr "Candjî li nombe di picsels divant di candjî d' coleur."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:10
+#, fuzzy
 msgid "Draws real plane fractals"
-msgstr ""
+msgstr "Dessine on boes avou des åbes fractås."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:12
 #, fuzzy
@@ -2402,7 +2403,7 @@ msgstr "Nombe di frumixhes."
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:15
 #, fuzzy
 msgid "Number of trails."
-msgstr "Macsimom di risayaedjes"
+msgstr "Nombe d' iteråcions."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:16
 msgid "Ron Tapia <tapia@nmia.com>"
@@ -2431,7 +2432,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:2
 #, fuzzy
 msgid "Lament"
-msgstr "Longeu"
+msgstr "Plaeçmint"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:4
 msgid ""
@@ -2527,7 +2528,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:16
 #, fuzzy
 msgid "Lisa"
-msgstr "Djîveye"
+msgstr "Djîvéye"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:17
 msgid "Lisa draws animated full-loop lisajous figures."
@@ -2574,7 +2575,7 @@ msgstr "Dji tchedje les gros tites..."
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:16
 #, fuzzy
 msgid "Number of interpolation steps."
-msgstr "Nombe di ponts"
+msgstr "Nombe d' iteråcions."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:17
 msgid "Number of points."
@@ -2583,7 +2584,7 @@ msgstr "Nombe di ponts"
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:18
 #, fuzzy
 msgid "Open figures."
-msgstr "Drovi on fitchî"
+msgstr "Drovî on fitchî"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:19
 msgid "Points"
@@ -2664,18 +2665,14 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-#, fuzzy
-msgid "If the solver can "
-msgstr "Tcherdjî li calindrî da l' ûzeu"
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
 #, fuzzy
 msgid "Less Delay"
-msgstr "Tårdjaedje"
+msgstr "Tårdjaedje des råyes"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:15
 #, fuzzy
@@ -2685,7 +2682,7 @@ msgstr "Novele coleur"
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:16
 #, fuzzy
 msgid "Maze"
-msgstr "Å pus _ptit"
+msgstr "Å pus grand"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:17
 #, fuzzy
@@ -2888,7 +2885,7 @@ msgstr "Groyes"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:15
 #, fuzzy
 msgid "Pedal"
-msgstr "Licence"
+msgstr "Sendmail"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:16
 msgid "Pedal Displays pretty geometric pictures."
@@ -2907,8 +2904,9 @@ msgid "Time to show each picture."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:1
+#, fuzzy
 msgid "Display an arcade game"
-msgstr ""
+msgstr "Mostere l' eure èt prevni s' i gn a des noveas messaedjes"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:2
 #, fuzzy
@@ -2945,7 +2943,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:5
 msgid "Frequency"
-msgstr "Frécwence"
+msgstr "Frécwénce"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:6
 msgid "Frequency of missile launch"
@@ -2976,7 +2974,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:14
 #, fuzzy
 msgid "Pyro"
-msgstr "Prop."
+msgstr "Proxy"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:15
 #, fuzzy
@@ -3088,7 +3086,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:4
 #, fuzzy
 msgid "Drip onto desktop."
-msgstr "È scribanne"
+msgstr "E scribanne"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:5
 #, fuzzy
@@ -3130,7 +3128,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Rotor.desktop.in.h:1
 #, fuzzy
 msgid "Rotor"
-msgstr "Waitroûle"
+msgstr "octôbe"
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
@@ -3243,7 +3241,7 @@ msgstr "A l' astcheyance"
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:2
 #, fuzzy
 msgid "Blob"
-msgstr "Bebob"
+msgstr "Å dzo"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:3
 #, fuzzy
@@ -3311,12 +3309,12 @@ msgstr "Chinwès"
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:24
 #, fuzzy
 msgid "Use raw shapes "
-msgstr "Eployi tecse metu è cogne"
+msgstr "Eployi tecse metou è cogne"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:25
 #, fuzzy
 msgid "Wide"
-msgstr "Catchî"
+msgstr "Ahesse"
 
 #: capplets/screensaver-properties/screensaver-desktops/Strange.desktop.in.h:1
 #, fuzzy
@@ -3414,7 +3412,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
 #, fuzzy
 msgid "Xroger"
-msgstr "Pus grand"
+msgstr "Pus long"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
 #, fuzzy
@@ -3424,7 +3422,7 @@ msgstr "Rimårkes"
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 #, fuzzy
 msgid "Cycle modes."
-msgstr "Môde do sistinme"
+msgstr "Môde des fitchîs:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:4
 msgid "Cycle through all the available modes."
@@ -3489,62 +3487,65 @@ msgstr "Ôteu: NÉN CNOXHOU"
 msgid "Settings"
 msgstr "Apontiaedjes"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "SIPÅRGNEU A L' ASTCHEYANCE"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "Sipårgneu di waitroûle"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
+msgstr ""
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
 msgstr ""
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
 msgstr "Apontiaedje do spårgneu di waitroûle"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "Enonder dispôy di "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
 msgstr " munutes."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
 msgstr "Prumîristé:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "Basse "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " Normå"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr "Distinde li waitroûle "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr " munutes après kel spårgneu di waitroûle åye stî enondé."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 #, fuzzy
 msgid "Screen Saver Demo"
 msgstr "Sipårgneu di waitroûle"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
-#, fuzzy
 msgid "Configure the settings of the screensaver"
-msgstr "Apontiaedje do spårgneu di waitroûle"
+msgstr "Fjhoz l' apontiaedje do spårgneu di waitroûle"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
 msgid "Screensaver"
@@ -3555,56 +3556,62 @@ msgid ""
 "an initialization error occurred while starting 'sound-properties-capplet'."
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:188
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
-msgstr "setinme"
+msgstr "Evenmint"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "Fitchî a djower"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "Mete èn alaedje"
-
 #: capplets/sound-properties/sound-properties.c:250
+msgid "Sound server"
+msgstr "Sierveu di son"
+
+#: capplets/sound-properties/sound-properties.c:257
 #, fuzzy
 msgid "Enable sound server startup"
 msgstr "Mete èn oûve li sierveu di sons"
 
-#: capplets/sound-properties/sound-properties.c:258
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
-msgstr "Sierveu di son"
+msgstr "Sons po ls evenmints"
+
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr "Maxheu di sons"
 
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr "Rimete les liveas di maxhaedje do Maxheu di sons di Gnome"
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Djenerå"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "Tchwezi on fitchî di son"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "Djower"
 
-#: capplets/sound-properties/sound-properties.c:336
-#, fuzzy
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
-msgstr "Sierveu di son"
+msgstr "Sons po ls evenmints"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
+#, fuzzy
 msgid "The sound file for this event does not exist."
-msgstr ""
+msgstr "Li fitchî specifyî n' egzisteye nén"
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3613,7 +3620,7 @@ msgstr ""
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:1
 msgid "Configure GNOME's use of sound"
-msgstr ""
+msgstr "Apontyî l' manîre ki Gnome eployrè l' son"
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
 msgid "Sound"
@@ -3631,7 +3638,7 @@ msgstr "Deus"
 #: capplets/theme-switcher/demo.c:52
 #, fuzzy
 msgid "Eenie"
-msgstr "plaijhî a-z avu"
+msgstr "noûf"
 
 #: capplets/theme-switcher/demo.c:52
 #, fuzzy
@@ -3641,12 +3648,12 @@ msgstr "Merengue"
 #: capplets/theme-switcher/demo.c:53
 #, fuzzy
 msgid "Mynie"
-msgstr "plaijhî a-z avu"
+msgstr "noûf"
 
 #: capplets/theme-switcher/demo.c:53
 #, fuzzy
 msgid "Moe"
-msgstr "Môde"
+msgstr "Bodjî"
 
 #: capplets/theme-switcher/demo.c:54
 #, fuzzy
@@ -3656,7 +3663,7 @@ msgstr "Muchete"
 #: capplets/theme-switcher/demo.c:54
 #, fuzzy
 msgid "Tiger"
-msgstr "Pus tene"
+msgstr "Eure"
 
 #: capplets/theme-switcher/demo.c:55
 #, fuzzy
@@ -3676,7 +3683,7 @@ msgstr ""
 #: capplets/theme-switcher/demo.c:119
 #, fuzzy
 msgid "Sample Button"
-msgstr "Posse di djeus"
+msgstr "Les botons polèt aveur li _focus"
 
 #: capplets/theme-switcher/demo.c:123
 #, fuzzy
@@ -3710,50 +3717,53 @@ msgstr "Botons mdk"
 msgid "Radio Button 2"
 msgstr "Sori PS/2 a 3 botons"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, fuzzy, c-format
 msgid ""
 "Error installing theme:\n"
 "'%s'\n"
 "%s"
-msgstr "dj' astale %s\n"
+msgstr ""
+"Yåk n' a nén stî come dji sayîve di tcherdjî li fitchî: \n"
+"%s\n"
+"%s"
 
-#: capplets/theme-switcher/gui.c:120
-#, fuzzy
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
-msgstr "Tchwezixhoz les plugins a astaler"
+msgstr "Tchwezixhoz on tinme a-z astaler"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "Tinmes k' i gn a"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 #, fuzzy
 msgid ""
 "Auto\n"
 "Preview"
 msgstr "Vey divant"
 
-#: capplets/theme-switcher/gui.c:233
-#, fuzzy
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
-msgstr "Dj' astale les fontes..."
+msgstr ""
+"Astaler on\n"
+"novea tinme..."
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
 msgstr "Fonte di l' ûzeu"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*,*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
 msgstr "Eployî fonte da vosse."
 
@@ -3788,7 +3798,7 @@ msgstr "Programes"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
-msgstr ""
+msgstr "Defini li prémetowe rivnance des programes GNOME"
 
 #: capplets/ui-properties/dialogs.desktop.in.h:1
 msgid "Dialogs"
@@ -3811,8 +3821,9 @@ msgid "Toolbar buttons have relieved border"
 msgstr ""
 
 #: capplets/ui-properties/ui-properties.c:69
+#, fuzzy
 msgid "Toolbars have line separators"
-msgstr ""
+msgstr "Fé on novea separateu"
 
 #: capplets/ui-properties/ui-properties.c:74
 msgid "Toolbars have text labels"
@@ -3858,7 +3869,7 @@ msgstr "Tchûzes pol bårs ås usteyes"
 #: capplets/ui-properties/ui-properties.c:170
 #, fuzzy
 msgid "Dialog buttons"
-msgstr "2 botons"
+msgstr "3 botons"
 
 #: capplets/ui-properties/ui-properties.c:171
 msgid "Default value"
@@ -3898,7 +3909,7 @@ msgstr "Eplaeçmint del imådjete"
 #: capplets/ui-properties/ui-properties.c:208
 #, fuzzy
 msgid "Let window manager decide"
-msgstr "Tchwezixhoz on manaedjeu di purneas"
+msgstr "Mete en alaedje les sons po ls evenmints do manaedjeu di purneas"
 
 #: capplets/ui-properties/ui-properties.c:209
 #, fuzzy
@@ -3918,7 +3929,7 @@ msgstr "Purneas di cweriaedje"
 #: capplets/ui-properties/ui-properties.c:216
 #, fuzzy
 msgid "Dialogs are like other windows"
-msgstr "Å dzeur des ôtes purneas"
+msgstr "Dizo les ôtes purneas"
 
 #: capplets/ui-properties/ui-properties.c:217
 #, fuzzy
@@ -3937,7 +3948,7 @@ msgstr "Adjinçmint d' astampé"
 #: capplets/ui-properties/ui-properties.c:244
 #, fuzzy
 msgid "Dialog Behavior"
-msgstr "Dûjhance di l' aspougneu"
+msgstr "Dûjhance des purneas"
 
 #: capplets/ui-properties/ui-properties.c:250
 msgid "Default MDI Mode"
@@ -4067,11 +4078,13 @@ msgid ""
 "Starting %s\n"
 "(%d seconds left before operation times out)"
 msgstr ""
+"Enondaedje di %s\n"
+"(i dmeure %d segondes divant di rnoncî)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:303
 #, c-format
 msgid "%s (Current)"
-msgstr "%s (èn alaedje pol moumint)"
+msgstr "%s (en alaedje pol moumint)"
 
 #: capplets/wm-properties/wm-properties-capplet.c:306
 #, c-format
@@ -4096,8 +4109,9 @@ msgid ""
 msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:413
+#, fuzzy
 msgid "Previous window manager did not die\n"
-msgstr ""
+msgstr "Mete en alaedje les sons po ls evenmints do manaedjeu di purneas"
 
 #: capplets/wm-properties/wm-properties-capplet.c:446
 #, c-format
@@ -4184,7 +4198,7 @@ msgstr "Candjî l' manaedjeu di purneas"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
-msgstr "Vos n' ploz nén disfacer li manaedjeu di purneas èn alaedje"
+msgstr "Vos n' ploz nén disfacer li manaedjeu di purneas en alaedje"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
@@ -4230,59 +4244,60 @@ msgstr "Rivni èn erî"
 msgid "Help with '%s' settings"
 msgstr "Aidance avou les apontiaedjes di «%s»"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
+#, fuzzy
 msgid "Multi-capplet id."
-msgstr ""
+msgstr "Apliketes multimédia"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
+#, fuzzy
 msgid "CAPID"
-msgstr ""
+msgstr "PID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr ""
 
-#: control-center/capplet-widget-libs.c:48
-#, fuzzy
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
-msgstr "ID"
+msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 #, fuzzy
 msgid "IOR of the control-center"
 msgstr "Aidance sol cente di contrôle"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 #, fuzzy
 msgid "IOR"
 msgstr "I/R"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
 msgstr "Dj' enonde l' apontiaedje del session"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
 msgstr ""
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "Dji rgrete, i gn a nole aidance po ces apontiaedjes la."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 #, fuzzy
 msgid "capplet-command to be run."
 msgstr "Tapez ene comande a-z enonder"
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr ""
 
@@ -4290,38 +4305,38 @@ msgstr ""
 msgid "The GNOME configuration tool"
 msgstr "L' usteye d' apontiaedje di GNOME"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
 msgstr "Aidance sol cente di contrôle"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "Aidance sol cente di contrôle di GNOME."
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr "Aidance sol pådje d' apontiaedje do moumint."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "Å dfait"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "Å dfait do cente di contrôle di GNOME."
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "Advertixhmint:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 #, fuzzy
 msgid "Discard all changes"
 msgstr "Catchî tos les pårtaedjes '$'"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4353,5 +4368,6 @@ msgstr "No di l' éndjole:"
 msgid "Unknown"
 msgstr "Nén cnoxhou"
 
-#~ msgid "Thickness of color bands (0 = Random)"
-#~ msgstr "Sipexheu des bindes di coleur (0 = a l' astcheyance)"
+#, fuzzy
+#~ msgid "If the solver can "
+#~ msgstr "Tcherdjî li calindrî da l' ûzeu"

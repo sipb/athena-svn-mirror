@@ -1,4 +1,6 @@
 #include <config.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "capplet-widget.h"
 #include <libgnomeui/gnome-window-icon.h>
 #include <locale.h>

@@ -461,7 +461,7 @@ _ORBIT_skel_GNOME_control_center_register_capplet(POA_GNOME_control_center *
 	 giop_send_buffer_write(_ORBIT_send_buffer);
 	 giop_send_buffer_unuse(_ORBIT_send_buffer);
       }
-      CORBA_Object_release(cap, ev);
+      CORBA_Object_release((CORBA_Object) cap, ev);
    }
 }
 void
@@ -604,7 +604,7 @@ _ORBIT_skel_GNOME_control_center_register_capplet_new(POA_GNOME_control_center
 	 giop_send_buffer_write(_ORBIT_send_buffer);
 	 giop_send_buffer_unuse(_ORBIT_send_buffer);
       }
-      CORBA_Object_release(cap, ev);
+      CORBA_Object_release((CORBA_Object) cap, ev);
    }
 }
 void

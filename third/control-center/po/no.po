@@ -1,12 +1,12 @@
 # Norwegian translation of control-center (bokmål dialect).
-# Copyright (C) 1999,2000 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1999,2000.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
+# Kjartan Maraas <kmaraas@gnome.org>, 1999-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: control-center 1.2.3\n"
-"POT-Creation-Date: 2001-03-28 14:47-0500\n"
-"PO-Revision-Date: 2001-03-27 22:46-05:00\n"
+"Project-Id-Version: control-center 1.4.0\n"
+"POT-Creation-Date: 2002-02-10 22:25+0100\n"
+"PO-Revision-Date: 2001-12-02 20:11+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +23,11 @@ msgstr "BILDE-FIL"
 
 #: capplets/background-properties/app-background.c:37
 msgid ""
-"an initialization error occurred while starting "
-"'background-properties-capplet'.\n"
+"an initialization error occurred while starting 'background-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
-"en initieringsfeil oppstod under start av 'background-properties-capplet'.\n"
+"en initieringsfeil oppstod under start av «background-properties-capplet».\n"
 "avbryter...\n"
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
@@ -38,139 +38,141 @@ msgstr "Bakgrunn"
 msgid "Configuration of the desktop's background"
 msgstr "Konfigurasjon av bakgrunn for skrivebordet"
 
-#: capplets/background-properties/property-background.c:116
+#: capplets/background-properties/property-background.c:117
 msgid "Disabled"
 msgstr "Slått av"
 
-#: capplets/background-properties/property-background.c:321
+#: capplets/background-properties/property-background.c:322
 msgid "Color"
 msgstr "Farge"
 
-#: capplets/background-properties/property-background.c:330
+#: capplets/background-properties/property-background.c:331
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
 msgid "Solid"
 msgstr "Helfylt"
 
-#: capplets/background-properties/property-background.c:336
+#: capplets/background-properties/property-background.c:337
 msgid "Horizontal Gradient"
 msgstr "Horisontal gradient"
 
-#: capplets/background-properties/property-background.c:342
+#: capplets/background-properties/property-background.c:343
 msgid "Vertical Gradient"
 msgstr "Vertikal gradient"
 
-#: capplets/background-properties/property-background.c:378
+#: capplets/background-properties/property-background.c:379
 msgid "Primary Color"
 msgstr "Primær farge"
 
-#: capplets/background-properties/property-background.c:380
+#: capplets/background-properties/property-background.c:381
 msgid "Secondary Color"
 msgstr "Sekundær farge"
 
-#: capplets/background-properties/property-background.c:568
+#: capplets/background-properties/property-background.c:569
 msgid "Wallpaper Selection"
 msgstr "Bakgrunnsvalg"
 
-#: capplets/background-properties/property-background.c:573
+#: capplets/background-properties/property-background.c:574
 #: capplets/file-types/file-types-icon-entry.c:258
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Kan ikke finne en hboks, bruker normalt filvalg"
 
-#: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1078
+#. for ssaver settings, preview
+#: capplets/background-properties/property-background.c:579
+#: capplets/background-properties/property-background.c:1079
 #: capplets/file-types/file-types-icon-entry.c:264
 #: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
-#: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:59
+#: capplets/theme-switcher/gui.c:264 capplets/theme-switcher/gui.c:336
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
-#: capplets/background-properties/property-background.c:635
+#: capplets/background-properties/property-background.c:636
 msgid "Wallpaper"
 msgstr "Bakgrunn"
 
-#: capplets/background-properties/property-background.c:638
+#: capplets/background-properties/property-background.c:639
 msgid " Browse... "
 msgstr " Bla gjennom... "
 
 #. Add default action to fourth column
-#: capplets/background-properties/property-background.c:643
+#: capplets/background-properties/property-background.c:644
 #: capplets/file-types/file-types-capplet.c:1400
 #: capplets/file-types/file-types-capplet.c:1600
 #: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "ingen"
 
-#: capplets/background-properties/property-background.c:688
+#: capplets/background-properties/property-background.c:689
 msgid "Embossed Logo"
 msgstr "Logo i relief"
 
-#: capplets/background-properties/property-background.c:699
+#: capplets/background-properties/property-background.c:700
 msgid "Scaled"
 msgstr "Skalert"
 
-#: capplets/background-properties/property-background.c:709
+#: capplets/background-properties/property-background.c:710
 msgid "Scaled (keep aspect)"
 msgstr "Skalert (behold høyde-/breddeforhold)"
 
-#: capplets/background-properties/property-background.c:721
+#: capplets/background-properties/property-background.c:722
 msgid "Centered"
 msgstr "Sentrert"
 
-#: capplets/background-properties/property-background.c:733
+#: capplets/background-properties/property-background.c:734
 msgid "Tiled"
 msgstr "Side-ved-side"
 
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1091
 msgid "Use GNOME to set background"
 msgstr "Bruk GNOME til å sette bakgrunnen"
 
-#: capplets/background-properties/property-background.c:1140
+#: capplets/background-properties/property-background.c:1141
 msgid "Set parameters from saved state and exit"
 msgstr "Sett parametere fra lagret tilstand og avslutt"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "IMAGE"
 msgstr "BILDE"
 
-#: capplets/background-properties/property-background.c:1141
+#: capplets/background-properties/property-background.c:1142
 msgid "Sets the wallpaper to the value specified"
 msgstr "Setter bakgrunnen til spesifiser verdi"
 
-#: capplets/background-properties/property-background.c:1142
 #: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "COLOR"
 msgstr "FARGE"
 
-#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies the background color"
 msgstr "Spesifiserer bakgrunnsfargen"
 
-#: capplets/background-properties/property-background.c:1143
+#: capplets/background-properties/property-background.c:1144
 msgid "Specifies end background color for gradient"
 msgstr "Spesifiserer bakgrunnsfargen for gradienten"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "ORIENT"
 msgstr "ORIENT"
 
-#: capplets/background-properties/property-background.c:1144
+#: capplets/background-properties/property-background.c:1145
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Orientering for gradient: vertikal eller horisontal"
 
-#: capplets/background-properties/property-background.c:1145
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a solid fill for the background"
 msgstr "Bruk helfylt bakgrunn"
 
-#: capplets/background-properties/property-background.c:1146
+#: capplets/background-properties/property-background.c:1147
 msgid "Use a gradient fill for the background"
 msgstr "Bruk gradvis fyll for bakgrunnen"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "MODE"
 msgstr "MODUS"
 
-#: capplets/background-properties/property-background.c:1147
+#: capplets/background-properties/property-background.c:1148
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Vis bakgrunn: side-ved-side, sentrert, skalert eller rate"
 
@@ -188,7 +190,7 @@ msgid "Document Handlers"
 msgstr "Dokumenthåndterere"
 
 #. create the app
-#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
+#: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:201
 #: control-center/splash.c:247
 msgid "Control Center"
 msgstr "Kontrollsenter"
@@ -377,7 +379,7 @@ msgstr "Oppførsel ved åpning"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1299
 msgid "Can open multiple files"
-msgstr "Kan ikk åpne flere filer"
+msgstr "Kan ikke åpne flere filer"
 
 #. FIXME bugzilla.eazel.com 6066: This needs to be three options now: "yes", "no", and "use uris for non-file locations"
 #: capplets/file-types/file-types-capplet-dialogs.c:1307
@@ -548,15 +550,15 @@ msgstr ""
 "sjekk om GNOME brukerhåndboken er installert på ditt system."
 
 #: capplets/keyboard-properties/keyboard-properties.c:412
-#: capplets/sound-properties/sound-properties.c:745
-#: control-center/capplet-widget.c:273
+#: capplets/sound-properties/sound-properties.c:777
+#: control-center/capplet-widget.c:279
 msgid "Close"
 msgstr "Lukk"
 
 #: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
-"an initialization error occurred while starting "
-"'keyboard-properties-capplet'.\n"
+"an initialization error occurred while starting 'keyboard-properties-"
+"capplet'.\n"
 "aborting...\n"
 msgstr ""
 "en initieringsfeil oppstod under start av 'keyboard-properties-capplet'.\n"
@@ -640,33 +642,33 @@ msgstr "Mus"
 msgid "Mouse Properties"
 msgstr "Egenskaper for mus"
 
-#: capplets/screensaver-properties/callbacks.c:102
+#: capplets/screensaver-properties/callbacks.c:105
 msgid "Require Password"
 msgstr "Trenger passord"
 
-#: capplets/screensaver-properties/callbacks.c:154
+#: capplets/screensaver-properties/callbacks.c:157
 msgid "Use power management."
 msgstr "Bruk strømstyring."
 
-#: capplets/screensaver-properties/callbacks.c:309
+#: capplets/screensaver-properties/callbacks.c:317
 msgid "No Screensaver"
 msgstr "Ingen skjermsparer"
 
-#: capplets/screensaver-properties/callbacks.c:314
+#: capplets/screensaver-properties/callbacks.c:322
 msgid "Random Screensaver"
 msgstr "Tilfeldig skjermsparer"
 
-#: capplets/screensaver-properties/callbacks.c:483
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:56
+#: capplets/screensaver-properties/callbacks.c:492
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:66
 msgid "Settings..."
 msgstr "Innstillinger..."
 
 #. we need to special case random
-#: capplets/screensaver-properties/callbacks.c:491
+#: capplets/screensaver-properties/callbacks.c:500
 msgid "Random Settings"
 msgstr "Innstillinger for tilfeldig"
 
-#: capplets/screensaver-properties/callbacks.c:501
+#: capplets/screensaver-properties/callbacks.c:510
 #, c-format
 msgid "%s Settings..."
 msgstr "Innstillinger for %s..."
@@ -765,10 +767,10 @@ msgid ""
 "heads (``ants'') walk along the screen, they change pixel values in their "
 "path. Then, as they pass over changed pixels, their behavior is influenced."
 msgstr ""
-"En cellulær automasjon som i virkeligheten er en to-dimensjonal "
-"Turing-maskin: ettersom hodene (``maurene'') går langs skjermen, endrer de "
-"piksel-verdiene langs sitt spor. Siden, ettersom de går over endrede "
-"piksler, påvirkes deres oppførsel."
+"En cellulær automasjon som i virkeligheten er en to-dimensjonal Turing-"
+"maskin: ettersom hodene (``maurene'') går langs skjermen, endrer de piksel-"
+"verdiene langs sitt spor. Siden, ettersom de går over endrede piksler, "
+"påvirkes deres oppførsel."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
 msgid "Ant"
@@ -2591,12 +2593,11 @@ msgid "Delay between finishing the maze and starting a new one."
 msgstr "Pause mellom løsing av labyrinten og start av en ny."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid "If the solver can "
-msgstr "Om problemløseren kan "
-
-#: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
-msgid " the end of a corridor it will color it this color."
+msgid ""
+"If the solver can \"see\" the end of a corridor it will color it this color."
 msgstr ""
+"Hvis løsningskomponenten kan «se» slutten på en korridor vil den farge den "
+"med denne fargen."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
 msgid "Less Delay"
@@ -3352,15 +3353,19 @@ msgstr "Forfatter: UKJENT"
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:38
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:39
 msgid "RANDOM SCREENSAVER"
 msgstr "TILFELDIG SKJERMSPARER"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:49
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:50
 msgid "Screen Saver"
 msgstr "Skjermsparer"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:61
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:60
+msgid "Pressing this button will preview current screensaver."
+msgstr "Når du trykker på denne knappen forhåndsvises aktiv skjermsparer."
+
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:71
 msgid ""
 "Pressing this button will popup a dialogbox that will help you setup the "
 "current screensaver."
@@ -3369,39 +3374,39 @@ msgstr ""
 "deg med å konfigurere den valgte skjermspareren."
 
 #. set up the initial frame, and get a vbox in which to pack things.
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:98
 msgid "Screen Saver Settings"
 msgstr "Innstillinger for skjermsparer"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:96
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:106
 msgid "Start After "
 msgstr "Start etter "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:112
 msgid " Minutes."
 msgstr " minutter."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:127
 msgid "Priority:"
 msgstr "Prioritet:"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:134
 msgid "Low "
 msgstr "Lav "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:126
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:136
 msgid " Normal"
 msgstr " Normal"
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:147
 msgid "Shutdown monitor "
 msgstr "Slå av monitor "
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:149
 msgid " minutes after screen saver has started."
 msgstr " minutter etter at skjermspareren har startet."
 
-#: capplets/screensaver-properties/screensaver-properties-capplet.c:152
+#: capplets/screensaver-properties/screensaver-properties-capplet.c:162
 msgid "Screen Saver Demo"
 msgstr "Skjermsparerdemo"
 
@@ -3419,52 +3424,60 @@ msgid ""
 msgstr ""
 "en initialiseringsfeil oppstod under start av 'sound-properties-capplet'."
 
-#: capplets/sound-properties/sound-properties.c:188
+#: capplets/sound-properties/sound-properties.c:195
 msgid "Event"
 msgstr "Hendelse"
 
-#: capplets/sound-properties/sound-properties.c:189
+#: capplets/sound-properties/sound-properties.c:196
 msgid "File to Play"
 msgstr "Fil som skal spilles"
 
-#: capplets/sound-properties/sound-properties.c:243
-msgid "Enable"
-msgstr "Slå på"
-
 #: capplets/sound-properties/sound-properties.c:250
+msgid "Sound server"
+msgstr "Lydtjener"
+
+#: capplets/sound-properties/sound-properties.c:257
 msgid "Enable sound server startup"
 msgstr "Slå på oppstart av lydtjener"
 
-#: capplets/sound-properties/sound-properties.c:258
+#: capplets/sound-properties/sound-properties.c:265
 msgid "Sounds for events"
 msgstr "Slå på lyd for hendelser"
 
+#: capplets/sound-properties/sound-properties.c:272
+msgid "Audio mixer"
+msgstr "Lydmikser"
+
 #: capplets/sound-properties/sound-properties.c:279
+msgid "Restore mixer levels of Gnome Mixer"
+msgstr "Gjenopprett lydnivå for GNOME mikser"
+
+#: capplets/sound-properties/sound-properties.c:305
 msgid "General"
 msgstr "Generelt"
 
-#: capplets/sound-properties/sound-properties.c:286
+#: capplets/sound-properties/sound-properties.c:312
 msgid "Select sound file"
 msgstr "Velg lydfil"
 
-#: capplets/sound-properties/sound-properties.c:325
+#: capplets/sound-properties/sound-properties.c:351
 msgid "Play"
 msgstr "Spill"
 
-#: capplets/sound-properties/sound-properties.c:336
+#: capplets/sound-properties/sound-properties.c:362
 msgid "Sound Events"
 msgstr "Lydhendelser"
 
-#: capplets/sound-properties/sound-properties.c:355
+#: capplets/sound-properties/sound-properties.c:381
 msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "GNOME kontrollsenter ble kompilert uten støtte for lyd"
 
-#: capplets/sound-properties/sound-properties.c:737
+#: capplets/sound-properties/sound-properties.c:769
 msgid "The sound file for this event does not exist."
 msgstr "Lydfilen for denne hendelsen eksisterer ikke."
 
-#: capplets/sound-properties/sound-properties.c:739
+#: capplets/sound-properties/sound-properties.c:771
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3484,7 +3497,7 @@ msgstr "Lyd"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "One"
-msgstr "Én"
+msgstr "En"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "Two"
@@ -3560,7 +3573,7 @@ msgstr "Radioknapp 1"
 msgid "Radio Button 2"
 msgstr "Radioknapp 2"
 
-#: capplets/theme-switcher/gui.c:89
+#: capplets/theme-switcher/gui.c:120
 #, c-format
 msgid ""
 "Error installing theme:\n"
@@ -3571,15 +3584,15 @@ msgstr ""
 "'%s'\n"
 "%s"
 
-#: capplets/theme-switcher/gui.c:120
+#: capplets/theme-switcher/gui.c:154
 msgid "Select a theme to install"
 msgstr "Velg et tema for installasjon"
 
-#: capplets/theme-switcher/gui.c:197
+#: capplets/theme-switcher/gui.c:231
 msgid "Available Themes"
 msgstr "Tilgjengelige tema"
 
-#: capplets/theme-switcher/gui.c:221
+#: capplets/theme-switcher/gui.c:255
 msgid ""
 "Auto\n"
 "Preview"
@@ -3587,29 +3600,29 @@ msgstr ""
 "Automatisk\n"
 "forhåndsvisning"
 
-#: capplets/theme-switcher/gui.c:233
+#: capplets/theme-switcher/gui.c:267
 msgid ""
 "Install new\n"
 "theme..."
 msgstr ""
-"Installér nytt\n"
+"Installer nytt\n"
 "tema..."
 
 #. Font selector.
 #.
-#: capplets/theme-switcher/gui.c:239
+#: capplets/theme-switcher/gui.c:273
 msgid "User Font"
-msgstr "Brukerdefinert skrifttype"
+msgstr "Brukerdefinert skrift"
 
 #. FIXME - should really get this from X somehow
 #. for now we just assume default gtk font
-#: capplets/theme-switcher/gui.c:257
+#: capplets/theme-switcher/gui.c:291
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
 
-#: capplets/theme-switcher/gui.c:276
+#: capplets/theme-switcher/gui.c:310
 msgid "Use custom font."
-msgstr "Bruk egendefinert skrifttype."
+msgstr "Bruk egendefinert skrift."
 
 #: capplets/theme-switcher/install.c:26
 msgid "Home directory doesn't exist!\n"
@@ -3622,7 +3635,7 @@ msgstr "Temaet eksisterer ikke"
 #: capplets/theme-switcher/install.c:68
 #, c-format
 msgid "Command '%s' failed"
-msgstr "Kommandoen '%s' feilet"
+msgstr "Kommandoen «%s» feilet"
 
 #: capplets/theme-switcher/install.c:73
 msgid "Unknown file format"
@@ -3654,7 +3667,7 @@ msgstr "MDI"
 
 #: capplets/ui-properties/ui-properties.c:54
 msgid "Can detach and move toolbars"
-msgstr "Kan ta av og flytte verktøylinjer"
+msgstr "Verktøylinjer kan tas av og flyttes"
 
 #: capplets/ui-properties/ui-properties.c:59
 msgid "Toolbars have relieved border"
@@ -3674,7 +3687,7 @@ msgstr "Verktøylinjer har tekstetiketter"
 
 #: capplets/ui-properties/ui-properties.c:103
 msgid "Can detach and move menus"
-msgstr "Kan ta av og flytte menyer"
+msgstr "Menyer kan tas av og flyttes"
 
 #: capplets/ui-properties/ui-properties.c:108
 msgid "Menus have relieved border"
@@ -3722,15 +3735,15 @@ msgstr "Spre knappene utover"
 
 #: capplets/ui-properties/ui-properties.c:173
 msgid "Put buttons on edges"
-msgstr "Plassér knapper på kantene"
+msgstr "Plasser knapper på kantene"
 
 #: capplets/ui-properties/ui-properties.c:174
 msgid "Left-justify buttons"
-msgstr "Venstrejustér knapper"
+msgstr "Venstrejuster knapper"
 
 #: capplets/ui-properties/ui-properties.c:175
 msgid "Right-justify buttons"
-msgstr "Høyrejustér knapper"
+msgstr "Høyrejuster knapper"
 
 #: capplets/ui-properties/ui-properties.c:180
 msgid "Dialog buttons have icons"
@@ -3770,7 +3783,7 @@ msgstr "Dialoger behandles som spesielle av vindushåndtereren"
 
 #: capplets/ui-properties/ui-properties.c:222
 msgid "Place dialogs over application window when possible"
-msgstr "Plassér dialogene over applikasjonsvinduet når mulig"
+msgstr "Plasser dialogene over applikasjonsvinduet når mulig"
 
 #: capplets/ui-properties/ui-properties.c:243
 msgid "Dialog Layout"
@@ -3935,7 +3948,7 @@ msgid ""
 "\t'%s' didn't start\n"
 msgstr ""
 "wm-properties-capplet: Kunne ikke initialisere vindushåndtereren.\n"
-"\t'%s' startet ikke\n"
+"\t«%s» startet ikke\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:413
 msgid "Previous window manager did not die\n"
@@ -3947,8 +3960,8 @@ msgid ""
 "Could not start '%s'.\n"
 "Falling back to previous window manager '%s'\n"
 msgstr ""
-"Kunne ikke starte '%s'.\n"
-"Faller tilbake til forrige vindushåndterer '%s'\n"
+"Kunne ikke starte «%s».\n"
+"Faller tilbake til forrige vindushåndterer «%s»\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:477
 msgid ""
@@ -3959,7 +3972,7 @@ msgid ""
 msgstr ""
 "Kunne ikke starte opp igjen forrige vindushåndterer.\n"
 "Vennligst kjør en vindushåndterer manuelt. Du kan\n"
-"gjøre dette ved å velge \"Kjør\" i fra\n"
+"gjøre dette ved å velge «Kjør» i fra\n"
 "fot-menyen\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
@@ -3980,10 +3993,10 @@ msgid ""
 "you log out.\n"
 msgstr ""
 "Du har byttet vindushåndterer. For å lagre denne endringen må du lagre \n"
-"den aktive sesjonen. Dette kan gjøres ved å velge \"Lagre aktiv sesjon\" \n"
+"den aktive sesjonen. Dette kan gjøres ved å velge «Lagre aktiv sesjon» \n"
 "under, eller du kan lagre den senere. Dette kan gjøres ved å velge \n"
-"\"Lagre aktiv sesjon\" under \"Innstillinger\" i hovedmenyen, eller ved å \n"
-"velge \"Lagre denne sesjonen\" når du logger ut.\n"
+"«Lagre aktiv sesjon» under «Innstillinger» i hovedmenyen, eller ved å \n"
+"velge «Lagre denne sesjonen» når du logger ut.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:527
 msgid "Save Session Later"
@@ -4002,9 +4015,8 @@ msgid ""
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
 "Du har byttet vindushåndterer. For å lagre denne endringen må du lagre \n"
-"denne sesjonen. Dette kan gjøres ved å velge \"Lagre aktiv sesjon\" under \n"
-"\"Innstillinger\" i hovedmenyen, eller ved å velge \"Lagre denne sesjonen\" "
-"\n"
+"denne sesjonen. Dette kan gjøres ved å velge «Lagre aktiv sesjon» under \n"
+"«Innstillinger» i hovedmenyen, eller ved å velge «Lagre denne sesjonen»\n"
 "når du logger ut.\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:745
@@ -4038,7 +4050,7 @@ msgstr "Kommandofeltet kan ikke være tomt"
 #: capplets/wm-properties/wm-properties-capplet.c:910
 #: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
-msgstr "Redigér vindushåndterer"
+msgstr "Rediger vindushåndterer"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
@@ -4046,7 +4058,7 @@ msgstr "Du kan ikke slette aktiv vindushåndterer"
 
 #: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
-msgstr "Redigér..."
+msgstr "Rediger..."
 
 #: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
@@ -4057,7 +4069,7 @@ msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"
 msgstr ""
-"en initieringsfeil oppstod under start av 'wm-properties-capplet'.\n"
+"en initieringsfeil oppstod under start av «wm-properties-capplet».\n"
 "avbryter...\n"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:1
@@ -4088,57 +4100,57 @@ msgstr "Forkast"
 #: control-center/capplet-manager.c:208
 #, c-format
 msgid "Help with '%s' settings"
-msgstr "Hjelp for '%s'-instillinger"
+msgstr "Hjelp for «%s»-instillinger"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "id of the capplet -- assigned by the control-center"
 msgstr "cappletens id -- tildelt av kontrollsenteret"
 
-#: control-center/capplet-widget-libs.c:46
+#: control-center/capplet-widget-libs.c:51
 msgid "ID"
 msgstr "ID"
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "Multi-capplet id."
 msgstr "Multicapplet-id."
 
-#: control-center/capplet-widget-libs.c:47
+#: control-center/capplet-widget-libs.c:52
 msgid "CAPID"
 msgstr "CAPID"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "X ID of the socket it's plugged into"
 msgstr "X-id til socketen den er pluggen inn i"
 
-#: control-center/capplet-widget-libs.c:48
+#: control-center/capplet-widget-libs.c:53
 msgid "XID"
 msgstr "XID"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR of the control-center"
 msgstr "Kontrollsenterets IOR"
 
-#: control-center/capplet-widget-libs.c:49
+#: control-center/capplet-widget-libs.c:54
 msgid "IOR"
 msgstr "IOR"
 
-#: control-center/capplet-widget-libs.c:50
+#: control-center/capplet-widget-libs.c:55
 msgid "Initialize session settings"
-msgstr "Initiér sesjonsinstillingene"
+msgstr "Initier sesjonsinstillingene"
 
-#: control-center/capplet-widget-libs.c:51
+#: control-center/capplet-widget-libs.c:56
 msgid "Ignore default action.  Used for custom init-session cases"
-msgstr "Ignorér standard handling. Brukes for spesielle init-session tilfeller"
+msgstr "Ignorer standard handling. Brukes for spesielle init-session tilfeller"
 
-#: control-center/capplet-widget.c:272
+#: control-center/capplet-widget.c:278
 msgid "Sorry, no help is available for these settings."
 msgstr "Beklager, ingen hjelp tilgjengelig for disse innstillingene."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "capplet-command to be run."
 msgstr "capplet-kommando som skal kjøres."
 
-#: control-center/corba-glue.c:77
+#: control-center/corba-glue.c:82
 msgid "CAPPLET"
 msgstr "CAPPLET"
 
@@ -4146,37 +4158,37 @@ msgstr "CAPPLET"
 msgid "The GNOME configuration tool"
 msgstr "GNOME konfigurasjonsverktøy"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help on control-center"
 msgstr "Hjelp for kontrollsenter"
 
-#: control-center/main.c:36
+#: control-center/main.c:40
 msgid "Help with the GNOME control-center."
 msgstr "Hjelp for GNOME kontrollsenter."
 
-#: control-center/main.c:38
+#: control-center/main.c:42
 msgid "Help with the current configuration page."
 msgstr "Hjelp for denne konfigurasjonsfanen."
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About"
 msgstr "Om"
 
-#: control-center/main.c:41
+#: control-center/main.c:45
 msgid "About the GNOME control-center."
 msgstr "Om GNOME kontrollsenter."
 
 #. we create the widgets
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Warning:"
 msgstr "Advarsel:"
 
-#: control-center/main.c:69
+#: control-center/main.c:73
 msgid "Discard all changes"
 msgstr "Forkast alle endringer"
 
 #. ...labels, etc
-#: control-center/main.c:78
+#: control-center/main.c:82
 msgid ""
 "The following modules have had changes made, but not committed.  If you "
 "would like to edit them, please double click on the appropriate entry."
@@ -4209,6 +4221,12 @@ msgstr "Vertsnavn:"
 #: control-center/splash.c:178
 msgid "Unknown"
 msgstr "Ukjent"
+
+#~ msgid "If the solver can "
+#~ msgstr "Om problemløseren kan "
+
+#~ msgid "Enable"
+#~ msgstr "Slå på"
 
 #~ msgid "Session Chooser"
 #~ msgstr "Sesjonsvelger"
@@ -4323,8 +4341,8 @@ msgstr "Ukjent"
 #~ msgstr "Oppstartskommando"
 
 #~ msgid ""
-#~ "Programs with smaller values are started before programs with higher values. "
-#~ "The default value should be OK"
+#~ "Programs with smaller values are started before programs with higher "
+#~ "values. The default value should be OK"
 #~ msgstr ""
 #~ "Programmer med mindre verdier startes før programmer med høyere verdier. "
 #~ "Standardverdiene bør være OK"

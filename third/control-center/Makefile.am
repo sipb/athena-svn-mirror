@@ -1,5 +1,5 @@
 
-always_built_SUBDIRS = control-center capplets idl doc omf-install
+always_built_SUBDIRS = control-center capplets idl doc omf-install man
 
 SUBDIRS = intl po macros \
 	 $(always_built_SUBDIRS)

@@ -1,4 +1,9 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <gnome.h>
 #include <orb/orbit.h>
 #include "capplet-widget.h"
@@ -25,6 +30,7 @@ static int capplet_widget_signals[LAST_SIGNAL] = {0,0,0,0};
 /* prototypes */ 
 static void capplet_widget_class_init	(CappletWidgetClass *klass);
 static void capplet_widget_init		(CappletWidget      *applet_widget);
+GtkWidget* capplet_widget_new(void);
 static GtkWidget *get_widget_by_id(gint id);
 void _capplet_widget_server_try(gint id);
 void _capplet_widget_server_revert(gint id);

@@ -1,23 +1,9 @@
 [Desktop Entry]
 Name=Ice WM
-Name[ca]=Gestor Ice
 Name[da]=IceWM
-Name[de]=Ice WM
-Name[es]=Ice WM
-Name[fi]=Ice WM
-Name[fr]=Ice WM
+Name[eu]=WM izotza
 Name[gl]=IceWM
-Name[hu]=Ice WM
-Name[ja]=Ice WM
-Name[ko]=Ice WM
-Name[no]=Ice WM
 Name[pl]=Mened¿er okien Ice (IceWM)
-Name[ru]=Ice WM
-Name[sk]=Ice WM
-Name[sl]=Ice WM
-Name[sv]=Ice WM
-Name[uk]=Ice WM
-Name[wa]=Ice WM
 Exec=icewm
 TryExec=icewm
 

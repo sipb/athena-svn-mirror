@@ -491,7 +491,7 @@ revert (GtkWidget *capplet, gpointer data)
 static void
 help (GtkWidget *capplet)
 {
-  gchar *tmp, *helpfile;
+  gchar *helpfile;
   GnomeHelpMenuEntry help_entry= {"control-center",NULL};
 
   switch(CAPPLET_WIDGET(capplet)->capid) {

@@ -26,6 +26,7 @@ extern int errno;
 
 /*#define HAVE_REDHAT_XSCREENSAVER_RPM*/
 extern GtkWidget *capplet;
+extern GtkWidget *preview_button;
 extern GtkWidget *setup_button;
 extern GtkWidget *setup_label;
 extern GtkWidget *monitor;
@@ -46,6 +47,8 @@ gboolean ignore_changes = FALSE;
 static gint random_x = 0;
 static gint random_y = 0;
 static guint random_timer = 0;
+
+void ssaver_preview (GtkWidget *parent_widget, screensaver_data *sdp);
 
 /* Loading info... */
 void
@@ -192,16 +195,21 @@ create_list (GtkCList *list, gchar *directory)
         gchar *prefix;
         GList *desktop_items = NULL, *listp;
         screensaver_data *sdnew;
+        char *suffix = ".desktop";
+        int suffixlen = strlen( suffix );
+        int d_namelen;
 
         dir = opendir (directory);
         if (dir == NULL)
                 return;
 
         while ((child = readdir (dir)) != NULL) {
-                if (!strstr(child->d_name, ".desktop"))
-                        continue;
-
-                if (child->d_name[0] != '.') {
+                /*
+                 * We only accept files, which have ".desktop" suffix in
+                 * filenames.
+                 */
+                d_namelen = strlen(child->d_name);
+                if (d_namelen > suffixlen && !strcmp(&child->d_name[d_namelen-suffixlen], suffix)) {
                         desktop_items = g_list_insert_sorted(desktop_items, 
                                              g_strdup(child->d_name),
                                              (GCompareFunc)strcmp); 
@@ -462,6 +470,7 @@ launch_miniview (screensaver_data *sd)
 
         return;
 }
+
 void
 setup_callback (GtkWidget *widget, gpointer data)
 {
@@ -616,17 +625,82 @@ ssaver_callback (GtkWidget *dialog, GdkEvent *event, GdkWindow *sswin)
         if (pid_big){
                 kill (pid_big, SIGKILL);
                 pid_big = 0;
-#if 0
+//#if 0
+/* 	uncommented it, so preview button doesn't get pressed again when mouse is clicked
+	while screen saver preview is running; 
+	why was it commented ? how come dialog's preview works without it ? */
                 if (event->any.type == GDK_KEY_PRESS)
                         gtk_signal_emit_stop_by_name (GTK_OBJECT (dialog),"key_press_event");
                 else if (event->any.type == GDK_BUTTON_PRESS)
                         gtk_signal_emit_stop_by_name (GTK_OBJECT (dialog),"button_press_event");
-#endif
+//#endif
                 if (sswin) {
                         gdk_window_hide (sswin);
                 }
         }
 }
+
+void
+ssaver_preview (GtkWidget *parent_widget, screensaver_data *sdp)
+{
+        gchar *temp;
+        static GdkWindow *sswin = NULL;
+        GdkWindowAttr attributes;
+        gchar xid[11];
+		
+	g_return_if_fail (sdp != NULL);
+	
+	if (sswin == NULL) {
+		attributes.title = NULL;
+		attributes.x = 0;
+                attributes.y = 0;
+		attributes.width = gdk_screen_width ();
+		attributes.height = gdk_screen_height ();
+		attributes.wclass = GDK_INPUT_OUTPUT;
+		attributes.window_type = GDK_WINDOW_TOPLEVEL;
+		attributes.override_redirect = TRUE;
+		sswin = gdk_window_new (NULL, &attributes, GDK_WA_X|GDK_WA_Y|GDK_WA_NOREDIR);
+	}
+	gtk_signal_connect (GTK_OBJECT (parent_widget), "key_press_event", (GtkSignalFunc) ssaver_callback, sswin);
+	gtk_signal_connect (GTK_OBJECT (parent_widget), "button_press_event", (GtkSignalFunc) ssaver_callback, sswin);
+	XSelectInput (GDK_WINDOW_XDISPLAY (sswin), GDK_WINDOW_XWINDOW (sswin), ButtonPressMask | KeyPressMask);
+	gdk_window_show (sswin);
+	gdk_window_set_user_data (sswin, parent_widget);
+                
+
+        pid_big = fork ();
+        if (pid_big == (pid_t) -1)
+                return;
+        if (pid_big == 0) {
+                char *ctmp, *envpath;
+                char **argv;
+
+                snprintf (xid, 11,"0x%x", (guint) GDK_WINDOW_XWINDOW (sswin));
+
+                envpath = getenv("PATH");
+                ctmp = g_strdup_printf ("PATH=%s%s%s",
+                        envpath ? envpath : "",
+                        envpath ? ":" : "",
+                        "/usr/X11R6/lib/xscreensaver");
+                putenv (ctmp);
+                /* trim args, so it will work for savers without any args (a space) */
+                temp = g_strconcat (g_strchomp(sd->args), " ", sd->windowid, " ", xid, NULL);
+                argv = g_strsplit (temp, " ", -1);
+
+                execvp (argv[0], argv);
+                _exit (1);
+                /* This call should never return */
+        }
+}
+	
+
+void
+preview_callback (GtkWidget *widget, gpointer data)
+{
+        ssaver_preview (preview_button, sd);
+}
+
+
 void
 dialog_destroy_callback (GtkWidget *dialog, screensaver_data *newsd)
 {
@@ -638,55 +712,10 @@ dialog_destroy_callback (GtkWidget *dialog, screensaver_data *newsd)
 void
 dialog_callback (GtkWidget *dialog, gint button, screensaver_data *newsd)
 {
-        gchar *temp;
-        static GdkWindow *sswin = NULL;
-        GdkWindowAttr attributes;
-        gchar xid[11];
-
         store_screensaver_data (newsd);
         switch (button) {
         case 0:
-                if (sswin == NULL) {
-                        attributes.title = NULL;
-                        attributes.x = 0;
-                        attributes.y = 0;
-                        attributes.width = gdk_screen_width ();
-                        attributes.height = gdk_screen_height ();
-                        attributes.wclass = GDK_INPUT_OUTPUT;
-                        attributes.window_type = GDK_WINDOW_TOPLEVEL;
-                        attributes.override_redirect = TRUE;
-                        sswin = gdk_window_new (NULL, &attributes, GDK_WA_X|GDK_WA_Y|GDK_WA_NOREDIR);
-                }
-                gtk_signal_connect (GTK_OBJECT (dialog), "key_press_event", (GtkSignalFunc) ssaver_callback, sswin);
-                gtk_signal_connect (GTK_OBJECT (dialog), "button_press_event", (GtkSignalFunc) ssaver_callback, sswin);
-                XSelectInput (GDK_WINDOW_XDISPLAY (sswin), GDK_WINDOW_XWINDOW (sswin), ButtonPressMask | KeyPressMask);
-                gdk_window_show (sswin);
-                gdk_window_set_user_data (sswin, dialog);
-                
-
-                pid_big = fork ();
-                if (pid_big == (pid_t) -1)
-                        return;
-                if (pid_big == 0) {
-                        char *ctmp, *envpath;
-                        char **argv;
-                        
-                        snprintf (xid, 11,"0x%x", (guint) GDK_WINDOW_XWINDOW (sswin));
-
-                        envpath = getenv("PATH");
-                        ctmp = g_strdup_printf ("PATH=%s%s%s",
-                                                envpath ? envpath : "",
-                                                envpath ? ":" : "",
-                                                "/usr/X11R6/lib/xscreensaver");
-                        putenv (ctmp);
-
-                        temp = g_strconcat (newsd->args, " ", newsd->windowid, " ", xid, NULL);
-                        argv = g_strsplit (temp, " ", -1);
-
-                        execvp (argv[0], argv);
-                        _exit (1);
-                        /* This call should never return */
-                }
+                ssaver_preview (dialog, newsd);
                 break;
         case 1:
                 gnome_dialog_close (GNOME_DIALOG (dialog));
