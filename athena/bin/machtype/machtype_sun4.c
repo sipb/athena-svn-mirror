@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.8 1994-03-30 10:38:03 miki Exp $
+ *    $Id: machtype_sun4.c,v 1.9 1994-06-30 09:09:03 vrt Exp $
  *    $Locker:  $
  */
 
@@ -199,7 +199,7 @@ kvm_t *kv;
 usage(name)
 char *name;
 {
-    fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-M]\n",name);
+    fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
     fprintf(stderr, "             [-k kernel] [-m memory] [-A] [-L] [-P]\n");
     exit(1);
 }
