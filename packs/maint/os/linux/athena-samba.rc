@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# samba: Start the Athena SMB services.
+#
+# chkconfig: 345 80 30
+# description: Samba startup.
+# processname: smbd nmbd
+# pidfile: /usr/athena/var/locks/smbd.pid
+# pidfile: /usr/athena/var/locks/nmbd.pid
+# config: /etc/sysconfig/network
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+. /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:/usr/athena/etc:$PATH
+
+# Check that networking is up.
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /usr/athena/etc/smbd ] || exit 0
+
+[ "$SMBSRV" = true ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Starting Athena SMB services: "
+	daemon smbd && daemon nmbd
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/samba
+	;;
+
+  stop)
+	echo -n "Stopping Athena SMB services: "
+	killproc nmbd && killproc smbd
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/samba
+	;;
+
+  status)
+	status nmbd && status smbd
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP smbd && killall -HUP nmbd
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: athena-samba {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL
