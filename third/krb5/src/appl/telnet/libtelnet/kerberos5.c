@@ -94,6 +94,7 @@ int setpag(), ktc_ForgetAllTokens();
 
 extern auth_debug_mode;
 extern int net;
+extern int al_local_acct;
 
 #ifdef	FORWARD
 int forward_flags = 0;  /* Flags get set in telnet/main.c on -f and -F */
@@ -692,11 +693,12 @@ kerberos5_status(ap, name, level)
 		int status, *warnings;
 		char *errmem, *err;
 
-		if (k5_haveauth)
-		    try_afscall(setpag);
-		status = al_acct_create(UserNameRequested, NULL, getpid(),
-					  k5_haveauth, 0, &warnings);
-		if (status != AL_SUCCESS) {
+		if (!al_local_acct) {
+			if (k5_haveauth)
+				try_afscall(setpag);
+			status = al_acct_create(UserNameRequested, NULL,
+						getpid(), k5_haveauth, 0,
+						&warnings);
 			if (status == AL_WARNINGS) {
 				int i;
 				for (i = 0; warnings[i]; i++) {
@@ -708,7 +710,7 @@ kerberos5_status(ap, name, level)
 					net_write("\r\n", 2);
 				}
 				free(warnings);
-			} else {
+			} else if (status != AL_SUCCESS) {
 				err = al_strerror(status, &errmem);
 				net_write(err, strlen(err));
 				al_free_errmem(errmem);
@@ -719,10 +721,12 @@ kerberos5_status(ap, name, level)
 		ok = krb5_kuserok(telnet_context, ticket->enc_part2->client, 
 				  UserNameRequested);
 
-		al_acct_revert(UserNameRequested, getpid());
-		if (k5_haveauth) {
-		    try_afscall(ktc_ForgetAllTokens);
-		    dest_tkt();
+		if (!al_local_acct) {
+			al_acct_revert(UserNameRequested, getpid());
+			if (k5_haveauth) {
+				try_afscall(ktc_ForgetAllTokens);
+				dest_tkt();
+			}
 		}
 	}
 

@@ -83,6 +83,7 @@
 int auth_debug_mode = 0;
 int auth_has_failed = 0;
 int auth_enable_encrypt = 0;
+int al_local_acct;
 static 	char	*Name = "Noname";
 static	int	Server = 0;
 static	Authenticator	*authenticated = 0;
@@ -518,7 +519,7 @@ auth_name(data, cnt)
 	if (auth_debug_mode)
 		printf(">>>%s: Got NAME [%s]\r\n", Name, savename);
 
-	status = al_login_allowed(savename, 1, &filetext);
+	status = al_login_allowed(savename, 1, &al_local_acct, &filetext);
 	if (status != AL_SUCCESS) {
 		printf("%s\r\n", al_strerror(status, &errmem));
 		al_free_errmem(errmem);

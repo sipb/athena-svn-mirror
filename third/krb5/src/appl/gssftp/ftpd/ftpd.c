@@ -197,6 +197,7 @@ int	defumask = CMASK;		/* default umask value */
 char	tmpline[FTP_BUFSIZ];
 char	hostname[MAXHOSTNAMELEN];
 char	remotehost[MAXHOSTNAMELEN];
+int	al_local_acct;
 
 /*
  * Timeout intervals for retrying connections
@@ -595,22 +596,24 @@ user(name)
 		return;
 	}
 
-	status = al_login_allowed(name, 1, NULL);
+	status = al_login_allowed(name, 1, &al_local_acct, NULL);
 	if (status != AL_SUCCESS) {
 		reply(530, "User %s access denied: %s", name,
 		      al_strerror(status, &errmem));
 		al_free_errmem(errmem);
 		return;
 	}
-	status = al_acct_create(name, NULL, getpid(), 0, 0, &warnings);
-	if (status != AL_SUCCESS) {
-		if (status == AL_WARNINGS)
-			free(warnings);
-		else {
-			reply(530, "User %s access denied: %s", name,
-			      al_strerror(status, &errmem));
-			al_free_errmem(errmem);
-			return;
+	if (!al_local_acct) {
+		status = al_acct_create(name, NULL, getpid(), 0, 0, &warnings);
+		if (status != AL_SUCCESS) {
+			if (status == AL_WARNINGS)
+				free(warnings);
+			else {
+				reply(530, "User %s access denied: %s", name,
+				      al_strerror(status, &errmem));
+				al_free_errmem(errmem);
+				return;
+			}
 		}
 	}
 
@@ -768,6 +771,9 @@ char *name, *passwd;
 #ifdef KRB5_KRB4_COMPAT
 	char realm[REALM_SZ];
 #endif /* KRB5_KRB4_COMPAT */
+
+	if (al_local_acct)
+		return 0;
 
 	krb5_init_context(&kcontext);
 	memset((char *)&my_creds, 0, sizeof(my_creds));

@@ -15,8 +15,14 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.8 1998-03-08 17:52:01 danw Exp $
+ * $Id: auth-passwd.c,v 1.9 1998-04-09 22:51:45 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  1998/03/08 17:52:01  danw
+ * From nathanw: use same krb5 options (proxy+forward) as other programs.
+ * Use krb_set_tkt_string before get_pw_in_tkt in case the krb4 lib has
+ * already cached another ticket location (while trying to do ticket forwarding,
+ * for example)
+ *
  * Revision 1.7  1998/01/24 01:47:21  danw
  * merge in changes for 1.2.22
  *
@@ -141,6 +147,8 @@ the password is valid for the user.
 #include "ssh.h"
 #include "servconf.h"
 #include "xmalloc.h"
+
+extern int al_local_acct;
 
 #ifdef SECURE_RPC
 /*
@@ -507,7 +515,7 @@ int auth_password(const char *server_user, const char *password)
   saved_pw_passwd = xstrdup(pw->pw_passwd);
   
 #if defined(KERBEROS)
-  if (options.kerberos_authentication)
+  if (options.kerberos_authentication && !al_local_acct)
     {
 #if defined(KRB5)
       sprintf(ccname, "FILE:/tmp/krb5cc_l%d", getpid());

@@ -100,6 +100,7 @@ static Schedule sched;
 static Block	challenge	= { 0 };
 #endif	/* ENCRYPTION */
 static int krb4_accepted = 0;
+extern int al_local_acct;
 
 	static int
 Data(ap, type, d, c)
@@ -310,9 +311,10 @@ kerberos4_is(ap, data, cnt)
 			int status, *warnings;
 			char *errmem;
 
-			status = al_acct_create(UserNameRequested, NULL,
-						  getpid(), 0, 0, &warnings);
-			if (status != AL_SUCCESS) {
+			if (!al_local_acct) {
+				status = al_acct_create(UserNameRequested,
+							NULL, getpid(), 0, 0,
+							&warnings);
 				if (status == AL_WARNINGS) {
 					int i;
 					for (i = 0; warnings[i]; i++) {
@@ -322,7 +324,7 @@ kerberos4_is(ap, data, cnt)
 						al_free_errmem(errmem);
 					}
 					free(warnings);
-				} else {
+				} else if (status != AL_SUCCESS) {
 					printf("%s\r\n",
 					       al_strerror(status, &errmem));
 					al_free_errmem(errmem);
@@ -336,7 +338,8 @@ kerberos4_is(ap, data, cnt)
 				Data(ap, KRB_REJECT,
 				     (void *)"user is not authorized", -1);
 
-			al_acct_revert(UserNameRequested, getpid());
+			if (!al_local_acct)
+				al_acct_revert(UserNameRequested, getpid());
 		} else
 			Data(ap, KRB_REJECT,
 			     (void *)"user is not authorized", -1);

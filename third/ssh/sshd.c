@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.10 1998-03-12 20:37:12 danw Exp $
+ * $Id: sshd.c,v 1.11 1998-04-09 22:51:48 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  1998/03/12 20:37:12  danw
+ * recheck pw->pw_dir after al_acct_create in case we got a temp homedir
+ *
  * Revision 1.9  1998/03/01 16:12:59  danw
  * Use xmalloc, not malloc. (pointed out by mhpower)
  *
@@ -492,6 +495,7 @@ void try_afscall(int (*func)(void));
 void al_cleanup(void);
 int *al_warnings = NULL;
 char *al_user;
+int al_local_acct;
 
 /* Server configuration options. */
 ServerOptions options;
@@ -1843,7 +1847,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 			 
   /* Verify that the user is a valid user.  We disallow usernames starting
      with any characters that are commonly used to start NIS entries. */
-  status = al_login_allowed(user, 1, &filetext);
+  status = al_login_allowed(user, 1, &al_local_acct, &filetext);
   if (status != AL_SUCCESS)
     {
       /* We don't want to use `packet_disconnect', because it will syslog
@@ -1872,13 +1876,16 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
       fatal_severity(SYSLOG_SEVERITY_INFO, "Login denied: %s", err);
       /* not reached */
     }
-  al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
-  al_user = xstrdup(user);
-  atexit(al_cleanup);
-  if (al_warnings)
+  if (!al_local_acct)
     {
-      free(al_warnings);
-      al_warnings = NULL;
+      al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
+      al_user = xstrdup(user);
+      atexit(al_cleanup);
+      if (al_warnings)
+	{
+	  free(al_warnings);
+	  al_warnings = NULL;
+	}
     }
   pw = getpwnam(user);
 
@@ -2395,10 +2402,13 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   
   if (havecred)
     try_afscall(setpag);
-  status = al_acct_create(pw->pw_name, NULL, getpid(), havecred, 1,
-			  &al_warnings);
-  if (status != AL_SUCCESS && status != AL_WARNINGS)
-    packet_disconnect("%s\n", al_strerror(status, &errmem));
+  if (!al_local_acct)
+    {
+      status = al_acct_create(pw->pw_name, NULL, getpid(), havecred, 1,
+			      &al_warnings);
+      if (status != AL_SUCCESS && status != AL_WARNINGS)
+	packet_disconnect("%s\n", al_strerror(status, &errmem));
+    }
 
   /* al_acct_create may have given us a temp homedir */
   pw2 = getpwnam(pw->pw_name);
