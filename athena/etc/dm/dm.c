@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.13.2.4 2000-09-23 19:32:36 ghudson Exp $
+/* $Id: dm.c,v 1.13.2.5 2000-11-08 23:17:30 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.13.2.4 2000-09-23 19:32:36 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.13.2.5 2000-11-08 23:17:30 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -746,7 +746,7 @@ static void shutdown(int signo)
       i = read(console_tty, buf, sizeof(buf));
       if (i == -1 && errno != EINTR)
 	perror("console pty");
-      else
+      else if (i > 0)
 	write(1, buf, i);
     }
 }
