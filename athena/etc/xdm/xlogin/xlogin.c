@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.20 1992-05-20 12:52:39 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.21 1992-05-20 14:41:19 epeisach Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -649,6 +649,7 @@ do_motd()
 		    len++;
 		}
 	    }
+	    *d = 0;
 
 	    /* now set the text */
 	    XtSetArg(args[0], XtNlabel, temp);
