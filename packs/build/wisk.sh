@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.71 $
+# $Revision: 1.72 $
 
 umask 2
 
@@ -248,7 +248,8 @@ switch ($package)
 # and link to that.
 if ($machine == "sun4" || $machine == "sgi") then
 	rm $BUILD/transarc
-	ln -s /afs/athena/astaff/project/afsdev/dist/@sys $BUILD/transarc
+	ln -s /afs/athena/system/afsuser/dist/3.4a.patches.1/@sys \
+		$BUILD/transarc
 endif
 
 	mkdir -p $BUILD/bin
