@@ -1,2 +1,2 @@
 copy *;rdl
-ignore *RCS;l
+ignore *CVS
