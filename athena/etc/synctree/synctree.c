@@ -250,7 +250,7 @@ int dodir(src,dst,part)
 {
     struct src srclist,*sp,*spp,*sppp;
     struct targ targlist,*tp,*tpp,*tppp;
-    int i,j;
+    int i,j,exitstatus = 0;
     void *getmemt;
     bool sorted;
     DIR *dirp;
@@ -517,6 +517,8 @@ int dodir(src,dst,part)
 #define FIXMODE 6
 #define FIXOWNANDMODE 7
 
+#define note_error() (exitstatus = 1)
+
 #define filecheck3() \
 	((srcstat.st_mtime > targstat.st_mtime) ? \
 	 OUTOFDATE : \
@@ -600,7 +602,7 @@ int dodir(src,dst,part)
     }
     
   poprules();
-  return 0;
+  return exitstatus;
 }
 
 char * destination_pathname(dstdir, sname, mapstring)

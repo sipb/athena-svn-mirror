@@ -8,7 +8,7 @@
 #endif
 
 #define noupdate(problem) printf("Not %sing %s because %s\n",action,targname,problem)
-#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,strerror(errno))
+#define update_error(problem) (note_error(), printf("Error %sing %s: %s: %s\n",action,targname,problem,strerror(errno)))
 
         switch (typeofaction) {
 	    int status;
@@ -254,9 +254,6 @@
 		printf("The update of %s from %s aborted prematurely.\n",
 		       targname, srcname);
 	    break;
-
-#undef update_error
-#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,strerror(errno))
 
 #undef action
 #define action "delet"
