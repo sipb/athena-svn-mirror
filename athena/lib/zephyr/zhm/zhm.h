@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: jtkohl $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.10 1989-10-19 12:49:38 jtkohl Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.11 1989-10-24 17:17:49 jtkohl Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -76,6 +76,11 @@ extern void init_queue(), retransmit_queue();
 #define MACHINE "sun4"
 #define ok
 #endif /* SUN4_ARCH */
+
+#if defined(ultrix) && defined(mips)
+#define MACHINE "decmips"
+#define ok
+#endif /* ultrix && mips */
 
 #ifndef ok
 #define MACHINE "unknown"
