@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.5 1992-05-13 13:07:08 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.6 1992-05-13 22:51:11 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -18,12 +18,14 @@
 static RSAKeyStorage gdss_pubkey;
 static int gdss_have_key;
 
+#ifdef notdef
+/* This function is obsolete */
 int GDSS_Sig_Info(Signature, aSigInfo)
 unsigned char *Signature;
 SigInfo *aSigInfo;
 {
   int status;
-  static int fetchkey();
+  static int pfetchkey();
   unsigned char hash[16];
   unsigned char *cp;
 
@@ -32,7 +34,7 @@ SigInfo *aSigInfo;
   aSigInfo->rawsig = cp;
   aSigInfo->SigInfoVersion = 0;
   do {
-    status = fetchkey();
+    status = pfetchkey();
     if (status) break;
     status = gdss_rverify(Signature, hash, &(*aSigInfo).pname,
 			  &(*aSigInfo).pinst, &(*aSigInfo).prealm,
@@ -41,39 +43,54 @@ SigInfo *aSigInfo;
   } while(0);
   return (status);
 }
+#endif
 
-int GDSS_Verify(Data, DataLen, Signature)
+int GDSS_Verify(Data, DataLen, Signature, aSigInfo)
 unsigned char *Data;
 unsigned int DataLen;
 unsigned char *Signature;
+SigInfo *aSigInfo;
 {
-  unsigned char hash[16], digest[16];
-  SigInfo aSigInfo;
+  unsigned char hash[16];
+  SigInfo bSigInfo, *iSigInfo;
   int status;
-  status = fetchkey();
+  unsigned char *cp;
+
+  if (aSigInfo == NULL) {
+    iSigInfo = &bSigInfo;
+  } else {
+    iSigInfo = aSigInfo;
+  }
+  status = pfetchkey();
   if (status) return (status);
 
-  status = gdss_rverify(Signature, hash, &aSigInfo.pname,
-			&aSigInfo.pinst, &aSigInfo.prealm,
-			&gdss_pubkey, &aSigInfo.timestamp, NULL);
+  bzero(&bSigInfo, sizeof(bSigInfo));
+  cp = iSigInfo->rawsig;
+  bzero(iSigInfo, sizeof(bSigInfo));
+  iSigInfo->rawsig = cp;
+
+  RSA_MD2(Data, DataLen, hash);
+
+  status = gdss_rverify(Signature, hash, iSigInfo->pname,
+			iSigInfo->pinst, iSigInfo->prealm,
+			&gdss_pubkey, &iSigInfo->timestamp, iSigInfo->rawsig);
+
   if (status) return (status);
-  RSA_MD2(Data, DataLen, digest);
-  if(bcmp(digest, hash, 16)) return (GDSS_E_BADSIG);
   return (GDSS_SUCCESS);
 }
 
 int GDSS_Sig_Size()
 {
-  static int fetchkey();
+  static int pfetchkey();
   int status;
   int retval;
-  status = fetchkey();
+  status = pfetchkey();
   if (status) retval = 512;	/* No provision for errors, so default value */
   retval = sizeof(SigInfo) + (gdss_pubkey.nl)*4 + GDSS_PAD + 5;
   return (retval);
 }
 
-static int fetchkey()
+static int pfetchkey()
 {
   FILE *keyf;
   unsigned char buffer[512];
@@ -87,6 +104,15 @@ static int fetchkey()
   gdss_have_key++;
   return (GDSS_SUCCESS);
 }
+
+GDSS_Recompose(aSigInfo, signature)
+SigInfo *aSigInfo;
+unsigned char *signature;
+{
+  if (aSigInfo->rawsig == NULL) return (GDSS_E_BADINPUT);
+  return(gdss_recompose(aSigInfo, signature));
+}
+
 
 #include <sys/types.h>
 #include <sys/socket.h>

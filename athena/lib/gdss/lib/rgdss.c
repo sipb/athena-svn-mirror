@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.2 1992-05-13 13:06:57 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.3 1992-05-13 22:50:53 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -32,18 +32,11 @@ RSAKeyStorage *key;
   int loopcnt;
   int siglen;
 
-#ifdef notdef
-  /* asigblen = max name sizes plus modulus size (signature) + hash + time */
-  sigblen = ANAME_SZ + REALM_SZ + INST_SZ 
-    + 16 /* hash size */  + 4 /* time size */
-      + 4*(key->nl) /* modulus size in bytes */
-	+ 5 /* null byte at end plus 4 bytes of fudge factor */
-	  + GDSS_PAD; /* padding needed for removing zeros from signature */
-#endif
-
   for (loopcnt = 0; loopcnt < 10; loopcnt++) {
     cp = signature;
-    *cp++ = 0x43;   /* Version Number */
+    for (i = 0; i < 16; i++)
+      *cp++ = hash[i];
+    *cp++ = 0x44;   /* Version Number */
     ip = (unsigned char *) name;
     while (*cp++ = *ip++);
     ip = (unsigned char *) instance;
@@ -55,13 +48,15 @@ RSAKeyStorage *key;
     *cp++ = ((the_time) >> 16) & 0xff;
     *cp++ = ((the_time) >> 8) & 0xff;
     *cp++ = the_time & 0xff;
-    for (i = 0; i < 16; i++)
-      *cp++ = hash[i];
     if(!RSASign(signature, cp - signature, key, &signature[cp - signature],
 		&siglen)) return (-1);
-    status = gdss_rpadout(signature, cp - signature + siglen);
-    if ((status == GDSS_SUCCESS) || (status != GDSS_E_PADTOOMANY))
-      return (status);
+    status = gdss_rpadout(&signature[16], cp - signature + siglen - 16);
+    if ((status == GDSS_SUCCESS) || (status != GDSS_E_PADTOOMANY)) {
+      ip = &signature[16];
+      cp = signature;
+      while (*cp++ = *ip++);	/* shuffle over hash */
+      return(GDSS_SUCCESS);
+    }
     sleep(1);			/* Allow time to change */
   }
   return (GDSS_E_PADTOOMANY);
@@ -152,16 +147,20 @@ unsigned char *rawsig;
   int siglen;
   unsigned char *signature;
 
-  if (*isignature != 0x43) return (GDSS_E_BVERSION); /* Bad Version */
+  if (*isignature != 0x44) return (GDSS_E_BVERSION); /* Bad Version */
 
-  signature = (unsigned char *) malloc (strlen(isignature) + 1);
-  strcpy(signature, isignature);
+  signature = (unsigned char *) malloc (strlen(isignature) + 17);
+  	/* Length of input signature + null byte + 16 bytes of hash */
+  strcpy(&signature[16], isignature);
 
-  status = gdss_rpadin(signature, &siglen);
+  status = gdss_rpadin(&signature[16], &siglen);
   if (status) return (status);
   
+  siglen += 16;			/* Account for the hash */
   cp = signature;
-  if (*cp++ != 0x43) return (GDSS_E_BVERSION); /* Bad Version */
+  for (i = 0; i < 16; i++)
+    *cp++ = hash[i];
+  if (*cp++ != 0x44) return (GDSS_E_BVERSION); /* Bad Version */
   ip = (unsigned char *) name;
   while (*ip++ = *cp++);
   ip = (unsigned char *) instance;
@@ -173,10 +172,8 @@ unsigned char *rawsig;
   *the_time |= *cp++ << 16;
   *the_time |= *cp++ << 8;
   *the_time |= *cp++;
-  for (i = 0; i < 16; i++)
-    hash[i] = *cp++;
   if(!RSAVerify(signature, cp - signature, key, &signature[cp - signature],
-	      siglen - (cp - signature))) {
+		siglen - (cp - signature))) {
     free (signature);
     return (GDSS_E_BADSIG);
   }
@@ -190,3 +187,38 @@ unsigned char *rawsig;
   return (status);
 }
     
+gdss_recompose(aSigInfo, signature)
+SigInfo *aSigInfo;
+unsigned char *signature;
+{
+  register unsigned char *ip;
+  register unsigned char *cp;
+  unsigned char *isignature;
+  int siglen;
+  int status;
+
+  isignature = (unsigned char *) malloc(strlen(aSigInfo->rawsig) + 1);
+  if (isignature == NULL) return (GDSS_E_ALLOC);
+  strcpy(isignature, aSigInfo->rawsig);
+  status = gdss_rpadin(isignature, &siglen);
+  if (status) {
+    free(isignature);
+    return (status);
+  }
+
+  cp = signature;
+  *cp++ = 0x44;			/* Version */
+  ip = (unsigned char *) aSigInfo->pname;
+  while (*cp++ = *ip++);
+  ip = (unsigned char *) aSigInfo->pinst;
+  while (*cp++ = *ip++);
+  ip = (unsigned char *) aSigInfo->prealm;
+  while (*cp++ = *ip++);
+  *cp++ = ((aSigInfo->timestamp) >> 24) & 0xff;
+  *cp++ = ((aSigInfo->timestamp) >> 16) & 0xff;
+  *cp++ = ((aSigInfo->timestamp) >> 8) & 0xff;
+  *cp++ = aSigInfo->timestamp & 0xff;
+  bcopy(isignature, cp, siglen);
+  free(isignature);
+  return(gdss_rpadout(signature, cp - signature + siglen));
+}
