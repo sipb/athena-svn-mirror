@@ -1,4 +1,4 @@
-.TH LOCKERS 7 "2 December 1994"
+.TH LOCKERS 7 "6 March 1998"
 .ds ]W MIT Athena
 .SH NAME
 lockers - description of Athena locker organization conventions
@@ -154,6 +154,21 @@ not magically know how to cope with the "@sys" string properly, it
 will also still work correctly. If Athena migrates to another kind of
 filesystem that does not support the use of "@sys," nothing will need
 to be done to update lockers and everything will still work.
+
+.SH OPERATING SYSTEM COMPATIBILITY SUPPORT
+
+As mentioned above, a given operating system may have the ability to
+run binaries from various @sys values. For example, a sun4x_56 system
+can run binaries from sun4x_55 and sun4m_54. In part to ease the
+transition of machines to new operating systems, where ordinarily they
+would find no support initially for their @sys values in lockers,
+there is the environment variable \fIATHENA_SYS_COMPAT\fR. This
+variable is a colon separated list of fallback @sys values which are
+known to be generally compatible with the current system. So in the
+above example, this variable might be set to sun4x_55:sun4m_54 to
+enable lockers that have not yet been updated for the new operating
+system to continue to function. Both \fIadd\fR(1) and \fIathdir\fR(1)
+support this variable.
 
 .SH MAINTENANCE SUPPORT
 
