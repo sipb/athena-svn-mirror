@@ -1,7 +1,7 @@
 /* Renew a credentials cache using a graphical interface. Much of the source
  * is modified from that of kinit.
  *
- * $Id: grenew.c,v 1.2 2002-06-03 18:27:55 mwhitson Exp $
+ * $Id: grenew.c,v 1.3 2002-06-04 17:35:13 mwhitson Exp $
  */
 
 #include <gtk/gtk.h>
@@ -38,10 +38,15 @@ static void quit()
 
 static void do_error_dialog(char *msg)
 {
-  GtkWidget *window;
+  static GtkWidget *window = NULL;
 
+  if (window != NULL)
+    gtk_widget_destroy(window);
   window = gnome_message_box_new(msg, GNOME_MESSAGE_BOX_ERROR, 
 				 GNOME_STOCK_BUTTON_OK, NULL);
+  gtk_signal_connect(GTK_OBJECT(window), "destroy",
+		     GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+		     &window);
   gtk_widget_show(window);
 }
 
