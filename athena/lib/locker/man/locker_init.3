@@ -1,4 +1,4 @@
-.\" $Id: locker_init.3,v 1.2 1999-03-27 17:34:00 danw Exp $
+.\" $Id: locker_init.3,v 1.3 1999-10-19 20:26:02 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -70,6 +70,12 @@ also stores a pointer to a Hesiod context and a Zephyr windowgram port
 in the locker context. (If it cannot find a windowgram port, it will
 not return an error message until the windowgram port is actually
 needed for some liblocker operation.)
+.PP
+Before calling any liblocker routines that may access attachtab files,
+the caller should set the process signal mask (with
+.BR sigprocmask (2)
+) to block SIGTSTP, SIGTTOU, and SIGTTIN if there is any chance the
+process will get those signals.
 .SH RETURN VALUES
 .I locker_init
 may return the following values:
