@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.10 1988-07-19 10:16:27 jtkohl Exp $";
+static char rcsid_class_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.11 1988-10-19 22:49:18 raeburn Exp $";
 #endif SABER
 #endif lint
 
@@ -452,6 +452,7 @@ char *class;
 
 	ptr->zct_classname = strsave(class);
 	if (!(clist = (ZClientList_t *) xmalloc(sizeof(ZClientList_t)))) {
+		xfree(ptr->zct_classname);
 		xfree(ptr);
 		return(NULLZCT);
 	}
