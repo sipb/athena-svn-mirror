@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1999-04-09 19:12:24 ghudson Exp $
+# $Id: Makefile,v 1.4 1999-04-20 14:32:13 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -9,7 +9,6 @@ OWAPPDEFS=/usr/openwin/lib/app-defaults
 KEYTABLES=/usr/openwin/share/etc/keytables
 DEFAULT=/etc/default
 INET=/etc/inet
-MAIL=/etc/mail
 CRONTABS=/var/spool/cron/crontabs
 USRLIB=/usr/lib
 
@@ -32,10 +31,9 @@ install:
 	mkdir -p ${DESTDIR}${KEYTABLES}
 	mkdir -p ${DESTDIR}${DEFAULT}
 	mkdir -p ${DESTDIR}${INET}
-	mkdir -p ${DESTDIR}${MAIL}
 	mkdir -p ${DESTDIR}${CRONTABS}
 	mkdir -p ${DESTDIR}${USRLIB}
-	install -c -m 0644 ../../aliases ${DESTDIR}${MAIL}
+	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
 	install -c -m 0644 Athena4.kt ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 Athena5.kt ${DESTDIR}${KEYTABLES}
@@ -74,7 +72,7 @@ install:
 	install -c -m 0644 nsswitch.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0644 sendmail.cf ${DESTDIR}${MAIL}
+	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 services ${DESTDIR}${INET}
 	install -c -m 0644 shadow.fallback ${DESTDIR}${ETCDIR}
 	install -c -m 0644 su ${DESTDIR}${DEFAULT}
