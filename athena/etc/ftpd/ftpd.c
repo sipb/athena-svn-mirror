@@ -44,10 +44,18 @@ static char sccsid[] = "@(#)ftpd.c	5.19 (Berkeley) 11/30/88 + portability hacks 
 #include <stdio.h>
 #include <signal.h>
 #include <pwd.h>
+#ifdef SOLARIS
+#include <shadow.h>
+#endif
 #include <setjmp.h>
 #include <netdb.h>
 #include <errno.h>
+#ifdef POSIX
+#include <string.h>
+#include <termios.h>
+#else
 #include <strings.h>
+#endif
 #include <syslog.h>
 #ifdef ATHENA
 #include "athena_ftpd.h"
@@ -76,7 +84,11 @@ extern	char version[];
 extern	char *home;		/* pointer to home directory for glob */
 extern	FILE *ftpd_popen(), *fopen(), *freopen();
 extern	int  pclose(), fclose();
+#ifndef SOLARIS
 extern	char *getline(), *getwd();
+#else
+extern	char *getline(), *getcwd();
+#endif
 extern	char cbuf[];
 
 struct	sockaddr_in ctrl_addr;
@@ -136,6 +148,11 @@ main(argc, argv)
 	struct hostent *hostentry;
 	extern char *optarg;
 	extern int optind;
+#ifdef POSIX
+	struct sigaction act;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+#endif
 	
 	addrlen = sizeof (his_addr);
 	if (getpeername(0, &his_addr, &addrlen) < 0) {
@@ -195,17 +212,38 @@ main(argc, argv)
 		bug_address = BUG_ADDRESS;
 #endif
 	(void) freopen("/dev/null", "w", stderr);
-	(void) signal(SIGPIPE, lostconn);
+#ifdef POSIX
+	act.sa_handler= (void (*)()) lostconn;
+	(void) sigaction (SIGPIPE, &act, NULL);
+#else
+	(void) signal(SIGPIPE, lostconn);	
+#endif
 #ifdef ATHENA
 	if (athena)
 	  {
+#ifdef POSIX
+	    act.sa_handler= (void (*)()) dologout;
+	    (void) sigaction (SIGHUP, &act, NULL);
+	    (void) sigaction (SIGTERM, &act, NULL);
+#else
 	    (void) signal(SIGHUP, dologout);
 	    (void) signal(SIGTERM, dologout);
+#endif
 	  }
 #endif
+#ifdef POSIX
+	act.sa_handler= (void (*)()) SIG_IGN;
+	(void) sigaction (SIGCHLD, &act, NULL);
+	act.sa_handler= (void (*)()) myoob;
+	if( sigaction (SIGURG, &act, NULL) < 0)
+		syslog(LOG_ERR, "signal: %m");
+
+#else
 	(void) signal(SIGCHLD, SIG_IGN);
 	if ((int)signal(SIGURG, myoob) < 0)
 		syslog(LOG_ERR, "signal: %m");
+#endif
+
 
 	/* handle urgent data inline */
 	/* Sequent defines this, but it doesn't work */
@@ -214,9 +252,12 @@ main(argc, argv)
 		syslog(LOG_ERR, "setsockopt: %m");
 #endif
 	pgid = getpid();
+#ifndef SOLARIS
 	if (ioctl(fileno(stdin), SIOCSPGRP, (char *) &pgid) < 0) {
 		syslog(LOG_ERR, "ioctl: %m");
 	}
+#endif
+
 	dolog(&his_addr);
 	/* do telnet option negotiation here */
 	/*
@@ -275,6 +316,23 @@ sgetsave(s)
 	return (new);
 }
 
+#ifdef SYSV
+struct passwd *
+get_pwnam(usr)
+char *usr;
+{
+  struct passwd *pwd;
+  struct spwd *sp;
+  pwd = getpwnam (usr);
+  sp = getspnam(usr);
+  if ((sp != NULL) && (pwd != NULL))
+    pwd->pw_passwd = sp->sp_pwdp;
+   return(pwd);
+}
+#else
+#define get_pwnam(x) getpwnam(x)
+#endif
+
 /*
  * Save the result of a getpwnam.  Used for USER command, since
  * the data returned must not be clobbered by any other command
@@ -290,15 +348,15 @@ sgetpwnam(name)
 
 #ifdef ATHENA
 	if ((p = (athena ? athena_getpwnam(name)
-		  	 : getpwnam(name))) == NULL)
+		  	 : get_pwnam(name))) == NULL)
 #else
-	if ((p = getpwnam(name)) == NULL)
-#endif
+	if ((p = get_pwnam(name)) == NULL)
+#endif 
 		return (p);
 	if (save.pw_name) {
 		free(save.pw_name);
 		free(save.pw_passwd);
-#ifndef _IBMR2
+#if !defined(_IBMR2)  && !defined(SOLARIS)
 		free(save.pw_comment);
 #endif
 		free(save.pw_gecos);
@@ -308,8 +366,8 @@ sgetpwnam(name)
 	save = *p;
 	save.pw_name = sgetsave(p->pw_name);
 	save.pw_passwd = sgetsave(p->pw_passwd);
-#ifndef _IBMR2
-	save.pw_comment = sgetsave(p->pw_comment);
+#if !defined(_IBMR2) && !defined(SOLARIS)
+	save.pw_comment = sgetsave(p->pw_comment); 
 #endif
 	save.pw_gecos = sgetsave(p->pw_gecos);
 	save.pw_dir = sgetsave(p->pw_dir);
@@ -447,11 +505,15 @@ pass(passwd)
 	    }
 	  else
 #endif
-		reply(230, "User %s logged in.", pw->pw_name);
+	  reply(230, "User %s logged in.", pw->pw_name);
 #if defined(_IBMR2)
 	seteuid_rios(pw->pw_uid);
 #else
+#ifdef SOLARIS
+	setuid(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 #endif
 	home = pw->pw_dir;		/* home dir for globbing */
 	return;
@@ -583,26 +645,43 @@ getdatasock(mode)
 #if defined(ATHENA) && defined(_IBMR2)
 	seteuid_rios(0);
 #else
+#ifdef SOLARIS
+	setuid(0);
+#else
 	seteuid(0);
+#endif
 #endif
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof (on)) < 0)
 		goto bad;
 	/* anchor socket to avoid multi-homing problems */
 	data_source.sin_family = AF_INET;
 	data_source.sin_addr = ctrl_addr.sin_addr;
-	if (bind(s, &data_source, sizeof (data_source)) < 0)
+#ifdef SOLARIS
+/* let the system pick a good address */
+	data_source.sin_port = 0;
+#endif
+	if (bind(s, &data_source, sizeof (data_source)) < 0) 
 		goto bad;
 #if defined(ATHENA) && defined(_IBMR2)
 	seteuid_rios(pw->pw_uid);
 #else
-	seteuid(pw->pw_uid);
+#ifdef SOLARIS
+	setuid(pw->pw_uid);
+#else
+       seteuid(pw->pw_uid);
+#endif
 #endif
 	return (fdopen(s, mode));
 bad:
+
 #if defined(ATHENA) && defined(_IBMR2)
 	seteuid_rios(pw->pw_uid);
 #else
-	seteuid(pw->pw_uid);
+#ifdef SOLARIS
+	setuid(pw->pw_uid);
+#else
+        seteuid(pw->pw_uid);
+#endif
 #endif
 	(void) close(s);
 	return (NULL);
@@ -650,10 +729,10 @@ dataconn(name, size, mode)
 	usedefault = 1;
 	file = getdatasock(mode);
 	if (file == NULL) {
-		reply(425, "Can't create data socket (%s,%d): %s.",
+		reply(425, "Can't create data socket (%s,%d): %s. ",
 		    inet_ntoa(data_source.sin_addr),
 		    ntohs(data_source.sin_port),
-		    sys_errlist[errno]);
+		    sys_errlist[errno]) ;
 		return (NULL);
 	}
 	data = fileno(file);
@@ -852,7 +931,7 @@ yyerror(s)
 {
 	char *cp;
 
-	cp = index(cbuf,'\n');
+	cp = strchr(cbuf,'\n');
 	*cp = '\0';
 	reply(500, "'%s': command not understood.",cbuf);
 }
@@ -929,7 +1008,11 @@ pwd()
 {
 	char path[MAXPATHLEN + 1];
 
+#ifndef SOLARIS
 	if (getwd(path) == NULL) {
+#else
+	if( getcwd(path, MAXPATHLEN + 1) == NULL) {
+#endif
 		reply(550, "%s.", path);
 		return;
 	}
@@ -1002,9 +1085,10 @@ dologout(status)
 		logwtmp(ttyline, "", "");
 	}
 #ifdef ATHENA
-	if (athena)
+	if (athena) 
 	  athena_logout(pw);
 #endif
+
 	/* beware of flushing buffers after a SIGPIPE */
 	_exit(status);
 }
@@ -1025,7 +1109,7 @@ checkftpusers(name)
 	if ((fd = fopen(FTPUSERS, "r")) == NULL)
 		return (1);
 	while (fgets(line, sizeof (line), fd) != NULL) {
-		if ((cp = index(line, '\n')) != NULL)
+		if ((cp = strchr(line, '\n')) != NULL)
 			*cp = '\0';
 		if (strcmp(line, name) == 0) {
 			found++;
@@ -1057,9 +1141,9 @@ checkuser(name)
 	if (athena ? 
 	             (((p = athena_getpwnam(name)) == NULL) ||
 		        athena_notallowed(name))
-	           : ((p = getpwnam(name)) == NULL))
+	           : ((p = get_pwnam(name)) == NULL))
 #else
-	if ((p = getpwnam(name)) == NULL)
+	if ((p = get_pwnam(name)) == NULL)
 #endif
 		return (0);
 	if ((shell = p->pw_shell) == NULL || *shell == 0)
@@ -1160,7 +1244,7 @@ gunique(local)
 	char *local;
 {
 	static char new[MAXPATHLEN];
-	char *cp = rindex(local, '/');
+	char *cp = strrchr(local, '/');
 	int d, count=0;
 	char ext = '1';
 
