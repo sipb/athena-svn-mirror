@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.2 1987-12-02 18:46:29 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.3 1987-12-03 17:30:35 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  87/12/02  18:46:29  don
+ * hc warnings.
+ * 
  * Revision 2.1  87/12/01  16:45:00  don
  * fixed bugs in readstat's traversal of entries] and statfile:
  * cur_ent is no longer global, but is now part of get_next_match's
@@ -42,7 +45,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.2 1987-12-02 18:46:29 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.3 1987-12-03 17:30:35 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -66,9 +69,9 @@ char statfilepath[LINELEN];		/* pathname to statfile */
 FILE *statfile;				/* the statfile! */
 Statline *statfilebufs;			/* array of line buffers for sort() */
 int cur_line;				/* index into statfilebufs	*/
-int maxlines = 0;			/* max # lines in statfile buf array.
+unsigned maxlines = 0;			/* max # lines in statfile buf array.
 					 * write_statline maintains maxlines */
-int stackmax = STACKMAX;		/* max depth of pathname-stack vars */
+unsigned stackmax = STACKMAX;		/* max depth of pathname-stack vars */
 
 char prgname[LINELEN];
 
@@ -144,7 +147,7 @@ char **argv;
 		 */ 
 		case 'S':
 			get_arg(scratch,argv,&i);
-			sscanf( scratch, "%d", stackmax);
+			sscanf( scratch, "%d", &stackmax);
 			break;
 		/* -T dirname
 		 *    Specify destination "root" directory.
@@ -419,7 +422,7 @@ clearlocks()
 
 writestat()
 {
-	char **from, **cmp;
+	char **from, **cmp, **dummy = (char **) NULL;
 	struct stat *cmpstatp;
 
 	from = initpath();
@@ -433,7 +436,7 @@ writestat()
 		/* dec_entry pushes pathname-qualification
 		 * onto the paths 'from' & 'cmp'.
 		 */
-		cmpstatp = dec_entry( entnum, from, NULL, cmp);
+		cmpstatp = dec_entry( entnum, from, dummy, cmp);
 
 		/* write_statline returns fromfile's type:
 		 */
@@ -446,9 +449,9 @@ writestat()
 			(*cmpstatp).st_mode &= 0x7777;
 			(*cmpstatp).st_mode |= S_IFDIR;		/* XXX */
 
-			walk_trees( from, NULL,	cmpstatp);
+			walk_trees( from, dummy, cmpstatp);
 		}
-		else    walk_trees( from, cmp,  cmpstatp);
+		else    walk_trees( from, cmp,   cmpstatp);
 
 		/* WARNING: walk_trees alters ALL of its arguments */
 	}
