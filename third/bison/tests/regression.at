@@ -1,5 +1,5 @@
 # Bison Regressions.                               -*- Autotest -*-
-# Copyright 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,99 +19,62 @@
 AT_BANNER([[Regression tests.]])
 
 
-## ------------------- ##
-## %nonassoc and eof.  ##
-## ------------------- ##
+## ------------------------- ##
+## Early token definitions.  ##
+## ------------------------- ##
 
-AT_SETUP([%nonassoc and eof])
+
+AT_SETUP([Early token definitions])
+
+# Found in GCJ: they expect the tokens to be defined before the user
+# prologue, so that they can use the token definitions in it.
 
 AT_DATA([input.y],
-[[
-%{
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <error.h>
-#define YYERROR_VERBOSE 1
-#define yyerror(Msg) \
-do { \
-  fprintf (stderr, "%s\n", Msg); \
-  exit (1); \
-} while (0)
-
-/* The current argument. */
-static const char *input = NULL;
-
-static int
-yylex (void)
-{
-  /* No token stands for end of file. */
-  if (input && *input)
-    return *input++;
-  else
-    return 0;
-}
-
+[[%{
+void yyerror (const char *s);
+int yylex (void);
 %}
 
-%nonassoc '<' '>'
-
-%%
-expr: expr '<' expr
-    | expr '>' expr
-    | '0'
-    ;
-%%
-int
-main (int argc, const char *argv[])
+%union
 {
-  if (argc > 1)
-    input = argv[1];
-  return yyparse ();
-}
+  int val;
+};
+%{
+#ifndef MY_TOKEN
+# error "MY_TOKEN not defined."
+#endif
+%}
+%token MY_TOKEN
+%%
+exp: MY_TOKEN;
+%%
 ]])
 
-# Specify the output files to avoid problems on different file systems.
-AT_CHECK([bison input.y -o input.c])
-AT_CHECK([$CC $CFLAGS $CPPFLAGS input.c -o input], 0, [], [ignore])
-
-AT_CHECK([./input '0<0'])
-# FIXME: This is an actual bug, but a new one, in the sense that
-# no one has ever spotted it!  The messages are *wrong*: there should
-# be nothing there, it should be expected eof.
-AT_CHECK([./input '0<0<0'], [1], [],
-         [parse error, unexpected '<', expecting '<' or '>'
-])
-
-AT_CHECK([./input '0>0'])
-AT_CHECK([./input '0>0>0'], [1], [],
-         [parse error, unexpected '>', expecting '<' or '>'
-])
-
-AT_CHECK([./input '0<0>0'], [1], [],
-         [parse error, unexpected '>', expecting '<' or '>'
-])
+AT_CHECK([bison -o input.c input.y])
+AT_COMPILE([input.o], [-c input.c])
 
 AT_CLEANUP
+
+
 
 ## ---------------- ##
 ## Braces parsing.  ##
 ## ---------------- ##
 
 
-AT_SETUP([braces parsing])
+AT_SETUP([Braces parsing])
 
 AT_DATA([input.y],
 [[/* Bison used to swallow the character after `}'. */
 
 %%
-exp: { tests = {{{{{{{{{{}}}}}}}}}}; }
+exp: { tests = {{{{{{{{{{}}}}}}}}}}; };
 %%
 ]])
 
-AT_CHECK([bison -v input.y -o input.c], 0, ignore, ignore)
+AT_CHECK([bison -v -o input.c input.y])
 
-AT_CHECK([fgrep 'tests = {{{{{{{{{{}}}}}}}}}};' input.c], 0, [ignore])
+AT_CHECK([grep 'tests = {{{{{{{{{{}}}}}}}}}};' input.c], 0, [ignore])
 
 AT_CLEANUP
 
@@ -123,7 +86,7 @@ AT_CLEANUP
 
 AT_SETUP([Duplicate string])
 
-AT_DATA([duplicate.y],
+AT_DATA([input.y],
 [[/* `Bison -v' used to dump core when two tokens are defined with the same
    string, as LE and GE below. */
 
@@ -136,219 +99,11 @@ exp: '(' exp ')' | NUM ;
 %%
 ]])
 
-AT_CHECK([bison -v duplicate.y -o duplicate.c], 0, ignore, ignore)
-
-AT_CLEANUP
-
-
-## ------------------------- ##
-## Unresolved SR Conflicts.  ##
-## ------------------------- ##
-
-AT_SETUP([Unresolved SR Conflicts])
-
-AT_DATA([input.y],
-[[%token NUM OP
-%%
-exp: exp OP exp | NUM;
-]])
-
-AT_CHECK([bison input.y -o input.c -v], 0, [],
-[input.y contains 1 shift/reduce conflict.
-])
-
-# Check the contents of the report.
-AT_CHECK([cat input.output], [],
-[[State 4 contains 1 shift/reduce conflict.
-
-
-Grammar
-
-  Number, Line, Rule
-    1   3 exp -> exp OP exp
-    2   3 exp -> NUM
-
-
-Terminals, with rules where they appear
-
-$ (-1)
-error (256)
-NUM (257) 2
-OP (258) 1
-
-
-Nonterminals, with rules where they appear
-
-exp (5)
-    on left: 1 2, on right: 1
-
-
-state 0
-
-    NUM 	shift, and go to state 1
-
-    exp 	go to state 2
-
-
-
-state 1
-
-    exp  ->  NUM .   (rule 2)
-
-    $default	reduce using rule 2 (exp)
-
-
-
-state 2
-
-    exp  ->  exp . OP exp   (rule 1)
-
-    $   	go to state 5
-    OP  	shift, and go to state 3
-
-
-
-state 3
-
-    exp  ->  exp OP . exp   (rule 1)
-
-    NUM 	shift, and go to state 1
-
-    exp 	go to state 4
-
-
-
-state 4
-
-    exp  ->  exp . OP exp   (rule 1)
-    exp  ->  exp OP exp .   (rule 1)
-
-    OP  	shift, and go to state 3
-
-    OP  	[reduce using rule 1 (exp)]
-    $default	reduce using rule 1 (exp)
-
-
-
-state 5
-
-    $   	go to state 6
-
-
-
-state 6
-
-    $default	accept
-
-
+AT_CHECK([bison -v -o input.c input.y], 0, [],
+[[input.y:6.8-14: warning: symbol `"<="' used more than once as a literal string
 ]])
 
 AT_CLEANUP
-
-
-## --------------------- ##
-## Solved SR Conflicts.  ##
-## --------------------- ##
-
-AT_SETUP([Solved SR Conflicts])
-
-AT_DATA([input.y],
-[[%token NUM OP
-%right OP
-%%
-exp: exp OP exp | NUM;
-]])
-
-AT_CHECK([bison input.y -o input.c -v], 0, [], [])
-
-# Check the contents of the report.
-AT_CHECK([cat input.output], [],
-[[Conflict in state 4 between rule 1 and token OP resolved as shift.
-
-
-Grammar
-
-  Number, Line, Rule
-    1   4 exp -> exp OP exp
-    2   4 exp -> NUM
-
-
-Terminals, with rules where they appear
-
-$ (-1)
-error (256)
-NUM (257) 2
-OP (258) 1
-
-
-Nonterminals, with rules where they appear
-
-exp (5)
-    on left: 1 2, on right: 1
-
-
-state 0
-
-    NUM 	shift, and go to state 1
-
-    exp 	go to state 2
-
-
-
-state 1
-
-    exp  ->  NUM .   (rule 2)
-
-    $default	reduce using rule 2 (exp)
-
-
-
-state 2
-
-    exp  ->  exp . OP exp   (rule 1)
-
-    $   	go to state 5
-    OP  	shift, and go to state 3
-
-
-
-state 3
-
-    exp  ->  exp OP . exp   (rule 1)
-
-    NUM 	shift, and go to state 1
-
-    exp 	go to state 4
-
-
-
-state 4
-
-    exp  ->  exp . OP exp   (rule 1)
-    exp  ->  exp OP exp .   (rule 1)
-
-    OP  	shift, and go to state 3
-
-    $default	reduce using rule 1 (exp)
-
-
-
-state 5
-
-    $   	go to state 6
-
-
-
-state 6
-
-    $default	accept
-
-
-]])
-
-AT_CLEANUP
-
-
 
 
 ## ------------------- ##
@@ -356,6 +111,8 @@ AT_CLEANUP
 ## ------------------- ##
 
 AT_SETUP([Rule Line Numbers])
+
+AT_KEYWORDS([report])
 
 AT_DATA([input.y],
 [[%%
@@ -384,25 +141,29 @@ expr:
 
 {
 
-}
+};
 ]])
 
-AT_CHECK([bison input.y -o input.c -v], 0, [], [])
+AT_CHECK([bison -o input.c -v input.y])
 
 # Check the contents of the report.
 AT_CHECK([cat input.output], [],
 [[Grammar
 
-  Number, Line, Rule
-    1   2 @1 -> /* empty */
-    2   2 expr -> 'a' @1 'b'
-    3  15 @2 -> /* empty */
-    4  15 expr -> @2 'c'
+    0 $accept: expr $end
+
+    1 @1: /* empty */
+
+    2 expr: 'a' @1 'b'
+
+    3 @2: /* empty */
+
+    4 expr: @2 'c'
 
 
 Terminals, with rules where they appear
 
-$ (-1)
+$end (0) 0
 'a' (97) 2
 'b' (98) 2
 'c' (99) 4
@@ -411,145 +172,81 @@ error (256)
 
 Nonterminals, with rules where they appear
 
-expr (6)
-    on left: 2 4
-@1 (7)
+$accept (6)
+    on left: 0
+expr (7)
+    on left: 2 4, on right: 0
+@1 (8)
     on left: 1, on right: 2
-@2 (8)
+@2 (9)
     on left: 3, on right: 4
 
 
 state 0
 
-    'a' 	shift, and go to state 1
+    0 $accept: . expr $end
 
-    $default	reduce using rule 3 (@2)
+    'a'  shift, and go to state 1
 
-    expr	go to state 6
-    @2  	go to state 2
+    $default  reduce using rule 3 (@2)
 
+    expr  go to state 2
+    @2    go to state 3
 
 
 state 1
 
-    expr  ->  'a' . @1 'b'   (rule 2)
+    2 expr: 'a' . @1 'b'
 
-    $default	reduce using rule 1 (@1)
+    $default  reduce using rule 1 (@1)
 
-    @1  	go to state 3
-
+    @1  go to state 4
 
 
 state 2
 
-    expr  ->  @2 . 'c'   (rule 4)
+    0 $accept: expr . $end
 
-    'c' 	shift, and go to state 4
-
+    $end  shift, and go to state 5
 
 
 state 3
 
-    expr  ->  'a' @1 . 'b'   (rule 2)
+    4 expr: @2 . 'c'
 
-    'b' 	shift, and go to state 5
-
+    'c'  shift, and go to state 6
 
 
 state 4
 
-    expr  ->  @2 'c' .   (rule 4)
+    2 expr: 'a' @1 . 'b'
 
-    $default	reduce using rule 4 (expr)
-
+    'b'  shift, and go to state 7
 
 
 state 5
 
-    expr  ->  'a' @1 'b' .   (rule 2)
+    0 $accept: expr $end .
 
-    $default	reduce using rule 2 (expr)
-
+    $default  accept
 
 
 state 6
 
-    $   	go to state 7
+    4 expr: @2 'c' .
 
+    $default  reduce using rule 4 (expr)
 
 
 state 7
 
-    $   	go to state 8
+    2 expr: 'a' @1 'b' .
 
-
-
-state 8
-
-    $default	accept
-
-
+    $default  reduce using rule 2 (expr)
 ]])
 
 AT_CLEANUP
 
-
-
-## -------------------- ##
-## %expect not enough.  ##
-## -------------------- ##
-
-AT_SETUP([%expect not enough])
-
-AT_DATA([input.y],
-[[%token NUM OP
-%expect 0
-%%
-exp: exp OP exp | NUM;
-]])
-
-AT_CHECK([bison input.y -o input.c], 1, [],
-[input.y contains 1 shift/reduce conflict.
-expected 0 shift/reduce conflicts
-])
-AT_CLEANUP
-
-
-## --------------- ##
-## %expect right.  ##
-## --------------- ##
-
-AT_SETUP([%expect right])
-
-AT_DATA([input.y],
-[[%token NUM OP
-%expect 1
-%%
-exp: exp OP exp | NUM;
-]])
-
-AT_CHECK([bison input.y -o input.c], 0)
-AT_CLEANUP
-
-
-## ------------------ ##
-## %expect too much.  ##
-## ------------------ ##
-
-AT_SETUP([%expect too much])
-
-AT_DATA([input.y],
-[[%token NUM OP
-%expect 2
-%%
-exp: exp OP exp | NUM;
-]])
-
-AT_CHECK([bison input.y -o input.c], 1, [],
-[input.y contains 1 shift/reduce conflict.
-expected 2 shift/reduce conflicts
-])
-AT_CLEANUP
 
 
 ## ---------------------- ##
@@ -569,55 +266,10 @@ exp: ;
 %%
 ]])
 
-AT_CHECK([bison -v input.y -o input.c], 0, ignore, ignore)
+AT_CHECK([bison -v -o input.c input.y])
 
 AT_CLEANUP
 
-
-
-## ---------------------- ##
-## %union and --defines.  ##
-## ---------------------- ##
-
-
-AT_SETUP([%union and --defines])
-
-AT_DATA([union.y],
-[%union
-{
-  int   integer;
-  char *string ;
-}
-%%
-exp: {};
-])
-
-AT_CHECK([bison --defines union.y])
-
-AT_CLEANUP
-
-
-## --------------------------------------- ##
-## Duplicate '/' in C comments in %union   ##
-## --------------------------------------- ##
-
-
-AT_SETUP([%union and C comments])
-
-AT_DATA([union-comment.y],
-[%union
-{
-  /* The int.  */	int   integer;
-  /* The string.  */	char *string ;
-}
-%%
-exp: {};
-])
-
-AT_CHECK([bison union-comment.y])
-AT_CHECK([fgrep '//*' union-comment.tab.c], [1], [])
-
-AT_CLEANUP
 
 
 ## ---------------- ##
@@ -631,42 +283,78 @@ AT_DATA([input.y],
 [[%%
 ?
 default: 'a' }
-%{
 %&
 %a
 %-
+%{
 ]])
 
 AT_CHECK([bison input.y], [1], [],
-[[input.y:2: invalid input: `?'
-input.y:3: invalid input: `}'
-input.y:4: invalid input: `%{'
-input.y:5: invalid input: `%&'
-input.y:6: invalid input: `%a'
-input.y:7: invalid input: `%-'
+[[input.y:2.1: invalid character: `?'
+input.y:3.14: invalid character: `}'
+input.y:4.1: invalid character: `%'
+input.y:4.2: invalid character: `&'
+input.y:5.1: invalid character: `%'
+input.y:6.1: invalid character: `%'
+input.y:6.2: invalid character: `-'
+input.y:7.1-8.0: unexpected end of file in a prologue
+input.y:7.1-8.0: parse error, unexpected "%{...%}", expecting ";" or "|"
 ]])
 
 AT_CLEANUP
 
 
 
+## ------------------- ##
+## Token definitions.  ##
+## ------------------- ##
+
+
+AT_SETUP([Token definitions])
+
+# Bison managed, when fed with `%token 'f' "f"' to #define 'f'!
+AT_DATA([input.y],
+[%{
+void yyerror (const char *s);
+int yylex (void);
+%}
+[%token YYEOF 0 "end of file"
+%token 'a' "a"
+%token b "b"
+%token c 'c'
+%token 'd' d
+%%
+exp: "a";
+]])
+
+AT_CHECK([bison -o input.c input.y])
+AT_COMPILE([input.o], [-c input.c])
+AT_CLEANUP
+
+
+
 ## -------------------- ##
-## Invalid %directive.  ##
+## Characters Escapes.  ##
 ## -------------------- ##
 
 
-AT_SETUP([Invalid %directive])
+AT_SETUP([Characters Escapes])
 
 AT_DATA([input.y],
-[[%invalid
+[%{
+void yyerror (const char *s);
+int yylex (void);
+%}
+[%%
+exp:
+  '\'' "\'"
+| '\"' "\""
+| '"'  "'"
+;
 ]])
 
-AT_CHECK([bison input.y], [1], [],
-[[input.y:1: unrecognized: %invalid
-input.y:1:    Skipping to next %
-input.y:2: fatal error: no input grammar
-]])
-
+AT_CHECK([bison -o input.c input.y])
+AT_COMPILE([input.o], [-c input.c])
 AT_CLEANUP
 
 
@@ -681,6 +369,8 @@ AT_CLEANUP
 # the actual web2c.y.
 
 AT_SETUP([Web2c Report])
+
+AT_KEYWORDS([report])
 
 AT_DATA([input.y],
 [[%token	undef_id_tok const_id_tok
@@ -701,75 +391,133 @@ CONST_DEC:
 	  { } undef_id_tok '=' const_id_tok ';'
         ;
 %%
-
 ]])
 
 AT_CHECK([bison -v input.y])
-
-AT_CHECK([sed -n 's/  *$//;/^$/!p' input.output], 0,
+AT_CHECK([cat input.output], 0,
 [[Grammar
-  Number, Line, Rule
-    1   6 CONST_DEC_PART -> CONST_DEC_LIST
-    2  10 CONST_DEC_LIST -> CONST_DEC
-    3  12 CONST_DEC_LIST -> CONST_DEC_LIST CONST_DEC
-    4  15 @1 -> /* empty */
-    5  15 CONST_DEC -> @1 undef_id_tok '=' const_id_tok ';'
+
+    0 $accept: CONST_DEC_PART $end
+
+    1 CONST_DEC_PART: CONST_DEC_LIST
+
+    2 CONST_DEC_LIST: CONST_DEC
+    3               | CONST_DEC_LIST CONST_DEC
+
+    4 @1: /* empty */
+
+    5 CONST_DEC: @1 undef_id_tok '=' const_id_tok ';'
+
+
 Terminals, with rules where they appear
-$ (-1)
+
+$end (0) 0
 ';' (59) 5
 '=' (61) 5
 error (256)
-undef_id_tok (257) 5
-const_id_tok (258) 5
+undef_id_tok (258) 5
+const_id_tok (259) 5
+
+
 Nonterminals, with rules where they appear
-CONST_DEC_PART (7)
-    on left: 1
-CONST_DEC_LIST (8)
+
+$accept (7)
+    on left: 0
+CONST_DEC_PART (8)
+    on left: 1, on right: 0
+CONST_DEC_LIST (9)
     on left: 2 3, on right: 1 3
-CONST_DEC (9)
+CONST_DEC (10)
     on left: 5, on right: 2 3
-@1 (10)
+@1 (11)
     on left: 4, on right: 5
+
+
 state 0
-    $default	reduce using rule 4 (@1)
-    CONST_DEC_PART	go to state 9
-    CONST_DEC_LIST	go to state 1
-    CONST_DEC	go to state 2
-    @1  	go to state 3
+
+    0 $accept: . CONST_DEC_PART $end
+
+    $default  reduce using rule 4 (@1)
+
+    CONST_DEC_PART  go to state 1
+    CONST_DEC_LIST  go to state 2
+    CONST_DEC       go to state 3
+    @1              go to state 4
+
+
 state 1
-    CONST_DEC_PART  ->  CONST_DEC_LIST .   (rule 1)
-    CONST_DEC_LIST  ->  CONST_DEC_LIST . CONST_DEC   (rule 3)
-    undef_id_tok	reduce using rule 4 (@1)
-    $default	reduce using rule 1 (CONST_DEC_PART)
-    CONST_DEC	go to state 4
-    @1  	go to state 3
+
+    0 $accept: CONST_DEC_PART . $end
+
+    $end  shift, and go to state 5
+
+
 state 2
-    CONST_DEC_LIST  ->  CONST_DEC .   (rule 2)
-    $default	reduce using rule 2 (CONST_DEC_LIST)
+
+    1 CONST_DEC_PART: CONST_DEC_LIST .
+    3 CONST_DEC_LIST: CONST_DEC_LIST . CONST_DEC
+
+    undef_id_tok  reduce using rule 4 (@1)
+    $default      reduce using rule 1 (CONST_DEC_PART)
+
+    CONST_DEC  go to state 6
+    @1         go to state 4
+
+
 state 3
-    CONST_DEC  ->  @1 . undef_id_tok '=' const_id_tok ';'   (rule 5)
-    undef_id_tok	shift, and go to state 5
+
+    2 CONST_DEC_LIST: CONST_DEC .
+
+    $default  reduce using rule 2 (CONST_DEC_LIST)
+
+
 state 4
-    CONST_DEC_LIST  ->  CONST_DEC_LIST CONST_DEC .   (rule 3)
-    $default	reduce using rule 3 (CONST_DEC_LIST)
+
+    5 CONST_DEC: @1 . undef_id_tok '=' const_id_tok ';'
+
+    undef_id_tok  shift, and go to state 7
+
+
 state 5
-    CONST_DEC  ->  @1 undef_id_tok . '=' const_id_tok ';'   (rule 5)
-    '=' 	shift, and go to state 6
+
+    0 $accept: CONST_DEC_PART $end .
+
+    $default  accept
+
+
 state 6
-    CONST_DEC  ->  @1 undef_id_tok '=' . const_id_tok ';'   (rule 5)
-    const_id_tok	shift, and go to state 7
+
+    3 CONST_DEC_LIST: CONST_DEC_LIST CONST_DEC .
+
+    $default  reduce using rule 3 (CONST_DEC_LIST)
+
+
 state 7
-    CONST_DEC  ->  @1 undef_id_tok '=' const_id_tok . ';'   (rule 5)
-    ';' 	shift, and go to state 8
+
+    5 CONST_DEC: @1 undef_id_tok . '=' const_id_tok ';'
+
+    '='  shift, and go to state 8
+
+
 state 8
-    CONST_DEC  ->  @1 undef_id_tok '=' const_id_tok ';' .   (rule 5)
-    $default	reduce using rule 5 (CONST_DEC)
+
+    5 CONST_DEC: @1 undef_id_tok '=' . const_id_tok ';'
+
+    const_id_tok  shift, and go to state 9
+
+
 state 9
-    $   	go to state 10
+
+    5 CONST_DEC: @1 undef_id_tok '=' const_id_tok . ';'
+
+    ';'  shift, and go to state 10
+
+
 state 10
-    $   	go to state 11
-state 11
-    $default	accept
+
+    5 CONST_DEC: @1 undef_id_tok '=' const_id_tok ';' .
+
+    $default  reduce using rule 5 (CONST_DEC)
 ]])
 
 AT_CLEANUP
@@ -799,6 +547,8 @@ AT_CLEANUP
 
 AT_SETUP([Web2c Actions])
 
+AT_KEYWORDS([report])
+
 AT_DATA([input.y],
 [[%%
 statement:  struct_stat;
@@ -808,12 +558,14 @@ else: "else" statement;
 %%
 ]])
 
-AT_CHECK([bison -v input.y -o input.c])
+AT_CHECK([bison -v -o input.c input.y])
 
 # Check only the tables.  We don't use --no-parser, because it is
 # still to be implemented in the experimental branch of Bison.
-AT_CHECK([[sed -n 's/  *$//;/^static const.*\[\] =/,/^}/p' input.c]], 0,
-[[static const char yytranslate[] =
+[sed -n 's/  *$//;/^static const.*\[\] =/,/^}/p' input.c >tables.c]
+
+AT_CHECK([[cat tables.c]], 0,
+[[static const unsigned char yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -840,60 +592,69 @@ AT_CHECK([[sed -n 's/  *$//;/^static const.*\[\] =/,/^}/p' input.c]], 0,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     1,     3,     4,     5,
-       6
+       2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
+       5,     6
 };
-static const short yyprhs[] =
+static const unsigned char yyprhs[] =
 {
-       0,     0,     2,     3,     6,    11
+       0,     0,     3,     5,     6,     9,    14
 };
-static const short yyrhs[] =
+static const yysigned_char yyrhs[] =
 {
-       8,     0,     0,     9,    10,     0,     3,     4,     5,     7,
-       0,     6,     7,     0
+       8,     0,    -1,     9,    -1,    -1,    10,    11,    -1,     3,
+       4,     5,     8,    -1,     6,     8,    -1
 };
-static const short yyrline[] =
+static const unsigned char yyrline[] =
 {
-       0,     2,     3,     3,     4,     5
+       0,     2,     2,     3,     3,     4,     5
 };
 static const char *const yytname[] =
 {
-  "$", "error", "$undefined.", "\"if\"", "\"const\"", "\"then\"",
-  "\"else\"", "statement", "struct_stat", "if", "else", NULL
+  "$end", "error", "$undefined", "\"if\"", "\"const\"", "\"then\"",
+  "\"else\"", "$accept", "statement", "struct_stat", "if", "else", 0
 };
-static const short yyr1[] =
+static const unsigned short yytoknum[] =
 {
-       0,     7,     8,     8,     9,    10
+       0,   256,   257,   258,   259,   260,   261
 };
-static const short yyr2[] =
+static const unsigned char yyr1[] =
 {
-       0,     1,     0,     2,     4,     2
+       0,     7,     8,     9,     9,    10,    11
 };
-static const short yydefact[] =
+static const unsigned char yyr2[] =
 {
-       2,     0,     1,     0,     0,     2,     3,     2,     5,     4,
-       0,     0,     0
+       0,     2,     1,     0,     2,     4,     2
 };
-static const short yydefgoto[] =
+static const unsigned char yydefact[] =
 {
-       8,     2,     3,     6
+       3,     0,     0,     2,     0,     0,     1,     3,     4,     3,
+       6,     5
 };
-static const short yypact[] =
+static const yysigned_char yydefgoto[] =
 {
-      -2,    -1,-32768,    -4,     1,    -2,-32768,    -2,-32768,-32768,
-       4,     5,-32768
+      -1,     2,     3,     4,     8
 };
-static const short yypgoto[] =
+static const yysigned_char yypact[] =
 {
-       0,-32768,-32768,-32768
+      -2,    -1,     4,    -8,     0,     2,    -8,    -2,    -8,    -2,
+      -8,    -8
 };
-static const short yytable[] =
+static const yysigned_char yypgoto[] =
 {
-      10,     1,     5,     4,    11,    12,     7,     9
+      -8,    -7,    -8,    -8,    -8
 };
-static const short yycheck[] =
+static const unsigned char yytable[] =
 {
-       0,     3,     6,     4,     0,     0,     5,     7
+      10,     1,    11,     5,     6,     0,     7,     9
+};
+static const yysigned_char yycheck[] =
+{
+       7,     3,     9,     4,     0,    -1,     6,     5
+};
+static const unsigned char yystos[] =
+{
+       0,     3,     8,     9,    10,     4,     0,     6,    11,     5,
+       8,     8
 };
 ]])
 

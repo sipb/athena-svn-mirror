@@ -1,5 +1,5 @@
 # Exercising Bison Grammar Sets.                      -*- Autotest -*-
-# Copyright 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,46 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
+
+
+# AT_EXTRACT_SETS(INPUT, OUTPUT)
+# ------------------------------
+# Extract the information about the grammar sets from a bison
+# trace output (INPUT), and save it in OUTPUT.
+# And remember, there is no alternation in portable sed.
+m4_define([AT_EXTRACT_SETS],
+[AT_DATA([extract.sed],
+[[#n
+/^NULLABLE$/ {
+   :null
+   p
+   n
+   /^[ 	]*$/ !b null
+}
+/^FIRSTS$/ {
+   :firsts
+   p
+   n
+   /^[ 	]*$/ !b firsts
+}
+/^FDERIVES$/ {
+   :fderiv
+   p
+   n
+   /^[ 	]*$/ !b fderiv
+}
+/^DERIVES$/ {
+   :deriv
+   p
+   n
+   /^[ 	]*$/ !b deriv
+}
+]])
+AT_CHECK([sed -f extract.sed $1], 0, [stdout])
+AT_CHECK([mv stdout $2])
+])
+
+
 
 AT_BANNER([[Grammar Sets (Firsts etc.).]])
 
@@ -38,81 +78,32 @@ AT_DATA([[input.y]],
 e: 'e' | /* Nothing */;
 ]])
 
-AT_CHECK([[bison --trace input.y]], [], [],
-[[RITEM
-  'e'  (rule 1)
-  (rule 2)
-
-
-DERIVES
+AT_CHECK([[bison --trace=sets input.y]], [], [], [stderr])
+AT_EXTRACT_SETS([stderr], [sets])
+AT_CHECK([[cat sets]], [],
+[[DERIVES
+	$accept derives
+		  0  e $end
 	e derives
-		1: 'e' (rule 1)
-		2: (rule 2)
-
-
-Entering set_nullable
+		  1  'e'
+		  2  /* empty */
 NULLABLE
+	$accept: no
 	e: yes
-
-
-TC: Input BEGIN
-    @&t@
-   0
-  .-.
- 0| |
-  `-'
-TC: Input END
-
-TC: Output BEGIN
-    @&t@
-   0
-  .-.
- 0| |
-  `-'
-TC: Output END
-
 FIRSTS
+	$accept firsts
+		$accept
+		e
 	e firsts
-		4 (e)
-
-
+		e
 FDERIVES
+	$accept derives
+		  0  e $end
+		  1  'e'
+		  2  /* empty */
 	e derives
-		1: 'e'
-		2:
-
-
-Processing state 0 (reached by $)
-Closure: input
-
-
-Closure: output
-   0: . 'e'  (rule 1)
-   2: .  (rule 2)
-
-
-Entering new_itemsets, state = 0
-Entering append_states, state = 0
-Entering get_state, state = 0, symbol = 3 ('e')
-Entering new_state, state = 0, symbol = 3 ('e')
-Exiting get_state => 1
-Processing state 1 (reached by 'e')
-Closure: input
-   1: .  (rule 1)
-
-
-Closure: output
-   1: .  (rule 1)
-
-
-Entering new_itemsets, state = 1
-Entering append_states, state = 1
-transpose: input
-  0: @&t@
-
-transpose: output
-  0: @&t@
-
+		  1  'e'
+		  2  /* empty */
 ]])
 
 AT_CLEANUP
@@ -161,33 +152,103 @@ AT_SETUP([Broken Closure])
 
 AT_DATA([input.y],
 [[%%
-a: b
-b: c
-c: d
-d: e
-e: f
-f: g
-g: h
-h: 'h'
+a: b;
+b: c;
+c: d;
+d: e;
+e: f;
+f: g;
+g: h;
+h: 'h';
 ]])
 
-AT_CHECK([bison --trace input.y 2>&1 |
-          sed -n '/^TC: Output BEGIN/,/^TC: Output END/p'],
-         [0],
-[[TC: Output BEGIN
-           @&t@
-   01234567
-  .--------.
- 0| 1111111|
- 1|  111111|
- 2|   11111|
- 3|    1111|
- 4|     111|
- 5|      11|
- 6|       1|
- 7|        |
-  `--------'
-TC: Output END
+AT_CHECK([[bison --trace=sets input.y]], [], [], [stderr])
+
+AT_CHECK([[sed -n 's/[	 ]*$//;/^RTC: Firsts Output BEGIN/,/^RTC: Firsts Output END/p' stderr]], [],
+[[RTC: Firsts Output BEGIN
+
+   012345678
+  .---------.
+ 0|111111111|
+ 1| 11111111|
+ 2|  1111111|
+ 3|   111111|
+ 4|    11111|
+ 5|     1111|
+ 6|      111|
+ 7|       11|
+ 8|        1|
+  `---------'
+RTC: Firsts Output END
+]])
+
+AT_CLEANUP
+
+
+
+## -------- ##
+## Firsts.  ##
+## -------- ##
+
+AT_SETUP([Firsts])
+
+AT_DATA([input.y],
+[[%nonassoc '<' '>'
+%left '+' '-'
+%right '^' '='
+%%
+exp:
+   exp '<' exp
+ | exp '>' exp
+ | exp '+' exp
+ | exp '-' exp
+ | exp '^' exp
+ | exp '=' exp
+ | "exp"
+ ;
+]])
+
+AT_CHECK([[bison --trace=sets input.y]], [], [], [stderr])
+AT_EXTRACT_SETS([stderr], [sets])
+AT_CHECK([[cat sets]], [],
+[[DERIVES
+	$accept derives
+		  0  exp $end
+	exp derives
+		  1  exp '<' exp
+		  2  exp '>' exp
+		  3  exp '+' exp
+		  4  exp '-' exp
+		  5  exp '^' exp
+		  6  exp '=' exp
+		  7  "exp"
+NULLABLE
+	$accept: no
+	exp: no
+FIRSTS
+	$accept firsts
+		$accept
+		exp
+	exp firsts
+		exp
+FDERIVES
+	$accept derives
+		  0  exp $end
+		  1  exp '<' exp
+		  2  exp '>' exp
+		  3  exp '+' exp
+		  4  exp '-' exp
+		  5  exp '^' exp
+		  6  exp '=' exp
+		  7  "exp"
+	exp derives
+		  1  exp '<' exp
+		  2  exp '>' exp
+		  3  exp '+' exp
+		  4  exp '-' exp
+		  5  exp '^' exp
+		  6  exp '=' exp
+		  7  "exp"
 ]])
 
 AT_CLEANUP

@@ -1,6 +1,212 @@
 Bison News
 ----------
 
+Changes in version 1.75:
+
+* Bison should now work on 64-bit hosts.
+
+* Indonesian translation thanks to Tedi Heriyanto.
+
+* GLR parsers
+  Fix spurious parse errors.
+
+* Pure parsers
+  Some people redefine yyerror to steal yyparse' private variables.
+  Reenable this trick until an official feature replaces it.
+
+* Type Clashes
+  In agreement with POSIX and with other Yaccs, leaving a default
+  action is valid when $$ is untyped, and $1 typed:
+
+	untyped: ... typed;
+
+  but the converse remains an error:
+
+	typed: ... untyped;
+
+* Values of mid-rule actions
+  The following code:
+
+	foo: { ... } { $$ = $1; } ...
+
+  was incorrectly rejected: $1 is defined in the second mid-rule
+  action, and is equal to the $$ of the first mid-rule action.
+
+Changes in version 1.50, 2002-10-04:
+
+* GLR parsing
+  The declaration
+     %glr-parser
+  causes Bison to produce a Generalized LR (GLR) parser, capable of handling
+  almost any context-free grammar, ambiguous or not.  The new declarations
+  %dprec and %merge on grammar rules allow parse-time resolution of
+  ambiguities.  Contributed by Paul Hilfinger.
+
+  Unfortunately Bison 1.50 does not work properly on 64-bit hosts
+  like the Alpha, so please stick to 32-bit hosts for now.
+
+* Output Directory
+  When not in Yacc compatibility mode, when the output file was not
+  specified, running `bison foo/bar.y' created `foo/bar.c'.  It
+  now creates `bar.c'.
+
+* Undefined token
+  The undefined token was systematically mapped to 2 which prevented
+  the use of 2 by the user.  This is no longer the case.
+
+* Unknown token numbers
+  If yylex returned an out of range value, yyparse could die.  This is
+  no longer the case.
+
+* Error token
+  According to POSIX, the error token must be 256.
+  Bison extends this requirement by making it a preference: *if* the
+  user specified that one of her tokens is numbered 256, then error
+  will be mapped onto another number.
+
+* Verbose error messages
+  They no longer report `..., expecting error or...' for states where
+  error recovery is possible.
+
+* End token
+  Defaults to `$end' instead of `$'.
+
+* Error recovery now conforms to documentation and to POSIX
+  When a Bison-generated parser encounters a syntax error, it now pops
+  the stack until it finds a state that allows shifting the error
+  token.  Formerly, it popped the stack until it found a state that
+  allowed some non-error action other than a default reduction on the
+  error token.  The new behavior has long been the documented behavior,
+  and has long been required by POSIX.  For more details, please see
+  <http://mail.gnu.org/pipermail/bug-bison/2002-May/001452.html>.
+
+* Traces
+  Popped tokens and nonterminals are now reported.
+
+* Larger grammars
+  Larger grammars are now supported (larger token numbers, larger grammar
+  size (= sum of the LHS and RHS lengths), larger LALR tables).
+  Formerly, many of these numbers ran afoul of 16-bit limits;
+  now these limits are 32 bits on most hosts.
+
+* Explicit initial rule
+  Bison used to play hacks with the initial rule, which the user does
+  not write.  It is now explicit, and visible in the reports and
+  graphs as rule 0.
+
+* Useless rules
+  Before, Bison reported the useless rules, but, although not used,
+  included them in the parsers.  They are now actually removed.
+
+* Useless rules, useless nonterminals
+  They are now reported, as a warning, with their locations.
+
+* Rules never reduced
+  Rules that can never be reduced because of conflicts are now
+  reported.
+
+* Incorrect `Token not used'
+  On a grammar such as
+
+           %token useless useful
+           %%
+           exp: '0' %prec useful;
+
+  where a token was used to set the precedence of the last rule,
+  bison reported both `useful' and `useless' as useless tokens.
+
+* Revert the C++ namespace changes introduced in 1.31
+  as they caused too many portability hassles.
+
+* Default locations
+  By an accident of design, the default computation of @$ was
+  performed after another default computation was performed: @$ = @1.
+  The latter is now removed: YYLLOC_DEFAULT is fully responsible of
+  the computation of @$.
+
+* Token end-of-file
+  The token end of file may be specified by the user, in which case,
+  the user symbol is used in the reports, the graphs, and the verbose
+  error messages instead of `$end', which remains being the default.
+  For instance
+     %token YYEOF 0
+  or
+     %token YYEOF 0 "end of file"
+
+* Semantic parser
+  This old option, which has been broken for ages, is removed.
+
+* New translations
+  Brazilian Portuguese, thanks to Alexandre Folle de Menezes.
+  Croatian, thanks to Denis Lackovic.
+
+* Incorrect token definitions
+  When given `%token 'a' "A"', Bison used to output `#define 'a' 65'.
+
+* Token definitions as enums
+  Tokens are output both as the traditional #define's, and, provided
+  the compiler supports ANSI C or is a C++ compiler, as enums.
+  This lets debuggers display names instead of integers.
+
+* Reports
+  In addition to --verbose, bison supports --report=THINGS, which
+  produces additional information:
+  - itemset
+    complete the core item sets with their closure
+  - lookahead
+    explicitly associate lookaheads to items
+  - solved
+    describe shift/reduce conflicts solving.
+    Bison used to systematically output this information on top of
+    the report.  Solved conflicts are now attached to their states.
+
+* Type clashes
+  Previous versions don't complain when there is a type clash on
+  the default action if the rule has a mid-rule action, such as in:
+
+      %type <foo> bar
+      %%
+      bar: '0' {} '0';
+
+  This is fixed.
+
+* GNU M4 is now required when using Bison.
+
+Changes in version 1.35, 2002-03-25:
+
+* C Skeleton
+  Some projects use Bison's C parser with C++ compilers, and define
+  YYSTYPE as a class.  The recent adjustment of C parsers for data
+  alignment and 64 bit architectures made this impossible.
+
+  Because for the time being no real solution for C++ parser
+  generation exists, kludges were implemented in the parser to
+  maintain this use.  In the future, when Bison has C++ parsers, this
+  kludge will be disabled.
+
+  This kludge also addresses some C++ problems when the stack was
+  extended.
+
+Changes in version 1.34, 2002-03-12:
+
+* File name clashes are detected
+  $ bison foo.y -d -o foo.x
+  fatal error: header and parser would both be named `foo.x'
+
+* A missing `;' at the end of a rule triggers a warning
+  In accordance with POSIX, and in agreement with other
+  Yacc implementations, Bison will mandate this semicolon in the near
+  future.  This eases the implementation of a Bison parser of Bison
+  grammars by making this grammar LALR(1) instead of LR(2).  To
+  facilitate the transition, this release introduces a warning.
+
+* Revert the C++ namespace changes introduced in 1.31, as they caused too
+  many portability hassles.
+
+* DJGPP support added.
+
+* Fix test suite portability problems.
+
 Changes in version 1.33, 2002-02-07:
 
 * Fix C++ issues
@@ -45,6 +251,7 @@ Changes in version 1.31, 2002-01-14:
 
 * Better C++ compliance
   The output parsers try to respect C++ namespaces.
+  [This turned out to be a failed experiment, and it was reverted later.]
 
 * Reduced Grammars
   Fixed bugs when reporting useless nonterminals.
@@ -225,3 +432,24 @@ Output file does not redefine const for C++.
 Local Variables:
 mode: outline
 End:
+
+-----
+
+Copyright (C) 2001, 2002 Free Software Foundation, Inc.
+
+This file is part of GNU Autoconf.
+
+GNU Autoconf is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+GNU Autoconf is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with autoconf; see the file COPYING.  If not, write to
+the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.

@@ -1,5 +1,5 @@
 /* Compute look-ahead criteria for bison,
-   Copyright 1984, 1986, 1989, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1986, 1989, 2000, 2002 Free Software Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
 
@@ -21,16 +21,25 @@
 #ifndef LALR_H_
 # define LALR_H_
 
+# include "bitset.h"
+# include "bitsetv.h"
 
-/* Import the definition of CORE, SHIFTS and REDUCTIONS. */
+/* Import the definition of CORE, TRANSITIONS and REDUCTIONS. */
 # include "state.h"
 
+/* Import the definition of RULE_T. */
+# include "gram.h"
 
 /* Compute how to make the finite state machine deterministic; find
    which rules need lookahead in each state, and which lookahead
    tokens they accept.  */
 
 void lalr PARAMS ((void));
+
+/* Release the information related to lookaheads.  Can be performed
+   once the action tables are computed.  */
+
+void lalr_free PARAMS ((void));
 
 
 /* lalr() builds these data structures. */
@@ -45,57 +54,12 @@ void lalr PARAMS ((void));
    together and GOTO_MAP[I - NTOKENS] is the index in FROM_STATE and
    TO_STATE of the first of them.  */
 
-extern short *goto_map;
-extern short *from_state;
-extern short *to_state;
+typedef short goto_number_t;
+# define GOTO_NUMBER_MAX ((goto_number_t) SHRT_MAX)
 
-/* LARULENO is a vector which records the rules that need lookahead in
-   various states.  The elements of LARULENO that apply to state S are
-   those from LOOKAHEADS[S] through LOOKAHEADS[S+1]-1.  Each element
-   of LARULENO is a rule number.
-
-   If LR is the length of LAruleno, then a number from 0 to LR-1 can
-   specify both a rule and a state where the rule might be applied.
-   */
-
-extern short *LAruleno;
-
-/* LA is a lr by ntokens matrix of bits.  LA[l, i] is 1 if the rule
-   LAruleno[l] is applicable in the appropriate state when the next
-   token is symbol i.  If LA[l, i] and LA[l, j] are both 1 for i != j,
-   it is a conflict.  */
-
-extern unsigned *LA;
-#define LA(Rule) (LA + (Rule) * tokensetsize)
+extern goto_number_t *goto_map;
+extern state_number_t *from_state;
+extern state_number_t *to_state;
 
 
-/* A structure decorating a state, with additional information. */
-typedef struct state_s
-{
-  /* A state.  */
-  core *state;
-
-  /* Its accessing symbol. */
-  short accessing_symbol;
-
-  shifts     *shifts;
-  reductions *reductions;
-  errs       *errs;
-
-  /* Nonzero if no lookahead is needed to decide what to do in state
-     S.  */
-  char consistent;
-
-  short lookaheads;
-} state_t;
-
-/* All the decorated states, indexed by the state number.  Warning:
-   there is a state_TABLE in LR0.c, but it is different and static.
-   */
-extern state_t *state_table;
-
-extern int tokensetsize;
-
-/* The number of lookaheads. */
-extern size_t nlookaheads;
 #endif /* !LALR_H_ */

@@ -1,5 +1,7 @@
 /* quotearg.h - quote arguments for output
-   Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
+
+   Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software
+   Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,6 +19,9 @@
 
 /* Written by Paul Eggert <eggert@twinsun.com> */
 
+#ifndef QUOTEARG_H_
+# define QUOTEARG_H_ 1
+
 /* Basic quoting styles.  */
 enum quoting_style
   {
@@ -30,9 +35,9 @@ enum quoting_style
   };
 
 /* For now, --quoting-style=literal is the default, but this may change.  */
-#ifndef DEFAULT_QUOTING_STYLE
-# define DEFAULT_QUOTING_STYLE literal_quoting_style
-#endif
+# ifndef DEFAULT_QUOTING_STYLE
+#  define DEFAULT_QUOTING_STYLE literal_quoting_style
+# endif
 
 /* Names of quoting styles and their corresponding values.  */
 extern char const *const quoting_style_args[];
@@ -40,13 +45,13 @@ extern enum quoting_style const quoting_style_vals[];
 
 struct quoting_options;
 
-#ifndef PARAMS
-# if defined PROTOTYPES || defined __STDC__
-#  define PARAMS(Args) Args
-# else
-#  define PARAMS(Args) ()
+# ifndef PARAMS
+#  if defined PROTOTYPES || defined __STDC__
+#   define PARAMS(Args) Args
+#  else
+#   define PARAMS(Args) ()
+#  endif
 # endif
-#endif
 
 /* The functions listed below set and use a hidden variable
    that contains the default quoting style options.  */
@@ -99,6 +104,12 @@ char *quotearg PARAMS ((char const *arg));
    options to specify the quoting method.  */
 char *quotearg_n_style PARAMS ((int n, enum quoting_style s, char const *arg));
 
+/* Use style S and storage slot N to return a quoted version of the
+   argument ARG of size ARGSIZE.  This is like quotearg_n_style
+   (N, S, ARG), except it can quote null bytes.  */
+char *quotearg_n_style_mem PARAMS ((int n, enum quoting_style s,
+				    char const *arg, size_t argsize));
+
 /* Equivalent to quotearg_n_style (0, S, ARG).  */
 char *quotearg_style PARAMS ((enum quoting_style s, char const *arg));
 
@@ -107,3 +118,5 @@ char *quotearg_char PARAMS ((char const *arg, char ch));
 
 /* Equivalent to quotearg_char (ARG, ':').  */
 char *quotearg_colon PARAMS ((char const *arg));
+
+#endif /* !QUOTEARG_H_ */

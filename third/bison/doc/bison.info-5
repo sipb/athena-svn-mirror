@@ -1,35 +1,828 @@
-Ceci est le fichier Info bison.info, produit par Makeinfo version 4.0b
-à partir bison.texinfo.
+Ceci est le fichier Info bison.info, produit par Makeinfo version 4.2 à
+partir bison.texinfo.
 
-START-INFO-DIR-ENTRY
-* bison: (bison).	GNU Project parser generator (yacc replacement).
-END-INFO-DIR-ENTRY
 
-   This file documents the Bison parser generator.
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
-2000, 2001 Free Software Foundation, Inc.
+2000, 2001, 2002 Free Software Foundation, Inc.
 
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
 
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided also
-that the sections entitled "GNU General Public License" and "Conditions
-for Using Bison" are included exactly as in the original, and provided
-that the entire resulting derived work is distributed under the terms
-of a permission notice identical to this one.
-
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that the sections entitled "GNU General Public
-License", "Conditions for Using Bison" and this permission notice may be
-included in translations approved by the Free Software Foundation
-instead of in the original English.
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).	GNU parser generator (yacc replacement).
+END-INFO-DIR-ENTRY
 
 
-File: bison.info,  Node: Option Cross Key,  Next: VMS Invocation,  Prev: Environment Variables,  Up: Invocation
+File: bison.info,  Node: Semantic Tokens,  Next: Lexical Tie-ins,  Up: Context Dependency
+
+Semantic Info in Token Types
+============================
+
+   The C language has a context dependency: the way an identifier is
+used depends on what its current meaning is.  For example, consider
+this:
+
+     foo (x);
+
+   This looks like a function call statement, but if `foo' is a typedef
+name, then this is actually a declaration of `x'.  How can a Bison
+parser for C decide how to parse this input?
+
+   The method used in GNU C is to have two different token types,
+`IDENTIFIER' and `TYPENAME'.  When `yylex' finds an identifier, it
+looks up the current declaration of the identifier in order to decide
+which token type to return: `TYPENAME' if the identifier is declared as
+a typedef, `IDENTIFIER' otherwise.
+
+   The grammar rules can then express the context dependency by the
+choice of token type to recognize.  `IDENTIFIER' is accepted as an
+expression, but `TYPENAME' is not.  `TYPENAME' can start a declaration,
+but `IDENTIFIER' cannot.  In contexts where the meaning of the
+identifier is _not_ significant, such as in declarations that can
+shadow a typedef name, either `TYPENAME' or `IDENTIFIER' is
+accepted--there is one rule for each of the two token types.
+
+   This technique is simple to use if the decision of which kinds of
+identifiers to allow is made at a place close to where the identifier is
+parsed.  But in C this is not always so: C allows a declaration to
+redeclare a typedef name provided an explicit type has been specified
+earlier:
+
+     typedef int foo, bar, lose;
+     static foo (bar);        /* redeclare `bar' as static variable */
+     static int foo (lose);   /* redeclare `foo' as function */
+
+   Unfortunately, the name being declared is separated from the
+declaration construct itself by a complicated syntactic structure--the
+"declarator".
+
+   As a result, part of the Bison parser for C needs to be duplicated,
+with all the nonterminal names changed: once for parsing a declaration
+in which a typedef name can be redefined, and once for parsing a
+declaration in which that can't be done.  Here is a part of the
+duplication, with actions omitted for brevity:
+
+     initdcl:
+               declarator maybeasm '='
+               init
+             | declarator maybeasm
+             ;
+     
+     notype_initdcl:
+               notype_declarator maybeasm '='
+               init
+             | notype_declarator maybeasm
+             ;
+
+Here `initdcl' can redeclare a typedef name, but `notype_initdcl'
+cannot.  The distinction between `declarator' and `notype_declarator'
+is the same sort of thing.
+
+   There is some similarity between this technique and a lexical tie-in
+(described next), in that information which alters the lexical analysis
+is changed during parsing by other parts of the program.  The
+difference is here the information is global, and is used for other
+purposes in the program.  A true lexical tie-in has a special-purpose
+flag controlled by the syntactic context.
+
+
+File: bison.info,  Node: Lexical Tie-ins,  Next: Tie-in Recovery,  Prev: Semantic Tokens,  Up: Context Dependency
+
+Lexical Tie-ins
+===============
+
+   One way to handle context-dependency is the "lexical tie-in": a flag
+which is set by Bison actions, whose purpose is to alter the way tokens
+are parsed.
+
+   For example, suppose we have a language vaguely like C, but with a
+special construct `hex (HEX-EXPR)'.  After the keyword `hex' comes an
+expression in parentheses in which all integers are hexadecimal.  In
+particular, the token `a1b' must be treated as an integer rather than
+as an identifier if it appears in that context.  Here is how you can do
+it:
+
+     %{
+     int hexflag;
+     %}
+     %%
+     ...
+     expr:   IDENTIFIER
+             | constant
+             | HEX '('
+                     { hexflag = 1; }
+               expr ')'
+                     { hexflag = 0;
+                        $$ = $4; }
+             | expr '+' expr
+                     { $$ = make_sum ($1, $3); }
+             ...
+             ;
+     
+     constant:
+               INTEGER
+             | STRING
+             ;
+
+Here we assume that `yylex' looks at the value of `hexflag'; when it is
+nonzero, all integers are parsed in hexadecimal, and tokens starting
+with letters are parsed as integers if possible.
+
+   The declaration of `hexflag' shown in the prologue of the parser file
+is needed to make it accessible to the actions (*note The Prologue:
+Prologue.).  You must also write the code in `yylex' to obey the flag.
+
+
+File: bison.info,  Node: Tie-in Recovery,  Prev: Lexical Tie-ins,  Up: Context Dependency
+
+Lexical Tie-ins and Error Recovery
+==================================
+
+   Lexical tie-ins make strict demands on any error recovery rules you
+have.  *Note Error Recovery::.
+
+   The reason for this is that the purpose of an error recovery rule is
+to abort the parsing of one construct and resume in some larger
+construct.  For example, in C-like languages, a typical error recovery
+rule is to skip tokens until the next semicolon, and then start a new
+statement, like this:
+
+     stmt:   expr ';'
+             | IF '(' expr ')' stmt { ... }
+             ...
+             error ';'
+                     { hexflag = 0; }
+             ;
+
+   If there is a syntax error in the middle of a `hex (EXPR)'
+construct, this error rule will apply, and then the action for the
+completed `hex (EXPR)' will never run.  So `hexflag' would remain set
+for the entire rest of the input, or until the next `hex' keyword,
+causing identifiers to be misinterpreted as integers.
+
+   To avoid this problem the error recovery rule itself clears
+`hexflag'.
+
+   There may also be an error recovery rule that works within
+expressions.  For example, there could be a rule which applies within
+parentheses and skips to the close-parenthesis:
+
+     expr:   ...
+             | '(' expr ')'
+                     { $$ = $2; }
+             | '(' error ')'
+             ...
+
+   If this rule acts within the `hex' construct, it is not going to
+abort that construct (since it applies to an inner level of parentheses
+within the construct).  Therefore, it should not clear the flag: the
+rest of the `hex' construct should be parsed with the flag still in
+effect.
+
+   What if there is an error recovery rule which might abort out of the
+`hex' construct or might not, depending on circumstances?  There is no
+way you can write the action to determine whether a `hex' construct is
+being aborted or not.  So if you are using a lexical tie-in, you had
+better make sure your error recovery rules are not of this kind.  Each
+rule must be such that you can be sure that it always will, or always
+won't, have to clear the flag.
+
+
+File: bison.info,  Node: Debugging,  Next: Invocation,  Prev: Context Dependency,  Up: Top
+
+Debugging Your Parser
+*********************
+
+   Developing a parser can be a challenge, especially if you don't
+understand the algorithm (*note The Bison Parser Algorithm:
+Algorithm.).  Even so, sometimes a detailed description of the automaton
+can help (*note Understanding Your Parser: Understanding.), or tracing
+the execution of the parser can give some insight on why it behaves
+improperly (*note Tracing Your Parser: Tracing.).
+
+* Menu:
+
+* Understanding::     Understanding the structure of your parser.
+* Tracing::           Tracing the execution of your parser.
+
+
+File: bison.info,  Node: Understanding,  Next: Tracing,  Up: Debugging
+
+Understanding Your Parser
+=========================
+
+   As documented elsewhere (*note The Bison Parser Algorithm:
+Algorithm.)  Bison parsers are "shift/reduce automata".  In some cases
+(much more frequent than one would hope), looking at this automaton is
+required to tune or simply fix a parser.  Bison provides two different
+representation of it, either textually or graphically (as a VCG file).
+
+   The textual file is generated when the options `--report' or
+`--verbose' are specified, see *Note Invoking Bison: Invocation.  Its
+name is made by removing `.tab.c' or `.c' from the parser output file
+name, and adding `.output' instead.  Therefore, if the input file is
+`foo.y', then the parser file is called `foo.tab.c' by default.  As a
+consequence, the verbose output file is called `foo.output'.
+
+   The following grammar file, `calc.y', will be used in the sequel:
+
+     %token NUM STR
+     %left '+' '-'
+     %left '*'
+     %%
+     exp: exp '+' exp
+        | exp '-' exp
+        | exp '*' exp
+        | exp '/' exp
+        | NUM
+        ;
+     useless: STR;
+     %%
+
+   `bison' reports:
+
+     calc.y: warning: 1 useless nonterminal and 1 useless rule
+     calc.y:11.1-7: warning: useless nonterminal: useless
+     calc.y:11.8-12: warning: useless rule: useless: STR
+     calc.y contains 7 shift/reduce conflicts.
+
+   When given `--report=state', in addition to `calc.tab.c', it creates
+a file `calc.output' with contents detailed below.  The order of the
+output and the exact presentation might vary, but the interpretation is
+the same.
+
+   The first section includes details on conflicts that were solved
+thanks to precedence and/or associativity:
+
+     Conflict in state 8 between rule 2 and token '+' resolved as reduce.
+     Conflict in state 8 between rule 2 and token '-' resolved as reduce.
+     Conflict in state 8 between rule 2 and token '*' resolved as shift.
+...
+
+
+The next section lists states that still have conflicts.
+
+     State 8 contains 1 shift/reduce conflict.
+     State 9 contains 1 shift/reduce conflict.
+     State 10 contains 1 shift/reduce conflict.
+     State 11 contains 4 shift/reduce conflicts.
+
+The next section reports useless tokens, nonterminal and rules.  Useless
+nonterminals and rules are removed in order to produce a smaller parser,
+but useless tokens are preserved, since they might be used by the
+scanner (note the difference between "useless" and "not used" below):
+
+     Useless nonterminals:
+        useless
+     
+     Terminals which are not used:
+        STR
+     
+     Useless rules:
+     #6     useless: STR;
+
+The next section reproduces the exact grammar that Bison used:
+
+     Grammar
+     
+       Number, Line, Rule
+         0   5 $accept -> exp $end
+         1   5 exp -> exp '+' exp
+         2   6 exp -> exp '-' exp
+         3   7 exp -> exp '*' exp
+         4   8 exp -> exp '/' exp
+         5   9 exp -> NUM
+
+and reports the uses of the symbols:
+
+     Terminals, with rules where they appear
+     
+     $end (0) 0
+     '*' (42) 3
+     '+' (43) 1
+     '-' (45) 2
+     '/' (47) 4
+     error (256)
+     NUM (258) 5
+     
+     Nonterminals, with rules where they appear
+     
+     $accept (8)
+         on left: 0
+     exp (9)
+         on left: 1 2 3 4 5, on right: 0 1 2 3 4
+
+Bison then proceeds onto the automaton itself, describing each state
+with it set of "items", also known as "pointed rules".  Each item is a
+production rule together with a point (marked by `.') that the input
+cursor.
+
+     state 0
+     
+         $accept  ->  . exp $   (rule 0)
+     
+         NUM 	shift, and go to state 1
+     
+         exp 	go to state 2
+
+   This reads as follows: "state 0 corresponds to being at the very
+beginning of the parsing, in the initial rule, right before the start
+symbol (here, `exp').  When the parser returns to this state right
+after having reduced a rule that produced an `exp', the control flow
+jumps to state 2.  If there is no such transition on a nonterminal
+symbol, and the lookahead is a `NUM', then this token is shifted on the
+parse stack, and the control flow jumps to state 1.  Any other
+lookahead triggers a parse error."
+
+   Even though the only active rule in state 0 seems to be rule 0, the
+report lists `NUM' as a lookahead symbol because `NUM' can be at the
+beginning of any rule deriving an `exp'.  By default Bison reports the
+so-called "core" or "kernel" of the item set, but if you want to see
+more detail you can invoke `bison' with `--report=itemset' to list all
+the items, include those that can be derived:
+
+     state 0
+     
+         $accept  ->  . exp $   (rule 0)
+         exp  ->  . exp '+' exp   (rule 1)
+         exp  ->  . exp '-' exp   (rule 2)
+         exp  ->  . exp '*' exp   (rule 3)
+         exp  ->  . exp '/' exp   (rule 4)
+         exp  ->  . NUM   (rule 5)
+     
+         NUM         shift, and go to state 1
+     
+         exp         go to state 2
+
+In the state 1...
+
+     state 1
+     
+         exp  ->  NUM .   (rule 5)
+     
+         $default	reduce using rule 5 (exp)
+
+the rule 5, `exp: NUM;', is completed.  Whatever the lookahead
+(`$default'), the parser will reduce it.  If it was coming from state
+0, then, after this reduction it will return to state 0, and will jump
+to state 2 (`exp: go to state 2').
+
+     state 2
+     
+         $accept  ->  exp . $   (rule 0)
+         exp  ->  exp . '+' exp   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+     
+         $   	shift, and go to state 3
+         '+' 	shift, and go to state 4
+         '-' 	shift, and go to state 5
+         '*' 	shift, and go to state 6
+         '/' 	shift, and go to state 7
+
+In state 2, the automaton can only shift a symbol.  For instance,
+because of the item `exp -> exp . '+' exp', if the lookahead if `+', it
+will be shifted on the parse stack, and the automaton control will jump
+to state 4, corresponding to the item `exp -> exp '+' . exp'.  Since
+there is no default action, any other token than those listed above
+will trigger a parse error.
+
+   The state 3 is named the "final state", or the "accepting state":
+
+     state 3
+     
+         $accept  ->  exp $ .   (rule 0)
+     
+         $default	accept
+
+the initial rule is completed (the start symbol and the end of input
+were read), the parsing exits successfully.
+
+   The interpretation of states 4 to 7 is straightforward, and is left
+to the reader.
+
+     state 4
+     
+         exp  ->  exp '+' . exp   (rule 1)
+     
+         NUM 	shift, and go to state 1
+     
+         exp 	go to state 8
+     
+     state 5
+     
+         exp  ->  exp '-' . exp   (rule 2)
+     
+         NUM 	shift, and go to state 1
+     
+         exp 	go to state 9
+     
+     state 6
+     
+         exp  ->  exp '*' . exp   (rule 3)
+     
+         NUM 	shift, and go to state 1
+     
+         exp 	go to state 10
+     
+     state 7
+     
+         exp  ->  exp '/' . exp   (rule 4)
+     
+         NUM 	shift, and go to state 1
+     
+         exp 	go to state 11
+
+   As was announced in beginning of the report, `State 8 contains 1
+shift/reduce conflict':
+
+     state 8
+     
+         exp  ->  exp . '+' exp   (rule 1)
+         exp  ->  exp '+' exp .   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+     
+         '*' 	shift, and go to state 6
+         '/' 	shift, and go to state 7
+     
+         '/' 	[reduce using rule 1 (exp)]
+         $default	reduce using rule 1 (exp)
+
+   Indeed, there are two actions associated to the lookahead `/':
+either shifting (and going to state 7), or reducing rule 1.  The
+conflict means that either the grammar is ambiguous, or the parser lacks
+information to make the right decision.  Indeed the grammar is
+ambiguous, as, since we did not specify the precedence of `/', the
+sentence `NUM + NUM / NUM' can be parsed as `NUM + (NUM / NUM)', which
+corresponds to shifting `/', or as `(NUM + NUM) / NUM', which
+corresponds to reducing rule 1.
+
+   Because in LALR(1) parsing a single decision can be made, Bison
+arbitrarily chose to disable the reduction, see *Note Shift/Reduce
+Conflicts: Shift/Reduce.  Discarded actions are reported in between
+square brackets.
+
+   Note that all the previous states had a single possible action:
+either shifting the next token and going to the corresponding state, or
+reducing a single rule.  In the other cases, i.e., when shifting _and_
+reducing is possible or when _several_ reductions are possible, the
+lookahead is required to select the action.  State 8 is one such state:
+if the lookahead is `*' or `/' then the action is shifting, otherwise
+the action is reducing rule 1.  In other words, the first two items,
+corresponding to rule 1, are not eligible when the lookahead is `*',
+since we specified that `*' has higher precedence that `+'.  More
+generally, some items are eligible only with some set of possible
+lookaheads.  When run with `--report=lookahead', Bison specifies these
+lookaheads:
+
+     state 8
+     
+         exp  ->  exp . '+' exp  [$, '+', '-', '/']   (rule 1)
+         exp  ->  exp '+' exp .  [$, '+', '-', '/']   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+     
+         '*'         shift, and go to state 6
+         '/'         shift, and go to state 7
+     
+         '/'         [reduce using rule 1 (exp)]
+         $default    reduce using rule 1 (exp)
+
+   The remaining states are similar:
+
+     state 9
+     
+         exp  ->  exp . '+' exp   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp '-' exp .   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+     
+         '*' 	shift, and go to state 6
+         '/' 	shift, and go to state 7
+     
+         '/' 	[reduce using rule 2 (exp)]
+         $default	reduce using rule 2 (exp)
+     
+     state 10
+     
+         exp  ->  exp . '+' exp   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp '*' exp .   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+     
+         '/' 	shift, and go to state 7
+     
+         '/' 	[reduce using rule 3 (exp)]
+         $default	reduce using rule 3 (exp)
+     
+     state 11
+     
+         exp  ->  exp . '+' exp   (rule 1)
+         exp  ->  exp . '-' exp   (rule 2)
+         exp  ->  exp . '*' exp   (rule 3)
+         exp  ->  exp . '/' exp   (rule 4)
+         exp  ->  exp '/' exp .   (rule 4)
+     
+         '+' 	shift, and go to state 4
+         '-' 	shift, and go to state 5
+         '*' 	shift, and go to state 6
+         '/' 	shift, and go to state 7
+     
+         '+' 	[reduce using rule 4 (exp)]
+         '-' 	[reduce using rule 4 (exp)]
+         '*' 	[reduce using rule 4 (exp)]
+         '/' 	[reduce using rule 4 (exp)]
+         $default	reduce using rule 4 (exp)
+
+Observe that state 11 contains conflicts due to the lack of precedence
+of `/' wrt `+', `-', and `*', but also because the associativity of `/'
+is not specified.
+
+
+File: bison.info,  Node: Tracing,  Prev: Understanding,  Up: Debugging
+
+Tracing Your Parser
+===================
+
+   If a Bison grammar compiles properly but doesn't do what you want
+when it runs, the `yydebug' parser-trace feature can help you figure
+out why.
+
+   There are several means to enable compilation of trace facilities:
+
+the macro `YYDEBUG'
+     Define the macro `YYDEBUG' to a nonzero value when you compile the
+     parser.  This is compliant with POSIX Yacc.  You could use
+     `-DYYDEBUG=1' as a compiler option or you could put `#define
+     YYDEBUG 1' in the prologue of the grammar file (*note The
+     Prologue: Prologue.).
+
+the option `-t', `--debug'
+     Use the `-t' option when you run Bison (*note Invoking Bison:
+     Invocation.).  This is POSIX compliant too.
+
+the directive `%debug'
+     Add the `%debug' directive (*note Bison Declaration Summary: Decl
+     Summary.).  This is a Bison extension, which will prove useful
+     when Bison will output parsers for languages that don't use a
+     preprocessor.  Useless POSIX and Yacc portability matter to you,
+     this is the preferred solution.
+
+   We suggest that you always enable the debug option so that debugging
+is always possible.
+
+   The trace facility outputs messages with macro calls of the form
+`YYFPRINTF (stderr, FORMAT, ARGS)' where FORMAT and ARGS are the usual
+`printf' format and arguments.  If you define `YYDEBUG' to a nonzero
+value but do not define `YYFPRINTF', `<stdio.h>' is automatically
+included and `YYPRINTF' is defined to `fprintf'.
+
+   Once you have compiled the program with trace facilities, the way to
+request a trace is to store a nonzero value in the variable `yydebug'.
+You can do this by making the C code do it (in `main', perhaps), or you
+can alter the value with a C debugger.
+
+   Each step taken by the parser when `yydebug' is nonzero produces a
+line or two of trace information, written on `stderr'.  The trace
+messages tell you these things:
+
+   * Each time the parser calls `yylex', what kind of token was read.
+
+   * Each time a token is shifted, the depth and complete contents of
+     the state stack (*note Parser States::).
+
+   * Each time a rule is reduced, which rule it is, and the complete
+     contents of the state stack afterward.
+
+   To make sense of this information, it helps to refer to the listing
+file produced by the Bison `-v' option (*note Invoking Bison:
+Invocation.).  This file shows the meaning of each state in terms of
+positions in various rules, and also what each state will do with each
+possible input token.  As you read the successive trace messages, you
+can see that the parser is functioning according to its specification in
+the listing file.  Eventually you will arrive at the place where
+something undesirable happens, and you will see which parts of the
+grammar are to blame.
+
+   The parser file is a C program and you can use C debuggers on it,
+but it's not easy to interpret what it is doing.  The parser function
+is a finite-state machine interpreter, and aside from the actions it
+executes the same code over and over.  Only the values of variables
+show where in the grammar it is working.
+
+   The debugging information normally gives the token type of each token
+read, but not its semantic value.  You can optionally define a macro
+named `YYPRINT' to provide a way to print the value.  If you define
+`YYPRINT', it should take three arguments.  The parser will pass a
+standard I/O stream, the numeric code for the token type, and the token
+value (from `yylval').
+
+   Here is an example of `YYPRINT' suitable for the multi-function
+calculator (*note Declarations for `mfcalc': Mfcalc Decl.):
+
+     #define YYPRINT(file, type, value)   yyprint (file, type, value)
+     
+     static void
+     yyprint (FILE *file, int type, YYSTYPE value)
+     {
+       if (type == VAR)
+         fprintf (file, " %s", value.tptr->name);
+       else if (type == NUM)
+         fprintf (file, " %d", value.val);
+     }
+
+
+File: bison.info,  Node: Invocation,  Next: Table of Symbols,  Prev: Debugging,  Up: Top
+
+Invoking Bison
+**************
+
+   The usual way to invoke Bison is as follows:
+
+     bison INFILE
+
+   Here INFILE is the grammar file name, which usually ends in `.y'.
+The parser file's name is made by replacing the `.y' with `.tab.c'.
+Thus, the `bison foo.y' filename yields `foo.tab.c', and the `bison
+hack/foo.y' filename yields `hack/foo.tab.c'.  It's also possible, in
+case you are writing C++ code instead of C in your grammar file, to
+name it `foo.ypp' or `foo.y++'.  Then, the output files will take an
+extension like the given one as input (respectively `foo.tab.cpp' and
+`foo.tab.c++').  This feature takes effect with all options that
+manipulate filenames like `-o' or `-d'.
+
+   For example :
+
+     bison -d INFILE.YXX
+
+will produce `infile.tab.cxx' and `infile.tab.hxx', and
+
+     bison -d -o OUTPUT.C++ INFILE.Y
+
+will produce `output.c++' and `outfile.h++'.
+
+* Menu:
+
+* Bison Options::     All the options described in detail,
+			in alphabetical order by short options.
+* Option Cross Key::  Alphabetical list of long options.
+* VMS Invocation::    Bison command syntax on VMS.
+
+
+File: bison.info,  Node: Bison Options,  Next: Option Cross Key,  Up: Invocation
+
+Bison Options
+=============
+
+   Bison supports both traditional single-letter options and mnemonic
+long option names.  Long option names are indicated with `--' instead of
+`-'.  Abbreviations for option names are allowed as long as they are
+unique.  When a long option takes an argument, like `--file-prefix',
+connect the option name and the argument with `='.
+
+   Here is a list of options that can be used with Bison, alphabetized
+by short option.  It is followed by a cross key alphabetized by long
+option.
+
+Operations modes:
+`-h'
+`--help'
+     Print a summary of the command-line options to Bison and exit.
+
+`-V'
+`--version'
+     Print the version number of Bison and exit.
+
+`-y'
+`--yacc'
+     Equivalent to `-o y.tab.c'; the parser output file is called
+     `y.tab.c', and the other outputs are called `y.output' and
+     `y.tab.h'.  The purpose of this option is to imitate Yacc's output
+     file name conventions.  Thus, the following shell script can
+     substitute for Yacc:
+
+          bison -y $*
+
+Tuning the parser:
+
+`-S FILE'
+`--skeleton=FILE'
+     Specify the skeleton to use.  You probably don't need this option
+     unless you are developing Bison.
+
+`-t'
+`--debug'
+     In the parser file, define the macro `YYDEBUG' to 1 if it is not
+     already defined, so that the debugging facilities are compiled.
+     *Note Tracing Your Parser: Tracing.
+
+`--locations'
+     Pretend that `%locations' was specified.  *Note Decl Summary::.
+
+`-p PREFIX'
+`--name-prefix=PREFIX'
+     Pretend that `%name-prefix="PREFIX"' was specified.  *Note Decl
+     Summary::.
+
+`-l'
+`--no-lines'
+     Don't put any `#line' preprocessor commands in the parser file.
+     Ordinarily Bison puts them in the parser file so that the C
+     compiler and debuggers will associate errors with your source
+     file, the grammar file.  This option causes them to associate
+     errors with the parser file, treating it as an independent source
+     file in its own right.
+
+`-n'
+`--no-parser'
+     Pretend that `%no-parser' was specified.  *Note Decl Summary::.
+
+`-k'
+`--token-table'
+     Pretend that `%token-table' was specified.  *Note Decl Summary::.
+
+Adjust the output:
+
+`-d'
+`--defines'
+     Pretend that `%defines' was specified, i.e., write an extra output
+     file containing macro definitions for the token type names defined
+     in the grammar and the semantic value type `YYSTYPE', as well as a
+     few `extern' variable declarations.  *Note Decl Summary::.
+
+`--defines=DEFINES-FILE'
+     Same as above, but save in the file DEFINES-FILE.
+
+`-b FILE-PREFIX'
+`--file-prefix=PREFIX'
+     Pretend that `%verbose' was specified, i.e, specify prefix to use
+     for all Bison output file names.  *Note Decl Summary::.
+
+`-r THINGS'
+`--report=THINGS'
+     Write an extra output file containing verbose description of the
+     comma separated list of THINGS among:
+
+    `state'
+          Description of the grammar, conflicts (resolved and
+          unresolved), and LALR automaton.
+
+    `lookahead'
+          Implies `state' and augments the description of the automaton
+          with each rule's lookahead set.
+
+    `itemset'
+          Implies `state' and augments the description of the automaton
+          with the full set of items for each state, instead of its
+          core only.
+
+     For instance, on the following grammar
+
+`-v'
+`--verbose'
+     Pretend that `%verbose' was specified, i.e, write an extra output
+     file containing verbose descriptions of the grammar and parser.
+     *Note Decl Summary::.
+
+`-o FILENAME'
+`--output=FILENAME'
+     Specify the FILENAME for the parser file.
+
+     The other output files' names are constructed from FILENAME as
+     described under the `-v' and `-d' options.
+
+`-g'
+     Output a VCG definition of the LALR(1) grammar automaton computed
+     by Bison.  If the grammar file is `foo.y', the VCG output file will
+     be `foo.vcg'.
+
+`--graph=GRAPH-FILE'
+     The behavior of -GRAPH is the same than `-g'.  The only difference
+     is that it has an optional argument which is the name of the
+     output graph filename.
+
+
+File: bison.info,  Node: Option Cross Key,  Next: VMS Invocation,  Prev: Bison Options,  Up: Invocation
 
 Option Cross Key
 ================
@@ -40,7 +833,6 @@ find the corresponding short option.
      --debug                               -t
      --defines=DEFINES-FILE          -d
      --file-prefix=PREFIX                  -b FILE-PREFIX
-     --fixed-output-files --yacc           -y
      --graph=GRAPH-FILE              -d
      --help                                -h
      --name-prefix=PREFIX                  -p NAME-PREFIX
@@ -50,6 +842,7 @@ find the corresponding short option.
      --token-table                         -k
      --verbose                             -v
      --version                             -V
+     --yacc                                -y
 
 
 File: bison.info,  Node: VMS Invocation,  Prev: Option Cross Key,  Up: Invocation
@@ -76,10 +869,65 @@ In the above example, the output file would instead be named
 `foo_tab.c'.
 
 
+File: bison.info,  Node: FAQ,  Next: Copying This Manual,  Prev: Glossary,  Up: Top
+
+Frequently Asked Questions
+**************************
+
+   Several questions about Bison come up occasionally.  Here some of
+them are addressed.
+
+* Menu:
+
+* Parser Stack Overflow::      Breaking the Stack Limits
+
+
+File: bison.info,  Node: Parser Stack Overflow,  Up: FAQ
+
+Parser Stack Overflow
+=====================
+
+     My parser returns with error with a `parser stack overflow'
+     message.  What can I do?
+
+   This question is already addressed elsewhere, *Note Recursive Rules:
+Recursion.
+
+
 File: bison.info,  Node: Table of Symbols,  Next: Glossary,  Prev: Invocation,  Up: Top
 
 Bison Symbols
 *************
+
+`@$'
+     In an action, the location of the left-hand side of the rule.
+     *Note Locations Overview: Locations.
+
+`@N'
+     In an action, the location of the N-th symbol of the right-hand
+     side of the rule.  *Note Locations Overview: Locations.
+
+`$$'
+     In an action, the semantic value of the left-hand side of the rule.
+     *Note Actions::.
+
+`$N'
+     In an action, the semantic value of the N-th symbol of the
+     right-hand side of the rule.  *Note Actions::.
+
+`$accept'
+     The predefined nonterminal whose only rule is `$accept: START
+     $end', where START is the start symbol.  *Note The Start-Symbol:
+     Start Decl.  It cannot be used in the grammar.
+
+`$end'
+     The predefined token marking the end of the token stream.  It
+     cannot be used in the grammar.
+
+`$undefined'
+     The predefined token onto which all undefined values returned by
+     `yylex' are mapped.  It cannot be used in the grammar, rather, use
+     `error'.
 
 `error'
      A token name reserved for error recovery.  This token may be used
@@ -106,6 +954,10 @@ Bison Symbols
      Macro to discard a value from the parser stack and fake a
      look-ahead token.  *Note Special Features for Use in Actions:
      Action Features.
+
+`YYDEBUG'
+     Macro to define to equip the parser with tracing code.  *Note
+     Tracing Your Parser: Tracing.
 
 `YYERROR'
      Macro to pretend that a syntax error has just been detected: call
@@ -148,9 +1000,9 @@ Bison Symbols
      Features.
 
 `YYSTACK_USE_ALLOCA'
-     Macro used to control the use of `alloca'. If defined to `0', the
+     Macro used to control the use of `alloca'.  If defined to `0', the
      parser will not use `alloca' but `malloc' when trying to grow its
-     internal stacks. Do _not_ define `YYSTACK_USE_ALLOCA' to anything
+     internal stacks.  Do _not_ define `YYSTACK_USE_ALLOCA' to anything
      else.
 
 `YYSTYPE'
@@ -171,7 +1023,7 @@ Bison Symbols
 `yydebug'
      External integer variable set to zero by default.  If `yydebug' is
      given a nonzero value, the parser will output information on input
-     symbols and parser action.  *Note Debugging Your Parser: Debugging.
+     symbols and parser action.  *Note Tracing Your Parser: Tracing.
 
 `yyerrok'
      Macro to cause parser to recover immediately to its normal mode
@@ -219,16 +1071,30 @@ Bison Symbols
      Bison declaration to create a header file meant for the scanner.
      *Note Decl Summary::.
 
+`%dprec'
+     Bison declaration to assign a precedence to a rule that is used at
+     parse time to resolve reduce/reduce conflicts.  *Note GLR
+     Parsers::.
+
 `%file-prefix="PREFIX"'
-     Bison declaration to set tge prefix of the output files. *Note
+     Bison declaration to set the prefix of the output files.  *Note
      Decl Summary::.
+
+`%glr-parser'
+     Bison declaration to produce a GLR parser.  *Note GLR Parsers::.
 
 `%left'
      Bison declaration to assign left associativity to token(s).  *Note
      Operator Precedence: Precedence Decl.
 
+`%merge'
+     Bison declaration to assign a merging function to a rule.  If
+     there is a reduce/reduce conflict with a rule having the same
+     merging function, the function is applied to the two semantic
+     values to get a single result.  *Note GLR Parsers::.
+
 `%name-prefix="PREFIX"'
-     Bison declaration to rename the external symbols. *Note Decl
+     Bison declaration to rename the external symbols.  *Note Decl
      Summary::.
 
 `%no-lines'
@@ -240,7 +1106,7 @@ Bison Symbols
      Operator Precedence: Precedence Decl.
 
 `%output="FILENAME"'
-     Bison declaration to set the name of the parser file. *Note Decl
+     Bison declaration to set the name of the parser file.  *Note Decl
      Summary::.
 
 `%prec'
@@ -275,18 +1141,18 @@ Bison Symbols
      Bison declaration to specify several possible data types for
      semantic values.  *Note The Collection of Value Types: Union Decl.
 
+
    These are the punctuation and delimiters used in Bison input:
 
 `%%'
      Delimiter used to separate the grammar rule section from the Bison
-     declarations section or the additional C code section.  *Note The
-     Overall Layout of a Bison Grammar: Grammar Layout.
+     declarations section or the epilogue.  *Note The Overall Layout of
+     a Bison Grammar: Grammar Layout.
 
 `%{ %}'
      All code listed between `%{' and `%}' is copied directly to the
-     output file uninterpreted.  Such code forms the "C declarations"
-     section of the input file.  *Note Outline of a Bison Grammar:
-     Grammar Outline.
+     output file uninterpreted.  Such code forms the prologue of the
+     input file.  *Note Outline of a Bison Grammar: Grammar Outline.
 
 `/*...*/'
      Comment delimiters, as in C.
@@ -303,7 +1169,7 @@ Bison Symbols
      Syntax of Grammar Rules: Rules.
 
 
-File: bison.info,  Node: Glossary,  Next: Copying This Manual,  Prev: Table of Symbols,  Up: Top
+File: bison.info,  Node: Glossary,  Next: FAQ,  Prev: Table of Symbols,  Up: Top
 
 Glossary
 ********
@@ -335,6 +1201,14 @@ Finite-state stack machine
      machine.  In the case of the parser, the input is the language
      being parsed, and the states correspond to various stages in the
      grammar rules.  *Note The Bison Parser Algorithm: Algorithm.
+
+Generalized LR (GLR)
+     A parsing algorithm that can handle all context-free grammars,
+     including those that are not LALR(1).  It resolves situations that
+     Bison's usual LALR(1) algorithm cannot by effectively splitting
+     off multiple parsers, trying all possible parsers, and discarding
+     those that fail in the light of additional right context.  *Note
+     Generalized LR Parsing: Generalized LR Parsing.
 
 Grouping
      A language construct that is (in general) grammatically divisible;
@@ -469,7 +1343,7 @@ Terminal symbol
      Grammar.
 
 
-File: bison.info,  Node: Copying This Manual,  Next: Index,  Prev: Glossary,  Up: Top
+File: bison.info,  Node: Copying This Manual,  Next: Index,  Prev: FAQ,  Up: Top
 
 Copying This Manual
 *******************
@@ -477,619 +1351,4 @@ Copying This Manual
 * Menu:
 
 * GNU Free Documentation License::  License for copying this manual.
-
-
-File: bison.info,  Node: GNU Free Documentation License,  Up: Copying This Manual
-
-GNU Free Documentation License
-==============================
-
-                        Version 1.1, March 2000
-     Copyright (C) 2000 Free Software Foundation, Inc.
-     59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
-     
-     Everyone is permitted to copy and distribute verbatim copies
-     of this license document, but changing it is not allowed.
-
-  0. PREAMBLE
-
-     The purpose of this License is to make a manual, textbook, or other
-     written document "free" in the sense of freedom: to assure everyone
-     the effective freedom to copy and redistribute it, with or without
-     modifying it, either commercially or noncommercially.  Secondarily,
-     this License preserves for the author and publisher a way to get
-     credit for their work, while not being considered responsible for
-     modifications made by others.
-
-     This License is a kind of "copyleft", which means that derivative
-     works of the document must themselves be free in the same sense.
-     It complements the GNU General Public License, which is a copyleft
-     license designed for free software.
-
-     We have designed this License in order to use it for manuals for
-     free software, because free software needs free documentation: a
-     free program should come with manuals providing the same freedoms
-     that the software does.  But this License is not limited to
-     software manuals; it can be used for any textual work, regardless
-     of subject matter or whether it is published as a printed book.
-     We recommend this License principally for works whose purpose is
-     instruction or reference.
-
-  1. APPLICABILITY AND DEFINITIONS
-
-     This License applies to any manual or other work that contains a
-     notice placed by the copyright holder saying it can be distributed
-     under the terms of this License.  The "Document", below, refers to
-     any such manual or work.  Any member of the public is a licensee,
-     and is addressed as "you".
-
-     A "Modified Version" of the Document means any work containing the
-     Document or a portion of it, either copied verbatim, or with
-     modifications and/or translated into another language.
-
-     A "Secondary Section" is a named appendix or a front-matter
-     section of the Document that deals exclusively with the
-     relationship of the publishers or authors of the Document to the
-     Document's overall subject (or to related matters) and contains
-     nothing that could fall directly within that overall subject.
-     (For example, if the Document is in part a textbook of
-     mathematics, a Secondary Section may not explain any mathematics.)
-     The relationship could be a matter of historical connection with
-     the subject or with related matters, or of legal, commercial,
-     philosophical, ethical or political position regarding them.
-
-     The "Invariant Sections" are certain Secondary Sections whose
-     titles are designated, as being those of Invariant Sections, in
-     the notice that says that the Document is released under this
-     License.
-
-     The "Cover Texts" are certain short passages of text that are
-     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
-     that says that the Document is released under this License.
-
-     A "Transparent" copy of the Document means a machine-readable copy,
-     represented in a format whose specification is available to the
-     general public, whose contents can be viewed and edited directly
-     and straightforwardly with generic text editors or (for images
-     composed of pixels) generic paint programs or (for drawings) some
-     widely available drawing editor, and that is suitable for input to
-     text formatters or for automatic translation to a variety of
-     formats suitable for input to text formatters.  A copy made in an
-     otherwise Transparent file format whose markup has been designed
-     to thwart or discourage subsequent modification by readers is not
-     Transparent.  A copy that is not "Transparent" is called "Opaque".
-
-     Examples of suitable formats for Transparent copies include plain
-     ASCII without markup, Texinfo input format, LaTeX input format,
-     SGML or XML using a publicly available DTD, and
-     standard-conforming simple HTML designed for human modification.
-     Opaque formats include PostScript, PDF, proprietary formats that
-     can be read and edited only by proprietary word processors, SGML
-     or XML for which the DTD and/or processing tools are not generally
-     available, and the machine-generated HTML produced by some word
-     processors for output purposes only.
-
-     The "Title Page" means, for a printed book, the title page itself,
-     plus such following pages as are needed to hold, legibly, the
-     material this License requires to appear in the title page.  For
-     works in formats which do not have any title page as such, "Title
-     Page" means the text near the most prominent appearance of the
-     work's title, preceding the beginning of the body of the text.
-
-  2. VERBATIM COPYING
-
-     You may copy and distribute the Document in any medium, either
-     commercially or noncommercially, provided that this License, the
-     copyright notices, and the license notice saying this License
-     applies to the Document are reproduced in all copies, and that you
-     add no other conditions whatsoever to those of this License.  You
-     may not use technical measures to obstruct or control the reading
-     or further copying of the copies you make or distribute.  However,
-     you may accept compensation in exchange for copies.  If you
-     distribute a large enough number of copies you must also follow
-     the conditions in section 3.
-
-     You may also lend copies, under the same conditions stated above,
-     and you may publicly display copies.
-
-  3. COPYING IN QUANTITY
-
-     If you publish printed copies of the Document numbering more than
-     100, and the Document's license notice requires Cover Texts, you
-     must enclose the copies in covers that carry, clearly and legibly,
-     all these Cover Texts: Front-Cover Texts on the front cover, and
-     Back-Cover Texts on the back cover.  Both covers must also clearly
-     and legibly identify you as the publisher of these copies.  The
-     front cover must present the full title with all words of the
-     title equally prominent and visible.  You may add other material
-     on the covers in addition.  Copying with changes limited to the
-     covers, as long as they preserve the title of the Document and
-     satisfy these conditions, can be treated as verbatim copying in
-     other respects.
-
-     If the required texts for either cover are too voluminous to fit
-     legibly, you should put the first ones listed (as many as fit
-     reasonably) on the actual cover, and continue the rest onto
-     adjacent pages.
-
-     If you publish or distribute Opaque copies of the Document
-     numbering more than 100, you must either include a
-     machine-readable Transparent copy along with each Opaque copy, or
-     state in or with each Opaque copy a publicly-accessible
-     computer-network location containing a complete Transparent copy
-     of the Document, free of added material, which the general
-     network-using public has access to download anonymously at no
-     charge using public-standard network protocols.  If you use the
-     latter option, you must take reasonably prudent steps, when you
-     begin distribution of Opaque copies in quantity, to ensure that
-     this Transparent copy will remain thus accessible at the stated
-     location until at least one year after the last time you
-     distribute an Opaque copy (directly or through your agents or
-     retailers) of that edition to the public.
-
-     It is requested, but not required, that you contact the authors of
-     the Document well before redistributing any large number of
-     copies, to give them a chance to provide you with an updated
-     version of the Document.
-
-  4. MODIFICATIONS
-
-     You may copy and distribute a Modified Version of the Document
-     under the conditions of sections 2 and 3 above, provided that you
-     release the Modified Version under precisely this License, with
-     the Modified Version filling the role of the Document, thus
-     licensing distribution and modification of the Modified Version to
-     whoever possesses a copy of it.  In addition, you must do these
-     things in the Modified Version:
-
-       A. Use in the Title Page (and on the covers, if any) a title
-          distinct from that of the Document, and from those of
-          previous versions (which should, if there were any, be listed
-          in the History section of the Document).  You may use the
-          same title as a previous version if the original publisher of
-          that version gives permission.
-
-       B. List on the Title Page, as authors, one or more persons or
-          entities responsible for authorship of the modifications in
-          the Modified Version, together with at least five of the
-          principal authors of the Document (all of its principal
-          authors, if it has less than five).
-
-       C. State on the Title page the name of the publisher of the
-          Modified Version, as the publisher.
-
-       D. Preserve all the copyright notices of the Document.
-
-       E. Add an appropriate copyright notice for your modifications
-          adjacent to the other copyright notices.
-
-       F. Include, immediately after the copyright notices, a license
-          notice giving the public permission to use the Modified
-          Version under the terms of this License, in the form shown in
-          the Addendum below.
-
-       G. Preserve in that license notice the full lists of Invariant
-          Sections and required Cover Texts given in the Document's
-          license notice.
-
-       H. Include an unaltered copy of this License.
-
-       I. Preserve the section entitled "History", and its title, and
-          add to it an item stating at least the title, year, new
-          authors, and publisher of the Modified Version as given on
-          the Title Page.  If there is no section entitled "History" in
-          the Document, create one stating the title, year, authors,
-          and publisher of the Document as given on its Title Page,
-          then add an item describing the Modified Version as stated in
-          the previous sentence.
-
-       J. Preserve the network location, if any, given in the Document
-          for public access to a Transparent copy of the Document, and
-          likewise the network locations given in the Document for
-          previous versions it was based on.  These may be placed in
-          the "History" section.  You may omit a network location for a
-          work that was published at least four years before the
-          Document itself, or if the original publisher of the version
-          it refers to gives permission.
-
-       K. In any section entitled "Acknowledgments" or "Dedications",
-          preserve the section's title, and preserve in the section all
-          the substance and tone of each of the contributor
-          acknowledgments and/or dedications given therein.
-
-       L. Preserve all the Invariant Sections of the Document,
-          unaltered in their text and in their titles.  Section numbers
-          or the equivalent are not considered part of the section
-          titles.
-
-       M. Delete any section entitled "Endorsements".  Such a section
-          may not be included in the Modified Version.
-
-       N. Do not retitle any existing section as "Endorsements" or to
-          conflict in title with any Invariant Section.
-
-     If the Modified Version includes new front-matter sections or
-     appendices that qualify as Secondary Sections and contain no
-     material copied from the Document, you may at your option
-     designate some or all of these sections as invariant.  To do this,
-     add their titles to the list of Invariant Sections in the Modified
-     Version's license notice.  These titles must be distinct from any
-     other section titles.
-
-     You may add a section entitled "Endorsements", provided it contains
-     nothing but endorsements of your Modified Version by various
-     parties--for example, statements of peer review or that the text
-     has been approved by an organization as the authoritative
-     definition of a standard.
-
-     You may add a passage of up to five words as a Front-Cover Text,
-     and a passage of up to 25 words as a Back-Cover Text, to the end
-     of the list of Cover Texts in the Modified Version.  Only one
-     passage of Front-Cover Text and one of Back-Cover Text may be
-     added by (or through arrangements made by) any one entity.  If the
-     Document already includes a cover text for the same cover,
-     previously added by you or by arrangement made by the same entity
-     you are acting on behalf of, you may not add another; but you may
-     replace the old one, on explicit permission from the previous
-     publisher that added the old one.
-
-     The author(s) and publisher(s) of the Document do not by this
-     License give permission to use their names for publicity for or to
-     assert or imply endorsement of any Modified Version.
-
-  5. COMBINING DOCUMENTS
-
-     You may combine the Document with other documents released under
-     this License, under the terms defined in section 4 above for
-     modified versions, provided that you include in the combination
-     all of the Invariant Sections of all of the original documents,
-     unmodified, and list them all as Invariant Sections of your
-     combined work in its license notice.
-
-     The combined work need only contain one copy of this License, and
-     multiple identical Invariant Sections may be replaced with a single
-     copy.  If there are multiple Invariant Sections with the same name
-     but different contents, make the title of each such section unique
-     by adding at the end of it, in parentheses, the name of the
-     original author or publisher of that section if known, or else a
-     unique number.  Make the same adjustment to the section titles in
-     the list of Invariant Sections in the license notice of the
-     combined work.
-
-     In the combination, you must combine any sections entitled
-     "History" in the various original documents, forming one section
-     entitled "History"; likewise combine any sections entitled
-     "Acknowledgments", and any sections entitled "Dedications".  You
-     must delete all sections entitled "Endorsements."
-
-  6. COLLECTIONS OF DOCUMENTS
-
-     You may make a collection consisting of the Document and other
-     documents released under this License, and replace the individual
-     copies of this License in the various documents with a single copy
-     that is included in the collection, provided that you follow the
-     rules of this License for verbatim copying of each of the
-     documents in all other respects.
-
-     You may extract a single document from such a collection, and
-     distribute it individually under this License, provided you insert
-     a copy of this License into the extracted document, and follow
-     this License in all other respects regarding verbatim copying of
-     that document.
-
-  7. AGGREGATION WITH INDEPENDENT WORKS
-
-     A compilation of the Document or its derivatives with other
-     separate and independent documents or works, in or on a volume of
-     a storage or distribution medium, does not as a whole count as a
-     Modified Version of the Document, provided no compilation
-     copyright is claimed for the compilation.  Such a compilation is
-     called an "aggregate", and this License does not apply to the
-     other self-contained works thus compiled with the Document, on
-     account of their being thus compiled, if they are not themselves
-     derivative works of the Document.
-
-     If the Cover Text requirement of section 3 is applicable to these
-     copies of the Document, then if the Document is less than one
-     quarter of the entire aggregate, the Document's Cover Texts may be
-     placed on covers that surround only the Document within the
-     aggregate.  Otherwise they must appear on covers around the whole
-     aggregate.
-
-  8. TRANSLATION
-
-     Translation is considered a kind of modification, so you may
-     distribute translations of the Document under the terms of section
-     4.  Replacing Invariant Sections with translations requires special
-     permission from their copyright holders, but you may include
-     translations of some or all Invariant Sections in addition to the
-     original versions of these Invariant Sections.  You may include a
-     translation of this License provided that you also include the
-     original English version of this License.  In case of a
-     disagreement between the translation and the original English
-     version of this License, the original English version will prevail.
-
-  9. TERMINATION
-
-     You may not copy, modify, sublicense, or distribute the Document
-     except as expressly provided for under this License.  Any other
-     attempt to copy, modify, sublicense or distribute the Document is
-     void, and will automatically terminate your rights under this
-     License.  However, parties who have received copies, or rights,
-     from you under this License will not have their licenses
-     terminated so long as such parties remain in full compliance.
-
- 10. FUTURE REVISIONS OF THIS LICENSE
-
-     The Free Software Foundation may publish new, revised versions of
-     the GNU Free Documentation License from time to time.  Such new
-     versions will be similar in spirit to the present version, but may
-     differ in detail to address new problems or concerns.  See
-     `http://www.gnu.org/copyleft/'.
-
-     Each version of the License is given a distinguishing version
-     number.  If the Document specifies that a particular numbered
-     version of this License "or any later version" applies to it, you
-     have the option of following the terms and conditions either of
-     that specified version or of any later version that has been
-     published (not as a draft) by the Free Software Foundation.  If
-     the Document does not specify a version number of this License,
-     you may choose any version ever published (not as a draft) by the
-     Free Software Foundation.
-
-ADDENDUM: How to use this License for your documents
-----------------------------------------------------
-
-   To use this License in a document you have written, include a copy of
-the License in the document and put the following copyright and license
-notices just after the title page:
-
-       Copyright (C)  YEAR  YOUR NAME.
-       Permission is granted to copy, distribute and/or modify this document
-       under the terms of the GNU Free Documentation License, Version 1.1
-       or any later version published by the Free Software Foundation;
-       with the Invariant Sections being LIST THEIR TITLES, with the
-       Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
-       A copy of the license is included in the section entitled ``GNU
-       Free Documentation License''.
-
-   If you have no Invariant Sections, write "with no Invariant Sections"
-instead of saying which ones are invariant.  If you have no Front-Cover
-Texts, write "no Front-Cover Texts" instead of "Front-Cover Texts being
-LIST"; likewise for Back-Cover Texts.
-
-   If your document contains nontrivial examples of program code, we
-recommend releasing these examples in parallel under your choice of
-free software license, such as the GNU General Public License, to
-permit their use in free software.
-
-
-File: bison.info,  Node: Index,  Prev: Copying This Manual,  Up: Top
-
-Index
-*****
-
-* Menu:
-
-* $$:                                    Actions.
-* $N:                                    Actions.
-* %expect:                               Expect Decl.
-* %left:                                 Using Precedence.
-* %nonassoc:                             Using Precedence.
-* %prec:                                 Contextual Precedence.
-* %pure_parser:                          Pure Decl.
-* %right:                                Using Precedence.
-* %start:                                Start Decl.
-* %token:                                Token Decl.
-* %type:                                 Type Decl.
-* %union:                                Union Decl.
-* @$ <1>:                                Action Features.
-* @$:                                    Actions and Locations.
-* @N <1>:                                Action Features.
-* @N:                                    Actions and Locations.
-* action:                                Actions.
-* action data types:                     Action Types.
-* action features summary:               Action Features.
-* actions in mid-rule:                   Mid-Rule Actions.
-* actions, location:                     Actions and Locations.
-* actions, semantic:                     Semantic Actions.
-* additional C code section:             C Code.
-* algorithm of parser:                   Algorithm.
-* associativity:                         Why Precedence.
-* Backus-Naur form:                      Language and Grammar.
-* Bison declaration summary:             Decl Summary.
-* Bison declarations:                    Declarations.
-* Bison declarations (introduction):     Bison Declarations.
-* Bison grammar:                         Grammar in Bison.
-* Bison invocation:                      Invocation.
-* Bison parser:                          Bison Parser.
-* Bison parser algorithm:                Algorithm.
-* Bison symbols, table of:               Table of Symbols.
-* Bison utility:                         Bison Parser.
-* BISON_HAIRY:                           Environment Variables.
-* BISON_SIMPLE:                          Environment Variables.
-* BNF:                                   Language and Grammar.
-* C code, section for additional:        C Code.
-* C declarations section:                C Declarations.
-* C-language interface:                  Interface.
-* calc:                                  Infix Calc.
-* calculator, infix notation:            Infix Calc.
-* calculator, location tracking:         Location Tracking Calc.
-* calculator, multi-function:            Multi-function Calc.
-* calculator, simple:                    RPN Calc.
-* character token:                       Symbols.
-* compiling the parser:                  Rpcalc Compile.
-* conflicts:                             Shift/Reduce.
-* conflicts, reduce/reduce:              Reduce/Reduce.
-* conflicts, suppressing warnings of:    Expect Decl.
-* context-dependent precedence:          Contextual Precedence.
-* context-free grammar:                  Language and Grammar.
-* controlling function:                  Rpcalc Main.
-* dangling else:                         Shift/Reduce.
-* data type of locations:                Location Type.
-* data types in actions:                 Action Types.
-* data types of semantic values:         Value Type.
-* debugging:                             Debugging.
-* declaration summary:                   Decl Summary.
-* declarations, Bison:                   Declarations.
-* declarations, Bison (introduction):    Bison Declarations.
-* declarations, C:                       C Declarations.
-* declaring literal string tokens:       Token Decl.
-* declaring operator precedence:         Precedence Decl.
-* declaring the start symbol:            Start Decl.
-* declaring token type names:            Token Decl.
-* declaring value types:                 Union Decl.
-* declaring value types, nonterminals:   Type Decl.
-* default action:                        Actions.
-* default data type:                     Value Type.
-* default location type:                 Location Type.
-* default stack limit:                   Stack Overflow.
-* default start symbol:                  Start Decl.
-* defining language semantics:           Semantics.
-* else, dangling:                        Shift/Reduce.
-* environment variables:                 Environment Variables.
-* error:                                 Error Recovery.
-* error recovery:                        Error Recovery.
-* error recovery, simple:                Simple Error Recovery.
-* error reporting function:              Error Reporting.
-* error reporting routine:               Rpcalc Error.
-* examples, simple:                      Examples.
-* exercises:                             Exercises.
-* FDL, GNU Free Documentation License:   GNU Free Documentation License.
-* file format:                           Grammar Layout.
-* finite-state machine:                  Parser States.
-* formal grammar:                        Grammar in Bison.
-* format of grammar file:                Grammar Layout.
-* glossary:                              Glossary.
-* grammar file:                          Grammar Layout.
-* grammar rule syntax:                   Rules.
-* grammar rules section:                 Grammar Rules.
-* grammar, Bison:                        Grammar in Bison.
-* grammar, context-free:                 Language and Grammar.
-* grouping, syntactic:                   Language and Grammar.
-* infix notation calculator:             Infix Calc.
-* interface:                             Interface.
-* introduction:                          Introduction.
-* invoking Bison:                        Invocation.
-* invoking Bison under VMS:              VMS Invocation.
-* LALR(1):                               Mystery Conflicts.
-* language semantics, defining:          Semantics.
-* layout of Bison grammar:               Grammar Layout.
-* left recursion:                        Recursion.
-* lexical analyzer:                      Lexical.
-* lexical analyzer, purpose:             Bison Parser.
-* lexical analyzer, writing:             Rpcalc Lexer.
-* lexical tie-in:                        Lexical Tie-ins.
-* literal string token:                  Symbols.
-* literal token:                         Symbols.
-* location <1>:                          Locations.
-* location:                              Locations Overview.
-* location actions:                      Actions and Locations.
-* location tracking calculator:          Location Tracking Calc.
-* look-ahead token:                      Look-Ahead.
-* LR(1):                                 Mystery Conflicts.
-* ltcalc:                                Location Tracking Calc.
-* main function in simple example:       Rpcalc Main.
-* mfcalc:                                Multi-function Calc.
-* mid-rule actions:                      Mid-Rule Actions.
-* multi-function calculator:             Multi-function Calc.
-* multicharacter literal:                Symbols.
-* mutual recursion:                      Recursion.
-* nonterminal symbol:                    Symbols.
-* operator precedence:                   Precedence.
-* operator precedence, declaring:        Precedence Decl.
-* options for invoking Bison:            Invocation.
-* overflow of parser stack:              Stack Overflow.
-* parse error:                           Error Reporting.
-* parser:                                Bison Parser.
-* parser stack:                          Algorithm.
-* parser stack overflow:                 Stack Overflow.
-* parser state:                          Parser States.
-* polish notation calculator:            RPN Calc.
-* position, textual <1>:                 Locations.
-* position, textual:                     Locations Overview.
-* precedence declarations:               Precedence Decl.
-* precedence of operators:               Precedence.
-* precedence, context-dependent:         Contextual Precedence.
-* precedence, unary operator:            Contextual Precedence.
-* preventing warnings about conflicts:   Expect Decl.
-* pure parser:                           Pure Decl.
-* recovery from errors:                  Error Recovery.
-* recursive rule:                        Recursion.
-* reduce/reduce conflict:                Reduce/Reduce.
-* reduction:                             Algorithm.
-* reentrant parser:                      Pure Decl.
-* reverse polish notation:               RPN Calc.
-* right recursion:                       Recursion.
-* rpcalc:                                RPN Calc.
-* rule syntax:                           Rules.
-* rules section for grammar:             Grammar Rules.
-* running Bison (introduction):          Rpcalc Gen.
-* semantic actions:                      Semantic Actions.
-* semantic value:                        Semantic Values.
-* semantic value type:                   Value Type.
-* shift/reduce conflicts:                Shift/Reduce.
-* shifting:                              Algorithm.
-* simple examples:                       Examples.
-* single-character literal:              Symbols.
-* stack overflow:                        Stack Overflow.
-* stack, parser:                         Algorithm.
-* stages in using Bison:                 Stages.
-* start symbol:                          Language and Grammar.
-* start symbol, declaring:               Start Decl.
-* state (of parser):                     Parser States.
-* string token:                          Symbols.
-* summary, action features:              Action Features.
-* summary, Bison declaration:            Decl Summary.
-* suppressing conflict warnings:         Expect Decl.
-* symbol:                                Symbols.
-* symbol table example:                  Mfcalc Symtab.
-* symbols (abstract):                    Language and Grammar.
-* symbols in Bison, table of:            Table of Symbols.
-* syntactic grouping:                    Language and Grammar.
-* syntax error:                          Error Reporting.
-* syntax of grammar rules:               Rules.
-* terminal symbol:                       Symbols.
-* textual position <1>:                  Locations.
-* textual position:                      Locations Overview.
-* token:                                 Language and Grammar.
-* token type:                            Symbols.
-* token type names, declaring:           Token Decl.
-* tracing the parser:                    Debugging.
-* unary operator precedence:             Contextual Precedence.
-* using Bison:                           Stages.
-* value type, semantic:                  Value Type.
-* value types, declaring:                Union Decl.
-* value types, nonterminals, declaring:  Type Decl.
-* value, semantic:                       Semantic Values.
-* VMS:                                   VMS Invocation.
-* warnings, preventing:                  Expect Decl.
-* writing a lexical analyzer:            Rpcalc Lexer.
-* YYABORT:                               Parser Function.
-* YYACCEPT:                              Parser Function.
-* YYBACKUP:                              Action Features.
-* yychar:                                Look-Ahead.
-* yyclearin:                             Error Recovery.
-* yydebug:                               Debugging.
-* YYDEBUG:                               Debugging.
-* YYEMPTY:                               Action Features.
-* yyerrok:                               Error Recovery.
-* YYERROR:                               Action Features.
-* yyerror:                               Error Reporting.
-* YYERROR_VERBOSE:                       Error Reporting.
-* YYINITDEPTH:                           Stack Overflow.
-* yylex:                                 Lexical.
-* YYLEX_PARAM:                           Pure Calling.
-* yylloc:                                Token Positions.
-* YYLLOC_DEFAULT:                        Location Default Action.
-* YYLTYPE:                               Token Positions.
-* yylval:                                Token Values.
-* YYMAXDEPTH:                            Stack Overflow.
-* yynerrs:                               Error Reporting.
-* yyparse:                               Parser Function.
-* YYPARSE_PARAM:                         Pure Calling.
-* YYPRINT:                               Debugging.
-* YYRECOVERING:                          Error Recovery.
-* |:                                     Rules.
-
 

@@ -1,32 +1,30 @@
-Ceci est le fichier Info bison.info, produit par Makeinfo version 4.0b
-à partir bison.texinfo.
+Ceci est le fichier Info bison.info, produit par Makeinfo version 4.2 à
+partir bison.texinfo.
 
-START-INFO-DIR-ENTRY
-* bison: (bison).	GNU Project parser generator (yacc replacement).
-END-INFO-DIR-ENTRY
 
-   This file documents the Bison parser generator.
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
-2000, 2001 Free Software Foundation, Inc.
+2000, 2001, 2002 Free Software Foundation, Inc.
 
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
 
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided also
-that the sections entitled "GNU General Public License" and "Conditions
-for Using Bison" are included exactly as in the original, and provided
-that the entire resulting derived work is distributed under the terms
-of a permission notice identical to this one.
-
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that the sections entitled "GNU General Public
-License", "Conditions for Using Bison" and this permission notice may be
-included in translations approved by the Free Software Foundation
-instead of in the original English.
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).	GNU parser generator (yacc replacement).
+END-INFO-DIR-ENTRY
 
 
 File: bison.info,  Node: Top,  Next: Introduction,  Up: (dir)
@@ -34,8 +32,26 @@ File: bison.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Bison
 *****
 
-   This manual documents version 1.33 of Bison, updated 5 January 2002.
 
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
+
+   Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
+2000, 2001, 2002 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
 * Menu:
 
 * Introduction::
@@ -54,10 +70,11 @@ Reference sections:
 * Error Recovery::    Writing rules for error recovery.
 * Context Dependency::  What to do if your language syntax is too
                         messy for Bison to handle straightforwardly.
-* Debugging::         Debugging Bison parsers that parse wrong.
+* Debugging::         Understanding or debugging Bison parsers.
 * Invocation::        How to run Bison (to produce the parser source file).
 * Table of Symbols::  All the keywords of the Bison language are explained.
 * Glossary::          Basic concepts are explained.
+* FAQ::               Frequently Asked Questions
 * Copying This Manual::  License for copying this manual.
 * Index::             Cross-references to the text.
 
@@ -90,7 +107,7 @@ Examples
 
 Reverse Polish Notation Calculator
 
-* Decls: Rpcalc Decls.  Bison and C declarations for rpcalc.
+* Decls: Rpcalc Decls.  Prologue (declarations) for rpcalc.
 * Rules: Rpcalc Rules.  Grammar Rules for rpcalc, with explanation.
 * Lexer: Rpcalc Lexer.  The lexical analyzer.
 * Main: Rpcalc Main.    The controlling function.
@@ -128,10 +145,10 @@ Bison Grammar Files
 
 Outline of a Bison Grammar
 
-* C Declarations::    Syntax and usage of the C declarations section.
+* Prologue::          Syntax and usage of the prologue (declarations section).
 * Bison Declarations::  Syntax and usage of the Bison declarations section.
 * Grammar Rules::     Syntax and usage of the grammar rules section.
-* C Code::            Syntax and usage of the additional C code section.
+* Epilogue::          Syntax and usage of the epilogue (additional code section).
 
 Defining Language Semantics
 
@@ -182,6 +199,7 @@ The Bison Parser Algorithm
 * Parser States::     The parser is a finite-state-machine with stack.
 * Reduce/Reduce::     When two rules are applicable in the same situation.
 * Mystery Conflicts::  Reduce/reduce conflicts that look unjustified.
+* Generalized LR Parsing::  Parsing arbitrary context-free grammars.
 * Stack Overflow::    What happens when stack gets full.  How to avoid it.
 
 Operator Precedence
@@ -198,12 +216,21 @@ Handling Context Dependencies
 * Tie-in Recovery::   Lexical tie-ins have implications for how
                         error recovery rules must be written.
 
+Understanding or Debugging Your Parser
+
+* Understanding::     Understanding the structure of your parser.
+* Tracing::           Tracing the execution of your parser.
+
 Invoking Bison
 
 * Bison Options::     All the options described in detail,
 			in alphabetical order by short options.
 * Option Cross Key::  Alphabetical list of long options.
 * VMS Invocation::    Bison command syntax on VMS.
+
+Frequently Asked Questions
+
+* Parser Stack Overflow::      Breaking the Stack Limits
 
 Copying This Manual
 
@@ -237,7 +264,7 @@ Bison in detail.
 it Yacc-compatible.  Wilfred Hansen of Carnegie Mellon University added
 multi-character string literals and other features.
 
-   This edition corresponds to version 1.33 of Bison.
+   This edition corresponds to version 1.75 of Bison.
 
 
 File: bison.info,  Node: Conditions,  Next: Copying,  Prev: Introduction,  Up: Top
@@ -246,9 +273,9 @@ Conditions for Using Bison
 **************************
 
    As of Bison version 1.24, we have changed the distribution terms for
-`yyparse' to permit using Bison's output in nonfree programs.
-Formerly, Bison parsers could be used only in programs that were free
-software.
+`yyparse' to permit using Bison's output in nonfree programs when Bison
+is generating C code for LALR(1) parsers.  Formerly, these parsers
+could be used only in programs that were free software.
 
    The other GNU programming tools, such as the GNU C compiler, have
 never had such a requirement.  They could always be used for nonfree
@@ -269,6 +296,13 @@ concluded that limiting Bison's use to free software was doing little to
 encourage people to make other software free.  So we decided to make the
 practical conditions for using Bison match the practical conditions for
 using the other GNU tools.
+
+   This exception applies only when Bison is generating C code for a
+LALR(1) parser; otherwise, the GPL terms operate as usual.  You can
+tell whether the exception applies to your `.c' output file by
+inspecting it to see whether it says "As a special exception, when this
+file is copied by Bison into a Bison output file, you may use that
+output file without restriction."
 
 
 File: bison.info,  Node: Copying,  Next: Concepts,  Prev: Conditions,  Up: Top
@@ -650,6 +684,7 @@ carefully.
                         a semantic value (the value of an integer,
                         the name of an identifier, etc.).
 * Semantic Actions::  Each rule can have an action containing C code.
+* GLR Parsers::       Writing parsers for general context-free languages
 * Locations Overview::    Tracking Locations.
 * Bison Parser::      What are Bison's input and output,
                         how is the output used?
@@ -678,14 +713,30 @@ specify the language Algol 60.  Any grammar expressed in BNF is a
 context-free grammar.  The input to Bison is essentially
 machine-readable BNF.
 
-   Not all context-free languages can be handled by Bison, only those
-that are LALR(1).  In brief, this means that it must be possible to
-tell how to parse any portion of an input string with just a single
-token of look-ahead.  Strictly speaking, that is a description of an
-LR(1) grammar, and LALR(1) involves additional restrictions that are
-hard to explain simply; but it is rare in actual practice to find an
-LR(1) grammar that fails to be LALR(1).  *Note Mysterious Reduce/Reduce
-Conflicts: Mystery Conflicts, for more information on this.
+   There are various important subclasses of context-free grammar.
+Although it can handle almost all context-free grammars, Bison is
+optimized for what are called LALR(1) grammars.  In brief, in these
+grammars, it must be possible to tell how to parse any portion of an
+input string with just a single token of look-ahead.  Strictly
+speaking, that is a description of an LR(1) grammar, and LALR(1)
+involves additional restrictions that are hard to explain simply; but
+it is rare in actual practice to find an LR(1) grammar that fails to be
+LALR(1).  *Note Mysterious Reduce/Reduce Conflicts: Mystery Conflicts,
+for more information on this.
+
+   Parsers for LALR(1) grammars are "deterministic", meaning roughly
+that the next grammar rule to apply at any point in the input is
+uniquely determined by the preceding input and a fixed, finite portion
+(called a "look-ahead") of the remaining input.  A context-free grammar
+can be "ambiguous", meaning that there are multiple ways to apply the
+grammar rules to get the some inputs.  Even unambiguous grammars can be
+"non-deterministic", meaning that no fixed look-ahead always suffices
+to determine the next grammar rule to apply.  With the proper
+declarations, Bison is also able to parse these more general
+context-free grammars, using a technique known as GLR parsing (for
+Generalized LR).  Bison's GLR parsers are able to handle any
+context-free grammar for which the number of possible parses of any
+given string is finite.
 
    In the formal grammatical rules for a language, each kind of
 syntactic unit or grouping is named by a "symbol".  Those which are
@@ -841,7 +892,7 @@ programming language, an expression typically has a semantic value that
 is a tree structure describing the meaning of the expression.
 
 
-File: bison.info,  Node: Semantic Actions,  Next: Locations Overview,  Prev: Semantic Values,  Up: Concepts
+File: bison.info,  Node: Semantic Actions,  Next: GLR Parsers,  Prev: Semantic Values,  Up: Concepts
 
 Semantic Actions
 ================
@@ -870,214 +921,146 @@ The action says how to produce the semantic value of the sum expression
 from the values of the two subexpressions.
 
 
-File: bison.info,  Node: Locations Overview,  Next: Bison Parser,  Prev: Semantic Actions,  Up: Concepts
+File: bison.info,  Node: GLR Parsers,  Next: Locations Overview,  Prev: Semantic Actions,  Up: Concepts
 
-Locations
-=========
+Writing GLR Parsers
+===================
 
-   Many applications, like interpreters or compilers, have to produce
-verbose and useful error messages. To achieve this, one must be able to
-keep track of the "textual position", or "location", of each syntactic
-construct.  Bison provides a mechanism for handling these locations.
+   In some grammars, there will be cases where Bison's standard LALR(1)
+parsing algorithm cannot decide whether to apply a certain grammar rule
+at a given point.  That is, it may not be able to decide (on the basis
+of the input read so far) which of two possible reductions (applications
+of a grammar rule) applies, or whether to apply a reduction or read more
+of the input and apply a reduction later in the input.  These are known
+respectively as "reduce/reduce" conflicts (*note Reduce/Reduce::), and
+"shift/reduce" conflicts (*note Shift/Reduce::).
 
-   Each token has a semantic value. In a similar fashion, each token
-has an associated location, but the type of locations is the same for
-all tokens and groupings. Moreover, the output parser is equipped with
-a default data structure for storing locations (*note Locations::, for
-more details).
+   To use a grammar that is not easily modified to be LALR(1), a more
+general parsing algorithm is sometimes necessary.  If you include
+`%glr-parser' among the Bison declarations in your file (*note Grammar
+Outline::), the result will be a Generalized LR (GLR) parser.  These
+parsers handle Bison grammars that contain no unresolved conflicts
+(i.e., after applying precedence declarations) identically to LALR(1)
+parsers.  However, when faced with unresolved shift/reduce and
+reduce/reduce conflicts, GLR parsers use the simple expedient of doing
+both, effectively cloning the parser to follow both possibilities.  Each
+of the resulting parsers can again split, so that at any given time,
+there can be any number of possible parses being explored.  The parsers
+proceed in lockstep; that is, all of them consume (shift) a given input
+symbol before any of them proceed to the next.  Each of the cloned
+parsers eventually meets one of two possible fates: either it runs into
+a parsing error, in which case it simply vanishes, or it merges with
+another parser, because the two of them have reduced the input to an
+identical set of symbols.
 
-   Like semantic values, locations can be reached in actions using a
-dedicated set of constructs. In the example above, the location of the
-whole grouping is `@$', while the locations of the subexpressions are
-`@1' and `@3'.
+   During the time that there are multiple parsers, semantic actions are
+recorded, but not performed.  When a parser disappears, its recorded
+semantic actions disappear as well, and are never performed.  When a
+reduction makes two parsers identical, causing them to merge, Bison
+records both sets of semantic actions.  Whenever the last two parsers
+merge, reverting to the single-parser case, Bison resolves all the
+outstanding actions either by precedences given to the grammar rules
+involved, or by performing both actions, and then calling a designated
+user-defined function on the resulting values to produce an arbitrary
+merged result.
 
-   When a rule is matched, a default action is used to compute the
-semantic value of its left hand side (*note Actions::). In the same
-way, another default action is used for locations. However, the action
-for locations is general enough for most cases, meaning there is
-usually no need to describe for each rule how `@$' should be formed.
-When building a new location for a given grouping, the default behavior
-of the output parser is to take the beginning of the first symbol, and
-the end of the last symbol.
-
-
-File: bison.info,  Node: Bison Parser,  Next: Stages,  Prev: Locations Overview,  Up: Concepts
-
-Bison Output: the Parser File
-=============================
-
-   When you run Bison, you give it a Bison grammar file as input.  The
-output is a C source file that parses the language described by the
-grammar.  This file is called a "Bison parser".  Keep in mind that the
-Bison utility and the Bison parser are two distinct programs: the Bison
-utility is a program whose output is the Bison parser that becomes part
-of your program.
-
-   The job of the Bison parser is to group tokens into groupings
-according to the grammar rules--for example, to build identifiers and
-operators into expressions.  As it does this, it runs the actions for
-the grammar rules it uses.
-
-   The tokens come from a function called the "lexical analyzer" that
-you must supply in some fashion (such as by writing it in C).  The
-Bison parser calls the lexical analyzer each time it wants a new token.
-It doesn't know what is "inside" the tokens (though their semantic
-values may reflect this).  Typically the lexical analyzer makes the
-tokens by parsing characters of text, but Bison does not depend on
-this.  *Note The Lexical Analyzer Function `yylex': Lexical.
-
-   The Bison parser file is C code which defines a function named
-`yyparse' which implements that grammar.  This function does not make a
-complete C program: you must supply some additional functions.  One is
-the lexical analyzer.  Another is an error-reporting function which the
-parser calls to report an error.  In addition, a complete C program must
-start with a function called `main'; you have to provide this, and
-arrange for it to call `yyparse' or the parser will never run.  *Note
-Parser C-Language Interface: Interface.
-
-   Aside from the token type names and the symbols in the actions you
-write, all symbols defined in the Bison parser file itself begin with
-`yy' or `YY'.  This includes interface functions such as the lexical
-analyzer function `yylex', the error reporting function `yyerror' and
-the parser function `yyparse' itself.  This also includes numerous
-identifiers used for internal purposes.  Therefore, you should avoid
-using C identifiers starting with `yy' or `YY' in the Bison grammar
-file except for the ones defined in this manual.
-
-   In some cases the Bison parser file includes system headers, and in
-those cases your code should respect the identifiers reserved by those
-headers.  On some non-GNU hosts, `<alloca.h>', `<stddef.h>', and
-`<stdlib.h>' are included as needed to declare memory allocators and
-related types.  In the same situation, C++ parsers may include
-`<cstddef>' and `<cstdlib>' instead.  Other system headers may be
-included if you define `YYDEBUG' to a nonzero value (*note Debugging
-Your Parser: Debugging.).
-
-
-File: bison.info,  Node: Stages,  Next: Grammar Layout,  Prev: Bison Parser,  Up: Concepts
-
-Stages in Using Bison
-=====================
-
-   The actual language-design process using Bison, from grammar
-specification to a working compiler or interpreter, has these parts:
-
-  1. Formally specify the grammar in a form recognized by Bison (*note
-     Bison Grammar Files: Grammar File.).  For each grammatical rule in
-     the language, describe the action that is to be taken when an
-     instance of that rule is recognized.  The action is described by a
-     sequence of C statements.
-
-  2. Write a lexical analyzer to process input and pass tokens to the
-     parser.  The lexical analyzer may be written by hand in C (*note
-     The Lexical Analyzer Function `yylex': Lexical.).  It could also
-     be produced using Lex, but the use of Lex is not discussed in this
-     manual.
-
-  3. Write a controlling function that calls the Bison-produced parser.
-
-  4. Write error-reporting routines.
-
-   To turn this source code as written into a runnable program, you
-must follow these steps:
-
-  1. Run Bison on the grammar to produce the parser.
-
-  2. Compile the code output by Bison, as well as any other source
-     files.
-
-  3. Link the object files to produce the finished product.
-
-
-File: bison.info,  Node: Grammar Layout,  Prev: Stages,  Up: Concepts
-
-The Overall Layout of a Bison Grammar
-=====================================
-
-   The input file for the Bison utility is a "Bison grammar file".  The
-general form of a Bison grammar file is as follows:
+   Let's consider an example, vastly simplified from C++.
 
      %{
-     C DECLARATIONS
+       #define YYSTYPE const char*
      %}
      
-     BISON DECLARATIONS
+     %token TYPENAME ID
+     
+     %right '='
+     %left '+'
+     
+     %glr-parser
      
      %%
-     GRAMMAR RULES
-     %%
-     ADDITIONAL C CODE
+     
+     prog :
+          | prog stmt   { printf ("\n"); }
+          ;
+     
+     stmt : expr ';'  %dprec 1
+          | decl      %dprec 2
+          ;
+     
+     expr : ID 		{ printf ("%s ", $$); }
+          | TYPENAME '(' expr ')'
+     			{ printf ("%s <cast> ", $1); }
+          | expr '+' expr	{ printf ("+ "); }
+          | expr '=' expr	{ printf ("= "); }
+          ;
+     
+     decl : TYPENAME declarator ';'
+     			{ printf ("%s <declare> ", $1); }
+          | TYPENAME declarator '=' expr ';'
+     			{ printf ("%s <init-declare> ", $1); }
+          ;
+     
+     declarator : ID		{ printf ("\"%s\" ", $1); }
+          | '(' declarator ')'
+          ;
 
-The `%%', `%{' and `%}' are punctuation that appears in every Bison
-grammar file to separate the sections.
+This models a problematic part of the C++ grammar--the ambiguity between
+certain declarations and statements.  For example,
 
-   The C declarations may define types and variables used in the
-actions.  You can also use preprocessor commands to define macros used
-there, and use `#include' to include header files that do any of these
-things.
+     T (x) = y+z;
 
-   The Bison declarations declare the names of the terminal and
-nonterminal symbols, and may also describe operator precedence and the
-data types of semantic values of various symbols.
+parses as either an `expr' or a `stmt' (assuming that `T' is recognized
+as a TYPENAME and `x' as an ID).  Bison detects this as a reduce/reduce
+conflict between the rules `expr : ID' and `declarator : ID', which it
+cannot resolve at the time it encounters `x' in the example above.  The
+two `%dprec' declarations, however, give precedence to interpreting the
+example as a `decl', which implies that `x' is a declarator.  The
+parser therefore prints
 
-   The grammar rules define how to construct each nonterminal symbol
-from its parts.
+     "x" y z + T <init-declare>
 
-   The additional C code can contain any C code you want to use.  Often
-the definition of the lexical analyzer `yylex' goes here, plus
-subroutines called by the actions in the grammar rules.  In a simple
-program, all the rest of the program can go here.
+   Consider a different input string for this parser:
 
-
-File: bison.info,  Node: Examples,  Next: Grammar File,  Prev: Concepts,  Up: Top
+     T (x) + y;
 
-Examples
-********
+Here, there is no ambiguity (this cannot be parsed as a declaration).
+However, at the time the Bison parser encounters `x', it does not have
+enough information to resolve the reduce/reduce conflict (again,
+between `x' as an `expr' or a `declarator').  In this case, no
+precedence declaration is used.  Instead, the parser splits into two,
+one assuming that `x' is an `expr', and the other assuming `x' is a
+`declarator'.  The second of these parsers then vanishes when it sees
+`+', and the parser prints
 
-   Now we show and explain three sample programs written using Bison: a
-reverse polish notation calculator, an algebraic (infix) notation
-calculator, and a multi-function calculator.  All three have been tested
-under BSD Unix 4.3; each produces a usable, though limited, interactive
-desk-top calculator.
+     x T <cast> y +
 
-   These examples are simple, but Bison grammars for real programming
-languages are written the same way.  You can copy these examples out of
-the Info file and into a source file to try them.
+   Suppose that instead of resolving the ambiguity, you wanted to see
+all the possibilities.  For this purpose, we must "merge" the semantic
+actions of the two possible parsers, rather than choosing one over the
+other.  To do so, you could change the declaration of `stmt' as follows:
 
-* Menu:
+     stmt : expr ';'  %merge <stmtMerge>
+          | decl      %merge <stmtMerge>
+          ;
 
-* RPN Calc::          Reverse polish notation calculator;
-                        a first example with no operator precedence.
-* Infix Calc::        Infix (algebraic) notation calculator.
-                        Operator precedence is introduced.
-* Simple Error Recovery::  Continuing after syntax errors.
-* Location Tracking Calc:: Demonstrating the use of @N and @$.
-* Multi-function Calc::  Calculator with memory and trig functions.
-                           It uses multiple data-types for semantic values.
-* Exercises::         Ideas for improving the multi-function calculator.
+and define the `stmtMerge' function as:
 
-
-File: bison.info,  Node: RPN Calc,  Next: Infix Calc,  Up: Examples
+     static YYSTYPE stmtMerge (YYSTYPE x0, YYSTYPE x1)
+     {
+       printf ("<OR> ");
+       return "";
+     }
 
-Reverse Polish Notation Calculator
-==================================
+with an accompanying forward declaration in the C declarations at the
+beginning of the file:
 
-   The first example is that of a simple double-precision "reverse
-polish notation" calculator (a calculator using postfix operators).
-This example provides a good starting point, since operator precedence
-is not an issue.  The second example will illustrate how operator
-precedence is handled.
+     %{
+       #define YYSTYPE const char*
+       static YYSTYPE stmtMerge (YYSTYPE x0, YYSTYPE x1);
+     %}
 
-   The source code for this calculator is named `rpcalc.y'.  The `.y'
-extension is a convention used for Bison input files.
+With these declarations, the resulting parser will parse the first
+example as both an `expr' and a `decl', and print
 
-* Menu:
-
-* Decls: Rpcalc Decls.  Bison and C declarations for rpcalc.
-* Rules: Rpcalc Rules.  Grammar Rules for rpcalc, with explanation.
-* Lexer: Rpcalc Lexer.  The lexical analyzer.
-* Main: Rpcalc Main.    The controlling function.
-* Error: Rpcalc Error.  The error reporting function.
-* Gen: Rpcalc Gen.      Running Bison on the grammar file.
-* Comp: Rpcalc Compile. Run the C compiler on the output code.
+     "x" y z + T <init-declare> x T <cast> y z + = <OR>
 

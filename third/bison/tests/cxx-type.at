@@ -1,0 +1,286 @@
+# Checking GLR Parsing.                         -*- Autotest -*-
+# Copyright (C) 2002 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+AT_BANNER([[C++ Type Syntax (GLR).]])
+
+# _AT_TEST_GLR_CALC(DECL, RESOLVE1, RESOLVE2)
+# -------------------------------------------
+# Store into types.y the calc program, with DECL inserted as a declaration,
+# and with RESOLVE1 and RESOLVE2 as annotations on the conflicted rule for
+# stmt.  Then compile the result.
+m4_define([_AT_TEST_GLR_CALC],
+[AT_DATA([types.y],
+[[/* Simplified C++ Type and Expression Grammar.  */
+
+$1
+
+%{
+  #include <stdio.h>
+  #define YYSTYPE const char*
+  #define YYLTYPE int
+]m4_bmatch([$2], [stmtMerge],
+[ static YYSTYPE stmtMerge (YYSTYPE x0, YYSTYPE x1);])[
+  #define YYINITDEPTH 10
+  int yyerror (const char *s);
+
+  #if YYPURE
+]m4_bmatch([$1], [location],
+[  int yylex (YYSTYPE *lvalp, YYLTYPE *llocp);],
+[  int yylex (YYSTYPE *lvalp);])[
+  #else
+  int yylex (void);
+  #endif
+
+%}
+
+%token TYPENAME ID
+
+%right '='
+%left '+'
+
+%glr-parser
+
+%%
+
+prog :
+     | prog stmt   { printf ("\n"); }
+     ;
+
+stmt : expr ';'  $2
+     | decl      $3
+     | error ';'
+     | '@'  { YYACCEPT; }
+     ;
+
+expr : ID 		{ printf ("%s ", $$); }
+     | TYPENAME '(' expr ')'
+			{ printf ("%s <cast> ", ]$[1); }
+     | expr '+' expr	{ printf ("+ "); }
+     | expr '=' expr	{ printf ("= "); }
+     ;
+
+decl : TYPENAME declarator ';'
+			{ printf ("%s <declare> ", ]$[1); }
+     | TYPENAME declarator '=' expr ';'
+			{ printf ("%s <init-declare> ", ]$[1); }
+     ;
+
+declarator : ID		{ printf ("\"%s\" ", ]$[1); }
+     | '(' declarator ')'
+     ;
+
+%%
+
+#include <assert.h>
+#include <ctype.h>
+#include <string.h>
+
+int
+main (int argc, char** argv)
+{
+  assert (argc == 2);
+  if (!freopen (argv[1], "r", stdin))
+    abort ();
+  exit (yyparse ());
+}
+
+#if YYPURE
+int
+]m4_bmatch([$1], [location],
+[yylex (YYSTYPE *lvalp, YYLTYPE *llocp)],
+[yylex (YYSTYPE *lvalp)])[
+#else
+int
+yylex ()
+#endif
+{
+  char buffer[256];
+  int c;
+
+#if YYPURE
+# define yylval (*lvalp)
+]m4_bmatch([$1], [location],[  (void) llocp;])[
+#endif
+
+  while (1) {
+    c = getchar ();
+    switch (c) {
+    case EOF:
+      return 0;
+    case ' ': case '\t': case '\n': case '\f':
+      break;
+    default:
+      if (isalpha (c)) {
+	ungetc (c, stdin);
+	scanf ("%[A-Za-z0-9_]", buffer);
+	yylval = strdup (buffer);
+	return isupper ((unsigned char) buffer[0]) ? TYPENAME : ID;
+      }
+      return c;
+    }
+  }
+}
+
+int
+yyerror (const char *s)
+{
+  fprintf (stderr, "%s\n", s);
+  return 0;
+}
+
+]]
+m4_bmatch([$2], [stmtMerge],
+[[static YYSTYPE
+stmtMerge (YYSTYPE x0, YYSTYPE x1)
+{
+  /* Use the arguments. */
+  (void) x0;
+  (void) x1;
+  printf ("<OR> ");
+  return "";
+}
+]])
+)
+
+AT_DATA([test-input],
+[[
+
+z + q;
+
+T x;
+
+T x = y;
+
+x = y;
+
+T (x) + y;
+
+T (x);
+
+T (y) = z + q;
+
+T (y y) = z + q;
+
+z + q;
+
+@
+
+This is total garbage, but it should be ignored.
+]])
+
+AT_CHECK([bison -o types.c types.y], 0, [], ignore)
+AT_COMPILE([types])
+])
+
+m4_define([_AT_RESOLVED_GLR_OUTPUT],
+[[z q +
+"x" T <declare>
+"x" y T <init-declare>
+x y =
+x T <cast> y +
+"x" T <declare>
+"y" z q + T <init-declare>
+y
+z q +
+]])
+
+m4_define([_AT_AMBIG_GLR_OUTPUT],
+[[z q +
+"x" T <declare>
+"x" y T <init-declare>
+x y =
+x T <cast> y +
+"x" T <declare> x T <cast> <OR>
+"y" z q + T <init-declare> y T <cast> z q + = <OR>
+y
+z q +
+]])
+
+m4_define([_AT_GLR_STDERR],
+[[parse error
+]])
+
+m4_define([_AT_VERBOSE_GLR_STDERR],
+[[parse error, unexpected ID, expecting '=' or '+' or ')'
+]])
+
+## ---------------------------------------------------- ##
+## Compile the grammar described in the documentation.  ##
+## ---------------------------------------------------- ##
+
+AT_SETUP([GLR: Resolve ambiguity, impure, no locations])
+_AT_TEST_GLR_CALC([],[%dprec 1],[%dprec 2])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0, _AT_RESOLVED_GLR_OUTPUT,
+	 _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Resolve ambiguity, impure, locations])
+_AT_TEST_GLR_CALC([%locations],[%dprec 1],[%dprec 2])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0, _AT_RESOLVED_GLR_OUTPUT,
+	_AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Resolve ambiguity, pure, no locations])
+_AT_TEST_GLR_CALC([%pure-parser],[%dprec 1],[%dprec 2])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0, _AT_RESOLVED_GLR_OUTPUT,
+	 _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Resolve ambiguity, pure, locations])
+_AT_TEST_GLR_CALC([%pure-parser
+%locations],[%dprec 1],[%dprec 2])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+                _AT_RESOLVED_GLR_OUTPUT,
+	        _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Merge conflicting parses, impure, no locations])
+_AT_TEST_GLR_CALC([],[%merge <stmtMerge>],[%merge <stmtMerge>])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+                _AT_AMBIG_GLR_OUTPUT,
+ 	        _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Merge conflicting parses, impure, locations])
+_AT_TEST_GLR_CALC([%locations],[%merge <stmtMerge>],[%merge <stmtMerge>])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+                _AT_AMBIG_GLR_OUTPUT,
+	        _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Merge conflicting parses, pure, no locations])
+_AT_TEST_GLR_CALC([%pure-parser],[%merge <stmtMerge>],[%merge <stmtMerge>])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+                _AT_AMBIG_GLR_OUTPUT,
+	        _AT_GLR_STDERR)
+AT_CLEANUP
+AT_SETUP([GLR: Merge conflicting parses, pure, locations])
+_AT_TEST_GLR_CALC([%pure-parser
+%locations],[%merge <stmtMerge>],[%merge <stmtMerge>])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+                _AT_AMBIG_GLR_OUTPUT,
+	        _AT_GLR_STDERR)
+AT_CLEANUP
+
+AT_SETUP([GLR: Verbose messages, resolve ambiguity, impure, no locations])
+_AT_TEST_GLR_CALC([%error-verbose],
+[%merge <stmtMerge>],[%merge <stmtMerge>])
+AT_PARSER_CHECK([[./types test-input | sed 's/  *$//']], 0,
+	        _AT_AMBIG_GLR_OUTPUT,
+                _AT_VERBOSE_GLR_STDERR)
+AT_CLEANUP

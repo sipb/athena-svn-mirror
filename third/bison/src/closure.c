@@ -1,5 +1,5 @@
 /* Subroutines for bison
-   Copyright 1984, 1989, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
 
@@ -19,32 +19,30 @@
    02111-1307, USA.  */
 
 #include "system.h"
+#include "quotearg.h"
+#include "bitset.h"
+#include "bitsetv.h"
+#include "bitsetv-print.h"
 #include "getargs.h"
+#include "symtab.h"
 #include "gram.h"
 #include "reader.h"
 #include "closure.h"
 #include "derives.h"
-#include "warshall.h"
 
 /* NITEMSET is the size of the array ITEMSET.  */
-short *itemset;
-int nitemset;
+item_number_t *itemset;
+int nritemset;
 
-static unsigned *ruleset;
+static bitset ruleset;
 
 /* internal data.  See comments before set_fderives and set_firsts.  */
-static unsigned *fderives;
-static unsigned *firsts;
+static bitsetv fderives = NULL;
+static bitsetv firsts = NULL;
 
 /* Retrieve the FDERIVES/FIRSTS sets of the nonterminals numbered Var.  */
-#define FDERIVES(Var)   (fderives + ((Var) - ntokens) * rulesetsize)
-#define   FIRSTS(Var)   (firsts   + ((Var) - ntokens) * varsetsize)
-
-/* number of words required to hold a bit for each rule */
-static int rulesetsize;
-
-/* number of words required to hold a bit for each variable */
-static int varsetsize;
+#define FDERIVES(Var)   fderives[(Var) - ntokens]
+#define   FIRSTS(Var)   firsts[(Var) - ntokens]
 
 
 /*-----------------.
@@ -52,17 +50,17 @@ static int varsetsize;
 `-----------------*/
 
 static void
-print_closure (const char *title, short *array, size_t size)
+print_closure (const char *title, item_number_t *array, size_t size)
 {
   size_t i;
   fprintf (stderr, "Closure: %s\n", title);
   for (i = 0; i < size; ++i)
     {
-      short *rp;
+      item_number_t *rp;
       fprintf (stderr, "  %2d: .", array[i]);
-      for (rp = &ritem[array[i]]; *rp > 0; ++rp)
-	fprintf (stderr, " %s", tags[*rp]);
-      fprintf (stderr, "  (rule %d)\n", -*rp);
+      for (rp = &ritem[array[i]]; *rp >= 0; ++rp)
+	fprintf (stderr, " %s", symbols[*rp]->tag);
+      fprintf (stderr, "  (rule %d)\n", -*rp - 1);
     }
   fputs ("\n\n", stderr);
 }
@@ -71,15 +69,18 @@ print_closure (const char *title, short *array, size_t size)
 static void
 print_firsts (void)
 {
-  int i, j;
+  symbol_number_t i, j;
 
   fprintf (stderr, "FIRSTS\n");
   for (i = ntokens; i < nsyms; i++)
     {
-      fprintf (stderr, "\t%s firsts\n", tags[i]);
-      for (j = 0; j < nvars; j++)
-	if (BITISSET (FIRSTS (i), j))
-	  fprintf (stderr, "\t\t%d (%s)\n", j + ntokens, tags[j + ntokens]);
+      bitset_iterator iter;
+      fprintf (stderr, "\t%s firsts\n", symbols[i]->tag);
+      BITSET_FOR_EACH (iter, FIRSTS (i), j, 0)
+	{
+	  fprintf (stderr, "\t\t%s\n",
+		   symbols[j + ntokens]->tag);
+	}
     }
   fprintf (stderr, "\n\n");
 }
@@ -89,56 +90,55 @@ static void
 print_fderives (void)
 {
   int i;
-  int j;
+  rule_number_t r;
 
   fprintf (stderr, "FDERIVES\n");
-
   for (i = ntokens; i < nsyms; i++)
     {
-      fprintf (stderr, "\t%s derives\n", tags[i]);
-      for (j = 0; j <= nrules; j++)
-	if (BITISSET (FDERIVES (i), j))
-	  {
-	    short *rhsp;
-	    fprintf (stderr, "\t\t%d:", j);
-	    for (rhsp = ritem + rule_table[j].rhs; *rhsp > 0; ++rhsp)
-	      fprintf (stderr, " %s", tags[*rhsp]);
-	    fputc ('\n', stderr);
-	  }
+      bitset_iterator iter;
+      fprintf (stderr, "\t%s derives\n", symbols[i]->tag);
+      BITSET_FOR_EACH (iter, FDERIVES (i), r, 0)
+	{
+	  fprintf (stderr, "\t\t%3d ", r);
+	  rule_rhs_print (&rules[r], stderr);
+	}
     }
   fprintf (stderr, "\n\n");
 }
 
-/*-------------------------------------------------------------------.
-| Set FIRSTS to be an NVARS by NVARS bit matrix indicating which     |
-| items can represent the beginning of the input corresponding to    |
-| which other items.                                                 |
-|                                                                    |
-| For example, if some rule expands symbol 5 into the sequence of    |
-| symbols 8 3 20, the symbol 8 can be the beginning of the data for  |
-| symbol 5, so the bit [8 - ntokens, 5 - ntokens] in firsts is set.  |
-`-------------------------------------------------------------------*/
+/*------------------------------------------------------------------.
+| Set FIRSTS to be an NVARS array of NVARS bitsets indicating which |
+| items can represent the beginning of the input corresponding to   |
+| which other items.                                                |
+|                                                                   |
+| For example, if some rule expands symbol 5 into the sequence of   |
+| symbols 8 3 20, the symbol 8 can be the beginning of the data for |
+| symbol 5, so the bit [8 - ntokens] in first[5 - ntokens] (= FIRST |
+| (5)) is set.                                                      |
+`------------------------------------------------------------------*/
 
 static void
 set_firsts (void)
 {
-  int i, j;
+  symbol_number_t i, j;
 
-  varsetsize = WORDSIZE (nvars);
-
-  firsts = XCALLOC (unsigned, nvars * varsetsize);
+  firsts = bitsetv_create (nvars, nvars, BITSET_FIXED);
 
   for (i = ntokens; i < nsyms; i++)
-    for (j = 0; derives[i][j] >= 0; ++j)
+    for (j = 0; derives[i][j]; ++j)
       {
-	int symbol = ritem[rule_table[derives[i][j]].rhs];
+	int symbol = derives[i][j]->rhs[0];
 	if (ISVAR (symbol))
-	  SETBIT (FIRSTS (i), symbol - ntokens);
+	  bitset_set (FIRSTS (i), symbol - ntokens);
       }
 
-  RTC (firsts, nvars);
+  if (trace_flag & trace_sets)
+    bitsetv_matrix_dump (stderr, "RTC: Firsts Input", firsts);
+  bitsetv_reflexive_transitive_closure (firsts);
+  if (trace_flag & trace_sets)
+    bitsetv_matrix_dump (stderr, "RTC: Firsts Output", firsts);
 
-  if (trace_flag)
+  if (trace_flag & trace_sets)
     print_firsts ();
 }
 
@@ -155,32 +155,33 @@ set_firsts (void)
 static void
 set_fderives (void)
 {
-  int i, j, k;
+  symbol_number_t i, j;
+  rule_number_t k;
 
-  fderives = XCALLOC (unsigned, nvars * rulesetsize);
+  fderives = bitsetv_create (nvars, nrules, BITSET_FIXED);
 
   set_firsts ();
 
   for (i = ntokens; i < nsyms; ++i)
     for (j = ntokens; j < nsyms; ++j)
-      if (BITISSET (FIRSTS (i), j - ntokens))
-	for (k = 0; derives[j][k] > 0; ++k)
-	  SETBIT (FDERIVES (i), derives[j][k]);
+      if (bitset_test (FIRSTS (i), j - ntokens))
+	for (k = 0; derives[j][k]; ++k)
+	  bitset_set (FDERIVES (i), derives[j][k]->number);
 
-  if (trace_flag)
+  if (trace_flag & trace_sets)
     print_fderives ();
 
-  XFREE (firsts);
+  bitsetv_free (firsts);
 }
+
 
 
 void
 new_closure (int n)
 {
-  itemset = XCALLOC (short, n);
+  itemset = XCALLOC (item_number_t, n);
 
-  rulesetsize = WORDSIZE (nrules + 1);
-  ruleset = XCALLOC (unsigned, rulesetsize);
+  ruleset = bitset_create (nrules, BITSET_FIXED);
 
   set_fderives ();
 }
@@ -188,61 +189,49 @@ new_closure (int n)
 
 
 void
-closure (short *core, int n)
+closure (item_number_t *core, int n)
 {
   /* Index over CORE. */
   int c;
 
-  /* Index over RULESET. */
-  int r;
-
   /* A bit index over RULESET. */
-  int ruleno;
+  rule_number_t ruleno;
 
-  if (trace_flag)
+  bitset_iterator iter;
+
+  if (trace_flag & trace_sets)
     print_closure ("input", core, n);
 
-  if (n == 0)
-    {
-      for (r = 0; r < rulesetsize; ++r)
-	ruleset[r] = FDERIVES (start_symbol)[r];
-    }
-  else
-    {
-      for (r = 0; r < rulesetsize; ++r)
-	ruleset[r] = 0;
+  bitset_zero (ruleset);
 
-      for (c = 0; c < n; ++c)
-	if (ISVAR (ritem[core[c]]))
-	  for (r = 0; r < rulesetsize; ++r)
-	    ruleset[r] |= FDERIVES (ritem[core[c]])[r];
-    }
+  for (c = 0; c < n; ++c)
+    if (ISVAR (ritem[core[c]]))
+      bitset_or (ruleset, ruleset, FDERIVES (ritem[core[c]]));
 
-  nitemset = 0;
+  nritemset = 0;
   c = 0;
-  for (ruleno = 0; ruleno < rulesetsize * BITS_PER_WORD; ++ruleno)
-    if (BITISSET (ruleset, ruleno))
-      {
-	int itemno = rule_table[ruleno].rhs;
-	while (c < n && core[c] < itemno)
-	  {
-	    itemset[nitemset] = core[c];
-	    nitemset++;
-	    c++;
-	  }
-	itemset[nitemset] = itemno;
-	nitemset++;
-      }
+  BITSET_FOR_EACH (iter, ruleset, ruleno, 0)
+    {
+      item_number_t itemno = rules[ruleno].rhs - ritem;
+      while (c < n && core[c] < itemno)
+	{
+	  itemset[nritemset] = core[c];
+	  nritemset++;
+	  c++;
+	}
+      itemset[nritemset] = itemno;
+      nritemset++;
+    };
 
   while (c < n)
     {
-      itemset[nitemset] = core[c];
-      nitemset++;
+      itemset[nritemset] = core[c];
+      nritemset++;
       c++;
     }
 
-  if (trace_flag)
-    print_closure ("output", itemset, nitemset);
+  if (trace_flag & trace_sets)
+    print_closure ("output", itemset, nritemset);
 }
 
 
@@ -250,6 +239,6 @@ void
 free_closure (void)
 {
   XFREE (itemset);
-  XFREE (ruleset);
-  XFREE (fderives);
+  bitset_free (ruleset);
+  bitsetv_free (fderives);
 }

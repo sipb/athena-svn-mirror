@@ -1,5 +1,7 @@
 /* Generate the nondeterministic finite state machine for bison,
-   Copyright 1984, 1986, 1989, 2000, 2001  Free Software Foundation, Inc.
+
+   Copyright (C) 1984, 1986, 1989, 2000, 2001, 2002 Free Software
+   Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
 
@@ -23,6 +25,10 @@
    The entry point is generate_states.  */
 
 #include "system.h"
+#include "bitset.h"
+#include "quotearg.h"
+#include "symtab.h"
+#include "gram.h"
 #include "getargs.h"
 #include "reader.h"
 #include "gram.h"
@@ -30,39 +36,69 @@
 #include "complain.h"
 #include "closure.h"
 #include "LR0.h"
+#include "lalr.h"
 #include "reduce.h"
 
-int nstates;
-int final_state;
-core *first_state = NULL;
-shifts *first_shift = NULL;
-reductions *first_reduction = NULL;
+typedef struct state_list_s
+{
+  struct state_list_s *next;
+  state_t *state;
+} state_list_t;
 
-static core *this_state = NULL;
-static core *last_state = NULL;
-static shifts *last_shift = NULL;
-static reductions *last_reduction = NULL;
+static state_list_t *first_state = NULL;
+static state_list_t *last_state = NULL;
+
+
+/*------------------------------------------------------------------.
+| A state was just discovered from another state.  Queue it for     |
+| later examination, in order to find its transitions.  Return it.  |
+`------------------------------------------------------------------*/
+
+static state_t *
+state_list_append (symbol_number_t symbol,
+		   size_t core_size, item_number_t *core)
+{
+  state_list_t *node = XMALLOC (state_list_t, 1);
+  state_t *state = state_new (symbol, core_size, core);
+
+  if (trace_flag & trace_automaton)
+    fprintf (stderr, "state_list_append (state = %d, symbol = %d (%s))\n",
+	     nstates, symbol, symbols[symbol]->tag);
+
+  /* If this is the endtoken, and this is not the initial state, then
+     this is the final state.  */
+  if (symbol == 0 && first_state)
+    final_state = state;
+
+  node->next = NULL;
+  node->state = state;
+
+  if (!first_state)
+    first_state = node;
+  if (last_state)
+    last_state->next = node;
+  last_state = node;
+
+  return state;
+}
 
 static int nshifts;
-static short *shift_symbol = NULL;
+static symbol_number_t *shift_symbol = NULL;
 
-static short *redset = NULL;
-static short *shiftset = NULL;
+static rule_t **redset = NULL;
+static state_t **shiftset = NULL;
 
-static short **kernel_base = NULL;
+static item_number_t **kernel_base = NULL;
 static int *kernel_size = NULL;
-static short *kernel_items = NULL;
-
-/* hash table for states, to recognize equivalent ones.  */
-
-#define	STATE_TABLE_SIZE	1009
-static core **state_table = NULL;
+static item_number_t *kernel_items = NULL;
 
 
 static void
 allocate_itemsets (void)
 {
-  int i;
+  symbol_number_t i;
+  rule_number_t r;
+  item_number_t *rhsp;
 
   /* Count the number of occurrences of all the symbols in RITEMS.
      Note that useless productions (hence useless nonterminals) are
@@ -71,22 +107,22 @@ allocate_itemsets (void)
   int count = 0;
   short *symbol_count = XCALLOC (short, nsyms + nuseless_nonterminals);
 
-  for (i = 0; ritem[i]; ++i)
-    if (ritem[i] > 0)
+  for (r = 0; r < nrules; ++r)
+    for (rhsp = rules[r].rhs; *rhsp >= 0; ++rhsp)
       {
 	count++;
-	symbol_count[ritem[i]]++;
+	symbol_count[*rhsp]++;
       }
 
   /* See comments before new_itemsets.  All the vectors of items
      live inside KERNEL_ITEMS.  The number of active items after
      some symbol cannot be more than the number of times that symbol
-     appears as an item, which is symbol_count[symbol].
+     appears as an item, which is SYMBOL_COUNT[SYMBOL].
      We allocate that much space for each symbol.  */
 
-  kernel_base = XCALLOC (short *, nsyms);
+  kernel_base = XCALLOC (item_number_t *, nsyms);
   if (count)
-    kernel_items = XCALLOC (short, count);
+    kernel_items = XCALLOC (item_number_t, count);
 
   count = 0;
   for (i = 0; i < nsyms; i++)
@@ -105,9 +141,10 @@ allocate_storage (void)
 {
   allocate_itemsets ();
 
-  shiftset = XCALLOC (short, nsyms);
-  redset = XCALLOC (short, nrules + 1);
-  state_table = XCALLOC (core *, STATE_TABLE_SIZE);
+  shiftset = XCALLOC (state_t *, nsyms);
+  redset = XCALLOC (rule_t *, nrules);
+  state_hash_new ();
+  shift_symbol = XCALLOC (symbol_number_t, nsyms);
 }
 
 
@@ -120,169 +157,97 @@ free_storage (void)
   free (kernel_base);
   free (kernel_size);
   XFREE (kernel_items);
-  free (state_table);
+  state_hash_free ();
 }
 
 
 
 
-/*----------------------------------------------------------------.
-| Find which symbols can be shifted in the current state, and for |
-| each one record which items would be active after that shift.   |
-| Uses the contents of itemset.                                   |
-|                                                                 |
-| shift_symbol is set to a vector of the symbols that can be      |
-| shifted.  For each symbol in the grammar, kernel_base[symbol]   |
-| points to a vector of item numbers activated if that symbol is  |
-| shifted, and kernel_size[symbol] is their numbers.              |
-`----------------------------------------------------------------*/
+/*---------------------------------------------------------------.
+| Find which symbols can be shifted in STATE, and for each one   |
+| record which items would be active after that shift.  Uses the |
+| contents of itemset.                                           |
+|                                                                |
+| shift_symbol is set to a vector of the symbols that can be     |
+| shifted.  For each symbol in the grammar, kernel_base[symbol]  |
+| points to a vector of item numbers activated if that symbol is |
+| shifted, and kernel_size[symbol] is their numbers.             |
+`---------------------------------------------------------------*/
 
 static void
-new_itemsets (void)
+new_itemsets (state_t *state)
 {
   int i;
 
-  if (trace_flag)
+  if (trace_flag & trace_automaton)
     fprintf (stderr, "Entering new_itemsets, state = %d\n",
-	     this_state->number);
+	     state->number);
 
   for (i = 0; i < nsyms; i++)
     kernel_size[i] = 0;
 
-  shift_symbol = XCALLOC (short, nsyms);
   nshifts = 0;
 
-  for (i = 0; i < nitemset; ++i)
-    {
-      int symbol = ritem[itemset[i]];
-      if (symbol > 0)
-	{
-	  if (!kernel_size[symbol])
-	    {
-	      shift_symbol[nshifts] = symbol;
-	      nshifts++;
-	    }
+  for (i = 0; i < nritemset; ++i)
+    if (ritem[itemset[i]] >= 0)
+      {
+	symbol_number_t symbol
+	  = item_number_as_symbol_number (ritem[itemset[i]]);
+	if (!kernel_size[symbol])
+	  {
+	    shift_symbol[nshifts] = symbol;
+	    nshifts++;
+	  }
 
-	  kernel_base[symbol][kernel_size[symbol]] = itemset[i] + 1;
-	  kernel_size[symbol]++;
-	}
-    }
+	kernel_base[symbol][kernel_size[symbol]] = itemset[i] + 1;
+	kernel_size[symbol]++;
+      }
 }
 
 
 
 /*-----------------------------------------------------------------.
-| Subroutine of get_state.  Create a new state for those items, if |
-| necessary.                                                       |
+| Find the state we would get to (from the current state) by       |
+| shifting SYMBOL.  Create a new state if no equivalent one exists |
+| already.  Used by append_states.                                 |
 `-----------------------------------------------------------------*/
 
-static core *
-new_state (int symbol)
+static state_t *
+get_state (symbol_number_t symbol, size_t core_size, item_number_t *core)
 {
-  core *p;
+  state_t *sp;
 
-  if (trace_flag)
-    fprintf (stderr, "Entering new_state, state = %d, symbol = %d (%s)\n",
-	     this_state->number, symbol, tags[symbol]);
+  if (trace_flag & trace_automaton)
+    fprintf (stderr, "Entering get_state, symbol = %d (%s)\n",
+	     symbol, symbols[symbol]->tag);
 
-  if (nstates >= MAXSHORT)
-    fatal (_("too many states (max %d)"), MAXSHORT);
+  sp = state_hash_lookup (core_size, core);
+  if (!sp)
+    sp = state_list_append (symbol, core_size, core);
 
-  p = CORE_ALLOC (kernel_size[symbol]);
-  p->accessing_symbol = symbol;
-  p->number = nstates;
-  p->nitems = kernel_size[symbol];
-
-  shortcpy (p->items, kernel_base[symbol], kernel_size[symbol]);
-
-  last_state->next = p;
-  last_state = p;
-  nstates++;
-
-  return p;
-}
-
-
-/*--------------------------------------------------------------.
-| Find the state number for the state we would get to (from the |
-| current state) by shifting symbol.  Create a new state if no  |
-| equivalent one exists already.  Used by append_states.        |
-`--------------------------------------------------------------*/
-
-static int
-get_state (int symbol)
-{
-  int key;
-  int i;
-  core *sp;
-
-  if (trace_flag)
-    fprintf (stderr, "Entering get_state, state = %d, symbol = %d (%s)\n",
-	     this_state->number, symbol, tags[symbol]);
-
-  /* Add up the target state's active item numbers to get a hash key.
-     */
-  key = 0;
-  for (i = 0; i < kernel_size[symbol]; ++i)
-    key += kernel_base[symbol][i];
-  key = key % STATE_TABLE_SIZE;
-  sp = state_table[key];
-
-  if (sp)
-    {
-      int found = 0;
-      while (!found)
-	{
-	  if (sp->nitems == kernel_size[symbol])
-	    {
-	      found = 1;
-	      for (i = 0; i < kernel_size[symbol]; ++i)
-		if (kernel_base[symbol][i] != sp->items[i])
-		  found = 0;
-	    }
-
-	  if (!found)
-	    {
-	      if (sp->link)
-		{
-		  sp = sp->link;
-		}
-	      else		/* bucket exhausted and no match */
-		{
-		  sp = sp->link = new_state (symbol);
-		  found = 1;
-		}
-	    }
-	}
-    }
-  else				/* bucket is empty */
-    {
-      state_table[key] = sp = new_state (symbol);
-    }
-
-  if (trace_flag)
+  if (trace_flag & trace_automaton)
     fprintf (stderr, "Exiting get_state => %d\n", sp->number);
 
-  return sp->number;
+  return sp;
 }
 
-/*------------------------------------------------------------------.
-| Use the information computed by new_itemsets to find the state    |
-| numbers reached by each shift transition from the current state.  |
-|                                                                   |
-| shiftset is set up as a vector of state numbers of those states.  |
-`------------------------------------------------------------------*/
+/*---------------------------------------------------------------.
+| Use the information computed by new_itemsets to find the state |
+| numbers reached by each shift transition from STATE.           |
+|                                                                |
+| SHIFTSET is set up as a vector of those states.                |
+`---------------------------------------------------------------*/
 
 static void
-append_states (void)
+append_states (state_t *state)
 {
   int i;
   int j;
-  int symbol;
+  symbol_number_t symbol;
 
-  if (trace_flag)
+  if (trace_flag & trace_automaton)
     fprintf (stderr, "Entering append_states, state = %d\n",
-	     this_state->number);
+	     state->number);
 
   /* first sort shift_symbol into increasing order */
 
@@ -299,228 +264,11 @@ append_states (void)
     }
 
   for (i = 0; i < nshifts; i++)
-    shiftset[i] = get_state (shift_symbol[i]);
-}
-
-
-static void
-new_states (void)
-{
-  first_state = last_state = this_state = CORE_ALLOC (0);
-  nstates = 1;
-}
-
-
-/*------------------------------------------------------------.
-| Save the NSHIFTS of SHIFTSET into the current linked list.  |
-`------------------------------------------------------------*/
-
-static void
-save_shifts (void)
-{
-  shifts *p = shifts_new (nshifts);
-
-  p->number = this_state->number;
-
-  shortcpy (p->shifts, shiftset, nshifts);
-
-  if (last_shift)
-    last_shift->next = p;
-  else
-    first_shift = p;
-  last_shift = p;
-}
-
-
-/*------------------------------------------------------------------.
-| Subroutine of augment_automaton.  Create the next-to-final state, |
-| to which a shift has already been made in the initial state.      |
-`------------------------------------------------------------------*/
-
-static void
-insert_start_shift (void)
-{
-  core *statep;
-  shifts *sp;
-
-  statep = CORE_ALLOC (0);
-  statep->number = nstates;
-  statep->accessing_symbol = start_symbol;
-
-  last_state->next = statep;
-  last_state = statep;
-
-  /* Make a shift from this state to (what will be) the final state.  */
-  sp = shifts_new (1);
-  sp->number = nstates++;
-  sp->shifts[0] = nstates;
-
-  last_shift->next = sp;
-  last_shift = sp;
-}
-
-
-/*------------------------------------------------------------------.
-| Make sure that the initial state has a shift that accepts the     |
-| grammar's start symbol and goes to the next-to-final state, which |
-| has a shift going to the final state, which has a shift to the    |
-| termination state.  Create such states and shifts if they don't   |
-| happen to exist already.                                          |
-`------------------------------------------------------------------*/
-
-static void
-augment_automaton (void)
-{
-  core *statep;
-  shifts *sp;
-  shifts *sp1 = NULL;
-
-  sp = first_shift;
-
-  if (!sp->nshifts)
     {
-      /* There are no shifts for any state.  Make one shift, from the
-	 initial state to the next-to-final state.  */
-
-      sp = shifts_new (1);
-      sp->shifts[0] = nstates;
-
-      /* Initialize the chain of shifts with sp.  */
-      first_shift = sp;
-      last_shift = sp;
-
-      /* Create the next-to-final state, with shift to
-         what will be the final state.  */
-      insert_start_shift ();
+      symbol = shift_symbol[i];
+      shiftset[i] = get_state (symbol,
+			       kernel_size[symbol], kernel_base[symbol]);
     }
-  else if (sp->number == 0)
-    {
-      statep = first_state->next;
-
-      /* The states reached by shifts from FIRST_STATE are numbered
-	 1..(SP->NSHIFTS).  Look for one reached by START_SYMBOL.  */
-      while (statep->accessing_symbol < start_symbol
-	     && statep->number < sp->nshifts)
-	statep = statep->next;
-
-      if (statep->accessing_symbol == start_symbol)
-	{
-	  /* We already have a next-to-final state.
-	     Make sure it has a shift to what will be the final state.  */
-	  while (sp && sp->number < statep->number)
-	    {
-	      sp1 = sp;
-	      sp = sp->next;
-	    }
-
-	  if (sp && sp->number == statep->number)
-	    {
-	      int i;
-	      shifts *sp2 = shifts_new (sp->nshifts + 1);
-	      sp2->number = statep->number;
-	      sp2->shifts[0] = nstates;
-	      for (i = sp->nshifts; i > 0; i--)
-		sp2->shifts[i] = sp->shifts[i - 1];
-
-	      /* Patch sp2 into the chain of shifts in place of sp,
-		 following sp1.  */
-	      sp2->next = sp->next;
-	      sp1->next = sp2;
-	      if (sp == last_shift)
-		last_shift = sp2;
-	      XFREE (sp);
-	    }
-	  else
-	    {
-	      shifts *sp2 = shifts_new (1);
-	      sp2->number = statep->number;
-	      sp2->shifts[0] = nstates;
-
-	      /* Patch sp2 into the chain of shifts between sp1 and sp.  */
-	      sp2->next = sp;
-	      sp1->next = sp2;
-	      if (sp == 0)
-		last_shift = sp2;
-	    }
-	}
-      else
-	{
-	  int i, k;
-	  shifts *sp2;
-
-	  /* There is no next-to-final state as yet.  */
-	  /* Add one more shift in first_shift,
-	     going to the next-to-final state (yet to be made).  */
-	  sp = first_shift;
-
-	  sp2 = shifts_new (sp->nshifts + 1);
-
-	  /* Stick this shift into the vector at the proper place.  */
-	  statep = first_state->next;
-	  for (k = 0, i = 0; i < sp->nshifts; k++, i++)
-	    {
-	      if (statep->accessing_symbol > start_symbol && i == k)
-		sp2->shifts[k++] = nstates;
-	      sp2->shifts[k] = sp->shifts[i];
-	      statep = statep->next;
-	    }
-	  if (i == k)
-	    sp2->shifts[k++] = nstates;
-
-	  /* Patch sp2 into the chain of shifts
-	     in place of sp, at the beginning.  */
-	  sp2->next = sp->next;
-	  first_shift = sp2;
-	  if (last_shift == sp)
-	    last_shift = sp2;
-
-	  XFREE (sp);
-
-	  /* Create the next-to-final state, with shift to
-	     what will be the final state.  */
-	  insert_start_shift ();
-	}
-    }
-  else
-    {
-      /* The initial state didn't even have any shifts.
-	 Give it one shift, to the next-to-final state.  */
-      sp = shifts_new (1);
-      sp->shifts[0] = nstates;
-
-      /* Patch sp into the chain of shifts at the beginning.  */
-      sp->next = first_shift;
-      first_shift = sp;
-
-      /* Create the next-to-final state, with shift to
-	 what will be the final state.  */
-      insert_start_shift ();
-    }
-
-  /* Make the final state--the one that follows a shift from the
-     next-to-final state.
-     The symbol for that shift is 0 (end-of-file).  */
-  statep = CORE_ALLOC (0);
-  statep->number = nstates;
-  last_state->next = statep;
-  last_state = statep;
-
-  /* Make the shift from the final state to the termination state.  */
-  sp = shifts_new (1);
-  sp->number = nstates++;
-  sp->shifts[0] = nstates;
-  last_shift->next = sp;
-  last_shift = sp;
-
-  /* Note that the variable `final_state' refers to what we sometimes call
-     the termination state.  */
-  final_state = nstates;
-
-  /* Make the termination state.  */
-  statep = CORE_ALLOC (0);
-  statep->number = nstates++;
-  last_state->next = statep;
-  last_state = statep;
 }
 
 
@@ -531,41 +279,57 @@ augment_automaton (void)
 `----------------------------------------------------------------*/
 
 static void
-save_reductions (void)
+save_reductions (state_t *state)
 {
-  int count;
+  int count = 0;
   int i;
 
   /* Find and count the active items that represent ends of rules. */
-
-  count = 0;
-  for (i = 0; i < nitemset; ++i)
+  for (i = 0; i < nritemset; ++i)
     {
       int item = ritem[itemset[i]];
       if (item < 0)
-	redset[count++] = -item;
+	redset[count++] = &rules[item_number_as_rule_number (item)];
     }
 
   /* Make a reductions structure and copy the data into it.  */
-
-  if (count)
-    {
-      reductions *p = REDUCTIONS_ALLOC (count);
-
-      p->number = this_state->number;
-      p->nreds = count;
-
-      shortcpy (p->rules, redset, count);
-
-      if (last_reduction)
-	last_reduction->next = p;
-      else
-	first_reduction = p;
-      last_reduction = p;
-    }
+  state_reductions_set (state, count, redset);
 }
 
 
+/*---------------.
+| Build STATES.  |
+`---------------*/
+
+static void
+set_states (void)
+{
+  states = XCALLOC (state_t *, nstates);
+
+  while (first_state)
+    {
+      state_list_t *this = first_state;
+
+      /* Pessimization, but simplification of the code: make sure all
+	 the states have valid transitions and reductions members,
+	 even if reduced to 0.  It is too soon for errs, which are
+	 computed later, but set_conflicts.  */
+      state_t *state = this->state;
+      if (!state->transitions)
+	state_transitions_set (state, 0, 0);
+      if (!state->reductions)
+	state_reductions_set (state, 0, 0);
+
+      states[state->number] = state;
+
+      first_state = this->next;
+      free (this);
+    }
+  first_state = NULL;
+  last_state = NULL;
+}
+
+
 /*-------------------------------------------------------------------.
 | Compute the nondeterministic finite state machine (see state.h for |
 | details) from the grammar.                                         |
@@ -574,39 +338,50 @@ save_reductions (void)
 void
 generate_states (void)
 {
+  state_list_t *list = NULL;
   allocate_storage ();
-  new_closure (nitems);
-  new_states ();
+  new_closure (nritems);
 
-  while (this_state)
+  /* Create the initial state.  The 0 at the lhs is the index of the
+     item of this initial rule.  */
+  kernel_base[0][0] = 0;
+  kernel_size[0] = 1;
+  state_list_append (0, kernel_size[0], kernel_base[0]);
+
+  list = first_state;
+
+  while (list)
     {
-      if (trace_flag)
+      state_t *state = list->state;
+      if (trace_flag & trace_automaton)
 	fprintf (stderr, "Processing state %d (reached by %s)\n",
-		 this_state->number, tags[this_state->accessing_symbol]);
+		 state->number,
+		 symbols[state->accessing_symbol]->tag);
       /* Set up ruleset and itemset for the transitions out of this
          state.  ruleset gets a 1 bit for each rule that could reduce
          now.  itemset gets a vector of all the items that could be
          accepted next.  */
-      closure (this_state->items, this_state->nitems);
-      /* record the reductions allowed out of this state */
-      save_reductions ();
-      /* find the itemsets of the states that shifts can reach */
-      new_itemsets ();
-      /* find or create the core structures for those states */
-      append_states ();
+      closure (state->items, state->nitems);
+      /* Record the reductions allowed out of this state.  */
+      save_reductions (state);
+      /* Find the itemsets of the states that shifts can reach.  */
+      new_itemsets (state);
+      /* Find or create the core structures for those states.  */
+      append_states (state);
 
-      /* create the shifts structures for the shifts to those states,
-         now that the state numbers transitioning to are known */
-      save_shifts ();
+      /* Create the shifts structures for the shifts to those states,
+	 now that the state numbers transitioning to are known.  */
+      state_transitions_set (state, nshifts, shiftset);
 
-      /* states are queued when they are created; process them all */
-      this_state = this_state->next;
+      /* States are queued when they are created; process them all.
+	 */
+      list = list->next;
     }
 
   /* discard various storage */
   free_closure ();
   free_storage ();
 
-  /* set up initial and final states as parser wants them */
-  augment_automaton ();
+  /* Set up STATES. */
+  set_states ();
 }

@@ -1,5 +1,5 @@
 # Checking the output filenames.                         -*- Autotest -*-
-# Copyright 2000, 2001 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,8 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
-
-AT_BANNER([[Simple Calculator.]])
 
 ## ---------------------------------------------------- ##
 ## Compile the grammar described in the documentation.  ##
@@ -53,7 +51,6 @@ AT_DATA([calc.y],
 char *strcat(char *dest, const char *src);
 #endif
 #include <ctype.h>
-]$4[
 
 static int power (int base, int exponent);
 static void yyerror (const char *s);
@@ -62,11 +59,22 @@ static int yygetc (void);
 static void yyungetc (int c);
 
 extern void perror (const char *s);
+
+/* Exercise pre-prologue dependency to %union.  */
+typedef int value_t;
+
 %}
 
+/* Exercise %union. */
+%union
+{
+  value_t ival;
+};
+
 /* Bison Declarations */
-%token CALC_EOF 0
-%token NUM
+%token CALC_EOF 0 "end of file"
+%token <ival> NUM "number"
+%type  <ival> exp
 
 %nonassoc '=' /* comparison	       */
 %left '-' '+'
@@ -74,16 +82,18 @@ extern void perror (const char *s);
 %left NEG     /* negation--unary minus */
 %right '^'    /* exponentiation        */
 
+]$4[
+
 /* Grammar follows */
 %%
 input:
-  /* empty string */
+  line
 | input line
 ;
 
 line:
-  '\n'
-| exp '\n'
+  '\n'      {}
+| exp '\n'  {}
 ;
 
 exp:
@@ -91,7 +101,7 @@ exp:
 | exp '=' exp
   {
      if ($1 != $3)
-       printf ("calc: error: %d != %d\n", $1, $3);
+       fprintf (stderr, "calc: error: %d != %d\n", $1, $3);
      $$ = $1 == $3;
   }
 | exp '+' exp        { $$ = $1 + $3;        }
@@ -101,6 +111,7 @@ exp:
 | '-' exp  %prec NEG { $$ = -$2;            }
 | exp '^' exp        { $$ = power ($1, $3); }
 | '(' exp ')'        { $$ = $2;             }
+| '(' error ')'      { $$ = 0;              }
 ;
 %%
 /* The input. */
@@ -110,22 +121,27 @@ static void
 yyerror (const char *s)
 {
 #if YYLSP_NEEDED
-  fprintf (stderr, "%d.%d:%d.%d: ",
+  fprintf (stderr, "%d.%d-%d.%d: ",
 	   yylloc.first_line, yylloc.first_column,
 	   yylloc.last_line, yylloc.last_column);
 #endif
   fprintf (stderr, "%s\n", s);
 }
 
+
+#if YYLSP_NEEDED
+static YYLTYPE last_yylloc;
+#endif
 static int
 yygetc (void)
 {
   int res = getc (yyin);
 #if YYLSP_NEEDED
+  last_yylloc = yylloc;
   if (res == '\n')
     {
       yylloc.last_line++;
-      yylloc.last_column = 0;
+      yylloc.last_column = 1;
     }
   else
     yylloc.last_column++;
@@ -139,7 +155,7 @@ yyungetc (int c)
 {
 #if YYLSP_NEEDED
   /* Wrong when C == `\n'. */
-  yylloc.last_column--;
+  yylloc = last_yylloc;
 #endif
   ungetc (c, yyin);
 }
@@ -199,7 +215,7 @@ yylex (void)
   if (c == '.' || isdigit (c))
     {
       yyungetc (c);
-      yylval = read_signed_integer ();
+      yylval.ival = read_signed_integer ();
       return NUM;
     }
 
@@ -242,7 +258,7 @@ main (int argc, const char **argv)
   yydebug = 1;
 #endif
 #if YYLSP_NEEDED
-  yylloc.last_column = 0;
+  yylloc.last_column = 1;
   yylloc.last_line = 1;
 #endif
   yyparse ();
@@ -257,8 +273,8 @@ main (int argc, const char **argv)
 # Produce `calc.y'.
 m4_define([AT_DATA_CALC_Y],
 [_AT_DATA_CALC_Y($[1], $[2], $[3],
-                 [m4_bmatch([$1], [--yyerror-verbose],
-                            [[#define YYERROR_VERBOSE]])])])
+                 [m4_bpatsubst([$1], [--[^ ]*])])
+])
 
 
 
@@ -266,17 +282,22 @@ m4_define([AT_DATA_CALC_Y],
 # ------------------------------------------------------------
 # Run `calc' on INPUT and expect no STDOUT nor STDERR.
 #
-# If BISON-OPTIONS contains `--debug', then NUM-STDERR-LINES is the number
-# of expected lines on stderr.
+# If BISON-OPTIONS contains `%debug' but not `%glr-parser', then
+# NUM-STDERR-LINES is the number of expected lines on stderr.
+#
+# We don't count GLR's traces yet, since its traces are somewhat
+# different from LALR's.
 m4_define([_AT_CHECK_CALC],
 [AT_DATA([[input]],
 [[$2
 ]])
-AT_CHECK([./calc input], 0, [], [stderr])dnl
-AT_CHECK([wc -l <stderr | sed 's/[[^0-9]]//g'], 0,
-         [m4_bmatch([$1], [--debug],
-                    [$3], [0])
-])
+AT_PARSER_CHECK([./calc input], 0, [], [stderr])
+m4_bmatch([$1],
+  [%debug.*%glr\|%glr.*%debug],
+     [],
+  [%debug],
+     [AT_CHECK([wc -l <stderr | sed 's/[[^0-9]]//g'], 0, [$3
+])])
 ])
 
 
@@ -285,43 +306,66 @@ AT_CHECK([wc -l <stderr | sed 's/[[^0-9]]//g'], 0,
 # ------------------------------------------------------------
 # Run `calc' on INPUT, and expect a `parse error' message.
 #
+# If INPUT starts with a slash, it is used as absolute input file name,
+# otherwise as contents.
+#
 # If BISON-OPTIONS contains `--location', then make sure the ERROR-LOCATION
 # is correctly output on stderr.
 #
-# If BISON-OPTIONS contains `--yyerror-verbose', then make sure the
+# If BISON-OPTIONS contains `%error-verbose', then make sure the
 # IF-YYERROR-VERBOSE message is properly output after `parse error, '
 # on STDERR.
 #
-# If BISON-OPTIONS contains `--debug', then NUM-STDERR-LINES is the number
-# of expected lines on stderr.
+# If BISON-OPTIONS contains `%debug' but not `%glr', then NUM-STDERR-LINES
+# is the number of expected lines on stderr.
 m4_define([_AT_CHECK_CALC_ERROR],
-[AT_DATA([[input]],
+[m4_bmatch([$2], [^/],
+           [AT_PARSER_CHECK([./calc $2], 0, [], [stderr])],
+           [AT_DATA([[input]],
 [[$2
 ]])
+AT_PARSER_CHECK([./calc input], 0, [], [stderr])])
+m4_bmatch([$1],
+  [%debug.*%glr\|%glr.*%debug],
+     [],
+  [%debug],
+     [AT_CHECK([wc -l <stderr | sed 's/[[^0-9]]//g'], 0, [$3
+])])
 
-AT_CHECK([./calc input], 0, [], [stderr])
-
-
-AT_CHECK([wc -l <stderr | sed 's/[[^0-9]]//g'], 0,
-         [m4_bmatch([$1], [--debug],
-                    [$3], [1])
-])
-
-egrep -v '^((Start|Enter|Read|Reduc|Shift)ing|state|Error:) ' stderr >at-stderr
+# Normalize the observed and expected error messages, depending upon the
+# options.
+# 1. Remove the traces from observed.
+sed '/^Starting/d
+/^Entering/d
+/^Stack/d
+/^Reading/d
+/^Reducing/d
+/^Shifting/d
+/^state/d
+/^Error:/d
+/^Next/d
+/^Discarding/d
+/^yydestructor:/d' stderr >at-stderr
 mv at-stderr stderr
-
-AT_CHECK([cat stderr], 0,
-[m4_bmatch([$1], [--location], [$4: ])[]dnl
-parse error[]dnl
-m4_bmatch([$1], [--yyerror-verbose], [, $5])[]dnl
-
+# 2. Create the reference error message.
+AT_DATA([[expout]],
+[$4
+])
+# 3. If locations are not used, remove them.
+m4_bmatch([$1], [--location], [],
+[[sed 's/^[-0-9.]*: //' expout >at-expout
+mv at-expout expout]])
+# 4. If error-verbose is not used, strip the`, unexpected....' part.
+m4_bmatch([$1], [%error-verbose], [],
+[[sed 's/parse error, .*$/parse error/' expout >at-expout
+mv at-expout expout]])
+# 5. Check
+AT_CHECK([cat stderr], 0, [expout])
 ])
 
-])
 
-
-# AT_CHECK_CALC([BISON-OPTIONS], [PARSER-EXPECTED-STDERR])
-# --------------------------------------------------------
+# AT_CHECK_CALC([BISON-OPTIONS])
+# ------------------------------
 # Start a testing chunk which compiles `calc' grammar with
 # BISON-OPTIONS, and performs several tests over the parser.
 m4_define([AT_CHECK_CALC],
@@ -331,10 +375,10 @@ AT_SETUP([Calculator $1])
 AT_DATA_CALC_Y([$1])
 
 # Specify the output files to avoid problems on different file systems.
-AT_CHECK([bison calc.y -o calc.c m4_bpatsubst([$1], [--yyerror-verbose])],
+AT_CHECK([bison -o calc.c m4_bpatsubst([$1], [%[^ ]*]) calc.y],
          [0], [], [])
 
-AT_CHECK([$CC $CFLAGS $CPPFLAGS calc.c -o calc], 0, [], [ignore])
+AT_COMPILE([calc])
 
 # Test the priorities.
 _AT_CHECK_CALC([$1],
@@ -350,27 +394,38 @@ _AT_CHECK_CALC([$1],
 1 - (2 - 3) = 2
 
 2^2^3 = 256
-(2^2)^3 = 64], [491])
+(2^2)^3 = 64], [486])
 
 # Some parse errors.
-_AT_CHECK_CALC_ERROR([$1], [+1], [8],
-                     [1.0:1.1],
-                     [unexpected '+'])
-_AT_CHECK_CALC_ERROR([$1], [1//2], [17],
-                     [1.2:1.3],
-                     [unexpected '/', expecting NUM or '-' or '('])
-_AT_CHECK_CALC_ERROR([$1], [error], [8],
-                     [1.0:1.1],
-                     [unexpected $undefined.])
-_AT_CHECK_CALC_ERROR([$1], [1 = 2 = 3], [23],
-                     [1.6:1.7],
-                     [unexpected '='])
+_AT_CHECK_CALC_ERROR([$1], [0 0], [11],
+                     [1.3-1.4: parse error, unexpected "number"])
+_AT_CHECK_CALC_ERROR([$1], [1//2], [15],
+                     [1.3-1.4: parse error, unexpected '/', expecting "number" or '-' or '('])
+_AT_CHECK_CALC_ERROR([$1], [error], [4],
+                     [1.1-1.2: parse error, unexpected $undefined, expecting "number" or '-' or '\n' or '('])
+_AT_CHECK_CALC_ERROR([$1], [1 = 2 = 3], [22],
+                     [1.7-1.8: parse error, unexpected '='])
 _AT_CHECK_CALC_ERROR([$1],
                      [
 +1],
-                     [16],
-                     [2.0:2.1],
-                     [unexpected '+'])
+                     [14],
+                     [2.1-2.2: parse error, unexpected '+'])
+# Exercise error messages with EOF: work on an empty file.
+_AT_CHECK_CALC_ERROR([$1], [/dev/null], [4],
+                     [1.1-1.2: parse error, unexpected "end of file", expecting "number" or '-' or '\n' or '('])
+
+# Exercise the error token: without it, we die at the first error,
+# hence be sure i. to have several errors, ii. to test the action
+# associated to `error'.
+_AT_CHECK_CALC_ERROR([$1], [(1 ++ 2) + (0 0) = 1], [82],
+[1.5-1.6: parse error, unexpected '+', expecting "number" or '-' or '('
+1.15-1.16: parse error, unexpected "number"
+calc: error: 0 != 1])
+
+# Add a studid example demonstrating that Bison can further improve the
+# error message.  FIXME: Fix this ridiculous message.
+_AT_CHECK_CALC_ERROR([$1], [()], [21],
+[1.2-1.3: parse error, unexpected ')', expecting "number" or '-' or '('])
 
 AT_CLEANUP
 ])# AT_CHECK_CALC
@@ -378,22 +433,62 @@ AT_CLEANUP
 
 
 
-# ------------------ #
-# Test the parsers.  #
-# ------------------ #
+# ------------------------ #
+# Simple LALR Calculator.  #
+# ------------------------ #
 
-AT_CHECK_CALC()
+AT_BANNER([[Simple LALR Calculator.]])
 
-AT_CHECK_CALC([--defines])
-AT_CHECK_CALC([--locations])
-AT_CHECK_CALC([--name-prefix=calc])
-AT_CHECK_CALC([--verbose])
-AT_CHECK_CALC([--yacc])
-AT_CHECK_CALC([--yyerror-verbose])
+# AT_CHECK_CALC_LALR([BISON-OPTIONS])
+# -----------------------------------
+# Start a testing chunk which compiles `calc' grammar with
+# BISON-OPTIONS, and performs several tests over the parser.
+m4_define([AT_CHECK_CALC_LALR],
+[AT_CHECK_CALC($@)])
 
-AT_CHECK_CALC([--locations --yyerror-verbose])
+AT_CHECK_CALC_LALR()
 
-AT_CHECK_CALC([--defines --locations --name-prefix=calc --verbose --yacc --yyerror-verbose])
+AT_CHECK_CALC_LALR([--defines])
+AT_CHECK_CALC_LALR([--locations])
+AT_CHECK_CALC_LALR([--name-prefix=calc])
+AT_CHECK_CALC_LALR([--verbose])
+AT_CHECK_CALC_LALR([--yacc])
+AT_CHECK_CALC_LALR([%error-verbose])
 
-AT_CHECK_CALC([--debug])
-AT_CHECK_CALC([--debug --defines --locations --name-prefix=calc --verbose --yacc --yyerror-verbose])
+AT_CHECK_CALC_LALR([%error-verbose --locations])
+
+AT_CHECK_CALC_LALR([%error-verbose --defines --locations --name-prefix=calc --verbose --yacc])
+
+AT_CHECK_CALC_LALR([%debug])
+AT_CHECK_CALC_LALR([%error-verbose %debug --defines --locations --name-prefix=calc --verbose --yacc])
+
+
+# ----------------------- #
+# Simple GLR Calculator.  #
+# ----------------------- #
+
+AT_BANNER([[Simple GLR Calculator.]])
+
+# AT_CHECK_CALC_GLR([BISON-OPTIONS])
+# ----------------------------------
+# Start a testing chunk which compiles `calc' grammar with
+# BISON-OPTIONS and %glr-parser, and performs several tests over the parser.
+m4_define([AT_CHECK_CALC_GLR],
+[AT_CHECK_CALC([%glr_parser] $@)])
+
+
+AT_CHECK_CALC_GLR()
+
+AT_CHECK_CALC_GLR([--defines])
+AT_CHECK_CALC_GLR([--locations])
+AT_CHECK_CALC_GLR([--name-prefix=calc])
+AT_CHECK_CALC_GLR([--verbose])
+AT_CHECK_CALC_GLR([--yacc])
+AT_CHECK_CALC_GLR([%error-verbose])
+
+AT_CHECK_CALC_GLR([%error-verbose --locations])
+
+AT_CHECK_CALC_GLR([%error-verbose --defines --locations --name-prefix=calc --verbose --yacc])
+
+AT_CHECK_CALC_GLR([%debug])
+AT_CHECK_CALC_GLR([%error-verbose %debug --defines --locations --name-prefix=calc --verbose --yacc])

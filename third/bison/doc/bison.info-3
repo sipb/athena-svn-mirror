@@ -1,32 +1,288 @@
-Ceci est le fichier Info bison.info, produit par Makeinfo version 4.0b
-à partir bison.texinfo.
+Ceci est le fichier Info bison.info, produit par Makeinfo version 4.2 à
+partir bison.texinfo.
 
-START-INFO-DIR-ENTRY
-* bison: (bison).	GNU Project parser generator (yacc replacement).
-END-INFO-DIR-ENTRY
 
-   This file documents the Bison parser generator.
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
-2000, 2001 Free Software Foundation, Inc.
+2000, 2001, 2002 Free Software Foundation, Inc.
 
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
 
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided also
-that the sections entitled "GNU General Public License" and "Conditions
-for Using Bison" are included exactly as in the original, and provided
-that the entire resulting derived work is distributed under the terms
-of a permission notice identical to this one.
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).	GNU parser generator (yacc replacement).
+END-INFO-DIR-ENTRY
 
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that the sections entitled "GNU General Public
-License", "Conditions for Using Bison" and this permission notice may be
-included in translations approved by the Free Software Foundation
-instead of in the original English.
+
+File: bison.info,  Node: Symbols,  Next: Rules,  Prev: Grammar Outline,  Up: Grammar File
+
+Symbols, Terminal and Nonterminal
+=================================
+
+   "Symbols" in Bison grammars represent the grammatical classifications
+of the language.
+
+   A "terminal symbol" (also known as a "token type") represents a
+class of syntactically equivalent tokens.  You use the symbol in grammar
+rules to mean that a token in that class is allowed.  The symbol is
+represented in the Bison parser by a numeric code, and the `yylex'
+function returns a token type code to indicate what kind of token has
+been read.  You don't need to know what the code value is; you can use
+the symbol to stand for it.
+
+   A "nonterminal symbol" stands for a class of syntactically equivalent
+groupings.  The symbol name is used in writing grammar rules.  By
+convention, it should be all lower case.
+
+   Symbol names can contain letters, digits (not at the beginning),
+underscores and periods.  Periods make sense only in nonterminals.
+
+   There are three ways of writing terminal symbols in the grammar:
+
+   * A "named token type" is written with an identifier, like an
+     identifier in C.  By convention, it should be all upper case.  Each
+     such name must be defined with a Bison declaration such as
+     `%token'.  *Note Token Type Names: Token Decl.
+
+   * A "character token type" (or "literal character token") is written
+     in the grammar using the same syntax used in C for character
+     constants; for example, `'+'' is a character token type.  A
+     character token type doesn't need to be declared unless you need to
+     specify its semantic value data type (*note Data Types of Semantic
+     Values: Value Type.), associativity, or precedence (*note Operator
+     Precedence: Precedence.).
+
+     By convention, a character token type is used only to represent a
+     token that consists of that particular character.  Thus, the token
+     type `'+'' is used to represent the character `+' as a token.
+     Nothing enforces this convention, but if you depart from it, your
+     program will confuse other readers.
+
+     All the usual escape sequences used in character literals in C can
+     be used in Bison as well, but you must not use the null character
+     as a character literal because its numeric code, zero, signifies
+     end-of-input (*note Calling Convention for `yylex': Calling
+     Convention.).
+
+   * A "literal string token" is written like a C string constant; for
+     example, `"<="' is a literal string token.  A literal string token
+     doesn't need to be declared unless you need to specify its semantic
+     value data type (*note Value Type::), associativity, or precedence
+     (*note Precedence::).
+
+     You can associate the literal string token with a symbolic name as
+     an alias, using the `%token' declaration (*note Token
+     Declarations: Token Decl.).  If you don't do that, the lexical
+     analyzer has to retrieve the token number for the literal string
+     token from the `yytname' table (*note Calling Convention::).
+
+     *WARNING*: literal string tokens do not work in Yacc.
+
+     By convention, a literal string token is used only to represent a
+     token that consists of that particular string.  Thus, you should
+     use the token type `"<="' to represent the string `<=' as a token.
+     Bison does not enforce this convention, but if you depart from
+     it, people who read your program will be confused.
+
+     All the escape sequences used in string literals in C can be used
+     in Bison as well.  A literal string token must contain two or more
+     characters; for a token containing just one character, use a
+     character token (see above).
+
+   How you choose to write a terminal symbol has no effect on its
+grammatical meaning.  That depends only on where it appears in rules and
+on when the parser function returns that symbol.
+
+   The value returned by `yylex' is always one of the terminal symbols,
+except that a zero or negative value signifies end-of-input.  Whichever
+way you write the token type in the grammar rules, you write it the
+same way in the definition of `yylex'.  The numeric code for a
+character token type is simply the positive numeric code of the
+character, so `yylex' can use the identical value to generate the
+requisite code, though you may need to convert it to `unsigned char' to
+avoid sign-extension on hosts where `char' is signed.  Each named token
+type becomes a C macro in the parser file, so `yylex' can use the name
+to stand for the code.  (This is why periods don't make sense in
+terminal symbols.)  *Note Calling Convention for `yylex': Calling
+Convention.
+
+   If `yylex' is defined in a separate file, you need to arrange for the
+token-type macro definitions to be available there.  Use the `-d'
+option when you run Bison, so that it will write these macro definitions
+into a separate header file `NAME.tab.h' which you can include in the
+other source files that need it.  *Note Invoking Bison: Invocation.
+
+   If you want to write a grammar that is portable to any Standard C
+host, you must use only non-null character tokens taken from the basic
+execution character set of Standard C.  This set consists of the ten
+digits, the 52 lower- and upper-case English letters, and the
+characters in the following C-language string:
+
+     "\a\b\t\n\v\f\r !\"#%&'()*+,-./:;<=>?[\\]^_{|}~"
+
+   The `yylex' function and Bison must use a consistent character set
+and encoding for character tokens.  For example, if you run Bison in an
+ASCII environment, but then compile and run the resulting program in an
+environment that uses an incompatible character set like EBCDIC, the
+resulting program may not work because the tables generated by Bison
+will assume ASCII numeric values for character tokens.  It is standard
+practice for software distributions to contain C source files that were
+generated by Bison in an ASCII environment, so installers on platforms
+that are incompatible with ASCII must rebuild those files before
+compiling them.
+
+   The symbol `error' is a terminal symbol reserved for error recovery
+(*note Error Recovery::); you shouldn't use it for any other purpose.
+In particular, `yylex' should never return this value.  The default
+value of the error token is 256, unless you explicitly assigned 256 to
+one of your tokens with a `%token' declaration.
+
+
+File: bison.info,  Node: Rules,  Next: Recursion,  Prev: Symbols,  Up: Grammar File
+
+Syntax of Grammar Rules
+=======================
+
+   A Bison grammar rule has the following general form:
+
+     RESULT: COMPONENTS...
+             ;
+
+where RESULT is the nonterminal symbol that this rule describes, and
+COMPONENTS are various terminal and nonterminal symbols that are put
+together by this rule (*note Symbols::).
+
+   For example,
+
+     exp:      exp '+' exp
+             ;
+
+says that two groupings of type `exp', with a `+' token in between, can
+be combined into a larger grouping of type `exp'.
+
+   White space in rules is significant only to separate symbols.  You
+can add extra white space as you wish.
+
+   Scattered among the components can be ACTIONS that determine the
+semantics of the rule.  An action looks like this:
+
+     {C STATEMENTS}
+
+Usually there is only one action and it follows the components.  *Note
+Actions::.
+
+   Multiple rules for the same RESULT can be written separately or can
+be joined with the vertical-bar character `|' as follows:
+
+     RESULT:   RULE1-COMPONENTS...
+             | RULE2-COMPONENTS...
+             ...
+             ;
+
+They are still considered distinct rules even when joined in this way.
+
+   If COMPONENTS in a rule is empty, it means that RESULT can match the
+empty string.  For example, here is how to define a comma-separated
+sequence of zero or more `exp' groupings:
+
+     expseq:   /* empty */
+             | expseq1
+             ;
+     
+     expseq1:  exp
+             | expseq1 ',' exp
+             ;
+
+It is customary to write a comment `/* empty */' in each rule with no
+components.
+
+
+File: bison.info,  Node: Recursion,  Next: Semantics,  Prev: Rules,  Up: Grammar File
+
+Recursive Rules
+===============
+
+   A rule is called "recursive" when its RESULT nonterminal appears
+also on its right hand side.  Nearly all Bison grammars need to use
+recursion, because that is the only way to define a sequence of any
+number of a particular thing.  Consider this recursive definition of a
+comma-separated sequence of one or more expressions:
+
+     expseq1:  exp
+             | expseq1 ',' exp
+             ;
+
+Since the recursive use of `expseq1' is the leftmost symbol in the
+right hand side, we call this "left recursion".  By contrast, here the
+same construct is defined using "right recursion":
+
+     expseq1:  exp
+             | exp ',' expseq1
+             ;
+
+Any kind of sequence can be defined using either left recursion or right
+recursion, but you should always use left recursion, because it can
+parse a sequence of any number of elements with bounded stack space.
+Right recursion uses up space on the Bison stack in proportion to the
+number of elements in the sequence, because all the elements must be
+shifted onto the stack before the rule can be applied even once.  *Note
+The Bison Parser Algorithm: Algorithm, for further explanation of this.
+
+   "Indirect" or "mutual" recursion occurs when the result of the rule
+does not appear directly on its right hand side, but does appear in
+rules for other nonterminals which do appear on its right hand side.
+
+   For example:
+
+     expr:     primary
+             | primary '+' primary
+             ;
+     
+     primary:  constant
+             | '(' expr ')'
+             ;
+
+defines two mutually-recursive nonterminals, since each refers to the
+other.
+
+
+File: bison.info,  Node: Semantics,  Next: Locations,  Prev: Recursion,  Up: Grammar File
+
+Defining Language Semantics
+===========================
+
+   The grammar rules for a language determine only the syntax.  The
+semantics are determined by the semantic values associated with various
+tokens and groupings, and by the actions taken when various groupings
+are recognized.
+
+   For example, the calculator calculates properly because the value
+associated with each expression is the proper number; it adds properly
+because the action for the grouping `X + Y' is to add the numbers
+associated with X and Y.
+
+* Menu:
+
+* Value Type::        Specifying one data type for all semantic values.
+* Multiple Types::    Specifying several alternative data types.
+* Actions::           An action is the semantic definition of a grammar rule.
+* Action Types::      Specifying data types for actions to operate on.
+* Mid-Rule Actions::  Most actions go at the end of a rule.
+                      This says when, why and how to use the exceptional
+                        action in the middle of a rule.
 
 
 File: bison.info,  Node: Value Type,  Next: Multiple Types,  Up: Semantics
@@ -44,8 +300,8 @@ specify some other type, define `YYSTYPE' as a macro, like this:
 
      #define YYSTYPE double
 
-This macro definition must go in the C declarations section of the
-grammar file (*note Outline of a Bison Grammar: Grammar Outline.).
+This macro definition must go in the prologue of the grammar file
+(*note Outline of a Bison Grammar: Grammar Outline.).
 
 
 File: bison.info,  Node: Multiple Types,  Next: Actions,  Prev: Value Type,  Up: Semantics
@@ -85,10 +341,10 @@ groupings.
 
    An action consists of C statements surrounded by braces, much like a
 compound statement in C.  It can be placed at any position in the rule;
-it is executed at that position.  Most rules have just one action at
-the end of the rule, following all the components.  Actions in the
-middle of a rule are tricky and used only for special purposes (*note
-Actions in Mid-Rule: Mid-Rule Actions.).
+it is executed at that position.  Most rules have just one action at the
+end of the rule, following all the components.  Actions in the middle of
+a rule are tricky and used only for special purposes (*note Actions in
+Mid-Rule: Mid-Rule Actions.).
 
    The C code in an action can refer to the semantic values of the
 components matched by the rule with the construct `$N', which stands for
@@ -111,6 +367,14 @@ stored into `$$' so that it becomes the semantic value of the
 addition-expression just recognized by the rule.  If there were a
 useful semantic value associated with the `+' token, it could be
 referred to as `$2'.
+
+   Note that the vertical-bar character `|' is really a rule separator,
+and actions are attached to a single rule.  This is a difference with
+tools like Flex, for which `|' stands for either "or", or "the same
+action as that of the next rule".  In the following example, the action
+is triggered only when `b' is found:
+
+     a-or-b: 'a'|'b'   { a_or_b_found = 1; };
 
    If you don't specify an action for a rule, Bison supplies a default:
 `$$ = $1'.  Thus, the value of the first symbol in the rule becomes the
@@ -308,8 +572,8 @@ Tracking Locations
 ==================
 
    Though grammar rules and semantic actions are enough to write a fully
-functional parser, it can be useful to process some additionnal
-informations, especially symbol locations.
+functional parser, it can be useful to process some additional
+information, especially symbol locations.
 
    The way locations are handled is defined by providing a data type,
 and actions to take when rules are matched.
@@ -351,7 +615,7 @@ Actions and Locations
 also for describing the behavior of the output parser with locations.
 
    The most obvious way for building locations of syntactic groupings
-is very similar to the way semantic values are computed. In a given
+is very similar to the way semantic values are computed.  In a given
 rule, several constructs can be used to access the locations of the
 elements being matched.  The location of the Nth component of the right
 hand side is `@N', while the location of the left hand side grouping is
@@ -378,12 +642,12 @@ hand side is `@N', while the location of the left hand side grouping is
                  }
 
    As for semantic values, there is a default action for locations that
-is run each time a rule is matched. It sets the beginning of `@$' to the
-beginning of the first symbol, and the end of `@$' to the end of the
+is run each time a rule is matched.  It sets the beginning of `@$' to
+the beginning of the first symbol, and the end of `@$' to the end of the
 last symbol.
 
    With this default action, the location tracking can be fully
-automatic. The example above simply rewrites this way:
+automatic.  The example above simply rewrites this way:
 
      exp:    ...
              | exp '/' exp
@@ -405,34 +669,41 @@ File: bison.info,  Node: Location Default Action,  Prev: Actions and Locations, 
 Default Action for Locations
 ----------------------------
 
-   Actually, actions are not the best place to compute locations. Since
+   Actually, actions are not the best place to compute locations.  Since
 locations are much more general than semantic values, there is room in
 the output parser to redefine the default action to take for each rule.
-The `YYLLOC_DEFAULT' macro is called each time a rule is matched,
+The `YYLLOC_DEFAULT' macro is invoked each time a rule is matched,
 before the associated action is run.
 
    Most of the time, this macro is general enough to suppress location
 dedicated code from semantic actions.
 
-   The `YYLLOC_DEFAULT' macro takes three parameters. The first one is
-the location of the grouping (the result of the computation). The
+   The `YYLLOC_DEFAULT' macro takes three parameters.  The first one is
+the location of the grouping (the result of the computation).  The
 second one is an array holding locations of all right hand side
-elements of the rule being matched. The last one is the size of the
+elements of the rule being matched.  The last one is the size of the
 right hand side rule.
 
-   By default, it is defined this way:
+   By default, it is defined this way for simple LALR(1) parsers:
 
-     #define YYLLOC_DEFAULT(Current, Rhs, N)         \
-       Current.last_line   = Rhs[N].last_line;       \
-       Current.last_column = Rhs[N].last_column;
+     #define YYLLOC_DEFAULT(Current, Rhs, N)          \
+       Current.first_line   = Rhs[1].first_line;      \
+       Current.first_column = Rhs[1].first_column;    \
+       Current.last_line    = Rhs[N].last_line;       \
+       Current.last_column  = Rhs[N].last_column;
+
+and like this for GLR parsers:
+
+     #define YYLLOC_DEFAULT(Current, Rhs, N)          \
+       Current.first_line   = YYRHSLOC(Rhs,1).first_line;      \
+       Current.first_column = YYRHSLOC(Rhs,1).first_column;    \
+       Current.last_line    = YYRHSLOC(Rhs,N).last_line;       \
+       Current.last_column  = YYRHSLOC(Rhs,N).last_column;
 
    When defining `YYLLOC_DEFAULT', you should consider that:
 
-   * All arguments are free of side-effects. However, only the first
+   * All arguments are free of side-effects.  However, only the first
      one (the result) should be modified by `YYLLOC_DEFAULT'.
-
-   * Before `YYLLOC_DEFAULT' is executed, the output parser sets `@$'
-     to `@1'.
 
    * For consistency with semantic actions, valid indexes for the
      location array range from 1 to N.
@@ -495,7 +766,7 @@ name:
 
 It is generally best, however, to let Bison choose the numeric codes for
 all token types.  Bison will automatically select codes that don't
-conflict with each other or with ASCII characters.
+conflict with each other or with normal characters.
 
    In the event that the stack type is a union, you must augment the
 `%token' or other token declaration to include the data type
@@ -688,10 +959,10 @@ statically allocated variables for communication with `yylex',
 including `yylval' and `yylloc'.)
 
    Alternatively, you can generate a pure, reentrant parser.  The Bison
-declaration `%pure_parser' says that you want the parser to be
+declaration `%pure-parser' says that you want the parser to be
 reentrant.  It looks like this:
 
-     %pure_parser
+     %pure-parser
 
    The result is that the communication variables `yylval' and `yylloc'
 become local variables in `yyparse', and a different calling convention
@@ -753,7 +1024,7 @@ directives:
 `%debug'
      In the parser file, define the macro `YYDEBUG' to 1 if it is not
      already defined, so that the debugging facilities are compiled.
-     *Note Debugging Your Parser: Debugging.
+     *Note Tracing Your Parser: Tracing.
 
 `%defines'
      Write an extra output file containing macro definitions for the
@@ -782,10 +1053,10 @@ directives:
 `%name-prefix="PREFIX"'
      Rename the external symbols used in the parser so that they start
      with PREFIX instead of `yy'.  The precise list of symbols renamed
-     is `yyparse', `yylex', `yyerror', `yynerrs', `yylval', `yychar'
-     and `yydebug'.  For example, if you use `%name-prefix="c_"', the
-     names become `c_parse', `c_lex', and so on.  *Note Multiple
-     Parsers in the Same Program: Multiple Parsers.
+     is `yyparse', `yylex', `yyerror', `yynerrs', `yylval', `yychar',
+     `yydebug', and possible `yylloc'.  For example, if you use
+     `%name-prefix="c_"', the names become `c_parse', `c_lex', and so
+     on.  *Note Multiple Parsers in the Same Program: Multiple Parsers.
 
 `%no-parser'
      Do not include any C code in the parser file; generate tables
@@ -811,13 +1082,13 @@ directives:
      Request a pure (reentrant) parser program (*note A Pure
      (Reentrant) Parser: Pure Decl.).
 
-`%token_table'
+`%token-table'
      Generate an array of token names in the parser file.  The name of
      the array is `yytname'; `yytname[I]' is the name of the token
      whose internal Bison token code number is I.  The first three
-     elements of `yytname' are always `"$"', `"error"', and
-     `"$illegal"'; after these come the symbols defined in the grammar
-     file.
+     elements of `yytname' are always `"$end"', `"error"', and
+     `"$undefined"'; after these come the symbols defined in the
+     grammar file.
 
      For single-character literal tokens and literal string tokens, the
      name in the table includes the single-quote or double-quote
@@ -829,7 +1100,7 @@ directives:
      `yytname' contains `"*"*"'.  (In C, that would be written as
      `"\"*\"*\""').
 
-     When you specify `%token_table', Bison also generates macro
+     When you specify `%token-table', Bison also generates macro
      definitions for macros `YYNTOKENS', `YYNNTS', and `YYNRULES', and
      `YYNSTATES':
 
@@ -848,20 +1119,10 @@ directives:
 `%verbose'
      Write an extra output file containing verbose descriptions of the
      parser states and what is done for each type of look-ahead token in
-     that state.
-
-     This file also describes all the conflicts, both those resolved by
-     operator precedence and the unresolved ones.
-
-     The file's name is made by removing `.tab.c' or `.c' from the
-     parser output file name, and adding `.output' instead.
-
-     Therefore, if the input file is `foo.y', then the parser file is
-     called `foo.tab.c' by default.  As a consequence, the verbose
-     output file is called `foo.output'.
+     that state.  *Note Understanding Your Parser: Understanding, for
+     more information.
 
 `%yacc'
-`%fixed-output-files'
      Pretend the option `--yacc' was given, i.e., imitate Yacc,
      including its naming conventions.  *Note Bison Options::, for more.
 
@@ -910,8 +1171,8 @@ that it needs to use.
 
    Keep in mind that the parser uses many C identifiers starting with
 `yy' and `YY' for internal purposes.  If you use such an identifier
-(aside from those in this manual) in an action or in additional C code
-in the grammar file, you are likely to run into trouble.
+(aside from those in this manual) in an action or in epilogue in the
+grammar file, you are likely to run into trouble.
 
 * Menu:
 
@@ -976,273 +1237,4 @@ it.  *Note Invoking Bison: Invocation.
                         actions want that.
 * Pure Calling::      How the calling convention differs
                         in a pure parser (*note A Pure (Reentrant) Parser: Pure Decl.).
-
-
-File: bison.info,  Node: Calling Convention,  Next: Token Values,  Up: Lexical
-
-Calling Convention for `yylex'
-------------------------------
-
-   The value that `yylex' returns must be the numeric code for the type
-of token it has just found, or 0 for end-of-input.
-
-   When a token is referred to in the grammar rules by a name, that name
-in the parser file becomes a C macro whose definition is the proper
-numeric code for that token type.  So `yylex' can use the name to
-indicate that type.  *Note Symbols::.
-
-   When a token is referred to in the grammar rules by a character
-literal, the numeric code for that character is also the code for the
-token type.  So `yylex' can simply return that character code.  The
-null character must not be used this way, because its code is zero and
-that is what signifies end-of-input.
-
-   Here is an example showing these things:
-
-     int
-     yylex (void)
-     {
-       ...
-       if (c == EOF)     /* Detect end of file. */
-         return 0;
-       ...
-       if (c == '+' || c == '-')
-         return c;      /* Assume token type for `+' is '+'. */
-       ...
-       return INT;      /* Return the type of the token. */
-       ...
-     }
-
-This interface has been designed so that the output from the `lex'
-utility can be used without change as the definition of `yylex'.
-
-   If the grammar uses literal string tokens, there are two ways that
-`yylex' can determine the token type codes for them:
-
-   * If the grammar defines symbolic token names as aliases for the
-     literal string tokens, `yylex' can use these symbolic names like
-     all others.  In this case, the use of the literal string tokens in
-     the grammar file has no effect on `yylex'.
-
-   * `yylex' can find the multicharacter token in the `yytname' table.
-     The index of the token in the table is the token type's code.  The
-     name of a multicharacter token is recorded in `yytname' with a
-     double-quote, the token's characters, and another double-quote.
-     The token's characters are not escaped in any way; they appear
-     verbatim in the contents of the string in the table.
-
-     Here's code for looking up a token in `yytname', assuming that the
-     characters of the token are stored in `token_buffer'.
-
-          for (i = 0; i < YYNTOKENS; i++)
-            {
-              if (yytname[i] != 0
-                  && yytname[i][0] == '"'
-                  && strncmp (yytname[i] + 1, token_buffer,
-                              strlen (token_buffer))
-                  && yytname[i][strlen (token_buffer) + 1] == '"'
-                  && yytname[i][strlen (token_buffer) + 2] == 0)
-                break;
-            }
-
-     The `yytname' table is generated only if you use the
-     `%token_table' declaration.  *Note Decl Summary::.
-
-
-File: bison.info,  Node: Token Values,  Next: Token Positions,  Prev: Calling Convention,  Up: Lexical
-
-Semantic Values of Tokens
--------------------------
-
-   In an ordinary (non-reentrant) parser, the semantic value of the
-token must be stored into the global variable `yylval'.  When you are
-using just one data type for semantic values, `yylval' has that type.
-Thus, if the type is `int' (the default), you might write this in
-`yylex':
-
-       ...
-       yylval = value;  /* Put value onto Bison stack. */
-       return INT;      /* Return the type of the token. */
-       ...
-
-   When you are using multiple data types, `yylval''s type is a union
-made from the `%union' declaration (*note The Collection of Value
-Types: Union Decl.).  So when you store a token's value, you must use
-the proper member of the union.  If the `%union' declaration looks like
-this:
-
-     %union {
-       int intval;
-       double val;
-       symrec *tptr;
-     }
-
-then the code in `yylex' might look like this:
-
-       ...
-       yylval.intval = value; /* Put value onto Bison stack. */
-       return INT;          /* Return the type of the token. */
-       ...
-
-
-File: bison.info,  Node: Token Positions,  Next: Pure Calling,  Prev: Token Values,  Up: Lexical
-
-Textual Positions of Tokens
----------------------------
-
-   If you are using the `@N'-feature (*note Tracking Locations:
-Locations.) in actions to keep track of the textual locations of tokens
-and groupings, then you must provide this information in `yylex'.  The
-function `yyparse' expects to find the textual location of a token just
-parsed in the global variable `yylloc'.  So `yylex' must store the
-proper data in that variable.
-
-   By default, the value of `yylloc' is a structure and you need only
-initialize the members that are going to be used by the actions.  The
-four members are called `first_line', `first_column', `last_line' and
-`last_column'.  Note that the use of this feature makes the parser
-noticeably slower.
-
-   The data type of `yylloc' has the name `YYLTYPE'.
-
-
-File: bison.info,  Node: Pure Calling,  Prev: Token Positions,  Up: Lexical
-
-Calling Conventions for Pure Parsers
-------------------------------------
-
-   When you use the Bison declaration `%pure_parser' to request a pure,
-reentrant parser, the global communication variables `yylval' and
-`yylloc' cannot be used.  (*Note A Pure (Reentrant) Parser: Pure Decl.)
-In such parsers the two global variables are replaced by pointers
-passed as arguments to `yylex'.  You must declare them as shown here,
-and pass the information back by storing it through those pointers.
-
-     int
-     yylex (YYSTYPE *lvalp, YYLTYPE *llocp)
-     {
-       ...
-       *lvalp = value;  /* Put value onto Bison stack.  */
-       return INT;      /* Return the type of the token.  */
-       ...
-     }
-
-   If the grammar file does not use the `@' constructs to refer to
-textual positions, then the type `YYLTYPE' will not be defined.  In
-this case, omit the second argument; `yylex' will be called with only
-one argument.
-
-   If you use a reentrant parser, you can optionally pass additional
-parameter information to it in a reentrant way.  To do so, define the
-macro `YYPARSE_PARAM' as a variable name.  This modifies the `yyparse'
-function to accept one argument, of type `void *', with that name.
-
-   When you call `yyparse', pass the address of an object, casting the
-address to `void *'.  The grammar actions can refer to the contents of
-the object by casting the pointer value back to its proper type and
-then dereferencing it.  Here's an example.  Write this in the parser:
-
-     %{
-     struct parser_control
-     {
-       int nastiness;
-       int randomness;
-     };
-     
-     #define YYPARSE_PARAM parm
-     %}
-
-Then call the parser like this:
-
-     struct parser_control
-     {
-       int nastiness;
-       int randomness;
-     };
-     
-     ...
-     
-     {
-       struct parser_control foo;
-       ...  /* Store proper data in `foo'.  */
-       value = yyparse ((void *) &foo);
-       ...
-     }
-
-In the grammar actions, use expressions like this to refer to the data:
-
-     ((struct parser_control *) parm)->randomness
-
-   If you wish to pass the additional parameter data to `yylex', define
-the macro `YYLEX_PARAM' just like `YYPARSE_PARAM', as shown here:
-
-     %{
-     struct parser_control
-     {
-       int nastiness;
-       int randomness;
-     };
-     
-     #define YYPARSE_PARAM parm
-     #define YYLEX_PARAM parm
-     %}
-
-   You should then define `yylex' to accept one additional
-argument--the value of `parm'.  (This makes either two or three
-arguments in total, depending on whether an argument of type `YYLTYPE'
-is passed.)  You can declare the argument as a pointer to the proper
-object type, or you can declare it as `void *' and access the contents
-as shown above.
-
-   You can use `%pure_parser' to request a reentrant parser without
-also using `YYPARSE_PARAM'.  Then you should call `yyparse' with no
-arguments, as usual.
-
-
-File: bison.info,  Node: Error Reporting,  Next: Action Features,  Prev: Lexical,  Up: Interface
-
-The Error Reporting Function `yyerror'
-======================================
-
-   The Bison parser detects a "parse error" or "syntax error" whenever
-it reads a token which cannot satisfy any syntax rule.  An action in
-the grammar can also explicitly proclaim an error, using the macro
-`YYERROR' (*note Special Features for Use in Actions: Action Features.).
-
-   The Bison parser expects to report the error by calling an error
-reporting function named `yyerror', which you must supply.  It is
-called by `yyparse' whenever a syntax error is found, and it receives
-one argument.  For a parse error, the string is normally
-`"parse error"'.
-
-   If you define the macro `YYERROR_VERBOSE' in the Bison declarations
-section (*note The Bison Declarations Section: Bison Declarations.),
-then Bison provides a more verbose and specific error message string
-instead of just plain `"parse error"'.  It doesn't matter what
-definition you use for `YYERROR_VERBOSE', just whether you define it.
-
-   The parser can detect one other kind of error: stack overflow.  This
-happens when the input contains constructions that are very deeply
-nested.  It isn't likely you will encounter this, since the Bison
-parser extends its stack automatically up to a very large limit.  But
-if overflow happens, `yyparse' calls `yyerror' in the usual fashion,
-except that the argument string is `"parser stack overflow"'.
-
-   The following definition suffices in simple programs:
-
-     void
-     yyerror (char *s)
-     {
-       fprintf (stderr, "%s\n", s);
-     }
-
-   After `yyerror' returns to `yyparse', the latter will attempt error
-recovery if you have written suitable error recovery grammar rules
-(*note Error Recovery::).  If recovery is impossible, `yyparse' will
-immediately return 1.
-
-   The variable `yynerrs' contains the number of syntax errors
-encountered so far.  Normally this variable is global; but if you
-request a pure parser (*note A Pure (Reentrant) Parser: Pure Decl.)
-then it is a local variable which only the actions can access.
 

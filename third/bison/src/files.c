@@ -1,5 +1,5 @@
 /* Open and close files for bison,
-   Copyright 1984, 1986, 1989, 1992, 2000, 2001, 2002
+   Copyright (C) 1984, 1986, 1989, 1992, 2000, 2001, 2002
    Free Software Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
@@ -29,30 +29,37 @@
 
 /* From basename.c.  Almost a lie, as it returns a char *. */
 const char *base_name PARAMS ((char const *name));
-/* From xstrndup.c.  */
-char *xstrndup PARAMS ((const char *s, size_t n));
 
 FILE *finput = NULL;
 
-struct obstack action_obstack;
-struct obstack attrs_obstack;
-struct obstack table_obstack;
-struct obstack defines_obstack;
-struct obstack guard_obstack;
-struct obstack output_obstack;
+struct obstack pre_prologue_obstack;
+struct obstack post_prologue_obstack;
+
+/* Initializing some values below (such SPEC_NAME_PREFIX to `yy') is
+   tempting, but don't do that: for the time being our handling of the
+   %directive vs --option leaves precedence to the options by deciding
+   that if a %directive sets a variable which is really set (i.e., not
+   NULL), then the %directive is ignored.  As a result, %name-prefix,
+   for instance, will not be honored.  */
 
 char *spec_outfile = NULL;	/* for -o. */
 char *spec_file_prefix = NULL;	/* for -b. */
-char *spec_name_prefix = NULL;	/* for -p. */
+const char *spec_name_prefix = NULL;	/* for -p. */
 char *spec_verbose_file = NULL;   /* for --verbose. */
 char *spec_graph_file = NULL;   /* for -g. */
 char *spec_defines_file = NULL; /* for --defines. */
+char *parser_file_name = NULL;
 
 char *infile = NULL;
-char *attrsfile = NULL;
 
 static char *full_base_name = NULL;
-static char *short_base_name = NULL;
+
+/* Prefix used to generate output file names.  */
+char *short_base_name = NULL;
+
+/* Infix used to generate output file names (i.e., `.tab', or `_tab',
+   or `').  */
+char *output_infix = NULL;
 
 /* C source file extension (the parser source).  */
 const char *src_extension = NULL;
@@ -81,7 +88,7 @@ strsuffix (const char *string, const char *suffix)
 | STRING1, and STRING2.                                            |
 `-----------------------------------------------------------------*/
 
-static char *
+char*
 stringappend (const char *string1, const char *string2)
 {
   size_t len = strlen (string1) + strlen (string2);
@@ -91,49 +98,6 @@ stringappend (const char *string1, const char *string2)
   cp = stpcpy (cp, string2);
   return res;
 }
-
-
-/*-----------------------------------------------------------------.
-| Computes the macro name used to avoid double inclusion in the    |
-| header of the parser and store it in header_macro_name.  Be sure |
-| to produce valid CPP names (don't start with digit, remain       |
-| alphanumerical + underscore).                                    |
-`-----------------------------------------------------------------*/
-
-static char *
-compute_header_macro (void)
-{
-  const char *prefix = "BISON_";
-  char *macro_name, *cp;
-
-  if (spec_defines_file)
-    {
-      macro_name = XMALLOC (char,
-			    strlen (prefix) +
-			    strlen (spec_defines_file) + 1);
-      cp = stpcpy (macro_name, prefix);
-      cp = stpcpy (cp, spec_defines_file);
-    }
-  else
-    {
-      macro_name = XMALLOC (char,
-			    strlen (prefix) +
-			    strlen (full_base_name) +
-			    strlen (header_extension) + 1);
-      cp = stpcpy (macro_name, prefix);
-      cp = stpcpy (cp, full_base_name);
-      cp = stpcpy (cp, header_extension);
-    }
-
-  for (cp = macro_name; *cp; ++cp)
-    if (islower (*cp))
-      *cp = toupper (*cp);
-    else if (!isalnum (*cp))
-      *cp = '_';
-
-  return macro_name;
-}
-
 
 /*-----------------------------------------------------------------.
 | Try to open file NAME with mode MODE, and print an error message |
@@ -169,91 +133,6 @@ xfclose (FILE *ptr)
     error (2, errno, _("cannot close file"));
 
   return result;
-}
-
-/*--------------------------------------------------.
-| Save the content of the obstack OBS in FILENAME.  |
-`--------------------------------------------------*/
-
-static void
-obstack_save (struct obstack *obs, const char *filename)
-{
-  FILE *out = xfopen (filename, "w");
-  size_t size = obstack_object_size (obs);
-  fwrite (obstack_finish (obs), 1, size, out);
-  xfclose (out);
-}
-
-/*---------------------------------------------------------------------.
-| Output double inclusion protection macros and saves defines_obstack  |
-`---------------------------------------------------------------------*/
-
-static void
-defines_obstack_save (const char *filename)
-{
-  FILE *out = xfopen (filename, "w");
-  size_t size = obstack_object_size (&defines_obstack);
-  char *macro_name = compute_header_macro ();
-
-  fprintf (out, "#ifndef %s\n", macro_name);
-  fprintf (out, "# define %s\n\n", macro_name);
-  fwrite (obstack_finish (&defines_obstack), 1, size, out);
-  fprintf (out, "\n#endif /* not %s */\n", macro_name);
-
-  free (macro_name);
-  xfclose (out);
-}
-
-/*------------------------------------------------------------------.
-| Return the path to the skeleton which locaction might be given in |
-| ENVVAR, otherwise return SKELETON_NAME.                           |
-`------------------------------------------------------------------*/
-
-const char *
-skeleton_find (const char *envvar, const char *skeleton_name)
-{
-  const char *res = getenv (envvar);
-
-#if defined (MSDOS) || defined (_WIN32)
-  const char *cp = getenv ("INIT");
-  if (!res)
-    {
-      /* Skeleton file name without path */
-      const char *skel_name = strrchr (skeleton_name, '/');
-      if (!skel_name)
-        skel_name = strrchr (skeleton_name, '\\');
-      if (!skel_name)
-        skel_name = skeleton_name;
-      else
-        ++skel_name;
-
-      /* File doesn't exist in current directory; try in INIT directory.  */
-      if (cp)
-	{
-	  res = XMALLOC (char, strlen (cp) + strlen (skel_name) + 2);
-	  sprintf (res, "%s%c%s", cp, '\\', skel_name);
-	}
-      else if (access (skel_name, 4) == 0) /* Look in current dir. */
-        res = skel_name;
-      else
-	{
-	  /* Look in program locations dir. */
-	  extern char *program_name;
-	  cp = strrchr(program_name, '\\');
-	  if (!cp)
-	    return skeleton_name;
-	  else
-	    ++cp;
-	  res = XMALLOC (char, cp - program_name + strlen (skel_name) + 1);
-	  strncpy (res, program_name, cp - program_name);
-	  strcpy (res + (cp - program_name), skel_name);
-	}
-    }
-#endif /* defined (MSDOS) || defined (_WIN32) */
-  if (!res)
-    res = skeleton_name;
-
-  return res;
 }
 
 
@@ -372,16 +251,21 @@ compute_base_names (void)
 
       /* The full base name goes up the EXT, excluding it. */
       full_base_name =
- 	xstrndup (spec_outfile,
- 		  (strlen (spec_outfile) - (ext ? strlen (ext) : 0)));
+	xstrndup (spec_outfile,
+		  (strlen (spec_outfile) - (ext ? strlen (ext) : 0)));
+
       /* The short base name goes up to TAB, excluding it.  */
       short_base_name =
- 	xstrndup (spec_outfile,
- 		  (strlen (spec_outfile)
- 		   - (tab ? strlen (tab) : (ext ? strlen (ext) : 0))));
+	xstrndup (spec_outfile,
+		  (strlen (spec_outfile)
+		   - (tab ? strlen (tab) : (ext ? strlen (ext) : 0))));
+
+      if (tab)
+	output_infix = xstrndup (tab,
+				 (strlen (tab) - (ext ? strlen (ext) : 0)));
 
       if (ext)
- 	compute_exts_from_src (ext);
+	compute_exts_from_src (ext);
     }
 
   /* If --file-prefix=foo was specified, FULL_BASE_NAME = `foo.tab'
@@ -391,40 +275,40 @@ compute_base_names (void)
   else
     {
       if (spec_file_prefix)
- 	{
- 	  /* If --file-prefix=foo was specified, SHORT_BASE_NAME =
- 	     `foo'.  */
- 	  short_base_name = xstrdup (spec_file_prefix);
- 	}
+	{
+	  /* If --file-prefix=foo was specified, SHORT_BASE_NAME =
+	     `foo'.  */
+	  short_base_name = xstrdup (spec_file_prefix);
+	}
       else if (yacc_flag)
- 	{
- 	  /* If --yacc, then the output is `y.tab.c'. */
- 	  short_base_name = xstrdup ("y");
- 	}
+	{
+	  /* If --yacc, then the output is `y.tab.c'. */
+	  short_base_name = xstrdup ("y");
+	}
       else
- 	{
- 	  /* Otherwise, the short base name is computed from the input
- 	     grammar: `foo.yy' => `foo'.  */
- 	  filename_split (infile, &base, &tab, &ext);
- 	  short_base_name =
- 	    xstrndup (infile,
- 		      (strlen (infile) - (ext ? strlen (ext) : 0)));
- 	}
+	{
+	  /* Otherwise, the short base name is computed from the input
+	     grammar: `foo/bar.yy' => `bar'.  */
+	  filename_split (infile, &base, &tab, &ext);
+	  short_base_name =
+	    xstrndup (base,
+		      (strlen (base) - (ext ? strlen (ext) : 0)));
+	}
 
       /* In these cases, always append `.tab'. */
+      output_infix = xstrdup (EXT_TAB);
+
       full_base_name = XMALLOC (char,
- 				strlen (short_base_name)
- 				+ strlen (EXT_TAB) + 1);
+				strlen (short_base_name)
+				+ strlen (EXT_TAB) + 1);
       stpcpy (stpcpy (full_base_name, short_base_name), EXT_TAB);
 
       /* Computes the extensions from the grammar file name.  */
       filename_split (infile, &base, &tab, &ext);
-      
       if (ext && !yacc_flag)
 	compute_exts_from_gf (ext);
     }
 }
-
 
 /*-------------------------------------------------------.
 | Close the open files, compute the output files names.  |
@@ -441,6 +325,9 @@ compute_output_file_names (void)
   if (!header_extension)
     header_extension = ".h";
 
+  parser_file_name =
+    spec_outfile ? spec_outfile : stringappend (full_base_name, src_extension);
+
   /* It the defines filename if not given, we create it.  */
   if (!spec_defines_file)
     spec_defines_file = stringappend (full_base_name, header_extension);
@@ -450,83 +337,4 @@ compute_output_file_names (void)
     spec_graph_file = stringappend (short_base_name, ".vcg");
 
   spec_verbose_file = stringappend (short_base_name, EXT_OUTPUT);
-
-  attrsfile = stringappend (short_base_name, EXT_STYPE_H);
-#ifndef MSDOS
-  attrsfile = stringappend (attrsfile, header_extension);
-#endif /* MSDOS */
-
-}
-
-/*-----------------------------------------------------------------.
-| Open the input file.  Look for the skeletons.  Find the names of |
-| the output files.  Prepare the obstacks.                         |
-`-----------------------------------------------------------------*/
-
-void
-open_files (void)
-{
-  finput = xfopen (infile, "r");
-
-  /* Initialize the obstacks. */
-  obstack_init (&action_obstack);
-  obstack_init (&attrs_obstack);
-  obstack_init (&table_obstack);
-  obstack_init (&defines_obstack);
-  obstack_init (&guard_obstack);
-  obstack_init (&output_obstack);
-}
-
-
-
-/*-----------------------.
-| Close the open file..  |
-`-----------------------*/
-
-void
-close_files (void)
-{
-  xfclose (finput);
-}
-
-/*---------------------------.
-| Produce the output files.  |
-`---------------------------*/
-
-void
-output_files (void)
-{
-  /* Output the main file.  */
-  if (spec_outfile)
-    obstack_save (&table_obstack, spec_outfile);
-  else
-    obstack_save (&table_obstack,
-		  stringappend (full_base_name, src_extension));
-  obstack_free (&table_obstack, NULL);
-
-  /* Output the header file if wanted. */
-  if (defines_flag)
-    defines_obstack_save (spec_defines_file);
-  obstack_free (&defines_obstack, NULL);
-
-  /* If we output only the table, dump the actions in ACTFILE. */
-  if (no_parser_flag)
-    obstack_save (&action_obstack, stringappend (short_base_name, ".act"));
-  obstack_free (&action_obstack, NULL);
-
-  /* If we produced a semantic parser ATTRS_OBSTACK must be dumped
-     into its own file, ATTTRSFILE.  */
-  if (semantic_parser)
-    {
-      char *temp_name;
-
-      obstack_save (&attrs_obstack, attrsfile);
-      obstack_free (&attrs_obstack, NULL);
-      temp_name = stringappend (short_base_name, EXT_GUARD_C);
-#ifndef MSDOS
-      temp_name = stringappend (temp_name, src_extension);
-#endif /* MSDOS */
-      obstack_save (&guard_obstack, temp_name);
-      obstack_free (&guard_obstack, NULL);
-    }
 }
