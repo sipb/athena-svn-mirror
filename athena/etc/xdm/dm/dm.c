@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.26 1992-10-16 08:09:23 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.27 1992-10-16 08:14:41 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -35,6 +35,9 @@
 #endif
 
 #ifdef _IBMR2
+#if AIXV==31
+#define USE_X11R3
+#endif
 #include <termio.h>
 #include <grp.h>
 #include <usersec.h>
@@ -46,7 +49,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.26 1992-10-16 08:09:23 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.27 1992-10-16 08:14:41 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -142,7 +145,7 @@ char **argv;
 #if defined(ultrix) && defined(mips)
     int uacbuf[2];
 #endif
-#if defined(_AIX) && (AIXV == 31)
+#ifdef USE_X11R3
     fd_set rdlist;
     int pp[2], nfd, nfound;
     struct timeval timeout;
@@ -229,7 +232,7 @@ char **argv;
     /* Fire up X */
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
-#if defined(_AIX) && (AIXV == 31)
+#ifdef USE_X11R3
 	if (xpid != 0) {
 	    kill(xpid, SIGKILL);
 	    alarm(5);
@@ -246,7 +249,7 @@ char **argv;
 	xpid = fork();
 	switch (xpid) {
 	case 0:
-#if defined(_AIX) && (AIXV == 31)
+#ifdef USE_X11R3
 	    close(pp[0]);
 	    dup2(pp[1],1);
 #endif
@@ -277,7 +280,7 @@ char **argv;
 		write(file, number(xpid), strlen(number(xpid)));
 		close(file);
 	    }
-#if defined(_AIX) && (AIXV == 31)
+#ifdef USE_X11R3
 	    /* have to do it this way, since the Rios X server doesn't
 	     * send signals back when it starts up.  It does, however,
 	     * write the name of the display it started up on to stdout
