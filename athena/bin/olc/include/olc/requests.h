@@ -19,11 +19,29 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.17 1991-04-08 21:02:24 lwvanels Exp $
+ *	$Id: requests.h,v 1.18 1991-04-10 13:15:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
+
+#ifdef KERBEROS
+#include <krb.h>
+#else
+/* Need this just for the structure size; allows some interopability between
+   kerberized & non-kerberized clients/servers */
+/* From krb.h */
+
+#define         MAX_KTXT_LEN    1250
+struct ktext {
+    int     length;             /* Length of the text */
+    unsigned char dat[MAX_KTXT_LEN];    /* The data itself */
+    unsigned long mbz;          /* zero to catch runaway strings */
+};
+
+typedef struct ktext *KTEXT;
+typedef struct ktext KTEXT_ST;
+#endif
 
 /* request structure */
 
