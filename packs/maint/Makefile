@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2002-11-11 18:30:01 ghudson Exp $
+# $Id: Makefile,v 1.15 2003-03-29 23:08:59 rbasch Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -23,8 +23,6 @@ install:
 	install -c -m 0555 local-menus.sh ${DESTDIR}${ATHRETCDIR}/local-menus
 	install -c -m 0555 local-lockers.sh \
 		${DESTDIR}${ATHRETCDIR}/local-lockers
-	install -c -m 0555 local-netscape.sh \
-		${DESTDIR}${ATHRETCDIR}/local-netscape
 	install -c -m 0555 netparams.sh ${DESTDIR}${ATHRETCDIR}/netparams
 	install -c -m 0555 reactivate.sh ${DESTDIR}${ATHRETCDIR}/reactivate
 	install -c -m 0444 reactivate.8 ${DESTDIR}${ATHMANDIR}/man8
