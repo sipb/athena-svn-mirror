@@ -94,7 +94,8 @@ void AriRegisterAthena ( app )
     RCN("Form",				formWidgetClass		);
 
     /* Other Interestng Widgets (not in ref manual) */
-    RCN("Clock",			clockWidgetClass	);
+    RCN("ClockWidget",			clockWidgetClass	);
+    RCN("clockWidgetClass",		clockWidgetClass	);
 
 #ifdef Use_AtLabel		/* djf's formatted text stuff... */
     RCN("AtLabel",			atLabelWidgetClass	);
