@@ -1,5 +1,5 @@
 /*
- * $Id: Menu.c,v 1.3 1999-08-13 00:20:59 danw Exp $
+ * $Id: Menu.c,v 1.4 2000-07-17 21:12:02 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Menu.c,v 1.3 1999-08-13 00:20:59 danw Exp $";
+"$Id: Menu.c,v 1.4 2000-07-17 21:12:02 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -2310,6 +2310,8 @@ static void closeMenu(bar, menu, warp)
 		      (menu->x + menu->pane_width);
 	  woffset(bar, menu, MIN(freespace, -bar->menu.scrollx), warp);
 	}
+      else if (bar->menu.scrollx != 0 && menu->parent == bar->menu.rootMenu)
+	woffset(bar, menu->parent, -bar->menu.scrollx, warp);
     }
 }
 
