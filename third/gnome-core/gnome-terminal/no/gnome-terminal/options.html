@@ -1,0 +1,291 @@
+<HTML
+><HEAD
+><TITLE
+>Kommandolinjeflagg</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.57"><LINK
+REL="HOME"
+TITLE="GNOME Terminal brukermanual."
+HREF="index.html"><LINK
+REL="UP"
+TITLE="The GNOME terminal brukermanual."
+HREF="terminal.html"><LINK
+REL="PREVIOUS"
+TITLE="Terminalklasser"
+HREF="classes.html"><LINK
+REL="NEXT"
+TITLE="Pekerbruk"
+HREF="pointerusage.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Terminal brukermanual.</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="classes.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>The GNOME terminal brukermanual.</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="pointerusage.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="OPTIONS"
+>Kommandolinjeflagg</A
+></H1
+><P
+>	<P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--background FARGE</SPAN
+></P
+><P
+>Brukes til å spesifisere
+	      bakgrunnsfargen for terminalen ved oppstart. FARGE kan være på
+	      enhver form som aksepteres av vindussystemet.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--class KLASSENAVN</SPAN
+></P
+><P
+>	      KLASSENAVN spesifiserer terminalklassen som brukes til å
+	      konfigurere terminalen ved oppstart.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--command KMD, -e KMD</SPAN
+></P
+><P
+>	      Kjører kommandoen KMD ved oppstart.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--execute KMD ARG, -x KMD ARG</SPAN
+></P
+><P
+>	      Utfører kommandoen KMD med argumentene ARG ved
+	      oppstart. Ingen argumenter utover disse vil bli
+	      tatt hensyn til av terminalen, denne oppførselen
+	      etterligner xterm -e.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--font SKRIFTTYPE</SPAN
+></P
+><P
+>	      Setter skrifttypen i terminalen til SKRIFTTYPE.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--foreground FARGE</SPAN
+></P
+><P
+>	      Setter forgrunnen i terminalen til FARGE.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--geometry GEOMETRI</SPAN
+></P
+><P
+>	      Spesifiserer geometrien for denne terminalen ved oppstart.
+	      Geometrien spesifiserer ønsket bredde og høyde i antall
+	      terminaltegn.  For eksempel: --geometry=80x40 vil 
+	      lage en terminal med åtti kolonner og førti linjer.</P
+><P
+>FIXME:  LInk to gnome-libs document on GEOMETRY specifications
+	      when it is written
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--login</SPAN
+></P
+><P
+>	      Lar gnome-terminal starte skallet i login modus (det vil kjøre
+	      alle dine initialiseringsskript for innlogging i dette modus).
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--nologin</SPAN
+></P
+><P
+>	      Får gnome-terminal til bare å starte et skall.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--noutmp</SPAN
+></P
+><P
+>	      Indikerer at dette og assosierte skall ikke skal registreres
+	      i systemets database av brukere som er logget inn på 
+	      maskinen. 
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--utmp</SPAN
+></P
+><P
+>	      Indikerer at brukeren ønsker at denne terminalen skal
+	      registreres i systemets database av brukere som er logget
+	      inn på maskinen (utmp databasen).  Dette er satt som standard.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--title TITTEL, -t TITTEL</SPAN
+></P
+><P
+>	      Lar GNOME terminal bruke TITTEL til vindusoverskrift.
+	    </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="SYMBOL"
+>--termname TERMNAVN</SPAN
+></P
+><P
+>	      Gjør at GNOME terminal bruker TERMNAVN som verdi i
+	      TERM miljøvariabelen.
+	    </P
+></LI
+></UL
+>
+	
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="classes.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pointerusage.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Terminalklasser</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="terminal.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Pekerbruk</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,5 @@
+<!entity AppletWidget SYSTEM "sgml/applet-widget.sgml">
+<!entity panel-Panel-Interaction SYSTEM "sgml/interact.sgml">
+<!entity panel-Context-Menu SYSTEM "sgml/menu.sgml">
+<!entity panel-Miscellaneous SYSTEM "sgml/misc.sgml">
+<!entity StatusDocklet SYSTEM "sgml/status-docklet.sgml">

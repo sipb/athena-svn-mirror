@@ -1,0 +1,2 @@
+SUBDIRS = C de it
+
