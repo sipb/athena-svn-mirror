@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.13 2001-03-09 19:41:47 ghudson Exp $";
+"$Id: lpr.c,v 1.14 2001-11-01 22:11:01 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -521,7 +521,6 @@ void Get_parms(int argc, char *argv[] )
 		case 'f':
 		case 'g':
 		case 'n':
-		case 'p':
 		case 't':
 		case 'v':
 		    if( Format ){
@@ -571,7 +570,7 @@ void Get_parms(int argc, char *argv[] )
  -b,l        - binary or literal format\n\
  -Cclass  - job class\n\
  -F format   - job format filter\n\
-   -c,d,f,g,l,m,p,t,v are also format specifications\n\
+   -c,d,f,g,l,m,t,v are also format specifications\n\
  -h          - no header or banner page\n\
  -i indent   - indentation\n\
  -Jinfo   - banner and job information\n\
