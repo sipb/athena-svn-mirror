@@ -11,12 +11,11 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.23 1990-09-26 03:58:50 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.24 1991-02-20 17:24:51 jik Exp $";
 #endif
 
 #include <sys/types.h>
 #include <stdio.h>
-#include <sys/stat.h>
 #include <sys/dir.h>
 #ifdef SYSV
 #include <string.h>
@@ -451,7 +450,10 @@ int subs_not_deleted; /* If the file in question is a directory, and  */
 	       return error_code;
 	  }
      }
-     else if ((! force) && ((stat_buf.st_mode & S_IFMT) != S_IFLNK)
+     else if ((! force)
+#ifdef S_IFLNK
+	      && ((stat_buf.st_mode & S_IFMT) != S_IFLNK)
+#endif
 	      && access(filename, W_OK)) {
 	  if (emulate_rm)
 	       printf("%s: override protection %o for %s? ", whoami,
