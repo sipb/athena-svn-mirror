@@ -23,7 +23,8 @@ case "$1" in
 
 	if [ -f /etc/passwd.local ]; then
 		echo -n "Recovering Athena password file"
-		cp /etc/passwd.local /etc/passwd \
+		syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd \
+			 && chmod 644 /etc/passwd \
 			 && success "passwd recovery" \
 				 || failure "passwd recovery"
 		echo		 
@@ -31,7 +32,8 @@ case "$1" in
 
 	if [ -f /etc/shadow.local ]; then
 		echo -n "Recovering Athena shadow password file"
-		cp /etc/shadow.local /etc/shadow \
+		syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadow \
+			 && chmod 600 /etc/shadow \
 			 && success "shadow recovery" \
 				 || failure "shadow recovery"
 		echo		 
@@ -39,7 +41,8 @@ case "$1" in
 
 	if [ -f /etc/group.local ]; then
 		echo -n "Recovering Athena group file"
-		cp /etc/group.local /etc/group \
+		syncupdate -c /etc/group.new /etc/group.local /etc/group \
+			 && chmod 644 /etc/group \
 			 && success "group recovery" \
 				 || failure "group recovery"
 		echo
