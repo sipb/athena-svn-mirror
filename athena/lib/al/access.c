@@ -18,7 +18,7 @@
  * file for a user.
  */
 
-static const char rcsid[] = "$Id: access.c,v 1.3 1998-05-27 23:41:15 ghudson Exp $";
+static const char rcsid[] = "$Id: access.c,v 1.4 1998-06-04 18:26:03 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +56,10 @@ int al_get_access(const char *username, char **access, char **text)
   const char *match = NULL;
   const char *p, *q;
   struct passwd *pwd;
+
+  /* Null out *text for now, if the caller wants the access text. */
+  if (text)
+    *text = NULL;
 
   pwd = al__getpwnam(username);
   if (pwd)
