@@ -1,3 +1,7 @@
+*loggingOn:	True
+*logfile:	/afs/athena.mit.edu/user/s/sao/scores/lucy.log
+*BitmapFilePath:  /usr/athena/lib/X11/bitmaps:/usr/lib/X11/bitmaps:/usr/include/X11/bitmaps
+
 *font:					fixed
 *pane.refigureMode			True
 
@@ -109,7 +113,7 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 *helppopup*string: \
 SPACEBAR\n\
    You can scroll through lucy's answers by pressing the spacebar until\n\
-you get a message saying "Nothing more to read."\n\
+you get to the end of the list.\n\
 \n\
 ARROW KEYS\n\
    You can search up and down in the list of answers by pressing the\n\
@@ -192,12 +196,12 @@ Ctrl<Key>Return:        TriggerAdd(Go) \n\
 *helpbutton.x:				10
 *quitbutton.x:				30
 
-*configurebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*modebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*showbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*gotobutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*enterbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
-*botbox.writebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*configurebutton.leftBitmap: menu12
+*modebutton.leftBitmap: menu12
+*showbutton.leftBitmap: menu12
+*gotobutton.leftBitmap: menu12
+*enterbutton.leftBitmap: menu12
+*botbox.writebutton.leftBitmap: menu12
 
 *warningpopup.pane.box.acknowledge.label:	dismiss
 *warningpopup.pane.label1.showGrip:		False
