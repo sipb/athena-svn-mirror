@@ -1,7 +1,0 @@
-#
-# Configuration file for using the Bonobo library in GNOME applications
-#
-GAL_LIBDIR="@GAL_LIBDIR@"
-GAL_LIBS="@GAL_LIBS@"
-GAL_INCLUDEDIR="@GAL_INCLUDEDIR@"
-MODULE_VERSION="gal-@VERSION@"
