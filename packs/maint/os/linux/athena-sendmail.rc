@@ -41,6 +41,10 @@ case "$1" in
 	/usr/sbin/sendmail -bi > /dev/null && success alias || failure alias
 	RETVAL=$?
 
+	/usr/athena/etc/makemap hash /etc/mail/authinfo < /etc/mail/authinfo \
+	    && success authinfo || failure authinfo
+	RETVAL=$?
+
 	echo
 
 	if [ "$SENDMAIL" = true ]; then
