@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <math.h>
 
 #include <gdk/gdkx.h>
 
@@ -46,7 +47,7 @@ static gint fillPreview = TRUE;
 static gint ignoreChanges = TRUE;
 
 enum {
-	TARGET_URI_LIST,
+	TARGET_URI_LIST
 };
 
 BGState origState, curState;

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -67,9 +68,11 @@ CFLAGS = @CFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
 GDK_IMLIB_CFLAGS = @GDK_IMLIB_CFLAGS@
 GDK_IMLIB_LIBS = @GDK_IMLIB_LIBS@
 GENCAT = @GENCAT@
@@ -99,6 +102,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -107,6 +111,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -120,6 +125,7 @@ POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -128,7 +134,15 @@ VFS_LIBS = @VFS_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -137,22 +151,49 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(includedir) $(GNOME_INCLUDEDIR)			-DVERSION=\""$(VERSION)"\"
+INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
+	-I$(includedir) $(GNOME_INCLUDEDIR)		\
+	-DVERSION=\""$(VERSION)"\"
 
 
 bin_PROGRAMS = gnomecc
 
-CORBA_SRCLIST =  	control-center-skels.c 	control-center-stubs.c 	control-center-common.c 	control-center.h
+CORBA_SRCLIST = \
+	control-center-skels.c \
+	control-center-stubs.c \
+	control-center-common.c \
+	control-center.h
 
 
-gnomecc_SOURCES =  	main.c				tree.c				tree.h				callbacks.c			callbacks.h			corba-glue.c			corba-glue.h			gtk-multiview.c			gtk-multiview.h			splash.c			splash.h			capplet-manager.c		capplet-manager.h
+gnomecc_SOURCES = \
+	main.c			\
+	tree.c			\
+	tree.h			\
+	callbacks.c		\
+	callbacks.h		\
+	corba-glue.c		\
+	corba-glue.h		\
+	gtk-multiview.c		\
+	gtk-multiview.h		\
+	splash.c		\
+	splash.h		\
+	capplet-manager.c	\
+	capplet-manager.h
 
 
 BUILT_SOURCES = $(CORBA_SRCLIST)
 
 gnomecc_DEPS = libcapplet.la
 
-gnomecc_LDADD =  	libcapplet.la						-lgdk_imlib						$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(INTLLIBS)						$(GNORBA_LIBS)						$(ORB_LIBS)
+gnomecc_LDADD = \
+	libcapplet.la					\
+	$(GNOME_LIBDIR)					\
+	$(GNOMEUI_LIBS)					\
+	$(INTLLIBS)					\
+	$(GNORBA_LIBS)					\
+	$(ORB_LIBS)
 
 
 appicondir = $(datadir)/pixmaps
@@ -170,13 +211,18 @@ sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 confexecdir = $(libdir)
 confexec_DATA = cappletConf.sh
 
-libcapplet_la_SOURCES =  	capplet-widget.c		capplet-widget-libs.c		capplet-widget-libs.h		$(CORBA_SRCLIST)
+libcapplet_la_SOURCES = \
+	capplet-widget.c	\
+	capplet-widget-libs.c	\
+	capplet-widget-libs.h	\
+	$(CORBA_SRCLIST)
 
 
 libcapplet_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 libcapplet_la_LIBADD = $(ORB_LIBS) -lm $(DL_LIB) $(GNORBA_LIBS)
 
-include_HEADERS = capplet-widget.h
+libcappletincludedir = $(includedir)/libcapplet1
+libcappletinclude_HEADERS = capplet-widget.h
 
 lib_LTLIBRARIES = libcapplet.la
 MAINTAINERCLEANFILES = $(CORBA_SRCLIST)
@@ -194,10 +240,12 @@ libcapplet_la_DEPENDENCIES =
 libcapplet_la_OBJECTS =  capplet-widget.lo capplet-widget-libs.lo \
 control-center-skels.lo control-center-stubs.lo \
 control-center-common.lo
+bin_PROGRAMS =  gnomecc$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
-gnomecc_OBJECTS =  main.o tree.o callbacks.o corba-glue.o \
-gtk-multiview.o splash.o capplet-manager.o
+gnomecc_OBJECTS =  main.$(OBJEXT) tree.$(OBJEXT) callbacks.$(OBJEXT) \
+corba-glue.$(OBJEXT) gtk-multiview.$(OBJEXT) splash.$(OBJEXT) \
+capplet-manager.$(OBJEXT)
 gnomecc_DEPENDENCIES =  libcapplet.la
 gnomecc_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -206,7 +254,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(appicon_DATA) $(confexec_DATA) $(splash_DATA) $(sys_DATA)
 
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(libcappletinclude_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -220,7 +268,7 @@ OBJECTS = $(libcapplet_la_OBJECTS) $(gnomecc_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps control-center/Makefile
 
@@ -257,6 +305,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -265,6 +318,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -320,8 +374,8 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
-gnomecc: $(gnomecc_OBJECTS) $(gnomecc_DEPENDENCIES)
-	@rm -f gnomecc
+gnomecc$(EXEEXT): $(gnomecc_OBJECTS) $(gnomecc_DEPENDENCIES)
+	@rm -f gnomecc$(EXEEXT)
 	$(LINK) $(gnomecc_LDFLAGS) $(gnomecc_OBJECTS) $(gnomecc_LDADD) $(LIBS)
 
 install-appiconDATA: $(appicon_DATA)
@@ -400,19 +454,19 @@ uninstall-sysDATA:
 	  rm -f $(DESTDIR)$(sysdir)/$$p; \
 	done
 
-install-includeHEADERS: $(include_HEADERS)
+install-libcappletincludeHEADERS: $(libcappletinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(libcappletincludedir)
+	@list='$(libcappletinclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcappletincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcappletincludedir)/$$p; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-libcappletincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(includedir)/$$p; \
+	list='$(libcappletinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libcappletincludedir)/$$p; \
 	done
 
 tags: TAGS
@@ -452,13 +506,35 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+callbacks.o: callbacks.c ../config.h callbacks.h tree.h control-center.h \
+	corba-glue.h capplet-manager.h
+capplet-manager.o: capplet-manager.c ../config.h capplet-manager.h \
+	control-center.h tree.h callbacks.h gtk-multiview.h
+capplet-widget-libs.lo capplet-widget-libs.o : capplet-widget-libs.c \
+	../config.h capplet-widget-libs.h control-center.h
+capplet-widget.lo capplet-widget.o : capplet-widget.c ../config.h \
+	capplet-widget.h capplet-widget-libs.h control-center.h
+control-center-common.lo control-center-common.o : \
+	control-center-common.c control-center.h
+control-center-skels.lo control-center-skels.o : control-center-skels.c \
+	control-center.h
+control-center-stubs.lo control-center-stubs.o : control-center-stubs.c \
+	control-center.h
+corba-glue.o: corba-glue.c corba-glue.h control-center.h \
+	capplet-manager.h tree.h
+gtk-multiview.o: gtk-multiview.c gtk-multiview.h
+main.o: main.c ../config.h callbacks.h tree.h control-center.h \
+	corba-glue.h capplet-manager.h gtk-multiview.h splash.h
+splash.o: splash.c ../config.h splash.h
+tree.o: tree.c tree.h control-center.h capplet-manager.h
+
 info-am:
 info: info-am
 dvi-am:
@@ -472,7 +548,7 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 install-exec: install-exec-am
 
 install-data-am: install-appiconDATA install-splashDATA install-sysDATA \
-		install-includeHEADERS
+		install-libcappletincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
@@ -481,7 +557,7 @@ install: install-am
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
 		uninstall-appiconDATA uninstall-confexecDATA \
 		uninstall-splashDATA uninstall-sysDATA \
-		uninstall-includeHEADERS
+		uninstall-libcappletincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 all-redirect: all-am
@@ -491,7 +567,7 @@ installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(appicondir) $(DESTDIR)$(confexecdir) \
 		$(DESTDIR)$(splashdir) $(DESTDIR)$(sysdir) \
-		$(DESTDIR)$(includedir)
+		$(DESTDIR)$(libcappletincludedir)
 
 
 mostlyclean-generic:
@@ -543,12 +619,12 @@ clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS uninstall-appiconDATA install-appiconDATA \
 uninstall-confexecDATA install-confexecDATA uninstall-splashDATA \
 install-splashDATA uninstall-sysDATA install-sysDATA \
-uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
+uninstall-libcappletincludeHEADERS install-libcappletincludeHEADERS \
+tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-am install-data \
+install-am install uninstall-am uninstall all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @XML_I18N_MERGE_DESKTOP_RULE@
@@ -572,7 +648,7 @@ tree.h tree.c: control-center.h
 cappletConf.sh: cappletConf.sh.in Makefile
 	sed -e 's?\@GNOME_LIBDIR\@?$(GNOME_LIBDIR)?g' \
 	    -e 's?\@GNOMEUI_LIBS\@?$(GNOMEUI_LIBS)?g' \
-	    -e 's?\@GNOME_INCLUDEDIR\@?$(GNOME_INCLUDEDIR)?g' \
+	    -e 's?\@CAPPLET_INCLUDEDIR\@?-I$(libcappletincludedir) $(GNOME_INCLUDEDIR)?g' \
 	    -e 's?\@ORB_LIBS\@?$(ORB_LIBS)?g' \
 	    -e 's?\@VERSION\@?$(VERSION)?g' \
 	    < $(srcdir)/cappletConf.sh.in > cappletConf.tmp \

@@ -1,7 +1,7 @@
 AC_INIT(control-center)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(control-center, 1.4.0.1)
+AM_INIT_AUTOMAKE(control-center, 1.4.0.4)
 
 AM_MAINTAINER_MODE
 
@@ -43,7 +43,7 @@ LIBS=$LIBS_save
 dnl utility conditional
 AM_CONDITIONAL(FALSE, test "x" = "y")
 
-ALL_LINGUAS="az bg ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl no pl pt pt_BR ro ru sk sl sv tr uk wa zh_CN.GB2312 zh_TW.Big5"
+ALL_LINGUAS="az bg ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sv tr uk wa zh_CN zh_TW"
 AM_GNOME_GETTEXT
 
 AC_SUBST(CFLAGS)
@@ -95,6 +95,7 @@ else
 fi
 AC_SUBST(PIXBUF_CFLAGS)
 AC_SUBST(PIXBUF_LIBS)
+CFLAGS="`gnome-config --cflags gdk_pixbuf`${CFLAGS}"
 
 dnl esd-manager
 have_libesd=no
@@ -132,7 +133,7 @@ if test "x$VFS_CFLAGS" != x ; then
        AC_MSG_ERROR(You need at least gnome-vfs version 0.9 for control-center)
     fi
 else
-    AC_MSG_ERROR(Did not find GdkPixbuf installed)
+    AC_MSG_ERROR(Did not find gnome-vfs installed)
 fi
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
@@ -167,5 +168,6 @@ capplets/wm-properties/Makefile
 capplets/wm-properties/wm-desktops/Makefile
 idl/Makefile
 intl/Makefile
+man/Makefile
 omf-install/Makefile])
 

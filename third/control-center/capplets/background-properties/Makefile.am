@@ -15,9 +15,7 @@ background_properties_capplet_SOURCES =	\
 	imlib-misc.c		\
 	imlib-misc.h		
 
-background_properties_capplet_LDADD = \
-		../../control-center/libcapplet.la \
-		-lgdk_imlib \
+background_properties_capplet_LDADD = ../../control-center/libcapplet.la \
 		$(GNOME_LIBDIR) $(ORB_LIBS) $(IMLIB_LIBS) \
 		$(GNOMEUI_LIBS) $(INTLLIBS) $(PIXBUF_LIBS) -lgnorba 
 

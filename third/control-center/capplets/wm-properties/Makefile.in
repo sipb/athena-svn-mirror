@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -67,9 +68,11 @@ CFLAGS = @CFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
 GDK_IMLIB_CFLAGS = @GDK_IMLIB_CFLAGS@
 GDK_IMLIB_LIBS = @GDK_IMLIB_LIBS@
 GENCAT = @GENCAT@
@@ -99,6 +102,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -107,6 +111,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -120,6 +125,7 @@ POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -128,7 +134,15 @@ VFS_LIBS = @VFS_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -137,15 +151,26 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../control-center			-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR) $(IMLIB_CFLAGS)
+INCLUDES = -I. -I$(srcdir) 				\
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
+	-I$(srcdir)/../../control-center		\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-I$(includedir) $(GNOME_INCLUDEDIR) $(IMLIB_CFLAGS)
 
 
 bin_PROGRAMS = wm-properties-capplet
 
-wm_properties_capplet_SOURCES =  	wm-properties.h          	wm-properties-capplet.c	 	wm-list.c                	wm-exec.c
+wm_properties_capplet_SOURCES = \
+	wm-properties.h          \
+	wm-properties-capplet.c	 \
+	wm-list.c                \
+	wm-exec.c
 
 
-wm_properties_capplet_LDADD =  ../../control-center/libcapplet.la $(GNOME_LIBDIR) $(ORB_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba $(IMLIB_LIBS)
+wm_properties_capplet_LDADD = \
+../../control-center/libcapplet.la \
+$(GNOME_LIBDIR) $(ORB_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) \
+-lgnorba $(IMLIB_LIBS)
 
 
 EXTRA_DIST = wm-properties.desktop.in wm-properties.desktop
@@ -164,14 +189,15 @@ Set_DATA = $(sys_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  wm-properties-capplet$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-wm_properties_capplet_OBJECTS =  wm-properties-capplet.o wm-list.o \
-wm-exec.o
+wm_properties_capplet_OBJECTS =  wm-properties-capplet.$(OBJEXT) \
+wm-list.$(OBJEXT) wm-exec.$(OBJEXT)
 wm_properties_capplet_DEPENDENCIES =  ../../control-center/libcapplet.la
 wm_properties_capplet_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -192,7 +218,7 @@ OBJECTS = $(wm_properties_capplet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps capplets/wm-properties/Makefile
 
@@ -229,6 +255,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -237,6 +268,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -264,8 +296,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-wm-properties-capplet: $(wm_properties_capplet_OBJECTS) $(wm_properties_capplet_DEPENDENCIES)
-	@rm -f wm-properties-capplet
+wm-properties-capplet$(EXEEXT): $(wm_properties_capplet_OBJECTS) $(wm_properties_capplet_DEPENDENCIES)
+	@rm -f wm-properties-capplet$(EXEEXT)
 	$(LINK) $(wm_properties_capplet_LDFLAGS) $(wm_properties_capplet_OBJECTS) $(wm_properties_capplet_LDADD) $(LIBS)
 
 install-SetDATA: $(Set_DATA)
@@ -323,7 +355,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \

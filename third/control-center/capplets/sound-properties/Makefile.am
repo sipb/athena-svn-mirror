@@ -10,7 +10,6 @@ bin_PROGRAMS = sound-properties
 sound_properties_SOURCES = sound-properties.c
 
 sound_properties_LDADD = ../../control-center/libcapplet.la \
-		     $(ESD_LIBS) \
 		     $(GNOME_LIBDIR) $(ORB_LIBS) \
 		     $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba
 

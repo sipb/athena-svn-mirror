@@ -1,4 +1,4 @@
-CAPPLET_LIBDIR="`gnome-config --libs-only-L gnorba gnomeui`"
-CAPPLET_LIBS="-lcapplet `gnome-config --libs gnomeui` `orbit-config --libs client server` -lgnorba"
-CAPPLET_INCLUDEDIR="`gnome-config --cflags gnorba gnomeui`"
+CAPPLET_LIBDIR="@GNOME_LIBDIR@"
+CAPPLET_LIBS="-lcapplet @GNOMEUI_LIBS@ @ORB_LIBS@ -lgnorba"
+CAPPLET_INCLUDEDIR="@CAPPLET_INCLUDEDIR@"
 MODULE_VERSION="capplet-@VERSION@"

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -67,9 +68,11 @@ CFLAGS = @CFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
 GDK_IMLIB_CFLAGS = @GDK_IMLIB_CFLAGS@
 GDK_IMLIB_LIBS = @GDK_IMLIB_LIBS@
 GENCAT = @GENCAT@
@@ -99,6 +102,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -107,6 +111,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -120,6 +125,7 @@ POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -128,7 +134,15 @@ VFS_LIBS = @VFS_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -137,15 +151,28 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-INCLUDES =  	-I$(top_srcdir)/intl -I$(top_builddir)/intl     	-I$(srcdir)/../../control-center                	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-I$(includedir) $(GNOME_INCLUDEDIR) $(IMLIB_CFLAGS) 	$(PIXBUF_CFLAGS)
+INCLUDES = \
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl     \
+	-I$(srcdir)/../../control-center                \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
+	-I$(includedir) $(GNOME_INCLUDEDIR) $(IMLIB_CFLAGS) \
+	$(PIXBUF_CFLAGS)
 
 
 bin_PROGRAMS = background-properties-capplet
 
-background_properties_capplet_SOURCES =  	render-background.c		render-background.h		property-background.c		app-background.c		imlib-misc.c			imlib-misc.h		
+background_properties_capplet_SOURCES = \
+	render-background.c	\
+	render-background.h	\
+	property-background.c	\
+	app-background.c	\
+	imlib-misc.c		\
+	imlib-misc.h		
 
 
-background_properties_capplet_LDADD =  		../../control-center/libcapplet.la 		-lgdk_imlib 		$(GNOME_LIBDIR) $(ORB_LIBS) $(IMLIB_LIBS) 		$(GNOMEUI_LIBS) $(INTLLIBS) $(PIXBUF_LIBS) -lgnorba 
+background_properties_capplet_LDADD = ../../control-center/libcapplet.la \
+		$(GNOME_LIBDIR) $(ORB_LIBS) $(IMLIB_LIBS) \
+		$(GNOMEUI_LIBS) $(INTLLIBS) $(PIXBUF_LIBS) -lgnorba 
 
 
 EXTRA_DIST = background-properties.desktop.in background-properties.desktop
@@ -156,14 +183,16 @@ sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  background-properties-capplet$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
-background_properties_capplet_OBJECTS =  render-background.o \
-property-background.o app-background.o imlib-misc.o
+background_properties_capplet_OBJECTS =  render-background.$(OBJEXT) \
+property-background.$(OBJEXT) app-background.$(OBJEXT) \
+imlib-misc.$(OBJEXT)
 background_properties_capplet_DEPENDENCIES =  \
 ../../control-center/libcapplet.la
 background_properties_capplet_LDFLAGS = 
@@ -185,7 +214,7 @@ OBJECTS = $(background_properties_capplet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps capplets/background-properties/Makefile
 
@@ -222,6 +251,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -230,6 +264,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -257,8 +292,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-background-properties-capplet: $(background_properties_capplet_OBJECTS) $(background_properties_capplet_DEPENDENCIES)
-	@rm -f background-properties-capplet
+background-properties-capplet$(EXEEXT): $(background_properties_capplet_OBJECTS) $(background_properties_capplet_DEPENDENCIES)
+	@rm -f background-properties-capplet$(EXEEXT)
 	$(LINK) $(background_properties_capplet_LDFLAGS) $(background_properties_capplet_OBJECTS) $(background_properties_capplet_LDADD) $(LIBS)
 
 install-sysDATA: $(sys_DATA)
@@ -317,13 +352,22 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+app-background.o: app-background.c ../../config.h \
+	../../control-center/capplet-widget.h
+imlib-misc.o: imlib-misc.c imlib-misc.h
+property-background.o: property-background.c ../../config.h \
+	../../control-center/capplet-widget.h imlib-misc.h \
+	render-background.h
+render-background.o: render-background.c imlib-misc.h \
+	render-background.h
+
 info-am:
 info: info-am
 dvi-am:
