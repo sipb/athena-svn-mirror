@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB4_LIBS = @KRB4_LIBS@
@@ -193,7 +194,7 @@ providerdir = $(pkglibdir)/camel-providers/$(VERSION)
 provider_LTLIBRARIES = libcamelpop3.la
 provider_DATA = libcamelpop3.urls
 
-INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..			        -I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(GNOME_INCLUDEDIR)				$(KRB4_CFLAGS)					$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-pop3-provider\"
+INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..			        -I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(KRB4_CFLAGS)					$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-pop3-provider\"
 
 
 libcamelpop3_la_SOURCES =  	camel-pop3-folder.c				camel-pop3-provider.c				camel-pop3-store.c
@@ -400,6 +401,61 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+camel-pop3-folder.lo camel-pop3-folder.o : camel-pop3-folder.c \
+	../../../config.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	camel-pop3-store.h ../../../camel/camel-remote-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-stream-mem.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h ../../../e-util/md5-utils.h
+camel-pop3-provider.lo camel-pop3-provider.o : camel-pop3-provider.c \
+	../../../config.h camel-pop3-store.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-remote-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/camel-session.h \
+	../../../e-util/e-msgport.h
+camel-pop3-store.lo camel-pop3-store.o : camel-pop3-store.c \
+	../../../config.h ../../../camel/camel-operation.h \
+	camel-pop3-store.h ../../../camel/camel-types.h \
+	../../../camel/camel-remote-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-stream-buffer.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-tcp-stream.h \
+	../../../camel/camel-session.h ../../../e-util/e-msgport.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../e-util/md5-utils.h
+
 info-am:
 info: info-am
 dvi-am:
