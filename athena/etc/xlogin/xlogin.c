@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.14 2001-04-04 21:23:01 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.15 2001-04-26 16:45:18 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.14 2001-04-04 21:23:01 rbasch Exp
 #include <string.h>
 #include <unistd.h>
 #include <utmp.h>
+#include <time.h>
 
 #ifdef sgi
 #include <capability.h>
