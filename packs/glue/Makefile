@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.34.2.1 1999-06-18 21:54:30 ghudson Exp $
+# $Id: Makefile,v 1.34.2.1.2.1 2000-02-05 07:17:04 tb Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -66,6 +66,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
+	mkdir -p ${DESTDIR}${ATHLIBEXECDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
@@ -125,9 +126,9 @@ install:
 	ln -s `athdir -c -p ${TELLME} -t bin`/tellme \
 		${DESTDIR}${ATHBINDIR}/tellme
 	rm -f ${DESTDIR}/usr/andrew
-	. ../build/version; \
-		vers=$$major.$$minor; \
-		ln -s ${ANDREW}/athena-$$vers/$$HOSTTYPE ${DESTDIR}/usr/andrew
+#	. ../build/version; \
+#		vers=$$major.$$minor; \
+#		ln -s ${ANDREW}/athena-$$vers/$$HOSTTYPE ${DESTDIR}/usr/andrew
 	cd os/${OS} && ${MAKE} $@
 
 clean:
