@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.10 1993-06-30 17:38:37 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.11 1993-06-30 17:49:42 vrt Exp $
  */
 
 /*
@@ -44,6 +44,7 @@
 #include <sys/wait.h>
 #ifdef _AIX
 #define _BSD 44
+#include <sys/ioctl.h>
 #endif
 #ifdef POSIX
 #include <termios.h>
