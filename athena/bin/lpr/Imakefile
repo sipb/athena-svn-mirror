@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.9 1993-10-19 03:35:33 probe Exp $
+ * $Id: Imakefile,v 1.10 1995-05-03 11:39:03 miki Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -42,6 +42,7 @@ BINDIR=$(ATHBINDIR)
 USRETCDIR=$(ATHETCDIR)
 #endif
 
+
 #define LPRprogram(prog,objs,libs,dest)					@@\
 build_program(prog,objs,,libs)						@@\
 install_program(prog,-o root -g $(SPGRP) -m 6755,dest)
@@ -51,11 +52,10 @@ build_program(prog,objs,,libs)						@@\
 install_program(prog,-o root -g $(SPGRP) -m 2755,dest)
 
 LPRGprogram(lpd,lpd.o lpdchar.o printjob.o recvjob.o tcp_conn.o \
-	displayq.o rmjob.o common.o printcap.o, $(LIBS),$(LPDDIR))
-LPRGprogram(lpc,lpc.o cmds.o cmdtab.o printcap.o common.o startdaemon.o,\
-	$(LIBS),$(USRETCDIR))
-
-LPRprogram(lpr,lpr.o netsend.o printcap.o common.o startdaemon.o,\
+	displayq.o rmjob.o common.o printcap.o ms.o modes.o, $(LIBS),$(LPDDIR))
+LPRGprogram(lpc,lpc.o cmds.o displayq.o cmdtab.o printcap.o common.o \
+        startdaemon.o, $(LIBS),$(USRETCDIR))
+LPRprogram(lpr,lpr.o netsend.o printcap.o common.o startdaemon.o isexec.o,\
 	$(LIBS),$(BINDIR))
 LPRprogram(lpq,lpq.o displayq.o printcap.o common.o startdaemon.o,\
 	$(LIBS) -ltermcap,$(BINDIR))
