@@ -284,7 +284,6 @@ endif
 ifeq ($(OS_ARCH),OS2)
 ifdef BUILD_STATIC_LIBS
 EXE_DEF_FILE = mozilla.def
-OS_LIBS += -llibuni -luconv
 endif
 endif
 
@@ -311,7 +310,7 @@ endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 ifdef BUILD_STATIC_LIBS
-LIBS	+= -framework QuickTime
+LIBS	+= -framework QuickTime -framework IOKit
 endif
 
 endif

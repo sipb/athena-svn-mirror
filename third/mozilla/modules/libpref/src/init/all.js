@@ -41,13 +41,10 @@
 pref("startup.homepage_override_url","chrome://navigator-region/locale/region.properties");
 pref("browser.chromeURL","chrome://navigator/content/navigator.xul");
 
-pref("network.search.url","http://cgi.netscape.com/cgi-bin/url_search.cgi?search=");
-
-pref("keyword.URL", "http://keyword.netscape.com/keyword/");
+pref("keyword.URL", "http://www.google.com/search?ie=UTF-8&oe=utf-8&q=");
 pref("keyword.enabled", false);
 pref("general.useragent.locale", "chrome://navigator/locale/navigator.properties");
 pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
-pref("general.useragent.misc", "rv:1.5");
 
 pref("general.startup.browser",             true);
 pref("general.startup.mail",                false);
@@ -91,6 +88,7 @@ pref("browser.display.force_inline_alttext", false); // true = force ALT text fo
 pref("browser.display.normal_lineheight_calc_control", 2);
 pref("browser.display.show_image_placeholders", true); // true = show image placeholders while image is loaded and when image is broken
 pref("browser.anchor_color",                "#0000EE");
+pref("browser.active_color",                "#EE0000");
 pref("browser.visited_color",               "#551A8B");
 pref("browser.underline_anchors",           true);
 pref("browser.blink_allowed",               true);
@@ -109,6 +107,9 @@ pref("browser.urlbar.matchOnlyTyped", false);
 
 pref("browser.chrome.site_icons", true);
 pref("browser.chrome.favicons", false);
+
+// 0 = never, 1 = when in cache, 2 = always
+pref("browser.chrome.load_toolbar_icons", 0);
 
 pref("browser.chrome.toolbar_tips",         true);
 // 0 = Pictures Only, 1 = Text Only, 2 = Pictures and Text
@@ -173,8 +174,8 @@ pref("browser.history.grouping", "day");
 pref("browser.sessionhistory.max_entries", 50);
 
 // Translation service
-pref("browser.translation.service", "http://www.teletranslator.com:8120/?AlisUI=frames_ex/moz_home&alis_info=moz&AlisTargetURI=");
-pref("browser.translation.serviceDomain", "teletranslator.com");
+pref("browser.translation.service", "http://translate.google.com/translate?prev=/language_tools&u=");
+pref("browser.translation.serviceDomain", "translate.google.com");
   
 // Platform for Internet Content Selection
 pref("browser.PICS.ratings_enabled", false);
@@ -451,8 +452,6 @@ pref("capability.policy.default.Clipboard.paste", "noAccess");
 
 // Scripts & Windows prefs
 pref("browser.block.target_new_window",     false);
-pref("dom.disable_cookie_get",              false);
-pref("dom.disable_cookie_set",              false);
 pref("dom.disable_image_src_set",           false);
 pref("dom.disable_window_flip",             false);
 pref("dom.disable_window_move_resize",      false);
@@ -503,9 +502,22 @@ pref("network.protocol-handler.external.javascript", false);
 pref("network.protocol-handler.external.ms-help", false);
 pref("network.protocol-handler.external.vnd.ms.radio", false);
 
+// An exposed protocol handler is one that can be used in all contexts.  A
+// non-exposed protocol handler is one that can only be used internally by the
+// application.  For example, a non-exposed protocol would not be loaded by the
+// application in response to a link click or a X-remote openURL command.
+// Instead, it would be deferred to the system's external protocol handler.
+// Only internal/built-in protocol handlers can be marked as exposed.
+
+// This pref controls the default settings.  Per protocol settings can be used
+// to override this value.
+pref("network.protocol-handler.expose-all", true);
+
+// Example: make IMAP an exposed protocol
+// pref("network.protocol-handler.expose.imap", true);
+
 pref("network.hosts.smtp_server",           "mail");
 pref("network.hosts.pop_server",            "mail");
-pref("network.protocols.useSystemDefaults",   false); // set to true if user links should use system default handlers
 
 // <http>
 pref("network.http.version", "1.1");	  // default
@@ -651,12 +663,10 @@ pref("network.cookie.p3plevel",             1); // 0=low, 1=medium, 2=high, 3=cu
 pref("signon.rememberSignons",              false);
 pref("signon.expireMasterPassword",         false);
 pref("network.enablePad",                   false); // Allow client to do proxy autodiscovery
-pref("network.enableIDN",                   false); // Turn on/off IDN (Internationalized Domain Name) resolution
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
 pref("wallet.captureForms",                 false);
 pref("wallet.notified",                     false);
-pref("wallet.TutorialFromMenu",             "chrome://navigator/locale/navigator.properties");
 pref("wallet.Server",                       "chrome://navigator/locale/navigator.properties");
 pref("wallet.Samples",                      "chrome://navigator/locale/navigator.properties");
 pref("wallet.version",                      "1");
@@ -746,6 +756,12 @@ pref("mousewheel.withaltkey.numlines",1);
 pref("mousewheel.withaltkey.sysnumlines",false);
 
 pref("profile.confirm_automigration",true);
+// profile.migration_behavior determines how the profiles root is set
+// 0 - use NS_APP_USER_PROFILES_ROOT_DIR
+// 1 - create one based on the NS4.x profile root
+// 2 - use, if not empty, profile.migration_directory otherwise same as 0
+pref("profile.migration_behavior",0);
+pref("profile.migration_directory", "");
 
 // the amount of time (in seconds) that must elapse
 // before we think your mozilla profile is defunct
@@ -861,6 +877,12 @@ pref("browser.popups.showPopupBlocker", true);
 // Pref to control whether the viewmanager code does double-buffering or not
 // See http://bugzilla.mozilla.org/show_bug.cgi?id=169483 for further details...
 pref("viewmanager.do_doublebuffering", true);
+
+// which files will be selected for roaming by default.
+// See sroaming/content/prefs/all.js
+pref("roaming.default.files", "bookmarks.html,abook.mab,cookies.txt");
+// display some general warning to the user about making backups, security etc.
+pref("roaming.showInitialWarning", true);
 
 pref("dom.disable_open_during_load",              false);
 pref("privacy.popups.first_popup",                true);
