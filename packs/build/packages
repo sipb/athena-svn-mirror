@@ -1,4 +1,4 @@
-# $Id: packages,v 1.67 1999-03-06 16:12:23 ghudson Exp $
+# $Id: packages,v 1.68 1999-03-09 15:13:28 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -32,7 +32,7 @@ third/motif			linux
 third/motif/clients/mwm		solaris
 athena/lib/Mu
 athena/lib/Xj
-third/krb5/appl
+third/krb5/src/appl
 third/wcl
 third/tcp_wrappers		all,-linux
 third/tcsh
