@@ -2,9 +2,9 @@
 
 #	Top level Xsession file for all users
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Xsession,v 1.4 1991-02-05 20:41:40 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Xsession,v 1.5 1991-03-28 12:46:48 mar Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Xsession,v $
-#	$Author: probe $
+#	$Author: mar $
 #
 
 trap '/usr/athena/kdestroy; exit 0' 1 2 15
@@ -33,7 +33,9 @@ case $defsession in
 	;;
 esac
 
-/bin/stty dec	# Set the tty characteristics of the parent (console window)
+# Set the tty characteristics of the parent (console window)
+# the redirection sets stdin the same as stdout instead of /dev/null
+/bin/stty dec 0<&1
 $session
 
 status=$?
