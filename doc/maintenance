@@ -122,21 +122,20 @@ scratch, intended to alert the source tree maintainers when someone
 checks in a change which causes the source tree to stop building.  The
 general architecture of the wash process is:
 
-	* Each night at midnight, a machine (currently small-gods)
-	  performs a cvs update of the checked-out tree in
-	  /afs/dev.mit.edu/source/src-current.  If the cvs update
-	  fails, the update script sends mail to source-wash@mit.edu.
-	  This machine is on read:source and write:update.
+	* Each night at midnight, a machine performs a cvs update of
+	  the checked-out tree in /afs/dev.mit.edu/source/src-current.
+	  If the cvs update fails, the update script sends mail to
+	  source-wash@mit.edu.  This machine is on read:source and
+	  write:update.
 
 	* Each night at 4:30am, a machine of each architecture
-	  (currently whirlpool, kenmore, and maytag) performs a build
-	  of the tree into /var/srvd.new, using the build directory
-	  /var/build.  If the build fails, the wash script copies the
-	  log of the failed build into AFS and sends mail to
-	  source-wash@mit.edu with the last few lines of the log.  If
-	  the build succeeds, the wash script moves /var/srvd.new to
-	  /var/srvd, so that /var/srvd is always the last successful
-	  build of the source tree.
+	  performs a build of the tree into /var/srvd.new, using the
+	  build directory /var/build.  If the build fails, the wash
+	  script copies the log of the failed build into AFS and sends
+	  mail to source-wash@mit.edu with the last few lines of the
+	  log.  If the build succeeds, the wash script moves
+	  /var/srvd.new to /var/srvd, so that /var/srvd is always the
+	  last successful build of the source tree.
 
 	* Each Sunday at 1:00am, the wash machines make a copy of
 	  their last successful builds into a "srvd-current" directory
@@ -147,7 +146,9 @@ general architecture of the wash process is:
 Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines.  Logs of the
 start and end times of the wash processes on each machine live in
-/afs/dev.mit.edu/service/wash/status/`hostname`.
+/afs/dev.mit.edu/service/wash/status/`hostname`.  See "Rel-eng
+machines" below to find out which machines take part in the wash
+process.
 
 Imake templates
 ---------------
@@ -443,6 +444,8 @@ release are:
 Rel-eng machines
 ----------------
 
+The machine running the wash update is small-gods.mit.edu.
+
 There are three rel-eng machines for each platform:
 
 	* A current release build machine, for doing incremental
@@ -460,11 +463,11 @@ There are three rel-eng machines for each platform:
 
 Here is a list of the rel-eng machines for each platform:
 
-				Sun		Indy		O2
+			Sun        Indy      O2          Linux
 
-Current release build		downy		snuggle		bounce
-New release build		whirlpool	(none)		maytag
-Crash and burn			sourcery	pyramids	reaper-man
+Current release build	downy      snuggle   bounce      (none)
+New release build	whirlpool  (none)    maytag      drug-lord
+Crash and burn		sourcery   pyramids  reaper-man  (none)
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
