@@ -1,4 +1,4 @@
-;;; quail/hangul.el -- Quail package for inputting Korean Hangul characters
+;;; hangul.el --- Quail package for inputting Korean Hangul characters
 
 ;; Copyright (C) 1997 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
@@ -22,6 +22,8 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;;; Commentary:
+
 ;;; Code:
 
 (require 'quail)
@@ -44,7 +46,7 @@ The key sequence \"Z<key>\" can be used for \"０..Ａ..ａ..\
 The key sequence \"H<key-sequence>\" can be used for \"ㅥㅦ...\".
 The key sequnece \"S<key>\" can be used for such symbols as \"￥￡‰...\".
 
-You can use the key TAB to know the avairable key combination.
+You can use the key TAB to know the available key combination.
 For instance, typing \"S\" followed by TAB will tell you
  which key you should type to input some specific symbol.
 --- Example ---
@@ -2605,3 +2607,5 @@ For instance, typing \"S\" followed by TAB will tell you
  ("SA"	?Å)
  ("SC/"	?￠)
  ("SF"	?℉))
+
+;;; hangul.el ends here

@@ -1,6 +1,6 @@
 #include "copyright.h"
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/ChgSel.c,v 1.1.1.1 1996-09-26 00:59:42 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/ChgSel.c,v 1.1.1.2 2002-02-08 04:28:12 zacheiss Exp $ */
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*

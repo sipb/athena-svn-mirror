@@ -1,11 +1,17 @@
-# $Id: 4Corner.tit,v 1.1.1.1 1999-05-26 16:27:28 tb Exp $
+# $Id: 4Corner.tit,v 1.1.1.2 2002-02-08 04:34:42 zacheiss Exp $
 # HANZI input table for cxterm
 # To be used by cxterm, convert me to .cit format first
 # .cit version 2
 ENCODE:	BIG5
 PROMPT:	四角號碼::\040
 AUTOSELECT:	NEVER
-#
+COMMENT 
+COMMENT Copyright (c) 2001 Christian Wittern <chris@ccbs.ntu.edu.tw>
+COMMENT 
+COMMENT Permission to copy and distribute both modified and
+COMMENT unmodified versions is granted without royalty provided this
+COMMENT notice is preserved.
+COMMENT 
 COMMENT	Authors: Dr. Urs App, Christian Wittern (Kyoto Univ, Japan)
 COMMENT
 COMMENT Input:  四角號碼 (及一附加碼)
