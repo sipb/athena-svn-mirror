@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.19 1991-04-08 20:59:39 lwvanels Exp $
+ *	$Id: olc.h,v 1.20 1991-04-10 02:23:49 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -82,11 +82,7 @@ struct tREQUEST;
 #define OLCR_HELP_EXT	".help"
 #define OLCR_HELP_FILE	"olcr"
 
-#ifdef OLTA
 #define OLC_SERVICE_NAME	"OLC"
-#else
-#define OLC_SERVICE_NAME	"OLTA"
-#endif
 
 #ifdef KERBEROS
 #define K_SERVICE      "olc"                  /* Kerberos service name */
