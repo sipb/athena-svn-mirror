@@ -78,14 +78,15 @@ gboolean g_file_get_contents (const gchar  *filename,
                               gchar       **contents,
                               gsize        *length,    
                               GError      **error);
-
+gchar   *g_file_read_link    (const gchar  *filename,
+			      GError      **error);
 
 /* Wrapper / workalike for mkstemp() */
-int     g_mkstemp            (char         *tmpl);
+gint    g_mkstemp            (gchar        *tmpl);
 
 /* Wrapper for g_mkstemp */
-int     g_file_open_tmp      (const char   *tmpl,
-			      char        **name_used,
+gint    g_file_open_tmp      (const gchar  *tmpl,
+			      gchar       **name_used,
 			      GError      **error);
 
 gchar *g_build_path     (const gchar *separator,

@@ -307,6 +307,17 @@ my_traverse (gpointer key,
   return FALSE;
 }
 
+static gboolean 
+find_first_that(gpointer key, 
+		gpointer value, 
+		gpointer user_data)
+{
+  gint *v = value;
+  gint *test = user_data;
+  return (*v == *test);
+}
+
+
 int
 main (int   argc,
       char *argv[])
@@ -316,17 +327,20 @@ main (int   argc,
   GHashTable *hash_table;
   GMemChunk *mem_chunk;
   GStringChunk *string_chunk;
-  GTimer *timer;
+  GTimer *timer, *timer2;
   gint nums[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   gint morenums[10] = { 8, 9, 7, 0, 3, 2, 5, 1, 4, 6};
   gchar *string;
-
+  gint value = 120; 
+  gint *pvalue=NULL; 
+  
   gchar *mem[10000], *tmp_string = NULL, *tmp_string_2;
   gint i, j;
   GArray *garray;
   GPtrArray *gparray;
   GByteArray *gbarray;
   GString *string1, *string2;
+  const gchar *charset;
   GTree *tree;
   char chars[62];
   GRelation *relation;
@@ -336,7 +350,6 @@ main (int   argc,
     gchar *filename;
     gchar *dirname;
   } dirname_checks[] = {
-#ifndef G_OS_WIN32
     { "/", "/" },
     { "////", "/" },
     { ".////", "." },
@@ -345,14 +358,16 @@ main (int   argc,
     { "a/b", "a" },
     { "a/b/", "a/b" },
     { "c///", "c" },
-#else
+#ifdef G_OS_WIN32
     { "\\", "\\" },
     { ".\\\\\\\\", "." },
     { "..\\", ".." },
     { "..\\\\\\\\", ".." },
     { "a\\b", "a" },
-    { "a\\b\\", "a\\b" },
-    { "c\\\\\\", "c" },
+    { "a\\b/", "a\\b" },
+    { "a/b\\", "a/b" },
+    { "c\\\\/", "c" },
+    { "//\\", "/" },
 #endif
 #ifdef G_WITH_CYGWIN
     { "//server/share///x", "//server/share" },
@@ -367,13 +382,12 @@ main (int   argc,
     gchar *filename;
     gchar *without_root;
   } skip_root_checks[] = {
-#ifndef G_OS_WIN32
     { "/", "" },
     { "//", "" },
     { "/foo", "foo" },
     { "//foo", "foo" },
     { "a/b", NULL },
-#else
+#ifdef G_OS_WIN32
     { "\\", "" },
     { "\\foo", "foo" },
     { "\\\\server\\foo", "" },
@@ -401,16 +415,11 @@ main (int   argc,
   GError *error;
   char *name_used;
 #ifdef G_OS_WIN32
-  gchar *glib_dll = g_strdup_printf ("libglib-%d.%d-%d.dll",
-				     GLIB_MAJOR_VERSION,
-				     GLIB_MINOR_VERSION,
-				     GLIB_MICRO_VERSION - GLIB_BINARY_AGE);
+  /* Can't calculate GLib DLL name at runtime. */
+  gchar *glib_dll = "libglib-2.0-0.dll";
 #endif
 #ifdef G_WITH_CYGWIN
-  gchar *glib_dll = g_strdup_printf ("cygglib-%d.%d-%d.dll",
-				     GLIB_MAJOR_VERSION,
-				     GLIB_MINOR_VERSION,
-				     GLIB_MICRO_VERSION - GLIB_BINARY_AGE);
+  gchar *glib_dll = "cygglib-2.0-0.dll";
 #endif
 
   g_print ("TestGLib v%u.%u.%u (i:%u b:%u)\n",
@@ -429,14 +438,14 @@ main (int   argc,
   g_print ("tmp-dir: %s\n", g_get_tmp_dir ());
 
   /* type sizes */
-  g_print ("checking size of gint8: %d", (int)sizeof (gint8));
+  g_print ("checking size of gint8: %"    G_GSIZE_FORMAT, sizeof (gint8));
   TEST (NULL, sizeof (gint8) == 1);
-  g_print ("\nchecking size of gint16: %d", (int)sizeof (gint16));
+  g_print ("\nchecking size of gint16: %" G_GSIZE_FORMAT, sizeof (gint16));
   TEST (NULL, sizeof (gint16) == 2);
-  g_print ("\nchecking size of gint32: %d", (int)sizeof (gint32));
+  g_print ("\nchecking size of gint32: %" G_GSIZE_FORMAT, sizeof (gint32));
   TEST (NULL, sizeof (gint32) == 4);
-  g_print ("\nchecking size of gsize: %d", (int)sizeof (gsize));
-  g_print ("\nchecking size of gint64: %d", (int)sizeof (gint64));
+  g_print ("\nchecking size of gsize: %"  G_GSIZE_FORMAT, sizeof (gsize));
+  g_print ("\nchecking size of gint64: %" G_GSIZE_FORMAT, sizeof (gint64));
   TEST (NULL, sizeof (gint64) == 8);
   g_print ("\n");
 
@@ -448,6 +457,15 @@ main (int   argc,
   g_assert (strcmp (string, "file") == 0);
   g_free (string);
   g_print ("ok\n");
+#ifdef G_OS_WIN32
+  string = g_path_get_basename ("/foo/dir/");
+  g_assert (strcmp (string, "dir") == 0);
+  g_free (string);
+  string = g_path_get_basename ("/foo/file");
+  g_assert (strcmp (string, "file") == 0);
+  g_free (string);
+  g_print ("ok\n");
+#endif
 
   g_print ("checking g_path_get_dirname()...");
   for (i = 0; i < n_dirname_checks; i++)
@@ -715,6 +733,10 @@ main (int   argc,
       array[i] = i;
       g_hash_table_insert (hash_table, &array[i], &array[i]);
     }
+  pvalue = g_hash_table_find (hash_table, find_first_that, &value);
+  if (*pvalue != value)
+	  g_print("g_hash_table_find failed");
+  
   g_hash_table_foreach (hash_table, my_hash_callback, NULL);
 
   for (i = 0; i < 10000; i++)
@@ -941,6 +963,56 @@ main (int   argc,
 
   g_print ("ok\n");
 
+  g_print ("checking g_timer_continue...\n");
+
+  timer2 = g_timer_new ();
+
+  g_print ("\trun for 1 second...\n");
+  timer = g_timer_new();
+  g_usleep(G_USEC_PER_SEC); /* run timer for 1 second */
+  g_timer_stop(timer);
+
+  g_print ("\tstop for 1 second...\n");
+  g_usleep(G_USEC_PER_SEC); /* wait for 1 second */
+  g_print ("\trun for 2 seconds...\n");
+
+  g_timer_continue(timer);
+  g_usleep(2*G_USEC_PER_SEC); /* run timer for 2 seconds */
+  g_timer_stop(timer);
+
+  g_print ("\tstop for 1.5 seconds...\n");
+  g_usleep((3*G_USEC_PER_SEC)/2); /* wait for 1.5 seconds */
+  g_print ("\trun for 0.2 seconds...\n");
+
+  g_timer_continue(timer);
+  g_usleep(G_USEC_PER_SEC/5); /* run timer for 0.2 seconds */
+  g_timer_stop(timer);
+
+  g_print ("\tstop for 4 seconds...\n");
+  g_usleep(4*G_USEC_PER_SEC); /* wait for 4 seconds */
+  g_print ("\trun for 5.8 seconds...\n");
+
+  g_timer_continue(timer);
+  g_usleep((29*G_USEC_PER_SEC)/5); /* run timer for 5.8 seconds */
+  g_timer_stop(timer);
+
+  g_print ("\t=> total elapsed = %.2f seconds (should be: 9.00 seconds)\n\n", g_timer_elapsed(timer, NULL));
+
+  if (g_timer_elapsed(timer, NULL) > 8.8 && g_timer_elapsed(timer, NULL) < 9.2)
+    g_print ("g_timer_continue ... ok\n\n");
+  else
+    g_print ("g_timer_continue ... ***** FAILED *****\n\n");
+
+  g_timer_stop(timer2);
+
+  if (g_timer_elapsed(timer2, NULL) > (8.8+6.5) && g_timer_elapsed(timer2, NULL) < (9.2+6.5))
+    g_print ("timer2 ... ok\n\n");
+  else
+    g_print ("timer2 ... ***** FAILED *****\n\n");
+
+  g_timer_destroy(timer);
+  g_timer_destroy(timer2);
+
   g_print ("checking g_ascii_strcasecmp...");
   g_assert (g_ascii_strcasecmp ("FroboZZ", "frobozz") == 0);
   g_assert (g_ascii_strcasecmp ("frobozz", "frobozz") == 0);
@@ -1158,6 +1230,8 @@ main (int   argc,
   g_message ("the next warning is a test:");
   string = NULL;
   g_print (string);
+  g_message ("non-printable UTF-8: \"\xc3\xa4\xda\x85\"");
+  g_message ("unsafe chars: \"\x10\x11\x12\n\t\x7f\x81\x82\x83\"");
 
   g_print ("checking endian macros (host is ");
 #if G_BYTE_ORDER == G_BIG_ENDIAN
@@ -1170,6 +1244,11 @@ main (int   argc,
   g_assert (GUINT64_SWAP_LE_BE (gu64t1) == gu64t2);  
 
   g_print ("ok\n");
+
+  if (g_get_charset ((G_CONST_RETURN char**)&charset))
+    g_print ("current charset is UTF-8: %s\n", charset);
+  else
+    g_print ("current charset is not UTF-8: %s\n", charset);
 
 #ifdef G_PLATFORM_WIN32
   g_print ("current locale: %s\n", g_win32_getlocale ());
@@ -1234,6 +1313,18 @@ main (int   argc,
 	     error->message);
   close (fd);
   g_clear_error (&error);
+
+#ifdef G_OS_WIN32
+  strcpy (template, "zap/barXXXXXX");
+  fd = g_file_open_tmp (template, &name_used, &error);
+  if (fd != -1)
+    g_print ("g_file_open_tmp works even if template contains '/'\n");
+  else
+    g_print ("g_file_open_tmp correctly returns error: %s\n",
+	     error->message);
+  close (fd);
+  g_clear_error (&error);
+#endif
 
   strcpy (template, "zapXXXXXX");
   fd = g_file_open_tmp (template, &name_used, &error);

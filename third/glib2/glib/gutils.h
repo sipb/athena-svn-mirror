@@ -101,7 +101,7 @@ G_BEGIN_DECLS
 #  endif
 #endif
 #ifndef G_INLINE_FUNC
-#  if defined (__GNUC__) && (__OPTIMIZE__)
+#  if defined (__GNUC__) && defined (__OPTIMIZE__)
 #    define G_INLINE_FUNC extern inline
 #  elif defined (G_CAN_INLINE) && !defined (__GNUC__)
 #    define G_INLINE_FUNC static inline
@@ -171,12 +171,13 @@ gchar*                g_path_get_dirname   (const gchar *file_name);
 /* Set the pointer at the specified location to NULL */
 void                  g_nullify_pointer    (gpointer    *nullify_location);
 
-/* Get the codeset for the current locale */
-/* gchar * g_get_codeset    (void); */
-
 /* return the environment string for the variable. The returned memory
  * must not be freed. */
 G_CONST_RETURN gchar* g_getenv             (const gchar *variable);
+gboolean              g_setenv             (const gchar *variable,
+					    const gchar *value,
+					    gboolean     overwrite);
+void                  g_unsetenv           (const gchar *variable);
 
 
 /* we try to provide a usefull equivalent for ATEXIT if it is
@@ -232,10 +233,10 @@ g_bit_nth_lsf (gulong mask,
   do
     {
       nth_bit++;
-      if (mask & (1 << (gulong) nth_bit))
+      if (mask & (1UL << nth_bit))
 	return nth_bit;
     }
-  while (nth_bit < 31);
+  while (nth_bit < ((GLIB_SIZEOF_LONG * 8) - 1));
   return -1;
 }
 G_INLINE_FUNC gint
@@ -247,7 +248,7 @@ g_bit_nth_msf (gulong mask,
   do
     {
       nth_bit--;
-      if (mask & (1 << (gulong) nth_bit))
+      if (mask & (1UL << nth_bit))
 	return nth_bit;
     }
   while (nth_bit > 0);

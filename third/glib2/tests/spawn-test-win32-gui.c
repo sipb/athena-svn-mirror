@@ -1,8 +1,17 @@
 #include <windows.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
+
+#ifdef __CYGWIN__
+/* For read() and write() */
+#include <unistd.h>
+/* Cygwin does not prototype __argc and __argv in stdlib.h */
+extern int __argc;
+extern char** __argv;
+#endif
 
 int _stdcall
 WinMain (struct HINSTANCE__ *hInstance,
@@ -10,7 +19,14 @@ WinMain (struct HINSTANCE__ *hInstance,
 	char *lpszCmdLine,
 	int   nCmdShow)
 {
-  if (__argc <= 2)
+  char buf[100];
+
+  if (__argc >= 2 && strcmp (__argv[1], "nop") == 0)
+    {
+      sprintf (buf, "spawn-test-win32-gui: argv[0]=\"%s\"", __argv[0]);
+      MessageBox (NULL, buf, lpszCmdLine, MB_ICONINFORMATION|MB_SYSTEMMODAL);
+    }
+  else if (__argc <= 2)
     {
       MessageBox (NULL, "spawn-test-win32-gui: Will write to stdout",
 		  lpszCmdLine, MB_ICONINFORMATION|MB_SYSTEMMODAL);
@@ -29,7 +45,6 @@ WinMain (struct HINSTANCE__ *hInstance,
       int infd = atoi (__argv[2]);
       int outfd = atoi (__argv[3]);
       int k, n;
-      char buf[100];
 
       if (infd < 0 || outfd < 0)
 	{
@@ -87,9 +102,6 @@ WinMain (struct HINSTANCE__ *hInstance,
 	}
     }
 
-  MessageBox (NULL, "spawn-test-win32-gui: Sleeping a bit.",
-	      lpszCmdLine, MB_ICONINFORMATION|MB_SYSTEMMODAL);
-  
   Sleep (2000);
   
   MessageBox (NULL, "spawn-test-win32-gui: Done, exiting.",

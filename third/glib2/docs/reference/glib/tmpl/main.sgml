@@ -46,9 +46,8 @@ manages all available sources of events.
     loops associated with that #GMainContext.
   </para>
   <para>
-    GTK+ contains wrappers of many of these functions, e.g. gtk_main(),
-    gtk_main_quit(), gtk_events_pending(), gtk_idle_add(),
-    gtk_timeout_add() and gtk_input_add_full(). 
+    GTK+ contains wrappers of some of these functions, e.g. gtk_main(),
+    gtk_main_quit() and gtk_events_pending(). 
   </para>
   <refsect2>
     <title>Creating new sources types</title>
@@ -509,6 +508,14 @@ or -1 if an error occurred.
 @fd: 
 
 
+<!-- ##### FUNCTION g_main_depth ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
 <!-- ##### MACRO g_main_set_poll_func ##### -->
 <para>
 Sets the function to use for the handle polling of file descriptors
@@ -583,6 +590,55 @@ for the default main context.
 </para>
 
 @data: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF GPid ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION GChildWatchFunc ##### -->
+<para>
+
+</para>
+
+@pid: 
+@status: 
+@data: 
+
+
+<!-- ##### FUNCTION g_child_watch_source_new ##### -->
+<para>
+
+</para>
+
+@pid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_child_watch_add ##### -->
+<para>
+
+</para>
+
+@pid: 
+@function: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g_child_watch_add_full ##### -->
+<para>
+
+</para>
+
+@priority: 
+@pid: 
+@function: 
+@data: 
+@notify: 
 @Returns: 
 
 
@@ -674,9 +730,10 @@ called, so the source should be checked again here.
 Called to dispatch the event source, after it has returned %TRUE in
 either its @prepare or its @check function. The @dispatch function is
 passed in a callback function and data. The callback function may be
-%NULL if the source was never connected using g_source_attach(). The
-@dispatch function should call the callback function with data and
-whatever additional parameters are needed for this type of event source.
+%NULL if the source was never connected to a callback using
+g_source_set_callback(). The @dispatch function should call the
+callback function with @user_data and whatever additional parameters are
+needed for this type of event source.
 </entry>
 </row>
 

@@ -1,6 +1,7 @@
 /* gspawn-win32.c - Process launching on Win32
  *
  *  Copyright 2000 Red Hat, Inc.
+ *  Copyright 2003 Tor Lillqvist
  *
  * GLib is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -30,16 +31,18 @@
  *   running, and the current directory is common for all threads.)
  *
  * Thus, we must in most cases use a helper program to handle closing
- * of (inherited) file descriptors and changing of directory. In fact,
- * we do it all the time.
+ * of (inherited) file descriptors and changing of directory. The
+ * helper process is also needed if the standard input, standard
+ * output, or standard error of the process to be run are supposed to
+ * be redirected somewhere.
+ *
+ * The structure of the source code in this file is a mess, I know.
  */
 
 /* Define this to get some logging all the time */
 /* #define G_SPAWN_WIN32_DEBUG */
 
 #include <config.h>
-
-#include "config.h"
 
 #include "glib.h"
 #include "gprintfint.h"
@@ -96,6 +99,11 @@ enum {
   ARG_PROGRAM,
   ARG_COUNT = ARG_PROGRAM
 };
+
+/* Return codes from do_spawn() */
+#define DO_SPAWN_ERROR_HELPER -1
+#define DO_SPAWN_OK_NO_HELPER -2
+#define DO_SPAWN_ERROR_NO_HELPER -3
 
 static gint
 protect_argv (gchar  **argv,
@@ -189,9 +197,10 @@ static gboolean do_spawn_with_pipes  (gboolean              dont_wait,
                                       gboolean              stdout_to_null,
                                       gboolean              stderr_to_null,
                                       gboolean              child_inherits_stdin,
+				      gboolean		    file_and_argv_zero,
                                       GSpawnChildSetupFunc  child_setup,
                                       gpointer              user_data,
-                                      gint                 *child_pid,
+                                      GPid                 *child_handle,
                                       gint                 *standard_input,
                                       gint                 *standard_output,
                                       gint                 *standard_error,
@@ -214,7 +223,7 @@ g_spawn_async (const gchar          *working_directory,
                GSpawnFlags           flags,
                GSpawnChildSetupFunc  child_setup,
                gpointer              user_data,
-               gint                 *child_pid,
+               GPid                 *child_handle,
                GError              **error)
 {
   g_return_val_if_fail (argv != NULL, FALSE);
@@ -224,7 +233,7 @@ g_spawn_async (const gchar          *working_directory,
                                    flags,
                                    child_setup,
                                    user_data,
-                                   child_pid,
+                                   child_handle,
                                    NULL, NULL, NULL,
                                    error);
 }
@@ -305,7 +314,7 @@ g_spawn_sync (const gchar          *working_directory,
 {
   gint outpipe = -1;
   gint errpipe = -1;
-  gint pid;
+  GPid pid;
   GIOChannel *outchannel = NULL;
   GIOChannel *errchannel = NULL;
   GPollFD outfd, errfd;
@@ -345,6 +354,7 @@ g_spawn_sync (const gchar          *working_directory,
 			    (flags & G_SPAWN_STDOUT_TO_DEV_NULL) != 0,
 			    (flags & G_SPAWN_STDERR_TO_DEV_NULL) != 0,
 			    (flags & G_SPAWN_CHILD_INHERITS_STDIN) != 0,
+			    (flags & G_SPAWN_FILE_AND_ARGV_ZERO) != 0,
 			    child_setup,
 			    user_data,
 			    &pid,
@@ -361,7 +371,7 @@ g_spawn_sync (const gchar          *working_directory,
 
   if (outpipe >= 0)
     {
-      outstr = g_string_new ("");
+      outstr = g_string_new (NULL);
       outchannel = g_io_channel_win32_new_fd (outpipe);
       g_io_channel_set_encoding (outchannel, NULL, NULL);
       g_io_channel_win32_make_pollfd (outchannel,
@@ -371,7 +381,7 @@ g_spawn_sync (const gchar          *working_directory,
       
   if (errpipe >= 0)
     {
-      errstr = g_string_new ("");
+      errstr = g_string_new (NULL);
       errchannel = g_io_channel_win32_new_fd (errpipe);
       g_io_channel_set_encoding (errchannel, NULL, NULL);
       g_io_channel_win32_make_pollfd (errchannel,
@@ -480,6 +490,8 @@ g_spawn_sync (const gchar          *working_directory,
   if (errpipe >= 0)
     close_and_invalidate (&errpipe);
   
+  g_spawn_close_pid(pid);
+
   if (failed)
     {
       if (outstr)
@@ -511,7 +523,7 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
                           GSpawnFlags           flags,
                           GSpawnChildSetupFunc  child_setup,
                           gpointer              user_data,
-                          gint                 *child_pid,
+                          GPid                 *child_handle,
                           gint                 *standard_input,
                           gint                 *standard_output,
                           gint                 *standard_error,
@@ -536,9 +548,10 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
 			      (flags & G_SPAWN_STDOUT_TO_DEV_NULL) != 0,
 			      (flags & G_SPAWN_STDERR_TO_DEV_NULL) != 0,
 			      (flags & G_SPAWN_CHILD_INHERITS_STDIN) != 0,
+			      (flags & G_SPAWN_FILE_AND_ARGV_ZERO) != 0,
 			      child_setup,
 			      user_data,
-			      child_pid,
+			      child_handle,
 			      standard_input,
 			      standard_output,
 			      standard_error,
@@ -605,6 +618,14 @@ g_spawn_command_line_async (const gchar *command_line,
   return retval;
 }
 
+/* This stinks, code reorg needed. Presumably do_spawn() should be
+ * inserted into its only caller, do_spawn_with_pipes(), and then code
+ * snippets from that function should be split out to separate
+ * functions if necessary.
+ */
+
+static gint shortcut_spawn_retval;
+
 static gint
 do_spawn (gboolean              dont_wait,
 	  gint                  child_err_report_fd,
@@ -619,25 +640,66 @@ do_spawn (gboolean              dont_wait,
 	  gboolean              stdout_to_null,
 	  gboolean              stderr_to_null,
 	  gboolean              child_inherits_stdin,
+	  gboolean		file_and_argv_zero,
 	  GSpawnChildSetupFunc  child_setup,
 	  gpointer              user_data)
 {
+  gchar **protected_argv;
   gchar **new_argv;
   gchar args[ARG_COUNT][10];
   gint i;
   int rc;
-  int argc = 0;
+  int argc;
 
   SETUP_DEBUG();
 
-  while (argv[argc])
-    ++argc;
+  argc = protect_argv (argv, &protected_argv);
+
+  if (stdin_fd == -1 && stdout_fd == -1 && stderr_fd == -1 &&
+      (working_directory == NULL || !*working_directory) &&
+      !close_descriptors &&
+      !stdout_to_null && !stderr_to_null &&
+      child_inherits_stdin)
+    {
+      /* We can do without the helper process */
+      int mode = dont_wait ? P_NOWAIT : P_WAIT;
+
+      if (debug)
+	g_print ("doing without gspawn-win32-helper\n");
+
+      if (search_path)
+	rc = spawnvp (mode, argv[0], file_and_argv_zero ? protected_argv + 1 : protected_argv);
+      else
+	rc = spawnv (mode, argv[0], file_and_argv_zero ? protected_argv + 1 : protected_argv);
+
+      for (i = 0; i < argc; i++)
+	g_free (protected_argv[i]);
+      g_free (protected_argv);
+      
+      if (rc == -1)
+	{
+	  return DO_SPAWN_ERROR_NO_HELPER;
+	}
+      else
+	{
+	  shortcut_spawn_retval = rc;
+	  return DO_SPAWN_OK_NO_HELPER;
+	}
+    }
 
   new_argv = g_new (gchar *, argc + 1 + ARG_COUNT);
 
   new_argv[0] = "gspawn-win32-helper";
   _g_sprintf (args[ARG_CHILD_ERR_REPORT], "%d", child_err_report_fd);
   new_argv[ARG_CHILD_ERR_REPORT] = args[ARG_CHILD_ERR_REPORT];
+
+  if (file_and_argv_zero)
+    {
+      /* Overload ARG_CHILD_ERR_REPORT to also encode the
+       * G_SPAWN_FILE_AND_ARGV_ZERO functionality.
+       */
+      strcat (args[ARG_CHILD_ERR_REPORT], "#");
+    }
 
   if (stdin_fd >= 0)
     {
@@ -705,7 +767,7 @@ do_spawn (gboolean              dont_wait,
     new_argv[ARG_WAIT] = "w";
 
   for (i = 0; i <= argc; i++)
-    new_argv[ARG_PROGRAM + i] = argv[i];
+    new_argv[ARG_PROGRAM + i] = protected_argv[i];
 
   /* Call user function just before we execute the helper program,
    * which executes the program. Dunno what's the usefulness of this.
@@ -743,6 +805,10 @@ do_spawn (gboolean              dont_wait,
     close (stdout_fd);
   if (stderr_fd >= 0)
     close (stderr_fd);
+
+  for (i = 0; i < argc; i++)
+    g_free (protected_argv[i]);
+  g_free (protected_argv);
 
   g_free (new_argv[ARG_WORKING_DIRECTORY]);
   g_free (new_argv);
@@ -808,9 +874,10 @@ do_spawn_with_pipes (gboolean              dont_wait,
 		     gboolean              stdout_to_null,
 		     gboolean              stderr_to_null,
 		     gboolean              child_inherits_stdin,
+		     gboolean		   file_and_argv_zero,
 		     GSpawnChildSetupFunc  child_setup,
 		     gpointer              user_data,
-		     gint                 *child_pid,
+		     GPid                 *child_handle,
 		     gint                 *standard_input,
 		     gint                 *standard_output,
 		     gint                 *standard_error,
@@ -824,9 +891,6 @@ do_spawn_with_pipes (gboolean              dont_wait,
   gint helper = -1;
   gint buf[2];
   gint n_ints = 0;
-  gint i;
-  gint argc;
-  gchar **new_argv;
   
   if (!make_pipe (child_err_report_pipe, error))
     return FALSE;
@@ -840,30 +904,25 @@ do_spawn_with_pipes (gboolean              dont_wait,
   if (standard_error && !make_pipe (stderr_pipe, error))
     goto cleanup_and_fail;
 
-  argc = protect_argv (argv, &new_argv);
-
   helper = do_spawn (dont_wait,
 		     child_err_report_pipe[1],
 		     stdin_pipe[0],
 		     stdout_pipe[1],
 		     stderr_pipe[1],
 		     working_directory,
-		     new_argv,
+		     argv,
 		     envp,
 		     close_descriptors,
 		     search_path,
 		     stdout_to_null,
 		     stderr_to_null,
 		     child_inherits_stdin,
+		     file_and_argv_zero,
 		     child_setup,
 		     user_data);
       
-  for (i = 0; i < argc; i++)
-    g_free (new_argv[i]);
-  g_free (new_argv);
-
-  /* do_spawn() returns -1 if gspawn-win32-helper couldn't be run */
-  if (helper == -1)
+  /* Check if gspawn-win32-helper couldn't be run */
+  if (helper == DO_SPAWN_ERROR_HELPER)
     {
       g_set_error (error,
 		   G_SPAWN_ERROR,
@@ -872,29 +931,52 @@ do_spawn_with_pipes (gboolean              dont_wait,
       goto cleanup_and_fail;
     }
 
+  else if (helper == DO_SPAWN_OK_NO_HELPER)
+    {
+      if (child_handle && dont_wait && !dont_return_handle)
+	*child_handle = (GPid) shortcut_spawn_retval;
+      else if (!dont_wait && exit_status)
+	*exit_status = shortcut_spawn_retval;
+
+      close_and_invalidate (&child_err_report_pipe[0]);
+      close_and_invalidate (&child_err_report_pipe[1]);
+
+      return TRUE;
+    }
+  else if (helper == DO_SPAWN_ERROR_NO_HELPER)
+    {
+      g_set_error (error,
+		   G_SPAWN_ERROR,
+		   G_SPAWN_ERROR_FAILED,
+		   _("Failed to execute child process (%s)"),
+		   g_strerror (errno));
+      helper = -1;
+      goto cleanup_and_fail;
+    }
+
   if (!read_ints (child_err_report_pipe[0],
 		  buf, 2, &n_ints,
 		  error) ||
-      n_ints != 2)
+	   n_ints != 2)
     goto cleanup_and_fail;
         
   /* Error code from gspawn-win32-helper. */
   switch (buf[0])
     {
     case CHILD_NO_ERROR:
-      if (child_pid && dont_wait && !dont_return_handle)
+      if (child_handle && dont_wait && !dont_return_handle)
 	{
 	  /* helper is our HANDLE for gspawn-win32-helper. It has
 	   * told us the HANDLE of its child. Duplicate that into
 	   * a HANDLE valid in this process.
 	   */
 	  if (!DuplicateHandle ((HANDLE) helper, (HANDLE) buf[1],
-				GetCurrentProcess (), (LPHANDLE) child_pid,
+				GetCurrentProcess (), (LPHANDLE) child_handle,
 				0, TRUE, DUPLICATE_SAME_ACCESS))
-	    *child_pid = 0;
+	    *child_handle = 0;
 	}
-      else if (child_pid)
-	*child_pid = 0;
+      else if (child_handle)
+	*child_handle = 0;
       break;
       
     case CHILD_CHDIR_FAILED:
@@ -927,6 +1009,8 @@ do_spawn_with_pipes (gboolean              dont_wait,
     *exit_status = buf[1];
   CloseHandle ((HANDLE) helper);
   
+  close_and_invalidate (&child_err_report_pipe[0]);
+
   return TRUE;
 
  cleanup_and_fail:
@@ -960,5 +1044,10 @@ make_pipe (gint     p[2],
   else
     return TRUE;
 }
-
 #endif /* !GSPAWN_HELPER */
+
+void
+g_spawn_close_pid (GPid pid)
+{
+    CloseHandle (pid);
+}

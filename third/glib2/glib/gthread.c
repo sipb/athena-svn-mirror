@@ -1,7 +1,7 @@
 /* GLIB - Library of useful routines for C programming
  * Copyright (C) 1995-1997  Peter Mattis, Spencer Kimball and Josh MacDonald
  *
- * gmutex.c: MT safety related functions
+ * gthread.c: MT safety related functions
  * Copyright 1998 Sebastian Wilhelmi; University of Karlsruhe
  *                Owen Taylor
  *
@@ -34,13 +34,6 @@
 
 #include "config.h"
 
-#ifdef G_THREAD_USE_PID_SURROGATE
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <errno.h>
-#endif /* G_THREAD_USE_PID_SURROGATE */
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -48,7 +41,7 @@
 #include <string.h>
 
 #include "glib.h"
-
+#include "gthreadinit.h"
 
 #if GLIB_SIZEOF_SYSTEM_THREAD == SIZEOF_VOID_P
 # define g_system_thread_equal_simple(thread1, thread2)			\
@@ -84,23 +77,7 @@ struct  _GRealThread
   gpointer private_data;
   gpointer retval;
   GSystemThread system_thread;
-#ifdef G_THREAD_USE_PID_SURROGATE
-  pid_t pid;
-#endif /* G_THREAD_USE_PID_SURROGATE */
 };
-
-#ifdef G_THREAD_USE_PID_SURROGATE
-static gint priority_map[4];
-static gboolean prio_warned = FALSE;
-# define SET_PRIO(pid, prio) G_STMT_START{				\
-  gint error = setpriority (PRIO_PROCESS, (pid), priority_map[prio]);	\
-  if (error == -1 && errno == EACCES && !prio_warned)			\
-    {									\
-      prio_warned = TRUE;						\
-      g_warning ("Priorities can only be increased by root.");		\
-    }									\
-  }G_STMT_END
-#endif /* G_THREAD_USE_PID_SURROGATE */
 
 typedef struct _GStaticPrivateNode GStaticPrivateNode;
 struct _GStaticPrivateNode
@@ -118,9 +95,6 @@ static GSystemThread zero_thread; /* This is initialized to all zero */
 gboolean g_thread_use_default_impl = TRUE;
 gboolean g_threads_got_initialized = FALSE;
 
-#if defined(G_PLATFORM_WIN32) && defined(__GNUC__)
-__declspec(dllexport)
-#endif
 GThreadFunctions g_thread_functions_for_glib_use = {
   (GMutex*(*)())g_thread_fail,                 /* mutex_new */
   NULL,                                        /* mutex_lock */
@@ -148,42 +122,73 @@ GThreadFunctions g_thread_functions_for_glib_use = {
 
 /* Local data */
 
-static GMutex   *g_mutex_protect_static_mutex_allocation = NULL;
+static GMutex   *g_once_mutex = NULL;
+static GCond    *g_once_cond = NULL;
 static GPrivate *g_thread_specific_private = NULL;
 static GSList   *g_thread_all_threads = NULL;
 static GSList   *g_thread_free_indeces = NULL;
 
 G_LOCK_DEFINE_STATIC (g_thread);
 
+#ifdef G_THREADS_ENABLED
 /* This must be called only once, before any threads are created.
  * It will only be called from g_thread_init() in -lgthread.
  */
-void
-g_mutex_init (void)
+void 
+g_thread_init_glib (void)
 {
-  GRealThread* main_thread;
- 
   /* We let the main thread (the one that calls g_thread_init) inherit
-   * the data, that it set before calling g_thread_init
+   * the static_private data set before calling g_thread_init
    */
-  main_thread = (GRealThread*) g_thread_self ();
+  GRealThread* main_thread = (GRealThread*) g_thread_self ();
+
+  g_once_mutex = g_mutex_new ();
+  g_once_cond = g_cond_new ();
+
+  _g_convert_thread_init ();
+  _g_rand_thread_init ();
+  _g_main_thread_init ();
+  _g_mem_thread_init ();
+  _g_messages_thread_init ();
+  _g_atomic_thread_init ();
+ 
+  g_threads_got_initialized = TRUE;
 
   g_thread_specific_private = g_private_new (g_thread_cleanup);
-  G_THREAD_UF (private_set, (g_thread_specific_private, main_thread));
+  g_private_set (g_thread_specific_private, main_thread);
   G_THREAD_UF (thread_self, (&main_thread->system_thread));
 
-  g_mutex_protect_static_mutex_allocation = g_mutex_new ();
+  _g_mem_thread_private_init ();
+  _g_messages_thread_private_init ();
 
-#ifdef G_THREAD_USE_PID_SURROGATE
-  priority_map[G_THREAD_PRIORITY_NORMAL] = 
-    getpriority (PRIO_PROCESS, (getpid ()));
-  priority_map[G_THREAD_PRIORITY_LOW] = 
-    MIN (20, priority_map[G_THREAD_PRIORITY_NORMAL] + 10);
-  priority_map[G_THREAD_PRIORITY_HIGH] = 
-    MAX (-20, priority_map[G_THREAD_PRIORITY_NORMAL] - 10);
-  priority_map[G_THREAD_PRIORITY_URGENT] = 
-    MAX (-20, priority_map[G_THREAD_PRIORITY_NORMAL] - 15);
-#endif /* G_THREAD_USE_PID_SURROGATE */
+}
+#endif /* G_THREADS_ENABLED */
+
+gpointer 
+g_once_impl (GOnce       *once, 
+	     GThreadFunc  func, 
+	     gpointer     arg)
+{
+  g_mutex_lock (g_once_mutex);
+
+  while (once->status == G_ONCE_STATUS_PROGRESS)
+    g_cond_wait (g_once_cond, g_once_mutex);
+  
+  if (once->status != G_ONCE_STATUS_READY)
+    {
+      once->status = G_ONCE_STATUS_PROGRESS;
+      g_mutex_unlock (g_once_mutex);
+  
+      once->retval = func (arg);
+
+      g_mutex_lock (g_once_mutex);
+      once->status = G_ONCE_STATUS_READY;
+      g_cond_broadcast (g_once_cond);
+    }
+  
+  g_mutex_unlock (g_once_mutex);
+  
+  return once->retval;
 }
 
 void 
@@ -202,14 +207,23 @@ g_static_mutex_get_mutex_impl (GMutex** mutex)
   if (!g_thread_supported ())
     return NULL;
 
-  g_assert (g_mutex_protect_static_mutex_allocation);
+  g_assert (g_once_mutex);
 
-  g_mutex_lock (g_mutex_protect_static_mutex_allocation);
+  g_mutex_lock (g_once_mutex);
 
   if (!(*mutex)) 
-    *mutex = g_mutex_new (); 
+    {
+      GMutex *new_mutex = g_mutex_new (); 
+      
+      /* The following is a memory barrier to avoid the write 
+       * to *new_mutex being reordered to after writing *mutex */
+      g_mutex_lock (new_mutex);
+      g_mutex_unlock (new_mutex);
+      
+      *mutex = new_mutex;
+    }
 
-  g_mutex_unlock (g_mutex_protect_static_mutex_allocation);
+  g_mutex_unlock (g_once_mutex);
   
   return *mutex;
 }
@@ -531,10 +545,6 @@ g_thread_create_proxy (gpointer data)
 
   g_assert (data);
 
-#ifdef G_THREAD_USE_PID_SURROGATE
-  thread->pid = getpid ();
-#endif /* G_THREAD_USE_PID_SURROGATE */
-
   /* This has to happen before G_LOCK, as that might call g_thread_self */
   g_private_set (g_thread_specific_private, data);
 
@@ -543,11 +553,6 @@ g_thread_create_proxy (gpointer data)
   G_LOCK (g_thread);
   G_UNLOCK (g_thread);
  
-#ifdef G_THREAD_USE_PID_SURROGATE
-  if (g_thread_use_default_impl)
-    SET_PRIO (thread->pid, thread->thread.priority);
-#endif /* G_THREAD_USE_PID_SURROGATE */
-
   thread->retval = thread->thread.func (thread->thread.data);
 
   return NULL;
@@ -645,13 +650,8 @@ g_thread_set_priority (GThread* thread,
 
   thread->priority = priority;
 
-#ifdef G_THREAD_USE_PID_SURROGATE
-  if (g_thread_use_default_impl)
-    SET_PRIO (real->pid, priority);
-  else
-#endif /* G_THREAD_USE_PID_SURROGATE */
-    G_THREAD_CF (thread_set_priority, (void)0, 
-		 (&real->system_thread, priority));
+  G_THREAD_CF (thread_set_priority, (void)0, 
+	       (&real->system_thread, priority));
 }
 
 GThread*
@@ -675,10 +675,6 @@ g_thread_self (void)
       if (g_thread_supported ())
 	G_THREAD_UF (thread_self, (&thread->system_thread));
 
-#ifdef G_THREAD_USE_PID_SURROGATE
-      thread->pid = getpid ();
-#endif /* G_THREAD_USE_PID_SURROGATE */
-      
       g_private_set (g_thread_specific_private, thread); 
       
       G_LOCK (g_thread);

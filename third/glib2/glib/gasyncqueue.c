@@ -35,7 +35,7 @@ struct _GAsyncQueue
   GCond *cond;
   GQueue *queue;
   guint waiting_threads;
-  guint ref_count;
+  gint32 ref_count;
 };
 
 /**
@@ -50,7 +50,7 @@ g_async_queue_new ()
 {
   GAsyncQueue* retval = g_new (GAsyncQueue, 1);
   retval->mutex = g_mutex_new ();
-  retval->cond = g_cond_new ();
+  retval->cond = NULL;
   retval->queue = g_queue_new ();
   retval->waiting_threads = 0;
   retval->ref_count = 1;
@@ -61,33 +61,31 @@ g_async_queue_new ()
  * g_async_queue_ref:
  * @queue: a #GAsyncQueue.
  *
- * Increases the reference count of the asynchronous @queue by 1.
+ * Increases the reference count of the asynchronous @queue by 1. You
+ * do not need to hold the lock to call this function.
  **/
 void 
 g_async_queue_ref (GAsyncQueue *queue)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
   
-  g_mutex_lock (queue->mutex);
-  queue->ref_count++;
-  g_mutex_unlock (queue->mutex);
+  g_atomic_int_inc (&queue->ref_count);
 }
 
 /**
  * g_async_queue_ref_unlocked:
  * @queue: a #GAsyncQueue.
  * 
- * Increases the reference count of the asynchronous @queue by 1. This
- * function must be called while holding the @queue's lock.
+ * Increases the reference count of the asynchronous @queue by 1.
  **/
 void 
 g_async_queue_ref_unlocked (GAsyncQueue *queue)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
   
-  queue->ref_count++;
+  g_atomic_int_inc (&queue->ref_count);
 }
 
 /**
@@ -97,32 +95,16 @@ g_async_queue_ref_unlocked (GAsyncQueue *queue)
  * Decreases the reference count of the asynchronous @queue by 1 and
  * releases the lock. This function must be called while holding the
  * @queue's lock. If the reference count went to 0, the @queue will be
- * destroyed and the memory allocated will be freed. So you are not
- * allowed to use the @queue afterwards, as it might have disappeared.
- * The obvious asymmetry (it is not named
- * g_async_queue_unref_unlocked(<!-- -->)) is because the queue can't be
- * unlocked after unreffing it, as it might already have disappeared.
+ * destroyed and the memory allocated will be freed.
  **/
 void 
 g_async_queue_unref_and_unlock (GAsyncQueue *queue)
 {
-  gboolean stop;
-
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
 
-  queue->ref_count--;
-  stop = (queue->ref_count == 0);
   g_mutex_unlock (queue->mutex);
-  
-  if (stop)
-    {
-      g_return_if_fail (queue->waiting_threads == 0);
-      g_mutex_free (queue->mutex);
-      g_cond_free (queue->cond);
-      g_queue_free (queue->queue);
-      g_free (queue);
-    }
+  g_async_queue_unref (queue);
 }
 
 /**
@@ -132,16 +114,24 @@ g_async_queue_unref_and_unlock (GAsyncQueue *queue)
  * Decreases the reference count of the asynchronous @queue by 1. If
  * the reference count went to 0, the @queue will be destroyed and the
  * memory allocated will be freed. So you are not allowed to use the
- * @queue afterwards, as it might have disappeared.
+ * @queue afterwards, as it might have disappeared. You do not need to
+ * hold the lock to call this function.
  **/
 void 
 g_async_queue_unref (GAsyncQueue *queue)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
-
-  g_mutex_lock (queue->mutex);
-  g_async_queue_unref_and_unlock (queue);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
+  
+  if (g_atomic_int_dec_and_test (&queue->ref_count))
+    {
+      g_return_if_fail (queue->waiting_threads == 0);
+      g_mutex_free (queue->mutex);
+      if (queue->cond)
+	g_cond_free (queue->cond);
+      g_queue_free (queue->queue);
+      g_free (queue);
+    }
 }
 
 /**
@@ -149,14 +139,14 @@ g_async_queue_unref (GAsyncQueue *queue)
  * @queue: a #GAsyncQueue.
  * 
  * Acquires the @queue's lock. After that you can only call the
- * <function>g_async_queue_*_unlocked(<!-- -->)</function> function variants on that
+ * <function>g_async_queue_*_unlocked()</function> function variants on that
  * @queue. Otherwise it will deadlock.
  **/
 void
 g_async_queue_lock (GAsyncQueue *queue)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
 
   g_mutex_lock (queue->mutex);
 }
@@ -171,7 +161,7 @@ void
 g_async_queue_unlock (GAsyncQueue *queue)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
 
   g_mutex_unlock (queue->mutex);
 }
@@ -187,7 +177,7 @@ void
 g_async_queue_push (GAsyncQueue* queue, gpointer data)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
   g_return_if_fail (data);
 
   g_mutex_lock (queue->mutex);
@@ -207,11 +197,12 @@ void
 g_async_queue_push_unlocked (GAsyncQueue* queue, gpointer data)
 {
   g_return_if_fail (queue);
-  g_return_if_fail (queue->ref_count > 0);
+  g_return_if_fail (g_atomic_int_get (&queue->ref_count) > 0);
   g_return_if_fail (data);
 
   g_queue_push_head (queue->queue, data);
-  g_cond_signal (queue->cond);
+  if (queue->waiting_threads > 0)
+    g_cond_signal (queue->cond);
 }
 
 static gpointer
@@ -224,6 +215,10 @@ g_async_queue_pop_intern_unlocked (GAsyncQueue* queue, gboolean try,
     {
       if (try)
 	return NULL;
+      
+      if (!queue->cond)
+	queue->cond = g_cond_new ();
+
       if (!end_time)
         {
           queue->waiting_threads++;
@@ -265,7 +260,7 @@ g_async_queue_pop (GAsyncQueue* queue)
   gpointer retval;
 
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   g_mutex_lock (queue->mutex);
   retval = g_async_queue_pop_intern_unlocked (queue, FALSE, NULL);
@@ -288,7 +283,7 @@ gpointer
 g_async_queue_pop_unlocked (GAsyncQueue* queue)
 {
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   return g_async_queue_pop_intern_unlocked (queue, FALSE, NULL);
 }
@@ -309,7 +304,7 @@ g_async_queue_try_pop (GAsyncQueue* queue)
   gpointer retval;
 
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   g_mutex_lock (queue->mutex);
   retval = g_async_queue_pop_intern_unlocked (queue, TRUE, NULL);
@@ -333,7 +328,7 @@ gpointer
 g_async_queue_try_pop_unlocked (GAsyncQueue* queue)
 {
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   return g_async_queue_pop_intern_unlocked (queue, TRUE, NULL);
 }
@@ -358,7 +353,7 @@ g_async_queue_timed_pop (GAsyncQueue* queue, GTimeVal *end_time)
   gpointer retval;
 
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   g_mutex_lock (queue->mutex);
   retval = g_async_queue_pop_intern_unlocked (queue, FALSE, end_time);
@@ -386,7 +381,7 @@ gpointer
 g_async_queue_timed_pop_unlocked (GAsyncQueue* queue, GTimeVal *end_time)
 {
   g_return_val_if_fail (queue, NULL);
-  g_return_val_if_fail (queue->ref_count > 0, NULL);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, NULL);
 
   return g_async_queue_pop_intern_unlocked (queue, FALSE, end_time);
 }
@@ -411,7 +406,7 @@ g_async_queue_length (GAsyncQueue* queue)
   gint retval;
 
   g_return_val_if_fail (queue, 0);
-  g_return_val_if_fail (queue->ref_count > 0, 0);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, 0);
 
   g_mutex_lock (queue->mutex);
   retval = queue->queue->length - queue->waiting_threads;
@@ -439,7 +434,7 @@ gint
 g_async_queue_length_unlocked (GAsyncQueue* queue)
 {
   g_return_val_if_fail (queue, 0);
-  g_return_val_if_fail (queue->ref_count > 0, 0);
+  g_return_val_if_fail (g_atomic_int_get (&queue->ref_count) > 0, 0);
 
   return queue->queue->length - queue->waiting_threads;
 }

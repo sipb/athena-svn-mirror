@@ -162,8 +162,8 @@ put_marshal_value_getters (void)
   fputs ("#define g_marshal_value_peek_ulong(v)    (v)->data[0].v_ulong\n", fout);
   fputs ("#define g_marshal_value_peek_int64(v)    (v)->data[0].v_int64\n", fout);
   fputs ("#define g_marshal_value_peek_uint64(v)   (v)->data[0].v_uint64\n", fout);
-  fputs ("#define g_marshal_value_peek_enum(v)     (v)->data[0].v_int\n", fout);
-  fputs ("#define g_marshal_value_peek_flags(v)    (v)->data[0].v_uint\n", fout);
+  fputs ("#define g_marshal_value_peek_enum(v)     (v)->data[0].v_long\n", fout);
+  fputs ("#define g_marshal_value_peek_flags(v)    (v)->data[0].v_ulong\n", fout);
   fputs ("#define g_marshal_value_peek_float(v)    (v)->data[0].v_float\n", fout);
   fputs ("#define g_marshal_value_peek_double(v)   (v)->data[0].v_double\n", fout);
   fputs ("#define g_marshal_value_peek_string(v)   (v)->data[0].v_pointer\n", fout);
@@ -239,11 +239,11 @@ complete_out_arg (OutArgument *oarg)
     { "FLAGS",		"FLAGS",	"guint",	"g_value_set_flags",			     },
     { "FLOAT",		"FLOAT",	"gfloat",	"g_value_set_float",			     },
     { "DOUBLE",		"DOUBLE",	"gdouble",	"g_value_set_double",			     },
-    { "STRING",		"STRING",	"gchar*",	"g_value_set_string_take_ownership",         },
-    { "PARAM",		"PARAM",	"GParamSpec*",	"g_value_set_param_take_ownership",          },
-    { "BOXED",		"BOXED",	"gpointer",	"g_value_set_boxed_take_ownership",          },
+    { "STRING",		"STRING",	"gchar*",	"g_value_take_string",			     },
+    { "PARAM",		"PARAM",	"GParamSpec*",	"g_value_take_param",			     },
+    { "BOXED",		"BOXED",	"gpointer",	"g_value_take_boxed",			     },
     { "POINTER",	"POINTER",	"gpointer",	"g_value_set_pointer",			     },
-    { "OBJECT",		"OBJECT",	"GObject*",	"g_value_set_object_take_ownership",	     },
+    { "OBJECT",		"OBJECT",	"GObject*",	"g_value_take_object",			     },
     /* deprecated: */
     { "NONE",		"VOID",		"void",		NULL,					     },
     { "BOOL",		"BOOLEAN",	"gboolean",	"g_value_set_boolean",			     },

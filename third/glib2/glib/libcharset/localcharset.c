@@ -23,6 +23,13 @@
 # include <config.h>
 #endif
 
+#include <glibconfig.h>
+
+#if defined G_PLATFORM_WIN32
+/* Want to use Win32-specific code in this file also on Cygwin */
+# define _WIN32 1		
+#endif
+
 #if HAVE_STDDEF_H
 # include <stddef.h>
 #endif
@@ -112,9 +119,12 @@ _g_locale_get_charset_aliases ()
     {
 #if !defined WIN32
       FILE *fp;
-      const char *dir = LIBDIR;
+      const char *dir = getenv ("LIBCHARSET_ALIAS_DIR");
       const char *base = "charset.alias";
       char *file_name;
+
+      if (dir == NULL)
+	dir = LIBDIR;
 
       /* Concatenate dir and base into freshly allocated file_name.  */
       {

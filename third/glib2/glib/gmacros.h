@@ -88,6 +88,7 @@
 
 /* Wrap the gcc __PRETTY_FUNCTION__ and __FUNCTION__ variables with
  * macros, so we can refer to them as strings unconditionally.
+ * usage not-recommended since gcc-3.0
  */
 #if defined (__GNUC__) && (__GNUC__ < 3)
 #define G_GNUC_FUNCTION         __FUNCTION__
@@ -101,10 +102,19 @@
 #define	G_STRINGIFY_ARG(contents)	#contents
 
 /* Provide a string identifying the current code position */
-#if defined(__GNUC__) && (__GNUC__ < 3)
+#if defined(__GNUC__) && (__GNUC__ < 3) && !defined(__cplusplus)
 #  define G_STRLOC	__FILE__ ":" G_STRINGIFY (__LINE__) ":" __PRETTY_FUNCTION__ "()"
 #else
 #  define G_STRLOC	__FILE__ ":" G_STRINGIFY (__LINE__)
+#endif
+
+/* Provide a string identifying the current function, non-concatenatable */
+#if defined (__GNUC__)
+#  define G_STRFUNC     ((const char*) (__PRETTY_FUNCTION__))
+#elif defined (G_HAVE_ISO_VARARGS)
+#  define G_STRFUNC     ((const char*) (__func__))
+#else
+#  define G_STRFUNC     ((const char*) ("???"))
 #endif
 
 /* Guard C code in headers, while including them from C++ */
@@ -181,7 +191,7 @@
  */
 #if !(defined (G_STMT_START) && defined (G_STMT_END))
 #  if defined (__GNUC__) && !defined (__STRICT_ANSI__) && !defined (__cplusplus)
-#    define G_STMT_START	(void)(
+#    define G_STMT_START	(void) __extension__ (
 #    define G_STMT_END		)
 #  else
 #    if (defined (sun) || defined (__sun__))

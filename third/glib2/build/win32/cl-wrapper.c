@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +36,7 @@ static int lib_ix = 0;
 static int libdir_ix = 0;
 static int object_ix = 0;
 
-static int compileonly = 0, debug = 0, output = 0, verbose = 0;
+static int compileonly = 0, debug = 0, output = 0, verbose = 0, version = 0;
 static int nsources = 0;
 
 static void
@@ -46,6 +47,23 @@ backslashify (char *p)
       *p = '\\';
       p++;
     }
+}
+
+static char *
+quote (char *string)
+{
+  char *result = malloc (strlen (string) * 2);
+  char *p = string, *q = result;
+
+  while (*p)
+    {
+      if (*p == '"')
+	*q++ = '\\';
+      *q++ = *p;
+      p++;
+    }
+  *q++ = '\0';
+  return result;
 }
 
 static void
@@ -64,11 +82,11 @@ process_argv (int argc,
     else if (strncmp (argv[i], "-D", 2) == 0)
       {
 	strcat (cmdline, " ");
-	strcat (cmdline, argv[i]);
+	strcat (cmdline, quote (argv[i]));
 	if (strlen (argv[i]) == 2)
 	  {
 	    i++;
-	    strcat (cmdline, argv[i]);
+	    strcat (cmdline, quote (argv[i]));
 	  }
       }
     else if (strcmp (argv[i], "-E") == 0)
@@ -79,12 +97,12 @@ process_argv (int argc,
       {
 	strcat (cmdline, " ");
 	backslashify (argv[i]);
-	strcat (cmdline, argv[i]);
+	strcat (cmdline, quote (argv[i]));
 	if (strlen (argv[i]) == 2)
 	  {
 	    i++;
 	    backslashify (argv[i]);
-	    strcat (cmdline, argv[i]);
+	    strcat (cmdline, quote (argv[i]));
 	  }
       }
     else if (strncmp (argv[i], "-l", 2) == 0)
@@ -129,10 +147,12 @@ process_argv (int argc,
 	    strcat (cmdline, ".exe");
 	  }
       }
-    else if (strcmp (argv[i], "-O") == 0)
-      strcat (cmdline, " -O");
+    else if (strncmp (argv[i], "-O", 2) == 0)
+      strcat (cmdline, " -O2");
     else if (strcmp (argv[i], "-v") == 0)
       verbose++;
+    else if (strcmp (argv[i], "--version") == 0)
+      version = 1;
     else if (argv[i][0] == '-')
       fprintf (stderr, "Ignored flag %s\n", argv[i]);
     else
@@ -153,7 +173,6 @@ process_argv (int argc,
 	else
 	  fprintf (stderr, "Ignored argument: %s\n", argv[i]);
       }
-
 }
 
 static void
@@ -186,8 +205,8 @@ process_envvar (char *envvar)
 	{
 	  while (*q == ' ')
 	    q++;
-	  p = q;
 	}
+      p = q;
     }
   process_argv (argc, argv);
 }
@@ -200,7 +219,7 @@ main (int argc,
 
   int i, j, k;
   char *p;
-  
+
   libraries = malloc (argc * sizeof (char *));
   libdirs = malloc ((argc+10) * sizeof (char *));
   objects = malloc (argc * sizeof (char *));
@@ -224,65 +243,70 @@ main (int argc,
 
   process_argv (argc, argv);
 
-  if (!verbose)
-    strcat (cmdline, " -nologo");
-
-  if (output_executable != NULL)
+  if (version)
+    strcat (cmdline, " -c nul.c");
+  else
     {
-      if (stricmp (executable_type, ".dll") == 0)
-	strcat (cmdline, " -LD");
-    }
+      if (!verbose)
+	strcat (cmdline, " -nologo");
 
-  if (debug)
-    strcat (cmdline, " -Zi");
-
-  if (nsources == 0)
-    {
-      FILE *dummy = fopen ("__dummy__.c", "w");
-      fprintf (dummy, "static int foobar = 42;\n");
-      fclose (dummy);
-
-      strcat (cmdline, " __dummy__.c");
-    }
-
-  if (!output && !compileonly)
-    strcat (cmdline, " -Fea.exe");
-
-  if (!compileonly)
-    {
-      strcat (cmdline, " -link");
-
-      for (i = 0; i < object_ix; i++)
+      if (output_executable != NULL)
 	{
-	  strcat (cmdline, " ");
-	  strcat (cmdline, objects[i]);
+	  if (stricmp (executable_type, ".dll") == 0)
+	    strcat (cmdline, " -LD");
 	}
 
-      for (i = 0; i < lib_ix; i++)
+      if (debug)
+	strcat (cmdline, " -Zi");
+
+      if (nsources == 0)
 	{
-	  strcat (cmdline, " ");
-	  for (j = 0; j < libdir_ix; j++)
+	  FILE *dummy = fopen ("__dummy__.c", "w");
+	  fprintf (dummy, "static int foobar = 42;\n");
+	  fclose (dummy);
+
+	  strcat (cmdline, " __dummy__.c");
+	}
+
+      if (!output && !compileonly)
+	strcat (cmdline, " -Fea.exe");
+
+      if (!compileonly)
+	{
+	  strcat (cmdline, " -link");
+
+	  for (i = 0; i < object_ix; i++)
 	    {
-	      char b[1000];
-	      
-	      sprintf (b, "%s\\%s.lib", libdirs[j], libraries[i]);
-	      if (access (b, 4) == 0)
-		{
-		  strcat (cmdline, b);
-		  break;
-		}
-	      sprintf (b, "%s\\lib%s.lib", libdirs[j], libraries[i]);
-	      if (access (b, 4) == 0)
-		{
-		  strcat (cmdline, b);
-		  break;
-		}
+	      strcat (cmdline, " ");
+	      strcat (cmdline, objects[i]);
 	    }
-	  
-	  if (j == libdir_ix)
+
+	  for (i = 0; i < lib_ix; i++)
 	    {
-	      strcat (cmdline, libraries[i]);
-	      strcat (cmdline, ".lib");
+	      strcat (cmdline, " ");
+	      for (j = 0; j < libdir_ix; j++)
+		{
+		  char b[1000];
+
+		  sprintf (b, "%s\\%s.lib", libdirs[j], libraries[i]);
+		  if (access (b, 4) == 0)
+		    {
+		      strcat (cmdline, b);
+		      break;
+		    }
+		  sprintf (b, "%s\\lib%s.lib", libdirs[j], libraries[i]);
+		  if (access (b, 4) == 0)
+		    {
+		      strcat (cmdline, b);
+		      break;
+		    }
+		}
+
+	      if (j == libdir_ix)
+		{
+		  strcat (cmdline, libraries[i]);
+		  strcat (cmdline, ".lib");
+		}
 	    }
 	}
     }

@@ -44,6 +44,7 @@
 #endif
 
 #include "glib.h"
+#include "gprintf.h"
 #include "gprintfint.h"
 
 #ifdef G_OS_WIN32
@@ -51,7 +52,7 @@
 #endif
 
 /* do not include <unistd.h> in this place since it
- * inteferes with g_strsignal() on some OSes
+ * interferes with g_strsignal() on some OSes
  */
 
 static const guint16 ascii_table_data[256] = {
@@ -74,20 +75,19 @@ static const guint16 ascii_table_data[256] = {
   /* the upper 128 are all zeroes */
 };
 
-#if defined(G_PLATFORM_WIN32) && defined(__GNUC__)
-__declspec(dllexport)
-#endif
 const guint16 * const g_ascii_table = ascii_table_data;
 
 gchar*
 g_strdup (const gchar *str)
 {
   gchar *new_str;
+  gsize length;
 
   if (str)
     {
-      new_str = g_new (char, strlen (str) + 1);
-      strcpy (new_str, str);
+      length = strlen (str) + 1;
+      new_str = g_new (char, length);
+      memcpy (new_str, str, length);
     }
   else
     new_str = NULL;
@@ -179,29 +179,13 @@ g_stpcpy (gchar       *dest,
 
 gchar*
 g_strdup_vprintf (const gchar *format,
-		  va_list      args1)
+		  va_list      args)
 {
-  gchar *buffer;
-#ifdef HAVE_VASPRINTF
-  if (_g_vasprintf (&buffer, format, args1) < 0)
-    buffer = NULL;
-  else if (!g_mem_is_system_malloc ()) 
-    {
-      gchar *buffer1 = g_strdup (buffer);
-      free (buffer);
-      buffer = buffer1;
-    }
-#else
-  va_list args2;
+  gchar *string = NULL;
 
-  G_VA_COPY (args2, args1);
+  g_vasprintf (&string, format, args);
 
-  buffer = g_new (gchar, g_printf_string_upper_bound (format, args1));
-
-  _g_vsprintf (buffer, format, args2);
-  va_end (args2);
-#endif
-  return buffer;
+  return string;
 }
 
 gchar*
@@ -227,7 +211,8 @@ g_strconcat (const gchar *string1, ...)
   gchar	  *concat;
   gchar   *ptr;
 
-  g_return_val_if_fail (string1 != NULL, NULL);
+  if (!string1)
+    return NULL;
 
   l = 1 + strlen (string1);
   va_start (args, string1);
@@ -325,7 +310,7 @@ g_strtod (const gchar *nptr,
  * To handle input from the user you should normally use the
  * locale-sensitive system strtod() function.
  *
- * To convert from a string to #gdouble in a locale-insensitive
+ * To convert from a #gdouble to a string in a locale-insensitive
  * way, use g_ascii_dtostr().
  *
  * If the correct value would cause overflow, plus or minus %HUGE_VAL
@@ -361,7 +346,7 @@ g_ascii_strtod (const gchar *nptr,
   g_assert (decimal_point_len != 0);
   
   decimal_point_pos = NULL;
-  if (decimal_point[0] != '.' ||
+  if (decimal_point[0] != '.' || 
       decimal_point[1] != 0)
     {
       p = nptr;
@@ -373,7 +358,7 @@ g_ascii_strtod (const gchar *nptr,
       if (*p == '+' || *p == '-')
 	p++;
       
-      if (p[0] == '0' &&
+      if (p[0] == '0' && 
 	  (p[1] == 'x' || p[1] == 'X'))
 	{
 	  p += 2;
@@ -395,7 +380,6 @@ g_ascii_strtod (const gchar *nptr,
 		p++;
 	      while (g_ascii_isdigit (*p))
 		p++;
-	      end = p;
 	    }
 	}
       else
@@ -416,10 +400,10 @@ g_ascii_strtod (const gchar *nptr,
 		p++;
 	      while (g_ascii_isdigit (*p))
 		p++;
-	      end = p;
 	    }
 	}
       /* For the other cases, we need not convert the decimal point */
+      end = p;
     }
 
   /* Set errno to zero, so that we can distinguish zero results
@@ -446,7 +430,7 @@ g_ascii_strtod (const gchar *nptr,
 
       if (fail_pos)
 	{
-	  if (fail_pos > decimal_point_pos)
+	  if (fail_pos - copy > decimal_point_pos - nptr)
 	    fail_pos = (char *)nptr + (fail_pos - copy) - (decimal_point_len - 1);
 	  else
 	    fail_pos = (char *)nptr + (fail_pos - copy);
@@ -455,8 +439,28 @@ g_ascii_strtod (const gchar *nptr,
       g_free (copy);
 	  
     }
+  else if (decimal_point[0] != '.' ||
+	   decimal_point[1] != 0)
+    {
+      char *copy;
+      
+      copy = g_malloc (end - (char *)nptr + 1);
+      memcpy (copy, nptr, end - nptr);
+      *(copy + (end - (char *)nptr)) = 0;
+      
+      val = strtod (copy, &fail_pos);
+      
+      if (fail_pos)
+	{
+	  fail_pos = (char *)nptr + (fail_pos - copy);
+	}
+      
+      g_free (copy);
+    }
   else
-    val = strtod (nptr, &fail_pos);
+    {
+      val = strtod (nptr, &fail_pos);
+    }
 
   if (endptr)
     *endptr = fail_pos;
@@ -475,7 +479,7 @@ g_ascii_strtod (const gchar *nptr,
  * decimal point. 
  * 
  * This functions generates enough precision that converting
- * the string back using g_strtod() gives the same machine-number
+ * the string back using g_ascii_strtod() gives the same machine-number
  * (on machines with IEEE compatible 64bit doubles). It is
  * guaranteed that the size of the resulting string will never
  * be larger than @G_ASCII_DTOSTR_BUF_SIZE bytes.
@@ -494,13 +498,13 @@ g_ascii_dtostr (gchar       *buffer,
  * g_ascii_formatd:
  * @buffer: A buffer to place the resulting string in
  * @buf_len: The length of the buffer.
- * @format: The printf-style format to use for the
+ * @format: The printf()-style format to use for the
  *          code to use for converting. 
  * @d: The #gdouble to convert
  *
  * Converts a #gdouble to a string, using the '.' as
  * decimal point. To format the number you pass in
- * a printf-style formating string. Allowed conversion
+ * a printf()-style format string. Allowed conversion
  * specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. 
  * 
  * If you just want to want to serialize the value into a
@@ -739,13 +743,17 @@ g_strerror (gint errnum)
 {
   static GStaticPrivate msg_private = G_STATIC_PRIVATE_INIT;
   char *msg;
+  int saved_errno = errno;
 
 #ifdef HAVE_STRERROR
   const char *msg_locale;
 
   msg_locale = strerror (errnum);
   if (g_get_charset (NULL))
-    return msg_locale;
+    {
+      errno = saved_errno;
+      return msg_locale;
+    }
   else
     {
       gchar *msg_utf8 = g_locale_to_utf8 (msg_locale, -1, NULL, NULL, NULL);
@@ -756,7 +764,9 @@ g_strerror (gint errnum)
 	  GQuark msg_quark = g_quark_from_string (msg_utf8);
 	  g_free (msg_utf8);
 	  
-	  return g_quark_to_string (msg_quark);
+	  msg_utf8 = (gchar *) g_quark_to_string (msg_quark);
+	  errno = saved_errno;
+	  return msg_utf8;
 	}
     }
 #elif NO_SYS_ERRLIST
@@ -1191,6 +1201,7 @@ g_strerror (gint errnum)
 
   _g_sprintf (msg, "unknown error (%d)", errnum);
 
+  errno = saved_errno;
   return msg;
 }
 
@@ -1734,8 +1745,8 @@ g_ascii_strcasecmp (const gchar *s1,
 
   while (*s1 && *s2)
     {
-      c1 = (gint)(guchar) g_ascii_tolower (*s1);
-      c2 = (gint)(guchar) g_ascii_tolower (*s2);
+      c1 = (gint)(guchar) TOLOWER (*s1);
+      c2 = (gint)(guchar) TOLOWER (*s2);
       if (c1 != c2)
 	return (c1 - c2);
       s1++; s2++;
@@ -1775,8 +1786,8 @@ g_ascii_strncasecmp (const gchar *s1,
   while (n && *s1 && *s2)
     {
       n -= 1;
-      c1 = (gint)(guchar) g_ascii_tolower (*s1);
-      c2 = (gint)(guchar) g_ascii_tolower (*s2);
+      c1 = (gint)(guchar) TOLOWER (*s1);
+      c2 = (gint)(guchar) TOLOWER (*s2);
       if (c1 != c2)
 	return (c1 - c2);
       s1++; s2++;
@@ -2183,6 +2194,113 @@ g_strsplit (const gchar *string,
   return str_array;
 }
 
+/**
+ * g_strsplit_set:
+ * @string: The string to be tokenized
+ * @delimiters: A nul-terminated string containing bytes that are used
+ *              to split the string.
+ * @max_tokens: The maximum number of tokens to split @string into. 
+ *              If this is less than 1, the string is split completely
+ * 
+ * Splits @string into a number of tokens not containing any of the characters
+ * in @delimiter. A token is the (possibly empty) longest string that does not
+ * contain any of the characters in @delimiters. If @max_tokens is reached, the
+ * remainder is appended to the last token.
+ *
+ * For example the result of g_strsplit_set ("abc:def/ghi", ":/", -1) is a
+ * %NULL-terminated vector containing the three strings "abc", "def", 
+ * and "ghi".
+ *
+ * The result if g_strsplit_set (":def/ghi:", ":/", -1) is a %NULL-terminated
+ * vector containing the four strings "", "def", "ghi", and "".
+ * 
+ * As a special case, the result of splitting the empty string "" is an empty
+ * vector, not a vector containing a single string. The reason for this
+ * special case is that being able to represent a empty vector is typically
+ * more useful than consistent handling of empty elements. If you do need
+ * to represent empty elements, you'll need to check for the empty string
+ * before calling g_strsplit().
+ *
+ * Note that this function works on bytes not characters, so it can't be used 
+ * to delimit UTF-8 strings for anything but ASCII characters.
+ * 
+ * Return value: a newly-allocated %NULL-terminated array of strings. Use 
+ *    g_strfreev() to free it.
+ * 
+ * Since: 2.4
+ **/
+gchar **
+g_strsplit_set (const gchar *string,
+	        const gchar *delimiters,
+	        gint         max_tokens)
+{
+  gboolean delim_table[256];
+  GSList *tokens, *list;
+  gint n_tokens;
+  const gchar *s;
+  const gchar *current;
+  gchar *token;
+  gchar **result;
+  
+  g_return_val_if_fail (string != NULL, NULL);
+  g_return_val_if_fail (delimiters != NULL, NULL);
+
+  if (max_tokens < 1)
+    max_tokens = G_MAXINT;
+
+  if (*string == '\0')
+    {
+      result = g_new (char *, 1);
+      result[0] = NULL;
+      return result;
+    }
+  
+  memset (delim_table, FALSE, sizeof (delim_table));
+  for (s = delimiters; *s != '\0'; ++s)
+    delim_table[*(guchar *)s] = TRUE;
+
+  tokens = NULL;
+  n_tokens = 0;
+
+  s = current = string;
+  while (*s != '\0')
+    {
+      if (delim_table[*(guchar *)s] && n_tokens + 1 < max_tokens)
+	{
+	  gchar *token;
+
+	  token = g_strndup (current, s - current);
+	  tokens = g_slist_prepend (tokens, token);
+	  ++n_tokens;
+
+	  current = s + 1;
+	}
+      
+      ++s;
+    }
+
+  token = g_strndup (current, s - current);
+  tokens = g_slist_prepend (tokens, token);
+  ++n_tokens;
+
+  result = g_new (gchar *, n_tokens + 1);
+
+  result[n_tokens] = NULL;
+  for (list = tokens; list != NULL; list = list->next)
+    result[--n_tokens] = list->data;
+
+  g_slist_free (tokens);
+  
+  return result;
+}
+
+/**
+ * g_strfreev:
+ * @str_array: a %NULL-terminated array of strings to free.
+
+ * Frees a %NULL-terminated array of strings, and the array itself.
+ * If called on a %NULL value, g_strfreev() simply returns. 
+ **/
 void
 g_strfreev (gchar **str_array)
 {
@@ -2551,3 +2669,30 @@ g_str_has_prefix (const gchar  *str,
   return strncmp (str, prefix, prefix_len) == 0;
 }
 
+
+/**
+ * g_strip_context:
+ * @msgid: a string
+ * @msgval: another string
+ * 
+ * An auxiliary function for gettext() support (see Q_()).
+ * 
+ * Return value: @msgval, unless @msgval is identical to @msgid and contains
+ *   a '|' character, in which case a pointer to the substring of msgid after
+ *   the first '|' character is returned. 
+ *
+ * Since: 2.4
+ **/
+G_CONST_RETURN gchar *
+g_strip_context  (const gchar *msgid, 
+		  const gchar *msgval)
+{
+  if (msgval == msgid)
+    {
+      const char *c = strchr (msgid, '|');
+      if (c != NULL)
+	return c + 1;
+    }
+  
+  return msgval;
+}

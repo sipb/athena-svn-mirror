@@ -52,16 +52,22 @@ typedef unsigned int    guint;
 typedef float   gfloat;
 typedef double  gdouble;
 
-/* HAVE_LONG_DOUBLE doesn't work correctly on all platforms.
- * Since gldouble isn't used anywhere, just disable it for now */
+/* Define min and max constants for the fixed size numerical types */
+#define G_MININT8	((gint8)  0x80)
+#define G_MAXINT8	((gint8)  0x7f)
+#define G_MAXUINT8	((guint8) 0xff)
 
-#if 0
-#ifdef HAVE_LONG_DOUBLE
-typedef long double gldouble;
-#else /* HAVE_LONG_DOUBLE */
-typedef double gldouble;
-#endif /* HAVE_LONG_DOUBLE */
-#endif /* 0 */
+#define G_MININT16	((gint16)  0x8000)
+#define G_MAXINT16	((gint16)  0x7fff)
+#define G_MAXUINT16	((guint16) 0xffff)
+
+#define G_MININT32	((gint32)  0x80000000)
+#define G_MAXINT32	((gint32)  0x7fffffff)
+#define G_MAXUINT32	((guint32) 0xffffffff)
+
+#define G_MININT64	G_GINT64_CONSTANT(0x8000000000000000)
+#define G_MAXINT64	G_GINT64_CONSTANT(0x7fffffffffffffff)
+#define G_MAXUINT64	G_GINT64_CONSTANT(0xffffffffffffffffU)
 
 typedef void* gpointer;
 typedef const void *gconstpointer;
@@ -150,7 +156,7 @@ typedef void            (*GFreeFunc)            (gpointer       data);
 	    __v; }))
 #    if !defined (__i486__) && !defined (__i586__) \
 	&& !defined (__pentium__) && !defined (__i686__) \
-	&& !defined (__pentiumpro__)
+	&& !defined (__pentiumpro__) && !defined (__pentium4__)
 #       define GUINT32_SWAP_LE_BE_IA32(val) \
 	  (__extension__					\
 	   ({ register guint32 __v, __x = ((guint32) (val));	\
@@ -330,7 +336,7 @@ typedef union  _GDoubleIEEE754	GDoubleIEEE754;
 typedef union  _GFloatIEEE754	GFloatIEEE754;
 #define G_IEEE754_FLOAT_BIAS	(127)
 #define G_IEEE754_DOUBLE_BIAS	(1023)
-/* multiply with base2 exponent to get base10 exponent (nomal numbers) */
+/* multiply with base2 exponent to get base10 exponent (normal numbers) */
 #define G_LOG_2_BASE_10		(0.30102999566398119521)
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 union _GFloatIEEE754

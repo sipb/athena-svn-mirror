@@ -41,12 +41,13 @@
 #ifdef HAVE_UNISTD_H
 #include	<unistd.h>
 #endif
-#ifdef G_OS_WIN32
-#include	<io.h>		/* For _read() */
-#endif
 
 #include	"glib.h"
 #include	"gprintfint.h"
+
+#ifdef G_OS_WIN32
+#include	<io.h>		/* For _read() */
+#endif
 
 /* --- defines --- */
 #define	to_lower(c)				( \
@@ -1194,7 +1195,14 @@ g_scanner_get_token_i (GScanner	*scanner,
     {
       *token_p = G_TOKEN_FLOAT;
       if (scanner->config->store_int64)
-	value_p->v_float = value_p->v_int64;
+        {
+#ifdef _MSC_VER
+          /* work around error C2520, see gvaluetransform.c */
+          value_p->v_float = (__int64)value_p->v_int64;
+#else
+          value_p->v_float = value_p->v_int64;
+#endif
+        }
       else
 	value_p->v_float = value_p->v_int;
     }
@@ -1267,7 +1275,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	  g_scanner_get_char (scanner, line_p, position_p);
 	  token = G_TOKEN_COMMENT_MULTI;
 	  in_comment_multi = TRUE;
-	  gstring = g_string_new ("");
+	  gstring = g_string_new (NULL);
 	  while ((ch = g_scanner_get_char (scanner, line_p, position_p)) != 0)
 	    {
 	      if (ch == '*' && g_scanner_peek_next_char (scanner) == '/')
@@ -1287,7 +1295,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	    goto default_case;
 	  token = G_TOKEN_STRING;
 	  in_string_sq = TRUE;
-	  gstring = g_string_new ("");
+	  gstring = g_string_new (NULL);
 	  while ((ch = g_scanner_get_char (scanner, line_p, position_p)) != 0)
 	    {
 	      if (ch == '\'')
@@ -1306,7 +1314,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	    goto default_case;
 	  token = G_TOKEN_STRING;
 	  in_string_dq = TRUE;
-	  gstring = g_string_new ("");
+	  gstring = g_string_new (NULL);
 	  while ((ch = g_scanner_get_char (scanner, line_p, position_p)) != 0)
 	    {
 	      if (ch == '"')
@@ -1612,7 +1620,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	    {
 	      token = G_TOKEN_COMMENT_SINGLE;
 	      in_comment_single = TRUE;
-	      gstring = g_string_new ("");
+	      gstring = g_string_new (NULL);
 	      ch = g_scanner_get_char (scanner, line_p, position_p);
 	      while (ch != 0)
 		{
@@ -1626,6 +1634,10 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 		  gstring = g_string_append_c (gstring, ch);
 		  ch = g_scanner_get_char (scanner, line_p, position_p);
 		}
+	      /* ignore a missing newline at EOF for single line comments */
+	      if (in_comment_single &&
+		  config->cpair_comment_single[1] == '\n')
+		in_comment_single = FALSE;
 	    }
 	  else if (config->scan_identifier && ch &&
 		   strchr (config->cset_identifier_first, ch))
@@ -1637,7 +1649,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 			  g_scanner_peek_next_char (scanner)))
 		{
 		  token = G_TOKEN_IDENTIFIER;
-		  gstring = g_string_new ("");
+		  gstring = g_string_new (NULL);
 		  gstring = g_string_append_c (gstring, ch);
 		  do
 		    {

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Script to compile a resource file for a DLL if there is a .rc file
 # for it. The resource source file is supposed to contain a version
@@ -29,7 +29,7 @@ if [ -f $rcfile ]; then
     basename=`basename $rcfile .rc`
     if [ -f $basename-build.stamp ]; then
 	read number <$basename-build.stamp
-	buildnumber=$[number+1]
+	buildnumber=`expr $number + 1`
 	echo Build number $buildnumber
 	echo $buildnumber >$basename-build.stamp
     else
@@ -38,7 +38,7 @@ if [ -f $rcfile ]; then
     fi
 
     m4 -DBUILDNUMBER=$buildnumber <$rcfile >$$.rc &&
-	windres $$.rc $resfile &&
+	${WINDRES-windres} $$.rc $resfile &&
 	rm $$.rc
 else
     # Return failure

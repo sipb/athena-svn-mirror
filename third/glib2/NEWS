@@ -1,12 +1,192 @@
-Overview of Changes from GLib 2.2.0 to GLib-2.2.1
+Overview of Changes from GLib 2.4.5 to GLib 2.4.6
 =================================================
+
+* Bug fixes [Matthias Clasen, Ray Strode]
+* New and updated translations (mn,nb)
+
+Overview of Changes from GLib 2.4.4 to GLib 2.4.5
+=================================================
+
+* Fix g_filename_from_uri() to work with non-UTF-8 
+  filenames  [Robert Ögren, Matthias Clasen]
+* Make GMarkup parser handle of whitespace inside tags 
+  according to XML 1.1  [Hiroyuki Ikezoe, Matthias]
+* Documentation improvements [Soeren Sandmann, Christophe Fergeau,
+  Danek Duvall]
+* Other bug fixes [Oliver Guntermann, Sven Neumann, 
+  James Henstridge, Murray Cumming, Matthias, Tommi Komulainen]
+* New and updated translations (bg,hi,sq)
+
+Overview of Changes from GLib 2.4.2 to GLib 2.4.4
+=================================================
+
+* Win32 bug fixes (John Ehresman)
+* Other bug fixes (Manish Singh, Matthias Clasen, Federico
+  Mena Quintero, Philippe Blain, Sven Neumann, Julio M. Merino
+  Vidal, Kaz Sasayama, Morten Welinder, Mariano Suarez-Alvarez)
+* Documentation updates (Crispin Flowerday, Ed Griffiths, 
+  Federico)
+* New and updated translations (az,ne,sq)
+
+Overview of Changes from GLib 2.4.1 to GLib 2.4.2
+=================================================
+
+* Win32 bug fixes 
+ - make printf accept ll format modifier [Tor Lillqvist]
+ - only believe HOME if it is an absolute path an exists [Tor]
+* Other bug fixes (Steve Lhomme, Tor, Hans Breuer, Manish Singh, 
+  Owen Taylor, Matthias Clasen, Nikolai Weibull, Benoît Carpentier, 
+  Morten Welinder)
+* New and updated translations (de,it,ja,ko,no,pt_BR,sq,wa,zh_CN)
+
+Overview of Changes from GLib 2.4.0 to GLib 2.4.1
+=================================================
+
+* Win32 bug fixes [Tor Lillqvist, Roger Leigh, John Ehresman]
+* Miscellaneous bug and portability fixes [Owen Taylor,
+  Matthias Clasen, Jonas Jonsson, Christian Krause,
+  Nickolay V. Shmyrev, Christophe Saout, Philippe Blain,
+  Piotr Klaban]
+* Documentation updates [Matthias]
+* New and updated translations (ca,cs,cy,el,en_CA,en_GB,es,eu,fi,
+  fr,gu,he,id,nl,pt,pl,ru,sr,sr@ije,sr@Latn,sv,uk)
+
+Overview of Changes from GLib 2.3.6 to GLib 2.4.0
+=================================================
+
+* Handle invalid-UTF-8 in g_log() properly [Matthias Clasen]
+* Win32 bug fixes [Tor Lillqvist, Bruce Hochstetler]
+* Miscellaneous bug and portability fixes [Olivier Biot, David L. Cooper II, 
+  Kjartan Maraas, Frédéric L. W. Meunier, Christof Petig, Manish Singh, 
+  Sebastian Wilhelmi]
+* Documentation updates [Owen]
+* Updated translations (hr,ro)
+
+Overview of Changes from GLib 2.3.5 to GLib 2.3.6
+=================================================
+
+* GAtomic bug fixes [Sebastian Wilhelmi, Mark McLoughlin]
+* GMain threading fixes and improvements [Sebastian]
 * Win32 [Tor Lillqvist]
-  - Improve handling of stderr/stdout
-  - Install .def files
-  - Fix quoting for GSpawn [Alex Shaduri]
-  - Miscellaneous bug fixes
-* configure fixes [Owne Taylor, Manish Singh, Rich Burridge, Tim Mooney]
-* New and updated translations (am,bn,et,fi,mn,nl,pl,pt_BR,ru,zh_TW,uk)
+ - restore some symbols extraneously exported from gobject to maintain ABI compatibility
+ - Misc build improvements and fixes [Tor, Cedric Gustin, Hans Breuer]
+* Documentation updates [Sebastian, Takeshi AIHANA, Matthias, Sven Herzberg]
+* New and updated translations (be,es,fi,ga,pa,sr@ije,zh_CN)
+
+Overview of Changes from GLib 2.3.3 to GLib 2.3.5
+=================================================
+
+* Make glib-mkenums parse initializers with macros. [Matthias Clasen, muppet]
+* Respect locale era in g_date_set_parse(). [Theppitak Karoonboonyanan] 
+* Add atomic operations and use it for the async queue and
+  gonce implementation. [Sebastian Wilhelmi]
+* Documentation improvements [Sebastian, Matthias, Sven Herzberg]
+* Add g_main_depth() for finding the recursion depth of the main
+  loop [Owen Taylor, Tim Janik, Stefan Westerfeld]
+* Add g_spawn_close_pid(), needed on win32 [J. Ali]
+* Win32 fixes. [Hans Breuer, J. Ali Harlow]
+* Misc bugfixes [Sebastian, Matthias, Balazs Scheidler, Owen]
+* Updated translations (cy,et,ga,sq)
+
+Overview of Changes from GLib 2.3.2 to GLib 2.3.3
+=================================================
+
+* Add a native AIX gmodule implementation. [Laurent Vivier]
+* Add g_node_copy_deep().  [James M. Cape, Matthias Clasen]
+* Extend GQueue API to match the GList API. [Soeren Sandmann]
+* Add g_hash_table_find().  [Tim Janik]
+* Add a G_MODULE_BIND_LOCAL flag. [David Schleef]
+* Inline g_string_append_c() when possible. [Owen Taylor, Tim]
+* Wrap waitpid() as a GSource. [Jonathan R. Blandford]
+* Add g_completion_complete_utf8(). [Theppitak Karoonboonyanan, 
+  Matthias]
+* Add g_strsplit_set(). [Soeren]
+* Documentation improvements. [Vincent Untz, Sebastian Wilhelmi, 
+  Soeren, Matthias]
+* Win32 build fixes. [Tor Lillqvist]
+* Misc bugfixes [Manish Singh, Noah Levitt, Simon Josefsson, 
+  Morten Welinder, Damien Carbery, Julio M. Merino Vidal, Sebastian, 
+  Matthias]
+* Updated translations (nn,cs,it,ko,sq,ms,az,hr,uk,sr,sr@Latn,sq,ta)
+
+Overview of Changes from GLib 2.3.1 to GLib 2.3.2
+=================================================
+
+* Add G_MAXSIZE. [Manish Singh]
+* Add g_rand_new_with_seed_array(), g_rand_set_seed_array(),
+  implementing the init-by-array functionality of the 
+  original mersenne twister. Add g_rand_copy(). Improve seeding. 
+  [George Lebl]
+* Add a lowercase_name option to glib-mkenums. [Murray Cumming]
+* Add g_ptr_array_foreach(). [Matthias Clasen]
+* Add g_timer_continue(). [Tim-Philipp Müller]
+* Fix a threadsafety issue in mem chunks. [Matthias, Balazs Scheidler]
+* Fix g_filename_{to,from}_utf8() on Win32 and improve 
+  g_file_test() there too [Hans Breuer] 
+* Add a boxed type for NULL-terminated string arrays.  [Matthias]
+* Add G_DEFINE_TYPE() plus variants to ease the constuction
+  of GObject boilerplate code.  [Tim Janik]
+* Support & in password GECOS field [Matthias, Soeren Boll Overgaard]
+* Documentation improvements [Matthias, Manish]
+* Win32 build fixes [Hans]
+* Misc bug fixes [Damien Carbery, Matthias, Manish, Olivier Poncet, 
+  Zack Rusin]
+* Updated translations (ar,de,fa,ga,mn,nn,no,sq)
+
+Overview of Changes from GLib 2.3.0 to GLib-2.3.1
+=================================================
+
+* Add glib/gi18n.h and glib/gi18n-lib.h for common
+  gettext support, including a Q_() macro for translation
+  with context [Matthias Clasen]
+* Add a more flexible G_FILENAME_ENCODING variable
+  as a replacement for G_BROKEN_FILENAMES [Matthias]
+* Fix the return value g_main_context_iterate() for
+  newly ready sources [Padraig O'Briain]
+* Handle Hangul composition for normalization [Noah Levitt]
+* Add G_{MIN,MAX,MAXU}INT{8,16,32}. [Mark Jones, Matthias]
+* Add G_GSIZE_FORMAT/G_SSIZE_FORMAT [Manish Singh]
+* Add G_STRFUNC as a portable wrapper for __func__ [Tim Janik]
+* Documentation improvements [Matthias]
+* GObject [Tim Janik]
+ - Support '-' in g_signal_connect()/disconnect() names
+   like 'swapped-signal'.
+ - Add g_type_class_peek_static() and use to optimize
+   g_object_new() for static types [Tim]
+ - Allow setting construct-only properties from within
+   init() implementations
+ - Enforce readability/writeability in g_object_set/get()
+* Fix bug with g_ascii_strtod and multi-byte separator.
+  [Behdad Esfahbod, Roozbeh Pournader]  
+* Misc bug fixes [Matthias, John Ehresman, Andrew Lanoix,
+  Tor Lillqvist, Mark McLoughlin, Tim-Philipp Müller, Manish, 
+  Morten Welinder]
+* Updated translations (ca,cs,da,es,fr,ja,nn,no,pt,ru)
+
+Overview of Changes from GLib 2.2.x to GLib-2.3.0
+=================================================
+
+* Replace Trio printf by gnulib vasnprintf [Matthias Clasen]
+* Update Unicode data to Unicode 4.0 [Noah Levitt]
+* Support XML-safe formatted output with 
+  g_markup_[v]printf_escaped [Owen Taylor]
+* Add g_file_read_link to read symbolic links [Matthias]
+* Add g_unichar_get_mirror_char to obtain the 
+  mirrored variant of a character [Noah]
+* Support for one-time initialization functions. 
+  [Sebastian Wilhelmi]
+* Miscellaneous API additions: g_vasprintf
+  g_string_chunk_insert_len, g_setenv, g_unsetenv [Matthias]
+* Docs improvements [Matthias]
+* Add support instance-private data on classed types
+  [Mark McLoughlin, Tim Janik, Owen]
+* Optimize signal emissions [Soeren Sandmann, Tim]
+* Support a "default vtable" per interface [Tim]
+* Add support for properties on interfaces [Owen, Tim]
+* Miscellaneous API additions: g_value_take_string(),
+  g_value_take_param(), g_value_take_object(), 
+  g_value_take_boxed(). [Matthias]
+* Win32 build fixes [Tor Lillqvist]
 
 Overview of Changes from GLib 2.1.5 to GLib-2.2.0
 =================================================

@@ -1,108 +1,386 @@
-Tue Jan 28 17:00:03 2003  Owen Taylor  <otaylor@redhat.com>
+2004-08-13  Matthias Clasen  <clasen@redhat.com>
+                                                                                
+        * === Released 2.4.6 ===
+                                                                                
+Fri Aug 13 01:25:06 2004  Matthias Clasen  <maclas@gmx.de>
 
-	* === Released 2.2.1 ===
+	* NEWS: Updates.
 
-	* configure.in: Version 2.2.1, interface age 1.
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* NEWS: Updated.
+	* configure.in: Added nb to ALL_LINGUAS
 
-Tue Jan 28 16:08:56 2003  Owen Taylor  <otaylor@redhat.com>
-
-	* m4macros/glib-gettext.m4: If msgfmt isn't found,
-	unset gt_cv_have_gettext. (#102552, Tim Mooney)
-
-Tue Jan 28 15:18:24 2003  Owen Taylor  <otaylor@redhat.com>
-
-	* autogen.sh (have_automake): Fix version in complaint
-	message about automake. (#104366, Rich Burridge)
-
-2003-01-26  Tor Lillqvist  <tml@iki.fi>
-
-	* glib/gspawn.c (g_spawn_async_with_pipes): Fix my typo in doc
-	comment. (#104467)
-
-2003-01-24  Daniel Yacob <locales@geez.org>
-
-	* configure.in: Added am to ALL_LINGUAS.
-
-2003-01-23  Pablo Saratxaga  <pablo@mandrakesoft.com>
-
-	* configure.in: Added Bengali (bn) to ALL_LINGUAS
-
-2003-01-22  Tor Lillqvist  <tml@iki.fi>
-
-	Fix for bug #104014, reported by Alex Shaduri:
+Thu Aug 5 20:53:00 2004 Ray Strode <rstrode@redhat.com>
 	
-	* glib/gspawn-win32.c (protect_argv): New function. Add
-	double-quotes around argv elements that need it, and escape
-	embedded double-quotes with backslash.
-	(do_spawn_with_pipes) Call protect_argv().
+	* glib/gutils.h (g_get_codeset): strdup result so caller
+	doesn't free internally managed memory.
 
-	* glib/gspawn-win32-helper.c (WinMain): Call protect_argv().
+Sat Jul 31 20:33:07 2004  Matthias Clasen  <maclas@gmx.de>
 
-	* glib/gspawn.c (g_spawn_async_with_pipes): Document argument
-	vector vs. command line details on Win32.
-	(g_spawn_command_line_sync): Improve documentation about
-	backslashes in the command line on Windows.
+	* tests/shell-test.c: Include a test involving consecutive
+	backslashes followed by a non-escaped doublequote.
+	
+	* glib/gshell.c (tokenize_command_line): Count consecutive
+	backslashes mod 2 to detect escaped doubleqotes.  (#127306)
 
-2003-01-21  Christian Rose  <menthos@menthos.com>
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
 
-	* configure.in: Added "mn" to ALL_LINGUAS.
+	* configure.in: Bump version.
 
-2003-01-12  Tor Lillqvist  <tml@iki.fi>
+	* === Released 2.4.5 ===
 
-	* glib/glib.def: Add some missing entries. Thanks to Kenichi SUTO.
+	* NEWS: Updates 
 
-2003-01-05  Tor Lillqvist  <tml@iki.fi>
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
 
-	* README.win32: Updates.
+	* glib/gconvert.c (g_unescape_uri_string): Don't validate
+	for UTF-8 here.  (#148420, Robert Ögren)
 
-	* configure.in: Don't use -lm in TRIO_LIBS on Windows, with no
-	libm. (Mingw has a dummy libm.a, but the .pc file should be
-	useable by MSVC users, too.)
+	* tests/uri-test.c (run_roundtrip_tests): Add tests for 
+	roundtrip compatibility. Going from filename to uri and 
+	back should always give you the same filename back. 
 
-2003-01-04  Tor Lillqvist  <tml@iki.fi>
+2004-07-28  Matthias Clasen  <mclasen@redhat.com>
 
-	* Makefile.am (BUILT_EXTRA_DIST): Don't distribute glib-zip.
+	* tests/markups/valid-{9,10,11}.gmarkup: 
+	* tests/markups/fail-{37,38,39}.gmarkup: Tests for handling
+	of whitespace inside tags.
 
-	* {glib,gmodule,gobject,gthread}/Makefile.am:
-	[Win32] Install also the .def files, to help users generate
-	import libraries for other compilers. Uninstall, too.
+	* glib/gmarkup.c (enum GMarkupParseState): Add 
+	STATE_AFTER_ATTRIBUTE_NAME and STATE_AFTER_CLOSE_TAG_NAME.
+	(g_markup_parse_context_parse): Accept whitespace between
+	attribute names, '=' and attribute values and between
+	close tag name and '>'. (#148646, Hiroyuki Ikezoe)
 
-	* glib-zip.in: Include .def files from above.
+Sat Jul 24 17:50:07 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
 
-	* glib/giowin32.c (g_io_win32_fd_get_flags_internal): Don't claim
-	broken pipes are unreadable. (Well, they are, but read() handles
-	it, and treats it like EOF.)
+	* glib/gstrfuncs.c (g_strsplit_set):
+	s/g_strtokenize/g_strsplit_set/ in docs.
 
-Thu Jan  2 16:19:15 2003  Manish Singh  <yosh@gimp.org>
+Fri Jul 23 10:40:43 2004  Matthias Clasen  <maclas@gmx.de>
 
-	* configure.in: use AC_COMPILE_IFELSE instead of AC_TRY_COMPILE for
-	tests for inline keywords. Fixes #101976.
+	* tests/type-test.c (main): Actually test G_MAXSIZE with a 
+	gsize variable.
 
-2003-01-02  Tor Lillqvist  <tml@iki.fi>
+Thu Jul  8 00:51:30 2004  Matthias Clasen  <maclas@gmx.de>
 
-	* glib/gwin32.h: Correct the comment telling what headers have
-	the declarations of some POSIXish functions.
+	* glib/gi18n.h: Remove the ENABLE_NLS check, since GLib can't
+	be built without anyway.  (#135899, Murray Cumming)
 
-	* glib/giowin32.c (g_io_win32_fd_get_flags_internal): Fix braino:
-	The checks for readability/writeability were backwards.
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
 
-	* glib/gmessages.c (ensure_stderr_valid): New function, parallel
-	to ensure_stdout_valid(). #defined as empty on Unix. Move the
-	alloc_console_called static flag inside these two functions.
-	(ensure_stdout_valid, ensure_stderr_valid): Check the C stdout and
-	stderr streams for validity, instead of what GetStdHandle() returns.
-	(mklevel_prefix): Do use either stderr or stdout on Windows,
-	too. Otherwise g_warning() messages (that are just warnings, by
-	definition) will get mixed with proper stdout output. Noticed in
-	GIMP's gimpconfig-dump.
-	(strdup_convert, mklevel_prefix, g_printerr): Call
-	ensure_stderr_valid() before trying to use stderr.
-	(g_logv): [Win32] Convert message to current codepage before
-	display with MessageBox().
+	Fix #132858, Sven Neumann, patch by James Henstridge:
+	
+	* glib-gettextize.in: modify so that mkinstalldirs will 
+	get installed into auxdir.
 
-2002-12-28  Tõivo Leedjärv  <toivo@linux.ee>
+	* Makefile.am (gettext_SCRIPTS): install mkinstalldirs.
 
-	* configure.in: Added et to ALL_LINGUAS.
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix #147651, reported by Oliver Guntermann:
+
+	* glib/gprintfint.h (_g_vasprintf): Don't wrap vasprintf(),
+	_g_gnulib_vasprintf() in a macro, since they behave 
+	differently wrt. to memory allocation.
+
+	* glib/gprintf.c (g_vasprintf): Instead, differentiate 
+	here between the three cases: system vasprintf(), 
+	_g_gnulib_vasprintf(), no vasprintf().  
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version.
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.4 ===
+
+	* configure.in: Sync version with GTK+ again.
+
+	* NEWS: Updates
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gdir.c (g_dir_open): Convert filename to UTF-8 
+	before using it in the error message.  (#146054, Federico
+	Mena Quintero)
+
+Mon Jul  5 18:42:30 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gnulib/Makefile.am (INCLUDES): Add top_srcdir to 
+	make srcdir != . work.  (#145166, Kaz Sasayama)
+
+Sun Jul  4 01:52:18 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* configure.in: Use a small test library instead of
+	libpthread.so for testing RTLD_GLOBAL brokenness.  (#139567,
+	Julio M. Merino Vidal)
+
+2004-07-01  John Ehresman  <jpe@wingide.com>
+
+	* glib/giowin32.c (g_io_channel_win32_init, g_io_win32_free)
+	Initialize reset_send & reset_recv fields and don't close
+	sockets unless they were created.  (#145153)
+
+Fri Jun 11 22:56:46 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gscanner.c (g_scanner_get_token_ll): Ignore a 
+	missing newline at EOF for single line comments.  
+	(#83674, Sven Neumann)
+
+Thu Jun 10 23:38:02 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/printf-test.c (TEST): Actually set any_failed on 
+	failure.  (#143552, Philippe Blain)
+
+2004-06-09  Federico Mena Quintero  <federico@ximian.com>
+
+	Merge from HEAD:
+
+	* tests/uri-test.c (to_uri_tests): Fix expected results (ha ha)
+	for URIs that *should* have been invalid, or viceversa.
+	(from_uri_tests): Likewise.
+
+2004-06-08  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in:Added "ne" (Nepali) in ALL_LINGUAS
+
+2004-06-07  Federico Mena Quintero  <federico@ximian.com>
+
+	* README.in: Added a note about the changes below.
+
+	Merge from HEAD:
+
+	Fixes #140532.
+
+	* glib/gconvert.c (is_asciialphanum): Renamed from
+	is_escalphanum(); ensures that this is an ASCII character.
+	(is_asciiescalpha): Renamed from is_escalpha().
+	(hostname_validate): Use the two functions above.
+	(g_filename_to_uri): Don't convert the filename to UTF-8.
+	(g_filename_from_uri): Don't convert the filename from UTF-8.
+
+Mon Jun  7 22:25:24 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/run-markup-tests.sh: Default to silence, but support
+	a -v argument to get the old output back. 
+
+2004-06-06  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gutils.c (g_get_any_init): Check home for being
+	NULL. (#143812, Ivan Wong)
+
+2004-06-04  Manish Singh  <yosh@gimp.org>
+
+	* glib/galloca.h: cpp #directives should always have the "#" in the
+	first column of the the line. Do that for "#pragma alloca". Fixes
+	bug #143744.
+ 
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version to 2.4.3
+
+	* === Released 2.4.2 ===
+
+	* NEWS: Updates
+
+Tue Jun  1 21:56:31 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gmarkup.c (advance_char): Fix an off-by-one error 
+	in g_markup_parse_context_parse().  (#142794, Morten Welinder)
+
+Sun May 16 23:20:33 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gcompletion.c (g_completion_add_items):
+	(g_completion_remove_items): Remove unnecessary 
+	checks.  (#142559, Morten Welinder)
+
+2004-05-15  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gutils.c (g_get_any_init): [Win32] Only believe HOME if it
+	is an absolute path and exists. (#138618)
+
+2004-05-14  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gnulib/vasnprintf.c (vasnprintf): Handle empty digit string
+	for precision correctly. (#142400)
+
+	For backward compatibility with the Trio implementation, make "ll"
+	format modifer work on Win32, too. Change into "I64" before
+	passing to the system printf. (#142433)
+
+	* tests/printf-test.c (main): Add tests for the above.
+
+2004-05-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gmain.c (block_source, unblock_source): Make these 
+	static.  (#142230, Morten Welinder)
+
+2004-05-10  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/giowin32.c (g_win32_print_gioflags): Remove two duplicated
+	lines. Thanks to Benoît Carpentier.
+
+Sun May  9 02:04:14 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/guniprop.c (g_utf8_casefold): Avoid an unnecessary
+	memleak.  (#141998, Nikolai Weibull)
+
+Sat May  8 23:02:26 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gutils.h: Remove vestigial g_get_codeset().
+	* glib/gutils.c (g_get_codeset): Call g_get_charset().
+	(#137703, Owen Taylor)
+
+2004-05-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version number to 2.4.2.
+
+2004-05-03  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Walloon (wa) to ALL_LINGUAS
+
+Sun May  2 03:51:59 2004  Manish Singh  <yosh@gimp.org>
+
+	* glib/gtypes.h: check for __pentium4__ when deciding whether to
+	use bswap for GUINT32_SWAP_LE_BE_IA32(). Fixes bug #141620.
+
+2004-05-01  Hans Breuer  <hans@breuer.org>
+
+	* glib/gnulib/Makefile.am : added makefile.msc to EXTRA_DIST
+	fixes #141563, Steve Lhomme
+
+2004-04-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.1 ===
+
+	* configure.in: Version 2.4.1, interface age 1. 
+
+	* NEWS: Updates
+	
+2004-04-25  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gwin32.c (g_win32_get_package_installation_subdirectory):
+	Plug memory leak. (#140770, John Ehresman)
+
+2004-04-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/libcharset/localcharset.c (_g_locale_get_charset_aliases): 
+	Reinstate LIBCHARSET_ALIAS_DIR support which got lost at some
+	point.  (#139134, Piotr Klaban)
+
+	* glib/gconvert.c (open_converter): Don't call g_strerror() here, 
+	since it can lead to infinite recursion.  (#139133, Piotr Klaban)
+
+2004-04-22  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/testglib.c (main): Trivial warning fix.  (#140345)
+
+	* tests/queue-test.c (main): Add some tests for off-by-one errors.
+
+	* glib/gqueue.c (g_queue_pop_nth_link): Fix an off-by-one 
+	error.  (#139703, Philippe Blain)
+
+	* tests/testglib.c (main): Add testcases for g_message() involving
+	non-printable and unsafe characters.
+
+	* glib/gmessages.c (escape_string): Don't assume that
+	string->str remains unchanged over g_string_insert() 
+	calls.  (#139030, Christophe Saout)
+
+	* glib/gstrfuncs.c (g_ascii_strtod): Fix problems when a 
+	locale-specific decimal separator directly follows a 
+	number.  (#138424, Nickolay V. Shmyrev)
+
+	* tests/strtod-test.c (main): Add some more testcases.
+
+	* glib/gmain.c (g_main_context_query): Only set time_is_current to 
+	FALSE if context->timeout is not zero.  (#137795, Christian Krause)
+
+2004-04-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/printf-test.c (main): Comment out a nonessential testcase
+	which fails on HP-UX.  (#136283, Jonas Jonsson)
+
+2004-04-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/patterntest.c (main): Add tests for the empty pattern.
+
+	* glib/gpattern.c (g_pattern_spec_new): Don't read and write out 
+	of bounds when the pattern is empty.  (#140032, Stanislav Brabec,
+	Stefan Fent)
+
+2004-04-10  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gwin32.c (g_win32_getlocale): Add new language and
+	sublanguage codes, from GNU gettext. (#137958)
+	
+	* glib/giowin32.c
+	* glib/gmain.c
+	* glib/gstrfuncs.c
+	* glib/gthread.c: Decorating variable definitions with
+	__declspec(dllexport) causes problems on Cygwin build, and isn't
+	really needed for a native Win32 build with mingw or MSVC, so
+	remove. (#138402, Roger Leigh)
+
+	* glib/libcharset/localcharset.c: Use Win32-specific code also on
+	Cygwin.
+	* tests/uri-test.c: Don't assume that local filenames are in UTF-8
+	on Cygwin, either. (#138412, Roger Leigh)
+
+2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-03  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Remove AC_CYGWIN, obsolete. Don't let pthreads be
+	found on Cygwin, they don't work. (#138401, Roger Leigh)
+
+2004-03-31  Tor Lillqvist  <tml@iki.fi>
+
+	* tests/spawn-test-win32-gui.c: Minor Cygwin fix. (#138405, Roger
+	Leigh)
+
+	* tests/unicode-encoding.c (process): Use UTF-16LE explicitly also
+	on Cygwin. (#138423, Roger Leigh)
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-21  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gutils.c (g_path_get_dirname): Fix Win32 behaviour in some
+	cases where a drive letter is present. For 'a:' or 'a:foo', return
+	'a:.'. This is mostly just for consistency with the behaviour
+	without a drive letter. But very important is to for 'a:\foo' or
+	'a:\', return 'a:\', and not 'a:'. (Ditto for forward slashes
+	instead of backslashes.) (#137316)
+
+	* tests/dirname-test.c (main): More complete testing on Win32. If
+	a test fails, include expected and actual result in error message.
+
+Fri Mar 19 15:21:09 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/gmain.c: Fix the accidental revert of the
+	fixes from #112222 that happened when the GChildWatch
+	code was added. (Caught by Christian Persch)
+
+Fri Mar 19 11:07:06 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* tests/atomic-test.c (main): Make computation
+	of "biggest_pointer" vaguely more portable.
+	(#137498, Jonas Jonsson)
+
+2004-03-16  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Define HAVE_INT64_AND_I64 also in the mingw (gcc
+	on Win32) case, where the 64-bit type is called long long, but the
+	system printf/scanf format modifier for 64-bit integers is still I64.
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
 

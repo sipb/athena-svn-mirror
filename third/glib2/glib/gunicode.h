@@ -100,7 +100,9 @@ typedef enum
   G_UNICODE_BREAK_POSTFIX,
   G_UNICODE_BREAK_COMPLEX_CONTEXT,
   G_UNICODE_BREAK_AMBIGUOUS,
-  G_UNICODE_BREAK_UNKNOWN
+  G_UNICODE_BREAK_UNKNOWN,
+  G_UNICODE_BREAK_NEXT_LINE,
+  G_UNICODE_BREAK_WORD_JOINER
 } GUnicodeBreakType;
 
 /* Returns TRUE if current locale uses UTF-8 charset.  If CHARSET is
@@ -276,6 +278,9 @@ gint   g_utf8_collate     (const gchar *str1,
 			   const gchar *str2);
 gchar *g_utf8_collate_key (const gchar *str,
 			   gssize       len);
+
+gboolean g_unichar_get_mirror_char (gunichar ch,
+                                    gunichar *mirrored_ch);
 
 G_END_DECLS
 

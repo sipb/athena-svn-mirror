@@ -75,7 +75,8 @@ struct  _GObjectClass
   /*< private >*/
   GSList      *construct_properties;
 
-  /* public overridable methods */
+  /*< public >*/
+  /* overridable methods */
   GObject*   (*constructor)     (GType                  type,
                                  guint                  n_construct_properties,
                                  GObjectConstructParam *construct_properties);
@@ -98,6 +99,7 @@ struct  _GObjectClass
   /* signals */
   void	     (*notify)			(GObject	*object,
 					 GParamSpec	*pspec);
+  /*< private >*/
   /* padding */
   gpointer	pdummy[8];
 };
@@ -116,6 +118,17 @@ GParamSpec* g_object_class_find_property      (GObjectClass   *oclass,
 					       const gchar    *property_name);
 GParamSpec**g_object_class_list_properties    (GObjectClass   *oclass,
 					       guint	      *n_properties);
+void        g_object_class_override_property  (GObjectClass   *oclass,
+					       guint           property_id,
+					       const gchar    *name);
+
+void        g_object_interface_install_property (gpointer     g_iface,
+						 GParamSpec  *pspec);
+GParamSpec* g_object_interface_find_property    (gpointer     g_iface,
+						 const gchar *property_name);
+GParamSpec**g_object_interface_list_properties  (gpointer     g_iface,
+						 guint       *n_properties_p);
+
 gpointer    g_object_new                      (GType           object_type,
 					       const gchar    *first_property_name,
 					       ...);
@@ -210,10 +223,12 @@ gulong	    g_signal_connect_object           (gpointer	       instance,
 void        g_object_run_dispose	      (GObject	      *object);
 
 
-/* --- marshaller specific --- */
+void        g_value_take_object               (GValue         *value,
+					       gpointer        v_object);
+#ifndef G_DISABLE_DEPRECATED
 void        g_value_set_object_take_ownership (GValue         *value,
 					       gpointer        v_object);
-
+#endif
 
 /* --- implementation macros --- */
 #define G_OBJECT_WARN_INVALID_PSPEC(object, pname, property_id, pspec) \

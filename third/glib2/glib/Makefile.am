@@ -2,19 +2,18 @@
 
 if HAVE_GOOD_PRINTF
 else
-TRIO_SUBDIR = trio
-trio_libtrio_la = trio/libtrio.la
+PRINTF_SUBDIR = gnulib
+printf_la = gnulib/libgnulib.la
 endif 
 
-SUBDIRS = libcharset $(TRIO_SUBDIR)
+SUBDIRS = libcharset $(PRINTF_SUBDIR)
 
-DIST_SUBDIRS = libcharset trio
+DIST_SUBDIRS = libcharset gnulib
 
 INCLUDES = -I$(top_srcdir) -DG_LOG_DOMAIN=\"GLib\" \
-	@GLIB_DEBUG_FLAGS@ -DG_DISABLE_DEPRECATED -DGLIB_COMPILATION 
+	$(GLIB_DEBUG_FLAGS) -DG_DISABLE_DEPRECATED -DGLIB_COMPILATION 
 
 EXTRA_DIST = 			\
-	makefile.mingw.in	\
 	makefile.msc.in		\
 	glib.rc.in		\
 	gen-unicode-tables.pl	\
@@ -23,7 +22,6 @@ EXTRA_DIST = 			\
 # These may be in the builddir too
 BUILT_EXTRA_DIST = 		\
 	makefile.msc		\
-	makefile.mingw		\
 	glib.rc
 
 lib_LTLIBRARIES = libglib-2.0.la
@@ -44,8 +42,8 @@ endif
 libglib_2_0_la_SOURCES = 	\
 	garray.c		\
 	gasyncqueue.c		\
+	gatomic.c		\
 	gbacktrace.c		\
-	gbsearcharray.c		\
 	gbsearcharray.h		\
 	gcache.c		\
 	gcompletion.c		\
@@ -77,6 +75,7 @@ libglib_2_0_la_SOURCES = 	\
 	gstrfuncs.c		\
 	gstring.c		\
 	gthread.c       	\
+	gthreadinit.h		\
 	gthreadpool.c   	\
 	gtimer.c		\
 	gtree.c			\
@@ -89,6 +88,7 @@ libglib_2_0_la_SOURCES = 	\
 	gunicomp.h		\
 	gunidecomp.h		\
 	gunidecomp.c		\
+	gunicodeprivate.h	\
 	gutils.c		\
 	gdebug.h		\
 	gprintf.c		\
@@ -111,6 +111,7 @@ glibsubinclude_HEADERS =   \
 	galloca.h	\
 	garray.h	\
 	gasyncqueue.h	\
+	gatomic.h	\
 	gbacktrace.h	\
 	gcache.h	\
 	gcompletion.h	\
@@ -122,6 +123,8 @@ glibsubinclude_HEADERS =   \
 	gfileutils.h	\
 	ghash.h		\
 	ghook.h		\
+	gi18n.h		\
+	gi18n-lib.h	\
 	giochannel.h	\
 	glist.h		\
 	gmacros.h	\
@@ -168,11 +171,11 @@ endif
 
 if OS_WIN32
 # This requires a very new libtool
-export_symbols = -export-symbols glib.def
+export_symbols = -export-symbols $(srcdir)/glib.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libglib-2.0.dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) glib.def $(DESTDIR)$(libdir)/glib-2.0.def
+	$(INSTALL) $(srcdir)/glib.def $(DESTDIR)$(libdir)/glib-2.0.def
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libglib-2.0.dll.a $(DESTDIR)$(libdir)/glib-2.0.def
@@ -181,8 +184,8 @@ install-libtool-import-lib:
 uninstall-libtool-import-lib:
 endif
 
-libglib_2_0_la_LIBADD = libcharset/libcharset.la $(trio_libtrio_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @G_LIB_WIN32_RESOURCE@ @ICONV_LIBS@ @G_LIBS_EXTRA@ 
-libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(trio_libtrio_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @G_LIB_WIN32_RESOURCE@ @GLIB_DEF@
+libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @G_LIB_WIN32_RESOURCE@ @ICONV_LIBS@ @G_LIBS_EXTRA@ 
+libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @G_LIB_WIN32_RESOURCE@ @GLIB_DEF@
 
 libglib_2_0_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
@@ -193,21 +196,12 @@ bin_PROGRAMS = gspawn-win32-helper
 gspawn_win32_helper_LDADD = libglib-2.0.la
 gspawn_win32_helper_LDFLAGS = -mwindows
 
-@G_LIB_WIN32_RESOURCE@ : glib.rc
-	$(top_srcdir)/build/win32/lt-compile-resource glib.rc @G_LIB_WIN32_RESOURCE@
+$(G_LIB_WIN32_RESOURCE): glib.rc
+	$(top_srcdir)/build/win32/lt-compile-resource glib.rc $@
 endif
 
 glib-2.0.lib: libglib-2.0.la glib.def
-	lib -name:libglib-2.0-@LT_CURRENT_MINUS_AGE@.dll -def:glib.def -out:$@
-
-glib.rc: $(top_builddir)/config.status $(top_srcdir)/glib/glib.rc.in
-	cd $(top_builddir) && CONFIG_FILES=glib/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-makefile.mingw: $(top_builddir)/config.status $(top_srcdir)/glib/makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=glib/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-makefile.msc: $(top_builddir)/config.status $(top_srcdir)/glib/makefile.msc.in
-	cd $(top_builddir) && CONFIG_FILES=glib/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	lib -name:libglib-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:glib.def -out:$@
 
 dist-hook: $(BUILT_EXTRA_DIST)
 	files='$(BUILT_EXTRA_DIST)'; \

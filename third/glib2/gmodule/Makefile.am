@@ -4,7 +4,6 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/glib -I$(top_srcdir)/gmodule \
 	-DG_LOG_DOMAIN=\"GModule\" @GLIB_DEBUG_FLAGS@ -DG_DISABLE_DEPRECATED
 
 EXTRA_DIST =	\
-		makefile.mingw.in \
 		makefile.msc.in \
 		gmoduleconf.h.in \
 		gmodule.def	\
@@ -14,11 +13,11 @@ EXTRA_DIST =	\
 		gmodule-os2.c	\
 		gmodule-win32.c	\
 		gmodule-beos.c	\
+		gmodule-ar.c	\
 		gmoduleconf.h.win32 \
 		gmodule.rc.in
 
 BUILT_EXTRA_DIST = \
-		makefile.mingw	\
 		makefile.msc	\
 		gmodule.rc
 
@@ -53,11 +52,11 @@ no_undefined = -no-undefined
 endif
 
 if OS_WIN32
-export_symbols = -export-symbols gmodule.def
+export_symbols = -export-symbols $(srcdir)/gmodule.def
 
 install-libtool-import-lib:
 	$(INSTALL) .libs/libgmodule-2.0.dll.a $(DESTDIR)$(libdir)
-	$(INSTALL) gmodule.def $(DESTDIR)$(libdir)/gmodule-2.0.def
+	$(INSTALL) $(srcdir)/gmodule.def $(DESTDIR)$(libdir)/gmodule-2.0.def
 
 uninstall-libtool-import-lib:
 	-rm $(DESTDIR)$(libdir)/libgmodule-2.0.dll.a $(DESTDIR)$(libdir)/gmodule-2.0.def
@@ -68,30 +67,21 @@ endif
 
 libgmodule_2_0_la_SOURCES = gmodule.c
 libgmodule_2_0_la_LDFLAGS = \
-	@G_MODULE_LDFLAGS@ \
+	$(G_MODULE_LDFLAGS) \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-export-dynamic $(no_undefined) $(export_symbols)
 
-libgmodule_2_0_la_LIBADD = @G_MODULE_WIN32_RESOURCE@ @G_MODULE_LIBS_EXTRA@ @G_MODULE_LIBS@ $(libglib)
+libgmodule_2_0_la_LIBADD = $(G_MODULE_WIN32_RESOURCE) $(G_MODULE_LIBS_EXTRA) $(G_MODULE_LIBS) $(libglib)
 
-libgmodule_2_0_la_DEPENDENCIES = @G_MODULE_WIN32_RESOURCE@ @GMODULE_DEF@
+libgmodule_2_0_la_DEPENDENCIES = $(G_MODULE_WIN32_RESOURCE) $(GMODULE_DEF)
 
 if OS_WIN32
-@G_MODULE_WIN32_RESOURCE@ : gmodule.rc
-	$(top_srcdir)/build/win32/lt-compile-resource gmodule.rc @G_MODULE_WIN32_RESOURCE@
+$(G_MODULE_WIN32_RESOURCE): gmodule.rc
+	$(top_srcdir)/build/win32/lt-compile-resource gmodule.rc $@
 endif
 
 gmodule-2.0.lib: libgmodule-2.0.la gmodule.def
-	lib -name:libgmodule-2.0-@LT_CURRENT_MINUS_AGE@.dll -def:gmodule.def -out:$@
-
-gmodule.rc: $(top_builddir)/config.status $(top_srcdir)/gmodule/gmodule.rc.in
-	cd $(top_builddir) && CONFIG_FILES=gmodule/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-makefile.mingw: $(top_builddir)/config.status $(top_srcdir)/gmodule/makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=gmodule/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-makefile.msc: $(top_builddir)/config.status $(top_srcdir)/gmodule/makefile.msc.in
-	cd $(top_builddir) && CONFIG_FILES=gmodule/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	lib -name:libgmodule-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:gmodule.def -out:$@
 
 .PHONY: files release
 

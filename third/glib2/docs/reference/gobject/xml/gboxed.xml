@@ -13,14 +13,14 @@
 
 <synopsis>
 
-#include &lt;gobject.h&gt;
+#include &lt;glib-object.h&gt;
 
 
 <link linkend="gpointer">gpointer</link>    (<link linkend="GBoxedCopyFunc">*GBoxedCopyFunc</link>)               (<link linkend="gpointer">gpointer</link> boxed);
-void        (<link linkend="GBoxedFreeFunc">*GBoxedFreeFunc</link>)               (<link linkend="gpointer">gpointer</link> boxed);
+<link linkend="void">void</link>        (<link linkend="GBoxedFreeFunc">*GBoxedFreeFunc</link>)               (<link linkend="gpointer">gpointer</link> boxed);
 <link linkend="gpointer">gpointer</link>    <link linkend="g-boxed-copy">g_boxed_copy</link>                    (<link linkend="GType">GType</link> boxed_type,
                                              <link linkend="gconstpointer">gconstpointer</link> src_boxed);
-void        <link linkend="g-boxed-free">g_boxed_free</link>                    (<link linkend="GType">GType</link> boxed_type,
+<link linkend="void">void</link>        <link linkend="g-boxed-free">g_boxed_free</link>                    (<link linkend="GType">GType</link> boxed_type,
                                              <link linkend="gpointer">gpointer</link> boxed);
 <link linkend="GType">GType</link>       <link linkend="g-boxed-type-register-static">g_boxed_type_register_static</link>    (const <link linkend="gchar">gchar</link> *name,
                                              <link linkend="GBoxedCopyFunc">GBoxedCopyFunc</link> boxed_copy,
@@ -28,10 +28,14 @@ void        <link linkend="g-boxed-free">g_boxed_free</link>                    
 <link linkend="GType">GType</link>       <link linkend="g-pointer-type-register-static">g_pointer_type_register_static</link>  (const <link linkend="gchar">gchar</link> *name);
 
 #define     <link linkend="G-TYPE-GSTRING-CAPS">G_TYPE_GSTRING</link>
+#define     <link linkend="G-TYPE-STRV-CAPS">G_TYPE_STRV</link>
+typedef     <link linkend="GStrv">GStrv</link>;
 
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -50,7 +54,7 @@ void        <link linkend="g-boxed-free">g_boxed_free</link>                    
 <title>Details</title>
 <refsect2>
 <title><anchor id="GBoxedCopyFunc"/>GBoxedCopyFunc ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    (*GBoxedCopyFunc)               (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
+<indexterm><primary>GBoxedCopyFunc</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    (*GBoxedCopyFunc)               (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 This function is provided by the user and should produce a copy of the passed
 in boxed structure.
@@ -65,7 +69,7 @@ in boxed structure.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GBoxedFreeFunc"/>GBoxedFreeFunc ()</title>
-<programlisting>void        (*GBoxedFreeFunc)               (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
+<indexterm><primary>GBoxedFreeFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GBoxedFreeFunc)               (<link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 This function is provided by the user and should free the boxed
 structure passed.
@@ -78,7 +82,7 @@ structure passed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-boxed-copy"/>g_boxed_copy ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    g_boxed_copy                    (<link linkend="GType">GType</link> boxed_type,
+<indexterm><primary>g_boxed_copy</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    g_boxed_copy                    (<link linkend="GType">GType</link> boxed_type,
                                              <link linkend="gconstpointer">gconstpointer</link> src_boxed);</programlisting>
 <para>
 Provide a copy of a boxed structure <parameter>src_boxed</parameter> which is of type <parameter>boxed_type</parameter>.
@@ -96,7 +100,7 @@ Provide a copy of a boxed structure <parameter>src_boxed</parameter> which is of
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-boxed-free"/>g_boxed_free ()</title>
-<programlisting>void        g_boxed_free                    (<link linkend="GType">GType</link> boxed_type,
+<indexterm><primary>g_boxed_free</primary></indexterm><programlisting><link linkend="void">void</link>        g_boxed_free                    (<link linkend="GType">GType</link> boxed_type,
                                              <link linkend="gpointer">gpointer</link> boxed);</programlisting>
 <para>
 Free the boxed structure <parameter>boxed</parameter> which is of type <parameter>boxed_type</parameter>.
@@ -112,7 +116,7 @@ Free the boxed structure <parameter>boxed</parameter> which is of type <paramete
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-boxed-type-register-static"/>g_boxed_type_register_static ()</title>
-<programlisting><link linkend="GType">GType</link>       g_boxed_type_register_static    (const <link linkend="gchar">gchar</link> *name,
+<indexterm><primary>g_boxed_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>       g_boxed_type_register_static    (const <link linkend="gchar">gchar</link> *name,
                                              <link linkend="GBoxedCopyFunc">GBoxedCopyFunc</link> boxed_copy,
                                              <link linkend="GBoxedFreeFunc">GBoxedFreeFunc</link> boxed_free);</programlisting>
 <para>
@@ -130,28 +134,72 @@ provided to copy and free opaque boxed structures of this type.
 <listitem><simpara>Boxed structure free function.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>New <literal>G_TYPE_BOXED</literal> derived type id for <parameter>name</parameter>.
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="g-pointer-type-register-static"/>g_pointer_type_register_static ()</title>
-<programlisting><link linkend="GType">GType</link>       g_pointer_type_register_static  (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<indexterm><primary>g_pointer_type_register_static</primary></indexterm><programlisting><link linkend="GType">GType</link>       g_pointer_type_register_static  (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
-
+Creates a new <literal>G_TYPE_POINTER</literal> derived type id for a new
+pointer type with name <parameter>name</parameter>. 
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>the name of the new pointer type.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <literal>G_TYPE_POINTER</literal> derived type id for <parameter>name</parameter>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="G-TYPE-GSTRING-CAPS"/>G_TYPE_GSTRING</title>
-<programlisting>#define	G_TYPE_GSTRING		(g_gstring_get_type ())
+<indexterm><primary>G_TYPE_GSTRING</primary></indexterm><programlisting>#define	G_TYPE_GSTRING		(g_gstring_get_type ())
 </programlisting>
 <para>
-The <link linkend="GType">GType</link> for <link linkend="GString">GString</link>.
+The <link linkend="GType"><type>GType</type></link> for <link linkend="GString"><type>GString</type></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="G-TYPE-STRV-CAPS"/>G_TYPE_STRV</title>
+<indexterm role="2.4"><primary>G_TYPE_STRV</primary></indexterm><programlisting>#define	G_TYPE_STRV	        (g_strv_get_type ())
+</programlisting>
+<para>
+The <link linkend="GType"><type>GType</type></link> for a boxed type holding a <literal>NULL</literal>-terminated array of strings.
+</para>
+<para>
+The code fragments in the following example show the use of a property of
+type <link linkend="G-TYPE-STRV-CAPS"><type>G_TYPE_STRV</type></link> with <link linkend="g-object-class-install-property"><function>g_object_class_install_property()</function></link>, <link linkend="g-object-set"><function>g_object_set()</function></link>
+and <link linkend="g-object-get"><function>g_object_get()</function></link>.
+</para>
+<informalexample><programlisting>
+g_object_class_install_property (object_class,
+                                 PROP_AUTHORS,
+                                 g_param_spec_boxed ("authors",
+                                                     _("Authors"),
+                                                     _("List of authors"),
+                                                     G_TYPE_STRV,
+                                                     G_PARAM_READWRITE));
+
+
+gchar *authors[] = { "Owen", "Tim", NULL };
+g_object_set (obj, "authors", authors, NULL);
+
+
+gchar *writers[];
+g_object_get (obj, "authors", &amp;writers, NULL);
+/* do something with writers */
+g_strfreev (writers);
+</programlisting></informalexample><para>Since 2.4
+
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GStrv"/>GStrv</title>
+<indexterm><primary>GStrv</primary></indexterm><programlisting>typedef gchar** GStrv;
+</programlisting>
+<para>
+A C representable type name for <link linkend="G-TYPE-STRV-CAPS"><type>G_TYPE_STRV</type></link>.
 </para></refsect2>
 
 </refsect1>
@@ -161,7 +209,7 @@ The <link linkend="GType">GType</link> for <link linkend="GString">GString</link
 <refsect1>
 <title>See Also</title>
 <para>
-<link linkend="GParamSpecBoxed">GParamSpecBoxed</link>, <link linkend="g-param-spec-boxed">g_param_spec_boxed</link>()
+<link linkend="GParamSpecBoxed"><type>GParamSpecBoxed</type></link>, <link linkend="g-param-spec-boxed"><function>g_param_spec_boxed()</function></link>
 </para>
 </refsect1>
 

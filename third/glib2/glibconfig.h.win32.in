@@ -28,18 +28,16 @@ G_BEGIN_DECLS
 #define G_MAXLONG	LONG_MAX
 #define G_MAXULONG	ULONG_MAX
 
-#define G_MININT64	((gint64)  0x8000000000000000)
-#define G_MAXINT64	((gint64)  0x7fffffffffffffff)
-#define G_MAXUINT64	((guint64) 0xffffffffffffffff)
-
 typedef signed char gint8;
 typedef unsigned char guint8;
 typedef signed short gint16;
 typedef unsigned short guint16;
+#define G_GINT16_MODIFIER "h"
 #define G_GINT16_FORMAT "hi"
 #define G_GUINT16_FORMAT "hu"
 typedef signed int gint32;
 typedef unsigned int guint32;
+#define G_GINT32_MODIFIER ""
 #define G_GINT32_FORMAT "i"
 #define G_GUINT32_FORMAT "u"
 #define G_HAVE_GINT64 1          /* deprecated, always true */
@@ -57,6 +55,7 @@ typedef unsigned __int64 guint64;
 #else /* _MSC_VER */
 #define G_GINT64_CONSTANT(val)	(val##i64)
 #endif /* _MSC_VER */
+#define G_GINT64_MODIFIER "I64"
 #define G_GINT64_FORMAT "I64i"
 #define G_GUINT64_FORMAT "I64u"
 
@@ -66,12 +65,18 @@ typedef unsigned __int64 guint64;
 
 typedef signed int gssize;
 typedef unsigned int gsize;
+#define G_GSIZE_MODIFIER ""
+#define G_GSSIZE_FORMAT "i"
+#define G_GSIZE_FORMAT "u"
+
+#define G_MAXSIZE	G_MAXUINT
 
 #define GPOINTER_TO_INT(p)	((gint)   (p))
 #define GPOINTER_TO_UINT(p)	((guint)  (p))
 
 #define GINT_TO_POINTER(i)	((gpointer)  (i))
 #define GUINT_TO_POINTER(u)	((gpointer)  (u))
+
 #ifdef NeXT /* @#%@! NeXTStep */
 # define g_ATEXIT(proc)	(!atexit (proc))
 #else
@@ -130,7 +135,8 @@ typedef unsigned int gsize;
 #define G_THREADS_IMPL_WIN32
 typedef struct _GMutex* GStaticMutex;
 #define G_STATIC_MUTEX_INIT NULL
-#define g_static_mutex_get_mutex(mutex) (g_static_mutex_get_mutex_impl (mutex))
+#define g_static_mutex_get_mutex(mutex) \
+  (g_static_mutex_get_mutex_impl_shortcut (mutex))
 /* This represents a system thread as used by the implementation. An
  * alien implementaion, as loaded by g_thread_init can only count on
  * "sizeof (gpointer)" bytes to store their info. We however need more
@@ -174,6 +180,8 @@ union _GSystemThread
 #define GLIB_SYSDEF_POLLNVAL =32
 
 #define G_MODULE_SUFFIX "dll"
+
+typedef void * GPid;
 
 G_END_DECLS
 

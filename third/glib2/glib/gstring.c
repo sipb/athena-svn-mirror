@@ -40,6 +40,7 @@
 #include <ctype.h>
 
 #include "glib.h"
+#include "gprintf.h"
 
 
 struct _GStringChunk
@@ -146,29 +147,9 @@ gchar*
 g_string_chunk_insert (GStringChunk *chunk,
 		       const gchar  *string)
 {
-  gsize len = strlen (string);
-  char* pos;
-
   g_return_val_if_fail (chunk != NULL, NULL);
 
-  if ((chunk->storage_next + len + 1) > chunk->this_size)
-    {
-      gsize new_size = nearest_power (chunk->default_size, len + 1);
-
-      chunk->storage_list = g_slist_prepend (chunk->storage_list,
-					     g_new (char, new_size));
-
-      chunk->this_size = new_size;
-      chunk->storage_next = 0;
-    }
-
-  pos = ((char *) chunk->storage_list->data) + chunk->storage_next;
-
-  strcpy (pos, string);
-
-  chunk->storage_next += len + 1;
-
-  return pos;
+  return g_string_chunk_insert_len (chunk, string, -1);
 }
 
 gchar*
@@ -191,6 +172,58 @@ g_string_chunk_insert_const (GStringChunk *chunk,
     }
 
   return lookup;
+}
+
+/**
+ * g_string_chunk_insert_len:
+ * @chunk: a #GStringChunk
+ * @string: bytes to insert
+ * @len: number of bytes of @string to insert, or -1 to insert a 
+ *     nul-terminated string. 
+ * 
+ * Adds a copy of the first @len bytes of @string to the #GStringChunk. The
+ * copy is nul-terminated.
+ * 
+ * The characters in the string can be changed, if necessary, though you
+ * should not change anything after the end of the string.
+ * 
+ * Return value: a pointer to the copy of @string within the #GStringChunk
+ * 
+ * Since: 2.4
+ **/
+gchar*
+g_string_chunk_insert_len (GStringChunk *chunk,
+			   const gchar  *string, 
+			   gssize        len)
+{
+  gchar* pos;
+
+  g_return_val_if_fail (chunk != NULL, NULL);
+
+  if (len < 0)
+    len = strlen (string);
+  
+  if ((chunk->storage_next + len + 1) > chunk->this_size)
+    {
+      gsize new_size = nearest_power (chunk->default_size, len + 1);
+
+      chunk->storage_list = g_slist_prepend (chunk->storage_list,
+					     g_new (gchar, new_size));
+
+      chunk->this_size = new_size;
+      chunk->storage_next = 0;
+    }
+
+  pos = ((gchar *) chunk->storage_list->data) + chunk->storage_next;
+
+  *(pos + len) = '\0';
+
+  strncpy (pos, string, len);
+  len = strlen (pos);
+
+  chunk->storage_next += len + 1;
+
+  return pos;
 }
 
 /* Strings.
@@ -235,10 +268,17 @@ g_string_new (const gchar *init)
 {
   GString *string;
 
-  string = g_string_sized_new (init ? strlen (init) + 2 : 2);
+  if (init == NULL || *init == '\0')
+    string = g_string_sized_new (2);
+  else 
+    {
+      gint len;
 
-  if (init)
-    g_string_append (string, init);
+      len = strlen (init);
+      string = g_string_sized_new (len + 2);
+
+      g_string_append_len (string, init, len);
+    }
 
   return string;
 }
@@ -333,9 +373,15 @@ g_string_assign (GString     *string,
 {
   g_return_val_if_fail (string != NULL, NULL);
   g_return_val_if_fail (rval != NULL, string);
-  
-  g_string_truncate (string, 0);
-  g_string_append (string, rval);
+
+  /* Make sure assigning to itself doesn't corrupt the string.  */
+  if (string->str != rval)
+    {
+      /* Assigning from substring should be ok since g_string_truncate
+	 does not realloc.  */
+      g_string_truncate (string, 0);
+      g_string_append (string, rval);
+    }
 
   return string;
 }
@@ -396,17 +442,50 @@ g_string_insert_len (GString     *string,
     pos = string->len;
   else
     g_return_val_if_fail (pos <= string->len, string);
-  
-  g_string_maybe_expand (string, len);
 
-  /* If we aren't appending at the end, move a hunk
-   * of the old string to the end, opening up space
-   */
-  if (pos < string->len)
-    g_memmove (string->str + pos + len, string->str + pos, string->len - pos);
-  
-  /* insert the new string */
-  g_memmove (string->str + pos, val, len);
+  /* Check whether val represents a substring of string.  This test
+     probably violates chapter and verse of the C standards, since
+     ">=" and "<=" are only valid when val really is a substring.
+     In practice, it will work on modern archs.  */
+  if (val >= string->str && val <= string->str + string->len)
+    {
+      gsize offset = val - string->str;
+      gsize precount = 0;
+
+      g_string_maybe_expand (string, len);
+      val = string->str + offset;
+      /* At this point, val is valid again.  */
+
+      /* Open up space where we are going to insert.  */
+      if (pos < string->len)
+	g_memmove (string->str + pos + len, string->str + pos, string->len - pos);
+
+      /* Move the source part before the gap, if any.  */
+      if (offset < pos)
+	{
+	  precount = MIN (len, pos - offset);
+	  memcpy (string->str + pos, val, precount);
+	}
+
+      /* Move the source part after the gap, if any.  */
+      if (len > precount)
+	memcpy (string->str + pos + precount,
+		val + /* Already moved: */ precount + /* Space opened up: */ len,
+		len - precount);
+    }
+  else
+    {
+      g_string_maybe_expand (string, len);
+
+      /* If we aren't appending at the end, move a hunk
+       * of the old string to the end, opening up space
+       */
+      if (pos < string->len)
+	g_memmove (string->str + pos + len, string->str + pos, string->len - pos);
+
+      /* insert the new string */
+      memcpy (string->str + pos, val, len);
+    }
 
   string->len += len;
 
@@ -436,6 +515,7 @@ g_string_append_len (GString	 *string,
   return g_string_insert_len (string, -1, val, len);
 }
 
+#undef g_string_append_c
 GString*
 g_string_append_c (GString *string,
 		   gchar    c)
@@ -623,10 +703,11 @@ GString*
 g_string_ascii_down (GString *string)
 {
   gchar *s;
-  gint n = string->len;
+  gint n;
 
   g_return_val_if_fail (string != NULL, NULL);
 
+  n = string->len;
   s = string->str;
 
   while (n)
@@ -653,10 +734,11 @@ GString*
 g_string_ascii_up (GString *string)
 {
   gchar *s;
-  gint n = string->len;
+  gint n;
 
   g_return_val_if_fail (string != NULL, NULL);
 
+  n = string->len;
   s = string->str;
 
   while (n)
@@ -685,10 +767,11 @@ GString*
 g_string_down (GString *string)
 {
   guchar *s;
-  glong n = string->len;    
+  glong n;
 
   g_return_val_if_fail (string != NULL, NULL);
 
+  n = string->len;    
   s = (guchar *) string->str;
 
   while (n)
@@ -718,10 +801,11 @@ GString*
 g_string_up (GString *string)
 {
   guchar *s;
-  glong n = string->len;
+  glong n;
 
   g_return_val_if_fail (string != NULL, NULL);
 
+  n = string->len;
   s = (guchar *) string->str;
 
   while (n)
@@ -741,9 +825,10 @@ g_string_append_printf_internal (GString     *string,
 				 va_list      args)
 {
   gchar *buffer;
-
-  buffer = g_strdup_vprintf (fmt, args);
-  g_string_append (string, buffer);
+  gint length;
+  
+  length = g_vasprintf (&buffer, fmt, args);
+  g_string_append_len (string, buffer, length);
   g_free (buffer);
 }
 

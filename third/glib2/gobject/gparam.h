@@ -73,7 +73,7 @@ struct _GParamSpec
   gchar         *name;
   GParamFlags    flags;
   GType		 value_type;
-  GType		 owner_type;	/* class using this property */
+  GType		 owner_type;	/* class or interface using this property */
 
   /*< private >*/
   gchar         *_nick;
@@ -98,6 +98,7 @@ struct _GParamSpecClass
   gint          (*values_cmp)           (GParamSpec   *pspec,
 					 const GValue *value1,
 					 const GValue *value2);
+  /*< private >*/
   gpointer	  dummy[4];
 };
 struct _GParameter /* auxillary structure for _setv() variants */
@@ -122,6 +123,8 @@ void            g_param_spec_set_qdata_full	(GParamSpec    *pspec,
 						 GDestroyNotify destroy);
 gpointer        g_param_spec_steal_qdata	(GParamSpec    *pspec,
 						 GQuark         quark);
+GParamSpec*     g_param_spec_get_redirect_target (GParamSpec   *pspec);
+
 void		g_param_value_set_default	(GParamSpec    *pspec,
 						 GValue	       *value);
 gboolean	g_param_value_defaults		(GParamSpec    *pspec,
@@ -144,10 +147,12 @@ GParamSpec*     g_value_get_param               (const GValue  *value);
 GParamSpec*     g_value_dup_param               (const GValue  *value);
 
 
-/* --- marshaller specific --- */
+void           g_value_take_param               (GValue        *value,
+					         GParamSpec    *param);
+#ifndef G_DISABLE_DEPRECATED
 void           g_value_set_param_take_ownership (GValue        *value,
 					         GParamSpec    *param);
-
+#endif
 
 /* --- convenience functions --- */
 typedef struct _GParamSpecTypeInfo GParamSpecTypeInfo;

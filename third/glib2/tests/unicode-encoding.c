@@ -195,7 +195,7 @@ process (gint      line,
       gint n_chars;
       gchar *utf8_result;
 
-#ifdef G_OS_WIN32
+#ifdef G_PLATFORM_WIN32
 #define TARGET "UTF-16LE"
 #else
 #define TARGET "UTF-16"
@@ -418,5 +418,5 @@ main (int argc, char **argv)
       line++;
     }
 
-  return 0;
+  return exit_status;
 }
