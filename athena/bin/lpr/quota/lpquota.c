@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.3 1990-05-01 14:02:29 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.4 1990-05-01 14:23:13 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.3 1990-05-01 14:02:29 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.4 1990-05-01 14:23:13 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -558,7 +558,7 @@ krb_ktext *auth;
 	start = 0;
 
 	while(done == 0) {
-	    if(qerr = LoggerJournal(h, auth, qid, start, LOGMAXRETURN,
+	    if(qerr = LoggerJournal(h, auth, qid, start, 20,
 			    (loggerflags) 0, &numtrans, LogEnts, currency))
 		return quota_error(qerr);
 	    if(numtrans == 0) {
