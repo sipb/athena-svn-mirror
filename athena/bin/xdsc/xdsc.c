@@ -15,6 +15,8 @@ without express or implied warranty.
 */
 
 #include	<stdio.h>
+#include	<strings.h>
+
 #include	<X11/IntrinsicP.h>
 #include	<X11/StringDefs.h>
 #include	<X11/CoreP.h>
@@ -67,7 +69,6 @@ Boolean		nocache;
 extern void	PutUpHelp();
 extern void	SubmitTransaction();
 extern void	WriteTransaction();
-extern char	*strchr();
 extern char	*tempnam();
 extern int	PopdownCB();
 extern char     *getenv();
