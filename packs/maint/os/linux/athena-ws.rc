@@ -70,10 +70,17 @@ case "$1" in
 		echo
 	fi
 
+	if [ -e /dev/fd0 ]; then
+		echo -n "Fixing permissions on floppy device"
+		chmod 666 /dev/fd0* \
+			 && success "floppy device chmod" \
+				 || failure "floppy device chmod"
+		echo
+	fi
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
-		/etc/athena/verify || failure "RPM verification and repair"
 		rm -rf /.hushlogin /etc/X0.hosts \
 			&& rm -f /etc/nologin.persist \
 			&& rm -rf /etc/ssh_host_key* \
