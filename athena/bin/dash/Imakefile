@@ -14,6 +14,7 @@ Makefiles::
 	@echo "/* This file automatically generated." > LDEF
 	@echo " * See ../Imakefile for details." >> LDEF
 	@echo " */" >> LDEF
+	@echo HOSTTYPE = ${HOSTTYPE} >> LDEF
 	@echo MAN_DIR = ${ATHMANDIR} >> LDEF
 	@echo DASH_BIN_DIR = ${ATHBINDIR} >> LDEF
 	@echo DASH_XBM_DIR = ${ATHXBITDIR} >> LDEF
