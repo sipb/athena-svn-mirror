@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.61 1997-06-02 17:40:33 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.62 1997-10-03 17:45:03 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -338,9 +338,9 @@ main(argc, argv)
 	    sprintf(hname, "%s:%s/%%N", c, argv[i+1]);
 	else
 	    sprintf(hname, "%s/%%N", argv[i+1]);
-	setenv("XUSERFILESEARCHPATH", hname, 1);
+	psetenv("XUSERFILESEARCHPATH", hname, 1);
 	sprintf(hname, "%s/Xlogin.local", argv[i+1]);
-	setenv("XENVIRONMENT", hname, 1);
+	psetenv("XENVIRONMENT", hname, 1);
 	break;
     }
 
@@ -518,9 +518,9 @@ main(argc, argv)
   else
     activation_state = ACTIVATED;
 
-  setenv("PATH", defaultpath, 1);
+  psetenv("PATH", defaultpath, 1);
 #ifdef HOSTTYPE
-  setenv("hosttype", HOSTTYPE, 1); /* environment.h */
+  psetenv("hosttype", HOSTTYPE, 1); /* environment.h */
 #endif
 
   /* create shells to blank out all other screens, if any... */
@@ -1176,16 +1176,16 @@ Cardinal *n;
      *   mucked with. Others are done earlier for other functions
      *   of xlogin.
      */
-    unsetenv("XUSERFILESEARCHPATH");
-    unsetenv("XENVIRONMENT");
+    punsetenv("XUSERFILESEARCHPATH");
+    punsetenv("XENVIRONMENT");
 
-    setenv("PATH", defaultpath, 1);
-    setenv("USER", "daemon", 1);
-    setenv("SHELL", "/bin/sh", 1);
-    setenv("DISPLAY", ":0", 1);
+    psetenv("PATH", defaultpath, 1);
+    psetenv("USER", "daemon", 1);
+    psetenv("SHELL", "/bin/sh", 1);
+    psetenv("DISPLAY", ":0", 1);
 
 #ifdef sgi
-    setenv("PRELOGIN", "true", 1);
+    psetenv("PRELOGIN", "true", 1);
     if (nanny_setupUser(N_DAEMON, 0, environ, argv))
       {
 	fprintf(stderr, "Unable set up for daemon app\n");

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.82 1997-08-22 22:48:23 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.83 1997-10-03 17:45:01 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -268,7 +268,7 @@ char *display;
       {
 	sprintf(tkt_file, "/tmp/tkt%d", pwd->pw_uid);
       }
-    setenv("KRBTKFILE", tkt_file, 1);
+    psetenv("KRBTKFILE", tkt_file, 1);
 
     /* we set the ticket file here because a previous dest_tkt() might
        have cached the wrong ticket file. */
@@ -276,7 +276,7 @@ char *display;
 
 #ifdef KRB5
     sprintf(tkt5_file, "/tmp/krb5cc_%s", fixed_tty);
-    setenv("KRB5CCNAME", tkt5_file, 1);
+    psetenv("KRB5CCNAME", tkt5_file, 1);
 #endif
 
     /* set real uid/gid for kerberos library */
@@ -1738,6 +1738,39 @@ pid_t fork_and_store(pid_t *var)
     *var = fork();
     sigprocmask(SIG_SETMASK, &omask, NULL);
     return *var;
+}
+
+/* Emulate setenv() with the more portable (these days) putenv(). */
+int psetenv(const char *name, const char *value, int overwrite)
+{
+    char *var;
+
+    if (!overwrite && getenv(name) != NULL)
+	return 0;
+    var = malloc(strlen(name) + strlen(value) + 2);
+    if (!var) {
+	errno = ENOMEM;
+	return -1;
+    }
+    sprintf(var, "%s=%s", name, value);
+    putenv(var);
+    return 0;
+}
+
+/* Emulate unsetenv() by fiddling with the environment. */
+int punsetenv(const char *name)
+{
+    extern char **environ;
+    char **p, **q;
+    int len = strlen(name);
+
+    q = environ;
+    for (p = environ; *p; p++) {
+	if (strncmp(*p, name, len) != 0 || (*p)[len] != '=')
+	    *q++ = *p;
+    }
+    *q = NULL;
+    return 0;
 }
 
 #ifdef KRB5
