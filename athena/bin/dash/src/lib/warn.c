@@ -10,8 +10,8 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/warn.c,v 1.2 1991-12-17 11:22:45 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/warn.c,v 1.3 1993-07-01 18:56:41 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -22,16 +22,17 @@ static char rcsid[] =
 #include "Form.h"
 #include "warn.h"
 
-extern char line1[], line2[];
-extern Jet root;
-
 static int ok(who, w, data)
      Jet who;
      Warning *w;
      caddr_t data;
 {
+  Display *dpy;
+
+  dpy = w->top->core.display;	/* save off the display before */
+				/* destroying the Jet */
   XjDestroyJet(w->top);
-  XFlush(who->core.display);
+  XFlush(dpy);
 
   XjFree(w->l1);
   XjFree(w->l2);
@@ -39,9 +40,11 @@ static int ok(who, w, data)
   return 0;
 }
 
-Warning *UserWarning(okProc, realize)
+Warning *XjUserWarning(root, okProc, realize, line1, line2)
+     Jet root;
      Warning *okProc;
      Boolean realize;
+     char *line1, *line2;
 {
   Jet warnTop, warnForm, warn1label, warn2label, warn1icon,
   warnokwindow, warnoklabel;
