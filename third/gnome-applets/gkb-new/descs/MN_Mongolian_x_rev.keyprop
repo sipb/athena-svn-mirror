@@ -1,8 +1,11 @@
 [Keymap Entry]
 Countries=1
 Name=Plain Mongolian keymap
-Name[bg]=Обикновена Монголска клавиатура
+Name[ar]=لوحة مفاتيح الماغولية البسيطة
+Name[az]=Monqolca sadə düzülüş
+Name[bg]=Обикновена монголска клавиатура
 Name[bs]=obični mongolski raspored
+Name[ca]=Teclat mongol simple
 Name[cs]=Jednoduchá mongolská mapa kláves
 Name[cy]=Bysellfwrdd Mongoleg blaen
 Name[da]=Ren mongolsk tastaturlayout
@@ -15,8 +18,10 @@ Name[fi]=Mongolialainen tavallinen näppäinkartta
 Name[fr]=Mappage clavier mongolien standard
 Name[gu]=સરળ મોંગોલિયાઈ કીમૅપ
 Name[hu]=Egyszerű mongol billentyűzetkiosztás
+Name[it]=Mappatura mongola semplice
 Name[ja]=モンゴル語キーマップ (プレーン)
 Name[ko]=일반 몽골어 키맵
+Name[lt]=Paprastas Mongolų išdėstymas
 Name[ms]=Keymap Mongolia Jernih
 Name[nb]=Vanlig mongolsk tastaturkart
 Name[nl]=Normaal Mongools toetsenbord

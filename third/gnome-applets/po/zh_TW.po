@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:10+0800\n"
+"POT-Creation-Date: 2004-12-06 18:51+0800\n"
 "PO-Revision-Date: 2004-09-13 12:26+0800\n"
 "Last-Translator: Abel Cheung <maddog@linuxhall.org>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -77,12 +77,12 @@ msgstr "顯示無障礙環境鍵盤狀態"
 
 #: accessx-status/applet.c:136 battstat/battstat_applet.c:1064
 #: cdplayer/cdplayer.c:596 charpick/charpick.c:564 drivemount/drivemount.c:552
-#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:608
+#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:599
 #: gtik/gtik.c:723 gweather/gweather-about.c:47 mailcheck/mailcheck.c:2467
-#: mini-commander/src/about.c:50 mixer/mixer.c:1349
+#: mini-commander/src/about.c:50 mixer/mixer.c:1392
 #: modemlights/modemlights.c:118 multiload/main.c:58
 #: stickynotes/stickynotes_applet_callbacks.c:261
-#: wireless/wireless-applet.c:572
+#: wireless/wireless-applet.c:574
 msgid "translator_credits"
 msgstr ""
 "i18n 程式中文化計劃\n"
@@ -481,7 +481,7 @@ msgid "Battery Charge Monitor Preferences"
 msgstr "電池電量監察程式偏好設定"
 
 #: battstat/battstat_applet.glade.h:13 drivemount/properties.c:358
-#: gweather/gweather-pref.c:1049 mailcheck/mailcheck.c:2053
+#: gweather/gweather-pref.c:1052 mailcheck/mailcheck.c:2053
 #: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:563
 msgid "General"
 msgstr "一般"
@@ -541,9 +541,9 @@ msgstr "黃(_Y)︰"
 #: battstat/properties.c:291 drivemount/drivemount.c:509
 #: drivemount/properties.c:604 mailcheck/mailcheck.c:2320
 #: mailcheck/mailcheck.c:2614 mini-commander/src/preferences.c:364
-#: mixer/mixer.c:1462 stickynotes/stickynotes_applet_callbacks.c:238
+#: mixer/mixer.c:1505 stickynotes/stickynotes_applet_callbacks.c:238
 #: stickynotes/stickynotes_applet_callbacks.c:402
-#: wireless/wireless-applet.c:542 wireless/wireless-applet.c:626
+#: wireless/wireless-applet.c:544 wireless/wireless-applet.c:628
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "顯示說明文件時出現錯誤：%s"
@@ -613,7 +613,7 @@ msgstr "下一首"
 msgid "You do not have permission to use the CD player."
 msgstr "您沒有足夠權限使用 CD 播放程式。"
 
-#: cdplayer/cdplayer.c:378 mixer/mixer.c:1316 multiload/main.c:142
+#: cdplayer/cdplayer.c:378 mixer/mixer.c:1359 multiload/main.c:142
 #, c-format
 msgid "There was an error executing '%s': %s"
 msgstr "執行‘%s’時出現錯誤：%s"
@@ -1492,9 +1492,9 @@ msgstr "丹麥"
 msgid "Danish keymap"
 msgstr "丹麥鍵盤對應表"
 
-#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:848
-#: gweather/gweather-pref.c:868 gweather/gweather-pref.c:892
-#: gweather/gweather-pref.c:918
+#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:871 gweather/gweather-pref.c:895
+#: gweather/gweather-pref.c:921
 msgid "Default"
 msgstr "預設"
 
@@ -2908,7 +2908,7 @@ msgstr "標籤"
 msgid "Flag and Label"
 msgstr "國旗及標籤"
 
-#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1034
+#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1037
 #: modemlights/properties.c:444
 msgid "Display"
 msgstr "顯示"
@@ -3003,7 +3003,7 @@ msgid "GNOME keyboard layout indicator"
 msgstr "GNOME 鍵盤配置指示器"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:3
-#: gswitchit/gswitchit-applet.c:613
+#: gswitchit/gswitchit-applet.c:604
 msgid "Keyboard Indicator"
 msgstr "鍵盤配置指示器"
 
@@ -3016,19 +3016,19 @@ msgstr "鍵盤面板程式工廠"
 msgid "Keyboard Indicator (%s)"
 msgstr "鍵盤配置指示器 (%s)"
 
-#: gswitchit/gswitchit-applet.c:616
+#: gswitchit/gswitchit-applet.c:607
 msgid "Copyright (c) Sergey V. Udaltsov 1999-2004"
 msgstr "版權所有 © Sergey V. Udaltsov 1999-2004"
 
-#: gswitchit/gswitchit-applet.c:618
+#: gswitchit/gswitchit-applet.c:609
 msgid "Keyboard layout indicator applet for GNOME"
 msgstr "適用於 GNOME 的鍵盤配置指示器"
 
-#: gswitchit/gswitchit-applet.c:772
+#: gswitchit/gswitchit-applet.c:763
 msgid "XKB initialization error"
 msgstr "XKB 初始化發生錯誤"
 
-#: gswitchit/gswitchit-applet.c:780
+#: gswitchit/gswitchit-applet.c:771
 msgid "Error loading XKB configuration registry"
 msgstr "載入 XKB 設定時發生錯誤"
 
@@ -3038,11 +3038,11 @@ msgid ""
 "No way to switch to this layout using the keyboard."
 msgstr ""
 
-#: gswitchit/gswitchit-capplet.c:265
+#: gswitchit/gswitchit-capplet.c:262
 msgid "_Exclude from keyboard switching"
 msgstr ""
 
-#: gswitchit/gswitchit-capplet.c:296
+#: gswitchit/gswitchit-capplet.c:293
 msgid "Not used"
 msgstr "未有使用"
 
@@ -3249,7 +3249,7 @@ msgstr "股票代碼"
 msgid "Behavior"
 msgstr "運作方式"
 
-#: gtik/gtik.c:1434 gweather/gweather-pref.c:994
+#: gtik/gtik.c:1434 gweather/gweather-pref.c:997
 msgid "Update"
 msgstr "更新"
 
@@ -3257,7 +3257,7 @@ msgstr "更新"
 msgid "Stock update fre_quency:"
 msgstr "股市行情更新周期(_Q)："
 
-#: gtik/gtik.c:1450 gweather/gweather-pref.c:1018 mailcheck/mailcheck.c:2101
+#: gtik/gtik.c:1450 gweather/gweather-pref.c:1021 mailcheck/mailcheck.c:2101
 #: mailcheck/mailcheck.c:2107
 msgid "minutes"
 msgstr "分"
@@ -3640,14 +3640,14 @@ msgstr "請輸入 URL"
 
 #. TRANSLATOR: This is the default unit to use for temperature measurements.
 #. Valid values are: "K" (Kelvin), "C" (Celsius) and "F" (Fahrenheit)
-#: gweather/gweather-pref.c:400 gweather/gweather-pref.c:409
+#: gweather/gweather-pref.c:403 gweather/gweather-pref.c:412
 msgid "DEFAULT_TEMP_UNIT"
 msgstr "C"
 
 #. TRANSLATOR: This is the default unit to use for wind speed.
 #. Valid values are: "m/s" (meters per second), "km/h" (kilometers per hour),
 #. "mph" (miles per hour) and "knots"
-#: gweather/gweather-pref.c:435 gweather/gweather-pref.c:445
+#: gweather/gweather-pref.c:438 gweather/gweather-pref.c:448
 msgid "DEFAULT_SPEED_UNIT"
 msgstr "knots"
 
@@ -3655,134 +3655,134 @@ msgstr "knots"
 #. Valid values are: "kPa" (kiloPascals), "hPa" (hectoPascals),
 #. "mb" (millibars), "mmHg" (millimeters of mercury) and
 #. "inHg" (inches of mercury)
-#: gweather/gweather-pref.c:473 gweather/gweather-pref.c:484
+#: gweather/gweather-pref.c:476 gweather/gweather-pref.c:487
 msgid "DEFAULT_PRESSURE_UNIT"
 msgstr "hPa"
 
 #. TRANSLATOR: This is the default unit to use for visibility distance.
 #. Valid values are: "m" (meters), "km" (kilometers) and "mi" (miles)
-#: gweather/gweather-pref.c:510 gweather/gweather-pref.c:519
+#: gweather/gweather-pref.c:513 gweather/gweather-pref.c:522
 msgid "DEFAULT_DISTANCE_UNIT"
 msgstr "km"
 
-#: gweather/gweather-pref.c:797
+#: gweather/gweather-pref.c:800
 msgid "Weather Preferences"
 msgstr "天氣程式偏好設定"
 
-#: gweather/gweather-pref.c:830 gweather/gweather-pref.c:998
+#: gweather/gweather-pref.c:833 gweather/gweather-pref.c:1001
 msgid "_Automatically update every:"
 msgstr "自動更新相隔的時間(_A)："
 
 #. Temperature Unit
-#: gweather/gweather-pref.c:839
+#: gweather/gweather-pref.c:842
 msgid "_Temperature Unit:"
 msgstr "溫度單位(_T)："
 
-#: gweather/gweather-pref.c:849
+#: gweather/gweather-pref.c:852
 msgid "Kelvin"
 msgstr "絕對溫度"
 
 #. TRANSLATORS: Celsius is sometimes referred Centigrade
-#: gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:854
 msgid "Celsius"
 msgstr "攝氏"
 
-#: gweather/gweather-pref.c:852
+#: gweather/gweather-pref.c:855
 msgid "Fahrenheit"
 msgstr "華氏"
 
 #. Speed Unit
-#: gweather/gweather-pref.c:859
+#: gweather/gweather-pref.c:862
 msgid "_Wind Speed Unit:"
 msgstr "風速單位(_W)："
 
 #. TRANSLATOR: The wind speed unit "meters per second"
-#: gweather/gweather-pref.c:870
+#: gweather/gweather-pref.c:873
 msgid "m/s"
 msgstr "m/s"
 
 #. TRANSLATOR: The wind speed unit "kilometers per hour"
-#: gweather/gweather-pref.c:872
+#: gweather/gweather-pref.c:875
 msgid "km/h"
 msgstr "km/h"
 
 #. TRANSLATOR: The wind speed unit "miles per hour"
-#: gweather/gweather-pref.c:874
+#: gweather/gweather-pref.c:877
 msgid "mph"
 msgstr "mph"
 
 #. TRANSLATOR: The wind speed unit "knots"
-#: gweather/gweather-pref.c:876
+#: gweather/gweather-pref.c:879
 msgid "knots"
 msgstr "節"
 
 #. Pressure Unit
-#: gweather/gweather-pref.c:883
+#: gweather/gweather-pref.c:886
 msgid "_Pressure Unit:"
 msgstr "氣壓單位(_P)："
 
 #. TRANSLATOR: The pressure unit "kiloPascals"
-#: gweather/gweather-pref.c:894
+#: gweather/gweather-pref.c:897
 msgid "kPa"
 msgstr "kPa"
 
 #. TRANSLATOR: The pressure unit "hectoPascals"
-#: gweather/gweather-pref.c:896
+#: gweather/gweather-pref.c:899
 msgid "hPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "millibars"
-#: gweather/gweather-pref.c:898
+#: gweather/gweather-pref.c:901
 msgid "mb"
 msgstr "mb"
 
 #. TRANSLATOR: The pressure unit "millibars of mercury"
-#: gweather/gweather-pref.c:900
+#: gweather/gweather-pref.c:903
 msgid "mmHg"
 msgstr "mmHg"
 
 #. TRANSLATOR: The pressure unit "inches of mercury"
-#: gweather/gweather-pref.c:902
+#: gweather/gweather-pref.c:905
 msgid "inHg"
 msgstr "inHg"
 
 #. Distance Unit
-#: gweather/gweather-pref.c:909
+#: gweather/gweather-pref.c:912
 msgid "_Visibility Unit:"
 msgstr "能見度單位(_V)："
 
 #. TRANSLATOR: The distance unit "meters"
-#: gweather/gweather-pref.c:920
+#: gweather/gweather-pref.c:923
 msgid "meters"
 msgstr "米"
 
 #. TRANSLATOR: The distance unit "kilometers"
-#: gweather/gweather-pref.c:922
+#: gweather/gweather-pref.c:925
 msgid "km"
 msgstr "千米"
 
 #. TRANSLATOR: The distance unit "miles"
-#: gweather/gweather-pref.c:924
+#: gweather/gweather-pref.c:927
 msgid "miles"
 msgstr "英里"
 
-#: gweather/gweather-pref.c:949
+#: gweather/gweather-pref.c:952
 msgid "Enable _radar map"
 msgstr "啟用雷達圖(_R)"
 
-#: gweather/gweather-pref.c:963
+#: gweather/gweather-pref.c:966
 msgid "Use _custom address for radar map"
 msgstr "自行指定雷達圖的地址(_C)"
 
-#: gweather/gweather-pref.c:980
+#: gweather/gweather-pref.c:983
 msgid "A_ddress:"
 msgstr "地址(_D)："
 
-#: gweather/gweather-pref.c:1062
+#: gweather/gweather-pref.c:1065
 msgid "_Select a location:"
 msgstr "選取位置(_S)："
 
-#: gweather/gweather-pref.c:1092
+#: gweather/gweather-pref.c:1095
 msgid "Location"
 msgstr "位置"
 
@@ -5124,8 +5124,8 @@ msgstr "指令"
 msgid "Adjust the sound volume"
 msgstr "調校音量"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:199
-#: mixer/mixer.c:1363
+#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:210
+#: mixer/mixer.c:1406
 msgid "Volume Control"
 msgstr "音量控制"
 
@@ -5137,115 +5137,115 @@ msgstr "靜音(_M)"
 msgid "_Open Volume Control"
 msgstr "啟動音量控制程式(_O)"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Main Volume"
 msgstr "主音量"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Bass"
 msgstr "低音"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Treble"
 msgstr "高音"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Synth"
 msgstr "合成"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Pcm"
 msgstr "Pcm"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Speaker"
 msgstr "揚聲器"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Line"
 msgstr ""
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Microphone"
 msgstr "麥克風"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "CD"
 msgstr "CD"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Mix"
 msgstr ""
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Pcm2"
 msgstr "Pcm2"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Recording Level"
 msgstr ""
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Input Gain"
 msgstr "輸入增益"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Output Gain"
 msgstr "輸出增益"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line1"
 msgstr "Line1"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line2"
 msgstr "Line2"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line3"
 msgstr "Line3"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Digital1"
 msgstr ""
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital2"
 msgstr ""
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital3"
 msgstr ""
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Input"
 msgstr ""
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Output"
 msgstr ""
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Video"
 msgstr ""
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Radio"
 msgstr ""
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Monitor"
 msgstr ""
 
-#: mixer/mixer.c:200
+#: mixer/mixer.c:211
 msgid "Volume Control (muted)"
 msgstr "音量控制 (靜音)"
 
-#: mixer/mixer.c:201
+#: mixer/mixer.c:212
 msgid "No audio device"
 msgstr "沒有音效裝置"
 
-#: mixer/mixer.c:518
+#: mixer/mixer.c:546
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -5253,50 +5253,50 @@ msgstr ""
 "警告：這個版本的 gmix 是用不同\n"
 "版本的 soundcard.h 編譯出來的。\n"
 
-#: mixer/mixer.c:893
+#: mixer/mixer.c:936
 #, c-format
 msgid "Couldn't open mixer device %s\n"
 msgstr "無法開啟音量調整裝置 %s\n"
 
-#: mixer/mixer.c:1062
+#: mixer/mixer.c:1105
 msgid "Volume Controller"
 msgstr "音量控制程式"
 
-#: mixer/mixer.c:1063
+#: mixer/mixer.c:1106
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "使用上/下方向鍵更改音量"
 
 #. Translators - The + and - refer to increasing and decreasing the volume.
 #. ** I don't know if there are sensible alternatives in other languages
-#: mixer/mixer.c:1087
+#: mixer/mixer.c:1130
 msgid "+"
 msgstr "+"
 
-#: mixer/mixer.c:1088
+#: mixer/mixer.c:1131
 msgid "-"
 msgstr "-"
 
-#: mixer/mixer.c:1364
+#: mixer/mixer.c:1407
 msgid "(C) 2001 Richard Hult"
 msgstr "版權所有 ©2001 Richard Hult"
 
-#: mixer/mixer.c:1365
+#: mixer/mixer.c:1408
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr "音量控制可設定系統的音量。"
 
-#: mixer/mixer.c:1512
+#: mixer/mixer.c:1555
 msgid "Volume Control Preferences"
 msgstr "音量控制偏好設定"
 
-#: mixer/mixer.c:1536
+#: mixer/mixer.c:1579
 msgid "Audio Channels"
 msgstr "聲道"
 
-#: mixer/mixer.c:1552
+#: mixer/mixer.c:1595
 msgid "_Select channel to control:"
 msgstr "請選取準備控制的聲道(_S)："
 
-#: mixer/mixer.c:1888
+#: mixer/mixer.c:1936
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr "音量控制可設定系統的音量"
 
@@ -6314,7 +6314,7 @@ msgid "Monitor the quality of a wireless network link"
 msgstr "監察無線網路連線的訊號品質"
 
 #: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
-#: wireless/wireless-applet.c:588 wireless/wireless-applet.c:840
+#: wireless/wireless-applet.c:590 wireless/wireless-applet.c:842
 msgid "Wireless Link Monitor"
 msgstr "無線網路連線監察程式"
 
@@ -6323,7 +6323,7 @@ msgstr "無線網路連線監察程式"
 msgid "Link Strength: %2.0d%%"
 msgstr "連線訊號強度：%2.0d%%"
 
-#: wireless/wireless-applet.c:367
+#: wireless/wireless-applet.c:369
 msgid ""
 "There doesn't seem to be any wireless devices configured on your system.\n"
 "Please verify your configuration if you think this is incorrect."
@@ -6331,19 +6331,19 @@ msgstr ""
 "似乎系統中並沒有設定任何無線網路裝置。\n"
 "如果以上的推斷和事實不符，請確認組態是否出錯。"
 
-#: wireless/wireless-applet.c:502 wireless/wireless-applet.c:829
+#: wireless/wireless-applet.c:504 wireless/wireless-applet.c:831
 msgid "No Wireless Devices"
 msgstr "沒有任何無線網路裝置"
 
-#: wireless/wireless-applet.c:590
+#: wireless/wireless-applet.c:592
 msgid "(C) 2001, 2002 Free Software Foundation "
 msgstr "版權所有 © 2001, 2002 Free Software Foundation"
 
-#: wireless/wireless-applet.c:591
+#: wireless/wireless-applet.c:593
 msgid "This utility shows the status of a wireless link."
 msgstr "此公用程式能顯示無線網路的連線狀態。"
 
-#: wireless/wireless-applet.c:841
+#: wireless/wireless-applet.c:843
 msgid "This utility shows the status of a wireless link"
 msgstr "此公用程式能顯示無線網路的連線狀態。"
 

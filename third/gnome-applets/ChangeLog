@@ -1,3 +1,36 @@
+2004-12-06  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS: release 2.8.2
+
+2004-10-28  Vincent Berger  <vincent.berger@ext.bull.net>
+
+	reviewed by: Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.in:
+	* mixer/mixer.c: (openMixer), (readMixer), (setMixer),
+	(mixer_applet_create):
+	  AIX implementation of mixer (#156487).
+
+2004-10-13  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS: release 2.8.1.1, hurrr!
+
+2004-10-12  Davyd Madeley  <davyd@madeley.id.au>
+
+	* configure.in:
+	* NEWS: release 2.8.1
+
+2004-10-08  Shaun McCance  <shaunm@gnome.org>
+
+	* stickynotes/stickynotes.c:
+	- Use right section for note properties Help (#152476)
+
+2004-09-13  Davyd Madeley  <davyd@madeley.id.au>
+
+	* README.STABLE_BRANCH: Updated to indicate this is the stable branch
+
 2004-09-13  Davyd Madeley  <davyd@madeley.id.au>
 
 	* configure.in:

@@ -155,7 +155,7 @@ CappletResponse (GtkDialog * capplet, gint id, GSwitchItApplet * sia)
 {
 	if (id == GTK_RESPONSE_HELP) {
 		GSwitchItHelp (GTK_WIDGET (sia->propsDialog),
-			       "gswitchitPropsCapplet");
+			       "gswitchit-applet-prefs");
 		return;
 	}
 	gtk_widget_destroy (GTK_WIDGET (capplet));
@@ -250,9 +250,6 @@ GSwitchItAppletPropsCreate (GSwitchItApplet * sia)
 		gtk_widget_set_name (frameFlag, sz);
 		gtk_object_set_data (GTK_OBJECT (capplet), sz, frameFlag);
 		//gtk_widget_show( frameFlag );
-
-		gtk_frame_set_shadow_type (GTK_FRAME (frameFlag),
-					   GTK_SHADOW_ETCHED_OUT);
 
 		vboxPerGroup = gtk_vbox_new (FALSE, 0);
 		g_snprintf (sz, sizeof (sz), "vboxPerGroup.%d", i);

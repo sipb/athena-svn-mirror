@@ -231,7 +231,7 @@ CappletResponse (GtkDialog * dialog, gint response)
 {
 	if (response == GTK_RESPONSE_HELP) {
 		GSwitchItHelp (GTK_WIDGET (dialog),
-			       "gswitchitAppletPlugins");
+			       "gswitchit-applet-plugins");
 		return;
 	}
 
@@ -320,11 +320,11 @@ main (int argc, char **argv)
 	GError *gconf_error = NULL;
 	GConfClient *confClient;
 
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (PACKAGE);
+	textdomain (GETTEXT_PACKAGE);
 	memset (&gswic, 0, sizeof (gswic));
-	gnome_program_init ("gswitchit-properties", VERSION,
+	gnome_program_init ("gswitchit", VERSION,
 			    LIBGNOMEUI_MODULE, argc, argv,
 			    GNOME_PROGRAM_STANDARD_PROPERTIES, NULL); 
 	if (!gconf_init (argc, argv, &gconf_error)) {

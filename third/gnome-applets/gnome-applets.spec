@@ -1,5 +1,5 @@
 %define name	gnome-applets
-%define ver	2.8.0
+%define ver	2.8.2
 %define RELEASE	1
 %define rel	%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 

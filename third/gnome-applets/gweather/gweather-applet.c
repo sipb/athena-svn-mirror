@@ -1,4 +1,4 @@
-/* $Id: gweather-applet.c,v 1.1.1.3 2004-10-04 03:07:52 ghudson Exp $ */
+/* $Id: gweather-applet.c,v 1.1.1.4 2005-03-10 19:44:37 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -283,27 +283,27 @@ applet_destroy (GtkWidget *widget, GWeatherApplet *gw_applet)
 	
     if (gw_applet->gweather_info->metar_handle) {
        gnome_vfs_async_cancel(gw_applet->gweather_info->metar_handle);
-       gw_applet->gweather_info->metar_handle = 0;
+       gw_applet->gweather_info->metar_handle = NULL;
     }
 
     if (gw_applet->gweather_info->iwin_handle) {
        gnome_vfs_async_cancel(gw_applet->gweather_info->iwin_handle);
-       gw_applet->gweather_info->iwin_handle = 0;
+       gw_applet->gweather_info->iwin_handle = NULL;
     }
 
     if (gw_applet->gweather_info->wx_handle) {
        gnome_vfs_async_cancel(gw_applet->gweather_info->wx_handle);
-       gw_applet->gweather_info->wx_handle = 0;
+       gw_applet->gweather_info->wx_handle = NULL;
     }
 
     if (gw_applet->gweather_info->met_handle) {
        gnome_vfs_async_cancel(gw_applet->gweather_info->met_handle);
-       gw_applet->gweather_info->met_handle = 0;
+       gw_applet->gweather_info->met_handle = NULL;
     }
 
     if (gw_applet->gweather_info->bom_handle) {
        gnome_vfs_async_cancel(gw_applet->gweather_info->bom_handle);
-       gw_applet->gweather_info->bom_handle = 0;
+       gw_applet->gweather_info->bom_handle = NULL;
     }
 }
 

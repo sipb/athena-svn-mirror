@@ -1036,11 +1036,10 @@ AC_DEFUN([AM_MAINTAINER_MODE],
 ]
 )
 
-ll## intltool.m4 - Configure intltool for the target system. -*-Shell-script-*-
 
-dnl AC_PROG_INTLTOOL([MINIMUM-VERSION], [no-xml])
-# serial 1 AC_PROG_INTLTOOL
-AC_DEFUN([AC_PROG_INTLTOOL],
+dnl IT_PROG_INTLTOOL([MINIMUM-VERSION], [no-xml])
+# serial 1 IT_PROG_INTLTOOL
+AC_DEFUN([IT_PROG_INTLTOOL],
 [
 
 if test -n "$1"; then
@@ -1071,6 +1070,7 @@ INTLTOOL_DIRECTORY_RULE='%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcar
 INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
        INTLTOOL_UI_RULE='%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
       INTLTOOL_XML_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
+      INTLTOOL_XML_NOMERGE_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< [$]@' 
       INTLTOOL_XAM_RULE='%.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
       INTLTOOL_KBD_RULE='%.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -m -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
     INTLTOOL_CAVES_RULE='%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
@@ -1090,6 +1090,7 @@ AC_SUBST(INTLTOOL_UI_RULE)
 AC_SUBST(INTLTOOL_XAM_RULE)
 AC_SUBST(INTLTOOL_KBD_RULE)
 AC_SUBST(INTLTOOL_XML_RULE)
+AC_SUBST(INTLTOOL_XML_NOMERGE_RULE)
 AC_SUBST(INTLTOOL_CAVES_RULE)
 AC_SUBST(INTLTOOL_SCHEMAS_RULE)
 AC_SUBST(INTLTOOL_THEME_RULE)
@@ -1120,6 +1121,11 @@ if test "x$2" != "xno-xml"; then
    fi
 fi
 
+AC_PATH_PROG(ICONV, iconv, iconv)
+AC_PATH_PROG(MSGFMT, msgfmt, msgfmt)
+AC_PATH_PROG(MSGMERGE, msgmerge, msgmerge)
+AC_PATH_PROG(XGETTEXT, xgettext, xgettext)
+
 # Remove file type tags (using []) from po/POTFILES.
 
 ifdef([AC_DIVERSION_ICMDS],[
@@ -1140,13 +1146,47 @@ ifdef([AC_DIVERSION_ICMDS],[
         changequote([,])
     ])
   ])
+
+if mkdir -p --version . >/dev/null 2>&1 && test ! -d ./--version; then
+  # Keeping the `.' argument allows $(mkdir_p) to be used without
+  # argument.  Indeed, we sometimes output rules like
+  #   $(mkdir_p) $(somedir)
+  # where $(somedir) is conditionally defined.
+  # (`test -n '$(somedir)' && $(mkdir_p) $(somedir)' is a more
+  # expensive solution, as it forces Make to start a sub-shell.)
+  mkdir_p='mkdir -p -- .'
+else
+  # On NextStep and OpenStep, the `mkdir' command does not
+  # recognize any option.  It will interpret all options as
+  # directories to create, and then abort because `.' already
+  # exists.
+  for d in ./-p ./--version;
+  do
+    test -d $d && rmdir $d
+  done
+  # $(mkinstalldirs) is defined by Automake if mkinstalldirs exists.
+  if test -f "$ac_aux_dir/mkinstalldirs"; then
+    mkdir_p='$(mkinstalldirs)'
+  else
+    mkdir_p='$(install_sh) -d'
+  fi
+fi
+AC_SUBST([mkdir_p])
 ])
 
 # Manually sed perl in so people don't have to put the intltool scripts in AC_OUTPUT.
 
-AC_OUTPUT_COMMANDS([
+AC_CONFIG_COMMANDS([intltool], [
 
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${ac_aux_dir}/intltool-extract.in > intltool-extract.out
+intltool_edit="-e 's:@INTLTOOL_EXTRACT@:`pwd`/intltool-extract:g' \
+               -e 's:@INTLTOOL_ICONV@:${ICONV}:g' \
+               -e 's:@INTLTOOL_MSGFMT@:${MSGFMT}:g' \
+               -e 's:@INTLTOOL_MSGMERGE@:${MSGMERGE}:g' \
+               -e 's:@INTLTOOL_XGETTEXT@:${XGETTEXT}:g' \
+               -e 's:@INTLTOOL_PERL@:${INTLTOOL_PERL}:g'"
+
+eval sed ${intltool_edit} < ${ac_aux_dir}/intltool-extract.in \
+  > intltool-extract.out
 if cmp -s intltool-extract intltool-extract.out 2>/dev/null; then
   rm -f intltool-extract.out
 else
@@ -1155,8 +1195,8 @@ fi
 chmod ugo+x intltool-extract
 chmod u+w intltool-extract
 
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" \
-    < ${ac_aux_dir}/intltool-merge.in > intltool-merge.out
+eval sed ${intltool_edit} < ${ac_aux_dir}/intltool-merge.in \
+  > intltool-merge.out
 if cmp -s intltool-merge intltool-merge.out 2>/dev/null; then
   rm -f intltool-merge.out
 else
@@ -1165,7 +1205,8 @@ fi
 chmod ugo+x intltool-merge
 chmod u+w intltool-merge
 
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${ac_aux_dir}/intltool-update.in > intltool-update.out
+eval sed ${intltool_edit} < ${ac_aux_dir}/intltool-update.in \
+  > intltool-update.out
 if cmp -s intltool-update intltool-update.out 2>/dev/null; then
   rm -f intltool-update.out
 else
@@ -1174,9 +1215,15 @@ fi
 chmod ugo+x intltool-update
 chmod u+w intltool-update
 
-], INTLTOOL_PERL=${INTLTOOL_PERL} ac_aux_dir=${ac_aux_dir})
+], INTLTOOL_PERL='${INTLTOOL_PERL}' ac_aux_dir=${ac_aux_dir}
+INTLTOOL_EXTRACT='${INTLTOOL_EXTRACT}' ICONV='${ICONV}'
+MSGFMT='${MSGFMT}' MSGMERGE='${MSGMERGE}' XGETTEXT='${XGETTEXT}')
 
 ])
+
+# deprecated macros
+AC_DEFUN([AC_PROG_INTLTOOL], [IT_PROG_INTLTOOL($@)])
+
 
 # isc-posix.m4 serial 2 (gettext-0.11.2)
 dnl Copyright (C) 1995-2002 Free Software Foundation, Inc.
@@ -7363,7 +7410,7 @@ AC_DEFUN([AM_GCONF_SOURCE_2],
 ])
 
 # Copyright (C) 1995-2002 Free Software Foundation, Inc.
-# Copyright (C) 2001-2003 Red Hat, Inc.
+# Copyright (C) 2001-2003,2004 Red Hat, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -7386,7 +7433,9 @@ AC_DEFUN([AM_GCONF_SOURCE_2],
 #
 # Added better handling of ALL_LINGUAS from GNU gettext version 
 # written by Bruno Haible, Owen Taylor <otaylor.redhat.com> 5/30/3002
-
+#
+# Modified to require ngettext
+# Matthias Clasen <mclasen@redhat.com> 08/06/2004
 #
 # We need this here as well, since someone might use autoconf-2.5x
 # to configure GLib then an older version to configure a package
@@ -7479,16 +7528,27 @@ glib_DEFUN([GLIB_WITH_NLS],
       #
       # First check in libc
       #
-      AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
+      AC_CACHE_CHECK([for ngettext in libc], gt_cv_func_ngettext_libc,
         [AC_TRY_LINK([
 #include <libintl.h>
 ],
-          [return (int) dgettext ("","")],
-	  gt_cv_func_dgettext_libc=yes,
-          gt_cv_func_dgettext_libc=no)
+         [return (int) ngettext ("","", 1)],
+	  gt_cv_func_ngettext_libc=yes,
+          gt_cv_func_ngettext_libc=no)
         ])
   
-      if test "$gt_cv_func_dgettext_libc" = "yes" ; then
+      if test "$gt_cv_func_ngettext_libc" = "yes" ; then
+	      AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
+        	[AC_TRY_LINK([
+#include <libintl.h>
+],
+	          [return (int) dgettext ("","")],
+		  gt_cv_func_dgettext_libc=yes,
+	          gt_cv_func_dgettext_libc=no)
+        	])
+      fi
+  
+      if test "$gt_cv_func_ngettext_libc" = "yes" ; then
         AC_CHECK_FUNCS(bind_textdomain_codeset)
       fi
 
@@ -7496,25 +7556,29 @@ glib_DEFUN([GLIB_WITH_NLS],
       # If we don't have everything we want, check in libintl
       #
       if test "$gt_cv_func_dgettext_libc" != "yes" \
+	 || test "$gt_cv_func_ngettext_libc" != "yes" \
          || test "$ac_cv_func_bind_textdomain_codeset" != "yes" ; then
         
         AC_CHECK_LIB(intl, bindtextdomain,
-	    [AC_CHECK_LIB(intl, dgettext,
-		          gt_cv_func_dgettext_libintl=yes)])
+	    [AC_CHECK_LIB(intl, ngettext,
+		    [AC_CHECK_LIB(intl, dgettext,
+			          gt_cv_func_dgettext_libintl=yes)])])
 
 	if test "$gt_cv_func_dgettext_libintl" != "yes" ; then
 	  AC_MSG_CHECKING([if -liconv is needed to use gettext])
 	  AC_MSG_RESULT([])
-          AC_CHECK_LIB(intl, dcgettext,
+  	  AC_CHECK_LIB(intl, ngettext,
+          	[AC_CHECK_LIB(intl, dcgettext,
 		       [gt_cv_func_dgettext_libintl=yes
 			libintl_extra_libs=-liconv],
-			:,-liconv)
+			:,-liconv)],
+		:,-liconv)
         fi
 
         #
         # If we found libintl, then check in it for bind_textdomain_codeset();
         # we'll prefer libc if neither have bind_textdomain_codeset(),
-        # and both have dgettext
+        # and both have dgettext and ngettext
         #
         if test "$gt_cv_func_dgettext_libintl" = "yes" ; then
           glib_save_LIBS="$LIBS"
@@ -7526,7 +7590,8 @@ glib_DEFUN([GLIB_WITH_NLS],
           if test "$ac_cv_func_bind_textdomain_codeset" = "yes" ; then
             gt_cv_func_dgettext_libc=no
           else
-            if test "$gt_cv_func_dgettext_libc" = "yes"; then
+            if test "$gt_cv_func_dgettext_libc" = "yes" \
+		&& test "$gt_cv_func_ngettext_libc" = "yes"; then
               gt_cv_func_dgettext_libintl=no
             fi
           fi

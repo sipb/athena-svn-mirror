@@ -1,3 +1,60 @@
+Changes in GNOME-Applets 2.8.2
+==================================
+
+Codenamed "BANG UP JOB OLD BEAN!!!"
+
+Overall
+ * Bugfixes: #156220, #153398, #156220, #134000, ... (Sergey V. Udaltsov,
+   Kjartan Maraas, Muktha Narayan)
+ * AIX mixer support (Vincent Berger)
+
+Translations
+ * fr (Christophe Merlet)
+ * ru (Leonid Kanter)
+ * li (Žygimantas Beručka)
+ * bg (Vladimir Petkov, Alexander Shopov)
+ * ca (Jordi Mallach)
+ * da (Martin Willemoes Hansen)
+ * it (Alessio Frusciante, Marco Ciampa)
+ * de (Hendrik Brandt)
+
+Changes in GNOME-Applets 2.8.1.1
+==================================
+
+Codenamed "THIS CONSUMER PRODUCT IS NOT INTENDED FOR USERS PRONE TO VIOLET FITS
+           OF RAGE!!!" [1]
+
+Also known as the "test your code before you release" release.
+
+Overall
+ * Fix possible crasher in gweather preferences (Mark McLoughlin)
+ * Fix error in Italian translation that caused gweather to not parse the
+   location list (Kjarten Maraas)
+
+[1] With all regards to Pokey the Penguin
+
+Changes in GNOME-Applets 2.8.1
+==================================
+
+Overall
+ * Bugfixes
+ * New icons from Jakub Steiner (charpick, geyes, gswitchit)
+ * Fix multiload network traffic under NetBSD (Douglas Brebner)
+
+Translations
+ * nl (Michael Sikkes)
+ * az (Mətin Əmirov)
+ * ca (Jordi Mallach)
+ * ar (Arafat Medini)
+ * fr (Christophe Merlet, Raphael Tournoy, Yannick Marchegay)
+ * ko (Changwoo Ryu)
+ * it (Luca Ferretti)
+ * ru (Leonid Kanter)
+ * it (Alessio Frusciante, Francesco Marletta)
+ * en_GB (David Lodge)
+ * fa (Meelad Zakaria)
+ * zh_TW (Abel Cheung)
+
 Changes in GNOME-Applets 2.8.0
 ==================================
 

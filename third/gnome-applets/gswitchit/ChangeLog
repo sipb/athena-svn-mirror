@@ -1,3 +1,29 @@
+2004-10-24  Sergey V. Udaltsov <svu@gnome.org>
+
+	* gswitchit-applet.c: Fixed #156220
+
+2004-10-24  Sergey V. Udaltsov <svu@gnome.org>
+
+	* gswitchit-plugins.c: Fixed #153398
+
+2004-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gswitchit-plugins.c: (main): Use GETTEXT_PACKAGE
+	so that translations work.
+
+2004-10-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* GNOME_GSwitchItApplet.xml: Use correct png.
+	* gswitchit-capplet.c: (GSwitchItAppletPropsCreate):
+	Don't set frame to GTK_SHADOW_ETCHED_OUT on a GtkVBox
+	since we get warnings from glib about an illegal cast.
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* gswitchit-applet.png,
+	  gswitchit-properties-capplet.png: new icon from
+	Jakub Steiner.
+
 2004-09-13  Shaun McCance  <shaunm@gnome.org>
 
 	* help/C/Makefile.am:

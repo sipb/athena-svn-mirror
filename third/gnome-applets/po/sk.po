@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:10+0800\n"
+"POT-Creation-Date: 2004-12-06 18:51+0800\n"
 "PO-Revision-Date: 2004-03-18 16:53+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
@@ -81,12 +81,12 @@ msgstr "Zobrazí stav funkcií pre sprístupnenie klávesnice"
 
 #: accessx-status/applet.c:136 battstat/battstat_applet.c:1064
 #: cdplayer/cdplayer.c:596 charpick/charpick.c:564 drivemount/drivemount.c:552
-#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:608
+#: geyes/geyes.c:201 gkb-new/gkb-applet.c:84 gswitchit/gswitchit-applet.c:599
 #: gtik/gtik.c:723 gweather/gweather-about.c:47 mailcheck/mailcheck.c:2467
-#: mini-commander/src/about.c:50 mixer/mixer.c:1349
+#: mini-commander/src/about.c:50 mixer/mixer.c:1392
 #: modemlights/modemlights.c:118 multiload/main.c:58
 #: stickynotes/stickynotes_applet_callbacks.c:261
-#: wireless/wireless-applet.c:572
+#: wireless/wireless-applet.c:574
 msgid "translator_credits"
 msgstr "Stanislav Višňovský"
 
@@ -496,7 +496,7 @@ msgid "Battery Charge Monitor Preferences"
 msgstr "Monitor nabitia batérií"
 
 #: battstat/battstat_applet.glade.h:13 drivemount/properties.c:358
-#: gweather/gweather-pref.c:1049 mailcheck/mailcheck.c:2053
+#: gweather/gweather-pref.c:1052 mailcheck/mailcheck.c:2053
 #: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:563
 msgid "General"
 msgstr "Všeobecné"
@@ -556,9 +556,9 @@ msgstr "Ž_ltá:"
 #: battstat/properties.c:291 drivemount/drivemount.c:509
 #: drivemount/properties.c:604 mailcheck/mailcheck.c:2320
 #: mailcheck/mailcheck.c:2614 mini-commander/src/preferences.c:364
-#: mixer/mixer.c:1462 stickynotes/stickynotes_applet_callbacks.c:238
+#: mixer/mixer.c:1505 stickynotes/stickynotes_applet_callbacks.c:238
 #: stickynotes/stickynotes_applet_callbacks.c:402
-#: wireless/wireless-applet.c:542 wireless/wireless-applet.c:626
+#: wireless/wireless-applet.c:544 wireless/wireless-applet.c:628
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Pri pokuse o zobrazenie Pomocníka nastala chyba: %s"
@@ -630,7 +630,7 @@ msgstr "Nasledujúca stopa"
 msgid "You do not have permission to use the CD player."
 msgstr "Nemáte práva pre používanie prehrávača CD."
 
-#: cdplayer/cdplayer.c:378 mixer/mixer.c:1316 multiload/main.c:142
+#: cdplayer/cdplayer.c:378 mixer/mixer.c:1359 multiload/main.c:142
 #, c-format
 msgid "There was an error executing '%s': %s"
 msgstr "Pri pokuse o spustenie '%s' nastala chyba: %s"
@@ -1515,9 +1515,9 @@ msgstr "Dánsko"
 msgid "Danish keymap"
 msgstr "Dánska"
 
-#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:848
-#: gweather/gweather-pref.c:868 gweather/gweather-pref.c:892
-#: gweather/gweather-pref.c:918
+#: gkb-new/descs/Default.keyprop.desktop.in.h:1 gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:871 gweather/gweather-pref.c:895
+#: gweather/gweather-pref.c:921
 #, fuzzy
 msgid "Default"
 msgstr "Použiť š_tandardné"
@@ -2934,7 +2934,7 @@ msgstr "Popis"
 msgid "Flag and Label"
 msgstr "Vlajka a popis"
 
-#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1034
+#: gkb-new/prop.c:257 gtik/gtik.c:1521 gweather/gweather-pref.c:1037
 #: modemlights/properties.c:444
 msgid "Display"
 msgstr "Zobrazenie"
@@ -3032,7 +3032,7 @@ msgid "GNOME keyboard layout indicator"
 msgstr "Indikátor Prepínania klávesníc"
 
 #: gswitchit/GNOME_KeyboardApplet.server.in.in.h:3
-#: gswitchit/gswitchit-applet.c:613
+#: gswitchit/gswitchit-applet.c:604
 msgid "Keyboard Indicator"
 msgstr "Indikátor klávesnice"
 
@@ -3045,20 +3045,20 @@ msgstr "Vytváracie rozhranie pre applet Klávesnica"
 msgid "Keyboard Indicator (%s)"
 msgstr "Indikátor klávesnice (%s)"
 
-#: gswitchit/gswitchit-applet.c:616
+#: gswitchit/gswitchit-applet.c:607
 #, fuzzy
 msgid "Copyright (c) Sergey V. Udaltsov 1999-2004"
 msgstr "Copyright (c) Sergey V. Oudaltsov 1999-2004"
 
-#: gswitchit/gswitchit-applet.c:618
+#: gswitchit/gswitchit-applet.c:609
 msgid "Keyboard layout indicator applet for GNOME"
 msgstr "Indikátor prepínania klávesníc pre GNOME"
 
-#: gswitchit/gswitchit-applet.c:772
+#: gswitchit/gswitchit-applet.c:763
 msgid "XKB initialization error"
 msgstr "Chyba inicializácie XKB"
 
-#: gswitchit/gswitchit-applet.c:780
+#: gswitchit/gswitchit-applet.c:771
 msgid "Error loading XKB configuration registry"
 msgstr "Chyba pri načítavaní konfigurácie XKB"
 
@@ -3070,11 +3070,11 @@ msgstr ""
 "Sprístupniť rozloženie iba z menu appletu.\n"
 "Nie je možné prepínať toto rozloženie klávesnicou."
 
-#: gswitchit/gswitchit-capplet.c:265
+#: gswitchit/gswitchit-capplet.c:262
 msgid "_Exclude from keyboard switching"
 msgstr "_Vynechať z prepínania"
 
-#: gswitchit/gswitchit-capplet.c:296
+#: gswitchit/gswitchit-capplet.c:293
 msgid "Not used"
 msgstr "Nepoužívané"
 
@@ -3285,7 +3285,7 @@ msgstr "Symboly"
 msgid "Behavior"
 msgstr "Chovanie"
 
-#: gtik/gtik.c:1434 gweather/gweather-pref.c:994
+#: gtik/gtik.c:1434 gweather/gweather-pref.c:997
 msgid "Update"
 msgstr "Aktualizovať"
 
@@ -3293,7 +3293,7 @@ msgstr "Aktualizovať"
 msgid "Stock update fre_quency:"
 msgstr "Frekvencia _aktualizácie kurzov:"
 
-#: gtik/gtik.c:1450 gweather/gweather-pref.c:1018 mailcheck/mailcheck.c:2101
+#: gtik/gtik.c:1450 gweather/gweather-pref.c:1021 mailcheck/mailcheck.c:2101
 #: mailcheck/mailcheck.c:2107
 msgid "minutes"
 msgstr "minút"
@@ -3681,14 +3681,14 @@ msgstr "Zadajte URL"
 
 #. TRANSLATOR: This is the default unit to use for temperature measurements.
 #. Valid values are: "K" (Kelvin), "C" (Celsius) and "F" (Fahrenheit)
-#: gweather/gweather-pref.c:400 gweather/gweather-pref.c:409
+#: gweather/gweather-pref.c:403 gweather/gweather-pref.c:412
 msgid "DEFAULT_TEMP_UNIT"
 msgstr ""
 
 #. TRANSLATOR: This is the default unit to use for wind speed.
 #. Valid values are: "m/s" (meters per second), "km/h" (kilometers per hour),
 #. "mph" (miles per hour) and "knots"
-#: gweather/gweather-pref.c:435 gweather/gweather-pref.c:445
+#: gweather/gweather-pref.c:438 gweather/gweather-pref.c:448
 msgid "DEFAULT_SPEED_UNIT"
 msgstr ""
 
@@ -3696,143 +3696,143 @@ msgstr ""
 #. Valid values are: "kPa" (kiloPascals), "hPa" (hectoPascals),
 #. "mb" (millibars), "mmHg" (millimeters of mercury) and
 #. "inHg" (inches of mercury)
-#: gweather/gweather-pref.c:473 gweather/gweather-pref.c:484
+#: gweather/gweather-pref.c:476 gweather/gweather-pref.c:487
 msgid "DEFAULT_PRESSURE_UNIT"
 msgstr ""
 
 #. TRANSLATOR: This is the default unit to use for visibility distance.
 #. Valid values are: "m" (meters), "km" (kilometers) and "mi" (miles)
-#: gweather/gweather-pref.c:510 gweather/gweather-pref.c:519
+#: gweather/gweather-pref.c:513 gweather/gweather-pref.c:522
 msgid "DEFAULT_DISTANCE_UNIT"
 msgstr ""
 
-#: gweather/gweather-pref.c:797
+#: gweather/gweather-pref.c:800
 msgid "Weather Preferences"
 msgstr "Nastavenie Počasia"
 
-#: gweather/gweather-pref.c:830 gweather/gweather-pref.c:998
+#: gweather/gweather-pref.c:833 gweather/gweather-pref.c:1001
 msgid "_Automatically update every:"
 msgstr "_Automaticky aktualizovať každých:"
 
 #. Temperature Unit
-#: gweather/gweather-pref.c:839
+#: gweather/gweather-pref.c:842
 #, fuzzy
 msgid "_Temperature Unit:"
 msgstr "Teplota:"
 
-#: gweather/gweather-pref.c:849
+#: gweather/gweather-pref.c:852
 #, fuzzy
 msgid "Kelvin"
 msgstr "Belgická"
 
 #. TRANSLATORS: Celsius is sometimes referred Centigrade
-#: gweather/gweather-pref.c:851
+#: gweather/gweather-pref.c:854
 msgid "Celsius"
 msgstr ""
 
-#: gweather/gweather-pref.c:852
+#: gweather/gweather-pref.c:855
 #, fuzzy
 msgid "Fahrenheit"
 msgstr "Francúzska"
 
 #. Speed Unit
-#: gweather/gweather-pref.c:859
+#: gweather/gweather-pref.c:862
 msgid "_Wind Speed Unit:"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "meters per second"
-#: gweather/gweather-pref.c:870
+#: gweather/gweather-pref.c:873
 msgid "m/s"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "kilometers per hour"
-#: gweather/gweather-pref.c:872
+#: gweather/gweather-pref.c:875
 msgid "km/h"
 msgstr ""
 
 #. TRANSLATOR: The wind speed unit "miles per hour"
-#: gweather/gweather-pref.c:874
+#: gweather/gweather-pref.c:877
 #, fuzzy
 msgid "mph"
 msgstr "kph"
 
 #. TRANSLATOR: The wind speed unit "knots"
-#: gweather/gweather-pref.c:876
+#: gweather/gweather-pref.c:879
 msgid "knots"
 msgstr "uzly"
 
 #. Pressure Unit
-#: gweather/gweather-pref.c:883
+#: gweather/gweather-pref.c:886
 #, fuzzy
 msgid "_Pressure Unit:"
 msgstr "Tlak:"
 
 #. TRANSLATOR: The pressure unit "kiloPascals"
-#: gweather/gweather-pref.c:894
+#: gweather/gweather-pref.c:897
 #, fuzzy
 msgid "kPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "hectoPascals"
-#: gweather/gweather-pref.c:896
+#: gweather/gweather-pref.c:899
 msgid "hPa"
 msgstr "hPa"
 
 #. TRANSLATOR: The pressure unit "millibars"
-#: gweather/gweather-pref.c:898
+#: gweather/gweather-pref.c:901
 msgid "mb"
 msgstr ""
 
 #. TRANSLATOR: The pressure unit "millibars of mercury"
-#: gweather/gweather-pref.c:900
+#: gweather/gweather-pref.c:903
 msgid "mmHg"
 msgstr ""
 
 #. TRANSLATOR: The pressure unit "inches of mercury"
-#: gweather/gweather-pref.c:902
+#: gweather/gweather-pref.c:905
 msgid "inHg"
 msgstr "inHg"
 
 #. Distance Unit
-#: gweather/gweather-pref.c:909
+#: gweather/gweather-pref.c:912
 #, fuzzy
 msgid "_Visibility Unit:"
 msgstr "Viditeľnosť:"
 
 #. TRANSLATOR: The distance unit "meters"
-#: gweather/gweather-pref.c:920
+#: gweather/gweather-pref.c:923
 #, fuzzy
 msgid "meters"
 msgstr "kilometre"
 
 #. TRANSLATOR: The distance unit "kilometers"
-#: gweather/gweather-pref.c:922
+#: gweather/gweather-pref.c:925
 msgid "km"
 msgstr ""
 
 #. TRANSLATOR: The distance unit "miles"
-#: gweather/gweather-pref.c:924
+#: gweather/gweather-pref.c:927
 msgid "miles"
 msgstr "míle"
 
-#: gweather/gweather-pref.c:949
+#: gweather/gweather-pref.c:952
 msgid "Enable _radar map"
 msgstr "Povoliť _radarové mapy"
 
-#: gweather/gweather-pref.c:963
+#: gweather/gweather-pref.c:966
 #, fuzzy
 msgid "Use _custom address for radar map"
 msgstr "Použiť _vlastnú adresu pre radarovú mapu"
 
-#: gweather/gweather-pref.c:980
+#: gweather/gweather-pref.c:983
 msgid "A_ddress:"
 msgstr "_Adresa:"
 
-#: gweather/gweather-pref.c:1062
+#: gweather/gweather-pref.c:1065
 msgid "_Select a location:"
 msgstr "_Vyberte miesto:"
 
-#: gweather/gweather-pref.c:1092
+#: gweather/gweather-pref.c:1095
 msgid "Location"
 msgstr "Umiestnenie"
 
@@ -5185,8 +5185,8 @@ msgstr "Príkaz"
 msgid "Adjust the sound volume"
 msgstr "Úprava hlasitosti zvuku"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:199
-#: mixer/mixer.c:1363
+#: mixer/GNOME_MixerApplet.server.in.in.h:2 mixer/mixer.c:210
+#: mixer/mixer.c:1406
 msgid "Volume Control"
 msgstr "Nastavenie hlasitosti"
 
@@ -5198,115 +5198,115 @@ msgstr "_Potichu"
 msgid "_Open Volume Control"
 msgstr "_Zobraziť nastavenie hlasitosti"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Main Volume"
 msgstr "Hlavná hlasitosť"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Bass"
 msgstr "Basové tóny"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Treble"
 msgstr "Vysoké tóny"
 
-#: mixer/mixer.c:124
+#: mixer/mixer.c:130
 msgid "Synth"
 msgstr "Syntéza"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Pcm"
 msgstr "Pcm"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Speaker"
 msgstr "Reproduktor"
 
-#: mixer/mixer.c:125
+#: mixer/mixer.c:131
 msgid "Line"
 msgstr "Riadok"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Microphone"
 msgstr "MIkrofón"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "CD"
 msgstr "CD"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Mix"
 msgstr "Mix"
 
-#: mixer/mixer.c:126
+#: mixer/mixer.c:132
 msgid "Pcm2"
 msgstr "Pcm2"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Recording Level"
 msgstr "Úroveň nahrávania"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Input Gain"
 msgstr "Vstupná úroveň"
 
-#: mixer/mixer.c:127
+#: mixer/mixer.c:133
 msgid "Output Gain"
 msgstr "Výstupná úroveň"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line1"
 msgstr "Vstup1"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line2"
 msgstr "Vstup2"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Line3"
 msgstr "Vstup3"
 
-#: mixer/mixer.c:128
+#: mixer/mixer.c:134
 msgid "Digital1"
 msgstr "Digitálny vstup1"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital2"
 msgstr "Digitálny vstup2"
 
-#: mixer/mixer.c:129
+#: mixer/mixer.c:135
 msgid "Digital3"
 msgstr "Digitálny vstup3"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Input"
 msgstr "Vstup telefón"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Phone Output"
 msgstr "Výstup telefón"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Video"
 msgstr "Video"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Radio"
 msgstr "Rádio"
 
-#: mixer/mixer.c:130
+#: mixer/mixer.c:136
 msgid "Monitor"
 msgstr "Monitor"
 
-#: mixer/mixer.c:200
+#: mixer/mixer.c:211
 msgid "Volume Control (muted)"
 msgstr "Nastavenie hlasitosti (potichu)"
 
-#: mixer/mixer.c:201
+#: mixer/mixer.c:212
 msgid "No audio device"
 msgstr "Žiadne zvukové zariadenie"
 
-#: mixer/mixer.c:518
+#: mixer/mixer.c:546
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -5314,50 +5314,50 @@ msgstr ""
 "varovanie: táto verzia gmix bola preložená s inou verziou súboru\n"
 "soundcard.h.\n"
 
-#: mixer/mixer.c:893
+#: mixer/mixer.c:936
 #, c-format
 msgid "Couldn't open mixer device %s\n"
 msgstr "Nepodarilo sa otvoriť mixér %s\n"
 
-#: mixer/mixer.c:1062
+#: mixer/mixer.c:1105
 msgid "Volume Controller"
 msgstr "Ovládanie hlasitosti"
 
-#: mixer/mixer.c:1063
+#: mixer/mixer.c:1106
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "Použite šipky hore a dolu pre zmenu hlasitosti"
 
 #. Translators - The + and - refer to increasing and decreasing the volume.
 #. ** I don't know if there are sensible alternatives in other languages
-#: mixer/mixer.c:1087
+#: mixer/mixer.c:1130
 msgid "+"
 msgstr "+"
 
-#: mixer/mixer.c:1088
+#: mixer/mixer.c:1131
 msgid "-"
 msgstr "-"
 
-#: mixer/mixer.c:1364
+#: mixer/mixer.c:1407
 msgid "(C) 2001 Richard Hult"
 msgstr "(C) 2001 Richard Hult"
 
-#: mixer/mixer.c:1365
+#: mixer/mixer.c:1408
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr "Ovládanie hlasitosti umožňuje nastaviť hlasitosť pre vaše prostredie."
 
-#: mixer/mixer.c:1512
+#: mixer/mixer.c:1555
 msgid "Volume Control Preferences"
 msgstr "Nastavenie Ovládania hlasitosti"
 
-#: mixer/mixer.c:1536
+#: mixer/mixer.c:1579
 msgid "Audio Channels"
 msgstr "Zvukové kanále"
 
-#: mixer/mixer.c:1552
+#: mixer/mixer.c:1595
 msgid "_Select channel to control:"
 msgstr "_Vyberte ovládaný kanál:"
 
-#: mixer/mixer.c:1888
+#: mixer/mixer.c:1936
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr "Ovládanie hlasitosti umožňuje nastaviť hlasitosť pre vaše prostredie."
 
@@ -6379,7 +6379,7 @@ msgid "Monitor the quality of a wireless network link"
 msgstr "Monitorovanie kvality bezdrôtového pripojenia"
 
 #: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
-#: wireless/wireless-applet.c:588 wireless/wireless-applet.c:840
+#: wireless/wireless-applet.c:590 wireless/wireless-applet.c:842
 msgid "Wireless Link Monitor"
 msgstr "Sledovanie bezdrôtového pripojenia"
 
@@ -6388,7 +6388,7 @@ msgstr "Sledovanie bezdrôtového pripojenia"
 msgid "Link Strength: %2.0d%%"
 msgstr ""
 
-#: wireless/wireless-applet.c:367
+#: wireless/wireless-applet.c:369
 msgid ""
 "There doesn't seem to be any wireless devices configured on your system.\n"
 "Please verify your configuration if you think this is incorrect."
@@ -6396,19 +6396,19 @@ msgstr ""
 "Váš systém asi neobsahuje žiadne nakonfigurované bezdrôtové pripojenia.\n"
 "Prosím, overte konfiguráciu, ak máte pocit, že nie je správna."
 
-#: wireless/wireless-applet.c:502 wireless/wireless-applet.c:829
+#: wireless/wireless-applet.c:504 wireless/wireless-applet.c:831
 msgid "No Wireless Devices"
 msgstr "Žiadne bezdrôtové zariadenia"
 
-#: wireless/wireless-applet.c:590
+#: wireless/wireless-applet.c:592
 msgid "(C) 2001, 2002 Free Software Foundation "
 msgstr "(C) 2001, 2002 Free Software Foundation "
 
-#: wireless/wireless-applet.c:591
+#: wireless/wireless-applet.c:593
 msgid "This utility shows the status of a wireless link."
 msgstr "Tento nástroj zobrazuje stav bezdrôtového pripojenia."
 
-#: wireless/wireless-applet.c:841
+#: wireless/wireless-applet.c:843
 msgid "This utility shows the status of a wireless link"
 msgstr "Tento nástroj zobrazuje stav bezdrôtového pripojenia"
 
