@@ -31,7 +31,7 @@ Menu Desktop
     "Customize"		f.menu Customize
     "Audio Control"	f.checkexec.sh "/usr/sbin/apanel"
     "Empty Dumpster"	f.checkexpr.sh "test \! -f $HOME/.desktop-`hostname`/nodesktop -a -x /usr/lib/desktop/telldesktop" "/usr/lib/desktop/telldesktop 'empty dumpster'"
-    "Unix Shell"	f.checkexec.sh "/usr/sbin/winterm" 
+    "Unix Shell"	f.checkexec.sh "/usr/bin/X11/xterm" 
      no-label           f.separator
     "Log Out"           f.checkexec.sh "/usr/bin/X11/endsession"
 }
