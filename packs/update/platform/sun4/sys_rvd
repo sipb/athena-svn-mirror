@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.8 1994-01-05 12:04:41 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.9 1994-01-27 10:31:38 miki Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -127,7 +127,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> accept
 		-> add_drv
 		-> adm*
-		-> clri
 		-> convert*
 		-> *4x
 		-> group*
