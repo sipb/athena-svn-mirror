@@ -4,7 +4,7 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.4 1993-10-09 19:42:01 probe Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.5 1995-07-11 21:27:09 miki Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH
@@ -27,9 +27,9 @@ VERBOSELOG=1
 BANNERFIRST=1
 BANNERLAST=0
 BANNERPRO=$PSLIBDIR/banner.pro
-PSTEXT=$PSLIBDIR/pstext
-PSBANNER=$PSLIBDIR/psbanner
-PSCOMM=$PSLIBDIR/pscomm
+PSTEXT=/var/hp/pstext
+PSBANNER=/var/hp/psbanner
+PSCOMM=/var/hp/hpcomm
 
 export PSLIBDIR VERBOSELOG BANNERFIRST BANNERLAST BANNERPRO REVERSE \
 	PSTEXT PSBANNER PSCOMM
@@ -72,11 +72,13 @@ export PATH
 # nf - ditroff, tf - troff (CAT), gf - plot
 # vf - raster, df - TeX DVI, cf - cifplot, rf - fortran
 
+prog=`basename $prog`
+
 args="-p $prog -n $user -h $host ${account+-a ${account}} ${mediacost+-m ${mediacost}}"
 
 comm="$PSCOMM -P $pname $args $afile"
 
-prog=`basename $prog`
+
 case $prog in
 	psif) exec $comm ;;
 	psof) exec $PSBANNER $pname ; exit 0 ;;
