@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.8 1990-11-18 16:57:24 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.9 1990-11-21 10:53:23 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.8 1990-11-18 16:57:24 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.9 1990-11-21 10:53:23 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -63,8 +63,8 @@ char *wtmpf =	"/usr/adm/wtmp";
 char *passwdf =	"/etc/passwd";
 char *passwdtf ="/etc/ptmp";
 char *xpidf = 	"/usr/tmp/X0.pid";
-char *consolepidf = "/etc/console.pid";
-char *dmpidf =	"/etc/dm.pid";
+char *consolepidf = "/etc/athena/console.pid";
+char *dmpidf =	"/etc/athena/dm.pid";
 char *consolef ="/dev/console";
 char *consolelog = "/usr/tmp/console.log";
 char *mousedev = "/dev/mouse";
@@ -727,7 +727,10 @@ char *login;
 
     if (!strcmp(login, "root")) return;
 
-    while ((access(passwdtf, F_OK) == 0) && --count) sleep(1);
+    while ((access(passwdtf, F_OK) == 0) && --count) {
+	alarm(1);
+	sigpause(0);
+    }
     if (count == 0) unlink(passwdtf);
 
     oldfile = open(passwdf, O_RDONLY, 0);
