@@ -6,29 +6,26 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.9 1990-07-16 08:30:17 lwvanels Exp $
+ *	$Id: list.c,v 1.10 1990-12-05 21:22:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.9 1990-07-16 08:30:17 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.10 1990-12-05 21:22:02 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olc/olc.h>
 #include <olcd.h>
 
 #define NBLOCKS 100
 
 int
-#ifdef __STDC__
-list_knuckle(KNUCKLE *knuckle, LIST *data)
-#else
 list_knuckle(knuckle,data)
      KNUCKLE *knuckle;
      LIST *data;
-#endif /* STDC */
 {
     get_list_info(knuckle,data); /* doesn't return a value */
     return 0;
@@ -36,14 +33,10 @@ list_knuckle(knuckle,data)
 
 
 int
-#ifdef __STDC__
-list_user_knuckles(KNUCKLE *knuckle, LIST **data, int *size)
-#else
 list_user_knuckles(knuckle,data,size)
      KNUCKLE *knuckle;
      LIST **data;
      int *size;
-#endif /* STDC */
 {
   USER *user;
   KNUCKLE **k_ptr;
@@ -70,7 +63,7 @@ list_user_knuckles(knuckle,data,size)
       {
 #ifdef TEST
         printf("getting %s %d\n",(*k_ptr)->user->username,n);
-#endif TEST
+#endif /* TEST */
 
 	get_list_info((*k_ptr),d++);
 	n++;
@@ -82,12 +75,8 @@ list_user_knuckles(knuckle,data,size)
   return(SUCCESS);
 }
 
-#ifdef __STDC__
-list_redundant(KNUCKLE *knuckle)
-#else
 list_redundant(knuckle)
      KNUCKLE *knuckle;
-#endif /* STDC */
 {
     return is_connected(knuckle)
 	&&  knuckle->question->owner != knuckle;
@@ -96,10 +85,6 @@ list_redundant(knuckle)
 
 
 int
-#ifdef __STDC__
-list_queue(int queue, LIST **data, int queues, int *topics, int stati,
-	   char *name, int *size)
-#else
 list_queue(queue,data,queues,topics,stati,name,size)
      int queue;
      LIST **data;
@@ -108,7 +93,6 @@ list_queue(queue,data,queues,topics,stati,name,size)
      int stati;
      char *name;
      int *size;
-#endif /* STDC */
 {
   KNUCKLE **k_ptr;
   LIST *d;
@@ -126,7 +110,7 @@ list_queue(queue,data,queues,topics,stati,name,size)
 
 #ifdef TEST
   printf("list ststu: %d %s\n",stati,name);
-#endif TEST
+#endif /* TEST */
 
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
@@ -154,7 +138,7 @@ list_queue(queue,data,queues,topics,stati,name,size)
 	if(d->nseen >= 0)
 	  printf("question: %s \n",d->topic);
 
-#endif TEST
+#endif /* TEST */
 	d++;
 	n++;
 	if((1024 * NBLOCKS * page) <= ((n-1) * sizeof(LIST)))
@@ -175,7 +159,7 @@ list_queue(queue,data,queues,topics,stati,name,size)
 
 #ifdef TEST
   printf("%d elements in list\n",n);
-#endif TEST
+#endif /* TEST */
 
   return(SUCCESS);
 }

@@ -20,30 +20,27 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.11 1990-08-20 04:45:03 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.12 1990-12-05 21:27:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.11 1990-08-20 04:45:03 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.12 1990-12-05 21:27:27 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olc/olc.h>
 #include <olcd.h>
 
 extern ACL  Acl_List[];
 
 ERRCODE
-#ifdef __STDC__
-olc_load_user(int fd, REQUEST *request, int auth)
-#else
 olc_load_user(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user;
@@ -74,14 +71,10 @@ olc_load_user(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_dump(int fd, REQUEST *request, int auth)
-#else
 olc_dump(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   int status;
@@ -104,14 +97,10 @@ olc_dump(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_dump_req_stats(int fd, REQUEST *request, int auth)
-#else
 olc_dump_req_stats(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   int status;
@@ -134,14 +123,10 @@ olc_dump_req_stats(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_dump_ques_stats(int fd, REQUEST *request, int auth)
-#else
 olc_dump_ques_stats(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   int status;
@@ -164,14 +149,10 @@ olc_dump_ques_stats(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_change_motd(int fd, REQUEST *request, int auth)
-#else
 olc_change_motd(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   int status;
@@ -192,14 +173,10 @@ olc_change_motd(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_change_acl(int fd, REQUEST *request, int auth)
-#else
 olc_change_acl(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user = (USER *) NULL;
@@ -210,7 +187,7 @@ olc_change_acl(fd,request,auth)
 
 #ifdef LOG
   char mesg[BUF_SIZE];
-#endif LOG
+#endif /* LOG */
 
   status = find_knuckle(&(request->requester), &requester);	
   if(status)
@@ -236,7 +213,7 @@ olc_change_acl(fd,request,auth)
   sprintf(mesg,"%s changing %s acl for %s", request->requester.username, 
 	  acl, name);
   log_admin(mesg);
-#endif LOG
+#endif /* LOG */
 
   for(a_ptr = Acl_List; a_ptr->code > 0; a_ptr++)
     {
@@ -273,14 +250,10 @@ olc_change_acl(fd,request,auth)
   
 
 ERRCODE
-#ifdef __STDC__
-olc_list_acl(int fd, REQUEST *request, int auth)
-#else
 olc_list_acl(fd, request, auth)
      int fd;                    /* File descriptor for socket. */
      REQUEST *request;          /* Request structure from olcr. */
      int auth;                  /* indicates if requestor was authenticated */
-#endif /* STDC */
 {
   KNUCKLE *requester;
   ACL *a_ptr;
@@ -312,14 +285,10 @@ olc_list_acl(fd, request, auth)
 }
 
 ERRCODE
-#ifdef __STDC__
-olc_get_accesses(int fd, REQUEST *request, int auth)
-#else
 olc_get_accesses(fd,request,auth)  
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -372,14 +341,10 @@ olc_get_accesses(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_get_dbinfo(int fd, REQUEST *request, int auth)
-#else
 olc_get_dbinfo(fd,request,auth)  
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -421,14 +386,10 @@ olc_get_dbinfo(fd,request,auth)
 
 
 ERRCODE
-#ifdef __STDC__
-olc_change_dbinfo(int fd, REQUEST *request, int auth)
-#else
 olc_change_dbinfo(fd,request,auth)
      int fd;
      REQUEST *request;
      int auth;
-#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;

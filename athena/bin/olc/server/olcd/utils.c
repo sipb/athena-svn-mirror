@@ -12,22 +12,25 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Id: utils.c,v 1.9 1990-07-16 08:31:07 lwvanels Exp $
+ *	$Id: utils.c,v 1.10 1990-12-05 21:31:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.9 1990-07-16 08:31:07 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.10 1990-12-05 21:31:00 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
-#include <olc/olc.h>
+
 #include <olcd.h>
 
 #include <strings.h>
@@ -37,13 +40,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 void
-#ifdef __STDC__
-get_user_status_string(USER *u, char *status)
-#else
 get_user_status_string(u,status)
      USER *u;
      char *status;
-#endif /* STDC */
 {
   switch(u->status)
     {
@@ -64,13 +63,9 @@ get_user_status_string(u,status)
 
 
 void
-#ifdef __STDC__
-get_status_string(KNUCKLE *k, char *status)
-#else
 get_status_string(k,status)
      KNUCKLE *k;
      char *status;
-#endif /* STDC */
 {
   *status = '\0';
 
@@ -139,13 +134,9 @@ printf("==> %d %d\n",is_busy(k), !is_busy(k));
 
 
 void
-#ifdef __STDC__
-get_list_info(KNUCKLE *k, LIST *data)
-#else
 get_list_info(k,data)
      KNUCKLE *k;
      LIST *data;
-#endif /* STDC */
 { 
   data->user.uid = k->user->uid;
   data->user.instance = k->instance;

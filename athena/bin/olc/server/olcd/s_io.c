@@ -20,21 +20,18 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.17 1990-08-20 04:39:50 lwvanels Exp $
+ *	$Id: s_io.c,v 1.18 1990-12-05 21:21:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.17 1990-08-20 04:39:50 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.18 1990-12-05 21:21:18 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olc/lang.h>
-
-#if is_cplusplus
-extern "C" {
-#endif
 #include <sys/types.h>             /* System type declarations. */
 #include <sys/socket.h>            /* Network socket defs. */
 #include <sys/file.h>              /* File handling defs. */
@@ -44,11 +41,7 @@ extern "C" {
 #include <errno.h>                 /* System error numbers. */
 #include <netdb.h>
 #include <signal.h>
-#if is_cplusplus
-};
-#endif
 
-#include <olc/olc.h>
 #include <olcd.h>
 
 /* External Variables. */
@@ -78,16 +71,13 @@ extern int errno;
  */
 
 ERRCODE
-#ifdef __STDC__
-read_request(int fd, REQUEST *request)
-#else
 read_request(fd, request)
      int fd;
      REQUEST *request;
-#endif /* STDC */
 {
   static IO_REQUEST io_req;
   char msgbuf[BUF_SIZE];
+  int ltr;
 
   if (sread(fd, (char *) &io_req, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
     return(ERROR);
@@ -103,7 +93,7 @@ read_request(fd, request)
 
 #if 0
   printf("%d %d\n",request->requester.uid,request->version);
-#endif TEST
+#endif /* TEST */
 
   if ((request->version != VERSION_5)  &&
       (request->version != VERSION_4)  &&
@@ -129,18 +119,17 @@ read_request(fd, request)
 
 #if 0
   printf("klength: %d\n",request->kticket.length);
-#endif TEST
+#endif /* TEST */
 
-  if (read(fd, (char *) request->kticket.dat,
-	   MIN(sizeof(unsigned char)*request->kticket.length,
-	   sizeof(request->kticket.dat))) != 
-      sizeof(unsigned char)*request->kticket.length) 
+  ltr = MIN(sizeof(unsigned char)*request->kticket.length,
+	    sizeof(request->kticket.dat));
+  if (read(fd, (char *) request->kticket.dat,ltr) != ltr) 
     {
       log_error("error on read: kdata failure");
       return(ERROR);
     }
 
-#endif KERBEROS
+#endif /* KERBEROS */
 
 return(SUCCESS);  
 }
@@ -148,14 +137,10 @@ return(SUCCESS);
 
 
 int
-#ifdef __STDC__
-send_list(int fd, REQUEST *request, LIST *list)
-#else
 send_list(fd, request, list)
      int fd;
      REQUEST *request;
      LIST *list;
-#endif /* STDC */
 {
   LIST list_rq;
   OLDLIST frep;
@@ -213,13 +198,9 @@ send_list(fd, request, list)
   
 
 ERRCODE
-#ifdef __STDC__
-send_person(int fd, PERSON *person)
-#else
 send_person(fd, person)
      int fd;
      PERSON *person;
-#endif /* STDC */
 {
   PERSON person_rq;
 

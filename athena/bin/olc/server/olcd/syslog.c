@@ -7,12 +7,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.8 1990-09-02 10:56:47 lwvanels Exp $
+ *	$Id: syslog.c,v 1.9 1990-12-05 21:30:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.8 1990-09-02 10:56:47 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.9 1990-12-05 21:30:27 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -31,8 +33,23 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #endif
 #include <errno.h>
 #include <com_err.h>
-#include <olc/olc.h>
+
 #include "olcd.h"
+
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
+
+#ifndef SYSLOG
+static FILE *open_log P((char *filename ));
+static void log_to_file P((FILE *file , char *text ));
+#else
+static void log_to_syslogd P((int level , char *text ));
+#endif /* SYSLOG */
+
+#undef P
 
 #ifndef SYSLOG
 
@@ -52,11 +69,8 @@ static FILE *admin_log = (FILE *) NULL;
  */
 
 static FILE *
-#if __STDC__
-open_log (const char *filename)
-#else
-open_log (filename) char *filename;
-#endif
+open_log (filename)
+     char *filename;
 {
     char msgbuf[BUFSIZ];
     FILE *file;
@@ -88,11 +102,9 @@ open_log (filename) char *filename;
 }
 
 static void
-#if __STDC__
-log_to_file (FILE *file, const char *text)
-#else
-log_to_file (file, text) FILE *file; char *text;
-#endif
+log_to_file (file, text)
+     FILE *file;
+     char *text;
 {
     char time_buf[32];
     time_now (time_buf);
@@ -104,11 +116,9 @@ log_to_file (file, text) FILE *file; char *text;
 #else /* use syslog */
 
 static void
-#if __STDC__
-log_to_syslogd (int level, const char *text)
-#else
-log_to_syslogd (level, text) char *text;
-#endif
+log_to_syslogd (level, text)
+     int level;
+     char *text;
 {
     static int initialized = 0;
 #ifdef LOG_CONS
@@ -137,11 +147,8 @@ log_to_syslogd (level, text) char *text;
  */
 
 void
-#if __STDC__
-log_error(const char *message)
-#else
-log_error (message) char *message;
-#endif
+log_error (message)
+     char *message;
 {
 #ifdef SYSLOG
 
@@ -173,14 +180,9 @@ log_error (message) char *message;
  */
 
 
-
-
 void
-#if __STDC__
-log_zephyr_error(const char *message)
-#else
-log_error (message) char *message;
-#endif
+log_zephyr_error (message)
+     char *message;
 {
 #ifdef SYSLOG
 
@@ -208,11 +210,8 @@ log_error (message) char *message;
  */
 
 void
-#if __STDC__
-log_status(const char *message)
-#else
-log_status(message) char *message;
-#endif
+log_status(message)
+     char *message;
 {
 #ifdef SYSLOG
 
@@ -231,11 +230,8 @@ log_status(message) char *message;
 
 
 void
-#if __STDC__
-log_admin(const char *message)
-#else
-log_admin(message) char *message;
-#endif
+log_admin(message)
+     char *message;
 {
 #ifdef SYSLOG
 
@@ -252,11 +248,8 @@ log_admin(message) char *message;
 }
 
 void
-#if __STDC__
-log_debug (const char *message)
-#else
-log_debug (message) const char *message;
-#endif
+log_debug (message)
+     char *message;
 {
 #ifdef SYSLOG
     log_to_syslogd (LOG_DEBUG, message);

@@ -10,17 +10,18 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.8 1990-08-26 16:12:12 lwvanels Exp $
+ *	$Id: statistics.c,v 1.9 1990-12-05 21:29:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.8 1990-08-26 16:12:12 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.9 1990-12-05 21:29:43 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 
-#include <olc/olc.h>
 #include <olcd.h>
 
 /*
@@ -37,12 +38,8 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
  */
 
 void
-#ifdef __STDC__
-dump_request_stats(const char *file)
-#else
 dump_request_stats(file)
      char *file;
-#endif
 {
     FILE *fp;
     int i;
@@ -82,12 +79,8 @@ dump_request_stats(file)
  */
 
 void
-#ifdef __STDC__
-dump_question_stats(const char *file)
-#else
 dump_question_stats(file)
      char *file;
-#endif
 {
     FILE *fp;
 

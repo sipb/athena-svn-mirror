@@ -23,17 +23,17 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.28 1990-08-26 16:06:21 lwvanels Exp $
+ *	$Id: olcd.c,v 1.29 1990-12-05 21:26:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.28 1990-08-26 16:06:21 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.29 1990-12-05 21:26:11 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
-
-#include <olc/lang.h>
 
 #include <sys/types.h>          /* Standard type defs. */
 #include <sys/socket.h>		/* IPC definitions. */
@@ -50,22 +50,13 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <zephyr/zephyr.h>
 #endif /* ZEPHYR */
 
-#include <olc/olc.h>
-#include <olcd.h>
-
-#if is_cplusplus
-extern "C" {
-#endif
-
 #include <netdb.h>		/* Network database defs. */
 #ifndef DIRSIZ
 #include <sys/dir.h>		/* Directory entry format */
 #endif
 #include <arpa/inet.h>		/* inet_* defs */
 
-#if is_cplusplus
-};
-#endif
+#include <olcd.h>
 
 /* Global variables. */
 
@@ -81,51 +72,33 @@ char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
 
 #ifdef KERBEROS
 static long ticket_time = 0L;	/* Timer on kerberos ticket */
-#if __STDC__
-int get_kerberos_ticket(void);
-#endif
 extern char SERVER_REALM[];
 extern char *DFLT_SERVER_REALM;
 extern char *TICKET_FILE;
 extern int krb_ap_req_debug;
-#endif KERBEROS
+#endif /* KERBEROS */
 
-#if __STDC__
-static void flush_olc_userlogs (void);
-static void process_request (int, struct sockaddr_in *);
+
+#ifdef __STDC__
+# define        P(s) s
 #else
-static void flush_olc_userlogs (), process_request ();
+# define P(s) ()
 #endif
 
+static void process_request P((int fd , struct sockaddr_in *from ));
+static void flush_olc_userlogs P((void ));
+static int reap_child P((int sig ));
+#ifdef PROFILE
+static int dump_profile P((int sig ));
+static int start_profile P((int sig ));
+#endif /* PROFILE */
+#undef P
 
 /* Static variables */
 
 static int processing_request;
 static int got_signal;
 static int listening_fd;
-#if __STDC__
-int punt(int sig);
-int reap_child(int sig);
-#ifdef PROFILE
-int dump_profile(int sig);
-int start_profile(int sig);
-#endif /* PROFILE */
-#else
-int punt();
-int reap_child();
-#ifdef PROFILE
-int dump_profile();
-int start_profile();
-#endif /* PROFILE */
-#endif
-
-static char ME[60] =
-#ifdef TEST
-    "Test OLC daemon"
-#else
-    "OLC Daemon"
-#endif
-    ;
 
 /*
  * Function:	main() is the start-up function for the olcd daemon.
@@ -144,13 +117,9 @@ static char ME[60] =
  *	request table as they are received.
  */
 
-#if __STDC__
-int main(int argc, char **argv)
-#else
 main (argc, argv)
     int argc;
     char **argv;
-#endif
 {
     struct sockaddr_in from;		/* Socket address for input. */
     struct servent *service;		/* Network service entry. */
@@ -182,6 +151,7 @@ main (argc, argv)
 #endif
 
     strcpy(DaemonInst, OLC_SERVICE); /* set default 'instance' -- "olc" */
+    upcase_string(DaemonInst);
 
     /*
      * Parse any arguments
@@ -208,15 +178,13 @@ main (argc, argv)
 		return 1;
 	    }
 	    port_num = htons (atoi (argv[arg]));
-	    strcat (ME, " [port=");
-	    strcat (ME, argv[arg]);
-	    strcat (ME, "]");
 	}
 	else if (!strcmp (argv[arg], "-inst")) {
 	  if (!argv[++arg])
 	    fprintf (stderr, "-inst requires an instance name\n");
 	  else
 	    strcpy(DaemonInst, argv[arg]);
+	  upcase_string(DaemonInst);
 	}
 	else {
 	    fprintf (stderr, "unknown argument: %s\n",argv[arg]);
@@ -388,7 +356,7 @@ restart:
     }
 
     /*
-     * s&m
+     * bind the socket to the port
      */
 
     if (bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in)) < 0)
@@ -396,6 +364,10 @@ restart:
 	perror("Can't bind socket");
 	exit(ERROR);
     }
+
+    /*
+     * chdir so cores get dumped in the right directory
+     */
 
     if (chdir(LOG_DIR) == -1)
     {
@@ -421,16 +393,16 @@ restart:
 
 #ifdef KERBEROS
     setenv("KRBTKFILE",TICKET_FILE,TRUE);
-#endif KERBEROS
+#endif /* KERBEROS */
 
-    log_status (fmt ("%s startup....", ME));
+    log_status (fmt ("%s Daemon startup....", DaemonInst));
 
     load_db();
     load_data();
     flush_olc_userlogs();
 
     /*
-     * shhhh!
+     * Listen for connections..
      */
 
     if (listen(fd, SOMAXCONN))
@@ -457,12 +429,13 @@ restart:
     get_kerberos_ticket ();
 
     olc_broadcast_message("syslog",
-		fmt("%s successfully started.  Waiting for requests.", ME),
+		fmt("%s Daemon successfully started.  Waiting for requests.",
+		    DaemonInst),
 		"system");
     start_time = time(0);
 
      /*
-     * Wait for requests (hum drum life of a server)
+     * Wait for requests
      */
 
     while (TRUE)
@@ -525,13 +498,9 @@ restart:
  */
 
 static void
-#if __STDC__
-process_request(int fd, struct sockaddr_in *from)
-#else
 process_request (fd, from)
     int fd;
     struct sockaddr_in *from;
-#endif
 {
     REQUEST request;	/* Request structure from client. */
     int type;		/* Type of request. */
@@ -542,7 +511,6 @@ process_request (fd, from)
     index = 0;
     processing_request = 1;
     if(read_request(fd, &request) != SUCCESS) {
-	/*      log_error("Error in reading request");*/
 	perror ("Error in reading request");
 	return;
     }
@@ -554,9 +522,10 @@ process_request (fd, from)
      */
 
     get_kerberos_ticket();
-#endif KERBEROS
+#endif /* KERBEROS */
 
     /* get the right hostname */
+
     hp = gethostbyaddr(&from->sin_addr, sizeof(struct in_addr),
 		       from->sin_family);
     if (!hp)
@@ -597,10 +566,10 @@ process_request (fd, from)
     else
     {
 	send_response(fd, UNKNOWN_REQUEST);
-#ifdef	TEST
+#ifdef TEST
 	printf("Got unknown request from '%s' (#%d)\n",
 	       request.requester.username, type);
-#endif	TEST
+#endif /* TEST */
 
     }
 
@@ -615,7 +584,8 @@ process_request (fd, from)
 }
 
 
-static void flush_olc_userlogs()
+static void
+flush_olc_userlogs()
 {
     /* placeholder until this is really written */
     /*
@@ -638,13 +608,14 @@ static void flush_olc_userlogs()
 
     for (dp = readdir(dirp); dp != (struct direct *)NULL; dp = readdir(dirp))
     {
-	if (!strcmp(dp->d_name+dp->d_namlen-3, ".log"))
+	if (!strcmp(dp->d_name+dp->d_namlen-4, ".log"))
 	{
 	    char msgbuf[BUFSIZ];
 	    (void) strcpy(msgbuf, "Found log file ");
 	    (void) strncat(msgbuf, dp->d_name, dp->d_namlen);
 	    log_status(msgbuf);
 	    /* check for username among active questions */
+	    /* (yet to be implemented) */
 	}
     }
 }
@@ -660,15 +631,12 @@ static void flush_olc_userlogs()
  */
 
 int
-#if __STDC__
-punt(int sig)
-#else
 punt(sig)
     int sig;
-#endif
 {
     olc_broadcast_message("syslog",
-			  fmt ("%s shutting down on signal %d.", ME, sig),
+			  fmt ("%s Daemon shutting down on signal %d.",
+			       DaemonInst, sig),
 			  "system");
 
     close(listening_fd);
@@ -695,13 +663,9 @@ punt(sig)
  *		loop while there are any children waiting to report status.
  */
 
-int
-#if __STDC__
-reap_child(int sig)
-#else
+static int
 reap_child(sig)
      int sig;
-#endif
 {
   union wait status;
   int pid;
@@ -710,34 +674,27 @@ reap_child(sig)
   pid = wait3(&status,WNOHANG,0);
   while(pid > 0)
     pid = wait3(&status,WNOHANG,0);
+  return;
 }
 
 #ifdef PROFILE
-int
-#if __STDC__
-dump_profile(int sig)
-#else
+static int
 dump_profile(sig)
      int sig;
-#endif
 {
-  olc_broadcast_message("syslog", fmt("%s dumping profiling stats.",
-				      ME),"system");
+  olc_broadcast_message("syslog", fmt("%s Daemon dumping profiling stats.",
+				      Daemon_Inst),"system");
   log_status("Dumping profile..");
   monitor(0);
   moncontrol(0);
 }
 
-int
-#if __STDC__
-start_profile(int sig)
-#else
+static int
 start_profile(sig)
      int sig;
-#endif /* __STDC__ */
 {
-  olc_broadcast_message("syslog", fmt("%s starting profiling.",
-				      ME),"system");
+  olc_broadcast_message("syslog", fmt("%s Daemon starting profiling.",
+				      Daemon_Inst),"system");
   log_status("Starting profile..");
   moncontrol(1);
 }
@@ -750,47 +707,43 @@ start_profile(sig)
  *
  * Arguments:	REQUEST *request
  * Returns:	ERROR if cannot authenticate
- * Notes:       F, C, B flat
  *
  */
 
 
-#if __STDC__
-authenticate(REQUEST *request, long unsigned int addr)
-#else
 authenticate(request, addr)
     REQUEST *request;
     unsigned long addr;
-#endif
 {
 
 #ifdef KERBEROS
     AUTH_DAT data;
-#endif KERBEROS
+#endif /* KERBEROS */
 
     int result;
 
 #ifndef KERBEROS
     return(SUCCESS);
-#else KERBEROS
+#else /* KERBEROS */
 
     result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
 			addr,&data,SRVTAB_FILE);
 
 #if 0
     printf("kerberos result: %d\n",result);
-#endif TEST
+#endif /* TEST */
 
     strcpy(request->requester.username,data.pname);
     strcpy(request->requester.realm,data.prealm);
 
     return(result);
-#endif KERBEROS
+#endif /* KERBEROS */
 }
 
 
 #ifdef KERBEROS
-int get_kerberos_ticket()
+int
+get_kerberos_ticket()
 {
     int ret;
     char sinstance[INST_SZ];
@@ -820,4 +773,4 @@ int get_kerberos_ticket()
     }
     return(SUCCESS);
 }
-#endif KERBEROS
+#endif /* KERBEROS */
