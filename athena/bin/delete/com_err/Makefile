@@ -4,7 +4,7 @@
 # Copyright 1987, 1989, 1991 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.9 1991-02-22 07:47:16 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.10 1991-02-22 07:50:07 jik Exp $
 #	$Locker:  $
 #
 
@@ -31,14 +31,14 @@ YACCS=		error_table.y
 LEXS=		et_lex.lex.l
 ETS=		test1.et test2.et
 FILES=		Makefile PATCHLEVEL README\
-		com_err.texinfo.Z.uu profiled texinfo.tex.Z.uu\
+		com_err.texinfo.Z.uu texinfo.tex.Z.uu\
 		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
 
 
 #
 # what to build...
 #
-all:	compile_et libcom_err.a libcom_err_p.a
+all:	compile_et libcom_err.a
 
 lint:	llib-lcom_err.ln
 
@@ -65,10 +65,6 @@ doc:	com_err.dvi
 	dvi2ps -r $< > $@.new
 	mv $@.new $@
 
-.c.o:
-	${CC} -c -pg ${CFLAGS} $*.c
-	mv $*.o profiled/$*.o
-	${CC} -c ${CFLAGS} $*.c
 
 #
 # real entries...
@@ -91,8 +87,6 @@ install: all
 				${DESTDIR}${INCDIR}/mit-sipb-copyright.h
 	install -c libcom_err.a ${DESTDIR}${LIBDIR}/libcom_err.a
 	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err.a
-	install -c libcom_err_p.a ${DESTDIR}${LIBDIR}/libcom_err_p.a
-	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err_p.a
 	install -c com_err.texinfo ${DESTDIR}${DOCDIR}/com_err.texinfo
 	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
 	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
@@ -106,10 +100,6 @@ libcom_err.a:	$(LIBOBJS)
 	ar cruv libcom_err.a $(LIBOBJS)
 	${RANLIB} libcom_err.a
 
-libcom_err_p.a:	$(LIBOBJS)
-	(cd profiled; ar uv ../libcom_err_p.a $(LIBOBJS); \
-		${RANLIB} ../libcom_err_p.a)
-
 libcom_err.o:	$(LIBOBJS)
 	ld -r -s -o libcom_err.o $(LIBOBJS)
 	chmod -x libcom_err.o
@@ -121,7 +111,7 @@ clean:
 	rm -f *~ \#* *.bak \
 		*.otl *.aux *.toc *.PS *.dvi *.x9700 *.ps \
 		*.cp *.fn *.ky *.log *.pg *.tp *.vr \
-		*.o profiled/*.o libcom_err.a libcom_err_p.a \
+		*.o libcom_err.a \
 		com_err.o compile_et \
 		et.ar TAGS y.tab.c lex.yy.c error_table.c \
 		et_lex.lex.c \
