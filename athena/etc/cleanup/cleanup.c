@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.23 1997-11-02 23:39:50 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.24 1997-11-05 21:40:45 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,6 +39,12 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.23 1997-11-02 23:39:50 ghudson E
 #include <sys/procfs.h>
 #include <fcntl.h>
 #define PATH_PINFO "/proc/pinfo"
+#endif
+
+#ifdef OSF
+#include <sys/procfs.h>
+#include <fcntl.h>
+#define PATH_PINFO "/proc"
 #endif
 
 #ifdef NETBSD
@@ -149,7 +155,7 @@ static struct process *get_processes(int *nprocs)
   kvm_close(kv);
 #endif
 
-#ifdef IRIX
+#if defined(IRIX) || defined(OSF)
   DIR *procdir;
   struct dirent *entry;
   char *filename;

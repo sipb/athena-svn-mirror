@@ -24,6 +24,9 @@ netbsd*)
 linux*)
 	CPPFLAGS="$CPPFLAGS -DLINUX"
 	;;
+osf*)
+	CPPFLAGS="$CPPFLAGS -DOSF"
+	;;
 esac
 
 AC_MSG_CHECKING(for /etc/master.passwd)

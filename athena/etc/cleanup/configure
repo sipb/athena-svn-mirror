@@ -1017,10 +1017,13 @@ fi
 linux*)
 	CPPFLAGS="$CPPFLAGS -DLINUX"
 	;;
+osf*)
+	CPPFLAGS="$CPPFLAGS -DOSF"
+	;;
 esac
 
 echo $ac_n "checking for /etc/master.passwd""... $ac_c" 1>&6
-echo "configure:1024: checking for /etc/master.passwd" >&5
+echo "configure:1027: checking for /etc/master.passwd" >&5
 if test -f /etc/master.passwd; then
 	cat >> confdefs.h <<\EOF
 #define HAVE_MASTER_PASSWD 1
@@ -1041,12 +1044,12 @@ fi
 
 if test "$hesiod" != no; then
 	echo $ac_n "checking for res_send""... $ac_c" 1>&6
-echo "configure:1045: checking for res_send" >&5
+echo "configure:1048: checking for res_send" >&5
 if eval "test \"`echo '$''{'ac_cv_func_res_send'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1050 "configure"
+#line 1053 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char res_send(); below.  */
@@ -1069,7 +1072,7 @@ res_send();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1073: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1076: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_res_send=yes"
 else
@@ -1087,7 +1090,7 @@ if eval "test \"`echo '$ac_cv_func_'res_send`\" = yes"; then
 else
   echo "$ac_t""no" 1>&6
 echo $ac_n "checking for res_send in -lresolv""... $ac_c" 1>&6
-echo "configure:1091: checking for res_send in -lresolv" >&5
+echo "configure:1094: checking for res_send in -lresolv" >&5
 ac_lib_var=`echo resolv'_'res_send | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1095,7 +1098,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lresolv  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1099 "configure"
+#line 1102 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -1106,7 +1109,7 @@ int main() {
 res_send()
 ; return 0; }
 EOF
-if { (eval echo configure:1110: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1113: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1140,7 +1143,7 @@ if test "$hesiod" != yes; then
 	LDFLAGS="$LDFLAGS -L$hesiod/lib"
 fi
 echo $ac_n "checking for hes_resolve in -lhesiod""... $ac_c" 1>&6
-echo "configure:1144: checking for hes_resolve in -lhesiod" >&5
+echo "configure:1147: checking for hes_resolve in -lhesiod" >&5
 ac_lib_var=`echo hesiod'_'hes_resolve | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1148,7 +1151,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lhesiod  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1152 "configure"
+#line 1155 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -1159,7 +1162,7 @@ int main() {
 hes_resolve()
 ; return 0; }
 EOF
-if { (eval echo configure:1163: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1166: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
