@@ -1,4 +1,4 @@
-# $Id: packages,v 1.64 1999-03-03 00:58:06 danw Exp $
+# $Id: packages,v 1.65 1999-03-04 16:45:00 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -22,13 +22,15 @@ third/afsbin
 athena/lib/et
 athena/lib/ss
 athena/lib/hesiod
-athena/lib/al
 third/krb5
+athena/lib/locker
+athena/lib/al
 athena/etc/synctree
 third/motif			linux
 third/motif/clients/mwm		solaris
 athena/lib/Mu
 athena/lib/Xj
+third/krb5/appl
 third/wcl
 third/tcp_wrappers		all,-linux
 third/tcsh
@@ -65,7 +67,6 @@ athena/lib/zephyr
 athena/lib/neos
 athena/lib/athdir
 athena/lib/larv
-athena/lib/locker
 athena/etc/track
 athena/etc/newsyslog
 athena/etc/cleanup
