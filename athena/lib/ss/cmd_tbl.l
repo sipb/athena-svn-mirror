@@ -67,7 +67,7 @@ static l_quoted_string()
 {
      register char *p;
      yylval.dynstr = ds(yytext+1);
-     if (p=rindex(yylval.dynstr, '"'))
+     if (p=strrchr(yylval.dynstr, '"'))
 	  *p='\0';
      last_token = ds(yylval.dynstr);
      return STRING;

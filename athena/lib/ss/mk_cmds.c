@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.2 1991-06-10 02:25:03 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.3 1995-07-12 05:22:26 cfields Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -44,12 +44,12 @@ main(argc, argv)
 
     path = malloc(strlen(argv[1])+4); /* extra space to add ".ct" */
     strcpy(path, argv[1]);
-    p = rindex(path, '/');
+    p = strrchr(path, '/');
     if (p == (char *)NULL)
 	p = path;
     else
 	p++;
-    p = rindex(p, '.');
+    p = strrchr(p, '.');
     if (p == (char *)NULL || strcmp(p, ".ct"))
 	strcat(path, ".ct");
     yyin = fopen(path, "r");
@@ -58,7 +58,7 @@ main(argc, argv)
 	exit(1);
     }
 
-    p = rindex(path, '.');
+    p = strrchr(path, '.');
     *p = '\0';
     strcpy(c_file, path);
     strcat(c_file, ".c");
