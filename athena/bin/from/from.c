@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.18 1996-12-11 15:53:08 ghudson Exp $
+ * $Id: from.c,v 1.19 1997-10-02 18:57:29 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.18 1996-12-11 15:53:08 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.19 1997-10-02 18:57:29 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -19,14 +19,11 @@ static char *rcsid = "$Id: from.c,v 1.18 1996-12-11 15:53:08 ghudson Exp $";
 #include <pwd.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef HESIOD
-#include <hesiod.h>
-#endif
 #include <ctype.h>
 #include <sys/stat.h>
-#ifdef SOLARIS
 #include <termios.h>
-#include <regexpr.h>
+#ifdef HAVE_HESIOD
+#include <hesiod.h>
 #endif
 #define NOTOK (-1)
 #define OK 0
@@ -63,15 +60,15 @@ char	*headers[MAX_HEADER_LINES];
 int	num_headers, skip_message;
 
 char *Short_List[] = {
-	"^from$", NULL
+	"from", NULL
 	};
 
 char *Report_List[] = {
-        "^from$", "^subject$", NULL
+        "from", "subject", NULL
 	};
 
 char *Verbose_List[] = {
-	"^to$", "^from$", "^subject$", "^date$", NULL
+	"to", "from", "subject", "date", NULL
 	};
 
 	
@@ -105,7 +102,7 @@ parse_args(argc,argv)
 	char *cp;
 	int	c;
 	extern char	*getenv();
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
 	struct hes_postoffice *p;
 #endif
 
@@ -183,7 +180,7 @@ parse_args(argc,argv)
 	if (popmail) {
 	  if (!host)
 	    host = getenv("MAILHOST");
-#ifdef HESIOD
+#ifdef HAVE_HESIOD
 	  if (!host) {
 	    p = hes_getmailhost(user);
 	    if (p && !strcmp(p->po_type, "POP"))
@@ -240,7 +237,7 @@ getmail_pop(user, host, printhdr)
 		return -1;
 	}
 
-#ifdef KPOP
+#ifdef HAVE_KRB4
 	if (pop_command("USER %s", user) == NOTOK || 
 	    pop_command("PASS %s", user) == NOTOK)
 #else
@@ -403,20 +400,13 @@ error (s1, s2)
   putc ('\n', stderr);
 }
 
-char *re_comp();
-
 int list_compare(s,list)
       char *s,**list;
 {
       char *retval;
 
       while (*list!=NULL) {
-	      retval=re_comp(*list++);
-	      if (retval) {
-		      fprintf(stderr,"%s: %s - %s\n",progname,retval,*(--list));
-		      exit(1);
-		      }
-	      if (re_exec(s))
+	      if (strcmp(*list++, s) == 0)
 		      return(1);
       }
       return(0);
