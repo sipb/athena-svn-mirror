@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 1997-11-03 23:17:28 ghudson Exp $
+# $Id: syncconf.sh,v 1.2 1997-12-30 18:30:34 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -215,13 +215,14 @@ handle()
 		move $config/ifconfig-1.options \
 			$config/ifconfig-1.options.saved
 
-		net=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
-		gateway=$net.0.1
-		broadcast=$net.255.255
+		set -- `/etc/athena/netparams "$ADDR"`
+		netmask=$1
+		broadcast=$3
+		gateway=$4
 
 		put    /etc/sys_id $HOST
 		put    $config/staticroute.options $gateway
-		put    $config/ifconfig-1.options "netmask 0xffff0000"
+		put    $config/ifconfig-1.options "netmask $netmask"
 		append $config/ifconfig-1.options "broadcast $broadcast"
 		put    /etc/hosts "#"
 		append /etc/hosts "# Internet host table"
