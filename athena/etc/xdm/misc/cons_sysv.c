@@ -248,6 +248,7 @@ int cons_stop(cons_state *c)
   int status;
   struct sigaction sigact, osigact;
   pid_t ret;
+  sigset_t mask, omask;
 
   if (c == NULL)
     return 1;
@@ -255,10 +256,16 @@ int cons_stop(cons_state *c)
   if (c->state != CONS_UP)
     return 0;
 
+  /* Block child signals while waiting for console to die. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
+
   if (kill(c->pid, SIGHUP))
     {
       /* This should only be ESRCH; assuming console already down */
       cons_cleanup(c, CONS_DOWN);
+      sigprocmask(SIG_SETMASK, &omask, NULL);
       return 0;
     }
 
@@ -270,18 +277,23 @@ int cons_stop(cons_state *c)
   sigaction(SIGALRM, &sigact, &osigact);
 
   alarm(5);
-  while ((ret = waitpid(c->pid, &status, 0)) == -1)
+  while (((ret = waitpid(c->pid, &status, 0)) == -1) && (errno == EINTR))
     {
-      if (errno == EINTR && cons_ding)
+      if (cons_ding)
 	{
+	  /* Timed out */
 	  kill(c->pid, SIGKILL);
-	  cons_cleanup(c, CONS_DOWN);
 	  break;
 	}
-      /* ouch! */
     }
+  alarm(0);
+  cons_ding = 0;
+  sigaction(SIGALRM, &osigact, NULL);
 
-  if (ret == c->pid)
+  if (ret == -1)
+    cons_cleanup(c, CONS_DOWN);
+
+  else if (ret == c->pid)
     {
       if ((WIFEXITED(status) && WEXITSTATUS(status) == 0) ||
 	  (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL))
@@ -290,9 +302,7 @@ int cons_stop(cons_state *c)
 	cons_cleanup(c, CONS_FROZEN);
     }
 
-  alarm(0);
-  cons_ding = 0;
-  sigaction(SIGALRM, &osigact, NULL);
+  sigprocmask(SIG_SETMASK, &omask, NULL);
 
   return 0;
 }
