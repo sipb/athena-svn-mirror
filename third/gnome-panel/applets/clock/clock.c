@@ -138,7 +138,6 @@ struct _ClockData {
         time_t             current_time;
 	char              *timeformat;
 	guint              timeout;
-	int                timeouttime;
 	PanelAppletOrient  orient;
 	int                size;
 
@@ -156,7 +155,8 @@ struct _ClockData {
 	guint listeners [N_GCONF_PREFS];
 };
 
-static void update_clock (ClockData * cd);
+static void  update_clock (ClockData * cd);
+static float get_itime    (time_t current_time);
 
 static void set_atk_name_description (GtkWidget *widget,
                                       const char *name,
@@ -206,39 +206,27 @@ static int
 clock_timeout_callback (gpointer data)
 {
 	ClockData *cd = data;
+	time_t new_time;
 
-	update_clock (cd);
+        time (&new_time);
 
-	if (!cd->showseconds && cd->format != CLOCK_FORMAT_UNIX) {
-		if (cd->format != CLOCK_FORMAT_INTERNET) {
-			int sec = cd->current_time % 60;
-			if (sec != 0 || cd->timeouttime != 60000) {
-				/* ensure next update is exactly on 0 seconds */
-				cd->timeouttime = (60 - sec)*1000;
-				cd->timeout = g_timeout_add (cd->timeouttime,
-							     clock_timeout_callback,
-							     cd);
-				return FALSE;
-			}
-		} else {
-			struct tm *tm;
-			time_t bmt;
-			long isec;
-
-			/* BMT (Biel Mean Time) is GMT+1 */
-			bmt = cd->current_time + 3600;
-			tm = gmtime (&bmt);
-			isec = ((tm->tm_hour*3600 + tm->tm_min*60 + tm->tm_sec)*10) % 864;
-			
-			if (isec != 0 || cd->timeouttime != INTERNETBEAT) {
-				/* ensure next update is exactly on beat limit */
-				cd->timeouttime = (864 - isec)*100;
-				cd->timeout = g_timeout_add (cd->timeouttime,
-							     clock_timeout_callback,
-							     cd);
-				return FALSE;
-			}
+	if (!cd->showseconds &&
+	    cd->format != CLOCK_FORMAT_UNIX &&
+	    cd->format != CLOCK_FORMAT_CUSTOM) {
+		if (cd->format != CLOCK_FORMAT_INTERNET && 
+		    new_time % 60 != cd->current_time % 60)
+		{
+				update_clock (cd);
 		}
+		else if ((long)get_itime (new_time) !=
+			 (long)get_itime (cd->current_time))
+		{
+				update_clock (cd);
+		}
+	}
+	else
+	{
+		update_clock (cd);
 	}
 
 	return TRUE;
@@ -342,7 +330,7 @@ update_clock (ClockData * cd)
 	char date[256], hour[256];
 	char *utf8, *loc;
 
-        time (&cd->current_time);
+	time (&cd->current_time);
 	
 	if (cd->gmt_time)
 		tm = gmtime (&cd->current_time);
@@ -407,6 +395,8 @@ refresh_clock (ClockData *cd)
 static void
 refresh_clock_timeout(ClockData *cd)
 {
+	int timeouttime;
+
 	unfix_size (cd);
 	
 	update_timeformat (cd);
@@ -416,29 +406,12 @@ refresh_clock_timeout(ClockData *cd)
 
 	update_clock (cd);
 	
-	if (cd->format == CLOCK_FORMAT_INTERNET) {
-		if (cd->showseconds)
-			cd->timeouttime = INTERNETSECOND;
-		else {
-			struct tm *tm;
-			time_t bmt;
-			long isec;
-
-			/* BMT (Biel Mean Time) is GMT+1 */
-			bmt = cd->current_time + 3600;
-			tm = gmtime (&bmt);
-			isec = ((tm->tm_hour*3600 + tm->tm_min*60 + tm->tm_sec)*10) % 864;
-			cd->timeouttime = (864 - isec)*100;
-		}
-	}
-	else if(cd->format == CLOCK_FORMAT_UNIX ||
-		cd->format == CLOCK_FORMAT_CUSTOM ||
-		cd->showseconds)
-		cd->timeouttime = 1000;
+	if (cd->format == CLOCK_FORMAT_INTERNET)
+		timeouttime = INTERNETSECOND;
 	else
-		cd->timeouttime = (60 - cd->current_time % 60)*1000;
+		timeouttime = 1000;
 	
-	cd->timeout = g_timeout_add (cd->timeouttime,
+	cd->timeout = g_timeout_add (timeouttime,
 	                             clock_timeout_callback,
 	                             cd);
 }
@@ -708,7 +681,7 @@ handle_task_percent_complete_edited (ClockData           *cd,
         GtkTreeIter  iter;
         char        *uid;
         int          percent_complete;
-        char        *error = NULL;
+        char        *error = NULL, *text_copy;
 
         path       = gtk_tree_path_new_from_string (path_str);
         child_path = gtk_tree_model_filter_convert_path_to_child_path (cd->tasks_filter, path);
@@ -717,7 +690,10 @@ handle_task_percent_complete_edited (ClockData           *cd,
                             TASK_COLUMN_UID, &uid,
                             -1);
 
-        percent_complete = (int) g_strtod (text, &error);
+        text_copy = g_strdup (text);
+        text_copy = g_strdelimit (text_copy, "%", ' ');
+        text_copy = g_strstrip (text_copy);
+        percent_complete = (int) g_strtod (text_copy, &error);
         if (!error || !error [0]) {
                 gboolean task_completed;
 
@@ -731,6 +707,7 @@ handle_task_percent_complete_edited (ClockData           *cd,
         }
 
         g_free (uid);
+        g_free (text_copy);
         gtk_tree_path_free (path);
         gtk_tree_path_free (child_path);
 }
@@ -1513,6 +1490,27 @@ clock_size_request (GtkWidget *clock, GtkRequisition *req, gpointer data)
 	req->height = cd->fixed_height;
 }
 
+static inline void
+force_no_focus_padding (GtkWidget *widget)
+{
+        gboolean first_time = TRUE;
+
+        if (first_time) {
+                gtk_rc_parse_string ("\n"
+                                     "   style \"clock-applet-button-style\"\n"
+                                     "   {\n"
+                                     "      GtkWidget::focus-line-width=0\n"
+                                     "      GtkWidget::focus-padding=0\n"
+                                     "   }\n"
+                                     "\n"
+                                     "    widget \"*.clock-applet-button\" style \"clock-applet-button-style\"\n"
+                                     "\n");
+                first_time = FALSE;
+        }
+
+        gtk_widget_set_name (widget, "clock-applet-button");
+}
+
 static void
 create_clock_widget (ClockData *cd)
 {
@@ -1534,6 +1532,8 @@ create_clock_widget (ClockData *cd)
 	toggle = gtk_toggle_button_new ();
 	gtk_container_set_resize_mode (GTK_CONTAINER (toggle), GTK_RESIZE_IMMEDIATE);
 	gtk_button_set_relief (GTK_BUTTON (toggle), GTK_RELIEF_NONE);
+
+        force_no_focus_padding (toggle);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 	gtk_container_add (GTK_CONTAINER (alignment), clock);
@@ -1590,21 +1590,30 @@ applet_change_background (PanelApplet               *applet,
 			  GdkPixmap                 *pixmap,
 			  ClockData                 *cd)
 {
-	if (type == PANEL_NO_BACKGROUND) {
-		GtkRcStyle *rc_style;
+        GtkRcStyle *rc_style;
+        GtkStyle   *style;
 
-		rc_style = gtk_rc_style_new ();
+        /* reset style */
+        gtk_widget_set_style (GTK_WIDGET (cd->applet), NULL);
+        rc_style = gtk_rc_style_new ();
+        gtk_widget_modify_style (GTK_WIDGET (cd->applet), rc_style);
+        g_object_unref (rc_style);
 
-		gtk_widget_modify_style (cd->applet, rc_style);
-
-		g_object_unref (rc_style);
-
-	} else if (type == PANEL_COLOR_BACKGROUND)
-		gtk_widget_modify_bg (cd->applet, GTK_STATE_NORMAL, color);
-
-	/* else if (type == PANEL_PIXMAP_BACKGROUND)
-	 * FIXME: Handle this when the panel support works again
-	 */
+        switch (type) {
+        case PANEL_NO_BACKGROUND:
+                break;
+        case PANEL_COLOR_BACKGROUND:
+                gtk_widget_modify_bg (GTK_WIDGET (cd->applet),
+                                      GTK_STATE_NORMAL, color);
+                break;
+        case PANEL_PIXMAP_BACKGROUND:
+                style = gtk_style_copy (GTK_WIDGET (cd->applet)->style);
+                if (style->bg_pixmap[GTK_STATE_NORMAL])
+                        g_object_unref (style->bg_pixmap[GTK_STATE_NORMAL]);
+                style->bg_pixmap[GTK_STATE_NORMAL] = g_object_ref (pixmap);
+                gtk_widget_set_style (GTK_WIDGET (cd->applet), style);
+                break;
+        }
 }
 
 

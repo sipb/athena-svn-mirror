@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-31 09:29+0100\n"
+"POT-Creation-Date: 2004-12-05 17:53+0100\n"
 "PO-Revision-Date: 2004-05-22 15:14+0300\n"
 "Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -50,9 +50,9 @@ msgstr "_אודות..."
 #: applets/wncklet/GNOME_WindowListApplet.xml.h:2
 #: applets/wncklet/GNOME_WindowMenuApplet.xml.h:2
 #: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:2
-#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2370
+#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2364
 #: gnome-panel/panel-action-button.c:678 gnome-panel/panel-menu-bar.c:325
-#: gnome-panel/panel-menu-button.c:620
+#: gnome-panel/panel-menu-button.c:613
 msgid "_Help"
 msgstr "_עזרה"
 
@@ -65,7 +65,7 @@ msgid "_Preferences"
 msgstr "_העדפות..."
 
 #: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:1
-#: applets/clock/clock.c:2544
+#: applets/clock/clock.c:2553
 msgid "Clock"
 msgstr "שעון"
 
@@ -81,20 +81,20 @@ msgstr "יצרן ליצירת יישומוני שעון."
 msgid "Get the current time and date"
 msgstr "קבל את השעה והתאריך הנוכחיים"
 
-#: applets/clock/clock.c:277
+#: applets/clock/clock.c:265
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: applets/clock/clock.c:277 applets/clock/clock.c:608
+#: applets/clock/clock.c:265 applets/clock/clock.c:581
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: applets/clock/clock.c:279 applets/clock/clock.c:1655
+#: applets/clock/clock.c:267 applets/clock/clock.c:1664
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
-#: applets/clock/clock.c:279 applets/clock/clock.c:610
-#: applets/clock/clock.c:1657
+#: applets/clock/clock.c:267 applets/clock/clock.c:583
+#: applets/clock/clock.c:1666
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -103,7 +103,7 @@ msgstr "%H:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: applets/clock/clock.c:290
+#: applets/clock/clock.c:278
 msgid "%a %b %e"
 msgstr "%a %d ב%b"
 
@@ -111,7 +111,7 @@ msgstr "%a %d ב%b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:297
+#: applets/clock/clock.c:285
 #, c-format
 msgid ""
 "%1$s\n"
@@ -124,36 +124,36 @@ msgstr ""
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:304
+#: applets/clock/clock.c:292
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
 #. Show date in tooltip
-#: applets/clock/clock.c:388
+#: applets/clock/clock.c:376
 msgid "%A %B %d"
 msgstr "יום %A, ה %d ב%B"
 
 #. Translators: If the event did not start on the current day
 #. we will display the start date in the most abbreviated way possible.
-#: applets/clock/clock.c:615
+#: applets/clock/clock.c:588
 #, fuzzy
 msgid "%b %d"
 msgstr "%a %d ב%b"
 
-#: applets/clock/clock.c:911
+#: applets/clock/clock.c:888
 msgid "Tasks"
 msgstr "משימות"
 
-#: applets/clock/clock.c:1055
+#: applets/clock/clock.c:1032
 msgid "All Day"
 msgstr "כל היום"
 
-#: applets/clock/clock.c:1096
+#: applets/clock/clock.c:1073
 msgid "Appointments"
 msgstr "פגישות"
 
-#: applets/clock/clock.c:1328
+#: applets/clock/clock.c:1305
 msgid "Calendar"
 msgstr "לוח שנה"
 
@@ -161,34 +161,34 @@ msgstr "לוח שנה"
 msgid "Computer Clock"
 msgstr "שעון מחשב"
 
-#: applets/clock/clock.c:1650
+#: applets/clock/clock.c:1659
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
-#: applets/clock/clock.c:1652
+#: applets/clock/clock.c:1661
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
-#: applets/clock/clock.c:1694
+#: applets/clock/clock.c:1703
 msgid "%A, %B %d %Y"
 msgstr "יום %A, ה %d ב%B %Y"
 
-#: applets/clock/clock.c:1738
+#: applets/clock/clock.c:1747
 #, c-format
 msgid "Failed to launch time configuration tool: %s"
 msgstr "נכשל בהפעלת הכלי להגדרת השעה: %s"
 
-#: applets/clock/clock.c:1777
+#: applets/clock/clock.c:1786
 msgid ""
 "Failed to locate a program for configuring the date and time. Perhaps none "
 "is installed?"
 msgstr "נכשל במציאת תוכנית להגדרת התאריך והשעה. אולי אין כזו תוכנית מותקנת?"
 
-#: applets/clock/clock.c:2179
+#: applets/clock/clock.c:2188
 msgid "Custom format"
 msgstr "סידור מותאם אישית"
 
-#: applets/clock/clock.c:2300 applets/clock/clock.c:2490
+#: applets/clock/clock.c:2309 applets/clock/clock.c:2499
 #: applets/fish/fish.c:127 applets/notification_area/main.c:84
 #: applets/wncklet/showdesktop.c:426 applets/wncklet/window-list.c:115
 #: applets/wncklet/window-list.c:772 applets/wncklet/window-menu.c:100
@@ -198,48 +198,48 @@ msgstr "סידור מותאם אישית"
 msgid "There was an error displaying help: %s"
 msgstr "ארעה שגיאה בהצגת העזרה: %s"
 
-#: applets/clock/clock.c:2336
+#: applets/clock/clock.c:2345
 msgid "Clock Preferences"
 msgstr "העדפות שעון"
 
-#: applets/clock/clock.c:2372
+#: applets/clock/clock.c:2381
 msgid "Clock _type:"
 msgstr "_סוג שעון:"
 
-#: applets/clock/clock.c:2382
+#: applets/clock/clock.c:2391
 msgid "12 hour"
 msgstr "12 שעות"
 
-#: applets/clock/clock.c:2383
+#: applets/clock/clock.c:2392
 msgid "24 hour"
 msgstr "24 שעות"
 
-#: applets/clock/clock.c:2384
+#: applets/clock/clock.c:2393
 msgid "UNIX time"
 msgstr "זמן UNIX"
 
-#: applets/clock/clock.c:2385
+#: applets/clock/clock.c:2394
 msgid "Internet time"
 msgstr "זמן אינטרנט"
 
-#: applets/clock/clock.c:2393
+#: applets/clock/clock.c:2402
 msgid "Custom _format:"
 msgstr "_סידור מותאם אישית"
 
-#: applets/clock/clock.c:2412
+#: applets/clock/clock.c:2421
 msgid "Show _seconds"
 msgstr "הצג _שניות"
 
-#: applets/clock/clock.c:2421
+#: applets/clock/clock.c:2430
 msgid "Show _date"
 msgstr "הצג _תאריך"
 
-#: applets/clock/clock.c:2430
+#: applets/clock/clock.c:2439
 msgid "Use _UTC"
 msgstr "השתמש ב _UTC"
 
 #. Translator credits
-#: applets/clock/clock.c:2525 applets/notification_area/main.c:120
+#: applets/clock/clock.c:2534 applets/notification_area/main.c:120
 #: applets/wncklet/showdesktop.c:456 applets/wncklet/window-list.c:804
 #: applets/wncklet/window-menu.c:130 applets/wncklet/workspace-switcher.c:506
 #: gnome-panel/menu.c:201
@@ -251,7 +251,7 @@ msgstr ""
 "פרויקט linBrew\n"
 "http://linbrew.sourceforge.net"
 
-#: applets/clock/clock.c:2546
+#: applets/clock/clock.c:2555
 msgid "The Clock displays the current time and date"
 msgstr "השעון מציג את הזמן והתאריך הנוכחיים"
 
@@ -965,11 +965,11 @@ msgstr "לא ניתן למצוא נקודה ריקה"
 msgid "Failed to load image %s"
 msgstr "נכשלה טעינת תמונה %s"
 
-#: gnome-panel/button-widget.c:403
+#: gnome-panel/button-widget.c:408
 msgid "none"
 msgstr "ללא"
 
-#: gnome-panel/button-widget.c:408
+#: gnome-panel/button-widget.c:413
 msgid "file not found"
 msgstr "קובץ לא נמצא"
 
@@ -1003,7 +1003,7 @@ msgid "Drawer"
 msgstr "מגירה"
 
 #: gnome-panel/drawer.c:614 gnome-panel/launcher.c:824 gnome-panel/menu.c:1376
-#: gnome-panel/menu.c:2320 gnome-panel/panel-action-button.c:132
+#: gnome-panel/menu.c:2314 gnome-panel/panel-action-button.c:132
 msgid "_Properties"
 msgstr "_מאפיינים"
 
@@ -1011,7 +1011,7 @@ msgstr "_מאפיינים"
 msgid "Create new file in the given directory"
 msgstr "צור קובץ חדש בספרייה הנתונה"
 
-#: gnome-panel/gnome-panel-screenshot.c:121
+#: gnome-panel/gnome-panel-screenshot.c:122
 msgid ""
 "Unable to initialize png structure.\n"
 "You probably have a bad version of libpng on your system"
@@ -1019,7 +1019,7 @@ msgstr ""
 "לא ניתן לנתח את מבנה png.\n"
 "כנראה יש לך גירסה לא טובה של libpng במערכת שלך"
 
-#: gnome-panel/gnome-panel-screenshot.c:129
+#: gnome-panel/gnome-panel-screenshot.c:130
 msgid ""
 "Unable to create png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1027,7 +1027,7 @@ msgstr ""
 "לא ניתן ליצור מידע png.\n"
 "כנראה יש לך גירסה לא טובה של libpng במערכת שלך"
 
-#: gnome-panel/gnome-panel-screenshot.c:136
+#: gnome-panel/gnome-panel-screenshot.c:137
 msgid ""
 "Unable to set png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1035,7 +1035,7 @@ msgstr ""
 "לא ניתן לקבוע מידע png.\n"
 "כנראה יש לך גירסה לא טובה של libpng במערכת שלך"
 
-#: gnome-panel/gnome-panel-screenshot.c:154
+#: gnome-panel/gnome-panel-screenshot.c:155
 msgid ""
 "Insufficient memory to save the screenshot.\n"
 "Please free up some resources and try again."
@@ -1043,13 +1043,13 @@ msgstr ""
 "אין מספיק זיכרון לשמירת תמונת המסך\n"
 "אנא פנה קצת משאבים ונסה שוב."
 
-#: gnome-panel/gnome-panel-screenshot.c:212
+#: gnome-panel/gnome-panel-screenshot.c:213
 #, c-format
 msgid "File %s already exists. Overwrite?"
 msgstr "הקובץ %s כבר קיים. להחליף?"
 
-#: gnome-panel/gnome-panel-screenshot.c:233
-#: gnome-panel/gnome-panel-screenshot.c:584
+#: gnome-panel/gnome-panel-screenshot.c:234
+#: gnome-panel/gnome-panel-screenshot.c:587
 #, c-format
 msgid ""
 "Unable to create the file:\n"
@@ -1062,21 +1062,21 @@ msgstr ""
 
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:420
+#: gnome-panel/gnome-panel-screenshot.c:421
 #, c-format
 msgid "Screenshot-%s.png"
 msgstr "תמונת-מסך-%s.png"
 
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:424
+#: gnome-panel/gnome-panel-screenshot.c:425
 msgid "Screenshot.png"
 msgstr "תמונת-מסך.png"
 
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if a specific window is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:445
+#: gnome-panel/gnome-panel-screenshot.c:447
 #, c-format
 msgid "Screenshot-%s-%d.png"
 msgstr "תמונת-מסך-%s-%d.png"
@@ -1084,17 +1084,17 @@ msgstr "תמונת-מסך-%s-%d.png"
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if the entire screen is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:452
+#: gnome-panel/gnome-panel-screenshot.c:454
 #, c-format
 msgid "Screenshot-%d.png"
 msgstr "תמונת-מסך-%d.png"
 
-#: gnome-panel/gnome-panel-screenshot.c:607
+#: gnome-panel/gnome-panel-screenshot.c:610
 #, c-format
 msgid "Not enough room to write file %s"
 msgstr "אין מספיק מקום לכתוב את הקובץ %s"
 
-#: gnome-panel/gnome-panel-screenshot.c:708
+#: gnome-panel/gnome-panel-screenshot.c:711
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -1103,7 +1103,7 @@ msgstr ""
 "ארעה שגיאה בהצגת העזרה: \n"
 "%s"
 
-#: gnome-panel/gnome-panel-screenshot.c:1189
+#: gnome-panel/gnome-panel-screenshot.c:1306
 msgid ""
 "Glade file for the screenshot program is missing.\n"
 "Please check your installation of gnome-panel"
@@ -1111,20 +1111,20 @@ msgstr ""
 "קובץ Glade לתוכנית תמונות המסך חסר.\n"
 "אנא בדוק את ההתקנה שלך של gnome-panel"
 
-#: gnome-panel/gnome-panel-screenshot.c:1205
+#: gnome-panel/gnome-panel-screenshot.c:1322
 msgid "Unable to take a screenshot of the current desktop."
 msgstr "לא ניתן לקחת תמונת מסך של שולחן העבודה הנוכחי."
 
-#: gnome-panel/gnome-panel-screenshot.c:1265
+#: gnome-panel/gnome-panel-screenshot.c:1382
 #, c-format
 msgid "Save screenshot to _web page (save in %s)"
 msgstr "שמור תמונות מסך לעמוד _רשת (שמור ב %s)"
 
-#: gnome-panel/gnome-panel-screenshot.c:1321
+#: gnome-panel/gnome-panel-screenshot.c:1438
 msgid "Grab a window instead of the entire screen"
 msgstr "תפוס חלון במקום את כל המסך"
 
-#: gnome-panel/gnome-panel-screenshot.c:1322
+#: gnome-panel/gnome-panel-screenshot.c:1439
 msgid "Take screenshot after specified delay [in seconds]"
 msgstr "קח תמונת מסך לאחר פרק זמן נתון [בשניות]"
 
@@ -1304,62 +1304,62 @@ msgstr "הוסף משגר זה ללוח"
 msgid "Remove this item"
 msgstr "הסר פריט זה"
 
-#: gnome-panel/menu.c:1398
+#: gnome-panel/menu.c:1397
 msgid "Entire menu"
 msgstr "הפריט השלם"
 
-#: gnome-panel/menu.c:1406
+#: gnome-panel/menu.c:1405
 msgid "Add this as drawer to panel"
 msgstr "הוסף זאת כמגירה ללוח"
 
-#: gnome-panel/menu.c:1417
+#: gnome-panel/menu.c:1414
 msgid "Add this as menu to panel"
 msgstr "הוסף זאת כתפריט ללוח"
 
-#: gnome-panel/menu.c:1429
+#: gnome-panel/menu.c:1424
 msgid "Add new item to this menu"
 msgstr "הוסף פריט חדש לתפריט הזה"
 
-#: gnome-panel/menu.c:1456
+#: gnome-panel/menu.c:1451
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: gnome-panel/menu.c:2169 gnome-panel/menu.c:2173 gnome-panel/menu.c:2561
+#: gnome-panel/menu.c:2164 gnome-panel/menu.c:2168 gnome-panel/menu.c:2555
 #: gnome-panel/panel-menu-bar.c:202
 msgid "Applications"
 msgstr "יישומים"
 
-#: gnome-panel/menu.c:2213
+#: gnome-panel/menu.c:2208
 msgid "You cannot remove your last panel."
 msgstr "אתה לא יכול להסיר את הלוח האחרון שלך."
 
-#: gnome-panel/menu.c:2273
+#: gnome-panel/menu.c:2268
 msgid "_Delete This Panel..."
 msgstr "_מחק לוח זה..."
 
-#: gnome-panel/menu.c:2276 gnome-panel/menu.c:2305
+#: gnome-panel/menu.c:2271 gnome-panel/menu.c:2299
 msgid "_Delete This Panel"
 msgstr "_מחק לוח זה"
 
-#: gnome-panel/menu.c:2289
+#: gnome-panel/menu.c:2284
 #, fuzzy
 msgid "_Add to Panel..."
 msgstr "_הוסף ללוח"
 
-#: gnome-panel/menu.c:2334
+#: gnome-panel/menu.c:2328
 msgid "_New Panel"
 msgstr "לוח _חדש"
 
-#: gnome-panel/menu.c:2381
+#: gnome-panel/menu.c:2375
 #, fuzzy
 msgid "A_bout Panels"
 msgstr "_אודות הלוחות"
 
-#: gnome-panel/menu.c:2395
+#: gnome-panel/menu.c:2389
 msgid "About _GNOME"
 msgstr "אודות _GNOME"
 
-#: gnome-panel/menu.c:2642
+#: gnome-panel/menu.c:2636
 msgid "Desktop"
 msgstr "שולחן עבודה"
 
@@ -1469,27 +1469,27 @@ msgstr ""
 msgid "(empty)"
 msgstr ""
 
-#: gnome-panel/panel-addto.c:352 libpanel-applet/panel-test-applets.c:156
+#: gnome-panel/panel-addto.c:376 libpanel-applet/panel-test-applets.c:156
 #, c-format
 msgid "query returned exception %s\n"
 msgstr "שאילתה החזירה חריגה %s\n"
 
-#: gnome-panel/panel-addto.c:766
+#: gnome-panel/panel-addto.c:787
 #, fuzzy, c-format
 msgid "Add to %s"
 msgstr "_הוסף ללוח"
 
-#: gnome-panel/panel-addto.c:768
+#: gnome-panel/panel-addto.c:789
 #, fuzzy
 msgid "Add to the panel"
 msgstr "_הוסף ללוח"
 
-#: gnome-panel/panel-addto.c:774
+#: gnome-panel/panel-addto.c:795
 #, c-format
 msgid "Select an _item to add to %s:"
 msgstr ""
 
-#: gnome-panel/panel-addto.c:777
+#: gnome-panel/panel-addto.c:798
 msgid "Select an _item to add to the panel:"
 msgstr ""
 
@@ -1966,25 +1966,25 @@ msgid "Use custom path for menu contents"
 msgstr "השתמש בנתיב מותאם אישית לתכני התפריט"
 
 #: gnome-panel/panel-profile.c:768 gnome-panel/panel-profile.c:799
-#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1606
+#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1641
 #, c-format
 msgid "Error reading GConf string value '%s': %s"
 msgstr "שגיאה בקריאת ערך מחרוזת של GConf '%s': %s"
 
-#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1504
-#: gnome-panel/panel-profile.c:1575 gnome-panel/panel-profile.c:1638
+#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1539
+#: gnome-panel/panel-profile.c:1610 gnome-panel/panel-profile.c:1673
 #, c-format
 msgid "Error reading GConf integer value '%s': %s"
 msgstr "שגיאה בקריאת ערך מספר שלם של GConf '%s': %s"
 
-#: gnome-panel/panel-profile.c:1514
+#: gnome-panel/panel-profile.c:1549
 #, c-format
 msgid ""
 "Panel '%s' is set to be displayed on screen %d which is not currently "
 "available. Not loading this panel."
 msgstr "הלוח '%s' נקבע להצגה על המסך %d אשר אינו זמין כרגע. לא טוען את לוח זה."
 
-#: gnome-panel/panel-profile.c:1590
+#: gnome-panel/panel-profile.c:1625
 #, c-format
 msgid "Error reading GConf boolean value '%s': %s"
 msgstr "שגיאה בקריאת ערך בוליאני של GConf '%s': %s"
@@ -2264,73 +2264,73 @@ msgstr "ה_כרח יציאה"
 msgid "C_lear"
 msgstr "לוח שנה"
 
-#: gnome-panel/panel-toplevel.c:1111
+#: gnome-panel/panel-toplevel.c:1109
 msgid "Hide Panel"
 msgstr "הסתר לוח"
 
 #. translators: these string will be shown in MetaCity's switch window
 #. * popup when you pass the focus to a panel
-#: gnome-panel/panel-toplevel.c:1472
+#: gnome-panel/panel-toplevel.c:1470
 msgid "Top Expanded Edge Panel"
 msgstr "לוח קצה מורחב עליון"
 
-#: gnome-panel/panel-toplevel.c:1473
+#: gnome-panel/panel-toplevel.c:1471
 msgid "Top Centered Panel"
 msgstr "לוח ממורכז עליון"
 
-#: gnome-panel/panel-toplevel.c:1474
+#: gnome-panel/panel-toplevel.c:1472
 msgid "Top Floating Panel"
 msgstr "לוח צף עליון"
 
-#: gnome-panel/panel-toplevel.c:1475
+#: gnome-panel/panel-toplevel.c:1473
 msgid "Top Edge Panel"
 msgstr "לוח קצה עליון"
 
-#: gnome-panel/panel-toplevel.c:1479
+#: gnome-panel/panel-toplevel.c:1477
 msgid "Bottom Expanded Edge Panel"
 msgstr "לוח קצה מורחב תחתון"
 
-#: gnome-panel/panel-toplevel.c:1480
+#: gnome-panel/panel-toplevel.c:1478
 msgid "Bottom Centered Panel"
 msgstr "לוח ממורכז תחתון"
 
-#: gnome-panel/panel-toplevel.c:1481
+#: gnome-panel/panel-toplevel.c:1479
 msgid "Bottom Floating Panel"
 msgstr "לוח צף תחתון"
 
-#: gnome-panel/panel-toplevel.c:1482
+#: gnome-panel/panel-toplevel.c:1480
 msgid "Bottom Edge Panel"
 msgstr "לוח קצה תחתון"
 
-#: gnome-panel/panel-toplevel.c:1486
+#: gnome-panel/panel-toplevel.c:1484
 msgid "Left Expanded Edge Panel"
 msgstr "לוח קצה מורחב שמאלי"
 
-#: gnome-panel/panel-toplevel.c:1487
+#: gnome-panel/panel-toplevel.c:1485
 msgid "Left Centered Panel"
 msgstr "לוח ממורכז שמאלי"
 
-#: gnome-panel/panel-toplevel.c:1488
+#: gnome-panel/panel-toplevel.c:1486
 msgid "Left Floating Panel"
 msgstr "לוח צף שמאלי"
 
-#: gnome-panel/panel-toplevel.c:1489
+#: gnome-panel/panel-toplevel.c:1487
 msgid "Left Edge Panel"
 msgstr "לוח קצה שמאלי"
 
-#: gnome-panel/panel-toplevel.c:1493
+#: gnome-panel/panel-toplevel.c:1491
 msgid "Right Expanded Edge Panel"
 msgstr "לוח קצה מורחב ימני"
 
-#: gnome-panel/panel-toplevel.c:1494
+#: gnome-panel/panel-toplevel.c:1492
 msgid "Right Centered Panel"
 msgstr "לוח ממורכז ימני"
 
-#: gnome-panel/panel-toplevel.c:1495
+#: gnome-panel/panel-toplevel.c:1493
 msgid "Right Floating Panel"
 msgstr "לוח צף ימני"
 
-#: gnome-panel/panel-toplevel.c:1496
+#: gnome-panel/panel-toplevel.c:1494
 msgid "Right Edge Panel"
 msgstr "לוח קצה ימני"
 
@@ -2654,18 +2654,18 @@ msgstr "קורדינטת ה Y של הלוח."
 msgid "Cannot display help document"
 msgstr "לא ניתן להציג מסמך עזרה"
 
-#: gnome-panel/panel.c:446
+#: gnome-panel/panel.c:458
 #, c-format
 msgid "Open URL: %s"
 msgstr "פתח כתובת: %s"
 
-#: gnome-panel/panel.c:1245
+#: gnome-panel/panel.c:1272
 msgid ""
 "When a panel is deleted, the panel and its\n"
 " settings are lost. Delete this panel?"
 msgstr "כאשר לוח נמחק, הלוח והגדרותיו נאבדים. למחוק לוח זה?"
 
-#: gnome-panel/panel.c:1254
+#: gnome-panel/panel.c:1281
 msgid "Delete Panel"
 msgstr "מחק לוח"
 

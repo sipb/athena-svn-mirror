@@ -249,18 +249,42 @@ panel_addto_make_text (const char *name,
 
 static GdkPixbuf *
 panel_addto_make_pixbuf (const char *filename,
-			 int         size)
+			 GtkIconSize size)
 {
 	char *file;
-	GdkPixbuf *pb;
+	GdkPixbuf *pb, *newpb;
+	int width, height;
+	int desired_width, desired_height;
+
+	if (!gtk_icon_size_lookup (size, &desired_width, &desired_height))
+		return NULL;
 
 	file = gnome_desktop_item_find_icon (panel_icon_theme,
-					     filename, size, 0);
+					     filename, desired_height, 0);
 
 	if (file == NULL)
 		return NULL;
 
-	pb = gdk_pixbuf_new_from_file (file, NULL);
+	pb = gdk_pixbuf_new_from_file_at_size (file, desired_width,
+					       desired_height, NULL);
+	width = gdk_pixbuf_get_width (pb);
+	height = gdk_pixbuf_get_height (pb);
+
+	/* If the icon is larger than the icon size, then scale down
+	 * to fit in the bounding box. */
+	if (height > desired_height || width > desired_width) {
+		if (width * desired_height / height > desired_width)
+			desired_height = height * desired_width / width;
+		else
+			desired_width = width * desired_height / height;
+
+		newpb = gdk_pixbuf_scale_simple (pb,
+						 desired_width,
+						 desired_height,
+						 GDK_INTERP_BILINEAR);
+		g_object_unref (pb);
+		pb = newpb;
+	}
 
 	g_free (file);
 	return pb;
@@ -412,11 +436,8 @@ panel_addto_make_applet_model (PanelAddtoDialog *dialog)
 	GtkTreeIter iter;
 	GSList *item = NULL;
 
-	if (panel_profile_list_is_writable (PANEL_GCONF_APPLETS)) {
+	if (panel_profile_id_lists_are_writable ()) {
 		dialog->applet_list = panel_addto_query_applets (dialog->applet_list);
-	}
-
-	if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS)) {
 		dialog->applet_list = panel_addto_append_internal_applets (dialog->applet_list);
 	}
 
@@ -438,7 +459,7 @@ panel_addto_make_applet_model (PanelAddtoDialog *dialog)
 
 		if (applet->icon != NULL) {
 			pixbuf = panel_addto_make_pixbuf (applet->icon,
-							  PANEL_DEFAULT_MENU_ICON_SIZE);
+							  GTK_ICON_SIZE_DIALOG);
 		} else {
 			pixbuf = gtk_widget_render_icon (GTK_WIDGET (dialog->panel_widget),
 							 applet->stock_icon,
@@ -529,7 +550,7 @@ panel_addto_make_application_model_r (GtkTreeStore *store,
 		text = panel_addto_make_text (data->item_info.name,
 					      data->item_info.description);
 		pixbuf = panel_addto_make_pixbuf (data->item_info.icon,
-						  PANEL_DEFAULT_MENU_ICON_SIZE);
+						  GTK_ICON_SIZE_DIALOG);
 		gtk_tree_store_set (store, &iter,
 				    COLUMN_ICON, pixbuf,
 				    COLUMN_TEXT, text,
@@ -675,7 +696,7 @@ static void
 panel_addto_dialog_destroy (GtkWidget *widget_dialog,
 			    PanelAddtoDialog *dialog)
 {
-	panel_toplevel_unblock_auto_hide (PANEL_TOPLEVEL (dialog->panel_widget->toplevel));
+	panel_toplevel_pop_autohide_disabler (PANEL_TOPLEVEL (dialog->panel_widget->toplevel));
 	g_object_set_qdata (G_OBJECT (dialog->panel_widget->toplevel),
 			    panel_addto_dialog_quark,
 			    NULL);
@@ -817,13 +838,21 @@ panel_addto_selection_changed (GtkTreeSelection *selection,
 	PanelAddtoItemInfo *data;
 	char               *iid;
 
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (dialog->add_button),
+					  FALSE);
 		return;
+	}
 
 	gtk_tree_model_get (model, &iter, COLUMN_DATA, &data, -1);
 
-	if (!data)
+	if (!data) {
+		gtk_widget_set_sensitive (GTK_WIDGET (dialog->add_button),
+					  FALSE);
 		return;
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (dialog->add_button), TRUE);
 
 	if (data->type == PANEL_ADDTO_LAUNCHER_MENU) {
 		gtk_button_set_label (GTK_BUTTON (dialog->add_button),
@@ -839,7 +868,7 @@ panel_addto_selection_changed (GtkTreeSelection *selection,
 	}
 
 	/* only allow dragging applets if we can add applets */
-	if (panel_profile_list_is_writable (PANEL_GCONF_APPLETS)) {
+	if (panel_profile_id_lists_are_writable ()) {
 		switch (data->type) {
 		case PANEL_ADDTO_LAUNCHER:
 			panel_addto_setup_launcher_drag (GTK_TREE_VIEW (dialog->tree_view),
@@ -921,6 +950,7 @@ panel_addto_dialog_new (PanelWidget *panel_widget)
 	dialog->add_button = gtk_dialog_add_button (GTK_DIALOG (dialog->addto_dialog),
 						     GTK_STOCK_ADD,
 						     PANEL_ADDTO_RESPONSE_ADD);
+	gtk_widget_set_sensitive (GTK_WIDGET (dialog->add_button), FALSE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog->addto_dialog),
 				      FALSE);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog->addto_dialog),
@@ -1003,7 +1033,7 @@ panel_addto_dialog_new (PanelWidget *panel_widget)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (dialog->label),
 				       dialog->tree_view);
 
-	panel_toplevel_block_auto_hide (dialog->panel_widget->toplevel);
+	panel_toplevel_push_autohide_disabler (dialog->panel_widget->toplevel);
 	panel_addto_name_change (dialog,
 				 panel_toplevel_get_name (dialog->panel_widget->toplevel));
 

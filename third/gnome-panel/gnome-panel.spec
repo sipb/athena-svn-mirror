@@ -15,7 +15,7 @@
 
 Summary: GNOME panel
 Name: gnome-panel
-Version: 2.8.0
+Version: 2.8.3
 Release: 1
 URL: http://www.gnome.org
 Source0: ftp://ftp.gnome.org/pub/GNOME/pre-gnome2/sources/gnome-panel/%{name}-%{version}.tar.gz

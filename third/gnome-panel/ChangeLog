@@ -1,3 +1,95 @@
+2005-02-14  Vincent Untz  <vincent@vuntz.net>
+
+	* NEWS, README, configure.in: Version 2.8.3.
+
+2004-12-13  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	* configure.in: post-release bump to 2.8.3.
+
+==================== 2.8.2 ====================
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	* NEWS, README: Version 2.8.2.
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Backport patch from HEAD.
+
+	* help/it/clock/clock-it.omf
+	* help/it/clock/clock.xml
+	* help/it/clock/figures/clock_applet.png
+	* help/it/fish/fish-applet-2-it.omf
+	* help/it/fish/fish-applet-2.xml
+	* help/it/window-list/window-list-it.omf
+	* help/it/window-list/window-list.xml
+	* help/it/window-list/figures/window_list_applet.png
+	* help/it/window-list/figures/window_list_group_applet.png
+	* help/it/workspace-switcher/workspace-switcher-it.omf
+	* help/it/workspace-switcher/workspace-switcher.xml
+	* help/it/workspace-switcher/figures/workspace_switcher_applet.png:
+	updated docs for italian language. Fix bug #135760.
+
+2004-11-29  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-10-26  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+      
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.2.
+
+==================== 2.8.1 ====================
+
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.1.
+	
+2004-10-04  Vincent Noel  <vnoel@cox.net>
+
+	* configure.in: Make it depend on gtk+ 2.5.0.
+
+2004-09-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0.1 ====================
+
+2004-09-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.0.1.
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* icons/gnome-clock.png,
+	  icons/panel-drawer.png: revert the revert, got
+	docs approval now.
+	
+2004-09-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* icons/gnome-clock.png,
+	  icons/panel-drawer.png: revert - forgot about
+	docs impact.
+
+2004-09-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* icons/gnome-clock.png,
+	  icons/panel-drawer.png: new clock and
+	drawer icons from Jakub Steiner.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0 ====================
+
 2004-09-14  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.

@@ -16,12 +16,12 @@
 #include &lt;panel-applet.h&gt;
 
 
-struct      <link linkend="PanelApplet-struct">PanelApplet</link>;
+            <link linkend="PanelApplet-struct">PanelApplet</link>;
 typedef     <link linkend="PanelAppletOrient">PanelAppletOrient</link>;
-#define     <link linkend="PANEL-APPLET-ORIENT-UP-CAPS">PANEL_APPLET_ORIENT_UP</link>
-#define     <link linkend="PANEL-APPLET-ORIENT-DOWN-CAPS">PANEL_APPLET_ORIENT_DOWN</link>
-#define     <link linkend="PANEL-APPLET-ORIENT-LEFT-CAPS">PANEL_APPLET_ORIENT_LEFT</link>
-#define     <link linkend="PANEL-APPLET-ORIENT-RIGHT-CAPS">PANEL_APPLET_ORIENT_RIGHT</link>
+#define     <link linkend="PANEL-APPLET-ORIENT-UP:CAPS">PANEL_APPLET_ORIENT_UP</link>
+#define     <link linkend="PANEL-APPLET-ORIENT-DOWN:CAPS">PANEL_APPLET_ORIENT_DOWN</link>
+#define     <link linkend="PANEL-APPLET-ORIENT-LEFT:CAPS">PANEL_APPLET_ORIENT_LEFT</link>
+#define     <link linkend="PANEL-APPLET-ORIENT-RIGHT:CAPS">PANEL_APPLET_ORIENT_RIGHT</link>
 enum        <link linkend="PanelAppletBackgroundType">PanelAppletBackgroundType</link>;
 enum        <link linkend="PanelAppletFlags">PanelAppletFlags</link>;
 <link linkend="gboolean">gboolean</link>    (<link linkend="PanelAppletFactoryCallback">*PanelAppletFactoryCallback</link>)   (<link linkend="PanelApplet">PanelApplet</link> *applet,
@@ -68,7 +68,7 @@ enum        <link linkend="PanelAppletFlags">PanelAppletFlags</link>;
                                             (const <link linkend="gchar">gchar</link> *iid,
                                              <link linkend="GType">GType</link> applet_type,
                                              <link linkend="GClosure">GClosure</link> *closure);
-#define     <link linkend="PANEL-APPLET-BONOBO-FACTORY-CAPS">PANEL_APPLET_BONOBO_FACTORY</link>     (iid, type, name, version, callback, data)
+#define     <link linkend="PANEL-APPLET-BONOBO-FACTORY:CAPS">PANEL_APPLET_BONOBO_FACTORY</link>     (iid, type, name, version, callback, data)
 <link linkend="Bonobo-Unknown">Bonobo_Unknown</link> <link linkend="panel-applet-shlib-factory">panel_applet_shlib_factory</link>   (const <link linkend="char">char</link> *iid,
                                              <link linkend="GType">GType</link> applet_type,
                                              <link linkend="PortableServer-POA">PortableServer_POA</link> poa,
@@ -83,7 +83,7 @@ enum        <link linkend="PanelAppletFlags">PanelAppletFlags</link>;
                                              <link linkend="gpointer">gpointer</link> impl_ptr,
                                              <link linkend="GClosure">GClosure</link> *closure,
                                              <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
-#define     <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS">PANEL_APPLET_BONOBO_SHLIB_FACTORY</link>(iid, type, descr, callback, data)
+#define     <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY:CAPS">PANEL_APPLET_BONOBO_SHLIB_FACTORY</link>(iid, type, descr, callback, data)
 
 
 </synopsis>
@@ -159,8 +159,8 @@ the cross process UI emmbedding required by applets possible.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="PanelApplet-struct"/>struct PanelApplet</title>
-<indexterm><primary>PanelApplet</primary></indexterm><programlisting>struct PanelApplet;</programlisting>
+<title><anchor id="PanelApplet-struct"/>PanelApplet</title>
+<indexterm><primary>PanelApplet</primary></indexterm><programlisting>typedef struct _PanelApplet PanelApplet;</programlisting>
 <para>
 The <link linkend="PanelApplet"><type>PanelApplet</type></link> struct contains private data only.
 </para></refsect2>
@@ -175,28 +175,28 @@ is on the right hand side), but this is because the value is representative
 of the applet's <emphasis>orientation</emphasis>, not the panel's position.
 </para></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-ORIENT-UP-CAPS"/>PANEL_APPLET_ORIENT_UP</title>
+<title><anchor id="PANEL-APPLET-ORIENT-UP:CAPS"/>PANEL_APPLET_ORIENT_UP</title>
 <indexterm><primary>PANEL_APPLET_ORIENT_UP</primary></indexterm><programlisting>#define PANEL_APPLET_ORIENT_UP    GNOME_Vertigo_PANEL_ORIENT_UP
 </programlisting>
 <para>
 The applet is orientated up (i.e. the panel is at the bottom of the screen).
 </para></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-ORIENT-DOWN-CAPS"/>PANEL_APPLET_ORIENT_DOWN</title>
+<title><anchor id="PANEL-APPLET-ORIENT-DOWN:CAPS"/>PANEL_APPLET_ORIENT_DOWN</title>
 <indexterm><primary>PANEL_APPLET_ORIENT_DOWN</primary></indexterm><programlisting>#define PANEL_APPLET_ORIENT_DOWN  GNOME_Vertigo_PANEL_ORIENT_DOWN
 </programlisting>
 <para>
 The applet is orientated down (i.e. the panel is at the top of the screen).
 </para></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-ORIENT-LEFT-CAPS"/>PANEL_APPLET_ORIENT_LEFT</title>
+<title><anchor id="PANEL-APPLET-ORIENT-LEFT:CAPS"/>PANEL_APPLET_ORIENT_LEFT</title>
 <indexterm><primary>PANEL_APPLET_ORIENT_LEFT</primary></indexterm><programlisting>#define PANEL_APPLET_ORIENT_LEFT  GNOME_Vertigo_PANEL_ORIENT_LEFT
 </programlisting>
 <para>
 The applet is orientated left (i.e. the panel is at the right hand side of the screen).
 </para></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-ORIENT-RIGHT-CAPS"/>PANEL_APPLET_ORIENT_RIGHT</title>
+<title><anchor id="PANEL-APPLET-ORIENT-RIGHT:CAPS"/>PANEL_APPLET_ORIENT_RIGHT</title>
 <indexterm><primary>PANEL_APPLET_ORIENT_RIGHT</primary></indexterm><programlisting>#define PANEL_APPLET_ORIENT_RIGHT GNOME_Vertigo_PANEL_ORIENT_RIGHT
 </programlisting>
 <para>
@@ -300,7 +300,7 @@ and initialized.
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>The data passed to the factory macros.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> on success, <literal>FALSE</literal> on failure.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara><literal>TRUE</literal> on success, <literal>FALSE</literal> on failure.
 
 
 </simpara></listitem></varlistentry>
@@ -313,7 +313,7 @@ Creates a new <link linkend="PanelApplet"><type>PanelApplet</type></link>. This 
 useful as the applet is created before the <link linkend="PanelAppletFactoryCallback"><type>PanelAppletFactoryCallback</type></link>
 is invoked.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -327,7 +327,7 @@ Get the current orientation of the applet.
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The orientation of the applet.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The orientation of the applet.
 
 
 </simpara></listitem></varlistentry>
@@ -349,7 +349,7 @@ only as a hint by which to decide the applet's layout.
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The panel's size hint.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The panel's size hint.
 
 
 </simpara></listitem></varlistentry>
@@ -380,7 +380,7 @@ portion of the panel's background pixmap.
 <varlistentry><term><parameter>pixmap</parameter>&nbsp;:</term>
 <listitem><simpara>Returned <link linkend="GdkPixmap"><type>GdkPixmap</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The background type.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The background type.
 
 
 </simpara></listitem></varlistentry>
@@ -399,7 +399,7 @@ more information.
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>A GConf path.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>A GConf path.
 
 
 </simpara></listitem></varlistentry>
@@ -443,7 +443,7 @@ Retrieve the <link linkend="PanelAppletFlags"><type>PanelAppletFlags</type></lin
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The <link linkend="PanelAppletFlags"><type>PanelAppletFlags</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The <link linkend="PanelAppletFlags"><type>PanelAppletFlags</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -474,7 +474,7 @@ these flags.
                                              <link linkend="int">int</link> base_size);</programlisting>
 <para>
 Set a list of desired size ranges for an applet with the
-<link linkend="PANEL-APPLET-EXPAND-MAJOR-CAPS"><type>PANEL_APPLET_EXPAND_MAJOR</type></link> flags set. <parameter>size_hints</parameter> is an
+<link linkend="PANEL-APPLET-EXPAND-MAJOR:CAPS"><type>PANEL_APPLET_EXPAND_MAJOR</type></link> flags set. <parameter>size_hints</parameter> is an
 array of (max, min) pairs where min(i) > max(i + 1).
 </para>
 
@@ -507,7 +507,7 @@ Retrieves the <link linkend="BonoboControl"><type>BonoboControl</type></link> as
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>A <link linkend="BonoboControl"><type>BonoboControl</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>A <link linkend="BonoboControl"><type>BonoboControl</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -523,7 +523,7 @@ with <parameter>applet</parameter>.
 <varlistentry><term><parameter>applet</parameter>&nbsp;:</term>
 <listitem><simpara>The <link linkend="PanelApplet"><type>PanelApplet</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>A <link linkend="BonoboUIComponent"><type>BonoboUIComponent</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>A <link linkend="BonoboUIComponent"><type>BonoboUIComponent</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -597,7 +597,7 @@ the format of the xml.
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 A generic 'main' routine for applets. This should not normally be
-used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTORY-CAPS"><type>PANEL_APPLET_BONOBO_FACTORY</type></link>.
+used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTORY:CAPS"><type>PANEL_APPLET_BONOBO_FACTORY</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
 <listitem><simpara>The bonobo-activation iid of the factory.
@@ -611,7 +611,7 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>The factory user data pointer.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>0 on success, 1 on failure.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>0 on success, 1 on failure.
 
 
 </simpara></listitem></varlistentry>
@@ -624,7 +624,7 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
                                              <link linkend="GClosure">GClosure</link> *closure);</programlisting>
 <para>
 A generic 'main' routine for applets. This should not normally be
-used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTORY-CAPS"><type>PANEL_APPLET_BONOBO_FACTORY</type></link>.
+used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTORY:CAPS"><type>PANEL_APPLET_BONOBO_FACTORY</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
 <listitem><simpara>The bonobo-activation iid of the factory.
@@ -635,13 +635,13 @@ used directly because it is invoked by <link linkend="PANEL-APPLET-BONOBO-FACTOR
 <varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
 <listitem><simpara>The factory callback closure.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>0 on success, 1 on failure.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>0 on success, 1 on failure.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-BONOBO-FACTORY-CAPS"/>PANEL_APPLET_BONOBO_FACTORY()</title>
+<title><anchor id="PANEL-APPLET-BONOBO-FACTORY:CAPS"/>PANEL_APPLET_BONOBO_FACTORY()</title>
 <indexterm><primary>PANEL_APPLET_BONOBO_FACTORY</primary></indexterm><programlisting>#define     PANEL_APPLET_BONOBO_FACTORY(iid, type, name, version, callback, data)</programlisting>
 <para>
 Defines a 'main' routine for the applet factory.
@@ -678,7 +678,7 @@ Defines a 'main' routine for the applet factory.
                                              <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
 <para>
 A generic shared library factory routine for applets. This should not
-normally be used directly as it is invoked by <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"><type>PANEL_APPLET_BONOBO_SHLIB_FACTORY</type></link>.
+normally be used directly as it is invoked by <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY:CAPS"><type>PANEL_APPLET_BONOBO_SHLIB_FACTORY</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
 <listitem><simpara>The bonobo-activation iid of the factory.
@@ -702,7 +702,7 @@ callback.
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara>The $CORBA_Environment passed to the shlib factory callback.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>A <link linkend="Bonobo-Unknown"><type>Bonobo_Unknown</type></link> to return from the shlib factory
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>A <link linkend="Bonobo-Unknown"><type>Bonobo_Unknown</type></link> to return from the shlib factory
 callback.
 
 
@@ -719,7 +719,7 @@ callback.
                                              <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
 <para>
 A generic shared library factory routine for applets. This should not
-normally be used directly as it is invoked by <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"><type>PANEL_APPLET_BONOBO_SHLIB_FACTORY</type></link>.
+normally be used directly as it is invoked by <link linkend="PANEL-APPLET-BONOBO-SHLIB-FACTORY:CAPS"><type>PANEL_APPLET_BONOBO_SHLIB_FACTORY</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
 <listitem><simpara>The bonobo-activation iid of the factory.
@@ -740,14 +740,14 @@ callback.
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara>The $CORBA_Environment passed to the shlib factory callback.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>A <link linkend="Bonobo-Unknown"><type>Bonobo_Unknown</type></link> to return from the shlib factory
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>A <link linkend="Bonobo-Unknown"><type>Bonobo_Unknown</type></link> to return from the shlib factory
 callback.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"/>PANEL_APPLET_BONOBO_SHLIB_FACTORY()</title>
+<title><anchor id="PANEL-APPLET-BONOBO-SHLIB-FACTORY:CAPS"/>PANEL_APPLET_BONOBO_SHLIB_FACTORY()</title>
 <indexterm><primary>PANEL_APPLET_BONOBO_SHLIB_FACTORY</primary></indexterm><programlisting>#define     PANEL_APPLET_BONOBO_SHLIB_FACTORY(iid, type, descr, callback, data)</programlisting>
 <para>
 Defines a Bonobo Activation shared library plugin and associated
