@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: raeburn $
- *      $Id: olc.h,v 1.8 1990-01-04 14:46:24 raeburn Exp $
+ *      $Id: olc.h,v 1.9 1990-01-05 06:12:50 raeburn Exp $
  */
 
 #ifndef __olc_olc_h
@@ -38,6 +38,12 @@ extern "C" {
 
 #ifdef HESIOD
 #include <hesiod.h>
+    char **hes_resolve OPrototype((const char *, const char *));
+#if __STDC__
+    int hes_error (void);
+#else
+    int hes_error OPrototype ((void));
+#endif
 #endif
 
 #if is_cplusplus
@@ -57,7 +63,9 @@ extern "C" {
 #include <olc/procs.h>
 #include <olc/status.h>
 
-#if is_cpluscplus
+void expand_hostname ();
+
+#if is_cplusplus
 };
 #endif
     
@@ -92,12 +100,5 @@ extern char DaemonHost[];
 
 #define CLIENT_TIME_OUT 300     
 #define DEFAULT_MAILHUB "Athena.mit.edu"
-
-#ifdef HESIOD
-char **hes_resolve OPrototype((const char *, const char *));
-int hes_error OPrototype ((void));
-#endif
-
-void expand_hostname ();
 
 #endif /* __olc_olc_h */
