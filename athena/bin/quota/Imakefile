@@ -1,0 +1,19 @@
+DEFINES=-DUW $(MACHDEFS)
+
+PROGRAM=	quota
+SRCS=		quota.c $(MACHSRCS)
+OBJS=		quota.o $(MACHOBJS)
+#ifndef ultrix
+LIBS=		-lrpcsvc
+#endif
+#if defined(ultrix) || defined(i386)
+/* Need to use the local header files and sources */
+MACHDEFS=-I./include
+MACHSRCS=rcquotaxdr.c
+MACHOBJS=rcquotaxdr.o
+#endif
+
+build_program(quota,$(OBJS),,$(LIBS))
+install_program(quota,-o root -m 4755,/usr/ucb/program)
+install_man(quota.1,quota.1)
+
