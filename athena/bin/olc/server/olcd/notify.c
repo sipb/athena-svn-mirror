@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.16 1990-02-26 16:14:08 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.17 1990-03-01 18:28:28 raeburn Exp $";
 #endif
 
 
@@ -59,6 +59,8 @@ extern "C" {
 /* External Variables. */
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
+
+int use_zephyr = 1;
 
 #if __STDC__
 int notice_timeout(int a);
@@ -255,33 +257,30 @@ write_message_to_user(k, message, flags)
     case ERROR:
       set_status(k->user, UNKNOWN_STATUS);
       (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.",
-	      k->title, k->user->username);
+		     k->title, k->user->username);
       log_daemon(k, msgbuf);
       if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
-				     NO_RESPOND);
+	  (void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       status = UNKNOWN_STATUS;
       break;
 
     case MACHINE_DOWN:
       set_status(k->user, MACHINE_DOWN);
       (void) sprintf(msgbuf,"Unable to contact %s %s.  Host machine down.",
-	      k->title, k->user->username);
+		     k->title, k->user->username);
       log_daemon(k, msgbuf);
       if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
-				     NO_RESPOND);
+	  (void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       status = MACHINE_DOWN;
       break;
 
     case LOGGED_OUT:
       set_status(k->user, LOGGED_OUT);
       (void) sprintf(msgbuf,"Unable to contact %s %s.  User logged out.",
-	      k->title, k->user->username);
+		     k->title, k->user->username);
       log_daemon(k, msgbuf);
       if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
-				     NO_RESPOND);
+	  (void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       status = LOGGED_OUT;
       break;
 
@@ -376,33 +375,26 @@ zsend_message(c_class, instance, opcode, username, message, flags)
 #endif
 {
   ZNotice_t notice;		/* Zephyr notice */
-  int ret;			/* return value, length */
+  int ret, len;			/* return value, length */
   char error[ERROR_SIZE];
   char buf[BUF_SIZE];
-  char *signature = "From: OLC Service \n";
+  char *signature = "From: OLC Service\n";
 
 #ifdef lint
   flags = flags;
 #endif lint;
 
-  if ((ret = ZInitialize()) != ZERR_NONE)
-    {
-      (void) fprintf(stderr, "zwrite_message: couldn't ZInitialize\n");
-      return(ERROR);		/* Oops, couldn't initialize. */
-    }
+  if (!use_zephyr)
+      return ERROR;
+
+  if ((ret = ZInitialize()) != ZERR_NONE) {
+      com_err ("zwrite_message", ret, "couldn't ZInitialize");
+      return ERROR;		/* Oops, couldn't initialize. */
+  }
   
   bzero(&notice, sizeof(ZNotice_t));
 
-  if(username!= (char *) NULL)
-    {
-      if(!string_eq(username,""))
-	notice.z_kind = ACKED;
-      else
-	notice.z_kind = UNSAFE;
-    }
-  else 
-    notice.z_kind = UNSAFE;
-
+  notice.z_kind = (username && username[0]) ? ACKED : UNSAFE;
   notice.z_port = 0;
   /*
    * The Zephyr header files don't deal with `const', but I don't
@@ -416,13 +408,17 @@ zsend_message(c_class, instance, opcode, username, message, flags)
   notice.z_default_format = "Message $message";
   notice.z_opcode = (char *) opcode;
 
+  if (strlen (signature) + strlen (message) + 5 > BUF_SIZE)
+      return ERROR;
   (void) strcpy(buf,signature);
   (void) strcat(buf,message);
-
+  len = strlen (buf);
+  if (buf[len-1] != '\n')
+      buf[len++] = '\n';
 
   /* Watch the moving pointer.... */
   notice.z_message = buf;     
-  notice.z_message_len = strlen(buf) + 1;
+  notice.z_message_len = len + 1;
   ret = zsend(&notice); /* send real message */
 
   return(ret);  
