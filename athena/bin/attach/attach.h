@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.18 1995-07-21 00:36:43 cfields Exp $
+ * $Id: attach.h,v 1.19 1996-04-26 17:12:17 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -339,7 +339,6 @@ extern	char	*errstr();	/* convert errno to string */
 
 AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();
-extern char *strdup(), *strtok();
 extern int errno;
 extern unsigned long rvderrno;
 extern char *sys_errlist[];
