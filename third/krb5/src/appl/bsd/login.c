@@ -281,7 +281,7 @@ extern int errno;
 					   passsword */
 #endif
 
-#ifdef __SVR4
+#if defined(__SVR4) || defined(sgi)
 #define NO_MOTD
 #define NO_MAILCHECK
 #endif
@@ -1327,6 +1327,12 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	 */
 	if (eflag)
 	    	lgetstr(term, sizeof(term), "Terminal type");
+	else if (!(kflag || Kflag ))  /*Preserve terminal if not read over net */
+	  {
+	    if (getenv("TERM"))
+	      strncpy(term, getenv("TERM"), sizeof(term));
+	  }
+	
 	term_init (rflag || kflag || Kflag || eflag);
 
 	for (cnt = getdtablesize(); cnt > 2; cnt--)
