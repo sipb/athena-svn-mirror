@@ -1,7 +1,7 @@
 .TH ENSCRIPT 1 "18 August 1992" "Adobe Systems"
 \" Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/enscript.1p,v 1.2 1996-10-14 05:09:41 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/enscript.1p,v 1.3 2001-01-03 05:20:51 zacheiss Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .SH NAME
 enscript \- convert text files to PostScript language format for printing
@@ -143,8 +143,7 @@ The default is Courier-Bold10.
 causes the \*(PS file to be written to the named file rather than
 being spooled for printing.  As a special case, 
 .B -p
-.I-
-will send the resulting\*(PS language code to the standard output.
+\- will send the resulting\*(PS language code to the standard output.
 .TP
 .B -g
 causes the fact that a file is garbage to be ignored.  Normally, any file
