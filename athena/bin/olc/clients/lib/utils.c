@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.4 1989-08-15 13:38:19 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.5 1989-08-22 13:57:34 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -28,6 +28,49 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <signal.h>
 #include <ctype.h>
 #include <sys/stat.h>
+
+OFillRequest(req)
+     REQUEST *req;
+{
+  return(fill_request(req));
+}
+  
+fill_request(req)
+     REQUEST *req;
+{
+  int status;
+
+#ifdef KERBEROS
+  int result;
+  CREDENTIALS k_cred;
+#endif KERBEROS
+
+  req->options = NO_OPT;
+  req->version = CURRENT_VERSION;
+
+  req->requester.instance = User.instance;
+  req->requester.uid      = User.uid;
+  (void) strncpy(req->requester.username, User.username, LOGIN_SIZE);
+  (void) strncpy(req->requester.realname, User.realname, NAME_LENGTH);
+  (void) strncpy(req->requester.machine,  User.machine,  NAME_LENGTH);
+  
+  req->target.instance = User.instance;
+  req->target.uid      = User.uid;
+  (void) strncpy(req->target.username, User.username, LOGIN_SIZE);
+  (void) strncpy(req->target.realname, User.realname, NAME_LENGTH);
+  (void) strncpy(req->target.machine,  User.machine,  NAME_LENGTH);
+
+#ifdef KERBEROS
+  if(krb_get_cred(K_SERVICE,INSTANCE,REALM, &k_cred) == KSUCCESS)
+    {
+      (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
+      (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
+    }
+#endif KERBEROS
+
+  return(SUCCESS);
+}
+
 
 /*
  * Function:	call_program() executes the named program by forking the
