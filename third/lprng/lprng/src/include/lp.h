@@ -221,7 +221,7 @@ EXTERN struct malloc_list C_files_list;
  *		I -- "indent" amount to indent output
  *		J -- "job name" on banner page
  *		L -- "literal" user's name to print on banner
- *		M -- "mail" to user when done printing
+ *		M -- notify ("mail") user when done printing
  *		N -- "name" of file (used by lpq)
  *		P -- "Person" user's login name
  *		Q -- "Queue Name" used for spooling
@@ -709,6 +709,7 @@ EXTERN int Accounting_remote; /* write remote transfer accounting (if af is set)
 EXTERN char* Accounting_start;/* accounting at start (see also af, la, ar) */
 EXTERN int Allow_user_logging; /* allow users to get log info */
 EXTERN int Always_banner; /* always print banner, ignore lpr -h option */
+EXTERN int Athena_Z_compat; /* compatibility with Athena Z flag */
 EXTERN int Auto_hold;	 /* automatically hold all jobs */
 EXTERN int Backwards_compatible; /* backwards-compatible: job file format */
 EXTERN int Backwards_compatible_filter; /* backwards-compatible: filter parameters */
@@ -737,6 +738,7 @@ EXTERN char* Default_priority;	/* default priority */
 EXTERN char* Default_format;	/* default format */
 EXTERN char* Destinations; /* printers that a route filter may return and we should query */
 EXTERN int Direct_read;	/* filter reads directly from a file */
+EXTERN int Extended_notification; /* printer supports extened 'M' cf line */
 EXTERN int FF_on_close; /* print a form feed when device is closed */
 EXTERN int FF_on_open; /* print a form feed when device is opened */
 EXTERN int Force_FQDN_hostname; /* force FQDN Host name in control file */
@@ -751,6 +753,7 @@ EXTERN int Generate_banner; /* generate a banner when sending to remote */
 EXTERN int Hold_all;	 /* hold all jobs */
 EXTERN int Ignore_requested_user_priority;	 /* ignore requested user priority */
 EXTERN char* IF_Filter; /* filter command, run on a per-file basis */
+EXTERN int KA; /* Use old Athena krb4 authentication */
 EXTERN char* Leader_on_open; /* leader string printed on printer open */
 EXTERN int Local_accounting; /* write local printer accounting (if af is set) */
 EXTERN int Lock_it; /* lock the IO device */
@@ -842,7 +845,6 @@ EXTERN char * Server_tmp_dir;	/* default temporary file directory */
 EXTERN char * Filter_ld_path;
 EXTERN char * Filter_options;
 EXTERN char * Filter_path;
-EXTERN int KA;
 EXTERN char * Lockfile;
 EXTERN char * Logfile;
 EXTERN char * Lpd_port;
@@ -869,6 +871,7 @@ EXTERN char *Syslog_device;	/* default syslog device if no syslog() facility */
 EXTERN int Use_info_cache;
 EXTERN char * User_authentication_command;
 EXTERN char * User_lpc;
+EXTERN char * Zwrite;
 EXTERN char * Daemon_group;
 EXTERN char * Server_user;
 EXTERN char * Remote_user;
@@ -904,6 +907,7 @@ EXTERN char *Username;	/* Specified with the -U option */
 EXTERN int Use_queuename_flag;	/* Specified with the -Q option */
 EXTERN int Secure;		/* Secure filter option */
 EXTERN int Setup_mailaddress;   /* Set up mail address */
+EXTERN int Zephyr;	/* Zephyr notification on completion */
 EXTERN char *Zopts;     /* Z options */
 
 EXTERN int Filecount;   /* number of files to print */ 
