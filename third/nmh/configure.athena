@@ -1,5 +1,6 @@
-# $Id: configure.athena,v 1.2 1999-02-23 17:00:04 danw Exp $
+# $Id: configure.athena,v 1.3 1999-03-18 22:56:58 danw Exp $
 
 ./configure --enable-nmh-pop --enable-nmh-debug \
 	--with-krb4=$ATHTOOLROOT/usr/athena \
-	--with-hesiod=$ATHTOOLROOT/usr/athena
+	--with-hesiod=$ATHTOOLROOT/usr/athena \
+	--with-mts=sendmail
