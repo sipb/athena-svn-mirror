@@ -10261,7 +10261,7 @@ SUPPORTINCS='-DNEED_GNOMESUPPORT_H -I$(top_builddir)/support -I$(top_srcdir)/sup
 
 ART_LIBS="-lart_lgpl"
 GNOME_LIBS="-lgnome -lgnomesupport $LIBGNOME_LIBS"
-GNOMEUI_LIBS="-lgnomeui $ART_LIBS $GDK_IMLIB_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\` $GNOME_LIBS"
+GNOMEUI_LIBS="-lgnomeui $ART_LIBS \`imlib-config --libs\` -lSM -lICE \`gtk-config $gtk_config_args --libs\` $GNOME_LIBS"
 GTKXMHTML_LIBS="-lgtkxmhtml $LIBGTKXMHTML_LIBS"
 ZVT_LIBS="-lzvt $UTIL_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
 
