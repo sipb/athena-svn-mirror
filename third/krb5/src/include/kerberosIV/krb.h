@@ -486,6 +486,7 @@ typedef int (*decrypt_tkt_type) PROTOTYPE ((char *, char *, char *, char *,
  * Function Prototypes for Kerberos V4.
  */
 
+#include <stdio.h>
 struct sockaddr_in;
 
 /* add_ticket.c */
@@ -558,11 +559,6 @@ int krb_get_tf_fullname PROTOTYPE((char *, char *, char *, char *));
 /* get_tf_realm.c */
 int krb_get_tf_realm PROTOTYPE((char *, char *));
 
-#if 0    
-/* getopt.c */
-int getopt PROTOTYPE((int , char **, char *));
-#endif
-
 /* getrealm.c */
 char *krb_realmofhost PROTOTYPE((char *));
 
@@ -595,11 +591,6 @@ int krb_get_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , int 
 
 /* kuserok.c */
 int kuserok PROTOTYPE((AUTH_DAT *, char *));
-
-/* log.c */
-void log PROTOTYPE((char *, int , int , int , int , int , int , int , int , int , int ));
-int set_logfile PROTOTYPE((char *));
-int new_log PROTOTYPE((long , char *));
 
 /* mk_err.c */
 long krb_mk_err PROTOTYPE((u_char *, long , char *));
@@ -660,14 +651,6 @@ int send_to_kdc PROTOTYPE((KTEXT , KTEXT , char *));
 int krb_sendauth PROTOTYPE((long , int , KTEXT , char *, char *, char *, u_long , MSG_DAT *, CREDENTIALS *, Key_schedule , struct sockaddr_in *, struct sockaddr_in *, char *));
 int krb_sendsvc PROTOTYPE((int , char *));
 
-#if 0    
-/* setenv.c */
-/* int setenv PROTOTYPE((char *, char *, int )); -- is also in telnetd/local-proto.h */
-void unsetenv PROTOTYPE((char *));
-char *getenv PROTOTYPE((char *));
-char *_findenv PROTOTYPE((char *, int *));
-#endif
-
 /* stime.c */
 char *krb_stime PROTOTYPE((long *));
 
@@ -689,7 +672,7 @@ char *tkt_string PROTOTYPE((void ));
 void krb_set_tkt_string PROTOTYPE((char *));
 
 /* util.c */
-int ad_print PROTOTYPE((AUTH_DAT *));
+void ad_print PROTOTYPE((AUTH_DAT *));
 int placebo_cblock_print PROTOTYPE((des_cblock ));
 
 #endif /*  _KRB4_PROTO_H__ */
