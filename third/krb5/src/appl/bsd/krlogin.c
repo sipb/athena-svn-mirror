@@ -599,11 +599,11 @@ main(argc, argv)
     rem = sock;
 #else
     rem = rcmd(&host, debug_port,
-	       null_local_username ? NULL : pwd->pw_name,
+	       null_local_username ? "" : pwd->pw_name,
 	       name ? name : pwd->pw_name, term, 0);
     rcmd_stream_init_normal();
 #endif /* KERBEROS */
-    
+
     if (rem < 0)
       exit(1);
     
