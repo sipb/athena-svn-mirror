@@ -25,7 +25,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.2 1989-07-31 14:29:12 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.3 1989-07-31 15:52:09 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -34,8 +34,8 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
  *  X- and Motif-type variables.
  */
 
-static MRMHierarchy	Hierarchy;     /* MRM database hierarchy id */
-static MRMCode		class;
+static MrmHierarchy	Hierarchy;     /* MRM database hierarchy id */
+static MrmCode		class;
 
 /*extern Widget				/* Widget ID's */
 /*  w_newq_btn,
@@ -73,7 +73,7 @@ extern void
   widget_create()
 ;
 
-static MRMCount reg_num = 14;		/* There are reg_num callbacks */
+static MrmCount reg_num = 14;		/* There are reg_num callbacks */
 static MRMRegisterArg  reg_vec[] = {
   {"olc_new_ques", (caddr_t) olc_new_ques},
   {"olc_cont_ques", (caddr_t) olc_cont_ques},
@@ -190,7 +190,7 @@ printf("main: starting for %s/%s (%d)  on %s\n",User.realname, User.username,
 
 /*  Initialize Motif Resource Manager.	*/
 
-  XmInitializeMRM();
+  MrmInitialize();
 
 /*
  *  First, try opening display.  If this fails, print a 'nice' error
@@ -215,20 +215,20 @@ printf("main: starting for %s/%s (%d)  on %s\n",User.realname, User.username,
 #ifdef TEST
   printf("main: Opening hierarchy.  Registering and fetching widgets.\n");
 #endif TEST
-  if (XmOpenHierarchy (1, vec, NULL, &Hierarchy) != MRMSuccess)
+  if (MrmOpenHierarchy (1, vec, NULL, &Hierarchy) != MrmSUCCESS)
     {
       fprintf(stderr, "%s: Unable to OPEN heirarchy file that contains layout of interface.\n\tTry using the text-based interface instead.  Type:\n\n\t\tolc\n\n", program);
       exit(ERROR);
     }
       
-  if (XmRegisterMRMNames (reg_vec, reg_num) != MRMSuccess)
+  if (MrmRegisterNames (reg_vec, reg_num) != MrmSUCCESS)
     {
       fprintf(stderr, "%s: Unable to REGISTER names for layout of interface.\n\tTry using the text-based interface instead.  Type:\n\n\t\tolc\n\n", program);
       exit(ERROR);
     }
 
-  if (XmFetchWidget (Hierarchy, "main", toplevel, &main_form, 
-		     &class) != MRMSuccess)
+  if (MrmFetchWidget (Hierarchy, "main", toplevel, &main_form, 
+		     &class) != MrmSUCCESS)
     {
       fprintf(stderr, "%s: Unable to FETCH layout of interface.\n\tTry using the text-based interface instead.  Type:\n\n\t\tolc\n\n", program);
       exit(ERROR);
