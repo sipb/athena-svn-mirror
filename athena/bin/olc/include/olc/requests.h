@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.10 1990-05-25 16:13:12 vanharen Exp $
+ *	$Id: requests.h,v 1.11 1990-07-16 09:50:46 vanharen Exp $
  *	$Author: vanharen $
  */
 
@@ -186,7 +186,8 @@ typedef struct tIO_REQUEST
 
 #define	VERSION_1	1	/* 07 Aug 1986 */
 #define	VERSION_2	2	/* 07 Jun 1988 */
-#define VERSION_3       3       /* 07 Jun 1989 */
-#define VERSION_4       4       /* 01 Oct 1989 */
+#define VERSION_3	3	/* 07 Jun 1989 */
+#define VERSION_4	4	/* 01 Oct 1989 */
+#define VERSION_5	5	/* 16 Jul 1990 */
 
-#define CURRENT_VERSION VERSION_4
+#define CURRENT_VERSION VERSION_5
