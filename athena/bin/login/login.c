@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.67 1994-04-29 14:20:34 root Exp $
+ * $Id: login.c,v 1.68 1994-04-30 13:28:12 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.67 1994-04-29 14:20:34 root Exp $";
+static char *rcsid = "$Id: login.c,v 1.68 1994-04-30 13:28:12 vrt Exp $";
 #endif
 
 /*
@@ -72,7 +72,11 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #ifndef SOLARIS
 #include <ttyent.h>
 #endif
+#ifdef ultrix
+#include <nsyslog.h>
+#else
 #include <syslog.h>
+#endif
 #include <strings.h>
 #include <krb.h>	
 #include <netdb.h>
@@ -480,7 +484,7 @@ main(argc, argv)
 	tty = ttyn;
     else
 	tty++;
-#ifndef SYSLOG42
+#ifdef LOG_ODELAY 
     openlog("login", LOG_ODELAY, LOG_AUTH);
 #endif
     /* destroy environment unless user has asked to preserve it */
