@@ -26,7 +26,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.1 1989-12-13 14:14:52 vanharen Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.2 1990-03-09 11:58:14 vanharen Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -328,8 +328,8 @@ create_cref_dir(dir)
 }
 
 log_status(logfile,logstring)
-     char *logfile[];
-     char *logstring[];
+     char *logfile;
+     char *logstring;
 {
 	FILE *fp;
 	long current_time;
