@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.92 1998-06-01 04:41:02 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.93 1998-06-23 19:29:16 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -197,6 +197,10 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	  strncat(errbuf, altext, sizeof(errbuf) - strlen(errbuf) - 1);
 	  free(altext);
 	}
+
+      syslog(LOG_INFO, "Unauthorized login attempt for username %s: %s", user,
+	     al_strerror(status, &alerrmem));
+      al_free_errmem(alerrmem);
 
       return errbuf;
     }
