@@ -1,0 +1,7 @@
+Name: athena-gtkhtml
+Summary: GTK-based HTML rendering library, for Athena
+License: LGPL
+Group: X11/Libraries
+
+%description
+GtkHTML is a lightweight HTML rendering/printing/editing engine.
