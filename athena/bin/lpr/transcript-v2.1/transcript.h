@@ -3,12 +3,22 @@
  * Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
  * GOVERNMENT END USERS: See notice of rights in Notice file in TranScript
  * library directory -- probably /usr/lib/ps/Notice
- * RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/transcript.h,v 1.1 1993-10-12 05:28:06 probe Exp $
+ * RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/transcript.h,v 1.2 1995-07-11 21:24:25 miki Exp $
  *
  * some general global defines
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  94/09/15  12:01:25  probe
+ * POSIX compliance.
+ * 
+ * Revision 1.2  94/09/14  13:59:22  probe
+ * POSIX support added.
+ * Assume everything has strchr/strrchr (even BSD did)
+ * 
+ * Revision 1.1  94/02/22  15:52:07  probe
+ * Initial revision
+ * 
  * Revision 2.2  87/11/17  16:52:57  byron
  * Release 2.1
  * 
@@ -48,13 +58,8 @@
 #define VOID void
 #define VOIDC (void)
 
-#ifdef SYSV
 #define INDEX strchr
 #define RINDEX strrchr
-#else
-#define INDEX index
-#define RINDEX rindex
-#endif
 
 /* external globals (from config.c) */
 
@@ -96,10 +101,16 @@ extern VOID pexit2();
 extern char *mapname();
 
 /* system functions */
+#ifdef POSIX
+#include <unistd.h>
+#include <stdlib.h>
+#else
+#include <sys/types.h>
 extern VOID perror();
 extern VOID exit();
 extern char *ctime();
-extern long time();
+extern time_t time();
 extern char *mktemp();
 extern char *gets();
 extern char *malloc();
+#endif
