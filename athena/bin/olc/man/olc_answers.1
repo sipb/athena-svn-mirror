@@ -1,0 +1,40 @@
+.\"
+.\" 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/olc_answers.1,v $
+.\"	$Author: lwvanels $
+.\"	$Locker:  $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/olc_answers.1,v 1.1 1990-11-15 09:16:44 lwvanels Exp $
+.\"
+.TH OLC_ANSWERS 1
+.FM mit
+.SH NAME
+olc_answers - allows you to read the OLC stock answers
+.SH SYNOPSIS
+.B /usr/athena/olc_answers [-q]
+.SH DESCRIPTION
+.I olc_answers
+allows you to read the set of On-Line Consulting (OLC) "stock" answers.
+These are pre-written answers that consultants use to answer questions
+in OLC, and are made available to users directly.
+.PP
+The stock answers are stored on NFS lockers - the program automatically
+attaches the correct locker, and attempts to attach a backup if the
+primary locker fails.
+.SH "OPTIONS"
+.TP 8
+.B "\-q"
+Start up
+.I olc_answers
+quietly, suppressing the help screen that is normally given.
+.SH FILES
+.TP 30
+/mit/olc-stock/browser
+The browser program.
+.TP 30
+/mit/olc-stock/stock_answers
+The directory containing the stock answers.
+.SH "SEE ALSO"
+olc(1), olcr(1), attach(1)
+.SH COPYRIGHT
+Copyright 1987, Massachusetts Institute of Technology.
+.SH AUTHOR
+Win Treese, Marc Campos, Tom Coppeto, Chris VanHaren, MIT Project Athena.
