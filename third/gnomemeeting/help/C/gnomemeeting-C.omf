@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<omf>
+  <resource>
+    <creator>
+      zanee@kernelcode.com
+    </creator>
+    <maintainer>
+      zanee@kernelcode.com
+    </maintainer>
+<!--
+    <title>
+      GnomeMeeting Manual V1.00
+    </title>
+-->
+    <title>
+      GnomeMeeting
+    </title>    
+    <date>
+      2004-02-19
+    </date>
+    <version identifier="1.00" date="2004-02-19" description="Updated for GNOME 2.6"/>
+    <subject category="GNOME|Applications|Internet"/>
+    <description>
+      User manual for the GnomeMeeting videoconferencing, IP Telephony and VoIP application. 
+    </description>
+    <type>
+      user's guide
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="gnomemeeting.xml"/>
+    <language code="C"/>
+    <relation seriesid="081c7e56-2acd-11d6-819f-e6a1118e62db"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Damien Sandras"/>
+  </resource>        
+</omf>

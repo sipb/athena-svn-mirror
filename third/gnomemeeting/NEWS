@@ -1,0 +1,91 @@
+This File Contains Important News
+
+1.0.1 :
+* Prevent the LPC 10 codec to be used if not selected.
+* Do not play busy tone when rejecting or missing an incoming call.
+* When a window is present on another workspace and that the user
+  activates it, then move it to the current workspace instead of
+  hiding it.
+* configure.in: Fixed --install-schemas
+* Fixed manual so that tips are correctly displayed with GNOME 2.6.
+* Improved manual page
+* Fixed suspending of ESound daemon during calls
+* Fixed translation of gnomemeeting --help
+
+1.0.0 :
+
+Main GUI :
+
+* Defaults to h323: or callto: if no url handler is specified and automatically rewrites the URL in the GUI
+* Improved the incoming call dialog so that it displays the remote URL (either the IP or the remote party number or the remote alias).
+* Added a speed dials submenu in the Call menu. All users for which you are adding a speed dial in the addressbook will be listed there, that gives a fast and easy way to call your friend or to transfer any existing call to them.
+* Do not display DTMF's in the URL bar during calls.
+* Improved the incoming calls dialog
+* Added alphabet to the dialpad
+
+Address book :
+
+* Allow to rename groups and servers.
+* Allow to have a group name identical to a server name while keeping them distinct and vice-versa.
+* Keep the last selected page as current when deleting, adding or renaming a group or a server. 
+* Automatically enable the current group in the groups list when adding a new contact.
+* Added a menu entry to the right-click menu to copy the URL of the currently selected contact to the clipboard. 
+
+Preferences window :
+
+* Rewrote the preferences window code.
+* Added info dialog for codecs.
+
+Calls history:
+
+* Added call end reason for calls.
+* Remember last 100 calls.
+
+Audio :
+
+* Added support for plugins (Julien Puydt, Craig Southeren).
+* Added support for native ALSA.
+
+Video :
+
+* Added support for plugins (Julien Puydt, Craig Southeren).
+* Improved performances of the video grabber.
+* Fixed palette problem due to a bug in the Philips webcams driver.
+* Fixed problem with bttv under 2.6.0.
+
+Configuration Assistant : 
+
+* Completely rewrote the configuration assistant to make it simpler and more HIG compliant
+* Users are now only registered to ILS if they explicitely request it
+* Automatically disable video transmission when there is no video device for the selected plugin
+* Added VU Meter support (widget from Stefan Bruëns)
+* The settings are now only applied when the user clicks on "Finish"
+* Better default settings for DSL and cable users
+* Rewrote the Audio Tester for better performance, and to permit it to work with Quicknet cards.
+
+H.323:
+
+* Added possibility to user early H.245 in setup or not.
+* Added a way to force the gatekeeper alias to be registered as primary alias with the gatekeeper
+* Added possibility to clear automatically calls after 30 seconds of inactivity.
+* Added iLBC codec support.
+* Added possibility to start/stop the video channel on-the-fly during calls.
+* Added support for gateway/proxy.
+
+Misc :
+
+* Added support for maximum bandwidth setting. The codecs will be chosen during the negotiation according to the maximum bandwidth available to the endpoint.
+* Only display one error popup when several attempts to open the soundcard fail.
+* Rewrote the preferences management code
+* Added plugin-managed sound events for incoming calls (incoming call ring) and outgoing calls (ring tone and busy tone).
+* All windows sizes and positions are remembered between sessions.
+* Do not use ILS anymore to get the public IP when a NAT gateway is used, that allows people to have the service even if they don't register to ILS.
+* Allow to configure the web address GnomeMeeting uses to get the public IP address. This allows people to not have to trust seconix.com.
+* Added possibility to keep video on windows on top of others.
+* New notion of status : Available, Free For Chat, Busy, Forward.
+* Unusable codecs are now grayed out when a Quicknet card is used.
+* The text chat now supports h323:, callto:, http: and mailto: URLs (thanks to Julien Puydt).
+* Rewrote Quicknet support
+* The Transfer Call dialog is now closed at the end of calls. You can also transfer calls using only your POTS.
+* New PC-To-Phone configuration window.
+* Better GConf keys structure.
