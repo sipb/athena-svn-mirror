@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Id: server.c,v 1.54 1993-03-23 03:10:43 probe Exp $";
+static char rcsid_server_c[] = "$Id: server.c,v 1.55 1993-05-05 13:11:05 probe Exp $";
 #endif
 #endif
 
@@ -955,6 +955,8 @@ admin_dispatch(notice, auth, who, server)
 		bdump_get(notice, auth, who, server);
 	} else if (!strcmp(opcode, ADMIN_LOST_CLT)) {
 		status = recover_clt(notice, server);
+		if (status == ZERR_NONE)
+			ack(notice, who);
 	} else if (!strcmp(opcode, ADMIN_KILL_CLT)) {
 		status = kill_clt(notice, server);
 		if (status == ZERR_NONE)
