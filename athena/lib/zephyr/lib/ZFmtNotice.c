@@ -4,24 +4,22 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v $
- *	$Author: raeburn $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.11 1990-12-01 17:47:24 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.12 1991-06-20 14:24:54 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.11 1990-12-01 17:47:24 raeburn Exp $";
-#endif lint
-
-#include <zephyr/mit-copyright.h>
+static char rcsid_ZFormatNotice_c[] = "$Id: ZFmtNotice.c,v 1.12 1991-06-20 14:24:54 jfc Exp $";
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
-    ZNotice_t *notice;
+    register ZNotice_t *notice;
     char **buffer;
     int *ret_len;
     Z_AuthProc cert_routine;
@@ -36,6 +34,7 @@ Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
 
     *ret_len = hdrlen+notice->z_message_len;
 
+    /* Length can never be zero, don't have to worry about malloc(0). */
     if (!(*buffer = malloc((unsigned)*ret_len)))
 	return (ENOMEM);
 
