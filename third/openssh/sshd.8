@@ -530,6 +530,12 @@ This avoids infinitely hanging sessions.
 To disable keepalives, the value should be set to
 .Dq no
 in both the server and the client configuration files.
+.It Cm Kerberos524
+Specifies whether Kerberos 4 tickets should be obtained
+from Kerberos 5 tickets, similar to
+.Xr krb524init 1 .  
+Default is
+.Dq yes .
 .It Cm KerberosAuthentication
 Specifies whether Kerberos authentication is allowed.
 This can be in the form of a Kerberos ticket, or if
