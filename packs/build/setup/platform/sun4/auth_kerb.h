@@ -7,9 +7,9 @@
 #ifndef	_RPC_AUTH_KERB_H
 #define	_RPC_AUTH_KERB_H
 
-#pragma ident	"@(#)auth_kerb.h	1.8	93/05/26 SMI"
+#pragma ident	"@(#)auth_kerb.h	1.10	95/04/04 SMI"
 
-#include <krb.h>
+#include <kerberosIV/krb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -111,10 +111,11 @@ struct authkerb_verf {
  * Register the service name, instance and realm.
  */
 extern int	authkerb_create(char *, char *, char *, u_int,
-			struct netbuf *, int *, dev_t, int, AUTH **);
+			struct netbuf *, int *, struct knetconfig *,
+			int, AUTH **);
 extern bool_t	xdr_authkerb_cred(XDR *, struct authkerb_cred *);
 extern bool_t	xdr_authkerb_verf(XDR *, struct authkerb_verf *);
-extern int	svc_kerb_reg(SVCXPRT *, char *, char *, char *);
+extern int	svc_kerb_reg(SVCXPRT *, u_long, u_long, char *, char *, char *);
 extern enum auth_stat _svcauth_kerb(struct svc_req *, struct rpc_msg *);
 
 extern kmutex_t	authkerb_lock;
