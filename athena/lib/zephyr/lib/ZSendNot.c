@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.8 1988-05-17 21:23:41 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.9 1988-06-15 20:48:32 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.8 1988-05-17 21:23:41 rfrench Exp $";
+static char rcsid_ZSendNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.9 1988-06-15 20:48:32 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -24,6 +24,14 @@ Code_t ZSendNotice(notice, cert_routine)
     ZNotice_t *notice;
     int (*cert_routine)();
 {
+    return(ZSrvSendNotice(notice, cert_routine, Z_XmitFragment));
+}
+
+Code_t ZSrvSendNotice(notice, cert_routine, send_routine)
+    ZNotice_t *notice;
+    int (*cert_routine)();
+    int (*send_routine)();
+{    
     Code_t retval;
     ZNotice_t newnotice;
     char *buffer;
@@ -36,7 +44,7 @@ Code_t ZSendNotice(notice, cert_routine)
     if ((retval = ZParseNotice(buffer, len, &newnotice)) != ZERR_NONE)
 	return (retval);
     
-    retval = Z_SendFragmentedNotice(&newnotice, len);
+    retval = Z_SendFragmentedNotice(&newnotice, len, send_routine);
 
     free(buffer);
 
