@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.5 1994-06-07 09:30:56 cfields Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.8,v 1.6 1997-04-01 01:09:46 ghudson Exp $
 .TH DM 8 "30 April 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -49,8 +49,8 @@ console handling.  This is necessary if more than one display manager
 is running on a machine.
 .SH FILES
 /etc/utmp, /usr/adm/wtmp, /etc/passwd, /etc/ptmp, /etc/X*.hosts,
-/usr/tmp/X*.pid, /etc/athena/console.pid, /etc/athena/dm.pid, /dev/mouse,
-/dev/cons, /usr/tmp/console.log, /dev/console
+/var/athena/X*.pid, /var/athena/console.pid, /var/athena/dm.pid, /dev/mouse,
+/dev/cons, /var/athena/console.log, /dev/console
 
 .SH "SEE ALSO"
 Xserver(1), console(8), xlogin(8), config_console(1), init(8)

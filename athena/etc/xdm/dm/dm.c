@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.48 1996-11-26 21:56:07 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49 1997-04-01 01:09:48 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.48 1996-11-26 21:56:07 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49 1997-04-01 01:09:48 ghudson Exp $";
 #endif
 
 #ifndef NULL
@@ -125,12 +125,12 @@ char *passwdtf ="/etc/ptmp";
 char *spasswdf =	"/etc/shadow";
 char *spasswdtf =	"/etc/stmp";
 #endif
-char *xpids =	"/usr/tmp/X%d.pid";
+char *xpids =	"/var/athena/X%d.pid";
 char *xhosts =	"/etc/X%d.hosts";
-char *consolepidf = "/etc/athena/console.pid";
-char *dmpidf =	"/etc/athena/dm.pid";
+char *consolepidf = "/var/athena/console.pid";
+char *dmpidf =	"/var/athena/dm.pid";
 char *consolef ="/dev/console";
-char *consolelog = "/usr/tmp/console.log";
+char *consolelog = "/var/athena/console.log";
 char *mousedev = "/dev/mouse";
 char *displaydev = "/dev/cons";
 #ifdef ultrix
