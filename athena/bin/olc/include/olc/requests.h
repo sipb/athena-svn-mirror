@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: vanharen $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.7 1990-02-15 18:55:12 vanharen Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.8 1990-02-16 05:45:26 vanharen Exp $
  */
 
 /* request structure */
@@ -100,8 +100,9 @@ typedef struct tIO_REQUEST
 #define OLC_CHANGE_TOPICS    245
 #define OLC_DUMP_REQ_STATS   250      /* debug server */
 #define OLC_DUMP_QUES_STATS  251      /* debug server */
+#define OLC_SET_USER_STATUS  252      /* for future use */
 
-#define OLC_NUM_REQUESTS     44      /* number of possible requests */
+#define OLC_NUM_REQUESTS     45      /* number of possible requests */
 
 /* Return values from daemon requests and functions. */
 
