@@ -1,7 +1,0 @@
-# $Id: configure.athena,v 1.1 1999-02-22 03:46:21 danw Exp $
-
-# Solaris 2.6's kernel PLL support is broken (at this patch level); disable it.
-if [ "$HOSTTYPE" = sun4 ]; then
-	echo "ac_cv_var_kernel_pll=no" > config.cache;
-fi
-./configure

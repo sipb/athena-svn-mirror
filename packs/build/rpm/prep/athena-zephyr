@@ -1,5 +1,0 @@
-#!/bin/sh
-
-cp $1/packs/config/zephyr.vars $2
-cp $1/packs/maint/os/linux/zephyrd.rc $2
-cp $1/packs/maint/os/linux/zhm.rc $2
