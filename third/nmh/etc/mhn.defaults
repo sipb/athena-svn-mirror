@@ -37,3 +37,4 @@ mhstore-store-application/x-excel: %m%P.xls
 mhstore-store-application/msexcel: %m%P.xls
 mhstore-store-application/x-msexcel: %m%P.xls
 mhstore-store-application/vnd.ms-excel: %m%P.xls
+mhshow-show-message/delivery-status: %ecat '%f'
