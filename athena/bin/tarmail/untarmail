@@ -1,0 +1,12 @@
+#
+#atob and untar mail sent via tarmail
+atob < $1 | tar xvpf -
+mv $1 /usr/tmp/$1.$$
+echo tarmail file moved to: /usr/tmp/$1.$$
+exit
+#
+# 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/untarmail,v $
+#	$Author: jtkohl $
+#	$Locker:  $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/untarmail,v 1.1 1985-04-25 20:37:35 jtkohl Exp $
+#
