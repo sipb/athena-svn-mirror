@@ -46,26 +46,116 @@ static void zenity_about_dialog_response (GtkWidget *widget, int response, gpoin
 
 /* Sync with the people in the THANKS file */
 static const gchar *author_credits[] = {
-  "Author -",
-  "Glynn Foster <glynn.foster@sun.com>",
+  "Authors",
+  "=======",
+  "Glynn Foster <glynn foster sun com>",
+  "Mike Newman <mikegtn gnome org>",
   "",
-  "Thanks to -",
-  "Jonathan Blandford <jrb@redhat.com>",
-  "Ross Burton <ross@burtonini.com>",
-  "Anders Carlsson <andersca@codefactory.se>",
-  "Nicholas Curran <quasar@austar.net.au>",
-  "John Fleck <jfleck@inkstain.net>",
-  "James Henstridge <james@daa.com.au>",
-  "Mihai T. Lazarescu <mihai@email.it>",
-  "Buhan Milne <bgmilne@linux-mandrake.com>",
-  "Mike Newman <mikegtn@gnome.org>",
-  "Havoc Pennington <hp@redhat.com>",
-  "Kevin C. Krinke <kckrinke@opendoorsoftware.com>",
-  "Kristian Rietveld <kris@gtk.org>",
-  "Jakub Steiner <jimmac@ximian.com>",
-  "Daniel d'Surreal <dagmar@speakeasy.net>",
-  "Hidetoshi Tajima <hidetoshi.tajima@sun.com>",
-  "Tom Tromey <tromey@redhat.com>",
+  "Patches from the following people",
+  "=================================",
+  "Darren Adams  <darrenadams dsl pipex com>"
+  "Peter Astrand  <astrand lysator liu se>",
+  "Jonathan Blandford  <jrb redhat com>",
+  "Paul Bolle  <pebolle tiscali nl>",
+  "Leonardo Boshell  <p kapcoweb com>",
+  "Ross Burton  <ross burtonini com>",
+  "Damien Carbery  <damien carbery sun com>",
+  "Anders Carlsson  <andersca codefactory se>",
+  "Nicholas Curran  <quasar austar net au>",
+  "John Fleck  <jfleck inkstain net>",
+  "Sebastian Heinlein <glatzor pimpzkru de>",
+  "James Henstridge  <james daa com au>",
+  "Mihai T  Lazarescu  <mihai email it>",
+  "Sebastian Kapfer <sebastian_kapfer web de>",
+  "Tomasz Koczko  <kloczek pld org pl>",
+  "Jordi Mallach  <jordi sindominio net>",
+  "Kjartan Maraas  <kmaraas gnome org>",
+  "Baptiste Mille-Mathias  <bmm80 free fr>",
+  "Buhan Milne  <bgmilne linux-mandrake com>",
+  "Christian Monneckes  <c-w-m gmx de>",
+  "Ivan Noris  <vix vazka sk>",
+  "Havoc Pennington  <hp redhat com>",
+  "Jan Arne Petersen  <jpetersen uni-bonn de>",
+  "Kevin C  Krinke  <kckrinke opendoorsoftware com>",
+  "Kristian Rietveld  <kris gtk org>",
+  "Christian Rose  <menthos menthos com>",
+  "Jakub Steiner  <jimmac ximian com>",
+  "Luke Suchocki  <gnome lukiepoo com>",
+  "Daniel d'Surreal  <dagmar speakeasy net>",
+  "Hidetoshi Tajima  <hidetoshi tajima sun com>",
+  "Tom Tromey  <tromey redhat com>",
+  "Yann  <bloch iie cnam fr>",
+  "",
+  "And all the translators that rock my world",
+  "==========================================",
+  "Vincent van Adrighem  <v vanadrighem dirck mine nu>",
+  "Taneem Ahmed  <taneem bengalinux org>",
+  "Takeshi Aihana <aihana gnome gr jp>",
+  "Amanpreet Singh Alam  <amanlinux netscape net>",
+  "Sanlig Badral  <badral openmn org>",
+  "John C Barstow  <jbowtie amathaine com>",
+  "Aygimantas Beruka  <uid0 tuxfamily org>",
+  "Alberto Fernandez Benito <afernn euskalnet net>",
+  "Stefano Canepa  <sc linux it>",
+  "Young-Ho Cha <ganadist mizi com>",
+  "Abel Cheung  <maddog linux org hk>",
+  "Zbigniew Chyla  <cyba gnome pl>",
+  "Mohammad Damt  <mdamt bisnisweb com>",
+  "Fatih Demir  <kabalak gtranslator org>",
+  "Laurent Dhima  <laurenti alblinux net>",
+  "Paul Duffy <dubhthach frink nuigalway ie>",
+  " Laszlo Dvornik  <dvornik gnome hu>",
+  "Francisco Javier Fernandez  <serrador arrakis es>",
+  "Artur Flinta  <aflinta cvs gnome org>",
+  "Alessio Frusciante  <algol firenze linux it>",
+  "Evandro Fernandes Giovanini  <evandrofg ig com br>",
+  "Pablo Gonzalo del Campo  <pablodc bigfoot com>",
+  "Dhurba Gnawali  <dhurbagnawali hotmail com>",
+  "Sammi Gunnarsson  <sammi techattack nu>",
+  "Dafydd Harries  <daf parnassus ath cx>",
+  "Wang Jian  <lark linux net cn>",
+  "Guntupalli Karunakar  <karunakar freedomink org>",
+  "Tomas Kuliavas  <tokul users sourceforge net>",
+  "Priit Laes  <amd tt ee>",
+  "Iaki Larraaga  <dooteo euskalgnu org>",
+  "Ole Laursen  <olau hardworking dk>",
+  "Toivo Leedjrv  <toivo linux ee>",
+  "Duarte Loreto  <happyguy_pt hotmail com>",
+  "Johanna Makkonen  <johanna makkonen iki fi>",
+  "Jordi Mallach  <jordi sindominio net>",
+  "Kjartan Maraas  <kmaraas gnome org>",
+  "Jordi Mas  <jmas softcatala org>",
+  "Kamagasako Masatoshi  <emerald gnome gr jp>",
+  "Dmitry G  Mastrukov  <dmitry taurussoft org>",
+  "Arafat Medini  <lumina silverpen de>",
+  "Christophe Merlet  <redfox redfoxcenter org>",
+  "Mike Newman  <mikegtn gnome org>",
+  "Ahmad Riza H Nst  <rizahnst eriagempita co id>",
+  "Alexandre Folle de Menezes  <afmenez terra com br>",
+  "Christian Neumair  <chris gnome-de org>",
+  "Metin Omirov  <metin karegen com>",
+  "Gareth Owen  <gowen72 yahoo com>",
+  "Kostas Papadimas  <pkst gmx net>",
+  "Sami Pesonen  <sampeson iki fi>",
+  "Roozbeh Pournader  <roozbeh sharif edu>",
+  "Jarkko Ranta  <jjranta cc joensuu fi>",
+  "Rostislav Raykov  <zbrox dir bg>",
+  "Christian Rose  <menthos menthos com>",
+  "Changwoo Ryu  <cwryu debian org>",
+  "Pablo Saratxaga  <pablo mandrakesoft com>",
+  "Robert Sedak  <robert sedak sk htnet hr>",
+  "Paisa Seeluangsawat  <paisa users sf net>",
+  "Danilo Segan  <dsegan gmx net>",
+  "Alexander Shopov  <ash contact bg>",
+  "Aasmund Skjaveland  <aasmunds fys uio no>",
+  "Yuriy Syrota  <rasta renome rovno ua>",
+  "Marcel Telka  <marcel telka sk>",
+  "Andras Timar  <timar gnome hu>",
+  "Miloslav Trmac  <mitr volny cz>",
+  "Mugurel Tudor <mugurelu go ro>",
+  "Daniel Yacob  <locales geez org>",
+  "Funda Wang <fundawang linux net cn>",
+  "Alexander Winston  <alexander winston comcast net>",
   NULL
 };
 
@@ -265,7 +355,15 @@ zenity_about (ZenityData *data)
     return;
   }
 
-  translator_credits = _("translator_credits");
+  /* Translators: This is a special message that shouldn't be translated
+                  literally. It is used in the about box to give credits to
+                  the translators.
+                  Thus, you should translate it to your name and email address.
+                  You can also include other translators who have contributed to
+                  this translation; in that case, please write them on separate
+                  lines seperated by newlines (\n). */
+
+  translator_credits = _("translator-credits");
 
   glade_xml_signal_autoconnect (glade_dialog);
 
@@ -306,7 +404,7 @@ zenity_about (ZenityData *data)
   if (glade_dialog)
     g_object_unref (glade_dialog);
 
-  gtk_widget_show (dialog);
+  zenity_util_show_dialog (dialog);
   gtk_main ();
 }
 
@@ -355,7 +453,7 @@ zenity_about_update_translator_label (GtkWidget *label)
   GString *string;
   gchar *tmp;
 
-  if (strcmp (translator_credits, "translator_credits") == 0) {
+  if (strcmp (translator_credits, "translator-credits") == 0) {
     gtk_widget_hide (label);
     return;
   } else {
@@ -414,7 +512,7 @@ zenity_about_display_credits_dialog (void)
     zenity_about_update_author_label (label);
   }
 
-  if (translator_credits != NULL && strcmp (translator_credits, "translator_credits") != 0) {
+  if (translator_credits != NULL && strcmp (translator_credits, "translator-credits") != 0) {
     label = zenity_about_create_label ();
     sw = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), 
@@ -443,7 +541,7 @@ zenity_about_dialog_response (GtkWidget *widget, int response, gpointer data)
       break;
 
     case GTK_RESPONSE_HELP:
-      zenity_util_show_help (ZENITY_HELP_PATH, "zenity.xml", NULL);
+      zenity_util_show_help (NULL);
       break;
 
     case GTK_RESPONSE_CREDITS:

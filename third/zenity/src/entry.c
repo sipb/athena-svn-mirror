@@ -59,7 +59,8 @@ zenity_entry (ZenityData *data, ZenityEntryData *entry_data)
   else
     zenity_util_set_window_icon (dialog, ZENITY_IMAGE_FULLPATH ("zenity-entry.png"));
 
-  gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
+  if (data->width > -1 || data->height > -1)
+    gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
 
   text = glade_xml_get_widget (glade_dialog, "zenity_entry_text");
 
@@ -79,7 +80,7 @@ zenity_entry (ZenityData *data, ZenityEntryData *entry_data)
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (text), entry);
 
-  gtk_widget_show (dialog);
+  zenity_util_show_dialog (dialog);
   gtk_main ();
 }
 
@@ -97,12 +98,10 @@ zenity_entry_dialog_response (GtkWidget *widget, int response, gpointer data)
       if (text != NULL)
         g_print ("%s\n", text);
 
-      gtk_main_quit ();
       break;
 
     case GTK_RESPONSE_CANCEL:
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_CANCEL);
-      gtk_main_quit ();
       break;
 
     default:
@@ -110,4 +109,5 @@ zenity_entry_dialog_response (GtkWidget *widget, int response, gpointer data)
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_ESC);
       break;
   }
+  gtk_main_quit ();
 }

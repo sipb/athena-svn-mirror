@@ -1,3 +1,184 @@
+Zenity 2.8.0
+============
+" Zen Elimination "
+	* Add new translations [Abel]
+	* New and updated translations
+		- Takeshi AIHANA [ja]
+		- Hendrik Richter [de]
+		- Raphael Higino [pt_BR]
+		- Miloslav Trmac [cs]
+		- Kostas Papadimas [el]
+		- David Lodge [en_GB]
+		- Mugurel Tudor [ro]
+		- Vincent van Adrighem [nl]
+		- Arafat Medini [ar]
+		- Priit Laes [et]
+		- Baris Cicek [tr]
+		- Abel Cheung [zh_TW]
+		- Dafydd Harries [cy]
+
+Zenity 2.7.91
+=============
+" Here I stand, sad and free "
+
+	* Updated online documentation [Breda, Glynn]
+	* Fix translator-credits string [Christian, Glynn]
+	* Update man pages [Glynn]
+	* New and updated translations
+		- Maxim Dziumanenko [uk]
+		- Alessio Frusciante, Stefano Canepa [it]
+		- Sami Pesonen [fi]
+		- Martin Willemoes Hansen [da]
+		- Jordi Mallach [ca]
+		- Danilo ≈| egan [sr, sr@Latn]
+		- Kjartan Maraas [nb, no]
+		- Laurent Dhima [sq]	
+		- Hasbullah Bin Pit [ms]
+		- Laszlo Dvornik [hu]
+		- Christian Rose [sv]
+		- Christian Rose, Kemal Sanjta [bs]
+		- Metin Amiroff, M…~Ytin ∆~Omirov [az]
+		- Ankit Patel [gu]
+		- Francisco Javier F. Serrador [es]	
+		- Duarte Loreto [pt]
+		- Changwoo Ryu [ko]
+		- Miloslav Trmac [cs]
+		- Adam Weinberger [en_CA]
+		- Funda Wang [zh_CN]
+		- Artur Flinta [pl]
+		- Marcel Telka [sk]
+		
+Zenity 2.7.90
+============
+" Let's sit down to find out where we stand "
+
+	* New and updated translations
+		- Laurent Dhima [sq]
+		- I√±aki Larra√±aga [eu]
+		- Takeshi AIHANA [ja]
+		- Alexander Winston [en_CA]
+		- Guntupalli Karunakar [hi]
+		- Miloslav Trmac [cs]
+		- Vincent van Adrighem [nl]
+		- Christian Rose [sv]
+		- Duarte Loreto [pt]
+		- Gareth Owen [en_GB]
+		- Laszlo Dvornik [hu]
+		- Kjartan Maraas [no]	
+		- Francisco Javier F. Serrador [es]
+
+Zenity 2.7.0
+============
+" You know what, I think I might stay here a little longer "
+
+	* Parsing typos [Paul Bolle]
+	* Send HUP to parent in progress dialog [Luke Suchocki]
+	* Compilation fixes [Ivan Noris]
+	* Use markup in message dialogs so that we get nice 
+	  HIG compliatn dialogs [Sebastian Heinlein]
+	* Documentation fixes [Baptiste Mille-Mathias]
+	* Remove duplicate headers [Leonardo Boshell]
+	* Add --print-column option for list dialog [Paul Bolle, Glynn]
+	* Miscellaneous cleanups [Paul Bolle]
+	* New and updated translations
+		- Rostislav Raykov, Alexander Shopov [bg]
+		- Ahmad Riza H Nst, Mohammad DAMT [id]
+		- John C Barstow [mi]
+
+Zenity 2.6.2
+============
+" Look what you've gone and done "
+
+	* Make dialogs transients of parent xterm [Sebastian Kapfer]
+	* Fix up the dialogs according to the HIG [Sebastian Heinlein]
+	* Add --text to the list dialog, it was mostly implemented 
+	  but never hooked up [Glynn]
+	* New and updated translations
+		- Adam Weinberger [en_CA]
+		- Duarte Loreto [pt]
+		- Vincent van Adrighem [nl]
+
+Zenity 2.6.1
+============
+" Okay, so I didn't get to Rottnest! "
+
+	* Fix up scrollkeeper issues [Glynn]
+	* Fix up help docs [Ross, Matt]
+	* New and updated translations
+		- David Fernandez Vaamonde, Jesus Bravo Alvarez [gl]
+		- Guntupalli Karunakar [gu]
+		- Adam Weinberger [en_CA]
+		- Yogeesh MB [kn]
+
+Zenity 2.6.0
+============
+" Roll on Rottnest! "
+
+	* Fix up dialog sizes [Darren, Glynn]
+	* Add Serbian help docs [Danilo]
+	* New and updated translations
+		- Alexander Winston [en_CA]
+		- Kostas Papadimas, Nikos Charonitakis [el]
+		- Telsa Gwynne, Dafydd Tomos [cy]
+		- Andras Timar [hu]
+		- Mugurel Tudor [ro]
+
+Zenity 2.5.91
+=============
+" Too old to die young "
+
+	* Use automake 1.7 now [Glynn]	
+	* Removed some unused code [Glynn]
+	* New and updated translations
+		- M…~Ytin ∆~Omirov [az]
+
+Zenity 2.5.90
+=============
+" Half drunk "
+
+	* Build fixes [Tomasz]
+	* Fix help, remove cruft [Glynn]
+	* THANKS [Glynn]
+	* New and updated translations
+		- Takeshi AIHANA [ja]
+		- Changwoo Ryu [ko]
+		- Robert Sedak [hr]
+		- Arafat Medini [ar]
+		- Danilo ≈| egan, Aleksandar Uro≈°eviƒ~G [sr, sr@Latn]
+		- Paisa Seeluangsawat, Supranee Thirawatthanasuk [th]
+		- Jarkko Ranta [fi]
+		- Laurent Dhima [sq]
+		- Kostas Papadimas [el]
+		- Priit Laes [et]
+		- Guntupalli Karunakar, Amanpreet Singh Alam [pa]
+
+Zenity 2.5.2
+============
+" Bottle half full or half empty? "
+
+	* Handle stdin on text dialog [Glynn]
+	* Build fixes [Glynn]	
+	* New and updated translations
+		- Duarte Loreto [pt]	
+		- Sanlig Badral [mn]
+		- Robert Sedak [hr]
+		- Christophe Merlet [fr]
+		- Roozbeh Pournader [fa]
+		- Christian Neumair [de]
+		- Kjartan Maraas [no]
+		- Laurent Dhima [sq]
+		- √~Esmund Skj√¶veland [nn]		
+		- Andras Timar [hu]
+		- Funda Wang [zh_CN]
+		- M…~Ytin ∆~Omirov [az]
+		- Laurent Dhima [sq]
+
+Zenity 2.5.1
+============
+" Zen beginnings "
+
+	* Use the new file selection widget [Jan]
+
 Zenity 1.8
 ==========
 " Zenning into the new year "

@@ -63,7 +63,8 @@ zenity_calendar (ZenityData *data, ZenityCalendarData *cal_data)
   else
     zenity_util_set_window_icon (dialog, ZENITY_IMAGE_FULLPATH ("zenity-calendar.png"));
 
-  gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
+  if (data->width > -1 || data->height > -1)
+    gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
 
   text = glade_xml_get_widget (glade_dialog, "zenity_calendar_text");
 
@@ -81,7 +82,7 @@ zenity_calendar (ZenityData *data, ZenityCalendarData *cal_data)
     gtk_calendar_select_day (GTK_CALENDAR (calendar), cal_data->day);
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (text), calendar);
-  gtk_widget_show (dialog);
+  zenity_util_show_dialog (dialog);
   gtk_main ();
 }
 
@@ -106,17 +107,16 @@ zenity_calendar_dialog_response (GtkWidget *widget, int response, gpointer data)
         g_date_free (date);
     
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_OK);
-      gtk_main_quit ();
       break;
 
     case GTK_RESPONSE_CANCEL:
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_CANCEL);
-      gtk_main_quit ();
       break;
 
     default:
       /* Esc dialog */
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_ESC);
       break;
-    }
+  }
+  gtk_main_quit ();
 }

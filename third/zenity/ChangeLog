@@ -1,3 +1,359 @@
+2004-09-13  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.8.0
+
+2004-09-11  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "kn" "mk" "tr" to ALL_LINGUAS.
+
+2004-08-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-08-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.91
+
+2004-08-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/C/zenity.xml: Update the documentation after
+	Breda's commit, to add the new --print-column option for the
+	list dialog.
+
+2004-08-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add «nb» to ALL_LINGUAS.
+
+2004-08-18  Breda McColgan <breda.mccolgan@sun.com>
+
+	* Updated the following files:
+		* help/C/zenity.xml
+		* help/C/zenity-C.omf
+		* help/C/figures/zenity-calendar-screenshot.png
+		* help/C/figures/zenity-entry-screenshot.png
+		* help/C/figures/zenity-error-screenshot.png
+		* help/C/figures/zenity-fileselection-screenshot.png
+		* help/C/figures/zenity-information-screenshot.png
+		* help/C/figures/zenity-list-screenshot.png
+		* help/C/figures/zenity-progress-screenshot.png
+		* help/C/figures/zenity-question-screenshot.png
+		* help/C/figures/zenity-text-screenshot.png
+		* help/C/figures/zenity-warning-screenshot.png
+
+	* Added the following files:
+		* help/C/l10n.txt
+		* help/C/l10n_scripts/
+		* help/C/l10n_scripts/calendar.sh 
+		* help/C/l10n_scripts/cvs.txt
+		* help/C/l10n_scripts/error.sh
+		* help/C/l10n_scripts/filesel.sh
+		* help/C/l10n_scripts/info.sh
+		* help/C/l10n_scripts/list.sh
+		* help/C/l10n_scripts/progress.sh
+		* help/C/l10n_scripts/question.sh
+		* help/C/l10n_scripts/text_entry.sh
+		* help/C/l10n_scripts/text_info.sh
+		* help/C/l10n_scripts/warning.sh
+	  See the help/C/l10n.txt file for information about l10n_scripts.
+
+2004-08-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/about.c: Add translator comment from Christian Rose, 
+	and fix up strcmp's for untranslated translator-credits.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/about.c: Use 'translator-credits' rather than the
+	underscore version which makes things easier for the translation
+	dudes.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* data/zenity.1: Update the man page for the --print-column
+	option added.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* TODO: Updates.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.90
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.0
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/calendar.c, src/entry.c, src/fileselection.c,
+	* src/msg.c, src/progress.c, src/text.c, src/tree.c: Cleanup
+	fixes from Paul Bolle.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/main.c, src/tree.c, src/zenity.h, 
+	help/C/zenity.xml: Add new option for --print-column, based 
+	on a patch by Paul Bolle.  Fixes #144496.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/main.c: Remove duplicate locale.h include. Patch
+	from Leonardo Boshell. Partly fixes #137993.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/C/zenity.xml, help/sr/zenity.xml: Fix up 
+	documentation for correct usage of the Text Entry
+	dialog. Patch from Baptiste Mille-Mathias. Fixes #141513.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/msg.c: Make sure the text can take markup, so
+	that people can create nice HIG compliant message
+	dialogs. Patch from Sebastian Heinlein. Fixes #140748.
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in, src/Makefile.am: Fix up compilation
+	using Forte compiler. Based on patch from Ivan Noris. 
+	Fixes #143041.
+
+2004-06-18  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS, src/about.c, src/progress.c: Patch
+	from Luke Suchocki to send HUP to parent 
+	instead of itself. Fixes #144542.
+
+2004-06-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/main.c: Fix parsing errors. Patch from 
+	Paull Bolle. Fixes #144501.
+
+2004-06-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS, src/about.c: Add Paul.
+	* src/main.c:  fix tyops in parsing.
+
+2004-05-27  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation by Ahmad 
+	Riza H Nst <rizahnst@eriagempita.co.id>
+	* configure.in: Added id to ALL_LINGUAS
+
+2004-05-26  Alexander Shopov <ash@contact.bg>
+
+	* po/bg.po:
+	* configure.in: Added Bulgarian translation
+	by Rostislav Raykov <zbrox@dir.bg>
+
+2004-04-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-04-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.6.2
+	* NEWS: Update.
+
+2004-04-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/main.c, src/tree.c: Fix the list dialog not being
+	able to handle --text to change the text. It was also 
+	intentional but must have fallen through the gaps.
+	* data/zenity.1: Update
+	* help/C/zenity.xml: Update.
+
+2004-04-27  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/zenity.glade: Untranslate 3 strings again. Thanks
+	to Christian for pointing this out.
+
+2004-04-26  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS, src/about.c: Add from the 2 Sebastian's, and make
+	email addresses more spam proof.
+	* src/calendar.c, src/entry.c, src/fileselection.c, src/msg.c,
+	* src/progress.c, src/text.c, src/tree.c, src/util.c,
+	* src/util.h: Patch from Sebastian Kapfer to make all zenity
+	dialogs transients of the parent xterm. Fixes #136226.
+	* src/zenity.glade: Patch from Sebastian Heinlein to
+	improve things HIG wise. Fixes #140745.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post version bump.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.6.1
+	* NEWS: Update.
+
+2004-04-20  Ross Burton  <ross@burtonini.com>
+
+	* help/C/zenity.xml: Fix a typo, "Calender". Patch from Matt Kraai
+	<kraai@ftbfs.org>.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/C/zenity.xml: Fix documentation for text-info
+	as pointed out by the grand master of the zenity man
+	page, Ross Burton.
+
+2004-04-10  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA (Canadian English) to ALL_LINGUAS
+
+2004-03-28  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* configure.in: Added Galician (gl) to ALL_LINGUAS
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Add workaround to scrollkeeper-update not
+	cleaning up after itself, as copied from gnome-panel.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* NEWS, THANKS, src/about.c: Update.
+	* configure.in: Release 2.6.0
+
+2004-03-21  Mugurel Tudor  <mugurelu@go.ro>
+
+	* configure.in: Added "ro" to ALL_LINGUAS
+
+2004-03-21  Danilo Segan  <dsegan@gmx.net>
+
+	* configure.in: Removed "en_CA" because the po/en_CA.po is missing.
+
+2004-03-21  Danilo Segan  <dsegan@gmx.net>
+
+	* help/Makefile.am (SUBDIRS): Add "sr" to SUBDIRS.
+	* configure.in: Add help/sr/Makefile to AC_OUTPUT.
+
+2004-03-21  Danilo Segan  <dsegan@gmx.net>
+
+	* help/sr/*: Added Serbian translation of documentation (with
+	screenshots); build system not adjusted yet.
+
+2004-03-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/calendar.c, src/entry.c, src/fileselection.c,
+	src/msg.c, src/progress.c, src/text.c, src/tree.c:
+	Patch from Darren Adams <darrenadams@dsl.pipex.com> to make
+	sure the new file chooser resizes nicely. Sanitize the default
+	setting of the other widgets.
+	* configure.in, src/util.c: Lose gconf dependancy since we 
+	don't currently use it, although arguably we should to detect
+	which help browser we're supposed to run :/
+	* THANKS, src/about.c: Add Darren to the list.
+
+2004-03-16  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added "en_CA" (Canadian English) to ALL_LINGUAS.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* NEWS: Update.
+	* autogen.sh: Use automake 1.7 since everyone has it by now.
+	* configure.in: Release 2.5.91
+
+2004-03-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/util.c: Remove some unused code.
+
+2004-03-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* AUTHORS: Update to add Mike.
+	* NEWS: Update for new release.
+	* THANKS, src/about.c: Add lots of people, probably get heaps 
+	of bug reports complaining their name is spelled wrongly - darn 
+	those weird characters.
+	* configure.in: Release 2.5.90
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" for Punjabi to ALL_LINGUAS.
+
+2004-02-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/about.c, src/util.c, src/util.h: Remove all the
+	stupid duplicated code to do the help stuff, and instead
+	do a simple call for 'yelp ghelp:zenity'. -418, +23. Eeek.
+	Fixes #135607.
+
+2004-02-21  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-04  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* configure.in: Trival cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	  substed by default.
+
+2004-02-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.5.2
+
+2004-01-26  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/text.c: Handle stdin. Fixes #132517.
+
+2004-01-20  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added 'nn' to ALL_LINGUAS.
+	* po/nn.po: Added Norwegian Nynorsk translation.
+
+2004-01-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Back out the intltool stuff.
+	* configure.in: Require 0.29
+
+2004-01-05  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" (Persian) to ALL_LINGUAS.
+
+2004-01-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Do the intltool-modules extra dist
+	foo.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2003-12-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.5.1, a ridiculous bump
+	so that we sync with the GNOME desktop releases.
+
+2003-12-30  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* src/fileselection.c: (zenity_fileselection),
+	(zenity_fileselection_dialog_response): Replace
+	GtkFileSelection with GtkFileChooser.
+
 2003-12-30  Glynn Foster  <glynn.foster@sun.com>
 
 	* configure.in: Release 1.8

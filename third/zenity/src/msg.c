@@ -107,13 +107,14 @@ zenity_msg (ZenityData *data, ZenityMsgData *msg_data)
         break;
     }
   }
-
-  gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
+  
+  if (data->width > -1 || data->height > -1)
+    gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
         
   if (msg_data->dialog_text)
-    gtk_label_set_text (GTK_LABEL (text), msg_data->dialog_text);
+    gtk_label_set_markup (GTK_LABEL (text), msg_data->dialog_text);
 
-  gtk_widget_show (dialog);
+  zenity_util_show_dialog (dialog);
   gtk_main ();
 }
 
@@ -125,16 +126,15 @@ zenity_msg_dialog_response (GtkWidget *widget, int response, gpointer data)
   switch (response) {
     case GTK_RESPONSE_OK:
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_OK);
-      gtk_main_quit ();
       break;
 
     case GTK_RESPONSE_CANCEL:
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_CANCEL);
-      gtk_main_quit ();
       break;
 
     default:
-      zen_data->exit_code = 1;
+      zen_data->exit_code = zenity_util_return_exit_code (ZENITY_ESC);
       break;
   }
+  gtk_main_quit ();
 }

@@ -29,6 +29,79 @@ static ZenityTextData	*zen_text_data;
 
 static void zenity_text_dialog_response (GtkWidget *widget, int response, gpointer data);
 
+static gboolean
+zenity_text_handle_stdin (GIOChannel  *channel,
+                          GIOCondition condition,
+                          gpointer     data)
+{
+  static GtkTextBuffer *buffer;
+  gchar buf[1024];
+
+  static GtkTextIter iter, end;
+  static gboolean first_time = FALSE;
+  gchar *str;
+  gsize len;
+
+  buffer = GTK_TEXT_BUFFER (data);
+
+  if ((condition == G_IO_IN) || (condition == G_IO_IN + G_IO_HUP)) {
+    GError *error = NULL;
+
+    while (channel->is_readable != TRUE)
+      ;
+    do {
+      gint status;
+
+      do {
+        status = g_io_channel_read_chars (channel, buf, 1024, &len, &error);
+
+        while (gtk_events_pending ())
+          gtk_main_iteration ();
+
+      } while (status == G_IO_STATUS_AGAIN);
+
+      if (status != G_IO_STATUS_NORMAL) {
+        if (error) {
+          g_warning ("zenity_text_handle_stdin () : %s", error->message);
+          g_error_free (error);
+          error = NULL;
+        }
+        continue;
+      }
+
+      if (len > 0) {
+	GtkTextIter end;
+        gchar *utftext; 
+        gsize localelen; 
+        gsize utflen;
+
+	gtk_text_buffer_get_end_iter (buffer, &end);
+        utftext = g_convert_with_fallback (buf, len, "UTF-8", "ISO-8859-1", NULL, &localelen, &utflen, NULL);
+        gtk_text_buffer_insert (buffer, &end, utftext, utflen);
+        g_free (utftext);
+      }
+ 
+    } while (g_io_channel_get_buffer_condition (channel) == G_IO_IN); 
+  }
+
+  if (condition != G_IO_IN) {
+    g_io_channel_shutdown (channel, TRUE, NULL); 
+    return FALSE;
+  }
+  return TRUE;
+}
+
+static void
+zenity_text_fill_entries_from_stdin (GtkTextBuffer *text_buffer)
+{
+  GIOChannel *channel; 
+
+  channel = g_io_channel_unix_new (0);
+  g_io_channel_set_encoding (channel, NULL, NULL);
+  g_io_channel_set_flags (channel, G_IO_FLAG_NONBLOCK, NULL);
+  g_io_add_watch (channel, G_IO_IN | G_IO_HUP, zenity_text_handle_stdin, text_buffer);
+}
+
 void
 zenity_text (ZenityData *data, ZenityTextData *text_data)
 {
@@ -60,7 +133,6 @@ zenity_text (ZenityData *data, ZenityTextData *text_data)
   else
     zenity_util_set_window_icon (dialog, ZENITY_IMAGE_FULLPATH ("zenity-text.png"));
 
-  gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
   gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
 
   text_buffer = gtk_text_buffer_new (NULL);
@@ -70,11 +142,18 @@ zenity_text (ZenityData *data, ZenityTextData *text_data)
 
   if (text_data->uri)
     zenity_util_fill_file_buffer (text_buffer, text_data->uri);
+  else
+    zenity_text_fill_entries_from_stdin (GTK_TEXT_BUFFER (text_buffer));
 
   if (text_data->editable)
     zen_text_data->buffer = text_buffer;
 
-  gtk_widget_show (dialog);
+  if (data->width > -1 || data->height > -1)
+    gtk_window_set_default_size (GTK_WINDOW (dialog), data->width, data->height);
+  else
+    gtk_window_set_default_size (GTK_WINDOW (dialog), 300, 400); 
+
+  zenity_util_show_dialog (dialog);
 
   if (glade_dialog)
     g_object_unref (glade_dialog);
@@ -96,7 +175,6 @@ zenity_text_dialog_response (GtkWidget *widget, int response, gpointer data)
         g_print (gtk_text_buffer_get_text (zen_text_data->buffer, &start, &end, 0));
       }
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_OK);
-      gtk_main_quit ();
       break;
 
     default:
@@ -104,4 +182,5 @@ zenity_text_dialog_response (GtkWidget *widget, int response, gpointer data)
       zen_data->exit_code = zenity_util_return_exit_code (ZENITY_ESC);
       break;
   }
+  gtk_main_quit ();
 }
