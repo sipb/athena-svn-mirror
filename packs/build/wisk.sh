@@ -2,7 +2,7 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.37 $
+# $Revision: 1.38 $
 
 umask 2
 
@@ -31,9 +31,9 @@ setenv LD_LIBRARY_PATH /usr/openwin/lib
 endif
 
 if ( $machine == "sun4" ) then
-	set path=( /usr/ccs/bin $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin $path /mit/sunsoft/sun4bin  /mit/$comp/sun4bin)
+	set path=( /usr/ccs/bin $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin /usr/athena/bin /bin/athena $path /mit/sunsoft/sun4bin  /mit/$comp/sun4bin)
 else
-	set path=( $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin $path)
+	set path=( $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin /usr/athena/bin /bin/athena $path /usr/bin/X11)
 endif
 rehash
 echo $path
@@ -48,7 +48,7 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 t
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-19.28 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif athena/lib/Mu third/supported/tcsh6 third/supported/emacs-19.28 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
 
 switch ( $machine )
   case decmips
@@ -67,11 +67,16 @@ switch ( $machine )
     set machthird="athena/ucb/look"
 endsw
 
-set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/moira.dev athena/lib/neos"
+set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr athena/lib/neos"
 
-set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd athena/etc/desync"
+# athena/lib/moira.dev ; I think this is not ours at the moment.
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/inetd.new athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd athena/etc/desync"
+
+# Decomissioned 9/95 by fiat
+# athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
+
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
 
 set end="athena/man athena/dotfiles athena/config"
 
@@ -517,7 +522,7 @@ endif # installonly
 	(cd $BUILD/$package; make install DESTDIR=$SRVD >>& $outfile)
 	breaksw	
 
-	case athena/lib/zephyr.p4
+	case athena/lib/zephyr
 	(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
 	((cd $BUILD/$package ; /usr/athena/bin/xmkmf $cwd  >>& $outfile ) && \
@@ -535,6 +540,27 @@ if ( $installonly == "0" ) then
 #	endif
 #endif
 	((cd $BUILD/$package;make all) >> & $outfile )
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+
+	(cd $BUILD/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
+
+	case athena/lib/Mu
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd $BUILD/$package ; /usr/athena/bin/xmkmf  >>& $outfile ) && \
+	((cd $BUILD/$package;make Makefiles) >>& $outfile )  && \
+	((cd $BUILD/$package;make clean) >>& $outfile) && \
+	((cd $BUILD/$package;make depend) >>& $outfile) && \
+	((cd $BUILD/$package;make all) >> & $outfile ))
 	if ($status == 1) then
 		echo "We bombed in $package" >>& $outfile
 		exit -1
