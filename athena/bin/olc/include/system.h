@@ -7,13 +7,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/system.h,v $
- *	$Id: system.h,v 1.4 1991-04-11 09:33:44 lwvanels Exp $
+ *	$Id: system.h,v 1.5 1991-04-15 17:24:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
 
-#ifndef HAS_ANSI_INCLUDES
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -30,7 +29,11 @@ int krb_mk_req P((KTEXT authent, char *service, char *instance, char *realm,
 
 #endif /* KERBEROS */
 
+#ifdef HESIOD
 char **hes_resolve P((char *name, char *HesiodNameType));
+#endif
+
+#ifndef HAS_ANSI_INCLUDES
 void *calloc P((unsigned nelem, unsigned elsize));
 void *malloc P((unsigned size));
 char *strcpy P((char *s1, char *s2));
