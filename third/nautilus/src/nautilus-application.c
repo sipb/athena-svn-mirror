@@ -408,7 +408,8 @@ nautilus_application_startup (NautilusApplication *application,
 		 * itself. Otherwise we may spawn a second nautilus
 		 * process when looking for a metadata factory..
 		 */
-		g_idle_add (create_starthere_link_callback, NULL);
+		/* Athena hack: Don't do this; we don't want it. */
+		/* g_idle_add (create_starthere_link_callback, NULL); */
 		nautilus_set_first_time_file_flag ();
 	}
 
