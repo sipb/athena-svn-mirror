@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.28 1999-02-26 23:07:28 danw Exp $
+# $Id: do.sh,v 1.29 1999-02-27 16:55:00 ghudson Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -24,7 +24,7 @@ while getopts cd:ns: opt; do
 		source=$OPTARG
 		;;
 	\?)
-		echo "$usage"
+		echo "$usage" 1>&2
 		exit 1
 		;;
 	esac
@@ -75,6 +75,10 @@ case `uname -srm` in
 Linux\ 2.2.*\ i?86)
 	ATHENA_SYS=i386_linux22
 	ATHENA_SYS_COMPAT=i386_linux3:i386_linux2:i386_linux1
+	;;
+*)
+	echo "Unrecognized system type, aborting." 1>&2
+	exit 1
 	;;
 esac
 
