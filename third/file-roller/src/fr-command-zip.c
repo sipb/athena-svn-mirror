@@ -20,11 +20,13 @@
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #include <glib.h>
+#include <gnome.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 
@@ -77,7 +79,7 @@ mktime_from_string (char *date_s,
 
 	fields = g_strsplit (time_s, ":", 3);
 	if (fields[0] != NULL) {
-		tm.tm_hour = atoi (fields[0]) - 1;
+		tm.tm_hour = atoi (fields[0]);
 		if (fields[1] != NULL) {
 			tm.tm_min = atoi (fields[1]);
 			if (fields[2] != NULL)
@@ -90,52 +92,33 @@ mktime_from_string (char *date_s,
 }
 
 
-static char *
-eat_spaces (char *line)
+static char*
+zip_escape (const char *str)
 {
-	while ((*line == ' ') && (*line != 0))
-		line++;
-	return line;
+	return escape_str (str, "*?[]");
 }
 
 
-static char **
-split_line (char *line, 
-	    int   n_fields)
+static char*
+prepend_path_separator (const char *str)
 {
-	char **fields;
-	char  *scan, *field_end;
-	int    i;
-
-	fields = g_new0 (char *, n_fields + 1);
-	fields[n_fields] = NULL;
-
-	scan = eat_spaces (line);
-	for (i = 0; i < n_fields; i++) {
-		field_end = strchr (scan, ' ');
-		fields[i] = g_strndup (scan, field_end - scan);
-		scan = eat_spaces (field_end);
-	}
-
-	return fields;
+	if (*str == '-' || g_str_has_prefix (str, "\\-")) 
+		return g_strconcat (".", G_DIR_SEPARATOR_S, str, NULL);
+	else 
+		return g_strdup (str);
 }
 
 
-static char *
-get_last_field (char *line)
+static char*
+prepend_path_separator_zip_escape (const char *str)
 {
-	int   i;
-	char *field;
-	int   n = 8;
+	char *tmp1, *tmp2;
 
-	n--;
-	field = eat_spaces (line);
-	for (i = 0; i < n; i++) {
-		field = strchr (field, ' ');
-		field = eat_spaces (field);
-	}
-
-	return field;
+	tmp2 = prepend_path_separator (str);
+	tmp1 = zip_escape (tmp2);
+	g_free (tmp2);
+	
+	return tmp1;
 }
 
 
@@ -143,11 +126,11 @@ static void
 list__process_line (char     *line, 
 		    gpointer  data)
 {
-	FileData   *fdata;
-	FRCommand  *comm = FR_COMMAND (data);
-	char      **fields;
-	char       *name_field;
-	gint        line_l;
+	FileData    *fdata;
+	FRCommand   *comm = FR_COMMAND (data);
+	char       **fields;
+	const char  *name_field;
+	gint         line_l;
 
 	g_return_if_fail (line != NULL);
 
@@ -175,7 +158,7 @@ list__process_line (char     *line,
 
 	/* Full path */
 
-	name_field = get_last_field (line);
+	name_field = get_last_field (line, 8);
 
 	if (*name_field == '/') {
 		fdata->full_path = g_strdup (name_field);
@@ -199,22 +182,75 @@ list__process_line (char     *line,
 
 
 static void
+add_filename_arg (FRCommand *comm) 
+{
+	char *temp = prepend_path_separator (comm->e_filename);
+	fr_process_add_arg (comm->process, temp);
+	g_free (temp);
+}
+
+
+static void
+add_password_arg (FRCommand     *comm,
+		  const char    *password,
+		  gboolean       always_specify)
+{
+	if (always_specify || ((password != NULL) && (*password != 0))) {
+		char *arg;
+		char *e_password;
+
+		fr_process_add_arg (comm->process, "-P");
+
+		e_password = escape_str (password, "\"");
+		if (e_password != NULL) {
+			arg = g_strconcat ("\"", e_password, "\"", NULL);
+			g_free (e_password);
+		} else
+			arg = g_strdup ("\"\"");
+
+		fr_process_add_arg (comm->process, arg);
+		g_free (arg);
+	}
+}
+
+
+static void
 fr_command_zip_list (FRCommand *comm)
 {
+
+
 	FR_COMMAND_ZIP (comm)->is_empty = FALSE;
 
 	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
 				      list__process_line,
 				      comm);
 
-	fr_process_clear (comm->process);
 	fr_process_begin_command (comm->process, "unzip");
 	fr_process_add_arg (comm->process, "-qq");
 	fr_process_add_arg (comm->process, "-v");
 	fr_process_add_arg (comm->process, "-l");
-	fr_process_add_arg (comm->process, comm->e_filename);
+	add_filename_arg (comm);
 	fr_process_end_command (comm->process);
 	fr_process_start (comm->process);
+}
+
+
+static void
+process_line__common (char     *line, 
+		      gpointer  data)
+{
+	FRCommand  *comm = FR_COMMAND (data);
+
+	if (line == NULL)
+		return;
+
+	fr_command_message (comm, line);
+
+	if (comm->n_files != 0) {
+		double fraction = (double) comm->n_file++ / comm->n_files;
+		fr_command_progress (comm, fraction);
+	}
+
 }
 
 
@@ -228,6 +264,10 @@ fr_command_zip_add (FRCommand     *comm,
 {
 	GList *scan;
 
+	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
+				      process_line__common,
+				      comm);
+
 	fr_process_begin_command (comm->process, "zip");
 
 	if (base_dir != NULL) 
@@ -239,10 +279,7 @@ fr_command_zip_add (FRCommand     *comm,
 	if (update)
 		fr_process_add_arg (comm->process, "-u");
 
-	if (password != NULL) {
-		fr_process_add_arg (comm->process, "-P");
-		fr_process_add_arg (comm->process, password);
-	}
+	add_password_arg (comm, password, FALSE);
 
 	switch (compression) {
 	case FR_COMPRESSION_VERY_FAST:
@@ -255,10 +292,13 @@ fr_command_zip_add (FRCommand     *comm,
 		fr_process_add_arg (comm->process, "-9"); break;
 	}
 
-	fr_process_add_arg (comm->process, comm->e_filename);
+	add_filename_arg (comm);
 
-	for (scan = file_list; scan; scan = scan->next) 
-		fr_process_add_arg (comm->process, (gchar*) scan->data);
+	for (scan = file_list; scan; scan = scan->next) {
+		char *temp = prepend_path_separator_zip_escape ((char*) scan->data);
+		fr_process_add_arg (comm->process, temp);
+		g_free (temp);
+	}
 
 	fr_process_end_command (comm->process);
 }
@@ -270,12 +310,20 @@ fr_command_zip_delete (FRCommand *comm,
 {
 	GList *scan;
 
+	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
+				      process_line__common,
+				      comm);
+
 	fr_process_begin_command (comm->process, "zip");
 	fr_process_add_arg (comm->process, "-d");
-	fr_process_add_arg (comm->process, comm->e_filename);
+	add_filename_arg (comm);
 
-	for (scan = file_list; scan; scan = scan->next)
-		fr_process_add_arg (comm->process, scan->data);
+	for (scan = file_list; scan; scan = scan->next) {
+		char *temp = prepend_path_separator_zip_escape ((char*) scan->data);
+		fr_process_add_arg (comm->process, temp);
+		g_free (temp);
+	}
+
 	fr_process_end_command (comm->process);
 }
 
@@ -291,10 +339,14 @@ fr_command_zip_extract (FRCommand  *comm,
 {
 	GList *scan;
 
+	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
+				      process_line__common,
+				      comm);
+
 	fr_process_begin_command (comm->process, "unzip");
 	
 	if (dest_dir != NULL) {
-		gchar *e_dest_dir = shell_escape (dest_dir);
+		char *e_dest_dir = shell_escape (dest_dir);
 		fr_process_add_arg (comm->process, "-d");
 		fr_process_add_arg (comm->process, e_dest_dir);
 		g_free (e_dest_dir);
@@ -311,15 +363,15 @@ fr_command_zip_extract (FRCommand  *comm,
 	if (junk_paths)
 		fr_process_add_arg (comm->process, "-j");
 
-	if (password != NULL) {
-		fr_process_add_arg (comm->process, "-P");
-		fr_process_add_arg (comm->process, password);
+	add_password_arg (comm, password, TRUE);
+
+	add_filename_arg (comm);
+
+	for (scan = file_list; scan; scan = scan->next) {
+		char *temp = prepend_path_separator_zip_escape ((char*) scan->data);
+		fr_process_add_arg (comm->process, temp);
+		g_free (temp);
 	}
-
-	fr_process_add_arg (comm->process, comm->e_filename);
-
-	for (scan = file_list; scan; scan = scan->next)
-		fr_process_add_arg (comm->process, scan->data);
 
 	fr_process_end_command (comm->process);
 }
@@ -331,13 +383,8 @@ fr_command_zip_test (FRCommand   *comm,
 {
 	fr_process_begin_command (comm->process, "unzip");
 	fr_process_add_arg (comm->process, "-t");
-
-	if (password != NULL) {
-		fr_process_add_arg (comm->process, "-P");
-		fr_process_add_arg (comm->process, password);
-	}
-
-	fr_process_add_arg (comm->process, comm->e_filename);
+	add_password_arg (comm, password, TRUE);
+	add_filename_arg (comm);
 	fr_process_end_command (comm->process);
 }
 
@@ -346,9 +393,12 @@ static void
 fr_command_zip_handle_error (FRCommand   *comm, 
 			     FRProcError *error)
 {
-	if ((error->type == FR_PROC_ERROR_GENERIC) 
-	    && (error->status <= 1))
-		error->type = FR_PROC_ERROR_NONE;
+	if (error->type == FR_PROC_ERROR_GENERIC) {
+		if (error->status <= 1)
+			error->type = FR_PROC_ERROR_NONE;
+		else if ((error->status == 82) || (error->status == 5))
+			error->type = FR_PROC_ERROR_ASK_PASSWORD;
+	}
 }
 
 
@@ -402,7 +452,7 @@ fr_command_zip_finalize (GObject *object)
 GType
 fr_command_zip_get_type ()
 {
-        static guint type = 0;
+        static GType type = 0;
 
         if (! type) {
                 GTypeInfo type_info = {

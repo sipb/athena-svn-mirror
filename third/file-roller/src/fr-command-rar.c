@@ -42,6 +42,22 @@ static void fr_command_rar_finalize    (GObject           *object);
 static FRCommandClass *parent_class = NULL;
 
 
+static gboolean
+fr_command_rar_have_rar (void)
+{
+	char *path;
+	gboolean retval;
+	
+	retval = FALSE;
+	path = g_find_program_in_path ("rar");
+	if (path)
+		retval = TRUE;
+	g_free (path);
+	
+	return retval;
+}
+
+
 /* -- list -- */
 
 static time_t
@@ -78,57 +94,6 @@ mktime_from_string (char *date_s,
 }
 
 
-static char *
-eat_spaces (char *line)
-{
-	while ((*line == ' ') && (*line != 0))
-		line++;
-	return line;
-}
-
-
-static char **
-split_line (char *line, 
-	    int   n_fields)
-{
-	char **fields;
-	char  *scan, *field_end;
-	int    i;
-
-	fields = g_new0 (char *, n_fields + 1);
-	fields[n_fields] = NULL;
-
-	scan = eat_spaces (line);
-	for (i = 0; i < n_fields; i++) {
-		field_end = strchr (scan, ' ');
-		if (field_end != NULL) {
-			fields[i] = g_strndup (scan, field_end - scan);
-			scan = eat_spaces (field_end);
-		}
-	}
-
-	return fields;
-}
-
-
-static char *
-get_last_field (char *line)
-{
-	int   i;
-	char *field;
-	int   n = 1;
-
-	n--;
-	field = eat_spaces (line);
-	for (i = 0; i < n; i++) {
-		field = strchr (field, ' ');
-		field = eat_spaces (field);
-	}
-
-	return field;
-}
-
-
 static void
 process_line (char     *line, 
 	      gpointer  data)
@@ -136,7 +101,7 @@ process_line (char     *line,
 	FRCommand     *comm = FR_COMMAND (data);
 	FRCommandRar  *rar_comm = FR_COMMAND_RAR (comm);
 	char         **fields;
-	char          *name_field;
+	const char    *name_field;
 
 	g_return_if_fail (line != NULL);
 
@@ -160,7 +125,7 @@ process_line (char     *line,
 
 		/* read file name. */
 
-		name_field = get_last_field (line);
+		name_field = get_last_field (line, 1);
 
 		if (*name_field == '/') {
 			fdata->full_path = g_strdup (name_field);
@@ -208,8 +173,10 @@ fr_command_rar_list (FRCommand *comm)
 				      process_line,
 				      comm);
 
-	fr_process_clear (comm->process);
-	fr_process_begin_command (comm->process, "rar");
+	if (fr_command_rar_have_rar ())
+		fr_process_begin_command (comm->process, "rar");
+	else
+		fr_process_begin_command (comm->process, "unrar");
 	fr_process_add_arg (comm->process, "v");
 	fr_process_add_arg (comm->process, "-c-");
 
@@ -244,13 +211,13 @@ fr_command_rar_add (FRCommand     *comm,
 
 	switch (compression) {
 	case FR_COMPRESSION_VERY_FAST:
-		fr_process_add_arg (comm->process, "m1"); break;
+		fr_process_add_arg (comm->process, "-m1"); break;
 	case FR_COMPRESSION_FAST:
-		fr_process_add_arg (comm->process, "m2"); break;
+		fr_process_add_arg (comm->process, "-m2"); break;
 	case FR_COMPRESSION_NORMAL:
-		fr_process_add_arg (comm->process, "m3"); break;
+		fr_process_add_arg (comm->process, "-m3"); break;
 	case FR_COMPRESSION_MAXIMUM:
-		fr_process_add_arg (comm->process, "m5"); break;
+		fr_process_add_arg (comm->process, "-m5"); break;
 	}
 
 	/* stop switches scanning */
@@ -296,7 +263,11 @@ fr_command_rar_extract (FRCommand  *comm,
 {
 	GList *scan;
 
-	fr_process_begin_command (comm->process, "rar");
+	if (fr_command_rar_have_rar ())
+		fr_process_begin_command (comm->process, "rar");
+	else
+		fr_process_begin_command (comm->process, "unrar");
+
 	fr_process_add_arg (comm->process, "x");
 
 	if (overwrite)
@@ -385,7 +356,7 @@ fr_command_rar_finalize (GObject *object)
 GType
 fr_command_rar_get_type ()
 {
-        static guint type = 0;
+        static GType type = 0;
 
         if (! type) {
                 GTypeInfo type_info = {

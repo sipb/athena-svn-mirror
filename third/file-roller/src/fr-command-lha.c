@@ -91,22 +91,13 @@ mktime_from_string (char *month,
 }
 
 
-static char *
-eat_spaces (char *line)
-{
-	while ((*line == ' ') && (*line != 0))
-		line++;
-	return line;
-}
-
-
 static char **
 split_line_lha (char *line)
 {
-	char **fields;
-	int    n_fields = 7;
-	char  *scan, *field_end;
-	int    i;
+	char       **fields;
+	int          n_fields = 7;
+	const char  *scan, *field_end;
+	int          i;
 
 	fields = g_new0 (char *, n_fields + 1);
 	fields[n_fields] = NULL;
@@ -117,27 +108,37 @@ split_line_lha (char *line)
 		fields[i++] = g_strdup ("");
 		fields[i++] = g_strdup ("");
 		line += strlen ("[MS-DOS]");
+
+	} else if (strncmp (line, "[generic]", 9) == 0) {
+		fields[i++] = g_strdup ("");
+		fields[i++] = g_strdup ("");
+		line += strlen ("[generic]");
 	}
 
 	scan = eat_spaces (line);
 	for (; i < n_fields; i++) {
 		field_end = strchr (scan, ' ');
-		fields[i] = g_strndup (scan, field_end - scan);
-		scan = eat_spaces (field_end);
+		if (field_end != NULL) {
+			fields[i] = g_strndup (scan, field_end - scan);
+			scan = eat_spaces (field_end);
+		}
 	}
 
 	return fields;
 }
 
 
-static char *
-get_last_field (char *line)
+static const char *
+get_last_field_lha (char *line)
 {
-	int   i;
-	char *field;
-	int   n = 7;
+	int         i;
+	const char *field;
+	int         n = 7;
 
 	if (strncmp (line, "[MS-DOS]", 8) == 0) 
+		n--;
+
+	if (strncmp (line, "[generic]", 9) == 0) 
 		n--;
 
 	field = eat_spaces (line);
@@ -154,10 +155,10 @@ static void
 process_line (char     *line, 
 	      gpointer  data)
 {
-	FileData   *fdata;
-	FRCommand  *comm = FR_COMMAND (data);
-	char      **fields;
-	char       *name_field;
+	FileData    *fdata;
+	FRCommand   *comm = FR_COMMAND (data);
+	char       **fields;
+	const char  *name_field;
 
 	g_return_if_fail (line != NULL);
 
@@ -172,7 +173,7 @@ process_line (char     *line,
 
 	/* Full path */
 
-	name_field = get_last_field (line);
+	name_field = get_last_field_lha (line);
 
 	if (*name_field == '/') {
 		fdata->full_path = g_strdup (name_field);
@@ -202,7 +203,6 @@ fr_command_lha_list (FRCommand *comm)
 				      process_line,
 				      comm);
 
-	fr_process_clear (comm->process);
 	fr_process_begin_command (comm->process, "lha");
 	fr_process_add_arg (comm->process, "lq");
 	fr_process_add_arg (comm->process, comm->e_filename);
@@ -336,7 +336,7 @@ fr_command_lha_finalize (GObject *object)
 GType
 fr_command_lha_get_type ()
 {
-        static guint type = 0;
+        static GType type = 0;
 
         if (! type) {
                 GTypeInfo type_info = {
