@@ -12,9 +12,11 @@ sun4)
   fi
 
   # Clean up some dead symlinks to /os.a
-  cat "$LIBDIR/deadfiles-9.1.12"			>> $DEADFILES
+  cat "$LIBDIR/deadfiles-9.1.12"			>> "$DEADFILES"
   ;;
 
 sgi)
   ;;
 esac
+
+echo "/etc/sshd_config"					>> "$CONFCHG"
