@@ -510,7 +510,7 @@ Here is a list of the rel-eng machines for each platform:
 			Sun        O2          Linux
 
 Current release build	downy      bounce      snuggle
-New release build	whirlpool  maytag      kenmore
+New release build	maytag     whirlpool   kenmore
 Crash and burn		sourcery   reaper-man  feet-of-clay
 
 For reference, here are some names that fit various laundry and
