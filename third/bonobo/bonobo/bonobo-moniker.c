@@ -53,7 +53,7 @@ impl_set_parent (PortableServer_Servant servant,
 {
 	BonoboMoniker *moniker = bonobo_moniker_from_servant (servant);
 
-	return CLASS (moniker)->set_parent (moniker, value, ev);
+	CLASS (moniker)->set_parent (moniker, value, ev);
 }
 
 /**

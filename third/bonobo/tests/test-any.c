@@ -14,7 +14,7 @@
 
 #ifdef HAVE_DYNANY
 
-#define CHECK_OK(ev) (g_assert ((ev)->_major == CORBA_NO_EXCEPTION))
+#define CHECK_OK(ev) g_assert ((ev)->_major == CORBA_NO_EXCEPTION)
 
 static const CORBA_TypeCode
 octet_subtypes_array [] = {

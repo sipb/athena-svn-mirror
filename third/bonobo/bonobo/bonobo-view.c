@@ -38,6 +38,7 @@ static guint view_signals [LAST_SIGNAL];
 typedef void (*GnomeSignal_NONE__DOUBLE) (GtkObject *object, double arg1, gpointer user_data);
 
 struct _BonoboViewPrivate {
+	int dummy;
 };
 
 static void

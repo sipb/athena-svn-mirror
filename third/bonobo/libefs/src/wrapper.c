@@ -401,8 +401,8 @@ efs_file_read (EFSFile *file, gpointer buf, gint32 count, guint32 *bytes_read)
 			if (s->err == Z_STREAM_END) {
 				/* Check CRC */
 				s->crc = crc32(s->crc, start, (uInt)
-					       ((gpointer)s->stream.next_out -
-						start));
+					       ((char *)s->stream.next_out -
+						(char *)start));
 				start = s->stream.next_out;
 
 				if (gzstream_get_long(file) != s->crc)
@@ -411,7 +411,7 @@ efs_file_read (EFSFile *file, gpointer buf, gint32 count, guint32 *bytes_read)
 			if (s->err != Z_OK || s->eof) break;
 		}
 		s->crc = crc32(s->crc, start, (uInt)
-			       ((gpointer)s->stream.next_out - start));
+			       ((char *)s->stream.next_out - (char *)start));
 
 		*bytes_read = count - s->stream.avail_out;
 		

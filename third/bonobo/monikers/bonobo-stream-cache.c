@@ -214,7 +214,7 @@ impl_Bonobo_Stream_setInfo (BonoboStream                   *stream,
 {
 	BonoboStreamCache *stream_cache = BONOBO_STREAM_CACHE (stream);
 	
-	return Bonobo_Stream_setInfo (stream_cache->priv->cs, info, mask, ev);
+	Bonobo_Stream_setInfo (stream_cache->priv->cs, info, mask, ev);
 }
 
 static void

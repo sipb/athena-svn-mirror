@@ -378,7 +378,7 @@ ib1_node_open (EFSNode **node, EFSDir *efs_dir, const char *path,
 
 	if (!(*p)) { /* dup directory*/
 		if (type == EFS_FILE) return EFS_ERR_NOTFILE; 
-		(IB1Dir *)(*node) = g_new0 (IB1Dir, 1);
+		*(IB1Dir **)node = g_new0 (IB1Dir, 1);
 		*((IB1Dir *)(*node)) = *((IB1Dir *)parent);
 		ib1_inode_ref (efs, ((IB1Dir *)(*node))->inode);
 		(*node)->mode &= ~(EFS_ROOT);
@@ -400,7 +400,7 @@ ib1_node_open (EFSNode **node, EFSDir *efs_dir, const char *path,
 	
 	if (de->type & EFS_FILE) {
 		if (!(de->type & EFS_FILE)) return EFS_ERR_NOTFILE;
-		(IB1File *)(*node) = g_new0 (IB1File, 1);
+		*(IB1File **)node = g_new0 (IB1File, 1);
 		(*node)->efs = (EFS *)efs;
 		(*node)->mode = (flags&(EFS_RDWR|EFS_APPEND)) | EFS_FILE | 
 			(de->type&EFS_COMP);
@@ -410,7 +410,7 @@ ib1_node_open (EFSNode **node, EFSDir *efs_dir, const char *path,
 
 	if (de->type & EFS_DIR) {
 		if (!(de->type & EFS_DIR)) return EFS_ERR_NOTDIR;
-		(IB1Dir *)(*node) = g_new0 (IB1Dir, 1);
+		*(IB1Dir **)node = g_new0 (IB1Dir, 1);
 		(*node)->efs = (EFS *)efs; 
 		(*node)->mode = EFS_DIR;
 		((IB1Dir *)(*node))->inode = inode;
@@ -539,7 +539,7 @@ ib1_file_read (EFSFile *efs_file, gpointer buf, gint32 count,
 		mb = MIN ((IB1_IDATA_LEN-efs_file->pos), count);
 		memcpy (buf, &node->data[efs_file->pos], mb);
 		*bytes_read = mb;
-		buf += mb;
+		buf = (char *)buf + mb;
 		efs_file->pos += mb;
 	}
 
@@ -554,7 +554,7 @@ ib1_file_read (EFSFile *efs_file, gpointer buf, gint32 count,
 		memcpy (buf, ce1->data + ind, mb);
 
 		*bytes_read += mb;
-		buf += mb;
+		buf = (char *)buf + mb;
 		efs_file->pos += mb;
 	}
 
@@ -590,7 +590,7 @@ ib1_file_write (EFSFile *efs_file, gpointer buf, gint32 count)
 		mb = MIN ((IB1_IDATA_LEN-efs_file->pos), count);
 		memcpy (&node->data[efs_file->pos], buf, mb);
 		bytes_written = mb;
-		buf += mb;
+		buf = (char *) buf + mb;
 		efs_file->pos += mb;
 		ib1_cache_touch (ce, TRUE);
 	}
@@ -606,7 +606,7 @@ ib1_file_write (EFSFile *efs_file, gpointer buf, gint32 count)
 		memcpy (ce1->data+ind, buf, mb);
 
 		bytes_written += mb;
-		buf += mb;
+		buf = (char *) buf + mb;
 		efs_file->pos += mb;
 	}
 
