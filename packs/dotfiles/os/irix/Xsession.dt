@@ -1,0 +1,513 @@
+#!/bin/bsh
+
+# Based on: $XConsortium: Xsession,v 1.7 92/08/06 11:08:14 gildea Exp $
+
+# # Uncomment this for X11R5 redirection of Xsession errors.
+#
+# # Redirect errors to a file in user's home directory if we can.
+# for errfile in "$HOME/.xsession-errors" "/tmp/xses-$USER"
+# do
+#         if ( cp /dev/null "$errfile" 2> /dev/null )
+#         then
+#                 chmod 600 "$errfile"
+#                 exec > "$errfile" 2>&1
+#                 break
+#         fi
+# done
+
+case $# in
+1)
+	case $1 in
+	failsafe)
+	    dim="`xdpyinfo | awk ' /dimensions/ {print $2}' | grep '1024x768'`"
+	    if [ "$?" = 0 ]; then
+		    geom="80x40+190+102"
+		    font="-sgi-terminal-*-*-*--12-*"
+	    else
+		    geom="80x40+150+172"
+		    font="-sgi-terminal-*-*-*--17-*"
+	    fi
+	    exec xwsh -geom $geom -fn $font -xrm "XWsh.autoFork: off" -nomenu
+	    ;;
+	esac
+esac
+
+host=`hostname`
+dotdesktop=.desktop-$host
+usrlibdesktop=/usr/lib/desktop
+
+xsession=$HOME/.xsession
+resources=$HOME/.Xresources
+sgiresources=$HOME/.Sgiresources
+sgisession=$HOME/.sgisession
+userenv=/usr/bin/X11/userenv
+localecmd=/usr/bin/locale
+defBGicons=/var/X11/xdm/DefaultIconList
+defBGdevs=/var/X11/xdm/DefaultDeviceList
+
+desktopenv=$HOME/$dotdesktop/desktopenv
+wmsession=$HOME/$dotdesktop/0.0/4Dwmsession
+ssaverresources=$HOME/$dotdesktop/ScreenSaver
+panelsession=$HOME/$dotdesktop/panelsession
+configchecks=$HOME/$dotdesktop/configchecks
+nodesktop=$HOME/$dotdesktop/nodesktop
+
+chestrccheck=$configchecks/checkchestrc
+versioncheck=$configchecks/checkversion
+desktopdir=$HOME/$dotdesktop
+
+# The sysdesktopdir directory is for things that *must* be host-specific.  
+# These things can't be in the sessiondir (desktopdir) because sessiondir 
+# can be shared between hosts.
+sysdesktopdir=.desktophost/$host
+sysdesktopicondir=$sysdesktopdir/Icons
+
+rundesktop=TRUE
+confirmdirectory=/usr/share/misc/sessionwarnings
+deflogin=/etc/default/login
+
+# The configchecks directory isn't made till a lot later in the process,
+# so this is an accurate check to see if it's the first login.
+firstlogin=FALSE
+if [ ! -d $configchecks ]
+then
+	firstlogin=TRUE
+fi
+
+
+# ------------ BEGIN Environment variables section ----------- 
+
+#XUSERFILESEARCHPATH="$HOME/$dotdesktop/%N:$HOME/%N:$HOME/$dotdesktop/0.0/%N"
+#export XUSERFILESEARCHPATH
+
+# If locale is already set, then keep it for possible use with $xsession.
+oldLang=$LANG
+
+# Find user's environment as set up during a login shell, then 
+# add this to the environment.  This must come before desktopenv.
+#if [ -x $userenv ]
+#then
+#	# No userenv output saved, as dotdesktop may not exist yet.
+#	eval `$userenv`
+#fi
+
+# Restore variables set by customization panels, including language. 
+# Priority for setting locale: First try desktopenv, then try
+# $HOME/.lang, else use system default from the /etc/default/login file.
+# The userenv(1) command uses $HOME/.lang, else default, else LANG=C,
+# so we call userenv then load desktopenv after to overload LANG.
+if [ -r $desktopenv ]; then
+	. $desktopenv
+fi
+# If LANG is somehow not set, revert locale to "C".
+if [ "$LANG" = "" ]; then
+	LANG="C"; export LANG
+fi
+
+# Display messages in correct language.  LC_MESSAGES can differ from LANG.
+if [ -x $localecmd ]
+then
+	msgs=`$localecmd | grep "LC_MESSAGES" | sed 's/LC_MESSAGES=//g'|sed 's/"//g'`
+else
+	msgs=$LANG
+fi
+lconfirmdirectory=$confirmdirectory/$msgs
+
+# ------------ END Environment variables section ----------- 
+
+
+# If no desktop directory exists, then make one.  Run after LANG set.
+if [ ! -d $desktopdir ]; then
+    $usrlibdesktop/makeDotDesktop
+    # If user clicks Cancel or any problems occur, then abort login.
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+fi
+
+# Figure out where the background directory is supposed to
+# be, and create it if necessary.
+if [ "$SGI_DESKTOP_DIRECTORY" = "" ]; then
+	backgroundDir=$HOME/Desktop
+else
+	backgroundDir=$SGI_DESKTOP_DIRECTORY
+fi
+
+if [ ! -r $backgroundDir ]
+then
+	(mkdir $backgroundDir)
+	(rm -f $desktopdir/DefaultBackgroundIconDB)
+fi
+
+
+# Set up for various configuration checks.  Create a directory for
+# them if it isn't already present.  Note several of the following 
+# commands are in parentheses.  This avoids having the script die
+# if there is an error.
+
+if [ ! -d $configchecks ]
+then
+	(mkdir $configchecks)
+	# Save a version (currently not used).
+	(echo "1" > $versioncheck)
+fi
+
+
+# Since 4Dwm has been shipping for some time, we assume that any user
+# with a $xsession file probably really wants to use it, despite the
+# fact that it could keep them from loading the desktop.  So in 6.5 on
+# we no longer bother them with a warning dialog.
+#if [ -r $xsession -a "$0" != $xsession ]; then
+#
+#	# To maintain compatibility with earlier versions, we run
+#	# any $xsession file in the old locale.  Make sure LANG
+#	# gets set correctly (490851). 
+#	LANG=$oldLang; export LANG
+#	if [ -x $xsession ]; then
+#		exec $xsession
+#	else
+#		exec /bin/bsh $xsession
+#	fi
+#fi
+
+# Note that if $xsession file exists, then we don't continue past
+# this point, just exec $xsession instead.  (That's why [before 6.5]
+# we used to post a xsession.msg warning dialog to the user.)
+
+
+if [ -r $resources -a "${NOCALLS-ok}" = "ok" ]; then
+        xrdb -load -quiet $resources
+
+        if [ -r $sgiresources ]; then
+                xrdb -merge -quiet $sgiresources
+        fi
+fi
+
+
+# Check to see if the user has a personal .chestrc that they 
+# haven't been warned about yet.
+if [ -f $HOME/.chestrc -a ! -f $chestrccheck ]
+then
+	# If the chestrc is older than the system default file
+	# /usr/lib/X11/system.chestrc, then it probably preedates the
+	# install, so we move it out of the way.  If it is newer, we
+	# just issue a warning. 
+	if $usrlibdesktop/newer $HOME/.chestrc /usr/lib/X11/system.chestrc
+	then
+		if [ -r $lconfirmdirectory/chestrc.nomove.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/chestrc.nomove.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/C/chestrc.nomove.msg -c > /dev/null
+		fi
+	else
+		if [ -r $lconfirmdirectory/chestrc.move.msg ]
+		then
+			xconfirm -file $lconfirmdirectory/chestrc.move.msg -c > /dev/null
+		else
+			xconfirm -file $confirmdirectory/C/chestrc.move.msg -c > /dev/null
+		fi
+		mv $HOME/.chestrc $HOME/.chestrc.bak
+	fi
+	(echo "1" > $chestrccheck)
+fi
+
+
+# If xhoston flag file exists in /usr/lib/desktop, then
+# give anyone on any host access to this display.
+if [ -f $usrlibdesktop/xhoston ]; then
+	/usr/bin/X11/xhost +
+fi
+
+
+screens=`/usr/bin/X11/xlistscrns`
+#for screen in $screens
+#	do 
+#	/usr/bin/X11/xsetroot -cursor_name X_cursor 	\
+#		-fg red -bg white -display $screen
+#	done
+
+# Determine the correct visuals and colormaps for icon-based
+# applications.  This must be run before any icon-based apps,
+# and since the window manager can start such apps (through 
+# session management), this must be run before 4Dwm.  Also, 
+# if the displays have a single colormap, we preallocate the
+# important colors to minimize colormap flashing with the GL.
+for screen in $screens
+	do
+		DISPLAY=$screen $usrlibdesktop/makeIconVisuals
+		DISPLAY=$screen $usrlibdesktop/preallocColors
+	done
+
+# Note: Output from $HOME/.sgisession, 4Dwm, workspace and toolchest
+# is redirected to /dev/console. All other output is written to 
+# /usr/adm/SYSLOG by default.
+
+# Run language-dependent applications.  The i18n group lists some 
+# applications in the uxsgidesktop message catalog on line 452, such 
+# that eval'ing this line will launch the special apps.  Caveat: To 
+# avoid unpredictable results, LANG should not be set in line 452.
+intlenv=`gettxt uxsgidesktop:452 ':'`
+eval ${intlenv}
+
+# If there is a panelsession file then run it.  The panelsession file
+# contains commands created through the customization panels.
+if [ -r $panelsession ]; then
+	/bin/bsh $panelsession >/dev/console 2>&1 &
+fi
+
+# Before we launch 4Dwm, we need to make sure a conversion happens.
+firsttimedir=/var/X11/xdm/firsttime
+if [ -d $firsttimedir ]
+then
+	convertfile=$firsttimedir/autoconvert
+	checkfile=$configchecks/autoconvert
+	if test -x $convertfile
+	then
+		if $usrlibdesktop/newer $convertfile $checkfile
+		then
+			$convertfile 4dwm
+		fi
+	fi
+fi
+
+
+# Before toolchest, 4Dwm, or fm starts, copy data from (OOBE) 
+# system setup to appropriate files under user's home directory.
+user=`logname`
+scriptDir=/var/sysadmdesktop/EZsetup/SysSetup/bin
+dataDir=$HOME/.EZsetupData
+if [ ! -f $configchecks/SysSetup ]; then
+	if [ -x $scriptDir/sysSetupDataCopy -a \
+		\( -f $dataDir/$user-deskConfigData -o \
+	     	   -f $dataDir/$user-wwwConnectData -o \
+		   -f $dataDir/$user-wwwSecureData \) ]; then
+	   $scriptDir/sysSetupDataCopy
+	fi
+fi
+
+
+# 4Dwm's -launch flag tells 4Dwm to launch the apps saved in the 4Dwmsession file.
+/usr/bin/X11/4Dwm -launch -xrm "*SG_UseBackgrounds: True" >/dev/console 2>&1 &
+/usr/bin/X11/wait4wm
+
+
+#
+# BEGIN SOUNDSCHEME MODIFICATIONS
+# -------------------------------
+# Start soundscheme daemon.
+if /sbin/chkconfig soundscheme
+then
+	/usr/sbin/soundscheme >/dev/console 2>&1 &
+	if [ -r $dotdesktop/DesktopAudioDevice ]
+	then	
+		/usr/sbin/setAudioDevice `cat $dotdesktop/DesktopAudioDevice` \
+		>/dev/console 2>&1 &
+	fi
+fi
+#
+# END SOUNDSCHEME MODIFICATIONS
+# -----------------------------
+
+/usr/lib/desktop/removeOldLangCatalog >/dev/null 2>&1
+
+#
+# BEGIN Desktop  MODIFICATIONS
+#
+
+# Always start up toolchest.  Toolchest doesn't set the WM_COMMAND
+# property, so session management doesn't start it.  This way, even 
+# if toolchest is killed, logging out and in will force it to restart.
+for screen in $screens
+do
+	DISPLAY=$screen /usr/bin/X11/toolchest -name ToolChest >/dev/console 2>&1 &
+done
+
+
+# If no .desktop-<hostname>/0.0/4Dwmsession or if not running the 
+# SM version of 4DWM, then start up the normal set of apps.
+runwmsession=FALSE
+if [ -r $wmsession -a -s $wmsession ]
+then
+	# Wait for the window manager to be ready for session management.
+	# Try calling tellwm, but if it fails, sleep and try again.
+	for i in 1 2 3 4 5
+	do
+		if /usr/bin/X11/tellwm -t end_session
+		then
+			runwmsession=TRUE
+			break
+		else
+			sleep 1
+		fi
+	done
+else
+	# Since there is no session management, we should wait for the
+	# toolchest to come up and tell the window manager to not place
+	# any icons on top of it.
+	for i in 1 2 3 4 5
+	do
+	    if xlsatoms | grep _SGI_TOOLCHEST_WINDOW > /dev/null
+	    then
+		#
+		# Toolchest=`xlswins | grep Toolchest | nawk '{ print $1; }'`
+		# if [ -n "$Toolchest" ]; then
+		#     xprop -id $Toolchest | grep _SGI_DESKS_RESERVE > /dev/null
+		#     if [ $? -eq 0 ]; then
+		# 	echo found _SGI_DESKS_RESERVE
+		# 	break
+		#     fi
+		# fi
+		#
+		break
+	    else
+		sleep 1
+	    fi
+	done
+fi
+
+if [ -r $nodesktop ]
+then
+	rundesktop=FALSE
+fi
+if [ "$rundesktop" = TRUE ]
+then
+    # Clean up any remnant flags so imdmonitor runs as designed.
+    if [ -f $dotdesktop/AskingRestartDesktop ]; then
+        rm -f $dotdesktop/AskingRestartDesktop
+    fi
+
+    # If this is firsttime, create dumpster and Desktop directory, 
+    # and start iconcatalog.
+    dumpster=`gettxt uxsgiimd:223 'dumpster'`
+    if [ "$firstlogin" = TRUE ]
+    then
+	/usr/sbin/iconcatalog -geometry -50-10 &
+        if [ ! -r $HOME/$dumpster ] 
+        then
+            (mkdir $HOME/$dumpster)
+        fi
+    fi
+    (touch $HOME/$dumpster/.dumpster)
+
+
+    # Create the overlay directory for "system" icons.  This needs
+    # to happen before fm or any of the other bgicons commands are run,
+    # so it is done in the foreground.
+    if [ ! -d $sysdesktopicondir -a -x /usr/sbin/bgicons ]
+    then
+	/usr/sbin/bgicons -overlay 2>&1
+    fi
+
+    # Start the desktop.
+    /usr/sbin/fm  -b >/dev/console 2>&1 &
+
+    # Update system admin background icons which are to be maintained
+    # automatically by bgicons.
+    if [ -x /usr/sbin/bgicons -a -x /usr/sysadm/bin/sabgicons ]
+    then
+	(/usr/sysadm/bin/sabgicons | \
+		/usr/sbin/bgicons -icondb $sysdesktopdir/SysadmBgIconDB \
+			-icondir $sysdesktopicondir \
+			>/dev/console 2>&1) &
+    fi
+
+    # Update the background's 'required icons'.  These are icons for apps
+    # that are pre-specified by the local MIS department for users' machines.
+    # The MIS department should put a file containing the full pathnames of 
+    # the app/file names, one per line, in the /var/X11/xdm/DefaultIconList 
+    # file.  This list can be changed at any time, and the changes will be 
+    # reflected on the user's background.
+    # Note: These go on the normal desktop, not sysdesktopicondir.
+    if [ -x /usr/sbin/bgicons -a -x /usr/sbin/FLtoPopDB -a -r $defBGicons ]
+    then
+  	(/usr/sbin/FLtoPopDB <$defBGicons | /usr/sbin/bgicons \
+		-icondb $desktopdir/DefaultBackgroundIconDB \
+		>/dev/console 2>&1) &
+    fi
+
+    # Update the system's device icons on the background.
+    # The devices to be put on the background are to be requested in
+    # the /var/X11/xdm/DefaultDeviceList file.  But only the devices
+    # actually present will be added.  Devices not present will be removed.
+    if [ -x /usr/sbin/bgicons -a -x /usr/sbin/genDeviceIcons -a -r $defBGdevs ]
+    then
+  	(/usr/sbin/genDeviceIcons $defBGdevs | /usr/sbin/bgicons \
+		-icondir $sysdesktopicondir \
+		-icondb $sysdesktopdir/DefaultBackgroundDeviceDB \
+		>/dev/console 2>&1) &
+    fi
+
+    # If system monitoring is installed and enabled then start
+    # imdmonitor to monitor filesystem space and watch for sysmon messages.
+    if [ -x /usr/sbin/sysmon -a -x /usr/sbin/syserrpanel ]
+    then
+        /usr/sbin/syserrpanel -notify query > /dev/null 2>&1
+        if [ "$?" = "1" ]; then
+            /usr/sbin/imdmonitor &
+        fi
+    fi
+fi
+
+
+#if [ "$runwmsession" = FALSE ]
+#then
+#	/usr/sbin/startconsole -iconic
+#fi
+
+if [ -x $sgisession ]; then
+	$sgisession >/dev/console 2>&1 &
+elif [ -r $sgisession ]; then
+	/bin/bsh $sgisession >/dev/console 2>&1 &
+fi
+
+
+# Load audio panel settings.
+audiostate -openfile $HOME/.audiopanelrc
+
+
+# Force powersaver restart if ssaver panel has not been run yet, or
+# if ssaver panel resources were somehow erased.
+# Note: The loop is run in the background so that reaper will be run and will
+# reap the setPowerSaver program if logout occurs while it is still running.
+#(
+#if [ -x $usrlibdesktop/setPowerSaver -a ! -r $ssaverresources ]
+#then
+#	$usrlibdesktop/setPowerSaver > /dev/null 2>&1 &
+#fi
+#) &
+
+
+# BEGIN FIRSTTIME program execution 
+#
+# The "firsttime" programs are executed only the first time the user logs in.
+# Also, if the program is updated, the program is run again for the user.
+# We assume this to be the case because the firsttime program may change
+# to alert a user of something new in a subsequent release.
+#
+# Note: The loop is run in the background so that reaper will be run and will
+# reap the firsttime programs if logout occurs while the programs are still
+# running.
+(
+if test -d $firsttimedir
+then
+	for program in $firsttimedir/*
+	do
+		checkfile=$configchecks/`basename $program`
+		# Test that item is executable and is not a directory.
+		if [ -x $program -a ! -d $program ]
+		then
+			if $usrlibdesktop/newer $program $checkfile
+			then
+				(echo "1" > $checkfile)
+				$program &
+			fi
+		fi
+	done
+fi
+) &
+#
+# END FIRSTTIME program execution
+
+
+exec /usr/bin/X11/reaper
