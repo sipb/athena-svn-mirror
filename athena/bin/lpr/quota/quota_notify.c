@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.2 1990-04-25 11:52:29 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.3 1990-06-01 09:52:13 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.2 1990-04-25 11:52:29 epeisach Exp $";
+static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.3 1990-06-01 09:52:13 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -82,51 +82,54 @@ quota_rec 		*quotaRec;
 
     }
 
-    ratio = ((float) (quotaRec->quotaLimit - quotaRec->quotaAmount)) / 
-	((qreport->pages == 0) ? 1 : 
-	 (qreport->pages * qreport->pcost));
+    if(qreport->pcost != 0) {
+	ratio = ((float) (quotaRec->quotaLimit - quotaRec->quotaAmount)) / 
+	    ((qreport->pages == 0) ? 1 : 
+	     (qreport->pages * qreport->pcost));
+	
+	if(ratio >=1 && ratio < 2) {
+	    if(strcmp(qcurrency, "cents"))
+		sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
+			message1,
+			(quotaRec->quotaLimit - quotaRec->quotaAmount), 
+			qcurrency,
+			quotaRec->service);
+	    else
+		sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
+			message1,
+			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0, 
+			quotaRec->service);
+	    sprintf(message1, "%sYour last print job was %d pages.\n",
+		    message, qreport->pages);
+	    sprintf(message, "%sYou can print only one more print job of\n",
+		    message1);
+	    sprintf(message1, "%sthat size without going over your quota.\n",
+		    message);
+	    goto notify;
+	}
+	
+	if(ratio < 1) {
+	    if(strcmp(qcurrency, "cents"))
+		sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
+			message1,
+			quotaRec->quotaLimit - quotaRec->quotaAmount,
+			qcurrency,
+			quotaRec->service);
+	    else
+		sprintf(message,"%s\nThere is $%.2f left in your %s print quota.\n",
+			message1,
+			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
+			quotaRec->service);
+	    sprintf(message1, "%sYour last print job was %d pages.\n",
+		    message, qreport->pages);
+	    sprintf(message, "%sYou cannot print another print job of\n",
+		    message1);
+	    sprintf(message1, "%sthat size without going over your quota.\n",
+		    message);
+	    goto notify;
+	}
 
-    if(ratio >=1 && ratio < 2) {
-	if(strcmp(qcurrency, "cents"))
-	    sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
-		    message1,
-		    (quotaRec->quotaLimit - quotaRec->quotaAmount), 
-		    qcurrency,
-		    quotaRec->service);
-	else
-	    sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
-		    message1,
-		    (float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0, 
-		    quotaRec->service);
-	sprintf(message1, "%sYour last print job was %d pages.\n",
-		message, qreport->pages);
-	sprintf(message, "%sYou can print only one more print job of\n",
-		message1);
-	sprintf(message1, "%sthat size without going over your quota.\n",
-		message);
-	goto notify;
-    }
-
-    if(ratio < 1) {
-	if(strcmp(qcurrency, "cents"))
-	    sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
-		    message1,
-		    quotaRec->quotaLimit - quotaRec->quotaAmount,
-		    qcurrency,
-		    quotaRec->service);
-	else
-	    sprintf(message,"%s\nThere is $%.2f left in your %s print quota.\n",
-		    message1,
-		    (float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
-		    quotaRec->service);
-	sprintf(message1, "%sYour last print job was %d pages.\n",
-		message, qreport->pages);
-	sprintf(message, "%sYou cannot print another print job of\n",
-		message1);
-	sprintf(message1, "%sthat size without going over your quota.\n",
-		message);
-	goto notify;
-    }
+    } /* if pcost = 0 */
     /* Don't notify */
     return 0;
 
