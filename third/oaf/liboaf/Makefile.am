@@ -94,3 +94,5 @@ CLEANFILES=			\
 
 
 
+oaf-stubs.o oaf-skels.o oaf-common.o: oaf-factory.h
+oaf-stubs.lo oaf-skels.lo oaf-common.lo: oaf-factory.h

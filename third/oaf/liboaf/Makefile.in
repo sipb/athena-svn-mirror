@@ -305,7 +305,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:
@@ -402,6 +401,9 @@ stamp-idl: $(top_srcdir)/idl/oaf.idl
 oaf-factory.h stamp-factory-idl: $(top_srcdir)/idl/oaf-factory.idl
 	$(ORBIT_IDL) -I$(top_srcdir)/idl --define=GNOME_FACTORY_COMPILATION $(top_srcdir)/idl/oaf-factory.idl
 	touch stamp-factory-idl
+
+oaf-stubs.o oaf-skels.o oaf-common.o: oaf-factory.h
+oaf-stubs.lo oaf-skels.lo oaf-common.lo: oaf-factory.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
