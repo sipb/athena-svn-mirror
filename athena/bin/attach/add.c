@@ -17,7 +17,7 @@
  * for attach.
  */
 
-static char rcsid[] = "$Id: add.c,v 1.1 1998-03-17 03:48:47 cfields Exp $";
+static char rcsid[] = "$Id: add.c,v 1.2 1998-04-17 22:31:55 cfields Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,9 +41,23 @@ char *debug_strings[5] = {
   "$athena_manpath"
 };
 
+char *shell_templates[2][2] =
+{
+  {
+    "setenv PATH %s; setenv MANPATH %s\n",
+    "PATH=%s; export PATH; MANPATH=%s; export MANPATH\n"
+  },
+  {
+    "set athena_path=(%s); set athena_manpath=%s\n",
+    "athena_path=%s;athena_manpath=%s\n"
+  }
+};
+
 void usage()
 {
-  fprintf(stderr, "Usage: add [-vdfrpwe] [-P $athena_path] [-M $athena_manpath] [-a attachflags]             [lockername] [lockername] ...\n");
+  fprintf(stderr, "Usage: add [-vdfrpwb] [-P $athena_path] "
+	  "[-M $athena_manpath] [-a attachflags]\n"
+	  "           [lockername] [lockername] ...\n");
   exit(1);
 }
 
@@ -128,7 +142,7 @@ string_list *modify_path(string_list *path, string_list *changes,
 void print_readable_path(string_list *path)
 {
   string_list *readable_path = NULL;
-  char **ptr, *name, *name_end;
+  char **ptr, *name, *name_end, *readable_path_string;
   char name_buf[MAXPATHLEN+10];
 
   if (sl_grab_string_array(path) != NULL)
@@ -161,7 +175,13 @@ void print_readable_path(string_list *path)
 	      exit(1);
 	    }
 	}
-      fprintf(stdout, "%s\n", sl_grab_string(readable_path, ' '));
+
+      readable_path_string = sl_grab_string(readable_path, ' ');
+      if (readable_path_string)
+	{
+	  fprintf(stdout, "%s\n", readable_path_string);
+	  free(readable_path_string);
+	}
       sl_free(&readable_path);
     }
 }
@@ -171,12 +191,13 @@ int addcmd(int argc, char **argv)
   int c;
   int verbose = 0, debug = 0, add_to_front = 0,
     remove_from_path = 0, print_path = 0, give_warnings = 0,
-    use_athena_paths = 0, bourne_output = 0, end_args = 0;
+    use_athena_paths = 0, bourne_shell = 0, end_args = 0;
   string_list *path = NULL, *manpath = NULL;
-  string_list *athena_path = NULL, *athena_manpath = NULL;
   string_list *delta_path = NULL, *delta_manpath = NULL;
   string_list *mountpoint_list = NULL;
   string_list *attach_args = NULL;
+  char *path_string = NULL, *manpath_string = NULL, *empty_string = "";
+  char path_delimiter = ':';
   char **found, **mountpoint, **ptr;
   FILE *shell;
 
@@ -188,7 +209,7 @@ int addcmd(int argc, char **argv)
   dup2(STDERR_FILENO, STDOUT_FILENO);
 
   /* Parse the command line... */
-  while (!end_args && (c = getopt(argc, argv, "vdnfrpwebP:M:a")) != EOF)
+  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbP:M:a")) != EOF)
     switch(c)
       {
       case 'v':
@@ -219,47 +240,36 @@ int addcmd(int argc, char **argv)
 	give_warnings = 1;
 	break;
 
-      case 'e':
-	use_athena_paths = 1;
-	break;
-
       case 'b':
-	bourne_output = 1;
+	bourne_shell = 1;
 	break;
 
       case 'P':
-	/* Store the elements of athena_path, if passed, into the
-	 * athena_path string list. athena_path is a space-separated
-	 * sequence of arguments, so we need to loop over them to
-	 * add each to the string list individually.
+	/* Save the athena_path string off to be parsed later. We won't
+	 * know until we've parsed all of the command-line args whether
+	 * -b has been specified, and that affects show it should be
+	 * parsed.
 	 */
-	if (sl_add_string(&athena_path, optarg, 0))
+	if (optarg[0] == '-')
 	  {
-	    fprintf(stderr, "%s: out of memory (P)\n", progname);
-	    exit(1);
+	    fprintf(stderr, "%s: -P requires an argument\n", progname);
+	    usage();
 	  }
-	while (optind < argc && *argv[optind] != '-')
-	  {
-	    if (sl_add_string(&athena_path, argv[optind++], 0))
-	      {
-		fprintf(stderr, "%s: out of memory (P)\n", progname);
-		exit(1);
-	      }
-	  }
+
+	use_athena_paths = 1;
+	path_string = optarg;
 	break;
 
       case 'M':
-	/* Store the elements of athena_manpath, if passed, into the
-	 * athena_manpath string list. athena_manpath is a coloon-separated
-	 * path list, so there is only one argument we need to worry about.
-	 * We use sl_parse_string to separate the list into components
-	 * and store it into the string list.
-	 */
-	if (sl_parse_string(&athena_manpath, optarg, ':'))
+	/* Wait to parse manpath_string until we parse path_string. */
+	if (optarg[0] == '-')
 	  {
-	    fprintf(stderr, "%s: out of memory (M)\n", progname);
-	    exit(1);
+	    fprintf(stderr, "%s: -M requires an argument\n", progname);
+	    usage();
 	  }
+
+	use_athena_paths = 1;
+	manpath_string = optarg;
 	break;
 
       case 'a':
@@ -274,24 +284,34 @@ int addcmd(int argc, char **argv)
 	break;
       }
 
-  /* Set up path/manpath to point to the paths we wish to manipulate.
-   * If use_athena_paths, -M and -P should have been specified, and
-   * the search paths come from there. Otherwise, we want the search
-   * paths specified in the environment.
+  /* Set up path/manpath_string to point to the paths we wish to
+   * manipulate. If use_athena_paths, -M and -P should have been
+   * specified, and path/manpath_string are already set. Otherwise,
+   * we want the search paths specified in the environment.
    */
   if (use_athena_paths)
     {
-      path = athena_path;
-      manpath = athena_manpath;
+      if (path_string == NULL || manpath_string == NULL)
+	{
+	  fprintf(stderr, "%s: -P and -M must both be specified\n");
+	  usage();
+	}
+
+      /* The C shell delimiter for $athena_path is a space. */
+      if (!bourne_shell)
+	path_delimiter = ' ';
     }
   else
     {
-      if (sl_parse_string(&path, getenv("PATH"), ':') ||
-	  sl_parse_string(&manpath, getenv("MANPATH"), ':'))
-	{
-	  fprintf(stderr, "%s: out of memory (setup)\n", progname);
-	  exit(1);
-	}
+      path_string = getenv("PATH");
+      manpath_string = getenv("MANPATH");
+    }
+
+  if (sl_parse_string(&path, path_string, path_delimiter) ||
+      sl_parse_string(&manpath, manpath_string, ':'))
+    {
+      fprintf(stderr, "%s: out of memory (setup)\n", progname);
+      exit(1);
     }
 
   /* If no arguments have been directed to attach, or -p was specified,
@@ -322,7 +342,7 @@ int addcmd(int argc, char **argv)
 	}
     }
 
-  attachcmd(sl_grab_length(attach_args),  sl_grab_string_array(attach_args),
+  attachcmd(sl_grab_length(attach_args), sl_grab_string_array(attach_args),
 	    &mountpoint_list);
   sl_free(&attach_args);
 
@@ -384,26 +404,21 @@ int addcmd(int argc, char **argv)
   sl_free(&delta_manpath);
 
   /* Output the shell commands needed to modify the user's path. */
-  if (use_athena_paths)
-    {
-      fprintf(shell, "set athena_path=(%s);", sl_grab_string(path, ' '));
-      fprintf(shell, "set athena_manpath=%s\n", sl_grab_string(manpath, ':'));
-    }
-  else
-    {
-      if (bourne_output)
-	{
-	  fprintf(shell, "PATH=%s;export PATH;", sl_grab_string(path, ':'));
-	  fprintf(shell, "MANPATH=%s;export MANPATH\n",
-		  sl_grab_string(manpath, ':'));
-	}
-      else
-	{
-	  fprintf(shell, "setenv PATH %s;", sl_grab_string(path, ':'));
-	  fprintf(shell, "setenv MANPATH %s\n", sl_grab_string(manpath, ':'));
-	}
-    }
+  path_string = sl_grab_string(path, path_delimiter);
+  if (path_string == NULL)
+    path_string = empty_string;
 
+  manpath_string = sl_grab_string(manpath, ':');
+  if (manpath_string == NULL)
+    manpath_string = empty_string;
+
+  fprintf(shell, shell_templates[use_athena_paths][bourne_shell], path_string,
+	  manpath_string);
+
+  if (path_string != empty_string)
+    free(path_string);
+  if (manpath_string != empty_string)
+    free(manpath_string);
   sl_free(&path);
   sl_free(&manpath);
   exit(0);
