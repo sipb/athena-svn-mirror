@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+
 /*			I N _ C K S U M
  *
  * Checksum routine for Internet Protocol family headers (C Version).
@@ -16,7 +18,8 @@ in_cksum( filename, statp) char *filename; struct stat *statp;
 {
 	int fd;
 	struct stat statbuf;
-	static char buf[ 8192];
+	static char buf[65536];
+	int readsize;
 	register int nleft;
 	register u_short *w;
 	register unsigned int sum = 0;
@@ -32,6 +35,9 @@ in_cksum( filename, statp) char *filename; struct stat *statp;
 		statp = &statbuf;
 		fstat( fd, statp);
 	}
+
+	readsize = MIN(sizeof(buf), statp->st_blksize);
+
 	/*
 	 * Our algorithm is simple, using a 48 bit accumulator (sum),
 	 * we add sequential 16 bit words to it, and at the end, fold
@@ -40,7 +46,7 @@ in_cksum( filename, statp) char *filename; struct stat *statp;
 	 * this means we can handle files containing 2**32 16-bit words,
 	 * that is, 2**33 bytes, which is a little more than 8 gigabytes.
 	 */
-	while ( 0 < ( nleft = read( fd, buf, (*statp).st_blksize))) {
+	while ( 0 < ( nleft = read( fd, buf, readsize))) {
 		w = (u_short *) buf;
 		while( nleft > 1 )  {
 			sum += *w++;
