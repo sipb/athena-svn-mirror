@@ -1,4 +1,0 @@
-build_program(ccimake,ccimake.o,,)
-build_program(imake,imake.o,,)
-
-SpecialObject(imake.o,imake.c ccimake,`./ccimake`)
