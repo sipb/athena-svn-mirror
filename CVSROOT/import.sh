@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.9 2004-10-26 16:25:59 ghudson Exp $
+# $Id: import.sh,v 1.10 2005-03-19 22:18:38 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -101,7 +101,7 @@ if [ "${oldver+set}" != set ]; then
   if [ ! -d "$CVSROOT/$repdir" ]; then
     oldver=none
   else
-    oldver=`find $CVSROOT/$repdir -name "*,v" -print | xargs rlog -h | 
+    oldver=`find $CVSROOT/$repdir -name "*,v" -exec rlog -h {} \; |
       perl -e '
 	sub vercmp {
 	  @a = split(/\./, shift @_); @b = split(/\./, shift @_);
