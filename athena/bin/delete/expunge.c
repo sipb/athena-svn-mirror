@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.12 1989-11-22 21:31:58 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.13 1989-12-28 14:45:15 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -68,6 +68,11 @@ char *argv[];
      
      whoami = lastpart(argv[0]);
      if (*whoami == 'p') { /* we're doing a purge */
+	  if (argc > 1) {
+	       set_error(PURGE_TOO_MANY_ARGS);
+	       error("");
+	       exit(1);
+	  }
 	  if (purge())
 	       error("purge");
 	  exit(error_occurred ? 1 : 0);
