@@ -1,0 +1,54 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=High Contrast Large Print Inverse
+Name[bg]=Обърнат висок контраст, едри елементи
+Name[ca]=Contrast alt invertit per a impressió gran
+Name[cs]=Inverzní vysoký kontrast velké písmo
+Name[de]=Hoher Kontrast, groß und invertiert
+Name[es]=Alto contraste grande invertido
+Name[fi]=Suuri kontrasti suurikokoisena (käänteinen)
+Name[he]=ניגוד גבוה הפוך בהדפסה מוגדלת
+Name[hu]=Nagy kontraszt, nagy szöveg és inverz
+Name[it]=Forte contrasto, caratteri larghi, inverso
+Name[ko]=고대비 확대 역상
+Name[lv]=Spēcīga Kontrasta Liels Drukas Pretstats
+Name[ms]=Cetakan Besar Kontras Tinggi Menyongsang
+Name[nl]=Hoog contrast grote tekst negatief
+Name[no]=Høy kontrast, stor skrift, omvendt
+Name[pt_BR]=Alto Contraste Letras Grandes Inverso
+Name[ro]=Mărime mare, contrast puternic şi culori inversate
+Name[ru]=Высококонтрастная негативная для печати
+Name[sq]=Negativi i paraqitjes së zmadhuar me kontrast të lartë
+Name[sv]=Inverterad stor text med hög kontrast
+Name[uk]=Висококонтрастна негативна для друку
+Name[zh_TW]=高反差/大型/反色
+Comment=Large white-on-black text and icons
+Comment[bg]=Едри, бели текст и икони на черен фон
+Comment[ca]=Text i icones grans en blanc sobre negre
+Comment[cs]=Velký text bíle na černém a ikony
+Comment[de]=Text und Icons groß und Weiß vor schwarzem Hintergrund
+Comment[es]=Textos e iconos grandes en blanco sobre negro
+Comment[fi]=Suurikokoinen valkoinen teksti ja kuvakkeet mustalla taustalla
+Comment[he]=מלל וסמלים מוגדלים בלבן על שחור
+Comment[hu]=Fekete alapon nagy fehér szöveg és ikonok
+Comment[it]=Bianco su nero per testo ed icone grandi
+Comment[ko]=검은 바탕에 커다란 흰 글씨와 아이콘
+Comment[lv]=Liels balts-uz-melna teksts un ikonas
+Comment[ms]=Teks dan ikon putih-atas-hitam Besar
+Comment[nl]=Grote wit/zwart tekst en pictogrammen
+Comment[no]=Tekst og ikoner, stor tekst og ikoner
+Comment[pt_BR]=Texto e ícones branco-no-preto grandes
+Comment[ro]=Text şi iconiţe mari Alb-pe-Negru
+Comment[ru]=Крупные текст и значки белые на чёрном
+Comment[sq]=Tekst dhe ikona të mëdha në të bardhë mbi të zezë
+Comment[sv]=Stor vit text och ikoner på svart botten
+Comment[uk]=Великі білі текст і піктограми на чорному
+Comment[zh_TW]=大型黑底白線文字及圖示
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=HighContrastLargePrintInverse
+IconTheme=HighContrastLargePrintInverse
+MetacityTheme=Atlanta
+ApplicationFont=sans 18
+

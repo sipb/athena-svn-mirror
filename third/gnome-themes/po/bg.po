@@ -1,0 +1,71 @@
+# Gnome themes po file
+# Copyright (C) 2002, Free Software Foundation, Inc.
+# Alexander Shopov <al_shopov@yahoo.com>, 2002.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-themes\n"
+"POT-Creation-Date: 2003-01-20 20:11+0000\n"
+"PO-Revision-Date: 2002-12-19 14:58+0200\n"
+"Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
+"Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: HighContrast/index.theme.in.h:1
+msgid "Black-on-white text and icons"
+msgstr "Черни текст и икони на бял фон"
+
+#: HighContrast/index.theme.in.h:2
+msgid "High Contrast"
+msgstr "Висок контраст"
+
+#: HighContrastInverse/index.theme.in.h:1
+msgid "High Contrast Inverse"
+msgstr "Обърнат висок контраст"
+
+#: HighContrastInverse/index.theme.in.h:2
+msgid "White-on-black text and icons"
+msgstr "Бели текст и икони на черен фон"
+
+#: HighContrastLargePrint/index.theme.in.in.h:1
+msgid "High Contrast Large"
+msgstr "Висок контраст, едри елементи"
+
+#: HighContrastLargePrint/index.theme.in.in.h:2
+msgid "Large black-on-white text and icons"
+msgstr "Едри, черни текст и икони на бял фон"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:1
+msgid "High Contrast Large Print Inverse"
+msgstr "Обърнат висок контраст, едри елементи"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:2
+msgid "Large white-on-black text and icons"
+msgstr "Едри, бели текст и икони на черен фон"
+
+#: LargePrint/index.theme.in.in.h:1
+msgid "Large Print"
+msgstr "Едър печат"
+
+#: LargePrint/index.theme.in.in.h:2
+msgid "Large text and icons"
+msgstr "Едри текст и икони"
+
+#: LowContrast/index.theme.in.h:1
+msgid "Low Contrast"
+msgstr "Нисък контраст"
+
+#: LowContrast/index.theme.in.h:2
+msgid "Muted text and icons"
+msgstr "Затъмнени текст и икони"
+
+#: LowContrastLargePrint/index.theme.in.in.h:1
+msgid "Large muted text and icons"
+msgstr "Едри, затъмнени текст и икони"
+
+#: LowContrastLargePrint/index.theme.in.in.h:2
+msgid "Low Contrast Large Print"
+msgstr "Нисък контраст, едър печат"

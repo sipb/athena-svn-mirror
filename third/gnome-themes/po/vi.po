@@ -1,0 +1,79 @@
+# Gnome-themes in Vietnamese.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# T.M.Thanh <tmthanh@yahoo.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gnome-themes for Gnome v2.1.x\n"
+"POT-Creation-Date: 2003-01-20 20:11+0000\n"
+"PO-Revision-Date: 2002-12-14 11:12+0700\n"
+"Last-Translator: Trinh Minh Thanh <tmthanh@linuxmail.org>\n"
+"Language-Team: Gnome-Vi Team <Gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: HighContrast/index.theme.in.h:1
+msgid "Black-on-white text and icons"
+msgstr "Biểu tượng và chữ đen nền trắng"
+
+#: HighContrast/index.theme.in.h:2
+msgid "High Contrast"
+msgstr "Độ tương phản cao"
+
+#: HighContrastInverse/index.theme.in.h:1
+msgid "High Contrast Inverse"
+msgstr "Độ tương phản cao ngược lại"
+
+#: HighContrastInverse/index.theme.in.h:2
+msgid "White-on-black text and icons"
+msgstr "Biểu tượng và chữ trắng nền đen"
+
+#: HighContrastLargePrint/index.theme.in.in.h:1
+#, fuzzy
+msgid "High Contrast Large"
+msgstr "Độ tương phản cao"
+
+#: HighContrastLargePrint/index.theme.in.in.h:2
+#, fuzzy
+msgid "Large black-on-white text and icons"
+msgstr "Biểu tượng và chữ đen nền trắng"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:1
+#, fuzzy
+msgid "High Contrast Large Print Inverse"
+msgstr "Độ tương phản cao ngược lại"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:2
+#, fuzzy
+msgid "Large white-on-black text and icons"
+msgstr "Biểu tượng và chữ trắng nền đen"
+
+#: LargePrint/index.theme.in.in.h:1
+msgid "Large Print"
+msgstr ""
+
+#: LargePrint/index.theme.in.in.h:2
+#, fuzzy
+msgid "Large text and icons"
+msgstr "Biểu tượng và chữ đen nền trắng"
+
+#: LowContrast/index.theme.in.h:1
+#, fuzzy
+msgid "Low Contrast"
+msgstr "Độ tương phản cao"
+
+#: LowContrast/index.theme.in.h:2
+#, fuzzy
+msgid "Muted text and icons"
+msgstr "Biểu tượng và chữ trắng nền đen"
+
+#: LowContrastLargePrint/index.theme.in.in.h:1
+#, fuzzy
+msgid "Large muted text and icons"
+msgstr "Biểu tượng và chữ đen nền trắng"
+
+#: LowContrastLargePrint/index.theme.in.in.h:2
+msgid "Low Contrast Large Print"
+msgstr ""

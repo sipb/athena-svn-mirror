@@ -1,0 +1,72 @@
+# Albanian translation for gnome-themes.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-themes package.
+# Laurent Dhima <laurenti@alblinux.net>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-themes\n"
+"POT-Creation-Date: 2003-01-20 20:11+0000\n"
+"PO-Revision-Date: 2003-01-13 16:46+0100\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: HighContrast/index.theme.in.h:1
+msgid "Black-on-white text and icons"
+msgstr "Teksti dhe ikonat në të zezë mbi të bardhë"
+
+#: HighContrast/index.theme.in.h:2
+msgid "High Contrast"
+msgstr "Kontrast i lartë"
+
+#: HighContrastInverse/index.theme.in.h:1
+msgid "High Contrast Inverse"
+msgstr "Kontrast i lartë i invertuar"
+
+#: HighContrastInverse/index.theme.in.h:2
+msgid "White-on-black text and icons"
+msgstr "Teksti dhe ikonat në të bardhë mbi të zezë"
+
+#: HighContrastLargePrint/index.theme.in.in.h:1
+msgid "High Contrast Large"
+msgstr "Kontrast i lartë i madh"
+
+#: HighContrastLargePrint/index.theme.in.in.h:2
+msgid "Large black-on-white text and icons"
+msgstr "Tekst dhe ikona të mëdha në të zezë mbi të bardhë"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:1
+msgid "High Contrast Large Print Inverse"
+msgstr "Negativi i paraqitjes së zmadhuar me kontrast të lartë"
+
+#: HighContrastLargePrintInverse/index.theme.in.in.h:2
+msgid "Large white-on-black text and icons"
+msgstr "Tekst dhe ikona të mëdha në të bardhë mbi të zezë"
+
+#: LargePrint/index.theme.in.in.h:1
+msgid "Large Print"
+msgstr "Paraqitje e zmadhuar"
+
+#: LargePrint/index.theme.in.in.h:2
+msgid "Large text and icons"
+msgstr "Tekst dhe ikona të mëdha"
+
+#: LowContrast/index.theme.in.h:1
+msgid "Low Contrast"
+msgstr "Kontrast i ulët"
+
+#: LowContrast/index.theme.in.h:2
+msgid "Muted text and icons"
+msgstr "Tekst dhe ikona pa volum"
+
+#: LowContrastLargePrint/index.theme.in.in.h:1
+msgid "Large muted text and icons"
+msgstr "Tekst dhe ikona të mëdha pa volum"
+
+#: LowContrastLargePrint/index.theme.in.in.h:2
+msgid "Low Contrast Large Print"
+msgstr "Paraqitje e zmadhuar me kontrast të ulët"
