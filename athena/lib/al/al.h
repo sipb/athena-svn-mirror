@@ -1,6 +1,6 @@
-/* $Id: al.h,v 1.3 1997-11-13 21:59:30 ghudson Exp $ */
+/* $Id: al.h,v 1.4 1998-04-08 02:15:31 ghudson Exp $ */
 
-/* Copyright 1997 by the Massachusetts Institute of Technology.
+/* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
  * software and its documentation for any purpose and without
@@ -46,7 +46,8 @@
 #define AL_WNOATTACH		16
 
 /* Public functions */
-int al_login_allowed(const char *username, int isremote, char **filetext);
+int al_login_allowed(const char *username, int isremote, int *local_acct,
+		     char **text);
 int al_acct_create(const char *username, const char *cryptpw,
 		   pid_t sessionpid, int havecred, int tmphomedir,
 		   int **warnings);

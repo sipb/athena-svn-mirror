@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-10-21 01:54:03 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-04-08 02:15:29 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -44,6 +44,7 @@ install:
 	${RANLIB} ${DESTDIR}${libdir}/libal.a
 	chmod u-w ${DESTDIR}${libdir}/libal.a
 	${INSTALL} -m 444 ${srcdir}/al.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/access.5 ${DESTDIR}${mandir}/man5
 	${INSTALL} -m 444 ${srcdir}/al_acct_cleanup.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_acct_create.3 ${DESTDIR}${mandir}/man3
 	${INSTALL} -m 444 ${srcdir}/al_acct_revert.3 ${DESTDIR}${mandir}/man3

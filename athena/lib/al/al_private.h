@@ -1,6 +1,6 @@
-/* $Id: al_private.h,v 1.4 1997-11-20 22:18:17 ghudson Exp $ */
+/* $Id: al_private.h,v 1.5 1998-04-08 02:15:32 ghudson Exp $ */
 
-/* Copyright 1997 by the Massachusetts Institute of Technology.
+/* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
  * software and its documentation for any purpose and without
@@ -27,6 +27,7 @@
 #define PATH_TMPPROTO		"/usr/athena/lib/prototype_tmpuser"
 #define PATH_ATTACH		"/bin/athena/attach"
 #define PATH_DETACH		"/bin/athena/detach"
+#define PATH_ACCESS		"/etc/athena/access"
 #define PATH_NOLOGIN		"/etc/nologin"
 #define PATH_NOREMOTE		"/etc/noremote"
 #define PATH_NOCREATE		"/etc/nocreate"

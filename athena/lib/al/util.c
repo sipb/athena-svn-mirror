@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.5 1997-12-31 19:47:55 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.6 1998-04-08 02:15:33 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -45,9 +45,9 @@ const char *al_strerror(int code, char **mem)
     "Successful completion with some warnings",
     "Bad Hesiod entry for user",
     "Unknown username",
-    "Logins not allowed for non-local accounts",
+    "You are not allowed to log into this machine",
     "Logins currently disabled",
-    "Remote logins not allowed for non-local accounts",
+    "You are not allowed to log into this machine remotely",
     "Could not add user to passwd file",
     "Could not modify user's session record",
     "Permission denied while modifying system files",
