@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.40 2001-12-03 17:53:29 miki Exp $
+# $Id: do-update.sh,v 1.41 2002-06-04 22:32:03 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -39,7 +39,14 @@ onexit()
 trap onexit EXIT
 touch /var/athena/update.running
 
-echo "Starting update at `date`."
+# We get three arguments: the method by which the machine was rebooted.
+# (possible values are Auto, Manual, and Remote), the current workstation
+# version, and the new version.
+method=$1
+version=$2
+newvers=$3
+
+echo "Beginning update from $version to $newvers at `date`."
 . /srvd/usr/athena/lib/update/update-environment
 
 # Remove the version script state files.
@@ -62,13 +69,6 @@ sun4)
 	export SUNPLATFORM ROOTDISK
 	;;
 esac
-
-# We get three arguments: the method by which the machine was rebooted.
-# (possible values are Auto, Manual, and Remote), the current workstation
-# version, and the new version.
-method=$1
-version=$2
-newvers=$3
 
 # On IRIX, reboot prompts for confirmation when logged in remotely.
 # The following kludge prevents the prompt.
