@@ -160,20 +160,11 @@ fi
 
 echo ""								>/dev/console
 
-# The audio driver on the Sparcstation 5 has a habit of disappearing.
-# So we put it back periodically...
-#if [ -f /kernel/drv/audiocs ]; then
-#	case `/bin/athena/machtype -c` in
-#	  SPARC/5)
-#	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
-#	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
-#	      /usr/sbin/audlinks
-#	      echo "done."					>/dev/console
-#	      ;;
-#	  *)
-#	      ;;
-#	esac
-#fi
+# Whenever Solaris decides to configure the devices directory, it insists
+# on creating /dev/audio and /dev/audioctl mode 600 (which would require
+# various CD-playing programs to be setuid), despite our efforts.  Make
+# sure they're world-writable.
+chmod 666 /dev/audio /dev/audioctl
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
@@ -200,7 +191,6 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /etc/passwd.local /etc/passwd
 	cp -p /etc/shadow.local /etc/shadow
 	chmod 600 /etc/shadow
-	chmod 666 /dev/audio /dev/audioctl
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
