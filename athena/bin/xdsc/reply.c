@@ -28,7 +28,7 @@ without express or implied warranty.
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.15 1996-09-20 03:37:00 ghudson Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.16 1998-12-20 23:05:12 rbasch Exp $";
 
 extern char     *getenv();
 extern char	*RunCommand();
@@ -460,7 +460,7 @@ int	current;
 			args,
 			n);
 
-	XtAddCallback (button, XtNcallback, WriteCB, True);
+	XtAddCallback (button, XtNcallback, WriteCB, (XtPointer) True);
 
 	n = 0;
 	button = XtCreateManagedWidget(
@@ -470,7 +470,7 @@ int	current;
 			args,
 			n);
 
-	XtAddCallback (button, XtNcallback, WriteCB, False);
+	XtAddCallback (button, XtNcallback, WriteCB, (XtPointer) False);
 	XtPopup(writePopupW, XtGrabNone);
 }
 
@@ -665,7 +665,7 @@ AddMeeting()
 			addBox3W,
 			args,
 			n);
-	XtAddCallback (addButton1W, XtNcallback, AddCB, True);
+	XtAddCallback (addButton1W, XtNcallback, AddCB, (XtPointer) True);
 
 	n = 0;
 	addButton2W = XtCreateManagedWidget(
@@ -675,7 +675,7 @@ AddMeeting()
 			args,
 			n);
 
-	XtAddCallback (addButton2W, XtNcallback, AddCB, False);
+	XtAddCallback (addButton2W, XtNcallback, AddCB, (XtPointer) False);
 	XtPopup(addPopupW, XtGrabNone);
 
 }
@@ -827,7 +827,8 @@ DeleteMeeting()
 			deleteBox2W,
 			args,
 			n);
-	XtAddCallback (deleteButton1W, XtNcallback, DeleteCB, True);
+	XtAddCallback (deleteButton1W, XtNcallback, DeleteCB,
+		       (XtPointer) True);
 
 	n = 0;
 	deleteButton2W = XtCreateManagedWidget(
@@ -836,7 +837,8 @@ DeleteMeeting()
 			deleteBox2W,
 			args,
 			n);
-	XtAddCallback (deleteButton2W, XtNcallback, DeleteCB, False);
+	XtAddCallback (deleteButton2W, XtNcallback, DeleteCB,
+		       (XtPointer) False);
 
 	XtPopup(deletePopupW, XtGrabNone);
 
@@ -1003,7 +1005,8 @@ Boolean	deathoption;
 			args,
 			n);
 
-	XtAddCallback (warningButtonW, XtNcallback, PopdownCB, False);
+	XtAddCallback (warningButtonW, XtNcallback, PopdownCB,
+		       (XtPointer) False);
 
 	if (deathoption) {
 		deathButtonW = XtCreateManagedWidget(
@@ -1012,7 +1015,8 @@ Boolean	deathoption;
 				warningBoxW,
 				NULL, 0);
 
-		XtAddCallback (deathButtonW, XtNcallback, DieCB, False);
+		XtAddCallback (deathButtonW, XtNcallback, DieCB,
+			       (XtPointer) False);
 	}
 
 	XtInstallAllAccelerators(warningPopupW, paneW);
@@ -1110,7 +1114,7 @@ PutUpHelp()
 			n);
 
 	XtInstallAllAccelerators(helpPopupW, paneW);
-	XtAddCallback (buttonW, XtNcallback, PopdownCB, True);
+	XtAddCallback (buttonW, XtNcallback, PopdownCB, (XtPointer) True);
 	XtPopup(helpPopupW, XtGrabNone);
 }
 
@@ -1245,7 +1249,7 @@ GetTransactionNum()
 			args,
 			n);
 
-	XtAddCallback (button, XtNcallback, NumCB, True);
+	XtAddCallback (button, XtNcallback, NumCB, (XtPointer) True);
 
 	n = 0;
 	button = XtCreateManagedWidget(
@@ -1255,7 +1259,7 @@ GetTransactionNum()
 			args,
 			n);
 
-	XtAddCallback (button, XtNcallback, NumCB, False);
+	XtAddCallback (button, XtNcallback, NumCB, (XtPointer) False);
 	XtPopup(numPopupW, XtGrabNone);
 }
 

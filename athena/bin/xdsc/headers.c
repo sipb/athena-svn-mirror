@@ -37,6 +37,7 @@ extern Boolean	debug;
 extern char	filebase[];
 extern int	topscreen;
 extern void	TopSelect();
+extern char	*CurrentMtg();
 
 static void	FetchHeaders();
 static char	oldmeeting[LONGNAMELEN];

@@ -1605,7 +1605,7 @@ int	whichone;
 				commandWidgetClass, parent,
 				args, n);
 			XtAddCallback(	command, XtNcallback, 
-					mycallback, i);
+					mycallback, (XtPointer) i);
 		}
 
 		toprec->button = command;
@@ -1649,7 +1649,8 @@ int	whichone;
 					name, smeBSBObjectClass, menu,
 				      	args, n);
 			XtAddCallback(	entry, XtNcallback,
-					mycallback, i + (j << 4));
+					mycallback,
+					(XtPointer) (i + (j << 4)));
 			newrec->button = entry;
 			toprec = newrec;
 		}
@@ -1740,10 +1741,12 @@ Cardinal *num_params;   /* unused */
 	if (	lasttime == 0 ||
 		(XtLastTimestampProcessed(XtDisplay(w)) - lasttime) >
 			(Time) XtGetMultiClickTime(XtDisplay(w))) {
-		XtCallActionProc(w, "select-start", event, params, num_params);
+		XtCallActionProc(w, "select-start", event,
+				 params, *num_params);
 	}
 	else {
-		XtCallActionProc(w, "Update", event, params, num_params);
+		XtCallActionProc(w, "Update", event,
+				 params, *num_params);
 	}
 	lasttime = XtLastTimestampProcessed(XtDisplay(w));
 }
