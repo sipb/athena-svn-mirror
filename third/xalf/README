@@ -1,5 +1,5 @@
-Xalf 0.7 (http://www.lysator.liu.se/~astrand/projects/xalf/)
-----------------------------------------------------------
+Xalf (http://www.lysator.liu.se/~astrand/projects/xalf/)
+--------------------------------------------------------
 
 This a utility to provide feedback when starting X11 applications.
 
@@ -31,7 +31,7 @@ foot-menu windows.
 
 Animated star:
 An animated indicator resembling the look of that on SGI/Irix
-machines (a kind of yellow star blinking while loading a program).
+machines (a kind of yellow animated star). 
 
 
 INSTALL
@@ -39,34 +39,27 @@ INSTALL
 See the file INSTALL. 
 
 
+SUPPORTED PLATFORMS
+-------------------
+The main platforms for Xalf are Linux and Solaris. People have
+reported that Xalf also runs on FreeBSD and Irix. Newer versions are
+only tested on Linux and Solaris. If you want support for other
+platforms and are willing to test beta-versions, contact me.
+
+
 GNOME INTEGRATION
 -----------------
-Gnome-libs 1.2.0 has built-in support for Xalf. It can be activated by
-setting the environment variable GNOME_USE_XALF before starting GNOME
-(eg. add: export GNOME_USE_XALF=1 to .bash_profile or other appropiate
-dotfile). This means that all applications will be started via Xalf.
-Note: The built-in hooks has some drawbacks: Xalf is always given the
-arguments --mappingmode and --invisiblewindow. 
+Xalf is included with GNOME 1.4. Xalf also works with earlier GNOME
+versions if you have Gnome-libs version 1.2.11 or newer.
 
-I recommend using an updated version of Gnome-libs, which can be
-downloaded on the Xalf homepage. You should use version
-gnome-libs-1.2.1-0_helix_1xalf2.i386.rpm or newer. Starting with this
-version, GNOME_USE_XALF and GNOME_XALF_OPTIONS is obsolete and doesn't
-work anymore. Instead, Xalf behavior is controlled by the file
-/.gnome/xalf. Use control center to control it (see below). With this
-modified version, you can prepend NO_XALF to desktop entries
-commandlines to disable Xalf for a specific application. This is
-especially useful for launching applications that doesn't start new
-processes but only creates new windows. Gmc works like this, so I
-recommend change "Exec=gmc" in /usr/share/gnome/apps/Gmc.desktop to
-"Exec=NO_XALF gmc". 
+You can control Xalf via GNOME Control Center (or by editing
+~/.gnome/xalf). Note:
 
-
-GNOME CONTROL CENTER CAPPLET
-----------------------------
-From version 0.4, an GNOME Control Center capplet is included. It
-requires an updated version of gnome-libs
-(gnome-libs-1.2.1-0_helix_1xalf2.i386.rpm or newer). 
+You can prepend NO_XALF to desktop entries commandlines to disable
+Xalf for a specific application. This is especially useful for
+launching applications that doesn't start new processes but only
+creates new windows. Gmc works like this, so I recommend change
+"Exec=gmc" in /usr/share/gnome/apps/Gmc.desktop to "Exec=NO_XALF gmc".
 
 
 KDE INTEGRATION
@@ -75,11 +68,36 @@ KDE has borrowed some Xalf techniques, and integrated them into
 KDE2. I don't know the current status of this work, though. 
 
 
+USING SAWFISH "Matched Windows"
+-------------------------------
+Beginning with version 0.11, Xalf sets different WM_CLASS names for
+the different indicators. The class name is always set to "xalf". The
+instance name is set to "invisiblewindow", "splash" and "anim",
+depending on the indicator that is used. 
+
+This can be used with Sawfish to automatically iconify, for example,
+the invisible window. This can be done by:
+
+1) Create and match on Class: xalf/invisiblewindow
+2) Set its state to "Iconified" in the State pane. 
+
+
+THE FUTURE
+----------
+Xalf needs to do quite many tricks to work. The principle with
+LD_PRELOAD is not very beautiful and there are many cases when it does
+not work. These issues were discussed on the Window manager
+specification mailing list. Most people (including myself) thinks that
+an Toolkit-based implementation is a better long term solution. Mary
+Dwyer at Sun Microsystems has begun working on such an
+implementation. 
+
+
 USAGE
 -----
 If you are not using GNOME with built-in hooks, prepend xalf to your
 commandlines. For example, create an desktop icon running:
- xalf netscape
+ "xalf gnumeric"
 
 
 COMMANDLINE OPTIONS
@@ -100,6 +118,4 @@ COMMANDLINE OPTIONS
 Comments and bug-reports are appreciated. 
 
 /Peter Åstrand <astrand@lysator.liu.se>
-
-
 
