@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.10 1999-07-27 13:26:08 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.11 1999-08-10 16:07:42 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -204,8 +204,6 @@ if test "$krb4" != yes; then
 		CPPFLAGS="$CPPFLAGS -I$krb4/include/kerberosIV"
 	fi
 	LDFLAGS="$LDFLAGS -L$krb4/lib"
-elif test -d /usr/include/kerberosIV; then
-	CPPFLAGS="$CPPFLAGS -I/usr/include/kerberosIV"
 fi
 AC_CHECK_LIB(krb4, krb_rd_req,
 	     [KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
