@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1999-02-26 23:27:08 danw Exp $
+# $Id: Makefile.athena,v 1.2 1999-04-05 03:38:38 ghudson Exp $
 
 SHELL=/bin/sh
 BUILD=`pwd`/BuildTools/bin/Build
@@ -6,12 +6,12 @@ BUILD=`pwd`/BuildTools/bin/Build
 prepare:
 
 clean:
-	make BUILD=$(BUILD) clean
+	${MAKE} BUILD=$(BUILD) clean
 
 all:
-	make BUILD=$(BUILD) all
+	${MAKE} BUILD=$(BUILD) CC=$$COMPILER all
 
 check:
 
 install:
-	make BUILD=$(BUILD) DESTDIR=$$SRVD install
+	${MAKE} BUILD=$(BUILD) CC=$$COMPILER DESTDIR=$$SRVD install
