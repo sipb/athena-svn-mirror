@@ -1,9 +1,9 @@
 /* example.c -- usage example of the zlib compression library
- * Copyright (C) 1995-1998 Jean-loup Gailly.
+ * Copyright (C) 1995-2002 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
-/* @(#) $Id: example.c,v 1.1.1.1 2000-10-28 01:10:33 ghudson Exp $ */
+/* @(#) $Id: example.c,v 1.1.1.2 2002-03-12 17:19:03 zacheiss Exp $ */
 
 #include <stdio.h>
 #include "zlib.h"
