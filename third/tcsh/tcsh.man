@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Id: tcsh.man,v 1.1.1.1 1996-10-02 06:09:30 ghudson Exp $
+.\" $Id: tcsh.man,v 1.2 1996-10-03 04:45:29 ghudson Exp $
 .TH TCSH 1 "20 November 1992" "Cornell 6.03.00"
 .SH NAME
 tcsh \- C shell with file name completion and command line editing
@@ -1282,7 +1282,7 @@ The available sequences are:
 .ta 1.2i 1.7i
 .nf
 %/	Current working directory.
-%~	cwd.  If it starts with $HOME, that part is 
+%~ or %d	cwd.  If it starts with $HOME, that part is 
 	replaced by a ~. In addition if a directory
 	name prefix matches a user's home directory,
 	that part of the directory will be substituted
@@ -1311,7 +1311,7 @@ The available sequences are:
 ^c	`c' is parsed the same way as in bindkey.
 %%	A single %.
 %n	The user name, contents of $user.
-%d	The weekday in <Day> format.
+%k	The weekday in <Day> format.
 %D	The day in dd format.
 %w	The month in <Mon> format.
 %W	The month in mm format.
