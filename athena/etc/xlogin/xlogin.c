@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.17 2001-06-07 20:11:16 jweiss Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.18 2001-06-07 20:13:45 jweiss Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -1682,7 +1682,9 @@ static short auxconditions[] =
   2448, 2449, 2450, 2451, 2452, 2739, 2740, 2741, 2742, 2743,
   3470, 3471, 3472, 3473, 3474, 3761, 3762, 3763, 3764, 3765,
   3981, 3982, 3983, 3984, 3985, 4271, 4272, 4273, 4274, 4275,
-  4498, 4499, 4500, 4501, 4502
+  4498, 4499, 4500, 4501, 4502,
+  5009, 5010, 5011, 5012, 5013, 5300, 5301, 5302, 5303, 5304,
+  5520, 5521, 5522, 5523, 5524
 };
 
 static int auxconditions_len = sizeof(auxconditions) / sizeof(short);
