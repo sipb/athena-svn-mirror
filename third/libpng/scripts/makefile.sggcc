@@ -27,7 +27,7 @@ VER=1.2.1
 SONUM=3
 LIBS=libpng.so.$(SONUM).$(VER)
 SHAREDLIB=libpng.so
-libdir=$(prefix)/lib32
+libdir=$(prefix)/lib
 
 RANLIB=echo
 #RANLIB=ranlib
