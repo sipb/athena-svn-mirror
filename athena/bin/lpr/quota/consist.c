@@ -8,6 +8,17 @@
 fd_set *bitmap; 
 int bitmap_size;
 
+#ifdef _AUX_SOURCE
+typedef long	fd_mask;
+#define NBBY	8
+#define NFDBITS	(sizeof(fd_mask) * NBBY)
+#ifndef howmany
+#define howmany(x, y)	 (((x)+((y)-1))/(y))
+#endif
+#define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
+#define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
+#endif
+
 main(argc, argv) 
 int argc;
 char *argv[];
