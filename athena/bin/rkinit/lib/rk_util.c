@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v 1.1 1989-11-12 19:29:53 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v 1.2 1990-07-03 14:58:39 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v $
  * $Author: qjb $
  *
@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v 1.1 1989-11-12 19:29:53 qjb Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_util.c,v 1.2 1990-07-03 14:58:39 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -84,6 +84,9 @@ char *rki_mt_to_string(mt)
 	break;
       case MT_AUTH:
 	string = "Authenticator";
+	break;
+      case MT_DROP:
+	string = "Drop server";
 	break;
       default:
 	string = "Unknown message type";
