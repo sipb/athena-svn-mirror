@@ -1,7 +1,0 @@
-Name: athena-nautilus-media
-Summary: A Nautilus media package with views and thumbnailers, for Athena
-License: LGPL
-Group: Libraries/Multimedia
-
-%description
-This package contains a Nautilus view for audio using GStreamer.
