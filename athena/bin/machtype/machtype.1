@@ -1,8 +1,8 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: cfields $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.12 1995-05-26 20:47:45 cfields Exp $
-.TH MACHTYPE 1 "December 17 1994"
+.\"     $Author: ghudson $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.13 1996-05-14 16:38:45 ghudson Exp $
+.TH MACHTYPE 1 "May 14 1996"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
@@ -10,51 +10,33 @@ machtype \- Print machine type to standard output
 [-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-V] [-N] [-E] [-S] [-k kernel] [-m memory] 
 .SH DESCRIPTION
 .I Machtype
-prints the CPU type to standard output.  It prints "vax" when run on a
-VAX processor, "rt" when run on an IBM RT/PC workstation, "decmips"
-when run on a DECstation 3100 (pmax), and "rsaix" when run on an IBM RS6000. 
+prints the CPU type to standard output.  It prints "sun4" when run on a
+Sun and "sgi" when run on an SGI.
 .TP
 .B -c
-Print the specific cpu type, one of VAX780, VAX750, VAX730, VAX8600,
-VAX8200, MVAX-II, VAXSTAR, CVAXSTAR, or VAX650 (on a VAX), RTPC-ROMPC,
-RTPC-SGP, RTPC-MOD135, IBM-ATR (on an IBM RT/PC), KN01 (on a Decstation
-3100), KN02 (DS 5000), KN210 (DS 5400), KN220 (DS5500), KN02ba (DS5000/100),
-KN02ca (DS5000/25; "Maxine"), KN??? (unknown decstation) or POWER
-(on a IBM RISC/6000).
+Print the specific cpu type (e.g. SPARC/5 or IP22).
 .TP
 .B -d
-Print the types of display heads attached to the system, one or more
-of QVSS, QDSS, SM, SG, PLX, or VS100 (VAX), apa16, aed, apa8, plx, or mpel
-(RT), or PM-MONO or PM-COLOR (pmax), or colorgda, graygda, hiprfmge,
-hispd3d, sga (or other displays defined by IBM in the future)
-(rsaix).
+Print the types of display attached to the system (e.g.  "cgthree").
 .TP
 .B -r
-Print the types of any disk drives attached will be printed, one to a
-line, as in "ra0: RD53".
+Print the types of any disk drives attached to the syystem, one to a
+line, as in "SUN0535".
 .TP
 .B -M
-Print the physical memory present (in hex) (in K on the RISC/6000).
+Print the physical memory present (in hex).
 .TP
 .B -k
 Override the default kernel:
 .I /vmunix.
-This does not have any effect on the RISC/6000, since it is getting the
-information from the ODM, not the kernel.
 .TP
 .B -m
 Override the default memory:
 .I /dev/kmem
 used to look up the specific cpu type, displays, and disk drives.
-This does not have any effect on the RISC/6000, since it is getting the
-information from the ODM, not kmem.
 .TP
 .B -v
 Verbose output (suitable for humans to read, instead of computers).
-.TP
-.B -V
-(RISC/6000 only) Print out complete hardware configuration as known by the
-ODM.
 .TP
 .B -A
 Print out the release that machtype was compiled under.
@@ -70,7 +52,7 @@ Print out the version of Athena installed on the local system from
 .B -N
 Print out the name of the base operating system; if used with the "-v" flag,
 the version number of the OS will be included as well.  Current values for
-the name of the base OS are "BSD", "Ultrix", and "AIX".
+the name of the base OS are "SunOS" and "IRIX".
 .TP
 .B -E
 Print out the version number of the base operating system.
@@ -91,7 +73,5 @@ architectures.
 .SH SEE ALSO
 csh(1), lockers(7)
 .SH BUGS
-Disk types can not be read for rd disk drives (i.e. on the VAXstation
-2000), or for SCSI drives on the IBM RT/PC.  The disk size on the RISC/6000 is
-not always present in the ODM database, although it can be gotten from the
-names printed out with the -v flag.
+Prints "UNKNOWN video" when given the -d option on an SGI, since we
+don't currently know how to find the display hardware on an SGI.
