@@ -1,0 +1,495 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+ALSA_LIBS = @ALSA_LIBS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+DATADIRNAME = @DATADIRNAME@
+EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
+EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GOB2 = @GOB2@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+
+@HAVE_ALSA_TRUE@ALSA_CFLAGS = -DHAVE_ALSA
+@HAVE_ALSA_TRUE@ALSA_files = volume-alsa.c volume-alsa.h volume-alsa-private.h
+@HAVE_ALSA_TRUE@ALSA_gob_files = volume-alsa.gob
+
+@HAVE_OSS_TRUE@OSS_CFLAGS = -DHAVE_OSS
+@HAVE_OSS_TRUE@OSS_files = volume-oss.c volume-oss.h volume-oss-private.h
+@HAVE_OSS_TRUE@OSS_gob_files = volume-oss.gob
+
+@HAVE_FB_TRUE@FB_CFLAGS = -DHAVE_FB
+@HAVE_FB_TRUE@FB_files = fb-level.c fb-level.h fb-level-private.h
+@HAVE_FB_TRUE@FB_gob_files = fb-level.gob
+
+INCLUDES =  	$(EXTRA_GNOME_CFLAGS)					$(ALSA_CFLAGS) $(OSS_CFLAGS) $(FB_CFLAGS)		-DACME_DATA=\""$(datadir)/acme/"\"			-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-DWNCK_I_KNOW_THIS_IS_UNSTABLE				-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED		-DGTK_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED
+
+
+bin_PROGRAMS = acme acme-properties
+
+BUILT_SOURCES =  	volume-alsa.c volume-alsa.h volume-alsa-private.h 	volume-oss.c volume-oss.h volume-oss-private.h		g-volume.c g-volume.h g-volume-private.h		fb-level.c fb-level.h fb-level-private.h
+
+
+BUILT_files_unconditional =  	g-volume.c g-volume.h g-volume-private.h
+
+
+acme_SOURCES =  	$(ALSA_gob_files) $(OSS_gob_files)			$(FB_gob_files)						g-volume.gob						$(ALSA_files) $(OSS_files) $(FB_files)			$(BUILT_files_unconditional)				eggtrayicon.h eggtrayicon.c				acme.c acme.h
+
+
+acme_LDFLAGS =  	-export-dynamic						$(EXTRA_GNOME_LIBS)					$(ALSA_LIBS)						$(INTLLIBS)
+
+
+acme_properties_SOURCES =  	acme-properties.c					eggcellrendererkeys.c					eggcellrendererkeys.h					eggaccelerators.h					eggaccelerators.c
+
+
+CLEANFILES = $(BUILT_SOURCES) *.bak *.gladep $(desktop_DATA) $(schema_DATA)
+
+EGGFILES1 = eggcellrendererkeys.c eggcellrendererkeys.h eggaccelerators.h eggaccelerators.c
+EGGFILES2 = eggtrayicon.h eggtrayicon.c
+EGGDIR1 = $(srcdir)/../../libegg/libegg/treeviewutils/
+EGGDIR2 = $(srcdir)/../../libegg/libegg/tray/
+
+acme_properties_LDFLAGS =  	$(EXTRA_GNOME_LIBS)				$(INTLLIBS)
+
+
+EXTRA_DIST =  	$(Data_DATA)			$(schema_in_files)		$(BUILT_SOURCES)		$(EGGFILES1)			$(EGGFILES2)			$(desktop_in_files)		fb-level.gob g-volume.gob volume-alsa.gob volume-oss.gob
+
+
+Datadir = $(datadir)/acme/
+Data_DATA =  	acme.glade				acme-properties.glade			gnome-speakernotes-muted.png		gnome-speakernotes.png			acme-brightness.png			acme-eject.png				acme-48.png				acme-16.png
+
+
+schema_in_files = acme.schemas.in
+schemadir = $(sysconfdir)/gconf/schemas
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
+
+desktop_in_files = acme.desktop.in
+desktopdir = $(datadir)/control-center-2.0/capplets
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@acme_OBJECTS =  \
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@fb-level.o g-volume.o \
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@eggtrayicon.o acme.o
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@acme_OBJECTS =  \
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@volume-oss.o fb-level.o \
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@g-volume.o eggtrayicon.o \
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@acme.o
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@acme_OBJECTS =  \
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@volume-alsa.o fb-level.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@g-volume.o eggtrayicon.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_TRUE@acme.o
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@acme_OBJECTS =  \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@volume-alsa.o volume-oss.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@fb-level.o g-volume.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_TRUE@eggtrayicon.o acme.o
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@acme_OBJECTS =  \
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@g-volume.o \
+@HAVE_ALSA_FALSE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@eggtrayicon.o acme.o
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@acme_OBJECTS =  \
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@volume-alsa.o g-volume.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_FALSE@@HAVE_FB_FALSE@eggtrayicon.o acme.o
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@acme_OBJECTS =  \
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@volume-oss.o g-volume.o \
+@HAVE_ALSA_FALSE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@eggtrayicon.o acme.o
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@acme_OBJECTS =  \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@volume-alsa.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@volume-oss.o g-volume.o \
+@HAVE_ALSA_TRUE@@HAVE_OSS_TRUE@@HAVE_FB_FALSE@eggtrayicon.o acme.o
+acme_LDADD = $(LDADD)
+acme_DEPENDENCIES = 
+acme_properties_OBJECTS =  acme-properties.o eggcellrendererkeys.o \
+eggaccelerators.o
+acme_properties_LDADD = $(LDADD)
+acme_properties_DEPENDENCIES = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(Data_DATA) $(desktop_DATA) $(schema_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(acme_SOURCES) $(acme_properties_SOURCES)
+OBJECTS = $(acme_OBJECTS) $(acme_properties_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+acme: $(acme_OBJECTS) $(acme_DEPENDENCIES)
+	@rm -f acme
+	$(LINK) $(acme_LDFLAGS) $(acme_OBJECTS) $(acme_LDADD) $(LIBS)
+
+acme-properties: $(acme_properties_OBJECTS) $(acme_properties_DEPENDENCIES)
+	@rm -f acme-properties
+	$(LINK) $(acme_properties_LDFLAGS) $(acme_properties_OBJECTS) $(acme_properties_LDADD) $(LIBS)
+
+install-DataDATA: $(Data_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(Datadir)
+	@list='$(Data_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Datadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Datadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Datadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(Datadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-DataDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(Data_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(Datadir)/$$p; \
+	done
+
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
+install-schemaDATA: $(schema_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemadir)
+	@list='$(schema_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemadir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemaDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(schema_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemadir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+acme-properties.o: acme-properties.c ../config.h acme.h \
+	eggcellrendererkeys.h eggaccelerators.h
+acme.o: acme.c ../config.h eggtrayicon.h acme.h g-volume.h fb-level.h
+eggaccelerators.o: eggaccelerators.c eggaccelerators.h
+eggcellrendererkeys.o: eggcellrendererkeys.c ../config.h \
+	eggcellrendererkeys.h eggaccelerators.h
+eggtrayicon.o: eggtrayicon.c eggtrayicon.h
+fb-level.o: fb-level.c fb-level.h fb-level-private.h
+g-volume.o: g-volume.c g-volume.h g-volume-private.h volume-oss.h
+volume-alsa.o: volume-alsa.c volume-alsa.h volume-alsa-private.h
+volume-oss.o: volume-oss.c volume-oss.h volume-oss-private.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-DataDATA install-desktopDATA install-schemaDATA \
+		install-data-local
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS uninstall-DataDATA \
+		uninstall-desktopDATA uninstall-schemaDATA
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Datadir) \
+		$(DESTDIR)$(desktopdir) $(DESTDIR)$(schemadir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-compile clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-tags \
+		distclean-generic clean-am
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile uninstall-DataDATA install-DataDATA \
+uninstall-desktopDATA install-desktopDATA uninstall-schemaDATA \
+install-schemaDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-local install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+%.c %.h %-private.h: %.gob
+	@GOB2@ --always-private-header $<
+
+eggcellrendererkeys.c: regenerate-built-sources
+eggcellrendererkeys.h: regenerate-built-sources
+eggaccelerators.h: regenerate-built-sources
+eggaccelerators.c: regenerate-built-sources
+eggtrayicon.h: regenerate-built-sources
+eggtrayicon.c: regenerate-built-sources
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES1)" EGGDIR="$(EGGDIR1)" $(srcdir)/update-from-egg.sh || true
+	EGGFILES="$(EGGFILES2)" EGGDIR="$(EGGDIR2)" $(srcdir)/update-from-egg.sh || true
+@INTLTOOL_SCHEMAS_RULE@
+@INTLTOOL_DESKTOP_RULE@
+
+install-data-local:
+	-GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

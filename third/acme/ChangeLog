@@ -1,0 +1,468 @@
+2003-01-19  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (do_action): use "xset dpms force off" if apm isn't
+	found (requested by Anders)
+
+2003-01-19  He Qiangqiang  <carton@linux.net.cn>
+
+	* configure.in: Added "zh_CN" (Simplified Chinese) to ALL_LINGUAS.
+
+2003-01-16  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW" (traditional Chinese) to ALL_LINGUAS.
+
+2003-01-15  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in: Added "fi" (Finnish) to ALL_LINGUAS.
+
+2003-01-13  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/acme.c: (init_kbd), (dialog_show): we need a newer version of
+	libwnck, so we need a newer gtk+, so we're multihead anyway
+
+2003-01-10  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Russian to ALL_LINGUAS.
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: f1x0r the distcheck
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: acme 2.0 woot
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (dialog_show): gtk_widget_realize the window after
+	having moved it, otherwise the info about the geometry and moving
+	it don't work properly (Closes: #94022)
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (ungrab_key_real), (grab_key_real), (init_kbd),
+	(dialog_show), (acme_filter_events), (main): remove all the debug,
+	the window is presented when gtk_window_set_screen is called which
+	is a bug :)
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (acme_filter_events): typo, was supposed to be
+	==, not !=
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (dialog_show), (acme_filter_events), (main):
+	changes to make the window appear on the right screen, when in
+	multihead
+
+2003-01-09  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/acme.c: (ungrab_key_real), (ungrab_key), (grab_key_real),
+	(grab_key), (update_kbd_cb), (init_kbd), (acme_filter_events),
+	(main): changes to handle multihead, should help with bug #94022
+
+2003-01-08  Bastien Nocera  <hadess@hadess.net>
+
+	* src/eggaccelerators.[ch]:
+	* src/eggcellrendererkeys.[ch]:
+	* src/eggtrayicon.[ch]: Added these files for the benefit of the
+	i18n people
+
+2003-01-07  Alex Duggan  <aldug@gnome.org>
+
+	* src/acme.c: (about_activated) : unref() the pixbuf used in the 
+	about dialog to prevent a small memory leak.  Fixes #102798
+	
+2003-01-07  Bastien Nocera  <hadess@hadess.net>
+
+	* README: updated with all the recent changes
+
+2003-01-03  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2003-01-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in (ALL_LINGUAS): Added pl (Polish).
+
+2002-12-30  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.h: remove the EJECT_TIMEOUT, it's not used anywhere
+
+2002-12-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: add the libegg stuff to Makefile.am so a clean
+	checkout would work if libegg is present
+
+2002-12-23  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (about_activated): change (C) to proper copyright sign
+	(patch by Christian Neumair <chris@gnome-de.org>)
+
+2002-12-22  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added "hu" to ALL_LINGUAS.
+
+2002-12-19  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (init_content): fixed key names not getting
+	translated in the prefs (Closes: #101643)
+
+2002-12-19  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.99.13
+
+2002-12-17  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: really fix ALSA compilation (hopefully)
+
+2002-12-16  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.99.12
+
+2002-12-16  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: fix the build problem after I have removed the ALSA
+	libraries from my machine. Need a new release...
+
+2002-12-15  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.99.11
+
+2002-12-10  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (unhookup_keysym), (hookup_keysym), (update_kbd_cb),
+	(init_kbd), (do_www_action), (do_media_action), (do_action),
+	(acme_filter_events):
+	* src/acme.h:
+	* src/acme.schemas.in: added support for "Media" (launches default
+	MP3 player), "Groups" (Browser to www.gnomedesktop.org) and "Refresh"
+	(sends XF86Refresh)
+
+2002-12-10  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: yay, ALSA now uses pkg-config like everyone else
+
+2002-12-05  Christian Neumair  <chris@gnome-de.org>
+
+	* src/acme.c: Changed copyright string.
+
+2002-12-05  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (init_gui): fixed for following change
+	* src/acme-properties.glade: HIG patch from elle.uca@genie.it
+
+2002-11-28  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" to ALL_LINGUAS.
+
+2002-11-26  Hasbullah BIn Pit <sebol@ikhlas.com>
+
+        * configure.in: Added "ms" to ALL_LINGUAS.
+
+2002-11-25  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (update_kbd_cb): clear the keycode after we ungrab the
+	key (Closes: #99463)
+
+2002-11-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (ungrab_key), (grab_key), (unhookup_keysym),
+	(hookup_keysym), (update_kbd_cb), (init_kbd), (about_activated),
+	(init_sm), (do_action), (acme_filter_events):
+	* src/acme.h:
+	* src/acme.schemas.in: add support for Play, Pause, Stop, Previous and
+	Next. App developers should fetch the key with the following keysyms
+	XF86XK_AudioPlay, XF86XK_AudioPause, XF86XK_AudioStop,
+	XF86XK_AudioPrev, XF86XK_AudioNext
+
+2002-11-23  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.9.10
+
+2002-11-23  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (do_shade_window_action), (do_action):
+	* src/acme.h:
+	* src/acme.schemas.in: added support for the "Shade Window" button
+
+2002-11-23  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/acme.c: (do_close_window_action), (do_action), (main):
+	* src/acme.h:
+	* src/acme.schemas.in: added dependency on libwnck, added support for
+	the "Close Window" button
+
+2002-11-23  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (tray_destroyed), (init_tray): worked around the tray
+	icon not reappearing when the panel is killed or crashes (pointed out
+	by Gregory Merchan <merchan@baton.phys.lsu.edu>)
+
+2002-11-23  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (init_kbd), (acme_filter_events), (main):
+	use an event filter instead of steal the events from the root window,
+	fixes the crash when changing themes and fonts with Gtk+ 2.1
+	(Closes: #99281)
+
+2002-11-21  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.desktop.in: added X-Bugzilla stuff
+
+2002-11-11  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-16.png: updated icon from Lapo Calamandrei
+	<l_calamandrei@neri-group.com>, rock!
+
+2002-11-10  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added da to ALL_LINGUAS.
+
+2002-11-11  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added ko to ALL_LINGUAS.
+
+2002-11-04  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: correct double definition of acme_LDFLAGS
+
+2002-10-31  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * acme.spec.in: fixed requirements
+          configure.in: make AC_DEFINE three-argument
+
+2002-10-28  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (execute_this_or_that): add missing space, oops
+	(Closes: #97005)
+
+2002-10-28  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.99.9
+
+2002-10-26  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (verify_double), (init_columns): fix lockup
+	* src/acme.c: (fb_problem_cb): show up the error message only if we're
+	running on a powerbook
+	* src/fb-level.gob: make is_powerbook public
+
+2002-10-24  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: removed en_GB, it's already in that language ;)
+
+2002-10-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (acme_error), (verify_double),
+	(keys_edited_callback), (real_start_editing_cb): check that the key is
+	not already bound before trying to bind it (Closes: #94044)
+	* src/acme.h: key_type is an int not a char
+
+2002-10-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (keys_edited_callback),
+	(init_content_helper), (init_columns), (init_treeview), (init_gui):
+	Add nifty icons before the description, as the "Enabled/Disabled"
+	labels weren't very clear (Closes: #95384)
+
+2002-10-14  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-16.png: added
+	* src/acme-48.png: added (doh!)
+	* src/acme.c: (do_action), (event_cb): use key releases instead of key
+	presses, makes it possible to use the Apple Pro kbd's eject key, fixes
+	a couple of bugs with key repeats as well
+
+2002-10-10  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: upd
+	* src/acme-eject.png: 
+	* src/acme-properties.c: (init_gui):
+	* src/acme.c: (about_activated), (init_tray): upd
+	* src/keymap-16.png:
+	* src/keymap-48.png: 3 better icons from Lapo Calamandrei
+	<l_calamandrei@neri-group.com>, they rock!
+
+2002-10-06  Bastien Nocera  <hadess@hadess.net>
+
+	* src/fb-level.gob: only use the fb-level stuff if we're on a
+	PowerBook (and iBooks). Thanks to Dan Burcaw for pointing this out
+
+2002-10-01  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS
+
+2002-09-30  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: added acme.spec to the CLEANFILES
+	* acme.spec.in: no need to run ldconfig, we're not packaging a library
+
+2002-09-24  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.glade: added some instructions (Closes: #94043)
+
+2002-09-23  Bastien Nocera  <hadess@hadess.net>
+
+	* README: upd
+	* src/acme.c: (do_www_action), (do_action):
+	* src/acme.h:
+	* src/acme.schemas.in: added support for WWW, Calculator and Record
+
+2002-09-23  Bastien Nocera  <hadess@hadess.net>
+
+	* .cvsignore: added acme.spec
+	* src/.cvsignore: upd
+	* Makefile.am: added acme.spec*
+	* README: updated
+	* acme.spec.in: added, thanks to Christian Fredrik Kalager Schaller
+	<Uraeus@linuxrising.org>
+	* configure.in: added acme.spec generation
+	* src/acme-properties.c: (is_running), (keys_edited_callback),
+	(start_editing_cb): misc upd, code cleanups, basis for key
+	verification
+
+2002-09-22  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: version 1.99.8
+	* src/Makefile.am: libegg-fu
+	* src/acme.c: (acme_exit), (execute), (execute_this_or_that),
+	(acme_play_sound), (init_kbd), (prefs_activated),
+	(about_activated), (tray_icon_release), (tray_icon_press),
+	(init_tray), (do_eject_action), (do_action), (main):
+	if no keys are configured (default), acme-properties is launched,
+	added a tray icon with prefs and about buttons, made launches async
+	for long-running apps
+	* src/acme.schemas.in: everything is disabled by default
+	* src/keymap-16.png: added
+
+2002-09-22  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.desktop.in: lower-case the description (just like the other
+	apps in the control-center)
+
+2002-09-22  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (grab_key), (do_action), (main): make it possible to run
+	acme even without OSS or ALSA sound output, remove mention of ACME in
+	the dialogs, use the word "daemon" instead
+
+2002-09-22  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (keys_edited_callback),
+	(real_start_editing_cb), (start_editing_cb), (init_content_helper),
+	(init_columns): clicking anywhere on a row now starts up the editing
+	like in the keyboard shortcuts capplet, removed mention and display of
+	keycodes as they don't mean anything to users.
+	* src/acme-properties.glade: remove mention of keycodes column
+	* src/acme.c: (grab_key), (update_kbd_cb): don't grab with AnyModifier
+	as it might break a11y tools.
+
+2002-09-20  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme-properties.c: (keys_edited_callback): use GDK keysyms
+	instead of keycodes
+	* src/acme.c: (init_kbd): fix uninitialised keys being picked up
+
+2002-09-19  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: build g-volume.o after the other volume stuff
+	* src/acme.c: (execute), (execute_this_or_that), (do_action):
+	* src/acme.h:
+	* src/acme.schemas.in: Added support for My Home, Search, E-Mail,
+	Sleep, Screensaver, Finance and Help keys support
+
+2002-09-19  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 1.99.7
+	* src/acme-properties.c: (is_running): see below
+	* src/acme.c: (selection_get_func), (selection_clear_func),
+	(acme_get_lock), (acme_exit), (update_use_pcm_cb), (main):
+	re-enable use_pcm stuff, make acme be unique per display instead of
+	per user
+	* src/g-volume.gob: re-enable use_pcm stuff
+
+2002-08-29  Gustavo Noronha Silva  <kov@debian.org>
+
+	* configure.in (ALL_LINGUAS): added pt_BR
+
+2002-08-24  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/acme.c (init_kbd): fixed a bug causing it to always use
+	  default values when grabbing keys.
+
+2002-08-15  Bastien Nocera  <hadess@hadess.net>
+
+	* README: upd
+	* src/acme.c: (acme_exit), (main): hopefully fix a crash-on-exit bug
+
+2002-08-12  Bastien Nocera  <hadess@hadess.net>
+
+	* README: upd
+	* src/Makefile.am: dist the .in file
+	* src/g-volume.gob: default to OSS, alsa works better as a super-OSS
+
+2002-08-01  Christophe Merlet  <christophe@merlet.net>
+
+	* configure.in: Added fr to $ALL_LINGUAS.
+
+2002-07-31  Bastien Nocera  <hadess@hadess.net>
+
+	* AUTHORS: added
+	* Makefile.am: removed cruft
+	* NEWS: added
+	* README: upd
+	* configure.in: 1.99.6
+	* src/acme.c: (permission_problem_string), (vol_problem_cb),
+	(fb_problem_cb): modify to minimise translations
+
+2002-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.c: (acme_error), (fb_problem_cb), (do_action), (main):
+	make fb level settings work again, for sure.
+	* src/acme.h: revive USE_FBLEVEL (because, even though it can compile
+	on every machine that has the necessary headers, it doesn't make sense
+	on anything but PowerMacs running Linux)
+	* src/fb-level.gob: kill dead codepaths
+
+2002-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* .cvsignore:
+	* src/.cvsignore: upd
+
+2002-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: upd defines
+	* src/acme.c: (do_action), (main):
+	* src/acme.h: updated wrt defines
+	* src/g-volume.gob: added run-time ALSA support
+	* src/volume-alsa.gob: it works for you ? You're damn lucky, just like
+	me then :)
+
+2002-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* README: added some links
+	* configure.in: added detection for ALSA, OSS, and FB stuff
+	* src/Makefile.am: mucho conditional work
+	* src/acme.c: (vol_problem_cb), (update_use_pcm_cb),
+	(do_sound_action), (do_action), (main): s/VolumeOSS/GVolume/
+	* src/acme.h: remove USE_FBLEVEL conditional
+	* src/g-volume.gob: extra layer between the real mixer and acme
+	* src/volume-alsa.gob: added (it's still OSS stuff though)
+	* src/volume-oss.gob: updated
+
+2002-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* src/Makefile.am: fix wrt changes to libegg
+	* src/acme.c: (acme_exit), (execute), (main):
+	cleanups when acme is already running
+	* src/volume-oss.gob: don't try to set volume on the PCM device when
+	it's not present. This needs some cleanups at some point.
+

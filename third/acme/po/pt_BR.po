@@ -1,0 +1,515 @@
+# acme: translation to Brazilian Portuguese (pt_BR)
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the acme package.
+# Alexandre Folle de Menezes <afmenez@terra.com.br>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"PO-Revision-Date: 2003-01-17 01:00-0200\n"
+"Last-Translator: Gustavo Noronha Silva <kov@debian.org>\n"
+"Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>, Brazilian "
+"Portuguese <ldp-br@bazar.conectiva.com.br>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/acme.c:163
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"Impossível executar comando: %s\n"
+"Verifique se este comando existe."
+
+#: src/acme.c:182
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"Impossível executar o comando: %s\n"
+"ou o comando: %s\n"
+"Certifique-se que pelo menos um deles existe."
+
+#: src/acme.c:225
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"Permissões do arquivo %s estão erradas\n"
+"Por favor verifique a documentação do ACME, corrija o problema e reinicie o "
+"ACME."
+
+#: src/acme.c:314
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"Ocorreu um erro removendo acesso às teclas multimídia.\n"
+"A tecla %d não pôde ser desvinculada."
+
+#: src/acme.c:382
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"Parece que outra aplicação já tem acesso às teclas multimídia.\n"
+"A tecla %d não pôde ser vinculada.\n"
+"Há outro daemon rodando?"
+
+#: src/acme.c:607
+msgid "translator_credits"
+msgstr "(C) 2002 Alexandre Folle de Menezes"
+
+#: src/acme.c:618
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:620
+msgid "Multimedia keys daemon"
+msgstr "Daemon de teclas Multimídia"
+
+#: src/acme.c:680
+msgid "Multimedia Keys daemon active"
+msgstr "Daemon de teclas Multimídia está ativo"
+
+#: src/acme.c:1173
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Impossível carregar o arquivo Glade.\n"
+"Certifique-se de que este daemon está instalado apropriadamente."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "Volume"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "Tecla de Emudecer"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "Tecla de Diminuir o Volume"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "Tecla de Aumentar o Volume"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "Tecla de Energia"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "Tecla de Ejetar"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "Tecla de Mídia"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "Tecla de Reproduzir"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "Tecla de Pausa"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "Tecla de Parar (Audio)"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "Tecla de Anterior (Audio)"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "Tecla de Próximo (Audio)"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "Tecla Home"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr "Tecla de Atualização"
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "Tecla de Busca"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "Tecla de E-mail"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr "Tecla de Dormir"
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "Tecla de Protetor de Tela"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "Tecla de Finanças"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "Tecla de Ajuda"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "Tecla de WWW"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "Tecla de Grupos"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "Tecla de Calculadora"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "Tecla de Gravar"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "Tecla de Fechar Janela"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "Tecla de Desativar Janela"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "Tecla de Diminuir o Brilho"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "Tecla de Aumentar o Brilho"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "Desabilitado"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"Esta tecla já está associada a uma ação.\n"
+"Por favor, escolha outra tecla."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "Descrição"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "Estado"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">Configuração de Teclas </span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">Configuração de Som</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "Prefrências das Teclas Multimídia"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"Para designar uma tecla para uma ação, clique na coluna dos keycodes e "
+"pressione a tecla que você que associar com ela.\n"
+"\"C\" cancela a captura, e \"Backspace\" desabilita o atalho de tecla."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "Use o volume _PCM ao invés do volume Master"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "_Iniciar o daemon de teclas multimídia"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "Configurar o comportamento das teclas multimídia"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "Teclas Multimídia"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "XKeycode da tecla de diminuir o brilho"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de diminuir o brilho, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "XKeycode da tecla de aumentar o brilho"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de aumentar o brilho, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "XKeycode da tecla de Calculadora"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Calculadora, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "XKeycode da tecla de fechar janela"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de fechar janela, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "Comando a executar quando o botão Eject é pressionado"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "XKeycode da tecla de E-mail"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de E-mail, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "XKeycode da tecla de Eject"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Eject, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "XKeycode da tecla de Finanças"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Finanças, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "XKeycode da tecla de Grupos"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Grupos, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "XKeycode da tecla de Ajuda"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Ajuda, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "XKeycode da tecla de Emudecer"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Emudecer, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "XKeycode da tecla de Home"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Home, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "XKeycode da tecla de Próximo"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Próximo, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "XKeycode da tecla de Pausa"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Pausa, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "XKeycode da tecla de Reproduzir"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Reproduzir, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "XKeycode da tecla de Energia"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Energia, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "XKeycode da tecla de Anterior"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Anterior, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "XKeycode da tecla de Gravar"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Gravar, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr "XKeycode da tecla de Atualizar"
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Atualizar, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "XKeycode da tecla de Protetor de Tela"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Protetor de Tela, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "XKeycode da tecla de Busca"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Busca, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "XKeycode da tecla de esconder janela"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de esconder janela, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr "XKeycode da tecla de Dormir"
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de Dormir, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "Arquivo de som a ser tocado quando o volume for mudado"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "Usar o Volume PCM ao invés do Volume Master"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "XKeycode da tecla de diminuir o volume"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de diminuir o volume, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "XKeycode da tecla de aumentar o volume"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de aumentar o volume, 0 para desabilitar"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "XKeycode da tecla de WWW"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "XKeycode da tecla de WWW, 0 para desabilitar"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "Tecla de atalho"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "Modificadores dos atalhos"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "Modo do Atalho"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "O tipo de atalho."
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr "Digite um novo atalho, ou pressione Backspace para limpar"
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "Digite um novo atalho"
+
+#~ msgid "(C) 2001, 2002 Bastien Nocera"
+#~ msgstr "(C) 2001, 2002 Bastien Nocera"
+
+#~ msgid "Keys setup"
+#~ msgstr "Configuração das teclas"
+
+#~ msgid "Sound setup"
+#~ msgstr "Configuração de som"

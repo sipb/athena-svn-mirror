@@ -1,0 +1,504 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Young-Ho, Cha <ganadist@mizi.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: AC_PACKAGE_NAME AC_PACKAGE_VERSION\n"
+"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"PO-Revision-Date: 2003-01-05 15:42+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/acme.c:163
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"명령을 실행할 수 없습니다: %s\n"
+"명령이 있는지 확인해보십시오."
+
+#: src/acme.c:182
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"명령 :%s\n"
+"또는 명령 :%s\n"
+"(을)를 실행할 수 없습니다. 적어도 하나의 명령이 있는지 확인하십시오."
+
+#: src/acme.c:225
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"파일 %s의 허가권이 없습니다\n"
+"ACME의 문서를 참고해서 문제부분을 해결한 다음 ACME를 다시 시작하십시오."
+
+#: src/acme.c:314
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"멀티미디어 글쇠의 등록을 지우는데 오류가 생겼습니다.\n"
+"%d 글쇠를 지울 수 없습니다."
+
+#: src/acme.c:382
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"멀티미디어 글쇠가 다른 프로그램에서 쓰고 있습니다.\n"
+"%d 글쇠를 등록할 수 없습니다.\n"
+"다른 데몬이 떠있습니까?"
+
+#: src/acme.c:607
+msgid "translator_credits"
+msgstr "차영호 <ganadist@mizi.com>, 2002"
+
+#: src/acme.c:618
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:620
+msgid "Multimedia keys daemon"
+msgstr "멀티미디어 글쇠 데몬"
+
+#: src/acme.c:680
+msgid "Multimedia Keys daemon active"
+msgstr "멀티미디어 글쇠 데몬 시작"
+
+#: src/acme.c:1173
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Glade 파일을 읽을 수 없습니다.\n"
+"데몬이 제대로 설치되어 있는지 확인하십시오."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "소리 크기"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "소리 끔"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "소리 낮춤 글쇠"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "소리 높임 글쇠"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "전원 글쇠"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "꺼내기 글쇠"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "미디어 글쇠"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "연주 글쇠"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "잠시 멈춤 글쇠"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "오디오 멈춤 글쇠"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "이전 오디오 글쇠"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "다음 오디오 글쇠"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "내 폴더 글쇠"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr ""
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "찾기 글쇠"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "메일 글쇠"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr ""
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "화면보호기 글쇠"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "가계부 글쇠"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "도움말 글쇠"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "WWW 글쇠"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "그놈 새소식 글쇠"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "계산기 글쇠"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "녹음 글쇠"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "창 닫기 글쇠"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "창 말기 글쇠"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "밝기 낮춤 글쇠"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "밝기 높임 글쇠"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "쓰지 않기"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "쓰기"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"이 글쇠는 이미 등록되어 있습니다.\n"
+"다른 글쇠를 골라주세요."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "설명"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "상태"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">글쇠 설정 </span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">소리 설정</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "멀티미디어 글쇠 기본 설정"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"글쇠를 등록하려면, 마우스 버튼을 누르고 등록할 글쇠를 누르십시오.\n"
+"\"C\"를 누르면 등록을 하지 않게 되고, \"백스페이스\"글쇠를 누르면 글쇠 등록"
+"이 해제됩니다."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "기본 소리크기 대신 PCM 소리크기를 씁니다(_P)"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "멀티미디어 글쇠 데몬을 시작(_L)"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "멀티미디어 글쇠 설정을 합니다"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "멀티미디어 글쇠"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "밝기 낮춤 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "밝기 낮춤 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "밝기 높임 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "밝기 높임 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "계산기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "계산기 길쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "창 닫기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "창 닫기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "Eject 글쇠를 눌렀을 때 실행할 명령"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "메일 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "메일 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "꺼내기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "꺼내기 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "가계부 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "가계부 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "그놈 새소식의 X글쇠코드"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "그놈 새소식의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "도움말 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "도움말 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "소리 끔 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "소리 끔 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "내 폴더 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "내 폴더 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "다음 오디오 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "다음 오디오 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "잠시 멈춤 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "잠시 멈춤 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "연주 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "연주 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "전원 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "전원 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "이전 오디오 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "이전 오디오 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "녹음 글쇠의 XKeycode"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "녹음 글쇠의 XKeycode, 0은 사용않음"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr ""
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr ""
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "화면보호기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "화면보호기 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "찾기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "찾기 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "창 말기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "창 말기 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr ""
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr ""
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "소리 크기가 변할 때 연주될 소리 파일"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "기본 소리크기대신 PCM 소리크기를 씁니다"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "소리 낮춤 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "소리 낮춤 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "소리 높임 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "소리 높임 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "WWW 글쇠의 X글쇠코드"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "WWW 글쇠의 X글쇠코드, 0은 사용않음"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "바로가기 글쇠"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "바로가기 변경자"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "바로가기 모드"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "바로가기의 형식"
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr "새 바로가기 글쇠를 넣으십시오, 백스페이스를 누르면 취소됩니다"
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "새 바로가기 글쇠를 넣으십시오"
