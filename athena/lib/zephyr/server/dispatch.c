@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.22 1988-06-20 15:15:50 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.23 1988-06-21 17:31:15 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -692,7 +692,8 @@ ZServerDesc_t *server;
 
 	if (!strcmp(notice->z_class_inst, ZEPHYR_CTL_HM))
 		return(hostm_dispatch(notice, auth, who, server));
-	else if (!strcmp(opcode, CLIENT_GIMMESUBS)) {
+	else if (!strcmp(opcode, CLIENT_GIMMESUBS) ||
+		 !strcmp(opcode, CLIENT_GIMMEDEFS)) {
 		/* this special case is before the auth check so that
 		   someone who has no subscriptions does NOT get a SERVNAK
 		   but rather an empty list.  Note we must therefore
