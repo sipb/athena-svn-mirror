@@ -214,7 +214,7 @@ LIBLPR_OBJS = \
 	lockfile.o malloclist.o merge.o parse_debug.o \
 	pathname.o patselect.o permissions.o pr_support.o \
 	printcap.o printjob.o proctitle.o readstatus.o \
-	removejob.o rw_pipe.o sendauth.o sendjob.o sendkrb4.o \
+	removejob.o rw_pipe.o sendauth.o sendjob.o \
 	sendlpc.o sendlprm.o sendlpq.o serverpid.o \
 	setstatus.o setuid.o setup_filter.o setupprinter.o \
 	snprintf.o spoolcontrol.o stty.o termclear.o \
@@ -462,7 +462,7 @@ lpd.conf: ${SRC}/common/vars.c
 ########### LIBRARY ORDER #########
 LIBLPR_ORDER = \
 	 termclear.o setupprinter.o serverpid.o sendlpq.o\
-	 sendlprm.o sendlpc.o sendjob.o sendauth.o sendkrb4.o\
+	 sendlprm.o sendlpc.o sendjob.o sendauth.o\
 	 removejob.o readstatus.o printjob.o pr_support.o\
 	 patselect.o parse_debug.o krb5_sendauth.o krb5_auth.o\
 	 initialize.o getuserinfo.o getprinter.o getparms.o\
