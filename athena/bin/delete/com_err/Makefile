@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.7 1990-06-07 23:26:23 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.8 1991-02-22 07:34:58 jik Exp $
 #	$Locker:  $
 #
 
@@ -30,7 +30,7 @@ MANS=		com_err.3 compile_et.1
 YACCS=		error_table.y
 LEXS=		et_lex.lex.l
 ETS=		test1.et test2.et
-FILES=		MANIFEST Makefile PATCHLEVEL README\
+FILES=		Makefile PATCHLEVEL README\
 		com_err.texinfo.Z.uu profiled texinfo.tex.Z.uu\
 		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
 
@@ -129,15 +129,15 @@ clean:
 		eddep makedep
 
 patch: $(FILES)
-	makepatch $(ARCHIVE)
+	makepatch $(FILES)
 	mv patch com_err.patch`cat PATCHLEVEL`
 	shar com_err.patch`cat PATCHLEVEL` > com_err.patch`cat PATCHLEVEL`.shar
 
 shar: $(FILES)
 	makekit -oMANIFEST $(FILES)
 
-tar: $(ARCHIVE)
-	tar cvf - $(ARCHIVE) | compress > com_err.tar.Z
+tar: $(FILES)
+	tar cvf - $(FILES) | compress > com_err.tar.Z
 
 # for testing
 test:	test.o test1.o test2.o libcom_err.a
