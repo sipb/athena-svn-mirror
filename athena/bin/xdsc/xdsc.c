@@ -170,7 +170,7 @@ static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { "replybutton", "newbutton", NULL },
         { "writebutton", "mailbutton", NULL }};
 
-#ifdef 0
+#if 0
 typedef struct{
 	Boolean logging_on;
 	String	log_file;
@@ -295,7 +295,7 @@ char *argv[];
 
 	myfree (newpath);
 
-#ifdef 0
+#if 0
 	XtGetApplicationResources(	topW, (XtPointer) &defs,
 					app_resources, XtNumber (app_resources),
 					NULL, 0);
