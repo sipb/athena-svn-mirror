@@ -1,16 +1,16 @@
 #
-# $Id: Imakefile,v 1.6 1996-05-15 19:08:42 ghudson Exp $
+# $Id: Imakefile,v 1.6.2.1 1997-11-04 18:28:50 ghudson Exp $
 #
 
 SCRIPT=  end_session 
 
 #ifdef sgi
 DEFINES=-DSGISession
-LDDEFS=-lX11
+MACHLIBS=-lX11
 #endif
 
 /* Current directory C programs */
-SimpleProgram(session_gate,session_gate.o,,$(ATHBINDIR))
+SimpleProgram(session_gate,session_gate.o,$(MACHLIBS),$(ATHBINDIR))
 
 /* SPECIAL rules */
 all::	${SPECIAL}
