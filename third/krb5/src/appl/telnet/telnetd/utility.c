@@ -35,7 +35,10 @@
 
 #define PRINTOPTIONS
 #include "telnetd.h"
+
+#ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
+#endif
 
 /*
  * utility functions performing io related tasks
@@ -183,6 +186,7 @@ ptyflush()
 	if (n < 0) {
 		if (errno == EWOULDBLOCK || errno == EINTR)
 			return;
+		(void)signal(SIGCHLD, SIG_DFL);
 		cleanup(0);
 	}
 	pbackp += n;
@@ -348,6 +352,7 @@ netflush()
     if (n < 0) {
 	if (errno == EWOULDBLOCK || errno == EINTR)
 		return;
+	(void)signal(SIGCHLD, SIG_DFL);
 	cleanup(0);
     }
     nbackp += n;
@@ -509,9 +514,11 @@ putf(cp, where)
 	char *slash;
 	time_t t;
 	char db[100];
+#ifdef HAVE_SYS_UTSNAME_H
 	struct utsname utsinfo;
 
-	uname(&utsinfo);
+	(void) uname(&utsinfo);
+#endif
 
 	putlocation = where;
 
@@ -545,6 +552,7 @@ putf(cp, where)
 			putstr(db);
 			break;
 
+#ifdef HAVE_SYS_UTSNAME_H
 		case 's':
 			putstr(utsinfo.sysname);
 			break;
@@ -560,6 +568,7 @@ putf(cp, where)
 		case 'v':
 			putstr(utsinfo.version);
 			break;
+#endif
 
 		case '%':
 			putchr('%');
