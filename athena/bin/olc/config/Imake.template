@@ -6,7 +6,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.12 1991-04-19 01:13:16 lwvanels Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.13 1991-05-06 23:12:22 lwvanels Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
@@ -170,6 +170,10 @@
 #ifdef ibm032
 #undef ibm032
 #define RtArchitecture
+#endif
+#ifdef _IBMR2
+#undef _IBMR2
+#define RiosArchitecture
 #endif
 #ifdef aix
 #undef aix
