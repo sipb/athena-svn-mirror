@@ -16,9 +16,18 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v 1.3 1989-11-17 14:53:56 tjcoppet Exp $
+ *      $Author: vanharen $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v 1.4 1990-01-17 05:16:12 vanharen Exp $
  */
+
+/* Structure describing a principal. */
+
+typedef struct tPRINCIPAL
+{
+  char	pname[ANAME_SZ];
+  char	pinst[INST_SZ];
+  char	prealm[REALM_SZ];
+} PRINCIPAL;
 
 /* Structure describing a person. */
 
@@ -27,12 +36,12 @@ typedef struct tPERSON
   int     uid;                       /* Person's user ID. */
   int     instance;                  /* the user's instance id */
   char    username[LOGIN_SIZE+1];    /* Person's username. */
-  char    realname[LABEL_LENGTH];    /* Person's real name. */
+  char    realname[LABEL_SIZE];      /* Person's real name. */
   char    realm[REALM_SZ];           /* current realm */
   char    inst[INST_SZ];             /* oh well */
-  char    nickname[STRING_LENGTH];   /* Person's first name. */
-  char    title[LABEL_LENGTH];       /* Person's title */
-  char    machine[LABEL_LENGTH];     /* Person's current machine. */
+  char    nickname[STRING_SIZE];     /* Person's first name. */
+  char    title[LABEL_SIZE];         /* Person's title */
+  char    machine[LABEL_SIZE];       /* Person's current machine. */
 } PERSON;
 
 
@@ -72,13 +81,13 @@ typedef struct tGOO
 typedef struct tSTATUS
 {
   int status;
-  char label[LABEL_LENGTH];
+  char label[LABEL_SIZE];
 } STATUS;
 
 typedef struct tDBINFO
 {
   int max_ask;
   int max_answer;
-  char title1[LABEL_LENGTH];
-  char title2[LABEL_LENGTH];
+  char title1[LABEL_SIZE];
+  char title2[LABEL_SIZE];
 } DBINFO ;
