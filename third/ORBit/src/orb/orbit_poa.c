@@ -709,6 +709,8 @@ ORBit_POA_ServantManager_use_servant(PortableServer_POA poa,
 					poa, recv_buffer->message.u.request.operation,
 					the_cookie,
 					ev);
+		if(!retval)
+			return NULL;
 
 		((ORBit_ObjectKey *)retval->_private)->object = fake_obj_impl;
 		fake_obj_impl->object_id = oid;

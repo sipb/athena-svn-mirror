@@ -56,6 +56,8 @@ struct _GIOPMessageHeaderConstants {
   GIOP_octet flags;
 } PACKED;
 
+#include <stdlib.h>
+
 /* functions */
 static gint giop_recv_decode_message(GIOPRecvBuffer *buf);
 static gboolean num_on_list(GIOP_unsigned_long num,
@@ -188,10 +190,10 @@ giop_send_buffer_write(GIOPSendBuffer *send_buffer)
 #if defined(ORBIT_DEBUG) && 0
   g_print("Message of length %d looks like:\n",
 	  GIOP_MESSAGE_BUFFER(send_buffer)->message_header.message_size);
-  for(sum = 0, i = 2; i < nvecs; i++) {
+  for(sum = 0, t = 2; t < nvecs; t++) {
 
-    sum += curvec[i].iov_len;
-    g_print("    [%p, %d]: %d\n", curvec[i].iov_base, curvec[i].iov_len,
+    sum += curvec[t].iov_len;
+    g_print("    [%p, %d]: %d\n", curvec[t].iov_base, curvec[t].iov_len,
 	    sum);
   }
 #endif
@@ -754,13 +756,11 @@ giop_recv_buffer_unuse(GIOPRecvBuffer *buffer)
   if (buffer == NULL)
     return;
 
-  if(buffer->message_body) {
-    buffer->message_body = ((guchar *)buffer->message_body)
-      - sizeof(GIOPMessageHeader);
-    
-    g_free(buffer->message_body);
-    buffer->message_body = NULL;
-  }
+  if(buffer->message_body)
+    {
+      g_free(buffer->message_body);
+      buffer->message_body = NULL;
+    }
 
   if(GIOP_MESSAGE_BUFFER(buffer)->connection->incoming_msg == buffer)
     GIOP_MESSAGE_BUFFER(buffer)->connection->incoming_msg = NULL;
@@ -888,11 +888,10 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
 	  goto errout;
 	}
 
-	retval->message_body = g_malloc(message_size+sizeof(GIOPMessageHeader));
+	retval->message_body = g_malloc(message_size+sizeof(GIOPMessageHeader)+4);
 	/* XXX1 This is a lame hack to work with the fact that
 	   alignment is relative to the MessageHeader, not the RequestHeader */
-	retval->message_body = ((guchar *)retval->message_body) + sizeof(GIOPMessageHeader);
-	retval->cur = retval->message_body;
+	retval->cur = retval->message_body + 12;
 	retval->state = GIOP_MSG_READING_BODY;
 	retval->left_to_read = message_size;
 	break;
@@ -1131,7 +1130,7 @@ giop_recv_decode_message(GIOPRecvBuffer *buf)
 if(!( (( ((guchar*)GIOP_RECV_BUFFER(buf)->cur) \
 		        + (requested_increment) ) \
 		       <= ( ((guchar *)GIOP_RECV_BUFFER(buf)->message_body) \
-			   + GIOP_MESSAGE_BUFFER(buf)->message_header.message_size)) \
+			   + GIOP_MESSAGE_BUFFER(buf)->message_header.message_size) + 12) \
 		      && ( ( ((guchar*)GIOP_RECV_BUFFER(buf)->cur) \
 			    + (requested_increment) ) \
 			  >= ((guchar*)GIOP_RECV_BUFFER(buf)->cur) ))) goto out;

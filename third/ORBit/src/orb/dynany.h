@@ -28,1412 +28,635 @@
 #define _ORBIT_DYNANY_H_
 
 #include "orbit_types.h"
+#include "orbit_object.h"
+#include "corba_any.h"
 
-typedef struct CORBA_DynAny_type *CORBA_DynAny;
-typedef struct CORBA_DynEnum_type *CORBA_DynEnum;
-typedef struct CORBA_DynStruct_type *CORBA_DynStruct;
-typedef struct CORBA_DynUnion_type *CORBA_DynUnion;
-typedef struct CORBA_DynSequence_type *CORBA_DynSequence;
-typedef struct CORBA_DynArray_type *CORBA_DynArray;
+#define ex_DynamicAny_DynAny_Invalid      "IDL:CORBA/DynAny/Invalid:1.0"
+#define ex_DynamicAny_DynAny_InvalidValue "IDL:CORBA/DynAny/InvalidValue:1.0"
+#define ex_DynamicAny_DynAny_TypeMismatch "IDL:CORBA/DynAny/TypeMismatch:1.0"
+#define ex_DynamicAny_DynAny_InvalidSeq   "IDL:CORBA/DynAny/InvalidSeq:1.0"
 
-typedef struct CORBA_DynAny_Invalid {
-	int dummy;
-} CORBA_DynAny_Invalid;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynAny;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynEnum;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynStruct;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynUnion;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynSequence;
+typedef struct DynamicAny_DynAny_type *DynamicAny_DynArray;
 
-typedef struct CORBA_DynAny_InvalidValue {
-	int dummy;
-} CORBA_DynAny_InvalidValue;
-
-typedef struct CORBA_DynAny_TypeMismatch {
-	int dummy;
-} CORBA_DynAny_TypeMismatch;
-
-typedef struct CORBA_DynAny_InvalidSeq {
-	int dummy;
-} CORBA_DynAny_InvalidSeq;
-
-typedef struct CORBA_DynFixed_Invalid {
-	int dummy;
-} CORBA_DynFixed_Invalid;
-
-typedef struct CORBA_DynFixed_InvalidValue {
-	int dummy;
-} CORBA_DynFixed_InvalidValue;
-
-typedef struct CORBA_DynFixed_TypeMismatch {
-	int dummy;
-} CORBA_DynFixed_TypeMismatch;
-
-typedef struct CORBA_DynFixed_InvalidSeq {
-	int dummy;
-} CORBA_DynFixed_InvalidSeq;
-
-typedef struct CORBA_DynEnum_Invalid {
-	int dummy;
-} CORBA_DynEnum_Invalid;
-
-typedef struct CORBA_DynEnum_InvalidValue {
-	int dummy;
-} CORBA_DynEnum_InvalidValue;
-
-typedef struct CORBA_DynEnum_TypeMismatch {
-	int dummy;
-} CORBA_DynEnum_TypeMismatch;
-
-typedef struct CORBA_DynEnum_InvalidSeq {
-	int dummy;
-} CORBA_DynEnum_InvalidSeq;
-
-typedef struct CORBA_DynStruct_Invalid {
-	int dummy;
-} CORBA_DynStruct_Invalid;
-
-typedef struct CORBA_DynStruct_InvalidValue {
-	int dummy;
-} CORBA_DynStruct_InvalidValue;
-
-typedef struct CORBA_DynStruct_TypeMismatch {
-	int dummy;
-} CORBA_DynStruct_TypeMismatch;
-
-typedef struct CORBA_DynStruct_InvalidSeq {
-	int dummy;
-} CORBA_DynStruct_InvalidSeq;
-
-typedef struct CORBA_DynUnion_Invalid {
-	int dummy;
-} CORBA_DynUnion_Invalid;
-
-typedef struct CORBA_DynUnion_InvalidValue {
-	int dummy;
-} CORBA_DynUnion_InvalidValue;
-
-typedef struct CORBA_DynUnion_TypeMismatch {
-	int dummy;
-} CORBA_DynUnion_TypeMismatch;
-
-typedef struct CORBA_DynUnion_InvalidSeq {
-	int dummy;
-} CORBA_DynUnion_InvalidSeq;
-
-typedef struct CORBA_DynSequence_Invalid {
-	int dummy;
-} CORBA_DynSequence_Invalid;
-
-typedef struct CORBA_DynSequence_InvalidValue {
-	int dummy;
-} CORBA_DynSequence_InvalidValue;
-
-typedef struct CORBA_DynSequence_TypeMismatch {
-	int dummy;
-} CORBA_DynSequence_TypeMismatch;
-
-typedef struct CORBA_DynSequence_InvalidSeq {
-	int dummy;
-} CORBA_DynSequence_InvalidSeq;
-
-typedef struct CORBA_DynArray_Invalid {
-	int dummy;
-} CORBA_DynArray_Invalid;
-
-typedef struct CORBA_DynArray_InvalidValue {
-	int dummy;
-} CORBA_DynArray_InvalidValue;
-
-typedef struct CORBA_DynArray_TypeMismatch {
-	int dummy;
-} CORBA_DynArray_TypeMismatch;
-
-typedef struct CORBA_DynArray_InvalidSeq {
-	int dummy;
-} CORBA_DynArray_InvalidSeq;
-
-struct CORBA_DynAny_type {
+struct DynamicAny_DynAny_type {
 	struct ORBit_PseudoObject_struct parent;
-
-	gpointer items;
+	gpointer data;
 };
 
-struct CORBA_DynFixed_type {
-	struct CORBA_DynAny_type parent;
-	
-};
-
-struct CORBA_DynEnum_type {
-	struct CORBA_DynAny_type parent;
-
-};
-
-struct CORBA_DynStruct_type {
-	struct CORBA_DynAny_type parent;
-};
-
-struct CORBA_DynUnion_type {
-	struct CORBA_DynAny_type parent;
-
-};
-
-struct CORBA_DynSequence_type {
-	struct CORBA_DynAny_type parent;
-
-};
-
-struct CORBA_DynArray_type {
-	struct CORBA_DynAny_type parent;
-};
-
-CORBA_DynAny CORBA_ORB_create_dyn_any(CORBA_ORB obj,
-				      CORBA_any *value,
-				      CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_ORB_create_basic_dyn_any(CORBA_ORB obj,
-					    CORBA_TypeCode type,
-					    CORBA_Environment *ev);
-
-CORBA_DynStruct CORBA_ORB_create_dyn_struct(CORBA_ORB obj,
-					    CORBA_TypeCode type,
-					    CORBA_Environment *ev);
-
-CORBA_DynSequence CORBA_ORB_create_dyn_sequence(CORBA_ORB obj,
-						CORBA_TypeCode type,
-						CORBA_Environment *ev);
-
-CORBA_DynArray CORBA_ORB_create_dyn_array(CORBA_ORB obj,
-					  CORBA_TypeCode type,
-					  CORBA_Environment *ev);
-
-CORBA_DynUnion CORBA_ORB_create_dyn_union(CORBA_ORB obj,
-					  CORBA_TypeCode type,
-					  CORBA_Environment *ev);
-
-CORBA_DynEnum CORBA_ORB_create_dyn_enum(CORBA_ORB obj,
-					CORBA_TypeCode type,
-					CORBA_Environment *ev);
-
-CORBA_DynFixed CORBA_ORB_create_dyn_fixed(CORBA_ORB obj,
-					  CORBA_TypeCode type,
-					  CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynAny_type(CORBA_DynAny obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynAny_assign(CORBA_DynAny obj,
-			 CORBA_DynAny dyn_any,
-			 CORBA_Environment *ev);
-
-void CORBA_DynAny_from_any(CORBA_DynAny obj,
-			   CORBA_any value,
-			   CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynAny_to_any(CORBA_DynAny obj,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_destroy(CORBA_DynAny obj,
-			  CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynAny_copy(CORBA_DynAny obj,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_boolean(CORBA_DynAny obj,
-				 CORBA_boolean value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_octet(CORBA_DynAny obj,
-			       CORBA_octet value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_char(CORBA_DynAny obj,
-			      CORBA_char value,
-			      CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_short(CORBA_DynAny obj,
-			       CORBA_short value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_ushort(CORBA_DynAny obj,
-				CORBA_unsigned_short value,
-				CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_long(CORBA_DynAny obj,
-			      CORBA_long value,
-			      CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_ulong(CORBA_DynAny obj,
-			       CORBA_unsigned_long value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_float(CORBA_DynAny obj,
-			       CORBA_float value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_double(CORBA_DynAny obj,
-				CORBA_double value,
-				CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_string(CORBA_DynAny obj,
-				CORBA_char *value,
-				CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_reference(CORBA_DynAny obj,
-				   CORBA_Object value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_typecode(CORBA_DynAny obj,
-				  CORBA_TypeCode value,
-				  CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynAny_insert_longlong(CORBA_DynAny obj,
-				  CORBA_long_long value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_ulonglong(CORBA_DynAny obj,
-				   CORBA_unsigned_long_long value,
-				   CORBA_Environment *ev);
-#endif
-
-void CORBA_DynAny_insert_longdouble(CORBA_DynAny obj,
-				    CORBA_long_double value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_wchar(CORBA_DynAny obj,
-			       CORBA_wchar value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_wstring(CORBA_DynAny obj,
-				 CORBA_wchar *value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynAny_insert_any(CORBA_DynAny obj,
-			     CORBA_any value,
-			     CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynAny_get_boolean(CORBA_DynAny obj,
-				       CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynAny_get_octet(CORBA_DynAny obj,
-				   CORBA_Environment *ev);
-
-CORBA_char CORBA_DynAny_get_char(CORBA_DynAny obj,
-				 CORBA_Environment *ev);
-
-CORBA_short CORBA_DynAny_get_short(CORBA_DynAny obj,
-				   CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynAny_get_ushort(CORBA_DynAny obj,
-					     CORBA_Environment *ev);
-
-CORBA_long CORBA_DynAny_get_long(CORBA_DynAny obj,
-				 CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynAny_get_ulong(CORBA_DynAny obj,
-					   CORBA_Environment *ev);
-
-CORBA_float CORBA_DynAny_get_float(CORBA_DynAny obj,
-				   CORBA_Environment *ev);
-
-CORBA_double CORBA_DynAny_get_double(CORBA_DynAny obj,
-				     CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynAny_get_string(CORBA_DynAny obj,
-				    CORBA_Environment *ev);
-
-CORBA_Object CORBA_DynAny_get_reference(CORBA_DynAny obj,
-					CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynAny_get_typecode(CORBA_DynAny obj,
-					 CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynAny_get_longlong(CORBA_DynAny obj,
-					  CORBA_Environment *ev);
-
-CORBA_unsigned_long_long CORBA_DynAny_get_ulonglong(CORBA_DynAny obj,
-						    CORBA_Environment *ev);
-#endif
-
-CORBA_long_double CORBA_DynAny_get_longdouble(CORBA_DynAny obj,
-					      CORBA_Environment *ev);
-
-CORBA_wchar CORBA_DynAny_get_wchar(CORBA_DynAny obj,
-				   CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynAny_get_wstring(CORBA_DynAny obj,
-				      CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynAny_get_any(CORBA_DynAny obj,
-				CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynAny_current_component(CORBA_DynAny obj,
-					    CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynAny_next(CORBA_DynAny obj,
-				CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynAny_seek(CORBA_DynAny obj,
-				CORBA_long index,
-				CORBA_Environment *ev);
-
-void CORBA_DynAny_rewind(CORBA_DynAny obj,
-			 CORBA_Environment *ev);
-
-CORBA_DynFixed_OctetSeq *CORBA_DynFixed_get_value(CORBA_DynFixed obj,
+DynamicAny_DynAny CORBA_ORB_create_dyn_any       (CORBA_ORB obj,
+						  CORBA_any *value,
 						  CORBA_Environment *ev);
 
-void CORBA_DynFixed_set_value(CORBA_DynFixed obj,
-			      CORBA_DynFixed_OctetSeq *val,
-			      CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynFixed_type(CORBA_DynFixed obj,
-				   CORBA_Environment *ev);
-
-void CORBA_DynFixed_assign(CORBA_DynFixed obj,
-			   CORBA_DynAny dyn_any,
-			   CORBA_Environment *ev);
-
-void CORBA_DynFixed_from_any(CORBA_DynFixed obj,
-			     CORBA_any value,
-			     CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynFixed_to_any(CORBA_DynFixed obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_destroy(CORBA_DynFixed obj,
-			    CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynFixed_copy(CORBA_DynFixed obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_boolean(CORBA_DynFixed obj,
-				   CORBA_boolean value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_octet(CORBA_DynFixed obj,
-				 CORBA_octet value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_char(CORBA_DynFixed obj,
-				CORBA_char value,
-				CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_short(CORBA_DynFixed obj,
-				 CORBA_short value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_ushort(CORBA_DynFixed obj,
-				  CORBA_unsigned_short value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_long(CORBA_DynFixed obj,
-				CORBA_long value,
-				CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_ulong(CORBA_DynFixed obj,
-				 CORBA_unsigned_long value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_float(CORBA_DynFixed obj,
-				 CORBA_float value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_double(CORBA_DynFixed obj,
-				  CORBA_double value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_string(CORBA_DynFixed obj,
-				  CORBA_char *value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_reference(CORBA_DynFixed obj,
-				     CORBA_Object value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_typecode(CORBA_DynFixed obj,
-				    CORBA_TypeCode value,
-				    CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynFixed_insert_longlong(CORBA_DynFixed obj,
-				    CORBA_long_long value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_ulonglong(CORBA_DynFixed obj,
-				     CORBA_unsigned_long_long value,
-				     CORBA_Environment *ev);
-#endif
-
-void CORBA_DynFixed_insert_longdouble(CORBA_DynFixed obj,
-				      CORBA_long_double value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_wchar(CORBA_DynFixed obj,
-				 CORBA_wchar value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_wstring(CORBA_DynFixed obj,
-				   CORBA_wchar *value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynFixed_insert_any(CORBA_DynFixed obj,
-			       CORBA_any value,
-			       CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynFixed_get_boolean(CORBA_DynFixed obj,
-					 CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynFixed_get_octet(CORBA_DynFixed obj,
-				     CORBA_Environment *ev);
-
-CORBA_char CORBA_DynFixed_get_char(CORBA_DynFixed obj,
-				   CORBA_Environment *ev);
-
-CORBA_short CORBA_DynFixed_get_short(CORBA_DynFixed obj,
-				     CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynFixed_get_ushort(CORBA_DynFixed obj,
-					       CORBA_Environment *ev);
-
-CORBA_long CORBA_DynFixed_get_long(CORBA_DynFixed obj,
-				   CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynFixed_get_ulong(CORBA_DynFixed obj,
-					     CORBA_Environment *ev);
-
-CORBA_float CORBA_DynFixed_get_float(CORBA_DynFixed obj,
-				     CORBA_Environment *ev);
-
-CORBA_double CORBA_DynFixed_get_double(CORBA_DynFixed obj,
-				       CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynFixed_get_string(CORBA_DynFixed obj,
-				      CORBA_Environment *ev);
-
-CORBA_Object CORBA_DynFixed_get_reference(CORBA_DynFixed obj,
-					  CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynFixed_get_typecode(CORBA_DynFixed obj,
-					   CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynFixed_get_longlong(CORBA_DynFixed obj,
-					    CORBA_Environment *ev);
-
-CORBA_unsigned_long_long CORBA_DynFixed_get_ulonglong(CORBA_DynFixed obj,
-						      CORBA_Environment *ev);
-#endif
-
-CORBA_long_double CORBA_DynFixed_get_longdouble(CORBA_DynFixed obj,
-						CORBA_Environment *ev);
-
-CORBA_wchar CORBA_DynFixed_get_wchar(CORBA_DynFixed obj,
-				     CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynFixed_get_wstring(CORBA_DynFixed obj,
-					CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynFixed_get_any(CORBA_DynFixed obj,
-				  CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynFixed_current_component(CORBA_DynFixed obj,
-					      CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynFixed_next(CORBA_DynFixed obj,
-				  CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynFixed_seek(CORBA_DynFixed obj,
-				  CORBA_long index,
-				  CORBA_Environment *ev);
-
-void CORBA_DynFixed_rewind(CORBA_DynFixed obj,
-			   CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynEnum__get_value_as_string(CORBA_DynEnum obj,
-					       CORBA_Environment *ev);
-
-void CORBA_DynEnum__set_value_as_string(CORBA_DynEnum obj,
-					CORBA_char *value_as_string,
-					CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynEnum__get_value_as_ulong(CORBA_DynEnum obj,
-						      CORBA_Environment *ev);
-
-void CORBA_DynEnum__set_value_as_ulong(CORBA_DynEnum obj,
-				       CORBA_unsigned_long value_as_ulong,
-				       CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynEnum_type(CORBA_DynEnum obj,
-				  CORBA_Environment *ev);
-
-void CORBA_DynEnum_assign(CORBA_DynEnum obj,
-			  CORBA_DynAny dyn_any,
-			  CORBA_Environment *ev);
-
-void CORBA_DynEnum_from_any(CORBA_DynEnum obj,
-			    CORBA_any value,
-			    CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynEnum_to_any(CORBA_DynEnum obj,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_destroy(CORBA_DynEnum obj,
-			   CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynEnum_copy(CORBA_DynEnum obj,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_boolean(CORBA_DynEnum obj,
-				  CORBA_boolean value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_octet(CORBA_DynEnum obj,
-				CORBA_octet value,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_char(CORBA_DynEnum obj,
-			       CORBA_char value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_short(CORBA_DynEnum obj,
-				CORBA_short value,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_ushort(CORBA_DynEnum obj,
-				 CORBA_unsigned_short value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_long(CORBA_DynEnum obj,
-			       CORBA_long value,
-			       CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_ulong(CORBA_DynEnum obj,
-				CORBA_unsigned_long value,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_float(CORBA_DynEnum obj,
-				CORBA_float value,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_double(CORBA_DynEnum obj,
-				 CORBA_double value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_string(CORBA_DynEnum obj,
-				 CORBA_char *value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_reference(CORBA_DynEnum obj,
-				    CORBA_Object value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_typecode(CORBA_DynEnum obj,
-				   CORBA_TypeCode value,
-				   CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynEnum_insert_longlong(CORBA_DynEnum obj,
-				   CORBA_long_long value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_ulonglong(CORBA_DynEnum obj,
-				    CORBA_unsigned_long_long value,
-				    CORBA_Environment *ev);
-#endif
-
-void CORBA_DynEnum_insert_longdouble(CORBA_DynEnum obj,
-				     CORBA_long_double value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_wchar(CORBA_DynEnum obj,
-				CORBA_wchar value,
-				CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_wstring(CORBA_DynEnum obj,
-				  CORBA_wchar *value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynEnum_insert_any(CORBA_DynEnum obj,
-			      CORBA_any value,
-			      CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynEnum_get_boolean(CORBA_DynEnum obj,
-					CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynEnum_get_octet(CORBA_DynEnum obj,
-				    CORBA_Environment *ev);
-
-CORBA_char CORBA_DynEnum_get_char(CORBA_DynEnum obj,
-				  CORBA_Environment *ev);
-
-CORBA_short CORBA_DynEnum_get_short(CORBA_DynEnum obj,
-				    CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynEnum_get_ushort(CORBA_DynEnum obj,
-					      CORBA_Environment *ev);
-
-CORBA_long CORBA_DynEnum_get_long(CORBA_DynEnum obj,
-				  CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynEnum_get_ulong(CORBA_DynEnum obj,
-					    CORBA_Environment *ev);
-
-CORBA_float CORBA_DynEnum_get_float(CORBA_DynEnum obj,
-				    CORBA_Environment *ev);
-
-CORBA_double CORBA_DynEnum_get_double(CORBA_DynEnum obj,
-				      CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynEnum_get_string(CORBA_DynEnum obj,
-				     CORBA_Environment *ev);
-
-CORBA_Object CORBA_DynEnum_get_reference(CORBA_DynEnum obj,
-					 CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynEnum_get_typecode(CORBA_DynEnum obj,
-					  CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynEnum_get_longlong(CORBA_DynEnum obj,
-					   CORBA_Environment *ev);
-
-CORBA_unsigned_long_long CORBA_DynEnum_get_ulonglong(CORBA_DynEnum obj,
+DynamicAny_DynAny CORBA_ORB_create_basic_dyn_any (CORBA_ORB obj,
+						  const CORBA_TypeCode type,
+						  CORBA_Environment *ev);
+
+DynamicAny_DynStruct CORBA_ORB_create_dyn_struct (CORBA_ORB obj,
+						  const CORBA_TypeCode type,
+						  CORBA_Environment *ev);
+
+DynamicAny_DynSequence CORBA_ORB_create_dyn_sequence(CORBA_ORB obj,
+						     const CORBA_TypeCode type,
 						     CORBA_Environment *ev);
-#endif
 
-CORBA_long_double CORBA_DynEnum_get_longdouble(CORBA_DynEnum obj,
+DynamicAny_DynArray CORBA_ORB_create_dyn_array(CORBA_ORB obj,
+					       const CORBA_TypeCode type,
 					       CORBA_Environment *ev);
 
-CORBA_wchar CORBA_DynEnum_get_wchar(CORBA_DynEnum obj,
-				    CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynEnum_get_wstring(CORBA_DynEnum obj,
-				       CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynEnum_get_any(CORBA_DynEnum obj,
-				 CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynEnum_current_component(CORBA_DynEnum obj,
-					     CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynEnum_next(CORBA_DynEnum obj,
-				 CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynEnum_seek(CORBA_DynEnum obj,
-				 CORBA_long index,
-				 CORBA_Environment *ev);
-
-void CORBA_DynEnum_rewind(CORBA_DynEnum obj,
-			  CORBA_Environment *ev);
-
-CORBA_FieldName CORBA_DynStruct_current_member_name(CORBA_DynStruct obj,
-						    CORBA_Environment *ev);
-
-CORBA_TCKind CORBA_DynStruct_current_member_kind(CORBA_DynStruct obj,
-						 CORBA_Environment *ev);
-
-CORBA_NameValuePairSeq *CORBA_DynStruct_get_members(CORBA_DynStruct obj,
-						    CORBA_Environment *ev);
-
-void CORBA_DynStruct_set_members(CORBA_DynStruct obj,
-				 CORBA_NameValuePairSeq *value,
-				 CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynStruct_type(CORBA_DynStruct obj,
-				    CORBA_Environment *ev);
-
-void CORBA_DynStruct_assign(CORBA_DynStruct obj,
-			    CORBA_DynAny dyn_any,
-			    CORBA_Environment *ev);
-
-void CORBA_DynStruct_from_any(CORBA_DynStruct obj,
-			      CORBA_any value,
-			      CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynStruct_to_any(CORBA_DynStruct obj,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_destroy(CORBA_DynStruct obj,
-			     CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynStruct_copy(CORBA_DynStruct obj,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_boolean(CORBA_DynStruct obj,
-				    CORBA_boolean value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_octet(CORBA_DynStruct obj,
-				  CORBA_octet value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_char(CORBA_DynStruct obj,
-				 CORBA_char value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_short(CORBA_DynStruct obj,
-				  CORBA_short value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_ushort(CORBA_DynStruct obj,
-				   CORBA_unsigned_short value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_long(CORBA_DynStruct obj,
-				 CORBA_long value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_ulong(CORBA_DynStruct obj,
-				  CORBA_unsigned_long value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_float(CORBA_DynStruct obj,
-				  CORBA_float value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_double(CORBA_DynStruct obj,
-				   CORBA_double value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_string(CORBA_DynStruct obj,
-				   CORBA_char *value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_reference(CORBA_DynStruct obj,
-				      CORBA_Object value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_typecode(CORBA_DynStruct obj,
-				     CORBA_TypeCode value,
-				     CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynStruct_insert_longlong(CORBA_DynStruct obj,
-				     CORBA_long_long value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_ulonglong(CORBA_DynStruct obj,
-				      CORBA_unsigned_long_long value,
-				      CORBA_Environment *ev);
-#endif
-
-void CORBA_DynStruct_insert_longdouble(CORBA_DynStruct obj,
-				       CORBA_long_double value,
-				       CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_wchar(CORBA_DynStruct obj,
-				  CORBA_wchar value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_wstring(CORBA_DynStruct obj,
-				    CORBA_wchar *value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynStruct_insert_any(CORBA_DynStruct obj,
-				CORBA_any value,
-				CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynStruct_get_boolean(CORBA_DynStruct obj,
-					  CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynStruct_get_octet(CORBA_DynStruct obj,
-				      CORBA_Environment *ev);
-
-CORBA_char CORBA_DynStruct_get_char(CORBA_DynStruct obj,
-				    CORBA_Environment *ev);
-
-CORBA_short CORBA_DynStruct_get_short(CORBA_DynStruct obj,
-				      CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynStruct_get_ushort(CORBA_DynStruct obj,
+DynamicAny_DynUnion CORBA_ORB_create_dyn_union (CORBA_ORB obj,
+						const CORBA_TypeCode type,
 						CORBA_Environment *ev);
 
-CORBA_long CORBA_DynStruct_get_long(CORBA_DynStruct obj,
-				    CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynStruct_get_ulong(CORBA_DynStruct obj,
+DynamicAny_DynEnum CORBA_ORB_create_dyn_enum (CORBA_ORB obj,
+					      const CORBA_TypeCode type,
 					      CORBA_Environment *ev);
 
-CORBA_float CORBA_DynStruct_get_float(CORBA_DynStruct obj,
-				      CORBA_Environment *ev);
-
-CORBA_double CORBA_DynStruct_get_double(CORBA_DynStruct obj,
-					CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynStruct_get_string(CORBA_DynStruct obj,
+CORBA_TypeCode DynamicAny_DynAny_type (DynamicAny_DynAny obj,
 				       CORBA_Environment *ev);
 
-CORBA_Object CORBA_DynStruct_get_reference(CORBA_DynStruct obj,
-					   CORBA_Environment *ev);
+void       DynamicAny_DynAny_assign   (DynamicAny_DynAny obj,
+				       DynamicAny_DynAny dyn_any,
+				       CORBA_Environment *ev);
 
-CORBA_TypeCode CORBA_DynStruct_get_typecode(CORBA_DynStruct obj,
+void       DynamicAny_DynAny_from_any (DynamicAny_DynAny obj,
+				       CORBA_any *value,
+				       CORBA_Environment *ev);
+
+CORBA_any *DynamicAny_DynAny_to_any   (DynamicAny_DynAny obj,
+				       CORBA_Environment *ev);
+
+void       DynamicAny_DynAny_destroy  (DynamicAny_DynAny obj,
+				       CORBA_Environment *ev);
+
+CORBA_boolean DynamicAny_DynAny_equal (DynamicAny_DynAny obj_a,
+				       DynamicAny_DynAny obj_b,
+				       CORBA_Environment *ev);
+
+DynamicAny_DynAny DynamicAny_DynAny_copy   (DynamicAny_DynAny obj,
 					    CORBA_Environment *ev);
 
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynStruct_get_longlong(CORBA_DynStruct obj,
-					     CORBA_Environment *ev);
-
-CORBA_unsigned_long_long CORBA_DynStruct_get_ulonglong(CORBA_DynStruct obj,
-						       CORBA_Environment *ev);
-#endif
-
-CORBA_long_double CORBA_DynStruct_get_longdouble(CORBA_DynStruct obj,
-						 CORBA_Environment *ev);
-
-CORBA_wchar CORBA_DynStruct_get_wchar(CORBA_DynStruct obj,
-				      CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynStruct_get_wstring(CORBA_DynStruct obj,
-					 CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynStruct_get_any(CORBA_DynStruct obj,
-				   CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynStruct_current_component(CORBA_DynStruct obj,
-					       CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynStruct_next(CORBA_DynStruct obj,
-				   CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynStruct_seek(CORBA_DynStruct obj,
-				   CORBA_long index,
-				   CORBA_Environment *ev);
-
-void CORBA_DynStruct_rewind(CORBA_DynStruct obj,
-			    CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynUnion_discriminator(CORBA_DynUnion obj,
-					  CORBA_Environment *ev);
-
-CORBA_TCKind CORBA_DynUnion_discriminator_kind(CORBA_DynUnion obj,
-					       CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynUnion_member(CORBA_DynUnion obj,
-				   CORBA_Environment *ev);
-
-CORBA_TCKind CORBA_DynUnion_member_kind(CORBA_DynUnion obj,
-					CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynUnion__get_set_as_default(CORBA_DynUnion obj,
-						 CORBA_Environment *ev);
-
-void CORBA_DynUnion__set_set_as_default(CORBA_DynUnion obj,
-					CORBA_boolean set_as_default,
-					CORBA_Environment *ev);
-
-CORBA_FieldName CORBA_DynUnion__get_member_name(CORBA_DynUnion obj,
-						CORBA_Environment *ev);
-
-void CORBA_DynUnion__set_member_name(CORBA_DynUnion obj,
-				     CORBA_FieldName member_name,
-				     CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynUnion_type(CORBA_DynUnion obj,
-				   CORBA_Environment *ev);
-
-void CORBA_DynUnion_assign(CORBA_DynUnion obj,
-			   CORBA_DynAny dyn_any,
-			   CORBA_Environment *ev);
-
-void CORBA_DynUnion_from_any(CORBA_DynUnion obj,
-			     CORBA_any value,
-			     CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynUnion_to_any(CORBA_DynUnion obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_destroy(CORBA_DynUnion obj,
-			    CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynUnion_copy(CORBA_DynUnion obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_boolean(CORBA_DynUnion obj,
-				   CORBA_boolean value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_octet(CORBA_DynUnion obj,
-				 CORBA_octet value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_char(CORBA_DynUnion obj,
-				CORBA_char value,
-				CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_short(CORBA_DynUnion obj,
-				 CORBA_short value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_ushort(CORBA_DynUnion obj,
-				  CORBA_unsigned_short value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_long(CORBA_DynUnion obj,
-				CORBA_long value,
-				CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_ulong(CORBA_DynUnion obj,
-				 CORBA_unsigned_long value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_float(CORBA_DynUnion obj,
-				 CORBA_float value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_double(CORBA_DynUnion obj,
-				  CORBA_double value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_string(CORBA_DynUnion obj,
-				  CORBA_char *value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_reference(CORBA_DynUnion obj,
-				     CORBA_Object value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_typecode(CORBA_DynUnion obj,
-				    CORBA_TypeCode value,
-				    CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynUnion_insert_longlong(CORBA_DynUnion obj,
-				    CORBA_long_long value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_ulonglong(CORBA_DynUnion obj,
-				     CORBA_unsigned_long_long value,
-				     CORBA_Environment *ev);
-#endif
-
-void CORBA_DynUnion_insert_longdouble(CORBA_DynUnion obj,
-				      CORBA_long_double value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_wchar(CORBA_DynUnion obj,
-				 CORBA_wchar value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_wstring(CORBA_DynUnion obj,
-				   CORBA_wchar *value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynUnion_insert_any(CORBA_DynUnion obj,
-			       CORBA_any value,
-			       CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynUnion_get_boolean(CORBA_DynUnion obj,
-					 CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynUnion_get_octet(CORBA_DynUnion obj,
-				     CORBA_Environment *ev);
-
-CORBA_char CORBA_DynUnion_get_char(CORBA_DynUnion obj,
-				   CORBA_Environment *ev);
-
-CORBA_short CORBA_DynUnion_get_short(CORBA_DynUnion obj,
-				     CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynUnion_get_ushort(CORBA_DynUnion obj,
-					       CORBA_Environment *ev);
-
-CORBA_long CORBA_DynUnion_get_long(CORBA_DynUnion obj,
-				   CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynUnion_get_ulong(CORBA_DynUnion obj,
-					     CORBA_Environment *ev);
-
-CORBA_float CORBA_DynUnion_get_float(CORBA_DynUnion obj,
-				     CORBA_Environment *ev);
-
-CORBA_double CORBA_DynUnion_get_double(CORBA_DynUnion obj,
+void DynamicAny_DynAny_insert_boolean (DynamicAny_DynAny obj,
+				       CORBA_boolean value,
 				       CORBA_Environment *ev);
 
-CORBA_char *CORBA_DynUnion_get_string(CORBA_DynUnion obj,
-				      CORBA_Environment *ev);
-
-CORBA_Object CORBA_DynUnion_get_reference(CORBA_DynUnion obj,
-					  CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynUnion_get_typecode(CORBA_DynUnion obj,
-					   CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynUnion_get_longlong(CORBA_DynUnion obj,
-					    CORBA_Environment *ev);
-
-CORBA_unsigned_long_long CORBA_DynUnion_get_ulonglong(CORBA_DynUnion obj,
-						      CORBA_Environment *ev);
-#endif
-
-CORBA_long_double CORBA_DynUnion_get_longdouble(CORBA_DynUnion obj,
-						CORBA_Environment *ev);
-
-CORBA_wchar CORBA_DynUnion_get_wchar(CORBA_DynUnion obj,
-				     CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynUnion_get_wstring(CORBA_DynUnion obj,
-					CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynUnion_get_any(CORBA_DynUnion obj,
-				  CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynUnion_current_component(CORBA_DynUnion obj,
-					      CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynUnion_next(CORBA_DynUnion obj,
-				  CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynUnion_seek(CORBA_DynUnion obj,
-				  CORBA_long index,
-				  CORBA_Environment *ev);
-
-void CORBA_DynUnion_rewind(CORBA_DynUnion obj,
-			   CORBA_Environment *ev);
-
-CORBA_AnySeq *CORBA_DynSequence_get_elements(CORBA_DynSequence obj,
-					     CORBA_Environment *ev);
-
-void CORBA_DynSequence_set_elements(CORBA_DynSequence obj,
-				    CORBA_AnySeq *value,
-				    CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynSequence__get_length(CORBA_DynSequence obj,
-						  CORBA_Environment *ev);
-
-void CORBA_DynSequence__set_length(CORBA_DynSequence obj,
-				   CORBA_unsigned_long length,
-				   CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynSequence_type(CORBA_DynSequence obj,
-				      CORBA_Environment *ev);
-
-void CORBA_DynSequence_assign(CORBA_DynSequence obj,
-			      CORBA_DynAny dyn_any,
-			      CORBA_Environment *ev);
-
-void CORBA_DynSequence_from_any(CORBA_DynSequence obj,
-				CORBA_any value,
-				CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynSequence_to_any(CORBA_DynSequence obj,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_destroy(CORBA_DynSequence obj,
-			       CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynSequence_copy(CORBA_DynSequence obj,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_boolean(CORBA_DynSequence obj,
-				      CORBA_boolean value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_octet(CORBA_DynSequence obj,
-				    CORBA_octet value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_char(CORBA_DynSequence obj,
-				   CORBA_char value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_short(CORBA_DynSequence obj,
-				    CORBA_short value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_ushort(CORBA_DynSequence obj,
-				     CORBA_unsigned_short value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_long(CORBA_DynSequence obj,
-				   CORBA_long value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_ulong(CORBA_DynSequence obj,
-				    CORBA_unsigned_long value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_float(CORBA_DynSequence obj,
-				    CORBA_float value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_double(CORBA_DynSequence obj,
-				     CORBA_double value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_string(CORBA_DynSequence obj,
-				     CORBA_char *value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_reference(CORBA_DynSequence obj,
-					CORBA_Object value,
-					CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_typecode(CORBA_DynSequence obj,
-				       CORBA_TypeCode value,
+void DynamicAny_DynAny_insert_octet   (DynamicAny_DynAny obj,
+				       CORBA_octet value,
 				       CORBA_Environment *ev);
 
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynSequence_insert_longlong(CORBA_DynSequence obj,
-				       CORBA_long_long value,
+void DynamicAny_DynAny_insert_char    (DynamicAny_DynAny obj,
+				       CORBA_char value,
 				       CORBA_Environment *ev);
 
-void CORBA_DynSequence_insert_ulonglong(CORBA_DynSequence obj,
-					CORBA_unsigned_long_long value,
-					CORBA_Environment *ev);
-#endif
+void DynamicAny_DynAny_insert_short   (DynamicAny_DynAny obj,
+				       CORBA_short value,
+				       CORBA_Environment *ev);
 
-void CORBA_DynSequence_insert_longdouble(CORBA_DynSequence obj,
-					 CORBA_long_double value,
+void DynamicAny_DynAny_insert_ushort  (DynamicAny_DynAny obj,
+				       CORBA_unsigned_short value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_long    (DynamicAny_DynAny obj,
+				       CORBA_long value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_ulong   (DynamicAny_DynAny obj,
+				       CORBA_unsigned_long value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_float   (DynamicAny_DynAny obj,
+				       CORBA_float value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_double  (DynamicAny_DynAny obj,
+				       CORBA_double value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_string  (DynamicAny_DynAny obj,
+				       const CORBA_char *value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_reference (DynamicAny_DynAny obj,
+					 CORBA_Object value,
 					 CORBA_Environment *ev);
 
-void CORBA_DynSequence_insert_wchar(CORBA_DynSequence obj,
-				    CORBA_wchar value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_wstring(CORBA_DynSequence obj,
-				      CORBA_wchar *value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynSequence_insert_any(CORBA_DynSequence obj,
-				  CORBA_any value,
-				  CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynSequence_get_boolean(CORBA_DynSequence obj,
-					    CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynSequence_get_octet(CORBA_DynSequence obj,
-					CORBA_Environment *ev);
-
-CORBA_char CORBA_DynSequence_get_char(CORBA_DynSequence obj,
-				      CORBA_Environment *ev);
-
-CORBA_short CORBA_DynSequence_get_short(CORBA_DynSequence obj,
-					CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynSequence_get_ushort(CORBA_DynSequence obj,
-						  CORBA_Environment *ev);
-
-CORBA_long CORBA_DynSequence_get_long(CORBA_DynSequence obj,
-				      CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynSequence_get_ulong(CORBA_DynSequence obj,
-						CORBA_Environment *ev);
-
-CORBA_float CORBA_DynSequence_get_float(CORBA_DynSequence obj,
-					CORBA_Environment *ev);
-
-CORBA_double CORBA_DynSequence_get_double(CORBA_DynSequence obj,
-					  CORBA_Environment *ev);
-
-CORBA_char *CORBA_DynSequence_get_string(CORBA_DynSequence obj,
+void DynamicAny_DynAny_insert_typecode  (DynamicAny_DynAny obj,
+					 CORBA_TypeCode value,
 					 CORBA_Environment *ev);
-
-CORBA_Object CORBA_DynSequence_get_reference(CORBA_DynSequence obj,
-					     CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynSequence_get_typecode(CORBA_DynSequence obj,
-					      CORBA_Environment *ev);
 
 #ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynSequence_get_longlong(CORBA_DynSequence obj,
-					       CORBA_Environment *ev);
+void DynamicAny_DynAny_insert_longlong  (DynamicAny_DynAny obj,
+					 CORBA_long_long value,
+					 CORBA_Environment *ev);
 
-CORBA_unsigned_long_long CORBA_DynSequence_get_ulonglong(CORBA_DynSequence obj,
-							 CORBA_Environment *ev);
+void DynamicAny_DynAny_insert_ulonglong (DynamicAny_DynAny obj,
+					 CORBA_unsigned_long_long value,
+					 CORBA_Environment *ev);
 #endif
 
-CORBA_long_double CORBA_DynSequence_get_longdouble(CORBA_DynSequence obj,
+void DynamicAny_DynAny_insert_longdouble (DynamicAny_DynAny obj,
+					  CORBA_long_double value,
+					  CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_wchar (DynamicAny_DynAny obj,
+				     CORBA_wchar value,
+				     CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_wstring (DynamicAny_DynAny obj,
+				       CORBA_wchar *value,
+				       CORBA_Environment *ev);
+
+void DynamicAny_DynAny_insert_any (DynamicAny_DynAny obj,
+				   CORBA_any *value,
+				   CORBA_Environment *ev);
+
+CORBA_boolean DynamicAny_DynAny_get_boolean (DynamicAny_DynAny obj,
+					     CORBA_Environment *ev);
+
+CORBA_octet DynamicAny_DynAny_get_octet (DynamicAny_DynAny obj,
+					 CORBA_Environment *ev);
+
+CORBA_char DynamicAny_DynAny_get_char (DynamicAny_DynAny obj,
+				       CORBA_Environment *ev);
+
+CORBA_short DynamicAny_DynAny_get_short (DynamicAny_DynAny obj,
+					 CORBA_Environment *ev);
+
+CORBA_unsigned_short DynamicAny_DynAny_get_ushort (DynamicAny_DynAny obj,
 						   CORBA_Environment *ev);
 
-CORBA_wchar CORBA_DynSequence_get_wchar(CORBA_DynSequence obj,
-					CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynSequence_get_wstring(CORBA_DynSequence obj,
-					   CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynSequence_get_any(CORBA_DynSequence obj,
-				     CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynSequence_current_component(CORBA_DynSequence obj,
-						 CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynSequence_next(CORBA_DynSequence obj,
-				     CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynSequence_seek(CORBA_DynSequence obj,
-				     CORBA_long index,
-				     CORBA_Environment *ev);
-
-void CORBA_DynSequence_rewind(CORBA_DynSequence obj,
-			      CORBA_Environment *ev);
-
-CORBA_AnySeq *CORBA_DynArray_get_elements(CORBA_DynArray obj,
-					  CORBA_Environment *ev);
-
-void CORBA_DynArray_set_elements(CORBA_DynArray obj,
-				 CORBA_AnySeq *value,
-				 CORBA_Environment *ev);
-
-CORBA_TypeCode CORBA_DynArray_type(CORBA_DynArray obj,
-				   CORBA_Environment *ev);
-
-void CORBA_DynArray_assign(CORBA_DynArray obj,
-			   CORBA_DynAny dyn_any,
-			   CORBA_Environment *ev);
-
-void CORBA_DynArray_from_any(CORBA_DynArray obj,
-			     CORBA_any value,
-			     CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynArray_to_any(CORBA_DynArray obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_destroy(CORBA_DynArray obj,
-			    CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynArray_copy(CORBA_DynArray obj,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_boolean(CORBA_DynArray obj,
-				   CORBA_boolean value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_octet(CORBA_DynArray obj,
-				 CORBA_octet value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_char(CORBA_DynArray obj,
-				CORBA_char value,
-				CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_short(CORBA_DynArray obj,
-				 CORBA_short value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_ushort(CORBA_DynArray obj,
-				  CORBA_unsigned_short value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_long(CORBA_DynArray obj,
-				CORBA_long value,
-				CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_ulong(CORBA_DynArray obj,
-				 CORBA_unsigned_long value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_float(CORBA_DynArray obj,
-				 CORBA_float value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_double(CORBA_DynArray obj,
-				  CORBA_double value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_string(CORBA_DynArray obj,
-				  CORBA_char *value,
-				  CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_reference(CORBA_DynArray obj,
-				     CORBA_Object value,
-				     CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_typecode(CORBA_DynArray obj,
-				    CORBA_TypeCode value,
-				    CORBA_Environment *ev);
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynArray_insert_longlong(CORBA_DynArray obj,
-				    CORBA_long_long value,
-				    CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_ulonglong(CORBA_DynArray obj,
-				     CORBA_unsigned_long_long value,
-				     CORBA_Environment *ev);
-#endif
-
-void CORBA_DynArray_insert_longdouble(CORBA_DynArray obj,
-				      CORBA_long_double value,
-				      CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_wchar(CORBA_DynArray obj,
-				 CORBA_wchar value,
-				 CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_wstring(CORBA_DynArray obj,
-				   CORBA_wchar *value,
-				   CORBA_Environment *ev);
-
-void CORBA_DynArray_insert_any(CORBA_DynArray obj,
-			       CORBA_any value,
-			       CORBA_Environment *ev);
-
-CORBA_boolean CORBA_DynArray_get_boolean(CORBA_DynArray obj,
-					 CORBA_Environment *ev);
-
-CORBA_octet CORBA_DynArray_get_octet(CORBA_DynArray obj,
-				     CORBA_Environment *ev);
-
-CORBA_char CORBA_DynArray_get_char(CORBA_DynArray obj,
-				   CORBA_Environment *ev);
-
-CORBA_short CORBA_DynArray_get_short(CORBA_DynArray obj,
-				     CORBA_Environment *ev);
-
-CORBA_unsigned_short CORBA_DynArray_get_ushort(CORBA_DynArray obj,
-					       CORBA_Environment *ev);
-
-CORBA_long CORBA_DynArray_get_long(CORBA_DynArray obj,
-				   CORBA_Environment *ev);
-
-CORBA_unsigned_long CORBA_DynArray_get_ulong(CORBA_DynArray obj,
-					     CORBA_Environment *ev);
-
-CORBA_float CORBA_DynArray_get_float(CORBA_DynArray obj,
-				     CORBA_Environment *ev);
-
-CORBA_double CORBA_DynArray_get_double(CORBA_DynArray obj,
+CORBA_long DynamicAny_DynAny_get_long (DynamicAny_DynAny obj,
 				       CORBA_Environment *ev);
 
-CORBA_char *CORBA_DynArray_get_string(CORBA_DynArray obj,
-				      CORBA_Environment *ev);
+CORBA_unsigned_long DynamicAny_DynAny_get_ulong (DynamicAny_DynAny obj,
+						 CORBA_Environment *ev);
 
-CORBA_Object CORBA_DynArray_get_reference(CORBA_DynArray obj,
-					  CORBA_Environment *ev);
+CORBA_float DynamicAny_DynAny_get_float (DynamicAny_DynAny obj,
+					 CORBA_Environment *ev);
 
-CORBA_TypeCode CORBA_DynArray_get_typecode(CORBA_DynArray obj,
+CORBA_double DynamicAny_DynAny_get_double (DynamicAny_DynAny obj,
 					   CORBA_Environment *ev);
 
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynArray_get_longlong(CORBA_DynArray obj,
-					    CORBA_Environment *ev);
+CORBA_char *DynamicAny_DynAny_get_string (DynamicAny_DynAny obj,
+					  CORBA_Environment *ev);
 
-CORBA_unsigned_long_long CORBA_DynArray_get_ulonglong(CORBA_DynArray obj,
-						      CORBA_Environment *ev);
-#endif
-
-CORBA_long_double CORBA_DynArray_get_longdouble(CORBA_DynArray obj,
-						CORBA_Environment *ev);
-
-CORBA_wchar CORBA_DynArray_get_wchar(CORBA_DynArray obj,
-				     CORBA_Environment *ev);
-
-CORBA_wchar *CORBA_DynArray_get_wstring(CORBA_DynArray obj,
-					CORBA_Environment *ev);
-
-CORBA_any *CORBA_DynArray_get_any(CORBA_DynArray obj,
-				  CORBA_Environment *ev);
-
-CORBA_DynAny CORBA_DynArray_current_component(CORBA_DynArray obj,
+CORBA_Object DynamicAny_DynAny_get_reference (DynamicAny_DynAny obj,
 					      CORBA_Environment *ev);
 
-CORBA_boolean CORBA_DynArray_next(CORBA_DynArray obj,
-				  CORBA_Environment *ev);
+CORBA_TypeCode DynamicAny_DynAny_get_typecode (DynamicAny_DynAny obj,
+					       CORBA_Environment *ev);
 
-CORBA_boolean CORBA_DynArray_seek(CORBA_DynArray obj,
-				  CORBA_long index,
-				  CORBA_Environment *ev);
+#ifdef HAVE_CORBA_LONG_LONG
+CORBA_long_long DynamicAny_DynAny_get_longlong (DynamicAny_DynAny obj,
+						CORBA_Environment *ev);
 
-void CORBA_DynArray_rewind(CORBA_DynArray obj,
-			   CORBA_Environment *ev);
+CORBA_unsigned_long_long DynamicAny_DynAny_get_ulonglong (DynamicAny_DynAny obj,
+							  CORBA_Environment *ev);
+#endif
+
+CORBA_long_double DynamicAny_DynAny_get_longdouble (DynamicAny_DynAny obj,
+						    CORBA_Environment *ev);
+
+CORBA_wchar DynamicAny_DynAny_get_wchar (DynamicAny_DynAny obj,
+					 CORBA_Environment *ev);
+
+CORBA_wchar *DynamicAny_DynAny_get_wstring (DynamicAny_DynAny obj,
+					    CORBA_Environment *ev);
+
+CORBA_any *DynamicAny_DynAny_get_any (DynamicAny_DynAny obj,
+				      CORBA_Environment *ev);
+
+CORBA_unsigned_long DynamicAny_DynAny_component_count (DynamicAny_DynAny obj,
+						       CORBA_Environment *ev);
+
+DynamicAny_DynAny DynamicAny_DynAny_current_component (DynamicAny_DynAny obj,
+						       CORBA_Environment *ev);
+
+CORBA_boolean DynamicAny_DynAny_next (DynamicAny_DynAny obj,
+				      CORBA_Environment *ev);
+
+CORBA_boolean DynamicAny_DynAny_seek (DynamicAny_DynAny obj,
+				      CORBA_long index,
+				      CORBA_Environment *ev);
+
+void DynamicAny_DynAny_rewind (DynamicAny_DynAny obj,
+			       CORBA_Environment *ev);
+
+/* DynEnum */
+CORBA_char *DynamicAny_DynEnum_get_as_string (DynamicAny_DynEnum obj,
+					      CORBA_Environment *ev);
+
+void DynamicAny_DynEnum_set_as_string(DynamicAny_DynEnum obj,
+				      const CORBA_char *value_as_string,
+				      CORBA_Environment *ev);
+
+CORBA_unsigned_long DynamicAny_DynEnum_get_as_ulong (DynamicAny_DynEnum obj,
+						     CORBA_Environment *ev);
+
+void DynamicAny_DynEnum_set_as_ulong (DynamicAny_DynEnum obj,
+				      CORBA_unsigned_long value_as_ulong,
+				      CORBA_Environment *ev);
+
+/* DynStruct */
+CORBA_FieldName         DynamicAny_DynStruct_current_member_name (DynamicAny_DynStruct obj,
+								  CORBA_Environment *ev);
+
+CORBA_TCKind            DynamicAny_DynStruct_current_member_kind (DynamicAny_DynStruct obj,
+								  CORBA_Environment *ev);
+
+CORBA_NameValuePairSeq *DynamicAny_DynStruct_get_members  (DynamicAny_DynStruct obj,
+							   CORBA_Environment *ev);
+
+void                    DynamicAny_DynStruct_set_members  (DynamicAny_DynStruct obj,
+							   CORBA_NameValuePairSeq *value,
+							   CORBA_Environment *ev);
+
+/* DynUnion */
+DynamicAny_DynAny  DynamicAny_DynUnion_get_discriminator  (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+void          DynamicAny_DynUnion_set_discriminator       (DynamicAny_DynUnion obj,
+							   DynamicAny_DynAny   d,
+							   CORBA_Environment *ev);
+
+void          DynamicAny_DynUnion_set_to_default_member   (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+void          DynamicAny_DynUnion_set_to_no_active_member (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+CORBA_boolean DynamicAny_DynUnion_has_no_active_member    (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+CORBA_TCKind  DynamicAny_DynUnion_discriminator_kind      (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+DynamicAny_DynAny  DynamicAny_DynUnion_member             (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+CORBA_FieldName DynamicAny_DynUnion_member_name           (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+CORBA_TCKind  DynamicAny_DynUnion_member_kind             (DynamicAny_DynUnion obj,
+							   CORBA_Environment *ev);
+
+typedef struct {
+	CORBA_unsigned_long _maximum,
+		_length;
+	CORBA_any **_buffer;
+	CORBA_boolean _release;
+} CORBA_sequence_DynamicAny_DynAny_AnySeq;
+
+typedef CORBA_sequence_DynamicAny_DynAny_AnySeq DynamicAny_DynAny_AnySeq;
+
+extern const struct CORBA_TypeCode_struct
+	TC_CORBA_sequence_DynamicAny_DynAny_AnySeq_struct;
+#define TC_CORBA_sequence_DynamicAny_DynAny_AnySeq \
+	((CORBA_TypeCode)&TC_CORBA_sequence_DynamicAny_DynAny_AnySeq_struct)
+
+CORBA_sequence_DynamicAny_DynAny_AnySeq *CORBA_sequence_DynamicAny_DynAny_AnySeq__alloc (void);
+CORBA_any **CORBA_sequence_DynamicAny_DynAny_AnySeq_allocbuf (CORBA_unsigned_long len);
+
+typedef struct {
+	CORBA_unsigned_long _maximum,
+		_length;
+	DynamicAny_DynAny *_buffer;
+	CORBA_boolean _release;
+} CORBA_sequence_DynamicAny_DynAny_DynAnySeq;
+
+typedef CORBA_sequence_DynamicAny_DynAny_DynAnySeq DynamicAny_DynAny_DynAnySeq;
+
+extern const struct CORBA_TypeCode_struct
+	TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq_struct;
+#define TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq \
+	((CORBA_TypeCode)&TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq_struct)
+
+CORBA_sequence_DynamicAny_DynAny_DynAnySeq *CORBA_sequence_DynamicAny_DynAny_DynAnySeq__alloc (void);
+DynamicAny_DynAny *CORBA_sequence_DynamicAny_DynAny_DynAnySeq_allocbuf (CORBA_unsigned_long len);
+
+/* DynSequence */
+DynamicAny_DynAny_AnySeq *DynamicAny_DynSequence_get_elements(DynamicAny_DynSequence obj,
+							      CORBA_Environment *ev);
+
+void DynamicAny_DynSequence_set_elements(DynamicAny_DynSequence obj,
+					 DynamicAny_DynAny_AnySeq *value,
+					 CORBA_Environment *ev);
+
+CORBA_unsigned_long DynamicAny_DynSequence_get_length (DynamicAny_DynSequence obj,
+						       CORBA_Environment *ev);
+
+void DynamicAny_DynSequence_set_length (DynamicAny_DynSequence obj,
+					CORBA_unsigned_long length,
+					CORBA_Environment *ev);
+
+/* DynArray */
+DynamicAny_DynAny_AnySeq *DynamicAny_DynArray_get_elements(DynamicAny_DynArray obj,
+							   CORBA_Environment *ev);
+
+void DynamicAny_DynArray_set_elements(DynamicAny_DynArray obj,
+				      DynamicAny_DynAny_AnySeq *value,
+				      CORBA_Environment *ev);
+
+/*
+ * These defines create the API for the inherited methods.
+ */
+#define DynamicAny_DynFixed_type			DynamicAny_DynAny_type
+#define DynamicAny_DynFixed_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynFixed_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynFixed_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynFixed_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynFixed_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynFixed_copy			DynamicAny_DynAny_copy
+#define DynamicAny_DynFixed_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynFixed_insert_octet		DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynFixed_insert_char			DynamicAny_DynAny_insert_char
+#define DynamicAny_DynFixed_insert_short		DynamicAny_DynAny_insert_short
+#define DynamicAny_DynFixed_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynFixed_insert_long			DynamicAny_DynAny_insert_long
+#define DynamicAny_DynFixed_insert_ulong		DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynFixed_insert_float		DynamicAny_DynAny_insert_float
+#define DynamicAny_DynFixed_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynFixed_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynFixed_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynFixed_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynFixed_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynFixed_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynFixed_insert_longdouble		DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynFixed_insert_wchar		DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynFixed_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynFixed_insert_any			DynamicAny_DynAny_insert_any
+#define DynamicAny_DynFixed_get_boolean			DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynFixed_get_octet			DynamicAny_DynAny_get_octet
+#define DynamicAny_DynFixed_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynFixed_get_short			DynamicAny_DynAny_get_short
+#define DynamicAny_DynFixed_get_ushort			DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynFixed_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynFixed_get_ulong			DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynFixed_get_float			DynamicAny_DynAny_get_float
+#define DynamicAny_DynFixed_get_double			DynamicAny_DynAny_get_double
+#define DynamicAny_DynFixed_get_string			DynamicAny_DynAny_get_string
+#define DynamicAny_DynFixed_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynFixed_get_typecode		DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynFixed_get_longlong		DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynFixed_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynFixed_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynFixed_get_wchar			DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynFixed_get_wstring			DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynFixed_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynFixed_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynFixed_current_component		DynamicAny_DynAny_current_component
+#define DynamicAny_DynFixed_next			DynamicAny_DynAny_next
+#define DynamicAny_DynFixed_seek			DynamicAny_DynAny_seek
+#define DynamicAny_DynFixed_rewind			DynamicAny_DynAny_rewind
+
+
+#define DynamicAny_DynEnum_type				DynamicAny_DynAny_type
+#define DynamicAny_DynEnum_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynEnum_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynEnum_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynEnum_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynEnum_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynEnum_copy				DynamicAny_DynAny_copy
+#define DynamicAny_DynEnum_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynEnum_insert_octet			DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynEnum_insert_char			DynamicAny_DynAny_insert_char
+#define DynamicAny_DynEnum_insert_short			DynamicAny_DynAny_insert_short
+#define DynamicAny_DynEnum_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynEnum_insert_long			DynamicAny_DynAny_insert_long
+#define DynamicAny_DynEnum_insert_ulong			DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynEnum_insert_float			DynamicAny_DynAny_insert_float
+#define DynamicAny_DynEnum_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynEnum_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynEnum_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynEnum_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynEnum_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynEnum_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynEnum_insert_longdouble		DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynEnum_insert_wchar			DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynEnum_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynEnum_insert_any			DynamicAny_DynAny_insert_any
+#define DynamicAny_DynEnum_get_boolean			DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynEnum_get_octet			DynamicAny_DynAny_get_octet
+#define DynamicAny_DynEnum_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynEnum_get_short			DynamicAny_DynAny_get_short
+#define DynamicAny_DynEnum_get_ushort			DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynEnum_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynEnum_get_ulong			DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynEnum_get_float			DynamicAny_DynAny_get_float
+#define DynamicAny_DynEnum_get_double			DynamicAny_DynAny_get_double
+#define DynamicAny_DynEnum_get_string			DynamicAny_DynAny_get_string
+#define DynamicAny_DynEnum_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynEnum_get_typecode			DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynEnum_get_longlong			DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynEnum_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynEnum_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynEnum_get_wchar			DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynEnum_get_wstring			DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynEnum_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynEnum_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynEnum_current_component		DynamicAny_DynAny_current_component
+#define DynamicAny_DynEnum_next				DynamicAny_DynAny_next
+#define DynamicAny_DynEnum_seek				DynamicAny_DynAny_seek
+#define DynamicAny_DynEnum_rewind			DynamicAny_DynAny_rewind
+
+#define DynamicAny_DynStruct_type			DynamicAny_DynAny_type
+#define DynamicAny_DynStruct_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynStruct_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynStruct_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynStruct_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynStruct_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynStruct_copy			DynamicAny_DynAny_copy
+#define DynamicAny_DynStruct_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynStruct_insert_octet		DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynStruct_insert_char		DynamicAny_DynAny_insert_char
+#define DynamicAny_DynStruct_insert_short		DynamicAny_DynAny_insert_short
+#define DynamicAny_DynStruct_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynStruct_insert_long		DynamicAny_DynAny_insert_long
+#define DynamicAny_DynStruct_insert_ulong		DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynStruct_insert_float		DynamicAny_DynAny_insert_float
+#define DynamicAny_DynStruct_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynStruct_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynStruct_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynStruct_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynStruct_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynStruct_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynStruct_insert_longdouble		DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynStruct_insert_wchar		DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynStruct_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynStruct_insert_any			DynamicAny_DynAny_insert_any
+#define DynamicAny_DynStruct_get_boolean		DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynStruct_get_octet			DynamicAny_DynAny_get_octet
+#define DynamicAny_DynStruct_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynStruct_get_short			DynamicAny_DynAny_get_short
+#define DynamicAny_DynStruct_get_ushort			DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynStruct_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynStruct_get_ulong			DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynStruct_get_float			DynamicAny_DynAny_get_float
+#define DynamicAny_DynStruct_get_double			DynamicAny_DynAny_get_double
+#define DynamicAny_DynStruct_get_string			DynamicAny_DynAny_get_string
+#define DynamicAny_DynStruct_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynStruct_get_typecode		DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynStruct_get_longlong		DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynStruct_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynStruct_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynStruct_get_wchar			DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynStruct_get_wstring		DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynStruct_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynStruct_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynStruct_current_component		DynamicAny_DynAny_current_component
+#define DynamicAny_DynStruct_next			DynamicAny_DynAny_next
+#define DynamicAny_DynStruct_seek			DynamicAny_DynAny_seek
+#define DynamicAny_DynStruct_rewind			DynamicAny_DynAny_rewind
+
+#define DynamicAny_DynUnion_type			DynamicAny_DynAny_type
+#define DynamicAny_DynUnion_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynUnion_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynUnion_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynUnion_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynUnion_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynUnion_copy			DynamicAny_DynAny_copy
+#define DynamicAny_DynUnion_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynUnion_insert_octet		DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynUnion_insert_char			DynamicAny_DynAny_insert_char
+#define DynamicAny_DynUnion_insert_short		DynamicAny_DynAny_insert_short
+#define DynamicAny_DynUnion_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynUnion_insert_long			DynamicAny_DynAny_insert_long
+#define DynamicAny_DynUnion_insert_ulong		DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynUnion_insert_float		DynamicAny_DynAny_insert_float
+#define DynamicAny_DynUnion_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynUnion_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynUnion_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynUnion_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynUnion_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynUnion_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynUnion_insert_longdouble		DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynUnion_insert_wchar		DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynUnion_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynUnion_insert_any			DynamicAny_DynAny_insert_any
+#define DynamicAny_DynUnion_get_boolean			DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynUnion_get_octet			DynamicAny_DynAny_get_octet
+#define DynamicAny_DynUnion_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynUnion_get_short			DynamicAny_DynAny_get_short
+#define DynamicAny_DynUnion_get_ushort			DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynUnion_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynUnion_get_ulong			DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynUnion_get_float			DynamicAny_DynAny_get_float
+#define DynamicAny_DynUnion_get_double			DynamicAny_DynAny_get_double
+#define DynamicAny_DynUnion_get_string			DynamicAny_DynAny_get_string
+#define DynamicAny_DynUnion_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynUnion_get_typecode		DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynUnion_get_longlong		DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynUnion_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynUnion_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynUnion_get_wchar			DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynUnion_get_wstring			DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynUnion_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynUnion_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynUnion_current_component		DynamicAny_DynAny_current_component
+#define DynamicAny_DynUnion_next			DynamicAny_DynAny_next
+#define DynamicAny_DynUnion_seek			DynamicAny_DynAny_seek
+#define DynamicAny_DynUnion_rewind			DynamicAny_DynAny_rewind
+
+#define DynamicAny_DynSequence_type			DynamicAny_DynAny_type
+#define DynamicAny_DynSequence_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynSequence_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynSequence_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynSequence_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynSequence_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynSequence_copy			DynamicAny_DynAny_copy
+#define DynamicAny_DynSequence_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynSequence_insert_octet		DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynSequence_insert_char		DynamicAny_DynAny_insert_char
+#define DynamicAny_DynSequence_insert_short		DynamicAny_DynAny_insert_short
+#define DynamicAny_DynSequence_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynSequence_insert_long		DynamicAny_DynAny_insert_long
+#define DynamicAny_DynSequence_insert_ulong		DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynSequence_insert_float		DynamicAny_DynAny_insert_float
+#define DynamicAny_DynSequence_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynSequence_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynSequence_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynSequence_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynSequence_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynSequence_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynSequence_insert_longdouble	DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynSequence_insert_wchar		DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynSequence_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynSequence_insert_any		DynamicAny_DynAny_insert_any
+#define DynamicAny_DynSequence_get_boolean		DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynSequence_get_octet		DynamicAny_DynAny_get_octet
+#define DynamicAny_DynSequence_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynSequence_get_short		DynamicAny_DynAny_get_short
+#define DynamicAny_DynSequence_get_ushort		DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynSequence_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynSequence_get_ulong		DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynSequence_get_float		DynamicAny_DynAny_get_float
+#define DynamicAny_DynSequence_get_double		DynamicAny_DynAny_get_double
+#define DynamicAny_DynSequence_get_string		DynamicAny_DynAny_get_string
+#define DynamicAny_DynSequence_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynSequence_get_typecode		DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynSequence_get_longlong		DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynSequence_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynSequence_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynSequence_get_wchar		DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynSequence_get_wstring		DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynSequence_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynSequence_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynSequence_current_component	DynamicAny_DynAny_current_component
+#define DynamicAny_DynSequence_next			DynamicAny_DynAny_next
+#define DynamicAny_DynSequence_seek			DynamicAny_DynAny_seek
+#define DynamicAny_DynSequence_rewind			DynamicAny_DynAny_rewind
+
+#define DynamicAny_DynArray_type			DynamicAny_DynAny_type
+#define DynamicAny_DynArray_assign			DynamicAny_DynAny_assign
+#define DynamicAny_DynArray_from_any			DynamicAny_DynAny_from_any
+#define DynamicAny_DynArray_to_any			DynamicAny_DynAny_to_any
+#define DynamicAny_DynArray_destroy			DynamicAny_DynAny_destroy
+#define DynamicAny_DynArray_equal			DynamicAny_DynAny_equal 
+#define DynamicAny_DynArray_copy			DynamicAny_DynAny_copy
+#define DynamicAny_DynArray_insert_boolean		DynamicAny_DynAny_insert_boolean
+#define DynamicAny_DynArray_insert_octet		DynamicAny_DynAny_insert_octet
+#define DynamicAny_DynArray_insert_char			DynamicAny_DynAny_insert_char
+#define DynamicAny_DynArray_insert_short		DynamicAny_DynAny_insert_short
+#define DynamicAny_DynArray_insert_ushort		DynamicAny_DynAny_insert_ushort
+#define DynamicAny_DynArray_insert_long			DynamicAny_DynAny_insert_long
+#define DynamicAny_DynArray_insert_ulong		DynamicAny_DynAny_insert_ulong
+#define DynamicAny_DynArray_insert_float		DynamicAny_DynAny_insert_float
+#define DynamicAny_DynArray_insert_double		DynamicAny_DynAny_insert_double
+#define DynamicAny_DynArray_insert_string		DynamicAny_DynAny_insert_string
+#define DynamicAny_DynArray_insert_reference		DynamicAny_DynAny_insert_reference
+#define DynamicAny_DynArray_insert_typecode		DynamicAny_DynAny_insert_typecode
+#define DynamicAny_DynArray_insert_longlong		DynamicAny_DynAny_insert_longlong
+#define DynamicAny_DynArray_insert_ulonglong		DynamicAny_DynAny_insert_ulonglong
+#define DynamicAny_DynArray_insert_longdouble		DynamicAny_DynAny_insert_longdouble
+#define DynamicAny_DynArray_insert_wchar		DynamicAny_DynAny_insert_wchar
+#define DynamicAny_DynArray_insert_wstring		DynamicAny_DynAny_insert_wstring
+#define DynamicAny_DynArray_insert_any			DynamicAny_DynAny_insert_any
+#define DynamicAny_DynArray_get_boolean			DynamicAny_DynAny_get_boolean
+#define DynamicAny_DynArray_get_octet			DynamicAny_DynAny_get_octet
+#define DynamicAny_DynArray_get_char			DynamicAny_DynAny_get_char
+#define DynamicAny_DynArray_get_short			DynamicAny_DynAny_get_short
+#define DynamicAny_DynArray_get_ushort			DynamicAny_DynAny_get_ushort
+#define DynamicAny_DynArray_get_long			DynamicAny_DynAny_get_long
+#define DynamicAny_DynArray_get_ulong			DynamicAny_DynAny_get_ulong
+#define DynamicAny_DynArray_get_float			DynamicAny_DynAny_get_float
+#define DynamicAny_DynArray_get_double			DynamicAny_DynAny_get_double
+#define DynamicAny_DynArray_get_string			DynamicAny_DynAny_get_string
+#define DynamicAny_DynArray_get_reference		DynamicAny_DynAny_get_reference
+#define DynamicAny_DynArray_get_typecode		DynamicAny_DynAny_get_typecode
+#define DynamicAny_DynArray_get_longlong		DynamicAny_DynAny_get_longlong
+#define DynamicAny_DynArray_get_ulonglong		DynamicAny_DynAny_get_ulonglong
+#define DynamicAny_DynArray_get_longdouble		DynamicAny_DynAny_get_longdouble
+#define DynamicAny_DynArray_get_wchar			DynamicAny_DynAny_get_wchar
+#define DynamicAny_DynArray_get_wstring			DynamicAny_DynAny_get_wstring
+#define DynamicAny_DynArray_get_any			DynamicAny_DynAny_get_any
+#define DynamicAny_DynArray_component_count		DynamicAny_DynAny_component_count 
+#define DynamicAny_DynArray_current_component		DynamicAny_DynAny_current_component
+#define DynamicAny_DynArray_next			DynamicAny_DynAny_next
+#define DynamicAny_DynArray_seek			DynamicAny_DynAny_seek
+#define DynamicAny_DynArray_rewind			DynamicAny_DynAny_rewind
 
 #endif /* !_ORBIT_DYNANY_H_ */

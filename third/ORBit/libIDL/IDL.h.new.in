@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: IDL.h.new.in,v 1.1.1.1 2000-11-10 00:47:58 ghudson Exp $
+    $Id: IDL.h.new.in,v 1.1.1.2 2001-01-16 22:13:26 ghudson Exp $
 
 ***************************************************************************/
 #ifndef __IDL_H
@@ -38,6 +38,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h>
 
 /* version */
 #define LIBIDL_VERSION(a,b,c)		(((a) << 16) + ((b) << 8) + (c))

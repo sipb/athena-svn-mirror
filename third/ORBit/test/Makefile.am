@@ -1,7 +1,7 @@
 noinst_PROGRAMS=test test-dynamic echo-client echo-server test-object \
 echo-local test-any-client test-any-server test-tc-client \
 test-tc-server test-ir-client test-ir-server \
-empty-server empty-client
+empty-server empty-client test-dynany
 bin_PROGRAMS=ior-decode
 SUBDIRS=test-poa idl
 BUILT_SOURCES=echo.h echo-common.c echo-stubs.c echo-skels.c \
@@ -78,6 +78,11 @@ test_any_server_LDFLAGS = $(FLAGS)
 test_any_server_DEPENDENCIES = $(DEPS) test-any.h
 test_any_server_LDADD= $(LDADDS)
 
+test_dynany_SOURCES=test-dynany.c
+test_dynany_LDFLAGS = $(FLAGS)
+test_dynany_DEPENDENCIES = $(DEPS)
+test_dynany_LDADD= $(LDADDS)
+
 $(srcdir)/test-any-client.c $(srcdir)/test-any-server.c: test-any.h
 
 test_tc_client_SOURCES=test-tc-client.c test-tc-common.c test-tc-stubs.c
@@ -153,3 +158,5 @@ dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 CLEANFILES=echo_built empty_built test_any_built test_tc_built test_ir_built
+
+TESTS = test-dynany

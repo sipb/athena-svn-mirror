@@ -1,5 +1,4 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
 /*
  *  ORBit: A CORBA v2.2 ORB
  *
@@ -30,2483 +29,1844 @@
 #include "orbit.h"
 #include "sequences.h"
 
-#define o_return_if_fail(x)
-#define o_return_val_if_fail(x, y)
+#define o_return_val_if_fail(expr, val) if(!(expr)) { CORBA_exception_set_system (ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO); return (val); }
+#define o_return_if_fail(expr)          if(!(expr)) { CORBA_exception_set_system (ev, ex_CORBA_BAD_PARAM, CORBA_COMPLETED_NO); return; }
+#define b_return_val_if_fail(expr, val) if(!(expr)) { CORBA_exception_set_system (ev, ex_CORBA_OBJECT_NOT_EXIST, CORBA_COMPLETED_NO); return (val); }
+#define b_return_if_fail(expr)          if(!(expr)) { CORBA_exception_set_system (ev, ex_CORBA_OBJECT_NOT_EXIST, CORBA_COMPLETED_NO); return; }
 
-static void CORBA_DynAny_release_fn(CORBA_DynAny obj, CORBA_Environment *ev);
 
-static const ORBit_RootObject_Interface CORBA_DynAny__epv = {
-	(void (*)(gpointer, CORBA_Environment *))CORBA_DynAny_release_fn
+static void DynamicAny_DynAny_release_fn(DynamicAny_DynAny obj, CORBA_Environment *ev);
+
+static const ORBit_RootObject_Interface DynamicAny_DynAny__epv = {
+	(void (*)(gpointer, CORBA_Environment *)) DynamicAny_DynAny_release_fn
 };
 
-typedef struct {
-	CORBA_TypeCode tc;
-	union {
-		gpointer sub, sub2;
-		guchar data[sizeof(CORBA_Principal)];
-	} u;
-} dynpiece_t;
+/*	     CORBA_tk_null:
+	case CORBA_tk_void:
+	case CORBA_tk_short:
+	case CORBA_tk_long:
+	case CORBA_tk_ushort:
+	case CORBA_tk_ulong:
+	case CORBA_tk_float:
+	case CORBA_tk_double:
+	case CORBA_tk_boolean:
+	case CORBA_tk_char:
+	case CORBA_tk_octet:
+	case CORBA_tk_any:
+	case CORBA_tk_TypeCode:
+	case CORBA_tk_Principal:
+	case CORBA_tk_objref:
+ 	case CORBA_tk_struct:
+	case CORBA_tk_union:
+	case CORBA_tk_enum:
+	case CORBA_tk_string:
+	case CORBA_tk_sequence:
+	case CORBA_tk_array:
+	case CORBA_tk_alias:
+	case CORBA_tk_except:
+	case CORBA_tk_longlong:
+	case CORBA_tk_ulonglong:
+	case CORBA_tk_longdouble:
+	case CORBA_tk_wchar:
+	case CORBA_tk_wstring:
+	case CORBA_tk_fixed:
+	case CORBA_tk_recursive: */
 
-static dynpiece_t *
-ORBit_DynAny_items_from_any(CORBA_TypeCode type,
-			    guchar **value,
-			    CORBA_Environment *ev);
-static CORBA_any *ORBit_DynAny_any_from_items(CORBA_DynAny obj,
-					      CORBA_Environment *ev);
 
-/* Operations needed:
-   free what we have
-   copy what we have
-   insert new item
-   delete item
+#define DYNANY_TYPE_SINGLE \
+	     CORBA_tk_null: \
+	case CORBA_tk_void: \
+	case CORBA_tk_short: \
+	case CORBA_tk_long: \
+	case CORBA_tk_ushort: \
+	case CORBA_tk_ulong: \
+	case CORBA_tk_float: \
+	case CORBA_tk_double: \
+	case CORBA_tk_boolean: \
+	case CORBA_tk_char: \
+	case CORBA_tk_octet: \
+	case CORBA_tk_string: \
+	case CORBA_tk_longlong: \
+	case CORBA_tk_ulonglong: \
+	case CORBA_tk_longdouble: \
+	case CORBA_tk_wchar: \
+	case CORBA_tk_wstring: \
+	case CORBA_tk_objref: \
+	case CORBA_tk_any: \
+	case CORBA_tk_TypeCode: \
+	case CORBA_tk_Principal
 
-   any -> items
-   items -> any
+#define DYNANY_TYPE_RELEASED \
+ 	     CORBA_tk_struct: \
+	case CORBA_tk_union: \
+	case CORBA_tk_sequence: \
+	case CORBA_tk_array: \
+	case CORBA_tk_alias: \
+	case CORBA_tk_objref: \
+	case CORBA_tk_any: \
+	case CORBA_tk_TypeCode: \
+	case CORBA_tk_Principal
+
+
+
+typedef struct _DynAny DynAny;
+
+struct _DynAny {
+	/*
+	 *  This stores the DynAny's typecode, which is
+	 * always valid unless OBJECT_NOT_EXIST should
+	 * be fired. any->_value points to the value;
+	 * the validity of this is enforced.
+	 */
+	CORBA_any   *any;
+	int          idx;
+
+	/*
+	 *  These are validated when something bad
+	 * happens such as changing a union's discriminator
+	 * or shrinking a sequence.
+	 */
+	GSList      *children;		/* DynAny *'s */
+	int          parent_idx;
+
+	/* To allow de-registration */
+	DynAny      *parent;
+};
+
+/*
+ *  All clever validation happens parent -> child
+ * children use their parent simply to deregister themselfs;
  */
-
-/* Section 7.2.2 */
-CORBA_DynAny
-CORBA_ORB_create_dyn_any(CORBA_ORB obj,
-			 CORBA_any *value,
-			 CORBA_Environment *ev)
+static void
+dynany_invalidate (DynAny *d,
+		   gboolean invalidate_cur,
+		   CORBA_Environment *ev)
 {
-	CORBA_DynAny retval;
-	guchar *ptmp;
+	if (invalidate_cur) {
+		if (d->parent) {
+			d->parent->children = g_slist_remove (
+				d->parent->children, d);
+			d->parent = NULL;
+			g_assert (!d->any->_release);
+		}
 
-	g_return_val_if_fail(ev, NULL);
-	o_return_val_if_fail(obj, NULL);
+		CORBA_Object_release ((CORBA_Object) d->any->_type, ev);
+		CORBA_free (d->any);
+		d->any = NULL;
+	}
 
-	retval = g_new0(struct CORBA_DynAny_type, 1);
+	while (d->children)
+		dynany_invalidate (d->children->data, TRUE, ev);
+}
 
-	ORBit_RootObject_set_interface(ORBIT_ROOT_OBJECT(retval),
-				       (ORBit_RootObject_Interface *)&CORBA_DynAny__epv, ev);
-	ORBIT_ROOT_OBJECT(retval)->refs = 0;
+#define GET_DYNANY(obj) ((DynAny *)((struct DynamicAny_DynAny_type *)(obj))->data)
 
-	ptmp = value->_value;
-	retval->items =
-		ORBit_DynAny_items_from_any(value->_type, &ptmp, ev);
+static void
+DynamicAny_DynAny_release_fn (DynamicAny_DynAny obj, CORBA_Environment *ev)
+{
+	DynAny *dynany;
+
+	g_return_if_fail (obj != NULL);
+
+	dynany = GET_DYNANY (obj);
+
+	dynany_invalidate (dynany, FALSE, ev);
+
+	if (dynany->any)
+		CORBA_free (dynany->any);
+
+	g_slist_free (dynany->children);
+
+	g_free (dynany);
+	g_free (obj);
+}
+
+static CORBA_TypeCode
+dynany_get_cur_type (DynAny *dynany)
+{
+	CORBA_TypeCode tc = dynany->any->_type;
+
+ find_type:
+	switch (tc->kind) {
+	case DYNANY_TYPE_SINGLE:
+	case CORBA_tk_fixed:
+	case CORBA_tk_enum:
+		return tc;
+		
+	case CORBA_tk_sequence:
+	case CORBA_tk_array:
+		return tc->subtypes [0];
+		
+	case CORBA_tk_struct:
+	case CORBA_tk_except:
+		if (dynany->idx >= 0 && dynany->idx < tc->sub_parts)
+			return tc->subtypes [dynany->idx];
+		else
+			return CORBA_OBJECT_NIL;
+
+	case CORBA_tk_union:
+		if (dynany->idx == 0)
+			return tc->discriminator;
+		else
+			g_warning ("Union body type checking unimplemented");
+		break;
+
+	case CORBA_tk_alias:
+		tc = tc->subtypes [0];
+		goto find_type;
+		
+	default:
+		g_warning ("Unknown kind '%d'", tc->kind);
+		break;
+	}
+
+	return CORBA_OBJECT_NIL;
+}
+
+static gboolean
+dynany_type_mismatch (DynAny        *dynany,
+		      CORBA_TypeCode assign,
+		      CORBA_Environment *ev)
+{
+	gboolean       equal;
+	CORBA_TypeCode tc = dynany_get_cur_type (dynany);
+
+	if (tc != CORBA_OBJECT_NIL) {
+		equal = CORBA_TypeCode_equal (tc, assign, ev);
+
+		if (ev->_major != CORBA_NO_EXCEPTION)
+			return TRUE;
+	} else
+		equal = FALSE;
+
+	if (!equal)
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_TypeMismatch, NULL);
+	return !equal;
+}
+
+static gboolean
+dynany_kind_mismatch (DynAny *dynany,
+		      CORBA_TCKind kind,
+		      CORBA_Environment *ev)
+{
+	if (dynany->any->_type->kind != kind) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_TypeMismatch, NULL);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/* ORBit_demarshal_allocate_mem cut & paste: should globalize this */
+static gpointer
+ORBit_demarshal_allocate_mem (CORBA_TypeCode tc, gint nelements)
+{
+	size_t block_size;
+	gpointer retval = NULL;
+
+	if (!nelements)
+		return retval;
+
+	block_size = ORBit_gather_alloc_info(tc);
+
+	if (block_size) {
+		retval = ORBit_alloc_2 (
+			block_size *nelements,
+			(ORBit_free_childvals) ORBit_free_via_TypeCode,
+			GINT_TO_POINTER (nelements),
+			sizeof (CORBA_TypeCode));
+
+		*(CORBA_TypeCode *)((char *) retval - sizeof (ORBit_mem_info) -
+				    sizeof (CORBA_TypeCode)) =
+			(CORBA_TypeCode) CORBA_Object_duplicate ((CORBA_Object) tc, NULL);
+	}
 
 	return retval;
 }
 
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynAny
-CORBA_ORB_create_basic_dyn_any(CORBA_ORB obj,
-			       CORBA_TypeCode type,
-			       CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynStruct
-CORBA_ORB_create_dyn_struct(CORBA_ORB obj,
-			    CORBA_TypeCode type,
-			    CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynSequence
-CORBA_ORB_create_dyn_sequence(CORBA_ORB obj,
-			      CORBA_TypeCode type,
-			      CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynArray
-CORBA_ORB_create_dyn_array(CORBA_ORB obj,
-			   CORBA_TypeCode type,
-			   CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynUnion
-CORBA_ORB_create_dyn_union(CORBA_ORB obj,
-			   CORBA_TypeCode type,
-			   CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynEnum
-CORBA_ORB_create_dyn_enum(CORBA_ORB obj,
-			  CORBA_TypeCode type,
-			  CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-/* Section 7.2.2
- *
- * raises: InconsistentTypeCode
- */
-CORBA_DynFixed
-CORBA_ORB_create_dyn_fixed(CORBA_ORB obj,
-			   CORBA_TypeCode type,
-			   CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
 static void
-CORBA_DynAny_release_fn(CORBA_DynAny obj, CORBA_Environment *ev)
+dynany_init_default (gpointer *val, const CORBA_TypeCode tc)
 {
-	g_free(obj);
-}
+	int    i;
+	size_t size;
 
-CORBA_TypeCode
-CORBA_DynAny_type(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	size = ORBit_gather_alloc_info (tc);
 
-static dynpiece_t *
-ORBit_DynAny_items_from_any(CORBA_TypeCode type,
-			    guchar **value,
-			    CORBA_Environment *ev)
-{
-	dynpiece_t *cur, *sub;
-	int i;
+	*val = ALIGN_ADDRESS (*val, ORBit_find_alignment (tc));
 
-	cur = g_new(dynpiece_t, 1);
-	cur->u.sub = NULL;
-	cur->tc = (CORBA_TypeCode)
-		CORBA_Object_duplicate((CORBA_Object)type, ev);
-
-	switch(type->kind) {
-	case CORBA_tk_short:
- 	case CORBA_tk_ushort:
-		memcpy(cur->u.data, *value, sizeof(CORBA_short));
-		*value += sizeof(CORBA_short);
+	switch (tc->kind) {
+	case CORBA_tk_null:
 		break;
 	case CORBA_tk_long:
 	case CORBA_tk_ulong:
 	case CORBA_tk_enum:
-		memcpy(cur->u.data, *value, sizeof(CORBA_long));
-		*value += sizeof(CORBA_long);
-		break;
-	case CORBA_tk_float:
-		memcpy(cur->u.data, *value, sizeof(CORBA_float));
-		*value += sizeof(CORBA_float);
-		break;
- 	case CORBA_tk_double:
-		memcpy(cur->u.data, *value, sizeof(CORBA_double));
-		*value += sizeof(CORBA_double);
-		break;
+	case CORBA_tk_short:
+	case CORBA_tk_ushort:
+	case CORBA_tk_wchar:
 	case CORBA_tk_boolean:
 	case CORBA_tk_char:
 	case CORBA_tk_octet:
-		memcpy(cur->u.data, *value, sizeof(CORBA_octet));
-		*value += sizeof(CORBA_octet);
-		break;
-	case CORBA_tk_any:
-		{
-			CORBA_any *anyval;
-			gpointer ptmp;
-
-			anyval = (CORBA_any *)*value;
-			ptmp = anyval->_value;
-			cur->u.sub = ORBit_DynAny_items_from_any(anyval->_type,
-								 ptmp,
-								 ev);
-			*value += sizeof(CORBA_any);
-		}
-		break;
-	case CORBA_tk_TypeCode:
-	case CORBA_tk_objref:
-		memcpy(cur->u.data, *value, sizeof(CORBA_Object));
-		CORBA_Object_duplicate((CORBA_Object)cur->u.data, ev);
-		*value += sizeof(CORBA_Object);
-		break;
-	case CORBA_tk_Principal:
-		{
-			/* aka sequence_octet, oh well */
-			CORBA_Principal *prtmp;
-
-			memcpy(cur->u.data, *value, sizeof(CORBA_Principal));
-			prtmp = (CORBA_Principal *)cur->u.data;
-			prtmp->_buffer =
-				CORBA_octet_allocbuf(prtmp->_length);
-
-			memcpy(prtmp->_buffer, 
-			       ((CORBA_Principal *)*value)->_buffer,
-			       prtmp->_length);
-			*value += sizeof(CORBA_Principal);
-		}
-		break;
- 	case CORBA_tk_struct:
-		*value = ALIGN_ADDRESS(*value, ALIGNOF_CORBA_STRUCT);
-		for(i = 0; i < type->sub_parts; i++) {
-			*value = ALIGN_ADDRESS(*value,
-					       ORBit_find_alignment(type->subtypes[i]));
-			sub = ORBit_DynAny_items_from_any(type->subtypes[i],
-							  value,
-							  ev);
-							  
-			cur->u.sub = g_list_append(cur->u.sub,
-						   sub);
-		}
-		break;
-	case CORBA_tk_union:
-		{
-			CORBA_TypeCode data_tc;
-
-			*value = ALIGN_ADDRESS(*value,
-					       MAX(ALIGNOF_CORBA_STRUCT,
-						   ORBit_find_alignment(type->discriminator)));
-
-			cur->u.sub =
-				ORBit_DynAny_items_from_any(type->discriminator,
-							    value, ev);
-
-			/* XXX: I dont know if {value} should be updated? */
-			data_tc = ORBit_get_union_tag(type, (gpointer *)value, TRUE);
-
-			*value = ALIGN_ADDRESS(*value,
-					       ORBit_find_alignment(data_tc));
-			cur->u.sub2 = 
-				ORBit_DynAny_items_from_any(data_tc,
-							    value, ev);
-		}
-		break;
-	case CORBA_tk_string:
-		cur->u.sub = CORBA_string_dup(*(CORBA_char **)*value);
-		*value += sizeof(CORBA_char *);
-		break;
-	case CORBA_tk_sequence:
-#ifdef FINISH_OFF_HERE_YOU_MORON
-		for(i = 0; i < 
-		cur->u.sub
-#endif
-		break;
-	case CORBA_tk_array:
-		break;
-	case CORBA_tk_alias:
-		break;
-	case CORBA_tk_except:
-		break;
 	case CORBA_tk_longlong:
-		break;
 	case CORBA_tk_ulonglong:
+		memset (*val, 0, size);
+		*val = ((guchar *)*val) + size;
 		break;
-	case CORBA_tk_longdouble:
-		break;
-	case CORBA_tk_wchar:
-		break;
+
 	case CORBA_tk_wstring:
+	case CORBA_tk_string:
+		*(CORBA_char **) *val = CORBA_string_dup ("");
+		*val = ((guchar *)*val) + size;
 		break;
-	case CORBA_tk_fixed:
+
+	case CORBA_tk_float:
+		*(CORBA_float *) *val = 0.0;
+		*val = ((guchar *)*val) + size;
 		break;
-	case CORBA_tk_recursive:
+
+	case CORBA_tk_double:
+		*(CORBA_double *) *val = 0.0;
+		*val = ((guchar *)*val) + size;
 		break;
-	default:
-		CORBA_Object_release((CORBA_Object)cur->tc, ev);
-		g_free(cur);
-		cur = NULL;
+
+	case CORBA_tk_longdouble:
+		*(CORBA_long_double *) *val = 0.0;
+		*val = ((guchar *)*val) + size;
+		break;
+
+	case CORBA_tk_objref:
+		*(CORBA_Object *) *val = CORBA_OBJECT_NIL;
+		*val = ((guchar *)*val) + size;
+		break;
+
+	case CORBA_tk_any: {
+		CORBA_any *any = (CORBA_any *) *val;
+
+		any->_type = (CORBA_TypeCode) CORBA_Object_duplicate (
+			(CORBA_Object) TC_null, NULL);
+		any->_value = NULL;
+
+		CORBA_any_set_release (any, CORBA_TRUE);
+		*val = ((guchar *)*val) + size;
 		break;
 	}
 
-	return cur;
+	case CORBA_tk_TypeCode:
+		*(CORBA_Object *) *val = CORBA_Object_duplicate (
+			(CORBA_Object) TC_null, NULL);
+		*val = ((guchar *)*val) + size;
+		break;
+
+ 	case CORBA_tk_sequence: {
+		CORBA_sequence_octet *s;
+
+		s = (CORBA_sequence_octet *) *val;
+
+		s->_maximum = tc->length;
+		s->_length = 0;
+		s->_buffer = NULL;
+		s->_release = CORBA_TRUE;
+
+		*val = ((guchar *)*val) + sizeof (CORBA_sequence_octet);
+		break;
+	}
+
+	case CORBA_tk_array:
+		for (i = 0; i < tc->length; i++) 
+			dynany_init_default (val, tc->subtypes [0]);
+		break;
+		
+	case CORBA_tk_except:
+	case CORBA_tk_struct:
+		for (i = 0; i < tc->sub_parts; i++)
+			dynany_init_default (val, tc->subtypes [i]);
+		break;
+
+	case CORBA_tk_union: {
+		gpointer oldval = *val;
+
+		dynany_init_default (val, tc->discriminator);
+
+		dynany_init_default (val, tc->subtypes [0]);
+
+		*val = ((guchar *)oldval) + size;
+		break;
+	}
+
+	case CORBA_tk_alias:
+		dynany_init_default (val, tc->subtypes [0]);
+		break;
+		
+	case CORBA_tk_fixed:
+	default:
+		g_warning ("Unhandled typecode");
+		break;
+	}
 }
 
-static CORBA_any *
-ORBit_DynAny_any_from_items(CORBA_DynAny obj,
+static gpointer
+dynany_any_new_default (const CORBA_TypeCode tc)
+{
+	gpointer value;
+	gpointer p;
+
+	p = value = ORBit_demarshal_allocate_mem (tc, 1);
+	dynany_init_default (&p, tc);
+
+	return value;
+}
+
+static gboolean
+dynany_sequence_realloc_to (CORBA_sequence_octet *s,
+			    CORBA_TypeCode        sequence_tc,
+			    long                  len,
+			    CORBA_Environment    *ev)
+{
+	CORBA_TypeCode tc = sequence_tc->subtypes [0];
+	gpointer buf, old_buf, a, b;
+
+	buf = ORBit_demarshal_allocate_mem (tc, len);
+
+	if (!buf)
+		return FALSE;
+
+	old_buf = s->_buffer;
+	s->_buffer = buf;
+	s->_length = len;
+
+	if (old_buf) {
+		int i;
+
+		a = old_buf;
+		b = buf;
+		
+		for (i = 0; i < len; i++)
+			_ORBit_copy_value (&a, &b, tc);
+		
+		ORBit_free (old_buf, TRUE);
+	}
+
+	return TRUE;
+}
+
+#define DYNANY_GET_OFFSET(p,i,tc) \
+	((gpointer) (((guchar *) (p)) + ORBit_gather_alloc_info (tc) * (i)))
+
+/**
+ * dynany_get_value:
+ * @dynany: dynany
+ * @ev: exception environment
+ * 
+ *   Calculates the address of the current component's
+ * value data; ie. for a _tk_long we return a CORBA_long *
+ * 
+ * Return value: as above, or NULL on exception.
+ **/
+static gpointer
+dynany_get_value (DynAny *dynany, CORBA_Environment *ev)
+{
+	gpointer  value;
+	CORBA_any *any = dynany->any;
+	CORBA_TypeCode tc = any->_type;
+
+ get_from_typecode:
+	switch (tc->kind) {
+	case DYNANY_TYPE_SINGLE:
+	case CORBA_tk_fixed:
+	case CORBA_tk_enum:
+		value = any->_value;
+		break;
+	default:
+		if (dynany->idx < 0) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_DynamicAny_DynAny_InvalidValue, NULL);
+			return NULL;
+		}
+
+		switch (tc->kind) {
+		case CORBA_tk_sequence: {
+			CORBA_sequence_octet *s;
+			
+			s = (CORBA_sequence_octet *) any->_value;
+			if (!s || dynany->idx >= s->_length) {
+				value = NULL;
+				g_warning ("Serious internal sequence related "
+					   "error %p %d >= %d", s,
+					   s ? s->_length: -1, dynany->idx);
+			} else
+				value = DYNANY_GET_OFFSET (s->_buffer, dynany->idx,
+							   tc->subtypes [0]);
+			break;
+		}
+
+		case CORBA_tk_array:
+			value = DYNANY_GET_OFFSET (any->_value, dynany->idx,
+						   tc->subtypes [0]);
+			break;
+
+		case CORBA_tk_struct:
+		case CORBA_tk_except: {
+			int i;
+			/* FIXME: could cache for efficiency */
+			value = any->_value;
+			for (i = 0; i < dynany->idx; i++)
+				value = DYNANY_GET_OFFSET (value, 1, tc->subtypes [i]);
+			break;
+		}
+
+		case CORBA_tk_alias:
+			tc = tc->subtypes [0];
+			goto get_from_typecode;
+
+		case CORBA_tk_union:
+			g_warning ("Can't get some complex types yet");
+			value = NULL;
+
+		default:
+			g_warning ("Unknown kind '%d'", any->_type->kind);
+			value = NULL;
+			break;
+		}
+	}
+
+	if (!value)
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	
+	return value;
+}
+
+static void
+dynany_get (DynAny *dynany,
+	    gpointer retval,
+	    CORBA_TypeCode value_type,
+	    CORBA_Environment *ev)
+{
+	gpointer dval;
+
+	dval = dynany_get_value (dynany, ev);
+	if (!dval)
+		return;
+
+	_ORBit_copy_value (&dval, &retval, value_type);
+}
+
+static void
+dynany_insert (DynAny        *dynany,
+	       CORBA_TypeCode value_type,
+	       gpointer       value,
+	       CORBA_Environment *ev)
+{
+	gpointer dval;
+
+	dval = dynany_get_value (dynany, ev);
+	if (!dval)
+		return;
+
+	_ORBit_copy_value (&value, &dval, value_type);
+}
+
+/**
+ * dynany_create:
+ * @type: the type of the any
+ * @value: a pointer to a value
+ * @parent: flags whether we are a slave object or a master
+ * @ev: exception environment
+ * 
+ *   If we have a parent, it is reffed and we store a pointer
+ * into the parent's data structure. -REALLOC-!
+ * 
+ * Return value: a new DynAny object
+ **/
+static DynamicAny_DynAny
+dynany_create (const CORBA_TypeCode type,
+	       gpointer             value,
+	       DynAny              *parent,
+	       CORBA_Environment   *ev)
+{
+	DynamicAny_DynAny object;
+	DynAny      *dynany;
+
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	object = g_new0 (struct DynamicAny_DynAny_type, 1);
+	if (!object)
+		goto nomemory;
+
+	dynany = g_new (DynAny, 1);
+	if (!dynany) {
+		g_free (object);
+		goto nomemory;
+	}
+
+	dynany->idx = 0;
+	dynany->parent = NULL;
+	dynany->children = NULL;
+	dynany->parent_idx = 0;
+
+	ORBit_RootObject_set_interface (
+		ORBIT_ROOT_OBJECT (object),
+		(ORBit_RootObject_Interface *) &DynamicAny_DynAny__epv, ev);
+	ORBIT_ROOT_OBJECT (object)->refs = 0;
+
+	dynany->any = CORBA_any_alloc ();
+	dynany->any->_type = (CORBA_TypeCode)
+		CORBA_Object_duplicate ((CORBA_Object) type, ev);
+
+	if (parent) {
+		dynany->parent = parent;
+		dynany->parent_idx = parent->idx;
+		parent->children = g_slist_prepend (
+			parent->children, dynany);
+
+		g_assert (value);
+		dynany->any->_release = CORBA_FALSE;
+		dynany->any->_value = value;
+	} else {
+		dynany->any->_release = CORBA_TRUE;
+
+		if (value)
+			dynany->any->_value = ORBit_copy_value (value, type);
+		else
+			dynany->any->_value = dynany_any_new_default (type);
+	}
+
+	object->data = dynany;
+
+	return object;
+
+ nomemory:
+	CORBA_exception_set_system (
+		ev, ex_CORBA_NO_MEMORY, CORBA_COMPLETED_NO);
+
+	return CORBA_OBJECT_NIL;
+}
+
+
+/* Section 7.2.2 */
+DynamicAny_DynAny
+CORBA_ORB_create_dyn_any(CORBA_ORB obj,
+			 CORBA_any *value,
+			 CORBA_Environment *ev)
+{
+	o_return_val_if_fail (value, CORBA_OBJECT_NIL);
+
+	return dynany_create (value->_type, value->_value, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynAny
+CORBA_ORB_create_basic_dyn_any(CORBA_ORB obj,
+			       const CORBA_TypeCode type,
+			       CORBA_Environment *ev)
+{
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynStruct
+CORBA_ORB_create_dyn_struct (CORBA_ORB obj,
+			     const CORBA_TypeCode type,
+			     CORBA_Environment *ev)
+{
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return (DynamicAny_DynStruct) dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynSequence
+CORBA_ORB_create_dyn_sequence (CORBA_ORB obj,
+			       const CORBA_TypeCode type,
+			       CORBA_Environment *ev)
+{
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return (DynamicAny_DynSequence) dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynArray
+CORBA_ORB_create_dyn_array (CORBA_ORB obj,
+			    const CORBA_TypeCode type,
 			    CORBA_Environment *ev)
 {
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return (DynamicAny_DynArray) dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynUnion
+CORBA_ORB_create_dyn_union (CORBA_ORB obj,
+			    const CORBA_TypeCode type,
+			    CORBA_Environment *ev)
+{
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return (DynamicAny_DynUnion) dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* Section 7.2.2
+ *
+ * raises: InconsistentTypeCode
+ */
+DynamicAny_DynEnum
+CORBA_ORB_create_dyn_enum (CORBA_ORB obj,
+			   const CORBA_TypeCode type,
+			   CORBA_Environment *ev)
+{
+	o_return_val_if_fail (type, CORBA_OBJECT_NIL);
+
+	return (DynamicAny_DynEnum) dynany_create (type, NULL, CORBA_OBJECT_NIL, ev);
+}
+
+/* 9.2.3.1 */
+
+CORBA_TypeCode
+DynamicAny_DynAny_type (DynamicAny_DynAny obj, CORBA_Environment *ev)
+{
+	DynAny *dynany;
+
+	o_return_val_if_fail (obj != NULL, CORBA_OBJECT_NIL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      CORBA_OBJECT_NIL);
+
+	return (CORBA_TypeCode) CORBA_Object_duplicate (
+		(CORBA_Object) dynany->any->_type, ev);
+}
+
+/* 9.2.3.2 */
+
+void
+DynamicAny_DynAny_assign (DynamicAny_DynAny dest,
+		     DynamicAny_DynAny src,
+		     CORBA_Environment *ev)
+{
+	DynAny *dynany_src;
+
+	o_return_if_fail (dest && src);
+
+	dynany_src = GET_DYNANY (src);
+	o_return_if_fail (dynany_src != NULL &&
+			  dynany_src->any != NULL &&
+			  dynany_src->any->_type != NULL);
+
+	DynamicAny_DynAny_from_any (dest, dynany_src->any, ev);
+}
+
+/* 9.2.3.3 */
+
+void
+DynamicAny_DynAny_from_any (DynamicAny_DynAny obj,
+		       CORBA_any   *value,
+		       CORBA_Environment *ev)
+{
+	DynAny  *dynany;
+	gboolean equal;
+
+	o_return_if_fail (value != NULL && value->_type);
+
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL &&
+			  dynany->any->_type != NULL);
+
+	equal = CORBA_TypeCode_equal (dynany->any->_type, value->_type, ev);
+
+	if (ev->_major != CORBA_NO_EXCEPTION)
+		return;
+
+	if (!equal) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_TypeMismatch, NULL);
+		return;
+	}
+
+	dynany_invalidate (dynany, TRUE, ev);
+	
+	CORBA_free (dynany->any);
+
+	dynany->any = CORBA_any_alloc ();
+	CORBA_any__copy (dynany->any, value);
+}
+
+/* 9.2.3.4 */
+
+CORBA_any *
+DynamicAny_DynAny_to_any (DynamicAny_DynAny obj,
+			  CORBA_Environment *ev)
+{
+	DynAny    *dynany;
+	CORBA_any *any;
+
+	o_return_val_if_fail (obj != NULL, NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      NULL);
+
+	any = CORBA_any_alloc ();
+
+	CORBA_any__copy (any, dynany->any);
+
+	return any;
+}
+
+/* 9.2.3.5 */
+
+CORBA_boolean
+DynamicAny_DynAny_equal (DynamicAny_DynAny obj_a,
+			 DynamicAny_DynAny obj_b,
+			 CORBA_Environment *ev)
+{
+	DynAny *dynanya;
+	DynAny *dynanyb;
+
+	o_return_val_if_fail (obj_a != NULL && obj_b != NULL, FALSE);
+
+	dynanya = GET_DYNANY (obj_a);
+	dynanyb = GET_DYNANY (obj_b);
+	b_return_val_if_fail (dynanya != NULL &&
+			      dynanya->any != NULL,
+			      FALSE);
+
+	b_return_val_if_fail (dynanyb != NULL &&
+			      dynanyb->any != NULL,
+			      FALSE);
+
+	return ORBit_any_equivalent (dynanya->any, dynanyb->any, ev);
+}
+
+/* 9.2.3.6 */
+
+void
+DynamicAny_DynAny_destroy(DynamicAny_DynAny obj,
+		     CORBA_Environment *ev)
+{
+	/*
+	 * This method is almost totaly pointless
+	 * In theory we should destroy the Any and return
+	 * OBJECT_NOT_EXIST if people try to access it.
+	 */
+}
+
+/* 9.2.3.7 */
+
+DynamicAny_DynAny
+DynamicAny_DynAny_copy (DynamicAny_DynAny obj,
+		   CORBA_Environment *ev)
+{
+	DynAny *dynany;
+
+	o_return_val_if_fail (obj != NULL, CORBA_OBJECT_NIL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL,
+			      CORBA_OBJECT_NIL);
+
+	return dynany_create (dynany->any->_type, dynany->any->_value, dynany->parent, ev);
+}
+
+/* 9.2.3.8 */
+
+void
+DynamicAny_DynAny_insert_string (DynamicAny_DynAny       obj,
+				 const CORBA_char  *value,
+				 CORBA_Environment *ev)
+{
+	DynAny *dynany;
+
+	o_return_if_fail (obj != NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL);
+
+	if (dynany_type_mismatch (dynany, TC_string, ev))
+		return;
+
+	dynany_insert (dynany, TC_string, (gpointer)&value, ev);
+
+	return;
+}
+
+#define MAKE_DYNANY_INSERT(ctype,typecode,apiname)				\
+										\
+void										\
+DynamicAny_DynAny_insert_##apiname (DynamicAny_DynAny       obj,				\
+			       CORBA_##ctype      value,			\
+			       CORBA_Environment *ev)				\
+{										\
+	DynAny  *dynany;							\
+										\
+	o_return_if_fail (obj != NULL);						\
+										\
+	dynany = GET_DYNANY (obj);						\
+	b_return_if_fail (dynany != NULL &&					\
+			  dynany->any != NULL);					\
+										\
+	if (dynany_type_mismatch (dynany, typecode, ev))			\
+		return;								\
+										\
+	dynany_insert (dynany, typecode, &value, ev);				\
+										\
+	return;									\
+}
+
+#if 0
+MAKE_DYNANY_INSERT (char *,              TC_string,             string);
+#endif
+MAKE_DYNANY_INSERT (short,               TC_short,              short);
+MAKE_DYNANY_INSERT (long,                TC_long,               long);
+MAKE_DYNANY_INSERT (unsigned_short,      TC_ushort,             ushort);
+MAKE_DYNANY_INSERT (unsigned_long,       TC_ulong,              ulong);
+MAKE_DYNANY_INSERT (float,               TC_float,              float);
+MAKE_DYNANY_INSERT (double,              TC_double,             double);
+MAKE_DYNANY_INSERT (long_double,         TC_longdouble,         longdouble);
+MAKE_DYNANY_INSERT (boolean,             TC_boolean,            boolean);
+MAKE_DYNANY_INSERT (char,                TC_char,               char);
+MAKE_DYNANY_INSERT (wchar,               TC_wchar,              wchar);
+MAKE_DYNANY_INSERT (octet,               TC_octet,              octet);
+MAKE_DYNANY_INSERT (any *,               TC_any,                any);
+MAKE_DYNANY_INSERT (TypeCode,            TC_TypeCode,           typecode);
+MAKE_DYNANY_INSERT (Object,              TC_Object,             reference);
+MAKE_DYNANY_INSERT (wchar *,             TC_wstring,            wstring);
+#ifdef HAVE_CORBA_LONG_LONG
+MAKE_DYNANY_INSERT (long_long,           TC_longlong,           longlong); 
+MAKE_DYNANY_INSERT (unsigned_long_long,  TC_ulonglong,          ulonglong);
+#endif
+
+#define MAKE_DYNANY_GET(ctype,typecode,apiname)					\
+										\
+CORBA_##ctype									\
+DynamicAny_DynAny_get_##apiname (DynamicAny_DynAny       obj,				\
+			    CORBA_Environment *ev)				\
+{										\
+	DynAny       *dynany;							\
+	CORBA_##ctype value;							\
+										\
+	o_return_val_if_fail (obj != NULL, 0);				       	\
+										\
+	dynany = GET_DYNANY (obj);						\
+										\
+	/* FIXME: assumes NULL == CORBA_OBJECT_NIL for simplicity */		\
+	b_return_val_if_fail (dynany != NULL &&					\
+			      dynany->any != NULL, 0);				\
+										\
+	if (dynany_type_mismatch (dynany, typecode, ev))			\
+		return 0;	       						\
+										\
+	dynany_get (dynany, &value, typecode, ev);				\
+										\
+	return value;								\
+}
+
+MAKE_DYNANY_GET (short,               TC_short,              short);
+MAKE_DYNANY_GET (long,                TC_long,               long);
+MAKE_DYNANY_GET (unsigned_short,      TC_ushort,             ushort);
+MAKE_DYNANY_GET (unsigned_long,       TC_ulong,              ulong);
+MAKE_DYNANY_GET (float,               TC_float,              float);
+MAKE_DYNANY_GET (double,              TC_double,             double);
+MAKE_DYNANY_GET (long_double,         TC_longdouble,         longdouble);
+MAKE_DYNANY_GET (boolean,             TC_boolean,            boolean);
+MAKE_DYNANY_GET (char,                TC_char,               char);
+MAKE_DYNANY_GET (wchar,               TC_wchar,              wchar);
+MAKE_DYNANY_GET (octet,               TC_octet,              octet);
+MAKE_DYNANY_GET (any *,               TC_any,                any);
+MAKE_DYNANY_GET (TypeCode,            TC_TypeCode,           typecode);
+MAKE_DYNANY_GET (Object,              TC_Object,             reference);
+MAKE_DYNANY_GET (char *,              TC_string,             string);
+MAKE_DYNANY_GET (wchar *,             TC_wstring,            wstring);
+#ifdef HAVE_CORBA_LONG_LONG
+MAKE_DYNANY_GET (long_long,           TC_longlong,           longlong); 
+MAKE_DYNANY_GET (unsigned_long_long,  TC_ulonglong,          ulonglong);
+#endif
+
+/* 9.2.3.9 */
+
+CORBA_boolean
+DynamicAny_DynAny_seek (DynamicAny_DynAny obj, CORBA_long index, CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_any *any;
+	CORBA_TypeCode tc;
+
+	o_return_val_if_fail (obj != NULL, FALSE);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      FALSE);
+	any = dynany->any;
+	tc = any->_type;
+
+ validate_seek:
+	switch (tc->kind) {
+	case DYNANY_TYPE_SINGLE:
+	case CORBA_tk_enum:
+	case CORBA_tk_fixed:
+		dynany->idx = -1;
+		if (index == -1)
+			return TRUE;
+		else
+			return FALSE;
+
+	case CORBA_tk_array:
+		if (index < tc->length && index >= 0) {
+			dynany->idx = index;
+			return TRUE;
+		} else {
+			dynany->idx = -1;
+			return FALSE;
+		}
+		break;
+
+ 	case CORBA_tk_struct:
+ 	case CORBA_tk_except:
+		if (index < tc->sub_parts && index >= 0) {
+			dynany->idx = index;
+			return TRUE;
+		}
+		break;
+
+	case CORBA_tk_sequence: {
+		CORBA_sequence_octet *s;
+
+		s = dynany->any->_value;
+		if (s && index < s->_length) {
+			dynany->idx = index;
+			return TRUE;
+		} else {
+			dynany->idx = -1;
+			return FALSE;
+		}
+	}
+
+	case CORBA_tk_union:
+		if (index < 0 || index > 1) {
+			dynany->idx = -1;
+			return FALSE;
+		}
+		dynany->idx = index;
+		return TRUE;
+
+	case CORBA_tk_alias:
+		tc = tc->subtypes [0];
+		goto validate_seek;
+
+	default:
+		g_error ("Unknown kind '%d'", tc->kind);
+	}
+
+	dynany->idx = -1;
+
+	return FALSE;
+}
+
+CORBA_unsigned_long
+DynamicAny_DynAny_component_count (DynamicAny_DynAny obj,
+			      CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_any *any;
+	CORBA_TypeCode tc;
+
+	o_return_val_if_fail (obj != NULL, 0);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+
+	any = dynany->any;
+	tc = any->_type;
+
+ count_type:
+	switch (tc->kind) {
+	case DYNANY_TYPE_SINGLE:
+	case CORBA_tk_fixed:
+	case CORBA_tk_enum:
+		return 0;
+
+	case CORBA_tk_sequence: {
+		CORBA_sequence_octet *s = any->_value;
+		if (!s) {
+			g_warning ("Wierd");
+			return 0;
+		}
+		
+		return s->_length;
+	}
+
+	case CORBA_tk_array:
+		return tc->length;
+
+ 	case CORBA_tk_struct:
+ 	case CORBA_tk_except:
+		return tc->sub_parts;
+
+	case CORBA_tk_union:
+		g_warning ("Can't count complex types yet");
+		break;
+
+	case CORBA_tk_alias:
+		tc = tc->subtypes [0];
+		goto count_type;
+
+	default:
+		g_error ("Unknown kind '%d'", tc->kind);
+		break;
+	}
+
+	return 0;
+}
+
+DynamicAny_DynAny
+DynamicAny_DynAny_current_component (DynamicAny_DynAny obj,
+				CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_any *any;
+	CORBA_TypeCode tc;
+
+	o_return_val_if_fail (obj != NULL, CORBA_OBJECT_NIL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      CORBA_OBJECT_NIL);
+	if (dynany->idx < 0)
+		return CORBA_OBJECT_NIL;
+
+	any = dynany->any;
+	tc = any->_type;
+ find_type:	
+	switch (tc->kind) {
+
+	case CORBA_tk_alias:
+		tc = tc->subtypes [0];
+		goto find_type;
+
+	case CORBA_tk_enum:
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_TypeMismatch, NULL);
+		return CORBA_OBJECT_NIL;
+
+	case CORBA_tk_except:
+		if (tc->sub_parts == 0) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_TypeMismatch, NULL);
+			return CORBA_OBJECT_NIL;
+		} /* else drop through */
+
+	case CORBA_tk_fixed:
+	case CORBA_tk_union:
+ 	case CORBA_tk_struct:
+	case CORBA_tk_sequence:
+	case CORBA_tk_array:
+	case DYNANY_TYPE_SINGLE:
+		return dynany_create (
+			dynany_get_cur_type (dynany),
+			dynany_get_value (dynany, ev), dynany, ev);
+
+	default:
+		g_error ("Unknown kind '%d'", any->_type->kind);
+	}
+
+	return CORBA_OBJECT_NIL;
+}
+
+CORBA_boolean
+DynamicAny_DynAny_next (DynamicAny_DynAny obj, CORBA_Environment *ev)
+{
+	DynAny *dynany;
+
+	o_return_val_if_fail (obj != NULL, FALSE);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      FALSE);
+
+	return DynamicAny_DynAny_seek (obj, dynany->idx + 1, ev);
+}
+
+void
+DynamicAny_DynAny_rewind (DynamicAny_DynAny obj, CORBA_Environment *ev)
+{
+	DynamicAny_DynAny_seek (obj, 0, ev);
+}
+
+/* 9.2.5 */
+
+CORBA_char *
+DynamicAny_DynEnum_get_as_string (DynamicAny_DynEnum obj,
+			     CORBA_Environment *ev)
+{
+	CORBA_unsigned_long *i;
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+
+	o_return_val_if_fail (obj != NULL, NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_enum, ev))
+		return NULL;
+
+	i = dynany_get_value (dynany, ev);
+	if (!i)
+		return NULL;
+
+	tc = dynany->any->_type;
+
+	g_assert (*i < tc->sub_parts);
+
+	return CORBA_string_dup (tc->subnames [*i]);
+}
+
+void
+DynamicAny_DynEnum_set_as_string (DynamicAny_DynEnum obj,
+			     const CORBA_char *value_as_string,
+			     CORBA_Environment *ev)
+{
+	CORBA_unsigned_long i;
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+
+	o_return_if_fail (obj != NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL &&
+			  dynany->any->_type != NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_enum, ev))
+		return;
+
+	tc = dynany->any->_type;
+	for (i = 0; i < tc->sub_parts; i++) {
+		if (!strcmp (tc->subnames [i], value_as_string)) {
+			CORBA_unsigned_long *e;
+
+			e = dynany_get_value (dynany, ev);
+			if (!e)
+				return;
+
+			*e = i;
+			return;
+		}
+	}
+
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+}
+
+CORBA_unsigned_long
+DynamicAny_DynEnum_get_as_ulong (DynamicAny_DynEnum obj,
+			    CORBA_Environment *ev)
+{
+	CORBA_unsigned_long *i;
+	DynAny *dynany;
+
+	o_return_val_if_fail (obj != NULL, 0);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      0);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_enum, ev))
+		return 0;
+
+	i = dynany_get_value (dynany, ev);
+	if (!i)
+		return 0;
+	
+	return *i;
+}
+
+void
+DynamicAny_DynEnum_set_as_ulong (DynamicAny_DynEnum obj,
+			    CORBA_unsigned_long value_as_ulong,
+			    CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+
+	o_return_if_fail (obj != NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL &&
+			  dynany->any->_type != NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_enum, ev))
+		return;
+
+	tc = dynany->any->_type;
+	if (value_as_ulong < tc->sub_parts) {
+		CORBA_unsigned_long *e;
+
+		e = dynany_get_value (dynany, ev);
+		if (!e)
+			return;
+		
+		*e = value_as_ulong;
+	} else
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_InvalidValue, NULL);
+}
+
+/* 9.2.6 */
+
+CORBA_FieldName
+DynamicAny_DynStruct_current_member_name (DynamicAny_DynStruct obj,
+					  CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+
+	o_return_val_if_fail (obj != NULL, NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_struct, ev))
+		return NULL;
+
+	tc = dynany->any->_type;
+
+	if (dynany->idx >= 0 &&
+	    dynany->idx < tc->sub_parts) {
+
+		if (tc->subnames [dynany->idx])
+			return CORBA_string_dup (
+				tc->subnames [dynany->idx]);
+		else
+			return CORBA_string_dup ("");
+	}
+	
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	return NULL;
+}
+
+CORBA_TCKind
+DynamicAny_DynStruct_current_member_kind (DynamicAny_DynStruct obj,
+					  CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+	
+	o_return_val_if_fail (obj != NULL, 0);
+	
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+	
+	if (dynany_kind_mismatch (dynany, CORBA_tk_struct, ev))
+		return 0;
+
+	tc = dynany->any->_type;
+
+	if (dynany->idx >= 0 &&
+	    dynany->idx < tc->sub_parts &&
+	    tc->subtypes [dynany->idx])
+
+		return tc->subtypes [dynany->idx]->kind;
+	
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	return 0;
+}
+
+CORBA_NameValuePairSeq *
+DynamicAny_DynStruct_get_members (DynamicAny_DynStruct obj,
+			     CORBA_Environment *ev)
+{
+	g_assert (!"Not yet implemented");
 	return NULL;
 }
 
 void
-CORBA_DynAny_assign(CORBA_DynAny obj,
-		    CORBA_DynAny dyn_any,
-		    CORBA_Environment *ev)
+DynamicAny_DynStruct_set_members (DynamicAny_DynStruct obj,
+			     CORBA_NameValuePairSeq *value,
+			     CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
+	g_assert (!"Not yet implemented");
+}
+
+/* 9.2.7 */
+
+DynamicAny_DynAny
+DynamicAny_DynUnion_get_discriminator (DynamicAny_DynUnion obj,
+				  CORBA_Environment *ev)
+{
+	g_assert (!"Not yet implemented");
+	return NULL;
 }
 
 void
-CORBA_DynAny_from_any(CORBA_DynAny obj,
-		      CORBA_any value, CORBA_Environment *ev)
+DynamicAny_DynUnion_set_discriminator (DynamicAny_DynUnion obj,
+				  DynamicAny_DynAny   d,
+				  CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *
-CORBA_DynAny_to_any(CORBA_DynAny obj,
-		    CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
+	g_assert (!"Not yet implemented");
 }
 
 void
-CORBA_DynAny_destroy(CORBA_DynAny obj,
-		     CORBA_Environment *ev)
+DynamicAny_DynUnion_set_to_default_member (DynamicAny_DynUnion obj,
+				      CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
+	g_assert (!"Not yet implemented");
 }
-
-CORBA_DynAny
-CORBA_DynAny_copy(CORBA_DynAny obj,
-		  CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynAny_insert_boolean(CORBA_DynAny obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_octet(CORBA_DynAny obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_char(CORBA_DynAny obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_short(CORBA_DynAny obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_ushort(CORBA_DynAny obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_long(CORBA_DynAny obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_ulong(CORBA_DynAny obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_float(CORBA_DynAny obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_double(CORBA_DynAny obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_string(CORBA_DynAny obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_reference(CORBA_DynAny obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_typecode(CORBA_DynAny obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynAny_insert_longlong(CORBA_DynAny obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_ulonglong(CORBA_DynAny obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynAny_insert_longdouble(CORBA_DynAny obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_wchar(CORBA_DynAny obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_wstring(CORBA_DynAny obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynAny_insert_any(CORBA_DynAny obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynAny_get_boolean(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynAny_get_octet(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynAny_get_char(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynAny_get_short(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynAny_get_ushort(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynAny_get_long(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynAny_get_ulong(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynAny_get_float(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynAny_get_double(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynAny_get_string(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object CORBA_DynAny_get_reference(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode
-CORBA_DynAny_get_typecode(CORBA_DynAny obj,
-			  CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynAny_get_longlong(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynAny_get_ulonglong(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynAny_get_longdouble(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynAny_get_wchar(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar *CORBA_DynAny_get_wstring(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *CORBA_DynAny_get_any(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-CORBA_DynAny
-CORBA_DynAny_current_component(CORBA_DynAny obj,
-			       CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynAny_next(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynAny_seek(CORBA_DynAny obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynAny_rewind(CORBA_DynAny obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_DynFixed_OctetSeq *CORBA_DynFixed_get_value(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynFixed_set_value(CORBA_DynFixed obj, CORBA_DynFixed_OctetSeq *val, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode
-CORBA_DynFixed_type(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynFixed_assign(CORBA_DynFixed obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_from_any(CORBA_DynFixed obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *CORBA_DynFixed_to_any(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynFixed_destroy(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_DynAny
-CORBA_DynFixed_copy(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynFixed_insert_boolean(CORBA_DynFixed obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_octet(CORBA_DynFixed obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_char(CORBA_DynFixed obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_short(CORBA_DynFixed obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_ushort(CORBA_DynFixed obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_long(CORBA_DynFixed obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_ulong(CORBA_DynFixed obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_float(CORBA_DynFixed obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_double(CORBA_DynFixed obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_string(CORBA_DynFixed obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_reference(CORBA_DynFixed obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_typecode(CORBA_DynFixed obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynFixed_insert_longlong(CORBA_DynFixed obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_ulonglong(CORBA_DynFixed obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynFixed_insert_longdouble(CORBA_DynFixed obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_wchar(CORBA_DynFixed obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_wstring(CORBA_DynFixed obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynFixed_insert_any(CORBA_DynFixed obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynFixed_get_boolean(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynFixed_get_octet(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynFixed_get_char(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynFixed_get_short(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynFixed_get_ushort(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynFixed_get_long(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynFixed_get_ulong(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynFixed_get_float(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynFixed_get_double(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynFixed_get_string(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object
-CORBA_DynFixed_get_reference(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode
-CORBA_DynFixed_get_typecode(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynFixed_get_longlong(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynFixed_get_ulonglong(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynFixed_get_longdouble(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynFixed_get_wchar(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar *CORBA_DynFixed_get_wstring(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *
-CORBA_DynFixed_get_any(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-
-	return(NULL);
-}
-
-
-CORBA_DynAny
-CORBA_DynFixed_current_component(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynFixed_next(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynFixed_seek(CORBA_DynFixed obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynFixed_rewind(CORBA_DynFixed obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_char *CORBA_DynEnum__get_value_as_string(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynEnum__set_value_as_string(CORBA_DynEnum obj, CORBA_char *value_as_string, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_unsigned_long CORBA_DynEnum__get_value_as_ulong(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-void CORBA_DynEnum__set_value_as_ulong(CORBA_DynEnum obj, CORBA_unsigned_long value_as_ulong, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode
-CORBA_DynEnum_type(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynEnum_assign(CORBA_DynEnum obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_from_any(CORBA_DynEnum obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *CORBA_DynEnum_to_any(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynEnum_destroy(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_DynAny
-CORBA_DynEnum_copy(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynEnum_insert_boolean(CORBA_DynEnum obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_octet(CORBA_DynEnum obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_char(CORBA_DynEnum obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_short(CORBA_DynEnum obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_ushort(CORBA_DynEnum obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_long(CORBA_DynEnum obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_ulong(CORBA_DynEnum obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_float(CORBA_DynEnum obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_double(CORBA_DynEnum obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_string(CORBA_DynEnum obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_reference(CORBA_DynEnum obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_typecode(CORBA_DynEnum obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynEnum_insert_longlong(CORBA_DynEnum obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_ulonglong(CORBA_DynEnum obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynEnum_insert_longdouble(CORBA_DynEnum obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_wchar(CORBA_DynEnum obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_wstring(CORBA_DynEnum obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynEnum_insert_any(CORBA_DynEnum obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynEnum_get_boolean(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynEnum_get_octet(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynEnum_get_char(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynEnum_get_short(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynEnum_get_ushort(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynEnum_get_long(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynEnum_get_ulong(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynEnum_get_float(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynEnum_get_double(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynEnum_get_string(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object CORBA_DynEnum_get_reference(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode CORBA_DynEnum_get_typecode(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynEnum_get_longlong(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynEnum_get_ulonglong(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynEnum_get_longdouble(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynEnum_get_wchar(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar *CORBA_DynEnum_get_wstring(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *CORBA_DynEnum_get_any(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-CORBA_DynAny
-CORBA_DynEnum_current_component(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynEnum_next(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynEnum_seek(CORBA_DynEnum obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynEnum_rewind(CORBA_DynEnum obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_FieldName CORBA_DynStruct_current_member_name(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TCKind CORBA_DynStruct_current_member_kind(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	CORBA_TCKind ret=0;
-
-	g_assert(!"Not yet implemented");
-	return(ret);
-}
-
-CORBA_NameValuePairSeq *CORBA_DynStruct_get_members(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynStruct_set_members(CORBA_DynStruct obj, CORBA_NameValuePairSeq *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode CORBA_DynStruct_type(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynStruct_assign(CORBA_DynStruct obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_from_any(CORBA_DynStruct obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *CORBA_DynStruct_to_any(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynStruct_destroy(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_DynAny CORBA_DynStruct_copy(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynStruct_insert_boolean(CORBA_DynStruct obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_octet(CORBA_DynStruct obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_char(CORBA_DynStruct obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_short(CORBA_DynStruct obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_ushort(CORBA_DynStruct obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_long(CORBA_DynStruct obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_ulong(CORBA_DynStruct obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_float(CORBA_DynStruct obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_double(CORBA_DynStruct obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_string(CORBA_DynStruct obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_reference(CORBA_DynStruct obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_typecode(CORBA_DynStruct obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynStruct_insert_longlong(CORBA_DynStruct obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_ulonglong(CORBA_DynStruct obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynStruct_insert_longdouble(CORBA_DynStruct obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_wchar(CORBA_DynStruct obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_wstring(CORBA_DynStruct obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynStruct_insert_any(CORBA_DynStruct obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynStruct_get_boolean(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynStruct_get_octet(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynStruct_get_char(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynStruct_get_short(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynStruct_get_ushort(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynStruct_get_long(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynStruct_get_ulong(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynStruct_get_float(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynStruct_get_double(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynStruct_get_string(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object CORBA_DynStruct_get_reference(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode CORBA_DynStruct_get_typecode(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynStruct_get_longlong(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynStruct_get_ulonglong(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynStruct_get_longdouble(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynStruct_get_wchar(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar *CORBA_DynStruct_get_wstring(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *CORBA_DynStruct_get_any(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-CORBA_DynAny CORBA_DynStruct_current_component(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynStruct_next(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynStruct_seek(CORBA_DynStruct obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynStruct_rewind(CORBA_DynStruct obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_DynAny CORBA_DynUnion_discriminator(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TCKind CORBA_DynUnion_discriminator_kind(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	CORBA_TCKind ret=0;
-
-	g_assert(!"Not yet implemented");
-	return(ret);
-}
-
-CORBA_DynAny CORBA_DynUnion_member(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TCKind CORBA_DynUnion_member_kind(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	CORBA_TCKind ret=0;
-
-	g_assert(!"Not yet implemented");
-	return(ret);
-}
-
-CORBA_boolean CORBA_DynUnion__get_set_as_default(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynUnion__set_set_as_default(CORBA_DynUnion obj, CORBA_boolean set_as_default, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_FieldName CORBA_DynUnion__get_member_name(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynUnion__set_member_name(CORBA_DynUnion obj, CORBA_FieldName member_name, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode CORBA_DynUnion_type(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynUnion_assign(CORBA_DynUnion obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_from_any(CORBA_DynUnion obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *CORBA_DynUnion_to_any(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynUnion_destroy(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_DynAny CORBA_DynUnion_copy(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynUnion_insert_boolean(CORBA_DynUnion obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_octet(CORBA_DynUnion obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_char(CORBA_DynUnion obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_short(CORBA_DynUnion obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_ushort(CORBA_DynUnion obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_long(CORBA_DynUnion obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_ulong(CORBA_DynUnion obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_float(CORBA_DynUnion obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_double(CORBA_DynUnion obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_string(CORBA_DynUnion obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_reference(CORBA_DynUnion obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_typecode(CORBA_DynUnion obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynUnion_insert_longlong(CORBA_DynUnion obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_ulonglong(CORBA_DynUnion obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynUnion_insert_longdouble(CORBA_DynUnion obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_wchar(CORBA_DynUnion obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_wstring(CORBA_DynUnion obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynUnion_insert_any(CORBA_DynUnion obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynUnion_get_boolean(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynUnion_get_octet(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynUnion_get_char(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynUnion_get_short(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynUnion_get_ushort(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynUnion_get_long(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynUnion_get_ulong(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynUnion_get_float(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynUnion_get_double(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynUnion_get_string(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object CORBA_DynUnion_get_reference(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode CORBA_DynUnion_get_typecode(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynUnion_get_longlong(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynUnion_get_ulonglong(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynUnion_get_longdouble(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynUnion_get_wchar(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
+
+void
+DynamicAny_DynUnion_set_to_no_active_member (DynamicAny_DynUnion obj,
+					CORBA_Environment *ev)
+{
+	g_assert (!"Not yet implemented");
+}
+
+CORBA_boolean
+DynamicAny_DynUnion_has_no_active_member (DynamicAny_DynUnion obj,
+				     CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	
+	o_return_val_if_fail (obj != NULL, 0);
+	
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+
+	if (dynany->idx == 0)
+		return TRUE;
+	else
+		return FALSE;
 }
 
-CORBA_wchar *CORBA_DynUnion_get_wstring(CORBA_DynUnion obj, CORBA_Environment *ev)
+CORBA_TCKind
+DynamicAny_DynUnion_discriminator_kind (DynamicAny_DynUnion obj,
+				   CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *CORBA_DynUnion_get_any(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-CORBA_DynAny CORBA_DynUnion_current_component(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynUnion_next(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynUnion_seek(CORBA_DynUnion obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynUnion_rewind(CORBA_DynUnion obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_AnySeq *CORBA_DynSequence_get_elements(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynSequence_set_elements(CORBA_DynSequence obj, CORBA_AnySeq *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_unsigned_long CORBA_DynSequence__get_length(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-void CORBA_DynSequence__set_length(CORBA_DynSequence obj, CORBA_unsigned_long length, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode CORBA_DynSequence_type(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynSequence_assign(CORBA_DynSequence obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_from_any(CORBA_DynSequence obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_any *CORBA_DynSequence_to_any(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynSequence_destroy(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-CORBA_DynAny CORBA_DynSequence_copy(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-
-void CORBA_DynSequence_insert_boolean(CORBA_DynSequence obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_octet(CORBA_DynSequence obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_char(CORBA_DynSequence obj, CORBA_char value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_short(CORBA_DynSequence obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_ushort(CORBA_DynSequence obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_long(CORBA_DynSequence obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_ulong(CORBA_DynSequence obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_float(CORBA_DynSequence obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_double(CORBA_DynSequence obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_string(CORBA_DynSequence obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_reference(CORBA_DynSequence obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_typecode(CORBA_DynSequence obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynSequence_insert_longlong(CORBA_DynSequence obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_ulonglong(CORBA_DynSequence obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
-
-void CORBA_DynSequence_insert_longdouble(CORBA_DynSequence obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_wchar(CORBA_DynSequence obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_wstring(CORBA_DynSequence obj, CORBA_wchar *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-void CORBA_DynSequence_insert_any(CORBA_DynSequence obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_boolean CORBA_DynSequence_get_boolean(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_octet CORBA_DynSequence_get_octet(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char CORBA_DynSequence_get_char(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_short CORBA_DynSequence_get_short(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_short CORBA_DynSequence_get_ushort(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_long CORBA_DynSequence_get_long(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long CORBA_DynSequence_get_ulong(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_float CORBA_DynSequence_get_float(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_double CORBA_DynSequence_get_double(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_char *CORBA_DynSequence_get_string(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_Object CORBA_DynSequence_get_reference(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_TypeCode CORBA_DynSequence_get_typecode(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynSequence_get_longlong(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_unsigned_long_long CORBA_DynSequence_get_ulonglong(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
-
-CORBA_long_double CORBA_DynSequence_get_longdouble(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar CORBA_DynSequence_get_wchar(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-
-CORBA_wchar *CORBA_DynSequence_get_wstring(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_any *CORBA_DynSequence_get_any(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+	
+	o_return_val_if_fail (obj != NULL, 0);
+	
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+	
+	if (dynany_kind_mismatch (dynany, CORBA_tk_union, ev))
+		return 0;
+
+	tc = dynany->any->_type;
+
+	if (tc->discriminator)
+		return tc->discriminator->kind;
+
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	return 0;
+}
+
+DynamicAny_DynAny
+DynamicAny_DynUnion_member (DynamicAny_DynUnion obj,
+		       CORBA_Environment *ev)
+{
+	g_assert (!"Not yet implemented");
+	return NULL;
+}
+
+CORBA_FieldName
+DynamicAny_DynUnion_member_name (DynamicAny_DynUnion obj,
+			    CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+	
+	o_return_val_if_fail (obj != NULL, 0);
+	
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+
+	tc = dynany->any->_type;
+
+	if (dynany->idx >= 0 &&
+	    dynany->idx < tc->sub_parts) {
+
+		if (tc->subnames [dynany->idx])
+			return CORBA_string_dup (
+				tc->subnames [dynany->idx]);
+		else
+			return CORBA_string_dup ("");
+	}
+	
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	return NULL;
+}
+
+CORBA_TCKind
+DynamicAny_DynUnion_member_kind (DynamicAny_DynUnion obj,
+			    CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_TypeCode tc;
+	
+	o_return_val_if_fail (obj != NULL, 0);
+	
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL, 0);
+	
+	if (dynany_kind_mismatch (dynany, CORBA_tk_union, ev))
+		return 0;
+
+	tc = dynany->any->_type;
+
+	if (dynany->idx >= 0 &&
+	    dynany->idx < tc->sub_parts &&
+	    tc->subtypes [dynany->idx])
+
+		return tc->subtypes [dynany->idx]->kind;
+
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_DynamicAny_DynAny_InvalidValue, NULL);
+	return 0;
+}
+
+/* 9.2.8 */
+
+DynamicAny_DynAny_AnySeq *
+DynamicAny_DynSequence_get_elements (DynamicAny_DynSequence obj,
+				CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_sequence_octet *s;
+	DynamicAny_DynAny_AnySeq *retval;
+	int i;
+	gpointer src;
+	CORBA_TypeCode subtc;
+
+	o_return_val_if_fail (obj != NULL, NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_sequence, ev))
+		return NULL;
+
+	s = dynany->any->_value;
+	if (!s)
+		return NULL;
+	
+	src = s->_buffer;
+	retval = CORBA_sequence_DynamicAny_DynAny_AnySeq__alloc ();
+	retval->_buffer = CORBA_sequence_DynamicAny_DynAny_AnySeq_allocbuf (
+		s->_length);
+	subtc = dynany->any->_type->subtypes [0];
+
+	for (i = 0; i < s->_length; i++) {
+		CORBA_any *any = CORBA_any__alloc ();
+		gpointer   to;
+
+		any->_type = (CORBA_TypeCode) CORBA_Object_duplicate (
+			(CORBA_Object) subtc, ev);
+		to = any->_value = ORBit_demarshal_allocate_mem (subtc, 1);
+		
+		_ORBit_copy_value (&src, &to, subtc);
+	}
+
+	return retval;
+}
+
+void
+DynamicAny_DynSequence_set_elements (DynamicAny_DynSequence obj,
+				DynamicAny_DynAny_AnySeq *value,
+				CORBA_Environment *ev)
+{
+	DynAny *dynany;
+	CORBA_sequence_octet *s;
+	int i;
+	gpointer dest;
+	CORBA_TypeCode subtc;
+
+	o_return_if_fail (obj != NULL);
+	o_return_if_fail (value != NULL);
+
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL &&
+			  dynany->any->_type != NULL);
+
+	if (dynany_kind_mismatch (dynany, CORBA_tk_sequence, ev))
+		return;
+
+	s = dynany->any->_value;
+	if (!s)
+		return;
+	
+	subtc = dynany->any->_type->subtypes [0];
+
+	for (i = 0; i < value->_length && i < s->_length; i++) {
+		CORBA_any *a = value->_buffer [i];
+		if (!a || !a->_type ||
+		    !CORBA_TypeCode_equal (subtc, a->_type, ev)) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_DynamicAny_DynAny_InvalidValue, NULL);
+			return;
+		}
+	}
 
-CORBA_DynAny CORBA_DynSequence_current_component(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-CORBA_boolean CORBA_DynSequence_next(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-CORBA_boolean CORBA_DynSequence_seek(CORBA_DynSequence obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
-
-void CORBA_DynSequence_rewind(CORBA_DynSequence obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_AnySeq *CORBA_DynArray_get_elements(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
-
-void CORBA_DynArray_set_elements(CORBA_DynArray obj, CORBA_AnySeq *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-
-
-CORBA_TypeCode CORBA_DynArray_type(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	dynany_invalidate (dynany, FALSE, ev);
 
-void CORBA_DynArray_assign(CORBA_DynArray obj, CORBA_DynAny dyn_any, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	dest = s->_buffer;
+	for (i = 0; i < value->_length; i++) {
+		CORBA_any *a = value->_buffer [i];
+		gpointer src = a->_value;
 
-void CORBA_DynArray_from_any(CORBA_DynArray obj, CORBA_any value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
+		_ORBit_copy_value (&src, &dest, subtc);
+	}
 }
 
-CORBA_any *CORBA_DynArray_to_any(CORBA_DynArray obj, CORBA_Environment *ev)
+CORBA_unsigned_long
+DynamicAny_DynSequence_get_length (DynamicAny_DynSequence  obj,
+			      CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	DynAny *dynany;
+	CORBA_sequence_octet *s;
 
-void CORBA_DynArray_destroy(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	o_return_val_if_fail (obj != NULL, 0);
 
-CORBA_DynAny CORBA_DynArray_copy(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	dynany = GET_DYNANY (obj);
+	b_return_val_if_fail (dynany != NULL &&
+			      dynany->any != NULL &&
+			      dynany->any->_type != NULL,
+			      0);
 
+	if (dynany_kind_mismatch (dynany, CORBA_tk_sequence, ev))
+		return -1;
 
-void CORBA_DynArray_insert_boolean(CORBA_DynArray obj, CORBA_boolean value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	s = dynany->any->_value;
+	if (!s)
+		return -1;
 
-void CORBA_DynArray_insert_octet(CORBA_DynArray obj, CORBA_octet value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
+	return s->_length;
 }
 
-void CORBA_DynArray_insert_char(CORBA_DynArray obj, CORBA_char value, CORBA_Environment *ev)
+void
+DynamicAny_DynSequence_set_length (DynamicAny_DynSequence   obj,
+			      CORBA_unsigned_long length,
+			      CORBA_Environment  *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
-}
+	DynAny *dynany;
+	CORBA_sequence_octet *s;
+	CORBA_long old_length;
 
-void CORBA_DynArray_insert_short(CORBA_DynArray obj, CORBA_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	o_return_if_fail (obj != NULL);
 
-void CORBA_DynArray_insert_ushort(CORBA_DynArray obj, CORBA_unsigned_short value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	dynany = GET_DYNANY (obj);
+	b_return_if_fail (dynany != NULL &&
+			  dynany->any != NULL &&
+			  dynany->any->_type != NULL);
 
-void CORBA_DynArray_insert_long(CORBA_DynArray obj, CORBA_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	if (dynany_kind_mismatch (dynany, CORBA_tk_sequence, ev))
+		return;
 
-void CORBA_DynArray_insert_ulong(CORBA_DynArray obj, CORBA_unsigned_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	s = dynany->any->_value;
+	if (!s)
+		return;
 
-void CORBA_DynArray_insert_float(CORBA_DynArray obj, CORBA_float value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	if (length == s->_length)
+		return;
 
-void CORBA_DynArray_insert_double(CORBA_DynArray obj, CORBA_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	if (s->_maximum && length > s->_maximum) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_DynamicAny_DynAny_InvalidValue, NULL);
+		return;
+	}
 
-void CORBA_DynArray_insert_string(CORBA_DynArray obj, CORBA_char *value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	old_length = s->_length;
+	if (!dynany_sequence_realloc_to (s, dynany->any->_type, length, ev))
+		return;
 
-void CORBA_DynArray_insert_reference(CORBA_DynArray obj, CORBA_Object value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	if (length > old_length) {
+		if (dynany->idx == -1)
+			dynany->idx = old_length;
 
-void CORBA_DynArray_insert_typecode(CORBA_DynArray obj, CORBA_TypeCode value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+	} else {
+		GSList *l;
 
-#ifdef HAVE_CORBA_LONG_LONG
-void CORBA_DynArray_insert_longlong(CORBA_DynArray obj, CORBA_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+		for (l = dynany->children; l; l = l->next) {
+			DynAny *child = l->data;
 
-void CORBA_DynArray_insert_ulonglong(CORBA_DynArray obj, CORBA_unsigned_long_long value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
-#endif
+			if (child->parent_idx >= length)
+				dynany_invalidate (child, TRUE, ev);
+		}
 
-void CORBA_DynArray_insert_longdouble(CORBA_DynArray obj, CORBA_long_double value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
+		if (length == 0 ||
+		    dynany->idx >= length)
+			dynany->idx = -1;
+	}
 }
 
-void CORBA_DynArray_insert_wchar(CORBA_DynArray obj, CORBA_wchar value, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
-}
+/* 9.2.9 */
 
-void CORBA_DynArray_insert_wstring(CORBA_DynArray obj, CORBA_wchar *value, CORBA_Environment *ev)
+DynamicAny_DynAny_AnySeq *
+DynamicAny_DynArray_get_elements (DynamicAny_DynArray obj,
+			     CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
+	g_assert (!"Not yet implemented");
+	return NULL;
 }
 
-void CORBA_DynArray_insert_any(CORBA_DynArray obj, CORBA_any value, CORBA_Environment *ev)
+void
+DynamicAny_DynArray_set_elements (DynamicAny_DynArray obj,
+			     DynamicAny_DynAny_AnySeq *value,
+			     CORBA_Environment *ev)
 {
-	g_assert(!"Not yet implemented");
-	return;
+	g_assert (!"Not yet implemented");
 }
-
 
-CORBA_boolean CORBA_DynArray_get_boolean(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
+static const CORBA_TypeCode
+DynamicAny_DynAny_AnySeq_subtypes_array [] = {
+	TC_any
+};
 
-CORBA_octet CORBA_DynArray_get_octet(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+static const struct CORBA_TypeCode_struct
+TC_CORBA_sequence_DynamicAny_DynAny_AnySeq_struct = {
+	{{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+	 ORBIT_PSEUDO_TYPECODE},
 
-CORBA_char CORBA_DynArray_get_char(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	CORBA_tk_sequence, NULL, NULL,
+	0, 1,
+	NULL,
+	(CORBA_TypeCode *) DynamicAny_DynAny_AnySeq_subtypes_array,
+	NULL,
+	CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
 
-CORBA_short CORBA_DynArray_get_short(CORBA_DynArray obj, CORBA_Environment *ev)
+CORBA_sequence_DynamicAny_DynAny_AnySeq *
+CORBA_sequence_DynamicAny_DynAny_AnySeq__alloc (void)
 {
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	CORBA_sequence_DynamicAny_DynAny_AnySeq *retval;
 
-CORBA_unsigned_short CORBA_DynArray_get_ushort(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	retval = ORBit_demarshal_allocate_mem (
+		TC_CORBA_sequence_DynamicAny_DynAny_AnySeq, 1);
 
-CORBA_long CORBA_DynArray_get_long(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	retval->_maximum = 0;
+	retval->_length = 0;
+	retval->_buffer = NULL;
+	retval->_release = CORBA_FALSE;
 
-CORBA_unsigned_long CORBA_DynArray_get_ulong(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
+	return retval;
 }
 
-CORBA_float CORBA_DynArray_get_float(CORBA_DynArray obj, CORBA_Environment *ev)
+CORBA_any **
+CORBA_sequence_DynamicAny_DynAny_AnySeq_allocbuf (CORBA_unsigned_long len)
 {
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	CORBA_any **retval;
 
-CORBA_double CORBA_DynArray_get_double(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	retval = ORBit_demarshal_allocate_mem (
+		TC_any, len);
 
-CORBA_char *CORBA_DynArray_get_string(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	memset (retval, '\0', sizeof (CORBA_any *) * len);
 
-CORBA_Object CORBA_DynArray_get_reference(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
+	return retval;
 }
 
-CORBA_TypeCode CORBA_DynArray_get_typecode(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+static const CORBA_TypeCode
+DynamicAny_DynAny_DynAnySeq_subtypes_array [] = {
+	TC_Object
+};
 
-#ifdef HAVE_CORBA_LONG_LONG
-CORBA_long_long CORBA_DynArray_get_longlong(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+static const struct CORBA_TypeCode_struct
+TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq_struct = {
+	{{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+	 ORBIT_PSEUDO_TYPECODE},
 
-CORBA_unsigned_long_long CORBA_DynArray_get_ulonglong(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
-#endif
+	CORBA_tk_sequence, NULL, NULL,
+	0, 1,
+	NULL,
+	(CORBA_TypeCode *) DynamicAny_DynAny_DynAnySeq_subtypes_array,
+	NULL,
+	CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
 
-CORBA_long_double CORBA_DynArray_get_longdouble(CORBA_DynArray obj, CORBA_Environment *ev)
+CORBA_sequence_DynamicAny_DynAny_DynAnySeq *
+CORBA_sequence_DynamicAny_DynAny_DynAnySeq__alloc (void)
 {
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	CORBA_sequence_DynamicAny_DynAny_DynAnySeq *retval;
 
-CORBA_wchar CORBA_DynArray_get_wchar(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(0);
-}
+	retval = ORBit_demarshal_allocate_mem (
+		TC_CORBA_sequence_DynamicAny_DynAny_DynAnySeq, 1);
 
-CORBA_wchar *CORBA_DynArray_get_wstring(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	retval->_maximum = 0;
+	retval->_length = 0;
+	retval->_buffer = NULL;
+	retval->_release = CORBA_FALSE;
 
-CORBA_any *CORBA_DynArray_get_any(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(NULL);
+	return retval;
 }
 
-
-CORBA_DynAny CORBA_DynArray_current_component(CORBA_DynArray obj, CORBA_Environment *ev)
+DynamicAny_DynAny *
+CORBA_sequence_DynamicAny_DynAny_DynAnySeq_allocbuf (CORBA_unsigned_long len)
 {
-	g_assert(!"Not yet implemented");
-	return(NULL);
-}
+	DynamicAny_DynAny *retval;
 
-CORBA_boolean CORBA_DynArray_next(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
+	retval = ORBit_demarshal_allocate_mem (
+		TC_Object, len);
 
-CORBA_boolean CORBA_DynArray_seek(CORBA_DynArray obj, CORBA_long index, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return(CORBA_FALSE);
-}
+	memset (retval, '\0', sizeof (DynamicAny_DynAny) * len);
 
-void CORBA_DynArray_rewind(CORBA_DynArray obj, CORBA_Environment *ev)
-{
-	g_assert(!"Not yet implemented");
-	return;
+	return retval;
 }

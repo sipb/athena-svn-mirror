@@ -379,6 +379,13 @@ CDR_buffer_getn(CDR_Codec *codec, void *dest, int bsize)
 static CORBA_boolean
 CDR_buffer_putn(CDR_Codec *codec, void *datum, int bsize)
 {
+#ifndef I_DONT_FEEL_LIKE_INITIALISING_MY_MEMORY
+        gulong forward = (gulong)ALIGN_ADDRESS(codec->wptr, bsize),
+	  i = codec->wptr;
+        while(forward > i)
+	        codec->buffer[i++] = '\0';
+#endif
+
 	codec->wptr = (unsigned long)ALIGN_ADDRESS(codec->wptr, bsize);
 	if(codec->host_endian==codec->data_endian)
 		memcpy(codec->buffer + codec->wptr, datum, bsize);
