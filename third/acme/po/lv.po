@@ -1,0 +1,507 @@
+# acme for Latvian.
+# Copyright (C) 2002 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the acme package.
+# Peteris Krisjanis <peteris.krisjanis@os.lv>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: acme\n"
+"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"PO-Revision-Date: 2003-01-14 13:04+0200\n"
+"Last-Translator: Artis Trops <hornet@navigator.lv>\n"
+"Language-Team: Latvian <ll10nt@os.lv>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/acme.c:163
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"Nevarēju palaist komandu %s\n"
+"Pārbaudiet, vai šāda komanda eksistē."
+
+#: src/acme.c:182
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"Nevarēju izpildīt vai nu komandu: %s\n"
+"vai komandu: %s\n"
+"Pārbaudiet, vai vismaz viena no šīm komandām eksistē."
+
+#: src/acme.c:225
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"Atļaujas failam %s ir kļūdainas\n"
+"Lūdzu pārbaudiet ACME dokumentāciju, novērsiet problēmu un pārstartējiet "
+"ACME."
+
+#: src/acme.c:314
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"Kļūda noņemot pieeju multimēdiju taustiņiem.\n"
+"Taustiņš %d nevarēja tikt atsaistīts."
+
+#: src/acme.c:382
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"Izskatās, ka jau cita aplikācija izmanto mūltimēdiju taustiņus.\n"
+"Taustiņš %d nevarēja tikt piesaistīts.\n"
+"Vai nestrādā jau cits dēmons ?"
+
+#: src/acme.c:607
+msgid "translator_credits"
+msgstr ""
+"Pēteris Krišjānis <peteris.krisjanis@os.lv>\n"
+"Artis Trops <hornet@navigator.lv>"
+
+#: src/acme.c:618
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:620
+msgid "Multimedia keys daemon"
+msgstr "Multimediju taustiņu dēmons"
+
+#: src/acme.c:680
+msgid "Multimedia Keys daemon active"
+msgstr "Multimediju taustiņu dēmons aktīvs"
+
+#: src/acme.c:1173
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Nevarēju ielādēt Glade failu.\n"
+"Pārliecinieties, vai dēmons ir pareizi uzstādīts."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "Skaļums"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "Aplklusināšanas taustiņš"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "Klusāk taustiņš"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "Skaļāk taustiņš"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "Strāvas taustiņš"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "Iekārtas izbīdes taustiņš"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "Medija taustiņš"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "Atskaņošanas taustiņš"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "Pauzes taustiņš"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "Stop (Audio) taustiņš"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "Iepriekšējā (Audio) taustiņš"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "Nākošā (Audio) taustiņš"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "Manas Mājas taustiņš"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr "Atjaunināšanas taustiņš"
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "Meklēšanas taustiņš"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "E-pasta taustiņš"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr "Iemidzināšanas taustiņš"
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "Ekrānsaudzētāja taustiņš"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "Finanšu taustiņš"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "Palīdzības taustiņš"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "WWW taustiņš"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "Grupu taustiņš"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "Kalkuklātora taustiņš"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "Ierakstīt taustiņu"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "Aizvērt Logu taustiņš"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "Ēnot Logu taustiņš"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "Tumšāk taustiņš"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "Gaišāk taustiņš"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "Deaktivizēts"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "Aktivizēts"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"Šis taustiņš jau ir piesaistīts darbībai.\n"
+"Lūdzu izvēlaties citu taustiņu."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "Apraksts"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "Statuss"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">Taustiņu Uzstādījumi </span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">Skaņas Uzstādījumi</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "Multimēdiju Taustiņu Preferences"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"Lai darbībai piešķirtu taustiņu, klikšķiniet uz līnijas un nospiediet "
+"taustiņu, kuru ar to vēlaties asociēt.\n"
+"\"C\" atsauc uzņemšanu un \"Atpakļatkāpe\" seaktivizē taustiņa saīsni."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "Lietot _PCM skaļumu Master (galvenā) skaļuma vietā"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "_Palaist multimediju taustiņu dēmonu"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "Konfigurēt multimēdiju taustiņu uzvedību"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "Multimēdiju Taustiņi"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "Tumšāk taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "Tumšāk taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "Gaišāk taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "Gaišāk taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "Kalkulātora taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "Kalkulatora taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "Aizvērt Logu taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "Aizvērt Logu taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "Komanda, ko izpildīt, kad nospiesta Iekārtas izbīdes poga"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "E-pasta taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "E-pasta taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "Iekārtas izbīdes taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "Iekārtas izbīdes taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "Finanšu taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "Finanšu taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "Grupas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "Grupas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "Palīdzības taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "Palīdzības taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "Apklusināšanas' taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "Apklusināšanas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "Manas Mājas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "Manas Mājas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "Nākošā taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "Nākošā taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "Pauzes taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "Pauzes taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "Atskaņošanas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "Atskaņošanas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "Strāvas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "Strāvas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "Iepriekšējā taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "Iepriekšējā taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "Ierakstīt taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "Ierakstīt taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr "Atjanināšanas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr "Atjunināšanas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "Ekrānsaudzētāja taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "Ekrānsaudzētāja taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "Meklēšanas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "Meklēšanas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "Ēnot Logu taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "Ēnot Logu taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr "Iemidzināšanas taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr "Iemidzināšanas taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "Skaņas fails, ko atskaņot, kad tiek mainīts skaļums"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "Lietot PCM skaļumu Master (galvenā) skaļuma vietā"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "Klusāk taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "Klusāk taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "Skaļāk taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "Skaļāk taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "WWW taustiņa XKeycode"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "Kalkulātora taustiņa XKeycode, 0, lai izslēgtu"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "Paātrinātāja taustiņš"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "Paātrinātāja modifikatori"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "Paātrinātāja Režīms"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "Paātrinātāja tips."
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr "Ievadiet jaunu paātrinātāju vai nospiediet Atpakaļatkāpi, lai attīrītu"
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "Ievadiet jaunu paātrinātāju"

@@ -1,0 +1,168 @@
+%{
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+
+#ifdef __NetBSD__
+#include <soundcard.h>
+#else
+#include <sys/soundcard.h>
+#endif /* __NetBSD__ */
+
+#include "volume-oss.h"
+#include "volume-oss-private.h"
+%}
+
+class Volume:OSS from G:Object {
+	/* the current volume */
+	public int volume = 0;
+	argument INT volume (export)
+	get {
+		gint vol, r, l, fd;
+
+		fd  = open ("/dev/mixer", O_RDONLY);
+		if (volume_oss_mixer_check(self, fd) == FALSE)
+		{
+			ARG = 0;
+		} else {
+			if (self->use_pcm && self->_priv->pcm_avail)
+				ioctl (fd, MIXER_READ (SOUND_MIXER_PCM), &vol);
+			else
+				ioctl (fd, MIXER_READ (SOUND_MIXER_VOLUME),
+						&vol);
+			close (fd);
+
+			r = (vol & 0xff);
+			l = (vol & 0xff00) >> 8;
+			vol = (r + l) / 2;
+			vol = volume_oss_vol_check (vol);
+
+			ARG = vol;
+		}
+	}
+
+	set {
+		gint fd, tvol, volume;
+
+		volume = volume_oss_vol_check(ARG);
+
+		fd = open ("/dev/mixer", O_RDONLY);
+		if (volume_oss_mixer_check(self, fd) == FALSE)
+		{
+			return;
+		} else {
+			tvol = (volume << 8) + volume;
+			if (self->use_pcm && self->_priv->pcm_avail)
+				ioctl (fd, MIXER_WRITE (SOUND_MIXER_PCM),
+						&tvol);
+			else
+				ioctl (fd, MIXER_WRITE (SOUND_MIXER_VOLUME),
+						&tvol);
+			close(fd);
+			self->volume = volume;
+		}
+	};
+
+	/* the current muting status */
+	public gboolean mute = FALSE;
+	argument INT (type gboolean) mute (export)
+	get {
+		/* somebody else might have changed the volume */
+		if ((self->mute == TRUE) && (self->volume != 0))
+		{
+			self->mute = FALSE;
+		}
+		ARG = self->mute;
+	}
+
+	set {
+		if (self->mute == FALSE)
+		{
+			self->_priv->saved_volume =
+				volume_oss_get_volume(self);
+			volume_oss_set_volume (self, 0);
+			self->mute = TRUE;
+		} else {
+			volume_oss_set_volume (self, self->_priv->saved_volume);
+			self->mute = FALSE;
+		}
+	};
+
+	/* use the PCM volume, or the Master Volume ? */
+	public gboolean use_pcm = FALSE;
+	argument INT (type gboolean) use_pcm (export) link;
+
+	/**
+	 * new:
+	 *
+	 * Creates a new #VolumeOSS object
+	 *
+	 * Returns: a new object
+	 **/
+	public
+	VolumeOSS *
+	new(void)
+	{
+		VolumeOSS *self;
+		int fd;
+
+		self = (VolumeOSS *)GET_NEW;
+
+		fd  = open ("/dev/mixer", O_RDONLY);
+		if (volume_oss_mixer_check(self, fd) == FALSE)
+		{
+			self->_priv->pcm_avail = FALSE;
+		} else {
+			int mask = 0;
+
+			ioctl (fd, SOUND_MIXER_READ_DEVMASK, &mask);
+			if (mask & ( 1 << SOUND_MIXER_PCM))
+				self->_priv->pcm_avail = TRUE;
+			else
+				self->_priv->pcm_avail = FALSE;
+			if (!(mask & ( 1 << SOUND_MIXER_VOLUME)))
+				self->use_pcm = TRUE;
+
+			close (fd);
+		}
+
+		return self;
+	}
+
+	/* 
+	 * PRIVATE functions and data
+	 */
+
+	private gboolean mixerpb = FALSE;
+	private gint saved_volume = 0;
+	private gboolean pcm_avail = TRUE;
+
+	signal last NONE (NONE)
+	void fd_problem(self);
+
+	/* returns a valid volume between 0 and 100 */
+	private
+	gint
+	vol_check (gint volume)
+	{
+		return CLAMP (volume, 0, 100);
+	}
+
+	/* checks if the mixer device is opened properly */
+	private
+	gboolean
+	mixer_check (Volume:OSS *self (check null type), gint fd)
+	{
+		gboolean retval;
+
+		if (fd <0) {
+			if (self->_priv->mixerpb == FALSE) {
+				self->_priv->mixerpb = TRUE;
+				volume_oss_fd_problem(self);
+			}
+		}
+		retval = (!self->_priv->mixerpb);
+		return retval;
+	}
+}
+

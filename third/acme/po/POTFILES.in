@@ -1,0 +1,8 @@
+src/acme.c
+src/acme.glade
+src/acme.h
+src/acme-properties.c
+src/acme-properties.glade
+src/acme.desktop.in
+src/acme.schemas.in
+src/eggcellrendererkeys.c

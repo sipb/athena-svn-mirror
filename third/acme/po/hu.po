@@ -1,0 +1,507 @@
+# ACME Hungarian translation.
+# Copyright (C) 2002 Péter Mátó
+# This file is distributed under the same license as the acme package.
+# Péter Mátó <atya@andrews.hu>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: acme CVS\n"
+"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"PO-Revision-Date: 2003-01-14 15:31+0100\n"
+"Last-Translator: Péter Mátó <atya@andrews.hu>\n"
+"Language-Team: Hungarian <hu@gnome.hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/acme.c:163
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"A következő parancsot nem lehet végrehajtani: %s\n"
+"Ellenőrizd, hogy a parancs létezik-e."
+
+#: src/acme.c:182
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"Sem a %s,\n"
+"sem a %s parancsot nem sikerült végrehajtani. Ellenőrizd, hogy legalább az "
+"egyik parancs létezik-e."
+
+#: src/acme.c:225
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"A jogosultságok nem megfelelőek a következő fájlon: %s\n"
+"Tanulmányozd az ACME leírását, javítsd ki a hibát, és indítsd újra az ACME-t."
+
+#: src/acme.c:314
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"Hiba történt a multimédia billentyűkhöz való hozzáférés megszüntetése "
+"közben.\n"
+"A %d billentyűt nem lehet felszabadítani."
+
+#: src/acme.c:382
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"Feltehetőleg egy másik alkalmazás használja a multimédia billentyűket.\n"
+"A %d billentyűt nem sikerült kötni.\n"
+"Már fut egy másik démon?"
+
+#: src/acme.c:607
+msgid "translator_credits"
+msgstr "Mátó Péter <atya@andrews.hu>"
+
+#: src/acme.c:618
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:620
+msgid "Multimedia keys daemon"
+msgstr "Multimédia billentyűzet démon"
+
+#: src/acme.c:680
+msgid "Multimedia Keys daemon active"
+msgstr "Multimédia billentyűzet démon aktív"
+
+#: src/acme.c:1173
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"A Glade fájlt nem lehet betölteni.\n"
+"Ellenőrizd, hogy a démon helyesen van-e telepítve."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "Hangerő"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "Némítás billentyű"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "Halkítás billentyű"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "Hangosítás billentyű"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "Főkapcsoló billentyű"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "Média kiadása billentyű"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "Média billentyű"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "Lejátszás billentyű"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "Szünet billentyű"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "Állj (Hang) billentyű"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "Következő (Hang) billentyű"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "Előző (Hang) billentyű"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "Saját gép billentyű"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr "Frissítés billentyű"
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "Keresés billentyű"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "E-mail billentyű"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr "Elalvás billentyű"
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "Képernyővédő billentyű"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "Pénzügyek billentyű"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "Súgó billentyű"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "WWW billentyű"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "Csoportok billentyű"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "Számológép billentyű"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "Rögzítés billentyű"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "Ablak bezárása billentyű"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "Ablak felgördítése billentyű"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "Fényerő csökkentése billentyű"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "Fényerő növelése billentyű"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "Tiltott"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "Engedélyezett"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"Ez a billentyű már hozzá van kötve egy művelethez.\n"
+"Kérlek válassz másik billentyűt."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "Leírás"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "Állapot"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">Billentyűbeállítások</span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">Hangbeállítások</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "Multimédia billentyűk tulajdonságai"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"Egy művelet billentyűhöz kötéséhez kattints egy sorra, majd nyomd le az "
+"ehhez kötni kívánt billentyűt.\n"
+"A \"C\" megszakítja a bevitelt, a \"Backspace\" letiltja a billentyűt."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "A _PCM hangerő használata a Mester hangerő helyett"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "A multimédia billentyűzet démon _indítása"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "Multimédia billentyűk viselkedésének beállításai"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "Multimédia billentyűk"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "Fényerő csökkentés billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "Fényerő csökkentés billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "Fényerő növelés billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "Fényerő növelés billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "Számológép billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "Számológép billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "Ablak bezárása billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "Ablak bezárása billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "A Média kiadása billentyű megnyomásakor végrehajtandó parancs"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "E-mail billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "E-mail billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "Média kiadása billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "Média kiadása billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "Pénzügyek billentyű Xkeycode-ja"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "Pénzügyek billentyű Xkeycode-je, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "Csoportok billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "Csoportok billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "Súgó billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "Súgó billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "Némítás billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "Némítás billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "Saját gép billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "Saját gép billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "Következő billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "Következő billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "Szünet billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "Szünet billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "Lejátszás billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "Lejátszás billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "Főkapcsoló billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "Főkapcsoló billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "Előző billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "Előző billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "Rögzítés billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "Rögzítés billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr "Frissítés billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr "Frissítés billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "Képernyővédő billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "Képernyővédő billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "Keresés billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "Keresés billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "Ablak felgörgetése billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "Ablak felgörgetése billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr "Elalvás billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr "Elalvás billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "Lejátszandó hangfájl a hangerő változtatásakor"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "A PCM hangerő használata a Mester hangerő helyett"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "Halkítás billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "Halkítás billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "Hangosítás billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "Hangosítás billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "WWW billentyű XKeycode-ja"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "WWW billentyű XKeycode-ja, a tiltáshoz 0"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "Gyorsbillentyű"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "Gyorsbillentyű-módosítók"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "Gyorsbillentyű mód"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "A gyorsbillentyű típusa"
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr ""
+"Nyomd le az új gyorsbillentyűt, vagy nyomd meg a Backspace gombot a "
+"törléshez."
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "Új gyorsbillentyű megadása"
