@@ -1,9 +1,8 @@
-# $Id: Makefile,v 1.2 1996-10-10 18:31:32 ghudson Exp $
+# $Id: Makefile,v 1.3 1996-12-27 21:50:11 ghudson Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
-CFLAGS=${CDEBUGFLAGS}
-CDEBUGFLAGS=-O
+CFLAGS=-g
 
 all: upvers
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -19,14 +18,15 @@ check:
 # release, which would make it very hard to track actual changes to this file.
 install:
 	-mkdir -p ${DESTDIR}${UPDATE}
-	install -c -m 0555 do_update.sh ${DESTDIR}${UPDATE}/do_update
+	install -c -m 0555 do-update.sh ${DESTDIR}${UPDATE}/do-update
+	install -c -m 0555 finish-update.sh ${DESTDIR}${UPDATE}/finish-update
 	install -c -m 0555 update_ws.sh ${DESTDIR}/update_ws
 	install -c -s -m 0555 upvers ${DESTDIR}${UPDATE}
 	rm -f ${DESTDIR}/auto_update
 	ln -s update_ws ${DESTDIR}/auto_update
 	cd platform/${HOSTTYPE} && ${MAKE} $@
-	for i in vers/?.??; do \
-		install -c -m 0444 $$i ${DESTDIR}${UPDATE}; \
+	for i in vers/*.*.*; do \
+		install -c -m 0555 $$i ${DESTDIR}${UPDATE}; \
 	done
 
 clean:
