@@ -1,5 +1,5 @@
 This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
-file /tmp/sgmltmp.ifhp7895.info.2.
+file /tmp/sgmltmp.ifhp19043.info.2.
 
    \input texinfo
 
@@ -86,6 +86,7 @@ discussed later in this document in detail.
      if( device specified using -Tdev=device )[lcub  ]
              // if device is host%port, we open TCP/IP connection
              fd = open(device);
+             // Note - option read_write will open the device or file read write
              dup fd to 1; close fd;
      [rcub  ]
      if( appsocket procotol specified and TCP/IP device )[lcub  ]

@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: vars.c,v 1.1.1.3 1999-05-04 18:50:34 mwhitson Exp $";
+static char *const _id = "$Id: vars.c,v 1.1.1.4 1999-05-18 19:17:44 mwhitson Exp $";
 
 #define EXTERN
 #include "ifhp.h"
@@ -39,11 +39,13 @@ struct keyvalue Valuelist[] = {
     {  "Pagecount_timeout", "pagecount_timeout", (char **)&Pagecount_timeout, INTV },
     {  "Pcl", "pcl", (char **)&Pcl, FLGV },
     {  "Pjl", "pjl", (char **)&Pjl, FLGV },
+    {  "Pjl_console", "pjl_console", (char **)&Pjl_console, FLGV },
     {  "Pjl_enter", "pjl_enter", (char **)&Pjl_enter, FLGV },
     {  "Ps", "ps", (char **)&Ps, FLGV },
     {  "Ps_pagecount_code", "ps_pagecount_code", &Ps_pagecount_code, STRV },
     {  "Ps_status_code", "ps_status_code", &Ps_status_code, STRV },
     {  "Psonly", "psonly", (char **)&Psonly, FLGV },
+    {  "Read_write", "read_write", (char **)&Read_write, FLGV  },
     {  "Remove_ctrl", "remove_ctrl", &Remove_ctrl, STRV  },
     {  "Status", "status", (char **)&Status, FLGV },
     {  "Stty_args", "stty", &Stty_args, STRV },

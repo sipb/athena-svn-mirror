@@ -1,5 +1,5 @@
 This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
-file /tmp/sgmltmp.ifhp7895.info.2.
+file /tmp/sgmltmp.ifhp19043.info.2.
 
    \input texinfo
 
@@ -10,7 +10,7 @@ IFHP-HOWTO
 **********
 
      Patrick Powell
-     22 Apr 1999 (For ifhp-3.2.7)
+     17 May 1999 (For ifhp-3.2.9)
    `papowell@astart.com'
 
    The `ifhp' software is an enhanced, extended, highly configurable,
@@ -1116,7 +1116,13 @@ most limited in abilities.
           ifhp 15:57:23.738 [3096] Do_accounting: accounting at end, pagecount 0, pages 0
           ifhp 15:57:23.738 [3096] Process_job: done
 
-     and you should get a printed page.
+     and you should get a printed page.  If you happen to have an
+     operating system that support bi-directional parallel ports, you
+     can add to the ifhp
+          read[lowbar]write
+
+     which will cause ifhp to open the port read/write.
+
 
 
 File: ifhp.info,  Node: Fine Tuning A Configuration and Printcap Entries,  Next: ifhp-conf Defaults,  Prev: Parallel Port,  Up: Configuration Tutorial

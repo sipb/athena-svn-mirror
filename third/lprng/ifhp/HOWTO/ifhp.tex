@@ -13,7 +13,7 @@
 \title{ IFHP-HOWTO}
 \author{Patrick Powell
 {\ttfamily \onlynameurl{papowell@astart.com}}}
-\date{ 22 Apr 1999 (For ifhp-3.2.7)}
+\date{ 17 May 1999 (For ifhp-3.2.9)}
 \abstract{The {\ttfamily ifhp} software is an enhanced, extended, highly configurable,
 and portable implementation of a print filter for use with the {\ttfamily ifhp}
 Print spooler software.
@@ -1216,6 +1216,16 @@ ifhp 15:57:23.738 [3096] Process_job: done
 \end{tscreen}
 
 and you should get a printed page.
+If you happen to have an operating system that support bi-directional
+parallel ports, you can add to the ifhp
+\begin{tscreen}
+read\_write
+\end{tscreen}
+
+which will cause ifhp to open the port read/write.
+
+
+
 \end{enumerate}
 
 
@@ -1479,6 +1489,7 @@ flag.
 
 \section{Filter Operation Details}
 
+\label{read_write}
 The
 {\ttfamily ifhp}
 filter operates by first reading a configuration file
@@ -1574,6 +1585,7 @@ foreach option in predefined list {
 if( device specified using -Tdev=device ){
         // if device is host%port, we open TCP/IP connection
         fd = open(device);
+        // Note - option read_write will open the device or file read write
         dup fd to 1; close fd;
 }
 if( appsocket procotol specified and TCP/IP device ){
@@ -3090,7 +3102,8 @@ The following is a list of predefined options. \\
 {\ttfamily \ref{pjl_vars_set} {(pjl\_vars\_set=LIST)}}{\ttfamily ~~~~~~~~~~~~~} Allow these PJL variables to be set \\ 
 {\ttfamily \ref{ps} {(ps FLAG)}}{\ttfamily ~~~~~~~~~~~~~~~~~~~~~~~} Printer supports PostScript (ps) \\ 
 {\ttfamily \ref{ps_user_opts} {(ps\_user\_opts=LIST)}}{\ttfamily ~~~~~~~~~~~~~} Support these PostScript user options \\ 
-{\ttfamily \ref{remove_ctrl} {(remove\_ctrl=LIST)}}{\ttfamily ~~~~~~~~~~~~~~} Support these characters from PostScript jobs \\ 
+{\ttfamily \ref{read_write} {(read\_write FLAG)}}{\ttfamily ~~~~~~~~~~~~~~~} Open a file or device read/write\\ 
+{\ttfamily \ref{remove_ctrl} {(remove\_ctrl=LIST)}}{\ttfamily ~~~~~~~~~~~~~~} Remove these characters from PostScript jobs \\ 
 {\ttfamily \ref{startpage} {(startpage=NNN)}}{\ttfamily ~~~~~~~~~~~~~~~~~} PJL JOB command START = NNN value \\ 
 {\ttfamily \ref{status} {(status FLAG)}}{\ttfamily ~~~~~~~~~~~~~~~~~~~} Printer supplies status information \\ 
 {\ttfamily \ref{statusfile} {(statusfile=PATHNAME)}}{\ttfamily ~~~~~~~~~~~} Status file pathname \\ 

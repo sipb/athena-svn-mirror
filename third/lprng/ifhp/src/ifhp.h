@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****
-$Id: ifhp.h,v 1.1.1.3 1999-05-04 18:50:35 mwhitson Exp $
+$Id: ifhp.h,v 1.1.1.4 1999-05-18 19:17:46 mwhitson Exp $
  **** ENDHEADER ****/
 
 #ifndef _IFHP_H_
@@ -204,7 +204,9 @@ EXTERN int
 	Pagecount_timeout,	/* pagecount */
 	Pcl,		/* has PCL support */
 	Pjl,		/* has PJL support */
+	Pjl_console,	/* use the PJL Console */
 	Pjl_enter,	/* use the PJL ENTER command */
+	Read_write,	/* open the device read/write */
 	Ps,			/* has PostScript support */
 	Psonly,	/* only recognizes PostScript */
 	Quiet,		/* suppress printer status messages */

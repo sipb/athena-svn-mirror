@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: linelist.c,v 1.1.1.3 1999-05-04 18:50:42 mwhitson Exp $";
+static char *const _id = "$Id: linelist.c,v 1.1.1.4 1999-05-18 19:17:51 mwhitson Exp $";
 
 #include "ifhp.h"
 
@@ -770,3 +770,44 @@ void Set_str_value( struct line_list *l, char *key, const char *value )
 	}
 }
 
+
+char *Join_line_list( struct line_list *l, char *sep )
+{
+	char *s, *t, *str = 0;
+	int len = 0, i, n = 0;
+
+	if( sep ) n = strlen(sep);
+	for( i = 0; i < l->count; ++i ){
+		s = l->list[i];
+		if( s && *s ) len += strlen(s) + n;
+	}
+	if( len ){
+		str = malloc_or_die(len+1,__FILE__,__LINE__);
+		t = str;
+		for( i = 0; i < l->count; ++i ){
+			s = l->list[i];
+			if( s && *s ){
+				strcpy( t, s );
+				t += strlen(t);
+				if( n ){
+					strcpy(t,sep);
+					t += n;
+				}
+			}
+		}
+		*t = 0;
+	}
+	return( str );
+}
+
+char *Join_line_list_with_sep( struct line_list *l, char *sep )
+{
+	char *s = Join_line_list( l, sep );
+	int len = 0;
+
+	if( sep ) len = strlen(sep);
+	if( s ){
+		*(s+strlen(s)-len) = 0;;
+	}
+	return( s );
+}

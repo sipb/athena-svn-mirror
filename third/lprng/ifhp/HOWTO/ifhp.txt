@@ -1,6 +1,6 @@
   IFHP-HOWTO
   Patrick Powell papowell@astart.com
-  22 Apr 1999 (For ifhp-3.2.7)
+  17 May 1999 (For ifhp-3.2.9)
 
   The ifhp software is an enhanced, extended, highly configurable, and
   portable implementation of a print filter for use with the ifhp Print
@@ -1148,6 +1148,15 @@
 
   and you should get a printed page.
 
+  If you happen to have an operating system that support bi-directional
+  parallel ports, you can add to the ifhp
+
+       read_write
+
+
+  which will cause ifhp to open the port read/write.
+
+
   33..88..  FFiinnee TTuunniinngg AA CCoonnffiigguurraattiioonn aanndd PPrriinnttccaapp EEnnttrriieess
 
   If you have followed the above directions, you should now be able to
@@ -1183,16 +1192,13 @@
   cartridge on a parallel port.
 
 
-
-
-
-  status@
-  pjl@
-  pcl
-  ps
-  text@
-  text_converter=/usr/local/bin/a2ps -o-
-  text_converter_output=ps
+       status@
+       pjl@
+       pcl
+       ps
+       text@
+       text_converter=/usr/local/bin/a2ps -o-
+       text_converter_output=ps
 
 
 
@@ -1250,21 +1256,19 @@
   done.  Here is a sample configuration file section, and an example.
 
 
+       # we add the upper and lower keywords
+       #  lpr -Zupper  or lpr -Zlower will be specified by the user
+       pjl_user_opts=[ upper lower ]
+       pjl_upper=@PJL SET INTRAY=TRAY1
+       pjl_lower=@PJL SET INTRAY=TRAY2
 
-
-  # we add the upper and lower keywords
-  #  lpr -Zupper  or lpr -Zlower will be specified by the user
-  pjl_user_opts=[ upper lower ]
-  pjl_upper=@PJL SET INTRAY=TRAY1
-  pjl_lower=@PJL SET INTRAY=TRAY2
-
-  #  lpr -Zpagesetup
-  pcl_user_opts=[ pagesetup ]
-  pcl_pagesetup=[ lines=12 cols=4 ]
-  lines=20
-  pcl_lines=\033*(\%{lines}L
-  cols=2
-  pcl_cols=\033*(\%{cols}C
+       #  lpr -Zpagesetup
+       pcl_user_opts=[ pagesetup ]
+       pcl_pagesetup=[ lines=12 cols=4 ]
+       lines=20
+       pcl_lines=\033*(\%{lines}L
+       cols=2
+       pcl_cols=\033*(\%{cols}C
 
 
 
@@ -1321,6 +1325,7 @@
   end of job, set the no_pcl_eoj flag.
 
   44..  FFiilltteerr OOppeerraattiioonn DDeettaaiillss
+
 
   The ifhp filter operates by first reading a configuration file to
   determine the type of printer it is working with, and then proceeds to
@@ -1379,11 +1384,6 @@
 
 
 
-
-
-
-
-
   // extract configuration information
   foreach path in configuration pathlist {
       open path;
@@ -1410,6 +1410,7 @@
   if( device specified using -Tdev=device ){
           // if device is host%port, we open TCP/IP connection
           fd = open(device);
+          // Note - option read_write will open the device or file read write
           dup fd to 1; close fd;
   }
   if( appsocket procotol specified and TCP/IP device ){
@@ -1423,7 +1424,6 @@
 
 
   /// See: ``Synchronization and Pagecount''
-
 
 
 
@@ -2625,7 +2625,8 @@
   ``ps FLAG''                        Printer supports PostScript (ps)
   ``ps_user_opts=LIST''              Support these PostScript user
   options
-  ``remove_ctrl=LIST''               Support these characters from
+  ``read_write FLAG''                Open a file or device read/write
+  ``remove_ctrl=LIST''               Remove these characters from
   PostScript jobs
   ``startpage=NNN''                  PJL JOB command START = NNN value
   ``status FLAG''                    Printer supplies status information
@@ -2702,7 +2703,6 @@
        flag@       flag=0           (FLAG)
        flag=val           flag=val (string value) STRING
        flag=] v v  ... [          LIST
-
 
   3. Flags are used for options which take a TRUE/FALSE, 0/1, or ON/OFF
      value, and ifhp will substitute the appropriate form or perform the

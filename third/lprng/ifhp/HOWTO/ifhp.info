@@ -1,104 +1,104 @@
 This is Info file ifhp.info, produced by Makeinfo-1.64 from the input
-file /tmp/sgmltmp.ifhp7895.info.2.
+file /tmp/sgmltmp.ifhp19043.info.2.
 
    \input texinfo
 
 
 Indirect:
-ifhp.info-1: 125
-ifhp.info-2: 46965
-ifhp.info-3: 91339
-ifhp.info-4: 137827
+ifhp.info-1: 126
+ifhp.info-2: 47173
+ifhp.info-3: 91628
+ifhp.info-4: 138305
 
 Tag Table:
 (Indirect)
-Node: Top125
-Node: Introduction1353
-Node: Copyright3611
-Node: Disclaimer4285
-Node: Commercial Support4685
-Node: Web Site5065
-Node: FTP Sites5235
-Node: Mailing List6017
-Node: PGP Public Key6257
-Node: Installation and Express Configuration7648
-Node: Configure and Compilation9583
-Node: Printcap Configuration10362
-Node: PS PCL PJL Printer with Network Connection13642
-Node: PS PCL PJL Printer with Parallel Port Connection15140
-Node: PS PCL PJL Printer with Serial Port16132
-Node: PostScript Only Printer17220
-Node: PostScript Only Printer With Text Conversion18817
-Node: Tektronixs Phaser Series Printer with Network Connections20439
-Node: Configuration Tutorial22317
-Node: Configuration Files and Testsupport Directory23150
-Node: Output Device Specification24832
-Node: Output to a File25406
-Node: Default ifhp-conf File and Simple CRLF Filter27871
-Node: HP Jetdirect or Compatible Network Interface29457
-Node: Serial Port35855
-Node: Parallel Port38764
-Node: Fine Tuning A Configuration and Printcap Entries40376
-Node: ifhp-conf Defaults40885
-Node: Extending ifhp Capabilties42867
-Node: PCL and PostScript End of Job Sequences45707
-Node: Filter Operation Details46965
-Node: Options Initialization and Setup59224
-Node: Debug and Trace61619
-Node: Configuration File Paths61989
-Node: Model Selection62474
-Node: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min64953
-Node: Summmaryfile65630
-Node: Operation Configuration Options66176
-Node: status and forcestatus FLAGS67059
-Node: pjl pcl ps and text FLAGS67361
-Node: crlf FLAG67643
-Node: pjl[lowbar]job FLAG68165
-Node: pjl[lowbar]enter FLAG68821
-Node: nullpad STRING69215
-Node: pjl[lowbar]console FLAG69678
-Node: remove[lowbar]ctrl STRING70010
-Node: tbcp FLAG70546
-Node: Synchronization and Pagecounts71325
-Node: PJL Initialization75153
-Node: Text File Conversion77911
-Node: Default Converter Program78718
-Node: Pseudo-MagicFilter Support80879
-Node: No Textfile Conversion Needed82664
-Node: Default Passthrough of Unknown File Types83109
-Node: Language Specific Initialization83535
-Node: File Transfer and Error Status Monitoring84536
-Node: End of Job86649
-Node: Tektronix Phaser and AppSocket Support87376
-Node: Banners and OF Mode Operations89434
-Node: Predefined Options91339
-Node: Configuration Files101606
-Node: Configuration Selection105166
-Node: Option Use106786
-Node: Recursive List Expansion107370
-Node: String Expansion109735
-Node: Language Context113586
-Node: PJL Language114046
-Node: PCL Lanaguage114986
-Node: PostScript Language115859
-Node: Font Download Support116415
-Node: PCL Font Downloading116918
-Node: PS Font Downloading118836
-Node: PJL File Downloading119651
-Node: Banner Printing120417
-Node: Banner Printing with LPRng121224
-Node: Stand Alone Banner Program123392
-Node: Accounting124617
-Node: Page Accounting Algorithm125448
-Node: You Used 2000 Pages Out of Quota128728
-Node: Bad Jobs - Who Do We Bill?130140
-Node: How Do We Update The Database131586
-Node: Accounting Shell Script133230
-Node: Pagecounter Values133608
-Node: Monitoring Printer Operation134840
-Node: HP JetDirect Card Support135649
-Node: TCP/IP Network Address136130
-Node: BOOTP Information137827
-Node: Timeouts146297
+Node: Top126
+Node: Introduction1354
+Node: Copyright3612
+Node: Disclaimer4286
+Node: Commercial Support4686
+Node: Web Site5066
+Node: FTP Sites5236
+Node: Mailing List6018
+Node: PGP Public Key6258
+Node: Installation and Express Configuration7649
+Node: Configure and Compilation9584
+Node: Printcap Configuration10363
+Node: PS PCL PJL Printer with Network Connection13643
+Node: PS PCL PJL Printer with Parallel Port Connection15141
+Node: PS PCL PJL Printer with Serial Port16133
+Node: PostScript Only Printer17221
+Node: PostScript Only Printer With Text Conversion18818
+Node: Tektronixs Phaser Series Printer with Network Connections20440
+Node: Configuration Tutorial22318
+Node: Configuration Files and Testsupport Directory23151
+Node: Output Device Specification24833
+Node: Output to a File25407
+Node: Default ifhp-conf File and Simple CRLF Filter27872
+Node: HP Jetdirect or Compatible Network Interface29458
+Node: Serial Port35856
+Node: Parallel Port38765
+Node: Fine Tuning A Configuration and Printcap Entries40584
+Node: ifhp-conf Defaults41093
+Node: Extending ifhp Capabilties43075
+Node: PCL and PostScript End of Job Sequences45915
+Node: Filter Operation Details47173
+Node: Options Initialization and Setup59513
+Node: Debug and Trace61908
+Node: Configuration File Paths62278
+Node: Model Selection62763
+Node: Statusfile Statusfile[lowbar]max Statusfile[lowbar]min65242
+Node: Summmaryfile65919
+Node: Operation Configuration Options66465
+Node: status and forcestatus FLAGS67348
+Node: pjl pcl ps and text FLAGS67650
+Node: crlf FLAG67932
+Node: pjl[lowbar]job FLAG68454
+Node: pjl[lowbar]enter FLAG69110
+Node: nullpad STRING69504
+Node: pjl[lowbar]console FLAG69967
+Node: remove[lowbar]ctrl STRING70299
+Node: tbcp FLAG70835
+Node: Synchronization and Pagecounts71614
+Node: PJL Initialization75442
+Node: Text File Conversion78200
+Node: Default Converter Program79007
+Node: Pseudo-MagicFilter Support81168
+Node: No Textfile Conversion Needed82953
+Node: Default Passthrough of Unknown File Types83398
+Node: Language Specific Initialization83824
+Node: File Transfer and Error Status Monitoring84825
+Node: End of Job86938
+Node: Tektronix Phaser and AppSocket Support87665
+Node: Banners and OF Mode Operations89723
+Node: Predefined Options91628
+Node: Configuration Files102084
+Node: Configuration Selection105644
+Node: Option Use107264
+Node: Recursive List Expansion107848
+Node: String Expansion110213
+Node: Language Context114064
+Node: PJL Language114524
+Node: PCL Lanaguage115464
+Node: PostScript Language116337
+Node: Font Download Support116893
+Node: PCL Font Downloading117396
+Node: PS Font Downloading119314
+Node: PJL File Downloading120129
+Node: Banner Printing120895
+Node: Banner Printing with LPRng121702
+Node: Stand Alone Banner Program123870
+Node: Accounting125095
+Node: Page Accounting Algorithm125926
+Node: You Used 2000 Pages Out of Quota129206
+Node: Bad Jobs - Who Do We Bill?130618
+Node: How Do We Update The Database132064
+Node: Accounting Shell Script133708
+Node: Pagecounter Values134086
+Node: Monitoring Printer Operation135318
+Node: HP JetDirect Card Support136127
+Node: TCP/IP Network Address136608
+Node: BOOTP Information138305
+Node: Timeouts146775
 
 End Tag Table
