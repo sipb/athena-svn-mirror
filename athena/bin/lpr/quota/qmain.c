@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.7 1990-08-21 20:36:10 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.8 1990-08-29 17:17:46 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.7 1990-08-21 20:36:10 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.8 1990-08-29 17:17:46 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -194,7 +194,10 @@ main(argc, argv)
     (void) open("/dev/null", O_WRONLY);
     (void) dup(1);
 #endif
-    
+
+    /* Remove a shutdown for backup file on restart in case user forgets*/
+    (void) unlink(SHUTDOWNFILE);
+
     if(!(child=fork())) {
 	if(create_query_socket(&qfd))  {
 	    syslog(LOG_ERR, "Could not bind to socket");
