@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v $
- *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.1 1990-06-05 13:47:30 ilham Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.2 1990-07-10 16:01:38 epeisach Exp $
  */
 
 /*
@@ -10,14 +10,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.1 1990-06-05 13:47:30 ilham Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.2 1990-07-10 16:01:38 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
 #include "quota.h"
 #include <krb.h>
 #include "quota_limits.h"
-#include "quota_ncs.h"
+#include "quota_ncs_v1.h"
 #include "quota_err.h"
 #include "quota_db.h"
 #include "uuid.h"
@@ -25,7 +25,7 @@ extern char qcurrency[];             /* The quota currency */
 char *set_service();
 
 
-quota_error_code QuotaReport(h, auth, qid, qreport, cks)
+quota_error_code QuotaReport_v1(h, auth, qid, qreport, cks)
 handle_t h;
 krb_ktext *auth;
 unsigned long *cks;
@@ -49,7 +49,7 @@ quota_report *qreport;
 	    return QBADTKTS;
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
 
-	if(!is_sacct(name))
+	if(!is_sacct(name, service))
 	    return QNOAUTH;
 
 	/* This machine is authorized to connect */
@@ -95,11 +95,11 @@ quota_report *qreport;
 	return 0;
     }
 
-quota_error_code QuotaQuery (h, auth, qid, qret)
+quota_error_code QuotaQuery_v1(h, auth, qid, qret)
 handle_t h;
 krb_ktext *auth;
 quota_identifier *qid;
-quota_return *qret;
+quota_return_v1 *qret;
     {
 	AUTH_DAT ad;
 	char name[MAX_K_NAME_SZ];
@@ -174,7 +174,7 @@ quota_return *qret;
 
     }
 
-quota_error_code QuotaModifyUser (h, auth, qid, qtype, qamount)
+quota_error_code QuotaModifyUser_v1(h, auth, qid, qtype, qamount)
 handle_t h;
 krb_ktext *auth;
 quota_identifier *qid;
@@ -182,7 +182,7 @@ modify_user_type qtype;
 quota_value qamount;
     {
 	AUTH_DAT ad;
-	char name[MAX_K_NAME_SZ];
+	char name[MAX_K_NAME_SZ], uname[MAX_K_NAME_SZ];
 	char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
 	quota_rec quotarec;
 	int retval,more;
@@ -237,6 +237,14 @@ quota_value qamount;
 	    quotarec.lastQuotaAmount  = (quota_amount)  0;
 	    quotarec.yearToDateCharge = (quota_amount)  0;
 	    quotarec.deleted          = (quota_deleted) 0;
+
+            /* If we cannot generate new uid then error */
+	    /* This is really the wrong error number, but 
+	       the V1 client did not have the new error messages. */
+	    /* This code is for forward compatibility */
+            make_kname(qprincipal, qinstance, qrealm, uname);
+            if ((quotarec.uid = (long) uid_add_string(uname)) < (long)0)
+                return(QDBASEERROR);
 
 #ifdef DEBUG
 	    printf("\tPrincipal - %s\n\tInstance - %s\n\tRealm - %s\n\tService - %s\n",
@@ -316,7 +324,7 @@ quota_value qamount;
 	return 0;
     }
 
-quota_error_code QuotaModifyAccount(h, auth, qtype, qid, qamount)
+quota_error_code QuotaModifyAccount_v1(h, auth, qtype, qid, qamount)
 handle_t h;
 krb_ktext *auth;
 quota_identifier *qid;
@@ -333,10 +341,10 @@ quota_value qamount;
 
 /* Warning these must reflect the idl file */
 static print_quota_v1$epv_t print_quota_v1$mgr_epv = {
-    QuotaReport,
-    QuotaQuery,
-    QuotaModifyUser,
-    QuotaModifyAccount
+    QuotaReport_v1,
+    QuotaQuery_v1,
+    QuotaModifyUser_v1,
+    QuotaModifyAccount_v1
     };
 
 register_quota_manager_v1()
