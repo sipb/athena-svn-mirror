@@ -106,6 +106,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 YACC = @YACC@
@@ -115,7 +116,7 @@ NULL =
 
 lib_LTLIBRARIES = liboaf.la
 
-INCLUDES =  	-I$(top_srcdir) 			-I$(top_builddir) 			-I$(top_srcdir)/liboaf 			-I$(top_builddir)/liboaf 		@ORBIT_CFLAGS@ 				@GLIB_CFLAGS@ 				-DVERSION=\"$(VERSION)\"		$(NULL)
+INCLUDES =  	-I$(top_srcdir) 			-I$(top_builddir) 			-I$(top_srcdir)/liboaf 			-I$(top_builddir)/liboaf 		-DOAF_LOCALEDIR=\""$(datadir)/locale"\" 	@ORBIT_CFLAGS@ 				@GLIB_CFLAGS@ 				-DVERSION=\"$(VERSION)\"		$(NULL)
 
 
 LDFLAGS =  	@ORBIT_LIBS@ 		@GLIB_LIBS@		$(NULL)
@@ -304,61 +305,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-factory-common.lo gnome-factory-common.o : gnome-factory-common.c \
-	gnome-factory.h
-gnome-factory-stubs.lo gnome-factory-stubs.o : gnome-factory-stubs.c \
-	gnome-factory.h
-oaf-actid.lo oaf-actid.o : oaf-actid.c ../config.h liboaf-private.h \
-	liboaf.h liboaf-version.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
-	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
-oaf-activate.lo oaf-activate.o : oaf-activate.c liboaf-private.h \
-	../config.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
-	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
-	oaf-activate-private.h
-oaf-async-corba.lo oaf-async-corba.o : oaf-async-corba.c oaf.h \
-	oaf-factory.h oaf-factory-suppress.h liboaf.h liboaf-version.h \
-	oaf.h oaf-activate.h oaf-servreg.h oaf-util.h oaf-actid.h \
-	oaf-plugin.h oaf-mainloop.h oaf-registration.h oaf-async.h \
-	oaf-async-corba.h oaf-i18n.h ../config.h
-oaf-async.lo oaf-async.o : oaf-async.c ../config.h oaf-async.h \
-	liboaf-version.h oaf.h oaf-factory.h oaf-factory-suppress.h \
-	oaf-async-corba.h oaf.h oaf-activate.h oaf-activate-private.h \
-	liboaf-private.h liboaf.h oaf-servreg.h oaf-util.h oaf-actid.h \
-	oaf-plugin.h oaf-mainloop.h oaf-registration.h
-oaf-common.lo oaf-common.o : oaf-common.c oaf.h oaf-factory.h \
-	oaf-factory-suppress.h
-oaf-factory-common.lo oaf-factory-common.o : oaf-factory-common.c \
-	oaf-factory.h
-oaf-factory-skels.lo oaf-factory-skels.o : oaf-factory-skels.c \
-	oaf-factory.h
-oaf-factory-stubs.lo oaf-factory-stubs.o : oaf-factory-stubs.c \
-	oaf-factory.h
-oaf-mainloop.lo oaf-mainloop.o : oaf-mainloop.c ../config.h oaf-i18n.h \
-	liboaf-private.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
-	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
-oaf-plugin.lo oaf-plugin.o : oaf-plugin.c liboaf-private.h ../config.h \
-	liboaf.h liboaf-version.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
-	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h \
-	oaf-plugin.h
-oaf-registration.lo oaf-registration.o : oaf-registration.c \
-	liboaf-private.h ../config.h liboaf.h liboaf-version.h oaf.h \
-	oaf-factory.h oaf-factory-suppress.h oaf-activate.h \
-	oaf-servreg.h oaf-util.h oaf-actid.h oaf-plugin.h \
-	oaf-mainloop.h oaf-registration.h oaf-i18n.h
-oaf-servreg.lo oaf-servreg.o : oaf-servreg.c ../config.h \
-	liboaf-private.h liboaf.h liboaf-version.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h oaf-activate.h oaf-servreg.h oaf-util.h \
-	oaf-actid.h oaf-plugin.h oaf-mainloop.h oaf-registration.h
-oaf-skels.lo oaf-skels.o : oaf-skels.c oaf.h oaf-factory.h \
-	oaf-factory-suppress.h
-oaf-stubs.lo oaf-stubs.o : oaf-stubs.c oaf.h oaf-factory.h \
-	oaf-factory-suppress.h
-oaf-util.lo oaf-util.o : oaf-util.c oaf-util.h oaf.h oaf-factory.h \
-	oaf-factory-suppress.h
 
 info-am:
 info: info-am

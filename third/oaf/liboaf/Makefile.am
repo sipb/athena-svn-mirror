@@ -7,6 +7,7 @@ INCLUDES=				\
 	-I$(top_builddir) 		\
 	-I$(top_srcdir)/liboaf 		\
 	-I$(top_builddir)/liboaf 	\
+	-DOAF_LOCALEDIR=\""$(datadir)/locale"\" \
 	@ORBIT_CFLAGS@ 			\
 	@GLIB_CFLAGS@ 			\
 	-DVERSION=\"$(VERSION)\"	\

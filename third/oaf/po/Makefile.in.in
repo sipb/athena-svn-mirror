@@ -55,7 +55,7 @@ SOURCES = cat-id-tbl.c
 POFILES = @POFILES@
 GMOFILES = @GMOFILES@
 DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(PACKAGE).pot \
-stamp-cat-id $(POFILES) $(GMOFILES) $(SOURCES) $(XML_I18N_UPDATE) $(XML_I18N_EXTRACT)
+stamp-cat-id $(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
 
