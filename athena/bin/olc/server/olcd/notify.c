@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.32 1991-04-09 14:03:29 lwvanels Exp $
+ *	$Id: notify.c,v 1.33 1991-09-22 11:55:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.32 1991-04-09 14:03:29 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.33 1991-09-22 11:55:06 lwvanels Exp $";
 #endif
 #endif
 
@@ -64,7 +64,11 @@ static long zpunt_time;
 # define P(s) ()
 #endif
 
+#ifdef VOID_SIGRET
+static void notice_timeout P((int a ));
+#else
 static int notice_timeout P((int a ));
+#endif
 #ifdef ZEPHYR
 static ERRCODE zwrite_message P((char *username , char *message ));
 static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message ));
@@ -210,7 +214,11 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 }
 
  
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 notice_timeout(a)
      int a;
 {
