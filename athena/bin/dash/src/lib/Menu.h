@@ -65,6 +65,7 @@ typedef struct _Menu {
   struct _Menu *child;
   int weight;
   char *title;
+  int title_width, title_height;
   XjCallback *activateProc;
   int paneType;			/* one of NORMAL, HELP */
   int orientation;		/* one of HORIZONTAL, VERTICAL */
@@ -85,7 +86,11 @@ typedef struct _MenuU {
 
 typedef struct _ItemU {
   char *help;
+  int help_width, help_height;
   XjCallback *activateProc;
+#ifdef MENU_COMPILER
+  char *activateString;
+#endif
   int machtype;
   Boolean verify;
 } ItemU;
@@ -107,6 +112,7 @@ typedef struct _Item {
   int type;
   int flags;
   char *title;
+  int title_width;
   XrmQuark name;
   XrmQuark parents[MAXPARENTS];		/* possible types of parents */
   int weight[MAXPARENTS];		/* weight per-parent */
@@ -153,6 +159,9 @@ typedef struct {
   Menu *responsibleParent;
   XjCallback *verifyProc;
   Boolean verify;
+  Boolean moveMenus;
+  char *rightJet;
+  Jet right_jet;
 } MenuPart;
 
 typedef struct _MenuRec {
@@ -196,6 +205,10 @@ typedef struct _MenuClassRec *MenuJetClass;
 #define XjNverify "verify"
 #define XjCAutoRaise "AutoRaise"
 #define XjNautoRaise "autoRaise"
+#define XjCMoveMenus "MoveMenus"
+#define XjNmoveMenus "moveMenus"
+#define XjCJet "Jet"
+#define XjNrightJet "rightJet"
 
 typedef struct _MenuInfo
 {
