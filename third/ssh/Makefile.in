@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.5 1998-01-24 01:47:20 danw Exp $
+# $Id: Makefile.in,v 1.6 1998-04-08 02:28:43 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.5  1998/01/24 01:47:20  danw
+# merge in changes for 1.2.22
+#
 # Revision 1.4  1998/01/01 18:17:31  danw
 # put sshd in the right place
 #
@@ -504,9 +507,6 @@ hostinstall: $(PROGRAMS) make-dirs generate-host-key install-configs
 # bound to a non-privileged port).  Also, password authentication may
 # not be available if non-root and using shadow passwords.
 install: $(PROGRAMS) make-dirs
-	-rm -f $(install_prefix)$(bindir)/ssh.old
-	-mv $(install_prefix)$(bindir)/ssh $(install_prefix)$(bindir)/ssh.old
-	-chmod 755 $(install_prefix)$(bindir)/ssh.old
 	$(INSTALL_PROGRAM) -o root -m $(SSH_INSTALL_MODE) ssh $(install_prefix)$(bindir)/ssh
 	-if test "`echo ssh | sed '$(transform)'`" '!=' ssh; then \
 	  rm -f $(install_prefix)$(bindir)/`echo ssh | sed '$(transform)'`; \
@@ -519,8 +519,6 @@ install: $(PROGRAMS) make-dirs
 	  $(LN_S) ssh \
 	    $(install_prefix)$(bindir)/`echo slogin | sed '$(transform)'`; fi
 	-for p in $(NORMAL_PROGRAMS) $(X_PROGRAMS) $(OTHER_PROGRAMS); do \
-	  rm -f $(install_prefix)$(bindir)/$$p.old ; \
-	  mv $(install_prefix)$(bindir)/$$p $(install_prefix)$(bindir)/$$p.old; \
 	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(bindir)/$$p; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; \
@@ -528,8 +526,6 @@ install: $(PROGRAMS) make-dirs
 	      $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; fi; \
 	done
 	-for p in $(SCRIPT_PROGRAMS); do \
-	  rm -f $(install_prefix)$(bindir)/$$p.old ; \
-	  mv $(install_prefix)$(bindir)/$$p $(install_prefix)$(bindir)/$$p.old; \
 	  $(INSTALL_DATA) $$p $(install_prefix)$(bindir)/$$p; \
 	  chmod 755 $(install_prefix)$(bindir)/$$p; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
@@ -538,8 +534,6 @@ install: $(PROGRAMS) make-dirs
 	      $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; fi; \
 	done
 	-for p in $(SBIN_PROGRAMS); do \
-	  rm -f $(install_prefix)$(sbindir)/$$p.old ; \
-	  mv $(install_prefix)$(sbindir)/$$p $(install_prefix)$(sbindir)/$$p.old; \
 	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(sbindir)/$$p; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(sbindir)/`echo $$p | sed '$(transform)'`;\
