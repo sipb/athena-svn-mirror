@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.24 1992-04-27 19:13:42 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.25 1992-05-20 12:53:29 lwvanels Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -30,10 +30,11 @@ xlogin*left:			ChainLeft
 
 *instructions.wcConstructor:	XtCreateTransientShell
 *instructions.wcChildren:	hitanykey
+*instructions.allowShellResize:	true
 
 *hitanykey.wcClassName:		Form
 *hitanykey.wcChildren:		version, logo, welcome, host, clock, mesg, \
-				logo2
+				logo2, motd
 
 *warningShell.wcConstructor:	XtCreateTransientShell
 *warningShell.wcChildren:	warning
@@ -149,6 +150,13 @@ xlogin.Geometry: 		580x325+205+105
 *mesg.fromVert:			*clock
 *mesg.font:			-adobe-new century schoolbook-bold-r-*-240-*
 *mesg.label:			Press any key to start . . .
+
+*motd.wcClassName:		Label
+*motd.fromHoriz:		*logo
+*motd.horizDistance:		5
+*motd.vertDistance:		10
+*motd.fromVert:			*mesg
+*motd*resizable:		true
 
 *userName.wcClassName:		Label
 *userName.fromVert:		*welcome
@@ -639,7 +647,7 @@ xlogin.Geometry: 		580x325+205+105
 !
 
 *login*background:		white
-*login*foreground:		black,gray55,gray55
+*login*foreground:		black,gray55,black
 
 *login.logo.foreground:		black,gray15,red
 *login.eyes.foreground:		black,gray15,red

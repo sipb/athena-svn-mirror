@@ -1,10 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.19 1992-05-08 12:58:01 systest Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.20 1992-05-20 12:52:39 lwvanels Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <utmp.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
@@ -92,9 +93,7 @@ typedef struct _XLoginResources {
   String loginName;
   Boolean blankAll;
   Boolean showMotd;
-#ifdef MOTD_TEST
   String motdFile;
-#endif
 } XLoginResources;
 
 /*
@@ -272,28 +271,6 @@ main(argc, argv)
   XtGetApplicationResources(appShell, (caddr_t) &resources, 
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal) 0);
-  /*
-   * merge in the motd file, if one exists, and the "showMotd" resource
-   * is true...
-   */
-  if (resources.showMotd
-#ifdef MOTD_TEST
-      &&  resources.motdFile != NULL
-#endif
-      )
-    {
-      XrmDatabase motd_rdb, cur_rdb;
-
-#ifdef MOTD_TEST
-      if ((motd_rdb = XrmGetFileDatabase(resources.motdFile)) != NULL )
-#else
-      if ((motd_rdb = XrmGetFileDatabase(MOTD_FILENAME)) != NULL )
-#endif
-	{
-	  cur_rdb = XtDatabase(dpy);
-	  XrmMergeDatabases (motd_rdb, &cur_rdb);
-	}
-    }
 
   WcRegisterCallback(app, "UnsetFocus", unfocusACT, NULL);
   WcRegisterCallback(app, "runCB", runCB, NULL);
@@ -438,12 +415,13 @@ main(argc, argv)
   XtMainLoop ( );
 }
 
+static Dimension x_max = 0, y_max = 0;
+
 static void
 move_instructions(data, timerid)
      XtPointer  data;
      XtIntervalId  *timerid;
 {
-  static Dimension x_max = 0, y_max = 0;
   Position x, y;
   Window wins[2];
 
@@ -488,6 +466,8 @@ start_reactivate(data, timerid)
 	fprintf(stderr, "Restarting X Server\n");
 	exit(0);
     }
+
+    do_motd();
 
     if ((file = open(UTMPF, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
@@ -579,6 +559,7 @@ screensave(data, timerid)
   for (i=0; i < num_screens; i++)
     XtPopup(savershell[i], XtGrabNone);
 
+  do_motd();
   XtPopup(ins, XtGrabNone);
   XRaiseWindow(XtDisplay(ins), XtWindow(ins));
   unfocusACT(appShell, NULL, NULL, NULL);
@@ -614,6 +595,72 @@ screensave(data, timerid)
   react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
 			       start_reactivate, NULL);
 }
+
+
+/* Check the motd file and update the contents of the widget if necessary */
+
+do_motd()
+{
+    static Widget motdtext = NULL;
+    static time_t modtime = 0;
+    struct stat stbuf;
+    Arg args[1];
+    char buf[10000], *temp, *s, *d;
+    int fid, len;
+
+    if (!motdtext) {
+	motdtext = WcFullNameToWidget(appShell, "*motd");
+#ifndef MOTD_TEST
+	resources.motdFile = MOTD_FILENAME;
+#endif
+    }
+
+    if (resources.showMotd && resources.motdFile != NULL) {
+	if (!stat(resources.motdFile, &stbuf) &&
+	    stbuf.st_mtime > modtime) {
+	    /* time to update the motd */
+	    modtime = stbuf.st_mtime;
+	    /* read the new motd */
+	    if ((fid = open(resources.motdFile, O_RDONLY)) < 0) return;
+	    len = read(fid, buf, sizeof(buf));
+	    close(fid);
+	    buf[len] = 0;
+
+	    /* de-tabbify the motd (label widgets don't do tabs) */
+	    for (s = buf; *s; s++)
+	      if (*s == '\t') len += 7;
+	    d = temp = malloc(len+1);
+	    len = 0;
+	    for (s = buf; *s; s++) {
+		switch (*s) {
+		case '\t':
+		    *d++ = ' ';
+		    len++;
+		    while (len++ % 8 != 0)
+		      *d++ = ' ';
+		    len--;
+		    break;
+		case '\n':
+		    len = 0;
+		    *d++ = *s;
+		    break;
+		default:
+		    *d++ = *s;
+		    len++;
+		}
+	    }
+
+	    /* now set the text */
+	    XtSetArg(args[0], XtNlabel, temp);
+	    XtSetValues(motdtext, args, 1);
+	    free(temp);
+
+	    /* force move_instructions() to recompute size */
+	    x_max = 0;
+	}
+    }
+}
+
 
 static void
 unsave(w, popdown, event, bool)
