@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.9 2000-04-14 14:44:39 ghudson Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.10 2002-03-15 04:39:49 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -436,7 +436,6 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
     sprintf(user + strlen(user), "@%s", urealm);
 
   /* Look up principal's PTS id. */
-  initialize_pt_error_table();
   status = pr_Initialize(0, AFSDIR_CLIENT_ETC_DIRPATH, cell);
   if (status)
     {
