@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -219,19 +242,15 @@ serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
 INCLUDES = \
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/calendar		\
-	-I$(top_builddir)/calendar/cal-client	\
-	-I$(top_srcdir)/libical/src/libical	\
-	-I$(top_builddir)/libical/src/libical	\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_builddir)/e-util		\
+	-I$(top_srcdir)/widgets/misc		\
+	-I$(top_builddir)/widgets/misc		\
 	$(EVOLUTION_CALENDAR_CONDUIT_CFLAGS)
 
 
 # ToDo Conduit
-e_todo_conduitsdir = $(libdir)/gnome-pilot/conduits
-e_todo_conduits_LTLIBRARIES = libetodo_conduit.la
+privconduit_LTLIBRARIES = libetodo_conduit.la
 
 libetodo_conduit_la_SOURCES = \
 	todo-conduit.c
@@ -240,17 +259,16 @@ libetodo_conduit_la_SOURCES = \
 libetodo_conduit_la_LDFLAGS = -module -avoid-version
 libetodo_conduit_la_LIBADD = \
 	$(top_builddir)/e-util/libeutil.la				\
-	$(top_builddir)/calendar/cal-client/libcal-client-static.la	\
-	$(top_builddir)/calendar/cal-util/libcal-util-static.la		\
-	$(top_builddir)/libversit/libversit.la				\
-	$(top_builddir)/libical/src/libical/libical-static.la		\
-	$(top_builddir)/libwombat/libwombat-static.la                   \
 	$(top_builddir)/e-util/libeconduit.la		 		\
+	$(top_builddir)/widgets/misc/libemiscwidgets.la		 	\
 	$(EVOLUTION_CALENDAR_CONDUIT_LIBS)
 
 
-Conduitdir = $(datadir)/gnome-pilot/conduits/
-Conduit_DATA = e-todo.conduit
+conduitdir = $(datadir)/gnome-pilot/conduits/
+conduit_DATA = e-todo-$(BASE_VERSION).conduit
+
+BUILT_SOURCES = $(conduit_DATA)
+CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 	e-todo.conduit.in
@@ -259,15 +277,11 @@ subdir = calendar/conduits/todo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(e_todo_conduits_LTLIBRARIES)
+LTLIBRARIES = $(privconduit_LTLIBRARIES)
 
 libetodo_conduit_la_DEPENDENCIES = $(top_builddir)/e-util/libeutil.la \
-	$(top_builddir)/calendar/cal-client/libcal-client-static.la \
-	$(top_builddir)/calendar/cal-util/libcal-util-static.la \
-	$(top_builddir)/libversit/libversit.la \
-	$(top_builddir)/libical/src/libical/libical-static.la \
-	$(top_builddir)/libwombat/libwombat-static.la \
-	$(top_builddir)/e-util/libeconduit.la
+	$(top_builddir)/e-util/libeconduit.la \
+	$(top_builddir)/widgets/misc/libemiscwidgets.la
 am_libetodo_conduit_la_OBJECTS = todo-conduit.lo
 libetodo_conduit_la_OBJECTS = $(am_libetodo_conduit_la_OBJECTS)
 
@@ -288,12 +302,13 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 DIST_SOURCES = $(libetodo_conduit_la_SOURCES)
-DATA = $(Conduit_DATA)
+DATA = $(conduit_DATA)
 
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libetodo_conduit_la_SOURCES)
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -302,36 +317,36 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --gnu  calendar/conduits/todo/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-e_todo_conduitsLTLIBRARIES_INSTALL = $(INSTALL)
-install-e_todo_conduitsLTLIBRARIES: $(e_todo_conduits_LTLIBRARIES)
+privconduitLTLIBRARIES_INSTALL = $(INSTALL)
+install-privconduitLTLIBRARIES: $(privconduit_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(e_todo_conduitsdir)
-	@list='$(e_todo_conduits_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(privconduitdir)
+	@list='$(privconduit_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(e_todo_conduitsLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(e_todo_conduitsdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(e_todo_conduitsLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(e_todo_conduitsdir)/$$f; \
+	    echo " $(LIBTOOL) --mode=install $(privconduitLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(privconduitdir)/$$f"; \
+	    $(LIBTOOL) --mode=install $(privconduitLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(privconduitdir)/$$f; \
 	  else :; fi; \
 	done
 
-uninstall-e_todo_conduitsLTLIBRARIES:
+uninstall-privconduitLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(e_todo_conduits_LTLIBRARIES)'; for p in $$list; do \
+	@list='$(privconduit_LTLIBRARIES)'; for p in $$list; do \
 	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(e_todo_conduitsdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(e_todo_conduitsdir)/$$p; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(privconduitdir)/$$p"; \
+	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(privconduitdir)/$$p; \
 	done
 
-clean-e_todo_conduitsLTLIBRARIES:
-	-test -z "$(e_todo_conduits_LTLIBRARIES)" || rm -f $(e_todo_conduits_LTLIBRARIES)
-	@list='$(e_todo_conduits_LTLIBRARIES)'; for p in $$list; do \
+clean-privconduitLTLIBRARIES:
+	-test -z "$(privconduit_LTLIBRARIES)" || rm -f $(privconduit_LTLIBRARIES)
+	@list='$(privconduit_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test -z "$dir" && dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
 libetodo_conduit.la: $(libetodo_conduit_la_OBJECTS) $(libetodo_conduit_la_DEPENDENCIES) 
-	$(LINK) -rpath $(e_todo_conduitsdir) $(libetodo_conduit_la_LDFLAGS) $(libetodo_conduit_la_OBJECTS) $(libetodo_conduit_la_LIBADD) $(LIBS)
+	$(LINK) -rpath $(privconduitdir) $(libetodo_conduit_la_LDFLAGS) $(libetodo_conduit_la_OBJECTS) $(libetodo_conduit_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -372,23 +387,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-ConduitDATA_INSTALL = $(INSTALL_DATA)
-install-ConduitDATA: $(Conduit_DATA)
+conduitDATA_INSTALL = $(INSTALL_DATA)
+install-conduitDATA: $(conduit_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(Conduitdir)
-	@list='$(Conduit_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(conduitdir)
+	@list='$(conduit_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(ConduitDATA_INSTALL) $$d$$p $(DESTDIR)$(Conduitdir)/$$f"; \
-	  $(ConduitDATA_INSTALL) $$d$$p $(DESTDIR)$(Conduitdir)/$$f; \
+	  echo " $(conduitDATA_INSTALL) $$d$$p $(DESTDIR)$(conduitdir)/$$f"; \
+	  $(conduitDATA_INSTALL) $$d$$p $(DESTDIR)$(conduitdir)/$$f; \
 	done
 
-uninstall-ConduitDATA:
+uninstall-conduitDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(Conduit_DATA)'; for p in $$list; do \
+	@list='$(conduit_DATA)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(Conduitdir)/$$f"; \
-	  rm -f $(DESTDIR)$(Conduitdir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(conduitdir)/$$f"; \
+	  rm -f $(DESTDIR)$(conduitdir)/$$f; \
 	done
 
 ETAGS = etags
@@ -452,12 +467,15 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(e_todo_conduitsdir) $(DESTDIR)$(Conduitdir)
+	$(mkinstalldirs) $(DESTDIR)$(privconduitdir) $(DESTDIR)$(conduitdir)
 
 install: install-am
 install-exec: install-exec-am
@@ -476,6 +494,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -483,9 +502,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
-clean-am: clean-e_todo_conduitsLTLIBRARIES clean-generic clean-libtool \
+clean-am: clean-generic clean-libtool clean-privconduitLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -501,8 +521,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-ConduitDATA install-data-local \
-	install-e_todo_conduitsLTLIBRARIES
+install-data-am: install-conduitDATA install-privconduitLTLIBRARIES
 
 install-exec-am:
 
@@ -521,32 +540,31 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-ConduitDATA uninstall-e_todo_conduitsLTLIBRARIES \
-	uninstall-info-am
+uninstall-am: uninstall-conduitDATA uninstall-info-am \
+	uninstall-privconduitLTLIBRARIES
 
-.PHONY: GTAGS all all-am check check-am clean \
-	clean-e_todo_conduitsLTLIBRARIES clean-generic clean-libtool \
-	distclean distclean-compile distclean-depend distclean-generic \
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-privconduitLTLIBRARIES distclean \
+	distclean-compile distclean-depend distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am info \
-	info-am install install-ConduitDATA install-am install-data \
-	install-data-am install-data-local \
-	install-e_todo_conduitsLTLIBRARIES install-exec install-exec-am \
-	install-info install-info-am install-man install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool tags uninstall \
-	uninstall-ConduitDATA uninstall-am \
-	uninstall-e_todo_conduitsLTLIBRARIES uninstall-info-am
+	info-am install install-am install-conduitDATA install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-privconduitLTLIBRARIES \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-conduitDATA \
+	uninstall-info-am uninstall-privconduitLTLIBRARIES
 
 
-e-todo.conduit: e-todo.conduit.in Makefile
-	sed -e 's^\@prefix\@^$(prefix)^g' 				\
+e-todo-$(BASE_VERSION).conduit: e-todo.conduit.in
+	sed -e 's^\@privconduitdir\@^$(privconduitdir)^g' 			\
 	    -e 's^\@datadir\@^$(datadir)^g' 				\
-	    < $(srcdir)/e-todo.conduit.in > e-todo.conduit.tmp 		\
-	&& mv e-todo.conduit.tmp e-todo.conduit
+	    -e 's^\@BASE_VERSION\@^$(BASE_VERSION)^g' 			\
+	    $< > $@
 
-install-data-local:
-	$(mkinstalldirs) $(Conduitdir)
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

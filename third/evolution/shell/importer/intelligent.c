@@ -142,7 +142,7 @@ get_intelligent_importers (void)
 	int i;
 
 	CORBA_exception_init (&ev);
-	info_list = bonobo_activation_query ("repo_ids.has ('IDL:GNOME/Evolution/IntelligentImporter:1.0')", NULL, &ev);
+	info_list = bonobo_activation_query ("repo_ids.has ('IDL:GNOME/Evolution/IntelligentImporter:" BASE_VERSION "')", NULL, &ev);
 	CORBA_exception_free (&ev);
 
 	for (i = 0; i < info_list->_length; i++) {
@@ -186,6 +186,10 @@ create_gui (GList *importers)
 
 	d = g_new (IntelligentImporterDialog, 1);
 	d->dialog = dialog = gtk_dialog_new();
+	gtk_dialog_set_has_separator ((GtkDialog *) dialog, FALSE);
+	gtk_container_set_border_width ((GtkContainer *) ((GtkDialog *)dialog)->vbox, 0);
+	gtk_container_set_border_width ((GtkContainer *) ((GtkDialog *)dialog)->action_area, 12);
+
 	gtk_window_set_title((GtkWindow *)dialog, _("Importers"));
 	dummy = gtk_button_new_from_stock(GTK_STOCK_CONVERT);
 	gtk_button_set_label((GtkButton *)dummy, _("Import"));
@@ -219,6 +223,7 @@ create_gui (GList *importers)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(sw), 
 					GTK_POLICY_AUTOMATIC, 
 					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_IN);
 	gtk_widget_set_size_request (sw, 300, 150);
 	gtk_container_add (GTK_CONTAINER (sw), clist);
 	gtk_box_pack_start (GTK_BOX (hbox), sw, TRUE, TRUE, 0);

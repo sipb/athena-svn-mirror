@@ -26,16 +26,14 @@
 #include <glade/glade.h>
 #include <gal/e-table/e-table.h>
 #include <gal/e-table/e-table-scrolled.h>
+#include <libedataserver/e-source-list.h>
+#include <widgets/misc/e-source-option-menu.h>
 
-#include "evolution-shell-client.h"
 #include "e-addressbook-model.h"
 
 #include "e-select-names-model.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* ESelectNames - A dialog displaying information about a contact.
  *
@@ -59,6 +57,8 @@ struct _ESelectNames
 {
 	GtkDialog parent;
 	
+	ESourceList *source_list;
+	
 	/* item specific fields */
 	GladeXML *gui;
 	
@@ -67,7 +67,7 @@ struct _ESelectNames
 	ETableScrolled *table;
 	ETableModel *adapter;
 	ETableModel *without;
-	EAddressbookModel *model;
+	EABModel *model;
 	GtkWidget *categories;
 	GtkWidget *select_entry;
 	GtkWidget *status_message;
@@ -85,8 +85,9 @@ struct _ESelectNamesClass
 };
 
 
-GtkWidget *e_select_names_new          (EvolutionShellClient *shell_client);
 GType      e_select_names_get_type     (void);
+
+GtkWidget *e_select_names_new          (void);
 
 void       e_select_names_add_section  (ESelectNames         *e_select_names,
 				       	const char           *name,
@@ -95,9 +96,6 @@ void       e_select_names_add_section  (ESelectNames         *e_select_names,
 void       e_select_names_set_default  (ESelectNames         *e_select_names,
 					const char           *id);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __E_SELECT_NAMES_H__ */

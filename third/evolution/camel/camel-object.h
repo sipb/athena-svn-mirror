@@ -1,12 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-object.h: Base class for Camel */
-
 /*
- * Author:
+ * Authors:
  *  Dan Winship <danw@ximian.com>
  *  Michael Zucchi <notzed@ximian.com>
  *
- * Copyright 2000 Ximian, Inc. (www.ximian.com)
+ * Copyright 2000-2004 Novell, Inc. (www.novell.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -23,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_OBJECT_H
 #define CAMEL_OBJECT_H 1
 
@@ -32,18 +30,17 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-#include <stdlib.h>		/* size_t */
 #include <glib.h>
+#include <stdio.h>		/* FILE */
+#include <stdlib.h>		/* size_t */
 #include <stdarg.h>
+#include <pthread.h>
+
 #include <camel/camel-arg.h>
 #include <camel/camel-types.h>	/* this is a @##$@#SF stupid header */
 
 /* this crap shouldn't be here */
 #include <camel/camel-i18n.h>
-
-#ifdef ENABLE_THREADS
-#include <pthread.h>
-#endif
 
 /* turn on so that camel_object_class_dump_tree() dumps object instances as well */
 #define CAMEL_OBJECT_TRACK_INSTANCES
@@ -76,6 +73,7 @@ extern CamelType camel_object_type;
 typedef struct _CamelObjectClass CamelObjectClass;
 typedef struct _CamelObject CamelObject;
 typedef unsigned int CamelObjectHookID;
+typedef struct _CamelObjectMeta CamelObjectMeta;
 
 typedef void (*CamelObjectClassInitFunc) (CamelObjectClass *);
 typedef void (*CamelObjectClassFinalizeFunc) (CamelObjectClass *);
@@ -87,17 +85,35 @@ typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
 
 #define CAMEL_INVALID_TYPE (NULL)
 
-/* camel object args */
+/* camel object args. */
 enum {
-	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,
+	/* Get a description of the object. */
+	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,	/* Get a copy of the meta-data list (should be freed) */
+	CAMEL_OBJECT_ARG_METADATA,
+	CAMEL_OBJECT_ARG_STATE_FILE,
+	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES,
 };
 
 enum {
 	CAMEL_OBJECT_DESCRIPTION = CAMEL_OBJECT_ARG_DESCRIPTION | CAMEL_ARG_STR,
+	/* Returns a CamelObjectMeta list */
+	CAMEL_OBJECT_METADATA = CAMEL_OBJECT_ARG_METADATA | CAMEL_ARG_PTR,
+	/* sets where the persistent data should reside, otherwise it isn't persistent */
+	CAMEL_OBJECT_STATE_FILE = CAMEL_OBJECT_ARG_STATE_FILE | CAMEL_ARG_STR,
+	/* returns a GSList CamelProperties of persistent properties */
+	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES | CAMEL_ARG_PTR,
 };
 
 enum _CamelObjectFlags {
 	CAMEL_OBJECT_DESTROY = (1<<0),
+};
+
+/* returned by get::CAMEL_OBJECT_METADATA */
+struct _CamelObjectMeta {
+	struct _CamelObjectMeta *next;
+
+	char *value;
+	char name[1];		/* allocated as part of structure */
 };
 
 /* TODO: create a simpleobject which has no events on it, or an interface for events */
@@ -157,6 +173,14 @@ struct _CamelObjectClass
 	int (*getv)(struct _CamelObject *, struct _CamelException *ex, CamelArgGetV *args);
 	/* we only free 1 at a time, and only pointer types, obviously */
 	void (*free)(struct _CamelObject *, guint32 tag, void *ptr);
+
+	/* get/set meta-data interface */
+	char *(*meta_get)(struct _CamelObject *, const char * name);
+	gboolean (*meta_set)(struct _CamelObject *, const char * name, const char *value);
+
+	/* persistence stuff */
+	int (*state_read)(struct _CamelObject *, FILE *fp);
+	int (*state_write)(struct _CamelObject *, FILE *fp);
 };
 
 /* The type system .... it's pretty simple..... */
@@ -211,7 +235,15 @@ int camel_object_setv(void *obj, struct _CamelException *ex, CamelArgV *);
 int camel_object_get(void *obj, struct _CamelException *ex, ...);
 int camel_object_getv(void *obj, struct _CamelException *ex, CamelArgGetV *);
 
-/* free a bunch of objects, list must be 0 terminated */
+/* meta-data for user-specific data */
+char *camel_object_meta_get(void *vo, const char * name);
+gboolean camel_object_meta_set(void *vo, const char * name, const char *value);
+
+/* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
+int camel_object_state_read(void *vo);
+int camel_object_state_write(void *vo);
+
+/* free a retrieved object.  May be a noop for static data. */
 void camel_object_free(void *vo, guint32 tag, void *value);
 
 /* for managing bags of weakly-ref'd 'child' objects */
@@ -220,12 +252,36 @@ typedef void *(*CamelCopyFunc)(const void *vo);
 
 CamelObjectBag *camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree);
 void *camel_object_bag_get(CamelObjectBag *bag, const void *key);
+void *camel_object_bag_peek(CamelObjectBag *bag, const void *key);
 void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key);
 void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *o);
 void camel_object_bag_abort(CamelObjectBag *bag, const void *key);
+void camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey);
 GPtrArray *camel_object_bag_list(CamelObjectBag *bag);
 void camel_object_bag_remove(CamelObjectBag *bag, void *o);
 void camel_object_bag_destroy(CamelObjectBag *bag);
+
+#define CAMEL_MAKE_CLASS(type, tname, parent, pname)				\
+static CamelType type##_type;							\
+static pname##Class * type##_parent_class;					\
+										\
+CamelType									\
+type##_get_type(void)								\
+{										\
+	if (type##_type == 0) {							\
+		type##_parent_class = (pname##Class *)parent##_get_type();	\
+		type##_type = camel_type_register(				\
+			type##_parent_class, #tname "Class",			\
+			sizeof(tname),						\
+			sizeof(tname ## Class),					\
+			(CamelObjectClassInitFunc) type##_class_init,		\
+			NULL,							\
+			(CamelObjectInitFunc) type##_init,			\
+			(CamelObjectFinalizeFunc) type##_finalise);		\
+	}									\
+										\
+	return type##_type;							\
+}
 
 #ifdef __cplusplus
 }

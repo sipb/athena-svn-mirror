@@ -16,13 +16,11 @@
 #include <gtk/gtksignal.h>
 
 #include <gal/util/e-util.h>
-
+#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
 #include "e-select-names-model.h"
 #include "e-select-names-marshal.h"
-#include "addressbook/backend/ebook/e-card-simple.h"
-
-#define MAX_LENGTH 2047
-
+#include "eab-book-util.h"
 
 enum {
 	E_SELECT_NAMES_MODEL_CHANGED,
@@ -35,7 +33,7 @@ static guint e_select_names_model_signals[E_SELECT_NAMES_MODEL_LAST_SIGNAL] = { 
 /* Object argument IDs */
 enum {
 	ARG_0,
-	ARG_CARD,
+	ARG_CONTACT,
 };
 
 struct _ESelectNamesModelPrivate {
@@ -158,12 +156,6 @@ e_select_names_model_changed (ESelectNamesModel *model)
 	}
 }
 
-static void
-destination_changed_proxy (EDestination *dest, gpointer closure)
-{
-	e_select_names_model_changed (E_SELECT_NAMES_MODEL (closure));
-}
-
 /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
 
 ESelectNamesModel *
@@ -219,12 +211,6 @@ e_select_names_model_get_textification (ESelectNamesModel *model, const char *se
 		}
 		
 		text = g_strjoinv (separator, strv);
-
-		if (g_utf8_strlen(text, -1) > MAX_LENGTH) {
-			char *p = g_utf8_offset_to_pointer (text, MAX_LENGTH);
-			*p = '\0';
-			text = g_realloc (text, p - text + 1);
-		}
 		
 		g_free (strv);
 		
@@ -339,13 +325,6 @@ e_select_names_model_export_destinationv (ESelectNamesModel *model)
 	return str;
 }
 
-static
-void send_changed (EDestination *dest, ECard *card, gpointer closure)
-{
-	ESelectNamesModel *model = closure;
-	e_select_names_model_changed (model);
-}
-
 void
 e_select_names_model_import_destinationv (ESelectNamesModel *model,
 					  gchar *destinationv)
@@ -363,14 +342,13 @@ e_select_names_model_import_destinationv (ESelectNamesModel *model,
 		return;
 
 	for (i = 0; destv[i]; i++) {
-		e_destination_use_card (destv[i], send_changed, model);
 		e_select_names_model_append (model, destv[i]);
 	}
 	g_free (destv);
 }
 
-ECard *
-e_select_names_model_get_card (ESelectNamesModel *model, gint index)
+EContact *
+e_select_names_model_get_contact (ESelectNamesModel *model, gint index)
 {
 	const EDestination *dest;
 
@@ -379,7 +357,7 @@ e_select_names_model_get_card (ESelectNamesModel *model, gint index)
 	g_return_val_if_fail (index < g_list_length (model->priv->data), NULL);
 
 	dest = e_select_names_model_get_destination (model, index);
-	return dest ? e_destination_get_card (dest) : NULL;
+	return dest ? e_destination_get_contact (dest) : NULL;
 
 }
 
@@ -395,21 +373,6 @@ e_select_names_model_get_string (ESelectNamesModel *model, gint index)
 	dest = e_select_names_model_get_destination (model, index);
 	
 	return dest ? e_destination_get_textrep (dest, FALSE) : "";
-}
-
-static void
-connect_destination (ESelectNamesModel *model, EDestination *dest)
-{
-	g_signal_connect (dest,
-			  "changed",
-			  G_CALLBACK (destination_changed_proxy),
-			  model);
-}
-
-static void
-disconnect_destination (ESelectNamesModel *model, EDestination *dest)
-{
-	g_signal_handlers_disconnect_by_func (dest, destination_changed_proxy, model);
 }
 
 gboolean
@@ -442,8 +405,6 @@ e_select_names_model_insert (ESelectNamesModel *model, gint index, EDestination 
 		return;
 	}
 
-	connect_destination (model, dest);
-
 	model->priv->data = g_list_insert (model->priv->data, dest, index);
 	
 	g_object_ref (dest);
@@ -462,8 +423,6 @@ e_select_names_model_append (ESelectNamesModel *model, EDestination *dest)
 		g_object_unref (dest);
 		return;
 	}
-
-	connect_destination (model, dest);
 
 	model->priv->data = g_list_append (model->priv->data, dest);
 
@@ -489,8 +448,6 @@ e_select_names_model_replace (ESelectNamesModel *model, gint index, EDestination
 
 	if (model->priv->data == NULL) {
 
-		connect_destination (model, dest);
-
 		model->priv->data = g_list_append (model->priv->data, dest);
 		g_object_ref (dest);
 
@@ -499,9 +456,6 @@ e_select_names_model_replace (ESelectNamesModel *model, gint index, EDestination
 		node = g_list_nth (model->priv->data, index);
 
 		if (node->data != dest) {
-
-			disconnect_destination (model, E_DESTINATION (node->data));
-			connect_destination (model, dest);
 
 			old_str = e_destination_get_textrep (E_DESTINATION (node->data), FALSE);
 			old_strlen = old_str ? strlen (old_str) : 0;
@@ -532,7 +486,6 @@ e_select_names_model_delete (ESelectNamesModel *model, gint index)
 	node = g_list_nth (model->priv->data, index);
 	dest = E_DESTINATION (node->data);
 
-	disconnect_destination (model, dest);
 	g_object_unref (dest);
 
 	model->priv->data = g_list_remove_link (model->priv->data, node);
@@ -561,11 +514,9 @@ e_select_names_model_clean (ESelectNamesModel *model, gboolean clean_last_entry)
 		
 		dest = iter->data ? E_DESTINATION (iter->data) : NULL;
 
-		if (dest == NULL || e_destination_is_empty (dest)) {
-			if (dest) {
-				disconnect_destination (model, dest);
+		if (dest == NULL || e_destination_empty (dest)) {
+			if (dest)
 				g_object_unref (dest);
-			}
 			model->priv->data = g_list_remove_link (model->priv->data, iter);
 			g_list_free_1 (iter);
 			changed = TRUE;
@@ -578,19 +529,12 @@ e_select_names_model_clean (ESelectNamesModel *model, gboolean clean_last_entry)
 		e_select_names_model_changed (model);
 }
 
-static void
-delete_all_iter (gpointer data, gpointer closure)
-{
-	disconnect_destination (E_SELECT_NAMES_MODEL (closure), E_DESTINATION (data));
-	g_object_unref (data);
-}
-
 void
 e_select_names_model_delete_all (ESelectNamesModel *model)
 {
 	g_return_if_fail (model != NULL && E_IS_SELECT_NAMES_MODEL (model));
 
-	g_list_foreach (model->priv->data, delete_all_iter, model);
+	g_list_foreach (model->priv->data, (GFunc)g_object_unref, model);
 	g_list_free (model->priv->data);
 	model->priv->data = NULL;
 
@@ -635,6 +579,116 @@ e_select_names_model_merge (ESelectNamesModel *dest, ESelectNamesModel *src)
 			e_select_names_model_append (dest, e_destination_copy (d));
 	}
 }
+
+typedef struct {
+	EDestination *dest;
+	ESelectNamesModel *model;
+} ModelDestClosure;
+
+static void
+name_and_email_simple_query_cb (EBook *book, EBookStatus status, GList *contacts, gpointer closure)
+{
+	ModelDestClosure *c = closure;
+	EDestination *dest = c->dest;
+	ESelectNamesModel *model = c->model;
+	EContact *contact;
+	int num_non_list_contacts = 0;
+	GList *l;
+
+	g_free (c);
+
+	if (status == E_BOOK_ERROR_OK) {
+		for (l = contacts; l; l = l->next) {
+			EContact *c = E_CONTACT (l->data);
+			if (!e_contact_get (c, E_CONTACT_IS_LIST)) {
+				num_non_list_contacts++;
+				contact = c;
+			}
+		}
+
+		if (num_non_list_contacts == 1) {
+			const char *email = e_destination_get_email (dest);
+			int email_num = 0;
+		
+			if (email && *email) {
+				GList *email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+				GList *l;
+
+				for (l = email_list; l; l = l->next) {
+					if (!g_ascii_strcasecmp (email, l->data))
+						break;
+					email_num++;
+				}
+				if (l == NULL)
+					email_num = -1;
+			}
+
+			if (email_num >= 0) {
+				e_destination_set_contact (dest, contact, email_num);
+				e_select_names_model_changed (model);
+			}
+		}
+	}
+	
+	
+	g_object_unref (dest);
+	g_object_unref (model);
+	g_object_unref (book);
+}
+
+static void
+book_opened (EBook *book, EBookStatus status, gpointer closure)
+{
+	ESelectNamesModel *model = closure;
+	GList *iter;
+
+	for (iter = model->priv->data; iter != NULL; iter = g_list_next (iter)) {
+		ModelDestClosure *c = g_new (ModelDestClosure, 1);
+
+		c->dest = g_object_ref (E_DESTINATION (iter->data));
+		c->model = g_object_ref (model);
+
+		if (e_destination_is_evolution_list (c->dest))
+			continue;
+	
+		if (e_destination_get_contact (c->dest))
+			continue;
+
+		g_object_ref (book);
+
+		eab_name_and_email_query (book,
+					  e_destination_get_name (c->dest),
+					  e_destination_get_email (c->dest),
+					  name_and_email_simple_query_cb,
+					  c);
+	}
+
+
+	g_object_unref (model);
+	g_object_unref (book);
+}
+
+void
+e_select_names_model_load_contacts (ESelectNamesModel *model)
+{
+	EBook *book;
+
+	g_return_if_fail (E_IS_SELECT_NAMES_MODEL (model));
+
+	if (model->priv->data) {
+		g_object_ref (model);
+
+		book = e_book_new_default_addressbook (NULL);
+
+		e_book_async_open (book, TRUE, book_opened, model);
+	}
+}
+
+void
+e_select_names_cancel_contacts_load (ESelectNamesModel *model)
+{
+}
+
 
 void
 e_select_names_model_name_pos (ESelectNamesModel *model, gint seplen, gint index, gint *pos, gint *length)
@@ -716,97 +770,6 @@ e_select_names_model_text_pos (ESelectNamesModel *model, gint seplen, gint pos, 
 		*start_pos = sp;
 	if (length)
 		*length = len;
-}
-
-void
-e_select_names_model_cardify (ESelectNamesModel *model, EBook *book, gint index, gint delay)
-{
-	EDestination *dest;
-
-	g_return_if_fail (E_IS_SELECT_NAMES_MODEL (model));
-	g_return_if_fail (book == NULL || E_IS_BOOK (book));
-	g_return_if_fail (0 <= index && index < g_list_length (model->priv->data));
-
-	dest = E_DESTINATION (g_list_nth_data (model->priv->data, index));
-
-	if (!e_destination_is_empty (dest)) {
-
-		if (delay > 0)
-			e_destination_cardify_delayed (dest, book, delay);
-		else
-			e_destination_cardify (dest, book);
-	}
-}
-
-gboolean
-e_select_names_model_uncardify (ESelectNamesModel *model, gint index)
-{
-	EDestination *dest;
-	gboolean rv = FALSE;
-
-	g_return_val_if_fail (E_IS_SELECT_NAMES_MODEL (model), FALSE);
-	g_return_val_if_fail (0 <= index && index < g_list_length (model->priv->data), FALSE);
-
-	dest = E_DESTINATION (g_list_nth_data (model->priv->data, index));
-
-	if (!e_destination_is_empty (dest)) {
-		EDestination *cpy_dest = e_destination_copy (dest);
-
-		rv = e_destination_uncardify (cpy_dest);
-
-		if (rv) {
-			e_select_names_model_replace (model, index, cpy_dest);
-		}
-		
-	}
-
-	return rv;
-}
-
-void
-e_select_names_model_cancel_cardify (ESelectNamesModel *model, gint index)
-{
-	EDestination *dest;
-
-	g_return_if_fail (E_IS_SELECT_NAMES_MODEL (model));
-	g_return_if_fail (0 <= index && index < g_list_length (model->priv->data));
-
-	dest = E_DESTINATION (g_list_nth_data (model->priv->data, index));
-	
-	e_destination_cancel_cardify (dest);
-}
-
-void
-e_select_names_model_cardify_all (ESelectNamesModel *model, EBook *book, gint delay)
-{
-	GList *iter;
-
-	g_return_if_fail (E_IS_SELECT_NAMES_MODEL (model));
-	g_return_if_fail (book == NULL || E_IS_BOOK (book));
-
-	for (iter = model->priv->data; iter != NULL; iter = g_list_next (iter)) {
-		EDestination *dest = E_DESTINATION (iter->data);
-		if (!e_destination_is_empty (dest)) {
-
-			if (delay > 0)
-				e_destination_cardify_delayed (dest, book, delay);
-			else
-				e_destination_cardify (dest, book);
-		}
-	}
-}
-
-void
-e_select_names_model_cancel_cardify_all (ESelectNamesModel *model)
-{
-	GList *iter;
-
-	g_return_if_fail (E_IS_SELECT_NAMES_MODEL (model));
-
-	for (iter = model->priv->data; iter != NULL; iter = g_list_next (iter)) {
-		EDestination *dest = E_DESTINATION (iter->data);
-		e_destination_cancel_cardify (dest);
-	}
 }
 
 void

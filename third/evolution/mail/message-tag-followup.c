@@ -36,18 +36,29 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtklist.h>
 #define GTK_ENABLE_DEPRECATED
-#endif /* GTK_DISABLE_DEPRECATED */
+#else
+#include <gtk/gtkcombo.h>
+#include <gtk/gtklist.h>
+#endif /* !GTK_DISABLE_DEPRECATED */
+
+#include <gtk/gtkentry.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkbox.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtkcellrenderertext.h>
 
 #include <glade/glade.h>
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
-#include <libgnomeui/gnome-window-icon.h>
 #include <libgnomeui/gnome-pixmap.h>
 
 #include "message-tag-followup.h"
 #include "mail-config.h"
+#include <e-util/e-icon-factory.h>
+#include "widgets/misc/e-dateedit.h"
 
 static void message_tag_followup_class_init (MessageTagFollowUpClass *class);
 static void message_tag_followup_init (MessageTagFollowUp *followup);
@@ -149,7 +160,7 @@ get_tag_list (MessageTagEditor *editor)
 	
 	date = e_date_edit_get_time (followup->target_date);
 	if (date != (time_t) -1) {
-		text = header_format_date (date, 0);
+		text = camel_header_format_date (date, 0);
 		camel_tag_set (&tags, "due-by", text);
 		g_free (text);
 	} else {
@@ -157,7 +168,7 @@ get_tag_list (MessageTagEditor *editor)
 	}
 	
 	if (gtk_toggle_button_get_active (followup->completed)) {
-		text = header_format_date (followup->completed_date, 0);
+		text = camel_header_format_date (followup->completed_date, 0);
 		camel_tag_set (&tags, "completed-on", text);
 		g_free (text);
 	} else {
@@ -180,7 +191,7 @@ set_tag_list (MessageTagEditor *editor, CamelTag *tags)
 	
 	text = camel_tag_get (&tags, "due-by");
 	if (text && *text) {
-		date = header_decode_date (text, NULL);
+		date = camel_header_decode_date (text, NULL);
 		e_date_edit_set_time (followup->target_date, date);
 	} else {
 		e_date_edit_set_time (followup->target_date, (time_t) -1);
@@ -188,7 +199,7 @@ set_tag_list (MessageTagEditor *editor, CamelTag *tags)
 	
 	text = camel_tag_get (&tags, "completed-on");
 	if (text && *text) {
-		date = header_decode_date (text, NULL);
+		date = camel_header_decode_date (text, NULL);
 		if (date != (time_t) 0) {
 			gtk_toggle_button_set_active (followup->completed, TRUE);
 			followup->completed_date = date;
@@ -276,13 +287,24 @@ construct (MessageTagEditor *editor)
 	GtkWidget *widget;
 	GList *strings;
 	GladeXML *gui;
+	GList *icon_list;
+	GdkPixbuf *pixbuf;
 	int i;
 	
 	gtk_window_set_title (GTK_WINDOW (editor), _("Flag to Follow Up"));
-	gnome_window_icon_set_from_file (GTK_WINDOW (editor), EVOLUTION_IMAGES "/flag-for-followup-16.png");
-	gtk_container_set_border_width (GTK_CONTAINER (editor), 6);
 	
-	gui = glade_xml_new (EVOLUTION_GLADEDIR "/message-tags.glade", "followup_editor", NULL);
+	icon_list = e_icon_factory_get_icon_list ("stock_mail-flag-for-followup");
+	if (icon_list) {
+		gtk_window_set_icon_list (GTK_WINDOW (editor), icon_list);
+		g_list_foreach (icon_list, (GFunc) g_object_unref, NULL);
+		g_list_free (icon_list);
+	}
+
+	gtk_dialog_set_has_separator (GTK_DIALOG (editor), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (editor)->vbox), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (editor)->action_area), 12);
+
+	gui = glade_xml_new (EVOLUTION_GLADEDIR "/mail-dialogs.glade", "followup_editor", NULL);
 	
 	widget = glade_xml_get_widget (gui, "toplevel");
 	
@@ -291,7 +313,9 @@ construct (MessageTagEditor *editor)
 	gtk_box_set_child_packing (GTK_BOX (GTK_DIALOG (editor)->vbox), widget, TRUE, TRUE, 6, GTK_PACK_START);
 	
 	widget = glade_xml_get_widget (gui, "pixmap");
-	gtk_image_set_from_file ((GtkImage *)widget, EVOLUTION_GLADEDIR "/flag-for-followup-48.png");
+	pixbuf = e_icon_factory_get_icon ("stock_mail-flag-for-followup", E_ICON_SIZE_DIALOG);
+	gtk_image_set_from_pixbuf ((GtkImage *)widget, pixbuf);
+	g_object_unref (pixbuf);
 	
 	followup->message_list = GTK_TREE_VIEW (glade_xml_get_widget (gui, "message_list"));
 	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);

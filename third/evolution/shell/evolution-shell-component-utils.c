@@ -24,7 +24,7 @@
 #endif
 
 #include "evolution-shell-component-utils.h"
-
+#include <e-util/e-icon-factory.h>
 #include "e-util/e-dialog-utils.h"
 
 #include <string.h>
@@ -53,23 +53,14 @@ void e_pixmaps_update (BonoboUIComponent *uic, EPixmap *pixcache)
 
 	for (i = 0; pixcache [i].path; i++) {
 		if (!pixcache [i].pixbuf) {
-			char *path;
 			GdkPixbuf *pixbuf;
 
-			path = g_build_filename (EVOLUTION_IMAGES, pixcache [i].fname, NULL);
-
-			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-			if (pixbuf == NULL) {
-				g_warning ("Cannot load image -- %s", path);
-			} else {
-				pixcache [i].pixbuf = bonobo_ui_util_pixbuf_to_xml (pixbuf);
-				g_object_unref (pixbuf);
-				bonobo_ui_component_set_prop (uic,
-					pixcache [i].path, "pixname",
-					pixcache [i].pixbuf, NULL);
-			}
-
-			g_free (path);
+			pixbuf = e_icon_factory_get_icon (pixcache [i].name, pixcache [i].size);
+			pixcache [i].pixbuf = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+			g_object_unref (pixbuf);
+			bonobo_ui_component_set_prop (uic,
+				pixcache [i].path, "pixname",
+				pixcache [i].pixbuf, NULL);
 		} else {
 			bonobo_ui_component_set_prop (uic, pixcache [i].path,
 						      "pixname",
@@ -92,53 +83,6 @@ free_pixmaps (void)
 	}
 
 	g_slist_free (inited_arrays);
-}
-
-
-/**
- * e_activation_failure_dialog:
- * @parent: parent window of the dialog, or %NULL
- * @msg: the context-specific part of the error message
- * @oafiid: the OAFIID of the component that failed to start
- * @repo_id: the repo_id of the component that failed to start
- *
- * This puts up an error dialog about a failed component activation
- * containing as much information as we can manage to gather about
- * why it failed.
- **/
-void
-e_activation_failure_dialog (GtkWindow *parent, const char *msg,
-			     const char *oafiid, const char *repo_id)
-{
-	Bonobo_Unknown object;
-	CORBA_Environment ev;
-	char *errmsg;
-
-	CORBA_exception_init (&ev);
-	object = bonobo_get_object (oafiid, repo_id, &ev);
-	if (ev._major == CORBA_NO_EXCEPTION) {
-		if (object) {
-			Bonobo_Unknown_unref (object, &ev);
-			CORBA_Object_release (object, &ev);
-		}
-		errmsg = g_strdup_printf (_("%s\n\nUnknown error."), msg);
-	} else if (strcmp (CORBA_exception_id (&ev), ex_Bonobo_GeneralError) != 0) {
-		char *bonobo_err = bonobo_exception_get_text (&ev);
-		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
-					    "component system is:\n%s"),
-					  msg, bonobo_err);
-		g_free (bonobo_err);
-	} else {
-		Bonobo_GeneralError *errval = CORBA_exception_value (&ev);
-
-		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
-					    "activation system is:\n%s"),
-					  msg, errval->description);
-	}
-	CORBA_exception_free (&ev);
-
-	e_notice (parent, GTK_MESSAGE_ERROR, errmsg);
-	g_free (errmsg);
 }
 
 

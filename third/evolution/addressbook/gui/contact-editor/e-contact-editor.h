@@ -25,9 +25,13 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <glade/glade.h>
 
-#include "addressbook/backend/ebook/e-book.h"
-#include "addressbook/backend/ebook/e-card.h"
-#include "addressbook/backend/ebook/e-card-simple.h"
+#include "addressbook/gui/contact-editor/eab-editor.h"
+
+#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
+
+#include <gtk/gtktreeview.h>
+#include <gtk/gtkliststore.h>
 
 G_BEGIN_DECLS
 
@@ -52,84 +56,58 @@ typedef struct _EContactEditorClass  EContactEditorClass;
 
 struct _EContactEditor
 {
-	GtkObject object;
+	EABEditor object;
 	
 	/* item specific fields */
-	EBook *book;
-	ECard *card;
-	ECardSimple *simple;
+	EBook *source_book;
+	EBook *target_book;
+	EContact *contact;
 
 	/* UI handler */
 	BonoboUIComponent *uic;
 	
 	GladeXML *gui;
 	GtkWidget *app;
-	GnomeUIInfo *email_info;
-	GnomeUIInfo *phone_info;
-	GnomeUIInfo *address_info;
-	GtkWidget *email_popup;
-	GtkWidget *phone_popup;
-	GtkWidget *address_popup;
-	GList *email_list;
-	GList *phone_list;
-	GList *address_list;
 
-	ECardName *name;
-	char *company;
+	GtkWidget *file_selector;
 
-	ECardSimpleEmailId email_choice;
-	ECardSimplePhoneId phone_choice[4];
-	ECardSimpleAddressId address_choice;
-	ECardSimpleAddressId address_mailing;
-	
-	GList *arbitrary_fields;
+	EContactName *name;
 
-	/* Whether we are editing a new card or an existing one */
-	guint is_new_card : 1;
+	/* Whether we are editing a new contact or an existing one */
+	guint is_new_contact : 1;
 
-	/* Whether the card has been changed since bringing up the contact editor */
+	/* Whether the image chooser widget has been changed. */
+	guint image_set : 1;
+
+	/* Whether the contact has been changed since bringing up the contact editor */
 	guint changed : 1;
 
-	/* Whether the contact editor will accept modifications */
-	guint editable : 1;
-
-	/* Whether the fullname will accept modifications */
-	guint fullname_editable : 1;
-
-	/* Whether each of the addresses are editable */
-	gboolean address_editable[E_CARD_SIMPLE_ADDRESS_ID_LAST];
+	/* Whether the contact editor will accept modifications, save */
+	guint target_editable : 1;
 
 	/* Whether an async wombat call is in progress */
 	guint in_async_call : 1;
 
 	EList *writable_fields;
+
+	/* ID for async load_source call */
+	guint  load_source_id;
+	EBook *load_book;
+
+	/* signal ids for "writable_status" */
+	int target_editable_id;
 };
 
 struct _EContactEditorClass
 {
-	GtkObjectClass parent_class;
-
-	/* Notification signals */
-
-	void (* card_added)    (EContactEditor *ce, EBookStatus status, ECard *card);
-	void (* card_modified) (EContactEditor *ce, EBookStatus status, ECard *card);
-	void (* card_deleted)  (EContactEditor *ce, EBookStatus status, ECard *card);
-	void (* editor_closed) (EContactEditor *ce);
+	EABEditorClass parent_class;
 };
 
 EContactEditor *e_contact_editor_new                (EBook          *book,
-						     ECard          *card,
-						     gboolean        is_new_card,
+						     EContact       *contact,
+						     gboolean        is_new_contact,
 						     gboolean        editable);
 GType           e_contact_editor_get_type           (void);
-
-void            e_contact_editor_show               (EContactEditor *editor);
-void            e_contact_editor_close              (EContactEditor *editor);
-void            e_contact_editor_raise              (EContactEditor *editor);
-
-gboolean        e_contact_editor_confirm_delete     (GtkWindow      *parent);
-
-gboolean        e_contact_editor_request_close_all  (void);
 
 G_END_DECLS
 

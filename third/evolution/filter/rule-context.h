@@ -41,15 +41,20 @@
 typedef struct _RuleContext RuleContext;
 typedef struct _RuleContextClass RuleContextClass;
 
+/* backend capabilities, this is a hack since we don't support nested rules */
+enum {
+	RULE_CONTEXT_GROUPING = 1 << 0,
+	RULE_CONTEXT_THREADING = 1 << 1,
+};
+
 struct _RuleContext {
 	GObject parent_object;
 	struct _RuleContextPrivate *priv;
 	
 	char *error;              /* string version of error */
-	
-	xmlDocPtr system;         /* system rules source */
-	xmlDocPtr user;           /* user defined rules source */
-	
+
+	guint32 flags;		/* capability flags */
+
 	GList *parts;
 	GList *rules;
 	
@@ -63,7 +68,7 @@ typedef void (*RCRegisterFunc) (RuleContext *rc, FilterRule *rule, gpointer user
 
 struct _RuleContextClass {
 	GObjectClass parent_class;
-	
+
 	/* virtual methods */
 	int (*load) (RuleContext *rc, const char *system, const char *user);
 	int (*save) (RuleContext *rc, const char *user);
@@ -71,6 +76,8 @@ struct _RuleContextClass {
 	
 	GList *(*delete_uri) (RuleContext *rc, const char *uri, GCompareFunc cmp);
 	GList *(*rename_uri) (RuleContext *rc, const char *olduri, const char *newuri, GCompareFunc cmp);
+
+	FilterElement *(*new_element)(RuleContext *rc, const char *name);
 	
 	/* signals */
 	void (*rule_added) (RuleContext *rc, FilterRule *rule);
@@ -85,22 +92,24 @@ typedef FilterRule * (*RCNextRuleFunc) (RuleContext *rc, FilterRule *rule, const
 
 struct _part_set_map {
 	char *name;
-	int type;
+	GType type;
 	RCPartFunc append;
 	RCNextPartFunc next;
 };
 
 struct _rule_set_map {
 	char *name;
-	int type;
+	GType type;
 	RCRuleFunc append;
 	RCNextRuleFunc next;
 };
 
 GType rule_context_get_type (void);
-RuleContext *rule_context_new (void);
 
 /* methods */
+RuleContext *rule_context_new (void);
+
+/* io */
 int rule_context_load (RuleContext *rc, const char *system, const char *user);
 int rule_context_save (RuleContext *rc, const char *user);
 int rule_context_revert (RuleContext *rc, const char *user);
@@ -122,10 +131,13 @@ void rule_context_rank_rule (RuleContext *rc, FilterRule *rule, const char *sour
 int rule_context_get_rank_rule (RuleContext *rc, FilterRule *rule, const char *source);
 
 /* setup type for set parts */
-void rule_context_add_part_set (RuleContext *rc, const char *setname, int part_type,
+void rule_context_add_part_set (RuleContext *rc, const char *setname, GType part_type,
 				RCPartFunc append, RCNextPartFunc next);
-void rule_context_add_rule_set (RuleContext *rc, const char *setname, int rule_type,
+void rule_context_add_rule_set (RuleContext *rc, const char *setname, GType rule_type,
 				RCRuleFunc append, RCNextRuleFunc next);
+
+/* dynamic element types */
+FilterElement *rule_context_new_element(RuleContext *rc, const char *name);
 
 /* uri's disappear/renamed externally */
 GList *rule_context_delete_uri (RuleContext *rc, const char *uri, GCompareFunc cmp);

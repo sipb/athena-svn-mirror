@@ -24,7 +24,7 @@
 #ifndef MEETING_PAGE_H
 #define MEETING_PAGE_H
 
-#include "../e-meeting-model.h"
+#include "../e-meeting-store.h"
 #include "../itip-utils.h"
 #include "comp-editor-page.h"
 
@@ -54,11 +54,11 @@ typedef struct {
 
 GtkType       meeting_page_get_type          (void);
 MeetingPage  *meeting_page_construct         (MeetingPage   *mpage,
-					      EMeetingModel *emm,
-					      CalClient     *client);
-MeetingPage  *meeting_page_new               (EMeetingModel *emm,
-					      CalClient     *client);
-CalComponent *meeting_page_get_cancel_comp   (MeetingPage   *mpage);
+					      EMeetingStore *ems,
+					      ECal     *client);
+MeetingPage  *meeting_page_new               (EMeetingStore *ems,
+					      ECal     *client);
+ECalComponent *meeting_page_get_cancel_comp   (MeetingPage   *mpage);
 
 
 

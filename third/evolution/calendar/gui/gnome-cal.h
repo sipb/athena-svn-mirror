@@ -30,7 +30,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <gal/widgets/e-popup-menu.h>
 #include <widgets/misc/e-calendar.h>
-#include <cal-client/cal-client.h>
+#include <libecal/e-cal.h>
 
 #include "e-calendar-table.h"
 
@@ -54,19 +54,20 @@ typedef enum {
 	GNOME_CAL_DAY_VIEW,
 	GNOME_CAL_WORK_WEEK_VIEW,
 	GNOME_CAL_WEEK_VIEW,
-	GNOME_CAL_MONTH_VIEW
+	GNOME_CAL_MONTH_VIEW,
+	GNOME_CAL_LIST_VIEW,
+	GNOME_CAL_LAST_VIEW
 } GnomeCalendarViewType;
 
-typedef enum
-{
-  GNOME_CAL_GOTO_TODAY,
-  GNOME_CAL_GOTO_DATE,
-  GNOME_CAL_GOTO_FIRST_DAY_OF_MONTH,
-  GNOME_CAL_GOTO_LAST_DAY_OF_MONTH,
-  GNOME_CAL_GOTO_FIRST_DAY_OF_WEEK,
-  GNOME_CAL_GOTO_LAST_DAY_OF_WEEK,
-  GNOME_CAL_GOTO_SAME_DAY_OF_PREVIOUS_WEEK,
-  GNOME_CAL_GOTO_SAME_DAY_OF_NEXT_WEEK
+typedef enum {
+	GNOME_CAL_GOTO_TODAY,
+	GNOME_CAL_GOTO_DATE,
+	GNOME_CAL_GOTO_FIRST_DAY_OF_MONTH,
+	GNOME_CAL_GOTO_LAST_DAY_OF_MONTH,
+	GNOME_CAL_GOTO_FIRST_DAY_OF_WEEK,
+	GNOME_CAL_GOTO_LAST_DAY_OF_WEEK,
+	GNOME_CAL_GOTO_SAME_DAY_OF_PREVIOUS_WEEK,
+	GNOME_CAL_GOTO_SAME_DAY_OF_NEXT_WEEK
 } GnomeCalendarGotoDateType;
 
 struct _GnomeCalendar {
@@ -87,9 +88,12 @@ struct _GnomeCalendarClass {
 
 	void (* calendar_focus_change)  (GnomeCalendar *gcal, gboolean in);
 	void (* taskpad_focus_change)   (GnomeCalendar *gcal, gboolean in);
-        void (* goto_date)         (GnomeCalendar *day_view,
-				    GnomeCalendarGotoDateType date);
 
+        void (* source_added)           (GnomeCalendar *gcal, ECalSourceType source_type, ESource *source);
+        void (* source_removed)         (GnomeCalendar *gcal, ECalSourceType source_type, ESource *source);
+
+	/* Action signals */
+        void (* goto_date)              (GnomeCalendar *gcal, GnomeCalendarGotoDateType date);
 };
 
 
@@ -98,17 +102,18 @@ GtkWidget *gnome_calendar_construct		(GnomeCalendar *gcal);
 
 GtkWidget *gnome_calendar_new			(void);
 
-void gnome_calendar_set_ui_component (GnomeCalendar *cal,
-				      BonoboUIComponent *ui_component);
+void gnome_calendar_set_activity_handler (GnomeCalendar *cal, EActivityHandler *activity_handler);
+void gnome_calendar_set_ui_component (GnomeCalendar *cal, BonoboUIComponent *ui_component);
 
 ECalendarTable *gnome_calendar_get_task_pad	(GnomeCalendar *gcal);
 
-CalClient *gnome_calendar_get_cal_client	(GnomeCalendar *gcal);
-CalClient *gnome_calendar_get_task_pad_cal_client(GnomeCalendar *gcal);
+ECalModel *gnome_calendar_get_calendar_model    (GnomeCalendar *gcal);
+ECal *gnome_calendar_get_default_client    (GnomeCalendar *gcal);
 
-gboolean   gnome_calendar_open                  (GnomeCalendar *gcal, const char *str_uri);
-
-void gnome_calendar_set_query (GnomeCalendar *gcal, const char *sexp);
+gboolean   gnome_calendar_add_source      (GnomeCalendar *gcal, ECalSourceType source_type, ESource *source);
+gboolean   gnome_calendar_remove_source   (GnomeCalendar *gcal, ECalSourceType source_type, ESource *source);
+gboolean   gnome_calendar_remove_source_by_uid   (GnomeCalendar *gcal, ECalSourceType source_type, const char *uid);
+gboolean   gnome_calendar_set_default_source (GnomeCalendar *gcal, ECalSourceType source_type, ESource *source);
 
 void       gnome_calendar_next             	(GnomeCalendar *gcal);
 void       gnome_calendar_previous         	(GnomeCalendar *gcal);
@@ -120,10 +125,15 @@ void       gnome_calendar_dayjump          	(GnomeCalendar *gcal,
 void       gnome_calendar_goto_today            (GnomeCalendar *gcal);
 
 GnomeCalendarViewType gnome_calendar_get_view (GnomeCalendar *gcal);
-void gnome_calendar_set_view (GnomeCalendar *gcal, GnomeCalendarViewType view_type,
-			      gboolean range_selected, gboolean grab_focus);
+void gnome_calendar_set_view (GnomeCalendar *gcal, GnomeCalendarViewType view_type);
 
 GtkWidget *gnome_calendar_get_current_view_widget (GnomeCalendar *gcal);
+
+ECalendarTable *gnome_calendar_get_task_pad	(GnomeCalendar *gcal);
+GtkWidget *gnome_calendar_get_e_calendar_widget (GnomeCalendar *gcal); 
+GtkWidget *gnome_calendar_get_search_bar_widget (GnomeCalendar *gcal);
+GtkWidget *gnome_calendar_get_view_notebook_widget (GnomeCalendar *gcal);
+
 void gnome_calendar_setup_view_menus (GnomeCalendar *gcal, BonoboUIComponent *uic);
 void gnome_calendar_discard_view_menus (GnomeCalendar *gcal);
 
@@ -136,16 +146,6 @@ void	   gnome_calendar_set_selected_time_range (GnomeCalendar *gcal,
 void	   gnome_calendar_get_selected_time_range (GnomeCalendar *gcal,
 						   time_t	 *start_time,
 						   time_t	 *end_time);
-
-void       gnome_calendar_edit_object           (GnomeCalendar *gcal,
-						 CalComponent  *comp,
-						 gboolean meeting);
-
-void       gnome_calendar_new_appointment       (GnomeCalendar *gcal);
-void       gnome_calendar_new_appointment_for   (GnomeCalendar *cal,
-						 time_t dtstart, time_t dtend,
-						 gboolean all_day,
-						 gboolean meeting);
 
 void       gnome_calendar_new_task		(GnomeCalendar *gcal);
 
@@ -168,11 +168,6 @@ gint	   gnome_calendar_get_num_events_selected (GnomeCalendar *gcal);
 /* Returns the number of selected tasks */
 gint       gnome_calendar_get_num_tasks_selected (GnomeCalendar *gcal);
 
-/* Tells the calendar to reload all config settings. initializing should be
-   TRUE when we are setting the config settings for the first time. */
-void	   gnome_calendar_update_config_settings (GnomeCalendar *gcal,
-						  gboolean	 initializing);
-
 /* Get the current timezone. */
 icaltimezone *gnome_calendar_get_timezone	(GnomeCalendar	*gcal);
 
@@ -184,6 +179,8 @@ void       gnome_calendar_paste_clipboard       (GnomeCalendar  *gcal);
 
 void       gnome_calendar_delete_selection	(GnomeCalendar  *gcal);
 void       gnome_calendar_delete_selected_occurrence (GnomeCalendar *gcal);
+void       gnome_calendar_purge                 (GnomeCalendar  *gcal,
+						 time_t older_than);
 
 
 

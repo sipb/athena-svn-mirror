@@ -31,6 +31,7 @@
 #include <glib.h>
 #include <libgnome/gnome-i18n.h>
 #include "e-week-view-main-item.h"
+#include "ea-calendar.h"
 
 static void e_week_view_main_item_class_init	(EWeekViewMainItemClass *class);
 static void e_week_view_main_item_init		(EWeekViewMainItem *wvmitem);
@@ -97,6 +98,9 @@ e_week_view_main_item_class_init (EWeekViewMainItemClass *class)
 	item_class->update      = e_week_view_main_item_update;
 	item_class->draw        = e_week_view_main_item_draw;
 	item_class->point       = e_week_view_main_item_point;
+
+	/* init the accessibility support for e_week_view_main_item */
+ 	e_week_view_main_item_a11y_init ();
 }
 
 
@@ -345,7 +349,8 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 		struct icaltimetype tt;
 
 		/* Check if we are drawing today */		
-		tt = icaltime_from_timet_with_zone (time (NULL), FALSE, week_view->zone);
+		tt = icaltime_from_timet_with_zone (time (NULL), FALSE,
+						    e_calendar_view_get_timezone (E_CALENDAR_VIEW (week_view)));
 		if (g_date_year (date) == tt.year 
 		    && g_date_month (date) == tt.month
 		    && g_date_day (date) == tt.day)

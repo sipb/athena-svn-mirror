@@ -30,11 +30,9 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <gal/widgets/e-unicode.h>
 #include <gal/util/e-util.h>
 #include "cal-search-bar.h"
 
-
 
 /* IDs and option items for the ESearchBar */
 enum {
@@ -42,16 +40,18 @@ enum {
 	SEARCH_SUMMARY_CONTAINS,
 	SEARCH_DESCRIPTION_CONTAINS,
 	SEARCH_COMMENT_CONTAINS,
-	SEARCH_CATEGORY_IS,
+	SEARCH_LOCATION_CONTAINS,
+	SEARCH_CATEGORY_IS
 };
 
+/* Comments are disabled because they are kind of useless right now, see bug 33247 */
 static ESearchBarItem search_option_items[] = {
 	{ N_("Any field contains"), SEARCH_ANY_FIELD_CONTAINS, NULL },
 	{ N_("Summary contains"), SEARCH_SUMMARY_CONTAINS, NULL },
 	{ N_("Description contains"), SEARCH_DESCRIPTION_CONTAINS, NULL },
 	{ N_("Comment contains"), SEARCH_COMMENT_CONTAINS, NULL },
+	{ N_("Location contains"), SEARCH_LOCATION_CONTAINS, NULL },
 	{ N_("Category is"), SEARCH_CATEGORY_IS, NULL },
-	{ NULL, -1, NULL }
 };
 
 /* IDs for the categories suboptions */
@@ -225,7 +225,7 @@ get_current_category (CalSearchBar *cal_search)
 
 /* Sets the query string to be (contains? "field" "text") */
 static void
-notify_query_contains (CalSearchBar *cal_search, const char *field)
+notify_e_cal_view_contains (CalSearchBar *cal_search, const char *field)
 {
 	char *text;
 	char *sexp;
@@ -294,19 +294,23 @@ regen_query (CalSearchBar *cal_search)
 
 	switch (id) {
 	case SEARCH_ANY_FIELD_CONTAINS:
-		notify_query_contains (cal_search, "any");
+		notify_e_cal_view_contains (cal_search, "any");
 		break;
 
 	case SEARCH_SUMMARY_CONTAINS:
-		notify_query_contains (cal_search, "summary");
+		notify_e_cal_view_contains (cal_search, "summary");
 		break;
 
 	case SEARCH_DESCRIPTION_CONTAINS:
-		notify_query_contains (cal_search, "description");
+		notify_e_cal_view_contains (cal_search, "description");
 		break;
 
 	case SEARCH_COMMENT_CONTAINS:
-		notify_query_contains (cal_search, "comment");
+		notify_e_cal_view_contains (cal_search, "comment");
+		break;
+
+	case SEARCH_LOCATION_CONTAINS:
+		notify_e_cal_view_contains (cal_search, "location");
 		break;
 
 	case SEARCH_CATEGORY_IS:
@@ -393,18 +397,36 @@ make_suboptions (CalSearchBar *cal_search)
 /**
  * cal_search_bar_construct:
  * @cal_search: A calendar search bar.
+ * @flags: bitfield of items to appear in the search menu
  * 
  * Constructs a calendar search bar by binding its menu and option items.
  * 
  * Return value: The same value as @cal_search.
  **/
 CalSearchBar *
-cal_search_bar_construct (CalSearchBar *cal_search)
+cal_search_bar_construct (CalSearchBar *cal_search, guint32 flags)
 {
-	g_return_val_if_fail (cal_search != NULL, NULL);
+	ESearchBarItem *items;
+	guint32 bit = 0x1;
+	int i, j;
+	
 	g_return_val_if_fail (IS_CAL_SEARCH_BAR (cal_search), NULL);
-
-	e_search_bar_construct (E_SEARCH_BAR (cal_search), NULL, search_option_items);
+	
+	items = g_alloca ((G_N_ELEMENTS (search_option_items) + 1) * sizeof (ESearchBarItem));
+	for (i = 0, j = 0; i < G_N_ELEMENTS (search_option_items); i++, bit <<= 1) {
+		if ((flags & bit) != 0) {
+			items[j].text = search_option_items[i].text;
+			items[j].id = search_option_items[i].id;
+			items[j].subitems = search_option_items[i].subitems;
+			j++;
+		}
+	}
+	
+	items[j].text = NULL;
+	items[j].id = -1;
+	items[j].subitems = NULL;
+	
+	e_search_bar_construct (E_SEARCH_BAR (cal_search), NULL, items);
 	make_suboptions (cal_search);
 
 	e_search_bar_set_ids (E_SEARCH_BAR (cal_search), SEARCH_CATEGORY_IS, CATEGORIES_ALL);
@@ -414,6 +436,7 @@ cal_search_bar_construct (CalSearchBar *cal_search)
 
 /**
  * cal_search_bar_new:
+ * flags: bitfield of items to appear in the search menu
  * 
  * Creates a new calendar search bar.
  * 
@@ -421,12 +444,12 @@ cal_search_bar_construct (CalSearchBar *cal_search)
  * "sexp_changed" signal to monitor changes in the generated sexps.
  **/
 GtkWidget *
-cal_search_bar_new (void)
+cal_search_bar_new (guint32 flags)
 {
 	CalSearchBar *cal_search;
 
 	cal_search = g_object_new (TYPE_CAL_SEARCH_BAR, NULL);
-	return GTK_WIDGET (cal_search_bar_construct (cal_search));
+	return GTK_WIDGET (cal_search_bar_construct (cal_search, flags));
 }
 
 /* Used from qsort() */
@@ -477,7 +500,6 @@ cal_search_bar_set_categories (CalSearchBar *cal_search, GPtrArray *categories)
 {
 	CalSearchBarPrivate *priv;
 
-	g_return_if_fail (cal_search != NULL);
 	g_return_if_fail (IS_CAL_SEARCH_BAR (cal_search));
 	g_return_if_fail (categories != NULL);
 

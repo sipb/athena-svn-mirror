@@ -31,20 +31,17 @@ extern "C" {
 
 typedef struct _EPixmap {
 	const char *path;
-	const char *fname;
+	const char *name;
+	gint       size;
 	char       *pixbuf;
 } EPixmap;
 
-#define E_PIXMAP(path,fname)	{ (path), (fname), NULL }
-#define E_PIXMAP_END		{ NULL, NULL, NULL }
+#define E_PIXMAP(path,name,size)	{ (path), (name), (size), NULL }
+#define E_PIXMAP_END			{ NULL, NULL, 0, NULL }
 
 /* Takes an array of pixmaps, terminated by E_PIXMAP_END, and loads into uic */
 void e_pixmaps_update (BonoboUIComponent *uic, EPixmap *pixcache);
 
-void  e_activation_failure_dialog   (GtkWindow       *parent,
-				     const char      *msg,
-				     const char      *oafiid,
-				     const char      *repo_id);
 char *e_get_activation_failure_msg  (CORBA_Environment *ev);
 
 #ifdef __cplusplus

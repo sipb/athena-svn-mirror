@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -218,12 +241,15 @@ privlibexecdir = @privlibexecdir@
 serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
+ruledir = $(privdatadir)
+
 INCLUDES = \
-	-DG_LOG_DOMAIN=\"e-minicard\"			\
+	-DG_LOG_DOMAIN=\"eab-widgets\"			\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
 	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"	\
 	-DEVOLUTION_GALVIEWSDIR=\""$(viewsdir)"\"	\
 	-I$(top_srcdir)					\
+	-I$(top_srcdir)/addressbook			\
 	-I$(top_srcdir)/addressbook/backend		\
 	-I$(top_builddir)/addressbook/backend		\
 	-I$(top_srcdir)/addressbook/gui/contact-editor	\
@@ -231,10 +257,7 @@ INCLUDES = \
 	-I$(top_srcdir)/addressbook/gui/component	\
 	-I$(top_srcdir)/widgets/misc			\
 	-I$(top_builddir)/shell				\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DLIBGNOME_DISABLE_DEPRECATED			\
-	-DLIBGNOMEUI_DISABLE_DEPRECATED			\
+	-DSEARCH_RULE_DIR=\"$(ruledir)\"		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
@@ -253,114 +276,59 @@ CORBA_SOURCE_C = $(CORBA_COMPOSER_SOURCE_C)
 CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
 
 noinst_LTLIBRARIES = \
-	libeminicard.la
+	libeabwidgets.la
 
 
-libeminicard_la_SOURCES = \
+libeabwidgets_la_SOURCES = \
 	$(CORBA_SOURCE)				\
-	e-addressbook-marshal.c			\
+	$(MARSHAL_GENERATED)			\
+	eab-contact-display.c			\
+	eab-contact-display.h			\
+	eab-gui-util.c				\
+	eab-gui-util.h				\
+	eab-popup-control.c			\
+	eab-popup-control.h			\
+	eab-vcard-control.c			\
+	eab-vcard-control.h			\
+	e-minicard.c				\
+	e-minicard.h				\
+	e-minicard-label.c			\
+	e-minicard-label.h			\
+	e-minicard-view.c			\
+	e-minicard-view.h			\
+	e-minicard-view-widget.c		\
+	e-minicard-view-widget.h		\
 	e-addressbook-reflow-adapter.c		\
 	e-addressbook-reflow-adapter.h		\
 	e-addressbook-table-adapter.c		\
 	e-addressbook-table-adapter.h		\
 	e-addressbook-model.c			\
 	e-addressbook-model.h			\
-	e-addressbook-util.c			\
-	e-addressbook-util.h			\
 	e-addressbook-view.c			\
 	e-addressbook-view.h			\
-	e-minicard-control.c			\
-	e-minicard-control.h			\
-	e-minicard-label.c			\
-	e-minicard-label.h			\
-	e-minicard-view-widget.c		\
-	e-minicard-view-widget.h		\
-	e-minicard-view.c			\
-	e-minicard-view.h			\
-	e-minicard-widget.c			\
-	e-minicard-widget.h			\
-	e-minicard.c				\
-	e-minicard.h				\
-	gal-view-factory-minicard.c		\
-	gal-view-factory-minicard.h		\
 	gal-view-minicard.c			\
-	gal-view-minicard.h
+	gal-view-minicard.h			\
+	gal-view-factory-minicard.c		\
+	gal-view-factory-minicard.h
 
 
-MARSHAL_GENERATED = e-addressbook-marshal.c e-addressbook-marshal.h
+
+#TREEVIEW_SOURCES=	e-addressbook-treeview-adapter.c	\
+#			e-addressbook-treeview-adapter.h	\
+#			gal-view-factory-treeview.c		\
+#			gal-view-factory-treeview.h		\
+#			gal-view-treeview.c			\
+#			gal-view-treeview.h
+MARSHAL_GENERATED = eab-marshal.c eab-marshal.h
 
 BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 
-
-#noinst_PROGRAMS =				\
-#	 minicard-widget-test			\
-#	 minicard-label-test			\
-#	 minicard-test
-#
-#minicard_label_test_SOURCES = 	\
-#	 test-minicard-label.c
-#
-#minicard_label_test_LDADD =				\
-#	 libeminicard.a					\
-#	 $(EVOLUTION_ADDRESSBOOK_LIBS)			\
-#	 $(top_builddir)/e-util/libeutil.la
-#
-#minicard_test_SOURCES = 	\
-#	 test-minicard.c
-#
-#minicard_test_LDADD =							\
-#	 libeminicard.a							\
-#	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a \
-#	 $(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a \
-#	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	 $(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
-#	 $(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
-#	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
-#	 libeminicard.a
-#
-#reflow_test_SOURCES = 	\
-#	 test-reflow.c
-#
-#reflow_test_LDADD =							\
-#	 libeminicard.a							\
-#	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/addressbook/contact-editor/libecontacteditor.a	\
-#	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
-#	$(EVOLUTION_ADDRESSBOOK_LIBS)
-
-#minicard_view_test_SOURCES = 	\
-#	test-minicard-view.c
-
-#minicard_view_test_LDADD =						\
-#	$(EVOLUTION_ADDRESSBOOK_LIBS)
-#	libeminicard.a							\
-#	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	$(top_builddir)/addressbook/contact-editor/libecontacteditor.a	\
-#	$(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	$(top_builddir)/widgets/misc/libemiscwidgets.la
-#
-#minicard_widget_test_SOURCES = 	\
-#	 e-minicard-widget-test.c
-#
-#minicard_widget_test_LDADD =						\
-#	 libeminicard.a							\
-#	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a \
-#	 $(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a \
-#	 $(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
-#	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
-#	 $(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
-#	$(EVOLUTION_ADDRESSBOOK_LIBS)
 etspec_DATA = e-addressbook-view.etspec
 
 EXTRA_DIST = \
 	$(etspec_DATA)		\
-	e-addressbook-marshal.list
+	eab-marshal.list
 
 subdir = addressbook/gui/widgets
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -368,22 +336,23 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 
-libeminicard_la_LDFLAGS =
-libeminicard_la_LIBADD =
+libeabwidgets_la_LDFLAGS =
+libeabwidgets_la_LIBADD =
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 am__objects_3 = Evolution-Composer-common.lo Evolution-Composer-skels.lo \
 	Evolution-Composer-stubs.lo
 am__objects_4 = $(am__objects_3)
 am__objects_5 = $(am__objects_2) $(am__objects_4)
-am_libeminicard_la_OBJECTS = $(am__objects_5) e-addressbook-marshal.lo \
+am__objects_6 = eab-marshal.lo
+am_libeabwidgets_la_OBJECTS = $(am__objects_5) $(am__objects_6) \
+	eab-contact-display.lo eab-gui-util.lo eab-popup-control.lo \
+	eab-vcard-control.lo e-minicard.lo e-minicard-label.lo \
+	e-minicard-view.lo e-minicard-view-widget.lo \
 	e-addressbook-reflow-adapter.lo e-addressbook-table-adapter.lo \
-	e-addressbook-model.lo e-addressbook-util.lo \
-	e-addressbook-view.lo e-minicard-control.lo e-minicard-label.lo \
-	e-minicard-view-widget.lo e-minicard-view.lo \
-	e-minicard-widget.lo e-minicard.lo gal-view-factory-minicard.lo \
-	gal-view-minicard.lo
-libeminicard_la_OBJECTS = $(am_libeminicard_la_OBJECTS)
+	e-addressbook-model.lo e-addressbook-view.lo \
+	gal-view-minicard.lo gal-view-factory-minicard.lo
+libeabwidgets_la_OBJECTS = $(am_libeabwidgets_la_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -395,18 +364,19 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Evolution-Composer-common.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Evolution-Composer-skels.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Evolution-Composer-stubs.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-marshal.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-model.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-reflow-adapter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-table-adapter.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-util.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-addressbook-view.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-minicard-control.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-minicard-label.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-minicard-view-widget.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-minicard-view.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-minicard-widget.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-minicard.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/eab-contact-display.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/eab-gui-util.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/eab-marshal.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/eab-popup-control.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/eab-vcard-control.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-view-factory-minicard.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gal-view-minicard.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -417,11 +387,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libeminicard_la_SOURCES)
+DIST_SOURCES = $(libeabwidgets_la_SOURCES)
 DATA = $(etspec_DATA)
 
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libeminicard_la_SOURCES)
+SOURCES = $(libeabwidgets_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -442,8 +412,8 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libeminicard.la: $(libeminicard_la_OBJECTS) $(libeminicard_la_DEPENDENCIES) 
-	$(LINK)  $(libeminicard_la_LDFLAGS) $(libeminicard_la_OBJECTS) $(libeminicard_la_LIBADD) $(LIBS)
+libeabwidgets.la: $(libeabwidgets_la_OBJECTS) $(libeabwidgets_la_DEPENDENCIES) 
+	$(LINK)  $(libeabwidgets_la_LDFLAGS) $(libeabwidgets_la_OBJECTS) $(libeabwidgets_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -454,18 +424,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Composer-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Composer-skels.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Evolution-Composer-stubs.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-model.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-reflow-adapter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-table-adapter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-addressbook-view.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard-label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard-view-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard-view.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-minicard.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eab-contact-display.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eab-gui-util.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eab-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eab-popup-control.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eab-vcard-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-view-factory-minicard.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gal-view-minicard.Plo@am__quote@
 
@@ -672,25 +643,7 @@ $(CORBA_COMPOSER_SOURCE_H): $(CORBA_COMPOSER_IDL)
 	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(CORBA_COMPOSER_IDL)
 
 $(CORBA_COMPOSER_SOURCE_C): $(CORBA_COMPOSER_SOURCE_H)
-
-#TREEVIEW_SOURCES=	e-addressbook-treeview-adapter.c	\
-#			e-addressbook-treeview-adapter.h	\
-#			gal-view-factory-treeview.c		\
-#			gal-view-factory-treeview.h		\
-#			gal-view-treeview.c			\
-#			gal-view-treeview.h
-
-# GLib marshalling cruft
-
-e-addressbook-marshal.h: e-addressbook-marshal.list
-	( @GLIB_GENMARSHAL@ --prefix=e_addressbook_marshal e-addressbook-marshal.list --header > e-addressbook-marshal.tmp \
-	&& mv e-addressbook-marshal.tmp e-addressbook-marshal.h ) \
-	|| ( rm -f e-addressbook-marshal.tmp && exit 1 )
-
-e-addressbook-marshal.c: e-addressbook-marshal.h
-	( @GLIB_GENMARSHAL@ --prefix=e_addressbook_marshal e-addressbook-marshal.list --body > e-addressbook-marshal.tmp \
-	&& mv e-addressbook-marshal.tmp e-addressbook-marshal.c ) \
-	|| ( rm -f e-addressbook-marshal.tmp && exit 1 )
+@EVO_MARSHAL_RULE@
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

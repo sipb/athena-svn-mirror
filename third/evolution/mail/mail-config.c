@@ -21,17 +21,21 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <pwd.h>
-#include <ctype.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <errno.h>
+
 #include <string.h>
+#include <ctype.h>
 
 #include <glib.h>
 #include <gtk/gtkdialog.h>
@@ -47,18 +51,25 @@
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-exception.h>
 
-#include <shell/evolution-shell-client.h>
-
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-gui-utils.h>
+
 #include <e-util/e-url.h>
 #include <e-util/e-passwords.h>
-#include "mail.h"
+#include <e-util/e-account-list.h>
+#include <e-util/e-signature-list.h>
+
+#include <camel/camel-service.h>
+#include <camel/camel-stream-mem.h>
+#include <camel/camel-stream-fs.h>
+#include <camel/camel-mime-filter-charset.h>
+#include <camel/camel-stream-filter.h>
+
+#include "mail-component.h"
+#include "mail-session.h"
 #include "mail-config.h"
 #include "mail-mt.h"
 #include "mail-tools.h"
-
-#include "Mailer.h"
 
 /* Note, the first element of each MailConfigLabel must NOT be translated */
 MailConfigLabel label_defaults[5] = {
@@ -74,18 +85,19 @@ typedef struct {
 	
 	gboolean corrupt;
 	
-	EAccountList *accounts;
+	char *gtkrc;
 	
-	GSList *signatures;
-	int sig_nextid;
-	gboolean signature_info;
+	EAccountList *accounts;
+	ESignatureList *signatures;
 	
 	GSList *labels;
 	guint label_notify_id;
 	
 	guint font_notify_id;
 	guint spell_notify_id;
-
+	guint mark_citations__notify_id;
+	guint citation_colour_notify_id;
+	
 	GPtrArray *mime_types;
 	guint mime_types_notify_id;
 } MailConfig;
@@ -93,60 +105,6 @@ typedef struct {
 static MailConfig *config = NULL;
 static guint config_write_timeout = 0;
 
-#define MAIL_CONFIG_IID "OAFIID:GNOME_Evolution_MailConfig_Factory"
-#define MAIL_CONFIG_RC "/gtkrc-mail-fonts"
-
-/* signatures */
-MailConfigSignature *
-signature_copy (const MailConfigSignature *sig)
-{
-	MailConfigSignature *ns;
-	
-	g_return_val_if_fail (sig != NULL, NULL);
-	
-	ns = g_new (MailConfigSignature, 1);
-	
-	ns->id = sig->id;
-	ns->name = g_strdup (sig->name);
-	ns->filename = g_strdup (sig->filename);
-	ns->script = g_strdup (sig->script);
-	ns->html = sig->html;
-	
-	return ns;
-}
-
-void
-signature_destroy (MailConfigSignature *sig)
-{
-	g_free (sig->name);
-	g_free (sig->filename);
-	g_free (sig->script);
-	g_free (sig);
-}
-
-static char *
-xml_get_prop (xmlNodePtr node, const char *name)
-{
-	char *buf, *val;
-	
-	buf = xmlGetProp (node, name);
-	val = g_strdup (buf);
-	xmlFree (buf);
-	
-	return val;
-}
-
-static char *
-xml_get_content (xmlNodePtr node)
-{
-	char *buf, *val;
-	
-	buf = xmlNodeGetContent (node);
-        val = g_strdup (buf);
-	xmlFree (buf);
-	
-	return val;
-}
 
 void
 mail_config_save_accounts (void)
@@ -154,160 +112,12 @@ mail_config_save_accounts (void)
 	e_account_list_save (config->accounts);
 }
 
-static MailConfigSignature *
-signature_new_from_xml (char *in, int id)
+void
+mail_config_save_signatures (void)
 {
-	MailConfigSignature *sig;
-	xmlNodePtr node, cur;
-	xmlDocPtr doc;
-	char *buf;
-	
-	if (!(doc = xmlParseDoc (in)))
-		return NULL;
-	
-	node = doc->children;
-	if (strcmp (node->name, "signature") != 0) {
-		xmlFreeDoc (doc);
-		return NULL;
-	}
-	
-	sig = g_new0 (MailConfigSignature, 1);
-	sig->name = xml_get_prop (node, "name");
-	sig->id = id;
-	
-	buf = xml_get_prop (node, "format");
-	if (!strcmp (buf, "text/html"))
-		sig->html = TRUE;
-	else
-		sig->html = FALSE;
-	g_free (buf);
-	
-	cur = node->children;
-	while (cur) {
-		if (!strcmp (cur->name, "filename")) {
-			g_free (sig->filename);
-			sig->filename = xml_get_content (cur);
-		} else if (!strcmp (cur->name, "script")) {
-			g_free (sig->script);
-			sig->script = xml_get_content (cur);
-		}
-		
-		cur = cur->next;
-	}
-	
-	xmlFreeDoc (doc);
-	
-	return sig;
+	e_signature_list_save (config->signatures);
 }
 
-static void
-config_read_signatures (void)
-{
-	GSList *list, *l, *tail, *n;
-	int i = 0;
-	
-	config->signatures = NULL;
-	
-	tail = NULL;
-	list = gconf_client_get_list (config->gconf, "/apps/evolution/mail/signatures",
-				      GCONF_VALUE_STRING, NULL);
-	
-	l = list;
-	while (l != NULL) {
-		MailConfigSignature *sig;
-		
-		if ((sig = signature_new_from_xml ((char *) l->data, i++))) {
-			n = g_slist_alloc ();
-			n->next = NULL;
-			n->data = sig;
-			
-			if (tail == NULL)
-				config->signatures = n;
-			else
-				tail->next = n;
-			tail = n;
-		}
-		
-		n = l->next;
-		g_slist_free_1 (l);
-		l = n;
-	}
-	
-	config->sig_nextid = i + 1;
-}
-
-static char *
-signature_to_xml (MailConfigSignature *sig)
-{
-	char *xmlbuf, *tmp;
-	xmlNodePtr root;
-	xmlDocPtr doc;
-	int n;
-	
-	doc = xmlNewDoc ("1.0");
-	
-	root = xmlNewDocNode (doc, NULL, "signature", NULL);
-	xmlDocSetRootElement (doc, root);
-	
-	xmlSetProp (root, "name", sig->name);
-	xmlSetProp (root, "format", sig->html ? "text/html" : "text/plain");
-	
-	if (sig->filename)
-		xmlNewTextChild (root, NULL, "filename", sig->filename);
-	
-	if (sig->script)
-		xmlNewTextChild (root, NULL, "script", sig->script);
-	
-	xmlDocDumpMemory (doc, (xmlChar **) &xmlbuf, &n);
-	xmlFreeDoc (doc);
-	
-	/* remap to glib memory */
-	tmp = g_malloc (n + 1);
-	memcpy (tmp, xmlbuf, n);
-	tmp[n] = '\0';
-	xmlFree (xmlbuf);
-	
-	return tmp;
-}
-
-static void
-config_write_signatures (void)
-{
-	GSList *list, *tail, *n, *l;
-	char *xmlbuf;
-	
-	list = NULL;
-	tail = NULL;
-	
-	l = config->signatures;
-	while (l != NULL) {
-		if ((xmlbuf = signature_to_xml ((MailConfigSignature *) l->data))) {
-			n = g_slist_alloc ();
-			n->data = xmlbuf;
-			n->next = NULL;
-			
-			if (tail == NULL)
-				list = n;
-			else
-				tail->next = n;
-			tail = n;
-		}
-		
-		l = l->next;
-	}
-	
-	gconf_client_set_list (config->gconf, "/apps/evolution/mail/signatures", GCONF_VALUE_STRING, list, NULL);
-	
-	l = list;
-	while (l != NULL) {
-		n = l->next;
-		g_free (l->data);
-		g_slist_free_1 (l);
-		l = n;
-	}
-	
-	gconf_client_suggest_sync (config->gconf, NULL);
-}
 
 static void
 config_clear_labels (void)
@@ -434,32 +244,18 @@ config_cache_mime_types (void)
 static void
 config_write_style (void)
 {
+	int red = 0xffff, green = 0, blue = 0;
 	GConfValue *val;
-	char *filename;
-	FILE *rc;
 	gboolean custom;
 	char *fix_font;
 	char *var_font;
-	gint red = 0xffff, green = 0, blue = 0;
+	FILE *rc;
 	
-	/*
-	 * This is the wrong way to get the path but it needs to 
-	 * always be the same as the gtk_rc_parse call and evolution_dir 
-	 * may not have been set yet
-	 *
-	 * filename = g_build_filename (evolution_dir, MAIL_CONFIG_RC, NULL);
-	 */
-	filename = g_build_filename (g_get_home_dir (), "evolution", MAIL_CONFIG_RC, NULL);
-
-	rc = fopen (filename, "w");
-
-	if (!rc) {
-		g_warning ("unable to open %s", filename);
-		g_free (filename);
+	if (!(rc = fopen (config->gtkrc, "wt"))) {
+		g_warning ("unable to open %s", config->gtkrc);
 		return;
 	}
-	g_free (filename);
-
+	
 	custom = gconf_client_get_bool (config->gconf, "/apps/evolution/mail/display/fonts/use_custom", NULL);
 	var_font = gconf_client_get_string (config->gconf, "/apps/evolution/mail/display/fonts/variable", NULL);
 	fix_font = gconf_client_get_string (config->gconf, "/apps/evolution/mail/display/fonts/monospace", NULL);
@@ -472,21 +268,27 @@ config_write_style (void)
 	fprintf (rc, "        GtkHTML::spell_error_color = \"#%02x%02x%02x\"\n",
 		 0xff & (red >> 8), 0xff & (green >> 8), 0xff & (blue >> 8));
 
+	if (gconf_client_get_bool (config->gconf, "/apps/evolution/mail/display/mark_citations", NULL))
+		fprintf (rc, "        GtkHTML::cite_color = \"%s\"\n",
+			 gconf_client_get_string (config->gconf, "/apps/evolution/mail/display/citation_colour", NULL));
+
 	if (custom && var_font && fix_font) {
 		fprintf (rc,
 			 "        GtkHTML::fixed_font_name = \"%s\"\n"
 			 "        font_name = \"%s\"\n",
 			 fix_font, var_font); 
 	}
-	fprintf (rc, "}\n\n"); 
-
-	fprintf (rc, "widget \"*.MailDisplay.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
-	fprintf (rc, "widget \"*.FolderBrowser.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
+	fprintf (rc, "}\n\n");
+	
+	fprintf (rc, "widget \"*.EMFolderView.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
+	fprintf (rc, "widget \"*.EMFolderBrowser.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
+	fprintf (rc, "widget \"*.EMMessageBrowser.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
 	fprintf (rc, "widget \"*.BonoboPlug.*.GtkHTML\" style \"evolution-mail-custom-fonts\"\n");
 	fprintf (rc, "widget \"*.EvolutionMailPrintHTMLWidget\" style \"evolution-mail-custom-fonts\"\n");
-
-	if (fclose (rc) == 0)
-		gtk_rc_reparse_all ();
+	fflush (rc);
+	fclose (rc);
+	
+	gtk_rc_reparse_all ();
 }
 
 static void
@@ -516,33 +318,33 @@ gconf_mime_types_changed (GConfClient *client, guint cnxn_id,
 void
 mail_config_init (void)
 {
-	char *filename;
-	
 	if (config)
 		return;
 	
 	config = g_new0 (MailConfig, 1);
 	config->gconf = gconf_client_get_default ();
 	config->mime_types = g_ptr_array_new ();
+	config->gtkrc = g_build_filename (g_get_home_dir (), ".evolution", "mail", "config", "gtkrc-mail-fonts", NULL);
 	
 	mail_config_clear ();
-
-	/*
-	  filename = g_build_filename (evolution_dir, MAIL_CONFIG_RC, NULL);
-	*/
-	filename = g_build_filename (g_get_home_dir (), "evolution", MAIL_CONFIG_RC, NULL);
-	gtk_rc_parse (filename);
-	g_free (filename);
 	
-	gconf_client_add_dir (config->gconf, "/apps/evolution/mail/display/fonts", 			      
+	gtk_rc_parse (config->gtkrc);
+	
+	gconf_client_add_dir (config->gconf, "/apps/evolution/mail/display",
 			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-	gconf_client_add_dir (config->gconf, "/GNOME/Spell", 			      
+	gconf_client_add_dir (config->gconf, "/apps/evolution/mail/display/fonts",
+			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	gconf_client_add_dir (config->gconf, "/GNOME/Spell",
 			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 	config->font_notify_id = gconf_client_notify_add (config->gconf, "/apps/evolution/mail/display/fonts",
 							  gconf_style_changed, NULL, NULL, NULL);
 	config->spell_notify_id = gconf_client_notify_add (config->gconf, "/GNOME/Spell",
 							   gconf_style_changed, NULL, NULL, NULL);
-
+	config->mark_citations__notify_id = gconf_client_notify_add (config->gconf, "/apps/evolution/mail/display/mark_citations",
+								     gconf_style_changed, NULL, NULL, NULL);
+	config->citation_colour_notify_id = gconf_client_notify_add (config->gconf, "/apps/evolution/mail/display/citation_colour",
+								     gconf_style_changed, NULL, NULL, NULL);
+	
 	gconf_client_add_dir (config->gconf, "/apps/evolution/mail/labels",
 			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 	config->label_notify_id =
@@ -556,11 +358,12 @@ mail_config_init (void)
 					 gconf_mime_types_changed, NULL, NULL, NULL);
 	
 	config_cache_labels ();
-	config_read_signatures ();
 	config_cache_mime_types ();
 	
 	config->accounts = e_account_list_new (config->gconf);
+	config->signatures = e_signature_list_new (config->gconf);
 }
+
 
 void
 mail_config_clear (void)
@@ -573,16 +376,15 @@ mail_config_clear (void)
 		config->accounts = NULL;
 	}
 	
+	if (config->signatures) {
+		g_object_unref (config->signatures);
+		config->signatures = NULL;
+	}
+	
 	config_clear_labels ();
 	config_clear_mime_types ();
 }
 
-void
-mail_config_write_account_sig (EAccount *account, int id)
-{
-	/* FIXME: what is this supposed to do? */
-	;
-}
 
 void
 mail_config_write (void)
@@ -590,8 +392,8 @@ mail_config_write (void)
 	if (!config)
 		return;
 	
-	config_write_signatures ();
 	e_account_list_save (config->accounts);
+	e_signature_list_save (config->signatures);
 	
 	gconf_client_suggest_sync (config->gconf, NULL);
 }
@@ -638,7 +440,7 @@ mail_config_write_on_exit (void)
 	g_object_unref (iter);
 	
 	/* then we clear out our component passwords */
-	e_passwords_clear_component_passwords ("Mail");
+	e_passwords_clear_passwords ("Mail");
 	
 	/* then we remember them */
 	iter = e_list_get_iterator ((EList *) config->accounts);
@@ -659,6 +461,8 @@ mail_config_write_on_exit (void)
 	
 	g_object_unref (config->gconf);
 	g_ptr_array_free (config->mime_types, TRUE);
+	
+	g_free (config->gtkrc);
 	
 	g_free (config);
 }
@@ -766,6 +570,12 @@ mail_config_get_account_by_name (const char *account_name)
 }
 
 EAccount *
+mail_config_get_account_by_uid (const char *uid)
+{
+	return (EAccount *) e_account_list_find (config->accounts, E_ACCOUNT_FIND_UID, uid);
+}
+
+EAccount *
 mail_config_get_account_by_source_url (const char *source_url)
 {
 	CamelProvider *provider;
@@ -775,7 +585,7 @@ mail_config_get_account_by_source_url (const char *source_url)
 	
 	g_return_val_if_fail (source_url != NULL, NULL);
 	
-	provider = camel_session_get_provider (session, source_url, NULL);
+	provider = camel_provider_get(source_url, NULL);
 	if (!provider)
 		return NULL;
 	
@@ -823,7 +633,7 @@ mail_config_get_account_by_transport_url (const char *transport_url)
 	
 	g_return_val_if_fail (transport_url != NULL, NULL);
 	
-	provider = camel_session_get_provider (session, transport_url, NULL);
+	provider = camel_provider_get(transport_url, NULL);
 	if (!provider)
 		return NULL;
 	
@@ -933,16 +743,17 @@ mail_config_get_default_transport (void)
 static char *
 uri_to_evname (const char *uri, const char *prefix)
 {
+	const char *base_directory = mail_component_peek_base_directory (mail_component_peek ());
 	char *safe;
 	char *tmp;
-
+	
 	safe = g_strdup (uri);
 	e_filename_make_safe (safe);
 	/* blah, easiest thing to do */
 	if (prefix[0] == '*')
-		tmp = g_strdup_printf ("%s/%s%s.xml", evolution_dir, prefix + 1, safe);
+		tmp = g_strdup_printf ("%s/mail/%s%s.xml", base_directory, prefix + 1, safe);
 	else
-		tmp = g_strdup_printf ("%s/%s%s", evolution_dir, prefix, safe);
+		tmp = g_strdup_printf ("%s/mail/%s%s", base_directory, prefix, safe);
 	g_free (safe);
 	return tmp;
 }
@@ -957,8 +768,8 @@ mail_config_uri_renamed (GCompareFunc uri_cmp, const char *old, const char *new)
 	char *cachenames[] = { "config/hidestate-", 
 			       "config/et-expanded-", 
 			       "config/et-header-", 
-			       "*views/mail/current_view-",
-			       "*views/mail/custom_view-",
+			       "*views/current_view-",
+			       "*views/custom_view-",
 			       NULL };
 	
 	iter = e_list_get_iterator ((EList *) config->accounts);
@@ -1006,9 +817,8 @@ mail_config_uri_deleted (GCompareFunc uri_cmp, const char *uri)
 	EIterator *iter;
 	int work = 0;
 	/* assumes these can't be removed ... */
-	extern char *default_sent_folder_uri, *default_drafts_folder_uri;
-
-	mail_tool_delete_meta_data(uri);
+	const char *default_sent_folder_uri = mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_SENT);
+	const char *default_drafts_folder_uri = mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_DRAFTS);
 	
 	iter = e_list_get_iterator ((EList *) config->accounts);
 	while (e_iterator_is_valid (iter)) {
@@ -1054,10 +864,15 @@ mail_config_folder_to_safe_url (CamelFolder *folder)
 char *
 mail_config_folder_to_cachename (CamelFolder *folder, const char *prefix)
 {
-	char *url, *filename;
+	char *url, *basename, *filename;
+	const char *evolution_dir;
+	
+	evolution_dir = mail_component_peek_base_directory (mail_component_peek ());
 	
 	url = mail_config_folder_to_safe_url (folder);
-	filename = g_strdup_printf ("%s/config/%s%s", evolution_dir, prefix, url);
+	basename = g_strdup_printf ("%s%s", prefix, url);
+	filename = g_build_filename (evolution_dir, "mail", "config", basename, NULL);
+	g_free (basename);
 	g_free (url);
 	
 	return filename;
@@ -1173,154 +988,8 @@ mail_config_check_service (const char *url, CamelProviderType type, GList **auth
 	return ret;
 }
 
-/* MailConfig Bonobo object */
-#define PARENT_TYPE BONOBO_OBJECT_TYPE
-static BonoboObjectClass *parent_class = NULL;
-
-/* For the bonobo object */
-typedef struct _EvolutionMailConfig EvolutionMailConfig;
-typedef struct _EvolutionMailConfigClass EvolutionMailConfigClass;
-
-struct _EvolutionMailConfig {
-	BonoboObject parent;
-};
-
-struct _EvolutionMailConfigClass {
-	BonoboObjectClass parent_class;
-
-	POA_GNOME_Evolution_MailConfig__epv epv;
-};
-
-static gboolean
-do_config_write (gpointer data)
-{
-	config_write_timeout = 0;
-	mail_config_write ();
-	return FALSE;
-}
-
-static void
-impl_GNOME_Evolution_MailConfig_addAccount (PortableServer_Servant servant,
-					    const GNOME_Evolution_MailConfig_Account *account,
-					    CORBA_Environment *ev)
-{
-	GNOME_Evolution_MailConfig_Service source, transport;
-	GNOME_Evolution_MailConfig_Identity id;
-	EAccount *new;
-	
-	if (mail_config_get_account_by_name (account->name)) {
-		/* FIXME: we need an exception. */
-		return;
-	}
-	
-	new = e_account_new ();
-	new->name = g_strdup (account->name);
-	new->enabled = source.enabled;
-	
-	/* Copy ID */
-	id = account->id;
-	new->id->name = g_strdup (id.name);
-	new->id->address = g_strdup (id.address);
-	new->id->reply_to = g_strdup (id.reply_to);
-	new->id->organization = g_strdup (id.organization);
-	
-	/* Copy source */
-	source = account->source;
-	if (!(source.url == NULL || strcmp (source.url, "none://") == 0))
-		new->source->url = g_strdup (source.url);
-	
-	new->source->keep_on_server = source.keep_on_server;
-	new->source->auto_check = source.auto_check;
-	new->source->auto_check_time = source.auto_check_time;
-	new->source->save_passwd = source.save_passwd;
-	
-	/* Copy transport */
-	transport = account->transport;
-	if (transport.url != NULL)
-		new->transport->url = g_strdup (transport.url);
-	
-	new->transport->url = g_strdup (transport.url);
-	new->transport->save_passwd = transport.save_passwd;
-	
-	/* Add new account */
-	mail_config_add_account (new);
-	
-	/* Don't write out the config right away in case the remote
-	 * component is creating or removing multiple accounts.
-	 */
-	if (!config_write_timeout)
-		config_write_timeout = g_timeout_add (2000, do_config_write, NULL);
-}
-
-static void
-impl_GNOME_Evolution_MailConfig_removeAccount (PortableServer_Servant servant,
-					       const CORBA_char *name,
-					       CORBA_Environment *ev)
-{
-	EAccount *account;
-	
-	if ((account = mail_config_get_account_by_name (name)))
-		mail_config_remove_account (account);
-	
-	/* Don't write out the config right away in case the remote
-	 * component is creating or removing multiple accounts.
-	 */
-	if (!config_write_timeout)
-		config_write_timeout = g_timeout_add (2000, do_config_write, NULL);
-}
-
-static void
-evolution_mail_config_class_init (EvolutionMailConfigClass *klass)
-{
-	POA_GNOME_Evolution_MailConfig__epv *epv = &klass->epv;
-	
-	parent_class = g_type_class_ref(PARENT_TYPE);
-	epv->addAccount = impl_GNOME_Evolution_MailConfig_addAccount;
-	epv->removeAccount = impl_GNOME_Evolution_MailConfig_removeAccount;
-}
-
-static void
-evolution_mail_config_init (EvolutionMailConfig *config)
-{
-	;
-}
-
-BONOBO_TYPE_FUNC_FULL (EvolutionMailConfig,
-		       GNOME_Evolution_MailConfig,
-		       PARENT_TYPE,
-		       evolution_mail_config);
-
-static BonoboObject *
-evolution_mail_config_factory_fn (BonoboGenericFactory *factory,
-				  const char *id,
-				  void *closure)
-{
-	EvolutionMailConfig *config;
-	
-	config = g_object_new (evolution_mail_config_get_type (), NULL);
-	
-	return BONOBO_OBJECT (config);
-}
-
-gboolean
-evolution_mail_config_factory_init (void)
-{
-	BonoboGenericFactory *factory;
-	
-	factory = bonobo_generic_factory_new (MAIL_CONFIG_IID, 
-					      evolution_mail_config_factory_fn,
-					      NULL);
-	if (factory == NULL) {
-		g_warning ("Error starting MailConfig");
-		return FALSE;
-	}
-
-	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
-	return TRUE;
-}
-
-GSList *
-mail_config_get_signature_list (void)
+ESignatureList *
+mail_config_get_signatures (void)
 {
 	return config->signatures;
 }
@@ -1328,22 +997,24 @@ mail_config_get_signature_list (void)
 static char *
 get_new_signature_filename (void)
 {
+	const char *base_directory;
 	char *filename, *id;
 	struct stat st;
 	int i;
-	
-	filename = g_build_filename (evolution_dir, "/signatures", NULL);
+
+	base_directory = mail_component_peek_base_directory (mail_component_peek ());
+	filename = g_build_filename (base_directory, "signatures", NULL);
 	if (lstat (filename, &st)) {
 		if (errno == ENOENT) {
 			if (mkdir (filename, 0700))
-				g_warning ("Fatal problem creating %s/signatures directory.", evolution_dir);
+				g_warning ("Fatal problem creating %s directory.", filename);
 		} else
-			g_warning ("Fatal problem with %s/signatures directory.", evolution_dir);
+			g_warning ("Fatal problem with %s directory.", filename);
 	}
 	g_free (filename);
 	
-	filename = g_malloc (strlen (evolution_dir) + sizeof ("/signatures/signature-") + 12);
-	id = g_stpcpy (filename, evolution_dir);
+	filename = g_malloc (strlen (base_directory) + sizeof ("/signatures/signature-") + 12);
+	id = g_stpcpy (filename, base_directory);
 	id = g_stpcpy (id, "/signatures/signature-");
 	
 	for (i = 0; i < (INT_MAX - 1); i++) {
@@ -1365,174 +1036,55 @@ get_new_signature_filename (void)
 }
 
 
-MailConfigSignature *
-mail_config_signature_new (gboolean html, const char *script)
+ESignature *
+mail_config_signature_new (const char *filename, gboolean script, gboolean html)
 {
-	MailConfigSignature *sig;
+	ESignature *sig;
 	
-	sig = g_new0 (MailConfigSignature, 1);
-	
-	sig->id = config->sig_nextid++;
+	sig = e_signature_new ();
 	sig->name = g_strdup (_("Unnamed"));
-	if (script)
-		sig->script = g_strdup (script);
-	else
-		sig->filename = get_new_signature_filename ();
+	sig->script = script;
 	sig->html = html;
+	
+	if (filename == NULL)
+		sig->filename = get_new_signature_filename ();
+	else
+		sig->filename = g_strdup (filename);
 	
 	return sig;
 }
 
-
-void
-mail_config_signature_add (MailConfigSignature *sig)
+ESignature *
+mail_config_get_signature_by_uid (const char *uid)
 {
-	g_assert (g_slist_find (config->signatures, sig) == NULL);
-	
-	config->signatures = g_slist_append (config->signatures, sig);
-	config_write_signatures ();
-	mail_config_signature_emit_event (MAIL_CONFIG_SIG_EVENT_ADDED, sig);
+	return (ESignature *) e_signature_list_find (config->signatures, E_SIGNATURE_FIND_UID, uid);
 }
 
-static void
-delete_unused_signature_file (const char *filename)
+ESignature *
+mail_config_get_signature_by_name (const char *name)
 {
-	char *signatures_dir;
-	int len;
-	
-	signatures_dir = g_strconcat (evolution_dir, "/signatures", NULL);
-	
-	/* remove signature file if it's in evolution dir and no other signature uses it */
-	len = strlen (signatures_dir);
-	if (filename && !strncmp (filename, signatures_dir, len)) {
-		gboolean only_one = TRUE;
-		GSList *node;
-		
-		node = config->signatures;
-		while (node != NULL) {
-			MailConfigSignature *sig = node->data;
-			
-			if (sig->filename && !strcmp (filename, sig->filename)) {
-				only_one = FALSE;
-				break;
-			}
-			
-			node = node->next;
-		}
-		
-		if (only_one)
-			unlink (filename);
-	}
-	
-	g_free (signatures_dir);
+	return (ESignature *) e_signature_list_find (config->signatures, E_SIGNATURE_FIND_NAME, name);
 }
 
 void
-mail_config_signature_delete (MailConfigSignature *sig)
+mail_config_add_signature (ESignature *signature)
 {
-	EAccount *account;
-	EIterator *iter;
-	GSList *node, *next;
-	gboolean after = FALSE;
-	int index;
-	
-	index = g_slist_index (config->signatures, sig);
-	
-	iter = e_list_get_iterator ((EList *) config->accounts);
-	while (e_iterator_is_valid (iter)) {
-		account = (EAccount *) e_iterator_get (iter);
-		
-		if (account->id->def_signature == index)
-			account->id->def_signature = -1;
-		else if (account->id->def_signature > index)
-			account->id->def_signature--;
-		
-		e_iterator_next (iter);
-	}
-	
-	g_object_unref (iter);
-	
-	node = config->signatures;
-	while (node != NULL) {
-		next = node->next;
-		
-		if (after) {
-			((MailConfigSignature *) node->data)->id--;
-		} else if (node->data == sig) {
-			config->signatures = g_slist_remove_link (config->signatures, node);
-			config->sig_nextid--;
-			after = TRUE;
-		}
-		
-		node = next;
-	}
-	
-	config_write_signatures ();
-	delete_unused_signature_file (sig->filename);
-	/* printf ("signatures: %d\n", config->signatures); */
-	mail_config_signature_emit_event (MAIL_CONFIG_SIG_EVENT_DELETED, sig);
-	signature_destroy (sig);
+	e_signature_list_add (config->signatures, signature);
+	mail_config_save_signatures ();
 }
 
 void
-mail_config_signature_set_filename (MailConfigSignature *sig, const char *filename)
+mail_config_remove_signature (ESignature *signature)
 {
-	char *old_filename = sig->filename;
+	if (signature->filename && !signature->script)
+		unlink (signature->filename);
 	
-	sig->filename = g_strdup (filename);
-	if (old_filename) {
-		delete_unused_signature_file (old_filename);
-		g_free (old_filename);
-	}
-	config_write_signatures ();
+	e_signature_list_remove (config->signatures, signature);
+	mail_config_save_signatures ();
 }
 
-void
-mail_config_signature_set_name (MailConfigSignature *sig, const char *name)
-{
-	g_free (sig->name);
-	sig->name = g_strdup (name);
-	
-	config_write_signatures ();
-	
-	mail_config_signature_emit_event (MAIL_CONFIG_SIG_EVENT_NAME_CHANGED, sig);
-}
-
-static GList *clients = NULL;
-
-/* uh...the following code is snot. this needs to be fixed. I just don't feel like doing it right now. */
-
-void
-mail_config_signature_register_client (MailConfigSignatureClient client, gpointer data)
-{
-	clients = g_list_append (clients, client);
-	clients = g_list_append (clients, data);
-}
-
-void
-mail_config_signature_unregister_client (MailConfigSignatureClient client, gpointer data)
-{
-	GList *link;
-	
-	if ((link = g_list_find (clients, data)) != NULL) {
-		clients = g_list_remove_link (clients, link->prev);
-		clients = g_list_remove_link (clients, link);
-	}
-}
-
-void
-mail_config_signature_emit_event (MailConfigSigEvent event, MailConfigSignature *sig)
-{
-	GList *l, *next;
-
-	for (l = clients; l; l = next) {
-		next = l->next->next;
-		(*((MailConfigSignatureClient) l->data)) (event, sig, l->next->data);
-	}
-}
-
-gchar *
-mail_config_signature_run_script (gchar *script)
+char *
+mail_config_signature_run_script (const char *script)
 {
 	int result, status;
 	int in_fds[2];
@@ -1555,13 +1107,10 @@ mail_config_signature_run_script (gchar *script)
 		setsid ();
 		
 		maxfd = sysconf (_SC_OPEN_MAX);
-		if (maxfd > 0) {
-			for (i = 0; i < maxfd; i++) {
-				if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
-					close (i);
-			}
+		for (i = 3; i < maxfd; i++) {
+			if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
+				fcntl (i, F_SETFD, FD_CLOEXEC);
 		}
-		
 		
 		execlp (script, script, NULL);
 		g_warning ("Could not execute %s: %s\n", script, g_strerror (errno));
@@ -1603,9 +1152,12 @@ mail_config_signature_run_script (gchar *script)
 			camel_object_unref (stream);
 			
 			charset = gconf_client_get_string (config->gconf, "/apps/evolution/mail/composer/charset", NULL);
-			charenc = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "utf-8");
-			camel_stream_filter_add (filtered_stream, charenc);
-			camel_object_unref (charenc);
+			if (charset && *charset) {
+				if ((charenc = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "utf-8"))) {
+					camel_stream_filter_add (filtered_stream, charenc);
+					camel_object_unref (charenc);
+				}
+			}
 			g_free (charset);
 			
 			camel_stream_write_to_stream ((CamelStream *) filtered_stream, (CamelStream *) memstream);
@@ -1638,15 +1190,5 @@ mail_config_signature_run_script (gchar *script)
 		}
 		
 		return content;
-	}
-}
-
-void
-mail_config_signature_set_html (MailConfigSignature *sig, gboolean html)
-{
-	if (sig->html != html) {
-		sig->html = html;
-		config_write_signatures ();
-		mail_config_signature_emit_event (MAIL_CONFIG_SIG_EVENT_HTML_CHANGED, sig);
 	}
 }

@@ -39,6 +39,7 @@ extern "C" {
  * name		 type		read/write	description
  * ---------------------------------------------------------------------------------
  * query         string         R               String representing query.
+ * state         string         RW              XML string representing the state.
  */
 
 #define E_FILTER_BAR_TYPE			(e_filter_bar_get_type ())
@@ -63,7 +64,7 @@ struct _EFilterBar {
 	GtkWidget *save_dialog;    /* current save dialogue (so we dont pop up multiple ones) */
 	
 	FilterRule *current_query; /* as it says */
-	int setquery;		   /* true when we're setting a query directly to advanced, so dont popup the dialogue */
+	int setquery;		   /* true when we're setting a query directly to advanced, so dont popup the dialog */
 	
 	RuleContext *context;
 	char *systemrules;

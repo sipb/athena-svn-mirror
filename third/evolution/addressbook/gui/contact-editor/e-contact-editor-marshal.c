@@ -1,3 +1,4 @@
+#include "e-contact-editor-marshal.h"
 
 #include	<glib-object.h>
 
@@ -35,8 +36,8 @@
 #define g_marshal_value_peek_ulong(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_int64(v)    (v)->data[0].v_int64
 #define g_marshal_value_peek_uint64(v)   (v)->data[0].v_uint64
-#define g_marshal_value_peek_enum(v)     (v)->data[0].v_int
-#define g_marshal_value_peek_flags(v)    (v)->data[0].v_uint
+#define g_marshal_value_peek_enum(v)     (v)->data[0].v_long
+#define g_marshal_value_peek_flags(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_float(v)    (v)->data[0].v_float
 #define g_marshal_value_peek_double(v)   (v)->data[0].v_double
 #define g_marshal_value_peek_string(v)   (v)->data[0].v_pointer
@@ -47,14 +48,14 @@
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* NONE:INT,OBJECT (e-contact-editor-marshal.list:1) */
+/* NONE:INT,OBJECT (./e-contact-editor-marshal.list:1) */
 void
-ece_marshal_VOID__INT_OBJECT (GClosure     *closure,
-                              GValue       *return_value,
-                              guint         n_param_values,
-                              const GValue *param_values,
-                              gpointer      invocation_hint,
-                              gpointer      marshal_data)
+e_contact_editor_marshal_VOID__INT_OBJECT (GClosure     *closure,
+                                           GValue       *return_value,
+                                           guint         n_param_values,
+                                           const GValue *param_values,
+                                           gpointer      invocation_hint,
+                                           gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__INT_OBJECT) (gpointer     data1,
                                                  gint         arg_1,
@@ -84,5 +85,5 @@ ece_marshal_VOID__INT_OBJECT (GClosure     *closure,
             data2);
 }
 
-/* NONE:NONE (e-contact-editor-marshal.list:2) */
+/* NONE:NONE (./e-contact-editor-marshal.list:2) */
 

@@ -32,7 +32,17 @@
 #include "camel-mime-filter-tohtml.h"
 #include "camel-utf8.h"
 
+/**
+ * TODO: convert common text/plain 'markup' to html. eg.:
+ *
+ * _word_ -> <u>_word_</u>
+ * *word* -> <b>*word*</b>
+ * /word/ -> <i>/word/</i>
+ **/
+
 #define d(x)
+
+#define FOOLISHLY_UNMUNGE_FROM 0
 
 #define CONVERT_WEB_URLS  CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS
 #define CONVERT_ADDRSPEC  CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES
@@ -48,6 +58,9 @@ static struct {
 	{ CONVERT_WEB_URLS, { "news://",   "",        camel_url_web_start,      camel_url_web_end      } },
 	{ CONVERT_WEB_URLS, { "nntp://",   "",        camel_url_web_start,      camel_url_web_end      } },
 	{ CONVERT_WEB_URLS, { "telnet://", "",        camel_url_web_start,      camel_url_web_end      } },
+	{ CONVERT_WEB_URLS, { "webcal://", "",        camel_url_web_start,      camel_url_web_end      } },
+	{ CONVERT_WEB_URLS, { "callto://", "",        camel_url_web_start,      camel_url_web_end      } },
+	{ CONVERT_WEB_URLS, { "h323://",   "",        camel_url_web_start,      camel_url_web_end      } },
 	{ CONVERT_WEB_URLS, { "www.",      "http://", camel_url_web_start,      camel_url_web_end      } },
 	{ CONVERT_WEB_URLS, { "ftp.",      "ftp://",  camel_url_web_start,      camel_url_web_end      } },
 	{ CONVERT_ADDRSPEC, { "@",         "mailto:", camel_url_addrspec_start, camel_url_addrspec_end } },
@@ -127,9 +140,11 @@ citation_depth (const char *in)
 	if (*inptr++ != '>')
 		return 0;
 	
+#if FOOLISHLY_UNMUNGE_FROM
 	/* check that it isn't an escaped From line */
 	if (!strncmp (inptr, "From", 4))
 		return 0;
+#endif
 	
 	while (*inptr != '\n') {
 		if (*inptr == ' ')
@@ -222,9 +237,21 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 	int depth;
 
 	if (inlen == 0) {
-		*out = in;
-		*outlen = 0;
-		*outprespace = 0;
+		if (html->pre_open) {
+			/* close the pre-tag */
+			outend = filter->outbuf + filter->outsize;
+			outptr = check_size (filter, filter->outbuf, &outend, 10);
+			outptr = g_stpcpy (outptr, "</pre>");
+			html->pre_open = FALSE;
+
+			*out = filter->outbuf;
+			*outlen = outptr - filter->outbuf;
+			*outprespace = filter->outpre;
+		} else {
+			*out = in;
+			*outlen = 0;
+			*outprespace = 0;
+		}
 
 		return;
 	}
@@ -246,7 +273,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 		while (inptr < inend && *inptr != '\n')
 			inptr++;
 
-		if (*inptr != '\n' && !flush)
+		if (inptr >= inend && !flush)
 			break;
 
 		html->column = 0;
@@ -258,10 +285,13 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 				
 				outptr = check_size (filter, outptr, &outend, 25);
 				outptr += sprintf(outptr, "<font color=\"#%06x\">", (html->colour & 0xffffff));
-			} else if (*start == '>') {
+			}
+#if FOOLISHLY_UNMUNGE_FROM
+			else if (*start == '>') {
 				/* >From line */
 				start++;
 			}
+#endif
 		} else if (html->flags & CAMEL_MIME_FILTER_TOHTML_CITE) {
 			outptr = check_size (filter, outptr, &outend, 6);
 			outptr = g_stpcpy (outptr, "&gt; ");

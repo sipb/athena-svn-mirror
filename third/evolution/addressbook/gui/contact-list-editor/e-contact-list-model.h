@@ -2,12 +2,9 @@
 #ifndef _E_CONTACT_LIST_MODEL_H_
 #define _E_CONTACT_LIST_MODEL_H_
 
-#include <gtk/gtk.h>
 #include <gal/e-table/e-table-model.h>
-#include "addressbook/backend/ebook/e-book.h"
-#include "addressbook/backend/ebook/e-book-view.h"
-#include "addressbook/backend/ebook/e-card-simple.h"
-#include "addressbook/backend/ebook/e-destination.h"
+#include <libebook/e-contact.h>
+#include "addressbook/util/e-destination.h"
 
 G_BEGIN_DECLS
 
@@ -40,7 +37,7 @@ ETableModel *e_contact_list_model_new (void);
 
 void         e_contact_list_model_add_destination (EContactListModel *model, EDestination *dest);
 void         e_contact_list_model_add_email       (EContactListModel *model, const char *email);
-void         e_contact_list_model_add_card        (EContactListModel *model, ECardSimple *simple);
+void         e_contact_list_model_add_contact     (EContactListModel *model, EContact *contact, int email_num);
 
 void	     e_contact_list_model_remove_row (EContactListModel *model, int row);
 void         e_contact_list_model_remove_all (EContactListModel *model);

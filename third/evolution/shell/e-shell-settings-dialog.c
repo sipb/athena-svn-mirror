@@ -28,8 +28,7 @@
 #include "e-shell-settings-dialog.h"
 
 #include "e-corba-config-page.h"
-
-#include "e-util/e-lang-utils.h"
+#include <e-util/e-icon-factory.h>
 
 #include <gal/util/e-util.h>
 
@@ -156,6 +155,7 @@ load_pages (EShellSettingsDialog *dialog)
 	EShellSettingsDialogPrivate *priv;
 	Bonobo_ServerInfoList *control_list;
 	CORBA_Environment ev;
+	const GList *l;
 	GSList *language_list;
 	GList *page_list;
 	GList *p;
@@ -165,7 +165,7 @@ load_pages (EShellSettingsDialog *dialog)
 	
 	CORBA_exception_init (&ev);
 
-	control_list = bonobo_activation_query ("defined(evolution:config_item:title)", NULL, &ev);
+	control_list = bonobo_activation_query ("repo_ids.has('IDL:GNOME/Evolution/ConfigControl:" BASE_VERSION "')", NULL, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION || control_list == NULL) {
 		g_warning ("Cannot load configuration pages -- %s", BONOBO_EX_REPOID (&ev));
 		CORBA_exception_free (&ev);
@@ -174,7 +174,10 @@ load_pages (EShellSettingsDialog *dialog)
 
 	CORBA_exception_free (&ev);
 
-	language_list = e_get_language_list ();
+	/* Great, one uses GList the other GSList (!) */
+	l = gnome_i18n_get_language_list("LC_MESSAGES");
+	for (language_list=NULL;l;l=l->next)
+		language_list = g_slist_append(language_list, l->data);
 
 	page_list = NULL;
 	for (i = 0; i < control_list->_length; i ++) {
@@ -192,11 +195,11 @@ load_pages (EShellSettingsDialog *dialog)
 
 		info = & control_list->_buffer[i];
 
-		title       	= bonobo_server_info_prop_lookup (info, "evolution:config_item:title", language_list);
-		description 	= bonobo_server_info_prop_lookup (info, "evolution:config_item:description", language_list);
-		icon_path   	= bonobo_server_info_prop_lookup (info, "evolution:config_item:icon_name", NULL);
-		type            = bonobo_server_info_prop_find   (info, "evolution:config_item:type");
-		priority_string = bonobo_server_info_prop_lookup (info, "evolution:config_item:priority", NULL);
+		title       	= bonobo_server_info_prop_lookup (info, "evolution2:config_item:title", language_list);
+		description 	= bonobo_server_info_prop_lookup (info, "evolution2:config_item:description", language_list);
+		icon_path   	= bonobo_server_info_prop_lookup (info, "evolution2:config_item:icon_name", NULL);
+		type            = bonobo_server_info_prop_find   (info, "evolution2:config_item:type");
+		priority_string = bonobo_server_info_prop_lookup (info, "evolution2:config_item:priority", NULL);
 
 		if (icon_path == NULL) {
 			icon = NULL;
@@ -204,11 +207,7 @@ load_pages (EShellSettingsDialog *dialog)
 			if (g_path_is_absolute (icon_path)) {
 				icon = gdk_pixbuf_new_from_file (icon_path, NULL);
 			} else {
-				char *real_icon_path;
-
-				real_icon_path = g_build_filename (EVOLUTION_IMAGES, icon_path, NULL);
-				icon = gdk_pixbuf_new_from_file (real_icon_path, NULL);
-				g_free (real_icon_path);
+				icon = e_icon_factory_get_icon (icon_path, E_ICON_SIZE_DIALOG);
 			}
 		}
 
@@ -239,6 +238,7 @@ load_pages (EShellSettingsDialog *dialog)
 
 		CORBA_exception_free (&ev);
 	}
+	g_slist_free(language_list);
 
 	page_list = sort_page_list (page_list);
 	for (p = page_list, i = 0; p != NULL; p = p->next, i++) {
@@ -267,23 +267,7 @@ load_pages (EShellSettingsDialog *dialog)
 	}
 
 	g_list_free (page_list);
-	e_free_language_list (language_list);
 	CORBA_free (control_list);
-}
-
-
-/* GtkWidget methods.  */
-
-static void
-impl_realize (GtkWidget *widget)
-{
-	EShellSettingsDialog *dialog;
-
-	dialog = E_SHELL_SETTINGS_DIALOG (widget);
-
-	set_dialog_size (dialog);
-
-	(* GTK_WIDGET_CLASS (parent_class)->realize) (widget);
 }
 
 
@@ -319,13 +303,9 @@ static void
 class_init (EShellSettingsDialog *class)
 {
 	GObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = impl_finalize;
-
-	widget_class = GTK_WIDGET_CLASS (class);
-	widget_class->realize = impl_realize;
 
 	parent_class = g_type_class_ref(PARENT_TYPE);
 }
@@ -341,9 +321,10 @@ init (EShellSettingsDialog *dialog)
 	dialog->priv = priv;
 
 	load_pages (dialog);
+	set_dialog_size (dialog);
 	
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 6); 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Evolution Settings"));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 }
 
 

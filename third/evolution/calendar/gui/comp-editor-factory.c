@@ -27,11 +27,12 @@
 #include <bonobo/bonobo-i18n.h>
 #include <evolution-calendar.h>
 #include <e-util/e-url.h>
-#include <cal-client/cal-client.h>
+#include <libecal/e-cal.h>
 #include "calendar-config.h"
 #include "e-comp-editor-registry.h"
 #include "comp-editor-factory.h"
 #include "comp-util.h"
+#include "common/authentication.h"
 #include "dialogs/event-editor.h"
 #include "dialogs/task-editor.h"
 
@@ -69,7 +70,7 @@ typedef struct {
 	char *uri;
 
 	/* Client of the calendar */
-	CalClient *client;
+	ECal *client;
  
 	/* Count editors using this client */
 	int editor_count;
@@ -95,7 +96,8 @@ static void comp_editor_factory_finalize (GObject *object);
 
 static void impl_editExisting (PortableServer_Servant servant,
 			       const CORBA_char *str_uri,
-			       const GNOME_Evolution_Calendar_CalObjUID uid,
+			       const CORBA_char *uid,
+			       const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode corba_type,
 			       CORBA_Environment *ev);
 static void impl_editNew (PortableServer_Servant servant,
 			  const CORBA_char *str_uri,
@@ -239,45 +241,38 @@ editor_destroy_cb (GtkObject *object, gpointer data)
 static void
 edit_existing (OpenClient *oc, const char *uid)
 {
-	CalComponent *comp;
-	CalClientGetStatus status;
+	ECalComponent *comp;
+	icalcomponent *icalcomp;
 	CompEditor *editor;
-	CalComponentVType vtype;
+	ECalComponentVType vtype;
 
 	g_assert (oc->open);
 
 	/* Get the object */
+	if (!e_cal_get_object (oc->client, uid, NULL, &icalcomp, NULL)) {
+		/* FIXME Better error handling */
+		g_warning (G_STRLOC ": Syntax error while getting component `%s'", uid);
 
-	status = cal_client_get_object (oc->client, uid, &comp);
-
-	switch (status) {
-	case CAL_CLIENT_GET_SUCCESS:
-		/* see below */
-		break;
-
-	case CAL_CLIENT_GET_NOT_FOUND:
-		/* The object disappeared from the server */
-		return;
-
-	case CAL_CLIENT_GET_SYNTAX_ERROR:
-		g_message ("edit_exiting(): Syntax error while getting component `%s'", uid);
-		return;
-
-	default:
-		g_assert_not_reached ();
 		return;
 	}
-
+	
+	comp = e_cal_component_new ();
+	if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+		g_object_unref (comp);
+		icalcomponent_free (icalcomp);
+		return;
+	}
+	
 	/* Create the appropriate type of editor */
 	
-	vtype = cal_component_get_vtype (comp);
+	vtype = e_cal_component_get_vtype (comp);
 
 	switch (vtype) {
-	case CAL_COMPONENT_EVENT:
+	case E_CAL_COMPONENT_EVENT:
 		editor = COMP_EDITOR (event_editor_new (oc->client));
 		break;
 
-	case CAL_COMPONENT_TODO:
+	case E_CAL_COMPONENT_TODO:
 		editor = COMP_EDITOR (task_editor_new (oc->client));
 		break;
 
@@ -297,52 +292,10 @@ edit_existing (OpenClient *oc, const char *uid)
 	e_comp_editor_registry_add (comp_editor_registry, editor, TRUE);
 }
 
-/* Creates a component with the appropriate defaults for the specified component
- * type.
- */
-static CalComponent *
-get_default_event (CalClient *client, gboolean all_day) 
+static ECalComponent *
+get_default_task (ECal *client)
 {
-	CalComponent *comp;
-	struct icaltimetype itt;
-	CalComponentDateTime dt;
-	char *location;
-	icaltimezone *zone;
-
-	comp = cal_comp_event_new_with_defaults (client);
-
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
-
-	if (all_day) {
-		itt = icaltime_from_timet_with_zone (time (NULL), 1, zone);
-
-		dt.value = &itt;
-		dt.tzid = icaltimezone_get_tzid (zone);
-		
-		cal_component_set_dtstart (comp, &dt);
-		cal_component_set_dtend (comp, &dt);		
-	} else {
-		itt = icaltime_current_time_with_zone (zone);
-		icaltime_adjust (&itt, 0, 1, -itt.minute, -itt.second);
-		
-		dt.value = &itt;
-		dt.tzid = icaltimezone_get_tzid (zone);
-		
-		cal_component_set_dtstart (comp, &dt);
-		icaltime_adjust (&itt, 0, 1, 0, 0);
-		cal_component_set_dtend (comp, &dt);
-	}
-
-	cal_component_commit_sequence (comp);
-
-	return comp;
-}
-
-static CalComponent *
-get_default_task (CalClient *client)
-{
-	CalComponent *comp;
+	ECalComponent *comp;
 	
 	comp = cal_comp_task_new_with_defaults (client);
 
@@ -353,18 +306,18 @@ get_default_task (CalClient *client)
 static void
 edit_new (OpenClient *oc, const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode type)
 {
-	CalComponent *comp;
+	ECalComponent *comp;
 	CompEditor *editor;
 	
 	switch (type) {
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT:
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING:
 		editor = COMP_EDITOR (event_editor_new (oc->client));
-		comp = get_default_event (oc->client, FALSE);
+		comp = cal_comp_event_new_with_current_time (oc->client, FALSE);
 		break;
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT:
 		editor = COMP_EDITOR (event_editor_new (oc->client));
-		comp = get_default_event (oc->client, TRUE);
+		comp = cal_comp_event_new_with_current_time (oc->client, TRUE);
 		break;
 	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO:
 		editor = COMP_EDITOR (task_editor_new (oc->client));
@@ -393,19 +346,19 @@ resolve_pending_requests (OpenClient *oc)
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	GSList *l;
-	char *location;
 	icaltimezone *zone;
 
 	factory = oc->factory;
 	priv = factory->priv;
 
-	g_assert (oc->pending != NULL);
+	if (!oc->pending)
+		return;
 
 	/* Set the default timezone in the backend. */
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
-	if (zone)
-		cal_client_set_default_timezone (oc->client, zone);
+	zone = calendar_config_get_icaltimezone ();
+
+	/* FIXME Error handling? */
+	e_cal_set_default_timezone (oc->client, zone, NULL);
 
 	for (l = oc->pending; l; l = l->next) {
 		Request *request;
@@ -433,7 +386,7 @@ resolve_pending_requests (OpenClient *oc)
  * requests.
  */
 static void
-cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
+cal_opened_cb (ECal *client, ECalendarStatus status, gpointer data)
 {
 	OpenClient *oc;
 	CompEditorFactory *factory;
@@ -445,29 +398,29 @@ cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
 	priv = factory->priv;
 
 	switch (status) {
-	case CAL_CLIENT_OPEN_SUCCESS:
+	case E_CALENDAR_STATUS_OK:
 		oc->open = TRUE;
 		resolve_pending_requests (oc);
 		return;
 
-	case CAL_CLIENT_OPEN_ERROR:
+	case E_CALENDAR_STATUS_OTHER_ERROR:
 		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 						 _("Error while opening the calendar"));
 		break;
 
-	case CAL_CLIENT_OPEN_NOT_FOUND:
-		/* bullshit; we specified only_if_exists = FALSE */
+	case E_CALENDAR_STATUS_NO_SUCH_CALENDAR:
+		/* oops - we specified only_if_exists = FALSE */
 		g_assert_not_reached ();
 		return;
 
-	case CAL_CLIENT_OPEN_METHOD_NOT_SUPPORTED:
+	case E_CALENDAR_STATUS_PROTOCOL_NOT_SUPPORTED:
 		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 						 _("Method not supported when opening the calendar"));
 		break;
 
-	case CAL_CLIENT_OPEN_PERMISSION_DENIED :
+	case E_CALENDAR_STATUS_PERMISSION_DENIED :
 		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 						 _("Permission denied to open the calendar"));
@@ -490,15 +443,16 @@ cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
  * open request.
  */
 static OpenClient *
-open_client (CompEditorFactory *factory, const char *uristr)
+open_client (CompEditorFactory *factory, ECalSourceType source_type, const char *uristr)
 {
 	CompEditorFactoryPrivate *priv;
-	CalClient *client;
+	ECal *client;
 	OpenClient *oc;
+	GError *error = NULL;
 
 	priv = factory->priv;
 
-	client = cal_client_new ();
+	client = auth_new_cal_from_uri (uristr, source_type);
 	if (!client)
 		return NULL;
 
@@ -516,10 +470,12 @@ open_client (CompEditorFactory *factory, const char *uristr)
 
 	g_hash_table_insert (priv->uri_client_hash, oc->uri, oc);
 
-	if (!cal_client_open_calendar (oc->client, uristr, FALSE)) {
+	if (!e_cal_open (oc->client, FALSE, &error)) {
+		g_warning (_("open_client(): %s"), error->message);
 		g_free (oc->uri);
 		g_object_unref (oc->client);
 		g_free (oc);
+		g_error_free (error);
 
 		return NULL;
 	}
@@ -531,7 +487,7 @@ open_client (CompEditorFactory *factory, const char *uristr)
  * NULL on failure; in the latter case it sets the ev exception.
  */
 static OpenClient *
-lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Environment *ev)
+lookup_open_client (CompEditorFactory *factory, ECalSourceType source_type, const char *str_uri, CORBA_Environment *ev)
 {
 	CompEditorFactoryPrivate *priv;
 	OpenClient *oc;
@@ -550,7 +506,7 @@ lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Envir
 
 	oc = g_hash_table_lookup (priv->uri_client_hash, str_uri);
 	if (!oc) {
-		oc = open_client (factory, str_uri);
+		oc = open_client (factory, source_type, str_uri);
 		if (!oc) {
 			bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError);
 			return NULL;
@@ -579,18 +535,28 @@ queue_edit_existing (OpenClient *oc, const char *uid)
 static void
 impl_editExisting (PortableServer_Servant servant,
 		   const CORBA_char *str_uri,
-		   const GNOME_Evolution_Calendar_CalObjUID uid,
+		   const CORBA_char *uid,
+		   const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode corba_type,
 		   CORBA_Environment *ev)
 {
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	OpenClient *oc;
 	CompEditor *editor;
-
+	ECalSourceType source_type;
+	
 	factory = COMP_EDITOR_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
-	oc = lookup_open_client (factory, str_uri, ev);
+	switch (corba_type) {
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO:
+		source_type = E_CAL_SOURCE_TYPE_TODO;
+		break;
+	default:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+	}
+	
+	oc = lookup_open_client (factory, source_type, str_uri, ev);
 	if (!oc)
 		return;
 
@@ -600,7 +566,7 @@ impl_editExisting (PortableServer_Servant servant,
 	}
 
 	/* Look up the component */
-	editor = e_comp_editor_registry_find (comp_editor_registry, uid);	
+	editor = e_comp_editor_registry_find (comp_editor_registry, uid);
 	if (editor == NULL) {
 		edit_existing (oc, uid);
 	} else {
@@ -633,11 +599,20 @@ impl_editNew (PortableServer_Servant servant,
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	OpenClient *oc;
- 
+	ECalSourceType source_type;
+	
 	factory = COMP_EDITOR_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
-	oc = lookup_open_client (factory, str_uri, ev);
+	switch (corba_type) {
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO:
+		source_type = E_CAL_SOURCE_TYPE_TODO;
+		break;
+	default:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+	}
+
+	oc = lookup_open_client (factory, source_type, str_uri, ev);
 	if (!oc)
 		return;
 

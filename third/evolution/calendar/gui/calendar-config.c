@@ -27,7 +27,10 @@
  * calendar-config.c - functions to load/save/get/set user settings.
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <string.h>
 #include <time.h>
 #include <gtk/gtksignal.h>
@@ -35,17 +38,18 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <gal/util/e-util.h>
 #include <widgets/e-timezone-dialog/e-timezone-dialog.h>
-#include <cal-util/timeutil.h>
+#include <libecal/e-cal-time-util.h>
 
 #include "calendar-component.h"
 #include "calendar-commands.h"
 #include "e-tasks.h"
 #include "e-cell-date-edit-text.h"
+#include "calendar-config-keys.h"
 #include "calendar-config.h"
-#include "e-util/e-config-listener.h"
 
 
-static EConfigListener *config = NULL;
+
+static GConfClient *config = NULL;
 
 static void on_timezone_set		(GnomeDialog	*dialog,
 					 int		 button,
@@ -67,8 +71,16 @@ calendar_config_init			(void)
 	if (config)
 		return;
 
-	config = e_config_listener_new ();
+	config = gconf_client_get_default ();
 	g_atexit ((GVoidFunc) do_cleanup);
+
+	gconf_client_add_dir (config, CALENDAR_CONFIG_PREFIX, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
+}
+
+void
+calendar_config_remove_notification (guint id)
+{
+	gconf_client_notify_remove (config, id);
 }
 
 /* Returns TRUE if the locale has 'am' and 'pm' strings defined, in which
@@ -107,38 +119,100 @@ units_to_string (CalUnits units)
  * Calendar Settings.
  */
 
+/* The current list of calendars selected */
+GSList *
+calendar_config_get_calendars_selected (void)
+{
+	return gconf_client_get_list (config, CALENDAR_CONFIG_SELECTED_CALENDARS, GCONF_VALUE_STRING, NULL);
+}
+
+void
+calendar_config_set_calendars_selected (GSList *selected)
+{
+	gconf_client_set_list (config, CALENDAR_CONFIG_SELECTED_CALENDARS, GCONF_VALUE_STRING, selected, NULL);
+}
+
+guint
+calendar_config_add_notification_calendars_selected (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_SELECTED_CALENDARS, func, data, NULL, NULL);
+	
+	return id;
+}
+
+/* The primary calendar */
+char *
+calendar_config_get_primary_calendar (void)
+{
+	return gconf_client_get_string (config, CALENDAR_CONFIG_PRIMARY_CALENDAR, NULL);
+}
+
+void
+calendar_config_set_primary_calendar (const char *primary_uid)
+{
+	gconf_client_set_string (config, CALENDAR_CONFIG_PRIMARY_CALENDAR, primary_uid, NULL);
+}
+
+
+guint
+calendar_config_add_notification_primary_calendar (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_PRIMARY_CALENDAR, func, data, NULL, NULL);
+	
+	return id;
+}
+
+
 /* The current timezone, e.g. "Europe/London". It may be NULL, in which case
    you should assume UTC (though Evolution will show the timezone-setting
    dialog the next time a calendar or task folder is selected). */
-gchar*
-calendar_config_get_timezone		(void)
+gchar *
+calendar_config_get_timezone (void)
 {
-	static char *timezone = NULL;
+	return gconf_client_get_string (config, CALENDAR_CONFIG_TIMEZONE, NULL);
+}
 
-	if (timezone)
-		g_free (timezone);
+icaltimezone *
+calendar_config_get_icaltimezone (void)
+{
+	char *location;
+	icaltimezone *zone = NULL;
+	
+	location = calendar_config_get_timezone ();
+	if (location)
+		zone = icaltimezone_get_builtin_timezone (location);
 
-	timezone = e_config_listener_get_string_with_default (config,
-							      "/apps/evolution/calendar/display/timezone",
-							      "UTC", NULL);
-	if (!timezone)
-		timezone = g_strdup ("UTC");
-
-	return timezone;
+	if (!zone)
+		zone = icaltimezone_get_utc_timezone ();
+	
+	return zone;
 }
 
 
 /* Sets the timezone. If set to NULL it defaults to UTC.
    FIXME: Should check it is being set to a valid timezone. */
 void
-calendar_config_set_timezone		(gchar	     *timezone)
+calendar_config_set_timezone (gchar *timezone)
 {
 	if (timezone && timezone[0])
-		e_config_listener_set_string (config, "/apps/evolution/calendar/display/timezone", timezone);
+		gconf_client_set_string (config, CALENDAR_CONFIG_TIMEZONE, timezone, NULL);
 	else
-		e_config_listener_set_string (config, "/apps/evolution/calendar/display/timezone", "UTC");
+		gconf_client_set_string (config, CALENDAR_CONFIG_TIMEZONE, "UTC", NULL);
 }
 
+guint
+calendar_config_add_notification_timezone (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TIMEZONE, func, data, NULL, NULL);
+	
+	return id;
+}
 
 /* Whether we use 24-hour format or 12-hour format (AM/PM). */
 gboolean
@@ -148,10 +222,8 @@ calendar_config_get_24_hour_format	(void)
 	   choice of 12-hour or 24-hour time format, with 12-hour as the
 	   default. If the locale doesn't have 'am' and 'pm' strings we have
 	   to use 24-hour format, or strftime()/strptime() won't work. */
-	if (calendar_config_locale_supports_12_hour_format ()) {
-		return e_config_listener_get_boolean_with_default (
-			config, "/apps/evolution/calendar/display/use_24hour_format", FALSE, NULL);
-	}
+	if (calendar_config_locale_supports_12_hour_format ())
+		return gconf_client_get_bool (config, CALENDAR_CONFIG_24HOUR, NULL);
 
 	return TRUE;
 }
@@ -160,183 +232,298 @@ calendar_config_get_24_hour_format	(void)
 void
 calendar_config_set_24_hour_format	(gboolean     use_24_hour)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/display/use_24hour_format", use_24_hour);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_24HOUR, use_24_hour, NULL);
 }
 
+guint
+calendar_config_add_notification_24_hour_format (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_24HOUR, func, data, NULL, NULL);
+	
+	return id;
+}
 
 /* The start day of the week (0 = Sun to 6 = Mon). */
 gint
 calendar_config_get_week_start_day	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/week_start_day", 1, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_WEEK_START, NULL);
 }
 
 
 void
 calendar_config_set_week_start_day	(gint	      week_start_day)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/week_start_day", week_start_day);
+	gconf_client_set_int (config, CALENDAR_CONFIG_WEEK_START, week_start_day, NULL);
 }
 
+guint 
+calendar_config_add_notification_week_start_day (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_WEEK_START, func, data, NULL, NULL);
+	
+	return id;	
+}
 
 /* The start and end times of the work-day. */
 gint
 calendar_config_get_day_start_hour	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/day_start_hour", 9, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_DAY_START_HOUR, NULL);
 }
 
 
 void
 calendar_config_set_day_start_hour	(gint	      day_start_hour)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/day_start_hour", day_start_hour);
+	gconf_client_set_int (config, CALENDAR_CONFIG_DAY_START_HOUR, day_start_hour, NULL);
 }
 
+guint 
+calendar_config_add_notification_day_start_hour (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_DAY_START_HOUR, func, data, NULL, NULL);
+	
+	return id;	
+}
 
 gint
 calendar_config_get_day_start_minute	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/day_start_minute", 0, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_DAY_START_MINUTE, NULL);
 }
 
 
 void
 calendar_config_set_day_start_minute	(gint	      day_start_min)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/day_start_minute", day_start_min);
+	gconf_client_set_int (config, CALENDAR_CONFIG_DAY_START_MINUTE, day_start_min, NULL);
 }
 
+guint 
+calendar_config_add_notification_day_start_minute (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_DAY_START_MINUTE, func, data, NULL, NULL);
+	
+	return id;	
+}
 
 gint
 calendar_config_get_day_end_hour	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/day_end_hour", 17, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_DAY_END_HOUR, NULL);
 }
 
 
 void
 calendar_config_set_day_end_hour	(gint	      day_end_hour)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/day_end_hour", day_end_hour);
+	gconf_client_set_int (config, CALENDAR_CONFIG_DAY_END_HOUR, day_end_hour, NULL);
 }
 
+guint 
+calendar_config_add_notification_day_end_hour (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_DAY_END_HOUR, func, data, NULL, NULL);
+	
+	return id;	
+}
 
 gint
 calendar_config_get_day_end_minute	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/day_end_minute", 0, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_DAY_END_MINUTE, NULL);
 }
 
 
 void
 calendar_config_set_day_end_minute	(gint	      day_end_min)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/day_end_minute", day_end_min);
+	gconf_client_set_int (config, CALENDAR_CONFIG_DAY_END_MINUTE, day_end_min, NULL);
 }
 
+guint 
+calendar_config_add_notification_day_end_minute (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_DAY_END_MINUTE, func, data, NULL, NULL);
+	
+	return id;	
+}
 
 /* The time divisions in the Day/Work-Week view in minutes (5/10/15/30/60). */
 gint
 calendar_config_get_time_divisions	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/time_divisions", 30, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_TIME_DIVISIONS, NULL);
 }
 
 
 void
 calendar_config_set_time_divisions	(gint	      divisions)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/time_divisions", divisions);
+	gconf_client_set_int (config, CALENDAR_CONFIG_TIME_DIVISIONS, divisions, NULL);
 }
 
+guint
+calendar_config_add_notification_time_divisions (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TIME_DIVISIONS, func, data, NULL, NULL);
+	
+	return id;
+}
 
 /* Whether we show week numbers in the Date Navigator. */
 gboolean
 calendar_config_get_dnav_show_week_no	(void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/date_navigator/show_week_numbers", FALSE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_DN_SHOW_WEEK_NUMBERS, NULL);
 }
 
 
 void
 calendar_config_set_dnav_show_week_no	(gboolean     show_week_no)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/date_navigator/show_week_numbers", show_week_no);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_DN_SHOW_WEEK_NUMBERS, show_week_no, NULL);
 }
 
-
-/* The view to show on start-up, 0 = Day, 1 = WorkWeek, 2 = Week, 3 = Month. */
-gint
-calendar_config_get_default_view	(void)
+guint 
+calendar_config_add_notification_dnav_show_week_no (GConfClientNotifyFunc func, gpointer data)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/default_view", 0, NULL);
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_DN_SHOW_WEEK_NUMBERS, func, data, NULL, NULL);
+	
+	return id;
 }
-
-
-void
-calendar_config_set_default_view	(gint	      view)
-{
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/default_view", view);
-}
-
 
 /* The positions of the panes in the normal and month views. */
 gint
 calendar_config_get_hpane_pos		(void)
 {
-	return e_config_listener_get_long_with_default (config,
-						       "/apps/evolution/calendar/display/hpane_position",
-						       400, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_HPANE_POS, NULL);
 }
 
 
 void
 calendar_config_set_hpane_pos		(gint	      hpane_pos)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/hpane_position", hpane_pos);
+	gconf_client_set_int (config, CALENDAR_CONFIG_HPANE_POS, hpane_pos, NULL);
 }
 
 
 gint
 calendar_config_get_vpane_pos		(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/vpane_position", 150, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_VPANE_POS, NULL);
 }
 
 
 void
 calendar_config_set_vpane_pos		(gint	      vpane_pos)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/vpane_position", vpane_pos);
+	gconf_client_set_int (config, CALENDAR_CONFIG_VPANE_POS, vpane_pos, NULL);
 }
 
 
 gint
 calendar_config_get_month_hpane_pos	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/month_hpane_position", 32000, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_MONTH_HPANE_POS, NULL);
 }
 
 
 void
 calendar_config_set_month_hpane_pos	(gint	      hpane_pos)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/month_hpane_position", hpane_pos);
+	gconf_client_set_int (config, CALENDAR_CONFIG_MONTH_HPANE_POS, hpane_pos, NULL);
 }
 
 
 gint
 calendar_config_get_month_vpane_pos	(void)
 {
-	return  e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/display/month_vpane_position", 150, NULL);
+	return  gconf_client_get_int (config, CALENDAR_CONFIG_MONTH_VPANE_POS, NULL);
 }
 
 
 void
 calendar_config_set_month_vpane_pos	(gint	      vpane_pos)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/month_vpane_position", vpane_pos);
+	gconf_client_set_int (config, CALENDAR_CONFIG_MONTH_VPANE_POS, vpane_pos, NULL);
+}
+
+/* The current list of task lists selected */
+GSList   *
+calendar_config_get_tasks_selected (void)
+{
+	return gconf_client_get_list (config, CALENDAR_CONFIG_TASKS_SELECTED_TASKS, GCONF_VALUE_STRING, NULL);
+}
+
+void
+calendar_config_set_tasks_selected (GSList *selected)
+{
+	gconf_client_set_list (config, CALENDAR_CONFIG_TASKS_SELECTED_TASKS, GCONF_VALUE_STRING, selected, NULL);
+}
+
+guint
+calendar_config_add_notification_tasks_selected (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TASKS_SELECTED_TASKS, func, data, NULL, NULL);
+	
+	return id;
+}
+
+/* The primary task list */
+char *
+calendar_config_get_primary_tasks (void)
+{
+	return gconf_client_get_string (config, CALENDAR_CONFIG_PRIMARY_TASKS, NULL);
+}
+
+void
+calendar_config_set_primary_tasks (const char *primary_uid)
+{
+	gconf_client_set_string (config, CALENDAR_CONFIG_PRIMARY_TASKS, primary_uid, NULL);
+}
+
+
+guint
+calendar_config_add_notification_primary_tasks (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_PRIMARY_TASKS, func, data, NULL, NULL);
+	
+	return id;
+}
+
+gint
+calendar_config_get_task_vpane_pos	(void)
+{
+	return  gconf_client_get_int (config, CALENDAR_CONFIG_TASK_VPANE_POS, NULL);
+}
+
+
+void
+calendar_config_set_task_vpane_pos	(gint	      vpane_pos)
+{
+	gconf_client_set_int (config, CALENDAR_CONFIG_TASK_VPANE_POS, vpane_pos, NULL);
 }
 
 
@@ -344,63 +531,97 @@ calendar_config_set_month_vpane_pos	(gint	      vpane_pos)
 gboolean
 calendar_config_get_compress_weekend	(void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/display/compress_weekend", TRUE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_COMPRESS_WEEKEND, NULL);
 }
 
 
 void
 calendar_config_set_compress_weekend	(gboolean     compress)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/display/compress_weekend", compress);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_COMPRESS_WEEKEND, compress, NULL);
 }
 
+guint
+calendar_config_add_notification_compress_weekend (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_COMPRESS_WEEKEND, func, data, NULL, NULL);
+	
+	return id;
+}
 
 /* Whether we show event end times. */
 gboolean
 calendar_config_get_show_event_end	(void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/display/show_event_end", TRUE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_SHOW_EVENT_END, NULL);
 }
 
 
 void
 calendar_config_set_show_event_end	(gboolean     show_end)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/display/show_event_end", show_end);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_SHOW_EVENT_END, show_end, NULL);
 }
 
+guint
+calendar_config_add_notification_show_event_end (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_SHOW_EVENT_END, func, data, NULL, NULL);
+	
+	return id;
+}
 
 /* The working days of the week, a bit-wise combination of flags. */
 CalWeekdays
 calendar_config_get_working_days	(void)
 {
-	return e_config_listener_get_long_with_default (config,
-                "/apps/evolution/calendar/display/working_days", CAL_MONDAY | CAL_TUESDAY |
-		CAL_WEDNESDAY | CAL_THURSDAY | CAL_FRIDAY, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_WORKING_DAYS, NULL);
 }
 
 
 void
 calendar_config_set_working_days	(CalWeekdays  days)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/display/working_days", days);
+	gconf_client_set_int (config, CALENDAR_CONFIG_WORKING_DAYS, days, NULL);
 }
 
+guint 
+calendar_config_add_notification_working_days (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_WORKING_DAYS , func, data, NULL, NULL);
+	
+	return id;	
+}
 
 /* Settings to hide completed tasks. */
 gboolean
 calendar_config_get_hide_completed_tasks	(void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/tasks/hide_completed", FALSE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED, NULL);
 }
 
 
 void
 calendar_config_set_hide_completed_tasks	(gboolean	hide)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/tasks/hide_completed", hide);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED, hide, NULL);
 }
 
+guint 
+calendar_config_add_notification_hide_completed_tasks (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED , func, data, NULL, NULL);
+	
+	return id;	
+}
 
 CalUnits
 calendar_config_get_hide_completed_tasks_units	(void)
@@ -408,11 +629,11 @@ calendar_config_get_hide_completed_tasks_units	(void)
 	char *units;
 	CalUnits cu;
 
-	units = e_config_listener_get_string_with_default (config, "/apps/evolution/calendar/tasks/hide_completed_units", "days", NULL);
+	units = gconf_client_get_string (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_UNITS, NULL);
 
-	if (!strcmp (units, "minutes"))
+	if (units && !strcmp (units, "minutes"))
 		cu = CAL_MINUTES;
-	else if (!strcmp (units, "hours"))
+	else if (units && !strcmp (units, "hours"))
 		cu = CAL_HOURS;
 	else
 		cu = CAL_DAYS;
@@ -439,23 +660,42 @@ calendar_config_set_hide_completed_tasks_units	(CalUnits	cu)
 		units = g_strdup ("days");
 	}
 
-	e_config_listener_set_string (config, "/apps/evolution/calendar/tasks/hide_completed_sunits", units);
+	gconf_client_set_string (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_UNITS, units, NULL);
 
 	g_free (units);
 }
 
+guint 
+calendar_config_add_notification_hide_completed_tasks_units (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_UNITS , func, data, NULL, NULL);
+	
+	return id;	
+}
 
 gint
 calendar_config_get_hide_completed_tasks_value	(void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/tasks/hide_completed_value", 1, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_VALUE, NULL);
 }
 
 
 void
 calendar_config_set_hide_completed_tasks_value	(gint		value)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/tasks/hide_completed_value", value);
+	gconf_client_set_int (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_VALUE, value, NULL);
+}
+
+guint 
+calendar_config_add_notification_hide_completed_tasks_value (GConfClientNotifyFunc func, gpointer data)
+{
+	guint id;
+	
+	id = gconf_client_notify_add (config, CALENDAR_CONFIG_TASKS_HIDE_COMPLETED_VALUE , func, data, NULL, NULL);
+	
+	return id;	
 }
 
 /**
@@ -469,7 +709,7 @@ calendar_config_set_hide_completed_tasks_value	(gint		value)
 gboolean
 calendar_config_get_confirm_delete (void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/prompts/confirm_delete", TRUE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_PROMPT_DELETE, NULL);
 }
 
 /**
@@ -482,60 +722,35 @@ calendar_config_get_confirm_delete (void)
 void
 calendar_config_set_confirm_delete (gboolean confirm)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/prompts/confirm_delete", confirm);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_PROMPT_DELETE, confirm, NULL);
 }
 
 /**
- * calendar_config_get_confirm_expunge:
+ * calendar_config_get_confirm_purge:
  *
  * Queries the configuration value for whether a confirmation dialog is
- * presented when expunging calendar/tasks items.
+ * presented when purging calendar/tasks items.
  *
- * Return value: Whether confirmation is required when expunging items.
+ * Return value: Whether confirmation is required when purging items.
  **/
 gboolean
-calendar_config_get_confirm_expunge (void)
+calendar_config_get_confirm_purge (void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/prompts/confirm_expunge", TRUE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_PROMPT_PURGE, NULL);
 }
 
 /**
- * calendar_config_set_confirm_expunge:
- * @confirm: Whether confirmation is required when expunging items.
+ * calendar_config_set_confirm_purge:
+ * @confirm: Whether confirmation is required when purging items.
  *
  * Sets the configuration value for whether a confirmation dialog is presented
- * when expunging calendar/tasks items.
+ * when purging calendar/tasks items.
  **/
 void
-calendar_config_set_confirm_expunge (gboolean confirm)
+calendar_config_set_confirm_purge (gboolean confirm)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/prompts/confirm_expunge", confirm);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_PROMPT_PURGE, confirm, NULL);
 }
-
-/* This sets all the common config settings for an ECalendar widget.
-   These are the week start day, and whether we show week numbers. */
-void
-calendar_config_configure_e_calendar	(ECalendar	*cal)
-{
-	gboolean dnav_show_week_no;
-	gint week_start_day;
-
-	g_return_if_fail (E_IS_CALENDAR (cal));
-
-	dnav_show_week_no = calendar_config_get_dnav_show_week_no ();
-
-	/* Note that this is 0 (Sun) to 6 (Sat). */
-	week_start_day = calendar_config_get_week_start_day ();
-
-	/* Convert it to 0 (Mon) to 6 (Sun), which is what we use. */
-	week_start_day = (week_start_day + 6) % 7;
-
-	gnome_canvas_item_set (GNOME_CANVAS_ITEM (cal->calitem),
-			       "show_week_numbers", dnav_show_week_no,
-			       "week_start_day", week_start_day,
-			       NULL);
-}
-
 
 /* This sets all the common config settings for an EDateEdit widget.
    These are the week start day, whether we show week numbers, and whether we
@@ -562,86 +777,6 @@ calendar_config_configure_e_date_edit	(EDateEdit	*dedit)
 	e_date_edit_set_show_week_numbers (dedit, dnav_show_week_no);
 	e_date_edit_set_use_24_hour_format (dedit, use_24_hour);
 }
-
-
-/* This sets all the common config settings for an ECellDateEdit ETable item.
-   These are the settings for the ECalendar popup and the time list (if we use
-   24 hour format, and the hours of the working day). */
-void
-calendar_config_configure_e_cell_date_edit	(ECellDateEdit	*ecde)
-{
-	gboolean use_24_hour;
-	gint start_hour, end_hour;
-	ECellPopup *ecp;
-	ECellDateEditText *ecd;
-	char *location;
-	icaltimezone *zone;
-
-	g_return_if_fail (E_IS_CELL_DATE_EDIT (ecde));
-
-	ecp = E_CELL_POPUP (ecde);
-	ecd = E_CELL_DATE_EDIT_TEXT (ecp->child);
-
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
-
-	calendar_config_configure_e_calendar (E_CALENDAR (ecde->calendar));
-
-	use_24_hour = calendar_config_get_24_hour_format ();
-
-	start_hour = calendar_config_get_day_start_hour ();
-	end_hour = calendar_config_get_day_end_hour ();
-
-	/* Round up the end hour. */
-	if (calendar_config_get_day_end_minute () != 0)
-		end_hour++;
-
-	e_cell_date_edit_freeze (ecde);
-	g_object_set (G_OBJECT (ecde),
-		      "use_24_hour_format", use_24_hour,
-#if 0
-		      /* We use the default 0 - 24 now. */
-		      "lower_hour", start_hour,
-		      "upper_hour", end_hour,
-#endif
-		      NULL);
-	e_cell_date_edit_thaw (ecde);
-
-	e_cell_date_edit_text_set_timezone (ecd, zone);
-	e_cell_date_edit_text_set_use_24_hour_format (ecd, use_24_hour);
-}
-
-
-/* This sets all the common config settings for an ECalendarTable widget.
-   These are the settings for the ECalendar popup and the time list (if we use
-   24 hour format, and the hours of the working day). */
-void
-calendar_config_configure_e_calendar_table	(ECalendarTable	*cal_table)
-{
-	CalendarModel *model;
-	gboolean use_24_hour;
-	char *location;
-	icaltimezone *zone;
-
-	g_return_if_fail (E_IS_CALENDAR_TABLE (cal_table));
-
-	use_24_hour = calendar_config_get_24_hour_format ();
-
-	model = e_calendar_table_get_model (cal_table);
-	calendar_model_set_use_24_hour_format (model, use_24_hour);
-
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
-	calendar_model_set_timezone (model, zone);
-
-	calendar_config_configure_e_cell_date_edit (cal_table->dates_cell);
-
-	/* Reload the event/tasks, since the 'Hide Completed Tasks' option
-	   may have been changed, so the query needs to be updated. */
-	calendar_model_refresh (model);
-}
-
-
 
 void
 calendar_config_check_timezone_set ()
@@ -680,12 +815,8 @@ on_timezone_set			(GnomeDialog	*dialog,
 	icaltimezone *zone;
 
 	zone = e_timezone_dialog_get_timezone (etd);
-	if (zone) {
+	if (zone)
 		calendar_config_set_timezone (icaltimezone_get_location (zone));
-
-		update_all_config_settings ();
-		e_tasks_update_all_config_settings ();
-	}
 
 	g_object_unref (etd);
 }
@@ -716,7 +847,7 @@ calendar_config_get_tasks_due_today_color (void)
 	if (color)
 		g_free (color);
 
-	color = e_config_listener_get_string_with_default (config, "/apps/evolution/calendar/tasks/colors/due_today", "blue", NULL);
+	color = gconf_client_get_string (config, CALENDAR_CONFIG_TASKS_DUE_TODAY_COLOR, NULL);
 	return color;
 }
 
@@ -731,7 +862,7 @@ calendar_config_set_tasks_due_today_color (const char *color)
 {
 	g_return_if_fail (color != NULL);
 
-	e_config_listener_set_string (config, "/apps/evolution/calendar/tasks/colors/due_today", color);
+	gconf_client_set_string (config, CALENDAR_CONFIG_TASKS_DUE_TODAY_COLOR, color, NULL);
 }
 
 /**
@@ -749,7 +880,7 @@ calendar_config_get_tasks_overdue_color (void)
 	if (color)
 		g_free (color);
 
-	color = e_config_listener_get_string_with_default (config, "/apps/evolution/calendar/tasks/colors/overdue", "red", NULL);
+	color = gconf_client_get_string (config, CALENDAR_CONFIG_TASKS_OVERDUE_COLOR, NULL);
 	return color;
 }
 
@@ -764,7 +895,7 @@ calendar_config_set_tasks_overdue_color (const char *color)
 {
 	g_return_if_fail (color != NULL);
 
-	e_config_listener_set_string (config, "/apps/evolution/calendar/tasks/colors/overdue", color);
+	gconf_client_set_string (config, CALENDAR_CONFIG_TASKS_OVERDUE_COLOR, color, NULL);
 }
 
 /**
@@ -780,7 +911,7 @@ calendar_config_set_tasks_overdue_color (const char *color)
 gboolean
 calendar_config_get_use_default_reminder (void)
 {
-	return e_config_listener_get_boolean_with_default (config, "/apps/evolution/calendar/other/use_default_reminder", FALSE, NULL);
+	return gconf_client_get_bool (config, CALENDAR_CONFIG_DEFAULT_REMINDER, NULL);
 }
 
 /**
@@ -793,7 +924,7 @@ calendar_config_get_use_default_reminder (void)
 void
 calendar_config_set_use_default_reminder (gboolean value)
 {
-	e_config_listener_set_boolean (config, "/apps/evolution/calendar/other/use_default_reminder", value);
+	gconf_client_set_bool (config, CALENDAR_CONFIG_DEFAULT_REMINDER, value, NULL);
 }
 
 /**
@@ -807,7 +938,7 @@ calendar_config_set_use_default_reminder (gboolean value)
 int
 calendar_config_get_default_reminder_interval (void)
 {
-	return e_config_listener_get_long_with_default (config, "/apps/evolution/calendar/other/default_reminder_interval", 15, NULL);
+	return gconf_client_get_int (config, CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL, NULL);
 }
 
 /**
@@ -820,7 +951,7 @@ calendar_config_get_default_reminder_interval (void)
 void
 calendar_config_set_default_reminder_interval (int interval)
 {
-	e_config_listener_set_long (config, "/apps/evolution/calendar/other/default_reminder_interval", interval);
+	gconf_client_set_int (config, CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL, interval, NULL);
 }
 
 /**
@@ -837,17 +968,14 @@ calendar_config_get_default_reminder_units (void)
 	char *units;
 	CalUnits cu;
 
-	units = e_config_listener_get_string_with_default (config, "/apps/evolution/calendar/other/default_reminder_units", "minutes", NULL);
+	units = gconf_client_get_string (config, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, NULL);
 
-	if (!strcmp (units, "days"))
+	if (units && !strcmp (units, "days"))
 		cu = CAL_DAYS;
-	else if (!strcmp (units, "hours"))
+	else if (units && !strcmp (units, "hours"))
 		cu = CAL_HOURS;
 	else
-		cu = CAL_MINUTES; /* changed from above because
-				   * if bonobo-config fucks up
-				   * we want minutes, not days!
-				   */
+		cu = CAL_MINUTES;
 	g_free (units);
 
 	return cu;
@@ -862,7 +990,7 @@ calendar_config_get_default_reminder_units (void)
 void
 calendar_config_set_default_reminder_units (CalUnits units)
 {
-	e_config_listener_set_string (config, "/apps/evolution/calendar/other/default_reminder_units", units_to_string(units));
+	gconf_client_set_string (config, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, units_to_string(units), NULL);
 }
 
 /**
@@ -888,15 +1016,14 @@ calendar_config_get_hide_completed_tasks_sexp (void)
 			   immediately, so we filter out all completed tasks.*/
 			sexp = g_strdup ("(not is-completed?)");
 		} else {
-			char *location, *isodate;
+			char *isodate;
 			icaltimezone *zone;
 			struct icaltimetype tt;
 			time_t t;
 
 			/* Get the current time, and subtract the appropriate
 			   number of days/hours/minutes. */
-			location = calendar_config_get_timezone ();
-			zone = icaltimezone_get_builtin_timezone (location);
+			zone = calendar_config_get_icaltimezone ();
 			tt = icaltime_current_time_with_zone (zone);
 
 			switch (units) {
@@ -925,21 +1052,16 @@ calendar_config_get_hide_completed_tasks_sexp (void)
 	return sexp;
 }
 
-char *
-calendar_config_default_calendar_folder (void)
-{
-	char *uri;
-	
-	uri = e_config_listener_get_string_with_default (config, "/apps/evolution/shell/default_folders/calendar_uri", NULL, NULL);
-	return uri;	
+GSList *
+calendar_config_get_free_busy (void)
+{	
+	return gconf_client_get_list (config, CALENDAR_CONFIG_PUBLISH, 
+				      GCONF_VALUE_STRING, NULL);
 }
 
-char *
-calendar_config_default_tasks_folder (void)
+void
+calendar_config_set_free_busy (GSList *url_list)
 {
-	char *uri;
-	
-	uri = e_config_listener_get_string_with_default (config, "/apps/evolution/shell/default_folders/tasks_uri", NULL, NULL);
-	return uri;	
+	gconf_client_set_list (config, CALENDAR_CONFIG_PUBLISH, 
+			       GCONF_VALUE_STRING, url_list, NULL);
 }
-

@@ -149,7 +149,7 @@ calendar_view_get_title (GalView *view)
 	cal_view = CALENDAR_VIEW (view);
 	priv = cal_view->priv;
 
-	return priv->title;
+	return (const char *) priv->title;
 }
 
 /* set_title method of the calendar view */

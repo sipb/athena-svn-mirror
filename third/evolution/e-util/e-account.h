@@ -28,17 +28,59 @@
 #define E_IS_ACCOUNT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_ACCOUNT))
 #define E_IS_ACCOUNT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_ACCOUNT))
 
-typedef struct {
+typedef enum _e_account_item_t {
+	E_ACCOUNT_ID_NAME,
+	E_ACCOUNT_ID_ADDRESS,
+	E_ACCOUNT_ID_REPLY_TO,
+	E_ACCOUNT_ID_ORGANIZATION,
+	E_ACCOUNT_ID_SIGNATURE,
+
+	E_ACCOUNT_SOURCE_URL,
+	E_ACCOUNT_SOURCE_KEEP_ON_SERVER,
+	E_ACCOUNT_SOURCE_AUTO_CHECK,
+	E_ACCOUNT_SOURCE_AUTO_CHECK_TIME,
+	E_ACCOUNT_SOURCE_SAVE_PASSWD,
+
+	E_ACCOUNT_TRANSPORT_URL,
+	E_ACCOUNT_TRANSPORT_SAVE_PASSWD,
+
+	E_ACCOUNT_DRAFTS_FOLDER_URI,
+	E_ACCOUNT_SENT_FOLDER_URI,
+
+	E_ACCOUNT_CC_ALWAYS,
+	E_ACCOUNT_CC_ADDRS,
+
+	E_ACCOUNT_BCC_ALWAYS,
+	E_ACCOUNT_BCC_ADDRS,
+
+	E_ACCOUNT_PGP_KEY,
+	E_ACCOUNT_PGP_ENCRYPT_TO_SELF,
+	E_ACCOUNT_PGP_ALWAYS_SIGN,
+	E_ACCOUNT_PGP_NO_IMIP_SIGN,
+	E_ACCOUNT_PGP_ALWAYS_TRUST,
+
+	E_ACCOUNT_SMIME_SIGN_KEY,
+	E_ACCOUNT_SMIME_ENCRYPT_KEY,
+	E_ACCOUNT_SMIME_SIGN_DEFAULT,
+	E_ACCOUNT_SMIME_ENCRYPT_TO_SELF,
+	E_ACCOUNT_SMIME_ENCRYPE_DEFAULT,
+
+	E_ACCOUNT_ITEM_LAST
+} e_account_item_t;
+
+typedef enum _e_account_access_t {
+	E_ACCOUNT_ACCESS_WRITE = 1<<0,
+} e_account_access_t;
+
+typedef struct _EAccountIdentity {
 	char *name;
 	char *address;
 	char *reply_to;
 	char *organization;
-	
-	int def_signature;
-	gboolean auto_signature;
+	char *sig_uid;
 } EAccountIdentity;
 
-typedef struct {
+typedef struct _EAccountService {
 	char *url;
 	gboolean keep_on_server;
 	gboolean auto_check;
@@ -46,8 +88,7 @@ typedef struct {
 	gboolean save_passwd;
 } EAccountService;
 
-
-typedef struct {
+typedef struct _EAccount {
 	GObject parent_object;
 
 	char *name;
@@ -72,9 +113,11 @@ typedef struct {
 	gboolean pgp_no_imip_sign;
 	gboolean pgp_always_trust;
 
-	char *smime_key;
+	char *smime_sign_key;
+	char *smime_encrypt_key;
+	gboolean smime_sign_default;
 	gboolean smime_encrypt_to_self;
-	gboolean smime_always_sign;
+	gboolean smime_encrypt_default;
 } EAccount;
 
 typedef struct {
@@ -88,18 +131,22 @@ GType     e_account_get_type (void);
 EAccount *e_account_new          (void);
 
 EAccount *e_account_new_from_xml (const char *xml);
-
-gboolean  e_account_set_from_xml (EAccount   *account,
-				  const char *xml);
-
-void      e_account_import       (EAccount   *dest,
-				  EAccount   *src);
-
+gboolean  e_account_set_from_xml (EAccount   *account, const char *xml);
+void      e_account_import       (EAccount   *dest, EAccount   *src);
 char     *e_account_to_xml       (EAccount   *account);
-
-
 char     *e_account_uid_from_xml (const char *xml);
 
-char     *e_account_gen_uid      (void);
+#if 0
+const char *e_account_get_string(EAccount *, e_account_item_t type);
+int e_account_get_int(EAccount *, e_account_item_t type);
+gboolean e_account_get_bool(EAccount *, e_account_item_t type);
+
+void e_account_set_string(EAccount *, e_account_item_t type, const char *);
+void e_account_set_int(EAccount *, e_account_item_t type, const char *);
+void e_account_set_bool(EAccount *, e_account_item_t type, const char *);
+#endif
+
+gboolean e_account_writable(EAccount *ea, e_account_item_t type);
+gboolean e_account_writable_option(EAccount *ea, const char *protocol, const char *option);
 
 #endif /* __E_ACCOUNT__ */

@@ -25,8 +25,10 @@
 #ifndef _E_TASKS_H_
 #define _E_TASKS_H_
 
+#include <bonobo/bonobo-ui-component.h>
 #include <gtk/gtktable.h>
-#include <cal-client/cal-client.h>
+#include <libedataserver/e-source.h>
+#include <libecal/e-cal.h>
 #include "e-calendar-table.h"
 
 #define E_TYPE_TASKS            (e_tasks_get_type ())
@@ -52,6 +54,8 @@ struct _ETasksClass {
 
 	/* Notification signals */
 	void (* selection_changed) (ETasks *tasks, int n_selected);
+        void (* source_added)      (ETasks *tasks, ESource *source);
+        void (* source_removed)    (ETasks *tasks, ESource *source);
 };
 
 
@@ -60,14 +64,15 @@ GtkWidget *e_tasks_construct       (ETasks *tasks);
 
 GtkWidget *e_tasks_new             (void);
 
-void  e_tasks_set_ui_component  (ETasks            *tasks,
-				 BonoboUIComponent *ui_component);
+void       e_tasks_set_ui_component  (ETasks            *tasks,
+				      BonoboUIComponent *ui_component);
 
-gboolean   e_tasks_open            (ETasks            *tasks,
-				    char              *file);
+gboolean   e_tasks_add_todo_source (ETasks *tasks, ESource *source);
+gboolean   e_tasks_remove_todo_source (ETasks *tasks, ESource *source);
+gboolean   e_tasks_set_default_source (ETasks *tasks, ESource *source);
+ECal      *e_tasks_get_default_client    (ETasks *tasks);
 
-CalClient *e_tasks_get_cal_client  (ETasks            *tasks);
-
+void       e_tasks_open_task         (ETasks		*tasks);
 void       e_tasks_new_task          (ETasks            *tasks);
 void       e_tasks_complete_selected (ETasks            *tasks);
 void       e_tasks_delete_selected   (ETasks            *tasks);
@@ -78,9 +83,5 @@ void e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic);
 void e_tasks_discard_view_menus (ETasks *tasks);
 
 ECalendarTable *e_tasks_get_calendar_table (ETasks *tasks);
-
-/* This updates all the preference settings for all the ETasks widgets in use.
- */
-void	   e_tasks_update_all_config_settings	(void);
 
 #endif /* _E_TASKS_H_ */

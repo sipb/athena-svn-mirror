@@ -5,9 +5,6 @@
     <cmd name="EmptyTrash"
      _tip="Permanently remove all deleted messages from all folders"/>
 
-    <cmd name="ForgetPasswords"
-     _tip="Forget remembered passwords so you will be prompted for them again"/>
-
     <cmd name="MailCompose"
      _tip="Open a window for composing a mail message"
      pixtype="pixbuf"/>
@@ -17,7 +14,7 @@
 
     <cmd name="MailStop"
      _tip="Cancel the current mail operation"
-     pixtype="stock" pixname="Stop"/>
+     pixtype="stock" pixname="gtk-stop"/>
 
     <cmd name="ToolsFilters"
      _tip="Create or edit rules for filtering new mail"/>
@@ -30,46 +27,37 @@
 
     <cmd name="ViewPreview"
      _tip="Show message preview window"
-     accel="grave"
+     accel="*Control*grave"
      type="toggle"/>
 
   </commands>
 
-  <keybindings>
-    <accel name="*Shift*grave" verb="ViewPreview"/>
-    <accel name="asciitilde" verb="ViewPreview"/>
-    <accel name="*Shift*asciitilde" verb="ViewPreview"/>
-
-  </keybindings>
-
   <menu>
 
-    <submenu name="View">
+    <submenu name="View" _label="_View">
       <menuitem name="ViewPreview" verb="" _label="_Preview Pane"/>
       <separator f="" name="emailglobal"/>
       <placeholder name="MailMessageView"/>
       <placeholder name="MailListView"/>
     </submenu>
 
-    <submenu name="EditPlaceholder">
+    <placeholder name="EditPlaceholder">
       <submenu name="Edit">
         <placeholder name="MailListEdit"/>
         <placeholder name="MailMessageEdit"/>
         <placeholder name="MailListEditFlags"/>
       </submenu>
-    </submenu>
+    </placeholder>
 
     <submenu name="Actions" _label="_Actions">
       <placeholder name="ComponentActionsPlaceholder">
         <menuitem name="ActionCompose" verb="MailCompose" _label="Compose _New Message"/>
-        <menuitem name="ActionPost" verb="MailPost" _label="Post New Message"/>
+        <menuitem name="ActionPost" verb="MailPost" _label="Post Ne_w Message"/>
 	<menuitem name="ActionStop" verb="MailStop" _label="Cancel"/>
 
 	<separator f="" name="emailglobal"/>
 
         <placeholder name="MailMessageActions"/>
-
-        <menuitem name="ForgetPasswords" verb="" _label="Forget _Passwords"/>
 
         <placeholder name="MailListActions"/>
 

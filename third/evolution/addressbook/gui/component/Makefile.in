@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -227,12 +250,11 @@ INCLUDES = \
 	-I$(top_srcdir)/shell					\
 	-I$(top_builddir)/shell					\
 	-I$(top_srcdir)/widgets/misc				\
+	-I$(top_srcdir)/addressbook/util			\
 	-I$(top_srcdir)/addressbook/gui/contact-editor		\
 	-I$(top_srcdir)/addressbook/gui/contact-list-editor	\
-	-I$(top_srcdir)/addressbook/gui/minicard		\
 	-I$(top_srcdir)/addressbook/gui/widgets			\
-	-I$(top_srcdir)/addressbook/backend			\
-	-I$(top_builddir)/addressbook/backend			\
+	-I$(top_builddir)/a11y/addressbook			\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		\
@@ -241,10 +263,6 @@ INCLUDES = \
 	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"		\
 	-DPREFIX=\""$(prefix)"\"				\
 	$(LDAP_CFLAGS)						\
-	-DG_DISABLE_DEPRECATED					\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DLIBGNOME_DISABLE_DEPRECATED				\
-	-DLIBGNOMEUI_DISABLE_DEPRECATED				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
@@ -255,32 +273,37 @@ libevolution_addressbook_la_SOURCES = \
 	addressbook-component.h		\
 	addressbook-config.c		\
 	addressbook-config.h		\
-	addressbook-storage.c		\
-	addressbook-storage.h		\
+	addressbook-migrate.c		\
+	addressbook-migrate.h		\
+	autocompletion-config.c		\
+	autocompletion-config.h		\
 	addressbook.c			\
 	addressbook.h			\
-	component-factory.c		\
-	e-cardlist-model.c		\
-	e-cardlist-model.h		\
-	e-address-widget.h		\
-	e-address-widget.c		\
-	e-address-popup.h		\
-	e-address-popup.c
+	addressbook-view.c		\
+	addressbook-view.h		\
+	component-factory.c
 
+
+
+#	$(top_builddir)/addressbook/printing/libecontactprint.la
+@ENABLE_SMIME_TRUE@SMIME_LIB = $(top_builddir)/smime/gui/libevolution-smime.la
 
 libevolution_addressbook_la_LIBADD = \
-	select-names/libeselectnames.la							\
-	$(top_builddir)/shell/libeshell.la						\
-	$(top_builddir)/addressbook/gui/widgets/libeminicard.la				\
+	$(SMIME_LIB)									\
 	$(top_builddir)/addressbook/printing/libecontactprint.la			\
+	$(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
+	$(top_builddir)/shell/libeshell.la						\
+	$(top_builddir)/addressbook/gui/merging/libeabbookmerging.la			\
+	$(top_builddir)/addressbook/gui/widgets/libeabwidgets.la			\
 	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la			\
 	$(top_builddir)/filter/libfilter.la						\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
-	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la	\
+	$(top_builddir)/addressbook/util/libeabutil.la					\
 	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la		\
+	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la	\
 	$(top_builddir)/widgets/misc/libemiscwidgets.la					\
-	$(top_builddir)/addressbook/gui/merging/libecardmerging.la			\
 	$(top_builddir)/widgets/menus/libmenus.la					\
+	$(top_builddir)/a11y/addressbook/libevolution-addressbook-a11y.la		\
+	$(top_builddir)/camel/libcamel.la						\
 	$(EVOLUTION_ADDRESSBOOK_LIBS) $(LDAP_LIBS)
 
 
@@ -289,20 +312,22 @@ libevolution_addressbook_la_LDFLAGS = -module -avoid-version
 
 # GConf schemas
 schemadir = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_evolution_addressbook.schemas
+schema_in_files = apps_evolution_addressbook.schemas.in.in
+schema_DATA = $(schema_in_files:.schemas.in.in=-$(BASE_VERSION).schemas)
 
 server_in_files = GNOME_Evolution_Addressbook.server.in.in
-server_DATA = $(server_in_files:.server.in.in=.server)
+server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
 
-glade_DATA = ldap-config.glade
+glade_DATA = \
+	ldap-config.glade
+
 
 BUILT_SOURCES = $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 	$(glade_DATA)		\
-	$(schema_DATA)		\
-	$(server_DATA)		\
+	$(schema_in_files)	\
 	$(server_in_files)
 
 
@@ -313,23 +338,41 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(component_LTLIBRARIES)
 
-libevolution_addressbook_la_DEPENDENCIES = \
-	select-names/libeselectnames.la \
-	$(top_builddir)/shell/libeshell.la \
-	$(top_builddir)/addressbook/gui/widgets/libeminicard.la \
-	$(top_builddir)/addressbook/printing/libecontactprint.la \
-	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la \
-	$(top_builddir)/filter/libfilter.la \
-	$(top_builddir)/addressbook/backend/ebook/libebook.la \
-	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la \
-	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la \
-	$(top_builddir)/widgets/misc/libemiscwidgets.la \
-	$(top_builddir)/addressbook/gui/merging/libecardmerging.la \
-	$(top_builddir)/widgets/menus/libmenus.la
+@ENABLE_SMIME_TRUE@libevolution_addressbook_la_DEPENDENCIES = \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/smime/gui/libevolution-smime.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/printing/libecontactprint.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/shell/libeshell.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/merging/libeabbookmerging.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/widgets/libeabwidgets.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/filter/libfilter.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/util/libeabutil.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/widgets/misc/libemiscwidgets.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/widgets/menus/libmenus.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/a11y/addressbook/libevolution-addressbook-a11y.la \
+@ENABLE_SMIME_TRUE@	$(top_builddir)/camel/libcamel.la
+@ENABLE_SMIME_FALSE@libevolution_addressbook_la_DEPENDENCIES = \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/printing/libecontactprint.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/shell/libeshell.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/merging/libeabbookmerging.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/widgets/libeabwidgets.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/filter/libfilter.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/util/libeabutil.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/widgets/misc/libemiscwidgets.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/widgets/menus/libmenus.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/a11y/addressbook/libevolution-addressbook-a11y.la \
+@ENABLE_SMIME_FALSE@	$(top_builddir)/camel/libcamel.la
 am_libevolution_addressbook_la_OBJECTS = addressbook-component.lo \
-	addressbook-config.lo addressbook-storage.lo addressbook.lo \
-	component-factory.lo e-cardlist-model.lo e-address-widget.lo \
-	e-address-popup.lo
+	addressbook-config.lo addressbook-migrate.lo \
+	autocompletion-config.lo addressbook.lo addressbook-view.lo \
+	component-factory.lo
 libevolution_addressbook_la_OBJECTS = \
 	$(am_libevolution_addressbook_la_OBJECTS)
 
@@ -342,12 +385,11 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/addressbook-component.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/addressbook-config.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/addressbook-storage.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/addressbook-migrate.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/addressbook-view.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/addressbook.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/component-factory.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-address-popup.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-address-widget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-cardlist-model.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/autocompletion-config.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/component-factory.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -417,12 +459,11 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook-component.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook-config.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook-storage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook-migrate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/addressbook.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/autocompletion-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/component-factory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-address-popup.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-address-widget.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cardlist-model.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -644,6 +685,9 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-recursive
 all-am: Makefile $(LTLIBRARIES) $(DATA) all-local
@@ -740,6 +784,10 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-am uninstall-info-recursive uninstall-recursive \
 	uninstall-schemaDATA uninstall-serverDATA
 
+%-$(BASE_VERSION).schemas.in: %.schemas.in.in
+	cp $< $@
+
+@INTLTOOL_SCHEMAS_RULE@
 
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
@@ -747,10 +795,11 @@ install-data-local:
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
 		done \
 	fi
-%.server.in: %.server.in.in
-	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
-
+@EVO_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 @ENABLE_PURIFY_TRUE@all-local: evolution-addressbook.pure
 

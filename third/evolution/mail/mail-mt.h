@@ -60,6 +60,11 @@ void mail_msg_wait(unsigned int msgid);
 void mail_msg_wait_all(void);
 int mail_msg_active(unsigned int msgid);
 
+/* To implement the stop button */
+void *mail_cancel_hook_add(GDestroyNotify func, void *data);
+void mail_cancel_hook_remove(void *handle);
+void mail_cancel_all(void);
+
 /* request a string/password */
 char *mail_get_password (CamelService *service, const char *prompt,
 			 gboolean secret, gboolean *cache);
@@ -95,6 +100,7 @@ typedef enum {
 	MAIL_CALL_p_pp,
 	MAIL_CALL_p_ppp,
 	MAIL_CALL_p_pppp,
+	MAIL_CALL_p_ppppp,
 	MAIL_CALL_p_ppippp,
 } mail_call_t;
 

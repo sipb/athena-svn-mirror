@@ -27,11 +27,11 @@
 #include <bonobo/bonobo-arg.h>
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-stream-client.h>
+#include <camel/camel-stream-mem.h>
 
 #include "listener.h"
 
 static BonoboObjectClass *listener_parent_class;
-static POA_GNOME_GtkHTML_Editor_Listener__vepv listener_vepv;
 
 inline static EditorListener *
 listener_from_servant (PortableServer_Servant servant)
@@ -195,9 +195,10 @@ impl_event (PortableServer_Servant _servant,
 			g_free (url);
 		}
 	} else if (!strcmp (name, "delete")) {
-		CORBA_char *orig;
-		
 		if (GNOME_GtkHTML_Editor_Engine_isParagraphEmpty (l->composer->editor_engine, ev)) {
+			CORBA_char *orig;
+			CORBA_char *signature;
+		
 			orig = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "orig", ev);
 			if (ev->_major == CORBA_NO_EXCEPTION) {
 				if (orig && *orig == '1') {
@@ -211,6 +212,12 @@ impl_event (PortableServer_Servant _servant,
 					GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "delete-back", ev);
 				}
 				CORBA_free (orig);
+			}
+			signature = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "signature", ev);
+			if (ev->_major == CORBA_NO_EXCEPTION) {
+				if (signature && *signature == '1')
+					GNOME_GtkHTML_Editor_Engine_setParagraphData (l->composer->editor_engine, "signature", "0", ev);
+				CORBA_free (signature);
 			}
 		}
 	} else if (!strcmp (name, "url_requested")) {
@@ -235,7 +242,7 @@ impl_event (PortableServer_Servant _servant,
 		ba = g_byte_array_new ();
 		cstream = camel_stream_mem_new_with_byte_array (ba);
 		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
-		camel_data_wrapper_write_to_stream (wrapper, cstream);
+		camel_data_wrapper_decode_to_stream (wrapper, cstream);
 
 		bonobo_stream_client_write (e->stream, ba->data, ba->len, ev);
 

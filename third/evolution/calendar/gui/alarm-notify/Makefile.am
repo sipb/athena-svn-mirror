@@ -20,14 +20,12 @@ privlibexec_PROGRAMS = evolution-alarm-notify
 INCLUDES = 						\
 	-DG_LOG_DOMAIN=\"evolution-alarm-notify\"	\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	-I$(top_srcdir)/libical/src/libical		\
-	-I$(top_builddir)/libical/src/libical		\
 	-I$(top_srcdir)/widgets				\
+	-I$(top_srcdir)/calendar			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"	\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DEVOLUTION_LIBEXECDIR=\""$(privlibexecdir)"\"	\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 glade_DATA =		\
@@ -46,25 +44,20 @@ evolution_alarm_notify_SOURCES =	\
 	config-data.c			\
 	config-data.h			\
 	notify-main.c			\
-	save.c				\
-	save.h
+	util.c				\
+	util.h
 
 evolution_alarm_notify_LDADD =						\
-	$(top_builddir)/calendar/cal-client/libcal-client.la		\
-	$(top_builddir)/calendar/cal-util/libcal-util.la		\
+	$(top_builddir)/e-util/libeutil.la				\
+	$(top_builddir)/calendar/common/libevolution-calendarprivate.la	\
 	$(EVOLUTION_CALENDAR_LIBS)
 
-server_in_files = \
-	GNOME_Evolution_Calendar_AlarmNotify.server.in.in
-
-server_DATA = $(server_in_files:.server.in.in=.server)
-%.server.in: %.server.in.in
-	sed -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" $< > $@
-
+server_in_files = GNOME_Evolution_Calendar_AlarmNotify.server.in.in
+server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
+@EVO_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST =		\
-	$(server_DATA)	\
+EXTRA_DIST =			\
 	$(server_in_files)	\
 	$(glade_DATA)
 

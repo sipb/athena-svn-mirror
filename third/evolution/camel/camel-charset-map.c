@@ -1,12 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; -*- */
-
 /* 
  * Authors:
  *   Michael Zucchi <notzed@ximian.com>
  *   Jeffrey Stedfast <fejj@ximian.com>
  *   Dan Winship <danw@ximian.com>
  *
- * Copyright 2000, 2003 Ximian, Inc. (www.ximian.com)
+ * Copyright 2000-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -203,15 +202,13 @@ int main (void)
 
 #include "camel-charset-map.h"
 #include "camel-charset-map-private.h"
-#include "string-utils.h"
+
+#include <gal/util/e-iconv.h>
 
 #include <glib.h>
-#include <glib/gunicode.h>
 #include <locale.h>
 #include <ctype.h>
-#ifdef ENABLE_THREADS
 #include <pthread.h>
-#endif
 #ifdef HAVE_CODESET
 #include <langinfo.h>
 #endif
@@ -219,7 +216,7 @@ int main (void)
 void
 camel_charset_init (CamelCharset *c)
 {
-	c->mask = ~0;
+	c->mask = (unsigned int) ~0;
 	c->level = 0;
 }
 
@@ -266,12 +263,19 @@ camel_charset_step (CamelCharset *c, const char *in, int len)
 static const char *
 camel_charset_best_mask(unsigned int mask)
 {
+	const char *locale_lang, *lang;
 	int i;
-
-	for (i=0;i<sizeof(camel_charinfo)/sizeof(camel_charinfo[0]);i++) {
-		if (camel_charinfo[i].bit & mask)
-			return camel_charinfo[i].name;
+	
+	locale_lang = e_iconv_locale_language ();
+	for (i = 0; i < G_N_ELEMENTS (camel_charinfo); i++) {
+		if (camel_charinfo[i].bit & mask) {
+			lang = e_iconv_charset_language (camel_charinfo[i].name);
+			
+			if (!lang || (locale_lang && !strncmp (locale_lang, lang, 2)))
+				return camel_charinfo[i].name;
+		}
 	}
+	
 	return "UTF-8";
 }
 

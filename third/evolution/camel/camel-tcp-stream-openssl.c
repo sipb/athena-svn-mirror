@@ -32,20 +32,17 @@
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
 #include <openssl/err.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <string.h>
 #include "camel-session.h"
 #include "camel-service.h"
 #include "camel-operation.h"
 #include "camel-certdb.h"
-#ifdef ENABLE_THREADS
-#include <pthread.h>
-#endif
 
 #define d(x)
 
@@ -735,6 +732,7 @@ open_ssl_connection (CamelService *service, int sockfd, CamelTcpStreamSSL *opens
 	ssl_ctx = SSL_CTX_new (SSLv23_client_method ());
 	g_return_val_if_fail (ssl_ctx != NULL, NULL);
 	
+	SSL_CTX_set_default_verify_paths (ssl_ctx);
 	SSL_CTX_set_verify (ssl_ctx, SSL_VERIFY_PEER, &ssl_verify);
 	ssl = SSL_new (ssl_ctx);
 	SSL_set_fd (ssl, sockfd);

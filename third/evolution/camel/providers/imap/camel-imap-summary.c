@@ -35,7 +35,7 @@
 #include "camel-imap-summary.h"
 #include "camel-file-utils.h"
 
-#define CAMEL_IMAP_SUMMARY_VERSION (0x300)
+#define CAMEL_IMAP_SUMMARY_VERSION (1)
 
 static int summary_header_load (CamelFolderSummary *, FILE *);
 static int summary_header_save (CamelFolderSummary *, FILE *);
@@ -94,9 +94,6 @@ camel_imap_summary_init (CamelImapSummary *obj)
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof(CamelImapMessageInfo);
 	s->content_info_size = sizeof(CamelImapMessageContentInfo);
-
-	/* and a unique file version */
-	s->version += CAMEL_IMAP_SUMMARY_VERSION;
 }
 
 /**
@@ -125,7 +122,6 @@ camel_imap_summary_new (const char *filename)
 	return summary;
 }
 
-
 static int
 summary_header_load (CamelFolderSummary *s, FILE *in)
 {
@@ -134,7 +130,22 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 	if (camel_imap_summary_parent->summary_header_load (s, in) == -1)
 		return -1;
 
-	return camel_file_util_decode_uint32 (in, &ims->validity);
+	/* Legacy version */
+	if (s->version == 0x30c)
+		return camel_file_util_decode_uint32(in, &ims->validity);
+
+	/* Version 1 */
+	if (camel_file_util_decode_fixed_int32(in, &ims->version) == -1
+	    || camel_file_util_decode_fixed_int32(in, &ims->validity) == -1)
+		return -1;
+
+	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
+		g_warning("Unkown summary version\n");
+		errno = EINVAL;
+		return -1;
+	}
+
+	return 0;
 }
 
 static int
@@ -145,9 +156,10 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 	if (camel_imap_summary_parent->summary_header_save (s, out) == -1)
 		return -1;
 
-	return camel_file_util_encode_uint32 (out, ims->validity);
-}
+	camel_file_util_encode_fixed_int32(out, CAMEL_IMAP_SUMMARY_VERSION);
 
+	return camel_file_util_encode_fixed_int32(out, ims->validity);
+}
 
 static CamelMessageInfo *
 message_info_load (CamelFolderSummary *s, FILE *in)
@@ -225,6 +237,8 @@ camel_imap_summary_add_offline (CamelFolderSummary *summary, const char *uid,
 		camel_tag_set (&mi->user_tags, tag->name, tag->value);
 		tag = tag->next;
 	}
+
+	mi->size = info->size;
 
 	/* Set uid and add to summary */
 	camel_message_info_set_uid (mi, g_strdup (uid));

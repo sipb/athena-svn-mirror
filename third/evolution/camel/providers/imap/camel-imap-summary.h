@@ -37,7 +37,7 @@
 				 CAMEL_MESSAGE_FLAGGED | \
 				 CAMEL_MESSAGE_SEEN)
 
-#define CAMEL_IMAP_MESSAGE_RECENT (1 << 8)
+#define CAMEL_IMAP_MESSAGE_RECENT (1 << 17)
 
 typedef struct _CamelImapSummaryClass CamelImapSummaryClass;
 
@@ -55,6 +55,7 @@ typedef struct _CamelImapMessageInfo {
 struct _CamelImapSummary {
 	CamelFolderSummary parent;
 
+	guint32 version;
 	guint32 validity;
 };
 

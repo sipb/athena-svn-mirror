@@ -63,19 +63,21 @@ enum {
 	CAMEL_IMAP_STORE_ARG_NAMESPACE,
 	CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE,
 	CAMEL_IMAP_STORE_ARG_CHECK_ALL,
-	CAMEL_IMAP_STORE_ARG_FILTER_INBOX
+	CAMEL_IMAP_STORE_ARG_FILTER_INBOX,
+	CAMEL_IMAP_STORE_ARG_FILTER_JUNK,
+	CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX,
 };
 
 #define CAMEL_IMAP_STORE_NAMESPACE           (CAMEL_IMAP_STORE_ARG_NAMESPACE | CAMEL_ARG_STR)
 #define CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE  (CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE | CAMEL_ARG_INT)
 #define CAMEL_IMAP_STORE_CHECK_ALL           (CAMEL_IMAP_STORE_ARG_CHECK_ALL | CAMEL_ARG_INT)
 #define CAMEL_IMAP_STORE_FILTER_INBOX        (CAMEL_IMAP_STORE_ARG_FILTER_INBOX | CAMEL_ARG_INT)
+#define CAMEL_IMAP_STORE_FILTER_JUNK         (CAMEL_IMAP_STORE_ARG_FILTER_JUNK | CAMEL_ARG_BOO)
+#define CAMEL_IMAP_STORE_FILTER_JUNK_INBOX   (CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX | CAMEL_ARG_BOO)
 
 /* CamelFolderInfo flags */
 #define CAMEL_IMAP_FOLDER_MARKED	     (1<<16)
 #define CAMEL_IMAP_FOLDER_UNMARKED	     (1<<17)
-#define CAMEL_IMAP_FOLDER_NOCHILDREN	     (1<<18)
-
 
 typedef enum {
 	IMAP_LEVEL_UNKNOWN,
@@ -96,6 +98,8 @@ typedef enum {
 #define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
 #define IMAP_PARAM_CHECK_ALL			(1 << 1)
 #define IMAP_PARAM_FILTER_INBOX			(1 << 2)
+#define IMAP_PARAM_FILTER_JUNK			(1 << 3)
+#define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 4)
 
 struct _CamelImapStore {
 	CamelDiscoStore parent_object;	
@@ -106,7 +110,8 @@ struct _CamelImapStore {
 	struct _CamelImapStoreSummary *summary;
 	
 	/* Information about the command channel / connection status */
-	gboolean connected;
+	guint connected:1;
+	guint preauthed:1;
 	char tag_prefix;
 	guint32 command;
 	CamelFolder *current_folder;
@@ -114,15 +119,12 @@ struct _CamelImapStore {
 	/* Information about the server */
 	CamelImapServerLevel server_level;
 	guint32 capabilities, parameters;
+	guint braindamaged:1;
 	/* NB: namespace should be handled by summary->namespace */
 	char *namespace, dir_sep, *base_url, *storage_path;
 	GHashTable *authtypes;
 	
-	gboolean renaming;
-	
-#ifdef ENABLE_THREADS
-	EThread *async_thread;
-#endif
+	guint renaming:1;
 };
 
 

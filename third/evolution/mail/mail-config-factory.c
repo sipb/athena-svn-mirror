@@ -27,81 +27,34 @@
 
 #include <string.h>
 
-#include "mail-accounts.h"
-#include "mail-preferences.h"
-#include "mail-composer-prefs.h"
+#include "em-account-prefs.h"
+#include "em-composer-prefs.h"
+#include "em-mailer-prefs.h"
+
 #include "mail-config-factory.h"
 
-#define CONFIG_CONTROL_FACTORY_ID "OAFIID:GNOME_Evolution_Mail_ConfigControlFactory"
-
-static BonoboGenericFactory *factory = NULL;
-
-
-typedef void (*ApplyFunc) (GtkWidget *prefs);
-
-struct _config_data {
-	GtkWidget *prefs;
-	ApplyFunc apply;
-};
-
-static void
-config_control_destroy_cb (struct _config_data *data, GObject *deadbeef)
-{
-	g_object_unref (data->prefs);
-	g_free (data);
-}
-
-static void
-config_control_apply_cb (EvolutionConfigControl *config_control, void *user_data)
-{
-	struct _config_data *data = user_data;
-	
-	data->apply (data->prefs);
-}
+#define CONFIG_CONTROL_FACTORY_ID "OAFIID:GNOME_Evolution_Mail_ConfigControlFactory:" BASE_VERSION
 
 BonoboObject *
 mail_config_control_factory_cb (BonoboGenericFactory *factory, const char *component_id, void *user_data)
 {
 	GNOME_Evolution_Shell shell = (GNOME_Evolution_Shell) user_data;
 	EvolutionConfigControl *control;
-	struct _config_data *data;
 	GtkWidget *prefs = NULL;
 	
-	data = g_new (struct _config_data, 1);
-	
-	/* TODO: should use ascii_str*cmp? */
-	if (!strcmp (component_id, MAIL_ACCOUNTS_CONTROL_ID)) {
-		prefs = mail_accounts_tab_new (shell);
-		data->apply = (ApplyFunc) mail_accounts_tab_apply;
-	} else if (!strcmp (component_id, MAIL_PREFERENCES_CONTROL_ID)) {
-		prefs = mail_preferences_new ();
-		data->apply = (ApplyFunc) mail_preferences_apply;
-	} else if (!strcmp (component_id, MAIL_COMPOSER_PREFS_CONTROL_ID)) {
-		prefs = mail_composer_prefs_new ();
-		data->apply = (ApplyFunc) mail_composer_prefs_apply;
+	if (!strcmp (component_id, EM_ACCOUNT_PREFS_CONTROL_ID)) {
+		prefs = em_account_prefs_new (shell);
+	} else if (!strcmp (component_id, EM_MAILER_PREFS_CONTROL_ID)) {
+		prefs = em_mailer_prefs_new ();
+	} else if (!strcmp (component_id, EM_COMPOSER_PREFS_CONTROL_ID)) {
+		prefs = em_composer_prefs_new ();
 	} else {
 		g_assert_not_reached ();
 	}
-
-	data->prefs = prefs;
-	g_object_ref (prefs);
 	
 	gtk_widget_show_all (prefs);
 	
 	control = evolution_config_control_new (prefs);
-	
-	if (!strcmp (component_id, MAIL_ACCOUNTS_CONTROL_ID)) {
-		/* nothing to do here... */
-	} else if (!strcmp (component_id, MAIL_PREFERENCES_CONTROL_ID)) {
-		MAIL_PREFERENCES (prefs)->control = control;
-	} else if (!strcmp (component_id, MAIL_COMPOSER_PREFS_CONTROL_ID)) {
-		MAIL_COMPOSER_PREFS (prefs)->control = control;
-	} else {
-		g_assert_not_reached ();
-	}
-	
-	g_signal_connect (control, "apply", G_CALLBACK (config_control_apply_cb), data);
-	g_object_weak_ref ((GObject *) control, (GWeakNotify) config_control_destroy_cb, data);
 	
 	return BONOBO_OBJECT (control);
 }

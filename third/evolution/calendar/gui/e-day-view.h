@@ -26,15 +26,14 @@
 
 #include <time.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtktooltips.h>
 #include <libgnomecanvas/gnome-canvas.h>
 #include <gal/widgets/e-popup-menu.h>
 
+#include "e-calendar-view.h"
 #include "gnome-cal.h"
-#include "evolution-activity-client.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /*
  * EDayView - displays the Day & Work-Week views of the calendar.
@@ -165,25 +164,9 @@ typedef enum
 	E_DAY_VIEW_DRAG_END
 } EDayViewDragPosition;
 
-/* Specifies the position of the mouse. */
-typedef enum
-{
-	E_DAY_VIEW_POS_OUTSIDE,
-	E_DAY_VIEW_POS_NONE,
-	E_DAY_VIEW_POS_EVENT,
-	E_DAY_VIEW_POS_LEFT_EDGE,
-	E_DAY_VIEW_POS_RIGHT_EDGE,
-	E_DAY_VIEW_POS_TOP_EDGE,
-	E_DAY_VIEW_POS_BOTTOM_EDGE
-} EDayViewPosition;
-
 typedef struct _EDayViewEvent EDayViewEvent;
 struct _EDayViewEvent {
-	CalComponent *comp;
-
-	/* These are the times of this specific occurrence of the event. */
-	time_t start;
-	time_t end;
+	E_CALENDAR_VIEW_EVENT_FIELDS
 
 	/* For events in the main canvas, this contains the start column.
 	   For long events in the top canvas, this is its row. */
@@ -195,20 +178,6 @@ struct _EDayViewEvent {
 	   i.e. it couldn't fit into the display. Currently long events are
 	   always shown as we just increase the height of the top canvas. */
 	guint8 num_columns;
-
-	/* TRUE if the event is at a different UTC offset than our current
-	   timezone, i.e. it is in a different timezone. */
-	guint different_timezone : 1;
-
-	/* These are minute offsets from the first time shown in the view.
-	   They range from 0 to 24 * 60. Currently the main canvas always
-	   starts at 12am  and the code to handle starting at other times
-	   isn't finished. */
-	guint16 start_minute;
-	guint16 end_minute;
-
-	/* This is the EText item containing the event summary. */
-	GnomeCanvasItem *canvas_item;
 };
 
 
@@ -222,7 +191,7 @@ typedef struct _EDayViewClass  EDayViewClass;
 
 struct _EDayView
 {
-	GtkTable table;
+	ECalendarView cal_view;
 
 	/* The top canvas where the dates and long appointments are shown. */
 	GtkWidget *top_canvas;
@@ -238,15 +207,8 @@ struct _EDayView
 
 	GtkWidget *vscrollbar;
 
-	/* The calendar we are associated with. */
-	GnomeCalendar *calendar;
-
-	/* Calendar client object we are monitoring */
-	CalClient *client;
-
 	/* S-expression for query and the query object */
-	char *sexp;
-	CalQuery *query;
+	ECalView *query;
 
 	/* The start and end of the days shown. */
 	time_t lower;
@@ -262,9 +224,6 @@ struct _EDayView
 
 	/* The start of each day & an extra element to hold the last time. */
 	time_t day_starts[E_DAY_VIEW_MAX_DAYS + 1];
-
-	/* The timezone. */
-	icaltimezone *zone;
 
 	/* An array of EDayViewEvent elements for the top view and each day. */
 	GArray *long_events;
@@ -320,9 +279,6 @@ struct _EDayView
 	gint work_day_end_hour;
 	gint work_day_end_minute;
 
-	/* Whether we use 12-hour of 24-hour format. */
-	gboolean use_24_hour_format;
-
 	/* Whether we use show event end times in the main canvas. */
 	gboolean show_event_end_times;
 
@@ -368,14 +324,10 @@ struct _EDayView
 	GdkGC *main_gc;
 
 	/* The icons. */
-	GdkPixmap *reminder_icon;
-	GdkBitmap *reminder_mask;
-	GdkPixmap *recurrence_icon;
-	GdkBitmap *recurrence_mask;
-	GdkPixmap *timezone_icon;
-	GdkBitmap *timezone_mask;
-	GdkPixmap *meeting_icon;
-	GdkBitmap *meeting_mask;
+	GdkPixbuf *reminder_icon;
+	GdkPixbuf *recurrence_icon;
+	GdkPixbuf *timezone_icon;
+	GdkPixbuf *meeting_icon;
 
 	/* Colors for drawing. */
 	GdkColor colors[E_DAY_VIEW_COLOR_LAST];
@@ -412,7 +364,6 @@ struct _EDayView
 	/* The event for which a popup menu is being displayed, as above. */
 	gint popup_event_day;
 	gint popup_event_num;
-	EPopupMenu *view_menu;
 	
 	/* The currently selected region. If selection_start_day is -1 there is
 	   no current selection. If start_row or end_row is -1 then the
@@ -450,9 +401,12 @@ struct _EDayView
 	/* These are used when resizing events. */
 	gint resize_event_day;
 	gint resize_event_num;
-	EDayViewPosition resize_drag_pos;
+	ECalendarViewPosition resize_drag_pos;
 	gint resize_start_row;
 	gint resize_end_row;
+
+	/* This is used to remember the last edited event. */
+	gchar *last_edited_comp_string;
 
 	/* This is the event the mouse button was pressed on. If the button
 	   is released we start editing it, but if the mouse is dragged we set
@@ -491,59 +445,16 @@ struct _EDayView
 	gchar *pm_string;
 	gint am_string_width;
 	gint pm_string_width;
-
-	/* the invisible widget to manage the clipboard selections */
-	GtkWidget *invisible;
-	gchar *clipboard_selection;
-
-	/* The default category for new events */
-	char *default_category;
-
-	/* The activity client used to show messages on the status bar. */
-	EvolutionActivityClient *activity;
 };
 
 struct _EDayViewClass
 {
-	GtkTableClass parent_class;
-
-	/* Notification signals */
-	void (* selection_changed) (EDayView *day_view);
+	ECalendarViewClass parent_class;
 };
 
 
 GtkType	   e_day_view_get_type			(void);
 GtkWidget* e_day_view_new			(void);
-
-void       e_day_view_set_calendar		(EDayView	*day_view,
-						 GnomeCalendar	*calendar);
-
-void       e_day_view_set_cal_client		(EDayView	*day_view,
-						 CalClient	*client);
-
-void       e_day_view_set_query			(EDayView	*day_view,
-						 const char	*sexp);
-
-void       e_day_view_set_default_category	(EDayView	*day_view,
-						 const char	*category);
-
-/* This sets the selected time range. The EDayView will show the day or week
-   corresponding to the start time. If the start_time & end_time are not equal
-   and are both visible in the view, then the selection is set to those times,
-   otherwise it is set to 1 hour from the start of the working day. */
-void       e_day_view_set_selected_time_range	(EDayView	*day_view,
-						 time_t		 start_time,
-						 time_t		 end_time);
-
-/* Returns the selected time range. */
-void       e_day_view_get_selected_time_range	(EDayView	*day_view,
-						 time_t		*start_time,
-						 time_t		*end_time);
-
-/* Gets the visible time range. Returns FALSE if no time range has been set. */
-gboolean   e_day_view_get_visible_time_range	(EDayView	*day_view,
-						 time_t		*start_time,
-						 time_t		*end_time);
 
 /* Whether we are displaying a work-week, in which case the display always
    starts on the first day of the working week. */
@@ -582,11 +493,6 @@ void	   e_day_view_set_working_day		(EDayView	*day_view,
 						 gint		 end_hour,
 						 gint		 end_minute);
 
-/* Whether we use 12-hour or 24-hour format. */
-gboolean   e_day_view_get_24_hour_format	(EDayView	*day_view);
-void	   e_day_view_set_24_hour_format	(EDayView	*day_view,
-						 gboolean	 use_24_hour);
-
 /* Whether we display event end times in the main canvas. */
 gboolean   e_day_view_get_show_event_end_times	(EDayView	*day_view);
 void	   e_day_view_set_show_event_end_times	(EDayView	*day_view,
@@ -597,25 +503,10 @@ gint	   e_day_view_get_week_start_day	(EDayView	*day_view);
 void	   e_day_view_set_week_start_day	(EDayView	*day_view,
 						 gint		 week_start_day);
 
-/* The current timezone. */
-icaltimezone* e_day_view_get_timezone		(EDayView	*day_view);
-void	      e_day_view_set_timezone		(EDayView	*day_view,
-						 icaltimezone	*zone);
-
-
-/* Clipboard-related functions */
-void       e_day_view_cut_clipboard             (EDayView       *day_view);
-void       e_day_view_copy_clipboard            (EDayView       *day_view);
-void       e_day_view_paste_clipboard           (EDayView       *day_view);
-
-void       e_day_view_delete_event		(EDayView       *day_view);
 void       e_day_view_delete_occurrence         (EDayView       *day_view);
-
 
 /* Returns the number of selected events (0 or 1 at present). */
 gint	   e_day_view_get_num_events_selected	(EDayView	*day_view);
-
-CalComponent *e_day_view_get_selected_event     (EDayView       *day_view);
 
 /*
  * Internal functions called by the associated canvas items.
@@ -672,11 +563,16 @@ gint	   e_day_view_get_time_string_width	(EDayView	*day_view);
 gint	   e_day_view_event_sort_func		(const void	*arg1,
 						 const void	*arg2);
 
-void       e_day_view_set_status_message        (EDayView       *day_view,
-						 const char     *message);
+gboolean e_day_view_find_event_from_item (EDayView *day_view,
+ 					  GnomeCanvasItem *item,
+ 					  gint *day_return,
+ 					  gint *event_num_return);
+void e_day_view_update_calendar_selection_time (EDayView *day_view);
+void e_day_view_ensure_rows_visible (EDayView *day_view,
+				     gint start_row,
+				     gint end_row);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+
+G_END_DECLS
 
 #endif /* _E_DAY_VIEW_H_ */

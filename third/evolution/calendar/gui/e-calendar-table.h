@@ -27,11 +27,10 @@
 #include <gtk/gtktable.h>
 #include <gal/e-table/e-table-scrolled.h>
 #include <widgets/misc/e-cell-date-edit.h>
-#include "calendar-model.h"
+#include "e-activity-handler.h"
+#include "e-cal-model.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /*
  * ECalendarTable - displays the iCalendar objects in a table (an ETable).
@@ -48,39 +47,43 @@ typedef struct _ECalendarTable       ECalendarTable;
 typedef struct _ECalendarTableClass  ECalendarTableClass;
 
 
-struct _ECalendarTable
-{
+struct _ECalendarTable {
 	GtkTable table;
 
 	/* The model that we use */
-	CalendarModel *model;
+	ECalModel *model;
 
 	GtkWidget *etable;
 
 	/* The ECell used to view & edit dates. */
 	ECellDateEdit *dates_cell;
 
-	/* The invisible widget used for cut/copy/paste */
-	GtkWidget *invisible;
-	gchar *clipboard_selection;
+	/* Fields used for cut/copy/paste */
 	icalcomponent *tmp_vcal;
+
+	/* Activity ID for the EActivityHandler (i.e. the status bar).  */
+	EActivityHandler *activity_handler;
+	guint activity_id;
 };
 
-struct _ECalendarTableClass
-{
+struct _ECalendarTableClass {
 	GtkTableClass parent_class;
+
+	/* Notification signals */
+	void (* user_created) (ECalendarTable *cal_table);
 };
 
 
-GtkType	   e_calendar_table_get_type		(void);
-GtkWidget* e_calendar_table_new			(void);
+GtkType	   e_calendar_table_get_type (void);
+GtkWidget* e_calendar_table_new	(void);
 
-CalendarModel *e_calendar_table_get_model	(ECalendarTable *cal_table);
+ECalModel *e_calendar_table_get_model (ECalendarTable *cal_table);
 
-ETable *e_calendar_table_get_table (ECalendarTable *cal_table);
+ETable    *e_calendar_table_get_table (ECalendarTable *cal_table);
 
-void e_calendar_table_complete_selected (ECalendarTable *cal_table);
-void e_calendar_table_delete_selected (ECalendarTable *cal_table);
+void       e_calendar_table_open_selected (ECalendarTable *cal_table);
+void       e_calendar_table_complete_selected (ECalendarTable *cal_table);
+void       e_calendar_table_delete_selected (ECalendarTable *cal_table);
 
 /* Clipboard related functions */
 void       e_calendar_table_cut_clipboard       (ECalendarTable *cal_table);
@@ -94,9 +97,11 @@ void	   e_calendar_table_load_state		(ECalendarTable *cal_table,
 void	   e_calendar_table_save_state		(ECalendarTable *cal_table,
 						 gchar		*filename);
 
+void       e_calendar_table_set_activity_handler (ECalendarTable *cal_table,
+						  EActivityHandler *activity_handler);
+void       e_calendar_table_set_status_message (ECalendarTable *cal_table,
+						const gchar *message);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _E_CALENDAR_TABLE_H_ */

@@ -45,6 +45,7 @@ enum camel_arg_t {
 	CAMEL_ARG_DBL = 0x20000000, /* double */
 	CAMEL_ARG_STR = 0x30000000, /* c string */
 	CAMEL_ARG_PTR = 0x40000000, /* ptr */
+	CAMEL_ARG_BOO = 0x50000000, /* bool */
 };
 
 typedef struct _CamelArg CamelArg;
@@ -101,6 +102,15 @@ int camel_arggetv_build(CamelArgGetV *tv);
 
 /* set an arg ignored */
 #define camel_argv_ignore(tv, i) ((tv)->argv[i].tag = ((tv)->argv[i].tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE)
+
+/* 'self-describing' property list */
+typedef struct _CamelProperty CamelProperty;
+
+struct _CamelProperty {
+	guint32 tag;
+	char *name;
+	char *description;
+};
 
 #ifdef __cplusplus
 }

@@ -54,7 +54,7 @@ static void pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex
 static gint pop3_get_message_count (CamelFolder *folder);
 static GPtrArray *pop3_get_uids (CamelFolder *folder);
 static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex);
-static void pop3_set_message_flags (CamelFolder *folder, const char *uid, guint32 flags, guint32 set);
+static gboolean pop3_set_message_flags (CamelFolder *folder, const char *uid, guint32 flags, guint32 set);
 
 static void
 camel_pop3_folder_class_init (CamelPOP3FolderClass *camel_pop3_folder_class)
@@ -145,7 +145,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	CamelPOP3FolderInfo *fi = data;
 	MD5Context md5;
 	unsigned char digest[16];
-	struct _header_raw *h;
+	struct _camel_header_raw *h;
 	CamelMimeParser *mp;
 
 	/* TODO; somehow work out the limit and use that for proper progress reporting
@@ -156,9 +156,9 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	mp = camel_mime_parser_new();
 	camel_mime_parser_init_with_stream(mp, (CamelStream *)stream);
 	switch (camel_mime_parser_step(mp, NULL, NULL)) {
-	case HSCAN_HEADER:
-	case HSCAN_MESSAGE:
-	case HSCAN_MULTIPART:
+	case CAMEL_MIME_PARSER_STATE_HEADER:
+	case CAMEL_MIME_PARSER_STATE_MESSAGE:
+	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		h = camel_mime_parser_headers_raw(mp);
 		while (h) {
 			if (strcasecmp(h->name, "status") != 0
@@ -173,7 +173,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	}
 	camel_object_unref(mp);
 	md5_final(&md5, digest);
-	fi->uid = base64_encode_simple(digest, 16);
+	fi->uid = camel_base64_encode_simple(digest, 16);
 
 	d(printf("building uid for id '%d' = '%s'\n", fi->id, fi->uid));
 }
@@ -365,7 +365,8 @@ cmd_tocache(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 		w += n;
 		if (w > fi->size)
 			w = fi->size;
-		camel_operation_progress(NULL, (w * 100) / fi->size);
+		if (fi->size != 0)
+			camel_operation_progress(NULL, (w * 100) / fi->size);
 	}
 
 	/* it all worked, output a '#' to say we're a-ok */
@@ -496,7 +497,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		}
 
 		if (camel_stream_read(stream, buffer, 1) != 1 || buffer[0] != '#') {
-			camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Cannot get message %s: %s"), uid, _("Unknown reason"));
 			goto done;
 		}
@@ -521,15 +522,24 @@ fail:
 	return message;
 }
 
-static void
+static gboolean
 pop3_set_message_flags (CamelFolder *folder, const char *uid, guint32 flags, guint32 set)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (folder);
 	CamelPOP3FolderInfo *fi;
+	gboolean res = FALSE;
 
 	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
-	if (fi)
-		fi->flags = (fi->flags & ~flags) | (set & flags);
+	if (fi) {
+		guint32 new = (fi->flags & ~flags) | (set & flags);
+
+		if (fi->flags != new) {
+			fi->flags = new;
+			res = TRUE;
+		}
+	}
+
+	return res;
 }
 
 static gint

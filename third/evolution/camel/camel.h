@@ -33,7 +33,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <camel/camel-cipher-context.h>
-#include <camel/camel-cms-context.h>
 #include <camel/camel-data-wrapper.h>
 #include <camel/camel-exception.h>
 #include <camel/camel-folder.h>
@@ -44,16 +43,21 @@ extern "C" {
 #include <camel/camel-disco-store.h>
 #include <camel/camel-vee-folder.h>
 #include <camel/camel-medium.h>
+#include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-filter-basic.h>
+#include <camel/camel-mime-filter-bestenc.h>
 #include <camel/camel-mime-filter-canon.h>
 #include <camel/camel-mime-filter-charset.h>
+#include <camel/camel-mime-filter-crlf.h>
 #include <camel/camel-mime-filter-enriched.h>
 #include <camel/camel-mime-filter-from.h>
+#include <camel/camel-mime-filter-gzip.h>
+#include <camel/camel-mime-filter-html.h>
 #include <camel/camel-mime-filter-index.h>
+#include <camel/camel-mime-filter-linewrap.h>
 #include <camel/camel-mime-filter-save.h>
-#include <camel/camel-mime-filter-crlf.h>
 #include <camel/camel-mime-filter-tohtml.h>
-#include <camel/camel-mime-filter.h>
+#include <camel/camel-mime-filter-yenc.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-mime-part-utils.h>
@@ -64,14 +68,11 @@ extern "C" {
 #include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-multipart-signed.h>
 #include <camel/camel-gpg-context.h>
-#include <camel/camel-pgp-mime.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-seekable-stream.h>
 #include <camel/camel-seekable-substream.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
-#include <camel/camel-smime-context.h>
-#include <camel/camel-smime-utils.h>
 #include <camel/camel-store.h>
 #include <camel/camel-stream-buffer.h>
 #include <camel/camel-stream-filter.h>
@@ -84,9 +85,9 @@ extern "C" {
 #include <camel/camel-transport.h>
 #include <camel/camel-uid-cache.h>
 #include <camel/camel-url.h>
-#include <camel/string-utils.h>
+#include <camel/camel-string-utils.h>
 
-gint camel_init (const char *certdb_dir, gboolean nss_init);
+int camel_init (const char *certdb_dir, gboolean nss_init);
 
 #ifdef __cplusplus
 }

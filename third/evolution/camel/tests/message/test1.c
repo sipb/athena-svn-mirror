@@ -162,9 +162,9 @@ int main(int argc, char **argv)
 		push("testing text number %d", j);
 		text = texts[j].text;
 		len = texts[j].len;
-		for (i=0;i<CAMEL_MIME_PART_NUM_ENCODINGS;i++) {
+		for (i=0;i<CAMEL_TRANSFER_NUM_ENCODINGS;i++) {
 			
-			push("test simple message, encoding %s", camel_mime_part_encoding_to_string(i));
+			push("test simple message, encoding %s", camel_transfer_encoding_to_string(i));
 			msg = test_message_create_simple();
 
 			push("set simple content");

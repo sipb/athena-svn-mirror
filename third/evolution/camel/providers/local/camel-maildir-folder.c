@@ -2,7 +2,7 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * Copyright (C) 1999, 2000 Ximian Inc.
+ * Copyright (C) 1999, 2003 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -34,7 +34,6 @@
 
 #include "camel-maildir-folder.h"
 #include "camel-maildir-store.h"
-#include "string-utils.h"
 #include "camel-stream-fs.h"
 #include "camel-maildir-summary.h"
 #include "camel-data-wrapper.h"
@@ -57,6 +56,35 @@ static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar *
 
 static void maildir_finalize(CamelObject * object);
 
+static int
+maildir_folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
+{
+	CamelFolder *folder = (CamelFolder *)object;
+	int i;
+	guint32 tag;
+
+	for (i=0;i<args->argc;i++) {
+		CamelArgGet *arg = &args->argv[i];
+
+		tag = arg->tag;
+
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_FOLDER_ARG_NAME:
+			if (!strcmp(folder->full_name, "."))
+				*arg->ca_str = _("Inbox");
+			else
+				*arg->ca_str = folder->name;
+			break;
+		default:
+			continue;
+		}
+
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+
+	return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
+}
+
 static void camel_maildir_folder_class_init(CamelObjectClass * camel_maildir_folder_class)
 {
 	CamelFolderClass *camel_folder_class = CAMEL_FOLDER_CLASS(camel_maildir_folder_class);
@@ -67,6 +95,8 @@ static void camel_maildir_folder_class_init(CamelObjectClass * camel_maildir_fol
 	/* virtual method definition */
 
 	/* virtual method overload */
+	((CamelObjectClass *)camel_folder_class)->getv = maildir_folder_getv;
+
 	camel_folder_class->append_message = maildir_append_message;
 	camel_folder_class->get_message = maildir_get_message;
 
@@ -209,7 +239,9 @@ static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar *
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID, _("Cannot get message: %s\n  %s"), uid, _("No such message"));
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, _("No such message"));
 		return NULL;
 	}
 
@@ -221,18 +253,18 @@ static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar *
 	camel_folder_summary_info_free(folder->summary, info);
 
 	if ((message_stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0)) == NULL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				      _("Cannot get message: %s\n  %s"),
-				      name, g_strerror (errno));
+		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, g_strerror(errno));
 		g_free(name);
 		return NULL;
 	}
 
 	message = camel_mime_message_new();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		camel_exception_setv(ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s\n  %s"),
-				     name, _("Invalid message contents"));
+		camel_exception_setv(ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, _("Invalid message contents"));
 		g_free(name);
 		camel_object_unref((CamelObject *)message_stream);
 		camel_object_unref((CamelObject *)message);

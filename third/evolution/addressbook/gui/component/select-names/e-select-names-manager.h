@@ -32,13 +32,12 @@ struct _ESelectNamesManager {
 
 	ESelectNames *names;
 
+	ESourceList *source_list;	
 	GList *completion_books;
-
+	
 	int minimum_query_length;
 
-	gulong listener_id;
-
-	char *cached_folder_list;
+	GList *notifications;
 };
 
 struct _ESelectNamesManagerClass {
@@ -62,7 +61,6 @@ ESelectNamesModel   *e_select_names_manager_get_source             (ESelectNames
 GtkWidget           *e_select_names_manager_create_entry           (ESelectNamesManager *manager,
 							            const char *id);
 void                 e_select_names_manager_activate_dialog        (ESelectNamesManager *manager,
-								    EvolutionShellClient *shell_client,
 							            const char *id);
 /* Standard Gtk function */			      
 GType                e_select_names_manager_get_type               (void);

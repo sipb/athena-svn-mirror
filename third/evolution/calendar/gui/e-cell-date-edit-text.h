@@ -23,13 +23,13 @@
 
 /*
  * ECellDateEditText - a subclass of ECellText used to show and edit the text
- * representation of the date, from a CalComponentDateTime* model value.
+ * representation of the date, from a ECalComponentDateTime* model value.
  */
 
 #ifndef _E_CELL_DATE_EDIT_TEXT_H_
 #define _E_CELL_DATE_EDIT_TEXT_H_
 
-#include <ical.h>
+#include <libical/ical.h>
 #include <gal/e-table/e-cell-text.h>
 
 G_BEGIN_DECLS

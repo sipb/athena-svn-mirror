@@ -1,8 +1,9 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*-
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
+ *          Jeffrey Stedfast <fejj@ximian.com>
  *
- * Copyright (C) 1999, 2000 Ximian Inc.
+ * Copyright (C) 1999, 2003 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -34,7 +35,6 @@
 
 #include "camel-mbox-folder.h"
 #include "camel-mbox-store.h"
-#include "string-utils.h"
 #include "camel-stream-fs.h"
 #include "camel-mbox-summary.h"
 #include "camel-data-wrapper.h"
@@ -52,11 +52,14 @@ static CamelLocalFolderClass *parent_class = NULL;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CMBOXS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
+char *camel_mbox_folder_get_full_path (const char *toplevel_dir, const char *full_name);
+char *camel_mbox_folder_get_meta_path (const char *toplevel_dir, const char *full_name, const char *ext);
+
 static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void mbox_unlock(CamelLocalFolder *lf);
 
 #ifdef STATUS_PINE
-static void mbox_set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guint32 set);
+static gboolean mbox_set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guint32 set);
 #endif
 
 static void mbox_set_message_user_flag(CamelFolder *folder, const char *uid, const char *name, gboolean value);
@@ -87,7 +90,9 @@ camel_mbox_folder_class_init(CamelMboxFolderClass * camel_mbox_folder_class)
 #endif
 	camel_folder_class->set_message_user_flag = mbox_set_message_user_flag;
 	camel_folder_class->set_message_user_tag = mbox_set_message_user_tag;
-
+	
+	lclass->get_full_path = camel_mbox_folder_get_full_path;
+	lclass->get_meta_path = camel_mbox_folder_get_meta_path;
 	lclass->create_summary = mbox_create_summary;
 	lclass->lock = mbox_lock;
 	lclass->unlock = mbox_unlock;
@@ -139,6 +144,67 @@ camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 f
 							     parent_store, full_name, flags, ex);
 
 	return folder;
+}
+
+char *
+camel_mbox_folder_get_full_path (const char *toplevel_dir, const char *full_name)
+{
+	const char *inptr = full_name;
+	int subdirs = 0;
+	char *path, *p;
+	
+	while (*inptr != '\0') {
+		if (*inptr == '/')
+			subdirs++;
+		inptr++;
+	}
+	
+	path = g_malloc (strlen (toplevel_dir) + (inptr - full_name) + (4 * subdirs) + 1);
+	p = g_stpcpy (path, toplevel_dir);
+	
+	inptr = full_name;
+	while (*inptr != '\0') {
+		while (*inptr != '/' && *inptr != '\0')
+			*p++ = *inptr++;
+		
+		if (*inptr == '/') {
+			p = g_stpcpy (p, ".sbd/");
+			inptr++;
+			
+			/* strip extranaeous '/'s */
+			while (*inptr == '/')
+				inptr++;
+		}
+	}
+	
+	*p = '\0';
+	
+	return path;
+}
+
+char *
+camel_mbox_folder_get_meta_path (const char *toplevel_dir, const char *full_name, const char *ext)
+{
+/*#define USE_HIDDEN_META_FILES*/
+#ifdef USE_HIDDEN_META_FILES
+	char *name, *slash;
+	
+	name = g_alloca (strlen (full_name) + strlen (ext) + 2);
+	if ((slash = strrchr (full_name, '/')))
+		sprintf (name, "%.*s.%s%s", slash - full_name + 1, full_name, slash + 1, ext);
+	else
+		sprintf (name, ".%s%s", full_name, ext);
+	
+	return camel_mbox_folder_get_full_path (toplevel_dir, name);
+#else
+	char *full_path, *path;
+	
+	full_path = camel_mbox_folder_get_full_path (toplevel_dir, full_name);
+	path = g_strdup_printf ("%s%s", full_path, ext);
+	g_free (full_path);
+	
+	return path;
+#endif
 }
 
 static CamelLocalSummary *mbox_create_summary(const char *path, const char *folder, CamelIndex *index)
@@ -348,7 +414,8 @@ retry:
 
 	if (info == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s\n  %s"), uid, _("No such message"));
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
 
@@ -365,7 +432,7 @@ retry:
 
 	fd = open(lf->folder_path, O_RDONLY);
 	if (fd == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"),
 				      uid, lf->folder_path, g_strerror (errno));
 		goto fail;
@@ -377,7 +444,7 @@ retry:
 	camel_mime_parser_scan_from(parser, TRUE);
 
 	camel_mime_parser_seek(parser, frompos, SEEK_SET);
-	if (camel_mime_parser_step(parser, NULL, NULL) != HSCAN_FROM
+	if (camel_mime_parser_step(parser, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM
 	    || camel_mime_parser_tell_start_from(parser) != frompos) {
 
 		g_warning("Summary doesn't match the folder contents!  eek!\n"
@@ -396,7 +463,7 @@ retry:
 				goto retry;
 		}
 
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
 				     _("The folder appears to be irrecoverably corrupted."));
 		goto fail;
@@ -404,9 +471,9 @@ retry:
 	
 	message = camel_mime_message_new();
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
-		camel_exception_setv(ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		camel_exception_setv(ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
 				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
-				     _("Message construction failed: Corrupt mailbox?"));
+				     _("Message construction failed."));
 		camel_object_unref((CamelObject *)message);
 		message = NULL;
 		goto fail;
@@ -430,7 +497,7 @@ fail:
 }
 
 #ifdef STATUS_PINE
-static void
+static gboolean
 mbox_set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guint32 set)
 {
 	/* Basically, if anything could change the Status line, presume it does */
@@ -440,7 +507,7 @@ mbox_set_message_flags(CamelFolder *folder, const char *uid, guint32 flags, guin
 		set |= CAMEL_MESSAGE_FOLDER_XEVCHANGE|CAMEL_MESSAGE_FOLDER_FLAGGED;
 	}
 
-	((CamelFolderClass *)parent_class)->set_message_flags(folder, uid, flags, set);
+	return ((CamelFolderClass *)parent_class)->set_message_flags(folder, uid, flags, set);
 }
 #endif
 
@@ -456,9 +523,14 @@ mbox_set_message_user_flag(CamelFolder *folder, const char *uid, const char *nam
 		return;
 
 	if (camel_flag_set(&info->user_flags, name, value)) {
+		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+
 		info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED|CAMEL_MESSAGE_FOLDER_XEVCHANGE;
 		camel_folder_summary_touch(folder->summary);
-		camel_object_trigger_event(CAMEL_OBJECT(folder), "message_changed", (char *) uid);
+
+		camel_folder_change_info_change_uid(changes, uid);
+		camel_object_trigger_event(folder, "folder_changed", changes);
+		camel_folder_change_info_free(changes);
 	}
 	camel_folder_summary_info_free(folder->summary, info);
 }
@@ -475,9 +547,14 @@ mbox_set_message_user_tag(CamelFolder *folder, const char *uid, const char *name
 		return;
 
 	if (camel_tag_set(&info->user_tags, name, value)) {
+		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+
 		info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED|CAMEL_MESSAGE_FOLDER_XEVCHANGE;
 		camel_folder_summary_touch(folder->summary);
-		camel_object_trigger_event(CAMEL_OBJECT(folder), "message_changed", (char *) uid);
+
+		camel_folder_change_info_change_uid(changes, uid);
+		camel_object_trigger_event (folder, "folder_changed", changes);
+		camel_folder_change_info_free(changes);
 	}
 	camel_folder_summary_info_free(folder->summary, info);
 }

@@ -6,11 +6,11 @@
 
 G_BEGIN_DECLS
 
-/* NONE:NONE (filter-marshal.list:1) */
+/* NONE:NONE (./filter-marshal.list:1) */
 #define filter_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID
 #define filter_marshal_NONE__NONE	filter_marshal_VOID__VOID
 
-/* NONE:POINTER (filter-marshal.list:2) */
+/* NONE:POINTER (./filter-marshal.list:2) */
 #define filter_marshal_VOID__POINTER	g_cclosure_marshal_VOID__POINTER
 #define filter_marshal_NONE__POINTER	filter_marshal_VOID__POINTER
 

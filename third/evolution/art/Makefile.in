@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -219,275 +242,34 @@ serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
 images_DATA = \
-	16_copy.png			\
-	16_customize.png		\
-	16_cut.png			\
-	16_paste.png			\
 	about-box.png			\
-	alarm.png			\
-	all_contacts.xpm		\
-	apply-filters-16.xpm		\
 	bcg.png				\
-	briefcase.png       		\
-	butterfly.png			\
-	calendar-and-tasks-settings.png \
-	cellphone.png       		\
-	compose-message.png		\
-	composer-settings.png		\
-	configure_16_addressbook.xpm	\
-	configure_16_calendar.xpm	\
-	configure_16_folder.xpm		\
-	configure_16_mail.xpm		\
-	connect_to_url-16.xpm		\
-	contact-is-a-list.png		\
-	contact-list-16.png		\
-	copy_16_message.xpm		\
-	edit.xpm			\
-	empty.gif			\
-	encrypt.xpm			\
-	envelope.png        		\
-	es-appointments.png		\
-	es-weather.png			\
-	evolution-calendar-mini.png 	\
-	evolution-calendar.png 		\
-	evolution-contacts-mini.png 	\
-	evolution-contacts-plain.png 	\
-	evolution-contacts.png 		\
-	evolution-inbox-mini.png 	\
-	evolution-inbox.png 		\
-	evolution-notes-mini.png 	\
-	evolution-notes.png 		\
-	evolution-tasks-mini.png 	\
-	evolution-tasks.png 		\
-	evolution-today-mini.png	\
-	evolution-today.png 		\
-	evolution-trash-mini.png 	\
-	evolution-trash.png 		\
-	executive-summary-bg.png	\
-	executive-summary-curve.png	\
-	info-bulb.png			\
-	faq-16.png			\
-	fetch-mail.png			\
-	find_contact.xpm		\
-	find_message.xpm		\
-	flag-for-followup-16.png	\
-	folder-copy-16.png		\
-	folder-move-16.png		\
-	folder-settings.png		\
-	folder.png			\
-	folder-mini.png			\
-	folder.xpm			\
-	font.png			\
-	forward.xpm			\
-	globe.png           		\
-	goto-16.png			\
-	hide_deleted_messages.xpm	\
-	hide_read_messages.xpm		\
-	hide_selected_messages.xpm	\
-	house.png           		\
-	ico-calendar.png		\
-	ico-mail.png			\
-	ico-rdf.png			\
-	ico-weather.png			\
-	import.png			\
-	import.xpm			\
-	inbox.png			\
-	inbox-mini.png			\
-	ldap-mini.png			\
-	ldap-settings.png		\
-	ldap.png			\
-	mail.png			\
-	mail-accounts-settings.png	\
-	mail-config-druid-account-name.png \
-	mail-config-druid-identity.png	\
-	mail-config-druid-receive.png	\
-	mail-config-druid-send.png	\
-	mail-config-druid.png		\
-	mail-new.xpm			\
-	mail-read.xpm			\
-	malehead.png			\
-	mark-as-important-16.png	\
-	meeting-request.png		\
-	meeting-request-16.png 		\
+	evolution-contacts-mini.png	\
 	monkey-16.png			\
-	move_message.xpm		\
-	myevo-appointments.png		\
-	myevo-mail-summary.png		\
-	myevo-post-it.png		\
-	myweather-clouds.png		\
-	myweather-fog.png		\
-	myweather-rain.png		\
-	myweather-snow.png		\
-	myweather-storm.png		\
-	myweather-sun.png		\
-	myweather-suncloud.png		\
-	new-message.xpm			\
-	new_all_day_event.png		\
-	new_appointment.xpm		\
-	new_contact.xpm			\
-	new_task-16.png			\
 	offline.png			\
 	online.png			\
-	open-in-new-window-16.png 	\
-	outbox.png			\
-	outbox-mini.png			\
-	pattern.png			\
-	pgp-signature-bad.png 		\
-	pgp-signature-nokey.png 	\
-	pgp-signature-ok.png 		\
-	post-message-16.png		\
-	post-reply-24.png		\
-	print-preview.xpm		\
-	print.xpm			\
-	priority-high.xpm		\
-	public-folder.png		\
-	public-folder-mini.png		\
-	rdf.png				\
-	reply.xpm			\
-	reply_to_all.xpm		\
-	save-16.png			\
-	save-as-16.png			\
-	save.xpm			\
-	schedule-meeting-16.xpm		\
-	schedule-meeting-24.png		\
-	search-16.png			\
-	search-and-replace-16.png	\
-	send-16.png                     \
-	send-later-16.png		\
-	send-receive.xpm		\
-	service-close.png		\
-	service-configure.png		\
-	service-down-disabled.png	\
-	service-down.png		\
-	service-left-disabled.png	\
-	service-left.png		\
-	service-right-disabled.png	\
-	service-right.png		\
-	service-up-disabled.png		\
-	service-up.png			\
-	settings.png			\
-	settings-16.png			\
-	show_all_messages.xpm		\
-	splash.png			\
-	stock-edit-16.png		\
-	stock-edit-24.png		\
-	summary-settings.png		\
-	summary_preferences-16.png	\
-	talking-heads.png		\
-	task.png			\
-	task.xpm			\
-	thankyou.png			\
-	timezone-16.xpm			\
-	timezone-48.png 		\
-	undelete_message-16.png		\
-	wax-seal-broken.png		\
-	wax-seal.png			\
-	work_offline.xpm		\
-	work_online-16.png		\
-	working-16.png			\
 	world_map-960.png
 
 
-buttons_DATA = \
-	arrow-right-24.png		\
-	arrow-left-24.png		\
-	add-attachment.png		\
-	add-service.png			\
-	compose-message.png		\
-	copy-message.png		\
-	copy.png			\
-	cut.png				\
-	dayview.xpm			\
-	delete-message.png		\
-	fetch-mail.png			\
-	forward.png			\
-	goto-24.png  			\
-	monthview.xpm  			\
-	move-message.png		\
-	next-message.png		\
-	new_appointment.png		\
-	new_task.png			\
-	paste.png			\
-	previous-message.png		\
-	print.png			\
-	print-preview-24.png		\
-	reply.png			\
-	reply-to-all.png		\
-	receive-24.png		\
-	save-24.png			\
-	send-24-receive.png		\
-	send-24.png		\
-	weekview.xpm  			\
-	workweekview.xpm		\
-	yearview.xpm
-
-
-glade_DATA = \
-	evolution.png				\
-	import.png				\
-	flag-for-followup-48.png		\
-	mail-config-druid-account-name.png	\
-	mail-config-druid-identity.png		\
-	mail-config-druid.png			\
-	mail-config-druid-receive.png		\
-	mail-config-druid-send.png		\
-	thankyou.png				\
-	timezone-48.png
-
-
-conduitsdir = $(imagesdir)/conduits
-conduits_DATA = \
-	evo-16-address-conduit.png   	\
-	evo-16-todo-conduit.png     	\
-	evo-16-calendar-conduit.png  	\
-	evo-48-calendar-conduit.png	\
-	evo-48-address-conduit.png  	\
-	evo-48-todo-conduit.png
-
-
 EXTRA_DIST = \
+	ChangeLog			\
 	ChangeLog.pre-1-4		\
-	attachment.xpm			\
-	bell.xpm			\
-	check-filled.xpm		\
+	README				\
+	broken-image-16.xpm		\
+	broken-image-24.xpm		\
 	empty.xpm			\
 	evolution.png			\
 	jump.xpm			\
-	mail-need-reply.xpm		\
-	mail-new.xpm			\
-	mail-read.xpm			\
-	mail-replied.xpm		\
-	flag-for-followup.xpm		\
-	mark.xpm			\
-	priority-high.xpm		\
-	priority-low.xpm		\
-	recur.xpm			\
-	score-higher.xpm		\
-	score-highest.xpm		\
-	score-high.xpm			\
-	score-lower.xpm			\
-	score-lowest.xpm		\
-	score-low.xpm			\
-	score-normal.xpm		\
-	task-assigned-to.xpm		\
-	task-assigned.xpm		\
-	task-recurring.xpm		\
-	timezone-16.xpm			\
-	tree-expanded.xpm		\
-	tree-unexpanded.xpm		\
-	$(images_DATA)			\
-	$(buttons_DATA)			\
-	$(conduits_DATA)		\
-	$(glade_DATA)
+	$(images_DATA)
 
 subdir = art
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DATA = $(buttons_DATA) $(conduits_DATA) $(glade_DATA) $(images_DATA)
+DATA = $(images_DATA)
 
-DIST_COMMON = ChangeLog Makefile.am Makefile.in
+DIST_COMMON = README ChangeLog Makefile.am Makefile.in
 all: all-am
 
 .SUFFIXES:
@@ -506,60 +288,6 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-buttonsDATA_INSTALL = $(INSTALL_DATA)
-install-buttonsDATA: $(buttons_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(buttonsdir)
-	@list='$(buttons_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(buttonsDATA_INSTALL) $$d$$p $(DESTDIR)$(buttonsdir)/$$f"; \
-	  $(buttonsDATA_INSTALL) $$d$$p $(DESTDIR)$(buttonsdir)/$$f; \
-	done
-
-uninstall-buttonsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(buttons_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(buttonsdir)/$$f"; \
-	  rm -f $(DESTDIR)$(buttonsdir)/$$f; \
-	done
-conduitsDATA_INSTALL = $(INSTALL_DATA)
-install-conduitsDATA: $(conduits_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(conduitsdir)
-	@list='$(conduits_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(conduitsDATA_INSTALL) $$d$$p $(DESTDIR)$(conduitsdir)/$$f"; \
-	  $(conduitsDATA_INSTALL) $$d$$p $(DESTDIR)$(conduitsdir)/$$f; \
-	done
-
-uninstall-conduitsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(conduits_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(conduitsdir)/$$f"; \
-	  rm -f $(DESTDIR)$(conduitsdir)/$$f; \
-	done
-gladeDATA_INSTALL = $(INSTALL_DATA)
-install-gladeDATA: $(glade_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(gladedir)
-	@list='$(glade_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(gladeDATA_INSTALL) $$d$$p $(DESTDIR)$(gladedir)/$$f"; \
-	  $(gladeDATA_INSTALL) $$d$$p $(DESTDIR)$(gladedir)/$$f; \
-	done
-
-uninstall-gladeDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(glade_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(gladedir)/$$f"; \
-	  rm -f $(DESTDIR)$(gladedir)/$$f; \
-	done
 imagesDATA_INSTALL = $(INSTALL_DATA)
 install-imagesDATA: $(images_DATA)
 	@$(NORMAL_INSTALL)
@@ -612,7 +340,7 @@ check: check-am
 all-am: Makefile $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(buttonsdir) $(DESTDIR)$(conduitsdir) $(DESTDIR)$(gladedir) $(DESTDIR)$(imagesdir)
+	$(mkinstalldirs) $(DESTDIR)$(imagesdir)
 
 install: install-am
 install-exec: install-exec-am
@@ -654,8 +382,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-buttonsDATA install-conduitsDATA \
-	install-data-local install-gladeDATA install-imagesDATA
+install-data-am: install-data-local install-imagesDATA
 
 install-exec-am:
 
@@ -673,21 +400,17 @@ mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
-uninstall-am: uninstall-buttonsDATA uninstall-conduitsDATA \
-	uninstall-gladeDATA uninstall-imagesDATA uninstall-info-am
+uninstall-am: uninstall-imagesDATA uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am info info-am install install-am install-buttonsDATA \
-	install-conduitsDATA install-data install-data-am \
-	install-data-local install-exec install-exec-am \
-	install-gladeDATA install-imagesDATA install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool uninstall uninstall-am \
-	uninstall-buttonsDATA uninstall-conduitsDATA \
-	uninstall-gladeDATA uninstall-imagesDATA uninstall-info-am
+	dvi-am info info-am install install-am install-data \
+	install-data-am install-data-local install-exec install-exec-am \
+	install-imagesDATA install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool uninstall uninstall-am \
+	uninstall-imagesDATA uninstall-info-am
 
 
 install-data-local:

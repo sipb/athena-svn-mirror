@@ -26,23 +26,25 @@
 #include "addressbook.h"
 #include "addressbook-component.h"
 #include "addressbook-config.h"
-#include "e-address-popup.h"
-#include "e-address-widget.h"
-#include "e-minicard-control.h"
+#include "addressbook-view.h"
+#include "autocompletion-config.h"
+#include "eab-popup-control.h"
+#include "eab-vcard-control.h"
 #include "select-names/e-select-names-bonobo.h"
-
+#ifdef ENABLE_SMIME
+#include "smime/gui/certificate-manager.h"
+#endif
 #include <bonobo/bonobo-shlib-factory.h>
 
 
-#define FACTORY_ID "OAFIID:GNOME_Evolution_Addressbook_Factory"
+#define FACTORY_ID "OAFIID:GNOME_Evolution_Addressbook_Factory:" BASE_VERSION
 
-#define MINICARD_CONTROL_ID            "OAFIID:GNOME_Evolution_Addressbook_MiniCard_Control"
-#define ADDRESSBOOK_CONTROL_ID         "OAFIID:GNOME_Evolution_Addressbook_Control"
-#define SHELL_COMPONENT_ID             "OAFIID:GNOME_Evolution_Addressbook_ShellComponent"
-#define ADDRESS_WIDGET_ID              "OAFIID:GNOME_Evolution_Addressbook_AddressWidget"
-#define ADDRESS_POPUP_ID               "OAFIID:GNOME_Evolution_Addressbook_AddressPopup"
-#define SELECT_NAMES_ID                "OAFIID:GNOME_Evolution_Addressbook_SelectNames"
-#define LDAP_STORAGE_CONFIG_CONTROL_ID "OAFIID:GNOME_Evolution_LDAPStorage_ConfigControl"
+#define VCARD_CONTROL_ID               "OAFIID:GNOME_Evolution_Addressbook_VCard_Control:" BASE_VERSION
+#define COMPONENT_ID                   "OAFIID:GNOME_Evolution_Addressbook_Component:" BASE_VERSION
+#define ADDRESS_POPUP_ID               "OAFIID:GNOME_Evolution_Addressbook_AddressPopup:" BASE_VERSION
+#define SELECT_NAMES_ID                "OAFIID:GNOME_Evolution_Addressbook_SelectNames:" BASE_VERSION
+#define COMPLETION_CONFIG_CONTROL_ID "OAFIID:GNOME_Evolution_Addressbook_Autocompletion_ConfigControl:" BASE_VERSION
+#define CERTIFICATE_MANAGER_CONFIG_CONTROL_ID "OAFIID:GNOME_Evolution_SMime_CertificateManager_ConfigControl:" BASE_VERSION
 
 
 static BonoboObject *
@@ -50,20 +52,25 @@ factory (BonoboGenericFactory *factory,
 	 const char *component_id,
 	 void *closure)
 {
-	if (strcmp (component_id, MINICARD_CONTROL_ID) == 0)
-		return BONOBO_OBJECT (e_minicard_control_new ());
-	if (strcmp (component_id, ADDRESSBOOK_CONTROL_ID) == 0)
-		return BONOBO_OBJECT (addressbook_new_control ());
-	if (strcmp (component_id, SHELL_COMPONENT_ID) == 0)
-		return addressbook_component_init ();
-	if (strcmp (component_id, ADDRESS_WIDGET_ID) == 0)
-		return BONOBO_OBJECT (e_address_widget_new_control ());
+	printf ("asked to activate component_id `%s'\n", component_id);
+
+	if (strcmp (component_id, VCARD_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (eab_vcard_control_new ());
+	if (strcmp (component_id, COMPONENT_ID) == 0) {
+		BonoboObject *object = BONOBO_OBJECT (addressbook_component_peek ());
+		bonobo_object_ref (object);
+		return object;
+	}
 	if (strcmp (component_id, ADDRESS_POPUP_ID) == 0)
-		return BONOBO_OBJECT (e_address_popup_new_control ());
-	if (strcmp (component_id, LDAP_STORAGE_CONFIG_CONTROL_ID) == 0)
-		return BONOBO_OBJECT (addressbook_config_control_new ());
+		return BONOBO_OBJECT (eab_popup_control_new ());
+	if (strcmp (component_id, COMPLETION_CONFIG_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (autocompletion_config_control_new ());
 	if (strcmp (component_id, SELECT_NAMES_ID) == 0)
 		return BONOBO_OBJECT (e_select_names_bonobo_new ());
+#ifdef ENABLE_SMIME
+        if (strcmp (component_id, CERTIFICATE_MANAGER_CONFIG_CONTROL_ID) == 0)
+                return BONOBO_OBJECT (certificate_manager_config_control_new ());
+#endif
 
 	g_warning (FACTORY_ID ": Don't know what to do with %s", component_id);
 	return NULL;

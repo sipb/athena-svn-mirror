@@ -36,17 +36,18 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkradiomenuitem.h>
 #include <gtk/gtkseparatormenuitem.h>
-#include <gtk/gtklabel.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <addressbook/backend/ebook/e-book-util.h>
+#include <addressbook/util/eab-book-util.h>
 #include <addressbook/gui/contact-editor/e-contact-editor.h>
+#include <addressbook/gui/contact-list-editor/e-contact-list-editor.h>
 #include <addressbook/gui/contact-editor/e-contact-quick-add.h>
-#include "e-addressbook-util.h"
+#include "eab-gui-util.h"
 #include "e-select-names-popup.h"
+#include <e-util/e-icon-factory.h>
 
-#define LIST_ICON_FILENAME "contact-list-16.png"
-#define CONTACT_ICON_FILENAME "evolution-contacts-mini.png"
+#define LIST_ICON_NAME "stock_contact-list"
+#define CONTACT_ICON_NAME "stock_contact"
 
 typedef struct _PopupInfo PopupInfo;
 struct _PopupInfo {
@@ -92,34 +93,36 @@ popup_info_free (PopupInfo *info)
 static void
 popup_info_cleanup (GtkWidget *w, gpointer info)
 {
+	g_signal_handlers_disconnect_matched (G_OBJECT (w), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, info);
+
 	popup_info_free ((PopupInfo *) info);
 }
 
 /* You are in a maze of twisty little callbacks, all alike... */
 
+#if TOO_MANY_MENU_ITEMS
 static void
 make_contact_editor_cb (EBook *book, gpointer user_data)
 {
 	if (book) {
 		EDestination *dest = E_DESTINATION (user_data);
-		ECard *card;
+		EContact *contact;
 
-		card = (ECard *) e_destination_get_card (dest);
-		if (e_card_evolution_list (card)) {
+		contact = (EContact *) e_destination_get_contact (dest);
+		if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 			EContactListEditor *ce;
-			ce = e_addressbook_show_contact_list_editor (book, card, FALSE, TRUE);
+			ce = e_addressbook_show_contact_list_editor (book, contact, FALSE, TRUE);
 			e_contact_list_editor_raise (ce);
 		}
 		else {
 			EContactEditor *ce;
-			ce = e_addressbook_show_contact_editor (book, card, FALSE, TRUE);
+			ce = e_addressbook_show_contact_editor (book, contact, FALSE, TRUE);
 			e_contact_editor_raise (ce);
 		}
 		g_object_unref (dest);
 	}
 }
 
-#if TOO_MANY_MENU_ITEMS
 static void
 edit_contact_info_cb (GtkWidget *w, gpointer user_data)
 {
@@ -149,7 +152,7 @@ change_email_num_cb (GtkWidget *w, gpointer user_data)
 
 	if (n != e_destination_get_email_num (info->dest)) {
 		dest = e_destination_new ();
-		e_destination_set_card (dest, e_destination_get_card (info->dest), n);
+		e_destination_set_contact (dest, e_destination_get_contact (info->dest), n);
 		e_select_names_model_replace (info->text_model->source, info->index, dest);
 	}
 }
@@ -187,14 +190,15 @@ toggle_html_mail_cb (GtkWidget *w, gpointer user_data)
 #endif
 
 static void
-populate_popup_card (GtkWidget *pop, gboolean list, PopupInfo *info)
+populate_popup_contact (GtkWidget *pop, gboolean list, PopupInfo *info)
 {
+	GdkPixbuf *pixbuf;
 	GtkWidget *image;
-	ECard *card;
-	EIterator *iterator;
+	EContact *contact;
 	GtkWidget *menuitem;
+	GList *email_list;
 
-	card = e_destination_get_card (info->dest);
+	contact = e_destination_get_contact (info->dest);
 
 #if TOO_MANY_MENU_ITEMS
 	menuitem = gtk_separator_menu_item_new();
@@ -232,31 +236,24 @@ populate_popup_card (GtkWidget *pop, gboolean list, PopupInfo *info)
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (pop), menuitem);
 #endif
 
-	if (card->email) {
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+
+	if (email_list) {
 		menuitem = gtk_separator_menu_item_new();
 		gtk_widget_show (menuitem);
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (pop), menuitem);
 		
-		if (e_list_length (card->email) > 1) {
+		if (g_list_length (email_list) > 1) {
+			GList *l;
 			GSList *radiogroup = NULL;
 			gint n = e_destination_get_email_num (info->dest);
-			gint j = e_list_length (card->email) - 1;
+			gint j = g_list_length (email_list) - 1;
 
-			iterator = e_list_get_iterator (card->email);
-			for (e_iterator_last (iterator); e_iterator_is_valid (iterator); e_iterator_prev (iterator)) {
-				char *email = (char *)e_iterator_get (iterator);
+			for (l = g_list_last (email_list); l; l = l->prev) {
+				char *email = l->data;
 				char *label = NULL;
 
-				if (!strncmp (email, "<?xml", 5)) {
-					EDestination *dest = e_destination_import (email);
-					if (dest) {
-						label = g_strdup (e_destination_get_textrep (dest, TRUE));
-						g_object_unref (dest);
-					}
-				}
-				else {
-					label = g_strdup (email);
-				}
+				label = g_strdup (email);
 
 				if (list) {
 					menuitem = gtk_menu_item_new_with_label (label);
@@ -280,22 +277,23 @@ populate_popup_card (GtkWidget *pop, gboolean list, PopupInfo *info)
 
 				g_free (label);
 			}
-
-			g_object_unref (iterator);
 		} else {
 			menuitem = gtk_menu_item_new_with_label (e_destination_get_email (info->dest));
 			gtk_widget_show (menuitem);
 			gtk_menu_shell_prepend (GTK_MENU_SHELL (pop), menuitem);
 		}
+
+		g_list_foreach (email_list, (GFunc)g_free, NULL);
+		g_list_free (email_list);
 	}
 
 	menuitem = gtk_separator_menu_item_new ();
 	gtk_widget_show (menuitem);
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (pop), menuitem);
 
-	image = gtk_image_new_from_file (list
-					 ? EVOLUTION_IMAGESDIR "/" LIST_ICON_FILENAME
-					 : EVOLUTION_IMAGESDIR "/" CONTACT_ICON_FILENAME);
+	pixbuf = e_icon_factory_get_icon (list ? LIST_ICON_NAME : CONTACT_ICON_NAME, E_ICON_SIZE_MENU);
+	image = gtk_image_new_from_pixbuf (pixbuf);
+	g_object_unref (pixbuf);
 	gtk_widget_show (image);
 	menuitem = gtk_image_menu_item_new_with_label (e_destination_get_name (info->dest));
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem),
@@ -312,7 +310,7 @@ quick_add_cb (GtkWidget *w, gpointer user_data)
 }
 
 static void
-populate_popup_nocard (GtkWidget *pop, PopupInfo *info)
+populate_popup_nocontact (GtkWidget *pop, PopupInfo *info)
 {
 	const gchar *str;
 	GtkWidget *menuitem;
@@ -376,15 +374,15 @@ e_select_names_populate_popup (GtkWidget *menu, ESelectNamesTextModel *text_mode
 
 	/* XXX yuck, why does this return a const? */
 	dest = (EDestination *)e_select_names_model_get_destination (model, index);
-	if (e_destination_is_empty (dest))
+	if (e_destination_empty (dest))
 		return;
 
 	info = popup_info_new (text_model, dest, pos, index);
 	
-	if (e_destination_contains_card (dest)) {
-		populate_popup_card (menu, e_destination_is_evolution_list (dest), info);
+	if (e_destination_get_contact (dest)) {
+		populate_popup_contact (menu, e_destination_is_evolution_list (dest), info);
 	} else {
-		populate_popup_nocard (menu, info);
+		populate_popup_nocontact (menu, info);
 	}
 
 	/* Clean up our info item after we've made our selection. */

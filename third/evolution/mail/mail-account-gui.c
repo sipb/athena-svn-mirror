@@ -22,35 +22,52 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <glib.h>
+
 #include <string.h>
 #include <stdarg.h>
 
-#include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
-#include <e-util/e-account-list.h>
-#include <e-util/e-dialog-utils.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtktextbuffer.h>
+#include <gtk/gtktextview.h>
+#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkdialog.h>
 
-#include "evolution-folder-selector-button.h"
+#include <e-util/e-account-list.h>
+#include <e-util/e-signature-list.h>
+
+#include <widgets/misc/e-error.h>
+
+#include "em-account-prefs.h"
+#include "em-folder-selection-button.h"
 #include "mail-account-gui.h"
 #include "mail-session.h"
 #include "mail-send-recv.h"
 #include "mail-signature-editor.h"
-#include "mail-composer-prefs.h"
+#include "mail-component.h"
+#include "em-utils.h"
+#include "em-composer-prefs.h"
 #include "mail-config.h"
 #include "mail-ops.h"
 #include "mail-mt.h"
-#include "mail.h"
+
+#if defined (HAVE_NSS)
+#include "smime/gui/e-cert-selector.h"
+#endif
 
 #define d(x)
-
-extern char *default_drafts_folder_uri, *default_sent_folder_uri;
-extern EvolutionShellClient *global_shell_client;
 
 static void save_service (MailAccountGuiService *gsvc, GHashTable *extra_conf, EAccountService *service);
 static void service_changed (GtkEntry *entry, gpointer user_data);
@@ -151,6 +168,105 @@ auto_detected_foreach (gpointer key, gpointer value, gpointer user_data)
 	g_free (value);
 }
 
+static void
+check_button_state (GtkToggleButton *button, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (button)))
+		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+	else
+		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+}
+
+
+static gboolean
+populate_text_entry (GtkTextView *view, const char *filename)
+{
+	FILE *fd;
+	char *filebuf;
+	GtkTextIter iter;
+	GtkTextBuffer *buffer;
+	int count;
+
+	g_return_val_if_fail (filename != NULL , FALSE);
+
+	fd = fopen (filename, "r");
+	
+	if (!fd) {
+		/* FIXME: Should never come here */
+		return FALSE;
+	}
+	
+	filebuf = g_malloc (1024);
+
+	buffer =  gtk_text_buffer_new (NULL);
+	gtk_text_buffer_get_start_iter (buffer, &iter);
+
+	while (!feof (fd) && !ferror (fd)) {
+		count = fread (filebuf, 1, sizeof (filebuf), fd);
+		gtk_text_buffer_insert (buffer, &iter, filebuf, count);
+	}
+	gtk_text_view_set_buffer (GTK_TEXT_VIEW (view), 
+					GTK_TEXT_BUFFER (buffer));
+	fclose (fd);
+	g_free (filebuf);
+	return TRUE;
+}
+
+static gboolean
+display_license (CamelProvider *prov)
+{
+	GladeXML *xml;
+	GtkWidget *top_widget;
+	GtkTextView *text_entry;
+	GtkButton *button_yes, *button_no;
+	GtkCheckButton *check_button;
+	GtkResponseType response = GTK_RESPONSE_NONE;
+	GtkLabel *top_label;
+	char *label_text, *dialog_title;
+	gboolean status;
+	
+	xml = glade_xml_new (EVOLUTION_GLADEDIR "/mail-dialogs.glade", "lic_dialog", NULL);
+	
+	top_widget = glade_xml_get_widget (xml, "lic_dialog");
+	text_entry = GTK_TEXT_VIEW (glade_xml_get_widget (xml, "textview1"));
+	if (!(status = populate_text_entry (GTK_TEXT_VIEW (text_entry), prov->license_file)))
+		goto failed;
+	
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_entry), FALSE);
+	
+	button_yes = GTK_BUTTON (glade_xml_get_widget (xml, "lic_yes_button"));
+	gtk_widget_set_sensitive (GTK_WIDGET (button_yes), FALSE);
+	
+	button_no = GTK_BUTTON (glade_xml_get_widget (xml, "lic_no_button"));
+	
+	check_button = GTK_CHECK_BUTTON (glade_xml_get_widget (xml, "lic_checkbutton"));
+	
+	top_label = GTK_LABEL (glade_xml_get_widget (xml, "lic_top_label"));
+	
+	label_text = g_strdup_printf (_("\nPlease read carefully the license agreement\n" 
+					"for %s displayed below\n" 
+					"and tick the check box for accepting it\n"), prov->license);
+	
+	gtk_label_set_label (top_label, label_text);
+	
+	dialog_title = g_strdup_printf (_("%s License Agreement"), prov->license);
+	
+	gtk_window_set_title (GTK_WINDOW (top_widget), dialog_title);
+	
+	g_signal_connect (check_button, "toggled", G_CALLBACK (check_button_state), button_yes);
+	
+	response = gtk_dialog_run (GTK_DIALOG (top_widget));
+	
+	g_free (label_text);
+	g_free (dialog_title);
+	
+ failed:
+	gtk_widget_destroy (top_widget);
+	g_object_unref (xml);
+	
+	return (response == GTK_RESPONSE_ACCEPT);
+}
+
 static gboolean
 service_complete (MailAccountGuiService *service, GHashTable *extra_config, GtkWidget **incomplete)
 {
@@ -209,6 +325,48 @@ service_complete (MailAccountGuiService *service, GHashTable *extra_config, GtkW
 	}
 	
 	return TRUE;
+}
+
+static gboolean
+mail_account_gui_check_for_license (CamelProvider *prov)
+{
+	GConfClient *gconf;
+	gboolean accepted = TRUE, status;
+	GSList * providers_list, *l, *n;
+	char *provider;
+
+	if (prov->flags & CAMEL_PROVIDER_HAS_LICENSE) {
+		gconf = mail_config_get_gconf_client ();
+		
+		providers_list = gconf_client_get_list (gconf, "/apps/evolution/mail/licenses", GCONF_VALUE_STRING, NULL);
+		
+		for (l = providers_list, accepted = FALSE; l && !accepted; l = g_slist_next (l))
+			accepted = (strcmp ((char *)l->data, prov->protocol) == 0);
+		if (!accepted) {
+			/* Since the license is not yet accepted, pop-up a 
+			 * dialog to display the license agreement and check 
+			 * if the user accepts it
+			 */
+
+			if ((accepted = display_license (prov)) == TRUE) {
+				provider = g_strdup (prov->protocol);
+				providers_list = g_slist_append (providers_list,
+						 provider);
+				status = gconf_client_set_list (gconf, 
+						"/apps/evolution/mail/licenses",
+						GCONF_VALUE_STRING,
+						 providers_list, NULL);
+			}
+		}
+		l = providers_list;
+		while (l) {
+			n = g_slist_next (l);
+			g_free (l->data);
+			g_slist_free_1 (l);
+			l = n;
+		}
+	}
+	return accepted;
 }
 
 gboolean
@@ -283,6 +441,8 @@ mail_account_gui_auto_detect_extra_conf (MailAccountGui *gui)
 		entries = service->provider->extra_conf;
 		
 		for (i = 0; entries[i].type != CAMEL_PROVIDER_CONF_END; i++) {
+			GtkWidget *enable_widget = NULL;
+
 			if (!entries[i].name)
 				continue;
 			
@@ -294,12 +454,14 @@ mail_account_gui_auto_detect_extra_conf (MailAccountGui *gui)
 			case CAMEL_PROVIDER_CONF_CHECKBOX:
 				toggle = g_hash_table_lookup (gui->extra_config, entries[i].name);
 				gtk_toggle_button_set_active (toggle, atoi (value));
+				enable_widget = (GtkWidget *)toggle;
 				break;
 				
 			case CAMEL_PROVIDER_CONF_ENTRY:
 				entry = g_hash_table_lookup (gui->extra_config, entries[i].name);
 				if (value)
 					gtk_entry_set_text (entry, value);
+				enable_widget = (GtkWidget *)entry;
 				break;
 				
 			case CAMEL_PROVIDER_CONF_CHECKSPIN:
@@ -318,11 +480,16 @@ mail_account_gui_auto_detect_extra_conf (MailAccountGui *gui)
 				g_assert (*value == ':');
 				val = strtod (++value, NULL);
 				gtk_spin_button_set_value (spin, val);
+				enable_widget = (GtkWidget *)spin;
 			}
 			break;
 			default:
 				break;
 			}
+
+			if (enable_widget)
+				gtk_widget_set_sensitive(enable_widget, e_account_writable_option(gui->account, prov->protocol, entries[i].name));
+
 		}
 		
 		g_hash_table_foreach (auto_detected, auto_detected_foreach, NULL);
@@ -478,6 +645,8 @@ source_type_changed (GtkWidget *widget, gpointer user_data)
 	MailAccountGui *gui = user_data;
 	GtkWidget *file_entry, *label, *frame, *dwidget = NULL;
 	CamelProvider *provider;
+	gboolean writeable;
+	gboolean license_accepted = TRUE;
 	
 	provider = g_object_get_data ((GObject *) widget, "provider");
 	
@@ -490,13 +659,28 @@ source_type_changed (GtkWidget *widget, gpointer user_data)
 	
 	gui->source.provider = provider;
 	
+	if (gui->source.provider) {
+		writeable = e_account_writable_option (gui->account, gui->source.provider->protocol, "auth");
+		gtk_widget_set_sensitive ((GtkWidget *) gui->source.authtype, writeable);
+		gtk_widget_set_sensitive ((GtkWidget *) gui->source.check_supported, writeable);
+		
+		writeable = e_account_writable_option (gui->account, gui->source.provider->protocol, "use_ssl");
+		gtk_widget_set_sensitive ((GtkWidget *) gui->source.use_ssl, writeable);
+		
+		writeable = e_account_writable (gui->account, E_ACCOUNT_SOURCE_SAVE_PASSWD);
+		gtk_widget_set_sensitive ((GtkWidget *) gui->source.remember, writeable);
+	}
+	
 	if (provider)
 		gtk_label_set_text (gui->source.description, provider->description);
 	else
 		gtk_label_set_text (gui->source.description, "");
 	
+	if (gui->source.provider)	
+		license_accepted = mail_account_gui_check_for_license (gui->source.provider);
+
 	frame = glade_xml_get_widget (gui->xml, "source_frame");
-	if (provider) {
+	if (provider && license_accepted) {
 		gtk_widget_show (frame);
 		
 		/* hostname */
@@ -542,11 +726,14 @@ source_type_changed (GtkWidget *widget, gpointer user_data)
 		
 		/* ssl */
 #ifdef HAVE_SSL
-		if (provider && provider->flags & CAMEL_PROVIDER_SUPPORTS_SSL)
-			gtk_widget_show (gui->source.ssl_hbox);
-		else
-			gtk_widget_hide (gui->source.ssl_hbox);
 		gtk_widget_hide (gui->source.no_ssl);
+		if (provider && provider->flags & CAMEL_PROVIDER_SUPPORTS_SSL) {
+			gtk_widget_show (gui->source.ssl_frame);
+			gtk_widget_show (gui->source.ssl_hbox);
+		} else {
+			gtk_widget_hide (gui->source.ssl_frame);
+			gtk_widget_hide (gui->source.ssl_hbox);
+		}
 #else
 		gtk_widget_hide (gui->source.ssl_hbox);
 		gtk_widget_show (gui->source.no_ssl);
@@ -596,9 +783,22 @@ transport_type_changed (GtkWidget *widget, gpointer user_data)
 	MailAccountGui *gui = user_data;
 	CamelProvider *provider;
 	GtkWidget *label, *frame;
+	gboolean writeable;
 	
 	provider = g_object_get_data ((GObject *) widget, "provider");
 	gui->transport.provider = provider;
+	
+	if (gui->transport.provider) {
+		writeable = e_account_writable_option (gui->account, gui->transport.provider->protocol, "auth");
+		gtk_widget_set_sensitive ((GtkWidget *) gui->transport.authtype, writeable);
+		gtk_widget_set_sensitive ((GtkWidget *) gui->transport.check_supported, writeable);
+		
+		writeable = e_account_writable_option (gui->account, gui->transport.provider->protocol, "use_ssl");
+		gtk_widget_set_sensitive ((GtkWidget *) gui->transport.use_ssl, writeable);
+		
+		writeable = e_account_writable (gui->account, E_ACCOUNT_TRANSPORT_SAVE_PASSWD);
+		gtk_widget_set_sensitive ((GtkWidget *) gui->transport.remember, writeable);
+	}
 	
 	/* description */
 	gtk_label_set_text (gui->transport.description, provider->description);
@@ -612,7 +812,6 @@ transport_type_changed (GtkWidget *widget, gpointer user_data)
 		
 		label = glade_xml_get_widget (gui->xml, "transport_host_label");
 		if (CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_HOST)) {
-			gtk_widget_grab_focus (GTK_WIDGET (gui->transport.hostname));
 			gtk_widget_show (GTK_WIDGET (gui->transport.hostname));
 			gtk_widget_show (label);
 		} else {
@@ -622,11 +821,14 @@ transport_type_changed (GtkWidget *widget, gpointer user_data)
 		
 		/* ssl */
 #ifdef HAVE_SSL
-		if (provider && provider->flags & CAMEL_PROVIDER_SUPPORTS_SSL)
-			gtk_widget_show (gui->transport.ssl_hbox);
-		else
-			gtk_widget_hide (gui->transport.ssl_hbox);
 		gtk_widget_hide (gui->transport.no_ssl);
+		if (provider && provider->flags & CAMEL_PROVIDER_SUPPORTS_SSL) {
+			gtk_widget_show (gui->transport.ssl_frame);
+			gtk_widget_show (gui->transport.ssl_hbox);
+		} else {
+			gtk_widget_hide (gui->transport.ssl_frame);
+			gtk_widget_hide (gui->transport.ssl_hbox);
+		}
 #else
 		gtk_widget_hide (gui->transport.ssl_hbox);
 		gtk_widget_show (gui->transport.no_ssl);
@@ -715,19 +917,22 @@ toggle_sensitivity (GtkToggleButton *toggle, GtkWidget *widget)
 	gtk_widget_set_sensitive (widget, gtk_toggle_button_get_active (toggle));
 }
 
-static void
+/* Returns true if the widget is enabled */
+static gboolean
 setup_toggle (GtkWidget *widget, const char *depname, MailAccountGui *gui)
 {
 	GtkToggleButton *toggle;
 	
 	if (!strcmp (depname, "UNIMPLEMENTED")) {
 		gtk_widget_set_sensitive (widget, FALSE);
-		return;
+		return FALSE;
 	}
 	
 	toggle = g_hash_table_lookup (gui->extra_config, depname);
 	g_signal_connect (toggle, "toggled", G_CALLBACK (toggle_sensitivity), widget);
 	toggle_sensitivity (toggle, widget);
+
+	return gtk_toggle_button_get_active(toggle);
 }
 
 void
@@ -739,7 +944,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 	GtkWidget *hostname, *username, *path;
 	GtkTable *main_table, *cur_table;
 	CamelProviderConfEntry *entries;
-	GList *children, *child;
+	GList *child, *next;
 	char *name;
 	int i, rows;
 	
@@ -763,29 +968,37 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 	/* Remove the contents of the extra_table except for the
 	 * mailcheck_frame.
 	 */
-	main_table = (GtkTable *)glade_xml_get_widget (gui->xml, "extra_table");
+	main_table = (GtkTable *) glade_xml_get_widget (gui->xml, "extra_table");
+	gtk_container_set_border_width ((GtkContainer *) main_table, 12);
+	gtk_table_set_row_spacings (main_table, 6);
+	gtk_table_set_col_spacings (main_table, 8);
 	mailcheck_frame = glade_xml_get_widget (gui->xml, "extra_mailcheck_frame");
-	children = gtk_container_get_children (GTK_CONTAINER (main_table));
-	for (child = children; child; child = child->next) {
-		if (child->data != (gpointer)mailcheck_frame) {
-			gtk_container_remove (GTK_CONTAINER (main_table),
-					      child->data);
-		}
+	child = gtk_container_get_children (GTK_CONTAINER (main_table));
+	while (child != NULL) {
+		next = child->next;
+		if (child->data != (gpointer) mailcheck_frame)
+			gtk_container_remove (GTK_CONTAINER (main_table), child->data);
+		g_list_free_1 (child);
+		child = next;
 	}
-	g_list_free (children);
+	
 	gtk_table_resize (main_table, 1, 2);
 	
 	/* Remove any additional mailcheck items. */
-	cur_table = (GtkTable *)glade_xml_get_widget (gui->xml, "extra_mailcheck_table");
+	cur_table = (GtkTable *) glade_xml_get_widget (gui->xml, "extra_mailcheck_table");
+	gtk_container_set_border_width ((GtkContainer *) cur_table, 12);
+	gtk_table_set_row_spacings (cur_table, 6);
+	gtk_table_set_col_spacings (cur_table, 8);
 	mailcheck_hbox = glade_xml_get_widget (gui->xml, "extra_mailcheck_hbox");
-	children = gtk_container_get_children (GTK_CONTAINER (cur_table));
-	for (child = children; child; child = child->next) {
-		if (child->data != (gpointer)mailcheck_hbox) {
-			gtk_container_remove (GTK_CONTAINER (cur_table),
-					      child->data);
-		}
+	child = gtk_container_get_children (GTK_CONTAINER (cur_table));
+	while (child != NULL) {
+		next = child->next;
+		if (child->data != (gpointer) mailcheck_hbox)
+			gtk_container_remove (GTK_CONTAINER (cur_table), child->data);
+		g_list_free_1 (child);
+		child = next;
 	}
-	g_list_free (children);
+	
 	gtk_table_resize (cur_table, 1, 2);
 
 	if (!gui->source.provider) {
@@ -794,7 +1007,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			camel_url_free (url);
 		return;
 	} else
-		gtk_widget_set_sensitive (GTK_WIDGET (main_table), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(main_table), e_account_writable(gui->account, E_ACCOUNT_SOURCE_URL));
 	
 	/* Set up our hash table. */
 	if (gui->extra_config)
@@ -808,28 +1021,47 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 	cur_table = main_table;
 	rows = main_table->nrows;
 	for (i = 0; ; i++) {
+		GtkWidget *enable_widget = NULL;
+		int enabled = TRUE;
+		
 		switch (entries[i].type) {
 		case CAMEL_PROVIDER_CONF_SECTION_START:
 		{
-			GtkWidget *frame;
+			GtkWidget *frame, *label;
+			char *markup;
 			
-			if (entries[i].name && !strcmp (entries[i].name, "mailcheck"))
-				cur_table = (GtkTable *)glade_xml_get_widget (gui->xml, "extra_mailcheck_table");
-			else {
-				frame = gtk_frame_new (entries[i].text);
-				gtk_container_set_border_width (GTK_CONTAINER (frame), 3);
-				gtk_table_attach (main_table, frame, 0, 2,
-						  rows, rows + 1,
-						  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-				cur_table = (GtkTable *)gtk_table_new (0, 2, FALSE);
-				rows = 0;
-				gtk_table_set_row_spacings (cur_table, 4);
-				gtk_table_set_col_spacings (cur_table, 8);
-				gtk_container_set_border_width (GTK_CONTAINER (cur_table), 3);
-
-				gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (cur_table));
+			if (entries[i].name && !strcmp (entries[i].name, "mailcheck")) {
+				cur_table = (GtkTable *) glade_xml_get_widget (gui->xml, "extra_mailcheck_table");
+				rows = cur_table->nrows;
+				break;
 			}
+			
+			markup = g_strdup_printf ("<span weight=\"bold\">%s</span>", entries[i].text);
+			label = gtk_label_new (NULL);
+			gtk_label_set_markup ((GtkLabel *) label, markup);
+			gtk_label_set_justify ((GtkLabel *) label, GTK_JUSTIFY_LEFT);
+			gtk_label_set_use_markup ((GtkLabel *) label, TRUE);
+			gtk_misc_set_alignment ((GtkMisc *) label, 0.0, 0.5);
+			gtk_widget_show (label);
+			g_free (markup);
+			
+			cur_table = (GtkTable *) gtk_table_new (0, 2, FALSE);
+			gtk_container_set_border_width ((GtkContainer *) cur_table, 12);
+			gtk_table_set_row_spacings (cur_table, 6);
+			gtk_table_set_col_spacings (cur_table, 8);
+			gtk_widget_show ((GtkWidget *) cur_table);
+			
+			frame = gtk_vbox_new (FALSE, 0);
+			gtk_box_pack_start ((GtkBox *) frame, label, FALSE, FALSE, 0);
+			gtk_box_pack_start ((GtkBox *) frame, (GtkWidget *) cur_table, FALSE, FALSE, 0);
+			gtk_widget_show (frame);
+			
+			gtk_table_attach (main_table, frame, 0, 2,
+					  rows, rows + 1,
+					  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+			
+			rows = 0;
+			
 			break;
 		}
 		case CAMEL_PROVIDER_CONF_SECTION_END:
@@ -843,10 +1075,13 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 				
 				if (!strcmp (entries[i].name, "username")) {
 					gtk_label_set_text_with_mnemonic (GTK_LABEL (username_label), entries[i].text);
+					enable_widget = username_label;
 				} else if (!strcmp (entries[i].name, "hostname")) {
 					gtk_label_set_text_with_mnemonic (GTK_LABEL (hostname_label), entries[i].text);
+					enable_widget = hostname_label;
 				} else if (!strcmp (entries[i].name, "path")) {
 					gtk_label_set_text_with_mnemonic (GTK_LABEL (path_label), entries[i].text);
+					enable_widget = path_label;
 				} else {
 					/* make a new label */
 					label = gtk_label_new (entries[i].text);
@@ -854,6 +1089,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 					gtk_table_attach (cur_table, label, 0, 2, rows, rows + 1,
 							  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 					rows++;
+					enable_widget = label;
 				}
 			}
 			break;
@@ -869,13 +1105,15 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			else
 				active = atoi (entries[i].value);
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), active);
-
+			
 			gtk_table_attach (cur_table, checkbox, 0, 2, rows, rows + 1,
 					  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 			rows++;
 			g_hash_table_insert (gui->extra_config, entries[i].name, checkbox);
 			if (entries[i].depname)
-				setup_toggle (checkbox, entries[i].depname, gui);
+				enabled = setup_toggle(checkbox, entries[i].depname, gui);
+
+			enable_widget = checkbox;
 			break;
 		}
 		
@@ -908,7 +1146,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 						  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 				rows++;
 			}
-
+			
 			if (url)
 				text = camel_url_get_param (url, entries[i].name);
 			else
@@ -919,11 +1157,12 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			
 			if (entries[i].depname) {
 				setup_toggle (entry, entries[i].depname, gui);
-				setup_toggle (label, entries[i].depname, gui);
+				enabled = setup_toggle (label, entries[i].depname, gui);
 			}
-
+			
 			g_hash_table_insert (gui->extra_config, entries[i].name, entry);
-						
+			
+			enable_widget = entry;
 			break;
 		}
 		
@@ -946,11 +1185,11 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			data = entries[i].value;
 			enable = *data++ == 'y';
 			g_return_if_fail (*data == ':');
-			min = strtod (++data, &data);
+			min = strtod (data + 1, &data);
 			g_return_if_fail (*data == ':');
-			def = strtod (++data, &data);
+			def = strtod (data + 1, &data);
 			g_return_if_fail (*data == ':');
-			max = strtod (++data, NULL);
+			max = strtod (data + 1, NULL);
 			
 			if (url) {
 				const char *val;
@@ -985,14 +1224,22 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			if (entries[i].depname) {
 				setup_toggle (checkbox, entries[i].depname, gui);
 				setup_toggle (spin, entries[i].depname, gui);
-				setup_toggle (label, entries[i].depname, gui);
+				enabled = setup_toggle (label, entries[i].depname, gui);
 			}
+			
+			enable_widget = hbox;
 			break;
 		}
-		
+
+		case CAMEL_PROVIDER_CONF_HIDDEN:
+			break;
+
 		case CAMEL_PROVIDER_CONF_END:
 			goto done;
 		}
+		
+		if (enabled && enable_widget)
+			gtk_widget_set_sensitive(enable_widget, e_account_writable_option(gui->account, gui->source.provider->protocol, entries[i].name));
 	}
 	
  done:
@@ -1050,7 +1297,12 @@ extract_values (MailAccountGuiService *source, GHashTable *extra_config, CamelUR
 			camel_url_set_param (url, entries[i].name, name);
 			g_free (name);
 			break;
-			
+
+		case CAMEL_PROVIDER_CONF_HIDDEN:
+			if (entries[i].value)
+				camel_url_set_param (url, entries[i].name, entries[i].value);
+			break;
+
 		case CAMEL_PROVIDER_CONF_END:
 			return;
 			
@@ -1060,16 +1312,13 @@ extract_values (MailAccountGuiService *source, GHashTable *extra_config, CamelUR
 	}
 }
 
-
 static void
-folder_selected (EvolutionFolderSelectorButton *button,
-		 GNOME_Evolution_Folder *corba_folder,
-		 gpointer user_data)
+folder_selected (EMFolderSelectionButton *button, gpointer user_data)
 {
 	char **folder_name = user_data;
 	
 	g_free (*folder_name);
-	*folder_name = g_strdup (corba_folder->physicalUri);
+	*folder_name = g_strdup(em_folder_selection_button_get_selection(button));
 }
 
 static void
@@ -1079,15 +1328,13 @@ default_folders_clicked (GtkButton *button, gpointer user_data)
 	
 	/* Drafts folder */
 	g_free (gui->drafts_folder_uri);
-	gui->drafts_folder_uri = g_strdup (default_drafts_folder_uri);
-	evolution_folder_selector_button_set_uri (EVOLUTION_FOLDER_SELECTOR_BUTTON (gui->drafts_folder_button),
-						  gui->drafts_folder_uri);
+	gui->drafts_folder_uri = g_strdup(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_DRAFTS));
+	em_folder_selection_button_set_selection((EMFolderSelectionButton *)gui->drafts_folder_button, gui->drafts_folder_uri);
 	
 	/* Sent folder */
 	g_free (gui->sent_folder_uri);
-	gui->sent_folder_uri = g_strdup (default_sent_folder_uri);
-	evolution_folder_selector_button_set_uri (EVOLUTION_FOLDER_SELECTOR_BUTTON (gui->sent_folder_button),
-						  gui->sent_folder_uri);
+	gui->sent_folder_uri = g_strdup(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_SENT));
+	em_folder_selection_button_set_selection((EMFolderSelectionButton *)gui->sent_folder_button, gui->sent_folder_uri);
 }
 
 GtkWidget *mail_account_gui_folder_selector_button_new (char *widget_name, char *string1, char *string2, int int1, int int2);
@@ -1097,11 +1344,11 @@ mail_account_gui_folder_selector_button_new (char *widget_name,
 					     char *string1, char *string2,
 					     int int1, int int2)
 {
-	return (GtkWidget *)g_object_new (EVOLUTION_TYPE_FOLDER_SELECTOR_BUTTON, NULL);
+	return (GtkWidget *)em_folder_selection_button_new(_("Select Folder"), NULL);
 }
 
 static gboolean
-setup_service (MailAccountGuiService *gsvc, EAccountService *service)
+setup_service (MailAccountGui *gui, MailAccountGuiService *gsvc, EAccountService *service)
 {
 	CamelURL *url = camel_url_new (service->url, NULL);
 	gboolean has_auth = FALSE;
@@ -1171,6 +1418,9 @@ setup_service (MailAccountGuiService *gsvc, EAccountService *service)
 	camel_url_free (url);
 	
 	gtk_toggle_button_set_active (gsvc->remember, service->save_passwd);
+
+	gtk_widget_set_sensitive((GtkWidget *)gsvc->authtype, e_account_writable_option(gui->account, gsvc->provider->protocol, "auth"));
+	gtk_widget_set_sensitive((GtkWidget *)gsvc->use_ssl, e_account_writable_option(gui->account, gsvc->provider->protocol, "use_ssl"));
 	
 	return has_auth;
 }
@@ -1222,65 +1472,125 @@ construct_ssl_menu (MailAccountGuiService *service)
 }
 
 static void
+sig_activate (GtkWidget *item, MailAccountGui *gui)
+{
+	ESignature *sig;
+	
+	sig = g_object_get_data ((GObject *) item, "sig");
+	
+	gui->sig_uid = sig ? sig->uid : NULL;
+}
+
+static void
+signature_added (ESignatureList *signatures, ESignature *sig, MailAccountGui *gui)
+{
+	GtkWidget *menu, *item;
+	
+	menu = gtk_option_menu_get_menu (gui->sig_menu);
+	if (sig->autogen)
+		item = gtk_menu_item_new_with_label (_("Autogenerated"));
+	else
+		item = gtk_menu_item_new_with_label (sig->name);
+	g_object_set_data ((GObject *) item, "sig", sig);
+	g_signal_connect (item, "activate", G_CALLBACK (sig_activate), gui);
+	gtk_widget_show (item);
+	
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	
+	gtk_option_menu_set_history (gui->sig_menu, g_list_length (GTK_MENU_SHELL (menu)->children));
+}
+
+static void
+signature_removed (ESignatureList *signatures, ESignature *sig, MailAccountGui *gui)
+{
+	GtkWidget *menu;
+	ESignature *cur;
+	GList *items;
+	
+	if (gui->sig_uid == sig->uid)
+		gui->sig_uid = NULL;
+	
+	menu = gtk_option_menu_get_menu (gui->sig_menu);
+	items = GTK_MENU_SHELL (menu)->children;
+	while (items != NULL) {
+		cur = g_object_get_data (items->data, "sig");
+		if (cur == sig) {
+			gtk_widget_destroy (items->data);
+			break;
+		}
+		items = items->next;
+	}
+}
+
+static void
+menu_item_set_label (GtkMenuItem *item, const char *label)
+{
+	GtkWidget *widget;
+	
+	widget = gtk_bin_get_child ((GtkBin *) item);
+	if (GTK_IS_LABEL (widget))
+		gtk_label_set_text ((GtkLabel *) widget, label);
+}
+
+static void
+signature_changed (ESignatureList *signatures, ESignature *sig, MailAccountGui *gui)
+{
+	GtkWidget *menu;
+	ESignature *cur;
+	GList *items;
+	
+	menu = gtk_option_menu_get_menu (gui->sig_menu);
+	items = GTK_MENU_SHELL (menu)->children;
+	while (items != NULL) {
+		cur = g_object_get_data (items->data, "sig");
+		if (cur == sig) {
+			menu_item_set_label (items->data, sig->name);
+			break;
+		}
+		items = items->next;
+	}
+}
+
+static void
 clear_menu (GtkWidget *menu)
 {
 	while (GTK_MENU_SHELL (menu)->children)
 		gtk_container_remove (GTK_CONTAINER (menu), GTK_MENU_SHELL (menu)->children->data);
 }
 
-static inline int
-sig_get_index (MailConfigSignature *sig)
-{
-	return sig ? sig->id + 2 : 0;
-}
-
-static inline int
-sig_gui_get_index (MailAccountGui *gui)
-{
-	if (gui->auto_signature)
-		return 1;
-	return sig_get_index (gui->def_signature);
-}
-
 static void
-sig_fill_options (MailAccountGui *gui)
+sig_fill_menu (MailAccountGui *gui)
 {
-	GtkWidget *menu;
-	GtkWidget *mi;
-	GSList *l;
-	MailConfigSignature *sig;
+	ESignatureList *signatures;
+	GtkWidget *menu, *item;
+	EIterator *it;
 	
-	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (gui->sig_option_menu));
+	menu = gtk_option_menu_get_menu (gui->sig_menu);
+	clear_menu (menu);
 	
-	if (menu)
-		clear_menu (menu);
-	else
-		menu = gtk_menu_new ();
+	item = gtk_menu_item_new_with_label (_("None"));
+	gtk_widget_show (item);
+	g_signal_connect (item, "activate", G_CALLBACK (sig_activate), gui);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_menu_item_new_with_label (_("None")));
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_menu_item_new_with_label (_("Autogenerated")));
-	/* gtk_menu_shell_append(GTK_MENU_SHELL(menu), gtk_menu_item_new_with_label (_("Random"))); */
+	signatures = mail_config_get_signatures ();
+	it = e_list_get_iterator ((EList *) signatures);
 	
-	for (l = mail_config_get_signature_list (); l; l = l->next) {
-		sig = l->data;
-		mi = gtk_menu_item_new_with_label (sig->name);
-		g_object_set_data ((GObject *) mi, "sig", sig);
-		gtk_widget_show (mi);
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), mi);
+	while (e_iterator_is_valid (it)) {
+		ESignature *sig;
+		
+		sig = (ESignature *) e_iterator_get (it);
+		signature_added (signatures, sig, gui);
+		e_iterator_next (it);
 	}
-}
-
-static void
-sig_changed (GtkWidget *w, MailAccountGui *gui)
-{
-	GtkWidget *active;
-	int index;
 	
-	active = gtk_menu_get_active (GTK_MENU (w));
-	index = g_list_index (GTK_MENU_SHELL (w)->children, active);
+	g_object_unref (it);
 	
-	gui->def_signature = (MailConfigSignature *) g_object_get_data(G_OBJECT(active), "sig");
-	gui->auto_signature = index == 1 ? TRUE : FALSE;
+	gui->sig_added_id = g_signal_connect (signatures, "signature-added", G_CALLBACK (signature_added), gui);
+	gui->sig_removed_id = g_signal_connect (signatures, "signature-removed", G_CALLBACK (signature_removed), gui);
+	gui->sig_changed_id = g_signal_connect (signatures, "signature-changed", G_CALLBACK (signature_changed), gui);
+	
+	gtk_option_menu_set_history (gui->sig_menu, 0);
 }
 
 static void
@@ -1309,110 +1619,144 @@ sig_add_new_signature (GtkWidget *w, MailAccountGui *gui)
 	parent = gtk_widget_get_toplevel (w);
 	parent = GTK_WIDGET_TOPLEVEL (parent) ? parent : NULL;
 	
-	gui->def_signature = mail_composer_prefs_new_signature ((GtkWindow *) parent, send_html, NULL);
-	gui->auto_signature = FALSE;
-	
-	gtk_option_menu_set_history (GTK_OPTION_MENU (gui->sig_option_menu), sig_gui_get_index (gui));
+	em_composer_prefs_new_signature ((GtkWindow *) parent, send_html);
 }
 
 static void
-setup_signatures (MailAccountGui *gui)
+select_account_signature (MailAccountGui *gui)
 {
-	MailConfigSignature *sig;
-	GSList *signatures;
+	ESignature *sig, *cur;
+	GtkWidget *menu;
+	GList *items;
+	int i = 0;
 	
-	signatures = mail_config_get_signature_list ();
-	sig = g_slist_nth_data (signatures, gui->account->id->def_signature);
+	if (!gui->account->id->sig_uid || !(sig = mail_config_get_signature_by_uid (gui->account->id->sig_uid)))
+		return;
 	
-	gui->def_signature = sig;
-	gui->auto_signature = gui->account->id->auto_signature;
-	gtk_option_menu_set_history (GTK_OPTION_MENU (gui->sig_option_menu), sig_gui_get_index (gui));
-}
-
-static void
-sig_event_client (MailConfigSigEvent event, MailConfigSignature *sig, MailAccountGui *gui)
-{
-	switch (event) {
-	case MAIL_CONFIG_SIG_EVENT_ADDED: {
-		GtkWidget *menu;
-		GtkWidget *mi;
-		
-		d(printf ("accounts ADDED\n"));
-		mi = gtk_menu_item_new_with_label (sig->name);
-		g_object_set_data ((GObject *) mi, "sig", sig);
-		gtk_widget_show (mi);
-		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (gui->sig_option_menu));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), mi);
-		
-		break;
-	}
-	case MAIL_CONFIG_SIG_EVENT_NAME_CHANGED: {
-		GtkWidget *menu;
-		GtkWidget *mi;
-		
-		d(printf ("gui NAME CHANGED\n"));
-		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (gui->sig_option_menu));
-		gtk_widget_ref (menu);
-		gtk_option_menu_remove_menu (GTK_OPTION_MENU (gui->sig_option_menu));
-		mi = g_list_nth_data (GTK_MENU_SHELL (menu)->children, sig_get_index (sig));
-		gtk_label_set_text (GTK_LABEL (GTK_BIN (mi)->child), sig->name);
-		gtk_option_menu_set_menu (GTK_OPTION_MENU (gui->sig_option_menu), menu);
-		gtk_widget_unref (menu);
-		gtk_option_menu_set_history (GTK_OPTION_MENU (gui->sig_option_menu),
-					     sig_gui_get_index (gui));
-		
-		break;
-	}
-	case MAIL_CONFIG_SIG_EVENT_DELETED: {
-		GtkWidget *menu;
-		GtkWidget *mi;
-		
-		d(printf ("gui DELETED\n"));
-		
-		if (sig == gui->def_signature) {
-			gui->def_signature = NULL;
-			gui->auto_signature = TRUE;
-			gtk_option_menu_set_history (GTK_OPTION_MENU (gui->sig_option_menu),
-						     sig_gui_get_index (gui));
+	menu = gtk_option_menu_get_menu (gui->sig_menu);
+	items = GTK_MENU_SHELL (menu)->children;
+	while (items != NULL) {
+		cur = g_object_get_data (items->data, "sig");
+		if (cur == sig) {
+			gtk_option_menu_set_history (gui->sig_menu, i);
+			gtk_menu_item_activate (items->data);
+			break;
 		}
-		
-		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (gui->sig_option_menu));
-		mi = g_list_nth_data (GTK_MENU_SHELL (menu)->children, sig_get_index (sig));
-		gtk_container_remove (GTK_CONTAINER (menu), mi);
-		
-		break;
-	}
-	default:
-		;
+		items = items->next;
+		i++;
 	}
 }
 
 static void
 prepare_signatures (MailAccountGui *gui)
 {
-	gui->sig_option_menu = glade_xml_get_widget (gui->xml, "sigOption");
-	sig_fill_options (gui);
-	g_signal_connect (gtk_option_menu_get_menu (GTK_OPTION_MENU (gui->sig_option_menu)),
-			  "selection-done", G_CALLBACK(sig_changed), gui);
+	GtkWidget *button;
 	
-	glade_xml_signal_connect_data (gui->xml, "sigAddNewClicked",
-				       G_CALLBACK (sig_add_new_signature), gui);
+	gui->sig_menu = (GtkOptionMenu *) glade_xml_get_widget (gui->xml, "sigOption");
+	sig_fill_menu (gui);
+	
+	button = glade_xml_get_widget (gui->xml, "sigAddNew");
+	g_signal_connect (button, "clicked", G_CALLBACK (sig_add_new_signature), gui);
 	
 	if (!gui->dialog) {
 		gtk_widget_hide (glade_xml_get_widget (gui->xml, "sigLabel"));
 		gtk_widget_hide (glade_xml_get_widget (gui->xml, "sigOption"));
 		gtk_widget_hide (glade_xml_get_widget (gui->xml, "sigAddNew"));
-	} else {
-		mail_config_signature_register_client ((MailConfigSignatureClient) sig_event_client, gui);
+	}
+	
+	select_account_signature (gui);
+}
+
+#if defined (HAVE_NSS)
+static void
+smime_changed(MailAccountGui *gui)
+{
+	int act;
+	const char *tmp;
+
+	tmp = gtk_entry_get_text(gui->smime_sign_key);
+	act = tmp && tmp[0];
+	gtk_widget_set_sensitive((GtkWidget *)gui->smime_sign_key_clear, act);
+	gtk_widget_set_sensitive((GtkWidget *)gui->smime_sign_default, act);
+	if (!act)
+		gtk_toggle_button_set_active(gui->smime_sign_default, FALSE);
+
+	tmp = gtk_entry_get_text(gui->smime_encrypt_key);
+	act = tmp && tmp[0];
+	gtk_widget_set_sensitive((GtkWidget *)gui->smime_encrypt_key_clear, act);
+	gtk_widget_set_sensitive((GtkWidget *)gui->smime_encrypt_default, act);
+	gtk_widget_set_sensitive((GtkWidget *)gui->smime_encrypt_to_self, act);
+	if (!act) {
+		gtk_toggle_button_set_active(gui->smime_encrypt_default, FALSE);
+		gtk_toggle_button_set_active(gui->smime_encrypt_to_self, FALSE);
 	}
 }
 
-MailAccountGui *
-mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
+static void
+smime_sign_key_selected(GtkWidget *dialog, const char *key, MailAccountGui *gui)
 {
-	const char *allowed_types[] = { "mail/*", NULL };
+	if (key != NULL) {
+		gtk_entry_set_text(gui->smime_sign_key, key);
+		smime_changed(gui);
+	}
+
+	gtk_widget_destroy(dialog);
+}
+
+static void
+smime_sign_key_select(GtkWidget *button, MailAccountGui *gui)
+{
+	GtkWidget *w;
+
+	w = e_cert_selector_new(E_CERT_SELECTOR_SIGNER, gtk_entry_get_text(gui->smime_sign_key));
+	gtk_window_set_modal((GtkWindow *)w, TRUE);
+	gtk_window_set_transient_for((GtkWindow *)w, (GtkWindow *)gui->dialog);
+	g_signal_connect(w, "selected", G_CALLBACK(smime_sign_key_selected), gui);
+	gtk_widget_show(w);
+}
+
+static void
+smime_sign_key_clear(GtkWidget *w, MailAccountGui *gui)
+{
+	gtk_entry_set_text(gui->smime_sign_key, "");
+	smime_changed(gui);
+}
+
+static void
+smime_encrypt_key_selected(GtkWidget *dialog, const char *key, MailAccountGui *gui)
+{
+	if (key != NULL) {
+		gtk_entry_set_text(gui->smime_encrypt_key, key);
+		smime_changed(gui);
+	}
+
+	gtk_widget_destroy(dialog);
+}
+
+static void
+smime_encrypt_key_select(GtkWidget *button, MailAccountGui *gui)
+{
+	GtkWidget *w;
+
+	w = e_cert_selector_new(E_CERT_SELECTOR_SIGNER, gtk_entry_get_text(gui->smime_encrypt_key));
+	gtk_window_set_modal((GtkWindow *)w, TRUE);
+	gtk_window_set_transient_for((GtkWindow *)w, (GtkWindow *)gui->dialog);
+	g_signal_connect(w, "selected", G_CALLBACK(smime_encrypt_key_selected), gui);
+	gtk_widget_show(w);
+}
+
+static void
+smime_encrypt_key_clear(GtkWidget *w, MailAccountGui *gui)
+{
+	gtk_entry_set_text(gui->smime_encrypt_key, "");
+	smime_changed(gui);
+}
+#endif
+
+MailAccountGui *
+mail_account_gui_new (EAccount *account, EMAccountPrefs *dialog)
+{
 	MailAccountGui *gui;
-	GtkWidget *button;
 	
 	g_object_ref (account);
 	
@@ -1436,8 +1780,6 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	gui->reply_to = GTK_ENTRY (glade_xml_get_widget (gui->xml, "identity_reply_to"));
 	gui->organization = GTK_ENTRY (glade_xml_get_widget (gui->xml, "identity_organization"));
 	
-	prepare_signatures (gui);
-	
 	if (account->id->name)
 		gtk_entry_set_text (gui->full_name, account->id->name);
 	if (account->id->address)
@@ -1447,10 +1789,11 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	if (account->id->organization)
 		gtk_entry_set_text (gui->organization, account->id->organization);
 	
-	setup_signatures (gui);
+	prepare_signatures (gui);
 	
 	/* Source */
 	gui->source.provider_type = CAMEL_PROVIDER_STORE;
+	gui->source.container = glade_xml_get_widget(gui->xml, "source_vbox");
 	gui->source.type = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "source_type_omenu"));
 	gui->source.description = GTK_LABEL (glade_xml_get_widget (gui->xml, "source_description"));
 	gui->source.hostname = GTK_ENTRY (glade_xml_get_widget (gui->xml, "source_host"));
@@ -1462,6 +1805,8 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	gui->source.path = GTK_ENTRY (glade_xml_get_widget (gui->xml, "source_path"));
 	g_signal_connect (gui->source.path, "changed",
 			  G_CALLBACK (service_changed), &gui->source);
+	gui->source.ssl_frame = glade_xml_get_widget (gui->xml, "source_security_frame");
+	gtk_widget_hide (gui->source.ssl_frame);
 	gui->source.ssl_hbox = glade_xml_get_widget (gui->xml, "source_ssl_hbox");
 	gui->source.use_ssl = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "source_use_ssl"));
 	construct_ssl_menu (&gui->source);
@@ -1476,6 +1821,7 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	
 	/* Transport */
 	gui->transport.provider_type = CAMEL_PROVIDER_TRANSPORT;
+	gui->transport.container = glade_xml_get_widget(gui->xml, "transport_vbox");
 	gui->transport.type = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "transport_type_omenu"));
 	gui->transport.description = GTK_LABEL (glade_xml_get_widget (gui->xml, "transport_description"));
 	gui->transport.hostname = GTK_ENTRY (glade_xml_get_widget (gui->xml, "transport_host"));
@@ -1484,6 +1830,8 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	gui->transport.username = GTK_ENTRY (glade_xml_get_widget (gui->xml, "transport_user"));
 	g_signal_connect (gui->transport.username, "changed",
 			  G_CALLBACK (service_changed), &gui->transport);
+	gui->transport.ssl_frame = glade_xml_get_widget (gui->xml, "transport_security_frame");
+	gtk_widget_hide (gui->transport.ssl_frame);
 	gui->transport.ssl_hbox = glade_xml_get_widget (gui->xml, "transport_ssl_hbox");
 	gui->transport.use_ssl = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "transport_use_ssl"));
 	construct_ssl_menu (&gui->transport);
@@ -1499,35 +1847,27 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	
 	/* Drafts folder */
 	gui->drafts_folder_button = GTK_BUTTON (glade_xml_get_widget (gui->xml, "drafts_button"));
-	g_signal_connect (gui->drafts_folder_button, "selected",
-			  G_CALLBACK (folder_selected), &gui->drafts_folder_uri);
+	g_signal_connect (gui->drafts_folder_button, "selected", G_CALLBACK (folder_selected), &gui->drafts_folder_uri);
 	if (account->drafts_folder_uri)
-		gui->drafts_folder_uri = g_strdup (account->drafts_folder_uri);
+		gui->drafts_folder_uri = em_uri_to_camel (account->drafts_folder_uri);
 	else
-		gui->drafts_folder_uri = g_strdup (default_drafts_folder_uri);
-	evolution_folder_selector_button_construct (EVOLUTION_FOLDER_SELECTOR_BUTTON (gui->drafts_folder_button),
-						    global_shell_client,
-						    _("Select Folder"),
-						    gui->drafts_folder_uri,
-						    allowed_types);
+		gui->drafts_folder_uri = g_strdup(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_DRAFTS));
+	em_folder_selection_button_set_selection((EMFolderSelectionButton *)gui->drafts_folder_button, gui->drafts_folder_uri);
+	gtk_widget_show ((GtkWidget *) gui->drafts_folder_button);
 	
 	/* Sent folder */
 	gui->sent_folder_button = GTK_BUTTON (glade_xml_get_widget (gui->xml, "sent_button"));
-	g_signal_connect (gui->sent_folder_button, "selected",
-			  G_CALLBACK (folder_selected), &gui->sent_folder_uri);
+	g_signal_connect (gui->sent_folder_button, "selected", G_CALLBACK (folder_selected), &gui->sent_folder_uri);
 	if (account->sent_folder_uri)
-		gui->sent_folder_uri = g_strdup (account->sent_folder_uri);
+		gui->sent_folder_uri = em_uri_to_camel (account->sent_folder_uri);
 	else
-		gui->sent_folder_uri = g_strdup (default_sent_folder_uri);
-	evolution_folder_selector_button_construct (EVOLUTION_FOLDER_SELECTOR_BUTTON (gui->sent_folder_button),
-						    global_shell_client,
-						    _("Select Folder"),
-						    gui->sent_folder_uri,
-						    allowed_types);
+		gui->sent_folder_uri = g_strdup(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_SENT));
+	em_folder_selection_button_set_selection((EMFolderSelectionButton *)gui->sent_folder_button, gui->sent_folder_uri);
+	gtk_widget_show ((GtkWidget *) gui->sent_folder_button);
 	
 	/* Special Folders "Reset Defaults" button */
-	button = glade_xml_get_widget (gui->xml, "default_folders_button");
-	g_signal_connect (button, "clicked", G_CALLBACK (default_folders_clicked), gui);
+	gui->restore_folders_button = (GtkButton *)glade_xml_get_widget (gui->xml, "default_folders_button");
+	g_signal_connect (gui->restore_folders_button, "clicked", G_CALLBACK (default_folders_clicked), gui);
 	
 	/* Always Cc */
 	gui->always_cc = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "always_cc"));
@@ -1556,37 +1896,57 @@ mail_account_gui_new (EAccount *account, MailAccountsTab *dialog)
 	gui->pgp_always_trust = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "pgp_always_trust"));
 	gtk_toggle_button_set_active (gui->pgp_always_trust, account->pgp_always_trust);
 	
-#if defined (HAVE_NSS) && defined (SMIME_SUPPORTED)
-	gui->smime_key = GTK_ENTRY (glade_xml_get_widget (gui->xml, "smime_key"));
-	if (account->smime_key)
-		gtk_entry_set_text (gui->smime_key, account->smime_key);
-	gui->smime_encrypt_to_self = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "smime_encrypt_to_self"));
-	gtk_toggle_button_set_active (gui->smime_encrypt_to_self, account->smime_encrypt_to_self);
-	gui->smime_always_sign = GTK_TOGGLE_BUTTON (glade_xml_get_widget (gui->xml, "smime_always_sign"));
-	gtk_toggle_button_set_active (gui->smime_always_sign, account->smime_always_sign);
+#if defined (HAVE_NSS)
+	gui->smime_sign_key = (GtkEntry *)glade_xml_get_widget (gui->xml, "smime_sign_key");
+	if (account->smime_sign_key)
+		gtk_entry_set_text(gui->smime_sign_key, account->smime_sign_key);
+	gui->smime_sign_key_select = (GtkButton *)glade_xml_get_widget (gui->xml, "smime_sign_key_select");
+	gui->smime_sign_key_clear = (GtkButton *)glade_xml_get_widget (gui->xml, "smime_sign_key_clear");
+	g_signal_connect(gui->smime_sign_key_select, "clicked", G_CALLBACK(smime_sign_key_select), gui);
+	g_signal_connect(gui->smime_sign_key_clear, "clicked", G_CALLBACK(smime_sign_key_clear), gui);
+
+	gui->smime_sign_default = (GtkToggleButton *)glade_xml_get_widget (gui->xml, "smime_sign_default");
+	gtk_toggle_button_set_active(gui->smime_sign_default, account->smime_sign_default);
+
+	gui->smime_encrypt_key = (GtkEntry *)glade_xml_get_widget (gui->xml, "smime_encrypt_key");
+	if (account->smime_encrypt_key)
+		gtk_entry_set_text(gui->smime_encrypt_key, account->smime_encrypt_key);
+	gui->smime_encrypt_key_select = (GtkButton *)glade_xml_get_widget (gui->xml, "smime_encrypt_key_select");
+	gui->smime_encrypt_key_clear = (GtkButton *)glade_xml_get_widget (gui->xml, "smime_encrypt_key_clear");
+	g_signal_connect(gui->smime_encrypt_key_select, "clicked", G_CALLBACK(smime_encrypt_key_select), gui);
+	g_signal_connect(gui->smime_encrypt_key_clear, "clicked", G_CALLBACK(smime_encrypt_key_clear), gui);
+
+	gui->smime_encrypt_default = (GtkToggleButton *)glade_xml_get_widget (gui->xml, "smime_encrypt_default");
+	gtk_toggle_button_set_active(gui->smime_encrypt_default, account->smime_encrypt_default);
+	gui->smime_encrypt_to_self = (GtkToggleButton *)glade_xml_get_widget (gui->xml, "smime_encrypt_to_self");
+	gtk_toggle_button_set_active(gui->smime_encrypt_to_self, account->smime_encrypt_to_self);
+	smime_changed(gui);
 #else
 	{
 		/* Since we don't have NSS, hide the S/MIME config options */
 		GtkWidget *frame;
 		
-		frame = glade_xml_get_widget (gui->xml, "smime_frame");
+		frame = glade_xml_get_widget (gui->xml, "smime_vbox");
 		gtk_widget_destroy (frame);
 	}
-#endif /* HAVE_NSS && SMIME_SUPPORTED */
-	
+#endif /* HAVE_NSS */
+
 	return gui;
 }
 
 void
 mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 {
-	GtkWidget *stores, *transports, *item;
+	GtkWidget *stores, *transports, *item, *none;
 	GtkWidget *fstore = NULL, *ftransport = NULL;
 	int si = 0, hstore = 0, ti = 0, htransport = 0;
 	int max_width = 0;
 	char *max_authname = NULL;
 	char *source_proto, *transport_proto;
 	GList *providers, *l;
+	gboolean writeable;
+	
+	printf("account gui setup\n");
 	
 	if (gui->account->source && gui->account->source->url) {
 		source_proto = gui->account->source->url;
@@ -1603,7 +1963,16 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	/* Construct source/transport option menus */
 	stores = gtk_menu_new ();
 	transports = gtk_menu_new ();
-	providers = camel_session_list_providers (session, TRUE);
+
+	/* add a "None" option to the stores menu */
+	none = item = gtk_menu_item_new_with_label (_("None"));
+	g_object_set_data ((GObject *) item, "provider", NULL);
+	g_signal_connect (item, "activate", G_CALLBACK (source_type_changed), gui);
+	gtk_menu_shell_append(GTK_MENU_SHELL(stores), item);
+	gtk_widget_show (item);
+	si++;
+
+	providers = camel_provider_list(TRUE);
 	
 	/* sort the providers, remote first */
 	providers = g_list_sort (providers, (GCompareFunc) provider_compare);
@@ -1653,7 +2022,8 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 			if (CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT (provider))
 				gtk_widget_set_sensitive (item, FALSE);
 			
-			if (!ftransport) {
+			if (!ftransport
+			    && !CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT (provider)) {
 				ftransport = item;
 				htransport = ti;
 			}
@@ -1688,18 +2058,9 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	}
 	g_list_free (providers);
 	
-	/* add a "None" option to the stores menu */
-	item = gtk_menu_item_new_with_label (_("None"));
-	g_object_set_data ((GObject *) item, "provider", NULL);
-	g_signal_connect (item, "activate", G_CALLBACK (source_type_changed), gui);
-	
-	gtk_menu_shell_append(GTK_MENU_SHELL(stores), item);
-	
-	gtk_widget_show (item);
-	
 	if (!fstore || !source_proto) {
-		fstore = item;
-		hstore = si;
+		fstore = none;
+		hstore = 0;
 	}
 	
 	/* set the menus on the optionmenus */
@@ -1730,7 +2091,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	}
 	
 	if (top != NULL) {
-		gtk_widget_show_all (top);
+		gtk_widget_show (top);
 	}
 	
 	if (fstore) {
@@ -1744,7 +2105,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	}
 	
 	if (source_proto) {
-		setup_service (&gui->source, gui->account->source);
+		setup_service (gui, &gui->source, gui->account->source);
 		gui->source.provider_type = CAMEL_PROVIDER_STORE;
 		g_free (source_proto);
 		if (gui->account->source->auto_check) {
@@ -1755,11 +2116,60 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 	}
 	
 	if (transport_proto) {
-		if (setup_service (&gui->transport, gui->account->transport))
+		if (setup_service (gui, &gui->transport, gui->account->transport))
 			gtk_toggle_button_set_active (gui->transport_needs_auth, TRUE);
 		gui->transport.provider_type = CAMEL_PROVIDER_TRANSPORT;
 		g_free (transport_proto);
 	}
+
+	/* FIXME: drive by table?? */
+	if (!e_account_writable (gui->account, E_ACCOUNT_SOURCE_URL)) {
+		gtk_widget_set_sensitive (gui->source.container, FALSE);
+	} else {
+		gtk_widget_set_sensitive (gui->source.container, TRUE);
+		
+		if (gui->source.provider) {
+			writeable = e_account_writable_option (gui->account, gui->source.provider->protocol, "auth");
+			gtk_widget_set_sensitive ((GtkWidget *) gui->source.authtype, writeable);
+			gtk_widget_set_sensitive ((GtkWidget *) gui->source.check_supported, writeable);
+			
+			writeable = e_account_writable_option (gui->account, gui->source.provider->protocol, "use_ssl");
+			gtk_widget_set_sensitive ((GtkWidget *) gui->source.use_ssl, writeable);
+			
+			writeable = e_account_writable (gui->account, E_ACCOUNT_SOURCE_SAVE_PASSWD);
+			gtk_widget_set_sensitive ((GtkWidget *) gui->source.remember, writeable);
+		}
+	}
+	
+	if (!e_account_writable (gui->account, E_ACCOUNT_TRANSPORT_URL)) {
+		gtk_widget_set_sensitive (gui->transport.container, FALSE);
+	} else {
+		gtk_widget_set_sensitive (gui->transport.container, TRUE);
+		
+		if (gui->transport.provider) {
+			writeable = e_account_writable_option (gui->account, gui->transport.provider->protocol, "auth");
+			gtk_widget_set_sensitive ((GtkWidget *) gui->transport.authtype, writeable);
+			gtk_widget_set_sensitive ((GtkWidget *) gui->transport.check_supported, writeable);
+			
+			writeable = e_account_writable_option (gui->account, gui->transport.provider->protocol, "use_ssl");
+			gtk_widget_set_sensitive ((GtkWidget *) gui->transport.use_ssl, writeable);
+			
+			writeable = e_account_writable (gui->account, E_ACCOUNT_TRANSPORT_SAVE_PASSWD);
+			gtk_widget_set_sensitive ((GtkWidget *) gui->transport.remember, writeable);
+		}
+	}
+
+	gtk_widget_set_sensitive((GtkWidget *)gui->drafts_folder_button, e_account_writable(gui->account, E_ACCOUNT_DRAFTS_FOLDER_URI));
+	gtk_widget_set_sensitive((GtkWidget *)gui->sent_folder_button, e_account_writable(gui->account, E_ACCOUNT_SENT_FOLDER_URI));
+	gtk_widget_set_sensitive((GtkWidget *)gui->restore_folders_button,
+				 e_account_writable(gui->account, E_ACCOUNT_SENT_FOLDER_URI)
+				 || e_account_writable(gui->account, E_ACCOUNT_DRAFTS_FOLDER_URI));
+	gtk_widget_set_sensitive((GtkWidget *)gui->sig_menu, e_account_writable(gui->account, E_ACCOUNT_ID_SIGNATURE));
+	gtk_widget_set_sensitive(glade_xml_get_widget(gui->xml, "sigAddNew"),
+				 gconf_client_key_is_writable(mail_config_get_gconf_client(),
+							      "/apps/evolution/mail/signatures", NULL));
+	gtk_widget_set_sensitive((GtkWidget *)gui->source_auto_check, e_account_writable(gui->account, E_ACCOUNT_SOURCE_AUTO_CHECK));
+	gtk_widget_set_sensitive((GtkWidget *)gui->source_auto_check_min, e_account_writable(gui->account, E_ACCOUNT_SOURCE_AUTO_CHECK_TIME));
 }
 
 static void
@@ -1841,20 +2251,13 @@ save_service (MailAccountGuiService *gsvc, GHashTable *extra_config, EAccountSer
 static void
 add_new_store (char *uri, CamelStore *store, void *user_data)
 {
+	MailComponent *component = mail_component_peek ();
 	EAccount *account = user_data;
-	EvolutionStorage *storage;
 	
 	if (store == NULL)
 		return;
 	
-	storage = mail_lookup_storage (store);
-	if (storage) {
-		/* store is already in the folder tree, so do nothing */
-		bonobo_object_unref (BONOBO_OBJECT (storage));
-	} else {
-		/* store is *not* in the folder tree, so lets add it. */
-		mail_add_storage (store, account->name, account->source->url);
-	}
+	mail_component_add_store (component, store, account->name);
 }
 
 gboolean
@@ -1865,7 +2268,6 @@ mail_account_gui_save (MailAccountGui *gui)
 	gboolean is_new = FALSE;
 	const char *new_name;
 	gboolean is_storage;
-	GSList *signatures;
 	
 	if (!mail_account_gui_identity_complete (gui, NULL) ||
 	    !mail_account_gui_source_complete (gui, NULL) ||
@@ -1883,7 +2285,8 @@ mail_account_gui_save (MailAccountGui *gui)
 	account = mail_config_get_account_by_name (new_name);
 	
 	if (account && account != new) {
-		e_notice (gui->account_name, GTK_MESSAGE_ERROR, _("You may not create two accounts with the same name."));
+		e_error_run((GtkWindow *)gtk_widget_get_toplevel((GtkWidget *)gui->account_name),
+			    "mail:account-notunique", NULL);
 		return FALSE;
 	}
 	
@@ -1900,14 +2303,12 @@ mail_account_gui_save (MailAccountGui *gui)
 	new->id->organization = g_strdup (gtk_entry_get_text (gui->organization));
 	
 	/* signatures */
-	signatures = mail_config_get_signature_list ();
-	new->id->def_signature = g_slist_index (signatures, gui->def_signature);
-	new->id->auto_signature = gui->auto_signature;
+	new->id->sig_uid = g_strdup (gui->sig_uid);
 	
 	/* source */
 	save_service (&gui->source, gui->extra_config, new->source);
 	if (new->source->url)
-		provider = camel_session_get_provider (session, new->source->url, NULL);
+		provider = camel_provider_get(new->source->url, NULL);
 	
 	new->source->auto_check = gtk_toggle_button_get_active (gui->source_auto_check);
 	if (new->source->auto_check)
@@ -1921,19 +2322,21 @@ mail_account_gui_save (MailAccountGui *gui)
 		save_service (&gui->transport, NULL, new->transport);
 	
 	/* Check to make sure that the Drafts folder uri is "valid" before assigning it */
-	if (mail_config_get_account_by_source_url (gui->drafts_folder_uri)) {
-		new->drafts_folder_uri = g_strdup (gui->drafts_folder_uri);
+	if (mail_config_get_account_by_source_url (gui->drafts_folder_uri) ||
+		!strncmp (gui->drafts_folder_uri, "mbox:", 5)) {
+		new->drafts_folder_uri = em_uri_from_camel (gui->drafts_folder_uri);
 	} else {
 		/* assign defaults - the uri is unknown to us (probably pointed to an old source url) */
-		new->drafts_folder_uri = g_strdup (default_drafts_folder_uri);
+		new->drafts_folder_uri = em_uri_from_camel(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_DRAFTS));
 	}
 	
 	/* Check to make sure that the Sent folder uri is "valid" before assigning it */
-	if (mail_config_get_account_by_source_url (gui->sent_folder_uri)) {
-		new->sent_folder_uri = g_strdup (gui->sent_folder_uri);
+	if (mail_config_get_account_by_source_url (gui->sent_folder_uri) ||
+		!strncmp (gui->sent_folder_uri, "mbox:", 5)) {
+		new->sent_folder_uri = em_uri_from_camel (gui->sent_folder_uri);
 	} else {
 		/* assign defaults - the uri is unknown to us (probably pointed to an old source url) */
-		new->sent_folder_uri = g_strdup (default_sent_folder_uri);
+		new->sent_folder_uri = em_uri_from_camel(mail_component_get_folder_uri(NULL, MAIL_COMPONENT_FOLDER_SENT));
 	}
 	
 	new->always_cc = gtk_toggle_button_get_active (gui->always_cc);
@@ -1947,27 +2350,20 @@ mail_account_gui_save (MailAccountGui *gui)
 	new->pgp_no_imip_sign = gtk_toggle_button_get_active (gui->pgp_no_imip_sign);
 	new->pgp_always_trust = gtk_toggle_button_get_active (gui->pgp_always_trust);
 	
-#if defined (HAVE_NSS) && defined (SMIME_SUPPORTED)
-	new->smime_key = g_strdup (gtk_entry_get_text (gui->smime_key));
-	new->smime_encrypt_to_self = gtk_toggle_button_get_active (gui->smime_encrypt_to_self);
-	new->smime_always_sign = gtk_toggle_button_get_active (gui->smime_always_sign);
-#endif /* HAVE_NSS && SMIME_SUPPORTED */
+#if defined (HAVE_NSS)
+	new->smime_sign_default = gtk_toggle_button_get_active (gui->smime_sign_default);
+	new->smime_sign_key = g_strdup (gtk_entry_get_text (gui->smime_sign_key));
 	
-	is_storage = provider && (provider->flags & CAMEL_PROVIDER_IS_STORAGE) &&
-		!(provider->flags & CAMEL_PROVIDER_IS_EXTERNAL);
+	new->smime_encrypt_default = gtk_toggle_button_get_active (gui->smime_encrypt_default);
+	new->smime_encrypt_key = g_strdup (gtk_entry_get_text (gui->smime_encrypt_key));
+	new->smime_encrypt_to_self = gtk_toggle_button_get_active (gui->smime_encrypt_to_self);
+#endif /* HAVE_NSS */
+	
+	is_storage = provider && (provider->flags & CAMEL_PROVIDER_IS_STORAGE);
 	
 	if (!mail_config_find_account (account)) {
 		/* this is a new account so add it to our account-list */
 		is_new = TRUE;
-	} else if (account->source->url) {
-		/* this means the account was edited - if the old and
-                   new source urls are not identical, replace the old
-                   storage with the new storage */
-#define sources_equal(old,new) (new->url && !strcmp (old->url, new->url))
-		if (!sources_equal (account->source, new->source)) {
-			/* Remove the old storage from the folder-tree */
-			mail_remove_storage_by_uri (account->source->url);
-		}
 	}
 	
 	/* update the old account with the new settings */
@@ -1976,22 +2372,21 @@ mail_account_gui_save (MailAccountGui *gui)
 	
 	if (is_new) {
 		mail_config_add_account (account);
+		
+		/* if the account provider is something we can stick
+		   in the folder-tree and not added by some other
+		   component, then get the CamelStore and add it to
+		   the folder-tree */
+		if (is_storage && account->enabled)
+			mail_get_store (account->source->url, NULL, add_new_store, account);
 	} else {
 		e_account_list_change (mail_config_get_accounts (), account);
 	}
-	
-	/* if the account provider is something we can stick
-	   in the folder-tree and not added by some other
-	   component, then get the CamelStore and add it to
-	   the shell storages */
-	if (is_storage && account->enabled)
-		mail_get_store (account->source->url, NULL, add_new_store, account);
 	
 	if (gtk_toggle_button_get_active (gui->default_account))
 		mail_config_set_default_account (account);
 	
 	mail_config_save_accounts ();
-	mail_config_write_account_sig (account, -1);
 	
 	mail_autoreceive_setup ();
 	
@@ -2001,11 +2396,15 @@ mail_account_gui_save (MailAccountGui *gui)
 void
 mail_account_gui_destroy (MailAccountGui *gui)
 {
-	if (gui->dialog)
-		mail_config_signature_unregister_client ((MailConfigSignatureClient) sig_event_client, gui);
+	ESignatureList *signatures;
 	
 	g_object_unref (gui->xml);
 	g_object_unref (gui->account);
+	
+	signatures = mail_config_get_signatures ();
+	g_signal_handler_disconnect (signatures, gui->sig_added_id);
+	g_signal_handler_disconnect (signatures, gui->sig_removed_id);
+	g_signal_handler_disconnect (signatures, gui->sig_changed_id);
 	
 	if (gui->extra_config)
 		g_hash_table_destroy (gui->extra_config);

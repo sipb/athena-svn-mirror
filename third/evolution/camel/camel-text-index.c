@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*- */
 /*
- *  Copyright (C) 2001 Ximian Inc.
+ *  Copyright (C) 2001-2003 Ximian Inc.
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
@@ -23,17 +23,16 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
 #include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 #include "e-util/e-msgport.h"
 #include "e-util/e-memory.h"
@@ -46,7 +45,6 @@
 
 #include <glib/gunicode.h>
 
-#include <stdio.h>
 
 #define w(x)
 #define io(x) 
@@ -55,13 +53,10 @@
 /* cursor debug */
 #define c(x)
 
-#ifdef ENABLE_THREADS
+#define CAMEL_TEXT_INDEX_MAX_WORDLEN  (36)
+
 #define CAMEL_TEXT_INDEX_LOCK(kf, lock) (e_mutex_lock(((CamelTextIndex *)kf)->priv->lock))
 #define CAMEL_TEXT_INDEX_UNLOCK(kf, lock) (e_mutex_unlock(((CamelTextIndex *)kf)->priv->lock))
-#else
-#define CAMEL_TEXT_INDEX_LOCK(kf, lock)
-#define CAMEL_TEXT_INDEX_UNLOCK(kf, lock)
-#endif
 
 static int text_index_compress_nosync(CamelIndex *idx);
 
@@ -130,9 +125,7 @@ struct _CamelTextIndexPrivate {
 	int word_cache_count;
 	EDList word_cache;
 	GHashTable *words;
-#ifdef ENABLE_THREADS
 	EMutex *lock;
-#endif
 };
 
 /* Root block of text index */
@@ -766,10 +759,8 @@ camel_text_index_init(CamelTextIndex *idx)
 	/* this cache size and the block cache size have been tuned for about the best
 	   with moderate memory usage.  Doubling the memory usage barely affects performance. */
 	p->word_cache_limit = 4096; /* 1024 = 128K */
-
-#ifdef ENABLE_THREADS
+	
 	p->lock = e_mutex_new(E_MUTEX_REC);
-#endif
 }
 
 static void
@@ -797,11 +788,9 @@ camel_text_index_finalise(CamelTextIndex *idx)
 		camel_object_unref((CamelObject *)p->blocks);
 	if (p->links)
 		camel_object_unref((CamelObject *)p->links);
-
-#ifdef ENABLE_THREADS
+	
 	e_mutex_destroy(p->lock);
-#endif
-
+	
 	g_free(p);
 }
 
@@ -1026,7 +1015,7 @@ add_type(GHashTable *map, camel_block_t id, int type)
 
 	if (old != 0 && old != type)
 		g_warning("block %x redefined as type %d, already type %d\n", id, type, old);
-	g_hash_table_insert(map, id, type|old);
+	g_hash_table_insert(map, id, GINT_TO_POINTER (type|old));
 }
 
 static void
@@ -1280,7 +1269,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 			printf("Warning, name '%s' duplicates key (%x) with name '%s'\n", word, keyid, oldword);
 			g_free(word);
 		} else {
-			g_hash_table_insert(name_word, word, (void *)1);
+			g_hash_table_insert(name_word, word, GINT_TO_POINTER (1));
 			if ((flags & 1) == 0) {
 				g_hash_table_insert(names, GINT_TO_POINTER(keyid), word);
 			} else {
@@ -1478,11 +1467,12 @@ text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
 			utf8[utf8len] = 0;
 			g_string_append(p->buffer, utf8);
 		} else {
-			if (p->buffer->len) {
+			if (p->buffer->len > 0 && p->buffer->len <= CAMEL_TEXT_INDEX_MAX_WORDLEN) {
 				text_index_name_add_word(idn, p->buffer->str);
 				/*camel_index_name_add_word(idn, p->buffer->str);*/
-				g_string_truncate(p->buffer, 0);
 			}
+			
+			g_string_truncate (p->buffer, 0);
 		}
 	}
 

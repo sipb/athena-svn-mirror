@@ -1,12 +1,10 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* camel-execpetion.c : exception utils */
-
 /* 
  *
  * Author : 
  *  Bertrand Guiheneuf <bertrand@helixcode.com>
  *
- * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
+ * Copyright 1999-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -27,25 +25,26 @@
 #include <config.h>
 #endif
 
+#include <stdio.h>
 #include <glib.h>
+#include <pthread.h>
+
 #include "camel-exception.h"
 #include "e-util/e-memory.h"
+
+#include "camel-debug.h"
+
+/* dont turn this off */
+#define w(x) x
 
 /* i dont know why gthread_mutex stuff even exists, this is easier */
 
 /* also, i'm not convinced mutexes are needed here.  But it
    doesn't really hurt either */
-#ifdef ENABLE_THREADS
-#include <pthread.h>
-
 static pthread_mutex_t exception_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define CAMEL_EXCEPTION_LOCK(e) (pthread_mutex_lock(&exception_mutex))
 #define CAMEL_EXCEPTION_UNLOCK(e) (pthread_mutex_unlock(&exception_mutex))
-#else
-#define CAMEL_EXCEPTION_LOCK(e) 
-#define CAMEL_EXCEPTION_UNLOCK(e) 
-#endif
 
 static EMemChunk *exception_chunks = NULL;
 
@@ -167,6 +166,9 @@ camel_exception_set (CamelException *ex,
 		     ExceptionId id,
 		     const char *desc)
 {
+	if (camel_debug("exception"))
+		printf("CamelException.set(%p, %d, '%s')\n", ex, id, desc);
+
 	if (!ex)
 		return;
 
@@ -210,21 +212,24 @@ camel_exception_setv (CamelException *ex,
 		      ...)
 {
 	va_list args;
-	char *old;
-	
-	if (!ex)
-		return;
+	char *desc;
 
-	CAMEL_EXCEPTION_LOCK(exception);
-	
-	old = ex->desc;
-	
 	va_start(args, format);
-	ex->desc = g_strdup_vprintf (format, args);
+	desc = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	g_free (old);
+	if (camel_debug("exception"))
+		printf("CamelException.setv(%p, %d, '%s')\n", ex, id, desc);
 	
+	if (!ex) {
+		g_free(desc);
+		return;
+	}
+
+	CAMEL_EXCEPTION_LOCK(exception);
+
+	g_free(ex->desc);
+	ex->desc = desc;
 	ex->id = id;
 
 	CAMEL_EXCEPTION_UNLOCK(exception);
@@ -245,7 +250,7 @@ camel_exception_xfer (CamelException *ex_dst,
 		      CamelException *ex_src)
 {
 	if (ex_src == NULL) {
-		g_warning ("camel_exception_xfer: trying to transfer NULL exception to %p\n", ex_dst);
+		w(g_warning ("camel_exception_xfer: trying to transfer NULL exception to %p\n", ex_dst));
 		return;
 	}
 
@@ -283,10 +288,10 @@ camel_exception_get_id (CamelException *ex)
 {
 	if (ex)
 		return ex->id;
-	else {
-		g_warning ("camel_exception_get_id called with NULL parameter.");
-		return CAMEL_EXCEPTION_NONE;
-	}
+	
+	w(g_warning ("camel_exception_get_id called with NULL parameter."));
+	
+	return CAMEL_EXCEPTION_NONE;
 }
 
 /**
@@ -307,7 +312,7 @@ camel_exception_get_description (CamelException *ex)
 	if (ex)
 		ret = ex->desc;
 	else
-		g_warning ("camel_exception_get_description called with NULL parameter.");
+		w(g_warning ("camel_exception_get_description called with NULL parameter."));
 		
 	return ret;
 }

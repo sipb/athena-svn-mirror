@@ -70,9 +70,9 @@ static void
 ecal_date_range_changed (ECalendarItem *calitem, gpointer user_data)
 {
 	GoToDialog *dlg = user_data;
-	CalClient *client;
+	ECal *client;
 	
-	client = gnome_calendar_get_cal_client (dlg->gcal);
+	client = gnome_calendar_get_default_client (dlg->gcal);
 	if (client)
 		tag_calendar_by_client (dlg->ecal, client);
 }
@@ -106,14 +106,12 @@ ecal_event (ECalendarItem *calitem, gpointer user_data)
 static struct tm
 get_current_time (ECalendarItem *calitem, gpointer data)
 {
-	char *location;
 	icaltimezone *zone;
 	struct tm tmp_tm = { 0 };
 	struct icaltimetype tt;
 
 	/* Get the current timezone. */
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
+	zone = calendar_config_get_icaltimezone ();
 
 	tt = icaltime_from_timet_with_zone (time (NULL), FALSE, zone);
 
@@ -138,6 +136,9 @@ create_ecal (GoToDialog *dlg)
 	dlg->ecal = E_CALENDAR (e_calendar_new ());
 	calitem = dlg->ecal->calitem;
 	
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (calitem),
+			"move_selection_when_moving", FALSE,
+			NULL);
 	e_calendar_item_set_display_popup (calitem, FALSE);
 	gtk_widget_show (GTK_WIDGET (dlg->ecal));
 	gtk_box_pack_start (GTK_BOX (dlg->vbox), GTK_WIDGET (dlg->ecal), TRUE, TRUE, 0);
@@ -240,6 +241,16 @@ goto_dialog (GnomeCalendar *gcal)
 
 	gtk_window_set_transient_for (GTK_WINDOW (dlg->dialog),
 				      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (gcal))));
+
+	/* set initial selection to current day */
+
+	dlg->ecal->calitem->selection_set = TRUE;
+	dlg->ecal->calitem->selection_start_month_offset = 0;
+	dlg->ecal->calitem->selection_start_day = tt.day;
+	dlg->ecal->calitem->selection_end_month_offset = 0;
+	dlg->ecal->calitem->selection_end_day = tt.day;
+
+	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (dlg->ecal->calitem));
 
 	b = gtk_dialog_run (GTK_DIALOG (dlg->dialog));
 	gtk_widget_destroy (dlg->dialog);

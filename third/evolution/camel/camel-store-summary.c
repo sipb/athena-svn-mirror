@@ -1,5 +1,6 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2001 Ximian Inc.
+ * Copyright (C) 2001-2003 Ximian Inc.
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
@@ -22,20 +23,19 @@
 #include <config.h>
 #endif
 
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <string.h>
+#include <fcntl.h>
 #include <errno.h>
-#include <stdlib.h>
 
 #include "camel-store-summary.h"
 
 #include "camel-file-utils.h"
 
-#include "string-utils.h"
 #include "e-util/md5-utils.h"
 #include "e-util/e-memory.h"
 
@@ -47,9 +47,10 @@
 
 /* possible versions, for versioning changes */
 #define CAMEL_STORE_SUMMARY_VERSION_0 (1)
+#define CAMEL_STORE_SUMMARY_VERSION_2 (2)
 
 /* current version */
-#define CAMEL_STORE_SUMMARY_VERSION (1)
+#define CAMEL_STORE_SUMMARY_VERSION (2)
 
 #define _PRIVATE(o) (((CamelStoreSummary *)(o))->priv)
 
@@ -105,13 +106,11 @@ camel_store_summary_init (CamelStoreSummary *s)
 
 	s->folders = g_ptr_array_new();
 	s->folders_path = g_hash_table_new(g_str_hash, g_str_equal);
-
-#ifdef ENABLE_THREADS
+	
 	p->summary_lock = g_mutex_new();
 	p->io_lock = g_mutex_new();
 	p->alloc_lock = g_mutex_new();
 	p->ref_lock = g_mutex_new();
-#endif
 }
 
 static void
@@ -130,14 +129,12 @@ camel_store_summary_finalise (CamelObject *obj)
 
 	if (s->store_info_chunks)
 		e_memchunk_destroy(s->store_info_chunks);
-
-#ifdef ENABLE_THREADS
+	
 	g_mutex_free(p->summary_lock);
 	g_mutex_free(p->io_lock);
 	g_mutex_free(p->alloc_lock);
 	g_mutex_free(p->ref_lock);
-#endif
-
+	
 	g_free(p);
 }
 
@@ -825,6 +822,23 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 	camel_file_util_decode_uint32(in, &mi->flags);
 	camel_file_util_decode_uint32(in, &mi->unread);
 	camel_file_util_decode_uint32(in, &mi->total);
+
+	/* Ok, brown paper bag bug - prior to version 2 of the file, flags are
+	   stored using the bit number, not the bit. Try to recover as best we can */
+	if (s->version < CAMEL_STORE_SUMMARY_VERSION_2) {
+		guint32 flags = 0;
+
+		if (mi->flags & 1)
+			flags |= CAMEL_STORE_INFO_FOLDER_NOSELECT;
+		if (mi->flags & 2)
+			flags |= CAMEL_STORE_INFO_FOLDER_READONLY;
+		if (mi->flags & 3)
+			flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+		if (mi->flags & 4)
+			flags |= CAMEL_STORE_INFO_FOLDER_FLAGGED;
+
+		mi->flags = flags;
+	}
 
 	if (!ferror(in))
 		return mi;

@@ -29,11 +29,11 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 #include <gnome.h>
-#include <ical.h>
+#include <libical/ical.h>
 #include <glade/glade.h>
 #include <gal/util/e-util.h>
 #include <widgets/misc/e-map.h>
-#include <ebook/e-destination.h>
+#include <addressbook/util/e-destination.h>
 #include "Evolution-Addressbook-SelectNames.h"
 #include "e-delegate-dialog.h"
 
@@ -53,7 +53,7 @@ struct _EDelegateDialogPrivate {
 	GtkWidget *entry;	
 };
 
-#define SELECT_NAMES_OAFID "OAFIID:GNOME_Evolution_Addressbook_SelectNames"
+#define SELECT_NAMES_OAFID "OAFIID:GNOME_Evolution_Addressbook_SelectNames:" BASE_VERSION
 static const char *section_name = "Delegate To";
 
 static void e_delegate_dialog_class_init	(EDelegateDialogClass *class);
@@ -187,7 +187,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 	str = e_destination_exportv(destv);
 	bonobo_widget_set_property (BONOBO_WIDGET (priv->entry), "destinations", TC_CORBA_string, str, NULL);
 	g_free(str);
-	g_object_unref((dest));
+	g_object_unref (dest);
 		
 	g_signal_connect((priv->addressbook), "clicked",
 			    G_CALLBACK (addressbook_clicked_cb), edd);
@@ -196,7 +196,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 
  error:
 
-	g_object_unref((edd));
+	g_object_unref (edd);
 	return NULL;
 }
 

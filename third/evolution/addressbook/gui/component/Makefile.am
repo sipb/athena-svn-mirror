@@ -7,12 +7,11 @@ INCLUDES =									\
 	-I$(top_srcdir)/shell					\
 	-I$(top_builddir)/shell					\
 	-I$(top_srcdir)/widgets/misc				\
+	-I$(top_srcdir)/addressbook/util			\
 	-I$(top_srcdir)/addressbook/gui/contact-editor		\
 	-I$(top_srcdir)/addressbook/gui/contact-list-editor	\
-	-I$(top_srcdir)/addressbook/gui/minicard		\
 	-I$(top_srcdir)/addressbook/gui/widgets			\
-	-I$(top_srcdir)/addressbook/backend			\
-	-I$(top_builddir)/addressbook/backend			\
+	-I$(top_builddir)/a11y/addressbook			\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		\
@@ -21,10 +20,6 @@ INCLUDES =									\
 	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"		\
 	-DPREFIX=\""$(prefix)"\"				\
 	$(LDAP_CFLAGS)						\
-	-DG_DISABLE_DEPRECATED					\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DLIBGNOME_DISABLE_DEPRECATED				\
-	-DLIBGNOMEUI_DISABLE_DEPRECATED				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 component_LTLIBRARIES = libevolution-addressbook.la
@@ -34,31 +29,38 @@ libevolution_addressbook_la_SOURCES = 	\
 	addressbook-component.h		\
 	addressbook-config.c		\
 	addressbook-config.h		\
-	addressbook-storage.c		\
-	addressbook-storage.h		\
+	addressbook-migrate.c		\
+	addressbook-migrate.h		\
+	autocompletion-config.c		\
+	autocompletion-config.h		\
 	addressbook.c			\
 	addressbook.h			\
-	component-factory.c		\
-	e-cardlist-model.c		\
-	e-cardlist-model.h		\
-	e-address-widget.h		\
-	e-address-widget.c		\
-	e-address-popup.h		\
-	e-address-popup.c
+	addressbook-view.c		\
+	addressbook-view.h		\
+	component-factory.c
+
+#	$(top_builddir)/addressbook/printing/libecontactprint.la
+
+if ENABLE_SMIME
+SMIME_LIB=$(top_builddir)/smime/gui/libevolution-smime.la
+endif
 
 libevolution_addressbook_la_LIBADD =							\
-	select-names/libeselectnames.la							\
-	$(top_builddir)/shell/libeshell.la						\
-	$(top_builddir)/addressbook/gui/widgets/libeminicard.la				\
+	$(SMIME_LIB)									\
 	$(top_builddir)/addressbook/printing/libecontactprint.la			\
+	$(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
+	$(top_builddir)/shell/libeshell.la						\
+	$(top_builddir)/addressbook/gui/merging/libeabbookmerging.la			\
+	$(top_builddir)/addressbook/gui/widgets/libeabwidgets.la			\
 	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la			\
 	$(top_builddir)/filter/libfilter.la						\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
-	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la	\
+	$(top_builddir)/addressbook/util/libeabutil.la					\
 	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la		\
+	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la	\
 	$(top_builddir)/widgets/misc/libemiscwidgets.la					\
-	$(top_builddir)/addressbook/gui/merging/libecardmerging.la			\
 	$(top_builddir)/widgets/menus/libmenus.la					\
+	$(top_builddir)/a11y/addressbook/libevolution-addressbook-a11y.la		\
+	$(top_builddir)/camel/libcamel.la						\
 	$(EVOLUTION_ADDRESSBOOK_LIBS) $(LDAP_LIBS)
 
 
@@ -68,7 +70,12 @@ libevolution_addressbook_la_LDFLAGS = -module -avoid-version
 # GConf schemas
 
 schemadir   = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_evolution_addressbook.schemas
+schema_in_files = apps_evolution_addressbook.schemas.in.in
+schema_DATA = $(schema_in_files:.schemas.in.in=-$(BASE_VERSION).schemas)
+%-$(BASE_VERSION).schemas.in: %.schemas.in.in
+	cp $< $@
+
+@INTLTOOL_SCHEMAS_RULE@
 
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
@@ -78,22 +85,23 @@ install-data-local:
 	fi
 
 server_in_files = GNOME_Evolution_Addressbook.server.in.in
-server_DATA = $(server_in_files:.server.in.in=.server)
-%.server.in: %.server.in.in
-	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
-
+server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
+@EVO_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@
 
-glade_DATA = ldap-config.glade
+glade_DATA =			\
+	ldap-config.glade
 
 BUILT_SOURCES = $(server_DATA)
 CLEANFILES    = $(BUILT_SOURCES)
 
 EXTRA_DIST =			\
 	$(glade_DATA)		\
-	$(schema_DATA)		\
-	$(server_DATA)		\
+	$(schema_in_files)	\
 	$(server_in_files)
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@

@@ -14,19 +14,16 @@ BUILT_SOURCES = $(IDL_GENERATED)
 INCLUDES = 								\
 	-DG_LOG_DOMAIN=\"calendar-gui\"					\
 	-I$(top_srcdir)							\
+	-I$(top_builddir)						\
 	-I$(top_srcdir)/calendar					\
 	-I$(top_srcdir)/calendar/cal-client				\
 	-I$(top_builddir)/calendar/cal-client				\
-	-I$(top_srcdir)/libical/src/libical				\
-	-I$(top_builddir)/libical/src/libical				\
 	-I$(top_builddir)/shell						\
 	-I$(top_srcdir)/shell						\
-	-I$(top_srcdir)/addressbook/backend				\
-	-I$(top_builddir)/addressbook/backend				\
+	-I$(top_srcdir)/widgets/misc					\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"				\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				\
 	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"			\
-	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"			\
 	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"			\
 	-DPREFIX=\""$(prefix)"\"					\
 	$(EVOLUTION_CALENDAR_CFLAGS)
@@ -35,12 +32,14 @@ noinst_LTLIBRARIES = libcal-dialogs.la
 
 libcal_dialogs_la_SOURCES =	\
 	$(IDL_GENERATED)	\
-	alarm-options.c		\
-	alarm-options.h		\
-	alarm-page.c		\
-	alarm-page.h		\
+	alarm-dialog.c		\
+	alarm-dialog.h		\
+	alarm-list-dialog.c	\
+	alarm-list-dialog.h	\
 	cal-prefs-dialog.c	\
 	cal-prefs-dialog.h	\
+	calendar-setup.c	\
+	calendar-setup.h	\
 	cancel-comp.c		\
 	cancel-comp.h		\
 	changed-comp.c		\
@@ -51,6 +50,8 @@ libcal_dialogs_la_SOURCES =	\
 	comp-editor-page.h	\
 	comp-editor-util.c	\
 	comp-editor-util.h	\
+	copy-source-dialog.c	\
+	copy-source-dialog.h	\
 	delete-comp.c		\
 	delete-comp.h		\
 	delete-error.c		\
@@ -71,6 +72,8 @@ libcal_dialogs_la_SOURCES =	\
 	save-comp.h		\
 	schedule-page.c		\
 	schedule-page.h		\
+	select-source-dialog.c	\
+	select-source-dialog.h	\
 	send-comp.c		\
 	send-comp.h		\
 	task-editor.c		\
@@ -78,21 +81,23 @@ libcal_dialogs_la_SOURCES =	\
 	task-details-page.c	\
 	task-details-page.h	\
 	task-page.c		\
-	task-page.h
+	task-page.h		\
+	url-editor-dialog.c	\
+	url-editor-dialog.h	
 
 glade_DATA =				\
-	alarm-options.glade		\
-	alarm-page.glade		\
+	alarm-dialog.glade		\
+	alarm-list-dialog.glade		\
 	cal-prefs-dialog.glade		\
+	calendar-setup.glade		\
 	e-delegate-dialog.glade		\
 	event-page.glade		\
 	meeting-page.glade		\
 	recurrence-page.glade		\
 	schedule-page.glade		\
 	task-details-page.glade		\
-	task-page.glade
-
-etspec_DATA = meeting-page.etspec
+	task-page.glade			\
+	url-editor-dialog.glade
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -100,5 +105,4 @@ dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
 
 EXTRA_DIST =			\
-	$(glade_DATA)		\
-	$(etspec_DATA)
+	$(glade_DATA)

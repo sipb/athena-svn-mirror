@@ -25,12 +25,13 @@
 #endif
 
 #include "e-combo-button.h"
+#include <e-util/e-icon-factory.h>
 
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtksignal.h>
 
 #include <gal/util/e-util.h>
@@ -39,9 +40,9 @@
 struct _EComboButtonPrivate {
 	GdkPixbuf *icon;
 
-	GtkWidget *icon_pixmap;
+	GtkWidget *icon_image;
 	GtkWidget *label;
-	GtkWidget *arrow_pixmap;
+	GtkWidget *arrow_image;
 	GtkWidget *hbox;
 
 	GtkMenu *menu;
@@ -67,35 +68,18 @@ static guint signals[LAST_SIGNAL] = { 0 };
 /* Utility functions.  */
 
 static GtkWidget *
-create_pixmap_widget_from_pixbuf (GdkPixbuf *pixbuf)
+create_empty_image_widget (void)
 {
-	GtkWidget *pixmap_widget;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-
-	pixmap_widget = gtk_pixmap_new (pixmap, mask);
-
-	gdk_pixmap_unref (pixmap);
-	g_object_unref (mask);
-
-	return pixmap_widget;
-}
-
-static GtkWidget *
-create_empty_pixmap_widget (void)
-{
-	GtkWidget *pixmap_widget;
+	GtkWidget *image_widget;
 	GdkPixbuf *pixbuf;
 
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 1, 1);
+	pixbuf = e_icon_factory_get_icon (NULL, E_ICON_SIZE_MENU);
 
-	pixmap_widget = create_pixmap_widget_from_pixbuf (pixbuf);
+	image_widget = gtk_image_new_from_pixbuf (pixbuf);
 
 	g_object_unref (pixbuf);
 
-	return pixmap_widget;
+	return image_widget;
 }
 
 static void
@@ -103,8 +87,6 @@ set_icon (EComboButton *combo_button,
 	  GdkPixbuf *pixbuf)
 {
 	EComboButtonPrivate *priv;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 
 	priv = combo_button->priv;
 
@@ -113,19 +95,15 @@ set_icon (EComboButton *combo_button,
 
 	if (pixbuf == NULL) {
 		priv->icon = NULL;
-		gtk_widget_hide (priv->icon_pixmap);
+		gtk_widget_hide (priv->icon_image);
 		return;
 	}
 
 	priv->icon = g_object_ref (pixbuf);
 
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	gtk_pixmap_set (GTK_PIXMAP (priv->icon_pixmap), pixmap, mask);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (priv->icon_image), priv->icon);
 
-	gtk_widget_show (priv->icon_pixmap);
-
-	gdk_pixmap_unref (pixmap);
-	gdk_pixmap_unref (mask);
+	gtk_widget_show (priv->icon_image);
 }
 
 
@@ -136,51 +114,79 @@ paint (EComboButton *combo_button,
        GdkRectangle *area)
 {
 	EComboButtonPrivate *priv = combo_button->priv;
+	GtkWidget *widget = GTK_WIDGET (combo_button);
 	GtkShadowType shadow_type;
+	gboolean interior_focus;
 	int separator_x;
+	int focus_width, focus_pad;
+	int x, y, width, height;
+	int border_width;
 
-	gdk_window_set_back_pixmap (GTK_WIDGET (combo_button)->window, NULL, TRUE);
-	gdk_window_clear_area (GTK_WIDGET (combo_button)->window,
-			       area->x, area->y,
-			       area->width, area->height);
+	shadow_type = GTK_BUTTON (widget)->depressed ? GTK_SHADOW_IN : GTK_SHADOW_OUT;
 
-	/* Only paint the outline if we are in prelight state.  */
-	if (GTK_WIDGET_STATE (combo_button) != GTK_STATE_PRELIGHT
-	    && GTK_WIDGET_STATE (combo_button) != GTK_STATE_ACTIVE)
-		return;
+	border_width = GTK_CONTAINER (widget)->border_width;
+
+	x = widget->allocation.x + border_width;
+	y = widget->allocation.y + border_width;
+	width = widget->allocation.width - border_width * 2;
+	height = widget->allocation.height - border_width * 2;
 
 	separator_x = (priv->label->allocation.width
 		       + priv->label->allocation.x
-		       + priv->arrow_pixmap->allocation.x) / 2;
+		       + priv->arrow_image->allocation.x) / 2;
 
-	if (GTK_WIDGET_STATE (combo_button) == GTK_STATE_ACTIVE)
-		shadow_type = GTK_SHADOW_IN;
-	else
-		shadow_type = GTK_SHADOW_OUT;
+	gtk_widget_style_get (GTK_WIDGET (widget),
+			      "focus-line-width", &focus_width,
+			      "focus-padding", &focus_pad,
+			      "interior-focus", &interior_focus,
+			      NULL); 
 
-	gtk_paint_box (GTK_WIDGET (combo_button)->style,
-		       GTK_WIDGET (combo_button)->window,
-		       GTK_STATE_PRELIGHT,
-		       shadow_type,
-		       area,
-		       GTK_WIDGET (combo_button),
-		       "button",
-		       0,
-		       0,
-		       separator_x,
-		       GTK_WIDGET (combo_button)->allocation.height);
+	if (GTK_WIDGET_HAS_DEFAULT (widget)
+	    && GTK_BUTTON (widget)->relief == GTK_RELIEF_NORMAL)
+		gtk_paint_box (widget->style, widget->window,
+			       GTK_STATE_NORMAL, GTK_SHADOW_IN,
+			       area, widget, "buttondefault",
+			       x, y, width, height);
 
-	gtk_paint_box (GTK_WIDGET (combo_button)->style,
-		       GTK_WIDGET (combo_button)->window,
-		       GTK_STATE_PRELIGHT,
-		       shadow_type,
-		       area,
-		       GTK_WIDGET (combo_button),
-		       "button",
-		       separator_x,
-		       0,
-		       GTK_WIDGET (combo_button)->allocation.width - separator_x,
-		       GTK_WIDGET (combo_button)->allocation.height);
+	if (!interior_focus && GTK_WIDGET_HAS_FOCUS (widget)) {
+		x += focus_width + focus_pad;
+		y += focus_width + focus_pad;
+		width -= 2 * (focus_width + focus_pad);
+		height -= 2 * (focus_width + focus_pad);
+	}
+
+	if ((GTK_BUTTON (widget)->relief != GTK_RELIEF_NONE) ||
+	    ((GTK_WIDGET_STATE(widget) != GTK_STATE_NORMAL) &&
+	     (GTK_WIDGET_STATE(widget) != GTK_STATE_ACTIVE || GTK_BUTTON (widget)->depressed) &&
+	     (GTK_WIDGET_STATE(widget) != GTK_STATE_INSENSITIVE))) {
+		gtk_paint_box (widget->style, widget->window,
+			       GTK_WIDGET_STATE (widget), shadow_type,
+			       area, widget, "button",
+			       x, y, separator_x, height);
+		gtk_paint_box (widget->style, widget->window,
+			       GTK_WIDGET_STATE (widget), shadow_type,
+			       area, widget, "button",
+			       separator_x, y, width - separator_x, height);
+	}
+
+	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+		if (interior_focus) {
+			x += widget->style->xthickness + focus_pad;
+			y += widget->style->ythickness + focus_pad;
+			width -= 2 * (widget->style->xthickness + focus_pad);
+			height -=  2 * (widget->style->xthickness + focus_pad);
+		} else {
+			x -= focus_width + focus_pad;
+			y -= focus_width + focus_pad;
+			width += 2 * (focus_width + focus_pad);
+			height += 2 * (focus_width + focus_pad);
+		}
+
+		gtk_paint_focus (widget->style, widget->window,
+				 GTK_WIDGET_STATE (widget),
+				 area, widget, "button",
+				 x, y, width, height);
+	}
 }
 
 
@@ -249,9 +255,9 @@ impl_destroy (GtkObject *object)
 	priv = combo_button->priv;
 
 	if (priv) {
-		if (priv->arrow_pixmap != NULL) {
-			gtk_widget_destroy (priv->arrow_pixmap);
-			priv->arrow_pixmap = NULL;
+		if (priv->arrow_image != NULL) {
+			gtk_widget_destroy (priv->arrow_image);
+			priv->arrow_image = NULL;
 		}
 		
 		if (priv->icon != NULL) {
@@ -284,7 +290,7 @@ impl_button_press_event (GtkWidget *widget,
 		GTK_BUTTON (widget)->button_down = TRUE;
 
 		if (event->button == 3 || 
-		    event->x >= priv->arrow_pixmap->allocation.x) {
+		    event->x >= priv->arrow_image->allocation.x) {
 			/* User clicked on the right side: pop up the menu.  */
 			gtk_button_pressed (GTK_BUTTON (widget));
 
@@ -423,19 +429,19 @@ init (EComboButton *combo_button)
 	gtk_container_add (GTK_CONTAINER (combo_button), priv->hbox);
 	gtk_widget_show (priv->hbox);
 
-	priv->icon_pixmap = create_empty_pixmap_widget ();
-	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->icon_pixmap, TRUE, TRUE, 0);
-	gtk_widget_show (priv->icon_pixmap);
+	priv->icon_image = create_empty_image_widget ();
+	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->icon_image, TRUE, TRUE, 0);
+	gtk_widget_show (priv->icon_image);
 
 	priv->label = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->label, TRUE, TRUE,
 			    2 * GTK_WIDGET (combo_button)->style->xthickness);
 	gtk_widget_show (priv->label);
 
-	priv->arrow_pixmap = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_NONE);
-	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->arrow_pixmap, TRUE, TRUE,
+	priv->arrow_image = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_NONE);
+	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->arrow_image, TRUE, TRUE,
 			    GTK_WIDGET (combo_button)->style->xthickness);
-	gtk_widget_show (priv->arrow_pixmap);
+	gtk_widget_show (priv->arrow_image);
 
 	priv->icon           = NULL;
 	priv->menu           = NULL;

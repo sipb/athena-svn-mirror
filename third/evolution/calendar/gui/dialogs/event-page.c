@@ -29,17 +29,22 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtktogglebutton.h>
+#include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>
-#include <gal/widgets/e-unicode.h>
 #include <gal/widgets/e-categories.h>
+#include "common/authentication.h"
 #include "e-util/e-categories-config.h"
 #include "e-util/e-dialog-widgets.h"
 #include "widgets/misc/e-dateedit.h"
-#include "cal-util/timeutil.h"
+#include "widgets/misc/e-source-option-menu.h"
+#include <libecal/e-cal-time-util.h>
 #include "../calendar-config.h"
 #include "../e-timezone-entry.h"
+#include "comp-editor.h"
 #include "comp-editor-util.h"
+#include "../e-alarm-list.h"
+#include "alarm-list-dialog.h"
 #include "event-page.h"
 
 
@@ -54,7 +59,9 @@ struct _EventPagePrivate {
 	GtkWidget *main;
 
 	GtkWidget *summary;
+	GtkWidget *summary_label;
 	GtkWidget *location;
+	GtkWidget *location_label;
 
 	GtkWidget *start_time;
 	GtkWidget *end_time;
@@ -64,19 +71,28 @@ struct _EventPagePrivate {
 
 	GtkWidget *description;
 
-	GtkWidget *classification_public;
-	GtkWidget *classification_private;
-	GtkWidget *classification_confidential;
+	GtkWidget *classification;
 	
-	GtkWidget *show_time_frame;
-	GtkWidget *show_time_as_free;
 	GtkWidget *show_time_as_busy;
+
+	GtkWidget *alarm;
+	GtkWidget *alarm_time;
+	GtkWidget *alarm_warning;
+	GtkWidget *alarm_custom;
 
 	GtkWidget *categories_btn;
 	GtkWidget *categories;
 
+	GtkWidget *source_selector;
+
+	EAlarmList *alarm_list_store;
+	
 	gboolean updating;
 
+	char *old_summary;
+	CalUnits alarm_units;
+	int alarm_interval;
+	
 	/* This is TRUE if both the start & end timezone are the same. If the
 	   start timezone is then changed, we updated the end timezone to the
 	   same value, since 99% of events start and end in one timezone. */
@@ -91,8 +107,9 @@ static void event_page_finalize (GObject *object);
 
 static GtkWidget *event_page_get_widget (CompEditorPage *page);
 static void event_page_focus_main_widget (CompEditorPage *page);
-static void event_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static gboolean event_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean event_page_fill_widgets (CompEditorPage *page, ECalComponent *comp);
+static gboolean event_page_fill_component (CompEditorPage *page, ECalComponent *comp);
+static gboolean event_page_fill_timezones (CompEditorPage *page, GHashTable *timezones);
 static void event_page_set_summary (CompEditorPage *page, const char *summary);
 static void event_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates);
 
@@ -128,6 +145,7 @@ event_page_class_init (EventPageClass *class)
 	editor_page_class->focus_main_widget = event_page_focus_main_widget;
 	editor_page_class->fill_widgets = event_page_fill_widgets;
 	editor_page_class->fill_component = event_page_fill_component;
+	editor_page_class->fill_timezones = event_page_fill_timezones;
 	editor_page_class->set_summary = event_page_set_summary;
 	editor_page_class->set_dates = event_page_set_dates;
 
@@ -147,22 +165,25 @@ event_page_init (EventPage *epage)
 
 	priv->main = NULL;
 	priv->summary = NULL;
+	priv->summary_label = NULL;
 	priv->location = NULL;
+	priv->location_label = NULL;
 	priv->start_time = NULL;
 	priv->end_time = NULL;
 	priv->start_timezone = NULL;
 	priv->end_timezone = NULL;
 	priv->all_day_event = NULL;
 	priv->description = NULL;
-	priv->classification_public = NULL;
-	priv->classification_private = NULL;
-	priv->classification_confidential = NULL;
-	priv->show_time_frame = NULL;
-	priv->show_time_as_free = NULL;
+	priv->classification = NULL;
 	priv->show_time_as_busy = NULL;
+	priv->alarm = NULL;
+	priv->alarm_time = NULL;
+	priv->alarm_custom = NULL;
 	priv->categories_btn = NULL;
 	priv->categories = NULL;
 
+	priv->alarm_interval =  -1;
+	
 	priv->updating = FALSE;
 	priv->sync_timezones = FALSE;
 }
@@ -184,10 +205,17 @@ event_page_finalize (GObject *object)
 		gtk_widget_unref (priv->main);
 
 	if (priv->xml) {
-		g_object_unref((priv->xml));
+		g_object_unref (priv->xml);
 		priv->xml = NULL;
 	}
 
+	if (priv->alarm_list_store) {
+		g_object_unref (priv->alarm_list_store);
+		priv->alarm_list_store = NULL;
+	}
+
+	g_free (priv->old_summary);
+	
 	g_free (priv);
 	epage->priv = NULL;
 
@@ -198,15 +226,24 @@ event_page_finalize (GObject *object)
 
 
 static const int classification_map[] = {
-	CAL_COMPONENT_CLASS_PUBLIC,
-	CAL_COMPONENT_CLASS_PRIVATE,
-	CAL_COMPONENT_CLASS_CONFIDENTIAL,
+	E_CAL_COMPONENT_CLASS_PUBLIC,
+	E_CAL_COMPONENT_CLASS_PRIVATE,
+	E_CAL_COMPONENT_CLASS_CONFIDENTIAL,
 	-1
 };
 
-static const int transparency_map[] = {
-	CAL_COMPONENT_TRANSP_TRANSPARENT,
-	CAL_COMPONENT_TRANSP_OPAQUE,
+enum {
+	ALARM_15_MINUTES,
+	ALARM_1_HOUR,
+	ALARM_1_DAY,
+	ALARM_USER_TIME
+};
+
+static const int alarm_map[] = {
+	ALARM_15_MINUTES,
+	ALARM_1_HOUR,
+	ALARM_1_DAY,
+	ALARM_USER_TIME,
 	-1
 };
 
@@ -265,12 +302,11 @@ set_all_day (EventPage *epage, gboolean all_day)
 }
 
 static void
-update_time (EventPage *epage, CalComponentDateTime *start_date, CalComponentDateTime *end_date)
+update_time (EventPage *epage, ECalComponentDateTime *start_date, ECalComponentDateTime *end_date)
 {
 	EventPagePrivate *priv;
 	struct icaltimetype *start_tt, *end_tt, implied_tt;
 	icaltimezone *start_zone = NULL, *end_zone = NULL;
-	CalClientGetStatus status;
 	gboolean all_day_event;
 
 	priv = epage->priv;
@@ -280,24 +316,22 @@ update_time (EventPage *epage, CalComponentDateTime *start_date, CalComponentDat
 	   first. */
 	start_zone = icaltimezone_get_builtin_timezone_from_tzid (start_date->tzid);
 	if (!start_zone) {
-		status = cal_client_get_timezone (COMP_EDITOR_PAGE (epage)->client,
-						  start_date->tzid,
-						  &start_zone);
 		/* FIXME: Handle error better. */
-		if (status != CAL_CLIENT_GET_SUCCESS)
+		if (!e_cal_get_timezone (COMP_EDITOR_PAGE (epage)->client,
+					      start_date->tzid, &start_zone, NULL)) {
 			g_warning ("Couldn't get timezone from server: %s",
-				   start_date->tzid ? start_date->tzid : "");
+				   start_date->tzid ? start_date->tzid : "");			
+		}
 	}
 
 	end_zone = icaltimezone_get_builtin_timezone_from_tzid (end_date->tzid);
 	if (!end_zone) {
-		status = cal_client_get_timezone (COMP_EDITOR_PAGE (epage)->client,
-						  end_date->tzid,
-						  &end_zone);
-		/* FIXME: Handle error better. */
-		if (status != CAL_CLIENT_GET_SUCCESS)
-		  g_warning ("Couldn't get timezone from server: %s",
-			     end_date->tzid ? end_date->tzid : "");
+		if (!e_cal_get_timezone (COMP_EDITOR_PAGE (epage)->client,
+					      end_date->tzid, &end_zone, NULL)) {
+			/* FIXME: Handle error better. */
+			g_warning ("Couldn't get timezone from server: %s",
+				   end_date->tzid ? end_date->tzid : "");
+		}
 	}
 
 	/* If both times are DATE values, we set the 'All Day Event' checkbox.
@@ -323,11 +357,8 @@ update_time (EventPage *epage, CalComponentDateTime *start_date, CalComponentDat
 	/* If it is an all day event, we set both timezones to the current
 	   timezone, so that if the user toggles the 'All Day Event' checkbox
 	   the event uses the current timezone rather than none at all. */
-	if (all_day_event) {
-		char *location = calendar_config_get_timezone ();
-		start_zone = end_zone = icaltimezone_get_builtin_timezone (location);
-	}
-
+	if (all_day_event)
+		start_zone = end_zone = calendar_config_get_icaltimezone ();
 
 	gtk_signal_handler_block_by_data (GTK_OBJECT (priv->start_time),
 					  epage);
@@ -397,33 +428,233 @@ clear_widgets (EventPage *epage)
 	set_all_day (epage, FALSE);
 
 	/* Classification */
-	e_dialog_radio_set (priv->classification_public,
-			    CAL_COMPONENT_CLASS_PRIVATE, classification_map);
+	e_dialog_option_menu_set (priv->classification, E_CAL_COMPONENT_CLASS_PRIVATE, classification_map);
 
 	/* Show Time As (Transparency) */
-	e_dialog_radio_set (priv->show_time_as_free,
-			    CAL_COMPONENT_TRANSP_OPAQUE, transparency_map);
+	e_dialog_toggle_set (priv->show_time_as_busy, TRUE);
 
+	/* Alarm */
+	e_dialog_toggle_set (priv->alarm, FALSE);
+	e_dialog_option_menu_set (priv->alarm_time, ALARM_15_MINUTES, alarm_map);
+	
 	/* Categories */
 	e_dialog_editable_set (priv->categories, NULL);
 }
 
+static gboolean
+is_custom_alarm (ECalComponentAlarm *ca, char *old_summary, CalUnits user_units, int user_interval, int *alarm_type) 
+{
+	ECalComponentAlarmTrigger trigger;
+	ECalComponentAlarmRepeat repeat;
+	ECalComponentAlarmAction action;
+	ECalComponentText desc;
+	icalcomponent *icalcomp;
+	icalproperty *icalprop;
+	icalattach *attach;
+	gboolean needs_desc = FALSE;
+	
+	e_cal_component_alarm_get_action (ca, &action);
+	if (action != E_CAL_COMPONENT_ALARM_DISPLAY)
+		return TRUE;
+
+	e_cal_component_alarm_get_attach (ca, &attach);
+	if (attach)
+		return TRUE;
+
+	icalcomp = e_cal_component_alarm_get_icalcomponent (ca);
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	while (icalprop) {
+		const char *x_name;
+
+		x_name = icalproperty_get_x_name (icalprop);
+		if (!strcmp (x_name, "X-EVOLUTION-NEEDS-DESCRIPTION"))
+			needs_desc = TRUE;
+
+		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+	}
+
+	if (!needs_desc) {	
+		e_cal_component_alarm_get_description (ca, &desc);
+		if (!desc.value || !old_summary || strcmp (desc.value, old_summary))
+			return TRUE;
+	}
+
+	e_cal_component_alarm_get_repeat (ca, &repeat);
+	if (repeat.repetitions != 0)
+		return TRUE;
+	
+	if (e_cal_component_alarm_has_attendees (ca))
+		return TRUE;
+	
+	e_cal_component_alarm_get_trigger (ca, &trigger);
+	if (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
+		return TRUE;
+	
+	if (trigger.u.rel_duration.is_neg != 1)
+		return TRUE;
+
+	if (trigger.u.rel_duration.weeks != 0)
+		return TRUE;
+
+	if (trigger.u.rel_duration.seconds != 0)
+		return TRUE;
+
+	if (trigger.u.rel_duration.days == 1
+	    && trigger.u.rel_duration.hours == 0
+	    && trigger.u.rel_duration.minutes == 0) {
+		if (alarm_type)
+			*alarm_type = ALARM_1_DAY;
+		return FALSE;
+	}
+	
+	if (trigger.u.rel_duration.days == 0
+	    && trigger.u.rel_duration.hours == 1
+	    && trigger.u.rel_duration.minutes == 0) {
+		if (alarm_type)
+			*alarm_type = ALARM_1_HOUR;
+		return FALSE;
+	}
+	
+	if (trigger.u.rel_duration.days == 0
+	    && trigger.u.rel_duration.hours == 0
+	    && trigger.u.rel_duration.minutes == 15) {
+		if (alarm_type)
+			*alarm_type = ALARM_15_MINUTES;		
+		return FALSE;
+	}
+
+	if (user_interval != -1) {
+		switch (user_units) {
+		case CAL_DAYS:		
+			if (trigger.u.rel_duration.days == user_interval
+			    && trigger.u.rel_duration.hours == 0
+			    && trigger.u.rel_duration.minutes == 0) {
+				if (alarm_type)
+					*alarm_type = ALARM_USER_TIME;		
+				return FALSE;
+			}
+			break;
+			
+		case CAL_HOURS:
+			if (trigger.u.rel_duration.days == 0
+			    && trigger.u.rel_duration.hours == user_interval
+			    && trigger.u.rel_duration.minutes == 0) {
+				if (alarm_type)
+					*alarm_type = ALARM_USER_TIME;		
+				return FALSE;
+			}
+			break;
+			
+		case CAL_MINUTES:
+			if (trigger.u.rel_duration.days == 0
+			    && trigger.u.rel_duration.hours == 0
+			    && trigger.u.rel_duration.minutes == user_interval) {
+				if (alarm_type)
+					*alarm_type = ALARM_USER_TIME;		
+				return FALSE;
+			}
+			break;
+		}		
+	}
+
+	return TRUE;
+}
+
+static gboolean
+is_custom_alarm_uid_list (ECalComponent *comp, GList *alarms, char *old_summary, CalUnits user_units, int user_interval, int *alarm_type)
+{
+	ECalComponentAlarm *ca;
+	gboolean result;
+	
+	if (g_list_length (alarms) > 1)
+		return TRUE;
+
+	ca = e_cal_component_get_alarm (comp, alarms->data);
+	result = is_custom_alarm (ca, old_summary, user_units, user_interval, alarm_type);
+	e_cal_component_alarm_free (ca);
+
+	return result;
+}
+
+static gboolean
+is_custom_alarm_store (EAlarmList *alarm_list_store, char *old_summary,  CalUnits user_units, int user_interval, int *alarm_type) 
+{
+	const ECalComponentAlarm *alarm;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gboolean valid_iter;
+	
+	model = GTK_TREE_MODEL (alarm_list_store);
+
+	valid_iter = gtk_tree_model_get_iter_first (model, &iter);
+	if (!valid_iter)
+		return FALSE;
+
+	alarm = e_alarm_list_get_alarm (alarm_list_store, &iter);
+	if (is_custom_alarm ((ECalComponentAlarm *)alarm, old_summary, user_units, user_interval, alarm_type))
+		return TRUE;
+
+	valid_iter = gtk_tree_model_iter_next (model, &iter);
+	if (valid_iter)
+		return TRUE;
+	
+	return FALSE;
+}
+
+static void
+sensitize_widgets (EventPage *epage)
+{
+	gboolean read_only, custom, alarm;
+	EventPagePrivate *priv;
+	
+	priv = epage->priv;
+
+	if (!e_cal_is_read_only (COMP_EDITOR_PAGE (epage)->client, &read_only, NULL))
+		read_only = TRUE;
+
+	custom = is_custom_alarm_store (priv->alarm_list_store, priv->old_summary, priv->alarm_units, priv->alarm_interval, NULL);
+	alarm = e_dialog_toggle_get (priv->alarm);
+	
+	gtk_widget_set_sensitive (priv->summary_label, !read_only);
+	gtk_entry_set_editable (GTK_ENTRY (priv->summary), !read_only);
+	gtk_widget_set_sensitive (priv->location_label, !read_only);
+	gtk_entry_set_editable (GTK_ENTRY (priv->location), !read_only);
+	gtk_widget_set_sensitive (priv->start_time, !read_only);
+	gtk_widget_set_sensitive (priv->start_timezone, !read_only);
+	gtk_widget_set_sensitive (priv->end_time, !read_only);
+	gtk_widget_set_sensitive (priv->end_timezone, !read_only);
+	gtk_widget_set_sensitive (priv->all_day_event, !read_only);
+	gtk_widget_set_sensitive (priv->description, !read_only);
+	gtk_widget_set_sensitive (priv->classification, !read_only);
+	gtk_widget_set_sensitive (priv->show_time_as_busy, !read_only);
+	gtk_widget_set_sensitive (priv->alarm, !read_only);
+	gtk_widget_set_sensitive (priv->alarm_time, !read_only && !custom && alarm);
+	gtk_widget_set_sensitive (priv->alarm_custom, !read_only && alarm);
+	if (custom)
+		gtk_widget_show (priv->alarm_warning);
+	else
+		gtk_widget_hide (priv->alarm_warning);
+	gtk_widget_set_sensitive (priv->categories_btn, !read_only);
+	gtk_entry_set_editable (GTK_ENTRY (priv->categories), !read_only);
+}
 
 /* fill_widgets handler for the event page */
-static void
-event_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
+static gboolean
+event_page_fill_widgets (CompEditorPage *page, ECalComponent *comp)
 {
 	EventPage *epage;
 	EventPagePrivate *priv;
-	CalComponentText text;
-	CalComponentClassification cl;
-	CalComponentTransparency transparency;
-	CalComponentDateTime start_date, end_date;
+	ECalComponentText text;
+	ECalComponentClassification cl;
+	ECalComponentTransparency transparency;
+	ECalComponentDateTime start_date, end_date;
 	const char *location;
 	const char *categories;
+	ESource *source;
 	GSList *l;
+	gboolean validated = TRUE;
 	
-	g_return_if_fail (page->client != NULL);
+	g_return_val_if_fail (page->client != NULL, FALSE);
 
 	epage = EVENT_PAGE (page);
 	priv = epage->priv;
@@ -436,101 +667,122 @@ event_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 
 	/* Summary, location, description(s) */
 
-	cal_component_get_summary (comp, &text);
+	e_cal_component_get_summary (comp, &text);
 	e_dialog_editable_set (priv->summary, text.value);
-
-	cal_component_get_location (comp, &location);
+	priv->old_summary = g_strdup (text.value);
+	
+	e_cal_component_get_location (comp, &location);
 	e_dialog_editable_set (priv->location, location);
 
-	cal_component_get_description_list (comp, &l);
-	if (l) {
-		text = *(CalComponentText *)l->data;
+	e_cal_component_get_description_list (comp, &l);
+	if (l && l->data) {
+		ECalComponentText *dtext;
+		
+		dtext = l->data;
 		gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->description)),
-					  text.value, -1);
+					  dtext->value ? dtext->value : "", -1);
 	}
-	cal_component_free_text_list (l);
+	e_cal_component_free_text_list (l);
 
 	/* Start and end times */
 
-	cal_component_get_dtstart (comp, &start_date);
-	cal_component_get_dtend (comp, &end_date);
-
-	update_time (epage, &start_date, &end_date);
+	e_cal_component_get_dtstart (comp, &start_date);
+	e_cal_component_get_dtend (comp, &end_date);
+	if (!start_date.value) {
+		comp_editor_page_display_validation_error (page, _("Event with no start date"), priv->start_time);
+		validated = FALSE;
+	} else if (!end_date.value) {
+		comp_editor_page_display_validation_error (page, _("Event with no end date"), priv->end_time);
+		validated = FALSE;
+	} else
+		update_time (epage, &start_date, &end_date);
 	
-	cal_component_free_datetime (&start_date);
-	cal_component_free_datetime (&end_date);
+	e_cal_component_free_datetime (&start_date);
+	e_cal_component_free_datetime (&end_date);
 
 	/* Classification */
-
-	cal_component_get_classification (comp, &cl);
+	e_cal_component_get_classification (comp, &cl);
 
 	switch (cl) {
-	case CAL_COMPONENT_CLASS_PUBLIC:
-	    	e_dialog_radio_set (priv->classification_public,
-				    CAL_COMPONENT_CLASS_PUBLIC,
-				    classification_map);
+	case E_CAL_COMPONENT_CLASS_PUBLIC:
+	case E_CAL_COMPONENT_CLASS_PRIVATE:
+	case E_CAL_COMPONENT_CLASS_CONFIDENTIAL:
 		break;
-
-	case CAL_COMPONENT_CLASS_PRIVATE:
-	    	e_dialog_radio_set (priv->classification_public,
-				    CAL_COMPONENT_CLASS_PRIVATE,
-				    classification_map);
-		break;
-
-	case CAL_COMPONENT_CLASS_CONFIDENTIAL:
-	    	e_dialog_radio_set (priv->classification_public,
-				    CAL_COMPONENT_CLASS_CONFIDENTIAL,
-				    classification_map);
-		break;
-
 	default:
-		/* default to PUBLIC */
-		e_dialog_radio_set (priv->classification_public,
-				    CAL_COMPONENT_CLASS_PUBLIC,
-				    classification_map);
+		cl = E_CAL_COMPONENT_CLASS_PUBLIC;
 		break;
 	}
-
+	e_dialog_option_menu_set (priv->classification, cl, classification_map);
 
 	/* Show Time As (Transparency) */
-	cal_component_get_transparency (comp, &transparency);
+	e_cal_component_get_transparency (comp, &transparency);
 	switch (transparency) {
-	case CAL_COMPONENT_TRANSP_TRANSPARENT:
-	    	e_dialog_radio_set (priv->show_time_as_free,
-				    CAL_COMPONENT_TRANSP_TRANSPARENT,
-				    transparency_map);
+	case E_CAL_COMPONENT_TRANSP_TRANSPARENT:
+		e_dialog_toggle_set (priv->show_time_as_busy, FALSE);
 		break;
 
 	default:
-	    	e_dialog_radio_set (priv->show_time_as_free,
-				    CAL_COMPONENT_TRANSP_OPAQUE,
-				    transparency_map);
+		e_dialog_toggle_set (priv->show_time_as_busy, TRUE);
 		break;
 	}
-	if (cal_client_get_static_capability (page->client, CAL_STATIC_CAPABILITY_NO_TRANSPARENCY))
-		gtk_widget_hide (priv->show_time_frame);
+	if (e_cal_get_static_capability (page->client, CAL_STATIC_CAPABILITY_NO_TRANSPARENCY))
+		gtk_widget_hide (priv->show_time_as_busy);
 	else
-		gtk_widget_show (priv->show_time_frame);
+		gtk_widget_show (priv->show_time_as_busy);
 
+	/* Alarms */
+	g_signal_handlers_block_matched (priv->alarm, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, epage);
+	if (e_cal_component_has_alarms (comp)) {
+		GList *alarms, *l;
+		int alarm_type;
+		
+		e_dialog_toggle_set (priv->alarm, TRUE);
+
+		alarms = e_cal_component_get_alarm_uids (comp);
+		if (!is_custom_alarm_uid_list (comp, alarms, priv->old_summary, priv->alarm_units, priv->alarm_interval, &alarm_type))
+			e_dialog_option_menu_set (priv->alarm_time, alarm_type, alarm_map);
+
+		for (l = alarms; l != NULL; l = l->next) {
+			ECalComponentAlarm *ca;
+			
+			ca = e_cal_component_get_alarm (comp, l->data);
+			e_alarm_list_append (priv->alarm_list_store, NULL, ca);			
+			e_cal_component_alarm_free (ca);
+		}
+
+		cal_obj_uid_list_free (alarms);
+	} else {
+		e_dialog_toggle_set (priv->alarm, FALSE);
+		e_dialog_option_menu_set (priv->alarm_time, priv->alarm_interval == -1 ? ALARM_15_MINUTES : ALARM_USER_TIME, alarm_map);
+	}
+	g_signal_handlers_unblock_matched (priv->alarm, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, epage);
+	
 	/* Categories */
-	cal_component_get_categories (comp, &categories);
+	e_cal_component_get_categories (comp, &categories);
 	e_dialog_editable_set (priv->categories, categories);
 
+	/* Source */
+	source = e_cal_get_source (page->client);
+	e_source_option_menu_select (E_SOURCE_OPTION_MENU (priv->source_selector), source);
+
 	priv->updating = FALSE;
+
+	sensitize_widgets (epage);
+
+	return validated;
 }
 
 /* fill_component handler for the event page */
 static gboolean
-event_page_fill_component (CompEditorPage *page, CalComponent *comp)
+event_page_fill_component (CompEditorPage *page, ECalComponent *comp)
 {
 	EventPage *epage;
 	EventPagePrivate *priv;
-	CalComponentDateTime start_date, end_date;
+	ECalComponentDateTime start_date, end_date;
 	struct icaltimetype start_tt, end_tt;
-	gboolean all_day_event, start_date_set, end_date_set;
+	gboolean all_day_event, start_date_set, end_date_set, busy;
 	char *cat, *str;
-	CalComponentClassification classif;
-	CalComponentTransparency transparency;
+	ECalComponentClassification classif;
 	GtkTextBuffer *text_buffer;
 	GtkTextIter text_iter_start, text_iter_end;
 
@@ -542,14 +794,14 @@ event_page_fill_component (CompEditorPage *page, CalComponent *comp)
 
 	str = e_dialog_editable_get (priv->summary);
 	if (!str || strlen (str) == 0)
-		cal_component_set_summary (comp, NULL);
+		e_cal_component_set_summary (comp, NULL);
 	else {
-		CalComponentText text;
+		ECalComponentText text;
 
 		text.value = str;
 		text.altrep = NULL;
 
-		cal_component_set_summary (comp, &text);
+		e_cal_component_set_summary (comp, &text);
 	}
 
 	if (str)
@@ -559,9 +811,9 @@ event_page_fill_component (CompEditorPage *page, CalComponent *comp)
 
 	str = e_dialog_editable_get (priv->location);
 	if (!str || strlen (str) == 0)
-		cal_component_set_location (comp, NULL);
+		e_cal_component_set_location (comp, NULL);
 	else
-		cal_component_set_location (comp, str);
+		e_cal_component_set_location (comp, str);
 
 	if (str)
 		g_free (str);
@@ -573,17 +825,17 @@ event_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	str = gtk_text_buffer_get_text (text_buffer, &text_iter_start, &text_iter_end, FALSE);
 
 	if (!str || strlen (str) == 0)
-		cal_component_set_description_list (comp, NULL);
+		e_cal_component_set_description_list (comp, NULL);
 	else {
 		GSList l;
-		CalComponentText text;
+		ECalComponentText text;
 
 		text.value = str;
 		text.altrep = NULL;
 		l.data = &text;
 		l.next = NULL;
 
-		cal_component_set_description_list (comp, &l);
+		e_cal_component_set_description_list (comp, &l);
 	}
 
 	if (str)
@@ -652,8 +904,8 @@ event_page_fill_component (CompEditorPage *page, CalComponent *comp)
 		end_date.tzid = icaltimezone_get_tzid (end_zone);
 	}
 
-	cal_component_set_dtstart (comp, &start_date);
-	cal_component_set_dtend (comp, &end_date);
+	e_cal_component_set_dtstart (comp, &start_date);
+	e_cal_component_set_dtend (comp, &end_date);
 
 
 	/* Categories */
@@ -663,22 +915,150 @@ event_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	if (cat)
 		g_free (cat);
 
-	cal_component_set_categories (comp, str);
+	e_cal_component_set_categories (comp, str);
 
 	if (str)
 		g_free (str);
 
 	/* Classification */
-
-	classif = e_dialog_radio_get (priv->classification_public,
-				      classification_map);
-	cal_component_set_classification (comp, classif);
+	classif = e_dialog_option_menu_get (priv->classification, classification_map);
+	e_cal_component_set_classification (comp, classif);
 
 	/* Show Time As (Transparency) */
+	busy = e_dialog_toggle_get (priv->show_time_as_busy);
+	e_cal_component_set_transparency (comp, busy ? E_CAL_COMPONENT_TRANSP_OPAQUE : E_CAL_COMPONENT_TRANSP_TRANSPARENT);
 
-	transparency = e_dialog_radio_get (priv->show_time_as_free,
-					   transparency_map);
-	cal_component_set_transparency (comp, transparency);
+	/* Alarm */
+	e_cal_component_remove_all_alarms (comp);
+	if (e_dialog_toggle_get (priv->alarm)) {
+		if (is_custom_alarm_store (priv->alarm_list_store, priv->old_summary, priv->alarm_units, priv->alarm_interval, NULL)) {
+			GtkTreeModel *model;
+			GtkTreeIter iter;
+			gboolean valid_iter;
+
+			model = GTK_TREE_MODEL (priv->alarm_list_store);
+			
+			for (valid_iter = gtk_tree_model_get_iter_first (model, &iter); valid_iter;
+			     valid_iter = gtk_tree_model_iter_next (model, &iter)) {
+				ECalComponentAlarm *alarm, *alarm_copy;
+				icalcomponent *icalcomp;
+				icalproperty *icalprop;
+				
+				alarm = (ECalComponentAlarm *) e_alarm_list_get_alarm (priv->alarm_list_store, &iter);
+				g_assert (alarm != NULL);
+				
+				/* We set the description of the alarm if it's got
+				 * the X-EVOLUTION-NEEDS-DESCRIPTION property.
+				 */
+				icalcomp = e_cal_component_alarm_get_icalcomponent (alarm);
+				icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+				while (icalprop) {
+					const char *x_name;
+					ECalComponentText summary;
+
+					x_name = icalproperty_get_x_name (icalprop);
+					if (!strcmp (x_name, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
+						e_cal_component_get_summary (comp, &summary);
+						e_cal_component_alarm_set_description (alarm, &summary);
+
+						icalcomponent_remove_property (icalcomp, icalprop);
+						break;
+					}
+
+					icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+				}
+
+				/* We clone the alarm to maintain the invariant that the alarm
+				 * structures in the list did *not* come from the component.
+				 */
+
+				alarm_copy = e_cal_component_alarm_clone (alarm);
+				e_cal_component_add_alarm (comp, alarm_copy);
+				e_cal_component_alarm_free (alarm_copy);
+			}
+		} else {
+			ECalComponentAlarm *ca;
+			ECalComponentText summary;
+			ECalComponentAlarmTrigger trigger;
+			int alarm_type;
+
+			ca = e_cal_component_alarm_new ();
+			
+			e_cal_component_get_summary (comp, &summary);
+			e_cal_component_alarm_set_description (ca, &summary);
+		
+			e_cal_component_alarm_set_action (ca, E_CAL_COMPONENT_ALARM_DISPLAY);
+
+			memset (&trigger, 0, sizeof (ECalComponentAlarmTrigger));
+			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;		
+			trigger.u.rel_duration.is_neg = 1;
+		
+			alarm_type = e_dialog_option_menu_get (priv->alarm_time, alarm_map);
+			switch (alarm_type) {
+			case ALARM_15_MINUTES:
+				trigger.u.rel_duration.minutes = 15;
+				break;
+			
+			case ALARM_1_HOUR:
+				trigger.u.rel_duration.hours = 1;
+				break;
+			
+			case ALARM_1_DAY:
+				trigger.u.rel_duration.days = 1;
+				break;
+
+			case ALARM_USER_TIME:
+				switch (calendar_config_get_default_reminder_units ()) {
+				case CAL_DAYS:		
+					trigger.u.rel_duration.days = priv->alarm_interval;
+					break;
+		
+				case CAL_HOURS:
+					trigger.u.rel_duration.hours = priv->alarm_interval;
+					break;
+		
+				case CAL_MINUTES:
+					trigger.u.rel_duration.minutes = priv->alarm_interval;
+					break;
+				}
+				break;
+				
+			default:
+				break;
+			}		
+			e_cal_component_alarm_set_trigger (ca, trigger);
+
+			e_cal_component_add_alarm (comp, ca);
+		}
+	}
+	
+	return TRUE;
+}
+
+/* fill_timezones handler for the event page */
+static gboolean
+event_page_fill_timezones (CompEditorPage *page, GHashTable *timezones)
+{
+	EventPage *epage;
+	EventPagePrivate *priv;
+	icaltimezone *zone;
+
+	epage = EVENT_PAGE (page);
+	priv = epage->priv;
+
+	/* add start date timezone */
+	zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->start_timezone));
+	if (zone) {
+		if (!g_hash_table_lookup (timezones, icaltimezone_get_tzid (zone)))
+			g_hash_table_insert (timezones, icaltimezone_get_tzid (zone), zone);
+	}
+
+	/* add end date timezone */
+	zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->end_timezone));
+	if (zone) {
+		if (!g_hash_table_lookup (timezones, icaltimezone_get_tzid (zone)))
+			g_hash_table_insert (timezones, icaltimezone_get_tzid (zone), zone);
+	}
 
 	return TRUE;
 }
@@ -727,8 +1107,10 @@ get_widgets (EventPage *epage)
 	gtk_widget_ref (priv->main);
 	gtk_container_remove (GTK_CONTAINER (priv->main->parent), priv->main);
 
-	priv->summary = GW ("general-summary");
+	priv->summary = GW ("summary");
+	priv->summary_label = GW ("summary-label");
 	priv->location = GW ("location");
+	priv->location_label = GW ("location-label");
 
 	/* Glade's visibility flag doesn't seem to work for custom widgets */
 	priv->start_time = GW ("start-time");
@@ -742,16 +1124,19 @@ get_widgets (EventPage *epage)
 
 	priv->description = GW ("description");
 
-	priv->classification_public = GW ("classification-public");
-	priv->classification_private = GW ("classification-private");
-	priv->classification_confidential = GW ("classification-confidential");
+	priv->classification = GW ("classification");
 
-	priv->show_time_frame = GW ("show-time-frame");
-	priv->show_time_as_free = GW ("show-time-as-free");
 	priv->show_time_as_busy = GW ("show-time-as-busy");
+
+	priv->alarm = GW ("alarm");
+	priv->alarm_time = GW ("alarm-time");
+	priv->alarm_warning = GW ("alarm-warning");
+	priv->alarm_custom = GW ("alarm-custom");
 
 	priv->categories_btn = GW ("categories-button");
 	priv->categories = GW ("categories");
+
+	priv->source_selector = GW ("source");
 
 #undef GW
 
@@ -763,12 +1148,12 @@ get_widgets (EventPage *epage)
 		&& priv->end_timezone
 		&& priv->all_day_event
 		&& priv->description
-		&& priv->classification_public
-		&& priv->classification_private
-		&& priv->classification_confidential
-		&& priv->show_time_frame
-		&& priv->show_time_as_free
+		&& priv->classification
 		&& priv->show_time_as_busy
+		&& priv->alarm
+		&& priv->alarm_time
+		&& priv->alarm_warning
+		&& priv->alarm_custom
 		&& priv->categories_btn
 		&& priv->categories);
 }
@@ -803,7 +1188,7 @@ notify_dates_changed (EventPage *epage, struct icaltimetype *start_tt,
 {
 	EventPagePrivate *priv;
 	CompEditorPageDates dates;
-	CalComponentDateTime start_dt, end_dt;
+	ECalComponentDateTime start_dt, end_dt;
 	gboolean all_day_event;
 	icaltimezone *start_zone = NULL, *end_zone = NULL;
 
@@ -1193,15 +1578,175 @@ field_changed_cb (GtkWidget *widget, gpointer data)
 		comp_editor_page_notify_changed (COMP_EDITOR_PAGE (epage));
 }
 
+static void
+source_changed_cb (GtkWidget *widget, ESource *source, gpointer data)
+{
+	EventPage *epage;
+	EventPagePrivate *priv;
+
+	epage = EVENT_PAGE (data);
+	priv = epage->priv;
+
+	if (!priv->updating) {
+		ECal *client;
+
+		client = auth_new_cal_from_source (source, E_CAL_SOURCE_TYPE_EVENT);
+		if (!client || !e_cal_open (client, FALSE, NULL)) {
+			GtkWidget *dialog;
+
+			if (client)
+				g_object_unref (client);
+
+			e_source_option_menu_select (E_SOURCE_OPTION_MENU (priv->source_selector),
+						     e_cal_get_source (COMP_EDITOR_PAGE (epage)->client));
+
+			dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+							 GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+							 _("Unable to open the calendar '%s'."),
+							 e_source_peek_name (source));
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+		} else {
+			icaltimezone *zone;
+			
+			zone = calendar_config_get_icaltimezone ();
+			e_cal_set_default_timezone (client, zone, NULL);
+
+			comp_editor_notify_client_changed (
+				COMP_EDITOR (gtk_widget_get_toplevel (priv->main)),
+				client);
+			sensitize_widgets (epage);
+		}
+	}
+}
+
+static void
+alarm_changed_cb (GtkWidget *widget, gpointer data)
+{
+	EventPage *epage;
+	EventPagePrivate *priv;
+	
+	epage = EVENT_PAGE (data);
+	priv = epage->priv;
+
+	if (e_dialog_toggle_get (priv->alarm)) {
+		ECalComponentAlarm *ca;
+		ECalComponentAlarmTrigger trigger;
+		icalcomponent *icalcomp;
+		icalproperty *icalprop;
+		int alarm_type;
+		
+		ca = e_cal_component_alarm_new ();		
+		
+		e_cal_component_alarm_set_action (ca, E_CAL_COMPONENT_ALARM_DISPLAY);
+
+		memset (&trigger, 0, sizeof (ECalComponentAlarmTrigger));
+		trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;		
+		trigger.u.rel_duration.is_neg = 1;
+		
+		alarm_type = e_dialog_option_menu_get (priv->alarm_time, alarm_map);
+		switch (alarm_type) {
+		case ALARM_15_MINUTES:
+			trigger.u.rel_duration.minutes = 15;
+			break;
+			
+		case ALARM_1_HOUR:
+			trigger.u.rel_duration.hours = 1;
+			break;
+			
+		case ALARM_1_DAY:
+			trigger.u.rel_duration.days = 1;
+			break;
+
+		case ALARM_USER_TIME:
+			switch (calendar_config_get_default_reminder_units ()) {
+			case CAL_DAYS:		
+				trigger.u.rel_duration.days = priv->alarm_interval;
+				break;
+				
+			case CAL_HOURS:
+				trigger.u.rel_duration.hours = priv->alarm_interval;
+				break;
+				
+			case CAL_MINUTES:
+				trigger.u.rel_duration.minutes = priv->alarm_interval;
+				break;
+			}
+			break;
+			
+		default:
+			break;
+		}		
+		e_cal_component_alarm_set_trigger (ca, trigger);
+
+		icalcomp = e_cal_component_alarm_get_icalcomponent (ca);
+		icalprop = icalproperty_new_x ("1");
+		icalproperty_set_x_name (icalprop, "X-EVOLUTION-NEEDS-DESCRIPTION");
+		icalcomponent_add_property (icalcomp, icalprop);
+
+		e_alarm_list_append (priv->alarm_list_store, NULL, ca);
+	} else {
+		e_alarm_list_clear (priv->alarm_list_store);
+	}	
+		
+	sensitize_widgets (epage);	
+}
+
+static void
+alarm_custom_clicked_cb (GtkWidget *widget, gpointer data)
+{
+	EventPage *epage;
+	EventPagePrivate *priv;
+	EAlarmList *temp_list_store;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gboolean valid_iter;
+	GtkWidget *toplevel;
+	
+	epage = EVENT_PAGE (data);
+	priv = epage->priv;
+
+	/* Make a copy of the list store in case the user cancels */
+	temp_list_store = e_alarm_list_new ();
+	model = GTK_TREE_MODEL (priv->alarm_list_store);
+	
+	for (valid_iter = gtk_tree_model_get_iter_first (model, &iter); valid_iter;
+	     valid_iter = gtk_tree_model_iter_next (model, &iter)) {
+		ECalComponentAlarm *alarm;
+				
+		alarm = (ECalComponentAlarm *) e_alarm_list_get_alarm (priv->alarm_list_store, &iter);
+		g_assert (alarm != NULL);
+
+		e_alarm_list_append (temp_list_store, NULL, alarm);
+	}	
+	
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	if (alarm_list_dialog_run (toplevel, COMP_EDITOR_PAGE (epage)->client, temp_list_store)) {
+		g_object_unref (priv->alarm_list_store);
+		priv->alarm_list_store = temp_list_store;
+
+		comp_editor_page_notify_changed (COMP_EDITOR_PAGE (epage));	
+	} else {
+		g_object_unref (temp_list_store);
+	}	
+	
+	/* If the user erases everything, uncheck the alarm toggle */
+	valid_iter = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (priv->alarm_list_store), &iter);
+	if (!valid_iter)
+		e_dialog_toggle_set (priv->alarm, FALSE);
+
+	sensitize_widgets (epage);
+}
+
 /* Hooks the widget signals */
 static gboolean
 init_widgets (EventPage *epage)
 {
 	EventPagePrivate *priv;
 	GtkTextBuffer *text_buffer;
-	char *location;
 	icaltimezone *zone;
-
+	char *menu_label = NULL;
+	
 	priv = epage->priv;
 
 	/* Make sure the EDateEdit widgets use our timezones to get the
@@ -1242,6 +1787,58 @@ init_widgets (EventPage *epage)
 	g_signal_connect((priv->categories_btn), "clicked",
 			    G_CALLBACK (categories_clicked_cb), epage);
 
+	/* Source selector */
+	g_signal_connect((priv->source_selector), "source_selected",
+			    G_CALLBACK (source_changed_cb), epage);
+
+	/* Alarms */
+	priv->alarm_list_store = e_alarm_list_new ();
+
+	/* Add the user defined time if necessary */
+	priv->alarm_units = calendar_config_get_default_reminder_units ();
+	priv->alarm_interval = calendar_config_get_default_reminder_interval ();
+	
+	switch (priv->alarm_units) {
+	case CAL_DAYS:
+		if (priv->alarm_interval != 1) {
+			menu_label = g_strdup_printf (ngettext("%d day before appointment", "%d days before appointment", priv->alarm_interval), priv->alarm_interval);
+		} else {
+			priv->alarm_interval = -1;
+		}
+		break;
+		
+	case CAL_HOURS:
+		if (priv->alarm_interval != 1) {
+			menu_label = g_strdup_printf (ngettext("%d hour before appointment", "%d hours before appointment", priv->alarm_interval), priv->alarm_interval);
+		} else {
+			priv->alarm_interval = -1;
+		}
+		break;
+		
+	case CAL_MINUTES:
+		if (priv->alarm_interval != 15) {
+			menu_label = g_strdup_printf (ngettext("%d minute before appointement", "%d minutes before appointment", priv->alarm_interval), priv->alarm_interval);
+		} else {
+			priv->alarm_interval = -1;
+		}
+		break;
+	}
+	
+	if (menu_label) {
+		GtkWidget *item, *menu;
+
+		item = gtk_menu_item_new_with_label (menu_label);
+		gtk_widget_show (item);
+		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (priv->alarm_time));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	}
+	
+	g_signal_connect (priv->alarm,
+			  "toggled", G_CALLBACK (alarm_changed_cb),
+			  epage);
+	g_signal_connect (priv->alarm_custom, "clicked",
+			  G_CALLBACK (alarm_custom_clicked_cb), epage);
+
 	/* Connect the default signal handler to use to make sure we notify
 	 * upstream of changes to the widget values.
 	 */
@@ -1264,27 +1861,23 @@ init_widgets (EventPage *epage)
 			    G_CALLBACK (field_changed_cb), epage);
 	g_signal_connect((priv->all_day_event), "toggled",
 			    G_CALLBACK (field_changed_cb), epage);
-	g_signal_connect((priv->classification_public),
-			    "toggled", G_CALLBACK (field_changed_cb),
-			    epage);
-	g_signal_connect((priv->classification_private),
-			    "toggled", G_CALLBACK (field_changed_cb),
-			    epage);
-	g_signal_connect((priv->classification_confidential),
-			    "toggled", G_CALLBACK (field_changed_cb),
-			    epage);
-	g_signal_connect((priv->show_time_as_free),
-			    "toggled", G_CALLBACK (field_changed_cb),
+	g_signal_connect((priv->classification),
+			    "changed", G_CALLBACK (field_changed_cb),
 			    epage);
 	g_signal_connect((priv->show_time_as_busy),
 			    "toggled", G_CALLBACK (field_changed_cb),
+			    epage);
+	g_signal_connect((priv->alarm),
+			    "toggled", G_CALLBACK (field_changed_cb),
+			    epage);
+	g_signal_connect((priv->alarm_time),
+			    "changed", G_CALLBACK (field_changed_cb),
 			    epage);
 	g_signal_connect((priv->categories), "changed",
 			    G_CALLBACK (field_changed_cb), epage);
 
 	/* Set the default timezone, so the timezone entry may be hidden. */
-	location = calendar_config_get_timezone ();
-	zone = icaltimezone_get_builtin_timezone (location);
+	zone = calendar_config_get_icaltimezone ();
 	e_timezone_entry_set_default_timezone (E_TIMEZONE_ENTRY (priv->start_timezone), zone);
 	e_timezone_entry_set_default_timezone (E_TIMEZONE_ENTRY (priv->end_timezone), zone);
 
@@ -1347,7 +1940,7 @@ event_page_new (void)
 
 	epage = g_object_new (TYPE_EVENT_PAGE, NULL);
 	if (!event_page_construct (epage)) {
-		g_object_unref ((epage));
+		g_object_unref (epage);
 		return NULL;
 	}
 
@@ -1372,4 +1965,23 @@ make_timezone_entry (void)
 	w = e_timezone_entry_new ();
 	gtk_widget_show (w);
 	return w;
+}
+
+GtkWidget *event_page_create_source_option_menu (void);
+
+GtkWidget *
+event_page_create_source_option_menu (void)
+{
+	GtkWidget   *menu;
+	GConfClient *gconf_client;
+	ESourceList *source_list;
+
+	gconf_client = gconf_client_get_default ();
+	source_list = e_source_list_new_for_gconf (gconf_client, "/apps/evolution/calendar/sources");
+
+	menu = e_source_option_menu_new (source_list);
+	g_object_unref (source_list);
+
+	gtk_widget_show (menu);
+	return menu;
 }

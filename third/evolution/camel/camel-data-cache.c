@@ -128,7 +128,7 @@ camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
 {
 	CamelDataCache *cdc;
 
-	if (camel_file_util_mkdir(path, 0700) == -1) {
+	if (camel_mkdir (path, 0700) == -1) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Unable to create cache path"));
 		return NULL;
@@ -239,7 +239,7 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	sprintf(dir, "%s/%s/%02x", cdc->path, path, hash);
 	if (access(dir, F_OK) == -1) {
 		if (create)
-			camel_file_util_mkdir(dir, 0700);
+			camel_mkdir (dir, 0700);
 	} else if (cdc->priv->expire_inc == hash
 		   && (cdc->expire_age != -1 || cdc->expire_access != -1)) {
 		time_t now;
@@ -287,12 +287,17 @@ camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, Cam
 	CamelStream *stream;
 
 	real = data_cache_path(cdc, TRUE, path, key);
-	stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
-	if (stream) {
-		unlink(real);
-		camel_object_bag_remove(cdc->priv->busy_bag, stream);
-		camel_object_unref(stream);
-	}
+	/* need to loop 'cause otherwise we can call bag_add/bag_abort
+	 * after bag_reserve returned a pointer, which is an invalid
+	 * sequence. */
+	do {
+		stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
+		if (stream) {
+			unlink(real);
+			camel_object_bag_remove(cdc->priv->busy_bag, stream);
+			camel_object_unref(stream);
+		}
+	} while (stream != NULL);
 
 	stream = camel_stream_fs_new_with_name(real, O_RDWR|O_CREAT|O_TRUNC, 0600);
 	if (stream)

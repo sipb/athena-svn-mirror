@@ -20,7 +20,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -36,6 +35,7 @@
 
 #include "filter-datespec.h"
 #include "e-util/e-sexp.h"
+#include "widgets/misc/e-error.h"
 
 #define d(x)
 
@@ -61,15 +61,26 @@ typedef struct _timespan {
 	float max;
 } timespan;
 
+#ifdef ngettext
+#undef ngettext
+#endif
+
+/* This is a nasty hack trying to keep both ngettext function and xgettext tool happy */
+/* It *will* cause problems if ngettext is a macro */
+#define ngettext(a, b)  a, b
+
 static const timespan timespans[] = {
-	{ 1, N_("1 second ago"), N_("%d seconds ago"), 59.0 },
-	{ 60, N_("1 minute ago"), N_("%d minutes ago"), 59.0 },
-	{ 3600, N_("1 hour ago"), N_("%d hours ago"), 23.0 },
-	{ 86400, N_("1 day ago"), N_("%d days ago"), 31.0 },
-	{ 604800, N_("1 week ago"), N_("%d weeks ago"), 52.0 },
-	{ 2419200, N_("1 month ago"), N_("%d months ago"), 12.0 },
-	{ 31557600, N_("1 year ago"), N_("%d years ago"), 1000.0 },
+	{ 1, ngettext("1 second ago", "%d seconds ago"), 59.0 },
+	{ 60, ngettext("1 minute ago", "%d minutes ago"), 59.0 },
+	{ 3600, ngettext("1 hour ago", "%d hours ago"), 23.0 },
+	{ 86400, ngettext("1 day ago", "%d days ago"), 31.0 },
+	{ 604800, ngettext("1 week ago", "%d weeks ago"), 52.0 },
+	{ 2419200, ngettext("1 month ago", "%d months ago"), 12.0 },
+	{ 31557600, ngettext("1 year ago", "%d years ago"), 1000.0 },
 };
+
+/* now we let the compiler see the real function call */
+#undef ngettext
 
 #define DAY_INDEX 3
 #define N_TIMESPANS (sizeof (timespans) / sizeof (timespans[0]))
@@ -162,7 +173,6 @@ static gboolean
 validate (FilterElement *fe)
 {
 	FilterDatespec *fds = (FilterDatespec *) fe;
-	GtkWidget *dialog;
 	gboolean valid;
 	
 	valid = fds->type != FDST_UNKNOWN;
@@ -171,12 +181,7 @@ validate (FilterElement *fe)
                    GtkWidget member pointing to the value gotten with
                    ::get_widget() so that we can get the parent window
                    here. */
-		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
-						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-						 "%s", _("You must choose a date."));
-		
-		gtk_dialog_run ((GtkDialog *) dialog);
-		gtk_widget_destroy (dialog);
+		e_error_run(NULL, "filter:no-date", NULL);
 	}
 	
 	return valid;
@@ -293,12 +298,7 @@ set_button (FilterDatespec *fds)
 			span = get_best_span(fds->value);
 			count = fds->value / timespans[span].seconds;
 			
-			if (count == 1)
-				/* 1 (minute|day|...) ago (singular time ago) */
-				strcpy(buf, _(timespans[span].singular));
-			else
-				/* N (minutes|days|...) ago (plural time ago) */
-				sprintf(buf, _(timespans[span].plural), count);
+			sprintf(buf, ngettext(timespans[span].singular, timespans[span].plural, count), count);
 		}
 		break;
 	}
@@ -405,9 +405,10 @@ button_clicked (GtkButton *button, FilterDatespec *fds)
 	dialog = (GtkDialog *) gtk_dialog_new ();
 	gtk_window_set_title ((GtkWindow *) dialog, _("Select a time to compare against"));
 	gtk_dialog_add_buttons (dialog,
-				GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-				GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_OK, GTK_RESPONSE_OK,
 				NULL);
+	gtk_dialog_set_has_separator (dialog, FALSE);
 	
 	p->notebook_type = glade_xml_get_widget (gui, "notebook_type");
 	p->option_type = glade_xml_get_widget (gui, "option_type");
@@ -424,7 +425,7 @@ button_clicked (GtkButton *button, FilterDatespec *fds)
 	
 	gtk_box_pack_start ((GtkBox *) dialog->vbox, toplevel, TRUE, TRUE, 3);
 	
-	if (gtk_dialog_run (dialog) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
 		get_values (fds);
 		set_button (fds);
 	}

@@ -29,6 +29,12 @@ $(HTML_EDITOR_GENERATED): $(GTKHTML_DATADIR)/Editor.idl
 
 ##
 
+error_DATA = mail-composer-errors.xml
+error_i18n = $(error_DATA:.xml=.xml.h)
+errordir = $(privdatadir)/errors
+%.xml.h: %.xml
+	$(top_builddir)/e-util/e-error-tool $^
+
 idl_DATA = $(IDLS)
 
 glade_DATA =					\
@@ -41,6 +47,8 @@ INCLUDES =								\
 	-I$(top_builddir)						\
 	-I$(top_srcdir)/widgets						\
 	-I$(top_builddir)/widgets					\
+	-I$(top_srcdir)/widgets/misc					\
+	-I$(top_builddir)/widgets/misc					\
 	-I$(top_srcdir)/camel					 	\
 	-I$(top_builddir)/camel					 	\
 	-I$(top_srcdir)/addressbook/backend				\
@@ -54,8 +62,6 @@ INCLUDES =								\
 	-DEVOLUTION_GLADEDIR=\"$(gladedir)\"				\
 	-DPREFIX=\"$(prefix)\"						\
 	-DG_LOG_DOMAIN=\"composer\"					\
-	-DG_DISABLE_DEPRECATED						\
-	-DGTK_DISABLE_DEPRECATED					\
 	$(EVOLUTION_MAIL_CFLAGS)
 
 libcomposer_la_SOURCES = 			\
@@ -77,11 +83,13 @@ libcomposer_la_SOURCES = 			\
 	listener.h
 
 EXTRA_DIST =					\
+	$(error_DATA)				\
+	$(error_i18n)				\
 	$(glade_DATA)				\
 	$(IDLS)					\
 	ChangeLog.pre-1-4
 
-BUILT_SOURCES = $(IDL_GENERATED) $(HTML_EDITOR_GENERATED)
+BUILT_SOURCES = $(IDL_GENERATED) $(HTML_EDITOR_GENERATED) $(error_i18n)
 CLEANFILES = $(BUILT_SOURCES)
 
 dist-hook:

@@ -23,8 +23,8 @@
 
 #include <time.h>
 #include <gtk/gtkwidget.h>
-#include <cal-util/cal-component.h>
-#include "cal-client.h"
+#include <libecal/e-cal-component.h>
+#include <libecal/e-cal.h>
 
 G_BEGIN_DECLS
 
@@ -37,17 +37,18 @@ G_BEGIN_DECLS
 #define IS_COMP_EDITOR_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), TYPE_COMP_EDITOR_PAGE))
 
 typedef struct {
-	CalComponentDateTime *start;
-	CalComponentDateTime *end;
-	CalComponentDateTime *due;
+	ECalComponentDateTime *start;
+	ECalComponentDateTime *end;
+	ECalComponentDateTime *due;
 	struct icaltimetype *complete;
 } CompEditorPageDates;
 
 typedef struct {
 	GtkObject object;
 
-	/* Some of the pages need the CalClient to access timezone data. */
-	CalClient *client;
+	/* Some of the pages need the ECal to access timezone data. Also,
+	 * the event page needs to know it to fill the source option menu. */
+	ECal *client;
 
 	/* The GtkAccelGroup for the page. We install this when the page is
 	   mapped, and uninstall when it is unmapped. libglade would do this
@@ -66,14 +67,16 @@ typedef struct {
 
 	void (* summary_changed) (CompEditorPage *page, const char *summary);
 	void (* dates_changed)   (CompEditorPage *page, const char *dates);
+	void (* client_changed)  (CompEditorPage *page, ECal *client);
 
 	/* Virtual methods */
 
 	GtkWidget *(* get_widget) (CompEditorPage *page);
 	void (* focus_main_widget) (CompEditorPage *page);
 
-	void     (* fill_widgets) (CompEditorPage *page, CalComponent *comp);
-	gboolean (* fill_component) (CompEditorPage *page, CalComponent *comp);
+	gboolean (* fill_widgets) (CompEditorPage *page, ECalComponent *comp);
+	gboolean (* fill_component) (CompEditorPage *page, ECalComponent *comp);
+	gboolean (* fill_timezones) (CompEditorPage *page, GHashTable *timezones);
 
 	void (* set_summary) (CompEditorPage *page, const char *summary);
 	void (* set_dates) (CompEditorPage *page, CompEditorPageDates *dates);
@@ -83,12 +86,14 @@ typedef struct {
 GtkType    comp_editor_page_get_type               (void);
 GtkWidget *comp_editor_page_get_widget             (CompEditorPage      *page);
 void       comp_editor_page_focus_main_widget      (CompEditorPage      *page);
-void       comp_editor_page_fill_widgets           (CompEditorPage      *page,
-						    CalComponent        *comp);
+gboolean   comp_editor_page_fill_widgets           (CompEditorPage      *page,
+						    ECalComponent        *comp);
 gboolean   comp_editor_page_fill_component         (CompEditorPage      *page,
-						    CalComponent        *comp);
-void       comp_editor_page_set_cal_client         (CompEditorPage      *page,
-						    CalClient           *client);
+						    ECalComponent        *comp);
+gboolean   comp_editor_page_fill_timezones         (CompEditorPage      *page,
+						    GHashTable          *timezones);
+void       comp_editor_page_set_e_cal              (CompEditorPage      *page,
+						    ECal           *client);
 void       comp_editor_page_set_summary            (CompEditorPage      *page,
 						    const char          *summary);
 void       comp_editor_page_set_dates              (CompEditorPage      *page,
@@ -99,6 +104,8 @@ void       comp_editor_page_notify_summary_changed (CompEditorPage      *page,
 						    const char          *summary);
 void       comp_editor_page_notify_dates_changed   (CompEditorPage      *page,
 						    CompEditorPageDates *dates);
+void       comp_editor_page_notify_client_changed  (CompEditorPage      *page,
+						    ECal                *client);
 void       comp_editor_page_display_validation_error (CompEditorPage      *page,
 						      const char          *msg,
 						      GtkWidget           *field);

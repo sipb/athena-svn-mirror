@@ -21,7 +21,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -31,6 +30,7 @@
 #include <glade/glade.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
+#include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
@@ -44,14 +44,17 @@
 
 #include <gal/util/e-iconv.h>
 
-#include "camel/camel-data-wrapper.h"
-#include "camel/camel-stream-fs.h"
-#include "camel/camel-stream-null.h"
-#include "camel/camel-stream-filter.h"
-#include "camel/camel-mime-filter-bestenc.h"
-#include "camel/camel-mime-part.h"
+#include <camel/camel-data-wrapper.h>
+#include <camel/camel-stream-fs.h>
+#include <camel/camel-stream-null.h>
+#include <camel/camel-stream-mem.h>
+#include <camel/camel-stream-filter.h>
+#include <camel/camel-mime-filter-bestenc.h>
+#include <camel/camel-mime-part.h>
 
 #include "e-util/e-gui-utils.h"
+#include "e-util/e-icon-factory.h"
+#include "widgets/misc/e-error.h"
 
 #define ICON_WIDTH 64
 #define ICON_SEPARATORS " /-_"
@@ -168,22 +171,15 @@ add_from_file (EMsgComposerAttachmentBar *bar,
 	       const char *disposition)
 {
 	EMsgComposerAttachment *attachment;
-	EMsgComposer *composer;
 	CamelException ex;
-	GtkWidget *dialog;
 	
 	camel_exception_init (&ex);
 	attachment = e_msg_composer_attachment_new (file_name, disposition, &ex);
 	if (attachment) {
 		add_common (bar, attachment);
 	} else {
-		composer = E_MSG_COMPOSER (gtk_widget_get_toplevel (GTK_WIDGET (bar)));
-		dialog = gtk_message_dialog_new(GTK_WINDOW(composer),
-						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-						"%s", camel_exception_get_description (&ex));
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		e_error_run((GtkWindow *)gtk_widget_get_toplevel((GtkWidget *)bar), "mail-composer:no-attach",
+			    file_name, camel_exception_get_description(&ex), NULL);
 		camel_exception_clear (&ex);
 	}
 }
@@ -192,9 +188,16 @@ static void
 remove_attachment (EMsgComposerAttachmentBar *bar,
 		   EMsgComposerAttachment *attachment)
 {
+	g_return_if_fail (E_IS_MSG_COMPOSER_ATTACHMENT_BAR (bar));
+	g_return_if_fail (g_list_find (bar->priv->attachments, attachment) != NULL);
+
 	bar->priv->attachments = g_list_remove (bar->priv->attachments,
 						attachment);
 	bar->priv->num_attachments--;
+	if (attachment->editor_gui != NULL) {
+		GtkWidget *dialog = glade_xml_get_widget (attachment->editor_gui, "dialog");
+		g_signal_emit_by_name (dialog, "response", GTK_RESPONSE_CLOSE);
+	}
 	
 	g_object_unref(attachment);
 	
@@ -224,53 +227,34 @@ update (EMsgComposerAttachmentBar *bar)
 		CamelContentType *content_type;
 		char *size_string, *label;
 		GdkPixbuf *pixbuf;
-		gboolean image;
 		const char *desc;
 		
 		attachment = p->data;
 		content_type = camel_mime_part_get_content_type (attachment->body);
 		/* Get the image out of the attachment 
 		   and create a thumbnail for it */
-		image = header_content_type_is (content_type, "image", "*");
-		
-		if (image && attachment->pixbuf_cache == NULL) {
+		pixbuf = attachment->pixbuf_cache;
+		if (pixbuf) {
+			g_object_ref(pixbuf);
+		} else if (camel_content_type_is(content_type, "image", "*")) {
 			CamelDataWrapper *wrapper;
-			CamelStream *mstream;
+			CamelStreamMem *mstream;
 			GdkPixbufLoader *loader;
 			gboolean error = TRUE;
-			char tmp[4096];
-			int t;
 			
 			wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (attachment->body));
-			mstream = camel_stream_mem_new ();
+			mstream = (CamelStreamMem *) camel_stream_mem_new ();
 			
-			camel_data_wrapper_write_to_stream (wrapper, mstream);
-			
-			camel_stream_reset (mstream);
+			camel_data_wrapper_decode_to_stream (wrapper, (CamelStream *) mstream);
 			
 			/* Stream image into pixbuf loader */
 			loader = gdk_pixbuf_loader_new ();
-			do {
-				t = camel_stream_read (mstream, tmp, 4096);
-				if (t > 0) {
-					error = !gdk_pixbuf_loader_write (loader, tmp, t, NULL);
-					if (error) {
-						break;
-					}
-				} else {
-					if (camel_stream_eos (mstream))
-						break;
-					error = TRUE;
-					break;
-				}
-				
-			} while (!camel_stream_eos (mstream));
+			error = !gdk_pixbuf_loader_write (loader, mstream->buffer->data, mstream->buffer->len, NULL);
+			gdk_pixbuf_loader_close (loader, NULL);
 			
 			if (!error) {
 				int ratio, width, height;
-
-				gdk_pixbuf_loader_close (loader, NULL);
-
+				
 				/* Shrink pixbuf */
 				pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 				width = gdk_pixbuf_get_width (pixbuf);
@@ -294,15 +278,16 @@ update (EMsgComposerAttachmentBar *bar)
 					 width,
 					 height,
 					 GDK_INTERP_BILINEAR);
+				pixbuf = attachment->pixbuf_cache;
+				g_object_ref(pixbuf);
 			} else {
+				pixbuf = NULL;
 				g_warning ("GdkPixbufLoader Error");
-				image = FALSE;
 			}
 			
 			/* Destroy everything */
-			gdk_pixbuf_loader_close (loader, NULL);
 			g_object_unref (loader);
-			camel_stream_close (mstream);
+			camel_object_unref (mstream);
 		}
 		
 		desc = camel_mime_part_get_description (attachment->body);
@@ -319,17 +304,22 @@ update (EMsgComposerAttachmentBar *bar)
 		} else
 			label = g_strdup (desc);
 		
-		if (image) {
-			gnome_icon_list_append_pixbuf (icon_list, attachment->pixbuf_cache, NULL, label);
-		} else {
+		if (pixbuf == NULL) {
 			char *mime_type;
 			
-			mime_type = header_content_type_simple (content_type);
+			mime_type = camel_content_type_simple (content_type);
 			pixbuf = e_icon_for_mime_type (mime_type, 48);
+			if (pixbuf == NULL) {
+				g_warning("cannot find icon for mime type %s (installation problem?)", mime_type);
+				/* stock_attach would be better, but its fugly scaled up */
+				pixbuf = e_icon_factory_get_icon("stock_unknown", E_ICON_SIZE_DIALOG);
+			}
 			g_free (mime_type);
+		}
+
+		if (pixbuf) {
 			gnome_icon_list_append_pixbuf (icon_list, pixbuf, NULL, label);
-			if (pixbuf)
-				g_object_unref (pixbuf);
+			g_object_unref(pixbuf);
 		}
 		
 		g_free (label);
@@ -344,7 +334,7 @@ remove_selected (EMsgComposerAttachmentBar *bar)
 	GnomeIconList *icon_list;
 	EMsgComposerAttachment *attachment;
 	GList *attachment_list, *p;
-	int num;
+	int num = 0, left, dlen;
 	
 	icon_list = GNOME_ICON_LIST (bar);
 	
@@ -354,10 +344,18 @@ remove_selected (EMsgComposerAttachmentBar *bar)
 	
 	attachment_list = NULL;
 	p = gnome_icon_list_get_selection (icon_list);
+	dlen = g_list_length (p);
 	for ( ; p != NULL; p = p->next) {
 		num = GPOINTER_TO_INT (p->data);
-		attachment = E_MSG_COMPOSER_ATTACHMENT (g_list_nth (bar->priv->attachments, num)->data);
-		attachment_list = g_list_prepend (attachment_list, attachment);
+		attachment = E_MSG_COMPOSER_ATTACHMENT (g_list_nth_data (bar->priv->attachments, num));
+
+		/* We need to check if there are duplicated index in the return list of 
+		   gnome_icon_list_get_selection() because of gnome bugzilla bug #122356.
+		   FIXME in the future. */
+
+		if (g_list_find (attachment_list, attachment) == NULL) {
+			attachment_list = g_list_prepend (attachment_list, attachment);
+		}
 	}
 	
 	for (p = attachment_list; p != NULL; p = p->next)
@@ -366,6 +364,11 @@ remove_selected (EMsgComposerAttachmentBar *bar)
 	g_list_free (attachment_list);
 	
 	update (bar);
+	
+	left = gnome_icon_list_get_num_icons (icon_list);
+	num = num - dlen + 1;
+	if (left > 0)
+		gnome_icon_list_focus_icon (icon_list, left > num ? num : left - 1);
 }
 
 static void
@@ -443,16 +446,19 @@ remove_cb (GtkWidget *widget, gpointer data, GtkWidget *for_widget)
 	remove_selected (bar);
 }
 
-
+
 /* Popup menu handling.  */
 
 static GnomeUIInfo icon_context_menu_info[] = {
-	GNOMEUIINFO_ITEM (N_("Remove"),
-			  N_("Remove selected items from the attachment list"),
-			  remove_cb, NULL),
+	GNOMEUIINFO_ITEM_STOCK (N_("_Remove"),
+				N_("Remove selected items from the attachment list"),
+				remove_cb,
+				GTK_STOCK_REMOVE),
 	GNOMEUIINFO_MENU_PROPERTIES_ITEM (properties_cb, NULL),
 	GNOMEUIINFO_END
 };
+
+#define ICON_CONTEXT_MENU_PROPERTIES (1)
 
 static GtkWidget *
 get_icon_context_menu (EMsgComposerAttachmentBar *bar)
@@ -472,8 +478,15 @@ popup_icon_context_menu (EMsgComposerAttachmentBar *bar,
 			 GdkEventButton *event)
 {
 	GtkWidget *menu;
-	
+	GnomeIconList *icon_list;
+	GList *selection;
+
 	menu = get_icon_context_menu (bar);
+	icon_list = GNOME_ICON_LIST (bar);
+	selection = gnome_icon_list_get_selection (icon_list);
+
+	gtk_widget_set_sensitive (icon_context_menu_info[ICON_CONTEXT_MENU_PROPERTIES].widget, g_list_length (selection) == 1);
+
 	gnome_popup_menu_do_popup (menu, NULL, NULL, event, bar, NULL);
 }
 
@@ -529,13 +542,14 @@ destroy (GtkObject *object)
 
 /* GtkWidget methods.  */
 
+
 static void
 popup_menu_placement_callback (GtkMenu *menu, int *x, int *y, gboolean *push_in, gpointer user_data)
 {
 	EMsgComposerAttachmentBar *bar;
 	GnomeIconList *icon_list;
-	GnomeCanvasPixbuf *image;
 	GList *selection;
+	GnomeCanvasPixbuf *image;
 	
 	bar = E_MSG_COMPOSER_ATTACHMENT_BAR (user_data);
 	icon_list = GNOME_ICON_LIST (user_data);
@@ -553,7 +567,6 @@ popup_menu_placement_callback (GtkMenu *menu, int *x, int *y, gboolean *push_in,
 	/* Put menu to the center of icon. */
 	*x += (int)(image->item.x1 + image->item.x2) / 2;
 	*y += (int)(image->item.y1 + image->item.y2) / 2;
-
 }
 
 static gboolean 
@@ -575,7 +588,8 @@ popup_menu_event (GtkWidget *widget)
 	return TRUE;
 }
 
-static gint
+
+static int
 button_press_event (GtkWidget *widget,
 		    GdkEventButton *event)
 {
@@ -601,6 +615,23 @@ button_press_event (GtkWidget *widget,
 	return TRUE;
 }
 
+static gint
+key_press_event (GtkWidget *widget, GdkEventKey *event)
+{
+        EMsgComposerAttachmentBar *bar;
+        GnomeIconList *icon_list;
+	
+        bar = E_MSG_COMPOSER_ATTACHMENT_BAR (widget);
+        icon_list = GNOME_ICON_LIST (bar);                                                                                 
+                                                                                
+        if (event->keyval == GDK_Delete) {
+                remove_selected (bar);
+                return TRUE;
+        }
+                                                                                
+        return GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
+}
+
 
 /* Initialization.  */
 
@@ -621,6 +652,7 @@ class_init (EMsgComposerAttachmentBarClass *klass)
 	
 	widget_class->button_press_event = button_press_event;
 	widget_class->popup_menu = popup_menu_event;
+	widget_class->key_press_event = key_press_event;
 
 	
 	/* Setup signals.  */
@@ -712,24 +744,31 @@ e_msg_composer_attachment_bar_new (GtkAdjustment *adj)
 	return GTK_WIDGET (new);
 }
 
-static const char *
+static char *
 get_default_charset (void)
 {
 	GConfClient *gconf;
-	const char *charset;
-	char *buf;
+	const char *locale;
+	char *charset;
 	
 	gconf = gconf_client_get_default ();
-	buf = gconf_client_get_string (gconf, "/apps/evolution/mail/composer/charset", NULL);
+	charset = gconf_client_get_string (gconf, "/apps/evolution/mail/composer/charset", NULL);
+	
+	if (!charset || charset[0] == '\0') {
+		g_free (charset);
+		charset = gconf_client_get_string (gconf, "/apps/evolution/mail/format/charset", NULL);
+		if (charset && charset[0] == '\0') {
+			g_free (charset);
+			charset = NULL;
+		}
+	}
+	
 	g_object_unref (gconf);
 	
-	if (buf != NULL) {
-		charset = e_iconv_charset_name (buf);
-		g_free (buf);
-	} else
-		charset = e_iconv_locale_charset ();
+	if (!charset && (locale = e_iconv_locale_charset ()))
+		charset = g_strdup (locale);
 	
-	return charset;
+	return charset ? charset : g_strdup ("us-ascii");
 }
 
 static void
@@ -744,42 +783,36 @@ attach_to_multipart (CamelMultipart *multipart,
 	content = camel_medium_get_content_object (CAMEL_MEDIUM (attachment->body));
 	
 	if (!CAMEL_IS_MULTIPART (content)) {
-		if (header_content_type_is (content_type, "text", "*")) {
-			CamelMimePartEncodingType encoding;
-			CamelStreamFilter *filtered_stream;
+		if (camel_content_type_is (content_type, "text", "*")) {
+			CamelTransferEncoding encoding;
+			CamelStreamFilter *filter_stream;
 			CamelMimeFilterBestenc *bestenc;
 			CamelStream *stream;
 			const char *charset;
+			char *buf = NULL;
 			char *type;
 			
-			/* assume that if a charset is set, that the content is in UTF-8
-			 * or else already has rawtext set to TRUE */
-			if (!(charset = header_content_type_param (content_type, "charset"))) {
-				/* Let camel know that this text part was read in raw and thus is not in
-				 * UTF-8 format so that when it writes this part out, it doesn't try to
-				 * convert it from UTF-8 into the @default_charset charset. */
-				content->rawtext = TRUE;
-			}
+			charset = camel_content_type_param (content_type, "charset");
 			
 			stream = camel_stream_null_new ();
-			filtered_stream = camel_stream_filter_new_with_stream (stream);
+			filter_stream = camel_stream_filter_new_with_stream (stream);
 			bestenc = camel_mime_filter_bestenc_new (CAMEL_BESTENC_GET_ENCODING);
-			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (bestenc));
-			camel_object_unref (CAMEL_OBJECT (stream));
+			camel_stream_filter_add (filter_stream, CAMEL_MIME_FILTER (bestenc));
+			camel_object_unref (stream);
 			
-			camel_data_wrapper_write_to_stream (content, CAMEL_STREAM (filtered_stream));
-			camel_object_unref (CAMEL_OBJECT (filtered_stream));
+			camel_data_wrapper_decode_to_stream (content, CAMEL_STREAM (filter_stream));
+			camel_object_unref (filter_stream);
 			
 			encoding = camel_mime_filter_bestenc_get_best_encoding (bestenc, CAMEL_BESTENC_8BIT);
 			camel_mime_part_set_encoding (attachment->body, encoding);
 			
-			if (encoding == CAMEL_MIME_PART_ENCODING_7BIT) {
+			if (encoding == CAMEL_TRANSFER_ENCODING_7BIT) {
 				/* the text fits within us-ascii so this is safe */
 				/* FIXME: check that this isn't iso-2022-jp? */
 				default_charset = "us-ascii";
 			} else if (!charset) {
 				if (!default_charset)
-					default_charset = get_default_charset ();
+					default_charset = buf = get_default_charset ();
 				
 				/* FIXME: We should really check that this fits within the
                                    default_charset and if not find one that does and/or
@@ -788,16 +821,16 @@ attach_to_multipart (CamelMultipart *multipart,
 			
 			if (!charset) {
 				/* looks kinda nasty, but this is how ya have to do it */
-				header_content_type_set_param (content_type, "charset", default_charset);
-				type = header_content_type_format (content_type);
+				camel_content_type_set_param (content_type, "charset", default_charset);
+				type = camel_content_type_format (content_type);
 				camel_mime_part_set_content_type (attachment->body, type);
 				g_free (type);
+				g_free (buf);
 			}
 			
-			camel_object_unref (CAMEL_OBJECT (bestenc));
+			camel_object_unref (bestenc);
 		} else if (!CAMEL_IS_MIME_MESSAGE (content)) {
-			camel_mime_part_set_encoding (attachment->body,
-						      CAMEL_MIME_PART_ENCODING_BASE64);
+			camel_mime_part_set_encoding (attachment->body, CAMEL_TRANSFER_ENCODING_BASE64);
 		}
 	}
 	

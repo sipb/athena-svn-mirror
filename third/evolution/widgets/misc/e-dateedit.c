@@ -138,6 +138,8 @@ static void e_date_edit_class_init		(EDateEditClass	*class);
 static void e_date_edit_init			(EDateEdit	*dedit);
 static void create_children			(EDateEdit	*dedit);
 static void e_date_edit_dispose			(GObject	*object);
+static gboolean e_date_edit_mnemonic_activate	(GtkWidget	*widget,
+						 gboolean	 group_cycling);
 static void e_date_edit_grab_focus		(GtkWidget	*widget);
 
 static gint on_date_entry_key_press		(GtkWidget	*widget,
@@ -252,6 +254,7 @@ e_date_edit_class_init		(EDateEditClass	*class)
 
 	object_class->dispose = e_date_edit_dispose;
 
+	widget_class->mnemonic_activate = e_date_edit_mnemonic_activate;
 	widget_class->grab_focus = e_date_edit_grab_focus;
 
 	class->changed = NULL;
@@ -319,7 +322,6 @@ create_children			(EDateEdit	*dedit)
 	priv = dedit->priv;
 
 	priv->date_entry  = gtk_entry_new ();
-	gtk_widget_set_size_request (priv->date_entry, 90, -1);
 	gtk_box_pack_start (GTK_BOX (dedit), priv->date_entry, FALSE, TRUE, 0);
 	
 	g_signal_connect (priv->date_entry, "key_press_event",
@@ -336,7 +338,7 @@ create_children			(EDateEdit	*dedit)
 	gtk_box_pack_start (GTK_BOX (dedit), priv->date_button,
 			    FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (priv->date_button), arrow);
 	gtk_widget_show (arrow);
 
@@ -351,7 +353,6 @@ create_children			(EDateEdit	*dedit)
 
 
 	priv->time_combo = gtk_combo_new ();
-	gtk_widget_set_size_request (GTK_COMBO (priv->time_combo)->entry, 90, -1);
 	gtk_box_pack_start (GTK_BOX (dedit), priv->time_combo, FALSE, TRUE, 0);
 	rebuild_time_popup (dedit);
 
@@ -469,6 +470,14 @@ e_date_edit_dispose		(GObject	*object)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
 }
 
+
+/* GtkWidget::mnemonic_activate() handler for the EDateEdit */
+static gboolean
+e_date_edit_mnemonic_activate (GtkWidget *widget, gboolean group_cycling)
+{
+	e_date_edit_grab_focus (widget);
+	return TRUE;
+}
 
 /* Grab_focus handler for the EDateEdit. If the date field is being shown, we
    grab the focus to that, otherwise we grab it to the time field. */
@@ -1176,6 +1185,7 @@ e_date_edit_show_date_popup	(EDateEdit	*dedit)
 			   | GDK_BUTTON_RELEASE_MASK
 			   | GDK_POINTER_MOTION_MASK),
 			  NULL, NULL, GDK_CURRENT_TIME);
+	gdk_window_focus (priv->cal_popup->window, GDK_CURRENT_TIME);
 }
 
 

@@ -35,12 +35,9 @@
 #include <gtk/gtksignal.h>
 #include <gnome.h>
 #include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
 #include <widgets/e-timezone-dialog/e-timezone-dialog.h>
 #include "e-timezone-entry.h"
-
-/* The timezone icon for the button. */
-#include "art/timezone-16.xpm"
+#include <e-util/e-icon-factory.h>
 
 struct _ETimezoneEntryPrivate {
 	/* The current timezone, set in e_timezone_entry_set_timezone()
@@ -69,6 +66,8 @@ static void e_timezone_entry_class_init	(ETimezoneEntryClass	*class);
 static void e_timezone_entry_init	(ETimezoneEntry	*tentry);
 static void e_timezone_entry_destroy	(GtkObject	*object);
 
+static gboolean e_timezone_entry_mnemonic_activate (GtkWidget *widget,
+                                                    gboolean   group_cycling);
 static void on_entry_changed		(GtkEntry	*entry,
 					 ETimezoneEntry *tentry);
 static void on_button_clicked		(GtkWidget	*widget,
@@ -87,11 +86,13 @@ static void
 e_timezone_entry_class_init		(ETimezoneEntryClass	*class)
 {
 	GtkObjectClass *object_class = (GtkObjectClass *) class;
-
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class) ;
+ 
 	object_class = (GtkObjectClass*) class;
 
 	parent_class = g_type_class_peek_parent (class);
 
+	widget_class->mnemonic_activate = e_timezone_entry_mnemonic_activate;
 	timezone_entry_signals[CHANGED] =
 		gtk_signal_new ("changed",
 				GTK_RUN_LAST,
@@ -112,10 +113,8 @@ static void
 e_timezone_entry_init		(ETimezoneEntry	*tentry)
 {
 	ETimezoneEntryPrivate *priv;
-	GdkColormap *colormap;
-	GdkPixmap *timezone_icon;
-	GdkBitmap *timezone_mask;
-	GtkWidget *pixmap;
+	GtkWidget *gtk_image;
+	GdkPixbuf *gdk_pixbuf;
 
 	tentry->priv = priv = g_new0 (ETimezoneEntryPrivate, 1);
 
@@ -134,12 +133,12 @@ e_timezone_entry_init		(ETimezoneEntry	*tentry)
 	gtk_box_pack_start (GTK_BOX (tentry), priv->button, FALSE, FALSE, 6);
 	gtk_widget_show (priv->button);
 
-	colormap = gtk_widget_get_colormap (priv->button);
-	timezone_icon = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &timezone_mask, NULL, timezone_16_xpm);
-
-	pixmap = gtk_pixmap_new (timezone_icon, timezone_mask);
-	gtk_container_add (GTK_CONTAINER (priv->button), pixmap);
-	gtk_widget_show (pixmap);
+	gdk_pixbuf = e_icon_factory_get_icon ("stock_timezone", E_ICON_SIZE_BUTTON);
+	gtk_image = gtk_image_new_from_pixbuf (gdk_pixbuf);
+	gtk_container_add (GTK_CONTAINER (priv->button), gtk_image);
+	gtk_widget_show (gtk_image);
+	
+	g_object_unref (gdk_pixbuf);
 }
 
 
@@ -157,6 +156,8 @@ e_timezone_entry_new			(void)
 	ETimezoneEntry *tentry;
 
 	tentry = g_object_new (e_timezone_entry_get_type (), NULL);
+
+	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(tentry), GTK_CAN_FOCUS);
 
 	return GTK_WIDGET (tentry);
 }
@@ -295,5 +296,21 @@ e_timezone_entry_set_entry (ETimezoneEntry *tentry)
 		gtk_widget_hide (priv->entry);
 
 	g_free (name_buffer);
+}
+
+
+static gboolean
+e_timezone_entry_mnemonic_activate (GtkWidget *widget,
+                                    gboolean   group_cycling)
+{
+        GtkButton *button = NULL;
+                                                                                                
+        if (GTK_WIDGET_CAN_FOCUS (widget)) {
+                button = GTK_BUTTON (((ETimezoneEntryPrivate *) ((ETimezoneEntry *) widget)->priv)->button);
+                if (button != NULL)
+                        gtk_widget_grab_focus (GTK_WIDGET (button));
+        }
+                                                                                                
+        return TRUE;
 }
 
