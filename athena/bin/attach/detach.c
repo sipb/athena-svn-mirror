@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.16 1999-03-23 18:24:39 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.17 1999-03-23 18:30:35 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -120,6 +120,31 @@ int detach_main(int argc, char **argv)
 	      type = optarg;
 	      break;
 
+	    case 'U':
+	      if (getuid() != 0)
+		{
+		  fprintf(stderr, "%s: You are not allowed to use the "
+			  "--user option.\n", whoami);
+		  exit(1);
+		}
+	      else
+		{
+		  uid_t uid;
+		  struct passwd *pw;
+
+		  pw = getpwnam(optarg);
+		  if (!pw)
+		    {
+		      fprintf(stderr, "%s: No such user %s.\n",
+			      whoami, optarg);
+		      exit(1);
+		    }
+		  locker_end(context);
+		  if (locker_init(&context, pw->pw_uid, NULL, NULL))
+		    exit(1);
+		}
+	      break;
+
 	    case 'v':
 	      verbose = 1;
 	      break;
@@ -140,7 +165,6 @@ int detach_main(int argc, char **argv)
 	    case 'f':
 	    case 'L':
 	    case 's':
-	    case 'U':
 	      fprintf(stderr, "%s: The '%c' flag is no longer supported.\n",
 		      whoami, opt);
 	      break;
