@@ -12,10 +12,13 @@
 ** provided this header is included.
 */
 
-char *basename(str)	/* return last portion of a path name */
-char *str;
+#include <string.h>
+
+char *basename(char *str);
+
+char *basename(char *str)
 {
-	char *cp, *strrchr();	/* change to strrchr() for USG systems */
+	char *cp;
 
 	if((cp = strrchr(str, '/')) == NULL)
 		return(str);

@@ -14,6 +14,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #define TRUE	1
@@ -21,15 +22,17 @@
 
 extern char yytext[];
 extern int yyleng;
+extern void yylex(void);
 
 int line_no = 1;	/* current line number */
 char *fname = NULL;	/* current file name */
 
-char *basename();	/* strips leading path of a file name */
+void outid(void);
+void usage(char *name);
 
-main(argc,argv)
-int argc;
-char **argv;
+#include "basename.c"
+
+int main(int argc, char **argv)
 {
 	FILE saved_in, *fp;
 	char *name;
@@ -83,20 +86,16 @@ char **argv;
 		if(more_input)
 			line_no = 1;
 	}
+	return(0);
 }
 
-outid()
+void outid(void)
 {
-	char *basename();
-
 	printf("%s\t%s\t%d\n", yytext, basename(fname), line_no);
 }
 
-usage(name)
-char *name;
+void usage(char *name)
 {
 	fprintf(stderr,"usage: %s [files]\n", name);
 	exit(1);
 }
-
-#include "basename.c"

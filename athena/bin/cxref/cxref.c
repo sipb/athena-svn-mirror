@@ -16,9 +16,16 @@
 ** provided this header is included.
 */
 
-#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+
 #include <ctype.h>
+#include <fcntl.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define TRUE	1
 #define FALSE	0
@@ -40,22 +47,29 @@ int Fflag = FALSE;	/* fold case in indentifiers */
 
 int ancestor;		/* id of this process, used by children */
 
-char *filename();	/* turns "-" into "stdin" */
-
 #define do_pipe(x)	if (pipe(x) < 0) { fprintf(stderr, "x: pipe failed\n");\
 				fflush(stderr); exit (1); }
 
-main(argc, argv)
-int argc;
-char **argv;
+void setargs(void);
+void runprogs(void);
+void deltemps(void);
+void idens(void);
+void integers(void);
+void floats(void);
+void usage(void);
+char *filename(char *fname);
+void catchem(void);
+
+#include "basename.c"
+
+int main(int argc, char **argv)
 {
 	int i;
-	int catchem();
 	struct sigaction act;
 
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
-	act.sa_handler= (void (*)()) catchem;
+	act.sa_handler = catchem;
 	(void) sigaction(SIGINT, &act, NULL);
 	(void) sigaction(SIGQUIT, &act, NULL);
 
@@ -105,10 +119,10 @@ char **argv;
 					break;
 				
 				case 'w':
-					if (isdigit(argv[0][i+1]))
+					if (isdigit((int)argv[0][i+1]))
 					{
 						width = 0;
-						for(i++; isdigit(argv[0][i]); i++)
+						for(i++; isdigit((int)argv[0][i]); i++)
 							width = width * 10 + argv[0][i] - '0';
 						i--;
 					}
@@ -126,11 +140,12 @@ char **argv;
 				}
 			}
 	
-	if (width != 0)
+	if (width != 0) {
 		if (width < 51)
 			width = 80;
 		else if (width > 132)
 			width = 132;
+	}
 
 	xargc = argc;
 	xargv = argv;
@@ -157,7 +172,7 @@ typedef int PIPE[2];
 
 PIPE pipe1, pipe2, pipe3;
 
-setargs()		/* initialize argv vectors */
+void setargs(void)		/* initialize argv vectors */
 {
 	static char widthbuf[100];
 	static char pidbuf[100];
@@ -170,7 +185,7 @@ setargs()		/* initialize argv vectors */
 		fmtxref[3] = NULL;
 	}
 
-	sprintf(pidbuf, "%d", getpid());
+	sprintf(pidbuf, "%lu", (unsigned long)getpid());
 
 	if (Fflag)
 		sort1[5] = "-f";	/* fold case in identifiers */
@@ -212,7 +227,7 @@ flow of control is:
 	sort3 pipe1 cxrfilt -f pipe2 fmtxref -userargs
 */
 
-runprogs()		/* run the programs, obeying user's options */
+void runprogs(void)		/* run the programs, obeying user's options */
 {
 	int i;
 
@@ -272,14 +287,14 @@ runprogs()		/* run the programs, obeying user's options */
 	deltemps();
 }
 
-deltemps()	/* delete temp files used for ints and floats */
+void deltemps(void)	/* delete temp files used for ints and floats */
 {
 	char buf[BUFSIZ];
 	int i;
 
 	for (i = 1; i <= 2; i++)
 	{
-		sprintf(buf, "/tmp/cxr.%d.%d", getpid(), i);
+		sprintf(buf, "/tmp/cxr.%lu.%d", (unsigned long)getpid(), i);
 		unlink(buf);
 	}
 }
@@ -290,7 +305,7 @@ deltemps()	/* delete temp files used for ints and floats */
 
 int level;	/* how many children down are we */
 
-idens()		/* cross reference identifiers */
+void idens(void)		/* cross reference identifiers */
 {
 	int status;
 	int pid;
@@ -309,7 +324,9 @@ retest:
 			level++;
 			do_pipe(pipe3);
 
-			if (ischild = ((pid = fork()) == 0))
+			pid = fork();
+			ischild = (pid == 0);
+			if (ischild)
 				goto retest;
 
 			close(pipe3[1]);	/* doesn't need this */
@@ -338,7 +355,9 @@ retest:
 		/* set up i/o for next child */
 		do_pipe(pipe2);
 
-		if (ischild = ((pid = fork()) == 0))
+		pid = fork();
+		ischild = (pid == 0);
+		if (ischild)
 			goto retest;
 
 		close (pipe2[1]);
@@ -363,7 +382,9 @@ retest:
 		/* set up to read from next child */
 		do_pipe(pipe1);
 
-		if (ischild = ((pid = fork()) == 0))
+		pid = fork();
+		ischild = (pid == 0);
+		if (ischild)
 			goto retest;
 
 		close (pipe1[1]);
@@ -397,10 +418,7 @@ retest:
 	}
 }
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
-integers()
+void integers(void)
 {
 	int status;
 	int pid;
@@ -426,7 +444,9 @@ retest:
 			level++;
 			do_pipe(pipe2);
 
-			if (ischild = ((pid = fork()) == 0))
+			pid = fork();
+			ischild = (pid == 0);
+			if (ischild)
 				goto retest;
 
 			close(pipe2[1]);	/* doesn't need this */
@@ -455,7 +475,9 @@ retest:
 		/* set up i/o for next child */
 		do_pipe(pipe1);
 
-		if (ischild = ((pid = fork()) == 0))
+		pid = fork();
+		ischild = (pid == 0);
+		if (ischild)
 			goto retest;
 
 		close (pipe1[1]);
@@ -498,7 +520,7 @@ retest:
 	}
 }
 
-floats()
+void floats(void)
 {
 	int status;
 	int pid;
@@ -524,7 +546,9 @@ retest:
 			level++;
 			do_pipe(pipe2);
 
-			if (ischild = ((pid = fork()) == 0))
+			pid = fork();
+			ischild = (pid == 0);
+			if (ischild)
 				goto retest;
 
 			close(pipe2[1]);	/* doesn't need this */
@@ -553,7 +577,9 @@ retest:
 		/* set up i/o for next child */
 		do_pipe(pipe1);
 
-		if (ischild = ((pid = fork()) == 0))
+		pid = fork();
+		ischild = (pid == 0);
+		if (ischild)
 			goto retest;
 
 		close (pipe1[1]);
@@ -596,30 +622,29 @@ retest:
 	}
 }
 
-usage()
+void usage(void)
 {
 	fprintf(stderr, "usage: %s [-SCcsif] [-w width] [files]\n", name);
 	fflush(stderr);
 	exit (1);
 }
 
-char *filename(fname)
-char *fname;
+char *filename(char *fname)
 {
-	char *cp, *basename();
+	char *cp;
 
 	cp = basename(fname);
 
 	return ( strcmp(cp, "-") == 0 ? "stdin" : cp);
 }
 
-catchem()	/* simple signal catcher */
+void catchem(void)	/* simple signal catcher */
 {
 	struct sigaction act;
 
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
-	act.sa_handler= (void (*)()) SIG_IGN;
+	act.sa_handler = SIG_IGN;
 	(void) sigaction(SIGINT, &act, NULL);
 	(void) sigaction(SIGQUIT, &act, NULL);
 
@@ -627,5 +652,3 @@ catchem()	/* simple signal catcher */
 
 	exit (0);
 }
-
-#include "basename.c"

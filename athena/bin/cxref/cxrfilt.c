@@ -23,6 +23,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "constdefs.h"
 
 #define MAXFILE		120
@@ -32,11 +33,15 @@ FILE *fp1, *fp2;
 int cflag = 0;
 int sflag = 0;
 char *name;
-char *basename();
 
-main(argc, argv)
-int argc;
-char **argv;
+void outint(char *buf);
+void outfloat(char *buf);
+void usage(void);
+void intfilter(void);
+void floatfilter(void);
+#include "basename.c"
+
+int main(int argc, char **argv)
 {
 	char buf[BUFSIZ];
 	char file1[MAXFILE], file2[MAXFILE];
@@ -88,13 +93,13 @@ char **argv;
 
 	if ((fp1 = fopen(file1, "w")) == NULL)
 	{
-		fprintf(stderr,"%s: couldn't create tempfile 1\n");
+		fprintf(stderr,"%s: couldn't create tempfile 1\n", name);
 		exit (2);
 	}
 
 	if ((fp2 = fopen(file2, "w")) == NULL)
 	{
-		fprintf(stderr,"%s: couldn't create tempfile 2\n");
+		fprintf(stderr,"%s: couldn't create tempfile 2\n", name);
 		exit (3);
 	}
 
@@ -132,15 +137,14 @@ char **argv;
 	fclose(fp1);
 	fclose(fp2);
 
-	exit(0);
+	return(0);
 }
 
 #define OCTAL	1
 #define HEX	2
 #define DEC	3
 
-outint(buf)
-char *buf;
+void outint(char *buf)
 {
 	char file[MAXLINE], line[MAXLINE];
 	int val;
@@ -179,8 +183,7 @@ char *buf;
 	fprintf(fp1, "%d\t%s\t%s\t%d\n", val, file, line, type);
 }
 
-outfloat(buf)
-char *buf;
+void outfloat(char *buf)
 {
 	char file[MAXLINE], line[MAXLINE];
 	char mantissa[MAXLINE], exponent[MAXLINE];
@@ -234,14 +237,14 @@ char *buf;
 		exponent[0] != '\0' ? exponent : "0", file, line);
 }
 
-usage()
+void usage(void)
 {
 	fprintf(stderr, "usage: %s [-csfi] pid\n", name);
 	exit (1);
 }
 
 
-intfilter()	/* put sorted ints back into their original bases */
+void intfilter(void)	/* put sorted ints back into their original bases */
 {
 	char buf[BUFSIZ];
 	char file[MAXLINE], number[MAXLINE];
@@ -276,7 +279,7 @@ intfilter()	/* put sorted ints back into their original bases */
 	}
 }
 
-floatfilter()	/* put sorted floats back together */
+void floatfilter(void)	/* put sorted floats back together */
 {
 	char buf[BUFSIZ];
 	char file[MAXLINE], number[MAXLINE];
@@ -294,5 +297,3 @@ floatfilter()	/* put sorted floats back together */
 		printf("\t%s\t%s\n", file, number);
 	}
 }
-
-#include "basename.c"

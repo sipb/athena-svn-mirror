@@ -14,6 +14,8 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
 #define TRUE	1
@@ -41,14 +43,16 @@ char file[MAXFILE] = "";
 char line[MAXNUM] = "";
 
 char *name;
-char *basename();	/* strips leading path name */
 
-main(argc, argv)
-int argc;
-char **argv;
+int breakup(char *text);
+void output(int val);
+void usage(void);
+
+#include "basename.c"
+
+int main(int argc, char **argv)
 {
 	char in_line[BUFSIZ];
-	char *gets();
 	int val;
 
 	name = basename(argv[0]);
@@ -60,18 +64,19 @@ char **argv;
 	 * we also know that cxref makes sure we get a valid width.
 	 */
 
-	if (argc > 1)
-		if (argc == 3)
+	if (argc > 1) {
+		if (argc == 3) {
 			if (strcmp(argv[1], "-w") == 0)
 				width = atoi(argv[2]);
 			else
 				usage();
-		else
+		} else
 			usage();
+	}
 	/* else
 		use default width */
 
-	if(gets(in_line) == NULL)
+	if(fgets(in_line, sizeof(in_line), stdin) == NULL)
 	{
 		fprintf(stderr, "%s: standard input is empty.\n", name);
 		exit(1);
@@ -85,7 +90,7 @@ char **argv;
 
 	output(val);		/* does proper formatting */
 
-	while(gets(in_line) != NULL && val != ERROR)
+	while(fgets(in_line, sizeof(in_line), stdin) != NULL && val != ERROR)
 	{
 		val = breakup(in_line);
 		output(val);
@@ -98,10 +103,10 @@ char **argv;
 	}
 
 	putchar('\n');
+	return(0);
 }
 
-breakup(text)
-char *text;
+int breakup(char *text)
 {
 	int retval;
 	int i, j;
@@ -123,18 +128,18 @@ char *text;
 		id[i] = '\0';
 		j++;	/* skip close quote */
 
-		while(isspace(text[j]))
+		while(isspace((int)text[j]))
 			j++;
 		
-		for(i = 0; !isspace(text[j]); i++, j++)
+		for(i = 0; !isspace((int)text[j]); i++, j++)
 			file[i] = text[j];
 		file[i] = '\0';
 
 
-		while(isspace(text[j]))
+		while(isspace((int)text[j]))
 			j++;
 
-		for(i = 0; !isspace(text[j]) && text[j] != '\0'; i++, j++)
+		for(i = 0; !isspace((int)text[j]) && text[j] != '\0'; i++, j++)
 			line[i] = text[j];
 		line[i] = '\0';
 	}
@@ -163,8 +168,7 @@ char *text;
 	return(retval);
 }
 
-output(val)
-int val;
+void output(int val)
 {
 	static int curpos = 1;
 	static int first = TRUE;
@@ -217,12 +221,8 @@ int val;
 	}
 }
 
-usage()
+void usage(void)
 {
-	char *basename();
-
 	fprintf(stderr, "usage: %s [-w width]\n", basename(name));
 	exit (1);
 }
-
-#include "basename.c"

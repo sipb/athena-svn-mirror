@@ -14,9 +14,19 @@
 */
 
 %{
+#include <stdlib.h>
+#include <string.h>
+
 #undef yywrap
 extern int line_no;
-extern char *fname, *basename();
+extern char *fname, *basename(char *);
+
+void outchar(void);
+void outstring(void);
+void outint(void);
+void outfloat(void);
+void outtext(char type);
+void outid(void);
 %}
 
 letter		[A-Za-z_]
@@ -143,7 +153,7 @@ endif		;	/* ignore C and cpp keywords */
 
 %%
 
-yywrap()	/* wrap up for lex, return 1 */
+int yywrap(void)	/* wrap up for lex, return 1 */
 {
 	return(1);
 }
@@ -151,19 +161,18 @@ yywrap()	/* wrap up for lex, return 1 */
 #include "constdefs.h"
 
 extern char *fname;
-extern char *basename();
 
-outchar()
+void outchar(void)
 {
 	outtext(CHAR);
 }
 
-outstring()
+void outstring(void)
 {
 	outtext(STRING);
 }
 
-outint()
+void outint(void)
 {
 	int i = strlen(yytext);
 
@@ -175,13 +184,12 @@ outint()
 	outtext(INT);
 }
 
-outfloat()
+void outfloat(void)
 {
 	outtext(FLOAT);
 }
 
-outtext(type)
-char type;
+void outtext(char type)
 {
 	printf("~%c%s\t%s\t%d\n", type, yytext, basename(fname), line_no);
 }
