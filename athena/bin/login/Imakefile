@@ -12,7 +12,7 @@ AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 #ifdef vax
 MACHDEP=-DPOSIX -DSYSLOG42
 #else
-MACHDEP=-DPOSIX -DSYSLOG42 -Olimit 537
+MACHDEP=-DPOSIX -DSYSLOG42 -Olimit 600
 #endif
 #endif
 #ifdef i386
