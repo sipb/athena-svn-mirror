@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.1 1991-03-21 16:14:27 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.2 1991-03-23 13:44:29 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
@@ -20,6 +20,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <Wc/WcCreate.h>
 #include <stdio.h>
 #include "cref.h"
+#include <signal.h>
 
 extern char Titles[MAX_TITLES][TITLE_SIZE];
 char *program;				/* name of program */
@@ -45,12 +46,9 @@ void main(argc, argv)
   XtAppContext app;
   Widget toplevel;
 
-  program = rindex(*argv,'/');
-  if(program == (char *) NULL)
-     program = *argv;
-  if(*program == '/')
-     ++program;
-
+  program = "xbrowser";
+  *argv = program;
+  
 /*
  *  First, try opening display.  If this fails, print a 'nice' error
  *  message and exit.
@@ -89,6 +87,9 @@ void main(argc, argv)
 /*
  *  Loop forever.  Exiting controlled by the "quit" callback.
  */
+
+  /* Let our invoker know we're ready... */
+  kill(0,SIGUSR1);
 
   XtMainLoop();
 }
