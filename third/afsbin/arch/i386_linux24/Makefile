@@ -1,32 +1,32 @@
-# $Id: Makefile,v 1.1 2001-04-28 21:50:54 ghudson Exp $
+# $Id: Makefile,v 1.2 2001-04-29 02:05:41 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
-AFSWS=/usr/afsws
+WS=/usr/afsws
 
 all:
 
 check:
 
 install:
-	mkdir -p $(DESTDIR)$(ATHRBINDIR)
-	mkdir -p $(DESTDIR)$(VICE)/modload
-	mkdir -p $(DESTDIR)$(AFSWS)/lib/afs
-	mkdir -p $(DESTDIR)$(AFSWS)/include/afs
-	mkdir -p $(DESTDIR)$(AFSWS)/include/rx
-	mkdir -p $(DESTDIR)/etc/rc.d/init.d
-	mkdir -p $(DESTDIR)/etc/sysconfig
-	mkdir -p $(DESTDIR)/usr/vice/cache
-	install -c -m 444 libafs-2.4.2-2.mp.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.4.2-2.o $(DESTDIR)$(VICE)/modload
-	install -c -m 555 fs $(DESTDIR)$(ATHRBINDIR)
-	install -c -m 555 tokens $(DESTDIR)$(ATHRBINDIR)
-	install -c -m 555 unlog $(DESTDIR)$(ATHRBINDIR)
-	install -c -m 555 afsd $(DESTDIR)$(VICE)
-	install -c -m 555 ThisCell $(DESTDIR)$(VICE)
-	install -c -m 555 CellServDB $(DESTDIR)$(VICE)
-	install -c -m 555 cacheinfo $(DESTDIR)$(VICE)
-	install -c -m 555 afs.rc $(DESTDIR)/etc/rc.d/init.d/afs
+	mkdir -p ${DESTDIR}${ATHRBINDIR}
+	mkdir -p ${DESTDIR}${VICE}/modload
+	mkdir -p ${DESTDIR}${WS}/lib/afs
+	mkdir -p ${DESTDIR}${WS}/include/afs
+	mkdir -p ${DESTDIR}${WS}/include/rx
+	mkdir -p ${DESTDIR}/etc/rc.d/init.d
+	mkdir -p ${DESTDIR}/etc/sysconfig
+	mkdir -p ${DESTDIR}/usr/vice/cache
+	install -c -m 444 libafs-2.4.2-2.mp.o ${DESTDIR}${VICE}/modload
+	install -c -m 444 libafs-2.4.2-2.o ${DESTDIR}${VICE}/modload
+	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 afsd ${DESTDIR}${VICE}
+	install -c -m 555 ThisCell ${DESTDIR}${VICE}
+	install -c -m 555 CellServDB ${DESTDIR}${VICE}
+	install -c -m 555 cacheinfo ${DESTDIR}${VICE}
+	install -c -m 555 afs.rc ${DESTDIR}/etc/rc.d/init.d/afs
 	install -c -m 444 include/afs/acl.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs_Admin.h ${DESTDIR}${WS}/include/afs
@@ -215,5 +215,5 @@ install:
 	install -c -m 444 lib/libubik.a ${DESTDIR}${WS}/lib
 	install -c -m 444 lib/pam_afs.krb.so.1 ${DESTDIR}${WS}/lib
 	install -c -m 444 lib/pam_afs.so.1 ${DESTDIR}${WS}/lib
-	rm -f $(DESTDIR)$(AFSWS)/lib/afs/libtermlib.a
-	ln -s libnull.a $(DESTDIR)$(AFSWS)/lib/afs/libtermlib.a
+	rm -f ${DESTDIR}${WS}/lib/afs/libtermlib.a
+	ln -s libnull.a ${DESTDIR}${WS}/lib/afs/libtermlib.a
