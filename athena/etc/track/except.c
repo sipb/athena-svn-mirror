@@ -1,12 +1,15 @@
 /*
- * $Id: except.c,v 4.5 1991-07-06 15:44:01 probe Exp $
+ * $Id: except.c,v 4.6 1994-04-07 12:58:19 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.5 1991-07-06 15:44:01 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.6 1994-04-07 12:58:19 miki Exp $";
 #endif lint
 
 #include "mit-copyright.h"
+#ifdef SOLARIS
+#include <regexpr.h>
+#endif
 #include "bellcore-copyright.h"
 
 #include "track.h"
@@ -94,7 +97,7 @@ lookup( name, hashval, ht) char *name; unsigned long hashval; Table *ht; {
 	for ( ptop = &ht->table[ hashval >> ht->shift];
 	     *ptop;
 	      ptop = PNEXT( *ptop)) {
-		switch ( SIGN( strcmp( *ptop, name))) {
+		switch ( SIGN( strcmp( (char *)*ptop, (char *)name))) {
 		case -1: continue;
 		case 1:  break;
 		case 0:  return( ptop);
@@ -165,7 +168,7 @@ store( list_elt, p) List_element *list_elt; Table *p; {
 	 * ensure that FORCE_LINK overrides DONT_TRACK.
 	 */ 
 	for ( nextp = collisionp; *nextp; nextp = PNEXT( *nextp)) {
-	    switch( SIGN( strcmp( *nextp, list_elt))) {
+	    switch( SIGN( strcmp( (char *)*nextp, (char *)list_elt))) {
 	    case -1: continue;
 	    case  1: break;				/* switch */
 	    case  0: FLAG( *nextp) |= FLAG( list_elt);
@@ -199,7 +202,7 @@ add_list_elt( str, flag, top) char *str; char flag; List_element **top; {
 	}
 	else NEXT( p) = NULL;
 	FLAG( p)   = flag;
-	strcpy( p, str);
+	strcpy( (char *)p, (char *)str);
 	return( p);
 }
 #define RATIO ((unsigned)(0.6125423371 * 0x80000000))
@@ -235,10 +238,26 @@ next_def_except() {
 */
 match( p, fname) char *p; char *fname;
 {
+#ifdef SOLARIS
+        char *retval;
+#endif
 	/* all our regexp's begin with ^,
 	 * because re_conv() makes them.
 	 */
 	if ( *p != '^') return( 0);
+#ifdef SOLARIS
+         retval=compile(p, NULL, NULL);
+         if (retval) {
+	   sprintf(errmsg, "%s bad regular expression\n", retval);
+               do_panic();
+       }
+       switch( step( fname, retval)) {
+       case 0: return( 0);             /* most frequent case */
+       case 1: return( 1);
+       case -1: sprintf( errmsg, "%s bad regexp\n", p);
+                do_panic();
+       }
+#else
 	if ( re_comp( p)) {
 		sprintf(errmsg, "%s bad regular expression\n", re_comp( p));
 		do_panic();
@@ -249,6 +268,7 @@ match( p, fname) char *p; char *fname;
 	case -1: sprintf( errmsg, "%s bad regexp\n", p);
 		 do_panic();
 	}
+#endif
 	sprintf( errmsg, "bad value from re_exec\n");
 	do_panic();
 	return( -1);
@@ -323,7 +343,7 @@ char *from;
 /*
  * This is for A/UX.  It is a wrapper around the C library regex functions.
  *
- * $Id: except.c,v 4.5 1991-07-06 15:44:01 probe Exp $
+ * $Id: except.c,v 4.6 1994-04-07 12:58:19 miki Exp $
  */
 
 #ifdef _AUX_SOURCE
