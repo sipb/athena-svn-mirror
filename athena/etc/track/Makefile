@@ -1,9 +1,9 @@
 # Makefile for "track" automatic update program
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
-#	$Author: treese $
+#	$Author: shanzer $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.4 1987-08-23 23:06:52 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.5 1987-09-08 16:03:24 shanzer Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
@@ -43,6 +43,7 @@ install:
 	-mkdir $(DESTDIR)/etc/athena/lib/slists
 	-mkdir $(DESTDIR)/etc/athena/lib/stats
 	install -c sys_rvd $(DESTDIR)/etc/athena/lib/slists
+	(cd doc; make install )
 
 clean:
 	/bin/rm -f a.out core *.o *~ y.tab.c lex.yy.c $(PROGS)
