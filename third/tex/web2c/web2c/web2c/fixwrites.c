@@ -2,6 +2,7 @@
    Originally by Tim Morgan, October 10, 1987.  */
 
 #include "config.h"
+#include <kpathsea/c-pathmx.h>
 
 int argc;
 char **gargv;
@@ -12,17 +13,17 @@ char *file, *argp, *as, *cmd;
 int tex = false;
 
 
-
 /* Replace the last (should be only) newline in S with a null.  */
 
-void
-remove_newline (s)
-     char *s;
+static void
+remove_newline P1C(string, s)
 {
   char *temp = strrchr (s, '\n');
   if (temp == NULL)
     {
       fprintf (stderr, "Lost newline somehow.\n");
+      /* This is so the convert script can delete the output file on error.  */
+      puts ("@error@");
       uexit (1);
     }
 
@@ -30,9 +31,8 @@ remove_newline (s)
 }
 
 
-char *
-insert_long (cp)
-     char *cp;
+static char *
+insert_long P1C(string, cp)
 {
   char tbuf[BUFSIZ];
   register int i;
@@ -46,9 +46,8 @@ insert_long (cp)
 }
 
 
-void
-join (cp)
-     char *cp;
+static void
+join P1C(string, cp)
 {
   char temp[BUFSIZ], *tp;
 
@@ -64,9 +63,8 @@ join (cp)
 }
 
 
-void
-do_blanks (indent)
-     int indent;
+static void
+do_blanks P1C(int, indent)
 {
   register int i;
 
@@ -78,13 +76,10 @@ do_blanks (indent)
 }
 
 
-/*
- * Return true if we have a whole write/writeln statement.  We determine
- * this by matching parens, ignoring those within strings.
- */
-int
-whole (cp)
-     register char *cp;
+/* Return true if we have a whole write/writeln statement.  We determine
+   this by matching parens, ignoring those within strings.  */
+static int
+whole P1C(string, cp)
 {
   register int depth = 0;
 
@@ -117,9 +112,8 @@ whole (cp)
 
 /* Skips to the next , or ), skipping over balanced paren pairs.  */
 
-char *
-skip_balanced (cp)
-     char *cp;
+static char *
+skip_balanced P1C(string, cp)
 {
   register int depth = 0;
 
@@ -142,10 +136,8 @@ skip_balanced (cp)
 
 /* Return true if c appears, except inside a quoted string */
 
-int
-bare (cp, c)
-  char *cp;
-  char c;
+static int
+bare P2C(string, cp,  char, c)
 {
   for (; *cp && *cp != c; ++cp)
     {
@@ -170,15 +162,37 @@ bare (cp, c)
   return *cp;
 }
 
+
+/* xchr[...] is supposed to be replaced by Xchr(...)  when characters
+   take more than a single octet each, as is the case in Omega.  Now
+   there are several occurrences of xchr[...[...]...], which are
+   translated into Xchr(...[...)...], and the compiler dies on syntax
+   errors.  Ensures that it is the matching bracket that is replaced,
+   not the first one.  */
+
+char *
+advance_cp P2C(char *, cp, int, lefts)
+{
+  char *cp1;
+  char *cp2;
+
+  cp1 = strchr (cp + 1, ']');
+  cp2 = strchr (cp + 1, '[');
+  if (cp2 && cp2 < cp1)
+    return advance_cp (cp2, lefts + 1);
+  if (lefts == 1)
+    return cp1;
+  return advance_cp (cp1, lefts - 1);
+}
 
 int
-main (argc, argv)
-    int argc;
-    char *argv[];
+main P2C(int, argc,  string *, argv)
 {
   register char *cp;
   int blanks_done, indent, i;
   char *program_name = "";
+
+  kpse_set_program_name (argv[0], NULL); /* In case we use FATAL.  */
 
   for (i = 1; i < argc; i++)
     {
@@ -313,11 +327,14 @@ main (argc, argv)
       /* Some writes start with a variable, instead of a file. */
       if (*(cp + 1) == '"' || *(cp + 1) == '\''
           || strncmp (cp + 1, "buffer", 6) == 0
-          || strncmp (cp + 1, "dig", 3) == 0
           || strncmp (cp + 1, "xchr", 4) == 0
-          || strncmp (cp + 1, "versionstring", 13) == 0
           || strncmp (cp + 1, "k ,", 3) == 0
-          || strncmp (cp + 1, "s ,", 3) == 0)
+          || strncmp (cp + 1, "s ,", 3) == 0
+          || strncmp (cp + 1, "dig", 3) == 0
+          || strncmp (cp + 1, "HEX", 3) == 0
+          || strncmp (cp + 1, "versionstring", 13) == 0
+          || strncmp (cp + 1, "kpathseaversionstring", 21) == 0
+         )
 	strcpy (filename, "stdout");
       else
 	{
@@ -338,6 +355,11 @@ main (argc, argv)
       while (*cp != ')')
 	{
 	  if (*cp == '\'' || strncmp (cp, "xchr", 4) == 0
+              || (strncmp (cp ,"HEX", 3) == 0
+                  && (STREQ (program_name, "ofm2opl")
+                      || STREQ (program_name, "opl2ofm")
+                      || STREQ (program_name, "ovp2ovf")
+                      || STREQ (program_name, "ovf2ovp")))
 	      || strncmp (cp, "ASCII04", 7) == 0
 	      || strncmp (cp, "ASCII1", 6) == 0
 	      || strncmp (cp, "ASCIIall", 8) == 0              
@@ -345,7 +367,9 @@ main (argc, argv)
 	      || strncmp (cp, "nameoffile", 10) == 0
 	      || (strncmp (cp, "buffer", 6) == 0
                   && (STREQ (program_name, "vptovf")
-                      || STREQ (program_name, "pltotf")))
+                      || STREQ (program_name, "pltotf")
+                      || STREQ (program_name, "ovp2ovf")
+                      || STREQ (program_name, "ofm2opl")))
               || (((strncmp (cp, "buf", 3) == 0
 		    || strncmp (cp, "xdig", 4) == 0
 		    || strncmp (cp, "xext", 4) == 0
@@ -360,7 +384,7 @@ main (argc, argv)
 		  *cp = 'X';
 		  cp = strchr (cp, '[');
 		  *cp = '(';
-		  cp = strchr (cp, ']');
+		  cp = advance_cp(cp,1);
 		  *cp++ = ')';
 		}
 	      else if (*cp == '\'')

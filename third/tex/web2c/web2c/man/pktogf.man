@@ -1,4 +1,4 @@
-.TH PKTOGF 1 "14 December 1993"
+.TH PKTOGF 1 "14 December 1993" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -27,6 +27,11 @@ pktogf \- convert packed font files to generic font files
 ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B pktogf
 program converts a packed font file
@@ -78,9 +83,7 @@ looks for
 using the
 environment variable PKFONTS.  If that is not set, it uses the variable
 TEXPKS.  If that is not set, it uses TEXFONTS.  If that is not set, it
-uses the system default:
-.br
-.I @DEFAULT_PK_PATH@
+uses the system default.
 .PP
 See
 .BR tex (1)

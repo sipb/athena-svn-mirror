@@ -1,102 +1,59 @@
-# Makefile for TeX to C conversion programs.
+# Makefile for TeX-project WEB sources to C conversion programs.
 
-SHELL = /bin/sh
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-# This is so kpathsea will get remade automatically if you change
-# something in it and recompile from the package directory.
-kpathsea_parent = ../..
-kpathsea_dir = $(kpathsea_parent)/kpathsea
-kpathsea = $(kpathsea_dir)/kpathsea.a
-
-# Routines used everywhere.
-commono = ../lib/lib.a $(kpathsea)
-
-CC = @CC@
-CFLAGS = -g
-CPPFLAGS = -I$(srcdir)/../lib -I../..
+# These get expanded from the parent directory, not this one.
+ac_include ../make/common.make
+ac_include ../make/programs.make
+ac_include kpathsea.make
 
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 YACC = @YACC@
 
-CCLD = $(CC)
-LDFLAGS = $(CFLAGS) $(XLDFLAGS)
-LIBS = @LIBS@ $(extralibs)
-libs = $(commono) $(LIBS)
+proglib = ../lib/lib.a
+programs = web2c fixwrites splitup
 
-program = web2c fixwrites splitup regfix
+web2c_objects = main.o y_tab.o $(LEX_OUTPUT_ROOT).o
+all: $(programs)
+web2c: $(web2c_objects)
+	$(kpathsea_link) $(web2c_objects) $(LEXLIB) $(LOADLIBES) 
 
-.SUFFIXES:
-.SUFFIXES: .o .c
-.c.o:
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $*.c
-
-
-all: $(program)
-
-web2c: web2c.o y.tab.o $(LEX_OUTPUT_ROOT).o
-	$(CCLD) -o web2c $(LDFLAGS) web2c.o y.tab.o $(LEX_OUTPUT_ROOT).o \
-	  $(LEXLIB) $(libs) 
-
-web2c.o: web2c.c y.tab.h
-
-$(LEX_OUTPUT_ROOT).o: $(LEX_OUTPUT_ROOT).c y.tab.h
-$(LEX_OUTPUT_ROOT).c: web2c.lex
-	$(LEX) web2c.lex
-
-y.tab.o: y.tab.c
-y.tab.c y.tab.h: web2c.yacc
+# We use y_tab.* for the sake of MS-DOS.
+main.o: main.c y_tab.h
+y_tab.c y_tab.h: web2c.y
 	@echo Expect one shift/reduce conflict.
-	$(YACC) -d -v web2c.yacc
+	$(YACC) -d -v $(srcdir)/web2c.y
+	-test -f y.tab.c && mv -f y.tab.c y_tab.c
+	-test -f y.tab.h && mv -f y.tab.h y_tab.h
+$(LEX_OUTPUT_ROOT).o: y_tab.h
+$(LEX_OUTPUT_ROOT).c: web2c.l
+	$(LEX) $(srcdir)/web2c.l
 
 fixwrites: fixwrites.o
-	$(CCLD) -o fixwrites $(LDFLAGS) fixwrites.o $(libs)
-
+	$(kpathsea_link) fixwrites.o $(LOADLIBES)
 splitup: splitup.o
-	$(CCLD) -o splitup $(LDFLAGS) splitup.o $(libs)
-
+	$(kpathsea_link) splitup.o $(LOADLIBES)
 regfix: regfix.o
-	$(CCLD) -o regfix $(LDFLAGS) regfix.o $(libs)
+	$(kpathsea_link) regfix.o $(LOADLIBES)
 
+$(programs): $(proglib) $(kpathsea)
+
+@MAINT@# It's really not worth srcdir etc. here.
+@MAINT@lib_sources = $(addprefix ../lib/,alloca.c basechsuffix.c chartostring.c \
+@MAINT@  eofeoln.c fprintreal.c input2int.c inputint.c main.c openclose.c \
+@MAINT@  uexit.c usage.c version.c zround.c)
+@MAINT@$(proglib): $(lib_sources)
+@MAINT@	cd ../lib && $(MAKE)
+@MAINT@always:
 
 Makefile: Makefile.in ../config.status
-	(cd ..; $(SHELL) config.status)
+	cd .. && $(SHELL) config.status
 
-
-install install-exec install-data:
-
-TAGS: *.c *.h
-	etags -t *.c *.h
-
-
-mostlyclean::
-	rm -f *.o $(program) $(lib) $(programs)
-
-clean:: mostlyclean
-	rm -f *.dvi *.pool
-
-distclean:: clean
-	rm -f Makefile config.status c-auto.h
-
-# Although we can remake configure and c-auto.h.in, we don't remove
-# them, since many people may lack Autoconf.  Use configclean for that.
-realclean:: distclean
-	rm -f TAGS *.info*
-
-extraclean::
-	rm -f *.aux *.bak *.bbl *.blg *.dvi *.log *.orig *.pl *.rej
-	rm -f *.i *.s *.tfm *.vf *.vpl *\#* *gf *pk *~
-	rm -f CONTENTS.tex a.out core mfput.* patch* texput.*
-
-configclean:
-	rm -f configure c-auto.h.in c-auto.h
-
-
-# Prevent GNU make 3 from overflowing arg limit on system V.
-.NOEXPORT:
+ac_include ../make/tkpathsea.make
+ac_include ../make/clean.make
 
 clean::
-	rm -f y.tab.c y.tab.h y.output yacc.* $(LEX_OUTPUT_ROOT).c
+	rm -f y_tab.c y_tab.h y.out* yacc.* $(LEX_OUTPUT_ROOT).c
+
+ac_include ../make/rdepend.make
+ac_include web2c/depend.make

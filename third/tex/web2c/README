@@ -1,29 +1,51 @@
-This directory contains various programs that use the kpathsea library
-for path searching, and the library itself.
+This directory contains TeX-related programs that use the kpathsea
+library for configuration and path searching (and the library itself).
 
-Please read the README and NEWS files in the subdirectories.
+For the simplest possible installation, see the beginning of
+kpathsea/INSTALL.
 
-See the INSTALL files in the subdirectories for detailed installation
-instructions, options, etc.  If you just want to go for it:
+If you want to override the defaults, read both <program>/INSTALL (e.g.,
+web2c/INSTALL) and kpathsea/INSTALL.
 
-configure
-make
-make install
-make distclean
+Other files are not necessary reading for basic installation, but may
+prove helpful:
+- etc/unixtex.ftp describes how to obtain a TeX system by ftp or on
+  physical media, and some alternative TeX distributions.
+- README in each subdirectory briefly summarizes that directory.
+- NEWS in each subdirectory has noteworthy changes by release.
+- kpathsea/BUGS has bug reporting information.
+- kpathsea/CONFIGURE has generic instructions on running configure scripts.
 
-This will install just the programs.  To install the library, 
-(cd kpathsea; make install)
+Please send bug reports and suggestions for either the programs or the
+documentation, no matter how small, to tex-k@mail.tug.org.  But please
+read kpathsea/BUGS first.  (That file also tells you how to join the
+mailing list yourself, and how to receive announcements only.)
 
-Report bugs in any software here, or suggestions in either the programs
-or the documentation, no matter how small, to tex-k@cs.umb.edu.
-(Email tex-k-request@cs.umb.edu with a line containing
-subscribe your-preferred-email-address
-in the body of the message to join this mailing list.)
+For general documentation on the coding and usage standards this
+distribution follows, see the GNU standards document
+ftp://prep.ai.mit.edu/pub/gnu/standards/standards.text, especially the
+`Makefile Conventions', `Configuration', and `User Interfaces' sections.
 
-The default installation prefix is the parent of the directory that
-contains the program `tex', or /usr/local.
+The files in the etc/ directory are present for informational purposes.
+They are not used or installed by the programs.  For example, a copy of
+texinfo.tex is there in case you want to produce DVI files from the
+Texinfo manuals.
+
+If you know enough about TeX to be reading this, then you (or your
+institution) should consider joining the TeX Users Group.  (If you're
+already a member, thanks!)  TUG produces the periodical TUGboat, sponsors
+an annual meeting and publishes the proceedings, and arranges TeX
+courses for all levels of TeX users, throughout the world.  Contact:
+    TeX Users Group
+    P.O. Box 1239
+    Three Rivers, CA 93271-1239
+    USA
+    phone: 1 209 561 0112
+    fax: 1 209 561 4584
+    email: tug@tug.org
+    url:   http://www.tug.org
 
 This is free software.  See the files COPYING* for copying permissions.
 
-karl@cs.umb.edu
+kb@mail.tug.org
 Member of the League for Programming Freedom -- write lpf@uunet.uu.net.

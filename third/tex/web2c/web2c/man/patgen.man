@@ -1,4 +1,4 @@
-.TH PATGEN 1 "27 December 1992"
+.TH PATGEN 1 "27 December 1992" "Web2C @VERSION@"
 .\"=====================================================================
 .if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
 .if n .ds TX TeX
@@ -19,6 +19,11 @@ patgen \- generate patterns for TeX hyphenation
 dictionary_file pattern_file log_file translate_file
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B patgen
 program reads the
@@ -37,7 +42,7 @@ The patterns thus generated can be read by
 for use in hyphenating words. For a (very) long example of
 .IR patgen 's
 output, see
-.IR @TEXINPUTDIR@/hyphen.tex ,
+.IR $TEXMFMAIN/generic/hyphen/hyphen.tex ,
 which contains the patterns \*(TX uses for English.
 At some sites, patterns for several other languages may be available,
 and the local
@@ -51,8 +56,8 @@ extensions or path searching is done.
 .PP
 .\"=====================================================================
 .SH FILES
-.TP \w'@TEXINPUTDIR@/hyphen.tex'u+2n
-.I @TEXINPUTDIR@/hyphen.tex
+.TP \w'@@'u+2n
+.I $TEXMFMAIN/generic/hyphen/hyphen.tex
 Patterns for English.
 .\"=====================================================================
 .SH "SEE ALSO"

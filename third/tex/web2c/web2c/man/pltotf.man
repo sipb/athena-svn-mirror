@@ -1,4 +1,4 @@
-.TH PLTOTF 1 "27 December 1992"
+.TH PLTOTF 1 "27 December 1992" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -27,6 +27,11 @@ pltotf \- convert property list files to TeX font metric (tfm) format
 .I tfm_file_name
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B pltotf
 program translates a (human-oriented) \*(WB property list file to a

@@ -22,10 +22,25 @@
    your main control loop, etc. to force garbage collection.  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
-/* If compiling with GCC, this file's not needed.  */
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
+#ifdef emacs
+#include "blockinput.h"
+#endif
+
+/* If compiling with GCC 2, this file's not needed.  */
+#if !defined (__GNUC__) || __GNUC__ < 2
+
+/* If someone has defined alloca as a macro,
+   there must be some other way alloca is supposed to work.  */
 #ifndef alloca
 
 #ifdef emacs
@@ -42,14 +57,10 @@ lose
 #endif /* static */
 #endif /* emacs */
 
-#ifdef emacs
-#define free xfree
-#endif
-
 /* If your stack is a linked list of frames, you have to
    provide an "address metric" ADDRESS_FUNCTION macro.  */
 
-#ifdef CRAY
+#if defined (CRAY) && defined (CRAY_STACKSEG_END)
 long i00afunc ();
 #define ADDRESS_FUNCTION(arg) (char *) i00afunc (&(arg))
 #else
@@ -62,9 +73,24 @@ typedef void *pointer;
 typedef char *pointer;
 #endif
 
+#ifndef NULL
 #define	NULL	0
+#endif
 
-extern pointer xmalloc ();
+/* Different portions of Emacs need to call different versions of
+   malloc.  The Emacs executable needs alloca to call xmalloc, because
+   ordinary malloc isn't protected from input signals.  On the other
+   hand, the utilities in lib-src need alloca to call malloc; some of
+   them are very simple, and don't have an xmalloc routine.
+
+   Non-Emacs programs expect this to call use xmalloc.
+
+   Callers below should use malloc.  */
+
+#ifndef emacs
+#define malloc xmalloc
+#endif
+extern pointer malloc ();
 
 /* Define STACK_DIRECTION if you know the direction of stack
    growth for your system; otherwise it will be automatically
@@ -154,10 +180,14 @@ alloca (size)
 #endif
 
   /* Reclaim garbage, defined as all alloca'd storage that
-     was allocated from deeper in the stack than currently. */
+     was allocated from deeper in the stack than currently.  */
 
   {
     register header *hp;	/* Traverses linked list.  */
+
+#ifdef emacs
+    BLOCK_INPUT;
+#endif
 
     for (hp = last_alloca_header; hp != NULL;)
       if ((STACK_DIR > 0 && hp->h.deep > depth)
@@ -173,6 +203,10 @@ alloca (size)
 	break;			/* Rest are not deeper.  */
 
     last_alloca_header = hp;	/* -> last valid storage.  */
+
+#ifdef emacs
+    UNBLOCK_INPUT;
+#endif
   }
 
   if (size == 0)
@@ -181,8 +215,11 @@ alloca (size)
   /* Allocate combined header + user data storage.  */
 
   {
-    register pointer new = xmalloc (sizeof (header) + size);
+    register pointer new = malloc (sizeof (header) + size);
     /* Address of header.  */
+
+    if (new == 0)
+      abort();
 
     ((header *) new)->h.next = last_alloca_header;
     ((header *) new)->h.deep = depth;
@@ -195,7 +232,7 @@ alloca (size)
   }
 }
 
-#ifdef CRAY
+#if defined (CRAY) && defined (CRAY_STACKSEG_END)
 
 #ifdef DEBUG_I00AFUNC
 #include <stdio.h>
@@ -313,7 +350,7 @@ struct stk_trailer
 
 #ifdef CRAY2
 /* Determine a "stack measure" for an arbitrary ADDRESS.
-   I doubt that "lint" will like this much. */
+   I doubt that "lint" will like this much.  */
 
 static long
 i00afunc (long *address)
@@ -464,3 +501,4 @@ i00afunc (long address)
 #endif /* CRAY */
 
 #endif /* no alloca */
+#endif /* not GCC version 2 */

@@ -1,4 +1,4 @@
-.TH PKTYPE 1 "14 December 1993"
+.TH PKTYPE 1 "13 March 1996" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -15,16 +15,20 @@
 .if n .ds LX LaTeX
 .\"=====================================================================
 .SH NAME
-pktype \- translate a packed font file for humans to read
-.\"=====================================================================
-.SH SYNTAX
+pktype \- verify and translate a packed font bitmap file to plain text
+.SH SYNOPSIS
 .B pktype
-.I pk_file_name
+.I pk_file
 [
-.I output_file_name
+.I output_file
 ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B pktype
 program translates a packed font file
@@ -42,15 +46,13 @@ program for other software that wants to read
 files.
 .PP
 The
-.I pk_file_name
+.I pk_file
 on the command line must be complete. Because
 the resolution is part of the extension, it would not make
 sense to append a default extension as is done with \*(TX or
 DVI-reading software. If no
-.I output_file_name
-is specified, the
-output goes to the
-.IR stdout .
+.I output_file
+is specified, the plain text translation is written to standard output.
 .PP
 The output file gives a compact encoding of the packed encoding, using
 conventions described in the source code. Run lengths of black pixels
@@ -60,13 +62,10 @@ are used to indicate when a row should be repeated.
 .SH ENVIRONMENT
 .B pktype
 looks for
-.I pk_file_name
-using the
-environment variable PKFONTS.  If that is not set, it uses the variable
-TEXPKS.  If that is not set, it uses TEXFONTS.  If that is not set, it uses the
-system default:
-.br
-.I @DEFAULT_PK_PATH@
+.I pk_file
+using the environment variable PKFONTS.  If that is not set, it uses
+the variable TEXPKS.  If that is not set, it uses TEXFONTS.  If that
+is not set, it uses the system default.
 .PP
 See
 .BR tex (1)
@@ -83,5 +82,4 @@ Donald E. Knuth et al.,
 .SH AUTHORS
 Tomas Rokicki wrote the program.
 Donald E. Knuth originally ported it to Unix.
-Pierre MacKay adapted it for compilation with
-.BR web2c .
+Pierre MacKay adapted it for compilation with Web2c.

@@ -1,14 +1,13 @@
 /* regfix -- change locals to be register declarations.  This
-  produces code which runs 10% faster on some systems (e.g., Vax-11/750,
-  Sequent Balance).  Don't try to use this program with other than TeX
-  and Metafont in C.
- 
-  Tim Morgan   February 25, 1988.  */
+   produces code which runs 10% faster on some systems (e.g., Vax-11/750,
+   Sequent Balance).  Don't try to use this program with other than TeX
+   and Metafont in C.
+
+   Tim Morgan   February 25, 1988.  */
 
 #include "config.h"
 
-int argc;
-char **gargv;
+#ifdef REGFIX		/* REST OF FILE (almost) */
 
 #define BUFFER_SIZE 10240
 char line[BUFFER_SIZE];
@@ -18,21 +17,19 @@ char line[BUFFER_SIZE];
 /* Replace the last (should be only) newline in S with a null.  */
 
 void
-remove_newline (s)
-  char *s;
+remove_newline P1C(string, s)
 {
   char *temp = strrchr (s, '\n');
   if (temp == NULL)
     {
-      fprintf (stderr, "Lost newline somehow.\n");
-      uexit (1);
+      fprintf (stderr, "regfix: Lost newline somehow.\n");
+      exit (EXIT_FAILURE);
     }
 
   *temp = 0;
 }
 
 
-#ifdef	REGFIX		/* REST OF FILE (almost) */
 
 #define	Puts(s)	fputs(s, stdout)
 
@@ -45,7 +42,7 @@ int lens[NUMTYPES];
 
 
 char *
-matchestype ()
+matchestype P1H(void)
 {
   register int i;
 
@@ -64,7 +61,7 @@ matchestype ()
 
 
 int
-main ()
+main P1H(void)
 {
     register int i;
 #ifdef	vax
@@ -105,20 +102,32 @@ main ()
     uexit (0);
 }
 
-#else	/* not REGFIX */
+#else /* not REGFIX */
 
 /* If we don't want to use register variables, we just copy stdin to
-   stdout.  */
+   stdout.  If writing or reading fail, exit with bad status.  */
 
 int
 main ()
 {
-    while (fgets (line, BUFFER_SIZE, stdin))
-      {
-        remove_newline (line);
-	puts (line);
-      }
+  int c;
 
-    return EXIT_SUCCESS;
+  while ((c = getchar ()) != EOF)
+    {
+      if (putchar (c) == EOF)
+        {
+          perror ("regfix");
+          exit (EXIT_FAILURE);
+        }
+    }
+
+  if (!feof (stdin))
+    {
+      perror ("regfix");
+      exit (EXIT_FAILURE);
+    }
+
+  return EXIT_SUCCESS;
 }
-#endif	/* not REGFIX */
+
+#endif /* not REGFIX */

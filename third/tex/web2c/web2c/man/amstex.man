@@ -1,4 +1,4 @@
-.TH AMSTEX 1 "27 December 1992"
+.TH AMSTEX 1 "27 December 1992" "Web2C @VERSION@"
 .\"=====================================================================
 .if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
 .if n .ds TX TeX
@@ -23,6 +23,11 @@ amstex \- structured text formatting and typesetting
 [ first line ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The \*(AX language is described in the book
 .IR "The Joy of \*(OX" .
 \*(AX is a \*(TX macro package, not a modification to the \*(TX source
@@ -42,11 +47,19 @@ online version of AMS Math Reviews uses \*(AX input syntax for display of
 mathematical material.  AMS authors can provide editors with
 computer-readable \*(AX files.
 .PP
-For authors more familiar with \*(LX, an AMS-supported variant called
-\*(AY is available.
+For authors more familiar with \*(LX, an AMS-supported package called
+.I amsmath.sty
+is is available.
+.\"=====================================================================
+.SH FILES
+.TP
+.I amsguide.tex"
+Documentation for \*(AX, typesettable by \*(TX.
+.TP
+.I amfndoc.tex"
+Documentation for AMS fonts, typesettable by \*(TX.
 .\"=====================================================================
 .SH "SEE ALSO"
-.BR amslatex (1),
 .BR latex (1),
 .BR tex (1),
 .BR slitex (1).

@@ -1,163 +1,88 @@
-Here is the installed TeX & Metafont hierarchy (as of 31dec93) that
-we have been working on.  Please send comments to mackay@cs.washington.edu,
-unixtex@u.washington.edu, and kb@cs.umb.edu.
-(Especially if you try to actually install TeX like this!)
+TeX directory structure
+=======================
 
-First, pick a root directory for the library files:
-TEXMFROOT = /usr/local/lib/texmf
+  This section describes the default installation hierarchy of the
+distribution.  It conforms to both the GNU coding standards and the TeX
+directory structure (TDS) standard.  For rationale and further
+explanation, please see those documents.  The GNU standard is available
+as `ftp://prep.ai.mit.edu/pub/gnu/standards/standards.texi' and
+mirrors.  The TDS document is available from `CTAN:/tex-archive/tds'
+(*note unixtex.ftp::.).
 
-(Or, in make variable terms: $(datadir)/texmf.)
+  You can change the default paths in many ways (*note Changing search
+paths::.).  One common desire is to put everything (binaries and all)
+under a single top-level directory such as `/usr/local/texmf' or
+`/opt/texmf'--in the terms used below, make PREFIX and TEXMF the same.
+For specific instructions on doing that, see *Note configure
+scenarios::.
 
-All the files are installed relative to $TEXMFROOT.  Top-level directories:
-bibtex		-- see below
-fonts 		   for these
-tex		   three
-mf		-- utility MF sources
-                   ({plain, expr, null, io, slant, modes, ...}.mf)
-ini		-- .base, .fmt, .pool
-dvips		-- only if you want it, naturally
-(Maybe pool and formats should be combined into `sys' or something?)
+  Here is a skeleton of the default directory structure, extracted from
+the TDS document:
 
-In general, where possible, the same setup as ctan is clearly a win.
+     PREFIX/      installation root (`/usr/local' by default)
+      bin/         executables
+      man/         man pages
+      include/     C header files
+      info/        GNU info files
+      lib/         libraries (`libkpathsea.*')
+      share/       architecture-independent files
+       texmf/      TDS root
+        bibtex/     BibTeX input files
+         bib/        BibTeX databases
+          base/       base distribution (e.g., `xampl.bib')
+          misc/       single-file databases
+          PKG/       name of a package
+         bst/        BibTeX style files
+          base/       base distribution (e.g., `plain.bst', `acm.bst')
+          misc/       single-file styles
+          PKG/       name of a package
+        doc/         additional documentation
+        dvips/       `.pro', `.ps', `psfonts.map'
+        fonts/       font-related files
+         TYPE/         file type (e.g., `tfm', `pk')
+          MODE/          type of output device (types `pk' and `gf' only)
+           SUPPLIER/       name of a font supplier (e.g., `public')
+            TYPEFACE/        name of a typeface (e.g., `cm')
+             dpiNNN/           font resolution (types `pk' and `gf' only)
+        metafont/    Metafont (non-font) input files
+         base/        base distribution (e.g., `plain.mf')
+         misc/        single-file packages (e.g., `modes.mf')
+         PKG/           name of a package (e.g., `mfpic')
+        metapost/    MetaPost input files
+         base/        base distribution (e.g., `plain.mp')
+         misc/        single-file packages
+         PKG/           name of a package
+         support/     support files for MetaPost-related utilities (e.g., `trfonts.map')
+        mft/         `MFT' inputs (e.g., `plain.mft')
+        tex/         TeX input files
+         FORMAT/         name of a format (e.g., `plain')
+          base/        base distribution for FORMAT (e.g., `plain.tex')
+          misc/        single-file packages (e.g., `webmac.tex')
+          local/       local additions to or local configuration files for FORMAT
+          PKG/           name of a package (e.g., `graphics', `mfnfss')
+         generic/     format-independent packages
+          hyphen/      hyphenation patterns (e.g., `hyphen.tex')
+          images/      image input files (e.g., Encapsulated PostScript)
+          misc/        single-file format-independent packages (e.g., `null.tex').
+          PKG/           name of a package (e.g., `babel')
+        web2c/        implementation-dependent files (`.pool', `.fmt', `texmf.cnf', etc.)
 
-Under bibtex:
-bib	(xampl.bib & some of Nelson's bib files)
-bst	(at least standard and semi-standard)
-doc	(btxbst.doc, btxdoc.*, btxhak.tex)
+  Some concrete examples for most file types:
 
-Under dvips, have the .pro/.ps/psfonts.map files.
+     /usr/local/bin/tex
+     /usr/local/man/man1/xdvi.1
+     /usr/local/info/kpathsea.info
+     /usr/local/lib/libkpathsea.a
+     /usr/local/share/texmf/bibtex/bst/base/plain.bst
+     /usr/local/share/texmf/fonts/pk/ljfour/public/cm/cmr10.600pk
+     /usr/local/share/texmf/fonts/source/public/pandora/pnr10.mf
+     /usr/local/share/texmf/fonts/tfm/public/cm/cmr10.tfm
+     /usr/local/share/texmf/fonts/type1/adobe/utopia/putr.pfa
+     /usr/local/share/texmf/metafont/base/plain.mf
+     /usr/local/share/texmf/metapost/base/plain.mp
+     /usr/local/share/texmf/tex/plain/base/plain.tex
+     /usr/local/share/texmf/tex/generic/hyphen/hyphen.tex
+     /usr/local/share/texmf/web2c/tex.pool
+     /usr/local/share/texmf/web2c/tex.fmt
+     /usr/local/share/texmf/web2c/texmf.cnf
 
-Under tex, at least:
-plain	({plain, manmac, null, plain, story, testfont, webmac}.tex,
-	 perhaps also texinfo.tex, eplain.tex, other single-file sources)
-latex	(with subdirectories base/ for M&S's files, and contrib/ for
-	 other people's styles)
-tugboat	(tugboat.cmn, tugboat.sty, etc.)
-mft	(*.mft)
-
-Also under tex/ would go many other things:
-dvips	(rotate.tex, epsf.sty, etc.)
-texdraw
-musictex
-...
-
-Having a whole separate tree for the utility MF sources seems pointless,
-since there are so few of them. Most .mf files go under fonts/.
-
-
-Under fonts:
-<source>/<typeface>/
-  for <source> in public, adobe, ams, bitstream, urw, ...
-  for public/<typeface> in cm, concrete, punk, ...
-  for ams/<typeface> in euler, msym, ...
-  for adobe/<typeface> in times, palatino, avantgarde, ...
-
-Under .../<source>/<typeface>/
-src/*.mf
-tfm/*.tfm
-vf/*.vf
-afm/*.afm
-pk/<mode> (including pseudo-modes for gsrenderfont, pstopk, gsftopk)
-type1/*.{pfa,pfb,gsf}
-truetype/whatever
-
-For example:
-/usr/local/lib/texmf/fonts/public/cm/pk/cx/cmr10.300pk
-/usr/local/lib/texmf/fonts/public/sauter/src/b-cmbx.mf
-/usr/local/lib/texmf/fonts/adobe/utopia/type1/putr.pfa
-
-All the names which can be matched by the paths you actually use need to
-be unique. If you have two 300dpi devices, say `cx' and `qms', you can
-set their PK paths for dvips in their printer-specific configuration
-file. Conceivably you could instead make the default path include
-`$MAKETEX_MODE' (kpathsea sets this as it runs), but I'm not quite sure
-what all the ramifications of that are.
-
-
-Here are default variable values that go with the above:
-
-TEXMFROOT = /usr/local/lib/texmf
-
-BIBINPUTS = $TEXMFROOT/bibtex/bib
-BSTINPUTS = $TEXMFROOT/bibtex/bst
-
-TEXFORMATS = $TEXMFROOT/ini
-MFBASES    = $TEXMFROOT/ini
-
-TEXPOOL = $TEXMFROOT/ini
-MFPOOL  = $TEXMFROOT/ini
-
-It's pointless to search the adobe, bitstream, etc. directories for
-Metafont sources, but we want at least ams/ and public/, and who
-knows if there might be others.
-MFINPUTS  = .:$TEXMFROOT/mf:$TEXMFROOT/fonts//src//
-TEXINPUTS = .:$TEXMFROOT/tex//
-
-TFMFONTS = .:$TEXMFROOT/fonts//tfm
-VFFONTS = .:$TEXMFROOT/fonts//vf
-PKFONTS = .:$TEXMFROOT/fonts//pk//
-
-From mackay@cs.washington.edu Wed Dec 29 16:27:02 1993
-Date: Wed, 29 Dec 1993 13:27:08 -0800
-From: mackay@cs.washington.edu (Pierre MacKay)
-Subject: Directory tree
-
-
-  # The write-black, bitmapped type1 and write-white choices at this site
-  set WB=cx
-  set WW=ricoh
-  set BM=ps-to-pk
-  #
-  # (use the ${} variable form throughout---it saves grief.
-  #
-  set USRLOCAL=/usr2/local
-
-  set TEXMFRT=${USRLOCAL}/lib/texmf
-  setenv TEXROOT ${TEXMFRT}/tex
-  setenv TEXFONTS .:${TEXROOT}/fonts//
-  setenv TEXINPUTS .:${TEXROOT}/inputs//
-  setenv TEXFORMATS .:${TEXROOT}/formats
-  setenv TEXPOOL ${TEXFORMATS}
-
-  setenv MFROOT ${TEXMFRT}/mf
-  setenv MFINPUTS .:${MFROOT}/inputs:${TEXROOT}/fonts/public//src
-  setenv MFBASES ${MFROOT}/bases
-  setenv MFPOOL ${MFBASES}/bases
-
-  # The 00[TFM.VF,XDVI] directories are "accelerators" where links
-  # to files that are in extremely frequent use are placed.
-  #
-  # The 00PK directory is where MakeTeXPK stores its
-  # output.  It must therefore be in both XDVI and DVIPS paths.
-  # It can also be used as an "accelerator" directory for
-  # links to frequently used PK files.  But don't store write-white
-  # fonts there unless you are unlucky enough to have a write-white
-  # printer.
-  #
-  # XDVIFONTS takes write-white fonts from the ricoh set
-  # but since we don't have to worry about write-white printers
-  # any more, the ricoh directories contain only resolutions
-  # below 360 dpi.  Above that it doesn't really matter very much
-  # when all you are concerned with is screen preview.
-  # Don't leave out the ${BM} part of the XDVI path if type1
-  # fonts are in use.
-  # NOTE: Locally, if we decide to use MakeTeXPK at all with XDVI, 
-  # we will set it to produce fonts for the hardcopy printer only
-  setenv TFMFONTS .:${TEXROOT}/fonts/00TFM:${TEXROOT}/fonts//tfm
-  setenv VFFONTS .:${TEXROOT}/fonts/00VF:${TEXROOT}/fonts//vf
-  setenv XDVIFONTS .:${TEXROOT}/fonts/00XDVI:${TEXROOT}/fonts/00PK:${TEXROOT}/fonts//${WW}:${TEXROOT}/fonts//${BM}:${TEXROOT}//${WB}
-  setenv DVIPSFONTS .:${TEXROOT}/fonts/00PK:${TEXROOT}//${WB}
-  setenv PKFONTS $DVIPSFONTS
-  setenv TEXPKS $DVIPSFONTS
-
-This sets up the common root "texmf" for both TEXROOT and MFROOT,
-but puts both TEXROOT and MFROOT into the environment.  Saves
-much typing.  
-
-[TEX,MF]POOL really don't need a separate path, since it is
-only in a run of ini[tex,mf] that they are ever likely to be
-needed.  So TEXFORMATS and MFBASES is the obvious place.  
-
-For BM I have changed from the specific "ps2pk" to a more general
-"ps-to-pk" because I sometimes find that pfb2mf->METAFONT->pk works
-better than ps2pk for a screen image.

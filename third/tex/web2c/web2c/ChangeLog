@@ -1,3 +1,1789 @@
+Tue Mar 24 19:20:13 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* mp.web: New upstream source from John Hobby: version 0.641.
+
+Tue Mar  3 14:16:57 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in (WEB2CVERSION): version 7.2.
+
+Wed Feb 25 20:20:26 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Used `test ... -o test ...' which is always wrong,
+ 	changed `-o' to `||'.  Spotted by Andreas Schott <ays@rzg.mpg.de>.
+
+Fri Feb 20 17:14:33 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* configure.in: Tests moved over from withenable.ac.
+
+	* withenable.ac: Boilerplating, and move some tests to
+ 	configure.in, to make it possible to distinguish between default
+ 	settings and user choices.
+
+	* doc/install.texi: Update with --with-epsfwin switch.
+
+Tue Feb 10 21:15:06 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* withenable.ac: Add --with-epsfwin option.  From Mathias
+ 	Herberts.
+
+	* doc/web2c.texi: Document epsf driver.
+
+Fri Feb  6 17:56:53 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (pdftex.fmt, pdflatex.fmt): Do not require an .ini
+ 	file to exist.
+
+Tue Feb  3 17:06:40 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (mltex.fmt, mllatex.fmt): Don't use .ini files.
+
+	* dvitomp.web: Incorporate a bug fix by John Hobby, as modified by
+ 	Peter Breitenlohner.
+
+Sun Feb  1 15:50:06 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* bibtex.ch: fptr -> f_ptr.
+
+	* dvitomp.web: Correct version number and date in printed title.
+
+	* mf.ch (49.1204): Remove trailing _ from inf_ and sup_ because
+ 	tangle doesn't like them.
+
+	* mp.ch (46.1298): Remove trailing _ from inf_ and sup_ because
+ 	tangle doesn't like them.
+
+	* mp.web: takescaled -> take_scaled.
+
+	* patgen.ch: readln -> read_ln; writeln -> write_ln.
+
+	* tangle.ch (8): Increase unambig_length to 32.
+	(58): Remove the conversion to uppercase, to match 63.
+
+	* tex.ch (51.1332): Remove trailing _ from inf_ and sup_ because
+ 	tangle doesn't like them.
+
+	* share/special.map: Version 2.7, from Karl Berry.
+
+Fri Jan 30 21:17:07 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* share/special.map: Update from Sebastian Rahtz
+ 	<s.rahtz@elsevier.co.uk>.
+
+Thu Jan 29 16:08:10 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (tex-check): Use WEB2C instead of MKTEXSCRIPT.
+
+	* mp.ch, dvitomp.ch: Update for version 0.64.
+
+	* mp.web, dvitomp.web: Version 0.64, from John Hobby.
+
+	* triptrap/mtrap.0 triptrap/mtrap.1 triptrap/mtrap.log
+ 	triptrap/mtrap.mp triptrap/trap.148 triptrap/trap.149
+ 	triptrap/trap.150 triptrap/ triptrap/ triptrap/ triptrap/trap.151
+ 	triptrap/trap.197 triptrap/trap.200 triptrap/trap.5
+ 	triptrap/trap.6: New files from John Hobby.
+
+Wed Jan 28 20:44:40 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* dvitomp.ch: Version number 0.632a.
+
+	* dvitomp.web, dvitomp.ch: Version number set to 0.632a.  Note
+ 	that the modifications are a stopgap, until John Hoppy releases an
+ 	updated version.
+
+	* tex.ch (50.1325): undump_upper_check_things was supplied with
+ 	the wrong upper limit.
+
+	* share/special.map: New version from Thomas Esser.
+
+Fri Jan 23 15:03:49 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* dvitomp.ch, dvitomp.web: Various fixes from Peter
+	Breitenlohner.
+
+	* mf.ch (48.1200): Four-digit years.
+	(49.1211): Make %& lines work reliably.
+
+	* mp.ch (45.1249): Four-digit years.
+	(46.1298): Make %& lines work reliably.
+
+	* tex.ch (50.1328): Use four-digit years.
+	(51.1337): Make %& lines work reliably.
+
+	* texmfmem.h: Changes for Omega, to make its dumps
+ 	endian-independent.  After John Plaice.
+
+Sat Jan 17 09:37:23 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* wmftalk.h renamed to mftalk.h.  From Mathias Herberts
+ 	<Mathias.Herberts@irisa.fr>
+
+	* withenable.ac: --with-mftalk defined NEXTWIN, not MFTALKWIN.
+  	From Mathias Herberts <Mathias.Herberts@irisa.fr>
+
+Wed Jan 14 21:23:56 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* tex.ch: Added warning for the unwary on the advice of Peter
+ 	Breitenlohner.  Comment fixes from Peter.
+
+Tue Jan 13 08:31:52 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (dvitomp-check): Let DVItoMP look in ./tests for
+ 	ptmr.vf.
+
+	* dvitomp.ch ([65] l.1152): Correct a bug in dvitomp.web, that
+ 	prevents the font name from being printed as part of the error
+ 	message.
+
+	* Makefile.in (check-tex): Correction of typo, set TMPDIR to ..,
+ 	so that the PATH settings continue to work when the target is used
+ 	from the source directory.  From Eli Zaretskii.
+
+Fri Jan  9 21:13:39 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Many changes, related to putting omegaware files in
+ 	omegaware directory.
+	(all, default): Make manual pages.
+
+Sun Jan  4 16:00:54 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Change for manual pages.
+
+Thu Jan  1 15:52:39 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Add an all-dist target (maintainer only) and change
+ 	the names of the etex, omega, and pdftex tarballs.
+
+Tue Dec 30 17:49:51 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (etex.efmt, elatex.efmt): Expand contents of
+ 	{etex,elatex}.ini files.
+	(check-pooltype): In e-TeX compatibility mode there's no tex.pool, but
+	an etex.pool.  Both after Peter Breitenlohner.
+
+	* Makefile.in: Add man directory to targets.  Correct PATH setting
+ 	for the nonesuch test in check-tex.
+
+	* configure.in: Added man/Makefile to AC_OUTPUT.
+
+Thu Dec 18 20:37:48 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (check-tex): Make the nonesuch test work when we
+ 	haven't installed the scripts yet.
+
+	* doc/web2c.texi: Correction of -maketex -> -mktex, and a few
+ 	others.
+
+	* help.h: Change spelling of -maketex option to -mktex.
+
+Tue Dec 16 19:11:05 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* PROJECTS: Add info on overflow bug.
+
+	* help.h: Reformatted text for IPC-related switches.
+
+Sat Dec 13 23:03:46 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* texmfmp.h [TeX]: Add definitions for flushdvi.
+
+	* tex.ch ([32.640] l.12690): Somewhat cleaner code for the IPC
+ 	fflushes.
+
+Fri Dec 12 10:25:43 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* help.h: Correct some messages for the change of MakeTeX to
+ 	mktex.
+
+	* tex.ch ([32.640] l.12690): Add fflush(dvi_file) in two places of
+	the IPC code; the buffering caused problems.  After Gregor
+	Hoffleit & Richard Hutchinson.
+
+	* weave.ch: Increase max_bytes, so that we can weave Omega.
+
+	* doc/web2c.texi: Updated for changes to shell_enabled and
+ 	openout_any variables.
+
+Wed Dec  3 17:38:53 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (install-fmts): The choice is between @TEX@ and
+ 	@CTEX@, not @TEX@ and @ETEX@.
+
+Tue Dec  2 12:57:17 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (extraclean): Be more thorough.
+
+	* Makefile.in (mf.base, mpost.mem): Use --base=mf, --mem=mpost
+ 	option.
+
+Mon Dec  1 19:07:00 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* doc/web2c.texi: Update for -interaction option.
+
+	* mfmpw32.c: New file from Fabrice Popineau.
+
+	* help.h: Updated for the --interaction option.
+
+	* mf.ch (6.68, 6.69, 48.1199): Add support for --interaction
+ 	option.
+
+	* mp.ch (6.83, 6.84, 45.1293): Support for --interaction option.
+
+	* tex.ch (6.73, 6,74, 50.1327): Support for the --interaction
+ 	option.
+
+	* Makefile.in (install-links): Links are cheap on UNIX, so install
+ 	links for all kinds of *ini* and *vir*.
+
+Sun Nov 30 13:32:25 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* withenable.ac: Change --with-maketextex to --with-mktextex as a
+ 	consequence of the great renaming.
+
+Sat Nov 29 13:07:49 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* tex.ch (29.530): Assume empty suffix means TeX input file.
+	(29.537): Don't strip ".tex" suffix, don't give ".tex" suffix to
+	prompt_file_name.
+	(29.537) [Init]: New rules for determining dump file name.
+
+	* mp.ch (35.770) [init]: Implement new rule for determining name
+	of dump file.
+
+	* mf.ch (38.793) [init]: Implement new rules to determine name of
+	dump file.
+
+	* Makefile.in (*.{fmt,emft,base,mem}): Changes for new name
+ 	generation rules for formats.
+
+	* Makefile.in (*-check): Changes for checking outside the source
+ 	dir.
+	(*-dist): Add versions of the added packages to the names of their
+	tarballs.
+
+	* configure.in: Create stamp-auto.  From Peter Breitenlohner.
+
+Tue Nov 25 18:29:47 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Conditionalize tex-check, include etex-check.
+	From Peter Breitenlohner.
+
+Mon Nov 24 17:26:40 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Changes to let make check work outside the source
+ 	tree.
+
+	* configure.in: Create a tests subdirectory if necessary.
+
+Sat Nov 22 19:27:47 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Change ?w2c-$(version).tar.gz names to
+ 	?web2c-$(version).tar.gz in the etex-dist, omega-dist, pdftex-dist
+ 	targets.
+
+	* README: Add references to etexdir/README, omegadir/README, and
+ 	pdftexdir/README.
+
+	* doc/web2c.texi: Minor updates.
+
+Fri Nov 21 15:22:53 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Add a tex2.c/tex2.o file to tex_c/tex_o.
+
+Wed Nov 19 17:13:31 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* share/skey1250.map, share/skey1555.map, share/texfonts.map: Name
+	change of softkey-*.map to skey*.map.
+
+	* Makefile.in: Definition of LN_S removed, it is included from
+ 	common.make.
+  	Explicit rules for tangling e-TeX and PDFTeX. Corrected the rule
+	for tangling Omega.
+	(dist): Ensure the fontname *.map files are included.
+	(gftopk-check, pktogf-check, pktype-check): cmr10.600pk is renamed to
+	cmr10.pk.
+	(depend): Make depend in $(otps) as well.
+
+	* texmfmp.h [NeXT]: More compile-time endianness tests.
+
+	* withenable.ac: Change formatting of help text to make it line up
+ 	better.
+
+Sun Nov 16 11:41:08 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in (install-links): Add "" to prevent syntax errors.
+
+Sat Nov 15 21:33:28 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* withenable.ac: Add an --with-omega option, so that omega can be
+ 	selectively disabled if so desired.
+
+	* texmfmp.h: Definition of Xchr removed.  Additions for Omega.
+  	The added definitions for PDFTeX now come from an external file.
+
+	* help.h: Help messages for e-TeX, PDFTeX, and Omega and friends.
+  	Since these messages are highly web2c-specific, and unlikely to
+ 	change much, there seems to be little reason to move them to
+ 	external files.
+
+	* cpascal.h: Put definition of Xchr in this file, because Omega
+ 	likes it.  Also other additions to support Omega.
+
+	* configure.in: Add support for conditionally using Omega.
+
+	* Makefile.in: Many changes to support building Omega.
+
+Fri Nov 14 16:39:32 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Add very primitive kludge for the creation of
+ 	matching e-TeX and PDFTeX distributions.
+
+	* Makefile.in (web-dist): Remove etex.web and pdftex.web for the
+ 	web-distribution.
+
+	* Makefile.in (dist): Include tiedir in distribution.
+
+	* Add tie-2.4 to the distribution.  It lives in web2c/tiedir.
+	
+	* texmfmp.h [eTeX]: TEXPOOLNAME changes; [PDFTeX]: define
+ 	PDFTEXPOOLNAME.
+
+	* help.h: Include a help header for e-TeX and PDFTeX.
+
+	* Makefile.in: Changes to accomodate e-TeX and PDFTeX.
+
+	* configure.in: Change @ETEXTEX@ to @CTEX@.
+
+	* withenable.ac: Add --with-pdftex, --with-etex,
+ 	--with-system-zlib, and --with-system-pnglib options.
+
+	* configure.in: Add support for pdfTeX and e-TeX related options.
+
+Thu Nov 13 23:49:10 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* texmfmp.h: Include code to test for endianess when compiling.
+  	When the BYTE_ORDER macros are available, this improves the
+ 	ability to cross-compile.
+
+Mon Nov 10 13:15:21 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* configure.in (WEB2CVERSION): Version 7.1.
+
+Thu Nov  6 20:29:35 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* triptrap/texmf.cnf: Bumped pool_size from 32000 to 40000.
+
+	* mf.ch: Bump max_font_dimen from 50 to 60.
+
+	* bibtex.ch: Bump buf_size and glob_str_size from 3000 to 5000.
+
+Tue Nov  4 19:11:59 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Get rid of CVS dir.
+
+Wed Oct 29 11:43:30 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* withenable.ac: Correction: dump-noshare -> dump-share.
+
+	* configure.in: Do not include ../kpathsea/xt.ac at the top,
+ 	because that puts the tests for X before the defaults that
+ 	withenable.ac sets up.
+	* withenable.ac: Include ../kpathsea/xt.ac here.
+
+	* withenable.ac: Add quotes to make --with-editor='vim +%d %s'
+ 	work, rather than require --with-editor='"vim +%d %s"'.
+
+Tue Oct 28 21:35:37 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Use cp -p when creating a distribution.
+
+Mon Oct 27 16:22:54 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* withenable.ac: sinclude(../kpathsea/xt.ac) and
+ 	sinclude(kpathsea/xt.ac) are apparently superfluous.
+
+Tue Oct 21 23:35:47 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Somewhat saner handling of triptrap dir when
+ 	creating a distribution.
+
+Mon Oct 20 08:05:31 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Replace y.tab with y_tab.
+
+	* doc/ref.bib: Preserve capitalisation in titles.
+
+	* cpascal.h: Undef `read' if it is already defined, before
+ 	defining it.  Don't set console device to binary on WIN32.  From
+	Fabrice Popineau.
+
+	* config.h [WIN32]: Add WIN32WIN define.  From Fabrice Popineau.
+
+Fri Oct 17 10:37:38 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* cpascal.h [__DJGPP__]: Set stdin/stdout to binary, but not if
+ 	they are the console device.  From Eli Zaretskii
+ 	<eliz@is.elta.co.il>.
+
+Thu Oct 16 20:39:27 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Add target depend:: to remake dependencies in
+ 	subdirectories.
+
+	* Makefile.in (tex_c, tex_o): After the last changes to tex.ch, we
+ 	no longer have a tex2.c.
+
+	* tex.ch: Replace 'xlparen' by '@=(@>' and 'xrparen' by '@=)@>'.
+  	Compare ./web2c/cvttex.sed: Obsolete file.  Also, various changes
+ 	for e-TeX (small rearrangements, introduces Init..Tini, remove
+	tabs and trailing blanks).  From Peter Breitenlohner
+	<peb@mppmu.mpg.de>.
+
+	* doc/web2c.texi: Remove documentation of -extend-jobname option.
+	* help.h [TeX] Remove description of -extend-jobname option.
+	* mp.ch: Get mpost to handle filenames with multiple dots better.
+	* mf.ch: Get mf to handle filenames with multiple dots better.
+	* tex.ch: Numerous changes to remove the extend-jobname stuff, and
+ 	replace it with a sane handling of filenames with more than one
+ 	dot.  See especially end_name and start_input.
+
+Wed Oct 15 17:37:07 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in ($(proglib)): Added stamp-auto to the dependencies.
+
+Sun Oct 12 11:50:58 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* tex.ch [53.1374]: Check name of file before opening it, not
+ 	afterwards.
+	* mp.ch [35.783]: Check name of file with open_out_name_ok before
+ 	trying to open it for writing instead of afterwards.
+
+Fri Oct  3 11:10:15 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* tangle.ch ([64] Delayed pool file opening.): Use
+ 	basename_change_suffix to obtain a reasonable name for the pool
+ 	file.
+
+	* vptovf.ch (6 Open VPL file): Print version_string instead of
+ 	repeating the banner.
+
+	* doc/web2c.texi: Correct description of -extend-jobname option.
+
+	* help.h [TEXHELP]: Correct description of -extend-jobname option.
+	* tex.ch (29.517): Changed logic to fix extend-jobname=never
+ 	problem.
+
+Thu Oct  2 18:06:11 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* doc/web2c.texi: Some minor corrections, suggested by "Tomasz
+ 	J. Cholewo" <tjchol01@mecca.spd.louisville.edu>.
+
+	* tex.ch: A patch to allow printing of non-ascii characters. From
+ 	Bernd Raichle <raichle@informatik.uni-stuttgart.de>.
+
+Wed Oct  1 23:29:54 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* configure.in: Fix for faulty link window/x11.c.
+
+Tue Sep 30 11:15:35 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Corrected path to rename.
+
+	* Makefile.in (version_files): removed.
+	* configure.in: Added definitions of WEB2CVERSION.
+	* Makefile.in: Let version = @WEB2CVERSION@.
+
+	* doc/Makefile.in: Use the add-info-toc script for the top level.
+
+	* tangle.ch: Increase max_toks from 50000 to 60000, max_names from
+ 	4000 to 6000
+	(was 5000).
+
+	* c-auto.h.in (YYTEXT_UCHAR): added to solve the unsigned char
+ 	yytext[] bug.  (From Thomas Esser <te@informatik.uni-hannover.de>)
+
+Sat Apr 19 16:11:24 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch: Add .latex and .ini as another special case.
+	From: Henk Vosmeijer <vosmeijer@nfra.nl> and te.
+
+Fri Mar 21 16:45:28 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (tex.fmt, latex.fmt, mf.base, mpost.mem): Include
+		$(makeargs) when calling prereq-check so that any path
+		changes (e.g., $(prefix)) get propagated.
+	Bug from: jumper@lens.sri.com (Greg Jumper), among others.
+
+Mon Feb 24 17:02:14 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* vptovf.ch (max_kerns, hash_size, max_lig_steps): Increase
+	for psfonts.
+	From: Sebastian Rahtz <s.rahtz@elsevier.co.uk>.
+
+Thu Feb  6 11:27:23 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Version 7.0.
+
+	* tftopl.ch (tfm_size, lig_size, hash_size): Increase to match vptovf.
+	From Richard.
+
+	* vptovf.ch (max_kerns): Increase to 10007, a prime > 10000.
+	From Richard.
+
+	* tex.ch: Oops, .drv should be .drv, not .dtx!
+	From Fabrice and Thomas.
+
+	* Makefile.in (default): Depend on info.  From Tim.
+
+Tue Feb  4 14:16:19 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* triptrap/mptrapin.log: Missed updating this.
+
+Mon Feb  3 17:11:45 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (windowlink): Forgot to include $(x_tool_libs).
+
+Sat Feb  1 17:17:19 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (x_ext_lib): New variable.
+	(windowlink): Use it.
+	
+	* configure.in: Fix test for -lXext to include $X_EXTRA_LIBS
+ 	(needed on Solaris at least).  Introduce $x_tool_libs variable 
+	for toolkit libraries -lXt -lXext, only leave -lX11 in $wlibs.
+	From Ulrik.
+
+	* tex.ch: Make main_memory changes more robust.
+	Change ssup_max_strings and ssup_hyph_size to 65535.
+	From Wayne.
+
+Fri Jan 31 17:57:14 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch: Make .drv a special case.
+
+Mon Jan 27 22:34:18 1997  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* dvitomp.web, mp.web: New files (version 0.632) from John Hobby.
+	* dvitomp.ch, mp.ch: Minor update to reflect changes in WEB files.
+
+	* triptrap: Need to update master files for mptrap test.
+	
+Fri Jan 17 16:56:37 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (post-dist): Ungnuify doc/Makefile.in.
+
+Wed Jan 15 22:40:11 1997  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* mp.ch: : Allow tabs as field seperators in psfonts.map.
+
+Thu Jan 16 09:58:24 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (socketlibs): New variable.
+	(tex): Include it in the link.
+	* withenable.ac (--enable-ipc): Check for -lsocket.
+	Needed on Solaris, at least.
+	From: Richard Walker <Richard.Walker@cs.anu.edu.au>.
+
+	* tex.ch (ssup_trie_opcode, ssup_trie_size): Change to 65535.
+
+Fri Jan  3 09:02:34 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch (trie_op_size, neg_trie_op_size): Change to 1501.
+	From Braams.
+
+Sun Dec 15 16:50:39 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch: ifdef-out the TCX file stuff.
+
+Mon Dec  9 00:50:56 1996  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* bibtex.ch, dvicopy.ch, dvitype.ch: Make messages consistent
+	if called with no arguments.
+
+Sun Dec  8 16:32:50 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* bibtex.ch (standard_input, standard_output): Make globals here.
+	Initialize in main program.
+
+	* cpascal.h (makebinaryfile) [WIN32]: Define.
+	(resetbin, rewritebin): New macros.
+	(FOPENRBINMODE): Define.
+	(standardinput, standardoutput): Remove, these are in bibtex.ch now.
+
+	* config.h (unlink) [!unlink]: Add condition.
+	* dvicopy.ch, dvitomp.ch, dvitype.ch, gftodvi.ch, gftopk.ch,
+	mp.ch, pktogf.ch, pltotf.ch, vftovp.ch, vptovf.ch: Distinguish
+	between text and binary files, sigh.
+	From Fabrice.
+
+Fri Dec  6 17:44:15 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* texmfmem.h: Add conditionals and comments for Omega.
+	* texmfmp.h ({ocp,ofm}openin): New macros.
+
+Tue Dec  3 14:56:54 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* texmfmp.h (ipcpage) [IPC]: Give correct prototype.
+	From: Gregor Hoffleit <flight@mathi.uni-heidelberg.de>.
+
+Sun Dec  1 11:56:39 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* bibtex.ch (max_glob_strs): Increase to 20 for indxcite.
+
+Tue Dec  3 13:44:28 1996  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* Makefile.in (mostlyclean): Call $(MAKE) $@, not $(MAKE) $$target.
+
+Tue Dec  3 01:45:33 1996  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* triptrap/texmf.cnf: Correct max_strings.mpost.
+	
+	* dvitomp.ch: Duplicate banner line for use in print_version.
+
+Wed Nov 27 09:55:04 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (distclean): Don't remove tangleboot.p.
+	(all_subdirs): Add doc, so it gets cleaned.
+
+Tue Nov 26 11:57:25 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* configure.in: If --with-x-toolkit is set, set with_x.
+	Also protect --with tests from (unusual) values starting with -.
+
+	* Makefile.in (install_makeargs): Remove INSTALL_LIBTOOL_PROGRAM
+	again, there's no way to pass it down since its value is
+	subdirectory-relative.
+	(mft-check): Use $(srcdir)/.. instead of ../$(srcdir).
+	(mpost-check): Set MAKEMPX_BINDIR so we get the distribution's
+	tex, newer, etc., not anything installed
+
+Mon Nov 25 15:04:40 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* configure.in: Only set with_x=no if it hasn't already been set.
+
+Fri Nov 22 17:17:03 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (mpost-check): Run tests/mptest.
+	* tests/mptest.mp: New file from Ulrik to test various bugs.
+
+	* mp.ch: Fix from John Hobby to allow invalid big number inside
+	btex..etex.  Will probably appear in the next mp.web.
+
+Sun Nov 10 16:02:08 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (install-data): Install from doc, too.
+	Install mp.pool, not mpost.pool.
+        Call mkdirchain.
+	From Ulrik.
+
+	* configure.in: Do X testing here,
+	* withenable.ac: Instead of here; sinclude ../kpathsea/xt.ac instead.
+
+	* withenable.ac (maketextex-default): Test $withval, not $enableval.
+	From: Gerd Neugebauer <gerd@mailhost.uni-koblenz.de>.
+
+Thu Oct 31 19:27:56 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (texinfo.fmt): Simplify dump rule for recent Texinfo's.
+	From: Stephen Gildea <gildea@intouchsys.com>.
+
+Sun Oct 27 05:15:03 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* patgen.web: New version from peb to avoid division by zero.
+        * patgen.ch: Remove my hack that did this.
+
+Fri Oct 25 15:11:43 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in: Include doc stuff in distribution.
+
+Thu Oct 24 12:56:47 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in: Rename the mp binary to mpost, because there is a
+	Sun OpenWindows program by that name, plus a sort-of-freeware
+	version thereof.  Sigh, sigh, sigh.  Reported by Thomas.
+
+Wed Oct 23 17:19:29 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* help.h: Extra blank line in vftovp's help.
+
+	* patgen.ch: Avoid division by zero when printing the efficiency.
+
+Tue Oct 22 13:14:26 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* triptrap/texmf.cnf (MPXCOMMAND): Turn off with 0,
+	not none, which feature I guess I removed from callmakempx
+	at some point.
+
+	* Makefile.in (default, all): Depend on formats, not
+	$(fmts) $(bases) $(mems).  We weren't remaking the formats.
+	
+	* Makefile.in (trip, trap, mptrap): @echo to stderr, no use
+        redirecting it to the file we tell them to look at.
+
+	* mf.ch: Initialize char_class[255]; somehow the loop was changed
+	to stop at 254?!
+
+	* triptrap/texmf.cnf: Oops, can't have comments on the same line
+        as variable definitions.
+
+Sun Oct 20 18:00:16 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (mpware_sources): New variable.
+	($(mpware)): New target, replacing mpware.
+	(always): No longer needed.
+
+Tue Oct 15 17:23:40 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (version_files): Add mpto.c and newer.c in mpware/.
+
+Mon Oct 14 11:09:28 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* cpascal.h (makebinaryfile) [!WIN32]: Define as a no-op.
+	* dvicopy.ch: Have to change stdin/stdout to be ``binary'' files.
+	* config.h (DllImport) [_WIN32]: Define.
+	* Changes for NT from: Fabrice POPINEAU <popineau@esemetz.ese-metz.fr>.
+
+	* weave.ch (max_toks, max_texts),
+	* tangle.ch (max_texts): Increase for tex2pdf.
+
+Sun Oct 13 16:54:11 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* patgen.ch: Patch the new call to get_input.
+
+	* dvicopy.web: Update (just a doc change) from peb.
+	* patgen.web: Update to version 2.2 from peb.
+
+	* tests: Rename directory from check/, for the sake of Gnits.
+
+Tue Oct  8 16:10:31 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (lib_sources): Add printversion.c.
+	(version_files): Add makempx.in.
+
+Mon Oct  7 17:12:03 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* *.ch: Oops, turns out printversionandexit needs more arguments.
+	* cpascal.h: Change decl.
+
+Sun Oct  6 18:02:27 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* cpascal.h (kpathseaversionstring): Remove this.
+	(printversionandexit): Declare this.
+	*.ch: Call the latter with the program banner.
+
+Sun Sep  8 19:14:09 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* mp.ch: Fix help message reference to MPtoTeX.
+
+Sat Sep  7 17:34:36 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (default all): Make $(fmts) $(bases) $(mems) by default.
+
+Fri Sep  6 15:03:35 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* configure.in: Call AC_PROG_RANLIB.
+
+Wed Aug 14 16:31:42 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch: Make .ins a ``known'' extension, too.
+
+Sun Aug  4 15:51:41 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* cpascal.h (kpathseaversionstring): Need to restore _'s.
+
+	* *.ch: print_ln (kpathsea_version_string) with --version.
+
+Fri Jul 26 15:47:35 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in: Remove co.make.
+
+Wed Jul 24 10:24:37 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* Makefile.in (dist_subdirs, all_subdirs): Remove man.
+
+Sat Jun  8 13:15:40 1996  K. Berry  <kb@cs.umb.edu>
+
+	* Makefile.in: Use $(kpathsea_link) instead of $(link_command).
+
+Sat Jun  1 13:12:44 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* texmfmp.h (openoutnameok): Move outside of #ifdef TeX conditional.
+
+Mon May 27 13:27:38 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * config.h: Use #if __STDC__, not #ifdef.
+
+Sat May 25 15:30:52 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Doc fix.
+
+Fri May 24 11:12:07 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (TEXHELP): Document -extend-jobname.
+        * tex.ch: Implement it.
+
+        * dvitype.ch (name_size): Increase to 1000. We should dynamically
+        allocate all these arrays, but it doesn't seem worth the trouble
+        to delay the release even more.
+
+Thu May 23 16:53:38 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * bibtex.ch: Dynamically (re)allocate the wiz_fn_space array
+        wiz_functions, as Nelson has reached the limit.
+
+Mon May 13 17:27:23 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch: Include program name in `need <however many> arguments' error.
+
+Mon May  6 14:42:09 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * dvitype.ch: Doc fixes.
+
+Fri May  3 17:34:29 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * withenable.ac: Use AC_ARG_WITH instead of AC_ARG_ENABLE for
+        maketextex-default.
+        Turn off MakeTeXTeX by default, as intended.
+        Remove maketexmf-default -- that is in kpathsea now.
+
+Thu May  2 14:14:38 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (dist_subdirs): Add contrib, rename data to share.
+
+        * kpathsea.make (c_auto_h_dir): Restore this.
+
+Mon Apr 29 16:09:10 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in ({tex,mp,mf}.pool): Add these targets along with the
+        .p's, since they get made at the same time.  We never depend on them.
+
+Sun Apr 28 15:06:15 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in (pb_AC_ASM_UNDERSCORE): Add call to new routine.
+        From: Peter Breitenlohner <peb@MPPMU.MPG.DE>.
+
+Sat Apr 27 17:11:00 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Add changes from Wayne for dynamically allocated number
+        of hyphenation exceptions.
+
+Mon Apr 22 11:47:17 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * pktogf.ch: Correct call to kpse_open_file.
+
+Sun Apr 21 17:27:02 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (MFHELP, TEXHELP): Document [-no]-maketex.
+
+Wed Mar 13 15:43:00 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in (AC_OUTPUT): Add doc/Makefile.
+
+Tue Mar 12 15:27:37 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch (hyph_size): Increase to 1009.
+
+Sun Mar 10 15:56:35 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch (\openout): Don't log if the log file isn't open yet.
+
+        * bibtex.ch (glob_str_size): Increase to buf_size. Suggested by Ulrik.
+        Could dynamically allocate it (and global_strs, etc.), a la
+        entry_strs, but time is fleeting.
+
+Fri Feb 23 11:23:27 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * bibtex.ch: Doc fix.
+
+Sun Feb 18 16:18:54 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * (most).ch: Change xopenfile calls to kpse_find_file.
+
+Sat Feb 17 15:22:59 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch (\openout): Log what we open, and disallow some filenames.
+        * texmfmp.h (openoutnameok): Declare this.
+
+Fri Feb 16 17:55:12 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * texmfmp.h (NONASCII): Define this.
+
+Thu Feb 15 14:11:58 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Set kpse_make_tex_discard_errors if interaction = batchmode.
+        * mf.ch, mp.ch: Likewise.
+        * Makefile.in (tex-check): Include check that this works.
+        * texmfmp.h: Include <kpathsea/tex-make.h>.
+        * cpascal.h (kpsemaketexdiscarderrors): New macro.
+        
+        * data: Rename to `share'.
+        * Makefile.in: Uses changed.
+
+Wed Feb 14 11:25:03 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * mf.ch, mp.ch: Incorporate patches for length of single-character
+        unprintable strings, per message to tex-implementors.
+        From: vieth@thphy.uni-duesseldorf.de (Ulrik Vieth).
+        Date: Wed, 20 Dec 1995 13:43:52 +0100.
+
+Sat Feb 10 15:17:45 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * mf.ch: Use halfp where possible (from Andreas Scherer).
+
+        * tex.ch: Add copyright clarification (from bernd).
+
+        * help.h ({TEX,MF,MP}HELP): -program is really -progname.
+
+        * tex.ch, mf.ch, mp.ch: Remove word `default' in ``Can't find the
+        default ___ foo.''
+
+Fri Feb  9 15:46:31 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * withenable.ac: --with-maketexpk etc. moved to
+        kpathsea/withenable.ac.
+
+Sat Feb  3 15:45:15 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (DEFS): Move to common.make.
+
+Sun Dec 31 16:46:23 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (kpsefindmft): Add to underscore-less list.
+
+Fri Dec 29 17:17:02 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in: misc.make is now clean.make.
+
+Tue Dec 26 15:04:10 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (program_files): Add *.ac.
+        * withenable.ac: New file.
+
+        * configure.in (maketex*): Fix doc strings.
+
+Mon Dec 18 11:29:44 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (programs): New target.
+
+Sun Dec 17 15:10:09 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Add support for dumping interesting parts of the .fmt
+	file, to aid in debugging latex, etc.  Suggested by David Carlisle.
+
+Tue Dec 12 15:57:15 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-links): Make dependency of install-exec,
+        rather than install-data.
+        (install-exec): Install the pool files as well.
+        From Ulrik.
+
+        * mf.ch, mp.ch: Module number corrections, etc., from Ulrik.
+
+Mon Dec 11 12:59:16 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (tex-check): Add run of Bernd's mltextst.tex, and
+        add that file to check/.
+
+        * weave.ch: Remove bogus increment of optind that prevented
+        recognition of the change file.
+
+Sun Dec 10 14:58:38 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (post-dist): Include tangleboot.p.
+
+        * mf.ch: Back to disallowing 8-bit characters.
+        * mp.ch: Disallow in general, but allow when |tex_flushing|.
+        From Ulrik.
+
+        * Makefile.in (check/check.log): New target.
+        (pre-dist): Depend on it.
+
+        * mft.ch: Use kpse_find_mft.
+
+        * Makefile.in (triptrap): Rename from mptriptrap. From Ulrik.
+
+        * triptrap/texmf.cnf: Remove pool_size.mp, since it was being
+        treated as 32000 anyway. From Ulrik.
+
+        * cpascal.h: Doc fix, from a comment by Andreas S.
+
+        * Makefile.in (install-man): New target, dependency of
+        install-data. 
+        (install-links): Don't install tex as a link, it's the binary.
+	From: Joern Clausen <joern@techfak.uni-bielefeld.de> (among others).
+
+Sat Dec  9 20:26:51 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+      * cpascal.h (kpsemftformat): Add this for MFT style files.
+
+Sun Dec  3 13:42:33 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch: Make character 255 invalid here, too.
+        Allow input filenames like `one.two.mp'.
+
+        * tex.ch: .dtx is another special case for TeX input.
+
+Fri Dec  1 16:15:32 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mf.ch, mp.ch, mft.ch: Patches from Ulrik to allow 8-bit
+        input. (Although bugs remain.)
+        
+Mon Nov 27 11:10:53 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-links): Install mltex as a link to virtex.
+
+Sun Nov 26 13:40:01 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (TEXHELP): Document -mltex.
+
+Fri Nov 24 13:16:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-data): Avoid use of basename here.
+
+Thu Nov 23 15:20:24 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * dvicopy.web, dvicopy.ch: Update for version 1.5.
+
+Wed Nov 22 13:04:50 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mft.ch: Treat tab and form feed like spaces on input.
+
+        * {weave,tangle,mft,patgen,vptovf,pltotf}.ch: Increase input line
+        length limit to 3000. From Ulrik.
+
+Sun Nov 19 16:05:06 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (program_files): Remove tangleboot.p.
+        (dist): Don't include various files in check/.
+        (distclean): Remove tangleboot.
+        (clean): Remove *.fmt, etc.
+        From John I.
+
+Sat Nov 18 17:05:37 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (distclean): Remove *extra.c. From Peter Dyballa.
+
+        * tex.ch: String recycling changes from Bernd.
+
+Fri Nov 17 13:22:31 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch (open_write_file): Needs modification for Amiga. From
+        Andreas S.
+
+        * gftodvi.ch (start_gf): Initialize arg_buf_ptr. From Andreas S.
+
+        * help.h (TEXHELP, MFHELP, MPHELP): Document new option -program.
+
+        * tangle.ch, weave.ch: Correct logic for finding chg_name. From
+        Ulrik and Andreas S.
+
+        * cpascal.h (libcfree): Use this name instead of cfree, which
+        historically exists on some systems.
+        * tex.ch, mf.ch, mp.ch: Change the calls.
+
+        * dvitomp.ch, gftodvi.ch: abs => fabs. From Ulrik.
+
+Thu Nov 16 16:18:11 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * weave.ch, vptovf.ch, tangle.ch, pltotf.ch, patgen.ch: Call
+        kpse_set_progname. From Gregor Hoffleit.
+
+        * Makefile.in (install-exec): make install-exec in mpware.
+        (clean): Remove junk from mptriptrap.
+        (install-links, install-fmts, etc.): Various fixes.
+        From Ulrik.
+
+        * config.h (AMIGAWIN) [AMIGA]: Define this. From Andreas Scherer.
+
+Sun Nov 12 16:05:44 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * gftype.ch (parse_arguments): Had <> -1 instead of = -1 when
+        checking the getopt_return_val.
+
+        * mf.ch, mp.ch (ab_vs_cd): Remove assembler possibility for this,
+        since it's not an inner loop function. From Wayne.
+
+        * mp.ch: Allow more comment characters in psfonts.map.
+        Make all error messages use `psfonts.map' consistently. From Ulrik.
+
+        * help.h (TEXHELP): -shell-escape instead of -noshell. Alphabetize
+        all (excepting -help/-version).
+
+        * tex.ch: Adding logging of system, disable by default, convert to
+        external character set. Suggested by Bernd, Nelson, et al.
+
+        * Makefile.in (dvitomp-check): Use ./dvitomp.
+
+Mon Oct 30 17:04:19 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (MPHELP): Corrections from John Hobby.
+
+Sun Oct 22 16:47:23 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (mems, bases, fmts, formats, mptriptrap): New
+        targets. Reported by Ulrik.
+        (web2c, .ch.p, tangle.p): Use $(shared_env). From Simon.
+        (tex.fmt, latex.fmt): Missing \ before \input. Reported by Tim.
+        (install-links): Install vir* links as well as ini*. Reported by Tim.
+
+Sat Oct  7 17:48:43 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-links): Also depend on install-mems. From Ulrik.
+
+Fri Oct  6 16:26:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in: Use ./<program> instead of just <program>, in the
+        *-check targets and trip. From Wayne.
+
+        * help.h ({TEX,MF,MP}HELP: Document %&ini.
+
+Mon Oct  2 15:55:57 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * pooltype.ch: Call kpse_set_progname.
+
+Sat Sep 30 15:06:57 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Add \write18 and -output-comment support.
+        * help.h (TEX_HELP): Document the options.
+
+Sat Sep 23 15:05:06 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in (strtol): Move this test to kpathsea, since we
+        can only use it once.
+
+Wed Sep 20 16:22:54 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Chop off an extension of .ltx, .texi, or .texinfo after
+        all, when making the jobname.
+
+Sun Sep 17 11:48:34 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in: Enable MakeTeXMF and MakeTeXTFM by default.
+
+Sat Sep  9 16:26:01 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-data): Install the *.map files.
+        (dist): Put the .tcx and .map files in a subdir `data'.
+
+Thu Sep  7 12:43:02 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (lib_sources): Remove xopenfile.c.
+
+Mon Sep  4 17:15:43 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (xopenfile): Moved to kpathsea.
+
+Fri Sep  1 17:43:05 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in: Doc fix.
+        * texmfmem.h: Doc fix.
+
+Thu Aug 31 13:36:09 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (odd): Maybe x & 1 is better than x % 2.
+	(half, halfp, roundscaled, roundfraction, floorscaled,
+	floorunscaled): Define these.
+	* mf.ch, mp.ch (ab_vs_cd) [ASM_SCALED_FRACTION]: ifdef this, and
+	use the routines above.
+        * configure.in: If Linux, set and substitute for @system_optimize@.
+
+Wed Aug 30 16:30:56 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * texmfmem.h: Remove junkx and junky in LittleEndian case.
+        Reported by Wayne.
+
+        * config.h (NO_DUMP_SHARE): Renamed from NO_FMTBASE_SWAP.
+
+Fri Aug 25 13:21:31 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (prereq-lose, tex.fmt, latex.fmt, mp.mem, etc.): New
+        targets, mostly copied from the old Makefiles. Run kpsewhich to
+        make sure the input files are there first.
+
+Thu Aug 24 19:13:02 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (TEXHELP, MPHELP, MFHELP): Mention the &DUMPFILE capability.
+
+Tue Aug 22 11:44:08 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * kpathsea.make (c_auto_h_dir): Define this.
+
+        * dvitype.ch: Don't call xfclose if we didn't open the tfm file.
+
+Mon Aug 21 16:43:39 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (FOPENRMODE): Define this.
+        * dvitype.ch (open_tfm_file): Don't call xopenfile, since we don't
+        want to exit if no TFM file.
+
+Fri Aug 18 09:21:14 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (program_files): Put .tcx files here.
+
+Tue Aug  8 14:56:49 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (putbyte): Swallow semicolon.
+
+Thu Aug  3 11:32:07 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (dist): Only remake triptrapdiffs if necessary.
+
+Tue Aug  1 19:26:21 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Merge Wayne's dynamic font sizing changes.
+        * texmfmem.h (B0, B1): Declare as short, instead of quarterword.
+
+Mon Jul 31 17:46:11 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch, mf.ch, tex.ch: Omit $ from setup_bound_var calls.
+
+Sat Jul 29 13:13:31 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in: Generate mpware/Makefile.
+
+        * texmfmp.h: Rename from texmf.h.
+
+        * dvitomp.ch, dvitomp.web: New files.
+        * Makefile.in: Add rules to make dvitomp.
+        * help.h (DVITOMPHELP): Define this.
+
+Fri Jul 28 11:10:46 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch: Dynamically allocate/set str_pool, string_vacancies,
+        etc., for the sake of the mptrap test.
+
+        * Makefile.in (post-dist): Include *.sed. From Greg.
+
+        * kpathsea.make (kpathsea_parent): Define as ../.., not using
+        $(top_srcdir). From Greg.
+
+        * mp.ch (copy_old_name): Null-terminate.
+        
+        * triptrap/texmf.cnf (MPXCOMMAND): Set to `none'.
+
+Thu Jul 27 17:56:18 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch (more_name): Rewrite to make last . the one that counts
+        for the extension. And change jobname setting accordingly.
+
+        * Makefile.in (all_subdirs): Add window.
+
+Tue Jul 25 13:17:28 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mp.ch: malloc old_file_name.
+
+Mon Jul 24 17:45:42 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (mptrap): New target.
+        (trap): Rename some trap.* files to avoid conflicts.
+
+Sun Jul 23 11:43:51 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (MPHELP): Define this.
+
+Sat Jul 22 14:20:50 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch: Reformat changes to get rid of extra % lines, etc.
+
+        * Makefile.in (mp, mfpextra.c): New target.
+        (mp_o, mp_c): New variables.
+	* texmfmem.h: Include MP in #ifdef's and comments.
+
+Fri Jul 21 15:31:17 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * texmf.h (undumpuppercheckthings): New macro.
+        * tex.ch (hyf_next, font_name, font_area): Use it. These base
+        types are unsigned, so comparing to 0 is redundant.
+
+        * mf.ch: Dynamicize main memory, a la TeX. Now with a memory size
+        of 3001, we pass the trap test. Whew.
+
+Thu Jul 20 13:48:40 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * texmf.h (put[24]bytes): Define these again.
+        * mf.ch: Use them instead of the default for tfm_two and tfm_four.vb
+
+        * mf.ch: Dynamically set error_line, half_error_line,
+        max_print_line, gf_buf, gf_buf_size. This is for the trap test.
+
+Wed Jul 19 11:31:00 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch (dvi_buf_size): Rename all occurrences of dvibuf_size.
+
+Tue Jul 18 14:09:15 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (install-links): Install links for inimf and initex.
+
+        * configure.in: Check for -lposix giving us sigemptyset.
+        From: bernt@weinberg.pop.bio.aau.dk (Bernt Guldbrandtsen).
+
+Mon Jul 17 13:08:32 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in: Change default to not include X support.
+
+        * Makefile.in (mf): Add dependency on $(windowlib), and link with
+        $(windowlink).
+        $(windowlib): New variable, target, etc.
+        * window: New directory for the window support.
+
+        * configure.in: Use NO_DUMP_SHARE rather than NO_FMTBASE_SHARE, in
+        preparation for Metapost.
+
+Sun Jul 16 14:19:04 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in (ipc, auto-dump): AC_ARG_ENABLE these.
+
+Sat Jul 15 16:04:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * acconfig.h: Make this a symlink to ../kpathsea/acconfig.h, as
+        with everything else.
+        * configure.in: Start adding all the --with's and --enable's.
+
+        * tex.ch: Patches from Wayne to allow extending the hash table via
+        a hash_extra value.
+
+Fri Jul 14 14:36:47 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Regenerate the first 256 strings if the user changed
+        which characters are printable.
+
+Thu Jul 13 14:09:19 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (TEXHELP): Document -translate-file.
+        * texmf.h (setupcharset): Declare this.
+        * tex.ch (is_printable): Declare this new array.
+
+Sat Jul  8 13:54:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bibtex.ch (stat, tats): Enable these by default.
+
+        * cpascal.h (BIB_XRETALLOC): Slight front end to XRETALLOC for
+       BibTeX's dynamic arrays.
+
+Wed Jul  5 17:47:03 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bibtex.ch: Begin merging changes for dynamic array allocation.
+        From Nelson.
+
+Thu Jun 29 19:06:31 1995  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch (font_bc, font_ec): Do not check these unsigned char
+	values against the range [0,255] when undumping.
+	
+        * tex.ch: Use fputs instead of wterm for string variables
+        name_of_file, TEX_format_default.
+        * mf.ch: Likewise.
+
+        * help.h (TEX_IPC_HELP): Split this out from TEXHELP.
+
+Wed Jun 21 15:35:09 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (MFHELP, TEXHELP): Document -base and -fmt respectively.
+
+        * tex.ch: Restore checking of various arrays when undumping.
+        * texmf.h (undumpcheckedthings): Macro to do the checking.
+
+Tue Jun 20 19:53:38 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (TEXHELP) [IPC]: Document -ipc and -ipc-start.
+
+Fri Jun 16 11:45:48 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Add IPC changes.
+        From: Shamim Mohamed <shamim@howland.isu.edu>
+        From: Tomas G. Rokicki <rokicki@CS.Stanford.EDU>
+
+Tue Jun 13 11:30:57 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch (max_font_max): Increase to 1000, why not.
+        * mf.ch (tfm_out, tfm_two, tfm_four, tfm_qqqq): Leave default
+        definitions.
+
+        * kpathsea.make (kpathsea_parent): Use $(top_srcdir). From Greg.
+
+Sat Jun 10 19:25:10 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * texmf.h: Include c-pathch.h.
+
+        * tex.ch: Add changes to allow > 256 fonts.
+        * texmfmem.h (fmemoryword): New type.
+        From: wgs@maths.ucd.ie (Wayne G. Sullivan) and
+        From: Bernd Raichle <raichle@azu.informatik.uni-stuttgart.de>.
+
+Thu Jun  8 20:11:43 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mf.ch: Use IS_AREA_SEP here, too.
+
+Sun Jun  4 13:56:08 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * config.h (unlink) [UNLINK_MISSING && HAVE_REMOVE]: Define as remove.
+
+        * mft.ch: No longer need special case in input_ln, eof itself
+        checks now.
+        * {tangle,weave}.ch: Avoid /dev/null by just leaving the variable
+        name NULL.
+
+        * tex.ch (area_delimiter): Do : stuff for Amiga. From Andreas Scherer.
+
+        * texmf.h (initscreen, updatescreen, blankrectangle, paintrow):
+        Add prototypes for these.
+
+        * Makefile.in (post-dist): Work on this.
+
+Sat Jun  3 11:45:32 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Redo setup_bound_var to allow _'s in the names the user sees.
+
+        * bibtex.ch (ent_str_size): Double to 200. From Nelson.
+
+        * texmf.h (setupboundvariable): Declare this.
+
+Fri Jun  2 17:37:36 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch: Merge in Wayne's dynamic array diffs.
+        (hash_size, hash_prime): Increase to 10000 and 8501 for no
+        particular reason.
+
+        * texmf.h (xmallocarray): Add one to element size.
+
+Thu Jun  1 11:45:11 1995  Karl Berry  <karl@cs.umb.edu>
+
+	* tex.ch, mf.ch: If input file is foo.tex, output goes to foo.dvi,
+	not foo.tex.dvi!  Fix from May 28 change.
+	
+        * tex.ch (trie_size): Increase to 50000 to support U[KS] English,
+        French, and German.
+        From: Richard Walker <Richard.Walker@cs.anu.edu.au>.
+        (nest_size): Increase to 100.
+        From: lamport@src.dec.com.
+
+        * {tex,mf,bibtex,gftodvi}.ch (name_of_file): Declare as a pointer
+        to text_char, not char, so 8-bit filenames get echoed in correctly
+        in ^^ notation.  From: thorinn@diku.dk (Lars Mathiesen).
+
+Sun May 28 17:45:33 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * tex.ch, mf.ch: If input file is a.b.{tex,mf}, jobname is a.b, so
+        we write to a.b.log. From rs@purple.in-ulm.de (Ralph Schleicher).
+
+        * vptovf.ch: Increase sizes of constants (Sebastian).
+
+Sat May 27 17:15:46 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * dvi{type,copy}.ch: Add options to replace the dialogue.
+
+Fri May 26 17:34:06 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * config.h (strtol) [!HAVE_STRTOL]: Declare this.
+        * configure.in (strtol): AC_CHECK_FUNCS for it.
+        
+        * cpascal.h (addressofint): Rename to just addressof.
+        * *.ch: Change calls.
+
+Wed May 24 19:37:25 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h, *.ch: Finish -help and -version for all but dvitype.
+
+Sat May 20 13:02:04 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch: Use new usage(1, 'progname'). 
+
+        * cpascal.h (basenamechangesuffix): Take three args now.
+        *.ch: Change calls.
+
+Fri May 19 19:29:06 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (findsuffix): Another in the underscore list.
+        
+        * help.h (GFTOPK): Define help string.
+        * gftopk.ch: Add -help and -version support.
+
+Tue May 16 15:47:02 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (removesuffix): Add this to the underscore list.
+
+        * help.h (MFT, PATGEN, VFTOVP): Define help string.
+        * {vftovp,patgen,mft}.ch: Add -help and -version support.
+
+Sun May 14 11:14:46 1995  Karl Berry  <karl@fosse>
+
+        * texmf.h (bytefile, wordfile): Do not define here.
+        * mf.ch, tex.ch (alpha_file, byte_file, word_file): Keep these
+        declarations.
+
+Tue May  9 15:47:55 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * help.h (PKTYPE, GFTYPE, TFTOPL, PKTOGF): Define *HELP strings.
+        * {pktogf,tftopl,gftype,pktype}.ch: Add -help and -version support.
+
+Mon May  8 12:05:05 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * pooltype.ch: Append `pool' if necessary.
+
+Sat May  6 11:24:01 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (lib_sources): Add usage.c.
+        * config.h (usage): Declare it.
+
+Fri May  5 17:48:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * pooltype.ch: Write the usage function in C now, passing in the
+        help string.
+
+Thu May  4 19:41:05 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h: Include help.h.
+        * help.h: New file for help messages.
+
+Fri Apr 28 13:45:08 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h: Include kpathsea/tex-file.h here.
+        * *.ch: Don't bother including it in only the relevant change files.
+        
+        * cpascal.h (alphafile, fileptr): Don't bother defining these.
+        * bibtex.ch (alpha_file): Define as text.
+
+Tue Apr 25 13:43:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch: Don't bother changing program statements or removing
+        compiler directives now.
+
+        * *.ch: Use ^char instead of c_string where possible.
+
+        * Makefile.in: Clean up clean rules, etc.
+
+        * Update all .web files from 21 March 1995 Knuth archive.  (bibtex,
+        dvicopy, and pktogf are not included.)  New versions for dvitype (3.5),
+        mf (2.718), pltotf (3.5), tangle (4.4), tex (3.14159), and
+        vptovf (1.4).
+
+Sun Apr 23 10:54:58 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (mfextra.c, texextra.c): Don't just link, substitute
+        for which one we are.
+
+Sat Apr 22 13:22:09 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * mf.ch (format_ident): Don't set to INIMF unless we are.
+
+        * texmf.h (kpsetexpoolformat): Define this.
+        (write_out): Let's try always using fwrite.  Shouldn't it be more
+        efficient than write(2)?
+        (xmallocarray): New routine for the hyphenation tries.
+
+        * tex.ch: Avoid special case for first bad_pool; instead, change
+        a_close to not complain about already-closed files.
+        * tex.ch: Use kpathsea routines and constants.
+        
+        * mf.ch: Copy pool file in correctly.
+
+Fri Apr 21 11:16:12 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h: Include progname.h.
+        (putbyte): Check return status.
+
+        * Makefile.in (web2c_programs): Remove regfix.
+
+        * cpascal.h, texmf.h: Add prototypes.
+
+        * mf.ch (debug, gubed): Use the cpp symbol MF_DEBUG, instead of
+        DEBUG, which kpathsea uses.  Use kpathsea routines and constants.
+
+Tue Apr 18 11:03:55 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (cfree): Define this.
+
+        * texmf.h (dump_path): Define as the kpse_*_fmt, not the old path name.
+
+Mon Apr 17 10:00:04 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in: Add rules for Metafont and TeX.
+
+Fri Apr 14 15:30:34 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * dvicopy.ch, dvitype.ch, gftopk.ch: Use xfseek and xftell instead
+        of checked_fseek.
+        * cpascal.h (checked_fseek): Remove this.
+
+        * cpascal.h (open_input, open_output, aclose): Declare with prototypes.
+
+Tue Apr 11 13:15:51 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (bibtex.c): Depend on bibtex.cvtsed.
+
+Mon Apr 10 17:07:52 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (standardinput, standardoutput): Do not conditionalize
+        these on BibTeX.
+
+Tue Apr  4 15:22:08 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (web2c/web2c): Dependency is now on web2c/main.c,
+        not web2c/web2c.c.
+
+        * cpascal.h (kpse{bib,bst}format): Add these.
+
+        * bibtex.ch: Don't use file_name_size as an array size.
+
+Sun Mar 19 17:53:01 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * gftodvi.ch: Add -help, -version, change help message.
+
+Sat Mar 18 17:24:47 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (input): #define as stdin.
+        (kpsefindvf): Also use this for dvicopy.
+
+Fri Mar 10 10:52:09 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch (arg_options): Don't bother defining this, we never use it
+        any more.
+
+Thu Mar  9 15:50:12 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * acconfig.h: Warn that this is not the right thing to edit to fix
+        configuration problems.
+
+Tue Feb 21 13:41:25 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (output): Define as stdout.
+        * *.ch: Don't bother to redefine `output' as `stdout'.
+
+Mon Feb 20 15:24:31 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * *.ch: Rationalize argument parsing and usage messages.
+
+        * cpascal.h (kpsefind{mf,tex}): Define these.
+
+Sun Feb  5 15:26:28 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (basenamechangesuffix): Declare this.
+
+Tue Jan 10 11:43:27 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * texmf.h (glueratio): Move to here from config.h.
+        * config.h (ourpaths.h): No longer needed.
+        (link, getname, etc.): Move to cpascal.h.
+
+        * cpascal.h (nil): Define to be NULL.
+        * pktogf.ch: Use nil instead of NULL.
+
+Sat Jan  7 16:31:15 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (kpseinitprog): Add this.
+
+Tue Jan  3 15:19:52 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * config.h: getopt.h is in kpathsea now.
+
+Mon Dec 19 13:22:04 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (kpsefindfile): Add this -- more _ synonyms.
+        (kpse{pk,vf}format): And this.
+
+Sun Dec 18 16:33:29 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (flush): May as well define `break' as fflush in the
+        change files, and remove this.
+        * *.ch: Redefine `break' as `fflush' instead of `flush'.
+
+Sat Dec 17 13:40:19 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * vptovf.ch: Use cmdline instead of argv, rename gargv to argv,
+        make the filenames be C strings, and extend them if necessary.
+
+        * config.h (chartostring): Declare it.
+        (setpaths): Remove this.
+        * cpascal.h: Doc fix.
+
+        * tangle.ch (Parse arguments): Use char_to_string instead of
+        make_suffix_char.
+        * weave.ch (Define the option...): Use char_to_string for -x.
+
+Thu Nov 24 13:34:16 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * vptovf.ch (hash_size, max_kerns): Increase per Sebastian.
+
+Tue Nov 15 11:47:35 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * cpascal.h (kpsesetprogname): Define to
+        kpse_set_progname. Gosh, this is annoying.
+
+Mon Nov 14 13:28:04 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * {patgen,pooltype,pltotf,tftopl}.ch: Rewrite for argv changes, etc.
+
+        * cpascal.h (vstrcpy, vstrcat): Toss these. Change callers.
+
+        * *.ch: Rename c_char_pointer to c_string.
+
+        * config.h (argv): Rename to cmdline, and make a function.
+        * main.c (cmdline): Renamed from argv.
+        (gargv): Rename to argv.
+        (makesuffixchar): Declare.
+
+Sun Nov 13 16:19:27 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in, Makefile.in: Update for Autoconf 2.0.
+
+Sun Nov  6 15:57:17 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * acconfig.h: Incorporate c-auto.h.top (and remove that file), for
+        Autoconf 2.0.
+
+Fri Oct 28 11:13:56 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (tangle.c, tftopl.c): Depend on $(web2c_aux)
+        $(web2c_programs).
+
+        * tangle.ch: Redo argument parsing using getopt, extend_filename, etc.
+
+        * cpascal.h (extendfilename): Add this to _ list.
+
+Thu Oct 27 17:58:50 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * tftopl.ch (tfm_name, pl_name): Declare as C strings; call
+        kpse_find_tfm.
+
+        * cpascal.h (reset, rewrite): Call plain xfopen, not xfopen_pas.
+
+Mon Oct 10 16:23:13 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (web2c_makeargs): Don't pass LEX et al.
+        (lib_makeargs): Don't pass RANLIB and LN.
+
+Sun Sep 25 16:49:30 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * configure.in (AC_OUTPUT): Generate man/Makefile, changes for new
+        source directories.
+        * Makefile.in: Everything changes.
+
+Fri May 27 12:37:36 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * c-auto.h.top: (XVIEWWIN, X10WIN): Take these out.
+
+        * tex.man, mf.man: Take out references to USE_MAKETEX*.
+
+Tue Apr 26 14:05:22 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * configure.in: Use AC_FIND_XTRA, for Autoconf 1.9.
+
+Mon Apr 18 13:22:21 1994  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * configure.in, Makefile.in: Changes for the new configure.
+
+Sun Apr 17 16:16:28 1994  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Makefile.in (top_srcdir): Define this for configure to substitute.
+
+Sat Mar 12 10:19:04 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (install-exec): Install relative vir* links, instead
+        of absolute. From Simon.
+
+Wed Feb 23 06:54:49 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (manpages): Pass infodir down. From Ken Yap.
+
 Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
 
         * Version 6.1.
@@ -2007,44 +3793,1611 @@ Sat Feb 17 07:36:50 1990  Karl Berry  (karl at hayley)
 
 	* web2c/Makefile (web2cy.c): do `-if', since one of the commands
 	exits with bad status under Ultrix.
+
+bibtex:
+Mon Feb 21 14:49:52 1994  Karl Berry  (karl@cs.umb.edu)
 
-Release 4.893b:
-* Include patches from Tim to web2c to turn off the verbose output,
-  unless -d is supplied to web2c.
-* Change $(AR) in the MFwindow Makefile to `ar'.
-* Try to get the base file from the program name in Metafont, as well in
-  TeX.  Implication: mf.script and tex.script are no longer supplied,
-  since a link to plain.{base,fmt} named {mf,tex}.{base,fmt} suffices. 
-  `make install' doesn't create these links, since they only need to be
-  done once.
-* Move some stuff from site.h that should never be changed to a new
-  file, defaults.h. Add a new definition, SIGNAL_HANDLER_RETURN_TYPE, to
-  site.h, to get rid of the warnings in {tex,mf}/extra.c.
-* Use a sed script, contributed by eggert@twinsun.com, instead of the
-  awk script, at the beginning of the pipeline.
-* Fix an unsigned comparison problem in pltotf, that made cc produce
-  infinite ligature loops when converting trip.pl.
-* Change threshold in Metafont, and f in tftopl, so broken C compilers
-  (like some versions of pcc) don't get confused.
-* Port vftovp and vptovf. Move pktogf and pktype to fontutil.
-* Allow more than 500 kern pairs in pltotf.
-* Change the first parameter to {mf,extra}/extra.c to *filename from
-  filename[].
-* Use a better hack for the mutually recursive procedures in pltotf et al.,
-  from Tor Lillqvist <tml@hemuli.atk.vtt.fi>.
+        * Makefile.in: srcdir changes from simon.
 
-Release 2.993+1.9 = 4.893a:
-Sebastian contributed the updates to ctex.ch, tftopl.ch, and pltotf.ch. 
-Karl did the cmf.ch update.
+Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
 
-Release 3.0:
-Brings everything up to the new 8-bit versions.
-Almost every file has changed at least somewhat, so I'm not going to
-list all the changes.  Here are some highlights:
-* char is now 0.255 instead of 0..127 in *.defines.
-* `packed' is no longer ignored as part of an identifier (e.g., `packed_trie').
-* new Makefiles to make it easier to do the trip/trap test, and with all
-  the support programs integrated.
-* ctex.ch has a hack to get around trie_op_hash being an array with a
-  negative lower bound.
-* pltotf.ch has a hack to get around mutually recursive routines.
+        * Version 6.1.
+
+Mon Jan 24 07:33:17 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Sun Nov  7 14:26:23 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Remove call to sync.
+
+Fri Nov  5 15:50:55 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (option_index): Declare as int.
+
+Tue Oct 12 14:07:15 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (verbose): Declare as int.
+
+Sun Oct  3 12:41:46 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (cbibtex.ch): Don't chmod 444.
+	(commonh): paths.h is in kpathsea.
+	(commono): kpathsea.a has its own variable now.
+	(*clean): Include standard targets.
+        (program): New variable.
+
+Sun May 23 06:17:53 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (max_bib_files): Increase to 1000.
+
+Sun May  9 10:10:01 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Fri Apr 30 15:07:24 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Add paths.h.
+
+Sat Apr 10 16:41:18 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Don't sync unless /bin/sync exists.
+
+Fri Apr  9 16:07:24 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Thu Mar 25 16:59:08 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (openinout.c): Remove the file before making the link.
+
+Sat Mar 13 11:44:46 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+	* convert: Use cpascal.h instead of pascal.h.
+
+Sun Feb 21 08:27:23 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Fri Feb 19 13:21:01 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* small.sed (max_ent_strs): Restore to 3000.
+
+Tue Feb 16 17:53:06 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Mon Feb 15 12:06:14 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (27): Allow any character as input.
+
+Tue Jan 26 17:09:10 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (banner): Use version_string.
+
+Sun Jan  3 13:28:45 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+Thu Dec 17 07:36:44 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch (198): @d int == `the_int', instead of doing the
+	substitution ourselves.
+
+	* bibtex.ch: Move command-line processing to the existing section
+	that handles it.
+
+	* Makefile.in (libs): $(fileio) => $(fileioo).
+
+Wed Dec 16 18:03:32 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* bibtex.ch: Put in option parsing; make min_crossrefs a variable,
+	instead of a constant.
+
+Sun Dec 13 14:24:35 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sat Dec 12 14:07:37 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+	* small.sed: New file to replace small.diff.
+
+Mon Nov 16 08:09:07 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (cbibtex.ch): New target.  (Copy from bibtex.ch.)
+
+	* bibtex.ch (lex_class): Make RET be white_space.
+
+Sun Nov  1 16:20:05 1992  Kathy Hargreaves  (letters@red.cs.umb.edu)
+
+	* bibtex.ch (max_bib_files): increase to 100.
+
+Thu Sep 24 11:04:03 1992  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile (openinout.c): avoid use of $<.
+
+Fri Sep  4 08:58:58 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 19 08:39:55 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (openinout.c): new target.
+        (clean): remove it.
+
+Wed Aug 12 16:16:28 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (fileioo): use the default compilation rule.
+
+Wed Jul 15 11:52:40 1992  Karl Berry  (karl@hayley)
+
+        * bibtex.ch, small.diff: don't change the value of min_crossrefs.
+
+Sun Jul  5 07:23:23 1992  Karl Berry  (karl@hayley)
+
+        * convert (sed): change `/bin/sed' to `sed'.
+
+        * bibtex.ch: avoid lines >= 80 chars.
+
+Fri Jul  3 11:59:50 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (bibtex.p): depend on cbibtex.ch, not bibtex.ch.
+
+Thu Jul  2 16:04:37 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Thu May 14 19:21:10 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Sat Apr 25 09:18:17 1992  Karl Berry  (karl@hayley)
+
+        * convert: sync after the pipe.
+
+        * Makefile (libs): new var to abbreviate `../libs.a $(LIBS)'.
+        (bibtex): use it.
+
+        * Makefile (distclean): new target.
+
+Thu Apr 23 12:07:32 1992  Karl Berry  (karl@hayley)
+
+        * Makefile: fix clean targets (from Andreas).
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Sun Apr 12 11:46:24 1992  Karl Berry  (karl@hayley)
+
+        * bibtex.ch: use BSTINPUTS to look for the BST file instead of
+          TEXINPUTS.
+
+Sat Apr 11 10:31:57 1992  Karl Berry  (karl@hayley)
+
+        * bibtex.ch (388): remove mutually exclusive test, instead of
+          fixing it.
+
+Fri Apr 10 17:26:30 1992  Karl Berry  (karl@hayley)
+
+        * small.diff: remake this so it works properly.
+
+        * Makefile (mostlyclean): remove cbibtex.ch.
+        (.ch.p): tangle with cbibtex.ch.
+
+Fri Apr  3 09:53:25 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Mon Mar 30 11:20:11 1992  Karl Berry  (karl at hayley)
+
+        * bibtex.ch (388): fix mutually exclusive tests.
+
+Fri Mar 20 16:14:05 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+Fri Jan 24 09:08:31 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+        * bibtex.ch (max_ent_strs): reduce to 10000, as the previous value
+          allocated 2.5MB (even this allocates 1MB).
+
+Sun Jan 12 09:16:54 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (bibtex.o): remove -Dbswap=bswapp.  Why did I do this?
+
+        * Makefile (fileioh): no longer exists.
+
+        * convert (../common): now ../lib.
+
+Sat Jan 11 16:53:05 1992  Karl Berry  (karl at hayley)
+
+        * bibtex.ch (FILENAMESIZE): rename to `PATH_MAX'.
+
+        * Makefile: redo for new configuration.
+
+Tue Jan  7 16:09:55 1992  Karl Berry  (karl at hayley)
+
+        * bibtex.ch (10/main program): exit with bad status if history >
+          warning_message.
+Mon Feb 21 14:50:08 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
+Thu Feb 10 10:00:49 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * dvicopy.ch: Don't print fontname twice when it can't be opened.
+        Increase table sizes.
+
+dviutil:
+Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.1.
+
+Mon Jan 24 07:33:33 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Tue Oct 12 13:35:28 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Simplify kpathsea references.
+
+Sun Oct  3 12:56:06 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): paths.h is in kpathsea.
+	(commono): kpathsea.a has its own variable now.
+	(*clean): Include standard targets.
+	(program): New variable.
+	(install): Use it.
+
+Fri May 21 14:08:08 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* dvitype.ch (open_{dvi,tfm}_file): Don't declare unused variable i.
+
+Sun May  9 10:10:48 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Fri Apr 30 15:07:41 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Add paths.h.
+
+Fri Apr  9 16:07:39 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Sat Mar 13 12:10:31 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+Sun Feb 21 08:27:57 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Tue Feb 16 17:53:43 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Tue Jan 26 16:38:05 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* *.ch (banner): Use version_string.
+
+	* Makefile.in: Merge dvitype from texware.
+        
+Sun Jan  3 13:29:30 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+Sun Dec 13 14:25:12 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sat Dec 12 14:52:23 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+Fri Sep  4 09:00:58 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Thu Jul  2 16:06:12 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Thu May 14 19:21:26 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Fri Apr  3 09:54:34 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Fri Mar 20 16:21:18 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+Fri Jan 24 09:21:22 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+Sun Jan 12 08:49:00 1992  Karl Berry  (karl at hayley)
+
+        * dvicopy.ch: `cwd_test_read_access' is gone.
+
+Following is the ChangeLog from texware, before I merged the contents
+of that directory with the others.  (26 January 1993)
+
+Sat Jan 23 10:23:08 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tftopl.ch: Output error messages to stderr.
+
+Sun Jan  3 13:33:35 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+Fri Dec 18 13:16:08 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* tftopl.c (Set init...): Extend `tfm_name' with ".tfm" if necessary.
+
+Sun Dec 13 14:28:24 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sat Dec 12 15:23:14 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+Fri Sep  4 09:04:31 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 19 08:27:16 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tftopl.o): use default compilation rule.
+
+        * pltotf.ch: rename `index' to `index_var'.
+
+Wed Aug 12 16:34:13 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (pltotf.o): use default compilation rule.
+
+Thu Jul  2 16:09:37 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Thu Jun  4 08:18:28 1992  Karl Berry  (karl@hayley)
+
+        * {tftopl,pltotf}.ch: rename `class' to `class_var' because of AIX
+          brain-damage.
+
+Thu May 14 19:22:33 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Sat Apr 25 09:38:16 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (distclean): new target.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Fri Apr  3 09:56:04 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Sat Mar 21 11:40:36 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (patgen): use patgen2.
+        * patgen2.{web,ch}: new files.
+
+Fri Mar 20 16:29:58 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+Wed Mar 18 09:09:54 1992  Karl Berry  (karl at hayley)
+
+        * dvitype.ch (max_widths): increase to 25000.
+
+Sun Feb  2 07:54:09 1992  Karl Berry  (karl at hayley)
+
+        * tftopl.ch (argument_is): change `option_table' to
+          `long_options', for the new getopt.
+
+Fri Jan 24 09:20:36 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+Sun Jan 12 07:49:54 1992  Karl Berry  (karl at hayley)
+
+        * tftopl.ch: `cwd_test_read_access' is gone.
+
+        * Makefile (vftovp.o, vptovf.o): remove the -Dlink, as it is now
+          in common.h.
+
+Wed Jan  8 07:43:23 1992  Karl Berry  (karl at hayley)
+
+        * tftopl.ch (cast_to_pointer_to_byte): the name seems to be
+          `cast_to_byte_pointer'.
+
+fontutil:
+Mon Feb 21 14:30:23 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
+        * gftodmem.h: Move to ../lib.
+
+Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.1.
+
+Mon Jan 24 07:33:41 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Sat Nov  6 13:46:52 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* vftovp.ch (out_char): Don't offset index into xchr by 31.  From
+	dak@pool.informatik.rwth-aachen.de.
+
+	* tftopl.ch (Usage): Squeeze onto one line.
+
+Fri Nov  5 15:49:15 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* {gftodvi,vftovp,vptovf,pltotf,tftopl}.ch (option_index): Declare
+	as int.
+
+Tue Oct 12 14:07:42 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* gftodvi.ch (verbose): Declare as int.
+	* {pl,tf}to{tf,pl}.ch: Likewise.
+	* {vf,vp}to{vp,vf}.ch: Likewise.
+
+Sun Oct  3 13:00:05 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): paths.h is in kpathsea.
+	(commono): kpathsea.a has its own variable now.
+	(*clean): Include standard targets.
+	(program): New variable.
+	(install): Use it.
+
+Fri May 21 14:09:13 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* gf{type,topk}.ch (open_gf_file): Remove unused var j.
+	* pk{type,togf}.ch (open_pk_file): Likewise.
+
+Fri May 14 14:36:50 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tftopl.ch (index_var): Oops, that's a type, not a variable.
+
+Sun May  9 10:10:51 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Thu May  6 16:04:32 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* pktype.ch (53): Expand out writeln statement to avoid undefined
+	evaluation order problem.
+
+Fri Apr 30 15:07:43 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* vptovf.ch, vftovp.ch, mft.ch (class): Rename to `class_var'.
+
+	* Makefile.in (commonh): Add paths.h.
+
+Fri Apr  9 16:07:42 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Sat Mar 13 11:24:09 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+	* pktogf.ch (37): Do addition of 2 2^31's in two assignments, to
+	avoid compiler rearrangements.
+
+Sun Feb 21 08:27:39 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Tue Feb 16 17:53:48 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Tue Jan 26 16:19:58 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* *.ch (banner): Use version_string.
+
+	* Merge mfware and tftopl/pltotf.
+
+Sun Dec 13 14:26:16 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sun Jan 10 16:07:32 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* gftopk.ch (max_row): Increase to 100,000.  (From Wayne Sullivan.)
+
+Sun Jan  3 13:32:20 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+Sun Dec 13 14:27:45 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sat Dec 12 14:59:21 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+Fri Sep  4 09:01:36 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 12 16:17:10 1992  Karl Berry  (karl@hayley)
+
+        * {vf,vp}to{vp,vf}.ch (index): @d to be `index_type'.
+        * Makefile ({vf,vp}to{vp,vf}.o): use default compilation rule.
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Sun Jun 21 09:20:35 1992  Karl Berry  (karl@io)
+
+        * vftovp.ch: don't compare o to set_char_0, since that's always true.
+
+Thu May 14 19:21:32 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Fri Apr 10 15:13:27 1992  Karl Berry  (karl@hayley)
+
+        * gftopk.ch (81--83): don't add anything to the font comment.
+
+Fri Apr  3 09:54:48 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Thu Mar 26 07:00:04 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (clean): don't remove *.h, as gftodmem.h goes away.
+
+Fri Mar 20 16:23:32 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+Sun Feb  2 08:01:42 1992  Karl Berry  (karl at hayley)
+
+        * vftovp.ch (argument_is): use `long_options', not `option_table'.
+
+        * gftodvi.ch (argument_is): use `long_options' instead of
+          `option_table'.
+
+Fri Jan 24 09:21:12 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+Sun Jan 12 07:49:14 1992  Karl Berry  (karl at hayley)
+
+        * pktype.ch, pktogf.ch, vftovp.ch: `cwd_test_read_access' is gone.
+
+        * Makefile (vftovp.o, vptovf.o): remove the -Dlink, as it is now
+          in common.h.
+
+        * gftopk.ch, gftype.ch: `cwd_test_read_access' is gone.
+
+mf:
+Mon Feb 21 13:24:21 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
+Wed Feb  2 11:01:01 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.1.
+
+Tue Feb  1 18:01:19 1994  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (extrah): Include mfd.h and texmfmem.h here.
+	(commonh): No texmfmem.h here.
+	
+Mon Jan 24 07:34:01 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Mon Jan 17 14:30:09 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (iextra.o): Depend on mfd.h.
+
+Sat Dec 11 13:23:35 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: coerce.fix has been renamed coerce.add.
+
+Sun Dec  5 15:22:43 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (windowlibs): Put x_extra_libs here.
+	(LIBS): Not here.
+
+Sat Dec  4 16:51:57 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (*objs): Depend on $(extrah) and $(commonh).
+	(mf?.o): Depend only on mf?.c.
+
+Thu Nov 11 11:18:06 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (x_{include,lib}_flags): Renamed from x{include,lib}dir.
+
+Sun Nov  7 14:26:10 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Remove call to sync.
+	* Makefile.in (mfd.h): Instead, touch mfd.h after it finishes
+	running, to ensure the timestamp will be later.
+
+Tue Nov  2 16:00:16 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (objs): Add mf10.o.
+
+Tue Oct 12 13:34:00 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Simplify kpathsea references.
+
+Sun Oct  3 13:11:05 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* fixcoerce.h: Rename to coerce.add.
+	* convert: Similarly.
+
+	* Makefile.in (commonh): paths.h is in kpathsea.
+	(commono): kpathsea.a has its own variable now.
+	(*clean): Include standard targets.
+	(program): New variable.
+	(install): Use it.
+
+Tue May 18 14:05:03 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-*): mkdirchain on install dirs.
+
+Sun May  9 10:10:53 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Fri Apr 30 15:07:45 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Add paths.h.
+
+Fri Apr 23 10:41:11 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Remove volatile's for the MIPS compiler, as they no
+	longer have any effect.
+
+Fri Apr 16 08:01:53 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* mf.ch: Doc fix.
+
+Sat Apr 10 16:42:43 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Don't sync unless /bin/sync exists.
+
+Fri Apr  9 16:07:46 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Thu Mar 25 16:58:34 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (openinout.c): Remove the file before making the link.
+
+Sat Mar 13 12:10:46 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+Sun Feb 28 10:51:08 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trap): Don't install mfd.h.bak if it has the
+	trap constants.
+
+Sun Feb 21 08:28:22 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Tue Feb 16 17:54:50 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Sun Feb 14 11:25:51 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (iobjs, vobjs): Don't include $(objs), and depend on
+	mfd.h.
+        (inimf, virmf): Include $(objs.)
+
+Fri Feb 12 07:36:49 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean): Remove iextra.c.
+        (mostlyclean): Remove trap.mf.
+
+Wed Jan 27 07:14:55 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (run-trap): {mf,tex}ware => {dvi,font}util.
+
+Tue Jan 26 11:44:29 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install): Change `exit 0' to true.
+
+	* Makefile.in (iextra.c, inimf.c): New targets.
+        (iextra.o, initex.o): Just do the compilation.
+
+Mon Jan 25 10:38:57 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trap): Remove trapmf and stamp-trap.
+
+	* Makefile.in (CPPFLAGS): Don't need -I. any more.
+
+Sun Jan 24 11:35:16 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (iextra.o): $(LN) to $(extrac), instead of compiling
+	directly.
+
+	* Makefile.in (mf-extra): Rename to vextra.
+
+	* Makefile.in (cmf.ch): Don't use $@.
+
+	* Makefile.in (run-trap): Depend on trapmf.
+
+	* Makefile.in (mostlyclean): Remove trap files explicitly, as we
+	don't want to remove trap.sed.
+
+	* Makefile.in (mfsrcdir): Define with `mf', not `tex'!
+
+Sat Jan 16 08:46:33 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (mfsrcdir): New variable; use it in various rules.
+
+Thu Jan 14 08:04:47 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* small.sed (pool_size): Increase to 36000.  From tim@maths.tcd.ie.
+
+Sun Jan  3 13:16:32 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+	* Makefile.in (check): New target, synonym for run-trap.
+
+Sun Dec 13 09:45:53 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trap, c-sources): New targets.
+
+	* Makefile.in (stamp-trap): Use sed instead of ini_to_trap.
+
+Sat Dec 12 13:15:03 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+	* small.sed: New file.
+
+	* Makefile (stamp-trap): Change dependency to `stamp-convert'.
+
+Mon Nov 16 08:16:51 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (cmf.ch): New target.
+
+Sun Oct 11 11:23:26 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* convert (sed): Don't use /bin/sed, as GNU sed works as of 1.10.
+
+Thu Sep 24 11:03:39 1992  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile (openinout.c): avoid use of $<.
+
+Thu Sep 17 08:41:26 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (install): use filename in install target names.
+
+Fri Sep  4 09:02:57 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 19 08:22:57 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (openinout.c): new target.
+        (clean): remove it.
+
+        * Makefile (CPPFLAGS): we need -I. for mfd.h.
+
+Wed Aug 12 16:28:18 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (iextra.o): include $(CPPFLAGS); remove `-I.'.
+        (inimf.o): likewise.
+        (mf-extra.c): new target.
+        (mf-extra.o); depend on it (and use default compilation rule).
+        (fileioo): use default compilation rule.
+
+Sat Jul 25 17:51:03 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (makeargs): pass CFLAGS, not cflags.
+
+Sun Jul  5 07:28:13 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (clean): remove inimf.c, trap.*, mf-extra.c here.
+
+Thu Jul  2 16:08:00 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Tue Jun 23 10:19:45 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CC): change default to `gcc -posix'.
+
+Thu May 14 19:21:57 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Sat Apr 25 09:36:23 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (distclean): new target.
+
+        * convert: sync after the pipeline.
+
+Thu Apr 23 12:05:51 1992  Karl Berry  (karl@hayley)
+
+        * Makefile: fix clean targets, fix inimf/virmf/etc. to reflect
+          reality.  From Andreas.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Sat Apr 11 09:18:59 1992  Karl Berry  (karl@hayley)
+
+        * mf.ch (pack_file_name, pack_buffered_name): don't fill the
+          name_of_file array completely.
+
+Fri Apr 10 17:25:07 1992  Karl Berry  (karl@hayley)
+
+        * mf.ch: new file for configure to make cmf.ch from.
+        * Makefile (mostlyclean): remove cmf.ch.
+
+Fri Apr  3 09:55:30 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Mon Mar 30 07:57:08 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (clean, mostlyclean, windowlib, trapmf): use $(MAKE),
+          not `make'.
+
+Sun Mar 29 17:06:04 1992  Karl Berry  (karl at hayley)
+
+        * ini_to_trap: change some more constants.
+
+        * mf.web: new verion from dek.
+        * cmf.ch: update version number.
+
+Sun Mar 22 06:33:42 1992  Karl Berry  (karl at fosse)
+
+        * Makefile (makeargs): don't bother to pass variables for linking.
+
+Sat Mar 21 10:40:57 1992  Karl Berry  (karl at hayley)
+
+        * cmf.ch (38.789): check for the extension being irrelevant.
+
+Fri Mar 20 15:30:00 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+        * cmf.ch (4.51): set name_length to strlen pool_name.
+
+Fri Jan 24 09:21:17 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+Wed Jan 15 12:59:29 1992  Karl Berry  (karl at hayley)
+
+        * cmf.ch (input): same changes as in TeX.
+
+Sun Jan 12 09:18:03 1992  Karl Berry  (karl at hayley)
+
+        * cmf.ch (memory structure): include "texmfmem.h", omitting the
+          ../common.
+
+        * Makefile (fileioh): no longer exists.
+
+Tue Jan  7 15:52:24 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (opening input files): do `name_length + 5 <
+          file_name_size', not `name_length < file_name_size + 5'.  From
+          tony@marcam.dsir.govt.nz.
+
+mp:
+Wed Apr 12 18:50:13 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* mp.ch: complete rewrite, merging material from ../mf/mf.ch
+	and the original mp.ch.
+
+Tue Apr 11 17:53:15 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* Makefile: discarded, will be regenerated from Makefile.in 
+	during configure run.
+
+	* Makefile.in: complete rewrite, based on ../mf/Makefile.in.
+
+	* convert: replaced by modified version of ../mf/convert script.  
+	Removed execute permission, using sh -c in the Makefile instead.
+
+	* mp.def: discarded, using ../lib/texmf.defines instead.
+
+	* mp.h: discarded, using the web2c header files from ../lib.
+	(Actually moved to MPtime subdirectory for use in timing test.)
+
+	* mpext.c: discarded, using routines from ../lib/lib.a instead.
+	Moved code for callmakempx() to file ../lib/openinout.c.
+
+	* mpmath.c: preserved without changes. Ccomments refererring to 
+	site.h are no longer applicable when using ../lib/c-auto.h instead.
+
+	* pathexp.c: moved to ../mpware as only DMP uses the pathexpand() 
+	function. MetaPost and DVItoMP use Kpathsea routines instead.
+
+	* fixcoerce.h: discarded, using ../mf/coerce.add instead.
+
+	* fix.lex: discarded, apparently no longer needed in web2c-6.1.
+
+	* ini_to_trap: discarded, using sed script trap.sed instead of
+        shell script that invokes ed. Also added sed script small.sed.
+
+	* trapdir: renamed to MPtrap, for consistency with ../mf/MFtrap.
+
+	* trapmp: replaced by modified version of ../mp/trapenv script.
+	Removed execute permission, using sh -c in the Makefile instead.
+	Also rename etrapmp target to trapmp in the Makefile.
+
+Mon Apr 11 18:32:00 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
+
+	* created subdirectory MPtime for timing test files not needed
+	for production version of MetaPost. 
+
+	* mp.h, test_mpd.h, mathtest.c, time.c, pmath.c: moved to MPtime.
+
+	* mpmath.c: copied to MPtime and renamed to cmath.c for use in 
+	timing test. Changed #include "mpd.h" to include "test_mpd.h".
+
+	* site.h, defaults.h: copied from top-level directory to MPtime.
+	Renamed site.h to site.h.orig and copied to site.h.{system-type}.
+
+tex:
+Thu Feb 24 06:02:39 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (tex.p): Use a tab, not eight spaces, in the
+        commented-out mltex lines. From Eric.Picheral@univ-rennes1.fr.
+
+Mon Feb 21 13:25:52 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
+Wed Feb  2 11:01:18 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.1.
+
+Tue Feb  1 13:26:25 1994  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (extrah): Include texd.h and texmfmem.h here.
+	(commonh): No texmfmem.h here.
+	
+        * Makefile.in (tex.p): Add commented out additions for MLTeX.
+
+Mon Jan 24 07:34:13 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Mon Jan 17 14:29:27 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (iextra.o): Depend on texd.h.
+
+Wed Dec 15 06:29:41 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (formats): Rename to fmts.
+
+Tue Dec  7 13:45:05 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch: Invoke MakeTeXTeX for \openin.
+	From carlisle@cs.man.ac.uk.
+
+	* patgen.ch: Doc fix.
+
+Sat Dec  4 16:28:27 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (*objs): Depend on $(extrah) and $(commonh).
+	(tex?.o): Depend only on tex?.c.
+
+Fri Dec  3 08:58:50 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* patgen.ch (filnam): Add a trailing space to filnam, and declare
+	it to be one character larger. From jmr.
+
+Sun Nov 14 11:58:13 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install*): texfontdir => fontdir.
+
+Sun Nov  7 14:25:54 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Remove call to sync.
+	* Makefile.in (mfd.h): Instead, touch mfd.h after it finishes
+	running, to ensure the timestamp will be later.
+
+Tue Nov  2 13:33:41 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch (banner): At version 3.1415 now.
+	* tex.web: Update from Knuth.
+
+	* Makefile.in (objs): Add tex9.o and rename $(tex9_o) to extra_tex_obj.
+
+	* openinout.c (make_tex_file): Return a boolean, not a string.
+
+Tue Oct 12 13:33:02 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Simplify kpathsea references.
+
+Sun Oct  3 13:18:18 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* fixcoerce.h: Rename to coerce.add.
+	* convert: Similarly.
+
+	* Makefile.in (commonh): paths.h is in kpathsea.
+	(commono): kpathsea.a has its own variable now.
+	(*clean): Include standard targets.
+	(program): New variable.
+	(install): Use it.
+
+Tue Jun 29 16:22:54 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Doc fix.
+
+Mon May 31 08:19:11 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* trip.sed (negtrieopsize): Change to -500.
+
+Tue May 18 14:04:07 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-*): mkdirchain on install dirs.
+
+Sun May  9 10:10:54 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Tue May  4 10:24:29 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (extraclean): Do not depend on distclean; remove
+	CONTENTS.tex and tex.tex.
+
+Fri Apr 30 15:08:01 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (patgen2): Rename to patgen throughout.
+
+	* Makefile.in (commonh): Add paths.h.
+
+Fri Apr 16 07:27:03 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch: Doc fix.
+
+Sat Apr 10 16:42:35 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* convert: Don't sync unless /bin/sync exists.
+
+Fri Apr  9 16:07:52 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Sat Mar 13 12:10:53 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+Fri Mar 12 15:48:57 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (tex9.o): Depend on tex9.c, not tex8.c!
+
+Sun Feb 28 10:47:06 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trip): Don't reinstall texd.h if it has the
+	trip constants.
+
+	* Makefile.in (clean-trip): Remove triptex, not tripmf.
+
+Sun Feb 21 08:28:26 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Tue Feb 16 17:56:03 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Mon Feb 15 10:19:12 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch (563): Call make_tex_tfm if the first open fails.
+
+	* tex.ch: Only call a_open_in without the .tex if we actually
+	changed anything; call make_tex_tex if everything before fails,
+	and if that succeeds, call a_open_in again.
+
+	* tex.ch: Comment out term_offset thing.
+
+Sun Feb 14 11:24:37 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (iobjs, vobjs): Don't include $(objs), and depend on
+	texd.h.
+        (initex, virtex): Include $(objs).
+
+Sun Feb  7 10:22:45 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install): Fix logic for overwriting texfonts.map.
+
+	* Makefile.in (.p.c, .ch.p): New suffix rules for patgen.
+
+Sat Jan 30 10:31:01 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install): Correct texfonts.map installation.
+
+Wed Jan 27 07:14:28 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (run-trip): {mf,tex}ware => {dvi,font}util.
+
+Tue Jan 26 11:44:45 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* *.ch (banner): Use version_string.
+
+	* Makefile.in: Merge in patgen.
+
+	* Makefile.in (install): Change `exit 0' to true.
+
+	* Makefile.in (install): Install texfonts.map.
+
+	* Makefile.in (iextra.c, initex.c): New targets.
+        (iextra.o, initex.o): Just do the compilation.
+
+Mon Jan 25 10:39:13 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trip): Remove tripmf and stamp-trip.
+
+	* Makefile.in (CPPFLAGS): Don't need -I now.
+
+Sun Jan 24 11:34:27 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (tex-extra): Rename to vextra.
+
+	* Makefile.in (iextra.o): $(LN) to $(extrac), instead of compiling
+	it directly.
+
+	* Makefile.in (ctex.ch): Don't use $@.
+
+	* Makefile.in (mostlyclean): Remove trip files explicitly, to
+	avoid removing trip.sed.
+
+	* Makefile.in (stamp-trip): Depend on trip.sed in $(texsrcdir).
+
+Sat Jan 16 09:00:49 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch (trie_size): Increase to 30,000 for
+	English/German/Portuguese.
+
+Thu Jan 14 08:02:01 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* small.sed (font_mem_size, hash_size, pool_size, max_strings,
+	string_vacancies): Increase the small sizes somewhat.  The result
+	still runs on a 3b1, so I suspect it will run on anything.  From
+	andy@scp.caltech.edu.
+
+Sun Jan  3 13:14:39 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+	* Makefile.in (DIFF, DIFFFLAGS): New variables.
+        (run-trip): Use them (in appropriate places) instead of `diff', so
+        spiff can be used if it's available (and desired).
+        (check): New target, synonym for run-trip.
+
+Sun Dec 13 14:13:02 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (clean-trip, c-sources): New targets.
+
+Sat Dec 12 14:08:07 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+	* small.sed: New file.
+
+Mon Nov 16 08:16:33 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (ctex.ch): New target.
+
+Sat Nov 14 18:50:20 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (run-trip): Run tftopl on the trip.tfm we create, and
+	diff the result with the original PL file.
+
+Tue Oct 27 08:15:12 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (objs): Use $(tex9_o), which is empty by default.
+
+	* tex.ch (mem_top): Improve comment.
+
+Sun Oct 18 13:55:54 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* tex.ch (trie_op_size): Define as 751, since that's prime.
+
+	* tex.ch (neg_trie_op_size): Improve comments, and use it in
+	[43.944] where useful.
+
+Thu Sep 24 11:03:02 1992  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile (openinout.c): avoid use of $<.
+
+Thu Sep 17 08:42:01 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (install): use filename in install target names.
+
+Fri Sep  4 09:04:06 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 19 08:22:27 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (openinout.c): new target.
+        (clean): remove it.
+
+        * Makefile (CPPFLAGS): we need -I. for texd.h.
+
+Wed Aug 12 16:28:18 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (iextra.o): include $(CPPFLAGS); remove `-I.'.
+        (initex.o): likewise.
+        (tex-extra.c): new target.
+        (tex-extra.o); depend on it (and use default compilation rule).
+        (fileioo): use default compilation rule.
+
+Sat Jul 25 17:51:18 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (amstex.fmt): don't bother with \dump on the command
+          line, since amstex.ini includes it.
+
+        * Makefile (makeargs): pass CFLAGS, not cflags.
+
+Sun Jul  5 07:28:40 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (clean): remove trip.*, initex.c, tex-extra.c here.
+
+Fri Jul  3 11:50:49 1992  Karl Berry  (karl@hayley)
+
+        * small.diff (hash_size, hash_prime): increase to 3500 and 2981
+          for LaTeX.  (From bernd.)
+
+Thu Jul  2 16:09:45 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Thu May 21 09:22:33 1992  Karl Berry  (karl@hayley)
+
+        * tex.ch: warn that increasing max_quarterword makes texmfmem.h
+          break.
+
+Thu May 14 19:22:23 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Thu May  7 07:29:59 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tex9.[co]): new targets (not used in our dist).
+        
+Sat Apr 25 08:56:54 1992  Karl Berry  (karl@hayley)
+
+        * convert: sync after the pipeline.
+
+        * Makefile (distclean): new target.
+
+        * Makefile (amstex.fmt): don't use &./tex.
+        (amslatex.fmt): be more explicit about AMSLaTeX's horrible
+        installation scheme.
+
+Thu Apr 23 12:04:49 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (initex, virtex): changes from Andreas to reflect
+          reality; fix clean targets.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Sat Apr 11 09:19:41 1992  Karl Berry  (karl@hayley)
+
+        * tex.ch (pack_file_name, pack_buffered_name): don't fill the
+          name_of_file array completely.
+
+Fri Apr 10 17:03:41 1992  Karl Berry  (karl@hayley)
+
+        * tex.ch: new file for configure to make ctex.ch from.
+        * Makefile (mostlyclean): remove ctex.ch.
+
+        * Makefile (default): make it `all'.
+
+Fri Apr  3 09:55:55 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Mon Mar 30 07:59:29 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (triptex): use $(MAKE), not make.
+
+Sun Mar 29 15:44:30 1992  Karl Berry  (karl at hayley)
+
+        * ini_to_trip: change additional constants.
+
+        * tex.web: new version from dek.
+        * tex.ch: update version number.
+
+Sat Mar 21 11:09:06 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (pool_name): define to be `TEX_POOL_NAME', instead of
+          hardwiring `tex.pool'.
+
+Fri Mar 20 15:29:22 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (mostlyclean): new name for `clean'.
+        (clean): what `realclean' used to be.
+        (realclean): nothing to do anymore.
+        (install): install the program.
+
+        * ctex.ch (4.51): set name_length to the strlen of pool_name.
+
+Sun Mar  1 07:09:28 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (font_mem_size): increase to 100,000.
+
+Fri Jan 24 07:41:25 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+        * ctex.ch (\input, \openin): don't try .tex if the filename is
+          already the maximal length; otherwise foo.aux gets found
+          as foo.aux.tex under system V, when foo is 14 characters long.
+
+Tue Jan 21 17:20:17 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (pool_size): increase to 124,000.
+        (string_vacancies): to 100,000.
+
+Wed Jan 15 10:12:30 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (\input, \openin): if cur_ext=".tex", don't append .tex,
+          and reset it before trying without suffix.
+
+        * ctex.ch (max_strings): increase to 15000.
+
+Tue Jan 14 08:52:24 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (\input, \openin): try to find foo.tex before foo.
+          (From bent@ragged.dartmouth.edu.)
+
+        * Makefile (*.fmt): do not remove the \font lines from the output
+          via grep, as then prompts do not appear.
+
+Sun Jan 12 09:17:40 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (memory structure): include "texmfmem.h", omitting the
+          ../common.
+
+        * Makefile (fileioh): no longer exists.
+
+Tue Jan  7 15:51:28 1992  Karl Berry  (karl at hayley)
+
+        * ctex.ch (opening input files): do `name_length + 5 <
+          file_name_size', not `name_length < file_name_size + 5'.  From
+          tony@marcam.dsir.govt.nz.
+
+web:
+Mon Feb 21 14:51:24 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
+Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.1.
+
+Mon Jan 24 07:27:36 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 6.0.
+
+Sun Jan 23 16:56:45 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in (mostlyclean): Remove tangleboot.
+
+Tue Nov 30 16:19:06 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (tangle.web): Exit 1 if we get here.
+
+Sun Nov  7 14:52:11 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (tangle.web): New target, telling people to retrieve
+	web.tar.gz.
+
+Tue Oct 12 13:32:07 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Simplify kpathsea references.
+
+Sun May  9 10:10:56 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Remove $(srcdir) for paths.h.
+	(commono): Add kpathsea library.
+
+Fri Apr 30 15:08:11 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Add paths.h.
+
+Fri Apr  9 16:07:56 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (commonh): Define as config.h.
+
+Sat Mar 13 12:10:56 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (CPPFLAGS): Add @DEFS@, for -DHAVE_CONFIG_H.
+
+Sun Feb 21 08:28:31 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 5.851d.
+
+Tue Feb 16 17:58:10 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (install-exec, install-data): New targets.
+
+Fri Feb 12 07:37:51 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (mostlyclean): Remove pooltype.
+
+Sun Feb  7 20:10:46 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (tangleboot.c): Use $(MAKE), not make.
+
+Tue Jan 26 16:36:45 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* *.ch (banner): Use version_string.
+
+	* Makefile.in: Merge pooltype from texware.
+
+Sun Jan  3 13:34:00 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (distclean): Remove Makefile.
+
+Sun Dec 13 14:28:37 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in (c-sources): New target.
+
+Sat Dec 12 14:19:16 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile.in: Rewrite from Makefile.
+
+Fri Sep  4 09:05:12 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (extraclean): new target.
+        (distclean): don't remove backup files etc. here.
+
+Wed Aug 19 08:35:14 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tangleboot): use tangleboot.o as arg, not tangleboot.c.
+
+Sat Jul 25 17:52:34 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tangleboot): depend on tangleboot.o.
+        (tangleboot.o): new target.
+
+Thu Jul  2 16:10:15 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (CPPFLAGS): new variable
+        (.c.o): use it.
+        (cflags): change to CFLAGS.
+
+Tue Jun 23 10:14:23 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tangleboot.c): make all in lib and web2c before trying
+          to `convert'.
+
+Sun Jun 21 16:42:00 1992  Karl Berry  (karl@io)
+
+        * Makefile (realclean): don't remove tangleboot after all.
+
+Thu May 14 19:22:40 1992  Karl Berry  (karl@claude.cs.umb.edu)
+
+        * Version 5.851c.
+
+Wed May 13 10:52:36 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (clean): can't remove *.[pch], since tangleboot goes away.
+
+Sat Apr 25 09:40:18 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (libs): new var.
+        (distclean): new target.
+
+Thu Apr 16 13:49:36 1992  Karl Berry  (karl@ra.cs.umb.edu)
+
+        * Version 5.851b.
+
+Wed Apr 15 03:59:25 1992  Karl Berry  (karl@fosse)
+
+        * Makefile (mostlyclean): remove tangleboot.
+
+Tue Apr 14 17:25:29 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tangleboot.[ch]): new targets.
+        (tangleboot): depend on tangleboot.h, not tangle.h.
+        (clean): remove tangle.h.
+
+Mon Apr 13 09:10:07 1992  Karl Berry  (karl@hayley)
+
+        * Makefile (tangle.p): depend on tangleboot; remove the loop.
+        (tangleboot): new target.
+
+Fri Apr  3 09:56:16 1992  Karl Berry  (karl at hayley)
+
+        * Version 5.851a.
+
+Thu Apr  2 13:48:21 1992  Karl Berry  (karl at ds1.cs.umb.edu)
+
+        * Makefile (clean): don't remove *.c; we need tangleboot.
+
+Sun Mar 29 15:24:51 1992  Karl Berry  (karl at hayley)
+
+        * {tangle,weave}.web: new versions from dek.
+        * {tangle,weave}.ch: update version numbers.
+
+Fri Jan 24 09:20:20 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (cflags): don't include -I../config.
+
+Tue Jan  7 16:29:30 1992  Karl Berry  (karl at hayley)
+
+        * Makefile (tangle.p): use quotes instead of \'s, for ptx.  (From
+          maddog@sequent.com.)
