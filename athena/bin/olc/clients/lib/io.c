@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.18 1991-09-10 11:18:06 lwvanels Exp $
+ *	$Id: io.c,v 1.19 1991-10-30 16:15:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.18 1991-09-10 11:18:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.19 1991-10-30 16:15:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -302,13 +302,19 @@ open_connection_to_daemon(request, fd)
       if (port_env != NULL)
 	  sin.sin_port = htons (atoi (port_env));
       else {
-          service = getservbyname(OLC_SERVICE, OLC_PROTOCOL);
-          if (service == (struct servent *)NULL) {
-	     close(*fd);
-	     return(ERROR_SLOC);
+#ifdef HESIOD
+          service = hes_getservbyname(OLC_SERVICE, OLC_PROTOCOL);
+#endif
+	  /* Fall back to /etc/services if no hesiod information avail. */
+	  if (service == (struct servent *) NULL) {
+	    if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
+		(struct servent *) NULL) {
+	      close(*fd);
+	      return(ERROR_SLOC);
+	    }
 	  }
-          sin.sin_port = service->s_port;
-      }
+	  sin.sin_port = service->s_port;
+	}
       sptr = &sin;
     }
 
@@ -337,9 +343,15 @@ open_connection_to_nl_daemon(fd)
       return(ERROR);
     }
 
-    if ((service = getservbyname("ols","tcp")) == NULL) {
-      fprintf(stderr,"ols/tcp unknown service\n");
-      return(ERROR);
+#ifdef HESIOD
+    service = getservbyname("ols","tcp");
+#endif    
+    /* Fall back to /etc/services if no hesiod- */
+    if (service == NULL) {
+      if ((service = getservbyname("ols","tcp")) == NULL) {
+	fprintf(stderr,"ols/tcp unknown service\n");
+	return(ERROR);
+      }
     }
 
     bzero(&sin,sizeof(sin));
