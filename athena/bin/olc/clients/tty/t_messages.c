@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *	$Id: t_messages.c,v 1.14 1990-11-14 14:45:32 lwvanels Exp $
+ *	$Id: t_messages.c,v 1.15 1990-11-16 07:57:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.14 1990-11-14 14:45:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.15 1990-11-16 07:57:11 lwvanels Exp $";
 #endif
 #endif
 
@@ -110,8 +110,7 @@ t_replay(Request, queues, topics, users, stati, file, display)
 	{
 	  (void) strcpy(Request->target.username, l->user.username);
 	  Request->target.instance = l->user.instance;
-	  (void) t_replay(Request, (char *) NULL, (char *) NULL,
-			  (char *) NULL, 0, file, display);
+	  (void) t_replay(Request, "", "", "", 0, file, display);
 	  if (--n)
 	    {
 	      printf("========  Hit 'q' to quit, any other key ");
