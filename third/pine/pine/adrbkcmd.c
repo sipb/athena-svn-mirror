@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp $";
+static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.3 2003-05-01 01:12:31 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -3040,7 +3040,7 @@ ab_del_abook(cur_line, command_line, err)
 		  del_stream = same_stream(origfile, ps_global->inbox_stream);
 		
 		ps_global->c_client_error[0] = '\0';
-		if(!mail_delete(del_stream, origfile) &&
+		if(!pine_mail_delete(del_stream, origfile) &&
 		   ps_global->c_client_error[0] != '\0'){
 		    dprint(1, (debugfile, "%s: %s\n", origfile,
 			   ps_global->c_client_error));
@@ -6335,7 +6335,7 @@ query_server(ps, selecting, exit, who, error)
 	    so_puts(msgso,
 "\n Fill in some of the fields above to create a query.");
 	    so_puts(msgso,
-"\n The match will be for the exact string unless you include wildcards (*'s).");
+"\n The match will be for the exact string unless you include wildcards (*).");
 	    so_puts(msgso,
 "\n All filled-in fields must match in order to be counted as a match.");
 	    so_puts(msgso,

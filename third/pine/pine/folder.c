@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: folder.c,v 1.1.1.2 2003-02-12 08:02:01 ghudson Exp $";
+static char rcsid[] = "$Id: folder.c,v 1.1.1.3 2003-05-01 01:13:05 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: folder.c,v 1.1.1.2 2003-02-12 08:02:01 ghudson Exp $
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -175,6 +175,7 @@ typedef struct _build_folder_list_data {
     long	 mask;			/* bitmap of responses to ignore    */
     LISTARGS_S	 args;
     LISTRES_S	 response;
+    int          is_move_folder;
     void	*list;
 } BFL_DATA_S;
 
@@ -183,6 +184,7 @@ typedef struct _existdata {
     LISTARGS_S	 args;
     LISTRES_S	 response;
     char       **fullname;
+    int          is_move_folder;
 } EXISTDATA_S;
 
 
@@ -260,7 +262,6 @@ int	   folder_insert_sorted PROTO((int, int, int, FOLDER_S *, void *,
 void       folder_insert_index PROTO((FOLDER_S *, int, void *));
 int        swap_incoming_folders PROTO((int, int, void *));
 int        folder_total PROTO((void *));
-int	   add_new_folder PROTO((CONTEXT_S *, int, char *, size_t, MAILSTREAM *));
 int	   shuffle_incoming_folders PROTO((CONTEXT_S *, int));
 int	   group_subscription PROTO((char *, size_t, CONTEXT_S *));
 STRLIST_S *folders_for_subscribe PROTO((struct pine *, CONTEXT_S *, char *));
@@ -299,10 +300,14 @@ int	   folder_list_select_popup PROTO((SCROLL_S *, int));
 void	   folder_popup_config PROTO((FSTATE_S *, struct key_menu *,MPopup *));
 #endif
 int	   mail_list_in_collection PROTO((char **, char *, char *, char *));
-void	   mail_list_filter PROTO((MAILSTREAM *, char *, int, long, void *));
-void	   mail_lsub_filter PROTO((MAILSTREAM *, char *, int, long, void *));
-void	   mail_list_exists PROTO((MAILSTREAM *, char *, int, long, void *));
-void	   mail_list_response PROTO((MAILSTREAM *, char *, int, long, void *));
+void	   mail_list_filter PROTO((MAILSTREAM *, char *, int, long, void *,
+				   unsigned));
+void	   mail_lsub_filter PROTO((MAILSTREAM *, char *, int, long, void *,
+				   unsigned));
+void	   mail_list_exists PROTO((MAILSTREAM *, char *, int, long, void *,
+				   unsigned));
+void	   mail_list_response PROTO((MAILSTREAM *, char *, int, long, void *,
+				     unsigned));
 int	   folder_delimiter PROTO((char *));
 int	   folder_select_props PROTO((struct pine *, CONTEXT_S *, int));
 int	   folder_select_count PROTO((long *, int *));
@@ -314,9 +319,10 @@ int	   scan_get_pattern PROTO((char *, char *, int));
 int	   scan_scan_folder PROTO((MAILSTREAM *, CONTEXT_S *,
 				   FOLDER_S *, char *));
 int	   foreach_do_stat PROTO((FOLDER_S *, void *));
-int        pine_mail_list PROTO((MAILSTREAM *, char *, char *));
+int        pine_mail_list PROTO((MAILSTREAM *, char *, char *, unsigned *));
 void	   mail_list_internal PROTO((MAILSTREAM *, char *, char *));
 int        percent_formatted PROTO((void));
+char      *end_bracket_no_nest PROTO((char *));
 #ifdef	DEBUG
 void	   dump_contexts PROTO((FILE *fp));
 #endif
@@ -1242,9 +1248,11 @@ context_edit_screen(ps, func, def_nick, def_serv, def_path, def_view)
     if(msgso = so_get(PicoText, NULL, EDIT_ACCESS)){
 	pbf.msgtext = (void *) so_text(msgso);
 	so_puts(msgso,
-       "\n   Fill in the fields above to create a new Folder Collection.");
+       "\n   Fill in the fields above to add a Folder Collection to your");
 	so_puts(msgso,
-       "\n   Use \"^G\" command to get help specific help for each item, and");
+       "\n   COLLECTION LIST screen.");
+	so_puts(msgso,
+       "\n   Use the \"^G\" command to get help specific to each item, and");
 	so_puts(msgso,
        "\n   use \"^X\" when finished.");
     }
@@ -2310,18 +2318,17 @@ folder_processor(cmd, msgmap, sparms)
 	    CONTEXT_S *cntxt = (sparms->text.handles)
 				 ? sparms->text.handles->h.f.context
 				 : FPROC(sparms)->fs->context;
-	    int        index = (sparms->text.handles)
-				 ? sparms->text.handles->h.f.index
-				 : -1;
-	    char       new_file[MAXFOLDER+1];
+	    char       new_file[2*MAXFOLDER+10];
 	    int	       r;
 
 	    if(NEWS_TEST(cntxt))
 	      r = group_subscription(new_file, sizeof(new_file), cntxt);
 	    else
-	      r = add_new_folder(cntxt, index, new_file, sizeof(new_file),
+	      r = add_new_folder(cntxt, Main, V_INCOMING_FOLDERS, new_file,
+				 sizeof(new_file),
 				 FPROC(sparms)->fs->cache_streamp
-				 ? *FPROC(sparms)->fs->cache_streamp : NULL);
+				  ? *FPROC(sparms)->fs->cache_streamp : NULL,
+				 NULL);
 
 	    if(r && (cntxt->use & CNTXT_INCMNG || context_isambig(new_file))){
 		rv = 1;			/* rebuild display! */
@@ -3564,32 +3571,73 @@ mail_cmd_stream(context, closeit)
     return(pine_mail_open(NULL, tmp, OP_HALFOPEN | OP_SILENT));
 }
 
+/*
+ *  Find the next '}' that isn't part of a "${"
+ *  that appear for environment variables.  We need
+ *  this for configuration, because we want to edit
+ *  the original pinerc entry, and not the digested
+ *  value.
+ */
+char *
+end_bracket_no_nest(str)
+    char *str;
+{
+    char *p;
 
+    for(p = str; *p; p++){
+	if(*p == '$' && *(p+1) == '{'){
+	    while(*p && *p != '}')
+	      p++;
+	    if(!*p)
+	      return NULL;
+	}
+	else if(*p == '}')
+	  return p;
+    }
+    /* if we get here then there was no trailing '}' */
+    return NULL;
+}
 
 /*----------------------------------------------------------------------
       Create a new folder
 
-   Args: add_folder  -- Folder name added
-         folder_list -- The current list of folders
+   Args: context    -- context we're adding in
+	 which      -- which config file to operate on
+	 varnum     -- which varnum to operate on
+         add_folder -- return new folder here
+	 len        -- length of add_folder
+	 possible_stream -- possible stream for re-use
+	 def        -- default value to start out with for add_folder
+			(for now, only for inbox-path editing)
 
- Result: returns the name of the folder created
-
+ Result: returns nonzero on successful add, 0 otherwise
   ----*/
 int
-add_new_folder(context, index, add_folder, len, possible_stream)
+add_new_folder(context, which, varnum, add_folder, len, possible_stream, def)
     CONTEXT_S  *context;
-    int         index;
+    EditWhich   which;
+    int         varnum;
     char       *add_folder;
     size_t      len;
     MAILSTREAM *possible_stream;
+    char       *def;
 {
     char	 tmp[max(MAXFOLDER,MAX_SCREEN_COLS)+1], nickname[32], 
-		*p = NULL, *return_val = NULL;
+		*p = NULL, *return_val = NULL, buf[MAILTMPLEN],
+		buf2[MAILTMPLEN], def_in_prompt[MAILTMPLEN];
     HelpType     help;
-    int          rc, offset, exists, cnt = 0, isdir = 0;
+    int          i, rc, offset, exists, cnt = 0, isdir = 0;
+    int          maildrop = 0, flags = 0, inbox = 0;
+    char        *maildropfolder = NULL, *maildroplongname = NULL;
+    char        *default_mail_drop_host = NULL,
+		*default_mail_drop_folder = NULL,
+		*default_dstn_host = NULL,
+		*default_dstn_folder = NULL,
+		*copydef = NULL,
+	        *dstnmbox = NULL;
+    char         mdmbox[MAILTMPLEN];
     MAILSTREAM  *create_stream = NULL;
     FOLDER_S    *f;
-    EditWhich    ew;
     static ESCKEY_S add_key[] = {{ctrl('X'),12,"^X", NULL},
 				 {-1, 0, NULL, NULL}};
 
@@ -3597,20 +3645,18 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 
     add_folder[0] = '\0';
     nickname[0]   = '\0';
-    if(context->use & CNTXT_INCMNG){
+    inbox = (varnum == V_INBOX_PATH);
+
+    if(inbox || context->use & CNTXT_INCMNG){
 	char inbox_host[MAXPATH], *beg, *end = NULL;
-	ESCKEY_S *special_key;
 	int readonly = 0;
 	PINERC_S *prc = NULL;
-	static ESCKEY_S host_key[] = {{ctrl('X'),12,"^X","Use Inbox Host"},
-				      {-1, 0, NULL, NULL}};
-
-	ew = Main;
+	static ESCKEY_S host_key[4];
 
 	if(ps_global->restricted)
 	  readonly = 1;
 	else{
-	    switch(ew){
+	    switch(which){
 	      case Main:
 		prc = ps_global->prc;
 		break;
@@ -3631,34 +3677,200 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 
 	if(readonly){
 	    q_status_message(SM_ORDER,3,5,
-		"Addition cancelled: config file not editable");
+		"Cancelled: config file not editable");
 	    return(FALSE);
 	}
 
 	/*
-	 * Prompt for the full pathname (with possible "news" subcommand),
-	 * then fall thru to prompt for foldername, then prompt for 
-	 * nick name.
-	 * NOTE : Don't put it in a "[<default]" prompt since we 
-	 * need a way to chose a local folder!
+	 * When adding an Incoming folder we can't supply the inbox host
+	 * as a default, because then the user has no way to type just
+	 * a plain RETURN to mean "no host, I want a local folder".
+	 * So we supply it as a ^X command instead. We could supply it
+	 * as the initial value of the string...
+	 *
+	 * When editing inbox-path we will supply the default value as an
+	 * initial value of the string which can be edited. They can edit it
+	 * or erase it entirely to mean no host.
 	 */
+
+	if(inbox && def){
+
+	    copydef = cpystr(def);
+	    (void) removing_double_quotes(copydef);
+
+	    if(check_for_move_mbox(copydef, mdmbox, sizeof(mdmbox), &dstnmbox)){
+
+		/*
+		 * Current inbox is using a mail drop. Get the default
+		 * host value for the maildrop.
+		 */
+
+		if(mdmbox
+		   && (mdmbox[0] == '{'
+		       || (mdmbox[0] == '*' && mdmbox[1] == '{'))
+		   && (end = end_bracket_no_nest(mdmbox+1))
+		   && end-mdmbox < len){
+		    *end = '\0';
+		    if(mdmbox[0] == '{')
+		      default_mail_drop_host = cpystr(mdmbox+1);
+		    else
+		      default_mail_drop_host = cpystr(mdmbox+2);
+		}
+
+		if(!default_mail_drop_host)
+		  default_mail_drop_folder = cpystr(mdmbox);
+		else if(end && *(end+1))
+		  default_mail_drop_folder = cpystr(end+1);
+
+		end = NULL;
+		if(dstnmbox
+		   && (*dstnmbox == '{'
+		       || (*dstnmbox == '*' && *++dstnmbox == '{'))
+		   && (end = end_bracket_no_nest(dstnmbox+1))
+		   && end-dstnmbox < len){
+		    *end = '\0';
+		    default_dstn_host = cpystr(dstnmbox+1);
+		}
+
+		if(!default_dstn_host)
+		  default_dstn_folder = cpystr(dstnmbox);
+		else if(end && *(end+1))
+		  default_dstn_folder = cpystr(end+1);
+
+		maildrop++;
+	    }
+	    else{
+		end = NULL;
+		dstnmbox = copydef;
+		if(dstnmbox
+		   && (*dstnmbox == '{'
+		       || (*dstnmbox == '*' && *++dstnmbox == '{'))
+		   && (end = end_bracket_no_nest(dstnmbox+1))
+		   && end-dstnmbox < len){
+		    *end = '\0';
+		    default_dstn_host = cpystr(dstnmbox+1);
+		}
+
+		if(!default_dstn_host)
+		  default_dstn_folder = cpystr(dstnmbox);
+		else if(end && *(end+1))
+		  default_dstn_folder = cpystr(end+1);
+	    }
+
+	    if(copydef)
+	      fs_give((void **) &copydef);
+	}
+
+get_folder_name:
+
+	i = 0;
+	host_key[i].ch      = 0;
+	host_key[i].rval    = 0;
+	host_key[i].name    = "";
+	host_key[i++].label = "";
+
 	inbox_host[0] = '\0';
-	if((beg = ps_global->VAR_INBOX_PATH)
+	if(!inbox && (beg = ps_global->VAR_INBOX_PATH)
 	   && (*beg == '{' || (*beg == '*' && *++beg == '{'))
 	   && (end = strindex(ps_global->VAR_INBOX_PATH, '}'))){
 	    strncpy(inbox_host, beg+1, end - beg);
 	    inbox_host[end - beg - 1] = '\0';
-	    special_key = host_key;
+	    host_key[i].ch      = ctrl('X');
+	    host_key[i].rval    = 12;
+	    host_key[i].name    = "^X";
+	    host_key[i++].label = "Use Inbox Host";
 	}
-	else
-	  special_key = NULL;
+	else{
+	    host_key[i].ch      = 0;
+	    host_key[i].rval    = 0;
+	    host_key[i].name    = "";
+	    host_key[i++].label = "";
+	}
 
-	sprintf(tmp, "Name of server to contain added folder : ");
+	if(!maildrop && !maildropfolder){
+	    host_key[i].ch      = ctrl('W');
+	    host_key[i].rval    = 13;
+	    host_key[i].name    = "^W";
+	    host_key[i++].label = "Use a Mail Drop";
+	}
+	else if(maildrop){
+	    host_key[i].ch      = ctrl('W');
+	    host_key[i].rval    = 13;
+	    host_key[i].name    = "^W";
+	    host_key[i++].label = "Do Not use a Mail Drop";
+	}
+
+	host_key[i].ch      = -1;
+	host_key[i].rval    = 0;
+	host_key[i].name    = NULL;
+	host_key[i].label = NULL;
+
+	if(maildrop)
+	  sprintf(tmp, "Name of Mail Drop server : ");
+	else if(maildropfolder)
+	  sprintf(tmp, "Name of server to contain destination folder : ");
+	else if(inbox)
+	  sprintf(tmp, "Name of Inbox server : ");
+	else
+	  sprintf(tmp, "Name of server to contain added folder : ");
+
 	help = NO_HELP;
+
+	/* set up defaults */
+	if(inbox && def){
+	    flags = OE_APPEND_CURRENT;
+	    if(maildrop && default_mail_drop_host){
+		strncpy(add_folder, default_mail_drop_host, len);
+		add_folder[len-1] = '\0';
+	    }
+	    else if(!maildrop && default_dstn_host){
+		strncpy(add_folder, default_dstn_host, len);
+		add_folder[len-1] = '\0';
+	    }
+	    else
+	      add_folder[0] = '\0';
+	}
+	else{
+	    flags = 0;
+	    add_folder[0] = '\0';
+	}
+
 	while(1){
 	    rc = optionally_enter(add_folder, -FOOTER_ROWS(ps_global), 0,
-				  len, tmp, special_key, help, 0);
+				  len, tmp, host_key, help, &flags);
 	    removing_leading_and_trailing_white_space(add_folder);
+
+	    /*
+	     * User went for the whole enchilada and entered a maildrop
+	     * completely without going through the steps.
+	     * Split it up as if they did and then skip over
+	     * some of the code.
+	     */
+	    if(check_for_move_mbox(add_folder, mdmbox, sizeof(mdmbox),
+				   &dstnmbox)){
+		maildrop = 1;
+		if(maildropfolder)
+		  fs_give((void **) &maildropfolder);
+
+		maildropfolder = cpystr(mdmbox);
+
+		strncpy(add_folder, dstnmbox, len);
+		add_folder[len-1] = '\0';
+		offset = 0;
+		goto skip_over_folder_input;
+	    }
+
+	    /*
+	     * Now check to see if they entered a whole c-client
+	     * spec that isn't a mail drop.
+	     */
+	    if(add_folder[0] == '{'
+	       && add_folder[1] != '\0'
+	       && (p = srchstr(add_folder, "}"))
+	       && *(p+1) != '\0'){
+		offset = p+1 - add_folder;
+		goto skip_over_folder_input;
+	    }
 
 	    /* remove surrounding braces */
 	    if(add_folder[0] == '{' && add_folder[1] != '\0'){
@@ -3673,15 +3885,70 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	    }
 
 	    if(rc == 3){
-		help = help == NO_HELP ? h_incoming_add_folder_host : NO_HELP;
+		if(maildropfolder && inbox)
+		  helper(h_inbox_add_maildrop_destn,
+			 "HELP FOR DESTINATION SERVER ", HLPD_SIMPLE);
+		else if(maildropfolder && !inbox)
+		  helper(h_incoming_add_maildrop_destn,
+			 "HELP FOR DESTINATION SERVER ", HLPD_SIMPLE);
+		else if(maildrop && inbox)
+		  helper(h_inbox_add_maildrop, "HELP FOR MAILDROP NAME ",
+		         HLPD_SIMPLE);
+		else if(maildrop && !inbox)
+		  helper(h_incoming_add_maildrop, "HELP FOR MAILDROP NAME ",
+		         HLPD_SIMPLE);
+		else if(inbox)
+		  helper(h_incoming_add_inbox, "HELP FOR INBOX SERVER ",
+		         HLPD_SIMPLE);
+		else
+		  helper(h_incoming_add_folder_host, "HELP FOR SERVER NAME ",
+		         HLPD_SIMPLE);
+
+		ps_global->mangled_screen = 1;
 	    }
 	    else if(rc == 12){
 		strncpy(add_folder, inbox_host, len);
-		break;
+		flags |= OE_APPEND_CURRENT;
+	    }
+	    else if(rc == 13){
+		if(maildrop){
+		    maildrop = 0;
+		    if(maildropfolder)
+		      fs_give((void **) &maildropfolder);
+		}
+		else{
+		    maildrop++;
+		    if(inbox && def){
+			default_mail_drop_host = default_dstn_host;
+			default_dstn_host = NULL;
+			default_mail_drop_folder = default_dstn_folder;
+			default_dstn_folder = NULL;
+		    }
+		}
+
+		goto get_folder_name;
 	    }
 	    else if(rc == 1){
 		q_status_message(SM_ORDER,0,2,
-		    "Addition of new folder cancelled");
+				 inbox ? "INBOX change cancelled"
+				       : "Addition of new folder cancelled");
+		if(maildropfolder)
+		  fs_give((void **) &maildropfolder);
+
+		if(inbox && def){
+		    if(default_mail_drop_host)
+		      fs_give((void **) &default_mail_drop_host);
+
+		    if(default_mail_drop_folder)
+		      fs_give((void **) &default_mail_drop_folder);
+
+		    if(default_dstn_host)
+		      fs_give((void **) &default_dstn_host);
+
+		    if(default_dstn_folder)
+		      fs_give((void **) &default_dstn_folder);
+		}
+
 		return(FALSE);
 	    }
 	    else if(rc == 0)
@@ -3689,9 +3956,52 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	}
     }
 
+    /* set up default folder, if any */
+    def_in_prompt[0] = '\0';
+    if(inbox && def){
+	if(maildrop && default_mail_drop_folder){
+	    strncpy(def_in_prompt, default_mail_drop_folder,
+		    sizeof(def_in_prompt));
+	    def_in_prompt[sizeof(def_in_prompt)-1] = '\0';
+	}
+	else if(!maildrop && default_dstn_folder){
+	    strncpy(def_in_prompt, default_dstn_folder,
+		    sizeof(def_in_prompt));
+	    def_in_prompt[sizeof(def_in_prompt)-1] = '\0';
+	}
+    }
+
     if(offset = strlen(add_folder)){		/* must be host for incoming */
 	int i;
-	sprintf(tmp, "Folder on \"%.100s\" to add : ", add_folder);
+	if(maildrop)
+	  sprintf(tmp,
+	    "Maildrop folder on \"%.100s\" to copy mail from%.5s%.100s%.5s : ",
+	    short_str(add_folder, buf, 15, EndDots),
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else if(maildropfolder)
+	  sprintf(tmp,
+	    "Folder on \"%.100s\" to copy mail to%.5s%.100s%.5s : ",
+	    short_str(add_folder, buf, 20, EndDots),
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else if(inbox)
+	  sprintf(tmp,
+	    "Folder on \"%.100s\" to use for INBOX%.5s%.100s%.5s : ",
+	    short_str(add_folder, buf, 20, EndDots),
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else
+	  sprintf(tmp,
+	    "Folder on \"%.100s\" to add%.5s%.100s%.5s : ",
+	    short_str(add_folder, buf, 25, EndDots),
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+
 	for(i = offset;i >= 0; i--)
 	  add_folder[i+1] = add_folder[i];
 
@@ -3699,12 +4009,35 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	add_folder[++offset] = '}';
 	add_folder[++offset] = '\0';		/* +2, total */
     }
-    else
-      sprintf(tmp, "Folder name to add : ");
+    else{
+	if(maildrop)
+	  sprintf(tmp,
+	    "Folder to copy mail from%.5s%.100s%.5s : ",
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else if(maildropfolder)
+	  sprintf(tmp,
+	    "Folder to copy mail to%.5s%.100s%.5s : ",
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else if(inbox)
+	  sprintf(tmp,
+	    "Folder name to use for INBOX%.5s%.100s%.5s : ",
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+	else
+	  sprintf(tmp,
+	    "Folder name to add%.5s%.100s%.5s : ",
+	    def_in_prompt[0] ? " [" : "",
+	    short_str(def_in_prompt, buf2, 20, MidDots),
+	    def_in_prompt[0] ? "]" : "");
+    }
 
     help = NO_HELP;
     while(1){
-	int flags;
 
 	p = NULL;
 	if(isdir){
@@ -3721,9 +4054,25 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	flags = OE_APPEND_CURRENT;
         rc = optionally_enter(&add_folder[offset], -FOOTER_ROWS(ps_global), 0, 
 			      len - offset, tmp,
-			      (context->dir->delim) ? add_key : NULL,
+			      ((context->dir->delim) && !maildrop)
+				  ? add_key : NULL,
 			      help, &flags);
+	/* use default */
+	if(rc == 0 && def_in_prompt[0] && !add_folder[offset]){
+	    strncpy(&add_folder[offset], def_in_prompt, len-offset);
+	    add_folder[len-1] = '\0';
+	}
+
 	removing_leading_and_trailing_white_space(&add_folder[offset]);
+
+	if(rc == 0 && !(inbox || context->use & CNTXT_INCMNG)
+	   && check_for_move_mbox(add_folder, NULL, 0L, NULL)){
+	    q_status_message(SM_ORDER, 6, 6,
+	  "#move folders may only be the INBOX or in the Incoming Collection");
+	    display_message(NO_OP_COMMAND);
+	    continue;
+	}
+
         if(rc == 0 && add_folder[offset]){
 	    if(!ps_global->show_dot_names && add_folder[offset] == '.'){
 		if(cnt++ <= 0)
@@ -3731,7 +4080,7 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 				   "Folder name can't begin with dot");
 		else
 		  q_status_message1(SM_ORDER,3,3,
-		      "Config feature \"%.200s\" enables names beginning with dot",
+		   "Config feature \"%.200s\" enables names beginning with dot",
 		      feature_list_name(F_ENABLE_DOT_FOLDERS));
 
                 display_message(NO_OP_COMMAND);
@@ -3765,17 +4114,41 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	    isdir = !isdir;		/* toggle directory creation */
 	}
         else if(rc == 3){
-	    help = (help == NO_HELP)
-			? ((context->use & CNTXT_INCMNG)
-			    ? h_incoming_add_folder_name
-			    : h_oe_foldadd)
-			: NO_HELP;
+	    helper(h_incoming_add_folder_name, "HELP FOR FOLDER NAME ",
+		   HLPD_SIMPLE);
 	}
 	else if(rc == 1 || add_folder[0] == '\0') {
-	    q_status_message(SM_ORDER,0,2, "Addition of new folder cancelled");
+	    q_status_message(SM_ORDER,0,2,
+			     inbox ? "INBOX change cancelled"
+				   : "Addition of new folder cancelled");
+	    if(maildropfolder)
+	      fs_give((void **) &maildropfolder);
+
+	    if(inbox && def){
+		if(default_mail_drop_host)
+		  fs_give((void **) &default_mail_drop_host);
+
+		if(default_mail_drop_folder)
+		  fs_give((void **) &default_mail_drop_folder);
+
+		if(default_dstn_host)
+		  fs_give((void **) &default_dstn_host);
+
+		if(default_dstn_folder)
+		  fs_give((void **) &default_dstn_folder);
+	    }
+
 	    return(FALSE);
 	}
     }
+
+    if(maildrop && !maildropfolder){
+	maildropfolder = cpystr(add_folder);
+	maildrop = 0;
+	goto get_folder_name;
+    }
+
+skip_over_folder_input:
 
     create_stream = context_same_stream(context, add_folder,
 					ps_global->mail_stream);
@@ -3788,7 +4161,7 @@ add_new_folder(context, index, add_folder, len, possible_stream)
       create_stream = context_same_stream(context, add_folder, possible_stream);
 
     help = NO_HELP;
-    if(context->use & CNTXT_INCMNG){
+    if(!inbox && context->use & CNTXT_INCMNG){
 	sprintf(tmp, "Nickname for folder \"%.100s\" : ", &add_folder[offset]);
 	while(1){
 	    int flags = OE_APPEND_CURRENT;
@@ -3809,7 +4182,25 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 	    }
 	    else if(rc == 1 || (rc != 3 && !*nickname)){
 		q_status_message(SM_ORDER,0,2,
-		    "Addition of new folder cancelled");
+				 inbox ? "INBOX change cancelled"
+				       : "Addition of new folder cancelled");
+		if(maildropfolder)
+		  fs_give((void **) &maildropfolder);
+
+		if(inbox && def){
+		    if(default_mail_drop_host)
+		      fs_give((void **) &default_mail_drop_host);
+
+		    if(default_mail_drop_folder)
+		      fs_give((void **) &default_mail_drop_folder);
+
+		    if(default_dstn_host)
+		      fs_give((void **) &default_dstn_host);
+
+		    if(default_dstn_folder)
+		      fs_give((void **) &default_dstn_folder);
+		}
+
 		return(FALSE);
 	    }
 	}
@@ -3826,6 +4217,23 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 		q_status_message1(SM_ORDER | SM_DING, 0, 3,
 				  "Incoming folder \"%.200s\" already exists",
 				  nickname[0] ? nickname : add_folder);
+		if(maildropfolder)
+		  fs_give((void **) &maildropfolder);
+
+		if(inbox && def){
+		    if(default_mail_drop_host)
+		      fs_give((void **) &default_mail_drop_host);
+
+		    if(default_mail_drop_folder)
+		      fs_give((void **) &default_mail_drop_folder);
+
+		    if(default_dstn_host)
+		      fs_give((void **) &default_dstn_host);
+
+		    if(default_dstn_folder)
+		      fs_give((void **) &default_dstn_folder);
+		}
+
 		return(FALSE);
 	    }
 	}
@@ -3841,52 +4249,160 @@ add_new_folder(context, index, add_folder, len, possible_stream)
 			        add_folder);
 	}
     }
-    else
+    else if(!inbox)
       exists = FEX_NOENT;
+    else{
+	exists = FEX_ISFILE;
+	/*
+	 * If inbox is a maildropfolder, try to create the destination
+	 * folder. But it shouldn't cause a fatal error.
+	 */
+	if(maildropfolder && (folder_exists(NULL, add_folder) == FEX_NOENT))
+	  context_create(NULL, NULL, add_folder);
+    }
 
     if(exists == FEX_ERROR
        || (exists == FEX_NOENT
 	   && !context_create(context, create_stream, add_folder)
 	   && !((context->use & CNTXT_INCMNG)
-		&& !context_isambig(add_folder))))
-      return(FALSE);		/* c-client should've reported error */
+		&& !context_isambig(add_folder)))){
+	if(maildropfolder)
+	  fs_give((void **) &maildropfolder);
+
+	if(inbox && def){
+	    if(default_mail_drop_host)
+	      fs_give((void **) &default_mail_drop_host);
+
+	    if(default_mail_drop_folder)
+	      fs_give((void **) &default_mail_drop_folder);
+
+	    if(default_dstn_host)
+	      fs_give((void **) &default_dstn_host);
+
+	    if(default_dstn_folder)
+	      fs_give((void **) &default_dstn_folder);
+	}
+
+	return(FALSE);		/* c-client should've reported error */
+    }
 
     if(isdir && p)				/* whack off trailing delim */
       *p = '\0';
 
-    if(context->use & CNTXT_INCMNG){
+    if(inbox || context->use & CNTXT_INCMNG){
+	char  **apval;
 	char ***alval;
 
-	alval = ALVAL(&ps_global->vars[V_INCOMING_FOLDERS], ew);
-	if(!*alval){
-	    offset = 0;
-	    *alval = (char **)fs_get(2*sizeof(char *));
+	if(inbox){
+	    apval = APVAL(&ps_global->vars[varnum], which);
+	    if(apval && *apval)
+	      fs_give((void **) apval);
 	}
 	else{
-	    for(offset=0;  (*alval)[offset]; offset++)
-	      ;
+	    alval = ALVAL(&ps_global->vars[varnum], which);
+	    if(!*alval){
+		offset = 0;
+		*alval = (char **) fs_get(2*sizeof(char *));
+	    }
+	    else{
+		for(offset=0;  (*alval)[offset]; offset++)
+		  ;
 
-	    fs_resize((void **)alval, (offset + 2) * sizeof(char *));
+		fs_resize((void **) alval, (offset + 2) * sizeof(char *));
+	    }
 	}
 
-	(*alval)[offset]   = put_pair(nickname, add_folder);
-	(*alval)[offset+1] = NULL;
-	set_current_val(&ps_global->vars[V_INCOMING_FOLDERS], TRUE, FALSE);
-	write_pinerc(ps_global, ew);
+	/*
+	 * If we're using a Mail Drop we have to assemble the correct
+	 * c-client string to do that. Mail drop syntax looks like
+	 *
+	 *   #move <DELIM> <FromMailbox> <DELIM> <ToMailbox>
+	 *
+	 * DELIM is any character which does not appear in either of
+	 * the mailbox names.
+	 *
+	 * And then the nickname is still in front of that mess.
+	 */
+	if(maildropfolder){
+	    char *delims = " +-_:!|ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	    char *c;
+
+	    maildroplongname = (char *) fs_get((5+2+1+strlen(maildropfolder)+
+					        strlen(add_folder)) *
+					       sizeof(char));
+	    for(c = delims; *c; c++){
+		if(!strindex(maildropfolder, *c) &&
+		   !strindex(add_folder, *c))
+		  break;
+	    }
+
+	    if(*c){
+		sprintf(maildroplongname, "#move%c%.*s%c%.*s",
+			*c, strlen(maildropfolder), maildropfolder,
+			*c, strlen(add_folder), add_folder);
+		if(strlen(maildroplongname) < len)
+		  strcpy(add_folder, maildroplongname);
+
+		fs_give((void **) &maildroplongname);
+	    }
+	    else{
+		q_status_message2(SM_ORDER,0,2,
+		    "Can't find delimiter for \"#move %.100s %.100s\"",
+		    maildropfolder, add_folder);
+		dprint(2, (debugfile,
+		    "Can't find delimiter for \"#move %.100s %.100s\"",
+		    maildropfolder, add_folder));
+
+		if(maildroplongname)
+		  fs_give((void **) &maildroplongname);
+
+		if(maildropfolder)
+		  fs_give((void **) &maildropfolder);
+
+		if(inbox && def){
+		    if(default_mail_drop_host)
+		      fs_give((void **) &default_mail_drop_host);
+
+		    if(default_mail_drop_folder)
+		      fs_give((void **) &default_mail_drop_folder);
+
+		    if(default_dstn_host)
+		      fs_give((void **) &default_dstn_host);
+
+		    if(default_dstn_folder)
+		      fs_give((void **) &default_dstn_folder);
+		}
+
+		return(FALSE);
+	    }
+	}
+
+	if(inbox)
+	  *apval = cpystr(add_folder);
+	else{
+	    (*alval)[offset]   = put_pair(nickname, add_folder);
+	    (*alval)[offset+1] = NULL;
+	}
+
+	set_current_val(&ps_global->vars[varnum], TRUE, FALSE);
+	write_pinerc(ps_global, which);
 
 	/*
 	 * Instead of inserting the new folder in the list of folders,
 	 * and risking bugs associated with that, 
 	 * we re-initialize from the config variable.
 	 */
-	reinit_incoming_folder_list(ps_global, context);
+	if(context->use & CNTXT_INCMNG)
+	  reinit_incoming_folder_list(ps_global, context);
 
 	if(nickname[0]){
 	    strncpy(add_folder, nickname, len-1);  /* known by new name */
 	    add_folder[len-1] = '\0';
 	}
 
-	q_status_message1(SM_ORDER, 0, 3, "Folder \"%.200s\" created", add_folder);
+	if(!inbox)
+	  q_status_message1(SM_ORDER, 0, 3, "Folder \"%.200s\" created",
+			    add_folder);
 	return_val = add_folder;
     }
     else if(context_isambig(add_folder)){
@@ -3899,6 +4415,23 @@ add_new_folder(context, index, add_folder, len, possible_stream)
       q_status_message1(SM_ORDER, 0, 3,
 			"Folder \"%.200s\" created outside current collection",
 			add_folder);
+
+    if(maildropfolder)
+      fs_give((void **) &maildropfolder);
+
+    if(inbox && def){
+	if(default_mail_drop_host)
+	  fs_give((void **) &default_mail_drop_host);
+
+	if(default_mail_drop_folder)
+	  fs_give((void **) &default_mail_drop_folder);
+
+	if(default_dstn_host)
+	  fs_give((void **) &default_dstn_host);
+
+	if(default_dstn_folder)
+	  fs_give((void **) &default_dstn_folder);
+    }
 
     return(return_val != NULL);
 }
@@ -4231,7 +4764,7 @@ rename_folder(context, index, new_name, len, possible_stream)
 
     if(NEWS_TEST(context)){
 	q_status_message(SM_ORDER | SM_DING, 3, 3,
-			 "Can't rename bulletin boards or news groups!");
+			 "Can't rename news groups!");
 	return(0);
     }
     else if(!folder_total(FOLDERS(context))){
@@ -4389,7 +4922,9 @@ rename_folder(context, index, new_name, len, possible_stream)
 	      if(nickname)
 		fs_give((void **)&nickname);
 
-	      *lp++ = put_pair(new_name, folder_string);
+	      *lp = put_pair(new_name, folder_string);
+
+	      new_f->varhash = line_hash(*lp++);
 	  }
 	  else
 	    *lp++ = cpystr((*alval)[i]);
@@ -4993,12 +5528,13 @@ scan_scan_folder(stream, context, f, pattern)
 
     ----*/
 void
-mail_list_response(stream, mailbox, delim, attribs, data)
+mail_list_response(stream, mailbox, delim, attribs, data, options)
     MAILSTREAM *stream;
     char       *mailbox;
     int		delim;
     long	attribs;
     void       *data;
+    unsigned    options;	/* unused */
 {
     if(delim)
       ((LISTRES_S *) data)->delim = delim;
@@ -5569,7 +6105,9 @@ folder_name_exists(cntxt, file, fullpath)
     we_cancel = busy_alarm(1, NULL, NULL, 0);
 
     parms.args.name = file;
-    res = pine_mail_list(ldata.stream, parms.args.reference, parms.args.name);
+
+    res = pine_mail_list(ldata.stream, parms.args.reference, parms.args.name,
+			 &ldata.options);
 
     if(we_cancel)
       cancel_busy_alarm(-1);
@@ -5600,12 +6138,13 @@ folder_name_exists(cntxt, file, fullpath)
 
     ----*/
 void
-mail_list_exists(stream, mailbox, delim, attribs, data)
+mail_list_exists(stream, mailbox, delim, attribs, data, options)
     MAILSTREAM *stream;
     char       *mailbox;
     int		delim;
     long	attribs;
     void       *data;
+    unsigned    options;
 {
     if(delim)
       ((EXISTDATA_S *) data)->response.delim = delim;
@@ -5624,7 +6163,8 @@ mail_list_exists(stream, mailbox, delim, attribs, data)
 	if(attribs & LATT_MARKED)
 	  ((EXISTDATA_S *) data)->response.ismarked = 1;
 
-	if(attribs & LATT_UNMARKED)
+	/* don't mark #move folders unmarked */
+	if(attribs & LATT_UNMARKED && !(options & PML_IS_MOVE_MBOX))
 	  ((EXISTDATA_S *) data)->response.unmarked = 1;
 
 	if(attribs & LATT_HASCHILDREN)
@@ -5705,7 +6245,7 @@ folder_delimiter(folder)
 	}
     }
 
-    pine_mail_list(ldata.stream, folder, "");
+    pine_mail_list(ldata.stream, folder, "", NULL);
 
     if(ourstream)
       pine_mail_close(ldata.stream);
@@ -6453,7 +6993,8 @@ build_folder_list(stream, context, pat, content, flags)
       mail_lsub(ldata.stream, response.args.reference, response.args.name);
     else{
       set_read_predicted(1);
-      pine_mail_list(ldata.stream, response.args.reference, response.args.name);
+      pine_mail_list(ldata.stream, response.args.reference, response.args.name,
+		     &ldata.options);
       set_read_predicted(0);
     }
 
@@ -6489,7 +7030,7 @@ build_folder_list(stream, context, pat, content, flags)
 		  *p++ = context->dir->delim;
 		  *p   = '\0';
 
-		  pine_mail_list(ldata.stream, reference, "%");
+		  pine_mail_list(ldata.stream, reference, "%", NULL);
 	      }
 
 	      /* anything interesting inside? */
@@ -6523,12 +7064,13 @@ build_folder_list(stream, context, pat, content, flags)
  *
  */
 void
-mail_list_filter(stream, mailbox, delim, attribs, data)
+mail_list_filter(stream, mailbox, delim, attribs, data, options)
     MAILSTREAM *stream;
     char       *mailbox;
     int		delim;
     long	attribs;
     void       *data;
+    unsigned    options;
 {
     BFL_DATA_S *ld = (BFL_DATA_S *) data;
     FOLDER_S   *new_f = NULL;
@@ -6610,7 +7152,8 @@ mail_list_filter(stream, mailbox, delim, attribs, data)
     if(attribs & LATT_MARKED)
       ld->response.ismarked = 1;
 
-    if(attribs & LATT_UNMARKED)
+    /* don't mark #move folders unmarked */
+    if(attribs & LATT_UNMARKED && !(options & PML_IS_MOVE_MBOX))
       ld->response.unmarked = 1;
 
     if(attribs & LATT_HASCHILDREN)
@@ -6626,12 +7169,13 @@ mail_list_filter(stream, mailbox, delim, attribs, data)
  *
  */
 void
-mail_lsub_filter(stream, mailbox, delim, attribs, data)
+mail_lsub_filter(stream, mailbox, delim, attribs, data, options)
     MAILSTREAM *stream;
     char       *mailbox;
     int		delim;
     long	attribs;
     void       *data;
+    unsigned    options;	/* unused */
 {
     BFL_DATA_S *ld = (BFL_DATA_S *) data;
     FOLDER_S   *new_f = NULL;
@@ -6642,7 +7186,7 @@ mail_lsub_filter(stream, mailbox, delim, attribs, data)
 
     /* test against mask of DIS-allowed attributes */
     if((ld->mask & attribs)){
-	dprint(3, (debugfile, "mail_list_filter: failed attribute test"));
+	dprint(3, (debugfile, "mail_lsub_filter: failed attribute test"));
 	return;
     }
 
@@ -7199,15 +7743,20 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 	      }
 	      else{
 		  if(stream){
-		      if(!context_status(cntxt, stream, f->name, SA_RECENT)){
+		      if(!context_status_full(cntxt, stream,
+					      f->name, SA_RECENT,
+					      &f->uidvalidity,
+					      &f->uidnext)){
 			  failed_status = 1;
 			  mm_status_result.flags = 0L;
 		      }
 		  }
 		  else{
 		      /* so we can re-use the stream */
-		      if(!context_status_streamp(cntxt, streamp, f->name,
-					         SA_RECENT)){
+		      if(!context_status_streamp_full(cntxt, streamp, f->name,
+						      SA_RECENT,
+						      &f->uidvalidity,
+						      &f->uidnext)){
 			  failed_status = 1;
 			  mm_status_result.flags = 0L;
 		      }
@@ -8125,12 +8674,33 @@ get_post_list(post_host)
  * instead of leaving it in mail_list_internal, but leave well enough alone.
  */
 int
-pine_mail_list(stream, ref, pat)
+pine_mail_list(stream, ref, pat, options)
     MAILSTREAM *stream;
     char       *ref, *pat;
+    unsigned   *options;
 {
     int   we_open = 0;
     char *halfopen_target;
+    char  source[MAILTMPLEN], *target = NULL;
+
+    dprint(7, (debugfile, "pine_mail_list: ref=%s pat=%s%s\n", 
+	       ref ? ref : "(NULL)",
+	       pat ? pat : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
+    if(!ref && check_for_move_mbox(pat, source, sizeof(source), &target)
+       ||
+       check_for_move_mbox(ref, source, sizeof(source), &target)){
+	ref = NIL;
+	pat = target;
+	if(options)
+	  *options |= PML_IS_MOVE_MBOX;
+
+	dprint(7, (debugfile,
+		   "pine_mail_list: #move special case, listing \"%s\"%s\n", 
+		   pat ? pat : "(NULL)",
+		   stream ? "" : " (stream was NULL)"));
+    }
 
     if(!stream && ((pat && *pat == '{') || (ref && *ref == '{'))){
 	we_open++;

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: adrbklib.h,v 1.1.1.2 2003-02-12 08:01:11 ghudson Exp $
+  $Id: adrbklib.h,v 1.1.1.3 2003-05-01 01:12:45 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -20,7 +20,7 @@
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -323,9 +323,15 @@ typedef struct expanded_list {
 typedef enum {Local, Imap} AdrbkType;
 
 
+#ifndef IMAP_IDLE_TIMEOUT
 #define IMAP_IDLE_TIMEOUT	(10L * 60L)	/* seconds */
+#endif
+#ifndef FILE_VALID_CHK_INTERVAL
 #define FILE_VALID_CHK_INTERVAL (      15L)	/* seconds */
+#endif
+#ifndef LOW_FREQ_CHK_INTERVAL
 #define LOW_FREQ_CHK_INTERVAL	(240)		/* minutes */
+#endif
 
 typedef struct adrbk {
     AdrbkType	  type;                /* type of address book               */
@@ -890,7 +896,9 @@ extern int          ab_nesting_level;
  * back. You get it back by editing the nickname field manually to remove
  * the extra 18 characters off the front.
  */
+#ifndef ABOOK_DELETED_EXPIRE_TIME
 #define ABOOK_DELETED_EXPIRE_TIME   ONE_HUNDRED_DAYS
+#endif
 
 #ifdef	ENABLE_LDAP
 typedef struct _cust_filt {

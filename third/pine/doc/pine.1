@@ -1,4 +1,4 @@
-.TH pine 1 "Version 4.53"
+.TH pine 1 "Version 4.55"
 .SH NAME
 pine \- a Program for Internet News and Email
 .SH SYNTAX 
@@ -182,6 +182,9 @@ Start up in the FOLDER INDEX screen.
 .IP \fB-I\ \fIkeystrokes\fR 20
 Initial (comma separated list of) keystrokes which Pine should execute
 on startup.
+.IP \fB-install\fR 20
+For PC-Pine only, this option causes PC-Pine to prompt for some basic
+setup information, then exits.
 .IP \fB-k\fR 20
 Use function keys for commands. This is the same as running the command
 .IR pinef .
@@ -212,6 +215,7 @@ Possible values for \fIcmd\fR are set, clear, and dump.
 \fISet\fR will always reset Pine's registry 
 entries according to its current settings.
 \fIClear\fR will clear the registry values.
+\fIClearsilent\fR will silently clear the registry values.
 \fIDump\fR will display the values of current registry settings.
 Note that the dump command is currently disabled.
 Without the -registry option, PC-Pine will write values into
@@ -384,4 +388,4 @@ of Computing & Communications) includes:
 Copyright 1989-2003 by the University of Washington.
 Pine and Pico are trademarks of the University of Washington.
 
-$Date: 2003-02-12 08:02:39 $
+$Date: 2003-05-01 01:13:40 $

@@ -1,7 +1,7 @@
 
                              Pine Technical Notes
                                        
-   Version 4.53, January 2003
+   Version 4.55, March 2003
    
    _Pine_ and _Pico_ are trademarks of the University of Washington.
    No commercial use of these trademarks may be made without prior
@@ -66,12 +66,16 @@ Table of Contents
      * Scoring Configuration
      * Other Rules Configuration
      * Patterns
+     * Configuring News
        
     Configuration Notes
           + Pine in Function Key Mode
           + Domain Settings
           + Syntax for Collections
-          + Syntax for Remote Folders
+          + Syntax for Folder Names
+          + Server Name Syntax for Folders
+          + Folder Namespaces
+          + What is a Mail Drop?
           + Sorting a Folder
           + Alternate Editor
           + Signatures and Signature Placement
@@ -392,7 +396,7 @@ Internet Message Access Protocol (IMAP)
        support this capability, however.
        
    IMAP2 is defined in RFC 1176. IMAP4rev1, the revision to IMAP2, is
-   described in RFC 2060. Further information about IMAP may be obtained
+   described in RFC 3501. Further information about IMAP may be obtained
    from the University of Washington's IMAP Information Center on the
    World Wide Web.
    
@@ -888,70 +892,48 @@ Installing Pine and Pico on UNIX Platforms
    
 Installing PC-Pine
 
-   Beginning with the _Pine_ 3.90 release, there is a _PC-Pine_ version
-   that runs under windows using the Winsock network interface. For those
-   who still need to run the DOS version of _PC-Pine_, there are versions
-   for four different TCP/IP network stacks: FTP Inc's PC/TCP, Novell's
-   LAN Workplace for DOS, Sun's PC/NFS, and WATTCP for packet drivers.
-   _PC-Pine_ needs to be able to interact closely with the stack loaded
-   on your PC. Most of the time, this occurs automatically. However,
-   there are certain modifications that need be made.
+   The PC-Pine distribution comes as a .zip file. To install, unzip the
+   files to a directory where you would like the program to reside.
+   Modern Windows versions come with the capability of unzipping .zip
+   files. Failing that, you can use one of the many .zip file extractors
+   out there, or the pkunzip.exe program that resides on our FTP server.
+   Following current Windows conventions, a common directory into which
+   the files could be extracted would be C:\Program Files\PC-Pine\.
    
-   LAN Workplace for DOS Version 4.1
-          Set the environment variable _EXCELAN_ in the PC's
-          _AUTOEXEC.BAT_ file. This provides the necessary links so that
-          LAN Workplace for DOS 4.1 can translate domain names to IP
-          numbers correctly. It is needed because _Pine_ was developed
-          for LAN Workplace 4.0 and this particular variable is treated
-          differently in 4.1 than in 4.0. The _EXCELAN_ variable must
-          point to the directory in which LAN Workplace is installed.
-   PC/TCP versions before 2.2
-          You need a file called _PCTCP.INI_ which contains a
-          bare-minimum 2-line description of the PC's configuration. It
-          looks like this:
-                [pctcp ifcust 0]
-                ip-address=_xx.xx.xx.xx_
-          Where _xx.xx.xx.xx_ is the IP address of the PC. _Pine_ also
-          requires an environment variable, _PCTCP,_ which points to this
-          file. For example:
-                set PCTCP=C:\PINE\PCTCP.INI
-   Packet Drivers
-          _Pine_ needs to be made aware of the PC's network configuration
-          file. Simply edit the file WATTCP.CFG included in the _Pine_
-          distribution. The file includes 5 configuration
-          settings--IP-address, gateway, netmask, nameserver(s) and
-          domainslist. If you have a network configuration file for NCSA
-          Telnet then WATTCP.CFG is just a pared down version of the
-          CONFIG.TEL file you already made. Take a look at CONFIG.TEL to
-          find the correct settings for WATTCP.CFG. Once the
-          configuration file is made, the DOS environment variable
-          WATTCP.CFG needs to point at it. For example:
-                set WATTCP.CFG=C:\PINE
-          
-   In addition to networking software issues, you might need to worry
-   about setting the time zone. _PC-Pine_ includes the time zone as part
-   of outgoing email. There is a generic way for PC applications to get
-   the time zone, but, because _PC-Pine_ is one of a very few
-   applications which requires this information, time zone might not be
-   previously configured.
+   Having extracted PC-Pine's .zip file to the directory of choice, you
+   can now run that directory's pine.exe, which is the actual PC-Pine
+   program. For convenience, you could place shortcuts to it on the task
+   bar, start menu, etc.
    
-   The trick is to add an environment variable, _TZ_, to your PC's
-   AUTOEXEC.BAT file. The format for the _TZ_ environment variable is as
-   follows:
-        ZZZ[+H]H[:MM:SSTTT]
-
-   First is the 3-letter code for your standard time, then a "+" or a "-"
-   for direction of offset from GMT, then the amount of offset (hours,
-   minutes, seconds) and finally the 3-letter code for your summer- or
-   daylight savings time. Everything in [] brackets is optional.
+   Upon first running PC-Pine, you may be asked where you would like to
+   access your Configuration file (called the _pinerc_). This is useful
+   in accessing already existing configuration files, and it does not
+   matter where this file gets created. If you are connecting to an IMAP
+   server to access your email, it is also possible to store this
+   Configuration data on that server, which facilitates accessing the
+   same configuration from multiple machines (in fact, your configuration
+   may have already been set up this way for use with other pine
+   programs).
    
-   The default time zone is "PST-8PDT" (U.S. Pacific Time).
-   Coincidentally, Microsoft is headquartered in that time zone.
+   After having established the location of the configuration file, it
+   may be necessary to specify a few configuration settings before
+   reading or sending mail. You may be prompted for the following (which
+   may also be edited from the (S)etup (C)onfig screen from the Main
+   Menu):
    
-   As an example, people in the Eastern part of the US should add this
-   line to their AUTOEXEC.BAT files:
+     Folder to open as inbox (or _inbox-path_) - This can be an inbox
+   residing on an IMAP or POP3 server, or one residing locally. An
+   example of an INBOX for an IMAP server is: {server.example.com}INBOX.
    
-        TZ=EST-5EDT
+     User-id, Personal name, and host/domain, which are to be used as
+   your email address.
+   
+     SMTP server to forward message - You must enter your SMTP server
+   before you can send any messages.
+   
+   At this point, you will be able to read and send email messages. There
+   are, however, many more preferences that you can set in the
+   Configuration screen.
      _________________________________________________________________
    
 Installing IMAPd
@@ -1307,6 +1289,9 @@ Pine
           then it will be expanded into the individual characters in the
           string, excluding the double quotes.
           Configuration equivalent: _initial-keystroke-list_
+   -install
+          For _PC-Pine_ only, this option prompts for some basic setup
+          information, then exits.
    -k
           Function-Key Mode: When invoked in this way, _Pine_ expects the
           input of commands to be function-keys. Otherwise, commands are
@@ -1331,9 +1316,8 @@ Pine
           _PC-Pine_. Pinerc may be either a local file or a remote
           configuration folder.
    -passfile _passfile_
-          _PC-Pine_ only. This tells _PC-Pine_ what file should be used
-          as the password file. This should be a fully-qualified
-          filename.
+          This tells _Pine_ what file should be used as the password
+          file. This should be a fully-qualified filename.
    -pinerc _file_
           Output fresh pinerc configuration to _file_, preserving the
           settings of variables that the user has made. Use _file_ set to
@@ -1344,14 +1328,15 @@ Pine
           limited.
    -registry _cmd_
           For _PC-Pine_ only, this option affects the values of _Pine_'s
-          registry entries. Possible values for _cmd_ are set, clear, and
-          dump. _Set_ will always reset _Pine_'s registry entries
-          according to its current settings. _Clear_ will clear the
-          registry values. _Dump_ will display the values of current
-          registry settings. Note that the dump command is currently
-          disabled. Without the -registry option, _PC-Pine_ will write
-          values into the registry only if there currently aren't any
-          values set.
+          registry entries. Possible values for _cmd_ are set, clear,
+          clearsilent, and dump. _Set_ will always reset _Pine_'s
+          registry entries according to its current settings. _Clear_
+          will clear the registry values. _Clearsilent_ will silently
+          clear the registry values. _Dump_ will display the values of
+          current registry settings. Note that the dump command is
+          currently disabled. Without the -registry option, _PC-Pine_
+          will write values into the registry only if there currently
+          aren't any values set.
    -sort _key_
           Sort-Key: Specifies the order messages will be displayed in for
           the FOLDER INDEX screen. _Key_ can have the following values:
@@ -1541,9 +1526,9 @@ Pine Configuration
    _PC-Pine_ also use personal (user-based) configuration files. On UNIX
    machines, the personal configuration file is the file ~/.pinerc. For
    _PC-Pine_ systems, the personal configuration file is in $PINERC or
-   <PineRC registry value> or $HOME\PINE\PINERC or <PINE.EXE dir>\PINERC.
-   Or the personal configuration file can be specified with the -p
-   command line argument.
+   <PineRC registry value> or ${HOME}\PINE\PINERC or <PINE.EXE
+   dir>\PINERC. Or the personal configuration file can be specified with
+   the -p command line argument.
    
    After the personal configuration, _Pine_ may optionally use a personal
    exceptions configuration file which is specified with the command line
@@ -1560,7 +1545,7 @@ Pine Configuration
    local directory that the regular config file is located in. If the
    regular config file is remote then _PC-Pine_ looks in the local
    directory specfied by the "-aux local_directory" command line
-   argument, or the directory $HOME\PINE, or in <PINE.EXE directory>.
+   argument, or the directory ${HOME}\PINE, or in <PINE.EXE directory>.
    
    The syntax of a non-list configuration variable is this:
    
@@ -1868,23 +1853,68 @@ General Configuration Variables
    _current-indexline-style_
           current-indexline-style.
    _customized-hdrs_
-          Add these custom headers when composing. Also possible to add
-          default values to these custom headers or to any of the
-          standard headers. This is a list variable. Each entry in the
-          list is a header name (the actual header name that will appear
-          in the message) followed by an optional colon and value. For
-          example, if a Reply-to header was needed because it was
-          different from the From address, that could be accomplished
-          with:
+          You may add your own custom headers to outgoing messages. Each
+          header you specify here must include the header tag (Reply-To:,
+          Approved:, etc.) and may optionally include a value for that
+          header. If you want to see these custom headers each time you
+          compose a message, you must add them to your
+          default-composer-hdrs list, otherwise they become part of the
+          rich header set which you only see when you press the rich
+          header command. Here's an example which shows how you might set
+          your From address
           
-     customized-hdrs=Reply-to: fred_flintstone@bedrock.net
-          Leaving the optional value out allows the user to fill it in
-          when composing a message. If it isn't filled in, it won't be
-          included in the message.
+                     From: Full Name <user@example.com>
+          and another showing how you might set a Reply-To address
+          
+                         Reply-To: user@example.com
+          You may also set non-standard header values here. For example,
+          you could add
+          
+                     Organization: My Organization Name
+          or even
+          
+                     X-Favorite-Colors: Purple and Gold
+          If you include a value after the colon then that header will be
+          included in your outgoing messages unless you delete it before
+          sending. If a header in the Customized-Headers list has only a
+          tag but no value, then it will not be included in outgoing
+          messages unless you edit a value in manually. For example, if
+          
+                                 Reply-To:
+          is in the list, then the Reply-To header will be available for
+          editing but won't be included unless a value is added while in
+          the composer.
+          It's actually a little more complicated than that. The values
+          of headers that you set with the Customized-Headers option are
+          defaults. If the message you are about to compose already has a
+          value for a header, that value is used instead of a value from
+          your Customized-Headers. For example, if you are Replying to a
+          message the Subject field will already be filled in. In that
+          case, if the Customized-Headers list contains a Subject line,
+          the custom subject will _NOT_ be used. The subject derived from
+          the subject of the message you are Replying to will be used
+          instead.
+          It is also possible to make header setting even more
+          complicated and more automatic by using Roles, but if all you
+          want to do is set a default value for a header, you don't need
+          to think about Roles.
+          If you change your From address you may also find it useful to
+          add the changed From address to the alt-addresses configuration
+          option.
+          Limitation: Because commas are used to separate the list of
+          Customized-Headers, it is not possible to have the value of a
+          header contain a comma. Nor is there currently an "escape"
+          mechanism provided to make this work.
    _default-composer-hdrs_
-          Show only these headers (by default) when composing a message.
-          This list may include headers defined in the _customized-hdrs_
-          list.
+          You can decide which headers you want visible when composing
+          outgoing email using this option. You can specify any of the
+          regular set, any rich header or any custom header which you
+          have already defined. If you use this setting at all, you must
+          specify all the headers you want to see, you can't just add to
+          the regular header set. The default set is To:, Cc:, Attchmnt:,
+          and Subject:.
+          Note that the "Newsgroups:" header will be abbreviated in the
+          Composer display, but should be spelled out in full here.
    _default-fcc_
           The name of the folder to which all outgoing mail goes is set
           here. The compiled-in default is _sent-mail_ (UNIX) or
@@ -1902,6 +1932,15 @@ General Configuration Variables
           normally _saved-messages_ in the default folder collection.
           _PC-Pine_ default is _SAVEMAIL_ (normally stored as
           _SAVEMAIL.MTX_).
+   _disable-setlocale-collate_
+          This is a hard to understand feature that should only be used
+          in rare cases. Normally, the C function call
+          
+                         setlocale(LC_COLLATE, "")
+          is used by _Pine_. If you want to try turning it off, setting
+          this feature will turn it off. This part of the locale has to
+          do with the sort order of characters in your locale. A related
+          feature is enable-setlocale-ctype.
    _disable-these-drivers_
           This variable is a list of mail drivers which will be disabled.
           The candidates for disabling are listed below. There may be
@@ -2138,6 +2177,104 @@ General Configuration Variables
    _folder-extension_
           _PC-Pine_ only. File extension used for local folder names.
           This is .MTX by default.
+   _folder-reopen-rule_
+          _Pine_ normally checks for new mail in the currently open
+          folder and in the INBOX every few minutes.
+          There are some situations where automatic new-mail checking
+          does not work. For example, if a mail folder is opened using
+          the POP protocol or a newsgroup is being read using the NNTP
+          protocol, then new-mail checking is disabled.
+          It may be possible to check for new mail in these cases by
+          reopening the folder. _Pine_ does not do this for you
+          automatically, but you may do the commands manually to cause
+          this to happen. You reopen by going back to the folder list
+          screen from the message index screen with the "<" command, and
+          then going back into the message index screen with the ">"
+          command. (Actually, any method you would normally use to open a
+          folder will work the same as the "<" followed by ">" method.
+          For example, the GoTo Folder command will work, or you may use
+          L to go to the Folder List screen and Carriage Return to reopen
+          the folder.)
+          There are some cases where _Pine_ knows that reopening the
+          folder should be useful as a way to discover new mail. At the
+          time of this writing, connections made using the POP protocol,
+          news reading using the NNTP protocol, local news reading, and
+          local ReadOnly folders which are in the traditional UNIX or the
+          MMDF format all fall into this category. There are other cases
+          where it _may_ be a way to discover new mail, but _Pine_ has no
+          way of knowing, so it might also just be an exercise in
+          futility. All remote, ReadOnly folders other than those listed
+          just above fall into this category. The setting of this option
+          together with the type of folder controls how _Pine_ will react
+          to the apparent attempt to reopen a folder.
+          If you don't reopen, then you will just be back in the message
+          index with no change. You left the index and came back, but the
+          folder remained "open" the whole time. However, if you do
+          reopen the folder, the folder is closed and then reopened. In
+          this case, the current state of the open folder is lost. The
+          New status, Important and Answered flags, selected state, Zoom
+          state, collapsed or expanded state of threads, current message
+          number, and any other temporary state is all lost when the
+          reopen happens. For POP folders (but not NNTP newsgroups) the
+          Deleted flags are also lost.
+          In the possibilities listed below, the text says "POP/NNTP" in
+          several places. That really implies the case where _Pine_ knows
+          it is a good way to discover new mail, which is more than just
+          POP and NNTP, but POP and NNTP are the cases of most interest.
+          This option probably has more possible values than it deserves.
+          They are:
+          
+        Always reopen
+                _Pine_ will not ask whether you want to reopen but will
+                just do the reopen whenever you type a command that
+                implies a reopen, regardless of the access method. In
+                other words, it is assumed you would always answer Yes if
+                asked about reopening.
+                
+        Yes for POP/NNTP, Ask about other remote [Yes]
+                _Pine_ will assume a Yes answer if the access method is
+                POP or NNTP, but will ask you whether to reopen other
+                remote folders, with a default answer of Yes.
+                
+        Yes for POP/NNTP, Ask about other remote [No]
+                _Pine_ will assume a Yes answer if the access method is
+                POP or NNTP, but will ask you whether to reopen other
+                remote folders, with a default answer of No.
+                
+        Yes for POP/NNTP, No for other remote
+                _Pine_ will assume a Yes answer if the access method is
+                POP or NNTP, and will assume a No answer for all other
+                remote folders.
+                
+        Always ask [Yes]
+                _Pine_ will not differentiate based on access method. It
+                will always ask for all remote folders, with a default
+                answer of Yes.
+                
+        Always ask [No]
+                _Pine_ will not differentiate based on access method. It
+                will always ask for all remote folders, with a default
+                answer of No.
+                
+        Ask about POP/NNTP [Yes], No for other remote
+                _Pine_ will ask if the access method is POP or NNTP, with
+                a default answer of Yes. It will never attempt to reopen
+                other remote folders.
+                
+        Ask about POP/NNTP [No], No for other remote
+                This is the default. _Pine_ will ask if the access method
+                is POP or NNTP, with a default answer of No. It will
+                never attempt to reopen other remote folders.
+                
+        Never reopen
+                _Pine_ will never attempt to reopen already open folders.
+                
+          Remember, wherever it says POP or NNTP above it really means
+          POP or NNTP or any of the other situations where it is likely
+          that reopening is a good way to discover new mail.
+          There is an alternative that may be of useful in some
+          situations. Instead of manually checking for new mail you can
+          set up a Mail Drop and automatically check for new mail.
    _folder-sort-rule_
           This option controls the order in which folder list entries
           will be presented in the FOLDER LIST screen. Choose one of the
@@ -2485,27 +2622,18 @@ General Configuration Variables
    _mail-check-interval_
           This option specifies, in seconds, how often _Pine_ will check
           for new mail. If set to zero, new-mail checking is disabled.
-          There is a minimum value, normally 15 seconds.
-          There are some situations where new-mail checking does not
-          work. For example, if a mail folder is opened using the POP
-          protocol or a newsgroup is being read using the NNTP protocol,
-          then new-mail checking is disabled.
-          It may be possible to check for new mail in these cases by
-          reopening the folder. There is an experimental method for doing
-          this. You reopen by going back to the folder list screen from
-          the message index screen with the "<" command, and then going
-          back into the message index screen with the ">" command. If
-          _Pine_ knows that reopening the folder would be a way to
-          discover new mail, it offers to do the reopen. If you don't
-          agree to reopen (you answer No) then you are just back in the
-          message index with no change. However, if you agree to reopen
-          the folder by answering Yes, the folder is closed and then
-          reopened. In this case, the current state of the open folder is
-          lost. The New status, Important and Answered flags, selected
-          state, Zoom state, collapsed or expanded state of threads,
-          current message number, and any other temporary state is all
-          lost when the reopen happens. For POP folders (but not NNTP
-          newsgroups) the Deleted flags are also lost.
+          There is a minimum value, normally 15 seconds. The default
+          value is normally 150 seconds. his applies to the INBOX and to
+          the currently open folder if that is different from the INBOX.
+          There are some situations where automatic new-mail checking
+          does not work. See the discussion about new-mail checking in
+          folder-reopen-rule.
+          If the mailbox being check uses a Mail Drop then there is a
+          minimum time (maildrop-check-minimum) between new mail checks.
+          Because of this minimum you may notice that new mail does not
+          appear promptly when you expect it. The reason for this is to
+          protect the server from over-zealous opening and closing of the
+          Mail Drop folder, since that is a costly operation.
           A side effect of disabling mail checking is that there will be
           situations in which the user's IMAP connection will be broken
           due to inactivity timers on the server. Another side effect is
@@ -2514,11 +2642,40 @@ General Configuration Variables
           This variable was more important in previous versions of
           _Pine_. Now it is used only as the default for storing personal
           folders (and only if there are no folder-collections defined).
-          The default value is _~/mail_ on UNIX and _$HOME\MAIL_ on a PC.
+          The default value is _~/mail_ on UNIX and _${HOME}\MAIL_ on a
+          PC.
    _mailcap-search-path_
           This variable is used to replace _Pine_'s default mailcap file
           search path. It takes one or more file names (full paths must
           be specified) in which to look for mail capability data.
+   _maildrop-check-minimum_
+          New mail checking for a Mail Drop is a little different from
+          new mail checking for a regular folder. One of the differences
+          is that the connection to the Mail Drop is not kept open and so
+          the cost of checking (delay for you and additional load for the
+          server) may be significant. Because of this additional cost we
+          set a minimum time that must pass between checks. This minimum
+          only applies to the automatic checking done by _Pine_. If you
+          force a check by typing ^L or by typing the Next command when
+          you are at the end of a folder index, then the check is done
+          right away.
+          This option specifies, in seconds, the _minimum_ time between
+          Mail Drop new mail checks. You may want to set this minimum
+          high in order to avoid experiencing some of the delays
+          associated with the checks. Note that the time between checks
+          is still controlled by the regular Mail-Check-Interval option.
+          When _Pine_ is about to do an automatic check for new mail
+          (because the Mail-Check-Interval has expired) then if the time
+          since the last new mail check of any open Mail Drops has been
+          greater than the MailDrop-Check-Minimum, the Mail Drop is
+          checked for new mail as well. Therefore, it is only useful to
+          set this option to a value that is higher than the
+          Mail-Check-Interval.
+          If this option is set to zero, automatic Mail Drop new mail
+          checking is disabled. There is a minimum value, normally 60
+          seconds. The default value is normally 60 seconds as well. This
+          applies to the INBOX and to the currently open folder if that
+          is different from the INBOX.
    _mimetype-search-path_
           This variable is used to replace _Pine_'s default mime.types
           file search path. It takes one or more file names (full paths
@@ -2550,12 +2707,60 @@ General Configuration Variables
           "newsrc" news status and subscription file. If set, _Pine_ will
           take this value as the full pathname for the desired newsrc
           file.
+   _nntp-range_
+          This option applies only to newsgroups accessed using the NNTP
+          protocol. It does not, for example, apply to newsgroups
+          accessed using an IMAP-to-NNTP proxy.
+          When you open a connection to a News server using the NNTP
+          protocol, you normally have access to all of the articles in
+          each newsgroup. If a server keeps a large backlog of messages
+          it may speed performance some to restrict attention to only the
+          newer messages in a group. This option allows you to set how
+          many article numbers should be checked when opening a
+          newsgroup. You can think of "nntp-range" as specifying the
+          maximum number of messages you ever want to see. For example,
+          if you only ever wanted to look at the last 500 messages in
+          each newsgroup you could set this option to 500. In actuality,
+          it isn't quite that. Instead, for performance reasons, it
+          specifies the range of article numbers to be checked, beginning
+          with the highest numbered article and going backwards from
+          there. If there are messages that have been canceled or deleted
+          their article numbers are still counted as part of the range.
+          So, more precisely, setting the "nntp-range" will cause article
+          numbers
+          
+      last_article_number - nntp-range + 1 through last_article_number
+          to be considered when reading a newsgroup. The number of
+          messages that show up in your index will be less than or equal
+          to the value of "nntp-range".
+          The purpose of this option is simply to speed up access when
+          reading news. The speedup comes because _Pine_ can ignore all
+          but the last nntp-range article numbers, and can avoid
+          downloading any information about the ignored articles. There
+          is a cost you pay for this speedup. That cost is that there is
+          no way for you to see those ignored articles. The articles that
+          come before the range you specify are invisible to you and to
+          _Pine_, as if they did not exist at all. There is no way to see
+          those messages using, for example, an unexclude command or
+          something similar. The only way to see those articles is to set
+          this option high enough (or set it to zero) and then to reopen
+          the newsgroup.
+          If this option is set to 0 (which is also the default), then
+          the range is unlimited. This option applies globally to all
+          NNTP servers and to all newsgroups on those servers. There is
+          no way to set different values for different newsgroups or
+          servers.
    _nntp-server_
           One or more NNTP servers (host name or IP address) which _Pine_
           will use for reading and sending news. If you read and post
           news to and from a single NNTP server, you can get away with
           only setting the _nntp-server_ variable and leaving the
           _news-collections_ variable unset.
+          When you define an NNTP server, _Pine_ implicitly defines a
+          news collection for you, assuming that server as the news
+          server and assuming that you will use the NNTP protocol and a
+          local newsrc configuration file for reading news. See also
+          Configuring News.
    _normal-background-color_
    _normal-foreground-color_
           Normal Color.
@@ -2634,7 +2839,8 @@ General Configuration Variables
    _personal-name_
           Personal configuration file only. User's full personal name. On
           UNIX systems, the default is taken from the accounts data base
-          (/etc/passwd).
+          (/etc/passwd). The easiest way to change the full From address
+          is with the customized-hdrs variable.
    _personal-print-category_
           Personal configuration file only. This is the category that the
           default print command belongs to. There are three categories.
@@ -2669,16 +2875,30 @@ General Configuration Variables
    _pruned-folders_
           This variable allows you to define a list of one or more
           folders that _Pine_ will offer to prune for you in the same way
-          it automatically offers to prune your _sent-mail_ folder each
-          month. That is, once a month for each folder listed, _Pine_
-          will offer to move the contents of the folder to a new folder
-          of the same name but with the previous month's date appended.
-          _Pine_ will then look for any such date-appended folder names
-          created for a previous month, and offer each one it finds for
-          deletion. If you decline the first offer, no mail is moved and
-          no new folder is created. Folders listed are assumed to exist,
-          and the archive folders will be created, in the first
-          collection defined by the folder-collections variable.
+          it automatically offers to prune your "sent-mail" folder each
+          month. Each folder in this list must be a folder in your
+          default folder collection (the first folder collection if you
+          have more than one), and it is just the relative name of the
+          folder in the collection, not the fully-qualified name. It is
+          similar to sent-mail. Instead of something like
+          
+                   pruned-folders={servername}mail/folder
+          the correct value to use would be
+          
+                                   folder
+          There is an assumption here that your first collection is the
+          folders in
+          
+                              {servername}mail
+          Once a month, for each folder listed, _Pine_ will offer to move
+          the contents of the folder to a new folder of the same name but
+          with the previous month's date appended. _Pine_ will then look
+          for any such date-appended folder names created for a previous
+          month, and offer each one it finds for deletion.
+          If you decline the first offer, no mail is moved and no new
+          folder is created.
+          The new folders will be created in your default folder
+          collection.
    _pruning-rule_
           By default, _Pine_ will ask at the beginning of each month
           whether or not you want to rename your sent-mail folder to a
@@ -2901,7 +3121,8 @@ General Configuration Variables
           command will allow you to select which filter (or none) to
           apply to the message before it is sent. For security reasons,
           the full path of the filter program must be specified.
-          Sending filters do not work with _PC-Pine_.
+          Sending filters do not work with _PC-Pine_ and sending filters
+          are not used if the feature send-without-confirm is set.
           Command Modifying Tokens:
           
         __RECIPIENTS__
@@ -3046,6 +3267,9 @@ General Configuration Variables
                         _DAYDATE_ = Sat, 24 Oct 1998
           It is not possible to have a literal backslash followed by an
           expanded token.
+   _signature-background-color_
+   _signature-foreground-color_
+          Signature Color.
    _smtp-server_
           One or more SMTP servers (host name or IP address) which _Pine_
           will use for outgoing mail. If not set, _Pine_ passes outgoing
@@ -3377,11 +3601,15 @@ General Configuration Variables
           if user-domain is NOT set.
    _user-domain_
           Sets the domain or host name for the user, overriding the
-          system host or domain name. See the domain name section.
+          system host or domain name. See the domain name section. The
+          easiest way to change the full From address is with the
+          customized-hdrs variable.
    _user-id_
           _PC-Pine_ only and personal configuration file only. Sets the
           username that is placed on all outgoing messages. The username
-          is the part of the address that comes before the "@".
+          is the part of the address that comes before the "@". The
+          easiest way to change the full From address is with the
+          customized-hdrs variable.
    _user-input-timeout_
           If this is set to an integer greater than zero, then this is
           the number of _hours_ to wait for user input before _Pine_
@@ -3500,9 +3728,10 @@ Configuration Features
           normal inverse-video cursor (used to highlight the current item
           in a list) will be replaced by an _arrow_ cursor and other
           screen update optimizations for low-speed links (e.g. 2400 bps
-          dialup connections) will be activated. This might be useful if
-          _you_ know you have a slow speed link but for some reason _Pine_
-          doesn't know.
+          dialup connections) will be activated. One of the optimizations
+          is that colored index lines (set up with Indexcolor Rules) will
+          not be colored. This might be useful if _you_ know you have a
+          slow speed link but for some reason _Pine_ doesn't know.
    _auto-move-read-msgs_
           This feature controls an aspect of _Pine_'s behavior upon
           quitting. If set, and the read-message-folder variable is also
@@ -3596,7 +3825,7 @@ Configuration Features
           local domain (which _Pine_ normally does by default).
           A complete (fully-qualified) address is one containing a
           username followed by an _@_ symbol, followed by a host or
-          domain name (e.g. _jsmith@nowhere.edu_). An unqualified name is
+          domain name (e.g. _jsmith@example.com_). An unqualified name is
           one without the _@_ symbol and host or domain name (e.g.
           _jsmith_).
    _compose-send-offers-first-filter_
@@ -3871,7 +4100,8 @@ Configuration Features
           message to arrive at its destination.
           This feature isn't supported on all systems. All DOS and
           Windows, as well as several Unix ports, do not recognize this
-          feature.
+          feature. It is not possible to use background sending if the
+          feature send-without-confirm is set.
           Error handling is significantly different when this feature is
           enabled. Any message posting failure results in the message
           being appended to your _Interrupted_ mail folder. When you type
@@ -3914,6 +4144,8 @@ Configuration Features
           (DSN) which you would like. Most users will be happy with the
           default, and need not enable this feature. See the online help
           for more details.
+          It is not possible to use delivery status notifications if the
+          feature send-without-confirm is set.
           Note that this is not a method to request _READ_ receipts,
           which tells the sender when the receiver has read the message.
           In this case we're talking about notification of delivery to
@@ -4133,6 +4365,17 @@ John: on a job well done!
    _enable-search-and-replace_
           If set _Pine_'s composer offers the _R Replace_ command option
           inside the _W WhereIs_ command.
+   _enable-setlocale-ctype_
+          This is a hard to understand feature that should only be used
+          in rare cases. Normally, the C function call
+          
+                          setlocale(LC_CTYPE, "")
+          is not used by _Pine_ because it causes problems in some cases.
+          If you want to try turning it on, and it is available in your
+          operating system, setting this feature will turn it on. This
+          part of the locale has to do with identifying space characters
+          and alphanumeric characters in your locale. A related feature
+          is disable-setlocale-collate.
    _enable-sigdashes_
           If set and a _signature-file_ exists, the line consisting of
           the three characters "-- " (dash dash space) is included before
@@ -4158,7 +4401,17 @@ John: on a job well done!
           Book. Only the user@domain_name part of the address is put in
           the file.
    _enable-tray-icon_
-          _PC-Pine_ only.
+          _PC-Pine_ only. This option restores a behavior of previous
+          versions of PC-Pine. These versions, when started, installed a
+          PC-Pine icon in the notification tray of Window's Taskbar. The
+          primary use of this icon was to indicate new mail arrival by
+          turning red (while the Taskbar icon remained green).
+          Additionally, the icon now changes to yellow to signify that a
+          mail folder has been closed unexpectedly.
+          Rather than add another icon to the Taskbar, this version of
+          PC-Pine will color its Taskbar entry's icon red (as well as the
+          icon in the Window Title). This feature is only provided for
+          backwards compatibility.
    _enable-unix-pipe-cmd_
           This feature enables the _| Pipe_ command that sends the
           current message to the specified Unix command for external
@@ -4248,6 +4501,15 @@ John: on a job well done!
           recipients. If this feature is set, you will _not_ be prompted
           to confirm your intent to make only a copy of a message with no
           recipients.
+          This feature is closely related to
+          warn-if-blank-to-and-cc-and-newsgroups. The difference between
+          this feature and that feature is that this feature considers a
+          Bcc to be a recipient while that feature will ask for
+          confirmation even if there is a Bcc when there is no To, Cc, or
+          Newsgroup. The default values also differ. This feature
+          defaults to asking the question and you have to turn it off.
+          The warn-if-blank-to-and-cc-and-newsgroups feature defaults to
+          not asking unless you turn it on.
    _fcc-without-attachments_
           This features controls the way FCC's (File Carbon Copies) are
           made of the messages you send.
@@ -4593,6 +4855,15 @@ John: on a job well done!
           a performance problem so that the fetching of data takes
           significantly longer when partial fetching is used. Turning on
           this feature will turn off partial fetching.
+   _quell-personal-name-prompt_
+          _PC-Pine_personal-name. This prompt normally happens before
+          composing a message, and only happens when there is no personal
+          name already set.
+   _quell-user-id-prompt_
+          _PC-Pine_user-id if the information can be obtained from the
+          login name used to open the INBOX. Normally, this prompt
+          happens before composing a message, and only happens when there
+          is no user-id already set in the configuration.
    _quell-ssl-largeblocks_
           This feature (_PC-Pine_ only) changes the behavior of fetching
           messages and attachments so that the message data is fetched in
@@ -4658,6 +4929,12 @@ John: on a job well done!
           occurances this can cause an incompatibility with other mail
           access utilities. Enabling this hidden feature will cause _Pine_
           to refrain from writing this timezone to the "From " delimiter.
+   _return-to-inbox-without-confirm_
+          Normally, when you use the TAB command and there are no more
+          folders or newsgroups to visit, you are asked if you want to
+          return to the INBOX. If this feature is set you will not be
+          asked. It will be assumed that you do want to return to the
+          INBOX.
    _save-aggregates-copy-sequence_
           This feature will optimize an aggregate copy operation, if
           possible, by issuing a single IMAP _COPY_ command with a list
@@ -4721,6 +4998,22 @@ John: on a job well done!
           you to press _^T_ for a list of possible names. If set, the
           selected name will be used immediately, without further
           opportunity to confirm or edit the name.
+   _send-without-confirm_
+          By default, when you send or post a message you will be asked
+          to confirm with a question that looks something like:
+          
+                               Send message?
+          If this feature is set, you will _not_ be prompted to confirm
+          your intent to send and your message will be sent.
+          If this feature is set it disables some possibilities and
+          renders some other features meaningless. You will not be able
+          to use Sending Filters, Verbose sending mode, Background
+          Sending, or Delivery Status Notifications. These options are
+          normally available as suboptions in the Send prompt, but with
+          no Send prompt the options are gone.
+          A somewhat related feature is quell-extra-post-prompt. which
+          may be used to eliminate the extra confirmation question when
+          posting to a newsgroup.
    _separate-folder-and-directory-display_
           This feature affects folder collections wherein a folder and
           directory can have the same name. By default, _Pine_ displays
@@ -4855,14 +5148,14 @@ John: on a job well done!
           specification flags as follows:
           The /tls host flag, for example,
           
-                           {foo.bar.com/tls}INBOX
+                         {foo.example.com/tls}INBOX
           will over-ride this feature for the specified host by bypassing
           the SSL connection attempt. Moreover, with /tls specified, the
           connection attempt will fail if the service on port 143 does
           not offer TLS support.
           The /ssl host flag, for example,
           
-                           {foo.bar.com/ssl}INBOX
+                         {foo.example.com/ssl}INBOX
           will insist on an SSL connection for the specified host, and
           will fail if the SSL service on port 993 is not available.
           _Pine_ will not subsequently retry a connection on port 143 if
@@ -4922,9 +5215,31 @@ John: on a job well done!
           the Unix _fg_ command, but if this feature is set, it will be
           necessary to enter the _exit_ command instead.
    _vertical-folder-list_
-          This feature controls an aspect of Pine's FOLDER LIST screen.
+          This feature controls an aspect of _Pine_'s FOLDER LIST screen.
           If set, the folders will be listed alphabetically down the
           columns rather than across the columns as is the default.
+   _warn-if-subject-is-blank_
+          This feature affects _Pine_'s behavior when you send a message
+          being composed. If this option is set, _Pine_ will check to see
+          if the message about to be sent has a subject or not. If not,
+          you will be asked if you want to send the message anyway.
+   _warn-if-blank-to-and-cc-and-newsgroups_
+          This feature affects _Pine_'s behavior when you send a message
+          being composed. If this option is set, _Pine_ will check to see
+          if the message about to be sent has either a To address, a Cc
+          address, or a Newsgroup. If none of these is set, you will be
+          asked if you want to send the message anyway.
+          This feature is closely related to fcc-only-without-confirm.
+          _Pine_ will normally ask if you want to copy a message only to
+          the Fcc. This feature also applies to cases where there is a
+          Bcc but still no To, Cc, or Newsgroup. If the
+          Fcc-Only-Without-Confirm feature is set and you are sending a
+          message with only an Fcc, then you won't be asked about sending
+          with a blank To and Cc and Newsgroups header even if this
+          feature is set. Similarly, if you have already been asked if
+          you want to send to the Fcc only and you have answered Yes,
+          then you won't be asked again about sending with blank To, Cc,
+          and Newsgroups headers even if this feature is set.
           
 Hidden Config Variables and Features
 
@@ -4935,10 +5250,9 @@ Hidden Config Variables and Features
    be set in system-wide configuration files. Others are available to
    users but are thought to be of such little value to most users that
    their presence on the Config screens would cause more confusion than
-   help. Those features may only be set by hand editing the configuration
-   file. You may set the feature expose-hidden-config to cause most of
-   these hidden variables and features to show up in the Setup/Config
-   screen.
+   help. You may set the feature expose-hidden-config to cause most of
+   these hidden variables and features to show up at the bottom of the
+   Setup/Config screen.
    
   Hidden Variables Not Settable by Users
   
@@ -4970,8 +5284,10 @@ Hidden Config Variables and Features
        
    This group is usually correct but may be changed by system managers or
    users in special cases.
+     * disable-setlocale-collate
      * disable-these-authenticators
      * disable-these-drivers
+     * enable-setlocale-ctype
      * last-time-prune-questioned
      * new-version-threshold
      * remote-abook-history
@@ -5224,12 +5540,12 @@ Tokens for Index and Replying
    DAYOFWEEK
           This token represents the day of the week on which the message
           was sent, according to the "Date" header field. For example,
-          "Sun" or "Wed".
+          "Sunday" or "Wednesday".
           
-   DAYOFWEEKLONG
+   DAYOFWEEKABBREV
           This token represents the day of the week on which the message
           was sent, according to the "Date" header field. For example,
-          "Sunday" or "Wednesday".
+          "Sun" or "Wed".
           
    MONTHABBREV
           This token represents the month the message was sent, according
@@ -5468,6 +5784,11 @@ Tokens for Index and Replying
           This token represents the current time. This time is for a 12
           hour clock. It has the format HH:MMpm. For example, "5:28pm" or
           "11:13am".
+          
+   ROLENICK
+          This token represents the nickname of the role currently being
+          used. If no role is being used, then no text will be printed
+          for this token.
           
   _Token Available Only for Templates and Signatures_
   
@@ -5988,6 +6309,15 @@ Color Configuration
           Color2, ... If you define only the Quote1 Color, then the
           entire quote would be that color regardless of the quoting
           levels. By default, the Quote Colors are not defined.
+   _Signature Color_
+          The color _Pine_ uses for coloring the signature in the MESSAGE
+          TEXT screen. According to USENET conventions, the signature is
+          defined as the paragraph following the "sigdashes", that is,
+          the special line consisting of the three characters "-- "
+          (i.e., dash, dash, and space). _Pine_ allows for one empty line
+          right after the sigdashes to be considered as part of the
+          signature. By default, the Signature Color is not defined, so
+          will be the same as the Normal Color.
    _Prompt Color_
           The color _Pine_ uses for confirmation prompts and questions
           which appear in the status message line near the bottom of the
@@ -6853,9 +7183,9 @@ Patterns
    it may be the nickname you've given the folder. Here are some samples
    of specific folder names:
    
-                   {monet.art.nowhere.edu}mail/art-class
+                   {monet.art.example.com}mail/art-class
                                       
-                 {news.myisp.com/nntp}#news.comp.mail.pine
+                {news.example.com/nntp}#news.comp.mail.pine
                                       
                              mail/local-folder
                                       
@@ -6884,9 +7214,15 @@ Patterns
    zero. The special value "INF" may be used for the max value. It
    represents infinity.
    
+   Actually, this option may be defined as a list of intervals instead of
+   just a single interval. The list is separated by commas. It can look
+   like
+   
+                (min_age1,max_age1),(min_age2,max_age2),...
+                                      
    When there is an Age Interval defined, it is a match if the age, in
-   days, of the message is contained in the interval. The interval
-   includes both endpoints.
+   days, of the message is contained in any of the intervals. The
+   intervals include both endpoints.
    
    Even though this option is called Age, it isn't actually the _age_ of
    the message. Instead, it is how many days ago the message arrived in
@@ -6915,13 +7251,18 @@ Patterns
    32000. The special values "-INF" and "INF" may be used for the min and
    max values to represent negative and positive infinity.
    
+   Actually, a list of intervals may be used if you wish. A list would
+   look like
+   
+            (min_score1,max_score1),(min_score2,max_score2),...
+                                      
    When there is a Score Interval defined, it is a match if the score for
-   the message is contained in the interval. The interval includes both
-   endpoints. The score for a message is calculated by looking at every
-   Score rule defined and adding up the Score Values for the ones which
-   match the message. When deciding whether or not a Pattern matches a
-   message for purposes of calculating the score, the Score Interval is
-   ignored.
+   the message is contained in any of the intervals in the list. The
+   intervals include the endpoints. The score for a message is calculated
+   by looking at every Score rule defined and adding up the Score Values
+   for the ones which match the message. When deciding whether or not a
+   Pattern matches a message for purposes of calculating the score, the
+   Score Interval is ignored.
    
     Message Status
     
@@ -7078,9 +7419,16 @@ Patterns
           where "min_age" and "max_age" are non-negative integers. The
           special value "INF" may be used for the max value. It
           represents infinity.
+          In rare cases it may be useful to use the more general form of
+          the value, which is a comma-separated list of intervals. It
+          would look something like:
+          
+                (min_age1,max_age1),(min_age2,max_age2),...
           When there is an Age Interval defined, it is a match if the
           age, in days, of the message is contained in the interval. The
-          interval includes both endpoints.
+          interval includes both endpoints. If the option is set to a
+          list of intervals then it is a match if the age of the message
+          is contained in any of the intervals.
           Even though this option is called Age, it isn't actually the
           _age_ of the message. Instead, it is how many days ago the
           message arrived in one of your folders. If the current time is
@@ -7115,9 +7463,14 @@ Patterns
           and 32000. The special values "-INF" and "INF" can be used for
           the min and max values. These represent negative and positive
           infinity.
+          Actually, the value may be a list of intervals rather than just
+          a single interval if that is useful. The elements of the list
+          are separated by commas like:
+          
+            (min_score1,max_score1),(min_score2,max_score2),...
           When there is a Score Interval defined, it is a match if the
-          score for the message is contained in the interval. The
-          interval includes both endpoints. The score for a message is
+          score for the message is contained in any of the intervals. The
+          intervals include both endpoints. The score for a message is
           calculated by looking at every scoring rule defined and adding
           up the Score Values for the rules which match the message.
    _Current Folder Type_
@@ -7143,9 +7496,9 @@ Patterns
           folders, it may be the nickname you've given the folder. Here
           are a couple samples of specific folder names:
           
-                   {monet.art.nowhere.edu}mail/art-class
+                   {monet.art.example.com}mail/art-class
           
-                 {news.myisp.com/nntp}#news.comp.mail.pine
+                {news.example.com/nntp}#news.comp.mail.pine
           The easiest way to fill in the "Folder" field is to use the T
           command which is available when the "Folder" line is hilighted.
           Note that you won't be able to edit the "Folder" line unless
@@ -7246,6 +7599,69 @@ Patterns
           available when the "Abook List" line is highlighted. Note that
           you won't be able to edit the "Abook List" line unless the
           option is set to one of the two "Specific", values.
+          
+Configuring News
+
+   _Pine_ can access news folders in any one of three different ways:
+   
+   REMOTE NNTP
+          Using the Network News Transport Protocol (NNTP) to access news
+          on a remote news server. In this case the newsrc file is stored
+          on the machine where _Pine_ is running.
+          
+          To specify a remote news-collection accessed via NNTP use the
+          SETUP/collectionList screen's "Add" command. Set the Server:
+          value to the NNTP server's hostname appended with the
+          communication method "/service=NNTP", and set the Path: value
+          to the "#news." namespace (without the quotes).
+          
+          Instead of specifying a news-collection, you may simply set the
+          nntp-server option, which will cause _Pine_ to create a default
+          news-collection for you. Another NNTP option which may be of
+          interest is nntp-range.
+          
+   REMOTE IMAP
+          Using the Internet Message Access Protocol (IMAP) to access
+          news on a remote news server. In this case, your newsrc file is
+          stored on the news server, in your home directory, so you must
+          have an account on the news server, but you would be running
+          _Pine_ on a different machine. The news server must be running
+          an IMAPd server process.
+          
+          To specify a remote news-collection accessed via IMAP use the
+          SETUP/collectionList screen's "Add" command. Set the Server:
+          value to the IMAP server's hostname, and set the Path: value to
+          the "#news." namespace (without the quotes).
+          
+   LOCAL
+          Using local file access to the news database. In this case,
+          your newsrc file is stored on the news server, in your home
+          directory, so you must have an account on the news server, and
+          you would be running _Pine_ on the same machine.
+          
+          To specify a local news-collection use the SETUP/collectionList
+          screen's "Add" command. Leave the Server: value blank, and set
+          the Path: value to the "#news." namespace (without the quotes).
+          
+   NOTE: Should no news-collection be defined as above, _Pine_ will
+   automatically create one using the Setup/Config screen's "nntp-server"
+   variable's value if defined. The collection will be created as a
+   "Remote NNTP" as described above.
+   
+   If you are a _PC-Pine_ user, either option 1 (NNTP) or option 2 (IMAP)
+   is possible. If you don't have an account on the news server, or if
+   the news server is not running an IMAP daemon, then you must use NNTP.
+   (If you are not sure, ask your service provider, university, or
+   company for help.) In this case, your Unix .newsrc file can be
+   transferred to your PC. A good place to put it would be in the same
+   directory as your PINERC file, under the name NEWSRC, but you can
+   specify a different location.
+   
+   Other configuration features related to news are
+   Enable-8bit-Nntp-Posting. Compose-Sets-Newsgroup-Without-Confirm,
+   News-Approximates-New-Status, News-Deletes-Across-Groups,
+   News-Offers-Catchup-On-Close, News-Post-Without-Validation,
+   News-Read-in-Newsrc-Order, and Quell-Extra-Post-Prompt.
      _________________________________________________________________
 
                     Notes on Configuration and Preferences
@@ -7417,47 +7833,394 @@ Syntax for Collections
    configuration file.
      _________________________________________________________________
    
-Syntax for Remote Folders
+Syntax for Folder Names
 
    Remote folders are distinguished from local folders by a leading host
    name bracketed by '{' and '}'. The path and folder name immediately
-   following the closing bracket, '}', is interpreted by the IMAP server
-   and is in a form compatible with that server (i.e., path delimiters
-   and naming syntax relative to that server).
+   following the closing bracket, '}', is interpreted by the remote
+   server and is in a form compatible with that server (i.e., path
+   delimiters and naming syntax relative to that server).
    
-   Typically, a folder name without any path description is understood to
-   reside in the user's "home directory" (i.e., in some way the user's
-   personal, writable file area), as are incomplete path designations.
-   However, the IMAP specification does not require that unqualified
-   folder names live in one's home directory, so some IMAP servers may
-   require fully qualified names. An example of a remote folder
-   specification would be,
-        {host.dept.washington.edu}mail/saved-messages
+   The full syntax for a _Pine_ folder name looks like
+   
+     [{<remote-specification>}][#<namespace>]<namespace-specific-part>
+                                      
+   The square brackets ([]) mean that the part is optional.
+   
+   If there is no remote-specification, then the folder name is
+   interpreted locally on the computer running _Pine_. Local folder names
+   depend on the operating system used by the computer running _Pine_, as
+   well as the configuration of that system. For example,
+   "C:\PINE\FOLDERS\OCT-94" might exist on a PC, and
+   "~/mail/september-1994" might be a reasonable folder name on a system
+   running Unix.
+   
+   _Pine_ users have the option of using folders which are stored on some
+   other computer. _Pine_ accesses remote folders via IMAP (the Internet
+   Message Access Protocol), or in the case of news, via NNTP (the
+   Network News Transport Protocol). To be able to access remote folders
+   in _Pine_, the remote host must be running the appropriate server
+   software (imapd or nntpd) and you must correctly specify the name of
+   the folder to _Pine_, including the domain name of the remote machine.
+   For example,
+   
+                        {monet.art.example.com}INBOX
+                                      
+   could be a remote folder specification, and so could
+   
+              {unixhost.art.example.com}~/mail/september-1994
+                                      
+   and
+   
+                  {winhost.art.example.com}\mymail\SEP-94
+                                      
+   Note that in the case of remote folders, the directory/file path in
+   the specification is determined by the operating system of the remote
+   computer, _not_ by the operating system of the computer on which you
+   are running _Pine_.
+   
+   As you can tell, the name of the computer is in {} brackets followed
+   immediately by the name of the folder. (In each of these cases the
+   optional namespace is missing.) If, as in these examples, there is no
+   remote access protocol specified, then IMAP is assumed. Check Server
+   Name Syntax for a more detailed look at what options can be placed
+   between the brackets. If there are no brackets at all, then the folder
+   name is interpreted locally on the computer on which you are running
+   _Pine_.
+   
+   To the right of the brackets when a server name is present, or at the
+   start of the foldername if no server is present, the sharp sign, "#",
+   holds special meaning. It indicates a folder name outside the area
+   reserved for your personal folders. In fact, it's used to indicate
+   both the name of the folder, and a special phrase telling _Pine_ how
+   to interpret the name that follows.
+   
+   So, for example, _Pine_ can be used to access a newsgroup that might
+   be available on your computer using:
+   
+                            #news.comp.mail.pine
+                                      
+   The sharp sign indicates the folder name is outside your personal
+   folder area. The "news." phrase after it tells _Pine_ to interpret the
+   remainder of the name as a newsgroup.
+   
+   Similarly, to access a newsgroup on your IMAP server, you might use
+   something like:
+   
+               {wharhol.art.example.com}#news.comp.mail.misc
+                                      
+   There are a number of such special phrases (or "namespaces")
+   available. For a more detailed explanation read about Namespaces.
+   
+   Note that "INBOX" has special meaning in both local and remote folder
+   names. The name INBOX refers to your "principal incoming message
+   folder" and will be mapped to the actual file name used for your INBOX
+   on any given host. Therefore, a name like "{xxx.art.example.com}INBOX"
+   refers to whatever file is used to store incoming mail for you on that
+   particular host.
+     _________________________________________________________________
+   
+Server Name Syntax for Folders
 
-   This example simply specifies a folder named ``saved-messages'' on the
-   imap server ``host.dept.washington.edu'', in the ``mail'' subdirectory
-   of the user's home directory. Easy isn't it?
+   This section describes the syntax which may be used for the server
+   name associated with a remote folder.
    
-   To confuse things a bit, qualifiers are permitted within the brackets
-   following the host name. These qualifiers consist of a slash ('/')
-   character followed by a keyword or keyword and value, and have the
-   effect of modifying how the connection is made to the host specified.
-   An example of such a specification might be,
-        {news.u.washington.edu/nntp}#news.comp.mail.mime
+   A server name is the hostname of the server. It's a good idea to use
+   the host's fully-qualified network name.
+   
+                              foo.example.com
+                                      
+   However, IP addresses are allowed if surrounded with square-brackets.
+   
+                                [127.0.0.1]
+                                      
+   An optional network port number may be supplied by appending a colon
+   (:) followed by the port number to the server name. By default, the
+   IMAP port number, 143, is used.
+   
+                            foo.example.com:port
+                                      
+   Besides server name and optional port number, various other optional
+   parameters may be supplied that alter _Pine_'s interaction with the
+   server. A parameter is supplied by appending a slash (/) character
+   followed by the parameter's name and, depending on the particular
+   parameter, the value assigned to that name, to the server name (and
+   optional port number). Parameter names are _not_ case sensitive.
+   Currently supported parameters include:
+   
+   User
+          This parameter requires an associated value, and is intended to
+          provide the username identifier with which to establish the
+          server connection. An example might be:
+          
+                                /user=katie
+                                      
+   SSL
+          This is a unary parameter indicating communication with the
+          server should take place over a Secure Socket Layer connection.
+          The server must support this method, and be prepared to accept
+          connections on the appropriate port (993 by default). _Pine_
+          must be linked with an SSL library for this option to be
+          operational.
+          
+                                    /ssl
+                                      
+   NoValidate-Cert
+          Do not validate certificates (for TLS or SSL connections) from
+          the server. This is needed if the server uses self-signed
+          certificates or if _Pine_ cannot validate the certificate for
+          some other known reason.
+          
+   Anonymous
+          This is a unary parameter (that means it does not have a value)
+          indicating that the connection be logged in as "anonymous"
+          rather than a specific user. Not all servers offer anonymous
+          access; those which do generally only offer read-only access to
+          certain "public" folders.
+          
+                                 /anonymous
+                                      
+   Secure
+          This is a unary parameter indicating that the connection use
+          the most secure authentication method mutually supported by
+          _Pine_ and the server. _Pine_ is capable of authenticating
+          connections to the server using several methods. By default,
+          _Pine_ will attempt each method until either a connection is
+          established or the list of methods is exhausted. This parameter
+          causes _Pine_ to instead fail the connection if the first
+          (generally most "secure") method fails.
+          
+                                  /secure
+                                      
+   Debug
+          This is a unary parameter indicating that the connection be
+          established in a verbose mode. Basically, it causes _Pine_ to
+          log the communication with the server in _Pine_'s debug file.
+          Normally, the pine -d command-line flag would be used instead.
+          
+   NoRsh
+          By default, _Pine_ attempts to login using "rsh", the UNIX
+          remote shell program. Including "NoRsh" will cause connections
+          to this server to skip the "rsh" attempt. This might be useful
+          to avoid long timeouts caused by rsh firewalls, for example.
+          
+   Service
+          This parameter requires an associated value. The default value
+          is "IMAP" which indicates communication with the server based
+          on the IMAP4rev1 protocol (defined in RFC 3501 -- see
+          http://www.imap.org/docs/rfc3501.html). Other service values
+          include:
+          
+        NNTP
+                This value indicates communication with the server takes
+                place via the Network News Transfer Protocol. Use this to
+                define a collection of newsgroups on a remote news
+                server. So
+                
+                               /service=NNTP
+                                      
+                or just
+                
+                                   /NNTP
+                                      
+                is the way to specify NNTP access.
+                
+        POP3
+                This value indicates communication with the server takes
+                place via the Post Office Protocol 3 protocol.
+                
+                               /service=POP3
+                                      
+                or just
+                
+                                   /POP3
+                                      
+                Note that there are several important issues to consider
+                when selecting this option:
+                
+              1. POP3 provides access to only your INBOX. In other words,
+                 secondary folders such as your "saved-messages" are
+                 inaccessible.
+              2. _Pine_'s implementation of POP3 does not follow the
+                 traditional POP model and will leave your mail on the
+                 server. Refer to the Mail Drop functionality for a
+                 possible way around this problem.
+              3. See the discussion about new-mail checking in
+                 Folder-Reopen-Rule.
+                 
+   Note that it is possible to include more than one parameter in a
+   server specification by concatenating the parameters. For example:
+   
+           foo.example.com:port/user=katie/novalidate-cert/debug
+     _________________________________________________________________
+   
+Folder Namespaces
 
-   This specifies an altogether different access method: access via the
-   Network News Transport Protocol (NNTP).
+   A _Pine_ folder name looks like
    
-   Some other possible qualifiers are /user=username, which says to login
-   as user _username_; /secure, which says to use the most secure
-   authentication method supported by _Pine_ and the server and fail to
-   connect if that authentication fails; /imap; /pop3; /debug; /ssl,
-   which says to use a secure SSL connection; /novalidate-cert, which
-   tells _Pine_ to not attempt to validate certificates from SSL server;
-   and /anonymous.
+    [{<remote-specification>}][#<namespace>][<namespace-specific-part>]
+                                      
+   The local part of a folder name has an optional "Namespace" which
+   tells _Pine_ how to interpret the rest of the name.
    
-   There is also an optional :portnum following the hostname. This would
-   specify a non-standard port number to connect to.
+   By default the folder name is interpreted as defining a section of
+   your personal folder area. This area and how you specify it are
+   defined by the server, if one is specified, or, typically, the home
+   directory, if no server is defined.
+   
+   If a namespace is specified, it begins with the sharp, "#", character
+   followed by the name of the namespace and then the namespace's
+   path-element-delimiter. Aside from the path's format, namespaces can
+   also imply access rights, content policy, audience, location, and,
+   occasionally, access methods.
+   
+   Each server exports its own set (possibly of size one) of namespaces.
+   Hence, it's likely communication with your server's administrator will
+   be required for specific configurations. Some of the more common
+   namespaces, however, include:
+   
+   #news.
+          This specifies a set of folders in the newsgroup namespace.
+          Newsgroup names are hierarchically defined with each level
+          delimited by a period.
+          
+                            #news.comp.mail.pine
+                                      
+   #public/
+          This specifies a folder area that the server may export to the
+          general public.
+          
+   #shared/
+          This specifies a folder area that the folder may export to
+          groups of users.
+          
+   #ftp/
+          This specifies a folder area that is the same as that it may
+          have exported via the "File Transfer Protocol".
+          
+   #mh/
+          This specifies the personal folder area associated with folders
+          and directories that were created using the MH message handling
+          system.
+          
+   #move/
+          This namespace is interpreted locally by _Pine_. It has an
+          unusual interpretation and format.
+          
+           #move<DELIM><MailDropFolder><DELIM><DestinationFolder>
+                                      
+          The #move namespace is followed by two folder names separated
+          by a delimiter character. The delimiter character may be any
+          character which does not appear in the MailDropFolder name. The
+          meaning of #move is that mail will be copied from the
+          MailDropFolder to the DestinationFolder and then deleted (if
+          possible) from the MailDropFolder. Periodic checks at frequency
+          Mail-Check-Interval, but with a minimum time between checks set
+          by MailDrop-Check-Minimum, are made for new mail arriving in
+          the MailDropFolder. An example which copies mail from a POP
+          inbox to a local folder follows
+          
+          #move+{popserver.example.com/pop3/ssl}inbox+local folder
+                                      
+          To you it appears that mail is being delivered to the local
+          folder when it is copied from the MailDropFolder, and you read
+          mail from the local folder.
+          
+          Note that if the DestinationFolder does not exist then the
+          messages are not copied from the MailDropFolder. A #move folder
+          may only be used as an Incoming folder or an Inbox. When you
+          are in the FOLDER LIST of Incoming Message Folders (after
+          turning on the enable-incoming-folders option) the Add command
+          has a subcommand "Use Mail Drop" which may be helpful for
+          defining the folder in your _Pine_ configuration. The same is
+          true when you edit the Inbox-Path option in Setup/Config. Each
+          of these configuration methods will also create the
+          DestinationFolder if it doesn't already exist. If you are
+          having problems, make sure the DestinationFolder exists.
+          
+   In addition, the server may support access to other user's folders,
+   provided you have suitable permissions. Common methods use a prefix of
+   either "~user/", or "/user/" to indicate the root of the other user's
+   folder area.
+     _________________________________________________________________
+   
+What is a Mail Drop?
+
+   In some situaions it may make sense to have your mail delivered to one
+   folder (the Mail Drop) and then when you want to read mail that has
+   been delivered to the Mail Drop folder _Pine_ will move it to another
+   destination folder. Often the Mail Drop will be a remote folder and
+   messages will be moved from there to a local destination folder.
+   
+   One example where this might make sense is if the Mail Drop folder is
+   accessible only with the POP protocol. You could designate your POP
+   inbox as the Mail Drop folder and have _Pine_ move mail from there to
+   a local (on the same machine _Pine_ is running on) destination folder,
+   where you'll read it.
+   
+   A Mail Drop may only be used as your Inbox or as an Incoming folder.
+   
+   There is no attempt to synchronize the contents of the destination
+   folder with the contents of the Mail Drop folder. All that happens is
+   that all of the messages in the Mail Drop folder are copied to the
+   destination folder and then they are deleted and expunged (if
+   possible) from the Mail Drop folder. The next time a check for new
+   mail is made, any messages in the Mail Drop folder are once again
+   copied to the destination folder and deleted and expunged from the
+   Mail Drop folder. (If the Mail Drop folder is a news group, then the
+   messages can't be expunged from the newsgroup. Instead, only Recent
+   messages are copied from the newsgroup to the destination folder.)
+   
+   Configuration of a Mail Drop is a little different from configuration
+   of a folder which does not use a Mail Drop because you have to specify
+   two folder names instead of one. The two folders may be any types of
+   folders that _Pine_ can normally use. They don't have to be a remote
+   folder and a local folder, that is simply the most common usage. When
+   you use a Mail Drop folder _Pine_ will periodically re-open the Mail
+   Drop to check for new mail. The new mail checks will happen at the
+   frequency set with the Mail-Check-Interval option, but with a minimum
+   time (MailDrop-Check-Minimum) between checks. Because of this minimum
+   you may notice that new mail does not appear promptly when you expect
+   it. The reason for this is to protect the server from over-zealous
+   opening and closing of the Mail Drop folder. If the user initiates the
+   check by typing ^L or the Next command when at the end of the folder
+   index, then the check will happen, regardless of how long it has been
+   since the previous check.
+   
+   If there is new mail, that mail will be copied to the destination
+   folder and then will be deleted from the Mail Drop. Note that using a
+   Mail Drop with a local destination folder does not make sense if you
+   read mail from more than one machine, because the mail is downloaded
+   to the destination folder (which is accessible from only one machine)
+   and deleted from the Mail Drop.
+   
+   The actual syntax used by _Pine_ for a folder that uses a Mail Drop
+   is:
+   
+           #move<DELIM><MailDropFolder><DELIM><DestinationFolder>
+                                      
+   The brackets are not literal.
+   
+                                  <DELIM>
+                                      
+   is a single character which does not appear in the MailDropFolder
+   name. If the name doesn't contain spaces then it can be a space
+   character. The two folder names are full technical folder names as
+   used by _Pine_. Here are a couple examples to give you an idea what is
+   being talked about:
+   
+            #move {popserver.example.com/pop3}inbox localfolder
+                                      
+           #move+{nntpserver.example.com/nntp}inbox+local folder
+                                      
+   A #move folder may only be used as an Incoming folder or an Inbox.
+   When you are in the FOLDER LIST of Incoming Message Folders (after
+   turning on the Enable-Incoming-Folders option) the Add command has a
+   subcommand "Use Mail Drop" which may be helpful for defining the
+   folder in your _Pine_ configuration. The same is true when you edit
+   the Inbox-Path option in Setup/Config.
+   if it doesn't already exist. If you are having problems, make sure the
+   DestinationFolder exists.
      _________________________________________________________________
    
 Sorting a Folder
@@ -7628,7 +8391,7 @@ Configuration Inheritance
    For Unix _Pine_, the personal configuration file is normally the file
    .pinerc in the user's home directory. This can be changed with the -p
    command line flag. For _PC-Pine_, the personal configuration file is
-   in $PINERC or <PineRC registry value> or $HOME\PINE\PINERC or
+   in $PINERC or <PineRC registry value> or ${HOME}\PINE\PINERC or
    <PINE.EXE dir>\PINERC. This can be changed with the -p command line
    flag. If -p or $PINERC is used, the configuration data may be in a
    local file or a remote config folder.
@@ -7651,8 +8414,8 @@ Configuration Inheritance
    the same local directory that the regular config file is located in.
    If the regular config file is remote then _PC-Pine_ looks in the local
    directory specified by the "-aux local_directory" command line
-   argument, or the directory $HOME\PINE, or in <PINE.EXE directory> for
-   a file named "PINERCEX".
+   argument, or the directory ${HOME}\PINE, or in <PINE.EXE directory>
+   for a file named "PINERCEX".
    
    To reiterate, the value of a configuration option is taken from the
    last location in the list above in which it is set. Or, thinking about

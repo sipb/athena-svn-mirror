@@ -90,7 +90,7 @@ spell(f, n)
     int    wlen, bsize, ret, begi, endi, offset, i, qlen;
     char   wbuf[NLINE], *lbuf;
     FILE   *p;
-    LINE  *lp;
+    LINE   *lbp;  /* pointer to line before current line */
     struct StrStResult result;
 
     setimark(0, 1);
@@ -104,19 +104,24 @@ spell(f, n)
     qlen = (Pmaster && Pmaster->quote_str) ? strlen(Pmaster->quote_str) : 0;
     lbuf = (char *) malloc(sizeof(char));
     bsize = 0;
-    for(lp = lforw(curbp->b_linep); lp != curbp->b_linep; lp = lforw(lp)){
+    for(lbp = curbp->b_linep; lbp != curbp->b_linep->l_bp; lbp = lforw(lbp)){
+	/* 
+	 * before, we were accessing the current line, but since that can
+	 * potentially be free()'d (like in chword()), we should only access
+	 * the line from the line before (hence all the lforw(lbp)'s).
+	 */
 	if(qlen){				/* quoted line? */
 	    i = 0;
-	    if(qlen <= llength(lp))
-	      while(i < qlen && Pmaster->quote_str[i] == lgetc(lp, i).c)
+	    if(qlen <= llength(lforw(lbp)))
+	      while(i < qlen && Pmaster->quote_str[i] == lgetc(lforw(lbp), i).c)
 		i++;
 
 	    if(i == qlen)
 	      continue;
 	}
 
-	if(bsize < llength(lp) + 2){		/* resize line buffer? */
-	    bsize = llength(lp);
+	if(bsize < llength(lforw(lbp)) + 2){	/* resize line buffer? */
+	    bsize = llength(lforw(lbp));
 	    if(!(lbuf = (char *)realloc(lbuf, (bsize + 1) * sizeof(char)))){
 		emlwrite("Can't reallocate internal buffer!", NULL);
 		ret = 0;			/* FAILURE ! */
@@ -124,8 +129,8 @@ spell(f, n)
 	    }
 	}
 	  
-	for(i = 0; i < llength(lp); i++)	/* copy line to buffer */
-	  lbuf[i] = lgetc(lp, i).c;
+	for(i = 0; i < llength(lforw(lbp)); i++)  /* copy line to buffer */
+	  lbuf[i] = lgetc(lforw(lbp), i).c;
 
 	lbuf[i] = '\0';				/* initialize */
 	begi = endi = offset = 0;
@@ -151,7 +156,7 @@ spell(f, n)
 		  if(result.code & ST_EXIT)
 		    emlwrite("Spell Checking Cancelled", NULL);
 
-		  lp = NULL;			/* stop looking */
+		  lbp = NULL;		        /* stop looking */
 		  ret  = 0;
 		  break;
 	      }
@@ -162,7 +167,7 @@ spell(f, n)
 	      }
 	  }
 
-	if(!lp)					/* more to come? */
+	if(!lbp)				/* more to come? */
 	  break;
     }
 
@@ -185,6 +190,10 @@ spell(f, n)
  *	returns:
  *		TRUE upon success
  *		FALSE otherwise
+ *
+ * BUG - since it only moves to the first occurence, there is
+ *       no possibility to ignore the first misspelling and
+ *       change the second.
  */
 movetoword(w)
   char *w;

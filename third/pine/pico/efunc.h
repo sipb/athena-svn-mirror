@@ -1,5 +1,5 @@
 /*
- * $Id: efunc.h,v 1.1.1.2 2003-02-12 08:01:39 ghudson Exp $
+ * $Id: efunc.h,v 1.1.1.3 2003-05-01 01:13:24 ghudson Exp $
  *
  * Program:	Pine's composer and pico's function declarations
  *
@@ -245,7 +245,7 @@ extern	int sstrcasecmp PROTO((const QSType *, const QSType *));
 extern	int strucmp PROTO((char *, char *));
 extern	int struncmp PROTO((char *, char *, int));
 extern	void chkptinit PROTO((char *, int));
-extern	void set_collation PROTO((void));
+extern	void set_collation PROTO((int, int));
 extern	int (*pcollator)();
 extern  COLOR_PAIR *new_color_pair PROTO((char *, char *));
 extern	COLOR_PAIR *pico_get_cur_color PROTO((void));

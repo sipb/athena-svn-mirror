@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pine.c,v 1.1.1.2 2003-02-12 08:02:32 ghudson Exp $";
+static char rcsid[] = "$Id: pine.c,v 1.1.1.3 2003-05-01 01:13:34 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -223,14 +223,13 @@ main(argc, argv)
 {
     ARGDATA_S	 args;
     int		 rv;
+    long	 rvl;
     struct pine *pine_state;
     gf_io_t	 stdin_getc = NULL;
     char        *args_for_debug = NULL, *init_pinerc_debugging = NULL;
 #ifdef DYN
     char	 stdiobuf[64];
 #endif
-
-    set_collation();
 
     /*----------------------------------------------------------------------
           Set up buffering and some data structures
@@ -376,7 +375,11 @@ main(argc, argv)
       mal_debug(ps_global->debug_malloc);
 #endif
 
-    if(!ps_global->convert_sigs)
+    if(!ps_global->convert_sigs
+#ifdef _WINDOWS
+       && !ps_global->install_flag
+#endif /* _WINDOWS */
+	)
       init_debug();
 
     if(args_for_debug){
@@ -482,6 +485,19 @@ main(argc, argv)
 
     init_vars(pine_state);
 
+    set_collation(F_OFF(F_DISABLE_SETLOCALE_COLLATE, ps_global),
+		  F_ON(F_ENABLE_SETLOCALE_CTYPE, ps_global));
+
+#ifdef _WINDOWS
+    if(ps_global->install_flag){
+	init_install_get_vars();
+
+	if(ps_global->prc)
+	  free_pinerc_s(&ps_global->prc);
+
+	exit(0);
+    }
+#endif
     if(ps_global->convert_sigs){
 	if(convert_sigs_to_literal(ps_global, 0) == -1){
 	    fprintf(stderr, "trouble converting sigs\n");
@@ -513,6 +529,7 @@ main(argc, argv)
       (void)SVAR_TCP_READWARN(pine_state, rv, tmp_20k_buf);
     mail_parameters(NULL, SET_READTIMEOUT, (void *)(long)rv);
 
+    rv = 0;
     if(pine_state->VAR_TCPWRITEWARNTIMEO){
 	if(!SVAR_TCP_WRITEWARN(pine_state, rv, tmp_20k_buf))
 	  if(rv == 0 || rv > 4)				/* making sure */
@@ -521,16 +538,36 @@ main(argc, argv)
 
     mail_parameters(NULL, SET_TIMEOUT, (void *) pine_tcptimeout);
 
+    rv = 15;
     if(pine_state->VAR_RSHOPENTIMEO){
 	if(!SVAR_RSH_OPEN(pine_state, rv, tmp_20k_buf))
 	  if(rv == 0 || rv > 4)				/* making sure */
 	    mail_parameters(NULL, SET_RSHTIMEOUT, (void *)(long)rv);
     }
 
+    rv = 15;
     if(pine_state->VAR_SSHOPENTIMEO){
 	if(!SVAR_SSH_OPEN(pine_state, rv, tmp_20k_buf))
 	  if(rv == 0 || rv > 4)				/* making sure */
 	    mail_parameters(NULL, SET_SSHTIMEOUT, (void *)(long)rv);
+    }
+
+    rvl = 60L;
+    if(pine_state->VAR_MAILDROPCHECK){
+	if(!SVAR_MAILDCHK(pine_state, rvl, tmp_20k_buf)){
+	    if(rvl == 0L)
+	      rvl = (60L * 60L * 24L * 100L);	/* 100 days */
+
+	    if(rvl >= 60L)			/* making sure */
+	      mail_parameters(NULL, SET_SNARFINTERVAL, (void *) rvl);
+	}
+    }
+
+    rvl = 0L;
+    if(pine_state->VAR_NNTPRANGE){
+	if(!SVAR_NNTPRANGE(pine_state, rvl, tmp_20k_buf))
+	  if(rvl > 0L)
+	    mail_parameters(NULL, SET_NNTPRANGE, (void *) rvl);
     }
 
     /*
@@ -888,6 +925,13 @@ main(argc, argv)
 	if(args.action == aaURL){
 	    url_tool_t f;
 
+	    if(pine_state->in_init_seq){
+		pine_state->in_init_seq = pine_state->save_in_init_seq = 0;
+		clear_cursor_pos();
+		if(pine_state->free_initial_cmds)
+		  fs_give((void **) &(pine_state->free_initial_cmds));
+		pine_state->initial_cmds = 0;
+	    }
 	    if(f = url_local_handler(args.data.url)){
 		if(!((*f)(args.data.url) && pine_state->next_screen))
 		  goodnight_gracey(pine_state, 0);	/* no return */
@@ -2146,6 +2190,22 @@ setup_menu(ps)
     so_puts(store, "(E) Exit Setup:\n");
     so_puts(store, "    This puts you back at the Main Menu.\n");
 
+    if(exc){
+	so_puts(store, "\n");
+	so_puts(store, "(X) eXceptions:\n");
+	so_puts(store, "    This command is different from the rest. It is not actually a command\n");
+	so_puts(store, "    itself. Instead, it is a toggle which modifies the behavior of the\n");
+	so_puts(store, "    other commands. You toggle Exceptions editing on and off with this\n");
+	so_puts(store, "    command. When it is off you will be editing (changing) your regular\n");
+	so_puts(store, "    configuration file. When it is on you will be editing your exceptions\n");
+	so_puts(store, "    configuration file. For example, you might want to type the command \n");
+	so_puts(store, "    \"eXceptions\" followed by \"Kolor\" to setup different screen colors\n");
+	so_puts(store, "    on a particular platform.\n");
+	so_puts(store, "    (Note: this command does not show up on the keymenu at the bottom of\n");
+	so_puts(store, "    the screen unless you press \"O\" for \"Other Commands\" --but you don't\n");
+	so_puts(store, "    need to press the \"O\" in order to invoke the command.)\n");
+    }
+
     if(printer){
 	so_puts(store, "\n");
 	so_puts(store, "(P) Printer:\n");
@@ -2214,7 +2274,8 @@ setup_menu(ps)
     so_puts(store, "    the screen unless you press \"O\" for \"Other Commands\" --but you don't\n");
     so_puts(store, "    need to press the \"O\" in order to invoke the command.)\n");
 
-    if(exc){
+    /* put this down here for people who don't have exceptions */
+    if(!exc){
 	so_puts(store, "\n");
 	so_puts(store, "(X) eXceptions:\n");
 	so_puts(store, "    This command is different from the rest. It is not actually a command\n");
@@ -2225,9 +2286,14 @@ setup_menu(ps)
 	so_puts(store, "    configuration file. For example, you might want to type the command \n");
 	so_puts(store, "    \"eXceptions\" followed by \"Kolor\" to setup different screen colors\n");
 	so_puts(store, "    on a particular platform.\n");
-	so_puts(store, "    (Note: this command does not show up on the keymenu at the bottom of\n");
-	so_puts(store, "    the screen unless you press \"O\" for \"Other Commands\" --but you don't\n");
-	so_puts(store, "    need to press the \"O\" in order to invoke the command.)\n");
+	so_puts(store, "    (Note: this command does not do anything unless you have a configuration\n");
+	so_puts(store, "    with exceptions enabled (you don't have that). Common ways to enable an\n");
+	so_puts(store, "    exceptions config are the command line argument \"-x <exception_config>\";\n");
+	so_puts(store, "    or the existence of the file \".pinercex\" for Unix Pine, or \"PINERCEX\")\n");
+	so_puts(store, "    for PC-Pine.)\n");
+	so_puts(store, "    (Another note: this command does not show up on the keymenu at the bottom\n");
+	so_puts(store, "    of the screen unless you press \"O\" for \"Other Commands\" --but you\n");
+	so_puts(store, "    don't need to press the \"O\" in order to invoke the command.)\n");
     }
 
     memset(&sargs, 0, sizeof(SCROLL_S));
@@ -3904,10 +3970,14 @@ void
 panic(message)
     char *message;
 {
-    end_screen(NULL, -1);
-    end_keyboard(ps_global != NULL ? F_ON(F_USE_FK,ps_global) : 0);
-    end_tty_driver(ps_global);
-    end_signals(1);
+    char buf[256];
+
+    if(ps_global->ttyo){
+	end_screen(NULL, -1);
+	end_keyboard(ps_global != NULL ? F_ON(F_USE_FK,ps_global) : 0);
+	end_tty_driver(ps_global);
+	end_signals(1);
+    }
     if(filter_data_file(0))
       unlink(filter_data_file(0));
 
@@ -3915,16 +3985,16 @@ panic(message)
 
     /* intercept c-client "free storage" errors */
     if(strstr(message, "free storage"))
-      sprintf(tmp_20k_buf, "No more available memory.\nPine Exiting");
+      sprintf(buf, "No more available memory.\nPine Exiting");
     else
-      sprintf(tmp_20k_buf, "Problem detected: \"%s\".\nPine Exiting.",
-	      message);
+      sprintf(buf, "Problem detected: \"%.200s%s\".\nPine Exiting.",
+	      message, strlen(message) > 200 ? "..." : "");
 
 #ifdef _WINDOWS
     /* Put up a message box. */
-    mswin_messagebox (tmp_20k_buf, 1);
+    mswin_messagebox (buf, 1);
 #else
-    fprintf(stderr, "\n\n%s\n", tmp_20k_buf);
+    fprintf(stderr, "\n\n%s\n", buf);
 #endif
 
 #ifdef DEBUG
@@ -3975,9 +4045,15 @@ pine_mail_open(stream, mailbox, flags)
 {
     MAILSTREAM *retstream;
 
-    dprint(7, (debugfile, "pine_mail_open: opening \"%s\"%s\n", 
+    dprint(7, (debugfile,
+	       "pine_mail_open: opening \"%s\"%s flag=0x%x %s%s%s%s\n", 
 	       mailbox ? mailbox : "(NULL)",
-	       stream ? "" : " (stream was NULL)"));
+	       stream ? "" : " (stream was NULL)",
+	       flags,
+	       flags & OP_HALFOPEN ? " OP_HALFOPEN" : "",
+	       flags & OP_READONLY ? " OP_READONLY" : "",
+	       flags & OP_SILENT ? " OP_SILENT" : "",
+	       flags & OP_DEBUG ? " OP_DEBUG" : ""));
 
 #ifdef	DEBUG
     if(ps_global->debug_imap > 3 || ps_global->debugmem)
@@ -4056,23 +4132,36 @@ pine_mail_create(stream, mailbox)
     MAILSTREAM *stream;
     char       *mailbox;
 {
-    MAILSTREAM *ourstream = stream;
+    MAILSTREAM *origstream = stream;
     long        return_val;
+    char        source[MAILTMPLEN], *target = NULL;
 
     dprint(7, (debugfile, "pine_mail_create: creating \"%s\"%s\n", 
 	       mailbox ? mailbox : "(NULL)",
 	       stream ? "" : " (stream was NULL)"));
 
+    if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	mailbox = target;
+	dprint(7, (debugfile,
+		   "pine_mail_create: #move special case, creating \"%s\"\n", 
+		   mailbox ? mailbox : "(NULL)"));
+    }
+
     /*
      * We don't really need this anymore, since we are now using IMAPTRYALT.
      * We'll leave it since it works and since it gives us OP_DEBUG.
      */
-    if(stream == NULL && F_ON(F_PREFER_ALT_AUTH, ps_global)){
+    if(stream == NULL
+       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
+           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
 	DRIVER *d;
 
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap")){
-	    long flags = (OP_HALFOPEN | OP_TRYALT | OP_SILENT);
+	    long flags = (OP_HALFOPEN | OP_SILENT);
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      flags |= OP_TRYALT;
 
 #ifdef	DEBUG
 	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
@@ -4085,12 +4174,242 @@ pine_mail_create(stream, mailbox)
 
     return_val = mail_create(stream, mailbox);
 
-    if(stream != ourstream)
+    if(stream != origstream)
       pine_mail_close(stream);
 
     return(return_val);
 }
 
+
+/*
+ * Pine wrapper around mail_delete.
+ */
+long
+pine_mail_delete(stream, mailbox)
+    MAILSTREAM *stream;
+    char       *mailbox;
+{
+    MAILSTREAM *origstream = stream;
+    long        return_val;
+    char        source[MAILTMPLEN], *target = NULL;
+
+    dprint(7, (debugfile, "pine_mail_delete: deleting \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
+    if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	mailbox = target;
+	dprint(7, (debugfile,
+		   "pine_mail_delete: #move special case, deleting \"%s\"\n", 
+		   mailbox ? mailbox : "(NULL)"));
+    }
+
+    /*
+     * We don't really need this anymore, since we are now using IMAPTRYALT.
+     * We'll leave it since it works and since it gives us OP_DEBUG.
+     */
+    if(stream == NULL
+       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
+           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+	DRIVER *d;
+
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+	    long flags = (OP_HALFOPEN | OP_SILENT);
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      flags |= OP_TRYALT;
+
+#ifdef	DEBUG
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+	      flags |= OP_DEBUG;
+#endif
+
+	    stream = pine_mail_open(NULL, mailbox, flags);
+	}
+    }
+
+    return_val = mail_delete(stream, mailbox);
+
+    if(stream != origstream)
+      pine_mail_close(stream);
+
+    return(return_val);
+}
+
+
+/*
+ * Pine wrapper around mail_append.
+ */
+long
+pine_mail_append_full(stream, mailbox, flags, date, message)
+    MAILSTREAM *stream;
+    char       *mailbox;
+    char       *flags;
+    char       *date;
+    STRING     *message;
+{
+    MAILSTREAM *origstream = stream;
+    long        return_val;
+    char        source[MAILTMPLEN], *target = NULL;
+
+    dprint(7, (debugfile, "pine_mail_append_full: appending to \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
+    if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	mailbox = target;
+	dprint(7, (debugfile,
+	   "pine_mail_append_full: #move special case, appending to \"%s\"\n", 
+		   mailbox ? mailbox : "(NULL)"));
+    }
+
+    /*
+     * We don't really need this anymore, since we are now using IMAPTRYALT.
+     * We'll leave it since it works and since it gives us OP_DEBUG.
+     */
+    if(stream == NULL
+       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
+           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+	DRIVER *d;
+
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+	    long flags = (OP_HALFOPEN | OP_SILENT);
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      flags |= OP_TRYALT;
+
+#ifdef	DEBUG
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+	      flags |= OP_DEBUG;
+#endif
+
+	    stream = pine_mail_open(NULL, mailbox, flags);
+	}
+    }
+
+    return_val = mail_append_full(stream, mailbox, flags, date, message);
+
+    if(stream != origstream)
+      pine_mail_close(stream);
+
+    return(return_val);
+}
+
+
+/*
+ * Pine wrapper around mail_append.
+ */
+long
+pine_mail_append_multiple(stream, mailbox, af, data)
+    MAILSTREAM *stream;
+    char       *mailbox;
+    append_t    af;
+    void       *data;
+{
+    MAILSTREAM *origstream = stream;
+    long        return_val;
+    char        source[MAILTMPLEN], *target = NULL;
+
+    dprint(7, (debugfile, "pine_mail_append_multiple: appending to \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
+    if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	mailbox = target;
+	dprint(7, (debugfile,
+         "pine_mail_append_multiple: #move special case, appending to \"%s\"\n",
+		   mailbox ? mailbox : "(NULL)"));
+    }
+
+    if(stream == NULL
+       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
+           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+	DRIVER *d;
+
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+	    long flags = (OP_HALFOPEN | OP_SILENT);
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      flags |= OP_TRYALT;
+
+#ifdef	DEBUG
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+	      flags |= OP_DEBUG;
+#endif
+
+	    stream = pine_mail_open(NULL, mailbox, flags);
+	}
+    }
+
+    return_val = mail_append_multiple(stream, mailbox, af, data);
+
+    if(stream != origstream)
+      pine_mail_close(stream);
+
+    return(return_val);
+}
+
+
+/*
+ * Pine wrapper around mail_copy.
+ */
+long
+pine_mail_copy_full(stream, sequence, mailbox, options)
+    MAILSTREAM *stream;
+    char       *sequence;
+    char       *mailbox;
+    long        options;
+{
+    MAILSTREAM *origstream = stream;
+    long        return_val;
+    char        source[MAILTMPLEN], *target = NULL;
+
+    dprint(7, (debugfile, "pine_mail_copy_full: copying to \"%s\"%s\n", 
+	       mailbox ? mailbox : "(NULL)",
+	       stream ? "" : " (stream was NULL)"));
+
+    if(check_for_move_mbox(mailbox, source, sizeof(source), &target)){
+	mailbox = target;
+	dprint(7, (debugfile,
+	   "pine_mail_copy_full: #move special case, copying to \"%s\"\n", 
+		   mailbox ? mailbox : "(NULL)"));
+    }
+
+    /*
+     * We don't really need this anymore, since we are now using IMAPTRYALT.
+     * We'll leave it since it works and since it gives us OP_DEBUG.
+     */
+    if(stream == NULL
+       && (F_ON(F_PREFER_ALT_AUTH, ps_global)
+           || (ps_global->debug_imap > 3 || ps_global->debugmem))){
+	DRIVER *d;
+
+	if((d = mail_valid (NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "imap")){
+	    long flags = (OP_HALFOPEN | OP_SILENT);
+
+	    if(F_ON(F_PREFER_ALT_AUTH, ps_global))
+	      flags |= OP_TRYALT;
+
+#ifdef	DEBUG
+	    if(ps_global->debug_imap > 3 || ps_global->debugmem)
+	      flags |= OP_DEBUG;
+#endif
+
+	    stream = pine_mail_open(NULL, mailbox, flags);
+	}
+    }
+
+    return_val = mail_copy_full(stream, sequence, mailbox, options);
+
+    if(stream != origstream)
+      pine_mail_close(stream);
+
+    return(return_val);
+}
 
 
 /*----------------------------------------------------------------------

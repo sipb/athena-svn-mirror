@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.1.1.2 2003-02-12 08:02:19 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.1.1.3 2003-05-01 01:12:43 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailview.c,v 1.1.1.2 2003-02-12 08:02:19 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -330,6 +330,7 @@ void        clear_cur_embedded_color PROTO((void));
 char	   *url_embed PROTO((int));
 void	    embed_color PROTO((COLOR_PAIR *, gf_io_t));
 int         color_a_quote PROTO((long, char *, LT_INS_S **, void *));
+int         color_signature PROTO((long, char *, LT_INS_S **, void *));
 int         color_headers PROTO((long, char *, LT_INS_S **, void *));
 int	    url_hilite_hdr PROTO((long, char *, LT_INS_S **, void *));
 int	    url_launch PROTO((HANDLE_S *));
@@ -1430,6 +1431,7 @@ format_message(msgno, env, body, handlesp, flgs, pc)
     HEADER_S  h;
     ATTACH_S *a;
     int       show_parts, error_found = 0, seen = 1, width;
+    int       is_in_sig = OUT_SIG_BLOCK;
     gf_io_t   gc;
     MESSAGECACHE *mc;
 
@@ -1513,6 +1515,14 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 		|| F_ON(F_SCAN_ADDR, ps_global))
 	       && handlesp){
 		gf_link_filter(gf_line_test, gf_line_test_opt(url_hilite, handlesp));
+	    }
+
+	    if((flgs & FM_DISPLAY)
+	       && !(flgs & FM_NOCOLOR)
+	       && pico_usingcolor()
+	       && ps_global->VAR_SIGNATURE_FORE_COLOR
+	       && ps_global->VAR_SIGNATURE_BACK_COLOR){
+		gf_link_filter(gf_line_test, gf_line_test_opt(color_signature, &is_in_sig));
 	    }
 
 	    if((flgs & FM_DISPLAY)
@@ -3383,6 +3393,111 @@ color_a_quote(linenum, line, ins, local)
 
 
 /*
+ * Paint the signature.
+ * 
+ * Patch contributed by Nicolas Christin <nicolas@cs.virginia.edu>, 2003
+ */
+int
+color_signature(linenum, line, ins, is_in_sig)
+    long       linenum;
+    char      *line;
+    LT_INS_S **ins;
+    void      *is_in_sig;
+{
+    struct variable *vars = ps_global->vars;
+    int             *in_sig_block;
+    COLOR_PAIR      *col = NULL;
+
+    if(is_in_sig == NULL)
+      return 0;
+
+    in_sig_block = (int *) is_in_sig;
+    
+    if(!strcmp(line, SIGDASHES))
+      *in_sig_block = START_SIG_BLOCK; 
+    else if(*line == '\0')
+      /* 
+       * Suggested by Eduardo: allow for a blank line right after 
+       * the sigdashes. 
+       */
+      *in_sig_block = (*in_sig_block == START_SIG_BLOCK)
+			  ? IN_SIG_BLOCK : OUT_SIG_BLOCK;
+    else
+      *in_sig_block = (*in_sig_block != OUT_SIG_BLOCK)
+			  ? IN_SIG_BLOCK : OUT_SIG_BLOCK;
+
+    if(*in_sig_block != OUT_SIG_BLOCK
+       && VAR_SIGNATURE_FORE_COLOR && VAR_SIGNATURE_BACK_COLOR
+       && (col = new_color_pair(VAR_SIGNATURE_FORE_COLOR,
+				VAR_SIGNATURE_BACK_COLOR))){
+	if(!pico_is_good_colorpair(col))
+	  free_color_pair(&col);
+    }
+    
+    if(col){
+	char *p, fg[RGBLEN + 1], bg[RGBLEN + 1], rgbbuf[RGBLEN + 1];
+
+	ins = gf_line_test_new_ins(ins, line,
+				   color_embed(col->fg, col->bg),
+				   (2 * RGBLEN) + 4);
+
+        strcpy(fg, color_to_asciirgb(VAR_NORM_FORE_COLOR));
+	strcpy(bg, color_to_asciirgb(VAR_NORM_BACK_COLOR));
+
+	/*
+	 * Loop watching colors, and override with 
+	 * signature color whenever the normal foreground and background
+	 * colors are in force.
+	 */
+
+	for(p = line; *p; )
+	  if(*p++ == TAG_EMBED){
+
+	      switch(*p++){
+		case TAG_HANDLE :
+		  p += *p + 1;	/* skip handle key */
+		  break;
+
+		case TAG_FGCOLOR :
+		  sprintf(rgbbuf, "%.*s", RGBLEN, p);
+		  p += RGBLEN;	/* advance past color value */
+		  
+		  if(!colorcmp(rgbbuf, VAR_NORM_FORE_COLOR)
+		     && !colorcmp(bg, VAR_NORM_BACK_COLOR))
+		    ins = gf_line_test_new_ins(ins, p,
+					       color_embed(col->fg,NULL),
+					       RGBLEN + 2);
+		  break;
+
+		case TAG_BGCOLOR :
+		  sprintf(rgbbuf, "%.*s", RGBLEN, p);
+		  p += RGBLEN;	/* advance past color value */
+		  
+		  if(!colorcmp(rgbbuf, VAR_NORM_BACK_COLOR)
+		     && !colorcmp(fg, VAR_NORM_FORE_COLOR))
+		    ins = gf_line_test_new_ins(ins, p,
+					       color_embed(NULL,col->bg),
+					       RGBLEN + 2);
+
+		  break;
+
+		default :
+		  break;
+	      }
+	  }
+ 
+	ins = gf_line_test_new_ins(ins, line + strlen(line),
+				   color_embed(VAR_NORM_FORE_COLOR,
+					       VAR_NORM_BACK_COLOR),
+				   (2 * RGBLEN) + 4);
+        free_color_pair(&col);
+    }
+
+    return 0;
+}
+
+
+/*
  * Line filter to add color to displayed headers.
  */
 int
@@ -3845,8 +3960,15 @@ url_launch(handle)
 	 * is double-quoted we change that to single quotes.
 	 */
 #ifdef	_WINDOWS
-	if(*toolp == '*' || (*toolp == '\"' && *(toolp+1) == '*'))
-	  quotable = 0;		/* never quote */
+	/*
+	 * It should be safe to not quote any of the characters from the
+	 * string below.  It was quoting with '?' and '&' in a URL, which is
+	 * unnecessary.  Also the quoting code below only quotes with
+	 * ' (single quote), so we'd want it to at least do double quotes
+	 * instead, for Windows.
+	 */
+	if(toolp)
+	  quotable = 0;		/* always never quote */
 	else
 #endif
 	/* quote shell specials */
@@ -4881,9 +5003,10 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     DetachErrStyle  style;
     int		    flags;
 {
-    FILTLIST_S	filters[12];
+    FILTLIST_S	filters[13];
     char       *err, *charset;
     int		filtcnt = 0, error_found = 0, column, wrapit;
+    int         is_in_sig = OUT_SIG_BLOCK;
 
     column = (flags & FM_DISPLAY) ? ps_global->ttyo->screen_cols : 80;
     wrapit = column;
@@ -4901,6 +5024,8 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 		filters[filtcnt++].data = gf_convert_charset_opt(tab);
 	    }
 	}
+
+	fs_give((void **) &charset);
     }
 
     if(!ps_global->pass_ctrl_chars){
@@ -4923,6 +5048,20 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 	   && handlesp){
 	    filters[filtcnt].filter = gf_line_test;
 	    filters[filtcnt++].data = gf_line_test_opt(url_hilite, handlesp);
+	}
+
+	/*
+	 * First, paint the signature.
+	 * Disclaimers noted below for coloring quotes apply here as well.
+	 */
+	if((flags & FM_DISPLAY)
+	   && !(flags & FM_NOCOLOR)
+	   && pico_usingcolor()
+	   && VAR_SIGNATURE_FORE_COLOR
+	   && VAR_SIGNATURE_BACK_COLOR){
+	    filters[filtcnt].filter = gf_line_test;
+	    filters[filtcnt++].data = gf_line_test_opt(color_signature,
+						       &is_in_sig);
 	}
 
 	/*
@@ -6938,6 +7077,16 @@ scrolltool(sparms)
 		     /*
 		      * Translate the screen's column into the
 		      * line offset to start on...
+		      *
+		      * This makes it so search_text never returns -3
+		      * so we don't know it is the same match. That's
+		      * because we start well after the current handle
+		      * (at the next handle) and that causes us to
+		      * think the one we just matched on is a different
+		      * one from before. Can't think of an easy way to
+		      * fix it, though, and it isn't a big deal. We still
+		      * match, we just don't say current line contains
+		      * the only match.
 		      */
 		     start_row = h->loc->where.row;
 		     start_col = scroll_handle_index(start_row,
@@ -6976,10 +7125,9 @@ scrolltool(sparms)
 		   while(h = h->next);
 	     }
 	     else if(found_on == -3){
-		 found_on = start_row;
+		 whereis_pos.row = found_on = start_row;
 		 found_on_col = start_col - 1;
-		 whereis_pos.row = whereis_pos.row - cur_top_line + 1;
-		 q_status_message(SM_ORDER | SM_DING, 0, 3,
+		 q_status_message(SM_ORDER, 1, 3,
 				  "Current line contains the only match");
 	     }
 
@@ -7496,8 +7644,11 @@ update_scroll_titlebar(cur_top_line, redraw)
     if(st->parms->use_indexline_color
        && ps_global->titlebar_color_style != TBAR_COLOR_DEFAULT){
 	raw_msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
-	ss = mail_newsearchset();
-	ss->first = ss->last = (unsigned long) raw_msgno;
+	if(raw_msgno > 0L && ps_global->mail_stream
+	   && raw_msgno <= ps_global->mail_stream->nmsgs){
+	    ss = mail_newsearchset();
+	    ss->first = ss->last = (unsigned long) raw_msgno;
+	}
 
 	if(ss){
 	    PAT_STATE  *pstate = NULL;
@@ -8522,6 +8673,7 @@ search_scroll_text(start_line, start_col, word, cursor_pos, offset_in_line)
 	cursor_pos->row = start_line;
 	cursor_pos->col = scroll_handle_column(SROW(start_line),
 				     *offset_in_line = wh - SLINE(start_line));
+
 	return(start_line);
     }
 

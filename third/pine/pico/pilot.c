@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pilot.c,v 1.1.1.1 2001-02-19 07:02:21 ghudson Exp $";
+static char rcsid[] = "$Id: pilot.c,v 1.1.1.2 2003-05-01 01:13:23 ghudson Exp $";
 #endif
 /*
  * Program:	Main stand-alone Pine File Browser routines
@@ -43,7 +43,7 @@ static char rcsid[] = "$Id: pilot.c,v 1.1.1.1 2001-02-19 07:02:21 ghudson Exp $"
 
 extern char *gethomedir();
 
-char *pilot_args PROTO((int, char **));
+char *pilot_args PROTO((int, char **, int *, int *));
 void  pilot_args_help PROTO((void));
 void  pilot_display_args_err PROTO((char *, char **, int));
 
@@ -75,6 +75,8 @@ char *args_pilot_args[] = {
 "\t -crf color \treverse foreground color",
 "\t -crb color \treverse background color",
 #endif
+"\t -setlocale_ctype\tdo setlocale(LC_CTYPE) if available",
+"\t -no_setlocale_collate\tdo not do setlocale(LC_COLLATE)",
 "", 
 "\t All arguments may be followed by a directory name to start in.",
 "",
@@ -92,6 +94,8 @@ char    *argv[];
     char  filename[NSTRING];
     char  filedir[NSTRING];
     char *dir;
+    int   setlocale_collate = 1;
+    int   setlocale_ctype = 0;
  
     timeo = 0;
     Pmaster = NULL;			/* turn OFF composer functionality */
@@ -99,18 +103,19 @@ char    *argv[];
     opertree[0] = '\0'; opertree[NLINE] = '\0';
     filename[0] ='\0';
     gmode |= MDBRONLY;			/* turn on exclusive browser mode */
-    set_collation();
 
     /*
      * Read command line flags before initializing, otherwise, we never
      * know to init for f_keys...
      */
-    if(dir = pilot_args(argc, argv)){
+    if(dir = pilot_args(argc, argv, &setlocale_collate, &setlocale_ctype)){
 	strcpy(filedir, dir);
 	fixpath(filedir, NSTRING);
     }
     else
       strcpy(filedir, gethomedir(NULL));
+
+    set_collation(setlocale_collate, setlocale_ctype);
 
     if(!vtinit())			/* Displays.            */
       exit(1);
@@ -146,9 +151,11 @@ char    *argv[];
  *       returns the name of directory to start in if specified, else NULL
  */
 char *
-pilot_args(ac, av)
+pilot_args(ac, av, setlocale_collate, setlocale_ctype)
     int    ac;
     char **av;
+    int   *setlocale_collate;
+    int   *setlocale_ctype;
 {
     int   c, usage = 0;
     char *str;
@@ -160,6 +167,14 @@ Loop:
       /* while more chars in this argument */
       while(*++*av){
 
+	if(strcmp(*av, "setlocale_ctype") == 0){
+	    *setlocale_ctype = 1;
+	    goto Loop;
+	}
+	else if(strcmp(*av, "no_setlocale_collate") == 0){
+	    *setlocale_collate = 0;
+	    goto Loop;
+	}
 #if	defined(DOS) || defined(OS2)
 	if(strcmp(*av, "cnf") == 0
 	   || strcmp(*av, "cnb") == 0

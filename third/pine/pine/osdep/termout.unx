@@ -201,7 +201,7 @@ init_screen()
     }
 
     /* and make sure icon text starts out consistent */
-    icon_text(NULL);
+    icon_text(NULL, IT_NEWMAIL);
     fflush(stdout);
 }
         
@@ -290,7 +290,7 @@ end_screen(message, exit_val)
     }
 
     if(F_ON(F_ENABLE_XTERM_NEWMAIL, ps_global) && getenv("DISPLAY"))
-      icon_text("xterm");
+      icon_text("xterm", IT_NEWMAIL);
 
     fflush(stdout);
 
@@ -964,8 +964,9 @@ int c;
  Result: string indicated become our "icon" text
   ----*/
 void
-icon_text(s)
+icon_text(s, type)
     char *s;
+    int   type;
 {
     static char *old_s;
     static enum {ukn, yes, no} xterm;

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailindx.c,v 1.1.1.2 2003-02-12 08:02:07 ghudson Exp $";
+static char rcsid[] = "$Id: mailindx.c,v 1.1.1.3 2003-05-01 01:13:26 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ static char rcsid[] = "$Id: mailindx.c,v 1.1.1.2 2003-02-12 08:02:07 ghudson Exp
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -600,6 +600,8 @@ mail_index_screen(state)
     if(THRD_AUTO_VIEW() && state->viewing_a_thread
        && state->view_skipped_index)
       unview_thread(state, state->mail_stream, state->msgmap);
+
+    adjust_cur_to_visible(state->mail_stream, state->msgmap);
 
     if(THRD_INDX())
       thread_index_screen(state);
@@ -1423,12 +1425,14 @@ view_a_thread:
 		    dprint(3,(debugfile, "Special delete: msg %s\n",
 			      long2string(mn_get_cur(msgmap))));
 		    {
-			long	      raw;
+			long	      raw, t;
 			int	      del = 0;
 
 			raw = mn_m2raw(msgmap, mn_get_cur(msgmap));
 			if(!mail_elt(stream, raw)->deleted){
-			    clear_index_cache_ent(mn_get_cur(msgmap));
+			    if((t = mn_get_cur(msgmap)) > 0L)
+			      clear_index_cache_ent(t);
+
 			    mail_setflag(stream,long2string(raw),"\\DELETED");
 			    update_titlebar_status();
 			    del++;
@@ -1446,12 +1450,14 @@ view_a_thread:
 		    dprint(3,(debugfile, "Special UNdelete: msg %s\n",
 			      long2string(mn_get_cur(msgmap))));
 		    {
-			long	      raw;
+			long	      raw, t;
 			int	      del = 0;
 
 			raw = mn_m2raw(msgmap, mn_get_cur(msgmap));
 			if(mail_elt(stream, raw)->deleted){
-			    clear_index_cache_ent(mn_get_cur(msgmap));
+			    if((t = mn_get_cur(msgmap)) > 0L)
+			      clear_index_cache_ent(t);
+
 			    mail_clearflag(stream, long2string(raw),
 					   "\\DELETED");
 			    update_titlebar_status();
@@ -2922,6 +2928,7 @@ static INDEX_PARSE_T itokens[] = {
     {"YEAR2DIGIT",	iYear2Digit,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"ADDRESS",		iAddress,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"MAILBOX",		iMailbox,	FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
+    {"ROLENICK",       	iRoleNick,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"INIT",		iInit,		FOR_INDEX|FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"CURDATE",		iCurDate,	FOR_REPLY_INTRO|FOR_TEMPLATE},
     {"CURDATEISO",	iCurDateIso,	FOR_REPLY_INTRO|FOR_TEMPLATE},
@@ -4155,6 +4162,8 @@ format_index_index_line(idata)
     dprint(8, (debugfile, "=== format_index_line(%ld,%ld) ===\n",
 	       idata ? idata->msgno : -1, idata ? idata->rawno : -1));
 
+    memset(str_buf, 0, sizeof(str_buf));
+
     hline = get_index_cache(idata->msgno);
 
     /* is this a collapsed thread index line? */
@@ -4867,6 +4876,8 @@ format_index_index_line(idata)
 	cdesc->ctype != iNothing;
 	cdesc++)
       if(width = cdesc->width){
+	  char *q;
+
 	  /* space between columns */
 	  if(p > buffer){
 	      *p++ = ' ';
@@ -4877,6 +4888,29 @@ format_index_index_line(idata)
 	    sprintf(p, "%-*.*s", width, width, cdesc->string);
 	  else
 	    sprintf(p, "%*.*s", width, width, cdesc->string);
+
+	  /*
+	   * Make sure there are no nulls in the part we were supposed to
+	   * have just written. This may happen if sprintf returns an
+	   * error, but we don't want to check for that because some
+	   * sprintfs don't return anything. If there are nulls, rewrite it.
+	   */
+	  for(q = p; q < p+width; q++)
+	    if(*q == '\0')
+	      break;
+	    
+	  if(q < p+width){
+	      strncpy(p, repeat_char(width, ' '), width);
+	      p[width] = '\0';
+	      /* throw a ? in there too */
+	      if(width > 4){
+		  p[(width-1)/2 - 1] = '?';
+		  p[(width-1)/2    ] = '?';
+		  p[(width-1)/2 + 1] = '?';
+	      }
+	      else if(width > 2)
+		p[(width-1)/2] = '?';
+	  }
 
 	  p += width;
       }
@@ -6870,6 +6904,7 @@ index_search(state, stream, command_line, msgmap)
     char        prompt[MAX_SEARCH+50], new_string[MAX_SEARCH+1];
     HelpType	help;
     static char search_string[MAX_SEARCH+1] = { '\0' };
+    HLINE_S    *hl;
     static ESCKEY_S header_search_key[] = { {0, 0, NULL, NULL },
 					    {ctrl('Y'), 10, "^Y", "First Msg"},
 					    {ctrl('V'), 11, "^V", "Last Msg"},
@@ -6979,7 +7014,8 @@ index_search(state, stream, command_line, msgmap)
 	i <= mn_get_total(msgmap) && !ps_global->intr_pending;
 	i++)
       if(!msgline_hidden(stream, msgmap, i, 0) &&
-	 srchstr(build_header_line(state, stream, msgmap, i, NULL)->line,
+	 srchstr(((hl = build_header_line(state, stream, msgmap, i, NULL))
+		  && THRD_INDX() && hl->tihl) ? hl->tihl->line : hl->line,
 		 search_string)){
 	  selected++;
 	  if(select_all)
@@ -6991,7 +7027,8 @@ index_search(state, stream, command_line, msgmap)
     if(i > mn_get_total(msgmap))
       for(i = 1; i < sorted_msg && !ps_global->intr_pending; i++)
         if(!msgline_hidden(stream, msgmap, i, 0) &&
-	   srchstr(build_header_line(state, stream, msgmap, i, NULL)->line,
+	   srchstr(((hl = build_header_line(state, stream, msgmap, i, NULL))
+		    && THRD_INDX() && hl->tihl) ? hl->tihl->line : hl->line,
 		   search_string)){
 	    selected++;
 	    if(select_all)
@@ -7005,6 +7042,12 @@ index_search(state, stream, command_line, msgmap)
 			  select_all ? " Selected set may be incomplete.":"");
     }
     else if(select_all){
+	if(selected
+	   && any_lflagged(msgmap, MN_SLCT) > 0L
+	   && !any_lflagged(msgmap, MN_HIDE)
+	   && F_ON(F_AUTO_ZOOM, state))
+	  (void) zoom_index(state, stream, msgmap);
+	    
 	q_status_message1(SM_ORDER, 0, 3, "%.200s messages found matching word",
 			  long2string(selected));
     }
@@ -7746,9 +7789,12 @@ sort_thread_callback(stream, tree)
 			if(thrd && thrd->parent){
 			    thrd = fetch_thread(stream, thrd->parent);
 			    while(thrd){
-				if(get_lflag(stream, NULL, thrd->rawno, MN_COLL))
-				  clear_index_cache_ent(mn_raw2m(g_sort.msgmap,
-								 (long) thrd->rawno));
+				long t;
+
+				if(get_lflag(stream, NULL, thrd->rawno, MN_COLL)
+				   && (t = mn_raw2m(g_sort.msgmap,
+						    (long) thrd->rawno)))
+				  clear_index_cache_ent(t);
 
 				if(thrd->parent)
 				  thrd = fetch_thread(stream, thrd->parent);
@@ -9106,7 +9152,7 @@ i_cache_size(indx)
 {
     long j;
     size_t  newsize = sizeof(HLINE_S)
-		     + (max(ps_global->ttyo->screen_cols, 80) * sizeof(char));
+		 + ((max(ps_global->ttyo->screen_cols, 80)+1) * sizeof(char));
 
     if(j = (newsize % sizeof(long)))		/* alignment hack */
       newsize += (sizeof(long) - (size_t)j);
@@ -9174,6 +9220,26 @@ HLINE_S *
 get_index_cache(msgno)
     long         msgno;
 {
+    static HLINE_S *dummy_to_protect_ourselves = NULL;
+
+    /*
+     * This is not necessary if we did everything right elsewhere.
+     */
+    if(msgno <= 0L){
+	size_t big_enough;
+
+	dprint(2, (debugfile, "Called get_index_cache with msgno=%ld\n",
+		msgno));
+	big_enough = sizeof(HLINE_S) + (MAX_SCREEN_COLS * sizeof(char))
+		     + sizeof(long);
+	if(!dummy_to_protect_ourselves)
+	  dummy_to_protect_ourselves = (HLINE_S *) fs_get(big_enough);
+	
+	memset(dummy_to_protect_ourselves, 0, big_enough);
+
+	return(dummy_to_protect_ourselves);
+    }
+
     if(need_format_setup() && setup_header_widths)
       (*setup_header_widths)();
 
@@ -9247,6 +9313,9 @@ clear_index_cache_ent(indx)
     long indx;
 {
     HLINE_S *hline = get_index_cache(indx);
+
+    if(indx <= 0L)
+      return;
 
     if(SEP_THRDINDX()){
 	if(!hline->tihl){
@@ -10256,7 +10325,8 @@ set_thread_lflags(stream, thrd, msgmap, flags, v)
      * clear the cache entries for the this thread when we come back in
      * to view it again.
      */
-    if(flags == MN_CHID2 && v == 1 && get_index_cache(msgno)->line[0])
+    if(msgno > 0L && flags == MN_CHID2
+       && v == 1 && get_index_cache(msgno)->line[0])
       clear_index_cache_ent(msgno);
 
     if(thrd->next){
@@ -10663,23 +10733,33 @@ adjust_cur_to_visible(stream, msgmap)
     MSGNO_S    *msgmap;
 {
     long n, cur;
+    int  dir;
 
     cur = mn_get_cur(msgmap);
 
-    /* if current is hidden, adjust backwards */
+    /* if current is hidden, adjust */
     if(msgline_hidden(stream, msgmap, cur, 0)){
-	for(n = cur; n >= 1L && msgline_hidden(stream, msgmap, n, 0); n--)
+
+	dir = mn_get_revsort(msgmap) ? -1 : 1;
+
+	for(n = cur;
+	    ((dir == 1 && n >= 1L) || (dir == -1 && n <= mn_get_total(msgmap)))
+	    && msgline_hidden(stream, msgmap, n, 0);
+	    n -= dir)
 	  ;
 	
-	if(n >= 1L)
+	if((dir == 1 && n >= 1L) || (dir == -1 && n <= mn_get_total(msgmap)))
 	  mn_reset_cur(msgmap, n);
 	else{				/* no visible in that direction */
 	    for(n = cur;
-		n <= mn_get_total(msgmap) && msgline_hidden(stream, msgmap,n,0);
-		n++)
+		((dir == 1 && n >= 1L)
+		 || (dir == -1 && n <= mn_get_total(msgmap)))
+		&& msgline_hidden(stream, msgmap, n, 0);
+		n += dir)
 	      ;
 
-	    if(n <= mn_get_total(msgmap))
+	    if((dir == -1 && n >= 1L)
+	       || (dir == 1 && n <= mn_get_total(msgmap)))
 	      mn_reset_cur(msgmap, n);
 	    /* else trouble! */
 	}

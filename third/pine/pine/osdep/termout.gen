@@ -50,29 +50,40 @@ PutLine0n8b(x, y, line, length, handles)
 #endif
 
     MoveCursor(x,y);
-    while(length-- && (c = (unsigned char)*line++)){
 
-	if(c == (unsigned char)TAG_EMBED && length){
+    while(length--){
+
+	c = (unsigned char) *line++;
+
+	if(c == (unsigned char) TAG_EMBED && length){
+
 	    length--;
+
 	    switch(*line++){
 	      case TAG_INVON :
 		StartInverse();
 		break;
+
 	      case TAG_INVOFF :
 		EndInverse();
 		break;
+
 	      case TAG_BOLDON :
 		StartBold();
 		break;
+
 	      case TAG_BOLDOFF :
 		EndBold();
 		break;
+
 	      case TAG_ULINEON :
 		StartUnderline();
 		break;
+
 	      case TAG_ULINEOFF :
 		EndUnderline();
 		break;
+
 	      case TAG_HANDLE :
 		length -= *line + 1;	/* key length plus length tag */
 		if(handles){
@@ -103,6 +114,7 @@ PutLine0n8b(x, y, line, length, handles)
 		}
 
 		break;
+
 	      case TAG_FGCOLOR :
 		if(length < RGBLEN){
 		    Writechar(TAG_EMBED, 0);
@@ -114,6 +126,7 @@ PutLine0n8b(x, y, line, length, handles)
 		length -= RGBLEN;
 		line += RGBLEN;
 		break;
+
 	      case TAG_BGCOLOR :
 		if(length < RGBLEN){
 		    Writechar(TAG_EMBED, 0);
@@ -125,9 +138,11 @@ PutLine0n8b(x, y, line, length, handles)
 		length -= RGBLEN;
 		line += RGBLEN;
 		break;
+
 	      case TAG_EMBED:
 		Writechar(TAG_EMBED, 0);
 		break;
+
 	      default :		/* literal "embed" char? */
 		Writechar(TAG_EMBED, 0);
 		Writechar(*(line-1), 0);

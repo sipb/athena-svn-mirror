@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: send.c,v 1.1.1.2 2003-02-12 08:02:35 ghudson Exp $";
+static char rcsid[] = "$Id: send.c,v 1.1.1.3 2003-05-01 01:12:59 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ static char rcsid[] = "$Id: send.c,v 1.1.1.2 2003-02-12 08:02:35 ghudson Exp $";
    permission of the University of Washington.
 
    Pine, Pico, and Pilot software and its included text are Copyright
-   1989-2002 by the University of Washington.
+   1989-2003 by the University of Washington.
 
    The full text of our legal notices is contained in the file called
    CPYRIGHT, included with this distribution.
@@ -80,6 +80,7 @@ void       strings2outgoing PROTO((METAENV *, BODY **, PATMT *, char *));
 void	   resolve_encoded_entries PROTO((ADDRESS *, ADDRESS *));
 void       create_message_body PROTO((BODY **, PATMT *, char *));
 int	   check_addresses PROTO((METAENV *));
+int	   check_for_subject PROTO((METAENV *));
 PINEFIELD *parse_custom_hdrs PROTO((char **, CustomType));
 void       add_defaults_from_list PROTO((PINEFIELD *, char **));
 void       free_customs PROTO((PINEFIELD *));
@@ -249,6 +250,12 @@ static NETDRIVER piped_io = {
 
 
 /*
+ * For check_for_
+ */
+#define CF_OK		0x1
+#define CF_MISSING	0x2
+
+/*
  * For delivery-status notification
  */
 #define DSN_NEVER   0x1
@@ -366,6 +373,7 @@ alt_compose_screen(pine_state)
 	role->nick = cpystr("Default Role");
     }
 
+    pine_state->redrawer = NULL;
     compose_mail(NULL, NULL, role, NULL, NULL);
     free_action(&role);
     pine_state->next_screen = prev_screen;
@@ -1114,7 +1122,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	      if(*p == ',')
 		commas++;
 
-	    if(hdrval && (list = parse_list(hdrval, commas+1, NULL)) != NULL){
+	    if(hdrval && (list = parse_list(hdrval,commas+1,0,NULL)) != NULL){
 		
 		*custom = parse_custom_hdrs(list, Replace);
 		add_defaults_from_list(*custom,
@@ -1646,7 +1654,7 @@ redraft_cleanup(stream, problem, flags)
 	       && ps_global->mail_stream != ps_global->inbox_stream)
 	      stream = same_stream(mbox, ps_global->inbox_stream);
 
-	    if(!mail_delete(stream, mbox))
+	    if(!pine_mail_delete(stream, mbox))
 	      q_status_message1(SM_ORDER|SM_DING, 3, 3,
 				"Can't delete %.200s", mbox);
 
@@ -1865,6 +1873,7 @@ dos_valid_from()
      */
     if(!ps_global->VAR_USER_ID || ps_global->VAR_USER_ID[0] == '\0'){
 	NETMBX mb;
+	int no_prompt_user_id = 0;
 
 	if(ps_global->mail_stream && ps_global->mail_stream->mailbox
 	   && mail_valid_net_parse(ps_global->mail_stream->mailbox, &mb)
@@ -1875,10 +1884,16 @@ dos_valid_from()
 	else
 	  answer[0] = '\0';
 
+	if(F_ON(F_QUELL_USER_ID_PROMPT, ps_global) && answer[0]){
+	    /* No prompt, just assume mailbox login is user-id */
+	    no_prompt_user_id = 1; 
+	    rc = 0;
+	}
+
 	sprintf(prompt,"User-id for From address : "); 
 
 	help = NO_HELP;
-	while(1) {
+	while(!no_prompt_user_id) {
 	    flags = OE_APPEND_CURRENT;
 	    rc = optionally_enter(answer,-FOOTER_ROWS(ps_global),0,
 				  sizeof(answer),prompt,NULL,help,&flags);
@@ -1894,7 +1909,7 @@ dos_valid_from()
 	      break;
 	}
 
-	if(rc == 1 || (rc == 0 && !answer)) {
+	if(rc == 1 || (rc == 0 && !answer[0])) {
 	    q_status_message(SM_ORDER, 3, 4,
 		   "Send cancelled (User-id must be provided before sending)");
 	    return(0);
@@ -1904,6 +1919,7 @@ dos_valid_from()
 	sprintf(prompt, "Preserve %.*s as \"user-id\" in PINERC",
 		sizeof(prompt)-50, answer);
 	if(ps_global->blank_user_id
+	   && !no_prompt_user_id
 	   && want_to(prompt, 'y', 'n', NO_HELP, WT_NORM) == 'y'){
 	    set_variable(V_USER_ID, answer, 1, 1, Main);
 	}
@@ -1914,7 +1930,8 @@ dos_valid_from()
     }
 
     /* query for personal name */
-    if(!ps_global->VAR_PERSONAL_NAME || ps_global->VAR_PERSONAL_NAME[0]=='\0'){
+    if(!ps_global->VAR_PERSONAL_NAME || ps_global->VAR_PERSONAL_NAME[0]=='\0'
+	&& F_OFF(F_QUELL_PERSONAL_NAME_PROMPT, ps_global)){
 	answer[0] = '\0';
 	sprintf(prompt,"Personal name for From address : "); 
 
@@ -1985,7 +2002,7 @@ dos_valid_from()
 	      break;
 	}
 
-	if(rc == 1 || (rc == 0 && !answer)) {
+	if(rc == 1 || (rc == 0 && !answer[0])) {
 	    q_status_message(SM_ORDER, 3, 4,
 	  "Send cancelled (Host/domain name must be provided before sending)");
 	    return(0);
@@ -2180,19 +2197,23 @@ static struct headerentry he_custom_free_templ={
 #define	N_OURHDRS 21
 #define N_SENDER  22
 
+#define TONAME "To"
+#define CCNAME "cc"
+#define SUBJNAME "Subject"
+
 /* this is used in pine_send and pine_simple_send */
 /* name::type::canedit::writehdr::localcopy::rcptto */
 static PINEFIELD pf_template[] = {
   {"From",        Address,	0, 1, 1, 0},
   {"Reply-To",    Address,	0, 1, 1, 0},
-  {"To",          Address,	1, 1, 1, 1},
-  {"cc",          Address,	1, 1, 1, 1},
+  {TONAME,        Address,	1, 1, 1, 1},
+  {CCNAME,        Address,	1, 1, 1, 1},
   {"bcc",         Address,	1, 0, 1, 1},
   {"Newsgroups",  FreeText,	1, 1, 1, 0},
   {"Fcc",         Fcc,		1, 0, 0, 0},
   {"Lcc",         Address,	1, 0, 1, 1},
   {"Attchmnt",    Attachment,	1, 1, 1, 0},
-  {"Subject",     Subject,	1, 1, 1, 0},
+  {SUBJNAME,      Subject,	1, 1, 1, 0},
   {"References",  FreeText,	0, 1, 1, 0},
   {"Date",        FreeText,	0, 1, 1, 0},
   {"In-Reply-To", FreeText,	0, 1, 1, 0},
@@ -2996,6 +3017,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     BODY_PARTICULARS_S *bp;
     STORE_S	       *orig_so = NULL;
     PICO	        pbuf1, *save_previous_pbuf;
+    REDRAFT_POS_S      *local_redraft_pos = NULL;
 #ifdef	DOS
     char               *reserve;
 #endif
@@ -3918,6 +3940,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
         bp = save_body_particulars(*body);
 
 
+    local_redraft_pos = redraft_pos;
+
     /*----------------------------------------------------------------------
        Loop calling the editor until everything goes well
      ----*/
@@ -3940,11 +3964,11 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    pbf->pine_flags |= P_BODY;
 	    body_start = 0;		/* maybe not next time */
 	}
-	else if(redraft_pos){
-	    pbf->edit_offset = redraft_pos->offset;
+	else if(local_redraft_pos){
+	    pbf->edit_offset = local_redraft_pos->offset;
 	    /* set the start_here bit in correct header */
 	    for(pf = header.local; pf && pf->name; pf = pf->next)
-	      if(strcmp(pf->name, redraft_pos->hdrname) == 0
+	      if(strcmp(pf->name, local_redraft_pos->hdrname) == 0
 		  && pf->he){
 		  pf->he->start_here = 1;
 		  break;
@@ -4007,7 +4031,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	 * don't move the cursor, mostly for back-compat.
 	 */
 	if((!reply || reply->flags == REPLY_FORW) &&
-	   !redraft_pos && !(pbf->pine_flags & P_BODY) && he_from &&
+	   !local_redraft_pos && !(pbf->pine_flags & P_BODY) && he_from &&
 	   (he_from->display_it || !he_from->rich_header)){
 	    for(pf = header.local; pf && pf->name; pf = pf->next)
 	      if(pf->he &&
@@ -4539,7 +4563,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	}
 	else{
 	    /*------ Must be sending mail or posting ! -----*/
-	    int	       result, valid_addr;
+	    int	       result, valid_addr, continue_with_only_fcc = 0;
 	    CONTEXT_S *fcc_cntxt = NULL;
 
 	    result = 0;
@@ -4561,6 +4585,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		       want_to("No recipients, really copy only to Fcc ",
 			       'n', 'n', h_send_fcc_only, WT_NORM) != 'y')
 		      continue;
+		    
+		    continue_with_only_fcc++;
 		}
 		else{
 		    q_status_message(SM_ORDER, 3, 4,
@@ -4573,6 +4599,36 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    if((valid_addr = check_addresses(&header)) == CA_BAD){
 		/*--- Addresses didn't check out---*/
 		dprint(4, (debugfile, "addrs failed, continuing\n"));
+		continue;
+	    }
+
+	    if(F_ON(F_WARN_ABOUT_NO_TO_OR_CC, ps_global)
+	       && !continue_with_only_fcc
+	       && !(outgoing->to || outgoing->cc || lcc_addr
+		    || outgoing->newsgroups)
+	       && (want_to("No To, Cc, or Newsgroup specified, send anyway ",
+			   'n', 'n', h_send_check_to_cc, WT_NORM) != 'y')){
+		dprint(4, (debugfile, "No To or CC or Newsgroup, continuing\n"));
+		if(local_redraft_pos && local_redraft_pos != redraft_pos)
+		  free_redraft_pos(&local_redraft_pos);
+		
+		local_redraft_pos
+			= (REDRAFT_POS_S *) fs_get(sizeof(*local_redraft_pos));
+		memset((void *) local_redraft_pos,0,sizeof(*local_redraft_pos));
+		local_redraft_pos->hdrname = cpystr(TONAME);
+		continue;
+	    }
+
+	    if(F_ON(F_WARN_ABOUT_NO_SUBJECT, ps_global)
+	       && check_for_subject(&header) == CF_MISSING){
+		dprint(4, (debugfile, "No subject, continuing\n"));
+		if(local_redraft_pos && local_redraft_pos != redraft_pos)
+		  free_redraft_pos(&local_redraft_pos);
+		
+		local_redraft_pos
+			= (REDRAFT_POS_S *) fs_get(sizeof(*local_redraft_pos));
+		memset((void *) local_redraft_pos,0,sizeof(*local_redraft_pos));
+		local_redraft_pos->hdrname = cpystr(SUBJNAME);
 		continue;
 	    }
 
@@ -4877,6 +4933,9 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     fs_give((void **)&sending_order);
     if(title)
       fs_give((void **)&title);
+    
+    if(local_redraft_pos && local_redraft_pos != redraft_pos)
+      free_redraft_pos(&local_redraft_pos);
 
     pbf = save_previous_pbuf;
     g_rolenick = NULL;
@@ -5084,6 +5143,37 @@ pine_send_status(result, fcc_name, buf, goodorbad)
     return(buf);
 }
 
+
+/*
+ * Check for subject in outgoing message.
+ * 
+ * Asks user whether to proceed with no subject.
+ */
+int
+check_for_subject(header)
+    METAENV *header;
+{
+    PINEFIELD *pf;
+    int        rv = CF_OK;
+
+    for(pf = header->local; pf && pf->name; pf = pf->next)
+      if(pf->type == Subject){
+	  if(pf->text && *pf->text && **pf->text)
+	    rv = CF_OK;
+	  else{
+	      if(want_to("No Subject, send anyway ",
+		         'n', 'n', h_send_check_subj, WT_NORM) == 'y') 
+		rv = CF_OK;
+	      else
+		rv = CF_MISSING;
+	  }
+
+	  break;
+      }
+	      
+
+    return(rv);
+}
 
 
 /*----------------------------------------------------------------------
@@ -5302,7 +5392,7 @@ message_format_for_pico(n, f)
     pbf->quote_str = reply_quote_str(e);
 
     /* build separator line */
-    reply_delimiter(e, f);
+    reply_delimiter(e, NULL, f);
 
     /* actually write message text */
     if(!format_message(mn_m2raw(ps_global->msgmap, n), e, b, NULL,
@@ -5346,6 +5436,9 @@ send_exit_for_pico(he, redraw_pico)
 
     if(background_posting(FALSE))
       return("Can't send while background posting. Use postpone.");
+
+    if(F_ON(F_SEND_WO_CONFIRM, ps_global))
+      return(NULL);
 
     ps_global->redrawer = redraw_pico;
 
@@ -6790,7 +6883,8 @@ open_fcc(fcc, fcc_cntxt, force, err_prefix, err_suffix)
      * check for fcc's existance...
      */
     TIME_STAMP("open_fcc start", 1);
-    if(!is_absolute_path(fcc) && context_isambig(fcc)){
+    if(!is_absolute_path(fcc) && context_isambig(fcc)
+       && (strucmp(ps_global->inbox_name, fcc) != 0)){
 	int flip_dot = 0;
 
 	/*

@@ -225,6 +225,12 @@ the string, excluding the double quotes.
 Configuration equivalent:  <EM>initial-keystroke-list</EM>
 <P>
 
+<DT> -install
+
+<DD> For <EM>PC-Pine</EM> only, this option prompts for some basic
+setup information, then exits.
+<P>
+
 <DT> -k
 
 <DD> Function-Key Mode:  When invoked in this way, <EM>Pine</EM> expects
@@ -264,8 +270,7 @@ Pinerc may be either a local file or a remote configuration folder.
 
 <DT> -passfile <EM>passfile</EM>
 
-<DD> <EM>PC-Pine</EM> only.
-This tells <EM>PC-Pine</EM> what file should be used as the password file.
+<DD> This tells <EM>Pine</EM> what file should be used as the password file.
 This should be a fully-qualified filename.
 <P>
 
@@ -287,10 +292,11 @@ Save and export are limited.
 
 <DD> For <EM>PC-Pine</EM> only, this option affects the values of 
 <EM>Pine</EM>'s registry entries.
-Possible values for <EM>cmd</EM> are set, clear, and dump.
+Possible values for <EM>cmd</EM> are set, clear, clearsilent, and dump.
 <EM>Set</EM> will always reset <EM>Pine</EM>'s registry 
 entries according to its current settings.
 <EM>Clear</EM> will clear the registry values.
+<EM>Clearsilent</EM> will silently clear the registry values.
 <EM>Dump</EM> will display the values of current registry settings.
 Note that the dump command is currently disabled.
 Without the -registry option, <EM>PC-Pine</EM> will write values into

@@ -78,6 +78,7 @@ init_tty_driver(pine)
      struct pine *pine;
 {
 #ifdef _WINDOWS
+    mswin_showwindow();
     mswin_setresizecallback (pine_window_resize_callback);
     init_mouse ();			/* always a mouse under windows? */
 #else

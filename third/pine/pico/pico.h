@@ -1,5 +1,5 @@
 /*
- * $Id: pico.h,v 1.1.1.2 2003-02-12 08:01:46 ghudson Exp $
+ * $Id: pico.h,v 1.1.1.3 2003-05-01 01:12:18 ghudson Exp $
  *
  * Program:	pico.h - definitions for Pine's composer library
  *
@@ -408,7 +408,7 @@ extern	void	kbdestroy PROTO((KBESC_T *));
  */
 #ifdef	maindef
 PICO	*Pmaster = NULL;		/* composer specific stuff */
-char	*version = "4.4";		/* PICO version number */
+char	*version = "4.5";		/* PICO version number */
 
 #else
 extern	PICO *Pmaster;			/* composer specific stuff */

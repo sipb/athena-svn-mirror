@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: file.c,v 1.1.1.2 2003-02-12 08:01:40 ghudson Exp $";
+static char rcsid[] = "$Id: file.c,v 1.1.1.3 2003-05-01 01:12:35 ghudson Exp $";
 #endif
 /*
  * Program:	High level file input and output routines
@@ -376,7 +376,9 @@ insmsgchar(c)
 	char *p;
 
 	lnewline();
-	for(p = glo_quote_str; p && *p; p++)
+	for(p = (glo_quote_str ? glo_quote_str
+		 : (Pmaster ? Pmaster->quote_str : NULL));
+	    p && *p; p++)
 	  if(!linsert(1, *p))
 	    return(0);
     }

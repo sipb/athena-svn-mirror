@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.2 2003-02-12 08:02:33 ghudson Exp $";
+static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.3 2003-05-01 01:13:02 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -116,9 +116,8 @@ void	  cross_delete_crossposts PROTO((MAILSTREAM *));
 void      menu_clear_cmd_binding PROTO((struct key_menu *, int));
 int	  update_folder_spec PROTO((char *, char *));
 SEARCHSET *visible_searchset PROTO((MAILSTREAM *, MSGNO_S *));
-int       trivial_patgrp PROTO((PATGRP_S *));
 void      set_some_flags PROTO((MAILSTREAM *, MSGNO_S *, long, int));
-int       some_filter_depends_on_or_sets_state PROTO((void));
+int       some_filter_depends_on_state PROTO((void));
 void      mail_expunge_prefilter PROTO((MAILSTREAM *));
 unsigned  reset_startup_rule PROTO((MAILSTREAM *));
 long      closest_jump_target PROTO((long, MAILSTREAM *, MSGNO_S *, int,
@@ -634,7 +633,6 @@ nfolder:
 #if	defined(DOS) && !defined(WIN32)
 	flush_index_cache();		/* save room on PC */
 #endif
-	adjust_cur_to_visible(ps_global->mail_stream, ps_global->msgmap);
 	state->next_screen = mail_index_screen;
 	break;
 
@@ -896,15 +894,19 @@ nfolder:
 				{-1, 0, NULL, NULL}
 			    };
 
-			    sprintf(prompt,
-				    "No more %ss.  Return to \"%.*s\"? ",
-				    (state->context_current->use&CNTXT_INCMNG)
-				      ? "incoming folder" : "news group", 
-				    sizeof(prompt)-40, state->inbox_name);
+			    if(F_ON(F_RET_INBOX_NO_CONFIRM,state))
+			      ret = 'y';
+			    else{
+				sprintf(prompt,
+					"No more %ss.  Return to \"%.*s\"? ",
+					(state->context_current->use&CNTXT_INCMNG)
+					  ? "incoming folder" : "news group", 
+					sizeof(prompt)-40, state->inbox_name);
 
-			    ret = radio_buttons(prompt, -FOOTER_ROWS(state),
-						inbox_opt, 'y', 'x',
-						NO_HELP, RB_NORM);
+				ret = radio_buttons(prompt, -FOOTER_ROWS(state),
+						    inbox_opt, 'y', 'x',
+						    NO_HELP, RB_NORM);
+			    }
 
 			    /*
 			     * 'z' is a synonym for 'y'.  It is not 'y'
@@ -1843,7 +1845,7 @@ mail_expunge_prefilter(stream)
       ssdo_state = (scores_are_used(SCOREUSE_GET) & SCOREUSE_STATEDEP);
 
     if(!(sfdo_scores && ssdo_state))
-      sfdo_state = some_filter_depends_on_or_sets_state();
+      sfdo_state = some_filter_depends_on_state();
 
 
     if(sfdo_state || (sfdo_scores && ssdo_state)){
@@ -6068,7 +6070,8 @@ do_broach_folder(newfolder, new_context, streamp)
      MAILSTREAM **streamp;
 {
     MAILSTREAM *m, *stream = streamp ? *streamp : NULL;
-    int         open_inbox, rv, old_tros, we_cancel = 0, do_reopen = 0, n;
+    int         open_inbox, rv, old_tros, we_cancel = 0,
+                do_reopen = 0, n, was_dead = 0;
     char        expanded_file[max(MAXPATH,MAILTMPLEN)+1],
 	       *old_folder, *old_path, *p;
     long        openmode;
@@ -6085,6 +6088,7 @@ do_broach_folder(newfolder, new_context, streamp)
     dprint(1, (debugfile, "About to open folder \"%s\"    inbox: \"%s\"\n",
 	       newfolder, ps_global->inbox_name));
 
+    was_dead = ps_global->dead_stream || ps_global->dead_inbox;
     /*----- Little to do to if reopening same folder -----*/
     if(new_context == ps_global->context_current && ps_global->mail_stream
        && strcmp(newfolder, ps_global->cur_folder) == 0){
@@ -6096,16 +6100,70 @@ do_broach_folder(newfolder, new_context, streamp)
 	if(ps_global->dead_stream)
 	  do_reopen++;
 	
+	/*
+	 * If it is a stream which could probably discover newmail by
+	 * reopening and user has YES set for those streams, or it
+	 * is a stream which may discover newmail by reopening and
+	 * user has YES set for those stream, then do_reopen.
+	 */
 	if(!do_reopen
-	   && ps_global->mail_stream->dtb
-	   && ((ps_global->mail_stream->dtb->flags & DR_NONEWMAIL)
-	       || (ps_global->mail_stream->rdonly
-		  && ps_global->mail_stream->dtb->flags & DR_NONEWMAILRONLY))){
-	    /*
-	     * This is a case where the user may be interested in reopening
-	     * the connection in order to check for new mail.
-	     */
-	    switch(want_to("Re-open folder to check for new messages", 'n',
+	   &&
+	   (((ps_global->mail_stream->dtb
+	      && ((ps_global->mail_stream->dtb->flags & DR_NONEWMAIL)
+		  || (ps_global->mail_stream->rdonly
+		      && ps_global->mail_stream->dtb->flags
+					      & DR_NONEWMAILRONLY)))
+	     && (ps_global->reopen_rule == REOPEN_YES_YES
+	         || ps_global->reopen_rule == REOPEN_YES_ASK_Y
+	         || ps_global->reopen_rule == REOPEN_YES_ASK_N
+	         || ps_global->reopen_rule == REOPEN_YES_NO))
+	    ||
+	    ((ps_global->mail_stream->dtb
+	      && ps_global->mail_stream->rdonly
+	      && !(ps_global->mail_stream->dtb->flags & DR_LOCAL))
+	     && (ps_global->reopen_rule == REOPEN_YES_YES))))
+	  do_reopen++;
+
+	/*
+	 * If it is a stream which could probably discover newmail by
+	 * reopening and user has ASK set for those streams, or it
+	 * is a stream which may discover newmail by reopening and
+	 * user has ASK set for those stream, then ask.
+	 */
+	if(!do_reopen
+	   &&
+	   (((ps_global->mail_stream->dtb
+	      && ((ps_global->mail_stream->dtb->flags & DR_NONEWMAIL)
+		  || (ps_global->mail_stream->rdonly
+		      && ps_global->mail_stream->dtb->flags
+					      & DR_NONEWMAILRONLY)))
+	     && (ps_global->reopen_rule == REOPEN_ASK_ASK_Y
+	         || ps_global->reopen_rule == REOPEN_ASK_ASK_N
+	         || ps_global->reopen_rule == REOPEN_ASK_NO_Y
+	         || ps_global->reopen_rule == REOPEN_ASK_NO_N))
+	    ||
+	    ((ps_global->mail_stream->dtb
+	      && ps_global->mail_stream->rdonly
+	      && !(ps_global->mail_stream->dtb->flags & DR_LOCAL))
+	     && (ps_global->reopen_rule == REOPEN_YES_ASK_Y
+	         || ps_global->reopen_rule == REOPEN_YES_ASK_N
+	         || ps_global->reopen_rule == REOPEN_ASK_ASK_Y
+	         || ps_global->reopen_rule == REOPEN_ASK_ASK_N)))){
+	    int deefault;
+
+	    switch(ps_global->reopen_rule){
+	      case REOPEN_YES_ASK_Y:
+	      case REOPEN_ASK_ASK_Y:
+	      case REOPEN_ASK_NO_Y:
+		deefault = 'y';
+		break;
+
+	      default:
+		deefault = 'n';
+		break;
+	    }
+
+	    switch(want_to("Re-open folder to check for new messages", deefault,
 			   'x', h_reopen_folder, WT_NORM)){
 	      case 'y':
 	        do_reopen++;
@@ -6199,7 +6257,8 @@ do_broach_folder(newfolder, new_context, streamp)
     }
 
     /*--- Opening inbox, inbox has been already opened, the easy case ---*/
-    if(open_inbox && ps_global->inbox_stream != NULL ) {
+    if(open_inbox && ps_global->inbox_stream != NULL
+       && !ps_global->dead_inbox) {
         expunge_and_close(ps_global->mail_stream, ps_global->context_current,
 			  ps_global->cur_folder, NULL);
 
@@ -6259,6 +6318,25 @@ do_broach_folder(newfolder, new_context, streamp)
 	  pine_mail_close(stream);
 
 	return(1);
+    }
+    else if(open_inbox && ps_global->inbox_stream != NULL
+	    && ps_global->dead_inbox){
+	/* 
+	 * if dead INBOX, just close it and let it be reopened.
+	 * This is actually different from the do_reopen case above,
+	 * because we're going from another open mail folder to the
+	 * dead INBOX.
+	 */
+	dprint(2, (debugfile, "INBOX was dead, closing before reopening\n"));
+	pine_mail_close(ps_global->inbox_stream);
+	ps_global->inbox_stream = NULL;
+	if(ps_global->inbox_msgmap){
+	    mn_give(&ps_global->inbox_msgmap);
+	    ps_global->inbox_msgmap = NULL;
+	}
+	ps_global->inbox_expunge_count = 0L;
+	ps_global->inbox_new_mail_count = 0L;
+	
     }
 
     if(!new_context && !expand_foldername(expanded_file,sizeof(expanded_file))){
@@ -6377,6 +6455,11 @@ do_broach_folder(newfolder, new_context, streamp)
 		    reset_index_format();
 		    clear_index_cache();
                     reset_check_point();
+		    if(IS_NEWS(ps_global->mail_stream)
+		       && ps_global->mail_stream->rdonly)
+		      msgno_exclude_deleted(ps_global->mail_stream,
+					    ps_global->msgmap);
+
 		    if(mn_get_total(ps_global->msgmap) > 0)
 		      mn_set_cur(ps_global->msgmap,
 				 first_sorted_flagged(F_NONE,
@@ -6429,10 +6512,15 @@ do_broach_folder(newfolder, new_context, streamp)
     ps_global->expunge_count	    = 0L;
     ps_global->new_mail_count	    = 0L;
     ps_global->noticed_dead_stream  = 0;
-    ps_global->noticed_dead_inbox   = 0;
     ps_global->dead_stream          = 0;
-    ps_global->dead_inbox           = 0;
+    if(open_inbox){
+	ps_global->noticed_dead_inbox   = 0;
+	ps_global->dead_inbox           = 0;
+    }
     mn_init(&(ps_global->msgmap), m->nmsgs);
+    if(was_dead && ps_global->dead_stream == 0
+       && ps_global->dead_inbox == 0)
+      icon_text(NULL, IT_MCLOSED);
 
     ps_global->last_unambig_folder[0] = '\0';
 
@@ -6878,8 +6966,20 @@ expunge_and_close(stream, context, folder, final_msg)
 					     VAR_ARCHIVED_FOLDERS,
 					     buff1);
 
-            delete_count = F_ON(F_EXPUNGE_MANUALLY,ps_global) ?
-			     0L : count_flagged(stream, F_DEL);
+	    /*
+	     * We need the count_flagged to be executed not only to set
+	     * delete_count, but also to set the searched bits in all of
+	     * the deleted messages. The searched bit is used in the monkey
+	     * business section below which undeletes deleted messages
+	     * before expunging. It determines which messages are deleted
+	     * by examining the searched bit, which had better be set or not
+	     * based on this count_flagged call rather than some random
+	     * search that happened earlier.
+	     */
+            delete_count = count_flagged(stream, F_DEL);
+	    if(F_ON(F_EXPUNGE_MANUALLY,ps_global))
+              delete_count = 0L;
+
 	    ret = 'n';
 	    if(delete_count){
 		int charcnt = 0;
@@ -6918,13 +7018,20 @@ expunge_and_close(stream, context, folder, final_msg)
 		      F_ON(F_AUTO_READ_MSGS,ps_global) ? 0 : 3, 5, moved_msg);
 
 		if(ret == 'y'){
+		    long filtered;
+
+		    filtered = any_lflagged(stream == ps_global->mail_stream
+					     ? ps_global->msgmap :
+					     stream == ps_global->inbox_stream
+					      ? ps_global->inbox_msgmap : NULL,
+					    MN_EXLD);
 		    sprintf(buff2,
 		      "Clos%s \"%.30s\". %s %s message%s and remov%s %s.",
 			ing,
 	 		pretty_fn(folder),
 			final_msg ? "Kept" : "Keeping",
-			comatose((stream->nmsgs - delete_count)),
-			plural(stream->nmsgs - delete_count),
+			comatose(stream->nmsgs - filtered - delete_count),
+			plural(stream->nmsgs - filtered - delete_count),
 			ing,
 			long2string(delete_count));
 		    if(final_msg)
@@ -7251,13 +7358,22 @@ process_filter_patterns(stream, msgmap, recent)
 			    score = get_msg_score(stream, i);
 
 			    /*
-			     * If the score is outside the interval,
+			     * If the score is outside all of the intervals,
 			     * turn off the searched bit.
+			     * So that means we check each interval and if
+			     * it is inside any interval we stop and leave
+			     * the bit set. If it is outside we keep checking.
 			     */
-			    if(score != SCORE_UNDEF &&
-			       (score < pat->patgrp->score_min ||
-			        score > pat->patgrp->score_max))
-			      mc->searched = NIL;
+			    if(score != SCORE_UNDEF){
+				INTVL_S *iv;
+
+				for(iv = pat->patgrp->score; iv; iv = iv->next)
+				  if(score >= iv->imin && score <= iv->imax)
+				    break;
+				
+				if(!iv)
+				  mc->searched = NIL;
+			    }
 			}
 		}
 
@@ -7702,8 +7818,8 @@ reprocess_filter_patterns(stream, msgmap)
  * When killing or filtering we don't want to match by mistake. So if
  * a pattern has nothing set except the Current Folder Type (which is always
  * set to something) we'll consider it to be trivial and not a match.
- * This is the opposite of match_pattern which considers this to be a
- * match.
+ * match_pattern uses this to determine if there is a match, where it is
+ * just triggered on the Current Folder Type.
  */
 int
 trivial_patgrp(patgrp)
@@ -7746,7 +7862,7 @@ trivial_patgrp(patgrp)
 
 
 int
-some_filter_depends_on_or_sets_state()
+some_filter_depends_on_state()
 {
     long          rflags = ROLE_DO_FILTER;
     PAT_S        *pat;
@@ -7758,9 +7874,7 @@ some_filter_depends_on_or_sets_state()
 	for(pat = first_pattern(&pstate);
 	    pat && !ret;
 	    pat = next_pattern(&pstate))
-	  if((pat->action && !pat->action->bogus
-	      && pat->action->state_setting_bits)
-	     || patgrp_depends_on_active_state(pat->patgrp))
+	  if(patgrp_depends_on_active_state(pat->patgrp))
 	    ret++;
     }
 
@@ -9612,8 +9726,8 @@ zoom_index(state, stream, msgmap)
     MAILSTREAM  *stream;
     MSGNO_S	*msgmap;
 {
-    long        i, count = 0L, first = 0L;
-    PINETHRD_S *thrd = NULL, *topthrd = NULL;
+    long        i, count = 0L, first = 0L, msgno;
+    PINETHRD_S *thrd = NULL, *topthrd = NULL, *nthrd;
 
     if(any_lflagged(msgmap, MN_SLCT)){
 
@@ -9629,6 +9743,64 @@ zoom_index(state, stream, msgmap)
 		set_lflag(stream, msgmap, i, MN_HIDE, 1);
 	    }
 	    else{
+		/*
+		 * If a selected message is hidden beneath a collapsed
+		 * thread (not beneath a thread index line, but a collapsed
+		 * thread or subthread) then we make it visible. The user
+		 * should be able to see the selected messages when they
+		 * Zoom. We could get a bit fancier and re-collapse the
+		 * thread when the user unzooms, but we don't do that
+		 * for now.
+		 */
+		if(THREADING() && !THRD_INDX()
+		   && get_lflag(stream, msgmap, i, MN_CHID)){
+
+		    /*
+		     * What we need to do is to unhide this message and
+		     * uncollapse any parent above us.
+		     * Also, when we uncollapse a parent, we need to
+		     * trace back down the tree and unhide until we get
+		     * to a collapse point or the end. That's what
+		     * set_thread_subtree does.
+		     */
+
+		    thrd = fetch_thread(stream, mn_m2raw(msgmap, i));
+
+		    if(thrd && thrd->parent)
+		      thrd = fetch_thread(stream, thrd->parent);
+		    else
+		      thrd = NULL;
+
+		    /* unhide and uncollapse its parents */
+		    while(thrd){
+			/* if this parent is collapsed */
+			if(get_lflag(stream, NULL, thrd->rawno, MN_COLL)){
+			    /* uncollapse this parent and unhide its subtree */
+			    msgno = mn_raw2m(msgmap, thrd->rawno);
+			    if(msgno > 0L && msgno <= mn_get_total(msgmap)){
+				set_lflag(stream, msgmap, msgno,
+					  MN_COLL | MN_CHID, 0);
+				if(thrd->next &&
+				   (nthrd = fetch_thread(stream, thrd->next)))
+				  set_thread_subtree(stream, nthrd, msgmap,
+						     0, MN_CHID);
+			    }
+
+			    /* collapse symbol will be wrong */
+			    clear_index_cache_ent(msgno);
+			}
+
+			/*
+			 * Continue up tree to next parent looking for
+			 * more collapse points.
+			 */
+			if(thrd->parent)
+			  thrd = fetch_thread(stream, thrd->parent);
+			else
+			  thrd = NULL;
+		    }
+		}
+
 		count++;
 		if(!first){
 		    if(THRD_INDX()){
@@ -11026,12 +11198,14 @@ currentf_sequence(stream, msgmap, flag, count, mark)
 	    if(mark){
 		if(THRD_INDX()){
 		    PINETHRD_S *thrd;
+		    long        t;
 
 		    /* clear thread index line instead of index index line */
 		    thrd = fetch_thread(stream, mn_m2raw(msgmap, i));
 		    if(thrd && thrd->top
-		       && (thrd=fetch_thread(stream,thrd->top)))
-		      clear_index_cache_ent(mn_raw2m(msgmap, thrd->rawno));
+		       && (thrd=fetch_thread(stream,thrd->top))
+		       && (t = mn_raw2m(msgmap, thrd->rawno)))
+		      clear_index_cache_ent(t);
 		}
 		else
 		  clear_index_cache_ent(i);	/* force new index line */

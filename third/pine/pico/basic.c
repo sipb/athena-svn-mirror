@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: basic.c,v 1.1.1.2 2003-02-12 08:01:34 ghudson Exp $";
+static char rcsid[] = "$Id: basic.c,v 1.1.1.3 2003-05-01 01:12:34 ghudson Exp $";
 #endif
 /*
  * Program:	Cursor manipulation functions
@@ -286,13 +286,16 @@ int f, n;	/* default Flag & Numeric argument */
 	 * PLUS: if there's a quote string, a quoted-to-non-quoted
 	 *	 line transition.
 	 */
-	quoted = glo_quote_str
-	  ? quote_match(glo_quote_str, curwp->w_dotp, qstr, NLINE) : 0;
+	quoted = (glo_quote_str || (Pmaster && Pmaster->quote_str))
+	  ? quote_match(glo_quote_str ? glo_quote_str : Pmaster->quote_str,
+			curwp->w_dotp, qstr, NLINE) : 0;
 	qlen   = quoted ? strlen(qstr) : 0;
 	while(lback(curwp->w_dotp) != curbp->b_linep
 	      && llength(lback(curwp->w_dotp)) > qlen
-	      && (glo_quote_str
-		  ? (quoted == quote_match(glo_quote_str, lback(curwp->w_dotp),
+	      && ((glo_quote_str || (Pmaster && Pmaster->quote_str))
+		  ? (quoted == quote_match(glo_quote_str ? glo_quote_str
+					   : Pmaster->quote_str, 
+					   lback(curwp->w_dotp),
 					   qstr2, NLINE)
 		     && !strcmp(qstr, qstr2))
 		  : 1)
@@ -356,14 +359,17 @@ int f, n;	/* default Flag & Numeric argument */
 	 * PLUS: if there's a quote string, a quoted-to-non-quoted
 	 *	 line transition.
 	 */
-	quoted = glo_quote_str
-	  ? quote_match(glo_quote_str, curwp->w_dotp, qstr, NLINE) : 0;
+	quoted = ((glo_quote_str || (Pmaster && Pmaster->quote_str))
+	  ? quote_match(glo_quote_str ? glo_quote_str : Pmaster->quote_str,
+			curwp->w_dotp, qstr, NLINE) : 0);
 	qlen   = quoted ? strlen(qstr) : 0;
 	
 	while(curwp->w_dotp != curbp->b_linep
 	      && llength(lforw(curwp->w_dotp)) > qlen
-	      && (glo_quote_str
-		  ? (quoted == quote_match(glo_quote_str, lforw(curwp->w_dotp),
+	      && ((glo_quote_str || (Pmaster && Pmaster->quote_str))
+		  ? (quoted == quote_match(glo_quote_str ? glo_quote_str
+					   : Pmaster->quote_str,
+					   lforw(curwp->w_dotp),
 					   qstr2, NLINE)
 		     && !strcmp(qstr, qstr2))
 		  : 1)
