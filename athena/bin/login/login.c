@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.7 1987-08-07 04:34:43 kubitron Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.8 1987-08-08 00:36:48 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.7 1987-08-07 04:34:43 kubitron Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.8 1987-08-08 00:36:48 rfrench Exp $";
 #endif	lint
 
 /*
@@ -510,7 +510,7 @@ leavethis:
 	/*
 	 * If user not super-user, check for logins disabled.
 	 */
-	if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) != 0) {
+	if (pwd->pw_uid != 0 && (nlfd = fopen(nolog, "r")) > 0) {
 	    while ((c = getc(nlfd)) != EOF)
 		putchar(c);
 	    fflush(stdout);
@@ -1050,11 +1050,12 @@ dofork()
     if (attachedflag)
 	    (void) detach_homedir();
 
-    if (!fork()) {
-	    setuid(pwd->pw_uid);
-	    (void) ZUnsetLocation();
-	    exit(0);
-    } 
+    if (zephyrable && krbflag)
+	    if (!fork()) {
+		    setuid(pwd->pw_uid);
+		    (void) ZUnsetLocation();
+		    exit(0);
+	    } 
 
     if (tmppwflag)
 	    if (remove_pwent(pwd))
@@ -1439,7 +1440,7 @@ get_groups()
 		*ptr++ = '\0';
 	}
 
-	while (fgets(grbuf,sizeof grbuf,grin) != 0) {
+	while (fgets(grbuf,sizeof grbuf,grin) > 0) {
 		if (!*grbuf)
 			break;
 		grbuf[strlen(grbuf)-1] = '\0';
@@ -1465,8 +1466,10 @@ get_groups()
 				tmpptr = (char *)index(grtmp,',');
 				if (tmpptr)
 					*tmpptr = '\0';
-				if (!strcmp(grtmp,pwd->pw_name))
+				if (!strcmp(grtmp,pwd->pw_name)) {
+					grname[i] = "*";
 					break;
+				} 
 				lstptr = (char *)index(lstptr,',');
 				if (lstptr)
 					lstptr++;
