@@ -1,0 +1,529 @@
+#!/usr/bin/perl -w
+# -*- coding: utf-8 -*-
+# Convert GNOME 1 panel settings and applets → GNOME 2 GConf keys
+# Copyright © 2002 Colin Walters <walters@verbum.org>
+# $Id: gnome-panel-1-to-2,v 1.1 2003-04-20 01:41:42 ghudson Exp $
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+###### #### ### ## # # #
+# NOTE: This script should be run in the user's home directory.
+###### #### ### ## # # #
+
+use POSIX;
+
+my $cwd = POSIX::getcwd();
+
+my $no_act = 0;
+foreach my $arg (@ARGV) {
+  if ($arg eq '-n') {
+    $no_act = 1;
+  }
+}
+
+sub log {
+  print "gnome-panel-1-to-2: " . join(' ', @_) . "\n";
+}
+
+my $panelconfigfile = ".gnome/panel.d/default/panel";
+my $appletconfigfile = ".gnome/panel.d/default/Applet_Config";
+
+open(F, $panelconfigfile) or die "Couldn't open $panelconfigfile\n: $!";
+my ($panel_count, $applet_count) = (0,0);
+while (<F>) {
+  /panel_count=(.+)$/ and $panel_count = $1;
+  /applet_count=(.+)$/ and $applet_count = $1;
+}
+close(F);
+&log("panel_count: $panel_count");
+&log("applet_count: $applet_count\n");
+
+# From gnome-panel-2.0.10/gnome-panel/panel.c, line 101
+my %panel_type_map = (0 => "edge-panel",
+		      1 => "drawer-panel",
+		      2 => "aligned-panel",
+		      3 => "sliding-panel",
+		      4 => "floating-panel",
+		      5 => "menu-panel");
+
+# From gnome-core-1.4.0.6/panel/session.c, line 1357
+my %old_panel_size_map = (0 => "panel-size-xx-small",
+			  1 => "panel-size-medium",
+			  2 => "panel-size-large",
+			  3 => "panel-size-x-large");
+
+my %panel_align_map = (0 => "panel-alignment-left",
+		       2 => "panel-alignment-right");
+
+my %panel_anchor_map = (0 => "panel-anchor-left",
+			1 => "panel-anchor-right");
+
+# From gnome-core-1.4.0.6/panel/panel-types.h, line 15
+my @panel_size_associations = ([12, "panel-size-xx-small"], [24, "panel-size-x-small"],
+			       [36, "panel-size-small"], [48, "panel-size-medium"],
+			       [64, "panel-size-large"], , [80, "panel-size-x-large"],
+			       [128, "panel-size-xx-large"]);
+
+# From gnome-core-1.4.0.6/panel/panel-types.h, line 52
+my %old_panel_edge_map = (0 => "panel-edge-top",
+			  1 => "panel-edge-right",
+			  2 => "panel-edge-bottom",
+			  3 => "panel-edge-left");
+
+sub sprintf_objid {
+  my $id = shift;
+  return sprintf("%08d", $id);
+}
+
+sub system_internal {
+  my @cmd = @_;
+  if (not $no_act) {
+    system(@cmd) == 0 or die "Command \"" . join(' ', @cmd) . "\" exited with an error: $?";
+  }
+}
+
+sub mysystem {
+  my @cmd = @_;
+  &log("running: " . join(' ', @_));
+  system_internal(@_);
+}
+
+sub gconftool {
+  my ($path, $type, $value) = @_;
+  my @cmd = ("gconftool-2", "-s", "$path", "-t", "$type", "--", "$value");
+  mysystem(@cmd);
+}
+
+sub gconftool_list {
+  my ($path, $subtype, $value) = @_;
+  my @cmd = ("gconftool-2", "-s", "$path", "--type=list", "--list-type=$subtype", "--", "$value");
+  mysystem(@cmd);
+}
+
+# Create the panels
+open(F, $panelconfigfile) or die "Couldn't open $panelconfigfile\n: $!";
+my $line;
+@panel_id_list = ();
+$panel_id_count = 1;
+%panel_unique_id_map = ();
+while ($line = <F>) {
+  if ($line =~ /\[Panel_(\d+)\]/) {
+    my $current_panelid = $1;
+    &log("reading panel entry $current_panelid");
+    # skip unused panels
+    if ($current_panelid > $panel_count) {
+      &log("skipping panel id $current_panelid (> $panel_count)");
+      next;
+    }
+    push @panel_id_list, sprintf_objid($panel_id_count);
+    my $scount = sprintf_objid($panel_id_count);
+    # set up some sane defaults
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_pixmap_stretch", "boolean", "false");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_pixmap_fit", "boolean", "true");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_pixmap_rotate", "boolean", "true");
+    gconftool("/apps/panel/profiles/default/panels/$scount/hide_buttons_enabled", "boolean", "false");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_type", "string", "no-background");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_color", "string", "#000000");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_background_pixmap", "string", "");
+    gconftool("/apps/panel/profiles/default/panels/$scount/panel_type", "string", "edge-panel");
+    while (defined(($line = <F>)) and $line =~ /^\w+/) {
+      if ($line =~ /^hidebuttons_enabled=(.+)$/) {
+	gconftool("/apps/panel/profiles/default/panels/$scount/hide_buttons_enabled", "boolean", $1);
+      } elsif ($line =~ /^screen=(.+)$/) {
+	gconftool("/apps/panel/profiles/default/panels/$scount/screen_id", "int", $1);
+      } elsif ($line =~ /^type=(.+)$/) {
+	my $mappedtype = $panel_type_map{$1};
+	if ($mappedtype =~ /edge-panel/) {
+	  gconftool("/apps/panel/profiles/default/panels/$scount/panel_hide_mode", "int", "0");
+	  gconftool("/apps/panel/profiles/default/panels/$scount/panel_hide_state", "int", "0");
+	}
+	gconftool("/apps/panel/profiles/default/panels/$scount/panel_type", "string", $mappedtype);
+      } elsif ($line =~ /^edge=(.+)$/) {
+	gconftool("/apps/panel/profiles/default/panels/$scount/screen_edge", "string", $old_panel_edge_map{$1})
+      } elsif ($line =~ /^align=(.+)$/) {
+	my $align = $1;
+	if (not $panel_align_map{$align}) {
+	  &log("Unknown panel alignment $align")
+	}
+	gconftool("/apps/panel/profiles/default/panels/$scount/panel_align", "string", $panel_align_map{$align} || "panel-alignment-left")
+      } elsif ($line =~ /^anchor=(.+)$/) {
+	my $anchor = $1;
+	if (not $panel_anchor_map{$anchor}) {
+	  &log("Unknown panel anchor $anchor")
+	}
+	gconftool("/apps/panel/profiles/default/panels/$scount/panel_anchor", "string", $panel_anchor_map{$anchor} || "panel-anchor-left")
+      } elsif ($line =~ /^unique_id=(.+)$/) {
+	my $uniqueid = $1;
+	&log("making entry in unique id map: $uniqueid => $panel_id_count");
+	# Store this unique ID; it's used later when figuring out
+	# which applets go to which panel.
+	$panel_unique_id_map{$uniqueid} = $panel_id_count;
+      } elsif ($line =~ /^sz=(.+)$/) {
+	my $size = $1;
+	my $found = 0;
+	foreach my $entry (@panel_size_associations) {
+	  if ((not $found) and $size <= $entry->[0]) {
+	    gconftool("/apps/panel/profiles/default/panels/$scount/panel_size", "string", $entry->[1]);
+	    $found = 1;
+	  }
+	}
+	if (not $found) {
+	  gconftool("/apps/panel/profiles/default/panels/$scount/panel_size", "string", "panel-size-medium");
+	}
+      }
+    }
+    $panel_id_count++;
+  }
+}
+my $liststr = "[" . join(',', @panel_id_list) . "]";
+gconftool_list("/apps/panel/profiles/default/general/panel_id_list", "string", $liststr);
+  
+&log("finished reading panel config file");
+close(F);
+
+&log("converting .desktop files");
+my $gnome1dir = ".gnome/panel.d/default/launchers/";
+my $gnome2dir = ".gnome2/panel2.d/default/launchers/";
+if (-d $gnome1dir) {
+  &mysystem("mkdir", "-p", $gnome2dir);
+  opendir (DIR, $gnome1dir) or die "Couldn't open $gnome1dir: $!";
+  foreach my $entry (readdir(DIR)) {
+    if (not $entry =~ /^\.\.?$/) {
+      &mysystem("cp", "-a", $gnome1dir . $entry, $gnome2dir);
+    }
+  }
+  closedir(DIR);
+}
+
+# Create the applets and launchers.
+open(F, $appletconfigfile) or die "Couldn't open $appletconfigfile\n: $!";
+&log("Reading applet config file");
+
+my @applet_id_list = ();
+my $applet_id_count = 1;
+my @object_id_list = ();
+my $object_id_count = 1;
+LINE: while (defined ($line = <F>)) {
+  if ($line =~ /\[Applet_(\d+)\]/) {
+    my $appletnumber = $1;
+    &log("Reading applet/object id $appletnumber");
+    my $appletexternfile = ".gnome/panel.d/default/Applet_" . "$appletnumber" . "_Extern";
+    my @lines;
+    while (defined(($line = <F>)) and $line =~ /^\w+/) {
+      push(@lines, $line);
+    }
+    my ($appletid, $count, $scount, $type) = (undef, undef, undef, undef);
+    foreach my $line (@lines) {
+      if ($line =~ /^id=(.+)$/) {
+	$appletid = $1;
+	if ($appletid =~ /Extern/) {
+	  $count = $applet_id_count;
+	  $scount = sprintf_objid($count);
+	  gconftool("/apps/panel/profiles/default/applets/$scount/object_type", "string", "bonobo-applet");
+	  push @applet_id_list, sprintf_objid($applet_id_count);
+	  $applet_id_count++;
+	  $type = 'applets';
+	} elsif ($appletid =~ /Launcher/) {
+	  $count = $object_id_count;
+	  $scount = sprintf_objid($count);
+	  gconftool("/apps/panel/profiles/default/objects/$scount/panel_right_stick", "boolean", "false");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/object_type", "string", "launcher-object");
+	  push @object_id_list, sprintf_objid($object_id_count);
+	  $count = $object_id_count;
+	  $object_id_count++;
+	  $type = 'objects';
+	} elsif ($appletid =~ /Menu/) {
+	  $count = $object_id_count;
+	  $scount = sprintf_objid($count);
+	  gconftool("/apps/panel/profiles/default/objects/$scount/path", "string", "applications://");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/global_main", "boolean", "true");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/main-menu", "boolean", "true");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/object_type", "string", "menu-object");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/custom-icon", "boolean", "false");
+	  push @object_id_list, sprintf_objid($object_id_count);
+	  $count = $object_id_count;
+	  $object_id_count++;
+	  $type = 'objects';
+	} else {
+	  &log("warning: unknown Applet id=$appletid");
+	  $appletid = undef;
+	}
+      }
+    }
+    if (not $appletid) {
+      &log("Skipping this applet: unknown appletid");
+      next LINE;
+    }
+    # Handle applets specially
+    if ($appletid =~ /Extern/) {
+      my $valid_goadid = 1;
+      my $goadid = "!unspecified!";
+      foreach my $line (@lines) {
+	if ($line =~ /goad_id=(.+)$/) {
+	  $goadid = $1;
+	  if ($goadid =~ /clock/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_ClockApplet");
+	    # FIXME: set up sane defaults for now; we shoudl really pick these from the old prefs
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_seconds", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_tooltip", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/gmt_time", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/unix_time", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/hour_format", "int", "24");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/internet_time", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_date", "boolean", "true");
+	  } elsif ($goadid =~ /deskguide/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_PagerApplet");
+	    # FIXME: set up sane defaults for now; we shoudl really pick these from the old prefs
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/num_rows", "int", "1");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/display_all_workspaces", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/display_workspace_names", "boolean", "false");
+	  } elsif ($goadid =~ /mixer/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_MixerApplet");
+	  } elsif ($goadid =~ /geyes/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_GeyesApplet");
+	    # Theme stuff doesn't appear to be compatible; just ignore...
+	  } elsif ($goadid =~ /tasklist/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_TasklistApplet");
+	    my $group_windows = "auto";
+	    my $display_all_workspaces = "false";
+	    my $move_unminimized_windows = "true";
+	    if (-f $appletexternfile) {
+	      open(EXTFILE, $appletexternfile) or die "Couldn't open $appletexternfile\n: $!";
+	      while (<EXTFILE>) {
+		if (/^enable_grouping=(.+)$/) {
+		  my $grouping =$1;
+		  if ($grouping =~ /false/) {
+		    $group_windows = "never";
+		  }
+		} elsif (/^all_desks_normal=(.+)$/) {
+		  $display_all_workspaces = $1;
+		} elsif (/^move_to_current=(.+)$/) {
+		  $move_unminimized_windows = $1;
+		}
+	      }
+	      close(EXTFILE);
+	    }
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/group_windows", "string", $group_windows);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/display_all_workspaces", "boolean", $display_all_workspaces);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/move_unminimized_windows", "boolean", $move_unminimized_windows);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/maximum_size", "int", "4096");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/minimum_size", "int", "50");
+	  } elsif ($goadid =~ /battery_applet/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_BattstatApplet");
+	    my $full_notify_enable = "false";
+	    my $lowwarn_enable = "true";
+	    my $low_charge_val = 25;
+	    my $low_warn_val = 5;
+	    if (-f $appletexternfile) {
+	      open(EXTFILE, $appletexternfile) or die "Couldn't open $appletexternfile\n: $!";
+	      while (<EXTFILE>) {
+		if (/^low_charge_val=(.+)$/) {
+		  $low_charge_val = $1;
+		} elsif (/^low_warn_val=(.+)$/) {
+		  $low_warn_val = $1;
+		} elsif (/^full_notify_enable=(.+)$/) {
+		  $full_notify_enable = $1;
+		} elsif (/^low_warn_enable=(.+)$/) {
+		  $low_warn_enable = $1;
+		}
+	      }
+	      close(EXTFILE);
+	    }
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/full_battery_notification", "boolean", $full_notify_enable);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_percent", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/beep", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/suspend_command", "string", "");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/use_dock", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/red_value", "int", $low_warn_val);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/yellow_value", "int", "40");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/orange_value", "int", $low_charge_val);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_battery", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/horizontal", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/show_status", "boolean", "true");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/low_battery_notification", "boolean", $low_warn_enable);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/drain_from_top", "boolean", "false");
+	  } elsif ($goadid =~ /fish_applet/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_FishApplet");
+	    my $fishname = "Wanda";
+	    my $image = "fish/fishanim.png";
+	    my $fishcommand = "fortune";
+	    my $frames = 3;
+	    my $speed = 1;
+	    my $rotate = "true";
+	    if (-f $appletexternfile) {
+	      open(EXTFILE, $appletexternfile) or die "Couldn't open $appletexternfile\n: $!";
+	      while (<EXTFILE>) {
+		if (/^name=(.+)$/) {
+		  $fishname = $1;
+		} elsif (/^image=(.+)$/) {
+		  # Get rid of any path prefix.
+		  s,^/usr/share/pixmaps/,,;
+		  $image = $1;
+		} elsif (/^command=(.+)$/) {
+		  $fishcommand = $1;
+		} elsif (/^frames=(.+)$/) {
+		  $frames = $1;
+		} elsif (/^speed=(.+)$/) {
+		  $speed = $1;
+		} elsif (/^rotate=(.+)$/) {
+		  $rotate = $1;
+		}
+	      }
+	      close(EXTFILE);
+	    }
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/command", "string", $fishcommand);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/image", "string", $image);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/frames", "int", $frames);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/speed", "int", $speed);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/name", "string", $fishname);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/rotate", "boolean", $rotate);
+	  } elsif ($goadid =~ /multiload_(.+?)_applet/i) {
+	    my $multiload_type = $1;
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_MultiLoadApplet");
+	    my $speed = "500";
+	    my $size = "40";
+	    # FIXME: we make no attempt at preserving colors.  It seems tricky at first glance.
+	    if (-f $appletexternfile) {
+	      open(EXTFILE, $appletexternfile) or die "Couldn't open $appletexternfile\n: $!";
+	      while (<EXTFILE>) {
+		if (/^speed=(.+)$/) {
+		  $speed = $1;
+		} elsif (/^size=(.+)$/) {
+		  $size = $1;
+		}
+	      }
+	      close(EXTFILE);
+	    }
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_loadavg", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_memload", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_netload", "boolean", "false");
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_cpuload", "boolean", "false");
+	    if ($multiload_type =~ /netload/) {
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_netload", "boolean", "true");
+	    } elsif ($multiload_type =~ /cpuload/) {
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_cpuload", "boolean", "true");
+	    } elsif ($multiload_type =~ /memload/) {
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/view_memload", "boolean", "true");
+	    }
+
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/speed", "int", $speed);
+	    gconftool("/apps/panel/profiles/default/$type/$scount/prefs/size", "int", $size);
+	  } elsif ($goadid =~ /mailcheck/i) {
+	    gconftool("/apps/panel/profiles/default/$type/$scount/bonobo_iid", "string", "OAFIID:GNOME_MailcheckApplet");
+	    my $update_frequency = "120000";
+	    my $exec_enabled = "false";
+	    my $execcommand = "";
+	    my $newmail_enabled = "false";
+	    my $newmailcommand = "";
+	    my $clicked_enabled = "false";
+	    my $clickedcommand = "";
+	    my $play_sound = "false";
+	    my $mailbox_type = "0";
+	    my $mail_file = "";
+	    if (-f $appletexternfile) {
+	      open(EXTFILE, $appletexternfile) or die "Couldn't open $appletexternfile\n: $!";
+	      while (<EXTFILE>) {
+		if (/^update_frequency=(.+)$/) {
+		  $update_frequency = $1;
+		} elsif (/^exec_command=(.+)$/) {
+		  $execcommand = $1;
+		} elsif (/^exec_enabled=(.+)$/) {
+		  $exec_enabled = $1;
+		} elsif (/^newmail_command=(.+)$/) {
+		  $newmailcommand = $1;
+		} elsif (/^newmail_enabled=(.+)$/) {
+		  $newmail_enabled = $1;
+		} elsif (/^clicked_command=(.+)$/) {
+		  $clickedcommand = $1;
+		} elsif (/^clicked_enabled=(.+)$/) {
+		  $clicked_enabled = $1;
+		} elsif (/^play_sound=(.+)$/) {
+		  $play_sound = $1;
+		} elsif (/^mailbox_type=(.+)$/) {
+		  $mailbox_type = $1;
+		} elsif (/^mail_file=(.+)$/) {
+		  $mail_file = $1;
+		}
+	      }
+	      close(EXTFILE);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/update_frequency", "int", $update_frequency);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/exec_enabled", "boolean", $exec_enabled);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/exec_command", "string", $execcommand);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/newmail_enabled", "boolean", $newmail_enabled);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/newmail_command", "string", $newmailcommand);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/clicked_enabled", "boolean", $clicked_enabled);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/clicked_command", "string", $clickedcommand);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/play_sound", "boolean", $play_sound);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/mailbox_type", "int", $mailbox_type);
+	      gconftool("/apps/panel/profiles/default/$type/$scount/prefs/mail_file", "string", $mail_file);
+	    }
+	  } else {
+	    $valid_goadid = undef;
+	  }
+	}
+      }
+      if (not $valid_goadid) {
+	&log("Skipping this applet: unknown goad_id=$goadid");
+	next LINE;
+      }
+    } elsif ($appletid =~ /Menu/) {
+      my $main_menu_flags = 0;
+      my $global_main = 'true';
+      foreach my $line (@lines) {
+	if ($line =~ /^main-menu-flags=(.+)$/) {
+	  $main_menu_flags = $1;
+	} elsif ($line =~ /^global-main=(.+)$/) {
+	  $global_main = $1;
+	}
+      }
+      gconftool("/apps/panel/profiles/default/$type/$scount/global-main", "boolean", $global_main);
+      gconftool("/apps/panel/profiles/default/$type/$scount/main-menu-flags", "int", $main_menu_flags);
+    }
+    foreach my $line (@lines) {
+      if ($line =~ /^right_stick=(.+)$/) {
+	gconftool("/apps/panel/profiles/default/$type/$scount/panel_right_stick", "boolean", $1);
+      } elsif ($line =~ /^position=(.+)$/) {
+	gconftool("/apps/panel/profiles/default/$type/$scount/position", "int", $1);
+      } elsif ($line =~ /^unique_panel_id=(.+)$/) {
+	my $uniqueid = $1;
+	my $realpanelid = $panel_unique_id_map{$uniqueid};
+	if (not defined $realpanelid) {
+	  &log("warning: unknown unique panel id=$uniqueid, assuming first panel");
+	  $realpanelid = 1;
+	}
+	gconftool("/apps/panel/profiles/default/$type/$scount/panel_id", "string", sprintf_objid($realpanelid));
+      } elsif ($line =~ /^base_location=(.+)$/) {
+	my $launcher = $1;
+	gconftool("/apps/panel/profiles/default/$type/$scount/launcher_location", "string", "file://$cwd/.gnome2/panel2.d/default/launchers/$1");
+      }
+    }
+  }
+}
+close(F);
+&log("done reading applet config file");
+$liststr = "[" . join(',', @applet_id_list) . "]";
+gconftool_list("/apps/panel/profiles/default/general/applet_id_list", "string", $liststr);
+$liststr = "[" . join(',', @object_id_list) . "]";
+gconftool_list("/apps/panel/profiles/default/general/object_id_list", "string", $liststr);
+
+# clean up cruft
+&mysystem("rm", "-rf", ".gnome2/panel.d");
+
+&log("Transition script complete");
+
+# Local Variables:
+# compile-command: "perl -c gnome-panel-1-to-2"
+# End:
+

@@ -1,0 +1,428 @@
+#!/bin/bash -e
+# Convert GNOME 1 conf files to GNOME 2 GConf keys
+# Copyright (C) 2002 Christian Marillat <marillat.christian@wanadoo.fr>
+# Copyright (C) 2002 Colin Walters <walters@debian.org>
+# $Id: gnome-stuff-1-to-2,v 1.1 2003-04-20 01:41:46 ghudson Exp $
+
+DEBIAN_ADD_UPGRADE_CHECK="false"
+for arg in "$@";do
+  if [ "$arg" = "--add-debian-upgrade-check" ]; then
+    DEBIAN_ADD_UPGRADE_CHECK="true"
+  fi
+done  
+
+gconftool () {
+  type="$1"
+  key="$2"
+  value="$3"
+  if ! echo "$value" | iconv -f UTF-8 -t UTF-8 1>/dev/null 2>&1; then
+    echo "\"$value\" is not valid UTF-8, ignoring"
+    return
+  fi
+  echo "running: gconftool-2 -t $type -s $key -- $value"
+  gconftool-2 -t "$type" -s "$key" -- "$value"
+}
+
+# Move all files in ~/.gnome/ to ~/.gnome2
+if [ ! -d ~/.gnome2 ]; then
+  mkdir ~/.gnome2
+fi
+
+cp -r ~/.gnome/* ~/.gnome2/
+# Remove cruft
+rm -f ~/.gnome2/.gnome-smproxy*
+
+# Parse gnome general config 1.4
+GNOME_CONFIG_FILE=~/.gnome/Gnome
+
+if [ -e "$GNOME_CONFIG_FILE" ]; then
+  printf "Gnome global options file found\n"
+  GG_TERMINAL=`grep 'Terminal=' $GNOME_CONFIG_FILE | cut -f2 -d'=' | cut -f1 -d' '`
+  GG_EXEC=`grep 'Terminal=' $GNOME_CONFIG_FILE | cut -f2 -d'=' | cut -f2 -d' '`
+
+  # desktop_gnome_applications_terminal.schemas
+  test -n "$GG_TERMINAL" && gconftool string "/desktop/gnome/applications/terminal/exec" "$GG_TERMINAL"
+  test -n "$GG_EXEC" && gconftool string "/desktop/gnome/applications/terminal/exec_arg" "$GG_EXEC"
+  GG_DEFAULT_SHOW=`grep -w default-show $GNOME_CONFIG_FILE | cut -f2 -d'=' | cut -f1 -d' '`
+  GG_NEEDS_TERM=false
+  GG_NREMOTE=false
+
+  if [ "$GG_DEFAULT_SHOW" = "gnome-moz-remote" ]; then
+    if [ -e ~/.gnome/gnome-moz-remote ]; then
+      GG_DEFAULT_SHOW=`grep -w filename ~/.gnome/gnome-moz-remote | cut -f2 -d'='`
+      GG_NEEDS_TERM=`grep -w NEEDS_TERM ~/.gnome/gnome-moz-remote | cut -f2 -d'='`
+      GG_NREMOTE=`grep -w NREMOTE ~/.gnome/gnome-moz-remote | cut -f2 -d'='`
+    fi
+  fi
+
+  # desktop_gnome_applications_browser.schemas
+  test -n "$GG_DEFAULT_SHOW" && gconftool string "/schemas/desktop/gnome/applications/browser/exec" "$GG_DEFAULT_SHOW"
+  test -n "$GG_NEEDS_TERM" && gconftool bool "/desktop/gnome/applications/browser/needs_term" "$GG_NEEDS_TERM"
+  test -n "$GG_NREMOTE" && gconftool bool "/desktop/gnome/applications/browser/nremote" "$GG_NREMOTE"
+
+  GG_GHELP_SHOW=`grep -w ghelp-show $GNOME_CONFIG_FILE | cut -f2 -d'=' | cut -f1 -d' '`
+  GG_GHELP_TERM=`grep -w GHELP_TERM $GNOME_CONFIG_FILE | cut -f2 -d'='`
+  GG_GHELP_URLS=`grep -w GHELP_URLS $GNOME_CONFIG_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_applications_help_viewer.schemas
+  test -n "$GG_GHELP_SHOW" && gconftool string "/desktop/gnome/applications/help_viewer/exec" "$GG_GHELP_SHOW"
+  test -n "$GG_GHELP_TERM" && gconftool bool "/desktop/gnome/applications/help_viewer/needs_term" "$GG_GHELP_TERM"
+  test -n "$GG_GHELP_URLS" && gconftool bool "/desktop/gnome/applications/help_viewer/accepts_urls" "$GG_GHELP_URLS"
+
+  GG_MENUS_HAVE_TEAROFF=`grep -w Menus_have_tearoff $GNOME_CONFIG_FILE | cut -f2 -d'='`
+  GG_MENUS_HAVE_ICONS=`grep -w Menus_have_icons $GNOME_CONFIG_FILE | cut -f2 -d'='`
+  GG_MENUBAR_DETACHABLE=`grep -w Menubar_detachable $GNOME_CONFIG_FILE | cut -f2 -d'='`
+  GG_TOOLBAR_DETACHABLE=`grep -w Toolbar_detachable $GNOME_CONFIG_FILE | cut -f2 -d'='`
+  GG_STATUSBAR_METER_ON_RIGHT=`grep -w StatusBar_Meter_on_Right $GNOME_CONFIG_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_interface.schemas
+  test -n "$GG_MENUS_HAVE_TEAROFF" && gconftool bool "/desktop/gnome/interface/menus_have_tearoff" "$GG_MENUS_HAVE_TEAROFF"
+  test -n "$GG_MENUS_HAVE_ICONS" && gconftool bool "/desktop/gnome/interface/menus_have_icons" "$GG_MENUS_HAVE_ICONS"
+  test -n "$GG_MENUBAR_DETACHABLE" && gconftool bool "/desktop/gnome/interface/menubar_detachable" "$GG_MENUBAR_DETACHABLE"
+  test -n "$GG_TOOLBAR_DETACHABLE" && gconftool bool "/desktop/gnome/interface/toolbar_detachable" "$GG_TOOLBAR_DETACHABLE"
+  test -n "$GG_STATUSBAR_METER_ON_RIGHT" && gconftool bool "/desktop/gnome/interface/status_bar_meter_on_right" "$GG_STATUSBAR_METER_ON_RIGHT"
+
+  printf "Done.\n"
+else
+  printf "Gnome global options file not found\n"
+fi
+
+GNOME_SOUND_FILE=~/.gnome/sound/system
+
+if [ -e "$GNOME_SOUND_FILE" ]; then
+  printf "Gnome sound options file found\n"
+
+  GS_START_ESD=`grep -w start_esd $GNOME_SOUND_FILE | cut -f2 -d'='`
+  GS_EVENT_SOUNDS=`grep -w event_sounds $GNOME_SOUND_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_sound.schemas
+  test -n "$GS_START_ESD" && gconftool bool "/desktop/gnome/sound/enable_esd" "$GS_START_ESD"
+  test -n "$GS_EVENT_SOUNDS" && gconftool bool "/desktop/gnome/sound/event_sounds" "$GS_EVENT_SOUNDS"
+
+  printf "Done.\n"
+else
+  printf "Gnome sound options file not found\n"
+fi
+
+GNOME_MOUSE_FILE=~/.gnome/Desktop
+
+if [ -e "$GNOME_MOUSE_FILE" ]; then
+  printf "Gnome mouse options file found\n"
+
+  GM_ACCELERATION=`grep -w acceleration $GNOME_MOUSE_FILE | cut -f2 -d'='`
+  GM_THRESHOLD=`grep -w threshold $GNOME_MOUSE_FILE | cut -f2 -d'='`
+  GM_RIGHT_TO_LEFT=`grep -w right-to-left $GNOME_MOUSE_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_peripherals_mouse.schemas
+  test -n "$GM_ACCELERATION" && gconftool float "/desktop/gnome/peripherals/mouse/motion_acceleration" "$GM_ACCELERATION"
+  test -n "$GM_THRESHOLD" && gconftool int "/desktop/gnome/peripherals/mouse/motion_threshold" "$GM_THRESHOLD"
+  test -n "$GM_RIGHT_TO_LEFT" && gconftool bool "/desktop/gnome/peripherals/mouse/left_handed" "$GM_RIGHT_TO_LEFT"
+
+  printf "Done.\n"
+else
+  printf "Gnome mouse options file not found\n"
+fi
+
+GNOME_KEYBOARD_FILE=~/.gnome/Desktop
+
+if [ -e "$GNOME_KEYBOARD_FILE" ]; then
+  printf "Gnome keyboard options file found\n"
+
+  GK_REPEAT=`grep -w repeat $GNOME_KEYBOARD_FILE | cut -f2 -d'='`
+  GK_DELAY=`grep -w delay $GNOME_KEYBOARD_FILE | cut -f2 -d'='`
+  GK_RATE=`grep -w rate $GNOME_KEYBOARD_FILE | cut -f2 -d'='`
+  GK_CLICK=`grep -w click $GNOME_KEYBOARD_FILE | cut -f2 -d'='`
+  GK_CLICKVOLUME=`grep -w clickvolume $GNOME_KEYBOARD_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_peripherals_keyboard.schemas
+  test -n "$GK_REPEAT" && gconftool bool "/desktop/gnome/peripherals/keyboard/repeat" "$GK_REPEAT"
+  test -n "$GK_DELAY" && gconftool int "/desktop/gnome/peripherals/keyboard/delay" "$GK_DELAY"
+  test -n "$GK_RATE" && gconftool int "/desktop/gnome/peripherals/keyboard/rate" "$GK_RATE"
+  test -n "$GK_CLICK" && gconftool bool "/desktop/gnome/peripherals/keyboard/click" "$GK_CLICK"
+  test -n "$GK_CLICKVOLUME" && gconftool int "/desktop/gnome/peripherals/keyboard/click_volume" "$GK_CLICKVOLUME"
+
+  printf "Done.\n"
+else
+  printf "Gnome keyboard options file not found\n"
+fi
+
+GNOME_BACKGROUND_FILE=~/.gnome/Background
+
+if [ -e "$GNOME_BACKGROUND_FILE" ]; then
+  printf "Gnome background options file found\n"
+
+  GB_COLOR1=`grep -w color1 $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  GB_COLOR2=`grep -w color2 $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  GB_OPACITY=`grep -w opacity $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  GB_ENABLED=`grep -w Enabled $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  GB_GRADIENT=`grep -w gradient $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  GB_WALLPAPER=`grep -w wallpaper $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+
+  GB_WALLPAPERALIGN=`grep -w wallpaperAlign $GNOME_BACKGROUND_FILE | cut -f2 -d'='`
+  case "$GB_WALLPAPERALIGN" in
+    1) GB_WALLPAPERALIGN=centered ;;
+    2) GB_WALLPAPERALIGN=stretched ;;
+    3) GB_WALLPAPERALIGN=scaled ;;
+    *) GB_WALLPAPERALIGN=centered ;;
+  esac
+
+  # desktop_gnome_background.schemas
+  test -n "$GB_COLOR1" && gconftool string "/desktop/gnome/background/primary_color" "$GB_COLOR1"
+  test -n "$GB_COLOR2" && gconftool string "/desktop/gnome/background/secondary_color" "$GB_COLOR2"
+  test -n "$GB_OPACITY" && gconftool int "/desktop/gnome/background/picture_opacity" "$GB_OPACITY"
+  test -n "$GB_ENABLED" && gconftool bool "/desktop/gnome/background/draw_background" "$GB_ENABLED"
+  test -n "$GB_WALLPAPERALIGN" && gconftool string "/desktop/gnome/background/picture_options" "$GB_WALLPAPERALIGN"
+  test -n "$GB_GRADIENT" && gconftool string "/desktop/gnome/background/color_shading_type" "$GB_GRADIENT""-gradient"
+  test -n "$GB_WALLPAPER" && gconftool string "/desktop/gnome/background/picture_filename" "$GB_WALLPAPER"
+
+  printf "Done.\n"
+else
+  printf "Gnome background options file not found\n"
+fi
+
+GNOME_WM_FILE=~/.gnome/default.wm
+
+if [ -e "$GNOME_WM_FILE" ]; then
+  printf "Gnome window-manager options file found\n"
+
+  GWM=`grep -w WM $GNOME_WM_FILE | cut -f2 -d'='`
+
+  # desktop_gnome_peripherals_mouse.schemas
+  test $GWM != "" && gconftool string "/desktop/gnome/applications/window_manager/current" "$GWM"
+
+  printf "Done.\n"
+else
+  printf "Gnome window-manager options file not found\n"
+fi
+
+# Parse gnome-panel (global) 1.4 config
+
+GP_CONFIG_FILE=~/.gnome/panel
+
+if [ -e "$GP_CONFIG_FILE" ]; then
+  printf "Gnome-panel options file found\n"
+  GP_TOOLTIPS_ENABLED=`grep -w tooltips_enabled $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_DISABLE_ANIMATIONS=`grep -w disable_animations $GP_CONFIG_FILE | cut -f2 -d'='`
+  if [ $GP_DISABLE_ANIMATIONS = "true" ]; then
+    GP_DISABLE_ANIMATIONS=false
+  else
+    GP_DISABLE_ANIMATIONS=true
+  fi
+
+  GP_MINIMIZED_SIZE=`grep -w minimized_size $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_MAXIMIZE_DELAY=`grep -w maximize_delay $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_MINIMIZE_DELAY=`grep -w minimize_delay $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_MENU_KEY=`grep -w menu_key $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_RUN_KEY=`grep -w run_key $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_SCREENSHOT_KEY=`grep -w screenshot_key $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_WINDOW_SCREENSHOT_KEY=`grep -w window_screenshot_key $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_DRAWER_AUTO_CLOSE=`grep -w drawer_auto_close $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_CONFIRM_PANEL_REMOVE=`grep -w confirm_panel_remove $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_MEMORY_HUNGRY_MENUS=`grep -w memory_hungry_menus $GP_CONFIG_FILE | cut -f2 -d'='`
+  GP_SATURATE_WHEN_OVER=`grep -w saturate_when_over $GP_CONFIG_FILE | cut -f2 -d'='`
+
+  # Set gnome-panel 2 configuration
+  # panel-global-config.schemas
+  test -n "$GP_CONFIRM_PANEL_REMOVE" && gconftool bool "/apps/panel/global/confirm_panel_remove" "$GP_CONFIRM_PANEL_REMOVE"
+  test -n "$GP_DRAWER_AUTO_CLOSE" && gconftool bool "/apps/panel/global/drawer_autoclose" "$GP_DRAWER_AUTO_CLOSE"
+  test -n "$GP_DISABLE_ANIMATIONS" && gconftool bool "/apps/panel/global/enable_animations" "$GP_DISABLE_ANIMATIONS"
+  test -n "$GP_SATURATE_WHEN_OVER" && gconftool bool "/apps/panel/global/highlight_launchers_on_mouseover" "$GP_SATURATE_WHEN_OVER"
+  test -n "$GP_MEMORY_HUNGRY_MENUS" && gconftool bool "/apps/panel/global/keep_menus_in_memory" "$GP_MEMORY_HUNGRY_MENUS"
+  test -n "$GP_TOOLTIPS_ENABLED" && gconftool bool "/apps/panel/global/tooltips_enabled" "$GP_TOOLTIPS_ENABLED"
+  test -n "$GP_MINIMIZE_DELAY" && gconftool int "/apps/panel/global/panel_hide_delay" "$GP_MINIMIZE_DELAY"
+  test -n "$GP_MINIMIZED_SIZE" && gconftool int "/apps/panel/global/panel_minimized_size" "$GP_MINIMIZED_SIZE"
+  test -n "$GP_MAXIMIZE_DELAY" && gconftool int "/apps/panel/global/panel_show_delay" "$GP_MAXIMIZE_DELAY"
+  test -n "$GP_MENU_KEY" && gconftool string "/apps/panel/global/menu_key" "$GP_MENU_KEY"
+  test -n "$GP_RUN_KEY" && gconftool string "/apps/panel/global/run_key" "$GP_RUN_KEY"
+  test -n "$GP_SCREENSHOT_KEY" && gconftool string "/apps/panel/global/screenshot_key" "$GP_SCREENSHOT_KEY"
+  test -n "$GP_WINDOW_SCREENSHOT_KEY" && gconftool string "/apps/panel/global/window_screenshot_key" "$GP_WINDOW_SCREENSHOT_KEY"
+
+  printf "Done.\n"
+else
+  printf "Gnome-panel panel options file not found\n"
+fi
+
+# Parse gnome-session 1.4 config
+GSS_CONFIG_FILE=~/.gnome/session
+
+if [ -e "$GSS_CONFIG_FILE" ]; then
+  printf "Gnome-session options file found.\n"
+  GS_AUTOSAVE=`grep -w AutoSave $GSS_CONFIG_FILE | cut -f2 -d'='`
+  GS_LOGOUTPROMPT=`grep -w LogoutPrompt $GSS_CONFIG_FILE | cut -f2 -d'='`
+  GS_SPLASHSCREEN=`grep -w SplashScreen $GSS_CONFIG_FILE | cut -f2 -d'='`
+
+  # Set gnome-session 2 configuration
+  test -n "$GS_AUTOSAVE" && gconftool bool "/apps/gnome-session/options/auto_save_session" "$GS_AUTOSAVE"
+  test -n "$GS_LOGOUTPROMPT" && gconftool bool "/apps/gnome-session/options/logout_prompt" "$GS_LOGOUTPROMPT"
+  test -n "$GS_SPLASHSCREEN" && gconftool bool "/apps/gnome-session/options/show_splash_screen" "$GS_SPLASHSCREEN"
+
+  # First remove the one copied before
+  rm ~/.gnome2/session
+
+  # Which session ?
+  GS_SESSION=`grep -w "Current Session" $GSS_CONFIG_FILE | cut -f2 -d'='`
+
+  # If not defined use Default
+  if [ -z "$GS_SESSION" ]; then
+    GS_SESSION="Default"
+  fi
+
+  # Position of the Default string to do a tail instead a cat
+  GS_SESSION_POS=`grep -n -w "\["$GS_SESSION"\]" $GSS_CONFIG_FILE | cut -f1 -d':'`
+
+  # Load session file
+  array=(`tail +$GS_SESSION_POS $GSS_CONFIG_FILE`)
+  elements=${#array[*]}
+  index=0
+
+  while [ "$index" -lt "$elements" ]
+  do
+    # Number of clients
+    if [ `echo ${array[$index]} | grep -w "\["$GS_SESSION"\]"` ]; then
+      while [ "$index" -lt "$elements" ]
+      do
+	GS_CLIENTS=`echo ${array[$index]} | grep -w num_clients | cut -f2 -d'='`
+	let "index += 1"
+      done
+    fi
+    let "index += 1"
+  done
+
+  count=0
+  index=0
+  found_default=""
+
+  while [ "$count" -lt "$GS_CLIENTS" ]
+  do
+    index=0
+    while [ "$index" -lt "$elements" ]
+    do
+      if [ ${array[$index]} = "["$GS_SESSION"]" ] || [ -n "$found_default" ]; then
+	found_default=TRUE
+	if [ `echo ${array[$index]} | grep $count",Program="` ]; then
+	  while [ "$index" -lt "$elements" ]
+	  do
+	    if [ `echo ${array[$index]} | egrep -v "properties|xscreensaver-demo"` ]; then
+	      skip[$count]=TRUE
+	      let "count += 1"
+	      break
+	    else
+	      skip[$count]=FALSE
+	      let "count += 1"
+	      break
+	    fi
+	  done
+	fi
+      fi
+      let "index += 1"
+    done
+    let "count += 1"
+  done
+
+  found_default=""
+
+  printf "[Default]\n" > ~/.gnome2/session
+  elements=${#skip[*]}
+  count=0
+  index=0
+  found_default=""
+
+  for (( session = 0; session < $elements; session++ ))
+  do
+    if [ ${skip[$session]} = TRUE ]; then
+      tail +$GS_SESSION_POS $GSS_CONFIG_FILE | grep $session, | sed -e s/$session/$count/ >> ~/.gnome2/session
+      let "count += 1"
+    fi
+  done
+  if [ -n "$DEBIAN_ADD_UPGRADE_CHECK" ]; then
+    cat >> ~/.gnome2/session <<EOF
+    $count,id=debiangnomeupgrade666666
+    $count,Priority=50
+    $count,RestartCommand=debian-gnome-upgrade-check --sm-client-id debiangnomeupgrade666666
+    $count,RestartStyleHint=1
+EOF
+    let "count += 1"
+  fi 
+  printf "num_clients="$count"\n" >> ~/.gnome2/session
+
+  # Rename panel in gnome-panel
+  perl -i -pe 's,=panel,=gnome-panel,' ~/.gnome2/session
+  perl -i -pe 's,=/usr/bin/panel,=gnome-panel,' ~/.gnome2/session
+  # Use nautilus instead of gmc
+  perl -i -pe 's,=/usr/bin/gmc,=nautilus,' ~/.gnome2/session
+  perl -i -pe 's,=gmc,=nautilus,' ~/.gnome2/session
+
+  # replace ~/ by /home/$user
+  user_name=`id -un`
+  perl -i -pe 's,~/,/home/'$user_name',' ~/.gnome2/session
+
+  printf "Done.\n"
+else
+  printf "Gnome-session options file not found.\n"
+fi
+
+# Parse gnome-terminal 1.4 config
+GT_CONFIG_FILE=~/.gnome/Terminal
+
+if [ ! -e ~/.gconf/apps/gnome-terminal/global/%gconf.xml ]; then
+  if [ -e "$GT_CONFIG_FILE" ]; then
+    printf "Gnome-terminal configuration file found.\n"
+    GT_BACKGROUND_PIXMAP=`grep -w background_pixmap $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_BELL_SILENCED=`grep -w bell_silenced $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_BLINKING=`grep -w blinking $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_COLOR_SCHEME=`grep -w color_scheme $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_COLOR_SET=`grep -w color_set $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_DEL_IS_DEL=`grep -w del_is_del $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_KEYBOARD_SECURED=`grep -w keyboard_secured $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_LOGIN_BY_DEFAULT=`grep -w login_by_default $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_MENUBAR=`grep -w menubar $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_PALETTE=`grep -w palette $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_PIXMAP_FILE=`grep -w pixmap_file $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SCROLL_BACKGROUND=`grep -w scroll_background $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SCROLLBACKLINES=`grep -w scrollbacklines $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SCROLLONKEY=`grep -w scrollonkey $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SCROLLONOUTPUT=`grep -w scrollonoutput $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SCROLLPOS=`grep -w scrollpos $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SHADED=`grep -w shaded $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_SWAP_DEL_AND_BACKSPACE=`grep -w swap_del_and_backspace $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_TRANSPARENT=`grep -w transparent $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_USE_BOLD=`grep -w use_bold $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_USE_FONTSET=`grep -w use_fontset $GT_CONFIG_FILE | cut -f2 -d'='`
+    GT_WORDCLASS=`grep -w wordclass $GT_CONFIG_FILE | cut -f2 -d'='`
+
+    # Set gnome-terminal 2 configuration
+    test -n "$GT_USE_BOLD" && gconftool bool "/apps/gnome-terminal/profiles/Default/allow_bold" "$GT_USE_BOLD"
+    test -n "$GT_BLINKING" && gconftool bool "/apps/gnome-terminal/profiles/Default/cursor_blink" "$GT_BLINKING"
+    test -n "$GT_MENUBAR" && gconftool bool "/apps/gnome-terminal/profiles/Default/default_show_menubar" "$GT_MENUBAR"
+    test -n "$GT_LOGIN_BY_DEFAULT" && gconftool bool "/apps/gnome-terminal/profiles/Default/login_shell" "$GT_LOGIN_BY_DEFAULT"
+    test -n "$GT_SCROLL_BACKGROUND" && gconftool bool "/apps/gnome-terminal/profiles/Default/scroll_background" "$GT_SCROLL_BACKGROUND"
+    test -n "$GT_SCROLLONKEY" && gconftool bool "/apps/gnome-terminal/profiles/Default/scroll_on_keystroke" "$GT_SCROLLONKEY"
+    test -n "$GT_SCROLLONOUTPUT" && gconftool bool "/apps/gnome-terminal/profiles/Default/scroll_on_output" "$GT_SCROLLONOUTPUT"
+    test -n "$GT_BELL_SILENCED" && gconftool bool "/apps/gnome-terminal/profiles/Default/silent_bell" "$GT_BELL_SILENCED"
+    test -n "$GT_USE_FONTSET" &&  gconftool bool "/apps/gnome-terminal/profiles/Default/use_system_font" "$GT_USE_FONTSET"
+    test -n "$GT_SCROLLBACKLINES" && gconftool int "/apps/gnome-terminal/profiles/Default/scrollback_lines" "$GT_SCROLLBACKLINES"
+    test -n "$GT_PIXMAP_FILE" && gconftool string "/apps/gnome-terminal/profiles/Default/background_image" "$GT_PIXMAP_FILE"
+    test -n "$GT_SCROLLPOS" && gconftool string "/apps/gnome-terminal/profiles/Default/scrollbar_position" "$GT_SCROLLPOS"
+    
+    if [ "$GT_TRANSPARENT" = "true" ]; then
+      gconftool string "/apps/gnome-terminal/profiles/Default/background_type" "transparent"
+    else
+      gconftool string "/apps/gnome-terminal/profiles/Default/background_type" "solid"
+    fi
+
+    for GT_COLORS in $GT_PALETTE
+    do
+      NEW_GT_COLORS=$NEW_GT_COLORS'#'`expr substr $GT_COLORS 7 2``expr substr $GT_COLORS 12 2``expr substr $GT_COLORS 17 2`':'
+    done
+    NEW_GT_COLORS=`echo $NEW_GT_COLORS | cut -f-16 -d':'`
+    gconftool string "/apps/gnome-terminal/profiles/Default/palette" "$NEW_GT_COLORS"
+
+    printf "Done.\n"
+  else
+    printf "Gnome-terminal configuration file not found.\n"
+  fi
+fi
+
+# Local Variables:
+# compile-command: "bash -n gnome-stuff-1-to-2"
+# End:
