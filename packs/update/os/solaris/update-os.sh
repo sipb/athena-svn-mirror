@@ -26,20 +26,25 @@ fi
 
 yes="y\ny\ny\ny\ny\ny\ny\ny"
 
+if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" ]; then
+  pkglog=$UPDATE_ROOT/var/athena/update.pkglog
+  rm -f "$pkglog"
+fi
+
 if [ -s "$LOCALPACKAGES" ]; then
   echo "Installing os local packages"
   for i in `cat "$LOCALPACKAGES"`; do
     echo "$i"
-    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /cdrom "$i"
-  done 2>/dev/null
+    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom "$i"
+  done 2>>$pkglog
 fi
 
 if [ -s "$LINKPACKAGES" ]; then
   echo "Installing the os link packages"
   for i in `cat "$LINKPACKAGES"`; do
     echo "$i"
-    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /cdrom/cdrom.link "$i"
-  done 2>/dev/null
+    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom/cdrom.link "$i"
+  done 2>>$pkglog
 fi
 
 if [ "$NEWOS" = "true" ]; then
@@ -55,7 +60,8 @@ if [ -s "$PATCHES" ]; then
   # patchadd is stupid and elides blank arguments, so we have to be careful
   # specifying the update root.
   ur="${UPDATE_ROOT:+-R $UPDATE_ROOT}"
-  echo "$yes" | patchadd -d $ur -u -M /patches/patches.link `cat $PATCHES`
+  echo "$yes" | patchadd -d $ur -u -M /install/patches/patches.link \
+    `cat $PATCHES`
 fi
 
 if [ "$OSCHANGES" = true ]; then
