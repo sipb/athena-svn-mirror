@@ -14,7 +14,9 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_brain_dump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.1 1987-06-19 10:30:05 jtkohl Exp $";
+#ifndef SABER
+static char rcsid_brain_dump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.2 1987-07-01 04:32:48 jtkohl Exp $";
+#endif SABER
 #endif lint
 
 #include "zserver.h"
