@@ -13,11 +13,9 @@
 
 #include <errno.h>
 #ifdef SOLARIS
-#include <string.h>
 #include <fcntl.h>
-#else
-#include <strings.h>
 #endif
+#include <strings.h>
 extern int errno;
 #include "globalmessage_err.h"
 	/* Function return code */
