@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.16 1996-05-07 17:47:01 cfields Exp $
+# $Id: cshrc,v 1.17 1996-06-04 22:22:56 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -127,6 +127,19 @@ if (! $?ENV_SET) then
 		set path=($HOME/$bindir $athena_path .)	# Standard Athena path
 	endif
 
+	# Make sure applications can properly find their appdefs, etc.
+
+	if (! $?XUSERFILESEARCHPATH) then
+	  setenv XUSERFILESEARCHPATH "/usr/athena/lib/X11/app-defaults/%N"
+	else
+	  setenv XUSERFILESEARCHPATH "${XUSERFILESEARCHPATH}:/usr/athena/lib/X11/app-defaults/%N"
+	endif
+
+	if (! $?XFILESEARCHPATH) then
+	  setenv XFILESEARCHPATH "/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+	else
+	  setenv XFILESEARCHPATH "${XFILESEARCHPATH}:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+	endif
 endif
 	
 
