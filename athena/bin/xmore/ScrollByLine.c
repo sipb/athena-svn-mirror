@@ -1,17 +1,28 @@
-#ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.2 1989-10-15 04:31:51 probe Exp $";
-#endif lint
-
-/* 
- * ScrollByLine.c - This creates a widget the will text to 
- *                    be scrolled vertically.
- * 
- * Author:	Chris Peterson
- * 		M. I. T. Project Athena.
- *              Cambridge, Mass.
- * Date:	12/5/87
+/*
+ * xman - X window system manual page display program.
  *
+ * $XConsortium: ScrollByL.c,v 1.5 89/01/06 18:41:40 kit Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.3 1989-10-15 04:35:26 probe Exp $
+ *
+ * Copyright 1987, 1988 Massachusetts Institute of Technology
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in advertising or
+ * publicity pertaining to distribution of the software without specific,
+ * written prior permission.  M.I.T. makes no representations about the
+ * suitability of this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ *
+ * Author:    Chris D. Peterson, MIT Project Athena
+ * Created:   December 5, 1987
  */
+
+#if ( !defined(lint) && !defined(SABER))
+  static char rcs_version[] = "$Athena: ScrollByL.c,v 4.5 88/12/19 13:46:04 kit Exp $";
+#endif
 
 /*
  * I wrote this widget before I knew what form did, and it shows, since
@@ -19,17 +30,12 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xm
  * and do it much more like the Viewport widget in the Athena widget set.
  * But this works and time is short, so here it is.
  *
- *                                     Chris Peterson 1/30/88
- */
-
-/*
- * There is a horizontal scrollbar somewhat coded into this widget, the
- * layout function should be fine with the current horizontal code, (RIGHT!)
+ *                                     Chris D. Peterson 1/30/88
  * 
- * But I didn't really sit down and figure out what horizontal scrolling meant
- * for this widget, as it displays the stuff by line.
+ * I removed all the code for horizontal scrolling here, since is was a crock
+ * anyway.
  * 
- * Any brilliant Ideas?
+ *                                     Chris D. Peterson 11/13/88
  */
 
 #include	<X11/IntrinsicP.h>
@@ -37,7 +43,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xm
 #include	"ScrollByLineP.h"
 #include        <X11/Scroll.h>
 #include	<X11/StringDefs.h>
-#include	<X11/Misc.h>
+#include	<X11/XawMisc.h>
 
 /* Default Translation Table */
 
@@ -58,7 +64,7 @@ static char defaultTranslations[] =
 static XtResource resources[] = {
     {XtNforeground, XtCForeground, XtRPixel, sizeof(Pixel),
 	 XtOffset(ScrollByLineWidget, scroll_by_line.foreground), 
-         XtRString, "Black"},
+         XtRString, "XtDefaultForeground"},
     {XtNinnerWidth, XtCWidth, XtRInt, sizeof(int),
 	 XtOffset(ScrollByLineWidget, scroll_by_line.inner_width), 
          XtRString, "100"},
@@ -68,27 +74,21 @@ static XtResource resources[] = {
     {XtNforceBars, XtCBoolean, XtRBoolean, sizeof(Boolean),
 	 XtOffset(ScrollByLineWidget, scroll_by_line.force_bars),
          XtRString, "FALSE"},
-    {XtNallowHoriz, XtCBoolean, XtRBoolean, sizeof(Boolean),
-	 XtOffset(ScrollByLineWidget, scroll_by_line.allow_horiz),
-         XtRString, "FALSE"},
     {XtNallowVert, XtCBoolean, XtRBoolean, sizeof(Boolean),
 	 XtOffset(ScrollByLineWidget, scroll_by_line.allow_vert),
-         XtRString, "FALSE"},
-    {XtNuseBottom, XtCBoolean, XtRBoolean, sizeof(Boolean),
-	 XtOffset(ScrollByLineWidget, scroll_by_line.use_bottom),
          XtRString, "FALSE"},
     {XtNuseRight, XtCBoolean, XtRBoolean, sizeof(Boolean),
 	 XtOffset(ScrollByLineWidget, scroll_by_line.use_right),
          XtRString, "FALSE"},
     {XtNlines, XtCLine, XtRInt, sizeof(int), 
          XtOffset(ScrollByLineWidget, scroll_by_line.lines), 
-         XtRString, "0"},
+         XtRString, "1"},
     {XtNfontHeight, XtCHeight,XtRInt, sizeof(int),
          XtOffset(ScrollByLineWidget, scroll_by_line.font_height), 
          XtRString, "0"},
     {XtNcallback, XtCCallback, XtRCallback, sizeof(caddr_t), 
        XtOffset(ScrollByLineWidget, scroll_by_line.callbacks), 
-       XtRString, "NULL"},
+       XtRCallback, (caddr_t) NULL},
     {XtNformOnInner, XtCBoolean, XtRBoolean, sizeof(Boolean),
        XtOffset(ScrollByLineWidget, scroll_by_line.key),
        XtRString, "FALSE"},
@@ -100,24 +100,21 @@ static XtResource resources[] = {
  *
  ****************************************************************/
 
-static void HorizontalThumb();
 static Boolean ScrollVerticalText();
 static void VerticalThumb();
-static void HorizontalScroll();
 static void VerticalScroll();
 static void Page();
 static void InitializeHook();
+static void Initialize();
 static void Realize();
 static void Resize();
 static void ResetThumb();
 static void Redisplay();
 static void ChildExpose();
 static Boolean SetValues();
-static int MergeArglists();
 static Boolean Layout();
 static XtGeometryResult GeometryManager();
 static void ChangeManaged();
-static void ClassInitialize();
 
 static XtActionsRec actions[] = {
   { "Page",   Page},
@@ -130,10 +127,10 @@ ScrollByLineClassRec scrollByLineClassRec = {
     /* superclass         */    (WidgetClass) &compositeClassRec,
     /* class_name         */    "ScrollByLine",
     /* widget_size        */    sizeof(ScrollByLineRec),
-    /* class_initialize   */    ClassInitialize,
+    /* class_initialize   */    NULL,
     /* class_part_init    */    NULL,
     /* class_inited       */	FALSE,
-    /* initialize         */    NULL,
+    /* initialize         */    Initialize,
     /* initialize_hook    */    InitializeHook,
     /* realize            */    Realize,
     /* actions            */    actions,
@@ -156,14 +153,16 @@ ScrollByLineClassRec scrollByLineClassRec = {
     /* version            */    XtVersion,
     /* callback_private   */    NULL,
     /* tm_table           */    defaultTranslations,
+    /* query_geometry	  */	XtInheritQueryGeometry,
+    /* display_accelerator*/	XtInheritDisplayAccelerator,
+    /* extension	  */	NULL,
   },{
 /* composite_class fields */
     /* geometry_manager   */    GeometryManager,
     /* change_managed     */    ChangeManaged,
-    /* insert_child	  */	NULL,	/* Inherit from superclass */
-    /* delete_child	  */	NULL,	/* Inherit from superclass */
-    /* move_focus_to_next */    NULL,
-    /* move_focus_to_prev */    NULL
+    /* insert_child	  */	XtInheritInsertChild,
+    /* delete_child	  */	XtInheritDeleteChild,
+    /* extension	  */	NULL,
   },{
     /* mumble		  */	0	/* Make C compiler happy   */
   }
@@ -179,30 +178,12 @@ WidgetClass scrollByLineWidgetClass =
  *
  ****************************************************************/
 
-/*	Function Name: ClassInitialize
- *	Description: Used to initialize this class of widgets.
- *	Arguments: none.
- *	Returns: none.
- */
-
-static void ClassInitialize()
-{
-     CompositeWidgetClass superclass;
-     ScrollByLineWidgetClass myclass;
-
-     myclass = (ScrollByLineWidgetClass) scrollByLineWidgetClass;
-     superclass = (CompositeWidgetClass) myclass->core_class.superclass;
-
-     /* Inherit insert_child and delete_child from Composite */
-     myclass->composite_class.insert_child =
-	 superclass->composite_class.insert_child;
-     myclass->composite_class.delete_child =
-	 superclass->composite_class.delete_child;
-}
 
 /*	Function Name: Layout
  *	Description: This function lays out the scroll_by_line widget.
  *	Arguments: w - the scroll_by_line widget.
+ *                 key - a boolean: if true then resize the widget to the child
+ *                                  if false the resize children to fit widget.
  *	Returns: TRUE if successful.
  */
 
@@ -214,24 +195,20 @@ int key;
   ScrollByLineWidget sblw = (ScrollByLineWidget) w;
   Dimension width,height;	/* The size that the widget would like to be */
   XtGeometryResult answer;	/* the answer from the parent. */
-  Widget hbar,vbar,child;	/* The three children of this 
-       			    scrolled widget. */
+  Widget vbar,child;		/* The two children of this scrolled widget. */
   int vbar_x,vbar_y;		/* The locations of the various elements. */
-  int hbar_x,hbar_y;
-  int child_x,child_y;
-  int c_width,c_height;
+  int child_x;
+  int c_width;
   Boolean make_bar;
 
   vbar = sblw->composite.children[0];
-  hbar = sblw->composite.children[1];
-  child = sblw->composite.children[2];
+  child = sblw->composite.children[1];
   height = sblw->core.height;
   width = sblw->core.width;
 
 /* set the initial scroll bar positions. */
 
-  vbar_x = vbar_y = 0;
-  hbar_x = hbar_y = 0;
+  vbar_x = vbar_y = - vbar->core.border_width;
 
 /* Should I allow the vertical scrollbar to be seen */
 
@@ -256,21 +233,19 @@ int key;
      else
        c_width = width - vbar->core.width -2 * vbar->core.border_width;
 
-/* Put Scrollbar on right side if scrolled window? */
+     /* Put Scrollbar on right side if scrolled window? */
 
      if (sblw->scroll_by_line.use_right) {
        vbar_x = width - vbar->core.width - 2 * vbar->core.border_width;
        child_x = 0;
      }
-     else {
-       child_x = vbar->core.width + 2 * vbar->core.border_width;
-       vbar_x = 0;
-     }
+     else 
+       child_x = vbar->core.width + vbar->core.border_width;
    }
    else {
      /* Make the scroll bar dissappear, note how scroll bar is always there,
         sometimes it is just that we cannot see them. */
-     vbar_x = - vbar->core.width - 10;
+     vbar_x = - vbar->core.width - 2 * vbar->core.border_width - 10;
      child_x = 0;
      if (key)
        width = child->core.width;
@@ -278,96 +253,20 @@ int key;
        c_width = width;
    }
 
-/* set the horizontal bar position. */
+ /* Move child and v_bar to correct location. */
 
-/* should we allow the horiz. scroll bar. */
+  XtMoveWidget(vbar, vbar_x, vbar_y);
+  XtMoveWidget(child, child_x, 0);
 
-   if (sblw->scroll_by_line.allow_horiz && (child->core.width >= width ||
-					sblw->scroll_by_line.force_bars)) {
-     if (key)
-       height = child->core.height + hbar->core.height + 
-	        2 * hbar->core.border_width;
-     else
-       c_height = height - hbar->core.height - 2 * hbar->core.border_width;
+  /* resize the children to be the correct height or width. */
 
-     hbar_x = child_x;
+  XtResizeWidget(vbar, vbar->core.width, height, vbar->core.border_width);
 
-/* Should we put the scroll bar on the bottom?? */
+  if (!key)
+    XtResizeWidget(child, (Cardinal) (c_width - 20), (Cardinal) height,
+		   child->core.border_width);
 
-     if (sblw->scroll_by_line.use_bottom) {
-       hbar_y = height - hbar->core.height - 2 * hbar->core.border_width;
-       child_y = 0;
-     }
-     else {
-       child_y = hbar->core.height + 2 * hbar->core.border_width;
-       vbar_y = child_y;
-       hbar_y = 0;
-     }
-   }
-   else {
-     /* make this scroll bar disappear. */
-     hbar_y = - hbar->core.height - 10;
-     child_y = 0;
-     if (key)
-       height = child->core.height;
-     else
-       c_height = height;
-   }
-
- /* if the windows are realized we have to move them. */
-
-   if (XtIsRealized( (Widget) sblw)) {
-     XtMoveWidget(hbar,hbar_x,hbar_y);
-     XtMoveWidget(vbar,vbar_x,vbar_y);
-     XtMoveWidget(child,child_x,child_y);
-
- /* resize the children to be the correct height or width. */
-
-     XtResizeWidget(vbar,vbar->core.width,height - 
-		    2 * vbar->core.border_width - vbar_y,
-		    vbar->core.border_width);
-
-     XtResizeWidget(hbar,width - hbar_x - 
-		    2 * hbar->core.border_width,
-		    hbar->core.height,hbar->core.border_width);
-
-     if (!key)
-       XtResizeWidget(child, (Cardinal) c_width, (Cardinal) c_height,
-		      child->core.border_width);
-
-   }
-/* 
- * If they are not realized we do not need to move them then just set their 
- * core values, this saves a bit of time. 
- */
-  else {
-    hbar->core.x = hbar_x;
-    hbar->core.y = hbar_y;
-    vbar->core.x = vbar_x;
-    vbar->core.y = vbar_y;
-    child->core.x = child_x;
-    child->core.y = child_y;
-
-/* resize the scrollbars to be the correct height or width. */
-
-    XtResizeWidget(vbar,vbar->core.width,height - 
-       	    2 * vbar->core.border_width - vbar_y,
-       	    vbar->core.border_width);
-
-    XtResizeWidget(hbar,width - hbar_x - 
-       	    2 * hbar->core.border_width,
-       	    hbar->core.height,hbar->core.border_width);
-
-    if (!key) { 
-      child->core.width = c_width;
-      child->core.height = c_height;
-    }
-  }    
-
-  height = height;
-  width = width;
-
-/* set the thumb size to be correct. */
+  /* set the thumb size to be correct. */
 
   ResetThumb( (Widget) sblw);
 
@@ -396,11 +295,10 @@ Widget w;
 {
   float shown;
   ScrollByLineWidget sblw = (ScrollByLineWidget) w;
-  Widget child,vbar,hbar;
+  Widget child,vbar;
 
   vbar = sblw->composite.children[0];
-  hbar = sblw->composite.children[1];
-  child = sblw->composite.children[2];
+  child = sblw->composite.children[1];
 
 /* vertical */
 
@@ -410,18 +308,13 @@ Widget w;
     shown = 1.0;
 
   XtScrollBarSetThumb( vbar, (float) -1, shown );
-
-/* horizontal */
-
-  shown = (float) child->core.width / (float) child->core.width;
-  XtScrollBarSetThumb( hbar, (float) -1, shown );
 }
 
 /*
  *
  * Geometry Manager - If the height of width is changed then try a new layout.
-*                    else dissallow the requwest.
-*
+ *                    else dissallow the requwest.
+ *
  */
 
 /*ARGSUSED*/
@@ -458,7 +351,9 @@ XEvent *event;
  * then I call the redisplay routine.
  */
 
-  Redisplay(w->core.parent,event);
+  if ((event->type == Expose) || (event->type == GraphicsExpose))
+    Redisplay(w->core.parent, event, NULL);
+
 } /* ChildExpose */
 
 /*
@@ -466,18 +361,17 @@ XEvent *event;
  */
 
 /* ARGSUSED */
-static void Redisplay(w, event)
+static void Redisplay(w, event, region)
 Widget w;
 XEvent *event;
+Region region;
 {
   ScrollByLineWidget sblw = (ScrollByLineWidget) w;
 
   int top,bottom;		/* the locations of the top and
        			  bottom of the region that needs to be
        			  repainted. */
-  ScrollByLineStruct * sblw_struct;
-
-  sblw_struct = (ScrollByLineStruct *) malloc(sizeof(ScrollByLineStruct));
+  ScrollByLineStruct sblw_struct;
 
 /*
  * This routine tells the client which sections of the window to 
@@ -493,22 +387,20 @@ XEvent *event;
     bottom  = event->xgraphicsexpose.height + top;
   }
   
-  sblw_struct->start_line = top / sblw->scroll_by_line.font_height + 
+  sblw_struct.start_line = top / sblw->scroll_by_line.font_height + 
                             sblw->scroll_by_line.line_pointer;
 /*
  * If an expose event is called on a region that has no text assoicated
  * with it then do not redisplay. Only nescessary for very short file.
  */
-  if (sblw_struct->start_line > sblw->scroll_by_line.lines)
+  if (sblw_struct.start_line > sblw->scroll_by_line.lines)
     return;
-  sblw_struct->num_lines = (bottom - top) / 
+  sblw_struct.num_lines = (bottom - top) / 
                             sblw->scroll_by_line.font_height + 1;
-  sblw_struct->location =  top / sblw->scroll_by_line.font_height *
+  sblw_struct.location =  top / sblw->scroll_by_line.font_height *
                             sblw->scroll_by_line.font_height;
 
-  XtCallCallbacks( (Widget) sblw, XtNcallback, (caddr_t) sblw_struct);
-
-  free(sblw_struct);
+  XtCallCallbacks( (Widget) sblw, XtNcallback, (caddr_t) &sblw_struct);
 
 } /* redisplay (expose) */
 
@@ -565,7 +457,7 @@ Cardinal *num_params;
  * of scrolling has been turned off. 
  */
 
-   if (vbar->core.x < 0)
+   if (vbar->core.x < - vbar->core.border_width)
      return;
 
    switch ( direction ) {
@@ -577,7 +469,7 @@ Cardinal *num_params;
    case 'b':
    case 'B':
      /* move one page backward */
-     VerticalScroll(vbar,NULL, (int)  - vbar->core.height);
+     VerticalScroll(vbar,NULL,  - (int) vbar->core.height);
      break;
    case 'L':
    case 'l':
@@ -614,11 +506,11 @@ Boolean force_redisp;
     lines_to_move;		/* The number of lines to copy. */
   GC gc;
   Widget child,vbar;	/* Widgets. */
-  ScrollByLineStruct * sblw_struct;
+  ScrollByLineStruct sblw_struct;
   Boolean move_thumb = FALSE;
 
-  child = sblw->composite.children[2];
   vbar =  sblw->composite.children[0];
+  child = sblw->composite.children[1];
 
   num_lines =  child->core.height / sblw->scroll_by_line.font_height;
 
@@ -634,6 +526,8 @@ Boolean force_redisp;
   else {
     max_lines = sblw->scroll_by_line.lines -
      child->core.height / sblw->scroll_by_line.font_height;
+
+    if (max_lines < 0) max_lines = 0;
 
     if ( new_line > max_lines ) {
       new_line = max_lines;
@@ -725,18 +619,15 @@ Boolean force_redisp;
  * actual painting of the text. 
  */
 
-  sblw_struct = (ScrollByLineStruct *) malloc(sizeof(ScrollByLineStruct));
+  sblw_struct.location = y_pos;
+  sblw_struct.start_line = start_line;
+  sblw_struct.num_lines = num_lines_disp;
 
-  sblw_struct->location = y_pos;
-  sblw_struct->start_line = start_line;
-  sblw_struct->num_lines = num_lines_disp;
-
-  XtCallCallbacks( (Widget) sblw,XtNcallback, (caddr_t) sblw_struct);
+  XtCallCallbacks( (Widget) sblw,XtNcallback, (caddr_t) &sblw_struct);
 
 /* Save that memory */
 
   XFreeGC(XtDisplay( (Widget) sblw), gc);
-  free(sblw_struct);
 
   return(move_thumb);
 }
@@ -754,7 +645,7 @@ static void
 VerticalThumb(w,junk,percent)
 Widget w;
 caddr_t junk;
-float percent;
+float *percent;
 {
   int new_line;			/* The new location for the line pointer. */
   float location;		/* The location of the thumb. */
@@ -764,7 +655,7 @@ float percent;
 
   vbar =  sblw->composite.children[0];
 
-  new_line = (int) ((float) sblw->scroll_by_line.lines * percent);
+  new_line = (int) ((float) sblw->scroll_by_line.lines * (*percent));
 
   if (ScrollVerticalText( (Widget) sblw, new_line, FALSE)) {
 /* reposition the thumb */
@@ -812,186 +703,36 @@ int pos;
 
 }
 
-/*
- * I have not thought out the horizontal scrolling yet, I am not sure what 
- * should be done here.  This code is questionable.
- */
- 
-
-/*	Function Name: HorizontalThumb
- *	Description: This function moves the postition of the interior window
- *                   as the vertical scroll bar is moved.
- *	Arguments: w - the scrollbar widget.
- *                 junk - not used.
- *                 percent - the position of the scrollbar.
- *	Returns: none.
- */
-
-static void
-HorizontalThumb(w,junk,percent)
-Widget w;
-caddr_t junk;
-float percent;
-{
-  int x, y;
-  Widget child,vbar;
-  ScrollByLineWidget sblw = (ScrollByLineWidget) w->core.parent;
-
-  /* reposition the client window (child[2]) */
-
-  vbar =  sblw->composite.children[0];
-  child = sblw->composite.children[2];
-
-  x = (int) ( (0.0 - percent) * ((float) child->core.width));
-  y = child->core.y;
-
-/* 
- * if there is a vertical scrollbar and it is on the left then 
- * allow room for it .
- */
-
-  if (vbar->core.x == 0)
-    x += vbar->core.width + 2 * vbar->core.border_width;
-
-  XtMoveWidget(child,x,y);
-}
-
-/*	Function Name: HorizontalScroll
- *	Description: This function moves the postition of the interior window
- *                   as the horizontal scroll bar is moved.
- *	Arguments: w - the scrollbar widget.
- *                 junk - not used.
- *                 pos - the position of the cursor.
- *	Returns: none.
- */
-
-static void
-HorizontalScroll(w,junk,pos)
-Widget w;
-caddr_t junk;
-int pos;
-{
-  int x, y, min_x;
-  float location;
-  Widget child,vbar,hbar;
-  ScrollByLineWidget sblw = (ScrollByLineWidget) w->core.parent;
-
-  /* reposition the client window (child[2]) */
-
-  vbar =  sblw->composite.children[0];
-  hbar =  sblw->composite.children[1];
-  child = sblw->composite.children[2];
-
-  x = child->core.x - pos;
-  y = child->core.y;
-  
-/* 
- * Keep us in bounds.
- */
-
-  if ( x > 0 ) x = 0;
-  min_x = - (child->core.width - hbar->core.width - 
-	     2 * vbar->core.border_width);
-
-  if (vbar->core.y > 0)		/* vertical scrollbar is on right.*/
-    min_x -=  vbar->core.width +  2 * vbar->core.border_width;
-
-  if ( x < min_x ) x = min_x;
-
-/* reposition the thumb */
-
-  location = 0.0 - (float) y / (float) child->core.width; 
-  XtScrollBarSetThumb( hbar, location , (float) -1 );
-  
-/* 
- * if there is a vertical scrollbar and it is on the left then 
- * allow room for it .
- */
-
-  if (vbar->core.x == 0)
-    y += vbar->core.width + 2 * vbar->core.border_width;
-    
-  XtMoveWidget(child,x,y);	/* he's my child so I can move him. */
-}
-
-static void InitializeHook(new, args, num_args)
-    ScrollByLineWidget new;
-    ArgList args;
-    Cardinal *num_args;
+static void 
+Initialize(req, new)
+Widget req, new;
 {
   ScrollByLineWidget sblw = (ScrollByLineWidget) new;
-  Widget window;		/* Window widget. */
-  Arg arglist[50];		/* Must be large enough for the 
-				 arglist from the scrolled widget to 
-				 be added to it. */
-  Cardinal scrollbar_num;	/* the number of scrollbar args. */
-  Cardinal window_num;		/* the number of window args. */
   
-  static XtCallbackRec scrollcallback[] = { /* The scroll callback function. */
-    { NULL, NULL },
-    { NULL, NULL },
-  };
-  static XtCallbackRec thumbcallback[] = { /* The thumb callback function. */
-    { NULL, NULL },
-    { NULL, NULL },
-  };
-
-  sblw->scroll_by_line.line_pointer = 0; /* initial point to line 0. */
+  sblw->scroll_by_line.line_pointer = 0; /* initially point to line 0. */
 
   if (sblw->core.height <= 0)
     sblw->core.height = DEFAULT_HEIGHT;
   if (sblw->core.width <= 0)
     sblw->core.width = DEFAULT_WIDTH;
+} /* Initialize. */
 
-  scrollbar_num = 0;  
-  XtSetArg(arglist[scrollbar_num], XtNheight, 10); /* changed in layout. */
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNwidth, 16);
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNorientation, XtorientVertical);
-  scrollbar_num++;
-  thumbcallback[0].callback = VerticalThumb;  
-  scrollcallback[0].callback = VerticalScroll;
-  XtSetArg(arglist[scrollbar_num], XtNthumbProc, thumbcallback);
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNscrollProc, scrollcallback);
-  scrollbar_num++;
+static void 
+InitializeHook(new, args, num_args)
+ScrollByLineWidget new;
+ArgList args;
+Cardinal *num_args;
+{
+  ScrollByLineWidget sblw = (ScrollByLineWidget) new;
+  Widget window, s_bar;		/* Window widget, and scollbar. */
+  Arg arglist[10];		/* an arglist. */
+  ArgList merged_list, XtMergeArgLists(); /* The merged arglist. */
+  Cardinal window_num, merged_num; /* The number of window args. */
 
-/* 
- * Merge the argument lists so but have the scrollbar arglist take 
- * control when there is a discrepency this causes us to get the
- * correct height and width.
- */
-
-  scrollbar_num = MergeArglists(args, *num_args,arglist,scrollbar_num);
-
-  XtCreateManagedWidget("Vertical Scroll Bar",
-		 scrollbarWidgetClass, (Widget) sblw,arglist,scrollbar_num);
-
-  scrollbar_num = 0;  
-  XtSetArg(arglist[scrollbar_num], XtNwidth, 10); /* changed in layout. */
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNheight, 16);
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNorientation, XtorientHorizontal);
-  scrollbar_num++;
-  thumbcallback[0].callback = HorizontalThumb;
-  scrollcallback[0].callback = HorizontalScroll;
-  XtSetArg(arglist[scrollbar_num], XtNthumbProc, thumbcallback);
-  scrollbar_num++;
-  XtSetArg(arglist[scrollbar_num], XtNscrollProc, scrollcallback);
-  scrollbar_num++;
-
-/* 
- * Merge the argument lists so but have the scrollbar arglist take 
- * control when there is a discrepency this causes us to get the
- * correct height and width.
- */
-
-  scrollbar_num = MergeArglists(args, *num_args,arglist,scrollbar_num);
-
-  XtCreateManagedWidget("Horizontal Scroll Bar",
-		 scrollbarWidgetClass, (Widget) sblw,arglist,scrollbar_num);
+  s_bar = XtCreateManagedWidget("verticalScrollBar", scrollbarWidgetClass,
+				(Widget) sblw, args, *num_args);
+  XtAddCallback(s_bar, XtNjumpProc, VerticalThumb, NULL);
+  XtAddCallback(s_bar, XtNscrollProc, VerticalScroll, NULL);
 
   window_num = 0;  
   XtSetArg(arglist[window_num], XtNwidth, sblw->scroll_by_line.inner_width); 
@@ -1000,14 +741,24 @@ static void InitializeHook(new, args, num_args)
   window_num++;
   XtSetArg(arglist[window_num], XtNborderWidth, 0);
   window_num++;  
+
+/* 
+ * I hope this will cause my args to override those passed to the SBL widget.
+ */
   
-  window = XtCreateWidget("Window with file",widgetClass,(Widget) sblw,arglist,
-			  window_num);
+  merged_list = XtMergeArgLists(args, *num_args, arglist, window_num);
+  merged_num = *num_args + window_num;
+
+  window = XtCreateWidget("windowWithFile",widgetClass,(Widget) sblw,
+			  merged_list, merged_num);
   XtManageChild(window);
+  XtFree(merged_list);		/* done, free it. */
 
-/* We want expose events for this window also. */
+/*
+ * We want expose (and graphic exposuer) events for this window also. 
+ */
 
-  XtAddEventHandler(window, (Cardinal) ExposureMask, FALSE, ChildExpose, NULL);
+  XtAddEventHandler(window, (Cardinal) ExposureMask, TRUE, ChildExpose, NULL);
   
 } /* InitializeHook */
 
@@ -1048,56 +799,6 @@ static Boolean SetValues (current, request, new)
 
 } /* Set Values */
 
-/*	Function Name: MergeArglists
- *	Description: This function merges two arglists.
- *	Arguments: from,num_from - the number and list of args for the source.
- *                 to,num_to - the number and list of argument for the
- *                             destination.
- *	Returns: new number of argument in to.
- */
-
-/* Note: This function will be very unhappy with you if 'to' is not
- *       large enough to contain 'from', you will end up with pointers 
- *       in space.
- */
-
-static int
-MergeArglists(from,num_from,to,num_to)
-Arg from[],to[];
-Cardinal num_from,num_to;
-{
-  int i,j;			/* a counter. */
-
-/* When there are two similar values ignore the from value. */
-
-  i = 0;
-  while ( i < num_from ) {	
-    j = 0;
-    while ( j < num_to ) {
-      if ( !strcmp(from[i].name,to[j].name) ) {
-	/* if they are the same then goto next on the from list,
-	   i.e. ignore this entry, do not add to to list. */
-	i++;
-	if ( i > num_from)
-	  j = num_to + 100;
-	else {
-	  j = 0;
-	  continue;
-	}
-      }
-      j++;
-    }
-    /* add to to list */
-    if (j < num_to + 100) {
-      to[num_to].value = from[i].value;
-      to[num_to].name = from[i].name;
-      num_to++;
-      i++;
-    }
-  }
-  return(num_to);
-}
-
 /* Public Routines. */
 
 /*	Function Name: XtScrollByLineWidget()
@@ -1112,7 +813,7 @@ Widget w;
 {
   ScrollByLineWidget sblw = (ScrollByLineWidget) w; /* the sblw widget. */
   
-  return(sblw->composite.children[2]);
+  return(sblw->composite.children[1]);
 }
 
 /*	Function Name: XtResetScrollByLine
@@ -1139,5 +840,5 @@ Widget w;
              (float) sblw->scroll_by_line.lines; 
   XtScrollBarSetThumb( vbar, location , (float) -1 );
 
-  ResetThumb(w);
+  Layout(w, FALSE);		/* see if new layout is required. */
 }

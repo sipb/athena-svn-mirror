@@ -1,16 +1,23 @@
 /*
-* $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLineP.h,v 1.1 1989-10-15 04:32:33 probe Exp $
-*/
-
-
-/* 
- * ScrollByLineP.h - Private definitions for ScrollByLine widget
- * 
- * Author:	Chris Peterson
- * 		M. I. T. Project Athena.
- *              Cambridge, Mass.
- * Date:	12/5/87
+ * xman - X window system manual page display program.
  *
+ * $XConsortium: ScrollByLP.h,v 1.2 88/09/06 17:47:30 jim Exp $
+ * $Athena: ScrollByLP.h,v 4.0 88/08/31 22:11:21 kit Exp $
+ *
+ * Copyright 1987, 1988 Massachusetts Institute of Technology
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in advertising or
+ * publicity pertaining to distribution of the software without specific,
+ * written prior permission.  M.I.T. makes no representations about the
+ * suitability of this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ *
+ * Author:    Chris D. Peterson, MIT Project Athena
+ * Created:   December 5, 1987
  */
 
 #ifndef _XtScrollByLinePrivate_h
