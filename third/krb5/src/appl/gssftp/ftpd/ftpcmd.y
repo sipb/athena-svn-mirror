@@ -175,6 +175,7 @@ struct tab sitetab[];
 	CDUP	STOU	SMNT	SYST	SIZE	MDTM
 	AUTH	ADAT	PROT    PBSZ
 	CCC
+	ATCH
 
 	UMASK	IDLE	CHMOD
 
@@ -611,6 +612,13 @@ cmd:		USER SP username CRLF
 			auth_data((char *) $3);
 			free((char *) $3);
 		}
+	|	ATCH check_login SP pathname CRLF
+		= {
+			if ($2 && $4 != NULL)
+				attach(pw, (char *) $4);
+			if ($4 != NULL)
+				free((char *) $4);
+		}				
 	|	QUIT CRLF
 		= {
 			reply(221, "Goodbye.");
@@ -883,6 +891,7 @@ struct tab cmdtab[] = {		/* In order defined in RFC 765 */
 	{ "CCC",  CCC,  ARGS, 1,	"(clear command channel)" },
 	{ "SIZE", SIZE, OSTR, 1,	"<sp> path-name" },
 	{ "MDTM", MDTM, OSTR, 1,	"<sp> path-name" },
+	{ "ATCH", ATCH, STR1, 1,	"<sp> filesystem-name" },
 	{ NULL,   0,    0,    0,	0 }
 };
 

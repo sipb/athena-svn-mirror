@@ -136,10 +136,13 @@ char* gss_services[] = { "ftp", "host", 0 };
 char *auth_type;	/* Authentication succeeded?  If so, what type? */
 static char *temp_auth_type;
 
+#include <al.h>
 #include <krb5.h>
 krb5_context kcontext;
 krb5_ccache ccache;
 int have_creds = 0;
+void try_afscall(int (*func)());
+extern int setpag(), ktc_ForgetAllTokens();
 
 /*
  * File containing login names
@@ -262,7 +265,11 @@ main(argc, argv, envp)
 			break;
 
 		case 'a':
-			authenticate = 1;
+			if (argc > 1 && !strcmp(argv[1], "off")) {
+				argc--, argv++;
+				authenticate = -1;
+			} else
+				authenticate = 1;
 			break;
 
 		case 'p':
@@ -522,7 +529,8 @@ int prot_level;
 				reply(200, "Protection level set to %s.",
 					(level = prot_level) == PROT_S ?
 						"Safe" : level == PROT_P ?
-						"Private" : "Clear");
+						"Private (Encrypted)" : 
+						"Clear");
 			else
 		default:	reply(536, "%s protection level not supported.",
 					levelnames[prot_level]);
@@ -551,6 +559,8 @@ user(name)
 #ifdef HAVE_GETUSERSHELL
 	char *getusershell();
 #endif
+	char *errmem;
+	int status, *warnings;
 
 	/* Some paranoid sites may want the client to authenticate
 	 * before accepting the USER command.  If so, uncomment this:
@@ -580,6 +590,26 @@ user(name)
 			reply(530, "User %s unknown.", name);
 		return;
 	}
+
+	status = al_login_allowed(name, 1, NULL);
+	if (status != AL_SUCCESS) {
+		reply(530, "User %s access denied: %s", name,
+		      al_strerror(status, &errmem));
+		al_free_errmem(errmem);
+		return;
+	}
+	status = al_acct_create(name, NULL, getpid(), 0, 0, &warnings);
+	if (status != AL_SUCCESS) {
+		if (status == AL_WARNINGS)
+			free(warnings);
+		else {
+			reply(530, "User %s access denied: %s", name,
+			      al_strerror(status, &errmem));
+			al_free_errmem(errmem);
+			return;
+		}
+	}
+
 	if (pw = sgetpwnam(name)) {
 		if ((shell = pw->pw_shell) == NULL || *shell == 0)
 			shell = "/bin/sh";
@@ -601,62 +631,67 @@ user(name)
 			return;
 		}
 	}
+
+	if (authenticate != -1) {
 #ifdef KRB5_KRB4_COMPAT
-	if (auth_type && strcmp(auth_type, "KERBEROS_V4") == 0) {
-		char buf[FTP_BUFSIZ];
-		kerb_ok = kuserok(&kdata,name) == 0;
-		if (! kerb_ok && authenticate) {
-			reply(530, "User %s access denied.", name);
-			if (logging)
-				syslog(LOG_NOTICE,
-				       "FTP KERBEROS LOGIN REFUSED FROM %s, %s",
-				       remotehost, name);
-			pw = (struct passwd *) NULL;
-			return;
-		}
-		sprintf(buf, "Kerberos user %s%s%s@%s is%s authorized as %s%s",
-			kdata.pname, *kdata.pinst ? "." : "",
-			kdata.pinst, kdata.prealm,
-			kerb_ok ? "" : " not",
-			name, kerb_ok ? "" : "; Password required.");
-		reply(kerb_ok ? 232 : 331, "%s", buf);
-		syslog(kerb_ok ? LOG_INFO : LOG_ERR, "%s", buf);
-	} else
+		if (auth_type && strcmp(auth_type, "KERBEROS_V4") == 0) {
+			char buf[FTP_BUFSIZ];
+			kerb_ok = kuserok(&kdata,name) == 0;
+			if (! kerb_ok && authenticate) {
+				reply(530, "User %s access denied.", name);
+				if (logging)
+					syslog(LOG_NOTICE,
+					       "FTP KERBEROS LOGIN REFUSED FROM %s, %s",
+					       remotehost, name);
+				pw = (struct passwd *) NULL;
+				return;
+			}
+			sprintf(buf, "Kerberos user %s%s%s@%s is%s authorized as %s%s",
+				kdata.pname, *kdata.pinst ? "." : "",
+				kdata.pinst, kdata.prealm,
+				kerb_ok ? "" : " not",
+				name, kerb_ok ? "" : "; Password required.");
+			reply(kerb_ok ? 232 : 331, "%s", buf);
+			syslog(kerb_ok ? LOG_INFO : LOG_ERR, "%s", buf);
+		} else
 #endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
-	if (auth_type && strcmp(auth_type, "GSSAPI") == 0) {
-		char buf[FTP_BUFSIZ];
-		gss_ok = ftpd_userok(&client_name, name) == 0;
-		if (! gss_ok && authenticate) {
-			reply(530, "User %s access denied.", name);
+		if (auth_type && strcmp(auth_type, "GSSAPI") == 0) {
+			char buf[FTP_BUFSIZ];
+			gss_ok = ftpd_userok(&client_name, name) == 0;
+			if (! gss_ok && authenticate) {
+				reply(530, "User %s access denied.", name);
+				if (logging)
+				    syslog(LOG_NOTICE,
+					   "FTP GSSAPI LOGIN REFUSED FROM %s, %s",
+					   remotehost, name);
+				pw = (struct passwd *) NULL;
+				return;
+			}
+			sprintf(buf, "GSSAPI user %s is%s authorized as %s%s",
+				client_name.value,
+				gss_ok ? "" : " not",
+				name, gss_ok ? "" : "; Password required.");
+			/* 232 is per draft-8, but why 331 not 53z? */
+			reply(gss_ok ? 232 : 331, "%s", buf);
+			syslog(gss_ok ? LOG_INFO : LOG_ERR, "%s", buf);
+		} else
+#endif /* GSSAPI */
+		/* Other auth types go here ... */
+		if (authenticate) {
+			reply(530, "User %s access denied: authentication required.",
+			      name);
 			if (logging)
 				syslog(LOG_NOTICE,
-				       "FTP GSSAPI LOGIN REFUSED FROM %s, %s",
+				       "FTP LOGIN REFUSED FROM %s, %s",
 				       remotehost, name);
 			pw = (struct passwd *) NULL;
 			return;
-		}
-		sprintf(buf, "GSSAPI user %s is%s authorized as %s%s",
-			client_name.value,
-			gss_ok ? "" : " not",
-			name, gss_ok ? "" : "; Password required.");
-		/* 232 is per draft-8, but why 331 not 53z? */
-		reply(gss_ok ? 232 : 331, "%s", buf);
-		syslog(gss_ok ? LOG_INFO : LOG_ERR, "%s", buf);
-	} else
-#endif /* GSSAPI */
-	/* Other auth types go here ... */
-	if (authenticate) {
-		reply(530, "User %s access denied: authentication required.",
-		      name);
-		if (logging)
-			syslog(LOG_NOTICE,
-			       "FTP LOGIN REFUSED FROM %s, %s",
-			       remotehost, name);
-		pw = (struct passwd *) NULL;
-		return;
+		} else
+			reply(331, "Password required for %s.", name);
 	} else
 		reply(331, "Password required for %s.", name);
+
 	askpasswd = 1;
 	/*
 	 * Delay before reading passwd after first failed
@@ -700,9 +735,12 @@ end_login()
 	(void) seteuid((uid_t)0);
 	if (logged_in)
 		logwtmp(ttyline, "", "");
+	if (pw)
+		al_acct_revert(pw->pw_name, getpid());
 	if (have_creds) {
 		krb5_cc_destroy(kcontext, ccache);
 		dest_tkt();
+		try_afscall(ktc_ForgetAllTokens);
 	}
 	pw = NULL;
 	logged_in = 0;
@@ -789,6 +827,9 @@ pass(passwd)
 {
 	char *xpasswd, *salt;
 
+	int status, *warnings;
+	char *errmem;
+
 	if (logged_in || askpasswd == 0) {
 		reply(503, "Login with USER first.");
 		return;
@@ -824,6 +865,25 @@ pass(passwd)
 				    remotehost);
 				exit(0);
 			}
+			return;
+		}
+	}
+
+	try_afscall(setpag);
+	status = al_acct_create(pw->pw_name, NULL, getpid(), 1, 0, &warnings);
+	if (status != AL_SUCCESS) {
+		if (status == AL_WARNINGS) {
+			int i;
+			for (i = 0; warnings[i]; i++) {
+				lreply(230, "%s",
+				      al_strerror(warnings[i], &errmem));
+				al_free_errmem(errmem);
+			}
+			free(warnings);
+		} else {
+			reply(530, "User %s access denied: %s", pw->pw_name,
+			      al_strerror(status, &errmem));
+			al_free_errmem(errmem);
 			return;
 		}
 	}
@@ -1707,10 +1767,12 @@ dologout(status)
 	if (logged_in) {
 		(void) seteuid((uid_t)0);
 		logwtmp(ttyline, "", "");
+		al_acct_revert(pw->pw_name, getpid());
 	}
 	if (have_creds) {
 		krb5_cc_destroy(kcontext, ccache);
 		dest_tkt();
+		try_afscall(ktc_ForgetAllTokens);
 	}
 	/* beware of flushing buffers after a SIGPIPE */
 	_exit(status);
@@ -2388,3 +2450,83 @@ ftpd_userok(client_name, name)
 	return retval;
 }
 #endif /* GSSAPI */
+
+attach(pw, locker)
+	struct passwd *pw;
+	char *locker;
+{
+	int fd, status;
+	struct sigaction sa, osa;
+	sigset_t smask, osmask;
+
+	sigemptyset(&smask);
+	sigaddset(&smask, SIGCHLD);
+	sigprocmask(SIG_BLOCK, &smask, &osmask);
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = SIG_DFL;
+	sigaction(SIGCHLD, &sa, &osa);
+
+	switch (fork()) {
+		case -1:
+			reply(550, "Couldn't fork to attach");
+			break;
+			
+		case 0:
+			seteuid(0);
+			if (setgid(pw->pw_gid) == -1 ||
+			    setuid(pw->pw_uid) == -1)
+				_exit(1);
+
+			close(STDOUT_FILENO);
+			close(STDERR_FILENO);
+			execl("/bin/athena/attach", "attach", "-nozephyr",
+			      locker, NULL);
+			_exit(1);
+
+		default:
+			while (waitpid(-1, &status, 0) < 0 && errno == EINTR)
+				;
+			if ((WIFEXITED(status) && WEXITSTATUS(status) != 0))
+				switch(WEXITSTATUS(status)) {
+					case 11:
+						reply(550, "Attach failed: Server not responding.");
+						break;
+					case 12:
+						reply(550, "Attach failed: Authentication failure.");
+						break;
+					case 20:
+						reply(550, "Attach failed: Filesystem does not exist.");
+						break;
+					case 24:
+						reply(550, "Attach failed: You are not allowed to attach this filesystem.");
+						break;
+					case 25:
+						reply(550, "Attach failed: You are not allowed to attach a filesystem here.");
+						break;
+					default:
+						reply(550, "Attach failed: Error %d", WEXITSTATUS(status));
+						break;
+				}
+			else if (!WIFEXITED(status))
+				reply(550, "Attach failed.");
+			else
+				ack("ATCH");
+			break;
+	}
+
+	sigaction(SIGCHLD, &osa, NULL);
+	sigprocmask(SIG_SETMASK, &osmask, NULL);
+}
+
+void try_afscall(int (*func)(void))
+{
+    struct sigaction sa, osa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGSYS, &sa, &osa);
+    func();
+    sigaction(SIGSYS, &osa, NULL);
+}
