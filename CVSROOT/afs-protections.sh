@@ -29,6 +29,7 @@ attach -h -n -q gnu
 	-path ./athena/lib/gdss/lib -prune -o \
 	-path ./athena/etc/synctree -prune -o \
 	-path ./athena/etc/ftpd -prune -o \
+	-path ./third/transcript -prune -o \
 	-type d -print | xargs fs sa -acl $public -clear -dir
 
 find athena/bin/lpr -type d -print | xargs fs sa -acl $fascist -clear -dir
@@ -39,3 +40,4 @@ find athena/bin/voldump -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/lib/gdss/lib -type d -print | xargs fs sa -acl $fascist -clear -dir
 find athena/etc/synctree -type d -print | xargs fs sa -acl $auth -clear -dir
 find athena/etc/ftpd -type d -print | xargs fs sa -acl $fascist -clear -dir
+find third/transcript -type d -print | xargs fs sa -acl $fascist -clear -dir
