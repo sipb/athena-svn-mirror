@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog.h,v 1.5 1991-07-16 06:25:20 probe Exp $
+ * $Id: aklog.h,v 1.6 1994-04-13 14:55:31 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -9,8 +9,13 @@
 #define __AKLOG_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_aklog_h = "$Id: aklog.h,v 1.5 1991-07-16 06:25:20 probe Exp $";
+static char *rcsid_aklog_h = "$Id: aklog.h,v 1.6 1994-04-13 14:55:31 probe Exp $";
 #endif /* lint || SABER */
+
+#if !defined(vax)
+#include <unistd.h>
+#include <stdlib.h>
+#endif
 
 #include <krb.h>
 #include "linked_list.h"
