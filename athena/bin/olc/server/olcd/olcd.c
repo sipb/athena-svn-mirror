@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.10 1990-01-10 13:49:53 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.11 1990-01-10 15:11:53 raeburn Exp $";
 
 /* Global variables. */
 
@@ -70,15 +70,21 @@ int select_timeout = 10;
 
 #ifdef KERBEROS
 static long ticket_time = 0L;         /* Timer on kerberos ticket */
-int get_kerberos_ticket(void); 
+#if __STDC__
+int get_kerberos_ticket(void);
+#endif
 extern char SERVER_REALM[];
 extern char *DFLT_SERVER_REALM;
 extern char *TICKET_FILE;
 extern int krb_ap_req_debug;
 #endif KERBEROS
 
+#if __STDC__
 static void flush_olc_userlogs (void);
 static void process_request (int, struct sockaddr_in *);
+#else
+static void flush_olc_userlogs (), process_request ();
+#endif
 
 
 /* Static variables */
@@ -86,7 +92,11 @@ static void process_request (int, struct sockaddr_in *);
 static int processing_request;
 static int got_signal;
 static int listening_fd;
+#if __STDC__
 int punt(int sig);
+#else
+int punt();
+#endif
 
 
 #ifdef TEST
