@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.18 1990-05-26 11:06:17 vanharen Exp $
+ *	$Id: olcd.h,v 1.19 1990-07-16 10:07:02 vanharen Exp $
  *	$Author: vanharen $
  */
 
@@ -30,7 +30,7 @@
 
 /* Important files. */
 
-extern char *NF_PREFIX;
+extern char *DONE_DIR;
 extern char *LOG_DIR;
 extern char *BACKUP_FILE;
 extern char *BACKUP_TEMP;
@@ -355,7 +355,7 @@ extern int	insert_knuckle_in_user (KNUCKLE *, USER *);
 extern void	init_dbinfo (USER *);
 extern void	load_user (USER *);
 extern int	verify_topic (char *);
-extern ERRCODE	init_log (KNUCKLE *, const char *);
+extern ERRCODE	init_log (KNUCKLE *, const char *, const char *);
 extern int	is_topic (int *, int);
 extern int	owns_question (KNUCKLE *);
 extern int	insert_topic (TOPIC *);
@@ -382,7 +382,7 @@ extern void	new_message (char **, KNUCKLE *, char *);
 extern int	list_user_knuckles (KNUCKLE *, LIST **, int *);
 extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
 extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
-extern int	init_question (KNUCKLE *, char *, char *);
+extern int	init_question (KNUCKLE *, char *, char *, char *);
 extern void	free_new_messages (KNUCKLE *);
 
 /* notifications */
