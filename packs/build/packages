@@ -1,4 +1,4 @@
-# $Id: packages,v 1.78.2.1.2.1 1999-12-14 19:05:34 tb Exp $
+# $Id: packages,v 1.78.2.1.2.2 2000-02-05 07:14:36 tb Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -154,8 +154,8 @@ third/xscreensaver		requires krb5
 packs/config			late except linux
 packs/dotfiles			late
 packs/glue			late
-packs/install			late except linux
-packs/maint			late package base
+packs/install			late package base
+packs/maint			late package ws
 packs/update			late except linux
 packs/build/config		late package imakecf
 packs/build/finish		late except linux
