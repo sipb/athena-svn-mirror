@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.15 2004-05-06 16:37:08 zacheiss Exp $
+# $Id: syncconf.sh,v 1.16 2005-03-30 16:52:53 rbasch Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -12,22 +12,16 @@ startup=
 echo=echo
 maybe=
 
-# Usage: syncrc level {K/S} order scriptname boolvalue
-# e.g. "syncrc 2 S 50 mail false" turns off the /etc/rc2.d/S50mail link
-syncrc()
+# Usage: syncsvc service boolvalue
+# e.g. "syncsvc network/nfs/server false" turns off the nfs server service
+syncsvc()
 {
-	uprefix=$2
-	lprefix=`echo $uprefix | tr SK sk`
-	if [ "$5" = false ]; then
-		prefix="$lprefix"
+	if [ "$2" = false ]; then
+		action=disable
 	else
-		prefix="$uprefix"
+		action=enable
 	fi
-	if [ "$1$prefix" = 2S -a ! -h "/etc/rc2.d/S$3$4" ]; then
-		mustreboot=true
-	fi
-	$maybe rm -f "/etc/rc$1.d/$lprefix$3$4" "/etc/rc$1.d/$uprefix$3$4"
-	$maybe ln -s "../init.d/$4" "/etc/rc$1.d/$prefix$3$4"
+	$maybe /usr/sbin/svcadm "$action" "$1"
 }
 
 remove()
@@ -76,17 +70,11 @@ handle()
 
 	case "$1" in
 	NFSSRV)
-		syncrc 0 K 66 nfs.server "$NFSSRV"
-		syncrc 1 K 65 nfs.server "$NFSSRV"
-		syncrc 2 K 60 nfs.server "$NFSSRV"
-		syncrc 3 S 15 nfs.server "$NFSSRV"
+		syncsvc network/nfs/server "$NFSSRV"
 		;;
 
 	NFSCLIENT)
-		syncrc 0 K 75 nfs.client "$NFSCLIENT"
-		syncrc 1 K 80 nfs.client "$NFSCLIENT"
-		syncrc 2 K 65 nfs.client "$NFSCLIENT"
-		syncrc 2 S 73 nfs.client "$NFSCLIENT"
+		syncsvc network/nfs/client "$NFSSRV"
 		;;
 
 	HOSTADDR)
