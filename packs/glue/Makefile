@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.54 2003-02-19 20:39:35 zacheiss Exp $
+# $Id: Makefile,v 1.55 2003-03-27 23:49:55 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -128,7 +128,6 @@ install:
 	install -c -m 444 mh.1 ${DESTDIR}${ATHMANDIR}/man1
 	install -c -m 555 mitch ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 mozilla.sh ${DESTDIR}${ATHBINDIR}/mozilla
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 netscape.sh ${DESTDIR}${ATHBINDIR}/netscape
