@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.9 1991-04-08 21:04:02 lwvanels Exp $
+ *	$Id: common.h,v 1.10 1991-08-29 11:24:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -52,8 +52,8 @@ void time_now P((char *time_buf ));
 void olc_perror P((char *msg ));
 
 /* status.c */
-int OGetStatusString P((int status , char *string ));
-int OGetStatusCode P((char *string , int *status ));
+ERRCODE OGetStatusString P((int status , char *string ));
+ERRCODE OGetStatusCode P((char *string , int *status ));
 
 /* string_utils.c */
 void uncase P((char *string ));
