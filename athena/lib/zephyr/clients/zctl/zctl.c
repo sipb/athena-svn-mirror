@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <sys/file.h>
 #include <sys/param.h>
 #ifndef lint
-static char *rcsid_zctl_c = "$Id: zctl.c,v 1.19 1991-06-20 08:14:12 jfc Exp $";
+static char *rcsid_zctl_c = "$Id: zctl.c,v 1.20 1992-08-20 20:36:34 lwvanels Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -119,7 +119,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.19 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.20 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
@@ -788,6 +788,16 @@ load_subs(argc,argv)
 		}
 	}
 cleanup:
+	for (i=0;i<ind;i++) {
+	  free(subs[i].zsub_class);
+	  free(subs[i].zsub_classinst);
+	  free(subs[i].zsub_recipient);
+	} 
+	for (i=0;i<unind;i++) {
+	  free(unsubs[i].zsub_class);
+	  free(unsubs[i].zsub_classinst);
+	  free(unsubs[i].zsub_recipient);
+	} 
 	if (fp)
 		(void) fclose(fp);	/* ignore errs--file is read-only */
 	return;
