@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.20 1991-02-18 18:08:55 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.21 1991-02-20 17:27:03 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -25,12 +25,11 @@
 #else
 #include <strings.h>
 #endif /* SYSV */
-#include <sys/stat.h>
 #include <errno.h>
 #include <com_err.h>
-#include "directories.h"
 #include "pattern.h"
 #include "util.h"
+#include "directories.h"
 #include "undelete.h"
 #include "shell_regexp.h"
 #include "mit-copyright.h"

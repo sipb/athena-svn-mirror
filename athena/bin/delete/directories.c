@@ -11,12 +11,11 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.16 1990-06-06 19:06:24 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.17 1991-02-20 17:25:53 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/param.h>
 #include <sys/dir.h>
 #ifdef SYSV
@@ -29,8 +28,8 @@
 #include <errno.h>
 #include <com_err.h>
 #include "delete_errs.h"
-#include "directories.h"
 #include "util.h"
+#include "directories.h"
 #include "mit-copyright.h"
 #include "errors.h"
 

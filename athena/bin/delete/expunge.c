@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.14 1990-06-06 19:06:29 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.15 1991-02-20 17:26:16 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -26,12 +26,11 @@
 #else
 #include <strings.h>
 #endif /* SYSV */
-#include <sys/stat.h>
 #include <com_err.h>
 #include <errno.h>
 #include "col.h"
-#include "directories.h"
 #include "util.h"
+#include "directories.h"
 #include "pattern.h"
 #include "expunge.h"
 #include "shell_regexp.h"

@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.21 1990-12-16 19:53:26 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.22 1991-02-20 17:27:38 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -25,13 +25,12 @@
 #else
 #include <strings.h>
 #endif /* SYSV */
-#include <sys/stat.h>
 #include <com_err.h>
 #include <errno.h>
 #include "delete_errs.h"
-#include "directories.h"
 #include "pattern.h"
 #include "util.h"
+#include "directories.h"
 #include "undelete.h"
 #include "shell_regexp.h"
 #include "mit-copyright.h"
