@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.13 1993-05-10 13:48:09 vrt Exp $
+ *	$Id: Imakefile,v 1.14 1993-06-29 14:58:11 vrt Exp $
  *	$Author: vrt $
  *	$Locker:  $
  *
@@ -111,8 +111,13 @@ all::	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a
 ./ncs/cpp/cpp:
 	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
 
+#if defined(SOLARIS)
+./ncs/nidl/nidl:
+	(cd ncs/nidl; make MFLAGS=$(MFLAGS) EXTRACFLAGS="-I/usr/athena/include" )
+#else
 ./ncs/nidl/nidl:
 	(cd ncs/nidl; make MFLAGS=$(MFLAGS) )
+#endif
 
 #if defined(_IBMR2) && defined(_AIX)
 ./ncs/nck/libnck.a:
