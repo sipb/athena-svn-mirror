@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.1 1991-06-10 02:22:34 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.2 1991-06-10 02:25:03 probe Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -11,6 +11,7 @@
 
 #include "copyright.h"
 #include <stdio.h>
+#include <sys/types.h>
 #include <sys/param.h>
 #include <sys/file.h>
 #include <strings.h>
