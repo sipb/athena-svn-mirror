@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.12 1997-10-25 14:53:52 ghudson Exp $
+# $Id: Makefile.athena,v 1.13 1997-11-05 21:42:22 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -12,7 +12,7 @@ prepare:
 	cd src && CC="$$COMPILER" CONFIG_SITE= \
 		./configure --prefix=/usr/athena --datadir=/usr/athena/lib \
 		--sbindir=/usr/athena/etc --sysconfdir=/etc/athena \
-		--with-afs=/usr/afsws
+		--with-afs="$$ATHTOOLROOT"/usr/afsws
 
 clean:
 	cd src && ${MAKE} clean
