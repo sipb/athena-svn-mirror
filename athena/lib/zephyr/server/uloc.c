@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.42 1992-08-10 13:24:14 lwvanels Exp $";
+  "$Id: uloc.c,v 1.43 1992-08-14 12:16:17 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -625,7 +625,7 @@ ulogin_add_user(notice, exposure, who)
 	       (int) exposure));
 #endif
 
-	if (oldlocs = ulogin_find(notice,1)) {
+	if ((oldlocs = ulogin_find(notice,1)) != NULLZLT) {
 #if 0
 		zdbug((LOG_DEBUG,"ul_add: already here"));
 #endif
@@ -813,7 +813,7 @@ ulogin_find(notice, strict)
 	rlo = 0;
 	rhi = num_locs - 1;		/* first index is 0 */
 
-	while (compar = comp_zstring(locations[i].zlt_user, inst)) {
+	while ((compar = comp_zstring(locations[i].zlt_user, inst)) != 0) {
 #if 0
 		zdbug ((LOG_DEBUG, "ulogin_find: comparing %s %s %s %d %d",
 			notice->z_class_inst,

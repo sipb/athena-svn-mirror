@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_class_c[] =
-    "$Id: class.c,v 1.21 1992-01-17 09:24:27 lwvanels Exp $";
+    "$Id: class.c,v 1.22 1992-08-14 12:12:56 lwvanels Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -254,7 +254,7 @@ class_lookup(subs)
 
 	hashval = CLASS_HASHVAL(subs->zst_dest.classname, subs->zst_dest.inst);
 
-	if (ptr = class_bucket[hashval])
+	if ((ptr = class_bucket[hashval]) !=  NULLZCT)
 		/* go search the list for the class */
 		for (ptr2 = ptr->q_forw; ptr2 != ptr; ptr2 = ptr2->q_forw) {
 			/* walk down the list, looking for a match */
@@ -269,7 +269,7 @@ class_lookup(subs)
 	set_ZDestination_hash(&wc_sub.zst_dest);
 
 	hashval = CLASS_HASHVAL(wc_sub.zst_dest.classname, wc_sub.zst_dest.inst);
-	if (ptr = class_bucket[hashval])
+	if ((ptr = class_bucket[hashval]) != NULLZCT)
 		/* go search the list for the class */
 		for (ptr2 = ptr->q_forw; ptr2 != ptr; ptr2 = ptr2->q_forw) {
 			/* walk down the list, looking for a match */

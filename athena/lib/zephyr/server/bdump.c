@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.42 1992-02-13 07:40:58 lwvanels Exp $
+ *	$Id: bdump.c,v 1.43 1992-08-14 12:15:04 lwvanels Exp $
  *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -16,7 +16,7 @@
  
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.42 1992-02-13 07:40:58 lwvanels Exp $";
+static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.43 1992-08-14 12:15:04 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
  
@@ -28,6 +28,7 @@ static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.42 1992-02-13 07:40:58 lwvanels 
 /* inconsistent header files... */
 #ifdef SignalIgnore
 #undef SIG_IGN
+fubar
 #define SIG_IGN SignalIgnore
 #undef SIG_DFL
 #define SIG_DFL SignalDefault
@@ -347,7 +348,7 @@ bdump_send(void)
 		return;
 	}
 	if ((retval = SendKerberosData(live_socket, &ticket, "zephyr",
-				      "zephyr"))) {
+				      "zephyr")) != 0) {
 	  syslog(LOG_ERR,"bdump_send: SendKerberosData: %s",
 		 error_message (retval));
 	  cleanup(server, omask);
@@ -363,7 +364,7 @@ bdump_send(void)
 	}
 #endif /* KERBEROS */
 
-	if ((retval = setup_file_pointers())) {
+	if ((retval = setup_file_pointers()) != 0) {
 	    syslog (LOG_WARNING, "bdump_send: can't set up file pointers: %s",
 		    error_message (retval));
 	    cleanup (server, omask);
@@ -512,7 +513,7 @@ bdump_get_v1_guts (notice, auth, who, server)
 		return;
 	}
 	if ((retval = SendKerberosData(live_socket, &ticket, "zephyr",
-				       "zephyr"))) {
+				       "zephyr")) != 0) {
 		syslog(LOG_ERR,"bdump_get: %s",
 		       error_message (retval));
 		cleanup(server, omask);
@@ -539,7 +540,7 @@ bdump_get_v1_guts (notice, auth, who, server)
 		return;
 	}
 #endif /* KERBEROS */
-	if ((retval = setup_file_pointers())) {
+	if ((retval = setup_file_pointers()) != 0) {
 	    syslog (LOG_WARNING, "bdump_get: can't set up file pointers: %s",
 		    error_message (retval));
 	    cleanup (server, omask);
@@ -897,7 +898,8 @@ sbd_loop(from)
 #if 1
 			zdbug((LOG_DEBUG, "his state req"));
 #endif
-			if (server = server_which_server(&bogus_from)) {
+			if ((server = server_which_server(&bogus_from)) !=
+			    NULLZSDT) { 
 				if ((retval = bdump_send_loop(server,
 							      zeph_version))
 				    != ZERR_NONE)

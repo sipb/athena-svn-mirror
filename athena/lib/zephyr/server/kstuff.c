@@ -10,12 +10,12 @@
  */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.14 1992-01-17 07:49:57 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.15 1992-08-14 12:14:26 lwvanels Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.14 1992-01-17 07:49:57 lwvanels Exp $";
+static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.15 1992-08-14 12:14:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -333,8 +333,8 @@ ZCheckAuthentication(notice, from)
 	}
     }
     
-    if (result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE, 
-			      __Zephyr_realm, &cred)) {
+    if ((result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE, 
+			      __Zephyr_realm, &cred)) != KSUCCESS) {
 	syslog (LOG_DEBUG, "krb_get_cred failed (%s) ->AUTH_NO (from %s)",
 		krb_err_txt [result], inet_ntoa (from->sin_addr));
 	return (ZAUTH_NO);

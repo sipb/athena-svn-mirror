@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_access_c[] =
-    "$Id: access.c,v 1.13 1992-01-17 08:00:39 lwvanels Exp $";
+    "$Id: access.c,v 1.14 1992-08-14 12:15:31 lwvanels Exp $";
 #endif
 
 /*
@@ -198,9 +198,9 @@ access_setup (int first)
 		return;
 	}
 	while (fgets(class_name, 512, registry) != NULL) {
-		if (colon_idx = index(class_name, ':'))
+		if ((colon_idx = (char *) index(class_name, ':')) != NULL)
 		    *colon_idx = '\0';
-		else if (len = strlen(class_name))
+		else if ((len = strlen(class_name)) != 0)
 		    class_name[len - 1] = '\0';
 		acl = 0;
 		if (!first) {

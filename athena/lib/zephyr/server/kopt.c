@@ -19,7 +19,7 @@
 #ifndef lint
 #ifndef SABER
 static char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.4 1992-01-17 07:57:07 lwvanels Exp $";
+    "$Id: kopt.c,v 1.5 1992-08-14 12:17:02 lwvanels Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -317,7 +317,7 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
         if (read_service_key(service,instance,realm,(int) s_kvno,
                             fn,(char *)skey))
             return(RD_AP_UNDEC);
-        if (status = krb_set_key((char *)skey,0))
+        if ((status = krb_set_key((char *)skey,0)) != 0)
 	    return(status);
 #endif /* !NOENCRYPTION */
         (void) strcpy(st_rlm,realm);

@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.51 1992-08-10 13:23:10 lwvanels Exp $";
+    "$Id: main.c,v 1.52 1992-08-14 12:13:52 lwvanels Exp $";
 #endif
 #endif
 
@@ -163,7 +163,7 @@ main(argc, argv)
 	extern int optind;
 
 	/* set name */
-	if (programname = rindex(argv[0],'/'))
+	if ((programname = rindex(argv[0],'/')) != NULL)
 		programname++;
 	else programname = argv[0];
 
