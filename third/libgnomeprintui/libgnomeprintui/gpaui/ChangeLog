@@ -1,0 +1,105 @@
+2002-06-13  Chema Celorio  <chema@ximian.com>
+
+	* this is the gnome-2-0 branch
+
+2002-05-27  Chema Celorio  <chema@ximian.com>
+
+	* release 1.114.0
+
+2002-05-27  Chema Celorio  <chema@ximian.com>
+
+	* printer-selector.h: headers are now in gnome-print/private
+
+2002-05-25  Chema Celorio  <chema@ximian.com>
+
+	* settings-selector.c (gpa_ss_add_settings_activate): add a
+	#warning
+
+	* transport-selector.c (gpa_ts_rebuild_widget): remove if 0 es
+	* printer-selector.c: ditto
+
+	* gpa-widget.c (gpa_widget_size_request): remove all of the #if 0 ed
+	code gpa_widget_expose and gpa_widget_draw
+
+2002-05-17  Chema Celorio  <chema@celorio.com>
+
+	* transport-selector.c : fix ifs
+
+2002-05-14  Chema Celorio  <chema@celorio.com>
+
+	* transport-selector.c: remove unused prototypes
+	(gpa_transport_selector_init): add missing casto
+	(gpa_ts_printer_modified): #ifdef out unused function
+
+	* settings-selector.c: remove unused prototypes.
+	(gpa_ss_root_modified): disabled unused function
+
+	* printer-selector.c : remove unused prototypes
+
+2002-03-29  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.112.0
+
+2001-12-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am (CPPFLAGS): Added section, -DWE_ARE_LIBGNOMEPRINT_UI
+
+2001-12-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* transport-selector.c (gpa_transport_selector_init): Actually
+	connect entry "changed" signal
+
+2001-12-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-widget.c (gpa_widget_construct): Use GnomePrintConfig
+	(gpa_widget_new): Ditto
+
+2001-12-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* transport-selector.c (gpa_transport_selector_destroy): Removed
+	signalling
+	(gpa_transport_selector_construct): Ditto
+	(gpa_ts_rebuild_widget): Ditto
+
+	* settings-selector.c (gpa_settings_selector_destroy): Removed
+	signalling
+	(gpa_settings_selector_construct): Ditto
+	(gpa_ss_root_modified): Ditto
+	(gpa_ss_rebuild_menu): Ditto
+
+	* printer-selector.c (gpa_printer_selector_destroy): Removed
+	signalling
+	(gpa_printer_selector_construct): Ditto
+	(gpa_ps_rebuild_menu): Ditto
+
+	* gpa-widget.c: Removed ::expose virtual method at all
+
+2001-10-29  Havoc Pennington  <hp@redhat.com>
+
+	* add-printer-dialog.c: replace GNOME_PAD_SMALL and
+	gnome_stock_button with non-deprecated stuff.
+
+	* config-dialog.c: ditto
+	
+	* media-orientation.c: replace GNOME_PAD_SMALL with a local
+	macro
+
+2001-05-28  Lauris Kaplinski  <lauris@ximian.com>
+
+	* printer-selector.c (gpa_ps_rebuild_menu): Rearrange code, add
+	more comments
+	(gpa_ps_manage_printers_activate): New function (empty at moment)
+
+2001-03-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* add-printer-dialog.c: New file, implementing add printer dialog.
+	Most code is borrowed from Chema's gnome-print-admin module and
+	ported to GPANode.
+	(gpa_apw_select_model): Use get_path_value
+	(gpa_apw_read_vendors): Ditto
+	(gpa_apw_read_models): Ditto
+
+	* gpa-widget.c: New file, implementing abstract base class for
+	configuration widget (GtkBin that is bound to GPANode).
+
+	* Makefile.am: First version

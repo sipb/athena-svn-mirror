@@ -1,0 +1,48 @@
+libgnomeprintui 1.114.0
+-----------------------
+
+Note: all applications that depend on this library are recommended to bump
+      their requirements to 1.114 or higher
+
+What is libgnomeprintui?
+========================
+Libgnomeprintui is the gui part of the printing libraries for GNOME applications
+
+Download
+========
+ftp://ftp.gnome.org/pub/gnome/pre-gnome2/sources/libgnomeprintui/
+
+Changes
+=======
+	- several gnome-print-paper-selector fixes and improvements (Andreas) [#82268, #81768, #81674, #82215, #82271]
+	- Added examples directory with several code examples (Chema)	
+	- gnome-print-master-preview bug (Andreas) [#58300]
+	- code & build cleanups, remove debuging messages and compile warnings (Chema)
+	- fixed a crash when printing for the second time (Andreas & Federico)
+	- Added gnome_print_master_new_from dialog
+     - Added the custom transport which lets user specify the print command (Carlos) [#79733]
+	- fix #81644 (Chema)
+	- make gnome-print-dialog HIG complian (Paolo)
+	- multiple i18n fixes (Zbigniew)
+     - Improved keynav and added a11y support & mnemonics to dialogs (Damon)
+	- Fix range selection in print dialog (Andreas)
+
+
+--------------------------------------------------------------------------
+libgnomeprintui 1.113.0
+
+Andreas:
+	* fix range selection in print dialog
+	* make paper selector use initial print-config
+
+
+--------------------------------------------------------------------------
+libgnomeprintui 1.105.0
+
+	Bug fixes:
+		* build fixage (Me)
+		* macro guard fixing (Jacob)
+		* include fixage (Me)
+		* key fixing (Lauris)
+		* bpath fixes (Lauris, Me)
+

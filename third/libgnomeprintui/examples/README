@@ -1,0 +1,70 @@
+This is the examples directory inside libgnomeprintui. If you are going to be running this examples i
+recommend setting your default printer to print to file, since there isn't any gui for this yet you
+can modify libgnomeprint/data/printers/Generic.printer and change the line that says:
+  <Key Id="Backend" Value="lpr"/>
+to
+  <Key Id="Backend" Value="file"/>
+
+This examples contains code for both libgnomeprint and libgnomeprintui. To compile them you
+can use "make" or "make example_0x". To debug them inside gdb you need to run them with
+"gdb .libs/example_0x".
+
+Here is a brief description of what each example does.
+
+<NON-GUI>
+
+example_01.c
+------------
+Smallest non-gui gnome-print application. Shows basic GnomePrintMaster & GnomePrintContext usage.
+
+example_02.c
+------------
+Printing Images. Prints a generated image from memory, an image from disk and from a pixbuf.
+
+example_03.c (09)
+------------
+Using fonts, basic font usage.
+
+example_04.c
+------------
+Using utf-8 strings, printing non-western and acented characters.
+
+example_05.c
+------------
+Basic GnomePrintConfig usage, sets an option for GnomePrintConfig to change the default output
+filename and document titlem, it queries the print orientation and dumps it to the console.
+
+<GUI>
+example_06.c
+------------
+Basic usage of a GnomePrintDialog
+
+example_07.c (not yet implmented)
+------------
+GnomePrintDialog with a job page, using ranges.
+
+example_08.c
+------------
+Appending custom widgets to a GnomePrintDialog. This example also dumps a GnomePrintConfig tree
+when the "Dump Tree" button is clicked (used for debuggin purposes)
+
+example_09.c (functions in libgnomeprint for this example not yet implemented)
+------------
+Serializing and de-serializing a GnomePrintConfig object. This dialog should saves its configuration
+everytime it is used.
+
+<GUI + GLADE>
+example_10.c
+------------
+Example with an app, dialog, setup and print preview
+
+example_11.c (not yet implemented)
+------------
+Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
+menu and print previews it form File->Print Preview.
+
+TODO:
+----
+- We are leaking objects, when should we close, free or unref them? (04)
+- What happens when the user hits preview? (04)
+- printable area.

@@ -1,0 +1,536 @@
+# libgnomeprintui eesti tõlge.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Tõivo Leedjärv <toivo@linux.ee>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprintui\n"
+"POT-Creation-Date: 2002-12-27 21:55-0500\n"
+"PO-Revision-Date: 2002-08-14 20:23+0300\n"
+"Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
+"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:174
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Font family"
+msgstr "Perekond"
+
+#: libgnomeprintui/gnome-font-dialog.c:210
+msgid "The list of font families available"
+msgstr "Saadaval olevate kirjaperekondade nimekiri"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:221
+msgid "Style"
+msgstr "Laad"
+
+#: libgnomeprintui/gnome-font-dialog.c:263
+msgid "Font style"
+msgstr "Kirja laad"
+
+#: libgnomeprintui/gnome-font-dialog.c:264
+msgid "The list of styles available for the selected font family"
+msgstr "Saadaval olevate kirjalaadide nimekiri valitud perekonnale"
+
+#: libgnomeprintui/gnome-font-dialog.c:297
+msgid "Font _size:"
+msgstr "Kirja_suurus:"
+
+#: libgnomeprintui/gnome-font-dialog.c:784
+msgid "This font does not have sample"
+msgstr "Sellel kirjatüübil pole näidist"
+
+#: libgnomeprintui/gnome-font-dialog.c:892
+msgid "Font Preview"
+msgstr "Kirjatüübi eelvaade"
+
+#: libgnomeprintui/gnome-font-dialog.c:893
+msgid "Displays some example text in the selected font"
+msgstr ""
+
+#: libgnomeprintui/gnome-font-dialog.c:908
+msgid "Font Selection"
+msgstr "Kirjatüübi valik"
+
+#: libgnomeprintui/gnome-print-copies.c:247
+msgid "Copies"
+msgstr "Koopiaid"
+
+#: libgnomeprintui/gnome-print-copies.c:256
+msgid "N_umber of copies:"
+msgstr "Koopiate _arv:"
+
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-copies.c:285
+msgid "_Collate"
+msgstr "_Eksemplarhaaval"
+
+#: libgnomeprintui/gnome-print-copies.c:290
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:191
+msgid "Print range"
+msgstr "Prindivahemik"
+
+#: libgnomeprintui/gnome-print-dialog.c:229
+msgid "_All"
+msgstr "_Kõik"
+
+#: libgnomeprintui/gnome-print-dialog.c:251
+msgid "_Selection"
+msgstr "_Valik"
+
+#: libgnomeprintui/gnome-print-dialog.c:351
+msgid "_Job"
+msgstr "_Töö"
+
+#: libgnomeprintui/gnome-print-dialog.c:366
+msgid "P_rinter"
+msgstr "_Printer"
+
+#: libgnomeprintui/gnome-print-dialog.c:376
+msgid "Pap_er"
+msgstr "Pa_ber"
+
+#: libgnomeprintui/gnome-print-dialog.c:383
+msgid "Error in loading printer configuration"
+msgstr "Viga printeri konfiguratsiooni laadimisel"
+
+#: libgnomeprintui/gnome-print-dialog.c:388
+msgid "Gnome Print Dialog"
+msgstr "Gnome'i printimisdialoog"
+
+#: libgnomeprintui/gnome-print-dialog.c:530
+msgid "_From:"
+msgstr "_Alates:"
+
+#: libgnomeprintui/gnome-print-dialog.c:544
+msgid "Sets the start of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:554
+msgid "_To:"
+msgstr "_Kuni:"
+
+#: libgnomeprintui/gnome-print-dialog.c:568
+msgid "Sets the end of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:595
+msgid "Page Preview"
+msgstr "Eelvaade"
+
+#: libgnomeprintui/gnome-print-master-preview.c:596
+msgid "The preview of a page in the document to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:652
+msgid "P_age: "
+msgstr "_Lehekülg: "
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-master-preview.c:661
+msgid "of"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:667
+msgid "Page total"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:668
+msgid "The total number of pages in the document"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-master-preview.c:743
+msgid "/_Preview"
+msgstr "/_Eelvaade"
+
+#: libgnomeprintui/gnome-print-master-preview.c:745
+msgid "/Preview/_Print"
+msgstr "/Eelvaade/_Prindi"
+
+#: libgnomeprintui/gnome-print-master-preview.c:748
+msgid "/Preview/_Close"
+msgstr "/Eelvaade/_Sulge"
+
+#: libgnomeprintui/gnome-print-master-preview.c:752
+msgid "/_View"
+msgstr "/_Vaade"
+
+#: libgnomeprintui/gnome-print-master-preview.c:754
+msgid "/View/Zoom _1:1"
+msgstr "/Vaade/Suurendus _1:1"
+
+#: libgnomeprintui/gnome-print-master-preview.c:757
+msgid "/View/Zoom to _Fit"
+msgstr "/Vaade/_Mahuta aknasse"
+
+#: libgnomeprintui/gnome-print-master-preview.c:760
+msgid "/View/Zoom _In"
+msgstr "/Vaade/_Suurenda"
+
+#: libgnomeprintui/gnome-print-master-preview.c:763
+msgid "/View/Zoom _Out"
+msgstr "/Vaade/_Vähenda"
+
+#: libgnomeprintui/gnome-print-master-preview.c:767
+msgid "/_Go"
+msgstr "/_Liigu"
+
+#: libgnomeprintui/gnome-print-master-preview.c:769
+msgid "/Go/_First Page"
+msgstr "/Liigu/_Esimene leht"
+
+#: libgnomeprintui/gnome-print-master-preview.c:772
+msgid "/Go/_Previous Page"
+msgstr "/Liigu/Ee_lmine leht"
+
+#: libgnomeprintui/gnome-print-master-preview.c:775
+msgid "/Go/_Next Page"
+msgstr "/Liigu/_Järgmine leht"
+
+#: libgnomeprintui/gnome-print-master-preview.c:778
+msgid "/Go/_Last Page"
+msgstr "/Liigu/_Viimane leht"
+
+#: libgnomeprintui/gnome-print-master-preview.c:843
+msgid "Prints the current file"
+msgstr "Prindi aktiivne faili"
+
+#: libgnomeprintui/gnome-print-master-preview.c:847
+msgid "Closes print preview window"
+msgstr "Sulge prindivaate aken"
+
+#: libgnomeprintui/gnome-print-master-preview.c:858
+msgid "Shows the first page"
+msgstr "Näita esimest lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:860
+msgid "Shows the previous page"
+msgstr "Näita eelmist lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:862
+msgid "Shows the next page"
+msgstr "Näita järgmist lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:864
+msgid "Shows the last page"
+msgstr "Näita viimast lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:869
+msgid "Zooms 1:1"
+msgstr "Suurendus 1:1"
+
+#: libgnomeprintui/gnome-print-master-preview.c:871
+msgid "Zooms to fit the whole page"
+msgstr "Mahuta terve leht aknasse"
+
+#: libgnomeprintui/gnome-print-master-preview.c:873
+msgid "Zooms the page in"
+msgstr "Suurenda lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:875
+msgid "Zooms the page out"
+msgstr "Vähenda lehte"
+
+#: libgnomeprintui/gnome-print-master-preview.c:984
+msgid "Gnome Print Preview"
+msgstr "Gnome'i prindivaade"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1518
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1519
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1520
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1521
+msgid "m"
+msgstr "m"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1522
+msgid "in"
+msgstr "\""
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:1603
+msgid "Paper and layout"
+msgstr "Paber ja paigutus"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1615
+msgid "Paper _size:"
+msgstr "Paberi _suurus:"
+
+#. Create spinbuttons for paper size
+#: libgnomeprintui/gnome-print-paper-selector.c:1627
+msgid "_Width:"
+msgstr "_Laius:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1643
+msgid "_Height:"
+msgstr "_Kõrgus:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1666
+msgid "Metric selector"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1667
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1670
+msgid "_Feed orientation:"
+msgstr "_Söödusuund:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:1685
+msgid "Page _orientation:"
+msgstr "L_ehe suund:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:1697
+msgid "_Layout:"
+msgstr "P_aigutus:"
+
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:1709
+#: libgnomeprintui/gnome-print-paper-selector.c:1719
+msgid "Preview"
+msgstr "Eelvaade"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1720
+msgid "Preview of the page size, orientation and layout"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1739
+msgid "Margins"
+msgstr "Veerised"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1773
+msgid "Top"
+msgstr "Üleval"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1776
+msgid "Bottom"
+msgstr "All"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1779
+msgid "Left"
+msgstr "Vasakul"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1782
+msgid "Right"
+msgstr "Paremal"
+
+#. Fill optionmenus from config
+#: libgnomeprintui/gnome-print-paper-selector.c:1824
+msgid "No papers defined"
+msgstr "Ühtegi paberit pole määratud"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1835
+#: libgnomeprintui/gnome-print-paper-selector.c:1837
+msgid "No orientations defined"
+msgstr "Ühtegi suunda pole määratud"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:1839
+msgid "No layouts defined"
+msgstr "Ühtegi paigutust pole määratud"
+
+#: libgnomeprintui/gnome-printer-dialog.c:123
+msgid "Printer"
+msgstr "Printer"
+
+#: libgnomeprintui/gnome-printer-dialog.c:132
+msgid "State:"
+msgstr "Olek:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:135
+msgid "Type:"
+msgstr "Liik:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:138
+msgid "Comment:"
+msgstr "Kommentaar:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:140
+msgid "Co_nfigure"
+msgstr "_Häälesta"
+
+#: libgnomeprintui/gnome-printer-dialog.c:147
+msgid "Adjust the settings of the selected printer"
+msgstr ""
+
+#: libgnomeprintui/gnome-printer-dialog.c:158
+msgid "Pr_inter:"
+msgstr "Pr_inter:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:167
+msgid "_Settings:"
+msgstr "_Sätted:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:176
+msgid "_Location:"
+msgstr "_Asukoht:"
+
+#: libgnomeprintui/gnome-printer-dialog.c:445
+msgid "Select Printer"
+msgstr "Vali printer"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:59
+#: libgnomeprintui/gpaui/config-dialog.c:58
+msgid "Select printer model"
+msgstr "Vali printerimudel"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:67
+#: libgnomeprintui/gpaui/config-dialog.c:66
+msgid "Manufacturer"
+msgstr "Valmistaja"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:86
+#: libgnomeprintui/gpaui/config-dialog.c:85
+msgid "Model"
+msgstr "Mudel"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:109
+#: libgnomeprintui/gpaui/config-dialog.c:108
+msgid "Name"
+msgstr "Nimi"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:267
+#: libgnomeprintui/gpaui/config-dialog.c:266
+msgid "Add printer"
+msgstr "Lisa printer"
+
+#: libgnomeprintui/gpaui/add-printer-dialog.c:279
+#: libgnomeprintui/gpaui/config-dialog.c:278
+msgid "From PPD..."
+msgstr ""
+
+#: libgnomeprintui/gpaui/media-orientation.c:60
+msgid "Portrait"
+msgstr "Püstiselt"
+
+#: libgnomeprintui/gpaui/media-orientation.c:65
+msgid "Landscape"
+msgstr "Rõhtsalt"
+
+#: libgnomeprintui/gpaui/media-orientation.c:70
+msgid "Rotate 180"
+msgstr "Pööra 180"
+
+#: libgnomeprintui/gpaui/printer-selector.c:188
+msgid "Manage printers"
+msgstr "Printerite haldamine"
+
+#. No printers
+#: libgnomeprintui/gpaui/printer-selector.c:195
+msgid "Add new printer"
+msgstr "Lisa uus printer"
+
+#: libgnomeprintui/gpaui/settings-selector.c:155
+msgid "No printer selected"
+msgstr "Ühtegi printerit pole valitud"
+
+#: libgnomeprintui/gpaui/settings-selector.c:166
+msgid "No settings available"
+msgstr "Sätteid pole saadaval"
+
+#: libgnomeprintui/gpaui/settings-selector.c:209
+msgid "Add new settings"
+msgstr "Lisa uued sätted"
+
+#: libgnomeprintui/gpaui/transport-selector.c:47
+msgid "Default printer"
+msgstr "Vaikimisi printer"
+
+#: tests/sample_code.c:125
+msgid "My App Print Preview"
+msgstr ""
+
+#: tests/testembed.c:18
+msgid "extracts the first font from output.pdf and places it in font.dump."
+msgstr ""
+
+#: tests/testembed.c:21
+msgid "extracts the font header from font.dump"
+msgstr ""
+
+#: tests/testembed.c:23
+msgid "extracts the font body "
+msgstr ""
+
+#: tests/testembed.c:25
+msgid "decrypts the font body "
+msgstr ""
+
+#: tests/testprint.c:72
+msgid "Render from metafile"
+msgstr ""
+
+#: tests/testprint.c:72 tests/testprint.c:78
+msgid "PATH"
+msgstr "PATH"
+
+#: tests/testprint.c:73
+msgid "Bring up font dialog"
+msgstr ""
+
+#: tests/testprint.c:74
+msgid "Bring up printer dialog"
+msgstr ""
+
+#: tests/testprint.c:75
+msgid "Bring up print dialog"
+msgstr ""
+
+#: tests/testprint.c:76
+msgid "Use GnomePrintMasterPreview"
+msgstr ""
+
+#: tests/testprint.c:77
+msgid "Show paper dialog"
+msgstr ""
+
+#: tests/testprint.c:78
+msgid "Print text file"
+msgstr ""
+
+#~ msgid "Printer default location"
+#~ msgstr "Printeri vaikimisi asukoht"
+
+#~ msgid "Print"
+#~ msgstr "Prindi"
+
+#~ msgid "from:"
+#~ msgstr "alates:"
+
+#~ msgid "to:"
+#~ msgstr "kuni:"
+
+#~ msgid "Toggle preview"
+#~ msgstr "Eelvaade sisse/välja"
+
+#~ msgid "Paper Size"
+#~ msgstr "Paberi suurus"
+
+#~ msgid "Orientation"
+#~ msgstr "Suund"
