@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.3 2002-02-15 19:46:59 zacheiss Exp $
+# $Id: configure.ac,v 1.4 2002-04-08 15:08:51 ghudson Exp $
 
 AC_INIT
 AC_CONFIG_SRCDIR([ssh.c])
@@ -1550,7 +1550,7 @@ AC_ARG_WITH(kerberos5,
                                          K5LIBS="-lkrb5 -lkrb524 -lkrb4 -ldes -lcom_err -lasn1 -lroken"
                                        ],
                                        [ AC_MSG_RESULT(no)
-                                         K5LIBS="-lkrb5 -lk5crypto -lkrb524 -lkrb4 -lcom_err"
+                                         K5LIBS="-lkrb524 -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
                                        ]
                         )
                         if test ! -z "$need_dash_r" ; then

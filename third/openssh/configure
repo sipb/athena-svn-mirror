@@ -11691,7 +11691,7 @@ else
 cat conftest.$ac_ext >&5
  echo "$as_me:11692: result: no" >&5
 echo "${ECHO_T}no" >&6
-                                         K5LIBS="-lkrb5 -lk5crypto -lkrb524 -lkrb4 -lcom_err"
+                                         K5LIBS="-lkrb524 -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
 
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
