@@ -54,6 +54,17 @@ move()
   fi
 }
 
+quiet_move()
+{
+  if [ -f "$1" ]; then
+    if [ $debug = 1 ]; then
+      $ECHO1 mv "$1" "$2"
+    else
+      mv "$1" "$2"
+    fi
+  fi
+}
+
 put()
 {
   if [ $debug = 1 ]; then
@@ -140,11 +151,11 @@ handle()
 
   SENDMAIL|sendmail)
     if [ "${SENDMAIL}" = "false" ]; then
-      if [ -f /etc/rc2.d/S50mail ]; then
-        move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
-      fi
+      quiet_move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
+      quiet_move /etc/rc0.d/K20mail /etc/rc0.d/k20mail
     else
       move /etc/rc2.d/s50mail /etc/rc2.d/S50mail
+      move /etc/rc0.d/k20mail /etc/rc0.d/K20mail
     fi
     ;;
 
@@ -153,12 +164,16 @@ handle()
     ;;
 
   SAVECORE|savecore)
-    case "${SAVECORE}" {
-       true)  minfree=30000000 ;;
-      false)  minfree=2000000000 ;;
-          *)  minfree=${SAVECORE} ;;
-    }
-    put /var/adm/crash/minfree $minfree
+    if [ "${SAVECORE}" = "false" ]; then
+      quiet_move /etc/rc2.d/S48savecore /etc/rc2.d/s48savecore
+    else
+      case "${SAVECORE}" {
+         true)  minfree=30000000 ;;
+            *)  minfree=${SAVECORE} ;;
+      }
+      put /var/adm/crash/minfree $minfree
+      quiet_move /etc/rc2.d/s48savecore /etc/rc2.d/S48savecore
+    fi
     ;;
 
   ACCOUNT|account)
