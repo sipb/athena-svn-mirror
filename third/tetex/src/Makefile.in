@@ -79,7 +79,7 @@ install: all
 	     (cd $$dir && PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
                 $(MAKE) $@) || exit 1; \
 	done
-	$(srcdir)/selfautofix "$(bindir)" "$(texmf)/web2c"
+	$(srcdir)/selfautofix "$(bindir)" "${DESTDIR}$(texmf)/web2c"
 	test -f ${DESTDIR}$(scriptdir)/mktexlsr && \
 	  TEXMFMAIN=$(texmf) PATH=${DESTDIR}$(scriptdir):${DESTDIR}$(bindir):$(PATH) \
 	    ${DESTDIR}$(scriptdir)/mktexlsr ${DESTDIR}${texmf}
