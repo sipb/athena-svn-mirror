@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.3 1987-07-01 04:15:34 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.4 1987-07-01 18:06:50 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -149,7 +149,7 @@ extern char *strsave();
 extern void dispatch(), clt_ack(), nack_release(), sendit();
 
 /* found in hostm_s.c */
-extern void hostm_dispatch(), hostm_flush(), hostm_shutdown();
+extern void hostm_dispatch(), hostm_flush(), hostm_shutdown(), hostm_losing();
 extern ZHostList_t *hostm_find_host();
 extern ZServerDesc_t *hostm_find_server();
 
@@ -226,11 +226,11 @@ extern ZNotAcked_t *nacklist;		/* list of not ack'ed packets */
 #define	MATCHALL_CLASS	"ZMATCH_ALL"
 
 /* ACL's for pre-registered classes */
-#define	ZEPHYR_CTL_ACL	"/usr/athena/lib/zephyr/zctl.acl"
-#define	HM_ACL		"/usr/athena/lib/zephyr/hm.acl"
-#define	LOGIN_ACL	"/usr/athena/lib/zephyr/login.acl"
-#define	LOCATE_ACL	"/usr/athena/lib/zephyr/locate.acl"
-#define	MATCH_ALL_ACL	"/usr/athena/lib/zephyr/matchall.acl"
+#define	ZEPHYR_CTL_ACL	"/site/zephyr/zctl.acl"
+#define	HM_ACL		"/site/zephyr/hm.acl"
+#define	LOGIN_ACL	"/site/zephyr/login.acl"
+#define	LOCATE_ACL	"/site/zephyr/locate.acl"
+#define	MATCH_ALL_ACL	"/site/zephyr/matchall.acl"
 
 /* debugging macros */
 #ifdef DEBUG
