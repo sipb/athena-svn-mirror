@@ -686,7 +686,7 @@ kerberos5_status(ap, name, level)
 
 	if (UserNameRequested) {
 		int status, *warnings;
-		char *errmem;
+		char *errmem, *err;
 
 		if (k5_haveauth)
 		    try_afscall(setpag);
@@ -696,15 +696,19 @@ kerberos5_status(ap, name, level)
 			if (status == AL_WARNINGS) {
 				int i;
 				for (i = 0; warnings[i]; i++) {
-					printf("Warning: %s\r\n",
-					       al_strerror(warnings[i],
-							   &errmem));
+					net_write("Warning: ", 9);
+					err = al_strerror(warnings[i],
+							  &errmem);
+					net_write(err, strlen(err));
 					al_free_errmem(errmem);
+					net_write("\r\n", 2);
 				}
 				free(warnings);
 			} else {
-				printf("%s\r\n", al_strerror(status, &errmem));
+				err = al_strerror(status, &errmem);
+				net_write(err, strlen(err));
 				al_free_errmem(errmem);
+				net_write("\r\n", 2);
 			}
 		}
 
@@ -720,7 +724,10 @@ kerberos5_status(ap, name, level)
 
 	if (ok) {
 		strcpy(name, UserNameRequested);
-		return(AUTH_VALID);
+		if (k5_haveauth)
+			return(AUTH_CRED);
+		else
+			return(AUTH_VALID);
 	} else
 		return(AUTH_USER);
 }
