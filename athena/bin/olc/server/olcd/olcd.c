@@ -23,6 +23,8 @@
  *      $Author: raeburn $
  */
 
+#include <olc/lang.h>
+
 #include <sys/types.h>          /* Standard type defs. */
 #include <sys/socket.h>		/* IPC definitions. */
 #include <sys/file.h>		/* File I/O definitions. */
@@ -31,10 +33,7 @@
 #include <sys/wait.h>		/* Wait defs. */
 #include <errno.h>		/* Standard error numbers. */
 #include <pwd.h>		/* Password entry defintions. */
-#include <netdb.h>		/* Network database defs. */
 #include <signal.h>		/* Signal definitions. */
-#include <sys/dir.h>		/* Directory entry format */
-#include <arpa/inet.h>		/* inet_* defs */
 
 #ifdef SYSLOG
 #include <syslog.h>             /* syslog do hickies */
@@ -43,8 +42,20 @@
 #include <olc/olc.h>
 #include <olcd.h>
 
+#if is_cplusplus
+extern "C" {
+#endif
+
+#include <netdb.h>		/* Network database defs. */
+#include <sys/dir.h>		/* Directory entry format */
+#include <arpa/inet.h>		/* inet_* defs */
+
+#if is_cplusplus
+};
+#endif
+
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.8 1990-01-03 23:30:53 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.9 1990-01-05 06:23:00 raeburn Exp $";
 
 /* Global variables. */
 
@@ -57,7 +68,7 @@ int select_timeout = 10;
 
 #ifdef KERBEROS
 static long ticket_time = 0L;         /* Timer on kerberos ticket */
-int get_kerberos_ticket(); 
+int get_kerberos_ticket(void); 
 extern char SERVER_REALM[];
 extern char *DFLT_SERVER_REALM;
 extern char *TICKET_FILE;
@@ -73,7 +84,7 @@ static void process_request (int, struct sockaddr_in *);
 static int processing_request;
 static int got_signal;
 static int listening_fd;
-int punt();
+int punt(int sig);
 
 
 #ifdef TEST
@@ -99,9 +110,7 @@ int punt();
  *	request table as they are received.
  */
 	
-main(argc, argv)
-     int argc;
-     char *argv[];
+main(int argc, char **argv)
 {
   struct sockaddr_in from;           /* Socket address for input. */
   struct servent *service;           /* Network service entry. */
@@ -402,9 +411,7 @@ main(argc, argv)
  *	request in the request table.
  */
 
-static void process_request(fd, from)
-      int fd;                 /* File descriptor for socket. */
-      struct sockaddr_in *from;
+static void process_request(int fd, struct sockaddr_in *from)
 {
   REQUEST request;	/* Request structure from client. */
   int type;		/* Type of request. */
@@ -488,7 +495,7 @@ static void process_request(fd, from)
 }
 
 
-static void flush_olc_userlogs()
+static void flush_olc_userlogs(void)
 {
   /* placeholder until this is really written */
   /*
@@ -533,8 +540,7 @@ static void flush_olc_userlogs()
  */
 
 int
-punt(sig)
-    int sig;
+punt(int sig)
 {
   olc_broadcast_message("syslog",
 			fmt ("%s shutting down on signal %d.", ME, sig),
@@ -564,9 +570,7 @@ punt(sig)
  */
 
 
-authenticate(request, addr)
-    REQUEST *request;
-    unsigned long addr;
+authenticate(REQUEST *request, long unsigned int addr)
 {
 
 #ifdef KERBEROS
@@ -597,7 +601,7 @@ authenticate(request, addr)
 
 #ifdef KERBEROS
 int
-get_kerberos_ticket()
+get_kerberos_ticket(void)
 {
   int ret;
   char sinstance[INST_SZ];

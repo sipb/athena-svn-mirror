@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.5 1990-01-03 23:26:03 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.6 1990-01-05 06:21:46 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -49,8 +49,7 @@ static type_buf[BUF_SIZE];
 static int skip;
 
 static char *
-read_msgs(fd)
-     int fd;			
+read_msgs(int fd)			
 {
   int length;
   char *return_value = (char *)NULL;
@@ -69,9 +68,7 @@ read_msgs(fd)
 }
 
 static int
-write_msgs(fd, msg)
-     int fd;
-     char *msg;
+write_msgs(int fd, char *msg)
 {
   int length;
   
@@ -90,9 +87,7 @@ write_msgs(fd, msg)
 }
 
 static int
-write_knuckle_info(fd, knuckle)
-     int fd;
-     KNUCKLE *knuckle;
+write_knuckle_info(int fd, KNUCKLE *knuckle)
 {
   int size;
   QUESTION q;
@@ -146,9 +141,7 @@ write_knuckle_info(fd, knuckle)
 }
 
 static int
-read_knuckle_info(fd, knuckle)
-     int fd;
-     KNUCKLE *knuckle;
+read_knuckle_info(int fd, KNUCKLE *knuckle)
 {
   QUESTION q;
   int size;
@@ -212,9 +205,7 @@ read_knuckle_info(fd, knuckle)
 
 
 static int
-write_user_info(fd, user)
-     int fd;
-     USER *user;
+write_user_info(int fd, USER *user)
 {
   int size;
 
@@ -230,9 +221,7 @@ write_user_info(fd, user)
 }
 
 static int
-read_user_info(fd, user)
-     int fd;
-     USER *user;
+read_user_info(int fd, USER *user)
 {
   int size;
   
@@ -257,14 +246,13 @@ read_user_info(fd, user)
 
 static jmp_buf trap;
 
-oops()
+oops(void)
 {
   longjmp(trap, 1);
 }
 
 static int
-verify_string(str)
-     char *str;
+verify_string(char *str)
 {
   register int string_is_bogus;
 
@@ -287,7 +275,7 @@ verify_string(str)
 }
 
 static void
-ensure_consistent_state()
+ensure_consistent_state(void)
 {
   register KNUCKLE **k_ptr, *k;
   KNUCKLE *foo;
@@ -313,7 +301,7 @@ ensure_consistent_state()
  * and continue. This should be looked into.
  */
 		k->question = (QUESTION *) NULL;
-		delete_knuckle(k);
+		delete_knuckle(k, /*???*/0);
 		k->connected->question = (QUESTION *) NULL;
 		k->connected->connected = (KNUCKLE *) NULL;
 /* eat this too- chances are that if the connected person is invalid, 
@@ -368,7 +356,7 @@ ensure_consistent_state()
 }
 
 
-reconnect_knuckles()
+reconnect_knuckles(void)
 {
   KNUCKLE **k_ptr;
   KNUCKLE *k;
@@ -411,7 +399,7 @@ int needs_backup = 0;
  */
 
 void
-backup_data()
+backup_data(void)
 {
   KNUCKLE **k_ptr, **k_again;	           /* Current user. */
   int no_knuckles=0;
@@ -471,7 +459,7 @@ backup_data()
  * Notes:
  */
 
-void load_data()
+void load_data(void)
 {
   int no_knuckles=0;
   int fd, i,j,nk;		
@@ -605,9 +593,7 @@ void load_data()
 
 /* code like this can only be written the day after an all nighter */
 
-static void type_error(fd,string)
-    int fd;
-    const char *string;
+static void type_error(int fd, char *string)
 {
   char buf[BUF_SIZE];
   char buf2[BUF_SIZE];
@@ -642,8 +628,7 @@ static void type_error(fd,string)
 }
 
 void
-dump_data(file)
-    const char *file;
+dump_data(char *file)
 {
   FILE *fp;
   KNUCKLE **k_ptr, **k_again;	           /* Current user. */

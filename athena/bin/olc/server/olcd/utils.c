@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.4 1990-01-03 23:44:03 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.5 1990-01-05 06:23:21 raeburn Exp $";
 #endif
 
 
@@ -33,9 +33,7 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <ctype.h>		/* character types */
 
 
-get_user_status_string(u,status)
-     USER *u;
-     char *status;
+get_user_status_string(USER *u, char *status)
 {
   switch(u->status)
     {
@@ -54,9 +52,7 @@ get_user_status_string(u,status)
     }
 }
 
-get_status_string(k,status)
-     KNUCKLE *k;
-     char *status;
+get_status_string(KNUCKLE *k, char *status)
 {
   *status = '\0';
 
@@ -125,9 +121,7 @@ printf("==> %d %d\n",is_busy(k), !is_busy(k));
 
 
 void
-get_list_info(k,data)
-     KNUCKLE *k;
-     LIST *data;
+get_list_info(KNUCKLE *k, LIST *data)
 { 
   data->user.uid = k->user->uid;
   data->user.instance = k->instance;

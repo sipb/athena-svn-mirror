@@ -3,19 +3,14 @@
 
 #define NBLOCKS 100
 
-int list_knuckle(knuckle,data)
-     KNUCKLE *knuckle;
-     LIST *data;
+int list_knuckle(KNUCKLE *knuckle, LIST *data)
 {
     get_list_info(knuckle,data); /* doesn't return a value */
     return 0;
 }
 
 
-int list_user_knuckles(knuckle,data,size)
-     KNUCKLE *knuckle;
-     LIST **data;
-     int *size;
+int list_user_knuckles(KNUCKLE *knuckle, LIST **data, int *size)
 {
   USER *user;
   KNUCKLE **k_ptr;
@@ -54,8 +49,7 @@ int list_user_knuckles(knuckle,data,size)
   return(SUCCESS);
 }
 
-list_redundant(knuckle)
-     KNUCKLE *knuckle;
+list_redundant(KNUCKLE *knuckle)
 {
 
 printf("listing for %s %d\n",knuckle->user->username, knuckle->instance);
@@ -70,14 +64,7 @@ printf("true\n");
 
 
 
-int list_queue(queue,data,queues,topics,stati,name,size)
-     int queue;
-     LIST **data;
-     int queues;
-     int *topics;
-     int stati;
-     char *name;
-     int *size;
+int list_queue(int queue, LIST **data, int queues, int *topics, int stati, char *name, int *size)
 {
   KNUCKLE **k_ptr;
   LIST *d;

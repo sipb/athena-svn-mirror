@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.2 1990-01-03 23:46:59 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.3 1990-01-05 06:23:07 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,10 +30,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 extern ACL  Acl_List[];
 
 ERRCODE
-olc_load_user(fd,request,auth)
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_load_user(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester, *target;
   USER *user;
@@ -64,10 +61,7 @@ olc_load_user(fd,request,auth)
 
 
 ERRCODE
-olc_dump(fd,request,auth)
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_dump(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   int status;
@@ -89,10 +83,7 @@ olc_dump(fd,request,auth)
 
 
 ERRCODE
-olc_change_motd(fd,request,auth)
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_change_motd(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester, *target;
   int status;
@@ -114,10 +105,7 @@ olc_change_motd(fd,request,auth)
 
 
 ERRCODE
-olc_change_acl(fd,request,auth)
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_change_acl(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   USER *user = (USER *) NULL;
@@ -192,10 +180,7 @@ olc_change_acl(fd,request,auth)
   
 
 ERRCODE
-olc_list_acl(fd, request, auth)
-     int fd;                    /* File descriptor for socket. */
-     REQUEST *request;          /* Request structure from olcr. */
-     int auth;                  /* indicates if requestor was authenticated */
+olc_list_acl(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   ACL *a_ptr;
@@ -227,10 +212,7 @@ olc_list_acl(fd, request, auth)
 }
 
 ERRCODE
-olc_get_accesses(fd,request,auth)  
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_get_accesses(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -283,10 +265,7 @@ olc_get_accesses(fd,request,auth)
 
 
 ERRCODE
-olc_get_dbinfo(fd,request,auth)  
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_get_dbinfo(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -328,10 +307,7 @@ olc_get_dbinfo(fd,request,auth)
 
 
 ERRCODE
-olc_change_dbinfo(fd,request,auth)
-     int fd;
-     REQUEST *request;
-     int auth;
+olc_change_dbinfo(int fd, REQUEST *request, int auth)
 {
   KNUCKLE *requester;
   USER *user, u;

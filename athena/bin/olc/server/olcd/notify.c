@@ -21,26 +21,37 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.7 1990-01-03 23:42:56 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.8 1990-01-05 06:22:56 raeburn Exp $";
 #endif
 
-
-#ifdef ZEPHYR
-#include <com_err.h>
-#include <zephyr/zephyr.h>      /* Zephyr defs. */
-#endif
 
 #include <sys/types.h>
 #include <sys/socket.h>	        /* IPC socket defs. */
 #include <sys/file.h>           /* File handling defs. */
 #include <sys/stat.h>           /* File status defs. */
 #include <sys/wait.h>           /* */
-#include <netdb.h>              /* Net database defs. */
 #include <pwd.h>                /* Directory defs. */
 #include <signal.h>             /* System signal definitions. */
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
+
+#include <olc/lang.h>
+
+#if is_cplusplus
+extern "C" {
+#endif
+#include <netdb.h>              /* Net database defs. */
 #include <sys/uio.h>		/* for perror() */
+#ifdef ZEPHYR
+#include <com_err.h>
+#define class c_class
+#include <zephyr/zephyr.h>
+#undef class
+#endif /* ZEPHYR */
+#if is_cplusplus
+    extern int writev (int, struct iovec *, int);
+};
+#endif
 
 #include <olc/olc.h>
 #include <olcd.h>
@@ -49,7 +60,7 @@ static char rcsid[] =
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
 
-int notice_timeout();
+int notice_timeout(int a);
 static jmp_buf env;
 
 #ifdef ZEPHYR
@@ -79,8 +90,7 @@ static ERRCODE zsend (ZNotice_t *);
 static int write_port = 0;
 
 ERRCODE
-write_message(touser, tomachine, fromuser, frommachine, message)
-	char *touser, *tomachine, *fromuser, *frommachine, *message;
+write_message(char *touser, char *tomachine, char *fromuser, char *frommachine, char *message)
 {
 	FILE *tf = NULL;	/* Temporary file. */
 	int fds;		/* Socket descriptor. */
@@ -175,8 +185,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 
  
 int
-notice_timeout(a)
-     int     a;
+notice_timeout(int a)
 {
     longjmp(env, 1);
 }
@@ -196,10 +205,7 @@ notice_timeout(a)
 
 
 ERRCODE
-write_message_to_user(k, message, flags)
-  KNUCKLE *k;
-  char *message;
-  int flags;
+write_message_to_user(KNUCKLE *k, char *message, int flags)
 {
   int result;		/* Result of writing the message. */
   char msgbuf[BUFSIZE];	/* Message buffer. */
@@ -270,8 +276,7 @@ write_message_to_user(k, message, flags)
 #define OLC_CLASS    "OLC"
 #endif TEST
 
-ERRCODE olc_broadcast_message(instance,message, code)
-     char *instance, *message, *code;
+ERRCODE olc_broadcast_message(char *instance, char *message, char *code)
 {
 #ifdef ZEPHYR  
   if(zsend_message(OLC_CLASS,instance,code,"",message,0) == ERROR)
@@ -296,9 +301,7 @@ ERRCODE olc_broadcast_message(instance,message, code)
 
 
 static ERRCODE 
-zwrite_message(username, message)
-    const char *username;
-    const char *message;
+zwrite_message(char *username, char *message)
 {
    char error[ERRSIZE];
 
@@ -325,9 +328,7 @@ zwrite_message(username, message)
 
 
 static ERRCODE 
-zsend_message(class,instance,opcode,username,message, flags)
-    const char *class,*instance,*opcode,*username,*message;
-    int flags;
+zsend_message(char *c_class, char *instance, char *opcode, char *username, char *message, int flags)
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value, length */
@@ -359,7 +360,7 @@ zsend_message(class,instance,opcode,username,message, flags)
     notice.z_kind = UNSAFE;
 
   notice.z_port = 0;
-  notice.z_class = class;
+  notice.z_class = c_class;
   notice.z_class_inst = instance;
   notice.z_sender = 0;
   notice.z_message_len = 0;
@@ -386,8 +387,7 @@ zsend_message(class,instance,opcode,username,message, flags)
  */
 
 static ERRCODE 
-zsend(notice)
-     ZNotice_t *notice;
+zsend(ZNotice_t *notice)
 {
   int ret;
   ZNotice_t retnotice;
@@ -460,8 +460,7 @@ extern char *sys_errlist[];
 extern int errno;
 static char time_buf[20];
 
-void perror(msg)
-	char *msg;
+void perror(char *msg)
 {
 	register int error_number;
 	struct iovec iov[6];

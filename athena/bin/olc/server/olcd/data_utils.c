@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.6 1990-01-03 23:37:29 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.7 1990-01-05 06:22:36 raeburn Exp $";
 #endif
 
 
@@ -74,8 +74,7 @@ static int was_connected (KNUCKLE *, KNUCKLE *);
  */
 
 KNUCKLE *
-create_user(person)
-     PERSON *person;
+create_user(PERSON *person)
 {
   KNUCKLE *knuckle;           /* Ptr. to new user struct. */
   USER *user;                 /* Ptr. to another new struct */
@@ -137,8 +136,7 @@ create_user(person)
  */
 
 KNUCKLE *
-create_knuckle(user)
-     USER *user;
+create_knuckle(USER *user)
 {
   KNUCKLE *k, **k_ptr;
 
@@ -213,8 +211,7 @@ create_knuckle(user)
  *          Inserts a knuckle to the Knuckle List. 
  */
 
-int insert_knuckle(knuckle)
-     KNUCKLE *knuckle;
+int insert_knuckle(KNUCKLE *knuckle)
 {
   KNUCKLE **k_ptr;
   int n_knuckles=0;
@@ -296,9 +293,7 @@ int insert_knuckle(knuckle)
  *          Inserts a knuckle to the User list. 
  */
 
-int insert_knuckle_in_user(knuckle, user)
-     KNUCKLE *knuckle;
-     USER *user;
+int insert_knuckle_in_user(KNUCKLE *knuckle, USER *user)
 {
   int n_knuckles;
 
@@ -350,8 +345,7 @@ int insert_knuckle_in_user(knuckle, user)
  *          the database. The List manipulation is the same.
  */
 
-int insert_topic(t)
-     TOPIC *t;
+int insert_topic(TOPIC *t)
 {
   int n_topics;
   
@@ -402,8 +396,7 @@ int insert_topic(t)
  */
 
 void
-delete_user(user)
-     USER *user;
+delete_user(USER *user)
 {
   KNUCKLE *k;
   int i;
@@ -428,9 +421,7 @@ delete_user(user)
  */
 
 void
-delete_knuckle(knuckle,cont)
-     KNUCKLE *knuckle;
-     int cont;
+delete_knuckle(KNUCKLE *knuckle, int cont)
 {
   int n_knuckles, knuckle_idx;
   char msgbuf[BUFSIZ];
@@ -483,11 +474,10 @@ delete_knuckle(knuckle,cont)
 }
 
 
-deactivate_knuckle(knuckle)
-     KNUCKLE *knuckle;
+deactivate_knuckle(KNUCKLE *knuckle)
 {
   if(knuckle->instance > 0)
-    delete_knuckle(knuckle);
+    delete_knuckle(knuckle, /*???*/0);
   else
     knuckle->status = 0;
   
@@ -496,9 +486,7 @@ deactivate_knuckle(knuckle)
 
 
 void
-init_user(knuckle,person)
-     KNUCKLE *knuckle;
-     PERSON *person;
+init_user(KNUCKLE *knuckle, PERSON *person)
 {
   (void) strncpy(knuckle->user->realname,person->realname, NAME_LENGTH);
   (void) strncpy(knuckle->user->username,person->username, LOGIN_SIZE);
@@ -510,8 +498,7 @@ init_user(knuckle,person)
 }
 
 
-void init_dbinfo(user)
-    USER *user;
+void init_dbinfo(USER *user)
 {
   (void) strcpy(user->title1, DEFAULT_TITLE);
   (void) strcpy(user->title2, DEFAULT_TITLE2);
@@ -523,13 +510,9 @@ void init_dbinfo(user)
 }
 
 
-int init_question(k,topic,text)
-     KNUCKLE *k;
-     char *topic;
-     char *text;
+int init_question(KNUCKLE *k, char *topic, char *text)
 {
   struct timeval tp, tp1;
-  struct timezone tz;
 
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
@@ -538,7 +521,7 @@ int init_question(k,topic,text)
       return(ERROR);
     }
 
-  gettimeofday( &tp1, &tz );
+  gettimeofday( &tp1, 0 );
 
   k->timestamp = tp1.tv_sec;
   k->question->owner = k;
@@ -561,9 +544,7 @@ int init_question(k,topic,text)
 
 
 int
-get_user(person,user)
-     PERSON *person;
-     USER **user;
+get_user(PERSON *person, USER **user)
 {
   KNUCKLE **k_ptr;  
   int status = 0;
@@ -599,11 +580,7 @@ get_user(person,user)
  */
 
 int
-get_knuckle(name,instance,knuckle,active)
-     char *name;
-     int instance;
-     KNUCKLE **knuckle;
-     int active;
+get_knuckle(char *name, int instance, KNUCKLE **knuckle, int active)
 {
   KNUCKLE **k_ptr;  
   int status = 0;
@@ -660,10 +637,7 @@ get_knuckle(name,instance,knuckle,active)
 
 
 int
-match_knuckle(name,instance,knuckle)
-     char *name;
-     int instance;
-     KNUCKLE **knuckle;
+match_knuckle(char *name, int instance, KNUCKLE **knuckle)
 {
   KNUCKLE **k_ptr,*store_ptr;
   int status;
@@ -729,9 +703,7 @@ match_knuckle(name,instance,knuckle)
 
 
 int
-find_knuckle(person,knuckle)
-     PERSON *person;
-     KNUCKLE **knuckle;
+find_knuckle(PERSON *person, KNUCKLE **knuckle)
 {
   char mesg[BUF_SIZE];
   int status;
@@ -762,9 +734,7 @@ find_knuckle(person,knuckle)
 }
   
 
-get_instance(user,instance)
-     char *user;
-     int *instance;
+get_instance(char *user, int *instance)
 {
   KNUCKLE **k_ptr;
   KNUCKLE *k_save = (KNUCKLE *) NULL;
@@ -791,9 +761,7 @@ get_instance(user,instance)
 }
 
 
-verify_instance(knuckle,instance)
-     KNUCKLE *knuckle;
-     int instance;
+verify_instance(KNUCKLE *knuckle, int instance)
 {
   KNUCKLE **k;
   int i;
@@ -810,8 +778,7 @@ verify_instance(knuckle,instance)
 }
       
 
-static int validate_instance(knuckle)
-     KNUCKLE *knuckle;
+static int validate_instance(KNUCKLE *knuckle)
 {
   int i;
 
@@ -823,8 +790,7 @@ static int validate_instance(knuckle)
 }
 
 static int
-assign_instance(user)
-     USER *user;
+assign_instance(USER *user)
 {
   KNUCKLE **k;
   int match;
@@ -863,8 +829,7 @@ assign_instance(user)
  * Notes:
  */
 
-int connect_knuckles(a,b)
-     KNUCKLE *a, *b;
+int connect_knuckles(KNUCKLE *a, KNUCKLE *b)
 {
   char msg[BUFSIZ];
 
@@ -944,8 +909,7 @@ int connect_knuckles(a,b)
  * Notes:
  */
 
-int match_maker(knuckle)
-     KNUCKLE *knuckle;
+int match_maker(KNUCKLE *knuckle)
 {
   KNUCKLE **k_ptr, *temp = (KNUCKLE *) NULL;	
   int priority, queue, foo;
@@ -1140,10 +1104,7 @@ int match_maker(knuckle)
  *	to point at the right string.
  */
 
-void new_message(msg_field, sender, message)
-     char **msg_field;	/* Place to store the new message. */
-     KNUCKLE *sender;
-     char *message;		/* Message string. */
+void new_message(char **msg_field, KNUCKLE *sender, char *message)
 {
   int curr_length;	        /* Length of current message. */
   int msg_length;		/* Length of the new message. */
@@ -1197,7 +1158,7 @@ void new_message(msg_field, sender, message)
  */
 
 QUEUE_STATUS *
-get_status_info()
+get_status_info(void)
 {
   static QUEUE_STATUS status;	/* Static status structure. */
   KNUCKLE **k_ptr;	/* Current consultant. */
@@ -1236,8 +1197,7 @@ get_status_info()
 
 
 int
-verify_topic(topic)
-     char *topic;
+verify_topic(char *topic)
 {
   TOPIC **t_ptr;
 
@@ -1253,8 +1213,7 @@ verify_topic(topic)
 
 
   
-int owns_question(knuckle)
-     KNUCKLE *knuckle;
+int owns_question(KNUCKLE *knuckle)
 {
   if(knuckle == (KNUCKLE *) NULL)
     return(FALSE);
@@ -1269,9 +1228,7 @@ int owns_question(knuckle)
 }
 
 
-int is_topic(topics,code)
-     int *topics;
-     int code;
+int is_topic(int *topics, int code)
 {
   while(topics != (int *) NULL)
     {
@@ -1284,8 +1241,7 @@ int is_topic(topics,code)
   return(FALSE);
 }
 
-static int was_connected(a,b)
-     KNUCKLE *a, *b;
+static int was_connected(KNUCKLE *a, KNUCKLE *b)
 {
   int i = 0;
 

@@ -21,7 +21,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.9 1990-01-03 23:41:58 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.10 1990-01-05 06:22:52 raeburn Exp $";
 #endif
 
 
@@ -32,7 +32,7 @@ static const char rcsid[] =
 #include <string.h>		/* Defs. for string functions. */
 #include <syslog.h>             /* syslog do hickies */
 
-#include <varargs.h>
+#include <stdarg.h>
 
 #include <olc/olc.h>
 #include <olcd.h>
@@ -55,9 +55,7 @@ static ERRCODE dispose_of_log (KNUCKLE *, int);
  *	newline character.  If it does not, add one.
  */
 
-write_line_to_log(log, line)
-	FILE *log;
-	char *line;
+write_line_to_log(struct _iobuf *log, char *line)
 {
 	 
 	fputs (line, log);
@@ -77,9 +75,7 @@ write_line_to_log(log, line)
  *      a hook for better formatting of the user logs.
  */
 
-format_line_to_user_log(log,line)
-	FILE *log;
-	char *line;
+format_line_to_user_log(struct _iobuf *log, char *line)
 {
     fputs (line, log);
 }
@@ -100,10 +96,7 @@ format_line_to_user_log(log,line)
  */
 
 ERRCODE
-log_log(knuckle, message, header)
-     KNUCKLE *knuckle;
-     char *message;
-     char *header;
+log_log(KNUCKLE *knuckle, char *message, char *header)
 {
   FILE *log;		
   char error[DB_LINE];
@@ -123,15 +116,13 @@ log_log(knuckle, message, header)
 }
 
 
-char * fmt (va_alist) va_dcl {
+char * fmt (const char * format, ...) {
     va_list pvar;
     static char buf[BUFSIZ];
     FILE strbuf;
-    char *format;
     int len;
 
-    va_start (pvar);
-    format = va_arg (pvar, char *);
+    va_start (pvar, format);
     /* copied from sprintf.c, BSD */
     strbuf._flag = _IOWRT + _IOSTRG;
     strbuf._ptr = buf;
@@ -147,9 +138,7 @@ char * fmt (va_alist) va_dcl {
     
 
 
-void log_daemon(knuckle,message)
-     KNUCKLE *knuckle;
-     char *message;
+void log_daemon(KNUCKLE *knuckle, char *message)
 {
   char time[TIME_SIZE];	
   char header[DB_LINE]; 
@@ -160,9 +149,7 @@ void log_daemon(knuckle,message)
 }
 
 
-void log_message(owner,sender,message)
-     KNUCKLE *owner,*sender;
-     char *message;
+void log_message(KNUCKLE *owner, KNUCKLE *sender, char *message)
 {
   char time[TIME_SIZE];	
   char header[DB_LINE];
@@ -175,9 +162,7 @@ void log_message(owner,sender,message)
 }
 
 
-void log_mail(owner,sender,message)
-     KNUCKLE *owner,*sender;
-     char *message;
+void log_mail(KNUCKLE *owner, KNUCKLE *sender, char *message)
 {
   char time[TIME_SIZE];	
   char header[DB_LINE];
@@ -190,9 +175,7 @@ void log_mail(owner,sender,message)
 }
 
 
-void log_comment(owner,sender,message)
-     KNUCKLE *owner, *sender;
-     char *message;
+void log_comment(KNUCKLE *owner, KNUCKLE *sender, char *message)
 {
   char time[TIME_SIZE];
   char header[DB_LINE];
@@ -206,9 +189,7 @@ void log_comment(owner,sender,message)
 }
 
 
-void log_description(owner,sender,message)
-     KNUCKLE *owner, *sender;
-     char *message;
+void log_description(KNUCKLE *owner, KNUCKLE *sender, char *message)
 {
   char time[TIME_SIZE];
   char header[DB_LINE];
@@ -235,8 +216,7 @@ void log_description(owner,sender,message)
  *	Finally, close the file and return.
  */
 
-void log_error(message)
-    const char *message;
+void log_error(char *message)
 {
   char time_buf[32];
   char *time_string = &time_buf[0];
@@ -306,8 +286,7 @@ void log_error(message)
  *	and return.
  */
 
-void log_status(message)
-    const char *message;
+void log_status(char *message)
 {
   char time_buf[32];
 
@@ -362,8 +341,7 @@ void log_status(message)
 
 
 void
-log_admin(message)
-     char *message;
+log_admin(char *message)
 {
   char time_buf[32];
 
@@ -430,9 +408,7 @@ log_admin(message)
  */
 
 ERRCODE
-init_log(knuckle, question)
-     KNUCKLE *knuckle;
-     char *question;
+init_log(KNUCKLE *knuckle, char *question)
 {
   FILE *logfile;		/* Ptr. to user's log file. */
   char error[ERRSIZE];	        /* Error message. */
@@ -496,8 +472,7 @@ init_log(knuckle, question)
  */
 
 ERRCODE
-terminate_log_answered(knuckle)
-     KNUCKLE *knuckle;
+terminate_log_answered(KNUCKLE *knuckle)
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
@@ -539,8 +514,7 @@ terminate_log_answered(knuckle)
  */
 
 ERRCODE
-terminate_log_unanswered(knuckle)
-     KNUCKLE *knuckle;
+terminate_log_unanswered(KNUCKLE *knuckle)
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
@@ -579,8 +553,7 @@ terminate_log_unanswered(knuckle)
  */
 
 static ERRCODE
-terminate_log_crash(knuckle)
-     KNUCKLE *knuckle;
+terminate_log_crash(KNUCKLE *knuckle)
 {
   QUESTION *question;
   FILE *logfile;		/* Ptr. to user's log file. */
@@ -622,9 +595,7 @@ terminate_log_crash(knuckle)
  */
 
 static ERRCODE
-dispose_of_log(knuckle, answered)
-     KNUCKLE *knuckle;
-     int answered;
+dispose_of_log(KNUCKLE *knuckle, int answered)
 {
   QUESTION *question;
   char error[ERRSIZE];	        /* Error message. */

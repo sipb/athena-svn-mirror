@@ -21,10 +21,11 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.5 1990-01-03 23:39:49 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.6 1990-01-05 06:22:44 raeburn Exp $";
 #endif
 
 
+#include <stdio.h>
 #include <olc/olc.h>
 #include <sys/file.h>
 #include <olcd.h>
@@ -49,8 +50,7 @@ static int get_user_info (USER *);
  */
 
 
-get_specialties(user)
-     USER *user;
+get_specialties(USER *user)
 {
   TOPIC **t_ptr;
   int *s = user->specialties;
@@ -74,8 +74,7 @@ get_specialties(user)
 }
 
 
-get_acls(user)
-     USER *user;
+get_acls(USER *user)
 {
   ACL *a_ptr;
   char buf[BUFSIZ];
@@ -90,9 +89,9 @@ get_acls(user)
 }
 
 
-int load_db()
+int load_db(void)
 {
-  FILE *fp, *fopen();
+  FILE *fp;
   TOPIC *t;
   ACL *a;
   char *db;
@@ -145,8 +144,7 @@ int load_db()
   return(SUCCESS);
 }
 
-void load_user(user)
-     USER *user;
+void load_user(USER *user)
 {
   get_specialties(user);
   get_acls(user);
@@ -261,10 +259,9 @@ delete_user_info(user)
 
 #else /* ! NDBM */
 
-get_user_info(user)
-     USER *user;
+get_user_info(USER *user)
 {
-  FILE *fp, *fopen();
+  FILE *fp;
   char db_line[DB_LINE];  
   char msgbuf[BUFSIZ];
   char *db, buf[BUFSIZ];            
@@ -312,8 +309,7 @@ get_user_info(user)
 }
 
 
-save_user_info(user)
-     USER *user;
+save_user_info(USER *user)
 {
   return(ERROR);
 }

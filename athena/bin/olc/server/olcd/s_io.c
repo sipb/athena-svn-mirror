@@ -21,10 +21,14 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.5 1990-01-04 13:54:10 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.6 1990-01-05 06:22:47 raeburn Exp $";
 #endif
 
+#include <olc/lang.h>
 
+#if is_cplusplus
+extern "C" {
+#endif
 #include <sys/types.h>             /* System type declarations. */
 #include <sys/socket.h>            /* Network socket defs. */
 #include <sys/file.h>              /* File handling defs. */
@@ -34,6 +38,9 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <errno.h>                 /* System error numbers. */
 #include <netdb.h>
 #include <signal.h>
+#if is_cplusplus
+};
+#endif
 
 #include <olc/olc.h>
 #include <olcd.h>
@@ -68,9 +75,7 @@ static struct servent *service = (struct servent *)NULL; /* service entry */
  */
 
 ERRCODE
-read_request(fd, request)
-     int fd;
-     REQUEST *request;
+read_request(int fd, REQUEST *request)
 {
   static IO_REQUEST io_req;
 
@@ -126,10 +131,7 @@ return(SUCCESS);
 
 
 
-send_list(fd, request, list)
-     int fd;
-     REQUEST *request;
-     LIST *list;
+send_list(int fd, REQUEST *request, LIST *list)
 {
   LIST list_rq;
   OLDLIST frep;
@@ -184,9 +186,7 @@ send_list(fd, request, list)
 }
   
 
-send_person(fd, person)
-     int fd;
-     PERSON *person;
+send_person(int fd, PERSON *person)
 {
   PERSON person_rq;
 
