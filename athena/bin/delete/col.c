@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.7 1990-06-06 19:05:56 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.3 1989-05-04 09:09:27 jik Exp $";
 #endif
 
 /*
@@ -21,21 +21,15 @@
  */
 
 #include <stdio.h>
-#ifdef SYSV
-#include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
 #include <strings.h>
-#endif /* SYSV */
-#include "errors.h"
-#include "delete_errs.h"
 #include "col.h"
 #include "mit-copyright.h"
 
 
-static int calc_string_width(), calc_widths(), num_width();
+static int calc_string_width();
 static void trim_strings();
+extern char *malloc();
+extern char *whoami;
 
 int column_array(strings, num_to_print, screen_width, column_width,
 		 number_of_columns, margin, spread_flag, 
@@ -47,23 +41,24 @@ FILE *outfile;
      int updown, leftright, height;
      int string_width;
      int numwidth;
+     
 
      numwidth = num_width(num_to_print);
      if (! var_col_flag) {
 	  string_width = calc_string_width(column_width, margin, number_flag,
 					   num_to_print);
-	  if (string_width <= 0) {
-	       set_error(COL_COLUMNS_TOO_THIN);
-	       error("calc_string_width");
-	       return error_code;
+	  if (string_width < 0) {
+	       fprintf(stderr,
+		       "%s: do_wait: your columns aren't wide enough!\n",
+		       whoami);
+	       return(1);
 	  }
 	  trim_strings(strings, num_to_print, string_width);
      } else if (calc_widths(strings, &screen_width, &column_width,
 			    &number_of_columns, num_to_print, &margin,
-			    spread_flag, number_flag)) {
-	  error("calc_widths");
-	  return error_code;
-     }
+			    spread_flag, number_flag))
+	  return(1);
+
      height = num_to_print / number_of_columns;
      if (num_to_print % number_of_columns)
 	  height++;
@@ -88,7 +83,8 @@ FILE *outfile;
 	  }
 	  fprintf(outfile, "\n");
      }
-     return 0;
+     
+     return(0);
 }
 
 static int calc_string_width(column_width, margin, number_flag, max_number)
@@ -98,7 +94,7 @@ static int calc_string_width(column_width, margin, number_flag, max_number)
      string_width = column_width - margin;
      if (number_flag)
 	  string_width = string_width - num_width(max_number) - strlen(". ");
-     return string_width;
+     return(string_width);
 }
 
 
@@ -122,11 +118,16 @@ char **strings;
      int maxlen, templen;
      int spread;
      
+#ifdef DEBUG
+     printf("calc_widths starting with screen_width %d column_width %d number_of_columns %d margin %d num_to_print %d spread_flag %d number_flag %d\n", *screen_width, *column_width, *number_of_columns, *margin, num_to_print, spread_flag, number_flag);
+#endif
      maxlen = templen = 0;
      for (loop = 0; loop < num_to_print; loop++)
 	  if (maxlen < (templen = strlen(strings[loop])))
 	       maxlen = templen;
-
+#ifdef DEBUG
+     printf("calc_widths maxlen %d\n", maxlen);
+#endif
      *column_width = maxlen;
      
      if (number_flag)
@@ -171,17 +172,18 @@ char **strings;
 	       }
 	  }
      }
-     return 0;
+#ifdef DEBUG
+     printf("calc_widths returning screen_width %d column_width %d number_of_columns %d margin %d\n", *screen_width, *column_width, *number_of_columns, *margin);
+#endif
+     return(0);
 }
 
 
 	       
 
 static int num_width(number)
-int number;
 {
      char buf[BUFSIZ];
 
-     (void) sprintf(buf, "%d", number);
-     return strlen(buf);
+     return(strlen(sprintf(buf, "%d", number)));
 }

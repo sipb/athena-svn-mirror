@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.8 1989-11-06 19:54:20 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.6 1989-03-27 12:06:24 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -22,9 +22,6 @@ typedef short Boolean;
 
 #define FOLLOW_LINKS		1
 #define DONT_FOLLOW_LINKS	0
-
-#define DIR_MATCH		1
-#define DIR_NO_MATCH		0
      
 typedef struct filrec {
      char name[MAXNAMLEN];
@@ -40,10 +37,10 @@ typedef struct filrec {
 
 
 
-int add_directory_to_parent();
-int add_file_to_parent();
-int add_path_to_tree();
-int find_child();
+filerec *add_directory_to_parent();
+filerec *add_file_to_parent();
+filerec *add_path_to_tree();
+filerec *find_child();
 filerec *first_in_directory();
 filerec *first_specified_in_directory();
 filerec *get_cwd_tree();
@@ -55,7 +52,5 @@ filerec *next_specified_directory();
 filerec *next_specified_in_directory();
 filerec *next_specified_leaf();
 
-int get_leaf_path();
-int accumulate_names();
-
-void free_leaf();
+char *get_leaf_path();
+char **accumulate_names();

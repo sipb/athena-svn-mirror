@@ -11,41 +11,28 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.16 1990-06-06 19:06:24 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.12 1989-03-27 12:06:16 jik Exp $";
 #endif
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <sys/dir.h>
-#ifdef SYSV
-#include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
 #include <strings.h>
-#endif /* SYSV */
-#include <errno.h>
-#include <com_err.h>
-#include "delete_errs.h"
 #include "directories.h"
 #include "util.h"
 #include "mit-copyright.h"
-#include "errors.h"
 
-extern char *realloc();
-extern long time();
-extern int errno;
+extern char *malloc(), *realloc();
+extern char *whoami;
 
 static filerec root_tree;
 static filerec cwd_tree;
+static char *error_buf;
 
-void free_leaf();
-
- /* These are not static because external routines need to be able to */
- /* access them. 						      */
-time_t current_time;
+ /* these are not static because external routines need to be able to */
+ /* access them. */
+long current_time;
 
 
 static filerec default_cwd = {
@@ -110,51 +97,40 @@ filerec *get_cwd_tree()
 }
 
 
-int initialize_tree()
+initialize_tree()
 {
-     int retval;
+     int status;
      
      root_tree = default_root;
      cwd_tree = default_cwd;
 
-     current_time = time((time_t *)0);
-     if (retval = get_specs(".", &cwd_tree.specs, FOLLOW_LINKS)) {
-	  error("get_specs on .");
-	  return retval;
+     current_time = time(0);
+     error_buf = (char *) malloc(MAXPATHLEN + strlen(whoami) + 5);
+     if (! error_buf) {
+	  return(1);
      }
-     if (retval = get_specs("/", &root_tree.specs, FOLLOW_LINKS)) {
-	  error("get_specs on /");
-	  return retval;
-     }
-     return 0;
+     status = get_specs("", &cwd_tree.specs, FOLLOW_LINKS);
+     if (! status)
+	  status = get_specs("/", &root_tree.specs, FOLLOW_LINKS);
+     return(status);
 }
 
 
-int add_path_to_tree(path, leaf)
+filerec *add_path_to_tree(path)
 char *path;
-filerec **leaf;
 {
-     filerec *parent;
+     filerec *parent, *leaf;
      char next_name[MAXNAMLEN];
      char lpath[MAXPATHLEN], built_path[MAXPATHLEN], *ptr;
      struct stat specs;
-     int retval;
-     
-     if (retval = get_specs(path, &specs, DONT_FOLLOW_LINKS)) {
-	  char error_buf[MAXPATHLEN+14];
 
-	  (void) sprintf(error_buf, "get_specs on %s", path);
-	  error(error_buf);
-	  return retval;
-     }
-     
-     (void) strcpy(lpath, path); /* we don't want to damage the user's */
-				 /* string */
-     ptr = lpath;
+     if (get_specs(path, &specs, DONT_FOLLOW_LINKS))
+	  return((filerec *) NULL);
+     ptr = strcpy(lpath, path); /* we don't want to damage the user's string */
      if (*ptr == '/') {
 	  parent = &root_tree;
 	  ptr++;
-	  (void) strcpy(built_path, "/");
+	  strcpy(built_path, "/");
      }
      else if (! strncmp(ptr, "./", 2)) {
 	  parent = &cwd_tree;
@@ -166,51 +142,36 @@ filerec **leaf;
 	  *built_path = '\0';
      }
      
-     (void) strcpy(next_name, firstpart(ptr, ptr));
+     strcpy(next_name, firstpart(ptr, ptr));
      while (*ptr) {
-	  (void) strcat(built_path, next_name);
-	  if (retval = add_directory_to_parent(parent, next_name, False,
-					       &parent)) {
-	       error("add_directory_to_parent");
-	       return retval;
-	  }
-	  (void) strcpy(next_name, firstpart(ptr, ptr));
-	  if (retval = get_specs(built_path, &parent->specs, FOLLOW_LINKS)) {
-	       char error_buf[MAXPATHLEN+14];
-
-	       (void) sprintf(error_buf, "get_specs on %s", built_path);
-	       error(error_buf);
-	       return retval;
-	  }
-	  (void) strcat(built_path, "/");
+	  strcat(built_path, next_name);
+	  parent = add_directory_to_parent(parent, next_name, False);
+	  if (! parent)
+	       return ((filerec *) NULL);
+	  strcpy(next_name, firstpart(ptr, ptr));
+	  if (get_specs(built_path, &parent->specs, FOLLOW_LINKS))
+	       return((filerec *) NULL);
+	  strcat(built_path, "/");
      }
-     if ((specs.st_mode & S_IFMT) == S_IFDIR) {
-	  retval = add_directory_to_parent(parent, next_name, True, leaf);
-	  if (retval) {
-	       error("add_directory_to_parent");
-	       return retval;
-	  }
-     }
-     else {
-	  retval = add_file_to_parent(parent, next_name, True, leaf);
-	  if (retval) {
-	       error("add_file_to_parent");
-	       return retval;
-	  }
-     }          
+     if ((specs.st_mode & S_IFMT) == S_IFDIR)
+	  leaf = add_directory_to_parent(parent, next_name, True);
+     else
+	  leaf = add_file_to_parent(parent, next_name, True);
+          
+     if (! leaf)
+	  return ((filerec *) NULL);
+     leaf->specs = specs;
 
-     (*leaf)->specs = specs;
-
-     return 0;
+     return(leaf);
 }
 
 
 
 
-int get_specs(path, specs, follow)
+get_specs(path, specs, follow)
 char *path;
 struct stat *specs;
-int follow; /* follow symlinks or not? */
+int follow;
 {
      int status;
      
@@ -222,13 +183,10 @@ int follow; /* follow symlinks or not? */
      else 
 	  status = lstat(path, specs);
 
-     if (status) {
-	  set_error(errno);
-	  error(path);
-	  return error_code;
-     }
-
-     return 0;
+     if (status)
+	  return(1);
+     else
+	  return(0);
 }
 
 
@@ -353,7 +311,7 @@ filerec *leaf;
 }
 
 
-void print_paths_from(leaf)
+print_paths_from(leaf)
 filerec *leaf;
 {
      char buf[MAXPATHLEN];
@@ -365,10 +323,11 @@ filerec *leaf;
 	  print_paths_from(leaf->files);
      if (leaf->next)
 	  print_paths_from(leaf->next);
+     return(0);
 }
 
 
-void print_specified_paths_from(leaf)
+print_specified_paths_from(leaf)
 filerec *leaf;
 {
      char buf[MAXPATHLEN];
@@ -381,116 +340,101 @@ filerec *leaf;
 	  print_specified_paths_from(leaf->files);
      if (leaf->next)
 	  print_specified_paths_from(leaf->next);
+     return(0);
 }
      
 
-int add_file_to_parent(parent, name, specified, last)
-filerec *parent, **last;
+filerec *add_file_to_parent(parent, name, specified)
+filerec *parent;
 char *name;
 Boolean specified;
 {
-     filerec *files;
+     filerec *files, *last = (filerec *) NULL;
 
-     *last = files = (filerec *) NULL;
      files = parent->files;
      while (files) {
 	  if (! strcmp(files->name, name))
 	       break;
-	  *last = files;
+	  last = files;
 	  files = files->next;
      }
      if (files) {
 	  files->specified = (files->specified || specified);
-	  *last = files;
-	  return 0;
+	  return(files);
      }
-     if (*last) {
-	  (*last)->next = (filerec *) Malloc((unsigned) sizeof(filerec));
-	  if (! (*last)->next) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
-	  *(*last)->next = default_file;
-	  (*last)->next->previous = *last;
-	  (*last)->next->parent = parent;
-	  (*last) = (*last)->next;
+     if (last) {
+	  last->next = (filerec *) malloc(sizeof(filerec));
+	  if (! last->next)
+	       return((filerec *) NULL);
+	  *last->next = default_file;
+	  last->next->previous = last;
+	  last->next->parent = parent;
+	  last = last->next;
      }
      else {
-	  parent->files = (filerec *) Malloc(sizeof(filerec));
-	  if (! parent->files) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
+	  parent->files = (filerec *) malloc(sizeof(filerec));
+	  if (! parent->files)
+	       return((filerec *) NULL);
 	  *parent->files = default_file;
 	  parent->files->parent = parent;
 	  parent->files->previous = (filerec *) NULL;
-	  *last = parent->files;
+	  last = parent->files;
      }
-     (void) strcpy((*last)->name, name);
-     (*last)->specified = specified;
-     return 0;
+     strcpy(last->name, name);
+     last->specified = specified;
+     return(last);
 }
 
 
 
 
 
-int add_directory_to_parent(parent, name, specified, last)
-filerec *parent, **last;
+filerec *add_directory_to_parent(parent, name, specified)
+filerec *parent;
 char *name;
 Boolean specified;
 {
-     filerec *directories;
+     filerec *directories, *last = (filerec *) NULL;
 
-     *last = (filerec *) NULL;
      directories = parent->dirs;
      while (directories) {
 	  if (! strcmp(directories->name, name))
 	       break;
-	  (*last) = directories;
+	  last = directories;
 	  directories = directories->next;
      }
      if (directories) {
 	  directories->specified = (directories->specified || specified);
-	  *last = directories;
-	  return 0;
+	  return(directories);
      }
-     if (*last) {
-	  (*last)->next = (filerec *) Malloc(sizeof(filerec));
-	  if (! (*last)->next) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
-	  *(*last)->next = default_directory;
-	  (*last)->next->previous = *last;
-	  (*last)->next->parent = parent;
-	  (*last) = (*last)->next;
+     if (last) {
+	  last->next = (filerec *) malloc(sizeof(filerec));
+	  if (! last->next)
+	       return((filerec *) NULL);
+	  *last->next = default_directory;
+	  last->next->previous = last;
+	  last->next->parent = parent;
+	  last = last->next;
      }
      else {
-	  parent->dirs = (filerec *) Malloc(sizeof(filerec));
-	  if (! parent->dirs) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
+	  parent->dirs = (filerec *) malloc(sizeof(filerec));
+	  if (! parent->dirs)
+	       return((filerec *) NULL);
 	  *parent->dirs = default_directory;
 	  parent->dirs->parent = parent;
 	  parent->dirs->previous = (filerec *) NULL;
-	  (*last) = parent->dirs;
+	  last = parent->dirs;
      }
-     (void) strcpy((*last)->name, name);
-     (*last)->specified = specified;
-     return 0;
+     strcpy(last->name, name);
+     last->specified = specified;
+     return(last);
 }
 
 
 
 
 
-void free_leaf(leaf)
+free_leaf(leaf)
 filerec *leaf;
 {
      leaf->freed = True;
@@ -514,58 +458,53 @@ filerec *leaf;
 			      free_leaf(leaf->parent);
 		    }
 	       }
-	       free((char *) leaf);
+	       free(leaf);
 	  }
      }
+     return(0);
 }     
 
 
 
-int find_child(directory, name, child)
-filerec *directory, **child;
+filerec *find_child(directory, name)
+filerec *directory;
 char *name;
 {
      filerec *ptr;
-     
-     *child = (filerec *) NULL;
+
      if ((directory->specs.st_mode & S_IFMT) != S_IFDIR)
-	  return DIR_NOT_DIRECTORY;
+	  return ((filerec *) NULL);
      ptr = directory->dirs;
      while (ptr)
 	  if (strcmp(ptr->name, name))
 	       ptr = ptr->next;
 	  else
 	       break;
-     if (ptr) {
-	  *child = ptr;
-	  return DIR_MATCH;
-     }
+     if (ptr)
+	  return (ptr);
      ptr = directory->files;
      while (ptr)
 	  if (strcmp(ptr->name, name))
 	       ptr = ptr->next;
           else
 	       break;
-     if (ptr) {
-	  *child = ptr;
-	  return DIR_MATCH;
-     }
-     set_status(DIR_NO_MATCH);
-     return DIR_NO_MATCH;
+     if (ptr)
+	  return (ptr);
+     return ((filerec *) NULL);
 }
 
 
 
 
 
-int change_path(old_path, new_path)
+change_path(old_path, new_path)
 char *old_path, *new_path;
 {
      char next_old[MAXNAMLEN], next_new[MAXNAMLEN];
      char rest_old[MAXPATHLEN], rest_new[MAXPATHLEN];
-     int retval;
+
      filerec *current;
-     
+
      if (*old_path == '/') {
 	  current = &root_tree;
 	  old_path++;
@@ -578,121 +517,88 @@ char *old_path, *new_path;
      }
      else
 	  current = &cwd_tree;
-     
-     (void) strcpy(next_old, firstpart(old_path, rest_old));
-     (void) strcpy(next_new, firstpart(new_path, rest_new));
+
+     strcpy(next_old, firstpart(old_path, rest_old));
+     strcpy(next_new, firstpart(new_path, rest_new));
      while (*next_old && *next_new) {
-	  retval = find_child(current, next_old, &current);
-	  if (retval == DIR_MATCH) {
-	       if (current) {
-		    (void) strcpy(current->name, next_new);
-		    current->specified = False;
-	       }
-	       else {
-		    set_error(INTERNAL_ERROR);
-		    error("change_path");
-		    return error_code;
-	       }
-	  }
-	  else {
-	       error("change_path");
-	       return retval;
-	  }
-	  
-	  (void) strcpy(next_old, firstpart(rest_old, rest_old));
-	  (void) strcpy(next_new, firstpart(rest_new, rest_new));
+	  current = find_child(current, next_old);
+	  if (current)
+	       strcpy(current->name, next_new);
+	  else
+	       return(1);
+	  strcpy(next_old, firstpart(rest_old, rest_old));
+	  strcpy(next_new, firstpart(rest_new, rest_new));
      }
-     return 0;
+     if (! (*next_old || *next_new))
+	  return(0);
+     else
+	  return(1);
 }
 
 
-int get_leaf_path(leaf, leaf_buf)
+char *get_leaf_path(leaf, leaf_buf)
 filerec *leaf;
 char leaf_buf[]; /* RETURN */
 {
      char *name_ptr;
 
-     name_ptr = Malloc(1);
+     name_ptr = malloc(1);
      if (! name_ptr) {
-	  set_error(errno);
-	  error("Malloc");
 	  *leaf_buf = '\0';
-	  return error_code;
+	  return(leaf_buf);
      }
      *name_ptr = '\0';
      do {
-	  name_ptr = realloc((char *) name_ptr, (unsigned)
-			     (strlen(leaf->name) + strlen(name_ptr) + 2));
+	  name_ptr = realloc(name_ptr, strlen(leaf->name) + 
+			     strlen(name_ptr) + 2);
 	  if (! name_ptr) {
-	       set_error(errno);
 	       *leaf_buf = '\0';
-	       error("realloc");
-	       return error_code;
+	       return(leaf_buf);
 	  }
-	  (void) strcpy(leaf_buf, name_ptr);
+	  strcpy(leaf_buf, name_ptr);
 	  *name_ptr = '\0';
 	  if (leaf->parent) if (leaf->parent->parent)
-	       (void) strcat(name_ptr, "/");
-	  (void) strcat(name_ptr, leaf->name);
-	  (void) strcat(name_ptr, leaf_buf);
+	       strcat(name_ptr, "/");
+	  strcat(name_ptr, leaf->name);
+	  strcat(name_ptr, leaf_buf);
 	  leaf = leaf->parent;
      } while (leaf);
-     (void) strcpy(leaf_buf, name_ptr);
-     return 0;
+     strcpy(leaf_buf, name_ptr);
+     return(leaf_buf);
 }
 
 
 
 
 
-int accumulate_names(leaf, in_strings, num)
+char **accumulate_names(leaf, strings, num)
 filerec *leaf;
-char ***in_strings;
+char **strings;
 int *num;
 {
      char newname[MAXPATHLEN];
-     char **strings;
-     int retval;
      
-     strings = *in_strings;
      if (leaf->specified) {
 	  *num += 1;
-	  strings = (char **) realloc((char *) strings, (unsigned)
-				      (sizeof(char *) * (*num)));
+	  strings = (char **) realloc(strings, sizeof(char *) * (*num));
 	  if (! strings) {
-	       set_error(errno);
-	       error("realloc");
-	       return error_code;
+	       perror(sprintf(error_buf, "%s: accumulate_names", whoami));
+	       exit(1);
 	  }
-	  if (retval = get_leaf_path(leaf, newname)) {
-	       error("get_leaf_path");
-	       return retval;
-	  }
-	  (void) convert_to_user_name(newname, newname);
-	  strings[*num - 1] = Malloc((unsigned) (strlen(newname) + 1));
+	  convert_to_user_name(get_leaf_path(leaf, newname), newname);
+	  strings[*num - 1] = malloc(strlen(newname) + 1);
 	  if (! strings[*num - 1]) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
+	       perror(sprintf(error_buf, "%s: accumulate_names", whoami));
+	       exit(1);
 	  }
-	  (void) strcpy(strings[*num - 1], newname);
+	  strcpy(strings[*num - 1], newname);
      }
-     if (leaf->files) if (retval = accumulate_names(leaf->files, &strings,
-						    num)) {
-	  error("accumulate_names");
-	  return retval;
-     }
-     if (leaf->dirs) if (retval = accumulate_names(leaf->dirs, &strings,
-						   num)) {
-	  error("accumulate_names");
-	  return retval;
-     }
-     if (leaf->next) if (retval = accumulate_names(leaf->next, &strings,
-						   num)) {
-	  error("accumulate_names");
-	  return retval;
-     }
+     if (leaf->files)
+	  strings = accumulate_names(leaf->files, strings, num);
+     if (leaf->dirs)
+	  strings = accumulate_names(leaf->dirs, strings, num);
+     if (leaf->next)
+	  strings = accumulate_names(leaf->next, strings, num);
 
-     *in_strings = strings;
-     return 0;
+     return(strings);
 }

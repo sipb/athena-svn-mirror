@@ -11,40 +11,22 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.17 1990-06-07 13:05:30 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.7 1989-03-27 12:08:34 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
-#ifdef SYSV /* SYSV doesn't define uid_t */
-typedef unsigned short uid_t;
-#endif
 #include <sys/stat.h>
 #include <sys/dir.h>
-#ifdef SYSV
-#include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
 #include <strings.h>
-#endif /* SYSV */
 #include <pwd.h>
-#include <errno.h>
-#ifdef AFS_MOUNTPOINTS
-#include <sys/ioctl.h>
-#include <afs/vice.h>
-#include <afs/venus.h>
-#endif
-#include "delete_errs.h"
 #include "directories.h"
 #include "util.h"
 #include "mit-copyright.h"
-#include "errors.h"
 
-extern char *getenv();
-extern uid_t getuid();
-extern int errno;
+char *getenv();
+
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];
@@ -52,7 +34,7 @@ char user_name[];  /* RETURN */
 {
      char *ptr, *q;
      
-     (void) strcpy(user_name, real_name);
+     strcpy(user_name, real_name);
      while (ptr = strrindex(user_name, ".#")) {
 	  for (q = ptr; *(q + 2); q++)
 	       *q = *(q + 2);
@@ -102,6 +84,23 @@ char *str, *sub_str;
 }
      
      
+is_dotfile(filename)
+char *filename;
+{
+     return (! (strcmp(filename, ".") && strcmp(filename, "..")));
+}
+
+
+
+int is_deleted(filename)
+char *filename;
+{
+     return(! strncmp(filename, ".#", 2));
+}
+
+
+
+
 /*
  * NOTE: Append uses a static array, so its return value must be
  * copied immediately.
@@ -111,24 +110,20 @@ char *filepath, *filename;
 {
      static char buf[MAXPATHLEN];
 
-     (void) strcpy(buf, filepath);
+     strcpy(buf, filepath);
      if ((! *filename) || (! *filepath)) {
-	  (void) strcpy(buf, filename);
+	  strcpy(buf, filename);
 	  return(buf);
      }
      if (buf[strlen(buf) - 1] == '/')
 	  buf[strlen(buf) - 1] = '\0';
      if (strlen(buf) + strlen(filename) + 2 > MAXPATHLEN) {
-	  set_error(ENAMETOOLONG);
-	  strncat(buf, "/", MAXPATHLEN - strlen(buf) - 1);
-	  strncat(buf, filename, MAXPATHLEN - strlen(buf) - 1);
-	  error(buf);
  	  *buf = '\0';
-	  return buf;
+	  return(buf);
      }
-     (void) strcat(buf, "/");
-     (void) strcat(buf, filename);
-     return buf;
+     strcat(buf, "/");
+     strcat(buf, filename);
+     return(buf);
 }
 
 
@@ -144,7 +139,7 @@ yes() {
 	  exit(1);
      }
      if (! index(buf, '\n')) do
-	  (void) fgets(buf + 1, BUFSIZ - 1, stdin);
+	  fgets(buf + 1, BUFSIZ - 1, stdin);
      while (! index(buf + 1, '\n'));
      return(*buf == 'y');
 }
@@ -186,16 +181,30 @@ char *rest; /* RETURN */
      char *part;
      static char buf[MAXPATHLEN];
 
-     (void) strcpy(buf, filename);
+     strcpy(buf, filename);
      part = index(buf, '/');
      if (! part) {
 	  *rest = '\0';
 	  return(buf);
      }
-     (void) strcpy(rest, part + 1);
+     strcpy(rest, part + 1);
      *part = '\0';
      return(buf);
 }
+
+
+
+
+char *reg_firstpart(filename, rest)
+char *filename;
+char *rest; /* RETURN */
+{
+     static char first[MAXNAMLEN];
+     
+     sprintf(first, "^%s$", firstpart(filename, rest));
+     return(first);
+}
+
 
 
 
@@ -207,7 +216,7 @@ char *buf;
      char *user;
      struct passwd *psw;
      
-     (void) strcpy(buf, getenv("HOME"));
+     strcpy(buf, getenv("HOME"));
      
      if (*buf)
 	  return(0);
@@ -216,20 +225,17 @@ char *buf;
      psw = getpwnam(user);
 
      if (psw) {
-	  (void) strcpy(buf, psw->pw_dir);
+	  strcpy(buf, psw->pw_dir);
 	  return(0);
      }
      
-     psw = getpwuid((int) getuid());
+     psw = getpwuid(getuid());
 
      if (psw) {
-	  (void) strcpy(buf, psw->pw_dir);
+	  strcpy(buf, psw->pw_dir);
 	  return(0);
-     }
-
-     set_error(NO_HOME_DIR);
-     error("get_home");
-     return error_code;
+     }  
+     return(1);
 }
 
 
@@ -237,7 +243,7 @@ char *buf;
 
 timed_out(file_ent, current_time, min_days)
 filerec *file_ent;
-time_t current_time, min_days;
+int current_time, min_days;
 {
      if ((current_time - file_ent->specs.st_mtime) / 86400 >= min_days)
 	  return(1);
@@ -260,148 +266,4 @@ char *dirname;
 	  return(0);
 }
 
-
-
-is_link(name, oldbuf)
-char *name;
-struct stat *oldbuf;
-{
-     struct stat statbuf;
-
-     if (oldbuf)
-	  statbuf = *oldbuf;
-     else if (lstat(name, &statbuf) < 0) {
-	  set_error(errno);
-	  error("is_link");
-	  return(0);
-     }
-
-     if ((statbuf.st_mode & S_IFMT) == S_IFLNK)
-	  return 1;
-     else
-	  return 0;
-}
-
-
-
-/*
- * This is one of the few procedures that is allowed to break the
- * rule of always returning an error value if an error occurs.  That's
- * because it's stupid to expect a boolean function to do that, and
- * because defaulting to not being a mountpoint if there is an error
- * is a reasonable thing to do.
- */
-/*
- * The second parameter is optional -- if it is non-NULL< it is
- * presumed to be a stat structure fo the file being passed in.
- */
-int is_mountpoint(name, oldbuf)
-char *name;
-struct stat *oldbuf;
-{
-     struct stat statbuf;
-     dev_t device;
-     char buf[MAXPATHLEN];
-#ifdef AFS_MOUNTPOINTS
-     struct ViceIoctl blob;
-     char retbuf[MAXPATHLEN];
-     int retval;
-     char *shortname;
-#endif
-
-     /* First way to check for a mount point -- if the device number */
-     /* of name is different from the device number of name/..       */
-     if (oldbuf)
-	  statbuf = *oldbuf;
-     else if (lstat(name, &statbuf) < 0) {
-	  set_error(errno);
-	  error(name);
-	  return 0;
-     }
-
-     device = statbuf.st_dev;
-
-     if (strlen(name) + 4 /* length of "/.." + a NULL */ > MAXPATHLEN) {
-	  set_error(ENAMETOOLONG);
-	  error(name);
-	  return 0;
-     }
-
-     strcpy(buf, name);
-     strcat(buf, "/..");
-     if (lstat(buf, &statbuf) < 0) {
-	  set_error(errno);
-	  error(name);
-	  return 0;
-     }
-
-     if (statbuf.st_dev != device)
-	  return 1;
-
-#ifdef AFS_MOUNTPOINTS
-     /* Check for AFS mountpoint using the AFS pioctl call. */
-     if ((shortname = lastpart(name)) == name) {
-	  strcpy(buf, ".");
-	  blob.in = name;
-	  blob.in_size = strlen(name) + 1;
-	  blob.out = retbuf;
-	  blob.out_size = MAXPATHLEN;
-	  bzero(retbuf, MAXPATHLEN);
-     }
-     else {
-	  strncpy(buf, name, shortname - name - 1);
-	  buf[shortname - name - 1] = '\0';
-	  if (*buf == '\0')
-	       strcpy(buf, "/");
-	  blob.in = shortname;
-	  blob.in_size = strlen(shortname) + 1;
-	  blob.out = retbuf;
-	  blob.out_size = MAXPATHLEN;
-	  bzero(retbuf, MAXPATHLEN);
-     }
-
-     retval = pioctl(buf, VIOC_AFS_STAT_MT_PT, &blob, 0);
-
-     if (retval == 0) {
-#ifdef DEBUG
-	  printf("%s is an AFS mountpoint, is_mountpoint returning true.\n",
-		 name);
-#endif
-	  return 1;
-     }
-     else {
-	  if (errno != EINVAL) {
-	       set_error(errno);
-	       error(name);
-	  }
-     }
-#endif /* AFS_MOUNTPOINTS */
-
-     return 0;
-}
-
-#ifdef MALLOC_DEBUG
-char *Malloc(size)
-unsigned size;
-{
-     extern char *malloc();
-
-     static int count = 0;
-     char buf[10];
-     
-     count++;
-
-     fprintf(stderr, "This is call number %d to Malloc, for %u bytes.\n",
-	     count, size);
-     fprintf(stdout, "Shall I return NULL for this malloc? ");
-     fgets(buf, 10, stdin);
-     if ((*buf == 'y') || (*buf == 'Y')) {
-	  errno = ENOMEM;
-	  return ((char *) NULL);
-     }
-     else
-	  return (malloc(size));
-}
-#endif
-
-	  
+	       
