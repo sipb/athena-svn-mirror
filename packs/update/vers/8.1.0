@@ -9,6 +9,7 @@ sun4)
 	echo "/usr/lib/sendmail.nomx"		>> "$DEADFILES"
 	echo "/etc/mail/sendmail.fc"		>> "$DEADFILES"
 
+	echo "/.cshrc"				>> "$CONFCHG"
 	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
 	echo "/etc/inet/inetd.conf"		>> "$CONFCHG"
 	echo "/etc/inet/services"		>> "$CONFCHG"
