@@ -5,7 +5,7 @@ echo "NEWUNIX=true"			>> ${CONFVARS}
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
 echo "/.login"				>> ${CONFCHG}
-echo "/${SITE}/usr/vice/etc/SuidCells"	>> ${CONFCHG}
+echo "/usr/vice/etc/SuidCells"		>> ${CONFCHG}
 
 case "${MACH}" in
 DS*)
