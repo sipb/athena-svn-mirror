@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.41 1989-03-23 09:25:18 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.42 1989-10-27 10:55:13 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -331,7 +331,6 @@ void init_hm()
 	     }
      }
      cli_sin = ZGetDestAddr();
-     cli_sin.sin_port = sp->s_port;
   
      /* Open the server socket */
   
