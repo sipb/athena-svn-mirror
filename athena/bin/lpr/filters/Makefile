@@ -26,7 +26,7 @@ all:	printer
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp `../cppflags` Imakefile Makefile 
+	/lib/cpp `../cppflags` Imakefile > Makefile 
 
 printer: ${PRINTER}
 
