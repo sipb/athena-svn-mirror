@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.2 2003-04-17 15:24:17 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.3 2003-04-30 02:43:57 zacheiss Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -33,7 +33,7 @@ export LD_LIBRARY_PATH
 
 # On Solaris, use the X server's shared memory transport for better
 # performance.
-if [ "`uname`" = SunoS -a -z "$XSUNTRANSPORT" ]; then
+if [ "`uname`" = SunOS -a -z "$XSUNTRANSPORT" ]; then
   XSUNTRANSPORT=shmem
   XSUNSMESIZE=512
   export XSUNTRANSPORT XSUNSMESIZE
