@@ -86,7 +86,7 @@
   </RDF:Description>
 
   <RDF:Description about="urn:mimetype:externalApplication:application/x-java-jnlp-file"
-                   NC:path="/mit/java/current/bin/javaws"
+                   NC:path="/usr/bin/javaws"
                    NC:prettyName="javaws" />
 
   <RDF:Description about="urn:mimetype:audio/x-pn-realaudio"
