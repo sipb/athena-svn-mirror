@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.9 1989-11-29 12:06:40 jtkohl Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.10 1989-12-01 15:02:38 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -79,7 +79,7 @@ static void fake_startup_packet()
 {
     ZNotice_t notice;
 
-    var_set_variable("version", "0.3.7");
+    var_set_variable("version", "0.3.8");
 
     bzero(&notice, sizeof(notice));
 
@@ -93,7 +93,7 @@ static void fake_startup_packet()
     notice.z_port = 0;
     notice.z_kind = ACKED;
     notice.z_auth = ZAUTH_YES;
-    notice.z_message = "Zwgc mark II version 0.3.7 now running...";
+    notice.z_message = "Zwgc mark II version 0.3.8 now running...";
     notice.z_message_len = strlen(notice.z_message)+1;
     
     notice_handler(&notice);
@@ -271,7 +271,6 @@ void notice_handler(notice)
 	printf("got control opcode <%s>.\n", control_opcode);
 #endif
 	if (!strcasecmp(control_opcode, USER_REREAD)) {
-	    printf("zwgc: rereading descfile...\n");
 	    read_in_description_file();
 	} else if (!strcasecmp(control_opcode, USER_SHUTDOWN))
 	  zwgc_shutdown();
