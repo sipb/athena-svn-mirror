@@ -170,35 +170,8 @@ void        <link linkend="gconf-client-value-changed">gconf_client_value_change
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----GConfClient
-</synopsis>
-
-</refsect1>
 
 
-<refsect1>
-<title>Signal Prototypes</title>
-<synopsis>
-
-&quot;<link linkend="GConfClient-error">error</link>&quot;     void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gpointer">gpointer</link> arg1,
-                                            <link linkend="gpointer">gpointer</link> user_data);
-&quot;<link linkend="GConfClient-unreturned-error">unreturned-error</link>&quot;
-            void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gpointer">gpointer</link> arg1,
-                                            <link linkend="gpointer">gpointer</link> user_data);
-&quot;<link linkend="GConfClient-value-changed">value-changed</link>&quot;
-            void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gchar">gchar</link> *arg1,
-                                            <link linkend="gpointer">gpointer</link> arg2,
-                                            <link linkend="gpointer">gpointer</link> user_data);
-</synopsis>
-</refsect1>
 
 
 <refsect1>
@@ -1612,83 +1585,6 @@ Convenient varargs version of <link linkend="gconf-client-change-set-from-curren
 
 </refsect1>
 
-<refsect1>
-<title>Signals</title>
-<refsect2><title><anchor id="GConfClient-error">The &quot;error&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gpointer">gpointer</link> arg1,
-                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-<para>
-Emitted whenever an error occurs inside a <link linkend="GConfClient">GConfClient</link> function. Depending on
-the <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>, the default handler for this signal may or
-may not display an error dialog.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>a <link linkend="GError">GError</link>* (the error).
-
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GConfClient-unreturned-error">The &quot;unreturned-error&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gpointer">gpointer</link> arg1,
-                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-<para>
-Emitted when you pass <symbol>NULL</symbol> for the <link linkend="GError">GError</link>** argument to
-any <link linkend="GConfClient">GConfClient</link> function, and an error occurs. Depending on the
-<link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>, the default handler for this signal may or may
-not display an error dialog.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>a <link linkend="GError">GError</link>* (the unhandled error).
-
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GConfClient-value-changed">The &quot;value-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
-                                            <link linkend="gchar">gchar</link> *arg1,
-                                            <link linkend="gpointer">gpointer</link> arg2,
-                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-<para>
-Emitted when a key below one of the directories added with
-<link linkend="gconf-client-add-dir">gconf_client_add_dir</link>() receives a new value or is unset. Because your signal
-handler will have to use <link linkend="strcmp">strcmp</link>() to decide whether it cares about the
-particular value that changed, it can be much more efficient to use
-<link linkend="gconf-client-notify-add">gconf_client_notify_add</link>().
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>a const <link linkend="gchar">gchar</link>* representing the changed key name
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>a <link linkend="GConfValue">GConfValue</link>* representing the new value, or <symbol>NULL</symbol> for unset.
-
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
-</refsect1>
 
 
 

@@ -109,7 +109,7 @@ NAME="GCONF-GCONF-SOURCES">gconf-sources</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN8821"
+NAME="AEN8705"
 ></A
 ><H2
 >Name</H2
@@ -117,7 +117,7 @@ NAME="AEN8821"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN8824"><H2
+NAME="AEN8708"><H2
 >Synopsis</H2
 ><TABLE
 BORDER="0"
@@ -144,12 +144,8 @@ HREF="gconf-gconf-sources.html#GCONFSOURCE"
 >* <A
 HREF="gconf-gconf-sources.html#GCONF-RESOLVE-ADDRESS"
 >gconf_resolve_address</A
->          (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+>          (const gchar *address,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCE-FREE"
 >gconf_source_free</A
@@ -168,12 +164,8 @@ HREF="gconf-gconf-sources.html#GCONFSOURCES"
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-NEW-FROM-ADDRESSES"
 >gconf_sources_new_from_addresses</A
 >
-                                            (<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *addresses,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                            (GSList *addresses,
+                                             GError **err);
 <A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
@@ -201,27 +193,13 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-QUERY-VALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> use_schema_default,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *value_is_default,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *value_is_writable,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **schema_name,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             const gchar **locales,
+                                             gboolean use_schema_default,
+                                             gboolean *value_is_default,
+                                             gboolean *value_is_writable,
+                                             gchar **schema_name,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-SET-VALUE"
 >gconf_sources_set_value</A
@@ -229,16 +207,12 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-SET-VALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-UNSET-VALUE"
 >gconf_sources_unset_value</A
@@ -246,63 +220,37 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-UNSET-VALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     <A
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             GError **err);
+GSList*     <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-ALL-ENTRIES"
 >gconf_sources_all_entries</A
 >       (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     <A
+                                             const gchar *dir,
+                                             const gchar **locales,
+                                             GError **err);
+GSList*     <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-ALL-DIRS"
 >gconf_sources_all_dirs</A
 >          (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *dir,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-DIR-EXISTS"
 >gconf_sources_dir_exists</A
 >        (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *dir,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-REMOVE-DIR"
 >gconf_sources_remove_dir</A
@@ -310,12 +258,8 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-REMOVE-DIR"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *dir,
+                                             GError **err);
 void        <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-SET-SCHEMA"
 >gconf_sources_set_schema</A
@@ -323,27 +267,17 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-SET-SCHEMA"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *schema_key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             const gchar *key,
+                                             const gchar *schema_key,
+                                             GError **err);
+gboolean    <A
 HREF="gconf-gconf-sources.html#GCONF-SOURCES-SYNC-ALL"
 >gconf_sources_sync_all</A
 >          (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFMETAINFO"
 >GConfMetaInfo</A
@@ -354,12 +288,8 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-QUERY-METAINFO"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar *key,
+                                             GError **err);
 <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -371,18 +301,10 @@ HREF="gconf-gconf-sources.html#GCONF-SOURCES-QUERY-DEFAULT-VALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *is_writable,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar **locales,
+                                             gboolean *is_writable,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -390,7 +312,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8906"
+NAME="AEN8790"
 ></A
 ><H2
 >Description</H2
@@ -400,14 +322,14 @@ NAME="AEN8906"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN8909"
+NAME="AEN8793"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8911"
+NAME="AEN8795"
 ></A
 ><H3
 ><A
@@ -437,7 +359,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8916"
+NAME="AEN8800"
 ></A
 ><H3
 ><A
@@ -472,7 +394,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8921"
+NAME="AEN8805"
 ></A
 ><H3
 ><A
@@ -491,12 +413,8 @@ CLASS="PROGRAMLISTING"
 ><A
 HREF="gconf-gconf-sources.html#GCONFSOURCE"
 >GConfSource</A
->* gconf_resolve_address          (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *address,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+>* gconf_resolve_address          (const gchar *address,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -505,7 +423,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8929"><P
+NAME="AEN8813"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -576,7 +494,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8946"
+NAME="AEN8830"
 ></A
 ><H3
 ><A
@@ -604,7 +522,7 @@ HREF="gconf-gconf-sources.html#GCONFSOURCE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8952"><P
+NAME="AEN8836"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -640,7 +558,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8961"
+NAME="AEN8845"
 ></A
 ><H3
 ><A
@@ -669,7 +587,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8966"
+NAME="AEN8850"
 ></A
 ><H3
 ><A
@@ -689,12 +607,8 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 >* gconf_sources_new_from_addresses
-                                            (<A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *addresses,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                            (GSList *addresses,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -703,7 +617,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8974"><P
+NAME="AEN8858"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -774,7 +688,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN8991"
+NAME="AEN8875"
 ></A
 ><H3
 ><A
@@ -805,7 +719,7 @@ HREF="gconf-gconf-sources.html#GCONFSOURCE"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN8998"><P
+NAME="AEN8882"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -859,7 +773,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9011"
+NAME="AEN8895"
 ></A
 ><H3
 ><A
@@ -887,7 +801,7 @@ HREF="gconf-gconf-sources.html#GCONFSOURCES"
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9017"><P
+NAME="AEN8901"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -923,7 +837,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9026"
+NAME="AEN8910"
 ></A
 ><H3
 ><A
@@ -946,27 +860,13 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> use_schema_default,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *value_is_default,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *value_is_writable,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **schema_name,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar **locales,
+                                             gboolean use_schema_default,
+                                             gboolean *value_is_default,
+                                             gboolean *value_is_writable,
+                                             gchar **schema_name,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -975,7 +875,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9040"><P
+NAME="AEN8924"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1148,7 +1048,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9081"
+NAME="AEN8965"
 ></A
 ><H3
 ><A
@@ -1168,16 +1068,12 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              const <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1186,7 +1082,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9090"><P
+NAME="AEN8974"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1273,7 +1169,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9111"
+NAME="AEN8995"
 ></A
 ><H3
 ><A
@@ -1293,15 +1189,9 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *locale,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *locale,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1310,7 +1200,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9120"><P
+NAME="AEN9004"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1397,7 +1287,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9141"
+NAME="AEN9025"
 ></A
 ><H3
 ><A
@@ -1413,21 +1303,13 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     gconf_sources_all_entries       (<A
+>GSList*     gconf_sources_all_entries       (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             const gchar **locales,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1436,7 +1318,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9151"><P
+NAME="AEN9035"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1541,7 +1423,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9176"
+NAME="AEN9060"
 ></A
 ><H3
 ><A
@@ -1557,18 +1439,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A>*     gconf_sources_all_dirs          (<A
+>GSList*     gconf_sources_all_dirs          (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1577,7 +1453,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9185"><P
+NAME="AEN9069"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1665,7 +1541,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9206"
+NAME="AEN9090"
 ></A
 ><H3
 ><A
@@ -1681,18 +1557,12 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_sources_dir_exists        (<A
+>gboolean    gconf_sources_dir_exists        (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1701,7 +1571,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9215"><P
+NAME="AEN9099"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1789,7 +1659,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9236"
+NAME="AEN9120"
 ></A
 ><H3
 ><A
@@ -1809,12 +1679,8 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *dir,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *dir,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1823,7 +1689,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9244"><P
+NAME="AEN9128"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -1893,7 +1759,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9261"
+NAME="AEN9145"
 ></A
 ><H3
 ><A
@@ -1913,15 +1779,9 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *schema_key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar *schema_key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1930,7 +1790,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9270"><P
+NAME="AEN9154"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2017,7 +1877,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9291"
+NAME="AEN9175"
 ></A
 ><H3
 ><A
@@ -2033,15 +1893,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_sources_sync_all          (<A
+>gboolean    gconf_sources_sync_all          (<A
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2050,7 +1906,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9299"><P
+NAME="AEN9183"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2121,7 +1977,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9316"
+NAME="AEN9200"
 ></A
 ><H3
 ><A
@@ -2144,12 +2000,8 @@ HREF="gconf-gconf-value.html#GCONFMETAINFO"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2158,7 +2010,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9325"><P
+NAME="AEN9209"><P
 ></P
 ><TABLE
 BORDER="0"
@@ -2246,7 +2098,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN9346"
+NAME="AEN9230"
 ></A
 ><H3
 ><A
@@ -2270,18 +2122,10 @@ HREF="gconf-gconf-value.html#GCONFVALUE"
 HREF="gconf-gconf-sources.html#GCONFSOURCES"
 >GConfSources</A
 > *sources,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **locales,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> *is_writable,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar *key,
+                                             const gchar **locales,
+                                             gboolean *is_writable,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2290,7 +2134,7 @@ HREF=../glib/glib-error-reporting.html#GERROR
 ><DIV
 CLASS="INFORMALTABLE"
 ><A
-NAME="AEN9357"><P
+NAME="AEN9241"><P
 ></P
 ><TABLE
 BORDER="0"

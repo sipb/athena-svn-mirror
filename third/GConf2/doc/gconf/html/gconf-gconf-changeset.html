@@ -153,19 +153,13 @@ HREF="gconf-gconf-changeset.html#GCONFCHANGESETFOREACHFUNC"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             gpointer user_data);
+gboolean    <A
 HREF="gconf-gconf-changeset.html#GCONF-ENGINE-COMMIT-CHANGE-SET"
 >gconf_engine_commit_change_set</A
 >  (<A
@@ -176,12 +170,8 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> remove_committed,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             gboolean remove_committed,
+                                             GError **err);
 <A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
@@ -210,9 +200,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-CLEAR"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs);
-<A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       <A
+guint       <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SIZE"
 >gconf_change_set_size</A
 >           (<A
@@ -226,9 +214,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-REMOVE"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key);
+                                             const gchar *key);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-FOREACH"
 >gconf_change_set_foreach</A
@@ -240,9 +226,7 @@ HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESETFOREACHFUNC"
 >GConfChangeSetForeachFunc</A
 > func,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);
+                                             gpointer user_data);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET"
 >gconf_change_set_set</A
@@ -250,9 +234,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -264,9 +246,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-NOCOPY"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -278,9 +258,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-UNSET"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key);
+                                             const gchar *key);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-FLOAT"
 >gconf_change_set_set_float</A
@@ -288,12 +266,8 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-FLOAT"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A> val);
+                                             const gchar *key,
+                                             gdouble val);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-INT"
 >gconf_change_set_set_int</A
@@ -301,12 +275,8 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-INT"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> val);
+                                             const gchar *key,
+                                             gint val);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-STRING"
 >gconf_change_set_set_string</A
@@ -314,12 +284,8 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-STRING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *val);
+                                             const gchar *key,
+                                             const gchar *val);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-BOOL"
 >gconf_change_set_set_bool</A
@@ -327,12 +293,8 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-BOOL"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> val);
+                                             const gchar *key,
+                                             gboolean val);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-SCHEMA"
 >gconf_change_set_set_schema</A
@@ -340,9 +302,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-SCHEMA"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 >GConfSchema</A
@@ -354,16 +314,12 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-LIST"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *list);
+                                             GSList *list);
 void        <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-PAIR"
 >gconf_change_set_set_pair</A
@@ -371,9 +327,7 @@ HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-SET-PAIR"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -382,24 +336,16 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_car,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_cdr);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+                                             gconstpointer address_of_car,
+                                             gconstpointer address_of_cdr);
+gboolean    <A
 HREF="gconf-gconf-changeset.html#GCONF-CHANGE-SET-CHECK-VALUE"
 >gconf_change_set_check_value</A
 >    (<A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -415,12 +361,8 @@ HREF="gconf-gconf-changeset.html#GCONF-ENGINE-CHANGE-SET-FROM-CURRENTV"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **keys,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);
+                                             const gchar **keys,
+                                             GError **err);
 <A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
@@ -432,12 +374,8 @@ HREF="gconf-gconf-changeset.html#GCONF-ENGINE-CHANGE-SET-FROM-CURRENT"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *first_key,
+                                             GError **err,
+                                             const gchar *first_key,
                                              ...);
 <A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
@@ -454,9 +392,7 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -566,16 +502,12 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
 > *value,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);</PRE
+                                             gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -733,9 +665,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_engine_commit_change_set  (<A
+>gboolean    gconf_engine_commit_change_set  (<A
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
@@ -743,12 +673,8 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> remove_committed,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             gboolean remove_committed,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -896,9 +822,7 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the return location for an allocated <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A>, or <SPAN
+>the return location for an allocated GError, or <SPAN
 CLASS="SYMBOL"
 >NULL</SPAN
 > to ignore errors.</TD
@@ -1247,9 +1171,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GUINT
->guint</A>       gconf_change_set_size           (<A
+>guint       gconf_change_set_size           (<A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs);</PRE
@@ -1335,9 +1257,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key);</PRE
+                                             const gchar *key);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1442,9 +1362,7 @@ HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESETFOREACHFUNC"
 >GConfChangeSetForeachFunc</A
 > func,
-                                             <A
-HREF=../glib/glib-basic-types.html#GPOINTER
->gpointer</A> user_data);</PRE
+                                             gpointer user_data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1566,9 +1484,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -1680,9 +1596,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -1812,9 +1726,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key);</PRE
+                                             const gchar *key);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1907,19 +1819,13 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A> val);</PRE
+                                             const gchar *key,
+                                             gdouble val);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Adds a "set" operation; takes a <A
-HREF=../glib/glib-basic-types.html#GDOUBLE
->gdouble</A> argument, so you can avoid
+>Adds a "set" operation; takes a gdouble argument, so you can avoid
 creating a <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -2026,19 +1932,13 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> val);</PRE
+                                             const gchar *key,
+                                             gint val);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Adds a "set" operation; takes a <A
-HREF=../glib/glib-basic-types.html#GINT
->gint</A> argument, so you can avoid
+>Adds a "set" operation; takes a gint argument, so you can avoid
 creating a <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -2145,19 +2045,13 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *val);</PRE
+                                             const gchar *key,
+                                             const gchar *val);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Adds a "set" operation; takes a <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A>* argument, so you can avoid
+>Adds a "set" operation; takes a gchar* argument, so you can avoid
 creating a <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -2264,19 +2158,13 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
-                                             <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> val);</PRE
+                                             const gchar *key,
+                                             gboolean val);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Adds a "set" operation; takes a <A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A> argument, so you can avoid
+>Adds a "set" operation; takes a gboolean argument, so you can avoid
 creating a <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -2383,9 +2271,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-schema.html#GCONFSCHEMA"
 >GConfSchema</A
@@ -2510,16 +2396,12 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > list_type,
-                                             <A
-HREF=../glib/glib-singly-linked-lists.html#GSLIST
->GSList</A> *list);</PRE
+                                             GSList *list);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2635,9 +2517,7 @@ CLASS="PROGRAMLISTING"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
@@ -2646,12 +2526,8 @@ HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 HREF="gconf-gconf-value.html#GCONFVALUETYPE"
 >GConfValueType</A
 > cdr_type,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_car,
-                                             <A
-HREF=../glib/glib-basic-types.html#GCONSTPOINTER
->gconstpointer</A> address_of_cdr);</PRE
+                                             gconstpointer address_of_car,
+                                             gconstpointer address_of_cdr);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2797,15 +2673,11 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gconf_change_set_check_value    (<A
+>gboolean    gconf_change_set_check_value    (<A
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *key,
+                                             const gchar *key,
                                              <A
 HREF="gconf-gconf-value.html#GCONFVALUE"
 >GConfValue</A
@@ -2930,12 +2802,8 @@ HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> **keys,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             const gchar **keys,
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -3056,12 +2924,8 @@ HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 HREF="gconf-gconf-engine.html#GCONFENGINE"
 >GConfEngine</A
 > *conf,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err,
-                                             const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *first_key,
+                                             GError **err,
+                                             const gchar *first_key,
                                              ...);</PRE
 ></TD
 ></TR
@@ -3204,9 +3068,7 @@ HREF="gconf-gconf-engine.html#GCONFENGINE"
 HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
 >GConfChangeSet</A
 > *cs,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **err);</PRE
+                                             GError **err);</PRE
 ></TD
 ></TR
 ></TABLE

@@ -120,6 +120,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
@@ -133,8 +135,7 @@ l = @l@
 SUBDIRS = gconf backends po doc examples
 DIST_SUBDIRS = tests $(SUBDIRS)
 
-EXTRA_DIST = gconf.m4.in gconf.spec.in gconf.spec TODO \
-	   gconf-2.0.pc.in
+EXTRA_DIST = gconf.m4.in gconf.spec.in gconf.spec TODO 	   gconf-2.0.pc.in
 
 
 pkgconfigdir = $(libdir)/pkgconfig

@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
-"POT-Creation-Date: 2002-08-04 14:20-0400\n"
-"PO-Revision-Date: 2002-06-03 16:48+0200\n"
+"POT-Creation-Date: 2003-01-12 13:13-0500\n"
+"PO-Revision-Date: 2003-01-02 01:03+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,10 +35,10 @@ msgstr "Inicjowanie modułu przetwarzającego BerkeleyDB (BDB)"
 msgid "Couldn't find the %s root directory in the address `%s'"
 msgstr "Nie można odnaleźć głównego katalogu %s pod adresem \"%s\""
 
-#: backends/dir-utils.c:124 backends/xml-backend.c:304 backends/xml-dir.c:1212
+#: backends/dir-utils.c:124 backends/xml-backend.c:304
 #, c-format
 msgid "Could not make directory `%s': %s"
-msgstr "Nie można stworzyć katalogu \"%s\": %s"
+msgstr "Nie można utworzyć katalogu \"%s\": %s"
 
 #: backends/dir-utils.c:212
 #, c-format
@@ -52,12 +52,13 @@ msgstr "Usuwanie z pamięci modułu XML."
 
 #: backends/xml-backend.c:289
 #, c-format
-msgid "Couldn't find the XML root directory in the address `%s'"
-msgstr "Nie można znaleźć katalogu głównego XML pod adresem \"%s\""
+msgid "Couldn't find the root directory in the address \"%s\""
+msgstr "Nie można odnaleźć głównego katalogu pod adresem \"%s\""
 
 #: backends/xml-backend.c:414
 #, c-format
-msgid "Can't read from or write to the XML root directory in the address `%s'"
+msgid ""
+"Can't read from or write to the XML root directory in the address \"%s\""
 msgstr ""
 "Nie można odczytać lub zapisywać do katalogu głównego XML-a pod adresem \"%s"
 "\""
@@ -86,8 +87,8 @@ msgstr "Inicjowanie modułu XML"
 
 #: backends/xml-backend.c:790
 #, c-format
-msgid "Failed to give up lock on XML dir `%s': %s"
-msgstr "Nieudana próba usunięcia blokady na katalog XML \"%s\": %s"
+msgid "Failed to give up lock on XML dir \"%s\": %s"
+msgstr "Nieudana próba zwolnienia blokady na katalog XML \"%s\": %s"
 
 #: backends/xml-cache.c:257
 msgid "Failed to sync XML cache contents to disk"
@@ -189,10 +190,15 @@ msgid "A toplevel node in XML file `%s' is <%s> rather than <entry>, ignoring"
 msgstr ""
 "Głównym węzłem w pliku XML \"%s\" jest <%s> zamiast <entry>, zignorowano"
 
+#: backends/xml-dir.c:1212
+#, c-format
+msgid "Could not make directory \"%s\": %s"
+msgstr "Nie można utworzyć katalogu \"%s\": %s"
+
 #: backends/xml-dir.c:1228
 #, c-format
 msgid "Failed to create file `%s': %s"
-msgstr "Nie można stworzyć pliku \"%s\": %s"
+msgstr "Nie można utworzyć pliku \"%s\": %s"
 
 #: backends/xml-dir.c:1327
 #, c-format
@@ -616,12 +622,12 @@ msgstr "Nie można zablokować tymczasowego pliku \"%s\": %s"
 #: gconf/gconf-internals.c:2314
 #, c-format
 msgid "Could not create file '%s', probably because it already exists"
-msgstr "Nie można stworzyć pliku \"%s\", prawdopodobnie już on istnieje"
+msgstr "Nie można utworzyć pliku \"%s\", prawdopodobnie już on istnieje"
 
 #: gconf/gconf-internals.c:2360
 #, c-format
 msgid "Failed to create or open '%s'"
-msgstr "Nie można stworzyć lub otworzyć \"%s\""
+msgstr "Nie można utworzyć lub otworzyć \"%s\""
 
 #: gconf/gconf-internals.c:2370
 #, c-format
@@ -641,7 +647,7 @@ msgstr "nie udało się otworzyć pliku \"%s\" z IOR, nie odnaleziono gconfd: %s
 #, c-format
 msgid "gconftool or other non-gconfd process has the lock file '%s'"
 msgstr ""
-"plik blokady \"%s\" jest przetrzymywany przez gconftol lub inny proces (nie "
+"plik blokady \"%s\" jest przetrzymywany przez gconftool lub inny proces (nie "
 "gconfd)"
 
 #: gconf/gconf-internals.c:2447
@@ -656,7 +662,7 @@ msgstr "Nie można przekonwertować IOR-a \"%s\" na odwołanie do obiektu"
 #: gconf/gconf-internals.c:2507
 #, c-format
 msgid "couldn't create directory `%s': %s"
-msgstr "Nie można stworzyć katalogu \"%s\": %s"
+msgstr "Nie można utworzyć katalogu \"%s\": %s"
 
 #: gconf/gconf-internals.c:2566
 #, c-format
@@ -691,7 +697,7 @@ msgstr "Nie można usunąć katalogu blokady \"%s\": %s"
 #: gconf/gconf-internals.c:2816 gconf/gconfd.c:596
 #, c-format
 msgid "Failed to create %s: %s"
-msgstr "Nie można stworzyć %s: %s"
+msgstr "Nie można utworzyć %s: %s"
 
 #: gconf/gconf-internals.c:2838
 #, c-format
@@ -702,7 +708,7 @@ msgstr "Brak odpowiedzi serwera przy sprawdzeniu aktywności: %s"
 #, c-format
 msgid "Failed to create pipe for communicating with spawned gconf daemon: %s\n"
 msgstr ""
-"Nie można stworzyć potoku do komunikacji z uruchomionym demonem gconf: %s\n"
+"Nie można utworzyć potoku do komunikacji z uruchomionym demonem gconf: %s\n"
 
 #: gconf/gconf-internals.c:2883
 #, c-format
@@ -751,7 +757,7 @@ msgid ""
 msgstr ""
 "Skontaktuj się z administratorem systemu, aby rozwiązać następujący "
 "problem:\n"
-"Nie można otworzyć lub stworzyć pliku \"%s\"; wskazuje to, że może istnieć "
+"Nie można otworzyć lub utworzyć pliku \"%s\"; wskazuje to, że może istnieć "
 "problem z konfiguracją, gdyż wiele programów wymaga tworzenia w katalogu "
 "domowym pewnych plików. Błąd, który wystąpił: \"%s\" (errno = %d)."
 
@@ -811,6 +817,19 @@ msgstr ""
 #: gconf/gconf-schema.c:245
 msgid "Schema contains invalid UTF-8"
 msgstr "Schemat zawiera niepoprawną sekwencję UTF-8"
+
+#: gconf/gconf-schema.c:254
+msgid ""
+"Schema specifies type list but doesn't specify the type of the list elements"
+msgstr "Schemat określa typ jako listę, lecz nie określa typu elementów listy"
+
+#: gconf/gconf-schema.c:264
+msgid ""
+"Schema specifies type pair but doesn't specify the type of the car/cdr "
+"elements"
+msgstr ""
+"Schemat określa typ jako parę, lecz nie określa typu pierwszego/drugiego "
+"elementu"
 
 #: gconf/gconf-sources.c:319
 #, c-format
@@ -956,7 +975,7 @@ msgstr "Niezrozumiała wartość \"%s\" (lista musi się kończyć znakiem \"]\"
 #: gconf/gconf-value.c:325
 #, c-format
 msgid "Didn't understand `%s' (extra unescaped ']' found inside list)"
-msgstr "Niezrozumiała wartość \"%s\" (dodatkowy znak \"%]\" wewnątrz listy)"
+msgstr "Niezrozumiała wartość \"%s\" (dodatkowy znak \"]\" wewnątrz listy)"
 
 #: gconf/gconf-value.c:356 gconf/gconf-value.c:517
 #, c-format
@@ -1896,7 +1915,7 @@ msgstr ""
 msgid "WARNING: empty <applyto> node"
 msgstr "UWAGA: Pusty węzeł <applyto>"
 
-#: gconf/gconftool.c:1996 gconf/gconftool.c:2259
+#: gconf/gconftool.c:1996 gconf/gconftool.c:2278
 #, c-format
 msgid "WARNING: node <%s> not understood below <schema>\n"
 msgstr "UWAGA: Węzeł <%s> nie jest zrozumiały wewnątrz <schema>\n"
@@ -1905,12 +1924,24 @@ msgstr "UWAGA: Węzeł <%s> nie jest zrozumiały wewnątrz <schema>\n"
 msgid "WARNING: no key specified for schema\n"
 msgstr "UWAGA: nie określono klucza dla schematu\n"
 
-#: gconf/gconftool.c:2039
+#: gconf/gconftool.c:2017
+msgid "WARNING: no <list_type> specified for schema of type list\n"
+msgstr "UWAGA: nie określono <list_type> dla schematu o typie \"lista\"\n"
+
+#: gconf/gconftool.c:2024
+msgid "WARNING: no <car_type> specified for schema of type pair\n"
+msgstr "UWAGA: nie określono <car_type> dla schematu o typie \"para\"\n"
+
+#: gconf/gconftool.c:2030
+msgid "WARNING: no <cdr_type> specified for schema of type pair\n"
+msgstr "UWAGA: nie określono <cdr_type> dla schematu o typie \"para\"\n"
+
+#: gconf/gconftool.c:2058
 msgid "WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"
 msgstr ""
 "UWAGA: Węzeł <locale> nie zawiera atrybutu name=\"locale\", zignorowano\n"
 
-#: gconf/gconftool.c:2045
+#: gconf/gconftool.c:2064
 #, c-format
 msgid ""
 "WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"
@@ -1918,54 +1949,54 @@ msgstr ""
 "UWAGA: Wiele węzłów <locale> z wartością \"%s\", Zignorowano wszystkie, poza "
 "pierwszym.\n"
 
-#: gconf/gconftool.c:2126
+#: gconf/gconftool.c:2145
 #, c-format
 msgid "WARNING: Invalid node <%s> in a <locale> node\n"
 msgstr "UWAGA: Niepoprawny węzeł <%s> wewnątrz węzła <locale>\n"
 
-#: gconf/gconftool.c:2155
+#: gconf/gconftool.c:2174
 #, c-format
 msgid "WARNING: failed to install schema `%s' locale `%s': %s\n"
 msgstr ""
 "UWAGA: zainstalowanie schematu \"%s\" dla ustawień narodowych \"%s\" nie "
 "powiodło się: %s\n"
 
-#: gconf/gconftool.c:2163
+#: gconf/gconftool.c:2182
 #, c-format
 msgid "Installed schema `%s' for locale `%s'\n"
 msgstr "Zainstalowano schemat \"%s\" dla ustawień narodowych \"%s\"\n"
 
-#: gconf/gconftool.c:2185
+#: gconf/gconftool.c:2204
 #, c-format
 msgid "WARNING: failed to associate schema `%s' with key `%s': %s\n"
 msgstr ""
 "UWAGA: powiązanie schematu \"%s\" z kluczem \"%s\" nie powiodło się: %s\n"
 
-#: gconf/gconftool.c:2193
+#: gconf/gconftool.c:2212
 #, c-format
 msgid "Attached schema `%s' to key `%s'\n"
 msgstr "Schemat \"%s\" został przyłączony do klucza \"%s\"\n"
 
-#: gconf/gconftool.c:2272
+#: gconf/gconftool.c:2291
 msgid "You must have at least one <locale> entry in a <schema>\n"
 msgstr "Wewnątrz <schema> musi występować co najmniej jedno <locale>\n"
 
-#: gconf/gconftool.c:2303
+#: gconf/gconftool.c:2322
 #, c-format
 msgid "WARNING: node <%s> not understood below <schemalist>\n"
 msgstr "UWAGA: niezrozumiały węzeł <%s> poniżej węzła <schemalist>\n"
 
-#: gconf/gconftool.c:2326
+#: gconf/gconftool.c:2345
 #, c-format
 msgid "Failed to open `%s': %s\n"
 msgstr "Nie można otworzyć \"%s\": %s\n"
 
-#: gconf/gconftool.c:2333
+#: gconf/gconftool.c:2352
 #, c-format
 msgid "Document `%s' is empty?\n"
 msgstr "Dokument \"%s\" jest pusty?\n"
 
-#: gconf/gconftool.c:2345
+#: gconf/gconftool.c:2364
 #, c-format
 msgid ""
 "Document `%s' has the wrong type of root node (<%s>, should be "
@@ -1974,26 +2005,26 @@ msgstr ""
 "Dokument \"%s\" zawiera nieprawidłowy węzeł główny (<%s>, powinno być "
 "<gconfschemafile>)\n"
 
-#: gconf/gconftool.c:2358
+#: gconf/gconftool.c:2377
 #, c-format
 msgid "Document `%s' has no top level <gconfschemafile> node\n"
 msgstr "Głównym węzłem dokumentu \"%s\" nie jest gconfschemafile\n"
 
-#: gconf/gconftool.c:2372
+#: gconf/gconftool.c:2391
 #, c-format
 msgid "WARNING: node <%s> below <gconfschemafile> not understood\n"
 msgstr "UWAGA: niezrozumiały węzeł <%s> poniżej węzła <gconfschemafile>\n"
 
-#: gconf/gconftool.c:2383 gconf/gconftool.c:2415
+#: gconf/gconftool.c:2402 gconf/gconftool.c:2434
 #, c-format
 msgid "Error syncing config data: %s"
 msgstr "Błąd przy synchronizacji danych konfiguracji: %s"
 
-#: gconf/gconftool.c:2399
+#: gconf/gconftool.c:2418
 msgid "Must specify some schema files to install\n"
 msgstr "Należy podać jakieś pliki schematów do zainstalowania\n"
 
-#: gconf/gconftool.c:2436
+#: gconf/gconftool.c:2455
 #, c-format
 msgid ""
 "\n"
@@ -2002,16 +2033,16 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: gconf/gconftool.c:2456
+#: gconf/gconftool.c:2475
 #, c-format
 msgid "Failed to unset breakage key %s: %s\n"
 msgstr "Nie można wyczyścić klucza %s: %s\n"
 
-#: gconf/gconftool.c:2582
+#: gconf/gconftool.c:2601
 msgid "Must specify some keys to break\n"
 msgstr "Należy podać klucze przeznaczone do uszkodzenia\n"
 
-#: gconf/gconftool.c:2588
+#: gconf/gconftool.c:2607
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for key:\n"
@@ -2021,11 +2052,11 @@ msgstr ""
 "klucza:\n"
 "  %s\n"
 
-#: gconf/gconftool.c:2606
+#: gconf/gconftool.c:2625
 msgid "Must specify some directories to break\n"
 msgstr "Należy podać katalogi przeznaczone do uszkodzenia\n"
 
-#: gconf/gconftool.c:2625
+#: gconf/gconftool.c:2644
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for keys in "
@@ -2035,6 +2066,9 @@ msgstr ""
 "Próba uszkodzenia aplikacji poprzez przypisanie niepoprawnych wartości do "
 "kluczy w katalogu:\n"
 "  %s\n"
+
+#~ msgid "Couldn't find the XML root directory in the address `%s'"
+#~ msgstr "Nie można znaleźć katalogu głównego XML pod adresem \"%s\""
 
 #~ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 #~ msgstr ""

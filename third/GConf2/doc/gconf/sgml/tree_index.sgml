@@ -1,4 +1,4 @@
-<literallayout>
+<screen>
     <link linkend="GObject">GObject</link>
         <link linkend="GConfClient">GConfClient</link>
-</literallayout>
+</screen>

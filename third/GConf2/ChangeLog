@@ -1,3 +1,112 @@
+2003-01-20  Havoc Pennington  <hp@pobox.com>
+
+        * NEWS: update
+	
+	* configure.in: 2.2.0
+
+2003-01-12  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: 2.1.90
+
+2002-12-04  Havoc Pennington  <hp@pobox.com>
+
+	* backends/markup-tree.c (markup_entry_get_value): fix 
+	a logic error causing us to deref a null pointer, reported 
+	by  Brian Alexander Quistorff
+
+2002-11-22  Dan Mills  <thunder@ximian.com>
+
+	* configure.in: fix gtk-doc version check.
+
+2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-02  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-internals.c
+	(gconf_value_list_to_primitive_list_destructive): fix using the 
+	wrong type (value->type not value->list_type) in an error message, 
+	#96210
+
+2002-10-18  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-internals.c (subst_variables): patch from 
+	Benn Vosseteig fixing a crash with a long path to $HOME 
+	
+2002-09-30  Yanko Kaneti <yaneti@declera.com>
+
+	* doc/gconf/gconf.sgml:
+	* doc/gconf-1.0.dtd: Some additions to match the full range of schema
+	elements curently accepted by gconftool. Supposedly complete now.
+
+2002-09-18  Yanko Kaneti <yaneti@declera.com>
+
+	* doc/Makefile.am: change the gconf-1.0.dtd install location to 
+	$(datadir)/sgml/gconf which sounds more standards compliant.
+
+2002-09-18  Havoc Pennington  <hp@pobox.com>
+
+	* backends/markup-backend.c (resolve_address): add FIXME about
+	GCONF_LOCAL_LOCKS
+
+2002-09-18  Havoc Pennington  <hp@pobox.com>
+
+        Merge gconf-markup-hacking branch
+	
+	* tests/testbackend.c: add a test for backends
+
+	* gconf/gconftool.c (extract_global_info): add more error
+	checking, adding more error strings
+
+	* gconf/gconf-schema.c (gconf_schema_validate): do some more
+	validation with error strings that couldn't be added to stable
+	branch
+
+	* backends/xml-dir.c: fix quoting in error string
+
+	* backends/xml-backend.c (resolve_address): fix quoting in error
+	string
+
+	* backends/markup-tree.c: make it work
+
+	* backends/markup-backend.c: make it work
+
+	* backends/Makefile.am (libgconfbackend_markup_la_SOURCES): add
+	markup-backend.c
+
+2002-09-18  Yanko Kaneti <yaneti@declera.com>
+
+	* gconf.m4.in: Introduce --disable-schemas-install and the 
+	GCONF_SCHEMAS_INSTALL conditional, which allows disabling 
+	the schemas installation given the package decides to support it.
+
+	* doc/Makefile.am:
+	* doc/gconf/gconf.sgml:
+	* doc/gconf-1.0.dtd (ADDED): formal dtd for the schema files.
+	Not yet complete. Installed in $(pkgdatadir)/xml/gconf/ for now.
+
+2002-09-18  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: bump to 2.1.0, to get in sync with gnome and allow
+	identifying HEAD
+
+2002-09-09  jacob berkman  <jacob@ximian.com>
+
+	* gconf/GConf.idl:
+	* gconf/GConfX.idl:
+	* gconf/Makefile.am:
+	* gconf/gconf-database.h:
+	* gconf/gconf-internals.h:
+	* gconf/gconf.c:
+	* gconf/gconfd.c:
+	* gconf/gconfd.h: rename GConf.idl to GConfX.idl in order to build
+	on non-case-sensitive file systems
+
+2002-09-06  Peteris Krisjanis <peteris.krisjanis@os.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS
+
 2002-08-04  Havoc Pennington  <hp@redhat.com>
 
 	* configure.in: 1.2.1

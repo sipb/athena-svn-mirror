@@ -1,8 +1,8 @@
 #
 # Note that this is NOT a relocatable package
-# $Id: gconf.spec,v 1.1.1.1 2002-12-26 19:44:18 ghudson Exp $
+# $Id: gconf.spec,v 1.1.1.2 2003-01-29 20:00:20 ghudson Exp $
 #
-%define ver      1.2.1
+%define ver      2.2.0
 %define rel      1
 %define	prefix   %{_prefix}
 %define name	 GConf

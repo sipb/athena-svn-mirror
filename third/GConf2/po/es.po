@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf 2.0\n"
-"POT-Creation-Date: 2002-08-04 14:20-0400\n"
-"PO-Revision-Date: 2002-06-03 19:19GMT\n"
+"POT-Creation-Date: 2003-01-12 13:13-0500\n"
+"PO-Revision-Date: 2003-01-07 09:35GMT\n"
 "Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr "Inicializando el módulo BDB"
 msgid "Couldn't find the %s root directory in the address `%s'"
 msgstr "No se pudo encontrar el directorio raíz %s en la dirección `%s'"
 
-#: backends/dir-utils.c:124 backends/xml-backend.c:304 backends/xml-dir.c:1212
+#: backends/dir-utils.c:124 backends/xml-backend.c:304
 #, c-format
 msgid "Could not make directory `%s': %s"
 msgstr "No se pudo crear el directorio `%s': %s"
@@ -50,14 +50,15 @@ msgstr "Descargando el módulo de soporte de XML."
 
 #: backends/xml-backend.c:289
 #, c-format
-msgid "Couldn't find the XML root directory in the address `%s'"
-msgstr "No se pudo encontrar el directorio raíz XML en la dirección `%s'"
+msgid "Couldn't find the root directory in the address \"%s\""
+msgstr "No se pudo encontrar el directorio raíz en la dirección «%s»"
 
 #: backends/xml-backend.c:414
 #, c-format
-msgid "Can't read from or write to the XML root directory in the address `%s'"
+msgid ""
+"Can't read from or write to the XML root directory in the address \"%s\""
 msgstr ""
-"No se puede leer ni escribir el directorio raíz XML en la dirección `%s'"
+"No se puede leer ni escribir el directorio raíz XML en la dirección «%s»"
 
 #: backends/xml-backend.c:424
 #, c-format
@@ -83,9 +84,9 @@ msgstr "Inicializando el módulo de XML"
 
 #: backends/xml-backend.c:790
 #, c-format
-msgid "Failed to give up lock on XML dir `%s': %s"
+msgid "Failed to give up lock on XML dir \"%s\": %s"
 msgstr ""
-"Ha ocurrido un error al liberar el bloqueo en el directorio XML `%s': %s"
+"Ha ocurrido un error al liberar el bloqueo en el directorio XML «%s»: %s"
 
 #: backends/xml-cache.c:257
 msgid "Failed to sync XML cache contents to disk"
@@ -186,6 +187,11 @@ msgid "A toplevel node in XML file `%s' is <%s> rather than <entry>, ignoring"
 msgstr ""
 "Un nodo de alto nivel en el archivo XML `%s' es <%s> en lugar de <entry>, "
 "ignorándolo"
+
+#: backends/xml-dir.c:1212
+#, c-format
+msgid "Could not make directory \"%s\": %s"
+msgstr "No se pudo crear el directorio «%s»: %s"
 
 #: backends/xml-dir.c:1228
 #, c-format
@@ -820,6 +826,21 @@ msgstr ""
 #: gconf/gconf-schema.c:245
 msgid "Schema contains invalid UTF-8"
 msgstr "El schema contiene UTF-8 inválido"
+
+#: gconf/gconf-schema.c:254
+msgid ""
+"Schema specifies type list but doesn't specify the type of the list elements"
+msgstr ""
+"El esquema especifica un tipo de lista pero no especifica el tipo de los "
+"elementos listados"
+
+#: gconf/gconf-schema.c:264
+msgid ""
+"Schema specifies type pair but doesn't specify the type of the car/cdr "
+"elements"
+msgstr ""
+"El esquema especifica el tipo «par» pero no especifica el tipo de los "
+"elementos car/cdr"
 
 #: gconf/gconf-sources.c:319
 #, c-format
@@ -1903,7 +1924,7 @@ msgstr ""
 msgid "WARNING: empty <applyto> node"
 msgstr "AVISO: nodo <applyto> vacío"
 
-#: gconf/gconftool.c:1996 gconf/gconftool.c:2259
+#: gconf/gconftool.c:1996 gconf/gconftool.c:2278
 #, c-format
 msgid "WARNING: node <%s> not understood below <schema>\n"
 msgstr "AVISO: nodo <%s> no comprendido en <esquema>\n"
@@ -1912,12 +1933,25 @@ msgstr "AVISO: nodo <%s> no comprendido en <esquema>\n"
 msgid "WARNING: no key specified for schema\n"
 msgstr "AVISO: no hay clave especificada para el esquema\n"
 
-#: gconf/gconftool.c:2039
+#: gconf/gconftool.c:2017
+msgid "WARNING: no <list_type> specified for schema of type list\n"
+msgstr ""
+"AVISO: no hay <lista_tipo> especificada para el esquema de tipo de lista\n"
+
+#: gconf/gconftool.c:2024
+msgid "WARNING: no <car_type> specified for schema of type pair\n"
+msgstr "AVISO: no hay <tipo_car> especificado para el esquema de tipo «par»\n"
+
+#: gconf/gconftool.c:2030
+msgid "WARNING: no <cdr_type> specified for schema of type pair\n"
+msgstr "AVISO: no hay <tipo_cdr> especificado para el esquema de tipo «par»\n"
+
+#: gconf/gconftool.c:2058
 msgid "WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"
 msgstr ""
 "AVISO: nodo <locale> no tiene atributo `name=\"locale\"', ignorándolo\n"
 
-#: gconf/gconftool.c:2045
+#: gconf/gconftool.c:2064
 #, c-format
 msgid ""
 "WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"
@@ -1925,53 +1959,53 @@ msgstr ""
 "AVISO: múltiples nodos <locale> para el locale `%s', ignorando todos después "
 "del primero\n"
 
-#: gconf/gconftool.c:2126
+#: gconf/gconftool.c:2145
 #, c-format
 msgid "WARNING: Invalid node <%s> in a <locale> node\n"
 msgstr "AVISO: Nodo <%s> inválido en un nodo <locale>\n"
 
-#: gconf/gconftool.c:2155
+#: gconf/gconftool.c:2174
 #, c-format
 msgid "WARNING: failed to install schema `%s' locale `%s': %s\n"
 msgstr "AVISO: error al instalar esquema `%s' locale `%s': %s\n"
 
-#: gconf/gconftool.c:2163
+#: gconf/gconftool.c:2182
 #, c-format
 msgid "Installed schema `%s' for locale `%s'\n"
 msgstr "Instalado el esquema `%s' para el locale `%s'\n"
 
-#: gconf/gconftool.c:2185
+#: gconf/gconftool.c:2204
 #, c-format
 msgid "WARNING: failed to associate schema `%s' with key `%s': %s\n"
 msgstr ""
 "AVISO: ha ocurrido un error al asociar el esquema `%s' con la clave `%s': %"
 "s\n"
 
-#: gconf/gconftool.c:2193
+#: gconf/gconftool.c:2212
 #, c-format
 msgid "Attached schema `%s' to key `%s'\n"
 msgstr "Adjuntado esquema `%s' a la clave `%s'\n"
 
-#: gconf/gconftool.c:2272
+#: gconf/gconftool.c:2291
 msgid "You must have at least one <locale> entry in a <schema>\n"
 msgstr "Debe tener al menos un registro <locale> en un <schema>\n"
 
-#: gconf/gconftool.c:2303
+#: gconf/gconftool.c:2322
 #, c-format
 msgid "WARNING: node <%s> not understood below <schemalist>\n"
 msgstr "AVISO: es incomprensible el nodo <%s> bajo <schemalist>\n"
 
-#: gconf/gconftool.c:2326
+#: gconf/gconftool.c:2345
 #, c-format
 msgid "Failed to open `%s': %s\n"
 msgstr "Ha ocurrido un error al abrir `%s': %s\n"
 
-#: gconf/gconftool.c:2333
+#: gconf/gconftool.c:2352
 #, c-format
 msgid "Document `%s' is empty?\n"
 msgstr "¿Está vacío el documento `%s'?\n"
 
-#: gconf/gconftool.c:2345
+#: gconf/gconftool.c:2364
 #, c-format
 msgid ""
 "Document `%s' has the wrong type of root node (<%s>, should be "
@@ -1980,26 +2014,26 @@ msgstr ""
 "El documento `%s' tiene un tipo erróneo para el nodo raíz (<%s>, debe ser "
 "<gconfschemafile>)\n"
 
-#: gconf/gconftool.c:2358
+#: gconf/gconftool.c:2377
 #, c-format
 msgid "Document `%s' has no top level <gconfschemafile> node\n"
 msgstr "El documento `%s' no tiene nod <gconfschemafile> de nivel superior\n"
 
-#: gconf/gconftool.c:2372
+#: gconf/gconftool.c:2391
 #, c-format
 msgid "WARNING: node <%s> below <gconfschemafile> not understood\n"
 msgstr "AVISO: es incomprensible el nodo <%s> bajo <gconfschemafile>\n"
 
-#: gconf/gconftool.c:2383 gconf/gconftool.c:2415
+#: gconf/gconftool.c:2402 gconf/gconftool.c:2434
 #, c-format
 msgid "Error syncing config data: %s"
 msgstr "Ha ocurrido un error en la sincronización de datos: %s"
 
-#: gconf/gconftool.c:2399
+#: gconf/gconftool.c:2418
 msgid "Must specify some schema files to install\n"
 msgstr "Debe especificar algunos archivos de esquema a instalar\n"
 
-#: gconf/gconftool.c:2436
+#: gconf/gconftool.c:2455
 #, c-format
 msgid ""
 "\n"
@@ -2008,16 +2042,16 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: gconf/gconftool.c:2456
+#: gconf/gconftool.c:2475
 #, c-format
 msgid "Failed to unset breakage key %s: %s\n"
 msgstr "Error al eliminar la asignación a la clave de rotura %s: %s\n"
 
-#: gconf/gconftool.c:2582
+#: gconf/gconftool.c:2601
 msgid "Must specify some keys to break\n"
 msgstr "Debe especificar algunas claves a romper\n"
 
-#: gconf/gconftool.c:2588
+#: gconf/gconftool.c:2607
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for key:\n"
@@ -2026,11 +2060,11 @@ msgstr ""
 "Tratando de romper su aplicación asignando valores erróneos para la clave:\n"
 "  %s\n"
 
-#: gconf/gconftool.c:2606
+#: gconf/gconftool.c:2625
 msgid "Must specify some directories to break\n"
 msgstr "Debe especificar algunos directorios a romper\n"
 
-#: gconf/gconftool.c:2625
+#: gconf/gconftool.c:2644
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for keys in "
@@ -2040,15 +2074,3 @@ msgstr ""
 "Tratando de romper su aplicación asignando valores a las claves en el "
 "directorio:\n"
 "  %s\n"
-
-#~ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-#~ msgstr ""
-#~ "Han ocurrido multiples errores de segmentación; no se puede mostrar el "
-#~ "diálogo de error\n"
-
-#~ msgid ""
-#~ "Segmentation fault!\n"
-#~ "Cannot display crash dialog: %s\n"
-#~ msgstr ""
-#~ "Ha ocurrido un error de segmentación\n"
-#~ "No se puede mostrar el diálogo de error: %s\n"
