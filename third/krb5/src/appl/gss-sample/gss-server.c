@@ -19,10 +19,29 @@
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-server.c,v 1.1.1.6 2001-12-05 20:47:23 rbasch Exp $";
-#endif
+/*
+ * Copyright (C) 2004 by the Massachusetts Institute of Technology.
+ * All rights reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ */
 
 #include <stdio.h>
 #ifdef _WIN32
@@ -49,10 +68,10 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <strings.h>
 #endif
 
-void usage()
+static void usage()
 {
      fprintf(stderr, "Usage: gss-server [-port port] [-verbose] [-once]\n");
-     fprintf(stderr, "       [-inetd] [-export] [-logfile file] [service_name]\n");
+     fprintf(stderr, "       [-inetd] [-export] [-logfile file] service_name\n");
      exit(1);
 }
 
@@ -79,7 +98,7 @@ int verbose = 0;
  * fails, an error message is displayed and -1 is returned; otherwise,
  * 0 is returned.
  */
-int server_acquire_creds(service_name, server_creds)
+static int server_acquire_creds(service_name, server_creds)
      char *service_name;
      gss_cred_id_t *server_creds;
 {
@@ -132,7 +151,8 @@ int server_acquire_creds(service_name, server_creds)
  * in client_name and 0 is returned.  If unsuccessful, an error
  * message is displayed and -1 is returned.
  */
-int server_establish_context(s, server_creds, context, client_name, ret_flags)
+static int server_establish_context(s, server_creds, context, client_name, 
+				    ret_flags)
      int s;
      gss_cred_id_t server_creds;
      gss_ctx_id_t *context;
@@ -149,7 +169,11 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
      if (recv_token(s, &token_flags, &recv_tok) < 0)
        return -1;
 
-     (void) gss_release_buffer(&min_stat, &recv_tok);
+     if (recv_tok.value) {
+       free (recv_tok.value);
+       recv_tok.value = NULL;
+     }
+
      if (! (token_flags & TOKEN_NOOP)) {
        if (log)
 	 fprintf(log, "Expected NOOP token, got %d token instead\n",
@@ -165,7 +189,7 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 	   return -1;
 
 	 if (verbose && log) {
-	   fprintf(log, "Received token (size=%d): \n", recv_tok.length);
+	   fprintf(log, "Received token (size=%d): \n", (int) recv_tok.length);
 	   print_token(&recv_tok);
 	 }
 
@@ -182,13 +206,16 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 				  NULL, 	/* ignore time_rec */
 				  NULL); 	/* ignore del_cred_handle */
 
-	 (void) gss_release_buffer(&min_stat, &recv_tok);
+	 if(recv_tok.value) {
+	     free(recv_tok.value);
+	     recv_tok.value = NULL;
+	 }
 
 	 if (send_tok.length != 0) {
 	   if (verbose && log) {
 	     fprintf(log,
 		     "Sending accept_sec_context token (size=%d):\n",
-		     send_tok.length);
+		     (int) send_tok.length);
 	     print_token(&send_tok);
 	   }
 	   if (send_token(s, TOKEN_CONTEXT, &send_tok) < 0) {
@@ -202,7 +229,7 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 	 if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED) {
 	      display_status("accepting context", maj_stat,
 			     acc_sec_min_stat);
-	      if (*context == GSS_C_NO_CONTEXT)
+	      if (*context != GSS_C_NO_CONTEXT)
 		      gss_delete_sec_context(&min_stat, context,
 					     GSS_C_NO_BUFFER);
 	      return -1;
@@ -268,7 +295,7 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
  * A listening socket on the specified port and created and returned.
  * On error, an error message is displayed and -1 is returned.
  */
-int create_socket(port)
+static int create_socket(port)
      u_short port;
 {
      struct sockaddr_in saddr;
@@ -310,7 +337,7 @@ static float timeval_subtract(tv1, tv2)
  * DO NOT REMOVE THIS UNTIL A BETTER TEST HAS BEEN WRITTEN, THOUGH.
  * 					-TYT
  */
-int test_import_export_context(context)
+static int test_import_export_context(context)
 	gss_ctx_id_t *context;
 {
 	OM_uint32	min_stat, maj_stat;
@@ -329,7 +356,8 @@ int test_import_export_context(context)
 	gettimeofday(&tm2, (struct timezone *)0);
 	if (verbose && log)
 		fprintf(log, "Exported context: %d bytes, %7.4f seconds\n",
-			context_token.length, timeval_subtract(&tm2, &tm1));
+			(int) context_token.length, 
+			timeval_subtract(&tm2, &tm1));
 	copied_token.length = context_token.length;
 	copied_token.value = malloc(context_token.length);
 	if (copied_token.value == 0) {
@@ -378,130 +406,152 @@ int test_import_export_context(context)
  *
  * If any error occurs, -1 is returned.
  */
-int sign_server(s, server_creds, export)
+static int sign_server(s, server_creds, export)
      int s;
      gss_cred_id_t server_creds;
      int export;
 {
-     gss_buffer_desc client_name, xmit_buf, msg_buf;
-     gss_ctx_id_t context;
-     OM_uint32 maj_stat, min_stat;
-     int i, conf_state, ret_flags;
-     char	*cp;
-     int token_flags;
+    gss_buffer_desc client_name, xmit_buf, msg_buf;
+    gss_ctx_id_t context;
+    OM_uint32 maj_stat, min_stat;
+    int i, conf_state, ret_flags;
+    char	*cp;
+    int token_flags;
 
-     /* Establish a context with the client */
-     if (server_establish_context(s, server_creds, &context,
-				  &client_name, &ret_flags) < 0)
-	return(-1);
+    /* Establish a context with the client */
+    if (server_establish_context(s, server_creds, &context,
+                                  &client_name, &ret_flags) < 0)
+        return(-1);
 
-     if (context == GSS_C_NO_CONTEXT) {
-       printf("Accepted unauthenticated connection.\n");
-     }
-     else {
-       printf("Accepted connection: \"%.*s\"\n",
-	      (int) client_name.length, (char *) client_name.value);
-       (void) gss_release_buffer(&min_stat, &client_name);
+    if (context == GSS_C_NO_CONTEXT) {
+        printf("Accepted unauthenticated connection.\n");
+    }
+    else {
+        printf("Accepted connection: \"%.*s\"\n",
+                (int) client_name.length, (char *) client_name.value);
+        (void) gss_release_buffer(&min_stat, &client_name);
 
-       if (export) {
-	 for (i=0; i < 3; i++)
-	   if (test_import_export_context(&context))
-	     return -1;
-       }
-     }
+        if (export) {
+            for (i=0; i < 3; i++)
+                if (test_import_export_context(&context))
+                    return -1;
+        }
+    }
 
-     do {
-       /* Receive the message token */
-       if (recv_token(s, &token_flags, &xmit_buf) < 0)
-	 return(-1);
+    do {
+        /* Receive the message token */
+        if (recv_token(s, &token_flags, &xmit_buf) < 0)
+            return(-1);
 
-       if (token_flags & TOKEN_NOOP) {
-	 if (log)
-	   fprintf(log, "NOOP token\n");
-	 (void) gss_release_buffer(&min_stat, &xmit_buf);
-	 break;
-       }
+        if (token_flags & TOKEN_NOOP) {
+            if (log)
+                fprintf(log, "NOOP token\n");
+            if(xmit_buf.value) {
+                free(xmit_buf.value);
+                xmit_buf.value = 0;
+            }
+            break;
+        }
 
-       if (verbose && log) {
-	 fprintf(log, "Message token (flags=%d):\n", token_flags);
-	 print_token(&xmit_buf);
-       }
+        if (verbose && log) {
+            fprintf(log, "Message token (flags=%d):\n", token_flags);
+            print_token(&xmit_buf);
+        }
 
-       if ((context == GSS_C_NO_CONTEXT) &&
-	   (token_flags & (TOKEN_WRAPPED|TOKEN_ENCRYPTED|TOKEN_SEND_MIC))) {
-	 if (log)
-	   fprintf(log,
-		   "Unauthenticated client requested authenticated services!\n");
-	 (void) gss_release_buffer(&min_stat, &xmit_buf);
-	 return(-1);
-       }
+        if ((context == GSS_C_NO_CONTEXT) &&
+             (    token_flags & (TOKEN_WRAPPED|TOKEN_ENCRYPTED|TOKEN_SEND_MIC))) {
+            if (log)
+                fprintf(log,
+                         "Unauthenticated client requested authenticated services!\n");
+            if(xmit_buf.value) {
+                free (xmit_buf.value);
+                xmit_buf.value = 0;
+            }
+            return(-1);
+        }
 
-       if (token_flags & TOKEN_WRAPPED) {
-	 maj_stat = gss_unwrap(&min_stat, context, &xmit_buf, &msg_buf,
-			       &conf_state, (gss_qop_t *) NULL);
-	 if (maj_stat != GSS_S_COMPLETE) {
-	   display_status("unsealing message", maj_stat, min_stat);
-	   (void) gss_release_buffer(&min_stat, &xmit_buf);
-	   return(-1);
-	 } else if (! conf_state && (token_flags & TOKEN_ENCRYPTED)) {
-	   fprintf(stderr, "Warning!  Message not encrypted.\n");
-	 }
+        if (token_flags & TOKEN_WRAPPED) {
+            maj_stat = gss_unwrap(&min_stat, context, &xmit_buf, &msg_buf,
+                                   &conf_state, (gss_qop_t *) NULL);
+            if (maj_stat != GSS_S_COMPLETE) {
+                display_status("unsealing message", maj_stat, min_stat);
+                if(xmit_buf.value) {
+                    free (xmit_buf.value);
+                    xmit_buf.value = 0;
+                }
+                return(-1);
+            } else if (! conf_state && (token_flags & TOKEN_ENCRYPTED)) {
+                fprintf(stderr, "Warning!  Message not encrypted.\n");
+            }
 
-	 (void) gss_release_buffer(&min_stat, &xmit_buf);
-       }
-       else {
-	 msg_buf = xmit_buf;
-       }
+            if(xmit_buf.value) {
+                free (xmit_buf.value);
+                xmit_buf.value = 0;
+            }
+        }
+        else {
+            msg_buf = xmit_buf;
+        }
 
-       if (log) {
-	 fprintf(log, "Received message: ");
-	 cp = msg_buf.value;
-	 if ((isprint(cp[0]) || isspace(cp[0])) &&
-	    (isprint(cp[1]) || isspace(cp[1]))) {
-	   fprintf(log, "\"%.*s\"\n", msg_buf.length, msg_buf.value);
-	 } else {
-	   fprintf(log, "\n");
-	   print_token(&msg_buf);
-	 }
-       }
+        if (log) {
+            fprintf(log, "Received message: ");
+            cp = msg_buf.value;
+            if ((isprint((int) cp[0]) || isspace((int) cp[0])) &&
+                 (isprint((int) cp[1]) || isspace((int) cp[1]))) {
+                fprintf(log, "\"%.*s\"\n", (int) msg_buf.length, 
+                         (char *) msg_buf.value);
+                 } else {
+                     fprintf(log, "\n");
+                     print_token(&msg_buf);
+                 }
+        }
 
-       if (token_flags & TOKEN_SEND_MIC) {
-	 /* Produce a signature block for the message */
-	 maj_stat = gss_get_mic(&min_stat, context, GSS_C_QOP_DEFAULT,
-				&msg_buf, &xmit_buf);
-	 if (maj_stat != GSS_S_COMPLETE) {
-	   display_status("signing message", maj_stat, min_stat);
-	   return(-1);
-	 }
+        if (token_flags & TOKEN_SEND_MIC) {
+            /* Produce a signature block for the message */
+            maj_stat = gss_get_mic(&min_stat, context, GSS_C_QOP_DEFAULT,
+                                    &msg_buf, &xmit_buf);
+            if (maj_stat != GSS_S_COMPLETE) {
+                display_status("signing message", maj_stat, min_stat);
+                return(-1);
+            }
 
-	 (void) gss_release_buffer(&min_stat, &msg_buf);
+            if(msg_buf.value) {
+                free (msg_buf.value);
+                msg_buf.value = 0;
+            }
 
-	 /* Send the signature block to the client */
-	 if (send_token(s, TOKEN_MIC, &xmit_buf) < 0)
-	   return(-1);
+            /* Send the signature block to the client */
+            if (send_token(s, TOKEN_MIC, &xmit_buf) < 0)
+                return(-1);
 
-	 (void) gss_release_buffer(&min_stat, &xmit_buf);
-       }
-       else {
-	 (void) gss_release_buffer(&min_stat, &msg_buf);
-	 if (send_token(s, TOKEN_NOOP, empty_token) < 0)
-	   return(-1);
-       }
-     } while (1 /* loop will break if NOOP received */);
+            if(xmit_buf.value) {
+                free (xmit_buf.value);
+                xmit_buf.value = 0;
+            }
+        }
+        else {
+            if(msg_buf.value) {
+                free (msg_buf.value);
+                msg_buf.value = 0;
+            }
+            if (send_token(s, TOKEN_NOOP, empty_token) < 0)
+                return(-1);
+        }
+    } while (1 /* loop will break if NOOP received */);
 
-     if (context != GSS_C_NO_CONTEXT) {
-       /* Delete context */
-       maj_stat = gss_delete_sec_context(&min_stat, &context, NULL);
-       if (maj_stat != GSS_S_COMPLETE) {
-	 display_status("deleting context", maj_stat, min_stat);
-	 return(-1);
-       }
-     }
+    if (context != GSS_C_NO_CONTEXT) {
+        /* Delete context */
+        maj_stat = gss_delete_sec_context(&min_stat, &context, NULL);
+        if (maj_stat != GSS_S_COMPLETE) {
+            display_status("deleting context", maj_stat, min_stat);
+            return(-1);
+        }
+    }
 
-     if (log)
-       fflush(log);
+    if (log)
+        fflush(log);
 
-     return(0);
+    return(0);
 }
 
 int
@@ -585,7 +635,7 @@ main(argc, argv)
  		 }
  		 /* this return value is not checked, because there's
  		    not really anything to do if it fails */
- 		 sign_server(s, server_creds);
+ 		 sign_server(s, server_creds, export);
  		 close(s);
  	     } while (!once);
  

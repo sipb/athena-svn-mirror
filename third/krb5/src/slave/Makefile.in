@@ -1,7 +1,7 @@
 thisconfigdir=.
 myfulldir=slave
 mydir=.
-BUILDTOP=$(REL)$(U)
+BUILDTOP=$(REL)..
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
 
@@ -16,11 +16,11 @@ SERVEROBJS= kpropd.o
 SRCS= $(CLIENTSRCS) $(SERVERSRCS)
 
 
-kprop: $(CLIENTOBJS) $(KDB5_DEPLIB) $(KRB5_BASE_DEPLIBS)
+kprop: $(CLIENTOBJS) $(KRB5_BASE_DEPLIBS)
 	$(CC_LINK) -o kprop $(CLIENTOBJS) $(KRB5_BASE_LIBS)
 
-kpropd: $(SERVEROBJS) $(KDB5_DEPLIBS) $(KRB5_BASE_DEPLIBS)
-	$(CC_LINK) -o kpropd $(SERVEROBJS) $(KDB5_LIBS) $(KRB5_BASE_LIBS)
+kpropd: $(SERVEROBJS) $(KRB5_BASE_DEPLIBS)
+	$(CC_LINK) -o kpropd $(SERVEROBJS) $(KRB5_BASE_LIBS)
 
 install::
 	for f in kprop kpropd; do \
@@ -35,4 +35,22 @@ clean::
 
 clean::
 	$(RM) kprop kpropd
+
+# +++ Dependency line eater +++
+# 
+# Makefile dependencies follow.  This must be the last section in
+# the Makefile.in file
+#
+$(OUTPRE)kprop.$(OBJEXT): kprop.c $(SRCTOP)/include/k5-int.h \
+  $(BUILDTOP)/include/krb5/osconf.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/k5-platform.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(BUILDTOP)/include/profile.h $(SRCTOP)/include/port-sockets.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/krb5/kdb.h \
+  kprop.h
+$(OUTPRE)kpropd.$(OBJEXT): kpropd.c $(SRCTOP)/include/syslog.h \
+  $(SRCTOP)/include/k5-int.h $(BUILDTOP)/include/krb5/osconf.h \
+  $(BUILDTOP)/include/krb5/autoconf.h $(SRCTOP)/include/k5-platform.h \
+  $(BUILDTOP)/include/krb5.h $(COM_ERR_DEPS) $(BUILDTOP)/include/profile.h \
+  $(SRCTOP)/include/port-sockets.h $(SRCTOP)/include/socket-utils.h \
+  $(SRCTOP)/include/krb5/kdb.h kprop.h
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: cacheapi.h,v 1.1.1.2 2001-12-05 20:48:49 rbasch Exp $
+ *  $Id: cacheapi.h,v 1.1.1.3 2004-02-27 03:56:39 zacheiss Exp $
  *
  * Copyright 1997 by the Regents of the University of Michigan
  *
@@ -137,10 +137,10 @@ typedef struct _cc_creds {
     cc_time_t       renew_till;
     cc_uint32       is_skey;
     cc_uint32       ticket_flags;
-    cc_data FAR **  addresses;
+    cc_data **  addresses;
     cc_data         ticket;
     cc_data         second_ticket;
-    cc_data FAR **  authdata;
+    cc_data **  authdata;
 } cc_creds;
 
 

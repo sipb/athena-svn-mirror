@@ -1,7 +1,7 @@
 #
 # comerr library Macintosh export file
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/et/et.pbexp,v 1.1.1.1 2001-12-05 20:48:41 rbasch Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/et/et.pbexp,v 1.1.1.2 2004-02-27 03:58:26 zacheiss Exp $
 
 _com_err
 _com_err_va

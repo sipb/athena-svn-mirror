@@ -34,8 +34,8 @@
 #include "com_err.h"
 #include <kadm5/admin.h>
 #include <kadm5/adb.h>
+#include "kdb5_util.h"
 
-extern int errno;
 extern int exit_status;
 extern krb5_boolean dbactive;
 extern kadm5_config_params global_params;
@@ -53,7 +53,6 @@ kdb5_destroy(argc, argv)
     int optchar;
     char *dbname;
     char buf[5];
-    char dbfilename[MAXPATHLEN];
     krb5_error_code retval, retval1, retval2;
     krb5_context context;
     int force = 0;
@@ -90,7 +89,8 @@ kdb5_destroy(argc, argv)
 	printf("OK, deleting database '%s'...\n", dbname);
     }
 
-    if (retval = krb5_db_set_name(context, dbname)) {
+    retval = krb5_db_set_name(context, dbname);
+    if (retval) {
 	com_err(argv[0], retval, "'%s'",dbname);
 	exit_status++; return;
     }

@@ -1,3 +1,41 @@
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* rsa-md5.h (rsa_md5_cksumtable_entry,
+	rsa_md5_des_cksumtable_entry): Delete unused declarations.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_mddriver.c: Make prototypes unconditional.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* md5.c, rsa-md5.h: Don't explicitly declare pointers FAR any
+	more.
+
+2001-06-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_mddriver.c: Cleanup assignments in conditionals w/o parentheses.
+	Add parenthesis abount structure initializers.
+
+2001-03-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* rsa-md5.h: Always use prototypes.
+
+	* md5.c: Use UL suffix instead of UL macro.
+	(UL): Macro deleted.
+
 2000-01-21  Ken Raeburn  <raeburn@mit.edu>
 
 	* md5.c (PADDING): Now const.
@@ -5,12 +43,12 @@
 	(ROTATE_LEFT): Change (a&b|c) construct to silence gcc warning.
 	* rsa-md5.h (krb5_MD5Update): Update decl.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:20:16 1999  Danilo Almeida  <dalmeida@mit.edu>
 

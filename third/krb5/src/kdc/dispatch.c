@@ -26,6 +26,7 @@
  * Dispatch an incoming packet.
  */
 
+#define NEED_SOCKETS
 #include "k5-int.h"
 #include <syslog.h>
 #include "kdc_util.h"
@@ -35,50 +36,58 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+static krb5_int32 last_usec = 0, last_os_random = 0;
+
 krb5_error_code
-dispatch(pkt, from, portnum, response)
-    krb5_data *pkt;
-    const krb5_fulladdr *from;
-    int		portnum;
-    krb5_data **response;
+dispatch(krb5_data *pkt, const krb5_fulladdr *from, krb5_data **response)
 {
 
     krb5_error_code retval;
     krb5_kdc_req *as_req;
-
+    krb5_int32 now, now_usec;
+    
     /* decode incoming packet, and dispatch */
 
 #ifndef NOCACHE
     /* try the replay lookaside buffer */
     if (kdc_check_lookaside(pkt, from, response)) {
 	/* a hit! */
-	char *name = 0;
+	const char *name = 0;
 	char buf[46];
-	krb5_address *a = from->address;
 
-#ifdef HAVE_INET_NTOP
-	name = inet_ntop (from->address->addrtype, from->address->contents,
-			  buf, sizeof (buf));
-#else
-	if (from->address->addrtype == ADDRTYPE_INET) {
-	    struct sockaddr_in *sin
-		= (struct sockaddr_in *)from->address->contents;
-	    strcpy (buf, inet_ntoa (sin->sin_addr));
-	    name = buf;
-	}
-#endif
+	name = inet_ntop (ADDRTYPE2FAMILY (from->address->addrtype),
+			  from->address->contents, buf, sizeof (buf));
 	if (name == 0)
 	    name = "[unknown address type]";
 	krb5_klog_syslog(LOG_INFO,
-			 "DISPATCH: repeated (retransmitted?) request from %s port %d, resending previous response",
-			 name, portnum);
+			 "DISPATCH: repeated (retransmitted?) request from %s, resending previous response",
+			 name);
 	return 0;
     }
 #endif
+    retval = krb5_crypto_us_timeofday(&now, &now_usec);
+    if (retval == 0) {
+      krb5_int32 usec_difference = now_usec-last_usec;
+      krb5_data data;
+      if(last_os_random == 0)
+	last_os_random = now;
+      /* Grab random data from OS every hour*/
+      if(now-last_os_random >= 60*60) {
+	krb5_c_random_os_entropy(kdc_context, 0, NULL);
+	last_os_random = now;
+      }
+      
+      data.length = sizeof(krb5_int32);
+      data.data = (void *) &usec_difference;
+      
+      krb5_c_random_add_entropy(kdc_context,
+				KRB5_C_RANDSOURCE_TIMING, &data);
+      last_usec = now_usec;
+    }
     /* try TGS_REQ first; they are more common! */
 
     if (krb5_is_tgs_req(pkt)) {
-	retval = process_tgs_req(pkt, from, portnum, response);
+	retval = process_tgs_req(pkt, from, response);
     } else if (krb5_is_as_req(pkt)) {
 	if (!(retval = decode_krb5_as_req(pkt, &as_req))) {
 	    /*
@@ -86,14 +95,14 @@ dispatch(pkt, from, portnum, response)
 	     * pointer.
 	     */
 	    if (!(retval = setup_server_realm(as_req->server))) {
-		retval = process_as_req(as_req, from, portnum, response);
+		retval = process_as_req(as_req, from, response);
 	    }
 	    krb5_free_kdc_req(kdc_context, as_req);
 	}
     }
 #ifdef KRB5_KRB4_COMPAT
     else if (pkt->data[0] == 4)		/* old version */
-	retval = process_v4(pkt, from, portnum, response);
+	retval = process_v4(pkt, from, response);
 #endif
     else
 	retval = KRB5KRB_AP_ERR_MSG_TYPE;

@@ -28,8 +28,13 @@
  * Version 1.1, modified 2/27/1999
  */
 
+#include "prof_int.h"
+
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 #include <ctype.h>
+#include <string.h>
 #include "argv_parse.h"
 
 #define STATE_WHITESPACE	1
@@ -54,7 +59,7 @@ int argv_parse(char *in_buf, int *ret_argc, char ***ret_argv)
 	outcp = buf;
 	for (cp = in_buf; (ch = *cp); cp++) {
 		if (state == STATE_WHITESPACE) {
-			if (isspace(ch))
+			if (isspace((int) ch))
 				continue;
 			/* Not whitespace, so start a new token */
 			state = STATE_TOKEN;
@@ -79,7 +84,7 @@ int argv_parse(char *in_buf, int *ret_argc, char ***ret_argv)
 			continue;
 		}
 		/* Must be processing characters in a word */
-		if (isspace(ch)) {
+		if (isspace((int) ch)) {
 			/*
 			 * Terminate the current word and start
 			 * looking for the beginning of the next word.

@@ -1,22 +1,99 @@
-2001-11-05  Tom Yu  <tlyu@mit.edu>
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2002-10-08  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (LIBMINOR): Bump.
+
+	* client_init.c (kadm5_lock, kadm5_unlock): Add stubs that error
+	out, since these are not supported on the client side.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* client_init.c (_kadm5_init_any): If creating a new ccache, put
+	it in memory instead of on disk.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-31  Tom Yu  <tlyu@mit.edu>
+
+	* client_init.c (_kadm5_init_any): Use
+	KADM5_MISSING_KRB5_CONF_PARAMS in order to be less confusing to
+	someone running kadmin rather than kadmin.local.
+
+2002-07-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SHLIB_EXPDEPS, SHLIB_EXPLIBS): Drop references to
+	libdyn.
+
+2002-03-06  Ken Raeburn  <raeburn@mit.edu>
 
 	* Makefile.in (LIBMAJOR): Bump to avoid Heimdal conflict.
 
-2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
+2001-11-07  Sam Hartman  <hartmans@mit.edu>
+
+	* client_init.c: Allow arcfour-hmac-md5 to be used for  kadmin
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* client_init.c (_kadm5_init_any): Add casts to (gss_OID) in calls
+	to gss library.
+
+Sun Feb 18 17:32:53 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* client_rpc.c: Insure pointer argument type is same as passed
+        onto xdr functions. (arguments specified to *3_1 functions were
+        for the *_1 functions).
+
+	* client_init.c, client_principal.c, clnt_policy.c: Cleanup unused
+        variables and assignments in conditionals.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* clnt_chpass_util.c (kadm5_chpass_principal_util): Change msg_len
+	to unsigned int.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: The client library does not depend on the database
+	library. Remove reference to it.
+
+2000-06-30  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (SHLIB_EXPDEPS): Add libdb.
+	(SHLIB_EXPLIBS): Add -ldb.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* client_init.c (_kadm5_init_any): gss_krb5_ccache_name returns
+	const char *, but the code was treating it as a char *.
+
+2000-06-23  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* clnt_chpass_util.c (kadm5_chpass_principal_util): Adjust for new
 	length parameter in both kadm5_chpass_principal_util() and in
 	_kadm5_chpass_principal_util().
 
-2000-05-09  Ken Raeburn  <raeburn@mit.edu>
+	* client_init.c (_kadm5_init_any): Fix determination of client
+	name length for overflow checking.
+
+2000-06-23  Ken Raeburn  <raeburn@mit.edu>
 
 	* client_init.c (enctypes): Add des3 and des-md5 to the list of
 	permitted enctypes.
 
-2000-05-01  Nalin Dahyabhai  <nalin@redhat.com>
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
 
-	* client_init.c (_kadm5_init_any): Fix determination of client
-	name length for overflow checking.
+	* client_init.c, client_principal.c, client_rpc.c: Check for
+	existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
 
 2000-02-26  Tom Yu  <tlyu@mit.edu>
 
@@ -40,12 +117,12 @@
 	(_kadm5_init_any): Pass it in krb5_get_in_tkt_with_* calls for
 	now, while GSSAPI/krb5 can only handle DES.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-27  Tom Yu  <tlyu@mit.edu>
 

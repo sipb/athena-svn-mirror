@@ -41,10 +41,6 @@
 #define NEW_RSA_MD4_DES_CKSUM_LENGTH	24
 #define	RSA_MD4_DES_CONFOUND_LENGTH	8
 
-extern krb5_checksum_entry
-    rsa_md4_cksumtable_entry,
-    rsa_md4_des_cksumtable_entry;
-
 /*
  **********************************************************************
  ** md4.h -- Header file for implementation of MD4                   **
@@ -86,15 +82,9 @@ typedef struct {
   unsigned char digest[16];		/* actual digest after MD4Final call */
 } krb5_MD4_CTX;
 
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)
-extern void krb5_MD4Init(krb5_MD4_CTX FAR *);
-extern void krb5_MD4Update(krb5_MD4_CTX FAR *, const unsigned char FAR *, unsigned int);
-extern void krb5_MD4Final(krb5_MD4_CTX FAR *);
-#else
-void krb5_MD4Init ();
-void krb5_MD4Update ();
-void krb5_MD4Final ();
-#endif
+extern void krb5_MD4Init(krb5_MD4_CTX *);
+extern void krb5_MD4Update(krb5_MD4_CTX *, const unsigned char *, unsigned int);
+extern void krb5_MD4Final(krb5_MD4_CTX *);
 
 /*
  **********************************************************************

@@ -27,6 +27,8 @@
 
 #include "ksu.h" 
 #include "adm_proto.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /******************************************************************
 krb5_cache_copy
@@ -57,8 +59,8 @@ uid_t target_uid;
 {
 int i=0; 
 krb5_ccache  * cc_other;
-char * cc_def_name;
-char * cc_other_name; 
+const char * cc_def_name;
+const char * cc_other_name; 
 krb5_error_code retval=0;
 krb5_creds ** cc_def_creds_arr = NULL;
 krb5_creds ** cc_other_creds_arr = NULL;
@@ -344,13 +346,15 @@ char *flags_string(cred)
 void printtime(tv)
     time_t tv;
 {
-    struct tm *stime;
     char fmtbuf[18];
     char fill;
+    krb5_timestamp tstamp;
 
-    stime = localtime((time_t *)&tv);
+    /* XXXX ASSUMES sizeof(krb5_timestamp) >= sizeof(time_t) */
+    (void) localtime((time_t *)&tv);
+    tstamp = tv;
     fill = ' ';
-    if (!krb5_timestamp_to_sfstring((krb5_timestamp) tv,
+    if (!krb5_timestamp_to_sfstring(tstamp,
 				    fmtbuf,
 				    sizeof(fmtbuf),
 				    &fill))
@@ -534,8 +538,8 @@ krb5_error_code krb5_ccache_overwrite(context, ccs, cct, primary_principal)
     krb5_ccache cct;
     krb5_principal primary_principal;
 {
-char * cct_name;
-char * ccs_name; 
+const char * cct_name;
+const char * ccs_name; 
 krb5_error_code retval=0;
 krb5_principal temp_principal;
 krb5_creds ** ccs_creds_arr = NULL;
@@ -650,8 +654,8 @@ uid_t target_uid;
 
 int i=0; 
 krb5_ccache  * cc_other;
-char * cc_def_name;
-char * cc_other_name; 
+const char * cc_def_name;
+const char * cc_other_name; 
 krb5_error_code retval=0;
 krb5_creds ** cc_def_creds_arr = NULL;
 krb5_creds ** cc_other_creds_arr = NULL;
@@ -727,7 +731,7 @@ int i=0;
 krb5_error_code retval=0;
 krb5_principal temp_principal;
 krb5_creds ** cc_creds_arr = NULL;
-char * cc_name;
+const char * cc_name;
 krb5_boolean stored;
 struct stat st_temp;
 
@@ -799,7 +803,7 @@ krb5_error_code  krb5_find_princ_in_cache (context, cc, princ, found)
 {
 krb5_error_code retval;
 krb5_creds ** creds_list = NULL;
-char * cc_name;
+const char * cc_name;
 struct stat st_temp;
 
     cc_name = krb5_cc_get_name(context, cc);    

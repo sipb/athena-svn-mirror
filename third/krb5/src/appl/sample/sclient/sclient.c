@@ -35,30 +35,64 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "fake-addrinfo.h" /* not everyone implements getaddrinfo yet */
+
 #include <signal.h>
 
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#else
-extern char *malloc();
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
+
+#include <stdlib.h>
 
 #include "../sample.h"
 
-int
-main(argc, argv)
-int argc;
-char *argv[];
+#ifndef GETSOCKNAME_ARG3_TYPE
+#define GETSOCKNAME_ARG3_TYPE int
+#endif
+
+static int
+net_read(fd, buf, len)
+    int fd;
+    char *buf;
+    int len;
 {
-    struct servent *sp;
-    struct hostent *hp;
-    struct sockaddr_in sin, lsin;
-    int sock, namelen;
+    int cc, len2 = 0;
+
+    do {
+	cc = SOCKET_READ((SOCKET)fd, buf, len);
+	if (cc < 0) {
+	    if (SOCKET_ERRNO == SOCKET_EINTR)
+		continue;
+		
+		/* XXX this interface sucks! */
+        errno = SOCKET_ERRNO;    
+               
+	    return(cc);		 /* errno is already set */
+	}		
+	else if (cc == 0) {
+	    return(len2);
+	} else {
+	    buf += cc;
+	    len2 += cc;
+	    len -= cc;
+	}
+    } while (len > 0);
+    return(len2);
+}
+
+int
+main(int argc, char *argv[])
+{
+    struct addrinfo *ap, aihints;
+    int aierr;
+    int sock;
     krb5_context context;
     krb5_data recv_data;
     krb5_data cksum_data;
@@ -69,6 +103,7 @@ char *argv[];
     krb5_ap_rep_enc_part *rep_ret;
     krb5_auth_context auth_context = 0;
     short xmitlen;
+    char *portstr;
     char *service = SAMPLE_SERVICE;
 
     if (argc != 2 && argc != 3 && argc != 4) {
@@ -83,85 +118,80 @@ char *argv[];
     }
 
     (void) signal(SIGPIPE, SIG_IGN);
-    if (!valid_cksumtype(CKSUMTYPE_CRC32)) {
-	com_err(argv[0], KRB5_PROG_SUMTYPE_NOSUPP, "while using CRC-32");
+
+    if (argc > 2)
+	portstr = argv[2];
+    else
+	portstr = SAMPLE_PORT;
+
+    memset(&aihints, 0, sizeof(aihints));
+    aihints.ai_socktype = SOCK_STREAM;
+    aierr = getaddrinfo(argv[1], portstr, &aihints, &ap);
+    if (aierr) {
+	fprintf(stderr, "%s: error looking up host '%s' port '%s'/tcp: %s\n",
+		argv[0], argv[1], portstr, gai_strerror(aierr));
+	exit(1);
+    }
+    if (ap == 0) {
+	/* Should never happen.  */
+	fprintf(stderr, "%s: error looking up host '%s' port '%s'/tcp: no addresses returned?\n",
+		argv[0], argv[1], portstr);
 	exit(1);
     }
 
-    /* clear out the structure first */
-    (void) memset((char *)&sin, 0, sizeof(sin));
-
-    if (argc > 2) {
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(atoi(argv[2]));
-    } else {
-	/* find the port number for knetd */
-	sp = getservbyname(SAMPLE_PORT, "tcp");
-	if (!sp) {
-	    fprintf(stderr,
-		    "unknown service %s/tcp; check /etc/services\n",
-		    SAMPLE_PORT);
-	    exit(1);
-	}
-	/* copy the port number */
-	sin.sin_port = sp->s_port;
-	sin.sin_family = AF_INET;
-    }
     if (argc > 3) {
 	service = argv[3];
     }
 
-    /* look up the server host */
-    hp = gethostbyname(argv[1]);
-    if (!hp) {
-	fprintf(stderr, "unknown host %s\n",argv[1]);
-	exit(1);
-    }
-
-    if (retval = krb5_sname_to_principal(context, argv[1], service,
-					 KRB5_NT_SRV_HST, &server)) {
-	com_err(argv[0], retval, "while creating server name for %s/%s",
+    retval = krb5_sname_to_principal(context, argv[1], service,
+				     KRB5_NT_SRV_HST, &server);
+    if (retval) {
+	com_err(argv[0], retval, "while creating server name for host %s service %s",
 		argv[1], service);
 	exit(1);
     }
 
     /* set up the address of the foreign socket for connect() */
-    sin.sin_family = hp->h_addrtype;
-    (void) memcpy((char *)&sin.sin_addr,
-		  (char *)hp->h_addr,
-		  sizeof(hp->h_addr));
-
-    /* open a TCP socket */
-    sock = socket(PF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
-	perror("socket");
-	exit(1);
+    for (sock = -1; ap && sock == -1; ap = ap->ai_next) {
+	char abuf[NI_MAXHOST], pbuf[NI_MAXSERV];
+	char mbuf[NI_MAXHOST + NI_MAXSERV + 64];
+	if (getnameinfo(ap->ai_addr, ap->ai_addrlen, abuf, sizeof(abuf),
+			pbuf, sizeof(pbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
+	    memset(abuf, 0, sizeof(abuf));
+	    strncpy(abuf, "[error, cannot print address?]",
+		    sizeof(abuf)-1);
+	    strcpy(pbuf, "[?]");
+	}
+	sprintf(mbuf, "error contacting %s port %s", abuf, pbuf);
+	sock = socket(ap->ai_family, SOCK_STREAM, 0);
+	if (sock < 0) {
+	    fprintf(stderr, "%s: socket: %s\n", mbuf, strerror(errno));
+	    continue;
+	}
+	if (connect(sock, ap->ai_addr, ap->ai_addrlen) < 0) {
+	    fprintf(stderr, "%s: connect: %s\n", mbuf, strerror(errno));
+	    close(sock);
+	    sock = -1;
+	    continue;
+	}
+	/* connected, yay! */
     }
-
-    /* connect to the server */
-    if (connect(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-	perror("connect");
-	close(sock);
+    if (sock == -1)
+	/* Already printed error message above.  */
 	exit(1);
-    }
-
-    /* find out who I am, now that we are connected and therefore bound */
-    namelen = sizeof(lsin);
-    if (getsockname(sock, (struct sockaddr *) &lsin, &namelen) < 0) {
-	perror("getsockname");
-	close(sock);
-	exit(1);
-    }
+    printf("connected\n");
 
     cksum_data.data = argv[1];
     cksum_data.length = strlen(argv[1]);
 
-    if (retval = krb5_cc_default(context, &ccdef)) {
+    retval = krb5_cc_default(context, &ccdef);
+    if (retval) {
 	com_err(argv[0], retval, "while getting default ccache");
 	exit(1);
     }
 
-    if (retval = krb5_cc_get_principal(context, ccdef, &client)) {
+    retval = krb5_cc_get_principal(context, ccdef, &client);
+    if (retval) {
 	com_err(argv[0], retval, "while getting client principal name");
 	exit(1);
     }
@@ -190,21 +220,21 @@ char *argv[];
 	krb5_free_ap_rep_enc_part(context, rep_ret);
 
 	printf("sendauth succeeded, reply is:\n");
-	if ((retval = krb5_net_read(context, sock, (char *)&xmitlen,
-				    sizeof(xmitlen))) <= 0) {
+	if ((retval = net_read(sock, (char *)&xmitlen,
+			       sizeof(xmitlen))) <= 0) {
 	    if (retval == 0)
 		errno = ECONNABORTED;
 	    com_err(argv[0], errno, "while reading data from server");
 	    exit(1);
 	}
 	recv_data.length = ntohs(xmitlen);
-	if (!(recv_data.data = (char *)malloc(recv_data.length + 1))) {
+	if (!(recv_data.data = (char *)malloc((size_t) recv_data.length + 1))) {
 	    com_err(argv[0], ENOMEM,
 		    "while allocating buffer to read from server");
 	    exit(1);
 	}
-	if ((retval = krb5_net_read(context, sock, (char *)recv_data.data,
-				    recv_data.length)) <= 0) {
+	if ((retval = net_read(sock, (char *)recv_data.data,
+			       recv_data.length)) <= 0) {
 	    if (retval == 0)
 		errno = ECONNABORTED;
 	    com_err(argv[0], errno, "while reading data from server");

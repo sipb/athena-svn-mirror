@@ -30,23 +30,24 @@
 
 unsigned long
 mit_des_cbc_cksum(in, out, length, schedule, ivec)
-	krb5_octet FAR *in;
-	krb5_octet FAR *out;
-	long length;
-	mit_des_key_schedule schedule;
-	krb5_octet FAR *ivec;
+	const krb5_octet *in;
+	krb5_octet *out;
+	unsigned long length;
+	const mit_des_key_schedule schedule;
+	const krb5_octet *ivec;
 {
 	register unsigned DES_INT32 left, right;
 	register unsigned DES_INT32 temp;
-	register unsigned DES_INT32 *kp;
-	register unsigned char *ip;
+	const unsigned DES_INT32 *kp;
+	const unsigned char *ip;
+	unsigned char *op;
 	register DES_INT32 len;
 
 	/*
 	 * Initialize left and right with the contents of the initial
 	 * vector.
 	 */
-	ip = (unsigned char *)ivec;
+	ip = ivec;
 	GET_HALF_BLOCK(left, ip);
 	GET_HALF_BLOCK(right, ip);
 
@@ -54,7 +55,7 @@ mit_des_cbc_cksum(in, out, length, schedule, ivec)
 	 * Suitably initialized, now work the length down 8 bytes
 	 * at a time.
 	 */
-	ip = (unsigned char *)in;
+	ip = in;
 	len = length;
 	while (len > 0) {
 		/*
@@ -102,7 +103,7 @@ mit_des_cbc_cksum(in, out, length, schedule, ivec)
 		/*
 		 * Encrypt what we have
 		 */
-		kp = (unsigned DES_INT32 *)schedule;
+		kp = (const unsigned DES_INT32 *)schedule;
 		DES_DO_ENCRYPT(left, right, temp, kp);
 	}
 
@@ -110,14 +111,14 @@ mit_des_cbc_cksum(in, out, length, schedule, ivec)
 	 * Done.  Left and right have the checksum.  Put it into
 	 * the output.
 	 */
-	ip = (unsigned char *)out;
-	PUT_HALF_BLOCK(left, ip);
-	PUT_HALF_BLOCK(right, ip);
+	op = out;
+	PUT_HALF_BLOCK(left, op);
+	PUT_HALF_BLOCK(right, op);
 
 	/*
 	 * Return right.  I'll bet the MIT code returns this
 	 * inconsistantly (with the low order byte of the checksum
 	 * not always in the low order byte of the DES_INT32).  We won't.
 	 */
-	return right;
+	return right & 0xFFFFFFFFUL;
 }

@@ -52,23 +52,10 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
+#include "des_int.h"
 #include "des.h"
+#include "k5-int.h"
 
-/*
- * des_init_random_number_generator:
- *
- *    This routine takes a secret key possibly shared by a number
- * of servers and uses it to generate a random number stream that is
- * not shared by any of the other servers.  It does this by using the current
- * process id, host id, and the current time to the nearest second.  The
- * resulting stream seed is not useful information for cracking the secret
- * key.   Moreover, this routine keeps no copy of the secret key.
- * This routine is used for example, by the kerberos server(s) with the
- * key in question being the kerberos master key.
- *
- * Note: this routine calls des_set_random_generator_seed.
- */
 void
 des_init_random_number_generator(key)
     mit_des_cblock key;
@@ -76,7 +63,7 @@ des_init_random_number_generator(key)
     krb5_data seed;
 
     seed.length = sizeof(key);
-    seed.data = key;
+    seed.data = (char *) key;
 
     if (krb5_c_random_seed(/* XXX */ 0, &seed))
 	/* XXX */ abort();
@@ -92,7 +79,7 @@ des_init_random_number_generator(key)
  *        to be a weak des key.  Des_generate_random_block is used to
  *        provide the random bits.
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 des_new_random_key(key)
     mit_des_cblock key;
 {
@@ -107,4 +94,3 @@ des_new_random_key(key)
 
     return 0;
 }
-

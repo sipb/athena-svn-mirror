@@ -35,16 +35,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include <krb5.h>
 #include "com_err.h"
 
 #include "simple.h"
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#else
-extern char *malloc();
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 /* for old Unixes and friends ... */
@@ -53,6 +53,8 @@ extern char *malloc();
 #endif
 
 #define MSG "hi there!"			/* message text */
+
+void usage (char *);
 
 void
 usage(name)
@@ -67,6 +69,7 @@ main(argc, argv)
     char *argv[];
 {
     int sock, i;
+    unsigned int len;
     int flags = 0;			/* flags for sendto() */
     struct servent *serv;
     struct hostent *host;
@@ -96,7 +99,6 @@ main(argc, argv)
 
     krb5_context 	  context;
     krb5_auth_context 	  auth_context = NULL;
-    krb5_replay_data 	  replaydata;
 
     retval = krb5_init_context(&context);
     if (retval) {
@@ -145,11 +147,6 @@ main(argc, argv)
 	exit(1);
     }
 
-    if (!valid_cksumtype(CKSUMTYPE_CRC32)) {
-	com_err(progname, KRB5_PROG_SUMTYPE_NOSUPP, "while using CRC-32");
-	exit(1);
-    }
-
     /* Look up server host */
     if ((host = gethostbyname(hostname)) == (struct hostent *) 0) {
 	fprintf(stderr, "%s: unknown host\n", hostname);
@@ -160,8 +157,8 @@ main(argc, argv)
 
     /* lower-case to get name for "instance" part of service name */
     for (cp = full_hname; *cp; cp++)
-        if (isupper(*cp))
-            *cp = tolower(*cp);
+        if (isupper((int) *cp))
+            *cp = tolower((int) *cp);
 
     /* Set server's address */
     (void) memset((char *)&s_sock, 0, sizeof(s_sock));
@@ -237,7 +234,8 @@ main(argc, argv)
 	exit(1);
     }
     /* Send authentication info to server */
-    if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0) 
+    if ((i = send(sock, (char *)packet.data, (unsigned) packet.length, 
+		  flags)) < 0) 
 	com_err(progname, errno, "while sending KRB_AP_REQ message");
     printf("Sent authentication data: %d bytes\n", i);
     krb5_free_data_contents(context, &packet);
@@ -246,8 +244,8 @@ main(argc, argv)
 
     /* Get my address */
     memset((char *) &c_sock, 0, sizeof(c_sock));
-    i = sizeof(c_sock);
-    if (getsockname(sock, (struct sockaddr *)&c_sock, &i) < 0) {
+    len = sizeof(c_sock);
+    if (getsockname(sock, (struct sockaddr *)&c_sock, &len) < 0) {
 	com_err(progname, errno, "while getting socket name");
 	exit(1);
     }
@@ -305,7 +303,8 @@ main(argc, argv)
     }
 
     /* Send it */
-    if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0)
+    if ((i = send(sock, (char *)packet.data, (unsigned) packet.length, 
+		  flags)) < 0)
 	com_err(progname, errno, "while sending SAFE message");
     printf("Sent checksummed message: %d bytes\n", i);
     krb5_free_data_contents(context, &packet);
@@ -320,7 +319,8 @@ main(argc, argv)
     }
 
     /* Send it */
-    if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0)
+    if ((i = send(sock, (char *)packet.data, (unsigned) packet.length, 
+		  flags)) < 0)
 	com_err(progname, errno, "while sending PRIV message");
     printf("Sent encrypted message: %d bytes\n", i);
     krb5_free_data_contents(context, &packet);

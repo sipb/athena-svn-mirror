@@ -29,6 +29,7 @@
  * ser_actx.c - Serialize krb5_auth_context structure.
  */
 #include "k5-int.h"
+#include "int-proto.h"
 #include "auth_con.h"
 
 #define	TOKEN_RADDR	950916
@@ -46,21 +47,15 @@
  *	krb5_auth_context_internalize();
  */
 static krb5_error_code krb5_auth_context_size
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, size_t *));
+	(krb5_context, krb5_pointer, size_t *);
 static krb5_error_code krb5_auth_context_externalize
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, krb5_octet **, size_t *));
+	(krb5_context, krb5_pointer, krb5_octet **, size_t *);
 static krb5_error_code krb5_auth_context_internalize
-	KRB5_PROTOTYPE((krb5_context,krb5_pointer *, krb5_octet **, size_t *));
+	(krb5_context,krb5_pointer *, krb5_octet **, size_t *);
 
 /*
  * Other metadata serialization initializers.
  */
-krb5_error_code krb5_ser_authdata_init KRB5_PROTOTYPE((krb5_context));
-krb5_error_code krb5_ser_address_init KRB5_PROTOTYPE((krb5_context));
-krb5_error_code krb5_ser_authenticator_init KRB5_PROTOTYPE((krb5_context));
-krb5_error_code krb5_ser_checksum_init KRB5_PROTOTYPE((krb5_context));
-krb5_error_code krb5_ser_keyblock_init KRB5_PROTOTYPE((krb5_context));
-krb5_error_code krb5_ser_principal_init KRB5_PROTOTYPE((krb5_context));
 
 /* Local data */
 static const krb5_ser_entry krb5_auth_context_ser_entry = {
@@ -75,10 +70,7 @@ static const krb5_ser_entry krb5_auth_context_ser_entry = {
  *				  the krb5_auth_context.
  */
 static krb5_error_code
-krb5_auth_context_size(kcontext, arg, sizep)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    size_t		*sizep;
+krb5_auth_context_size(krb5_context kcontext, krb5_pointer arg, size_t *sizep)
 {
     krb5_error_code	kret;
     krb5_auth_context	auth_context;
@@ -159,21 +151,21 @@ krb5_auth_context_size(kcontext, arg, sizep)
 		required += sizeof(krb5_int32);
 	}
 
-	/* Calculate size required by local_subkey, if appropriate */
-	if (!kret && auth_context->local_subkey) {
+	/* Calculate size required by send_subkey, if appropriate */
+	if (!kret && auth_context->send_subkey) {
 	    kret = krb5_size_opaque(kcontext,
 				    KV5M_KEYBLOCK,
-				    (krb5_pointer) auth_context->local_subkey,
+				    (krb5_pointer) auth_context->send_subkey,
 				    &required);
 	    if (!kret)
 		required += sizeof(krb5_int32);
 	}
 
-	/* Calculate size required by remote_subkey, if appropriate */
-	if (!kret && auth_context->remote_subkey) {
+	/* Calculate size required by recv_subkey, if appropriate */
+	if (!kret && auth_context->recv_subkey) {
 	    kret = krb5_size_opaque(kcontext,
 				    KV5M_KEYBLOCK,
-				    (krb5_pointer) auth_context->remote_subkey,
+				    (krb5_pointer) auth_context->recv_subkey,
 				    &required);
 	    if (!kret)
 		required += sizeof(krb5_int32);
@@ -196,19 +188,15 @@ krb5_auth_context_size(kcontext, arg, sizep)
  * krb5_auth_context_externalize()	- Externalize the krb5_auth_context.
  */
 static krb5_error_code
-krb5_auth_context_externalize(kcontext, arg, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_auth_context_externalize(krb5_context kcontext, krb5_pointer arg, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_auth_context	auth_context;
     size_t		required;
     krb5_octet		*bp;
     size_t		remain;
-    krb5_int32		obuf;
-    size_t		vecsize;
+    size_t              obuf;
+    krb5_int32		obuf32;
 
     required = 0;
     bp = *buffer;
@@ -238,21 +226,22 @@ krb5_auth_context_externalize(kcontext, arg, buffer, lenremain)
 	    if (auth_context->i_vector) {
 		kret = krb5_c_block_size(kcontext,
 					 auth_context->keyblock->enctype,
-					 &vecsize);
+					 &obuf);
 	    } else {
-		vecsize = 0;
+		obuf = 0;
 	    }
-	    obuf = vecsize;
-	    if (obuf != vecsize)
-		kret = EINVAL;
 
+	    /* Convert to signed 32 bit integer */
+	    obuf32 = obuf;
+	    if (kret == 0 && obuf != obuf32)
+		kret = EINVAL;
 	    if (!kret)
-		(void) krb5_ser_pack_int32(obuf, &bp, &remain);
+		(void) krb5_ser_pack_int32(obuf32, &bp, &remain);
 
 	    /* Now copy i_vector */
 	    if (!kret && auth_context->i_vector)
 		(void) krb5_ser_pack_bytes(auth_context->i_vector,
-					   (size_t) obuf,
+					   obuf,
 					   &bp, &remain);
 
 	    /* Now handle remote_addr, if appropriate */
@@ -311,23 +300,23 @@ krb5_auth_context_externalize(kcontext, arg, buffer, lenremain)
 	    }
 
 	    /* Now handle subkey, if appropriate */
-	    if (!kret && auth_context->local_subkey) {
+	    if (!kret && auth_context->send_subkey) {
 		(void) krb5_ser_pack_int32(TOKEN_LSKBLOCK, &bp, &remain);
 		kret = krb5_externalize_opaque(kcontext,
 					       KV5M_KEYBLOCK,
 					       (krb5_pointer)
-					       auth_context->local_subkey,
+					       auth_context->send_subkey,
 					       &bp,
 					       &remain);
 	    }
 
 	    /* Now handle subkey, if appropriate */
-	    if (!kret && auth_context->remote_subkey) {
+	    if (!kret && auth_context->recv_subkey) {
 		(void) krb5_ser_pack_int32(TOKEN_RSKBLOCK, &bp, &remain);
 		kret = krb5_externalize_opaque(kcontext,
 					       KV5M_KEYBLOCK,
 					       (krb5_pointer)
-					       auth_context->remote_subkey,
+					       auth_context->recv_subkey,
 					       &bp,
 					       &remain);
 	    }
@@ -360,11 +349,7 @@ krb5_auth_context_externalize(kcontext, arg, buffer, lenremain)
  * krb5_auth_context_internalize()	- Internalize the krb5_auth_context.
  */
 static krb5_error_code
-krb5_auth_context_internalize(kcontext, argp, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	*argp;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_auth_context_internalize(krb5_context kcontext, krb5_pointer *argp, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_auth_context	auth_context;
@@ -489,26 +474,26 @@ krb5_auth_context_internalize(kcontext, argp, buffer, lenremain)
 		    kret = krb5_ser_unpack_int32(&tag, &bp, &remain);
 	    }
 
-	    /* This is the local_subkey */
+	    /* This is the send_subkey */
 	    if (!kret && (tag == TOKEN_LSKBLOCK)) {
 		if (!(kret = krb5_internalize_opaque(kcontext,
 						     KV5M_KEYBLOCK,
 						     (krb5_pointer *)
 						     &auth_context->
-						     local_subkey,
+						     send_subkey,
 						     &bp,
 						     &remain)))
 		    kret = krb5_ser_unpack_int32(&tag, &bp, &remain);
 	    }
 
-	    /* This is the remote_subkey */
+	    /* This is the recv_subkey */
 	    if (!kret) {
 		if (tag == TOKEN_RSKBLOCK) {
 		    kret = krb5_internalize_opaque(kcontext,
 						   KV5M_KEYBLOCK,
 						   (krb5_pointer *)
 						   &auth_context->
-						   remote_subkey,
+						   recv_subkey,
 						   &bp,
 						   &remain);
 		}
@@ -557,9 +542,8 @@ krb5_auth_context_internalize(kcontext, argp, buffer, lenremain)
 /*
  * Register the auth_context serializer.
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_ser_auth_context_init(kcontext)
-    krb5_context	kcontext;
+krb5_error_code KRB5_CALLCONV
+krb5_ser_auth_context_init(krb5_context kcontext)
 {
     krb5_error_code	kret;
     kret = krb5_register_serializer(kcontext, &krb5_auth_context_ser_entry);

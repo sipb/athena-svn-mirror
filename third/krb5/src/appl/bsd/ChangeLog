@@ -1,19 +1,515 @@
-2002-01-25  Ken Raeburn  <raeburn@mit.edu>
+2003-08-29  Ken Raeburn  <raeburn@mit.edu>
 
-	* login.c (main): Fix fencepost error in last change.
+	* krshd.c (ignore_signals): Split out from cleanup().
+	(doit): Call it when the shell process has completed, before
+	calling syslog.
 
-2001-12-21  Ken Raeburn  <raeburn@mit.edu>
+2003-05-23  Ken Raeburn  <raeburn@mit.edu>
 
-	* loginpaths.h [_PATH_DEFPATH]: Undefine LPATH and RPATH before
-	redefining them.
+	* configure.in: Don't use libkrb524.a any more.
+	* login.c: Don't include krb524.h.
+	(try_convert524): Don't call krb524_init_ets.
+
+2003-05-09  Tom Yu  <tlyu@mit.edu>
+
+	* krcp.c (main): Rename getlocalsubkey -> getsendsubkey.
+
+	* krlogin.c (main): Rename getlocalsubkey -> getsendsubkey.
+
+	* krlogind.c (recvauth): Rename getremotesubkey -> getrecvsubkey.
+
+	* krsh.c (main): Rename getlocalsubkey -> getsendsubkey.
+
+	* krshd.c (recvauth): Rename getremotesubkey -> getrecvsubkey.
+
+2003-04-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* krshd.c (main): Use LOG_AUTH syslog facility, not LOG_DAEMON,
+	for consistency with krlogind.c.
+
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* compat_recv.c: Only include krb.h if KRB5_KRB4_COMPAT.
+	(krb_v4_recvauth, krb5_compat_recvauth,
+	krb5_compat_recvauth_version): Define only if KRB5_KRB4_COMPAT.
+	* krlogind.c: Include krb.h only if KRB5_KRB4_COMPAT.
+	(v4_kdata, v4_schedule): Define only if KRB5_KRB4_COMPAT.
+	(recvauth) [!KRB5_KRB4_COMPAT]: Skip v4 stuff and call
+	krb5_recvauth_version.
+
+2003-03-03  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (DEFINES): Add -DKERBEROS.
+
+	* configure.in: Delete ADD_DEF.
+
+2003-02-05  Tom Yu  <tlyu@mit.edu>
+
+	* login.c (main): Don't zero out terminal window size.
+
+2003-02-03  Tom Yu  <tlyu@mit.edu>
+
+	* login.c (dofork): Don't dissociate from controlling tty in the
+	parent, since the parent needs to remain the session leader so it
+	can tell when the tty gets hung up.  Make the child wait for the
+	parent to set up a SIGHUP handler to ensure that cleanup happens
+	properly.
+
+2003-01-31  Tom Yu  <tlyu@mit.edu>
+
+	* kcmd.c (v4_des_write): Apply patch from ghudson to fix
+	non-right-justification case.
+
+2003-01-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* login.c (try_krb4): Delete unused krb5 principal name argument.
+	(main): Don't pass it.  Initialize 'hostname'.
+
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogind.c (main, recvauth): Use socklen_t when passing
+	addresses to socket functions.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* login.c: Remove declaration of errno
+
+2003-01-03  Ezra Peisach  <epeisach@bu.edu>
+
+	* compat_recv.c (accept_a_connection): Test if IPv6 socket returns
+	EAFNOSUPPORT as well as EPROTONOSUPPORT. Irix 6.5.16m returns the
+	former.
+
+2003-01-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* compat_recv.c: Include sys/select.h and port-sockets.h.
+	(krb5_compat_recvauth_version): Only attempt krb4 authentication
+	if the source address is an IPv4 one.
+	(accept_a_connection): New function, derived from old krshd.c.
+	Listen on IPv6 as well as IPv4, if possible.
+	* krshd.c (main): Call accept_a_connection.  Change fromlen to a
+	socklen_t.
+	(doit): Initialize s.  Change length passed to getsockname to a
+	socklen_t.
+	(recvauth): Change len to socklen_t.  Cast peer IPv4 address
+	before calling krb5_compat_recvauth_version.
+	* defines.h: Include port-sockets.h.
+	(accept_a_connection): Declare.
+
+2002-12-06  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Quote the argument to AC_CHECK_HEADER. Autoconf
+	2.57 was having problems.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* login.c (k5_get_password): Remove trailing colon, as new
+	implementation of krb5_read_password() appends it.
+
+2002-09-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (rcp): Fix typo in 06-25 change.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* compat_recv.c: Include defines.h for prototypes.
+
+2002-08-07  Jen Selby  <jenselby@mit.edu>
+	
+	* klogind.M, kshd.M, login.M: changed manual sections 8c, 1c, and
+	3x to 8, 1, and 3, respectively
+	* rcp.M, rlogin.M, rsh.M: added references to the server manpages
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* v4rcp.c: Include port-sockets.h.
+
+2002-07-09  Jen Selby <jenselby@mit.edu>
+
+	* login.M: added information about different command line options;
+	changed defaults given for tags that did not match code
+	* login.c: changed inaccurate comments
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogind.c (protocol): Initialize pbp, fbp.  Change left to type
+	size_t.
+
+2002-06-27  Jen Selby <jenselby@mit.edu>
+
+	* rsh.M: added warning that encryption does not encrypt the
+	command line
+	*rlogin.M: added warning that username is sent unencrypted
+
+2002-06-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* kcmd.c (kcmd): Don't restrict addresses to IPv4.
+
+	* configure.in: Check for rresvport_af.
+	* krshd.c (recvauth): Take sockaddr pointer argument instead of
+	sockaddr_in.  Use getnameinfo to extract port number string.
+	(remote_addr, remote_port, local_addr, local_port): Make buffers
+	bigger.
+	(doit): Use sockaddr_storage for local address.  Get rid of all
+	settings of non_privileged, since it's never used.  Don't copy
+	remote address to local variable.  Use getnameinfo instead of
+	inet_ntoa to format addresses and port numbers for environment
+	variables.  Create secondary channel socket in same address family
+	as primary channel socket; use rresvport_af if available.
+
+	* kcmd.c (setup_secondary_channel): Use select to time out after
+	10 minutes, or notice the primary channel being closed or
+	receiving data while we wait for the secondary one to be set up.
+
+	* compat_recv.c: New file, moved from lib/krb5util.
+	* Makefile.in (SRCS, OBJS): Include it.
+	(rcp, kshd, klogind): Link against it instead of krb5util
+	library.
+	* defines.h (krb5_compat_recvauth, krb5_compat_recvauth_version):
+	Move declarations here from include/k5-util.h.
+	(princ_maps_to_lname, default_realm): Declare.
+
+	* kcmd.c (kcmd_connect): Use strdup when copying hostname.
+	(princ_maps_to_lname, default_realm): Move functions here...
+	* krlogind.c (princ_maps_to_lname, default_realm): ...from here.
+	(recvauth): Use sockaddr_storage to hold addresses.
+	* krshd.c (default_realm, princ_maps_to_lname): Deleted.
+
+	* krsh.c (SECURE_MESSAGE): Only indicate that input/output data
+	are being encrypted, and don't automatically say it's with DES.
+
+	* krlogind.c: Include fake-addrinfo.h.
+	(SECURE_MESSAGE): Don't say it's DES that's used for encryption.
+	(main): "from" is now sockaddr_storage; cast pointers when calling
+	doit.
+	(doit): Take sockaddr pointer instead of sockaddr_in.  Use
+	getnameinfo instead of inet_ntoa and gethostbyaddr.  Only complain
+	about non-IPv4 addresses if not doing Kerberos, and only right
+	before checking port numbers.
+
+2002-06-17 Jen Selby <jenselby@mit.edu>
+
+	* klogind.M: documented the -D and -f options
+	* ksh.M: documented the -D and -L options
+	* rcp.M: documented the -c and -C options
+
+2002-05-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogin.c (oob): Loop reading data until we actually reach the
+	URG marker.
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* defines.h (FAI_PREFIX): Don't define.
+	* kcmd.c (kcmd_connect): Don't include fake-addrinfo.c.
+
+2002-03-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: Remove dependencies on krb524_err.h for login.o. If
+	compiling without krb4 support, this file will not be present.
+
+2002-03-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* kcmd.c (kcmd_connect): Don't call fixup_addrinfo, it's been
+	deleted.  Actually save errno value when preparing error text to
+	print.  Free address info before returning.
+
+2002-03-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* kcmd.c: Include fake-addrinfo.c once again.
+	(kcmd_connect): Use getaddrinfo instead of gethostbyname, but only
+	get AF_INET addresses for now.  Add new argument, pointer to where
+	to store local socket address used; call getsockname to fill it
+	in.  Always call getport with the address family from the current
+	address.  Retry connection to the same remote address if the error
+	returned was EADDRINUSE; that applies to the local address.
+	(setup_socket): New function.
+	(getport): Use setup_socket.  When selecting an address family to
+	use, fall through in the last case instead of calling getport
+	recursively.
+	(kcmd, k4cmd): Don't call getsockname, let kcmd_connect do it.
+	Delete unused variables.  Don't set *fd2p before calling
+	setup_secondary_channel.
+	(setup_secondary_channel): No cleanup is needed, just return error
+	indications rather than branching to end of function.  If fd2p is
+	non-null, initialize the pointed-to value to -1.
+
+	* rcp.M: Document -f and -t options as internal use only.
+
+2002-03-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* kcmd.c: Revert 2002-02-10 changes except those related to
+	getport.
+	(masktype): New typedef.
+	(block_urgent, restore_sigs, kcmd_connect,
+	setup_secondary_channel): New functions.
+	(kcmd, k4cmd): Use them.  Delete redundant getpid calls.
+
+2002-03-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* loginpaths.h [_PATH_DEFPATH]: Undefine LPATH and RPATH
+	unconditionally before redefining them.
+
 	* login.c (main): If the supplied name is longer than the utmp
 	buffer, don't bother trying it as a username.
 	(dolastlog): Don't assume lastlog.ll_time is a time_t.
 
+2002-02-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* fieldbits.h: Deleted.
+
+2002-02-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* defines.h: Include fake-addrinfo.h.
+	(FAI_PREFIX): Define.
+	(getport): Update.
+	* kcmd.c: Include fake-addrinfo.c.
+	(kcmd): Use getaddrinfo instead of gethostbyname, but only get
+	AF_INET addresses for now.
+	(k4cmd): Update argument list to getport.
+	(getport): Accept new argument, pointer to address family to use.
+	If zero, try inet6 and then inet.
+	* krshd.c (doit): Update argument list to getport.
+
+2001-12-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* krcp.c, krlogin.c, krlogind.c, krsh.c, krshd.c, login.c,
+	setenv.c, v4rcp.c: Signed v.s unsigned int cleanup.
+
+	* defines.h: rcmd_stream_{read,write} take size_t as length argument.
+
+	* kcmd.c: Use GETSOCKNAME_ARG3_TYPE instead of assuming int. input
+	and output handler take size_t as length argument instead of
+	int. Other signed vs. unsigned fixes.
+
+	* configure.in: Add KRB5_GETSOCKNAME_ARGS.
+
+2001-11-06  Sam Hartman  <hartmans@mit.edu>
+
+	* kcmd.c: Define storage for our key usages
+	(rcmd_stream_init_krb5): Support c_init_state for non-des non-des3 enctypes
+	(v5_des_write v5_des_read):  support variable keyusage
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogin.c: Make prototypes unconditional.
+
+2001-09-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogin.c (try_normal): Permit "rsh" as well as "rlogin" as the
+	program name, for detecting when argv[0] is not the hostname.
+	If argv[0] isn't the hostname, always replace it with the system
+	rlogin pathname.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): Use $(srcdir).
+
+2001-07-23  Ezra Peisach  <epeisach@mit.edu>
+
+	* setenv.c (setenv): Include stdlib.h for malloc prototypes. 
+
+2001-07-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* v4rcp.c (kstream_create_rcp_from_fd, kstream_create_from_fd):
+	Allocate correct amount of space for kstream data.  (Patch from
+	Cygnus KerbNet code, 1997.)
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* login.c (sigint): Declare static.
+
+2001-07-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: Link krshd with KRSHDLIBS instead of LOGINLIBS.
+
+	* configure.in: Creare a new variable KRSHDLIBS which differs from
+	LOGINLIBS by not including libkrb524.a. Test for getenv.
+
+	* krcp.c: Prototype lostconn().
+
+	* krlogind.c: Provide prototype for signal handler cleanup. Implied
+	need to add extra argument to function - ensure consistant
+	calling.
+
+	* krsh.c: Provide prototype for signal handler sendsig.
+
+	* krshd.c: Rewrite error() to use stdargs/varargs.
+	(doit): When creating a tty name using getpid. Ensure that does
+	not overflow tty string buffer.
+
+	* login.c: Provide prototype for signal handler timedout.
+
+	* setenv.c: Do not define getenv() unless needed.
+
+	* v4rcp.c: Rewrite error() to use stdargs/varargs. Add signal
+	number argument to lostconn(), include prototype, and ensure
+	called consistantly.
+
+2001-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* v4rcp.c, login.c: Fill in prototypes, declare many functions static. 
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* krlogind.c: Provide daemon prototype if needed.
+
+	* configure.in: Test if prototype for daemon necessary.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* login.c: Much cleanup to reduce globals and shadowing.
+
+	* krlogind.c (main): Change sin to sock_in.
+
+	* krshd.c: Change sin to sock_in to not shadow global. Change some
+	local variables to not shadow others.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* login.c (read_env_vars_from_file: Only define if
+	/etc/environment or /etc/timezone exists on machine.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* kcmd.c: Get rid of prototypes for krb5_write_message(),
+	krb5_net_write(), and krb5_net_read(). They are in krb5.h now.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* krcp.c (sink): Cast argument to isdigit() to int.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* loginpaths.h: If _PATH_DEFPATH is defined, undefine LPATH and
+	RPATH before redefining.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in (SETENVOBJ): If setenv is not present on system,
+	define NEED_SETENV as well as linking in local sources.
+
+	* defines.h: Include prototype for setenv() if NEED_SETENV defined.
+
+	* krlogin.c (prf): Declare as void. Used only with one argument -
+	get rid of pseudo-varargs behaviour.
+
+	* krlogind.c (recvauth): Include k5-util.h for
+	krb5_compat_recvauth_version() prototype. Declare sendoob() void.
+
+	* krshd.c: Include k5-util.h for krb5_compat_recvauth_version()
+	prototype.
+
+	* login.c: Include setenv prototype if NEED_SETENV defined. Cast
+	arguments to printf to match format string.
+
+	* v4rcp.c (source): Cast argument to sprintf() to match format string.
+	* krcp.c (rsource): Likewise.
+	* forward.c (rd_and_store_for_creds): Likewise.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* krshd.c: Include <grp.h>, <libpty.h>, and <sys/wait.h> for
+	initgroups(), pty_logwtmp()/pty_make_sane_hostname(), and wait()
+	prototypes. For local initgroups definition, conditionalize on
+	HAVE_INITGROUPS and not __SCO__.
+
+	* krcp.c: Include <sys/wait.h> for wait()/waitpid() prototype.
+
+2001-06-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* krlogin.c: Always provide prototype for setsignal and not if
+	__STDC__ is defined.
+
+2001-06-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* login.c: Add braces around initializers. Cleanup assignments in
+	conditionals.  Include krb524.h if KRB4_CONVERT defined.
+
+	* krlogind.c (main): Cleanup unused variables.
+	(protocol): Cleanup ambiguous if-if-else warning.
+
+	* krshd.c (main): Cleanup unused variables.
+
+	* krlogin.c (setsignal): Declare as void.
+	(server_message): Cleanup unused variables.
+
+	* setenv.c (setenv): Declare as returning int and clean up
+	assignments in conditionals.
+
+	* kcmd.c (kcmd, rcmd_stream_init_krb5, v5_des_read): Clean up
+	unused variables and assignments in conditionals.
+	* forward.c (rd_and_store_for_creds): Likewise.
+	* krcp.c (rsource): Likewise.
+	* v4rcp.c (answer_auth): Likewise.
+
+	* krsh.c (main): Declare as retuning int.
+
+2001-05-25  Tom Yu  <tlyu@mit.edu>
+
+	* krlogind.c (protocol): Don't do TIOCPKT on systems with STREAMS
+	ptys, even if there is a TIOCPKT, since it may result in hangs on
+	some systems where BSD packet mode is (presumably) not implemented
+	properly, such as AIX 4.3.3.  Should get cleaned up at some later
+	point to actually I_PUSH "pckt" or equivalent and do translation
+	between STREAMS and BSD style packet mode.
+
+2001-05-10  Tom Yu  <tlyu@mit.edu>
+
+	* defines.h: Fix k4cmd prototype to match kcmd.c.
+
+	* kcmd.c (k4cmd): Fix to not use a narrow type.
+
+	* krlogin.c: Fix prototypes so they don't include narrow types.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't use KRB5_CHECK_PROTOS.
+
+2001-04-02  Tom Yu  <tlyu@mit.edu>
+
+	* login.M: Don't include "= 0" as part of the "accept_passwd"
+	config option. [pullup from 1.2.2]
+
+2001-03-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* defines.h: Add prototypes for rcmd_stream_init_normal(),
+	rcmd_stream_init_krb4(), strsave() and rd_and_store_for_creds()
+
+	* Makefile.in: Add dependency of forward.o on defines.h
+
+	* forward.c: Include defines.h for prototypes.
+
+	* kcmd.c, krcp.c, krlogin.c, krlogind.c, krsh.c: Provide full prototype
+	for local functions and move include of kerberosIV/krb.h before
+	defines.h.
+
+2001-01-26  Tom Yu  <tlyu@mit.edu>
+
+	* krshd.c: Get path for NOLOGIN file from paths.h if present,
+	mirroring logic in login.c.  [patch from David MacKenzie
+	krb5-appl/913]
+
+2001-01-23  Tom Yu  <tlyu@mit.edu>
+
+	* forward.c (rd_and_store_for_creds): Overwrite any existing value
+	of the KRB5CCNAME environment variable.
+
+2001-01-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* krcp.c (error): Always declare with ellipsis.
+
 2001-01-13  Sam Hartman  <hartmans@mit.edu>
 
 	* configure.in: Force SunOS to not use termios.
-	[pullup 5.89->5.90 from trunk]
 
 2001-01-12  Sam Hartman  <hartmans@mit.edu>
 
@@ -22,48 +518,76 @@
 	then go out of our way not to use it on IRIX, Solaris or HPUX.  I
 	think all this comes about because you really want to use BSD
 	IOCTLS on Sunos rather than termios.  I propose to do that and
-	never [s/never/only/? --tlyu] use BSD IOCTLs on Sunos.
-	[pullup 5.68->5.69 from trunk]
+	never use BSD IOCTLs on Sunos.
 
-2001-09-07  Tom Yu  <tlyu@mit.edu>
 
-	* krlogind.c (protocol): Don't do TIOCPKT on systems with STREAMS
-	ptys, even if there is a TIOCPKT, since it may result in hangs on
-	some systems where BSD packet mode is (presumably) not implemented
-	properly, such as AIX 4.3.3.  Should get cleaned up at some later
-	point to actually I_PUSH "pckt" or equivalent and do translation
-	between STREAMS and BSD style packet mode.
-	[pullup from trunk]
+2000-12-15  Ken Raeburn  <raeburn@mit.edu>
 
-2001-02-16  Tom Yu  <tlyu@mit.edu>
+	* krlogin.c (main): Add new "-4" option, to use krb4
+	authentication only; useful for testing.
+	* rlogin.M: Updated.
 
-	* login.M: Don't include "= 0" as part of the "accept_passwd"
-	config option.
+2000-12-06  Ken Raeburn  <raeburn@mit.edu>
 
-2001-01-26  Tom Yu  <tlyu@mit.edu>
+	* krlogind.c (doit): Cast first argument to pty_make_sane_hostname
+	to sockaddr pointer.
+	* krshd.c (doit): Likewise.
 
-	* krshd.c: Get path for NOLOGIN file from paths.h if present,
-	mirroring logic in login.c.  [patch from David MacKenzie
-	krb5-appl/913, pulled up from trunk]
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
 
-2001-01-26  Tom Yu  <tlyu@mit.edu>
+	* configure.in: Update to autoconf 2 macro names:
+	AC_FORK->AC_FUNC_VFORK, AC_CONST->AC_C_CONST, AC_HEADER_CHECK ->
+	AC_CHECK_HEADER. In addition, conditionally use internal
+	AC_PROG_ECHO_N (autoconf 2.12) or _AC_PROG_ECHO (autoconf 2.49)
+	depending on which is defined.
+
+2000-10-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* login.c (k5_get_password): Declare second argument as unsigned
+	int length.
+
+Tue Oct 10 04:59:04 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* kcmd.c (kcmd): Use krb5_set_principal_realm() instead of freeing the
+	principals realm data and mucking with it ourselves.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* krlogin.c (main): Declare main as int.
+
+2000-09-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (DEFINES): Define HEIMDAL_FRIENDLY.
+	* krlogind.c (recvauth): Don't complain about a subkey sent for
+	KCMDV0.1 if HEIMDAL_FRIENDLY is defined, just quietly ignore it.
+	* krshd.c (recvauth): Likewise.
+
+Tue Aug  8 13:38:22 2000  Ezra Peisach  <epeisach@mit.edu>
 
 	* krlogin.c (read_wrapper): Copy from the current point and not
- 	the start of the cached buffer. [pullup from trunk]
+ 	the start of the cached buffer.
 
-2001-01-23  Tom Yu  <tlyu@mit.edu>
-
-	* forward.c (rd_and_store_for_creds): Overwrite any existing value
-	of the KRB5CCNAME environment variable.
-
-2000-07-19  Peter S Litwack  <plitwack@mit.edu>
+2000-07-21  Peter S Litwack  <plitwack@mit.edu>
 
 	* krlogin.c (writer): Improved bandwith efficiency by reading 
-	and sending more than one character at a time if multiple 
-	characters are available to be read from the terminal.
-	* krlogin.c (read_wrapper): Added this function as a helper
-	to writer.  It facilitates checking for escape sequences 
-	(~^Z etc.) when reading mulitple characters at a time.
+        and sending more than one character at a time if multiple 
+        characters are available to be read from the terminal.
+        * krlogin.c (read_wrapper): Added this function as a helper
+        to writer.  It facilitates checking for escape sequences 
+        (~^Z etc.) when reading mulitple characters at a time.
+
+2000-07-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* krcp.c: Provide format attribute for error() for versions of gcc
+	that support it.
+
+	* configure.in (LOGINLIBS): Test for crypt() in crypt library only
+	modifies LOGINLIBS.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: Remove linking of krb5util library from
+	applications that never use it.
 
 2000-06-29  Ken Raeburn  <raeburn@mit.edu>
 
@@ -250,12 +774,12 @@
 	* login.c (k_init): Call krb5_init_secure_context instead of
 	krb5_init_context and krb5_secure_config_files.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-01  Ken Raeburn  <raeburn@mit.edu>
 

@@ -1,14 +1,32 @@
 /*
- * g_pw_in_tkt.c
+ * lib/krb4/g_pw_in_tkt.c
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
+#include <krb5.h>
 #include "krb.h"
+#include "krb4int.h"
 #include "krb_err.h"
 #include "prot.h"
 #include <string.h>
@@ -46,12 +64,12 @@
  * and 0 is returned.
  */
 /*ARGSUSED */
-int
+static int
 passwd_to_key(user,instance,realm,passwd,key)
     char *user, *instance, *realm, *passwd;
     C_Block key;
 {
-#if defined(_WINDOWS) || defined(macintosh)
+#if defined(_WIN32) || defined(macintosh)
     string_to_key(passwd, key);
 #else /* unix */
 #ifdef NOENCRYPTION
@@ -61,7 +79,7 @@ passwd_to_key(user,instance,realm,passwd,key)
     if (passwd)
         string_to_key(passwd, key);
     else {
-        des_read_password(key, "Password: ", 0);
+        des_read_password((des_cblock *)key, "Password", 0);
     }
 #endif /* NOENCRYPTION */
 #endif /* unix */
@@ -92,13 +110,13 @@ passwd_to_key(user,instance,realm,passwd,key)
  * The result of the call to krb_get_in_tkt() is returned.
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_pw_in_tkt(user,instance,realm,service,sinstance,life,password)
-    char FAR *user, FAR *instance, FAR *realm, FAR *service, FAR *sinstance;
+    char *user, *instance, *realm, *service, *sinstance;
     int life;
-    char FAR *password;
+    char *password;
 {
-#if defined(_WINDOWS) || defined(macintosh)
+#if defined(_WIN32) || (defined(USE_LOGIN_LIBRARY) && USE_LOGIN_LIBRARY)
     /* In spite of the comments above, we don't allow that path here,
        to simplify coding the non-UNIX clients. The only code that now
        depends on this behavior is the preauth support, which has a
@@ -110,9 +128,21 @@ krb_get_pw_in_tkt(user,instance,realm,service,sinstance,life,password)
 #endif
 
     return(krb_get_in_tkt(user,instance,realm,service,sinstance,life,
-                          (key_proc_type)passwd_to_key,
-			  (decrypt_tkt_type)NULL, password));
+                          (key_proc_type)NULL, /* krb_get_in_tkt will try them all */
+                          (decrypt_tkt_type)NULL, password));
 }
+
+int KRB5_CALLCONV
+krb_get_pw_in_tkt_creds(
+    char *user, char *instance, char *realm, char *service, char *sinstance,
+    int life, char *password, CREDENTIALS *creds)
+{
+    return krb_get_in_tkt_creds(user, instance, realm,
+				service, sinstance, life,
+				(key_proc_type)NULL,  /* krb_get_in_tkt_creds will try them all */
+				NULL, password, creds);
+}
+
 
 /*
  * krb_get_pw_in_tkt_preauth() gets handed the password or key explicitly,
@@ -131,32 +161,38 @@ static int stub_key(user,instance,realm,passwd,key)
    return 0;
 }
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_pw_in_tkt_preauth(user,instance,realm,service,sinstance,life,password)
-    char FAR *user, FAR *instance, FAR *realm, FAR *service, FAR *sinstance;
+    char *user, *instance, *realm, *service, *sinstance;
     int life;
-    char FAR *password;
+    char *password;
 {
-   char *preauth_p;
-   int   preauth_len;
-   int   ret_st;
-
-#if defined(_WINDOWS) || defined(macintosh)
+    char          *preauth_p;
+    int            preauth_len;
+    int            ret_st;
+    key_proc_type *keyprocs = krb_get_keyprocs (NULL);
+    int            i = 0;
+    
+#if defined(_WIN32) || (defined(USE_LOGIN_LIBRARY) && USE_LOGIN_LIBRARY)
    /* On non-Unix systems, we can't handle a null password, because
       passwd_to_key can't handle prompting for the password.  */
-   if (password == 0)
-     return INTK_PW_NULL;
+    if (password == 0)
+        return INTK_PW_NULL;
 #endif
 
-   krb_mk_preauth(&preauth_p, &preauth_len, (key_proc_type)passwd_to_key,
-		  user, instance, realm, password, old_key);
-   ret_st = krb_get_in_tkt_preauth(user,instance,realm,service,sinstance,life,
+    /* Loop trying all the key_proc types */
+	do {
+        krb_mk_preauth(&preauth_p, &preauth_len, keyprocs[i],
+                            user, instance, realm, password, old_key);
+        ret_st = krb_get_in_tkt_preauth(user,instance,realm,service,sinstance,life,
 				   (key_proc_type) stub_key,
 				   (decrypt_tkt_type) NULL, password,
 				   preauth_p, preauth_len);
-
-   krb_free_preauth(preauth_p, preauth_len);
-   return ret_st;
+                   
+        krb_free_preauth(preauth_p, preauth_len);
+    } while ((keyprocs[++i] != NULL) && (ret_st == INTK_BADPW));
+    
+      return ret_st;
 }
 
 /* FIXME!  This routine belongs in the krb library and should simply

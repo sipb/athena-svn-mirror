@@ -54,21 +54,16 @@ static char sccsid[] = "@(#)xdr_rec.c 1.21 87/08/11 Copyr 1984 Sun Micro";
 #include <netinet/in.h>
 
 #include <unistd.h>
+#include <string.h>
 
-static unsigned int	fix_buf_size();
-static bool_t   flush_out();
-static bool_t   get_input_bytes();
-static bool_t   set_input_fragment();
-static bool_t   skip_input_bytes();
-
-static bool_t	xdrrec_getlong();
-static bool_t	xdrrec_putlong();
-static bool_t	xdrrec_getbytes();
-static bool_t	xdrrec_putbytes();
-static unsigned int	xdrrec_getpos();
-static bool_t	xdrrec_setpos();
-static rpc_int32 *	xdrrec_inline();
-static void	xdrrec_destroy();
+static bool_t	xdrrec_getlong(XDR *, long *);
+static bool_t	xdrrec_putlong(XDR *, long *);
+static bool_t	xdrrec_getbytes(XDR *, caddr_t, unsigned int);
+static bool_t	xdrrec_putbytes(XDR *, caddr_t, unsigned int);
+static unsigned int	xdrrec_getpos(XDR *);
+static bool_t	xdrrec_setpos(XDR *, unsigned int);
+static rpc_int32 *	xdrrec_inline(XDR *, int);
+static void	xdrrec_destroy(XDR *);
 
 static struct  xdr_ops xdrrec_ops = {
 	xdrrec_getlong,
@@ -122,6 +117,11 @@ typedef struct rec_strm {
 	unsigned int recvsize;
 } RECSTREAM;
 
+static unsigned int	fix_buf_size(unsigned int);
+static bool_t   flush_out(RECSTREAM *, bool_t);
+static bool_t   get_input_bytes(RECSTREAM *, caddr_t, int);
+static bool_t   set_input_fragment(RECSTREAM *);
+static bool_t   skip_input_bytes(RECSTREAM *, rpc_int32);
 
 /*
  * Create an xdr handle for xdrrec
@@ -176,7 +176,7 @@ xdrrec_create(xdrs, sendsize, recvsize, tcp_handle, readit, writeit)
 	rstrm->readit = readit;
 	rstrm->writeit = writeit;
 	rstrm->out_finger = rstrm->out_boundry = rstrm->out_base;
-	rstrm->frag_header = (rpc_u_int32 *)rstrm->out_base;
+	rstrm->frag_header = (rpc_u_int32 *)(void *)rstrm->out_base;
 	rstrm->out_finger += sizeof(rpc_u_int32);
 	rstrm->out_boundry += sendsize;
 	rstrm->frag_sent = FALSE;
@@ -199,7 +199,7 @@ xdrrec_getlong(xdrs, lp)
 	long *lp;
 {
 	register RECSTREAM *rstrm = (RECSTREAM *)(xdrs->x_private);
-	register rpc_int32 *buflp = (rpc_int32 *)(rstrm->in_finger);
+	register rpc_int32 *buflp = (rpc_int32 *)(void *)(rstrm->in_finger);
 	int mylong;
 
 	/* first try the inline, fast case */
@@ -222,7 +222,7 @@ xdrrec_putlong(xdrs, lp)
 	long *lp;
 {
 	register RECSTREAM *rstrm = (RECSTREAM *)(xdrs->x_private);
-	register rpc_int32 *dest_lp = ((rpc_int32 *)(rstrm->out_finger));
+	register rpc_int32 *dest_lp = ((rpc_int32 *)(void *)(rstrm->out_finger));
 
 	if ((rstrm->out_finger += sizeof(rpc_int32)) > rstrm->out_boundry) {
 		/*
@@ -233,7 +233,7 @@ xdrrec_putlong(xdrs, lp)
 		rstrm->frag_sent = TRUE;
 		if (! flush_out(rstrm, FALSE))
 			return (FALSE);
-		dest_lp = ((rpc_int32 *)(rstrm->out_finger));
+		dest_lp = ((rpc_int32 *)(void *)(rstrm->out_finger));
 		rstrm->out_finger += sizeof(rpc_int32);
 	}
 	*dest_lp = (rpc_int32)htonl((rpc_u_int32)(*lp));
@@ -275,10 +275,10 @@ xdrrec_putbytes(xdrs, addr, len)
 	register unsigned int len;
 {
 	register RECSTREAM *rstrm = (RECSTREAM *)(xdrs->x_private);
-	register int current;
+	register size_t current;
 
 	while (len > 0) {
-		current = (int) ((long)rstrm->out_boundry - 
+		current = (size_t) ((long)rstrm->out_boundry - 
 				 (long)rstrm->out_finger);
 		current = (len < current) ? len : current;
 		memmove(rstrm->out_finger, addr, current);
@@ -308,7 +308,7 @@ xdrrec_getpos(xdrs)
 #ifdef __osf__
 	pos = -1;
 #else
-	pos = lseek((int)rstrm->tcp_handle, (long) 0, 1);
+	pos = lseek((int)rstrm->tcp_handle, (off_t) 0, 1);
 #endif
 	if (pos != -1)
 		switch (xdrs->x_op) {
@@ -360,6 +360,9 @@ xdrrec_setpos(xdrs, pos)
 				return (TRUE);
 			}
 			break;
+
+		case XDR_FREE:
+			break;
 		}
 	return (FALSE);
 }
@@ -376,7 +379,7 @@ xdrrec_inline(xdrs, len)
 
 	case XDR_ENCODE:
 		if ((rstrm->out_finger + len) <= rstrm->out_boundry) {
-			buf = (rpc_int32 *) rstrm->out_finger;
+			buf = (rpc_int32 *)(void *) rstrm->out_finger;
 			rstrm->out_finger += len;
 		}
 		break;
@@ -384,11 +387,14 @@ xdrrec_inline(xdrs, len)
 	case XDR_DECODE:
 		if ((len <= rstrm->fbtbc) &&
 			((rstrm->in_finger + len) <= rstrm->in_boundry)) {
-			buf = (rpc_int32 *) rstrm->in_finger;
+			buf = (rpc_int32 *)(void *) rstrm->in_finger;
 			rstrm->fbtbc -= len;
 			rstrm->in_finger += len;
 		}
 		break;
+
+	case XDR_FREE:
+	        break;
 	}
 	return (buf);
 }
@@ -476,7 +482,7 @@ xdrrec_endofrecord(xdrs, sendnow)
 	len = (long)(rstrm->out_finger) - (long)(rstrm->frag_header) -
 	   sizeof(unsigned int);
 	*(rstrm->frag_header) = htonl((unsigned int)len | LAST_FRAG);
-	rstrm->frag_header = (rpc_u_int32 *)rstrm->out_finger;
+	rstrm->frag_header = (rpc_u_int32 *)(void *)rstrm->out_finger;
 	rstrm->out_finger += sizeof(unsigned int);
 	return (TRUE);
 }
@@ -499,7 +505,7 @@ flush_out(rstrm, eor)
 	if ((*(rstrm->writeit))(rstrm->tcp_handle, rstrm->out_base, (int)len)
 		!= (int)len)
 		return (FALSE);
-	rstrm->frag_header = (rpc_u_int32 *)rstrm->out_base;
+	rstrm->frag_header = (rpc_u_int32 *)(void *)rstrm->out_base;
 	rstrm->out_finger = (caddr_t)rstrm->out_base + sizeof(rpc_u_int32);
 	return (TRUE);
 }
@@ -530,10 +536,10 @@ get_input_bytes(rstrm, addr, len)
 	register caddr_t addr;
 	register int len;
 {
-	register int current;
+	register size_t current;
 
 	while (len > 0) {
-		current = (int)((long)rstrm->in_boundry - 
+		current = (size_t)((long)rstrm->in_boundry - 
 				(long)rstrm->in_finger);
 		if (current == 0) {
 			if (! fill_input_buf(rstrm))

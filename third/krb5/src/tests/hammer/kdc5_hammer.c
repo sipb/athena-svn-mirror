@@ -52,15 +52,6 @@ static int brief;
 static char *cur_realm = 0;
 static int do_timer = 0;
 
-krb5_error_code
-krb5_parse_lifetime (time, len)
-    char *time;
-    long *len;
-{
-    *len = atoi (time) * 60 * 60; /* XXX stub version */
-    return 0;
-}
-    
 krb5_data tgtname = {
     0, 
     KRB5_TGS_NAME_SIZE,
@@ -68,19 +59,19 @@ krb5_data tgtname = {
 };
 
 int verify_cs_pair 
-	PROTOTYPE((krb5_context,
+	(krb5_context,
 		   char *,
 		   krb5_principal,
 		   char *,
 		   char *,
 		   int, int, int,
-		   krb5_ccache));
+		   krb5_ccache);
 
 int get_tgt 
-	PROTOTYPE((krb5_context,
+	(krb5_context,
 		   char *,
 		   krb5_principal *,
-		   krb5_ccache));
+		   krb5_ccache);
 
 static void
 usage(who, status)
@@ -90,7 +81,7 @@ int status;
     fprintf(stderr,
 	    "usage: %s -p prefix -n num_to_check [-c cachename] [-r realmname]\n",
 	    who);
-    fprintf(stderr, "\t [-D depth] [-k enctype]\n");
+    fprintf(stderr, "\t [-D depth]\n");
     fprintf(stderr, "\t [-P preauth type] [-R repeat_count] [-t] [-b] [-v] \n");
 
     exit(status);
@@ -98,7 +89,6 @@ int status;
 
 static krb5_preauthtype * patype = NULL, patypedata[2] = { 0, -1 };
 static krb5_context test_context;
-static krb5_enctype enctype;
 
 struct timeval	tstart_time, tend_time;
 struct timezone	dontcare;
@@ -126,7 +116,7 @@ main(argc, argv)
     int errflg = 0;
     krb5_error_code code;
     int num_to_check, n, i, j, repeat_count, counter;
-    int n_tried, errors, enctypedone;
+    int n_tried, errors;
     char prefix[BUFSIZ], client[4096], server[4096];
     int depth;
     char ctmp[4096], ctmp2[BUFSIZ], stmp[4096], stmp2[BUFSIZ];
@@ -146,9 +136,8 @@ main(argc, argv)
     brief = 0;
     n_tried = 0;
     errors = 0;
-    enctypedone = 0;
 
-    while ((option = getopt(argc, argv, "D:p:n:c:R:k:P:e:bvr:t")) != -1) {
+    while ((option = getopt(argc, argv, "D:p:n:c:R:P:e:bvr:t")) != -1) {
 	switch (option) {
 	case 't':
 	    do_timer = 1;
@@ -174,10 +163,6 @@ main(argc, argv)
 	    break;
        case 'n':                        /* how many to check */
 	    num_to_check = atoi(optarg);
-	    break;
-	case 'k':
-	    enctype = atoi(optarg);
-	    enctypedone++;
 	    break;
 	case 'P':
 	    patypedata[0] = atoi(optarg);
@@ -206,20 +191,11 @@ main(argc, argv)
 
     if (!(num_to_check && prefix[0])) usage(prog, 1);
 
-    if (!enctypedone)
-	enctype = DEFAULT_KDC_ENCTYPE;
-
     if (!cur_realm) {
 	if ((retval = krb5_get_default_realm(test_context, &cur_realm))) {
 	    com_err(prog, retval, "while retrieving default realm name");
 	    exit(1);
 	}	    
-    }
-
-    if (!valid_enctype(enctype)) {
-      com_err(prog, KRB5_PROG_ETYPE_NOSUPP,
-	      "while setting up enctype %d", enctype);
-      exit(1);
     }
 
     if (ccache == NULL) {
@@ -348,7 +324,7 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
 {
     krb5_error_code 	  retval;
     krb5_creds 	 	  creds;
-    krb5_creds 		* credsp;
+    krb5_creds 		* credsp = NULL;
     krb5_ticket 	* ticket = NULL;
     krb5_keyblock 	* keyblock = NULL;
     krb5_auth_context 	  auth_context = NULL;
@@ -464,7 +440,7 @@ cleanup_keyblock:
 
 cleanup_rdata:
     krb5_free_data_contents(context, &request_data);
-    krb5_free_cred_contents(context, credsp);
+    if(credsp ) krb5_free_creds(context, credsp);
 
     return retval;
 }

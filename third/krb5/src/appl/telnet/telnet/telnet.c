@@ -33,7 +33,12 @@
 
 /* based on @(#)telnet.c	8.1 (Berkeley) 6/6/93 */
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include <sys/types.h>
+#include <time.h>
 
 #if	defined(unix)
 #include <signal.h>
@@ -42,6 +47,14 @@
  * declared in curses.h.
  */
 #endif	/* defined(unix) */
+
+#ifdef HAVE_CURSES_H
+#include <curses.h>
+#endif
+
+#ifdef HAVE_TERM_H
+#include <term.h>
+#endif
 
 #include <arpa/telnet.h>
 
@@ -53,6 +66,20 @@
 #include "externs.h"
 #include "types.h"
 #include "general.h"
+
+#ifdef AUTHENTICATION
+#include <libtelnet/auth.h>
+#endif
+
+#ifdef ENCRYPTION
+#include <libtelnet/encrypt.h>
+#endif
+
+#if	defined(AUTHENTICATION) || defined(ENCRYPTION) 
+#include <libtelnet/misc-proto.h>
+#endif	/* defined(AUTHENTICATION) || defined(ENCRYPTION)  */
+
+static int is_unique (char *, char **, char **);
 
 
 #define	strip(x)	((x)&0x7f)
@@ -617,7 +644,7 @@ dontoption(option)
 static char *name_unknown = "UNKNOWN";
 static char *unknown[] = { 0, 0 };
 
-	char **
+static	char **
 mklist(buf, name)
 	char *buf, *name;
 {
@@ -666,7 +693,9 @@ mklist(buf, name)
 			 */
 			if (n || (cp - cp2 > 41))
 				;
-			else if (name && (strncasecmp(name, cp2, cp-cp2) == 0))
+			else if (name && (strncasecmp(name, cp2, 
+						      (unsigned) (cp-cp2)) 
+					  == 0))
 				*argv = cp2;
 			else if (is_unique(cp2, argv+1, argvp))
 				*argvp++ = cp2;
@@ -688,8 +717,8 @@ mklist(buf, name)
 		 */
 		if ((c == ' ') || !isascii(c))
 			n = 1;
-		else if (islower(c))
-			*cp = toupper(c);
+		else if (islower((int) c))
+			*cp = toupper((int) c);
 	}
 	
 	/*
@@ -728,12 +757,12 @@ mklist(buf, name)
 		return(unknown);
 }
 
-	int
+static int
 is_unique(name, as, ae)
 	register char *name, **as, **ae;
 {
 	register char **ap;
-	register int n;
+	register unsigned int n;
 
 	n = strlen(name) + 1;
 	for (ap = as; ap < ae; ap++)
@@ -746,7 +775,7 @@ is_unique(name, as, ae)
 char termbuf[1024];
 
 	/*ARGSUSED*/
-	int
+static int
 setupterm(tname, fd, errp)
 	char *tname;
 	int fd, *errp;
@@ -768,7 +797,7 @@ extern char ttytype[];
 
 int resettermname = 1;
 
-	char *
+static	char *
 gettermname()
 {
 	char *tname;
@@ -852,14 +881,14 @@ suboption()
 	if (SB_EOF())
 	    return;
 	if (SB_GET() == TELQUAL_SEND) {
-	    long ospeed, ispeed;
+	    long o_speed, ispeed;
 	    unsigned char temp[50];
 	    int len;
 
-	    TerminalSpeeds(&ispeed, &ospeed);
+	    TerminalSpeeds(&ispeed, &o_speed);
 
-	    sprintf((char *)temp, "%c%c%c%c%d,%d%c%c", IAC, SB, TELOPT_TSPEED,
-		    TELQUAL_IS, ospeed, ispeed, IAC, SE);
+	    sprintf((char *)temp, "%c%c%c%c%ld,%ld%c%c", IAC, SB, TELOPT_TSPEED,
+		    TELQUAL_IS, o_speed, ispeed, IAC, SE);
 	    len = strlen((char *)temp+4) + 4;	/* temp[3] is 0 ... */
 
 	    if (len < NETROOM()) {
@@ -1215,7 +1244,7 @@ slc_init()
 
 #define	initfunc(func, flags) { \
 					spcp = &spc_data[func]; \
-					if (spcp->valp = tcval(func)) { \
+					if ((spcp->valp = tcval(func)) != NULL) { \
 					    spcp->val = *spcp->valp; \
 					    spcp->mylevel = SLC_VARIABLE|flags; \
 					} else { \
@@ -1623,12 +1652,12 @@ env_opt_add(ep)
 	if (ep == NULL || *ep == '\0') {
 		/* Send user defined variables first. */
 		env_default(1, 0);
-		while (ep = env_default(0, 0))
+		while ((ep = env_default(0, 0)) != NULL)
 			env_opt_add(ep);
 
 		/* Now add the list of well know variables.  */
 		env_default(1, 1);
-		while (ep = env_default(0, 1))
+		while ((ep = env_default(0, 1)) != NULL)
 			env_opt_add(ep);
 		return;
 	}
@@ -1636,7 +1665,7 @@ env_opt_add(ep)
 	if (opt_replyp + (vp ? strlen((char *)vp) : 0) +
 				strlen((char *)ep) + 6 > opt_replyend)
 	{
-		register int len;
+		register unsigned int len;
 		opt_replyend += OPT_REPLY_SIZE;
 		len = opt_replyend - opt_reply;
 		opt_reply = (unsigned char *)realloc(opt_reply, len);
@@ -1648,7 +1677,7 @@ env_opt_add(ep)
 		opt_replyp = opt_reply + len - (opt_replyend - opt_replyp);
 		opt_replyend = opt_reply + len;
 	}
-	if (opt_welldefined(ep))
+	if (opt_welldefined((char *) ep))
 #ifdef	OLD_ENVIRON
 		if (telopt_environ == TELOPT_OLD_ENVIRON)
 			*opt_replyp++ = old_env_var;
@@ -1658,7 +1687,7 @@ env_opt_add(ep)
 	else
 		*opt_replyp++ = ENV_USERVAR;
 	for (;;) {
-		while (c = *ep++) {
+		while ((c = *ep++)) {
 			switch(c&0xff) {
 			case IAC:
 				*opt_replyp++ = IAC;
@@ -1672,7 +1701,7 @@ env_opt_add(ep)
 			}
 			*opt_replyp++ = c;
 		}
-		if (ep = vp) {
+		if ((ep = vp) != NULL) {
 #ifdef	OLD_ENVIRON
 			if (telopt_environ == TELOPT_OLD_ENVIRON)
 				*opt_replyp++ = old_env_value;
@@ -1727,7 +1756,7 @@ telrcv()
 {
     register int c;
     register int scc;
-    register unsigned char *sbp;
+    register unsigned char *sbp = NULL;
     int count;
     int returnValue = 0;
 
@@ -2306,30 +2335,30 @@ telnet(user)
      */
     if (wantencryption) {
 	extern int auth_has_failed;
-	time_t timeout = time(0) + 60;
+	time_t time_out = time(0) + 60;
 
 	send_do(TELOPT_ENCRYPT, 1);
 	send_will(TELOPT_ENCRYPT, 1);
 	while (1) {
 	    if (my_want_state_is_wont(TELOPT_AUTHENTICATION)) {
 		printf("\nServer refused to negotiate authentication, which is required\n");
-		printf("for encryption.  Good bye.\n\r");
+		printf("for encryption.  Good-bye.\n\r");
 		Exit(1);
 	    }
 	    if (auth_has_failed) {
-		printf("\nAuthentication negotation has failed, which is required for\n");
-		printf("encryption.  Good bye.\n\r");
+		printf("\nNegotiation of authentication, which is required for encryption,\n");
+		printf("has failed.  Good-bye.\n\r");
 		Exit(1);
 	    }
 	    if (my_want_state_is_dont(TELOPT_ENCRYPT) ||
 		my_want_state_is_wont(TELOPT_ENCRYPT)) {
-		printf("\nServer refused to negotiate encryption.  Good bye.\n\r");
+		printf("\nServer refused to negotiate encryption.  Good-bye.\n\r");
 		Exit(1);
 	    }
 	    if (encrypt_is_encrypting())
 		break;
-	    if (time(0) > timeout) {
-		printf("\nEncryption could not be enabled.  Goodbye.\n\r");
+	    if (time(0) > time_out) {
+		printf("\nEncryption could not be enabled.  Good-bye.\n\r");
 		Exit(1);
 	    }
 	    if (printed_encrypt == 0) {
@@ -2343,7 +2372,7 @@ telnet(user)
 		    intr_waiting = 1;
 	    }
 	    if (intr_happened) {
-		    printf("\nUser requested an interrupt.  Goodbye.\n\r");
+		    printf("\nUser requested an interrupt.  Good-bye.\n\r");
 		    Exit(1);
 	    }
 	    telnet_spin();
@@ -2556,7 +2585,8 @@ xmitEC()
 
 
     int
-dosynch()
+dosynch(s)
+     char *s;
 {
     netclear();			/* clear the path to the network */
     NETADD(IAC);
@@ -2569,7 +2599,8 @@ dosynch()
 int want_status_response = 0;
 
     int
-get_status()
+get_status(s)
+    char *s;
 {
     unsigned char tmp[16];
     register unsigned char *cp;
@@ -2604,7 +2635,7 @@ intp()
 	doflush();
     }
     if (autosynch) {
-	dosynch();
+	dosynch(NULL);
     }
 }
 
@@ -2618,7 +2649,7 @@ sendbrk()
 	doflush();
     }
     if (autosynch) {
-	dosynch();
+	dosynch(NULL);
     }
 }
 
@@ -2632,7 +2663,7 @@ sendabort()
 	doflush();
     }
     if (autosynch) {
-	dosynch();
+	dosynch(NULL);
     }
 }
 
@@ -2646,7 +2677,7 @@ sendsusp()
 	doflush();
     }
     if (autosynch) {
-	dosynch();
+	dosynch(NULL);
     }
 }
 

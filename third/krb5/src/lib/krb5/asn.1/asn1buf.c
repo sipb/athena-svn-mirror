@@ -43,6 +43,7 @@
    asn1buf structure or be NULL.
 
    base points to a valid, allocated octet array or is NULL
+   bound, if non-NULL, points to the last valid octet
    next >= base
    next <= bound+2  (i.e. next should be able to step just past the bound,
                      but no further.  (The bound should move out in response
@@ -57,8 +58,7 @@
 #define asn1_is_eoc(class, num, indef)	\
 ((class) == UNIVERSAL && !(num) && !(indef))
 
-asn1_error_code asn1buf_create(buf)
-     asn1buf ** buf;
+asn1_error_code asn1buf_create(asn1buf **buf)
 {
   *buf = (asn1buf*)malloc(sizeof(asn1buf));
   if (*buf == NULL) return ENOMEM;
@@ -68,9 +68,7 @@ asn1_error_code asn1buf_create(buf)
   return 0;
 }
 
-asn1_error_code asn1buf_wrap_data(buf, code)
-     asn1buf * buf;
-     const krb5_data * code;
+asn1_error_code asn1buf_wrap_data(asn1buf *buf, const krb5_data *code)
 {
   if(code == NULL || code->data == NULL) return ASN1_MISSING_FIELD;
   buf->next = buf->base = code->data;
@@ -78,11 +76,7 @@ asn1_error_code asn1buf_wrap_data(buf, code)
   return 0;
 }
 
-asn1_error_code asn1buf_imbed(subbuf, buf, length, indef)
-     asn1buf * subbuf;
-     const asn1buf * buf;
-     const int length;
-     const int indef;
+asn1_error_code asn1buf_imbed(asn1buf *subbuf, const asn1buf *buf, const unsigned int length, const int indef)
 {
   subbuf->base = subbuf->next = buf->next;
   if (!indef) {
@@ -94,21 +88,16 @@ asn1_error_code asn1buf_imbed(subbuf, buf, length, indef)
   return 0;
 }
 
-asn1_error_code asn1buf_sync(buf, subbuf, class, lasttag, length, indef, seqindef)
-     asn1buf * buf;
-     asn1buf * subbuf;
-     const asn1_class class;
-     const asn1_tagnum lasttag;
-     const int length;
-     const int indef;
-     const int seqindef;
+asn1_error_code asn1buf_sync(asn1buf *buf, asn1buf *subbuf,
+			     asn1_class asn1class, asn1_tagnum lasttag,
+			     unsigned int length, int indef, int seqindef)
 {
   asn1_error_code retval;
 
   if (!seqindef) {
     /* sequence was encoded as definite length */
     buf->next = subbuf->bound + 1;
-  } else if (!asn1_is_eoc(class, lasttag, indef)) {
+  } else if (!asn1_is_eoc(asn1class, lasttag, indef)) {
       retval = asn1buf_skiptail(subbuf, length, indef);
       if (retval)
 	  return retval;
@@ -119,18 +108,11 @@ asn1_error_code asn1buf_sync(buf, subbuf, class, lasttag, length, indef, seqinde
   return 0;
 }
 
-asn1_error_code asn1buf_skiptail(buf, length, indef)
-     asn1buf *buf;
-     const int length;
-     const int indef;
+asn1_error_code asn1buf_skiptail(asn1buf *buf, const unsigned int length, const int indef)
 {
   asn1_error_code retval;
-  asn1_class class;
-  asn1_construction construction;
-  asn1_tagnum tagnum;
-  int taglen;
+  taginfo t;
   int nestlevel;
-  int tagindef;
 
   nestlevel = 1 + indef;
   if (!indef) {
@@ -140,25 +122,23 @@ asn1_error_code asn1buf_skiptail(buf, length, indef)
       return ASN1_OVERRUN;
   }
   while (nestlevel > 0) {
-    retval = asn1_get_tag_indef(buf, &class, &construction, &tagnum,
-				&taglen, &tagindef);
+    retval = asn1_get_tag_2(buf, &t);
     if (retval) return retval;
-    if (!tagindef) {
-      if (taglen <= buf->bound - buf->next + 1)
-	buf->next += taglen;
+    if (!t.indef) {
+      if (t.length <= buf->bound - buf->next + 1)
+	buf->next += t.length;
       else
 	return ASN1_OVERRUN;
     }
-    if (tagindef)
+    if (t.indef)
       nestlevel++;
-    if (asn1_is_eoc(class, tagnum, tagindef))
+    if (asn1_is_eoc(t.asn1class, t.tagnum, t.indef))
       nestlevel--;		/* got an EOC encoding */
   }
   return 0;
 }
 
-asn1_error_code asn1buf_destroy(buf)
-     asn1buf ** buf;
+asn1_error_code asn1buf_destroy(asn1buf **buf)
 {
   if (*buf != NULL) {
     if ((*buf)->base != NULL) free((*buf)->base);
@@ -171,23 +151,18 @@ asn1_error_code asn1buf_destroy(buf)
 #ifdef asn1buf_insert_octet
 #undef asn1buf_insert_octet
 #endif
-asn1_error_code asn1buf_insert_octet(buf, o)
-     asn1buf * buf;
-     const int o;
+asn1_error_code asn1buf_insert_octet(asn1buf *buf, const int o)
 {
   asn1_error_code retval;
 
-  retval = asn1buf_ensure_space(buf,1);
+  retval = asn1buf_ensure_space(buf,1U);
   if(retval) return retval;
   *(buf->next) = (char)o;
   (buf->next)++;
   return 0;
 }
 
-asn1_error_code asn1buf_insert_octetstring(buf, len, s)
-     asn1buf * buf;
-     const int len;
-     const krb5_octet * s;
+asn1_error_code asn1buf_insert_octetstring(asn1buf *buf, const unsigned int len, const krb5_octet *s)
 {
   asn1_error_code retval;
   int length;
@@ -199,10 +174,7 @@ asn1_error_code asn1buf_insert_octetstring(buf, len, s)
   return 0;
 }
 
-asn1_error_code asn1buf_insert_charstring(buf, len, s)
-     asn1buf * buf;
-     const int len;
-     const char * s;
+asn1_error_code asn1buf_insert_charstring(asn1buf *buf, const unsigned int len, const char *s)
 {
   asn1_error_code retval;
   int length;
@@ -215,23 +187,18 @@ asn1_error_code asn1buf_insert_charstring(buf, len, s)
 }
 
 #undef asn1buf_remove_octet
-asn1_error_code asn1buf_remove_octet(buf, o)
-     asn1buf * buf;
-     asn1_octet * o;
+asn1_error_code asn1buf_remove_octet(asn1buf *buf, asn1_octet *o)
 {
   if(buf->next > buf->bound) return ASN1_OVERRUN;
   *o = (asn1_octet)(*((buf->next)++));
   return 0;
 }
 
-asn1_error_code asn1buf_remove_octetstring(buf, len, s)
-     asn1buf * buf;
-     const int len;
-     asn1_octet ** s;
+asn1_error_code asn1buf_remove_octetstring(asn1buf *buf, const unsigned int len, asn1_octet **s)
 {
   int i;
 
-  if(buf->next + len - 1 > buf->bound) return ASN1_OVERRUN;
+  if (len > buf->bound + 1 - buf->next) return ASN1_OVERRUN;
   if (len == 0) {
       *s = 0;
       return 0;
@@ -245,14 +212,11 @@ asn1_error_code asn1buf_remove_octetstring(buf, len, s)
   return 0;
 }
 
-asn1_error_code asn1buf_remove_charstring(buf, len, s)
-     asn1buf * buf;
-     const int len;
-     char ** s;
+asn1_error_code asn1buf_remove_charstring(asn1buf *buf, const unsigned int len, char **s)
 {
   int i;
 
-  if (buf->next + len - 1 > buf->bound) return ASN1_OVERRUN;
+  if (len > buf->bound + 1 - buf->next) return ASN1_OVERRUN;
   if (len == 0) {
       *s = 0;
       return 0;
@@ -265,9 +229,7 @@ asn1_error_code asn1buf_remove_charstring(buf, len, s)
   return 0;
 }
 
-int asn1buf_remains(buf, indef)
-    asn1buf *buf;
-    int indef;
+int asn1buf_remains(asn1buf *buf, int indef)
 {
   int remain;
   if(buf == NULL || buf->base == NULL) return 0;
@@ -281,9 +243,7 @@ int asn1buf_remains(buf, indef)
   else return remain;
 }
 
-asn1_error_code asn12krb5_buf(buf, code)
-     const asn1buf * buf;
-     krb5_data ** code;
+asn1_error_code asn12krb5_buf(const asn1buf *buf, krb5_data **code)
 {
   int i;
   *code = (krb5_data*)calloc(1,sizeof(krb5_data));
@@ -308,9 +268,7 @@ asn1_error_code asn12krb5_buf(buf, code)
 /* These parse and unparse procedures should be moved out. They're
    useful only for debugging and superfluous in the production version. */
 
-asn1_error_code asn1buf_unparse(buf, s)
-     const asn1buf * buf;
-     char ** s;
+asn1_error_code asn1buf_unparse(const asn1buf *buf, char **s)
 {
   if(*s != NULL) free(*s);
   if(buf == NULL){
@@ -322,7 +280,7 @@ asn1_error_code asn1buf_unparse(buf, s)
     if(*s == NULL) return ENOMEM;
     strcpy(*s,"<EMPTY>");
   }else{
-    int length = asn1buf_len(buf);
+    unsigned int length = asn1buf_len(buf);
     int i;
 
     *s = calloc(length+1, sizeof(char));
@@ -334,9 +292,7 @@ asn1_error_code asn1buf_unparse(buf, s)
   return 0;
 }
 
-asn1_error_code asn1buf_hex_unparse(buf, s)
-     const asn1buf * buf;
-     char ** s;
+asn1_error_code asn1buf_hex_unparse(const asn1buf *buf, char **s)
 {
 #define hexchar(d) ((d)<=9 ? ('0'+(d)) :\
 		    ((d)<=15 ? ('A'+(d)-10) :\
@@ -353,7 +309,7 @@ asn1_error_code asn1buf_hex_unparse(buf, s)
     if(*s == NULL) return ENOMEM;
     strcpy(*s,"<EMPTY>");
   }else{
-    int length = asn1buf_len(buf);
+    unsigned int length = asn1buf_len(buf);
     int i;
 
     *s = malloc(3*length);
@@ -372,25 +328,21 @@ asn1_error_code asn1buf_hex_unparse(buf, s)
 /* Private Procedures */
 
 #undef asn1buf_size
-int asn1buf_size(buf)
-     const asn1buf * buf;
+int asn1buf_size(const asn1buf *buf)
 {
   if(buf == NULL || buf->base == NULL) return 0;
   return buf->bound - buf->base + 1;
 }
 
 #undef asn1buf_free
-int asn1buf_free(buf)
-     const asn1buf * buf;
+int asn1buf_free(const asn1buf *buf)
 {
   if(buf == NULL || buf->base == NULL) return 0;
   else return buf->bound - buf->next + 1;
 }
 
 #undef asn1buf_ensure_space
-asn1_error_code asn1buf_ensure_space(buf, amount)
-     asn1buf * buf;
-     const int amount;
+asn1_error_code asn1buf_ensure_space(asn1buf *buf, const unsigned int amount)
 {
   int avail = asn1buf_free(buf);
   if(avail < amount){
@@ -400,14 +352,12 @@ asn1_error_code asn1buf_ensure_space(buf, amount)
   return 0;
 }
 
-asn1_error_code asn1buf_expand(buf, inc)
-     asn1buf * buf;
-     int inc;
+asn1_error_code asn1buf_expand(asn1buf *buf, unsigned int inc)
 {
 #define STANDARD_INCREMENT 200
   int next_offset = buf->next - buf->base;
   int bound_offset;
-  if(buf->base == NULL) bound_offset = -1;
+  if (buf->base == NULL) bound_offset = -1;
   else bound_offset = buf->bound - buf->base;
 
   if (inc < STANDARD_INCREMENT)
@@ -418,15 +368,14 @@ asn1_error_code asn1buf_expand(buf, inc)
   else
     buf->base = realloc(buf->base,
 			(asn1buf_size(buf)+inc) * sizeof(asn1_octet));
-  if(buf->base == NULL) return ENOMEM;
+  if (buf->base == NULL) return ENOMEM;
   buf->bound = (buf->base) + bound_offset + inc;
   buf->next = (buf->base) + next_offset;
   return 0;
 }
 
 #undef asn1buf_len
-int asn1buf_len(buf)
-     const asn1buf * buf;
+int asn1buf_len(const asn1buf *buf)
 {
   return buf->next - buf->base;
 }

@@ -1,29 +1,145 @@
-2002-04-16  Danilo Almeida  <dalmeida@mit.edu>
+2003-12-18  Jeffrey Altman <jaltman@mit.edu>
 
-	* krb5_32.def: Remove krb5_mcc_ops and krb5_cc_register() as
-	GSSAPI no longer needs those.
+        * krb5_32.def: Remove exports added on 2003-12-13.  Moved
+          to krb5int_accessor
 
-2002-04-16  Danilo Almeida  <dalmeida@mit.edu>
+2003-12-13  Jeffrey Altman <jaltman@mit.edu>
+   
+        * krb4_32.def: Remove exports from KfM not yet compiled in KfW
+            krb_ad_tkt, krb_pw_tkt, kuserok, tkt_string, FSp_xxx
+        
+        * krb5_32.def: Add exports of private functions necessary for 
+            building new gssapi32.dll:
+              krb5int_c_mandatory_cksumtype   ; PRIVATE GSSAPI k5-int.h
+              krb5_ser_pack_int64             ; PRIVATE GSSAPI k5-int.h
+              krb5_ser_unpack_int64           ; PRIVATE GSSAPI k5-int.h
 
-	* krb5_32.def: Add krb5_free_ap_req() as private for GSSAPI.  Add
-	krb5_get_host_realm() and krb5_free_host_realm() as public
-	functions.  Reformat to make it easier to read and compare.
+2003-12-11  Jeffrey Altman <jaltman@mit.edu>
 
-2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+        * Makefile.in: Add secur32.lib to libraries necessary to build 
+          krb5_32.dll.  Necessary to support the new MSLSA ccache type.
 
-	* krb5_32.def: Hopefully final cut at consistent exports between
-	Windows and MacOS X.  Still has private stuff needed by gssapi and
-	krb4.
+2003-12-08  Jeffrey Altman <jaltman@mit.edu>
 
-2002-04-03  Danilo Almeida  <dalmeida@mit.edu>
+        * krb4_32.def: Add exports for functions exported by KfM
 
-	* krb5_32.def: First cut at consistent exports between Windows and
-	MacOS X.  More work needs to be done.
+2003-07-21  Alexandra Ellwood  <lxs@mit.edu>
 
-2001-11-29  Danilo Almeida  <dalmeida@mit.edu>
+        * krb5_32.def: Export krb5_principal2salt.
+
+2003-07-18  Jeffrey Altman <jaltman@mit.edu>
+
+    * gssapi32.def: Export GSS OID constants
+
+2003-07-09  Alexandra Ellwood  <lxs@mit.edu>
+
+        * krb5_32.def: Export krb5_get_permitted_enctypes and 
+        krb5_set_real_time for Samba.
+
+2003-05-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_32.def: Add krb5_524_convert_creds.
+
+2003-05-08  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_32.def: Add krb5_c_string_to_key_with_params
+
+2003-05-09  Tom Yu  <tlyu@mit.edu>
+
+	* krb5_32.def: Add krb5_auth_con_getrecvsubkey,
+	krb5_auth_con_getsendsubkey, krb5_auth_con_setrecvsubkey,
+	krb5_auth_con_setsendsubkey.
+
+2003-04-15  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_32.def: Add krb5_set_password and krb5_set_password_using_ccache
+
+2003-02-10  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (K4LIBS): Revert previous.
+
+	* krb5_32.def: Add afs_string_to_key, which is now needed by the
+	krb4 library.
+
+	* Makefile.in (K4LIBS): Add des425.lib.
+
+2003-01-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_32.def: Export krb5_rc_close, krb5_free_enc_tkt_part, and
+	krb5_decrypt_tkt_part, for GSSAPI.
+
+2003-01-12  Tom Yu  <tlyu@mit.edu>
+
+	* krb5_32.def: Merge from 1-2-2-branch.
+
+2003-01-06  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_32.def: Export krb5_auth_con_*_checksum_func
+
+2002-12-02  Tom Yu  <tlyu@mit.edu>
+
+	* win_glue.c: Put kadm_err.et references back in.
+
+2002-11-18  Tom Yu  <tlyu@mit.edu>
+
+	* win_glue.c (control): Remove references to the "kadm" error
+	table for now.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (MY_SUBDIRS): Don't list krb5util.
+	(CLEANLIBS): Don't delete libkrb5util.a.
+
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (WINLIBS): Use ws2_32.lib instead of wsock32.lib.
+
+2001-11-16  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_32.def: Export krb5_set_default_tgs_enctypes
+
+2001-10-15  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Add krb5_kt_* functions: krb5_kt_close,
+	krb5_kt_get_entry, krb5_kt_get_name, krb5_kt_get_type,
+	krb5_kt_start_seq_get, krb5_kt_next_entry, and krb5_kt_end_seq_get.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (RCFLAGS): Don't define _MSDOS_.
+
+	* win_glue.c: Don't explicitly declare pointers FAR any more.
+
+2001-07-27  Danilo Almeida  <dalmeida@mit.edu>
+
+	* gssapi32.def: Do no export gss_mech_krb5.
+
+2001-07-27  Danilo Almeida  <dalmeida@mit.edu>
 
 	* gssapi32.def: Export gss_mech_krb5 as DATA.  Mark all exported
-	variables as DATA.  [Copied over from trunk.]
+	variables as DATA.
+
+2001-01-22  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Add krb5_rc_close() so gssapi builds.
+
+2000-07-29  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Add missing krb5_cc_store_cred().
+
+2000-07-20  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Add krb5_cc_* functions.
+
+2000-07-19  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb4_32.def: Add krb_in_tkt.
+
+	* krb5_32.def: Add krb5int_accessor.
 
 2000-06-02  Danilo Almeida  <dalmeida@mit.edu>
 
@@ -77,12 +193,12 @@
 	krb5_16.def, sapgss16.def, sapkrb16.def, xpprof16.def: Remove
 	obsolete DEF files.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-26  Danilo Almeida  <dalmeida@mit.edu>
 

@@ -1,4 +1,13 @@
-AC_INIT(aclocal.m4)
+AC_INIT
+AC_CONFIG_SRCDIR([aclocal.m4])
+dnl
+dnl autoconf 2.49 defaults to a /dev/null cache file, which is what we
+dnl do not want for performance reasons. 
+if test "x$cache_file" = "x/dev/null"; then
+  cache_file=./config.cache
+  AC_CACHE_LOAD
+fi
+dnl
 CONFIG_RULES
 dnl
 dnl Determine version from patchlevel.h
@@ -6,21 +15,7 @@ eval `sed 's/#define \([A-Z0-9_]*\)[ \t]*\(.*\)/\1=\2/' < $srcdir/patchlevel.h`
 KRB5_VERSION="$KRB5_MAJOR_RELEASE.$KRB5_MINOR_RELEASE.$KRB5_PATCHLEVEL"
 AC_SUBST(KRB5_VERSION)
 dnl
-dnl This causes us to *always* set CPP, instead of doing it below only
-dnl when krb5_cv_prog_gcc isn't set.
 AC_REQUIRE_CPP
-dnl
-dnl
-dnl We cannot use the autoconf form as it is too generic and sets other
-dnl variables. This is only for the purpose of changing the link options.
-AC_MSG_CHECKING(whether we are using GNU C)
-AC_CACHE_VAL(krb5_cv_prog_gcc,
-[
-AC_EGREP_CPP(yes,[#ifdef __GNUC__
-yes;
-#endif],krb5_cv_prog_gcc=yes,krb5_cv_prog_gcc=no)
-])dnl
-AC_MSG_RESULT($krb5_cv_prog_gcc)
 dnl
 dnl The following lines are so that configure --help gives some global 
 dnl configuration options.
@@ -52,37 +47,33 @@ dnl
 dnl Begin autoconf tests for the Makefiles generated out of the top-level
 dnl configure.in...
 dnl
-AC_PROG_INSTALL
-AC_PROG_ARCHIVE
-AC_PROG_ARCHIVE_ADD
-AC_PROG_RANLIB
 AC_CHECK_FUNCS(memmove)
 KRB5_BUILD_LIBOBJS
 KRB5_BUILD_LIBRARY
 KRB5_BUILD_PROGRAM
 dnl
-dnl For util/makeshlib.  (Is SHLIB_TAIL_COMP still necessary?!?)
-dnl
-if test $krb5_cv_prog_gcc = yes ; then
-     HAVE_GCC=yes
-     else HAVE_GCC=
-fi
-AC_SUBST(HAVE_GCC)
 HOST_TYPE=$krb5_cv_host
 AC_SUBST(HOST_TYPE)
-SHLIB_TAIL_COMP=$krb5_cv_shlibs_tail_comp
-AC_SUBST(SHLIB_TAIL_COMP)
 dnl
 dnl
-AC_CONFIG_SUBDIRS(util/et util/ss util/profile util/pty util/db2 include lib/crypto lib/krb5 lib/des425 $libkrb4 lib/krb5util lib/kdb lib/gssapi lib/rpc lib/kadm5 $krb524 kdc kadmin slave clients appl tests)
-AC_OUTPUT_COMMANDS([chmod +x krb5-config])
-AC_OUTPUT_COMMANDS([echo timestamp > krb5-stamp-h])
-K5_GEN_FILE(krb5-config)
-K5_GEN_MAKEFILE(.)
-K5_GEN_MAKEFILE(util)
-K5_GEN_MAKEFILE(util/send-pr)
-K5_GEN_MAKEFILE(util/dyn, lib libobj)
-K5_GEN_MAKEFILE(lib)
-K5_GEN_MAKEFILE(config-files)
-K5_GEN_MAKEFILE(gen-manpages)
-K5_AC_OUTPUT
+if test "$COM_ERR_VERSION" = k5 ; then
+  AC_CONFIG_SUBDIRS(util/et)
+fi
+if test "$SS_VERSION" = k5 ; then
+  AC_CONFIG_SUBDIRS(util/ss)
+fi
+AC_CONFIG_SUBDIRS(util/profile util/pty)
+if test "$DB_VERSION" = k5 ; then
+  AC_CONFIG_SUBDIRS(util/db2)
+fi
+AC_CONFIG_SUBDIRS(include lib/crypto lib/krb5 lib/des425)
+if test -n "$KRB4_LIB"; then
+  AC_CONFIG_SUBDIRS(lib/krb4)
+fi
+AC_CONFIG_SUBDIRS(lib/kdb lib/gssapi lib/rpc lib/kadm5)
+if test -n "$KRB4_LIB"; then
+  AC_CONFIG_SUBDIRS(krb524)
+fi
+AC_CONFIG_SUBDIRS(kdc kadmin slave clients appl tests)
+AC_CONFIG_FILES(krb5-config, [chmod +x krb5-config])
+V5_AC_OUTPUT_MAKEFILE(. util util/send-pr lib config-files gen-manpages)

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_kdb.c,v 1.1.1.4 1999-10-05 16:12:43 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_kdb.c,v 1.1.1.5 2004-02-27 04:04:51 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_kdb.c,v 1.1.1.4 1999-10-05 16:12:43 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_kdb.c,v 1.1.1.5 2004-02-27 04:04:51 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -31,7 +31,10 @@ krb5_error_code kdb_init_master(kadm5_server_handle_t handle,
 {
     int		   ret = 0;
     char	   *realm;
-    krb5_keyblock  tmk;
+    krb5_boolean   from_kbd = FALSE;
+
+    if (from_keyboard)
+      from_kbd = TRUE;
 
     if (r == NULL)  {
 	if ((ret = krb5_get_default_realm(handle->context, &realm)))
@@ -47,13 +50,14 @@ krb5_error_code kdb_init_master(kadm5_server_handle_t handle,
 
     master_keyblock.enctype = handle->params.enctype;
 
-    if (ret = krb5_db_fetch_mkey(handle->context, master_princ,
-				 master_keyblock.enctype, from_keyboard,
-				 FALSE /* only prompt once */,
-				 handle->params.stash_file,
-				 NULL /* I'm not sure about this,
-					 but it's what the kdc does --marc */,
-				 &master_keyblock))
+    ret = krb5_db_fetch_mkey(handle->context, master_princ,
+			     master_keyblock.enctype, from_kbd,
+			     FALSE /* only prompt once */,
+			     handle->params.stash_file,
+			     NULL /* I'm not sure about this,
+				     but it's what the kdc does --marc */,
+			     &master_keyblock);
+    if (ret)
 	goto done;
 				 
     if ((ret = krb5_db_init(handle->context)) != KSUCCESS)
@@ -103,6 +107,7 @@ krb5_error_code kdb_init_hist(kadm5_server_handle_t handle, char *r)
     int	    ret = 0;
     char    *realm, *hist_name;
     krb5_key_data *key_data;
+    krb5_key_salt_tuple ks[1];
 
     if (r == NULL)  {
 	if ((ret = krb5_get_default_realm(handle->context, &realm)))
@@ -140,19 +145,22 @@ krb5_error_code kdb_init_hist(kadm5_server_handle_t handle, char *r)
 	   history principal, anyway. */
 
 	hist_kvno = 2;
-
-	if (ret = kadm5_create_principal(handle, &ent,
-					      (KADM5_PRINCIPAL |
-					       KADM5_MAX_LIFE |
-					       KADM5_ATTRIBUTES),
-					      "to-be-random"))
+	ks[0].ks_enctype = handle->params.enctype;
+	ks[0].ks_salttype = KRB5_KDB_SALTTYPE_NORMAL;
+	ret = kadm5_create_principal_3(handle, &ent,
+				       (KADM5_PRINCIPAL | KADM5_MAX_LIFE |
+					KADM5_ATTRIBUTES),
+				       1, ks,
+				       "to-be-random");
+	if (ret)
 	    goto done;
 
 	/* this won't let us randomize the hist_princ.  So we cheat. */
 
 	hist_princ = NULL;
 
-	ret = kadm5_randkey_principal(handle, ent.principal, NULL, NULL);
+	ret = kadm5_randkey_principal_3(handle, ent.principal, 0, 1, ks,
+					NULL, NULL);
 
 	hist_princ = ent.principal;
 
@@ -167,16 +175,14 @@ krb5_error_code kdb_init_hist(kadm5_server_handle_t handle, char *r)
 
     }
 
-    if (ret = krb5_dbe_find_enctype(handle->context,
-				    &hist_db,
-				    handle->params.enctype,
-				    -1,
-				    -1,
-				    &key_data))
+    ret = krb5_dbe_find_enctype(handle->context, &hist_db,
+				handle->params.enctype, -1, -1, &key_data);
+    if (ret)
 	goto done;
 
-    if (ret = krb5_dbekd_decrypt_key_data(handle->context, &master_keyblock,
-					  key_data, &hist_key, NULL))
+    ret = krb5_dbekd_decrypt_key_data(handle->context, &master_keyblock,
+				  key_data, &hist_key, NULL);
+    if (ret)
 	goto done;
 
     hist_kvno = key_data->key_data_kvno;
@@ -217,8 +223,9 @@ kdb_get_entry(kadm5_server_handle_t handle,
     krb5_tl_data tl_data;
     XDR xdrs;
 
-    if (ret = krb5_db_get_principal(handle->context, principal, kdb, &nprincs,
-				    &more))
+    ret = krb5_db_get_principal(handle->context, principal, kdb, &nprincs,
+				&more);
+    if (ret)
 	return(ret);
 
     if (more) {
@@ -327,11 +334,13 @@ kdb_put_entry(kadm5_server_handle_t handle,
     krb5_tl_data tl_data;
     int one;
 
-    if (ret = krb5_timeofday(handle->context, &now))
+    ret = krb5_timeofday(handle->context, &now);
+    if (ret)
 	return(ret);
 
-    if (ret = krb5_dbe_update_mod_princ_data(handle->context, kdb, now,
-					     handle->current_caller))
+    ret = krb5_dbe_update_mod_princ_data(handle->context, kdb, now,
+					 handle->current_caller);
+    if (ret)
 	return(ret);
     
     xdralloc_create(&xdrs, XDR_ENCODE); 
@@ -352,7 +361,8 @@ kdb_put_entry(kadm5_server_handle_t handle,
 
     one = 1;
 
-    if (ret = krb5_db_put_principal(handle->context, kdb, &one))
+    ret = krb5_db_put_principal(handle->context, kdb, &one);
+    if (ret)
 	return(ret);
 
     return(0);
@@ -394,7 +404,8 @@ kdb_iter_entry(kadm5_server_handle_t handle,
     id.func = iter_fct;
     id.data = data;
 
-    if (ret = krb5_db_iterate(handle->context, kdb_iter_func, &id))
+    ret = krb5_db_iterate(handle->context, kdb_iter_func, &id);
+    if (ret)
 	return(ret);
 
     return(0);

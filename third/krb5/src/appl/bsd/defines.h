@@ -34,10 +34,67 @@ extern int kcmd (int *sock, char **ahost, int /* u_short */ rport,
 		 enum kcmd_proto *protonum /* input and output */
 		 );
 
-extern int rcmd_stream_read (int fd, char *buf, int len, int secondary);
-extern int rcmd_stream_write (int fd, char *buf, int len, int secondary);
-extern int getport (int *);
+extern int rcmd_stream_read (int fd, char *buf, size_t len, int secondary);
+extern int rcmd_stream_write (int fd, char *buf, size_t len, int secondary);
+extern int getport (int * /* portnum */, int * /* addrfamily */);
 
 extern void rcmd_stream_init_krb5 (krb5_keyblock *in_keyblock,
 				   int encrypt_flag, int lencheck,
 				   int am_client, enum kcmd_proto protonum);
+
+extern void rcmd_stream_init_normal(void);
+
+#if defined(KRB5_KRB4_COMPAT) && !defined(SKIP_V4_PROTO)
+extern void rcmd_stream_init_krb4(C_Block, int, int, int);
+
+extern int k4cmd(int *sock, char **ahost, unsigned int rport,
+		 char *locuser,
+		 char *remuser, char *cmd, int *fd2p, KTEXT ticket,
+		 char *service, char *realm, CREDENTIALS *cred, 
+		 Key_schedule schedule, MSG_DAT *msg_data, 
+		 struct sockaddr_in *laddr, struct sockaddr_in *faddr, 
+		 long authopts, int anyport);
+#endif
+
+#ifndef HAVE_STRSAVE
+extern char *strsave(const char *sp);
+#endif
+
+krb5_error_code rd_and_store_for_creds(krb5_context context, 
+				       krb5_auth_context auth_context,
+				       krb5_data *inbuf, krb5_ticket *ticket,
+				       krb5_ccache *ccache);
+
+
+int princ_maps_to_lname(krb5_principal principal, char *luser);
+int default_realm(krb5_principal principal);
+
+#ifdef NEED_SETENV
+extern int setenv(char *, char *, int);
+#endif
+
+#include "fake-addrinfo.h"
+
+#ifdef KRB_DEFS
+krb5_error_code krb5_compat_recvauth(krb5_context, krb5_auth_context *,
+				     krb5_pointer, char *, krb5_principal, 
+				     krb5_int32, krb5_keytab,
+				     krb5_int32, char *, char *,
+				     struct sockaddr_in *, 
+				     struct sockaddr_in *, char *,
+				     krb5_ticket **, krb5_int32 *, 
+				     AUTH_DAT **, Key_schedule, char *);
+
+krb5_error_code
+krb5_compat_recvauth_version(krb5_context, krb5_auth_context *,
+			     krb5_pointer, krb5_principal, krb5_int32, 
+			     krb5_keytab, krb5_int32, char *, char *,
+			     struct sockaddr_in *, struct sockaddr_in *,
+			     char *, krb5_ticket **, krb5_int32*, 
+			     AUTH_DAT **,  Key_schedule, krb5_data *);
+#endif
+
+#include "port-sockets.h"
+
+int accept_a_connection (int debug_port, struct sockaddr *from,
+			 socklen_t *fromlenp);

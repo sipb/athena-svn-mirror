@@ -38,16 +38,8 @@
 #ifndef __XDR_HEADER__
 #define __XDR_HEADER__
 
-/*
- * Make sure we have a definition for PROTOTYPE.
- */
-#if !defined(PROTOTYPE)
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32) || defined(__ultrix)
-#define PROTOTYPE(x) x
-#else
-#define PROTOTYPE(x) ()
-#endif
-#endif
+/* We need FILE.  */
+#include <stdio.h>
 
 /*
  * XDR provides a conventional way for converting between C data
@@ -105,6 +97,8 @@ enum xdr_op {
  * to be decoded.  If this pointer is 0, then the type routines should
  * allocate dynamic storage of the appropriate size and return it.
  * bool_t	(*xdrproc_t)(XDR *, caddr_t *);
+ *
+ * XXX can't actually prototype it, because some take three args!!!
  */
 typedef	bool_t (*xdrproc_t)();
 
@@ -114,20 +108,35 @@ typedef	bool_t (*xdrproc_t)();
  * an operations vector for the paticular implementation (e.g. see xdr_mem.c),
  * and two private fields for the use of the particular impelementation.
  */
-typedef struct {
+typedef struct __xdr_s {
 	enum xdr_op	x_op;		/* operation; fast additional param */
 	struct xdr_ops {
-		bool_t	(*x_getlong)();	/* get a long from underlying stream */
-		bool_t	(*x_putlong)();	/* put a long to " */
-		bool_t	(*x_getbytes)();/* get some bytes from " */
-		bool_t	(*x_putbytes)();/* put some bytes to " */
-		unsigned int	(*x_getpostn)();/* returns bytes off from beginning */
-		bool_t  (*x_setpostn)();/* lets you reposition the stream */
-		rpc_int32 *	(*x_inline)();	/* buf quick ptr to buffered data */
-		void	(*x_destroy)();	/* free privates of this xdr_stream */
+	    /* get a long from underlying stream */
+	    bool_t	(*x_getlong)(struct __xdr_s *, long *);
+
+            /* put a long to underlying stream */
+	    bool_t	(*x_putlong)(struct __xdr_s *, long *);	
+
+            /* get some bytes from underlying stream */
+	    bool_t	(*x_getbytes)(struct __xdr_s *, caddr_t, unsigned int);
+
+            /* put some bytes to underlying stream */
+	    bool_t	(*x_putbytes)(struct __xdr_s *, caddr_t, unsigned int);
+
+            /* returns bytes off from beginning */
+	    unsigned int	(*x_getpostn)(struct __xdr_s *);
+
+            /* lets you reposition the stream */
+	    bool_t  (*x_setpostn)(struct __xdr_s *, unsigned int);
+
+	    /* buf quick ptr to buffered data */
+	    rpc_int32 *	(*x_inline)(struct __xdr_s *, int);	
+
+            /* free privates of this xdr_stream */
+	    void	(*x_destroy)(struct __xdr_s *);	
 	} *x_ops;
 	caddr_t 	x_public;	/* users' data */
-	caddr_t		x_private;	/* pointer to private data */
+	void *		x_private;	/* pointer to private data */
 	caddr_t 	x_base;		/* private used for position info */
 	int		x_handy;	/* extra private word */
 } XDR;
@@ -255,49 +264,49 @@ struct xdr_discrim {
 #define xdr_pointer	gssrpc_xdr_pointer
 #define xdr_wrapstring	gssrpc_xdr_wrapstring
 
-extern bool_t	xdr_void();
+extern bool_t	xdr_void(XDR *, void *);
 extern bool_t	xdr_int
-PROTOTYPE((XDR *, int *));
+(XDR *, int *);
 extern bool_t	xdr_u_int
-PROTOTYPE((XDR *, unsigned int *));
+(XDR *, unsigned int *);
 extern bool_t	xdr_long
-PROTOTYPE((XDR *, long *));
+(XDR *, long *);
 extern bool_t	xdr_u_long
-PROTOTYPE((XDR *, unsigned long *));
+(XDR *, unsigned long *);
 extern bool_t	xdr_short
-PROTOTYPE((XDR *, short *));
+(XDR *, short *);
 extern bool_t	xdr_u_short
-PROTOTYPE((XDR *, unsigned short *));
+(XDR *, unsigned short *);
 extern bool_t	xdr_bool
-PROTOTYPE((XDR *, bool_t *));
+(XDR *, bool_t *);
 extern bool_t	xdr_enum
-PROTOTYPE((XDR *, enum_t *));
+(XDR *, enum_t *);
 extern bool_t	xdr_array
-PROTOTYPE((XDR *, caddr_t *, unsigned int*, unsigned int, unsigned int, xdrproc_t));
+(XDR *, caddr_t *, unsigned int*, unsigned int, unsigned int, xdrproc_t);
 extern bool_t	xdr_bytes
-PROTOTYPE((XDR *, char **, unsigned int *, unsigned int));
+(XDR *, char **, unsigned int *, unsigned int);
 extern bool_t	xdr_opaque
-PROTOTYPE((XDR *, caddr_t, unsigned int));
+(XDR *, caddr_t, unsigned int);
 extern bool_t	xdr_string
-PROTOTYPE((XDR *, char **, unsigned int));
+(XDR *, char **, unsigned int);
 extern bool_t	xdr_union
-PROTOTYPE((XDR *, enum_t *, char *, struct xdr_discrim *, xdrproc_t));
+(XDR *, enum_t *, char *, struct xdr_discrim *, xdrproc_t);
 extern bool_t	xdr_char
-PROTOTYPE((XDR *, char *));
+(XDR *, char *);
 extern bool_t	xdr_u_char
-PROTOTYPE((XDR *, char *));
+(XDR *, unsigned char *);
 extern bool_t	xdr_vector
-PROTOTYPE((XDR *, char *, unsigned int, unsigned int, xdrproc_t));
+(XDR *, char *, unsigned int, unsigned int, xdrproc_t);
 extern bool_t	xdr_float
-PROTOTYPE((XDR *, float *));
+(XDR *, float *);
 extern bool_t	xdr_double
-PROTOTYPE((XDR *, double *));
+(XDR *, double *);
 extern bool_t	xdr_reference
-PROTOTYPE((XDR *, caddr_t *, unsigned int, xdrproc_t));
+(XDR *, caddr_t *, unsigned int, xdrproc_t);
 extern bool_t	xdr_pointer
-PROTOTYPE((XDR *, char **, unsigned int, xdrproc_t));
+(XDR *, char **, unsigned int, xdrproc_t);
 extern bool_t	xdr_wrapstring
-PROTOTYPE((XDR *, char **));
+(XDR *, char **);
 
 /*
  * Common opaque bytes objects used by many rpc protocols;
@@ -314,12 +323,12 @@ struct netobj {
 };
 typedef struct netobj netobj;
 extern bool_t   xdr_netobj
-PROTOTYPE((XDR *, struct netobj *));
+(XDR *, struct netobj *);
 
 extern bool_t	xdr_int32
-PROTOTYPE((XDR *, rpc_int32 *));
+(XDR *, rpc_int32 *);
 extern bool_t	xdr_u_int32
-PROTOTYPE((XDR *, rpc_u_int32 *));
+(XDR *, rpc_u_int32 *);
 
 /*
  * These are the public routines for the various implementations of
@@ -335,14 +344,38 @@ PROTOTYPE((XDR *, rpc_u_int32 *));
 #define xdrrec_eof		gssrpc_xdrrec_eof
 #define xdralloc_getdata	gssrpc_xdralloc_getdata
 
-extern void   xdrmem_create();		/* XDR using memory buffers */
-extern void   xdrstdio_create();	/* XDR using stdio library */
-extern void   xdrrec_create();		/* XDR pseudo records for tcp */
-extern void   xdralloc_create();	/* XDR allocating memory buffer */
-extern void   xdralloc_release();	/* destroy xdralloc, save buf */
-extern bool_t xdrrec_endofrecord();	/* make end of xdr record */
-extern bool_t xdrrec_skiprecord();	/* move to beginning of next record */
-extern bool_t xdrrec_eof();		/* true if no more input */
-extern caddr_t xdralloc_getdata();	/* get buffer from xdralloc */
+/* XDR allocating memory buffer */
+extern void   xdralloc_create (XDR *xdrs, enum xdr_op op);	
 
+/* destroy xdralloc, save buf */
+extern void   xdralloc_release (XDR *xdrs);	
+
+/* get buffer from xdralloc */
+extern caddr_t xdralloc_getdata (XDR *xdrs);	
+
+/* XDR using memory buffers */
+extern void xdrmem_create (XDR *xdrs, caddr_t addr,
+				     unsigned int size, enum xdr_op xop);
+
+/* XDR using stdio library */
+extern void xdrstdio_create (XDR *xdrs, FILE *file,
+					enum xdr_op op);
+
+/* XDR pseudo records for tcp */
+extern void xdrrec_create (XDR *xdrs, unsigned int sendsize,
+				     unsigned int recvsize, caddr_t tcp_handle,
+				     int (*readit) (caddr_t, caddr_t, int),
+				     int (*writeit) (caddr_t, caddr_t, int));
+
+/* make end of xdr record */
+extern bool_t xdrrec_endofrecord (XDR *xdrs, bool_t sendnow);
+
+/* move to beginning of next record */
+extern bool_t xdrrec_skiprecord (XDR *xdrs);
+
+/* true if no more input */
+extern bool_t xdrrec_eof (XDR *xdrs);
+
+/* free memory buffers for xdr */
+extern void gssrpc_xdr_free (xdrproc_t proc, void *__objp);
 #endif /* !__XDR_HEADER__ */

@@ -26,9 +26,19 @@
 #if defined(KERBEROS) || defined(KRB5)
 #include <stdio.h>
 #include <netdb.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
  
-#include "k5-int.h"
+#include "krb5.h"
+#include <errno.h>
+
+#include "krb5forw.h"
  
+#if defined(NEED_SETENV) || defined(NEED_SETENV_PROTO)
+extern int setenv(char *, char *, int);
+#endif
+
 extern char *line;		/* see sys_term.c */
 
 /* Decode, decrypt and store the forwarded creds in the local ccache. */
@@ -43,21 +53,21 @@ rd_and_store_for_creds(context, auth_context, inbuf, ticket)
     krb5_error_code retval;
     char ccname[35];
     krb5_ccache ccache = NULL;
-    char *tty;
 
-    if (retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL)) 
+    if ((retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL)))
 	return(retval);
 
-    sprintf(ccname, "FILE:/tmp/krb5cc_p%d", getpid());
-    setenv(KRB5_ENV_CCNAME, ccname, 1);
+    sprintf(ccname, "FILE:/tmp/krb5cc_p%ld", (long) getpid());
+    setenv("KRB5CCNAME", ccname, 1);
 
-    if (retval = krb5_cc_resolve(context, ccname, &ccache))
+    if ((retval = krb5_cc_resolve(context, ccname, &ccache)))
 	goto cleanup;
 
-    if (retval = krb5_cc_initialize(context, ccache, ticket->enc_part2->client))
+    if ((retval = krb5_cc_initialize(context, ccache, 
+				     ticket->enc_part2->client)))
 	goto cleanup;
 
-    if (retval = krb5_cc_store_cred(context, ccache, *creds)) 
+    if ((retval = krb5_cc_store_cred(context, ccache, *creds))) 
 	goto cleanup;
 
 cleanup:

@@ -25,32 +25,20 @@
 
 #else /* ! RES_ONLY */
 
-/* Windows 32 specific */
 #define SIZEOF_INT      4
 #define SIZEOF_SHORT    2
 #define SIZEOF_LONG     4
 
-/* always include this here, to get correct FAR and NEAR */
 #include <windows.h>
+#include <limits.h>
 
 #define HAVE_LABS
 
+#ifndef SIZE_MAX    /* in case Microsoft defines max size of size_t */
+#define SIZE_MAX UINT_MAX
+#endif
+
 #ifndef KRB5_CALLCONV
-#   ifdef _MSC_VER
-#    ifdef KRB5_DLL_FILE
-#      define KRB5_DLLIMP
-#    else
-#      define KRB5_DLLIMP __declspec(dllimport)
-#    endif
-#    ifdef GSS_DLL_FILE
-#      define GSS_DLLIMP
-#    else
-#      define GSS_DLLIMP __declspec(dllimport)
-#    endif
-#  else /* !_MSC_VER */
-#    define KRB5_DLLIMP
-#    define GSS_DLLIMP
-#  endif
 #  define KRB5_CALLCONV __stdcall
 #  define KRB5_CALLCONV_C __cdecl
 
@@ -62,7 +50,6 @@
 
 #  define KRB5_CALLCONV_WRONG KRB5_CALLCONV_C
 
-#  define KRB5_EXPORTVAR
 #endif /* !KRB5_CALLCONV */
 
 #ifndef KRB5_SYSTYPES__
@@ -127,9 +114,7 @@ typedef unsigned char	u_char;
 #define INI_RECENT_LOGINS "Recent Logins"    
 #define INI_LOGIN       "Login"
 
-#define HAS_ANSI_VOLATILE
 #define HAS_VOID_TYPE
-#define KRB5_PROVIDE_PROTOTYPES
 #define HAVE_STDARG_H
 #define HAVE_SYS_TYPES_H
 #define HAVE_STDLIB_H
@@ -165,8 +150,12 @@ typedef unsigned char	u_char;
 /*
  * Functions with slightly different names on the PC
  */
+#ifndef strcasecmp
 #define strcasecmp   stricmp
+#endif
+#ifndef strncasecmp
 #define strncasecmp  strnicmp
+#endif
 
 HINSTANCE get_lib_instance(void);
 
@@ -182,18 +171,6 @@ HINSTANCE get_lib_instance(void);
 
 #ifndef KRB5_CALLCONV_C
 #define KRB5_CALLCONV_C
-#endif
-
-#ifndef KRB5_DLLIMP
-#define KRB5_DLLIMP
-#endif
-
-#ifndef FAR
-#define FAR
-#endif
-
-#ifndef NEAR
-#define NEAR
 #endif
 
 #endif /* _KRB5_WIN_MAC_H */

@@ -1,20 +1,596 @@
-2002-04-16  Danilo Almeida  <dalmeida@mit.edu>
+2004-01-04 Jeffrey Altman <jaltman@mit.edu>
 
-	* krb5.hin: Make krb5_get_host_realm() and krb5_free_host_realm()
-	public.
+    * win-mac.h: conditionally define strcasecmp/strncasecmp macros 
+      only if they do not already exist.
 
-	* win-mac.h: Since this file is now only Win32, remove non-Win32
-	stuff to make it easier to read.  Never used __declspec(dllexport)
-	so that we do not accidentally export symbols.
+2003-12-18  Jeffrey Altman <jaltman@mit.edu>
 
-2002-04-05 Alexandra Ellwood <lxs@mit.edu>
-    * krb5.hin: Conditionalize KRB5_CALLCONV_WRONG separately
-    because gssapi.h defines KRB5_CALLCONV but doesn't need
-    KRB5_CALLCONV_WRONG
+    * k5-int.h: add new functions to krb5int_access for use by gssapi
 
-2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+2003-12-15  Ken Raeburn  <raeburn@mit.edu>
 
-	* win-mac.h: Add KRB5_CALLCONV_WRONG.
+	* k5-platform.h (SIZE_MAX): Provide default definition if stdint.h
+	doesn't define it.
+
+2003-12-15  Jeffrey Altman <jaltman@mit.edu>
+
+  * win-mac.h: source code written to the C99 standard assumes there
+    are standard definitions for the MAX sizes of C types including
+    size_t.  The MAX preprocessor variables are declared in limits.h
+    but limits.h is not included by any of the other header files.
+    We will therefore include it via win-mac.h.  We must also add a
+    declaration of SIZE_MAX (for size_t) because Microsoft does not
+    provide one.  
+
+2003-12-15  Jeffrey Altman <jaltman@mit.edu>
+
+  * k5-platform.h: apply casts (unsigned char) to the assignments from
+    64-bit ints to unsigned char fields to avoid warnings 
+
+2003-12-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (KRB5_AUTH_CONTEXT_USE_SUBKEY): New macro.
+
+	* k5-int.h (struct krb5_keytypes): Added field required_ctype.
+	(krb5int_c_mandatory_cksumtype): New declaration.
+	(krb5int_generate_and_set_subkey): Declare.
+	(memset) [__GNUC__ && __GLIBC__]: Undef, to reduce compilation
+	warnings in zap() macro with volatile pointer.
+
+	* k5-platform.h: New header file.  Manages inline-function and
+	64-bit support, in platform-specific ways.
+	* fake-addrinfo.h: Include k5-platform.h.
+	(inline): Don't define here.
+	* k5-int.h: Include k5-platform.h.
+	(krb5_ui_8, krb5_int64): New typedefs.
+	(krb5_ser_pack_int64, krb5_ser_unpack_int64): New function decls.
+
+2003-10-08  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Add prototypes for decode_krb5_safe_with_body and
+	encode_krb5_safe_with_body.
+
+2003-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (WRAP_GETADDRINFO, COPY_FIRST_CANONNAME): Don't
+	define on Linux unless HAVE_GETADDRINFO is defined, for libc5
+	compatibility.
+
+2003-08-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* foreachaddr.c (foreach_localaddr) [HAVE_IFADDRS_H]: Skip over
+	any returned data structure with a NULL ifa_addr field.
+
+2003-07-31  Jeffrey Altman  <jaltman@mit.edu>
+
+	* krb5.hin: krb5_get_host_realm and krb5_free_host_realm should
+	not be labeled as KRB5_PRIVATE.  They are required for many
+	applications including OpenAFS and UMich's Kx509.  1.2.8 had them
+	public but the change was never reflected on the trunk.
+
+2003-07-22  Alexandra Ellwood  <lxs@mit.edu>
+
+        * fake-addrinfo.h: Don't use broken getaddrinfo on Mac OS X
+
+2003-07-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (krb5int_zap_data, zap): New macros; call memset with
+	volatile cast for now.
+
+2003-07-21  Alexandra Ellwood  <lxs@mit.edu>
+
+        * krb5_32.def: Export krb5_principal2salt.
+
+2003-07-09  Alexandra Ellwood  <lxs@mit.edu>
+
+        * krb5.hin: Export krb5_get_permitted_enctypes and 
+        krb5_set_real_time for Samba.
+
+2003-06-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct krb5_cksumtypes): Add new field trunc_size.
+
+2003-06-12  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: krb524_init_ets() takes one argument.
+
+2003-06-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct srv_dns_entry): Declare.
+	(krb5int_make_srv_query_realm, krb5int_free_srv_dns_data):
+	Declare.
+	(struct _krb5int_access): Add make_srv_query_realm and
+	free_srv_dns_data fields.
+
+2003-06-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct _krb5int_access): Add locate_server back in.
+
+2003-05-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (KRB524_SERVICE, KRB524_PORT): Moved here...
+	* krb5.h: ...from here.
+	(krb5_524_convert_creds): Renamed from krb524_convert_creds_kdc,
+	fixed calling convention spec.
+	(krb524_convert_creds_kdc, krb524_init_ets) [KRB5_DEPRECATED]: New
+	macros.
+
+	* Makefile.in (clean-windows): Remove new "timestamp" file when
+	cleaning up.
+
+2003-05-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Sequence number of krb5_replay_data should be unsigned.
+
+2003-05-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (krb5.h): Include krb524_err.h.
+	(krb524_err.h): Depend on rebuild-error-tables like krb5_err.h and
+	friends.  Add a null command to cause make to recheck the
+	timestamp on the files possibly updated.
+	(clean-unix): Get rid of it.
+	* k5-int.h (KRb5INT_ACCESS_STRUCT_VERSION): Update to 7.
+	(struct ktext) [!defined(ANAME_SZ)]: Declare forward.
+	(krb5int_access): Delete krb5_locate_kdc, krb5_locate_server,
+	krb5_max_dgram_size and timeout fields.  Add krb_life_to_time,
+	krb_time_to_life, and krb524_encode_v4tkt function pointer
+	fields.  Reorder fields, and add comments.
+	(krb5int_krb_life_to_time, krb5int_krb_time_to_life,
+	krb5int_encode_v4tkt, krb5int_524_sendto_kdc): Declare.
+	* krb5.hin (KRB524_SERVICE, KRB524_PORT): New macros.
+	(struct credentials): Declare forward.
+	(krb524_convert_creds_kdc): Declare.
+
+2003-05-22  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Add prototype for krb5int_auth_con_chkseqnum.
+
+	* krb5.hin: Default KRB5_DEPRECATED to 0.  Default KRB5_PRIVATE to
+	0 on all platforms.
+
+2003-05-22  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: krb5int_populate_gic_opt returns void
+
+2003-05-19  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Prototype krb5int_populate_gic_opt
+
+2003-05-18  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Sequence numbers are now unsigned.
+
+	* krb5.hin: Sequence numbers are now unsigned.
+
+2003-05-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (KRB5_KPASSWD_ACCESSDENIED): New macro.
+	(KRB5_KPASSWD_BAD_VERSION, KRB5_KPASSWD_INITIAL_FLAG_NEEDED): New
+	macros.
+
+2003-05-13  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Add krb5int_copy_data_contents
+
+2003-05-08  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add prototype for krb5_c_string_to_key_with_params
+
+	* k5-int.h: Add s2kparams to krb5_gic_get_as_key_fct
+
+2003-05-07  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add KRB5_PADATA_ETYPE_INFO2
+
+2003-05-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct _krb5_context): New fields conf_tgs_ktypes,
+	conf_tgs_ktypes_count, use_conf_ktypes.
+
+2003-05-09  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Add krb5_auth_con_getsendsubkey,
+	krb5_auth_con_getrecvsubkey, krb5_auth_con_setsendsubkey,
+	krb5_auth_con_setrecvsubkey.  Mark krb5_auth_con_getlocalsubkey
+	and krb5_auth_con_getremotesubkey as deprecated.
+
+2003-05-06  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Add s2kparams to 
+	krb5_etype_info_entry
+	Add encode_etype_info2 and decode_etype_info2
+
+2003-05-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h (inet_ntop) [!_WIN32 && !HAVE_MACSOCK_H]: Define
+	as a macro if not provided by the OS.
+
+2003-04-17  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Add encode_krb5_setpw_req
+
+2003-04-15  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add krb5_set_password
+	Move krb5*_chpw internals to k5int.h
+
+	* k5-int.h: Add prototypes for set-password helper functions
+
+2003-04-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (getaddrinfo) [NUMERIC_SERVICE_BROKEN]:
+	Overwrite the port number only if a numeric service port was
+	supplied.
+
+2003-04-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (COPY_FIRST_CANONNAME) [_AIX]: Define.
+	(GET_HOST_BY_NAME) [_AIX]: New version for AIX version of
+	gethostbyname_r.
+	(getaddrinfo) [NUMERIC_SERVICE_BROKEN]: Use "discard" as a dummy
+	service name instead of none at all.  Don't check for unsigned
+	value less than zero.
+	(getaddrinfo) [COPY_FIRST_CANONNAME]: Set any ai_canonname fields
+	other than the first one to null.
+
+2003-03-18  Alexandra Ellwood  <lxs@mit.edu>
+
+    * configure.in: Use KRB5_AC_NEED_BIND_8_COMPAT to check for bind 9
+    and higher.  When bind 9 is present, BIND_8_COMPAT needs to be 
+    defined to get bind 8 types.
+
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
+    
+    * krb5.h: Removed enumsalwaysint because there are no typed
+    enums in this header.
+    
+    * k5-int.h: Removed Mac OS header goober. Added prototype for 
+    os_get_default_config_files which will be used by KfM's 
+    preference APIs (KFM needs to get the secure default files as 
+    well as the normal ones). Moved profile.h inclusion higher so 
+    it gets included before this function and thus its types are 
+    defined (the reason I put it where I did was there is another 
+    config file function next to it).
+
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.h (ENCTYPE_AES128_CTS_HMAC_SHA1_96,
+	ENCTYPE_AES256_CTS_HMAC_SHA1_96, CKSUMTYPE_HMAC_SHA1_96_AES128,
+	CKSUMTYPE_HMAC_SHA1_96_AES256): New macros.
+	* k5-int.h (krb5_str2key_func): Added params argument.
+	(krb5int_pbkdf2_hmac_sha1): Declare.
+	(krb5_cryptosystem_entry, krb5_cs_table_entry, SUM_FUNC,
+	SUM_VERF_FUNC, krb5_checksum_entry): Delete unused declarations.
+
+2003-02-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Set and substitute maybe_kerberosIV.
+	* Makefile.in (MY_SUBDIRS): Use it.
+
+2003-02-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_princ_component): Return NULL if going off the
+	end of the array.
+
+	* configure.in: Check for sys/select.h and time.h.
+
+2003-02-07  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (all-unix): Remove kerberosIV/krb_err.h, as it was
+	causing spurious rebuilds of lots of stuff because it was
+	depending on all-recurse, which is always out of date.
+	(install-headers-unix): Also, no need to depend on
+	kerberosIV/krb_err.h here, since the kerberosIV subdirectory takes
+	care of it.
+
+2003-01-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_mk_req_checksum_func): Fix Windows calling
+	convention syntax.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* socket-utils.h (socklen_t, krb5int_sockaddr_storage): Move
+	definitions...
+	* port-sockets.h (socklen_t, krb5int_sockaddr_storage): ...to
+	here.
+	(socket) [!_WIN32 && S_SPLINT_S]: Declare with Splint
+	annotations.
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (getaddrinfo) [_AIX]: Always overwrite sa_family
+	and sa_len fields, since sa_family at least may be non-zero *and*
+	wrong.
+	(protoname, socktypename, familyname, debug_dump_getaddrinfo_args,
+	debug_dump_error, debug_dump_error, debug_dump_addrinfos)
+	[DEBUG_ADDRINFO]: New debugging functions.
+	(fake_getaddrinfo, getaddrinfo) [DEBUG_ADDRINFO]: Use them.
+
+2003-01-08  Ezra Peisach  <epeisach@bu.edu>
+
+	* fake-addrinfo.h (freeaddrinfo): Back out 1/3/03 change. ANSI
+	does not require it.
+
+2003-01-08  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin :  Move KRB5_CALLCONV specifier for
+	krb5_mk_req_checksum_func to right place 
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (krb5_cc_dfl_ops): Declare as pointer to const.
+	(struct krb5_rc_st): Field ops now points to const.
+	(krb5_rc_register_type): Ops argument now points to const.
+	(krb5_rc_dfl_ops): Now const.
+	(struct _krb5_ccache): Field ops now points to const.
+
+2003-01-06  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add support for setting a callback to generate the
+	data  checksummed by mk_req
+
+2003-01-03  Ezra Peisach  <epeisach@bu.edu>
+
+	* fake-addrinfo.h (freeaddrinfo): Do not free a NULL pointer.
+
+2002-12-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_encrypt, krb5_decrypt, krb5_use_enctype,
+	krb5_calculate_checksum, krb5_verify_checksum,
+	krb5_get_credentials, krb5_get_credentials_validate,
+	krb5_get_credentials_renew, krb5_get_cred_via_tkt, krb5_mk_req,
+	krb5_mk_req_extended, krb5_524_conv_principal, krb5_send_tgs,
+	krb5_get_in_tkt, krb5_get_in_tkt_with_password,
+	krb5_get_in_tkt_with_skey, krb5_get_in_tkt_with_keytab,
+	krb5_aname_to_localname): Clean up use of "const" in API, where it
+	was applied to the value passed and not something pointed to.
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Update comment on krb5_kt_free_entry prototype to
+	point at the correct recommended function.
+
+2002-12-06  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Update prototype of krb5int_locate_server() to take
+	protocol family argument.  Update krb5int_access to current call
+	signatures of locate_kdc() and locate_server(), as well as to add
+	add_host_to_list() for use by krb4 library.
+
+2002-11-26  Tom Yu  <tlyu@mit.edu>
+
+	* port-sockets.h: Add SOCKET_CONNECT, SOCKET_GETSOCKNAME, and
+	SOCKET_CLOSE to allow for porting of some KfM things.
+
+2002-11-14  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove references to adm_err.h from here too.
+
+2002-11-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h [NEED_FAKE_GETADDRINFO]: Include errno.h.
+	(fake_getnameinfo): Check that socklen_t size arguments are
+	positive and fit in size_t; return EAI_SYSTEM/EINVAL if not.  Use
+	the size_t variants when calling string functions.
+	[_AIX]: Define NUMERIC_SERVICE_BROKEN.
+	[NUMERIC_SERVICE_BROKEN]: Include ctype.h and stdlib.h.
+	(getaddrinfo) [NUMERIC_SERVICE_BROKEN]: If the service name is a
+	numeric string, save its value and the socket type, pass a null
+	pointer to the real getaddrinfo, and patch the returned results.
+
+2002-10-23  Sam Hartman  <hartmans@mit.edu>
+
+	* spnego-asn1.h: New file.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h (DEFAULT_PWD_STRING1, DEFAULT_PWD_STRING2): Remove
+	trailing colon, as new implementation of krb5_read_password()
+	appends it.
+
+2002-10-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (krb5_ser_handle): Now points to const.
+	(krb5_kt_dfl_ops): Now const.
+	(struct _krb5_kt_ops): Field serializer now points to const
+	krb5_ser_entry instead of void.
+	* krb5.hin (struct _krb5_kt): Field ops now points to const.
+
+2002-10-30  Ken Hornstein  <kenh@cmf.nrl.navy.mil>
+
+	* krb5.hin: Change definitions of new SAM preauth types to
+	match kerberos-clarifications.
+
+2002-10-24  Ken Hornstein  <kenh@cmf.nrl.navy.mil>
+
+	* k5-int.h, krb5.hin: Add new protocols, definitions, and
+	data structures for new hardware preauthentication protocol.
+
+2002-10-23  Ken Hornstein  <kenh@cmf.nrl.navy.mil>
+
+	* krb5.hin: Add new LRQ type for password expiration
+	(from krb-clarifications)
+
+2002-10-07  Sam Hartman  <hartmans@mit.edu>
+
+	* Makefile.in : Add install-headers support
+
+2002-09-26  Tom Yu  <tlyu@mit.edu>
+
+	* socket-utils.h (sa2sin, sa2sin6): Add redundant cast to (void *)
+	to get GCC to shut up about alignment increasing.
+
+2002-09-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h: Include sys/filio.h if available.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for sys/filio.h.
+
+	* cm.h: New file.
+
+2002-09-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (maybe-make-db.h-sys, maybe-make-db.h-k5): New
+	targets, doing nothing.
+	(maybe-make-db.h-redirect): New target, creates db.h using
+	@DB_HEADER@.
+	(all-unix): Depend on maybe-make-db.h-@DB_HEADER_VERSION@.
+
+2002-09-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (gaiptr, faiptr, gniptr): Delete duplicate
+	declarations.
+
+	* foreachaddr.c: Include errno.h instead of declaring errno.
+
+2002-09-03  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Use AH_TEMPLATE to put undefined definition of
+	HAVE_STRUCT_SOCKADDR_STORAGE in krb5/autoconf.h - allowing for
+	acconfig.h to be removed.
+
+	* Makefile.in (autoconf.stmp): No longer depend on
+	$(SRCTOP)/acconfig.h.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h (SG_BUF): New macro.
+
+	* k5-int.h (krb5int_sendto_udp, krb5int_sendto_tcp): Declarations
+	deleted.
+	(krb5int_sendto, krb5int_grow_addrlist): New decls.
+
+2002-08-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct _krb5_context): Add new member udp_pref_limit.
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (install): Don't install port-sockets.h.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin: Put # for cpp directives in first column.
+
+2002-07-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h: Always include socket support headers; don't check
+	NEED_SOCKETS.
+	(krb5int_sendto_udp): Update prototype.
+	(struct _krb5int_access): Update sendto_udp field declaracion to
+	match krb5int_sendto_udp.
+
+2002-07-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h (SOCKET_WRITEV) [!_WIN32]: Use TMP after setting
+	it, to silence compiler warnings.
+
+	* configure.in: Rewrite gethostbyname_r and getservbyname_r tests
+	to properly disable the use of these functions if the argument
+	types cannot be determined.
+
+	* fake-addrinfo.h [NEED_FAKE_GETADDRINFO]: Include string.h.
+	(fake_getnameinfo): Cast GET_HOST_BY_ADDR address pointer argument
+	to char * as required by gethostbyaddr prototype.
+	(HAVE_GETADDRINFO, HAVE_GETNAMEINFO): If defining, define them to
+	1.
+
+2002-06-26  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Modify test for in6addr_any definition in C
+	library. Original test was stripped out by optimizing gcc
+	compiler.
+
+2002-06-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (GET_SERV_BY_PORT) [HAVE_GETSERVBYNAME_R &&
+	!GETSERVBYNAME_R_RETURNS_INT]: Fix getservbyport_r calling
+	sequence, based on IRIX man pages.
+	(getaddrinfo) [WRAP_GETADDRINFO]: Handle case where gethostbyname
+	fails because host has no IPv4 addresses.  Don't return a success
+	indication without replacing the old ai_canonname value if it
+	wasn't null.
+
+	* socket-utils.h (ss2sin6): Enable compilation of inline function
+	version.
+
+	* configure.in: Check for seteuid, setresuid, setreuid, setegid,
+	setresgid and setregid.
+	* k5-util.h: Include sys/types.h, unistd.h, and stdlib.h if
+	available; include krb5/autoconf.h and errno.h always.
+	(krb5_seteuid, krb5_setegid): Replace function declarations with
+	macro definitions.
+	(krb5_setedid): Delete declaration of non-existent function.
+	(krb5_compat_recvauth, krb5_compat_recvauth_version): Declarations
+	deleted.
+
+2002-06-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h (win_socket_initialize): Delete declaration,
+	since it's not mentioned elsewhere in the tree.
+
+2002-06-21  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Fix up yet more CALLCONV botches from last merge.
+
+2002-06-21  Ezra Peisach  <epeisach@bu.edu>
+
+	* fake-addrinfo.h: If IPv6 support is compiled in, but the OS does
+	not provide in6addr_any in libc, provide a static copy.
+
+	* configure.in: If IPv6 support is compiled in, test for existence
+	of in6addr_any in libc.
+
+2002-06-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h [!_WIN32 && !HAVE_MACSOCK_H]: Include
+	krb5/autoconf.h, to get HAVE_SYS_UIO_H.
+
+2002-06-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for sys/uio.h.
+	* port-sockets.h [!_WIN32 && !HAVE_MACSOCK_H]: Include sys/uio.h
+	if available, to get struct iovec.
+
+2002-06-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* port-sockets.h (sg_buf): New typedef name for OS-specific
+	scatter-gather buffer handle type.
+	(SG_ADVANCE, SG_LEN, SG_SET): New macros to manipulate sg_buf.
+	(SOCKET_WRITEV, SOCKET_WRITEV_TEMP): New macros for sending on
+	socket with gathered input.
+	(SHUTDOWN_READ, SHUTDOWN_WRITE, SHUTDOWN_BOTH): New macros, to be
+	passed to shutdown() to indicate direction.
+	(EINPROGRESS, EWOULDBLOCK, ECONNRESET, ECONNABORTED,
+	ECONNREFUSED, EHOSTUNREACH, ETIMEDOUT) [_WIN32]: Define as WSA
+	equivalents if not already defined.
+
+2002-06-15  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin: Delete inclusion of profile.h again.
+
+2002-06-15  Alexandra Ellwood <lxs@mit.edu>
+
+	* krb5.hin: Conditionalize KRB5_CALLCONV_WRONG separately
+	because gssapi.h defines KRB5_CALLCONV but doesn't need
+	KRB5_CALLCONV_WRONG
+	[pullup from 1-2-2-branch]
+
+2002-06-15  Danilo Almeida  <dalmeida@mit.edu>
 
 	* krb5.hin: Rename krb5_kt_free_entry_contents as
 	krb5_free_keytab_entry_contents to make it consistent with rest of
@@ -22,80 +598,386 @@
 	conventions.  For Win32, add KT an CC accessors and default to not
 	PRIVATE.
 
-2002-04-03  Danilo Almeida  <dalmeida@mit.edu>
-
 	* krb5.hin: Make krb5_build_principal_va() KRB5_CALLCONV.
 
-2002-04-03 Alexandra Ellwood <lxs@mit.edu>
-    * krb5.hin: When KRB5_KEYTAB_ACCESSOR_FUNCTIONS is defined, 
-    we still need actual definitions for krb5_kt_ops, etc defined 
-    because krb5_kt_register uses it as a type.  
-    Updated macros to define krb5_kt_ops when KRB5_PRIVATE is 1.
-    Also added a call to KRB5INT_BEGIN_DECLS so there isn't
-    a dangling }; in krb5.h when compiling C++
-    * k5-int.h: Added krb5_kt_dfl_ops for KRB5_KEYTAB_ACCESSOR_FUNCTIONS
+	[pullups from 1-2-2-branch]
 
-2002-04-02  Ken Raeburn  <raeburn@mit.edu>
+2002-06-15  Alexandra Ellwood <lxs@mit.edu>
+
+	* krb5.hin: Conditionalized pragmas for Metrowerks
+
+	* krb5.hin: Updated Mac OS X headers to new framework layout
+
+	[pullups from 1-2-2-branch]
+
+2002-06-15  Miro Jurisic  <meeroh@mit.edu>
+
+	* krb5.hin: Updated Mac OS #defines
+	and #includes for new header layout and Mac OS X frameworks
+
+	[pullups from 1-2-2-branch]
+
+2002-06-14  Alexandra Ellwood <lxs@mit.edu>
+
+	* k5-int.h: Added krb5_kt_dfl_ops for KRB5_KEYTAB_ACCESSOR_FUNCTIONS
+
+	* k5-int.h: Removed conditionals now defined in prefix files
+	and updated header paths
+
+	[pullups from 1-2-2-branch]
+
+2002-06-14  Miro Jurisic  <meeroh@mit.edu>
+
+	* k5-int.h: Rearranged the #ifdef macintosh section to
+	work on Mac OS 9 and X
+
+	* k5-int.h: Updated Mac OS #defines
+	and #includes for new header layout and Mac OS X frameworks
+
+	[pullups from 1-2-2-branch]
+
+2002-06-14  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Fix BEGIN_DECLS conditional.
+
+2002-06-14  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-mac.h: Since this file is now only Win32, remove non-Win32
+	stuff to make it easier to read.  Never used __declspec(dllexport)
+	so that we do not accidentally export symbols.
+
+	* win-mac.h: Add KRB5_CALLCONV_WRONG.
+
+	[pullups from 1-2-2-branch]
+
+2002-06-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* bsdlib.h, bstring.h, fake-stdlib.h: Deleted.
+
+	* sys/syslog.h: Deleted.
+
+2002-06-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (KRB_AP_PATH_NOT_ACCEPTED, KRB_ERR_RESPONSE_TOO_BIG):
+	New error number macros.
+	(krb5int_sendto_kdc): Update for new argument.
+	(krb5int_sendto_tcp): Declare.
+
+2002-06-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (krb5int_sendto_udp): Declare.
+	(krb5_sendto_kdc): Update declaration.
+	(KRB5INT_ACCESS_STRUCT_VERSION): Bump.
+	(struct _krb5int_access): Update locate_kdc interface; add
+	sendto_udp.
+
+	* fake-addrinfo.h [COPY_FIRST_CANONNAME]: Include string.h.
+
+	* k5-int.h (struct addrlist): Field "addrs" now points to
+	addrinfo instead of sockaddr.
+
+2002-05-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* socket-utils.h (socklen) [! HAVE_SA_LEN]: Return a socklen_t
+	instead of size_t.
+
+	* configure.in: Check return type for getservbyname_r just as for
+	gethostbyname_r.
+	* fake-addrinfo.h (GET_HOST_BY_NAME): Use plain gethostbyname if
+	THREADSAFE_GETHOSTBYNAME is defined, even if _r versions are
+	available.
+	(GET_HOST_BY_ADDR) [GETHOSTBYNAME_R_RETURNS_INT]: Add missing
+	variable declaration.
+	(GET_SERV_BY_NAME, GET_SERV_BY_PORT): New macros, in three
+	flavors, parallel to GET_HOST macros; not used yet.
+	(getaddrinfo, getnameinfo, gai_strerror, freeaddrinfo)
+	[S_SPLINT_S]: Add Splint annotations.
+	(getaddrinfo, getnameinfo): Buffer sizes are supposed to be
+	socklen_t, not size_t.
+	(freeaddrinfo) [COPY_FIRST_CANONNAME]: Handle null pointer
+	argument.
+	(getaddrinfo) [COPY_FIRST_CANONNAME]: Always do the copying if the
+	ai_canonname is non-null, regardless of the supplied flags.
+
+2002-05-24  Ken Raeburn  <raeburn@mit.edu>
+
+	Reduce build-time per-system dependencies and krb5.h namespace
+	intrusions:
+	* krb5.hin: Don't include profile.h.  Do include limits.h.
+	(krb5_int16, krb5_ui_2, krb5_int32, krb5_ui_4): Conditionalize on
+	the values of INT_MAX, LONG_MAX and SHRT_MAX.
+	(VALID_INT_BITS, VALID_UINT_BITS, SALT_TYPE_AFS_LENGTH,
+	SALT_TYPE_NO_LENGTH): Define in terms of INT_MAX and UINT_MAX.
+	(struct _profile_t): Declare forward.
+	(krb5_get_profile): Use struct _profile_t instead of profile_t in
+	declaration.
+	(krb5_ui_1): Delete.
+	* Makefile.in (krb5.h): Don't put SIZEOF macros into output.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* sys/syslog.h (syslog, vsyslog, openlog, closelog, setlogmask):
+	Always use prototype versions of declarations; delete
+	non-prototype declarations.
+
+2002-04-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (GET_HOST_BY_NAME, GET_HOST_BY_ADDR)
+	[GETHOSTBYNAME_R_RETURNS_INT]: Fix backwards test of return
+	value.
+
+2002-04-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: If the return type for gethostbyname_r can't be
+	determined, just pretend it's not avaliable.
+
+	* fake-addrinfo.h (getaddrinfo) [_AIX]: Declare and initialize
+	variable "ai".
+
+2002-04-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for gethostbyname_r, gethostbyaddr_r,
+	getservbyname_r and getservbyport_r.  Figure out the return type
+	of gethostbyname_r.
+	* fake-addrinfo.h (GET_HOST_BY_NAME, GET_HOST_BY_ADDR): New
+	macros.
+	(fai_add_hosts_by_name, fake_getnameinfo, getaddrinfo): Use them.
+	(fake_getaddrinfo): Use getservbyname_r if available.
+	(fake_getnameinfo): Never call inet_ntoa; in open-coded form,
+	initialize local pointer variable after label.  Use
+	getservbyport_r if available.
+	(gaiptr, faiptr, gniptr): Pointer variables are now const.
+
+2002-04-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* port-sockets.h: Use Winsock 2 headers for Win32.
+	* fake-addrinfo.h: Define HAVE_GETADDRINFO for Win32.
+
+2002-04-05  Ken Raeburn  <raeburn@mit.edu>
 
 	* krb5.hin (krb5_c_valid_enctype, krb5_c_valid_cksumtype,
-	krb5_c_is_coll_proof_cksum, krb5_c_is_keyed_cksum,
-	krb5_kt_free_entry_contents): New decls.
-	(valid_enctype, valid_cksumtype, is_coll_proof_cksum,
-	is_keyed_cksum, krb5_kt_free_entry): Conditionalize on
-	KRB5_PRIVATE.
+	krb5_c_is_coll_proof_cksum, krb5_c_is_keyed_cksum): Declare.
 
 2002-04-02  Tom Yu  <tlyu@mit.edu>
 
-	* krb5.hin: Allow override of KRB5_PRIVATE and KRB5_DEPRECATED on
-	compiler command line.  Make KRB5INT_BEGIN_DECLS and
-	KRB5INT_END_DECLS macros for C++ to keep indentation happy.  Make
-	krb5_{enc_priv_part,priv,safe} private.  Make most of rcache
-	functions and structs private.  Hide keytab structs if
-	KRB5_KEYTAB_ACCESSOR_FUNCTIONS is true.
-	(krb5_auth_con_getcksumtype): Remove declaration for unimplemented
-	function.
-
-2002-04-02  Sam Hartman  <hartmans@mit.edu>
-
-	* krb5.hin: Merge krb5_init_keyblock from mainline
+	* krb5.hin: Default to KRB5_DEPRECATED=1, allowing compiler
+	command line to override.  Hide some struct definitions.  Use
+	KRB5INT_BEGIN_DECLS and KRB5INT_END_DECLS to deal with C++
+	function declarations.
 
 2002-04-01  Tom Yu  <tlyu@mit.edu>
 
 	* krb5.hin: Move a whole bunch of stuff under KRB5_DEPRECATED or
-	KRB5_PRIVATE as a first pass for cleaning up the API.  [merge from
-	trunk] Note that KRB5_DEPRECATED=1 by default, and KRB5_PRIVATE=1
-	on all but MacOS X.
+	KRB5_PRIVATE as a first pass for cleaning up the API.
 
-2000-04-01  Miro Jurisic  <meeroh@mit.edu>
-    * krb5.hin: Conditionalized krb5_kt_* macros vs. functions with
-        KRB5_KEYTAB_ACCESSOR_FUNCTIONS
+2002-03-28  Sam Hartman  <hartmans@mit.edu>
 
-2002-03-28 Alexandra Ellwood <lxs@mit.edu>
-    * krb5.hin: Conditionalized pragmas for Metrowerks
+	* krb5.hin: krb5_init_keyblock new function.
 
-2002-03-07 Alexandra Ellwood <lxs@mit.edu>
-    * krb5.hin: Added check for CFM compiles.  Removed dependency on 
-    PRAGMA_* macros.
+2002-03-28  Ken Raeburn  <raeburn@mit.edu>
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * krb5.hin: Updated Mac OS X headers to new framework layout
-    * k5-int.h: Removed conditionals now defined in prefix files
-    and updated header paths
+	* k5-int.h: Include errno.h.
+	* krb5.hin: Don't include errno.h.
 
-2001-12-19  Miro Jurisic  <meeroh@mit.edu>
-	* win-mac.h: Fixed EFBIG #define
+	* fake-addrinfo.h (getaddrinfo) [__linux__]: Don't crash if hint
+	is a null pointer.
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* krb5.hin, k5-int.h: Condintionally use cc_* macros or functions
-	* krb5.hin: Changed KerberosConditionalMacros.h to
-	KerberosSupport.h
-	* k5-int.h: Rearranged the #ifdef macintosh section to
-	work on Mac OS 9 and X
-	* win-mac.h, k5-int.h, krb5.hin: Updated Mac OS #defines
-	and #includes for new header layout and Mac OS X frameworks
-        
-2001-09-25  Ken Raeburn  <raeburn@mit.edu>
+2002-03-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h [NEED_FAKE_GETADDRINFO]: Include errno.h.
+	(fake_getnameinfo) [__GNUC__ && __mips__]: Use const when
+	referencing bytes of supplied address.
+
+	* krb5.hin: Don't include <sys/types.h> any more.
+	* Makefile.in (krb5.h): Don't put HAVE_STDARG_H or HAVE_SYS_TYPE_H
+	symbols into output.
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h: Incorporate all of fake-addrinfo.c.  Make all
+	defined functions static, and inline if gcc is used.  Drop
+	FAI_PREFIX renaming hacks.  Fix some bugs in the separation of
+	getnameinfo from getaddrinfo/freeaddrinfo for wrapping purposes.
+	(fake_getnameinfo) [__GNUC__ && __mips__]: Don't call inet_ntoa,
+	struct passing doesn't work.  Format the output string locally.
+	* fake-addrinfo.c: Delete.
+
+2002-03-11  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.c (fixup_addrinfo): Deleted.
+	(fake_getaddrinfo, fake_getnameinfo, fake_freeaddrinfo): Renamed
+	from non-"fake_" versions, and made static.  Compile if
+	NEED_FAKE_GETADDRINFO is defined.
+	(fake_getnameinfo): Truncate results if provided buffers are too
+	small.
+	(getaddrinfo, getnameinfo, freeaddrinfo) [HAVE_FAKE_GETADDRINFO]:
+	New functions, simple wrappers around the "fake_" versions.
+	(getaddrinfo, freeaddrinfo) [WRAP_GETADDRINFO]: New functions
+	which call the system versions via function pointers and then fix
+	up some known problems in the returned data.
+	(getnameinfo) [WRAP_GETNAMEINFO]: Likewise.
+	(gaiptr, faiptr, gniptr) [WRAP_GETADDRINFO || WRAP_GETNAMEINFO]:
+	New static variables, initialized with addresses of system
+	versions of getaddrinfo, etc.
+	* fake-addrinfo.h (fixup_addrinfo): Declaration deleted.
+	(WRAP_GETADDRINFO): New macro, defined on Linux and AIX.
+	(getaddrinfo, getnameinfo, freeaddrinfo): Define as macros, and
+	declare functions, if WRAP_GETADDRINFO is defined or
+	HAVE_GETADDRINFO is not defined; drop BROKEN_GETADDRINFO check.
+	(gai_strerror, addrinfo, EAI_*): Define macros and declare
+	functions only if HAVE_GETADDRINFO isn't defined.
+
+2002-03-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_const): Restore macro definition, but include a
+	warning that it'll go away soon.
+
+2002-03-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* foreachaddr.c (SLOP): New macro.
+	(foreach_localaddr): Use it as the amount of extra space we look
+	for past the ifreq structures actually filled in.  Add SLOP to the
+	size of the buffer allocated to hold the ifreq structures.  Place
+	an upper bound on the buffer size.  Don't crash if the returned
+	ifc_len is larger than the supplied buffer size.
+
+2002-02-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin, k5-int.h: Use const instead of krb5_const.
+	* krb5.hin (krb5_const): Deleted definition.
+
+2002-02-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* foreachaddr.c: New file, contents taken from code shared between
+	kdc/network.c and lib/krb5/os/localaddr.c.  Split out multiple
+	branches within foreach_localaddr into separate functions.  Fixed
+	a couple minor compiler warnings on Linux.
+
+2002-02-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.c (_XOPEN_SOURCE_EXTENDED): Define if not defined,
+	and if not Mac or Windows, for duration of inclusion of netdb.h.
+	This gets us the h_errno declaration on HP-UX.
+	(getnameinfo): Cast gethostbyaddr pointer arg to char *, not
+	sockaddr *.
+
+2002-02-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h: Always check for FAI_PREFIX, not just when fake
+	getaddrinfo support is needed.
+	(fixup_addrinfo): Declare.
+	* fake-addrinfo.c (fixup_addrinfo): New function, fixes up
+	breakage in AIX and GNU implementations (so far) of getaddrinfo.
+
+2002-01-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* socket-utils.h (ss2sin6) [__GNUC__]: Define inline function only
+	if IPv6 support is turned on.
+
+2001-12-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h (krb5int_des_init_state): Change variable name in
+	prototype away from usage.
+
+2001-11-18  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add krb5_set_default_tgs_enctypes
+
+2001-11-15  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin:  Add krb5_c_random_add_entropy and
+	krb5_c_random_os_entropy 
+
+2001-11-14  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Added definitions of random sources 
+
+2001-11-06  Sam Hartman  <hartmans@tir-na-nogth.mit.edu>
+
+	* k5-int.h: Add krb5int_des_init_state and krb5int_default_free_state
+
+2001-11-06  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Add init_state and free_state to enc_provider struct
+
+2001-11-05  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin:  Add krb5_c_init_state and krb5_c_free_state
+
+2001-10-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* fake-addrinfo.c (freeaddrinfo): Do not free NULL pointers.
+
+2001-10-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h: Do not use "usage" in argument names in
+	krb5_keyhash_provider functions.
+
+2001-10-24  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: Add  declaration for  arcfour enc_provider and  md5
+	hash_provider  so we can get to these indirectly from libgssapi.
+	Ick.  This is an evil hack but somewhat less evil than  having raw
+	enctypes. 
+	Add above to krb5int_access along with krb5_hmac function
+
+2001-10-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Use of AC_DEFINE modified to include third
+	argument - the comment for the generated header file so that
+	acconfig.h can be cleaned up.
+
+2001-10-23  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5.hin: Add rc4-hmac, rc4-hmac-exp enctypes,  hmac-md5-rc4
+	cksumtype 
+
+2001-10-22  Sam Hartman  <hartmans@mit.edu>
+
+	* k5-int.h: keyhash_provider gains usage argument to hash function
+
+2001-10-15  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5.hin (krb5_kt_get_type): KRB5_CALLCONV.
+
+2001-10-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct _krb5_kt_ops, krb5_kt_ops, krb5_kt_dfl_ops):
+	Definitions and declarations moved here...
+	* krb5.hin: ...from here.
+	(krb5_kt_get_type, krb5_kt_get_name, krb5_kt_close,
+	krb5_kt_get_entry, krb5_kt_start_seq_get, krb5_kt_next_entry,
+	krb5_kt_end_seq_get): Replaced macro definitions with declarations
+	for functions now in lib/krb5/keytab/ktfns.c.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-stdlib.h: Make prototypes unconditional.
+	(P): Don't define.
+	* krb5.hin (KRB5_PROTOTYPE): Don't define.
+	* krb54proto.h: Make prototypes unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (KRB5_EXPORTVAR): Don't define.
+	* krb5.hin (KRB5_EXPORTVAR): Don't define.
+	* win-mac.h (KRB5_EXPORTVAR): Don't define.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h, krb5.hin, win-mac.h: Don't use or define KRB5_DLLIMP,
+	GSS_DLLIMP.  Drop MSDOS, NEAR, FAR support.
+	* krb54proto.h: Don't explicitly declare pointers FAR any more.
+	* port-sockets.h: Delete _MSDOS support.
+
+2001-09-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (all-unix): Depend directly on kerberosIV/krb_err.h
+	instead of on krb_err.h.
+	(krb_err.h): Target and rule deleted.
+	(clean-unix): Don't delete krb_err.h.
+
+2001-09-06  Ken Raeburn  <raeburn@mit.edu>
 
 	* krb5.hin (TKT_FLG_TRANSIT_POLICY_CHECKED,
 	TKT_FLG_OK_AS_DELEGATE, TKT_FLG_ANONYMOUS): New macros.
@@ -104,19 +986,287 @@
 	(krb5_check_transited_list): Pointed-to krb5_data structures are
 	now all const.
 
-2000-10-16  Miro Jurisic  <meeroh@mit.edu>
+2001-09-05  Ken Raeburn  <raeburn@mit.edu>
 
-	* win-mac.h: #include <KerberosConditionalMacros.h> on Mac OS
-        
-2000-10-02  Alexandra Ellwood  <lxs@mit.edu>
+	* fake-addrinfo.h: Include socket-utils.h.
 
-	* krb5-int.h: Added warning comment about #define macintosh
-        
-2000-09-19  Miro Jurisic  <meeroh@mit.edu>
+2001-08-31  Ken Raeburn  <raeburn@mit.edu>
 
-	* win-mac.h: Put #include <fcntl.h> back in
+	* fake-addrinfo.c: Test only HAVE_FAKE_GETADDRINFO.
+	* fake-addrinfo.h: Define it, when remapping symbols.
 
-2000-06-02  Danilo Almeida  <dalmeida@mit.edu>
+	* socket-utils.h (struct krb5int_sockaddr_storage,
+	sockaddr_storage): Conditionalize on HAVE_STRUCT_SOCKADDR_STORAGE
+	instead of KRB5_USE_INET6.
+
+2001-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* socket-utils.h (struct krb5int_sockaddr_storage): Add some extra
+	space.
+
+	* Makefile.in ($(srcdir)/krb5/autoconf.stmp): Since autoheader
+	doesn't change the target file if the contents wouldn't be
+	altered, touch an auxiliary timestamp file to avoid re-running
+	autoheader all the time.
+	(rebuild-error-tables): New intermediate target, avoids running
+	make in error_tables directory once for each generated header file
+	we care about.
+
+	* fake-addrinfo.c (getnameinfo): Cast address argument to
+	gethostbyaddr.
+
+	* fake-addrinfo.h (AI_V4MAPPED, AI_ADDRCONFIG, AI_ALL,
+	AI_DEFAULT): Define as bogus values, since they're part of
+	getipnodeby* API, not getaddrinfo API.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* socket-utils.h: New file.
+	* k5-int.h: Include it.
+	(socklen_t, struct krb5int_sockaddr_storage, sa2sin, sa2sin6,
+	ss2sa, ss2sin, ss2sin6, socklen): Definitions moved to
+	socket-utils.h.
+	(krb5int_get_fq_local_hostname, krb5int_translate_gai_error): New
+	decls.
+
+	* fake-addrinfo.c: New file, split off from fake-addrinfo.h.
+	* fake-addrinfo.h: Don't define implementation functions.
+	(FAI_DEFINED): New macro, used to protect against multiple
+	inclusions.
+
+2001-08-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (ss2sin6): New gcc-specific function and alternative
+	macro.
+	(krb5_crypt_func, krb5_encrypt_helper): Don't use "usage" in
+	argument names.
+
+2001-08-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (AI_NUMERICHOST): Define as zero if not already
+	defined.
+
+2001-07-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_check_transited_list): Pointer args now point to
+	const.
+
+2001-07-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h: Include port-sockets.h instead of system header
+	files; should fix Windows build.
+
+2001-07-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* fake-addrinfo.h (translate_h_errno): Supply a default value in
+	case some unrecognized code is returned.
+	(HAVE_GETNAMEINFO): Undefine before defining, just in case.
+
+	* krb5.hin (krb5_os_hostaddr): Declaration moved...
+	* k5-int.h (krb5_os_hostaddr): ...to here.
+
+	* fake-addrinfo.h: New file.
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Do not use "random_key" as argument name. When krb.h
+	included, it gets redefined. Do not use "options" either.
+
+	* k5-int.h (krb5_get_init_creds): Do not use "options" as argument
+	name.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Move prototypes for krb5_net_read() and
+	krb5_net_write() here.
+	* k5-int.h: From here.
+
+2001-06-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (struct addrlist): New type.
+	(ADDRLIST_INIT): New macro.
+	(krb5int_free_addrlist): Declare.
+	(krb5int_locate_server): Update declaration.
+	(KRB5INT_ACCESS_STRUCT_VERSION): Update to 3.
+	(struct _krb5int_access): Change locale_server prototype.  Add
+	free_addrlist function pointer field.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-util.h: Add prototypes for krb5_compat_recvauth_version() and
+	krb5_compat_recvauth().
+
+	* krb5.hin: Move krb5_read_message() and krb5_write_message()
+	prototypes here.
+	k5-int.h: From here.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Get rid of extraneous krb5_const before integer
+	arguments in prototypes for valid_enctype(), valid_cksumtype(),
+	is_coll_proof_cksum(), is_keyed_cksum(), krb5_encrypt_size(),
+	krb5_checksum_size(), krb5_verify_checksum() so they match the
+	existing code.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h: Remove AS_REP_105_SAM_COMPAT definition. Not used in
+	tree.  Remove SYSV redefinition of random() to rand() and
+	srandom() to srand(). Two locations in tree that might matter
+	already handled in configure. Unicos redefinition of utimes() to
+	utime() removed - appl/bsd has its own implementation.
+
+2001-06-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(srcdir)/krb5/autoconf.h.in): New target; rebuild
+	using autoheader.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (krb5int_locate_server): New prototype.
+	(krb5_locate_srv_conf, krb5_locate_srv_dns): Deleted.
+	(KRB5INT_ACCESS_STRUCT_VERSION): Update to 2.
+	(struct _krb5int_access): Update signature for locate_kdc, add
+	pointer for locate_server.
+	(struct krb5int_sockaddr_storage) [!KRB5_USE_INET6]: Declare dummy
+	type with space and alignment for an IPv4 address.
+	(sockaddr_storage) [!KRB5_USE_INET6]: Define to
+	krb5int_sockaddr_storage, so "struct sockaddr_storage" will do
+	something reasonable even without IPv6 support.
+	(sa2sin, sa2sin6, ss2sa, ss2sin): Define as macros or inline
+	functions, for safety in type conversion.
+
+	* win-mac.h (HAS_ANSI_VOLATILE, KRB5_PROVIDE_PROTOTYPES): Don't
+	define.
+
+	* configure.in: Don't use KRB5_CHECK_PROTOS.  Don't check for use
+	of prototypes inside structures.
+
+	* syslog.h (syslog, vsyslog, openlog, closelog, setlogmask):
+	Always use prototype versions of declarations; delete
+	non-prototype declarations.
+
+2001-04-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* k5-int.h (socklen_t) [NEED_SOCKETS] [!HAVE_SOCKLEN_T]: Define as
+	typedef for size_t.
+	(socklen) [NEED_SOCKETS]: Define macro if not already defined.
+	* configure.in: Don't check for support for type "void".  Move
+	socklen_t test here from krb5 library.
+
+2001-04-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (adm_err.h, asn1_err.h, krb5_err.h, kv5m_err.h):
+	Depend on corresponding error tables.  Run "make includes" in krb5
+	library code to rebuild instead of invoking awk here.
+	(all-unix): Depend on krb_err.h.
+	(krb_err.h): Depend on kerberosIV/krb_err.h; copy that file.
+	(kerberosIV/krb_err.h): Depend on all-recurse.
+	(clean-unix): Delete krb_err.h.
+
+	* k5-int.h: Always include stdlib.h and string.h; don't bother
+	testing the HAVE_ macros.
+
+2001-03-08 Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Add prototypes for krb5_auth_con_setpermetypes() and
+ 	krb5_auth_con_getpermetypes().
+
+2001-01-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (KRB5_NPROTOTYPE): Delete.
+
+	* k5-int.h, krb5.hin: Use prototypes unconditionally.
+
+	* krb5.hin (krb5_const, krb5_pointer, krb5_const_pointer): Always
+	define as ANSI versions.
+
+	* krb5.hin (struct _krb5_safe, struct _krb5_priv, struct
+	_krb5_priv_enc_part, krb5_free_safe, krb5_free_priv,
+	krb5_free_priv_enc_part, struct krb5_rc_st, struct _krb5_rc_ops,
+	krb5_rc_register_type, krb5_rc_dfl_ops): Move from here...
+	* k5-int.h: ...to here.
+
+	* krb5.hin (krb5_rc_initialize, krb5_rc_recover, krb5_rc_destroy,
+	krb5_rc_close, krb5_rc_close, krb5_rc_store, krb5_rc_expunge,
+	krb5_rc_get_lifespan, krb5_rc_get_name, krb5_rc_resolve): Replace
+	macros with function decls.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Use AC_C_CONST instead of AC_CONST and
+	AC_CHECK_HEADER instead of AC_HEADER_CHECK.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h: krb5_alt_method, krb5_etype_info_entry length fields
+	changed to unsigned int. KRB5_ETYPE_NO_LENGTH defined.  Change
+	prototype decode_krb5_sam_key to decode_krb5_enc_sam_key which is
+	what the code says.
+	krb5int_access - change timeouts, shifts, etc to unsigned ints. 
+
+	* krb5.hin: krb5_data, krb5_address, krb5_keyblock, krb5_checksum,
+	krb5_authdata, and krb5_pa_data length fields changed to unsigned
+	int. krb5_kt_get_name(), krb5_unparse_name_ext(),
+	krb5_build_principal(), krb5_build_principal_ext(),
+	krb5_build_principal_va() and krb5_read_password() all take or
+	return unsigned int lengths.
+
+	* port-sockets.h (SOCKET): Under unix, a socket is of type int.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin, k5-int.h: krb5_cc_get_name now returns const char *.
+
+Tue Sep 26 18:10:22 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Move prototype for krb5_gen_replay_name()
+
+	* k5-int.h: from here.
+
+2000-09-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-util.h (krb5_setedid): Add prototype.
+
+2000-08-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: lr_type element of krb5_last_req_entry needs to be a
+	signed int instead of an unsigned char.
+
+2000-07-20  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5.hin: Fix calling convention for krb5_cc_get_type.
+
+2000-07-19  Danilo Almeida  <dalmeida@mit.edu>
+
+	* k5-int.h: Add krb5int_accessor() and related definitions.
+	krb5int_accessor should be used by any code that is trying to use
+	krb5 internal functions (such as krb524 and GSSAPI).  The goal is
+	to eventually make this function do nothing.  That will only be
+	accomplished when we fix our apps/libraries not to call internal
+	functions.
+
+2000-07-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h: Move prototypes for krb5 only internal functions
+	krb5_libdefault_boolean, _krb5_use_dns_realm, _krb5_use_dns_kdc,
+	_krb5_conf_boolean to the header files in the lib/krb5/{os,krb}
+	directories.
+
+2000-07-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (krb5_cc_*): Replace macro definitions with function
+	declarations.
+	(struct _krb5_ccache, struct _krb5_cc_ops): Declare
+	only; move structure definitions...
+	* k5-int.h: To here.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5-int.h: Add prototypes for krb5_libdefault_boolean,
+	_krb5_use_dns_realm, _krb5_use_dns_kdc, _krb5_conf_boolean.
+
+2000-06-23  Danilo Almeida  <dalmeida@mit.edu>
 
 	* krb5.hin (krb5_get_tgs_ktypes, krb5_free_ktypes): Fix linkage to
 	be KRB5_CALLCONV.
@@ -124,9 +1274,14 @@
 	* k5-int.h (krb5int_cc_default): Fix linkage to be consistent with
 	code.  (Note: We should dump KRB5_DLLIMP.)
 
-2000-05-31  Ken Raeburn  <raeburn@mit.edu>
+2000-06-23  Ken Raeburn  <raeburn@mit.edu>
 
-	* krb5.hin (krb5_recvauth_version): Declare.
+	* krb5.hin (krb5_recvauth_version, krb5_free_ktypes): Declare.
+
+2000-06-05      Jeffrey Altman          <jaltman@columbia.edu>
+
+        * krb5-int.h: Fix the prototype for krb5int_cc_default so that it builds
+          on Windows.
 
 2000-5-19	Alexandra Ellwood <lxs@mit.edu>
 
@@ -139,14 +1294,11 @@
 
 2000-05-15      Jeffrey Altman          <jaltman@columbia.edu>
 
-        * krb5.hin -- Added prototypes for new public functions
+        * krb5.hin
+          Added prototypes for new public functions
 
                krb5_appdefault_string
                krb5_appdefault_boolean
-
-2000-04-18  Ken Raeburn  <raeburn@mit.edu>
-
-	* krb5.hin: Declare krb5_free_ktypes.
 
 2000-4-13	Alexandra Ellwood <lxs@mit.edu>
 
@@ -630,6 +1782,8 @@ Wed Jun 12 01:32:33 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* syslog.h: Add #ifdef _WIN32 in places where we had #ifdef _MSDOS
 
+	* sys/syslog.h: Add #ifdef _WIN32 in places where we had #ifdef _MSDOS
+
 Mon Jun 10 16:52:35 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* krb5.hin		
@@ -1052,6 +2206,7 @@ Thu Jun 22 16:03:07 1995  Tom Yu  (tlyu@dragons-lair)
 		also, NO_NESTED_PROTOTYPES -> KRB5_NO_NESTED_PROTOTYPES
 	* Makefile.in: don't install NO_NESTED_PROTOTYPES, HAS_VOID_TYPE,
 		and KRB5_PROVIDE_PROTOTYPES symbols into krb5.h
+	* sys/syslog.h: reverse sense of KRB5_PROVIDE_PROTOTYPES
 
 Thu Jun 22 11:51:10 EDT 1995	Paul Park	(pjpark@mit.edu)
 	* k5-int.h - Add pointer in krb5_context for database context.
@@ -1208,6 +2363,8 @@ Thu Apr 13 16:05:08 1995 Keith Vetter (keithv@fusion.com)
 	* bsdlib.h, bstring.h, fake-std.h, syslog.h:  __STDC__ conditionals
            also check for the _WINDOWS define.
         * krb5.h: added FAR to pointers visible to the world.
+	* sys/syslog.h:  __STDC__ conditionals also check for the _WINDOWS
+	   define.
 
 Tue Mar 28 18:12:32 1995  John Gilmore  (gnu at toad.com)
 

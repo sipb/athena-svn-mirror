@@ -1,19 +1,35 @@
 /*
- * g_phost.c
+ * lib/krb4/g_phost.c
  *
- * Copyright 1988 by the Massachusetts Institute of Technology.
+ * Copyright 1988, 2001 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
-#define	DEFINE_SOCKADDR		/* For struct hostent, <netdb.h>, etc */
 #include "krb.h"
 
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "port-sockets.h"
 
 /*
  * This routine takes an alias for a host name and returns the first
@@ -32,12 +48,13 @@
  * to the original "alias" argument is returned.
  */
 
-KRB5_DLLIMP char FAR * KRB5_CALLCONV
+char * KRB5_CALLCONV
 krb_get_phost(alias)
-    char FAR *alias;
+    char *alias;
 {
-    struct hostent FAR *h;
+    struct hostent *h;
     char *p;
+    unsigned char *ucp;
     static char hostname_mem[MAXHOSTNAMELEN];
 #ifdef DO_REVERSE_RESOLVE
     char *rev_addr; int rev_type, rev_len;
@@ -58,16 +75,18 @@ krb_get_phost(alias)
 		return (0);
 	}
 #endif
-	/* We don't want to return a FAR *, so we copy to a safe location. */
+	/* We don't want to return a *, so we copy to a safe location. */
 	strncpy (hostname_mem, h->h_name, sizeof (hostname_mem));
-	hostname_mem[MAXHOSTNAMELEN-1]='\0';
+	/* Bail out if h_name is too long. */
+	if (hostname_mem[MAXHOSTNAMELEN-1] != '\0')
+	    return NULL;
 	p = strchr( hostname_mem, '.' );
         if (p)
             *p = 0;
-        p = hostname_mem;
+        ucp = (unsigned char *)hostname_mem;
         do {
-            if (isupper(*p)) *p=tolower(*p);
-        } while (*p++);
+            if (isupper(*ucp)) *ucp=tolower(*ucp);
+        } while (*ucp++);
     }
     return(hostname_mem);
 }

@@ -43,29 +43,38 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "des_int.h"
 #include "des.h"
-/*   #include "des_internal.h" */
 
 extern int mit_des_debug;
 
 /*
- * convert an arbitrary length string to a DES key
+ * Convert an arbitrary length string to a DES key.
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+
+/*
+ * For krb5, a change was made to this algorithm: When each key is
+ * generated, after fixing parity, a check for weak and semi-weak keys
+ * is done.  If the key is weak or semi-weak, we XOR the last byte
+ * with 0xF0.  (In the case of the intermediate key, the weakness is
+ * probably irrelevant, but there it is.)  The odds that this will
+ * generate a different key for a random input string are pretty low,
+ * but non-zero.  So we need this different function for krb4 to use.
+ */
+int KRB5_CALLCONV
 des_string_to_key(str,key)
-    char *str;
+    const char *str;
     register mit_des_cblock key;
 {
-    register char *in_str;
+    const char *in_str;
     register unsigned temp;
     register int j;
-    register long i, length;
-    static unsigned char *k_p;
-    static int forward;
+    unsigned long i, length;
+    unsigned char *k_p;
+    int forward;
     register char *p_char;
-    static char k_char[64];
-    static mit_des_key_schedule key_sked;
-    extern void des_cbc_cksum();
+    char k_char[64];
+    mit_des_key_schedule key_sked;
 
     in_str = str;
     forward = 1;
@@ -78,7 +87,7 @@ des_string_to_key(str,key)
 #ifdef DEBUG
     if (mit_des_debug)
 	fprintf(stdout,
-		"\n\ninput str length = %d  string = %s\nstring = 0x ",
+		"\n\ninput str length = %ld  string = %s\nstring = 0x ",
 		length,str);
 #endif
 
@@ -97,7 +106,7 @@ des_string_to_key(str,key)
 	    else
 		*--p_char ^= (int) temp & 01;
 	    temp = temp >> 1;
-	} while (--j > 0);
+	}
 
 	/* check and flip direction */
 	if ((i%8) == 0)
@@ -119,10 +128,11 @@ des_string_to_key(str,key)
     des_fixup_key_parity(key);
 
     /* Now one-way encrypt it with the folded key */
-    (void) des_key_sched(key,key_sked);
-    (void) des_cbc_cksum((des_cblock *)in_str,key,length,key_sked,key);
+    (void) des_key_sched(key, key_sked);
+    (void) des_cbc_cksum((const des_cblock *)in_str, (des_cblock *)key,
+			 length, key_sked, (const des_cblock *)key);
     /* erase key_sked */
-    memset((char *)key_sked, 0,sizeof(key_sked));
+    memset(key_sked, 0,sizeof(key_sked));
 
     /* now fix up key parity again */
     des_fixup_key_parity(key);
@@ -138,4 +148,21 @@ des_string_to_key(str,key)
 				/* but the original spec was for it to */
 				/* return an int, and ANSI compilers */
 				/* can do dumb things sometimes */
+}
+
+void afs_string_to_key(char *str, char *cell, des_cblock key)
+{
+    krb5_data str_data;
+    krb5_data cell_data;
+    krb5_keyblock keyblock;
+
+    str_data.data = str;
+    str_data.length = strlen(str);
+    cell_data.data = cell;
+    cell_data.length = strlen(cell);
+    keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+    keyblock.length = sizeof(des_cblock);
+    keyblock.contents = key;
+
+    mit_afs_string_to_key(&keyblock, &str_data, &cell_data);
 }

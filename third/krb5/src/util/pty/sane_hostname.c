@@ -2,7 +2,8 @@
  * pty_make_sane_hostname: Make a sane hostname from an IP address.
  * This returns allocated memory!
  * 
- * Copyright 1999 by the Massachusetts Institute of Technology.
+ * Copyright 1999, 2000, 2001 by the Massachusetts Institute of
+ * Technology.
  *
  * Permission to use, copy, modify, and distribute this software and
  * its documentation for any purpose and without fee is hereby
@@ -19,29 +20,28 @@
  * express or implied warranty.
  * 
  */
-#include <com_err.h>
+#include "com_err.h"
 #include "pty-int.h"
+#include <sys/socket.h>
 #include "libpty.h"
 #include <arpa/inet.h>
 
-static long
-do_ntoa(struct sockaddr_in *addr,
-		     size_t hostlen,
-		     char **out)
+#include "socket-utils.h"
+#include "fake-addrinfo.h"
+
+static void
+downcase (char *s)
 {
-    strncpy(*out, inet_ntoa(addr->sin_addr), hostlen);
-    (*out)[hostlen - 1] = '\0';
-    return 0;
+    for (; *s != '\0'; s++)
+	*s = tolower ((int) *s);
 }
 
 long
-pty_make_sane_hostname(struct sockaddr_in *addr,
-		       int maxlen,
-		       int strip_ldomain,
-		       int always_ipaddr,
-		       char **out)
+pty_make_sane_hostname(const struct sockaddr *addr, int maxlen,
+		       int strip_ldomain, int always_ipaddr, char **out)
 {
-    struct hostent *hp;
+    struct addrinfo *ai = 0;
+    char addrbuf[NI_MAXHOST];
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
     struct utmp ut;
 #else
@@ -51,9 +51,14 @@ pty_make_sane_hostname(struct sockaddr_in *addr,
     char lhost[MAXHOSTNAMELEN];
     size_t ut_host_len;
 
+    /* Note that on some systems (e.g., AIX 4.3.3), we may get an IPv6
+       address such as ::FFFF:18.18.1.71 when an IPv4 connection comes
+       in.  That's okay; at least on AIX, getnameinfo will deal with
+       that properly.  */
+
     *out = NULL;
     if (maxlen && maxlen < 16)
-	/* assume they meant 16, otherwise IP addr won't fit */
+	/* assume they meant 16, otherwise IPv4 addr won't fit */
 	maxlen = 16;
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
     ut_host_len = sizeof (ut.ut_host);
@@ -67,36 +72,45 @@ pty_make_sane_hostname(struct sockaddr_in *addr,
 	return ENOMEM;
 
     if (always_ipaddr) {
-	return do_ntoa(addr, ut_host_len, out);
+    use_ipaddr:
+	if (getnameinfo (addr, socklen (addr), addrbuf, sizeof (addrbuf),
+			 (char *)0, 0, NI_NUMERICHOST) == 0)
+	    strncpy(*out, addrbuf, ut_host_len);
+	else
+	    strncpy(*out, "??", ut_host_len);
+	(*out)[ut_host_len - 1] = '\0';
+	return 0;
     }
-    hp = gethostbyaddr((char *)&addr->sin_addr, sizeof (struct in_addr),
-		       addr->sin_family);
-    if (hp == NULL) {
-	return do_ntoa(addr, ut_host_len, out);
-    }
-    strncpy(*out, hp->h_name, ut_host_len);
-    (*out)[ut_host_len - 1] = '\0';
-    for (cp = *out; *cp != '\0'; cp++)
-	*cp = tolower(*cp);
 
+    /* If we didn't want to chop off the local domain, this would be
+       much simpler -- just a single getnameinfo call and a strncpy.  */
+    if (getnameinfo(addr, socklen (addr), addrbuf, sizeof (addrbuf),
+		    (char *) NULL, 0, NI_NAMEREQD) != 0)
+	goto use_ipaddr;
+    downcase (addrbuf);
     if (strip_ldomain) {
+	struct addrinfo hints;
 	(void) gethostname(lhost, sizeof (lhost));
-	hp = gethostbyname(lhost);
-	if (hp != NULL) {
-	    strncpy(lhost, hp->h_name, sizeof (lhost));
-	    domain = strchr(lhost, '.');
-	    if (domain != NULL) {
-		for (cp = domain; *cp != '\0'; cp++)
-		    *cp = tolower(*cp);
-		cp = strstr(*out, domain);
-		if (cp != NULL)
-		    *cp = '\0';
-	    }
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_family = PF_UNSPEC;
+	hints.ai_flags = AI_CANONNAME;
+	if (getaddrinfo(lhost, (char *)NULL, &hints, &ai) == 0
+	    && ai != NULL) {
+		if (ai->ai_canonname != NULL) {
+			downcase (ai->ai_canonname);
+			domain = strchr (ai->ai_canonname, '.');
+			if (domain != NULL) {
+				cp = strstr (addrbuf, domain);
+				if (cp != NULL)
+					*cp = '\0';
+			}
+		}
+		freeaddrinfo (ai);
 	}
     }
-
-    if (strlen(*out) >= maxlen) {
-	return do_ntoa(addr, ut_host_len, out);
-    }
+    strncpy(*out, addrbuf, ut_host_len);
+    (*out)[ut_host_len - 1] = '\0';
+    if (strlen(*out) >= maxlen)
+	goto use_ipaddr;
     return 0;
 }

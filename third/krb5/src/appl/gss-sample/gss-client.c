@@ -19,10 +19,29 @@
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-client.c,v 1.1.1.5 2001-12-05 20:47:22 rbasch Exp $";
-#endif
+/*
+ * Copyright (C) 2003, 2004 by the Massachusetts Institute of Technology.
+ * All rights reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,11 +66,12 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 
 static int verbose = 1;
 
-void usage()
+static void usage()
 {
      fprintf(stderr, "Usage: gss-client [-port port] [-mech mechanism] [-d]\n");
+     fprintf(stderr, "       [-seq] [-noreplay] [-nomutual]\n");
      fprintf(stderr, "       [-f] [-q] [-ccount count] [-mcount count]\n");
-     fprintf(stderr, "       [-na] [-nw] [-nx] [-nm] host service msg\n");
+     fprintf(stderr, "       [-v1] [-na] [-nw] [-nx] [-nm] host service msg\n");
      exit(1);
 }
 
@@ -73,7 +93,7 @@ void usage()
  * opened and connected.  If an error occurs, an error message is
  * displayed and -1 is returned.
  */
-int connect_to_server(host, port)
+static int connect_to_server(host, port)
      char *host;
      u_short port;
 {
@@ -110,11 +130,12 @@ int connect_to_server(host, port)
  *
  * Arguments:
  *
- * 	s		(r) an established TCP connection to the service
- * 	service_name	(r) the ASCII service name of the service
- *	deleg_flag	(r) GSS-API delegation flag (if any)
+ * 	s		    (r) an established TCP connection to the service
+ * 	service_name(r) the ASCII service name of the service
+ *	gss_flags	(r) GSS-API delegation flag (if any)
  *	auth_flag	(r) whether to actually do authentication
- *	oid		(r) OID of the mechanism to use
+ *  v1_format   (r) whether the v1 sample protocol should be used
+ *	oid		    (r) OID of the mechanism to use
  * 	context		(w) the established GSS-API context
  *	ret_flags	(w) the returned flags from init_sec_context
  *
@@ -132,13 +153,14 @@ int connect_to_server(host, port)
  * unsuccessful, the GSS-API error messages are displayed on stderr
  * and -1 is returned.
  */
-int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
-			     gss_context, ret_flags)
+static int client_establish_context(s, service_name, gss_flags, auth_flag,
+				    v1_format, oid, gss_context, ret_flags)
      int s;
      char *service_name;
      gss_OID oid;
-     OM_uint32 deleg_flag;
+     OM_uint32 gss_flags;
      int auth_flag;
+     int v1_format;
      gss_ctx_id_t *gss_context;
      OM_uint32 *ret_flags;
 {
@@ -153,7 +175,7 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
 	* local variable space.
 	*/
        send_tok.value = service_name;
-       send_tok.length = strlen(service_name) + 1;
+       send_tok.length = strlen(service_name) ;
        maj_stat = gss_import_name(&min_stat, &send_tok,
 				  (gss_OID) gss_nt_service_name, &target_name);
        if (maj_stat != GSS_S_COMPLETE) {
@@ -161,9 +183,11 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
 	 return -1;
        }
      
-       if (send_token(s, TOKEN_NOOP|TOKEN_CONTEXT_NEXT, empty_token) < 0) {
-	 (void) gss_release_name(&min_stat, &target_name);
-	 return -1;
+       if (!v1_format) {
+	 if (send_token(s, TOKEN_NOOP|TOKEN_CONTEXT_NEXT, empty_token) < 0) {
+	   (void) gss_release_name(&min_stat, &target_name);
+	   return -1;
+	 }
        }
 
        /*
@@ -192,8 +216,7 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
 				gss_context,
 				target_name,
 				oid,
-				GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG |
-				deleg_flag,
+				gss_flags,
 				0,
 				NULL,	/* no channel bindings */
 				token_ptr,
@@ -203,13 +226,13 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
 				NULL);	/* ignore time_rec */
 
 	 if (token_ptr != GSS_C_NO_BUFFER)
-	   (void) gss_release_buffer(&min_stat, &recv_tok);
+	   free (recv_tok.value);
 
 	 if (send_tok.length != 0) {
 	   if (verbose)
 	     printf("Sending init_sec_context token (size=%d)...",
-		    send_tok.length);
-	   if (send_token(s, TOKEN_CONTEXT, &send_tok) < 0) {
+		    (int) send_tok.length);
+	   if (send_token(s, v1_format?0:TOKEN_CONTEXT, &send_tok) < 0) {
 	     (void) gss_release_buffer(&min_stat, &send_tok);
 	     (void) gss_release_name(&min_stat, &target_name);
 	     return -1;
@@ -221,7 +244,7 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
 	      display_status("initializing context", maj_stat,
 			     init_sec_min_stat);
 	      (void) gss_release_name(&min_stat, &target_name);
-	      if (*gss_context == GSS_C_NO_CONTEXT)
+	      if (*gss_context != GSS_C_NO_CONTEXT)
 		      gss_delete_sec_context(&min_stat, gss_context,
 					     GSS_C_NO_BUFFER);
 	      return -1;
@@ -250,11 +273,11 @@ int client_establish_context(s, service_name, deleg_flag, auth_flag, oid,
      return 0;
 }
 
-void read_file(file_name, in_buf)
+static void read_file(file_name, in_buf)
     char		*file_name;
     gss_buffer_t	in_buf;
 {
-    int fd, bytes_in, count;
+    int fd, count;
     struct stat stat_buf;
     
     if ((fd = open(file_name, O_RDONLY, 0)) < 0) {
@@ -275,7 +298,7 @@ void read_file(file_name, in_buf)
 
     if ((in_buf->value = malloc(in_buf->length)) == 0) {
 	fprintf(stderr, "Couldn't allocate %d byte buffer for reading file\n",
-		in_buf->length);
+		(int) in_buf->length);
 	exit(1);
     }
 
@@ -289,7 +312,7 @@ void read_file(file_name, in_buf)
     }
     if (count < in_buf->length)
 	fprintf(stderr, "Warning, only read in %d bytes, expected %d\n",
-		count, in_buf->length);
+		count, (int) in_buf->length);
 }
 
 /*
@@ -302,7 +325,7 @@ void read_file(file_name, in_buf)
  * 	host		(r) the host providing the service
  * 	port		(r) the port to connect to on host
  * 	service_name	(r) the GSS-API service name to authenticate to
- *	deleg_flag	(r) GSS-API delegation flag (if any)
+ *	gss_flags	(r) GSS-API delegation flag (if any)
  *	auth_flag	(r) whether to do authentication
  *	wrap_flag	(r) whether to do message wrapping at all
  *	encrypt_flag	(r) whether to do encryption while wrapping
@@ -321,15 +344,16 @@ void read_file(file_name, in_buf)
  * reads back a GSS-API signature block for msg from the server, and
  * verifies it with gss_verify.  -1 is returned if any step fails,
  * otherwise 0 is returned.  */
-int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
-		wrap_flag, encrypt_flag, mic_flag, msg, use_file,
-		mcount)
+static int call_server(host, port, oid, service_name, gss_flags, auth_flag,
+		       wrap_flag, encrypt_flag, mic_flag, v1_format, msg, use_file,
+		       mcount)
      char *host;
      u_short port;
      gss_OID oid;
      char *service_name;
-     OM_uint32 deleg_flag;
+     OM_uint32 gss_flags;
      int auth_flag, wrap_flag, encrypt_flag, mic_flag;
+     int v1_format;
      char *msg;
      int use_file;
      int mcount;
@@ -357,8 +381,9 @@ int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
 	  return -1;
 
      /* Establish context */
-     if (client_establish_context(s, service_name, deleg_flag, auth_flag,
-				  oid, &context, &ret_flags) < 0) {
+     if (client_establish_context(s, service_name, gss_flags, auth_flag,
+				  v1_format, oid, &context,
+				  &ret_flags) < 0) {
 	  (void) close(s);
 	  return -1;
      }
@@ -432,7 +457,7 @@ int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
 	 }
 	 printf("Mechanism %.*s supports %d names\n",
 		(int) oid_name.length, (char *) oid_name.value,
-		mech_names->count);
+		(int) mech_names->count);
 	 (void) gss_release_buffer(&min_stat, &oid_name);
 
 	 for (i=0; i<mech_names->count; i++) {
@@ -443,7 +468,7 @@ int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
 	     display_status("converting oid->string", maj_stat, min_stat);
 	     return -1;
 	   }
-	   printf("  %d: %.*s\n", i,
+	   printf("  %d: %.*s\n", (int) i,
 		  (int) oid_name.length, (char *) oid_name.value);
 
 	   (void) gss_release_buffer(&min_stat, &oid_name);
@@ -478,10 +503,11 @@ int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
        }
 
        /* Send to server */
-       if (send_token(s, (TOKEN_DATA |
+       if (send_token(s, (v1_format?0
+			  :(TOKEN_DATA |
 			  (wrap_flag ? TOKEN_WRAPPED : 0) |
 			  (encrypt_flag ? TOKEN_ENCRYPTED : 0) |
-			  (mic_flag ? TOKEN_SEND_MIC : 0)), &out_buf) < 0) {
+			  (mic_flag ? TOKEN_SEND_MIC : 0))), &out_buf) < 0) {
 	 (void) close(s);
 	 (void) gss_delete_sec_context(&min_stat, &context, GSS_C_NO_BUFFER);
 	 return -1;
@@ -515,13 +541,14 @@ int call_server(host, port, oid, service_name, deleg_flag, auth_flag,
 	   printf("Response received.\n");
        }
 
-       (void) gss_release_buffer(&min_stat, &out_buf);
+       free (out_buf.value);
      }
 
      if (use_file)
        free(in_buf.value);
 
      /* Send NOOP */
+     if (!v1_format)
      (void) send_token(s, TOKEN_NOOP, empty_token);
 
      if (auth_flag) {
@@ -547,7 +574,7 @@ static void parse_oid(char *mechanism, gss_OID *oid)
     gss_buffer_desc tok;
     OM_uint32 maj_stat, min_stat;
     
-    if (isdigit(mechanism[0])) {
+    if (isdigit((int) mechanism[0])) {
 	mechstr = malloc(strlen(mechanism)+5);
 	if (!mechstr) {
 	    fprintf(stderr, "Couldn't allocate mechanism scratch!\n");
@@ -578,14 +605,16 @@ int main(argc, argv)
      char *mechanism = 0;
      u_short port = 4444;
      int use_file = 0;
-     OM_uint32 deleg_flag = 0, min_stat;
+     OM_uint32 gss_flags = GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG;
+     OM_uint32 min_stat;
      gss_OID oid = GSS_C_NULL_OID;
      int mcount = 1, ccount = 1;
      int i;
-     int auth_flag, wrap_flag, encrypt_flag, mic_flag;
+     int auth_flag, wrap_flag, encrypt_flag, mic_flag, v1_format;
 
      display_file = stdout;
      auth_flag = wrap_flag = encrypt_flag = mic_flag = 1;
+     v1_format = 0;
 
      /* Parse arguments. */
      argc--; argv++;
@@ -599,7 +628,13 @@ int main(argc, argv)
 	       if (!argc) usage();
 	       mechanism = *argv;
 	   } else if (strcmp(*argv, "-d") == 0) {
-	       deleg_flag = GSS_C_DELEG_FLAG;
+	       gss_flags |= GSS_C_DELEG_FLAG;
+	   } else if (strcmp(*argv, "-seq") == 0) {
+	       gss_flags |= GSS_C_SEQUENCE_FLAG;
+	   } else if (strcmp(*argv, "-noreplay") == 0) {
+	       gss_flags &= ~GSS_C_REPLAY_FLAG;
+	   } else if (strcmp(*argv, "-nomutual") == 0) {
+	       gss_flags &= ~GSS_C_MUTUAL_FLAG;
 	  } else if (strcmp(*argv, "-f") == 0) {
 	       use_file = 1;
 	  } else if (strcmp(*argv, "-q") == 0) {
@@ -622,8 +657,10 @@ int main(argc, argv)
 	    encrypt_flag = 0;
 	  } else if (strcmp(*argv, "-nm") == 0) {
 	    mic_flag = 0;
-	  } else 
-	       break;
+	  } else  if (strcmp(*argv, "-v1") == 0) {
+	    v1_format = 1;
+	  } else
+	    break;
 	  argc--; argv++;
      }
      if (argc != 3)
@@ -638,8 +675,8 @@ int main(argc, argv)
 
      for (i = 0; i < ccount; i++) {
        if (call_server(server_host, port, oid, service_name,
-		       deleg_flag, auth_flag, wrap_flag, encrypt_flag, mic_flag,
-		       msg, use_file, mcount) < 0)
+		       gss_flags, auth_flag, wrap_flag, encrypt_flag, mic_flag,
+		       v1_format, 		       msg, use_file, mcount) < 0)
 	 exit(1);
      }
 

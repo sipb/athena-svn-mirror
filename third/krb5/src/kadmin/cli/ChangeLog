@@ -1,13 +1,119 @@
-2001-10-11  Ken Raeburn  <raeburn@mit.edu>
+2003-06-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* kadmin.c (strdate): Increase size of buffer to 40.  Use sizeof
+	for length passed to strftime.
+
+2003-05-19  Sam Hartman  <hartmans@mit.edu>
+
+	* kadmin.c (kadmin_startup): Don't register writable keytabs as this is always done by the library now.
+
+2003-02-07  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (install): Fix typo in k5srvutil.M install rule.
+
+2003-02-06  Sam Hartman  <hartmans@mit.edu>
+
+	* Makefile.in (install): Install k5srvutil
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* kadmin.c (kadmin_addprinc, kadmin_cpw): Remove trailing colon,
+	as new implementation of krb5_read_password() appends it.
+
+2002-10-08  Tom Yu  <tlyu@mit.edu>
+
+	* kadmin.c (quit): Release exclusive lock, if acquired.
+	(kadmin_lock, kadmin_unlock): New functions to call kadm5_lock and
+	kadm5_unlock.
+
+	* kadmin.h: Add kadmin_lock and kadmin_unlock.
+
+	* kadmin_ct.ct: Add lock and unlock commands.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* dump.c: Unused file deleted.
+
+2002-07-29  Jen Selby <jenselby@mit.edu>
+
+	* kadmin.M: corrected documenation of "-k/-t" options.
+	Added documentation for some other options.  Updated the lists
+	of aliases for commands, some command options, and some of
+	the sample output.
+
+2002-06-06  Tom Yu  <tlyu@mit.edu>
+
+	* kadmin.M: Remove references to "rename_principal".
+	[pullup from 1-2-2-branch]
+
+2001-10-10  Ken Raeburn  <raeburn@mit.edu>
 
 	* kadmin.c (kadmin_parse_name): Properly advance pointer in
 	certain error cases involving '@'.  Patch from Emily Ratliff,
 	<ratliff@austin.ibm.com>.
-	[pulled up 1.54->1.55 from trunk]
 
-2001-02-22  Tom Yu  <tlyu@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
 
-	* kadmin.M: Remove references to "rename_principal".
+	* dump.c: Make prototypes unconditional.
+
+2001-06-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* getdate.y: Provide full prototype for getdate_yylex() and
+	getdate_yyerror(). 
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* getdate.y: Cast argument to isalpha()/isspace()/isdigit() to int.
+
+Mon Feb 26 13:25:50 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* ss_wrapper.c: Include kadmin.h.
+
+	* kadmin.c, keytab.c: Warning cleanup of shadowing variables,
+ 	missing prototypes, assignments within conditionals. variables
+ 	type mismatches.
+
+	* getdate.y: Prototypes in file are for getdate_yylex() and
+ 	getdaye_yyerror() and not yylex()/yyerror().
+
+	* kadmin.h: New header file with ss callback prototypes and global
+ 	variables.
+
+	
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadmin.c (kadmin_cpw): Argument to krb5_read_password changed to
+	unsigned int.
+
+2000-10-16  Tom Yu  <tlyu@mit.edu>
+
+	* kadmin.c (strdur): Print negative durations somewhat (!)
+	sanely.
+	(kadmin_startup): Call krb5_klog_init() to avoid coredumping if
+	kadm5_init() logs something via krb5_klog_syslog().
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadmin.c (kadmin_getpol): Change format strings from %d to %ld
+	to match the policy types which are longs.
+
+	* getdate.y: Include stdlib.h if present on system.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* ss_wrapper.c (main): ss_listen() takes only one argument
 
 2000-06-09  Tom Yu  <tlyu@mit.edu>
 
@@ -54,12 +160,12 @@
 	(kadmin_addprinc): Add support for new api.
 	(kadmin_modprinc): Update to call new parse_princ_args reasonably.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-18  Ken Raeburn  <raeburn@mit.edu>
 

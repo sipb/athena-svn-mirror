@@ -92,8 +92,8 @@ error_code KRB5KRB_AP_ERR_METHOD,	"Alternative authentication method required"
 error_code KRB5KRB_AP_ERR_BADSEQ,	"Incorrect sequence number in message"
 error_code KRB5KRB_AP_ERR_INAPP_CKSUM,	"Inappropriate type of checksum in message"
 #^^ 50
-error_code KRB5PLACEHOLD_51,	"KRB5 error code 51"
-error_code KRB5PLACEHOLD_52,	"KRB5 error code 52"
+error_code KRB5KRB_AP_PATH_NOT_ACCEPTED,	"Policy rejects transited path"
+error_code KRB5KRB_ERR_RESPONSE_TOO_BIG,	"Response too big for UDP, retry with TCP"
 error_code KRB5PLACEHOLD_53,	"KRB5 error code 53"
 error_code KRB5PLACEHOLD_54,	"KRB5 error code 54"
 error_code KRB5PLACEHOLD_55,	"KRB5 error code 55"
@@ -170,7 +170,7 @@ error_code KRB5PLACEHOLD_125,	"KRB5 error code 125"
 error_code KRB5PLACEHOLD_126,	"KRB5 error code 126"
 error_code KRB5PLACEHOLD_127,	"KRB5 error code 127"
 
-error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.5 2001-12-05 20:48:15 rbasch Exp $"
+error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.6 2004-02-27 04:06:27 zacheiss Exp $"
 
 error_code KRB5_LIBOS_BADLOCKFLAG,	"Invalid flag for file lock mode"
 error_code KRB5_LIBOS_CANTREADPWD,	"Cannot read password"
@@ -310,6 +310,9 @@ error_code KRB5_GET_IN_TKT_LOOP,  "Looping detected inside krb5_get_in_tkt"
 error_code KRB5_CONFIG_NODEFREALM,	"Configuration file does not specify default realm"
 
 error_code KRB5_SAM_UNSUPPORTED,  "Bad SAM flags in obtain_sam_padata"
+error_code KRB5_SAM_INVALID_ETYPE,	"Invalid encryption type in SAM challenge"
+error_code KRB5_SAM_NO_CHECKSUM,	"Missing checksum in SAM challenge"
+error_code KRB5_SAM_BAD_CHECKSUM,	"Bad checksum in SAM challenge"
 error_code KRB5_KT_NAME_TOOLONG,	"Keytab name too long"
 error_code KRB5_KT_KVNONOTFOUND,	"Key version number for principal in key table is incorrect"
 error_code KRB5_APPL_EXPIRED,	"This application has expired"
@@ -323,4 +326,18 @@ error_code KRB5_NOPERM_ETYPE,	"Encryption type not permitted"
 error_code KRB5_CONFIG_ETYPE_NOSUPP,	"No supported encryption types (config file error?)"
 error_code KRB5_OBSOLETE_FN,	"Program called an obsolete, deleted function"
 
+# translated versions of getaddrinfo errors
+error_code KRB5_EAI_FAIL,	"unknown getaddrinfo failure"
+error_code KRB5_EAI_NODATA,	"no data available for host/domain name"
+error_code KRB5_EAI_NONAME,	"host/domain name not found"
+error_code KRB5_EAI_SERVICE,	"service name unknown"
+
+error_code KRB5_ERR_NUMERIC_REALM, "Cannot determine realm for numeric host address"
+
+error_code KRB5_ERR_BAD_S2K_PARAMS, "Invalid key generation parameters from KDC"
+
+error_code KRB5_ERR_NO_SERVICE,	"service not available"
+
+error_code KRB5_CC_READONLY,    "Ccache function not supported: read-only ccache type"
+error_code KRB5_CC_NOSUPP,      "Ccache function not supported: not implemented"
 end

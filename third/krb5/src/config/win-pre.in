@@ -1,6 +1,6 @@
 WHAT=windows
 
-all:: outpre-dir
+all:: setup-msg outpre-dir
 
 all:: all-$(WHAT)
 clean:: clean-$(WHAT)
@@ -39,9 +39,9 @@ CPU=i386
 #
 
 !if "$(OS)" == "Windows_NT"
-NULL=
+DIRNUL=
 !else 
-NULL=nul
+DIRNUL=\nul
 !endif
 
 # NOTE: ^ is an escape char for NMAKE.
@@ -55,17 +55,22 @@ OUTPRE2=$(OUTPRE1)\$(CPU)
 OUTPRE3=$(OUTPRE2)\$(OUTPRE_DBG)
 OUTPRE=$(OUTPRE3)^\
 
-$(OUTPRE3):
-	-@if not exist $(OUTPRE1)\nul mkdir $(OUTPRE1)
-	-@if not exist $(OUTPRE2)\nul mkdir $(OUTPRE2)
-	-@if not exist $(OUTPRE3)\nul mkdir $(OUTPRE3)
-	-@if exist $(OUTPRE3)\nul echo Output will go to $(OUTPRE3).
-	-@if not exist $(OUTPRE3)\nul echo Could not create $(OUTPRE3).
+$(OUTPRE3)$(DIRNUL):
+	-@if not exist $(OUTPRE1)$(DIRNUL) mkdir $(OUTPRE1)
+	-@if not exist $(OUTPRE2)$(DIRNUL) mkdir $(OUTPRE2)
+	-@if not exist $(OUTPRE3)$(DIRNUL) mkdir $(OUTPRE3)
+	@if exist $(OUTPRE3)$(DIRNUL) echo Output going into $(OUTPRE3)
+	@if not exist $(OUTPRE1)$(DIRNUL) echo The directory $(OUTPRE1) could not be created.
+	@if exist $(OUTPRE1)$(DIRNUL) if not exist $(OUTPRE2)$(DIRNUL) echo The directory $(OUTPRE2) could not be created.
+	@if exist $(OUTPRE2)$(DIRNUL) if not exist $(OUTPRE3)$(DIRNUL) echo The directory $(OUTPRE3) could not be created.
+
 
 clean-windows-dir::
-	-@if exist $(OUTPRE3)\nul rmdir $(OUTPRE3)
-	-@if exist $(OUTPRE2)\nul rmdir $(OUTPRE2)
-	-@if exist $(OUTPRE1)\nul rmdir $(OUTPRE1)
+	-@if exist $(OUTPRE3)$(DIRNUL) rmdir $(OUTPRE3)
+	-@if exist $(OUTPRE2)$(DIRNUL) rmdir $(OUTPRE2)
+	-@if exist $(OUTPRE1)$(DIRNUL) rmdir $(OUTPRE1)
+	@if exist $(OUTPRE2)$(DIRNUL) echo The directory $(OUTPRE2) is not empty.
+	@if not exist $(OUTPRE2)$(DIRNUL) if exist $(OUTPRE1)$(DIRNUL) echo The directory $(OUTPRE1) is not empty.
 
 # Directory syntax:
 #
@@ -111,13 +116,17 @@ DNSLIBS=
 DNSFLAGS=
 !endif
 
+!if defined(KRB5_KFW_COMPILE)
+KFWFLAGS=-DUSE_LEASH=1
+!endif
+
 #
 # The name of the C compiler for the target
 #
 CC=cl
 
 PDB_OPTS=-Fd$(OUTPRE)\ -FD
-CPPFLAGS=-I$(SRCTOP)\include -I$(SRCTOP)\include\krb5 $(DNSFLAGS) -DKRB5_PRIVATE=1
+CPPFLAGS=-I$(SRCTOP)\include -I$(SRCTOP)\include\krb5 $(DNSFLAGS) -DKRB5_PRIVATE=1 -DWIN32_LEAN_AND_MEAN -DKRB5_DEPRECATED=1 $(KFWFLAGS)
 CCOPTS=-nologo /W3 $(PDB_OPTS) $(DLL_FILE_DEF)
 LOPTS=-nologo -incremental:no
 
@@ -165,6 +174,10 @@ K4LIB=$(BUILDTOP)\lib\$(OUTPRE)krb4_32.lib
 GLIB=$(BUILDTOP)\lib\$(OUTPRE)gssapi32.lib
 WLIB=
 
+KRB4_INCLUDES=-I$(BUILDTOP)/include/kerberosIV
+
+COM_ERR_DEPS	= $(BUILDTOP)/include/com_err.h
+
 ARADD=rem
 RANLIB=rem
 ARCHIVE=rem
@@ -181,17 +194,27 @@ MAKE=-$(MAKE)
 CFLAGS = $(CCOPTS)
 ALL_CFLAGS = $(DEFS) $(DEFINES) $(LOCALINCLUDES) $(CPPFLAGS) $(CFLAGS)
 
+C_RULE_STUFF=$(CC) $(ALL_CFLAGS) -Fo$(OUTPRE)\ -c
+C_RULE_PRINT=$(C_RULE_STUFF)
+C_RULE=$(C_RULE_STUFF) $<
+
 {}.rc{$(OUTPRE)}.res:
 	$(RC) $(RCFLAGS) -fo $@ -r $<
 
 {}.c{$(OUTPRE)}.obj:
-	$(CC) $(ALL_CFLAGS) -Fo$(OUTPRE)\ -c $<
+	@if "%DO_C_RULE_PRINT%"=="1" echo %C_RULE_PRINT% ...
+	@set DO_C_RULE_PRINT=
+	@$(C_RULE)
 
 {}.cxx{$(OUTPRE)}.obj:
-	$(CC) $(ALL_CFLAGS) -Fo$(OUTPRE)\ -c $<
+	@if "%DO_C_RULE_PRINT%"=="1" echo %C_RULE_PRINT% ...
+	@set DO_C_RULE_PRINT=
+	@$(C_RULE)
 
 {}.cpp{$(OUTPRE)}.obj:
-	$(CC) $(ALL_CFLAGS) -Fo$(OUTPRE)\ -c $<
+	@if "%DO_C_RULE_PRINT%"=="1" echo %C_RULE_PRINT% ...
+	@set DO_C_RULE_PRINT=
+	@$(C_RULE)
 
 #
 # End of Win32 pre-config lines (config/win-pre.in)

@@ -1,7 +1,7 @@
 /*
  * src/lib/krb5/asn.1/asn1_decode.c
  * 
- * Copyright 1994 by the Massachusetts Institute of Technology.
+ * Copyright 1994, 2003 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -39,25 +39,25 @@
 
 #define setup()\
 asn1_error_code retval;\
-asn1_class class;\
-asn1_construction construction;\
-asn1_tagnum tagnum;\
-int length
+taginfo tinfo
+
+#define asn1class	(tinfo.asn1class)
+#define construction	(tinfo.construction)
+#define tagnum		(tinfo.tagnum)
+#define length		(tinfo.length)
 
 #define tag(type)\
-retval = asn1_get_tag(buf,&class,&construction,&tagnum,&length);\
+retval = asn1_get_tag_2(buf,&tinfo);\
 if(retval) return retval;\
-if(class != UNIVERSAL || construction != PRIMITIVE || tagnum != type)\
+if(asn1class != UNIVERSAL || construction != PRIMITIVE || tagnum != type)\
   return ASN1_BAD_ID
   
 #define cleanup()\
 return 0
 
-time_t gmt_mktime PROTOTYPE((struct tm *));
+time_t gmt_mktime (struct tm *);
 
-asn1_error_code asn1_decode_integer(buf, val)
-     asn1buf * buf;
-     long * val;
+asn1_error_code asn1_decode_integer(asn1buf *buf, long int *val)
 {
   setup();
   asn1_octet o;
@@ -82,9 +82,7 @@ asn1_error_code asn1_decode_integer(buf, val)
   cleanup();
 }
 
-asn1_error_code asn1_decode_unsigned_integer(buf, val)
-     asn1buf * buf;
-     unsigned long * val;
+asn1_error_code asn1_decode_unsigned_integer(asn1buf *buf, long unsigned int *val)
 {
   setup();
   asn1_octet o;
@@ -108,10 +106,61 @@ asn1_error_code asn1_decode_unsigned_integer(buf, val)
   cleanup();
 }
 
-asn1_error_code asn1_decode_octetstring(buf, retlen, val)
-     asn1buf * buf;
-     int * retlen;
-     asn1_octet ** val;
+/*
+ * asn1_decode_maybe_unsigned
+ *
+ * This is needed because older releases of MIT krb5 have signed
+ * sequence numbers.  We want to accept both signed and unsigned
+ * sequence numbers, in the range -2^31..2^32-1, mapping negative
+ * numbers into their positive equivalents in the same way that C's
+ * normal integer conversions do, i.e., would preserve bits on a
+ * two's-complement architecture.
+ */
+asn1_error_code asn1_decode_maybe_unsigned(asn1buf *buf, unsigned long *val)
+{
+  setup();
+  asn1_octet o;
+  unsigned long n, bitsremain;
+  unsigned int i;
+
+  tag(ASN1_INTEGER);
+  o = 0;
+  n = 0;
+  bitsremain = ~0UL;
+  for (i = 0; i < length; i++) {
+    /* Accounts for u_long width not being a multiple of 8. */
+    if (bitsremain < 0xff) return ASN1_OVERFLOW;
+    retval = asn1buf_remove_octet(buf, &o);
+    if (retval) return retval;
+    if (bitsremain == ~0UL) {
+      if (i == 0)
+	n = (o & 0x80) ? ~0UL : 0UL; /* grab sign bit */
+      /*
+       * Skip leading zero or 0xFF octets to humor non-compliant encoders.
+       */
+      if (n == 0 && o == 0)
+	continue;
+      if (n == ~0UL && o == 0xff)
+	continue;
+    }
+    n = (n << 8) | o;
+    bitsremain >>= 8;
+  }
+  *val = n;
+  cleanup();
+}
+
+asn1_error_code asn1_decode_oid(asn1buf *buf, unsigned int *retlen, asn1_octet **val)
+{
+  setup();
+  tag(ASN1_OBJECTIDENTIFIER);
+  retval = asn1buf_remove_octetstring(buf, length, val);
+  if (retval) return retval;
+  *retlen = length;
+  cleanup();
+}
+
+asn1_error_code asn1_decode_octetstring(asn1buf *buf, unsigned int *retlen, asn1_octet **val)
 {
   setup();
   tag(ASN1_OCTETSTRING);
@@ -121,10 +170,7 @@ asn1_error_code asn1_decode_octetstring(buf, retlen, val)
   cleanup();
 }
 
-asn1_error_code asn1_decode_charstring(buf, retlen, val)
-     asn1buf * buf;
-     int * retlen;
-     char ** val;
+asn1_error_code asn1_decode_charstring(asn1buf *buf, unsigned int *retlen, char **val)
 {
   setup();
   tag(ASN1_OCTETSTRING);
@@ -135,10 +181,7 @@ asn1_error_code asn1_decode_charstring(buf, retlen, val)
 }
 
 
-asn1_error_code asn1_decode_generalstring(buf, retlen, val)
-     asn1buf * buf;
-     int * retlen;
-     char ** val;
+asn1_error_code asn1_decode_generalstring(asn1buf *buf, unsigned int *retlen, char **val)
 {
   setup();
   tag(ASN1_GENERALSTRING);
@@ -149,8 +192,7 @@ asn1_error_code asn1_decode_generalstring(buf, retlen, val)
 }
 
 
-asn1_error_code asn1_decode_null(buf)
-     asn1buf * buf;
+asn1_error_code asn1_decode_null(asn1buf *buf)
 {
   setup();
   tag(ASN1_NULL);
@@ -158,10 +200,7 @@ asn1_error_code asn1_decode_null(buf)
   cleanup();
 }
 
-asn1_error_code asn1_decode_printablestring(buf, retlen, val)
-     asn1buf * buf;
-     int * retlen;
-     char ** val;
+asn1_error_code asn1_decode_printablestring(asn1buf *buf, int *retlen, char **val)
 {
   setup();
   tag(ASN1_PRINTABLESTRING);
@@ -171,10 +210,7 @@ asn1_error_code asn1_decode_printablestring(buf, retlen, val)
   cleanup();
 }
 
-asn1_error_code asn1_decode_ia5string(buf, retlen, val)
-     asn1buf * buf;
-     int * retlen;
-     char ** val;
+asn1_error_code asn1_decode_ia5string(asn1buf *buf, int *retlen, char **val)
 {
   setup();
   tag(ASN1_IA5STRING);
@@ -184,9 +220,7 @@ asn1_error_code asn1_decode_ia5string(buf, retlen, val)
   cleanup();
 }
 
-asn1_error_code asn1_decode_generaltime(buf, val)
-     asn1buf * buf;
-     time_t * val;
+asn1_error_code asn1_decode_generaltime(asn1buf *buf, time_t *val)
 {
   setup();
   char *s;

@@ -50,7 +50,7 @@ struct mblock {
     1
 };
 
-int set_dbname_help PROTOTYPE((char *, char *));
+int set_dbname_help (char *, char *);
 
 static void
 usage(who, status)
@@ -76,26 +76,13 @@ static char *cur_realm = 0;
 static char *mkey_name = 0;
 static char *mkey_password = 0;
 static krb5_boolean manual_mkey = FALSE;
-static krb5_boolean dbactive = FALSE;
 
-void
-quit()
-{
-    krb5_error_code retval = krb5_db_fini(test_context);
-    memset((char *)master_keyblock.contents, 0, master_keyblock.length);
-    if (retval) {
-	com_err(progname, retval, "while closing database");
-	exit(1);
-    }
-    exit(0);
-}
-
-void add_princ PROTOTYPE((krb5_context, char *));
+void add_princ (krb5_context, char *);
 
 int
 main(argc, argv)
-int argc;
-char *argv[];
+    int argc;
+    char *argv[];
 {
     extern char *optarg;	
     int optchar, i, n;
@@ -164,15 +151,17 @@ char *argv[];
 
 
     if ((retval = krb5_kt_register(test_context, &krb5_ktf_writable_ops))) {
-	com_err(progname, retval,
+        if (retval != KRB5_KT_TYPE_EXISTS) {
+	  com_err(progname, retval,
 		"while registering writable key table functions");
-	exit(1);
+	  exit(1);
+	}
     }
 
     if (!enctypedone)
 	master_keyblock.enctype = DEFAULT_KDC_ENCTYPE;
 
-    if (!valid_enctype(master_keyblock.enctype)) {
+    if (!krb5_c_valid_enctype(master_keyblock.enctype)) {
 	com_err(progname, KRB5_PROG_ETYPE_NOSUPP,
 		"while setting up enctype %d", master_keyblock.enctype);
 	exit(1);
@@ -210,11 +199,13 @@ char *argv[];
     }
 
     retval = krb5_db_fini(test_context);
-    memset((char *)master_keyblock.contents, 0, master_keyblock.length);
+    memset((char *)master_keyblock.contents, 0, 
+	   (size_t) master_keyblock.length);
     if (retval && retval != KRB5_KDB_DBNOTINITED) {
 	com_err(progname, retval, "while closing database");
 	exit(1);
     }
+    krb5_free_context(test_context);
     exit(0);
 }
 
@@ -247,6 +238,7 @@ add_princ(context, str_newprinc)
     if ((retval = krb5_copy_principal(context, newprinc, &newentry.princ))) {
       	com_err(progname, retval, "while encoding princ to db entry for '%s'", 
 	        princ_name);
+	krb5_free_principal(context, newprinc);
 	goto error;
     }
 
@@ -257,12 +249,14 @@ add_princ(context, str_newprinc)
 	retval = krb5_timeofday(context, &now);
 	if (retval) {
 	    com_err(progname, retval, "while fetching date");
+	    krb5_free_principal(context, newprinc);
 	    goto error;
 	}
 	retval = krb5_dbe_update_mod_princ_data(context, &newentry, now,
 					       master_princ);
 	if (retval) {
 	    com_err(progname, retval, "while encoding mod_princ data");
+	    krb5_free_principal(context, newprinc);
 	    goto error;
 	}
     }
@@ -274,8 +268,11 @@ add_princ(context, str_newprinc)
         if ((retval = krb5_principal2salt(context, newprinc, &salt))) {
 	    com_err(progname, retval, "while converting princ to salt for '%s'",
 		    princ_name);
+	    krb5_free_principal(context, newprinc);
 	    goto error;
         }
+
+	krb5_free_principal(context, newprinc);
 
     	pwd.length = strlen(princ_name);
     	pwd.data = princ_name;  /* must be able to regenerate */
@@ -408,7 +405,6 @@ char *dbname;
     mblock.mkvno = master_entry.key_data[0].key_data_kvno;
 
     krb5_db_free_principal(test_context, &master_entry, nentries);
-    dbactive = TRUE;
     return 0;
 }
 

@@ -19,7 +19,7 @@
  * 
  */
 
-#include <com_err.h>
+#include "com_err.h"
 #include "libpty.h"
 #include "pty-int.h"
 
@@ -28,6 +28,10 @@
 #define PTY_STRUCT_UTMPX struct utmpx
 #else
 #define PTY_STRUCT_UTMPX struct utmp
+#endif
+
+#ifdef NEED_LOGWTMP_PROTO
+void logwtmp(const char *, const char *, const char *);
 #endif
 
 long

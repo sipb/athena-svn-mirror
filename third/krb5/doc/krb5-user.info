@@ -1,5 +1,5 @@
-This is Info file krb5-user.info, produced by Makeinfo version 1.68
-from the input file user-guide.texinfo.
+This is krb5-user.info, produced by makeinfo version 4.0 from
+user-guide.texinfo.
 
 
 File: krb5-user.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
@@ -20,7 +20,7 @@ File: krb5-user.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: To
 Copyright
 *********
 
-Copyright (C) 1985-2001 by the Massachusetts Institute of Technology.
+Copyright (C) 1985-2002 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -76,6 +76,61 @@ kadmin/passwd, kadmin/server, lib/kadm5, and portions of lib/rpc:
      to continuing Kerberos technology development and our gratitude
      for the valuable work which has been performed by MIT and the
      Kerberos community.
+
+The implementation of the Yarrow pseudo-random number generator in
+src/lib/crypto/yarrow has the following copyright:
+
+     Copyright 2000 by Zero-Knowledge Systems, Inc.
+
+     Permission to use, copy, modify, distribute, and sell this software
+     and its documentation for any purpose is hereby granted without
+     fee, provided that the above copyright notice appear in all copies
+     and that both that copyright notice and this permission notice
+     appear in supporting documentation, and that the name of
+     Zero-Knowledge Systems, Inc. not be used in advertising or
+     publicity pertaining to distribution of the software without
+     specific, written prior permission.  Zero-Knowledge Systems, Inc.
+     makes no representations about the suitability of this software
+     for any purpose.  It is provided "as is" without express or
+     implied warranty.
+
+     ZERO-KNOWLEDGE SYSTEMS, INC. DISCLAIMS ALL WARRANTIES WITH REGARD
+     TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL ZERO-KNOWLEDGE
+     SYSTEMS, INC. BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
+     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+     OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+     TORTUOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+     PERFORMANCE OF THIS SOFTWARE.
+
+
+The implementation of the AES encryption algorithm in
+src/lib/crypto/aes has the following copyright:
+
+     Copyright (c) 2001, Dr Brian Gladman <brg@gladman.uk.net>,
+     Worcester, UK.  All rights reserved.
+
+     LICENSE TERMS
+
+     The free distribution and use of this software in both source and
+     binary form is allowed (with or without changes) provided that:
+
+       1. distributions of this source code include the above copyright
+          notice, this list of conditions and the following disclaimer;
+
+       2. distributions in binary form include the above copyright
+          notice, this list of conditions and the following disclaimer
+          in the documentation and/or other associated materials;
+
+       3. the copyright holder's name is not used to endorse products
+          built using this software without specific written permission.
+
+     DISCLAIMER
+
+     This software is provided 'as is' with no explcit or implied
+     warranties in respect of any properties, including, but not
+     limited to, correctness and fitness for purpose.
+
 
 Kerberos V5 includes documentation and software developed at the
 University of California at Berkeley, which includes this copyright
@@ -144,13 +199,13 @@ communications between two points anywhere on the internet, it provides
 a layer of security that is not dependent on which side of a firewall
 either client is on.  Since studies have shown that half of the computer
 security breaches in industry happen from inside firewalls, MIT's
-Kerberos V5 plays a vital role in maintaining your nework security.
+Kerberos V5 plays a vital role in maintaining your network security.
 
 The Kerberos V5 package is designed to be easy to use.  Most of the
-commands are nearly identical to UNIX network programs you are already
-used to.  Kerberos V5 is a "single-sign-on" system, which means that
-you have to type your password only once per session, and Kerberos does
-the authenticating and encrypting transparently.
+commands are nearly identical to UNIX network programs you already use.
+Kerberos V5 is a "single-sign-on" system, which means that you have to
+type your password only once per session, and Kerberos does the
+authenticating and encrypting transparently.
 
 * Menu:
 
@@ -189,9 +244,16 @@ What is a Kerberos Principal?
 =============================
 
 A Kerberos "principal" is a unique identity to which Kerberos can
-assign tickets.  By convention, a principal is divided into three parts:
-the "primary", the "instance", and the "realm".  The format of a
-typical Kerberos V5 principal is `primary/instance@REALM'.
+assign tickets.  Principals can have an arbitrary number of components.
+Each component is separated by a component separator, generally `/'.
+The last component is the realm, separated from the rest of the
+principal by the realm separator, generally `@'.  If there is no realm
+component in the principal, then it will be assumed that the principal
+is in the default realm for the context in which it is being used.
+
+Traditionally, a principal is divided into three parts:  the "primary",
+the "instance", and the "realm".  The format of a typical Kerberos V5
+principal is `primary/instance@REALM'.
 
    * The "primary" is the first part of the principal.  In the case of
      a user, it's the same as your username.  For a host, the primary is
@@ -210,8 +272,8 @@ typical Kerberos V5 principal is `primary/instance@REALM'.
 
    * The "realm" is your Kerberos realm.  In most cases, your Kerberos
      realm is your domain name, in upper-case letters.  For example,
-     the machine `daffodil.mit.edu' would be in the realm
-     `ATHENA.MIT.EDU'.
+     the machine `daffodil.example.com' would be in the realm
+     `EXAMPLE.COM'.
 
 
 File: krb5-user.info,  Node: Kerberos V5 Tutorial,  Next: Kerberos V5 Reference,  Prev: Introduction,  Up: Top
@@ -227,7 +289,7 @@ instruction to type the "`ls'" command would be represented as follows:
 
 In these examples, we will use sample usernames, such as `jennifer' and
 `david', sample hostnames, such as `daffodil' and `trillium', and
-sample domain names, such as `mit.edu' and `fubar.org'.  When you see
+sample domain names, such as `mit.edu' and `example.com'.  When you see
 one of these, substitute your username, hostname, or domain name
 accordingly.
 
@@ -275,12 +337,92 @@ copies of your tickets, or use a screensaver that locks the screen.
 
 * Menu:
 
+* Kerberos Ticket Properties::
 * Obtaining Tickets with kinit::
 * Viewing Your Tickets with klist::
 * Destroying Your Tickets with kdestroy::
 
 
-File: krb5-user.info,  Node: Obtaining Tickets with kinit,  Next: Viewing Your Tickets with klist,  Prev: Ticket Management,  Up: Ticket Management
+File: krb5-user.info,  Node: Kerberos Ticket Properties,  Next: Obtaining Tickets with kinit,  Prev: Ticket Management,  Up: Ticket Management
+
+Kerberos Ticket Properties
+--------------------------
+
+There are various properties that Kerberos tickets can have:
+
+If a ticket is "forwardable", then the KDC can issue a new ticket with
+a different network address based on the forwardable ticket.  This
+allows for authentication forwarding without requiring a password to be
+typed in again.  For example, if a user with a forwardable TGT logs
+into a remote system, the KDC could issue a new TGT for that user with
+the netword address of the remote system, allowing authentication on
+that host to work as though the user were logged in locally.
+
+When the KDC creates a new ticket based on a forwardable ticket, it
+sets the "forwarded" flag on that new ticket.  Any tickets that are
+created based on a ticket with the forwarded flag set will also have
+their forwarded flags set.
+
+A "proxiable" ticket is similar to a forwardable ticket in that it
+allows a service to take on the identity of the client.  Unlike a
+forwardable ticket, however, a proxiable ticket is only issued for
+specific services.  In other words, a ticket-granting ticket cannot be
+issued based on a ticket that is proxiable but not forwardable.
+
+A "proxy" ticket is one that was issued based on a proxiable ticket.
+
+A "postdated" ticket is issued with the invalid flag set.  After the
+starting time listed on the ticket, it can be presented to the KDC to
+obtain valid tickets.
+
+Tickets with the "postdateable" flag set can be used to issue postdated
+tickets.
+
+"Renewable" tickets can be used to obtain new session keys without the
+user entering their password again.  A renewable ticket has two
+expiration times.  The first is the time at which this particular
+ticket expires.  The second is the latest possible expiration time for
+any ticket issued based on this renewable ticket.
+
+A ticket with the "initial" flag set was issued based on the
+authentication protocol, and not on a ticket-granting ticket.   Clients
+that wish to ensure that the user's key has been recently presented for
+verification could specify that this flag must be set to accept the
+ticket.
+
+An "invalid" ticket must be rejected by application servers.  Postdated
+tickets are usually issued with this flag set, and must be validated by
+the KDC before they can be used.
+
+A "preauthenticated" ticket is one that was only issued after the
+client requesting the ticket had authenticated itself to the KDC.
+
+The "hardware authentication" flag is set on a ticket which required
+the use of hardware for authentication.  The hardware is expected to be
+possessed only by the client which requested the tickets.
+
+If a ticket has the "transit policy checked" flag set, then the KDC that
+issued this ticket implements the transited-realm check policy and
+checked the transited-realms list on the ticket.  The transited-realms
+list contains a list of all intermediate realms between the realm of the
+KDC that issued the first ticket and that of the one that issued the
+current ticket.  If this flag is not set, then the application server
+must check the transited realms itself or else reject the ticket.
+
+The "okay as delegate" flag indicates that the server specified in the
+ticket is suitable as a delegate as determined by the policy of that
+realm.  A server that is acting as a delegate has been granted a proxy
+or a forwarded TGT.  This flag is a new addition to the Kerberos V5
+protocol and is not yet implemented on MIT servers.
+
+An "anonymous"  ticket is one in which the named principal is a generic
+principal for that realm; it does not actually specify the individual
+that will be using the ticket.  This ticket is meant only to securely
+distribute a session key.  This is a new addition to the Kerberos V5
+protocol and is not yet implemented on MIT servers.
+
+
+File: krb5-user.info,  Node: Obtaining Tickets with kinit,  Next: Viewing Your Tickets with klist,  Prev: Kerberos Ticket Properties,  Up: Ticket Management
 
 Obtaining Tickets with kinit
 ----------------------------
@@ -314,10 +456,10 @@ and you won't get Kerberos tickets.
 Notice that `kinit' assumes you want tickets for your own username in
 your default realm.  Suppose Jennifer's friend David is visiting, and
 he wants to borrow a window to check his mail.  David needs to get
-tickets for himself in his own realm, FUBAR.ORG.(1)  He would type:
+tickets for himself in his own realm, EXAMPLE.COM.(1)  He would type:
 
-     shell% kinit david@FUBAR.ORG
-     Password for david@FUBAR.ORG: <- [Type david's password here.]
+     shell% kinit david@EXAMPLE.COM
+     Password for david@EXAMPLE.COM: <- [Type david's password here.]
      shell%
 
 David would then have tickets which he could use to log onto his own
@@ -335,17 +477,17 @@ option:
 
 Note that `kinit' does not tell you that it obtained forwardable
 tickets; you can verify this using the `klist' command (*note Viewing
-Your Tickets with klist::.).
+Your Tickets with klist::).
 
 Normally, your tickets are good for your system's default ticket
 lifetime, which is ten hours on many systems.  You can specify a
 different ticket lifetime with the `-l' option.  Add the letter `s' to
 the value for seconds, `m' for minutes, `h' for hours, or `d' for days.
-For example, to obtain forwardable tickets for `david@FUBAR.ORG' that
+For example, to obtain forwardable tickets for `david@EXAMPLE.COM' that
 would be good for three hours, you would type:
 
-     shell% kinit -f -l 3h david@FUBAR.ORG
-     Password for david@FUBAR.ORG: <- [Type david's password here.]
+     shell% kinit -f -l 3h david@EXAMPLE.COM
+     Password for david@EXAMPLE.COM: <- [Type david's password here.]
      shell%
 
 You cannot mix units; specifying a lifetime of `3h30m' would result in
@@ -355,7 +497,7 @@ automatically truncated to the maximum lifetime.
 
 ---------- Footnotes ----------
 
-(1) Note:  the realm FUBAR.ORG must be listed in your computer's
+(1) Note:  the realm EXAMPLE.COM must be listed in your computer's
 Kerberos configuration file, `/etc/krb5.conf'.
 
 
@@ -373,12 +515,12 @@ Ticket?::.)  The listing would look like this:
      Default principal: jennifer@ATHENA.MIT.EDU
      
      Valid starting     Expires            Service principal
-     06/07/96 19:49:21  06/08/96 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     06/07/04 19:49:21  06/08/04 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
      shell%
 
 The ticket cache is the location of your ticket file.  In the above
 example, this file is named `/tmp/krb5cc_ttypa'.  The default principal
-is your kerberos "principal".  (*note What is a Kerberos Principal?::.)
+is your kerberos "principal".  (*note What is a Kerberos Principal?::)
 
 The "valid starting" and "expires" fields describe the period of time
 during which the ticket is valid.  The "service principal" describes
@@ -393,8 +535,8 @@ typed `klist' again, she would have gotten the following result:
      Default principal: jennifer@ATHENA.MIT.EDU
      
      Valid starting     Expires            Service principal
-     06/07/96 19:49:21  06/08/96 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
-     06/07/96 20:22:30  06/08/96 05:49:19  host/daffodil.mit.edu@ATHENA.MIT.EDU
+     06/07/04 19:49:21  06/08/04 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     06/07/04 20:22:30  06/08/04 05:49:19  host/daffodil.mit.edu@ATHENA.MIT.EDU
      shell%
 
 Here's what happened:  when jennifer used telnet to connect to the host
@@ -405,20 +547,20 @@ presented to the host `daffodil.mit.edu', and she was allowed to log in
 without typing her password.
 
 Suppose your Kerberos tickets allow you to log into a host in another
-domain, such as `trillium.fubar.org', which is also in another Kerberos
-realm, `FUBAR.ORG'.  If you telnet to this host, you will receive a
-ticket-granting ticket for the realm `FUBAR.ORG', plus the new `host'
-ticket for `trillium.fubar.org'.  `klist' will now show:
+domain, such as `trillium.example.com', which is also in another
+Kerberos realm, `EXAMPLE.COM'.  If you telnet to this host, you will
+receive a ticket-granting ticket for the realm `EXAMPLE.COM', plus the
+new `host' ticket for `trillium.example.com'.  `klist' will now show:
 
      shell% klist
      Ticket cache: /tmp/krb5cc_ttypa
      Default principal: jennifer@ATHENA.MIT.EDU
      
      Valid starting     Expires            Service principal
-     06/07/96 19:49:21  06/08/96 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
-     06/07/96 20:22:30  06/08/96 05:49:19  host/daffodil.mit.edu@ATHENA.MIT.EDU
-     06/07/96 20:24:18  06/08/96 05:49:19  krbtgt/FUBAR.ORG@ATHENA.MIT.EDU
-     06/07/96 20:24:18  06/08/96 05:49:19  host/trillium.fubar.org@ATHENA.MIT.EDU
+     06/07/04 19:49:21  06/08/04 05:49:19  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     06/07/04 20:22:30  06/08/04 05:49:19  host/daffodil.mit.edu@ATHENA.MIT.EDU
+     06/07/04 20:24:18  06/08/04 05:49:19  krbtgt/EXAMPLE.COM@ATHENA.MIT.EDU
+     06/07/04 20:24:18  06/08/04 05:49:19  host/trillium.example.com@ATHENA.MIT.EDU
      shell%
 
 You can use the `-f' option to view the "flags" that apply to your
@@ -451,9 +593,24 @@ I
 i
      invalid
 
+H
+     Hardware authenticated
+
+A
+     preAuthenticated
+
+T
+     Transit policy checked
+
+O
+     Okay as delegate
+
+a
+     anonymous
+
 Here is a sample listing.  In this example, the user jennifer obtained
 her initial tickets (`I'), which are forwardable (`F') and postdated
-(`d') but not yet validated (`i').  (*Note kinit Reference:: for more
+(`d') but not yet validated (`i').  (*Note kinit Reference::, for more
 information about postdated tickets.)
 
      shell% klist -f
@@ -461,7 +618,7 @@ information about postdated tickets.)
      Default principal: jennifer@ATHENA.MIT.EDU
      
      Valid starting      Expires             Service principal
-     31 Jul 96 19:06:25  31 Jul 96 19:16:25  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     31/07/05 19:06:25  31/07/05 19:16:25  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
              Flags: FdiI
      shell%
 
@@ -470,12 +627,12 @@ to this host from another host.  The tickets are reforwardable (`F').
 
      shell% klist -f
      Ticket cache: /tmp/krb5cc_p11795
-     Default principal: david@FUBAR.ORG
+     Default principal: david@EXAMPLE.COM
      
      Valid starting     Expires            Service principal
-     07/31/96 11:52:29  07/31/96 21:11:23  krbtgt/FUBAR.ORG@FUBAR.ORG
+     07/31/05 11:52:29  07/31/05 21:11:23  krbtgt/EXAMPLE.COM@EXAMPLE.COM
              Flags: Ff
-     07/31/96 12:03:48  07/31/96 21:11:23  host/trillium.fubar.org@FUBAR.ORG
+     07/31/05 12:03:48  07/31/05 21:11:23  host/trillium.example.com@EXAMPLE.COM
              Flags: Ff
      shell%
 
@@ -501,7 +658,6 @@ destroy, it will give the following message:
 
      shell% kdestroy
      kdestroy: No credentials cache file found while destroying cache
-     Ticket cache NOT destroyed!
      shell%
 
 
@@ -515,7 +671,7 @@ If someone finds out your password, that person can masquerade as
 you--send email that comes from you, read, edit, or delete your files,
 or log into other hosts as you--and no one will be able to tell the
 difference.  For this reason, it is important that you choose a good
-password (*note Password Advice::.), and keep it secret.  If you need to
+password (*note Password Advice::), and keep it secret.  If you need to
 give access to your account to someone else, you can do so through
 Kerberos.  (*Note Granting Access to Your Account::.)  You should never
 tell your password to anyone, including your system administrator, for
@@ -542,9 +698,9 @@ twice is to make sure you have typed it correctly.)  For example, user
 `david' would do the following:
 
      shell% kpasswd
-     Old password for david:    <- Type your old password.
-     New Password for david:    <- Type your new password.
-     Verifying, please re-enter New Password for david:  <- Type the new password again.
+     Password for david:    <- Type your old password.
+     Enter new password:    <- Type your new password.
+     Enter it again:  <- Type the new password again.
      Password changed.
      shell%
 
@@ -552,21 +708,18 @@ If david typed the incorrect old password, he would get the following
 message:
 
      shell% kpasswd
-     Old password for david:  <- Type the incorrect old password.
-     Incorrect old password.
+     Password for david:  <- Type the incorrect old password.
+     kpasswd: Password incorrect while getting initial ticket
      shell%
 
 If you make a mistake and don't type the new password the same way
 twice, `kpasswd' will ask you to try again:
 
      shell% kpasswd
-     Old password for david:  <- Type the old password.
-     New Password for david:  <- Type the new password.
-     Verifying, please re-enter New Password for david: <- Type a different new password.
-     Mismatch - try again
-     New Password for david:  <- Type the new password.
-     Verifying, please re-enter New Password for david: <- Type the same new password.
-     Password changed.
+     Password for david:  <- Type the old password.
+     Enter new password:  <- Type the new password.
+     Enter it again: <- Type a different new password.
+     kpasswd: Password mismatch while reading password
      shell%
 
 Once you change your password, it takes some time for the change to
@@ -608,22 +761,27 @@ meant to show you how to make up a good password.  Passwords that
 appear in a manual are the first ones intruders will try.
 
 Kerberos V5 allows your system administrators to automatically reject
-bad passwords, based on whatever criteria they choose.  For example, if
-the user `jennifer' chose a bad password, Kerberos would give an error
+bad passwords, based on certain criteria, such as a password dictionary
+or a minimum length.  For example, if the user `jennifer', who had a
+policy "strict" that required a minimum of 8 characaters, chose a
+password that was less than 8 characters, Kerberos would give an error
 message like the following:
 
      shell% kpasswd
-     Old password for jennifer:  <- Type your old password here.
-     New Password for jennifer:  <- Type an insecure new password.
-     Verifying, please re-enter New Password for jennifer:  <- Type it again.
+     Password for jennifer:  <- Type your old password here.
      
-     ERROR: Insecure password not accepted.  Please choose another.
+     jennifer's password is controlled by the policy strict, which
+     requires a minimum of 8 characters from at least 3 classes (the five classes
+     are lowercase, uppercase, numbers, punctuation, and all other characters).
      
-     kpasswd: Insecure password rejected while attempting to change password.
+     Enter new password:  <- Type an insecure new password.
+     Enter it again:  <- Type it again.
+     
+     kpasswd: Password is too short while attempting to change password.
      Please choose another password.
      
-     New Password for jennifer:  <- Type a good password here.
-     Verifying, please re-enter New Password for david:  <- Type it again.
+     Enter new password:  <- Type a good password here.
+     Enter it again:  <- Type it again.
      Password changed.
      shell%
 
@@ -641,11 +799,11 @@ If you need to give someone access to log into your account, you can do
 so through Kerberos, without telling the person your password.  Simply
 create a file called `.k5login' in your home directory.  This file
 should contain the Kerberos principal (*Note What is a Kerberos
-Principal?::) of each person to whom you wish to give access.  Each
+Principal?::.) of each person to whom you wish to give access.  Each
 principal must be on a separate line.  Here is a sample `.k5login' file:
 
      jennifer@ATHENA.MIT.EDU
-     david@FUBAR.ORG
+     david@EXAMPLE.COM
 
 This file would allow the users `jennifer' and `david' to use your user
 ID, provided that they had Kerberos tickets in their respective realms.
@@ -723,7 +881,7 @@ password, because Kerberos has already proven your identity.
 
 The Kerberos V5 network programs allow you the options of forwarding
 your tickets to the remote host (if you obtained forwardable tickets
-with the `kinit' program; *note Obtaining Tickets with kinit::.), and
+with the `kinit' program; *note Obtaining Tickets with kinit::), and
 encrypting data transmitted between you and the remote host.
 
 This section of the tutorial assumes you are familiar with the
@@ -739,22 +897,12 @@ telnet
 The Kerberos V5 `telnet' command works exactly like the standard UNIX
 telnet program, with the following Kerberos options added:
 
-`-f, --forward'
+`-f'
      forwards a copy of your tickets to the remote host.
 
-`--noforward'
-     turns off forwarding of tickets to the remote host.  (This option
-     overrides any forwarding specified in your machine's configuration
-     files.)
-
-`-F, --forwardable'
+`-F'
      forwards a copy of your tickets to the remote host, and marks them
      re-forwardable from the remote host.
-
-`--noforwardable'
-     makes any forwarded tickets nonforwardable.  (This option
-     overrides any forwardability specified in your machine's
-     configuration files.)
 
 `-k realm'
      requests tickets for the remote host in the specified realm,
@@ -768,25 +916,22 @@ telnet program, with the following Kerberos options added:
      attempt automatic login using your tickets.  `telnet' will assume
      the same username unless you explicitly specify another.
 
-`-x, --encrypt'
+`-x'
      turns on encryption.
-
-`--noencrypt'
-     turns off encryption.
 
 For example, if `david' wanted to use the standard UNIX telnet to
 connect to the machine `daffodil.mit.edu', he would type:
 
-     shell% telnet daffodil.mit.edu
+     shell% telnet daffodil.example.com
      Trying 128.0.0.5 ...
-     Connected to daffodil.mit.edu.
+     Connected to daffodil.example.com.
      Escape character is '^]'.
      
      NetBSD/i386 (daffodil) (ttyp3)
      
      login: david
      Password:    <- david types his password here
-     Last login: Fri Jun 21 17:13:11 from trillium.fubar.org
+     Last login: Fri Jun 21 17:13:11 from trillium.mit.edu
      Copyright (c) 1980, 1983, 1986, 1988, 1990, 1991, 1993, 1994
              The Regents of the University of California.   All rights reserved.
      
@@ -795,36 +940,37 @@ connect to the machine `daffodil.mit.edu', he would type:
      Welcome to NetBSD!
      shell%
 
-Note that the machine `daffodil.mit.edu' asked for `david''s password.
-When he typed it, his password was sent over the network unencrypted.
-If an intruder were watching network traffic at the time, that intruder
-would know `david''s password.
+Note that the machine `daffodil.example.com' asked for `david''s
+password.  When he typed it, his password was sent over the network
+unencrypted.  If an intruder were watching network traffic at the time,
+that intruder would know `david''s password.
 
 If, on the other hand, `jennifer' wanted to use the Kerberos V5 telnet
-to connect to the machine `trillium.fubar.org', she could forward a
-copy of her tickets, request an encrypted session, and log on as herself
-as follows:
+to connect to the machine `trillium.mit.edu', she could forward a copy
+of her tickets, request an encrypted session, and log on as herself as
+follows:
 
-     shell% telnet -a -f -x trillium.fubar.org
+     shell% telnet -a -f -x trillium.mit.edu
      Trying 128.0.0.5...
-     Connected to trillium.fubar.org.
+     Connected to trillium.mit.edu.
      Escape character is '^]'.
-     [ Kerberos V5 accepts you as "jennifer@fubar.org" ]
+     [ Kerberos V5 accepts you as "jennifer@mit.edu" ]
      [ Kerberos V5 accepted forwarded credentials ]
-     NetBSD 1.1: Tue May 21 00:31:42 EDT 1996
+     What you type is protected by encryption.
+     Last login: Tue Jul 30 18:47:44 from {No value for `RANDOMHOST'}.example.com
+     Athena Server (sun4) Version 9.1.11 Tue Jul 30 14:40:08 EDT 2002
      
-     Welcome to NetBSD!
      shell%
 
 Note that `jennifer''s machine used Kerberos to authenticate her to
-`trillium.fubar.org', and logged her in automatically as herself.  She
+`trillium.mit.edu', and logged her in automatically as herself.  She
 had an encrypted session, a copy of her tickets already waiting for
 her, and she never typed her password.
 
 If you forwarded your Kerberos tickets, `telnet' automatically destroys
 them when it exits.  The full set of options to Kerberos V5 `telnet'
 are discussed in the Reference section of this manual.  (*note telnet
-Reference::.)
+Reference::)
 
 
 File: krb5-user.info,  Node: rlogin,  Next: FTP,  Prev: telnet,  Up: Kerberos V5 Applications
@@ -835,37 +981,25 @@ rlogin
 The Kerberos V5 `rlogin' command works exactly like the standard UNIX
 rlogin program, with the following Kerberos options added:
 
-`-f, --forward'
+`-f'
      forwards a copy of your tickets to the remote host.
 
-`--noforward'
-     turns off forwarding of tickets to the remote host.  (This option
-     overrides any forwarding specified in your machine's configuration
-     files.)
-
-`-F, --forwardable'
+`-F'
      forwards a copy of your tickets to the remote host, and marks them
      re-forwardable from the remote host.
-
-`--noforwardable'
-     makes any forwarded tickets nonforwardable.  (This option
-     overrides any forwardability specified in your machine's
-     configuration files.)
 
 `-k realm'
      requests tickets for the remote host in the specified realm,
      instead of determining the realm itself.
 
-`-x, --encrypt'
-     turns on encryption.
-
-`--noencrypt'
-     turns off encryption.
+`-x'
+     encrypts the input and output data streams (the username is sent
+     unencrypted)
 
 For example, if `david' wanted to use the standard UNIX rlogin to
-connect to the machine `daffodil.mit.edu', he would type:
+connect to the machine `daffodil.example.com', he would type:
 
-     shell% rlogin daffodil.mit.edu -l david
+     shell% rlogin daffodil.example.com -l david
      Password:  <- david types his password here
      Last login: Fri Jun 21 10:36:32 from :0.0
      Copyright (c) 1980, 1983, 1986, 1988, 1990, 1991, 1993, 1994
@@ -876,32 +1010,31 @@ connect to the machine `daffodil.mit.edu', he would type:
      Welcome to NetBSD!
      shell%
 
-Note that the machine `daffodil.mit.edu' asked for `david''s password.
-When he typed it, his password was sent over the network unencrypted.
-If an intruder were watching network traffic at the time, that intruder
-would know `david''s password.
+Note that the machine `daffodil.example.com' asked for `david''s
+password.  When he typed it, his password was sent over the network
+unencrypted.  If an intruder were watching network traffic at the time,
+that intruder would know `david''s password.
 
 If, on the other hand, `jennifer' wanted to use Kerberos V5 rlogin to
-connect to the machine `trillium.fubar.org', she could forward a copy
-of her tickets, mark them as not forwardable from the remote host, and
+connect to the machine `trillium.mit.edu', she could forward a copy of
+her tickets, mark them as not forwardable from the remote host, and
 request an encrypted session as follows:
 
-     shell% rlogin trillium.fubar.org -f -x
+     shell% rlogin trillium.mit.edu -f -x
      This rlogin session is using DES encryption for all data transmissions.
      Last login: Thu Jun 20 16:20:50 from daffodil
-     SunOS Release 4.1.4 (GENERIC) #2: Tue Nov 14 18:09:31 EST 1995
-     Not checking quotas. Try quota.real if you need them.
+     Athena Server (sun4) Version 9.1.11 Tue Jul 30 14:40:08 EDT 2002
      shell%
 
 Note that `jennifer''s machine used Kerberos to authenticate her to
-`trillium.fubar.org', and logged her in automatically as herself.  She
+`trillium.mit.edu', and logged her in automatically as herself.  She
 had an encrypted session, a copy of her tickets were waiting for her,
 and she never typed her password.
 
 If you forwarded your Kerberos tickets, `rlogin' automatically destroys
 them when it exits.  The full set of options to Kerberos V5 `rlogin'
 are discussed in the Reference section of this manual.  (*note rlogin
-Reference::.)
+Reference::)
 
 
 File: krb5-user.info,  Node: FTP,  Next: rsh,  Prev: rlogin,  Up: Kerberos V5 Applications
@@ -916,9 +1049,9 @@ program, with the following Kerberos features added:
      requests tickets for the remote host in the specified realm,
      instead of determining the realm itself.
 
-`-forward'
+`-f'
      requests that your tickets be forwarded to the remote host.  The
-     `-forward' argument must be the last argument on the command line.
+     `-f' argument must be the last argument on the command line.
 
 `protect level'
      (issued at the `ftp>' prompt) sets the protection level.  "Clear"
@@ -937,6 +1070,7 @@ following:
      334 Using authentication type GSSAPI; ADAT must follow
      GSSAPI accepted as authentication type
      GSSAPI authentication succeeded
+     200 Data channel protection level set to private.
      Name (daffodil.mit.edu:jennifer):
      232 GSSAPI user jennifer@ATHENA.MIT.EDU is authorized as jennifer
      230 User jennifer logged in.
@@ -955,7 +1089,7 @@ following:
      shell%
 
 The full set of options to Kerberos V5 `FTP' are discussed in the
-Reference section of this manual.  (*note FTP Reference::.)
+Reference section of this manual.  (*note FTP Reference::)
 
 
 File: krb5-user.info,  Node: rsh,  Next: rcp,  Prev: FTP,  Up: Kerberos V5 Applications
@@ -966,47 +1100,35 @@ rsh
 The Kerberos V5 `rsh' program works exactly like the standard UNIX
 rlogin program, with the following Kerberos features added:
 
-`-f, --forward'
+`-f'
      forwards a copy of your tickets to the remote host.
 
-`--noforward'
-     turns off forwarding of tickets to the remote host.  (This option
-     overrides any forwarding specified in your machine's configuration
-     files.)
-
-`-F, --forwardable'
+`-F'
      forwards a copy of your tickets to the remote host, and marks them
      re-forwardable from the remote host.
-
-`--noforwardable'
-     makes any forwarded tickets nonforwardable.  (This option
-     overrides any forwardability specified in your machine's
-     configuration files.)
 
 `-k realm'
      requests tickets for the remote host in the specified realm,
      instead of determining the realm itself.
 
-`-x, --encrypt'
-     turns on encryption.
-
-`--noencrypt'
-     turns off encryption.
+`-x'
+     encrypts the input and output data streams (the command line is
+     not encrypted)
 
 For example, if your Kerberos tickets allowed you to run programs on the
 host
-`trillium@fubar.org' as root, you could run the `date' program as
+`trillium@example.com' as root, you could run the `date' program as
 follows:
 
-     shell% rsh trillium.fubar.org -l root -x date
+     shell% rsh trillium.example.com -l root -x date
      This rsh session is using DES encryption for all data transmissions.
-     Fri Jun 21 17:06:12 EDT 1996
+     Tue Jul 30 19:34:21 EDT 2002
      shell%
 
 If you forwarded your Kerberos tickets, `rsh' automatically destroys
 them when it exits.  The full set of options to Kerberos V5 `rsh' are
 discussed in the Reference section of this manual.  (*note rsh
-Reference::.)
+Reference::)
 
 
 File: krb5-user.info,  Node: rcp,  Next: ksu,  Prev: rsh,  Up: Kerberos V5 Applications
@@ -1021,7 +1143,7 @@ program, with the following Kerberos features added:
      requests tickets for the remote host in the specified realm,
      instead of determining the realm itself.
 
-`-x, --encrypt'
+`-x'
      turns on encryption.
 
 For example, if you wanted to copy the file `/etc/motd' from the host
@@ -1033,7 +1155,7 @@ connection, you would simply type:
 The `rcp' program negotiates authentication and encryption
 transparently.  The full set of options to Kerberos V5 `rcp' are
 discussed in the Reference section of this manual.  (*note rcp
-Reference::.)
+Reference::)
 
 
 File: krb5-user.info,  Node: ksu,  Prev: rcp,  Up: Kerberos V5 Applications
@@ -1044,11 +1166,11 @@ ksu
 The Kerberos V5 `ksu' program replaces the standard UNIX su program.
 `ksu' first authenticates you to Kerberos.  Depending on the
 configuration of your system, `ksu' may ask for your Kerberos password
-if authentication fails.  *Note that you should never type your
-password if you are remotely logged in using an unencrypted connection.*
+if authentication fails.  _Note that you should never type your
+password if you are remotely logged in using an unencrypted connection._
 
 Once `ksu' has authenticated you, if your Kerberos principal appears in
-the target's `.k5login' file (*note Granting Access to Your Account::.)
+the target's `.k5login' file (*note Granting Access to Your Account::)
 or in the target's `.k5users' file (see below), it switches your user
 ID to the target user ID.
 
@@ -1071,8 +1193,8 @@ filename contains `david''s UID with `.1' appended to it:
      Default principal: jennifer@ATHENA.MIT.EDU
      
      Valid starting      Expires             Service principal
-     31 Jul 96 21:53:01  01 Aug 96 07:52:53  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
-     31 Jul 96 21:53:39  01 Aug 96 07:52:53  host/daffodil.mit.edu@ATHENA.MIT.EDU
+     07/31/04 21:53:01  08/01/04 07:52:53  krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
+     07/31/04 21:53:39  08/01/04 07:52:53  host/daffodil.mit.edu@ATHENA.MIT.EDU
      david%
 
 If `jennifer' had not appeared in `david''s `.k5login' file (and the
@@ -1101,18 +1223,18 @@ option.  `david''s `.k5users' file might look like the following:
      jennifer@ATHENA.MIT.EDU       /bin/ls /usr/bin/more
      joeadmin@ATHENA.MIT.EDU         /bin/ls
      joeadmin/admin@ATHENA.MIT.EDU   *
-     david@FUBAR.ORG
+     david@EXAMPLE.COM
 
 The above `.k5users' file would let `jennifer' run only the commands
 `/bin/ls' and `/usr/bin/more'.  It would let `joeadmin' run only the
 command `/bin/ls' if he had regular tickets, but if he had tickets for
 his `admin' instance, `joeadmin/admin@ATHENA.MIT.EDU', he would be able
 to execute any command.  The last line gives `david' in the realm
-FUBAR.ORG permission to execute any command.  (I.e., having only a
+EXAMPLE.COM permission to execute any command.  (I.e., having only a
 Kerberos principal on a line is equivalent to giving that principal
 permission to execute `*'.)  This is so that david can allow himself to
 execute commands when he logs in, using Kerberos, from a machine in the
-realm FUBAR.ORG.
+realm EXAMPLE.COM.
 
 Then, when `jennifer' wanted to list his home directory, she would type:
 
@@ -1140,10 +1262,6 @@ The `ksu' options you are most likely to use are:
 `-c'
      specifies the location of your Kerberos credentials cache (ticket
      file).
-
-`-C'
-     specifies the location you want the Kerberos credentials cache
-     (ticket file) to be for the target user ID.
 
 `-k'
      tells `ksu' not to destroy your Kerberos tickets when `ksu' is
@@ -1175,7 +1293,7 @@ The `ksu' options you are most likely to use are:
      after `-a' to the target shell.
 
 The full set of options to Kerberos V5 `ksu' are discussed in the
-Reference section of this manual.  (*note ksu Reference::.)
+Reference section of this manual.  (*note ksu Reference::)
 
 
 File: krb5-user.info,  Node: Kerberos V5 Reference,  Next: Kerberos Glossary,  Prev: Kerberos V5 Tutorial,  Up: Top
@@ -1207,20 +1325,20 @@ you would change the line to the following:
 Note to info users:  the manual pages are not available within this info
 tree.  You can read them from emacs with the command:
 
-     M-x manual-entry *command*
+     M-x manual-entry _command_
 
 * Menu:
 
 * kinit Reference::
 * klist Reference::
+* ksu Reference::
 * kdestroy Reference::
 * kpasswd Reference::
 * telnet Reference::
-* rlogin Reference::
 * FTP Reference::
+* rlogin Reference::
 * rsh Reference::
 * rcp Reference::
-* ksu Reference::
 
 ---------- Footnotes ----------
 
@@ -1238,7 +1356,7 @@ kinit Reference
 Type `M-x manual-entry kinit' to read this manual page.
 
 
-File: krb5-user.info,  Node: klist Reference,  Next: kdestroy Reference,  Prev: kinit Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: klist Reference,  Next: ksu Reference,  Prev: kinit Reference,  Up: Kerberos V5 Reference
 
 klist Reference
 ===============
@@ -1246,7 +1364,15 @@ klist Reference
 Type `M-x manual-entry klist' to read this manual page.
 
 
-File: krb5-user.info,  Node: kdestroy Reference,  Next: kpasswd Reference,  Prev: klist Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: ksu Reference,  Next: kdestroy Reference,  Prev: klist Reference,  Up: Kerberos V5 Reference
+
+ksu Reference
+=============
+
+Type `M-x manual-entry ksu' to read this manual page.
+
+
+File: krb5-user.info,  Node: kdestroy Reference,  Next: kpasswd Reference,  Prev: ksu Reference,  Up: Kerberos V5 Reference
 
 kdestroy Reference
 ==================
@@ -1262,7 +1388,7 @@ kpasswd Reference
 Type `M-x manual-entry kpasswd' to read this manual page.
 
 
-File: krb5-user.info,  Node: telnet Reference,  Next: rlogin Reference,  Prev: kpasswd Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: telnet Reference,  Next: FTP Reference,  Prev: kpasswd Reference,  Up: Kerberos V5 Reference
 
 telnet Reference
 ================
@@ -1270,15 +1396,7 @@ telnet Reference
 Type `M-x manual-entry telnet' to read this manual page.
 
 
-File: krb5-user.info,  Node: rlogin Reference,  Next: FTP Reference,  Prev: telnet Reference,  Up: Kerberos V5 Reference
-
-rlogin Reference
-================
-
-Type `M-x manual-entry rlogin' to read this manual page.
-
-
-File: krb5-user.info,  Node: FTP Reference,  Next: rsh Reference,  Prev: rlogin Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: FTP Reference,  Next: rlogin Reference,  Prev: telnet Reference,  Up: Kerberos V5 Reference
 
 FTP Reference
 =============
@@ -1286,7 +1404,15 @@ FTP Reference
 Type `M-x manual-entry FTP' to read this manual page.
 
 
-File: krb5-user.info,  Node: rsh Reference,  Next: rcp Reference,  Prev: FTP Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: rlogin Reference,  Next: rsh Reference,  Prev: FTP Reference,  Up: Kerberos V5 Reference
+
+rlogin Reference
+================
+
+Type `M-x manual-entry rlogin' to read this manual page.
+
+
+File: krb5-user.info,  Node: rsh Reference,  Next: rcp Reference,  Prev: rlogin Reference,  Up: Kerberos V5 Reference
 
 rsh Reference
 =============
@@ -1294,20 +1420,12 @@ rsh Reference
 Type `M-x manual-entry rsh' to read this manual page.
 
 
-File: krb5-user.info,  Node: rcp Reference,  Next: ksu Reference,  Prev: rsh Reference,  Up: Kerberos V5 Reference
+File: krb5-user.info,  Node: rcp Reference,  Prev: rsh Reference,  Up: Kerberos V5 Reference
 
 rcp Reference
 =============
 
 Type `M-x manual-entry rcp' to read this manual page.
-
-
-File: krb5-user.info,  Node: ksu Reference,  Prev: rcp Reference,  Up: Kerberos V5 Reference
-
-ksu Reference
-=============
-
-Type `M-x manual-entry ksu' to read this manual page.
 
 
 File: krb5-user.info,  Node: Kerberos Glossary,  Prev: Kerberos V5 Reference,  Up: Top
@@ -1337,7 +1455,8 @@ keytab
 
 principal
      a string that names a specific entity to which a set of
-     credentials may be assigned.  It generally has three parts:
+     credentials may be assigned.  It can have an arbitrary number of
+     components, but generally has three:
 
     primary
           the first part of a Kerberos principal.  In the case of a
@@ -1379,40 +1498,43 @@ TGT
 
 
 Tag Table:
-Node: Top109
-Node: Copyright368
-Node: Introduction5408
-Node: What is a Ticket?7275
-Node: What is a Kerberos Principal?8526
-Node: Kerberos V5 Tutorial9973
-Node: Setting Up to Use Kerberos V510761
-Node: Ticket Management11653
-Node: Obtaining Tickets with kinit12710
-Node: Viewing Your Tickets with klist15901
-Node: Destroying Your Tickets with kdestroy20039
-Node: Password Management20935
-Node: Changing Your Password21964
-Node: Password Advice23910
-Node: Granting Access to Your Account26299
-Node: Kerberos V5 Applications28205
-Node: Overview of Additional Features29212
-Node: telnet30479
-Node: rlogin33699
-Node: FTP36489
-Node: rsh38466
-Node: rcp39997
-Node: ksu40810
-Node: Kerberos V5 Reference46474
-Node: kinit Reference48149
-Node: klist Reference48369
-Node: kdestroy Reference48586
-Node: kpasswd Reference48814
-Node: telnet Reference49040
-Node: rlogin Reference49261
-Node: FTP Reference49478
-Node: rsh Reference49683
-Node: rcp Reference49885
-Node: ksu Reference50087
-Node: Kerberos Glossary50267
+Node: Top83
+Node: Copyright342
+Node: Introduction7845
+Node: What is a Ticket?9704
+Node: What is a Kerberos Principal?10955
+Node: Kerberos V5 Tutorial12802
+Node: Setting Up to Use Kerberos V513592
+Node: Ticket Management14484
+Node: Kerberos Ticket Properties15572
+Node: Obtaining Tickets with kinit19470
+Ref: Obtaining Tickets with kinit-Footnote-122568
+Node: Viewing Your Tickets with klist22683
+Node: Destroying Your Tickets with kdestroy26971
+Node: Password Management27834
+Node: Changing Your Password28862
+Node: Password Advice30614
+Node: Granting Access to Your Account33209
+Node: Kerberos V5 Applications35118
+Node: Overview of Additional Features36125
+Node: telnet37391
+Node: rlogin40320
+Node: FTP42701
+Node: rsh44720
+Node: rcp45896
+Node: ksu46697
+Node: Kerberos V5 Reference52238
+Ref: Kerberos V5 Reference-Footnote-153687
+Node: kinit Reference53913
+Node: klist Reference54133
+Node: ksu Reference54345
+Node: kdestroy Reference54554
+Node: kpasswd Reference54780
+Node: telnet Reference55006
+Node: FTP Reference55224
+Node: rlogin Reference55432
+Node: rsh Reference55646
+Node: rcp Reference55851
+Node: Kerberos Glossary56031
 
 End Tag Table

@@ -1,9 +1,9 @@
 #include "krb5.h"
 
+#include <stdio.h>
+
 int
-main(argc, argv)
-    int		argc;
-    char	*argv[];
+main(int argc, char **argv)
 {
     krb5_error_code	kret;
     krb5_context	kcontext;

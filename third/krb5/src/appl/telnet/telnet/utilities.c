@@ -38,6 +38,7 @@
 #define	SLC_NAMES
 #include <arpa/telnet.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/time.h>
 
 #include <ctype.h>
@@ -51,6 +52,14 @@
 #include "defines.h"
 
 #include "externs.h"
+
+#ifdef AUTHENTICATION
+#include <libtelnet/auth.h>
+#endif
+
+#ifdef ENCRYPTION
+#include <libtelnet/encrypt.h>
+#endif
 
 FILE	*NetTrace = 0;		/* Not in bss, since needs to stay */
 int	prettydump;
@@ -295,7 +304,7 @@ printsub(direction, pointer, length)
     int		  length;	/* length of suboption data */
 {
     register int i;
-    char buf[512];
+    unsigned char buf[512];
     extern int want_status_response;
 
     if (showoptions || direction == 0 ||

@@ -31,22 +31,25 @@
 #include <ctype.h>
 #include <stdio.h>
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_get_server_rcache(context, piece, rcptr)
-    krb5_context context;
-    const krb5_data *piece;
-    krb5_rcache *rcptr;
+/* Macro for valid RC name characters*/
+#define isvalidrcname(x) ((!ispunct(x))&&isgraph(x))
+krb5_error_code KRB5_CALLCONV
+krb5_get_server_rcache(krb5_context context, const krb5_data *piece, krb5_rcache *rcptr)
 {
     krb5_rcache rcache = 0;
     char *cachename = 0;
     char tmp[4];
     krb5_error_code retval;
-    int len, p, i;
+    int p, i;
+    unsigned int len;
 
 #ifdef HAVE_GETEUID
     unsigned long tens;
     unsigned long uid = geteuid();
 #endif
+    
+    if (piece == NULL)
+	return ENOMEM;
     
     rcache = (krb5_rcache) malloc(sizeof(*rcache));
     if (!rcache)
@@ -58,9 +61,9 @@ krb5_get_server_rcache(context, piece, rcptr)
 
     len = piece->length + 3 + 1;
     for (i = 0; i < piece->length; i++) {
-	if (piece->data[i] == '\\')
+	if (piece->data[i] == '-')
 	    len++;
-	else if (!isgraph(piece->data[i]))
+	else if (!isvalidrcname((int) piece->data[i]))
 	    len += 3;
     }
 
@@ -78,14 +81,14 @@ krb5_get_server_rcache(context, piece, rcptr)
     strcpy(cachename, "rc_");
     p = 3;
     for (i = 0; i < piece->length; i++) {
-	if (piece->data[i] == '\\') {
-	    cachename[p++] = '\\';
-	    cachename[p++] = '\\';
+	if (piece->data[i] == '-') {
+	    cachename[p++] = '-';
+	    cachename[p++] = '-';
 	    continue;
 	}
-	if (!isgraph(piece->data[i])) {
+	if (!isvalidrcname((int) piece->data[i])) {
 	    sprintf(tmp, "%03o", piece->data[i]);
-	    cachename[p++] = '\\';
+	    cachename[p++] = '-';
 	    cachename[p++] = tmp[0];
 	    cachename[p++] = tmp[1];
 	    cachename[p++] = tmp[2];

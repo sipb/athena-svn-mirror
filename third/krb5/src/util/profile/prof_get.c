@@ -4,14 +4,14 @@
  *
  */
 
+#include "prof_int.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #include <errno.h>
-
-#include "prof_int.h"
+#include <limits.h>
 
 /*
  * These functions --- init_list(), end_list(), and add_to_list() are
@@ -123,7 +123,7 @@ static int is_list_member(list, str)
  * This function frees a null-terminated list as returned by
  * profile_get_values.
  */
-KRB5_DLLIMP void KRB5_CALLCONV profile_free_list(list)
+void KRB5_CALLCONV profile_free_list(list)
     char	**list;
 {
     char	**cp;
@@ -136,10 +136,10 @@ KRB5_DLLIMP void KRB5_CALLCONV profile_free_list(list)
     free(list);
 }
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_get_values(profile, names, ret_values)
 	profile_t	profile;
-	const char	**names;
+	const char	*const *names;
 	char	***ret_values;
 {
 	errcode_t		retval;
@@ -206,7 +206,7 @@ cleanup:
 	return retval;
 }
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_get_string(profile, name, subname, subsubname,
 			     def_val, ret_string)
 	profile_t	profile;
@@ -241,7 +241,7 @@ profile_get_string(profile, name, subname, subsubname,
 	return 0;
 }
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_get_integer(profile, name, subname, subsubname,
 			      def_val, ret_int)
 	profile_t	profile;
@@ -252,11 +252,12 @@ profile_get_integer(profile, name, subname, subsubname,
 	const char	*value;
 	errcode_t	retval;
 	const char	*names[4];
+	char            *end_value;
+	long		ret_long;
 
-	if (profile == 0) {
-		*ret_int = def_val;
+	*ret_int = def_val;
+	if (profile == 0)
 		return 0;
-	}
 
 	names[0] = name;
 	names[1] = subname;
@@ -268,16 +269,101 @@ profile_get_integer(profile, name, subname, subsubname,
 		return 0;
 	} else if (retval)
 		return retval;
+
+	if (value[0] == 0)
+	    /* Empty string is no good.  */
+	    return PROF_BAD_INTEGER;
+	errno = 0;
+	ret_long = strtol (value, &end_value, 10);
+
+	/* Overflow or underflow.  */
+	if ((ret_long == LONG_MIN || ret_long == LONG_MAX) && errno != 0)
+	    return PROF_BAD_INTEGER;
+	/* Value outside "int" range.  */
+	if ((long) (int) ret_long != ret_long)
+	    return PROF_BAD_INTEGER;
+	/* Garbage in string.  */
+	if (end_value != value + strlen (value))
+	    return PROF_BAD_INTEGER;
+	
    
-	*ret_int = atoi(value);
+	*ret_int = ret_long;
 	return 0;
+}
+
+static const char *const conf_yes[] = {
+    "y", "yes", "true", "t", "1", "on",
+    0,
+};
+
+static const char *const conf_no[] = {
+    "n", "no", "false", "nil", "0", "off",
+    0,
+};
+
+static errcode_t
+profile_parse_boolean(s, ret_boolean)
+     char *s;
+     int* ret_boolean;
+{
+    const char *const *p;
+    
+    if (ret_boolean == NULL)
+    	return PROF_EINVAL;
+
+    for(p=conf_yes; *p; p++) {
+		if (!strcasecmp(*p,s)) {
+			*ret_boolean = 1;
+	    	return 0;
+		}
+    }
+
+    for(p=conf_no; *p; p++) {
+		if (!strcasecmp(*p,s)) {
+			*ret_boolean = 0;
+			return 0;
+		}
+    }
+	
+	return PROF_BAD_BOOLEAN;
+}
+
+errcode_t KRB5_CALLCONV
+profile_get_boolean(profile, name, subname, subsubname,
+			      def_val, ret_boolean)
+	profile_t	profile;
+	const char	*name, *subname, *subsubname;
+	int		def_val;
+	int		*ret_boolean;
+{
+	const char	*value;
+	errcode_t	retval;
+	const char	*names[4];
+
+	if (profile == 0) {
+		*ret_boolean = def_val;
+		return 0;
+	}
+
+	names[0] = name;
+	names[1] = subname;
+	names[2] = subsubname;
+	names[3] = 0;
+	retval = profile_get_value(profile, names, &value);
+	if (retval == PROF_NO_SECTION || retval == PROF_NO_RELATION) {
+		*ret_boolean = def_val;
+		return 0;
+	} else if (retval)
+		return retval;
+   
+	return profile_parse_boolean (value, ret_boolean);
 }
 
 /*
  * This function will return the list of the names of subections in the
  * under the specified section name.
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_get_subsection_names(profile, names, ret_names)
 	profile_t	profile;
 	const char	**names;
@@ -315,7 +401,7 @@ cleanup:
  * This function will return the list of the names of relations in the
  * under the specified section name.
  */
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_get_relation_names(profile, names, ret_names)
 	profile_t	profile;
 	const char	**names;
@@ -349,7 +435,7 @@ cleanup:
 	return retval;
 }
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_iterator_create(profile, names, flags, ret_iter)
 	profile_t	profile;
 	const char	**names;
@@ -359,14 +445,14 @@ profile_iterator_create(profile, names, flags, ret_iter)
 	return profile_node_iterator_create(profile, names, flags, ret_iter);
 }
 
-KRB5_DLLIMP void KRB5_CALLCONV
+void KRB5_CALLCONV
 profile_iterator_free(iter_p)
 	void	**iter_p;
 {
 	profile_node_iterator_free(iter_p);
 }
 
-KRB5_DLLIMP errcode_t KRB5_CALLCONV
+errcode_t KRB5_CALLCONV
 profile_iterator(iter_p, ret_name, ret_value)
 	void	**iter_p;
 	char **ret_name, **ret_value;
@@ -404,7 +490,7 @@ profile_iterator(iter_p, ret_name, ret_value)
 	return 0;
 }
 
-KRB5_DLLIMP void KRB5_CALLCONV
+void KRB5_CALLCONV
 profile_release_string(str)
 	char *str;
 {

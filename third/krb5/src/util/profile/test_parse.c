@@ -1,3 +1,5 @@
+#include "prof_int.h"
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDLIB_H
@@ -6,9 +8,7 @@
 #include <errno.h>
 #include <ctype.h>
 
-#include "prof_int.h"
-
-void dump_profile PROTOTYPE((struct profile_node *root, int level));
+void dump_profile (struct profile_node *root, int level);
 
 int main(argc, argv)
 	int	argc;
@@ -32,7 +32,8 @@ int main(argc, argv)
 
 	retval = profile_parse_file(f, &root);
 	if (retval) {
-		printf("profile_parse_file error %s\n", error_message(retval));
+		printf("profile_parse_file error %s\n", 
+		       error_message((errcode_t) retval));
 		exit(1);
 	}
 	fclose(f);
@@ -43,7 +44,7 @@ int main(argc, argv)
 	retval = profile_verify_node(root);
 	if (retval) {
 		printf("profile_verify_node reported an error: %s\n",
-		       error_message(retval));
+		       error_message((errcode_t) retval));
 		exit(1);
 	}
 

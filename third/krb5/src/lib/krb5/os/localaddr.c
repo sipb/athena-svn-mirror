@@ -1,7 +1,7 @@
 /*
  * lib/krb5/os/localaddr.c
  *
- * Copyright 1990,1991,2000 by the Massachusetts Institute of Technology.
+ * Copyright 1990,1991,2000,2001,2002 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -26,13 +26,13 @@
  *
  * Return the protocol addresses supported by this host.
  *
- * XNS support is untested, but "Should just work".
+ * XNS support is untested, but "Should just work".  (Hah!)
  */
 
 #define NEED_SOCKETS
 #include "k5-int.h"
 
-#if !defined(HAVE_MACSOCK_H) && !defined(_MSDOS) && !defined(_WIN32)
+#if !defined(HAVE_MACSOCK_H) && !defined(_WIN32)
 
 /* needed for solaris, harmless elsewhere... */
 #define BSD_COMP
@@ -40,63 +40,57 @@
 #include <sys/time.h>
 #include <errno.h>
 #include <stddef.h>
+#include <ctype.h>
 
-/*
- * The SIOCGIF* ioctls require a socket.
- * It doesn't matter *what* kind of socket they use, but it has to be
- * a socket.
- *
- * Of course, you can't just ask the kernel for a socket of arbitrary
- * type; you have to ask for one with a valid type.
- *
- */
-#ifdef HAVE_NETINET_IN_H
-
-#include <netinet/in.h>
-
-#ifndef USE_AF
-#define USE_AF AF_INET
-#define USE_TYPE SOCK_DGRAM
-#define USE_PROTO 0
+#if defined(TEST) || defined(DEBUG)
+# include "fake-addrinfo.h"
 #endif
 
-#endif
+#include "foreachaddr.c"
 
-#ifdef KRB5_USE_NS
+static krb5_error_code
+get_localaddrs (krb5_context context, krb5_address ***addr, int use_profile);
 
-#include <netns/ns.h>
+#ifdef TEST
 
-#ifndef USE_AF
-#define USE_AF AF_NS
-#define USE_TYPE SOCK_DGRAM
-#define USE_PROTO 0		/* guess */
-#endif
+static int print_addr (/*@unused@*/ void *dataptr, struct sockaddr *sa)
+     /*@modifies fileSystem@*/
+{
+    char hostbuf[NI_MAXHOST];
+    int err;
+    socklen_t len;
 
-#endif
-/*
- * Add more address families here.
- */
+    printf ("  --> family %2d ", sa->sa_family);
+    len = socklen (sa);
+    err = getnameinfo (sa, len, hostbuf, (socklen_t) sizeof (hostbuf),
+		       (char *) NULL, 0, NI_NUMERICHOST);
+    if (err)
+	printf ("<getnameinfo error %d: %s>\n", err, gai_strerror (err));
+    else
+	printf ("addr %s\n", hostbuf);
+    return 0;
+}
 
-extern int errno;
+int main ()
+{
+    int r;
 
-/*
- * Return all the protocol addresses of this host.
- *
- * We could kludge up something to return all addresses, assuming that
- * they're valid kerberos protocol addresses, but we wouldn't know the
- * real size of the sockaddr or know which part of it was actually the
- * host part.
- *
- * This uses the SIOCGIFCONF, SIOCGIFFLAGS, and SIOCGIFADDR ioctl's.
- */
+    (void) setvbuf (stdout, (char *)NULL, _IONBF, 0);
+    r = foreach_localaddr (0, print_addr, NULL, NULL);
+    printf ("return value = %d\n", r);
+    return 0;
+}
+
+#else /* not TESTing */
 
 struct localaddr_data {
-    int count, mem_err, cur_idx;
+    int count, mem_err, cur_idx, cur_size;
     krb5_address **addr_temp;
 };
 
 static int
 count_addrs (void *P_data, struct sockaddr *a)
+     /*@*/
 {
     struct localaddr_data *data = P_data;
     switch (a->sa_family) {
@@ -117,106 +111,96 @@ count_addrs (void *P_data, struct sockaddr *a)
 
 static int
 allocate (void *P_data)
+     /*@*/
 {
     struct localaddr_data *data = P_data;
     int i;
+    void *n;
 
-    data->addr_temp = (krb5_address **) malloc ((1 + data->count) * sizeof (krb5_address *));
-    if (data->addr_temp == 0)
+    n = realloc (data->addr_temp,
+		 (1 + data->count + data->cur_idx) * sizeof (krb5_address *));
+    if (n == 0) {
+	data->mem_err++;
 	return 1;
-    for (i = 0; i <= data->count; i++)
+    }
+    data->addr_temp = n;
+    data->cur_size = 1 + data->count + data->cur_idx;
+    for (i = data->cur_idx; i <= data->count + data->cur_idx; i++)
 	data->addr_temp[i] = 0;
     return 0;
 }
 
+static /*@null@*/ krb5_address *
+make_addr (int type, size_t length, const void *contents)
+    /*@*/
+{
+    krb5_address *a;
+    void *data;
+
+    data = malloc (length);
+    if (data == NULL)
+	return NULL;
+    a = malloc (sizeof (krb5_address));
+    if (a == NULL) {
+	free (data);
+	return NULL;
+    }
+    memcpy (data, contents, length);
+    a->magic = KV5M_ADDRESS;
+    a->addrtype = type;
+    a->length = length;
+    a->contents = data;
+    return a;
+}
+
 static int
 add_addr (void *P_data, struct sockaddr *a)
+     /*@modifies *P_data@*/
 {
     struct localaddr_data *data = P_data;
-    krb5_address *address = 0;
+    /*@null@*/ krb5_address *address = 0;
 
     switch (a->sa_family) {
 #ifdef HAVE_NETINET_IN_H
     case AF_INET:
-    {
-	struct sockaddr_in *in = (struct sockaddr_in *) a;
-
-	address = (krb5_address *) malloc (sizeof(krb5_address));
-	if (address) {
-	    address->magic = KV5M_ADDRESS;
-	    address->addrtype = ADDRTYPE_INET;
-	    address->length = sizeof(struct in_addr);
-	    address->contents = (unsigned char *)malloc(address->length);
-	    if (!address->contents) {
-		krb5_xfree(address);
-		address = 0;
-		data->mem_err++;
-	    } else {
-		memcpy ((char *)address->contents, (char *)&in->sin_addr, 
-			address->length);
-		break;
-	    }
-	} else
+	address = make_addr (ADDRTYPE_INET, sizeof (struct in_addr),
+			     &((const struct sockaddr_in *) a)->sin_addr);
+	if (address == NULL)
 	    data->mem_err++;
-    }
+	break;
 
 #ifdef KRB5_USE_INET6
     case AF_INET6:
     {
-	struct sockaddr_in6 *in = (struct sockaddr_in6 *) a;
+	const struct sockaddr_in6 *in = (const struct sockaddr_in6 *) a;
 	
 	if (IN6_IS_ADDR_LINKLOCAL (&in->sin6_addr))
-	    return 0;
-	
-	address = (krb5_address *) malloc (sizeof(krb5_address));
-	if (address) {
-	    address->magic = KV5M_ADDRESS;
-	    address->addrtype = ADDRTYPE_INET6;
-	    address->length = sizeof(struct in6_addr);
-	    address->contents = (unsigned char *)malloc(address->length);
-	    if (!address->contents) {
-		krb5_xfree(address);
-		address = 0;
-		data->mem_err++;
-	    } else {
-		memcpy ((char *)address->contents, (char *)&in->sin6_addr,
-			address->length);
-		break;
-	    }
-	} else
+	    break;
+
+	address = make_addr (ADDRTYPE_INET6, sizeof (struct in6_addr),
+			     &in->sin6_addr);
+	if (address == NULL)
 	    data->mem_err++;
+	break;
     }
 #endif /* KRB5_USE_INET6 */
 #endif /* netinet/in.h */
 
 #ifdef KRB5_USE_NS
     case AF_XNS:
-    {  
-	struct sockaddr_ns *ns = (struct sockaddr_ns *) a;
-	address = (krb5_address *)
-	    malloc (sizeof (krb5_address) + sizeof (struct ns_addr));
-	if (address) {
-	    address->magic = KV5M_ADDRESS;
-	    address->addrtype = ADDRTYPE_XNS; 
-
-	    /* XXX should we perhaps use ns_host instead? */
-
-	    address->length = sizeof(struct ns_addr);
-	    address->contents = (unsigned char *)malloc(address->length);
-	    if (!address->contents) {
-		krb5_xfree(address);
-		address = 0;
-		data->mem_err++;
-	    } else {
-		memcpy ((char *)address->contents,
-			(char *)&ns->sns_addr,
-			address->length);
-		break;
-	    }
-	} else
+	address = make_addr (ADDRTYPE_XNS, sizeof (struct ns_addr),
+			     &((const struct sockaddr_ns *)a)->sns_addr);
+	if (address == NULL)
 	    data->mem_err++;
 	break;
-    }
+#endif
+
+#ifdef AF_LINK
+	/* Some BSD-based systems (e.g. NetBSD 1.5) and AIX will
+	   include the ethernet address, but we don't want that, at
+	   least for now.  */
+    case AF_LINK:
+	break;
 #endif
     /*
      * Add more address families here..
@@ -224,6 +208,10 @@ add_addr (void *P_data, struct sockaddr *a)
     default:
 	break;
     }
+#ifdef __LCLINT__
+    /* Redundant but unconditional store un-confuses lclint.  */
+    data->addr_temp[data->cur_idx] = address;
+#endif
     if (address) {
 	data->addr_temp[data->cur_idx++] = address;
     }
@@ -231,245 +219,114 @@ add_addr (void *P_data, struct sockaddr *a)
     return data->mem_err;
 }
 
-/* Keep this in sync with kdc/network.c version.  */
-
-/*
- * BSD 4.4 defines the size of an ifreq to be
- * max(sizeof(ifreq), sizeof(ifreq.ifr_name)+ifreq.ifr_addr.sa_len
- * However, under earlier systems, sa_len isn't present, so the size is 
- * just sizeof(struct ifreq)
- */
-#ifdef HAVE_SA_LEN
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-#define ifreq_size(i) max(sizeof(struct ifreq),\
-     sizeof((i).ifr_name)+(i).ifr_addr.sa_len)
-#else
-#define ifreq_size(i) sizeof(struct ifreq)
-#endif /* HAVE_SA_LEN*/
-
-/* SIOCGIFCONF:
-
-   The behavior of this ioctl varies across systems.
-
-   NetBSD 1.5-alpha: The returned ifc_len is the desired amount of
-   space, always.  The returned list may be truncated if there isn't
-   enough room; no overrun.
-
-   Solaris 2.7: Return EINVAL if the buffer space is too small,
-   including ifc_len==0.  (Not sure if this is "too small for a single
-   entry" or "too small for the entire list"; my Sun has only one
-   interface.)  Solaris is the only system I've found so far that
-   actually returns an error.
-
-   AIX 4.3.3: Sometimes the returned ifc_len is bigger than the
-   supplied one, but it may not be big enough for *all* the
-   interfaces.  Sometimes it's smaller than the supplied value, even
-   if the returned list is truncated.  The list is filled in with as
-   many entries as will fit; no overrun.
-
-   Linux 2.2.12 (RH 6.1 dist, x86): The buffer is filled in with as
-   many entries as will fit, and the size used is returned in ifc_len.
-   The list is truncated if needed, with no indication.
-
-   IRIX 6.5: The buffer is filled in with as many entries as will fit
-   in N-1 bytes, and the size used is returned in ifc_len.  Providing
-   exactly the desired number of bytes is inadequate; the buffer must
-   be *bigger* than needed.  (E.g., 32->0, 33->32.)  The returned
-   ifc_len is always less than the supplied one.
-
-   Digital UNIX 4.0F: If input ifc_len is zero, return an ifc_len
-   that's big enough to include all entries.  (Actually, on our
-   system, it appears to be larger than that by 32.)  If input ifc_len
-   is nonzero, fill in as many entries as will fit, and set ifc_len
-   accordingly.
-
-   Using this ioctl is going to be messy.  Let's just hope that
-   getifaddrs() catches on quickly....  */
-
-static int
-foreach_localaddr (data, pass1fn, betweenfn, pass2fn)
-    void *data;
-    int (*pass1fn) (void *, struct sockaddr *);
-    int (*betweenfn) (void *);
-    int (*pass2fn) (void *, struct sockaddr *);
+static krb5_error_code
+krb5_os_localaddr_profile (krb5_context context, struct localaddr_data *datap)
 {
-    struct ifreq *ifr, ifreq, *ifr2;
-    struct ifconf ifc;
-    int s, code, n, i, j;
-    int est_if_count = 8, est_ifreq_size;
-    char *buf = 0;
-    size_t current_buf_size = 0;
-    int fail = 0;
-#ifdef SIOCGSIZIFCONF
-    int ifconfsize = -1;
+    krb5_error_code err;
+    static const char *const profile_name[] = {
+	"libdefaults", "extra_addresses", 0
+    };
+    char **values;
+    char **iter;
+    krb5_address **newaddrs;
+
+#ifdef DEBUG
+    fprintf (stderr, "looking up extra_addresses foo\n");
 #endif
 
-    s = socket (USE_AF, USE_TYPE, USE_PROTO);
-    if (s < 0)
-	return SOCKET_ERRNO;
+    err = profile_get_values (context->profile, profile_name, &values);
+    /* Ignore all errors for now?  */
+    if (err)
+	return 0;
 
-    /* At least on NetBSD, an ifreq can hold an IPv4 address, but
-       isn't big enough for an IPv6 or ethernet address.  So add a
-       little more space.  */
-    est_ifreq_size = sizeof (struct ifreq) + 16;
-#ifdef SIOCGSIZIFCONF
-    code = ioctl (s, SIOCGSIZIFCONF, &ifconfsize);
-    if (!code) {
-	current_buf_size = ifconfsize;
-	est_if_count = ifconfsize / est_ifreq_size;
-    }
+    for (iter = values; *iter; iter++) {
+	char *cp = *iter, *next, *current;
+	int i, count;
+
+#ifdef DEBUG
+	fprintf (stderr, "  found line: '%s'\n", cp);
 #endif
-    if (current_buf_size == 0) {
-	current_buf_size = est_ifreq_size * est_if_count;
-    }
-    buf = malloc (current_buf_size);
 
- ask_again:
-    memset(buf, 0, current_buf_size);
-    ifc.ifc_len = current_buf_size;
-    ifc.ifc_buf = buf;
-
-    code = ioctl (s, SIOCGIFCONF, (char *)&ifc);
-    if (code < 0) {
-	int retval = errno;
-	closesocket (s);
-	return retval;
-    }
-    /* BSD 4.4 and similar systems truncate the address list if the
-       supplied buffer isn't big enough.
-
-       Test that the buffer was big enough that another ifreq could've
-       fit easily, if the OS wanted to provide one.  That seems to be
-       the only indication we get, complicated by the fact that the
-       associated address may make the required storage a little
-       bigger than the size of an ifreq.  */
-#define SLOP (sizeof (struct ifreq) + 128)
-    if ((current_buf_size - ifc.ifc_len < sizeof (struct ifreq) + SLOP
-	/* On AIX 4.3.3, ifc.ifc_len may be set to a larger size than
-	   provided under some circumstances.  On my test system, a
-	   supplied value of 32..112 gets me 112, but with no data
-	   filled in even at 112.  But larger input ifc_len values get
-	   me larger output values, so it's not necessarily the full
-	   desired output buffer size.  And as near as I can tell, the
-	   ifc_len output has little to do with the offset of the last
-	   byte in the buffer actually modified, except that both
-	   input and output ifc_len values are higher (i.e., no buffer
-	   overrun takes place in my testing).  */
-	 || current_buf_size < ifc.ifc_len)
-	/* But let's let SIOCGSIZIFCONF dominate, unless we discover
-	   it's broken somewhere.  */
-#ifdef SIOCGSIZIFCONF
-	&& ifconfsize <= 0
+	for (cp = *iter, next = 0; *cp; cp = next) {
+	    while (isspace ((int) *cp) || *cp == ',')
+		cp++;
+	    if (*cp == 0)
+		break;
+	    /* Start of an address.  */
+#ifdef DEBUG
+	    fprintf (stderr, "    addr found in '%s'\n", cp);
 #endif
-	/* And we need *some* sort of bounds.  */
-	&& current_buf_size <= 100000
-	) {
-	int new_size;
-	char *newbuf;
-
-	est_if_count *= 2;
-	new_size = est_ifreq_size * est_if_count;
-	newbuf = realloc (buf, new_size);
-	if (newbuf == 0) {
-	    krb5_error_code e = errno;
-	    free (buf);
-	    return e;
-	}
-	current_buf_size = new_size;
-	buf = newbuf;
-	goto ask_again;
-    }
-
-    n = ifc.ifc_len;
-    if (n > current_buf_size)
-	n = current_buf_size;
-
-    /* Note: Apparently some systems put the size (used or wanted?)
-       into the start of the buffer, just none that I'm actually
-       using.  Fix this when there's such a test system available.
-       The Samba mailing list archives mention that NTP looks for the
-       size on these systems: *-fujitsu-uxp* *-ncr-sysv4*
-       *-univel-sysv*.  [raeburn:20010201T2226-05]  */
-    for (i = 0; i < n; i+= ifreq_size(*ifr) ) {
-	ifr = (struct ifreq *)((caddr_t) ifc.ifc_buf+i);
-
-	strncpy(ifreq.ifr_name, ifr->ifr_name, sizeof (ifreq.ifr_name));
-	if (ioctl (s, SIOCGIFFLAGS, (char *)&ifreq) < 0) {
-	skip:
-	    /* mark for next pass */
-	    ifr->ifr_name[0] = 0;
-
-	    continue;
-	}
-
-#ifdef IFF_LOOPBACK
-	    /* None of the current callers want loopback addresses.  */
-	if (ifreq.ifr_flags & IFF_LOOPBACK)
-	    goto skip;
+	    current = cp;
+	    while (*cp != 0 && !isspace((int) *cp) && *cp != ',')
+		cp++;
+	    if (*cp != 0) {
+		next = cp + 1;
+		*cp = 0;
+	    } else
+		next = cp;
+	    /* Got a single address, process it.  */
+#ifdef DEBUG
+	    fprintf (stderr, "    processing '%s'\n", current);
 #endif
-	/* Ignore interfaces that are down.  */
-	if (!(ifreq.ifr_flags & IFF_UP))
-	    goto skip;
-
-	/* Make sure we didn't process this address already.  */
-	for (j = 0; j < i; j += ifreq_size(*ifr2)) {
-	    ifr2 = (struct ifreq *)((caddr_t) ifc.ifc_buf+j);
-	    if (ifr2->ifr_name[0] == 0)
+	    newaddrs = 0;
+	    err = krb5_os_hostaddr (context, current, &newaddrs);
+	    if (err)
 		continue;
-	    if (ifr2->ifr_addr.sa_family == ifr->ifr_addr.sa_family
-		&& ifreq_size (*ifr) == ifreq_size (*ifr2)
-		/* Compare address info.  If this isn't good enough --
-		   i.e., if random padding bytes turn out to differ
-		   when the addresses are the same -- then we'll have
-		   to do it on a per address family basis.  */
-		&& !memcmp (&ifr2->ifr_addr.sa_data, &ifr->ifr_addr.sa_data,
-			    (ifreq_size (*ifr)
-			     - offsetof (struct ifreq, ifr_addr.sa_data))))
-		goto skip;
-	}
-
-	if ((*pass1fn) (data, &ifr->ifr_addr)) {
-	    fail = 1;
-	    goto punt;
-	}
-    }
-
-    if (betweenfn && (*betweenfn)(data)) {
-	fail = 1;
-	goto punt;
-    }
-
-    if (pass2fn)
-	for (i = 0; i < n; i+= ifreq_size(*ifr) ) {
-	    ifr = (struct ifreq *)((caddr_t) ifc.ifc_buf+i);
-
-	    if (ifr->ifr_name[0] == 0)
-		/* Marked in first pass to be ignored.  */
-		continue;
-
-	    if ((*pass2fn) (data, &ifr->ifr_addr)) {
-		fail = 1;
-		goto punt;
+	    for (i = 0; newaddrs[i]; i++) {
+#ifdef DEBUG
+		fprintf (stderr, "    %d: family %d", i,
+			 newaddrs[i]->addrtype);
+		fprintf (stderr, "\n");
+#endif
 	    }
+	    count = i;
+#ifdef DEBUG
+	    fprintf (stderr, "    %d addresses\n", count);
+#endif
+	    if (datap->cur_idx + count >= datap->cur_size) {
+		krb5_address **bigger;
+		bigger = realloc (datap->addr_temp,
+				  sizeof (krb5_address *) * (datap->cur_idx + count));
+		if (bigger) {
+		    datap->addr_temp = bigger;
+		    datap->cur_size = datap->cur_idx + count;
+		}
+	    }
+	    for (i = 0; i < count; i++) {
+		if (datap->cur_idx < datap->cur_size)
+		    datap->addr_temp[datap->cur_idx++] = newaddrs[i];
+		else
+		    free (newaddrs[i]->contents), free (newaddrs[i]);
+	    }
+	    free (newaddrs);
 	}
- punt:
-    closesocket(s);
-    free (buf);
-
-    return fail;
+    }
+    return 0;
 }
 
+krb5_error_code KRB5_CALLCONV
+krb5_os_localaddr(krb5_context context, krb5_address ***addr)
+{
+    return get_localaddrs(context, addr, 1);
+}
 
+krb5_error_code
+krb5int_local_addresses(krb5_context context, krb5_address ***addr)
+{
+    return get_localaddrs(context, addr, 0);
+}
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_os_localaddr(context, addr)
-    krb5_context context;
-    krb5_address FAR * FAR * FAR *addr;
+static krb5_error_code
+get_localaddrs (krb5_context context, krb5_address ***addr, int use_profile)
 {
     struct localaddr_data data = { 0 };
     int r;
+    krb5_error_code err;
+
+    if (use_profile) {
+	err = krb5_os_localaddr_profile (context, &data);
+	/* ignore err for now */
+    }
 
     r = foreach_localaddr (&data, count_addrs, allocate, add_addr);
     if (r != 0) {
@@ -479,7 +336,7 @@ krb5_os_localaddr(context, addr)
 		krb5_xfree (data.addr_temp[i]);
 	    free (data.addr_temp);
 	}
-	if (r == -1 && data.mem_err)
+	if (data.mem_err)
 	    return ENOMEM;
 	else
 	    return r;
@@ -501,16 +358,74 @@ krb5_os_localaddr(context, addr)
 	       be intact.  */
 	    *addr = data.addr_temp;
     }
+
+#ifdef DEBUG
+    {
+	int j;
+	fprintf (stderr, "addresses:\n");
+	for (j = 0; addr[0][j]; j++) {
+	    struct sockaddr_storage ss;
+	    int err2;
+	    char namebuf[NI_MAXHOST];
+	    void *addrp = 0;
+
+	    fprintf (stderr, "%2d: ", j);
+	    fprintf (stderr, "addrtype %2d, length %2d", addr[0][j]->addrtype,
+		     addr[0][j]->length);
+	    memset (&ss, 0, sizeof (ss));
+	    switch (addr[0][j]->addrtype) {
+	    case ADDRTYPE_INET:
+	    {
+		struct sockaddr_in *sinp = ss2sin (&ss);
+		sinp->sin_family = AF_INET;
+		addrp = &sinp->sin_addr;
+#ifdef HAVE_SA_LEN
+		sinp->sin_len = sizeof (struct sockaddr_in);
+#endif
+		break;
+	    }
+#ifdef KRB5_USE_INET6
+	    case ADDRTYPE_INET6:
+	    {
+		struct sockaddr_in6 *sin6p = ss2sin6 (&ss);
+		sin6p->sin6_family = AF_INET6;
+		addrp = &sin6p->sin6_addr;
+#ifdef HAVE_SA_LEN
+		sin6p->sin6_len = sizeof (struct sockaddr_in6);
+#endif
+		break;
+	    }
+#endif
+	    default:
+		ss2sa(&ss)->sa_family = 0;
+		break;
+	    }
+	    if (addrp)
+		memcpy (addrp, addr[0][j]->contents, addr[0][j]->length);
+	    err2 = getnameinfo (ss2sa(&ss), socklen (ss2sa (&ss)),
+				namebuf, sizeof (namebuf), 0, 0,
+				NI_NUMERICHOST);
+	    if (err2 == 0)
+		fprintf (stderr, ": addr %s\n", namebuf);
+	    else
+		fprintf (stderr, ": getnameinfo error %d\n", err2);
+	}
+    }
+#endif
+
     return 0;
 }
 
-#elif defined(_MSDOS) || defined(_WIN32) /* Windows version */
+#endif /* not TESTing */
+
+#else /* Windows/Mac version */
 
 /*
  * Hold on to your lunch!  Backup kludge method of obtaining your
  * local IP address, courtesy of Windows Socket Network Programming,
  * by Robert Quinn
  */
+#if defined(_WIN32)
 static struct hostent *local_addr_fallback_kludge()
 {
 	static struct hostent	host;
@@ -533,7 +448,7 @@ static struct hostent *local_addr_fallback_kludge()
 	if (err == SOCKET_ERROR)
 		return NULL;
 
-	err = getsockname(sock, (LPSOCKADDR) &addr, (int FAR *) size);
+	err = getsockname(sock, (LPSOCKADDR) &addr, (int *) size);
 	if (err == SOCKET_ERROR)
 		return NULL;
 
@@ -549,11 +464,12 @@ static struct hostent *local_addr_fallback_kludge()
 
 	return &host;
 }
+#endif
 
 /* No ioctls in winsock so we just assume there is only one networking 
  * card per machine, so gethostent is good enough. 
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
+krb5_error_code KRB5_CALLCONV
 krb5_os_localaddr (krb5_context context, krb5_address ***addr) {
     char host[64];                              /* Name of local machine */
     struct hostent *hostrec;
@@ -633,80 +549,5 @@ krb5_os_localaddr (krb5_context context, krb5_address ***addr) {
         *addr = paddr;
 
     return(err);
-}
-
-#else
-
-/* Mac OS 9 version */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_os_localaddr (krb5_context context, krb5_address ***addr) 
-{
-	// First, build the new list
-    krb5_address ** 		addresses = NULL;
-	SInt32					interfaceCount;
-	SInt32					interfaceIndex;
-	InetInterfaceInfo		info;
-	krb5_error_code			err = 0;
-
-	// Loop over the addressed once so we know how many there are
-	for (interfaceCount = 0; err == noErr; interfaceCount++) {
-		err = OTInetGetInterfaceInfo (&info, interfaceCount);
-	}
-	
-	// Allocate storage for the address list
-	addresses = (krb5_address **) malloc( sizeof (krb5_address *) * (interfaceCount + 1));
-	if (addresses == NULL) {
-        err = ENOMEM;
-        goto cleanup;
-    }
-
-	// Set the pointers to NULL so we will have a termination pointer
-	memset (addresses, 0, sizeof (krb5_address *) * (interfaceCount + 1));
-
-	// Look up the addresses and store them in the list
-	for (interfaceIndex = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
-		err = OTInetGetInterfaceInfo (&info, interfaceIndex);
-		if (err != noErr) {
-			err = 0;
-			break;
-		}
-        
-		addresses[interfaceIndex] = (krb5_address *) malloc (sizeof (krb5_address));
-		if (addresses[interfaceIndex] == NULL) {
-			err = ENOMEM;
-			goto cleanup;
-		}
-
-		addresses[interfaceIndex]->magic = KV5M_ADDRESS;
-		addresses[interfaceIndex]->addrtype = AF_INET;
-		addresses[interfaceIndex]->length = INADDRSZ;
-		addresses[interfaceIndex]->contents = (unsigned char *) malloc (addresses[interfaceIndex]->length);
-		if (addresses[interfaceIndex]->contents == NULL) {
-			err = ENOMEM;
-			goto cleanup;
-		}
-		
-		memcpy(addresses[interfaceIndex]->contents, &info.fAddress, addresses[interfaceIndex]->length);
-	}
-
-cleanup:
-	if (err) {
-		if (addresses != NULL) {
-			for (interfaceIndex = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
-				if (addresses[interfaceIndex] != NULL) {
-					if (addresses[interfaceIndex]->contents != NULL) {
-						free (addresses[interfaceIndex]->contents);
-					}
-					free (addresses[interfaceIndex]);
-				}
-			}
-			free(addresses);
-		}
-	} else {
-		*addr = addresses;
-	}
-	
-    return(err);
-
 }
 #endif

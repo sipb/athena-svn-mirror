@@ -70,17 +70,36 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#include "gssapiP_krb5.h"
 #include "k5-int.h"
+#include "gssapiP_krb5.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>
 #endif
 
-/*
- * $Id: acquire_cred.c,v 1.1.1.7 2002-05-02 16:56:36 rbasch Exp $
- */
+static char *krb5_gss_keytab = NULL;
+
+/* Heimdal calls this gsskrb5_register_acceptor_identity. */
+OM_uint32 KRB5_CALLCONV
+krb5_gss_register_acceptor_identity(const char *keytab)
+{
+    size_t	len;
+
+    if (keytab == NULL)
+	return GSS_S_FAILURE;
+    if (krb5_gss_keytab != NULL)
+	free(krb5_gss_keytab);
+
+    len = strlen(keytab);
+    krb5_gss_keytab = malloc(len + 1);
+    if (krb5_gss_keytab == NULL)
+	return GSS_S_FAILURE;
+
+    strcpy(krb5_gss_keytab, keytab);
+
+    return GSS_S_COMPLETE;
+}
 
 /* get credentials corresponding to a key in the krb5 keytab.
    If the default name is requested, return the name in output_princ.
@@ -107,47 +126,41 @@ acquire_accept_cred(context, minor_status, desired_name, output_princ, cred)
 
    /* open the default keytab */
 
-   if ((code = krb5_kt_default(context, &kt))) {
+   if (krb5_gss_keytab != NULL)
+      code = krb5_kt_resolve(context, krb5_gss_keytab, &kt);
+   else
+      code = krb5_kt_default(context, &kt);
+
+   if (code) {
       *minor_status = code;
       return(GSS_S_CRED_UNAVAIL);
    }
 
-   /* figure out what principal to use.  If the default name is
-      requested, use the default sn2princ output */
-
-   if (desired_name == (gss_name_t) NULL) {
-      if ((code = krb5_sname_to_principal(context, NULL, NULL, KRB5_NT_SRV_HST,
-					  &princ))) {
+   if (desired_name != GSS_C_NO_NAME) {
+      princ = (krb5_principal) desired_name;
+      if ((code = krb5_kt_get_entry(context, kt, princ, 0, 0, &entry))) {
 	 (void) krb5_kt_close(context, kt);
+	 if (code == KRB5_KT_NOTFOUND)
+	    *minor_status = KG_KEYTAB_NOMATCH;
+	 else
+	    *minor_status = code;
+	 return(GSS_S_CRED_UNAVAIL);
+      }
+      krb5_kt_free_entry(context, &entry);
+
+      /* Open the replay cache for this principal. */
+      if ((code = krb5_get_server_rcache(context,
+					 krb5_princ_component(context, princ, 0),
+					 &cred->rcache))) {
 	 *minor_status = code;
 	 return(GSS_S_FAILURE);
       }
-      *output_princ = princ;
-   } else {
-      princ = (krb5_principal) desired_name;
+
    }
 
-   if ((code = krb5_kt_get_entry(context, kt, princ, 0, 0, &entry))) {
-	(void) krb5_kt_close(context, kt);
-	if (code == KRB5_KT_NOTFOUND)
-	     *minor_status = KG_KEYTAB_NOMATCH;
-	else
-	     *minor_status = code;
-	return(GSS_S_CRED_UNAVAIL);
-   }
-   krb5_kt_free_entry(context, &entry);
-
-   /* hooray.  we made it */
+/* hooray.  we made it */
 
    cred->keytab = kt;
-
-   /* Open the replay cache for this principal. */
-   if ((code = krb5_get_server_rcache(context,
-				      krb5_princ_component(context, princ, 0),
-				      &cred->rcache))) {
-       *minor_status = code;
-       return(GSS_S_FAILURE);
-   }
 
    return(GSS_S_COMPLETE);
 }
@@ -177,8 +190,13 @@ acquire_init_cred(context, minor_status, desired_name, output_princ, cred)
 
    cred->ccache = NULL;
 
-   /* open the default credential cache */
+   /* load the GSS ccache name into the kg_context */
+   
+   if (GSS_ERROR(kg_sync_ccache_name(minor_status)))
+       return(GSS_S_FAILURE);
 
+   /* open the default credential cache */
+   
    if ((code = krb5int_cc_default(context, &ccache))) {
       *minor_status = code;
       return(GSS_S_CRED_UNAVAIL);
@@ -188,6 +206,7 @@ acquire_init_cred(context, minor_status, desired_name, output_princ, cred)
 
    flags = 0;		/* turns off OPENCLOSE mode */
    if ((code = krb5_cc_set_flags(context, ccache, flags))) {
+      (void)krb5_cc_close(context, ccache);
       *minor_status = code;
       return(GSS_S_CRED_UNAVAIL);
    }
@@ -417,7 +436,7 @@ krb5_gss_acquire_cred(minor_status, desired_name, time_req,
 
    /* if the princ wasn't filled in already, fill it in now */
 
-   if (!cred->princ)
+   if (!cred->princ && (desired_name != GSS_C_NO_CREDENTIAL))
       if ((code = krb5_copy_principal(context, (krb5_principal) desired_name,
 				      &(cred->princ)))) {
 	 if (cred->ccache)

@@ -26,52 +26,45 @@
 
 #define NEED_SOCKETS
 #include "k5-int.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 
 /* helper function: convert flags to necessary KDC options */
 #define flags2options(flags) (flags & KDC_TKT_COMMON_MASK)
 
 /* Get a TGT for use at the remote host */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
-		   forwardable, outbuf)
-    krb5_context context;
-    krb5_auth_context auth_context;
-    char FAR *rhost;
-    krb5_principal client;
-    krb5_principal server;
-    krb5_ccache cc;
-    int forwardable;      /* Should forwarded TGT also be forwardable? */
-    krb5_data FAR *outbuf;
+krb5_error_code KRB5_CALLCONV
+krb5_fwd_tgt_creds(krb5_context context, krb5_auth_context auth_context, char *rhost, krb5_principal client, krb5_principal server, krb5_ccache cc, int forwardable, krb5_data *outbuf)
+                         
+                                   
+                
+                          
+                          
+                   
+                          /* Should forwarded TGT also be forwardable? */
+                      
 {
     krb5_replay_data replaydata;
-    krb5_data FAR * scratch = 0;
-    krb5_address FAR * FAR *addrs = 0;
+    krb5_data * scratch = 0;
+    krb5_address **addrs = NULL;
     krb5_error_code retval;
     krb5_creds creds, tgt;
-    krb5_creds FAR *pcreds;
+    krb5_creds *pcreds;
     krb5_flags kdcoptions;
     int close_cc = 0;
     int free_rhost = 0;
     krb5_enctype enctype = 0;
     krb5_keyblock *session_key;
+    krb5_boolean old_use_conf_ktypes = context->use_conf_ktypes;
 
     memset((char *)&creds, 0, sizeof(creds));
     memset((char *)&tgt, 0, sizeof(creds));
 
-    if (rhost == NULL) {
-	if (krb5_princ_type(context, server) != KRB5_NT_SRV_HST)
-	    return(KRB5_FWD_BAD_PRINCIPAL);
-
-	if (krb5_princ_size(context, server) < 2)
-	    return (KRB5_CC_BADNAME);
-	
-	rhost = malloc(server->data[1].length+1);
-	if (!rhost)
-	    return ENOMEM;
-	free_rhost = 1;
-	memcpy(rhost, server->data[1].data, server->data[1].length);
-	rhost[server->data[1].length] = '\0';
+    if (cc == 0) {
+      if ((retval = krb5int_cc_default(context, &cc)))
+	goto errout;
+      close_cc = 1;
     }
     retval = krb5_auth_con_getkey (context, auth_context, &session_key);
     if (retval)
@@ -102,10 +95,6 @@ krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
     punt:
 	krb5_free_cred_contents (context, &in);
     }
-    
-    retval = krb5_os_hostaddr(context, rhost, &addrs);
-    if (retval)
-	goto errout;
 
     if ((retval = krb5_copy_principal(context, client, &creds.client)))
 	goto errout;
@@ -120,15 +109,11 @@ krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
 					   0)))
 	goto errout;
 	
-    if (cc == 0) {
-	if ((retval = krb5int_cc_default(context, &cc)))
-	    goto errout;
-	close_cc = 1;
-    }
-
     /* fetch tgt directly from cache */
+    context->use_conf_ktypes = 1;
     retval = krb5_cc_retrieve_cred (context, cc, KRB5_TC_SUPPORTED_KTYPES,
 				    &creds, &tgt);
+    context->use_conf_ktypes = old_use_conf_ktypes;
     if (retval)
 	goto errout;
 
@@ -143,6 +128,33 @@ krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
 	goto errout;
     }
     
+    if (tgt.addresses && *tgt.addresses) {
+      if (rhost == NULL) {
+	if (krb5_princ_type(context, server) != KRB5_NT_SRV_HST) {
+retval = KRB5_FWD_BAD_PRINCIPAL;
+ goto errout;
+	}
+
+	if (krb5_princ_size(context, server) < 2){
+	  retval = KRB5_CC_BADNAME;
+	  goto errout;
+	}
+	
+	rhost = malloc(server->data[1].length+1);
+	if (!rhost) {
+	  retval = ENOMEM;
+	  goto errout;
+	}
+	free_rhost = 1;
+	memcpy(rhost, server->data[1].data, server->data[1].length);
+	rhost[server->data[1].length] = '\0';
+      }
+
+	retval = krb5_os_hostaddr(context, rhost, &addrs);
+	if (retval)
+	    goto errout;
+    }
+    
     creds.keyblock.enctype = enctype;
     creds.times = tgt.times;
     creds.times.starttime = 0;
@@ -152,9 +164,15 @@ krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
       kdcoptions &= ~(KDC_OPT_FORWARDABLE);
 
     if ((retval = krb5_get_cred_via_tkt(context, &tgt, kdcoptions,
-					addrs, &creds, &pcreds)))
-        goto errout;
-
+					addrs, &creds, &pcreds))) {
+	if (enctype) {
+	    creds.keyblock.enctype = 0;
+	    if ((retval = krb5_get_cred_via_tkt(context, &tgt, kdcoptions,
+						addrs, &creds, &pcreds))) 
+		goto errout;
+	}
+	else goto errout;
+    }
     retval = krb5_mk_1cred(context, auth_context, pcreds,
                            &scratch, &replaydata);
     krb5_free_creds(context, pcreds);

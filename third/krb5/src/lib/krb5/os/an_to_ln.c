@@ -63,8 +63,7 @@
  * Find the portion of the flattened principal name that we use for mapping.
  */
 static char *
-aname_full_to_mapping_name(fprincname)
-    char *fprincname;
+aname_full_to_mapping_name(char *fprincname)
 {
     char	*atp;
     size_t	mlen;
@@ -98,10 +97,10 @@ db_an_to_ln(context, dbname, aname, lnsize, lname)
     krb5_context context;
     char *dbname;
     krb5_const_principal aname;
-    const int lnsize;
+    const unsigned int lnsize;
     char *lname;
 {
-#if	(!defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh))
+#if	(!defined(_WIN32) && !defined(macintosh))
     DBM *db;
     krb5_error_code retval;
     datum key, contents;
@@ -137,13 +136,13 @@ db_an_to_ln(context, dbname, aname, lnsize, lname)
     /* can't close until we copy the contents. */
     (void) KDBM_CLOSE(db);
     return retval;
-#else	/* !_MSDOS && !_WIN32 && !MACINTOSH */
+#else	/* !_WIN32 && !MACINTOSH */
     /*
      * If we don't have support for a database mechanism, then we can't
      * translate this now, can we?
      */
     return KRB5_LNAME_NOTRANS;
-#endif	/* !_MSDOS && !_WIN32 && !MACINTOSH */
+#endif	/* !_WIN32 && !MACINTOSH */
 }
 #endif /*ANAME_DB*/
 
@@ -196,9 +195,7 @@ db_an_to_ln(context, dbname, aname, lnsize, lname)
  * If no re_comp() or regcomp(), then always return a match.
  */
 static krb5_error_code
-aname_do_match(string, contextp)
-    char	*string;
-    char	**contextp;
+aname_do_match(char *string, char **contextp)
 {
     krb5_error_code	kret;
     char		*regexp, *startp, *endp = 0;
@@ -274,12 +271,7 @@ aname_do_match(string, contextp)
  * string.
  */
 static void
-do_replacement(regexp, repl, doall, in, out)
-    char	*regexp;
-    char	*repl;
-    int		doall;
-    char	*in;
-    char	*out;
+do_replacement(char *regexp, char *repl, int doall, char *in, char *out)
 {
 #if	HAVE_REGCOMP
     regex_t	match_exp;
@@ -357,10 +349,7 @@ do_replacement(regexp, repl, doall, in, out)
  * This routine enforces the "s/<pattern>/<replacement>/[g]" syntax.
  */
 static krb5_error_code
-aname_replacer(string, contextp, result)
-    char	*string;
-    char	**contextp;
-    char	**result;
+aname_replacer(char *string, char **contextp, char **result)
 {
     krb5_error_code	kret;
     char		*in;
@@ -388,7 +377,7 @@ aname_replacer(string, contextp, result)
 	 */
 	for (cp = *contextp; *cp; ) {
 	    /* Skip leading whitespace */
-	    while (isspace(*cp))
+	    while (isspace((int) (*cp)))
 		cp++;
 
 	    /*
@@ -463,12 +452,7 @@ aname_replacer(string, contextp, result)
  * the principal name.
  */
 static krb5_error_code
-rule_an_to_ln(context, rule, aname, lnsize, lname)
-    krb5_context		context;
-    char *			rule;
-    krb5_const_principal	aname;
-    const int			lnsize;
-    char *			lname;
+rule_an_to_ln(krb5_context context, char *rule, krb5_const_principal aname, const unsigned int lnsize, char *lname)
 {
     krb5_error_code	kret;
     char		*current;
@@ -515,12 +499,12 @@ rule_an_to_ln(context, rule, aname, lnsize, lname)
 				    ) {
 				    strncpy(cout,
 					    datap->data,
-					    datap->length);
+					    (unsigned) datap->length);
 				    cout += datap->length;
 				    *cout = '\0';
 				    current++;
 				    /* Point past number */
-				    while (isdigit(*current))
+				    while (isdigit((int) (*current)))
 					current++;
 				}
 				else
@@ -594,15 +578,11 @@ rule_an_to_ln(context, rule, aname, lnsize, lname)
  * that name is returned as the lname.
  */
 static krb5_error_code
-default_an_to_ln(context, aname, lnsize, lname)
-    krb5_context context;
-    krb5_const_principal aname;
-    const int lnsize;
-    char *lname;
+default_an_to_ln(krb5_context context, krb5_const_principal aname, const unsigned int lnsize, char *lname)
 {
     krb5_error_code retval;
     char *def_realm;
-    int realm_length;
+    unsigned int realm_length;
 
     realm_length = krb5_princ_realm(context, aname)->length;
     
@@ -654,11 +634,7 @@ default_an_to_ln(context, aname, lnsize, lname)
 */
 
 krb5_error_code KRB5_CALLCONV
-krb5_aname_to_localname(context, aname, lnsize, lname)
-    krb5_context context;
-    krb5_const_principal aname;
-    const int lnsize;
-    char *lname;
+krb5_aname_to_localname(krb5_context context, krb5_const_principal aname, const int lnsize_in, char *lname)
 {
     krb5_error_code	kret;
     char		*realm;
@@ -669,6 +645,12 @@ krb5_aname_to_localname(context, aname, lnsize, lname)
     int			i, nvalid;
     char		*cp;
     char		*typep, *argp;
+    unsigned int        lnsize;
+
+    if (lnsize_in < 0)
+      return KRB5_CONFIG_NOTENUFSPACE;
+
+    lnsize = lnsize_in; /* Unsigned */
 
     /*
      * First get the default realm.
@@ -697,7 +679,7 @@ krb5_aname_to_localname(context, aname, lnsize, lname)
 		    /* Trim the value. */
 		    cp = &mapping_values[nvalid-1]
 			[strlen(mapping_values[nvalid-1])];
-		    while (isspace(*cp)) cp--;
+		    while (isspace((int) (*cp))) cp--;
 		    cp++;
 		    *cp = '\0';
 

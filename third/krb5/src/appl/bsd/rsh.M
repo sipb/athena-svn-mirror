@@ -17,7 +17,7 @@
 .\"
 .\"	@(#)rsh.1	6.2 (Berkeley) 9/20/88
 .\" "
-.TH RSH
+.TH RSH 1
 .SH NAME
 rsh \- remote shell
 .SH SYNOPSIS
@@ -61,7 +61,8 @@ sets the remote username to
 Otherwise, the remote username will be the same as the local username.
 .TP
 \fB\-x\fP
-causes the network session traffic to be encrypted.
+causes the network session traffic to be encrypted.  This applies only
+to the input and output streams, and not the command line.
 .TP
 \fB\-f\fP
 cause nonforwardable Kerberos credentials to be forwarded to the remote
@@ -146,7 +147,7 @@ to
 (on remote host) - file containing Kerberos principals that are allowed
 access.
 .SH SEE ALSO
-rlogin(1), kerberos(3), krb_sendauth(3), krb_realmofhost(3)
+rlogin(1), kerberos(3), krb_sendauth(3), krb_realmofhost(3), kshd(8)
 .SH BUGS
 If you are using
 .IR csh (1)

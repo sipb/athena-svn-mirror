@@ -37,6 +37,9 @@
 #if	defined(AUTHENTICATION)
 #include <libtelnet/auth.h>
 #endif
+#if defined(ENCRYPTION)
+#include <libtelnet/encrypt.h>
+#endif
 
 unsigned char	doopt[] = { IAC, DO, '%', 'c', 0 };
 unsigned char	dont[] = { IAC, DONT, '%', 'c', 0 };
@@ -44,7 +47,7 @@ unsigned char	will[] = { IAC, WILL, '%', 'c', 0 };
 unsigned char	wont[] = { IAC, WONT, '%', 'c', 0 };
 int	not42 = 1;
 
-static int envvarok P((char *));
+static int envvarok (char *);
 
 /*
  * Buffer for sub-options, and macros
@@ -473,7 +476,7 @@ send_do(option, init)
 extern void auth_request();
 #endif
 #ifdef	LINEMODE
-extern void doclientstat();
+static void doclientstat(void);
 #endif
 #ifdef	ENCRYPTION
 extern void encrypt_send_support();
@@ -1530,11 +1533,13 @@ suboption()
 
 }  /* end of suboption */
 
-	void
+#ifdef	LINEMODE
+static	void
 doclientstat()
 {
 	clientstat(TELOPT_LINEMODE, WILL, 0);
 }
+#endif
 
 #define	ADD(c)	 *ncp++ = c;
 #define	ADD_DATA(c) { *ncp++ = c; if (c == SE) *ncp++ = c; }
@@ -1628,7 +1633,7 @@ send_status()
 	ADD(IAC);
 	ADD(SE);
 
-	netwrite(statusbuf, ncp - statusbuf);
+	netwrite(statusbuf, (unsigned) (ncp - statusbuf));
 	netflush();	/* Send it on its way */
 
 	DIAG(TD_OPTIONS,

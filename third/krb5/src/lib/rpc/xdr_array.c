@@ -41,7 +41,7 @@ static char sccsid[] = "@(#)xdr_array.c 1.10 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
-
+#include <string.h>
 #include <gssrpc/types.h>
 #include <gssrpc/xdr.h>
 
@@ -75,7 +75,8 @@ xdr_array(xdrs, addrp, sizep, maxsize, elsize, elproc)
 		return (FALSE);
 	}
 	c = *sizep;
-	if ((c > maxsize) && (xdrs->x_op != XDR_FREE)) {
+	if ((c > maxsize || c > LASTUNSIGNED / elsize)
+	    && (xdrs->x_op != XDR_FREE)) {
 		return (FALSE);
 	}
 	nodesize = c * elsize;
@@ -100,6 +101,9 @@ xdr_array(xdrs, addrp, sizep, maxsize, elsize, elproc)
 
 		case XDR_FREE:
 			return (TRUE);
+
+		case XDR_ENCODE:
+			break;
 	}
 	
 	/*

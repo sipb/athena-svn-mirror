@@ -1,7 +1,93 @@
-2001-09-25  Ken Raeburn  <raeburn@mit.edu>
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(OUTPRE)klist.exe): Use ws2_32.lib instead of
+	wsock32.lib.
+
+2002-06-13  Jen Selby <jenselby@mit.edu>
+
+	* klist.M: updated the manpage to show new ticket flags
+
+2002-04-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* klist.c: Do not pull in winsock.h since we already pull in
+	port-sockets.h.
+
+2002-04-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c (one_addr): Make 0 unsigned (!) in conditional
+	expression in getnameinfo call to avoid silly compiler warning.
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Include fake-addrinfo.h, not fake-addrinfo.c.
+	(FAI_PREFIX): Delete.
+
+2002-03-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Include port-sockets.h and socket-utils.h instead of
+	k5-int.h.
+	(NEED_SOCKETS): Don't define.
+
+2001-11-28  Ken Raeburn  <raeburn@mit.edu>
 
 	* klist.c (flags_string): Display transit-policy-checked,
 	ok-as-delegate, and anonymous ticket flags.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Make prototypes unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Delete _MSDOS support.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Include fake-addrinfo.c instead of .h file.
+	(FAI_IMPLEMENTATION): Don't define.
+
+2001-08-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c: Include k5-int.h and fake-addrinfo.h.
+	(NEED_SOCKETS, FAI_PREFIX, FAI_IMPLEMENTATION): Define macros.
+	(one_addr): Use getnameinfo always.
+
+2001-07-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c (one_addr): Pass UNIX address family, not Kerberos
+	address type, to inet_ntop.  Print different messages for unknown
+	address types and known address types we don't know how to print
+	(e.g., AF_INET6 without inet_ntop).
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* klist.c: Include unistd.h (if present) for getopt() prototype. 
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c (one_addr): Drop getipnodebyaddr support.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* klist.c (one_addr): gethostbyaddr takes an int as second argument.
+
+2000-10-09  Tom Yu  <tlyu@mit.edu>
+
+	* klist.c (do_v4_ccache): Call life_to_time().
+
+2000-08-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* klist.c: Compiler warning cleanups by declaring functions as
+	static, using existing global variables instead of trying to
+	shadow them, and removing assignments from conditionals.
 
 2000-04-19  Danilo Almeida  <dalmeida@mit.edu>
 
@@ -49,12 +135,12 @@
 
 	* Makefile.in: Windows fix for 10/26/99 cleanup.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-10-17  Ken Raeburn  <raeburn@raeburn.org>
 

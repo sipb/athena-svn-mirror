@@ -1,3 +1,63 @@
+2003-03-03  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Delete unused ADD_DEF, probably left over from
+	appl/bsd.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL,
+	AC_PROG_ARCHIVE, AC_PROG_RANLIB.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2002-12-06  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Quote the argument to AC_CHECK_HEADER. Autoconf
+	2.57 was having problems.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+	* pty_err.et: Add final "end" statement.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (install): Don't install libpty.h.
+	* configure.in: Always build static library only.
+
+2002-06-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* cleanup.c, getpty.c, init.c, init_slave.c, logwtmp.c,
+	open_ctty.c, open_slave.c, pty_paranoia.c, sane_hostname.c,
+	update_utmp.c, update_wtmp.c, vhangup.c, void_assoc.c: Include
+	"com_err.h" instead of <com_err.h>.
+
+	* pty-int.h: Don't include syslog.h.
+
+2002-05-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* sane_hostname.c (pty_make_sane_hostname): Always initialize
+	"ai".
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* sane_hostname.c: Include fake-addrinfo.h, not fake-addrinfo.c.
+	(FAI_PREFIX): Delete.
+
+2002-02-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (LIBMINOR): Bump due to change in internals.  (Tom's
+	change from 1.2.x branch.)
+
+2001-12-03  Sam Hartman  <hartmans@mit.edu>
+
+	* README: s-pty_init_ets/pty_init/
+
 2001-11-28  Tom Yu  <tlyu@mit.edu>
 
 	* update_utmp.c (PTY_GETUTXENT): Fix typo.  Thanks to Shawn
@@ -9,22 +69,47 @@
 	kludge around cases where we need to use more than 2 characters of
 	LINE in order to avoid conflicts in UT_ID.
 
-2001-11-05  Tom Yu  <tlyu@mit.edu>
+2001-10-18  Ezra Peisach  <epeisach@mit.edu>
 
-	* Makefile.in (LIBMINOR): Bump due to changes to internals.
+	* sane_hostname.c (pty_make_sane_hostname): Do not declare addrbuf
+	twice, shadowing the first declaration.
 
-2001-09-25  Tom Yu  <tlyu@mit.edu>
 
-	* pty-int.h: Fix up botched merge: cause prototypes for
-	ptyint_update_wtmp{,x} to be correct.
+2001-10-02  Ezra Peisach  <epeisach@mit.edu>
 
-2001-09-07  Tom Yu  <tlyu@mit.edu>
+	* Makefile.in (includes): Depend on
+	$(BUILDTOP)/include/krb5/autoconf.h. Automatic dependencies do not
+	work on systems in which shared libraries are build without static
+	ones.
+
+2001-09-11  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Cosmetic fix in utmpx.ut_exit check.
+
+Wed Sep  5 20:08:21 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in ($(BUILDTOP)/include/krb5/autoconf.h): Add rules to
+ 	build include/krb5/autoconf.h - this file is wiped out during a
+ 	make clean and sane_hostname.c depends on it.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* sane_hostname.c: Include socket-utils.h and fake-addrinfo.c.
+	(FAI_PREFIX): Define to krb5int_pty.
+	(sockaddrlen, do_ntoa): Deleted.
+	(pty_make_sane_hostname): Use socklen instead of sockaddrlen.
+	Delete support for not having getnameinfo.  Move code for do_ntoa
+	inline.
+
+2001-07-02  Tom Yu  <tlyu@mit.edu>
 
 	* update_utmp.c (pty_update_utmp): Remember to chop off leading
 	"/dev/" for the non-sysV case.  Handle lseek() returning non-zero
 	yet non-negative values (it usually does... :-), so that we can
 	actually write somewhere not at the beginning of the utmp file if
 	necessary.
+
+2001-06-28  Ken Raeburn  <raeburn@mit.edu>
 
 	* update_utmp.c (pty_update_utmp): Don't copy host if it's a null
 	pointer.
@@ -35,6 +120,24 @@
 	(main): Move utp and utxp declarations closer to their usages, and
 	make both conditionalized so they're not declared if they're not
 	used.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* libpty.h: Change variable line in prototype to tty_line to
+	prevent shadowing.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* pty-int.h: Provide revoke() prototype if system headers lacking. 
+
+	* logwtmp.c: Provide logwtmp() prototype if needed. 
+
+	* configure.in: Check for system provided getutmp(), logwtmp() and
+	revoke() prototypes.  Check for util.h, libutil.h.
+
+	* update_wtmp.c: Provide prototype for getutmp() if needed.
+
+2001-05-15  Tom Yu  <tlyu@mit.edu>
 
 	* getpty.c: Make pty_getpty() into ptyint_getpty_ext(), which has
 	an extra argument that determines whether to call grantpt() and
@@ -52,6 +155,8 @@
 	and under what conditions data will actually get passed between
 	master and slave.
 
+2001-05-10  Tom Yu  <tlyu@mit.edu>
+
 	* pty_paranoia.c: New file; do many paranoid checks about ctty
 	handling by the pty drivers.
 
@@ -64,6 +169,8 @@
 	* open_slave.c: Fix somewhat; AIX doesn't like opening the ctty
 	twice, so only do initial open if we special-case it in
 	configure.in, e.g. for Tru64.
+
+2001-05-08  Tom Yu  <tlyu@mit.edu>
 
 	* logwtmp.c: Delete code under "#if 0".  Fix reversed test for
 	loggingin.  Don't forget to set the ut_tv or ut_time for the
@@ -89,8 +196,12 @@
 
 	* void_assoc.c: Revise comment and reformat somewhat.
 
+2001-05-04  Ezra Peisach  <epeisach@mit.edu>
+
 	* open_slave.c (pty_open_slave): If revoke() present on system but
 	VHANG_FIRST is not defined, declare local variable.
+
+2001-05-04  Tom Yu  <tlyu@mit.edu>
 
 	* dump-utmp.c: Fix some off-by-one errors.  Handle cases where we
 	have utmpname() but not utmpname().
@@ -100,17 +211,34 @@
 	* open_slave.c (pty_open_slave): Add workaround for Tru64 v5.0,
 	since its revoke() will fail if the slave isn't open already.
 
+2001-05-03  Ezra Peisach  <epeisach@rna.mit.edu>
+
+	* sane_hostname.c (pty_make_sane_hostname): Preserve const
+	property of incomming parameter in casts.
+
+2001-05-03  Ezra Peisach  <epeisach@mit.edu>
+
 	* cleanup.c (pty_cleanup): Delcare local variable only if
 	VHANG_LAST defined.
 
 	* logwtmp.c (pty_logwtmp): Only declare local variables if
 	logwtmp() not available on system.
 
+	* sane_hostname.c (sockaddrlen): Only define static function if
+	HAVE_GETNAMEINFO defined. (pty_make_sane_hostname) Declare goto
+	target only if code compiled in.
+
+2001-05-01  Ken Raeburn  <raeburn@mit.edu>
+
 	* update_utmp.c (pty_update_utmp): Fix typo (OWRONLY ->
 	O_WRONLY).
 
+2001-05-01  Ezra Peisach  <epeisach@mit.edu>
+
 	* update_wtmp.c (ptyint_update_wtmpx): Add missing semi-colon in
  	code path if PTY_UTMP_E_EXIT and PTY_UTMPX_E_EXIT exist.
+
+2001-04-30  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Fix some quoting of shell variables when passing
 	to "test".  Reorder some logic in consistency checks to validate
@@ -122,6 +250,8 @@
 	* update_wtmp.c: Fix conditional compilation of update_wtmp() to
 	cover the case where we have setutxent() but don't have updwtmpx()
 	and WTMPX_FILE, as is the case on some Linux installations.
+
+2001-04-27  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in(K5_CHECK_UT_MEMBER): Fix typo in previous; make
 	sure to include the correct header when checking structure
@@ -157,19 +287,73 @@
 	takes a utmpx rather than a utmp, so it can fail to lose data
 	converting to and from utmp.
 
-	[many pullups from trunk]
+2001-01-12  Tom Yu  <tlyu@mit.edu>
 
-2000-03-24  Ken Raeburn  <raeburn@mit.edu>
+	* sane_hostname.c: Switch off of KRB5_USE_INET6 instead of
+	AF_INET6, which may be defined without a corresponding struct
+	sockaddr_in6.
+
+2000-12-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* sane_hostname.c (pty_make_sane_hostname, do_ntoa): Pass address
+	as const sockaddr pointer.
+	* libpty.h (pty_make_sane_hostname): Update prototype.
+
+	* sane_hostname.c (sockaddrlen, downcase): New function.
+	(do_ntoa, pty_make_sane_hostname): Reimplement using getnameinfo
+	and getaddrinfo if available.
+	* configure.in: Check for IPv6 support.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Quote macro use inside AC_CHECK_LIB. Change
+	AC_FUNC_CHECK to AC_CHECK_FUNC, AC_HAVE_FUNCS to AC_CHECK_FUNCS
+	and AC_HEADER_CHECK to AC_CHECK_HEADER..
+
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* pty-int.h: Add getutmpx() prototype if needed.
+
+	* configure.in: If getutmpx() exists on the system, test if a
+	prototype is provided by the system headers.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* getpty.c (pty_getpty): More conditionalizing variable defintion
+	based on OS features.
+
+	* cleanup.c (pty_cleanup): Add parenthesis about assignment in
+	conditional (gcc suggestion).
+
+	* pty-int.h: Include pty.h if it exists (for openpty prototype
+	under Linux).
+
+	* configure.in: Check for pty.h
+
+2000-06-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* libpty.h: If SOCK_DGRAM is not defined, provide a definition for
+	struct sockaddr_in to satisfy prototype. (based on similar 
+	code in k5-int.h).
+
+	* update_wtmp.c (ptyint_update_wtmp), update_utmp.c
+	(pty_update_utmp), open_slave.c (pty_open_slave), getpty.c
+	(pty_getpty): conditionalize definition of variables based on code
+	paths that are included.
+
+	
+
+1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Check for alpha*-dec-osf* instead of
 	alpha-dec-osf*.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-03  Ken Raeburn  <raeburn@mit.edu>
 

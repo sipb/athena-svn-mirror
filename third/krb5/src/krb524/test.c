@@ -25,11 +25,13 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/types.h>
+
+#ifndef _WIN32
 #include <netinet/in.h>
+#endif
 
 #include <des.h>
 #include <krb.h>
-#include "krb524.h"
 #include "com_err.h"
 
 #define KEYSIZE 8
@@ -37,18 +39,20 @@
 
 #define krb5_print_addrs
 
-void do_local PROTOTYPE((krb5_creds *, krb5_keyblock *)),
-     do_remote PROTOTYPE((krb5_context, krb5_creds *, char *, krb5_keyblock *));
+void do_local (krb5_creds *, krb5_keyblock *),
+     do_remote (krb5_context, krb5_creds *, char *, krb5_keyblock *);
 
+static 
 void print_key(msg, key)
      char *msg;
-     char *key;
+     des_cblock *key;
 {
      printf("%s: ", msg);
      C_Block_print(key);
      printf("\n");
 }
 
+static
 void print_time(msg, t)
      char *msg;
      int t;
@@ -56,6 +60,7 @@ void print_time(msg, t)
      printf("%s: %d, %s", msg, t, ctime((time_t *) &t));
 }
 
+static
 void krb5_print_times(msg, t)
      char *msg;
      krb5_ticket_times *t;
@@ -70,6 +75,7 @@ void krb5_print_times(msg, t)
 	    ctime((time_t *) &t->renew_till));
 }
 
+static
 void krb5_print_keyblock(msg, key)
      char *msg;
      krb5_keyblock *key;
@@ -77,10 +83,11 @@ void krb5_print_keyblock(msg, key)
      printf("%s: Keytype: %d\n", msg, key->enctype);
      printf("%s: Length: %d\n", msg, key->length);
      printf("%s: Key: ", msg);
-     C_Block_print(key->contents);
+     C_Block_print((des_cblock *) key->contents);
      printf("\n");
 }
 
+static
 void krb5_print_ticket(context, ticket_data, key)
      krb5_context context;
      krb5_data *ticket_data;
@@ -116,6 +123,7 @@ void krb5_print_ticket(context, ticket_data, key)
      krb5_free_ticket(context, tkt);
 }
 
+static
 void krb5_print_creds(context, creds, secret_key)
      krb5_context context;
      krb5_creds *creds;
@@ -133,11 +141,14 @@ void krb5_print_creds(context, creds, secret_key)
      krb5_print_times("Times", &creds->times);
      printf("is_skey: %s\n", creds->is_skey ? "True" : "False");
      printf("Flags: 0x%08x\n", creds->ticket_flags);
+#if 0
      krb5_print_addrs(creds->addresses);
+#endif
      krb5_print_ticket(context, &creds->ticket, secret_key);
      /* krb5_print_ticket(context, &creds->second_ticket, secret_key); */
 }
 
+static
 void krb4_print_ticket(ticket, secret_key)
      KTEXT ticket;
      krb5_keyblock *secret_key;
@@ -167,13 +178,14 @@ void krb4_print_ticket(ticket, secret_key)
      }
      printf("Ticket: Client: %s.%s@%s\n", pname, pinst, prealm);
      printf("Ticket: Service: %s.%s\n", sname, sinst);
-     printf("Ticket: Address: %08lx\n", addr);
+     printf("Ticket: Address: %08lx\n", (long) addr);
      print_key("Ticket: Session Key", (char *) session_key);
      printf("Ticket: Lifetime: %d\n", life);
-     printf("Ticket: Issue Date: %ld, %s", issue_time, ctime((time_t *)
-							     &issue_time));
+     printf("Ticket: Issue Date: %ld, %s", (long) issue_time, 
+	    ctime((time_t *) &issue_time));
 }
 
+static
 void krb4_print_creds(creds, secret_key)
      CREDENTIALS *creds;
      krb5_keyblock *secret_key;
@@ -189,6 +201,7 @@ void krb4_print_creds(creds, secret_key)
      krb4_print_ticket(&creds->ticket_st, secret_key);
 }
 
+static
 void usage()
 {
      fprintf(stderr, "Usage: test [-remote server] client service\n");
@@ -209,15 +222,15 @@ int main(argc, argv)
      krb5_context context;
      krb5_error_code retval;
 
+#if 0
      krb524_debug = 1;
+#endif
 
      retval = krb5_init_context(&context);
      if (retval) {
 	     com_err(argv[0], retval, "while initializing krb5");
 	     exit(1);
      }
-
-     krb524_init_ets(context);
 
      local = 0;
      remote = NULL;
@@ -298,8 +311,10 @@ void do_remote(context, v5creds, server, key)
      char *server;
      krb5_keyblock *key;
 {
+#if 0
      struct sockaddr_in saddr;
      struct hostent *hp;
+#endif
      CREDENTIALS v4creds;
      int ret;
 

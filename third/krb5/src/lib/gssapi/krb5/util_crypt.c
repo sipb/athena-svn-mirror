@@ -1,4 +1,5 @@
 /*
+  * Copyright2001 by the Massachusetts Institute of Technology.
  * Copyright 1993 by OpenVision Technologies, Inc.
  * 
  * Permission to use, copy, modify, distribute, and sell this software
@@ -48,11 +49,9 @@
 
 #include "k5-int.h"
 #include "gssapiP_krb5.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
-
-/*
- * $Id: util_crypt.c,v 1.1.1.4 2002-05-02 16:56:42 rbasch Exp $
- */
+#endif
 
 int
 kg_confounder_size(context, key)
@@ -61,8 +60,11 @@ kg_confounder_size(context, key)
 {
    krb5_error_code code;
    size_t blocksize;
-
-   if (code = krb5_c_block_size(context, key->enctype, &blocksize))
+   /* We special case rc4*/
+   if (key->enctype == ENCTYPE_ARCFOUR_HMAC)
+     return 8;
+   code = krb5_c_block_size(context, key->enctype, &blocksize);
+   if (code)
       return(-1); /* XXX */
 
    return(blocksize);
@@ -76,30 +78,16 @@ kg_make_confounder(context, key, buf)
 {
    krb5_error_code code;
    size_t blocksize;
-   krb5_data random;
+   krb5_data lrandom;
 
-   if (code = krb5_c_block_size(context, key->enctype, &blocksize))
+   code = krb5_c_block_size(context, key->enctype, &blocksize);
+   if (code)
        return(code);
 
-   random.length = blocksize;
-   random.data = buf;
+   lrandom.length = blocksize;
+   lrandom.data = buf;
 
-   return(krb5_c_random_make_octets(context, &random));
-}
-
-int
-kg_encrypt_size(context, key, n)
-     krb5_context context;
-     krb5_keyblock *key;
-     int n;
-{
-   krb5_error_code code;
-   size_t enclen;
-
-   if (code = krb5_c_encrypt_length(context, key->enctype, n, &enclen))
-      return(-1); /* XXX */
-
-   return(enclen);
+   return(krb5_c_random_make_octets(context, &lrandom));
 }
 
 krb5_error_code
@@ -110,7 +98,7 @@ kg_encrypt(context, key, usage, iv, in, out, length)
      krb5_pointer iv;
      krb5_pointer in;
      krb5_pointer out;
-     int length;
+     unsigned int length;
 {
    krb5_error_code code;
    size_t blocksize;
@@ -118,7 +106,8 @@ kg_encrypt(context, key, usage, iv, in, out, length)
    krb5_enc_data outputd;
 
    if (iv) {
-       if (code = krb5_c_block_size(context, key->enctype, &blocksize))
+       code = krb5_c_block_size(context, key->enctype, &blocksize);
+       if (code)
 	   return(code);
 
        ivd.length = blocksize;
@@ -139,7 +128,7 @@ kg_encrypt(context, key, usage, iv, in, out, length)
 
    code = krb5_c_encrypt(context, key, usage, pivd, &inputd, &outputd);
    if (pivd != NULL)
-       krb5_free_data_contents(context, pivd);
+       free(pivd->data);
    return code;
 }
 
@@ -153,7 +142,7 @@ kg_decrypt(context, key, usage, iv, in, out, length)
      krb5_pointer iv;
      krb5_pointer in;
      krb5_pointer out;
-     int length;
+     unsigned int length;
 {
    krb5_error_code code;
    size_t blocksize;
@@ -161,7 +150,8 @@ kg_decrypt(context, key, usage, iv, in, out, length)
    krb5_enc_data inputd;
 
    if (iv) {
-       if (code = krb5_c_block_size(context, key->enctype, &blocksize))
+       code = krb5_c_block_size(context, key->enctype, &blocksize);
+       if (code)
 	   return(code);
 
        ivd.length = blocksize;
@@ -183,6 +173,68 @@ kg_decrypt(context, key, usage, iv, in, out, length)
 
    code = krb5_c_decrypt(context, key, usage, pivd, &inputd, &outputd);
    if (pivd != NULL)
-       krb5_free_data_contents(context, pivd);
+       free(pivd->data);
    return code;
 }
+
+krb5_error_code
+kg_arcfour_docrypt (const krb5_keyblock *longterm_key , int ms_usage,
+		    const unsigned char *kd_data, size_t kd_data_len,
+		    const unsigned char *input_buf, size_t input_len,
+		    unsigned char *output_buf)
+{
+  krb5_error_code code;
+  krb5_data input, output;
+  krb5int_access kaccess;
+  krb5_keyblock seq_enc_key, usage_key;
+  unsigned char t[4];
+
+  usage_key.length = longterm_key->length;
+  usage_key.contents = malloc(usage_key.length);
+  if (usage_key.contents == NULL)
+    return (ENOMEM);
+  seq_enc_key.length = longterm_key->length;
+  seq_enc_key.contents = malloc(seq_enc_key.length);
+  if (seq_enc_key.contents == NULL) {
+    free ((void *) usage_key.contents);
+    return (ENOMEM);
+  }
+  code = krb5int_accessor (&kaccess, KRB5INT_ACCESS_VERSION);
+  if (code)
+    goto cleanup_arcfour;
+
+  t[0] = ms_usage &0xff;
+  t[1] = (ms_usage>>8) & 0xff;
+  t[2] = (ms_usage>>16) & 0xff;
+  t[3] = (ms_usage>>24) & 0xff;
+  input.data = (void *) &t;
+  input.length = 4;
+  output.data = (void *) usage_key.contents;
+  output.length = usage_key.length;
+  code = (*kaccess.krb5_hmac) (kaccess.md5_hash_provider,
+			       longterm_key, 1, &input, &output);
+  if (code)
+    goto cleanup_arcfour;
+	  
+  input.data = ( void *) kd_data;
+  input.length = kd_data_len;
+  output.data = (void *) seq_enc_key.contents;
+  code = (*kaccess.krb5_hmac) (kaccess.md5_hash_provider,
+			       &usage_key, 1, &input, &output);
+  if (code)
+    goto cleanup_arcfour;
+  input.data = ( void * ) input_buf;
+  input.length = input_len;
+  output.data = (void * ) output_buf;
+  output.length = input_len;
+  code =  ((*kaccess.arcfour_enc_provider->encrypt)(
+						    &seq_enc_key, 0, 
+						    &input, &output));
+ cleanup_arcfour:
+  memset ((void *) seq_enc_key.contents, 0, seq_enc_key.length);
+  memset ((void *) usage_key.contents, 0, usage_key.length);
+  free ((void *) usage_key.contents);
+  free ((void *) seq_enc_key.contents);
+  return (code);
+}
+		    

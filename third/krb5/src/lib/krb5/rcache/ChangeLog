@@ -1,31 +1,137 @@
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* rc_base.c (struct krb5_rc_typelist): Field "ops" now points to
+	const.
+	(krb5_rc_register_type): Likewise for "ops" argument.
+	* rcdef.c (krb5_rc_dfl_ops): Now const.
+	* rc_dfl.h (krb5_rc_dfl_ops): Declaration deleted.
+
+2002-09-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* rc_io.c (krb5_rc_io_move): Missed a variable name change.
+
+2002-09-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* rc_base.c, rc_conv.c, rc_io.c, ser_rc.c: Use prototype style
+	function definitions.
+
+	* rc_io.c (errno): Don't declare.
+	(krb5_rc_io_move): Avoid variable name "new".
+	* rc_dfl.c (cmp, alive): Avoid variable name "new".
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-14  Miro Jurisic  <meeroh@mit.edu>
+
 	* rc_io.c, rc_dfl.c: use "" includes for krb5.h and k5-int.h
+	[pullup from 1-2-2-branch]
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* rc_dfl.h, rc_io.h, ser_rc.c: Make prototypes unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* rc_io.c: Drop _MSDOS support.
+
+	* rcfns.c: Don't explicitly declare pointers FAR any more.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* ser_rc.c: Don't use KRB5_DLLIMP.
+
+2001-07-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* rc_dfl.c (krb5_rc_io_fetch): Once length element read from
+	cache, and verified to be positive, put into unsigned int variable
+	for passing to other functions that expect such.
+
+2001-07-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* rc_io.c: Declare krb5_rc_io_open_internal static.
+
+2001-06-21  Danilo Almeida  <dalmeida@mit.edu>
+
+	* rc_io.c (krb5_rc_io_creat): Make cleanup code easier to read.
+	(krb5_rc_io_open_internal): Include code previously in
+	krb5_rc_open().  Add a new full pathname parameter so that a file
+	can be opened by its full pathname.  Make cleanup code easier to
+	read.
+	(krb5_rc_io_open): Call krb5_rc_io_open_internal().
+	(krb5_rc_io_move): Fix Windows implementation so that it works
+	where it is used (only called by krb5_rc_dfl_expunge()).
+	(krb5_rc_io_sync): Fix function header to comply with coding
+	standard.  Add implementation for Windows.
+	(krb5_rc_io_close): Close file descriptor only if it is not -1.
+	Set file descriptor to -1 if it is successfully closed.
+
+	* rc_dfl.c (krb5_rc_dfl_close_no_free): Leave file descriptor
+	check for krb5_rc_io_close().
+	(krb5_rc_dfl_expunge): Do better resource cleanup on error.
+
+2001-06-20  Danilo Almeida  <dalmeida@mit.edu>
+
+	* rc_dfl.c, rc_io.c: More compliance with coding standards: use
+	ANSI function declarations, use curly braces to fix up #ifdef
+	reindenting under Emacs, reindent code, strip trailing whitespace,
+	wrap lines, fix commans.  Not finished: fix indenting of curly
+	braces in control structures.
 
 2001-01-23  Tom Yu  <tlyu@mit.edu>
 
-	* rc_io.c (getdir, krb5_rc_io_creat): Undo prior fudge; dirlen
-	will now not include trailing NUL character.
-
-2001-01-17  Tom Yu  <tlyu@mit.edu>
-
-	* rc_io.c (krb5_rc_io_creat): Fudge for dirlen including trailing
-	NUL character.
+	* rc_io.c (getdir): Subtract one from dirlen, since sizeof
+	includes the terminating NUL character.  Avoid redundant path
+	separators.
 	(krb5_rc_io_move): When renaming OLD to NEW, don't copy the
 	filename.  This was causing temporary files to get leaked.
 	(krb5_rc_io_close): Don't FREE if d->fn is NULL.
+
+2001-01-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* rcfns.c: New file, with function versions of former dispatch
+	macros from krb5.h.
+	* Makefile.in (STLIBOBJS, OBJS, SRCS): Add it.
+
+2000-09-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* rc_io.h (struct krb5_rc_iostuff): Internal structure - change
+	position in file from long to off_t (as argument for lseek). 
+
+	* rc_io.c (krb5_rc_io_read, krb5_rc_io_write): Unsigned vs signed
+	warnings cleanup.
+
+	* rc_dfl.c (alive): Do not shadow time() with variable named for same. 
+
+	* rc_base.c (krb5_rc_resolve_full): Cleanup unsigned vs. signed
+	warnings.
+
+	
+2000-06-29  Ezra Peisach  <epeisach@engrailed.mit.edu>
+
+	* rc_io.c (krb5_rc_io_creat): Cast getpid() to int.
+	(Use of a long might overflow buffer if pid_t is 64 bits */
 
 2000-04-28  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* rc_io.c (getdir): Don't check dirlen again, the call sites
 	always do.  Fix dirlen calculation.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-21  Ken Raeburn  <raeburn@mit.edu>
 

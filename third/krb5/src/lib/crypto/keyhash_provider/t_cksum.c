@@ -35,13 +35,13 @@
 #define MD4_K5BETA_COMPAT
 
 #if	MD == 4
-extern struct krb5_keyhash_provider krb5_keyhash_md4des;
-#define khp krb5_keyhash_md4des
+extern struct krb5_keyhash_provider krb5int_keyhash_md4des;
+#define khp krb5int_keyhash_md4des
 #endif
 
 #if	MD == 5
-extern struct krb5_keyhash_provider krb5_keyhash_md5des;
-#define khp krb5_keyhash_md5des
+extern struct krb5_keyhash_provider krb5int_keyhash_md5des;
+#define khp krb5int_keyhash_md5des
 #endif
 
 static void
@@ -74,15 +74,14 @@ main(argc, argv)
   int 			msgindex;
   krb5_boolean		valid;
   size_t		length;
-  krb5_context		kcontext;
   krb5_keyblock		keyblock;
-  krb5_error_code	kret;
+  krb5_error_code	kret=0;
   krb5_data		plaintext, newstyle_checksum;
 
   /* this is a terrible seed, but that's ok for the test. */
 
   plaintext.length = 8;
-  plaintext.data = testkey;
+  plaintext.data = (char *) testkey;
 
   krb5_c_random_seed(/* XXX */ 0, &plaintext);
 
@@ -94,8 +93,8 @@ main(argc, argv)
 
   newstyle_checksum.length = length;
 
-  if (!(newstyle_checksum.data = (krb5_octet *)
-	malloc(newstyle_checksum.length))) {
+  if (!(newstyle_checksum.data = (char *)
+	malloc((unsigned) newstyle_checksum.length))) {
     printf("cannot get memory for new style checksum\n");
     return(ENOMEM);
   }
@@ -103,13 +102,13 @@ main(argc, argv)
     plaintext.length = strlen(argv[msgindex]);
     plaintext.data = argv[msgindex];
 
-    if ((kret = (*(khp.hash))(&keyblock, 0, &plaintext, &newstyle_checksum))) {
+    if ((kret = (*(khp.hash))(&keyblock, 0, 0, &plaintext, &newstyle_checksum))) {
       printf("krb5_calculate_checksum choked with %d\n", kret);
       break;
     }
     print_checksum("correct", MD, argv[msgindex], &newstyle_checksum);
 
-    if ((kret = (*(khp.verify))(&keyblock, 0, &plaintext, &newstyle_checksum,
+    if ((kret = (*(khp.verify))(&keyblock, 0, 0, &plaintext, &newstyle_checksum,
 				&valid))) {
       printf("verify on new checksum choked with %d\n", kret);
       break;
@@ -121,7 +120,7 @@ main(argc, argv)
     printf("Verify succeeded for \"%s\"\n", argv[msgindex]);
 
     newstyle_checksum.data[0]++;
-    if ((kret = (*(khp.verify))(&keyblock, 0, &plaintext, &newstyle_checksum,
+    if ((kret = (*(khp.verify))(&keyblock, 0, 0, &plaintext, &newstyle_checksum,
 				&valid))) {
       printf("verify on new checksum choked with %d\n", kret);
       break;
@@ -133,6 +132,7 @@ main(argc, argv)
     printf("Verify of bad checksum OK for \"%s\"\n", argv[msgindex]);
     kret = 0;
   }
+  free(newstyle_checksum.data);
   if (!kret)
     printf("%d tests passed successfully for MD%d checksum\n", argc-1, MD);
   return(kret);

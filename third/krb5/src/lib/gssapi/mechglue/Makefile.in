@@ -1,7 +1,7 @@
 thisconfigdir=.
 myfulldir=lib/gssapi/mechglue
 mydir=.
-BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..$(S)..
 LOCALINCLUDES = -I. -I$(srcdir)
 
 ##DOSBUILDTOP = ..\..\..
@@ -99,8 +99,6 @@ all-windows:: includes $(OBJS)
 
 shared:
 	mkdir shared
-
-unixmac: 
 
 libgssapi.$(STEXT): $(OBJS)
 	$(RM) $@

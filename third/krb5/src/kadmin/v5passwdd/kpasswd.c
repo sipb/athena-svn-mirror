@@ -37,6 +37,7 @@
 #include "k5-int.h"
 #include "adm_defs.h"
 #include "adm.h"
+#include "krb5/adm_proto.h"
 
 #ifdef	HAVE_STRING_H
 #include <string.h>
@@ -53,41 +54,47 @@
 /*
  * Local data.
  */
-static const char *kpwd_serror_head =		"server";
-static const char *kpwd_change_prompt_1 = 	"   Enter new password: ";
-static const char *kpwd_change_prompt_2 = 	"Re-enter new password: ";
-static const char *kpwd_old_password_prompt =	"   Enter old password: ";
-static const char *kpwd_old_pwd_name_fmt = 	"Enter old password for %s: ";
+#define kpwd_serror_head		"server"
+#define kpwd_change_prompt_1		"   Enter new password"
+#define kpwd_change_prompt_2		"Re-enter new password"
+#define kpwd_old_password_prompt	"   Enter old password"
+#define kpwd_old_pwd_name_fmt		"Enter old password for %s"
 
 #ifdef	LANGUAGES_SUPPORTED
-static const char *kpwd_usage_error_fmt =	"%s: usage is %s [-u user] [-l language]\n";
-static const char *kpwd_getoptstring =		"l:u:";
+#define kpwd_usage_error_fmt		"%s: usage is %s [-u user] [-l language]\n"
+#define kpwd_getoptstring		"l:u:"
 #else	/* LANGUAGES_SUPPORTED */
-static const char *kpwd_usage_error_fmt =	"%s: usage is %s [-u user]\n";
-static const char *kpwd_getoptstring =		"u:";
+#define kpwd_usage_error_fmt		"%s: usage is %s [-u user]\n"
+#define kpwd_getoptstring		"u:"
 #endif	/* LANGUAGES_SUPPORTED */
-static const char *kpwd_extra_args =		"extra arguments";
-static const char *kpwd_bad_option_fmt = 	"%s: unrecognized option -%c.\n";
-static const char *kpwd_no_memory_fmt = 	"%s: not enough resources to allocate %d bytes for %s.\n";
-static const char *kpwd_bad_client_fmt =	"%s: %s%s%s %s not recognized by the server.\n";
-static const char *kpwd_no_server_fmt =		"%s: cannot find server for %s.\n";
-static const char *kpwd_incorrect_fmt =		"%s: incorrect password\n";
-static const char *kpwd_cant_connect_fmt = 	"%s: cannot contact server (%s).\n";
-static const char *kpwd_proto_error_fmt = 	"%s: protocol error during %s request (%s).\n";
-static const char *kpwd_pwproto_unsupp_fmt = 	"%s: %s request not supported by server.\n";
-static const char *kpwd_pwproto_error = 	"%s: server error (%s) during %s request.\n";
-static const char *kpwd_pwd_unacceptable = 	"%s: your new password is unacceptable to the server, %s.\n";
-static const char *kpwd_read_pass_error =	"%s: error (%s) reading passwords.\n";
+#define kpwd_extra_args			"extra arguments"
+#if 0
+#define kpwd_bad_option_fmt		"%s: unrecognized option -%c.\n"
+#endif
+#define kpwd_no_memory_fmt		"%s: not enough resources to allocate %d bytes for %s.\n"
+#define kpwd_bad_client_fmt		"%s: %s%s%s %s not recognized by the server.\n"
+#define kpwd_no_server_fmt		"%s: cannot find server for %s.\n"
+#define kpwd_incorrect_fmt		"%s: incorrect password\n"
+#define kpwd_cant_connect_fmt		"%s: cannot contact server (%s).\n"
+#define kpwd_proto_error_fmt		"%s: protocol error during %s request (%s).\n"
+#define kpwd_pwproto_unsupp_fmt		"%s: %s request not supported by server.\n"
+#define kpwd_pwproto_error		"%s: server error (%s) during %s request.\n"
+#define kpwd_pwd_unacceptable		"%s: your new password is unacceptable to the server, %s.\n"
+#define kpwd_read_pass_error		"%s: error (%s) reading passwords.\n"
 
 static const char *kpwd_password_text = "passwords";
+#if 0
 static const char *kpwd_realm_text = "realm name";
+#endif
 static const char *kpwd_args_text = "arguments";
 
 static const char *kpwd_try_again_text = "try again";
 static const char *kpwd_seeyalater_text = "password not changed";
 
+#if 0
 static const char *kpwd_mime_text = "MIME-enable";
 static const char *kpwd_language_text = "set language";
+#endif
 static const char *kpwd_check_pwd_text = "check password";
 static const char *kpwd_change_pwd_text = "change password";
 static const char *kpwd_quit_text = "quit";
@@ -122,13 +129,13 @@ usage(invocation, more_info)
 }
 
 static const char *
-kpwd_reply_to_string(stat)
-    krb5_int32	stat;
+kpwd_reply_to_string(status)
+    krb5_int32	status;
 {
-    int	index;
+    int	idx;
     const char *rval;
 
-    switch (stat) {
+    switch (status) {
     case KRB5_ADM_SUCCESS:
     case KRB5_ADM_CMD_UNKNOWN:
     case KRB5_ADM_PW_UNACCEPT:
@@ -136,8 +143,8 @@ kpwd_reply_to_string(stat)
     case KRB5_ADM_NOT_IN_TKT:
     case KRB5_ADM_CANT_CHANGE:
     case KRB5_ADM_LANG_NOT_SUPPORTED:
-	index = (int) stat;
-	rval = kpwd_replies[index];
+	idx = (int) status;
+	rval = kpwd_replies[idx];
 	break;
     default:
 	rval = kpwd_replies_unknown;
@@ -164,6 +171,7 @@ kpwd_print_sreply(progname, ncomps, complist)
     }
 }
 
+int
 main(argc, argv)
     int argc;
     char *argv[];
@@ -174,8 +182,10 @@ main(argc, argv)
     int			error;
 
     char		*name;
+#ifdef	LANGUAGES_SUPPORTED
     int			mflag;
     int			lflag;
+#endif
     char 		*language;
 
     krb5_error_code	kret;
@@ -195,7 +205,10 @@ main(argc, argv)
      * Initialize.
      */
     language = name = opwd_prompt = (char *) NULL;
-    mflag = lflag = error = 0;
+    error = 0;
+#ifdef	LANGUAGES_SUPPORTED
+    mflag = lflag = 0;
+#endif
     send_quit = 0;
     ccache = (krb5_ccache) NULL;
 
@@ -281,16 +294,12 @@ main(argc, argv)
     /*
      * Establish the connection.
      */
-    if (kret = krb5_adm_connect(kcontext,
-				name,
-				(opwd_prompt) ? 
-					opwd_prompt : kpwd_old_password_prompt,
-				opassword,
-				&conn_socket, 
-				&auth_context,
-				&ccache,
-				(char *) NULL,
-				0)) {
+    kret = krb5_adm_connect(kcontext, name, 
+			    (opwd_prompt) ? 
+			    opwd_prompt : kpwd_old_password_prompt,
+			    opassword, &conn_socket, &auth_context,
+				&ccache, (char *) NULL, 0);
+    if (kret) {
 	switch (kret) {
 	case KRB5KDC_ERR_C_PRINCIPAL_UNKNOWN:
 	    fprintf(stderr, kpwd_bad_client_fmt, argv[0],
@@ -417,12 +426,12 @@ main(argc, argv)
 
     /* Now - Actually change the password. */
     for (npass_tries = 1; npass_tries <= KPWD_MAX_TRIES; npass_tries++) {
-	int npass_len;
+	unsigned int npass_len;
 
 	npass_len = KRB5_ADM_MAX_PASSWORD_LEN;
 	if (!(kret = krb5_read_password(kcontext,
-					(char *) kpwd_change_prompt_1,
-					(char *) kpwd_change_prompt_2,
+					kpwd_change_prompt_1,
+					kpwd_change_prompt_2,
 					npassword,
 					&npass_len))) {
 	    krb5_data		check_data[2];
@@ -432,7 +441,7 @@ main(argc, argv)
 	    krb5_data		set_data[3];
 	    krb5_int32		set_status;
 	    krb5_int32		set_ncomps;
-	    krb5_int32		*set_reply;
+	    krb5_data		*set_reply;
 
 	    check_data[0].data = KRB5_ADM_CHECKPW_CMD;
 	    check_data[0].length = strlen(check_data[0].data);

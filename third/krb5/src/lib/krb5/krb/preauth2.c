@@ -1,5 +1,5 @@
 /*
- * Copyright 1995 by the Massachusetts Institute of Technology.  All
+ * Copyright 1995, 2003 by the Massachusetts Institute of Technology.  All
  * Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -35,7 +35,7 @@ typedef krb5_error_code (*pa_function)(krb5_context,
 				       krb5_kdc_req *request,
 				       krb5_pa_data *in_padata,
 				       krb5_pa_data **out_padata,
-				       krb5_data *salt,
+				       krb5_data *salt, krb5_data *s2kparams,
 				       krb5_enctype *etype,
 				       krb5_keyblock *as_key,
 				       krb5_prompter_fct prompter_fct,
@@ -57,7 +57,7 @@ krb5_error_code pa_salt(krb5_context context,
 			krb5_kdc_req *request,
 			krb5_pa_data *in_padata,
 			krb5_pa_data **out_padata,
-			krb5_data *salt,
+			krb5_data *salt, krb5_data *s2kparams,
 			krb5_enctype *etype,
 			krb5_keyblock *as_key,
 			krb5_prompter_fct prompter, void *prompter_data,
@@ -65,25 +65,14 @@ krb5_error_code pa_salt(krb5_context context,
 {
     krb5_data tmp;
 
-    /* screw the abstraction.  If there was a *reasonable* copy_data,
-       I'd use it.  But I'm inside the library, which is the twilight
-       zone of source code, so I can do anything. */
-
+    tmp.data = in_padata->contents;
     tmp.length = in_padata->length;
-    if (tmp.length) {
-	if ((tmp.data = malloc(tmp.length)) == NULL)
-	    return ENOMEM;
-	memcpy(tmp.data, in_padata->contents, tmp.length);
-    } else {
-	tmp.data = NULL;
-    }
-
-    *salt = tmp;
-
-    /* assume that no other salt was allocated */
+    krb5_free_data_contents(context, salt);
+    krb5int_copy_data_contents(context, &tmp, salt);
+    
 
     if (in_padata->pa_type == KRB5_PADATA_AFS3_SALT)
-	salt->length = -1;
+	salt->length = SALT_TYPE_AFS_LENGTH;
 
     return(0);
 }
@@ -94,6 +83,7 @@ krb5_error_code pa_enc_timestamp(krb5_context context,
 				 krb5_pa_data *in_padata,
 				 krb5_pa_data **out_padata,
 				 krb5_data *salt,
+				 krb5_data *s2kparams,
 				 krb5_enctype *etype,
 				 krb5_keyblock *as_key,
 				 krb5_prompter_fct prompter,
@@ -116,19 +106,19 @@ krb5_error_code pa_enc_timestamp(krb5_context context,
 	fprintf (stderr, "; *etype=%d request->ktype[0]=%d\n",
 		 *etype, request->ktype[0]);
 #endif
-       if (ret = ((*gak_fct)(context, request->client,
-			     *etype ? *etype : request->ktype[0],
-			     prompter, prompter_data,
-			     salt, as_key, gak_data)))
+       if ((ret = ((*gak_fct)(context, request->client,
+			      *etype ? *etype : request->ktype[0],
+			      prompter, prompter_data,
+			      salt, s2kparams, as_key, gak_data))))
            return(ret);
     }
 
     /* now get the time of day, and encrypt it accordingly */
 
-    if (ret = krb5_us_timeofday(context, &pa_enc.patimestamp, &pa_enc.pausec))
+    if ((ret = krb5_us_timeofday(context, &pa_enc.patimestamp, &pa_enc.pausec)))
 	return(ret);
 
-    if (ret = encode_krb5_pa_enc_ts(&pa_enc, &tmp))
+    if ((ret = encode_krb5_pa_enc_ts(&pa_enc, &tmp)))
 	return(ret);
 
 #ifdef DEBUG
@@ -178,8 +168,7 @@ krb5_error_code pa_enc_timestamp(krb5_context context,
 }
 
 static 
-char *sam_challenge_banner(sam_type)
-     krb5_int32 sam_type;
+char *sam_challenge_banner(krb5_int32 sam_type)
 {
     char *label;
 
@@ -234,6 +223,7 @@ krb5_error_code pa_sam(krb5_context context,
 		       krb5_pa_data *in_padata,
 		       krb5_pa_data **out_padata,
 		       krb5_data *salt,
+		       krb5_data *s2kparams,
 		       krb5_enctype *etype,
 		       krb5_keyblock *as_key,
 		       krb5_prompter_fct prompter,
@@ -257,11 +247,11 @@ krb5_error_code pa_sam(krb5_context context,
     krb5_pa_data *		pa;
 
     if (prompter == NULL)
-	return KRB5_LIBOS_CANTREADPWD;
+	return EIO;
 
     tmpsam.length = in_padata->length;
     tmpsam.data = (char *) in_padata->contents;
-    if (ret = decode_krb5_sam_challenge(&tmpsam, &sam_challenge))
+    if ((ret = decode_krb5_sam_challenge(&tmpsam, &sam_challenge)))
 	return(ret);
 
     if (sam_challenge->sam_flags & KRB5_SAM_MUST_PK_ENCRYPT_SAD) {
@@ -269,6 +259,24 @@ krb5_error_code pa_sam(krb5_context context,
 	return(KRB5_SAM_UNSUPPORTED);
     }
 
+    /* If we need the password from the user (USE_SAD_AS_KEY not set),	*/
+    /* then get it here.  Exception for "old" KDCs with CryptoCard 	*/
+    /* support which uses the USE_SAD_AS_KEY flag, but still needs pwd	*/ 
+
+    if (!(sam_challenge->sam_flags & KRB5_SAM_USE_SAD_AS_KEY) ||
+	(sam_challenge->sam_type == PA_SAM_TYPE_CRYPTOCARD)) {
+
+	/* etype has either been set by caller or by KRB5_PADATA_ETYPE_INFO */
+	/* message from the KDC.  If it is not set, pick an enctype that we */
+	/* think the KDC will have for us.				    */
+
+	if (etype && *etype == 0)
+	   *etype = ENCTYPE_DES_CBC_CRC;
+
+	if ((ret = (gak_fct)(context, request->client, *etype, prompter,
+			prompter_data, salt, s2kparams, as_key, gak_data)))
+	   return(ret);
+    }
     sprintf(name, "%.*s",
 	    SAMDATA(sam_challenge->sam_type_name, "SAM Authentication",
 		    sizeof(name) - 1));
@@ -289,14 +297,14 @@ krb5_error_code pa_sam(krb5_context context,
     response_data.length = sizeof(response);
 
     kprompt.prompt = prompt;
-    kprompt.hidden = sam_challenge->sam_challenge.length?0:1;
+    kprompt.hidden = 1;
     kprompt.reply = &response_data;
     prompt_type = KRB5_PROMPT_TYPE_PREAUTH;
 
     /* PROMPTER_INVOCATION */
     krb5int_set_prompt_types(context, &prompt_type);
-    if (ret = ((*prompter)(context, prompter_data, name,
-			   banner, 1, &kprompt))) {
+    if ((ret = ((*prompter)(context, prompter_data, name,
+			   banner, 1, &kprompt)))) {
 	krb5_xfree(sam_challenge);
 	krb5int_set_prompt_types(context, 0);
 	return(ret);
@@ -305,9 +313,9 @@ krb5_error_code pa_sam(krb5_context context,
 
     enc_sam_response_enc.sam_nonce = sam_challenge->sam_nonce;
     if (sam_challenge->sam_nonce == 0) {
-	if (ret = krb5_us_timeofday(context, 
+	if ((ret = krb5_us_timeofday(context, 
 				&enc_sam_response_enc.sam_timestamp,
-				&enc_sam_response_enc.sam_usec)) {
+				&enc_sam_response_enc.sam_usec))) {
 		krb5_xfree(sam_challenge);
 		return(ret);
 	}
@@ -318,6 +326,11 @@ krb5_error_code pa_sam(krb5_context context,
     /* XXX What if more than one flag is set?  */
     if (sam_challenge->sam_flags & KRB5_SAM_SEND_ENCRYPTED_SAD) {
 
+	/* Most of this should be taken care of before we get here.  We	*/
+	/* will need the user's password and as_key to encrypt the SAD	*/
+	/* and we want to preserve ordering of user prompts (first	*/
+	/* password, then SAM data) so that user's won't be confused.	*/
+
 	if (as_key->length) {
 	    krb5_free_keyblock_contents(context, as_key);
 	    as_key->length = 0;
@@ -325,9 +338,9 @@ krb5_error_code pa_sam(krb5_context context,
 
 	/* generate a salt using the requested principal */
 
-	if ((salt->length == -1) && (salt->data == NULL)) {
-	    if (ret = krb5_principal2salt(context, request->client,
-					  &defsalt)) {
+	if ((salt->length == -1 || salt->length == SALT_TYPE_AFS_LENGTH) && (salt->data == NULL)) {
+	    if ((ret = krb5_principal2salt(context, request->client,
+					  &defsalt))) {
 		krb5_xfree(sam_challenge);
 		return(ret);
 	    }
@@ -363,7 +376,7 @@ krb5_error_code pa_sam(krb5_context context,
 	}
 
 #if 0
-	if ((salt->length == -1) && (salt->data == NULL)) {
+	if ((salt->length == SALT_TYPE_AFS_LENGTH) && (salt->data == NULL)) {
 	    if (ret = krb5_principal2salt(context, request->client,
 					  &defsalt)) {
 		krb5_xfree(sam_challenge);
@@ -411,8 +424,8 @@ krb5_error_code pa_sam(krb5_context context,
     krb5_xfree(sam_challenge);
 
     /* encode the encoded part of the response */
-    if (ret = encode_krb5_enc_sam_response_enc(&enc_sam_response_enc,
-					       &scratch))
+    if ((ret = encode_krb5_enc_sam_response_enc(&enc_sam_response_enc,
+						&scratch)))
 	return(ret);
 
     ret = krb5_encrypt_data(context, as_key, 0, scratch,
@@ -429,7 +442,7 @@ krb5_error_code pa_sam(krb5_context context,
     if ((pa = malloc(sizeof(krb5_pa_data))) == NULL)
 	return(ENOMEM);
 
-    if (ret = encode_krb5_sam_response(&sam_response, &scratch)) {
+    if ((ret = encode_krb5_sam_response(&sam_response, &scratch))) {
 	free(pa);
 	return(ret);
     }
@@ -444,7 +457,336 @@ krb5_error_code pa_sam(krb5_context context,
     return(0);
 }
 
-static pa_types_t pa_types[] = {
+static
+krb5_error_code pa_sam_2(krb5_context context,
+				krb5_kdc_req *request,
+				krb5_pa_data *in_padata,
+				krb5_pa_data **out_padata,
+				krb5_data *salt,
+			 krb5_data *s2kparams,
+				krb5_enctype *etype,
+				krb5_keyblock *as_key,
+				krb5_prompter_fct prompter,
+				void *prompter_data,
+				krb5_gic_get_as_key_fct gak_fct,
+				void *gak_data) {
+
+   krb5_error_code retval;
+   krb5_sam_challenge_2 *sc2 = NULL;
+   krb5_sam_challenge_2_body *sc2b = NULL;
+   krb5_data tmp_data;
+   krb5_data response_data;
+   char name[100], banner[100], prompt[100], response[100];
+   krb5_prompt kprompt;
+   krb5_prompt_type prompt_type;
+   krb5_data defsalt;
+   krb5_checksum **cksum;
+   krb5_data *scratch = NULL;
+   krb5_boolean valid_cksum = 0;
+   krb5_enc_sam_response_enc_2 enc_sam_response_enc_2;
+   krb5_sam_response_2 sr2;
+   size_t ciph_len;
+   krb5_pa_data *sam_padata;
+
+   if (prompter == NULL)
+	return KRB5_LIBOS_CANTREADPWD;
+
+   tmp_data.length = in_padata->length;
+   tmp_data.data = (char *)in_padata->contents;
+
+   if ((retval = decode_krb5_sam_challenge_2(&tmp_data, &sc2)))
+	return(retval);
+
+   retval = decode_krb5_sam_challenge_2_body(&sc2->sam_challenge_2_body, &sc2b);
+
+   if (retval)
+	return(retval);
+
+   if (!sc2->sam_cksum || ! *sc2->sam_cksum) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(KRB5_SAM_NO_CHECKSUM);
+   }
+
+   if (sc2b->sam_flags & KRB5_SAM_MUST_PK_ENCRYPT_SAD) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(KRB5_SAM_UNSUPPORTED);
+   }
+
+   if (!valid_enctype(sc2b->sam_etype)) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(KRB5_SAM_INVALID_ETYPE);
+   }
+
+   /* All of the above error checks are KDC-specific, that is, they	*/
+   /* assume a failure in the KDC reply.  By returning anything other	*/
+   /* than KRB5_KDC_UNREACH, KRB5_PREAUTH_FAILED,		*/
+   /* KRB5_LIBOS_PWDINTR, or KRB5_REALM_CANT_RESOLVE, the client will	*/
+   /* most likely go on to try the AS_REQ against master KDC		*/
+
+   if (!(sc2b->sam_flags & KRB5_SAM_USE_SAD_AS_KEY)) {
+	/* We will need the password to obtain the key used for	*/
+	/* the checksum, and encryption of the sam_response.	*/
+	/* Go ahead and get it now, preserving the ordering of	*/
+	/* prompts for the user.				*/
+
+	retval = (gak_fct)(context, request->client,
+			sc2b->sam_etype, prompter,
+			prompter_data, salt, s2kparams, as_key, gak_data);
+	if (retval) {
+	   krb5_free_sam_challenge_2(context, sc2);
+	   krb5_free_sam_challenge_2_body(context, sc2b);
+	   return(retval);
+	}
+   }
+
+   sprintf(name, "%.*s",
+	SAMDATA(sc2b->sam_type_name, "SAM Authentication",
+	sizeof(name) - 1));
+
+   sprintf(banner, "%.*s",
+	SAMDATA(sc2b->sam_challenge_label,
+	sam_challenge_banner(sc2b->sam_type),
+	sizeof(banner)-1));
+
+   sprintf(prompt, "%s%.*s%s%.*s",
+	sc2b->sam_challenge.length?"Challenge is [":"",
+	SAMDATA(sc2b->sam_challenge, "", 20),
+	sc2b->sam_challenge.length?"], ":"",
+	SAMDATA(sc2b->sam_response_prompt, "passcode", 55));
+
+   response_data.data = response;
+   response_data.length = sizeof(response);
+   kprompt.prompt = prompt;
+   kprompt.hidden = 1;
+   kprompt.reply = &response_data;
+
+   prompt_type = KRB5_PROMPT_TYPE_PREAUTH;
+   krb5int_set_prompt_types(context, &prompt_type);
+
+   if ((retval = ((*prompter)(context, prompter_data, name,
+				banner, 1, &kprompt)))) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	krb5int_set_prompt_types(context, 0);
+	return(retval);
+   }
+
+   krb5int_set_prompt_types(context, (krb5_prompt_type *)NULL);
+
+   /* Generate salt used by string_to_key() */
+   if ((salt->length == -1) && (salt->data == NULL)) {
+	if ((retval = 
+	     krb5_principal2salt(context, request->client, &defsalt))) {
+	   krb5_free_sam_challenge_2(context, sc2);
+	   krb5_free_sam_challenge_2_body(context, sc2b);
+	   return(retval);
+	}
+	salt = &defsalt;
+   } else {
+	defsalt.length = 0;
+   }
+
+   /* Get encryption key to be used for checksum and sam_response */
+   if (!(sc2b->sam_flags & KRB5_SAM_USE_SAD_AS_KEY)) {
+	/* as_key = string_to_key(password) */
+
+	if (as_key->length) {
+	   krb5_free_keyblock_contents(context, as_key);
+	   as_key->length = 0;
+	}
+
+	/* generate a key using the supplied password */
+	retval = krb5_c_string_to_key(context, sc2b->sam_etype,
+                                   (krb5_data *)gak_data, salt, as_key);
+
+	if (retval) {
+	   krb5_free_sam_challenge_2(context, sc2);
+	   krb5_free_sam_challenge_2_body(context, sc2b);
+	   if (defsalt.length) krb5_xfree(defsalt.data);
+	   return(retval);
+	}
+
+	if (!(sc2b->sam_flags & KRB5_SAM_SEND_ENCRYPTED_SAD)) {
+	   /* as_key = combine_key (as_key, string_to_key(SAD)) */
+	   krb5_keyblock tmp_kb;
+
+	   retval = krb5_c_string_to_key(context, sc2b->sam_etype,
+				&response_data, salt, &tmp_kb);
+
+	   if (retval) {
+		krb5_free_sam_challenge_2(context, sc2);
+	        krb5_free_sam_challenge_2_body(context, sc2b);
+		if (defsalt.length) krb5_xfree(defsalt.data);
+		return(retval);
+	   }
+
+	   /* This should be a call to the crypto library some day */
+	   /* key types should already match the sam_etype */
+	   retval = krb5int_c_combine_keys(context, as_key, &tmp_kb, as_key);
+
+	   if (retval) {
+		krb5_free_sam_challenge_2(context, sc2);
+	        krb5_free_sam_challenge_2_body(context, sc2b);
+		if (defsalt.length) krb5_xfree(defsalt.data);
+		return(retval);
+	   }
+	   krb5_free_keyblock_contents(context, &tmp_kb);
+	}
+
+	if (defsalt.length)
+	   krb5_xfree(defsalt.data);
+
+   } else {
+	/* as_key = string_to_key(SAD) */
+
+	if (as_key->length) {
+	   krb5_free_keyblock_contents(context, as_key);
+	   as_key->length = 0;
+	}
+
+	/* generate a key using the supplied password */
+	retval = krb5_c_string_to_key(context, sc2b->sam_etype,
+				&response_data, salt, as_key);
+
+	if (defsalt.length)
+	   krb5_xfree(defsalt.data);
+
+	if (retval) {
+	   krb5_free_sam_challenge_2(context, sc2);
+	   krb5_free_sam_challenge_2_body(context, sc2b);
+	   return(retval);
+	}
+   }
+
+   /* Now we have a key, verify the checksum on the sam_challenge */
+
+   cksum = sc2->sam_cksum;
+   
+   while (*cksum) {
+	/* Check this cksum */
+	retval = krb5_c_verify_checksum(context, as_key,
+			KRB5_KEYUSAGE_PA_SAM_CHALLENGE_CKSUM,
+			&sc2->sam_challenge_2_body,
+			*cksum, &valid_cksum);
+	if (retval) {
+	   krb5_free_data(context, scratch);
+	   krb5_free_sam_challenge_2(context, sc2);
+	   krb5_free_sam_challenge_2_body(context, sc2b);
+	   return(retval);
+	}
+	if (valid_cksum)
+	   break;
+	cksum++;
+   }
+
+   if (!valid_cksum) {
+
+	/* If KRB5_SAM_SEND_ENCRYPTED_SAD is set, then password is only	*/
+	/* source for checksum key.  Therefore, a bad checksum means a	*/
+	/* bad password.  Don't give that direct feedback to someone	*/
+	/* trying to brute-force passwords.				*/
+
+	if (!(sc2b->sam_flags & KRB5_SAM_SEND_ENCRYPTED_SAD))
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	/*
+	 * Note: We return AP_ERR_BAD_INTEGRITY so upper-level applications
+	 * can interpret that as "password incorrect", which is probably
+	 * the best error we can return in this situation.
+	 */
+	return(KRB5KRB_AP_ERR_BAD_INTEGRITY);
+   }
+ 
+   /* fill in enc_sam_response_enc_2 */
+   enc_sam_response_enc_2.magic = KV5M_ENC_SAM_RESPONSE_ENC_2;
+   enc_sam_response_enc_2.sam_nonce = sc2b->sam_nonce;
+   if (sc2b->sam_flags & KRB5_SAM_SEND_ENCRYPTED_SAD) {
+	enc_sam_response_enc_2.sam_sad = response_data;
+   } else {
+	enc_sam_response_enc_2.sam_sad.data = NULL;
+	enc_sam_response_enc_2.sam_sad.length = 0;
+   }
+
+   /* encode and encrypt enc_sam_response_enc_2 with as_key */
+   retval = encode_krb5_enc_sam_response_enc_2(&enc_sam_response_enc_2,
+		&scratch);
+   if (retval) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(retval);
+   }
+
+   /* Fill in sam_response_2 */
+   memset(&sr2, 0, sizeof(sr2));
+   sr2.sam_type = sc2b->sam_type;
+   sr2.sam_flags = sc2b->sam_flags;
+   sr2.sam_track_id = sc2b->sam_track_id;
+   sr2.sam_nonce = sc2b->sam_nonce;
+
+   /* Now take care of sr2.sam_enc_nonce_or_sad by encrypting encoded	*/
+   /* enc_sam_response_enc_2 from above */
+
+   retval = krb5_c_encrypt_length(context, as_key->enctype, scratch->length,
+				  &ciph_len);
+   if (retval) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(retval);
+   }
+   sr2.sam_enc_nonce_or_sad.ciphertext.length = ciph_len;
+
+   sr2.sam_enc_nonce_or_sad.ciphertext.data =
+	(char *)malloc(sr2.sam_enc_nonce_or_sad.ciphertext.length);
+
+   if (!sr2.sam_enc_nonce_or_sad.ciphertext.data) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	return(ENOMEM);
+   }
+
+   retval = krb5_c_encrypt(context, as_key, KRB5_KEYUSAGE_PA_SAM_RESPONSE,
+		NULL, scratch, &sr2.sam_enc_nonce_or_sad);
+   if (retval) {
+	krb5_free_sam_challenge_2(context, sc2);
+	krb5_free_sam_challenge_2_body(context, sc2b);
+	krb5_free_data(context, scratch);
+	krb5_free_data_contents(context, &sr2.sam_enc_nonce_or_sad.ciphertext);
+	return(retval);
+   }
+   krb5_free_data(context, scratch);
+   scratch = NULL;
+
+   /* Encode the sam_response_2 */
+   retval = encode_krb5_sam_response_2(&sr2, &scratch);
+   krb5_free_sam_challenge_2(context, sc2);
+   krb5_free_sam_challenge_2_body(context, sc2b);
+   krb5_free_data_contents(context, &sr2.sam_enc_nonce_or_sad.ciphertext);
+
+   if (retval) {
+	return (retval);
+   }
+
+   /* Almost there, just need to make padata !  */
+   sam_padata = malloc(sizeof(krb5_pa_data));
+   if (sam_padata == NULL) {
+	krb5_free_data(context, scratch);
+	return(ENOMEM);
+   }
+
+   sam_padata->magic = KV5M_PA_DATA;
+   sam_padata->pa_type = KRB5_PADATA_SAM_RESPONSE_2;
+   sam_padata->length = scratch->length;
+   sam_padata->contents = (krb5_octet *) scratch->data;
+
+   *out_padata = sam_padata;
+
+   return(0);
+}
+
+static const pa_types_t pa_types[] = {
     {
 	KRB5_PADATA_PW_SALT,
 	pa_salt,
@@ -458,6 +800,11 @@ static pa_types_t pa_types[] = {
     {
 	KRB5_PADATA_ENC_TIMESTAMP,
 	pa_enc_timestamp,
+	PA_REAL,
+    },
+    {
+	KRB5_PADATA_SAM_CHALLENGE_2,
+	pa_sam_2,
 	PA_REAL,
     },
     {
@@ -476,17 +823,19 @@ krb5_error_code
 krb5_do_preauth(krb5_context context,
 		krb5_kdc_req *request,
 		krb5_pa_data **in_padata, krb5_pa_data ***out_padata,
-		krb5_data *salt, krb5_enctype *etype,
+		krb5_data *salt, krb5_data *s2kparams,
+		krb5_enctype *etype,
 		krb5_keyblock *as_key,
 		krb5_prompter_fct prompter, void *prompter_data,
 		krb5_gic_get_as_key_fct gak_fct, void *gak_data)
 {
     int h, i, j, out_pa_list_size;
-    krb5_pa_data *out_pa, **out_pa_list;
+    int seen_etype_info2 = 0;
+    krb5_pa_data *out_pa = NULL, **out_pa_list = NULL;
     krb5_data scratch;
     krb5_etype_info etype_info = NULL;
     krb5_error_code ret;
-    static int paorder[] = { PA_INFO, PA_REAL };
+    static const int paorder[] = { PA_INFO, PA_REAL };
     int realdone;
 
     if (in_padata == NULL) {
@@ -513,6 +862,7 @@ krb5_do_preauth(krb5_context context,
     for (h=0; h<(sizeof(paorder)/sizeof(paorder[0])); h++) {
 	realdone = 0;
 	for (i=0; in_padata[i] && !realdone; i++) {
+	    int k, l, etype_found, valid_etype_found;
 	    /*
 	     * This is really gross, but is necessary to prevent
 	     * lossge when talking to a 1.0.x KDC, which returns an
@@ -521,37 +871,93 @@ krb5_do_preauth(krb5_context context,
 	     */
 	    switch (in_padata[i]->pa_type) {
 	    case KRB5_PADATA_ETYPE_INFO:
-		if (etype_info)
-		    continue;
+	    case KRB5_PADATA_ETYPE_INFO2:
+	    {
+		krb5_preauthtype pa_type = in_padata[i]->pa_type;
+		if (etype_info) {
+		    if (seen_etype_info2 || pa_type != KRB5_PADATA_ETYPE_INFO2)
+			continue;
+		    if (pa_type == KRB5_PADATA_ETYPE_INFO2) {
+			krb5_free_etype_info( context, etype_info);
+			etype_info = NULL;
+		    }
+		}
+
 		scratch.length = in_padata[i]->length;
 		scratch.data = (char *) in_padata[i]->contents;
-		ret = decode_krb5_etype_info(&scratch, &etype_info);
+		if (pa_type == KRB5_PADATA_ETYPE_INFO2) {
+		    seen_etype_info2++;
+		    ret = decode_krb5_etype_info2(&scratch, &etype_info);
+		}
+		else ret = decode_krb5_etype_info(&scratch, &etype_info);
 		if (ret) {
-		    if (out_pa_list) {
-			out_pa_list[out_pa_list_size++] = NULL;
-			krb5_free_pa_data(context, out_pa_list);
-		    }
-		    return ret;
+		    ret = 0; /*Ignore error and etype_info element*/
+		    krb5_free_etype_info( context, etype_info);
+		    etype_info = NULL;
+		    continue;
 		}
 		if (etype_info[0] == NULL) {
 		    krb5_free_etype_info(context, etype_info);
 		    etype_info = NULL;
 		    break;
 		}
-		salt->data = (char *) etype_info[0]->salt;
-		salt->length = etype_info[0]->length;
-		*etype = etype_info[0]->etype;
+		/*
+		 * Select first etype in our request which is also in
+		 * etype-info (preferring client request ktype order).
+		 */
+		for (etype_found = 0, valid_etype_found = 0, k = 0;
+		     !etype_found && k < request->nktypes; k++) {
+		    for (l = 0; etype_info[l]; l++) {
+			if (etype_info[l]->etype == request->ktype[k]) {
+			    etype_found++;
+			    break;
+			}
+			/* check if program has support for this etype for more
+			 * precise error reporting.
+			 */
+			if (valid_enctype(etype_info[l]->etype))
+			    valid_etype_found++;
+		    }
+		}
+		if (!etype_found) {
+		  if (valid_etype_found) {
+			/* supported enctype but not requested */
+		    ret =  KRB5_CONFIG_ETYPE_NOSUPP;
+		    goto cleanup;
+		  }
+		  else {
+		    /* unsupported enctype */
+		    ret =  KRB5_PROG_ETYPE_NOSUPP;
+		    goto cleanup;
+		  }
+
+		}
+		scratch.data = (char *) etype_info[l]->salt;
+		scratch.length = etype_info[l]->length;
+		krb5_free_data_contents(context, salt);
+		if (scratch.length == KRB5_ETYPE_NO_SALT) 
+		  salt->data = NULL;
+		else
+		    if ((ret = krb5int_copy_data_contents( context, &scratch, salt)) != 0)
+		  goto cleanup;
+		*etype = etype_info[l]->etype;
+		krb5_free_data_contents(context, s2kparams);
+		if ((ret = krb5int_copy_data_contents(context,
+						      &etype_info[l]->s2kparams,
+						      s2kparams)) != 0)
+		  goto cleanup;
 #ifdef DEBUG
 		for (j = 0; etype_info[j]; j++) {
 		    krb5_etype_info_entry *e = etype_info[j];
 		    fprintf (stderr, "etype info %d: etype %d salt len=%d",
 			     j, e->etype, e->length);
-		    if (e->length > 0)
+		    if (e->length > 0 && e->length != KRB5_ETYPE_NO_SALT)
 			fprintf (stderr, " '%*s'", e->length, e->salt);
 		    fprintf (stderr, "\n");
 		}
 #endif
 		break;
+	    }
 	    case KRB5_PADATA_PW_SALT:
 	    case KRB5_PADATA_AFS3_SALT:
 		if (etype_info)
@@ -565,18 +971,12 @@ krb5_do_preauth(krb5_context context,
 		    (pa_types[j].flags & paorder[h])) {
 		    out_pa = NULL;
 
-		    if (ret = ((*pa_types[j].fct)(context, request,
-						  in_padata[i], &out_pa,
-						  salt, etype, as_key,
-						  prompter, prompter_data,
-						  gak_fct, gak_data))) {
-			if (out_pa_list) {
-			    out_pa_list[out_pa_list_size++] = NULL;
-			    krb5_free_pa_data(context, out_pa_list);
-			}
-			if (etype_info)
-			    krb5_free_etype_info(context, etype_info);
-			return(ret);
+		    if ((ret = ((*pa_types[j].fct)(context, request,
+						   in_padata[i], &out_pa,
+						   salt, s2kparams, etype, as_key,
+						   prompter, prompter_data,
+						   gak_fct, gak_data)))) {
+		      goto cleanup;
 		    }
 
 		    if (out_pa) {
@@ -584,18 +984,22 @@ krb5_do_preauth(krb5_context context,
 			    if ((out_pa_list =
 				 (krb5_pa_data **)
 				 malloc(2*sizeof(krb5_pa_data *)))
-				== NULL)
-				return(ENOMEM);
+				== NULL) {
+			      ret = ENOMEM;
+			      goto cleanup;
+			    }
 			} else {
 			    if ((out_pa_list =
 				 (krb5_pa_data **)
 				 realloc(out_pa_list,
 					 (out_pa_list_size+2)*
 					 sizeof(krb5_pa_data *)))
-				== NULL)
-				/* XXX this will leak the pointers which
+				== NULL) {
+			      /* XXX this will leak the pointers which
 				   have already been allocated.  oh well. */
-				return(ENOMEM);
+			      ret = ENOMEM;
+			      goto cleanup;
+			    }
 			}
 			
 			out_pa_list[out_pa_list_size++] = out_pa;
@@ -611,6 +1015,16 @@ krb5_do_preauth(krb5_context context,
 	out_pa_list[out_pa_list_size++] = NULL;
 
     *out_padata = out_pa_list;
-
+    if (etype_info)
+      krb5_free_etype_info(context, etype_info);
+    
     return(0);
+ cleanup:
+    if (out_pa_list) {
+      out_pa_list[out_pa_list_size++] = NULL;
+      krb5_free_pa_data(context, out_pa_list);
+    }
+    if (etype_info)
+      krb5_free_etype_info(context, etype_info);
+    return (ret);
 }

@@ -229,13 +229,18 @@ struct winsize {
 #define roundup(x,y) ((((x)+(y)-1)/(y))*(y))
 #endif
 
+#include "fake-addrinfo.h"
+
 #ifdef KERBEROS
      
 #include <krb5.h>
+#ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
+#endif
 #include <libpty.h>
 #ifdef HAVE_UTMP_H
 #include <utmp.h>
+#include <k5-util.h>
 #endif
 
 int auth_sys = 0;	/* Which version of Kerberos used to authenticate */
@@ -246,13 +251,15 @@ int auth_sys = 0;	/* Which version of Kerberos used to authenticate */
 int non_privileged = 0; /* set when connection is seen to be from */
 			/* a non-privileged port */
 
+#ifdef KRB5_KRB4_COMPAT
 AUTH_DAT	*v4_kdata;
 Key_schedule v4_schedule;
+#endif
 
 #include "com_err.h"
 #include "defines.h"
      
-#define SECURE_MESSAGE  "This rlogin session is using DES encryption for all data transmissions.\r\n"
+#define SECURE_MESSAGE  "This rlogin session is encrypting all data transmissions.\r\n"
 
 krb5_authenticator      *kdata;
 krb5_ticket     *ticket = 0;
@@ -309,6 +316,10 @@ char 	*progname;
 
 static	int Pfd;
 
+#if defined(NEED_DAEMON_PROTO)
+extern int daemon(int, int);
+#endif
+
 #if (defined(_AIX) && defined(i386)) || defined(ibm032) || (defined(vax) && !defined(ultrix)) || (defined(SunOS) && SunOS > 40) || defined(solaris20)
 #define VHANG_FIRST
 #endif
@@ -317,11 +328,11 @@ static	int Pfd;
 #define VHANG_LAST		/* vhangup must occur on close, not open */
 #endif
 
-void	fatal(), fatalperror(), doit(), usage(), do_krb_login(), getstr();
-void	protocol();
-int	princ_maps_to_lname(), default_realm();
-krb5_sigtype	cleanup();
-krb5_error_code recvauth();
+void	fatal(int, const char *), fatalperror(int, const char *), doit(int, struct sockaddr *), usage(void), do_krb_login(char *, char *), getstr(int, char *, int, char *);
+void	protocol(int, int);
+int	princ_maps_to_lname(krb5_principal, char *), default_realm(krb5_principal);
+krb5_sigtype	cleanup(int);
+krb5_error_code recvauth(int *);
 
 /* There are two authentication related masks:
    * auth_ok and auth_sent.
@@ -347,9 +358,9 @@ int main(argc, argv)
 {
     extern int opterr, optind;
     extern char * optarg;
-    int on = 1, fromlen, ch, i;
-    struct sockaddr_in from;
-    char *options;
+    int on = 1, ch;
+    socklen_t fromlen;
+    struct sockaddr_storage from;
     int debug_port = 0;
     int fd;
     int do_fork = 0;
@@ -478,7 +489,7 @@ int main(argc, argv)
     if (debug_port || do_fork) {
 	int s;
 	struct servent *ent;
-	struct sockaddr_in sin;
+	struct sockaddr_in sock_in;
 
 	if (!debug_port) {
 	    if (do_encrypt) {
@@ -499,16 +510,16 @@ int main(argc, argv)
 	    fprintf(stderr, "Error in socket: %s\n", strerror(errno));
 	    exit(2);
 	}
-	memset((char *) &sin, 0,sizeof(sin));
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(debug_port);
-	sin.sin_addr.s_addr = INADDR_ANY;
+	memset((char *) &sock_in, 0,sizeof(sock_in));
+	sock_in.sin_family = AF_INET;
+	sock_in.sin_port = htons(debug_port);
+	sock_in.sin_addr.s_addr = INADDR_ANY;
 
 	if (!do_fork)
 	    (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 			      (char *)&on, sizeof(on));
 
-	if ((bind(s, (struct sockaddr *) &sin, sizeof(sin))) < 0) {
+	if ((bind(s, (struct sockaddr *) &sock_in, sizeof(sock_in))) < 0) {
 	    fprintf(stderr, "Error in bind: %s\n", strerror(errno));
 	    exit(2);
 	}
@@ -538,7 +549,7 @@ int main(argc, argv)
 		    syslog(LOG_ERR, "fork: %s", error_message(errno));
 		case 0:
 		    (void) close(s);
-		    doit(fd, &from);
+		    doit(fd, (struct sockaddr *) &from);
 		    close(fd);
 		    exit(0);
 		default:
@@ -558,15 +569,15 @@ int main(argc, argv)
 	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
 	    syslog(LOG_ERR,"Can't get peer name of remote host: %m");
 #ifdef STDERR_FILENO
-	    fatal(STDERR_FILENO, "Can't get peer name of remote host", 1);
+	    fatal(STDERR_FILENO, "Can't get peer name of remote host");
 #else
-	    fatal(2, "Can't get peer name of remote host", 1);
+	    fatal(2, "Can't get peer name of remote host");
 #endif
 	}
 	fd = 0;
     }
 
-    doit(fd, &from);
+    doit(fd, (struct sockaddr *) &from);
     return 0;
 }
 
@@ -589,11 +600,11 @@ int pid; /* child process id */
 
 void doit(f, fromp)
   int f;
-  struct sockaddr_in *fromp;
+  struct sockaddr *fromp;
 {
     int p, t, on = 1;
-    register struct hostent *hp;
     char c;
+    char hname[NI_MAXHOST];
     char buferror[255];
     struct passwd *pwd;
 #ifdef POSIX_SIGNALS
@@ -636,22 +647,25 @@ void doit(f, fromp)
     sa.sa_flags = 0;
 #endif
 
-    fromp->sin_port = ntohs((u_short)fromp->sin_port);
-    hp = gethostbyaddr((char *) &fromp->sin_addr, sizeof (struct in_addr),
-		       fromp->sin_family);
-    strncpy(rhost_addra, inet_ntoa(fromp->sin_addr), sizeof (rhost_addra));
+    retval = getnameinfo(fromp, socklen(fromp), hname, sizeof(hname), 0, 0,
+			 NI_NUMERICHOST);
+    if (retval)
+	fatal(f, gai_strerror(retval));
+    strncpy(rhost_addra, hname, sizeof(rhost_addra));
     rhost_addra[sizeof (rhost_addra) -1] = '\0';
-    if (hp != NULL) {
-	/* Save hostent information.... */
-	strncpy(rhost_name,hp->h_name,sizeof (rhost_name));
-	rhost_name[sizeof (rhost_name) - 1] = '\0';
-    } else
-	rhost_name[0] = '\0';
     
+    retval = getnameinfo(fromp, socklen(fromp), hname, sizeof(hname), 0, 0, 0);
+    if (retval)
+	fatal(f, gai_strerror(retval));
+    strncpy(rhost_name, hname, sizeof(rhost_name));
+    rhost_name[sizeof (rhost_name) - 1] = '\0';
+
+#ifndef KERBEROS
     if (fromp->sin_family != AF_INET)
+	/* Not a real problem, we just haven't bothered to update
+	   the port number checking code to handle ipv6.  */
       fatal(f, "Permission denied - Malformed from address\n");
     
-#ifndef KERBEROS
     if (fromp->sin_port >= IPPORT_RESERVED ||
 	fromp->sin_port < IPPORT_RESERVED/2)
       fatal(f, "Permission denied - Connection from bad port");
@@ -812,7 +826,7 @@ void doit(f, fromp)
         setenv("TERM",term, 1);
     }
 
-    retval = pty_make_sane_hostname(fromp, maxhostlen,
+    retval = pty_make_sane_hostname((struct sockaddr *) fromp, maxhostlen,
 				    stripdomain, always_ip,
 				    &rhost_sane);
     if (retval)
@@ -893,7 +907,7 @@ void doit(f, fromp)
 #endif
     protocol(f, p);
     signal(SIGCHLD, SIG_IGN);
-    cleanup();
+    cleanup(0);
 }
 
 unsigned char	magic[2] = { 0377, 0377 };
@@ -906,7 +920,8 @@ unsigned char	oobdata[] = {TIOCPKT_WINDOW};
 char    oobdata[] = {0};
 #endif
 
-int sendoob(fd, byte)
+static 
+void sendoob(fd, byte)
      int fd;
      char *byte;
 {
@@ -936,7 +951,7 @@ int sendoob(fd, byte)
  * in the data stream.  For now, we are only willing to handle
  * window size changes.
  */
-int control(pty, cp, n)
+static int control(pty, cp, n)
      int pty;
      unsigned char *cp;
      int n;
@@ -974,15 +989,14 @@ int control(pty, cp, n)
 void protocol(f, p)
      int f, p;
 {
-    unsigned char pibuf[BUFSIZ], qpibuf[BUFSIZ*2], fibuf[BUFSIZ], *pbp, *fbp;
-    register pcc = 0, fcc = 0;
+    unsigned char pibuf[BUFSIZ], qpibuf[BUFSIZ*2], fibuf[BUFSIZ], *pbp=0, *fbp=0;
+    register int pcc = 0, fcc = 0;
     int cc;
-    char cntl;
 #ifdef POSIX_SIGNALS
     struct sigaction sa;
 #endif
 #ifdef TIOCPKT
-    register tiocpkt_on = 0;
+    register int tiocpkt_on = 0;
     int on = 1;
 #endif
     
@@ -1023,12 +1037,14 @@ void protocol(f, p)
 	    FD_SET(p, &obits);
 	else
 	    FD_SET(f, &ibits);
-	if (pcc >= 0)
-	    if (pcc)
+	if (pcc >= 0) {
+	    if (pcc) {
 		FD_SET(f, &obits);
-	    else
+	    } else {
 		FD_SET(p, &ibits);
-	
+	    }
+	}
+
 	if (select(8*sizeof(ibits), &ibits, &obits, &ebits, 0) < 0) {
 	    if (errno == EINTR)
 	      continue;
@@ -1041,7 +1057,8 @@ void protocol(f, p)
 		fcc = 0;
 	    } else {
 		register unsigned char *cp;
-		int left, n;
+		int n;
+		size_t left;
 		
 		if (fcc <= 0)
 		    break;
@@ -1140,7 +1157,8 @@ void protocol(f, p)
 
 
 
-krb5_sigtype cleanup()
+krb5_sigtype cleanup(signumber)
+    int signumber;
 {
     pty_cleanup (line, pid, 1);
     shutdown(netf, 2);
@@ -1152,7 +1170,7 @@ krb5_sigtype cleanup()
 
 void fatal(f, msg)
      int f;
-     char *msg;
+     const char *msg;
 {
     char buf[512];
     int out = 1 ;          /* Output queue of f */
@@ -1182,7 +1200,7 @@ void fatal(f, msg)
 #else
 	(void) ioctl(f, TCFLSH, out);
 #endif
-	cleanup();
+	cleanup(0);
     }
     exit(1);
 }
@@ -1191,7 +1209,7 @@ void fatal(f, msg)
 
 void fatalperror(f, msg)
      int f;
-     char *msg;
+     const char *msg;
 {
     char buf[512];
     
@@ -1206,7 +1224,6 @@ do_krb_login(host_addr, hostname)
      char *host_addr, *hostname;
 {
     krb5_error_code status;
-    struct passwd *pwd;
     char *msg_fail = NULL;
     int valid_checksum;
 
@@ -1327,41 +1344,6 @@ void usage()
 
 
 #ifdef KERBEROS
-int princ_maps_to_lname(principal, luser)	
-     krb5_principal principal;
-     char *luser;
-{
-    char kuser[10];
-    if (!(krb5_aname_to_localname(bsd_context, principal,
-				  sizeof(kuser), kuser))
-	&& (strcmp(kuser, luser) == 0)) {
-	return 1;
-    }
-    return 0;
-}
-
-int default_realm(principal)
-     krb5_principal principal;
-{
-    char *def_realm;
-    int realm_length;
-    int retval;
-    
-    realm_length = krb5_princ_realm(bsd_context, principal)->length;
-    
-    if ((retval = krb5_get_default_realm(bsd_context, &def_realm))) {
-	return 0;
-    }
-    
-    if ((realm_length != strlen(def_realm)) ||
-	(memcmp(def_realm, krb5_princ_realm(bsd_context, principal)->data, realm_length))) {
-	free(def_realm);
-	return 0;
-    }	
-    free(def_realm);
-    return 1;
-}
-
 
 #ifndef KRB_SENDAUTH_VLEN
 #define	KRB_SENDAUTH_VLEN 8	    /* length for version strings */
@@ -1376,10 +1358,12 @@ recvauth(valid_checksum)
 {
     krb5_auth_context auth_context = NULL;
     krb5_error_code status;
-    struct sockaddr_in peersin, laddr;
-    int len;
+    struct sockaddr_storage peersin, laddr;
+    socklen_t len;
     krb5_data inbuf;
+#ifdef KRB5_KRB4_COMPAT
     char v4_instance[INST_SZ];	/* V4 Instance */
+#endif
     krb5_data version;
     krb5_authenticator *authenticator;
     krb5_rcache rcache;
@@ -1398,7 +1382,9 @@ recvauth(valid_checksum)
 	exit(1);
     }
 
+#ifdef KRB5_KRB4_COMPAT
     strcpy(v4_instance, "*");
+#endif
 
     if ((status = krb5_auth_con_init(bsd_context, &auth_context)))
         return status;
@@ -1428,7 +1414,8 @@ recvauth(valid_checksum)
 	if (status) return status;
     }
 
-    if ((status = krb5_compat_recvauth_version(bsd_context, &auth_context,
+#ifdef KRB5_KRB4_COMPAT
+    status = krb5_compat_recvauth_version(bsd_context, &auth_context,
 					       &netf,
 				  NULL, 	/* Specify daemon principal */
 				  0, 		/* no flags */
@@ -1437,14 +1424,20 @@ recvauth(valid_checksum)
 				  do_encrypt ? KOPT_DO_MUTUAL : 0, /*v4_opts*/
 				  "rcmd", 	/* v4_service */
 				  v4_instance, 	/* v4_instance */
-				  &peersin, 	/* foriegn address */
-				  &laddr, 	/* our local address */
+				  ss2sin(&peersin), /* foriegn address */
+				  ss2sin(&laddr), /* our local address */
 				  "", 		/* use default srvtab */
 
 				  &ticket, 	/* return ticket */
 				  &auth_sys, 	/* which authentication system*/
 				  &v4_kdata, v4_schedule,
-					       &version))) {
+					       &version);
+#else
+    auth_sys = KRB5_RECVAUTH_V5;
+    status = krb5_recvauth_version(bsd_context, &auth_context, &netf,
+				   NULL, 0, keytab, &ticket, &version);
+#endif
+    if (status) {
 	if (auth_sys == KRB5_RECVAUTH_V5) {
 	    /*
 	     * clean up before exiting
@@ -1484,7 +1477,7 @@ recvauth(valid_checksum)
     
       if (authenticator->checksum) {
 	struct sockaddr_in adr;
-	int adr_length = sizeof(adr);
+	socklen_t adr_length = sizeof(adr);
 	char * chksumbuf = (char *) malloc(strlen(term)+strlen(lusername)+32);
 	if (getsockname(netf, (struct sockaddr *) &adr, &adr_length) != 0)
 	    goto error_cleanup;
@@ -1544,13 +1537,18 @@ recvauth(valid_checksum)
 	return status;
 
     key = 0;
-    status = krb5_auth_con_getremotesubkey (bsd_context, auth_context, &key);
+    status = krb5_auth_con_getrecvsubkey (bsd_context, auth_context, &key);
     if (status)
 	fatal (netf, "Server can't get session subkey");
     if (!key && do_encrypt && kcmd_proto == KCMD_NEW_PROTOCOL)
 	fatal (netf, "No session subkey sent");
-    if (key && kcmd_proto == KCMD_OLD_PROTOCOL)
+    if (key && kcmd_proto == KCMD_OLD_PROTOCOL) {
+#ifdef HEIMDAL_FRIENDLY
+	key = 0;
+#else
 	fatal (netf, "Session subkey not permitted under old kcmd protocol");
+#endif
+    }
     if (key == 0)
 	key = ticket->enc_part2->session;
 

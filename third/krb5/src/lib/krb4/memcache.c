@@ -13,8 +13,10 @@
  */
 
 #include "krb.h"
+#include "krb4int.h"
+#include "krb5/autoconf.h"
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #include <errno.h>
 
 typedef DWORD OSErr;
@@ -55,13 +57,13 @@ typedef int OSErr;
 static	int		fNumSessions = 0;
 static	Session		**fSessions = 0;
 
-#ifndef _WINDOWS
+#ifndef _WIN32
 #define change_cache()
 #endif
 
-#if defined (_WINDOWS) || defined (unix)
+#if defined (_WIN32) || defined (unix)
 /* Fake Mac handles up for general use.  */
-#define	Handle	char FAR * FAR *
+#define	Handle	char **
 #define	Size	int
 
 static OSErr memerror = noErr;
@@ -164,7 +166,7 @@ MemError()
 
 #endif /* Windows || unix */
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 
 /*
  * change_cache should be called after the cache changes.
@@ -259,7 +261,7 @@ static char curr_auth_uinst [INST_SZ];
     via ResEdit.
 
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 in_tkt(pname,pinst)
     char *pname;
     char *pinst;
@@ -279,6 +281,15 @@ in_tkt(pname,pinst)
 	
 }
 
+int KRB5_CALLCONV
+krb_in_tkt(pname, pinst, prealm)
+    char *pname;
+    char *pinst;
+    char *prealm;
+{
+    return in_tkt(pname, pinst);
+}
+
 /*
  * dest_tkt() is used to destroy the ticket store upon logout.
  * If the ticket file does not exist, dest_tkt() returns RET_TKFIL.
@@ -286,7 +297,7 @@ in_tkt(pname,pinst)
  * failure.
  *
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 dest_tkt()
 {
  	/* 	
@@ -345,7 +356,7 @@ int	dest_all_tkts()
 
 
 /* krb_get_tf_realm -- return the realm of the current ticket file. */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_tf_realm (tktfile, lrealm)
 	char *tktfile;
 	char *lrealm;		/* Result stored through here */
@@ -357,7 +368,7 @@ krb_get_tf_realm (tktfile, lrealm)
 
 /* krb_get_tf_fullname -- return name, instance and realm of the
 principal in the current ticket file. */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_tf_fullname (tktfile, name, instance, realm)
   char *tktfile;
   char *name;
@@ -408,7 +419,7 @@ krb_get_tf_fullname (tktfile, name, instance, realm)
  * information from the file.  If successful, it returns KSUCCESS.
  * On failure it returns a Kerberos error code.
  */
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_get_cred (service, instance, realm, c)
 	char *service;		/* Service name */
 	char *instance;		/* Instance */
@@ -448,9 +459,9 @@ krb_get_cred (service, instance, realm, c)
  * Returns KSUCCESS if all goes well, otherwise KFAILURE.
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
-krb_save_credentials(sname, sinst, srealm, session, 
-			lifetime, kvno, ticket, issue_date)
+int
+krb4int_save_credentials_addr(sname, sinst, srealm, session, 
+			      lifetime, kvno, ticket, issue_date, laddr)
 
 	char* sname;		/* Service name */
 	char* sinst;		/* Instance */	
@@ -460,6 +471,7 @@ krb_save_credentials(sname, sinst, srealm, session,
 	int kvno;		/* Key version number */
     	KTEXT ticket; 		/* The ticket itself */
 	long issue_date;	/* The issue time */
+	KRB_UINT32 laddr;
 {
 	CREDENTIALS	cr;
 
@@ -478,6 +490,23 @@ krb_save_credentials(sname, sinst, srealm, session,
 	change_cache();
 	return KSUCCESS;
 }
+
+int KRB5_CALLCONV
+krb_save_credentials(
+    char	*name,
+    char	*inst,
+    char	*realm,
+    C_Block	session,
+    int		lifetime,
+    int		kvno,
+    KTEXT	ticket,
+    long	issue_date)
+{
+    return krb4int_save_credentials_addr(name, inst, realm, session,
+					 lifetime, kvno, ticket,
+					 issue_date, 0);
+}
+
 
 int
 krb_delete_cred (sname, sinstance, srealm)

@@ -70,6 +70,9 @@ Contains various default values used by the Kerberos V5 library.
 Contains default values used by the Kerberos V5 login program,
 .IR login.krb5 (8).
 
+.IP [appdefaults]
+Contains default values that can be used by Kerberos V5 applications.
+
 .IP [realms]
 Contains subsections keyed by Kerberos realm names which describe where
 to find the Kerberos servers for a particular realm, and other
@@ -115,16 +118,20 @@ commas or whitespace.
 This relation identifies the supported list of session key encryption
 types that should be requested by the client, in the same format.
 
+.IP permitted_enctypes
+This relation identifies the permitted list of session key encryption
+types.
+
 .IP clockskew 
 This relation sets the maximum allowable amount of clockskew in seconds
 that the library will tolerate before assuming that a Kerberos message
 is invalid.  The default value is 300 seconds, or five minutes.
 
 .IP kdc_timesync 
-If the value of this relation is non-zero, the library will compute the
-difference between the system clock and the time returned by the KDC and
-in order to correct for an inaccurate system clock.  This corrective
-factor is only used by the Kerberos library.
+If the value of this relation is non-zero (the default), the library
+will compute the difference between the system clock and the time
+returned by the KDC and in order to correct for an inaccurate system
+clock.  This corrective factor is only used by the Kerberos library.
 
 .IP kdc_req_checksum_type
 For compatability with DCE security servers which do not support the
@@ -156,6 +163,99 @@ received. DCE and Kerberos can share the cache, but some versions of DCE
 do not support the default cache as created by this version of
 Kerberos. Use a value of 1 on DCE 1.0.3a systems, and a value of 2 on
 DCE 1.1 systems.
+
+.IP krb4_srvtab 
+Specifies the location of the Kerberos V4 srvtab file.  Default is
+"/etc/srvtab".
+
+.IP krb4_config
+Specifies the location of hte Kerberos V4 configuration file.  Default
+is "/etc/krb.conf".
+
+.IP krb4_realms
+Specifies the location of the Kerberos V4 domain/realm translation
+file.  Default is "/etc/krb.realms".
+
+.IP dns_lookup_kdc
+Indicate whether DNS SRV records shoud be used to locate the KDCs and 
+other servers for a realm, if they are not listed in the information 
+for the realm.  The default is to use these records.
+
+.IP dns_lookup_realm
+Indicate whether DNS TXT records should be used to determine the Kerberos
+realm of a host.  The default is not to use these records.
+
+.IP dns_fallback
+General flag controlling the use of DNS for Kerberos information.  If both
+of the preceding options are specified, this option has no effect.
+
+.IP extra_addresses
+This allows a computer to use multiple local addresses, in order to
+allow Kerberos to work in a network that uses NATs.  The addresses should
+be in a comma-separated list.
+
+.IP udp_preference_limit
+When sending a message to the KDC, the library will try using TCP
+before UDP if the size of the message is above "udp_preference_list".
+If the message is smaller than "udp_preference_list", then UDP will be
+tried before TCP.  Regardless of the size, both protocols will be
+tried if the first attempt fails.
+
+.IP verify_ap_req_nofail
+If this flag is set, then an attempt to get initial credentials will
+fail if the client machine does not have a keytab.  The default for the
+flag is false.
+
+.IP renew_lifetime
+The value of this tag is the default renewable lifetime for initial
+tickets.  The default value for the tag is 0.
+
+.IP noaddresses
+Setting this flag causes the initial Kerberos ticket to be addressless.
+The default for the flag is true.
+
+.IP forwardable
+If this flag is set, initial tickets by default will be forwardable.
+The default value for this flag is false.
+
+.IP proxiable
+If this flag is set, initial tickets by default will be proxiable.
+The default value for this flag is false.
+
+.SH APPDEFAULTS SECTION
+
+Each tag in the [appdefaults] section names a Kerberos V5 application
+or an option that is used by some Kerberos V5 application[s].  The
+four ways that you can set values for options are as follows, in
+decreasing order of precedence:
+
+.sp
+.nf
+.in +1i
+#1) 	
+	application = {
+		realm1 = {
+			option = value
+		}
+		realm2 = {
+			option = value
+		}
+	}
+#2) 	
+	application = {
+		option1 = value
+		option2 = value
+	}
+#3)	
+	realm = {
+		option = value
+	}
+#4)	
+	option = value
+.in -1in
+.fi
+.sp
+
 .SH LOGIN SECTION
 The [login] section is used to configure the behavior of the Kerberos V5
 login program,
@@ -173,9 +273,6 @@ subsection define the properties of that particular realm.  For example:
 .in +1i
 [realms]
 	ATHENA.MIT.EDU = {
-		kdc = KERBEROS.MIT.EDU
-		kdc = KERBEROS-1.MIT.EDU:750
-		kdc = KERBEROS-2.MIT.EDU:88
 		admin_server = KERBEROS.MIT.EDU
 		default_domain = MIT.EDU
 		v4_instance_convert = {
@@ -194,7 +291,8 @@ subsection:
 .IP kdc
 The value of this relation is the name of a host running a KDC for that
 realm.  An optional port number (preceded by a colon) may be appended to
-the hostname.
+the hostname.  This tag should generally be used only if the realm
+administrator has not made the information available through DNS.
 
 .IP admin_server
 This relation identifies the host where the administration server is
@@ -218,6 +316,34 @@ a V5 principal name to a V4 principal name. It is used when V4 realm
 name and the V5 realm are not the same, but still share the same 
 principal names and passwords. The tag value is the Kerberos V4 realm 
 name. 
+
+.IP auth_to_local_names
+This subsection allows you to set explicit mappings from principal
+names to local user names.  The tag is the mapping name, and the value
+is the corresponding local user name.
+
+.IP auth_to_local
+This tag allows you to set a general rule for mapping principal names
+to local user names.  It will be used if there is not an explicit
+mapping for the principal name that is being translated.  The possible
+values are:
+
+.in +.5i
+DB:<filename>
+.in +.5i
+The principal will be looked up in the database <filename>.
+Support for this is not currently compiled in by default.
+.in -.5in
+RULE:<exp>
+.in +.5i
+The local name will be formulated from <exp>.
+.in -.5i
+DEFAULT
+.in +.5i
+The principal name will be used as the local name.  If the
+principal has more than one component or is not in the default
+realm, this rule is not applicable and the conversion will fail.
+.in -1i
 
 .SH DOMAIN_REALM SECTION
 

@@ -27,7 +27,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.6 2004-02-27 03:59:44 zacheiss Exp $
  */
 
 #ifndef __KADM5_ADMIN_H__
@@ -55,12 +55,12 @@ typedef	char		*kadm5_policy_t;
 typedef long		kadm5_ret_t;
 
 #define KADM5_PW_FIRST_PROMPT \
-	((char *) error_message(CHPASS_UTIL_NEW_PASSWORD_PROMPT))
+	(error_message(CHPASS_UTIL_NEW_PASSWORD_PROMPT))
 #define KADM5_PW_SECOND_PROMPT \
-	((char *) error_message(CHPASS_UTIL_NEW_PASSWORD_AGAIN_PROMPT))
+	(error_message(CHPASS_UTIL_NEW_PASSWORD_AGAIN_PROMPT))
 
 /*
- * Succsessfull return code
+ * Successful return code
  */
 #define KADM5_OK	0
 
@@ -252,6 +252,7 @@ typedef struct __krb5_realm_params {
     char *		realm_mkey_name;
     char *		realm_stash_file;
     char *		realm_kdc_ports;
+    char *		realm_kdc_tcp_ports;
     char *		realm_acl_file;
     krb5_int32		realm_kadmind_port;
     krb5_enctype	realm_enctype;
@@ -280,6 +281,10 @@ krb5_error_code kadm5_get_config_params(krb5_context context,
 					char *kdcprofile, char *kdcenv,
 					kadm5_config_params *params_in,
 					kadm5_config_params *params_out);
+
+krb5_error_code kadm5_free_config_params(krb5_context context, 
+					 kadm5_config_params *params);
+
 krb5_error_code kadm5_free_realm_params(krb5_context kcontext,
 					kadm5_config_params *params);
 #endif
@@ -325,6 +330,8 @@ kadm5_ret_t    kadm5_init_with_creds(char *client_name,
 				     krb5_ui_4 api_version,
 				     void **server_handle);
 #endif
+kadm5_ret_t    kadm5_lock(void *server_handle);
+kadm5_ret_t    kadm5_unlock(void *server_handle);
 kadm5_ret_t    kadm5_flush(void *server_handle);
 kadm5_ret_t    kadm5_destroy(void *server_handle);
 kadm5_ret_t    kadm5_create_principal(void *server_handle,
@@ -396,6 +403,12 @@ kadm5_ret_t    kadm5_setkey_principal_3(void *server_handle,
 					krb5_keyblock *keyblocks,
 					int n_keys);
 
+kadm5_ret_t    kadm5_decrypt_key(void *server_handle,
+				 kadm5_principal_ent_t entry, krb5_int32
+				 ktype, krb5_int32 stype, krb5_int32
+				 kvno, krb5_keyblock *keyblock,
+				 krb5_keysalt *keysalt, int *kvnop);
+
 kadm5_ret_t    kadm5_create_policy(void *server_handle,
 				   kadm5_policy_ent_t ent,
 				   long mask);
@@ -439,7 +452,7 @@ kadm5_ret_t    kadm5_chpass_principal_util(void *server_handle,
 					   char *new_pw, 
 					   char **ret_pw,
 					   char *msg_ret,
-					   int msg_len);
+					   unsigned int msg_len);
 
 kadm5_ret_t    kadm5_free_principal_ent(void *server_handle,
 					kadm5_principal_ent_t
@@ -460,6 +473,9 @@ kadm5_ret_t    kadm5_free_key_data(void *server_handle,
 				   krb5_int16 *n_key_data,
 				   krb5_key_data *key_data);
 #endif
+
+kadm5_ret_t    kadm5_free_name_list(void *server_handle, char **names, 
+				    int count);
 
 #if USE_KADM5_API_VERSION == 1
 /*
@@ -490,7 +506,7 @@ enum	ovsec_kadm_saltmod  { OVSEC_KADM_MOD_KEEP, OVSEC_KADM_MOD_V4, OVSEC_KADM_MO
 	((char *) error_message(CHPASS_UTIL_NEW_PASSWORD_AGAIN_PROMPT))
 
 /*
- * Succsessfull return code
+ * Successful return code
  */
 #define OVSEC_KADM_OK	0
  
@@ -651,6 +667,9 @@ ovsec_kadm_ret_t    ovsec_kadm_free_principal_ent(void *server_handle,
 						  ent);
 ovsec_kadm_ret_t    ovsec_kadm_free_policy_ent(void *server_handle,
 					       ovsec_kadm_policy_ent_t ent);
+
+ovsec_kadm_ret_t ovsec_kadm_free_name_list(void *server_handle,
+					   char **names, int count);
 
 ovsec_kadm_ret_t    ovsec_kadm_get_principals(void *server_handle,
 					      char *exp, char ***princs,

@@ -1,18 +1,106 @@
-2002-02-05  Ken Raeburn  <raeburn@mit.edu>
+2004-02-12  Tom Yu  <tlyu@mit.edu>
 
-	* kadm_rpc_xdr.c (xdr_krb5_kvno): Disable previous change.
+	* configure.in: Invoke PRIOCNTL_HACK.
 
-2002-01-25  Ken Raeburn  <raeburn@mit.edu>
+2003-06-03  Tom Yu  <tlyu@mit.edu>
 
-	* kadm_rpc_xdr.c (xdr_krb5_kvno): Return an error if the key
-	version number won't fit in the one-byte encoding we currently
-	use.
+	* alt_prof.c (krb5_read_realm_params): Don't bother reading in
+	realm_keysalts or realm_num_keysalts, as they're no longer used.
 
-2001-10-31  Ezra Peisach  <epeisach@mit.edu>
+2003-05-30  Ken Raeburn  <raeburn@mit.edu>
 
-	* str_conv.c (krb5_string_to_keysalts): When parsing string, allow
-	for extra separator characters (like spaces) between keysalts.
-	[pullup 1.7->1.8 from trunk]
+	* alt_prof.c (kadm5_get_config_params): Change default max_life to
+	one day.
+
+2003-05-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* alt_prof.c (kadm5_get_config_params): Remove aes256 from the
+	default supported enctypes list for now.
+
+2003-04-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* alt_prof.c (kadm5_get_config_params): Add aes256 to the default
+	supported enctypes list.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_ARCHIVE,
+	AC_PROG_ARCHIVE_ADD, AC_PROG_RANLIB, AC_PROG_INSTALL.
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (all-prerecurse): Change double colons to single
+	colons.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* chpass_util_strings.et: Remove trailing colons, as new
+	implementation of krb5_read_password() appends it.
+
+2002-10-08  Tom Yu  <tlyu@mit.edu>
+
+	* adb.h (struct _osa_adb_db_ent_t): Add opencnt, which keeps track
+	of how many times an open was attempted on the adb.
+
+	* admin.h: Add kadm5_lock and kadm5_unlock.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin.h (struct __krb5_realm_params): New field
+	realm_kdc_tcp_ports.
+	* alt_prof.c (krb5_read_realm_params): Fill it in by looking up
+	"kdc_tcp_ports" in the config file.
+	(krb5_free_realm_params): Free the storage.
+
+	* logger.c (klog_com_err_proc, krb5_klog_init, krb5_klog_close,
+	severity2string, klog_vsyslog, krb5_klog_syslog,
+	krb5_klog_reopen): Always define functions in prototype style.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(HDRS)): Depend on "includes".
+
+2002-07-31  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_err.et: Add KADM5_MISSING_KRB5_CONF_PARAMS, indicating a
+	problem with krb5.conf.  This prevents confusing users who look
+	for kdc.conf trouble rather than krb5.conf trouble, which is what
+	they should be looking at on a kadm5 client.
+
+2002-06-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* get_admhst.c: Deleted.
+
+2001-11-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* alt_prof.c (krb5_aprof_get_boolean): Return krb5_boolean *
+	instead of int *.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* logger.c (krb5_klog_init): Initialize savec to keep compiler
+	happy.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* logger.c: Drop _MSDOS support.
 
 2001-09-25  Ken Raeburn  <raeburn@mit.edu>
 
@@ -23,21 +111,144 @@
 	(krb5_read_realm_params): Parse "reject_bad_transit" value as
 	boolean and save it.
 
-2001-09-07  Tom Yu  <tlyu@mit.edu>
+2001-07-25  Ezra Peisach  <epeisach@mit.edu>
 
-	* adb.h: Add btinfo. [pullup from trunk]
+	* kadm_rpc_xdr.c: Add xdr_krb5_ui_2. 
+	(xdr_krb5_tl_data): Change local variable from int to unsigned int. 
 
-2000-05-31  Ken Raeburn  <raeburn@mit.edu>
+	* admin_xdr.h: Add prototype for xdr_krb5_ui_2. 
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* logger.c (severity2string): Declare as returning const char *.
+	(klog_com_err_proc): Do not discard const status of format string.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* server_internal.h: Add prototype for krb5_copy_key_data_contents.
+
+2001-06-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* str_conv.c (krb5_string_to_keysalts): When parsing string, allow
+	for extra separator characters (like spaces) between keysalts.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* admin_internal.h (_KADM5_CHECK_HANDLE): Change code to ecode in
+	blocked statement to prevent shadowing.
+
+2001-06-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* logger.c (krb5_klog_init) [HAVE_SYSLOG]: Loop over an array of
+	syslog facility names rather than open-coding each check.  Add
+	"authpriv" and "ftp" names.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* server_internal.h: Add prototype for kdb_iter_entry().
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* alt_prof.c (krb5_read_realm_params): Cast argument to isspace()
+	to int.
+	* logger.c (krb5_klog_init): Likewise.
+
+2001-06-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* logger.c (klog_vsyslog): If krb5_klog_init() is not called, do
+	not pass a NULL pointer to vsprintf for a %s format. Also, if
+	syslog() exists on the system, fallback to using this so the
+	message is not dropped on the floor.
+
+2001-06-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* logger.c (krb5_klog_init): Cleanup assignments in
+	conditionals. Ensure that if hostname is MAXHOSTNAMELEN, buffer is
+	\0 terminated.
+
+	* str_conv.c (krb5_string_to_keysalts, krb5_keysalt_iterate):
+	Clean up assignments in conditionals.
+
+	* admin.h: Move kadm5_free_name_list() to version 1 api as it is
+ 	present in the ovsec_glue layer.
+
+2001-03-10  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* str_conv.c: Include adm_proto.h for missing prototypes.
+
+Sun Feb 18 16:26:33 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* server_internal.h: Add prototype for
+        krb5_free_key_data_contents() which really should be in libkdb.
+
+	* kadm_rpc_xdr.c: Include krb5/admin_xdr.h for prototypes.
+
+	* kadm_rpc.h: Add prototypes for client and server stub
+        functions. Server functions renamed to have _svc appended. 
+
+	* alt_prof.c: Clean up warnings. Do not shadow index() with local
+        variable.
+
+	* admin_xdr.h: Add prototypes for xdr_nulltype(), xdr_krb5_ui_4(),
+        xdr_krb5_int16(), xdr_krb5_key_data_nocontents(),
+        xdr_krb5_key_salt_tuple(), xdr_krb5_tl_data(),
+        xdr_kadm5_principal_ent_rec_v1(), xdr_cprinc3_arg(),
+        xdr_generic_ret(0, xdr_chpass3_arg(), xdr_setv4key_arg(),
+        xdr_setkey_arg(), xdr_setkey3_arg(), xdr_chrand3_arg(),
+        xdr_gprincs_arg(), xdr_grpincs_ret(), xdr_gpols_arg(),
+        xdr_gpols_ret(), xdr_getprivs_ret(), xdr_krb5_salttype().
+
+	* admin_internal.h: Add prototype for _kadm5_check_handle().
+
+	* admin.h: Add prototypes for kadm5_free_config_params(),
+        kadm5_decrypt_key(), ovsec_kadm_free_name_list().
+
+	* adb.h: Add prototypes for xdr_osa_pw_hist_ent(),
+        xdr_krb5_key_data(), osa_adb_rename_db(),
+        osa_adb_rename_policy_db().
+
+2001-01-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* str_conv.c (krb5_keysalt_iterate): Always use the prototype for
+	function-pointer argument ITERATOR.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* admin.h (KADM5_PW_FIRST_PROMPT): Get rid of casts from
+	error_message to char * - leave them as const char *.
+	(kadm5_chpass_principal_util): Argument msg_len is unsigned int.
+
+	* admin_internal.h (_kadm5_chpass_principal_util): msg_len is
+	unsigned int.
+
+	* chpass_util.c (_kadm5_chpass_principal_util): Change msg_len to
+	unsigned int. Arhument to krb5_read_password is unsigned int. 
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* admin.h: Add kadm5_free_name_list prototype.
+
+2000-06-30  Tom Yu  <tlyu@mit.edu>
+
+	* adb.h: Add btinfo.
+
+	* configure.in: Remove AIX_DB_LIB kludge as we're now building
+	libdb reasonably.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* alt_prof.c (krb5_aprof_init): profile_init takes a
+	profile_filespec_t as argument instad of char **.
+
+2000-06-23  Ken Raeburn  <raeburn@mit.edu>
 
 	* alt_prof.c (kadm5_get_config_params): Include des3 in supported
 	enctypes by default.
 
-2000-05-19  Ken Raeburn  <raeburn@mit.edu>
-
 	* ovsec_glue.c (ovsec_kadm_chpass_principal_util): Use 1024 for
 	hard-coded length, to match existing callers.
 
-2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
+2000-06-23  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* admin.h: Add a length parameter to kadm5_chpass_principal_util().
 	* admin_internal.h: Add a length parameter to
@@ -47,9 +258,13 @@
 	* ovsec_glue.c (ovsec_kadm_chpass_principal_util): Adjust for new
 	parameter in kadm5_chpass_principal_util().
 
-2000-05-01  Nalin Dahyabhai  <nalin@redhat.com>
-
 	* logger.c (klog_com_err_proc): Don't overflow buffer "outbuf".
+
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* configure.in, chpass_util.c, server_internal.h: Check for
+	existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
 
 2000-02-26  Tom Yu  <tlyu@mit.edu>
 
@@ -98,12 +313,12 @@
 	* alt_prof.c (kadm5_get_config_params): Fix bug in direction of
 	test while walking through whitespace.  Thanks to Matt Crawford.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-28  Ken Raeburn  <raeburn@mit.edu>
 

@@ -33,20 +33,21 @@
  * Modified to use UNIX domain IPC by Ralph Campbell
  */
 
-#if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh)
+#if !defined(_WIN32) && !defined(macintosh)
 
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)
+#if defined(__STDC__) || defined(_WIN32)
 #include <stdarg.h>
 #else
 #define const
 #include <varargs.h>
 #endif
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/file.h>
 #include <fcntl.h>
 #include <sys/signal.h>
-#include <sys/syslog.h>
+#include <syslog.h>
 #include <sys/wait.h>
 #include <netdb.h>
 #include <string.h>
@@ -63,7 +64,7 @@ static int	LogFacility = LOG_USER;	/* default facility code */
 
 
 void
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)
+#if defined(__STDC__) || defined(_WIN32)
 syslog(int pri, const char *fmt, ...)
 #else
 syslog(pri, fmt, va_alist)
@@ -74,7 +75,7 @@ syslog(pri, fmt, va_alist)
 {
     va_list pvar;
     void vsyslog();
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32)
+#if defined(__STDC__) || defined(_WIN32)
     va_start(pvar, fmt);
 #else
     va_start(pvar);
@@ -89,7 +90,6 @@ vsyslog(pri, fmt, ap)
 	const register char *fmt;
 	va_list ap;
 {
-	extern int errno;
 	register int cnt;
 	register char *p;
 	time_t now, time();
@@ -244,7 +244,7 @@ setlogmask(pmask)
 		LogMask = pmask;
 	return (omask);
 }
-#else /* _MSDOS */
+#else /* Windows or Mac */
 
 /* Windows doesn't have the concept of a system log, so just
 ** do nothing here.

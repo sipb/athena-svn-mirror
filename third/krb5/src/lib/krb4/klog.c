@@ -1,28 +1,43 @@
 /*
- * klog.c
+ * lib/krb4/klog.c
  *
- * Copyright 1985, 1986, 1987, 1988 by the Massachusetts Institute
- * of Technology.
+ * Copyright 1985, 1986, 1987, 1988 by the Massachusetts Institute of
+ * Technology.  All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ *
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
 #include "krb.h"
+#include "krb5/autoconf.h"
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-#if !defined(VMS) && !defined(_WINDOWS)
+#if !defined(VMS) && !defined(_WIN32)
 #include <sys/time.h>
 #endif
 #include <stdio.h>
 
-#include "krb.h"
+#include "krb4int.h"
 #include <klog.h>
 
 static char *log_name = KRBLOG;
-static int is_open;
 static char logtxt[1000];
 
 /*
@@ -57,7 +72,6 @@ char * klog(type,format,a1,a2,a3,a4,a5,a6,a7,a8,a9,a0)
 {
     FILE *logfile;
     time_t now;
-    char *month_sname();
     struct tm *tm;
     static int logtype_array[NLOGTYPE];
     static int array_initialized;
@@ -102,9 +116,9 @@ char * klog(type,format,a1,a2,a3,a4,a5,a6,a7,a8,a9,a0)
  * the logfile defaults to KRBLOG, defined in "krb.h".
  */
 
+void
 kset_logfile(filename)
     char *filename;
 {
     log_name = filename;
-    is_open = 0;
 }

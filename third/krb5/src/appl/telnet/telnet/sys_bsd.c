@@ -67,6 +67,12 @@
 #define	SIG_FUNC_RET	int
 #endif
 
+#ifdef	SIGTSTP
+static SIG_FUNC_RET susp(int);
+#endif	/* SIGTSTP */
+#ifdef	SIGINFO
+SIG_FUNC_RET ayt(int);
+#endif
 #ifdef	SIGINFO
 extern SIG_FUNC_RET ayt_status();
 #endif
@@ -160,7 +166,7 @@ init_sys()
 
     int
 TerminalWrite(buf, n)
-    char *buf;
+    unsigned char *buf;
     int  n;
 {
     return write(tout, buf, n);
@@ -168,7 +174,7 @@ TerminalWrite(buf, n)
 
     int
 TerminalRead(buf, n)
-    char *buf;
+    unsigned char *buf;
     int  n;
 {
     return read(tin, buf, n);
@@ -205,8 +211,6 @@ extern int kludgelinemode;
  *	0	Don't add this character.
  *	1	Do add this character
  */
-
-extern void xmitAO(), xmitEL(), xmitEC(), intp(), sendbrk();
 
     int
 TerminalSpecialChars(c)
@@ -251,7 +255,6 @@ TerminalSpecialChars(c)
 /*
  * Flush output to the terminal
  */
- 
     void
 TerminalFlushOutput()
 {
@@ -638,12 +641,6 @@ TerminalNewMode(f)
     }
 
     if (f != -1) {
-#ifdef	SIGTSTP
-	SIG_FUNC_RET susp();
-#endif	/* SIGTSTP */
-#ifdef	SIGINFO
-	SIG_FUNC_RET ayt();
-#endif
 
 #ifdef	SIGTSTP
 	(void) signal(SIGTSTP, susp);
@@ -814,7 +811,7 @@ NetClose(fd)
 }
 
 
-    void
+static void
 NetNonblockingIO(fd, onoff)
     int fd;
     int onoff;
@@ -847,7 +844,7 @@ NetSetPgrp(fd)
  */
 
     /* ARGSUSED */
-    SIG_FUNC_RET
+static  SIG_FUNC_RET
 deadpeer(sig)
     int sig;
 {
@@ -859,7 +856,7 @@ int intr_happened = 0;
 int intr_waiting = 0;
 
     /* ARGSUSED */
-    SIG_FUNC_RET
+static SIG_FUNC_RET
 intr(sig)
     int sig;
 {
@@ -876,7 +873,7 @@ intr(sig)
 }
 
     /* ARGSUSED */
-    SIG_FUNC_RET
+static SIG_FUNC_RET
 intr2(sig)
     int sig;
 {
@@ -893,7 +890,7 @@ intr2(sig)
 
 #ifdef	SIGTSTP
     /* ARGSUSED */
-    SIG_FUNC_RET
+static SIG_FUNC_RET
 susp(sig)
     int sig;
 {
@@ -906,7 +903,7 @@ susp(sig)
 
 #ifdef	SIGWINCH
     /* ARGSUSED */
-    SIG_FUNC_RET
+static  SIG_FUNC_RET
 sendwin(sig)
     int sig;
 {

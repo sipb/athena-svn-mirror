@@ -53,7 +53,6 @@ static char sccsid[] = "@(#)ftpd.c	5.40 (Berkeley) 7/2/91";
 #endif
 #include <sys/wait.h>
 #include <sys/file.h>
-
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
@@ -71,6 +70,7 @@ static char sccsid[] = "@(#)ftpd.c	5.40 (Berkeley) 7/2/91";
 #ifdef HAVE_SHADOW
 #include <shadow.h>
 #endif
+#include <grp.h> 
 #include <setjmp.h>
 #ifndef POSIX_SETJMP
 #undef sigjmp_buf
@@ -102,6 +102,10 @@ static char sccsid[] = "@(#)ftpd.c	5.40 (Berkeley) 7/2/91";
 #include "pathnames.h"
 #include <libpty.h>
 
+#ifdef NEED_SETENV
+extern int setenv(char *, char *, int);
+#endif
+
 #ifndef L_SET
 #define L_SET 0
 #endif
@@ -117,23 +121,14 @@ extern char *sys_errlist[];
 #endif
 
 extern char *mktemp ();
+char *ftpusers;
+extern int yyparse(void);
 
 #include <k5-util.h>
-
-#ifdef STDARG
-extern reply(int, char *, ...)
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
-     __attribute__ ((__format__ (__printf__, 2, 3)))
-#endif
-     ;
-extern lreply(int, char *, ...)
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
-     __attribute__ ((__format__ (__printf__, 2, 3)))
-#endif
-     ;
-#endif
+#include "port-sockets.h"
 
 #ifdef KRB5_KRB4_COMPAT
+#include <krb5.h>
 #include <krb.h>
 
 AUTH_DAT kdata;
@@ -147,6 +142,7 @@ static char *krb4_services[] = { "ftp", "rcmd", NULL };
 #ifdef GSSAPI
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
+#include <gssapi/gssapi_krb5.h>
 gss_ctx_id_t gcontext;
 gss_buffer_desc client_name;
 static char *gss_services[] = { "ftp", "host", NULL };
@@ -154,6 +150,10 @@ static char *gss_services[] = { "ftp", "host", NULL };
 #include <krb5.h>
 krb5_context kcontext;
 krb5_ccache ccache;
+
+static void ftpd_gss_convert_creds(char *name, gss_cred_id_t);
+static int ftpd_gss_userok(gss_buffer_t, char *name);
+
 #endif /* GSSAPI */
 
 char *auth_type;	/* Authentication succeeded?  If so, what type? */
@@ -166,7 +166,9 @@ int have_creds;		/* User has credentials on disk */
  * NOT to be used on this machine.
  * Commonly used to disallow uucp.
  */
-extern	int errno;
+#include "ftpd_var.h"
+#include "secure.h"
+
 extern	char *crypt();
 extern	char version[];
 extern	char *home;		/* pointer to home directory for glob */
@@ -236,19 +238,26 @@ char	*rhost_sane;
 int	swaitmax = SWAITMAX;
 int	swaitint = SWAITINT;
 
-void	lostconn(), myoob();
-FILE	*getdatasock(); 
+void	lostconn(int), myoob(int);
+FILE	*getdatasock(char *); 
 #if defined(__STDC__)
 /* 
  * The following prototypes must be ANSI for systems for which
  * sizeof(off_t) > sizeof(int) to prevent stack overflow problems 
  */
-FILE	*dataconn(char *name, off_t size, char *mode);
+FILE	*dataconn(char *name, off_t size, char *mymode);
 void	send_data(FILE *instr, FILE *outstr, off_t blksize);
 #else
 void	send_data();
 FILE	*dataconn();
 #endif
+static void dolog(struct sockaddr_in *);
+static int receive_data(FILE *, FILE *);
+static void login(char *passwd, int logincode);
+static void end_login(void);
+static int disallowed_user(char *);
+static int restricted_user(char *);
+static int checkuser(char *);
 
 #ifdef SETPROCTITLE
 char	**Argv = NULL;		/* pointer to argument vector */
@@ -272,13 +281,21 @@ int stripdomain = 1;
 int maxhostlen = 0;
 int always_ip = 0;
 
+int
 main(argc, argv, envp)
 	int argc;
 	char *argv[];
 	char **envp;
 {
-	int addrlen, on = 1, tos, port = -1;
-	char *cp;
+	int addrlen, c, on = 1, tos, port = -1;
+	extern char *optarg;
+	extern int optopt;
+#ifdef KRB5_KRB4_COMPAT
+	char *option_string = "AaCcdlp:r:s:T:t:U:u:vw:";
+#else /* !KRB5_KRB4_COMPAT */
+	char *option_string = "AaCcdlp:r:T:t:U:u:vw:";
+#endif /* KRB5_KRB4_COMPAT */
+	ftpusers = _PATH_FTPUSERS_DEFAULT;
 
 #ifdef KRB5_KRB4_COMPAT
 	keyfile = KEYFILE;
@@ -296,14 +313,10 @@ main(argc, argv, envp)
 
 #ifdef GSSAPI
 	krb5_init_context(&kcontext);
-#ifdef KRB5_KRB4_COMPAT
-	krb524_init_ets(kcontext);
-#endif
 #endif
 
-	argc--, argv++;
-	while (argc > 0 && *argv[0] == '-') {
-		for (cp = &argv[0][1]; *cp; cp++) switch (*cp) {
+	while ((c = getopt(argc, argv, option_string)) != -1) {
+		switch (c) {
 
 		case 'v':
 			debug = 1;
@@ -334,119 +347,94 @@ main(argc, argv, envp)
 			break;
 
 		case 'p':
-			if (*++cp != '\0')
-				port = atoi(cp);
-			else if (argc > 1) {
-				argc--, argv++;
-				port = atoi(*argv);
-			}
-			else
-				fprintf(stderr, "ftpd: -p expects argument\n");
-			goto nextopt;
+			port = atoi(optarg);
+			break;
 
 		case 'r':
-			if (*++cp != '\0')
-				setenv("KRB_CONF", cp, 1);
-			else if (argc > 1) {
-				argc--, argv++;
-				setenv("KRB_CONF", *argv, 1);
-			}
-			else
-				fprintf(stderr, "ftpd: -r expects argument\n");
-			goto nextopt;
+			setenv("KRB_CONF", optarg, 1);
+			break;
 
 #ifdef KRB5_KRB4_COMPAT
 		case 's':
-			if (*++cp != '\0')
-				keyfile = cp;
-			else if (argc > 1) {
-				argc--, argv++;
-				keyfile = *argv;
-			}
-			else
-				fprintf(stderr, "ftpd: -s expects argument\n");
-			goto nextopt;
-
+			keyfile = optarg;
+			break;
 #endif /* KRB5_KRB4_COMPAT */
+
 		case 't':
-			timeout = atoi(++cp);
+			timeout = atoi(optarg);
 			if (maxtimeout < timeout)
 				maxtimeout = timeout;
-			goto nextopt;
+			break;
 
 		case 'T':
-			maxtimeout = atoi(++cp);
+			maxtimeout = atoi(optarg);
 			if (timeout > maxtimeout)
 				timeout = maxtimeout;
-			goto nextopt;
+			break;
 
 		case 'u':
-		    {
-			int val = 0;
+			{
+			    int val = 0;
+			    char *umask_val = optarg;
 
-			while (*++cp && *cp >= '0' && *cp <= '9')
-				val = val*8 + *cp - '0';
-			if (*cp)
-				fprintf(stderr, "ftpd: Bad value for -u\n");
-			else
-				defumask = val;
-			goto nextopt;
-		    }
+			    while (*umask_val >= '0' && *umask_val <= '9') {
+				    val = val*8 + *umask_val - '0';
+				    umask_val++;
+			    }
+			    if (*umask_val != ' ' && *umask_val != '\0')
+				    fprintf(stderr, "ftpd: Bad value for -u\n");
+			    else
+				    defumask = val;
+			    break;
+			}
+
+		case 'U':
+			ftpusers = optarg;
+			break;
 
 		case 'w':
 		{
-			char *optarg;
-			if (*++cp != '\0')
-				optarg = cp;
-			else if (argc > 1) {
-				argc--;
-				argv++;
-				optarg = *argv;
-			} else {
-				fprintf(stderr, "ftpd: -w expects arg\n");
-				exit(1);
-			}
+			char *foptarg;
+			foptarg = optarg;
 
-			if (!strcmp(optarg, "ip"))
+			if (!strcmp(foptarg, "ip"))
 				always_ip = 1;
 			else {
-				char *cp;
-				cp = strchr(optarg, ',');
-				if (cp == NULL)
-					maxhostlen = atoi(optarg);
-				else if (*(++cp)) {
-					if (!strcmp(cp, "striplocal"))
+				char *cp2;
+				cp2 = strchr(foptarg, ',');
+				if (cp2 == NULL)
+					maxhostlen = atoi(foptarg);
+				else if (*(++cp2)) {
+					if (!strcmp(cp2, "striplocal"))
 						stripdomain = 1;
-					else if (!strcmp(cp, "nostriplocal"))
+					else if (!strcmp(cp2, "nostriplocal"))
 						stripdomain = 0;
 					else {
 						fprintf(stderr,
 							"ftpd: bad arg to -w\n");
 						exit(1);
 					}
-					*(--cp) = '\0';
-					maxhostlen = atoi(optarg);
+					*(--cp2) = '\0';
+					maxhostlen = atoi(foptarg);
 				}
 			}
-			goto nextopt;
+			break;
 		}
 		default:
 			fprintf(stderr, "ftpd: Unknown flag -%c ignored.\n",
-			     *cp);
+			     (char)optopt);
 			break;
 		}
-nextopt:
-		argc--, argv++;
 	}
 
 	if (port != -1) {
-		struct sockaddr_in sin;
+		struct sockaddr_in sin4;
 		int s, ns, sz;
 
 		/* Accept an incoming connection on port.  */
-		sin.sin_family = AF_INET;
-		sin.sin_addr.s_addr = INADDR_ANY;
-		sin.sin_port = htons(port);
+		sin4.sin_family = AF_INET;
+		sin4.sin_addr.s_addr = INADDR_ANY;
+		sin4.sin_port = htons(port);
 		s = socket(AF_INET, SOCK_STREAM, 0);
 		if (s < 0) {
 			perror("socket");
@@ -454,7 +442,7 @@ nextopt:
 		}
 		(void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 				  (char *)&on, sizeof(on));
-		if (bind(s, (struct sockaddr *)&sin, sizeof sin) < 0) {
+		if (bind(s, (struct sockaddr *)&sin4, sizeof sin4) < 0) {
 			perror("bind");
 			exit(1);
 		}
@@ -462,8 +450,8 @@ nextopt:
 			perror("listen");
 			exit(1);
 		}
-		sz = sizeof sin;
-		ns = accept(s, (struct sockaddr *)&sin, &sz);
+		sz = sizeof sin4;
+		ns = accept(s, (struct sockaddr *)&sin4, &sz);
 		if (ns < 0) {
 			perror("accept");
 			exit(1);
@@ -559,7 +547,8 @@ nextopt:
 }
 
 void
-lostconn()
+lostconn(sig)
+int sig;
 {
 	if (debug)
 		syslog(LOG_DEBUG, "lost connection");
@@ -571,7 +560,7 @@ static char ttyline[20];
 /*
  * Helper function for sgetpwnam().
  */
-char *
+static char *
 sgetsave(s)
 	char *s;
 {
@@ -591,7 +580,7 @@ sgetsave(s)
  * the data returned must not be clobbered by any other command
  * (e.g., globbing).
  */
-struct passwd *
+static struct passwd *
 sgetpwnam(name)
 	char *name;
 {
@@ -600,8 +589,6 @@ sgetpwnam(name)
 #ifdef HAVE_SHADOW
 	register struct spwd *sp;
 #endif
-	char *sgetsave();
-
 	if ((p = getpwnam(name)) == NULL)
 		return (p);
 	if (save.pw_name) {
@@ -630,7 +617,7 @@ sgetpwnam(name)
 /*
  * Expand the given pathname relative to the current working directory.
  */
-char *
+static char *
 path_expand(path)
        char *path;
 {
@@ -657,6 +644,7 @@ path_expand(path)
 /*
  * Set data channel protection level
  */
+void
 setdlevel(prot_level)
 int prot_level;
 {
@@ -685,15 +673,16 @@ int askpasswd;			/* had user command, ask for passwd */
  * Sets global passwd pointer pw if named account exists and is acceptable;
  * sets askpasswd if a PASS command is expected.  If logged in previously,
  * need to reset state.  If name is "ftp" or "anonymous", the name is not in
- * _PATH_FTPUSERS, and ftp account exists, set guest and pw, then just return.
+ * ftpusers, and ftp account exists, set guest and pw, then just return.
  * If account doesn't exist, ask for passwd anyway.  Otherwise, check user
  * requesting login privileges.  Disallow anyone who does not have a standard
  * shell as returned by getusershell().  Disallow anyone mentioned in the file
- * _PATH_FTPUSERS to allow people such as root and uucp to be avoided, except
+ * ftpusers to allow people such as root and uucp to be avoided, except
  * for users whose names are followed by whitespace and then the keyword
  * "restrict."  Restricted users are allowed to login, but a chroot() is
  * done to their home directory.
  */
+void
 user(name)
 	char *name;
 {
@@ -735,7 +724,8 @@ user(name)
 		return;
 	}
 
-	if (pw = sgetpwnam(name)) {
+	pw = sgetpwnam(name);
+	if (pw) {
 		if ((shell = pw->pw_shell) == NULL || *shell == 0)
 			shell = "/bin/sh";
 #ifdef HAVE_GETUSERSHELL
@@ -775,7 +765,8 @@ user(name)
 				name = "[username too long]";
 			}
 			sprintf(buf, "GSSAPI user %s is%s authorized as %s",
-				client_name.value, authorized ? "" : " not",
+				(char *) client_name.value, 
+				authorized ? "" : " not",
 				name);
 		}
 #ifdef KRB5_KRB4_COMPAT
@@ -837,10 +828,11 @@ user(name)
 }
 
 /*
- * Check if a user is in the file _PATH_FTPUSERS.
+ * Check if a user is in the file ftpusers.
  * Return 1 if they are (a disallowed user), -1 if their username
  * is followed by "restrict." (a restricted user).  Otherwise return 0.
  */
+static int
 checkuser(name)
 	char *name;
 {
@@ -848,7 +840,7 @@ checkuser(name)
 	register char *p;
 	char line[FTP_BUFSIZ];
 
-	if ((fd = fopen(_PATH_FTPUSERS, "r")) != NULL) {
+	if ((fd = fopen(ftpusers, "r")) != NULL) {
 	     while (fgets(line, sizeof(line), fd) != NULL) {
 	          if ((p = strchr(line, '\n')) != NULL) {
 			*p = '\0';
@@ -860,10 +852,10 @@ checkuser(name)
 			     int i = strlen(name) + 1;
 			     
 			     /* Make sure foo doesn't match foobar */
-			     if (line[i] == '\0' || !isspace(line[i]))
+			     if (line[i] == '\0' || !isspace((int) line[i]))
 			          continue;
 			     /* Ignore whitespace */
-			     while (isspace(line[++i]));
+			     while (isspace((int) line[++i]));
 
 			     if (strcmp(&line[i], "restrict") == 0)
 			          return (-1);
@@ -878,12 +870,14 @@ checkuser(name)
 	return (0);
 }
 
+static int
 disallowed_user(name)
         char *name;
 {
         return(checkuser(name) == 1);
 }
 
+static int
 restricted_user(name)
         char *name;
 {
@@ -894,6 +888,7 @@ restricted_user(name)
  * Terminate login as previous user, if any, resetting state;
  * used when USER command is given or login fails.
  */
+static void 
 end_login()
 {
 
@@ -914,11 +909,11 @@ end_login()
 	guest = 0;
 }
 
+static int
 kpass(name, passwd)
 char *name, *passwd;
 {
 #ifdef GSSAPI
-	krb5_error_code code;
 	krb5_principal server, me;
 	krb5_creds my_creds;
 	krb5_timestamp now;
@@ -943,7 +938,7 @@ char *name, *passwd;
 		return 0;
 	my_creds.client = me;
 
-	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
+	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%ld", (long) getpid());
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return(0);
 	if (krb5_cc_initialize(kcontext, ccache, me))
@@ -982,7 +977,7 @@ char *name, *passwd;
 	if (krb_get_lrealm(realm, 1) != KSUCCESS)
 		goto nuke_ccache;
 
-	sprintf(ccname, "%s_ftpd%d", TKT_ROOT, getpid());
+	sprintf(ccname, "%s_ftpd%ld", TKT_ROOT, (long) getpid());
 	krb_set_tkt_string(ccname);
 
 	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 1, passwd))
@@ -1036,6 +1031,7 @@ nuke_ccache:
 	return(0);
 }
 
+void
 pass(passwd)
 	char *passwd;
 {
@@ -1092,12 +1088,14 @@ pass(passwd)
 	return;
 }
 
+static void
 login(passwd, logincode)
 	char *passwd;
+	int logincode;
 {
 	if (have_creds) {
 #ifdef GSSAPI
-		char *ccname = krb5_cc_get_name(kcontext, ccache);
+		const char *ccname = krb5_cc_get_name(kcontext, ccache);
 		chown(ccname, pw->pw_uid, pw->pw_gid);
 #endif
 #ifdef KRB5_KRB4_COMPAT
@@ -1109,7 +1107,7 @@ login(passwd, logincode)
 	(void) initgroups(pw->pw_name, pw->pw_gid);
 
 	/* open wtmp before chroot */
-	(void) sprintf(ttyline, "ftp%d", getpid());
+	(void) sprintf(ttyline, "ftp%ld", (long) getpid());
 	pty_logwtmp(ttyline, pw->pw_name, rhost_sane);
 	logged_in = 1;
 
@@ -1191,6 +1189,7 @@ bad:
 	end_login();
 }
 
+void
 retrieve(cmd, name)
 	char *cmd, *name;
 {
@@ -1264,14 +1263,15 @@ done:
 	        syslog(LOG_NOTICE, "get: %i bytes transferred", byte_count);
 }
 
-store_file(name, mode, unique)
-	char *name, *mode;
+void
+store_file(name, fmode, unique)
+	char *name, *fmode;
 	int unique;
 {
 	FILE *fout, *din;
 	struct stat st;
 	int (*closefunc)();
-	char *gunique();
+	static char *gunique();
 
 	if (logging > 1) syslog(LOG_NOTICE, "put %s", path_expand(name));
 
@@ -1280,8 +1280,8 @@ store_file(name, mode, unique)
 		return;
 
 	if (restart_point)
-		mode = "r+w";
-	fout = fopen(name, mode);
+		fmode = "r+w";
+	fout = fopen(name, fmode);
 	closefunc = fclose;
 	if (fout == NULL) {
 		perror_reply(553, name);
@@ -1335,13 +1335,13 @@ done:
 }
 
 FILE *
-getdatasock(mode)
-	char *mode;
+getdatasock(fmode)
+	char *fmode;
 {
 	int s, on = 1, tries;
 
 	if (data >= 0)
-		return (fdopen(data, mode));
+		return (fdopen(data, fmode));
 	(void) krb5_seteuid((uid_t)0);
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s < 0)
@@ -1368,7 +1368,7 @@ getdatasock(mode)
 		syslog(LOG_WARNING, "setsockopt (IP_TOS): %m");
 #endif
 #endif
-	return (fdopen(s, mode));
+	return (fdopen(s, fmode));
 bad:
 	(void) krb5_seteuid((uid_t)pw->pw_uid);
 	(void) close(s);
@@ -1376,10 +1376,10 @@ bad:
 }
 
 FILE *
-dataconn(name, size, mode)
+dataconn(name, size, fmode)
 	char *name;
 	off_t size;
-	char *mode;
+	char *fmode;
 {
 	char sizebuf[32];
 	FILE *file;
@@ -1413,18 +1413,18 @@ dataconn(name, size, mode)
 #endif
 		reply(150, "Opening %s mode data connection for %s%s.",
 		     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
-		return(fdopen(pdata, mode));
+		return(fdopen(pdata, fmode));
 	}
 	if (data >= 0) {
 		reply(125, "Using existing data connection for %s%s.",
 		    name, sizebuf);
 		usedefault = 1;
-		return (fdopen(data, mode));
+		return (fdopen(data, fmode));
 	}
 	if (usedefault)
 		data_dest = his_addr;
 	usedefault = 1;
-	file = getdatasock(mode);
+	file = getdatasock(fmode);
 	if (file == NULL) {
 		reply(425, "Can't create data socket (%s,%d): %s.",
 		    inet_ntoa(data_source.sin_addr),
@@ -1454,9 +1454,11 @@ dataconn(name, size, mode)
  * FTP_BUFSIZ
  */
 #ifdef STDARG
+void
 secure_error(char *fmt, ...)
 #else
 /* VARARGS1 */
+void
 secure_error(fmt, p1, p2, p3, p4, p5)
 	char *fmt;
 #endif
@@ -1567,6 +1569,7 @@ file_err:
  *
  * N.B.: Form isn't handled.
  */
+static int
 receive_data(instr, outstr)
 	FILE *instr, *outstr;
 {
@@ -1647,6 +1650,7 @@ file_err:
 	return (-1);
 }
 
+void
 statfilecmd(filename)
 	char *filename;
 {
@@ -1700,13 +1704,14 @@ statfilecmd(filename)
 	reply(211, "End of Status");
 }
 
+void
 statcmd()
 {
-	struct sockaddr_in *sin;
+	struct sockaddr_in *sin4;
 	u_char *a, *p;
 	char str[FTP_BUFSIZ];
 
-	lreply(211, "%s FTP server status:", hostname, version);
+	lreply(211, "%s FTP server status:", hostname);
 	reply(0, "     %s", version);
 	sprintf(str, "     Connected to %s", remotehost[0] ? remotehost : "");
 	sprintf(&str[strlen(str)], " (%s)", rhost_addra);
@@ -1745,14 +1750,14 @@ statcmd()
 		strcpy(str, "     Data connection open");
 	else if (pdata != -1) {
 		strcpy(str, "     in Passive mode");
-		sin = &pasv_addr;
+		sin4 = &pasv_addr;
 		goto printaddr;
 	} else if (usedefault == 0) {
 		strcpy(str, "     PORT");
-		sin = &data_dest;
+		sin4 = &data_dest;
 printaddr:
-		a = (u_char *) &sin->sin_addr;
-		p = (u_char *) &sin->sin_port;
+		a = (u_char *) &sin4->sin_addr;
+		p = (u_char *) &sin4->sin_port;
 #define UC(b) (((int) b) & 0xff)
 		sprintf(&str[strlen(str)], " (%d,%d,%d,%d,%d,%d)", UC(a[0]),
 			UC(a[1]), UC(a[2]), UC(a[3]), UC(p[0]), UC(p[1]));
@@ -1763,6 +1768,7 @@ printaddr:
 	reply(211, "End of status");
 }
 
+void
 fatal(s)
 	char *s;
 {
@@ -1779,9 +1785,11 @@ char cont_char = ' ';
  * FTP_BUFSIZ bytes for now.
  */
 #ifdef STDARG
+void
 reply(int n, char *fmt, ...)
 #else
 /* VARARGS2 */
+void
 reply(n, fmt, p0, p1, p2, p3, p4, p5)
 	int n;
 	char *fmt;
@@ -1840,7 +1848,7 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 			int conf_state;
 		
 			in_buf.value = in;
-			in_buf.length = strlen(in) + 1;
+			in_buf.length = strlen(in);
 			maj_stat = gss_seal(&min_stat, gcontext,
 					    clevel == PROT_P, /* private */
 					    GSS_C_QOP_DEFAULT,
@@ -1871,7 +1879,7 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 		if (length >= sizeof(in) / 4 * 3) {
 			syslog(LOG_ERR, "input to radix_encode too long");
 			fputs(in, stdout);
-		} else if (kerror = radix_encode(out, in, &length, 0)) {
+		} else if ((kerror = radix_encode(out, in, &length, 0))) {
 			syslog(LOG_ERR, "Couldn't encode reply (%s)",
 					radix_error(kerror));
 			fputs(in,stdout);
@@ -1895,9 +1903,11 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
  * FTP_BUFSIZ
  */
 #ifdef STDARG
+void
 lreply(int n, char *fmt, ...)
 #else
 /* VARARGS2 */
+void
 lreply(n, fmt, p0, p1, p2, p3, p4, p5)
 	int n;
 	char *fmt;
@@ -1918,12 +1928,14 @@ lreply(n, fmt, p0, p1, p2, p3, p4, p5)
 	cont_char = ' ';
 }
 
+void
 ack(s)
 	char *s;
 {
 	reply(250, "%s command successful.", s);
 }
 
+void
 nack(s)
 	char *s;
 {
@@ -1931,17 +1943,21 @@ nack(s)
 }
 
 /* ARGSUSED */
+void
 yyerror(s)
 	char *s;
 {
 	char *cp;
 
-	if (cp = strchr(cbuf,'\n'))
+	cp = strchr(cbuf,'\n');
+	if (cp)
 		*cp = '\0';
 	reply(500, "'%.*s': command not understood.",
-	      FTP_BUFSIZ - sizeof("'': command not understood."), cbuf);
+	      (int) (FTP_BUFSIZ - sizeof("'': command not understood.")),
+	      cbuf);
 }
 
+void
 delete_file(name)
 	char *name;
 {
@@ -1968,6 +1984,7 @@ done:
 	ack("DELE");
 }
 
+void
 cwd(path)
 	char *path;
 {
@@ -1977,6 +1994,7 @@ cwd(path)
 		ack("CWD");
 }
 
+void
 makedir(name)
 	char *name;
 {
@@ -1988,6 +2006,7 @@ makedir(name)
 		reply(257, "MKD command successful.");
 }
 
+void
 removedir(name)
 	char *name;
 {
@@ -1999,6 +2018,7 @@ removedir(name)
 		ack("RMD");
 }
 
+void
 pwd()
 {
 	if (getcwd(pathbuf, sizeof pathbuf) == (char *)NULL)
@@ -2025,6 +2045,7 @@ renamefrom(name)
 	return (name);
 }
 
+void
 renamecmd(from, to)
 	char *from, *to;
 {
@@ -2037,10 +2058,11 @@ renamecmd(from, to)
 		ack("RNTO");
 }
 
-dolog(sin)
-	struct sockaddr_in *sin;
+static void
+dolog(sin4)
+	struct sockaddr_in *sin4;
 {
-	struct hostent *hp = gethostbyaddr((char *)&sin->sin_addr,
+	struct hostent *hp = gethostbyaddr((char *)&sin4->sin_addr,
 		sizeof (struct in_addr), AF_INET);
 	time_t t, time();
 	extern char *ctime();
@@ -2051,9 +2073,9 @@ dolog(sin)
 		remotehost[sizeof (remotehost) - 1] = '\0';
 	} else
 		remotehost[0] = '\0';
-	strncpy(rhost_addra, inet_ntoa(sin->sin_addr), sizeof (rhost_addra));
+	strncpy(rhost_addra, inet_ntoa(sin4->sin_addr), sizeof (rhost_addra));
 	rhost_addra[sizeof (rhost_addra) - 1] = '\0';
-	retval = pty_make_sane_hostname(sin, maxhostlen,
+	retval = pty_make_sane_hostname((struct sockaddr *) sin4, maxhostlen,
 					stripdomain, always_ip, &rhost_sane);
 	if (retval) {
 		fprintf(stderr, "make_sane_hostname: %s\n",
@@ -2076,6 +2098,7 @@ dolog(sin)
  * Record logout in wtmp file
  * and exit with supplied status.
  */
+void
 dologout(status)
 	int status;
 {
@@ -2096,7 +2119,8 @@ dologout(status)
 }
 
 void
-myoob()
+myoob(sig)
+    int sig;
 {
 	char *cp, *cs;
 #ifndef strpbrk
@@ -2123,9 +2147,11 @@ myoob()
 	if (strcmp(cp, "STAT") == 0) {
 		if (file_size != (off_t) -1)
 			reply(213, "Status: %lu of %lu bytes transferred",
-			    byte_count, file_size);
+			      (unsigned long) byte_count, 
+			      (unsigned long) file_size);
 		else
-			reply(213, "Status: %lu bytes transferred", byte_count);
+			reply(213, "Status: %lu bytes transferred", 
+			      (unsigned long) byte_count);
 	}
 }
 
@@ -2135,6 +2161,7 @@ myoob()
  * 	a legitimate response by Jon Postel in a telephone conversation
  *	with Rick Adams on 25 Jan 89.
  */
+void
 passive()
 {
 	int len;
@@ -2179,7 +2206,7 @@ pasv_error:
  * The file named "local" is already known to exist.
  * Generates failure reply on error.
  */
-char *
+static char *
 gunique(local)
 	char *local;
 {
@@ -2212,6 +2239,7 @@ gunique(local)
 /*
  * Format and send reply containing system error number.
  */
+void
 perror_reply(code, string)
 	int code;
 	char *string;
@@ -2229,43 +2257,44 @@ perror_reply(code, string)
 	 */
 	if (strlen(string) + extra_len > FTP_BUFSIZ) {
 		reply(code, "(truncated)%.*s: %s.",
-		      FTP_BUFSIZ - extra_len, string, err_string);
+		      (int) (FTP_BUFSIZ - extra_len), string, err_string);
 	} else {
 		reply(code, "%s: %s.", string, err_string);
 	}
 }
 
-auth(type)
-char *type;
+void
+auth(atype)
+char *atype;
 {
 	if (auth_type)
 		reply(534, "Authentication type already set to %s", auth_type);
 	else
 #ifdef KRB5_KRB4_COMPAT
-	if (strcmp(type, "KERBEROS_V4") == 0)
+	if (strcmp(atype, "KERBEROS_V4") == 0)
 		reply(334, "Using authentication type %s; ADAT must follow",
-				temp_auth_type = type);
+				temp_auth_type = atype);
 	else
 #endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
-	if (strcmp(type, "GSSAPI") == 0)
+	if (strcmp(atype, "GSSAPI") == 0)
 		reply(334, "Using authentication type %s; ADAT must follow",
-				temp_auth_type = type);
+				temp_auth_type = atype);
 	else
 #endif /* GSSAPI */
 	/* Other auth types go here ... */
-		reply(504, "Unknown authentication type: %s", type);
+		reply(504, "Unknown authentication type: %s", atype);
 }
 
-auth_data(data)
-char *data;
+int
+auth_data(adata)
+char *adata;
 {
 	int kerror, length;
 #ifdef KRB5_KRB4_COMPAT
-	int i;
 	static char **service=NULL;
 	char instance[INST_SZ];
-	u_long cksum;
+	KRB4_32 cksum;
 	char buf[FTP_BUFSIZ];
 	u_char out_buf[sizeof(buf)];
 #endif /* KRB5_KRB4_COMPAT */
@@ -2280,7 +2309,8 @@ char *data;
 	}
 #ifdef KRB5_KRB4_COMPAT
 	if (strcmp(temp_auth_type, "KERBEROS_V4") == 0) {
-		if (kerror = radix_encode(data, out_buf, &length, 1)) {
+	        kerror = radix_encode(adata, out_buf, &length, 1);
+		if (kerror) {
 			reply(501, "Couldn't decode ADAT (%s)",
 			      radix_error(kerror));
 			syslog(LOG_ERR, "Couldn't decode ADAT (%s)",
@@ -2318,7 +2348,9 @@ char *data;
 			secure_error("ADAT: reply too long");
 			return(0);
 		}
-		if (kerror = radix_encode(out_buf, buf, &length, 0)) {
+
+		kerror = radix_encode(out_buf, buf, &length, 0);
+		if (kerror) {
 			secure_error("Couldn't encode ADAT reply (%s)",
 				     radix_error(kerror));
 			return(0);
@@ -2336,8 +2368,8 @@ char *data;
 		int found = 0;
 		gss_cred_id_t server_creds, deleg_creds;
 		gss_name_t client;
-		int ret_flags;
-		struct gss_channel_bindings_struct chan;
+		OM_uint32 ret_flags;
+		int rad_len;
 		gss_buffer_desc name_buf;
 		gss_name_t server_name;
 		OM_uint32 acquire_maj, acquire_min, accept_maj, accept_min,
@@ -2348,19 +2380,12 @@ char *data;
 		u_char gout_buf[FTP_BUFSIZ];
 		char localname[MAXHOSTNAMELEN];
 		char service_name[MAXHOSTNAMELEN+10];
-		char **service;
+		char **gservice;
 		struct hostent *hp;
 
-		chan.initiator_addrtype = GSS_C_AF_INET;
-		chan.initiator_address.length = 4;
-		chan.initiator_address.value = &his_addr.sin_addr.s_addr;
-		chan.acceptor_addrtype = GSS_C_AF_INET;
-		chan.acceptor_address.length = 4;
-		chan.acceptor_address.value = &ctrl_addr.sin_addr.s_addr;
-		chan.application_data.length = 0;
-		chan.application_data.value = 0;
 
-		if (kerror = radix_encode(data, gout_buf, &length, 1)) {
+		kerror = radix_encode(adata, gout_buf, &length, 1);
+		if (kerror) {
 			reply(501, "Couldn't decode ADAT (%s)",
 			      radix_error(kerror));
 			syslog(LOG_ERR, "Couldn't decode ADAT (%s)",
@@ -2383,8 +2408,8 @@ char *data;
 		strncpy(localname, hp->h_name, sizeof(localname) - 1);
 		localname[sizeof(localname) - 1] = '\0';
 
-		for (service = gss_services; *service; service++) {
-			sprintf(service_name, "%s@%s", *service, localname);
+		for (gservice = gss_services; *gservice; gservice++) {
+			sprintf(service_name, "%s@%s", *gservice, localname);
 			name_buf.value = service_name;
 			name_buf.length = strlen(name_buf.value) + 1;
 			if (debug)
@@ -2415,7 +2440,7 @@ char *data;
 							    &gcontext, /* context_handle */
 							    server_creds, /* verifier_cred_handle */
 							    &tok, /* input_token */
-							    &chan, /* channel bindings */
+							    GSS_C_NO_CHANNEL_BINDINGS, /* channel bindings */
 							    &client, /* src_name */
 							    &mechid, /* mech_type */
 							    &out_tok, /* output_token */
@@ -2462,7 +2487,12 @@ char *data;
 								&deleg_creds);
 				return(0);
 			}
-			if (kerror = radix_encode(out_tok.value, gbuf, &out_tok.length, 0)) {
+
+			rad_len = out_tok.length;
+			kerror = radix_encode(out_tok.value, gbuf, 
+					      &rad_len, 0);
+			out_tok.length = rad_len;
+			if (kerror) {
 				secure_error("Couldn't encode ADAT reply (%s)",
 					     radix_error(kerror));
 				syslog(LOG_ERR, "couldn't encode ADAT reply");
@@ -2549,6 +2579,7 @@ char *data;
 #endif /* GSSAPI */
 	/* Other auth types go here ... */
 	/* Also need to check authorization, but that is done in user() */
+	return(0);
 }
 
 static char *onefile[] = {
@@ -2565,8 +2596,10 @@ static char *onefile[] = {
  * FTP_BUFSIZ
  */
 #ifdef STDARG
+static int
 secure_fprintf(FILE *stream, char *fmt, ...)
 #else
+static int
 secure_fprintf(stream, fmt, p1, p2, p3, p4, p5)
 FILE *stream;
 char *fmt;
@@ -2594,6 +2627,7 @@ char *fmt;
 #endif
 }
 
+void
 send_file_list(whichfiles)
 	char *whichfiles;
 {
@@ -2632,7 +2666,7 @@ send_file_list(whichfiles)
 		(void)secure_flush(fileno(dout));
 		return;
 	}
-	while (dirname = *dirlist++) {
+	while ((dirname = *dirlist++)) {
 		if (stat(dirname, &st) < 0) {
 			/*
 			 * If user typed "ls -l", etc, and the client
@@ -2772,6 +2806,7 @@ char *buf;
 #endif /* SETPROCTITLE */
 
 #ifdef GSSAPI
+void
 reply_gss_error(code, maj_stat, min_stat, s)
 int code;
 OM_uint32 maj_stat, min_stat;
@@ -2780,7 +2815,7 @@ char *s;
 	/* a lot of work just to report the error */
 	OM_uint32 gmaj_stat, gmin_stat;
 	gss_buffer_desc msg;
-	int msg_ctx;
+	OM_uint32 msg_ctx;
 	msg_ctx = 0;
 	while (!msg_ctx) {
 		gmaj_stat = gss_display_status(&gmin_stat, maj_stat,
@@ -2814,24 +2849,27 @@ char *s;
 	reply(code, "GSSAPI error: %s", s);
 }
 
+void
 secure_gss_error(maj_stat, min_stat, s)
 OM_uint32 maj_stat, min_stat;
 char *s;
 {
-  return reply_gss_error(535, maj_stat, min_stat, s);
+  reply_gss_error(535, maj_stat, min_stat, s);
+  return;
 }
 
 
 /* ftpd_gss_userok -- hide details of getting the name and verifying it */
 /* returns 0 for OK */
-ftpd_gss_userok(client_name, name)
-	gss_buffer_t client_name;
+static int
+ftpd_gss_userok(gclient_name, name)
+	gss_buffer_t gclient_name;
 	char *name;
 {
 	int retval = -1;
 	krb5_principal p;
 	
-	if (krb5_parse_name(kcontext, client_name->value, &p) != 0)
+	if (krb5_parse_name(kcontext, gclient_name->value, &p) != 0)
 		return -1;
 	if (krb5_kuserok(kcontext, p, name))
 		retval = 0;
@@ -2843,6 +2881,7 @@ ftpd_gss_userok(client_name, name)
 
 /* ftpd_gss_convert_creds -- write out forwarded creds */
 /* (code lifted from login.krb5) */
+static void
 ftpd_gss_convert_creds(name, creds)
 	char *name;
 	gss_cred_id_t creds;
@@ -2860,7 +2899,7 @@ ftpd_gss_convert_creds(name, creds)
 	if (krb5_parse_name(kcontext, name, &me))
 		return;
 
-	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%d", getpid());
+	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%ld", (long) getpid());
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return;
 	if (krb5_cc_initialize(kcontext, ccache, me))
@@ -2893,7 +2932,7 @@ ftpd_gss_convert_creds(name, creds)
 	if (krb524_convert_creds_kdc(kcontext, v5creds, &v4creds))
 		goto cleanup;
 
-	sprintf(ccname, "%s_ftpd%d", TKT_ROOT, getpid());
+	sprintf(ccname, "%s_ftpd%ld", TKT_ROOT, (long) getpid());
 	krb_set_tkt_string(ccname);
 
 	if (in_tkt(v4creds.pname, v4creds.pinst) != KSUCCESS)

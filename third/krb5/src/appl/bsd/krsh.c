@@ -64,10 +64,10 @@ char copyright[] =
 #ifdef KERBEROS
 #include <krb5.h>
 #include <com_err.h>
-#include "defines.h"
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
 #endif
+#include "defines.h"
 #endif /* KERBEROS */
 
 #ifdef KRB5_KRB4_COMPAT
@@ -78,14 +78,14 @@ Key_schedule v4_schedule;
 /*
  * rsh - remote shell
  */
-#define SECURE_MESSAGE "This rsh session is using DES encryption for all data transmissions.\r\n"
+#define SECURE_MESSAGE "This rsh session is encrypting input/output data transmissions.\r\n"
 
 int	error();
      
 int	options;
 int	rfd2;
 int	nflag;
-krb5_sigtype  sendsig();
+krb5_sigtype  sendsig(int);
 
 #ifdef KERBEROS
 
@@ -103,7 +103,7 @@ CREDENTIALS v4_cred;
 
 int	encrypt_flag = 0;
 char	*krb_realm = (char *)0;
-void	try_normal();
+void	try_normal(char **);
 
 #endif /* KERBEROS */
 
@@ -122,6 +122,7 @@ void	try_normal();
 #define	mask(s)	(1 << ((s) - 1))
 #endif /* POSIX_SIGNALS */
      
+int
 main(argc, argv0)
      int argc;
      char **argv0;
@@ -320,7 +321,7 @@ main(argc, argv0)
       cc += strlen(*ap) + 1;
     if (encrypt_flag)
       cc += 3;
-    cp = args = (char *) malloc(cc);
+    cp = args = (char *) malloc((unsigned) cc);
     if (encrypt_flag) {
       strcpy(args, "-x ");
       cp += 3;
@@ -410,8 +411,8 @@ main(argc, argv0)
 	krb5_keyblock *key = &cred->keyblock;
 
 	if (kcmd_proto == KCMD_NEW_PROTOCOL) {
-	    status = krb5_auth_con_getlocalsubkey (bsd_context, auth_context,
-						   &key);
+	    status = krb5_auth_con_getsendsubkey (bsd_context, auth_context,
+						  &key);
 	    if (status) {
 		com_err (argv[0], status, "determining subkey for session");
 		exit (1);
@@ -560,7 +561,7 @@ main(argc, argv0)
 		if ((errno != EWOULDBLOCK) && (errno != EAGAIN))
 		    FD_CLR(rfd2, &readfrom);
 	    } else
-	      (void) write(2, buf, cc);
+	      (void) write(2, buf, (unsigned) cc);
 	}
 	if (FD_ISSET(rem, &ready)) {
 	    errno = 0;
@@ -569,7 +570,7 @@ main(argc, argv0)
 		if ((errno != EWOULDBLOCK) && (errno != EAGAIN))
 		    FD_CLR(rem, &readfrom);
 	    } else
-	      (void) write(1, buf, cc);
+	      (void) write(1, buf, (unsigned) cc);
 	}
     } while (FD_ISSET(rem, &readfrom) || FD_ISSET(rfd2, &readfrom));
     if (nflag == 0)

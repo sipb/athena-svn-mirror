@@ -39,4 +39,8 @@ extern char *RemoteHostName;
 extern int ConnectedCount;
 extern int ReservedPort;
 
+int isprefix (char *, char *);
+char **genget (char *, char **, int);
+int Ambiguous (void *);
+
 #include "misc-proto.h"

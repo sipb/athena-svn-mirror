@@ -23,7 +23,10 @@
  * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
- * 
+ *
+ *
+ * This routine does not implement:
+ *
  *
  * Quadratic Congruential Manipulation Dectection Code
  *
@@ -35,8 +38,7 @@
  * This routine, part of the Athena DES library built for the Kerberos
  * authentication system, calculates a manipulation detection code for
  * a message.  It is a much faster alternative to the DES-checksum
- * method. No guarantees are offered for its security.	Refer to the
- * paper noted above for more information
+ * method. No guarantees are offered for its security.
  *
  * Implementation for 4.2bsd
  * by S.P. Miller	Project Athena/MIT
@@ -82,12 +84,29 @@
  *	cant get at the carry or high order results from multiply,
  *	but nontheless is 64 bit arithmetic.
  */
+/*
+ * This code purports to implement the above algorithm, but fails.
+ *
+ * First of all, there was an implicit mod 2**32 being done on the
+ * machines where this was developed because of their word sizes, and
+ * for compabitility this has to be done on machines with 64-bit
+ * words, so we make it explicit.
+ *
+ * Second, in the squaring operation, I really doubt the carry-over
+ * from the low 31-bit half of the accumulator is being done right,
+ * and using a modulus of 0x7fffffff on the low half of the
+ * accumulator seems completely wrong.  And I challenge anyone to
+ * explain where the number 83653421 comes from.
+ *
+ * --Ken Raeburn  2001-04-06
+ */
 
 
 /* System include files */
 #include <stdio.h>
 #include <errno.h>
 
+#include "des_int.h"
 #include "des.h"
 
 /* Definitions for byte swapping */
@@ -95,26 +114,22 @@
 /* vax byte order is LSB first. This is not performance critical, and
    is far more readable this way. */
 #define four_bytes_vax_to_nets(x) ((((((x[3]<<8)|x[2])<<8)|x[1])<<8)|x[0])
-#define vaxtohl(x) four_bytes_vax_to_nets(((unsigned char *)(x)))
+#define vaxtohl(x) four_bytes_vax_to_nets(((const unsigned char *)(x)))
 #define two_bytes_vax_to_nets(x) ((x[1]<<8)|x[0])
-#define vaxtohs(x) two_bytes_vax_to_nets(((unsigned char *)(x)))
+#define vaxtohs(x) two_bytes_vax_to_nets(((const unsigned char *)(x)))
 
 /* Externals */
-extern char *errmsg();
-#ifndef HAVE_ERRNO
-extern int errno;
-#endif
 extern int des_debug;
 
 /*** Routines ***************************************************** */
 
-KRB5_DLLIMP unsigned long KRB5_CALLCONV
+unsigned long KRB5_CALLCONV
 des_quad_cksum(in,out,length,out_count,c_seed)
-    unsigned char FAR *in;		/* input block */
-    unsigned DES_INT32 FAR *out;	/* optional longer output */
+    const unsigned char *in;	/* input block */
+    unsigned DES_INT32 *out;	/* optional longer output */
     long length;			/* original length in bytes */
     int out_count;			/* number of iterations */
-    mit_des_cblock FAR *c_seed;		/* secret seed, 8 bytes */
+    mit_des_cblock *c_seed;		/* secret seed, 8 bytes */
 {
 
     /*
@@ -128,14 +143,14 @@ des_quad_cksum(in,out,length,out_count,c_seed)
     register unsigned DES_INT32 z2;
     register unsigned DES_INT32 x;
     register unsigned DES_INT32 x2;
-    register unsigned char *p;
+    const unsigned char *p;
     register DES_INT32 len;
     register int i;
 
     /* use all 8 bytes of seed */
 
     z = vaxtohl(c_seed);
-    z2 = vaxtohl((char *)c_seed+4);
+    z2 = vaxtohl((const char *)c_seed+4);
     if (out == NULL)
 	out_count = 1;		/* default */
 
@@ -144,18 +159,31 @@ des_quad_cksum(in,out,length,out_count,c_seed)
 	len = length;
 	p = in;
 	while (len) {
+	    /*
+	     * X = Z + Input ... sort of.  Carry out from low half
+	     * isn't done, so we're using all 32 bits of x now.
+	     */
 	    if (len > 1) {
 		x = (z + vaxtohs(p));
 		p += 2;
 		len -= 2;
 	    }
 	    else {
-		x = (z + *(unsigned char *)p++);
+		x = (z + *(const unsigned char *)p++);
 		len = 0;
 	    }
 	    x2 = z2;
-	    z  = ((x * x) + (x2 * x2)) % 0x7fffffff;
-	    z2 = (x * (x2+83653421))   % 0x7fffffff; /* modulo */
+	    /*
+	     * I think this is supposed to be a squaring operation.
+	     * What it really is, I haven't figured out yet.
+	     *
+	     * Explicit mod 2**32 is for backwards compatibility.  Why
+	     * mod 0x7fffffff and not 0x80000000 on the low half of
+	     * the (supposed) accumulator?  And where does the number
+	     * 83653421 come from??
+	     */
+	    z  = (((x * x) + (x2 * x2)) & 0xffffffff) % 0x7fffffff;
+	    z2 = ((x * (x2+83653421)) & 0xffffffff) % 0x7fffffff; /* modulo */
 #ifdef DEBUG
 	    if (des_debug & 8)
 		printf("%d %d\n",z,z2);

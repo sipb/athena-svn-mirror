@@ -1,3 +1,34 @@
+2003-03-04  Ken Raeburn  <raeburn@mit.edu>
+
+	* rsa-md4.h (rsa_md4_cksumtable_entry,
+	rsa_md4_des_cksumtable_entry): Delete unused declarations.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* md4.c, rsa-md4.h: Don't explicitly declare pointers FAR any
+	more.
+
+2001-03-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* md4.c (GG, HH, krb5_MD4Init): Use UL suffix on numbers, don't
+	bother with UL macro.
+	(UL): Macro deleted.
+	(Transform): Always declare with prototype.
+
+	* rsa-md4.h: Always use prototypes.
+
 2000-01-21  Ken Raeburn  <raeburn@mit.edu>
 
 	* md4.c (PADDING): Now const.
@@ -5,12 +36,12 @@
 	(ROTATE_LEFT): Change (a&b|c) construct to silence gcc warning.
 	* rsa-md4.h (krb5_MD4Update): Update decl.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon May 10 15:19:48 1999  Danilo Almeida  <dalmeida@mit.edu>
 

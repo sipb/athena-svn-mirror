@@ -198,7 +198,7 @@ proc policy_exists {name} {
 proc error_and_restart {error} {
     api_exit
     api_start
-    error $error
+    perror $error
 }
 
 proc test {name} {
@@ -246,6 +246,7 @@ proc kinit { princ pass {opts ""} } {
 	# the parent, which is us, to read pending data.
 
 	expect {
+		"when initializing cache" { error "kinit failed: $expect_out(buffer)" }
 		eof {}
 	}
 	wait

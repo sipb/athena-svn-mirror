@@ -27,6 +27,15 @@
  */
 /* #define KRB5_MSGTYPE_STRICT */
 
+/*
+ * If KRB5_GENEROUS_LR_TYPE is defined, then we are generous about
+ * accepting a one byte negative lr_type - which is not sign
+ * extended. Prior to July 2000, we were sending a negative lr_type as
+ * a positve single byte value - instead of a signed integer. This
+ * allows us to receive the old value and deal
+ */
+#define KRB5_GENEROUS_LR_TYPE
+
 typedef krb5_octet asn1_octet;
 typedef krb5_error_code asn1_error_code;
 
@@ -48,6 +57,7 @@ typedef int asn1_tagnum;
 #define ASN1_OCTETSTRING	4
 #define ASN1_NULL		5
 #define ASN1_OBJECTIDENTIFIER	6
+#define ASN1_ENUMERATED 10
 #define ASN1_SEQUENCE		16
 #define ASN1_SET		17
 #define ASN1_PRINTABLESTRING	19

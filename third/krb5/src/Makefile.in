@@ -1,3 +1,5 @@
+datadir=@datadir@
+
 thisconfigdir=.
 myfulldir=.
 mydir=.
@@ -34,7 +36,10 @@ all-windows:: maybe-awk Makefile-windows
 	@echo Making in appl\gss-sample
 	cd ..\appl\gss-sample
 	$(MAKE) -$(MFLAGS)
-	cd ..\..
+	@echo Making in appl\gssftp\ftp
+	cd ..\..\appl\gssftp\ftp
+	$(MAKE) -$(MFLAGS)
+	cd ..\..\..
 
 world::
 	date
@@ -45,7 +50,10 @@ INSTALLMKDIRS = $(KRB5ROOT) $(KRB5MANROOT) $(KRB5OTHERMKDIRS) \
 		$(ADMIN_BINDIR) $(SERVER_BINDIR) $(CLIENT_BINDIR) \
 		$(ADMIN_MANDIR) $(SERVER_MANDIR) $(CLIENT_MANDIR) \
 		$(FILE_MANDIR) $(KRB5_LIBDIR) $(KRB5_INCDIR) \
-		$(KRB5_INCSUBDIRS)
+		$(KRB5_INCSUBDIRS) $(datadir)
+
+install-strip:
+	$(MAKE) install INSTALL_STRIP=-s
 
 install-recurse: install-mkdirs
 
@@ -53,6 +61,12 @@ install-mkdirs:
 	@for i in $(INSTALLMKDIRS); do \
 		$(srcdir)/config/mkinstalldirs $(DESTDIR)$$i; \
 	done
+
+install-headers-mkdirs:
+	$(srcdir)/config/mkinstalldirs $(DESTDIR)$(KRB5_INCDIR)
+	$(srcdir)/config/mkinstalldirs $(DESTDIR)$(KRB5_INCDIR)/gssapi
+	$(srcdir)/config/mkinstalldirs $(DESTDIR)$(KRB5_INCDIR)/kerberosIV
+install-headers-prerecurse: install-headers-mkdirs
 
 # install::
 #	$(MAKE) $(MFLAGS) install.man
@@ -63,7 +77,7 @@ TAGS: $(SRCS)
 clean-:: clean-windows
 clean-mac:: clean-unix
 clean-unix::
-	$(RM) *.o core
+	$(RM) *.o core krb5-config
 
 mostlyclean: clean
 
@@ -99,15 +113,6 @@ tgz-bin: pkgdir
 	(cd $(PKGDIR)/install && tar cf - usr/cygnus) | $(GZIPPROG) > cns5-bin.tgz
 	rm -rf $(PKGDIR)/install
 
-# Macintosh build process...
-
-# Build all things for the Mac build, which need to be built on
-# Unix first.
-unixmac:
-	(cd lib/krb5/error_tables; make -f Makefile.in unixmac)
-	(cd lib/gssapi/generic; make -f Makefile.in unixmac)
-
-
 # Microsoft Windows build process...
 #
 
@@ -128,31 +133,29 @@ config-windows:: Makefile-windows
 
 WINMAKEFILES=Makefile \
 	appl\gss-sample\Makefile \
+	appl\gssftp\ftp\Makefile \
 	clients\Makefile clients\kdestroy\Makefile \
 	clients\kinit\Makefile clients\klist\Makefile \
 	clients\kpasswd\Makefile clients\kvno\Makefile \
 	include\Makefile include\krb5\Makefile \
+	krb524\Makefile \
 	lib\Makefile lib\crypto\Makefile \
 	lib\crypto\crc32\Makefile lib\crypto\des\Makefile \
 	lib\crypto\dk\Makefile lib\crypto\enc_provider\Makefile \
 	lib\crypto\hash_provider\Makefile \
 	lib\crypto\keyhash_provider\Makefile \
 	lib\crypto\raw\Makefile lib\crypto\old\Makefile \
-	lib\crypto\sha1\Makefile \
+	lib\crypto\sha1\Makefile lib\crypto\arcfour\Makefile \
 	lib\crypto\md4\Makefile lib\crypto\md5\Makefile \
+	lib\crypto\yarrow\Makefile lib\crypto\aes\Makefile \
 	lib\des425\Makefile \
 	lib\gssapi\Makefile lib\gssapi\generic\Makefile \
 	lib\gssapi\krb5\Makefile lib\gssapi\mechglue\Makefile \
 	lib\krb4\Makefile lib\krb5\Makefile \
 	lib\krb5\asn.1\Makefile lib\krb5\ccache\Makefile \
-	lib\krb5\ccache\file\Makefile \
-	lib\krb5\ccache\stdio\Makefile \
-	lib\krb5\ccache\memory\Makefile \
 	lib\krb5\ccache\ccapi\Makefile \
 	lib\krb5\error_tables\Makefile \
 	lib\krb5\keytab\Makefile \
-	lib\krb5\keytab\file\Makefile \
-	lib\krb5\keytab\srvtab\Makefile \
 	lib\krb5\krb\Makefile \
 	lib\krb5\os\Makefile lib\krb5\posix\Makefile \
 	lib\krb5\rcache\Makefile \
@@ -170,6 +173,8 @@ WINMAKEFILES=Makefile \
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##appl\gss-sample\Makefile: appl\gss-sample\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##appl\gssftp\ftp\Makefile: appl\gssftp\ftp\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##clients\Makefile: clients\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##clients\kdestroy\Makefile: clients\kdestroy\Makefile.in $(MKFDEP)
@@ -185,6 +190,8 @@ WINMAKEFILES=Makefile \
 ##DOS##include\Makefile: include\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##include\krb5\Makefile: include\krb5\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##krb524\Makefile: krb524\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\Makefile: lib\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
@@ -204,9 +211,15 @@ WINMAKEFILES=Makefile \
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\crypto\sha1\Makefile: lib\crypto\sha1\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##lib\crypto\arcfour\Makefile: lib\crypto\arcfour\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\crypto\md4\Makefile: lib\crypto\md4\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\crypto\md5\Makefile: lib\crypto\md5\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##lib\crypto\yarrow\Makefile: lib\crypto\yarrow\Makefile.in $(MKFDEP)
+##DOS##	$(WCONFIG) config < $@.in > $@
+##DOS##lib\crypto\aes\Makefile: lib\crypto\aes\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\crypto\old\Makefile: lib\crypto\old\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
@@ -230,21 +243,11 @@ WINMAKEFILES=Makefile \
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\krb5\ccache\Makefile: lib\krb5\ccache\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##lib\krb5\ccache\file\Makefile: lib\krb5\ccache\file\Makefile.in $(MKFDEP)
-##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##lib\krb5\ccache\stdio\Makefile: lib\krb5\ccache\stdio\Makefile.in $(MKFDEP)
-##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##lib\krb5\ccache\memory\Makefile: lib\krb5\ccache\memory\Makefile.in $(MKFDEP)
-##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\krb5\ccache\ccapi\Makefile: lib\krb5\ccache\ccapi\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\krb5\error_tables\Makefile: lib\krb5\error_tables\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\krb5\keytab\Makefile: $$@.in $(MKFDEP)
-##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##lib\krb5\keytab\file\Makefile: $$@.in $(MKFDEP)
-##DOS##	$(WCONFIG) config < $@.in > $@
-##DOS##lib\krb5\keytab\srvtab\Makefile: $$@.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 ##DOS##lib\krb5\krb\Makefile: lib\krb5\krb\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
@@ -296,7 +299,10 @@ clean-windows:: Makefile-windows
 	@echo Making in appl\gss-sample
 	cd ..\appl\gss-sample
 	$(MAKE) -$(MFLAGS) clean
-	cd ..\..
+	@echo Making in appl\gssftp\ftp
+	cd ..\..\appl\gssftp\ftp
+	$(MAKE) -$(MFLAGS) clean
+	cd ..\..\..
 	@echo Making clean in root
 
 #
@@ -314,16 +320,16 @@ FILES= ./* \
 	clients/* clients/kdestroy/* clients/kinit/* clients/klist/* \
 	clients/kpasswd/* \
 	config/* include/* include/kerberosIV/* \
-	include/krb5/* include/krb5/stock/* include/sys/* lib/* \
+	include/krb5/* include/krb5/stock/* include/sys/* krb524/* lib/* \
 	lib/crypto/* lib/crypto/crc32/* lib/crypto/des/* lib/crypto/dk/* \
 	lib/crypto/enc_provider/* lib/crypto/hash_provider/* \
 	lib/crypto/keyhash_provider/* lib/crypto/old/* lib/crypto/raw/* \
-	lib/crypto/sha1/* lib/crypto/md4/* lib/crypto/md5/* \
+	lib/crypto/sha1/* lib/crypto/arcfour/* lib/crypto/md4/* \
+	lib/crypto/md5/* lib/crypto/yarrow/* \
 	lib/des425/* lib/gssapi/* lib/gssapi/generic/* lib/gssapi/krb5/* \
 	lib/gssapi/mechglue/* lib/krb4/* \
 	lib/krb5/* lib/krb5/asn.1/* lib/krb5/krb/* \
-	lib/krb5/ccache/* lib/krb5/ccache/file/* lib/krb5/ccache/memory/* \
-	lib/krb5/ccache/stdio/* lib/krb5/ccache/ccapi/* \
+	lib/krb5/ccache/* lib/krb5/ccache/ccapi/* \
 	lib/krb5/error_tables/* \
 	lib/krb5/keytab/* lib/krb5/keytab/file/* lib/krb5/keytab/srvtab/* \
 	lib/krb5/os/* lib/krb5/posix/* lib/krb5/rcache/* \
@@ -343,7 +349,7 @@ WINBINARYFILES=	windows/*/*.ico windows/*/*.doc windows/*/*.hlp \
 # Part of building the PC release has to be done on Unix. This includes
 # anything the requires awk.
 #
-AWK = gawk
+AWK = awk
 AH  = util/et/et_h.awk
 AC  = util/et/et_c.awk
 INC = include/
@@ -352,15 +358,18 @@ GG  = lib/gssapi/generic/
 GK  = lib/gssapi/krb5/
 PR  = util/profile/
 
-ETOUT =	$(INC)asn1_err.h $(ET)asn1_err.c \
+ETOUT =	\
+	$(INC)asn1_err.h $(ET)asn1_err.c \
 	$(INC)kdb5_err.h $(ET)kdb5_err.c \
 	$(INC)krb5_err.h $(ET)krb5_err.c \
 	$(INC)kv5m_err.h $(ET)kv5m_err.c \
-	$(INC)adm_err.h $(ET)adm_err.c \
+	$(INC)krb524_err.h $(ET)krb524_err.c \
+	$(INC)/kerberosIV/kadm_err.h lib/krb4/kadm_err.c \
 	$(INC)/kerberosIV/krb_err.h lib/krb4/krb_err.c \
 	$(PR)prof_err.h $(PR)prof_err.c \
 	$(GG)gssapi_err_generic.h $(GG)gssapi_err_generic.c \
-	$(GK)gssapi_err_krb5.h $(GK)gssapi_err_krb5.c
+	$(GK)gssapi_err_krb5.h $(GK)gssapi_err_krb5.c \
+	lib/krb4/krb_err_txt.c
 
 HOUT =	$(INC)krb5.h $(GG)gssapi.h $(PR)profile.h
 
@@ -458,8 +467,10 @@ $(INC)krb5_err.h: $(AH) $(ET)krb5_err.et
 	$(AWK) -f $(AH) outfile=$@ $(ET)krb5_err.et
 $(INC)kv5m_err.h: $(AH) $(ET)kv5m_err.et
 	$(AWK) -f $(AH) outfile=$@ $(ET)kv5m_err.et
-$(INC)adm_err.h: $(AH) $(ET)adm_err.et
-	$(AWK) -f $(AH) outfile=$@ $(ET)adm_err.et
+$(INC)krb524_err.h: $(AH) $(ET)krb524_err.et
+	$(AWK) -f $(AH) outfile=$@ $(ET)krb524_err.et
+$(INC)/kerberosIV/kadm_err.h: $(AH) lib/krb4/kadm_err.et
+	$(AWK) -f $(AH) outfile=$@ lib/krb4/kadm_err.et
 $(INC)/kerberosIV/krb_err.h: $(AH) lib/krb4/krb_err.et
 	$(AWK) -f $(AH) outfile=$@ lib/krb4/krb_err.et
 $(PR)prof_err.h: $(AH) $(PR)prof_err.et
@@ -477,8 +488,10 @@ $(ET)krb5_err.c: $(AC) $(ET)krb5_err.et
 	$(AWK) -f $(AC) outfile=$@ $(ET)krb5_err.et
 $(ET)kv5m_err.c: $(AC) $(ET)kv5m_err.et
 	$(AWK) -f $(AC) outfile=$@ $(ET)kv5m_err.et
-$(ET)adm_err.c: $(AC) $(ET)adm_err.et
-	$(AWK) -f $(AC) outfile=$@ $(ET)adm_err.et
+$(ET)krb524_err.c: $(AC) $(ET)krb524_err.et
+	$(AWK) -f $(AC) outfile=$@ $(ET)krb524_err.et
+lib/krb4/kadm_err.c: $(AC) lib/krb4/kadm_err.et
+	$(AWK) -f $(AC) outfile=$@ lib/krb4/kadm_err.et
 lib/krb4/krb_err.c: $(AC) lib/krb4/krb_err.et
 	$(AWK) -f $(AC) outfile=$@ lib/krb4/krb_err.et
 $(PR)prof_err.c: $(AC) $(PR)prof_err.et
@@ -488,8 +501,12 @@ $(GG)gssapi_err_generic.c: $(AC) $(GG)gssapi_err_generic.et
 $(GK)gssapi_err_krb5.c: $(AC) $(GK)gssapi_err_krb5.et
 	$(AWK) -f $(AC) outfile=$@ $(GK)gssapi_err_krb5.et
 
+lib/krb4/krb_err_txt.c: lib/krb4/krb_err.et
+	$(AWK) -f lib/krb4/et_errtxt.awk outfile=$@ \
+		lib/krb4/krb_err.et
+
 KRBHDEP = $(INC)krb5.hin $(INC)krb5_err.h $(INC)kdb5_err.h \
-	$(INC)kv5m_err.h $(INC)asn1_err.h
+	$(INC)kv5m_err.h $(INC)krb524_err.h $(INC)asn1_err.h
 
 $(INC)krb5.h: $(KRBHDEP)
 	rm -f $@
@@ -555,5 +572,9 @@ install-unix::
 		$(DESTDIR)$(CLIENT_BINDIR)/krb5-config
 
 krb5-config: $(srcdir)/krb5-config.in $(thisconfigdir)/config.status
-	cd $(thisconfigdir) && $(SHELL) config.status
+	cd $(thisconfigdir) && $(SHELL) config.status krb5-config
 
+# Test to ensure that krb5-config does not spit out things like
+# $(PURE) or $(LDFLAGS) in case someone changes config/shlib.conf
+check-unix:: krb5-config
+	$(SHELL) $(srcdir)/t_krbconf

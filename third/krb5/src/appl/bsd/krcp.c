@@ -65,11 +65,16 @@ char copyright[] =
 #else
 #include <varargs.h>
 #endif
+#include <sys/wait.h>
 
 #ifdef KERBEROS
 #include <krb5.h>
 #include <k5-util.h>
 #include <com_err.h>
+
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
 
 #include "defines.h"
 
@@ -84,21 +89,23 @@ krb5_encrypt_block eblock;         /* eblock for encrypt/decrypt */
 krb5_context bsd_context;
 
 #ifdef KRB5_KRB4_COMPAT
-#include <kerberosIV/krb.h>
 Key_schedule v4_schedule;
 CREDENTIALS v4_cred;
 KTEXT_ST v4_ticket;
 MSG_DAT v4_msg_data;
 #endif
 
-void	v4_send_auth(), try_normal();
-char	**save_argv();
+void	v4_send_auth(char *, char *), try_normal(char **);
+char	**save_argv(int, char **);
 #ifndef HAVE_STRSAVE
 char	*strsave();
 #endif
 int	rcmd_stream_write(), rcmd_stream_read();
-void 	usage(), sink(), source(), rsource(), verifydir(), answer_auth();
-int	response(), hosteq(), okname(), susystem();
+void 	usage(void), sink(int, char **),
+    source(int, char **), rsource(char *, struct stat *), verifydir(char *), 
+    answer_auth(char *, char *);
+int	response(void), hosteq(char *, char *), okname(char *), 
+    susystem(char *);
 int	encryptflag = 0;
 
 #ifndef UCB_RCP
@@ -108,9 +115,9 @@ int	encryptflag = 0;
 #endif /* KERBEROS */
 
 int	rem;
-char	*colon();
+char	*colon(char *);
 int	errs;
-krb5_sigtype	lostconn();
+krb5_sigtype	lostconn(int);
 int	iamremote, targetshouldbedirectory;
 int	iamrecursive;
 int	pflag;
@@ -120,18 +127,19 @@ int	userid;
 int	port = 0;
 
 struct buffer {
-    int	cnt;
+    unsigned int cnt;
     char	*buf;
-} *allocbuf();
+};
+
+struct buffer *allocbuf(struct buffer *, int, int);
 
 #define	NULLBUF	(struct buffer *) 0
   
-#ifdef HAVE_STDARG_H
-void 	error KRB5_STDARG_P((char *fmt, ...));
-#else
-/*VARARGS*/
-void	error KRB5_STDARG_P((char *, va_list));
+void 	error (char *fmt, ...)
+#if !defined (__cplusplus) && (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7))
+       __attribute__ ((__format__ (__printf__, 1, 2)))
 #endif
+     ;
 
 #define	ga()	 	(void) rcmd_stream_write(rem, "", 1, 0)
 
@@ -142,7 +150,7 @@ int main(argc, argv)
     char *targ, *host, *src;
     char *suser, *tuser, *thost;
     int i;
-    int cmdsiz = 30;
+    unsigned int cmdsiz = 30;
     char buf[RCP_BUFSIZ], cmdbuf[30];
     char *cmd = cmdbuf;
     struct servent *sp;
@@ -464,16 +472,17 @@ int main(argc, argv)
 			krb5_boolean similar;
 			krb5_keyblock *key = &cred->keyblock;
 
-			if (status = krb5_c_enctype_compare(bsd_context,
-							    ENCTYPE_DES_CBC_CRC,
-							    cred->keyblock.enctype,
-							    &similar))
+			status = krb5_c_enctype_compare(bsd_context,
+							ENCTYPE_DES_CBC_CRC,
+							cred->keyblock.enctype,
+							&similar);
+			if (status)
 			    try_normal(orig_argv); /* doesn't return */
 
 			if (!similar) {
-			    status = krb5_auth_con_getlocalsubkey (bsd_context,
-								   auth_context,
-								   &key);
+			    status = krb5_auth_con_getsendsubkey (bsd_context,
+								  auth_context,
+								  &key);
 			    if ((status || !key) && encryptflag)
 				try_normal(orig_argv);
 			}
@@ -590,9 +599,9 @@ int main(argc, argv)
 		    krb5_keyblock *key = &cred->keyblock;
 
 		    if (kcmd_proto == KCMD_NEW_PROTOCOL) {
-			status = krb5_auth_con_getlocalsubkey (bsd_context,
-							       auth_context,
-							       &key);
+			status = krb5_auth_con_getsendsubkey (bsd_context,
+							      auth_context,
+							      &key);
 			if (status) {
 			    com_err (argv[0], status,
 				     "determining subkey for session");
@@ -761,7 +770,8 @@ void source(argc, argv)
     struct stat stb;
     static struct buffer buffer;
     struct buffer *bp;
-    int x, readerr, f, amt;
+    int x, readerr, f;
+    unsigned int amt;
     off_t i;
     char buf[RCP_BUFSIZ];
     
@@ -878,13 +888,14 @@ void rsource(name, statp)
 	    return;
 	}
     }
-    (void) sprintf(buf, "D%04o %d %s\n", statp->st_mode&07777, 0, last);
+    (void) sprintf(buf, "D%04lo %d %s\n", (long) statp->st_mode&07777, 0, 
+		   last);
     (void) rcmd_stream_write(rem, buf, strlen(buf), 0);
     if (response() < 0) {
 	closedir(d);
 	return;
     }
-    while (dp = readdir(d)) {
+    while ((dp = readdir(d)) != NULL) {
 	if (dp->d_ino == 0)
 	  continue;
 	if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
@@ -908,7 +919,7 @@ int response()
 {
     char resp, c, rbuf[RCP_BUFSIZ], *cp = rbuf;
     if (rcmd_stream_read(rem, &resp, 1, 0) != 1)
-      lostconn();
+      lostconn(0);
     switch (resp) {
 	
       case 0:				/* ok */
@@ -921,11 +932,11 @@ int response()
       case 2:				/* fatal error, "" */
 	do {
 	    if (rcmd_stream_read(rem, &c, 1, 0) != 1)
-	      lostconn();
+	      lostconn(0);
 	    *cp++ = c;
 	} while (cp < &rbuf[RCP_BUFSIZ] && c != '\n');
 	if (iamremote == 0)
-	  (void) write(2, rbuf, cp - rbuf);
+	  (void) write(2, rbuf, (unsigned) (cp - rbuf));
 	errs++;
 	if (resp == 1)
 	  return (-1);
@@ -937,7 +948,8 @@ int response()
 
 
 krb5_sigtype
-  lostconn()
+  lostconn(signumber)
+    int signumber;
 {
     if (iamremote == 0)
       fprintf(stderr, "rcp: lost connection\n");
@@ -976,7 +988,9 @@ void sink(argc, argv)
     mode_t mask = umask(0);
     off_t i, j;
     char *targ, *whopp, *cp;
-    int of, wrerr, exists, first, count, amt, size;
+    int of, wrerr, exists, first;
+    off_t size;
+    unsigned int amt, count;
     struct buffer *bp;
     static struct buffer buffer;
     struct stat stb;
@@ -1027,7 +1041,7 @@ void sink(argc, argv)
 	    return;
 	}
 	
-#define getnum(t) (t) = 0; while (isdigit(*cp)) (t) = (t) * 10 + (*cp++ - '0');
+#define getnum(t) (t) = 0; while (isdigit((int) *cp)) (t) = (t) * 10 + (*cp++ - '0');
 	if (*cp == 'T') {
 	    setimes++;
 	    cp++;
@@ -1070,7 +1084,7 @@ void sink(argc, argv)
 	if (*cp++ != ' ')
 	  SCREWUP("mode not delimited");
 	size = 0;
-	while (isdigit(*cp))
+	while (isdigit((int) *cp))
 	  size = size * 10 + (*cp++ - '0');
 	if (*cp++ != ' ')
 	  SCREWUP("size not delimited");

@@ -33,10 +33,11 @@
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
 
-void display_status();
-static void display_status_1();
-static void display_buffer();
-static int test_import_name();
+#define GSSAPI_V2
+void display_status (char *, OM_uint32, OM_uint32);
+static void display_status_1 (char *, OM_uint32, int);
+static void display_buffer (gss_buffer_desc);
+static int test_import_name (char *);
 
 FILE *display_file;
 
@@ -122,7 +123,7 @@ static void display_status_1(m, code, type)
      OM_uint32 code;
      int type;
 {
-     OM_uint32 maj_stat, min_stat;
+     OM_uint32 min_stat;
      gss_buffer_desc msg;
 #ifdef	GSSAPI_V2
      OM_uint32 msg_ctx;
@@ -132,7 +133,7 @@ static void display_status_1(m, code, type)
      
      msg_ctx = 0;
      while (1) {
-	  maj_stat = gss_display_status(&min_stat, code,
+	  (void) gss_display_status(&min_stat, code,
 				       type, GSS_C_NULL_OID,
 				       &msg_ctx, &msg);
 	  if (display_file)

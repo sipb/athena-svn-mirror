@@ -1,7 +1,11 @@
+prefix=@prefix@
+bindir=@bindir@
+datadir=@datadir@
+mydatadir=$(datadir)/et
 thisconfigdir=.
 myfulldir=util/et
 mydir=.
-BUILDTOP=$(REL)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..
 RELDIR=../util/et
 SED = sed
 
@@ -17,7 +21,7 @@ LIBMAJOR=3
 LIBMINOR=0
 
 all-unix:: all-liblinks
-clean-unix:: clean-liblinks clean-libs clean-libobjs
+clean-unix:: clean-liblinks clean-libs clean-libobjs clean-lclint
 install-unix:: install-libs
 
 LINTFLAGS=-uhvb 
@@ -34,6 +38,7 @@ FILES=	Makefile et_name.c error_message.c compile_et.c \
 		com_err.c com_err.h \
 		error_table.h mit-sipb-copyright.h \
 		test_et.c test1.et test2.et \
+		t_com_err.c et1.et et2.et \
 		compiler.h internal.h \
 		com_err.texinfo texinfo.tex
 #SRCS=	compile_et.c error_table.c error_message.c et_name.c \
@@ -65,7 +70,7 @@ COM_ERR_HDR=$(BUILDTOP)$(S)include$(S)com_err.h
 all-windows:: $(COM_ERR_HDR)
 
 $(COM_ERR_HDR): com_err.h
-	$(CP) com_err.h $@
+	$(CP) com_err.h "$@"
 
 error_table.c: et_lex.lex.c 
 error_table.c: $(srcdir)/error_table.y
@@ -79,9 +84,46 @@ et_lex.lex.o: et_lex.lex.c
 test1.o: test1.c
 test2.o: test2.c
 test_et.o: test1.h test2.h
+et1.o: et1.c
+et2.o: et2.c
+test1.c test2.c et1.c et2.c test1.h test2.h et1.h et2.h: \
+	compile_et et_c.awk et_h.awk
+t_com_err.o: et1.h et2.h t_com_err.c
+
+# /u1/kr/lclint-2.5q/bin/lclint -warnposix -D__sparc
+LCLINT=lclint
+# +posixlib	gets more complete errno list than ansilib
+# -usedef	turns off bogus warnings from poor dataflow analysis (should be
+#		redundant with gcc warnings anyways)
+# -warnposix
+# +charintliteral
+# +ignoresigns
+# -predboolint
+# -exportlocal
+# -retvalint	allow ignoring of int return values (e.g., fputs)
+LCLINTOPTS=+posixlib \
+	-usedef -warnposix +charintliteral +ignoresigns -predboolint +boolint \
+	-exportlocal -retvalint \
+	+mod-uncon +modinternalstrict +modfilesys
+com_err.lcd: error_table.c error_table.h et_lex.lex.c com_err.h
+	$(LCLINT) $(LCLINTOPTS) $(LOCALINCLUDES) $(DEFS) $(SRCS) \
+		-dump com_err.new -expect 1
+	mv -f com_err.new com_err.lcd
+do-lclint: com_err.lcd t_com_err.c et1.c et2.c et1.h et2.h
+	$(LCLINT) $(LCLINTOPTS) $(LOCALINCLUDES) \
+		$(srcdir)/t_com_err.c et1.c et2.c
+# "-load com_err.lcd" -> lclint brokenness
+clean-lclint:
+	$(RM) com_err.new com_err.lcd
+ITS4=its4
+ITS4OPTS=
+do-its4: error_table.y et_lex.lex.c
+	$(ITS4) $(ITS4OPTS) $(SRCS)
 
 test_et: test_et.o test1.o test2.o $(LIBOBJS)
 	$(CC) -o test_et test_et.o test1.o test2.o $(LIBOBJS)
+t_com_err: t_com_err.o et1.o et2.o $(LIBOBJS)
+	$(CC) -o t_com_err t_com_err.o et1.o et2.o $(LIBOBJS)
 
 all-unix:: compile_et includes
 
@@ -97,24 +139,39 @@ includes:: com_err.h
 clean-unix::
 	$(RM) $(BUILDTOP)/include/com_err.h
 
+# test_et doesn't have an interesting exit status, but it'll exercise
+# some cases that t_com_err doesn't, so let's see if it crashes.
+check-unix:: t_com_err test_et
+	./test_et
+	./t_com_err
+
 # The real compile_et just isn't portable.  (But then again, anything using 
 # lex and yacc isn't portable by definition.  :-(  )
 #
 #compile_et: compile_et.o error_table.o
 #	$(CC) $(CFLAGS) -o $@ compile_et.o error_table.o $(LEXLIB) $(BSDLIB)
 #
-#install::
-#	$(INSTALLPROG) compile_et $(DESTDIR)$(PROGDIR)/compile_et
+install-unix:: compile_et
+	$(INSTALL) compile_et $(DESTDIR)$(bindir)/compile_et
+	test -d $(DESTDIR)$(mydatadir) || mkdir $(DESTDIR)$(mydatadir)
+	$(INSTALL_DATA) $(srcdir)/et_c.awk $(DESTDIR)$(mydatadir)
+	$(INSTALL_DATA) $(srcdir)/et_h.awk $(DESTDIR)$(mydatadir)
+
+
+install-headers:: compile_et
 
 compile_et: $(srcdir)/compile_et.sh $(srcdir)/config_script
 	$(SHELL) $(srcdir)/config_script $(srcdir)/compile_et.sh \
-		$(AWK) $(SED) > compile_et
+		"$(mydatadir)" $(AWK) $(SED) > compile_et
 	chmod 755 compile_et	
 
-et_c.awk: $(srcdir)/et_c.awk
-	$(CP) $(srcdir)/et_c.awk et_c.awk
-et_h.awk: $(srcdir)/et_h.awk
-	$(CP) $(srcdir)/et_h.awk et_h.awk
+rebuild: rebuild-c rebuild-h
+rebuild-c:
+	a2p < $(srcdir)/et_c.awk | awk 'NR != 1 || $$0 !~ /^\043!/{print;}' > $(srcdir)/et_c.tmp
+	mv -f $(srcdir)/et_c.tmp $(srcdir)/et_c.pl
+rebuild-h:
+	a2p < $(srcdir)/et_h.awk | awk 'NR != 1 || $$0 !~ /^\043!/{print;}' > $(srcdir)/et_h.tmp
+	mv -f $(srcdir)/et_h.tmp $(srcdir)/et_h.pl
 
 clean-unix::
 	$(RM) compile_et
@@ -124,13 +181,9 @@ depend::
 install:: com_err.h 
 	$(INSTALL_DATA) $(srcdir)/com_err.h  $(DESTDIR)$(KRB5_INCDIR)/com_err.h
 
-install:: mit-sipb-copyright.h
-	$(INSTALL_DATA) $(srcdir)/mit-sipb-copyright.h $(DESTDIR)$(KRB5_INCDIR)/mit-sipb-copyright.h
+install-unix:: compile_et.1
+	$(INSTALL_DATA) $(srcdir)/compile_et.1 $(DESTDIR)$(CLIENT_MANDIR)/compile_et.1
 
-#
-#install:: compile_et.1
-#	$(INSTALL_DATA) $(srcdir)/compile_et.1 $(DESTDIR)$(CLIENT_MANDIR)/compile_et.1
-#
 
 ## install_library_target(com_err,$(LIBOBJS),$(LINTFILES),)
 
@@ -145,6 +198,7 @@ clean-files::
 		et.ar TAGS y.tab.c lex.yy.c error_table.c \
 		et_lex.lex.c \
 		test1.h test1.c test2.h test2.c test_et \
+		et1.c et1.h et2.c et2.h t_com_err \
 		eddep makedep *.ln
 
 clean-windows::
@@ -165,4 +219,19 @@ TAGS:	et_name.c error_message.c compile_et.c error_table.c \
 		error_table.c init_et.c
 
 depend::  et_lex.lex.c
+
+
+# @lib_frag@
+# @libobj_frag@
+
+# +++ Dependency line eater +++
+# 
+# Makefile dependencies follow.  This must be the last section in
+# the Makefile.in file
+#
+error_message.so error_message.po $(OUTPRE)error_message.$(OBJEXT): error_message.c com_err.h \
+  error_table.h
+et_name.so et_name.po $(OUTPRE)et_name.$(OBJEXT): et_name.c com_err.h error_table.h
+init_et.so init_et.po $(OUTPRE)init_et.$(OBJEXT): init_et.c com_err.h error_table.h
+com_err.so com_err.po $(OUTPRE)com_err.$(OBJEXT): com_err.c com_err.h error_table.h
 

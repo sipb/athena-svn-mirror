@@ -44,11 +44,10 @@ k5_des_keysize(size_t *keybytes, size_t *keylength)
 }
 
 static krb5_error_code
-k5_des_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-	       krb5_const krb5_data *input, krb5_data *output, int encrypt)
+k5_des_docrypt(const krb5_keyblock *key, const krb5_data *ivec,
+	       const krb5_data *input, krb5_data *output, int enc)
 {
     mit_des_key_schedule schedule;
-    int ret;
 
     /* key->enctype was checked by the caller */
 
@@ -61,7 +60,7 @@ k5_des_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
     if (input->length != output->length)
 	return(KRB5_BAD_MSIZE);
 
-    switch (ret = mit_des_key_sched(key->contents, schedule)) {
+    switch (mit_des_key_sched(key->contents, schedule)) {
     case -1:
 	return(KRB5DES_BAD_KEYPAR);
     case -2:
@@ -72,8 +71,11 @@ k5_des_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
 
     mit_des_cbc_encrypt((krb5_pointer) input->data,
 			(krb5_pointer) output->data, input->length,
-			schedule, ivec?ivec->data:(char *)mit_des_zeroblock,
-			encrypt);
+			schedule,
+			(ivec
+			 ? (unsigned char *) ivec->data
+			 : (unsigned char *) mit_des_zeroblock),
+			enc);
 
     memset(schedule, 0, sizeof(schedule));
 
@@ -81,21 +83,21 @@ k5_des_docrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
 }
 
 static krb5_error_code
-k5_des_encrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-	       krb5_const krb5_data *input, krb5_data *output)
+k5_des_encrypt(const krb5_keyblock *key, const krb5_data *ivec,
+	       const krb5_data *input, krb5_data *output)
 {
     return(k5_des_docrypt(key, ivec, input, output, 1));
 }
 
 static krb5_error_code
-k5_des_decrypt(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-	       krb5_const krb5_data *input, krb5_data *output)
+k5_des_decrypt(const krb5_keyblock *key, const krb5_data *ivec,
+	       const krb5_data *input, krb5_data *output)
 {
     return(k5_des_docrypt(key, ivec, input, output, 0));
 }
 
 static krb5_error_code
-k5_des_make_key(krb5_const krb5_data *randombits, krb5_keyblock *key)
+k5_des_make_key(const krb5_data *randombits, krb5_keyblock *key)
 {
     if (key->length != 8)
 	return(KRB5_BAD_KEYSIZE);
@@ -119,10 +121,12 @@ k5_des_make_key(krb5_const krb5_data *randombits, krb5_keyblock *key)
     return(0);
 }
 
-const struct krb5_enc_provider krb5_enc_des = {
+const struct krb5_enc_provider krb5int_enc_des = {
     k5_des_block_size,
     k5_des_keysize,
     k5_des_encrypt,
     k5_des_decrypt,
-    k5_des_make_key
+    k5_des_make_key,
+    krb5int_des_init_state,
+    krb5int_default_free_state
 };

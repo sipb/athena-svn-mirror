@@ -37,33 +37,34 @@
  */
 
 int
-mit_des_cbc_encrypt(in, out, length, schedule, ivec, encrypt)
-	const mit_des_cblock FAR *in;
-	mit_des_cblock FAR *out;
-	long length;
-	mit_des_key_schedule schedule;
-	mit_des_cblock ivec;
-	int encrypt;
+mit_des_cbc_encrypt(in, out, length, schedule, ivec, enc)
+	const mit_des_cblock *in;
+	mit_des_cblock *out;
+	unsigned long length;
+	const mit_des_key_schedule schedule;
+	const mit_des_cblock ivec;
+	int enc;
 {
 	register unsigned DES_INT32 left, right;
 	register unsigned DES_INT32 temp;
-	register unsigned DES_INT32 *kp;
-	register unsigned char *ip, *op;
+	const unsigned DES_INT32 *kp;
+	const unsigned char *ip;
+	unsigned char *op;
 
 	/*
 	 * Get key pointer here.  This won't need to be reinitialized
 	 */
-	kp = (unsigned DES_INT32 *)schedule;
+	kp = (const unsigned DES_INT32 *)schedule;
 
 	/*
 	 * Deal with encryption and decryption separately.
 	 */
-	if (encrypt) {
+	if (enc) {
 		/*
 		 * Initialize left and right with the contents of the initial
 		 * vector.
 		 */
-		ip = (unsigned char *)ivec;
+		ip = ivec;
 		GET_HALF_BLOCK(left, ip);
 		GET_HALF_BLOCK(right, ip);
 
@@ -71,8 +72,8 @@ mit_des_cbc_encrypt(in, out, length, schedule, ivec, encrypt)
 		 * Suitably initialized, now work the length down 8 bytes
 		 * at a time.
 		 */
-		ip = (unsigned char *)in;
-		op = (unsigned char *)out;
+		ip = *in;
+		op = *out;
 		while (length > 0) {
 			/*
 			 * Get more input, xor it in.  If the length is
@@ -142,15 +143,15 @@ mit_des_cbc_encrypt(in, out, length, schedule, ivec, encrypt)
 		/*
 		 * Prime the old cipher with ivec.
 		 */
-		ip = (unsigned char *)ivec;
+		ip = ivec;
 		GET_HALF_BLOCK(ocipherl, ip);
 		GET_HALF_BLOCK(ocipherr, ip);
 
 		/*
 		 * Now do this in earnest until we run out of length.
 		 */
-		ip = (unsigned char *)in;
-		op = (unsigned char *)out;
+		ip = *in;
+		op = *out;
 		for (;;) {		/* check done inside loop */
 			/*
 			 * Read a block from the input into left and

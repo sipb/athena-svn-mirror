@@ -37,11 +37,10 @@ k5_descbc_hash_size(size_t *output)
 }
 
 static krb5_error_code
-k5_descbc_hash(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
-	       krb5_const krb5_data *input, krb5_data *output)
+k5_descbc_hash(const krb5_keyblock *key, krb5_keyusage usage, const krb5_data *ivec,
+	       const krb5_data *input, krb5_data *output)
 {
     mit_des_key_schedule schedule;
-    int ret;
 
     if (key->length != 8)
 	return(KRB5_BAD_KEYSIZE);
@@ -52,7 +51,7 @@ k5_descbc_hash(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
     if (output->length != 8)
 	return(KRB5_CRYPTO_INTERNAL);
 
-    switch (ret = mit_des_key_sched(key->contents, schedule)) {
+    switch (mit_des_key_sched(key->contents, schedule)) {
     case -1:
 	return(KRB5DES_BAD_KEYPAR);
     case -2:
@@ -61,15 +60,18 @@ k5_descbc_hash(krb5_const krb5_keyblock *key, krb5_const krb5_data *ivec,
 
     /* this has a return value, but it's useless to us */
 
-    mit_des_cbc_cksum(input->data, output->data, input->length,
-		      schedule, ivec?ivec->data:(char *)mit_des_zeroblock);
+    mit_des_cbc_cksum((unsigned char *) input->data, 
+		      (unsigned char *) output->data, input->length,
+		      schedule, 
+		      ivec? (unsigned char *)ivec->data: 
+		            (unsigned char *)mit_des_zeroblock);
 
     memset(schedule, 0, sizeof(schedule));
 
     return(0);
 }
 
-const struct krb5_keyhash_provider krb5_keyhash_descbc = {
+const struct krb5_keyhash_provider krb5int_keyhash_descbc = {
     k5_descbc_hash_size,
     k5_descbc_hash,
     NULL

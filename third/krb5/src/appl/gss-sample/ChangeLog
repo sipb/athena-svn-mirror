@@ -1,3 +1,111 @@
+2004-02-10  Jeffrey Altman <jaltman@mit.edu>
+
+    * gss-client.c: Remove extraneous parameters from 
+      client_establish_context()
+
+2004-02-06  Jeffrey Altman <jaltman@mit.edu>
+
+    * Update usage() for gss-client
+
+2004-02-06  Jeffrey Altman <jaltman@mit.edu>
+
+    * Add new command line switches to the gss-client
+      to support the use of GSS_C_SEQUENCE_FLAG or to 
+      disable the use of either GSS_C_MUTUAL_FLAG or 
+      GSS_C_REPLAY_FLAG
+
+2004-01-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* gss-misc.c: Include sys/time.h or time.h, to get struct timeval
+	declaration.
+
+2004-01-30  Jeffrey Altman <jaltman@mit.edu>
+
+    * gss-misc.c (read_all): Add call to select() so we don't block forever
+
+    * gss-server.c (main): Add missing "export" parameter to second sign_server()
+
+2003-01-08  Sam Hartman  <hartmans@mit.edu>
+
+	* gss-misc.c (recv_token): Support reading 0 token flags as part of length
+
+	* gss-client.c :  Support a -v1 argument meaning that no token flags are used,
+
+	* gss-misc.c (send_token): If token flags are null, do not send them.
+
+2002-12-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* gss-misc.c (send_token, recv_token): Open-code the math to send
+	and receive the length as four bytes in network order, rather than
+	using the first four bytes of a size_t.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(OUTPRE)gss-server.exe, $(OUTPRE)gss-server.exe):
+	Use ws2_32.lib instead of wsock32.lib.
+
+2002-04-30  Sam Hartman  <hartmans@mit.edu>
+
+	* gss-server.c (server_establish_context): Same here.
+
+	* gss-client.c (client_establish_context):  delete the context
+	when it is non-null, not when it is null. 
+
+2001-12-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* gss-client.c, gss-misc.c, gss-server.c: Cast buffer length to
+	int in length argument for printf.
+
+2001-11-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* gss-server.c (server_establish_context, sign_server): Ensure
+	that memory blocks are only freed once.
+
+2001-11-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* gss-misc.c (recv_token): Do not attempt to malloc 0 bytes.
+
+2001-11-01  Sam Hartman  <hartmans@mit.edu>
+
+	* gss-server.c  gss-client.c:  Only free buffers returned from
+	GSSAPI using  gss_release_buffer
+
+	* gss-client.c (client_establish_context): Trailing null should
+	not be part of service name 
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* gss-misc.c, gss-misc.h: Make prototypes unconditional.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): Use srcdir.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* gss-client.c (parse_oid): Cast argument to isdigit() to int.
+
+	* gss-server.c (sign_server): Cast argument to isspace() to int.
+
+2001-05-15  Danilo Almeida  <dalmeida@mit.edu>
+
+	* gss-server.c (usage): Fix usage info *again* to reflect that
+	service_name is required.
+
+Tue Sep 26 18:13:54 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* gss-misc.c: Include <sys/socket.h> for prototype definitions. 
+
+	* gss-client.c gss-server.c: Warning cleanups.
+
 2000-02-11  Tom Yu  <tlyu@mit.edu>
 
 	* README, gss-client.c, gss-misc.c, gss-misc.h, gss-server.c:
@@ -18,12 +126,12 @@
 
 	* Makefile.in: Build under Windows.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Mon Dec 21 22:04:02 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 

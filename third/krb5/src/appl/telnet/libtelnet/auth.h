@@ -65,23 +65,15 @@
 #define	AUTH_USER	3	/* We know he name */
 #define	AUTH_VALID	4	/* We know him, and he needs no password */
 
-#if	!defined(P)
-#ifdef	__STDC__
-#define P(x)	x
-#else
-#define P(x)	()
-#endif
-#endif
-
 typedef struct XauthP {
 	int	type;
 	int	way;
-	int	(*init) P((struct XauthP *, int));
-	int	(*send) P((struct XauthP *));
-	void	(*is) P((struct XauthP *, unsigned char *, int));
-	void	(*reply) P((struct XauthP *, unsigned char *, int));
-	int	(*status) P((struct XauthP *, char *, int));
-	void	(*printsub) P((unsigned char *, int, unsigned char *, int));
+	int	(*init) (struct XauthP *, int);
+	int	(*send) (struct XauthP *);
+	void	(*is) (struct XauthP *, unsigned char *, int);
+	void	(*reply) (struct XauthP *, unsigned char *, int);
+	int	(*status) (struct XauthP *, char *, int);
+	void	(*printsub) (unsigned char *, int, unsigned char *, unsigned int);
 } Authenticator;
 
 #include "auth-proto.h"
@@ -89,5 +81,5 @@ typedef struct XauthP {
 #define OPTS_FORWARD_CREDS           0x00000002
 #define OPTS_FORWARDABLE_CREDS       0x00000001
 
-extern auth_debug_mode;
+extern int auth_debug_mode;
 #endif

@@ -1,35 +1,47 @@
-<HTML>
-<HEAD>
-<!-- Created by texi2html 1.56k from krb425.texinfo on 29 April 2002 -->
+<html lang="en"><head>
+<title>Upgrading to Kerberos V5 from Kerberos V4</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=description content="Upgrading to Kerberos V5 from Kerberos V4">
+<meta name=generator content="makeinfo 4.0">
+<link href="http://texinfo.org/" rel=generator-home>
+</head><body>
 
-<TITLE>Upgrading to Kerberos V5 from Kerberos V4</TITLE>
-</HEAD>
-<BODY>
-<H1>Upgrading to Kerberos V5 from Kerberos V4</H1>
-<H2>Release:  1.2</H2>
-<H2>Document Edition:  1.0</H2>
-<H2>Last updated:  October 8, 1996</H2>
-<ADDRESS>MIT</ADDRESS>
-<P>
-<P><HR><P>
+<p><hr>
+Node:<a name="Top">Top</a>,
+Next:<a rel=next href="#Copyright">Copyright</a>,
+Previous:<a rel=previous href="#(dir)">(dir)</a>,
+Up:<a rel=up href="#(dir)">(dir)</a>
+<br>
 
+<ul>
+<li><a href="#Copyright">Copyright</a>: 
+<li><a href="#Introduction">Introduction</a>: 
+<li><a href="#Configuration%20Files">Configuration Files</a>: 
+<li><a href="#Upgrading%20KDCs">Upgrading KDCs</a>: 
+<li><a href="#Upgrading%20Application%20Servers">Upgrading Application Servers</a>: 
+<li><a href="#Upgrading%20Client%20machines">Upgrading Client machines</a>: 
+<li><a href="#Firewall%20Considerations">Firewall Considerations</a>: 
+</ul>
 
-<H1><A NAME="SEC1" HREF="krb425_toc.html#TOC1">Copyright</A></H1>
-<P>
-Copyright (C) 1985-2001 by the Massachusetts Institute of Technology. 
+<p><hr>
+Node:<a name="Copyright">Copyright</a>,
+Next:<a rel=next href="#Introduction">Introduction</a>,
+Previous:<a rel=previous href="#Top">Top</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
+<h1>Copyright</h1>
 
+<p>Copyright &copy; 1985-2002 by the Massachusetts Institute of Technology.
 
-<BLOCKQUOTE>
-<P>
+<blockquote>
 Export of software employing encryption from the United States of
 America may require a specific license from the United States
 Government.  It is the responsibility of any person or organization
-contemplating export to obtain such a license before exporting.
-</BLOCKQUOTE>
+contemplating export to obtain such a license before exporting. 
+</blockquote>
 
-<P>
-WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
+<p>WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
 this software and its documentation for any purpose and without fee is
 hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
@@ -42,32 +54,23 @@ the original MIT software.  M.I.T. makes no representations about the
 suitability of this software for any purpose.  It is provided "as is"
 without express or implied warranty.
 
-
-<P>
-@hrule
-
-
-<P>
-The following copyright and permission notice applies to the OpenVision
+<p>The following copyright and permission notice applies to the OpenVision
 Kerberos Administration system located in kadmin/create, kadmin/dbutil,
 kadmin/passwd, kadmin/server, lib/kadm5, and portions of lib/rpc:
 
-
-
-<BLOCKQUOTE>
-<P>
+<blockquote>
 Copyright, OpenVision Technologies, Inc., 1996, All Rights Reserved
-     
-WARNING:  Retrieving the OpenVision Kerberos Administration system source
+
+<p>WARNING:  Retrieving the OpenVision Kerberos Administration system source
 code, as described below, indicates your acceptance of the following
 terms.  If you do not agree to the following terms, do not retrieve the
 OpenVision Kerberos administration system.
-     
-You may freely use and distribute the Source Code and Object Code
+
+<p>You may freely use and distribute the Source Code and Object Code
 compiled from it, with or without modification, but this Source Code is
 provided to you "AS IS" EXCLUSIVE OF ANY WARRANTY, INCLUDING, WITHOUT
 LIMITATION, ANY WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A
-PARTICULAR PURPOSE, OR ANY OTHER WARRANTY, WHETHER EXPRESS OR IMPLIED.
+PARTICULAR PURPOSE, OR ANY OTHER WARRANTY, WHETHER EXPRESS OR IMPLIED. 
 IN NO EVENT WILL OPENVISION HAVE ANY LIABILITY FOR ANY LOST PROFITS,
 LOSS OF DATA OR COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR
 FOR ANY SPECIAL, INDIRECT, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS
@@ -75,397 +78,386 @@ AGREEMENT, INCLUDING, WITHOUT LIMITATION, THOSE RESULTING FROM THE USE
 OF THE SOURCE CODE, OR THE FAILURE OF THE SOURCE CODE TO PERFORM, OR FOR
 ANY OTHER REASON.
 
-
-<P>
-OpenVision retains all copyrights in the donated Source Code. OpenVision
+<p>OpenVision retains all copyrights in the donated Source Code. OpenVision
 also retains copyright to derivative works of the Source Code, whether
 created by OpenVision or by a third party. The OpenVision copyright
 notice must be preserved if derivative works are made based on the
 donated Source Code.
-     
-OpenVision Technologies, Inc. has donated this Kerberos Administration
-system to MIT for inclusion in the standard Kerberos 5 distribution.
+
+<p>OpenVision Technologies, Inc. has donated this Kerberos Administration
+system to MIT for inclusion in the standard Kerberos 5 distribution. 
 This donation underscores our commitment to continuing Kerberos
 technology development and our gratitude for the valuable work which has
-been performed by MIT and the Kerberos community.
-</BLOCKQUOTE>
+been performed by MIT and the Kerberos community. 
+</blockquote>
 
-<P>
-@hrule
+<p>The implementation of the Yarrow pseudo-random number generator
+in src/lib/crypto/yarrow has the following copyright:
 
+<blockquote>
 
-<P>
+<p>Copyright 2000 by Zero-Knowledge Systems, Inc.
+
+<p>Permission to use, copy, modify, distribute, and sell this software
+and its documentation for any purpose is hereby granted without fee,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the name of Zero-Knowledge Systems,
+Inc. not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.  Zero-Knowledge Systems, Inc. makes no representations
+about the suitability of this software for any purpose.  It is
+provided "as is" without express or implied warranty.
+
+<p>ZERO-KNOWLEDGE SYSTEMS, INC. DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS, IN NO EVENT SHALL ZERO-KNOWLEDGE SYSTEMS, INC. BE LIABLE FOR
+ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+</blockquote>
+
+<p>The implementation of the AES encryption algorithm in
+src/lib/crypto/aes has the following copyright:
+
+<blockquote>
+
+<p>Copyright (c) 2001, Dr Brian Gladman &lt;brg@gladman.uk.net&gt;, Worcester, UK. 
+All rights reserved.
+
+<p>LICENSE TERMS
+
+<p>The free distribution and use of this software in both source and binary
+form is allowed (with or without changes) provided that:
+
+<ol type=1 start=1>
+</p><li>distributions of this source code include the above copyright
+notice, this list of conditions and the following disclaimer;
+<li>distributions in binary form include the above copyright
+notice, this list of conditions and the following disclaimer
+in the documentation and/or other associated materials;
+<li>the copyright holder's name is not used to endorse products
+built using this software without specific written permission.
+</ol>
+
+<p>DISCLAIMER
+
+<p>This software is provided 'as is' with no explcit or implied warranties
+in respect of any properties, including, but not limited to, correctness
+and fitness for purpose.
+
+</blockquote>
+
 Kerberos V5 includes documentation and software developed at the
 University of California at Berkeley, which includes this copyright
 notice:
 
-
-<P>
-Copyright (C) 1983 Regents of the University of California.<BR>
+<p>Copyright &copy; 1983 Regents of the University of California.<br>
 All rights reserved.
 
-
-<P>
-Redistribution and use in source and binary forms, with or without
+<p>Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
-
-<OL>
-<LI>
-
-Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-<LI>
-
-Redistributions in binary form must reproduce the above copyright
+<ol type=1 start=1>
+</p><li>Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer. 
+<li>Redistributions in binary form must reproduce the above copyright
 notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
-<LI>
-
-All advertising materials mentioning features or use of this software
+documentation and/or other materials provided with the distribution. 
+<li>All advertising materials mentioning features or use of this software
 must display the following acknowledgement:
-
-<BLOCKQUOTE>
-<P>
+<blockquote>
 This product includes software developed by the University of
-California, Berkeley and its contributors.
-</BLOCKQUOTE>
-
-<LI>
-
-Neither the name of the University nor the names of its contributors
+California, Berkeley and its contributors. 
+</blockquote>
+<li>Neither the name of the University nor the names of its contributors
 may be used to endorse or promote products derived from this software
 without specific prior written permission.
-</OL>
+</ol>
 
-<P>
-@hrule
-
-
-<P>
-Permission is granted to make and distribute verbatim copies of this
+<p>Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notices and this permission notice are
 preserved on all copies.
 
-
-<P>
-Permission is granted to copy and distribute modified versions of this
+<p>Permission is granted to copy and distribute modified versions of this
 manual under the conditions for verbatim copying, provided also that the
 entire resulting derived work is distributed under the terms of a
 permission notice identical to this one.
 
-
-<P>
-Permission is granted to copy and distribute translations of this manual
+<p>Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions.
-@pagealignmacro
 
+<p><hr>
+Node:<a name="Introduction">Introduction</a>,
+Next:<a rel=next href="#Configuration%20Files">Configuration Files</a>,
+Previous:<a rel=previous href="#Copyright">Copyright</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
+<h1>Introduction</h1>
 
-
-<H1><A NAME="SEC2" HREF="krb425_toc.html#TOC2">Introduction</A></H1>
-
-<P>
-As with most software upgrades, Kerberos V5 is generally backward
+<p>As with most software upgrades, Kerberos V5 is generally backward
 compatible but not necessarily forward compatible.  The Kerberos V5
 daemons can interoperate with Kerberos V4 clients, but most of the
 Kerberos V4 daemons can not interoperate with Kerberos V5 clients.  This
 suggests the following strategy for performing the upgrade:
 
-
-
-<OL>
-<LI>
-
-<STRONG>Upgrade your KDCs.</STRONG>  This is must be done first, so that
+<ol type=1 start=1>
+</p><li><strong>Upgrade your KDCs.</strong>  This must be done first, so that
 interactions with the Kerberos database, whether by Kerberos V5 clients
 or by Kerberos V4 clients, will succeed.
 
-<LI>
-
-<STRONG>Upgrade your servers.</STRONG>  This must be done before upgrading
+<li><strong>Upgrade your servers.</strong>  This must be done before upgrading
 client machines, so that the servers are able to respond to both
 Kerberos V5 and Kerberos V4 queries.
 
-<LI>
-
-<STRONG>Upgrade your client machines.</STRONG>  Do this only after your KDCs and
+<li><strong>Upgrade your client machines.</strong>  Do this only after your KDCs and
 application servers are upgraded, so that all of your Kerberos V5
 clients will be talking to Kerberos V5 daemons.
-</OL>
+</ol>
 
+<p><hr>
+Node:<a name="Configuration%20Files">Configuration Files</a>,
+Next:<a rel=next href="#Upgrading%20KDCs">Upgrading KDCs</a>,
+Previous:<a rel=previous href="#Introduction">Introduction</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
+<h1>Configuration Files</h1>
 
-<H1><A NAME="SEC3" HREF="krb425_toc.html#TOC3">Configuration Files</A></H1>
-
-<P>
-The Kerberos <CODE>krb5.conf</CODE> and KDC <CODE>kdc.conf</CODE> configuration
+<p>The Kerberos <code>krb5.conf</code> and KDC <code>kdc.conf</code> configuration
 files allow additional tags for Kerberos V4 compatibility.
 
+<ul>
+<li><a href="#krb5.conf">krb5.conf</a>: 
+<li><a href="#kdc.conf">kdc.conf</a>: 
+</ul>
 
+<p><hr>
+Node:<a name="krb5.conf">krb5.conf</a>,
+Next:<a rel=next href="#kdc.conf">kdc.conf</a>,
+Previous:<a rel=previous href="#Configuration%20Files">Configuration Files</a>,
+Up:<a rel=up href="#Configuration%20Files">Configuration Files</a>
+<br>
 
+<h2>krb5.conf</h2>
 
-<H2><A NAME="SEC4" HREF="krb425_toc.html#TOC4">krb5.conf</A></H2>
-
-<P>
-If you used the defaults, both when you installed Kerberos V4 and when
+<p>If you used the defaults, both when you installed Kerberos V4 and when
 you installed Kerberos V5, you should not need to include any of
 these tags.  However, some or all of them may be necessary for
 nonstandard installations.
 
+<ul>
+<li><a href="#libdefaults">libdefaults</a>: 
+<li><a href="#realms%20(krb5.conf)">realms (krb5.conf)</a>: 
+<li><a href="#AFS%20and%20the%20Appdefaults%20Section">AFS and the Appdefaults Section</a>: 
+</ul>
 
+<p><hr>
+Node:<a name="libdefaults">libdefaults</a>,
+Next:<a rel=next href="#realms%20(krb5.conf)">realms (krb5.conf)</a>,
+Previous:<a rel=previous href="#krb5.conf">krb5.conf</a>,
+Up:<a rel=up href="#krb5.conf">krb5.conf</a>
+<br>
 
+<h3>[libdefaults]</h3>
 
-<H3><A NAME="SEC5" HREF="krb425_toc.html#TOC5">[libdefaults]</A></H3>
+<p>In the [libdefaults] section, the following additional tags may be used:
 
-<P>
-In the [libdefaults] section, the following additional tags may be used:
+<dl>
+<dt><b>krb4_srvtab</b>
+<dd>Specifies the location of the Kerberos V4 srvtab file.  Default is
+/etc/srvtab.
 
+<br><dt><b>krb4_config</b>
+<dd>Specifies the location of the Kerberos V4 configuration file.  Default
+is /etc/krb.conf.
 
-<DL COMPACT>
+<br><dt><b>krb4_realms</b>
+<dd>Specifies the location of the Kerberos V4 domain/realm translation
+file.  Default is /etc/krb.realms. 
+</dl>
 
-<DT><B>krb4_srvtab</B>
-<DD>
-Specifies the location of the Kerberos V4 srvtab file.  Default is
-<CODE>/etc/srvtab</CODE>.
+<p><hr>
+Node:<a name="realms%20(krb5.conf)">realms (krb5.conf)</a>,
+Next:<a rel=next href="#AFS%20and%20the%20Appdefaults%20Section">AFS and the Appdefaults Section</a>,
+Previous:<a rel=previous href="#libdefaults">libdefaults</a>,
+Up:<a rel=up href="#krb5.conf">krb5.conf</a>
+<br>
 
-<DT><B>krb4_config</B>
-<DD>
-Specifies the location of the Kerberos V4 configuration file.  Default
-is <CODE>/etc/krb.conf</CODE>.
+<h3>[realms]</h3>
 
-<DT><B>krb4_realms</B>
-<DD>
-Specifies the location of the Kerberos V4 domain/realm translation
-file.  Default is <CODE>/etc/krb.realms</CODE>.
-</DL>
-
-
-
-<H3><A NAME="SEC6" HREF="krb425_toc.html#TOC6">[realms]</A></H3>
-
-<P>
-In the [realms] section, the following Kerberos V4 tags may be used:
-<DL COMPACT>
-
-<DT><B>default_domain</B>
-<DD>
-Identifies the default domain for hosts in this realm.  This is needed
+<p>In the [realms] section, the following Kerberos V4 tags may be used:
+<dl>
+<dt><b>default_domain</b>
+<dd>Identifies the default domain for hosts in this realm.  This is needed
 for translating V4 principal names (which do not contain a domain name)
 to V5 principal names.  The default is your Kerberos realm name,
 converted to lower case.
 
-<DT><B>v4_instance_convert</B>
-<DD>
-This subsection allows the administrator to configure exceptions to the
+<dt><b>v4_instance_convert</b>
+<dd>This subsection allows the administrator to configure exceptions to the
 default_domain mapping rule.  It contains V4 instances (tag name) which
 should be translated to some specific hostname (tag value) as the second
 component in a Kerberos V5 principal name.
 
-<DT><B>v4_realm</B>
-<DD>
-This relation allows the administrator to configure a different
+<dt><b>v4_realm</b>
+<dd>This relation allows the administrator to configure a different
 realm name to be used when converting V5 principals to V4
 ones.  This should only be used when running separate V4 and V5
 realms, with some external means of password sychronization
 between the realms.
 
-</DL>
+</dl>
 
+<p><hr>
+Node:<a name="AFS%20and%20the%20Appdefaults%20Section">AFS and the Appdefaults Section</a>,
+Previous:<a rel=previous href="#realms%20(krb5.conf)">realms (krb5.conf)</a>,
+Up:<a rel=up href="#krb5.conf">krb5.conf</a>
+<br>
 
+<h3>AFS and the Appdefaults Section</h3>
 
-<H2><A NAME="SEC7" HREF="krb425_toc.html#TOC7">kdc.conf</A></H2>
+<p>Many Kerberos 4 sites also run the Andrew File System (AFS).
 
-<P>
-Because Kerberos V4 requires a different type of salt for the encryption
-type, you will need to change the <CODE>supported_enctypes</CODE> line in the
+<p>Modern AFS servers (OpenAFS &gt; 1.2.8) support the AFS 2b token format. 
+This allows AFS to use Kerberos 5 tickets rather than version 4
+tickets, enabling cross-realm authentication.  By default, the
+<code>krb524d</code> service will issue the new AFS 2b tokens.  If you are
+using old AFS servers, you will need to disable these new tokens. 
+Please see the documentation of the <code>appdefaults</code> section of
+<code>krb5.conf</code> in the Kerberos Administration guide.
+
+<p><hr>
+Node:<a name="kdc.conf">kdc.conf</a>,
+Previous:<a rel=previous href="#krb5.conf">krb5.conf</a>,
+Up:<a rel=up href="#Configuration%20Files">Configuration Files</a>
+<br>
+
+<h2>kdc.conf</h2>
+
+<p>Because Kerberos V4 requires a different type of salt for the encryption
+type, you will need to change the <code>supported_enctypes</code> line in the
 [realms] section to:
 
+<pre>supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
+</pre>
 
+<p>This is the only change needed to the <code>kdc.conf</code> file.
 
-<PRE>
-supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
-</PRE>
+<p><hr>
+Node:<a name="Upgrading%20KDCs">Upgrading KDCs</a>,
+Next:<a rel=next href="#Upgrading%20Application%20Servers">Upgrading Application Servers</a>,
+Previous:<a rel=previous href="#Configuration%20Files">Configuration Files</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
-<P>
-This is the only change needed to the <CODE>kdc.conf</CODE> file.
+<h1>Upgrading KDCs</h1>
 
-
-
-
-<H1><A NAME="SEC8" HREF="krb425_toc.html#TOC8">Upgrading KDCs</A></H1>
-
-<P>
-To convert your KDCs from Kerberos V4 to Kerberos V5, do the
+<p>To convert your KDCs from Kerberos V4 to Kerberos V5, do the
 following:
 
-
-
-<OL>
-<LI>
-
-Install Kerberos V5 on each KDC, according to the instructions in
+<ol type=1 start=1>
+</p><li>Install Kerberos V5 on each KDC, according to the instructions in
 the Kerberos V5 Installation Guide, up to the point where it tells
 you to create the database.
 
-<LI>
-
-Find the <CODE>kadmind</CODE> (V4) daemon process on the master KDC and kill
+<li>Find the <code>kadmind</code> (V4) daemon process on the master KDC and kill
 it.  This will prevent changes to the Kerberos database while you
 convert the database to the new Kerberos V5 format.
 
-<LI>
-
-Create a dump of the V4 database in the directory where your V5 database
+<li>Create a dump of the V4 database in the directory where your V5 database
 will reside by issuing the command:
 
+<pre>% kdb_util dump /usr/local/var/krb5kdc/v4-dump
+</pre>
 
-<PRE>
-% kdb_util dump /usr/local/var/krb5kdc/v4-dump
-</PRE>
+<li>Load the V4 dump into a Kerberos V5 database, by issuing the command:
 
-<LI>
+<pre>% kdb5_util load_v4 v4-dump
+</pre>
 
-Load the V4 dump into a Kerberos V5 database, by issuing the command:
+<li>Create a Kerberos V5 stash file, if desired, by issuing the command:
 
+<pre>% kdb5_util stash
+</pre>
 
-<PRE>
-% kdb5_util load_v4 v4-dump
-</PRE>
-
-<LI>
-
-Create a Kerberos V5 stash file, if desired, by issuing the command:
-
-
-<PRE>
-% kdb5_util stash
-</PRE>
-
-<LI>
-
-Proceed with the rest of the Kerberos V5 installation as described
+<li>Proceed with the rest of the Kerberos V5 installation as described
 in the Kerberos V5 Installation Guide.  When you get to the section
-that tells you to start the <CODE>krb5kdc</CODE> and <CODE>kadmind</CODE> daemons,
-first find and kill the Kerberos V4 <CODE>kerberos</CODE> daemon on each of
-the KDCs.  Then start the <CODE>krb5kdc</CODE> and <CODE>kadmind</CODE> daemons as
+that tells you to start the <code>krb5kdc</code> and <code>kadmind</code> daemons,
+first find and kill the Kerberos V4 <code>kerberos</code> daemon on each of
+the KDCs.  Then start the <code>krb5kdc</code> and <code>kadmind</code> daemons as
+You will need to specify an argument to the <code>-4</code> command line option to enable Kerberos 4 compatibility. 
+See the <code>krb5kdc</code> man page for details. 
 directed.  Finally, start the Kerberos V5 to V4 ticket translator
-daemon, <CODE>krb524d</CODE>, by issuing the command:
+daemon, <code>krb524d</code>, by issuing the command:
 
+<pre>% /usr/local/sbin/krb524d -m &gt; /dev/null &amp;
+</pre>
 
-<PRE>
-% /usr/local/sbin/krb524d -m &#62; /dev/null &#38;
-</PRE>
+<p>If you have a stash file and you start the <code>krb5kdc</code> and
+<code>kadmind</code> daemons at boot time, you should add the above line to
+your <code>/etc/rc</code> (or <code>/etc/rc.local</code>) file on each KDC.
+</ol>
 
-If you have a stash file and you start the <CODE>krb5kdc</CODE> and
-<CODE>kadmind</CODE> daemons at boot time, you should add the above line to
-your <CODE>/etc/rc</CODE> (or <CODE>/etc/rc.local</CODE>) file on each KDC.
-</OL>
+<p><hr>
+Node:<a name="Upgrading%20Application%20Servers">Upgrading Application Servers</a>,
+Next:<a rel=next href="#Upgrading%20Client%20machines">Upgrading Client machines</a>,
+Previous:<a rel=previous href="#Upgrading%20KDCs">Upgrading KDCs</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
+<h1>Upgrading Application Servers</h1>
 
-
-<H1><A NAME="SEC9" HREF="krb425_toc.html#TOC9">Upgrading Application Servers</A></H1>
-
-<P>
-Install Kerberos V5 on each application server, according to the
+<p>Install Kerberos V5 on each application server, according to the
 instructions in the Kerberos V5 Installation Guide, with the
 following exceptions:
 
-
-
-<UL>
-<LI>
-
-In the file <CODE>/etc/services</CODE>, add or edit the lines described in the
+<ul>
+<li>In the file <code>/etc/services</code>, add or edit the lines described in the
 Kerberos V5 Installation Guide, with the following exception:
 
-in place of:
+<p>in place of:
 
-
-<PRE>
-kerberos      88/udp    kdc    # Kerberos V5 KDC
+<pre>kerberos      88/udp    kdc    # Kerberos V5 KDC
 kerberos      88/tcp    kdc    # Kerberos V5 KDC
-</PRE>
+</pre>
 
-add instead:
+<p>add instead:
 
-
-<PRE>
-kerberos-sec  88/udp    kdc    # Kerberos V5 KDC
+<pre>kerberos-sec  88/udp    kdc    # Kerberos V5 KDC
 kerberos-sec  88/tcp    kdc    # Kerberos V5 KDC
-</PRE>
+</pre>
 
-<LI>
-
-In the file <CODE>/etc/inetd.conf</CODE>, for a <EM>secure</EM> server, instead
-of making the changes described in the Kerberos V5 Installation
-Guide, do the following:
-
-Find and comment out any lines for the services <CODE>ftp</CODE>,
-<CODE>telnet</CODE>, <CODE>shell</CODE>, <CODE>login</CODE>, and <CODE>exec</CODE>.
-
-Add the following lines.  (Note:  each line beginning with => is
-a continuation of the previous line.)
-
-
-<PRE>
-klogin  stream  tcp  nowait  root
-=>    /usr/local/sbin/klogind  klogind -k -c
-eklogin stream  tcp  nowait  root
-n=>   /usr/local/sbin/klogind  klogind -k -c -e
-kshell  stream  tcp  nowait  root
-=>    /usr/local/sbin/kshd  kshd -k -c -A
-ftp     stream  tcp  nowait  root
-=>    /usr/local/sbin/ftpd  ftpd -a
-telnet  stream  tcp  nowait  root
-=>    /usr/local/sbin/telnetd  telnetd -a valid
-</PRE>
-
-<STRONG>N.B.</STRONG>: As noted in the Kerberos V5 Installation Guide, if
-you have some clients running older versions of Kerberos V5 (beta 6 or
-earlier), checksums were done differently in those versions, which will
-cause authentication to fail.  To get around this problem, have the
-<CODE>klogind</CODE> and <CODE>kshd</CODE> daemons ignore checksums, by replacing
-each <CODE>-c</CODE> flag above with <CODE>-i</CODE>.
-
-For an <EM>insecure</EM> server, make the changes described in the
-Kerberos V5 Installation Guide.
-
-When you make changes to <CODE>inetd.conf</CODE>, remember to <CODE>kill -HUP</CODE>
-the <CODE>inetd</CODE> process to cause the changes to take effect.
-
-<LI>
-
-Convert your Kerberos V4 srvtab file to Kerberos V5 keytab file as
+</p><li>Convert your Kerberos V4 srvtab file to Kerberos V5 keytab file as
 follows:
 
+<pre><b>#</b> /usr/local/sbin/ktutil
+<b>ktutil:</b>  rst /etc/krb-srvtab
+<b>ktutil:</b>  wkt /etc/krb5.keytab
+<b>ktutil:</b>  q
+<b>#</b>
+</pre>
+</ul>
 
-<PRE>
-<B>#</B> /usr/local/sbin/ktutil
-<B>ktutil:</B>  rst /etc/krb-srvtab
-<B>ktutil:</B>  wkt /etc/krb5.keytab
-<B>ktutil:</B>  q
-<B>#</B>
-</PRE>
+<p><hr>
+Node:<a name="Upgrading%20Client%20machines">Upgrading Client machines</a>,
+Next:<a rel=next href="#Firewall%20Considerations">Firewall Considerations</a>,
+Previous:<a rel=previous href="#Upgrading%20Application%20Servers">Upgrading Application Servers</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
 
-</UL>
+<h1>Upgrading Client machines</h1>
 
-
-
-<H1><A NAME="SEC10" HREF="krb425_toc.html#TOC10">Upgrading Client machines</A></H1>
-
-<P>
-Install Kerberos V5 on each client machine, according to the
+<p>Install Kerberos V5 on each client machine, according to the
 instructions in the Kerberos V5 Installation Guide.
 
+<p>Tell your users to add the appropriate directory to their paths.  On
+UNIX machines, this will probably be <code>/usr/local/bin</code>.
 
-<P>
-Tell your users to add the appropriate directory to their paths.  On
-UNIX machines, this will probably be <CODE>/usr/local/bin</CODE>.
-
-
-<P>
-Note that if you upgrade your client machines before all of your
+<p>Note that if you upgrade your client machines before all of your
 application servers are upgraded, your users will need to use the
 Kerberos V4 programs to connect to application servers that are still
 running Kerberos V4.  (The one exception is the UNIX version of
@@ -473,22 +465,42 @@ Kerberos V5 telnet, which can connect to a Kerberos V4 and Kerberos
 V5 application servers.)  Users can use either the Kerberos V4 or
 Kerberos V5 programs to connect to Kerberos V5 servers.
 
+<p><hr>
+Node:<a name="Firewall%20Considerations">Firewall Considerations</a>,
+Previous:<a rel=previous href="#Upgrading%20Client%20machines">Upgrading Client machines</a>,
+Up:<a rel=up href="#Top">Top</a>
+<br>
+
+<h1>Firewall Considerations</h1>
+
+Kerberos V5 uses port 88, which is the port
+assigned by the IETF, for KDC requests.  Kerberos V4 used port
+750.  If your users will need to get to any KDCs
+outside your firewall, you will need to allow TCP and UDP requests on
+port 88 for your users to get to off-site Kerberos V5
+KDCs, and on port 750 for your users to get to
+off-site Kerberos V4 KDCs.
 
 
+<h1>Table of Contents</h1>
+<ul>
+<li><a href="#Copyright">Copyright</a>
+<li><a href="#Introduction">Introduction</a>
+<li><a href="#Configuration%20Files">Configuration Files</a>
+<ul>
+<li><a href="#krb5.conf">krb5.conf</a>
+<ul>
+<li><a href="#libdefaults">[libdefaults]</a>
+<li><a href="#realms%20(krb5.conf)">[realms]</a>
+<li><a href="#AFS%20and%20the%20Appdefaults%20Section">AFS and the Appdefaults Section</a>
+</ul>
+<li><a href="#kdc.conf">kdc.conf</a>
+</ul>
+<li><a href="#Upgrading%20KDCs">Upgrading KDCs</a>
+<li><a href="#Upgrading%20Application%20Servers">Upgrading Application Servers</a>
+<li><a href="#Upgrading%20Client%20machines">Upgrading Client machines</a>
+<li><a href="#Firewall%20Considerations">Firewall Considerations</a>
+</ul>
 
-<H1><A NAME="SEC11" HREF="krb425_toc.html#TOC11">Firewall Considerations</A></H1>
+</body></html>
 
-<P>
-Kerberos V5 uses port 88, which is the port assigned by the IETF,
-for KDC requests.  Kerberos V4 used port 750.  If your users will need
-to get to any KDCs outside your firewall, you will need to allow TCP and
-UDP requests on port 88 for your users to get to off-site Kerberos V5
-KDCs, and on port 750 for your users to get to off-site Kerberos V4
-KDCs.
-
-
-<P><HR><P>
-This document was generated on 29 April 2002 using
-<A HREF="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k.
-</BODY>
-</HTML>

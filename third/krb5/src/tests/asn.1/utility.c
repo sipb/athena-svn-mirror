@@ -2,8 +2,9 @@
 #include "utility.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
-char hexchar PROTOTYPE((const unsigned int digit));
+char hexchar (const unsigned int digit);
 
 asn1_error_code asn1_krb5_data_unparse(code, s)
      const krb5_data * code;
@@ -15,7 +16,7 @@ asn1_error_code asn1_krb5_data_unparse(code, s)
     *s = (char*)calloc(strlen("<NULL>")+1, sizeof(char));
     if(*s == NULL) return ENOMEM;
     strcpy(*s,"<NULL>");
-  }else if(code->data == NULL || code->length <= 0){
+  }else if(code->data == NULL || ((int) code->length) <= 0){
     *s = (char*)calloc(strlen("<EMPTY>")+1, sizeof(char));
     if(*s==NULL) return ENOMEM;
     strcpy(*s,"<EMPTY>");
@@ -60,33 +61,40 @@ krb5_error_code krb5_data_parse(d, s)
   return 0;
 }
 
-krb5_error_code krb5_data_hex_parse(d, s)
-     krb5_data * d;
-     const char * s;
+krb5_error_code krb5_data_hex_parse(krb5_data *d, const char *s)
 {
-  int i, digit;
-  char *copy; 
-  char *pos;
+    int lo;
+    long v;
+    const char *cp;
+    char *dp;
+    char buf[2];
 
-    /* 
-     * Do a strdup() and use that, because some systems can't handle non
-     * writeable strings being passed to sscanf() --proven.
-     */
-    copy = strdup(s);
-  d->data = (char*)calloc((strlen(copy)+1)/3,sizeof(char));
-  if(d->data == NULL) return ENOMEM;
-  d->length = (strlen(copy)+1)/3;
-  for(i=0,pos=(char*)copy; i<d->length; i++,pos+=3){
-    if(!sscanf(pos,"%x",&digit)) {
-#ifdef KRB5_USE_ISODE
-	    return EINVAL;
-#else
+    d->data = calloc((strlen(s) / 2 + 1), 1);
+    if (d->data == NULL)
+	return ENOMEM;
+    d->length = 0;
+    buf[1] = '\0';
+    for (lo = 0, dp = d->data, cp = s; *cp; cp++) {
+	if (*cp < 0)
 	    return ASN1_PARSE_ERROR;
-#endif
+	else if (isspace(*cp))
+	    continue;
+	else if (isxdigit(*cp)) {
+	    buf[0] = *cp;
+	    v = strtol(buf, NULL, 16);
+	} else
+	    return ASN1_PARSE_ERROR;
+	if (lo) {
+	    *dp++ |= v;
+	    lo = 0;
+	} else {
+	    *dp = v << 4;
+	    lo = 1;
+	}
     }
-    d->data[i] = (char)digit;
-  }
-  return 0;
+
+    d->length = dp - d->data;
+    return 0;
 }
 
 #if 0

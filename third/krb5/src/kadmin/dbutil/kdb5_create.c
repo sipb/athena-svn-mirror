@@ -1,7 +1,7 @@
 /*
- * admin/create/kdb5_create.c
+ * kadmin/dbutil/kdb5_create.c
  *
- * Copyright 1990,1991 by the Massachusetts Institute of Technology.
+ * Copyright 1990,1991,2001, 2002 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -57,6 +57,8 @@
 #include <k5-int.h>
 #include <kadm5/admin.h>
 #include <kadm5/adb.h>
+#include <krb5/adm_proto.h>
+#include "kdb5_util.h"
 
 enum ap_op {
     NULL_KEY,				/* setup null keys */
@@ -91,10 +93,10 @@ struct iterate_args {
 };
 
 static krb5_error_code add_principal 
-	PROTOTYPE((krb5_context,
-		   krb5_principal, 
-		   enum ap_op,
-		   struct realm_info *));
+	(krb5_context,
+	 krb5_principal,
+	 enum ap_op,
+	 struct realm_info *);
 
 /*
  * Steps in creating a database:
@@ -156,7 +158,7 @@ void kdb5_create(argc, argv)
     krb5_error_code retval;
     char *mkey_fullname;
     char *pw_str = 0;
-    int pw_size = 0;
+    unsigned int pw_size = 0;
     int do_stash = 0;
     krb5_int32 crflags = KRB5_KDB_CREATE_BTREE;
     krb5_data pwd, seed;
@@ -195,6 +197,13 @@ void kdb5_create(argc, argv)
 	exit_status++; return;
     }
 
+    printf ("Loading random data\n");
+    retval = krb5_c_random_os_entropy (util_context, 1, NULL);
+    if (retval) {
+      com_err (argv[0], retval, "Loading random data");
+      exit_status++; return;
+    }
+    
     /* assemble & parse the master key name */
 
     if ((retval = krb5_db_setup_mkey_name(util_context,
@@ -237,11 +246,13 @@ master key name '%s'\n",
     pwd.length = strlen(mkey_password);
     retval = krb5_principal2salt(util_context, master_princ, &master_salt);
     if (retval) {
-	com_err(argv[0], retval, "while calculated master key salt");
+	com_err(argv[0], retval, "while calculating master key salt");
 	exit_status++; return;
     }
-    if (retval = krb5_c_string_to_key(util_context, master_keyblock.enctype, 
-				      &pwd, &master_salt, &master_keyblock)) {
+
+    retval = krb5_c_string_to_key(util_context, master_keyblock.enctype, 
+				  &pwd, &master_salt, &master_keyblock);
+    if (retval) {
 	com_err(argv[0], retval, "while transforming master key from password");
 	exit_status++; return;
     }
@@ -261,7 +272,7 @@ master key name '%s'\n",
 		global_params.dbname);
 	exit_status++; return;
     }
-    if (retval = krb5_db_fini(util_context)) {
+    if ((retval = krb5_db_fini(util_context))) {
         com_err(argv[0], retval, "while closing current database");
         exit_status++; return;
     }
@@ -287,10 +298,11 @@ master key name '%s'\n",
      * it; delete the file below if it was not requested.  DO NOT EXIT
      * BEFORE DELETING THE KEYFILE if do_stash is not set.
      */
-    if (retval = krb5_db_store_mkey(util_context,
-				    global_params.stash_file,
-				    master_princ,
-				    &master_keyblock)) {
+    retval = krb5_db_store_mkey(util_context,
+			    global_params.stash_file,
+			    master_princ,
+			    &master_keyblock);
+    if (retval) {
 	com_err(argv[0], errno, "while storing key");
 	printf("Warning: couldn't stash master key.\n");
     }
@@ -324,7 +336,6 @@ tgt_keysalt_iterate(ksent, ptr)
     struct iterate_args	*iargs;
     krb5_keyblock	key;
     krb5_int32		ind;
-    krb5_pointer rseed;
     krb5_data	pwd;
 
     iargs = (struct iterate_args *) ptr;
@@ -338,7 +349,8 @@ tgt_keysalt_iterate(ksent, ptr)
      */
     pwd.data = mkey_password;
     pwd.length = strlen(mkey_password);
-    if (kret = krb5_c_random_seed(context, &pwd))
+    kret = krb5_c_random_seed(context, &pwd);
+    if (kret)
 	return kret;
 
     if (!(kret = krb5_dbe_create_key_data(iargs->ctx, iargs->dbentp))) {

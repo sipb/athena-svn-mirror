@@ -1,3 +1,89 @@
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_conn.c (kadm_contact_server): Use socklen_t when passing
+	address to socket functions.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* kpasswd.c (kpwd_change_prompt_1, kpwd_change_prompt_2)
+	(kpwd_old_password_prompt, kpwd_old_pwd_name_fmt): Remove trailing
+	colon, as new implementation of krb5_read_password() appends it.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-19  Ezra Peisach  <epeisach@bu.edu>
+
+	* srv_net.c: Conditionalize debugging variables inside DEBUG
+	conditional.
+
+	* kpasswd.c (main): Conditionalize local variables inside
+	definition of LANGUAGES_SUPPORTED to avoid a variable being set
+	with out use warning.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_conn.c, adm_rw.c, kadm5_defs.h: Make prototypes
+	unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_conn.c: Drop _MSDOS support.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (COMMON_SRCS, SERV_SRCS, CLI_SRCS): All live in
+	srcdir.
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* adm_conn.c (kadm_get_ccache): Cast return from getpid() to int
+	to match format.
+
+2001-06-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_conn.c, kpasswd.c, srv_net.c: Changed various char string
+	variables into macros, for better format/argument checking under
+	gcc.
+
+	* main.c (pwd_change): Use strncpy instead of sprintf to copy
+	error message text into buffer.  Use goto rather than repeated
+	code.
+	(main): Use %lx for params.mask.  Make debug_level volatile.
+
+	* srv_net.c (net_find_slave): Initialize "found".
+	(net_dispatch): Make "kret" volatile, so longjmp won't clobber
+	it.
+	(net_slaves_active): Variable deleted.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* main.c: Add prototype for daemon if needed.
+
+Mon Feb 26 15:22:44 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	*adm_conn.c, adm_rw.c, kadm5_defs.h, kpasswd.c, main.c,
+ 	proto_serv.c, srv_net.c: Warnings cleanup including assignments in
+ 	conditionals, shadowed variables, unused variables, prototypes.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* adm_conn.c, kpasswd.c: Argument to krb5_read_password
+	takes an unsigned int.
+
+	* kadm5_defs.h, main.c (pwd_change): Argument err_str_len changed
+	to unsigned int. (Argument to kadm5_chpass_principal_util()).
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: v5passwd does not depend on the kadm5
+	libraries. This is the older protocol.
+
 2000-05-24  Ken Raeburn  <raeburn@mit.edu>
 	    Ezra Peisach  <epeisach@mit.edu>
 
@@ -21,12 +107,12 @@
 	* proto_serv.c (proto_serv): For error return,strdup the returned
 	value from error_message to maintain its const status.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Tue May 11 11:39:36 1999  Ezra Peisach  <epeisach@mit.edu>
 

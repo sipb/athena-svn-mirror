@@ -26,15 +26,13 @@
 
 #include "dk.h"
 
-static unsigned char kerberos[] = "kerberos";
+static const unsigned char kerberos[] = "kerberos";
 #define kerberos_len (sizeof(kerberos)-1)
 
 krb5_error_code
-krb5_dk_string_to_key(enc, string, salt, key)
-     krb5_const struct krb5_enc_provider *enc;
-     krb5_const krb5_data *string;
-     krb5_const krb5_data *salt;
-     krb5_keyblock *key;
+krb5int_dk_string_to_key(const struct krb5_enc_provider *enc,
+			 const krb5_data *string, const krb5_data *salt,
+			 const krb5_data *parms, krb5_keyblock *key)
 {
     krb5_error_code ret;
     size_t keybytes, keylength, concatlen;
@@ -69,7 +67,7 @@ krb5_dk_string_to_key(enc, string, salt, key)
     krb5_nfold(concatlen*8, concat, keybytes*8, foldstring);
 
     indata.length = keybytes;
-    indata.data = foldstring;
+    indata.data = (char *) foldstring;
     foldkey.length = keylength;
     foldkey.contents = foldkeydata;
 
@@ -78,7 +76,7 @@ krb5_dk_string_to_key(enc, string, salt, key)
     /* now derive the key from this one */
 
     indata.length = kerberos_len;
-    indata.data = kerberos;
+    indata.data = (char *) kerberos;
 
     if ((ret = krb5_derive_key(enc, &foldkey, key, &indata)))
 	memset(key->contents, 0, key->length);

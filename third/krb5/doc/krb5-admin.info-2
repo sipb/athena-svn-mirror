@@ -1,5 +1,769 @@
-This is Info file krb5-admin.info, produced by Makeinfo version 1.68
-from the input file admin.texinfo.
+This is krb5-admin.info, produced by makeinfo version 4.0 from
+admin.texinfo.
+
+
+File: krb5-admin.info,  Node: capaths,  Next: Sample krb5.conf File,  Prev: logging,  Up: krb5.conf
+
+[capaths]
+---------
+
+In order to perform direct (non-hierarchical) cross-realm
+authentication, a database is needed to construct the authentication
+paths between the realms.  This section defines that database.
+
+A client will use this section to find the authentication path between
+its realm and the realm of the server.  The server will use this section
+to verify the authentication path used by the client, by checking the
+transited field of the received ticket.
+
+There is a tag for each participating realm, and each tag has subtags
+for each of the realms.  The value of the subtags is an intermediate
+realm which may participate in the cross-realm authentication.  The
+subtags may be repeated if there is more then one intermediate realm.  A
+value of "."  means that the two realms share keys directly, and no
+intermediate realms should be allowd to participate.
+
+There are n**2 possible entries in this table, but only those entries
+which will be needed on the client or the server need to be present.
+The client needs a tag for its local realm, with subtags for all the
+realms of servers it will need to authenticate with.  A server needs a
+tag for each realm of the clients it will serve.
+
+For example, ANL.GOV, PNL.GOV, and NERSC.GOV all wish to use the ES.NET
+realm as an intermediate realm.  ANL has a sub realm of TEST.ANL.GOV
+which will authenticate with NERSC.GOV but not PNL.GOV.  The [capaths]
+section for ANL.GOV systems would look like this:
+
+     [capaths]
+         ANL.GOV = {
+             TEST.ANL.GOV = .
+             PNL.GOV = ES.NET
+             NERSC.GOV = ES.NET
+             ES.NET = .
+         }
+         TEST.ANL.GOV = {
+             ANL.GOV = .
+         }
+         PNL.GOV = {
+             ANL.GOV = ES.NET
+         }
+         NERSC.GOV = {
+             ANL.GOV = ES.NET
+         }
+         ES.NET = {
+             ANL.GOV = .
+         }
+
+The [capaths] section of the configuration file used on NERSC.GOV
+systems would look like this:
+
+     [capaths]
+         NERSC.GOV = {
+             ANL.GOV = ES.NET
+             TEST.ANL.GOV = ES.NET
+             TEST.ANL.GOV = ANL.GOV
+             PNL.GOV = ES.NET
+             ES.NET = .
+         }
+         ANL.GOV = {
+             NERSC.GOV = ES.NET
+         }
+         PNL.GOV = {
+             NERSC.GOV = ES.NET
+         }
+         ES.NET = {
+             NERSC.GOV = .
+         }
+         TEST.ANL.GOV = {
+             NERSC.GOV = ANL.GOV
+             NERSC.GOV = ES.NET
+         }
+
+In the above examples, the ordering is not important, except when the
+same subtag name is used more then once.  The client will use this to
+determine the path.  (It is not important to the server, since the
+transited field is not sorted.)
+
+This feature is not currently supported by DCE.  DCE security servers
+can be used with Kerberized clients and servers, but versions prior to
+DCE 1.1 did not fill in the transited field, and should be used with
+caution.
+
+
+File: krb5-admin.info,  Node: Sample krb5.conf File,  Prev: capaths,  Up: krb5.conf
+
+Sample krb5.conf File
+---------------------
+
+Here is an example of a generic `krb5.conf' file:
+
+     [libdefaults]
+         default_realm = ATHENA.MIT.EDU
+         default_tkt_enctypes = des3-hmac-sha1 des-cbc-crc
+         default_tgs_enctypes = des3-hmac-sha1 des-cbc-crc
+         dns_lookup_kdc = true
+         dns_lookup_realm = false
+     
+     [realms]
+         ATHENA.MIT.EDU = {
+             kdc = kerberos.mit.edu
+             kdc = kerberos-1.mit.edu
+             kdc = kerberos-2.mit.edu:750
+             admin_server = kerberos.mit.edu
+             master_kdc = kerberos.mit.edu
+             default_domain = mit.edu
+         }
+         EXAMPLE.COM = {
+             kdc = kerberos.example.com
+             kdc = kerberos-1.example.com
+             admin_server = kerberos.example.com
+         }
+     
+     [domain_realm]
+         .mit.edu = ATHENA.MIT.EDU
+         mit.edu = ATHENA.MIT.EDU
+     
+     [capaths]
+         ATHENA.MIT.EDU = {
+         	EXAMPLE.COM = .
+         }
+         EXAMPLE.COM = {
+         	ATHENA.MIT.EDU = .
+         }
+     
+     [logging]
+         kdc = SYSLOG:INFO
+         admin_server = FILE=/var/kadm5.log
+
+
+File: krb5-admin.info,  Node: kdc.conf,  Prev: krb5.conf,  Up: Configuration Files
+
+kdc.conf
+========
+
+The `kdc.conf' file contains KDC configuration information, including
+defaults used when issuing Kerberos tickets.  Normally, you should
+install your `kdc.conf' file in the directory `/usr/local/var/krb5kdc'.
+You can override the default location by setting the environment
+variable `KRB5_KDC_PROFILE'.
+
+The `kdc.conf' file is set up in the same format as the `krb5.conf'
+file.  (*Note krb5.conf::.)  The `kdc.conf' file may contain any or all
+of the following three sections:
+
+kdcdefaults
+     Contains default values for overall behavior of the KDC.
+
+realms
+     Contains subsections keyed by Kerberos realm names.  Each
+     subsection describes realm-specific information, including where
+     to find the Kerberos servers for that realm.
+
+logging
+     Contains relations which determine how Kerberos programs are to
+     perform logging.
+
+* Menu:
+
+* kdcdefaults::
+* realms (kdc.conf)::
+* Sample kdc.conf File::
+
+
+File: krb5-admin.info,  Node: kdcdefaults,  Next: realms (kdc.conf),  Prev: kdc.conf,  Up: kdc.conf
+
+[kdcdefaults]
+-------------
+
+The following relation is defined in the [kdcdefaults] section:
+
+kdc_ports
+     This relation lists the ports on which the Kerberos server should
+     listen for UDP requests by default.  This list is a comma separated
+     list of integers.  If this relation is not specified, the
+     compiled-in default is 88,750, the first being the assigned
+     Kerberos port and the second which was used by Kerberos V4.
+
+kdc_tcp_ports
+     This relation lists the ports on which the Kerberos server should
+     listen for TCP connections by default.  This list is a comma
+     separated list of integers.  If this relation is not specified,
+     the compiled-in default is not to listen for TCP connections at
+     all.
+
+     If you wish to change this (which we do not recommend, because the
+     current implementation has little protection against
+     denial-of-service attacks), the standard port number assigned for
+     Kerberos TCP traffic is port 88.
+
+v4_mode
+     This string specifies how the KDC should respond to Kerberos 4
+     packets.  The possible values are none, disable, full, and
+     nopreauth.  The default value is none.
+
+
+File: krb5-admin.info,  Node: realms (kdc.conf),  Next: Sample kdc.conf File,  Prev: kdcdefaults,  Up: kdc.conf
+
+[realms]
+--------
+
+Each tag in the [realms] section of the file names a Kerberos realm.
+The value of the tag is a subsection where the relations in that
+subsection define KDC parameters for that particular realm.
+
+For each realm, the following tags may be specified in the [realms]
+subsection:
+
+acl_file
+     (String.)  Location of the access control list (acl) file that
+     kadmin uses to determine which principals are allowed which
+     permissions on the database.  The default is
+     `/usr/local/var/krb5kdc/kadm5.acl'.
+
+admin_keytab
+     (String.)  Location of the keytab file that the legacy
+     administration daemons `kadmind4' and `v5passwdd' use to
+     authenticate to the database.  The default is
+     `/usr/local/var/krb5kdc/kadm5.keytab'.
+
+database_name
+     (String.)  Location of the Kerberos database for this realm.  The
+     default is
+     `/usr/local/var/krb5kdc/principal'.
+
+default_principal_expiration
+     (Absolute time string.)  Specifies the default expiration date of
+     principals created in this realm.  The default value for this tag
+     is 0.
+
+default_principal_flags
+     (Flag string.)  Specifies the default attributes of principals
+     created in this realm.  The format for this string is a
+     comma-separated list of flags, with '+' before each flag that
+     should be enabled and '-' before each flag that should be
+     disabled.   The default is postdateable, forwardable, tgt-based,
+     renewable, proxiable, dup-skey, allow-tickets, and service
+     enabled..
+
+     There are a number of possible flags:
+
+    postdateable
+          Enabling this flag allows the principal to obtain
+          postdateable tickets.
+
+    forwardable
+          Enabling this flag allows the principal to obtain forwardable
+          tickets.
+
+    tgt-based
+          Enabling this flag allows a principal to obtain tickets based
+          on a ticket-granting-ticket, rather than repeating the
+          authentication process that was used to obtain the TGT.
+
+    renewable
+          Enabling this flag allows the principal to obtain renewable
+          tickets.
+
+    proxiable
+          Enabling this flag allows the principal to obtain proxy
+          tickets.
+
+    dup-skey
+          Enabling this flag allows the principal to obtain a session
+          key for another user, permitting user-to-user authentication
+          for this principal.
+
+    allow-tickets
+          Enabling this flag means that the KDC will issue tickets for
+          this principal.  Disabling this flag essentially deactivates
+          the principal within this realm.
+
+    preauth
+          If this flag is enabled on a client principal, then that
+          principal is required to preauthenticate to the KDC before
+          receiving any tickets.  On a service principal, enabling this
+          flag means that service tickets for this principal will only
+          be issued to clients with a TGT that has the preauthenticated
+          ticket set.
+
+    hwauth
+          If this flag is enabled, then the principal is required to
+          preauthenticate using a hardware device before receiving any
+          tickets.
+
+    pwchange
+          Enabling this flag forces a password change for this
+          principal.
+
+    service
+          Enabling this flag allows the the KDC to issue service
+          tickets for this principal.
+
+    pwservice
+          If this flag is enabled, it marks this principal as a
+          password change service.  This should only be used in special
+          cases, for example, if a user's password has expired, then
+          the user has to get tickets for that principal without going
+          through the normal password authentication in order to be
+          able to change the password.
+
+dict_file
+     (String.)  Location of the dictionary file containing strings that
+     are not allowed as passwords.  If none is specified or if there is
+     no policy assigned to the principal, no dictionary checks of
+     passwords will be performed.
+
+kadmind_port
+     (Port number.)  Specifies the port on which the kadmind daemon is
+     to listen for this realm.  The assigned port for kadmind is
+     749.
+
+kpasswd_port
+     (Port number.)  Specifies the port on which the kpasswd daemon is
+     to listen for this realm.  The default is 464.
+
+key_stash_file
+     (String.)  Specifies the location where the master key has been
+     stored (via `kdb5_util stash').  The default is
+     `/usr/local/var/krb5kdc/.k5.REALM', where REALM is the Kerberos
+     realm.
+
+kdc_ports
+     (String.)  Specifies the list of ports that the KDC is to listen to
+     for UDP requests for this realm.  By default, the value of
+     kdc_ports as specified in the [kdcdefaults] section is used.
+
+kdc_tcp_ports
+     (String.)  Specifies the list of ports that the KDC is to listen to
+     for TCP requests for this realm.  By default, the value of
+     kdc_tcp_ports as specified in the [kdcdefaults] section is used.
+
+master_key_name
+     (String.)  Specifies the name of the principal associated with the
+     master key.  The default is K/M.
+
+master_key_type
+     (Key type string.)  Specifies the master key's key type.  The
+     default value for this is des3-cbc-sha1.  For a list of all
+     possible values, see *Note Supported Encryption Types::.
+
+max_life
+     (Delta time string.)  Specifes the maximum time period for which a
+     ticket may be valid in this realm.  The default value is
+     10 hours.
+
+max_renewable_life
+     (Delta time string.)  Specifies the maximum time period during
+     which a valid ticket may be renewed in this realm.  The default
+     value is 0.
+
+supported_enctypes
+     List of key:salt strings.  Specifies the default key/salt
+     combinations of principals for this realm.  Any principals created
+     through `kadmin' will have keys of these types.  The default value
+     for this tag is des3-hmac-sha1:normal des-cbc-crc:normal. For
+     lists of possible values, see *Note Supported Encryption Types::
+     and *Note Salts::.
+
+reject_bad_transit
+     A boolean value (`true', `false').  If set to `true', the KDC will
+     check the list of transited realms for cross-realm tickets against
+     the transit path computed from the realm names and the `capaths'
+     section of its `krb5.conf' file; if the path in the ticket to be
+     issued contains any realms not in the computed path, the ticket
+     will not be issued, and an error will be returned to the client
+     instead.  If this value is set to `false', such tickets will be
+     issued anyways, and it will be left up to the application server to
+     validate the realm transit path.
+
+     If the `disable-transited-check' flag is set in the incoming
+     request, this check is not performed at all.  Having the
+     `reject_bad_transit' option will cause such ticket requests to be
+     rejected always.
+
+     This transit path checking and config file option currently apply
+     only to TGS requests.
+
+     Earlier versions of the MIT release (before 1.2.3) had bugs in the
+     application server support such that the server-side checks may
+     not be performed correctly.  We recommend turning this option on,
+     unless you know that all application servers in this realm have
+     been updated to fixed versions of the software, and for whatever
+     reason, you don't want the KDC to do the validation.
+
+     This is a per-realm option so that multiple-realm KDCs may control
+     it separately for each realm, in case (for example) one realm has
+     had the software on its application servers updated but another
+     has not.
+
+     This option defaults to `true'.
+
+
+File: krb5-admin.info,  Node: Sample kdc.conf File,  Prev: realms (kdc.conf),  Up: kdc.conf
+
+Sample kdc.conf File
+--------------------
+
+Here's an example of a `kdc.conf' file:
+
+     [kdcdefaults]
+         kdc_ports = 88
+     
+     [realms]
+         ATHENA.MIT.EDU = {
+             kadmind_port = 749
+             max_life = 12h 0m 0s
+             max_renewable_life = 7d 0h 0m 0s
+             master_key_type = des3-hmac-sha1
+             supported_enctypes = des3-hmac-sha1:normal des-cbc-crc:normal des-cbc-crc:v4
+         }
+     
+     [logging]
+         kdc = FILE:/usr/local/var/krb5kdc/kdc.log
+         admin_server = FILE:/usr/local/var/krb5kdc/kadmin.log
+
+
+File: krb5-admin.info,  Node: Using DNS,  Next: Administrating the Kerberos Database,  Prev: Configuration Files,  Up: Top
+
+Using DNS
+*********
+
+* Menu:
+
+* Mapping Hostnames onto Kerberos Realms::
+* Hostnames for KDCs::
+
+
+File: krb5-admin.info,  Node: Mapping Hostnames onto Kerberos Realms,  Next: Hostnames for KDCs,  Prev: Using DNS,  Up: Using DNS
+
+Mapping Hostnames onto Kerberos Realms
+======================================
+
+Mapping hostnames onto Kerberos realms is done in one of two ways.
+
+The first mechanism, which has been in use for years in MIT-based
+Kerberos distributions, works through a set of rules in the `krb5.conf'
+configuration file.  (*Note krb5.conf::.)  You can specify mappings for
+an entire domain or subdomain, and/or on a hostname-by-hostname basis.
+Since greater specificity takes precedence, you would do this by
+specifying the mappings for a given domain or subdomain and listing the
+exceptions.
+
+The second mechanism works by looking up the information in special
+`TXT' records in the Domain Name Service.  This is currently not used
+by default because security holes could result if the DNS TXT records
+were spoofed.  If this mechanism is enabled on the client, it will try
+to look up a `TXT' record for the DNS name formed by putting the prefix
+`_kerberos' in front of the hostname in question.  If that record is
+not found, it will try using `_kerberos' and the host's domain name,
+then its parent domain, and so forth.  So for the hostname
+BOSTON.ENGINEERING.FOOBAR.COM, the names looked up would be:
+
+     _kerberos.boston.engineering.foobar.com
+     _kerberos.engineering.foobar.com
+     _kerberos.foobar.com
+     _kerberos.com
+
+The value of the first TXT record found is taken as the realm name.
+(Obviously, this doesn't work all that well if a host and a subdomain
+have the same name, and different realms.  For example, if all the hosts
+in the ENGINEERING.FOOBAR.COM domain are in the ENGINEERING.FOOBAR.COM
+realm, but a host named ENGINEERING.FOOBAR.COM is for some reason in
+another realm.  In that case, you would set up TXT records for all
+hosts, rather than relying on the fallback to the domain name.)
+
+Even if you do not choose to use this mechanism within your site, you
+may wish to set it up anyway, for use when interacting with other sites.
+
+
+File: krb5-admin.info,  Node: Hostnames for KDCs,  Prev: Mapping Hostnames onto Kerberos Realms,  Up: Using DNS
+
+Hostnames for KDCs
+==================
+
+MIT recommends that your KDCs have a predefined set of CNAME records
+(DNS hostname aliases), such as `kerberos' for the master KDC and
+`kerberos-1', `kerberos-2', ... for the slave KDCs.  This way, if you
+need to swap a machine, you only need to change a DNS entry, rather
+than having to change hostnames.
+
+A new mechanism for locating KDCs of a realm through DNS has been added
+to the MIT Kerberos V5 distribution.  A relatively new record type
+called `SRV' has been added to DNS.  Looked up by a service name and a
+domain name, these records indicate the hostname and port number to
+contact for that service, optionally with weighting and prioritization.
+(See RFC 2782 if you want more information.  You can follow the
+example below for straightforward cases.)
+
+The use with Kerberos is fairly straightforward.  The domain name used
+in the SRV record name is the domain-style Kerberos realm name.  (It is
+possible to have Kerberos realm names that are not DNS-style names, but
+we don't recommend it for Internet use, and our code does not support it
+well.)  Several different Kerberos-related service names are used:
+
+`_kerberos._udp'
+     This is for contacting any KDC by UDP.  This entry will be used
+     the most often.  Normally you should list port 88 on each of your
+     KDCs.
+
+`_kerberos._tcp'
+     This is for contacting any KDC by TCP.  The MIT KDC by default
+     will not listen on any TCP ports, so unless you've changed the
+     configuration or you're running another KDC implementation, you
+     should leave this unspecified.  If you do enable TCP support,
+     normally you should use port 88.
+
+`_kerberos-master._udp'
+     This entry should refer to those KDCs, if any, that will
+     immediately see password changes to the Kerberos database.  This
+     entry is used only in one case, when the user is logging in and
+     the password appears to be incorrect; the master KDC is then
+     contacted, and the same password used to try to decrypt the
+     response, in case the user's password had recently been changed
+     and the first KDC contacted hadn't been updated.  Only if that
+     fails is an "incorrect password" error given.
+
+     If you have only one KDC, or for whatever reason there is no
+     accessible KDC that would get database changes faster than the
+     others, you do not need to define this entry.
+
+`_kerberos-adm._tcp'
+     This should list port 749 on your master KDC.  Support for it is
+     not complete at this time, but it will eventually be used by the
+     `kadmin' program and related utilities.  For now, you will also
+     need the `admin_server' entry in `krb5.conf'.  (*Note krb5.conf::.)
+
+`_kpasswd._udp'
+     This should list port 464 on your master KDC.  It is used when a
+     user changes her password.
+
+`_kerberos-iv._udp'
+     This should refer to your KDCs that serve Kerberos version 4
+     requests, if you have Kerberos v4 enabled.
+
+Be aware, however, that the DNS SRV specification requires that the
+hostnames listed be the canonical names, not aliases.  So, for example,
+you might include the following records in your (BIND-style) zone file:
+
+     $ORIGIN foobar.com.
+     _kerberos               TXT       "FOOBAR.COM"
+     kerberos                CNAME     daisy
+     kerberos-1              CNAME     use-the-force-luke
+     kerberos-2              CNAME     bunny-rabbit
+     _kerberos._udp          SRV       0 0 88 daisy
+                             SRV       0 0 88 use-the-force-luke
+                             SRV       0 0 88 bunny-rabbit
+     _kerberos-master._udp   SRV       0 0 88 daisy
+     _kerberos-adm._tcp      SRV       0 0 749 daisy
+     _kpasswd._udp           SRV       0 0 464 daisy
+
+As with the DNS-based mechanism for determining the Kerberos realm of a
+host, we recommend distributing the information this way for use by
+other sites that may want to interact with yours using Kerberos, even if
+you don't immediately make use of it within your own site.  If you
+anticipate installing a very large number of machines on which it will
+be hard to update the Kerberos configuration files, you may wish to do
+all of your Kerberos service lookups via DNS and not put the information
+(except for `admin_server' as noted above) in future versions of your
+`krb5.conf' files at all.  Eventually, we hope to phase out the listing
+of server hostnames in the client-side configuration files; making
+preparations now will make the transition easier in the future.
+
+
+File: krb5-admin.info,  Node: Administrating the Kerberos Database,  Next: Application Servers,  Prev: Using DNS,  Up: Top
+
+Administrating the Kerberos Database
+************************************
+
+Your Kerberos database contains all of your realm's Kerberos principals,
+their passwords, and other administrative information about each
+principal.  For the most part, you will use the `kdb5_util' program to
+manipulate the Kerberos database as a whole, and the `kadmin' program
+to make changes to the entries in the database.  (One notable exception
+is that users will use the `kpasswd' program to change their own
+passwords.)  The `kadmin' program has its own command-line interface,
+to which you type the database administrating commands.
+
+`Kdb5_util' provides a means to create, delete, load, or dump a
+Kerberos database.  It also includes a command to stash a copy of the
+master database key in a file on a KDC, so that the KDC can authenticate
+itself to the `kadmind' and `krb5kdc' daemons at boot time.
+
+`Kadmin' provides for the maintenance of Kerberos principals, KADM5
+policies, and service key tables (keytabs).  It exists as both a
+Kerberos client, `kadmin', using Kerberos authentication and an RPC, to
+operate securely from anywhere on the network, and as a local client,
+`kadmin.local', intended to run directly on the KDC without Kerberos
+authentication.  Other than the fact that the remote client uses
+Kerberos to authenticate the person using it, the functionalities of
+the two versions are identical.  The local version is necessary to
+enable you to set up enough of the database to be able to use the remote
+version.  It replaces the now obsolete `kdb5_edit' (except for database
+dump and load, which are provided by `kdb5_util').
+
+The remote version authenticates to the KADM5 server using the service
+principal `kadmin/admin'.  If the credentials cache contains a ticket
+for the `kadmin/admin' principal, and the `-c ccache' option is
+specified, that ticket is used to authenticate to KADM5.  Otherwise,
+the `-p' and `-k' options are used to specify the client Kerberos
+principal name used to authenticate.  Once kadmin has determined the
+principal name, it requests a `kadmin/admin' Kerberos service ticket
+from the KDC, and uses that service ticket to authenticate to KADM5.
+
+* Menu:
+
+* Kadmin Options::
+* Date Format::
+* Principals::
+* Policies::
+* Global Operations on the Kerberos Database::
+* Cross-realm Authentication::
+
+
+File: krb5-admin.info,  Node: Kadmin Options,  Next: Date Format,  Prev: Administrating the Kerberos Database,  Up: Administrating the Kerberos Database
+
+Kadmin Options
+==============
+
+You can invoke `kadmin' or `kadmin.local' with any of the following
+options:
+
+-r REALM
+     Use REALM as the default Kerberos realm for the database.
+
+-p principal
+     Use the Kerberos principal principal to authenticate to Kerberos.
+     If this option is not given, `kadmin' will append `admin' to
+     either the primary principal name, the environment variable USER,
+     or to the username obtained from `getpwuid', in order of
+     preference.
+
+-q query
+     Pass query directly to `kadmin'.  This is useful for writing
+     scripts that pass specific queries to `kadmin'.
+
+     You can invoke `kadmin' with any of the following options:
+
+-k [-t keytab]
+     Use the keytab keytab to decrypt the KDC response instead of
+     prompting for a password on the TTY.  In this case, the principal
+     will be `host/hostname'.  If -t is not used to specify a keytab,
+     then the default keytab will be used.
+
+-c credentials cache
+     Use credentials_cache as the credentials cache.  The credentials
+     cache should contain a service ticket for the `kadmin/admin'
+     service, which can be acquired with the `kinit' program.  If this
+     option is not specified, `kadmin' requests a new service ticket
+     from the KDC, and stores it in its own temporary ccache.
+
+-w password
+     Use password as the password instead of prompting for one on the
+     TTY.  Note:  placing the password for a Kerberos principal with
+     administration access into a shell script can be dangerous if
+     unauthorized users gain read access to the script.
+
+-s admin_server[:port]
+     Specifies the admin server that kadmin should contact.
+
+     You can invoke `kadmin.local' with an of the follwing options:
+
+-d_ dbname
+     Specifies the name of the Kerberos database.
+
+-e "enctypes ..."
+     Sets the list of cryptosystem and salt types to be used for any new
+     keys created.  See *Note Supported Encryption Types:: and *Note
+     Salts:: for available types.
+
+-m
+     Do not authenticate using a keytab.  This option will cause kadmin
+     to prompt for the master database password.
+
+
+File: krb5-admin.info,  Node: Date Format,  Next: Principals,  Prev: Kadmin Options,  Up: Administrating the Kerberos Database
+
+Date Format
+===========
+
+Many of the `kadmin' commands take a duration or time as an argument.
+The date can appear in a wide variety of formats, such as:
+
+     "15 minutes"
+     "7 days"
+     "1 month"
+     "2 hours"
+     "400000 seconds"
+     "next year"
+     "this Monday"
+     "next Monday"
+     yesterday
+     tomorrow
+     now
+     "second Monday"
+     fortnight
+     "3/31/1992 10:00:07 PST"
+     "January 23, 2007 10:05pm"
+     "22:00 GMT"
+
+Note that if the date specification contains spaces, you must enclose it
+in double quotes.  Note also that you cannot use a number without a
+unit.  (I.e., ""60 seconds"" is correct, but "60" is incorrect.)  All
+keywords are case-insensitive.  The following is a list of all of the
+allowable keywords.
+
+Months
+     january, jan, february, feb, march, mar, april, apr, may, june,
+     jun, july, jul, august, aug, september, sep, sept, october, oct,
+     november, nov, december, dec
+
+Days
+     sunday, sun, monday, mon, tuesday, tues, tue, wednesday, wednes,
+     wed, thursday, thurs, thur, thu, friday, fri, saturday, sat
+
+Units
+     year, month, fortnight, week, day, hour, minute, min, second, sec
+
+Relative
+     tomorrow, yesterday, today, now, last, this, next, first, second,
+     third, fourth, fifth, sixth, seventh, eighth, ninth, tenth,
+     eleventh, twelfth, ago
+
+Time Zones
+     `kadmin' recognizes abbreviations for most of the world's time
+     zones.  A complete listing appears in *Note kadmin Time Zones::.
+
+12-hour Time Delimiters
+     am, pm
+
+
+File: krb5-admin.info,  Node: Principals,  Next: Policies,  Prev: Date Format,  Up: Administrating the Kerberos Database
+
+Principals
+==========
+
+Each entry in the Kerberos database contains a Kerberos principal
+(*note Definitions::) and the attributes and policies associated with
+that principal.
+
+* Menu:
+
+* Retrieving Information About a Principal::
+* Privileges::
+* Adding or Modifying Principals::
+* Deleting Principals::
+* Changing Passwords::
+
+
+File: krb5-admin.info,  Node: Retrieving Information About a Principal,  Next: Privileges,  Prev: Principals,  Up: Principals
+
+Retrieving Information About a Principal
+----------------------------------------
+
+* Menu:
+
+* Attributes::
+* Retrieving a List of Principals::
 
 
 File: krb5-admin.info,  Node: Attributes,  Next: Retrieving a List of Principals,  Prev: Retrieving Information About a Principal,  Up: Retrieving Information About a Principal
@@ -15,35 +779,37 @@ the "inquire" administrative privilege.  The syntax is:
 
 The `get_principal' command has the alias `getprinc'.
 
-For example, suppose you wanted to view the attributes of the principals
-`jennifer/root@ATHENA.MIT.EDU' and `systest@ATHENA.MIT.EDU'.  You would
-type:
+For example, suppose you wanted to view the attributes of the principal
+`jennifer/root@ATHENA.MIT.EDU'.    You would type:
 
      shell% kadmin
      kadmin: getprinc jennifer/root
      Principal: jennifer/root@ATHENA.MIT.EDU
-     Key version: 3
-     Maximum life: 1 day 00:00:00
+     Expiration date: [never]
+     Last password change: Mon Jan 31 02:06:40 EDT 2002
+     Password Expiration date: [none]
+     Maximum ticket life: 0 days 10:00:00
      Maximum renewable life: 7 days 00:00:00
-     Master key version: 1
-     Expires: Mon Jan 18 22:14:07 EDT 2038
-     Password expires: Mon Sep 19 14:40:00 EDT 1996
-     Password last changed: Mon Jan 31 02:06:40 EDT 1996
-     Last modified: by joeadmin/admin@ATHENA.MIT.EDU
-     	on Wed Jul 13 18:27:08 EDT 1996
-     Attributes: DISALLOW_FORWARDABLE, DISALLOW_PROXIABLE,
-     	REQUIRES_HW_AUTH
-     Salt type: DEFAULT
+     Last modified: Wed Jul 24 14:46:25 EDT 2002 (joeadmin/admin@ATHENA.MIT.EDU)
+     Last successful authentication: Mon Jul 29 18:20:17 EDT 2002
+     Last failed authentication: Mon Jul 29 18:18:54 EDT 2002
+     Failed password attempts: 3
+     Number of keys: 2
+     Key: vno 2, Triple DES cbc mode with HMAC/sha1, no salt
+     Key: vno 2, DES cbc mode with CRC-32, no salt
+     Attributes: DISALLOW_FORWARDABLE, DISALLOW_PROXIABLE
+     Policy: [none]
      kadmin:
 
 The `get_principal' command has a `-terse' option, which lists the
 fields as a quoted, tab-separated string.  For example:
 
-     kadmin: getprinc -terse systest
-     systest@ATHENA.MIT.EDU	3	86400	604800	1
-     785926535	753241234	785900000
-     joeadmin/admin@ATHENA.MIT.EDU	786100034	0
-     0
+     kadmin: getprinc -terse jennifer/root
+     jennifer/root@ATHENA.MIT.EDU	0	1027458564
+     0	36000	 (joeadmin/admin@ATHENA.MIT.EDU
+     1027536385	18	2	0	[none]	604800	1027980137
+     1027980054	3	2	1	2	16	0	1
+     2	1	0
      kadmin:
 
 
@@ -59,14 +825,14 @@ command, which requires the "list" privilege.  The syntax is:
 
 where expression is a shell-style glob expression that can contain the
 characters `*', `?', `[', and `]'.  All policy names matching the
-expression are displayed.  The `list_principals' command has the alias
-`listprincs'.  For example:
+expression are displayed.  The `list_principals' command has the
+aliases `listprincs', `get_principals', and `getprincs'.  For example:
 
      kadmin: listprincs test*
-     test3@mit.edu
-     test2@mit.edu
-     test1@mit.edu
-     testuser@mit.edu
+     test3@ATHENA.MIT.EDU
+     test2@ATHENA.MIT.EDU
+     test1@ATHENA.MIT.EDU
+     testuser@ATHENA.MIT.EDU
      kadmin:
 
 If no expression is provided, all principals are printed.
@@ -78,10 +844,29 @@ Privileges
 ----------
 
 Administrative privileges for the Kerberos database are stored in the
-file `kadm5.acl'.  Each line of the file contains a principal, the
-privileges that principal has, and optionally the target to which those
-permissions apply.  The privileges are represented by single letters;
-UPPER-CASE letters represent negative permissions.  The permissions are:
+file `kadm5.acl'.
+
+The format of the file is:
+
+     Kerberos_principal      permissions     [target_principal]	[restrictions]
+
+The Kerberos principal (and optional target principal) can include the
+"*" wildcard, so if you want any principal with the instance "admin" to
+have full permissions on the database, you could use the principal
+"`*/admin@REALM'" where "REALM" is your Kerberos realm.
+`target_principal' can also include backreferences to
+`Kerberos_principal', in which "*number" matches the component number
+in the `Kerberos_principal'.
+
+Note:  a common use of an admin instance is so you can grant separate
+permissions (such as administrator access to the Kerberos database) to
+a separate Kerberos principal.  For example, the user `joeadmin' might
+have a principal for his administrative use, called `joeadmin/admin'.
+This way, `joeadmin' would obtain `joeadmin/admin' tickets only when he
+actually needs to use those permissions.
+
+The permissions are represented by single letters; UPPER-CASE letters
+represent negative permissions.  The permissions are:
 
 a
      allows the addition of principals or policies in the database.
@@ -120,33 +905,65 @@ l
 L
      disallows the listing of principals or policies in the database.
 
+s
+     allows the explicit setting of the key for a principal
+
+S
+     disallows the explicit setting of the key for a principal
+
 *
      All privileges (admcil).
 
 x
      All privileges (admcil); identical to "*".
 
-Principals in this file can include the * wildcard.  Here is an example
-of a `kadm5.acl' file.  Note that order is important; permissions are
-determined by the first matching entry.
+The restrictions are a string of flags.  Allowed restrictions are:
+
+[+ -]flagname
+     flag is forced to indicated value.  The permissible flags are the
+     same as the `+' and `-' flags for the `kadmin addprinc' and
+     `modprinc' commands.
+
+-clearpolicy
+     policy is forced to clear
+
+-policy pol
+     policy is forced to be pol
+
+expire time
+pwexpire time
+maxlife time
+maxrenewlife time
+     associated value will be forced to MIN(time, requested value)
+
+The above flags act as restrictions on any add or modify operation
+which is allowed due to that ACL line.
+
+Here is an example of a `kadm5.acl' file.  Note that order is
+important; permissions are determined by the first matching entry.
 
      */admin@ATHENA.MIT.EDU  *
      joeadmin@ATHENA.MIT.EDU  ADMCIL
-     joeadmin/*@ATHENA.MIT.EDU  il
-     jennifer/root@ATHENA.MIT.EDU  cil  */root@ATHENA.MIT.EDU
+     joeadmin/*@ATHENA.MIT.EDU il */root@ATHENA.MIT.EDU
+     *@ATHENA.MIT.EDU cil *1/admin@ATHENA.MIT.EDU
      */*@ATHENA.MIT.EDU  i
+     */admin@EXAMPLE.COM * -maxlife 9h -postdateable
 
-In the above file, any principal with an `admin' instance has all
-administrative privileges.  The user `joeadmin' has all permissions
-with his `admin' instance, `joeadmin/admin@ATHENA.MIT.EDU' (matches the
-first line).  He has no permissions at all with his `null' instance,
-`joeadmin@ATHENA.MIT.EDU' (matches the second line).  He has inquire
-and list permissions with any other instance (matches the third line).
-When `jennifer' is using her `root' instance,
-`jennifer/root@ATHENA.MIT.EDU', she has change password, inquire, and
-list privileges for any other principal that has the instance `root'.
-Finally, any principal in the realm `ATHENA.MIT.EDU' (except for
+In the above file, any principal in the ATHENA.MIT.EDU realm with an
+`admin' instance has all administrative privileges.  The user `joeadmin'
+has all permissions with his `admin' instance,
+`joeadmin/admin@ATHENA.MIT.EDU' (matches the first line).  He has no
+permissions at all with his `null' instance, `joeadmin@ATHENA.MIT.EDU'
+(matches the second line).  His root instance has inquire and list
+permissions with any other principal that has the instance `root'.  Any
+principal in ATHENA.MIT.EDU can inquire, list, or change the password of
+their `admin' instance, but not any other `admin' instance.  Any
+principal in the realm `ATHENA.MIT.EDU' (except for
 `joeadmin@ATHENA.MIT.EDU', as mentioned above) has inquire privileges.
+Finally, any principal with an admin instance in EXAMPLE.COM has all
+permissions, but any principal that they create or modify will not be
+able to get postdateable tickets or tickets with a life of longer than
+9 hours.
 
 
 File: krb5-admin.info,  Node: Adding or Modifying Principals,  Next: Deleting Principals,  Prev: Privileges,  Up: Principals
@@ -156,9 +973,9 @@ Adding or Modifying Principals
 
 To add a principal to the database, use the kadmin `add_principal'
 command, which requires the "add" administrative privilege.  This
-function creates the new principal and, if neither the -policy nor
--clearpolicy options are specified and the policy "default" exists,
-assigns it that policy.  The syntax is:
+function creates the new principal, prompting twice for a password, and,
+if neither the -policy nor -clearpolicy options are specified and the
+policy "default" exists, assigns it that policy.  The syntax is:
 
      kadmin: add_principal [options] principal
 
@@ -168,28 +985,11 @@ syntax is:
 
      kadmin: modify_principal [options] principal
 
-`add_principal' has the aliases `addprinc' and `ank'(1)
+`add_principal' has the aliases `addprinc' and `ank'(1).
+`modify_principal' has the alias `modprinc'.
 
 The `add_principal' and `modify_principal' commands take the following
 switches:
-
--salt salttype
-     Uses the specified salt for generating the key.  The valid salt
-     types are:
-
-        * full_name (aliases "v5_salt" and "normal"; this is the
-          default)
-
-        * name_only
-
-        * realm_only
-
-        * no_salt (alias "v4_salt")
-
--clearpolicy
-     For `modify_principal', removes the current policy from a
-     principal.  For `add_principal', suppresses the automatic
-     assignment of the policy "default".
 
 -expire date
      Sets the expiration date of the principal to date.
@@ -199,6 +999,10 @@ switches:
 
 -maxlife maxlife
      Sets the maximum ticket life of the principal to maxlife.
+
+-maxrenewlife maxrenewlife
+     Sets the maximum renewable life of tickets for the principal to
+     maxrenewlife.
 
 -kvno number
      Explicity sets the key version number to number.  MIT does not
@@ -211,6 +1015,11 @@ switches:
      supplied, the -clearpolicy is not specified, and the policy
      "default" exists, that policy is assigned.  If a principal is
      created with no policy, `kadmin' will print a warning message.
+
+-clearpolicy
+     For `modify_principal', removes the current policy from a
+     principal.  For `add_principal', suppresses the automatic
+     assignment of the policy "default".
 
 {-|+}allow_postdated
      The "-allow_postdated" option prohibits this principal from
@@ -292,10 +1101,6 @@ switches:
      "+password_changing_service" option sets the
      KRB5_KDB_PWCHANGE_SERVICE flag on the principal in the database.
 
--clearpolicy policyname
-     Removes the policy policyname from the principal
-     (`modify_principal' only).
-
 -randkey
      Sets the key for the principal to a random value (`add_principal'
      only).  MIT recommends using this option for host keys.
@@ -309,7 +1114,8 @@ switches:
      Uses the specified list of enctype-salttype pairs for setting the
      key of the principal.  The quotes are necessary if there are
      multiple enctype-salttype pairs.  This will not function against
-     kadmin daemons earlier than krb5-1.2.
+     kadmin daemons earlier than krb5-1.2.  See *Note Supported
+     Encryption Types:: and *Note Salts:: for available types.
 
 If you want to just use the default values, all you need to do is:
 
@@ -337,19 +1143,20 @@ of the previous line.)
      kadmin:
 
 If you will need cross-realm authentication, you need to add principals
-for the other realm's TGT to each realm.  For example, if you need to do
-cross-realm authentication between the realms ATHENA.MIT.EDU and
-FUBAR.ORG, you would need to add the principals
-`krbtgt/FUBAR.ORG@ATHENA.MIT.EDU' and `krbtgt/ATHENA.MIT.EDU@FUBAR.ORG'
-to both databases.  You need to be sure the passwords and the key
-version numbers (kvno) are the same in both databases.  This may require
-explicitly setting the kvno with the `-kvno' option.
+for the other realm's TGT to each realm.  For example, if you need to
+do cross-realm authentication between the realms ATHENA.MIT.EDU and
+EXAMPLE.COM, you would need to add the principals
+`krbtgt/EXAMPLE.COM@ATHENA.MIT.EDU' and
+`krbtgt/ATHENA.MIT.EDU@EXAMPLE.COM' to both databases.  You need to be
+sure the passwords and the key version numbers (kvno) are the same in
+both databases.  This may require explicitly setting the kvno with the
+`-kvno' option.  See *Note Cross-realm Authentication:: for more
+details.
 
 ---------- Footnotes ----------
 
 (1) `ank' was the short form of the equivalent command using the
-deprecated `kadmin5' database administrative tool.  It has been kept.
-`modify_principal' has the alias `modprinc'.
+deprecated `kadmin5' database administrative tool.  It has been kept
 
 
 File: krb5-admin.info,  Node: Deleting Principals,  Next: Changing Passwords,  Prev: Adding or Modifying Principals,  Up: Principals
@@ -388,11 +1195,6 @@ the principal is changing his/her own password).  The syntax is:
 The `change_password' option has the alias `cpw'.  `change_password'
 takes the following options:
 
--salt salttype
-     Uses the specified salt for generating the key.  Salt types are
-     the same as for the `add_principal' command (*note Adding or
-     Modifying Principals::.).
-
 -randkey
      Sets the key of the principal to a random value.
 
@@ -404,7 +1206,14 @@ takes the following options:
      Uses the specified list of enctype-salttype pairs for setting the
      key of the principal.  The quotes are necessary if there are
      multiple enctype-salttype pairs.  This will not function against
-     kadmin daemons earlier than krb5-1.2.
+     kadmin daemons earlier than krb5-1.2.  See *Note Supported
+     Encryption Types:: and *Note Salts:: for possible values.
+
+-keepold
+     Keeps the previous kvno's keys around.  There is no easy way to
+     delete the old keys, and this flag is usually not necessary except
+     perhaps for TGS keys.  Don't use this flag unless you know what
+     you're doing.
 
 For example:
 
@@ -418,7 +1227,7 @@ Note that `change_password' will not let you change the password to one
 that is in the principal's password history.
 
 
-File: krb5-admin.info,  Node: Policies,  Next: Dumping a Kerberos Database to a File,  Prev: Principals,  Up: Administrating Kerberos Database Entries
+File: krb5-admin.info,  Node: Policies,  Next: Global Operations on the Kerberos Database,  Prev: Principals,  Up: Administrating the Kerberos Database
 
 Policies
 ========
@@ -480,8 +1289,8 @@ command, which requires the "list" privilege.  The syntax is:
 
 where expression is a shell-style glob expression that can contain the
 characters *, ?, and [].  All policy names matching the expression are
-displayed.  The `list_policies' command has the alias `listpols'.  For
-example:
+displayed.  The `list_policies' command has the aliases `listpols',
+`get_policies', and `getpols'.  For example:
 
      kadmin:  listpols
      test-pol
@@ -531,665 +1340,4 @@ switches:
 
 -history number
      Sets the number of past keys kept for a principal to number.
-
-
-File: krb5-admin.info,  Node: Deleting Policies,  Prev: Adding or Modifying Policies,  Up: Policies
-
-Deleting Policies
------------------
-
-To delete a policy, use the `kadmin' `delete_policy' command, which
-requires the "delete" administrative privilege.  The syntax is:
-
-     delete_policy policy_name
-
-The `delete_policy' command has the alias `delpol'.  It prompts for
-confirmation before deletion.  For example:
-
-     kadmin: delete_policy guests
-     Are you sure you want to delete the policy "guests"?
-     (yes/no): yes
-     Policy "guests" deleted.
-     kadmin:
-
-Note that you must cancel the policy from all principals before deleting
-it.  The `delete_policy' command will fail if it is in use by any
-principals.
-
-
-File: krb5-admin.info,  Node: Dumping a Kerberos Database to a File,  Next: Restoring a Kerberos Database from a Dump File,  Prev: Policies,  Up: Administrating Kerberos Database Entries
-
-Dumping a Kerberos Database to a File
-=====================================
-
-To dump a Kerberos database into a file, use the `kdb5_util' `dump'
-command on one of the KDCs.  The syntax is:
-
-     kdb5_util dump [-old] [-b6] [-b7] [-ov] [-verbose]
-     [filename [principals...]]
-
-The `kdb5_util dump' command takes the following options:
-
--old
-     causes the dump to be in the Kerberos 5 Beta 5 and earlier dump
-     format ("kdb5_edit load_dump version 2.0").
-
--b6
-     causes the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
-     load_dump version 3.0").
-
--b7
-     causes the dump to be in the Kerberos 5 Beta 7 format ("kdb5_util
-     load_dump version 4").  This was the dump format produced on
-     releases prior to 1.2.2.
-
--ov
-     causes the dump to be in ovsec_adm_export format.
-
--verbose
-     causes the name of each principal and policy to be printed as it is
-     dumped.
-
-For example:
-
-     shell% kdb5_util dump dumpfile
-     shell%
-
-     shell% kbd5_util dump -verbose dumpfile
-     kadmin/admin@ATHENA.MIT.EDU
-     krbtgt/ATHENA.MIT.EDU@ATHENA.MIT.EDU
-     kadmin/history@ATHENA.MIT.EDU
-     K/M@ATHENA.MIT.EDU
-     kadmin/changepw@ATHENA.MIT.EDU
-     shell%
-
-If you specify which principals to dump, you must use the full
-principal, as in the following example.  (The line beginning with => is
-a continuation of the previous line.):
-
-     shell% kdb5_util dump -verbose dumpfile K/M@ATHENA.MIT.EDU
-     => kadmin/admin@ATHENA.MIT.EDU
-     kadmin/admin@ATHENA.MIT.EDU
-     K/M@ATHENA.MIT.EDU
-     shell%
-
-Otherwise, the principals will not match those in the database and will
-not be dumped:
-
-     shell% kdb5_util dump -verbose dumpfile K/M kadmin/admin
-     shell%
-
-If you do not specify a dump file, `kdb5_util' will dump the database
-to the standard output.
-
-
-File: krb5-admin.info,  Node: Restoring a Kerberos Database from a Dump File,  Next: Creating a Stash File,  Prev: Dumping a Kerberos Database to a File,  Up: Administrating Kerberos Database Entries
-
-Restoring a Kerberos Database from a Dump File
-==============================================
-
-To restore a Kerberos database dump from a file, use the `kdb5_util'
-`load' command on one of the KDCs.  The syntax is:
-
-     kdb5_util load [-old] [-b6] [-b7] [-ov] [-verbose]
-     [-update] dumpfilename dbname [admin_dbname]
-
-The `kdb5_util load' command takes the following options:
-
--old
-     requires the dump to be in the Kerberos 5 Beta 5 and earlier dump
-     format ("kdb5_edit load_dump version 2.0").
-
--b6
-     requires the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
-     load_dump version 3.0").
-
--b7
-     requires the dump to be in the Kerberos 5 Beta 7 format ("kdb5_util
-     load_dump version 4").
-
--ov
-     requires the dump to be in ovsec_adm_export format.
-
--verbose
-     causes the name of each principal and policy to be printed as it is
-     dumped.
-
--update
-     causes records from the dump file to be updated in or added to the
-     existing database.
-
-For example:
-
-     shell% kdb5_util load dumpfile principal
-     shell%
-
-     shell% kdb5_util load -update dumpfile principal
-     shell%
-
-If the database file exists, and the -update flag was not given,
-`kdb5_util' will overwrite the existing database.
-
-
-File: krb5-admin.info,  Node: Creating a Stash File,  Next: Creating and Destroying a Kerberos Database,  Prev: Restoring a Kerberos Database from a Dump File,  Up: Administrating Kerberos Database Entries
-
-Creating a Stash File
-=====================
-
-A stash file allows a KDC to authenticate itself to the database
-utilities, such as `kadmin', `kadmind', `krb5kdc', and `kdb5_util'.
-
-To create a stash file, use the `kdb5_util' `stash' command.  The
-syntax is:
-
-     kdb5_util stash [-f keyfile]
-
-For example:
-
-     shell% kdb5_util stash
-     kdb5_util: Cannot find/read stored master key while reading master key
-     kdb5_util: Warning: proceeding without master key
-     Enter KDC database master key:  <= Type the KDC database master password.
-     shell%
-
-If you do not specify a stash file, `kdb5_util' will stash the key in
-the file specified in your `kdc.conf' file.
-
-
-File: krb5-admin.info,  Node: Creating and Destroying a Kerberos Database,  Prev: Creating a Stash File,  Up: Administrating Kerberos Database Entries
-
-Creating and Destroying a Kerberos Database
-===========================================
-
-If you need to create a new Kerberos database, use the `kdb5_util'
-`create' command.  The syntax is:
-
-     kdb5_util create [-s]
-
-If you specify the `-s' option, `kdb5_util' will stash a copy of the
-master key in a stash file.  (*Note Creating a Stash File::.)  For
-example:
-
-     shell% /usr/local/sbin/kdb5_util -r ATHENA.MIT.EDU create -s
-     kdb5_util: No such file or directory while setting active database to
-     => '/usr/local/var/krb5kdc/principal'
-     Initializing database '/usr/local/var/krb5kdc/principal' for
-     => realm 'ATHENA.MIT.EDU',
-     master key name 'K/M@ATHENA.MIT.EDU'
-     You will be prompted for the database Master Password.
-     It is important that you NOT FORGET this password.
-     Enter KDC database master key:  <= Type the master password.
-     Re-enter KDC database master key to verify:  <= Type it again.
-     shell%
-
-
-File: krb5-admin.info,  Node: Application Servers,  Next: Backups of Secure Hosts,  Prev: Administrating Kerberos Database Entries,  Up: Top
-
-Application Servers
-*******************
-
-If you need to install the Kerberos V5 programs on an application
-server, please refer to the Kerberos V5 Installation Guide.  Once you
-have installed the software, you need to add that host to the Kerberos
-database (*note Adding or Modifying Principals::.), and generate a
-"keytab" for that host, that contains the host's key.  You also need to
-make sure the host's clock is within your maximum clock skew of the
-KDCs.
-
-* Menu:
-
-* Keytabs::
-* Clock Skew::
-* Getting DNS Information Correct::
-* Configuring Your Firewall to Work With Kerberos V5::
-
-
-File: krb5-admin.info,  Node: Keytabs,  Next: Clock Skew,  Prev: Application Servers,  Up: Application Servers
-
-Keytabs
-=======
-
-A "keytab" is a host's copy of its own keylist, which is analogous to a
-user's password.  An application server that needs to authenticate
-itself to the KDC has to have a keytab that contains its own principal
-and key.  Just as it is important for users to protect their passwords,
-it is equally important for hosts to protect their keytabs.  You should
-always store keytab files on local disk, and make them readable only by
-root, and you should never send a keytab file over a network in the
-clear.  Ideally, you should run the `kadmin' command to extract a
-keytab on the host on which the keytab is to reside.
-
-* Menu:
-
-* Adding Principals to Keytabs::
-* Removing Principals from Keytabs::
-
-
-File: krb5-admin.info,  Node: Adding Principals to Keytabs,  Next: Removing Principals from Keytabs,  Prev: Keytabs,  Up: Keytabs
-
-Adding Principals to Keytabs
-----------------------------
-
-To generate a keytab, or to add a principal to an existing keytab, use
-the `ktadd' command from `kadmin', which requires the "inquire"
-administrative privilege.  (If you use the -glob princ_exp option, it
-also requires the "list" administrative privilege.)  The syntax is:
-
-     ktadd [-k keytab] [-q] [principal | -glob princ_exp] [...]
-
-The `ktadd' command takes the following switches:
-
--k keytab
-     use keytab as the keytab file.  Otherwise, `ktadd' will use the
-     default keytab file (`/etc/krb5.keytab').
-
--e "enc:salt..."
-     Uses the specified list of enctype-salttype pairs for setting the
-     key of the principal.  The quotes are necessary if there are
-     multiple enctype-salttype pairs.  This will not function against
-     kadmin daemons earlier than krb5-1.2.
-
--q
-     run in quiet mode.  This causes `ktadd' to display less verbose
-     information.
-
-principal | -glob principal expression
-     add principal, or all principals matching principal expression to
-     the keytab.  The rules for principal expression are the same as
-     for the kadmin `list_principals' (*note Retrieving a List of
-     Principals::.) command.
-
-Here is a sample session, using configuration files that enable only
-`des-cbc-crc' encryption. (The line beginning with => is a continuation
-of the previous line.)
-
-     kadmin: ktadd host/daffodil.mit.edu@ATHENA.MIT.EDU
-     kadmin: Entry for principal host/daffodil.mit.edu@ATHENA.MIT.EDU with
-          kvno 2, encryption type DES-CBC-CRC added to keytab
-          WRFILE:/etc/krb5.keytab.
-     kadmin:
-
-     kadmin: ktadd -k /usr/local/var/krb5kdc/kadmind.keytab
-     => kadmin/admin kadmin/changepw
-     kadmin: Entry for principal kadmin/admin@ATHENA.MIT.EDU with
-          kvno 3, encryption type DES-CBC-CRC added to keytab
-          WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
-     kadmin:
-
-
-File: krb5-admin.info,  Node: Removing Principals from Keytabs,  Prev: Adding Principals to Keytabs,  Up: Keytabs
-
-Removing Principals from Keytabs
---------------------------------
-
-To remove a principal to an existing keytab, use the kadmin `ktremove'
-command.  The syntax is:
-
-     ktremove [-k keytab] [-q] principal [kvno | all | old]
-
-The `ktremove' command takes the following switches:
-
--k keytab
-     use keytab as the keytab file.  Otherwise, `ktremove' will use the
-     default keytab file (`/etc/krb5.keytab').
-
--q
-     run in quiet mode.  This causes `ktremove' to display less verbose
-     information.
-
-principal
-     the principal to remove from the keytab.  (Required.)
-
-kvno
-     remove all entries for the specified principal whose Key Version
-     Numbers match kvno.
-
-all
-     remove all entries for the specified principal
-
-old
-     remove all entries for the specified principal except those with
-     the highest kvno.
-
-For example:
-
-     kadmin: ktremove -k /usr/local/var/krb5kdc/kadmind.keytab kadmin/admin
-     kadmin: Entry for principal kadmin/admin with kvno 3 removed
-          from keytab WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
-     kadmin:
-
-
-File: krb5-admin.info,  Node: Clock Skew,  Next: Getting DNS Information Correct,  Prev: Keytabs,  Up: Application Servers
-
-Clock Skew
-==========
-
-In order to prevent intruders from resetting their system clocks in
-order to continue to use expired tickets, Kerberos V5 is set up to
-reject ticket requests from any host whose clock is not within the
-specified maximum clock skew of the KDC (as specified in the `kdc.conf'
-file).  Similarly, hosts are configured to reject responses from any
-KDC whose clock is not within the specified maximum clock skew of the
-host (as specified in the `krb5.conf' file).  The default value for
-maximum clock skew is 300 seconds (five minutes).
-
-MIT suggests that you add a line to client machines' `/etc/rc' files to
-synchronize the machine's clock to your KDC at boot time.  On UNIX
-hosts, assuming you had a kdc called `kerberos' in your realm, this
-would be:
-
-     gettime -s kerberos
-
-If the host is not likely to be rebooted frequently, you may also want
-to set up a cron job that adjusts the time on a regular basis.
-
-
-File: krb5-admin.info,  Node: Getting DNS Information Correct,  Next: Configuring Your Firewall to Work With Kerberos V5,  Prev: Clock Skew,  Up: Application Servers
-
-Getting DNS Information Correct
-===============================
-
-Several aspects of Kerberos rely on name service.  In order for Kerberos
-to provide its high level of security, it is less forgiving of name
-service problems than some other parts of your network.  It is important
-that your Domain Name System (DNS) entries and your hosts have the
-correct information.
-
-Each host's canonical name must be the fully-qualified host name
-(including the domain), and each host's IP address must reverse-resolve
-to the canonical name.
-
-Other than the `localhost' entry, make all entries in each machine's
-`/etc/hosts' file in the following form:
-
-     IP address      fully-qualified hostname        aliases
-
-Here is a sample `/etc/hosts' file:
-
-     # this is a comment
-     127.0.0.1       localhost localhost@mit.edu
-     10.0.0.6       daffodil.mit.edu trillium wake-robin
-
-Additionally, on Solaris machines, you need to be sure the "hosts"
-entry in the file
-`/etc/nsswitch.conf' includes the source "dns" as well as "file".
-
-Finally, each host's keytab file must include a host/key pair for the
-host's canonical name.  You can list the keys in a keytab file by
-issuing the command `klist -k'.  For example:
-
-     viola# klist -k
-     Keytab name: /etc/krb5.keytab
-     KVNO Principal
-     ---- ------------------------------------------------------------
-        1 host/daffodil.mit.edu@ATHENA.MIT.EDU
-
-If you telnet to the host with a fresh credentials cache (ticket file),
-and then `klist', the host's service principal should be
-host/fully-qualified-hostname@REALM_NAME.
-
-
-File: krb5-admin.info,  Node: Configuring Your Firewall to Work With Kerberos V5,  Prev: Getting DNS Information Correct,  Up: Application Servers
-
-Configuring Your Firewall to Work With Kerberos V5
-==================================================
-
-If you need off-site users to be able to get Kerberos tickets in your
-realm, they must be able to get to your KDC.  This requires either that
-you have a slave KDC outside your firewall, or you configure your
-firewall to allow UDP requests into to at least one of your KDCs, on
-whichever port the KDC is running.  (The default is port 88; other ports
-may be specified in the KDC's kdc.conf file.)  Similarly, if you need
-off-site users to be able to change their passwords in your realm, they
-must be able to get to your Kerberos admin server.  The default port for
-the admin server is 749.
-
-If your on-site users inside your firewall will need to get to KDCs in
-other realms, you will also need to configure your firewall to allow
-outgoing TCP and UDP requests to port 88.  Additionally, if they will
-need to get to any Kerberos V4 KDCs, you may also need to allow TCP and
-UDP requests to port 750.  If your on-site users inside your firewall
-will need to get to Kerberos admin servers in other realms, you will
-also need to allow outgoing TCP and UDP requests to port 749.
-
-If any of your KDCs is outside your firewall, you will need to allow
-`kprop' requests to get through to the remote KDC.  `Kprop' uses the
-krb5_prop service on port 754 (tcp).
-
-If you need your off-site users to have access to machines inside your
-firewall, you need to allow TCP connections from their off-site hosts on
-the appropriate ports for the programs they will be using.  The
-following lines from `/etc/services' show the default port numbers for
-the Kerberos V5 programs:
-
-     ftp           21/tcp           # Kerberos ftp and telnet use the
-     telnet        23/tcp           # default ports
-     kerberos      88/udp    kdc    # Kerberos V5 KDC
-     kerberos      88/tcp    kdc    # Kerberos V5 KDC
-     klogin        543/tcp          # Kerberos authenticated rlogin
-     kshell        544/tcp   cmd    # and remote shell
-     kerberos-adm  749/tcp          # Kerberos 5 admin/changepw
-     kerberos-adm  749/udp          # Kerberos 5 admin/changepw
-     krb5_prop     754/tcp          # Kerberos slave propagation
-     eklogin       2105/tcp         # Kerberos auth. & encrypted rlogin
-     krb524        4444/tcp         # Kerberos 5 to 4 ticket translator
-
-By default, Kerberos V5 `telnet' and `ftp' use the same ports as the
-standard `telnet' and `ftp' programs, so if you already allow telnet
-and ftp connections through your firewall, the Kerberos V5 versions
-will get through as well.  If you do not already allow telnet and ftp
-connections through your firewall, but need your users to be able to
-use Kerberos V5 telnet and ftp, you can either allow ftp and telnet
-connections on the standard ports, or switch these programs to
-non-default port numbers and allow ftp and telnet connections on those
-ports to get through.
-
-Kerberos V5 `rlogin' uses the `klogin' service, which by default uses
-port 543.  Encrypted Kerberos V5 rlogin uses uses the `eklogin'
-service, which by default uses port 2105.
-
-Kerberos V5 `rsh' uses the `kshell' service, which by default uses port
-544.  However, the server must be able to make a TCP connection from
-the kshell port to an arbitrary port on the client, so if your users
-are to be able to use `rsh' from outside your firewall, the server they
-connect to must be able to send outgoing packets to arbitrary port
-numbers.  Similarly, if your users need to run `rsh' from inside your
-firewall to hosts outside your firewall, the outside server needs to be
-able to connect to an arbitrary port on the machine inside your
-firewall.  Because Kerberos V5 `rcp' uses `rsh', the same issues apply.
-If you need to use `rsh' (or `rcp') through your firewall and are
-concerned with the security implications of allowing connections to
-arbitrary ports, MIT suggests that you have rules that specifically
-name these applications and, if possible, list the allowed hosts.
-
-A reasonably good cookbook for configuring firewalls is available by FTP
-from
-`ftp.livingston.com', in the location:
-`/pub/firewall/firewall-1.1.ps.Z'.  The book `UNIX System Security', by
-David Curry, is also a good starting point.
-
-
-File: krb5-admin.info,  Node: Backups of Secure Hosts,  Next: Bug Reporting,  Prev: Application Servers,  Up: Top
-
-Backups of Secure Hosts
-***********************
-
-When you back up a secure host, you should exclude the host's keytab
-file from the backup.  If someone obtained a copy of the keytab from a
-backup, that person could make any host masquerade as the host whose
-keytab was compromised.  This could be particularly dangerous if the
-compromised keytab was from one of your KDCs.  If the machine has a disk
-crash and the keytab file is lost, it is easy to generate another keytab
-file.  (*Note Adding Principals to Keytabs::.)  If you are unable to
-exclude particular files from backups, you should ensure that the
-backups are kept as secure as the host's root password.
-
-* Menu:
-
-* Backing Up the Kerberos Database::
-
-
-File: krb5-admin.info,  Node: Backing Up the Kerberos Database,  Prev: Backups of Secure Hosts,  Up: Backups of Secure Hosts
-
-Backing Up the Kerberos Database
-================================
-
-As with any file, it is possible that your Kerberos database could
-become corrupted.  If this happens on one of the slave KDCs, you might
-never notice, since the next automatic propagation of the database would
-install a fresh copy.  However, if it happens to the master KDC, the
-corrupted database would be propagated to all of the slaves during the
-next propagation.  For this reason, MIT recommends that you back up
-your Kerberos database regularly.  Because the master KDC is
-continuously dumping the database to a file in order to propagate it to
-the slave KDCs, it is a simple matter to have a cron job periodically
-copy the dump file to a secure machine elsewhere on your network.  (Of
-course, it is important to make the host where these backups are stored
-as secure as your KDCs, and to encrypt its transmission across your
-network.)  Then if your database becomes corrupted, you can load the
-most recent dump onto the master KDC.  (*Note Restoring a Kerberos
-Database from a Dump File::.)
-
-
-File: krb5-admin.info,  Node: Bug Reporting,  Next: Appendix,  Prev: Backups of Secure Hosts,  Up: Top
-
-Bug Reporting
-*************
-
-In any complex software, there will be bugs.  If you have successfully
-built and installed Kerberos V5, please use the `krb5-send-pr' program
-to fill out a Problem Report.
-
-Bug reports that include proposed fixes are especially welcome.  If you
-do include fixes, please send them using either context diffs or unified
-diffs (using `diff -c' or `diff -u', respectively).  Please be careful
-when using "cut and paste" or other such means to copy a patch into a
-bug report; depending on the system being used, that can result in
-converting TAB characters into spaces, which makes applying the patches
-more difficult.
-
-The `krb5-send-pr' program is installed in the directory
-`/usr/local/sbin'.
-
-The `krb5-send-pr' program enters the problem report into our Problem
-Report Management System (PRMS), which automatically assigns it to the
-engineer best able to help you with problems in the assigned category.
-
-The `krb5-send-pr' program will try to intelligently fill in as many
-fields as it can.  You need to choose the "category", "class",
-"severity", and "priority" of the problem, as well as giving us as much
-information as you can about its exact nature.
-
-The PR category will be one of:
-
-     krb5-admin   krb5-appl    krb5-build   krb5-clients
-     krb5-doc     krb5-kdc     krb5-libs    krb5-misc
-     pty          telnet       test
-
-Choose the category that best describes the area under which your
-problem falls.
-
-The class can be "sw-bug", "doc-bug", "change-request", or "support".
-The first two are exactly as their names imply.  Use change-request
-when the software is behaving according to specifications, but you want
-to request changes in some feature or behavior.  The support class is
-intended for more general questions about building or using Kerberos V5.
-
-The severity of the problem indicates the problem's impact on the
-usability of Kerberos V5.  If a problem is "critical", that means the
-product, component or concept is completely non-operational, or some
-essential functionality is missing, and no workaround is known.  A
-"serious" problem is one in which the product, component or concept is
-not working properly or significant functionality is missing.  Problems
-that would otherwise be considered critical are rated serious when a
-workaround is known.  A "non-critical" problem is one that is indeed a
-problem, but one that is having a minimal effect on your ability to use
-Kerberos V5.  E.g., The product, component or concept is working in
-general, but lacks features, has irritating behavior, does something
-wrong, or doesn't match its documentation.  The default severity is
-serious.
-
-The priority indicates how urgent this particular problem is in
-relation to your work.  Note that low priority does not imply low
-importance.  A priority of "high" means a solution is needed as soon as
-possible.  A priority of "medium" means the problem should be solved no
-later than the next release.  A priority of "low" means the problem
-should be solved in a future release, but it is not important to your
-work how soon this happens.  The default priority is medium.
-
-Note that a given severity does not necessarily imply a given priority.
-For example, a non-critical problem might still have a high priority if
-you are faced with a hard deadline.  Conversely, a serious problem might
-have a low priority if the feature it is disabling is one that you do
-not need.
-
-It is important that you fill in the release field and tell us what
-changes you have made, if any.
-
-Bug reports that include proposed fixes are especially welcome.  If you
-include proposed fixes, please send them using either context diffs
-(`diff -c') or unified diffs (`diff -u').
-
-A sample filled-out form from a company named "Toasters, Inc." might
-look like this:
-
-     To: krb5-bugs@mit.edu
-     Subject: misspelled "Kerberos" in title of installation guide
-     From: jcb
-     Reply-To: jcb
-     Cc:
-     X-send-pr-version: 3.99
-     
-     
-     >Submitter-Id:	mit
-     >Originator:	Jeffrey C. Gilman Bigler
-     >Organization:
-     mit
-     >Confidential:	no
-     >Synopsis:	Misspelled "Kerberos" in title of installation guide
-     >Severity:	non-critical
-     >Priority:	low
-     >Category:	krb5-doc
-     >Class:		doc-bug
-     >Release:	1.0-development
-     >Environment:
-     	<machine, os, target, libraries (multiple lines)>
-     System: ULTRIX imbrium 4.2 0 RISC
-     Machine: mips
-     >Description:
-             Misspelled "Kerberos" in title of "Kerboros V5 Installation Guide"
-     >How-To-Repeat:
-             N/A
-     >Fix:
-             Correct the spelling.
-
-If the `krb5-send-pr' program does not work for you, or if you did not
-get far enough in the process to have an installed and working
-`krb5-send-pr', you can generate your own form, using the above as an
-example.
-
-
-File: krb5-admin.info,  Node: Appendix,  Prev: Bug Reporting,  Up: Top
-
-Appendix
-********
-
-* Menu:
-
-* Errors::
-* kadmin Time Zones::
-
-
-File: krb5-admin.info,  Node: Errors,  Next: kadmin Time Zones,  Prev: Appendix,  Up: Appendix
-
-Kerberos Error Messages
-=======================
-
-* Menu:
-
-* Kerberos V5 Library Error Codes::
-* Kerberos V5 Database Library Error Codes::
-* Kerberos V5 Magic Numbers Error Codes::
-* ASN.1 Error Codes::
-* GSSAPI Error Codes::
 

@@ -1,10 +1,6 @@
 AC_INIT(getpty.c)
 CONFIG_RULES
 AC_PROG_AWK
-dnl LinkFileDir([$](TOPLIBD)/libpty.a,libpty.a,../util/pty)
-AC_PROG_INSTALL
-AC_PROG_ARCHIVE
-AC_PROG_RANLIB
 AC_CHECK_FUNCS(fchmod fchown revoke vhangup killpg _getpty)
 dnl
 LOGINLIBS=
@@ -55,15 +51,14 @@ AC_TYPE_MODE_T
 AC_CHECK_TYPE(time_t, long)
 AC_CHECK_FUNC(strsave,[AC_DEFINE(HAS_STRSAVE)])
 AC_CHECK_FUNCS(setreuid gettosbyname setsid ttyname line_push ptsname grantpt openpty)
-AC_CHECK_HEADERS(unistd.h stdlib.h string.h pty.h sys/filio.h sys/sockio.h sys/label.h sys/tty.h ttyent.h lastlog.h sys/select.h sys/ptyvar.h)
-AC_CHECK_HEADERS(sys/wait.h)
+AC_CHECK_HEADERS(unistd.h stdlib.h string.h libutil.h pty.h sys/filio.h sys/sockio.h sys/label.h sys/tty.h sys/wait.h ttyent.h lastlog.h sys/select.h sys/ptyvar.h util.h)
 AC_CHECK_FUNCS(waitpid)
 DECLARE_SYS_ERRLIST
 KRB5_SIGTYPE
 CHECK_SIGNALS
 CHECK_SETJMP
 CHECK_DIRENT
-AC_CHECK_HEADER(termios.h,AC_CHECK_FUNC(cfsetispeed,AC_DEFINE(POSIX_TERMIOS)))
+AC_CHECK_HEADER(termios.h,[AC_CHECK_FUNC(cfsetispeed,AC_DEFINE(POSIX_TERMIOS))])
 
 ######################################################################
 #
@@ -187,7 +182,38 @@ fi
 # end of utmp-related hair
 #
 ######################################################################
-
+dnl
+KRB5_NEED_PROTO([#ifdef HAVE_UTMP_H
+#include <utmp.h>
+#endif
+#ifdef HAVE_UTMPX_H
+#include <utmpx.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+],getutmp)
+dnl
+#########################################
+KRB5_NEED_PROTO([#include <sys/types.h>
+#ifdef HAVE_UTMP_H
+#include <utmp.h>
+#endif
+#ifdef HAVE_LIBUTIL_H
+#include <libutil.h>
+#endif
+#ifdef HAVE_UTIL_H
+#include <util.h>
+#endif
+],logwtmp)
+########################################
+KRB5_NEED_PROTO([#include <unistd.h>
+],revoke)
+########################################
+dnl
 AC_MSG_CHECKING([streams interface])
 AC_CACHE_VAL(krb5_cv_has_streams,
 [AC_TRY_COMPILE(
@@ -254,9 +280,10 @@ if test $krb5_cv_setpgrp_args = two; then
 AC_DEFINE(SETPGRP_TWOARG)
 fi
 dnl
-ADD_DEF(-DKERBEROS)
+KRB5_AC_INET6
 AC_C_CONST
-KRB5_BUILD_LIBRARY_WITH_DEPS
+dnl KRB5_BUILD_LIBRARY_WITH_DEPS
+KRB5_BUILD_LIBRARY_STATIC
 KRB5_BUILD_LIBOBJS
 KRB5_BUILD_PROGRAM
 KRB5_RUN_FLAGS

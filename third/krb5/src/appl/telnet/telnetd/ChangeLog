@@ -1,11 +1,75 @@
-2002-01-18  Tom Yu  <tlyu@mit.edu>
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
 
-	* ext.h: Make stdarg prototypes unconditional, to avoid annoying
-	mostly-ANSI compilers that don't define __STDC__.
+	* telnetd.h: Don't declare errno.
 
-2001-10-15  Ken Raeburn  <raeburn@mit.edu>
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
 
-	* telnetd.c (valid_opts): Note that 'w' takes a parameter.
+	* telnetd.c (main): Use socklen_t when passing address to socket
+	functions.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.orig: Deleted.
+
+2002-11-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* configure.in: Test for speed_t being present.
+
+	* sys_term.c (addarg): When reallocing memory, ensure in size of
+	pointer. Use speed_t instead of int for termspeeds.
+
+	* authenc.c, ext.h, state.c, utility.c: Unsigned/signed cleanup.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-08  Jen Selby  <jenselby@mit.edu>
+
+	* telnetd.c: Switched the valid and user descriptions under the -a
+	flag
+
+2002-03-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* telnetd.c: Include fake-addrinfo.h, not fake-addrinfo.c.
+	(FAI_PREFIX): Delete.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* defs.h, state.c, sys_term.c, telnetd-ktd.c, telnetd.c: Make
+	prototypes unconditional.
+
+Sat Sep  8 08:24:51 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* telnetd.c: Move include of fake-addrinfo.c to after stdlib.h so
+ 	that malloc prototype povided.
+
+2001-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for ipv6 support.
+
+	* ext.h: Always use prototype declarations.
+	(P): Definitions deleted.
+
+	* defs.h: Don't include socket-utils.h until after netinet/in.h.
+
+2001-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* defs.h: Include socket-utils.h.
+	* telnetd.c: Include fake-addrinfo.c.
+	(FAI_PREFIX): Define.
+	(doit): Now static, and takes sockaddr pointer rather than
+	sockaddr_in pointer.  Use getnameinfo instead of gethostbyaddr to
+	verify that host name was available.
+	(main): Use sockaddr_storage for remote address buffer; clear
+	before using.  Only do IP_TOS processing for IPv4.
+
+	* termio-tn.c, termios-tn.c: Define dummy variables if STREAMSPTY
+	isn't defined, to silence compiler complaints about empty files.
 
 2001-08-02  Tom Yu  <tlyu@mit.edu>
 
@@ -42,22 +106,104 @@
 	(ttloop, printoption, printsub, printdata): Fix to use new
 	NETOBUF-handling functions.
 
+2001-07-23  Ezra Peisach  <epeisach@mit.edu>
+
+	* sys_term.c (startslave): Get rid of extra argument in call to
+	getptyslave().
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* sys_term.c (addarg): Cast char to long in indexing array.
+
+2001-07-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* state.c: Declate doclientstat() static and conditionalize
+	inclusion if LINEMODE defined. 
+
+	* sys_term.c: Declare getptyslave() and addard() static.
+
+	* telnetd.c: Declare _gettermname() and getterminaltype() static.
+
+	* utility.c: Declare putstr() and nextitem() static.
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* telnetd.c (main): Change variable sin to sin4.
+	(encrypt_failure): Change to not shadow global error_message.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* telnetd.c: Add prototypes for getent() and tgetent(). 
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Test if prototypes needed for setenv and unsetenv. 
+
+	* ext.h: Provide prototypes for unsetenv and setenv if needed.
+
+2001-06-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* utility.c (printsub): Ensure variable set before use.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* utility.c (printdata): Cast argument to isprint() to int.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* ext.h: Remove unused prototype for start_slave() and replace
+	with one for startslave().
+
+	* state.c: Add libtlnet/encrypt.h for missing prototypes.
+
+	* sys_term.c: Add prototype for dup_tty(). Change getptyslave()
+	from int to void. Cleanup an assignment in conditional warning. 
+
+	* telnetd.c: Include libtelnet/misc-proto.h. Declare return from
+	terminaltypeok() and main() as int.
+
+	* utility.c: Include libtelnet/auth.h and libtelnet/encrypt.h for
+	prototypes.
+
+2001-04-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* telnetd.c (valid_opts): Note that 'w' takes a parameter.
+	Reported by Nico Williams, <Nicolas.Williams@ubsw.com>.
+	(main): Delete options 'N', 'u', 'i' that were removed from
+	valid_opts in 1999.
+	(usage): Don't show -u option.  Align output columns better.
+
 2001-01-25  Tom Yu  <tlyu@mit.edu>
 
 	* state.c (envvarok): Disallow LC_* and NLSPATH.
 
-2000-06-19  Tom Yu  <tlyu@mit.edu>
+2000-12-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* telnetd.c (doit): Cast pty_make_sane_hostname first argument to
+	sockaddr pointer.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+        * configure.in: Use AC_CHECK_HEADER and AC_CHECK_FUNC instead of
+	AC_HEADER_CHECK and AC_FUNC_CHECK.
+
+2000-06-29  Tom Yu  <tlyu@mit.edu>
 
 	* telnetd.c (doit): Change test for "no authentication" as per
 	Jeffrey Altman's patch.
 
-2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
+2000-06-29  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* sys_term.c (start_login, Solaris): forcefully terminate "termbuf"
 	in case the "TERM" environment variable isn't.
 	* telnet-ktd.c (getterminaltype): Don't overflow buffers "first" and
 	"netobuf".
 	(recv_ayt): Forcibly terminate buffer "netobuf".
+
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* configure.in, defs.h: Check for existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
 
 2000-03-20  Ken Raeburn  <raeburn@mit.edu>
 	    Jeffrey Altman  <jaltman@watsun.cc.columbia.edu>
@@ -76,12 +222,12 @@
 	* telnetd.c (doit): Provide a more useful error message than
 	"authentication failed" if no authentication was even attempted.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Thu Apr 15 17:02:49 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 

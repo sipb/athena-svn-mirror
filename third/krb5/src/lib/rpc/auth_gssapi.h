@@ -3,7 +3,7 @@
  * 
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: auth_gssapi.h,v 1.1.1.4 1999-10-05 16:15:00 ghudson Exp $
+ * $Id: auth_gssapi.h,v 1.1.1.5 2004-02-27 03:57:01 zacheiss Exp $
  *
  */
 
@@ -21,17 +21,6 @@
 #endif
 #ifdef minor
 #undef minor
-#endif
-
-/*
- * Make sure we have a definition for PROTOTYPE.
- */
-#if !defined(PROTOTYPE)
-#if defined(__STDC__) || defined(_MSDOS) || defined(_WIN32) || defined(__ultrix)
-#define PROTOTYPE(x) x
-#else
-#define PROTOTYPE(x) ()
-#endif
 #endif
 
 typedef struct _auth_gssapi_name {
@@ -59,72 +48,80 @@ typedef struct _auth_gssapi_init_res {
 } auth_gssapi_init_res;
 
 typedef void (*auth_gssapi_log_badauth_func)
-     PROTOTYPE((OM_uint32 major,
+     (OM_uint32 major,
 		OM_uint32 minor,
 		struct sockaddr_in *raddr,
-		caddr_t data));
+		caddr_t data);
    
 typedef void (*auth_gssapi_log_badverf_func)
-     PROTOTYPE((gss_name_t client,
+     (gss_name_t client,
 		gss_name_t server,
 		struct svc_req *rqst,
 		struct rpc_msg *msg,
-		caddr_t data));
+		caddr_t data);
 
 typedef void (*auth_gssapi_log_miscerr_func)
-     PROTOTYPE((struct svc_req *rqst,
+     (struct svc_req *rqst,
 		struct rpc_msg *msg,
 		char *error,
-		caddr_t data));
+		caddr_t data);
 
-bool_t xdr_authgssapi_creds();
-bool_t xdr_authgssapi_init_arg();
-bool_t xdr_authgssapi_init_res();
+bool_t xdr_gss_buf(XDR *, gss_buffer_t);
+bool_t xdr_authgssapi_creds(XDR *, auth_gssapi_creds *);
+bool_t xdr_authgssapi_init_arg(XDR *, auth_gssapi_init_arg *);
+bool_t xdr_authgssapi_init_res(XDR *, auth_gssapi_init_res *);
 
 bool_t auth_gssapi_wrap_data
-PROTOTYPE((OM_uint32 *major, OM_uint32 *minor,
+(OM_uint32 *major, OM_uint32 *minor,
 	   gss_ctx_id_t context, rpc_u_int32 seq_num, XDR
 	   *out_xdrs, bool_t (*xdr_func)(), caddr_t
-	   xdr_ptr));
+	   xdr_ptr);
 bool_t auth_gssapi_unwrap_data
-PROTOTYPE((OM_uint32 *major, OM_uint32 *minor,
+(OM_uint32 *major, OM_uint32 *minor,
 	   gss_ctx_id_t context, rpc_u_int32 seq_num, XDR
 	   *in_xdrs, bool_t (*xdr_func)(), caddr_t
-	   xdr_ptr));
+	   xdr_ptr);
 
 AUTH *auth_gssapi_create
-PROTOTYPE((CLIENT *clnt,
+(CLIENT *clnt,
 	   OM_uint32 *major_status,
 	   OM_uint32 *minor_status,
 	   gss_cred_id_t claimant_cred_handle,
 	   gss_name_t target_name,
 	   gss_OID mech_type,
-	   int req_flags,
+	   OM_uint32 req_flags,
 	   OM_uint32 time_req,
 	   gss_OID *actual_mech_type,
-	   int *ret_flags,
-	   OM_uint32 *time_rec));
+	   OM_uint32 *ret_flags,
+	   OM_uint32 *time_rec);
 
 AUTH *auth_gssapi_create_default
-PROTOTYPE((CLIENT *clnt, char *service_name));
+(CLIENT *clnt, char *service_name);
 
 void auth_gssapi_display_status
-PROTOTYPE((char *msg, OM_uint32 major,
-	   OM_uint32 minor)); 
-bool_t _svcauth_gssapi_set_names
-PROTOTYPE((auth_gssapi_name *names, int num));
-void _svcauth_gssapi_unset_names
-PROTOTYPE(());
+(char *msg, OM_uint32 major,
+	   OM_uint32 minor); 
 
-void _svcauth_set_log_badauth_func
-PROTOTYPE((auth_gssapi_log_badauth_func func,
-	   caddr_t data));
-void _svcauth_set_log_badverf_func
-PROTOTYPE((auth_gssapi_log_badverf_func func,
-	   caddr_t data));
-void _svcauth_set_log_miscerr_func
-PROTOTYPE((auth_gssapi_log_miscerr_func func,
-	   caddr_t data));
+bool_t auth_gssapi_seal_seq
+(gss_ctx_id_t context, rpc_u_int32 seq_num, gss_buffer_t out_buf);
+
+bool_t auth_gssapi_unseal_seq
+(gss_ctx_id_t context, gss_buffer_t in_buf, rpc_u_int32 *seq_num);
+
+bool_t _svcauth_gssapi_set_names
+(auth_gssapi_name *names, int num);
+void _svcauth_gssapi_unset_names
+(void);
+
+void _svcauth_gssapi_set_log_badauth_func
+(auth_gssapi_log_badauth_func func,
+	   caddr_t data);
+void _svcauth_gssapi_set_log_badverf_func
+(auth_gssapi_log_badverf_func func,
+	   caddr_t data);
+void _svcauth_gssapi_set_log_miscerr_func
+(auth_gssapi_log_miscerr_func func,
+	   caddr_t data);
 
 #define GSS_COPY_BUFFER(dest, src) { \
      (dest).length = (src).length; \

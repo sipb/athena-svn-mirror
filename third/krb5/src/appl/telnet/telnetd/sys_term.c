@@ -193,6 +193,9 @@ int ttyfd = -1;
 #define setpgrp(a,b) setpgrp()
 #endif
 
+int dup_tty(int);
+static char **addarg(char **, char *);
+
 /*
  * init_termbuf()
  * copy_termbuf(cp)
@@ -852,7 +855,7 @@ tty_iscrnl()
  */
 struct termspeeds {
 	int	speed;
-	int	value;
+	speed_t	value;
 } termspeeds[] = {
 	{ 0,     B0 },    { 50,    B50 },   { 75,    B75 },
 	{ 110,   B110 },  { 134,   B134 },  { 150,   B150 },
@@ -904,7 +907,7 @@ tty_isnewmap()
  * that is necessary.  The return value is a file descriptor
  * for the slave side.
  */
-	int
+static void
 getptyslave()
 {
      int t = -1;
@@ -1093,7 +1096,7 @@ startslave(host, autologin, autoname)
 	if (i) {
 		char c;
 
-		void sigjob P((int));
+		void sigjob (int);
 		slavepid = i; /* So we can clean it up later */
 #ifdef	CRAY
 		(void) signal(WJSIGNAL, sigjob);
@@ -1112,7 +1115,7 @@ startslave(host, autologin, autoname)
 		
 		pty_update_utmp (PTY_LOGIN_PROCESS, getpid(), "LOGIN", line,
 				 host, PTY_TTYSLOT_USABLE);
-		getptyslave(autologin);
+		getptyslave();
 
 		/* Notify our parent we're ready to continue.*/
 		write(syncpipe[1],"y",1);
@@ -1188,7 +1191,7 @@ init_env()
 	char **envp;
 
 	envp = envinit;
-	if (*envp = getenv("TZ"))
+	if ((*envp = getenv("TZ")))
 		*envp++ -= 3;
 #if	defined(CRAY) || defined(__hpux)
 	else
@@ -1213,11 +1216,8 @@ start_login(host, autologin, name)
 	int autologin;
 	char *name;
 {
-	register char *cp;
 	register char **argv;
-	char **addarg();
 	extern char *getenv();
-	register int pid = getpid();
 
 #ifdef SOLARIS
 	char *term;
@@ -1409,7 +1409,13 @@ start_login(host, autologin, name)
 	/*NOTREACHED*/
 }
 
-	char **
+/*
+ * This code returns a pointer to the first element of the array and
+ * expects the same to be called with.
+ * Therefore the -1 reference is legal. 
+ */
+
+static char **
 addarg(argv, val)
 	register char **argv;
 	register char *val;
@@ -1428,14 +1434,14 @@ addarg(argv, val)
 	}
 	for (cpp = argv; *cpp; cpp++)
 		;
-	if (cpp == &argv[(int)argv[-1]]) {
+	if (cpp == &argv[(long)argv[-1]]) {
 		--argv;
-		*argv = (char *)((int)(*argv) + 10);
-		argv = (char **)realloc(argv, (int)(*argv) + 2);
+		*argv = (char *)((long)(*argv) + 10);
+		argv = (char **)realloc(argv, sizeof(*argv) * ((long)(*argv) + 2));
 		if (argv == NULL)
 			return(NULL);
 		argv++;
-		cpp = &argv[(int)argv[-1] - 10];
+		cpp = &argv[(long)argv[-1] - 10];
 	}
 	*cpp++ = val;
 	*cpp = 0;

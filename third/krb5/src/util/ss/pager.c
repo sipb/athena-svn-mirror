@@ -9,6 +9,7 @@
 
 #include "ss_internal.h"
 #include "copyright.h"
+#include <errno.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -17,7 +18,6 @@
 static char MORE[] = "more";
 extern char *_ss_pager_name;
 extern char *getenv();
-extern int errno;
 
 /*
  * this needs a *lot* of work....
@@ -36,7 +36,7 @@ int ss_pager_create()
 	if (pipe(filedes) != 0)
 		return(-1);
 
-	switch(fork()) {
+	switch((int) fork()) {
 	case -1:
 		return(-1);
 	case 0:
@@ -102,7 +102,7 @@ void ss_page_stdin()
 		char buf[80];
 		register int n;
 		while ((n = read(0, buf, 80)) > 0)
-			write(1, buf, n);
+			write(1, buf, (unsigned) n);
 	}
 	exit(errno);
 }

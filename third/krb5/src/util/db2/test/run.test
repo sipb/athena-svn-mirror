@@ -401,7 +401,7 @@ test7()
 # Make sure that overflow pages are reused.
 test8()
 {
-	echo "Test 8: btree, hash: repeated small key, big data pairs"
+	echo "Test 8: btree: repeated small key, big data pairs"
 	rm -f $TMP1
 	echo "" | 
 	awk 'BEGIN {

@@ -49,7 +49,7 @@ struct mblock {
     0
 };
 
-int set_dbname_help PROTOTYPE((krb5_context, char *, char *));
+int set_dbname_help (krb5_context, char *, char *);
 
 static void
 usage(who, status)
@@ -76,27 +76,14 @@ static char *cur_realm = 0;
 static char *mkey_name = 0;
 static char *mkey_password = 0;
 static krb5_boolean manual_mkey = FALSE;
-static krb5_boolean dbactive = FALSE;
 
-void
-quit(context)
-    krb5_context context;
-{
-    krb5_error_code retval = krb5_db_fini(context);
-    memset((char *)master_keyblock.contents, 0, master_keyblock.length);
-    if (retval) {
-	com_err(progname, retval, "while closing database");
-	exit(1);
-    }
-    exit(0);
-}
 
-int check_princ PROTOTYPE((krb5_context, char *));
+int check_princ (krb5_context, char *);
 
 int
 main(argc, argv)
-int argc;
-char *argv[];
+    int argc;
+    char *argv[];
 {
     extern char *optarg;	
     int optchar, i, n;
@@ -166,7 +153,7 @@ char *argv[];
     if (!enctypedone)
 	master_keyblock.enctype = DEFAULT_KDC_ENCTYPE;
 
-    if (!valid_enctype(master_keyblock.enctype)) {
+    if (!krb5_c_valid_enctype(master_keyblock.enctype)) {
 	com_err(progname, KRB5_PROG_ETYPE_NOSUPP,
 		"while setting up enctype %d", master_keyblock.enctype);
 	exit(1);
@@ -217,11 +204,16 @@ char *argv[];
     krb5_finish_key(context, &master_encblock);
 
     retval = krb5_db_fini(context);
-    memset((char *)master_keyblock.contents, 0, master_keyblock.length);
+    memset((char *)master_keyblock.contents, 0, (size_t) master_keyblock.length);
     if (retval && retval != KRB5_KDB_DBNOTINITED) {
 	com_err(progname, retval, "while closing database");
 	exit(1);
     }
+
+    if (str_master_princ) {
+	krb5_free_unparsed_name(context, str_master_princ);
+    }
+    krb5_free_context(context);
     exit(0);
 }
 
@@ -254,6 +246,7 @@ check_princ(context, str_princ)
 
     if ((retval = krb5_principal2salt(context, princ, &salt))) {
 	com_err(progname, retval, "while converting principal to salt for '%s'", princ_name);
+	krb5_free_principal(context, princ);
 	goto out;
     }
 
@@ -261,14 +254,19 @@ check_princ(context, str_princ)
 				    &pwd_key, &pwd, &salt))) {
 	com_err(progname, retval, "while converting password to key for '%s'", 
 		princ_name);
+	krb5_free_data_contents(context, &salt);
+	krb5_free_principal(context, princ);
 	goto out;
     }
+    krb5_free_data_contents(context, &salt);
 
     if ((retval = krb5_db_get_principal(context, princ, &kdbe, 
 					&nprincs, &more))) {
       com_err(progname, retval, "while attempting to verify principal's existence");
+      krb5_free_principal(context, princ);
       goto out;
     }
+    krb5_free_principal(context, princ);
 
     if (nprincs != 1) {
       com_err(progname, 0, "Found %d entries db entry for %s.\n", nprincs,
@@ -291,7 +289,8 @@ errout:
       return(-1);
     }
     else {
-      if (memcmp((char *)pwd_key.contents, (char *) db_key.contents, pwd_key.length)) {
+      if (memcmp((char *)pwd_key.contents, (char *) db_key.contents, 
+		 (size_t) pwd_key.length)) {
 	fprintf(stderr, "\t key did not match stored value for %s\n", 
 		princ_name);
 	goto errout;
@@ -453,7 +452,6 @@ set_dbname_help(context, pname, dbname)
     mblock.mkvno = master_entry.key_data[0].key_data_kvno;
 
     krb5_db_free_principal(context, &master_entry, nentries);
-    dbactive = TRUE;
     return 0;
 }
 

@@ -1,3 +1,137 @@
+2003-02-08  Tom Yu  <tlyu@mit.edu>
+
+	* admin_server.c (kadm_listen): Zero sa_flags to avoid wonkiness.
+
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin_server.c (kadm_listen): Use socklen_t when passing address
+	to socket functions.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* admin_server.c (kadm_listen): Remove declaration of errno
+
+	* acl_files.c: Remove declaration of errno
+
+2002-11-26  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (OBJS): Remove kadm_stream.o and kadm_err.o.  Also,
+	remove references to kadm_err.et.
+
+	* kadm_err.et: Remove.  It lives in lib/krb4 now.
+
+	* kadm_server.h: Remove some prototypes that were moved to
+	kadm.h.
+
+	* kadm_stream.c: Remove.  It lives in lib/krb4 now.
+
+2002-11-01  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_ser_wrap.c (kadm_ser_in): Apply fix for MITKRB5-SA-2002-002
+	buffer overflow.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-13  Tom Yu  <tlyu@mit.edu>
+
+	* acl_files.c (canon;): Properly handle appending of the local
+	realm, which was botched due to a buffer-overflow patch.
+
+2001-11-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_server.h: Update prototype for convert_kadm5_to_kadm.
+
+	* admin_server.c (process_client): Do not assign negative value to
+	unsigned variable.
+	(convert_kadm5_to_kadm): Return krb5_int32 instead of krb5_ui_4 to
+	be compatible with error codes.
+
+2001-07-09  Ezra Peisach  <epeisach@mit.edu>
+
+	* admin_server.c: Provide prototype for do_child and declare static.
+
+2001-07-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_server.h: Add prototypes for missing acl_ functions.
+
+	* admin_server.c, kadm_func.c: Declare functions static that are
+ 	local to file.
+
+	* acl_files.c: Include kadm_server.h for prototypes. Flush out
+	static prototype for acl_abort.
+
+	* kadm_supp.c: Include kadm_server.h for prototypes.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_supp.c (prin_vals): Pass time_t * to localtime instead of
+	long *.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_funcs.c: Cast argument to isalnum()/isdigit() to int.
+
+	* acl_files.c (nuke_whitespace): Cast argument to isspace() to int. 
+
+2001-06-11  Ezra Peisach  <epeisach@rna.mit.edu>
+
+	* kadm_supp.c: Include string.h for strncpy() prototype.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_ser_wrap.c: Argument to quad_cksum is C_Block * - not C_Block.
+	(kadm_ser_init): Declare as returning int.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* acl_files.c, admin_server.c, kadm_funcs.c, kadm_ser_wrap.c:
+	Explicitly declare function return types and cleanup assignments
+	in conditionals.
+
+	* kadm_server.c: Include kadm_server.h and cleanup assignments in
+	conditionals.
+
+	* kadm_server.h: Include kadm5/admin.h, kadm.h, krb_db.h for
+	structure defintions so that many prototypes may be added to this
+	file.
+
+	* kadm_stream.c: Include kadm_server.h for prototypes. Explicitly
+	declare functions as ints.
+	(stream_to_vals) Assumption made that pointer to long the same
+	size as krb5_ui_4 fixed.
+
+	* kadm_supp.c: Include sys/param.h early so that MAXHOSTNAMELEN is
+	not defined by kadm.h and later redefined. In prin_vals(),
+	key_high and key_low elements of the Kadm_vals structure are longs
+	- use an appropriate format to printf.
+
+2001-06-04  Ezra Peisach  <epeisach@rna.mit.edu>
+
+	* kadm_ser_wrap.c, kadm_server.c: Cleanup assignments in conditionals.
+
+2000-10-23  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_ser_wrap.c (kadm_ser_in): Update call to mk_priv().
+
+2000-10-10  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_funcs.c: Call life_to_time() and time_to_life() as
+	appropriate.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: kadmin4d depends on the kdb5 lib.
+
 2000-05-23  Ken Raeburn  <raeburn@mit.edu>
 
 	* admin_server.c (main, case 'r'): Reject realm name that's too
@@ -25,12 +159,12 @@
 	* kadm_server.c (kadm_ser_cpw): Add new arg to call to
 	chpass_principal_util().
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Tue Jan 12 18:26:48 1999  Tom Yu  <tlyu@mit.edu>
 

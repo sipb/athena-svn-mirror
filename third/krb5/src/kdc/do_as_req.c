@@ -27,6 +27,7 @@
  * KDC Routines to deal with AS_REQ's
  */
 
+#define NEED_SOCKETS
 #include "k5-int.h"
 #include "com_err.h"
 
@@ -45,20 +46,14 @@
 #include "adm_proto.h"
 #include "extern.h"
 
-static krb5_error_code prepare_error_as PROTOTYPE((krb5_kdc_req *,
-						   int,
-						   krb5_data *, 
-						   krb5_data **));
+static krb5_error_code prepare_error_as (krb5_kdc_req *, int, krb5_data *, 
+					 krb5_data **, const char *);
 
 /*ARGSUSED*/
 krb5_error_code
-process_as_req(request, from, portnum, response)
-register krb5_kdc_req *request;
-const krb5_fulladdr *from;		/* who sent it ? */
-int	portnum;
-krb5_data **response;			/* filled in with a response packet */
+process_as_req(krb5_kdc_req *request, const krb5_fulladdr *from,
+	       krb5_data **response)
 {
-
     krb5_db_entry client, server;
     krb5_kdc_rep reply;
     krb5_enc_kdc_rep_part reply_encpart;
@@ -79,22 +74,24 @@ krb5_data **response;			/* filled in with a response packet */
     krb5_data e_data;
     register int i;
     krb5_timestamp until, rtime;
-    char *cname = 0, *sname = 0, *fromstring = 0;
+    char *cname = 0, *sname = 0;
+    const char *fromstring = 0;
     char ktypestr[128];
     char rep_etypestr[128];
+    char fromstringbuf[70];
 
     ticket_reply.enc_part.ciphertext.data = 0;
     e_data.data = 0;
     encrypting_key.contents = 0;
+    reply.padata = 0;
     session_key.contents = 0;
 
     ktypes2str(ktypestr, sizeof(ktypestr),
 	       request->nktypes, request->ktype);
 
-#ifdef HAVE_NETINET_IN_H
-    if (from->address->addrtype == ADDRTYPE_INET)
-	fromstring = (char *) inet_ntoa(*(struct in_addr *)from->address->contents);
-#endif
+    fromstring = inet_ntop(ADDRTYPE2FAMILY (from->address->addrtype),
+			   from->address->contents,
+			   fromstringbuf, sizeof(fromstringbuf));
     if (!fromstring)
 	fromstring = "<unknown>";
 
@@ -340,7 +337,7 @@ krb5_data **response;			/* filled in with a response packet */
     client_key = (krb5_key_data *) NULL;
     for (i = 0; i < request->nktypes; i++) {
 	useenctype = request->ktype[i];
-	if (!valid_enctype(useenctype))
+	if (!krb5_c_valid_enctype(useenctype))
 	    continue;
 
 	if (!krb5_dbe_find_enctype(kdc_context, &client, useenctype, -1,
@@ -365,7 +362,6 @@ krb5_data **response;			/* filled in with a response packet */
 
     /* Start assembling the response */
     reply.msg_type = KRB5_AS_REP;
-    reply.padata = 0;
     reply.client = request->client;
     reply.ticket = &ticket_reply;
     reply_encpart.session = &session_key;
@@ -415,10 +411,10 @@ krb5_data **response;			/* filled in with a response packet */
 
     rep_etypes2str(rep_etypestr, sizeof(rep_etypestr), &reply);
     krb5_klog_syslog(LOG_INFO,
-		     "AS_REQ (%s) %s(%d): ISSUE: authtime %d, "
+		     "AS_REQ (%s) %s: ISSUE: authtime %d, "
 		     "%s, %s for %s",
 		     ktypestr,
-	             fromstring, portnum, authtime,
+	             fromstring, authtime,
 		     rep_etypestr,
 		     cname, sname);
 
@@ -433,22 +429,28 @@ krb5_data **response;			/* filled in with a response packet */
 
 errout:
     if (status)
-        krb5_klog_syslog(LOG_INFO, "AS_REQ (%s) %s(%d): %s: %s for %s%s%s",
+        krb5_klog_syslog(LOG_INFO, "AS_REQ (%s) %s: %s: %s for %s%s%s",
 			 ktypestr,
-	       fromstring, portnum, status, 
+	       fromstring, status, 
 	       cname ? cname : "<unknown client>",
 	       sname ? sname : "<unknown server>",
 	       errcode ? ", " : "",
 	       errcode ? error_message(errcode) : "");
     if (errcode) {
+	if (status == 0)
+	    status = error_message (errcode);
 	errcode -= ERROR_TABLE_BASE_krb5;
 	if (errcode < 0 || errcode > 128)
 	    errcode = KRB_ERR_GENERIC;
 	    
-	errcode = prepare_error_as(request, errcode, &e_data, response);
+	errcode = prepare_error_as(request, errcode, &e_data, response,
+				   status);
     }
 
-    krb5_free_keyblock_contents(kdc_context, &encrypting_key);
+    if (encrypting_key.contents)
+	krb5_free_keyblock_contents(kdc_context, &encrypting_key);
+    if (reply.padata)
+	krb5_free_pa_data(kdc_context, reply.padata);
 
     if (cname)
 	    free(cname);
@@ -488,11 +490,8 @@ errout:
 }
 
 static krb5_error_code
-prepare_error_as (request, error, e_data, response)
-register krb5_kdc_req *request;
-int error;
-krb5_data *e_data;
-krb5_data **response;
+prepare_error_as (krb5_kdc_req *request, int error, krb5_data *e_data,
+		  krb5_data **response, const char *status)
 {
     krb5_error errpkt;
     krb5_error_code retval;
@@ -507,10 +506,10 @@ krb5_data **response;
     errpkt.error = error;
     errpkt.server = request->server;
     errpkt.client = request->client;
-    errpkt.text.length = strlen(error_message(error+KRB5KDC_ERR_NONE))+1;
+    errpkt.text.length = strlen(status)+1;
     if (!(errpkt.text.data = malloc(errpkt.text.length)))
 	return ENOMEM;
-    (void) strcpy(errpkt.text.data, error_message(error+KRB5KDC_ERR_NONE));
+    (void) strcpy(errpkt.text.data, status);
 
     if (!(scratch = (krb5_data *)malloc(sizeof(*scratch)))) {
 	free(errpkt.text.data);

@@ -72,10 +72,6 @@
 
 #include "gssapiP_krb5.h"
 
-/*
- * $Id: wrap_size_limit.c,v 1.1.1.7 2002-05-02 16:56:43 rbasch Exp $
- */
-
 /* V2 interface */
 OM_uint32
 krb5_gss_wrap_size_limit(minor_status, context_handle, conf_req_flag,
@@ -112,6 +108,40 @@ krb5_gss_wrap_size_limit(minor_status, context_handle, conf_req_flag,
     if (! ctx->established) {
 	*minor_status = KG_CTX_INCOMPLETE;
 	return(GSS_S_NO_CONTEXT);
+    }
+
+    if (ctx->proto == 1) {
+	/* No pseudo-ASN.1 wrapper overhead, so no sequence length and
+	   OID.  */
+	OM_uint32 sz = req_output_size;
+	/* Token header: 16 octets.  */
+	if (conf_req_flag) {
+	    while (sz > 0 && krb5_encrypt_size(sz, ctx->enc->enctype) + 16 > req_output_size)
+		sz--;
+	    /* Allow for encrypted copy of header.  */
+	    if (sz > 16)
+		sz -= 16;
+	    else
+		sz = 0;
+#ifdef CFX_EXERCISE
+	    /* Allow for EC padding.  In the MIT implementation, only
+	       added while testing.  */
+	    if (sz > 65535)
+		sz -= 65535;
+	    else
+		sz = 0;
+#endif
+	} else {
+	    /* Allow for token header and checksum.  */
+	    if (sz < 16 + ctx->cksum_size)
+		sz = 0;
+	    else
+		sz -= (16 + ctx->cksum_size);
+	}
+
+	*max_input_size = sz;
+	*minor_status = 0;
+	return GSS_S_COMPLETE;
     }
 
     /* Calculate the token size and subtract that from the output size */

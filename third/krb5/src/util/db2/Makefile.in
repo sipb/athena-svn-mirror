@@ -1,16 +1,32 @@
-SHELL = /bin/sh
+thisconfigdir=.
+myfulldir=util/db2
+mydir=.
+BUILDTOP=$(REL)..$(S)..
+LOCAL_SUBDIRS=hash btree db mpool recno clib test
 
-SUBDIRS = obj
+LIB=db
+LIBMAJOR=1
+LIBMINOR=1
+STOBJLISTS=hash/OBJS.ST btree/OBJS.ST db/OBJS.ST mpool/OBJS.ST \
+	recno/OBJS.ST clib/OBJS.ST
+SUBDIROBJLISTS=$(STOBJLISTS)
+RELDIR=../util/db2
 
-all clean distclean realclean check::
-	for i in ${SUBDIRS}; do (cd $$i; ${MAKE} $@) || exit 1; done
+HDRDIR=$(BUILDTOP)/include
+HDRS =	$(HDRDIR)/db.h $(HDRDIR)/db-config.h $(HDRDIR)/db-ndbm.h
 
-distclean::
-	rm -rf config.status config.log config.cache db-config.h
+all-unix:: all-liblinks includes
+clean-unix:: clean-liblinks clean-libs clean-includes
 
-install::
+includes:: $(HDRS)
 
-Makefiles::
+$(HDRDIR)/db.h: $(srcdir)/include/db.h
+	$(CP) $(srcdir)/include/db.h $@
+$(HDRDIR)/db-config.h: include/db-config.h
+	$(CP) include/db-config.h $@
+$(HDRDIR)/db-ndbm.h: $(srcdir)/include/db-ndbm.h
+	$(CP) $(srcdir)/include/db-ndbm.h $@
 
-realclean::
-	rm -rf configure db-config.h.in
+clean-includes::
+	$(RM) $(HDRS)
+# @lib_frag@

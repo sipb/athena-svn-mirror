@@ -57,18 +57,17 @@
 #define REALM_SEP	'@'
 #define	COMPONENT_SEP	'/'
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_unparse_name_ext(context, principal, name, size)
-    krb5_context context;
-    krb5_const_principal principal;
-    register char FAR * FAR *name;
-    int	FAR *size;
+krb5_error_code KRB5_CALLCONV
+krb5_unparse_name_ext(krb5_context context, krb5_const_principal principal, register char **name, unsigned int *size)
 {
 	register char *cp, *q;
 	register int i,j;
 	int	length;
 	krb5_int32 nelem;
-	register int totalsize = 0;
+	register unsigned int totalsize = 0;
+
+	if (!principal)
+		return KRB5_PARSE_MALFORMED;
 
 	cp = krb5_princ_realm(context, principal)->data;
 	length = krb5_princ_realm(context, principal)->length;
@@ -150,7 +149,8 @@ krb5_unparse_name_ext(context, principal, name, size)
 		*q++ = COMPONENT_SEP;
 	}
 
-	q--;			/* Back up last component separator */
+	if (i > 0)
+	    q--;		/* Back up last component separator */
 	*q++ = REALM_SEP;
 	
 	cp = krb5_princ_realm(context, principal)->data;
@@ -188,11 +188,8 @@ krb5_unparse_name_ext(context, principal, name, size)
     return 0;
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_unparse_name(context, principal, name)
-    krb5_context context;
-    krb5_const_principal principal;
-    register char **name;
+krb5_error_code KRB5_CALLCONV
+krb5_unparse_name(krb5_context context, krb5_const_principal principal, register char **name)
 {
 	*name = NULL;
 	return(krb5_unparse_name_ext(context, principal, name, NULL));

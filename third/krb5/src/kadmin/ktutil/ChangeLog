@@ -1,20 +1,86 @@
-2002-02-04  Ken Raeburn  <raeburn@mit.edu>
+2003-05-19  Sam Hartman  <hartmans@mit.edu>
+
+	* ktutil.c (main): Don't register writable keytab ops as they are
+	registered by the library now  
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* ktutil_funcs.c (ktutil_add): Remove trailing colon, as new
+	implementation of krb5_read_password() appends it.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* ktutil_ct.ct: Add final "end" statement.
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* ktutil.c (ktutil_list): Remove variable set but not used. Also,
+	do not assume that sizeof(time_t) is 32 bits.
+
+2003-03-07  Ken Raeburn  <raeburn@mit.edu>
 
 	* ktutil_funcs.c (ktutil_write_srvtab): When keeping only
 	highest-numbered kvno, with some heuristics to deal with
 	wrap-around at 256.
+
+2002-03-02  Sam Hartman  <hartmans@mit.edu>
+
+	* ktutil_funcs.c (ktutil_write_srvtab): Set umask to 077 to avoid
+	public srvtabs.
+	
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* ktutil.h: Make prototypes unconditional.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): Find ktutil_ct.c in build directory.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* ktutil_funcs.c (ktutil_add): Cast argument to isxdigit() to int.
+
+Mon Feb 26 14:27:24 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* ktutil.c, ktutil_funcs.c: Do not shadow system "index" and
+ 	"stime" variables.
+
+	* ktutil.h: Add prototypes for SS callback functions.
+
+2000-12-15  Ken Raeburn  <raeburn@mit.edu>
+
+	* ktutil.c (ktutil_list): Provide a real usage message.
+
+2000-07-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (ktutil): Do not link with the V4
+	libraries. Although the program can write out a v4 srvtab, the one
+	necessary function is here.
+
+	* ktutil_funcs.c (ktutil_read_keytab): Add explicit braces to
+	avoid ambiguous `else'.
+	(getstr): register count -> register int count
+
+	* ktutil.c (main): ss_listen() takes only one argument.
 
 2000-05-19  Ken Raeburn  <raeburn@mit.edu>
 
 	* ktutil_funcs.c (ktutil_write_keytab): Reject a filename that's
 	too long.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-17  Geoffrey King  <gjking@mit.edu>
 

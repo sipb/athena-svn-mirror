@@ -1,7 +1,7 @@
 thisconfigdir=./../..
 myfulldir=kadmin/passwd/unit-test
 mydir=passwd/unit-test
-BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..$(S)..
 check unit-test:: unit-test-@DO_TEST@
 
 unit-test-:
@@ -15,7 +15,8 @@ unit-test-ok:: unit-test-setup unit-test-body unit-test-cleanup
 unit-test-body::	
 	$(ENV_SETUP) $(RUNTEST) --tool kpasswd KPASSWD=../kpasswd \
 		KINIT=$(BUILDTOP)/clients/kinit/kinit \
-		KDESTROY=$(BUILDTOP)/clients/kdestroy/kdestroy
+		KDESTROY=$(BUILDTOP)/clients/kdestroy/kdestroy \
+		PRIOCNTL_HACK=@PRIOCNTL_HACK@
 
 unit-test-setup::
 	$(ENV_SETUP) $(START_SERVERS)

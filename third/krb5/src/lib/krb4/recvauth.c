@@ -1,19 +1,41 @@
 /*
- * recvauth.c
+ * lib/krb4/recvauth.c
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
-
-#define	DEFINE_SOCKADDR		/* Ask for sockets declarations from krb.h. */
 #include "krb.h"
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include "krb5/autoconf.h"
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include "port-sockets.h"
 
 
 #define	KRB_SENDAUTH_VERS	"AUTHV0.1" /* MUST be KRB_SENDAUTH_VLEN
@@ -24,10 +46,6 @@
  * and make appropriate changes in krb_sendauth.c
  * be sure to support old versions of krb_sendauth!
  */
-
-#ifndef _WINDOWS
-extern int errno;
-#endif
 
 /*
  * krb_recvauth() reads (and optionally responds to) a message sent
@@ -114,20 +132,20 @@ extern int errno;
 #define	max(a,b) (((a) > (b)) ? (a) : (b))
 #endif /* max */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 krb_recvauth(options, fd, ticket, service, instance, faddr, laddr, kdata,
 	     filename, schedule, version)
     long options;			 /* bit-pattern of options */
     int fd;				 /* file descr. to read from */
     KTEXT ticket;			 /* storage for client's ticket */
-    char FAR *service;			 /* service expected */
-    char FAR *instance;			 /* inst expected (may be filled in) */
-    struct sockaddr_in FAR *faddr;	 /* address of foreign host on fd */
-    struct sockaddr_in FAR *laddr;	 /* local address */
-    AUTH_DAT FAR *kdata;		 /* kerberos data (returned) */
-    char FAR *filename;			 /* name of file with service keys */
+    char *service;			 /* service expected */
+    char *instance;			 /* inst expected (may be filled in) */
+    struct sockaddr_in *faddr;	 /* address of foreign host on fd */
+    struct sockaddr_in *laddr;	 /* local address */
+    AUTH_DAT *kdata;		 /* kerberos data (returned) */
+    char *filename;			 /* name of file with service keys */
     Key_schedule schedule;		 /* key schedule (return) */
-    char FAR *version;			 /* version string (filled in) */
+    char *version;			 /* version string (filled in) */
 {
 
     int i, cc, old_vers = 0;
@@ -257,7 +275,7 @@ krb_recvauth(options, fd, ticket, service, instance, faddr, laddr, kdata,
 			       tmp_buf,
 			       (unsigned KRB4_32) sizeof(cksum),
 			       schedule,
-			       kdata->session,
+			       &kdata->session,
 			       laddr,
 			       faddr);
 	if (priv_len < 0) {

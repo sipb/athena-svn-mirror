@@ -32,15 +32,15 @@ int auth_debug_gssapi = DEBUG_GSSAPI;
 #define AUTH_GSSAPI_DISPLAY_STATUS(args)
 #endif
    
-static void 	auth_gssapi_nextverf();
-static bool_t 	auth_gssapi_marshall();
-static bool_t	auth_gssapi_validate();
-static bool_t	auth_gssapi_refresh();
-static bool_t	auth_gssapi_wrap();
-static bool_t	auth_gssapi_unwrap();
-static void	auth_gssapi_destroy();
+static void 	auth_gssapi_nextverf(AUTH *);
+static bool_t 	auth_gssapi_marshall(AUTH *, XDR *);
+static bool_t	auth_gssapi_validate(AUTH *, struct opaque_auth *);
+static bool_t	auth_gssapi_refresh(AUTH *, struct rpc_msg *);
+static bool_t	auth_gssapi_wrap(AUTH *, XDR *, xdrproc_t, caddr_t);
+static bool_t	auth_gssapi_unwrap(AUTH *, XDR *, xdrproc_t, caddr_t);
+static void	auth_gssapi_destroy(AUTH *);
    
-static bool_t	marshall_new_creds();
+static bool_t	marshall_new_creds(AUTH *, bool_t, gss_buffer_t);
 
 static struct auth_ops auth_gssapi_ops = {
      auth_gssapi_nextverf,
@@ -138,10 +138,10 @@ AUTH *auth_gssapi_create(clnt, gssstat, minor_stat,
      gss_cred_id_t claimant_cred_handle;
      gss_name_t target_name;
      gss_OID mech_type;
-     int req_flags;
+     OM_uint32 req_flags;
      OM_uint32 time_req;
      gss_OID *actual_mech_type;
-     int *ret_flags;
+     OM_uint32 *ret_flags;
      OM_uint32 *time_rec;
 {
      AUTH *auth, *save_auth;
@@ -150,7 +150,8 @@ AUTH *auth_gssapi_create(clnt, gssstat, minor_stat,
      struct sockaddr_in laddr, raddr;
      enum clnt_stat callstat;
      struct timeval timeout;
-     int init_func, bindings_failed;
+     int bindings_failed;
+     rpc_u_int32 init_func;
      
      auth_gssapi_init_arg call_arg;
      auth_gssapi_init_res call_res;
@@ -219,7 +220,7 @@ try_new_version:
       */
      if (call_arg.version < 4 && (mech_type == gss_mech_krb5 ||
 				  mech_type == GSS_C_NULL_OID))
-	  mech_type = gss_mech_krb5_old;
+	  mech_type = (gss_OID) gss_mech_krb5_old;
 #endif
 
      if (!bindings_failed && call_arg.version >= 3) {
@@ -394,7 +395,7 @@ next_token:
 		    goto cleanup;
 	       } else if (isn_buf.length != sizeof(rpc_u_int32)) {
 		    PRINTF(("gssapi_create: gss_unseal gave %d bytes\n",
-			    isn_buf.length));
+			    (int) isn_buf.length));
 		    goto cleanup;
 	       }
 	       
@@ -507,7 +508,7 @@ static bool_t marshall_new_creds(auth, auth_msg, client_handle)
 	  creds.client_handle.value = NULL;
      }
      
-     xdrmem_create(&xdrs, AUTH_PRIVATE(auth)->cred_buf,
+     xdrmem_create(&xdrs, (caddr_t) AUTH_PRIVATE(auth)->cred_buf,
 		   MAX_AUTH_BYTES, XDR_ENCODE);
      if (! xdr_authgssapi_creds(&xdrs, &creds)) {
 	  PRINTF(("marshall_new_creds: failed encoding auth_gssapi_creds\n"));
@@ -537,8 +538,8 @@ static bool_t marshall_new_creds(auth, auth_msg, client_handle)
  *
  * Effects: None.  Never called.
  */
-static void auth_gssapi_nextverf(/*auth*/)
-   /*AUTH *auth;*/
+static void auth_gssapi_nextverf(auth)
+   AUTH *auth;
 {
 }
 

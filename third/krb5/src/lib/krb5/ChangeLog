@@ -1,35 +1,161 @@
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * krb5_libinit.c: Added an include for com_err.h since
-    it is not included by error table headers on Mac OS X.  Also
-    fixed busted check for Mac OS
+2003-03-07  Alexandra Ellwood  <lxs@mit.edu>
 
-2001-12-03	Miro Jurisic <meeroh@mit.edu>
+    * krb5_libinit.c: Changed USE_HARDCODED_FALLBACK_ERROR_TABLES macro 
+    to !USE_BUNDLE_ERROR_STRINGS so Darwin based builds get com_err
+    style error tables.
 
-	* krb5_libinit.c: punted the Mac OS 9 sleep notification code
+2003-03-06  Alexandra Ellwood <lxs@mit.edu>
 
-2001-11-05  Tom Yu  <tlyu@mit.edu>
+    * krb5_libinit.c: Removed Mac OS X header goober.  Conditionalize
+    CCAPI calls on USE_CCAPI so Darwin builds work.
+
+2003-02-04  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Add KRB5_SIGTYPE and CHECK_SIGNALS for
+	os/prompter.c.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL.
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SUBDIROBJLISTS): New variable.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5_libinit.c: Put # for cpp directives in first column.
+
+2002-07-03  Alexandra Ellwood <lxs@mit.edu>
+
+	* krb5_libinit.c: Conditionalized error table loading for
+	Mac OS X.  Error tables should always be loaded on other 
+	platforms.
+
+	* krb5_libinit.c: Added an include for com_err.h since
+	it is not included by error table headers on Mac OS X.  Also
+	fixed busted check for Mac OS
+
+	[pullups form 1-2-2-branch]
+
+2002-06-25 Alexandra Ellwood <lxs@mit.edu>
+
+	* krb5_libinit.c: Added an include for com_err.h since
+	it is not included by error table headers on Mac OS X.  Also
+	fixed busted check for Mac OS
+
+	* krb5_libinit.c: added #define for Mac OS X so
+	that krb5int_cleanup_library calls krb5_stdcc_shutdown.
+
+	[pullups from 1-2-2-branch]
+
+2002-06-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't set up keytab/file or keytab/srvtab
+	subdirectories.
+	* Makefile.in (STOBJLISTS): Delete keytab/file/OBJS.ST and
+	keytab/srvtab/OBJS.ST.
+
+2002-03-06  Ken Raeburn  <raeburn@mit.edu>
 
 	* Makefile.in (LIBMINOR): Bump due to changes in error tables.
 
-2000-11-29	Miro Jurisic <meeroh@mit.edu>
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
 
-	* krb5_libinit.c: Install a callback in the Mac OS sleep
-	queue to get notification of the machine coming out
-	of sleep, in order to refresh the cached uptime to
-	real time offset
+	* krb5_libinit.c: Drop _MSDOS support.
 
-2000-10-02  Alexandra Ellwood <lxs@mit.edu
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
 
-   * krb5_libinit.c: added #define for Mac OS X so
-   that krb5int_cleanup_library calls krb5_stdcc_shutdown.
+	* Makefile.in (SRCS): Use $(srcdir) not $(subdir).
 
-2000-06-03  Tom Yu  <tlyu@mit.edu>
+2001-07-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add KRB5_GETSOCKNAME_ARGS and KRB5_GETPEERNAME_ARGS.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Test for strptime() prototype. Debian linux has
+	strptime in the C library but does not provide a prototype.
+
+2001-04-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't use HAS_ANSI_VOLATILE.
+
+2001-04-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Moved test for socklen_t to include directory.
+
+2001-03-05  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Check for sys/filio.h for FIONBIO.
+
+2000-12-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Look for socklen_t, define HAVE_SOCKLEN_T if
+	found.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Use AC_C_CONST instead of AC_CONST.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5_libinit.c: Include krb5_libinit.h for prototypes. 
+
+2000-10-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for getifaddrs and ifaddrs.h.
+
+2000-09-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add AC_TYPE_OFF_T for off_t declaraion.
+
+2000-08-29  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Don't generate keytab/db/Makefile, since it isn't
+	used.
+
+	* Makefile.in: Garbage collect a little.  Don't include keytab/*
+	directories directly on $(LOCAL_SUBDIRS), as keytab/Makefile.in
+	lists them itself.
+
+2000-07-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't generate Makefile in ccache/file,
+	ccache/stdio, ccache/memory.
+	* Makefile.in (LOCAL_SUBDIRS, LIB_SUBDIRS, LIBDONE, STOBJLISTS):
+	Delete references to those directories.
+
+2000-07-01  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (SHLIB_EXPLIBS): Use $(LIBS) not @RESOLV_LIB@ in
+	order to get -lnsl, -lsocket, etc. if necessary.
+
+2000-06-23  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in (LIBMAJOR, LIBMINOR): Bump version.
 
-2000-04-18  Ken Raeburn  <raeburn@mit.edu>
+2000-06-23  Ken Raeburn  <raeburn@mit.edu>
 
 	* Makefile.in (SHLIB_EXPLIBS): Add @RESOLV_LIB@.
+
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* configure.in: Check for existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
 
 2000-03-14  Ken Raeburn  <raeburn@mit.edu>
 

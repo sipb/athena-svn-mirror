@@ -25,31 +25,128 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <string.h>
-#include <krb5.h>
 
 extern int optind;
 extern char *optarg;
 
-void usage(char *argv0)
+static char *prog;
+
+static void xusage()
 {
-    char *cmd;
-
-    cmd = strrchr(argv0, '/');
-    cmd = cmd?(cmd+1):argv0;
-
-    fprintf(stderr, "usage: %s [-e etype] service1 service2 ...\n", cmd);
-
+#ifdef KRB5_KRB4_COMPAT
+    fprintf(stderr, "xusage: %s [-4 | -e etype] service1 service2 ...\n", prog);
+#else
+    fprintf(stderr, "xusage: %s [-e etype] service1 service2 ...\n", prog);
+#endif
     exit(1);
 }
 
+int quiet = 0;
+
+static void do_v4_kvno (int argc, char *argv[]);
+static void do_v5_kvno (int argc, char *argv[], char *etypestr);
+
 int main(int argc, char *argv[])
+{
+    int option;
+    char *etypestr = 0;
+    int v4 = 0;
+
+    prog = strrchr(argv[0], '/');
+    prog = prog ? (prog + 1) : argv[0];
+
+    while ((option = getopt(argc, argv, "e:hq4")) != -1) {
+	switch (option) {
+	case 'e':
+	    etypestr = optarg;
+	    break;
+	case 'h':
+	    xusage();
+	    break;
+	case 'q':
+	    quiet = 1;
+	    break;
+	case '4':
+	    v4 = 1;
+	    break;
+	default:
+	    xusage();
+	    break;
+	}
+    }
+
+    if ((argc - optind) < 1)
+	xusage();
+
+    if (etypestr != 0 && v4)
+	xusage();
+
+    if (v4)
+	do_v4_kvno(argc - optind, argv + optind);
+    else
+	do_v5_kvno(argc - optind, argv + optind, etypestr);
+    return 0;
+}
+
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
+static void do_v4_kvno (int count, char *names[])
+{
+#ifdef KRB5_KRB4_COMPAT
+    int i;
+
+    for (i = 0; i < count; i++) {
+	int err;
+	char name[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
+	KTEXT_ST req;
+	CREDENTIALS creds;
+	*name = *inst = *realm = '\0';
+	err = kname_parse (name, inst, realm, names[i]);
+	if (err) {
+	    fprintf(stderr, "%s: error parsing name '%s': %s\n",
+		    prog, names[i], krb_get_err_text(err));
+	    exit(1);
+	}
+	if (realm[0] == 0) {
+	    err = krb_get_lrealm(realm, 1);
+	    if (err) {
+		fprintf(stderr, "%s: error looking up local realm: %s\n",
+			prog, krb_get_err_text(err));
+		exit(1);
+	    }
+	}
+	err = krb_mk_req(&req, name, inst, realm, 0);
+	if (err) {
+	    fprintf(stderr, "%s: krb_mk_req error: %s\n", prog,
+		    krb_get_err_text(err));
+	    exit(1);
+	}
+	err = krb_get_cred(name, inst, realm, &creds);
+	if (err) {
+	    fprintf(stderr, "%s: krb_get_cred error: %s\n", prog,
+		    krb_get_err_text(err));
+	    exit(1);
+	}
+	if (!quiet)
+	    printf("%s: kvno = %d\n", names[i], creds.kvno);
+    }
+#else
+    xusage();
+#endif
+}
+
+#include <krb5.h>
+static void do_v5_kvno (int count, char *names[], char *etypestr)
 {
     krb5_context context;
     krb5_error_code ret;
-    int option, i, errors;
-    char *etypestr = 0;
-    int quiet = 0;
+    int i, errors;
     krb5_enctype etype;
     krb5_ccache ccache;
     krb5_principal me;
@@ -57,68 +154,54 @@ int main(int argc, char *argv[])
     krb5_ticket *ticket;
     char *princ;
 
-    if (ret = krb5_init_context(&context)) {
-	com_err(argv[0], ret, "while initializing krb5 library");
+    ret = krb5_init_context(&context);
+    if (ret) {
+	com_err(prog, ret, "while initializing krb5 library");
 	exit(1);
     }
 
-    while ((option = getopt(argc, argv, "e:hq")) != -1) {
-	switch (option) {
-	case 'e':
-	    etypestr = optarg;
-	    break;
-	case 'h':
-	    usage(argv[0]);
-	    break;
-	case 'q':
-	    quiet = 1;
-	    break;
-	default:
-	    usage(argv[0]);
-	    break;
-	}
-    }
-
-    if ((argc - optind) < 1)
-	usage(argv[0]);
-
     if (etypestr) {
-	if (ret = krb5_string_to_enctype(etypestr, &etype)) {
-	    com_err(argv[0], ret, "while converting etype");
+        ret = krb5_string_to_enctype(etypestr, &etype);
+	if (ret) {
+	    com_err(prog, ret, "while converting etype");
 	    exit(1);
 	}
     } else {
 	etype = 0;
     }
 
-    if (ret = krb5_cc_default(context, &ccache)) {
-	com_err(argv[0], ret, "while opening ccache");
+    ret = krb5_cc_default(context, &ccache);
+    if (ret) {
+	com_err(prog, ret, "while opening ccache");
 	exit(1);
     }
 
-    if (ret = krb5_cc_get_principal(context, ccache, &me)) {
-	com_err(argv[0], ret, "while getting client principal name");
+    ret = krb5_cc_get_principal(context, ccache, &me);
+    if (ret) {
+	com_err(prog, ret, "while getting client principal name");
 	exit(1);
     }
 
     errors = 0;
 
-    for (i = optind; i < argc; i++) {
+    for (i = 0; i < count; i++) {
 	memset(&in_creds, 0, sizeof(in_creds));
 
 	in_creds.client = me;
 
-	if (ret = krb5_parse_name(context, argv[i], &in_creds.server)) {
+	ret = krb5_parse_name(context, names[i], &in_creds.server);
+	if (ret) {
 	    if (!quiet)
 		fprintf(stderr, "%s: %s while parsing principal name\n",
-			argv[i], error_message(ret));
+			names[i], error_message(ret));
 	    errors++;
 	    continue;
 	}
 
-	if (ret = krb5_unparse_name(context, in_creds.server, &princ)) {
+	ret = krb5_unparse_name(context, in_creds.server, &princ);
+	if (ret) {
 	    fprintf(stderr, "%s: %s while printing principal name\n",
-		    argv[i], error_message(ret));
+		    names[i], error_message(ret));
 	    errors++;
 	    continue;
 	}
@@ -140,7 +223,8 @@ int main(int argc, char *argv[])
 	}
 
 	/* we need a native ticket */
-	if (ret = krb5_decode_ticket(&out_creds->ticket, &ticket)) {
+	ret = krb5_decode_ticket(&out_creds->ticket, &ticket);
+	if (ret) {
 	    fprintf(stderr, "%s: %s while decoding ticket\n",
 		    princ, error_message(ret));
 

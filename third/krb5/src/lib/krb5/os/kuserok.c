@@ -28,7 +28,7 @@
  */
 
 #include "k5-int.h"
-#if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh)    /* Not yet for Windows */
+#if !defined(_WIN32) && !defined(macintosh)    /* Not yet for Windows */
 #include <stdio.h>
 #include <pwd.h>
 
@@ -38,7 +38,7 @@
 #define getpwnam(user) getpwnam((char *)user)
 #endif
 
-#define MAX_USERNAME 10
+#define MAX_USERNAME 65
 
 /*
  * Given a Kerberos principal "principal", and a local username "luser",
@@ -60,10 +60,7 @@
  */
 
 krb5_boolean KRB5_CALLCONV
-krb5_kuserok(context, principal, luser)
-    krb5_context context;
-    krb5_principal principal;
-    const char *luser;
+krb5_kuserok(krb5_context context, krb5_principal principal, const char *luser)
 {
     struct stat sbuf;
     struct passwd *pwd;
@@ -141,7 +138,7 @@ krb5_kuserok(context, principal, luser)
     return(isok);
 }
 
-#else /* _MSDOS */
+#else /* _WIN32 || macintosh */
 
 /*
  * If the given Kerberos name "server" translates to the same name as "luser"
@@ -163,4 +160,4 @@ krb5_kuserok(context, principal, luser)
 
     return FALSE;
 }
-#endif /* _MSDOS */
+#endif /* _WIN32 || macintosh */

@@ -45,18 +45,11 @@ int main(argc, argv)
     char *argv[];
 {
     krb5_error_code retval;
-    extern krb5_kt_ops krb5_ktf_writable_ops;
     int sci_idx;
 
     retval = krb5_init_context(&kcontext);
     if (retval) {
         com_err(argv[0], retval, "while initializing krb5");
-	exit(1);
-    }
-    retval = krb5_kt_register(kcontext, &krb5_ktf_writable_ops);
-    if (retval) {
-	com_err(argv[0], retval,
-		"while registering writable key table functions");
 	exit(1);
     }
     sci_idx = ss_create_invocation("ktutil", "5.0", (char *)NULL,
@@ -65,7 +58,7 @@ int main(argc, argv)
 	ss_perror(sci_idx, retval, "creating invocation");
 	exit(1);
     }
-    ss_listen(sci_idx, &retval);
+    retval = ss_listen(sci_idx);
     ktutil_free_kt_list(kcontext, ktlist);
     exit(0);
 }
@@ -219,7 +212,6 @@ void ktutil_list(argc, argv)
 {
     krb5_error_code retval;
     krb5_kt_list lp;
-    struct tm *stime;
     int show_time = 0, show_keys = 0, show_enctype = 0;
     int i, j;
     char *pname;
@@ -237,8 +229,8 @@ void ktutil_list(argc, argv)
 	    show_enctype++;
 	    continue;
 	}
-	
-	fprintf(stderr, "%s: illegal arguments\n", argv[0]);
+
+	fprintf(stderr, "%s: usage: %s [-t] [-k] [-e]\n", argv[0], argv[0]);
 	return;
     }
     if (show_time) {
@@ -258,8 +250,10 @@ void ktutil_list(argc, argv)
 	if (show_time) {
 	    char fmtbuf[18];
 	    char fill;
+	    time_t tstamp;
 
-	    stime = localtime((time_t *)&lp->entry->timestamp);
+	    (void) localtime(&tstamp);
+	    lp->entry->timestamp = tstamp;
 	    fill = ' ';
 	    if (!krb5_timestamp_to_sfstring((krb5_timestamp)lp->entry->
 					    	timestamp,

@@ -36,21 +36,10 @@
 #ifndef	_DB_INT_H_
 #define	_DB_INT_H_
 
+#include "config.h"
 #include "db.h"
 
-/* deal with autoconf-based stuff (db.h includes db-config.h) */
-
-#ifndef HAVE_MEMMOVE
-#define memmove my_memmove
-#endif
-
-#ifndef HAVE_MKSTEMP
-#define mkstemp my_mkstemp
-#endif
-
-#ifndef HAVE_STRERROR
-#define strerror my_strerror
-#endif
+/* deal with autoconf-based stuff */
 
 #define DB_LITTLE_ENDIAN 1234
 #define DB_BIG_ENDIAN 4321
@@ -72,6 +61,13 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+/* Tru64 5.1: int8_t is defined here, and stdint.h doesn't exist.  */
+#include <inttypes.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>

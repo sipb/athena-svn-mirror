@@ -36,20 +36,32 @@
 #endif
 
 krb5_error_code
-krb5_generate_seq_number(context, key, seqno)
-    krb5_context context;
-    krb5_const krb5_keyblock *key;
-    krb5_int32 *seqno;
+krb5_generate_seq_number(krb5_context context, const krb5_keyblock *key, krb5_ui_4 *seqno)
 {
     krb5_data seed;
     krb5_error_code retval;
 
     seed.length = key->length;
     seed.data = key->contents;
-    if ((retval = krb5_c_random_seed(context, &seed)))
+    if ((retval = krb5_c_random_add_entropy(context, KRB5_C_RANDSOURCE_TRUSTEDPARTY, &seed)))
 	return(retval);
 
     seed.length = sizeof(*seqno);
     seed.data = (char *) seqno;
-    return(krb5_c_random_make_octets(context, &seed));
+    retval = krb5_c_random_make_octets(context, &seed);
+    if (retval)
+	return retval;
+    /*
+     * Work around implementation incompatibilities by not generating
+     * initial sequence numbers greater than 2^30.  Previous MIT
+     * implementations use signed sequence numbers, so initial
+     * sequence numbers 2^31 to 2^32-1 inclusive will be rejected.
+     * Letting the maximum initial sequence number be 2^30-1 allows
+     * for about 2^30 messages to be sent before wrapping into
+     * "negative" numbers.
+     */
+    *seqno &= 0x3fffffff;
+    if (*seqno == 0)
+	*seqno = 1;
+    return 0;
 }

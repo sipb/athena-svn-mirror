@@ -1,7 +1,7 @@
 #
 # Profile library Macintosh export file
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.exp,v 1.1.1.2 2001-12-05 20:48:43 rbasch Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.exp,v 1.1.1.3 2004-02-27 04:00:46 zacheiss Exp $
 
 profile_init
 profile_init_path
@@ -11,6 +11,7 @@ profile_release
 profile_get_values
 profile_free_list
 profile_get_string
+profile_get_boolean
 profile_get_integer
 profile_get_relation_names
 profile_get_subsection_names
@@ -28,3 +29,7 @@ profile_add_relation
 profile_ser_internalize
 profile_ser_externalize
 profile_ser_size
+
+# Mac only
+FSp_profile_init
+FSp_profile_init_path

@@ -3,7 +3,8 @@
  * 	values from the krb5 config file(s).
  */
 
-#include "krb5.h"
+#include "fake-addrinfo.h"
+#include "k5-int.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -16,8 +17,7 @@
 
 #include "os-proto.h"
 
-void test_get_default_realm(ctx)
-	krb5_context ctx;
+static void test_get_default_realm(krb5_context ctx)
 {
 	char	*realm;
 	krb5_error_code	retval;
@@ -31,9 +31,7 @@ void test_get_default_realm(ctx)
 	free(realm);
 }
 
-void test_set_default_realm(ctx, realm)
-    krb5_context ctx;
-    char	*realm;
+static void test_set_default_realm(krb5_context ctx, char *realm)
 {
 	krb5_error_code	retval;
 	
@@ -45,8 +43,7 @@ void test_set_default_realm(ctx, realm)
 	printf("krb5_set_default_realm(%s)\n", realm);
 }
 
-void test_get_default_ccname(ctx)
-	krb5_context ctx;
+static void test_get_default_ccname(krb5_context ctx)
 {
 	const char	*ccname;
 
@@ -57,9 +54,7 @@ void test_get_default_ccname(ctx)
 		printf("krb5_cc_default_name() returned NULL\n");
 }
 
-void test_set_default_ccname(ctx, ccname)
-    krb5_context ctx;
-    char	*ccname;
+static void test_set_default_ccname(krb5_context ctx, char *ccname)
 {
 	krb5_error_code	retval;
 	
@@ -71,9 +66,7 @@ void test_set_default_ccname(ctx, ccname)
 	printf("krb5_set_default_ccname(%s)\n", ccname);
 }
 
-void test_get_krbhst(ctx, realm)
-	krb5_context ctx;
-	char	*realm;
+static void test_get_krbhst(krb5_context ctx, char *realm)
 {
 	char **hostlist, **cpp;
 	krb5_data rlm;
@@ -103,38 +96,58 @@ void test_get_krbhst(ctx, realm)
 	printf("\n");
 }
 
-void test_locate_kdc(ctx, realm)
-	krb5_context ctx;
-	char	*realm;
+static void test_locate_kdc(krb5_context ctx, char *realm)
 {
-    	struct sockaddr *addrs;
-	struct sockaddr_in *sin;
-	int	i, naddrs;
+    	struct addrlist addrs;
+	int	i;
 	int	get_masters=0;
 	krb5_data rlm;
 	krb5_error_code	retval;
 
 	rlm.data = realm;
 	rlm.length = strlen(realm);
-	retval = krb5_locate_kdc(ctx, &rlm, &addrs, &naddrs,
-				 get_masters);
+	retval = krb5_locate_kdc(ctx, &rlm, &addrs, get_masters, 0, 0);
 	if (retval) {
-		com_err("krb5_get_krbhst", retval, 0);
+		com_err("krb5_locate_kdc", retval, 0);
 		return;
 	}
-	printf("krb_get_krbhst(%s) returned:", realm);
-	for (i=0; i < naddrs; i++) {
-	    sin = (struct sockaddr_in *) &addrs[i];
-	    printf(" %s/%d", inet_ntoa(sin->sin_addr), 
-		   ntohs(sin->sin_port));
+	printf("krb_locate_kdc(%s) returned:", realm);
+	for (i=0; i < addrs.naddrs; i++) {
+	    struct addrinfo *ai = addrs.addrs[i];
+	    switch (ai->ai_family) {
+	    case AF_INET:
+	    {
+		struct sockaddr_in *s_sin;
+		s_sin = (struct sockaddr_in *) ai->ai_addr;
+		printf(" inet:%s/%d", inet_ntoa(s_sin->sin_addr), 
+		       ntohs(s_sin->sin_port));
+	    }
+	    break;
+#ifdef KRB5_USE_INET6
+	    case AF_INET6:
+	    {
+		struct sockaddr_in6 *s_sin6;
+		int j;
+		s_sin6 = (struct sockaddr_in6 *) ai->ai_addr;
+		printf(" inet6");
+		for (j = 0; j < 8; j++)
+		    printf(":%x",
+			   (s_sin6->sin6_addr.s6_addr[2*j] * 256
+			    + s_sin6->sin6_addr.s6_addr[2*j+1]));
+		printf("/%d", ntohs(s_sin6->sin6_port));
+		break;
+	    }
+#endif
+	    default:
+		printf(" unknown-af-%d", ai->ai_family);
+		break;
+	    }
 	}
-	free(addrs);
+	krb5int_free_addrlist(&addrs);
 	printf("\n");
 }
 
-void test_get_host_realm(ctx, host)
-	krb5_context ctx;
-	char	*host;
+static void test_get_host_realm(krb5_context ctx, char *host)
 {
 	char **realms, **cpp;
 	krb5_error_code retval;
@@ -162,9 +175,7 @@ void test_get_host_realm(ctx, host)
 	printf("\n");
 }
 
-void test_get_realm_domain(ctx, realm)
-	krb5_context ctx;
-	char	*realm;
+static void test_get_realm_domain(krb5_context ctx, char *realm)
 {
 	krb5_error_code	retval;
 	char	*domain;
@@ -178,17 +189,14 @@ void test_get_realm_domain(ctx, realm)
 	free(domain);
 }
 
-void usage(progname)
-	char	*progname;
+static void usage(char *progname)
 {
 	fprintf(stderr, "%s: Usage: %s [-dc] [-k realm] [-r host] [-C ccname] [-D realm]\n",
 		progname, progname);
 	exit(1);
 }
 
-int main(argc, argv)
-	int	argc;
-	char	**argv;
+int main(int argc, char **argv)
 {
 	int	c;
 	krb5_context	ctx;

@@ -60,17 +60,13 @@
  */
 
 static krb5_error_code decrypt_authenticator
-	PROTOTYPE((krb5_context, const krb5_ap_req *, krb5_authenticator **,
-		   int));
+	(krb5_context, const krb5_ap_req *, krb5_authenticator **,
+		   int);
 
 #define in_clock_skew(date) (labs((date)-currenttime) < context->clockskew)
 
 static krb5_error_code
-krb5_rd_req_decrypt_tkt_part(context, req, keytab)
-    krb5_context          context;
-    const krb5_ap_req 	* req;
-    krb5_keytab           keytab;
-
+krb5_rd_req_decrypt_tkt_part(krb5_context context, const krb5_ap_req *req, krb5_keytab keytab)
 {
     krb5_error_code 	  retval;
     krb5_enctype 	  enctype;
@@ -91,16 +87,7 @@ krb5_rd_req_decrypt_tkt_part(context, req, keytab)
 }
 
 static krb5_error_code
-krb5_rd_req_decoded_opt(context, auth_context, req, server, keytab, 
-			ap_req_options, ticket, check_valid_flag)
-    krb5_context 	  context;
-    krb5_auth_context   * auth_context;
-    const krb5_ap_req 	* req;
-    krb5_const_principal  server;
-    krb5_keytab           keytab;
-    krb5_flags          * ap_req_options;
-    krb5_ticket	       ** ticket;
-    int			  check_valid_flag;
+krb5_rd_req_decoded_opt(krb5_context context, krb5_auth_context *auth_context, const krb5_ap_req *req, krb5_const_principal server, krb5_keytab keytab, krb5_flags *ap_req_options, krb5_ticket **ticket, int check_valid_flag)
 {
     krb5_error_code 	  retval = 0;
     krb5_timestamp 	  currenttime;
@@ -188,7 +175,6 @@ krb5_rd_req_decoded_opt(context, auth_context, req, server, keytab,
     /* Hierarchical Cross-Realm */
   
     {
-    	krb5_data        lrealm;
       	krb5_data      * realm;
       	krb5_transited * trans;
   
@@ -200,12 +186,11 @@ krb5_rd_req_decoded_opt(context, auth_context, req, server, keytab,
       	 * transited are within the hierarchy between the client's realm  
       	 * and the local realm.                                        
   	 */
-      	if (trans->tr_contents.data && trans->tr_contents.data[0]) {
-            krb5_get_default_realm(context, &(lrealm.data));
-            lrealm.length = strlen(lrealm.data);
-            retval = krb5_check_transited_list(context, &(trans->tr_contents), 
-					       realm, &lrealm);
-            free(lrealm.data);
+	if (trans->tr_contents.data && trans->tr_contents.data[0]) {
+	    retval = krb5_check_transited_list(context, &(trans->tr_contents), 
+					       realm,
+					       krb5_princ_realm (context,
+								 server));
       	}
     }
 
@@ -305,10 +290,18 @@ krb5_rd_req_decoded_opt(context, auth_context, req, server, keytab,
     if ((*auth_context)->authentp->subkey) {
 	if ((retval = krb5_copy_keyblock(context,
 					 (*auth_context)->authentp->subkey,
-					 &((*auth_context)->remote_subkey))))
+					 &((*auth_context)->recv_subkey))))
 	    goto cleanup;
+	retval = krb5_copy_keyblock(context, (*auth_context)->authentp->subkey,
+				    &((*auth_context)->send_subkey));
+	if (retval) {
+	    krb5_free_keyblock(context, (*auth_context)->recv_subkey);
+	    (*auth_context)->recv_subkey = NULL;
+	    goto cleanup;
+	}
     } else {
-	(*auth_context)->remote_subkey = 0;
+	(*auth_context)->recv_subkey = 0;
+	(*auth_context)->send_subkey = 0;
     }
 
     if ((retval = krb5_copy_keyblock(context, req->ticket->enc_part2->session,
@@ -344,15 +337,7 @@ cleanup:
 }
 
 krb5_error_code
-krb5_rd_req_decoded(context, auth_context, req, server, keytab, 
-		    ap_req_options, ticket)
-    krb5_context 	  context;
-    krb5_auth_context   * auth_context;
-    const krb5_ap_req 	* req;
-    krb5_const_principal  server;
-    krb5_keytab           keytab;
-    krb5_flags          * ap_req_options;
-    krb5_ticket	       ** ticket;
+krb5_rd_req_decoded(krb5_context context, krb5_auth_context *auth_context, const krb5_ap_req *req, krb5_const_principal server, krb5_keytab keytab, krb5_flags *ap_req_options, krb5_ticket **ticket)
 {
   krb5_error_code retval;
   retval = krb5_rd_req_decoded_opt(context, auth_context,
@@ -363,15 +348,7 @@ krb5_rd_req_decoded(context, auth_context, req, server, keytab,
 }
 
 krb5_error_code
-krb5_rd_req_decoded_anyflag(context, auth_context, req, server, keytab, 
-			ap_req_options, ticket)
-    krb5_context 	  context;
-    krb5_auth_context   * auth_context;
-    const krb5_ap_req 	* req;
-    krb5_const_principal  server;
-    krb5_keytab           keytab;
-    krb5_flags          * ap_req_options;
-    krb5_ticket	       ** ticket;
+krb5_rd_req_decoded_anyflag(krb5_context context, krb5_auth_context *auth_context, const krb5_ap_req *req, krb5_const_principal server, krb5_keytab keytab, krb5_flags *ap_req_options, krb5_ticket **ticket)
 {
   krb5_error_code retval;
   retval = krb5_rd_req_decoded_opt(context, auth_context,
@@ -382,11 +359,7 @@ krb5_rd_req_decoded_anyflag(context, auth_context, req, server, keytab,
 }
 
 static krb5_error_code
-decrypt_authenticator(context, request, authpp, is_ap_req)
-    krb5_context context;
-    const krb5_ap_req *request;
-    krb5_authenticator **authpp;
-    int is_ap_req;
+decrypt_authenticator(krb5_context context, const krb5_ap_req *request, krb5_authenticator **authpp, int is_ap_req)
 {
     krb5_authenticator *local_auth;
     krb5_error_code retval;

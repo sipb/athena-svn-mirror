@@ -47,16 +47,10 @@
  returns system errors
 */
 static krb5_error_code
-krb5_mk_safe_basic(context, userdata, keyblock, replaydata, local_addr,
-		   remote_addr, sumtype, outbuf)
-    krb5_context 	  context;
-    const krb5_data 	* userdata;
-    const krb5_keyblock * keyblock;
-    krb5_replay_data    * replaydata;
-    const krb5_address 	* local_addr;
-    const krb5_address 	* remote_addr;
-    const krb5_cksumtype  sumtype;
-    krb5_data 		* outbuf;
+krb5_mk_safe_basic(krb5_context context, const krb5_data *userdata,
+		   const krb5_keyblock *keyblock, krb5_replay_data *replaydata,
+		   krb5_address *local_addr, krb5_address *remote_addr,
+		   krb5_cksumtype sumtype, krb5_data *outbuf)
 {
     krb5_error_code retval;
     krb5_safe safemsg;
@@ -64,9 +58,10 @@ krb5_mk_safe_basic(context, userdata, keyblock, replaydata, local_addr,
     krb5_checksum safe_checksum;
     krb5_data *scratch1, *scratch2;
 
-    if (!valid_cksumtype(sumtype))
+    if (!krb5_c_valid_cksumtype(sumtype))
 	return KRB5_PROG_SUMTYPE_NOSUPP;
-    if (!is_coll_proof_cksum(sumtype) || !is_keyed_cksum(sumtype))
+    if (!krb5_c_is_coll_proof_cksum(sumtype)
+	|| !krb5_c_is_keyed_cksum(sumtype))
 	return KRB5KRB_AP_ERR_INAPP_CKSUM;
 
     safemsg.user_data = *userdata;
@@ -109,19 +104,13 @@ krb5_mk_safe_basic(context, userdata, keyblock, replaydata, local_addr,
 cleanup_checksum:
     krb5_xfree(safe_checksum.contents);
 
-cleanup_scratch:
     memset((char *)scratch1->data, 0, scratch1->length); 
     krb5_free_data(context, scratch1);
     return retval;
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_mk_safe(context, auth_context, userdata, outbuf, outdata)
-    krb5_context 	  context;
-    krb5_auth_context 	  auth_context;
-    const krb5_data   	FAR * userdata;
-    krb5_data         	FAR * outbuf;
-    krb5_replay_data  	FAR * outdata;
+krb5_error_code KRB5_CALLCONV
+krb5_mk_safe(krb5_context context, krb5_auth_context auth_context, const krb5_data *userdata, krb5_data *outbuf, krb5_replay_data *outdata)
 {
     krb5_error_code 	  retval;
     krb5_keyblock       * keyblock;
@@ -131,9 +120,8 @@ krb5_mk_safe(context, auth_context, userdata, outbuf, outdata)
     memset((char *) &replaydata, 0, sizeof(krb5_replay_data));
 
     /* Get keyblock */
-    if ((keyblock = auth_context->local_subkey) == NULL)
-        if ((keyblock = auth_context->remote_subkey) == NULL)
-            keyblock = auth_context->keyblock;
+    if ((keyblock = auth_context->send_subkey) == NULL)
+	keyblock = auth_context->keyblock;
 
     /* Get replay info */
     if ((auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_DO_TIME) &&

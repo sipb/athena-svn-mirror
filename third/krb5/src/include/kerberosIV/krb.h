@@ -1,8 +1,8 @@
 /*
  * include/kerberosIV/krb.h
  *
- * Copyright 1987, 1988, 1994 by the Massachusetts Institute of Technology.
- * All Rights Reserved.
+ * Copyright 1987, 1988, 1994, 2001, 2002 by the Massachusetts
+ * Institute of Technology.  All Rights Reserved.
  *
  * Export of this software from the United States of America may
  *   require a specific license from the United States Government.
@@ -30,36 +30,72 @@
 #ifndef	KRB_DEFS
 #define KRB_DEFS
 
+/*
+ * For MacOS, don't expose prototypes of various private functions.
+ * Unfortuantely, they've leaked out everywhere else.
+ */
+#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
+#	include <TargetConditionals.h>
+#	if TARGET_RT_MAC_CFM
+#		error "Use KfM 4.0 SDK headers for CFM compilation."
+#	endif
+#	ifndef KRB_PRIVATE
+#		define KRB_PRIVATE 0
+#	endif
+#else
+#	ifndef KRB_PRIVATE
+#		define KRB_PRIVATE 1
+#	endif
+#endif
+
+/* Define u_char, u_short, u_int, and u_long. */
+/* XXX these typdef names are not standardized! */
+#include <sys/types.h>
+
 /* Need some defs from des.h	 */
 #include <kerberosIV/des.h>
+#include <kerberosIV/krb_err.h>
+#include <profile.h>
 
-#ifdef _WINDOWS
-#include <winsock.h>
+#ifdef _WIN32
 #include <time.h>
-#endif /* _WINDOWS */
+#endif /* _WIN32 */
 
-#include <port-sockets.h>
+#ifdef __cplusplus
+#ifndef KRBINT_BEGIN_DECLS
+#define KRBINT_BEGIN_DECLS	extern "C" {
+#define KRBINT_END_DECLS	}
+#endif
+#else
+#define KRBINT_BEGIN_DECLS
+#define KRBINT_END_DECLS
+#endif
+KRBINT_BEGIN_DECLS
 
+#if TARGET_OS_MAC
+#	if defined(__MWERKS__)
+#		pragma import on
+#		pragma enumsalwaysint on
+#	endif
+#	pragma options align=mac68k
+#endif
 
-/* Text describing error codes */
+#define KRB4_32		DES_INT32
+#define KRB_INT32	DES_INT32
+#define KRB_UINT32	DES_UINT32
+
 #define		MAX_KRB_ERRORS	256
-extern const char *const krb_err_txt[MAX_KRB_ERRORS];
 
-/* These are not defined for at least SunOS 3.3 and Ultrix 2.2 */
-#if defined(ULTRIX022) || (defined(SunOS) && SunOS < 40)
-#define FD_ZERO(p)  ((p)->fds_bits[0] = 0)
-#define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
-#define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
-#endif /* ULTRIX022 || SunOS */
+#if TARGET_OS_MAC
+/* ABI divergence on Mac for backwards compatibility. */
+extern const char * const * const krb_err_txt;
+#else
+extern const char * const krb_err_txt[MAX_KRB_ERRORS];
+#endif
 
 /* General definitions */
 #define		KSUCCESS	0
 #define		KFAILURE	255
-
-#ifdef NO_UIDGID_T
-typedef unsigned short uid_t;
-typedef unsigned short gid_t;
-#endif /* NO_UIDGID_T */
 
 /*
  * Kerberos specific definitions 
@@ -86,6 +122,10 @@ typedef unsigned short gid_t;
 #define		REALM_SZ	40
 #define		SNAME_SZ	40
 #define		INST_SZ		40
+#define     ADDR_SZ     40
+/*
+ * NB: This overcounts due to NULs.
+ */
 /* include space for '.' and '@' */
 #define		MAX_K_NAME_SZ	(ANAME_SZ + INST_SZ + REALM_SZ + 2)
 #define		KKEY_SZ		100
@@ -96,8 +136,10 @@ typedef unsigned short gid_t;
 #define		MAX_HSTNM	100
 
 #ifndef DEFAULT_TKT_LIFE		/* allow compile-time override */
-#define DEFAULT_TKT_LIFE	255	/* default lifetime for krb_mk_req */
+#define DEFAULT_TKT_LIFE	120	/* default lifetime for krb_mk_req */
 #endif
+
+#define		KRB_TICKET_GRANTING_TICKET	"krbtgt"
 
 /* Definition of text structure used to pass text around */
 #define		MAX_KTXT_LEN	1250
@@ -129,7 +171,7 @@ typedef struct ktext KTEXT_ST;
 #endif /* PC */
 
 /* Parameters for rd_ap_req */
-/* Maximum alloable clock skew in seconds */
+/* Maximum allowable clock skew in seconds */
 #define 	CLOCK_SKEW	5*60
 /* Filename for readservkey */
 #define		KEYFILE		((char*)krb__get_srvtabname("/etc/srvtab"))
@@ -164,6 +206,13 @@ struct credentials {
     KRB4_32 issue_date;		/* The issue time */
     char    pname[ANAME_SZ];	/* Principal's name */
     char    pinst[INST_SZ];	/* Principal's instance */
+#if TARGET_OS_MAC
+    KRB_UINT32 address;			/* Address in ticket */
+    KRB_UINT32 stk_type;		/* string_to_key function needed */
+#endif
+#ifdef _WIN32
+    char    address[ADDR_SZ];   /* Address in ticket */
+#endif
 };
 
 typedef struct credentials CREDENTIALS;
@@ -171,7 +220,7 @@ typedef struct credentials CREDENTIALS;
 /* Structure definition for rd_private_msg and rd_safe_msg */
 
 struct msg_dat {
-    unsigned char FAR *app_data;	/* pointer to appl data */
+    unsigned char *app_data;	/* pointer to appl data */
     unsigned KRB4_32 app_length;	/* length of appl data */
     unsigned KRB4_32 hash;		/* hash to lookup replay */
     int     swap;			/* swap bytes? */
@@ -183,166 +232,102 @@ typedef struct msg_dat MSG_DAT;
 
 
 /* Location of ticket file for save_cred and get_cred */
-#ifdef _WINDOWS
+#ifdef _WIN32
 #define TKT_FILE        "\\kerberos\\ticket.ses"
 #else
 #define TKT_FILE        tkt_string()
 #define TKT_ROOT        "/tmp/tkt"
-#endif /* PC */
+#endif /* _WIN32 */
+
+/*
+ * Error codes are now defined as offsets from com_err (krb_err.et)
+ * values.
+ */
+#define KRB_ET(x)	((KRBET_ ## x) - ERROR_TABLE_BASE_krb)
 
 /* Error codes returned from the KDC */
-#define		KDC_OK		0	/* Request OK */
-#define		KDC_NAME_EXP	1	/* Principal expired */
-#define		KDC_SERVICE_EXP	2	/* Service expired */
-#define		KDC_AUTH_EXP	3	/* Auth expired */
-#define		KDC_PKT_VER	4	/* Protocol version unknown */
-#define		KDC_P_MKEY_VER	5	/* Wrong master key version */
-#define		KDC_S_MKEY_VER 	6	/* Wrong master key version */
-#define		KDC_BYTE_ORDER	7	/* Byte order unknown */
-#define		KDC_PR_UNKNOWN	8	/* Principal unknown */
-#define		KDC_PR_N_UNIQUE 9	/* Principal not unique */
-#define		KDC_NULL_KEY   10	/* Principal has null key */
-#define		KDC_GEN_ERR    20	/* Generic error from KDC */
-
+#define	KDC_OK		KRB_ET(KSUCCESS)	/*  0 - Request OK */
+#define	KDC_NAME_EXP	KRB_ET(KDC_NAME_EXP)	/*  1 - Principal expired */
+#define	KDC_SERVICE_EXP	KRB_ET(KDC_SERVICE_EXP)	/*  2 - Service expired */
+#define	KDC_AUTH_EXP	KRB_ET(KDC_AUTH_EXP)	/*  3 - Auth expired */
+#define	KDC_PKT_VER	KRB_ET(KDC_PKT_VER)	/*  4 - Prot version unknown */
+#define	KDC_P_MKEY_VER	KRB_ET(KDC_P_MKEY_VER)	/*  5 - Wrong mkey version */
+#define	KDC_S_MKEY_VER 	KRB_ET(KDC_S_MKEY_VER)	/*  6 - Wrong mkey version */
+#define	KDC_BYTE_ORDER	KRB_ET(KDC_BYTE_ORDER)	/*  7 - Byte order unknown */
+#define	KDC_PR_UNKNOWN	KRB_ET(KDC_PR_UNKNOWN)	/*  8 - Princ unknown */
+#define	KDC_PR_N_UNIQUE KRB_ET(KDC_PR_N_UNIQUE)	/*  9 - Princ not unique */
+#define	KDC_NULL_KEY	KRB_ET(KDC_NULL_KEY)	/* 10 - Princ has null key */
+#define	KDC_GEN_ERR	KRB_ET(KDC_GEN_ERR)	/* 20 - Generic err frm KDC */
 
 /* Values returned by get_credentials */
-#define		GC_OK		0	/* Retrieve OK */
-#define		RET_OK		0	/* Retrieve OK */
-#define		GC_TKFIL       21	/* Can't read ticket file */
-#define		RET_TKFIL      21	/* Can't read ticket file */
-#define		GC_NOTKT       22	/* Can't find ticket or TGT */
-#define		RET_NOTKT      22	/* Can't find ticket or TGT */
-
+#define	GC_OK		KRB_ET(KSUCCESS)	/*  0 - Retrieve OK */
+#define	RET_OK		KRB_ET(KSUCCESS)	/*  0 - Retrieve OK */
+#define	GC_TKFIL	KRB_ET(GC_TKFIL)	/* 21 - Can't rd tkt file */
+#define	RET_TKFIL	KRB_ET(GC_TKFIL)	/* 21 - Can't rd tkt file */
+#define	GC_NOTKT	KRB_ET(GC_NOTKT)	/* 22 - Can't find tkt|TGT */
+#define	RET_NOTKT	KRB_ET(GC_NOTKT)	/* 22 - Can't find tkt|TGT */
 
 /* Values returned by mk_ap_req	 */
-#define		MK_AP_OK	0	/* Success */
-#define		MK_AP_TGTEXP   26	/* TGT Expired */
+#define	MK_AP_OK	KRB_ET(KSUCCESS)	/*  0 - Success */
+#define	MK_AP_TGTEXP	KRB_ET(MK_AP_TGTEXP)	/* 26 - TGT Expired */
 
 /* Values returned by rd_ap_req */
-#define		RD_AP_OK	0	/* Request authentic */
-#define		RD_AP_UNDEC    31	/* Can't decode authenticator */
-#define		RD_AP_EXP      32	/* Ticket expired */
-#define		RD_AP_NYV      33	/* Ticket not yet valid */
-#define		RD_AP_REPEAT   34	/* Repeated request */
-#define		RD_AP_NOT_US   35	/* The ticket isn't for us */
-#define		RD_AP_INCON    36	/* Request is inconsistent */
-#define		RD_AP_TIME     37	/* delta_t too big */
-#define		RD_AP_BADD     38	/* Incorrect net address */
-#define		RD_AP_VERSION  39	/* protocol version mismatch */
-#define		RD_AP_MSG_TYPE 40	/* invalid msg type */
-#define		RD_AP_MODIFIED 41	/* message stream modified */
-#define		RD_AP_ORDER    42	/* message out of order */
-#define		RD_AP_UNAUTHOR 43	/* unauthorized request */
+#define	RD_AP_OK	KRB_ET(KSUCCESS)	/*  0 - Request authentic */
+#define	RD_AP_UNDEC	KRB_ET(RD_AP_UNDEC)	/* 31 - Can't decode authent */
+#define	RD_AP_EXP	KRB_ET(RD_AP_EXP)	/* 32 - Ticket expired */
+#define	RD_AP_NYV	KRB_ET(RD_AP_NYV)	/* 33 - Ticket not yet valid */
+#define	RD_AP_REPEAT	KRB_ET(RD_AP_REPEAT)	/* 34 - Repeated request */
+#define	RD_AP_NOT_US	KRB_ET(RD_AP_NOT_US)	/* 35 - Ticket isn't for us */
+#define	RD_AP_INCON	KRB_ET(RD_AP_INCON)	/* 36 - Request inconsistent */
+#define	RD_AP_TIME	KRB_ET(RD_AP_TIME)	/* 37 - delta_t too big */
+#define	RD_AP_BADD	KRB_ET(RD_AP_BADD)	/* 38 - Incorrect net addr */
+#define	RD_AP_VERSION	KRB_ET(RD_AP_VERSION)	/* 39 - prot vers mismatch */
+#define	RD_AP_MSG_TYPE	KRB_ET(RD_AP_MSG_TYPE)	/* 40 - invalid msg type */
+#define	RD_AP_MODIFIED	KRB_ET(RD_AP_MODIFIED)	/* 41 - msg stream modified */
+#define	RD_AP_ORDER	KRB_ET(RD_AP_ORDER)	/* 42 - message out of order */
+#define	RD_AP_UNAUTHOR	KRB_ET(RD_AP_UNAUTHOR)	/* 43 - unauthorized request */
 
 /* Values returned by get_pw_tkt */
-#define		GT_PW_OK	0	/* Got password changing tkt */
-#define		GT_PW_NULL     51	/* Current PW is null */
-#define		GT_PW_BADPW    52	/* Incorrect current password */
-#define		GT_PW_PROT     53	/* Protocol Error */
-#define		GT_PW_KDCERR   54	/* Error returned by KDC */
-#define		GT_PW_NULLTKT  55	/* Null tkt returned by KDC */
-
+#define	GT_PW_OK	KRB_ET(KSUCCESS)	/*  0 - Got passwd chg tkt */
+#define	GT_PW_NULL	KRB_ET(GT_PW_NULL)	/* 51 - Current PW is null */
+#define	GT_PW_BADPW	KRB_ET(GT_PW_BADPW)	/* 52 - Wrong passwd */
+#define	GT_PW_PROT	KRB_ET(GT_PW_PROT)	/* 53 - Protocol Error */
+#define	GT_PW_KDCERR	KRB_ET(GT_PW_KDCERR)	/* 54 - Error ret by KDC */
+#define	GT_PW_NULLTKT	KRB_ET(GT_PW_NULLTKT)	/* 55 - Null tkt ret by KDC */
 
 /* Values returned by send_to_kdc */
-#define		SKDC_OK		0	/* Response received */
-#define		SKDC_RETRY     56	/* Retry count exceeded */
-#define		SKDC_CANT      57	/* Can't send request */
+#define	SKDC_OK		KRB_ET(KSUCCESS)	/*  0 - Response received */
+#define	SKDC_RETRY	KRB_ET(SKDC_RETRY)	/* 56 - Retry count exceeded */
+#define	SKDC_CANT	KRB_ET(SKDC_CANT)	/* 57 - Can't send request */
 
 /*
  * Values returned by get_intkt
  * (can also return SKDC_* and KDC errors)
  */
 
-#define		INTK_OK		0	/* Ticket obtained */
-#define		INTK_W_NOTALL  61	/* Not ALL tickets returned */
-#define		INTK_BADPW     62	/* Incorrect password */
-#define		INTK_PROT      63	/* Protocol Error */
-#define		INTK_ERR       70	/* Other error */
+#define	INTK_OK		KRB_ET(KSUCCESS)	/*  0 - Ticket obtained */
+#define	INTK_PW_NULL	KRB_ET(GT_PW_NULL)	/* 51 - Current PW is null */
+#define	INTK_W_NOTALL	KRB_ET(INTK_W_NOTALL)	/* 61 - Not ALL tkts retd */
+#define	INTK_BADPW	KRB_ET(INTK_BADPW)	/* 62 - Incorrect password */
+#define	INTK_PROT	KRB_ET(INTK_PROT)	/* 63 - Protocol Error */
+#define	INTK_ERR	KRB_ET(INTK_ERR)	/* 70 - Other error */
 
 /* Values returned by get_adtkt */
-#define         AD_OK           0	/* Ticket Obtained */
-#define         AD_NOTGT       71	/* Don't have tgt */
+#define AD_OK		KRB_ET(KSUCCESS)	/*  0 - Ticket Obtained */
+#define AD_NOTGT	KRB_ET(AD_NOTGT)	/* 71 - Don't have tgt */
 
 /* Error codes returned by ticket file utilities */
-#define		NO_TKT_FIL	76	/* No ticket file found */
-#define		TKT_FIL_ACC	77	/* Couldn't access tkt file */
-#define		TKT_FIL_LCK	78	/* Couldn't lock ticket file */
-#define		TKT_FIL_FMT	79	/* Bad ticket file format */
-#define		TKT_FIL_INI	80	/* tf_init not called first */
+#define	NO_TKT_FIL	KRB_ET(NO_TKT_FIL)	/* 76 - No ticket file found */
+#define	TKT_FIL_ACC	KRB_ET(TKT_FIL_ACC)	/* 77 - Can't acc tktfile */
+#define	TKT_FIL_LCK	KRB_ET(TKT_FIL_LCK)	/* 78 - Can't lck tkt file */
+#define	TKT_FIL_FMT	KRB_ET(TKT_FIL_FMT)	/* 79 - Bad tkt file format */
+#define	TKT_FIL_INI	KRB_ET(TKT_FIL_INI)	/* 80 - tf_init not called */
 
 /* Error code returned by kparse_name */
-#define		KNAME_FMT	81	/* Bad Kerberos name format */
+#define	KNAME_FMT	KRB_ET(KNAME_FMT)	/* 81 - Bad krb name fmt */
 
 /* Error code returned by krb_mk_safe */
-#define		SAFE_PRIV_ERROR	-1	/* syscall error */
-
-/*
- * macros for byte swapping; also scratch space
- * u_quad  0-->7, 1-->6, 2-->5, 3-->4, 4-->3, 5-->2, 6-->1, 7-->0
- * u_long  0-->3, 1-->2, 2-->1, 3-->0
- * u_short 0-->1, 1-->0
- */
-
-#define     swap_u_16(x) {\
- unsigned KRB4_32   _krb_swap_tmp[4];\
- swab(((char *) x) +0, ((char *)  _krb_swap_tmp) +14 ,2); \
- swab(((char *) x) +2, ((char *)  _krb_swap_tmp) +12 ,2); \
- swab(((char *) x) +4, ((char *)  _krb_swap_tmp) +10 ,2); \
- swab(((char *) x) +6, ((char *)  _krb_swap_tmp) +8  ,2); \
- swab(((char *) x) +8, ((char *)  _krb_swap_tmp) +6 ,2); \
- swab(((char *) x) +10,((char *)  _krb_swap_tmp) +4 ,2); \
- swab(((char *) x) +12,((char *)  _krb_swap_tmp) +2 ,2); \
- swab(((char *) x) +14,((char *)  _krb_swap_tmp) +0 ,2); \
- memcpy((char *)x,(char *)_krb_swap_tmp,16);\
-                            }
-
-#define     swap_u_12(x) {\
- unsigned KRB4_32   _krb_swap_tmp[4];\
- swab(( char *) x,     ((char *)  _krb_swap_tmp) +10 ,2); \
- swab(((char *) x) +2, ((char *)  _krb_swap_tmp) +8 ,2); \
- swab(((char *) x) +4, ((char *)  _krb_swap_tmp) +6 ,2); \
- swab(((char *) x) +6, ((char *)  _krb_swap_tmp) +4 ,2); \
- swab(((char *) x) +8, ((char *)  _krb_swap_tmp) +2 ,2); \
- swab(((char *) x) +10,((char *)  _krb_swap_tmp) +0 ,2); \
- memcpy((char *)x,(char *)_krb_swap_tmp,12);\
-                            }
-
-#define     swap_C_Block(x) {\
- unsigned KRB4_32   _krb_swap_tmp[4];\
- swab(( char *) x,    ((char *)  _krb_swap_tmp) +6 ,2); \
- swab(((char *) x) +2,((char *)  _krb_swap_tmp) +4 ,2); \
- swab(((char *) x) +4,((char *)  _krb_swap_tmp) +2 ,2); \
- swab(((char *) x) +6,((char *)  _krb_swap_tmp)    ,2); \
- memcpy((char *)x,(char *)_krb_swap_tmp,8);\
-                            }
-#define     swap_u_quad(x) {\
- unsigned KRB4_32   _krb_swap_tmp[4];\
- swab(( char *) &x,    ((char *)  _krb_swap_tmp) +6 ,2); \
- swab(((char *) &x) +2,((char *)  _krb_swap_tmp) +4 ,2); \
- swab(((char *) &x) +4,((char *)  _krb_swap_tmp) +2 ,2); \
- swab(((char *) &x) +6,((char *)  _krb_swap_tmp)    ,2); \
- memcpy((char *)&x,(char *)_krb_swap_tmp,8);\
-                            }
-
-#define     swap_u_long(x) {\
- unsigned KRB4_32   _krb_swap_tmp[4];\
- swab((char *)  &x,    ((char *)  _krb_swap_tmp) +2 ,2); \
- swab(((char *) &x) +2,((char *)  _krb_swap_tmp),2); \
- x = _krb_swap_tmp[0];   \
-                           }
-
-#define     swap_u_short(x) {\
- unsigned short	_krb_swap_sh_tmp; \
- swab((char *)  &x,    ( &_krb_swap_sh_tmp) ,2); \
- x = (unsigned short) _krb_swap_sh_tmp; \
-                            }
-
-/*
- * New byte swapping routines, much cleaner
- */
-#define krb4_swab16(val)	((((val) >> 8)&0xFF) | ((val) << 8))
-#define krb4_swab32(val)	((((val)>>24)&0xFF) | (((val)>>8)&0xFF00) | \
-				  (((val)<<8)&0xFF0000) | ((val)<<24))
+#define	SAFE_PRIV_ERROR	(-1)			/* syscall error */
 
 /* Kerberos ticket flag field bit definitions */
 #define K_FLAG_ORDER    0       /* bit 0 --> lsb */
@@ -354,6 +339,7 @@ typedef struct msg_dat MSG_DAT;
 #define K_FLAG_6                /* reserved */
 #define K_FLAG_7                /* reserved, bit 7 --> msb */
 
+/* Are these needed anymore? */
 #ifdef	OLDNAMES
 #define krb_mk_req	mk_ap_req
 #define krb_rd_req	rd_ap_req
@@ -389,7 +375,7 @@ typedef struct msg_dat MSG_DAT;
 #endif /* ATHENA_COMPAT */
 
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #define	TIME_GMT_UNIXSEC	win_time_gmt_unixsec((unsigned KRB4_32 *)0)
 #define	TIME_GMT_UNIXSEC_US(us)	win_time_gmt_unixsec((us))
 #define	CONVERT_TIME_EPOCH	win_time_get_epoch()
@@ -402,19 +388,22 @@ typedef struct msg_dat MSG_DAT;
 #define	TIME_GMT_UNIXSEC	unix_time_gmt_unixsec((unsigned KRB4_32 *)0)
 #define	TIME_GMT_UNIXSEC_US(us)	unix_time_gmt_unixsec((us))
 #define	CONVERT_TIME_EPOCH	((long)0)	/* Unix epoch is Krb epoch */
-#endif /*_WINDOWS*/
+#endif /* _WIN32 */
 
-
-/* Define u_char, u_short, u_int, and u_long. */
-#include <sys/types.h>
-
-#if !defined(_WINDOWS)
-#ifdef NEED_TIME_H
-#include <time.h>		/* For localtime, etc */
-#include <sys/time.h>
-#endif
-#endif /* !_WINDOWS */
-
+/* Constants for KerberosProfileLib */
+#define	REALMS_V4_PROF_REALMS_SECTION		"v4 realms"
+#define	REALMS_V4_PROF_KDC			"kdc"
+#define	REALMS_V4_PROF_ADMIN_KDC		"admin_server"
+#define	REALMS_V4_PROF_KPASSWD_KDC		"kpasswd_server"
+#define	REALMS_V4_PROF_DOMAIN_SECTION		"v4 domain_realm"
+#define	REALMS_V4_PROF_LIBDEFAULTS_SECTION	"libdefaults"
+#define	REALMS_V4_PROF_LOCAL_REALM		"default_realm"
+#define	REALMS_V4_PROF_STK			"string_to_key_type"
+#define	REALMS_V4_MIT_STK			"mit_string_to_key"
+#define	REALMS_V4_AFS_STK			"afs_string_to_key"
+#define	REALMS_V4_COLUMBIA_STK			"columbia_string_to_key"
+#define	REALMS_V4_DEFAULT_REALM			"default_realm"
+#define	REALMS_V4_NO_ADDRESSES			"noaddresses"
 
 /* ask to disable IP address checking in the library */
 extern int krb_ignore_ip_address;
@@ -429,237 +418,377 @@ extern int krb_debug;
 #define	DEB(x)	/* nothing */
 #endif
 
-/*
- * Some Unixes don't declare errno in <errno.h>...
- * Move this out to individual c-*.h files if it becomes troublesome.
- */
-#if !defined(errno) && !defined(_WINDOWS)
-extern int errno;
-#endif
-
 /* Define a couple of function types including parameters.  These
    are needed on MS-Windows to convert arguments of the function pointers
    to the proper types during calls.  */
 
 typedef int (KRB5_CALLCONV *key_proc_type)
-	PROTOTYPE ((char FAR *, char FAR *, char FAR *,
-		    char FAR *, C_Block));
+	(char *, char *, char *,
+		    char *, C_Block);
 #define KEY_PROC_TYPE_DEFINED
 
 typedef int (KRB5_CALLCONV *decrypt_tkt_type)
-	PROTOTYPE ((char FAR *, char FAR *, char FAR *,
-		    char FAR *, key_proc_type, KTEXT FAR *));
+	(char *, char *, char *,
+		    char *, key_proc_type, KTEXT *);
 #define DECRYPT_TKT_TYPE_DEFINED
 
-extern struct _krb5_context FAR * krb5__krb4_context;
+extern struct _krb5_context * krb5__krb4_context;
 
 /*
  * Function Prototypes for Kerberos V4.
  */
 
-#if (defined(__STDC__) || defined(_WINDOWS)) && !defined(KRB5_NO_PROTOTYPES)
 struct sockaddr_in;
-#endif
 
 /* dest_tkt.c */
-KRB5_DLLIMP int KRB5_CALLCONV dest_tkt
-	PROTOTYPE((void));
+int KRB5_CALLCONV dest_tkt
+	(void);
 /* err_txt.c */
-KRB5_DLLIMP const char FAR * KRB5_CALLCONV krb_get_err_text
-	PROTOTYPE((int errnum));
+const char * KRB5_CALLCONV krb_get_err_text
+	(int errnum);
 /* g_ad_tkt.c */
-int get_ad_tkt
-	PROTOTYPE((char *service, char *sinst, char *realm, int lifetime));
+/* Previously not KRB5_CALLCONV */
+int KRB5_CALLCONV get_ad_tkt
+	(char *service, char *sinst, char *realm, int lifetime);
 /* g_admhst.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_admhst
-	PROTOTYPE((char FAR *host, char FAR *realm, int index));
+int KRB5_CALLCONV krb_get_admhst
+	(char *host, char *realm, int idx);
 /* g_cred.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_cred
-	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
-		   CREDENTIALS FAR *c));
+int KRB5_CALLCONV krb_get_cred
+	(char *service, char *instance, char *realm,
+		   CREDENTIALS *c);
 /* g_in_tkt.c */
-int krb_get_in_tkt
-	PROTOTYPE((char *user, char *instance, char *realm,
+/* Previously not KRB5_CALLCONV */
+int KRB5_CALLCONV krb_get_in_tkt
+	(char *k_user, char *instance, char *realm,
 		   char *service, char *sinst, int life,
-		   key_proc_type, decrypt_tkt_type, char *arg));
-int krb_get_in_tkt_preauth
-	PROTOTYPE((char *user, char *instance, char *realm,
+		   key_proc_type, decrypt_tkt_type, char *arg);
+#if KRB_PRIVATE
+/* Previously not KRB5_CALLCONV */
+int KRB5_CALLCONV krb_get_in_tkt_preauth
+	(char *k_user, char *instance, char *realm,
 		   char *service, char *sinst, int life,
 		   key_proc_type, decrypt_tkt_type, char *arg,
-		   char *preauth_p, int preauth_len));
+		   char *preauth_p, int preauth_len);
+#endif
+/* From KfM */
+int KRB5_CALLCONV krb_get_in_tkt_creds(char *, char *, char *, char *, char *,
+    int, key_proc_type, decrypt_tkt_type, char *, CREDENTIALS *);
+
 /* g_krbhst.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_krbhst
-	PROTOTYPE((char FAR *host, char FAR *realm, int index));
+int KRB5_CALLCONV krb_get_krbhst
+	(char *host, const char *realm, int idx);
 /* g_krbrlm.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_lrealm
-	PROTOTYPE((char FAR *realm, int index));
+int KRB5_CALLCONV krb_get_lrealm
+	(char *realm, int idx);
 /* g_phost.c */
-KRB5_DLLIMP char FAR * KRB5_CALLCONV krb_get_phost
-	PROTOTYPE((char FAR * alias));
+char * KRB5_CALLCONV krb_get_phost
+	(char * alias);
+/* get_pw_tkt */
+int KRB5_CALLCONV get_pw_tkt 
+        (char *, char *, char *, char *);
 /* g_pw_in_tkt.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_pw_in_tkt
-	PROTOTYPE((char FAR *user, char FAR *instance, char FAR *realm,
-		   char FAR *service, char FAR *sinstance,
-		   int life, char FAR *password));
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_pw_in_tkt_preauth
-	PROTOTYPE((char FAR *user, char FAR *instance, char FAR *realm,
-		   char FAR *service, char FAR *sinstance,
-		   int life, char FAR *password));
+int KRB5_CALLCONV krb_get_pw_in_tkt
+	(char *k_user, char *instance, char *realm,
+		   char *service, char *sinstance,
+		   int life, char *password);
+#if KRB_PRIVATE
+int KRB5_CALLCONV krb_get_pw_in_tkt_preauth
+	(char *k_user, char *instance, char *realm,
+		   char *service, char *sinstance,
+		   int life, char *password);
+#endif
+int KRB5_CALLCONV
+krb_get_pw_in_tkt_creds(char *, char *, char *,
+	char *, char *, int, char *, CREDENTIALS *);
+
 /* g_svc_in_tkt.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_svc_in_tkt
-	PROTOTYPE((char FAR *user, char FAR *instance, char FAR *realm,
-		   char FAR *service, char FAR *sinstance,
-		   int life, char FAR *srvtab));
+int KRB5_CALLCONV krb_get_svc_in_tkt
+	(char *k_user, char *instance, char *realm,
+		   char *service, char *sinstance,
+		   int life, char *srvtab);
+
 /* g_tf_fname.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_tf_fullname
-	PROTOTYPE((char *ticket_file, char *name, char *inst, char *realm));
+int KRB5_CALLCONV krb_get_tf_fullname
+	(const char *ticket_file, char *name, char *inst, char *realm);
 /* g_tf_realm.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_tf_realm
-	PROTOTYPE((char *ticket_file, char *realm));
+int KRB5_CALLCONV krb_get_tf_realm
+	(const char *ticket_file, char *realm);
 /* g_tkt_svc.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_get_ticket_for_service
-	PROTOTYPE((char FAR *serviceName,
-		   char FAR *buf, unsigned KRB4_32 FAR *buflen,
+int KRB5_CALLCONV krb_get_ticket_for_service
+	(char *serviceName,
+		   char *buf, unsigned KRB4_32 *buflen,
 		   int checksum, des_cblock, Key_schedule,
-		   char FAR *version, int includeVersion));
-/* getst.c */
-int getst
-	PROTOTYPE((int fd, char *s, int n));
+		   char *version, int includeVersion);
+#if KRB_PRIVATE
 /* in_tkt.c */
-KRB5_DLLIMP int KRB5_CALLCONV in_tkt
-	PROTOTYPE((char *name, char *inst));
+int KRB5_CALLCONV in_tkt
+	(char *name, char *inst);
+int KRB5_CALLCONV krb_in_tkt
+        (char *pname, char *pinst, char *realm);
+#endif
+
 /* kname_parse.c */
-KRB5_DLLIMP int KRB5_CALLCONV kname_parse
-	PROTOTYPE((char FAR *name, char FAR *inst, char FAR *realm,
-		   char FAR *fullname));
+int KRB5_CALLCONV kname_parse
+	(char *name, char *inst, char *realm,
+		   char *fullname);
+/* Merged from KfM */
+int KRB5_CALLCONV kname_unparse
+	(char *, const char *, const char *, const char *);
+
+int KRB5_CALLCONV k_isname
+        (char *);
+int KRB5_CALLCONV k_isinst
+        (char *);
+int KRB5_CALLCONV k_isrealm
+        (char *);
+
+
 /* kuserok.c */
-KRB5_DLLIMP int KRB5_CALLCONV kuserok
-	PROTOTYPE((AUTH_DAT FAR *kdata, char FAR *luser));
+int KRB5_CALLCONV kuserok
+	(AUTH_DAT *kdata, char *luser);
+
+/* lifetime.c */
+KRB4_32 KRB5_CALLCONV krb_life_to_time
+	(KRB4_32 start, int life);
+int KRB5_CALLCONV krb_time_to_life
+	(KRB4_32 start, KRB4_32 end);
+
 /* mk_auth.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_check_auth
-	PROTOTYPE((KTEXT, unsigned KRB4_32 cksum, MSG_DAT FAR *,
+int KRB5_CALLCONV krb_check_auth
+	(KTEXT, unsigned KRB4_32 cksum, MSG_DAT *,
 		   C_Block, Key_schedule,
-		   struct sockaddr_in FAR * local_addr,
-		   struct sockaddr_in FAR * foreign_addr));
-KRB5_DLLIMP int KRB5_CALLCONV krb_mk_auth
-	PROTOTYPE((long options, KTEXT ticket,
-		   char FAR *service, char FAR *inst, char FAR *realm,
-		   unsigned KRB4_32 checksum, char FAR *version, KTEXT buf));
+		   struct sockaddr_in * local_addr,
+		   struct sockaddr_in * foreign_addr);
+int KRB5_CALLCONV krb_mk_auth
+	(long k4_options, KTEXT ticket,
+		   char *service, char *inst, char *realm,
+		   unsigned KRB4_32 checksum, char *version, KTEXT buf);
 /* mk_err.c */
-KRB5_DLLIMP long KRB5_CALLCONV krb_mk_err
-	PROTOTYPE((u_char FAR *out, KRB4_32 code, char FAR *text));
+long KRB5_CALLCONV krb_mk_err
+	(u_char *out, KRB4_32 k4_code, char *text);
+#if KRB_PRIVATE
 /* mk_preauth.c */
 int krb_mk_preauth
-	PROTOTYPE((char **preauth_p, int *preauth_len, key_proc_type,
+	(char **preauth_p, int *preauth_len, key_proc_type,
 		   char *name, char *inst, char *realm, char *password,
-		   C_Block));
+		   C_Block);
 void krb_free_preauth
-	PROTOTYPE((char * preauth_p, int len));
+	(char * preauth_p, int len);
+#endif
 /* mk_priv.c */
-KRB5_DLLIMP long KRB5_CALLCONV krb_mk_priv
-	PROTOTYPE((u_char FAR *in, u_char FAR *out,
+long KRB5_CALLCONV krb_mk_priv
+	(u_char *in, u_char *out,
 		   unsigned KRB4_32 length,
-		   Key_schedule, C_Block,
-		   struct sockaddr_in FAR * sender,
-		   struct sockaddr_in FAR * receiver));
+		   Key_schedule, C_Block *,
+		   struct sockaddr_in * sender,
+		   struct sockaddr_in * receiver);
 /* mk_req.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_mk_req
-	PROTOTYPE((KTEXT authent,
-		   char FAR *service, char FAR *instance, char FAR *realm,
-		   KRB4_32 checksum));
+int KRB5_CALLCONV krb_mk_req
+	(KTEXT authent,
+		   char *service, char *instance, char *realm,
+		   KRB4_32 checksum);
+/* Merged from KfM */
+int KRB5_CALLCONV krb_mk_req_creds(KTEXT, CREDENTIALS *, KRB_INT32);
+
+/* Added CALLCONV (KfM exports w/o INTERFACE, but KfW doesn't export?) */
+int KRB5_CALLCONV krb_set_lifetime(int newval);
+
 /* mk_safe.c */
-KRB5_DLLIMP long KRB5_CALLCONV krb_mk_safe
-	PROTOTYPE((u_char FAR *in, u_char FAR *out, unsigned KRB4_32 length,
-		   C_Block,
-		   struct sockaddr_in FAR *sender,
-		   struct sockaddr_in FAR *receiver));
+long KRB5_CALLCONV krb_mk_safe
+	(u_char *in, u_char *out, unsigned KRB4_32 length,
+		   C_Block *,
+		   struct sockaddr_in *sender,
+		   struct sockaddr_in *receiver);
+#if KRB_PRIVATE
 /* netread.c */
 int krb_net_read
-	PROTOTYPE((int fd, char *buf, int len));
+	(int fd, char *buf, int len);
 /* netwrite.c */
 int krb_net_write
-	PROTOTYPE((int fd, char *buf, int len));
+	(int fd, char *buf, int len);
 /* pkt_clen.c */
 int pkt_clen
-	PROTOTYPE((KTEXT));
+	(KTEXT);
+#endif
+
 /* put_svc_key.c */
-KRB5_DLLIMP int KRB5_CALLCONV put_svc_key
-	PROTOTYPE((char FAR *sfile,
-		   char FAR *name, char FAR *inst, char FAR *realm,
-		   int newvno, char FAR *key));
+int KRB5_CALLCONV put_svc_key
+	(char *sfile,
+		   char *name, char *inst, char *realm,
+		   int newvno, char *key);
+
 /* rd_err.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_rd_err
-	PROTOTYPE((u_char FAR *in, u_long in_length,
-		   long FAR *code, MSG_DAT FAR *m_data));
+int KRB5_CALLCONV krb_rd_err
+	(u_char *in, u_long in_length,
+		   long *k4_code, MSG_DAT *m_data);
 /* rd_priv.c */
-KRB5_DLLIMP long KRB5_CALLCONV krb_rd_priv
-	PROTOTYPE((u_char FAR *in,unsigned KRB4_32 in_length,
-		   Key_schedule, C_Block,
-		   struct sockaddr_in FAR *sender,
-		   struct sockaddr_in FAR *receiver,
-		   MSG_DAT FAR *m_data));
+long KRB5_CALLCONV krb_rd_priv
+	(u_char *in,unsigned KRB4_32 in_length,
+		   Key_schedule, C_Block *,
+		   struct sockaddr_in *sender,
+		   struct sockaddr_in *receiver,
+		   MSG_DAT *m_data);
 /* rd_req.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_rd_req
-	PROTOTYPE((KTEXT, char FAR *service, char FAR *inst,
-		   unsigned KRB4_32 from_addr, AUTH_DAT FAR *,
-		   char FAR *srvtab));
+int KRB5_CALLCONV krb_rd_req
+	(KTEXT, char *service, char *inst,
+		   unsigned KRB4_32 from_addr, AUTH_DAT *,
+		   char *srvtab);
+/* Merged from KfM */
+int KRB5_CALLCONV
+krb_rd_req_int(KTEXT, char *, char *, KRB_UINT32, AUTH_DAT *, C_Block);
+
 /* rd_safe.c */
-KRB5_DLLIMP long KRB5_CALLCONV krb_rd_safe
-	PROTOTYPE((u_char FAR *in, unsigned KRB4_32 in_length, C_Block,
-		   struct sockaddr_in FAR *sender,
-		   struct sockaddr_in FAR *receiver,
-		   MSG_DAT FAR *m_data));
+long KRB5_CALLCONV krb_rd_safe
+	(u_char *in, unsigned KRB4_32 in_length,
+		   C_Block *,
+		   struct sockaddr_in *sender,
+		   struct sockaddr_in *receiver,
+		   MSG_DAT *m_data);
 /* rd_svc_key.c */
-KRB5_DLLIMP int KRB5_CALLCONV read_service_key
-	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
-		   int kvno, char FAR *file, char FAR *key));
-KRB5_DLLIMP int KRB5_CALLCONV get_service_key
-	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
-		   int FAR *kvno, char FAR *file, char FAR *key));
+int KRB5_CALLCONV read_service_key
+	(char *service, char *instance, char *realm,
+		   int kvno, char *file, char *key);
+int KRB5_CALLCONV get_service_key
+	(char *service, char *instance, char *realm,
+		   int *kvno, char *file, char *key);
+
 /* realmofhost.c */
-KRB5_DLLIMP char FAR * KRB5_CALLCONV krb_realmofhost
-	PROTOTYPE((char FAR *host));
+char * KRB5_CALLCONV krb_realmofhost
+	(char *host);
 /* recvauth.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_recvauth
-	PROTOTYPE((long options, int fd, KTEXT ticket,
-		   char FAR *service, char FAR *instance,
-		   struct sockaddr_in FAR *foreign_addr,
-		   struct sockaddr_in FAR *local_addr,
-		   AUTH_DAT FAR *kdata, char FAR *srvtab,
-		   Key_schedule schedule, char FAR *version));
+int KRB5_CALLCONV krb_recvauth
+	(long k4_options, int fd, KTEXT ticket,
+		   char *service, char *instance,
+		   struct sockaddr_in *foreign_addr,
+		   struct sockaddr_in *local_addr,
+		   AUTH_DAT *kdata, char *srvtab,
+		   Key_schedule schedule, char *version);
+/* sendauth.c */
+int KRB5_CALLCONV krb_sendauth
+        (long k4_options, int fd, KTEXT ticket,
+	 char *service, char *inst, char *realm,
+	 unsigned KRB4_32 checksum, MSG_DAT *msg_data,
+	 CREDENTIALS *cred, Key_schedule schedule, 
+	 struct sockaddr_in *laddr, struct sockaddr_in *faddr, 
+	 char *version);
+
+#if KRB_PRIVATE
 /* save_creds.c */
-KRB5_DLLIMP int KRB5_CALLCONV krb_save_credentials
-	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
+int KRB5_CALLCONV krb_save_credentials
+	(char *service, char *instance, char *realm,
 		   C_Block session, int lifetime, int kvno,
-		   KTEXT ticket, long issue_date));
+		   KTEXT ticket, long issue_date);
 /* send_to_kdc.c */
+/* XXX PRIVATE? KfM doesn't export. */
 int send_to_kdc
-	PROTOTYPE((KTEXT pkt, KTEXT rpkt, char *realm));
+	(KTEXT pkt, KTEXT rpkt, char *realm);
+#endif
+
 /* tkt_string.c */
-char * tkt_string
-	PROTOTYPE((void));
-void krb_set_tkt_string
-	PROTOTYPE((char *));
+/* Used to return pointer to non-const char */
+const char * KRB5_CALLCONV tkt_string
+	(void);
+/* Previously not KRB5_CALLCONV, and previously took pointer to non-const. */
+void KRB5_CALLCONV krb_set_tkt_string
+	(const char *);
+
+#if KRB_PRIVATE
+/* tf_util.c */
+int KRB5_CALLCONV tf_init (const char *tf_name, int rw);
+
+int KRB5_CALLCONV tf_get_pname (char *p);
+
+int KRB5_CALLCONV tf_get_pinst (char *p);
+
+int KRB5_CALLCONV tf_get_cred (CREDENTIALS *c);
+
+void KRB5_CALLCONV tf_close (void);
+#endif
+
+#if KRB_PRIVATE
+/* unix_time.c */
+unsigned KRB4_32 KRB5_CALLCONV unix_time_gmt_unixsec 
+        (unsigned KRB4_32 *);
 
 /*
  * Internal prototypes
  */
 extern int krb_set_key
-	PROTOTYPE((char *key, int cvt));
-extern int decomp_ticket
-	PROTOTYPE((KTEXT tkt, unsigned char *flags, char *pname,
+	(char *key, int cvt);
+
+/* This is exported by KfM.  It was previously not KRB5_CALLCONV. */
+extern int KRB5_CALLCONV decomp_ticket
+	(KTEXT tkt, unsigned char *flags, char *pname,
 		   char *pinstance, char *prealm, unsigned KRB4_32 *paddress,
 		   C_Block session, int *life, unsigned KRB4_32 *time_sec,
 		   char *sname, char *sinstance, C_Block,
-		   Key_schedule key_s));
+		   Key_schedule key_s);
 
-#ifdef _WINDOWS
+
+extern void cr_err_reply(KTEXT pkt, char *pname, char *pinst, char *prealm,
+			 u_long time_ws, u_long e, char *e_string);
+
+extern int create_ciph(KTEXT c, C_Block session, char *service, 
+		       char *instance, char *realm, unsigned long life,
+		       int kvno, KTEXT tkt, unsigned long kdc_time, 
+		       C_Block key);
+
+
+extern int krb_create_ticket(KTEXT tkt, unsigned int flags, char *pname,
+			     char *pinstance, char *prealm, long paddress,
+			     char *session, int life, long time_sec, 
+			     char *sname, char *sinstance, C_Block key);
+
+#endif /* KRB_PRIVATE */
+
+/* This function is used by KEYFILE above.  Do not call it directly */
+extern char * krb__get_srvtabname(const char *);
+
+#if KRB_PRIVATE
+
+extern int krb_kntoln(AUTH_DAT *, char *);
+
+#ifdef KRB5_GENERAL__
+extern int krb_cr_tkt_krb5(KTEXT tkt, unsigned int flags, char *pname,
+			   char *pinstance, char *prealm, long paddress,
+			   char *session, int life, long time_sec, 
+			   char *sname, char *sinstance,  
+			   krb5_keyblock *k5key);
+
+extern int krb_set_key_krb5(krb5_context ctx, krb5_keyblock *key);
+
+#endif
+
+#endif /* KRB_PRIVATE */
+
+/*
+ * krb_change_password -- merged from KfM
+ */
+/* change_password.c */
+int KRB5_CALLCONV krb_change_password(char *, char *, char *, char *, char *);
+
+/*
+ * RealmsConfig-glue.c -- merged from KfM
+ */
+int KRB5_CALLCONV krb_get_profile(profile_t *);
+
+#ifdef _WIN32
 HINSTANCE get_lib_instance(void);
 unsigned int krb_get_notification_message(void);
-KRB5_DLLIMP char FAR * KRB5_CALLCONV krb_get_default_user(void);
-KRB5_DLLIMP int KRB5_CALLCONV krb_set_default_user(char *);
+char * KRB5_CALLCONV krb_get_default_user(void);
+int KRB5_CALLCONV krb_set_default_user(char *);
 unsigned KRB4_32 win_time_gmt_unixsec(unsigned KRB4_32 *);
 long win_time_get_epoch(void);
 #endif
+
+#if TARGET_OS_MAC
+#	if defined(__MWERKS__)
+#		pragma import reset
+#	endif
+#	pragma options align=reset
+#endif
+
+KRBINT_END_DECLS
 
 #endif	/* KRB_DEFS */

@@ -1,10 +1,10 @@
-This is Info file krb5-install.info, produced by Makeinfo version 1.68
-from the input file install.texinfo.
+This is krb5-install.info, produced by makeinfo version 4.0 from
+install.texinfo.
 
 
 File: krb5-install.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
 
-This file documents how to install the 1.2 release of Kerberos V5.
+This file documents how to install the 1.3 release of Kerberos V5.
 
 * Menu:
 
@@ -15,7 +15,6 @@ This file documents how to install the 1.2 release of Kerberos V5.
 * Installing Kerberos V5::
 * Upgrading Existing Kerberos V5 Installations::
 * Bug Reports for Kerberos V5::
-* Files::
 
 
 File: krb5-install.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: Top
@@ -23,7 +22,7 @@ File: krb5-install.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up:
 Copyright
 *********
 
-Copyright (C) 1985-2001 by the Massachusetts Institute of Technology.
+Copyright (C) 1985-2002 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -79,6 +78,61 @@ kadmin/passwd, kadmin/server, lib/kadm5, and portions of lib/rpc:
      to continuing Kerberos technology development and our gratitude
      for the valuable work which has been performed by MIT and the
      Kerberos community.
+
+The implementation of the Yarrow pseudo-random number generator in
+src/lib/crypto/yarrow has the following copyright:
+
+     Copyright 2000 by Zero-Knowledge Systems, Inc.
+
+     Permission to use, copy, modify, distribute, and sell this software
+     and its documentation for any purpose is hereby granted without
+     fee, provided that the above copyright notice appear in all copies
+     and that both that copyright notice and this permission notice
+     appear in supporting documentation, and that the name of
+     Zero-Knowledge Systems, Inc. not be used in advertising or
+     publicity pertaining to distribution of the software without
+     specific, written prior permission.  Zero-Knowledge Systems, Inc.
+     makes no representations about the suitability of this software
+     for any purpose.  It is provided "as is" without express or
+     implied warranty.
+
+     ZERO-KNOWLEDGE SYSTEMS, INC. DISCLAIMS ALL WARRANTIES WITH REGARD
+     TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL ZERO-KNOWLEDGE
+     SYSTEMS, INC. BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
+     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+     OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+     TORTUOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+     PERFORMANCE OF THIS SOFTWARE.
+
+
+The implementation of the AES encryption algorithm in
+src/lib/crypto/aes has the following copyright:
+
+     Copyright (c) 2001, Dr Brian Gladman <brg@gladman.uk.net>,
+     Worcester, UK.  All rights reserved.
+
+     LICENSE TERMS
+
+     The free distribution and use of this software in both source and
+     binary form is allowed (with or without changes) provided that:
+
+       1. distributions of this source code include the above copyright
+          notice, this list of conditions and the following disclaimer;
+
+       2. distributions in binary form include the above copyright
+          notice, this list of conditions and the following disclaimer
+          in the documentation and/or other associated materials;
+
+       3. the copyright holder's name is not used to endorse products
+          built using this software without specific written permission.
+
+     DISCLAIMER
+
+     This software is provided 'as is' with no explcit or implied
+     warranties in respect of any properties, including, but not
+     limited to, correctness and fitness for purpose.
+
 
 Kerberos V5 includes documentation and software developed at the
 University of California at Berkeley, which includes this copyright
@@ -165,6 +219,20 @@ either client is on.  Since studies have shown that half of the computer
 security breaches in industry happen from inside firewalls, Kerberos V5
 from MIT will play a vital role in the security of your network.
 
+
+File: krb5-install.info,  Node: Please Read the Documentation,  Next: Overview of This Guide,  Prev: Why Should I use Kerberos?,  Up: Introduction
+
+Please Read the Documentation
+=============================
+
+As with any software package that uses a centrallized database, the
+installation procedure is somewhat involved, and requires forethought
+and planning.  MIT has attempted to make this Kerberos V5 Installation
+Guide as concise as possible, rather than making it an exhaustive
+description of the details of Kerberos.  Consequently, everything in
+this guide appears because MIT believes that it is important.  Please
+read and follow these instructions carefully.
+
 This document is one piece of the document set for Kerberos V5.  The
 documents, and their intended audiences, are:
 
@@ -186,20 +254,6 @@ documents, and their intended audiences, are:
      particularly the "Tutorial" section.
 
 
-File: krb5-install.info,  Node: Please Read the Documentation,  Next: Overview of This Guide,  Prev: Why Should I use Kerberos?,  Up: Introduction
-
-Please Read the Documentation
-=============================
-
-As with any software package that uses a centrallized database, the
-installation procedure is somewhat involved, and requires forethought
-and planning.  MIT has attempted to make this Kerberos V5 Installation
-Guide as concise as possible, rather than making it an exhaustive
-description of the details of Kerberos.  Consequently, everything in
-this guide appears because MIT believes that it is important.  Please
-read and follow these instructions carefully.
-
-
 File: krb5-install.info,  Node: Overview of This Guide,  Prev: Please Read the Documentation,  Up: Introduction
 
 Overview of This Guide
@@ -207,6 +261,8 @@ Overview of This Guide
 
 The next chapter describes the decisions you need to make before
 installing Kerberos V5.
+
+Chapter three provided instructions for building the Kerberos sources.
 
 Chapter four describes installation procedures for each class of
 Kerberos machines:
@@ -228,8 +284,6 @@ Chapter five describes procedure for updating previous installations of
 Kerberos V5.
 
 Chapter six describes our problem reporting system.
-
-The appendices give sample configuration files.
 
 
 File: krb5-install.info,  Node: Realm Configuration Decisions,  Next: Building Kerberos V5,  Prev: Introduction,  Up: Top
@@ -274,12 +328,12 @@ Kerberos Realms
 
 Although your Kerberos realm can be any ASCII string, convention is to
 make it the same as your domain name, in upper-case letters.  For
-example, hosts in the domain fubar.org would be in the Kerberos realm
-FUBAR.ORG.
+example, hosts in the domain example.com would be in the Kerberos realm
+EXAMPLE.COM.
 
 If you need multiple Kerberos realms, MIT recommends that you use
 descriptive names which end with your domain name, such as
-BOSTON.FUBAR.ORG and HOUSTON.FUBAR.ORG.
+BOSTON.EXAMPLE.COM and HOUSTON.EXAMPLE.COM.
 
 
 File: krb5-install.info,  Node: Mapping Hostnames onto Kerberos Realms,  Next: Ports for the KDC and Admin Services,  Prev: Kerberos Realms,  Up: Realm Configuration Decisions
@@ -297,21 +351,15 @@ Since greater specificity takes precedence, you would do this by
 specifying the mappings for a given domain or subdomain and listing the
 exceptions.
 
-The Kerberos V5 System Administrator's Guide contains a thorough
-description of the parts of the `krb5.conf' file and what may be
-specified in each.  A sample `krb5.conf' file appears in *Note
-krb5.conf::.  You should be able to use this file, substituting the
-relevant information for your Kerberos installation for the samples.
-
-The second mechanism, recently introduced into the MIT code base but not
-currently used by default, works by looking up the information in
-special `TXT' records in the Domain Name Service.  If this mechanism is
-enabled on the client, it will try to look up a `TXT' record for the
-DNS name formed by putting the prefix `_kerberos' in front of the
-hostname in question.  If that record is not found, it will try using
-`_kerberos' and the host's domain name, then its parent domain, and so
-forth.  So for the hostname BOSTON.ENGINEERING.FOOBAR.COM, the names
-looked up would be:
+The second mechanism works by looking up the information in special
+`TXT' records in the Domain Name Service.  This is currently not used
+by default because security holes could result if the DNS TXT records
+were spoofed.  If this mechanism is enabled on the client, it will try
+to look up a `TXT' record for the DNS name formed by putting the prefix
+`_kerberos' in front of the hostname in question.  If that record is
+not found, it will try using `_kerberos' and the host's domain name,
+then its parent domain, and so forth.  So for the hostname
+BOSTON.ENGINEERING.FOOBAR.COM, the names looked up would be:
 
      _kerberos.boston.engineering.foobar.com
      _kerberos.engineering.foobar.com
@@ -327,7 +375,7 @@ another realm.  In that case, you would set up TXT records for all
 hosts, rather than relying on the fallback to the domain name.)
 
 Even if you do not choose to use this mechanism within your site, you
-may wish to set up anyways, for use when interacting with other sites.
+may wish to set it up anyway, for use when interacting with other sites.
 
 
 File: krb5-install.info,  Node: Ports for the KDC and Admin Services,  Next: Slave KDCs,  Prev: Mapping Hostnames onto Kerberos Realms,  Up: Realm Configuration Decisions
@@ -405,9 +453,16 @@ we don't recommend it for Internet use, and our code does not support it
 well.)  Several different Kerberos-related service names are used:
 
 `_kerberos._udp'
-     This is for contacting any KDC.  This entry will be used the most
-     often.  Normally you should list ports 88 and 750 on each of your
+     This is for contacting any KDC by UDP.  This entry will be used
+     the most often.  Normally you should list port 88 on each of your
      KDCs.
+
+`_kerberos._tcp'
+     This is for contacting any KDC by TCP.  The MIT KDC by default
+     will not listen on any TCP ports, so unless you've changed the
+     configuration or you're running another KDC implementation, you
+     should leave this unspecified.  If you do enable TCP support,
+     normally you should use port 88.
 
 `_kerberos-master._udp'
      This entry should refer to those KDCs, if any, that will
@@ -427,11 +482,15 @@ well.)  Several different Kerberos-related service names are used:
      This should list port 749 on your master KDC.  Support for it is
      not complete at this time, but it will eventually be used by the
      `kadmin' program and related utilities.  For now, you will also
-     need the `admin_server' entry in `krb5.conf'.
+     need the `admin_server' entry in `krb5.conf'.  (*Note krb5.conf::.)
 
 `_kpasswd._udp'
      This should list port 464 on your master KDC.  It is used when a
      user changes her password.
+
+`_kerberos-iv._udp'
+     This should refer to your KDCs that serve Kerberos version 4
+     requests, if you have Kerberos v4 enabled.
 
 Be aware, however, that the DNS SRV specification requires that the
 hostnames listed be the canonical names, not aliases.  So, for example,
@@ -488,18 +547,19 @@ File: krb5-install.info,  Node: Building Kerberos V5,  Next: Installing Kerberos
 Building Kerberos V5
 ********************
 
-Starting with the Beta 4 distribution, we are using a new configuration
-system, which was built using the Free Software Foundation's `autoconf'
-program.  This system will hopefully make Kerberos V5 much simpler to
-build and reduce the amount of effort required in porting Kerberos V5
-to a new platform.
+Kerberos V5 uses a configuration system built using the Free Software
+Foundation's `autoconf' program.  This system makes Kerberos V5 much
+simpler to build and reduces the amount of effort required in porting
+Kerberos V5 to a new platform.
 
 * Menu:
 
+* Organization of the Source Directory::  Description of the source tree.
 * Build Requirements::          How much disk space, etc. you need to
                                            build Kerberos.
 * Unpacking the Sources::       Preparing the source tree.
 * Doing the Build::             Compiling Kerberos.
+* Installing the Binaries::     Installing the compiled binaries.
 * Testing the Build::           Making sure Kerberos built correctly.
 * Options to Configure::        Command-line options to Configure
 * osconf.h::                    Header file-specific configurations
@@ -509,10 +569,249 @@ to a new platform.
                                             configuration scripts.
 
 
-File: krb5-install.info,  Node: Build Requirements,  Next: Unpacking the Sources,  Prev: Building Kerberos V5,  Up: Building Kerberos V5
+File: krb5-install.info,  Node: Organization of the Source Directory,  Next: Build Requirements,  Prev: Building Kerberos V5,  Up: Building Kerberos V5
 
 Build Requirements
 ==================
+
+Below is a brief overview of the organization of the complete source
+directory.  More detailed descriptions follow.
+
+appl
+     applications with Kerberos V5 extensions
+
+clients
+     Kerberos V5 user programs
+
+gen-manpages
+     manpages for Kerberos V5 and the Kerberos V5 login program
+
+include
+     include files
+
+kadmin
+     administrative interface to the Kerberos master database
+
+kdc
+     the Kerberos V5 Authentication Service and Key Distribution Center
+
+krb524
+     utilities for converting between Kerberos 4 and Kerberos 5
+
+lib
+     libraries for use with/by Kerberos V5
+
+mac
+     source code for building Kerberos V5 on MacOS
+
+prototype
+     templates for source code files
+
+slave
+     utilities for propagating the database to slave KDCs
+
+tests
+     test suite
+
+util
+     various utilities for building/configuring the code, sending bug
+     reports, etc.
+
+windows
+     source code for building Kerberos V5 on Windows (see
+     windows/README)
+
+* Menu:
+
+* The appl Directory::
+* The clients Directory::
+* The gen-manpages Directory::
+* The include Directory::
+* The kadmin Directory::
+* The kdc Directory::
+* The krb524 Directory::
+* The lib Directory::
+* The prototype Directory::
+* The slave Directory::
+* The util Directory::
+
+
+File: krb5-install.info,  Node: The appl Directory,  Next: The clients Directory,  Prev: Organization of the Source Directory,  Up: Organization of the Source Directory
+
+The appl Directory
+------------------
+
+The Kerberos release provides certain UNIX utilities, modified to use
+Kerberos authentication.  In the appl/bsd directory are the Berkeley
+utilities login, rlogin, rsh, and rcp, as well as the associated
+daemons kshd and klogind.  The login program obtains ticket-granting
+tickets for users upon login; the other utilities provide authenticated
+Unix network services.
+
+The appl directory also contains Kerberized telnet and ftp programs, as
+well as sample Kerberos application client and server programs.
+
+
+File: krb5-install.info,  Node: The clients Directory,  Next: The gen-manpages Directory,  Prev: The appl Directory,  Up: Organization of the Source Directory
+
+The clients Directory
+---------------------
+
+This directory contains the code for several user-oriented programs.
+
+kdestroy
+     This program destroys the user's active Kerberos authorization
+     tickets.  MIT recommends that users `kdestroy' before logging out.
+
+kinit
+     This program prompts users for their Kerberos principal name and
+     password, and attempts to get an initial ticket-granting-ticket
+     for that principal.
+
+klist
+     This program lists the Kerberos principal and Kerberos tickets
+     held in a credentials cache, or the keys held in a keytab file.
+
+kpasswd
+     This program changes a user's Kerberos password.
+
+ksu
+     This program is a Kerberized verions of the `su' program that is
+     meant to securely change the real and effective user ID to that of
+     the target user and to create a new security context.
+
+kvno
+     This program acquires a service ticket for the specified Kerberos
+     principals and prints out the key version numbers of each.
+
+
+File: krb5-install.info,  Node: The gen-manpages Directory,  Next: The include Directory,  Prev: The clients Directory,  Up: Organization of the Source Directory
+
+The gen-manpages Directory
+--------------------------
+
+There are two manual pages in this directory.  One is an introduction
+to the Kerberos system.  The other describes the `.k5login' file which
+allows users to give access with their UID to other users authenticated
+by the Kerberos system.
+
+
+File: krb5-install.info,  Node: The include Directory,  Next: The kadmin Directory,  Prev: The gen-manpages Directory,  Up: Organization of the Source Directory
+
+The include Directory
+---------------------
+
+This directory contains the include files needed to build the Kerberos
+system.
+
+
+File: krb5-install.info,  Node: The kadmin Directory,  Next: The kdc Directory,  Prev: The include Directory,  Up: Organization of the Source Directory
+
+The kadmin Directory
+--------------------
+
+In this directory is the code for the utilities `kadmin',
+`kadmin.local', `kdb5_util', and `ktutil'.  `ktutil' is the Kerberos
+keytab file maintenance utility from which a Kerberos administrator can
+read, write, or edit entries in a Kerberos V5 keytab or Kerberos V4
+srvtab.  `kadmin' and `kadmin.local' are command-line interfaces to the
+Kerberos V5 KADM5 administration system.  `kadmin.local' runs on the
+master KDC and does not use Kerberos to authenticate to the database,
+while `kadmin' uses Kerberos authentication and an encrypted RPC.  The
+two provide identical functionalities, which allow administrators to
+modify the database of Kerberos principals.  `kdb5_util' allows
+administrators to perform low-level maintenance procedures on Kerberos
+and the KADM5 database.  With this utility, databases can be created,
+destroyed, or dumped to and loaded from ASCII files.  It can also be
+used to create master key stash files.
+
+
+File: krb5-install.info,  Node: The kdc Directory,  Next: The krb524 Directory,  Prev: The kadmin Directory,  Up: Organization of the Source Directory
+
+The kdc Directory
+-----------------
+
+This directory contains the code for the `krb5kdc' daemon, the Kerberos
+Authentication Service and Key Distribution Center.
+
+
+File: krb5-install.info,  Node: The krb524 Directory,  Next: The lib Directory,  Prev: The kdc Directory,  Up: Organization of the Source Directory
+
+The krb524 Directory
+--------------------
+
+This directory contains the code for `krb524', a service that converts
+Kerberos V5 credentials into Kerberos V4 credentials suitable for use
+with applications that for whatever reason do not use V5 directly.
+
+
+File: krb5-install.info,  Node: The lib Directory,  Next: The prototype Directory,  Prev: The krb524 Directory,  Up: Organization of the Source Directory
+
+The lib Directory
+-----------------
+
+The lib directory contain 10 subdirectories as well as some definition
+and glue files.  The crypto subdirectory contains the Kerberos V5
+encryption library.  The des425 subdirectory exports the Kerberos V4
+encryption API, and translates these functions into calls to the
+Kerberos V5 encryption API.  The gssapi library contains the Generic
+Security Services API, which is a library of commands to be used in
+secure client-server communication.  The kadm5 directory contains the
+libraries for the KADM5 administration utilities.  The Kerberos 5
+database libraries are contained in kdb.  The directories krb4 and krb5
+contain the Kerberos 4 and Kerberos 5 APIs, respectively.  The rpc
+directory contains the API for the Kerberos Remote Procedure Call
+protocol.
+
+
+File: krb5-install.info,  Node: The prototype Directory,  Next: The slave Directory,  Prev: The lib Directory,  Up: Organization of the Source Directory
+
+The prototype Directory
+-----------------------
+
+This directory contains several template files.  The `prototype.h' and
+`prototype.c' files contain the MIT copyright message and a placeholder
+for the title and description of the file.  `prototype.h' also has a
+short template for writing `ifdef' and `ifndef' preprocessor
+statements.  The `getopt.c' file provides a template for writing code
+that will parse the options with which a program was called.
+
+
+File: krb5-install.info,  Node: The slave Directory,  Next: The util Directory,  Prev: The prototype Directory,  Up: Organization of the Source Directory
+
+The slave Directory
+-------------------
+
+This directory contains code which allows for the propagation of the
+Kerberos principal database from the master KDC to slave KDCs over an
+encrypted, secure channel.  `kprop' is the program which actually
+propagates the database dump file.  `kpropd' is the Kerberos V5 slave
+KDC update server which accepts connections from the `kprop' program.
+`kslave_update' is a script that takes the name of a slave server, and
+propagates the database to that server if the database has been
+modified since the last dump or if the database has been dumped since
+the last propagation.
+
+
+File: krb5-install.info,  Node: The util Directory,  Prev: The slave Directory,  Up: Organization of the Source Directory
+
+The util Directory
+------------------
+
+This directory contains several utility programs and libraries.  The
+programs used to configure and build the code, such as `autoconf',
+`lndir', `kbuild', `reconf',  and `makedepend', are in this directory.
+The profile directory contains most of the functions which parse the
+Kerberos configuration files (`krb5.conf' and `kdc.conf').  Also in
+this directory are the Kerberos error table library and utilities (et),
+the Sub-system library and utilities (ss), database utilities (db2),
+pseudo-terminal utilities (pty), and bug-reporting program `send-pr'.
+
+
+File: krb5-install.info,  Node: Build Requirements,  Next: Unpacking the Sources,  Prev: Organization of the Source Directory,  Up: Building Kerberos V5
+
+Organization of the Source Directory
+====================================
 
 In order to build Kerberos V5, you will need approximately 60-70
 megabytes of disk space.  The exact amount will vary depending on the
@@ -531,21 +830,23 @@ File: krb5-install.info,  Node: Unpacking the Sources,  Next: Doing the Build,  
 Unpacking the Sources
 =====================
 
-The first step in each of these build procedures is to unpack the source
-distribution.  The Kerberos V5 distribution comes in two compressed tar
-files.  The first file, which is generally named `krb5-1.2.src.tar.gz',
-contains the sources for all of Kerberos except for the crypto library,
-which is found in the file `krb5-1.2.crypto.tar.gz'.
+The first step in each of these build procedures is to unpack the
+source distribution.  The Kerberos V5 distribution comes in a tar file,
+generally named `krb5-1.3.tar', which contains a compressed tar file
+consisting of the sources for all of Kerberos (generally
+`krb5-1.3.tar.gz') and a PGP signature for this source tree (generally
+`krb5-1.3.tar.gz.asc').  MIT highly recommends that you verify the
+integrity of the source code using this signature.
 
-Both files should be unpacked in the same directory, such as
-`/u1/krb5-1.2'.  (In the rest of this document, we will assume that you
+Unpack the compressed tar file in some directory, such as
+`/u1/krb5-1.3'.  (In the rest of this document, we will assume that you
 have chosen to unpack the Kerberos V5 source distribution in this
 directory.  Note that the tarfiles will by default all unpack into the
-`./krb5-1.2' directory, so that if your current directory is `/u1' when
-you unpack the tarfiles, you will get `/u1/krb5-1.2/src', etc.)
+`./krb5-1.3' directory, so that if your current directory is `/u1' when
+you unpack the tarfiles, you will get `/u1/krb5-1.3/src', etc.)
 
 
-File: krb5-install.info,  Node: Doing the Build,  Next: Testing the Build,  Prev: Unpacking the Sources,  Up: Building Kerberos V5
+File: krb5-install.info,  Node: Doing the Build,  Next: Installing the Binaries,  Prev: Unpacking the Sources,  Up: Building Kerberos V5
 
 Doing the Build
 ===============
@@ -574,7 +875,7 @@ Building Within a Single Tree
 If you don't want separate build trees for each architecture, then use
 the following abbreviated procedure.
 
-  1.  `cd /u1/krb5-1.2/src'
+  1.  `cd /u1/krb5-1.3/src'
 
   2.  `./configure'
 
@@ -597,9 +898,9 @@ this, see the next section.
 For example, if you wish to create a build directory for `pmax' binaries
 you might use the following procedure:
 
-  1. `mkdir /u1/krb5-1.2/pmax'
+  1. `mkdir /u1/krb5-1.3/pmax'
 
-  2.  `cd /u1/krb5-1.2/pmax'
+  2.  `cd /u1/krb5-1.3/pmax'
 
   3.  `../src/configure'
 
@@ -619,11 +920,11 @@ trees in your build directory.
 For example, if you wish to create a build directory for solaris
 binaries you might use the following procedure:
 
-  1.  `mkdir /u1/krb5-1.2/solaris'
+  1.  `mkdir /u1/krb5-1.3/solaris'
 
-  2.  `cd /u1/krb5-1.2/solaris'
+  2.  `cd /u1/krb5-1.3/solaris'
 
-  3.  `/u1/krb5-1.2/src/util/lndir `pwd`/../src'
+  3.  `/u1/krb5-1.3/src/util/lndir `pwd`/../src'
 
   4.  `./configure'
 
@@ -635,7 +936,32 @@ from the latest version as distributed and installed by the XConsortium
 with X11R6. Either version should be acceptable.
 
 
-File: krb5-install.info,  Node: Testing the Build,  Next: Options to Configure,  Prev: Doing the Build,  Up: Building Kerberos V5
+File: krb5-install.info,  Node: Installing the Binaries,  Next: Testing the Build,  Prev: Doing the Build,  Up: Building Kerberos V5
+
+Installing the Binaries
+=======================
+
+Once you have built Kerberos, you should install the binaries.  You can
+do this by running:
+
+     % make install
+
+If you want to install the binaries into a destination directory that
+is not their final destination, which may be convenient if you want to
+build a binary distribution to be deployed on multiple hosts, you may
+use:
+
+     % make install DESTDIR=/path/to/destdir
+
+This will install the binaries under `DESTDIR/PREFIX', e.g., the user
+programs will install into `DESTDIR/PREFIX/bin', the libraries into
+`DESTDIR/PREFIX/lib', etc.
+
+Note that if you want to test the build (see *Note Testing the Build::),
+you usually do not need to do a `make install' first.
+
+
+File: krb5-install.info,  Node: Testing the Build,  Next: Options to Configure,  Prev: Installing the Binaries,  Up: Building Kerberos V5
 
 Testing the Build
 =================
@@ -715,512 +1041,4 @@ re-configure the tree and run `make' at the top level again to make
 sure all the proper programs are built.  To save time, you actually only
 need to reconfigure and build in the directories src/kadmin/testing,
 src/lib/rpc, src/lib/kadm5.
-
-
-File: krb5-install.info,  Node: Options to Configure,  Next: osconf.h,  Prev: Testing the Build,  Up: Building Kerberos V5
-
-Options to Configure
-====================
-
-There are a number of options to `configure' which you can use to
-control how the Kerberos distribution is built.  The following table
-lists the most commonly used options to Kerberos V5's `configure'
-program.
-
-`--help'
-     Provides help to configure. This will list the set of commonly used
-     options for building Kerberos.
-
-`--prefix=PREFIX'
-     By default, Kerberos will install the package's files rooted at
-     `/usr/local' as in `/usr/local/bin', `/usr/local/sbin', etc. If you
-     desire a different location, use this option.
-
-`--exec-prefix=EXECPREFIX'
-     This option allows one to separate the architecture independent
-     programs from the configuration files and manual pages.
-
-`--localstatedir=LOCALSTATEDIR'
-     This option sets the directory for locally modifiable
-     single-machine data.  In Kerberos, this mostly is useful for
-     setting a location for the KDC data files, as they will be
-     installed in `LOCALSTATEDIR/krb5kdc', which is by default
-     `PREFIX/var/krb5kdc'.
-
-`--with-cc=COMPILER'
-     Use `COMPILER' as the C compiler.
-
-`--with-ccopts=FLAGS'
-     Use `FLAGS' as the default set of C compiler flags.
-
-     Note that if you use the native Ultrix compiler on a DECstation
-     you are likely to lose if you pass no flags to cc; md4.c takes an
-     estimated 3,469 billion years to compile if you provide neither
-     the `-g' flag nor the `-O' flag to `cc'.
-
-`--with-cppopts=CPPOPTS'
-     Use `CPPOPTS' as the default set of C preprocessor flags.  The most
-     common use of this option is to select certain `#define''s for use
-     with the operating system's include files.
-
-`--with-linker=LINKER'
-     Use `LINKER' as the default loader if it should be different from C
-     compiler as specified above.
-
-`--with-ldopts=LDOPTS'
-     This option allows one to specify optional arguments to be passed
-     to the linker. This might be used to specify optional library
-     paths.
-
-`--with-krb4'
-     This option enables Kerberos V4 backwards compatibility using the
-     builtin Kerberos V4 library.
-
-`--with-krb4=KRB4DIR'
-     This option enables Kerberos V4 backwards compatibility using a
-     pre-existing Kerberos V4 installation.  The directory specified by
-     `KRB4DIR' specifies where the V4 header files should be found
-     (`KRB4DIR/include') as well as where the V4 Kerberos library should
-     be found (`KRB4DIR/lib').
-
-`--without-krb4'
-     Disables Kerberos V4 backwards compatibility. This prevents
-     Kerberos V4 clients from using the V5 services including the KDC.
-     This would be useful if you know you will never install or need to
-     interact with V4 clients.
-
-`--with-netlib[=libs]'
-     Allows for suppression of or replacement of network libraries. By
-     default, Kerberos V5 configuration will look for `-lnsl' and
-     `-lsocket'. If your operating system has a broken resolver library
-     (see *Note Solaris versions 2.0 through 2.3::) or fails to pass
-     the tests in `src/tests/resolv' you will need to use this option.
-
-`--with-vague-errors'
-     If enabled, gives vague and unhelpful error messages to the
-     client... er, attacker.  (Needed to meet silly government
-     regulations; most other sites will want to keep this undefined.)
-
-`--with-kdc-kdb-update'
-     Set this option if you want to allow the KDC to modify the Kerberos
-     database; this allows the last request information to be updated,
-     as well as the failure count information.  Note that this doesn't
-     work if you're using slave servers!!!  It also causes the database
-     to be modified (and thus needing to be locked) frequently. Please
-     note that the implementors do not regularly test this feature.
-
-`--with-tcl=TCLPATH'
-     Some of the unit-tests in the build tree rely upon using a program
-     in Tcl. The directory specified by `TCLPATH' specifies where the
-     Tcl header file (`TCLPATH/include/tcl.h' as well as where the Tcl
-     library should be found (`TCLPATH/lib').
-
-`--enable-shared'
-     This option will turn on the building and use of shared library
-     objects in the Kerberos build. This option is only supported on
-     certain platforms.
-
-`--enable-dns'
-
-`--enable-dns-for-kdc'
-
-`--enable-dns-for-realm'
-     Enable the use of DNS to look up a host's Kerberos realm, or a
-     realm's KDCs, if the information is not provided in krb5.conf.  See
-     *Note Hostnames for the Master and Slave KDCs::, and *Note Mapping
-     Hostnames onto Kerberos Realms::.  By default, DNS lookups are
-     enabled for the latter but not for the former.
-
-`--enable-kdc-replay-cache'
-     Enable a cache in the KDC to detect retransmitted messages, and
-     resend the previous responses to them.  This protects against
-     certain types of attempts to extract information from the KDC
-     through some of the hardware preauthentication systems.
-
-For example, in order to configure Kerberos on a Solaris machine using
-the `suncc' compiler with the optimizer turned on, run the configure
-script with the following options:
-
-     % ./configure --with-cc=suncc --with-ccopts=-O
-
-
-File: krb5-install.info,  Node: osconf.h,  Next: Shared Library Support,  Prev: Options to Configure,  Up: Building Kerberos V5
-
-`osconf.h'
-==========
-
-There is one configuration file which you may wish to edit to control
-various compile-time parameters in the Kerberos distribution:
-`include/krb5/stock/osconf.h'. The list that follows is by no means
-complete, just some of the more interesting variables.
-
-Please note: The former configuration file `config.h' no longer exists
-as its functionality has been merged into the auto-configuration
-process. *Note Options to Configure::.
-
-`DEFAULT_PROFILE_PATH'
-     The pathname to the file which contains the profiles for the known
-     realms, their KDCs, etc.
-
-     The profile file format is no longer the same format as Kerberos
-     V4's `krb.conf' file.
-
-`DEFAULT_KEYTAB_NAME'
-     The type and pathname to the default server keytab file (the
-     equivalent of Kerberos V4's `/etc/srvtab').
-
-`DEFAULT_KDC_ENCTYPE'
-     The default encryption type for the KDC.
-
-`KDCRCACHE'
-     The name of the replay cache used by the KDC.
-
-`RCTMPDIR'
-     The directory which stores replay caches.
-
-`DEFAULT_KDB_FILE'
-     The location of the default database
-
-
-File: krb5-install.info,  Node: Shared Library Support,  Next: OS Incompatibilities,  Prev: osconf.h,  Up: Building Kerberos V5
-
-Shared Library Support
-======================
-
-Shared library support is provided for a few operating systems. There
-are restrictions as to which compiler to use when using shared
-libraries. In all cases, executables linked with the shared libraries in
-this build process will have built in the location of the libraries,
-therefore obliterating the need for special LD_LIBRARY_PATH, et al
-environment variables when using the programs. Except where noted,
-multiple versions of the libraries may be installed on the same system
-and continue to work.
-
-Currently the supported platforms are Solaris 2.6 (aka SunOS 5.6) and
-Irix 6.5.
-
-Shared library support has been tested on the following platforms but
-not exhaustively (they have been built but not necessarily tested in an
-installed state): Tru64 (aka Alpha OSF/1 or Digital Unix) 4.0, NetBSD
-1.4.x (i386), and HP/UX 10.20.
-
-Platforms for which there is shared library support but not significant
-testing include FreeBSD, OpenBSD, MacOS 10, AIX, Linux, and SunOS 4.x.
-
-To enable shared libraries on the above platforms, run the configure
-script with the option `--enable-shared'.
-
-
-File: krb5-install.info,  Node: OS Incompatibilities,  Next: Using Autoconf,  Prev: Shared Library Support,  Up: Building Kerberos V5
-
-Operating System Incompatibilities
-==================================
-
-This section details operating system incompatibilities with Kerberos V5
-which have been reported to the developers at MIT.  If you find
-additional incompatibilities, and/or discover work arounds to such
-problems, please send a report via the `krb5-send-pr' program.  Thanks!
-
-* Menu:
-
-* AIX::
-* Alpha OSF/1 V1.3::
-* Alpha OSF/1 (Digital Unix) V2.0++::
-* Alpha Tru64 4.0::
-* BSDI::
-* HPUX::
-* Solaris versions 2.0 through 2.3::
-* Solaris 2.X::
-* SGI Irix 5.X::
-* Ultrix 4.2/3::
-
-
-File: krb5-install.info,  Node: AIX,  Next: Alpha OSF/1 V1.3,  Prev: OS Incompatibilities,  Up: OS Incompatibilities
-
-AIX
----
-
-The AIX 3.2.5 linker dumps core trying to build a shared `libkrb5.a'
-produced with the GNU C compiler.  The native AIX compiler works fine.
-This problem is fixed using the AIX 4.1 linker.
-
-
-File: krb5-install.info,  Node: Alpha OSF/1 V1.3,  Next: Alpha OSF/1 (Digital Unix) V2.0++,  Prev: AIX,  Up: OS Incompatibilities
-
-Alpha OSF/1 V1.3
-----------------
-
-Using the native compiler, compiling with the `-O' compiler flag causes
-the `asn.1' library to be compiled incorrectly.
-
-Using GCC version 2.6.3 or later instead of the native compiler will
-also work fine, both with or without optimization.
-
-
-File: krb5-install.info,  Node: Alpha OSF/1 (Digital Unix) V2.0++,  Next: Alpha Tru64 4.0,  Prev: Alpha OSF/1 V1.3,  Up: OS Incompatibilities
-
-Alpha OSF/1 V2.0++
-------------------
-
-There used to be a bug when using the native compiler in compiling
-`md4.c' when compiled without either the `-O' or `-g' compiler options.
-We have changed the code and there is no problem under V2.1, but we do
-not have access to V2.0 to test and see if the problem would exist
-there. (We welcome feedback on this issue). There was never a problem
-in using GCC version 2.6.3.
-
-In version 3.2 and beyond of the operating system, we have not seen any
-optimizer problems with the native compiler.
-
-
-File: krb5-install.info,  Node: Alpha Tru64 4.0,  Next: BSDI,  Prev: Alpha OSF/1 (Digital Unix) V2.0++,  Up: OS Incompatibilities
-
-Alpha Tru64 4.0
----------------
-
-Alpha Tru64 4.0 will have some trouble compiling the some stdarg
-prototypes, since it defaults to K&R C.  Use the `-std' or `-std1'
-flags to force ANSI behavior (e.g. `./configure --with-cc='cc -std1'').
-
-
-File: krb5-install.info,  Node: BSDI,  Next: HPUX,  Prev: Alpha Tru64 4.0,  Up: OS Incompatibilities
-
-BSDI
-----
-
-BSDI versions 1.0 and 1.1 reportedly has a bad `sed' which causes it to
-go into an infinite loop during the build.  The work around is to use a
-`sed' from somewhere else, such as GNU.  (This may be true for some
-versions of other systems derived from BSD 4.4, such as NetBSD and
-FreeBSD.)
-
-
-File: krb5-install.info,  Node: HPUX,  Next: Solaris versions 2.0 through 2.3,  Prev: BSDI,  Up: OS Incompatibilities
-
-HPUX
-----
-
-The native (bundled) compiler for HPUX currently will not work, because
-it is not a full ANSI C compiler.  The optional compiler (c89) should
-work as long as you give it the `-D_HPUX_SOURCE' flag (i.e.
-`./configure --with-cc='c89 -D_HPUX_SOURCE'').  This has only been
-tested recently for HPUX 10.20.
-
-
-File: krb5-install.info,  Node: Solaris versions 2.0 through 2.3,  Next: Solaris 2.X,  Prev: HPUX,  Up: OS Incompatibilities
-
-Solaris versions 2.0 through 2.3
---------------------------------
-
-The `gethostbyname()' routine is broken; it does not return a fully
-qualified domain name, even if you are using the Domain Name Service
-routines.  Since Kerberos V5 uses the fully qualified domain name as the
-second component of a service principal (i.e,
-`host/tsx-11.mit.edu@ATHENA.MIT.EDU'), this causes problems for servers
-who try to figure out their own fully qualified domain name.
-
-Workarounds:
-
-  1.    Supply your own resolver library. (such as bind-4.9.3pl1
-     available from ftp.vix.com)
-
-  2.    Upgrade to Solaris 2.4
-
-  3.    Make sure your /etc/nsswitch.conf has `files' before `dns' like:
-
-          hosts:      files dns
-
-     and then in /etc/hosts, make sure there is a line with your
-     workstation's IP address and hostname, with the fully qualified
-     domain name first.  Example:
-
-          18.172.1.4      dcl.mit.edu dcl
-
-     Note that making this change may cause other programs in your
-     environment to break or behave differently.
-
-
-
-File: krb5-install.info,  Node: Solaris 2.X,  Next: SGI Irix 5.X,  Prev: Solaris versions 2.0 through 2.3,  Up: OS Incompatibilities
-
-Solaris 2.X
------------
-
-You must compile Kerberos V5 without the UCB compatibility libraries.
-This means that `/usr/ucblib' must not be in the LD_LIBRARY_PATH
-environment variable when you compile it.  Alternatively you can use
-the `-i' option to `cc', by using the specifying `--with-ccopts=-i'
-option to `configure'.
-
-
-File: krb5-install.info,  Node: SGI Irix 5.X,  Next: Ultrix 4.2/3,  Prev: Solaris 2.X,  Up: OS Incompatibilities
-
-SGI Irix 5.X
-------------
-
-If you are building in a tree separate from the source tree, the vendors
-version of make does not work properly with regards to `VPATH'. It also
-has problems with standard inference rules in 5.2 (not tested yet in
-5.3) so one needs to use GNU's make.
-
-Under 5.2, there is a bug in the optional System V `-lsocket' library
-in which the routine `gethostbyname()' is broken. The system supplied
-version in `-lc' appears to work though so one may simply specify
-`--with-netlib' option to `configure'.
-
-In 5.3, `gethostbyname()' is no longer present in `-lsocket' and is no
-longer an issue.
-
-
-File: krb5-install.info,  Node: Ultrix 4.2/3,  Prev: SGI Irix 5.X,  Up: OS Incompatibilities
-
-Ultrix 4.2/3
-------------
-
-The DEC MIPS platform currently will not support the native compiler,
-since the Ultrix compiler is not a full ANSI C compiler.  You should use
-GCC instead.
-
-
-File: krb5-install.info,  Node: Using Autoconf,  Prev: OS Incompatibilities,  Up: Building Kerberos V5
-
-Using `Autoconf'
-================
-
-(If you are not a developer, you can skip this section.)
-
-In most of the Kerberos V5 source directories, there is a `configure'
-script which automatically determines the compilation environment and
-creates the proper Makefiles for a particular platform.  These
-`configure' files are generated using `autoconf' version 2.4, which can
-be found in the `src/util/autoconf' directory in the distribution.
-
-Normal users will not need to worry about running `autoconf'; the
-distribution comes with the `configure' files already prebuilt.
-Developers who wish to modify the `configure.in' files should see *Note
-Overview: (autoconf)Top.
-
-Note that in order to run `autoconf', you must have GNU `m4' in your
-path.  Before you use the `autoconf' in the Kerberos V5 source tree,
-you may also need to run `configure', and then run `make' in the
-`src/util/autoconf' directory in order to properly set up `autoconf'.
-
-One tool which is provided for the convenience of developers can be
-found in `src/util/reconf'.  This program should be run while the
-current directory is the top source directory.  It will automatically
-rebuild any `configure' files which need rebuilding.  If you know that
-you have made a change that will require that all the `configure' files
-need to be rebuilt from scratch, specify the `--force' option:
-
-     % cd /u1/krb5-1.2/src
-     % ./util/reconf --force
-
-The developmental sources are a raw source tree (before it's been
-packaged for public release), without the pre-built `configure' files.
-In order to build from such a source tree, you must do:
-
-     % cd krb5/util/autoconf
-     % ./configure
-     % make
-     % cd ../..
-     % util/reconf
-
-Then follow the instructions for building packaged source trees (above).
-To install the binaries into a binary tree, do:
-
-     % cd /u1/krb5-1.2/src
-     % make all
-     % make install DESTDIR=somewhere-else
-
-
-File: krb5-install.info,  Node: Installing Kerberos V5,  Next: Upgrading Existing Kerberos V5 Installations,  Prev: Building Kerberos V5,  Up: Top
-
-Installing Kerberos V5
-**********************
-
-The sections of this chapter describe procedures for installing
-Kerberos V5 on:
-
-  1. The KDCs
-
-  2. UNIX client machines
-
-  3. UNIX Application Servers
-
-* Menu:
-
-* Installing KDCs::
-* Installing and Configuring UNIX Client Machines::
-* UNIX Application Servers::
-
-
-File: krb5-install.info,  Node: Installing KDCs,  Next: Installing and Configuring UNIX Client Machines,  Prev: Installing Kerberos V5,  Up: Installing Kerberos V5
-
-Installing KDCs
-===============
-
-The Key Distribution Centers (KDCs) issue Kerberos tickets.  Each KDC
-contains a copy of the Kerberos database.  The master KDC contains the
-master copy of the database, which it propagates to the slave KDCs at
-regular intervals.  All database changes (such as password changes) are
-made on the master KDC.
-
-Slave KDCs provide Kerberos ticket-granting services, but not database
-administration.  This allows clients to continue to obtain tickets when
-the master KDC is unavailable.
-
-MIT recommends that you install all of your KDCs to be able to function
-as either the master or one of the slaves.  This will enable you to
-easily switch your master KDC with one of the slaves if necessary.
-(*Note Switching Master and Slave KDCs::.)  This installation procedure
-is based on that recommendation.
-
-* Menu:
-
-* Install the Master KDC::
-* Install the Slave KDCs::
-* Back on the Master KDC::
-* Finish Installing the Slave KDCs::
-* Add Kerberos Principals to the Database::
-* Limit Access to the KDCs::
-* Switching Master and Slave KDCs::
-
-
-File: krb5-install.info,  Node: Install the Master KDC,  Next: Install the Slave KDCs,  Prev: Installing KDCs,  Up: Installing KDCs
-
-Install the Master KDC
-----------------------
-
-This installation procedure will require you to go back and forth a
-couple of times between the master KDC and each of the slave KDCs.  The
-first few steps must be done on the master KDC.
-
-* Menu:
-
-* Edit the Configuration Files::
-* Create the Database::
-* Add Administrators to the Acl File::
-* Add Administrators to the Kerberos Database::
-* Create a kadmind Keytab::
-* Start the Kerberos Daemons::
-
-
-File: krb5-install.info,  Node: Edit the Configuration Files,  Next: Create the Database,  Prev: Install the Master KDC,  Up: Install the Master KDC
-
-Edit the Configuration Files
-............................
-
-Modify the configuration files, `/etc/krb5.conf' (*note krb5.conf::.)
-and `/usr/local/var/krb5kdc/kdc.conf' (*note kdc.conf::.) to reflect
-the correct information (such as the hostnames and realm name) for your
-realm.  MIT recommends that you keep `krb5.conf' in `/etc'.
-
-Among the settings in your `/etc/krb5.conf' file, be sure to create a
-`[logging]' stanza so that the KDC and kadmind will generate logging
-output.  For example:
-
-     [logging]
-         kdc = FILE:/var/log/krb5kdc.log
-         admin_server = FILE:/var/log/kadmin.log
-         default = FILE:/var/log/krb5lib.log
 

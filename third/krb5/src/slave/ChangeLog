@@ -1,15 +1,75 @@
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2001-12-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add KRB5_GETSOCKNAME_ARGS and KRB5_GETPEERNAME_ARGS
+
+	* kprop.c, kpropd.c: Use GETSOCKNAME_ARG3_TYPE and
+	GETPEERNAME_ARG3_TYPE. 
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* kprop.c, kpropd.c: Make prototypes unconditional.
+
+2001-09-24  Mitchell Berger  <mitchb@mit.edu>
+
+	* kpropd.M: Correct typo (synopsis line should say kpropd, not kprop).
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Check for daemon() prototype.
+
+	* kpropd.c: Provide prototype if needed.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* kpropd.c (authorized_principal): Cast argument to ispace() to int.
+
+2001-01-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* kpropd.c (load_database): Initialize save_stderr variable.
+
+2001-01-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* kprop.h (KPROP_CKSUMTYPE): Delete unused macro.
+
+Tue Oct 17 08:11:56 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* kprop.c, kpropd.c: Use krb5_set_principal_realm() instead of
+	freeing library generated memory using the internal krb5_xfree(). 
+
+Sat Oct 14 14:16:20 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* kpropd.c, kprop.c:  Ensure size of database sent OTW as 4 bytes
+	instead of sizeof(int). 
+
+2000-08-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* kprop.c, kpropd.c: Compiler warning fixes including: not
+	shadowing global variabls/functions, assignments in conditionals,
+	declaring local functions static.
+
+	* configure.in: Check for mode_t being defined. 
+
+2000-06-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in: kprop does not depend on the database libraries. 
+	kpropd does not depend, nor need to link in the database libraries.
+
 2000-05-08  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* kprop.c (open_connection): New argument indicates output buffer
 	size.  Don't overrun it.
 	(get_tickets): Pass size of Errmsg.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

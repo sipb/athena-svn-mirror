@@ -1,4 +1,424 @@
-2001-12-18  Ken Raeburn  <raeburn@mit.edu>
+2003-04-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* bindresvport.c: Include errno.h.
+	(gssrpc_bindresvport): Don't declare errno.
+	* clnt_tcp.c: Don't declare errno.
+	* svc.c: Don't declare errno.  Include errno.h.
+
+2003-03-24  Tom Yu  <tlyu@mit.edu>
+
+	* xdr_mem.c (xdrmem_create): Perform some additional size checks.
+	(xdrmem_getlong, xdrmem_putlong, xdrmem_getbytes): Check x_handy
+	prior to decrementing it.
+
+2003-01-12  Ezra Peisach  <epeisach@bu.edu>
+
+	* svc_auth_gssapi.c (_svcauth_gssapi_unset_names): If invoked more
+	than once, do not double free memory.
+
+	* clnt_perror.c (clnt_sperror): Do not write past end of allocated
+	buffer.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_ARCHIVE,
+	AC_PROG_ARCHIVE_ADD, AC_PROG_RANLIB, AC_PROG_INSTALL.
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* svc_run.c svc_udp.c : Remove declaration of errno
+
+	* clnt_udp.c pmap_getmaps.c pmap_rmt.c svc_auth_gssapi.c: Remove
+	declaration of errno 
+
+2002-12-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* auth_gssapi_misc.c (xdr_gss_buf, auth_gssapi_wrap_data,
+	auth_gssapi_unwrap_data): Use temporary variables rather than
+	pointer casts when dealing with integral types of different
+	sizes.
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (all-prerecurse): Change double colons to single
+	colons.
+
+2002-11-11  Ken Raeburn  <raeburn@mit.edu>
+
+	* get_myaddress.c (get_myaddress): Local array buf size should be
+	counted in ifreq structs, not ifconf structs.
+
+2002-10-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* xdr_alloc.c (xdralloc_putlong): Coerce value pointed to by
+	argument to 32 bits, rather than reading only 32 bits from the
+	supplied address.
+
+2002-09-24  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(HDRS)): Depend on includes.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-12  Tom Yu  <tlyu@mit.edu>
+
+	* xdr.c (xdr_string): Fix off-by-one error; we're not vulnerable,
+	since we don't call it.
+
+2002-08-02  Tom Yu  <tlyu@mit.edu>
+
+	* xdr_array.c (xdr_array): Account for elsize when checking
+	encoded array count.
+
+2002-07-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* dyn.c: New file, combining contents of old util/dyn library,
+	with unused functions omitted, and memmove assumed.
+	* dyn.h: Moved from util/dyn/dyn.h, symbol renaming macros added.
+	Changed element size to size_t.  Include stdlib.h.
+	* dynP.h: Moved from util/dyn/dynP.h, symbol renaming macros
+	added.
+	* dyntest.c: Moved from util/dyn/test.c.
+	* Makefile.in (SHLIB_EXPDEPS, SHLIB_EXPLIBS): Omit libdyn
+	references.
+	(SRCS, OBJS, STLIBOBJS): Build dyn.c.
+	(dyntest, run-dyntest, clean-dyntest): New targets.
+	(check-unix): Depend on run-dyntest.
+	(clean-unix): Depend on clean-dyntest.
+	(LCLINT, LCLINTOPTS): Moved from util/dyn/Makefile.in.
+	(do-dyn-lclint): New target, untested.
+	* xdr_alloc.c: Include "dyn.h" instead of <dyn.h>.
+
+2001-12-14  Ezra Peisach  <epeisach@mit.edu>
+
+	* svc_auth_gssapi.c (_gssrpc_svcauth_gssapi): Local return
+	variable declared enum auth_stat instead of int.
+
+2001-12-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* clnt_raw, clnt_tcp.c, clnt_udp.c: Use a union structure to
+	ensure argument alignment.
+
+	* pmap_clnt.c, pmap_clnt.h (pmap_set): Change port argument to int
+	to avoid width warnings.
+
+	* rpc_callmsg.c (xdr_callmsg): Cast argument to XDR_INLINE to
+	avoid signed vs. unsigned warning.
+
+	* svc.c: Cast assignment to avoid signed warning.
+
+	* xdr.c (xdr_u_short, xdr_u_long): cast pointers to long * in
+	invocation of XDR_PUTLONG.
+
+	* xdr_alloc.c (xdralloc_putbytes): Cast argument to DynInsert to
+	avoid signed/unsigned warning.
+
+	* auth_gssapi.c, svc_auth_gssapi, xdr_rec.c: Cast arguments to
+	avoid alignment warnings.
+
+	* svc_tcp.c, xdr_stdio.c: Cast argument to fread/fwrite/read/write.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* auth_gssapi.h, auth_gssapi_misc.c, getrpcent.c,
+	svc_auth_gssapi.c, xdr.h: Make prototypes unconditional.  Don't
+	define PROTOTYPE.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* auth_gssapi.h, getrpcent.c, xdr.h: Drop _MSDOS support.
+
+2001-08-10    <epeisach@mit.edu>
+
+	* clnt_udp.c (clntudp_call): Do not assume that select will not
+	change the timeout struct timeval. Under Linux, this reflects the
+	time left available - which might result in 0 in the case of a
+	timeout. When attempting to resend a request, this may results in
+	a timeout of zero - flooding the server with replay requests.
+	
+	* clnt_tcp.c (readtcp): Same.
+	* pmap_rmt.c (clnt_broadcast): Same
+	* svc_tcp.c (readtcp): Same
+
+2001-07-26  Ezra Peisach  <epeisach@home>
+
+	* xdr_reference.c (xdr_reference): Remove cast in argument to memset.
+
+	* svc_auth_gssapi.c: In call to gss_accept_sec_context, pass
+	OM_uint32 * instead of int *;
+
+	* pmap_clnt.h, pmap_getport.c (pmap_getport): Prototype changed
+ 	for protocol from unsigned int to rpc_u_int32 to match struct
+ 	pmap.
+
+	* getrpcport.c (gssrpc_getrpcport): Update to reflect proper
+	calling conventions.
+
+	* rpc.h (callrpc): Change prototype from expecting ints for
+	prognum, versnum and procnum to rpc_u_int32 for consistancy.
+	(getrpcport): Update arguments in similar fashion.
+	
+	* clnt_simple.c (gssrpc_callrpc): Update to reflect prototype change.
+
+	* auth_gssapi_misc.c (auth_gssapi_display_status_1): Local
+	variable msg_ctx should be OM_uint32 instead of int as argument to
+	gss_display_status.
+
+2001-07-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth_gssapi.c (auth_gssapi_create): Change calling convention
+	from passing ints as arguments to OM_uint32 to match spec for
+	gss_init_sec_context.
+
+	* auth_gssapi.h: Update prototype for auth_gssapi_create.
+	
+	* svc.h (struct svc_req): The rq_clntcred and rq_svccred elements
+	are now void *.
+
+2001-07-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* xdr_mem.c: Do not assume that XDR x_private field is char *.
+
+	* auth.h: AUTH ah_private structure element changed to void *. 
+
+	* clnt.h: CLIENT cl_private structure element changed to type void *. 
+
+	* svc.h: SVCXRPT elements xp_p1 and xp_p2 changed to void * from
+	caddr_t.
+
+	* svc_udp.c: su_cache element of svcudp_data from caddr_t to void *.
+
+	* clnt_tcp.c, svc_tcp.c (writetcp, readtcp): Cleanup alignment
+	warning in casts.
+
+	* types.hin (mem_alloc): Do not cast type of malloc to char *.
+
+	* xdr.h: Change type of x_private of XDR from caddr_t to void *.
+
+2001-07-09  Ezra Peisach  <epeisach@mit.edu>
+
+	* pmap_rmt.c, svc.c, svc_simple.c, svc_udp.c, svc_tcp.c,
+	xdr_array.c, xdr_reference.c : Include string.h for memset and
+	memcmp prototypes.
+
+	* auth_gssapi.c, auth_gssapi_misc.c, svc_auth_gssapi.c: Cast
+	argment to PRINTF to match format.
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* svc.c (xprt_register): If svc_fdset has not been initilized, 
+	FD_ZERO it.
+	
+	* rpc_commondata.c: Do not assume what the structure of an fd_set
+	looks like. Add variable gssrpc_svc_fdset_init to determine if
+	initialized. 
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth_unix.c: In case GETGROUPS_T is not defined, default to int.
+
+2001-07-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add AC_TYPE_GETGROUPS to determine argument to
+	getgroups.
+
+	* auth_unix.c (authunix_create_default): Use GETGROUPS_T array in
+	call to getgroups. Copy into array of int for call to
+	authunix_create. Note: If auth_unix protection ever used with this
+	code, we will need to cleanup assumptions in int being 32 bits in
+	OTW transfer of gids.
+
+	* clnt_tcp.c, svc_tcp.c: Change writetcp and readtcp to take char
+	as first argument to be compatible with xdrrec_create.
+
+	* xdr.c (xdr_opaque): Cast argument in call to XDR_GETBYTES.
+
+	* svc.h: Add prototype for gssrpc_svcudp_enablecache.
+
+	* svc_auth_gssapi.c (_gssrpc_svcauth_gssapi): Change
+	_svcauth_gssapi to _gssrpc_svcauth_gssapi for consistancy.
+
+	* svc_auth.c: Move prototypes for _gssrpc_svcauth_{unix, null,
+	short, gssapi} to:
+	* svc_auth.h: here.
+
+	* svc_auth_unix.c: Update _gssrpc_svcauth_short and
+	_gssrpc_svcauth_unix to match prototype.
+
+2001-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth.h: Provide full prototype for xdr_des_block.
+
+	* auth_gssapi.h: Complete prototypes for
+	_svcauth_gssapi_unset_names().
+
+	* clnt.h: Prototype dispatch functions and all functions.
+
+	* clnt_perror.c: Prototype static auth_errmsg().
+
+	* clnt_raw.h clnt_tcp.c, clnt_udp.c: Provide prototypes to static
+	functions and match dispatch table prototypes. control function
+	takes void * instead of caddr_t.
+
+	* pmap_rmt.c: Move prototype for resultproc_t to pmap_clnt.h.
+
+	* rpc.h: get_myaddress returns int. Add prototypes for callrpc and
+	getrpcport.
+
+	* rpc_commondata.c (rpc_createerr): When initializing rpc_creaerr
+	use RPC_SUCCESS instead of 0. 
+
+	* get_myaddress.c, rpc_dtablesize.c: Include gssrpc/rpc.h for
+	prototype.
+
+	* pmap_clnt.h, pmap_prot.h, pmap_rmt.h, rpc_msg.h: Full prototypes
+	for all functions.
+
+	* svc.c: Provide full prototype for static function.
+
+	* svc.h: Prototypes for dispatch functions added. Flushed out
+	prototypes for all functions missing prototypes. Added prototype
+	for svcfd_create.
+
+	* svc_auth.c: Prototypes for all functions referenced.
+
+	* svc_auth.h: Prototype dispatch functions to svc_auth_ops.
+
+	* svc_auth_any.c: Replace use of authany_wrap() with a new local
+	function that matches svc_auth_ops dispatch table.
+
+	* svc_simple.c: Provide prototype for static function
+	universal. Fill in missing types of parameters to
+	gssrpc_registerrpc.
+
+	* svc_raw.c svc_tcp.c, svc_udp.c: Provide prototypes for static
+	functions and match prototypes in dispatch table. Change getargs
+	and freeargs argument to void * from caddr_t.
+
+	* xdr.c (xdr_void): Function to match prototype of arguments given.
+
+	* xdr.h: Provide full prototypes for xdr_ops dispatch table and
+	xdr_void().
+
+	* svc_auth_gssapi.c, xdr_alloc.c, xdr_mem.c, xdr_rec.c,
+	xdr_stdio.c: Provide protypes for static functions and match
+	dispatch tables.
+
+2001-06-27  Ezra Peisach  <epeisach@mit.edu>
+
+	* bindresvport.c: Include gssrpc/rpc.h for prototype.
+
+	* auth_unix.h: Expand prototype for xdr_authunix_params to include
+	arguments.
+
+	* auth_gssapi.h: Give full prototypes for xdr_gss_buf,
+	xdr_authgssapi_creds, xdr_authgssapi_init_arg and
+	xdr_authgssapi_init_res.
+
+	* auth_gssapi.c, auth_none.c, auth_unix.c: For struct AUTH
+	disptach functions, provide full prototypes and ensure consistant
+	usage in functions
+
+	* auth.h: Provide prototypes dispatch functions in struct
+	AUTH. Give a forward declaration of struct rpc_msg. Change
+	duplicate definitions of AUTH_WRAP and AUTH_UNWRAP into auth_wrap
+	and auth_unwrap. Give full prototype for authany_wrap.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* svc_simple.c (universal): Change transp to s_transp to not
+	shadow filewide static definition of name.
+	Move file wide definition of "pl" into respective functions.
+
+	* pmap_rmt.c: Change sin->sockin and socket->sock.
+
+	* pmap_getmaps.c, pmap_getport.c: Change socket to sock to not
+ 	shadow network function.
+
+	* bindresvport.c, clnt_generic.c: Change sin to sockin to not
+ 	shadow function declaration.
+
+2001-06-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* pmap_prot2.c (xdr_pmaplist): Ensure variable set before use. 
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth_gssapi.c (auth_gssapi_create): Cast const gss_OID to
+	gss_OID for gssapi functions.
+
+	* xdr.c (xdr_u_int, xdr_int32, xdr_u_int32): If enumerated
+	operation is not XDR_ENCODE, XDR_DECODE or XDR_FREE - return FALSE
+	instead falling off end of function.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth_gssapi.h: Rename prototypes from _svcauth_set_log_XXX_func to 
+	_svcauth_gssapi_set_log_XXX_func to match code.
+
+2001-06-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* clnt_perror.c (clnt_spcreateerror): Enumerate missing cases in
+	switch.
+
+	* getrpcport.c: Include string.h for memmove() prototype and
+	pmap_clnt.h for pmap_getport() prototype.
+
+	* rpc_dtablesize.c (_gssrpc_rpc_dtablesize): Declare as returning int.
+	* get_myaddress.c (gssrpc_get_myaddress): Likewise.
+
+	* rpc_prot.c (gssrpc_xdr_accepted_reply, sunrpc_seterr_reply):
+	Enumerate missing cases for switch.
+	(rejected): Fix typo: RPC_VERMISMATCH -> RPC_MISMATCH for
+	enumerated switch.
+
+  	* svc_auth.c: Add braces to svcauthsw[] initialization.
+
+	* svc_simple.c: Include pmap_clnt.h for pmap_unset prototype.
+
+	* bindresvport.c, clnt_simple.c, clnt_tcp.c, clnt_udp.c, pmap_clnt.c,
+	pmap_getmaps.c, pmap_gtport.c, pmap_rmt.c, svc_tcp.c, svc_udp.c:
+	Include unistd.h for close() prototype.
+
+	* xdr.c (xdr_opaque): Specify internal buffer as ints.
+	(xdr_u_int32): Declare as returning bool_t.
+
+	* clnt_generic.c, rpc_callmsg.c, svc_auth_unix.c, xdr_mem.c:
+	Include string.h for memmove() prototype.
+
+	* xdr_rec.c: Include string.h for memmove() prototype. Add dummy
+	XDR_FREE cases for switches.
+
+	* xdr_reference.c (xdr_reference): Add XDR_ENCODE case. (gcc warning). 
+	* xdr_array.c (xdr_array): Likewise.
+
+	* auth.h: Include gssrpc/xdr.h and provide prototype for
+	gssrpc_xdr_opaque_auth().
+
+	* auth_gssapi.h: Add prototypes for auth_gssapi_seal_seq() and
+	auth_gssapi_unseal_seq().
+
+	* clnt.h: Add prototype for _gssrpc_rpc_dtablesize(). 
+
+	* rpc.h: Add prototypes for gssrpc_get_myaddress() and
+	gssrpc_bindresvport().
+
+2001-03-07  Ken Raeburn  <raeburn@mit.edu>
 
 	* configure.in: Check for strerror.
 	* clnt_perror.c (strerror) [!HAVE_STRERROR]: Define, with
@@ -7,6 +427,24 @@
 	clnt_spcreateerror.
 	(clnt_sperror, clnt_spcreateerror): Use strerror always.  Skip
 	range check.
+
+Sun Feb 18 17:48:35 2001  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* xdr.h: Flush out prototypes for xdrmem_create(),
+        xdrstdio_create(), xdrrec_create(), xdralloc_create(),
+        xdralloc_release(), xdrrec_endofrecord(), xdrrec_skiprecord(),
+        xdrrec_eof(), xdralloc_getdata(). Add prototype for
+        gssrpc_xdr_fre().
+
+	* xdr.c: Argument to gssrpc_xdr_free(0 changed from char * to void
+        *. xdr_u_char() changed to take unsigned char * instead of char *.
+
+	* auth_unix.c: Include unistd.h and string.h for
+        prototypes. Declare marshal_new_auth() as static void instead of
+        static bool_t based on usage.
+
+	* auth.h, svc_auth.h: Provide full prototypes for a number of
+        functions.
 
 2000-06-21  Tom Yu  <tlyu@mit.edu>
 
@@ -115,12 +553,12 @@
 	* get_myaddress.c (gssrpc_get_myaddress): Copy in from NetBSD;
 	use loopback address only.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Fri Apr 23 20:05:38 1999  Tom Yu  <tlyu@mit.edu>
 

@@ -9,6 +9,7 @@
 
 #include "krb.h"
 #include <sys/time.h>
+#include "krb4int.h"
 
 /* Start and end Kerberos library access.  On Unix, this is a No-op.  */
 int
@@ -25,7 +26,7 @@ krb_end_session (x)
 	return KSUCCESS;
 }
 
-char FAR *
+char *
 krb_get_default_user ()
 {
 	return 0;		/* FIXME */

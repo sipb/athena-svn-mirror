@@ -47,9 +47,7 @@ krb5_deltat rc_lifetime; /* See kdc_initialize_rcache() */
  * initialize the replay cache.
  */
 krb5_error_code
-kdc_initialize_rcache(kcontext, rcache_name)
-    krb5_context	kcontext;
-    char 		*rcache_name;
+kdc_initialize_rcache(krb5_context kcontext, char *rcache_name)
 {
     krb5_error_code	retval;
     char		*rcname;
@@ -90,10 +88,8 @@ kdc_initialize_rcache(kcontext, rcache_name)
  * The replacement should be freed with krb5_free_authdata().
  */
 krb5_error_code
-concat_authorization_data(first, second, output)
-krb5_authdata **first;
-krb5_authdata **second;
-krb5_authdata ***output;
+concat_authorization_data(krb5_authdata **first, krb5_authdata **second,
+			  krb5_authdata ***output)
 {
     register int i, j;
     register krb5_authdata **ptr, **retdata;
@@ -139,9 +135,7 @@ krb5_authdata ***output;
 }
 
 krb5_boolean
-realm_compare(princ1, princ2)
-    krb5_principal princ1;
-    krb5_principal princ2;
+realm_compare(krb5_principal princ1, krb5_principal princ2)
 {
   krb5_data *realm1 = krb5_princ_realm(kdc_context, princ1);
   krb5_data *realm2 = krb5_princ_realm(kdc_context, princ2);
@@ -154,10 +148,10 @@ realm_compare(princ1, princ2)
  * Returns TRUE if the kerberos principal is the name of a Kerberos ticket
  * service.
  */
-krb5_boolean krb5_is_tgs_principal(principal)
-	krb5_principal	principal;
+krb5_boolean krb5_is_tgs_principal(krb5_principal principal)
 {
-	if ((krb5_princ_component(kdc_context, principal, 0)->length ==
+	if ((krb5_princ_size(kdc_context, principal) > 0) &&
+	    (krb5_princ_component(kdc_context, principal, 0)->length ==
 	     KRB5_TGS_NAME_SIZE) &&
 	    (!memcmp(krb5_princ_component(kdc_context, principal, 0)->data,
 		     KRB5_TGS_NAME, KRB5_TGS_NAME_SIZE)))
@@ -170,20 +164,17 @@ krb5_boolean krb5_is_tgs_principal(principal)
  * for source data.
  */
 static krb5_error_code
-comp_cksum(kcontext, source, ticket, his_cksum)
-    krb5_context	  kcontext;
-    krb5_data 		* source;
-    krb5_ticket 	* ticket;
-    krb5_checksum 	* his_cksum;
+comp_cksum(krb5_context kcontext, krb5_data *source, krb5_ticket *ticket,
+	   krb5_checksum *his_cksum)
 {
     krb5_error_code 	  retval;
     krb5_boolean	  valid;
 
-    if (!valid_cksumtype(his_cksum->checksum_type)) 
+    if (!krb5_c_valid_cksumtype(his_cksum->checksum_type)) 
 	return KRB5KDC_ERR_SUMTYPE_NOSUPP;
 
     /* must be collision proof */
-    if (!is_coll_proof_cksum(his_cksum->checksum_type))
+    if (!krb5_c_is_coll_proof_cksum(his_cksum->checksum_type))
 	return KRB5KRB_AP_ERR_INAPP_CKSUM;
 
     /* verify checksum */
@@ -199,12 +190,9 @@ comp_cksum(kcontext, source, ticket, his_cksum)
 }
 
 krb5_error_code 
-kdc_process_tgs_req(request, from, pkt, ticket, subkey)
-    krb5_kdc_req 	* request;
-    const krb5_fulladdr * from;
-    krb5_data 		* pkt;
-    krb5_ticket        ** ticket;
-    krb5_keyblock      ** subkey;
+kdc_process_tgs_req(krb5_kdc_req *request, const krb5_fulladdr *from,
+		    krb5_data *pkt, krb5_ticket **ticket,
+		    krb5_keyblock **subkey)
 {
     krb5_pa_data       ** tmppa;
     krb5_ap_req 	* apreq;
@@ -215,8 +203,8 @@ kdc_process_tgs_req(request, from, pkt, ticket, subkey)
     krb5_auth_context 	  auth_context = NULL;
     krb5_authenticator	* authenticator = NULL;
     krb5_checksum 	* his_cksum = NULL;
-    krb5_keyblock 	* key = NULL;
-    krb5_kvno 		  kvno = 0;
+/*    krb5_keyblock 	* key = NULL;*/
+/*    krb5_kvno 		  kvno = 0;*/
 
     if (!request->padata)
 	return KRB5KDC_ERR_PADATA_TYPE_NOSUPP;
@@ -325,8 +313,8 @@ kdc_process_tgs_req(request, from, pkt, ticket, subkey)
 	goto cleanup_auth_context;
     }
 
-    if ((retval = krb5_auth_con_getremotesubkey(kdc_context,
-						auth_context, subkey)))
+    if ((retval = krb5_auth_con_getrecvsubkey(kdc_context,
+					      auth_context, subkey)))
 	goto cleanup_auth_context;
 
     if ((retval = krb5_auth_con_getauthenticator(kdc_context, auth_context,
@@ -393,17 +381,13 @@ cleanup:
  * much else. -- tlyu
  */
 krb5_error_code
-kdc_get_server_key(ticket, key, kvno)
-    krb5_ticket 	* ticket;
-    krb5_keyblock      ** key;
-    krb5_kvno 		* kvno;	/* XXX nothing uses this */
+kdc_get_server_key(krb5_ticket *ticket, krb5_keyblock **key, krb5_kvno *kvno)
 {
     krb5_error_code 	  retval;
     krb5_db_entry 	  server;
     krb5_boolean 	  more;
     int	nprincs;
     krb5_key_data	* server_key;
-    int			  i;
 
     nprincs = 1;
 
@@ -453,9 +437,7 @@ static krb5_last_req_entry nolrentry = { KV5M_LAST_REQ_ENTRY, KRB5_LRQ_NONE, 0 }
 static krb5_last_req_entry *nolrarray[] = { &nolrentry, 0 };
 
 krb5_error_code
-fetch_last_req_info(dbentry, lrentry)
-krb5_db_entry *dbentry;
-krb5_last_req_entry ***lrentry;
+fetch_last_req_info(krb5_db_entry *dbentry, krb5_last_req_entry ***lrentry)
 {
     *lrentry = nolrarray;
     return 0;
@@ -465,8 +447,7 @@ krb5_last_req_entry ***lrentry;
 /* XXX!  This is a temporary place-holder */
 
 krb5_error_code
-check_hot_list(ticket)
-krb5_ticket *ticket;
+check_hot_list(krb5_ticket *ticket)
 {
     return 0;
 }
@@ -496,11 +477,9 @@ krb5_ticket *ticket;
  *            If r2 is not a subrealm, SUBREALM returns 0.
  */
 static  int
-subrealm(r1,r2)
-char	*r1;
-char	*r2;
+subrealm(char *r1, char *r2)
 {
-    int	l1,l2;
+    size_t l1,l2;
     l1 = strlen(r1);
     l2 = strlen(r2);
     if(l2 <= l1) return(0);
@@ -570,12 +549,9 @@ char	*r2;
  */
 
 krb5_error_code 
-add_to_transited(tgt_trans, new_trans, tgs, client, server)
-    krb5_data * tgt_trans;
-    krb5_data * new_trans;
-    krb5_principal tgs;
-    krb5_principal client;
-    krb5_principal server;
+add_to_transited(krb5_data *tgt_trans, krb5_data *new_trans,
+		 krb5_principal tgs, krb5_principal client,
+		 krb5_principal server)
 {
   krb5_error_code retval;
   char        *realm;
@@ -631,20 +607,21 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
 
   /* read field into current */
   for (i = 0; *otrans != '\0';) {
-    if (*otrans == '\\')
-      if (*(++otrans) == '\0')
-	break;
-      else
-	continue;
-    if (*otrans == ',') {
-      otrans++;
-      break;
-    }
-    current[i++] = *otrans++;
-    if (i >= MAX_REALM_LN) {
-      retval = KRB5KRB_AP_ERR_ILL_CR_TKT;
-      goto fail;
-    }
+      if (*otrans == '\\') {
+	  if (*(++otrans) == '\0')
+	      break;
+	  else
+	      continue;
+      }
+      if (*otrans == ',') {
+	  otrans++;
+	  break;
+      }
+      current[i++] = *otrans++;
+      if (i >= MAX_REALM_LN) {
+	  retval = KRB5KRB_AP_ERR_ILL_CR_TKT;
+	  goto fail;
+      }
   }
   current[i] = '\0';
 
@@ -687,20 +664,21 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
 
     /* read field into next */
     for (i = 0; *otrans != '\0';) {
-      if (*otrans == '\\')
-	if (*(++otrans) == '\0')
-	  break;
-	else
-	  continue;
-      if (*otrans == ',') {
-	otrans++;
-	break;
-      }
-      next[i++] = *otrans++;
-      if (i >= MAX_REALM_LN) {
-	retval = KRB5KRB_AP_ERR_ILL_CR_TKT;
-	goto fail;
-      }
+	if (*otrans == '\\') {
+	    if (*(++otrans) == '\0')
+		break;
+	    else
+		continue;
+	}
+	if (*otrans == ',') {
+	    otrans++;
+	    break;
+	}
+	next[i++] = *otrans++;
+	if (i >= MAX_REALM_LN) {
+	    retval = KRB5KRB_AP_ERR_ILL_CR_TKT;
+	    goto fail;
+	}
     }
     next[i] = '\0';
     nlst = i - 1;
@@ -731,10 +709,10 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
 	}
         strncat(current, ",", sizeof(current) - 1 - strlen(current));
         if (pl > 0) {
-          strncat(current, realm, pl);
+          strncat(current, realm, (unsigned) pl);
         }
         else {
-          strncat(current, realm+strlen(realm)+pl, -pl);
+          strncat(current, realm+strlen(realm)+pl, (unsigned) (-pl));
         }
       }
 
@@ -757,10 +735,10 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
 	    goto fail;
 	  }
           if (pl1 > 0) {
-            strncat(current, realm, pl1);
+            strncat(current, realm, (unsigned) pl1);
           }
           else {
-            strncat(current, realm+strlen(realm)+pl1, -pl1);
+            strncat(current, realm+strlen(realm)+pl1, (unsigned) (-pl1));
           }
         }
         else { /* If not a subrealm */
@@ -786,10 +764,10 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
         strncat(current,",", sizeof(current) - 1 - strlen(current));
 	current[sizeof(current) - 1] = '\0';
         if (pl > 0) {
-          strncat(current, exp, pl);
+          strncat(current, exp, (unsigned) pl);
         }
         else {
-          strncat(current, exp+strlen(exp)+pl, -pl);
+          strncat(current, exp+strlen(exp)+pl, (unsigned)(-pl));
         }
       }
     }
@@ -806,7 +784,7 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
       goto fail;
     }
     strcat(trans, current);
-    new_trans->length = strlen(trans) + 1;
+    new_trans->length = strlen(trans);
 
     strncpy(prev, exp, sizeof(prev) - 1);
     prev[sizeof(prev) - 1] = '\0';
@@ -834,7 +812,7 @@ add_to_transited(tgt_trans, new_trans, tgs, client, server)
       goto fail;
     }
     strcat(trans, realm);
-    new_trans->length = strlen(trans) + 1;
+    new_trans->length = strlen(trans);
   }
 
   retval = 0;
@@ -850,23 +828,19 @@ fail:
  * Returns a Kerberos protocol error number, which is _not_ the same
  * as a com_err error number!
  */
-#define AS_OPTIONS_HANDLED (KDC_OPT_FORWARDABLE | KDC_OPT_PROXIABLE | \
-			     KDC_OPT_ALLOW_POSTDATE | KDC_OPT_POSTDATED | \
-			     KDC_OPT_RENEWABLE | KDC_OPT_RENEWABLE_OK)
+#define AS_INVALID_OPTIONS (KDC_OPT_FORWARDED | KDC_OPT_PROXY |\
+KDC_OPT_VALIDATE | KDC_OPT_RENEW | KDC_OPT_ENC_TKT_IN_SKEY)
 int
-validate_as_request(request, client, server, kdc_time, status)
-register krb5_kdc_req *request;
-krb5_db_entry client;
-krb5_db_entry server;
-krb5_timestamp kdc_time;
-const char	**status;
+validate_as_request(register krb5_kdc_req *request, krb5_db_entry client,
+		    krb5_db_entry server, krb5_timestamp kdc_time,
+		    const char **status)
 {
     int		errcode;
     
     /*
-     * If an illegal option is set, complain.
+     * If an option is set that is only allowed in TGS requests, complain.
      */
-    if (request->kdc_options & ~(AS_OPTIONS_HANDLED)) {
+    if (request->kdc_options & AS_INVALID_OPTIONS) {
 	*status = "INVALID AS OPTIONS";
 	return KDC_ERR_BADOPTION;
     }
@@ -992,8 +966,7 @@ const char	**status;
  * returns -1 on failure.
  */
 static int
-asn1length(astream)
-unsigned char **astream;
+asn1length(unsigned char **astream)
 {
     int length;		/* resulting length */
     int sublen;		/* sublengths */
@@ -1044,11 +1017,8 @@ unsigned char **astream;
  * returns 0 on success, -1 otherwise.
  */
 int
-fetch_asn1_field(astream, level, field, data)
-unsigned char *astream;
-unsigned int level;
-unsigned int field;
-krb5_data *data;
+fetch_asn1_field(unsigned char *astream, unsigned int level,
+		 unsigned int field, krb5_data *data)
 {
     unsigned char *estream;	/* end of stream */
     int classes;		/* # classes seen so far this level */
@@ -1135,24 +1105,18 @@ krb5_data *data;
 		       KDC_OPT_VALIDATE)
 
 int
-validate_tgs_request(request, server, ticket, kdc_time, status)
-register krb5_kdc_req *request;
-krb5_db_entry server;
-krb5_ticket *ticket;
-krb5_timestamp kdc_time;
-const char **status;
+validate_tgs_request(register krb5_kdc_req *request, krb5_db_entry server,
+		     krb5_ticket *ticket, krb5_timestamp kdc_time,
+		     const char **status)
 {
     int		errcode;
     int		st_idx = 0;
 
     /*
-     * If an illegal option is set, complain.
+     * If an illegal option is set, ignore it.
      */
-    if (request->kdc_options & ~(TGS_OPTIONS_HANDLED)) {
-	*status = "INVALID TGS OPTIONS";
-	return KDC_ERR_BADOPTION;
-    }
-    
+    request->kdc_options &= TGS_OPTIONS_HANDLED;
+
     /* Check to see if server has expired */
     if (server.expiration && server.expiration < kdc_time) {
 	*status = "SERVICE EXPIRED";
@@ -1195,7 +1159,8 @@ const char **status;
 	    return KRB_AP_ERR_NOT_US;
 	}
 	/* ...and that the second component matches the server realm... */
-	if ((krb5_princ_component(kdc_context, ticket->server, 1)->length !=
+	if ((krb5_princ_size(kdc_context, ticket->server) <= 1) ||
+	    (krb5_princ_component(kdc_context, ticket->server, 1)->length !=
 	     krb5_princ_realm(kdc_context, request->server)->length) ||
 	    memcmp(krb5_princ_component(kdc_context, ticket->server, 1)->data,
 		   krb5_princ_realm(kdc_context, request->server)->data,
@@ -1385,10 +1350,8 @@ const char **status;
  * keytype, and 0 if not.
  */
 int
-dbentry_has_key_for_enctype(context, client, enctype)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_enctype	enctype;
+dbentry_has_key_for_enctype(krb5_context context, krb5_db_entry *client,
+			    krb5_enctype enctype)
 {
     krb5_error_code	retval;
     krb5_key_data	*datap;
@@ -1411,10 +1374,8 @@ dbentry_has_key_for_enctype(context, client, enctype)
  * options bits for now.
  */
 int
-dbentry_supports_enctype(context, client, enctype)
-    krb5_context	context;
-    krb5_db_entry *	client;
-    krb5_enctype	enctype;
+dbentry_supports_enctype(krb5_context context, krb5_db_entry *client,
+			 krb5_enctype enctype)
 {
     /*
      * If it's DES_CBC_MD5, there's a bit in the attribute mask which
@@ -1446,17 +1407,13 @@ dbentry_supports_enctype(context, client, enctype)
  * requested, and what the KDC and the application server can support.
  */
 krb5_enctype
-select_session_keytype(context, server, nktypes, ktype)
-    krb5_context	context;
-    krb5_db_entry *	server;
-    int			nktypes;
-    krb5_enctype	*ktype;
+select_session_keytype(krb5_context context, krb5_db_entry *server,
+		       int nktypes, krb5_enctype *ktype)
 {
     int		i;
-    krb5_enctype dfl = 0;
     
     for (i = 0; i < nktypes; i++) {
-	if (!valid_enctype(ktype[i]))
+	if (!krb5_c_valid_enctype(ktype[i]))
 	    continue;
 
 	if (!krb5_is_permitted_enctype(context, ktype[i]))
@@ -1472,17 +1429,14 @@ select_session_keytype(context, server, nktypes, ktype)
  * This function returns salt information for a particular client_key
  */
 krb5_error_code
-get_salt_from_key(context, client, client_key, salt)
-    krb5_context	       	context;
-    krb5_principal		client;
-    krb5_key_data *		client_key;
-    krb5_data *			salt;
+get_salt_from_key(krb5_context context, krb5_principal client,
+		  krb5_key_data *client_key, krb5_data *salt)
 {
     krb5_error_code		retval;
     krb5_data *			realm;
     
     salt->data = 0;
-    salt->length = -1;
+    salt->length = SALT_TYPE_NO_LENGTH;
     
     if (client_key->key_data_ver == 1)
 	return 0;

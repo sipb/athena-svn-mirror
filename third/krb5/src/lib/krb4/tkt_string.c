@@ -1,18 +1,36 @@
 /*
  * tkt_string.c
  *
- * Copyright 1985, 1986, 1987, 1988 by the Massachusetts Institute
- * of Technology.
+ * Copyright 1985, 1986, 1987, 1988, 2002 by the Massachusetts
+ * Institute of Technology.  All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
 #include "krb.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#include "krb5/autoconf.h"
+#include "port-sockets.h" /* XXX this gets us MAXPATHLEN but we should find
+			     a better way */
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -21,10 +39,10 @@ char *getenv();
 #endif
 
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 typedef unsigned long uid_t;
 uid_t getuid(void) { return 0; }
-#endif /* _WINDOWS */
+#endif /* _WIN32 */
 
 /*
  * This routine is used to generate the name of the file that holds
@@ -42,20 +60,21 @@ uid_t getuid(void) { return 0; }
 
 static char krb_ticket_string[MAXPATHLEN];
 
-char *tkt_string()
+const char *tkt_string()
 {
     char *env;
     uid_t getuid();
 
     if (!*krb_ticket_string) {
-        if (env = getenv("KRBTKFILE")) {
+	env = getenv("KRBTKFILE");
+        if (env) {
 	    (void) strncpy(krb_ticket_string, env,
 			   sizeof(krb_ticket_string)-1);
 	    krb_ticket_string[sizeof(krb_ticket_string)-1] = '\0';
 	} else {
 	    /* 32 bits of signed integer will always fit in 11 characters
 	     (including the sign), so no need to worry about overflow */
-	    (void) sprintf(krb_ticket_string, "%s%d",TKT_ROOT,getuid());
+	    (void) sprintf(krb_ticket_string, "%s%d",TKT_ROOT,(int) getuid());
         }
     }
     return krb_ticket_string;
@@ -72,9 +91,9 @@ char *tkt_string()
  * and return an undesired ticket file name until this routine is called.
  */
 
-void
+void KRB5_CALLCONV
 krb_set_tkt_string(val)
-char *val;
+    const char *val;
 {
     (void) strncpy(krb_ticket_string, val, sizeof(krb_ticket_string)-1);
     krb_ticket_string[sizeof(krb_ticket_string)-1] = '\0';

@@ -55,16 +55,7 @@ Returns system errors, integrity errors.
 */
 
 static krb5_error_code
-krb5_rd_priv_basic(context, inbuf, keyblock, local_addr, remote_addr, 
-	     	   i_vector, replaydata, outbuf)
-    krb5_context 	  context;
-    const krb5_data     * inbuf;
-    const krb5_keyblock * keyblock;
-    const krb5_address  * local_addr;
-    const krb5_address  * remote_addr;
-    krb5_pointer 	  i_vector;
-    krb5_replay_data    * replaydata;
-    krb5_data 		* outbuf;
+krb5_rd_priv_basic(krb5_context context, const krb5_data *inbuf, const krb5_keyblock *keyblock, const krb5_address *local_addr, const krb5_address *remote_addr, krb5_pointer i_vector, krb5_replay_data *replaydata, krb5_data *outbuf)
 {
     krb5_error_code 	  retval;
     krb5_priv 		* privmsg;
@@ -157,22 +148,16 @@ cleanup_privmsg:;
     return retval;
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_rd_priv(context, auth_context, inbuf, outbuf, outdata)
-    krb5_context 	  context;
-    krb5_auth_context 	  auth_context;
-    const krb5_data   	FAR * inbuf;
-    krb5_data 	      	FAR * outbuf;
-    krb5_replay_data  	FAR * outdata;
+krb5_error_code KRB5_CALLCONV
+krb5_rd_priv(krb5_context context, krb5_auth_context auth_context, const krb5_data *inbuf, krb5_data *outbuf, krb5_replay_data *outdata)
 {
     krb5_error_code 	  retval;
     krb5_keyblock       * keyblock;
     krb5_replay_data	  replaydata;
 
     /* Get keyblock */
-    if ((keyblock = auth_context->remote_subkey) == NULL)
-	if ((keyblock = auth_context->local_subkey) == NULL)
-            keyblock = auth_context->keyblock;
+    if ((keyblock = auth_context->recv_subkey) == NULL)
+	keyblock = auth_context->keyblock;
 
     if (((auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_RET_TIME) ||
       (auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_RET_SEQUENCE)) &&
@@ -261,7 +246,8 @@ krb5_rd_priv(context, auth_context, inbuf, outbuf, outdata)
     }
 
     if (auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_DO_SEQUENCE) {
-	if (auth_context->remote_seq_number != replaydata.seq) {
+	if (!krb5int_auth_con_chkseqnum(context, auth_context,
+					replaydata.seq)) {
 	    retval =  KRB5KRB_AP_ERR_BADORDER;
 	    goto error;
 	}

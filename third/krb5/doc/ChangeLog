@@ -1,27 +1,295 @@
-2002-02-27  Tom Yu  <tlyu@mit.edu>
+2004-02-13  Tom Yu  <tlyu@mit.edu>
 
-	* build.texinfo: Update build quirks for Tru64 4.0 defaulting to
-	K&R mode.
+	* build.texinfo (Solaris 9): Add section describing workaround for
+	Solaris 9 pty-close kernel bug.
+
+2003-07-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin.texinfo (realms (krb5.conf)): Add description of
+	master_kdc tag.
+	(Sample krb5.conf File): Add it to the example.
+
+2003-07-24  Sam Hartman  <hartmans@mit.edu>
+
+	* admin.texinfo (realms (kdc.conf)): Remove references to kdc_supported_enctypes
+	(Sample kdc.conf File): Remove kdc_supported_enctypes here too
+
+2003-06-20  Tom Yu  <tlyu@mit.edu>
+
+	* build.texinfo (Installing the Binaries): New node; describe
+	basic "make install", along with "DESTDIR=...".
+
+2003-06-19  Tom Yu  <tlyu@mit.edu>
+
+	* build.texinfo (HPUX): Fix typo.
+	(Options to Configure): Note that --with-system-db is unsupported,
+	concerning possible lossage with loading dumpfiles.
+
+2003-06-18  Tom Yu  <tlyu@mit.edu>
+
+	* dnssrv.texinfo: Add note about _kerberos-iv._udp SRV records.
+
+2003-05-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* definitions.texinfo (DefaultCcacheType, DefaultKDCTimesync,
+	DefaultMasterKeyType, DefaultTktLifetime): Updated for code
+	changes.
+	(DefaultCcacheTypeMac, DefaultKDCTimesyncMac): Deleted.
+
+	* admin.texinfo (libdefaults): Update kdc_timesync and ccache_type
+	descriptions to not separate Mac case.
+
+2003-05-30  Sam Hartman  <hartmans@mit.edu>
+
+	* admin.texinfo (Supported Encryption Types): Document AES interop issues.
+
+	* support-enc.texinfo: Add AES enctypes
+
+2003-05-27  Tom Yu  <tlyu@mit.edu>
+
+	* admin.texinfo (realms (kdc.conf)): Update to reflect that
+	kadm5.keytab is only used by legacy admin daemons.
+
+	* install.texinfo (Create a kadmind Keytab (optional)): Update to
+	reflect that kadm5.keytab is only used by legacy admin daemons.
+
+	* build.texinfo (HPUX): Make HPUX compiler flags simpler.
+
+2003-05-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* build.texinfo (HPUX, Solaris 2.X, Ultrix 4.2/3 [notdef]):
+	Replace descriptions of old --with- options with VAR=.
+	(Solaris 2.X): Suggest that defining _XOPEN_SOURCE and
+	__EXTENSIONS__ might help for 64-bit mode.
+
+2003-05-23  Tom Yu  <tlyu@mit.edu>
+
+	* admin.texinfo (appdefaults): Clarify afs_krb5 slightly.
+
+2003-05-22  Sam Hartman  <hartmans@mit.edu>
+
+	* admin.texinfo (appdefaults): Describe afs_krb5
+
+	* krb425.texinfo (AFS and the Appdefaults Section): Note about AFS and 2b tokens
+
+2003-05-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* definitions.texinfo: Updated DefaultSupportedEnctypes.
+
+2003-05-12  Sam Hartman  <hartmans@mit.edu>
+
+	* definitions.texinfo: Default v4 mode is now none
+
+2003-04-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* definitions.texinfo (DefaultETypeList,
+	DefaultSupportedEnctypes): Update for AES.
+	* install.texinfo (Client Machine Configuration Files): Fix typo
+	in variable reference.
+
+2003-04-08  Tom Yu  <tlyu@mit.edu>
+
+	* krb4-xrealm.txt: New file.  Describe the krb4 cross-realm
+	patchkit.  Copied from 2003-004-krb4_patchkit.
+
+2003-02-04  Sam Hartman  <hartmans@mit.edu>
+
+	* krb425.texinfo (Upgrading KDCs): Note that -4 needs to be specified
+
+2003-01-30  Sam Hartman  <hartmans@mit.edu>
+
+	* definitions.texinfo: Remove bogus sample IPs and domains.
+
+2002-09-20  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin.texinfo, dnssrv.texinfo: Documented config file variables
+	and SRV records to use for Kerberos TCP service, if it's enabled,
+	which it isn't by default.  Removed UDP port 750 from the DNS SRV
+	recommendations.
+
+2002-09-20  Jen Selby  <jenselby@mit.edu>
+
+	* Makefile: made the list of manpages a variable
+	* admin.texinfo: took out second inclusion of copyright notice,
+	changed some section names, updated initial synopsis of file,
+	added explanation of encryption types and the [login] section of
+	krb5.conf, added documentation on various tags in the configuration
+	files, added some more examples, fixed some typos, updated usage
+	statements for various kadmin and kdb5_util commands, updated the 
+	sample output from the commands, updated the infotex for use with 
+	makeinfo --html, added a section about getting shared-realm keys,
+	updated the error codes
+	* build.texinfo: added a section describing the structure of the
+	source code tree, updated documentation of options to configure
+	script, added information about defaults for various variable
+	settings, updated information about shared library support, 
+	added discussion of valid kerberos principals 
+	* definitions.texinfo: added some new default variables,
+	corrected some pathnames of default values
+	* dnssrv.texinfo: made the information about default port numbers
+	reference a variable
+	* glossary.texinfo: updated definition of principal
+	* install.texinfo: fixed typos and formatting errors, removed old 
+	sample config files from appendix (samples are in the sections about 
+	the config files), added information about supporting RC4 keys
+	* kadm5.acl: new file.  describes the kadm5.acl file.  included by
+	both admin.texinfo and install.texinfo.  text is made up mostly of
+	text that was split between those two documents.  documentation
+	of backreferences was added
+	* kdcconf.texinfo: made defaults reference variables 
+	* krb425.texinfo: deleted second inclusion of copyright info,
+	made defaults reference variable, fixed typos, took out redundant
+	part about editing inetd.conf and replaced it with reference to
+	install guide
+	* krb5conf.texinfo: documented the "final variable" feature, 
+	added mention of the [login] section, 
+	* send-pr.texinfo: minor change in wording for clarity
+	* user-guide.texinfo: made various minor wording changes, updated 
+	some of the sample output, updated documention of command options
+
+
+2002-09-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* build.texinfo (Options to Configure): Update for new options
+	--with-system-db, DB_HEADER=, DB_LIB=.
+
+2002-09-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* build.texinfo (Options to Configure): Update for new options
+	--with-system-et, --with-system-ss, SS_DIR=.
+
+2002-09-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* build.texinfo (Options to Configure): Update for new "CC=" style
+	options replacing "--with-cc=" options.
+
+2002-07-03  Ezra Peisach  <epeisach@bu.edu>
+
+	* user-guide.texinfo: Change `@end rawhtml' to `@end html' Texinfo
+	4 is more particular about matching @ifhtml (texinfo 3 did not
+	check). klist, ftp, and rcp postscript man pages have an
+	additional page now.
+
+2002-06-26 Jen Selby <jenselby@mit.edu>
+
+	* Makefile: changed the way html output is generated, made "make all"
+	remove generated tex files
+	* admin.texinfo: added sections about encryption types and salts,
+	updated the configuration file sections, revised the example 
+	configuration files, updated dates on output strings, added an
+	explanation of destroying a Kerberos database
+	* build.texinfo: changed the description of the tarball
+	* definitions.texinfo: added variables for all the default values
+	so that they can all be updated in one place, changed the release
+	from 1.2 to 1.3
+	* dnstxt.texinfo updated the information
+	* install.texinfo added more description of the configuration files
+	and the minimum needed in the files to set up a kerberos realm,
+	revised the examples of the configuration file sections, took out
+	old encryption type and salt information
+	* kdcconf.texinfo: new file, taken from the admin guide and included
+	in both the admin and install guides, provides descriptions of the
+	sections in kdc.conf
+	* krb425.texinfo: moved a texinfo tag so that makeinfo --html would
+	work
+	* krb5conf.texinfo: new file, take from the admin guide and included
+	in both the admin and install guides, provides descriptions of the
+	sections in krb5.conf
+	* man2html, man2html.M: new files, a perl program to create html pages 
+	from the output of the man command
+	* salts.texinfo: new file, a description of the different salt types
+	that are currently supported
+	* support-enc.texinfo: new file, a description of the currently
+	supported encryptions types
+	* user-guide.texinfo: added a section describing different ticket
+	flags, added a way to have the man pages in the reference section
+	accessible in the html version of the documentation
+
+2002-06-21  Ezra Eeisach  <epeisach@bu.edu>
+
+	* implementor.texinfo (IPv6 Support): Update fact that IRIX 6.5.16
+	has enough support for configure to believe IPv6 support works,
+	but the libraries fail to provide a definition of in6addr_any
+	(although netinet/in.h implies it foes).
+
+2002-06-20  Sam Hartman  <hartmans@mit.edu>
+
+	* implementor.texinfo (Operating System Notes for Shared Libraries):  Update why we don't use libtool
+	(Solaris  Shared Library Support): Update
+
+2002-06-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* implementor.texinfo: Don't use @smallbook.
+	(IPv6 Support): New chapter.
+	(Socket API): New placeholder chapter.
+	(Local Addresses, Host Address Lookup): Specify more precisely the
+	IRIX version we use at MIT.
+	(Thread Safety): Delete quoted email, since we don't actually have
+	this API yet.  Refer people to the mailing list archives.
+	(Operating System Notes for Shared Libraries): Add an introduction
+	mentioning why we can't use libtool.
+
+	* copyright.texinfo: Update copyright year.
+
+2002-05-30  Jen Selby  <jenselby@mit.edu>
+
+	* admin.texinfo, install.texinfo, dnssrv.texinfo, dnstxt.texinfo:
+	I corrected some minor typos.  Moved DNS information to separate
+	files.  Included these files in install guide (where they had
+	been) and in new sections in the admin guide.
+
+2002-05-08  Ken Raeburn  <raeburn@mit.edu>
+
+	* implementor.texinfo: Formatting updates.  Tru64 5.1 SIOCGIFCONF
+	and getaddrinfo update.  Description of fake-addrinfo.h and thread
+	safety problems.
+
+2002-03-13  Ken Raeburn  <raeburn@mit.edu>
+
+	* implementor.texinfo: Add chapters on local addresses, hostname
+	address lookups, and thread safety.
 
 2001-09-25  Ken Raeburn  <raeburn@mit.edu>
 
 	* admin.texinfo (realms (kdc.conf)): Add description of
 	reject_bad_transit realm option.
 
-2001-02-22  Tom Yu  <tlyu@mit.edu>
+2001-06-26  Ezra Peisach  <epeisach@mit.edu>
 
-	* admin.texinfo: Remove references to "rename_princpal".
+	* user-guide.texinfo, install.texinfo: Cleanup makeinfo warning of
+	not having `.' or `,' after @xref.
 
-2001-02-16  Tom Yu  <tlyu@mit.edu>
+2001-01-19  Ken Raeburn  <raeburn@mit.edu>
 
-	* admin.texinfo (Dumping a Kerberos Database to a File): 
-	(Restoring a Kerberos Database from a Dump File): Update to
-	reflect new dump file format and new flags to force beta7 dump
-	format.
+	* coding-style: Assume ANSI C '89.  Use krb5int_ for internal
+	names.
 
-	* install.texinfo (Switching Master and Slave KDCs):
-	(Upgrading Existing Kerberos V5 Installations): Update to reflect
-	new dump file format that includes principal policy information.
+2000-07-12  Tom Yu  <tlyu@mit.edu>
+
+	* coding-style: Update after some discussion.  Add sections
+	comparing to BSD KNF and GNU coding standards.
+
+2000-07-11  Tom Yu  <tlyu@mit.edu>
+
+	* coding-style: Some minor tweaks.  Require do-while to always be
+	braced.  Note some aspects of function pointer and array pointer
+	usage.  Elaborate on function declaration practices.  Add
+	placeholders for sections on Makefiles and test suites.
+
+2000-07-10  Tom Yu  <tlyu@mit.edu>
+
+	* coding-style: Another pass.  Add secion on namespaces.
+	Elaborate some on null pointers.
+	
+2000-07-10  Tom Yu  <tlyu@mit.edu>
+
+	* coding-style: First pass draft of coding standards.
+
+2000-06-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin.texinfo (Kerberos V5 Database Library Error Codes):
+	Replace RCS Id strings with comments indicating that the RCS Id
+	string of the error table is used.
 
 2000-06-22  Tom Yu  <tlyu@mit.edu>
 

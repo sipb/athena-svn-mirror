@@ -19,9 +19,32 @@
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+/*
+ * Copyright (C) 2003, 2004 by the Massachusetts Institute of Technology.
+ * All rights reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.4 2001-12-05 20:47:22 rbasch Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.5 2004-02-27 04:06:50 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -31,12 +54,20 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #else
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
 #endif
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <string.h>
+
+/* need struct timeval */
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
 
 #include <gssapi/gssapi_generic.h>
 #include "gss-misc.h"
@@ -53,7 +84,7 @@ gss_buffer_desc empty_token_buf = { 0, (void *) "" };
 gss_buffer_t empty_token = &empty_token_buf;
 
 static void display_status_1
-	PROTOTYPE( (char *m, OM_uint32 code, int type) );
+	(char *m, OM_uint32 code, int type);
 
 static int write_all(int fildes, char *buf, unsigned int nbyte)
 {
@@ -76,21 +107,31 @@ static int write_all(int fildes, char *buf, unsigned int nbyte)
 
 static int read_all(int fildes, char *buf, unsigned int nbyte)
 {
-     int ret;
-     char *ptr;
+    int ret;
+    char *ptr;
+    fd_set rfds;
+    struct timeval tv;
 
-     for (ptr = buf; nbyte; ptr += ret, nbyte -= ret) {
-	  ret = recv(fildes, ptr, nbyte, 0);
-	  if (ret < 0) {
-	       if (errno == EINTR)
-		    continue;
-	       return(ret);
-	  } else if (ret == 0) {
-	       return(ptr-buf);
-	  }
-     }
+    FD_ZERO(&rfds);
+    FD_SET(fildes, &rfds);
+    tv.tv_sec = 10;
+    tv.tv_usec = 0;
 
-     return(ptr-buf);
+    for (ptr = buf; nbyte; ptr += ret, nbyte -= ret) {
+	if (select(FD_SETSIZE, &rfds, NULL, NULL, &tv) <= 0
+	    || !FD_ISSET(fildes, &rfds))
+	    return(ptr-buf);
+	ret = recv(fildes, ptr, nbyte, 0);
+	if (ret < 0) {
+	    if (errno == EINTR)
+		continue;
+	    return(ret);
+	} else if (ret == 0) {
+	    return(ptr-buf);
+	}
+    }
+
+    return(ptr-buf);
 }
 
 /*
@@ -108,11 +149,11 @@ static int read_all(int fildes, char *buf, unsigned int nbyte)
  *
  * Effects:
  *
- * send_token writes the token flags (a single byte, even though
- * they're passed in in an integer), then the token length (as a
- * network long) and then the token data to the file descriptor s.  It
- * returns 0 on success, and -1 if an error occurs or if it could not
- * write all the data.
+ * If the flags are non-null, send_token writes the token flags (a
+ * single byte, even though they're passed in in an integer). Next,
+ * the token length (as a network long) and then the token data are
+ * written to the file descriptor s.  It returns 0 on success, and -1
+ * if an error occurs or if it could not write all the data.
  */
 int send_token(s, flags, tok)
      int s;
@@ -121,16 +162,23 @@ int send_token(s, flags, tok)
 {
      int len, ret;
      unsigned char char_flags = (unsigned char) flags;
+     unsigned char lenbuf[4];
 
-     ret = write_all(s, (char *)&char_flags, 1);
-     if (ret != 1) {
-       perror("sending token flags");
-       return -1;
+     if (char_flags) {
+	 ret = write_all(s, (char *)&char_flags, 1);
+	 if (ret != 1) {
+	     perror("sending token flags");
+	     return -1;
+	 }
      }
+     if (tok->length > 0xffffffffUL)
+	 abort();
+     lenbuf[0] = (tok->length >> 24) & 0xff;
+     lenbuf[1] = (tok->length >> 16) & 0xff;
+     lenbuf[2] = (tok->length >> 8) & 0xff;
+     lenbuf[3] = tok->length & 0xff;
 
-     len = htonl(tok->length);
-
-     ret = write_all(s, (char *) &len, 4);
+     ret = write_all(s, lenbuf, 4);
      if (ret < 0) {
 	  perror("sending token length");
 	  return -1;
@@ -150,7 +198,7 @@ int send_token(s, flags, tok)
 	 if (display_file)
 	     fprintf(display_file, 
 		     "sending token data: %d of %d bytes written\n", 
-		     ret, tok->length);
+		     ret, (int) tok->length);
 	 return -1;
      }
      
@@ -187,6 +235,7 @@ int recv_token(s, flags, tok)
 {
      int ret;
      unsigned char char_flags;
+     unsigned char lenbuf[4];
 
      ret = read_all(s, (char *) &char_flags, 1);
      if (ret < 0) {
@@ -200,20 +249,39 @@ int recv_token(s, flags, tok)
        *flags = (int) char_flags;
      }
 
-     ret = read_all(s, (char *) &tok->length, 4);
+     if (char_flags == 0 ) {
+     lenbuf[0] = 0;
+     ret = read_all(s, &lenbuf[1], 3);
      if (ret < 0) {
-	  perror("reading token length");
-	  return -1;
-     } else if (ret != 4) {
+	 perror("reading token length");
+	 return -1;
+     } else if (ret != 3) {
 	 if (display_file)
 	     fprintf(display_file, 
 		     "reading token length: %d of %d bytes read\n", 
-		     ret, 4);
+		     ret, 3);
 	 return -1;
      }
-	  
-     tok->length = ntohl(tok->length);
-     tok->value = (char *) malloc(tok->length);
+     }
+     else {
+       ret = read_all(s, lenbuf, 4);
+       if (ret < 0) {
+	 perror("reading token length");
+	 return -1;
+       } else if (ret != 4) {
+	 if (display_file)
+	   fprintf(display_file, 
+		   "reading token length: %d of %d bytes read\n", 
+		   ret, 4);
+	 return -1;
+       }
+     }
+
+     tok->length = ((lenbuf[0] << 24)
+		    | (lenbuf[1] << 16)
+		    | (lenbuf[2] << 8)
+		    | lenbuf[3]);
+     tok->value = (char *) malloc(tok->length ? tok->length : 1);
      if (tok->length && tok->value == NULL) {
 	 if (display_file)
 	     fprintf(display_file, 
@@ -228,7 +296,7 @@ int recv_token(s, flags, tok)
 	  return -1;
      } else if (ret != tok->length) {
 	  fprintf(stderr, "sending token data: %d of %d bytes written\n", 
-		  ret, tok->length);
+		  ret, (int) tok->length);
 	  free(tok->value);
 	  return -1;
      }

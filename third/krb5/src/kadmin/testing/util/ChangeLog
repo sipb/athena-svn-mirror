@@ -1,20 +1,79 @@
-2002-02-04  Ken Raeburn  <raeburn@mit.edu>
+2003-01-08  Ken Raeburn  <raeburn@mit.edu>
 
+	* Makefile.in (DEFINES): New variable.  Define HAS_STDARG for Tcl
+	headers.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.ov: Deleted.
+
+2002-11-04  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Use $(TCL_MAYBE_RPATH).
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* tcl_kadm5.c (unparse_err): Handle
+	KADM5_MISSING_KRB5_CONF_PARAMS.
+
+2002-07-15  Ezra Peisach  <epeisach@med-dotty.bu.edu>
+
+	* tcl_kadm5.c: Cleanup warnings for variables set but not used.
+	* tcl_ovsec_kadm.c (unparse_err): Likewise.
+
+2002-03-07  Ken Raeburn  <raeburn@mit.edu>
+	
 	* tcl_kadm5.c (unparse_err): Print error message, not just number,
 	to stderr for unrecognized error code.
 	* tcl_ovsec_kadm.c (unparse_err): Likewise.
+
+2001-09-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS): All files live in srcdir.
+
+2001-07-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* tcl_kadm5.h: File with prototypes for Tcl_kadm5_init and
+ 	Tcl_ovsec_kadm_init.
+
+	* tcl_kadm5.c: Include tcl_kadm5.h. Declare
+	tcl_kadm5_{rename,chpass,get}_principal,
+	tcl_kadm5_chpass_principal_util, tcl_kadm5_randkey_principal,
+	tcl_kadm5_{create,delete,modify,get}_policy,
+	tcl_kadm5_free_{principal,policy}_ent, tcl_kadm5_get_privs as static.
+
+	* test.c, tcl_ovsec_kadm.c: Include tcl_kadm5.h.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* tcl_kadm5.c: Cleanup assignments in conditionals.
+
+	* test.c: Add prototype for Tcl_ovsec_kadm_init() and Tcl_kadm5_init().
+
+2001-04-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* tcl_kadm5.c, tcl_ovsec_kadm.c: Cleanup of assignments in
+	conditionals, missing prototypes, etc.
 
 2000-05-23  Tom Yu  <tlyu@mit.edu>
 
 	* tcl_kadm5.c (tcl_kadm5_chpass_principal_util): Add new argument
 	to call to chpass_principal_util().
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

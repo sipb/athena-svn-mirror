@@ -1,3 +1,210 @@
+2003-04-01  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (install-unix): Delete install-libs.  We don't want
+	to install our in-tree libdb.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Don't explicitly invoke AC_PROG_INSTALL.
+
+	* configure.in: Use V5_AC_OUTPUT_MAKEFILE instead of
+	K5_GEN_MAKEFILE and K5_AC_OUTPUT.
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag.
+	* btree/Makefile.in, clib/Makefile.in, db/Makefile.in,
+	hash/Makefile.in, mpool/Makefile.in, recno/Makefile.in: Add
+	AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* clib/mkstemp.c (_gettemp): Remove declaration of errno
+
+2002-09-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for stdint.h and inttypes.h.
+
+2002-09-03  Ezra Peisach  <epeisach@bu.edu>
+
+	* acconfig.h: Remove file. All handled by configure.in now.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in, btree/Makefile.in, clib/Makefile.in,
+	db/Makefile.in, hash/Makefile.in, mpool/Makefile.in,
+	recno/Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-28  Tom Yu  <tlyu@mit.edu>
+
+	* btree/bt_split.c (bt_psplit): Correctly account for
+	sizeof(indx_t) when computing space used in a page by an item.
+	[patch from www.sleepycat.com]
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in, btree/Makefile.in, clib/Makefile.in,
+	db/Makefile.in, hash/Makefile.in, mpool/Makefile.in,
+	recno/Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-23  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (LIBMINOR): Bump due to addition of bt_rseq().
+
+	* hash/hash_debug.c: Remove inclusion of compat.h, as we don't
+	have it in our build system.
+
+	* btree/extern.h: Add missing prototypes/renames for
+	__bt_dmpage().  Add renames for bt_rseq() support functions.
+
+	* btree/bt_seq.c (bt_rseq): New function; like __bt_seq() but does
+	recursive descent rather than using the prev/next pointers.  This
+	will catch some pages that might be missed if the database is
+	inconsistent.  Added support functions for bt_rseq() as well.
+
+	* btree/bt_page.c (__bt_free): Set B_METADIRTY when updating free
+	list.
+	(__bt_new): Set B_METADIRTY when updating free list.
+	[patch from www.sleepycat.com]
+
+	* btree/bt_debug.c (__bt_dump): Bound loop by number of pages
+	actually in file to avoid getting a nigh-infinite number of
+	all-zeroes pages.
+	(__bt_dmpage): Print a newline after dumping the meta page.
+	(__bt_dpage): Add DB* parameter; use this to get pagesize in order
+	to limit dumping of page contents, in case NEXTINDEX(h) happens to
+	be bogus.
+	(__bt_stat): Bound loop by number of pages actually in file so as
+	to stop counting pages after the actual end of file.
+
+	* btree/bt_close.c (__bt_sync): Apply a Kerbnet fix from long ago;
+	don't return prematurely when B_METADIRTY is set but B_MODIFIED is
+	clear.
+
+2002-08-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SUBDIROBJLISTS): New variable.
+
+2002-01-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* btree/bt_put.c (__bt_put): Correctly handle writing out the key
+	or data size on a big-endian 64-bit platform.
+
+2001-10-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add optional argument to AC_DEFINE to provide
+	comment in generated header file.
+
+	* acconfig.h: Remove int32_t and u_int32_t, handled by configure.in
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* hash/hash_func.c (hash4): Declare first argument const.
+
+	* hash/hash.h: struct HTAB fname element now const.
+
+	* hash/hash.c: Declare third argument to hash_access and init_hash
+ 	const.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* hash/dbm.c: Include db-dbm.h for prototypes.
+
+2001-07-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* hash/hash_log2.c: Include hash.h, page.h and extern.h for prototype.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* test/dbtest.c: Cast argument to isspace() to int. Do not shadow
+	global variables type and flags.
+
+	* btree/bt_search.c, btree/bt_seq.c, recno/rec_search.c: Change
+	local variable index to idx.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* btree/bt_delete.c, btree/bt_put.c, recno/rec_delete.c,
+ 	recno/rec_put.c: Change local variable index to idx.
+
+	* hash/hash_page.c: Change local variable stat to status to
+	prevent shadowing system function.
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in (AC_COMPILE_TYPE): Declare with AC_DEFUN() instead
+	of define() as newer versions of autoconf check for AC_REQUIRE use
+	outside of AC_DEFUN.
+
+Thu Aug 10 23:21:01 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add AC_PROG_INSTALL for installation of library.
+
+2000-07-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* test/dbtest.c: Cleanup gcc -Wall complaints with printf format
+	strings.
+
+2000-07-02  Ezra Peisach  <epeisach@engrailed.mit.edu>
+
+	* recno/rec_seq.c: Include unused sccsid when LIBC_SCCS defined.
+
+	* recno/rec_close.c (__rec_close): Explicit braces to avoid
+	ambiguous `else'
+
+	* btree/bt_split.c (bt_psplit): Parenthesis about && and ||
+	conditional.
+
+	* btree/bt_put.c (__bt_put): Extra {} to make nested if/else
+	unambiguous.
+
+	* btree/bt_open.c (__bt_open): Add parenthesis to ensure
+	precedence ordering.
+
+	* hash/dbm.c (kdb2_dbm_firstkey): Conditionalize defintion of
+	variables based on use.
+
+	* hash/hash_func.c: Ifdef out unused static hash functions.
+
+	* hash/hash.c (init_htab): Remove unused variable.
+
+2000-07-01  Tom Yu  <tlyu@mit.edu>
+
+	* clib/strerror.c: #include config.h.
+
+	* clib/mkstemp.c: #include config.h.
+
+	* clib/memmove.c: #include config.h.
+
+	* clib/Makefile.in (LOCALINCLUDES): Add -I../include to get
+	config.h.
+
+	* configure.in: Generate two config headers, one for internal use
+	and one for external use.  Rework clib replacement code to use
+	AC_DEFINE rather than ADD_DEF.
+
+	* Makefile.in (STOBJLISTS): Add clib.
+
+2000-06-30  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Rework to use krb5 build system.
+
+	* Makefile.in: Rework to use krb5 build system.
+
+	* btree/Makefile.in: New file.
+
+	* clib/Makefile.in: New file.
+
+	* db/Makefile.in: New file.
+
+	* mpool/Makefile.in: New file.
+
+	* recno/Makefile.in: New file.
+
+	* test/Makefile.in: New file.
+
+2000-06-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* btree/bt_put.c (__bt_put): Initialize "e".
+
 2000-05-01  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* hash/dbm.c (kdb2_dbm_open): Don't overflow buffer "path".

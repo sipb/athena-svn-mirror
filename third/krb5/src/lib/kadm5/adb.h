@@ -1,8 +1,8 @@
 /*
- * Data Types for policys, and principal information that
- * exist in the respective databases.
+ * Data Types for policy and principal information that
+ * exists in the respective databases.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.6 2004-02-27 03:59:44 zacheiss Exp $
  *
  * This file was originally created with rpcgen.
  * It has been hacked up since then.
@@ -47,6 +47,7 @@ typedef struct _osa_adb_db_ent_t {
      BTREEINFO	btinfo;
      char	*filename;
      osa_adb_lock_t lock;
+     int	opencnt;
 } osa_adb_db_ent, *osa_adb_db_t, *osa_adb_princ_t, *osa_adb_policy_t;
 
 /* an osa_pw_hist_ent stores all the key_datas for a single password */
@@ -91,6 +92,8 @@ typedef	void	(*osa_adb_iter_policy_func) (void *, osa_policy_ent_t);
  */
 bool_t		xdr_osa_princ_ent_rec(XDR *xdrs, osa_princ_ent_t objp);
 bool_t		xdr_osa_policy_ent_rec(XDR *xdrs, osa_policy_ent_t objp);
+bool_t		xdr_osa_pw_hist_ent(XDR *xdrs, osa_pw_hist_ent *objp);
+bool_t          xdr_krb5_key_data(XDR *xdrs, krb5_key_data *objp);
 
 /*
  * Functions
@@ -98,6 +101,10 @@ bool_t		xdr_osa_policy_ent_rec(XDR *xdrs, osa_policy_ent_t objp);
 
 osa_adb_ret_t	osa_adb_create_db(char *filename, char *lockfile, int magic);
 osa_adb_ret_t	osa_adb_destroy_db(char *filename, char *lockfile, int magic);
+osa_adb_ret_t   osa_adb_rename_db(char *filefrom, char *lockfrom,
+				  char *fileto, char *lockto, int magic);
+osa_adb_ret_t   osa_adb_rename_policy_db(kadm5_config_params *fromparams,
+					 kadm5_config_params *toparams);
 osa_adb_ret_t	osa_adb_init_db(osa_adb_db_t *dbp, char *filename,
 				char *lockfile, int magic);
 osa_adb_ret_t	osa_adb_fini_db(osa_adb_db_t db, int magic);

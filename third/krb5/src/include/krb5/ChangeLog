@@ -1,7 +1,55 @@
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* macsock.h: Updated location of Utilities.h and Sockets headers
-	* macsock.h: #include <KerberosSupport/ErrorLib.h> 
+2003-05-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb.h: Add prototype for krb5_db_iterate_ext.
+
+2003-03-05  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_kt.h: Add krb5_ktkdb_set_context.  Update prototype of
+	krb5_ktdb_resolve.  Add krb5_kt_kdb_ops.
+
+2003-03-05  Sam Hartman  <hartmans@mit.edu>
+
+	* Remove kdb_dbm.h
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* kdb.h (KRB5_KDC_MKEY_1, KRB5_KDC_MKEY_2): Remove trailing colon,
+	as new implementation of krb5_read_password() appends it.
+
+2002-09-18  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm.h (struct __krb5_realm_params): New field
+	realm_kdc_tcp_ports.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* kwinsock.h, macsock.h: Deleted.
+
+2002-05-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* MacTCP.h, AddressXlation.h: Deleted.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* macsock.h (PROTOTYPE): Don't define.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_defs.h, kdb.h, kdb_dbc.h, kdb_dbm.h, kdb_kt.h, kwinsock.h:
+	Don't explicitly declare pointers or functions FAR any more.  Drop
+	_MSDOS support.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_proto.h: Don't use KRB5_DLLIMP.
 
 2001-09-25  Ken Raeburn  <raeburn@mit.edu>
 
@@ -9,13 +57,36 @@
 	realm_reject_bad_transit, realm_reject_bad_transit_valid; deleted
 	field realm_filler.
 
-2000-10-02	Alexandra Ellwood <lxs@mit.edu>
+2001-07-25  Ezra Peisach  <epeisach@mit.edu>
 
-	* kdb.h: added Mac OS X #define (__MACH__) -- we're still a kerberos client
+	* kdb.h: For structs krb5_tl_data (tl_data_length), krb5_key_data
+	(key-data_length), krb5_db_entry (len, e_length) change the
+	storage types from krb5_int16 to krb5_ui_2. This does not require
+	a database version change as the field sizes are the same. Remove
+	the code ifdefed under KRB5_OLD_AND_KRUFTY.
+
+2001-04-27  Ezra Peisach  <epeisach@mit.edu>
+
+	* .cvsignore: Add stamp-h.in
+
+2001-02-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* adm_proto.h (krb5_adm_connect): Declare prompt string const char *. 
+
+2001-01-16  Ken Raeburn  <raeburn@mit.edu>
+
+	* adm_proto.h, kdb.h, kdb_dbc.h, kdb_dbm.h, kdb_kt.h: Make all
+	prototypes unconditional.
+
+2000-05-30  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* Makefile.in, osconf.h: Use bindir and sbindir from configure
+	rather than building them up from EXEC_PREFIX.
 
 2000-5-18	Alexandra Ellwood <lxs@mit.edu>
 
-	* macsock.h: local_addr_fallback_kludge defined to 0 again... fixed gethostname
+	* macsock.h: local_addr_fallback_kludge defined to 0
+ 	again... fixed gethostname
 
 2000-5-9	Alexandra Ellwood <lxs@mit.edu>
 

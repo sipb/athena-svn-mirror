@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: gssapi_generic.c,v 1.1.1.4 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: gssapi_generic.c,v 1.1.1.5 2004-02-27 03:56:22 zacheiss Exp $
  */
 
 #include "gssapiP_generic.h"
@@ -31,26 +31,7 @@
  * encoding an object identifier.
  */
 
-/*
- * The OID of user_name is:
- * 	iso(1) member-body(2) US(840) mit(113554) infosys(1) gssapi(2)
- * 	generic(1) user_name(1) = 1.2.840.113554.1.2.1.1
- * machine_uid_name:
- * 	iso(1) member-body(2) US(840) mit(113554) infosys(1) gssapi(2)
- * 	generic(1) machine_uid_name(2) = 1.2.840.113554.1.2.1.2
- * string_uid_name:
- * 	iso(1) member-body(2) US(840) mit(113554) infosys(1) gssapi(2)
- * 	generic(1) string_uid_name(3) = 1.2.840.113554.1.2.1.3
- * service_name:
- * 	iso(1) member-body(2) US(840) mit(113554) infosys(1) gssapi(2)
- * 	generic(1) service_name(4) = 1.2.840.113554.1.2.1.4
- * exported_name:
- *      1(iso), 3(org), 6(dod), 1(internet), 5(security), 6(nametypes),
- *	    4(gss-api-exported-name)
- * host_based_service_name (v2):
- *      iso (1) org (3), dod (6), internet (1), security (5), nametypes(6),
- *      gss-host-based-services(2)
- */
+/* Reserved static storage for GSS_oids.  Comments are quotes from RFC 2744. */
 
 static gss_OID_desc oids[] = {
     /*
@@ -145,19 +126,22 @@ static gss_OID_desc oids[] = {
  * Constants of the form gss_nt_* are the original MIT krb5 names 
  * found in gssapi_generic.h.  They are provided for compatibility. */ 
 
-#if GSS_RFC_COMPLIANT_OIDS
 GSS_DLLIMP gss_OID GSS_C_NT_USER_NAME           = oids+0;
-GSS_DLLIMP gss_OID GSS_C_NT_MACHINE_UID_NAME    = oids+1;
-GSS_DLLIMP gss_OID GSS_C_NT_STRING_UID_NAME     = oids+2;
-GSS_DLLIMP gss_OID GSS_C_NT_HOSTBASED_SERVICE_X = oids+3;
-GSS_DLLIMP gss_OID GSS_C_NT_HOSTBASED_SERVICE   = oids+4;
-GSS_DLLIMP gss_OID GSS_C_NT_ANONYMOUS           = oids+5;
-GSS_DLLIMP gss_OID GSS_C_NT_EXPORT_NAME         = oids+6;
-#endif /* GSS_RFC_COMPLIANT_OIDS */
-
 GSS_DLLIMP gss_OID gss_nt_user_name             = oids+0;
+
+GSS_DLLIMP gss_OID GSS_C_NT_MACHINE_UID_NAME    = oids+1;
 GSS_DLLIMP gss_OID gss_nt_machine_uid_name      = oids+1;
+
+GSS_DLLIMP gss_OID GSS_C_NT_STRING_UID_NAME     = oids+2;
 GSS_DLLIMP gss_OID gss_nt_string_uid_name       = oids+2;
-GSS_DLLIMP gss_OID gss_nt_service_name_v2       = oids+3;
+
+GSS_DLLIMP gss_OID GSS_C_NT_HOSTBASED_SERVICE_X = oids+3;
+gss_OID gss_nt_service_name_v2       = oids+3;
+
+GSS_DLLIMP gss_OID GSS_C_NT_HOSTBASED_SERVICE   = oids+4;
 GSS_DLLIMP gss_OID gss_nt_service_name          = oids+4;
-GSS_DLLIMP gss_OID gss_nt_exported_name         = oids+6;
+
+GSS_DLLIMP gss_OID GSS_C_NT_ANONYMOUS           = oids+5;
+
+GSS_DLLIMP gss_OID GSS_C_NT_EXPORT_NAME         = oids+6;
+gss_OID gss_nt_exported_name         = oids+6;

@@ -1,9 +1,34 @@
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* server.c: Include port-sockets.h.
+
+2003-01-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* server.c (main): Use socklen_t when passing address to socket
+	functions.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-03-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* client.c, server.c: Include errno.h.
+
+2001-06-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* client.c, server.c: Cleanup assignments in conditionals.
+
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

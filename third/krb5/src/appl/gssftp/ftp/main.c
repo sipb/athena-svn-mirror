@@ -44,14 +44,30 @@ static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 3/1/91";
 /*
  * FTP User Program -- Command Interface.
  */
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include <stdio.h>
 #include "ftp_var.h"
+#ifndef _WIN32
 #ifndef KRB5_KRB4_COMPAT
 /* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
 #include <sys/socket.h>
+#include <netdb.h>
 #endif
 #include <sys/ioctl.h>
 #include <sys/types.h>
+#include <pwd.h>
+#endif /* !_WIN32 */
+
+#ifdef _WIN32
+#include <io.h>
+#undef ERROR
+#endif
 
 #include <arpa/ftp.h>
 
@@ -59,18 +75,19 @@ static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 3/1/91";
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
-#ifndef KRB5_KRB4_COMPAT
-/* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
-#include <netdb.h>
+
+#include <port-sockets.h>
+
+#ifdef _WIN32
+/* For SO_SYNCHRONOUS_NONALERT and SO_OPENTYPE: */
+#include <mswsock.h>
 #endif
-#include <pwd.h>
 
-#define sig_t my_sig_t
-#define sigtype krb5_sigtype
-typedef sigtype (*sig_t)();
-
+#ifndef _WIN32
 uid_t	getuid();
-sigtype	intr(), lostpeer();
+#endif
+
+sigtype	intr (int), lostpeer (int);
 extern	char *home;
 char	*getlogin();
 #ifdef KRB5_KRB4_COMPAT
@@ -79,15 +96,30 @@ struct servent staticsp;
 extern char realm[];
 #endif /* KRB5_KRB4_COMPAT */
 
+static void cmdscanner (int);
+static char *slurpstring (void);
+
+
+int 
 main(argc, argv)
 	volatile int argc;
 	char **volatile argv;
 {
 	register char *cp;
 	int top;
+#ifndef _WIN32
 	struct passwd *pw = NULL;
+#endif
 	char homedir[MAXPATHLEN];
 	char *progname = argv[0];
+
+#ifdef _WIN32
+	DWORD optionValue = SO_SYNCHRONOUS_NONALERT;
+	if (setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE, (char *)&optionValue, sizeof(optionValue)) == SOCKET_ERROR) {
+		fprintf(stderr, "ftp: cannot enable synchronous sockets\n");
+		exit(1);
+	}
+#endif
 
 	sp = getservbyname("ftp", "tcp");
 	if (sp == 0) {
@@ -185,6 +217,14 @@ main(argc, argv)
 	/*
 	 * Set up the home directory in case we're globbing.
 	 */
+#ifdef _WIN32
+	cp = getenv("HOME");
+	if (cp != NULL) {
+		home = homedir;
+		(void) strncpy(home, cp, sizeof(homedir) - 1);
+		homedir[sizeof(homedir) - 1] = '\0';
+	}
+#else /* !_WIN32 */
 	cp = getlogin();
 	if (cp != NULL) {
 		pw = getpwnam(cp);
@@ -196,17 +236,22 @@ main(argc, argv)
 		(void) strncpy(home, pw->pw_dir, sizeof(homedir) - 1);
 		homedir[sizeof(homedir) - 1] = '\0';
 	}
+#endif /* !_WIN32 */
 	if (argc > 0) {
 		if (setjmp(toplevel))
 			exit(0);
 		(void) signal(SIGINT, intr);
+#ifdef SIGPIPE
 		(void) signal(SIGPIPE, lostpeer);
+#endif
 		setpeer(argc + 1, argv - 1);
 	}
 	top = setjmp(toplevel) == 0;
 	if (top) {
 		(void) signal(SIGINT, intr);
+#ifdef SIGPIPE
 		(void) signal(SIGPIPE, lostpeer);
+#endif
 	}
 	for (;;) {
 		cmdscanner(top);
@@ -227,21 +272,21 @@ lostpeer(sig)
 	int sig;
 {
 	extern FILE *cout;
-	extern int data;
+	extern SOCKET data;
 	extern char *auth_type;
 	extern int clevel;
 	extern int dlevel;
 
 	if (connected) {
 		if (cout != NULL) {
-			(void) shutdown(fileno(cout), 1+1);
-			(void) fclose(cout);
+			(void) shutdown(SOCKETNO(fileno(cout)), 1+1);
+			(void) FCLOSE_SOCKET(cout);
 			cout = NULL;
 		}
-		if (data >= 0) {
+		if (data != INVALID_SOCKET) {
 			(void) shutdown(data, 1+1);
-			(void) close(data);
-			data = -1;
+			(void) closesocket(data);
+			data = INVALID_SOCKET;
 		}
 		connected = 0;
 		auth_type = NULL;
@@ -250,8 +295,8 @@ lostpeer(sig)
 	pswitch(1);
 	if (connected) {
 		if (cout != NULL) {
-			(void) shutdown(fileno(cout), 1+1);
-			(void) fclose(cout);
+			(void) shutdown(SOCKETNO(fileno(cout)), 1+1);
+			(void) FCLOSE_SOCKET(cout);
 			cout = NULL;
 		}
 		connected = 0;
@@ -282,13 +327,12 @@ tail(filename)
 /*
  * Command parser.
  */
+static void
 cmdscanner(top)
 	int top;
 {
 	register struct cmd *c;
 	register int l;
-	struct cmd *getcmd();
-	extern int help();
 
 	if (!top)
 		(void) putchar('\n');
@@ -336,7 +380,9 @@ cmdscanner(top)
 			break;
 	}
 	(void) signal(SIGINT, intr);
+#ifdef SIGPIPE
 	(void) signal(SIGPIPE, lostpeer);
+#endif
 }
 
 struct cmd *
@@ -351,7 +397,7 @@ getcmd(name)
 	longest = 0;
 	nmatches = 0;
 	found = 0;
-	for (c = cmdtab; p = c->c_name; c++) {
+	for (c = cmdtab; (p = c->c_name) != NULL; c++) {
 		for (q = name; *q == *p++; q++)
 			if (*q == 0)		/* exact match? */
 				return (c);
@@ -375,18 +421,24 @@ getcmd(name)
 
 int slrflag;
 
-makeargv()
+void makeargv()
 {
 	char **argp;
-	char *slurpstring();
 
 	margc = 0;
 	argp = margv;
 	stringbase = line;		/* scan from first of buffer */
 	argbase = argbuf;		/* store from first of buffer */
 	slrflag = 0;
-	while (*argp++ = slurpstring())
+	while ((*argp++ = slurpstring())) {
 		margc++;
+		if (margc == sizeof(margv)/sizeof(margv[0])) {
+			printf("sorry, too many arguments in input line\n");
+			margc = 0;
+			margv[0] = 0;
+			return;
+		}
+	}
 }
 
 /*
@@ -394,7 +446,7 @@ makeargv()
  * implemented with FSM to
  * handle quoting and strings
  */
-char *
+static char *
 slurpstring()
 {
 	int got_one = 0;
@@ -422,7 +474,7 @@ S0:
 	switch (*sb) {
 
 	case '\0':
-		goto OUT;
+		goto EXIT;
 
 	case ' ':
 	case '\t':
@@ -449,7 +501,7 @@ S1:
 	case ' ':
 	case '\t':
 	case '\0':
-		goto OUT;	/* end of token */
+		goto EXIT;	/* end of token */
 
 	case '\\':
 		sb++; goto S2;	/* slurp next character */
@@ -467,7 +519,7 @@ S2:
 	switch (*sb) {
 
 	case '\0':
-		goto OUT;
+		goto EXIT;
 
 	default:
 		*ap++ = *sb++;
@@ -479,7 +531,7 @@ S3:
 	switch (*sb) {
 
 	case '\0':
-		goto OUT;
+		goto EXIT;
 
 	case '"':
 		sb++; goto S1;
@@ -490,7 +542,7 @@ S3:
 		goto S3;
 	}
 
-OUT:
+EXIT:
 	if (got_one)
 		*ap++ = '\0';
 	argbase = ap;			/* update storage pointer */
@@ -512,13 +564,13 @@ OUT:
 	return((char *)0);
 }
 
-#define HELPINDENT (sizeof ("directory"))
+#define	HELPINDENT ((int) sizeof("disconnect"))
 
 /*
  * Help command.
  * Call each command handler with argc == 0 and argv[0] == name.
  */
-help(argc, argv)
+void help(argc, argv)
 	int argc;
 	char *argv[];
 {

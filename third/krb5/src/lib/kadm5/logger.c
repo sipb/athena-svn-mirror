@@ -25,8 +25,6 @@
  *
  */
 
-#if !defined(_MSDOS)
-
 /* KADM5 wants non-syslog log files to contain syslog-like entries */
 #define VERBOSE_LOGS
 
@@ -174,15 +172,11 @@ static struct log_entry	def_log_entry;
  *			  profile.
  */
 static void
-klog_com_err_proc(whoami, code, format, ap)
-    const char	*whoami;
-    long	code;
-    const char	*format;
-    va_list	ap;
+klog_com_err_proc(const char *whoami, long int code, const char *format, va_list ap)
 {
     char	outbuf[KRB5_KLOG_MAX_ERRMSG_SIZE];
     int		lindex;
-    char	*actual_format;
+    const char	*actual_format;
 #ifdef	HAVE_SYSLOG
     int		log_pri = -1;
 #endif	/* HAVE_SYSLOG */
@@ -205,7 +199,7 @@ klog_com_err_proc(whoami, code, format, ap)
     }
     cp = &outbuf[strlen(outbuf)];
     
-    actual_format = (char *) format;
+    actual_format = format;
 #ifdef	HAVE_SYSLOG
     /*
      * This is an unpleasant hack.  If the first character is less than
@@ -216,7 +210,7 @@ klog_com_err_proc(whoami, code, format, ap)
      * intermediate representation.
      */
     if ((((unsigned char) *format) > 0) && (((unsigned char) *format) <= 8)) {
-	actual_format = (char *) (format + 1);
+	actual_format = (format + 1);
 	switch ((unsigned char) *format) {
 #ifdef	LOG_EMERG
 	case 1:
@@ -350,18 +344,14 @@ klog_com_err_proc(whoami, code, format, ap)
  *			  where/how to send output.
  */
 krb5_error_code
-krb5_klog_init(kcontext, ename, whoami, do_com_err)
-    krb5_context	kcontext;
-    char		*ename;
-    char		*whoami;
-    krb5_boolean	do_com_err;
+krb5_klog_init(krb5_context kcontext, char *ename, char *whoami, krb5_boolean do_com_err)
 {
     const char	*logging_profent[3];
     const char	*logging_defent[3];
     char	**logging_specs;
     int		i, ngood;
     char	*cp, *cp2;
-    char	savec;
+    char	savec = '\0';
     int		error;
     int		do_openlog, log_facility;
     FILE	*f;
@@ -413,9 +403,9 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 		 *	<whitespace><data><whitespace>
 		 * so, trim off the leading and trailing whitespace here.
 		 */
-		for (cp = logging_specs[i]; isspace(*cp); cp++);
+		for (cp = logging_specs[i]; isspace((int) *cp); cp++);
 		for (cp2 = &logging_specs[i][strlen(logging_specs[i])-1];
-		     isspace(*cp2); cp2--);
+		     isspace((int) *cp2); cp2--);
 		cp2++;
 		*cp2 = '\0';
 		/*
@@ -453,7 +443,8 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 			/*
 			 * Find the end of the severity.
 			 */
-			if (cp2 = strchr(&cp[7], ':')) {
+			cp2 = strchr(&cp[7], ':');
+			if (cp2) {
 			    savec = *cp2;
 			    *cp2 = '\0';
 			    cp2++;
@@ -512,89 +503,73 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 			 * If there is a facility present, then parse that.
 			 */
 			if (cp2) {
-			    if (!strcasecmp(cp2, "AUTH")) {
-				log_control.log_entries[i].lsu_facility = LOG_AUTH;
-			    }
+			    const struct {
+				const char *name;
+				int value;
+			    } facilities[] = {
+				{ "AUTH",	LOG_AUTH	},
+#ifdef	LOG_AUTHPRIV
+				{ "AUTHPRIV",	LOG_AUTHPRIV	},
+#endif	/* LOG_AUTHPRIV */
 #ifdef	LOG_KERN
-			    else if (!strcasecmp(cp2, "KERN")) {
-				log_control.log_entries[i].lsu_facility = LOG_KERN;
-			    }
+				{ "KERN",	LOG_KERN	},
 #endif	/* LOG_KERN */
 #ifdef	LOG_USER
-			    else if (!strcasecmp(cp2, "USER")) {
-				log_control.log_entries[i].lsu_facility = LOG_USER;
-			    }
+				{ "USER",	LOG_USER	},
 #endif	/* LOG_USER */
 #ifdef	LOG_MAIL
-			    else if (!strcasecmp(cp2, "MAIL")) {
-				log_control.log_entries[i].lsu_facility = LOG_MAIL;
-			    }
+				{ "MAIL",	LOG_MAIL	},
 #endif	/* LOG_MAIL */
 #ifdef	LOG_DAEMON
-			    else if (!strcasecmp(cp2, "DAEMON")) {
-				log_control.log_entries[i].lsu_facility = LOG_DAEMON;
-			    }
+				{ "DAEMON",	LOG_DAEMON	},
 #endif	/* LOG_DAEMON */
+#ifdef	LOG_FTP
+				{ "FTP",	LOG_FTP		},
+#endif	/* LOG_FTP */
 #ifdef	LOG_LPR
-			    else if (!strcasecmp(cp2, "LPR")) {
-				log_control.log_entries[i].lsu_facility = LOG_LPR;
-			    }
+				{ "LPR",	LOG_LPR		},
 #endif	/* LOG_LPR */
 #ifdef	LOG_NEWS
-			    else if (!strcasecmp(cp2, "NEWS")) {
-				log_control.log_entries[i].lsu_facility = LOG_NEWS;
-			    }
+				{ "NEWS",	LOG_NEWS	},
 #endif	/* LOG_NEWS */
 #ifdef	LOG_UUCP
-			    else if (!strcasecmp(cp2, "UUCP")) {
-				log_control.log_entries[i].lsu_facility = LOG_UUCP;
-			    }
+				{ "UUCP",	LOG_UUCP	},
 #endif	/* LOG_UUCP */
 #ifdef	LOG_CRON
-			    else if (!strcasecmp(cp2, "CRON")) {
-				log_control.log_entries[i].lsu_facility = LOG_CRON;
-			    }
+				{ "CRON",	LOG_CRON	},
 #endif	/* LOG_CRON */
 #ifdef	LOG_LOCAL0
-			    else if (!strcasecmp(cp2, "LOCAL0")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL0;
-			    }
+				{ "LOCAL0",	LOG_LOCAL0	},
 #endif	/* LOG_LOCAL0 */
 #ifdef	LOG_LOCAL1
-			    else if (!strcasecmp(cp2, "LOCAL1")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL1;
-			    }
+				{ "LOCAL1",	LOG_LOCAL1	},
 #endif	/* LOG_LOCAL1 */
 #ifdef	LOG_LOCAL2
-			    else if (!strcasecmp(cp2, "LOCAL2")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL2;
-			    }
+				{ "LOCAL2",	LOG_LOCAL2	},
 #endif	/* LOG_LOCAL2 */
 #ifdef	LOG_LOCAL3
-			    else if (!strcasecmp(cp2, "LOCAL3")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL3;
-			    }
+				{ "LOCAL3",	LOG_LOCAL3	},
 #endif	/* LOG_LOCAL3 */
 #ifdef	LOG_LOCAL4
-			    else if (!strcasecmp(cp2, "LOCAL4")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL4;
-			    }
+				{ "LOCAL4",	LOG_LOCAL4	},
 #endif	/* LOG_LOCAL4 */
 #ifdef	LOG_LOCAL5
-			    else if (!strcasecmp(cp2, "LOCAL5")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL5;
-			    }
+				{ "LOCAL5",	LOG_LOCAL5	},
 #endif	/* LOG_LOCAL5 */
 #ifdef	LOG_LOCAL6
-			    else if (!strcasecmp(cp2, "LOCAL6")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL6;
-			    }
+				{ "LOCAL6",	LOG_LOCAL6	},
 #endif	/* LOG_LOCAL6 */
 #ifdef	LOG_LOCAL7
-			    else if (!strcasecmp(cp2, "LOCAL7")) {
-				log_control.log_entries[i].lsu_facility = LOG_LOCAL7;
-			    }
+				{ "LOCAL7",	LOG_LOCAL7	},
 #endif	/* LOG_LOCAL7 */
+			    };
+			    int j;
+
+			    for (j = 0; j < sizeof(facilities)/sizeof(facilities[0]); j++)
+				if (!strcasecmp(cp2, facilities[j].name)) {
+				    log_control.log_entries[i].lsu_facility = facilities[j].value;
+				    break;
+				}
 			    cp2--;
 			    *cp2 = savec;
 			}
@@ -610,8 +585,9 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 		 * Is this a standard error specification?
 		 */
 		else if (!strcasecmp(cp, "STDERR")) {
-		    if (log_control.log_entries[i].lfu_filep =
-			fdopen(fileno(stderr), "a+")) {
+		    log_control.log_entries[i].lfu_filep =
+			fdopen(fileno(stderr), "a+");
+		    if (log_control.log_entries[i].lfu_filep) {
 			log_control.log_entries[i].log_type = K_LOG_STDERR;
 			log_control.log_entries[i].lfu_fname =
 			    "standard error";
@@ -621,8 +597,9 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 		 * Is this a specification of the console?
 		 */
 		else if (!strcasecmp(cp, "CONSOLE")) {
-		    if (log_control.log_entries[i].ldu_filep =
-			CONSOLE_OPEN("a+")) {
+		    log_control.log_entries[i].ldu_filep =
+			CONSOLE_OPEN("a+");
+		    if (log_control.log_entries[i].ldu_filep) {
 			log_control.log_entries[i].log_type = K_LOG_CONSOLE;
 			log_control.log_entries[i].ldu_devname = "console";
 		    }
@@ -635,8 +612,9 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 		     * We handle devices very similarly to files.
 		     */
 		    if (cp[6] == '=') {
-			if (log_control.log_entries[i].ldu_filep =
-			    DEVICE_OPEN(&cp[7], "w")) {
+			log_control.log_entries[i].ldu_filep = 
+			    DEVICE_OPEN(&cp[7], "w");
+			if (log_control.log_entries[i].ldu_filep) {
 			    log_control.log_entries[i].log_type = K_LOG_DEVICE;
 			    log_control.log_entries[i].ldu_devname = &cp[7];
 			}
@@ -678,10 +656,15 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
 	log_control.log_nentries = 1;
     }
     if (log_control.log_nentries) {
-	if (log_control.log_whoami = (char *) malloc(strlen(whoami)+1))
+	log_control.log_whoami = (char *) malloc(strlen(whoami)+1);
+	if (log_control.log_whoami)
 	    strcpy(log_control.log_whoami, whoami);
-	if (log_control.log_hostname = (char *) malloc(MAXHOSTNAMELEN))
+
+	log_control.log_hostname = (char *) malloc(MAXHOSTNAMELEN + 1);
+	if (log_control.log_hostname) {
 	    gethostname(log_control.log_hostname, MAXHOSTNAMELEN);
+	    log_control.log_hostname[MAXHOSTNAMELEN] = '\0';
+	}
 #ifdef	HAVE_OPENLOG
 	if (do_openlog) {
 	    openlog(whoami, LOG_NDELAY|LOG_PID, log_facility);
@@ -698,8 +681,7 @@ krb5_klog_init(kcontext, ename, whoami, do_com_err)
  * krb5_klog_close()	- Close the logging context and free all data.
  */
 void
-krb5_klog_close(kcontext)
-    krb5_context	kcontext;
+krb5_klog_close(krb5_context kcontext)
 {
     int lindex;
     (void) reset_com_err_hook();
@@ -751,9 +733,8 @@ krb5_klog_close(kcontext)
 /*
  * severity2string()	- Convert a severity to a string.
  */
-static char *
-severity2string(severity)
-    int	severity;
+static const char *
+severity2string(int severity)
 {
     int s;
     const char *ss;
@@ -800,7 +781,7 @@ severity2string(severity)
 	break;
 #endif	/* LOG_DEBUG */
     }
-    return((char *) ss);
+    return(ss);
 }
 
 /*
@@ -809,10 +790,7 @@ severity2string(severity)
  *			  by krb5_klog_init().
  */
 static int
-klog_vsyslog(priority, format, arglist)
-    int		priority;
-    const char	*format;
-    va_list	arglist;
+klog_vsyslog(int priority, const char *format, va_list arglist)
 {
     char	outbuf[KRB5_KLOG_MAX_ERRMSG_SIZE];
     int		lindex;
@@ -855,7 +833,9 @@ klog_vsyslog(priority, format, arglist)
 #endif	/* HAVE_STRFTIME */
 #ifdef VERBOSE_LOGS
     sprintf(cp, " %s %s[%ld](%s): ",
-	    log_control.log_hostname, log_control.log_whoami, (long) getpid(),
+	    log_control.log_hostname ? log_control.log_hostname : "", 
+	    log_control.log_whoami ? log_control.log_whoami : "", 
+	    (long) getpid(),
 	    severity2string(priority));
 #else
     sprintf(cp, " ");
@@ -870,6 +850,17 @@ klog_vsyslog(priority, format, arglist)
 	    ((int *) arglist)[2], ((int *) arglist)[3],
 	    ((int *) arglist)[4], ((int *) arglist)[5]);
 #endif	/* HAVE_VSPRINTF */
+
+    /*
+     * If the user did not use krb5_klog_init() instead of dropping
+     * the request on the floor, syslog it - if it exists
+     */
+#ifdef HAVE_SYSLOG
+    if (log_control.log_nentries == 0) {
+	/* Log the message with our header trimmed off */
+	syslog(priority, "%s", syslogp);
+    }
+#endif
 
     /*
      * Now that we have the message formatted, perform the output to each
@@ -921,25 +912,13 @@ klog_vsyslog(priority, format, arglist)
     return(0);
 }
 
-#ifdef	HAVE_STDARG_H
 int
 krb5_klog_syslog(int priority, const char *format, ...)
-#else	/* HAVE_STDARG_H */
-int
-krb5_klog_syslog(priority, format, va_alist)
-    int		priority;
-    const char	*format;
-    va_dcl
-#endif	/* HAVE_STDARG_H */
 {
     int		retval;
     va_list	pvar;
 
-#ifdef	HAVE_STDARG_H
     va_start(pvar, format);
-#else	/* HAVE_STDARG_H */
-    va_start(pvar);
-#endif	/* HAVE_STDARG_H */
     retval = klog_vsyslog(priority, format, pvar);
     va_end(pvar);
     return(retval);
@@ -953,8 +932,7 @@ krb5_klog_syslog(priority, format, va_alist)
  *                      a new file descriptor for the give filename.
  */
 void
-krb5_klog_reopen(kcontext)
-krb5_context kcontext;
+krb5_klog_reopen(krb5_context kcontext)
 {
     int lindex;
     FILE *f;
@@ -981,6 +959,3 @@ krb5_context kcontext;
 	}
     }
 }
-
-#endif /* !defined(_MSDOS) */
-

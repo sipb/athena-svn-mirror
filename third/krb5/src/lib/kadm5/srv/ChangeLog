@@ -1,6 +1,91 @@
-2001-11-05  Tom Yu  <tlyu@mit.edu>
+2003-09-02  Alexandra Ellwood  <lxs@mit.edu>
+
+	* svr_principal.c: Added Apple password server support.
+
+2003-06-13  Tom Yu  <tlyu@mit.edu>
+
+	* server_kdb.c (kdb_init_hist): Force history principal's key to
+	be of the same enctype as the master key, as searches for it later
+	on explicitly specify the enctype.
+
+2003-04-01  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove $(SHLIB_DBLIB_DEPS) and related variables.
+	(SHLIB_EXPDEPS): Remove $(SHLIB_DBLIB_DEPS).
+	(SHLIB_EXPLIBS): Change $(DB_LIB) to $(KDB5_DB_LIB).
+
+2003-01-12  Ezra Peisach  <epeisach@bu.edu>
+
+	* svr_iters.c (kadm5_get_either): For POSIX_REGEXPS
+	(i.e. regcomp), call regfree() to cleanup memory.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for lib_frag and libobj_frag.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* server_dict.c: Remove declaration of errno
+
+	* adb_policy.c: Remove declaration of errno
+
+2002-12-16  Ezra Peisach  <epeisach@bu.edu>
+
+	* Makefile.in: Change to allow compilation with-system-db and
+	shared libraries.
+
+2002-11-07  Tom Yu  <tlyu@mit.edu>
+
+	* svr_principal.c (kadm5_setkey_principal_3): Apply patch from
+	Emily Ratliff to allow n_ks_tuple to be zero, which is the case if
+	being called from kadmind answering a client's setkey_principal
+	request.
+
+2002-10-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* server_init.c (kadm5_lock, kadm5_unlock): Return KADM5_OK
+	instead of falling off end of function.
+
+2002-10-08  Tom Yu  <tlyu@mit.edu>
+
+	* adb_openclose.c (osa_adb_init_db): Reset opencnt.
+	(osa_adb_open_and_lock): Don't open multiple times; merely
+	increment opencnt if already open.
+	(osa_adb_close_and_unlock): Decrement opencnt instead of
+	unconditionaly closing.
+
+	* server_init.c (kadm5_lock, kadm5_unlock): New functions to
+	support persistent exclusive locks across multiple API calls.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* svr_iters.c (struct iter_data): Replace DynObject "matches" with
+	pointer, allocation size, current count, and error flag.
+	(get_either_iter): Grow array if needed, noting failures.
+	(kadm5_get_either): Set up the array before calling the iterator
+	and use their values after.
+	* Makefile.in (SHLIB_EXPDEPS, SHLIB_EXPLIBS): Drop libdyn
+	references.
+
+2002-03-06  Ken Raeburn  <raeburn@mit.edu>
 
 	* Makefile.in (LIBMAJOR): Bump to avoid Heimdal conflict.
+
+2002-03-02  Sam Hartman  <hartmans@mit.edu>
+
+	* server_acl.c (acl_find_entry):  Patch from sxw@sxw.org.uk:
+	patch to correct handling of ACL targets.  Previous patch from
+	Matt Crawford  seems to only work for * targets where it ignores
+	the restrictions.  This patch seems to work for all the semantics
+	described in MATt's original message, at least as far as I tested.
 
 2001-10-22  Tom Yu  <tlyu@mit.edu>
 
@@ -17,22 +102,85 @@
 	to do this made kadmind vulnerable to a crash upon changing such a
 	principal's password.  Original patch written by Matt Crawford, with
 	a few changes.
-	[pullup from trunk]
 
-2001-09-07  Tom Yu  <tlyu@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* server_acl.h: Make prototypes unconditional.
+
+2001-07-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* svr_principal.c (check_pw_reuse): Change argument for
+	n_pw_hist_data to unsigned to be consistant with calling convention.
+
+2001-07-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* adb_xdr.c (xdr_krb5_key_data): Use xdr_krb5_ui_2 instead of
+	xdr_krb5_int16 for key_data_length field.
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* svr_iters.c: Declare kadm5_get_either static
+
+2001-06-20  Mitchell Berger  <mitchb@mit.edu>
+
+	* server_dict.c: Silly typo fixed.
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* server_misc.c (passwd_check): cast argument to
+	islower()/isupper(), isdigit(), ispunct() to int.
+
+	* server_acl.c (acl_parse_line): Cast argument to
+	isupper()/isspace() to int.
+
+2001-06-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* svr_principal.c (check_pw_reuse): Cleanup assignment in conditional.
+
+2001-06-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* svr_principal.c: Cleanup assignments in conditionals.
+
+Sun Feb 18 17:40:23 2001  Ezra Peisach  <epeisach@mit.edu>
+
+	* adb_openclose.c, adb_policy.c, server_acl.c, server_dict.c,
+        server_init.c, server_kdb.c, server_misc.c, svr_iters.c,
+        svr_principal.c: Cleanup assignments in conditionals, variables
+        sadowing one another, unused variables and declared some functions
+        as static.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* svr_chpass_util.c (kadm5_chpass_principal_util): Change msg_len
+	to unsigned int.
+
+Tue Oct 10 03:09:27 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* server_dict.c (init_dict): Change syslog() to krb5_klog_syslog()
+ 	so that errors go to the intended place as indicated by krb5.conf.
+
+2000-06-30  Tom Yu  <tlyu@mit.edu>
 
 	* adb_openclose.c (osa_adb_create_db): Default to btree.
 	(osa_adb_init_db): Set up btinfo as well.
 	(osa_adb_open_and_lock): Try btree, then hash.
-	[pullup from trunk]
 
-2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
+	* Makefile.in (SHLIB_EXPDEPS): Add libdb.
+	(SHLIB_EXPLIBS): Add -ldb.
+
+2000-06-23  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* adb_openclose.c (osa_adb_create_db): Open lock files using O_EXCL
 	and fdopen() the descriptor instead of using fopen().
 	* svr_chpass_util.c (kadm5_chpass_principal_util): Adjust for new
 	length parameter in both kadm5_chpass_principal_util() and in
 	_kadm5_chpass_principal_util().
+
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* adb_free.c, adb_xdr.c, server_dict.c: Check for existance
+	of<memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
 
 2000-03-16  Ken Raeburn  <raeburn@mit.edu>
 	    Matt Crawford  <crawdad@fnal.gov>
@@ -70,12 +218,12 @@
 
 	* svr_principal.c (kadm5_setkey_principal_3): New function.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-09-08  Ken Raeburn  <raeburn@mit.edu>
 

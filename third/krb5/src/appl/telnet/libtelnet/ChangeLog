@@ -1,16 +1,254 @@
+2003-05-09  Tom Yu  <tlyu@mit.edu>
+
+	* kerberos5.c (kerberos5_send): Rename getlocalsubkey ->
+	getsendsubkey.
+	(kerberos5_is): Rename getremotesubkey -> getrecvsubkey.
+
+2003-04-10  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Use library build framework.
+
+	* configure.in: Add support for library build framework.  Remove
+	old explicit checks for ranlib, etc.
+
+2003-04-09  Tom Yu  <tlyu@mit.edu>
+
+	* kerberos.c (kerberos4_status): Always copy in username if
+	present.  Patch from Nathan Neulinger to make "-a user" work.
+
+	* kerberos5.c (kerberos5_status): Always copy in username if
+	present.  Patch from Nathan Neulinger to make "-a user" work.
+
+2003-04-01  Nalin Dahyabhai  <nalin@redhat.com>
+
+	* kerberos5.c (kerberos5_is): Check principal name length before
+	examining components.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.orig: Deleted.
+
+2002-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* kerberos.c (kerberos4_send, kerberos4_is): Use
+	krb_get_err_text() instead of krb_err_txt array.
+
+	* strcasecmp.c: Include sys/types.h rather than sys/cdefs.h.
+
+2002-11-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* enc-proto.h, enc_des.c, encrypt.c: Unsigned/signed cleanups.
+
+	* forward.c: Include unistd.h if present on machine.
+
+	* misc-proto.h misc.c (auth_encrypt_user): Declare argument as
+	const.
+
+	* auth.c: Cast argument auth_encrypt_user. auth_gen_printsub() and
+	auth_printsub() take unsigned int as buffer length.
+
+	* auth.h, auth-proto.h, kerberos.c, kerberos5.c, spx.c:
+	auth_gen_printsub(), auth_printsub(), kerberos4_printsub(),
+	kerberos5_printsub(), spx_printsub() take unsigned int as length
+	argument.
+
+	* configure.in: Check for unistd.h
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-04-12  Sam Hartman  <hartmans@mit.edu>
+
+	* kerberos5.c forward.c: Build without k5-int.h
+
 2002-03-29  Tom Yu  <tlyu@mit.edu>
 
-	* kerberos5.c, kerberos.c (Data): Don't overflow
-	buffer. [telnet/1073] [pullup and reindent from trunk]
+	* kerberos.c, kerberos5.c (Data): Reindent to 8 columns. (yes,
+	this is original BSD style)
 
-2001-02-21  Tom Yu  <tlyu@mit.edu>
+2002-03-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* kerberos.c: Include errno.h.
+
+2002-03-26  Sam Hartman  <hartmans@mit.edu>
+
+	* kerberos.c kerberos5.c (Data): Fix indentation; fix termination condition
+
+2002-03-14  Sam Hartman  <hartmans@mit.edu>
+
+	* kerberos5.c kerberos.c  (Data): Don't overflow
+	buffer. [telnet/1073] 
+
+2002-03-13  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Do not explicitly add getent.o and setenv.o to
+	LIBOBJS. Autoconf 2.53 labels this as an error. Move to
+	Makefile.in.
+
+	* Makefile.in (OBJS): Add getent.o and setenv.o explicity. 
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* auth-proto.h, auth.h, enc-proto.h, enc_des.c, encrypt.c,
+	encrypt.h, kerberos.c, key-proto.h, misc-proto.h, misc.h,
+	setenv.c: Make prototypes unconditional.  Don't define P().
+
+2001-07-23  Ezra Peisach  <epeisach@mit.edu>
+
+	* enc_des.c (fb64_start): Remove variable set but never used.
+
+2001-07-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* kerberos.c (Data): Third argument now const.
+
+	* misc.c (printd): First argument now const.
+
+	* misc-proto.h: Modify printd prototype to take const first
+	argument. 
+
+	* auth.c: Cast argument to memcpy to unsigned. 
+
+2001-07-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Check for need to provide setenv prototype if
+	setenv is in the C library.
+
+	* forward.c: Provide setenv prototype if needed.
+
+	* auth.c (auth_name): Cast result of sizeof() to int to match
+	printf format specification.
+
+2001-07-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* encrypt.c (encrypt_reply): Cast arguments to printf to match
+	format in debugging statments.
+
+2001-07-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5forw.h: File with prototype for rd_and_store_for_creds().
+
+	* kerberos5.c: Include krb5forw.h for rd_and_store_for_creds()
+	prototype which is removed from this file.
+
+	* forward.c: Include krb5forw.h for prototype.
+
+	* setenv.c: Include misc-proto.h for setenv/unsetenv prototypes.
+
+	* parsetos.c: Include misc-proto.h for parsetos prototype.
+
+	* misc-proto.h: Add prototype for parsetos(), setenv(), unsetenv()
+	as needed.
+
+	* kerberos5.c: Declare kerberos5_forward() static and flush out
+	prototype.
+
+	* gettytab.h: Flush out prototypes for getent() and getstr().
+
+	* getent.c: Include gettytab.h for prototypes.
+
+	* genget.c: Include misc.h for prototypes.
+
+	* enc_des.c: Add prototype for fb64_printsub.
+
+	* enc-proto.h: Add prototypes for encrypt_debug(),
+	finddecryption(), EncryptAuthEnc(), EncryptAutoDec(),
+	EncryptDebug(), EncryptVerbose().
+
+	* encrypt.c: Declare encrypt_list_types() and encrypt_keyid() static.
+
+2001-06-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* enc_des.c: Change local variable index to idx to not shadown
+	global function.
+
+	* kerberos5.c (kerberos5_is): Change errbuf to kerrbuf to not
+	shadow previous local.
+
+	* kerberos.c (kerberos4_send): Change random_key to rand_key to
+	prevent redefine by des.h. Change auth to kauth to not shadow global.
+	(kerberos4_status): Change name to kname for same reason.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* forward.c: If NEED_SETENV defined, provide prototype for setenv.
+
+	* configure.in: If compiling setenv.c, define NEED_SETENV.
+
+2001-06-20  Ezra Peisach  <epeisach@mit.edu>
+
+	* kerberos5.c: Add prototype for rd_and_store_for_creds().
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* encrypt.c (encrypt_is): Cast arguments to printf to match format. 
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* genget.c (LOWER): Cast argument to isupper()/tolower() to int.
+
+2001-06-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth-proto.h: Add prototype for kerberos5_cleanup().
+
+	* enc-proto.h: Add prototypes for encrypt_printsub(),
+	encrypt_request_sart(), encrypt_request_end(),
+	encrypt_enc_keyid()m encrypt_dec_keyid(), encrypt_support(),
+	encrypt_start(), encrypt_end().
+
+2001-06-06  Ezra Peisach  <epeisach@mit.edu>
+
+	* auth-proto.h: Add prototypes for getauthmask(), auth_enable,
+	auth_disable(), auth_onoff(), auth_togdebug(), auth_status(),
+	auth_name(), auth_sendname(), auth_debug(), and auth_printsub().
+
+	* auth.c: Include unistd.h and cleanup some assignments in
+	conditionals.
+
+	* auth.h: Explicitly declare auth_debug mode as an int.
+
+	* enc-proto.h: Add prototypes for EncryptDisable(), EncryptType(),
+	EncryptStart(), EncryptStartInput(), EncryptStartOutput(),
+	EncryptStop(), EncryptStopInput(), EncryptStopOutput(),
+	EncryptStatus(), encrypt_gen_printsub(), printsub().
+
+	* enc_des.c: Declare encrypt_debug_mode as int. Cleanup unused
+	variables and assignments in conditionals. 
+
+	* encrypt.c: Include stdio.h for sprintf prototype. Cleanup
+	assignments in conditionals.
+
+	* getent.c: Conditionalize definition of some variables.
+
+	* kerberos5.c: Explicitly declare auth_debug_mode an int.
+
+	* misc-proto.h: Add prototype for auth_encrypt_user().
+
+	* misc.c: Include auth.h and encrypt.h for prototypes.
+
+	* misc.h: Add prototypes for isprfix(), genget(), Ambiguous().
+
+	* parsetos.c: Include stdlib.h for strtol() prototype.
+
+	* forward.c, kerberos.c, setenv.c: Assignment in conditional cleanup.
+
+2001-04-03  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Check for setenv, unsetenv, and getenv.  Compile
-	setenv.c if at least of these is undefined.
+	setenv.c if at least of these is undefined. [pullup from
+	krb5-1-2-2-branch]
 
 	* setenv.c: Add conditionals for compilation of setenv, unsetenv,
 	and getenv such that they only get compiled if they don't already
-	exist.
+	exist. [pullup from krb5-1-2-2-branch]
+
+2000-11-01  Ezra Peisach  <epeisach@mit.edu>
+
+        * configure.in: Use AC_C_CONST instead of AC_CONST.
 
 2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
 
@@ -31,12 +269,12 @@
 	"targ_printable".
 	(spx_status): Don't overflow buffer "acl_file".
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-31 17:28   Jeffrey Altman <jaltman@columbia.edu>
 

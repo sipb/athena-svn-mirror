@@ -30,40 +30,34 @@
 #define NEED_SOCKETS
 
 #include "k5-int.h"
+#include "com_err.h"
 #include "auth_con.h"
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
-static char *sendauth_version = "KRB5_SENDAUTH_V1.0";
+#ifndef GETPEERNAME_ARG2_TYPE
+#define GETPEERNAME_ARG2_TYPE struct sockaddr
+#endif
+#ifndef GETPEERNAME_ARG3_TYPE
+#define GETPEERNAME_ARG3_TYPE size_t
+#endif
+#ifndef GETSOCKNAME_ARG2_TYPE
+#define GETSOCKNAME_ARG2_TYPE struct sockaddr
+#endif
+#ifndef GETSOCKNAME_ARG3_TYPE
+#define GETSOCKNAME_ARG3_TYPE size_t
+#endif
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_sendauth(context, auth_context,
-	      /* IN */
-	      fd, appl_version, client, server, ap_req_options, in_data,
-	      in_creds,
-	      /* IN/OUT */
-	      ccache,
-	      /* OUT */
-	      error, rep_result, out_creds)
-    	krb5_context 		  context;
-    	krb5_auth_context       FAR * auth_context;
-	krb5_pointer		  fd;
-	char			FAR * appl_version;
-	krb5_principal		  client;
-	krb5_principal		  server;
-	krb5_flags		  ap_req_options;
-	krb5_data		FAR * in_data;
-	krb5_creds		FAR * in_creds;
-	krb5_ccache	  	  ccache;
-	krb5_error             FAR * FAR * error;
-	krb5_ap_rep_enc_part   FAR * FAR * rep_result;
-	krb5_creds	       FAR * FAR * out_creds;
+static const char sendauth_version[] = "KRB5_SENDAUTH_V1.0";
+
+krb5_error_code KRB5_CALLCONV
+krb5_sendauth(krb5_context context, krb5_auth_context *auth_context, krb5_pointer fd, char *appl_version, krb5_principal client, krb5_principal server, krb5_flags ap_req_options, krb5_data *in_data, krb5_creds *in_creds, krb5_ccache ccache, krb5_error **error, krb5_ap_rep_enc_part **rep_result, krb5_creds **out_creds)
 {
 	krb5_octet		result;
 	krb5_creds 		creds;
-	krb5_creds		FAR * credsp = NULL;
-	krb5_creds		FAR * credspout = NULL;
+	krb5_creds		 * credsp = NULL;
+	krb5_creds		 * credspout = NULL;
 	krb5_error_code		retval = 0;
 	krb5_data		inbuf, outbuf;
 	int			len;
@@ -79,7 +73,7 @@ krb5_sendauth(context, auth_context,
 	 * by the string itself.  
 	 */
 	outbuf.length = strlen(sendauth_version) + 1;
-	outbuf.data = sendauth_version;
+	outbuf.data = (char *) sendauth_version;
 	if ((retval = krb5_write_message(context, fd, &outbuf)))
 		return(retval);
 	outbuf.length = strlen(appl_version) + 1;
@@ -90,9 +84,6 @@ krb5_sendauth(context, auth_context,
 	 * Now, read back a byte: 0 means no error, 1 means bad sendauth
 	 * version, 2 means bad application version
 	 */
-#ifndef ECONNABORTED
-#define ECONNABORTED WSAECONNABORTED
-#endif
     if ((len = krb5_net_read(context, *((int *) fd), (char *)&result, 1)) != 1)
 	return((len < 0) ? errno : ECONNABORTED);
     if (result == 1)
@@ -157,19 +148,21 @@ krb5_sendauth(context, auth_context,
 	       not to guarantee randomness, but to make it less likely
 	       that multiple sessions could pick the same subkey.  */
 	    char rnd_data[1024];
-	    size_t len;
+	    GETPEERNAME_ARG3_TYPE len2;
 	    krb5_data d;
 	    d.length = sizeof (rnd_data);
 	    d.data = rnd_data;
-	    len = sizeof (rnd_data);
-	    if (getpeername (*(int*)fd, (struct sockaddr *) rnd_data, &len) == 0) {
-		d.length = len;
-		(void) krb5_c_random_seed (context, &d);
+	    len2 = sizeof (rnd_data);
+	    if (getpeername (*(int*)fd, (GETPEERNAME_ARG2_TYPE *) rnd_data, 
+			     &len2) == 0) {
+		d.length = len2;
+		(void) krb5_c_random_add_entropy (context, KRB5_C_RANDSOURCE_EXTERNAL_PROTOCOL, &d);
 	    }
-	    len = sizeof (rnd_data);
-	    if (getsockname (*(int*)fd, (struct sockaddr *) rnd_data, &len) == 0) {
-		d.length = len;
-		(void) krb5_c_random_seed (context, &d);
+	    len2 = sizeof (rnd_data);
+	    if (getsockname (*(int*)fd, (GETSOCKNAME_ARG2_TYPE *) rnd_data, 
+			     &len2) == 0) {
+		d.length = len2;
+		(void) krb5_c_random_add_entropy (context, KRB5_C_RANDSOURCE_EXTERNAL_PROTOCOL, &d);
 	    }
 	}
 

@@ -32,11 +32,8 @@
 /*
  * Copy a keyblock, including alloc'ed storage.
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_copy_keyblock_contents(context, from, to)
-    krb5_context context;
-    const krb5_keyblock FAR *from;
-    krb5_keyblock FAR *to;
+krb5_error_code KRB5_CALLCONV
+krb5_copy_keyblock_contents(krb5_context context, const krb5_keyblock *from, krb5_keyblock *to)
 {
     *to = *from;
     to->contents = (krb5_octet *)malloc(to->length);

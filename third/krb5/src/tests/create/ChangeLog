@@ -1,3 +1,38 @@
+2003-05-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_mkdums.c (main): When attempting to register writable
+	keytab, do not fail if error is KRB5_KT_TYPE_EXISTS.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-04-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_mkdums.c (main): Call krb5_c_valid_enctype instead of
+	valid_enctype.
+
+2001-11-19  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_mkdums.c (main): Invoke krb5_free_context when finished. 
+	(add_princ): Use krb5_free_principal to prevent memory leak.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_mkdums.c: Make prototypes unconditional.
+
+2000-07-28  Ezra Peisach  <epeisach@engrailed.mit.edu>
+
+	* kdb5_mkdums.c: Remove unused quit().
+
+2000-07-02  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_mkdums.c: Remove unused variable.
+
 2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
 
 	* kdb5_mkdums.c (main): Make sure buffer 'principal' is terminated.
@@ -8,12 +43,12 @@
 	* kdb5_mkdums.c (main): Make sure buffer "tmp" is
 	null-terminated.  Don't overflow buffer "tmp" or "tmp2".
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

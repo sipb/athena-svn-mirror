@@ -31,8 +31,8 @@
 #include "k5-int.h"
 #include <stdio.h>
 
-#if TARGET_OS_MAC
-#include <Kerberos/CredentialsCache.h>
+#if defined(USE_CCAPI)
+#include <CredentialsCache.h>
 #endif
 
 #if defined(_WIN32)
@@ -142,7 +142,7 @@ try_dir(
 }
 #endif
 
-#if defined(_MSDOS) || defined(_WIN32)
+#if defined(_WIN32)
 static krb5_error_code get_from_os(char *name_buf, int name_size)
 {
 	char *prefix = krb5_cc_dfl_ops->prefix;
@@ -186,7 +186,7 @@ static krb5_error_code get_from_os(char *name_buf, int name_size)
 }
 #endif
 
-#if TARGET_OS_MAC
+#if defined(USE_CCAPI)
 
 static krb5_error_code get_from_os(char *name_buf, int name_size)
 {
@@ -221,19 +221,17 @@ cleanup:
 }
 
 #else
-#if !(defined(_MSDOS) || defined(_WIN32))
+#if !(defined(_WIN32))
 static krb5_error_code get_from_os(char *name_buf, int name_size)
 {
-	sprintf(name_buf, "FILE:/tmp/krb5cc_%d", getuid());
+	sprintf(name_buf, "FILE:/tmp/krb5cc_%ld", (long) getuid());
 	return 0;
 }
 #endif
 #endif
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_cc_set_default_name(context, name)
-	krb5_context context;
-	const char *name;
+krb5_error_code KRB5_CALLCONV
+krb5_cc_set_default_name(krb5_context context, const char *name)
 {
 	char name_buf[1024];
 	char *new_name;
@@ -276,9 +274,8 @@ krb5_cc_set_default_name(context, name)
 }
 
 	
-KRB5_DLLIMP const char FAR * KRB5_CALLCONV
-krb5_cc_default_name(context)
-    krb5_context context;
+const char * KRB5_CALLCONV
+krb5_cc_default_name(krb5_context context)
 {
 	krb5_os_context os_ctx;
 

@@ -2,24 +2,16 @@
  * test_profile.c --- testing program for the profile routine
  */
 
+#include "prof_int.h"
+
 #include <stdio.h>
+#include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 
-#include "prof_int.h"
 #include "argv_parse.h"
-#ifndef _MSDOS
 #include "com_err.h"
-#else
-
-/* Stubs for the error handling routines */
-#include "prof_int.h"
-void initialize_prof_error_table() {}
-void com_err (char *fmt, long err, char *msg) {
-    printf (fmt, err, msg);
-}
-#endif
 
 const char *program_name = "test_profile";
 
@@ -70,7 +62,7 @@ static void do_batchmode(profile)
 			print_status = PRINT_VALUES;
 		} else if (!strcmp(cmd, "dump")) {
 			retval = profile_write_tree_file
-				(profile->first_file->root, stdout);
+				(profile->first_file->data->root, stdout);
 		} else if (!strcmp(cmd, "clear")) {
 			retval = profile_clear_relation(profile, names);
 		} else if (!strcmp(cmd, "update")) {
@@ -78,7 +70,7 @@ static void do_batchmode(profile)
 							 *names, *(names+1));
 		} else if (!strcmp(cmd, "verify")) {
 			retval = profile_verify_node
-				(profile->first_file->root);
+				(profile->first_file->data->root);
 		} else if (!strcmp(cmd, "rename_section")) {
 			retval = profile_rename_section(profile, names+1,
 							*names);
@@ -159,6 +151,7 @@ int main(argc, argv)
     }
     if (retval) {
 	    com_err(argv[0], retval, "while getting values");
+	    profile_release(profile);
 	    exit(1);
     }
     if (print_value) {

@@ -7,7 +7,6 @@
  * Public Domain.
  */
 
-#define	DEFINE_SOCKADDR
 #include "krb.h"
 
 #include <sys/types.h>
@@ -20,12 +19,12 @@
  * but might be ordinary pointers on real machines.  Printf modifiers
  * scattered through the code don't cut it,
  * since they might break on real machines.  Microloss
- * didn't provide a function to print a char FAR *, so we wrote one.
+ * didn't provide a function to print a char *, so we wrote one.
  * It gets #define'd to fputs on real machines. 
  */
 int
 far_fputs(string, stream)
-	char FAR *string;
+	char *string;
 	FILE *stream;
 {
 	return fprintf(stream, "%Fs", string);
@@ -45,7 +44,7 @@ krb_end_session(x)
 	return KSUCCESS;
 }
 
-void
+void KRB5_CALLCONV
 krb_set_tkt_string(val)
 char *val;
 {

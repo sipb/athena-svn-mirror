@@ -62,6 +62,9 @@
 #include <stdio.h>
 #include "com_err.h"
 
+static void do_encrypt(unsigned char *, unsigned char *);
+static void do_decrypt(unsigned char *, unsigned char *);
+
 char *progname;
 int nflag = 2;
 int vflag;
@@ -91,7 +94,6 @@ unsigned char default_ivec[8] = {
 };
 unsigned char *ivec;
 unsigned char zero_key[8] = {1,1,1,1,1,1,1,1}; /* just parity bits */
-int i,j;
 
 unsigned char cipher1[8] = {
     0x25,0xdd,0xac,0x3e,0x96,0x17,0x64,0x67
@@ -130,9 +132,9 @@ main(argc,argv)
     char *argv[];
 {
     /* Local Declarations */
-    int	 in_length, retval;
-    void do_encrypt();
-    void do_decrypt();
+    size_t  in_length;
+    int  retval;
+    int i, j;
 
 #ifdef WINDOWS
     /* Set screen window buffer to infinite size -- MS default is tiny.  */
@@ -273,12 +275,12 @@ main(argc,argv)
 
     printf("ACTUAL CBC\n\tclear \"%s\"\n",input);
     in_length =  strlen((char *)input);
-    if (retval = mit_des_cbc_encrypt((const mit_des_cblock *) input,
-				     (mit_des_cblock *) cipher_text,
-				     (size_t) in_length, 
-				     sched,
-				     ivec,
-				     MIT_DES_ENCRYPT)) {
+    if ((retval = mit_des_cbc_encrypt((const mit_des_cblock *) input,
+				      (mit_des_cblock *) cipher_text,
+				      (size_t) in_length, 
+				      sched,
+				      ivec,
+				      MIT_DES_ENCRYPT))) {
 	com_err("des verify", retval, "can't encrypt");
 	exit(-1);
     }
@@ -290,12 +292,12 @@ main(argc,argv)
 	}
 	printf("\n");
     }
-    if (retval = mit_des_cbc_encrypt((const mit_des_cblock *) cipher_text,
-				     (mit_des_cblock *) clear_text,
-				     (size_t) in_length, 
-				     sched,
-				     ivec,
-				     MIT_DES_DECRYPT)) {
+    if ((retval = mit_des_cbc_encrypt((const mit_des_cblock *) cipher_text,
+				      (mit_des_cblock *) clear_text,
+				      (size_t) in_length, 
+				      sched,
+				      ivec,
+				      MIT_DES_DECRYPT))) {
 	com_err("des verify", retval, "can't decrypt");
 	exit(-1);
     }
@@ -314,7 +316,7 @@ main(argc,argv)
     printf("\tchecksum\t58 d2 e7 7e 86 06 27 33, ");
     printf("or some part thereof\n");
     input = clear_text2;
-    mit_des_cbc_cksum(input,cipher_text,(long) strlen((char *)input),
+    mit_des_cbc_cksum(input,cipher_text, strlen((char *)input),
 		      sched,ivec);
     printf("ACTUAL CBC checksum\n");
     printf("\t\tencrypted cksum = (low to high bytes)\n\t\t");
@@ -331,6 +333,7 @@ main(argc,argv)
     exit(0);
 }
 
+#if 0
 void
 flip(array)
     char *array;
@@ -352,12 +355,14 @@ flip(array)
 	array++;
     }
 }
+#endif
 
-void
+static void
 do_encrypt(in,out)
-    char *in;
-    char *out;
+    unsigned char *in;
+    unsigned char *out;
 {
+    int i, j;
     for (i =1; i<=nflag; i++) {
 	mit_des_cbc_encrypt((const mit_des_cblock *)in,
 			    (mit_des_cblock *)out,
@@ -376,12 +381,13 @@ do_encrypt(in,out)
     }
 }
 
-void
+static void
 do_decrypt(in,out)
-    char *out;
-    char *in;
+    unsigned char *out;
+    unsigned char *in;
     /* try to invert it */
 {
+    int i, j;
     for (i =1; i<=nflag; i++) {
 	mit_des_cbc_encrypt((const mit_des_cblock *)out,
 			    (mit_des_cblock *)in,

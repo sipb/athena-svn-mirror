@@ -27,12 +27,34 @@
 #include "k5-int.h"
 #include "etypes.h"
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
+krb5_error_code KRB5_CALLCONV
+krb5_c_string_to_key_with_params(krb5_context context,
+				 krb5_enctype enctype,
+				 const krb5_data *string,
+				 const krb5_data *salt,
+				 const krb5_data *params,
+				 krb5_keyblock *key);
+
+
+krb5_error_code KRB5_CALLCONV
 krb5_c_string_to_key(context, enctype, string, salt, key)
      krb5_context context;
      krb5_enctype enctype;
-     krb5_const krb5_data *string;
-     krb5_const krb5_data *salt;
+     const krb5_data *string;
+     const krb5_data *salt;
+     krb5_keyblock *key;
+{
+    return krb5_c_string_to_key_with_params(context, enctype, string, salt,
+					    NULL, key);
+}
+
+krb5_error_code KRB5_CALLCONV
+krb5_c_string_to_key_with_params(context, enctype, string, salt, params, key)
+     krb5_context context;
+     krb5_enctype enctype;
+     const krb5_data *string;
+     const krb5_data *salt;
+     const krb5_data *params;
      krb5_keyblock *key;
 {
     int i;
@@ -49,7 +71,21 @@ krb5_c_string_to_key(context, enctype, string, salt, key)
 	return(KRB5_BAD_ENCTYPE);
 
     enc = krb5_enctypes_list[i].enc;
+/* xxx AFS string2key function is indicated by a special length  in
+ * the salt in much of the code.  However only the DES enctypes can
+ * deal with this.  Using s2kparams would be a much better solution.*/
+    if (salt && salt->length == SALT_TYPE_AFS_LENGTH) {
+	switch (enctype) {
+	case ENCTYPE_DES_CBC_CRC:
+	case ENCTYPE_DES_CBC_MD4:
+	case ENCTYPE_DES_CBC_MD5:
+	    break;
+	default:
+	    return (KRB5_CRYPTO_INTERNAL);
+	}
+    }
 
+	
     (*(enc->keysize))(&keybytes, &keylength);
 
     if ((key->contents = (krb5_octet *) malloc(keylength)) == NULL)
@@ -59,7 +95,8 @@ krb5_c_string_to_key(context, enctype, string, salt, key)
     key->enctype = enctype;
     key->length = keylength;
 
-    if ((ret = ((*(krb5_enctypes_list[i].str2key))(enc, string, salt, key)))) {
+    ret = (*krb5_enctypes_list[i].str2key)(enc, string, salt, params, key);
+    if (ret) {
 	memset(key->contents, 0, keylength);
 	free(key->contents);
     }

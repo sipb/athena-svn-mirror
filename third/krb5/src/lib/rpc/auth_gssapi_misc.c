@@ -26,7 +26,7 @@ int misc_debug_gssapi = DEBUG_GSSAPI;
 #endif
    
 static void auth_gssapi_display_status_1
-	PROTOTYPE((char *, OM_uint32, int, int));
+	(char *, OM_uint32, int, int);
    
 bool_t xdr_gss_buf(xdrs, buf)
    XDR *xdrs;
@@ -39,9 +39,14 @@ bool_t xdr_gss_buf(xdrs, buf)
       * to know the maximum length.  -1 effectively disables this
       * braindamage.
       */
-     return xdr_bytes(xdrs, (char **) &buf->value, (unsigned int *) &buf->length,
-		      (xdrs->x_op == XDR_DECODE && buf->value == NULL)
-		      ? (unsigned int) -1 : (unsigned int) buf->length);
+     bool_t result;
+     /* Fix type mismatches between APIs.  */
+     unsigned int length = buf->length;
+     result = xdr_bytes(xdrs, (char **) &buf->value, &length,
+			(xdrs->x_op == XDR_DECODE && buf->value == NULL)
+			? (unsigned int) -1 : (unsigned int) buf->length);
+     buf->length = length;
+     return result;
 }
 
 bool_t xdr_authgssapi_creds(xdrs, creds)
@@ -121,7 +126,7 @@ bool_t auth_gssapi_unseal_seq(context, in_buf, seq_num)
 	  return FALSE;
      } else if (out_buf.length != sizeof(rpc_u_int32)) {
 	  PRINTF(("gssapi_unseal_seq: unseal gave %d bytes\n",
-		  out_buf.length));
+		  (int) out_buf.length));
 	  gss_release_buffer(&minor_stat, &out_buf);
 	  return FALSE;
      }
@@ -150,7 +155,7 @@ static void auth_gssapi_display_status_1(m, code, type, rec)
 {
      OM_uint32 gssstat, minor_stat;
      gss_buffer_desc msg;
-     int msg_ctx;
+     OM_uint32 msg_ctx;
      
      msg_ctx = 0;
      while (1) {
@@ -192,6 +197,7 @@ bool_t auth_gssapi_wrap_data(major, minor, context, seq_num, out_xdrs,
      gss_buffer_desc in_buf, out_buf;
      XDR temp_xdrs;
      int conf_state;
+     unsigned int length;
      
      PRINTF(("gssapi_wrap_data: starting\n"));
      
@@ -227,11 +233,12 @@ bool_t auth_gssapi_wrap_data(major, minor, context, seq_num, out_xdrs,
      }
      
      PRINTF(("gssapi_wrap_data: %d bytes data, %d bytes sealed\n",
-	     in_buf.length, out_buf.length));
+	     (int) in_buf.length, (int) out_buf.length));
      
      /* write the token */
+     length = out_buf.length;
      if (! xdr_bytes(out_xdrs, (char **) &out_buf.value, 
-		     (unsigned int *) &out_buf.length,
+		     (unsigned int *) &length,
 		     out_buf.length)) {
 	  PRINTF(("gssapi_wrap_data: serializing encrypted data failed\n"));
 	  XDR_DESTROY(&temp_xdrs);
@@ -258,6 +265,7 @@ bool_t auth_gssapi_unwrap_data(major, minor, context, seq_num,
      XDR temp_xdrs;
      rpc_u_int32 verf_seq_num;
      int conf, qop;
+     unsigned int length;
      
      PRINTF(("gssapi_unwrap_data: starting\n"));
      
@@ -266,15 +274,15 @@ bool_t auth_gssapi_unwrap_data(major, minor, context, seq_num,
      
      in_buf.value = NULL;
      out_buf.value = NULL;
-     if (! xdr_bytes(in_xdrs, (char **) &in_buf.value, 
-		     (unsigned int *) &in_buf.length, (unsigned int) -1)) {
+     if (! xdr_bytes(in_xdrs, (char **) &in_buf.value,
+		     &length, (unsigned int) -1)) {
 	 PRINTF(("gssapi_unwrap_data: deserializing encrypted data failed\n"));
 	 temp_xdrs.x_op = XDR_FREE;
-	 (void)xdr_bytes(&temp_xdrs, (char **) &in_buf.value,
-			 (unsigned int *) &in_buf.length,
+	 (void)xdr_bytes(&temp_xdrs, (char **) &in_buf.value, &length,
 			 (unsigned int) -1);
 	 return FALSE;
      }
+     in_buf.length = length;
      
      *major = gss_unseal(minor, context, &in_buf, &out_buf, &conf,
 			 &qop);

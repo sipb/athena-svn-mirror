@@ -39,11 +39,13 @@ kadm_ser_init
 set up the server_parm structure
 */
 #ifdef KADM5
+int
 kadm_ser_init(inter, realm, params)
     int inter;			/* interactive or from file */
     char realm[];
     kadm5_config_params *params;
 #else
+int
 kadm_ser_init(inter, realm)
     int inter;			/* interactive or from file */
     char realm[];
@@ -154,6 +156,7 @@ int code;
 kadm_ser_in
 unwrap the data stored in dat, process, and return it.
 */
+int
 kadm_ser_in(dat,dat_len)
 u_char **dat;
 int *dat_len;
@@ -170,21 +173,29 @@ int *dat_len;
     u_char *retdat, *tmpdat;
     int retval, retlen;
 
-    if (strncmp(KADM_VERSTR, (char *)*dat, KADM_VERSIZE)) {
+    if ((*dat_len < KADM_VERSIZE + sizeof(krb5_ui_4))
+	|| strncmp(KADM_VERSTR, (char *)*dat, KADM_VERSIZE)) {
 	errpkt(dat, dat_len, KADM_BAD_VER);
 	return KADM_BAD_VER;
     }
     in_len = KADM_VERSIZE;
     /* get the length */
-    if ((retc = stv_long(*dat, &r_len, in_len, *dat_len)) < 0)
+    if ((retc = stv_long(*dat, &r_len, in_len, *dat_len)) < 0
+	|| (r_len > *dat_len - KADM_VERSIZE - sizeof(krb5_ui_4))
+	|| (*dat_len - r_len - KADM_VERSIZE -
+	    sizeof(krb5_ui_4) > sizeof(authent.dat))) {
+	errpkt(dat, dat_len, KADM_LENGTH_ERROR);
 	return KADM_LENGTH_ERROR;
+    }
+
     in_len += retc;
     authent.length = *dat_len - r_len - KADM_VERSIZE - sizeof(krb5_ui_4);
     memcpy((char *)authent.dat, (char *)(*dat) + in_len, authent.length);
     authent.mbz = 0;
     /* service key should be set before here */
-    if (retc = krb_rd_req(&authent, server_parm.sname, server_parm.sinst,
-			  server_parm.recv_addr.sin_addr.s_addr, &ad, (char *)0))
+    retc = krb_rd_req(&authent, server_parm.sname, server_parm.sinst,
+		      server_parm.recv_addr.sin_addr.s_addr, &ad, (char *)0);
+    if (retc)
     {
 	errpkt(dat, dat_len,retc + krb_err_base);
 	return retc + krb_err_base;
@@ -196,7 +207,7 @@ int *dat_len;
 #ifdef NOENCRYPTION
     ncksum = 0;
 #else
-    ncksum = quad_cksum(in_st, (krb5_ui_4 *)0, (long) r_len, 0, ad.session);
+    ncksum = quad_cksum(in_st, (krb5_ui_4 *)0, (long) r_len, 0, &ad.session);
 #endif
     if (ncksum!=ad.checksum) {		/* yow, are we correct yet */
 	clr_cli_secrets();
@@ -208,9 +219,11 @@ int *dat_len;
 #else
     des_key_sched(ad.session, sess_sched);
 #endif
-    if (retc = (int) krb_rd_priv(in_st, r_len, sess_sched, ad.session, 
-				 &server_parm.recv_addr,
-				 &server_parm.admin_addr, &msg_st)) {
+
+    retc = (int) krb_rd_priv(in_st, r_len, sess_sched, &ad.session, 
+			     &server_parm.recv_addr,
+			     &server_parm.admin_addr, &msg_st);
+    if (retc) {
 	clr_cli_secrets();
 	errpkt(dat, dat_len,retc + krb_err_base);
 	return retc + krb_err_base;
@@ -277,7 +290,7 @@ int *dat_len;
 				(u_long) (retlen + KADM_VERSIZE +
 					  sizeof(krb5_ui_4)),
 				sess_sched,
-				ad.session, &server_parm.admin_addr,
+				&ad.session, &server_parm.admin_addr,
 				&server_parm.recv_addr)) < 0) {
 	clr_cli_secrets();
 	errpkt(dat, dat_len, KADM_NO_ENCRYPT);

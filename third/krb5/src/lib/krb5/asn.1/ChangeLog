@@ -1,18 +1,265 @@
-2002-04-08  Tom Yu  <tlyu@mit.edu>
+2003-10-08  Tom Yu  <tlyu@mit.edu>
 
-	* asn1_get.c (asn1_get_length): Check for negative length.
+	* asn1_k_encode.c (asn1_encode_krb_saved_safe_body): New function;
+	kludge to insert a raw pre-encoded KRB-SAFE-BODY.
 
-2002-03-06 Alexandra Ellwood <lxs@mit.edu>
-    * asn1_encode.c: Removed unused Mac OS 9 code
+	* asn1_k_encode.h (asn1_encode_krb_saved_safe_body): Add
+	prototype.
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * asn1_get.c: removed unused variable to reduce warnings
+	* krb5_decode.c (decode_krb5_safe_with_body): New function; saves
+	a copy of the encoding of the KRB-SAFE-BODY to avoid problems
+	caused by re-encoding it during verification.
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
+	* krb5_encode.c (encode_krb5_safe_with_body): New function;
+	re-encode a KRB-SAFE using a saved KRB-SAFE-BODY encoding, to
+	avoid trouble with re-encoding a KRB-SAFE-BODY.
+
+2003-07-22  Sam Hartman  <hartmans@avalanche-breakdown.mit.edu>
+
+	* asn1_k_decode.c (asn1_decode_etype_info2_entry_1_3): Decoder for
+	the broken 1.3 ASN.1 behavior for  etype_info2; see bug 1681.
+
+	* asn1_k_decode.h (asn1_decode_etype_info2): Add v1_3_behavior
+	flag for parsing the broken 1.3 behavior  of using an octetString
+	instead of generalString
+
+	* asn1_k_decode.c (asn1_decode_etype_info2_entry):  Expect etype_info2 as generalstring not octetstring
+
+2003-06-20  Sam Hartman  <hartmans@mit.edu>
+
+	* asn1_k_decode.h (asn1_decode_etype_info2): Prototype.  Also
+	deleted prototype for asn1_decode_etype_info_entry as that is not
+	used outside asn1_k_decode.c
+
+	* krb5_decode.c (decode_krb5_etype_info2): Call etype_info2 decoder
+
+	* asn1_k_decode.c (asn1_decode_etype_info_entry): Split out
+	etype_info2 and etype_info decoder  so we ignore tag 2 in the
+	heimdal encoder
+	(asn1_decode_etype_info2): new function
+
+2003-05-23  Sam Hartman  <hartmans@mit.edu>
+
+	* asn1_k_decode.c (asn1_decode_etype_info_entry): Fix logic error
+	that incorrectly set up s2kparams.data 
+
+2003-05-20  Ezra Peisach  <epeisach@bu.edu>
+
+	* asn1_k_encode.c (asn1_encode_krb_safe_body): Use
+	asn1_encode_unsigned_integer for sequence number.
+
+	* asn1_k_decode.c (asn1_decode_krb_safe_body): Use
+	asn1_decode_seqnum to decode sequence number.
+	
+
+2003-05-18  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_decode.c (asn1_decode_maybe_unsigned): New function; decode
+	negative 32-bit numbers into positive unsigned numbers for the
+	sake of backwards compatibility with old code.
+
+	* asn1_decode.h: Add prototype for asn1_decode_maybe_unsigned.
+
+	* asn1_k_decode.c (asn1_decode_seqnum): New function; wrapper
+	around asn1_decode_maybe_unsigned.
+
+	* asn1_k_decode.h: Add prototype for asn1_decode_seqnum.
+
+	* krb5_decode.c (decode_krb5_authenticator) 
+	(decode_krb5_ap_rep_enc_part, decode_krb5_enc_priv_part): Sequence
+	numbers are now unsigned.  Use asn1_decode_seqnum to handle
+	backwards compat with negative sequence numbers.
+
+	* krb5_encode.c (encode_krb5_authenticator) 
+	(encode_krb5_ap_rep_enc_part, encode_krb5_enc_priv_part): Sequence
+	numbers are now unsigned.
+
+2003-05-06  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_decode.c (decode_krb5_etype_info2): New function; currently
+	the same code as decode_krb5_etype_info.  This means that we can
+	manage to accept s2kparams in etype_info which is wrong but
+	probably harmless.
+
+	* asn1_k_decode.c (asn1_decode_etype_info_entry): Add etype_info2
+	support 
+
+	* asn1_k_encode.c (asn1_encode_etype_info_entry):  Add support for
+	etype-info2 
+
+	* krb5_encode.c (encode_krb5_etype_info2): New function
+
+2003-04-15  Sam Hartman  <hartmans@mit.edu>
+
+	* krb5_encode.c (encode_krb5_setpw_req): new function
+
+2003-04-13  Ezra Peisach  <epeisach@mit.edu>
+
+	* asn1_k_decode.c (asn1_decode_kdc_req_body): Fix memory leak if
+	optional server field is lacking,
+
+2003-03-11  Ken Raeburn  <raeburn@mit.edu>
+
+	* asn1_get.c (asn1_get_tag): Deleted.
+	(asn1_get_tag_2): Renamed from asn1_get_tag_indef, now uses a
+	pointer to taginfo rather than a bunch of pointer args.
+	(asn1_get_id, asn1_get_length): Folded into asn1_get_tag_2.
+	(asn1_get_sequence): Call asn1_get_tag_2.
+	* asn1_get.h (taginfo): New structure.
+	(asn1_get_tag_indef, asn1_get_tag, asn1_get_id, asn1_get_length):
+	Declarations deleted.
+	(asn1_get_tag_2): Declare.
+	* asn1_decode.c (setup): Declare only a taginfo variable.
+	(asn1class, construction, tagnum, length): New macros.
+	(tag): Call asn1_get_tag_2.
+	* asn1_k_decode.c (next_tag, get_eoc, apptag, end_sequence_of,
+	end_sequence_of_no_tagvars, asn1_decode_krb5_flags): Call
+	asn1_get_tag_2; if no error, copy out values into scalar
+	variables.
+	(asn1_decode_ticket): Call asn1_get_tag_2.
+	* asn1buf.c (asn1buf_skiptail): Call asn1_get_tag_2.
+	* krb5_decode.c (check_apptag, next_tag, get_eoc): Call
+	asn1_get_tag_2; if no error, copy out values into scalar
+	variables.
+	(decode_krb5_enc_kdc_rep_part): Call asn1_get_tag_2.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2002-12-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* asn1_k_decode.c (asn1_decode_sam_challenge_2_body): Add
+	unused_var declaration to cleanup warnings. Signed/unsigned fix as
+	well.
+
+2002-11-07  Ezra Peisach  <epeisach@bu.edu>
+
+	* asn1_k_encode.c (asn1_encode_sam_challenge_2): Test for error
+	returned from asn1buf_insert_oxtetstring and cleanup strctures
+	properly.
+
+	* asn1_k_decode.c (asn1_decode_sam_challenge_2_body): Change
+	sequence_of/end_sequence_of to use
+	sequence_of_no_tagvars/end_sequence_of_no_tagravs to avoid
+	shadowing variables.
+
+2002-11-07  Ezra Peisach  <epeisach@bu.edu>
+
+	* asn1_k_encode.c (add_optstring): Add optional string only if
+	length > 0.
+
+2002-11-05  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_encode.h (asn1_encode_oid):
+	* asn1_encode.c (asn1_encode_oid): New function.
+
+	* asn1_decode.h (asn1_decode_oid):
+	* asn1_decode.c (asn1_decode_oid): New function.
+
+2002-10-30  Ken Hornstein  <kenh@cmf.nrl.navy.mil>
+
+	* KRB5-asn.py: Fix definition for sam-pk-for-sad element.
+
+2002-10-24  Ken Hornstein  <kenh@cmf.nrl.navy.mil>
+
+	* KRB5-asn.py, asn1_k_decode.c, asn1_k_decode.h, asn1_k_encode.c,
+	asn1_k_encode.h, krb5_decode.c, krb5_encode.c: New functions,
+	prototypes, and ASN.1 definitions for the new hardware
+	preauthentication protocol.
+
+2002-07-02  Sam Hartman  <hartmans@mit.edu>
+
+	* asn1_encode.h: Document asn1_encode_enumerated
+
+	* asn1_encode.c (asn1_encode_enumerated): New function; split out
+	asn1_encode_integer's guts into asn1_encode_integer_interal and
+	add this function to add different universal tag for enumerated 
+
+	* krbasn1.h (ASN1_ENUMERATED): enumerated is universal 10
+
+2002-10-07  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_get.c (asn1_get_tag_indef): Stomp on asn1class,
+	construction, retlen, and indef, even if we've hit the end of the
+	buffer, to avoid passing uninitialized values around.
+
+	* asn1_k_decode.c: Reformat somewhat and add comments to demystify
+	things a little.
+	(opt_field): Fix to explicitly check for end of subbuf before
+	verifying the pre-fetched tag, which may have been stomped on by
+	asn1_get_tag_indef() encountering end-of-buffer.
+
+	* krb5_decode.c (opt_field, opt_lenfield): Fix to explicitly check
+	for end of subbuf before verifying the pre-fetched tag, which may
+	have been stomped on by asn1_get_tag_indef() encountering
+	end-of-buffer.
+
+2002-09-02  Ken Raeburn  <raeburn@mit.edu>
+
+	* asn1_decode.c, asn1_encode.c, asn1_get.c, asn1_get.h,
+	asn1_k_decode.c, asn1_k_encode.c, asn1_make.c, asn1_make.h,
+	asn1buf,c. asn1buf.h, krb5_decode.c, krb5_encode.c: Use prototype
+	style definitions for functions.  Avoid variable name "class".
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-24  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_encode.c (asn1_encode_generaltime): Remove call to
+	unix_time_to_msl_time(), as it's Mac OS 9 specific and was missed
+	in the previous change.
+
+2002-06-24 Alexandra Ellwood <lxs@mit.edu>
+
+	* asn1_encode.c: Removed unused Mac OS 9 code
+	[pullup from 1-2-2-branch]
+
+2000-06-24  Miro Jurisic  <meeroh@mit.edu>
+
+	* asn1_encode.c (asn1_encode_generaltime): Fixed the Mac code to
+	use the correct epoch.
+
 	* asn1_encode.c: Updated Utilities.h #include
 
-2001-01-31  Tom Yu  <tlyu@mit.edu>
+	[pullups from 1-2-2-branch]
+
+2002-06-24  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_get.c (asn1_get_length): Check for negative length.
+	[pullup from 1-2-2-branch]
+
+2002-04-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* asn1buf.c (asn1buf_remove_octetstring,
+	asn1buf_remove_charstring): Fix bounds test for correctness in
+	overflow cases.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* asn1_decode.c, asn1_decode.h, asn1_encode.h, asn1_get.h,
+	asn1_k_decode.h, asn1_k_encode.h, asn1_make.h, asn1_misc.h,
+	asn1buf.h: Make prototypes unconditional.
+
+2001-07-24  Ezra Peisach  <epeisach@mit.edu>
+
+	* asn1_k_encode.c: (asn1_encode_predicted_sam_response): Use
+	asn1_encode_charstring() instead of asn1_decode_octetstring() for
+	krb5_data. (signed vs. unsigned)
+
+2001-06-12  Ezra Peisach  <epeisach@mit.edu>
+
+	* asn1_k_decode.c (asn1_decode_predicted_sam_response): Use
+	asn1_decode_charstring() instead of asn1_decode_octetstring() to
+	decode krb5_data.
+
+2000-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* asn1buf.c (asn1buf_sync): Add new arguments to include the full
 	complement of data about a prefetched tag, as well as to indicate
@@ -24,15 +271,14 @@
 	(asn1buf_remains): Add new argument to indicate whether the
 	surrounding encoding is indefinite.  Don't advance buf->next if an
 	EOC encoding is detected; the caller will do that.
-	[pullup from trunk]
 
-	* asn1buf.h: Update prototypes. [pullup from trunk]
+	* asn1buf.h: Update prototypes.
 
 	* asn1_get.c (asn1_get_tag_indef): Don't treat EOC encoding as
 	special anymore, since previous behavior was overloading the
 	tag number in a bad way.  Also, report a MISMATCH_INDEF error if
 	the tag encoding is for the forbidden primitive constructed
-	encoding. [pullup from trunk]
+	encoding.
 
 	* asn1_k_decode.c (next_tag): Call get_tag_indef() in order to get
 	information about whether the length is indefinite.  Don't check
@@ -66,8 +312,7 @@
 	convention.
 	(asn1_decode_sequence_of_enctype): Update for new
 	asn1buf_remains() calling convention.
-	[pullup from trunk]
-	
+
 	* krb5_decode.c (next_tag): Call get_tag_indef() in order to get
 	information about whether the length is indefinite.  Don't check
 	the tag class and construction explicitly.
@@ -82,12 +327,69 @@
 	field is indefinite.
 	(end_structure): Update to new calling convention of
 	asn1buf_sync().
-	[pullup from trunk]
 
-2000-09-28  Miro Jurisic  <meeroh@mit.edu>
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
 
-	* asn1_encode.c (asn1_encode_generaltime): Fixed the Mac code to
-	use the correct epoch.
+	* asn1buf.h: Lengths are now unsigned int for
+	asn1buf_ensure_space(), asn1buf_expand(), asn1buf_imbed(),
+	asn1buf_sync(), asn1buf_insert_octetstring(),
+	asn1buf_insert_charstring(), asn1_remove_octetstring(),
+	asn1buf_remove_charstring(),
+
+	* krb5_decode.c, krb5_encode.c: Length fields are unsigned ints. 
+	
+	* asn1_make.c, asn1_make.h: Prototypes changed to use an unsigned
+	int * in_len and retlen for: asn1_make_etag(), asn1_make_tag(),
+	asn1_make_sequence(), asn1_make_set(), asn1_make_string(),
+	asn1_make_length(), asn1_make_id().
+
+	* asn1_k_encode.h, asn1_k_encode.c: Change length fields to
+	unsigned ints for all functions.
+	(asn1_encode_etype_info_entry): Test for KRB5_ETYPE_NO_SALT
+	instead of -1.
+	
+	* asn1_k_decode.c (asn1_decode_etype_info_entry): Use a length of
+	KRB5_ETYPE_NO_SALT to indicate the optional salt not being
+	present. (instead of -1).
+	(setup): Length is now unsigned int.
+
+	* asn1_get.c, asn1_get.h: Change retlent to unsigned int * for
+	asn1_get_tag(), asn1_get_tag_indef(), asn1_get_sequence,
+	asn1_get_length().
+
+	* asn1_encode.c, asn1_encode.h: Change retlen to unsigned int *
+	for asn1_encode_integer(), asn1_encode_unsigned_integer(),
+	asn1_encode_octetstring(), asn1_encode_charstring(),
+	asn1_encode_printable_string(), asn1_encode_ia5string(),
+	asn1_encode_generaltime(), asn1_encode_generalstring()
+
+	* asn1_decode.c, asn1_decode.h: Change retlen to unsigned int *
+	for asn1_decode_octetstring(), asn1_decode_generalstring(),
+	asn1_decode_charstring(),
+
+2000-09-26  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_get.c (asn1_get_tag_indef): Fix to not deref random garbage
+	while checking for EOC encoding.  At least the indefinite decoding
+	breaks consistently now.
+
+2000-08-07  Ezra Peisach  <epeisach@mit.edu>
+
+	* asn1_k_decode.c (asn1_decode_last_req_entry): Decode the lr_type
+	as an int32. Handle backwards compatibility if KRB5_GENEROUS_LR_TYPE
+	is defined. 
+
+	* krbasn1.h: Define KRB5_GENEROUS_LR_TYPE for compatibility with
+	one byte negative lr_types which are sent as a positive integer.
+
+2000-06-29  Tom Yu  <tlyu@mit.edu>
+
+	* asn1buf.h (asn1buf_insert_octet): Define using __inline__ rather
+	than inline in order to shut up gcc -pedantic.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* asn1_get.c (asn1_get_tag):  Remove unused variable.
 
 2000-02-06  Ken Raeburn  <raeburn@mit.edu>
 
@@ -132,12 +434,12 @@
 	* asn1buf.c (asn1buf_imbed): Add "indef" arg so that we don't
 	treat a definite zero-length encoding as an indefinite encoding.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-10-06  Ken Raeburn  <raeburn@mit.edu>
 

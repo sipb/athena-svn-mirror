@@ -1,3 +1,46 @@
+2003-04-01  Nalin Dahyabhai  <nalin@redhat.com>
+
+	* heuristic.c (get_closest_principal): Don't try to examine
+	principal name components after the last.
+	* krb_auth_su.c (get_best_principal): Check principal name length
+	before examining components.
+
+2002-12-23  Ezra Peisach  <epeisach@bu.edu>
+
+	* authorization.c, heuristic.c, ksu.h: Use uid_t instead of int in
+	arguments to fowner() and get_best_princ_for_target(). Signed
+	vs. unsigned int cleanup.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-14  Jen Selby  <jenselby@mit.edu>
+
+	* main.c:  updated the usage function
+
+2002-06-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (ksu): Don't use krb5util library.
+
+2002-06-21  Ezra Peisach  <epeisach@bu.edu>
+
+	* ccache.c (printtime): Do not assume that krb5_timestamp and
+	time_t are the same size as an argument to localtime.
+
+	* heuristic.c (get_authorized_princ_names): If .k5login file
+	exists but is not owned by the user, do not attempt to fclose an
+	uninitialized FILE *.
+
+2001-10-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* main.c (main): Do not pass LOG_AUTH facility into openlog() as a
+	logopt.
+
 2001-10-18  Ken Raeburn  <raeburn@mit.edu>
 
 	Don't crash if .k[5]login file ownership is wrong.  Patch from
@@ -5,11 +48,88 @@
 	* authorization.c (fowner): Don't close the file even on error.
 	(krb5_authorization): Close the file if fowner returns FALSE.
 
-2001-02-21  Tom Yu  <tlyu@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* authorization.c, heuristic.c, krb_auth_su.c, ksu.h, main.c: Make
+	prototypes unconditional.
+
+2001-10-07  Mitchell Berger  <mitchb@mit.edu>
+
+	* krb_auth_su.c: Fix a call to plain_dump_principal() that had the
+	wrong number of arguments but was only compiled if GET_TGT_VIA_PASSWD
+	wasn't defined.
+
+2001-09-16  Mitchell Berger  <mitchb@mit.edu>
+
+	* ksu.M: Correct a few typos.
+
+2001-07-23  Ezra Peisach  <epeisach@mit.edu>
+
+	* setenv.c: Include stdlib.h, provide prototypes for setenv and
+	unsetenv before declaration.
+
+2001-06-26  Ezra Peisach  <epeisach@mit.edu>
+
+	* authorization.c (find_first_cmd_that_exists): Change xmalloc()
+	to xcalloc() where was intented in code (two arguments to xmalloc).
+
+	* ksu.h: Provide full prototypes for xmalloc(), xrealloc(),
+	xcalloc(), and xstrdup().
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* main.c (get_params): Change optind to optindex to prevent
+	shadowing. 
+
+2001-06-18  Ezra Peisach  <epeisach@mit.edu>
+
+	* main.c (main): Cast arguments to print_status to be consitant
+	with format string.
+
+2001-06-11  Ezra Peisach  <epeisach@mit.edu>
+
+	* setenv.c: Add prototype for _findenv to avoid inconsistancy of
+	static vs. extern.
+
+	* heuristic.c (find_either_ticket): Change krb5_tgtname() to
+	ksu_tgtname().
+
+	* ccache.c: Include <sys/types.h> and <sys/stat.h> for start()
+	prototype.
+
+	* krb_auth_su.c: Reindent for readability. Remove defunct
+	code. Change use of krb5_tgtname to ksu_tgtname().
+
+	* ksu.h: Include k5-util.h for krb5_seteuid() prototype. Add
+	prototype for ksu_tgtname. Add prototype for unsetenv() if not
+	defined.
+
+	* main.c: Include grp.h for initgroups() prototype. Cleanup
+	assignment in conditional warning. Reindent for
+	readability. Arguments to print_status made consistant with regard
+	to long vs. int. Change krb5_tgtname to ksu_tgtname. (do not use
+	an internal krb5 function that is not advertised).
+
+2001-06-05  Ezra Peisach  <epeisach@mit.edu>
+
+	* authorization.c, heuristic.c, krb_auth_su.c, main.c, setenv.c:
+	Cleanup assignments in conditionals.
+
+2001-04-03  Tom Yu  <tlyu@mit.edu>
 
 	* setenv.c: Add conditionals for compilation of setenv, unsetenv,
 	and getenv such that they only get compiled if they don't already
-	exist.
+	exist. [pullup from krb5-1-2-2-branch]
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb_auth_su.c (krb5_get_tkt_via_passwd): Argument to
+	krb5_read_password now takes an unsigned int.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* ccache.c, heuristic.c, main.c: Return of krb5_cc_get_name() is
+	const char *.
 
 2000-05-22  Tom Yu  <tlyu@mit.edu>
 
@@ -88,12 +208,12 @@
 	(get_dir_of_file): Argument now points to const.
 	* ksu.h (get_dir_of_file): Update declaration.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-23  Ken Raeburn  <raeburn@mit.edu>
 

@@ -1,35 +1,67 @@
-2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+2003-03-06  Alexandra Ellwood <lxs@mit.edu>
+
+    * stdcc.h, stdcc_util.h: Removed Mac header goober.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* winccld.c (krb5_fcc_ops): Updated decl.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-06-20  Danilo Almeida  <dalmeida@mit.edu>
 
 	* winccld.c: Include k5-int.h to get hidden ops struct.
+	[pullup from 1-2-2-branch]
 
-2002-04-03  Danilo Almeida  <dalmeida@mit.edu>
+2002-06-20  Alexandra Ellwood <lxs@mit.edu>
 
-	* stdcc.h: Remove KRB5_DLLIMP, KRB5_CALLCONV from
-	krb5_stdcc_shutdown() prototype (to fix Windows build).
+	* stdcc.h: Added prototype for krb5_stdcc_shutdown.
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * stdcc.h: Added prototype for krb5_stdcc_shutdown.
-    
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * stdcc.h, stdcc_util.h, stdcc_util.c: Updated Mac OS X headers to new 
-    framework layout
-    * stdcc.c: Removed unused variables and fixed macros to reduce warnings
-    
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
+	* stdcc.h, stdcc_util.h, stdcc_util.c: Updated Mac OS X headers to new 
+	framework layout
+
+	* stdcc.c: Removed unused variables and fixed macros to reduce warnings
+
+	[pullups from 1-2-2-branch]
+
+2002-06-20  Miro Jurisic  <meeroh@mit.edu>
+
 	* stdcc.c: Replaced cc_* macros with functions
 	* stdcc.h, stdcc_util.h: Updated Mac OS #defines and #includes for new 
 	header layout and Mac OS X frameworks
+	[pullup from 1-2-2-branch]
 
-2000-10-02	Alexandra Ellwood <lxs@mit.edu>
+2002-04-01  Danilo Almeida  <dalmeida@mit.edu>
 
-        * stdcc_util.c: now Mac OS X uses get_time_offsets to store offset time
-        like Mac OS 9.
+	* stdcc_util.c: Include errno.h.
 
-2000-09-12	Alexandra Ellwood <lxs@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
 
-        * stdcc.h, stdcc_util.h: created #define for USE_CCAPI now that 
-        both Mac OS 9 and Mac OS 10 use ccapi.
+	* stdcc.h: Make prototypes unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* stdcc.c, stdcc.h, stdcc_util.c, stdcc_util.h, winccld.c: Delete
+	_MSDOS support.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* stdcc.h, winccld.c: Don't use KRB5_DLLIMP.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* stdcc.c, stdcc.h (krb5_stdcc_get_name): Declare as returning
+	const char *.
+
+2000-07-20  Danilo Almeida  <dalmeida@mit.edu>
+
+	* stdcc.h: Include k5-int.h to get krb5_ccache definition.
 
 2000-06-08  Alexandra Ellwood  <lxs@mit.edu>
 
@@ -45,23 +77,25 @@
 
 	* stdcc_util.h: Replace C++ comments with C comments.
 
-	* winccld.h: Define CC_API_VER2 for all Windows code using ccapi.
-	Update dynamic loading declarations to use CC_API_VER2.
-
 	* winccld.h: Do not define or try to load cc_lock_request, which is
 	not actually used anywhere in the code.
-
-	* stdcc.c: Define CC_API_VER2 if not defined rather than just if
-	not Windows.
-
-	* winccld.c (LoadFuncs): Get error on DLL load failure even though
-	we do not use it in case we are doing source-level debugging.
 
 2000-05-04  Miro Jurisic  <meeroh@mit.edu>
 
 	* stdcc_util.c (dupCCtoK5, dupK5toCC): 
 		Conditionalized local/KDC time conversions for Mac-only
 		until we figure out what to do about that
+
+2000-04-18  Danilo Almeida  <dalmeida@mit.edu>
+
+	* winccld.h: Define CC_API_VER2 for all Windows code using ccapi.
+	Update dynamic loading declarations to use CC_API_VER2.
+
+	* stdcc.c: Define CC_API_VER2 if not defined rather than just if
+	not Windows.
+
+	* winccld.c (LoadFuncs): Get error on DLL load failure even though
+	we do not use it in case we are doing source-level debugging.
 
 2000-04-07  Jeffrey Altman <jaltman@columbia.edu>
 
@@ -115,12 +149,12 @@
 	* stdcc.h, stdcc_util.h: use CCache2.h under MacOS for CCAPI v2
 	compatibility
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-23  Ken Raeburn  <raeburn@mit.edu>
 

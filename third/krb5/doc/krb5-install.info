@@ -1,88 +1,102 @@
-This is Info file krb5-install.info, produced by Makeinfo version 1.68
-from the input file install.texinfo.
+This is krb5-install.info, produced by makeinfo version 4.0 from
+install.texinfo.
 
 
 Indirect:
-krb5-install.info-1: 109
-krb5-install.info-2: 49275
+krb5-install.info-1: 83
+krb5-install.info-2: 43254
+krb5-install.info-3: 92872
 
 Tag Table:
 (Indirect)
-Node: Top109
-Node: Copyright478
-Node: Introduction5521
-Node: What is Kerberos and How Does it Work?5807
-Node: Why Should I use Kerberos?6864
-Node: Please Read the Documentation8489
-Node: Overview of This Guide9161
-Node: Realm Configuration Decisions9918
-Node: Kerberos Realms10908
-Node: Mapping Hostnames onto Kerberos Realms11498
-Node: Ports for the KDC and Admin Services13917
-Node: Slave KDCs14775
-Node: Hostnames for the Master and Slave KDCs16052
-Node: Database Propagation20264
-Node: Building Kerberos V521247
-Node: Build Requirements22440
-Node: Unpacking the Sources23131
-Node: Doing the Build24061
-Node: Building Within a Single Tree24829
-Node: Building with Separate Build Directories25235
-Node: Building using lndir26002
-Node: Testing the Build26950
-Node: The DejaGnu Tests27454
-Node: The KADM5 Tests29083
-Node: Options to Configure30546
-Node: osconf.h35788
-Node: Shared Library Support36990
-Node: OS Incompatibilities38252
-Node: AIX38939
-Node: Alpha OSF/1 V1.339257
-Node: Alpha OSF/1 (Digital Unix) V2.0++39667
-Node: Alpha Tru64 4.040345
-Node: BSDI40716
-Node: HPUX41121
-Node: Solaris versions 2.0 through 2.341555
-Node: Solaris 2.X42722
-Node: SGI Irix 5.X43179
-Node: Ultrix 4.2/343909
-Node: Using Autoconf44189
-Node: Installing Kerberos V546200
-Node: Installing KDCs46662
-Node: Install the Master KDC47895
-Node: Edit the Configuration Files48479
-Node: Create the Database49275
-Node: Add Administrators to the Acl File52297
-Node: Add Administrators to the Kerberos Database55175
-Node: Create a kadmind Keytab56263
-Node: Start the Kerberos Daemons57751
-Node: Install the Slave KDCs58875
-Node: Create Host Keys for the Slave KDCs59495
-Node: Extract Host Keytabs for the KDCs61057
-Node: Set Up the Slave KDCs for Database Propagation61966
-Node: Back on the Master KDC63764
-Node: Propagate the Database to Each Slave KDC64139
-Node: Finish Installing the Slave KDCs65634
-Node: Create Stash Files on the Slave KDCs66093
-Node: Start the krb5kdc Daemon on Each KDC66967
-Node: Add Kerberos Principals to the Database67489
-Node: Limit Access to the KDCs68183
-Node: Switching Master and Slave KDCs69945
-Node: Installing and Configuring UNIX Client Machines71645
-Node: Client Programs72069
-Node: Client Machine Configuration Files73234
-Node: Mac OS X Configuration75165
-Node: UNIX Application Servers78437
-Node: Server Programs79462
-Node: Server Configuration Files79999
-Node: The Keytab File81570
-Node: Some Advice about Secure Hosts83943
-Node: Upgrading Existing Kerberos V5 Installations85380
-Node: Upgrading to Triple-DES Encryption Keys87552
-Node: Bug Reports for Kerberos V589585
-Node: Files94563
-Node: krb5.conf94700
-Node: kdc.conf95714
-Node: Encryption Types and Salt Types96630
+Node: Top83
+Node: Copyright442
+Node: Introduction7948
+Node: What is Kerberos and How Does it Work?8234
+Node: Why Should I use Kerberos?9291
+Node: Please Read the Documentation9932
+Node: Overview of This Guide11588
+Node: Realm Configuration Decisions12368
+Node: Kerberos Realms13358
+Node: Mapping Hostnames onto Kerberos Realms13956
+Node: Ports for the KDC and Admin Services16079
+Ref: Ports for the KDC and Admin Services-Footnote-116836
+Node: Slave KDCs16937
+Node: Hostnames for the Master and Slave KDCs18214
+Node: Database Propagation22909
+Node: Building Kerberos V523892
+Node: Organization of the Source Directory25162
+Node: The appl Directory26598
+Node: The clients Directory27315
+Node: The gen-manpages Directory28467
+Node: The include Directory28925
+Node: The kadmin Directory29214
+Node: The kdc Directory30344
+Node: The krb524 Directory30660
+Node: The lib Directory31063
+Node: The prototype Directory32017
+Node: The slave Directory32627
+Node: The util Directory33398
+Node: Build Requirements34118
+Node: Unpacking the Sources34861
+Node: Doing the Build35899
+Node: Building Within a Single Tree36673
+Node: Building with Separate Build Directories37079
+Node: Building using lndir37846
+Node: Installing the Binaries38794
+Node: Testing the Build39650
+Node: The DejaGnu Tests40162
+Ref: The DejaGnu Tests-Footnote-141580
+Node: The KADM5 Tests41791
+Node: Options to Configure43254
+Node: osconf.h51142
+Node: Shared Library Support52645
+Node: OS Incompatibilities53972
+Node: AIX54653
+Node: Alpha OSF/1 V1.354971
+Node: Alpha OSF/1 (Digital Unix) V2.0++55381
+Node: BSDI56038
+Node: HPUX56461
+Node: Solaris versions 2.0 through 2.356967
+Node: Solaris 2.X58134
+Node: Solaris 958820
+Node: SGI Irix 5.X59473
+Node: Ultrix 4.2/360201
+Node: Using Autoconf60481
+Node: Installing Kerberos V562480
+Node: Installing KDCs62942
+Node: Install the Master KDC64175
+Node: Edit the Configuration Files64797
+Node: krb5.conf65672
+Node: kdc.conf69167
+Node: Create the Database70149
+Node: Add Administrators to the Acl File73151
+Node: Add Administrators to the Kerberos Database77679
+Node: Create a kadmind Keytab (optional)78773
+Node: Start the Kerberos Daemons80689
+Node: Install the Slave KDCs81820
+Node: Create Host Keys for the Slave KDCs82440
+Node: Extract Host Keytabs for the KDCs83984
+Node: Set Up the Slave KDCs for Database Propagation84893
+Node: Back on the Master KDC86691
+Node: Propagate the Database to Each Slave KDC87066
+Node: Finish Installing the Slave KDCs88561
+Node: Create Stash Files on the Slave KDCs89020
+Node: Start the krb5kdc Daemon on Each KDC89894
+Node: Add Kerberos Principals to the Database90416
+Node: Limit Access to the KDCs91110
+Node: Switching Master and Slave KDCs92872
+Node: Installing and Configuring UNIX Client Machines94577
+Node: Client Programs95001
+Node: Client Machine Configuration Files96166
+Node: Mac OS X Configuration98098
+Node: UNIX Application Servers101370
+Node: Server Programs102392
+Node: Server Configuration Files102929
+Node: The Keytab File104500
+Node: Some Advice about Secure Hosts106874
+Node: Upgrading Existing Kerberos V5 Installations108311
+Node: Upgrading to Triple-DES and RC4 Encryption Keys110560
+Node: Bug Reports for Kerberos V5112791
 
 End Tag Table

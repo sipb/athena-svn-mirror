@@ -1,70 +1,420 @@
-2002-04-05  Danilo Almeida  <dalmeida@mit.edu>
+2004-02-04  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c:
+     Remove reference to <ntstatus.h> as it is not present in the August 2001
+     Platform SDK used by Pismere.  Instead copy the error value.
+
+2004-02-02  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_msla.c: 
+     GetMSCacheTicketFromCacheInfo() uses the tktinfo->TicketFlags as the
+     value to assign to TicketRequest->TicketFlags.  This field is blindly
+     inserted into the kdc-options[0] field of the TGS_REQ.  If there are
+     bits such as TRANSIT_POLICY_CHECKED in the TicketFlags, this will result
+     in an unknown TGS_OPTION being processed by the KDC.
+
+     This has been fixed by mapping the Ticket Flags to KDC options.
+     We only map Forwardable, Forwarded, Proxiable, and Renewable.  The others
+     should not be used.
+
+2004-02-02  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c: the MSLSA code was crashing on Pismere machines when 
+     logging on with cross realm credentials.  On these machines there are
+     8 tickets within the LSA cache from two different realms.  One of the
+     krbtgt/CLIENT-REALM@CLIENT-REALM tickets (not the Initial ticket but
+     a Forwarded ticket) is inaccessible to the ms2mit.exe and leash32.exe
+     processes.  The attempt to access the ticket returns a SubStatus code
+     of STATUS_LOGON_FAILURE (0xC000006DL) which is supposed to mean that
+     the logon attempt was invalid due to bad authentication information.
+     kerbtray has no problem listing this ticket.  The other seven tickets
+     in the cache including the Initial Ticket are accessible.  Modified 
+     krb5_lcc_next_cred() to skip to the next ticket if an attempt to read
+     a single ticket fails.
+
+2004-01-31  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c: Optimize the get next logic by storing a handle to
+     the MS TGT in the lcc_cursor data structure
+
+2004-01-31  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c: Do not return tickets to the caller if they contain
+     NULL session keys.  This is to prevent useless TGTs from being
+     placed into the MIT credential cache.
+
+2004-01-30  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c: As per extensive conversations with Doug Engert we have
+     concluded that MS is not specifying a complete set of domain information
+     when it comes to service tickets other than the initial TGT.  What happens
+     is the client principal domain cannot be derived from the fields they
+     export.  Code has now been added to obtain the domain from the initial
+     TGT and use that when constructing the client principals for all tickets.
+
+     This behavior can be turned off by setting a registry either on a per-user
+     or a system-wide basis:
+
+        {HKCU,HKLM}\Software\MIT\Kerberos5
+            PreserveInitialTicketIdentity = 0x0 (DWORD)
+           
+
+2004-01-06  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_file.c, cc_memory.c:
+     Add stub implementations for unimplemented krb5_cc_remove_cred()
+     Returns KRB5_CC_NOSUPP
+
+   * cc_mslsa.c:
+     Add implementation for krb5_cc_remove_cred().  Returns KRB5_CC_READONLY.
+
+2003-12-18  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_retr.c:  Extract the test to determine if a credential matches
+     a requested credential according to the specified fields into 
+     a private function: krb5int_cc_creds_match_request()
+
+   * cc_mslsa.c: Extend the functionality of krb5_lcc_retrieve() to
+     perform a MS Kerberos LSA ticket request if there is no matching
+     credential in the cache.  The MS Kerberos LSA places the following
+     restriction on what tickets it will place into the LSA cache:
+         tickets obtained by an application request for a specific
+         set of kerberos flags or enctype will not be cached.
+     Therefore, we first make a request with no flags or enctype in 
+     the hope that we will be lucky and get the right ones anyway.
+     If not, we make the application's request and return that ticket
+     if it matches the other criteria.
+
+     Implemented a similar technique for krb5_lcc_store().  Since we
+     can not write to the cache, when a store request is made we 
+     instead perform a ticket request through the lsa for a matching
+     credential.  If we receive one, we return success.  Otherwise,
+     we return the KRB5_CC_READONLY error.
+
+   With these changes I am now able to operate entirely with the MSLSA
+   ccache as the default cache provided the MS LSA credentials are
+   for the principal I wish to use.  Obviously, one cannot change
+   principals while the MSLSA ccache is the default.
+
+2003-12-15  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_msla.c:   Enable purging of the MS Kerberos LSA cache when the TGT
+     has expired.  This will force the LSA to get a new TGT instead of 
+     returning the expired version.
+
+2003-12-15  Jeffrey Altman <jaltman@mit.edu>
+
+   * cc_mslsa.c:  Perform a GetMSTGT() call as part of krb5_lcc_start_seq_get
+     to ensure that the tgt is refreshed
+
+2003-12-13  Jeffrey Altman <jaltman@mit.edu>
+
+   * Makefile.in: Remove extranenous spaces in ##WIN32## constructs
+     defining MSLSA_SRC MSLSA_OBJ
+
+2003-12-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Move ##WIN32## constructs from inside
+	backslash-continued lists, as it was breaking them.  Move explicit
+	dependency information from under automatic dependencies.
+
+2003-12-11  Jeffrey Altman <jaltman@mit.edu>
+
+    * Makefile.in, ccbase.c, cc_mslsa.c (new)
+
+    Remove all of the code which was duplicated between ms2mit.c
+    and the KfW Leash libraries (and who knows how many applications
+    shipped by third parties) and use it as the basis for a new
+    krb5_ccache type, "MSLSA:".  The "MSLSA:" ccache type is a
+    read-only ccache which can be used either as a monitor of the
+    contents of the Microsoft LSA cache or as a source for copying
+    the contents to another ccache type.  The purpose of migrating
+    this code to the krb5_32.dll is to avoid the need for applications
+    to be consistently updated each time Microsoft makes a change
+    to the behavior of the LSA cache.  Changes have occurred with
+    the release of 2000, XP, and 2003 so far.  Also, the code for
+    working with the MS LSA cache is not well documented and many
+    mistakes were made in the original versions of the ms2mit.c
+    code base.  Unfortunately, the ms2mit.c code has been copied
+    into many other applications.  
+
+    With access to this new ccache type, the ms2mit.c source file
+    is reduced from 890 lines to 80 lines including the copyright
+    banner.
+
+2003-11-26  Jeffrey Altman <jaltman@mit.edu>
+
+    * cc_default.c: Add support for Leash Kinit Dialog on Windows to
+            krb5int_c_default()
+
+2003-07-22  Sam Hartman  <hartmans@mit.edu>
+
+	* ccbase.c: Always register the file credentials cache type.  If
+	we do not, then when USE_CCAPI is defined, it will not be
+	available. 
+
+2003-03-06  Alexandra Ellwood <lxs@mit.edu>
+
+    * ccdefault.c: Remove Mac header goober and include
+    k5-int.h after KerberosLoginPrivate.h.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c (krb5_cc_file_ops, krb5_fcc_ops): Now const.
+	* fcc.h (krb5_cc_file_ops): Update decl.
+	* cc_memory.c (krb5_mcc_ops): Now const.
+	* ccbase.c (krb5_mcc_ops): Update decl.
+	* ccdefops.c (krb5_cc_dfl_ops): Now points to const.
+	* t_cc.c (krb5_fcc_ops, krb5_mcc_ops): Update decls.
+
+2002-09-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c, cc_memory.c, cc_retr.c, ccbase.c, cccopy.c,
+	ccdefault.c, ser_cc.c, t_cc.c: Use prototype style function
+	definitions.
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-08-15  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c (ALLOC): Use calloc, not malloc.
+	(krb5_fcc_read_principal): Check bounds on number of components
+	before calling ALLOC.
+
+2002-08-15  Tom Yu  <tlyu@mit.edu>
+
+	* t_cc.c: Remove references to STDIO ccache.
+
+2002-08-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c: Merge in cc_stdio.c, under preprocessor test for
+	USE_STDIO.
+	(USE_STDIO): Define it if HAVE_SYS_TYPES_H.
+	(krb5_change_cache, krb5_get_notification_message): Always
+	define.
+	(ALLOC): New macro, with overflow checking.
+	(krb5_fcc_read_principal, krb5_fcc_read_addrs,
+	krb5_fcc_read_authdata): Use it, and fix other overflow checks.
+	(my_fopen): Support non-Mac environments.
+	(krb5_fcc_open_file) [USE_STDIO]: Always use my_fopen.
+	(NO_FILE): New macro.  All functions changed to test or assign it
+	rather than -1 or (FILE*)NULL.
+	(krb5_fcc_read_keyblock, krb5_fcc_read_data): Rewrite bounds
+	check.
+	(BINARY_MODE): Always define.
+	(setvbuf) [!HAVE_SETVBUF]: Define as macro using setbuf.
+	(krb5_fcc_open_file): Change file descriptor variable to "f" and
+	combine newly matching stdio and file sections.  Use setvbuf
+	instead of checking whether to use setbuf.
+
+	* cc_stdio.c: Deleted.
+	* Makefile.in (STLIBOBJS, OBJS, SRCS): Updated.
+	* ccdefops.c (krb5_cc_dfl_ops) [!USE_CCAPI]: Always use
+	krb5_fcc_ops.
+
+2002-08-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c: All functions except krb5_change_cache and
+	krb5_get_notification_message now static.  Minor other shuffling
+	to become more similar to cc_stdio.c.
+	(krb5_fcc_data): Rename "fd" to "file"; change all uses.
+	* cc_stdio.c: All functions now static.  Rename all krb5_scc_
+	functions, data types and macros to use krb5_fcc_ prefix instead.
+	Minor other shuffling to become more similar to cc_file.c.
+	(krb5_fcc_data): Rename from krb5_scc_data; reorder some fields.
+	(krb5_fcc_close_file): Never call fflush on a read-only file.
+	(BINARY_MODE): New macro.
+	(krb5_fcc_open_file): Combine ANSI_STDIO and non-ANSI cases
+	statements by using BINARY_MODE and compile-time string
+	concatenation.  Choose lock flag value separately from call to
+	krb5_lock_file.
+	(krb5_fcc_generate_new): Use BINARY_MODE.
+
+2002-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c: Put # for cpp directives in first column.
+
+2002-60-20  Danilo Almeida  <dalmeida@mit.edu>
 
 	* Makefile.in: Build cc accessor functions on Windows.
+	[pullup from 1-2-2-branch]
 
-2002-04-2 Alexandra Ellwood <lxs@mit.edu>
-    * ccdefault.c: updated to new KLL function name
+2002-06-20 Alexandra Ellwood <lxs@mit.edu>
 
-2002-03-03 Alexandra Ellwood <lxs@mit.edu>
-    * ccdefault.c: swapped include of KerberosLoginPrivate with k5-int.h
-    to avoid problems with including CoreServices.h after profile.h and krb.h
+	* ccdefault.c: updated to new KLL function name
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * ccdefault.c: Updated Mac OS X headers to new framework layout
+	* ccdefault.c: swapped include of KerberosLoginPrivate with
+	k5-int.h to avoid problems with including CoreServices.h after
+	profile.h and krb.h
 
-2002-01-29  Tom Yu  <tlyu@mit.edu>
+	* ccdefault.c: Updated Mac OS X headers to new framework layout
 
-	* ccdefault.c: Add terminal newline.  Fixes [krb5-build/1041].
+	* ccdefops.c: created #define for USE_CCAPI now that both Mac OS 9
+	and Mac OS 10 use ccapi.
 
-2001-11-16  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch: LoginLib #include changes
+	[pullups from 1-2-2-branch]
+
+2002-04-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* cc_file.c: Use _WIN32 instead of _WINSOCKAPI_ because
+	_WINSOCKAPI_ depends on the Winsock header used (i.e., Winsock 2
+	does not define this).  What we are really trying to check for is
+	Win32.  Include port-sockets.h for Win32.  (NOTE: Why is
+	NEED_SOCKETS being defined after the inclusion of k5-int.h?  That
+	is pretty useless...  What we probably should do is more
+	consitently used NEED_SOCKETS instead of manually putting in
+	network code.  However, some people would probably have issues
+	with the build being slower...)
+
+2001-10-10  Ezra Peisach  <epeisach@mit.edu>
+
+	* cc_file.c (krb5_fcc_read): Remove const from fourth argument to
+	function to match prototype earlier in file.
+
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c, cc_memory.c, cc_stdio.c, ser_cc.c: Make prototypes
+	unconditional.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c, cc_stdio.c: Delete _MSDOS (win16) support.
+
+	* cc_memory.c, ccbase.c, ccdefault.c, ccfns.c: Don't explicitly
+	declare pointers FAR any more.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_file.c, ccbase.c, cccopy.c, ccdefault.c, fcc.h, ser_cc.c:
+	Don't use KRB5_DLLIMP.
+
+2000-10-30  Tom Yu  <tlyu@mit.edu>
+
+	* cc_stdio.c: Add a "mode" field to krb5_scc_data to keep track of
+	what mode the file was opened in.
+	(krb5_scc_close_file): Ignore EBADF from fflush() if the file was
+	opened for readonly access.  For some reason NetBSD's fflush()
+	exhibits this behavior.
+	(krb5_scc_open_file): Save the mode with which the file was opened
+	in data->mode.
+
+2000-10-17  Ezra Peisach  <epeisach@mit.edu>
+
+	* cc_stdio.c, cc_file.c: Unsigned/signed int cleanup.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* ser_cc.c (krb5_ccache_externalize): Use krb5_cc_get_name instead
+	of krb5_rc_get_name on credential cache.
+
+	* cc_file.c (krb5_fcc_get_name): 
+	* cc_stdio.c (krb5_scc_get_name): 
+	* cc_memory.c (krb5_mcc_get_name): 
+	* ccfns.c (krb5_cc_get_name): Declare as returning const char *.
+
+2000-09-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* cc_file.c ccbase.c, cc_stdio.c, cc_retr.c, cc_memory.c: More
+	signed/unsigned fixes.
+
+Sat Sep 23 23:42:32 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_cc.c: Code cleanup. Test more failure modes of the cache library. 
+
+	* cccopy.c (krb5_cc_copy_creds): Memory leak. Call krb5_cc_end_seq_get.
+
+	* cc_file.c (krb5_fcc_generate_new): Set flags to
+ 	KRB5_TC_OPENCLOSE, otherwise parts of the library assumes that the
+ 	file is open, when it is not.
+
+	* cc_stdio.c (krb5_scc_generate_new): Same as cc_file.c change.
 	
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* Makefile.in: Added ccfns.c
-	* ccdefault.h: Updated Mac OS #defines and #includes for new header layout 
-	and Mac OS X frameworks
-	
-2000-09-12	Alexandra Ellwood <lxs@mit.edu>
 
-        * ccdefops.c: created #define for USE_CCAPI now that both Mac OS 9 and
-        Mac OS 10 use ccapi.
+2000-09-22  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (check-unix): Build and exectute t_cc.
+
+	* t_cc.c: Test harness for memory, stdio and file caches. 
+
+2000-07-20  Danilo Almeida  <dalmeida@mit.edu>
+
+	* cc_file.c, cc_stdio.c: Remove unused krb5_[fs]cc_default_name()
+	prototype.
+
+	* cc_stdio.c: Fix calling convention for op functions.
+
+	* ccfns.c (krb5_cc_get_type): Fix calling convention.
+
+	* Makefile.in: Change ${CC} and ${OBJS} to $(CC) and $(OBJS) so
+	nmake does not freak out.
+
+2000-07-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* cc_memory.c (mcc_head): Combine static declaration and
+	initialization.
+
+2000-07-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_stdio.c, t_file.c, t_memory.c: Test cases copied from old
+	subdirectories.  Currently unused.
+	* Makefile.in (t_stdio): New target, basically same as 'test' in
+	old stdio/Makefile.in.
+	* file, memory, stdio: Subdirectories deleted.
+
+	* cc_file.c, cc_stdio.c, cc_memory.c: New files, built from source
+	files of appropriate subdirectories.
+	* fcc.h, scc.h: New files, copied from subdirectories; temporary.
+	* ccfns.c: New file, implementing what used to be krb5_cc_* macros
+	in krb5.h.
+	* Makefile.in (STLIBOBJS, OBJS, SRCS): Updated.
+	(LOCAL_SUBDIRS): Now empty.
+	(LOCALINCLUDES): Remove file and stdio subdirs.
+	(MAC_SUBDIRS): Remove file, stdio, memory.
+	(##DOS## stuff, clean-windows): Delete file and memory parts.
+
+	* cc_memory.c (mcc_head): Now static.
+
+2000-06-28  Ezra Peisach  <epeisach@mit.edu>
+
+	* ccdefault.c: Add newline at end of file (compiler warning)
 
 2000-5-31	Alexandra Ellwood <lxs@mit.edu>
 
-	* ccdefault.c: Changed kerberosPrincipal_V5 to kerberosVersion_V5 to reflect 
-	the new constant name.
-
-2000-5-19	Alexandra Ellwood <lxs@mit.edu>
-
-	* ccdefault.c: Added krb5int_cc_default.  This function 
-	supports the Kerberos Login Library and pops up a dialog if the cache does 
-	not contain valid tickets.  This is used to automatically get a tgt before
-	obtaining service tickets.  Note that this should be an internal function
-	because callers don't expect krb5_cc_default to pop up a dialog!
-	(We found this out the hard way :-)
+	* ccdefault.c: Changed kerberosPrincipal_V5 to kerberosVersion_V5
+	to reflect the new constant name.
 
 2000-4-26	Alexandra Ellwood <lxs@mit.edu>
 
-	* ccdefault.c: Added version number to internal Kerberos Login Library 
-	routine.
+	* ccdefault.c: Added version number to internal Kerberos Login
+	Library routine.
 
 2000-4-13	Alexandra Ellwood <lxs@mit.edu>
 
-	* ccdefault.c: Added Kerberos Login library support (with ifdefs to control 
-	whether or not it is on.  Also added support to store a krb5_principal in the
-	os_context along with the default ccache name (if known, this principal is 
-	the same as the last time we looked at the ccache.
-	* ccdefname.c: Added support to store a krb5_principal in the os_context 
-	along with the default ccache name (if known, this principal is the same 
-	as the last time we looked at the ccache.
+	* ccdefault.c: Added Kerberos Login library support (with ifdefs
+	to control whether or not it is on.  Also added support to store a
+	krb5_principal in the os_context along with the default ccache
+	name (if known, this principal is the same as the last time we
+	looked at the ccache.  * ccdefname.c: Added support to store a
+	krb5_principal in the os_context along with the default ccache
+	name (if known, this principal is the same as the last time we
+	looked at the ccache.
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1999-08-23  Ken Raeburn  <raeburn@mit.edu>
 

@@ -1,53 +1,243 @@
-2002-03-28 Alexandra Ellwood <lxs@mit.edu>
-    * gssapi.hin: Conditionalized pragmas for Metrowerks
+2004-02-08  Ken Raeburn  <raeburn@mit.edu>
 
-2002-03-07 Alexandra Ellwood <lxs@mit.edu>
-    * gssapi.hin: Added check for CFM compiles.  Removed dependency on 
-    PRAGMA_* macros.  Moved check struct alignment check before struct declarations.
+	* util_ordering.c (g_queue_externalize, g_queue_internalize):
+	Check for sufficient buffer space.
 
-2002-03-03 Alexandra Ellwood <lxs@mit.edu>
-    * disp_com_err_status.c: Updated Mac OS X headers to new 
-    framework layout... this time for real.
+2003-12-13  Ken Raeburn  <raeburn@mit.edu>
 
-2002-02-28 Alexandra Ellwood <lxs@mit.edu>
-    * disp_com_err_status.c, gssapi.hin, gssapi_generic.h: 
-    Updated Mac OS X headers to new framework layout
+	* gssapiP_generic.h: Include k5-platform.h.
+	(gssint_uint64): New typedef.
+	(g_order_init, g_order_check): Update decls.
+	* util_ordering.c (struct _queue): Change sequence number fields
+	to gssint_uint64.  Add mask field.
+	(queue_insert): Change sequence number to gssint_uint64.
+	(g_order_init): Change sequence numbers to gssint_uint64.  Add
+	"wide_nums" argument; initialize the queue mask field based on
+	it; all callers changed.  Store a -1 as the first element.
+	(g_order_check): Store and check elements as offsets from
+	firstnum.  Mask to 32 bits if desired.
+	* util_token.c (g_verify_token_header): Add new argument
+	indicating whether the pseudo-ASN.1 wrapper is required; all
+	callers changed.
 
-2000-11-19  Alexandra Ellwood <lxs@mit.edu>
-        * gssapi_generic.h: Fixed check for Mac OS X includes.
+2003-03-06  Alexandra Ellwood  <lxs@mit.edu>
 
-2001-10-29  Miro Jurisic  <meeroh@mit.edu>
-	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
-	* gssapi.hin, gssapi_generic.h, gssapi_generic.c: 
-	added oids from rfc 2744.  Kept old oids for compatibility.
-	* gssapi.hin: Changed KerberosConditionalMacros.h to
-	KerberosSupport.h.
-	* gssapi.hin: Fixed Mac OS preprocessor test
-	* gssapi_generic.h: corrected Mac OS include to <GSS/gssapi.h>
+    * disp_com_err_status.c, gssapi_generic.h:  
+    Removed Mac header goober.
+    
+    * gssapiP_generic.h, gssapi.hin: Removed macintosh check because 
+    we don't build on OS 9 anymore.
+    
+    * gssapi.hin: Removed enumsalwaysint because there are no typed
+    enums in this header.  Removed duplicate CFM-68K magic.  
+
+2003-02-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove stamp rules.  Explicitly creates header
+	directory if needed.
+	(gssapi.h): Tweak to avoid race conditions.
+
+2003-02-11  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (gssapi-include): New rules to avoid coding
+	dependence on relative pathnames in parent Makefile.in.
+
+2003-02-11  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Another attempt... turns our that the "copy"
+	command on Windows preserves modtimes, so spurious rebuilds were
+	happening even with the stamp file, since the target in $(EHDRDIR)
+	is always out of date with respect to the stamp file.
+
+2003-02-10  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix $(EHDRDIR) creation to avoid spurious
+	rebuilds.
+
+2003-02-09  Ezra Peisach  <epeisach@bu,edu>
+
+	* gssapiP_generic.h, util_token.c (g_token_size): Return unsigned
+	int instead of int.
+
+2003-01-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(EHDRDIR)$(S)gssapi.h): Depend on create-ehdrdir,
+	to make sure the directory is created before installation of the
+	file.
+	($(EHDRDIR)$(S)gssapi_generic.h): Likewise.
+	(create-ehdrdir): New target on UNIX.  Renamed from $(EHDRDIR) on
+	Windows and changed to check for an existing directory.
+
+2003-01-10  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Add AC_SUBST_FILE marker for libobj_frag.
+
+2003-01-07  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.original: Deleted.
+
+2002-12-05  Sam Hartman  <hartmans@mit.edu>
+
+	* util_token.c (g_verify_token_header g_make_token_header):
+	Accept -1 to mean  that no token type is expected; the token type
+	is purely an RFC 1964 artifact and is not used in other mechanisms
+	such as SPNEGO.
+
+2002-11-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* gssapiP_generic.h, util_token.c: Change g_make_token_header and
+	g_verfy_token_header to take an unsigned length in.
+
+2002-10-07  Sam Hartman  <hartmans@mit.edu>
+
+	* Makefile.in : Add install-headers- support
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in ($(EHDRDIR)/gssapi.h, $(EHDRDIR)/gssapi_generic.h):
+	Quote target of copies.  Reverted.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-15  Ezra Peisach  <epeisach@bu.edu>
+
+	* gssapiP_generic.h, util_token.c (g_verify_token_header): Make
+	length argument a pointer to an unsigned int.
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS, OBJS, STLIBOBJS): Don't build util_dup.c.
+	* util_set.c (g_set_destroy): Don't compile this unused function.
+
+2002-07-12  Alexandra Ellwood <lxs@mit.edu>
+
+	* gssapi_generic.h: allow inclusion by C++
+
+	* gssapi.hin: Conditionalized pragmas for Metrowerks
+
+	* gssapi.hin: Added check for CFM compiles.  Removed dependency on
+	PRAGMA_* macros.  Moved check struct alignment check before struct
+	declarations.
+
+	* disp_com_err_status.c, gssapi.hin, gssapi_generic.h: 
+	Updated Mac OS X headers to new framework layout
+
+	* gssapi_generic.h: Fixed check for Mac OS X includes.
+
+	[pullups from 1-2-2-branch]
+
+2002-07-12  Miro Jurisic  <meeroh@mit.edu>
+
 	* gssapiP_generic.h: use "" include for krb5.h
-	* disp_com_err_status.c, gssapi.hin: Updated Mac OS #defines
-	and #includes for new header layout and Mac OS X frameworks
-	* gssapi_generic.h: Added check for Mac OS X includes.  This will
-	not break autoconf-style builds because they do not include
-	ConditionalMacros.h.
-        
+	[pullup from 1-2-2-branch]
+
 2001-10-20  Ken Raeburn  <raeburn@mit.edu>
 
 	* gssapiP_generic.h (g_*): For every g_ function declared here,
 	first define the name as a macro using a gssint_ prefix to avoid
 	conflicting with glib function names.
 
-2000-09-11  Alexandra Ellwood <lxs@mit.edu>
-        * gssapi_generic.h: Added check for Mac OS X includes.  This will
-        not break autoconf-style builds because they do not include
-        ConditionalMacros.h.
-        
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+2001-10-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* gssapi.hin, gssapiP_generic.h: Make prototypes unconditional.
+	* gssapi.hin (PROTOTYPE): Don't define.
+
+2001-10-05  Ken Raeburn  <raeburn@mit.edu>
+
+	Windows still requires DLL specs for variables.
+	* gssapi.hin (GSS_DLLIMP): Define, as before (from win-mac.h) for
+	Windows, empty otherwise.
+	(GSS_C_NT_USER_NAME, GSS_C_NT_MACHINE_UID_NAME,
+	GSS_C_NT_STRING_UID_NAME, GSS_C_NT_HOSTBASED_SERVICE_X,
+	GSS_C_NT_HOSTBASED_SERVICE, GSS_C_NT_ANONYMOUS,
+	GSS_C_NT_EXPORT_NAME): Use GSS_DLLIMP.
+	(KRB5_EXPORTVAR): Don't define.
+
+	* gssapi_generic.h (gss_nt_user_name, gss_nt_machine_uid_name,
+	gss_nt_string_uid_name, gss_nt_service_name): Use GSS_DLLIMP.
+	* gssapi_generic.c (gss_nt_user_name, gss_nt_machine_uid_name,
+	gss_nt_string_uid_name, gss_nt_service_name, GSS_C_NT_USER_NAME,
+	GSS_C_NT_MACHINE_UID_NAME, GSS_C_NT_STRING_UID_NAME,
+	GSS_C_NT_HOSTBASED_SERVICE_X, GSS_C_NT_HOSTBASED_SERVICE,
+	GSS_C_NT_ANONYMOUS, GSS_C_NT_EXPORT_NAME): Use GSS_DLLIMP.
+
+	* gssapi.hin: Drop FAR, NEAR, _MSDOS support.
+	* gssapiP_generic.h: Drop _MSDOS support.
+
+2001-10-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* gssapi.hin, gssapi_generic.c, gssapi_generic.h: Don't use
+	GSS_DLLIMP.
+
+2001-06-25  Tom Yu  <tlyu@mit.edu>
+
+	* gssapi.hin, gssapi_generic.h, gssapi_generic.c:
+	added oids from rfc 2744.  Kept old oids for compatibility.
+	[pullup of lxs's changes]
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* util_validate.c (g_save): Cleanup extraneous variable from last
+ 	change.
+
+2001-06-21  Ezra Peisach  <epeisach@mit.edu>
+
+	* util_validate.c (g_validate, g_save, g_delete): If HAVE_BSD_TYPE
+	is not defined, declare static functions as taking a void *type for
+	passing to g_set_entry_add.
+
+2001-05-08  Ezra Peisach  <epeisach@mit.edu>
+
+	* disp_major_status.c (display_unknown): Remove unused variable. 
+
+	* util_token.c (g_make_token_header): Remove incorrect cast of
+	length argument to memcpy.
+
+	* oid_ops.c (generic_gss_str_to_oid): Cast argument of isxxx()
+	functions to int - avoids gcc warning when these are implemented
+	as macros indexing an array.
+
+2001-05-04  Ezra Peisach  <epeisach@mit.edu>
+
+	* disp_major_status.c (display_unknown): Declare as static. Remove
+	non-useful code.
+
+2001-04-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (unixmac): Target deleted.
+
+2001-03-10  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* oid_ops.c: Avoid the use of a variable named index.
+
+2000-10-03  Ezra Peisach  <epeisach@mit.edu>
+
+	* gssapiP_generic.h (g_OID_equal): Instead of casting argument to
+	memcmp as int, cast to unsigned int to match prototype.
+
+2000-08-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (SRCS, OBJS, STLIBOBJS): Remove util_canonhost.
+	* gssapiP_generic (g_canonicalize_host, g_local_host_name): Delete
+	declarations.
+
+2000-05-31  Wilfredo Sanchez  <tritan@mit.edu>
+
+	* util_token.c: Check for existance of <memory.h>.
+	[from Nathan Neulinger <nneul@umr.edu>]
+
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 Wed May 19 13:23:16 1999  Danilo Almeida  <dalmeida@mit.edu>
 

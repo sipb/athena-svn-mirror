@@ -1,8 +1,8 @@
 thisconfigdir=./..
 myfulldir=lib
 mydir=lib
-MY_SUBDIRS=crypto krb5 des425 @KRB4@ krb5util kdb gssapi rpc kadm5
-BUILDTOP=$(REL)$(U)
+MY_SUBDIRS=crypto krb5 des425 @KRB4@ kdb gssapi rpc kadm5
+BUILDTOP=$(REL)..
 
 MAC_SUBDIRS = crypto krb5 gssapi
 
@@ -12,7 +12,7 @@ all-mac::
 
 CLEANLIBS = libkrb5.a libkdb5.a libcrypto.a libgssapi_krb5.a libdes425.a \
 	libkrb425.a libkadm.a libkrb4.a libcom_err.a libpty.a \
-	libss.a libkrb5util.a libgssapi.a \
+	libss.a libgssapi.a \
 	libkrb5.so libcrypto.so libkrb4.so libdes425.so
 
 clean-mac:: clean-unix
@@ -51,8 +51,8 @@ K4DEF = krb4_32.def
 KRB5RC = krb5.rc
 VERSIONRC = $(BUILDTOP)\windows\version.rc
 
-WINLIBS = kernel32.lib wsock32.lib user32.lib shell32.lib oldnames.lib \
-	version.lib advapi32.lib gdi32.lib
+WINLIBS = kernel32.lib ws2_32.lib user32.lib shell32.lib oldnames.lib \
+	version.lib secur32.lib advapi32.lib gdi32.lib
 WINDLLFLAGS = $(DLL_LINKOPTS) -base:0x1c000000
 
 NO_GLUE=$(OUTPRE)no_glue.obj
@@ -66,7 +66,7 @@ KGLUE=$(K5_GLUE)
 GGLUE=$(GSS_GLUE)
 K4GLUE=$(K4_GLUE)
 
-RCFLAGS=$(CPPFLAGS) -D_WIN32 -D_MSDOS_ -DRES_ONLY
+RCFLAGS=$(CPPFLAGS) -D_WIN32 -DRES_ONLY
 
 ##WIN32##CRES=$(CLIB:.lib=.res)
 ##WIN32##PRES=$(PLIB:.lib=.res)

@@ -37,11 +37,11 @@
  *	krb5_ccache_internalize();
  */
 static krb5_error_code krb5_ccache_size
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, size_t *));
+	(krb5_context, krb5_pointer, size_t *);
 static krb5_error_code krb5_ccache_externalize
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, krb5_octet **, size_t *));
+	(krb5_context, krb5_pointer, krb5_octet **, size_t *);
 static krb5_error_code krb5_ccache_internalize
-	KRB5_PROTOTYPE((krb5_context,krb5_pointer *, krb5_octet **, size_t *));
+	(krb5_context,krb5_pointer *, krb5_octet **, size_t *);
 
 /*
  * Serialization entry for this type.
@@ -58,10 +58,7 @@ static const krb5_ser_entry krb5_ccache_ser_entry = {
  *				  this krb5_ccache variant.
  */
 static krb5_error_code
-krb5_ccache_size(kcontext, arg, sizep)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    size_t		*sizep;
+krb5_ccache_size(krb5_context kcontext, krb5_pointer arg, size_t *sizep)
 {
     krb5_error_code	kret;
     krb5_ccache		ccache;
@@ -83,7 +80,7 @@ krb5_ccache_size(kcontext, arg, sizep)
 	 * The ccache name is formed as follows:
 	 *	<prefix>:<name>
 	 */
-	required += strlen(krb5_rc_get_name(kcontext, ccache));
+	required += strlen(krb5_cc_get_name(kcontext, ccache));
 
 	kret = 0;
 	*sizep += required;
@@ -95,11 +92,7 @@ krb5_ccache_size(kcontext, arg, sizep)
  * krb5_ccache_externalize()	- Externalize the krb5_ccache.
  */
 static krb5_error_code
-krb5_ccache_externalize(kcontext, arg, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_ccache_externalize(krb5_context kcontext, krb5_pointer arg, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_ccache		ccache;
@@ -108,7 +101,7 @@ krb5_ccache_externalize(kcontext, arg, buffer, lenremain)
     size_t		remain;
     char		*ccname;
     size_t		namelen;
-    char		*fnamep;
+    const char		*fnamep;
 
     required = 0;
     bp = *buffer;
@@ -124,7 +117,7 @@ krb5_ccache_externalize(kcontext, arg, buffer, lenremain)
 	    /* Calculate the length of the name */
 	    namelen = (ccache->ops && ccache->ops->prefix) ?
 		strlen(ccache->ops->prefix)+1 : 0;
-	    fnamep = krb5_rc_get_name(kcontext, ccache);
+	    fnamep = krb5_cc_get_name(kcontext, ccache);
 	    namelen += (strlen(fnamep)+1);
 
 	    if ((ccname = (char *) malloc(namelen))) {
@@ -159,11 +152,7 @@ krb5_ccache_externalize(kcontext, arg, buffer, lenremain)
  * krb5_ccache_internalize()	- Internalize the krb5_ccache.
  */
 static krb5_error_code
-krb5_ccache_internalize(kcontext, argp, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	*argp;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_ccache_internalize(krb5_context kcontext, krb5_pointer *argp, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_ccache		ccache;
@@ -206,9 +195,8 @@ krb5_ccache_internalize(kcontext, argp, buffer, lenremain)
 /*
  * Register the ccache serializer.
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_ser_ccache_init(kcontext)
-    krb5_context	kcontext;
+krb5_error_code KRB5_CALLCONV
+krb5_ser_ccache_init(krb5_context kcontext)
 {
     return(krb5_register_serializer(kcontext, &krb5_ccache_ser_entry));
 }

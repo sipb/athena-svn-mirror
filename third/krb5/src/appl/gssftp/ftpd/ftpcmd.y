@@ -67,15 +67,12 @@ static char sccsid[] = "@(#)ftpcmd.y	5.24 (Berkeley) 2/25/91";
 #include <stdlib.h>
 #include <string.h>
 
+#include "ftpd_var.h"
+
 extern	char *auth_type;
 
 unsigned int maxbuf, actualbuf;
 unsigned char *ucbuf;
-
-#if defined(STDARG) || (defined(__STDC__) && ! defined(VARARGS)) || defined(HAVE_STDARG_H)
-extern reply(int, char *, ...);
-extern lreply(int, char *, ...);
-#endif
 
 static int kerror;	/* XXX needed for all auth types */
 #ifdef KRB5_KRB4_COMPAT
@@ -91,14 +88,9 @@ extern MSG_DAT msg_data;
 extern gss_ctx_id_t gcontext;
 #endif
 
-#ifndef unix			/* XXX */
-#ifdef _AIX
-#define unix
-#endif
-#ifdef __hpux
-#define unix
-#endif
-#ifdef BSD
+#ifndef unix
+/* sigh */
+#if defined(_AIX) || defined(__hpux) || defined(BSD)
 #define unix
 #endif
 #endif
@@ -138,6 +130,7 @@ extern	char *globerr;
 extern	int usedefault;
 extern  int transflag;
 extern  char tmpline[];
+
 char	**ftpglob();
 
 off_t	restart_point;
@@ -170,6 +163,11 @@ struct tab {
 };
 struct tab cmdtab[];
 struct tab sitetab[];
+
+void sizecmd(char *);
+void help(struct tab *, char *);
+static int yylex(void);
+static char *copy(char *);
 %}
 
 %union { int num; char *str; }
@@ -204,7 +202,7 @@ struct tab sitetab[];
 
 cmd_list:	/* empty */
 	|	cmd_list cmd
-		= {
+		{
 			fromname = (char *) 0;
 			restart_point = (off_t) 0;
 		}
@@ -212,17 +210,17 @@ cmd_list:	/* empty */
 	;
 
 cmd:		USER SP username CRLF
-		= {
+		{
 			user((char *) $3);
 			free((char *) $3);
 		}
 	|	PASS SP password CRLF
-		= {
+		{
 			pass((char *) $3);
 			free((char *) $3);
 		}
 	|	PORT SP host_port CRLF
-		= {
+		{
 			/*
 			 * Don't allow a port < 1024 if we're not
 			 * connecting back to the original source address
@@ -241,19 +239,19 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	PASV check_login CRLF
-		= {
+		{
 			if ($2)
 				passive();
 		}
 	|	PROT SP prot_code CRLF
-		= {
+		{
 		    if (maxbuf)
 			setdlevel ($3);
 		    else
 			reply(503, "Must first set PBSZ");
 		}
 	|	CCC CRLF
-		= {
+		{
 			if (!allow_ccc) {
 			    reply(534, "CCC not supported");
 			}
@@ -267,12 +265,13 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	PBSZ SP STRING CRLF
-		= {
+		{
 			/* Others may want to do something more fancy here */
 			if (!auth_type)
 			    reply(503, "Must first perform authentication");
 			else if (strlen($3) > 10 ||
-				 strlen($3) == 10 && strcmp($3,"4294967296") >= 0)
+				 (strlen($3) == 10 && 
+				  strcmp($3,"4294967296") >= 0))
 			    reply(501, "Bad value for PBSZ: %s", $3);
 			else {
 			    if (ucbuf) (void) free(ucbuf);
@@ -291,7 +290,7 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	TYPE SP type_code CRLF
-		= {
+		{
 			switch (cmd_type) {
 
 			case TYPE_A:
@@ -326,7 +325,7 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	STRU SP struct_code CRLF
-		= {
+		{
 			switch ($3) {
 
 			case STRU_F:
@@ -338,7 +337,7 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	MODE SP mode_code CRLF
-		= {
+		{
 			switch ($3) {
 
 			case MODE_S:
@@ -350,78 +349,78 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	ALLO SP NUMBER CRLF
-		= {
+		{
 			reply(202, "ALLO command ignored.");
 		}
 	|	ALLO SP NUMBER SP 'R' SP NUMBER CRLF
-		= {
+		{
 			reply(202, "ALLO command ignored.");
 		}
 	|	RETR check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				retrieve((char *) 0, (char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	STOR check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				store_file((char *) $4, "w", 0);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	APPE check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				store_file((char *) $4, "a", 0);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	NLST check_login CRLF
-		= {
+		{
 			if ($2)
 				send_file_list(".");
 		}
 	|	NLST check_login SP STRING CRLF
-		= {
+		{
 			if ($2 && $4 != NULL) 
 				send_file_list((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	LIST check_login CRLF
-		= {
+		{
 			if ($2)
 				retrieve("/bin/ls -lgA", "");
 		}
 	|	LIST check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				retrieve("/bin/ls -lgA %s", (char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	STAT check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				statfilecmd((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	STAT CRLF
-		= {
+		{
 			statcmd();
 		}
 	|	DELE check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				delete_file((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	RNTO SP pathname CRLF
-		= {
+		{
 			if (fromname) {
 				renamecmd(fromname, (char *) $3);
 				free(fromname);
@@ -432,27 +431,27 @@ cmd:		USER SP username CRLF
 			free((char *) $3);
 		}
 	|	ABOR CRLF
-		= {
+		{
 			reply(225, "ABOR command successful.");
 		}
 	|	CWD check_login CRLF
-		= {
+		{
 			if ($2)
 				cwd(pw->pw_dir);
 		}
 	|	CWD check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				cwd((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	HELP CRLF
-		= {
+		{
 			help(cmdtab, (char *) 0);
 		}
 	|	HELP SP STRING CRLF
-		= {
+		{
 			register char *cp = (char *)$3;
 
 			if (strncasecmp(cp, "SITE", 4) == 0) {
@@ -467,43 +466,43 @@ cmd:		USER SP username CRLF
 				help(cmdtab, (char *) $3);
 		}
 	|	NOOP CRLF
-		= {
+		{
 			reply(200, "NOOP command successful.");
 		}
 	|	MKD nonguest SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				makedir((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	RMD nonguest SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				removedir((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	PWD check_login CRLF
-		= {
+		{
 			if ($2)
 				pwd();
 		}
 	|	CDUP check_login CRLF
-		= {
+		{
 			if ($2)
 				cwd("..");
 		}
 	|	SITE SP HELP CRLF
-		= {
+		{
 			help(sitetab, (char *) 0);
 		}
 	|	SITE SP HELP SP STRING CRLF
-		= {
+		{
 			help(sitetab, (char *) $5);
 		}
 	|	SITE SP UMASK check_login CRLF
-		= {
+		{
 			int oldmask;
 
 			if ($4) {
@@ -513,7 +512,7 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	SITE SP UMASK nonguest SP octal_number CRLF
-		= {
+		{
 			int oldmask;
 
 			if ($4) {
@@ -528,7 +527,7 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	SITE SP CHMOD nonguest SP octal_number SP pathname CRLF
-		= {
+		{
 			if ($4 && ($8 != NULL)) {
 				if ($6 > 0777)
 					reply(501,
@@ -542,13 +541,13 @@ cmd:		USER SP username CRLF
 				free((char *) $8);
 		}
 	|	SITE SP IDLE CRLF
-		= {
+		{
 			reply(200,
 			    "Current IDLE time limit is %d seconds; max %d",
 				timeout, maxtimeout);
 		}
 	|	SITE SP IDLE SP NUMBER CRLF
-		= {
+		{
 			if ($5 < 30 || $5 > maxtimeout) {
 				reply(501,
 			"Maximum IDLE time must be between 30 and %d seconds",
@@ -562,14 +561,14 @@ cmd:		USER SP username CRLF
 			}
 		}
 	|	STOU check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				store_file((char *) $4, "w", 1);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
 	|	SYST CRLF
-		= {
+		{
 #ifdef unix
 #ifdef __svr4__
 #undef BSD
@@ -593,7 +592,7 @@ cmd:		USER SP username CRLF
 		 * using with RESTART (we just count bytes).
 		 */
 	|	SIZE check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL)
 				sizecmd((char *) $4);
 			if ($4 != NULL)
@@ -610,11 +609,11 @@ cmd:		USER SP username CRLF
 		 * not necessarily 3 digits)
 		 */
 	|	MDTM check_login SP pathname CRLF
-		= {
+		{
 			if ($2 && $4 != NULL) {
 				struct stat stbuf;
-				if (stat((char *) $4, &stbuf) < 0)
-					perror_reply(550, "%s", (char *) $4);
+				if (stat($4, &stbuf) < 0)
+					perror_reply(550, $4);
 				else if ((stbuf.st_mode&S_IFMT) != S_IFREG) {
 					reply(550, "%s: not a plain file.",
 						(char *) $4);
@@ -633,28 +632,26 @@ cmd:		USER SP username CRLF
 				free((char *) $4);
 		}
 	|	AUTH SP STRING CRLF
-		= {
+		{
 			auth((char *) $3);
 		}
 	|	ADAT SP STRING CRLF
-		= {
+		{
 			auth_data((char *) $3);
 			free((char *) $3);
 		}
 	|	QUIT CRLF
-		= {
+		{
 			reply(221, "Goodbye.");
 			dologout(0);
 		}
 	|	error CRLF
-		= {
+		{
 			yyerrok;
 		}
 	;
 rcmd:		RNFR check_login SP pathname CRLF
-		= {
-			char *renamefrom();
-
+		{
 			restart_point = (off_t) 0;
 			if ($2 && $4) {
 				fromname = renamefrom((char *) $4);
@@ -664,11 +661,12 @@ rcmd:		RNFR check_login SP pathname CRLF
 			}
 		}
 	|	REST SP byte_size CRLF
-		= {
+		{
 			fromname = (char *) 0;
 			restart_point = $3;
-			reply(350, "Restarting at %ld. %s", restart_point,
-			    "Send STORE or RETRIEVE to initiate transfer.");
+			reply(350, "Restarting at %ld. %s", 
+			      (long) restart_point,
+			      "Send STORE or RETRIEVE to initiate transfer.");
 		}
 	;
 		
@@ -676,7 +674,7 @@ username:	STRING
 	;
 
 password:	/* empty */
-		= {
+		{
 			*(char **)&($$) = (char *)calloc(1, sizeof(char));
 		}
 	|	STRING
@@ -687,7 +685,7 @@ byte_size:	NUMBER
 
 host_port:	NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA 
 		NUMBER COMMA NUMBER
-		= {
+		{
 			register char *a, *p;
 
 			a = (char *)&host_port.sin_addr;
@@ -699,109 +697,109 @@ host_port:	NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA
 	;
 
 form_code:	'N'
-	= {
+	{
 		$$ = FORM_N;
 	}
 	|	'T'
-	= {
+	{
 		$$ = FORM_T;
 	}
 	|	'C'
-	= {
+	{
 		$$ = FORM_C;
 	}
 	;
 
 prot_code:	'C'
-	= {
+	{
 		$$ = PROT_C;
 	}
 	|	'S'
-	= {
+	{
 		$$ = PROT_S;
 	}
 	|	'P'
-	= {
+	{
 		$$ = PROT_P;
 	}
 	|	'E'
-	= {
+	{
 		$$ = PROT_E;
 	}
 	;
 
 type_code:	'A'
-	= {
+	{
 		cmd_type = TYPE_A;
 		cmd_form = FORM_N;
 	}
 	|	'A' SP form_code
-	= {
+	{
 		cmd_type = TYPE_A;
 		cmd_form = $3;
 	}
 	|	'E'
-	= {
+	{
 		cmd_type = TYPE_E;
 		cmd_form = FORM_N;
 	}
 	|	'E' SP form_code
-	= {
+	{
 		cmd_type = TYPE_E;
 		cmd_form = $3;
 	}
 	|	'I'
-	= {
+	{
 		cmd_type = TYPE_I;
 	}
 	|	'L'
-	= {
+	{
 		cmd_type = TYPE_L;
 		cmd_bytesz = NBBY;
 	}
 	|	'L' SP byte_size
-	= {
+	{
 		cmd_type = TYPE_L;
 		cmd_bytesz = $3;
 	}
 	/* this is for a bug in the BBN ftp */
 	|	'L' byte_size
-	= {
+	{
 		cmd_type = TYPE_L;
 		cmd_bytesz = $2;
 	}
 	;
 
 struct_code:	'F'
-	= {
+	{
 		$$ = STRU_F;
 	}
 	|	'R'
-	= {
+	{
 		$$ = STRU_R;
 	}
 	|	'P'
-	= {
+	{
 		$$ = STRU_P;
 	}
 	;
 
 mode_code:	'S'
-	= {
+	{
 		$$ = MODE_S;
 	}
 	|	'B'
-	= {
+	{
 		$$ = MODE_B;
 	}
 	|	'C'
-	= {
+	{
 		$$ = MODE_C;
 	}
 	;
 
 pathname:	pathstring
-	= {
+	{
 		/*
 		 * Problem: this production is used for all pathname
 		 * processing, but only gives a 550 error reply.
@@ -830,7 +828,7 @@ pathstring:	STRING
 	;
 
 octal_number:	NUMBER
-	= {
+	{
 		register int ret, dec, multby, digit;
 
 		/*
@@ -855,7 +853,7 @@ octal_number:	NUMBER
 	;
 
 check_login:	/* empty */
-	= {
+	{
 		if (logged_in)
 			$$ = 1;
 		else {
@@ -866,7 +864,7 @@ check_login:	/* empty */
 	;
 
 nonguest: check_login
-	= {
+	{
 		if (guest) {
 			reply(550, "Operation prohibited for anonymous users.");
 			$$ = 0;
@@ -941,7 +939,7 @@ struct tab sitetab[] = {
 	{ NULL,   0,    0,    0,	0 }
 };
 
-struct tab *
+static struct tab *
 lookup(p, cmd)
 	register struct tab *p;
 	char *cmd;
@@ -956,7 +954,7 @@ lookup(p, cmd)
 /*
  * urgsafe_getc - hacked up getc to ignore EOF if SIOCATMARK returns TRUE
  */
-int
+static int
 urgsafe_getc(f)
 	FILE *f;
 {
@@ -981,11 +979,11 @@ urgsafe_getc(f)
 char *
 getline(s, n, iop)
 	char *s;
+	int n;
 	register FILE *iop;
 {
-	register c;
+	register int c;
 	register char *cs;
-	int atmark;
 
 	cs = s;
 /* tmpline may contain saved command from urgent mode interruption */
@@ -1086,7 +1084,8 @@ getline(s, n, iop)
 #endif /* NOENCRYPTION */
 	    if ((cp = strpbrk(cs, " \r\n")))
 		*cp = '\0';
-	    if (kerror = radix_encode(cs, out, &len, 1)) {
+	    kerror = radix_encode(cs, out, &len, 1);
+	    if (kerror) {
 		reply(501, "Can't base 64 decode argument to %s command (%s)",
 		      mic ? "MIC" : "ENC", radix_error(kerror));
 		*s = '\0';
@@ -1192,13 +1191,14 @@ toolong(sig)
 	dologout(1);
 }
 
+static int
 yylex()
 {
 	static int cpos, state;
 	register char *cp, *cp2;
 	register struct tab *p;
 	int n;
-	char c, *copy();
+	char c;
 
 	for (;;) {
 		switch (state) {
@@ -1284,7 +1284,7 @@ yylex()
 		dostr1:
 			if (cbuf[cpos] == ' ') {
 				cpos++;
-				state = state == OSTR ? STR2 : ++state;
+				state = state == OSTR ? STR2 : state+1;
 				return (SP);
 			}
 			break;
@@ -1317,9 +1317,9 @@ yylex()
 				cpos++;
 				return (SP);
 			}
-			if (isdigit(cbuf[cpos])) {
+			if (isdigit((int) cbuf[cpos])) {
 				cp = &cbuf[cpos];
-				while (isdigit(cbuf[++cpos]))
+				while (isdigit((int) cbuf[++cpos]))
 					;
 				c = cbuf[cpos];
 				cbuf[cpos] = '\0';
@@ -1332,9 +1332,9 @@ yylex()
 			goto dostr1;
 
 		case ARGS:
-			if (isdigit(cbuf[cpos])) {
+			if (isdigit((int) cbuf[cpos])) {
 				cp = &cbuf[cpos];
-				while (isdigit(cbuf[++cpos]))
+				while (isdigit((int) cbuf[++cpos]))
 					;
 				c = cbuf[cpos];
 				cbuf[cpos] = '\0';
@@ -1414,17 +1414,18 @@ yylex()
 	}
 }
 
+void
 upper(s)
 	register char *s;
 {
 	while (*s != '\0') {
-		if (islower(*s))
-			*s = toupper(*s);
+		if (islower((int) (*s)))
+			*s = toupper((int) (*s));
 		s++;
 	}
 }
 
-char *
+static char *
 copy(s)
 	char *s;
 {
@@ -1437,6 +1438,7 @@ copy(s)
 	return (p);
 }
 
+void
 help(ctab, s)
 	struct tab *ctab;
 	char *s;
@@ -1444,12 +1446,12 @@ help(ctab, s)
 	register struct tab *c;
 	register int width, NCMDS;
 	char str[80];
-	char *type;
+	char *ftype;
 
 	if (ctab == sitetab)
-		type = "SITE ";
+		ftype = "SITE ";
 	else
-		type = "";
+		ftype = "";
 	width = 0, NCMDS = 0;
 	for (c = ctab; c->name != NULL; c++) {
 		int len = strlen(c->name);
@@ -1464,7 +1466,7 @@ help(ctab, s)
 		int columns, lines;
 
 		lreply(214, "The following %scommands are recognized %s.",
-		    type, "(* =>'s unimplemented)");
+		    ftype, "(* =>'s unimplemented)");
 		columns = 76 / width;
 		if (columns == 0)
 			columns = 1;
@@ -1495,12 +1497,13 @@ help(ctab, s)
 		return;
 	}
 	if (c->implemented)
-		reply(214, "Syntax: %s%s %s", type, c->name, c->help);
+		reply(214, "Syntax: %s%s %s", ftype, c->name, c->help);
 	else
-		reply(214, "%s%-*s\t%s; unimplemented.", type, width,
+		reply(214, "%s%-*s\t%s; unimplemented.", ftype, width,
 		    c->name, c->help);
 }
 
+void
 sizecmd(filename)
 char *filename;
 {
@@ -1512,7 +1515,7 @@ char *filename;
 		    (stbuf.st_mode&S_IFMT) != S_IFREG)
 			reply(550, "%s: not a plain file.", filename);
 		else
-			reply(213, "%lu", stbuf.st_size);
+			reply(213, "%lu", (long) stbuf.st_size);
 		break;}
 	case TYPE_A: {
 		FILE *fin;

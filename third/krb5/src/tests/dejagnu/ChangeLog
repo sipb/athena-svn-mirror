@@ -1,15 +1,41 @@
+2004-02-12  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (check-runtest-yes): Add PRIOCNTL_HACK.
+
+2003-01-05  Sam Hartman  <hartmans@mit.edu>
+
+	* t_inetd.c: Remove declaration of errno
+
+2002-08-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Revert $(S)=>/ change, for Windows support.
+
+2002-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in: Change $(S)=>/ and $(U)=>.. globally.
+
+2002-07-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (RUNTEST): Variable renamed from HAVE_RUNTEST.
+	(check): Depend on check-runtest-@HAVE_RUNTEST@.
+	(check-runtest-yes, check-runtest-no): Renamed from check-runtest,
+	check-.
+
+2002-07-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (HAVE_RUNTEST): Include $(DEJAFLAGS).
+
 2000-08-08  Ezra Peisach  <epeisach@mit.edu>
 
 	* Makefile.in (KRB4_RUNTESTFLAGS): Set from configure.in and pass
 	to runtest if krb4 compatibility is enabled.
-	[pullup from trunk]
 
-1999-10-26  Tom Yu  <tlyu@mit.edu>
+1999-10-26  Wilfredo Sanchez  <tritan@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
-	Makefile cleanup. [from wsanchez@apple.com]
+	Makefile cleanup.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

@@ -2,28 +2,28 @@
 .\" All rights reserved.  The Berkeley software License Agreement
 .\" specifies the terms and conditions for redistribution.
 .\"
-.\"	@(#)rlogind.8c	6.3 (Berkeley) 5/24/86
+.\"	@(#)rlogind.8	6.3 (Berkeley) 5/24/86
 .\"
-.TH KLOGIND 8C
+.TH KLOGIND 8
 .SH NAME
 klogind \- remote login server
 .SH SYNOPSIS
 .B klogind
 [
-.B \-kr54cpPe
+.B \-kr54cpPef
 ]
-[
-[ \fB\-w\fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]] ]
+[[ \fB\-w\fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP ]] ]
+[ \fB\-D\fP \fIport\fP ]
 .SH DESCRIPTION
 .I Klogind
 is the server for the 
-.IR rlogin (1C)
+.IR rlogin (1)
 program.  The server is 
-based on rlogind(8C) but uses Kerberos authentication.
+based on rlogind(8) but uses Kerberos authentication.
 .PP
 The 
 .I klogind
-server is invoked by \fIinetd(8c)\fP when it receives a connection on
+server is invoked by \fIinetd(8)\fP when it receives a connection on
 the port indicated in /etc/inetd.conf.  A typical /etc/inetd.conf
 configuration line for \fIklogind\fP might be:
 
@@ -117,7 +117,7 @@ client is connecting from a privileged port, before allowing login.
 The parent of the login process manipulates the master side of the
 pseduo terminal, operating as an intermediary between the login
 process and the client instance of the
-.I rlogin(1C)
+.I rlogin(1)
 program.  In normal operation, the packet protocol described in
 .IR pty (4)
 is invoked to provide ^S/^Q type facilities and propagate interrupt
@@ -149,7 +149,7 @@ is stripped from the remote hostname.  By default, the equivalent of
 
 .PP
 .I Klogind
-supports three options which are used for testing
+supports five options which are used for testing
 purposes:
 
 .IP \fB\-S\ keytab\fP 10
@@ -163,6 +163,17 @@ Set the login program to use.  This option only has an effect if
 DO_NOT_USE_K_LOGIN was not defined when
 .I klogind
 was compiled.
+
+.IP \fB\-D\ port\fP
+Run in standalone mode, listening on \fBport\fP.  The daemon will exit
+after one connection and will not background itself.
+
+.IP \fB\-f\fP
+Allows for standalone daemon operation.  A new child is started for
+each incoming connection and waits for it to finish before accepting
+the next connection.  This automagically figures out which port to bind
+to if no port is specified.
+
 .SH DIAGNOSTICS
 All diagnostic messages are returned on the connection
 associated with the
@@ -180,6 +191,6 @@ by the server failed.
 .br
 The user's login shell could not be started.
 .SH SEE ALSO
-rlogind(8C), rlogin(1C)
+rlogind(8), rlogin(1)
 .SH BUGS
 A more extensible protocol should be used.
