@@ -1,111 +1,107 @@
-/*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.12 1996-08-10 21:38:19 cfields Exp $
- * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
- * $Author: cfields $
+/* Copyright 1996 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
- 
-#include	<sys/types.h>
-#include 	<string.h>
-#include	<dirent.h>
-#include	<ctype.h>
 
-struct	verfile {
-	int	mjr;	/* Major Version Number */
-	int	mnr; 	/* Minor Version Number */
-	int	deg;	/* Version Designation Char */
-} vf[1024];
+/* This is the source for the upvers program, which runs the
+ * appropriate scripts during the update process.
+ */
 
-#ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.12 1996-08-10 21:38:19 cfields Exp $";
-#endif
+static char rcsid[] = "$Id: upvers.c,v 1.13 1996-12-27 22:10:55 ghudson Exp $";
 
-main(argc, argv)
-int	argc;
-char	*argv[];
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
+
+struct verfile {
+  int major;
+  int minor;
+  int patch;
+};
+
+static int version_compare(const void *arg1, const void *arg2);
+
+int main(int argc, char **argv)
 {
+  struct verfile vf[1024], oldv, newv;
+  DIR *dp;
+  struct dirent *dirp;
+  int n = 0, i, start, end;
+  char filename[1024];
 
-	DIR	*dp;
-	int	n = 0, i;
-	int	oldmjr, oldmnr, newmjr, newmnr;
-	int	olddeg, newdeg, start, end, vcmp();
-	char	file[80];
-	extern	int	errno;
-	struct	dirent	*dirp;
+  if (argc < 4)
+    {
+      fprintf(stderr, "Usage: upvers <old-vers> <new-vers> <libdir>\n");
+      return 1;
+    }
 
-	if (argc < 4) 
-		puts("Usage: verup <old-vers> <new-vers> <libdir>"), exit(2);
+  /* Parse old-vers and new-vers. */
+  if (sscanf(argv[1], "%d.%d.%d", &oldv.major, &oldv.minor, &oldv.patch) != 3
+      || sscanf(argv[2], "%d.%d.%d", &newv.major, &newv.minor,
+		&newv.patch) != 3)
+    {
+      fprintf(stderr, "First two arguments must be dotted triplets.\n");
+      return 1;
+    }
 
-	if (chdir(argv[3]) == -1) 
-		perror(argv[3]), exit(1);
- 	oldmjr = atoi(strchr(argv[1], '.') - 1);
-	oldmnr = atoi(strrchr(argv[1], '.') + 1);
-	if (isalpha(argv[1][strlen(argv[1]) - 1]))
-		olddeg = argv[1][strlen(argv[1]) - 1];
-		
-	newmjr = atoi(strchr(argv[2], '.') - 1);
-	newmnr = atoi(strrchr(argv[2], '.') + 1);
-	if (isalpha(argv[2][strlen(argv[2]) - 1]))
-		newdeg = argv[2][strlen(argv[2]) - 1];
-		
-	if ((dp = opendir(".")) == NULL)
-		puts("Cannot open ."), exit(2);
-		
-	while (dirp = readdir(dp)) {
-		if(isdigit(dirp->d_name[0])) {
-			vf[n].mjr = atoi(strchr(dirp->d_name, '.') - 1);
-			vf[n].mnr = atoi(strrchr(dirp->d_name, '.') + 1);
-			if (isalpha(dirp->d_name[strlen(dirp->d_name) - 1]))
-				vf[n].deg = dirp->d_name[strlen(dirp->d_name) - 1];
-			n++;
-		}
-	}
-	qsort(vf, n, sizeof(struct verfile), vcmp);
-	start = n+1;			/* Default: assume no files */
-	end = n-1;			/* Default = last one */
-	for (i = 0; i < n; i++) {
-	    if (vf[i].mjr > oldmjr ||
-		(vf[i].mjr == oldmjr && vf[i].mnr > oldmnr) ||
-		(vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg > olddeg))
-		if (start > n) start = i;
-	    if (vf[i].mjr > newmjr ||
-		(vf[i].mjr == newmjr && vf[i].mnr > newmnr) ||
-		(vf[i].mjr == newmjr && vf[i].mnr == newmnr && vf[i].deg > newdeg))
-		if (end == n-1) end = i-1;
-	}
-	if (n == 0 || end < 0 || start > n) {
-	    printf("No files need to be run.\n");
-	    exit(0);
-	}
-	if (start > end ) {
-	    printf("Fatal error: starting version > ending version\n");
-	    exit(1);
-	}
+  /* Get the names of all the version files in libdir. */
+  dp = opendir(argv[3]);
+  if (!dp)
+    {
+      perror("opendir");
+      return 1;
+    }
+  while (dirp = readdir(dp))
+    {
+      if (sscanf(dirp->d_name, "%d.%d.%d", &vf[n].major, &vf[n].minor,
+		 &vf[n].patch) == 3)
+	n++;
+    }
+  closedir(dp);
 
-	for(i = start; i <= end; i++) {
-		sprintf(file, "%s/%d.%d%c", argv[3], vf[i].mjr, vf[i].mnr, vf[i].deg);
-		printf("Running %s\n", file);
-		system(file); 
-	}
+  /* Sort the version files names and decide where to start and end at. */
+  qsort(vf, n, sizeof(struct verfile), version_compare);
+  start = n + 1;
+  end = n;
+  for (i = 0; i < n; i++)
+    {
+      if (version_compare(&vf[i], &oldv) > 0 && start == n + 1)
+	start = i;
+      if (version_compare(&vf[i], &newv) > 0 && end == n)
+	end = i;
+    }
+
+  /* Now run the appropriate files. */
+  for (i = start; i < end; i++)
+    {
+      sprintf(filename, "%s/%d.%d.%d", argv[3], vf[i].major, vf[i].minor,
+	      vf[i].patch);
+      printf("Running %s\n", filename);
+      system(filename); 
+    }
+
+  return 0;
 }
 		
-vcmp(v1, v2)
-struct	verfile	*v1, *v2;
+static int version_compare(const void *arg1, const void *arg2)
 {
-	if (v1->mjr == v2->mjr) {
-		if (v1->mnr == v2->mnr) {
-			if (v1->deg == v2->deg) {
-				return 0;
-			} else if (v1->deg > v2->deg) {
-				return 1;
-			} else return -1;
-		} else if(v1->mnr > v2->mnr) {
-			return 1;
-		} else return -1;
-	}
-	else if(v1->mjr > v2->mjr)
-		return 1;
-	else return -1;
+  const struct verfile *v1 = (const struct verfile *) arg1;
+  const struct verfile *v2 = (const struct verfile *) arg2;
+
+  /* Compare major version, then minor version, then patchlevel. */
+  return (v1->major != v2->major) ? v1->major - v2->major
+    : (v1->minor != v2->minor) ? v1->minor - v2->minor
+    : v1->patch - v2->patch;
 }
-			
-				
-		
