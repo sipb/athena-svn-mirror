@@ -5,21 +5,17 @@
  * Copyright (C) 1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: tools.c,v 1.1 1999-03-06 16:48:49 ghudson Exp $
+ *	$Id: tools.c,v 1.2 1999-06-10 18:41:29 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] ="$Id: tools.c,v 1.1 1999-03-06 16:48:49 ghudson Exp $";
+static char rcsid[] ="$Id: tools.c,v 1.2 1999-06-10 18:41:29 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 #include "config.h"
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#else
-#include <sys/file.h>
-#endif
 #include <string.h>
 #include <stdio.h>
 #include <syslog.h>

@@ -8,12 +8,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: motd.c,v 1.17 1999-03-06 16:48:55 ghudson Exp $
+ *	$Id: motd.c,v 1.18 1999-06-10 18:41:30 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: motd.c,v 1.17 1999-03-06 16:48:55 ghudson Exp $";
+static char rcsid[] ="$Id: motd.c,v 1.18 1999-06-10 18:41:30 ghudson Exp $";
 #endif
 #endif
 
@@ -29,9 +29,7 @@ static char rcsid[] ="$Id: motd.c,v 1.17 1999-03-06 16:48:55 ghudson Exp $";
 #include <sys/time.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#ifdef HAVE_TIME_H
 #include <time.h>
-#endif
 
 #ifdef HAVE_DISCUSS
 #include <lumberjack.h>

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: utils.c,v 1.27 1999-03-06 16:47:41 ghudson Exp $
+ *	$Id: utils.c,v 1.28 1999-06-10 18:41:18 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: utils.c,v 1.27 1999-03-06 16:47:41 ghudson Exp $";
+static char rcsid[] ="$Id: utils.c,v 1.28 1999-06-10 18:41:18 ghudson Exp $";
 #endif
 #endif
 
@@ -214,11 +214,7 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
-#ifdef HAVE_SIGACTION
   struct sigaction sa, osa;
-#else /* don't HAVE_SIGACTION */
-  RETSIGTYPE (*func)(int);
-#endif /* don't HAVE_SIGACTION */
 
   pid = fork();
   if (pid == -1)
@@ -235,24 +231,18 @@ call_program(program, argument)
       }
     else 
       {
-#ifdef HAVE_SIGACTION
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sa.sa_handler= SIG_IGN;
 	sigaction(SIGINT, &sa, &osa);
-#else /* don't HAVE_SIGACTION */
-	func = signal(SIGINT, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
+
 	while (wait(0) != pid) 
 	  {
 			/* ho hum ... (yawn) */
             /* tap tap */
 	  };
-#ifdef HAVE_SIGACTION
+
 	sigaction(SIGINT, &osa, NULL);
-#else /* don't HAVE_SIGACTION */
-	signal(SIGINT, func);
-#endif /* don't HAVE_SIGACTION */
 	return(SUCCESS);
       }
 }

@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: rpd.c,v 1.19 1999-03-06 16:49:15 ghudson Exp $";
+static char *RCSid = "$Id: rpd.c,v 1.20 1999-06-10 18:41:35 ghudson Exp $";
 #endif
 #endif
 
@@ -48,9 +48,7 @@ main(argc, argv)
   int onoff;
   int nofork=0;
   int arg;
-#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif
 
 #ifdef PROFILE
     /* Turn off profiling on startup; that way, we collect "steady state" */
@@ -70,7 +68,6 @@ main(argc, argv)
   }
 
 
-#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = clean_up;
@@ -88,17 +85,6 @@ main(argc, argv)
   action.sa_handler = start_profile;     /* Start profiling */
   sigaction(SIGUSR2, &action, NULL);
 #endif /* PROFILE */
-#else /* don't HAVE_SIGACTION */
-  signal(SIGHUP,clean_up);
-  signal(SIGINT,clean_up);
-  signal(SIGTERM,clean_up);
-  signal(SIGPIPE,SIG_IGN);
-#ifdef PROFILE
-  signal(SIGUSR1, dump_profile); /* Dump profiling information and stop */
-  				 /* profiling */
-  signal(SIGUSR2, start_profile); /* Start profiling */
-#endif /* PROFILE */
-#endif /* don't HAVE_SIGACTION */
 
 #ifdef HAVE_SYSLOG
   openlog("rpd", LOG_CONS | LOG_PID, SYSLOG_FACILITY);

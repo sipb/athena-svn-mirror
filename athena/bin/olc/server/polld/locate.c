@@ -96,9 +96,7 @@ PTF *person;
   struct hostent *host;		/* Host entry for receiver */
   struct sockaddr_in sin;	/* Socket address */
   int len;
-#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif
 
   if (finger_port == 0) {
     struct servent *service;
@@ -126,25 +124,17 @@ PTF *person;
     return(LOC_ERROR);
   }
 
-#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = do_timeout;
   sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGALRM, do_timeout);
-#endif /* don't HAVE_SIGACTION */
   alarm(FINGER_TIMEOUT);
   setjmp(env);
 
   if (connect(fd, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
     alarm(0);
-#ifdef HAVE_SIGACTION
     action.sa_handler = SIG_IGN;             /* struct already initialized */
     sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-    signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
     close(fd);
     return(MACHINE_DOWN);
   } 
@@ -155,12 +145,8 @@ PTF *person;
   if (f == NULL) {
     syslog(LOG_ERR,"Error fdopening finger fd to %s: %m", person->machine);
     alarm(0);
-#ifdef HAVE_SIGACTION
     action.sa_handler = SIG_IGN;             /* struct already initialized */
     sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-    signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
     close(fd);
     return(LOC_ERROR);
   }
@@ -175,12 +161,8 @@ PTF *person;
   
   if (fclose(f) == EOF)
     syslog(LOG_ERR,"Error closing finger fd to %s: %m", person->machine);
-#ifdef HAVE_SIGACTION
   action.sa_handler = SIG_IGN;               /* struct already initialized */
   sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
   alarm(0);
 
   return(new_status);

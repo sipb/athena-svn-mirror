@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.21 1999-03-06 16:47:59 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.22 1999-06-10 18:41:23 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.21 1999-03-06 16:47:59 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.22 1999-06-10 18:41:23 ghudson Exp $";
 #endif
 #endif
 
@@ -38,9 +38,7 @@ static char rcsid[] ="$Id: p_cmdloop.c,v 1.21 1999-03-06 16:47:59 ghudson Exp $"
 #include <olc/olc_parser.h>
 #include <signal.h>
 #include <ctype.h>
-#ifdef HAVE_TIME_H
 #include <time.h>
-#endif
 
 int subsystem = 0;		/* (initial value) */
 extern char **environ;

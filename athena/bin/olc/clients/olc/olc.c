@@ -19,15 +19,19 @@
  *	Lucien Van Elsen
  *      MIT Project Athena
  *
- * Copyright (C) 1989-1997 by the Massachusetts Institute of Technology.
+ *      Richard Tibbetts
+ *      MIT Information Systems
+ *      Converted to assume POSIX.
+ *
+ * Copyright (C) 1989-1999 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.c,v 1.40 1999-03-06 16:47:50 ghudson Exp $
+ *	$Id: olc.c,v 1.41 1999-06-10 18:41:20 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olc.c,v 1.40 1999-03-06 16:47:50 ghudson Exp $";
+static char rcsid[] ="$Id: olc.c,v 1.41 1999-06-10 18:41:20 ghudson Exp $";
 #endif
 #endif
 
@@ -168,9 +172,7 @@ main(argc, argv)
   char *prompt = NULL;
   char *config;
   ERRCODE status;
-#ifdef HAVE_SIGACTION
   struct sigaction act;
-#endif /* HAVE_SIGACTION */
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -233,14 +235,11 @@ main(argc, argv)
 
   Command_Table = build_command_table(Command_Table_Template);
 
-#ifdef HAVE_SIGACTION
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   act.sa_handler= SIG_IGN;
   sigaction(SIGPIPE, &act, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGPIPE, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
+
   if (argc)
     {
       OInitialize();

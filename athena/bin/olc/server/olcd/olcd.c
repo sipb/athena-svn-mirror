@@ -10,12 +10,12 @@
  * Copyright (C) 1990-1997 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olcd.c,v 1.64 1999-03-06 16:48:57 ghudson Exp $
+ *	$Id: olcd.c,v 1.65 1999-06-10 18:41:32 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olcd.c,v 1.64 1999-03-06 16:48:57 ghudson Exp $";
+static char rcsid[] ="$Id: olcd.c,v 1.65 1999-06-10 18:41:32 ghudson Exp $";
 #endif
 #endif
 
@@ -147,9 +147,7 @@ int main (int argc, char **argv)
 #ifdef HAVE_HESIOD
   char **hp;				/* return value of Hesiod resolver */
 #endif
-#ifdef HAVE_SIGACTION
   struct sigaction action;		/* POSIX signal structure */
-#endif
 
   /* Before doing *anything* that might cause a coredump, move any old
    * coredumps out of the way.
@@ -499,7 +497,6 @@ restart:
     processing_request = 0;
     got_signal = 0;
 
-#ifdef HAVE_SIGACTION
     action.sa_flags = 0;
     sigemptyset(&action.sa_mask);
 
@@ -521,18 +518,6 @@ restart:
     action.sa_handler = start_profile;
     sigaction(SIGUSR2, &action, NULL); /* Start profiling */
 #endif /* PROFILE */
-#else /* don't HAVE_SIGACTION */
-    signal(SIGINT, punt);	/* ^C on control tty (for test mode) */
-    signal(SIGHUP, punt);	/* kill -1 $$ */
-    signal(SIGTERM, punt);	/* kill $$ */
-    signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
-    signal(SIGPIPE, SIG_IGN);
-#ifdef PROFILE
-    signal(SIGUSR1, dump_profile); /* Dump profiling information and stop */
-				   /* profiling */
-    signal(SIGUSR2, start_profile); /* Start profiling */
-#endif /* PROFILE */
-#endif /* don't HAVE_SIGACTION */
 
     sprintf(buf,"%s Daemon successfully started.  Waiting for requests.",
 	    DaemonInst);
@@ -838,16 +823,9 @@ reap_child(int sig)
 #ifdef SABER
   sig = sig;
 #endif
-#ifdef HAVE_WAITPID
   pid = waitpid(-1, &status, WNOHANG);
   while(pid > 0)
     pid = waitpid(-1, &status, WNOHANG);
-#else /* don't HAVE_WAITPID */
-  signal(SIGCHLD, reap_child);  /* Reset the handler if needed (non-POSIX) */
-  pid = wait3(&status,WNOHANG,NULL);
-  while(pid > 0)
-    pid = wait3(&status,WNOHANG,NULL);
-#endif /* don't HAVE_WAITPID */
   return;
 }
 

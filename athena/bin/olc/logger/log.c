@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking library
  *
- * $Id: log.c,v 1.13 1999-03-06 16:48:43 ghudson Exp $
+ * $Id: log.c,v 1.14 1999-06-10 18:41:27 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Id: log.c,v 1.13 1999-03-06 16:48:43 ghudson Exp $";
+static char rcsid[] = "$Id: log.c,v 1.14 1999-06-10 18:41:27 ghudson Exp $";
 #endif
 #endif
 
@@ -22,9 +22,7 @@ static char rcsid[] = "$Id: log.c,v 1.13 1999-03-06 16:48:43 ghudson Exp $";
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
-#ifdef HAVE_TIME_H
 #include <time.h>
-#endif
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>

@@ -8,12 +8,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.c,v 1.15 1999-03-06 16:49:09 ghudson Exp $
+ *	$Id: polld.c,v 1.16 1999-06-10 18:41:34 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: polld.c,v 1.15 1999-03-06 16:49:09 ghudson Exp $";
+static char rcsid[] ="$Id: polld.c,v 1.16 1999-06-10 18:41:34 ghudson Exp $";
 #endif
 #endif
 
@@ -95,9 +95,7 @@ int main(int argc, char **argv)
   int fd;
   int retval;
   char *dhost = NULL;
-#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif
 
 #ifdef PROFILE
   /* Turn off profiling on startup; that way, we collect "steady state" */
@@ -147,7 +145,6 @@ int main(int argc, char **argv)
   set_env_var("KRBTKFILE", TICKET_FILE);    /* piggyback on olcd's tickets */
 #endif /* HAVE_KRB4 */
 
-#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = clean_up;
@@ -158,12 +155,6 @@ int main(int argc, char **argv)
 
   action.sa_handler = SIG_IGN;
   sigaction(SIGPIPE, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGHUP,clean_up);
-  signal(SIGINT,clean_up);
-  signal(SIGTERM,clean_up);
-  signal(SIGPIPE,SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
   
 #ifdef HAVE_SYSLOG
   openlog ("polld", LOG_CONS | LOG_PID, SYSLOG_FACILITY);

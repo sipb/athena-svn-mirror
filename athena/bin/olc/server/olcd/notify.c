@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: notify.c,v 1.41 1999-03-06 16:48:56 ghudson Exp $
+ *	$Id: notify.c,v 1.42 1999-06-10 18:41:31 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: notify.c,v 1.41 1999-03-06 16:48:56 ghudson Exp $";
+static char rcsid[] ="$Id: notify.c,v 1.42 1999-06-10 18:41:31 ghudson Exp $";
 #endif
 #endif
 
@@ -109,9 +109,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	int flag = 0;
 	long time_now;
 	unsigned long ip_addr;
-#ifdef HAVE_SIGACTION
 	struct sigaction action;
-#endif
 
 	if (touser == (char *)NULL) /* User sanity check. */
 		return(ERROR);
@@ -186,26 +184,19 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		exit(2);
 	}
 
-#ifdef HAVE_SIGACTION
 	action.sa_flags = 0;
 	sigemptyset(&action.sa_mask);
 	action.sa_handler = notice_timeout;
 	sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-        signal(SIGALRM, notice_timeout);
-#endif /* don't HAVE_SIGACTION */
+
         if(setjmp(env) != 0) {
                 log_status("Unable to contact writed on %s", tomachine);
 		if(tf!=NULL)
 		  fclose(tf);
 		close(fds);
                 alarm(0);
-#ifdef HAVE_SIGACTION
 		action.sa_handler = SIG_IGN; /* struct already initialized */
 		sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-		signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
                 return(ERROR);
         }
         alarm(OLCD_TIMEOUT);
@@ -213,12 +204,8 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 
 	if (connect(fds, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
 	  alarm(0);
-#ifdef HAVE_SIGACTION
 	  action.sa_handler = SIG_IGN;       /* struct already initialized */
 	  sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-	  signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 	  (void) close(fds);
 	  return(MACHINE_DOWN);
 	}
@@ -235,12 +222,8 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		  (void) fclose(tf);
 		  (void) close(fds);
 		  alarm(0);
-#ifdef HAVE_SIGACTION
 		  action.sa_handler = SIG_IGN; /* struct already initialized */
 		  sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-		  signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 		  return(LOGGED_OUT);
 		}
 		if (buf[0] == '\n')
@@ -252,12 +235,8 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	(void) fclose(tf);
 	(void) close(fds);
 	alarm(0);
-#ifdef HAVE_SIGACTION
 	action.sa_handler = SIG_IGN;         /* struct already initialized */
 	sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-	signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 	return(SUCCESS);
 }
 
@@ -485,21 +464,13 @@ zsend(notice)
   int ret;
   ZNotice_t retnotice;
   char buf[BUFSIZ];
-#ifdef HAVE_SIGPROCMASK
   sigset_t sigchld, oldmask;
-#else /* don't HAVE_SIGPROCMASK */
-  int sigm;
-#endif /* don't HAVE_SIGPROCMASK */
-#ifdef HAVE_SIGACTION
   struct sigaction action;
 
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = notice_timeout;
   sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGALRM, notice_timeout);
-#endif /* don't HAVE_SIGACTION */
 
   alarm(6 * OLCD_TIMEOUT);	/* Longer timeout than for "write". */
 
@@ -508,12 +479,8 @@ zsend(notice)
       toggle_zephyr(1,ZEPHYR_PUNT_TIME);
       log_zephyr_error("Unable to send message via zephyr.  Punting.");
       alarm(0);
-#ifdef HAVE_SIGACTION
       action.sa_handler = SIG_IGN;           /* struct already initialized */
       sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-      signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
@@ -524,24 +491,16 @@ zsend(notice)
       log_zephyr_error("zsend: error '%s' (%d) from ZSendNotice",
 		       error_message(ret), ret);
       alarm(0);
-#ifdef HAVE_SIGACTION
       action.sa_handler = SIG_IGN;           /* struct already initialized */
       sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-      signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
   if(notice->z_kind != ACKED)
     {
       alarm(0);			/* If notice isn't acked, no need to wait. */
-#ifdef HAVE_SIGACTION
       action.sa_handler = SIG_IGN;           /* struct already initialized */
       sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-      signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
       return(SUCCESS);
     }
 
@@ -552,47 +511,28 @@ zsend(notice)
    * system call error message.
    */
 
-#ifdef HAVE_SIGPROCMASK
   sigemptyset(&sigchld);
   sigaddset(&sigchld, SIGCHLD);
   sigprocmask(SIG_BLOCK, &sigchld, &oldmask);
-#else /* don't HAVE_SIGPROCMASK */
-  sigm = sigblock(sigmask(SIGCHLD));
-#endif /* don't HAVE_SIGPROCMASK */
+
   ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
 		  ZCompareUIDPred, (char *) &notice->z_uid);
   if (ret != ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-#ifdef HAVE_SIGPROCMASK
       sigprocmask(SIG_SETMASK, &oldmask, NULL);
-#else /* don't HAVE_SIGPROCMASK */
-      sigsetmask(sigm);
-#endif /* don't HAVE_SIGPROCMASK */
       log_zephyr_error("zsend: error %s from ZIfNotice",error_message(ret));
       ZFreeNotice(&retnotice);
       alarm(0);
-#ifdef HAVE_SIGACTION
       action.sa_handler = SIG_IGN;           /* struct already initialized */
       sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-      signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
       return(ERROR);
     }
 
-#ifdef HAVE_SIGPROCMASK
   sigprocmask(SIG_SETMASK, &oldmask, NULL);
-#else /* don't HAVE_SIGPROCMASK */
-  sigsetmask(sigm);
-#endif /* don't HAVE_SIGPROCMASK */
   alarm(0);			/* If ZIfNotice came back, shut off alarm. */
-#ifdef HAVE_SIGACTION
   action.sa_handler = SIG_IGN;               /* struct already initialized */
   sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGALRM, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 
   if (retnotice.z_kind == SERVNAK)
     {

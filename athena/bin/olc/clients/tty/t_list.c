@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_list.c,v 1.22 1999-03-06 16:48:09 ghudson Exp $
+ *	$Id: t_list.c,v 1.23 1999-06-10 18:41:25 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_list.c,v 1.22 1999-03-06 16:48:09 ghudson Exp $";
+static char rcsid[] ="$Id: t_list.c,v 1.23 1999-06-10 18:41:25 ghudson Exp $";
 #endif
 #endif
 
@@ -32,9 +32,7 @@ static char rcsid[] ="$Id: t_list.c,v 1.22 1999-03-06 16:48:09 ghudson Exp $";
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
-#ifdef HAVE_TIME_H
 #include <time.h>
-#endif
 
 static const char *const default_sort_order[] = {
     "foo",

@@ -10,11 +10,11 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: procs.c,v 1.30 1999-03-06 16:47:45 ghudson Exp $
+ *      $Id: procs.c,v 1.31 1999-06-10 18:41:19 ghudson Exp $
  */
 
 #ifndef lint
-static char rcsid[]="$Id: procs.c,v 1.30 1999-03-06 16:47:45 ghudson Exp $";
+static char rcsid[]="$Id: procs.c,v 1.31 1999-06-10 18:41:19 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -70,11 +70,7 @@ reaper(sig)
   int pid;
   Arg args[1];
 
-#ifdef HAVE_WAITPID
   pid = waitpid(-1, &foo, WNOHANG);
-#else /* don't HAVE_WAITPID */
-  pid = wait3(&foo, WNOHANG, 0);
-#endif /* don't HAVE_WAITPID */
   if (pid <= 0)
     return;
   if (pid == sa_pid) {
@@ -88,16 +84,12 @@ reaper(sig)
 static RETSIGTYPE
 view_ready(sig)
 {
-#ifdef HAVE_SIGACTION
   struct sigaction act;
 
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
   act.sa_handler= SIG_IGN;
   sigaction(SIGUSR1, &act, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGUSR1, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
   STANDARD_CURSOR;
   return;
 }  
@@ -512,9 +504,7 @@ olc_stock (w, tag, callback_data)
 {
   Arg args[1];
   char pidascii[7];
-#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif /* don't HAVE_SIGACTION */
 
   WAIT_CURSOR;
   XtSetArg(args[0],XmNsensitive,FALSE);
@@ -533,7 +523,6 @@ olc_stock (w, tag, callback_data)
       _exit(1);
     }
   }
-#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
 
@@ -542,10 +531,6 @@ olc_stock (w, tag, callback_data)
   
   action.sa_handler = view_ready;
   sigaction(SIGUSR1, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGCHLD,reaper);
-  signal(SIGUSR1,view_ready);
-#endif /* don't HAVE_SIGACTION */
 
 #ifdef LOG_USAGE
   log_view("browser_start");

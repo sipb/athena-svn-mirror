@@ -23,13 +23,13 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Id: signal.c,v 1.12 1999-03-06 16:47:24 ghudson Exp $
+ *	$Id: signal.c,v 1.13 1999-06-10 18:41:14 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Id: signal.c,v 1.12 1999-03-06 16:47:24 ghudson Exp $";
+static char *rcsid_cref_c = "$Id: signal.c,v 1.13 1999-06-10 18:41:14 ghudson Exp $";
 #endif
 #endif
 
@@ -59,7 +59,6 @@ void init_signals P((void));
 void
 init_signals()
 {
-#ifdef HAVE_SIGACTION
   struct sigaction act;
 
   sigemptyset(&act.sa_mask);
@@ -68,10 +67,6 @@ init_signals()
   sigaction(SIGINT, &act, NULL);
   act.sa_handler = handle_resize_event;
   sigaction(SIGWINCH, &act, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGINT, handle_interrupt_event);
-  signal(SIGWINCH, handle_resize_event);
-#endif /* don't HAVE_SIGACTION */
 }
 
 static RETSIGTYPE
@@ -81,16 +76,12 @@ handle_resize_event(sig)
     struct winsize ws;
     int lines;
     int cols;
-#ifdef HAVE_SIGACTION
     struct sigaction act;
 
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     act.sa_handler= SIG_IGN;
     sigaction(SIGWINCH, &act, NULL);
-#else /* don't HAVE_SIGACTION */
-    signal(SIGWINCH, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 
     /*  Find out the new size.  */
 
@@ -128,12 +119,10 @@ handle_resize_event(sig)
     addstr(Prompt);
     clrtoeol();
     refresh();
-#ifdef HAVE_SIGACTION
+
     act.sa_handler= handle_resize_event;
     sigaction(SIGWINCH, &act, NULL);
-#else /* don't HAVE_SIGACTION */
-    signal(SIGWINCH, handle_resize_event);
-#endif /* don't HAVE_SIGACTION */
+
     return;
 }
 
@@ -143,16 +132,12 @@ static RETSIGTYPE
 handle_interrupt_event(sig)
      int sig;
 {
-#ifdef HAVE_SIGACTION
     struct sigaction act;
 
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     act.sa_handler= SIG_IGN;
     sigaction(SIGINT, &act, NULL);  
-#else /* don't HAVE_SIGACTION */
-    signal(SIGINT, SIG_IGN);
-#endif /* don't HAVE_SIGACTION */
 
     quit();
 }

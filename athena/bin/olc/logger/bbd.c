@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Id: bbd.c,v 1.17 1999-03-06 16:48:42 ghudson Exp $
+ * $Id: bbd.c,v 1.18 1999-06-10 18:41:27 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Id: bbd.c,v 1.17 1999-03-06 16:48:42 ghudson Exp $";
+static char rcsid_[] = "$Id: bbd.c,v 1.18 1999-06-10 18:41:27 ghudson Exp $";
 #endif
 #endif
 
@@ -121,16 +121,12 @@ RETSIGTYPE
 do_tick(int sig)
 {
   long now;
-#ifdef HAVE_SIGACTION
   struct sigaction action;
 
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = do_tick;
   sigaction(SIGALRM, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGALRM,do_tick);
-#endif /* don't HAVE_SIGACTION */
 
   alarm(60 * tick);
   now = time(0);
@@ -166,14 +162,8 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
-#ifdef HAVE_SIGACTION
   struct sigaction action;
-#endif /* HAVE_SIGACTION */
-#ifdef HAVE_SIGPROCMASK
   sigset_t oldmask, alarmmask;
-#else /* don't HAVE_SIGPROCMASK */
-  int oldmask, alarmmask;
-#endif /* don't HAVE_SIGPROCMASK */
   char *pidfile = "/usr/local/bin/bbd.pid";
 
   for (i=1;i<argc;i++) {
@@ -336,25 +326,18 @@ main(argc, argv)
     exit(1);
   }
   
-#ifdef HAVE_SIGACTION
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
   action.sa_handler = handle_hup;
   sigaction(SIGHUP, &action, NULL);
-#else /* don't HAVE_SIGACTION */
-  signal(SIGHUP,handle_hup);
-#endif /* don't HAVE_SIGACTION */
 
   if (tick != 0) {
     do_tick(0);
   }
 
-#ifdef HAVE_SIGPROCMASK
   sigemptyset(&alarmmask);
   sigaddset(&alarmmask, SIGALRM);
-#else /* don't HAVE_SIGPROCMASK */
-  alarmmask = sigmask(SIGALRM);
-#endif /* don't HAVE_SIGPROCMASK */
+
   while (1) {
     len = sizeof(struct sockaddr_in);
     rlen = recvfrom(fd,buf,1024,0,&from,&len);
@@ -365,11 +348,9 @@ main(argc, argv)
 #endif
       continue;
     }
-#ifdef HAVE_SIGPROCMASK
+
     sigprocmask(SIG_BLOCK, &alarmmask, &oldmask);
-#else /* don't HAVE_SIGPROCMASK */
-    oldmask = sigblock(alarmmask);
-#endif /* don't HAVE_SIGPROCMASK */
+
     if (buf[0] == 'S')
       handle_startup(fd,&buf[1],(rlen-1),from,lf);
     else {
@@ -377,11 +358,8 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
-#ifdef HAVE_SIGPROCMASK
+
     sigprocmask(SIG_BLOCK, &oldmask, NULL);
-#else /* don't HAVE_SIGPROCMASK */
-    sigblock(oldmask);
-#endif /* don't HAVE_SIGPROCMASK */
   }
 }
 
