@@ -32,5 +32,6 @@ struct hash {
 extern struct hash *create_hash();
 extern caddr_t hash_lookup();
 extern int hash_store();
+extern caddr_t hash_give_any_value();
 
 #endif /* _hash_h */
