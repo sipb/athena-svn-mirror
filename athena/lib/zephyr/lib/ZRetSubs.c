@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.13 1988-06-29 16:40:35 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.14 1988-06-29 16:51:57 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.13 1988-06-29 16:40:35 jtkohl Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.14 1988-06-29 16:51:57 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -127,7 +127,7 @@ static Code_t Z_RetSubs(notice, nsubs)
 			malloc((unsigned)(__subscriptions_num*
 					  sizeof(ZSubscription_t)));
 		if (!__subscriptions_list) {
-			ZFreeNotice(&notice);
+			ZFreeNotice(&retnotice);
 			return (ENOMEM);
 		}
 	
@@ -135,7 +135,7 @@ static Code_t Z_RetSubs(notice, nsubs)
 			__subscriptions_list[i].class = (char *)
 				malloc((unsigned)strlen(ptr)+1);
 			if (!__subscriptions_list[i].class) {
-				ZFreeNotice(&notice);
+				ZFreeNotice(&retnotice);
 				return (ENOMEM);
 			}
 			(void) strcpy(__subscriptions_list[i].class,ptr);
@@ -143,7 +143,7 @@ static Code_t Z_RetSubs(notice, nsubs)
 			__subscriptions_list[i].classinst = (char *)
 				malloc((unsigned)strlen(ptr)+1);
 			if (!__subscriptions_list[i].classinst) {
-				ZFreeNotice(&notice);
+				ZFreeNotice(&retnotice);
 				return (ENOMEM);
 			}
 			(void) strcpy(__subscriptions_list[i].classinst,ptr);
@@ -154,7 +154,7 @@ static Code_t Z_RetSubs(notice, nsubs)
 			__subscriptions_list[i].recipient = (char *)
 				malloc((unsigned)strlen(ptr2)+1);
 			if (!__subscriptions_list[i].recipient) {
-				ZFreeNotice(&notice);
+				ZFreeNotice(&retnotice);
 				return (ENOMEM);
 			}
 			(void) strcpy(__subscriptions_list[i].recipient,ptr2);
