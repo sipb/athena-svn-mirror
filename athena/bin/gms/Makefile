@@ -1,13 +1,13 @@
 #  This file is part of the Project Athena Global Message System.
 #  Created by: Mark W. Eichin <eichin@athena.mit.edu>
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v $
-#  $Author: raeburn $
+#  $Author: epeisach $
 # 
 # 	Copyright (c) 1988 by the Massachusetts Institute of Technology.
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.2 1988-11-01 16:38:48 raeburn Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.3 1989-01-27 14:25:25 epeisach Exp $
 # Generic one project, one target makefile.
 #
 
@@ -22,6 +22,8 @@ ETSRCS= gethost_err.et globalmessage_err.et hesiod_err.et
 ETINCS= gethost_err.h globalmessage_err.h hesiod_err.h
 
 ETOBJS= gethost_err.o globalmessage_err.o hesiod_err.o
+
+ETCSRC= gethost_err.c globalmessage_err.c hesiod_err.c
 
 OBJS= get_a_message.o get_fallback_file.o get_message.o get_message_from_server.o get_servername.o gethost_errors.o hesiod_errors.o put_fallback_file.o read_to_memory.o view_message_by_tty.o view_message_by_zephyr.o check_viewable.o
 
@@ -74,29 +76,28 @@ $(LIB):	$(OBJS) $(ETOBJS)
 $(ETINCS):	$(ETSRCS)
 	$(COMPILE_ET) $*.et
 
-$(ETOBJS):	$(ETSRCS)
+$(ETCSRC):	$(ETSRCS)
 	$(COMPILE_ET) $*.et
+
+$(ETOBJS):	$(ETCSRC)
 
 depend: $(ETINCS)
 	${DEPEND} -v ${CFLAGS} -s'# DO NOT DELETE' $(CSRCS) $(MODS)
 
 # DO NOT DELETE THIS LINE
 
-check_viewable.o: /usr/include/mit-copyright.h globalmessage.h
+get_a_message.o: /usr/include/mit-copyright.h globalmessage.h
 # globalmessage.h includes:
 #	errno.h
 #	globalmessage_err.h
-check_viewable.o: /usr/include/errno.h globalmessage_err.h
-check_viewable.o: /usr/include/strings.h /usr/include/sys/types.h
-check_viewable.o: /usr/include/sys/file.h /usr/include/pwd.h
-get_a_message.o: /usr/include/mit-copyright.h globalmessage.h
 get_a_message.o: /usr/include/errno.h globalmessage_err.h
+get_a_message.o: /usr/include/syslog.h
 get_fallback_file.o: /usr/include/mit-copyright.h globalmessage.h
 get_fallback_file.o: /usr/include/errno.h globalmessage_err.h
 get_fallback_file.o: /usr/include/sys/file.h
 get_message.o: /usr/include/mit-copyright.h globalmessage.h
 get_message.o: /usr/include/errno.h globalmessage_err.h /usr/include/stdio.h
-get_message.o: /usr/include/sys/types.h
+get_message.o: /usr/include/sys/types.h /usr/include/syslog.h
 get_message_from_server.o: /usr/include/mit-copyright.h globalmessage.h
 get_message_from_server.o: /usr/include/errno.h globalmessage_err.h
 get_message_from_server.o: /usr/include/sys/types.h /usr/include/sys/socket.h
@@ -112,12 +113,10 @@ gethost_errors.o: /usr/include/mit-copyright.h gethost_err.h
 gethost_errors.o: /usr/include/netdb.h
 hesiod_errors.o: /usr/include/mit-copyright.h hesiod_err.h
 hesiod_errors.o: /usr/include/hesiod.h
-message_daemon.o: /usr/include/mit-copyright.h globalmessage.h
-message_daemon.o: /usr/include/errno.h globalmessage_err.h
-message_daemon.o: /usr/include/fcntl.h
 put_fallback_file.o: /usr/include/mit-copyright.h globalmessage.h
 put_fallback_file.o: /usr/include/errno.h globalmessage_err.h
-put_fallback_file.o: /usr/include/sys/file.h
+put_fallback_file.o: /usr/include/sys/file.h /usr/include/sys/types.h
+put_fallback_file.o: /usr/include/sys/time.h /usr/include/sys/time.h
 read_to_memory.o: /usr/include/mit-copyright.h globalmessage.h
 read_to_memory.o: /usr/include/errno.h globalmessage_err.h
 view_message_by_tty.o: /usr/include/mit-copyright.h globalmessage.h
@@ -125,4 +124,8 @@ view_message_by_tty.o: /usr/include/errno.h globalmessage_err.h
 view_message_by_zephyr.o: /usr/include/mit-copyright.h globalmessage.h
 view_message_by_zephyr.o: /usr/include/errno.h globalmessage_err.h
 view_message_by_zephyr.o: /usr/include/pwd.h /usr/include/stdio.h
-view_message_by_zephyr.o: /usr/include/strings.h
+view_message_by_zephyr.o: /usr/include/strings.h /usr/include/syslog.h
+check_viewable.o: /usr/include/mit-copyright.h globalmessage.h
+check_viewable.o: /usr/include/errno.h globalmessage_err.h
+check_viewable.o: /usr/include/strings.h /usr/include/sys/types.h
+check_viewable.o: /usr/include/sys/file.h /usr/include/pwd.h
