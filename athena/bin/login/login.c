@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.87.2.3 1997-08-12 03:46:46 ghudson Exp $
+ * $Id: login.c,v 1.87.2.4 1997-09-10 01:15:58 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.87.2.3 1997-08-12 03:46:46 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.87.2.4 1997-09-10 01:15:58 ghudson Exp $";
 #endif
 
 /*
@@ -390,6 +390,14 @@ main(argc, argv)
      */
 
     while (argc > 1) {
+	if (strcmp(argv[1], "-d") == 0) {
+	    /* This flag can be passed to the System V login to specify a tty
+	     * name instead of calling ttyname().  Just ignore it. */
+	    if (argv[2] == 0)
+		exit(1);
+	    argc -= 2;
+	    argv += 2;
+	}
 	if (strcmp(argv[1], "-r") == 0) {
 	    if (rflag || kflag || Kflag || hflag) {
 		printf("Only one of -r -k -K or -h allowed\n");
