@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.5 1989-08-04 11:16:09 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.6 1989-08-07 14:49:24 tjcoppet Exp $";
 #endif
 
 
@@ -83,6 +83,7 @@ do_olc_topic(arguments)
 	 string_equiv(*arguments,"-file",max(strlen(*arguments),2)))
 	{
           ++arguments;
+	  unlink(file);
 	  if(*arguments == (char *) NULL)
 	    {
                fprintf(stderr,"You must specify a file name after the");
@@ -124,7 +125,6 @@ do_olc_topic(arguments)
       break;
 
     case 1:   
-      make_temp_name(file);
       status = t_list_topics(&Request,file,!save_file);
       if((status != SUCCESS) || (save_file == FALSE))
 	unlink(file);
