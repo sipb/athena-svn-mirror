@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2.4.2 1999-11-10 06:03:46 ghudson Exp $
+# $Id: syncconf.sh,v 1.2.4.3 1999-12-06 04:26:49 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -130,6 +130,11 @@ handle()
 			put	/etc/inet/netmasks "# Netmask for this host"
 			append	/etc/inet/netmasks "$ADDR	$netmask"
 		fi
+
+		# Decrease the likelihood that the machine reboots
+		# uncleanly before the new files are written out to
+		# disk.  A more robust algorithm is in the works.
+		sync
 
 		# Hostname configuration happens prior to rc2 scripts on
 		# Solaris.
