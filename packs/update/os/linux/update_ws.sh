@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.2 2000-02-05 16:39:35 ghudson Exp $
+# $Id: update_ws.sh,v 1.3 2000-02-07 22:23:34 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -74,7 +74,7 @@ esac
 # and/or NEW_PRODUCTION_RELEASE if there are new full releases
 # available, and will also set sysprefix and syscontrol to the
 # correct paths for the current full release.
-unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE sysprefix syscontrol
+unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
 /etc/athena/save_cluster_info
 if [ -f /var/athena/clusterinfo.bsh ]; then
 	. /var/athena/clusterinfo.bsh
