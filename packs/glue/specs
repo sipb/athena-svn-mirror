@@ -25,6 +25,7 @@ xinfo		xmit
 show-application	mimeutils
 show-audio	mimeutils
 show-binhex	mimeutils
+show-excel	mimeutils
 show-image	mimeutils
 show-msword	mimeutils
 show-pdf	mimeutils

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.38 2000-03-08 16:46:50 tb Exp $
+# $Id: Makefile,v 1.39 2000-03-25 05:38:50 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -9,7 +9,7 @@ ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
 	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
 	olh_motif pts stella usermaint vos xinfo \
-	show-application show-audio show-binhex show-image \
+	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
@@ -108,6 +108,7 @@ install:
 	install -c -m 555 show-application ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-audio ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-binhex ${DESTDIR}${ATHLIBEXECDIR}
+	install -c -m 555 show-excel ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-image ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-msword ${DESTDIR}${ATHLIBEXECDIR}
 	install -c -m 555 show-pdf ${DESTDIR}${ATHLIBEXECDIR}
