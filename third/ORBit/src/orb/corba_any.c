@@ -162,7 +162,7 @@ ORBit_marshal_value(GIOPSendBuffer *buf,
 	break;
     case CORBA_tk_objref:
 	*val = ALIGN_ADDRESS(*val, ALIGNOF_CORBA_POINTER);
-	ORBit_marshal_object(buf, *val);
+	ORBit_marshal_object(buf, *(CORBA_Object *)*val);
 	*val = ((guchar *)*val) + sizeof(CORBA_Object);
 	break;
     case CORBA_tk_except:
