@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.11 2001-07-09 13:41:26 ghudson Exp $
+;; $Id: site-init.jl,v 1.12 2001-07-09 21:49:31 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -17,6 +17,9 @@
 (setq focus-mode 'click)
 (setq raise-windows-on-focus t)
 (setq raise-window-timeout 0)
+
+;; Tooltips seem to be more confusing than helpful at the moment.
+(setq tooltips-enabled f)
 
 ;; Key bindings
 (unbind-keys border-keymap "Button3-Off")
