@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.17 1991-05-08 10:59:36 lwvanels Exp $
+ *	$Id: io.c,v 1.18 1991-09-10 11:18:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.17 1991-05-08 10:59:36 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.18 1991-09-10 11:18:06 lwvanels Exp $";
 #endif
 #endif
 
@@ -298,7 +298,7 @@ open_connection_to_daemon(request, fd)
 
       sin.sin_family = AF_INET;
 
-      port_env = getenv ("OLCD_PORT");
+      port_env = (char *) getenv ("OLCD_PORT");
       if (port_env != NULL)
 	  sin.sin_port = htons (atoi (port_env));
       else {
