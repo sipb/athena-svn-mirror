@@ -6,7 +6,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v $
  *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.8 1993-11-19 16:04:47 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.9 1994-03-15 12:44:40 probe Exp $
  *
  */
 
@@ -59,7 +59,7 @@ typedef struct _timer {
 #define ALARM_ARG(x)  ((x)->arg)
 #define TIMER_SIZE sizeof(struct _timer)
 
-#define NOW (gettimeofday(&t_local, (struct timezone *)0), t_local.tv_sec)
+#define NOW t_local.tv_sec
 typedef void (*timer_proc) P((void *));
 extern timer timer_set_rel P((long, timer_proc, void*));
 extern timer timer_set_abs P((long, timer_proc, void*));
