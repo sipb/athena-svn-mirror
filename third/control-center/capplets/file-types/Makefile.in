@@ -149,7 +149,7 @@ bin_PROGRAMS = file-types-capplet
 file_types_capplet_SOURCES =  	file-types-capplet.h 			file-types-capplet-dialogs.h 		file-types-icon-entry.h			file-types-capplet.c			file-types-capplet-dialogs.c 		file-types-icon-entry.c			$(NULL)
 
 
-file_types_capplet_LDADD =  	../../control-center/libcapplet.la		$(ORBIT_LIBS)					$(INTLLIBS)					$(VFS_LIBS)					-lgdk_pixbuf					$/libuuid/libuuid.a				$(NULL)
+file_types_capplet_LDADD =  	../../control-center/libcapplet.la		-loaf						-lgdk_imlib					$(ORBIT_LIBS)					$(INTLLIBS)					$(VFS_LIBS)					-lgdk_pixbuf					$/libuuid/libuuid.a				$(NULL)
 
 
 sysdir = $(datadir)/control-center/Documents
@@ -186,7 +186,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(file_types_capplet_SOURCES)
 OBJECTS = $(file_types_capplet_OBJECTS)
@@ -404,7 +404,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -421,17 +421,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-file-types-capplet-dialogs.o: file-types-capplet-dialogs.c \
-	../../config.h ../../control-center/capplet-widget.h \
-	libuuid/uuid.h file-types-capplet.h \
-	file-types-capplet-dialogs.h
-file-types-capplet.o: file-types-capplet.c ../../config.h \
-	../../control-center/capplet-widget.h \
-	file-types-capplet-dialogs.h file-types-icon-entry.h \
-	file-types-capplet.h
-file-types-icon-entry.o: file-types-icon-entry.c ../../config.h \
-	file-types-icon-entry.h file-types-capplet.h
-
 info-am:
 info: info-recursive
 dvi-am:

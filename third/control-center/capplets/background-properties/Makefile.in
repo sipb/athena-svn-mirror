@@ -145,7 +145,7 @@ bin_PROGRAMS = background-properties-capplet
 background_properties_capplet_SOURCES =  	render-background.c		render-background.h		property-background.c		app-background.c		imlib-misc.c			imlib-misc.h		
 
 
-background_properties_capplet_LDADD = ../../control-center/libcapplet.la 		$(GNOME_LIBDIR) $(ORB_LIBS) $(IMLIB_LIBS) 		$(GNOMEUI_LIBS) $(INTLLIBS) $(PIXBUF_LIBS) -lgnorba 
+background_properties_capplet_LDADD =  		../../control-center/libcapplet.la 		-lgdk_imlib 		$(GNOME_LIBDIR) $(ORB_LIBS) $(IMLIB_LIBS) 		$(GNOMEUI_LIBS) $(INTLLIBS) $(PIXBUF_LIBS) -lgnorba 
 
 
 EXTRA_DIST = background-properties.desktop.in background-properties.desktop
@@ -178,7 +178,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(background_properties_capplet_SOURCES)
 OBJECTS = $(background_properties_capplet_OBJECTS)
@@ -317,22 +317,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-app-background.o: app-background.c ../../config.h \
-	../../control-center/capplet-widget.h
-imlib-misc.o: imlib-misc.c imlib-misc.h
-property-background.o: property-background.c ../../config.h \
-	../../control-center/capplet-widget.h imlib-misc.h \
-	render-background.h
-render-background.o: render-background.c imlib-misc.h \
-	render-background.h
-
 info-am:
 info: info-am
 dvi-am:

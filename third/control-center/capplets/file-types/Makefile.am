@@ -30,6 +30,8 @@ file_types_capplet_SOURCES =			\
 
 file_types_capplet_LDADD =			\
 	../../control-center/libcapplet.la	\
+	-loaf					\
+	-lgdk_imlib				\
 	$(ORBIT_LIBS)				\
 	$(INTLLIBS)				\
 	$(VFS_LIBS)				\
