@@ -52,7 +52,7 @@ start)
 		. /srvd/usr/athena/lib/update/update-environment
 		. $CONFDIR/rc.conf
 
-		{ sh /srvd/usr/athena/lib/update/setup-swap-boot \
+		{ sh /install/miniroot/setup-swap-boot \
 			"$method" "$newvers" 2>&1 || {
 			echo "Please contact Athena Hotline at x3-1410."
 			echo "Thank you. -Athena Operations"
