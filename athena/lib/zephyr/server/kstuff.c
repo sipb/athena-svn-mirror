@@ -10,12 +10,12 @@
  */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.16 1993-09-24 21:36:57 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.17 1993-11-19 15:52:46 probe Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.16 1993-09-24 21:36:57 probe Exp $";
+static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.17 1993-11-19 15:52:46 probe Exp $";
 #endif
 #endif
 
@@ -23,8 +23,12 @@ static char rcsid_kstuff_c[] = "$Id: kstuff.c,v 1.16 1993-09-24 21:36:57 probe E
 
 #include <ctype.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
+
 #include <zephyr/zephyr_internal.h>
+#ifdef KERBEROS
+#include <zephyr/krb_err.h>
+#endif
 
 static char tkt_file[] = ZEPHYR_TKFILE;
 
@@ -223,7 +227,7 @@ check_cache (notice, from)
 	    return ZAUTH_FAILED;
 	}
 #ifndef NOENCRYPTION
-	_BCOPY (a->session_key, __Zephyr_session, sizeof (C_Block));
+	(void) memcpy (__Zephyr_session, a->session_key, sizeof (C_Block));
 #endif
 	return ZAUTH_YES;
     }
@@ -307,10 +311,10 @@ ZCheckAuthentication(notice, from)
 			    SERVER_INSTANCE, (int) from->sin_addr.s_addr, 
 			    &dat, SERVER_SRVTAB);
 	if (result == RD_AP_OK) {
-	    _BCOPY ((void *) dat.session, (void *) a.session_key,
-		   sizeof(C_Block));
-	    _BCOPY((char *)dat.session, (char *)__Zephyr_session, 
-		  sizeof(C_Block));
+	    (void) memcpy ((void *) a.session_key,(void *) dat.session, 
+			    sizeof(C_Block));
+	    (void) memcpy((char *)__Zephyr_session, (char *)dat.session, 
+			   sizeof(C_Block));
 	    (void) sprintf(srcprincipal, "%s%s%s@%s", dat.pname, 
 			   dat.pinst[0]?".":"", dat.pinst, dat.prealm);
 	    if (strcmp(srcprincipal, notice->z_sender)) {
