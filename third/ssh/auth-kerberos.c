@@ -9,8 +9,12 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.8 1998-07-28 03:15:50 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.9 1998-08-01 18:38:49 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  1998/07/28 03:15:50  ghudson
+ * Dan didn't actually just leave out a right paren; he put in a
+ * semicolon instead.  Nuke the semicolon.
+ *
  * Revision 1.7  1998/07/15 22:48:53  ghudson
  * Dan left out a right paren.
  *
@@ -264,7 +268,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_cc_store_cred(ssh_context, ccache, *creds))
     goto errout;
   
-  ticket = xmalloc(strlen(ccname + 5) + 1);
+  ticket = xmalloc(strlen(ccname) + 1);
   (void) sprintf(ticket, "%s", ccname);
   
   /* Now try to get krb4 tickets */
