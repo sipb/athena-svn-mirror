@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.64 1998-06-11 18:03:28 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.65 1998-06-11 18:04:52 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -32,12 +32,13 @@
 static sigset_t sig_zero;
 static sigset_t sig_cur;
 #include <termios.h>
+#include <syslog.h>
 
 #include <X11/Xlib.h>
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.64 1998-06-11 18:03:28 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.65 1998-06-11 18:04:52 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -246,6 +247,8 @@ int main(int argc, char **argv)
     logintty = argv[2];
     consoletty = argv[argc-1];
 
+    openlog("dm", 0, LOG_USER);
+
     /* We use options from the config file rather than taking
      * them from the command line because the current command
      * line form is gross (why???), and I don't see a good way
@@ -333,6 +336,7 @@ int main(int argc, char **argv)
     /* Fire up X */
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
+	syslog(LOG_DEBUG, "Starting X, try #%d", tries + 1);
 	x_running = STARTUP;
 	switch (fork_and_store(&xpid)) {
 	case 0:
@@ -368,6 +372,8 @@ int main(int argc, char **argv)
 	    alarm_running = RUNNING;
 	    sigsuspend(&sig_zero);
 	    if (x_running != RUNNING) {
+		syslog(LOG_DEBUG, "X failed to start; alarm_running=%d",
+		       alarm_running);
 		if (alarm_running == NONEXISTENT)
 		  fprintf(stderr,"dm: Unable to start X\n");
 		else
@@ -380,6 +386,7 @@ int main(int argc, char **argv)
     }
     alarm(0);
     if (x_running != RUNNING) {
+	syslog(LOG_DEBUG, "Giving up on starting X.");
 	console_login(conf, "\nUnable to start X, doing console login "
 		      "instead.\n");
     }
@@ -441,6 +448,7 @@ int main(int argc, char **argv)
 
     /* Fire up the X login */
     for (tries = 0; tries < 3; tries++) {
+	syslog(LOG_DEBUG, "Starting xlogin, try #%d", tries + 1);
 	login_running = STARTUP;
 	sigact.sa_handler = loginready;
         sigaction(SIGUSR1, &sigact, NULL);
@@ -483,6 +491,8 @@ int main(int argc, char **argv)
 	    while (login_running == STARTUP && alarm_running == RUNNING)
 	      sigsuspend(&sig_zero);
 	    if (login_running != RUNNING) {
+		syslog(LOG_DEBUG, "xlogin failed to start; alarm_running=%d",
+		       alarm_running);
 		kill(loginpid, SIGKILL);
 		if (alarm_running != NONEXISTENT)
 		  fprintf(stderr,"dm: Unable to start Xlogin\n");
@@ -495,9 +505,11 @@ int main(int argc, char **argv)
     sigact.sa_handler = SIG_IGN;
     sigaction(SIGUSR1, &sigact, NULL);
     alarm(0);
-    if (login_running != RUNNING)
+    if (login_running != RUNNING) {
+      syslog(LOG_DEBUG, "Giving up on starting xlogin.");
       console_login(conf, "\nUnable to start xlogin, doing console login "
 		    "instead.\n");
+    }
 
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
     (void) sigemptyset(&sig_cur);
@@ -531,6 +543,8 @@ int main(int argc, char **argv)
 	if (console && console_running == NONEXISTENT)
 	  start_console(line, consoleargv);
 	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
+	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
+		 login_running, x_running);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 	  cleanup(logintty);
 	  sleep(X_STOP_WAIT);
@@ -550,6 +564,7 @@ static void console_login(char *conf, char *msg)
     sigset_t mask, omask;
     char *p, **cargv;
 
+    syslog(LOG_DEBUG, "Performing console login: %s", msg);
     sigemptyset(&sig_zero);
     if (login_running != NONEXISTENT && login_running != STARTUP)
 	kill(loginpid, SIGKILL);
@@ -629,6 +644,7 @@ static void start_console(char *line, char **argv)
     int fd;
 #endif
 
+    syslog(LOG_DEBUG, "Starting console");
     if (console_tty == 0) {
 	/* Open master side of pty */
 	line[5] = 'p';
@@ -763,6 +779,7 @@ static void shutdown(int signo)
     struct termios tc;
     char buf[BUFSIZ];
 
+    syslog(LOG_DEBUG, "Received SIGFPE, performing shutdown");
     if (login_running == RUNNING)
       kill(loginpid, SIGHUP);
     if (console_running == RUNNING)
@@ -891,18 +908,28 @@ static void child(int signo)
     sigact.sa_handler = child;
     sigaction(SIGCHLD, &sigact, NULL);
     pid = waitpid(-1, &status, WNOHANG);
-    if (pid == 0 || pid == -1) return;
+    if (pid == 0 || pid == -1) {
+	syslog(LOG_DEBUG, "Received SIGCHLD but waitpid returned %d", pid);
+	return;
+    }
 
     if (pid == xpid) {
+	syslog(LOG_DEBUG, "Received SIGCHLD for xpid (%d), status %d", pid,
+	       status);
 	x_running = NONEXISTENT;
     } else if (pid == consolepid) {
+	syslog(LOG_DEBUG, "Received SIGCHLD for consolepid (%d), status %d",
+	       pid, status);
 	console_running = NONEXISTENT;
     } else if (pid == loginpid) {
+	syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
+	       pid, status);
         if (WEXITSTATUS(status) == CONSOLELOGIN)
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTENT;
     } else {
+	syslog(LOG_DEBUG, "Received SIGCHLD for unknown pid %d", pid);
 	fprintf(stderr,"dm: Unexpected SIGCHLD from pid %d\n",pid);
     }
 }
@@ -910,11 +937,13 @@ static void child(int signo)
 
 static void xready(int signo)
 {
+    syslog(LOG_DEBUG, "Received SIGUSR1; setting x_running.");
     x_running = RUNNING;
 }
 
 static void loginready(int signo)
 {
+    syslog(LOG_DEBUG, "Received SIGUSR1; setting login_running.");
     login_running = RUNNING;
 }
 
@@ -922,6 +951,7 @@ static void loginready(int signo)
 
 static void catchalarm(int signo)
 {
+    syslog(LOG_DEBUG, "Received SIGALRM.");
     alarm_running = NONEXISTENT;
 }
 
@@ -930,6 +960,7 @@ static void catchalarm(int signo)
 
 static void die(int signo)
 {
+    syslog(LOG_DEBUG, "Dying on signal %d", signo);
     cleanup(logintty);
     _exit(0);
 }
