@@ -1,0 +1,210 @@
+style "white-bg"
+{
+  bg[NORMAL]      = { 1.0, 1.0, 1.0 }
+  bg[PRELIGHT]    = { 1.0, 1.0, 1.0 }
+  bg[ACTIVE]      = { 1.0, 1.0, 1.0 }
+  bg[SELECTED]    = { 1.0, 1.0, 1.0 }
+}
+
+style "decdig-bg"
+{
+  bg[NORMAL]      = { 0.67, 0.91, 1.0 }
+  bg[PRELIGHT]    = { 0.67, 0.91, 1.0 }
+  bg[ACTIVE]      = { 0.67, 0.91, 1.0 }
+  bg[SELECTED]    = { 0.67, 0.91, 1.0 }
+  bg[INSENSITIVE] = { 0.63, 0.63, 0.63 }
+}
+
+style "hexdig-bg"
+{
+  bg[NORMAL]      = { 0.0, 0.91, 1.0 }
+  bg[PRELIGHT]    = { 0.0, 0.91, 1.0 }
+  bg[ACTIVE]      = { 0.0, 0.91, 1.0 }
+  bg[SELECTED]    = { 0.0, 0.91, 1.0 }
+  bg[INSENSITIVE] = { 0.63, 0.63, 0.63 }
+}
+
+style "arithop-bg"
+{
+  bg[NORMAL]      = { 0.92, 0.92, 0.92 }
+  bg[PRELIGHT]    = { 0.92, 0.92, 0.92 }
+  bg[ACTIVE]      = { 0.92, 0.92, 0.92 }
+  bg[SELECTED]    = { 0.92, 0.92, 0.92 }
+}
+
+style "adjust-bg"
+{
+  bg[NORMAL]      = { 1.0, 1.0, 0.50 }
+  bg[PRELIGHT]    = { 1.0, 1.0, 0.50 }
+  bg[ACTIVE]      = { 1.0, 1.0, 0.50 }
+  bg[SELECTED]    = { 1.0, 1.0, 0.50 }
+}
+
+style "portion-bg"
+{
+  bg[NORMAL]      = { 0.71, 1.0, 0.71 }
+  bg[PRELIGHT]    = { 0.71, 1.0, 0.71 }
+  bg[ACTIVE]      = { 0.71, 1.0, 0.71 }
+  bg[SELECTED]    = { 0.71, 1.0, 0.71 }
+}
+
+style "func-bg"
+{
+  bg[NORMAL]      = { 0.75, 0.75, 0.75 }
+  bg[PRELIGHT]    = { 0.75, 0.75, 0.75 }
+  bg[ACTIVE]      = { 0.75, 0.75, 0.75 }
+  bg[SELECTED]    = { 0.75, 0.75, 0.75 }
+}
+
+style "plogical-bg"
+{
+  bg[NORMAL]      = { 0.71, 1.0, 0.71 }
+  bg[PRELIGHT]    = { 0.71, 1.0, 0.71 }
+  bg[ACTIVE]      = { 0.71, 1.0, 0.71 }
+  bg[SELECTED]    = { 0.71, 1.0, 0.71 }
+}
+
+style "blogical-bg"
+{
+  bg[NORMAL]      = { 0.45, 0.91, 0.75 }
+  bg[PRELIGHT]    = { 0.45, 0.91, 0.75 }
+  bg[ACTIVE]      = { 0.45, 0.91, 0.75 }
+  bg[SELECTED]    = { 0.45, 0.91, 0.75 }
+}
+
+style "fin-bg"
+{
+  bg[NORMAL]      = { 1.0, 0.66, 0.49 }
+  bg[PRELIGHT]    = { 1.0, 0.66, 0.49 }
+  bg[ACTIVE]      = { 1.0, 0.66, 0.49 }
+  bg[SELECTED]    = { 1.0, 0.66, 0.49 }
+}
+
+style "trigcol-bg"
+{
+  bg[NORMAL]      = { 1.0, 0.58, 0.49 }
+  bg[PRELIGHT]    = { 1.0, 0.58, 0.49 }
+  bg[ACTIVE]      = { 1.0, 0.58, 0.49 }
+  bg[SELECTED]    = { 1.0, 0.58, 0.49 }
+}
+
+style "sci-bg" 
+{ 
+  bg[NORMAL]      = { 1.0, 0.66, 0.49 } 
+  bg[PRELIGHT]    = { 1.0, 0.66, 0.49 } 
+  bg[ACTIVE]      = { 1.0, 0.66, 0.49 } 
+  bg[SELECTED]    = { 1.0, 0.66, 0.49 } 
+}
+
+style "memory-bg"  
+{  
+  bg[NORMAL]      = { 1.0, 1.0, 1.0 } 
+  bg[PRELIGHT]    = { 1.0, 1.0, 1.0 }  
+  bg[ACTIVE]      = { 1.0, 1.0, 1.0 }  
+  bg[SELECTED]    = { 1.0, 1.0, 1.0 }  
+}
+
+style "text-bg"  
+{  
+  bg[NORMAL]      = { 0.0, 0.0, 0.0 } 
+  bg[PRELIGHT]    = { 0.0, 0.0, 0.0 }  
+  bg[ACTIVE]      = { 0.0, 0.0, 0.0 }  
+  bg[SELECTED]    = { 0.0, 0.0, 0.0 }  
+}
+
+widget "*bas_button0*" style "decdig-bg"
+widget "*bas_button1*" style "decdig-bg"
+widget "*bas_button2*" style "decdig-bg"
+widget "*bas_button3*" style "arithop-bg"
+
+widget "*bas_button5*" style "adjust-bg"
+widget "*bas_button6*" style "adjust-bg"
+widget "*bas_button7*" style "adjust-bg"
+ 
+widget "*bas_button8*" style "decdig-bg"
+widget "*bas_button9*" style "decdig-bg"
+widget "*bas_button10*" style "decdig-bg"
+widget "*bas_button11*" style "arithop-bg"
+widget "*bas_button12*" style "func-bg"
+widget "*bas_button13*" style "arithop-bg"
+widget "*bas_button14*" style "portion-bg"
+widget "*bas_button15*" style "func-bg"
+ 
+widget "*bas_button16*" style "decdig-bg"
+widget "*bas_button17*" style "decdig-bg"
+widget "*bas_button18*" style "decdig-bg"
+widget "*bas_button19*" style "arithop-bg"
+widget "*bas_button20*" style "arithop-bg"
+widget "*bas_button21*" style "arithop-bg"
+widget "*bas_button22*" style "portion-bg"
+widget "*bas_button23*" style "func-bg"
+ 
+widget "*bas_button24*" style "decdig-bg"
+widget "*bas_button25*" style "decdig-bg"
+widget "*bas_button26*" style "arithop-bg"
+widget "*bas_button27*" style "arithop-bg"
+widget "*bas_button28*" style "arithop-bg"
+widget "*bas_button29*" style "arithop-bg"
+widget "*bas_button30*" style "portion-bg"
+widget "*bas_button31*" style "func-bg"
+
+widget "*fin_button0*" style "fin-bg"
+widget "*fin_button1*" style "fin-bg"
+widget "*fin_button2*" style "fin-bg"
+widget "*fin_button3*" style "fin-bg"
+widget "*fin_button4*" style "fin-bg"
+widget "*fin_button5*" style "fin-bg"
+widget "*fin_button6*" style "fin-bg"
+widget "*fin_button7*" style "fin-bg"
+ 
+widget "*fin_button8*" style "fin-bg"
+
+widget "*sci_button0*" style "plogical-bg"
+widget "*sci_button1*" style "plogical-bg"
+widget "*sci_button2*" style "plogical-bg"
+widget "*sci_button3*" style "plogical-bg"
+
+widget "*sci_button5*" style "arithop-bg"
+widget "*sci_button6*" style "arithop-bg"
+widget "*sci_button7*" style "func-bg"
+
+widget "*sci_button8*" style "arithop-bg"
+widget "*sci_button9*" style "func-bg"
+widget "*sci_button10*" style "func-bg"
+widget "*sci_button11*" style "sci-bg"
+widget "*sci_button12*" style "sci-bg"
+widget "*sci_button13*" style "sci-bg"
+widget "*sci_button14*" style "sci-bg"
+widget "*sci_button15*" style "sci-bg"
+
+widget "*sci_button16*" style "hexdig-bg"
+widget "*sci_button17*" style "hexdig-bg"
+widget "*sci_button18*" style "hexdig-bg"
+widget "*sci_button19*" style "trigcol-bg"
+widget "*sci_button20*" style "trigcol-bg"
+widget "*sci_button21*" style "trigcol-bg"
+widget "*sci_button22*" style "sci-bg"
+widget "*sci_button23*" style "sci-bg"
+ 
+widget "*sci_button24*" style "hexdig-bg"
+widget "*sci_button25*" style "hexdig-bg"
+widget "*sci_button26*" style "hexdig-bg"
+widget "*sci_button27*" style "blogical-bg"
+widget "*sci_button28*" style "blogical-bg"
+widget "*sci_button29*" style "blogical-bg"
+widget "*sci_button30*" style "blogical-bg"
+widget "*sci_button31*" style "blogical-bg"
+
+widget "*displayitem*" style "white-bg"
+widget "*oplabel*" style "white-bg"
+
+widget "*register_label0*" style "white-bg"
+widget "*register_label1*" style "white-bg"
+widget "*register_label2*" style "white-bg"
+widget "*register_label3*" style "white-bg"
+widget "*register_label4*" style "white-bg"
+widget "*register_label5*" style "white-bg"
+widget "*register_label6*" style "white-bg"
+widget "*register_label7*" style "white-bg"
+widget "*register_label8*" style "white-bg"
+widget "*register_label9*" style "white-bg"

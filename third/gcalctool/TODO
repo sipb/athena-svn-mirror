@@ -1,0 +1,110 @@
+
+/*  $Header: /afs/dev.mit.edu/source/repository/third/gcalctool/TODO,v 1.1.1.1 2004-10-06 18:41:57 ghudson Exp $
+ *
+ *  Copyright (c) 1987-2003 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ */
+
+Gcalctool TODO.
+===============
+
+* Replace the use of GtkItemGFactory with GtkUIManager when there has been
+  a GTK+-2.3.x release. When this has been done, then -DGTK_DISABLE_DEPRECATED
+  should be returned to .../gcalctool/gcalctool/Makefile.am
+
+* From Jeremiah Jahn <jeremiah at goodinassociates dot com>
+  Add a modulo function.
+
+* From James Brown <alumnus at bigpond dot com>
+  In engineering it is typical to think of numbers in scientific notation 
+  in powers of three for example
+  123473 - I would only use say 4 signification "digits" and would say
+  123.4 kilo units
+
+  and .00000324 would be three point two four micro units
+
+  The only improvement I could suggest would be to have an engineering
+  mode where the postfix milli,micro,nano,pico,kilo,mega,giga etc
+  (m,u,n,p,k,M,G respectively) was shown next to the number.  
+
+* With the gcalctoolrc Gtk resources copied to a ~/.gcalctoolrc file, the 
+  "*displayitem*" widget and the "*register_label<n>*" widgets background 
+  color aren't being set to white.
+
+* Improve the colors in the gcalctoolrc file.
+
+* Now that constant and function definitions are read/written as Gconf
+  resources, there are three pieces of functionality that are no longer
+  present. Need to be consider whether we wish to reimplement them. They
+  are:
+  - ability to read new constant/function definitions from a .gcalctoolcf
+    file in the current directory, which override the ones in the users
+    home directory.
+  - ability to set initial values for the ten memory registers.
+  - ability to extensively comment the definitions in the file.
+
+* Implement bugtraq rfe #1190372/#1105626.
+  It appears that function definitions are unable to handle all calculator
+  buttons. Buttons with a keyboard equivalent that is a special key (clear 
+  display) or key combination (^s - Sin) appear to be rejected in functions 
+  defs.  This affects the availability of many of the calculator buttons.
+
+* Implement bugtraq rfe #4023507.
+  The calculator in Scientific mode accepts hex entries of up to
+  eight digits.  This was sufficient to deal with 32-bit addresses.
+  When Solaris is 64-bit, the calculator will be less useful.
+  Maybe there should be a Logical-64 mode.
+
+* Implement bugtraq rfe #4113441.
+  Scientists using dtcalc under CDE would like to get deeper precision.
+  The maximum accuracy depth, which is 9, is not enough for them.
+  They would like to have 15 digits available.
+
+* Implement bugtraq rfe #1122089.
+  Add a log base 2 key.
+
+* As of v3.0.1. gcalctool was modified to have "infinite" precision
+  internally. This needs to be made available to the "power" users, but
+  shouldn't confuse the novice. What I suggest is to replace the Acc
+  button menu, with an Acc... button which brings up a popup with a slider
+  on, to allow you to set the number of numeric places. By default this
+  will be 0-9. I also propose adding another gconf resource, which will also
+  allow you to set the number of numeric places. This value can be as
+  large as you want. When gcalctool starts up, it will look for that
+  resource, and adjust the sliders maximum value appropriately.
+ 
+  Making this addition will possibly cause the gcalctool numeric result to
+  be larger that can fully displayed. There are two possible ways to fix
+  this:
+
+  * make the display area a scrollable canvas.
+  * make the gcalctool numeric display a panel text item of the appropriate
+    length.
+
+* Consider adding in the ability to drag & drop from/to the display and 
+  the memory registers.
+ 
+* Consider adding in some more functions:
+ 
+  ~ Common antilogarithm and natural antilogarithm.
+  ~ Cube root key.
+  ~ Root key. The y root of x.
+  ~ Rectangular to polar and polar to rectangular keys.
+   
+* Consider adding Reverse Polish notation functionality (as an option).
+
+
+MP - todo.
+----------
+
+* Shouldn't have to convert back to a double in make_number() in order
+  to test if the number is too large to be displayed in fixed point.
+
+* The cmax field for make_fixed should be dynamic, and depend upon how
+  many characters can be displayed (ie. a larger gcalctool will be able
+  to display more).
+
+* Tidy up the code in mp.c, to eventually use no labels and goto's.
+
+* Adjust all uses of MP...[MP_SIZE] to use a dynamic size so that it's
+  possible to calculate to numbers of any length.

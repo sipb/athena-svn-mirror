@@ -1,0 +1,1492 @@
+# Serbian translation of gcalctool
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
+# This file is distributed under the same license as the gcalctool package.
+#
+# Maintainer: Danilo Šegan <dsegan@gmx.net>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gcalctool\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:54-0700\n"
+"PO-Revision-Date: 2004-06-21 00:02+0200\n"
+"Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
+"Language-Team: Serbian (sr) <gnom@prevod.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Strings for each base value.
+#: gcalctool/calctool.c:51
+msgid "_Bin"
+msgstr "_Bin"
+
+#: gcalctool/calctool.c:51
+msgid "_Oct"
+msgstr "_Okt"
+
+#: gcalctool/calctool.c:51
+msgid "_Dec"
+msgstr "_Dec"
+
+#: gcalctool/calctool.c:51
+msgid "He_x"
+msgstr "_Heks"
+
+#. Tooltips for each base value.
+#: gcalctool/calctool.c:55
+msgid "Set numeric base to binary (base 2)"
+msgstr "Postavi binarnu brojnu osnovu (osnova 2)"
+
+#: gcalctool/calctool.c:56
+msgid "Set numeric base to octal (base 8)"
+msgstr "Postavi oktalnu brojnu osnovu (osnova 8)"
+
+#: gcalctool/calctool.c:57
+msgid "Set numeric base to decimal (base 10)"
+msgstr "Postavi decimalnu brojnu osnovu (osnova 10)"
+
+#: gcalctool/calctool.c:58
+msgid "Set numeric base to hexadecimal (base 16)"
+msgstr "Postavi heksadecimalnu brojnu osnovu (osnova 16)"
+
+#. Strings for each display mode value.
+#: gcalctool/calctool.c:67
+msgid "E_ng"
+msgstr "In_ž"
+
+#: gcalctool/calctool.c:67
+msgid "_Fix"
+msgstr "_Razl"
+
+#: gcalctool/calctool.c:67
+msgid "_Sci"
+msgstr "_Nauč"
+
+#. Tooltips for each display mode value.
+#: gcalctool/calctool.c:71
+msgid "Set display type to engineering format"
+msgstr "Postavi način prikaza na inžinjerski"
+
+#: gcalctool/calctool.c:72
+msgid "Set display type to fixed-point format"
+msgstr "Postavi način prikaza na broj u nepokretnom zarezu"
+
+#: gcalctool/calctool.c:73
+msgid "Set display type to scientific format"
+msgstr "Postavi način prikaza na naučni"
+
+#: gcalctool/calctool.c:76
+msgid "Set hyperbolic option for trigonometric functions"
+msgstr "Koristi hiperboličke trigonometrijske funkcije"
+
+#: gcalctool/calctool.c:77
+msgid "Set inverse option for trigonometric functions"
+msgstr "Koristi inverzne trigonometrijske funkcije"
+
+#. Strings for each mode value.
+#: gcalctool/calctool.c:80
+msgid "BASIC"
+msgstr "OSNOVNI"
+
+#: gcalctool/calctool.c:80
+msgid "FINANCIAL"
+msgstr "FINANSIJSKI"
+
+#: gcalctool/calctool.c:80
+msgid "SCIENTIFIC"
+msgstr "NAUČNI"
+
+#. Mode titles to be added to the titlebar.
+#: gcalctool/calctool.c:84
+msgid "Basic Mode"
+msgstr "Osnovni mod"
+
+#: gcalctool/calctool.c:84
+msgid "Financial Mode"
+msgstr "Finansijski mod"
+
+#: gcalctool/calctool.c:84
+msgid "Scientific Mode"
+msgstr "Naučni mod"
+
+#. Strings for each trig type value.
+#: gcalctool/calctool.c:89
+msgid "De_grees"
+msgstr "_Stepeni"
+
+#: gcalctool/calctool.c:89
+msgid "Gr_adians"
+msgstr "Gr_adijani"
+
+#: gcalctool/calctool.c:89
+msgid "_Radians"
+msgstr "_Radijani"
+
+#. Tooltips for each trig type value.
+#: gcalctool/calctool.c:93
+msgid "Set trigonometric type to degrees"
+msgstr "Trigonometrijske funkcije rade sa stepenima"
+
+#: gcalctool/calctool.c:94
+msgid "Set trigonometric type to gradians"
+msgstr "Trigonometrijske funkcije rade sa gradijanima"
+
+#: gcalctool/calctool.c:95
+msgid "Set trigonometric type to radians"
+msgstr "Trigonometrijske funkcije rade sa radijanima"
+
+#: gcalctool/calctool.c:141
+msgid "7"
+msgstr "7"
+
+#: gcalctool/calctool.c:143
+msgid "Numeric 7"
+msgstr "Cifra 7"
+
+#: gcalctool/calctool.c:151
+msgid "8"
+msgstr "8"
+
+#: gcalctool/calctool.c:153
+msgid "Numeric 8"
+msgstr "Cifra 8"
+
+#: gcalctool/calctool.c:161
+msgid "9"
+msgstr "9"
+
+#: gcalctool/calctool.c:163
+msgid "Numeric 9"
+msgstr "Cifra 9"
+
+#: gcalctool/calctool.c:171
+msgid "/"
+msgstr "/"
+
+#: gcalctool/calctool.c:172
+msgid "Divide"
+msgstr "Deljenje"
+
+#: gcalctool/calctool.c:191
+msgid "Bksp"
+msgstr "Briši"
+
+#: gcalctool/calctool.c:192
+msgid "Remove rightmost character from displayed value"
+msgstr "Ukloni poslednji znak na desnoj strani iz prikazane vrednosti"
+
+#: gcalctool/calctool.c:193
+msgid "Backspace"
+msgstr "Brisanje"
+
+#: gcalctool/calctool.c:201
+msgid "CE"
+msgstr "CE"
+
+#: gcalctool/calctool.c:202
+msgid "Clear displayed value"
+msgstr "Očisti prikazanu vrednost"
+
+#: gcalctool/calctool.c:203
+msgid "Clear entry"
+msgstr "Očisti unos"
+
+#: gcalctool/calctool.c:211
+msgid "Clr"
+msgstr "Očisti"
+
+#: gcalctool/calctool.c:212
+msgid "Clear displayed value and any partial calculation"
+msgstr "Očisti prikazanu vrednost i bilo koji delimični proračun"
+
+#: gcalctool/calctool.c:213
+msgid "Clear"
+msgstr "Očisti"
+
+#: gcalctool/calctool.c:223
+msgid "4"
+msgstr "4"
+
+#: gcalctool/calctool.c:225
+msgid "Numeric 4"
+msgstr "Broj 4"
+
+#: gcalctool/calctool.c:233
+msgid "5"
+msgstr "5"
+
+#: gcalctool/calctool.c:235
+msgid "Numeric 5"
+msgstr "Broj 5"
+
+#: gcalctool/calctool.c:243
+msgid "6"
+msgstr "6"
+
+#: gcalctool/calctool.c:245
+msgid "Numeric 6"
+msgstr "Broj 6"
+
+#: gcalctool/calctool.c:253
+msgid "*"
+msgstr "×"
+
+#: gcalctool/calctool.c:254
+msgid "Multiply"
+msgstr "Množenje"
+
+#: gcalctool/calctool.c:273
+msgid "+/-"
+msgstr "+/-"
+
+#: gcalctool/calctool.c:274
+msgid "Change sign"
+msgstr "Promeni znak"
+
+#: gcalctool/calctool.c:283
+msgid "Int"
+msgstr "Ceo"
+
+#: gcalctool/calctool.c:284
+msgid "Integer portion of displayed value"
+msgstr "Ceo deo prikazane vrednosti"
+
+#: gcalctool/calctool.c:285
+msgid "Integer portion"
+msgstr "Celobrojni deo"
+
+#: gcalctool/calctool.c:293
+msgid "Sto"
+msgstr "Snimi"
+
+#: gcalctool/calctool.c:294
+msgid "Store displayed value in memory register"
+msgstr "Smesti prikazanu vrednost u memorijski registar"
+
+#: gcalctool/calctool.c:295
+msgid "Store to register"
+msgstr "Sačuvaj u registar"
+
+#: gcalctool/calctool.c:305
+msgid "1"
+msgstr "1"
+
+#: gcalctool/calctool.c:307
+msgid "Numeric 1"
+msgstr "Broj 1"
+
+#: gcalctool/calctool.c:315
+msgid "2"
+msgstr "2"
+
+#: gcalctool/calctool.c:317
+msgid "Numeric 2"
+msgstr "Broj 2"
+
+#: gcalctool/calctool.c:325
+msgid "3"
+msgstr "3"
+
+#: gcalctool/calctool.c:327
+msgid "Numeric 3"
+msgstr "Broj 3"
+
+#: gcalctool/calctool.c:335
+msgid "-"
+msgstr "—"
+
+#: gcalctool/calctool.c:336
+msgid "Subtract"
+msgstr "Oduzmi"
+
+#: gcalctool/calctool.c:345
+msgid "%"
+msgstr "%"
+
+#: gcalctool/calctool.c:346
+msgid "Percentage"
+msgstr "Procenat"
+
+#: gcalctool/calctool.c:355
+msgid "Sqrt"
+msgstr "Koren"
+
+#: gcalctool/calctool.c:356
+msgid "Square root"
+msgstr "Kvadratni koren"
+
+#: gcalctool/calctool.c:365
+msgid "Frac"
+msgstr "Razl"
+
+#: gcalctool/calctool.c:366
+msgid "Fractional portion of displayed value"
+msgstr "Razlomljeni deo prikazane vrednosti"
+
+#: gcalctool/calctool.c:367
+msgid "Fractional portion"
+msgstr "Razlomljeni deo"
+
+#: gcalctool/calctool.c:375
+msgid "Rcl"
+msgstr "Učt"
+
+#: gcalctool/calctool.c:376
+msgid "Retrieve memory register to display"
+msgstr "Učitaj iz memorijskog registra i prikaži"
+
+#: gcalctool/calctool.c:377
+msgid "Retrieve from register"
+msgstr "Učitaj iz registra"
+
+#: gcalctool/calctool.c:387
+msgid "0"
+msgstr "0"
+
+#: gcalctool/calctool.c:389
+msgid "Numeric 0"
+msgstr "Broj 0"
+
+#: gcalctool/calctool.c:397
+msgid "."
+msgstr ","
+
+#: gcalctool/calctool.c:398
+msgid "Numeric point"
+msgstr "Decimalni zarez"
+
+#: gcalctool/calctool.c:407
+msgid "="
+msgstr "="
+
+#: gcalctool/calctool.c:408
+msgid "Calculate result"
+msgstr "Izračunaj rezultat"
+
+#: gcalctool/calctool.c:417
+msgid "+"
+msgstr "+"
+
+#: gcalctool/calctool.c:418
+msgid "Add"
+msgstr "Saberi"
+
+#: gcalctool/calctool.c:427
+msgid "1/<i>x</i>"
+msgstr "1/<i>x</i>"
+
+#: gcalctool/calctool.c:428
+msgid "Reciprocal"
+msgstr "Recipročna"
+
+#: gcalctool/calctool.c:437
+msgid "<i>x</i><sup>2</sup>"
+msgstr "<i>x</i><sup>2</sup>"
+
+#: gcalctool/calctool.c:438
+msgid "Square"
+msgstr "Stepen"
+
+#: gcalctool/calctool.c:447
+msgid "Abs"
+msgstr "Aps"
+
+#: gcalctool/calctool.c:448
+msgid "Absolute value"
+msgstr "Apsolutna vrednost"
+
+#: gcalctool/calctool.c:457
+msgid "Exch"
+msgstr "Zamn"
+
+#: gcalctool/calctool.c:458
+msgid "Exchange displayed value with memory register"
+msgstr "Zameni prikazanu vrednost i memorijski registar"
+
+#: gcalctool/calctool.c:459
+msgid "Exchange with register"
+msgstr "Zameni sa registrom"
+
+#: gcalctool/calctool.c:483
+msgid "Ctrm"
+msgstr "Ctrm"
+
+#: gcalctool/calctool.c:484
+msgid "Compounding term"
+msgstr "Činilac sastava"
+
+#: gcalctool/calctool.c:493
+msgid "Ddb"
+msgstr "Ddb"
+
+#: gcalctool/calctool.c:494
+msgid "Double-declining depreciation"
+msgstr "Dvostruko-opadajuće opadanje"
+
+#: gcalctool/calctool.c:503
+msgid "Fv"
+msgstr "Bv"
+
+#: gcalctool/calctool.c:504
+msgid "Future value"
+msgstr "Buduća vrednost"
+
+#: gcalctool/calctool.c:513
+msgid "Pmt"
+msgstr "Pt"
+
+#: gcalctool/calctool.c:514
+msgid "Periodic payment"
+msgstr "Periodično plaćanje"
+
+#: gcalctool/calctool.c:523
+msgid "Pv"
+msgstr "Tv"
+
+#: gcalctool/calctool.c:524
+msgid "Present value"
+msgstr "Trenutna vrednost"
+
+#: gcalctool/calctool.c:533
+msgid "Rate"
+msgstr "Stopa"
+
+#: gcalctool/calctool.c:534
+msgid "Periodic interest rate"
+msgstr "Periodična stopa kamate"
+
+#: gcalctool/calctool.c:543
+msgid "Sln"
+msgstr "Sln"
+
+#: gcalctool/calctool.c:544
+msgid "Straight-line depreciation"
+msgstr "Pravolinijsko opadanje"
+
+#: gcalctool/calctool.c:553
+msgid "Syd"
+msgstr "Zcg"
+
+#: gcalctool/calctool.c:554
+msgid "Sum-of-the years'-digits depreciation"
+msgstr "Zbir-cifara-godine opadanje"
+
+#: gcalctool/calctool.c:565
+msgid "Term"
+msgstr "Rok"
+
+#: gcalctool/calctool.c:566
+msgid "Payment period"
+msgstr "Period za plaćanje"
+
+#: gcalctool/calctool.c:661
+msgid "<"
+msgstr "<"
+
+#: gcalctool/calctool.c:662
+msgid "Shift displayed value 1-15 places to the left"
+msgstr "Pomeri prikazanu vrednost 1–15 mesta ulevo"
+
+#: gcalctool/calctool.c:663
+msgid "Shift left"
+msgstr "Pomeri ulevo"
+
+#: gcalctool/calctool.c:671
+msgid ">"
+msgstr ">"
+
+#: gcalctool/calctool.c:672
+msgid "Shift displayed value 1-15 places to the right"
+msgstr "Pomeri prikazanu vrednost 1–15 mesta udesno"
+
+#: gcalctool/calctool.c:673
+msgid "Shift right"
+msgstr "Pomeri udesno"
+
+#: gcalctool/calctool.c:681
+msgid "&amp;16"
+msgstr "&amp;16"
+
+#: gcalctool/calctool.c:682
+msgid "16-bit unsigned integer value of display"
+msgstr "16-bitna neoznačena celobrojna vrednost prikaza"
+
+#: gcalctool/calctool.c:683
+msgid "16 bit unsigned integer"
+msgstr "16-bitni neoznačeni ceo broj"
+
+#: gcalctool/calctool.c:691
+msgid "&amp;32"
+msgstr "&amp;32"
+
+#: gcalctool/calctool.c:692
+msgid "32-bit unsigned integer value of display"
+msgstr "32-bitna neoznačena celobrojna vrednost prikaza"
+
+#: gcalctool/calctool.c:693
+msgid "32 bit unsigned integer"
+msgstr "32-bitni neoznačeni ceo broj"
+
+#: gcalctool/calctool.c:711
+msgid "("
+msgstr "("
+
+# Pokreni više operacija?
+# Pokreni izračunavanje
+#: gcalctool/calctool.c:712
+msgid "Start group of calculations"
+msgstr "Pokreni skup izračunavanja"
+
+#: gcalctool/calctool.c:713
+msgid "Left bracket"
+msgstr "Otvorena zagrada"
+
+#: gcalctool/calctool.c:721
+msgid ")"
+msgstr ")"
+
+#: gcalctool/calctool.c:722
+msgid "End group of calculations"
+msgstr "Okončaj skup izračunavanja"
+
+#: gcalctool/calctool.c:723
+msgid "Right bracket"
+msgstr "Zatvorena zagrada"
+
+#: gcalctool/calctool.c:731
+msgid "Acc"
+msgstr "Prec"
+
+#: gcalctool/calctool.c:732
+msgid "Set accuracy from 0 to 9 numeric places"
+msgstr "Postavi preciznost na 0 do 9 cifara"
+
+#: gcalctool/calctool.c:733
+msgid "Accuracy"
+msgstr "Preciznost"
+
+# msgid "Cone"
+# msgstr "Konus"
+#: gcalctool/calctool.c:743
+msgid "Con"
+msgstr "Kons"
+
+#: gcalctool/calctool.c:744
+msgid "Constants"
+msgstr "Konstante"
+
+#: gcalctool/calctool.c:753
+msgid "Fun"
+msgstr "F-je"
+
+#: gcalctool/calctool.c:754
+msgid "User-defined functions"
+msgstr "Funkcije korisnika"
+
+#: gcalctool/calctool.c:763
+msgid "Exp"
+msgstr "Eksp"
+
+#: gcalctool/calctool.c:764
+msgid "Enter an exponential number"
+msgstr "Unesite eksponencijalni broj"
+
+#: gcalctool/calctool.c:765
+msgid "Exponential"
+msgstr "Eksponent"
+
+#: gcalctool/calctool.c:773
+msgid "e<sup><i>x</i></sup>"
+msgstr "e<sup><i>x</i></sup>"
+
+#: gcalctool/calctool.c:774
+msgid "e to the power of displayed value"
+msgstr "e na stepen prikazane vrednosti"
+
+#: gcalctool/calctool.c:775
+msgid "E to the x"
+msgstr "e na X"
+
+#: gcalctool/calctool.c:783
+msgid "10<sup><i>x</i></sup>"
+msgstr "10<sup><i>x</i></sup>"
+
+#: gcalctool/calctool.c:784
+msgid "10 to the power of displayed value"
+msgstr "10 na stepen prikazane vrednosti"
+
+#: gcalctool/calctool.c:785
+msgid "Ten to the x"
+msgstr "Deset na X"
+
+#: gcalctool/calctool.c:793
+msgid "<i>x</i><sup><i>y</i></sup>"
+msgstr "<i>x</i><sup><i>y</i></sup>"
+
+#: gcalctool/calctool.c:794
+msgid "Raise displayed value to the power of y"
+msgstr "Digni prikazanu vrednost na stepen y"
+
+#: gcalctool/calctool.c:795
+msgid "X to the y"
+msgstr "X na y"
+
+#: gcalctool/calctool.c:803
+msgid "<i>x</i>!"
+msgstr "<i>x</i>!"
+
+#: gcalctool/calctool.c:804
+msgid "Factorial of displayed value"
+msgstr "Faktorijel prikazane vrednosti"
+
+#: gcalctool/calctool.c:805
+msgid "Factorial"
+msgstr "Faktorijel"
+
+#: gcalctool/calctool.c:813
+msgid "Rand"
+msgstr "Sluč"
+
+#: gcalctool/calctool.c:814
+msgid "Random number in the range 0.0 to 1.0"
+msgstr "Slučajan broj u opsegu 0.0 do 1.0"
+
+#: gcalctool/calctool.c:815
+msgid "Random number"
+msgstr "Slučajan broj"
+
+#: gcalctool/calctool.c:825
+msgid "D"
+msgstr "D"
+
+#: gcalctool/calctool.c:826
+msgid "Hexadecimal digit D"
+msgstr "Heksadecimalna cifra D"
+
+#: gcalctool/calctool.c:835
+msgid "E"
+msgstr "E"
+
+#: gcalctool/calctool.c:836
+msgid "Hexadecimal digit E"
+msgstr "Heksadecimalna cifra E"
+
+#: gcalctool/calctool.c:845 gcalctool/gtk.c:1381
+msgid "F"
+msgstr "F"
+
+#: gcalctool/calctool.c:846
+msgid "Hexadecimal digit F"
+msgstr "Heksadecimalna cifra F"
+
+#: gcalctool/calctool.c:855
+msgid "Cos"
+msgstr "cos"
+
+#: gcalctool/calctool.c:856
+msgid "Cosine"
+msgstr "Kosinus"
+
+#: gcalctool/calctool.c:865
+msgid "Sin"
+msgstr "sin"
+
+#: gcalctool/calctool.c:866
+msgid "Sine"
+msgstr "Sinus"
+
+#: gcalctool/calctool.c:875
+msgid "Tan"
+msgstr "tg"
+
+#: gcalctool/calctool.c:876
+msgid "Tangent"
+msgstr "Tangens"
+
+#: gcalctool/calctool.c:885
+msgid "Ln"
+msgstr "ln"
+
+#: gcalctool/calctool.c:886
+msgid "Natural log"
+msgstr "Prirodni logaritam"
+
+#: gcalctool/calctool.c:895
+msgid "Log"
+msgstr "log"
+
+#: gcalctool/calctool.c:896
+msgid "Base 10 log"
+msgstr "Logaritam sa osnovom 10"
+
+#: gcalctool/calctool.c:907
+msgid "A"
+msgstr "A"
+
+#: gcalctool/calctool.c:908
+msgid "Hexadecimal digit A"
+msgstr "Heksadecimalna cifra A"
+
+# msgid "By author"
+# msgstr "Po autoru"
+#: gcalctool/calctool.c:917
+msgid "B"
+msgstr "B"
+
+#: gcalctool/calctool.c:918
+msgid "Hexadecimal digit B"
+msgstr "Heksadecimalna cifra B"
+
+#: gcalctool/calctool.c:927 gcalctool/gtk.c:1373
+msgid "C"
+msgstr "C"
+
+#: gcalctool/calctool.c:928
+msgid "Hexadecimal digit C"
+msgstr "Heksadecimalna cifra C"
+
+#: gcalctool/calctool.c:937
+msgid "Or"
+msgstr "Ili"
+
+#: gcalctool/calctool.c:938
+msgid "Bitwise OR"
+msgstr "Bitovno ILI"
+
+#: gcalctool/calctool.c:947
+msgid "And"
+msgstr "I"
+
+#: gcalctool/calctool.c:948
+msgid "Bitwise AND"
+msgstr "Bitovno I"
+
+#: gcalctool/calctool.c:957
+msgid "Not"
+msgstr "Neg"
+
+#: gcalctool/calctool.c:958
+msgid "Bitwise NOT"
+msgstr "Bitovna negacija"
+
+#: gcalctool/calctool.c:967
+msgid "Xor"
+msgstr "Illi"
+
+#: gcalctool/calctool.c:968
+msgid "Bitwise XOR"
+msgstr "Bitovno ILLI"
+
+#: gcalctool/calctool.c:977
+msgid "Xnor"
+msgstr "Xnor"
+
+#: gcalctool/calctool.c:978
+msgid "Bitwise XNOR"
+msgstr "Bitovno XNOR"
+
+#: gcalctool/calctool.c:1078
+msgid "Kilometer-to-mile conversion factor"
+msgstr "Činilac za pretvaranje kilometara u milje"
+
+#: gcalctool/calctool.c:1079
+msgid "square root of 2"
+msgstr "kvadratni koren od 2"
+
+#: gcalctool/calctool.c:1080
+msgid "e"
+msgstr "e"
+
+#: gcalctool/calctool.c:1081
+msgid "pi"
+msgstr "π"
+
+#: gcalctool/calctool.c:1082
+msgid "Centimeter-to-inch conversion factor"
+msgstr "Činilac za pretvaranje centimetra u inče"
+
+#: gcalctool/calctool.c:1083
+msgid "degrees in a radian"
+msgstr "stepeni u radijanu"
+
+#: gcalctool/calctool.c:1084
+msgid "2 ^ 20"
+msgstr "2 ^ 20"
+
+#: gcalctool/calctool.c:1085
+msgid "Gram-to-ounce conversion factor"
+msgstr "Činilac za pretvaranje grama u unce"
+
+#: gcalctool/calctool.c:1086
+msgid "Kilojoule-to-British-thermal-unit conversion factor"
+msgstr "Činilac za pretvaranje kilodžula u britanske termičke jedinice"
+
+#: gcalctool/calctool.c:1087
+msgid "Cubic-centimeter-to-cubic-inch conversion factor"
+msgstr "Činilac za pretvaranje kubnih centimetara u kubne inče"
+
+#. THIS ROUTINE IS CALLED WHEN AN ERROR CONDITION IS ENCOUNTERED, AND
+#. *  AFTER A MESSAGE HAS BEEN WRITTEN TO STDERR.
+#.
+#: gcalctool/calctool.c:1098 gcalctool/display.c:262 gcalctool/functions.c:943
+#: gcalctool/functions.c:1071 gcalctool/functions.c:1110
+#: gcalctool/functions.c:1164 gcalctool/functions.c:1257
+#: gcalctool/functions.c:1258 gcalctool/graphics.c:102 gcalctool/mp.c:1987
+msgid "Error"
+msgstr "Greška"
+
+#: gcalctool/functions.c:1277
+msgid "Numeric stack error"
+msgstr "Greška numeričkog steka"
+
+#: gcalctool/functions.c:1298
+msgid "Operand stack error"
+msgstr "Greška steka operanda"
+
+#: gcalctool/get.c:162
+msgid "-a needs accuracy value"
+msgstr "-a zahteva vrednost tačnosti"
+
+#: gcalctool/get.c:166 gcalctool/get.c:320
+#, c-format
+msgid "%s: accuracy should be in the range 0-9\n"
+msgstr "%s: tačnost treba da bude u opsegu 0–9\n"
+
+#: gcalctool/get.c:191
+#, c-format
+msgid "%s: %s as next argument.\n"
+msgstr "%s: %s kao sledeći argument.\n"
+
+#. No calculator error initially.
+#. Not entering an exponent number.
+#. No pending arithmetic operation.
+#. No User supplied title line.
+#: gcalctool/get.c:278
+msgid "calculator"
+msgstr "kalkulator"
+
+#: gcalctool/get.c:334
+#, c-format
+msgid "%s: base should be 2, 8, 10 or 16\n"
+msgstr "%s: osnova može da bude 2, 8, 10 ili 16\n"
+
+#: gcalctool/get.c:349
+#, c-format
+msgid "%s: invalid display mode [%s]\n"
+msgstr "%s: neispravan način prikaza [%s]\n"
+
+#: gcalctool/get.c:364
+#, c-format
+msgid "%s: invalid mode [%s]\n"
+msgstr "%s: neispravan mod [%s]\n"
+
+#: gcalctool/get.c:378
+#, c-format
+msgid "%s: invalid trigonometric mode [%s]\n"
+msgstr "%s: neispravan trigonometrijski mod [%s]\n"
+
+#: gcalctool/get.c:424
+#, c-format
+msgid ""
+"%s version %s\n"
+"\n"
+msgstr ""
+"%s izdanje %s\n"
+"\n"
+
+#: gcalctool/get.c:425
+#, c-format
+msgid "Usage: %s: [-D] [-E] [-a accuracy] "
+msgstr "Upotreba: %s: [-D] [-E] [-a tačnost] "
+
+#: gcalctool/get.c:426
+msgid "\t\t [-?] [-v] [-?]\n"
+msgstr "\t\t [-?] [-v] [-?]\n"
+
+#. translators: R is the short form of register used inter alia
+#. in popup menus
+#: gcalctool/graphics.c:66 gcalctool/gtk.c:1173 gcalctool/gtk.c:1306
+msgid "R"
+msgstr "R"
+
+#: gcalctool/gtk.c:183
+msgid "_Quit"
+msgstr "_Izađi"
+
+#: gcalctool/gtk.c:184
+msgid "Quit the calculator"
+msgstr "Izađi iz kalkulatora"
+
+#: gcalctool/gtk.c:186
+msgid "_Copy"
+msgstr "_Umnoži"
+
+#: gcalctool/gtk.c:187
+msgid "Copy selection"
+msgstr "Umnoži izabrano"
+
+#: gcalctool/gtk.c:188
+msgid "_Paste"
+msgstr "U_baci"
+
+#: gcalctool/gtk.c:189
+msgid "Paste selection"
+msgstr "Ubaci izabrano"
+
+#: gcalctool/gtk.c:190
+msgid "_Insert ASCII Value..."
+msgstr "U_metni ASKRI vrednost..."
+
+#: gcalctool/gtk.c:191
+msgid "Insert ASCII value"
+msgstr "Umetni ASKRI vrednost"
+
+#: gcalctool/gtk.c:193
+msgid "_Contents"
+msgstr "_Sadržaj"
+
+#: gcalctool/gtk.c:194
+msgid "Show help contents"
+msgstr "Prikaži sadržaj pomoći"
+
+#: gcalctool/gtk.c:195
+msgid "_About"
+msgstr "_O programu"
+
+#: gcalctool/gtk.c:196
+msgid "Show about help"
+msgstr "Prikaži pomoć o programu"
+
+#: gcalctool/gtk.c:198 gcalctool/gtk.c:199 gcalctool/gtk.c:229
+#: gcalctool/gtk.c:230
+msgid "1 place"
+msgstr "1 mesto"
+
+#: gcalctool/gtk.c:200 gcalctool/gtk.c:201 gcalctool/gtk.c:231
+#: gcalctool/gtk.c:232
+msgid "2 places"
+msgstr "2 mesta"
+
+#: gcalctool/gtk.c:202 gcalctool/gtk.c:203 gcalctool/gtk.c:233
+#: gcalctool/gtk.c:234
+msgid "3 places"
+msgstr "3 mesta"
+
+#: gcalctool/gtk.c:204 gcalctool/gtk.c:205 gcalctool/gtk.c:235
+#: gcalctool/gtk.c:236
+msgid "4 places"
+msgstr "4 mesta"
+
+#: gcalctool/gtk.c:206 gcalctool/gtk.c:207 gcalctool/gtk.c:237
+#: gcalctool/gtk.c:238
+msgid "5 places"
+msgstr "5 mesta"
+
+#: gcalctool/gtk.c:208 gcalctool/gtk.c:209 gcalctool/gtk.c:239
+#: gcalctool/gtk.c:240
+msgid "6 places"
+msgstr "6 mesta"
+
+#: gcalctool/gtk.c:210 gcalctool/gtk.c:211 gcalctool/gtk.c:241
+#: gcalctool/gtk.c:242
+msgid "7 places"
+msgstr "7 mesta"
+
+#: gcalctool/gtk.c:212 gcalctool/gtk.c:213 gcalctool/gtk.c:243
+#: gcalctool/gtk.c:244
+msgid "8 places"
+msgstr "8 mesta"
+
+#: gcalctool/gtk.c:214 gcalctool/gtk.c:215 gcalctool/gtk.c:245
+#: gcalctool/gtk.c:246
+msgid "9 places"
+msgstr "9 mesta"
+
+#: gcalctool/gtk.c:216 gcalctool/gtk.c:217 gcalctool/gtk.c:247
+#: gcalctool/gtk.c:248
+msgid "10 places"
+msgstr "10 mesta"
+
+#: gcalctool/gtk.c:218 gcalctool/gtk.c:219 gcalctool/gtk.c:249
+#: gcalctool/gtk.c:250
+msgid "11 places"
+msgstr "11 mesta"
+
+#: gcalctool/gtk.c:220 gcalctool/gtk.c:221 gcalctool/gtk.c:251
+#: gcalctool/gtk.c:252
+msgid "12 places"
+msgstr "12 mesta"
+
+#: gcalctool/gtk.c:222 gcalctool/gtk.c:223 gcalctool/gtk.c:253
+#: gcalctool/gtk.c:254
+msgid "13 places"
+msgstr "13 mesta"
+
+#: gcalctool/gtk.c:224 gcalctool/gtk.c:225 gcalctool/gtk.c:255
+#: gcalctool/gtk.c:256
+msgid "14 places"
+msgstr "14 mesta"
+
+#: gcalctool/gtk.c:226 gcalctool/gtk.c:227 gcalctool/gtk.c:257
+#: gcalctool/gtk.c:258
+msgid "15 places"
+msgstr "15 mesta"
+
+#: gcalctool/gtk.c:263 gcalctool/gtk.c:270
+msgid "Show _Trailing Zeroes"
+msgstr "Prikaži prateće nu_le"
+
+#: gcalctool/gtk.c:264 gcalctool/gtk.c:271
+msgid "Show trailing zeroes"
+msgstr "Prikaži prateće nule"
+
+#: gcalctool/gtk.c:265
+msgid "Show T_housands Separator"
+msgstr "Prikaži razdvajač _hiljada"
+
+#: gcalctool/gtk.c:266
+msgid "Show thousands separator"
+msgstr "Prikaži razdvajač hiljada"
+
+#: gcalctool/gtk.c:267
+msgid "_Memory Registers"
+msgstr "_Memorijski registri"
+
+#: gcalctool/gtk.c:268
+msgid "Show memory registers"
+msgstr "Prikaži memorijske registre"
+
+#: gcalctool/gtk.c:276 gcalctool/gtk.c:277
+msgid "0 significant places"
+msgstr "0 značajnih mesta"
+
+#: gcalctool/gtk.c:278 gcalctool/gtk.c:279
+msgid "1 significant place"
+msgstr "1 značajno mesto"
+
+#: gcalctool/gtk.c:280 gcalctool/gtk.c:281
+msgid "2 significant places"
+msgstr "2 značajna mesta"
+
+#: gcalctool/gtk.c:282 gcalctool/gtk.c:283
+msgid "3 significant places"
+msgstr "3 značajna mesta"
+
+#: gcalctool/gtk.c:284 gcalctool/gtk.c:285
+msgid "4 significant places"
+msgstr "4 značajna mesta"
+
+#: gcalctool/gtk.c:286 gcalctool/gtk.c:287
+msgid "5 significant places"
+msgstr "5 značajnih mesta"
+
+#: gcalctool/gtk.c:288 gcalctool/gtk.c:289
+msgid "6 significant places"
+msgstr "6 značajnih mesta"
+
+#: gcalctool/gtk.c:290 gcalctool/gtk.c:291
+msgid "7 significant places"
+msgstr "7 značajnih mesta"
+
+#: gcalctool/gtk.c:292 gcalctool/gtk.c:293
+msgid "8 significant places"
+msgstr "8 značajnih mesta"
+
+#: gcalctool/gtk.c:294 gcalctool/gtk.c:295
+msgid "9 significant places"
+msgstr "9 značajnih mesta"
+
+#: gcalctool/gtk.c:300
+msgid "_Basic mode"
+msgstr "_Osnovni režim"
+
+#: gcalctool/gtk.c:301
+msgid "Basic mode"
+msgstr "Osnovni režim"
+
+#: gcalctool/gtk.c:302
+msgid "_Financial mode"
+msgstr "_Finansijski režim"
+
+#: gcalctool/gtk.c:303
+msgid "Financial mode"
+msgstr "Finansijski režim"
+
+#: gcalctool/gtk.c:304
+msgid "_Scientific mode"
+msgstr "_Naučni režim"
+
+#: gcalctool/gtk.c:305
+msgid "Scientific mode"
+msgstr "Naučni režim"
+
+#: gcalctool/gtk.c:447
+msgid "translator_credits"
+msgstr "Danilo Šegan <danilo@prevod.org>"
+
+#: gcalctool/gtk.c:449
+msgid "Gcalctool"
+msgstr "Gkalktul"
+
+#: gcalctool/gtk.c:451
+msgid "Calculator with financial and scientific modes."
+msgstr "Kalkulator sa finansijskim i naučnim načinom rada."
+
+#: gcalctool/gtk.c:738
+msgid "Insert ASCII Value"
+msgstr "Ubaci ASKRI vrednost"
+
+#: gcalctool/gtk.c:753
+msgid "Ch_aracter:"
+msgstr "_Znak:"
+
+#: gcalctool/gtk.c:778
+msgid "_Insert"
+msgstr "U_metni"
+
+#: gcalctool/gtk.c:857
+msgid "Edit Constants"
+msgstr "Uredi konstante"
+
+#: gcalctool/gtk.c:857
+msgid "Edit Functions"
+msgstr "Uredi funkcije"
+
+#: gcalctool/gtk.c:881
+msgid "Note:"
+msgstr "Obaveštenje:"
+
+#: gcalctool/gtk.c:882
+msgid "All constant values are specified in the decimal numeric base."
+msgstr "Sve konstantne vrednosti se navode u dekadnom brojnom sistemu."
+
+#: gcalctool/gtk.c:892
+msgid "Click a _value or description to edit it:"
+msgstr "Kliknite na _vrednost ili opis da ih uredite:"
+
+#: gcalctool/gtk.c:915
+msgid "No."
+msgstr "br."
+
+#: gcalctool/gtk.c:917
+msgid "Value"
+msgstr "Vrednost"
+
+#: gcalctool/gtk.c:919
+msgid "Description"
+msgstr "Opis"
+
+#: gcalctool/gtk.c:1025 gcalctool/gtk.c:1027 gcalctool.desktop.in.h:1
+msgid "Calculator"
+msgstr "Kalkulator"
+
+#. Make Hyp and Inv trigonometric check boxes.
+#: gcalctool/gtk.c:1241
+msgid "_Inv"
+msgstr "_Inv"
+
+#: gcalctool/gtk.c:1249
+msgid "H_yp"
+msgstr "H_yp"
+
+#: gcalctool/gtk.c:1297
+msgid "Memory Registers"
+msgstr "Memorijski registri"
+
+#: gcalctool/gtk.c:1362
+msgid "Edit Constants..."
+msgstr "Uredi konstante..."
+
+#: gcalctool/gtk.c:1362
+msgid "Edit Functions..."
+msgstr "Uredi funkcije..."
+
+#: gcalctool.desktop.in.h:2
+msgid "Perform calculations"
+msgstr "Izračunaj"
+
+#~ msgid "Logical OR"
+#~ msgstr "Logičko ILI"
+
+#~ msgid "Logical AND"
+#~ msgstr "Logičko I"
+
+#~ msgid "Logical NOT"
+#~ msgstr "Logička negacija"
+
+#~ msgid "Logical XOR"
+#~ msgstr "Logičko „ili — ili“ (isključivo ili)"
+
+#~ msgid "Logical XNOR"
+#~ msgstr "Logički XNOR"
+
+#~ msgid "kilometers per hour or miles per hour"
+#~ msgstr "kilometara po času ili milja po času"
+
+#~ msgid "centimeters or inches"
+#~ msgstr "centimetri ili inči"
+
+#~ msgid "grams or ounces"
+#~ msgstr "grama ili unci"
+
+#~ msgid "/_Calculator"
+#~ msgstr "/_Kalkulator"
+
+#~ msgid "/Calculator/_Quit"
+#~ msgstr "/Kalkulator/I_zađi"
+
+#~ msgid "/_Edit"
+#~ msgstr "/_Uredi"
+
+#~ msgid "/Edit/sep1"
+#~ msgstr "/Uredi/razdvojnik1"
+
+#~ msgid "/Edit/_Insert ASCII Value..."
+#~ msgstr "/Uredi/_Ubaci ASCII vrednost..."
+
+#~ msgid "/_View"
+#~ msgstr "/P_regled"
+
+#~ msgid "/View/_Basic Mode"
+#~ msgstr "/Pregled/_Osnovni mod"
+
+#~ msgid "/View/_Financial Mode"
+#~ msgstr "/Pregled/_Finansijski"
+
+#~ msgid "/View/_Scientific Mode"
+#~ msgstr "/Pregled/_Naučni mod"
+
+#~ msgid "/View/sep1"
+#~ msgstr "/Pregled/razdvojnik1"
+
+#~ msgid "/View/Show _Trailing Zeroes"
+#~ msgstr "/Pregled/Prikaži prateće nu_le"
+
+#~ msgid "/View/sep2"
+#~ msgstr "/Pregled/razdvojnik2"
+
+#~ msgid "/View/_Memory Registers"
+#~ msgstr "/Pregled/Prikaži _memorijske registre"
+
+#~ msgid "/_Help"
+#~ msgstr "/_Pomoć"
+
+#~ msgid "/sep1"
+#~ msgstr "/razdv1"
+
+#~ msgid "x<sup><i>2</i></sup>"
+#~ msgstr "x<sup><i>2</i></sup>"
+
+#~ msgid "y<sup><i>x</i></sup>"
+#~ msgstr "y<sup><i>x</i></sup>"
+
+#~ msgid "y to the power of displayed value"
+#~ msgstr "y na stepen prikazane vrednosti"
+
+#~ msgid "Y to the x"
+#~ msgstr "Y na X"
+
+#~ msgid "Set trigonometric type to gradients"
+#~ msgstr "Trigonometrijske funkcije rade sa gradijentima"
+
+#~ msgid "1/x"
+#~ msgstr "1/x"
+
+#~ msgid "x!"
+#~ msgstr "x!"
+
+#~ msgid ""
+#~ "*** SIGN NOT 0, +1 OR -1 IN MPADD2 CALL.\n"
+#~ "POSSIBLE OVERWRITING PROBLEM ***\n"
+#~ msgstr ""
+#~ "*** ZNAK NIJE 0, +1 ILI -1 U MPADD2 POZIVU.\n"
+#~ "MOGUĆI PROBLEM PREPISIVANjA ***\n"
+
+#~ msgid "*** N .LE. 1 IN CALL TO MPART1 ***\n"
+#~ msgstr "*** N ≤ 1 U POZIVU MPART1 ***\n"
+
+#~ msgid "*** ABS(X) .GT. 1 IN CALL TO MPASIN ***\n"
+#~ msgstr "*** ABS(X) > 1 U POZIVU MPASIN ***\n"
+
+#~ msgid "*** ERROR OCCURRED IN MPATAN, RESULT INCORRECT ***\n"
+#~ msgstr "*** DOŠLO JE DO GREŠKE U MPATAN, REZULTAT NETAČAN ***\n"
+
+#~ msgid ""
+#~ "*** B = %d ILLEGAL IN CALL TO MPCHK.\n"
+#~ "PERHAPS NOT SET BEFORE CALL TO AN MP ROUTINE ***\n"
+#~ msgstr ""
+#~ "*** B = %d NEISPRAVAN POZIV MPCHK.\n"
+#~ "MOGUĆE JE DA NIJE POSTAVLjEN PRE POZIVA MP RUTINE ***\n"
+
+#~ msgid ""
+#~ "*** T = %d ILLEGAL IN CALL TO MPCHK.\n"
+#~ "PERHAPS NOT SET BEFORE CALL TO AN MP ROUTINE ***\n"
+#~ msgstr ""
+#~ "*** T = %d NEISPRAVAN POZIV MPCHK.\n"
+#~ "MOGUĆE JE DA NIJE POSTAVLjEN PRE POZIVA MP RUTINE ***\n"
+
+#~ msgid ""
+#~ "*** M .LE. T IN CALL TO MPCHK.\n"
+#~ "PERHAPS NOT SET BEFORE CALL TO AN MP ROUTINE ***\n"
+#~ msgstr ""
+#~ "*** M ≤ T U POZIVU MPCHK.\n"
+#~ "MOGUĆE JE DA NIJE POSTAVLjEN PRE POZIVA MP RUTINE ***\n"
+
+#~ msgid "*** B TOO LARGE IN CALL TO MPCHK ***\n"
+#~ msgstr "*** B PREVELIKO U POZIVU MPCHK ***\n"
+
+#~ msgid ""
+#~ "*** MXR TOO SMALL OR NOT SET TO DIM(R) BEFORE CALL TO AN MP ROUTINE ***\n"
+#~ msgstr ""
+#~ "*** MXR PREMALO ILI NIJE POSTAVLjENO NA DIM(R) PRE POZIVA MP RUTINE ***\n"
+
+#~ msgid ""
+#~ "*** MXR SHOULD BE AT LEAST %d*T + %d = %d  ***\n"
+#~ "*** ACTUALLY MXR = %d, AND T = %d  ***\n"
+#~ msgstr ""
+#~ "*** MXR TREBA DA BUDE BAR %d*T + %d = %d  ***\n"
+#~ "*** ZAPRAVO MXR = %d, I T = %d  ***\n"
+
+#~ msgid "*** FLOATING-POINT OVER/UNDER-FLOW IN MPCMD ***\n"
+#~ msgstr "*** PREKORAČENjE BROJEVA U POKRETNOM ZAREZU U MPCMD ***\n"
+
+#~ msgid "*** FLOATING-POINT OVER/UNDER-FLOW IN MPCMR ***\n"
+#~ msgstr "*** PREKORAČENjE BROJEVA U POKRETNOM ZAREZU U MPCMR ***\n"
+
+#~ msgid "*** J = 0 IN CALL TO MPCQM ***\n"
+#~ msgstr "*** J = 0 U POZIVU MPCQM ***\n"
+
+#~ msgid "*** ATTEMPTED DIVISION BY ZERO IN CALL TO MPDIV ***\n"
+#~ msgstr "*** POKUŠAJ DELjENjA SA NULOM U POZIVU MPDIV ***\n"
+
+#~ msgid "*** OVERFLOW OCCURRED IN MPDIV ***\n"
+#~ msgstr "*** PREKORAČENjE U MPDIV ***\n"
+
+#~ msgid "*** ATTEMPTED DIVISION BY ZERO IN CALL TO MPDIVI ***\n"
+#~ msgstr "*** POKUŠAJ DELjENjA SA NULOM U POZIVU MPDIVI ***\n"
+
+#~ msgid "*** INTEGER OVERFLOW IN MPDIVI, B TOO LARGE ***\n"
+#~ msgstr "*** CELOBROJNO PREKORAČENjE U MPDIVI, B PREVELIKO ***\n"
+
+#~ msgid "*** OVERFLOW IN SUBROUTINE MPEXP ***\n"
+#~ msgstr "*** PREKORAČENjE U PODRUTINI MPEXP ***\n"
+
+#~ msgid "*** ERROR OCCURRED IN MPEXP, RESULT INCORRECT ***\n"
+#~ msgstr "*** DOŠLO JE DO GREŠKE U MPEXP, REZULTAT NETAČAN ***\n"
+
+#~ msgid "*** ABS(X) NOT LESS THAN 1 IN CALL TO MPEXP1 ***\n"
+#~ msgstr "*** ABS(X) NIJE MANjE OD 1 U POZIVU MPEXP1 ***\n"
+
+#~ msgid "*** X NONPOSITIVE IN CALL TO MPLN ***\n"
+#~ msgstr "*** X NEPOZITIVAN U POZIVU MPLN ***\n"
+
+#~ msgid "*** ERROR IN MPLN, ITERATION NOT CONVERGING ***\n"
+#~ msgstr "*** GREŠKA U MPLN, RED NE KONVERGIRA ***\n"
+
+#~ msgid "*** ABS(X) .GE. 1/B IN CALL TO MPLNS ***\n"
+#~ msgstr "*** ABS(X) ≥ 1/B U POZIVU MPLNS ***\n"
+
+#~ msgid ""
+#~ "*** ERROR OCCURRED IN MPLNS.\n"
+#~ "NEWTON ITERATION NOT CONVERGING PROPERLY ***\n"
+#~ msgstr ""
+#~ "*** GREŠKA U MPLNS.\n"
+#~ "NjUTONOVA ITERACIJA NE KONVERGIRA KAKO TREBA ***\n"
+
+#~ msgid "*** INTEGER OVERFLOW IN MPMUL, B TOO LARGE ***\n"
+#~ msgstr "*** CELOBROJNO PREKORAČENjE U MPMUL, B PREVELIKO ***\n"
+
+#~ msgid ""
+#~ "*** ILLEGAL BASE B DIGIT IN CALL TO MPMUL.\n"
+#~ "POSSIBLE OVERWRITING PROBLEM ***\n"
+#~ msgstr ""
+#~ "*** NEISPRAVNA CIFRA U OSNOVI B U POZIVU MPMUL.\n"
+#~ "MOGUĆI PROBLEM PREPISIVANjA ***\n"
+
+#~ msgid "*** OVERFLOW OCCURRED IN MPMUL2 ***\n"
+#~ msgstr "*** PREKORAČENjE U MPMUL2 ***\n"
+
+#~ msgid "*** INTEGER OVERFLOW IN MPMUL2, B TOO LARGE ***\n"
+#~ msgstr "*** CELOBROJNO PREKORAČENjE U MPMUL2, B PREVELIKO ***\n"
+
+#~ msgid "*** ATTEMPTED DIVISION BY ZERO IN MPMULQ ***\n"
+#~ msgstr "*** POKUŠAJ DELjENjA SA NULOM U MPMULQ ***\n"
+
+#~ msgid ""
+#~ "*** SIGN NOT 0, +1 OR -1 IN CALL TO MPNZR.\n"
+#~ "POSSIBLE OVERWRITING PROBLEM ***\n"
+#~ msgstr ""
+#~ "*** ZNAK NIJE 0, +1 ILI -1 U POZIVU MPNZR.\n"
+#~ "MOGUĆI PROBLEM PREPISIVANjA ***\n"
+
+#~ msgid "*** OVERFLOW OCCURRED IN MPNZR ***\n"
+#~ msgstr "*** PREKORAČENjE U MPNZR ***\n"
+
+#~ msgid "*** CALL TO MPOVFL, MP OVERFLOW OCCURRED ***\n"
+#~ msgstr "*** POZIV MPOVFL, MP PREKORAČENjE ***\n"
+
+#~ msgid "*** ERROR OCCURRED IN MPPI, RESULT INCORRECT ***\n"
+#~ msgstr "*** GREŠKA U MPPI, REZULTAT NETAČAN ***\n"
+
+#~ msgid ""
+#~ "*** ATTEMPT TO RAISE ZERO TO NEGATIVE POWER IN CALL TO SUBROUTINE MPPWR "
+#~ "***\n"
+#~ msgstr ""
+#~ "*** POKUŠAJ DIZANjA NULE NA NEGATIVAN BROJ U POZIVU PODRUTINE MPPWR ***\n"
+
+#~ msgid "*** X NEGATIVE IN CALL TO MPPWR2 ***\n"
+#~ msgstr "*** X NEGATIVNO U POZIVU MPPWR2 ***\n"
+
+#~ msgid "*** X ZERO AND Y NONPOSITIVE IN CALL TO MPPWR2 ***\n"
+#~ msgstr "*** X NULA I Y NEPOZITIVAN U POZIVU MPPWR2 ***\n"
+
+#~ msgid "*** ATTEMPTED DIVISION BY ZERO IN CALL TO MPREC ***\n"
+#~ msgstr "*** POKUŠAJ DELjENjA SA NULOM U POZIVU MPREC ***\n"
+
+#~ msgid ""
+#~ "*** ERROR OCCURRED IN MPREC, NEWTON ITERATION NOT CONVERGING PROPERLY "
+#~ "***\n"
+#~ msgstr ""
+#~ "*** GREŠKA U MPREC, NjUTNOVA ITERACIJE NE KONVERGIRA KAKO TREBA ***\n"
+
+#~ msgid "*** OVERFLOW OCCURRED IN MPREC ***\n"
+#~ msgstr "*** PREKORAČENjE U MPREC ***\n"
+
+#~ msgid "*** N = 0 IN CALL TO MPROOT ***\n"
+#~ msgstr "*** N = 0 U POZIVU MPROOT ***\n"
+
+#~ msgid "*** ABS(N) TOO LARGE IN CALL TO MPROOT ***\n"
+#~ msgstr "*** ABS(N) PREVELIKO U POZIVU MPROOT ***\n"
+
+#~ msgid "*** X = 0 AND N NEGATIVE IN CALL TO MPROOT ***\n"
+#~ msgstr "*** X = 0 I N NEGATIVNO U POZIVU MPROOT ***\n"
+
+#~ msgid "*** X NEGATIVE AND N EVEN IN CALL TO MPROOT ***\n"
+#~ msgstr "*** X NEGATIVNO I N PARNO U POZIVU MPROOT ***\n"
+
+#~ msgid ""
+#~ "*** ERROR OCCURRED IN MPROOT, NEWTON ITERATION NOT CONVERGING PROPERLY "
+#~ "***\n"
+#~ msgstr ""
+#~ "*** GREŠKA U MPROOT, NjUTNOVA ITERACIJA NE KONVERGIRA KAKO TREBA ***\n"
+
+#~ msgid "*** IDECPL .LE. 0 IN CALL TO MPSET ***\n"
+#~ msgstr "*** IDECPL ≤ 0 U POZIVU MPSET ***\n"
+
+#~ msgid ""
+#~ "ITMAX2 TOO SMALL IN CALL TO MPSET ***\n"
+#~ "*** INCREASE ITMAX2 AND DIMENSIONS OF MP ARRAYS TO AT LEAST %d ***\n"
+#~ msgstr ""
+#~ "ITMAX2 PREMALO U POZIVU MPSET ***\n"
+#~ "*** UVEĆAJTE ITMAX2 I DIMENZIJE MP NIZOVA NA BAR %d ***\n"
+
+#~ msgid "*** ERROR OCCURRED IN MPSIN, RESULT INCORRECT ***\n"
+#~ msgstr "*** GREŠKA U MPSIN, REZULTAT NETAČAN ***\n"
+
+#~ msgid "*** ABS(X) .GT. 1 IN CALL TO MPSIN1 ***\n"
+#~ msgstr "*** ABS(X) > 1 U POZIVU MPSIN1 ***\n"
+
+#~ msgid "*** X NEGATIVE IN CALL TO SUBROUTINE MPSQRT ***\n"
+#~ msgstr "*** X NEGATIVNO U POZIVU PODRUTINE MPSQRT ***\n"
