@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/server_defines.h,v $
- *	$Id: server_defines.h,v 1.1 1991-11-05 13:59:41 lwvanels Exp $
+ *	$Id: server_defines.h,v 1.2 1992-01-07 19:00:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -49,7 +49,6 @@
 
 #ifdef KERBEROS
 #define TICKET_FILE		"/usr/spool/olc/tkt.olc"
-#define SRVTAB_FILE		"/usr/athena/lib/olc/srvtab"
 #endif /* KERBEROS */
 
 /* Use by the acl checking code, so you need it even if you don't have
