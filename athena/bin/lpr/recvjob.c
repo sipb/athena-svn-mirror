@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.2 1990-04-16 12:18:56 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.3 1990-04-17 08:55:49 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.2 1990-04-16 12:18:56 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.3 1990-04-17 08:55:49 epeisach Exp $";
 #endif lint
 
 /*
@@ -522,12 +522,11 @@ char file[];
 	/* Read the control file for the person sending the job */
 	while (getline(cfp)) {
 		if (line[0] == 'A') {
-		    if(sscanf(line[0], "%d", &act) != 1) act=0;
+		    if(sscanf(line + 1, "%d", &act) != 1) act=0;
 		    break;
 		}
 	}
 	fclose(cfp);
-
 
        	act = htonl(act);
 	bcopy(outbuf + 35, &act, 4);
