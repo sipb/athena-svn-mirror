@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1997-03-28 10:35:04 ghudson Exp $
+# $Id: Makefile,v 1.9 1997-06-09 20:45:50 cfields Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -58,6 +58,7 @@ install:
 	install -c -m 0644 system.chestrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 verbose ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 webtools.chestrc ${DESTDIR}${X11LIB}
 	rm -f ${DESTDIR}${FLEXLM}/license.dat
 	ln -s ${CONFIG}/license/sgi/license.dat ${DESTDIR}${FLEXLM}/license.dat
 	rm -f ${DESTDIR}${NCS}/glb_site.txt
