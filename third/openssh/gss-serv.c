@@ -67,23 +67,21 @@ static struct ssh_gssapi_cred_cache gssapi_cred_store = {NULL,NULL,NULL};
 #define krb5_get_err_text(context,code) error_message(code)
 #endif
 
-static krb5_context krb_context = NULL;
-
 /* Initialise the krb5 library, so we can use it for those bits that
  * GSSAPI won't do */
 
-int ssh_gssapi_krb5_init() {
+int ssh_gssapi_krb5_init(Authctxt *authctxt) {
 	krb5_error_code problem;
 	
-	if (krb_context !=NULL)
+	if (authctxt->krb5_ctx !=NULL)
 		return 1;
 		
-	problem = krb5_init_context(&krb_context);
+	problem = krb5_init_context(&authctxt->krb5_ctx);
 	if (problem) {
 		log("Cannot initialize krb5 context");
 		return 0;
 	}
-	krb5_init_ets(krb_context);
+	krb5_init_ets(authctxt->krb5_ctx);
 
 	return 1;	
 }			
@@ -94,28 +92,29 @@ int ssh_gssapi_krb5_init() {
  */
 
 int
-ssh_gssapi_krb5_userok(char *name) {
+ssh_gssapi_krb5_userok(Authctxt *authctxt) {
 	krb5_principal princ;
 	int retval;
 
-	if (ssh_gssapi_krb5_init() == 0)
+	if (ssh_gssapi_krb5_init(authctxt) == 0)
 		return 0;
 		
-	if ((retval=krb5_parse_name(krb_context, gssapi_client_name.value, 
+	if ((retval=krb5_parse_name(authctxt->krb5_ctx, 
+				    gssapi_client_name.value, 
 				    &princ))) {
 		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(krb_context,retval));
+			krb5_get_err_text(authctxt->krb5_ctx,retval));
 		return 0;
 	}
-	if (krb5_kuserok(krb_context, princ, name)) {
+	if (krb5_kuserok(authctxt->krb5_ctx, princ, authctxt->user)) {
 		retval = 1;
-		log("Authorized to %s, krb5 principal %s (krb5_kuserok)",name,
-		    (char *)gssapi_client_name.value);
+		log("Authorized to %s, krb5 principal %s (krb5_kuserok)",
+		    authctxt->user, (char *)gssapi_client_name.value);
 	}
 	else
 		retval = 0;
 	
-	krb5_free_principal(krb_context, princ);
+	krb5_free_principal(authctxt->krb5_ctx, princ);
 	return retval;
 }
 	
@@ -130,7 +129,7 @@ ssh_gssapi_krb5_userok(char *name) {
  */
 
 void
-ssh_gssapi_krb5_storecreds() {
+ssh_gssapi_krb5_storecreds(Authctxt *authctxt) {
 	krb5_ccache ccache;
 	krb5_error_code problem;
 	krb5_principal princ;
@@ -145,23 +144,23 @@ ssh_gssapi_krb5_storecreds() {
 		return;
 	}
 		
-	if (ssh_gssapi_krb5_init() == 0)
+	if (ssh_gssapi_krb5_init(authctxt) == 0)
 		return;
 
 	if (options.gss_use_session_ccache) {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d_XXXXXX",geteuid());
-       
-        	if ((tmpfd = mkstemp(ccname))==-1) {
-                	log("mkstemp(): %.100s", strerror(errno));
-                	return;
-        	}
+        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d",getpid());
+		if ((tmpfd = mkstemp(ccname))==-1) {
+		  	log("mkstemp(): %.100s", strerror(errno));
+			return;
+		}
+
 	        if (fchmod(tmpfd, S_IRUSR | S_IWUSR) == -1) {
 	               	log("fchmod(): %.100s", strerror(errno));
 	               	close(tmpfd);
 	               	return;
 	        }
         } else {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d",geteuid());
+        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d",getpid());
         	tmpfd = open(ccname, O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
         	if (tmpfd == -1) {
         		log("open(): %.100s", strerror(errno));
@@ -172,37 +171,35 @@ ssh_gssapi_krb5_storecreds() {
        	close(tmpfd);
         snprintf(name, sizeof(name), "FILE:%s",ccname);
  
-        if ((problem = krb5_cc_resolve(krb_context, name, &ccache))) {
+        if ((problem = krb5_cc_resolve(authctxt->krb5_ctx, name, &ccache))) {
                 log("krb5_cc_default(): %.100s", 
-                	krb5_get_err_text(krb_context,problem));
+                	krb5_get_err_text(authctxt->krb5_ctx,problem));
                 return;
         }
 
-	if ((problem = krb5_parse_name(krb_context, gssapi_client_name.value, 
+	if ((problem = krb5_parse_name(authctxt->krb5_ctx, gssapi_client_name.value, 
 				       &princ))) {
 		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	
-	if ((problem = krb5_cc_initialize(krb_context, ccache, princ))) {
+	if ((problem = krb5_cc_initialize(authctxt->krb5_ctx, ccache, princ))) {
 		log("krb5_cc_initialize(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_free_principal(krb_context,princ);
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_free_principal(authctxt->krb5_ctx,princ);
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	
-	krb5_free_principal(krb_context,princ);
-
 	#ifdef HEIMDAL
-	if ((problem = krb5_cc_copy_cache(krb_context, 
+	if ((problem = krb5_cc_copy_cache(authctxt->krb5_ctx, 
 					   gssapi_client_creds->ccache,
 					   ccache))) {
 		log("krb5_cc_copy_cache(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	#else
@@ -211,14 +208,11 @@ ssh_gssapi_krb5_storecreds() {
 					       ccache))) {
 		log("gss_krb5_copy_ccache() failed");
 		ssh_gssapi_error(maj_status,min_status);
-		krb5_cc_destroy(krb_context,ccache);
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	#endif
 	
-	krb5_cc_close(krb_context,ccache);
-
-
 #ifdef USE_PAM
 	do_pam_putenv("KRB5CCNAME",name);
 #endif
@@ -226,6 +220,17 @@ ssh_gssapi_krb5_storecreds() {
 	gssapi_cred_store.filename=strdup(ccname);
 	gssapi_cred_store.envvar="KRB5CCNAME";
 	gssapi_cred_store.envval=strdup(name);
+
+	/* Populate the Kerberos specific members of the authctxt.
+	 * We'll need them later.
+	 */
+	krb5_copy_principal(authctxt->krb5_ctx, princ, &authctxt->krb5_user);
+	krb5_free_principal(authctxt->krb5_ctx, princ);
+
+	authctxt->krb5_fwd_ccache = ccache;
+	authctxt->krb5_ticket_file = 
+	  (char *)krb5_cc_get_name(authctxt->krb5_ctx, 
+				   authctxt->krb5_fwd_ccache);
 
 	return;
 }
@@ -346,12 +351,12 @@ ssh_gssapi_cleanup_creds(void *ignored)
 }
 
 void 
-ssh_gssapi_storecreds()
+ssh_gssapi_storecreds(Authctxt *authctxt)
 {
 	switch (gssapi_client_type) {
 #ifdef KRB5
 	case GSS_KERBEROS:
-		ssh_gssapi_krb5_storecreds();
+		ssh_gssapi_krb5_storecreds(authctxt);
 		break;
 #endif
 #ifdef GSI
@@ -409,7 +414,7 @@ ssh_gssapi_do_child(char ***envp, u_int *envsizep)
 }
 
 int
-ssh_gssapi_userok(char *user)
+ssh_gssapi_userok(Authctxt *authctxt)
 {
 	if (gssapi_client_name.length==0 || 
 	    gssapi_client_name.value==NULL) {
@@ -419,12 +424,12 @@ ssh_gssapi_userok(char *user)
 	switch (gssapi_client_type) {
 #ifdef KRB5
 	case GSS_KERBEROS:
-		return(ssh_gssapi_krb5_userok(user));
+		return(ssh_gssapi_krb5_userok(authctxt));
 		break; /* Not reached */
 #endif
 #ifdef GSI
 	case GSS_GSI:
-		return(ssh_gssapi_gsi_userok(user));
+		return(ssh_gssapi_gsi_userok(authctxt->user));
 		break; /* Not reached */
 #endif /* GSI */
 	case GSS_LAST_ENTRY:
@@ -441,7 +446,7 @@ userauth_external(Authctxt *authctxt)
 {
 	packet_done();
 
-	return(ssh_gssapi_userok(authctxt->user));
+	return(ssh_gssapi_userok(authctxt));
 }
 
 void input_gssapi_token(int type, int plen, void *ctxt);
@@ -575,7 +580,7 @@ input_gssapi_exchange_complete(int type, int plen, void *ctxt)
 		fatal("Couldn't convert client name");
 	}
 				     		
-        authenticated = ssh_gssapi_userok(authctxt->user);
+        authenticated = ssh_gssapi_userok(authctxt);
 
 	authctxt->postponed = 0;
 	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, NULL);

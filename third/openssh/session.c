@@ -473,12 +473,6 @@ do_exec_no_pty(Session *s, const char *command)
 
 	session_proctitle(s);
 
-#if defined(GSSAPI)
-	temporarily_use_uid(s->pw);
-	ssh_gssapi_storecreds();
-	restore_uid();
-#endif
-
 #if defined(USE_PAM)
 	do_pam_session(s->pw->pw_name, NULL);
 	do_pam_setcred(1);
@@ -597,12 +591,6 @@ do_exec_pty(Session *s, const char *command)
 	ptyfd = s->ptyfd;
 	ttyfd = s->ttyfd;
 
-#if defined(GSSAPI)
-	temporarily_use_uid(s->pw);
-	ssh_gssapi_storecreds();
-	restore_uid();
-#endif
-
 #if defined(USE_PAM)
 	do_pam_session(s->pw->pw_name, s->tty);
 	do_pam_setcred(1);
@@ -719,6 +707,12 @@ do_exec(Session *s, const char *command)
   char *filetext, *errmem;
   const char *err;
   int havecred = 0;
+
+#if defined(GSSAPI)
+	temporarily_use_uid(s->pw);
+	ssh_gssapi_storecreds(s->authctxt);
+	restore_uid();
+#endif
 
 #if KRB5
   if (s->authctxt->krb5_ticket_file)
