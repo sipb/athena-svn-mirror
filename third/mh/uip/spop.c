@@ -4,7 +4,7 @@
 /* spop.c - MH style mailer to write to a POP subscriber */
 #endif	SPOP
 #ifndef	lint
-static char ident[] = "@(#)$Id: spop.c,v 1.1.1.1 1996-10-07 07:14:22 ghudson Exp $";
+static char ident[] = "@(#)$Id: spop.c,v 1.2 1999-01-29 18:30:42 ghudson Exp $";
 #endif	lint
 
 #ifndef	SPOP
@@ -37,6 +37,7 @@ static char ident[] = "@(#)$Id: spop.c,v 1.1.1.1 1996-10-07 07:14:22 ghudson Exp
 #endif	not SPOP
 #endif	SENDMTS
 
+#include <sys/types.h>
 #include "../h/mh.h"
 #ifndef	SPOP
 #include "../h/addrsbr.h"
@@ -100,8 +101,6 @@ static char bb_rept[BUFSIZ];
 
 static struct bboard  *bb[NBB];
 
-
-off_t	lseek ();
 
 #ifndef	__STDC__
 #ifdef	SYS5
