@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.9 1990-01-17 05:39:54 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.10 1990-01-30 03:15:07 vanharen Exp $";
 #endif
 
 
@@ -734,6 +734,7 @@ match_knuckle(name,instance,knuckle)
 {
   KNUCKLE **k_ptr,*store_ptr;
   int status;
+  int not_unique = 0;
 
   status = get_knuckle(name,instance,knuckle,TRUE);
   if(status != USER_NOT_FOUND)
@@ -764,8 +765,13 @@ match_knuckle(name,instance,knuckle)
 	  {
 	    if(store_ptr != (KNUCKLE *) NULL)
 	      {
+/******
+  I wonder whether this next "if" can ever evaluate FALSE.  If we got
+  by the if statement just after the endif TEST above, then we are
+  going to pass this one, too, aren't we?    -Chris.
+  ******/ 
 		if(store_ptr->instance == (*k_ptr)->instance)
-		  return(NAME_NOT_UNIQUE);
+		  not_unique = 1;
 	      }
 	    else
 	      store_ptr = *k_ptr;
@@ -773,6 +779,9 @@ match_knuckle(name,instance,knuckle)
 	else
 	  status=1;
       }
+
+  if(not_unique)
+    return(NAME_NOT_UNIQUE);
 
   if(store_ptr != (KNUCKLE *) NULL)
     {
@@ -944,6 +953,7 @@ assign_instance(user)
   return(ERROR);
 }
 
+
 /*
  * Function:	connect_users() connects a user and a user.
  * Arguments:	a:	        User to be connected.
@@ -998,24 +1008,28 @@ connect_knuckles(a,b)
   (void) strcpy(b->cusername,a->user->username);
   b->cinstance = a->instance;
 
-  (void) sprintf(msg,"You are connected to %s %s (%s).\n",
-	  a->title, a->user->realname,a->user->username);
+  (void) sprintf(msg,"You are connected to %s %s (%s@%s [%d]).\n",
+		 a->title, a->user->realname, a->user->username,
+		 a->user->machine, a->instance);
   if(write_message_to_user(b,msg,0)!=SUCCESS)
     {
-/*      a->connected = (KNUCKLE *) NULL;
-      b->connected = (KNUCKLE *) NULL;
-      return(FAILURE);*/
+      disconnect_knuckles(a, b);
+      return(FAILURE);
     }
       
-  (void) sprintf(msg,"You are connected to %s %s (%s).\n",
-	  b->title, b->user->realname, b->user->username);
+  (void) sprintf(msg,"You are connected to %s %s (%s@%s [%d]).\n",
+		 b->title, b->user->realname, b->user->username,
+		 b->user->machine, b->instance);
   if((write_message_to_user(a,msg,0) != SUCCESS) &&  (!is_signed_on(b)))
     {
+ /***  I'm not sure that we want to do this...  this may make it so that */
+ /***  you cannot grab logged out users... ??? */
 /*      sprintf(msg,"Oops, he just logged out. Will try to find another...");
-      write_message_to_user(b,msg,0);
-      a->connected = (KNUCKLE *) NULL;
-      b->connected = (KNUCKLE *) NULL;
-      return(FAILURE);*/
+	write_message_to_user(b,msg,0);
+	a->connected = (KNUCKLE *) NULL;
+	b->connected = (KNUCKLE *) NULL;
+	return(FAILURE);
+*/
     }
 
   if (!was_connected(a,b))
@@ -1026,6 +1040,23 @@ connect_knuckles(a,b)
     }
 
   return(SUCCESS);
+}
+
+
+void
+#ifdef __STDC__
+disconnect_knuckles(KNUCKLE *a, KNUCKLE *b)
+#else
+disconnect_knuckles(a, b)
+     KNUCKLE *a, *b;
+#endif /* STDC */
+{
+  b->question = (QUESTION *) NULL;
+  b->connected = (KNUCKLE *) NULL;
+  b->cusername[0] = NULL;
+  deactivate_knuckle(b);
+  a->connected = (KNUCKLE *) NULL;
+  a->cusername[0] = NULL;
 }
 
 
@@ -1062,7 +1093,7 @@ match_maker(knuckle)
       priority = CANCEL;   /* lowest connectable priority */
       
 #ifdef TEST
-      printf("match_maker: %s (%d) has no question\n", 
+      printf("match_maker: %s [%d] has no question\n", 
 	     knuckle->user->username, knuckle->instance);
 #endif /* TEST */
 
@@ -1196,19 +1227,19 @@ match_maker(knuckle)
       if(status == SUCCESS)
 	{
 	  if(!owns_question(temp))
-	    (void) sprintf(msgbuf,"Connected to %s %s (%d) %s@%s",
+	    (void) sprintf(msgbuf,"Connected to %s %s %s@%s [%d]",
 			   temp->title,
 			   temp->user->realname,
-			   temp->instance,
 			   temp->user->username, 
-			   temp->user->machine);
+			   temp->user->machine,
+			   temp->instance);
 	  else
-	    (void) sprintf(msgbuf,"Connected to %s %s (%d) %s@%s",
+	    (void) sprintf(msgbuf,"Connected to %s %s %s@%s [%d]",
 			   knuckle->title,
 			   knuckle->user->realname,
-			   knuckle->instance,
 			   knuckle->user->username, 
-			   knuckle->user->machine);
+			   knuckle->user->machine,
+			   knuckle->instance);
 	  log_daemon(temp,msgbuf);
 	  return(SUCCESS);
 	}
@@ -1257,8 +1288,10 @@ new_message(msg_field, sender, message)
   char buf[BUF_SIZE];
 
   time_now(timebuf);
-  sprintf(buf,"\nMessage from %s %s (%s) on %s:\n\n",sender->title, 
-	  sender->user->realname, sender->user->username, timebuf);
+  sprintf(buf,"\n--- Message from %s %s (%s@%s [%d]).\n    [%s]\n",
+	  sender->title, sender->user->realname,
+	  sender->user->username, sender->user->machine,
+	  sender->instance, timebuf);
   length = strlen(buf);
   
   if (*msg_field == (char *) NULL)
