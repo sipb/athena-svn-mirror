@@ -112,6 +112,7 @@
 # include <strings.h>
 #endif
 #include <stdio.h>
+#include <errno.h>
 
 /*
  * For testing, define these values
