@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1 1997-10-06 16:18:11 ghudson Exp $
+# $Id: lp.sh,v 1.2 1998-07-23 16:27:41 danw Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -25,7 +25,7 @@ suppress_s=no
 content=""
 pages=""
 usage="lp [-P pagerange] [-T content-type] [-c] [-d dest] [-m] [-n number]
-   [-o option] [-t title] [-w] files"
+   [-o option] [-t title] [-w] [file ...]"
 while getopts H:P:S:T:cd:fmn:o:pq:rst:wy: opt; do
 	case "$opt" in
 	H)
@@ -87,7 +87,7 @@ fi
 
 # Find filter to use for content type, if any.
 filter=""
-case "$content" in
+case ${content:-simple} in
 troff)
 	filter=/usr/lib/lp/postscript/dpost
 	;;
@@ -134,12 +134,7 @@ case "$pages" in
 	esac
 esac
 
-# Verify that there is at least one file.
 shift `expr $OPTIND - 1`
-if [ $# -eq 0 ]; then
-	echo "$usage" 1>&2
-	exit 1
-fi
 
 case "$filter" in
 	"")
@@ -147,7 +142,7 @@ case "$filter" in
 		;;
 	*)
 		# This option may not work with all lpr options.
-		for file do
+		for file in "${@:--}"; do
 			$filter $file | lpr $opts
 		done
 		;;
