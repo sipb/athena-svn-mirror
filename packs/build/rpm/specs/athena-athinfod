@@ -10,14 +10,6 @@ installation state, the number of users logged on, and various other
 informational state queries.
 
 %install
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
@@ -29,6 +21,6 @@ cp athinfo.defs $RPM_BUILD_ROOT/etc/athena/athinfo.defs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/etc/athena/athinfo.access$|%config \0|" \
+      -e "s|^/etc/athena/athinfo.access$|%config(noreplace) \0|" \
       -e "s|^/etc/athena/athinfo.defs$|%config \0|" |
   sort > rpm.filelist
