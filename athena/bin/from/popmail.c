@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.3 1992-04-30 19:54:11 lwvanels Exp $
+ * $Id: popmail.c,v 1.4 1992-11-08 23:04:28 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
- * $Author: lwvanels $
+ * $Author: probe $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.3 1992-04-30 19:54:11 lwvanels Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.4 1992-11-08 23:04:28 probe Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -32,7 +32,7 @@ FILE *sfi;
 FILE *sfo;
 char Errmsg[80];
 #ifdef KPOP
-char *PrincipalHostname(), *index();
+char *PrincipalHostname();
 #endif
 extern int popmail_debug;
 

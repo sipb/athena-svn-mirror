@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.6 1991-07-06 15:35:57 probe Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.7 1992-11-08 23:05:28 probe Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -23,6 +23,7 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
+#include <strings.h>
 
 /*
  * This version of the daemon is run out of inetd, with a conf line of:
@@ -38,7 +39,6 @@ main(argc,argv)
 {
   char buf[BFSZ];
   int readstat, errstat, readlen, msgfile;
-  char *index();
   struct sockaddr from;
   /* these strange casts are so that I can print out the address of
    * the incoming packet.
