@@ -1,7 +1,7 @@
 /* Kerberos4 SASL plugin
  * Rob Siemborski
  * Tim Martin 
- * $Id: kerberos4.c,v 1.2.2.1 2003-07-14 19:59:55 ghudson Exp $
+ * $Id: kerberos4.c,v 1.2.2.2 2003-11-04 19:32:41 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -115,7 +115,7 @@ extern int gethostname(char *, int);
 
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: kerberos4.c,v 1.2.2.1 2003-07-14 19:59:55 ghudson Exp $";
+static const char plugin_id[] = "$Id: kerberos4.c,v 1.2.2.2 2003-11-04 19:32:41 ghudson Exp $";
 
 #ifndef KEYFILE
 #define KEYFILE "/etc/srvtab";
@@ -966,7 +966,7 @@ int kerberos4_server_plug_init(const sasl_utils_t *utils,
     
     /* fail if we can't open the srvtab file */
     if (access(srvtab, R_OK) != 0) {
-	utils->log(NULL, SASL_LOG_ERR,
+	utils->log(NULL, SASL_LOG_DEBUG,
 		   "can't access srvtab file %s: %m", srvtab, errno);
 	if(!(--refcount)) {
 	    utils->free(srvtab);

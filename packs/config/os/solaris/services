@@ -224,6 +224,9 @@ csnet-fi	106/tcp
 # Used by the ESRI Spatial Database Engine
 esri_sde	5150/tcp
 
+# SMTP over SSL (TLS)
+smtps		465/tcp
+
 #
 # End of Athena additions
 #
