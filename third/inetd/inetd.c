@@ -372,6 +372,7 @@ struct biltin {
 
 #define NUMINT	(sizeof(intab) / sizeof(struct inent))
 char	*CONFIG = _PATH_INETDCONF;
+char	*PIDFILE = _PATH_INETPID;
 char	**Argv;
 char 	*LastArg;
 extern char	*__progname;
@@ -411,9 +412,9 @@ main(argc, argv, envp)
 
 	while ((ch = getopt(argc, argv,
 #ifdef LIBWRAP
-					"dln"
+					"dlnp:"
 #else
-					"dn"
+					"dnp:"
 #endif
 					   )) != -1)
 		switch(ch) {
@@ -428,6 +429,9 @@ main(argc, argv, envp)
 #endif
 		case 'n':
 			access_on = 1;
+			break;
+		case 'p':
+			PIDFILE = optarg;
 			break;
 		case '?':
 		default:
@@ -1048,7 +1052,7 @@ goaway(signo)
 		}
 		(void)close(sep->se_fd);
 	}
-	(void)unlink(_PATH_INETDPID);
+	(void)unlink(PIDFILE);
 	exit(0);
 }
 
@@ -1592,7 +1596,7 @@ logpid()
 {
 	FILE *fp;
 
-	if ((fp = fopen(_PATH_INETDPID, "w")) != NULL) {
+	if ((fp = fopen(PIDFILE, "w")) != NULL) {
 		fprintf(fp, "%u\n", getpid());
 		(void)fclose(fp);
 	}
