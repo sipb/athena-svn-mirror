@@ -7,8 +7,8 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.15 1991-07-01 09:47:08 probe Exp $";
-#endif lint
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.16 1992-01-06 15:50:30 probe Exp $";
+#endif
 
 #include "attach.h"
 #include <signal.h>
@@ -254,21 +254,22 @@ try_attach(name, hesline, errorout)
     if (mntpt)
 	strcpy(at.mntpt, mntpt);
 
-    if (atp=attachtab_lookup_mntpt(at.mntpt)) {
-	    fprintf(stderr,"%s: Filesystem %s is already mounted on %s\n",
-		    at.hesiodname, atp->hesiodname, at.mntpt);
-	    error_status = ERR_ATTACHDIRINUSE;
-	    return(FAILURE);
-    }
-
     /*
      * Note if a filesystem does nothave AT_FS_MNTPT_CANON as a property,
      * it must also somehow call check_mntpt, if it wants mountpoint
      * checking to happen at all.
      */
     if (at.fs->flags & AT_FS_MNTPT_CANON) {
+	    char *path;
+
 	    /* Perform path canonicalization */
-	    strcpy(at.mntpt, path_canon(at.mntpt));
+	    if ((path = path_canon(at.mntpt)) == NULL) {
+		    fprintf(stderr, "%s: Cannot get information about the mountpoint %s\n",
+			    at.hesiodname, at.mntpt);
+		    error_status = ERR_SOMETHING;
+		    return(FAILURE);
+	    }
+	    strcpy(at.mntpt, path);
 	    if (debug_flag)
 		    printf("Mountpoint canonicalized as: %s\n", at.mntpt);
 	    if (!override && !check_mountpt(at.mntpt, at.fs->type)) {
@@ -277,6 +278,13 @@ try_attach(name, hesline, errorout)
 	    }
     }
     
+    if (atp=attachtab_lookup_mntpt(at.mntpt)) {
+	    fprintf(stderr,"%s: Filesystem %s is already mounted on %s\n",
+		    at.hesiodname, atp->hesiodname, at.mntpt);
+	    error_status = ERR_ATTACHDIRINUSE;
+	    return(FAILURE);
+    }
+
     if (override_mode)
 	at.mode = override_mode;
 	
