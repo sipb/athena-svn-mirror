@@ -1,0 +1,12 @@
+Name: athena-pine
+Summary: The PINE terminal mail-reading client, for Athena
+Copyright: distributable
+Group: Applications/Internet
+
+Requires: athena-hesiod athena-krb5
+
+%description
+Pine is a very popular, easy to use, full-featured email user agent
+which includes a simple text editor called pico. Pine supports MIME
+extensions and can also be used to read news.  Pine also supports
+IMAP, mail and MH style folders.
