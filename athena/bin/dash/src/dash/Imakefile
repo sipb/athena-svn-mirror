@@ -50,7 +50,7 @@ D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
 			${XMULIB} ${K_LIB} ${M_LIB}
 CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
 
-#if defined(HasPutenv)
+#if (HasPutenv)
 PUTENV_DEF	=	-DHAS_PUTENV
 #else
 PUTENV_DEF	=
