@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.14 1991-07-09 20:49:03 lwvanels Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.15 1991-07-26 15:59:50 probe Exp $";
 
 #include "attach.h"
 
@@ -448,7 +448,7 @@ void mark_in_use(name)
     unlink(filename);
     fd = open(filename, O_CREAT, 0644);
     if (!fd) {
-	    fprintf(stderr,"Can't open %s: %s\n", attachtab_fn,
+	    fprintf(stderr,"Can't open %s: %s\n", filename,
 		    sys_errlist[errno]);
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
