@@ -269,6 +269,15 @@ sgi)
 	    fi
 	fi
 	rm -f /etc/opasswd /etc/oshadow
+
+	# The 6.5 network start-up fails if the interface options file
+	# is multi-line.  Rewrite it now as one line.
+	if [ -f /etc/config/ifconfig-1.options ]; then
+	    ifopts=`cat /etc/config/ifconfig-1.options`
+	    rm -f /etc/config/ifconfig-1.options
+	    echo $ifopts > /etc/config/ifconfig-1.options
+	    chmod 644 /etc/config/ifconfig-1.options
+	fi
 	;;
 esac
 
