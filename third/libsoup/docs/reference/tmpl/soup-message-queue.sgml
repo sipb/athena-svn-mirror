@@ -20,6 +20,8 @@ An opaque data structure used to iterate the elements of a
 #SoupMessageQueue.
 </para>
 
+@cur: 
+@next: 
 
 <!-- ##### FUNCTION soup_message_queue_new ##### -->
 <para>

@@ -1,47 +1,17 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupAuthDigest</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupAuthBasic.html" title="SoupAuthBasic"><link rel="next" href="SoupConnection.html" title="SoupConnection"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
-        .synopsis, .classsynopsis {
-            background: #eeeeee;
-            border: solid 1px #aaaaaa;
-            padding: 0.5em;
-        }
-        .programlisting {
-            background: #eeeeff;
-            border: solid 1px #aaaaff;
-            padding: 0.5em;
-        }
-        .variablelist {
-            padding: 4px;
-            margin-left: 3em;
-        }
-        .navigation {
-            background: #ffeeee;
-            border: solid 1px #ffaaaa;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        .navigation a {
-            color: #770000;
-        }
-        .navigation a:visited {
-            color: #550000;
-        }
-        .navigation .title {
-            font-size: 200%;
-        }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupAuthBasic.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupConnection.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupAuthDigest"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupAuthDigest</span></h2><p>SoupAuthDigest &#8212; HTTP Digest Authentication</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupAuthDigest</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupAuthBasic.html" title="SoupAuthBasic"><link rel="next" href="SoupConnection.html" title="SoupConnection"><link rel="chapter" href="ch01.html" title="libsoup"><link rel="refentry" href="libsoup-soup-dns.html" title="soup-dns"><link rel="refentry" href="libsoup-SoupAddress.html" title="SoupAddress"><link rel="refentry" href="SoupAuth.html" title="SoupAuth"><link rel="refentry" href="SoupAuthBasic.html" title="SoupAuthBasic"><link rel="refentry" href="SoupAuthDigest.html" title="SoupAuthDigest"><link rel="refentry" href="SoupConnection.html" title="SoupConnection"><link rel="refentry" href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><link rel="refentry" href="libsoup-soup-headers.html" title="soup-headers"><link rel="refentry" href="libsoup-soup-md5-utils.html" title="soup-md5-utils"><link rel="refentry" href="libsoup-soup-message-private.html" title="soup-message-private"><link rel="refentry" href="libsoup-soup-message-queue.html" title="soup-message-queue"><link rel="refentry" href="SoupMessage.html" title="SoupMessage"><link rel="refentry" href="libsoup-soup-method.html" title="soup-method"><link rel="refentry" href="libsoup-soup-misc.html" title="soup-misc"><link rel="refentry" href="libsoup-soup-server-auth.html" title="soup-server-auth"><link rel="refentry" href="libsoup-SoupServerMessage.html" title="SoupServerMessage"><link rel="refentry" href="libsoup-SoupServer.html" title="SoupServer"><link rel="refentry" href="libsoup-SoupSession.html" title="SoupSession"><link rel="refentry" href="SoupSoapMessage.html" title="SoupSoapMessage"><link rel="refentry" href="libsoup-SoupSocket.html" title="SoupSocket"><link rel="refentry" href="libsoup-soup-ssl.html" title="soup-ssl"><link rel="refentry" href="libsoup-soup-status.html" title="soup-status"><link rel="refentry" href="libsoup-soup-uri.html" title="soup-uri"><link rel="section" href="SoupAuthDigest.html#id2528935" title="Object Hierarchy"><link rel="section" href="SoupAuthDigest.html#id2551914" title="Description"><link rel="section" href="SoupAuthDigest.html#id2533642" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupAuthBasic.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupConnection.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupAuthDigest"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupAuthDigest</span></h2><p>SoupAuthDigest &#8212; HTTP Digest Authentication</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
 struct      <a href="SoupAuthDigest.html#SoupAuthDigest-struct">SoupAuthDigest</a>;
 
-</pre></div><div class="refsect1" lang="en"><a name="id2541618"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2528935"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a>
          +----SoupAuthDigest
-</pre></div><div class="refsect1" lang="en"><a name="id2538928"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2551914"></a><h2>Description</h2><p>
 This implements the Digest HTTP Authentication mechanism, as described
 in RFC 2617.
-</p></div><div class="refsect1" lang="en"><a name="id2525060"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2518720"></a><h3><a name="SoupAuthDigest-struct"></a>struct SoupAuthDigest</h3><a class="indexterm" name="id2520313"></a><pre class="programlisting">struct SoupAuthDigest;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2533642"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2558873"></a><h3><a name="SoupAuthDigest-struct"></a>struct SoupAuthDigest</h3><a class="indexterm" name="id2519345"></a><pre class="programlisting">struct SoupAuthDigest;</pre><p>
 
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupAuthBasic.html"><b>&lt;&lt; SoupAuthBasic</b></a></td><td align="right"><a accesskey="n" href="SoupConnection.html"><b>SoupConnection &gt;&gt;</b></a></td></tr></table></body></html>

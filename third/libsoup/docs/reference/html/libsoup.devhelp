@@ -3,7 +3,7 @@
   <chapters>
     <sub name="libsoup" link="ch01.html">
       <sub name="soup-dns" link="libsoup-soup-dns.html"/>
-      <sub name="SoupAddress" link="SoupAddress.html"/>
+      <sub name="SoupAddress" link="libsoup-SoupAddress.html"/>
       <sub name="SoupAuth" link="SoupAuth.html"/>
       <sub name="SoupAuthBasic" link="SoupAuthBasic.html"/>
       <sub name="SoupAuthDigest" link="SoupAuthDigest.html"/>
@@ -17,11 +17,11 @@
       <sub name="soup-method" link="libsoup-soup-method.html"/>
       <sub name="soup-misc" link="libsoup-soup-misc.html"/>
       <sub name="soup-server-auth" link="libsoup-soup-server-auth.html"/>
-      <sub name="SoupServerMessage" link="SoupServerMessage.html"/>
-      <sub name="SoupServer" link="SoupServer.html"/>
-      <sub name="SoupSession" link="SoupSession.html"/>
+      <sub name="SoupServerMessage" link="libsoup-SoupServerMessage.html"/>
+      <sub name="SoupServer" link="libsoup-SoupServer.html"/>
+      <sub name="SoupSession" link="libsoup-SoupSession.html"/>
       <sub name="SoupSoapMessage" link="SoupSoapMessage.html"/>
-      <sub name="SoupSocket" link="SoupSocket.html"/>
+      <sub name="SoupSocket" link="libsoup-SoupSocket.html"/>
       <sub name="soup-ssl" link="libsoup-soup-ssl.html"/>
       <sub name="soup-status" link="libsoup-soup-status.html"/>
       <sub name="soup-uri" link="libsoup-soup-uri.html"/>
@@ -34,17 +34,17 @@
     <function name="soup_dns_entry_cancel_lookup ()" link="libsoup-soup-dns.html#soup-dns-entry-cancel-lookup"/>
     <function name="soup_dns_free_hostent ()" link="libsoup-soup-dns.html#soup-dns-free-hostent"/>
     <function name="soup_dns_ntop ()" link="libsoup-soup-dns.html#soup-dns-ntop"/>
-    <function name="enum SoupAddressFamily" link="SoupAddress.html#SoupAddressFamily"/>
-    <function name="SOUP_ADDRESS_ANY_PORT" link="SoupAddress.html#SOUP-ADDRESS-ANY-PORT-CAPS"/>
-    <function name="soup_address_new ()" link="SoupAddress.html#soup-address-new"/>
-    <function name="soup_address_new_from_sockaddr ()" link="SoupAddress.html#soup-address-new-from-sockaddr"/>
-    <function name="soup_address_new_any ()" link="SoupAddress.html#soup-address-new-any"/>
-    <function name="SoupAddressCallback ()" link="SoupAddress.html#SoupAddressCallback"/>
-    <function name="soup_address_resolve_async ()" link="SoupAddress.html#soup-address-resolve-async"/>
-    <function name="soup_address_resolve_sync ()" link="SoupAddress.html#soup-address-resolve-sync"/>
-    <function name="soup_address_get_name ()" link="SoupAddress.html#soup-address-get-name"/>
-    <function name="soup_address_get_physical ()" link="SoupAddress.html#soup-address-get-physical"/>
-    <function name="soup_address_get_port ()" link="SoupAddress.html#soup-address-get-port"/>
+    <function name="enum SoupAddressFamily" link="libsoup-SoupAddress.html#SoupAddressFamily"/>
+    <function name="SOUP_ADDRESS_ANY_PORT" link="libsoup-SoupAddress.html#SOUP-ADDRESS-ANY-PORT-CAPS"/>
+    <function name="soup_address_new ()" link="libsoup-SoupAddress.html#soup-address-new"/>
+    <function name="soup_address_new_from_sockaddr ()" link="libsoup-SoupAddress.html#soup-address-new-from-sockaddr"/>
+    <function name="soup_address_new_any ()" link="libsoup-SoupAddress.html#soup-address-new-any"/>
+    <function name="SoupAddressCallback ()" link="libsoup-SoupAddress.html#SoupAddressCallback"/>
+    <function name="soup_address_resolve_async ()" link="libsoup-SoupAddress.html#soup-address-resolve-async"/>
+    <function name="soup_address_resolve_sync ()" link="libsoup-SoupAddress.html#soup-address-resolve-sync"/>
+    <function name="soup_address_get_name ()" link="libsoup-SoupAddress.html#soup-address-get-name"/>
+    <function name="soup_address_get_physical ()" link="libsoup-SoupAddress.html#soup-address-get-physical"/>
+    <function name="soup_address_get_port ()" link="libsoup-SoupAddress.html#soup-address-get-port"/>
     <function name="struct SoupAuth" link="SoupAuth.html#SoupAuth-struct"/>
     <function name="soup_auth_new_from_header_list ()" link="SoupAuth.html#soup-auth-new-from-header-list"/>
     <function name="soup_auth_get_scheme_name ()" link="SoupAuth.html#soup-auth-get-scheme-name"/>
@@ -182,42 +182,42 @@
     <function name="soup_server_auth_free ()" link="libsoup-soup-server-auth.html#soup-server-auth-free"/>
     <function name="soup_server_auth_get_user ()" link="libsoup-soup-server-auth.html#soup-server-auth-get-user"/>
     <function name="soup_server_auth_check_passwd ()" link="libsoup-soup-server-auth.html#soup-server-auth-check-passwd"/>
-    <function name="soup_server_message_new ()" link="SoupServerMessage.html#soup-server-message-new"/>
-    <function name="soup_server_message_get_server ()" link="SoupServerMessage.html#soup-server-message-get-server"/>
-    <function name="soup_server_message_set_encoding ()" link="SoupServerMessage.html#soup-server-message-set-encoding"/>
-    <function name="soup_server_message_get_encoding ()" link="SoupServerMessage.html#soup-server-message-get-encoding"/>
-    <function name="soup_server_message_start ()" link="SoupServerMessage.html#soup-server-message-start"/>
-    <function name="soup_server_message_is_started ()" link="SoupServerMessage.html#soup-server-message-is-started"/>
-    <function name="soup_server_message_finish ()" link="SoupServerMessage.html#soup-server-message-finish"/>
-    <function name="soup_server_message_is_finished ()" link="SoupServerMessage.html#soup-server-message-is-finished"/>
-    <function name="struct SoupServerContext" link="SoupServer.html#SoupServerContext"/>
-    <function name="SoupServerCallbackFn ()" link="SoupServer.html#SoupServerCallbackFn"/>
-    <function name="SoupServerUnregisterFn ()" link="SoupServer.html#SoupServerUnregisterFn"/>
-    <function name="SOUP_SERVER_PORT" link="SoupServer.html#SOUP-SERVER-PORT-CAPS"/>
-    <function name="SOUP_SERVER_INTERFACE" link="SoupServer.html#SOUP-SERVER-INTERFACE-CAPS"/>
-    <function name="SOUP_SERVER_SSL_CERT_FILE" link="SoupServer.html#SOUP-SERVER-SSL-CERT-FILE-CAPS"/>
-    <function name="SOUP_SERVER_SSL_KEY_FILE" link="SoupServer.html#SOUP-SERVER-SSL-KEY-FILE-CAPS"/>
-    <function name="soup_server_new ()" link="SoupServer.html#soup-server-new"/>
-    <function name="soup_server_get_protocol ()" link="SoupServer.html#soup-server-get-protocol"/>
-    <function name="soup_server_get_port ()" link="SoupServer.html#soup-server-get-port"/>
-    <function name="soup_server_run ()" link="SoupServer.html#soup-server-run"/>
-    <function name="soup_server_run_async ()" link="SoupServer.html#soup-server-run-async"/>
-    <function name="soup_server_quit ()" link="SoupServer.html#soup-server-quit"/>
-    <function name="soup_server_add_handler ()" link="SoupServer.html#soup-server-add-handler"/>
-    <function name="soup_server_remove_handler ()" link="SoupServer.html#soup-server-remove-handler"/>
-    <function name="soup_server_get_handler ()" link="SoupServer.html#soup-server-get-handler"/>
-    <function name="soup_server_list_handlers ()" link="SoupServer.html#soup-server-list-handlers"/>
-    <function name="soup_server_context_get_client_address ()" link="SoupServer.html#soup-server-context-get-client-address"/>
-    <function name="soup_server_context_get_client_host ()" link="SoupServer.html#soup-server-context-get-client-host"/>
-    <function name="SOUP_SESSION_PROXY_URI" link="SoupSession.html#SOUP-SESSION-PROXY-URI-CAPS"/>
-    <function name="SOUP_SESSION_MAX_CONNS" link="SoupSession.html#SOUP-SESSION-MAX-CONNS-CAPS"/>
-    <function name="SOUP_SESSION_MAX_CONNS_PER_HOST" link="SoupSession.html#SOUP-SESSION-MAX-CONNS-PER-HOST-CAPS"/>
-    <function name="SOUP_SESSION_USE_NTLM" link="SoupSession.html#SOUP-SESSION-USE-NTLM-CAPS"/>
-    <function name="SOUP_SESSION_SSL_CA_FILE" link="SoupSession.html#SOUP-SESSION-SSL-CA-FILE-CAPS"/>
-    <function name="soup_session_queue_message ()" link="SoupSession.html#soup-session-queue-message"/>
-    <function name="soup_session_requeue_message ()" link="SoupSession.html#soup-session-requeue-message"/>
-    <function name="soup_session_send_message ()" link="SoupSession.html#soup-session-send-message"/>
-    <function name="soup_session_abort ()" link="SoupSession.html#soup-session-abort"/>
+    <function name="soup_server_message_new ()" link="libsoup-SoupServerMessage.html#soup-server-message-new"/>
+    <function name="soup_server_message_get_server ()" link="libsoup-SoupServerMessage.html#soup-server-message-get-server"/>
+    <function name="soup_server_message_set_encoding ()" link="libsoup-SoupServerMessage.html#soup-server-message-set-encoding"/>
+    <function name="soup_server_message_get_encoding ()" link="libsoup-SoupServerMessage.html#soup-server-message-get-encoding"/>
+    <function name="soup_server_message_start ()" link="libsoup-SoupServerMessage.html#soup-server-message-start"/>
+    <function name="soup_server_message_is_started ()" link="libsoup-SoupServerMessage.html#soup-server-message-is-started"/>
+    <function name="soup_server_message_finish ()" link="libsoup-SoupServerMessage.html#soup-server-message-finish"/>
+    <function name="soup_server_message_is_finished ()" link="libsoup-SoupServerMessage.html#soup-server-message-is-finished"/>
+    <function name="struct SoupServerContext" link="libsoup-SoupServer.html#SoupServerContext"/>
+    <function name="SoupServerCallbackFn ()" link="libsoup-SoupServer.html#SoupServerCallbackFn"/>
+    <function name="SoupServerUnregisterFn ()" link="libsoup-SoupServer.html#SoupServerUnregisterFn"/>
+    <function name="SOUP_SERVER_PORT" link="libsoup-SoupServer.html#SOUP-SERVER-PORT-CAPS"/>
+    <function name="SOUP_SERVER_INTERFACE" link="libsoup-SoupServer.html#SOUP-SERVER-INTERFACE-CAPS"/>
+    <function name="SOUP_SERVER_SSL_CERT_FILE" link="libsoup-SoupServer.html#SOUP-SERVER-SSL-CERT-FILE-CAPS"/>
+    <function name="SOUP_SERVER_SSL_KEY_FILE" link="libsoup-SoupServer.html#SOUP-SERVER-SSL-KEY-FILE-CAPS"/>
+    <function name="soup_server_new ()" link="libsoup-SoupServer.html#soup-server-new"/>
+    <function name="soup_server_get_protocol ()" link="libsoup-SoupServer.html#soup-server-get-protocol"/>
+    <function name="soup_server_get_port ()" link="libsoup-SoupServer.html#soup-server-get-port"/>
+    <function name="soup_server_run ()" link="libsoup-SoupServer.html#soup-server-run"/>
+    <function name="soup_server_run_async ()" link="libsoup-SoupServer.html#soup-server-run-async"/>
+    <function name="soup_server_quit ()" link="libsoup-SoupServer.html#soup-server-quit"/>
+    <function name="soup_server_add_handler ()" link="libsoup-SoupServer.html#soup-server-add-handler"/>
+    <function name="soup_server_remove_handler ()" link="libsoup-SoupServer.html#soup-server-remove-handler"/>
+    <function name="soup_server_get_handler ()" link="libsoup-SoupServer.html#soup-server-get-handler"/>
+    <function name="soup_server_list_handlers ()" link="libsoup-SoupServer.html#soup-server-list-handlers"/>
+    <function name="soup_server_context_get_client_address ()" link="libsoup-SoupServer.html#soup-server-context-get-client-address"/>
+    <function name="soup_server_context_get_client_host ()" link="libsoup-SoupServer.html#soup-server-context-get-client-host"/>
+    <function name="SOUP_SESSION_PROXY_URI" link="libsoup-SoupSession.html#SOUP-SESSION-PROXY-URI-CAPS"/>
+    <function name="SOUP_SESSION_MAX_CONNS" link="libsoup-SoupSession.html#SOUP-SESSION-MAX-CONNS-CAPS"/>
+    <function name="SOUP_SESSION_MAX_CONNS_PER_HOST" link="libsoup-SoupSession.html#SOUP-SESSION-MAX-CONNS-PER-HOST-CAPS"/>
+    <function name="SOUP_SESSION_USE_NTLM" link="libsoup-SoupSession.html#SOUP-SESSION-USE-NTLM-CAPS"/>
+    <function name="SOUP_SESSION_SSL_CA_FILE" link="libsoup-SoupSession.html#SOUP-SESSION-SSL-CA-FILE-CAPS"/>
+    <function name="soup_session_queue_message ()" link="libsoup-SoupSession.html#soup-session-queue-message"/>
+    <function name="soup_session_requeue_message ()" link="libsoup-SoupSession.html#soup-session-requeue-message"/>
+    <function name="soup_session_send_message ()" link="libsoup-SoupSession.html#soup-session-send-message"/>
+    <function name="soup_session_abort ()" link="libsoup-SoupSession.html#soup-session-abort"/>
     <function name="struct SoupSoapMessage" link="SoupSoapMessage.html#SoupSoapMessage-struct"/>
     <function name="soup_soap_message_new ()" link="SoupSoapMessage.html#soup-soap-message-new"/>
     <function name="soup_soap_message_new_from_uri ()" link="SoupSoapMessage.html#soup-soap-message-new-from-uri"/>
@@ -251,28 +251,28 @@
     <function name="soup_soap_message_persist ()" link="SoupSoapMessage.html#soup-soap-message-persist"/>
     <function name="soup_soap_message_get_namespace_prefix ()" link="SoupSoapMessage.html#soup-soap-message-get-namespace-prefix"/>
     <function name="soup_soap_message_get_xml_doc ()" link="SoupSoapMessage.html#soup-soap-message-get-xml-doc"/>
-    <function name="SOUP_SOCKET_FLAG_NONBLOCKING" link="SoupSocket.html#SOUP-SOCKET-FLAG-NONBLOCKING-CAPS"/>
-    <function name="SOUP_SOCKET_FLAG_NODELAY" link="SoupSocket.html#SOUP-SOCKET-FLAG-NODELAY-CAPS"/>
-    <function name="SOUP_SOCKET_FLAG_REUSEADDR" link="SoupSocket.html#SOUP-SOCKET-FLAG-REUSEADDR-CAPS"/>
-    <function name="SOUP_SOCKET_IS_SERVER" link="SoupSocket.html#SOUP-SOCKET-IS-SERVER-CAPS"/>
-    <function name="SOUP_SOCKET_SSL_CREDENTIALS" link="SoupSocket.html#SOUP-SOCKET-SSL-CREDENTIALS-CAPS"/>
-    <function name="soup_socket_new ()" link="SoupSocket.html#soup-socket-new"/>
-    <function name="soup_socket_connect ()" link="SoupSocket.html#soup-socket-connect"/>
-    <function name="soup_socket_listen ()" link="SoupSocket.html#soup-socket-listen"/>
-    <function name="soup_socket_start_ssl ()" link="SoupSocket.html#soup-socket-start-ssl"/>
-    <function name="soup_socket_disconnect ()" link="SoupSocket.html#soup-socket-disconnect"/>
-    <function name="soup_socket_is_connected ()" link="SoupSocket.html#soup-socket-is-connected"/>
-    <function name="SoupSocketCallback ()" link="SoupSocket.html#SoupSocketCallback"/>
-    <function name="SoupSocketListenerCallback ()" link="SoupSocket.html#SoupSocketListenerCallback"/>
-    <function name="soup_socket_client_new_async ()" link="SoupSocket.html#soup-socket-client-new-async"/>
-    <function name="soup_socket_client_new_sync ()" link="SoupSocket.html#soup-socket-client-new-sync"/>
-    <function name="soup_socket_server_new ()" link="SoupSocket.html#soup-socket-server-new"/>
-    <function name="soup_socket_get_local_address ()" link="SoupSocket.html#soup-socket-get-local-address"/>
-    <function name="soup_socket_get_remote_address ()" link="SoupSocket.html#soup-socket-get-remote-address"/>
-    <function name="enum SoupSocketIOStatus" link="SoupSocket.html#SoupSocketIOStatus"/>
-    <function name="soup_socket_read ()" link="SoupSocket.html#soup-socket-read"/>
-    <function name="soup_socket_read_until ()" link="SoupSocket.html#soup-socket-read-until"/>
-    <function name="soup_socket_write ()" link="SoupSocket.html#soup-socket-write"/>
+    <function name="SOUP_SOCKET_FLAG_NONBLOCKING" link="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-NONBLOCKING-CAPS"/>
+    <function name="SOUP_SOCKET_FLAG_NODELAY" link="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-NODELAY-CAPS"/>
+    <function name="SOUP_SOCKET_FLAG_REUSEADDR" link="libsoup-SoupSocket.html#SOUP-SOCKET-FLAG-REUSEADDR-CAPS"/>
+    <function name="SOUP_SOCKET_IS_SERVER" link="libsoup-SoupSocket.html#SOUP-SOCKET-IS-SERVER-CAPS"/>
+    <function name="SOUP_SOCKET_SSL_CREDENTIALS" link="libsoup-SoupSocket.html#SOUP-SOCKET-SSL-CREDENTIALS-CAPS"/>
+    <function name="soup_socket_new ()" link="libsoup-SoupSocket.html#soup-socket-new"/>
+    <function name="soup_socket_connect ()" link="libsoup-SoupSocket.html#soup-socket-connect"/>
+    <function name="soup_socket_listen ()" link="libsoup-SoupSocket.html#soup-socket-listen"/>
+    <function name="soup_socket_start_ssl ()" link="libsoup-SoupSocket.html#soup-socket-start-ssl"/>
+    <function name="soup_socket_disconnect ()" link="libsoup-SoupSocket.html#soup-socket-disconnect"/>
+    <function name="soup_socket_is_connected ()" link="libsoup-SoupSocket.html#soup-socket-is-connected"/>
+    <function name="SoupSocketCallback ()" link="libsoup-SoupSocket.html#SoupSocketCallback"/>
+    <function name="SoupSocketListenerCallback ()" link="libsoup-SoupSocket.html#SoupSocketListenerCallback"/>
+    <function name="soup_socket_client_new_async ()" link="libsoup-SoupSocket.html#soup-socket-client-new-async"/>
+    <function name="soup_socket_client_new_sync ()" link="libsoup-SoupSocket.html#soup-socket-client-new-sync"/>
+    <function name="soup_socket_server_new ()" link="libsoup-SoupSocket.html#soup-socket-server-new"/>
+    <function name="soup_socket_get_local_address ()" link="libsoup-SoupSocket.html#soup-socket-get-local-address"/>
+    <function name="soup_socket_get_remote_address ()" link="libsoup-SoupSocket.html#soup-socket-get-remote-address"/>
+    <function name="enum SoupSocketIOStatus" link="libsoup-SoupSocket.html#SoupSocketIOStatus"/>
+    <function name="soup_socket_read ()" link="libsoup-SoupSocket.html#soup-socket-read"/>
+    <function name="soup_socket_read_until ()" link="libsoup-SoupSocket.html#soup-socket-read-until"/>
+    <function name="soup_socket_write ()" link="libsoup-SoupSocket.html#soup-socket-write"/>
     <function name="enum SoupSSLType" link="libsoup-soup-ssl.html#SoupSSLType"/>
     <function name="soup_ssl_get_client_credentials ()" link="libsoup-soup-ssl.html#soup-ssl-get-client-credentials"/>
     <function name="soup_ssl_free_client_credentials ()" link="libsoup-soup-ssl.html#soup-ssl-free-client-credentials"/>
