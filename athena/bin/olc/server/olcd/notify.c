@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.11 1990-01-26 15:57:28 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.12 1990-01-30 03:01:09 vanharen Exp $";
 #endif
 
 
@@ -240,7 +240,7 @@ write_message_to_user(k, message, flags)
 
   if(k->user->no_knuckles > 1)
     {
-      sprintf(msgbuf,"To: %s %s@%s (%d)\n",k->title,k->user->username,
+      sprintf(msgbuf,"To: %s %s@%s [%d]\n",k->title,k->user->username,
 	      k->user->realm,k->instance);
       strcat(msgbuf,message);
       result = write_message(k->user->username, k->user->machine,
