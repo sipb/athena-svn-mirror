@@ -1,9 +1,10 @@
-# $Id: Imakefile,v 1.29 1995-05-25 22:11:05 cfields Exp $
+# $Id: Imakefile,v 1.29.1.1 1996-03-28 22:27:06 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
 #endif
 #ifdef SOLARIS
+MACHDEFS=-DSOLARIS_MAE
 LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
 #endif
 #ifdef ultrix
