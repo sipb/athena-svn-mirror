@@ -303,14 +303,13 @@ gail_text_view_real_notify_gtk (GObject             *obj,
 {
   if (!strcmp (pspec->name, "editable"))
     {
-      GValue value = { 0, };
       AtkObject *atk_obj;
+      gboolean editable;
 
-      g_value_init (&value, G_TYPE_BOOLEAN);
-      g_object_get_property (obj, "editable", &value);
       atk_obj = gtk_widget_get_accessible (GTK_WIDGET (obj));
+      editable = gtk_text_view_get_editable (GTK_TEXT_VIEW (obj));
       atk_object_notify_state_change (atk_obj, ATK_STATE_EDITABLE,
-                                      g_value_get_boolean (&value));
+                                      editable);
     }
   else
     parent_class->notify_gtk (obj, pspec);
@@ -465,12 +464,11 @@ gail_text_view_get_character_at_offset (AtkText *text,
   if (offset >= gtk_text_buffer_get_char_count (buffer))
     return '\0';
 
-  gtk_text_buffer_get_start_iter (buffer, &start);
-  gtk_text_buffer_get_end_iter (buffer, &end);
-  string = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
-  index = g_utf8_offset_to_pointer (string, offset);
-
-  unichar = g_utf8_get_char (index);
+  gtk_text_buffer_get_iter_at_offset (buffer, &start, offset);
+  end = start;
+  gtk_text_iter_forward_char (&end);
+  string = gtk_text_buffer_get_slice (buffer, &start, &end, FALSE);
+  unichar = g_utf8_get_char (string);
   g_free(string);
   return unichar;
 }
@@ -525,7 +523,7 @@ gail_text_view_set_caret_offset (AtkText *text,
   buffer = view->buffer;
 
   gtk_text_buffer_get_iter_at_offset (buffer,  &pos_itr, offset);
-  gtk_text_buffer_move_mark_by_name (buffer, "insert", &pos_itr);
+  gtk_text_buffer_place_cursor (buffer, &pos_itr);
   return TRUE;
 }
 

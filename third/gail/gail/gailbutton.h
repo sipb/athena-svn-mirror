@@ -22,6 +22,7 @@
 
 #include <gtk/gtkaccessible.h>
 #include <gail/gailcontainer.h>
+#include <libgail-util/gailtextutil.h>
 
 
 #ifdef __cplusplus
@@ -51,6 +52,10 @@ struct _GailButton
   gchar         *press_description;
   gchar         *release_description;
   gchar         *click_keybinding;
+  guint         action_idle_handler;
+  GQueue        *action_queue;
+
+  GailTextUtil	 *textutil;
 };
 
 GType gail_button_get_type (void);

@@ -6,7 +6,8 @@
 </refmeta>
 
 <refnamediv>
-<refname>GailTextUtil</refname><refpurpose></refpurpose>
+<refname>GailTextUtil</refname><refpurpose>GailTextUtil is a utility class which can be used to implement some of
+the AtkText functions for accessible objects which implement AtkText.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -15,7 +16,6 @@
 
 
 struct      <link linkend="GailTextUtil">GailTextUtil</link>;
-struct      <link linkend="GailTextUtilClass">GailTextUtilClass</link>;
 enum        <link linkend="GailOffsetType">GailOffsetType</link>;
 <link linkend="GailTextUtil">GailTextUtil</link>* <link linkend="gail-text-util-new">gail_text_util_new</link>            (void);
 void        <link linkend="gail-text-util-text-setup">gail_text_util_text_setup</link>       (<link linkend="GailTextUtil">GailTextUtil</link> *textutil,
@@ -44,7 +44,12 @@ void        <link linkend="gail-text-util-buffer-setup">gail_text_util_buffer_se
 <refsect1>
 <title>Description</title>
 <para>
+GailTextUtil is a utility class which can be used to implement the
+AtkText functions which get text for accessible objects which implement
+AtkText.
 
+In GAIL it is used by the accsesible objects for GnomeCanvasText, GtkEntry,
+GtkLabel, GtkCellRendererText and GtkTextview.
 </para>
 </refsect1>
 
@@ -60,12 +65,7 @@ void        <link linkend="gail-text-util-buffer-setup">gail_text_util_buffer_se
 };
 </programlisting>
 <para>
-
-</para></refsect2>
-<refsect2>
-<title><anchor id="GailTextUtilClass">struct GailTextUtilClass</title>
-<programlisting>struct GailTextUtilClass;</programlisting>
-<para>
+The GailTextCell structure should not be accessed directly.
 
 </para></refsect2>
 <refsect2>
@@ -78,8 +78,28 @@ void        <link linkend="gail-text-util-buffer-setup">gail_text_util_buffer_se
 }GailOffsetType;
 </programlisting>
 <para>
+Specifies which of the functions <link linkend="atk-text-get-text-before-offset">atk_text_get_text_before_offset</link>(),
+<link linkend="atk-text-get-text-at-offset">atk_text_get_text_at_offset</link>(), <link linkend="atk-text-get-text-after-offset">atk_text_get_text_after_offset</link>() the
+function <link linkend="gail-text-util-get-text">gail_text_util_get_text</link>() is being called for.</para>
+<para>
 
-</para></refsect2>
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GAIL_BEFORE_OFFSET</literal></term>
+<listitem><para> Text before offset is required.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GAIL_AT_OFFSET</literal></term>
+<listitem><para> Text at offset is required,
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GAIL_AFTER_OFFSET</literal></term>
+<listitem><para> Text after offset is required.
+</para></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-text-util-new">gail_text_util_new ()</title>
 <programlisting><link linkend="GailTextUtil">GailTextUtil</link>* gail_text_util_new            (void);</programlisting>
@@ -87,14 +107,10 @@ void        <link linkend="gail-text-util-buffer-setup">gail_text_util_buffer_se
 This function creates a new GailTextUtil object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the GailTextUtil object
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the GailTextUtil object
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-text-util-text-setup">gail_text_util_text_setup ()</title>
 <programlisting>void        gail_text_util_text_setup       (<link linkend="GailTextUtil">GailTextUtil</link> *textutil,
@@ -103,18 +119,14 @@ This function creates a new GailTextUtil object.</para>
 This function initializes the GailTextUtil with the specified character string,</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>textutil</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GailTextUtil">GailTextUtil</link> to be initialized.
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry> A gchar* which points to the text to be stored in the GailTextUtil
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>textutil</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="GailTextUtil">GailTextUtil</link> to be initialized.
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><para> A gchar* which points to the text to be stored in the GailTextUtil
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-text-util-buffer-setup">gail_text_util_buffer_setup ()</title>
 <programlisting>void        gail_text_util_buffer_setup     (<link linkend="GailTextUtil">GailTextUtil</link> *textutil,
@@ -123,18 +135,14 @@ This function initializes the GailTextUtil with the specified character string,<
 This function initializes the GailTextUtil with the specified GtkTextBuffer</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>textutil</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GailTextUtil">GailTextUtil</link> to be initialized
-</entry></row>
-<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GtkTextBuffer">GtkTextBuffer</link> which identifies the text to be stored in the GailUtil.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>textutil</parameter>&nbsp;:</term>
+<listitem><para> A <link linkend="GailTextUtil">GailTextUtil</link> to be initialized
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="GtkTextBuffer">GtkTextBuffer</link> which identifies the text to be stored in the GailUtil.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-text-util-get-text">gail_text_util_get_text ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gail_text_util_get_text         (<link linkend="GailTextUtil">GailTextUtil</link> *textutil,
@@ -151,36 +159,32 @@ for a GtkTextView which is not wrapped, is a GtkTextView for a GtkTextView
 which is wrapped and is a PangoLayout otherwise.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>textutil</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GailTextUtil">GailTextUtil</link>
-</entry></row>
-<row><entry align="right"><parameter>layout</parameter>&nbsp;:</entry>
-<entry> A gpointer which is a PangoLayout, a GtkTreeView of NULL
-</entry></row>
-<row><entry align="right"><parameter>function</parameter>&nbsp;:</entry>
-<entry> An enumeration specifying whether to return the text before, at, or
+</para><variablelist role="params">
+<varlistentry><term><parameter>textutil</parameter>&nbsp;:</term>
+<listitem><para> A <link linkend="GailTextUtil">GailTextUtil</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><para> A gpointer which is a PangoLayout, a GtkTreeView of NULL
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><para> An enumeration specifying whether to return the text before, at, or
   after the offset.
-</entry></row>
-<row><entry align="right"><parameter>boundary_type</parameter>&nbsp;:</entry>
-<entry> The boundary type.
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> The offset of the text in the GailTextUtil 
-</entry></row>
-<row><entry align="right"><parameter>start_offset</parameter>&nbsp;:</entry>
-<entry> Address of location in which the start offset is returned
-</entry></row>
-<row><entry align="right"><parameter>end_offset</parameter>&nbsp;:</entry>
-<entry> Address of location in which the end offset is returned
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the substring requested
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>boundary_type</parameter>&nbsp;:</term>
+<listitem><para> The boundary type.
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><para> The offset of the text in the GailTextUtil 
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>start_offset</parameter>&nbsp;:</term>
+<listitem><para> Address of location in which the start offset is returned
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>end_offset</parameter>&nbsp;:</term>
+<listitem><para> Address of location in which the end offset is returned
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the substring requested
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-text-util-get-substring">gail_text_util_get_substring ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gail_text_util_get_substring    (<link linkend="GailTextUtil">GailTextUtil</link> *textutil,
@@ -190,23 +194,19 @@ which is wrapped and is a PangoLayout otherwise.</para>
 Gets the substring indicated by <parameter>start_pos</parameter> and <parameter>end_pos</parameter></para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>textutil</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GailTextUtil">GailTextUtil</link>
-</entry></row>
-<row><entry align="right"><parameter>start_pos</parameter>&nbsp;:</entry>
-<entry> The start position of the substring
-</entry></row>
-<row><entry align="right"><parameter>end_pos</parameter>&nbsp;:</entry>
-<entry> The end position of the substring.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the substring indicated by <parameter>start_pos</parameter> and <parameter>end_pos</parameter>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>textutil</parameter>&nbsp;:</term>
+<listitem><para> A <link linkend="GailTextUtil">GailTextUtil</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>start_pos</parameter>&nbsp;:</term>
+<listitem><para> The start position of the substring
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>end_pos</parameter>&nbsp;:</term>
+<listitem><para> The end position of the substring.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the substring indicated by <parameter>start_pos</parameter> and <parameter>end_pos</parameter>
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

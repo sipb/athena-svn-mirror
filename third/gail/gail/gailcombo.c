@@ -36,6 +36,7 @@ static void         atk_action_interface_init          (AtkActionIface *iface);
 
 static gboolean     gail_combo_do_action               (AtkAction      *action,
                                                         gint           i);
+static gboolean     idle_do_action                     (gpointer       data);
 static gint         gail_combo_get_n_actions           (AtkAction      *action)
 ;
 static G_CONST_RETURN gchar* gail_combo_get_description(AtkAction      *action,
@@ -71,42 +72,42 @@ gail_combo_get_type (void)
   static GType type = 0;
 
   if (!type)
-  {
-    static const GTypeInfo tinfo =
     {
-      sizeof (GailComboClass),
-      (GBaseInitFunc) NULL, /* base init */
-      (GBaseFinalizeFunc) NULL, /* base finalize */
-      (GClassInitFunc) gail_combo_class_init, /* class init */
-      (GClassFinalizeFunc) NULL, /* class finalize */
-      NULL, /* class data */
-      sizeof (GailCombo), /* instance size */
-      0, /* nb preallocs */
-      (GInstanceInitFunc) gail_combo_object_init, /* instance init */
-      NULL /* value table */
-    };
+      static const GTypeInfo tinfo =
+      {
+        sizeof (GailComboClass),
+        (GBaseInitFunc) NULL, /* base init */
+        (GBaseFinalizeFunc) NULL, /* base finalize */
+        (GClassInitFunc) gail_combo_class_init, /* class init */
+        (GClassFinalizeFunc) NULL, /* class finalize */
+        NULL, /* class data */
+        sizeof (GailCombo), /* instance size */
+        0, /* nb preallocs */
+        (GInstanceInitFunc) gail_combo_object_init, /* instance init */
+        NULL /* value table */
+      };
 
-    static const GInterfaceInfo atk_action_info =
-    {
+      static const GInterfaceInfo atk_action_info =
+      {
         (GInterfaceInitFunc) atk_action_interface_init,
         (GInterfaceFinalizeFunc) NULL,
         NULL
-    };
-    static const GInterfaceInfo atk_selection_info =
-    {
+      };
+      static const GInterfaceInfo atk_selection_info =
+      {
         (GInterfaceInitFunc) atk_selection_interface_init,
         (GInterfaceFinalizeFunc) NULL,
         NULL
-    };
+      };
 
-    type = g_type_register_static (GAIL_TYPE_CONTAINER,
-                                   "GailCombo", &tinfo, 0);
+      type = g_type_register_static (GAIL_TYPE_CONTAINER,
+                                     "GailCombo", &tinfo, 0);
 
-    g_type_add_interface_static (type, ATK_TYPE_ACTION,
-                                 &atk_action_info);
-    g_type_add_interface_static (type, ATK_TYPE_SELECTION,
-                                 &atk_selection_info);
-  }
+      g_type_add_interface_static (type, ATK_TYPE_ACTION,
+                                   &atk_action_info);
+      g_type_add_interface_static (type, ATK_TYPE_SELECTION,
+                                   &atk_selection_info);
+    }
 
   return type;
 }
@@ -205,12 +206,11 @@ gail_combo_get_n_children (AtkObject* obj)
 
   widget = GTK_ACCESSIBLE (obj)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return 0;
-  }
+
   if (_gail_combo_is_entry_editable (GTK_COMBO (widget)->entry))
     n_children++;
 
@@ -227,27 +227,19 @@ gail_combo_ref_child (AtkObject *obj,
   g_return_val_if_fail (GAIL_IS_COMBO (obj), NULL);
 
   if (i < 0 || i > 1)
-  {
     return NULL;
-  }
 
   widget = GTK_ACCESSIBLE (obj)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return NULL;
-  }
 
   if (i == 0)
-  {
     accessible = gtk_widget_get_accessible (GTK_COMBO (widget)->list);
-  }
   else if (_gail_combo_is_entry_editable (GTK_COMBO (widget)->entry))
-  {
     accessible = gtk_widget_get_accessible (GTK_COMBO (widget)->entry);
-  }
   else
     return NULL;
 
@@ -267,6 +259,36 @@ atk_action_interface_init (AtkActionIface *iface)
   iface->set_description = gail_combo_set_description;
 }
 
+static gboolean
+gail_combo_do_action (AtkAction *action,
+                       gint      i)
+{
+  GailCombo *combo;
+  GtkWidget *widget;
+
+  widget = GTK_ACCESSIBLE (action)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  if (!GTK_WIDGET_SENSITIVE (widget) || !GTK_WIDGET_VISIBLE (widget))
+    return FALSE;
+
+  combo = GAIL_COMBO (action);
+  if (i == 0)
+    {
+      if (combo->action_idle_handler)
+        return FALSE;
+
+      combo->action_idle_handler = gtk_idle_add (idle_do_action, combo);
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
 /*
  * This action is the pressing of the button on the combo box.
  * The behavior is different depending on whether the list is being
@@ -276,41 +298,39 @@ atk_action_interface_init (AtkActionIface *iface)
  * a button release event is simulated in an idle function.
  */
 static gboolean
-gail_combo_do_action (AtkAction *action,
-                       gint      i)
+idle_do_action (gpointer data)
 {
   GtkCombo *combo;
   GtkWidget *action_widget;
   GtkWidget *widget;
+  GailCombo *gail_combo;
+  gboolean do_popup;
+  GdkEvent tmp_event;
 
-  widget = GTK_ACCESSIBLE (action)->widget;
+  gail_combo = GAIL_COMBO (data);
+  gail_combo->action_idle_handler = 0;
+  widget = GTK_ACCESSIBLE (gail_combo)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return FALSE;
-  }
 
   if (!GTK_WIDGET_SENSITIVE (widget) || !GTK_WIDGET_VISIBLE (widget))
     return FALSE;
 
   combo = GTK_COMBO (widget);
-  if (i == 0)
-  {
-    gboolean do_popup;
-    GdkEvent tmp_event;
 
-    do_popup = !GTK_WIDGET_MAPPED (combo->popwin);
+  do_popup = !GTK_WIDGET_MAPPED (combo->popwin);
 
-    tmp_event.button.type = GDK_BUTTON_PRESS; 
-    tmp_event.button.window = widget->window;
-    tmp_event.button.button = 1; 
-    tmp_event.button.send_event = TRUE;
-    tmp_event.button.time = GDK_CURRENT_TIME;
-    tmp_event.button.axes = NULL;
+  tmp_event.button.type = GDK_BUTTON_PRESS; 
+  tmp_event.button.window = widget->window;
+  tmp_event.button.button = 1; 
+  tmp_event.button.send_event = TRUE;
+  tmp_event.button.time = GDK_CURRENT_TIME;
+  tmp_event.button.axes = NULL;
 
-    if (do_popup)
+  if (do_popup)
     {
       /* Pop up list */
       action_widget = combo->button;
@@ -329,12 +349,8 @@ gail_combo_do_action (AtkAction *action,
       gtk_widget_event (action_widget, &tmp_event);
       gtk_idle_add (_gail_combo_popup_release, combo);
     }
-    return TRUE;
-  }
-  else
-    return FALSE;
+  return FALSE;
 }
-
 
 static gint
 gail_combo_get_n_actions (AtkAction *action)
@@ -350,16 +366,14 @@ gail_combo_get_description (AtkAction *action,
                            gint      i)
 {
   if (i == 0)
-  {
-    GailCombo *combo;
+    {
+      GailCombo *combo;
 
-    combo = GAIL_COMBO (action);
-    return combo->press_description;
-  }
+      combo = GAIL_COMBO (action);
+      return combo->press_description;
+    }
   else
-  {
     return NULL;
-  }
 }
 
 static G_CONST_RETURN gchar*
@@ -367,9 +381,7 @@ gail_combo_get_name (AtkAction *action,
                      gint      i)
 {
   if (i == 0)
-  {
     return "press";
-  }
   else
     return NULL;
 }
@@ -400,12 +412,11 @@ gail_combo_add_selection (AtkSelection   *selection,
 
   widget = GTK_ACCESSIBLE (selection)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return FALSE;
-  }
+
   combo = GTK_COMBO (widget);
 
   gtk_list_select_item (GTK_LIST (combo->list), i);
@@ -420,12 +431,11 @@ gail_combo_clear_selection (AtkSelection   *selection)
 
   widget = GTK_ACCESSIBLE (selection)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return FALSE;
-  }
+
   combo = GTK_COMBO (widget);
 
   gtk_list_unselect_all (GTK_LIST (combo->list));
@@ -444,12 +454,11 @@ gail_combo_ref_selection (AtkSelection   *selection,
 
   widget = GTK_ACCESSIBLE (selection)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return NULL;
-  }
+
   combo = GTK_COMBO (widget);
 
   /*
@@ -479,12 +488,11 @@ gail_combo_get_selection_count (AtkSelection   *selection)
 
   widget = GTK_ACCESSIBLE (selection)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return 0;
-  }
+
   combo = GTK_COMBO (widget);
 
   /*
@@ -511,12 +519,11 @@ gail_combo_is_child_selected (AtkSelection   *selection,
 
   widget = GTK_ACCESSIBLE (selection)->widget;
   if (widget == NULL)
-  {
     /*
      * State is defunct
      */
     return FALSE;
-  }
+
   combo = GTK_COMBO (widget);
 
   list = GTK_LIST (combo->list)->selection;
@@ -536,9 +543,8 @@ gail_combo_remove_selection (AtkSelection   *selection,
                              gint           i)
 {
   if (atk_selection_is_child_selected (selection, i))
-  {
     atk_selection_clear_selection (selection);
-  }    
+
   return TRUE;
 }
 
@@ -592,18 +598,16 @@ gail_combo_set_description (AtkAction      *action,
                             const gchar    *desc)
 {
   if (i == 0)
-  {
-    GailCombo *combo;
+    {
+      GailCombo *combo;
 
-    combo = GAIL_COMBO (action);
-    g_free (combo->press_description);
-    combo->press_description = g_strdup (desc);
-    return TRUE;
-  }
+      combo = GAIL_COMBO (action);
+      g_free (combo->press_description);
+      combo->press_description = g_strdup (desc);
+      return TRUE;
+    }
   else
-  {
     return FALSE;
-  }
 }
 
 static void
@@ -612,5 +616,10 @@ gail_combo_finalize (GObject            *object)
   GailCombo *combo = GAIL_COMBO (object);
 
   g_free (combo->press_description);
+  if (combo->action_idle_handler)
+    {
+      gtk_idle_remove (combo->action_idle_handler);
+      combo->action_idle_handler = 0;
+    }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

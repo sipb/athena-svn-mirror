@@ -34,6 +34,16 @@ extern "C" {
 #define GAIL_IS_TEXT_UTIL_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GAIL_TYPE_TEXT_UTIL))
 #define GAIL_TEXT_UTIL_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), GAIL_TYPE_TEXT_UTIL, GailTextUtilClass))
 
+/**
+ *GailOffsetType:
+ *@GAIL_BEFORE_OFFSET: Text before offset is required.
+ *@GAIL_AT_OFFSET: Text at offset is required,
+ *@GAIL_AFTER_OFFSET: Text after offset is required.
+ *
+ * Specifies which of the functions atk_text_get_text_before_offset(),
+ * atk_text_get_text_at_offset(), atk_text_get_text_after_offset() the
+ * function gail_text_util_get_text() is being called for.
+ **/
 typedef enum
 {
   GAIL_BEFORE_OFFSET,

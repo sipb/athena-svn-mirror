@@ -1,3 +1,513 @@
+2003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.2.0
+
+	* NEWS:
+	Updated for changes in 1.2.0
+
+2003-01-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailbutton.c:
+	Take account of the fact that a GtkButton may contain more than ome 
+	label. In this case the GailButton will report GailLabels as children.
+	(get_label_from_button): Add two additional parameters, index and 
+	allow_many.
+	(gail_button_get_n_children): Call get_n_labels_from_button() to 
+	determine the numbger of labels in the button.
+	(gail_button_ref_child): Call get_label_from_button() to get GtkLabel
+	whose accessible is reported as child, if appropriate.
+	(get_n_labels_from_button): New function which counts the number of
+	labels inside a button.
+
+	* gail/gaillabel.c (gail_label_real_initialize): Call 
+	atk_object_set_parent() to set parent to button if label is inside a 
+	button.
+
+	This fixes bug #103645.
+
+2003-01-15  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailrange.c (gail_range_finalize): Add check that GailAdjustment
+	has a GtkAdjustment.This fixes warnings emitted by at-spi test program 
+	test-simple.
+
+2003-01-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtextview.c (gail_text_view_get_character_at_offset):
+	Use gtk_text_buffer_get_slice() instead of gtk_text_buffer_get_text().
+	Speed up function.
+
+	This fixes bug #103035.
+
+2003-01-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailbutton.c:
+	Take account of the fact that the label for a button may not exist
+	when the GailButton is created.
+
+	This fixes bug #101350.	
+	
+2003-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.7
+
+	* NEWS:
+	Updated for changes in 1.1.7
+
+2003-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Add -wth-html-dir option. (bug #100599)
+
+	* docs/reference/libgail-util/Makefile.am; Remove HTML_DIR and 
+	INSTALLDIR.
+
+2003-01-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.6
+
+	* NEWS:
+	Updated for changes in 1.1.6
+
+2002-12-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailrange.c (gail_range_finalize): Disconnect signal handler
+	on GtkAdjustment.
+
+	This fixes bug #101137.
+
+2002-12-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.c 
+	(cursor_changed): Pass AtkObject instead of GtkWidget to idle handler.
+	(idle_cursor_changed): Add check for whether widget was deleted
+
+	This fixes bug #101349.
+
+2002-12-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.5
+
+	* NEWS:
+	Updated for changes in 1.1.5
+
+2002-12-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gaillabel.c:
+	(gail_label_real_initialize)
+	(gail_label_real_notify_gtk): Use default values of 0 instead of -1.
+
+	This addreses bug #101020.
+
+2002-12-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailbutton.[ch]: Add AtkText interface for GailButton.
+	Text selection and text cursor functions are not implemented.
+
+2002-12-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.[ch]:
+	Add focus-cell to GailtreeView data structure.
+	(idle_cursor-changed): Do not emit active-descendant-changed
+	if new focus cell is the same as previous focus cell. Store focus cell
+	in GailTreeView data structure.
+
+	This fixes bug #100829.
+	
+2002-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.4
+
+	* NEWS:
+	Updated for changes in 1.1.4
+
+2002-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Update to depend on version 2.1.3 of gtk+.
+
+2002-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.c:
+	(gail_tree_view_ref_state): New function which returns state
+	ATK_STATE_MANAGES_DESCENDANTS
+	(gail_tree_view_get_cell_area): 
+	Use gtk_tree-view_column_cell_get_position() to get cell area for cell
+	in multi-renderer column. This fixes bug #84133.
+	(idle_cursor_changed): Emit active-descendant-changed signal.
+	
+2002-12-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailwidget.c (gail_widget_connect_widget_destroyed):
+	Use g_signal_connect_after instead of g_signal_connect (bug #95794)
+
+2002-11-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* NEWS:
+	Updated for changes in 1.1.3
+
+2002-11-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Update to take account of gtk-doc-version being 0.10
+	Updated version required to 0.9
+
+2002-11-20  Bill Haneman <bill.haneman@sun.com>
+
+	* gail/gailtoplevel.c:
+	(gail_toplevel_new):
+	Set role to ATK_ROLE_APPLICATION.
+
+2002-11-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailwindow (filter_func): Add check that GdkWindow in GdkEvent 
+	is non-NULL. (bug #98305)
+
+	* gail/gail.c 
+	(gail_accessibility_module_init) (gail_accessibility_module_shutdown):
+	Use fprintf(stderr, ...) instead of g_print()
+
+2002-11-12  Bill Haneman <bill.haneman@sun.com>
+
+	[fix for bugzilla 98275]
+	* gail/gailbutton.h
+	Replaced action_number with an action_queue.
+	* gail/gailbutton.c
+	(gail_button_do_action): 
+	Add the action to a GQueue instead of only allowing 
+	one pending action at a time.
+	(idle_do_action): Process the whole queue of pending actions instead of
+	only a single action.
+	(gail_button_instance_init gail_button_finalize):
+	Changes in support of above.
+
+2002-10-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailwindow.c
+	(gail_window_new): Set role to ATK_ROLE_TOOL_TIP if GtkWindow's name
+	is "gtk-tooltips".
+	(gail_window_get_name): Return contents of tooltip if role is 
+	ATK_ROLE_TOOL_TIP.
+
+	This fixes bug 95824.
+
+2002-10-14  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.2
+	Updated versions for dependencies
+
+	* NEWS:
+	Updated for changes in 1.1.2
+
+2002-10-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailentry.c (gail_entry_real_notify_gtk): 
+	Use gtk_entry_get_visibility instead of getting property value.
+
+	* gail/gailframe.c (gail_frame_get_name): 
+	Use gtk_frame_get_label instead of getting property value.
+
+	* gail/gailmenuitem.c (gail_menu_item_ref_state_set):  Remove this
+	function as it does not add any value. This means that 
+	ATK_STATE_SELECTABLE is not unset for a non-sensitive menu item.
+
+	* gail/gailstatusbar.c (gail_frame_get_name): 
+	Use gtk_label_get_label instead of getting property value.
+
+	* gail/gailtextview.c (gail_text_view_real_notify_gtk): 
+	Use gtk_text_view_get_editable instead of getting property value.
+
+	* gail/gailwidget.c 
+	(gail_widget_ref_state_set): Set state ATK_STATE_ENABLED for 
+	sensitive widget.
+	(gail_widget_real_notify_gtk): Check for focus notifications first as 
+	they are likely to be most frequent.
+
+	* gail/gailwindow.c (gail_window_ref_state_set): Use
+	gtk_window_get_resizable() instead of getting property value.
+
+2002-10-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcombo.c gail/gaillabel.c gail/gailoptionmenu.c
+	gail/gailtreeview.c:
+	Fix compiler warnings pointed out by Michael Meeks.
+
+2002-10-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailbutton.c (gail_button_get_keybinding): Add modifier 
+	to keybinding; this fixes bug 95151. Fix leak of value returned by
+	gtk_accelerator_name().
+
+	* gail/gailcanvasitem.c (gail_canvas_item_get_mdi_zorder): New
+	function to fix compiler warning.
+
+2002-10-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtextview.c (gail_text_view_set_caret_offset):
+	Use gtk_text_buffer_place_cursor() instead of 
+	gtk_text_buffer_move_mark_by_name(). Fixes bug #95056.
+
+2002-10-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.c
+	(gail_tree_view_add_selection): New function which selects a cell
+	if rows have only one visible column.
+	(cursor_changed): Updated comment
+	(get_path_column_from_index): Check path exists before calling
+	gtk_tree_path_free
+
+2002-09-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.1
+	Updated versions for dependencies
+
+	* NEWS:
+	Updated for changes in 1.1.1
+
+2002-09-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailutil.c (configure_event_watcher): Suppress warning message
+	when a widget which is not a GtkWindow, e.g. a GtkDrawingArea, emits 
+	a GDK_CONFIGURE event.
+
+2002-09-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcanvasitem.c
+	(gail_canvas_item_initialize): Use "atk-component-layer" to store
+	layer value, to be consistent with GailWidget.
+	Move definition of get_zorder from AtkObject class to AtkComponent
+	interface.
+
+	* gail/gailwidget.c (gail_widget_get_layer):  Remove assertions
+
+	* gail/gailwindow.c 
+	(gail_window_real_initialize): Use "atk-component-layer" to store
+	layer value, to be consistent with GailWidget.
+	Add desktop, an array of ints to GailScreenInfo structure. This
+	array caches the desktop of the corresponding Window in the
+	stacked_windows array.
+	Add update_desktop_handler, id for idle handler for updating 
+	cached desktop value to GailScreenInfo structure.
+	Add desktop_changed, an array of gboolean to GailScreenInfo structure.
+	This array stores whether the desktop value of the corresponding 
+	Window in the stacked_windows array needs to be updated.
+	(get_window_desktop): New function to get the _NET_WM_DESKTOP value
+	for a Window.
+	(free_screen_info): New function which frees data allocated in a
+	GailScreenInfo structure.
+	(get_stacked_windows): Copy cached desktop and desktop_changed
+	value for a Window from previous GailScreenInfo structure, if 
+	Window was in previous structure, otherwise call get_window_desktop() 
+	to get the Window's desktop value. Use free_screen_info().
+	(update_desktop_info): Update caches desktop values for Windows
+	whose value has changed.
+	(filter_func): Function used to get notification of change
+	of _NET_WM_DESKTOP property and update cache if Window is in cache.
+	This function is also used instead of removed function 
+	root_window_event_filter  to update screen info.
+	(get_window_zorder): Use the cached value for a Window's desktop
+	to check whether a window is on the same desktop before incrmenting 
+	the zorder.
+
+	Remove some debug statements.
+
+2002-09-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* gail/gailwindow.c: (gail_window_class_init): fix warnings.
+	(gail_window_real_initialize): set layer as ATK_LAYER_WINDOW.
+	(atk_component_interface_init): set get_mdi_zorder.
+	(get_stacked_windows), (update_screen_info),
+	(root_window_event_filter), (display_closed),
+	(init_gail_screens), (init_gail_screen),
+	(get_screen_info), (get_window_zorder),
+	(gail_window_get_mdi_zorder): impl code to obtain the z-order
+	directly from _NET_CLIENT_LIST_STACKING root window property
+	and to monitor for changes on that property. Mostly fixes
+	#84097 - some remaining issues, though.
+
+2002-09-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* docs/reference/libgail-util/gail-libgail-util-sections.txt:
+	Remove GailTextUtilClass
+
+	* docs/reference/libgail-util/tmpl/gailtextutil.sgml:
+	Add some text to descriptions and remove GailTextUtilClass
+
+	* libgail-util/gailtextutil.h: Add documentation for GailOffsetType
+
+	These changes ensure that all symbols are documented.
+	
+2002-09-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gailbutton.[ch]: Add action_idle_handler and action_number
+	to GailButton data structure.
+	(gail_button_do_action): Do action in idle handler idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+	(gail_button_finalize): Remove idle handler if present.
+
+	* gailcell.[ch]: Add action_idle_handler and action_func to 
+	GailCell data structure.
+	(gail_cell_object_finalize): Remove idle handler if present.
+	(gail_cell_action_do_action): Do action in idle handler 
+	idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+
+	* gailcombo.[ch]: Add action_idle_handler to GailCombo data structure.
+	Cosmetic changes.
+	(gail_combo_do_action): Do action in idle handler idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+	(gail_combo_finalize): Remove idle handler if present.
+
+	* gailentry.[ch]: Add action_idle_handler to GailEntry data structure.
+	(gail_entry_finalize): Remove idle handler if present.
+	(gail_entry_do_action): Do action in idle handler idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+	
+	* gailmenuitem.[ch]: Add action_idle_handler to GailMenuItem
+	data structure.
+	(gail_menu_item_do_action): Do action in idle handler idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+	(gail_menu_item_finalize): Remove idle handler if present.
+
+	* gailoptionmenu.c
+	(gail_option_menu_do_action): Do action in idle handler 
+	idle_do_action().
+	Return FALSE if action pending.
+	(idle_do_action): New idle handler which does the actions.
+
+	* gailtreeview.c:
+	(toggle_cell_expanded): Change to return void instead of gboolean.
+	Change g_return_val_if_fail to g_return_if_fail.
+	(toggle_cell_toggled): Change to return void instead of gboolean.
+	Change g_return_val_if_fail to g_return_if_fail.
+	Correct arguments to g_signal_emit_by_name() call.
+	(edit_cell): Change to return void instead of gboolean.
+	Change g_return_val_if_fail to g_return_if_fail.
+	(activate_cell): Change to return void instead of gboolean.
+	Change g_return_val_if_fail to g_return_if_fail.
+
+	These change ensure that calls to atk_action_do_action() return
+	without waiting for the action to complete by doing the action in
+	an idle handler. (bug #90756)
+	
+2002-08-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtoplevel.c (_gail_toplevel_remove_child): Update list
+	of children before emitting signal child to be consistent with 
+	GailContainer. (bug #91957)
+
+	* gail/gailcanvasitem.c (gail_canvas_item_grab_focus): Add call to
+	gtk_window_present() on toplevel level window. (bug #91964)
+
+	* gail/gailtreeview.c (gail_tree_view_grab_cell_focus): Add call to
+	gtk_window_present() on toplevel level window. (bug #91964)
+
+	* gail/gailutil.c (window_focus): Fix compiler warning.
+
+	* gail/widget.c (gail_widget_grab_focus): Add call to
+	gtk_window_present() on toplevel level window. (bug #91964)
+
+2002-08-29  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcell.c (gail_cell_grab_focus): New function to
+	implement atk_component_grab_focus() for cells.
+
+	* gail/gailcellparent.[ch]: Add function gail_cell_parent_grab_focus().
+
+	* gail/gailtreeview.c:
+	(gail_tree_view_grab_cell_focus): Implements 
+	gail_cell_parent_grab_focus() which allows a cell to grab focus 
+	(bug #91718)
+	(gail_tree_view_get_cell_area): Speed up getting GtkTreePath and 
+	GtkTreeViewColumn for a cell.
+	(traverse_cells): Add check whether the GtkTreeView widget is 
+	being deleted
+
+2002-08-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailentry.c:
+	(gail_entry_real_initialize) Initialize GailEntry values for
+	cursor_position and selection_bound as text may be selected when
+	GailEntry is created.
+	(gail_entry_real_notify_gtk) Emit text-changed signal, if pending,
+	when notification of change of selection-bound is received.
+	(gail_entry_delete_text_cb) Ignore deletion of zero bytes.
+	(check_for_selection_change) Change gail_entry to gtk_entry
+	for clarity.
+	(Fixes for bug #90536)
+
+2002-08-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtextcell.c (gail_text_cell_update_cache): Store empty 
+	string in buffer if text is NULL. (bug #91717)
+
+2002-08-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.0
+	Updated versions for dependencies
+
+	* NEWS:
+	Updated for changes in 1.1.0
+
+2002-08-18  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: hardcode aclocal-1.4/automake-1.4 so that users with
+	both automake 1.6 and 1.4 installed get the right automake. Means
+	compilation from CVS will now require the latest automake 1.4
+	release, or manually creating symlinks called "automake-1.4" and
+	"aclocal-1.4"
+
+2002-08-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgail-util/gailtextutil.c (gail_text_util_get_substring):
+	Allow negative end_pos to mean to the end of the string.
+
+	* gail/gailentry.c:
+	(text_setup) New function which sets the text in the GailEntry's
+	GailTextUtil. If visibility is false the text consists of the 
+	GtkEntry's invisible_char.
+	(gail_entry_real_initialize) Use text_setup() to set the text in 
+	the GailEntry's GailTextUtil.
+	(gail_entry_real_notify_gtk) If GtkEntry's visibility property has
+	changed update role and GailEntry's GailTextUtil.
+	If GtkEntry's invisible-char property has changed update
+	GailEntry's GailTextUtil.
+	(gail_entry_get_text) Return text from GailEntry's GailTextUtil.
+	(gail_entry_get_character_at_offset) Return character from 
+	GailEntry's GailTextUtil.
+	(_gail_entry_changed_cb) Use text_setup() to set the text in the 
+	GailEntry's GailTextUtil. (bug #89323)
+
+2002-08-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gail.c (gail_finish_select): If the menu item being selected
+	has a submenu, do not report focus on menu item until the submenu is 
+	shown. (bug #89611)
+
+	* gail/gailutil.c:
+	Correct GAIL_WINDOW to GAIL_IS_WINDOW in g_return_if_fail calls.
+	(bug #89595)
+
+2002-08-01  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailbutton.c (gail_button_do_action): Do not do action for
+	insensitive button. (bug #89505)
+
+2002-07-31  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in: Decouple version number of package from number of 
+	current interface exported by libgailutil. (bug #89327)
+
 2002-07-22  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* configure.in:

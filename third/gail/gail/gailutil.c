@@ -444,7 +444,7 @@ state_event_watcher (GSignalInvocationHint  *hint,
     return TRUE;
   
   atk_obj = gtk_widget_get_accessible (widget);
-  g_return_val_if_fail (GAIL_WINDOW (atk_obj), FALSE);
+  g_return_val_if_fail (GAIL_IS_WINDOW (atk_obj), FALSE);
   signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
   g_signal_emit (atk_obj, signal_id, 0);
 
@@ -458,7 +458,7 @@ window_added (AtkObject *atk_obj,
 {
   GtkWidget *widget;
 
-  g_return_if_fail (GAIL_WINDOW (child));
+  g_return_if_fail (GAIL_IS_WINDOW (child));
 
   widget = GTK_ACCESSIBLE (child)->widget;
   g_return_if_fail (widget);
@@ -476,7 +476,7 @@ window_removed (AtkObject *atk_obj,
                  guint     index,
                  AtkObject *child)
 {
-  g_return_if_fail (GAIL_WINDOW (child));
+  g_return_if_fail (GAIL_IS_WINDOW (child));
 
   g_signal_emit (child, g_signal_lookup ("destroy", GAIL_TYPE_WINDOW), 0); 
 }
@@ -488,7 +488,7 @@ window_focus (GtkWidget     *widget,
   gchar *signal_name;
   AtkObject *atk_obj;
 
-  g_return_if_fail (GTK_WIDGET (widget));
+  g_return_val_if_fail (GTK_WIDGET (widget), FALSE);
 
   atk_obj = gtk_widget_get_accessible (widget);
   signal_name =  (event->in) ? "activate" : "deactivate";
@@ -511,7 +511,11 @@ configure_event_watcher (GSignalInvocationHint  *hint,
   guint signal_id;
 
   object = g_value_get_object (param_values + 0);
-  g_return_val_if_fail (GTK_IS_WINDOW (object), FALSE);
+  if (!GTK_IS_WINDOW (object))
+    /*
+     * GtkDrawingArea can send a GDK_CONFIGURE event but we ignore here
+     */
+    return FALSE;
 
   event = g_value_get_boxed (param_values + 1);
   if (event->type != GDK_CONFIGURE)
@@ -531,7 +535,7 @@ configure_event_watcher (GSignalInvocationHint  *hint,
   signal_name = "resize";
 
   atk_obj = gtk_widget_get_accessible (widget);
-  g_return_val_if_fail (GAIL_WINDOW (atk_obj), FALSE);
+  g_return_val_if_fail (GAIL_IS_WINDOW (atk_obj), FALSE);
   signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
   g_signal_emit (atk_obj, signal_id, 0);
 

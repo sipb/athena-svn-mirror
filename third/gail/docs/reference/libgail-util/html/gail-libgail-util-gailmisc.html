@@ -109,7 +109,7 @@ NAME="GAIL-LIBGAIL-UTIL-GAILMISC"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN216"
+NAME="AEN228"
 ></A
 ><H2
 >Name</H2
@@ -117,7 +117,7 @@ NAME="AEN216"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN219"
+NAME="AEN231"
 ></A
 ><H2
 >Synopsis</H2
@@ -143,7 +143,9 @@ HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
                                              <A
 HREF=../atk/atk-atktext.html#ATKTEXTATTRIBUTE
 >AtkTextAttribute</A> attr,
-                                             gchar *value);
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *value);
 <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
 >AtkAttributeSet</A>* <A
@@ -156,10 +158,18 @@ HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
                                              <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A> *layout,
-                                             gchar *text,
-                                             gint offset,
-                                             gint *start_offset,
-                                             gint *end_offset);
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *start_offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *end_offset);
 <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
 >AtkAttributeSet</A>* <A
@@ -181,16 +191,30 @@ HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-GET-EXTENTS-FROM-PANGO-RECTANGLE
                                              <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
 >PangoRectangle</A> *char_rect,
-                                             gint x_layout,
-                                             gint y_layout,
-                                             gint *x,
-                                             gint *y,
-                                             gint *width,
-                                             gint *height,
                                              <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *width,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *height,
+                                             <A
+HREF=../atk/atkutil.html#ATKCOORDTYPE
 >AtkCoordType</A> coords);
-gint        <A
+<A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        <A
 HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-GET-INDEX-AT-POINT-IN-LAYOUT"
 >gail_misc_get_index_at_point_in_layout</A
 >
@@ -198,21 +222,37 @@ HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-GET-INDEX-AT-POINT-IN-LAYOUT"
                                              <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A> *layout,
-                                             gint x_layout,
-                                             gint y_layout,
-                                             gint x,
-                                             gint y,
                                              <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y,
+                                             <A
+HREF=../atk/atkutil.html#ATKCOORDTYPE
 >AtkCoordType</A> coords);
 void        <A
 HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-GET-ORIGINS"
 >gail_misc_get_origins</A
 >           (GtkWidget *widget,
-                                             gint *x_window,
-                                             gint *y_window,
-                                             gint *x_toplevel,
-                                             gint *y_toplevel);
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x_window,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y_window,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x_toplevel,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y_toplevel);
 <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
 >AtkAttributeSet</A>* <A
@@ -232,9 +272,15 @@ HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-BUFFER-GET-RUN-ATTRIBUTES"
 >gail_misc_buffer_get_run_attributes</A
 >
                                             (GtkTextBuffer *buffer,
-                                             gint offset,
-                                             gint *start_offset,
-                                             gint *end_offset);</PRE
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *start_offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *end_offset);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -242,7 +288,7 @@ HREF="gail-libgail-util-gailmisc.html#GAIL-MISC-BUFFER-GET-RUN-ATTRIBUTES"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN276"
+NAME="AEN288"
 ></A
 ><H2
 >Description</H2
@@ -252,14 +298,14 @@ NAME="AEN276"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN279"
+NAME="AEN291"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN281"
+NAME="AEN293"
 ></A
 ><H3
 ><A
@@ -283,7 +329,9 @@ HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
                                              <A
 HREF=../atk/atk-atktext.html#ATKTEXTATTRIBUTE
 >AtkTextAttribute</A> attr,
-                                             gchar *value);</PRE
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *value);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -309,96 +357,57 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attrib_set</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A> to add the attribute to</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>AtkAttributeSet</A> to add the attribute to</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attr</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The AtkTextAttrribute which identifies the attribute to be added</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The AtkTextAttrribute which identifies the attribute to be added</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The attribute value</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The attribute value</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > A pointer to the new <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A>.</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>AtkAttributeSet</A>.</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN318"
+NAME="AEN330"
 ></A
 ><H3
 ><A
@@ -423,10 +432,18 @@ HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
                                              <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A> *layout,
-                                             gchar *text,
-                                             gint offset,
-                                             gint *start_offset,
-                                             gint *end_offset);</PRE
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *start_offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *end_offset);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -435,147 +452,90 @@ HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 attribute set.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attrib_set</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A> to add the attribute to</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>AtkAttributeSet</A> to add the attribute to</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The PangoLayout from which the attributes will be obtained</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The PangoLayout from which the attributes will be obtained</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >text</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The text </TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The text </P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The offset at which the attributes are required</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The offset at which the attributes are required</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >start_offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The start offset of the current run</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The start offset of the current run</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >end_offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The end offset of the current run</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The end offset of the current run</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > A pointer to the <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A>.</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>AtkAttributeSet</A>.</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN366"
+NAME="AEN381"
 ></A
 ><H3
 ><A
@@ -608,96 +568,57 @@ HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >Adds the default attributes to the specified attribute set.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attrib_set</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A> to add the attribute to</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>AtkAttributeSet</A> to add the attribute to</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The PangoLayout from which the attributes will be obtained</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The PangoLayout from which the attributes will be obtained</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The GtkWidget for which the default attributes are required.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The GtkWidget for which the default attributes are required.</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > A pointer to the <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A>.</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>AtkAttributeSet</A>.</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN399"
+NAME="AEN414"
 ></A
 ><H3
 ><A
@@ -718,14 +639,26 @@ CLASS="PROGRAMLISTING"
                                              <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
 >PangoRectangle</A> *char_rect,
-                                             gint x_layout,
-                                             gint y_layout,
-                                             gint *x,
-                                             gint *y,
-                                             gint *width,
-                                             gint *height,
                                              <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *width,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *height,
+                                             <A
+HREF=../atk/atkutil.html#ATKCOORDTYPE
 >AtkCoordType</A> coords);</PRE
 ></TD
 ></TR
@@ -746,115 +679,74 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The widget that contains the PangoLayout, that contains
-  the PangoRectangle</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+  the PangoRectangle</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >char_rect</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
->PangoRectangle</A> from which to calculate extents</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>PangoRectangle</A> from which to calculate extents</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x_layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The x-offset at which the widget displays the
   PangoLayout that contains the PangoRectangle, relative to <TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y_layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The y-offset at which the widget displays the
   PangoLayout that contains the PangoRectangle, relative to <TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The x-position of the <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
 >PangoRectangle</A> relative to <TT
@@ -862,23 +754,17 @@ CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The y-position of the <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
 >PangoRectangle</A> relative to <TT
@@ -886,74 +772,52 @@ CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >width</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The width of the <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
->PangoRectangle</A></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>PangoRectangle</A></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >height</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The  height of the <A
 HREF=../pango/pango-glyph-storage.html#PANGORECTANGLE
->PangoRectangle</A></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>PangoRectangle</A></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> An <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
->AtkCoordType</A> enumeration</TD
-></TR
-></TABLE
+>&nbsp;:</DT
+><DD
 ><P
-></P
-></DIV
+> An <A
+HREF=../atk/atkutil.html#ATKCOORDTYPE
+>AtkCoordType</A> enumeration</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN467"
+NAME="AEN487"
 ></A
 ><H3
 ><A
@@ -969,17 +833,27 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->gint        gail_misc_get_index_at_point_in_layout
+><A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        gail_misc_get_index_at_point_in_layout
                                             (GtkWidget *widget,
                                              <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A> *layout,
-                                             gint x_layout,
-                                             gint y_layout,
-                                             gint x,
-                                             gint y,
                                              <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y_layout,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> x,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> y,
+                                             <A
+HREF=../atk/atkutil.html#ATKCOORDTYPE
 >AtkCoordType</A> coords);</PRE
 ></TD
 ></TR
@@ -1000,69 +874,40 @@ HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A>.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GtkWidget</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> A GtkWidget</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
 >PangoLayout</A> from which to get the index at the
-  specified point.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+  specified point.</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x_layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The x-offset at which the widget displays the
   <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
@@ -1071,23 +916,17 @@ CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y_layout</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The y-offset at which the widget displays the
   <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
@@ -1096,86 +935,62 @@ CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
-></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The x-coordinate relative to <TT
 CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
 > at which to
-  calculate the index</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+  calculate the index</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The y-coordinate relative to <TT
 CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
 > at which to
-  calculate the index</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+  calculate the index</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >coords</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > An <A
-HREF=../atk/atk-atkutil.html#ATKCOORDTYPE
->AtkCoordType</A> enumeration</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+HREF=../atk/atkutil.html#ATKCOORDTYPE
+>AtkCoordType</A> enumeration</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > the byte offset at the specified <TT
 CLASS="PARAMETER"
 ><I
@@ -1189,17 +1004,13 @@ CLASS="PARAMETER"
 > in a
   <A
 HREF=../pango/pango-layout-objects.html#PANGOLAYOUT
->PangoLayout</A></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>PangoLayout</A></P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN533"
+NAME="AEN557"
 ></A
 ><H3
 ><A
@@ -1216,10 +1027,18 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gail_misc_get_origins           (GtkWidget *widget,
-                                             gint *x_window,
-                                             gint *y_window,
-                                             gint *x_toplevel,
-                                             gint *y_toplevel);</PRE
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x_window,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y_window,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *x_toplevel,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *y_toplevel);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1228,111 +1047,66 @@ CLASS="PROGRAMLISTING"
 widgets top-level window.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >widget</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> a GtkWidget</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> a GtkWidget</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x_window</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> the x-origin of the widget-&gt;window</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> the x-origin of the widget-&gt;window</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y_window</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> the y-origin of the widget-&gt;window</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> the y-origin of the widget-&gt;window</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >x_toplevel</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> the x-origin of the toplevel window for widget-&gt;window</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> the x-origin of the toplevel window for widget-&gt;window</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >y_toplevel</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> the y-origin of the toplevel window for widget-&gt;window</TD
-></TR
-></TABLE
+>&nbsp;:</DT
+><DD
 ><P
-></P
-></DIV
+> the y-origin of the toplevel window for widget-&gt;window</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN570"
+NAME="AEN595"
 ></A
 ><H3
 ><A
@@ -1365,98 +1139,59 @@ HREF=../atk/atk-atktext.html#ATKTEXTATTRIBUTE
 and adds it to the AttributeSet.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attrib_set</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > An <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A></TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>AtkAttributeSet</A></P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attrs</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The GtkTextAttributes containing the attribute value</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The GtkTextAttributes containing the attribute value</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >attr</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
 > The <A
 HREF=../atk/atk-atktext.html#ATKTEXTATTRIBUTE
->AtkTextAttribute</A> to be added</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>AtkTextAttribute</A> to be added</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > A pointer to the updated <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A>.</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>AtkAttributeSet</A>.</P
+></DD
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN605"
+NAME="AEN630"
 ></A
 ><H3
 ><A
@@ -1476,9 +1211,15 @@ CLASS="PROGRAMLISTING"
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
 >AtkAttributeSet</A>* gail_misc_buffer_get_run_attributes
                                             (GtkTextBuffer *buffer,
-                                             gint offset,
-                                             gint *start_offset,
-                                             gint *end_offset);</PRE
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *start_offset,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *end_offset);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1487,106 +1228,61 @@ HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
 run starting at offset.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >buffer</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The GtkTextBuffer for which the attributes will be obtained</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The GtkTextBuffer for which the attributes will be obtained</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The offset at which the attributes are required</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The offset at which the attributes are required</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >start_offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The start offset of the current run</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The start offset of the current run</P
+></DD
+><DT
 ><TT
 CLASS="PARAMETER"
 ><I
 >end_offset</I
 ></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The end offset of the current run</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
+>&nbsp;:</DT
+><DD
+><P
+> The end offset of the current run</P
+></DD
+><DT
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
+> :</DT
+><DD
+><P
 > A pointer to the <A
 HREF=../atk/atk-atktext.html#ATKATTRIBUTESET
->AtkAttributeSet</A>.</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
+>AtkAttributeSet</A>.</P
+></DD
 ></DIV
 ></DIV
 ><DIV

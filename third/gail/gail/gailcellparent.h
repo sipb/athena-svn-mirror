@@ -62,6 +62,8 @@ struct _GailCellParentIface
   void                  ( *get_cell_area)         (GailCellParent        *parent,
                                                    GailCell              *cell,
                                                    GdkRectangle          *cell_rect);
+  gboolean              ( *grab_focus)            (GailCellParent        *parent,
+                                                   GailCell              *cell);
 };
 
 GType  gail_cell_parent_get_type               (void);
@@ -77,6 +79,8 @@ void   gail_cell_parent_get_cell_extents       (GailCellParent        *parent,
 void  gail_cell_parent_get_cell_area           (GailCellParent        *parent,
                                                 GailCell              *cell,
                                                 GdkRectangle          *cell_rect);
+gboolean gail_cell_parent_grab_focus           (GailCellParent        *parent,
+                                                GailCell              *cell);
 
 #ifdef __cplusplus
 }

@@ -61,6 +61,7 @@ static G_CONST_RETURN gchar *
 				                   gint                index);
 static gboolean     gail_cell_action_do_action    (AtkAction           *action,
 			                           gint                index);
+static gboolean     idle_do_action                (gpointer            data);
 
 static void         atk_component_interface_init  (AtkComponentIface   *iface);
 static void         gail_cell_get_extents         (AtkComponent        *component,
@@ -69,6 +70,7 @@ static void         gail_cell_get_extents         (AtkComponent        *componen
                                                    gint                *width,
                                                    gint                *height,
                                                    AtkCoordType        coord_type);
+static gboolean     gail_cell_grab_focus         (AtkComponent        *component);
 
 static gpointer parent_class = NULL;
 
@@ -173,6 +175,11 @@ gail_cell_object_finalize (GObject *obj)
   if (cell->state_set)
     g_object_unref (cell->state_set);
   g_list_free (cell->action_list);
+  if (cell->action_idle_handler)
+    {
+      gtk_idle_remove (cell->action_idle_handler);
+      cell->action_idle_handler = 0;
+    }
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
@@ -471,7 +478,23 @@ gail_cell_action_do_action (AtkAction *action,
   if (info == NULL)
     return FALSE;
   g_return_val_if_fail (info->do_action_func, FALSE);
-  return info->do_action_func (cell);
+  if (cell->action_idle_handler)
+    return FALSE;
+  cell->action_func = info->do_action_func;
+  cell->action_idle_handler = gtk_idle_add (idle_do_action, cell);
+  return TRUE;
+}
+
+static gboolean
+idle_do_action (gpointer data)
+{
+  GailCell *cell;
+
+  cell = GAIL_CELL (data);
+  cell->action_idle_handler = 0;
+  cell->action_func (cell);
+
+  return FALSE;
 }
 
 static void
@@ -480,6 +503,7 @@ atk_component_interface_init (AtkComponentIface *iface)
   g_return_if_fail (iface != NULL);
 
   iface->get_extents = gail_cell_get_extents;
+  iface->grab_focus = gail_cell_grab_focus;
 }
 
 static void 
@@ -502,4 +526,21 @@ gail_cell_get_extents (AtkComponent *component,
   g_return_if_fail (GAIL_IS_CELL_PARENT (cell_parent));
   gail_cell_parent_get_cell_extents (GAIL_CELL_PARENT (cell_parent), 
                                    gailcell, x, y, width, height, coord_type);
+}
+
+static gboolean 
+gail_cell_grab_focus (AtkComponent *component)
+{
+  GailCell *gailcell;
+  AtkObject *cell_parent;
+
+  g_return_val_if_fail (GAIL_IS_CELL (component), FALSE);
+
+  gailcell = GAIL_CELL (component);
+
+  cell_parent = gtk_widget_get_accessible (gailcell->widget);
+
+  g_return_val_if_fail (GAIL_IS_CELL_PARENT (cell_parent), FALSE);
+  return gail_cell_parent_grab_focus (GAIL_CELL_PARENT (cell_parent), 
+                                      gailcell);
 }

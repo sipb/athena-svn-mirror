@@ -27,6 +27,8 @@ static void       gail_entry_class_init            (GailEntryClass       *klass)
 static void       gail_entry_object_init           (GailEntry            *entry);
 static void	  gail_entry_real_initialize       (AtkObject            *obj,
                                                     gpointer             data);
+static void       text_setup                       (GailEntry            *entry,
+                                                    GtkEntry             *gtk_entry);
 static void	  gail_entry_real_notify_gtk	   (GObject		 *obj,
                                                     GParamSpec		 *pspec);
 static void       gail_entry_finalize              (GObject              *object);
@@ -134,12 +136,13 @@ static void	  _gail_entry_delete_text_cb	   (GtkEntry		 *entry,
                                                     gint		 arg2);
 static void	  _gail_entry_changed_cb           (GtkEntry		 *entry);
 static gboolean   check_for_selection_change       (GailEntry            *entry,
-                                                    GtkEntry             *gail_entry);
+                                                    GtkEntry             *gtk_entry);
 
 static void                  atk_action_interface_init   (AtkActionIface  *iface);
 
 static gboolean              gail_entry_do_action        (AtkAction       *action,
                                                           gint            i);
+static gboolean              idle_do_action              (gpointer        data);
 static gint                  gail_entry_get_n_actions    (AtkAction       *action);
 static G_CONST_RETURN gchar* gail_entry_get_description  (AtkAction       *action,
                                                           gint            i);
@@ -249,7 +252,6 @@ gail_entry_real_initialize (AtkObject *obj,
 {
   GtkEntry *entry;
   GailEntry *gail_entry;
-  const gchar *entry_text;
 
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
@@ -259,8 +261,9 @@ gail_entry_real_initialize (AtkObject *obj,
   g_assert (GTK_IS_ENTRY (data));
 
   entry = GTK_ENTRY (data);
-  entry_text = gtk_entry_get_text (entry);
-  gail_text_util_text_setup (gail_entry->textutil, entry_text);
+  text_setup (gail_entry, entry);
+  gail_entry->cursor_position = entry->current_pos;
+  gail_entry->selection_bound = entry->selection_bound;
 
   /* Set up signal callbacks */
   g_signal_connect (data, "insert-text",
@@ -275,15 +278,18 @@ static void
 gail_entry_real_notify_gtk (GObject		*obj,
                             GParamSpec		*pspec)
 {
-  GtkWidget *widget = GTK_WIDGET (obj);
-  AtkObject* atk_obj = gtk_widget_get_accessible (widget);
-  GtkEntry* gtk_entry = GTK_ENTRY (widget);
-  GailEntry* entry = GAIL_ENTRY (atk_obj);
+  GtkWidget *widget;
+  AtkObject* atk_obj;
+  GtkEntry* gtk_entry;
+  GailEntry* entry;
+
+  widget = GTK_WIDGET (obj);
+  atk_obj = gtk_widget_get_accessible (widget);
+  gtk_entry = GTK_ENTRY (widget);
+  entry = GAIL_ENTRY (atk_obj);
 
   if (strcmp (pspec->name, "cursor-position") == 0)
     {
-      entry = GAIL_ENTRY (atk_obj);
-
       if (entry->signal_name)
         {
           g_signal_emit_by_name (atk_obj, 
@@ -302,6 +308,14 @@ gail_entry_real_notify_gtk (GObject		*obj,
     }
   else if (strcmp (pspec->name, "selection-bound") == 0)
     {
+      if (entry->signal_name)
+        {
+          g_signal_emit_by_name (atk_obj, 
+                                 entry->signal_name,
+                                 entry->position,
+                                 entry->length);
+          entry->signal_name = NULL;
+        }
       if (check_for_selection_change (entry, gtk_entry))
         g_signal_emit_by_name (atk_obj, "text_selection_changed");
     }
@@ -314,8 +328,54 @@ gail_entry_real_notify_gtk (GObject		*obj,
       atk_object_notify_state_change (atk_obj, ATK_STATE_EDITABLE,
                                                g_value_get_boolean (&value));
     }
+  else if (strcmp (pspec->name, "visibility") == 0)
+    {
+      gboolean visibility;
+      AtkRole new_role;
+
+      text_setup (entry, gtk_entry);
+      visibility = gtk_entry_get_visibility (gtk_entry);
+      new_role = visibility ? ATK_ROLE_TEXT : ATK_ROLE_PASSWORD_TEXT;
+      atk_object_set_role (atk_obj, new_role);
+    }
+  else if (strcmp (pspec->name, "invisible-char") == 0)
+    {
+      text_setup (entry, gtk_entry);
+    }
   else
     parent_class->notify_gtk (obj, pspec);
+}
+
+static void
+text_setup (GailEntry *entry,
+            GtkEntry  *gtk_entry)
+{
+  if (gtk_entry_get_visibility (gtk_entry))
+    {
+      gail_text_util_text_setup (entry->textutil, gtk_entry_get_text (gtk_entry));
+    }
+  else
+    {
+      gunichar invisible_char;
+      GString *tmp_string = g_string_new (NULL);
+      gint ch_len; 
+      gchar buf[7];
+      gint i;
+
+      invisible_char = gtk_entry_get_invisible_char (gtk_entry);
+      if (invisible_char == 0)
+        invisible_char = ' ';
+
+      ch_len = g_unichar_to_utf8 (invisible_char, buf);
+      for (i = 0; i < gtk_entry->text_length; i++)
+        {
+          g_string_append_len (tmp_string, buf, ch_len);
+        }
+
+      gail_text_util_text_setup (entry->textutil, tmp_string->str);
+      g_string_free (tmp_string, TRUE);
+
+    } 
 }
 
 static void
@@ -325,6 +385,11 @@ gail_entry_finalize (GObject            *object)
 
   g_object_unref (entry->textutil);
   g_free (entry->activate_description);
+  if (entry->action_idle_handler)
+    {
+      gtk_idle_remove (entry->action_idle_handler);
+      entry->action_idle_handler = 0;
+    }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -421,7 +486,6 @@ gail_entry_get_text (AtkText *text,
                      gint    start_pos,
                      gint    end_pos)
 {
-  GtkEntry *entry;
   GtkWidget *widget;
 
   widget = GTK_ACCESSIBLE (text)->widget;
@@ -429,9 +493,7 @@ gail_entry_get_text (AtkText *text,
     /* State is defunct */
     return NULL;
 
-  entry = GTK_ENTRY (widget);
-  
-  return gtk_editable_get_chars (GTK_EDITABLE (entry), start_pos, end_pos);
+  return gail_text_util_get_substring (GAIL_ENTRY (text)->textutil, start_pos, end_pos);
 }
 
 static gchar*
@@ -1025,11 +1087,11 @@ static void _gail_entry_insert_text_cb (GtkEntry *entry,
 }
 
 static gunichar 
-gail_entry_get_character_at_offset (AtkText	         *text,
-                                    gint	         offset)
+gail_entry_get_character_at_offset (AtkText *text,
+                                    gint     offset)
 {
   GtkWidget *widget;
-  GtkEntry *entry;
+  GailEntry *entry;
   gchar *string;
   gchar *index;
   gunichar unichar;
@@ -1039,8 +1101,8 @@ gail_entry_get_character_at_offset (AtkText	         *text,
     /* State is defunct */
     return '\0';
 
-  entry = GTK_ENTRY (widget);
-  string = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+  entry = GAIL_ENTRY (text);
+  string = gail_text_util_get_substring (entry->textutil, 0, -1);
   if (offset >= g_utf8_strlen (string, -1))
     {
       unichar = '\0';
@@ -1067,6 +1129,12 @@ static void _gail_entry_delete_text_cb (GtkEntry *entry,
 
   accessible = gtk_widget_get_accessible (GTK_WIDGET (entry));
 
+  /*
+   * Zero length text deleted so ignore
+   */
+  if (arg2 - arg1 == 0)
+    return;
+
   g_signal_emit_by_name (accessible, "text_changed::delete", arg1, arg2 - arg1);
 }
 
@@ -1080,28 +1148,23 @@ _gail_entry_changed_cb (GtkEntry *entry)
 
   gail_entry = GAIL_ENTRY (accessible);
 
-  /*
-   * Update the text in the GtkTextBuffer
-   */
-  gail_text_util_text_setup (gail_entry->textutil, gtk_entry_get_text (entry));
+  text_setup (gail_entry, entry);
 }
 
 static gboolean 
 check_for_selection_change (GailEntry   *entry,
-                            GtkEntry    *gail_entry)
+                            GtkEntry    *gtk_entry)
 {
-  gint pos;
   gboolean ret_val = FALSE;
  
-  pos = gtk_editable_get_position (GTK_EDITABLE (gail_entry));
-  if (gail_entry->current_pos != gail_entry->selection_bound)
+  if (gtk_entry->current_pos != gtk_entry->selection_bound)
     {
-      if (gail_entry->current_pos != entry->cursor_position ||
-          gail_entry->selection_bound != entry->selection_bound)
+      if (gtk_entry->current_pos != entry->cursor_position ||
+          gtk_entry->selection_bound != entry->selection_bound)
         /*
          * This check is here as this function can be called
-         * for notification of selection_bound or current_pos.
-         * The values of current_pos  selection_bound may be the same 
+         * for notification of selection_bound and current_pos.
+         * The values of current_pos and selection_bound may be the same 
          * for both notifications and we only want to generate one
          * text_selection_changed signal.
          */
@@ -1112,8 +1175,8 @@ check_for_selection_change (GailEntry   *entry,
       /* We had a selection */
       ret_val = (entry->cursor_position != entry->selection_bound);
     }
-  entry->cursor_position = gail_entry->current_pos;
-  entry->selection_bound = gail_entry->selection_bound;
+  entry->cursor_position = gtk_entry->current_pos;
+  entry->selection_bound = gtk_entry->selection_bound;
 
   return ret_val;
 }
@@ -1134,9 +1197,11 @@ static gboolean
 gail_entry_do_action (AtkAction *action,
                       gint      i)
 {
+  GailEntry *entry;
   GtkWidget *widget;
   gboolean return_value = TRUE;
 
+  entry = GAIL_ENTRY (action);
   widget = GTK_ACCESSIBLE (action)->widget;
   if (widget == NULL)
     /*
@@ -1150,13 +1215,38 @@ gail_entry_do_action (AtkAction *action,
   switch (i)
     {
     case 0:
-      gtk_widget_activate (widget);
+      if (entry->action_idle_handler)
+        return_value = FALSE;
+      else
+        entry->action_idle_handler = gtk_idle_add (idle_do_action, entry);
       break;
     default:
       return_value = FALSE;
       break;
     }
   return return_value; 
+}
+
+static gboolean
+idle_do_action (gpointer data)
+{
+  GailEntry *entry;
+  GtkWidget *widget;
+
+  entry = GAIL_ENTRY (data);
+  entry->action_idle_handler = 0;
+  widget = GTK_ACCESSIBLE (entry)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  if (!GTK_WIDGET_SENSITIVE (widget) || !GTK_WIDGET_VISIBLE (widget))
+    return FALSE;
+
+  gtk_widget_activate (widget);
+  return FALSE;
 }
 
 static gint

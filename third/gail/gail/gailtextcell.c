@@ -280,7 +280,7 @@ gail_text_cell_update_cache (GailRendererCell *cell,
     {
       if (new_cache == NULL)
         {
-          text_cell->cell_text = NULL;
+          text_cell->cell_text = g_strdup ("");
           text_cell->cell_length = 0;
         }
       else

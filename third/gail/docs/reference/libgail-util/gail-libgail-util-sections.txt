@@ -2,7 +2,6 @@
 <FILE>gailtextutil</FILE>
 <TITLE>GailTextUtil</TITLE>
 GailTextUtil
-GailTextUtilClass
 GailOffsetType
 gail_text_util_new
 gail_text_util_text_setup

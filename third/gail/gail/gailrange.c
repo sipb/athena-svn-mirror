@@ -276,6 +276,16 @@ gail_range_finalize (GObject            *object)
 
   if (range->adjustment)
     {
+      /*
+       * The GtkAdjustment may live on so we need to dicsonnect the
+       * signal handler
+       */
+      if (GAIL_ADJUSTMENT (range->adjustment)->adjustment)
+        {
+          g_signal_handlers_disconnect_by_func (GAIL_ADJUSTMENT (range->adjustment)->adjustment,
+                                                gail_range_value_changed,
+                                                range);
+        }
       g_object_unref (range->adjustment);
       range->adjustment = NULL;
     }

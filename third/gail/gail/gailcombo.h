@@ -43,6 +43,7 @@ struct _GailCombo
   GailContainer parent;
 
   gchar         *press_description;
+  guint         action_idle_handler;
 };
 
 GType gail_combo_get_type (void);
