@@ -13,6 +13,7 @@ The areas covered in this file are:
 	Imake templates
 	Release notes
 	Release cycles
+	Rel-eng machines
 	Cluster information
 
 Mailing lists
@@ -129,7 +130,7 @@ general architecture of the wash process is:
 	  This machine is on read:source and write:update.
 
 	* Each night at 4:30am, a machine of each architecture
-	  (currently snuggle and kenmore) recreates empty /build and
+	  (currently whirlpool and snuggle) recreates empty /build and
 	  /localsrvd filesystems and performs a build of the tree with
 	  /srvd pointed at /localsrvd.  If the build fails, the update
 	  script sends mail to source-wash@mit.edu with the last few
@@ -273,31 +274,49 @@ Release cycles
 We haven't had one yet with the current repository, but some notes on
 how they should be carried out:
 
-	* doc/third-party should be checked to see if any pieces of
+	* Release cycles have a crash and burn phase, an alpha phase,
+	  a beta phase, an early phase, and then the public release,
+	  after which we have incremental patch releases until the
+	  next release cycle.  The crash and burn and alpha phases are
+	  strictly for internal testers, so not as much communication
+	  or quality control is required (e.g. the packs may be
+	  rebuilt from scratch).  Once the beta phase is reached,
+	  however, the release engineer needs to adhere strictly to
+	  the update system and avoid breaking things.
+
+	* Before the release cycle reaches the beta phase,
+	  doc/third-party should be checked to see if any pieces of
 	  third-party material need to be updated before a release
 	  cycle.
 
-	* A branch should be made for each release cycle, of the form
-	  "athena-8_1".  Only the release engineers should commit on
-	  release branches.
+	* When the release cycle reaches beta, a branch should be made
+	  created of the form "athena-8_1".  Only the release
+	  engineer should make commits to the release branch, and each
+	  change needs to be tested carefully.
 
-	* A tag should be made on the release branch for each patch
-	  release, of the form "athena-8_1_0".
+	* A tag should be made on the release branch when the public
+	  release happens, of the form "athena-8_1-public".
 
 	* A checked-out tree should be made in /afs/dev.mit.edu/source
-	  for each release cycle, following the branch for that cycle.
+	  for the release branch, of the form "src-8.1".
 
-	* System packs should be created in a directory of the form
-	  "/afs/dev.mit.edu/system/${ATHENA_SYS}/srvd-8_1".
+	* During the crash and burn and alpha phases, up-to-date
+	  system packs may be constructed at any time by taking a
+	  snapshot from the wash machines.  When the beta phase is
+	  reached, a build machine should be set up for the new
+	  release, a final snapshot should be taken, and the packs
+	  should be updated incrementally from then on.  Remember to
+	  do an install in packs/build/finish after every incremental
+	  change.  Also, remember to move any modified binaries to a
+	  .deleted directory on the packs before updating them, or
+	  users running those binaries will experience a core dump
+	  when the volume is released.
 
-	* A build machine should be set up for each platform, with a
-	  local build tree and an /srvd pointing to the read-write
-	  volume.
-
-	* The release cycle should begin with a full build of the
-	  source; individual packages should be rebuilt with the build
-	  script (moving any relevant binaries into .deleted first),
-	  followed by a rebuild of packs/build/finish.
+	* After the public release, the release engineer should copy
+	  the build tree into AFS, update the rel-eng "current-release
+	  build machines" to be build machines for the current
+	  release, and resurrect the wash process if the wash machines
+	  were used as new release build machines.
 
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
@@ -318,6 +337,60 @@ list of popular lockers to get in addition to the glue ones:
 
 In addition, the third-party software lockers need to be updated; they
 keep their own list.
+
+Rel-eng machines
+----------------
+
+There are six roles for rel-eng machines for each platform:
+
+	* A wash machine, for nightly rebuilds of the source tree
+	  during the development cycle.
+
+	* A crash and burn machine, for testing the release.
+
+	* A current release build machine, for doing incremental
+	  updates to the last public release.
+
+	* A new release build machine, for doing incremental updates
+	  to the new release during the beta and early phases.
+
+	* A current release developer machine, for other developers to
+	  build and test software on under the current release.
+
+	* A new release developer machine, for other developers to
+	  build and test software on under the next release.
+
+Six machines for each platform is a lot, especially when two of them
+are only needed during a release cycle.  The following modifications
+can collapse the number of required machines to three:
+
+	* During the beta and early phases of a release cycle, the
+	  wash can be shut down and the wash machines used as new
+	  release build engines.
+
+	* The new release build machine can be used as a new release
+	  developer machine during the beta and early phases.  Having
+	  a separate machine is preferrable since it is useful to have
+	  a new release developer machine during the entire
+	  development cycle, not just during the last two phases of
+	  the release cycle.  Sometimes the crash and burn machine may
+	  be useful for developers, although it cannot be treated as a
+	  reliable resource.
+
+	* The current release build machine can be used as a current
+	  release developer machine.
+
+Here is a list of the rel-eng machines for each platform, with repeat
+machine names listed in parentheses:
+
+				Sun		SGI
+
+Wash				whirlpool	snuggle
+Crash and burn			sourcery	crash
+Current release build		downy		pyramids
+New release build		(whirlpool)	(snuggle)
+Current release developer	(downy)		(pyramids)
+New release developer		(whirlpool)	(snuggle)
 
 Clusters
 --------
