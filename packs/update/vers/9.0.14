@@ -6,7 +6,6 @@ sun4)
     echo "SUNWqlc"				>> "$LOCALPACKAGES"
     echo "SUNWqlcx"				>> "$LOCALPACKAGES"
   fi
-  echo "110750-01"				>> "$PATCHES"
   echo "108576-16"				>> "$PATCHES"
   ;;
 sgi)
