@@ -1,9 +1,10 @@
 dnl Use tcpwrappers and Hesiod
 dnl (src/Makefile.m4 has -lwrap: we don't want smrsh, etc, to link with it)
-APPENDDEF(`confENVDEF', `-DTCPWRAPPERS -DSASL')
+APPENDDEF(`confENVDEF', `-DTCPWRAPPERS -DSASL -DMILTER')
 APPENDDEF(`confINCDIRS', `-I/usr/athena/include -I/usr/athena/include/sasl')
 APPENDDEF(`confLIBDIRS', `-L/usr/athena/lib')
 APPENDDEF(`confLIBS', `-lhesiod')
+APPENDDEF(`conf_libmilter_ENVDEF', `-D_FFR_MILTER_ROOT_UNSAFE')
 APPENDDEF(`conf_sendmail_LIBS', `-lsasl2')
 
 dnl We don't want NIS support
@@ -24,6 +25,8 @@ define(`confMAN8SRC', 8)
 dnl Install random binaries in /usr/athena to save local disk space
 define(`confEBINDIR', `/usr/athena/libexec')
 define(`confSBINDIR', `/usr/athena/etc')
+define(`confINCLUDEDIR', `/usr/athena/include')
+define(`confLIBDIR', `/usr/athena/lib')
 
 dnl Use Athena install; the devtools one can't handle non-writable files.
 define(`confINSTALL', `install')
