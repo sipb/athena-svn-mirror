@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: probe $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.4 1989-10-20 10:06:53 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.5 1989-10-22 16:42:18 probe Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -130,16 +130,16 @@ FILTERS:
 
 install: all
 #	install -c -m 444 printcap ${DESTDIR}/etc/printcap
-	install -c -s -g ${SPGRP} -m 6755 lpd ${DESTDIR}/${LIBDIR}/lpd
-	install -c -s -g ${SPGRP} -m 6755 lpr ${DESTDIR}/${BINDIR}/lpr
-	install -c -s -g ${SPGRP} -m 6755 lpq ${DESTDIR}/${BINDIR}/lpq
-	install -c -s -g ${SPGRP} -m 6755 lprm ${DESTDIR}/${BINDIR}/lprm
-	install -c -s -g ${SPGRP} -m 6755 s_lpr ${DESTDIR}/${BINDIR}/s_lpr
-	install -c -s -g ${SPGRP} -m 6755 s_lpq ${DESTDIR}/${BINDIR}/s_lpq
-	install -c -s -g ${SPGRP} -m 6755 s_lprm ${DESTDIR}/${BINDIR}/s_lprm
-	install -c -s -g ${OP_GID} -m 6754 o_lprm ${DESTDIR}/usr/etc/o_lprm
-	install -c -s -g ${SPGRP} -m 2755 lpc ${DESTDIR}/usr/etc/lpc
-	install -c -s -g ${OP_GID} -m 6754 o_lpc ${DESTDIR}/usr/etc/o_lpc
+	install -c -s -o root -g ${SPGRP} -m 6755 lpd ${DESTDIR}/${LIBDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 lpr ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 lpq ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 lprm ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 s_lpr ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 s_lpq ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${SPGRP} -m 6755 s_lprm ${DESTDIR}/${BINDIR}/
+	install -c -s -o root -g ${OP_GID} -m 6754 o_lprm ${DESTDIR}/usr/etc/
+	install -c -s -g ${SPGRP} -m 2755 lpc ${DESTDIR}/usr/etc/
+	install -c -s -o root -g ${OP_GID} -m 6754 o_lpc ${DESTDIR}/usr/etc/
 #	install -s lptest ${DESTDIR}/${BINDIR}/lptest
 	install -s pac ${DESTDIR}/usr/etc/pac
 	install -c print.sh ${DESTDIR}/usr/ucb/print
