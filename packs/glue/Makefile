@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.57 2004-01-11 14:53:49 zacheiss Exp $
+# $Id: Makefile,v 1.58 2004-03-14 22:37:22 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -122,6 +122,7 @@ install:
 	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 help.sh ${DESTDIR}${ATHBINDIR}/help
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
+	install -c -m 555 ksrvutil.sh ${DESTDIR}${ATHBINDIR}/ksrvutil
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
 	install -c -m 555 lastlog ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
