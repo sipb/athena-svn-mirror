@@ -592,7 +592,7 @@ EXTERN	int		min_x, max_x, min_y, max_y;
 #ifdef	TOOLKIT
 EXTERN	Widget	top_level, vport_widget, draw_widget, clip_widget;
 #ifdef	BUTTONS
-#define	XTRA_WID	79
+#define	XTRA_WID	95
 EXTERN	Widget	form_widget;
 #endif
 #else	/* !TOOLKIT */
