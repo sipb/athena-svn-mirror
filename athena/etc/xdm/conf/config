@@ -1,37 +1,59 @@
-#ifdef vax
-#if defined(QV) || defined(SM)
+#define NEED_X
+
+#if defined(vax) && (defined(QV) || defined(SM))
+#undef NEED_X
 X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#else
-#if defined(QD) || defined(SG)
+#endif
+#if defined(vax) && (defined(QD) || defined(SG))
+#undef NEED_X
 X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#else
+#endif
+#if defined(vax) && defined(PLX)
+#undef NEED_X
 X	/etc/Xplx -su -bs -v :0 -fp /etc/athena/login/fonts/ -fn 9x15 -co /etc/athena/login/rgb -I -display /dev/plx0 -microcode /usr/plx/microcode
-#endif /* QD/SG */
-#endif /* QV/SM */
-#endif /* vax */
+#endif
+
 #ifdef ibm032
+#undef NEED_X
 X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #endif
+
 #ifdef mips
+#undef NEED_X
 X	/etc/Xws GRAY -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+/*X  /etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb*/
 #endif
+
 #ifdef sun
+#undef NEED_X
 X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #endif
+
 #ifdef RSAIX
+#undef NEED_X
 #if defined(POWER_Gt1)
-X       /usr/bin/X11/X -n :0 -c 0 -a 2
+X       /usr/bin/X11/X -n :0 -c 0 -a 2 -x dps -x pcsim -bs
 #else
-X       /usr/bin/X11/X -v -n :0 -c 0 -a 2
+X       /usr/bin/X11/X -v -n :0 -c 0 -a 2 -x dps -x pcsim -bs
 #endif
 #endif
 
+#ifdef NEED_X
+X	/usr/bin/X11/X -v :0
+#endif
+
+
+#define NEED_CONSOLE
+
 #ifdef ultrix
+#undef NEED_CONSOLE
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
-#else
+#endif
+
+#ifdef NEED_CONSOLE
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #endif
+
 
 #define NEED_LOGIN
 
