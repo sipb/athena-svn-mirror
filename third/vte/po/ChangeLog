@@ -1,3 +1,30 @@
+2003-04-20  Taneem Ahmed  <taneem@eyetap.org>
+
+	* bn.po: Added Bangla/Bengali translation
+	by Jamil Ahmed <jamil@bengalinux.org>.
+
+2003-03-31  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Added Albanian translation by
+	Damnus <damnus@libero.it>.
+	
+2003-03-16  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	*is.po:  Added Icelandic translation
+
+2003-03-16  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* fa.po: Added Persian translation.
+
+2003-03-14  Metin Amiroff  <metin@karegen.com>
+
+        * az.po: Added Azerbaijani translation.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* ml.po: Added Malayalam translation by
+	FSF-India <locale@gnu.org.in>.
+
 2003-02-19  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* be.po: Updated Belarusian translation

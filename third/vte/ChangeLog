@@ -1,3 +1,57 @@
+2003-04-28 nalin
+	* src/vte.c(vte_terminal_open_font_xft): use ascent + descent to get
+	the height of the line instead of the font height (#111752).
+
+2003-04-22 nalin
+	* src/vte.c: close out PTY completely on EOF or child exit, from HEAD.
+	* gnome-pty-helper: pull up from HEAD.
+
+2003-04-22 nalin
+	* src/vte.c(vte_terminal_read_io): don't queue up a call to
+	process_incoming() if we didn't read any fresh data, from HEAD.  Fix
+	signed/unsigned comparison, from HEAD.
+
+2003-04-21 nalin
+	* src/vte.c: don't snap the beginning of selection to the next line in
+	select-by-line mode, from HEAD.
+
+2003-04-21 nalin
+	* src/keymap.c: make Alt+Return generate ESC newline (#108863).
+
+2003-04-21 nalin
+	* src/mkunitables.sh: pull up from HEAD.
+	* src/unitable.KSX1001: pull up from HEAD.
+	* src/unitable.KSC5601: remove.
+	* src/Makefile.am: include unitable.KSX1001 in tarballs.
+	* src/vte.c: merge in selection changes from HEAD to fix triple-click.
+	* src/reflect.c: merge in changes from HEAD to set up the initial
+	contents right.
+	* src/iso2022.c: use the KS X 1001 table instead of KS C 5601.
+
+2003-04-20  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in:  Added "bn" to ALL_LINGUAS.
+
+2003-03-31: Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2003-03-16  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: added "is" to ALL_LINUGAS.
+
+2003-03-16  Roozbeh Pourander  <roozbeh@sharif.edu>
+
+	* configure.in: added "fa" to ALL_LINGUAS.
+
+2003-03-14  Metin Amiroff  <metin@karegen.com>
+
+	* configure.in: Added "az" to ALL_LINGUAS.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
 2003-03-04 nalin
 	* src/vte.c(vte_terminal_insert_char): wrap properly when a scrolling
 	region is set (#107559).  From HEAD.
