@@ -1,13 +1,13 @@
 /* 
- * $Id: rkinit.c,v 1.5 1991-06-09 21:39:20 probe Exp $
+ * $Id: rkinit.c,v 1.6 1994-07-20 12:03:59 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
- * $Author: probe $
+ * $Author: miki $
  *
  * This is an rkinit client
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.5 1991-06-09 21:39:20 probe Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.6 1994-07-20 12:03:59 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -77,7 +77,7 @@ main(argc, argv)
     bzero(aname, sizeof(aname));
     bzero(inst, sizeof(inst));
     bzero(realm, sizeof(realm));
-
+    bzero(r_krealm, sizeof(r_krealm));
     /* Parse commandline arguements. */
     if ((whoami = rindex(argv[0], '/')) == 0)
 	whoami = argv[0];
