@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.4 2005-03-10 22:16:59 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.5 2005-03-11 05:25:51 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -1841,7 +1841,7 @@ print_buffers(pnt)
 	if (pnt)
 	    printf
 		("Buffer #%d:\tfid=%lu page=%d, accTime=%d,\n\tHash=%x, data=%x, lockers=%x, dirty=%d, hashI=%d\n",
-		 i, bp->fid[0], bp->page, bp->accesstime, bp->hashNext,
+		 i, bp->fid, bp->page, bp->accesstime, bp->hashNext,
 		 bp->data, bp->lockers, bp->dirty, bp->hashIndex);
 #endif
 	j++;

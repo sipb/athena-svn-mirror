@@ -280,7 +280,7 @@ ${DEST}/etc/kdump: kdump-build
 		done ;; \
 	sun*_5[789] ) \
 		${INSTALLex} -f ${srcdir}/kdump.sh.solaris7 ${DEST}/etc/kdump; \
-		${INSTALL} -s -f $? $@;; \
+		${INSTALL} -s -f ${srcdir}/kdump ${DEST}/etc/kdump32;; \
 	*alpha_linux* ) \
 		${INSTALLex} -f ${srcdir}/kdump.sh.linux ${DEST}/etc/kdump; \
 		${INSTALL} -s kdump-alpha_linux-${LINUX_VERSION} $@ ;; \
