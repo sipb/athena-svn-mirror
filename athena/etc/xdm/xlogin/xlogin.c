@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.27 1992-06-12 14:56:13 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.28 1992-08-15 15:06:58 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -984,12 +984,13 @@ Cardinal *n;
     setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
 #if defined(_AIX) && defined(_IBMR2)
-    setgidx(ID_SAVED|ID_REAL|ID_EFFECTIVE, def_grplist[0]);
-    setuidx(ID_LOGIN|ID_SAVED|ID_REAL|ID_EFFECTIVE, DAEMON);
-#else
-    setgid(def_grplist[0]);
-    setuid(DAEMON);
+    setuidx(ID_LOGIN, DAEMON);
 #endif
+    setgid(def_grplist[0]);
+    if (setuid(DAEMON)) {
+	fprintf(stderr, "Unable to set user id.\n");
+	return;
+    }
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
     _exit(3);
