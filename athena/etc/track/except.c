@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.1 1988-05-17 19:00:31 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.2 1988-06-10 14:43:55 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/05/17  19:00:31  don
+ * fixed another bug in GLOBAL handling, by simplifying pattern-list
+ * traversal. now, global-list is chained onto end of each entry's list.
+ * 
  * Revision 4.0  88/04/14  16:42:35  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -48,7 +52,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.1 1988-05-17 19:00:31 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.2 1988-06-10 14:43:55 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -69,6 +73,9 @@ int entnum;
 	char retval = NORMALCASE, *tail, *wholename;
 	unsigned int k;
 	Entry *e = &entries[ entnum], *g = &entries[ 0];
+
+	if (( type == S_IFBLK || type == S_IFCHR) && ! incl_devs)
+		return( DONT_TRACK);
 
 	/* strip fromfile from path:
 	 * path   == fromfile/tail
