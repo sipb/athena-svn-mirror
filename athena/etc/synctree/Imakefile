@@ -25,7 +25,7 @@ install_man(synctree.man,synctree.8)
 
 build_program(regexp,regexp.o,,)
 
-
+synctree.o: synctree.c switch.c
 regexp.o: regexp.c
 	$(CC) $(CFLAGS) -DTEST -c $*.c
 
