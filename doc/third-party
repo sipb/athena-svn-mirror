@@ -1,0 +1,45 @@
+For the most part, third-party software is easy to locate because it
+is found in the third hierarchy.  Nevertheless, it's a good idea to
+keep track of what we get from outside, especially for things outside
+of third.
+
+Third-party stuff not under third
+---------------------------------
+
+	* packs/config/named.root
+
+		This file contains the named.root file available at
+		rs.internic.edu:/domain/named.root.
+
+Distribution sites for software under third
+-------------------------------------------
+
+This is a partial list at the moment.
+
+	afsbin		See our Transarc site contacts
+	ansi
+	cns		Previously we've talked to people we know at
+			Cygnus; the official channels involve signing
+			some ITAR-related paperwork.
+	emacs
+	gcc		prep.ai.mit.edu:pub/gnu
+	jove
+	krb5		athena-dist.mit.edu:pub/kerberos
+	learn
+	look
+	mae-2.0
+	mh
+	tcsh
+	patch
+	perl
+	rcs
+	sysinfo
+	tac
+	talk
+	tex
+	tools
+	top
+	transcript
+	wcl		ftp.x.org:contrib/devel_tools
+	whois
+	x3270
