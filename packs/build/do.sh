@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.59 2000-12-12 19:22:58 ghudson Exp $
+# $Id: do.sh,v 1.60 2001-01-04 04:48:31 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -168,6 +168,12 @@ if [ -n "$athtoolroot" ]; then
 	REPLISPDIR=$athtoolroot/usr/athena/share/rep/lisp
 	REPEXECDIR=$athtoolroot/usr/athena/libexec/rep
 	export LD_LIBRARY_PATH REPLISPDIR REPEXECDIR
+	if [ irix = "$OS" ]; then
+		# libtool likes to use this variable, which overrides
+		# LD_LIBRARY_PATH.  Work around that.
+		LD_LIBRARYN32_PATH=$LD_LIBRARY_PATH
+		export LD_LIBRARYN32_PATH
+	fi
 fi
 
 # Determine the Athena version
