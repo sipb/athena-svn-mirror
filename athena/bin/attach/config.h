@@ -2,7 +2,7 @@
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
  *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.2 1990-04-19 12:02:26 jfc Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.3 1990-07-09 02:34:09 jfc Exp $
  */
 
 /*
@@ -24,7 +24,7 @@
  */
 #define NFS
 #define AFS
-#ifndef AIX
+#if !defined(AIX) && !defined(_AUX_SOURCE)
 #define	RVD
 #define UFS
 #endif
@@ -47,12 +47,6 @@
 #define MTAB		"/etc/mtab"
 #define FSCK_FULLNAME "/etc/fsck"
 #define FSCK_SHORTNAME "fsck"
-#ifdef AIX
-#define AKLOG_FULLNAME "/usr/athena/aklog"
-#else
-#define AKLOG_FULLNAME "/afs/athena.mit.edu/service/aklog"
-#endif
-#define AKLOG_SHORTNAME "aklog"
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
 #define NOSUID_FILENAME "/etc/nosuid"
@@ -124,6 +118,8 @@ struct mntent {
 
 #endif /* ultrix compat stuff */
 
+/* These are not defined or recognized by the system, but they are useful
+   to allow common data structures with systems that do have these defines */
 #ifdef AIX
 #define	MOUNT_UFS	1
 #define	MOUNT_NFS	2
