@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.2 1987-12-03 17:31:15 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.3 1987-12-03 19:50:02 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  87/12/03  17:31:15  don
+ * fixed rt-port bug in dec_statfile's use of sscanf():
+ * can't fill a short int directly, because sscanf will interpret it
+ * as a long-int, and on the rt, short* gets converted to int* via
+ * truncation!
+ * 
  * Revision 2.1  87/12/01  16:44:54  don
  * fixed bugs in readstat's traversal of entries] and statfile:
  * cur_ent is no longer global, but is now part of get_next_match's
@@ -21,7 +27,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.2 1987-12-03 17:31:15 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.3 1987-12-03 19:50:02 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -232,7 +238,6 @@ last_match( remkey, i) char *remkey; int i; {
 	}
 	return( entrycnt - 1);
 }
-#define SIGN( i) (((i) > 0)? 1 : ((i)? -1 : 0))
 
 int
 get_next_match( remstatline)
