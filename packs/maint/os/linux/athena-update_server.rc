@@ -2,7 +2,7 @@
 
 # athena-update_server:	Start update_server
 #
-# chkconfig: 2345 80 30
+# chkconfig: 2345 80 10
 # description: Start update_server.
 #
 # config: /etc/athena/rc.conf
