@@ -7,8 +7,7 @@ INCLUDES = \
 
 LDADD = \
 	$(XML_LIBS) \
-	$(top_builddir)/libs/libscrollkeeper.la \
-	-lintl
+	$(top_builddir)/libs/libscrollkeeper.la
 
 bin_PROGRAMS = scrollkeeper_toc 
 

@@ -105,7 +105,7 @@ l = @l@
 INCLUDES =  	-I$(top_srcdir)/libs 	$(XML_CFLAGS)
 
 
-LDADD =  	$(XML_LIBS) 	$(top_builddir)/libs/libscrollkeeper.la 	-lintl
+LDADD =  	$(XML_LIBS) 	$(top_builddir)/libs/libscrollkeeper.la
 
 
 bin_PROGRAMS = scrollkeeper_toc 
@@ -263,10 +263,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-toc-extract.o: toc-extract.c ../../config.h toc-extract.h toc.h
-toc.o: toc.c ../../config.h toc.h toc-extract.h \
-	../../libs/scrollkeeper.h
-
 info-am:
 info: info-am
 dvi-am:
