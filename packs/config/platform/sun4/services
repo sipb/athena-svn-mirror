@@ -86,6 +86,7 @@ auth		113/tcp		authentication
 snmp		161/udp
 snmp-trap	162/udp		snmptrap
 ntalk		518/udp
+timed		525/udp		timeserver
 
 #
 # Athena additions
