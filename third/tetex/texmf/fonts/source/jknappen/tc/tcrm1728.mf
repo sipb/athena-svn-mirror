@@ -1,3 +1,0 @@
-if unknown exbase: input exbase fi;
-gensize:=17.28;
-generate tcrm;

@@ -1,7 +1,0 @@
-Name: athena-atk
-Summary: Accessibility Toolkit, for Athena
-License: LGPL
-Group: Development/Libraries
-
-%description
-atk is a library of accessability functions.
