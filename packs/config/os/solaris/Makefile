@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 1999-11-10 03:50:24 kcr Exp $
+# $Id: Makefile,v 1.11 2000-05-23 18:00:45 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -57,10 +57,6 @@ install:
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
 	install -c -m 0644 devlink.tab ${DESTDIR}${ETCDIR}
-	install -c -m 0644 driver_aliases.sun4m ${DESTDIR}${ETCDIR}
-	install -c -m 0644 driver_aliases.sun4u ${DESTDIR}${ETCDIR}
-	install -c -m 0644 driver_classes.sun4m ${DESTDIR}${ETCDIR}
-	install -c -m 0644 driver_classes.sun4u ${DESTDIR}${ETCDIR}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
@@ -68,10 +64,6 @@ install:
 	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
 	install -c -m 0644 keytable.map ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 logindevperm ${DESTDIR}${ETCDIR}
-	install -c -m 0644 minor_perm.sun4m ${DESTDIR}${ETCDIR}
-	install -c -m 0644 minor_perm.sun4u ${DESTDIR}${ETCDIR}
-	install -c -m 0644 name_to_major.sun4m ${DESTDIR}${ETCDIR}
-	install -c -m 0644 name_to_major.sun4u ${DESTDIR}${ETCDIR}
 	install -c -m 0644 name_to_sysnum ${DESTDIR}${ETCDIR}
 	install -c -m 0644 netspy ${DESTDIR}${ETCDIR}
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
