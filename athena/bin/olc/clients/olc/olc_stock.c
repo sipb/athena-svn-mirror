@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.18 1992-02-04 21:24:14 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.19 1992-02-06 17:07:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.18 1992-02-04 21:24:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.19 1992-02-06 17:07:44 lwvanels Exp $";
 #endif
 #endif
 
@@ -134,7 +134,7 @@ do_olc_stock(arguments)
     {
     case -1:                /* error */
       olc_perror("stock: fork");
-      fprintf(stderr, "stock: can't fork to execute OLC browser\n");
+      fprintf(stderr, "stock: can't fork to execute stock answer browser\n");
       return(ERROR);
     case 0:                 /* child */
       if (topic[0] != '\0')
@@ -143,7 +143,7 @@ do_olc_stock(arguments)
       else
 	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, 0);
       olc_perror("stock: execlp");
-      fprintf(stderr, "stock: could not exec OLC browser\n");
+      fprintf(stderr, "stock: could not exec stock answer browser\n");
       _exit(ERROR);
     default:                /* parent */
       (void) wait(0);
