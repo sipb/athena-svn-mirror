@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.20 1990-07-16 08:30:30 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: notify.c,v 1.21 1990-07-16 10:22:43 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.20 1990-07-16 08:30:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.21 1990-07-16 10:22:43 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -62,6 +62,7 @@ extern "C" {
 /* External Variables. */
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
+extern char DaemonInst[];	/* "olc", "olz", "olta", etc. */
 
 static int punt_zephyr = 0;
 static long zpunt_time;
@@ -320,19 +321,6 @@ write_message_to_user(k, message, flags)
 #define MESSAGE_CLASS "MESSAGE"
 #define PERSONAL_INSTANCE "PERSONAL"
 
-#define OLC_CLASS    "OLC"
-
-#ifdef OLZ
-#undef  OLC_CLASS
-#define OLC_CLASS    "OLZ"
-#endif
-
-#ifdef OLTA
-#undef  OLC_CLASS
-#define OLC_CLASS    "OLTA"
-#endif
-
-
 /*
  * Function:	olc_broadcast_message(instance, message, code)
  *		Broadcasts a zephyr message to a specified instance.
@@ -356,7 +344,7 @@ olc_broadcast_message(instance, message, code)
   if (punt_zephyr)
     return(ERROR);
 
-  if(zsend_message(OLC_CLASS,instance,code,"",message,0) == ERROR)
+  if(zsend_message(DaemonInst, instance, code, "", message, 0) == ERROR)
     return(ERROR);
 #endif
 
@@ -428,11 +416,6 @@ zsend_message(c_class, instance, opcode, username, message, flags)
   flags = flags;
 #endif lint;
 
-  if ((ret = ZInitialize()) != ZERR_NONE) {
-      com_err ("zwrite_message", ret, "couldn't ZInitialize");
-      return ERROR;		/* Oops, couldn't initialize. */
-  }
-  
   bzero(&notice, sizeof(ZNotice_t));
 
   notice.z_kind = (username && username[0]) ? ACKED : UNSAFE;
