@@ -1,0 +1,3 @@
+# $Id: configure.athena,v 1.1 1999-02-22 03:46:19 danw Exp $
+
+./configure --enable-subdir=/usr/athena/libexec/xscreensaver
