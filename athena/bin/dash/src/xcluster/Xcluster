@@ -1,7 +1,7 @@
 !
 !  Xcluster resources
 !
-*font:				*-helvetica-medium-r-*-120-*
+*font:				*-helvetica-medium-r-*--12-*
 *Label.Center:			True
 *borderWidth:			1
 *Button.borderWidth:		0
@@ -14,13 +14,13 @@
 
 *xclusterWindow.borderWidth:	3
 *xclusterWindow.title:		Xcluster
-*xclusterWindow.minWidth:	825
+*xclusterWindow.minWidth:	865
 *xclusterWindow.minHeight:	400
-*xclusterWindow.geometry:	825x755
-*xclusterWindow.defGeometry:	825x755
+*xclusterWindow.geometry:	865x755
+*xclusterWindow.defGeometry:	865x755
 
 *label1.label:			XCLUSTER           Cluster Monitor
-*label1.font:			*-helvetica-bold-r-*-*-*-180-*
+*label1.font:			*-helvetica-bold-r-*--18-*
 *mapwin.borderWidth:		0
 *twin.borderWidth:		0
 
@@ -102,7 +102,7 @@
 *helpDialog*window.title:		XCLUSTER Help
 
 *helpDialog*line1.label:		Directions:
-*helpDialog*line1.font:			*-helvetica-bold-r-*-*-*-180-*
+*helpDialog*line1.font:			*-helvetica-bold-r-*--18-*
 *helpDialog*line1.Center:		True
 *helpDialog*line2.label:		\
   For information on the number of machines available in a particular
