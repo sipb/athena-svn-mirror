@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.14 1992-02-06 17:06:43 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.15 1992-02-14 21:22:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.14 1992-02-06 17:06:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.15 1992-02-14 21:22:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -86,10 +86,10 @@ t_done(Request,title,check)
 		if(*buf != 'y')
 		  return(SUCCESS);
 	      }
-	    printf("Using this command means that the consultant has satisfactorly answered\n");
+	    printf("Using this command means that the %s has satisfactorly answered\n",DEFAULT_CONSULTANT_TITLE);
 	    printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
-	    printf("and %s will save your question until a consultant can answer it.  If you\n",
-                    OLC_SERVICE_NAME);
+	    printf("and %s will save your question until a %s can answer it.  If you\n",
+                    OLC_SERVICE_NAME,DEFAULT_CONSULTANT_TITLE);
 	    printf("wish to withdraw your question, use the 'cancel' command.\n");
 	    buf[0] = '\0';
 	    get_prompted_input("Really done? [y/n] ", buf, LINE_SIZE,0);
@@ -145,7 +145,7 @@ t_done(Request,title,check)
       break;
 
     case OK:
-      printf("The consultant has been notified that you are finished with your question.\n");
+      printf("The %s has been notified that you are finished with your question.\n",DEFAULT_CONSULTANT_TITLE);
       printf("Thank you for using %s!\n", OLC_SERVICE_NAME);
       if(OLC) {
 	exit(0);
@@ -213,9 +213,9 @@ t_cancel(Request,title)
       if(OLC)
 	{
 	  printf("Using this command means that you want to withdraw your question. If you \n");
-	  printf("do not, %s will store your question until a consultant can answer it.\n",
-		OLC_SERVICE_NAME);
-	  printf("In that case, exit using the 'quit' command. If the consultant has\n");
+	  printf("do not, %s will store your question until a %s can answer it.\n",
+		OLC_SERVICE_NAME,DEFAULT_CONSULTANT_TITLE);
+	  printf("In that case, exit using the 'quit' command. If the %s has\n",DEFAULT_CONSULTANT_TITLE);
 	  printf("satisfactorily answered your question, use the 'done' command to exit %s.\n", OLC_SERVICE_NAME);
 	}
 

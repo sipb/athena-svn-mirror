@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.36 1992-02-06 17:06:43 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.37 1992-02-14 21:22:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.36 1992-02-06 17:06:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.37 1992-02-14 21:22:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -278,7 +278,7 @@ handle_response(response, req)
      REQUEST *req;
 {
 #ifdef KERBEROS
-  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc.  If you were having trouble\nwith a program, try again.\n\n";
+  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run this program.  If you were having trouble\nwith a program, try again.\n\n";
 #ifdef ATHENA
   char *kmessage2 = "If you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
 #else
@@ -338,7 +338,7 @@ handle_response(response, req)
     case NOT_CONNECTED:
       if(isme(req))
 	fprintf(stderr,"You are not connected to a %s.\n", 
-		OLC?"consultant":"user");	  
+		OLC? DEFAULT_CONSULTANT_TITLE : "user");	  
       else
 	fprintf(stderr,"%s [%d] is not connected nor is asking a question.\n",
 		req->target.username,req->target.instance);

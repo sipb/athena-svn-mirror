@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.18 1992-02-06 17:06:43 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.19 1992-02-14 21:22:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.18 1992-02-06 17:06:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.19 1992-02-14 21:22:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -60,7 +60,8 @@ t_ask(Request,topic,q_file)
 
     case INVALID_TOPIC:
       fprintf(stderr, 
-	      "Try olc again, but please use '?' to see a list of topics.\n");
+	      "Try %s again, but please use '?' to see a list of topics.\n",
+	      OLC_SERVICE_NAME);
       if(OLC)
 	exit(1);
       else
@@ -174,11 +175,11 @@ t_ask(Request,topic,q_file)
     {
     case NOT_CONNECTED:
       printf("Your question will be forwarded to the first available ");
-      printf("consultant.\n");
+      printf("%s.\n",DEFAULT_CONSULTANT_TITLE);
       status = SUCCESS;
       break;
     case CONNECTED:
-      printf("A consultant is reviewing your question.\n");
+      printf("A %s is reviewing your question.\n",DEFAULT_CONSULTANT_TITLE);
       status = SUCCESS;
       break;
     default:

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.23 1992-02-06 17:06:43 lwvanels Exp $
+ *	$Id: t_status.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.23 1992-02-06 17:06:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -129,7 +129,8 @@ t_display_personal_status(Request,list,chart)
 	      printf("%s \"%s\" question in the queue.\n",
 		   article(list->topic),list->topic);
 	      if(OLC)
-		printf("You are waiting to be connected to a consultant.\n");
+		printf("You are waiting to be connected to a %s.\n",
+		       DEFAULT_CONSULTANT_TITLE);
 	    }
 	}
       else
@@ -237,7 +238,8 @@ t_who(Request)
 	  else
 	    {
 	      if(list.nseen >= 0)
-		printf("You are not connected to a consultant.\n");
+		printf("You are not connected to a %s.\n",
+		       DEFAULT_CONSULTANT_TITLE);
 	      else
 		printf("You are not connected to a user.\n");
 	    }

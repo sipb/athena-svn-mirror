@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.23 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Id: t_send.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.23 1992-01-10 19:57:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.24 1992-02-14 21:22:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -94,7 +94,8 @@ t_reply(Request,file,editor)
       break;
 
     case NOT_CONNECTED:
-      printf("You are not currently connected to a consultant but the next one\n");
+      printf("You are not currently connected to a %s but the next one\n",
+	     DEFAULT_CONSULTANT_TITLE);
       printf("available will receive your message.\n");
       status = ERROR;
       break;
