@@ -1,5 +1,5 @@
 .ll 6i
-.TH TRACK 1 "4 November 1986"
+.TH TRACK 1 "18 April 1988"
 .UC 4
 .SH NAME
 .B track
@@ -7,66 +7,129 @@
 .SH SYNOPSIS
 .B track
 [
-.B \- FSTcdfimnpqsuvwx
+.B \- FSTcdfimnpqsvwx
 ]
-subscriptionlist
-.SH DESCRIPTION
 .I subscriptionlist
-contains a list of files to be maintained across machines. 
-.B track
+.SH DESCRIPTION
+.B Track
 supports a
 .I librarian/subscriber
 model of file update.
-If
+That is, subscribing machines are able, but not obliged, to stay in synch with
+librarian machines' file-system contents.
+.PP
+The file
+.I subscriptionlist
+contains a description of those files, directories, devices, & links
+which are to be kept up-to-date on the subscriber machines.
+The
+.I subscriptionlist's
+file-system-description must follow a particular syntax,
+which is described in subscriptionlist(5).
+For a prototype, see the usual default, /srvd/etc/athena/lib/slists/sys_rvd.
+The general default is <workdir>/slists/sys_rvd, where <workdir> is
+the "local working directory", as described under the -d option below.
+.PP
+When
 .B track
 is invoked with the
 .B \-w
 option (i.e. as the
 .I librarian
-machine), then the
-.I subscriptionlist
-is used to create a 
+machine),
+.B track
+follows the
+.I subscriptionlist's
+directions to traverse the librarian's file-system, and creates a 
+.I statfile(5)
+containing currentness information about the files that are available to
+subscribing machines.
+The
+.I statfile's
+default path is /srvd/etc/athena/lib/stats/sys_rvd.
+The
+.I currentness
+information recorded in the statfile includes
+file-type, mod-time, uid, gid, permissions, device-type, link-value & checksum.
+This is a performance-hack, allowing the subscribers to avoid
+net-accesses except when librarian files need to be copied.
+The
 .I statfile
-containing status information about the files that are available to
-other machines.
-If
+is not particularly legible.
+.PP
+When
 .B track
 is invoked without
 .B \-w
 (i.e. as the
 .I subscriber
-machine), then the
+machine),
+the
+.I librarian
+machine is specified as an NFS mount-point with the -F option
+(default: /srvd).
+.B Track
+uses the
 .I subscriptionlist
-is used to decide what files are to be considered for possible updating.
-The librarian machine is specified as an NFS mount-point with the -F option.
-The default librarian is /srvd.
+to decide what local files are to be considered for possible updating.
+The
+.I statfile
+represents the librarian's exported files, and
+.B track
+uses it to decide whether each local file should be updated:
+any differences in currentness will cause
+.B track
+to update the local file from the librarian's version.
+.PP
+It is possible for the librarian & subscribers to use different
+.I subscriptionlists.
+In general, the librarian "exports" a catalog (the 
+.I statfile
+), and each subscriber may "import" as much or as little of this catalog's
+offering as he wishes.
+If the librarian's & subscribers'
+.I subscriptionlists
+differ, only those files which are specified in both lists can be updated.
+.PP
+.B Track
+is unforgiving when writing a statfile, so as to prevent confused updates.
+It tries to forgive errors when updating, so as to discourage partial updates.
+Any errors are logged in the file /usr/adm/TRACKLOG.
+The TRACKLOG is useful for patching an update that breaks.
 .PP
 The most commonly-used options are:
 .TP
-.B \-F
+.B \-F<fromdir>
 Specify the source ( librarian) root-directory or mount-point.
 The default value is /srvd.
 .TP
-.B \-T
-specify the destination root directory, or mount-point. The default is /.
+.B \-T<todir>
+Specify the destination root directory, or mount-point. The default is /.
 .TP
 .B \-c
-Compare checksums of regular files, when updating.
-This slows the update,
-but the checksums serve to detect file-system corruption.
+When updating,
+compare each regular file's checksum with
+the corresponding checksum on the librarian-mountpoint.
+The librarian's checksums are always recorded in the
+.I statfile.
+-c slows the update,
+but the checksums enable track to detect file-system corruption.
 .TP
-.B \-d<dirname>
-change the local working directory (i.e. the directory on the local machine) to
-.I dirname.
-A working directory is the place where
+.B \-d<workdir>
+Change the local working directory (i.e. the directory on the local machine) to
+.I workdir.
+The default is /mnt/etc/athena/lib, where /mnt is the librarian mount-point.
+The working directory is the place where
 .B track
 will look for
 .I statfiles
+(e.g., stats/sys_rvd),
 and
-.I subscriptionlists.
-.B Track
+.I subscriptionlists
+(e.g., slists/sys_rvd).
+In order to write a statfile (-w option),
+.B track
 must have permission to write in its local working directory.
-The default is /mnt/etc/athena/lib, where /mnt is the librarian mount-point.
 .TP
 .B \-f
 Force the update.  Don't be gentle about what is destroyed.  Normally
@@ -76,23 +139,28 @@ is very cautious about files being destroyed by an update.
 .B \-n
 Do nothing, just produce a list of files that need updating (disabled by \-w),
 and the anticipated consequences of doing the update.
+This output goes to stderr, but not into the TRACKLOG.
 .TP
 .B \-s <statfile>
 .B \-s -
-use the named file as the statfile, or use stdout if "-s -" is used.
+Use the named file as the statfile, or use stdio if "-s -" is used.
+The default is <workdir>/stats/sys_rvd, where <workdir> is the working-dir
+specified by the -d option.
 .TP
 .B \-v
 Produces a very verbose description of what is happening during the update:
-which files get updated, and why. This output goes to stderr.
+which files get updated, and why. This output goes to stderr, but not
+into the TRACKLOG.
 .TP
 .B \-w
-write out a
+Write out a
 .I statfile.
-This is flag is always used by the
+This flag is always used by the
 .I librarian
 machine and never used by the
 .I subscriber
 machine(s).
+This option turns on -c.
 .PP
 The less commonly-used options:
 .TP
@@ -105,23 +173,23 @@ The default recipient is root.
 .TP
 .B \-p
 Parse only and produce a verbose description of the fields in the
-.I subscriptionlist. The output goes to stderr.
+.I subscriptionlist.
 This can be useful when
 .B track
 complains about syntax errors
-in the subscription-list.
+in the subscriptionlist.
+The output goes to stderr.
 .TP
 .B \-q
 Be quiet, i.e. don't complain about non-fatal errors.
 The most common non-fatal error occurs when the
-.I librarian
-and/or network are unreachable.
-.TP
-.B \-u
-Unconditionally copy files (i.e. older files can overwrite newer files)
+.I librarian's
+statfile is out-of-date, so that the subscriber tries to import files
+which no longer exist on the
+.I librarian.
 .TP
 .B \-x
-display debugging information ( minimal).
+Display debugging information ( minimal).
 .TP
 .B \-S <max_path_depth>
 Specify deeper path stacks; this is an internal implementation parameter.
@@ -131,6 +199,12 @@ Since the default depth accomodates pathnames with ~50 components,
 this option is seldom used.
 .SH EXAMPLES
 .in 8
+.ti -8
+track
+.ti -4
+Update the local root's contents from the corresponding contents of
+/srvd, according to the constraints specified in the default subscriptionlist
+& statfile. This is what the Athena script update_ws does.
 .ti -8
 track \-p daily
 .ti -4
@@ -152,12 +226,14 @@ for the
 named "hourly".
 .sp 1
 .ti -8
-track \-w \-q hourly 
+track hourly \-w \-q
 .ti -4
 Same as above, but non-fatal errors will be ignored.
 .sp 1
 .ti -8
 attach paris:root
+.br
+.ti -8
 track daily -F/paris/root
 .ti -4
 Act as a
@@ -180,36 +256,25 @@ flag is a safe way to preview what will happen before
 is turned loose on a new machine.
 .sp 1
 .ti -8
-track \-u daily
-.ti -4
-Act as a
-.I subscriber,
-except update files from the
-.I librarian
-even if the versions on this machine are newer than the versions
-on the
-.I librarian.
-.sp 1
+track -w sys_rvd -s - -F/source \\
 .ti -8
-track \-u \-m \-q daily
+.br
+ | track sys_rvd -s - -F/source -T/target -c
 .ti -4
-Same as the above, except ignore non-fatal errors.
-These are the arguments most often given when
-.B track
-is executed by
-.B cron(8)
-on a
-.I subscriber
-machine.
+Backup to /target those of /source's contents that are specified in sys_rvd,
+but only if /target has a different version.
+It is best to run this on /target's machine, so that only reads are networked.
 .in -8
 .SH FILES
- .../track/*
+ /source/4.3/etc.athena/track/*
 .br
- .../track/slists
-.I subscriptionlist_name 
+ /srvd/etc/athena/lib/slists/sys_rvd
 .br
- .../track/stats
-.I subscriptionlist_name . librarian_machine_name
+ /srvd/etc/athena/lib/stats/sys_rvd
+.br
+ /usr/adm/TRACKLOG
+.br
+ /tmp/sys_rvd.started
 .SH SEE ALSO
 subscriptionlist(5), statfile(5), permissions(5), cron(8)
 .PP
@@ -217,3 +282,18 @@ When Network File Systems Aren't Enough: Automatic File Distribution Revisited
 .br
 .ti 5
 by Daniel Nachbar
+.SH AUTHOR
+Daniel Nachbar (AT&T);
+rewritten for bug-fixing, speed, -c option, & extra link-support
+by Don Davis (Athena); NFS-conversion done by Rob French (Athena).
+.SH BUGS
+.br
+-m option doesn't work.
+.sp 1
+If, under -n, the subscriptionlist-entry's topmost target directory
+doesn't exist,
+the simulated update raises many more errors than would the true update.
+.sp 1
+Needs a -C (comparison mount-point) option.
+.sp 1
+Can't handle pathnames longer than 256 chars.
