@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.26 2003-05-12 22:50:04 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.27 2003-05-13 20:28:53 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -82,9 +82,9 @@ static void read_old_list(struct package **pkgtab, const char *oldlistname);
 static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_upgrade_list(struct package **pkgtab, const char *listname);
 static void read_exception_list(struct package **pkgtab, const char *listname);
-static void read_installed_versions(struct package **pkgtab);
+static void read_installed_versions(struct package **pkgtab, rpmts ts);
 static void decide_actions(struct package **pkgtab, int public);
-static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
+static void perform_updates(struct package **pkgtab, rpmts ts, int depcheck,
 			    int hashmarks, int copy);
 static void *notify(const void *arg, rpmCallbackType what,
 		    unsigned long amount, unsigned long total,
@@ -93,7 +93,7 @@ static void print_hash(struct notify_data *ndata, int amount);
 static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmts ts, int copy);
-static void display_action(struct package *pkg, enum act action);
+static void display_actions(struct package **pkgtab);
 static int kernel_was_updated(rpmts ts, struct package *pkg);
 static void update_lilo(struct package *pkg);
 static char *fudge_arch_in_filename(char *filename);
@@ -125,6 +125,7 @@ int main(int argc, char **argv)
   struct package *pkgtab[HASHSIZE];
   int i, c, depcheck = 0, public = 0, dryrun = 0, hashmarks = 0, copy = 0;
   const char *oldlistname, *newlistname, *upgradelistname;
+  rpmts ts;
 
   /* Initialize rpmlib. */
   rpmReadConfigFiles(NULL, NULL);
@@ -184,18 +185,26 @@ int main(int argc, char **argv)
   for (i = 0; i < HASHSIZE; i++)
     pkgtab[i] = NULL;
 
-  /* Read the lists and the current versions into the hash table. */
+  /* Read the lists into the hash table. */
   read_old_list(pkgtab, oldlistname);
   read_new_list(pkgtab, newlistname);
   if (upgradelistname != NULL)
     read_upgrade_list(pkgtab, upgradelistname);
   if (!public)
     read_exception_list(pkgtab, SYSCONFDIR "/rpmupdate.exceptions");
-  read_installed_versions(pkgtab);
+
+  /* Create a transaction set and read the current versions into the table. */
+  ts = rpmtsCreate();
+  rpmtsSetRootDir(ts, "/");
+  read_installed_versions(pkgtab, ts);
 
   /* Decide what updates to perform, and do them. */
   decide_actions(pkgtab, public);
-  perform_updates(pkgtab, depcheck, dryrun, hashmarks, copy);
+  if (dryrun)
+    display_actions(pkgtab);
+  if (!dryrun || depcheck)
+    perform_updates(pkgtab, ts, depcheck, hashmarks, copy);
+  rpmtsFree(ts);
 
   exit(0);
 }
@@ -300,16 +309,14 @@ static void read_exception_list(struct package **pkgtab, const char *listname)
   free(buf);
 }
 
-static void read_installed_versions(struct package **pkgtab)
+static void read_installed_versions(struct package **pkgtab, rpmts ts)
 {
   rpmdbMatchIterator mi;
   Header h;
   char *pkgname;
   struct package *pkg;
-  rpmts ts;
   struct rev rev;
 
-  ts = rpmtsCreate();
   mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES, NULL, 0);
   if (mi == NULL)
     die("Failed to initialize database iterator");
@@ -338,7 +345,6 @@ static void read_installed_versions(struct package **pkgtab)
 	}
     }
   rpmdbFreeIterator(mi);
-  rpmtsFree(ts);
 }
 
 static void decide_actions(struct package **pkgtab, int public)
@@ -366,12 +372,11 @@ static void decide_actions(struct package **pkgtab, int public)
     }
 }
 
-static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
+static void perform_updates(struct package **pkgtab, rpmts ts, int depcheck,
 			    int hashmarks, int copy)
 {
-  int r, i, npackages;
+  int r, i, npackages, any;
   struct package *pkg;
-  rpmts ts;
   rpmps ps;
   rpmdbMatchIterator mi;
   Header h;
@@ -379,38 +384,33 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
   struct notify_data ndata;
   struct rev rev;
 
-  if (!dryrun || depcheck)
+  if (copy)
     {
-      ts = rpmtsCreate();
-      rpmtsSetRootDir(ts, "/");
-
-      if (copy)
-	{
-	  prepare_copy_area();
-	  check_copy_size(pkgtab);
-	}
+      prepare_copy_area();
+      check_copy_size(pkgtab);
     }
 
-  /* Decide what to do for each package.  Add updates to the
-   * transaction set.  Flag erasures for the next bit of code.
-   * If we're doing a dry run, say what we're going to do here.
+  /* Add updates to the transaction set.  Count package updates for
+   * the notification display.  If there is nothing to do, quit now;
+   * as of rpm 4.2, rpmlib considers it an error to attempt to run an
+   * empty transaction set.
    */
   npackages = 0;
+  any = 0;
   for (i = 0; i < HASHSIZE; i++)
     {
       for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
 	{
-	  if (dryrun)
-	    display_action(pkg, pkg->action);
-	  if ((!dryrun || depcheck) && pkg->action == UPDATE)
+	  if (pkg->action == UPDATE)
 	    {
 	      schedule_update(pkg, ts, copy);
 	      npackages++;
 	    }
+	  if (pkg->action != NONE)
+	    any = 1;
 	}
     }
-
-  if (dryrun && !depcheck)
+  if (!any)
     return;
 
   /* Walk through the database and add transactions to erase packages
@@ -453,10 +453,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
       exit(1);
     }
   if (depcheck)
-    {
-      rpmtsFree(ts);
-      return;
-    }
+    return;
 
   rpmtsOrder(ts);
 
@@ -478,7 +475,8 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
        */
       if (kernel_was_updated(ts, get_package(pkgtab, "kernel")))
 	update_lilo(get_package(pkgtab, "kernel"));
-      die("Failed to run transactions\n");
+      rpmtsFree(ts);
+      die("Failed to run transactions");
     }
   else if (r > 0)
     {
@@ -488,7 +486,6 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
       exit(1);
     }
 
-  rpmtsFree(ts);
   update_lilo(get_package(pkgtab, "kernel"));
 }
 
@@ -670,34 +667,43 @@ static void schedule_update(struct package *pkg, rpmts ts, int copy)
   headerFree(h);
 }
 
-static void display_action(struct package *pkg, enum act action)
+static void display_actions(struct package **pkgtab)
 {
-  switch (action)
+  int i;
+  struct package *pkg;
+
+  for (i = 0; i < HASHSIZE; i++)
     {
-    case ERASE:
-      printf("Erase package %s\n", pkg->pkgname);
-      break;
-    case UPDATE:
-      if (pkg->instrev.present)
+      for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
 	{
-	  printf("Update package %s from rev ", pkg->pkgname);
-	  printrev(&pkg->instrev);
-	  printf(" to rev ");
-	  printrev(&pkg->newlistrev);
-	  printf("\n");
+	  switch (pkg->action)
+	    {
+	    case ERASE:
+	      printf("Erase package %s\n", pkg->pkgname);
+	      break;
+	    case UPDATE:
+	      if (pkg->instrev.present)
+		{
+		  printf("Update package %s from rev ", pkg->pkgname);
+		  printrev(&pkg->instrev);
+		  printf(" to rev ");
+		  printrev(&pkg->newlistrev);
+		  printf("\n");
+		}
+	      else
+		{
+		  printf("Install package %s at rev ", pkg->pkgname);
+		  printrev(&pkg->newlistrev);
+		  printf("\n");
+		}
+	      break;
+	    case ELIMINATE_MULTIPLES:
+	      printf("Remove old versions of package %s\n", pkg->pkgname);
+	      break;
+	    default:
+	      break;
+	    }
 	}
-      else
-	{
-	  printf("Install package %s at rev ", pkg->pkgname);
-	  printrev(&pkg->newlistrev);
-	  printf("\n");
-	}
-      break;
-    case ELIMINATE_MULTIPLES:
-      printf("Eliminate multiple versions of package %s\n", pkg->pkgname);
-      break;
-    default:
-      break;
     }
 }
 
