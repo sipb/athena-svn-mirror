@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-canvas-item" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-canvas-item" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboCanvasItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>BonoboCanvasItem</refname><refpurpose>A GNOME Canvas Item that can be used to embbed remote Bonobo GNOME
+<refname>BonoboCanvasItem</refname><refpurpose>A GNOME Canvas Item that can be used to embed remote Bonobo GNOME
 Canvas Items.</refpurpose>
 </refnamediv>
 
@@ -39,13 +39,13 @@ void        <link linkend="bonobo-canvas-item-set-bounds">bonobo_canvas_item_set
 <title>Description</title>
 <para>
    The Bonobo Canvas Item is a Canvas item that will allow you to
-   embbed an arbitrary Canvas Item that lives in in a remote
+   embed an arbitrary Canvas Item that lives in in a remote
    Embeddable.  On the remote end, the <link linkend="BonoboCanvasComponent">BonoboCanvasComponent</link> class is
    used to wrap an arbitrary <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> and export it. 
 </para>
 
 <para>
-   This allows arbitrarly shaped components to be inserted into an
+   This allows arbitrarily shaped components to be inserted into an
    application.  Both Xlib and AA canvas items are supported.
 </para>
 </refsect1>

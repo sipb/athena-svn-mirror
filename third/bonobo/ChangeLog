@@ -1,3 +1,116 @@
+2001-02-15  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-xobject.c (do_corba_hacks): setup the 
+	servant flag.
+	(bonobo_x_object): impl.
+	(setup_type): publicise as
+	(bonobo_x_type_setup): this.
+
+2001-02-14  Michael Engber  <engber@eazel.com>
+
+	* bonobo/bonobo-zoomable.c:
+	(impl_Bonobo_Zoomable__get_preferredLevels),
+	(impl_Bonobo_Zoomable__get_preferredLevelNames),
+	Return copies of levels and level names since
+	we can't control when caller frees our return value.
+
+	(bonobo_zoomable_free_preferred_zoom_level_arrays),
+	(bonobo_zoomable_destroy), (bonobo_zoomable_finalize),
+	(bonobo_zoomable_init), (bonobo_zoomable_set_parameters_full),
+	(bonobo_zoomable_set_parameters),
+	Keep copies of level names rather (not pointer to passed in
+	strings). The g_array to hold the names used the wrong element type.
+
+	(bonobo_zoomable_add_preferred_zoom_level),
+	(bonobo_zoomable_report_zoom_level_changed),
+	(bonobo_zoomable_report_zoom_parameters_changed):
+	Removed redundant NULL tests.
+
+2001-02-14  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump to 0.37
+
+2001-02-13  John R. Sheets  <dusk@ravendusk.org>
+
+	* bonobo/bonobo-object-client.c: 
+	* bonobo/bonobo-moniker.c:
+	* bonobo/bonobo-object.c:
+	* bonobo/bonobo-ui-component.h:
+	* gshell/README:
+	* idl/Bonobo_Context.idl:
+	* idl/Bonobo_Control.idl:
+	* idl/Bonobo_Embeddable.idl:
+	* idl/Bonobo_Listener.idl:
+	* idl/Bonobo_Persist.idl:
+	* idl/Bonobo_Progressive.idl:
+	* idl/Bonobo_Property.idl:
+	* idl/Bonobo_Storage.idl:
+	* idl/Bonobo_Zoomable.idl: Minor tweaks in comments, update old
+	function and parameter names.
+
+2001-02-14  John R. Sheets  <dusk@ravendusk.org>
+ 
+	* doc/api/bonobo-decl.txt:
+	* api/tmpl/bonobo-canvas-component.sgml:
+	* api/tmpl/bonobo-canvas-item.sgml:
+	* api/tmpl/bonobo-listener.sgml:
+	* api/tmpl/bonobo-object-client.sgml:
+	* api/tmpl/bonobo-object.sgml:
+	* api/tmpl/bonobo-stream-memory.sgml:
+	* api/tmpl/bonobo-stream.sgml:
+	* api/tmpl/bonobo-transient.sgml:
+	* api/tmpl/bonobo-view.sgml: Update API template docs to remove
+ 	relics of old pre-namespace changes, plus some language tweaks.
+ 
+2001-02-14  Michael Meeks  <michael@ximian.com>
+
+	* doc/FAQ: running oafd faq.
+
+2001-02-14  Dietmar Maurer  <dietmar@ximian.com>
+
+	* bonobo/bonobo-arg.h: include gtk/gtktypeutils.h
+
+	* bonobo/bonobo-property-bag-xml.c: support
+	load/store of aliases.
+
+2001-02-14  Cody Russell  <bratsche@gnome.org>
+
+	* bonobo/bonobo-zoomable.c: Append the array, not the address of
+	the array.  *duh* Thanks, Mike Engber.
+
+2001-02-13  Dan Winship  <danw@ximian.com>
+
+	* bonobo/bonobo-listener.c (impl_Bonobo_Listener_event): ref the
+	listener through this function so that if the callback unrefs it
+	the signal emission won't crash.
+
+	* bonobo/bonobo-event-source.c
+	(bonobo_event_source_notify_listeners): ref the event source
+	around the notifications in case the last listener unregisters
+	itself from its notification function.
+
+	* bonobo/bonobo-control.c (impl_Bonobo_Control_setWindowId): Use
+	gtk_signal_connect_while_alive so we don't try to destroy the
+	control on both the "destroy_event" and "destroy" signals from the
+	plug.
+
+2001-02-13  Darin Adler  <darin@eazel.com>
+
+	* .cvsignore: Fix for recent xml-i18n-tools.
+
+2001-02-13  Darin Adler  <darin@eazel.com>
+
+	* bonobo/bonobo-ui-sync-menu.c: (str_uscore_equal): Fix bug where
+	it would consider two strings matching even if only the prefixes
+	matched. Also fix handling of strings with double underscores,
+	which match a single underscore (old code would match empty string).
+
+2001-02-09  Cody Russell  <bratsche@gnome.org>
+
+	* bonobo/bonobo-ui-engine-config.c: Remove the Cancel button.
+	Since this dialog makes changes in real time, this button serves
+	no purpose.
+
 2001-02-09  Michael Meeks  <michael@ximian.com>
 
 	* Version 0.36

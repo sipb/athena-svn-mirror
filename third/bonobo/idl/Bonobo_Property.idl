@@ -42,7 +42,7 @@ interface Property : Bonobo::Unknown {
 	 * Do not confuse this with the human-readable string which
 	 * should be presented to the user in a property editor.  A
 	 * property name is a human-language-independent key used to
-	 * identify a property.  See get_docstring() for more
+	 * identify a property.  See getDocString() for more
 	 * information about human-readable property descriptors.
 	 */
 	string getName ();

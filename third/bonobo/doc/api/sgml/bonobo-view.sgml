@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-view" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-view" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboView</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>BonoboView</refname><refpurpose>View object for exporting a view of a GnomeEmbeddable component</refpurpose>
+<refname>BonoboView</refname><refpurpose>View object for exporting a view of a BonoboEmbeddable component</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -55,35 +55,37 @@ void        <link linkend="bonobo-view-activate-notify">bonobo_view_activate_not
 <refsect1>
 <title>Description</title>
 <para>
-   <link linkend="GnomeView">GnomeView</link> objects are typically created on the view factory
-   callback of a <link linkend="GnomeEmbeddable">GnomeEmbeddable</link> object.  Bonobo components should be
+   <link linkend="BonoboView">BonoboView</link> objects are typically created on the view factory
+   callback of a <link linkend="BonoboEmbeddable">BonoboEmbeddable</link> object.  Bonobo components should be
    able to provide as many view objects as requested by the
-   <link linkend="GnomeEmbeddable">GnomeEmbeddable</link> object on demand.
+   <link linkend="BonoboEmbeddable">BonoboEmbeddable</link> object on demand.
 </para>
 
 <para>
-   It is the programmer responsability to keep the contents of all the
+   It is the programmer's responsibility to keep the contents of all the
    views displaying the same information (modulo per-view state, like
    the zoom factor).
 </para>
 
+<!-- FIXME: BonoboView API no longer matches following description -->
+
 <para>
    If your component provides menus, then you use the
-   <link linkend="gnome-view-set-ui-handler">gnome_view_set_ui_handler</link>() on your view to provide it with a set
+   <link linkend="bonobo-view-set-ui-handler">bonobo_view_set_ui_handler</link>() on your view to provide it with a set
    of menus and toolbars.   You can also retrieve the container's UI
-   handler using <link linkend="gnome-view-get-ui-handler">gnome_view_get_ui_handler</link>().
+   handler using <link linkend="bonobo-view-get-ui-handler">bonobo_view_get_ui_handler</link>().
 </para>
 
 <para>
    You can register verbs in the View by using the
-   <link linkend="gnome-view-register-verb">gnome_view_register_verb</link>().  When you want to stop supporting a
-   verb, you can use the <link linkend="gnome-view-unregister-verb">gnome_view_unregister_verb</link>().  Alternatively,
+   <link linkend="bonobo-view-register-verb">bonobo_view_register_verb</link>().  When you want to stop supporting a
+   verb, you can use the <link linkend="bonobo-view-unregister-verb">bonobo_view_unregister_verb</link>().  Alternatively,
    you can hook up to the "do_verb" signal and catch the verb requests
    on the signal handler.
 </para>
 
 <para>
-   <link linkend="GnomeView">GnomeView</link> objects get a chance to tell their containers their
+   <link linkend="BonoboView">BonoboView</link> objects get a chance to tell their containers their
    desired size by responding to the "size_query" signal.  They will
    get their size assigned later.  The size assignment happens on the
    GtkWidget using the normal Gtk+ size allocation procedure.
@@ -103,7 +105,7 @@ void        <link linkend="bonobo-view-activate-notify">bonobo_view_activate_not
 <programlisting>#define BONOBO_VIEW_TYPE        (bonobo_view_get_type ())
 </programlisting>
 <para>
-   Returns the GtkType associated with the <link linkend="GnomeView">GnomeView</link> object.
+   Returns the GtkType associated with the <link linkend="BonoboView">BonoboView</link> object.
 </para></refsect2>
 <refsect2>
 <title><anchor id="BONOBO-VIEW-CAPS">BONOBO_VIEW()</title>
@@ -456,7 +458,7 @@ void        <link linkend="bonobo-view-activate-notify">bonobo_view_activate_not
 <refsect1>
 <title>See Also</title>
 <para>
-   <link linkend="GnomeViewFrame">GnomeViewFrame</link>,  <link linkend="GnomeEmbeddable">GnomeEmbeddable</link>, <link linkend="BonoboWidget">BonoboWidget</link>, <link linkend="bonobo-widget-new">bonobo_widget_new</link>()
+   <link linkend="BonoboViewFrame">BonoboViewFrame</link>,  <link linkend="BonoboEmbeddable">BonoboEmbeddable</link>, <link linkend="BonoboWidget">BonoboWidget</link>, <link linkend="bonobo-widget-new">bonobo_widget_new</link>()
 </para>
 </refsect1>
 

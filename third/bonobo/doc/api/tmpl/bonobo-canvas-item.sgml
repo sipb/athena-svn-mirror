@@ -2,19 +2,19 @@
 BonoboCanvasItem
 
 <!-- ##### SECTION Short_Description ##### -->
-A GNOME Canvas Item that can be used to embbed remote Bonobo GNOME
+A GNOME Canvas Item that can be used to embed remote Bonobo GNOME
 Canvas Items.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
    The Bonobo Canvas Item is a Canvas item that will allow you to
-   embbed an arbitrary Canvas Item that lives in in a remote
+   embed an arbitrary Canvas Item that lives in in a remote
    Embeddable.  On the remote end, the #BonoboCanvasComponent class is
    used to wrap an arbitrary #GnomeCanvasItem and export it. 
 </para>
 
 <para>
-   This allows arbitrarly shaped components to be inserted into an
+   This allows arbitrarily shaped components to be inserted into an
    application.  Both Xlib and AA canvas items are supported.
 </para>
 

@@ -43,7 +43,7 @@ Abstract object for file (stream) access.
 <!-- ##### MACRO BONOBO_STREAM_TYPE ##### -->
 <para>
   Returns the GtkType associated with the
-  <classname>GnomeStream</classname> object
+  <classname>BonoboStream</classname> object
 </para>
 
 

@@ -502,10 +502,7 @@ button_clicked_fn (GnomeDialog *dialog,
 		   gint         button_number,
 		   BonoboUIEngineConfig *config)
 {
-	if (button_number == 0) /* Ok */
-		bonobo_ui_engine_config_serialize (config);
-	else
-		bonobo_ui_engine_config_hydrate (config);
+	bonobo_ui_engine_config_serialize (config);
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
@@ -520,7 +517,6 @@ dialog_new (BonoboUIEngineConfig *config)
 
 	window = gnome_dialog_new (_("Configure UI"), 
 				   GNOME_STOCK_BUTTON_OK,
-				   GNOME_STOCK_BUTTON_CANCEL,
 				   NULL);
 	gnome_dialog_set_default (GNOME_DIALOG (window), 0);
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.34\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
 "PO-Revision-Date: 2001-01-27 09:30-02:00\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -50,7 +50,7 @@ msgstr "_Texto e ícone"
 msgid "_Priority text only"
 msgstr "Apenas texto _prioritário"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Configurar IU"
 

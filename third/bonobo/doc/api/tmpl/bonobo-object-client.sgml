@@ -7,38 +7,23 @@ Object activation routines
 <!-- ##### SECTION Long_Description ##### -->
 <para>
   The #BonoboObjectClient object is used primarly to activate Bonobo
-  components (mainly by using gnome_object_activate ()).  The CORBA
+  components (mainly by using bonobo_object_activate ()).  The CORBA
   object reference to the Bonobo object is wrapped in a #BonoboObject.
 </para>
 
 <para>
   The #BonoboObjectClient object is also used to wrap an arbitrary
   Bonobo::Unknown CORBA object reference into a #BonoboObject (by using
-  gnome_object_client_from_corba()).
+  bonobo_object_client_from_corba()).
 </para>
 
 <para>
-  The main activation entry point is the gnome_object_activate()
+  The main activation entry point is the bonobo_object_activate()
   function.  This is a high-level routine that knows how to activate
-  components or activate and restore components.  Internally
-  gnome_object_activate() checks whether its argument is a moniker_url
-  or a GOAD-ID and depending on this it invokes
-  gnome_object_activate_with_goad_id() or gnome_object_restore_from_url().
-</para>
-
-<para>
-  The gnome_object_activate_with_goad_id() routine basically uses
-  GNORBA's goad_server_activate_with_id() to launch the component ( or
-  launch the factory implementing the component and requesting from
-  the factory a new instance).
-</para>
-
-<para>
-  The gnome_object_restore_from_url() takes a textual moniker url
-  description (See #BonoboMoniker) that represents a specific object
-  that is defined at least by a component and a url to restore its
-  state from.  Optionally, you can specific a subobject to request
-  from the resulting object.
+  components or activate and restore components.  bonobo_object_activate()
+  uses the supplied OAFIID to activate the object with OAF (GOAD 
+  activation is no longer supported).  If you want to activate an 
+  object with a moniker, use bonobo_get_object() instead.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->

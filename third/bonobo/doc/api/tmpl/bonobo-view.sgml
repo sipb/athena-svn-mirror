@@ -2,39 +2,41 @@
 BonoboView
 
 <!-- ##### SECTION Short_Description ##### -->
-View object for exporting a view of a GnomeEmbeddable component
+View object for exporting a view of a BonoboEmbeddable component
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-   #GnomeView objects are typically created on the view factory
-   callback of a #GnomeEmbeddable object.  Bonobo components should be
+   #BonoboView objects are typically created on the view factory
+   callback of a #BonoboEmbeddable object.  Bonobo components should be
    able to provide as many view objects as requested by the
-   #GnomeEmbeddable object on demand.
+   #BonoboEmbeddable object on demand.
 </para>
 
 <para>
-   It is the programmer responsability to keep the contents of all the
+   It is the programmer's responsibility to keep the contents of all the
    views displaying the same information (modulo per-view state, like
    the zoom factor).
 </para>
 
+<!-- FIXME: BonoboView API no longer matches following description -->
+
 <para>
    If your component provides menus, then you use the
-   gnome_view_set_ui_handler() on your view to provide it with a set
+   bonobo_view_set_ui_handler() on your view to provide it with a set
    of menus and toolbars.   You can also retrieve the container's UI
-   handler using gnome_view_get_ui_handler().
+   handler using bonobo_view_get_ui_handler().
 </para>
 
 <para>
    You can register verbs in the View by using the
-   gnome_view_register_verb().  When you want to stop supporting a
-   verb, you can use the gnome_view_unregister_verb().  Alternatively,
+   bonobo_view_register_verb().  When you want to stop supporting a
+   verb, you can use the bonobo_view_unregister_verb().  Alternatively,
    you can hook up to the "do_verb" signal and catch the verb requests
    on the signal handler.
 </para>
 
 <para>
-   #GnomeView objects get a chance to tell their containers their
+   #BonoboView objects get a chance to tell their containers their
    desired size by responding to the "size_query" signal.  They will
    get their size assigned later.  The size assignment happens on the
    GtkWidget using the normal Gtk+ size allocation procedure.
@@ -48,12 +50,12 @@ View object for exporting a view of a GnomeEmbeddable component
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-   #GnomeViewFrame,  #GnomeEmbeddable, #BonoboWidget, bonobo_widget_new()
+   #BonoboViewFrame,  #BonoboEmbeddable, #BonoboWidget, bonobo_widget_new()
 </para>
 
 <!-- ##### MACRO BONOBO_VIEW_TYPE ##### -->
 <para>
-   Returns the GtkType associated with the #GnomeView object.
+   Returns the GtkType associated with the #BonoboView object.
 </para>
 
 

@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bonobo 0.34\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
-"PO-Revision-Date: 2001-01-28 19:53+0100\n"
+"Project-Id-Version: bonobo 0.36\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"PO-Revision-Date: 2001-02-12 12:25+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,13 +45,13 @@ msgstr "_Icone"
 
 #: bonobo/bonobo-ui-config-widget.c:300
 msgid "_Text and Icon"
-msgstr "_Texte et icone"
+msgstr "_Texte et icône"
 
 #: bonobo/bonobo-ui-config-widget.c:310
 msgid "_Priority text only"
 msgstr "_Priorité au texte seulement"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Configurer l'IU"
 
@@ -211,12 +211,12 @@ msgstr "Aucun nom de fichier"
 #: bonobo/bonobo-object-directory.c:230
 #, c-format
 msgid "unknown mime type for '%s'"
-msgstr "type MIME inconnu pour '%s'"
+msgstr "type MIME inconnu pour « %s »"
 
 #: bonobo/bonobo-object-directory.c:255
 #, c-format
 msgid "no handlers for mime type '%s'"
-msgstr "aucun gestionnaire pour le type MIME '%s'"
+msgstr "aucun gestionnaire pour le type MIME « %s »"
 
 #: bonobo/bonobo-selector-widget.c:212
 msgid "Name"

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-0.32cvs\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
 "PO-Revision-Date: 2001-01-07 19:30+01:00\n"
 "Last-Translator: Benedikt Roth <Benedikt.Roth@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "_Priority text only"
 msgstr ""
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr ""
 

@@ -6,105 +6,103 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
-"PO-Revision-Date: 2000-09-23 00:05+0000\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"PO-Revision-Date: 2001-02-14 21:49GMT\n"
 "Last-Translator: Juan Manuel García Molina <juanmagm@mail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.8\n"
 
 #: bonobo/bonobo-ui-config-widget.c:235
 msgid "Visible"
-msgstr ""
+msgstr "Visible"
 
 #: bonobo/bonobo-ui-config-widget.c:243
 msgid "_Show"
-msgstr ""
+msgstr "_Mostrar"
 
 #: bonobo/bonobo-ui-config-widget.c:253
 msgid "_Hide"
-msgstr ""
+msgstr "_Ocultar"
 
 #: bonobo/bonobo-ui-config-widget.c:263
 msgid "_View tooltips"
-msgstr ""
+msgstr "_Ver consejos"
 
 #: bonobo/bonobo-ui-config-widget.c:270
 msgid "Toolbars"
-msgstr ""
+msgstr "Barras de herramientas"
 
 #: bonobo/bonobo-ui-config-widget.c:280
 msgid "Look"
-msgstr ""
+msgstr "Apariencia"
 
 #: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
 msgid "_Icon"
-msgstr ""
+msgstr "_Icono"
 
 #: bonobo/bonobo-ui-config-widget.c:300
 msgid "_Text and Icon"
-msgstr ""
+msgstr "_Texto e Icono"
 
 #: bonobo/bonobo-ui-config-widget.c:310
 msgid "_Priority text only"
-msgstr ""
+msgstr "_Priorizar sólo texto"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
-msgstr ""
+msgstr "Configurar IU"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:539
 msgid "B_oth"
-msgstr ""
+msgstr "Amb_os"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:541
 msgid "T_ext"
-msgstr ""
+msgstr "T_exto"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:542
 msgid "Hide t_ips"
-msgstr ""
+msgstr "Ocultar co_nsejos"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:542
 msgid "Show t_ips"
-msgstr ""
+msgstr "Mostrar co_nsejos"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:543
 msgid "_Hide toolbar"
-msgstr ""
+msgstr "_Ocultar barra de herramientas"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:544
-#, fuzzy
 msgid "Customi_ze"
-msgstr "Tamaño personalizado"
+msgstr "Personali_zar"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:544
 msgid "Customize the toolbar"
-msgstr ""
+msgstr "Personalizar la barra de herramientas"
 
 #. -lefence
 #: monikers/moniker-test.c:237
 msgid "Oaf options"
-msgstr ""
+msgstr "Opciónes de Oaf"
 
 #: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
 msgid "Could not initialize Bonobo!\n"
 msgstr "¡No se pudo inicializar Bonobo!\n"
 
 #: bonobo/bonobo-exception.c:129
-#, fuzzy
 msgid "An unsupported action was attempted"
-msgstr "Se intentó una acción no soportada sobre un stream"
+msgstr "Se intentó una acción no soportada"
 
 #: bonobo/bonobo-exception.c:132
-#, fuzzy
 msgid "IO Error"
-msgstr "Error de E/S en stream"
+msgstr "Error de E/S"
 
 #: bonobo/bonobo-exception.c:135
 msgid "Invalid argument value"
-msgstr ""
+msgstr "Valor de argumento no válido"
 
 #: bonobo/bonobo-exception.c:139
 msgid "Object not found"
@@ -135,9 +133,8 @@ msgid "IO Error on stream"
 msgstr "Error de E/S en stream"
 
 #: bonobo/bonobo-exception.c:166
-#, fuzzy
 msgid "IO Error on storage"
-msgstr "Error de E/S en stream"
+msgstr "Error de E/S en almacenamiento"
 
 #: bonobo/bonobo-exception.c:169
 msgid "Name already exists in storage"
@@ -152,23 +149,20 @@ msgid "No permission to do operation on storage"
 msgstr "No hay permiso para hacer la operación en el almacenamiento"
 
 #: bonobo/bonobo-exception.c:177
-#, fuzzy
 msgid "An unsupported storage action was attempted"
-msgstr "Se intentó una acción no soportada sobre un stream"
+msgstr "Se intentó una acción no soportada sobre almacenamiento"
 
 #: bonobo/bonobo-exception.c:179
-#, fuzzy
 msgid "Object is not a stream"
-msgstr "Objeto no encontrado en el almacenamiento"
+msgstr "Objeto no es un stream"
 
 #: bonobo/bonobo-exception.c:182
-#, fuzzy
 msgid "Object is not a storage"
-msgstr "Objeto no encontrado en el almacenamiento"
+msgstr "Objeto no es almacenamiento"
 
 #: bonobo/bonobo-exception.c:185
 msgid "Storage is not empty"
-msgstr ""
+msgstr "Almacenamiento no está vacío"
 
 #: bonobo/bonobo-exception.c:189
 msgid "malformed user interface XML description"
@@ -180,16 +174,15 @@ msgstr "camino incorrecto a elemento de interfaz de usuario XML"
 
 #: bonobo/bonobo-exception.c:196
 msgid "incorrect data type"
-msgstr "tido de dato incorrecto"
+msgstr "tipo de dato incorrecto"
 
 #: bonobo/bonobo-exception.c:199
 msgid "stream not found"
 msgstr "stream no encontrado"
 
 #: bonobo/bonobo-exception.c:203
-#, fuzzy
 msgid "property not found"
-msgstr "Objeto no encontrado"
+msgstr "propiedad no encontrada"
 
 #: bonobo/bonobo-exception.c:207
 msgid "Moniker interface cannot be found"
@@ -213,17 +206,17 @@ msgstr "Error chequeando error; sin excepción"
 
 #: bonobo/bonobo-object-directory.c:224
 msgid "No filename"
-msgstr ""
+msgstr "Sin nombre de archivo"
 
 #: bonobo/bonobo-object-directory.c:230
 #, c-format
 msgid "unknown mime type for '%s'"
-msgstr ""
+msgstr "tipo mime desconocido para '%s'"
 
 #: bonobo/bonobo-object-directory.c:255
 #, c-format
 msgid "no handlers for mime type '%s'"
-msgstr ""
+msgstr "no hay manejadores para el tipo mime '%s'"
 
 #: bonobo/bonobo-selector-widget.c:212
 msgid "Name"
@@ -235,321 +228,305 @@ msgstr "Descripción"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
 msgid "GnoMines control"
-msgstr ""
+msgstr "control de GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
 msgid "GnoMines control factory"
-msgstr ""
+msgstr "fábrica de controles de GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
 msgid "bonobo GnoMines object"
-msgstr ""
+msgstr "objeto de bonobo GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
-#, fuzzy
 msgid "bonobo GnoMines object factory"
-msgstr "No se puede activar objeto de fábrica"
+msgstr "fábrica de objetos de bonobo GnoMines"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:1
 msgid "Load a saved game"
 msgstr "Iniciar un juego guardado"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:2
-#, fuzzy
 msgid "New game"
-msgstr "_Nuevo Juego"
+msgstr "Nuevo juego"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:3
-#, fuzzy
 msgid "Open game"
-msgstr "_Nuevo Juego"
+msgstr "Abrir juego"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:4
 msgid "Start a new game"
 msgstr "Iniciar un nuevo juego"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:5
-#, fuzzy
 msgid "_Game"
-msgstr "Juego"
+msgstr "_Juego"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
 msgid "Waveform"
-msgstr ""
+msgstr "Forma de onda"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
-#, fuzzy
 msgid "Waveform component"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Componente forma de onda"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
 msgid "Waveform component factory"
-msgstr ""
+msgstr "Fábrica de componentes forma de onda"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
-#, fuzzy
 msgid "audio/ulaw bonobo object"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "objeto de bonobo audio/ulaw"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
-#, fuzzy
 msgid "audio/ulaw bonobo object factory"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "fábrica de objetos de bonobo audio/ulaw"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:1
 msgid "Component Selector"
-msgstr ""
+msgstr "Selector de Componentes"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:2
 msgid "Component Selector factory"
-msgstr ""
+msgstr "fábrica de Selectores de Componentes"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:3
 msgid "Component selector control"
-msgstr ""
+msgstr "Control de selector de componentes"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:4
 msgid "component selector control factory"
-msgstr ""
+msgstr "fábrica de controles de selectores de componentes"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
-#, fuzzy
 msgid "Text component"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Componente de texto"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
 msgid "Text component factory"
-msgstr ""
+msgstr "Fábrica de componentes de texto"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
-#, fuzzy
 msgid "text/plain component"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "componente text/plain"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
 msgid "text/plain embeddable factory"
-msgstr ""
+msgstr "fábrica de text/plain empotrable"
 
 #: components/text-plain/bonobo-text-plain.c:338
-#, fuzzy
 msgid "_Clear Text"
-msgstr "_Borrar Imagen"
+msgstr "_Borrar Texto"
 
 #: components/text-plain/bonobo-text-plain.c:339
-#, fuzzy
 msgid "Clears the text in the component"
-msgstr "_Añadir un nuevo componente text\\plain"
+msgstr "Limpia el texto del componente"
 
 #: gshell/controls.c:95 gshell/inout.c:91
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistFile"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban cargar datos en el componente "
+"con PersistFile"
 
 #: gshell/controls.c:119 gshell/inout.c:176
 #: samples/compound-doc/container/component.c:228
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open file %s"
-msgstr "No se pudo inicializar Bonobo"
+msgstr "No se pudo abrir el archivo %s"
 
 #: gshell/controls.c:144 gshell/inout.c:201
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStream"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban cargar datos en el componente "
+"con PersistStream"
 
 #: gshell/gshell-ui.xml.h:1
 msgid "About this application"
-msgstr ""
+msgstr "Acerca de esta aplicación"
 
 #: gshell/gshell-ui.xml.h:2
-#, fuzzy
 msgid "Close the current window"
-msgstr "Fijar el color para dibujar actual"
+msgstr "Cerrar la ventana actual"
 
 #: gshell/gshell-ui.xml.h:3
 msgid "Configure the application"
-msgstr ""
+msgstr "Configurar la aplicación"
 
 #: gshell/gshell-ui.xml.h:4
 msgid "Create New _Window"
-msgstr ""
+msgstr "Crear _Ventana Nueva"
 
 #: gshell/gshell-ui.xml.h:5
 msgid "Create a new window"
-msgstr ""
+msgstr "Crear una ventana nueva"
 
 #: gshell/gshell-ui.xml.h:6
 msgid "Displays only one window"
-msgstr ""
+msgstr "Mostrar sólo una ventana"
 
 #: gshell/gshell-ui.xml.h:7
 msgid "E_xit"
-msgstr ""
+msgstr "_Salir"
 
 #: gshell/gshell-ui.xml.h:8
 msgid "Exit the program"
-msgstr ""
+msgstr "Salir del programa"
 
 #: gshell/gshell-ui.xml.h:9
 msgid "Help on GNOME"
-msgstr ""
+msgstr "Ayuda sobre GNOME"
 
 #: gshell/gshell-ui.xml.h:10
 msgid "Kill the current buffer"
-msgstr ""
+msgstr "Matar el búfer actual"
 
 #: gshell/gshell-ui.xml.h:11
-#, fuzzy
 msgid "Launch Control..."
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Lanzar Control..."
 
 #: gshell/gshell-ui.xml.h:12
-#, fuzzy
 msgid "Launch Embeddable..."
-msgstr "No se pudo lanzar el Embeddable."
+msgstr "Lanzar Empotrable..."
 
 #: gshell/gshell-ui.xml.h:13
 msgid "Launches a new Control component"
-msgstr ""
+msgstr "Lanza un componente de Control nuevo"
 
 #: gshell/gshell-ui.xml.h:14
 msgid "Launches a new Embeddable component"
-msgstr ""
+msgstr "Lanza un componente Empotrable nuevo"
 
 #: gshell/gshell-ui.xml.h:15
-#, fuzzy
 msgid "Loads a file into the current component"
-msgstr "_Añadir un nuevo componente text\\plain"
+msgstr "Carga un archivo en el componente actual"
 
 #: gshell/gshell-ui.xml.h:16
-#, fuzzy
 msgid "Open a file"
-msgstr "Abrir Archivo IDL..."
+msgstr "Abrir un archivo"
 
 #: gshell/gshell-ui.xml.h:17
 msgid "Print S_etup..."
-msgstr ""
+msgstr "Cofi_gurar Impresión..."
 
 #: gshell/gshell-ui.xml.h:18
-#, fuzzy
 msgid "Print the current file"
-msgstr "Fijar el color para dibujar actual"
+msgstr "Imprimir el archivo actual"
 
 #: gshell/gshell-ui.xml.h:19
 msgid "Save _As..."
-msgstr ""
+msgstr "Guardar _Como..."
 
 #: gshell/gshell-ui.xml.h:20
-#, fuzzy
 msgid "Save the current file"
-msgstr "Fijar el color para dibujar actual"
+msgstr "Guardar el archivo actual"
 
 #: gshell/gshell-ui.xml.h:21
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "Guardar el archivo actual con un nombre diferente"
 
 #: gshell/gshell-ui.xml.h:22
 msgid "Setup the page settings for your current printer"
-msgstr ""
+msgstr "Configurar los ajustes de página para su impresora actual"
 
 #: gshell/gshell-ui.xml.h:23
-#, fuzzy
 msgid "Splits the current window"
-msgstr "Fijar el color para dibujar actual"
+msgstr "Divide la ventana actual"
 
 #: gshell/gshell-ui.xml.h:24
 msgid "Zoom ..."
-msgstr ""
+msgstr "Zoom ..."
 
 #: gshell/gshell-ui.xml.h:25
 msgid "Zoom _in"
-msgstr ""
+msgstr "Zoom _dentro"
 
 #: gshell/gshell-ui.xml.h:26
 msgid "Zoom _out"
-msgstr ""
+msgstr "Zoom _fuera"
 
 #: gshell/gshell-ui.xml.h:27
 msgid "Zoom to _default"
-msgstr ""
+msgstr "Zoom por _defecto"
 
 #: gshell/gshell-ui.xml.h:28
 msgid "Zoom to _fit"
-msgstr ""
+msgstr "Zoom hasta a_justar"
 
 #: gshell/gshell-ui.xml.h:29
 msgid "_About..."
-msgstr ""
+msgstr "_Acerca de..."
 
 #: gshell/gshell-ui.xml.h:30
 msgid "_Buffers"
-msgstr ""
+msgstr "_Búfers"
 
 #: gshell/gshell-ui.xml.h:31
 msgid "_Close This Window"
-msgstr ""
+msgstr "_Cerrar Esta Ventana"
 
 #: gshell/gshell-ui.xml.h:32
 msgid "_File"
-msgstr ""
+msgstr "_Archivo"
 
 #: gshell/gshell-ui.xml.h:33
 msgid "_Help"
-msgstr ""
+msgstr "A_yuda"
 
 #: gshell/gshell-ui.xml.h:34
 msgid "_Help on GNOME"
-msgstr ""
+msgstr "A_yuda sobre GNOME"
 
 #: gshell/gshell-ui.xml.h:35
 msgid "_Kill"
-msgstr ""
+msgstr "_Matar"
 
 #: gshell/gshell-ui.xml.h:36
 msgid "_Load..."
-msgstr ""
+msgstr "_Cargar..."
 
 #: gshell/gshell-ui.xml.h:37
 msgid "_One Window"
-msgstr ""
+msgstr "_Una Ventana"
 
 #: gshell/gshell-ui.xml.h:38
 msgid "_Open..."
-msgstr ""
+msgstr "_Abrir..."
 
 #: gshell/gshell-ui.xml.h:39
 msgid "_Preferences..."
-msgstr ""
+msgstr "_Preferencias..."
 
 #: gshell/gshell-ui.xml.h:40
 msgid "_Print"
-msgstr ""
+msgstr "_Imprimir"
 
 #: gshell/gshell-ui.xml.h:41
-#, fuzzy
 msgid "_Save"
-msgstr "Juego"
+msgstr "_Guardar"
 
 #: gshell/gshell-ui.xml.h:42
 msgid "_Settings"
-msgstr ""
+msgstr "_Configuraciones"
 
 #: gshell/gshell-ui.xml.h:43
 msgid "_Split Window"
-msgstr ""
+msgstr "_Dividir Ventana"
 
 #: gshell/gshell-ui.xml.h:44
 msgid "_Window"
-msgstr ""
+msgstr "_Ventana"
 
 #: gshell/gshell-ui.xml.h:45
 msgid "_Zoom"
-msgstr ""
+msgstr "_Zoom"
 
 #: gshell/gshell.c:46
 msgid ""
@@ -558,19 +535,23 @@ msgid ""
 "under the conditions of the GNU General Public License. Please report bugs "
 "to dietmar@maurer-it.com"
 msgstr ""
+"Este programa es parte del proyecto GNOME. Gnome Shell viene ABSOLUTAMENTE "
+"SIN GARANTÍAS. Esto es software libre, y puede redistribuirlo bajo las "
+"condiciones de la Licencia Pública General GNU. Por favor, informe de "
+"errores a dietmar@maurer-it.com"
 
 #: gshell/gshell.c:89
 msgid "fatal CORBA exception!  Shutting down..."
-msgstr ""
+msgstr "¡excepción fatal de CORBA!  Apagando..."
 
 #: gshell/gshell.c:162
 #, c-format
 msgid "New zoom level is %.3g."
-msgstr ""
+msgstr "Nuevo nivel de zoom es %.3g."
 
 #: gshell/gshell.c:596
 msgid "Set zoom level:"
-msgstr ""
+msgstr "Fijar nivel de zoom:"
 
 #: gshell/gshell.c:652
 msgid "Could not initialize Bonobo!"
@@ -581,103 +562,101 @@ msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistFile"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban guardar datos del componente "
+"con PersistFile"
 
 #: gshell/inout.c:115
-#, fuzzy, c-format
+#, c-format
 msgid "Could not save file %s"
-msgstr "No se pudo inicializar Bonobo"
+msgstr "No se pudo guardar el archivo %s"
 
 #: gshell/inout.c:151
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStream"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban guardar datos del componente "
+"con PersistStream"
 
 #: gshell/inout.c:364
-#, fuzzy
 msgid "Open"
-msgstr "_Nuevo Juego"
+msgstr "Abrir"
 
 #: gshell/inout.c:393 gshell/inout.c:450
-#, fuzzy
 msgid "Launch component"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Lanzar componente"
 
 #: gshell/inout.c:553
-#, fuzzy
 msgid "Load"
-msgstr "Local"
+msgstr "Cargar"
 
 #: gshell/inout.c:604
-#, fuzzy
 msgid "Save As"
-msgstr "Juego"
+msgstr "Guardar Como"
 
 #: gshell/properties.c:152
 msgid "Component has no editable properties"
-msgstr ""
+msgstr "El componente no tiene propiedades editables"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
 msgid "Gunzip Moniker factory"
-msgstr ""
+msgstr "Fábrica de Monikers Gunzip"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
 msgid "gunzip Moniker"
-msgstr ""
+msgstr "Moniker gunzip"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
 msgid "HTTP Moniker"
-msgstr ""
+msgstr "Moniker HTTP"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Fábrica de Monikers estándar"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "archivo MonikerExtender"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr ""
+msgstr "moniker de activación de Oaf genérico"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr ""
+msgstr "moniker de petición de Oaf genérica"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr ""
+msgstr "moniker de 'nueva' fábrica genérica"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
 msgid "generic file moniker"
-msgstr ""
+msgstr "moniker de archivo genérico"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
 msgid "generic item moniker"
-msgstr ""
+msgstr "moniker de elemento genérico"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
 msgid "stream MonikerExtender"
-msgstr ""
+msgstr "stream MonikerExtender"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "fábrica de servidores de Echo de Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Programa de ejemplo de servidor de Echo de Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
-#, fuzzy
 msgid "Echo component"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Componente Echo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
-#, fuzzy
 msgid "Echo component factory"
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "Fábrica de componentes Echo"
 
 #: samples/bonobo-class/echo-client.c:30
 msgid "I could not initialize Bonobo"
@@ -685,40 +664,44 @@ msgstr "No se pudo inicializar Bonobo"
 
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
-msgstr ""
+msgstr "¡El componente ahora se queja de que no permite PersistStream!"
 
 #: samples/compound-doc/container/container-filesel.c:18
 msgid "Select file"
-msgstr ""
+msgstr "Seleccionar archivo"
 
 #: samples/compound-doc/container/container-menu.c:18
 msgid "Select an embeddable Bonobo component to add"
-msgstr ""
+msgstr "Seleccionar una componente de Bonobo empotrable para añadir"
 
 #: samples/compound-doc/container/container-menu.c:100
 msgid "Bonobo sample container"
-msgstr ""
+msgstr "Contenedor de ejemplo de Bonobo"
 
 #: samples/compound-doc/container/container.c:45
 msgid "Sample Bonobo container"
-msgstr ""
+msgstr "Contenedor de Bonobo de Ejemplo"
 
 #: samples/compound-doc/container/container.c:113
-#, fuzzy, c-format
+#, c-format
 msgid "Could not launch Embeddable %s!"
-msgstr "No se pudo lanzar el Embeddable."
+msgstr "¡No se pudo lanzar el Empotrable %s!"
 
 #: samples/compound-doc/container/embeddable-io.c:36
 msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStorage"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban cargar datos en el componente "
+"con PersistStorage"
 
 #: samples/compound-doc/container/embeddable-io.c:67
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStorage"
 msgstr ""
+"Ocurrió una excepción mientras se intentaban guardar datos desde el "
+"componente con PersistStorage"
 
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
@@ -733,9 +716,8 @@ msgid "Can not bind object server to client_site"
 msgstr "No se pudo asociar el servidor de objetos con el client_site"
 
 #: tests/test-container.c:269
-#, fuzzy
 msgid "Can not activate server"
-msgstr "No se pudo activar el object_server"
+msgstr "No se puede activar el servidor"
 
 #: tests/test-container.c:319 tests/test-container.c:364
 msgid "Could not launch bonobo object."
@@ -743,281 +725,12 @@ msgstr "No se pudo lanzar el objeto de bonobo."
 
 #: tests/test-container.c:562
 msgid "Could not launch Embeddable."
-msgstr "No se pudo lanzar el Embeddable."
+msgstr "No se pudo lanzar el Empotrable."
 
 #: tests/test-container.c:596
-#, fuzzy
 msgid "Could not launch Control."
-msgstr "No se pudo lanzar el objeto de bonobo."
+msgstr "No se pudo lanzar el Control."
 
 #: tests/test-container.c:848 tests/test-storage.c:489
 msgid "Can not bonobo_init"
 msgstr "No se pudo hacer bonobo_init"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "No se pudo inicializar Bonobo"
-
-#~ msgid "Select drawing color..."
-#~ msgstr "Seleccione color para dibujar..."
-
-#~ msgid "Set the current drawing color"
-#~ msgstr "Fijar el color para dibujar actual"
-
-#~ msgid "White"
-#~ msgstr "Blanco"
-
-#~ msgid "Set the current drawing color to white"
-#~ msgstr "Fijar el color actual para dibujar a blanco"
-
-#~ msgid "Red"
-#~ msgstr "Rojo"
-
-#~ msgid "Set the current drawing color to red"
-#~ msgstr "Fijar el color actual para dibujar a rojo"
-
-#~ msgid "Green"
-#~ msgstr "Verde"
-
-#~ msgid "Set the current drawing color to green"
-#~ msgstr "Fijar el color actual para dibujar a verde"
-
-#~ msgid "Tiny"
-#~ msgstr "Chico"
-
-#~ msgid "Medium"
-#~ msgstr "Mediano"
-
-#~ msgid "Biiiig"
-#~ msgstr "Graaande"
-
-#~ msgid "Custom"
-#~ msgstr "Personalizado"
-
-#~ msgid "Gnome Mines"
-#~ msgstr "Gnome Minas"
-
-#~ msgid "Code: Pista"
-#~ msgstr "Código: Pista"
-
-#~ msgid "Faces: tigert"
-#~ msgstr "Dibujos: tigert"
-
-#~ msgid "Score: HoraPe"
-#~ msgstr "Puntuaciones: HoraPe"
-
-#~ msgid "(C) 1997-1999 the Free Software Foundation"
-#~ msgstr "© 1997-1999 la Free Software Foundation"
-
-#~ msgid "Minesweeper clone"
-#~ msgstr "Desminador"
-
-#~ msgid "Game"
-#~ msgstr "Juego"
-
-#~ msgid "Field size"
-#~ msgstr "Tamaño del tablero"
-
-#~ msgid "Horizontal:"
-#~ msgstr "Horizontal:"
-
-#~ msgid "Vertical:"
-#~ msgstr "Vertical:"
-
-#~ msgid "Number of mines:"
-#~ msgstr "Cantidad de minas:"
-
-#~ msgid "Mine size:"
-#~ msgstr "Tamaño mina:"
-
-#~ msgid "Gnome Mine Preferences"
-#~ msgstr "Preferencias de Gnome Minas"
-
-#~ msgid "Width of grid"
-#~ msgstr "Ancho del tablero"
-
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "Height of grid"
-#~ msgstr "Alto del tablero"
-
-#~ msgid "Y"
-#~ msgstr "Y"
-
-#~ msgid "Size of mines"
-#~ msgstr "Tamaño de las minas"
-
-#~ msgid "SIZE"
-#~ msgstr "TAMAÑO"
-
-#~ msgid "Number of mines"
-#~ msgstr "Cantidad de minas"
-
-#~ msgid "NUMBER"
-#~ msgstr "CANTIDAD"
-
-#~ msgid "Flags:"
-#~ msgstr "Banderas:"
-
-#~ msgid "Time:"
-#~ msgstr "Tiempo:"
-
-#~ msgid "Change the game"
-#~ msgstr "Cambiar el juego"
-
-#~ msgid "_Send progressive data to an existing text\\plain component"
-#~ msgstr "_Enviar datos progresivos a un componente text\\plain existente"
-
-#~ msgid "Add a new _view to an existing text\\plain component"
-#~ msgstr "Añadir una nueva _vista a un componente text\\plain existente"
-
-#~ msgid "_Add a new simple paint component"
-#~ msgstr "_Añadir un nuevo componente paint simple"
-
-#~ msgid "Add a new _view to an existing paint component"
-#~ msgstr "Añadir una nueva _vista a un componente paint existente"
-
-#~ msgid "_Add a new application\\x-png component"
-#~ msgstr "_Añadir un nuevo componente application\\x-png"
-
-#~ msgid "Add a new _view to an existing application\\x-png component"
-#~ msgstr ""
-#~ "Añadir una nueva _vista a un componente application\\x-png existente"
-
-#~ msgid "_Add a new application\\x-pdf component"
-#~ msgstr "_Añadir un nuevo componente application\\x-pdf"
-
-#~ msgid "Add a new Gnumeric instance through monikers"
-#~ msgstr "Añadir una nueva instancia Gnumeric a través de monikers"
-
-#~ msgid "Add a new _object"
-#~ msgstr "Añadir un nuevo _objeto"
-
-#~ msgid "Add a new Sample-Canvas item on an AA canvas"
-#~ msgstr "Añadir un nuevo elemento Sample-Canvas ta un canvas AA"
-
-#~ msgid "Add a new Sample-Canvas item on a regular canvas"
-#~ msgstr "Añadir un nuevo elemento Sample-Canvas a un canvas regular"
-
-#~ msgid "_text\\plain"
-#~ msgstr "_text\\plain"
-
-#~ msgid "_image\\x-png"
-#~ msgstr "_image\\x-png"
-
-#~ msgid "_app\\x-pdf"
-#~ msgstr "_app\\x-pdf"
-
-#~ msgid "paint sample"
-#~ msgstr "paint sample"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Canvas-based"
-#~ msgstr "Canvas-based"
-
-#~ msgid "Clear the image to black"
-#~ msgstr "Borrar la imagen con negro"
-
-#~ msgid "Registration browser"
-#~ msgstr "Registro de navegador"
-
-#~ msgid "Name service browser"
-#~ msgstr "Navegador de servicio de nombres"
-
-#~ msgid "IDL browser"
-#~ msgstr "Navegador IDL"
-
-#~ msgid "BonoBrowser"
-#~ msgstr "BonoBrowser"
-
-#~ msgid "file selection dialog"
-#~ msgstr "Diálogo de selección de archivo"
-
-#~ msgid "identifier"
-#~ msgstr "identificador"
-
-#~ msgid "kind"
-#~ msgstr "tipo"
-
-#~ msgid "Refresh"
-#~ msgstr "Actualizar"
-
-#~ msgid "server id"
-#~ msgstr "id servidor"
-
-#~ msgid "location info"
-#~ msgstr "info localización"
-
-#~ msgid "repo ids"
-#~ msgstr "ids repo"
-
-#~ msgid "Register new object..."
-#~ msgstr "Registrar objeto nuevo..."
-
-#~ msgid "Interface"
-#~ msgstr "Interfaz"
-
-#~ msgid "Activation Type"
-#~ msgstr "Tipo de Activación"
-
-#~ msgid "Please fill in the creation type."
-#~ msgstr "Por favor, rellene el tipo de creación."
-
-#~ msgid "Please fill in the creation method."
-#~ msgstr "Por favor, rellene el método de creación."
-
-#~ msgid "The server_id is empty."
-#~ msgstr "El server_id está vacío"
-
-#~ msgid "Can't open file %s for writing: %s"
-#~ msgstr "No se puede abrir el archivo %s para escritura: %s"
-
-#~ msgid "The file %s already exists!"
-#~ msgstr "¡El archivo %s ya existe!"
-
-#~ msgid "New"
-#~ msgstr "Nuevo"
-
-#~ msgid "Add"
-#~ msgstr "Añadir"
-
-#~ msgid "factory"
-#~ msgstr "fábrica"
-
-#~ msgid "exe"
-#~ msgstr "exe"
-
-#~ msgid "shlib"
-#~ msgstr "shlib"
-
-#~ msgid "Browse"
-#~ msgstr "Navegar"
-
-#~ msgid "New Object"
-#~ msgstr "Objeto Nuevo"
-
-#~ msgid "Interface(s)"
-#~ msgstr "Interfaz(ces)"
-
-#~ msgid "Server ID"
-#~ msgstr "ID Servidor"
-
-#~ msgid "Creation method"
-#~ msgstr "Método de creación"
-
-#~ msgid "Description:"
-#~ msgstr "Descripción:"
-
-#~ msgid "Register this object"
-#~ msgstr "Registrar este objeto"
-
-#~ msgid "OK"
-#~ msgstr "Aceptar"
-
-#~ msgid "path to menu or toolbar item not found"
-#~ msgstr "camino al elemento de menú o barra de herramientas no encontrado"
-
-#~ msgid "internal menu or toolbar exception"
-#~ msgstr "excepción interna del menú o barra de herramientas"

@@ -279,13 +279,28 @@ cmd_get_menu_pixmap (BonoboUINode     *node,
 	return NULL;
 }
 
+/*
+ * The second parameter uses underscores to escape keyboard
+ * shortcuts. We ignore the first underscore, but if there
+ * are two in a row, they are treated as if there was one.
+ */
 static gboolean
 str_uscore_equal (const char *plain, const char *scored)
 {
-	while (*plain && *scored) {
-		if (*scored == '_')
+	while (*plain || *scored) {
+		if (*scored == '_') {
 			scored++;
-		else if (*scored != *plain)
+
+			/*
+			 * Must check for badly formed string
+			 * (ending with single underscore)
+			 * or risk reading off end.
+			 */
+			if (!*scored)
+				return FALSE;
+		}
+
+		if (*scored != *plain)
 			return FALSE;
 		else {
 			scored++;

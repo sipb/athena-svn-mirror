@@ -28,7 +28,7 @@ module Bonobo {
 		 * start:
 		 *
 		 * This method signals that a new transmission of data
-		 * is coming in.  It must be called before add_data
+		 * is coming in.  It must be called before addData
 		 * can be used.
 		 */
 		void start ();
@@ -43,6 +43,7 @@ module Bonobo {
 
 		/**
 		 * addData:
+		 * @buffer:
 		 *
 		 * As each chunk of data comes in, this method is
 		 * called with a CORBA sequence buffer, which
@@ -52,6 +53,7 @@ module Bonobo {
 
 		/**
 		 * setSize:
+		 * @count:
 		 *
 		 * This method notifies a component of the total size
 		 * of the incoming data.  It can be called at any

@@ -1,6 +1,6 @@
 # Note this is NOT a relocatable thing :)
 %define name		bonobo
-%define ver		0.36
+%define ver		0.37
 %define RELEASE		pre
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr

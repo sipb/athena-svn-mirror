@@ -33,7 +33,7 @@ module Bonobo {
 		exception UnknownListener {};
   
   		/**
- 		 * add_listener: Adds a listener to all events being
+ 		 * addListener: Adds a listener to all events being
  		 * emitted by this object.
   		 * @l: the listener implementation.
 		 *
@@ -43,10 +43,10 @@ module Bonobo {
  		ListenerId addListener (in Listener l);
   		
   		/**
- 		 * add_listener: Adds a listener to certain events
+ 		 * addListenerWithMask: Adds a listener to certain events
  		 * emitted by this object.
  		 * @l: the listener implementation.
- 		 * @mask: a comma-separated list of event names this listener 
+ 		 * @event_mask: a comma-separated list of event names this listener 
 		 * is interested in recieving. If this listener is already 
  		 * receiving events from this EventSource, only the 
  		 * events listed here will be delivered.
@@ -58,7 +58,7 @@ module Bonobo {
 						in string   event_mask);
  
  		/**
-  		 * remove_listener: Removes a listener
+  		 * removeListener: Removes a listener
   		 * @id: the listener Id
   		 */
  		void removeListener (in ListenerId id)

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.19\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
 "PO-Revision-Date: 2000-09-20 20:05+0200\n"
 "Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "_Priority text only"
 msgstr ""
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr ""
 

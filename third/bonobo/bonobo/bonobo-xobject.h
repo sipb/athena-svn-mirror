@@ -94,6 +94,11 @@ GtkType        bonobo_x_type_unique            (GtkType            parent_type,
 						int                epv_struct_offset,
 						const GtkTypeInfo *info);
 
+gboolean       bonobo_x_type_setup             (GtkType            type,
+						BonoboXObjectPOAFn init_fn,
+						BonoboXObjectPOAFn fini_fn,
+						int                epv_struct_offset);
+						
 
 #define BONOBO_X_TYPE_FUNC_FULL(class_name, corba_name, parent, prefix)     \
 GtkType                                                                       \

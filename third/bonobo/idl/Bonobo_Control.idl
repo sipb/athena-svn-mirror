@@ -37,8 +37,8 @@ interface ControlFrame : Bonobo::Unknown {
 	 * queueResize:
 	 *
 	 * Tell the container that the Control would like to be
-	 * resized.  It should follow-up by calling
-	 * Control:size_request()
+	 * resized.  The container should follow-up by calling
+	 * Control::setSize ()
 	 *
 	 */
 	void queueResize ();
@@ -101,7 +101,7 @@ interface Control : Bonobo::Unknown {
 	 * @id: An X Window ID.
 	 *
 	 *   Sets the window ID that should be used for the plug
-	 * of this window, the id encoding is is described above.
+	 * of this window, the id encoding is as described above.
 	 */
 	void setWindowId (in windowId id);
 

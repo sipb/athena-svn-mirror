@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
-"PO-Revision-Date: 2001-02-02 19:31+03:00\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"PO-Revision-Date: 2001-02-12 13:53+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgstr "Текст и пиктограмма"
 msgid "_Priority text only"
 msgstr "Приоритет только текста"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Настроить интерфейс"
 
@@ -233,7 +233,7 @@ msgstr ""
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
 msgid "bonobo GnoMines object"
-msgstr ""
+msgstr "bonobo объект GnoMines"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
 msgid "bonobo GnoMines object factory"
@@ -661,7 +661,7 @@ msgstr "Не удалось инициализировать Bonobo"
 
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
-msgstr ""
+msgstr "Компонент объявляет, что он не поддерживает PersistStream!"
 
 #: samples/compound-doc/container/container-filesel.c:18
 msgid "Select file"

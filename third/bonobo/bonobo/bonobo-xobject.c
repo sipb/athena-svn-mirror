@@ -31,8 +31,8 @@ extern void bonobo_object_epv_init (POA_Bonobo_Unknown__epv *epv);
 	guchar is_pseudo_object;
 	gint refs;
 */
-#define BONOBO_X_GTK_OBJ_FLAG_PATTERN 0x8000
 #define BONOBO_X_GTK_FLAG_PATTERN    (GTK_FLOATING | 0x4000)
+#define BONOBO_X_SERVANT_FLAG_PATTERN 0x7132
 
 static GtkObjectClass *x_object_parent_class;
 
@@ -173,6 +173,7 @@ do_corba_hacks (BonoboXObject      *object,
 	object->servant.servant_placeholder._private = NULL;
 	object->servant.servant_placeholder.vepv     = klass->vepv;
 	object->servant.bonobo_object                = (BonoboObject *) object;
+	object->flags                                = BONOBO_X_SERVANT_FLAG_PATTERN;
 
 	/* Initialize the servant structure with our POA__init fn */
 	for (xklass = klass; xklass && !xklass->poa_init_fn;)
@@ -289,11 +290,11 @@ bonobo_x_object_get_type (void)
 	return type;
 }
 
-static gboolean
-setup_type (GtkType            type,
-	    BonoboXObjectPOAFn init_fn,
-	    BonoboXObjectPOAFn fini_fn,
-	    int                epv_struct_offset)
+gboolean
+bonobo_x_type_setup (GtkType            type,
+		     BonoboXObjectPOAFn init_fn,
+		     BonoboXObjectPOAFn fini_fn,
+		     int                epv_struct_offset)
 {
 	GtkType       p, b_type;
 	int           depth;
@@ -382,8 +383,8 @@ bonobo_x_type_unique (GtkType            parent_type,
 	if (!type)
 		return 0;
 
-	if (setup_type (type, init_fn, fini_fn,
-			epv_struct_offset))
+	if (bonobo_x_type_setup (type, init_fn, fini_fn,
+				 epv_struct_offset))
 		return type;
 	else
 		return 0;
@@ -392,10 +393,23 @@ bonobo_x_type_unique (GtkType            parent_type,
 BonoboXObject *
 bonobo_x_object (gpointer p)
 {
+	GtkObject     *obj;
+	BonoboXObject *xobj;
+	
+
 	if (!p)
 		return NULL;
 
-	/* ... do clever stuff here */
+	if (((obj = p)->flags & BONOBO_X_GTK_FLAG_PATTERN) ==
+	    BONOBO_X_GTK_FLAG_PATTERN)
+		return BONOBO_X_OBJECT (p);
 
-	return NULL;
+	else if ((xobj = BONOBO_X_SERVANT_GET_OBJECT (p))->flags ==
+		 BONOBO_X_SERVANT_FLAG_PATTERN)
+		return xobj;
+
+	else { /* Dodgy indeed */
+		g_warning ("Untested, unsafe code path");
+		return BONOBO_X_CORBA_GET_OBJECT (p);
+	}
 }

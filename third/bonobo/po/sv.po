@@ -6,13 +6,13 @@
 # Christian Rose <menthos@menthos.com>, 2000.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.2 2001-02-11 17:56:01 ghudson Exp $
+# $Id: sv.po,v 1.1.1.3 2001-03-19 18:25:15 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Bonobo\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
-"PO-Revision-Date: 2000-12-22 00:05+0100\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"PO-Revision-Date: 2001-02-12 02:44+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,97 +21,92 @@ msgstr ""
 
 #: bonobo/bonobo-ui-config-widget.c:235
 msgid "Visible"
-msgstr ""
+msgstr "Synlig"
 
 #: bonobo/bonobo-ui-config-widget.c:243
 msgid "_Show"
-msgstr ""
+msgstr "_Visa"
 
 #: bonobo/bonobo-ui-config-widget.c:253
-#, fuzzy
 msgid "_Hide"
-msgstr "_Arkiv"
+msgstr "_Göm"
 
 #: bonobo/bonobo-ui-config-widget.c:263
 msgid "_View tooltips"
-msgstr ""
+msgstr "_Visa verktygstips"
 
 #: bonobo/bonobo-ui-config-widget.c:270
 msgid "Toolbars"
-msgstr ""
+msgstr "Verktygsrader"
 
 #: bonobo/bonobo-ui-config-widget.c:280
 msgid "Look"
-msgstr ""
+msgstr "Utseende"
 
 #: bonobo/bonobo-ui-config-widget.c:290 bonobo/bonobo-ui-sync-toolbar.c:540
 msgid "_Icon"
-msgstr ""
+msgstr "_Ikon"
 
 #: bonobo/bonobo-ui-config-widget.c:300
 msgid "_Text and Icon"
-msgstr ""
+msgstr "_Text och ikon"
 
 #: bonobo/bonobo-ui-config-widget.c:310
 msgid "_Priority text only"
-msgstr ""
+msgstr "_Endast prioritetstext"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
-msgstr ""
+msgstr "Konfigurera användargränssnitt"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:539
 msgid "B_oth"
-msgstr ""
+msgstr "B_åda"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:541
-#, fuzzy
 msgid "T_ext"
-msgstr "_Avsluta"
+msgstr "Te_xt"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:542
 msgid "Hide t_ips"
-msgstr ""
+msgstr "Göm t_ips"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:542
 msgid "Show t_ips"
-msgstr ""
+msgstr "Visa t_ips"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:543
 msgid "_Hide toolbar"
-msgstr ""
+msgstr "_Göm verktygsrad"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:544
-#, fuzzy
 msgid "Customi_ze"
-msgstr "Egen storlek"
+msgstr "Anpa_ssa"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:544
 msgid "Customize the toolbar"
-msgstr ""
+msgstr "Anpassa verktygsraden"
 
 #. -lefence
 #: monikers/moniker-test.c:237
 msgid "Oaf options"
-msgstr ""
+msgstr "Oaf-alternativ"
 
 #: samples/compound-doc/container/container.c:277 tests/test-ui.c:228
 msgid "Could not initialize Bonobo!\n"
 msgstr "Kunde inte initiera Bonobo!\n"
 
 #: bonobo/bonobo-exception.c:129
-#, fuzzy
 msgid "An unsupported action was attempted"
-msgstr "Ett försök gjordes med en flödesåtgärd som inte stöds"
+msgstr "Ett försök gjordes med en åtgärd som inte stöds"
 
 #: bonobo/bonobo-exception.c:132
-#, fuzzy
 msgid "IO Error"
-msgstr "IO-fel på flöde"
+msgstr "IO-fel"
 
 #: bonobo/bonobo-exception.c:135
 msgid "Invalid argument value"
-msgstr ""
+msgstr "Ogiltigt argumentvärde"
 
 #: bonobo/bonobo-exception.c:139
 msgid "Object not found"
@@ -237,20 +232,19 @@ msgstr "Beskrivning"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:1
 msgid "GnoMines control"
-msgstr ""
+msgstr "GnoMines-kontroll"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:2
 msgid "GnoMines control factory"
-msgstr ""
+msgstr "GnoMines-kontrollfabrik"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:3
 msgid "bonobo GnoMines object"
-msgstr ""
+msgstr "GnoMines-bonoboobjekt"
 
 #: components/application-x-gnomine/Bonobo_Sample_Mines.oaf.in.h:4
-#, fuzzy
 msgid "bonobo GnoMines object factory"
-msgstr "Kan inte aktivera objektet från fabriken"
+msgstr "GnoMines-bonoboobjektfabrik"
 
 #: components/application-x-gnomine/bonobo-application-x-mines-ui.xml.h:1
 msgid "Load a saved game"
@@ -274,64 +268,59 @@ msgstr "_Spel"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:1
 msgid "Waveform"
-msgstr ""
+msgstr "Vågform"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:2
-#, fuzzy
 msgid "Waveform component"
-msgstr "Starta komponent"
+msgstr "Vågformskomponent"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:3
 msgid "Waveform component factory"
-msgstr ""
+msgstr "Vågformskomponentfabrik"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:4
-#, fuzzy
 msgid "audio/ulaw bonobo object"
-msgstr "Kunde inte starta bonono-objektet."
+msgstr "ljud-/ulawbonoboobjekt"
 
 #: components/audio-ulaw/Bonobo_Sample_Audio.oaf.in.h:5
-#, fuzzy
 msgid "audio/ulaw bonobo object factory"
-msgstr "Kunde inte starta bonono-objektet."
+msgstr "ljud-/ulawbonoboobjektfabrik"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:1
 msgid "Component Selector"
-msgstr ""
+msgstr "Komponentväljare"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:2
 msgid "Component Selector factory"
-msgstr ""
+msgstr "Komponentväljarfabrik"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:3
 msgid "Component selector control"
-msgstr ""
+msgstr "Komponentväljarkontroll"
 
 #: components/selector/Bonobo_Selector.oaf.in.h:4
 msgid "component selector control factory"
-msgstr ""
+msgstr "komponentväljarkontrollfabrik"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:1
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:2
-#, fuzzy
 msgid "Text component"
-msgstr "Starta komponent"
+msgstr "Textkomponent"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:3
 msgid "Text component factory"
-msgstr ""
+msgstr "Textkomponentfabrik"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:4
-#, fuzzy
 msgid "text/plain component"
-msgstr "Starta komponent"
+msgstr "textkomponent"
 
 #: components/text-plain/Bonobo_Sample_Text.oaf.in.h:5
 msgid "text/plain embeddable factory"
-msgstr ""
+msgstr "fabrik för inbyggbar text"
 
 #: components/text-plain/bonobo-text-plain.c:338
 msgid "_Clear Text"
@@ -615,65 +604,63 @@ msgstr "Komponenten har inga redigerbara egenskaper"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
 msgid "Gunzip Moniker factory"
-msgstr ""
+msgstr "Gunzip-monikerfabrik"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
 msgid "gunzip Moniker"
-msgstr ""
+msgstr "gunzip-moniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
 msgid "HTTP Moniker"
-msgstr ""
+msgstr "HTTP-moniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Standardmonikerfabrik"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "filmonikerutökare"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr ""
+msgstr "allmän Oaf-aktiveringsmoniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr ""
+msgstr "allmän Oaf-frågemoniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr ""
+msgstr "allmän ny fabrikmoniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
 msgid "generic file moniker"
-msgstr ""
+msgstr "allmän filmoniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
 msgid "generic item moniker"
-msgstr ""
+msgstr "allmän objektmoniker"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
 msgid "stream MonikerExtender"
-msgstr ""
+msgstr "strömmonikerutökare"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "Bonobo-ekoserverfabrik"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Bonobo-ekoservertestprogram"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
-#, fuzzy
 msgid "Echo component"
-msgstr "Starta komponent"
+msgstr "Ekokomponent"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
-#, fuzzy
 msgid "Echo component factory"
-msgstr "Starta komponent"
+msgstr "Ekokomponentfabrik"
 
 #: samples/bonobo-class/echo-client.c:30
 msgid "I could not initialize Bonobo"
@@ -738,7 +725,7 @@ msgstr "Kan inte aktivera server"
 
 #: tests/test-container.c:319 tests/test-container.c:364
 msgid "Could not launch bonobo object."
-msgstr "Kunde inte starta bonono-objektet."
+msgstr "Kunde inte starta bonobo-objektet."
 
 #: tests/test-container.c:562
 msgid "Could not launch Embeddable."

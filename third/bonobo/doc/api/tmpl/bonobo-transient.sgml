@@ -24,7 +24,7 @@ Creates a server that will handle transient objects.
 <para>
    For example, consider the case in which a large list of objects
    needs to be returned to a client application.  For example, an
-   object reference could returned for every file on a directory.
+   object reference could be returned for every file on a directory.
    But it would be wasteful to keep one server running for each file.
    And given that the program has all the information available to
    create the servers on demand, you want to use this system.
@@ -107,7 +107,7 @@ create_servant (PortableServer_POA  poa,
         servant = g_new0 (MyServant, 1);
         servant->vepv = my_servant_get_epv ();
         servant->my_data = g_strdup ("Hello world!");
-        POA_My_Iface__init ((PortableServer_Servant) servant, &ev);
+        POA_My_Iface__init ((PortableServer_Servant) servant, &amp;ev);
         return servant;
 }
 
@@ -117,9 +117,9 @@ destroy_servant (PortableServer_Servant servant, void *my_callback_data)
         CORBA_Environment ev;
 
         g_free (servant->my_data);
-        CORBA_exception_init (&ev);
-        POA_My_Iface__fini (servant, &ev);
-        CORBA_exception_free (&ev);
+        CORBA_exception_init (&amp;ev);
+        POA_My_Iface__fini (servant, &amp;ev);
+        CORBA_exception_free (&amp;ev);
 }
 
 CORBA_Object

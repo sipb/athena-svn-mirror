@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-canvas-component" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-canvas-component" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboCanvasComponent</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -48,10 +48,10 @@ void        <link linkend="bonobo-canvas-component-set-proxy">bonobo_canvas_comp
 <refsect1>
 <title>Description</title>
 <para>
-  The BonoboCanvasComponent objects are used to wrap a GnomeCanvasItems
-  and export them to a container application.  Typically the
+  The BonoboCanvasComponent objects are used to wrap GnomeCanvasItems
+  and export them to container applications.  Typically the
   <link linkend="bonobo-component-canvas-new">bonobo_component_canvas_new</link>() function will be invoked in a callback
-  from a BonoboEmbeddable object.  Like this:
+  from a BonoboEmbeddable object.
 </para>
 
 <para>
@@ -62,7 +62,7 @@ void        <link linkend="bonobo-canvas-component-set-proxy">bonobo_canvas_comp
     <programlisting>
 
 /*
- * Here is where the GnomeCanvasItem (in this case an ellipse
+ * Here is where the GnomeCanvasItem (in this case an ellipse)
  * is created and wrapped in a BonoboCanvasComponent.
  *
  * This function is invoked on demand on the embeddable

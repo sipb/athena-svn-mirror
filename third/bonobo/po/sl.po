@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.13\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
 "PO-Revision-Date: 2000-05-14 20:32+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=iso8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-ui-config-widget.c:235
@@ -49,7 +49,7 @@ msgstr "_Besedilo in ikone"
 msgid "_Priority text only"
 msgstr "Le _prednostno besedilo"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Nastavi uporabni¹ki vmesnik"
 
