@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpstat.c,v 1.1.1.2 1999-05-24 18:29:21 danw Exp $";
+"$Id: lpstat.c,v 1.1.1.2.4.1 2000-02-23 20:01:48 tb Exp $";
 
 
 /***************************************************************************
@@ -93,6 +93,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 
 	/*
 	 * set up the user state
