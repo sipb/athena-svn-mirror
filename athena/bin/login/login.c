@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.68 1994-04-30 13:28:12 vrt Exp $
+ * $Id: login.c,v 1.69 1994-05-24 15:58:26 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.68 1994-04-30 13:28:12 vrt Exp $";
+static char *rcsid = "$Id: login.c,v 1.69 1994-05-24 15:58:26 cfields Exp $";
 #endif
 
 /*
@@ -104,9 +104,7 @@ typedef struct in_addr inaddr_t;
 typedef int sigtype;
 #endif
 
-#ifndef SOLARIS
 #define SETPAG
-#endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
