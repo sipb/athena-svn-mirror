@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.4 1993-07-21 17:43:50 vrt Exp $
+# $Id: cshrc,v 1.5 1993-08-04 13:07:27 vrt Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -20,9 +20,10 @@ set athena_path=( /usr/athena/bin /bin/athena /usr/openwin/bin \
 # be included in actual searchpath as ~/$bindir -- e.g., ~/vaxbin):
 set hosttype=sun4
 set bindir=${hosttype}bin
+/usr/bin/stty erase  >& /dev/null
 
 # Set standard path of directories for man command to search:
-set athena_manpath=/usr/athena/man:/usr/man:/usr/openwin/man
+set athena_manpath=/usr/openwin/man:/usr/athena/man:/usr/man
 
 
 # Set up standard system/user environment configuration (including setup of
