@@ -1,3 +1,32 @@
+Version 0.10.1 "Dance the ghost with me but don't step on my toes"
+------------------------------------------------------------------
+
+* Fixed thinko in color parsing routines (John).
+
+Version 0.10.0 "Dance the ghost with me"
+----------------------------------------
+
+* New XBM file loader (John).
+
+* We now have our own poor man's implementation of XParseColor() so
+  that the XPM loader can work for both GdK and Xlib (John).
+
+* Completely re-written PNM loader (Jeff, Pavel, Frédéric).
+
+* Memory leak fixes for the PNG loader (Iain).
+
+* Fixes to gdk-pixbuf.m4 (Mathieu).
+
+* Updates for the new gdk_image_get() API return value (Ramiro).
+
+* Offset computation fixes for the compositing functions (Larry,
+  Mitsuru, Helmethead, Federico).
+
+* Compositing fixes for greater accuracy (Federico).
+
+* Fixed the GDK_PIXBUF_LIBS output so that image libraries are not
+  linked with programs that use gdk-pixbuf (Miguel).
+
 Version 0.9.0
 -------------
 

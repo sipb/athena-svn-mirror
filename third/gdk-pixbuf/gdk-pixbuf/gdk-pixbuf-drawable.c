@@ -1073,7 +1073,8 @@ rgbconvert (GdkImage *image, guchar *pixels, int rowstride, int alpha, GdkColorm
  * Return value: The same pixbuf as @dest if it was non-NULL, or a newly-created
  * pixbuf with a reference count of 1 if no destination pixbuf was specified; in
  * the latter case, NULL will be returned if not enough memory could be
- * allocated for the pixbuf to be created.
+ * allocated for the pixbuf to be created or if the image data could not be
+ * retrieved from the drawable.
  **/
 GdkPixbuf *
 gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
@@ -1146,7 +1147,8 @@ gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
 
 	/* Get Image in ZPixmap format (packed bits). */
 	image = gdk_image_get (src, src_x, src_y, width, height);
-	g_return_val_if_fail (image != NULL, NULL);
+	if (!image)
+		return NULL;
 
 	/* Create the pixbuf if needed */
 	if (!dest) {

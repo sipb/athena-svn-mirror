@@ -23,9 +23,6 @@
 #include "gdk-pixbuf-private.h"
 #include "gdk-pixbuf-xlib-private.h"
 
-Display *gdk_pixbuf_dpy;
-int gdk_pixbuf_screen;
-
 /**
  * gdk_pixbuf_xlib_init:
  * @display: X display to use.

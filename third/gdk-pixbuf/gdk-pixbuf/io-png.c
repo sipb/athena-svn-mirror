@@ -1,4 +1,4 @@
-/* GdkPixbuf library - JPEG image loader
+/* GdkPixbuf library - PNG image loader
  *
  * Copyright (C) 1999 Mark Crichton
  * Copyright (C) 1999 The Free Software Foundation
@@ -347,7 +347,7 @@ gdk_pixbuf__png_image_stop_load (gpointer context)
 
         gdk_pixbuf_unref(lc->pixbuf);
         
-        png_destroy_read_struct(&lc->png_read_ptr, NULL, NULL);
+        png_destroy_read_struct(&lc->png_read_ptr, &lc->png_info_ptr, NULL);
         g_free(lc);
 }
 

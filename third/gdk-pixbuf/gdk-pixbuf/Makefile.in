@@ -180,6 +180,13 @@ libpixbufloader_bmp_la_SOURCES = io-bmp.c
 libpixbufloader_bmp_la_LDFLAGS = -version-info 1:0:0 -module
 libpixbufloader_bmp_la_LIBADD = 
 
+#
+# The XBM loader
+#
+libpixbufloader_xbm_la_SOURCES = io-xbm.c
+libpixbufloader_xbm_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_xbm_la_LIBADD = 
+
 @HAVE_PNG_TRUE@PNG_LIB = libpixbufloader-png.la
 
 @HAVE_JPEG_TRUE@JPEG_LIB = libpixbufloader-jpeg.la
@@ -198,11 +205,13 @@ PNM_LIB = libpixbufloader-pnm.la
 
 BMP_LIB = libpixbufloader-bmp.la
 
-@BUILD_DYNAMIC_MODULES_TRUE@libexec_LTLIBRARIES = 	$(PNG_LIB)		$(JPEG_LIB)		$(GIF_LIB)		$(ICO_LIB)		$(RAS_LIB)		$(XPM_LIB)		$(TIFF_LIB)		$(PNM_LIB)		$(BMP_LIB)
+XBM_LIB = libpixbufloader-xbm.la
+
+@BUILD_DYNAMIC_MODULES_TRUE@libexec_LTLIBRARIES = 	$(PNG_LIB)		$(JPEG_LIB)		$(GIF_LIB)		$(ICO_LIB)		$(RAS_LIB)		$(XPM_LIB)		$(TIFF_LIB)		$(PNM_LIB)		$(BMP_LIB)		$(XBM_LIB)
 @BUILD_DYNAMIC_MODULES_FALSE@libexec_LTLIBRARIES = 
 
 @BUILD_DYNAMIC_MODULES_TRUE@extra_sources = 
-@BUILD_DYNAMIC_MODULES_FALSE@extra_sources = $(libpixbufloader_png_la_SOURCES) 			$(libpixbufloader_jpeg_la_SOURCES) 			$(libpixbufloader_xpm_la_SOURCES) 			$(libpixbufloader_gif_la_SOURCES) 			$(libpixbufloader_ico_la_SOURCES) 			$(libpixbufloader_ras_la_SOURCES) 			$(libpixbufloader_tiff_la_SOURCES) 			$(libpixbufloader_pnm_la_SOURCES) 			$(libpixbufloader_bmp_la_SOURCES)
+@BUILD_DYNAMIC_MODULES_FALSE@extra_sources = $(libpixbufloader_png_la_SOURCES) 			$(libpixbufloader_jpeg_la_SOURCES) 			$(libpixbufloader_xpm_la_SOURCES) 			$(libpixbufloader_gif_la_SOURCES) 			$(libpixbufloader_ico_la_SOURCES) 			$(libpixbufloader_ras_la_SOURCES) 			$(libpixbufloader_tiff_la_SOURCES) 			$(libpixbufloader_pnm_la_SOURCES) 			$(libpixbufloader_bmp_la_SOURCES)			$(libpixbufloader_xbm_la_SOURCES)
 
 @BUILD_DYNAMIC_MODULES_FALSE@builtin_libraries = 
 
@@ -235,20 +244,20 @@ GDK_PIXBUF_LIBS = $(GLIB_LIBS) $(GTK_LIBS)
 
 libgdk_pixbufincludedir = $(includedir)/gdk-pixbuf
 
-libgdk_pixbuf_la_SOURCES =  	gdk-pixbuf.c			gdk-pixbuf-animation.c		gdk-pixbuf-data.c		gdk-pixbuf-drawable.c		gdk-pixbuf-io.c			gdk-pixbuf-loader.c		gdk-pixbuf-render.c		gdk-pixbuf-scale.c		gdk-pixbuf-util.c		$(extra_sources)
+libgdk_pixbuf_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-drawable.c			gdk-pixbuf-io.c				gdk-pixbuf-loader.c			gdk-pixbuf-render.c			gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-parse-color.c		$(extra_sources)
 
 
-libgdk_pixbuf_la_LDFLAGS = -version-info 2:0:0 $(GLIB_LIBS) $(GTK_LIBS)
+libgdk_pixbuf_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(GTK_LIBS)
 libgdk_pixbuf_la_LIBADD = pixops/libpixops.la
 
 #
 # The GdkPixbufXlib library
 #
 
-libgdk_pixbuf_xlib_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-xlib.c			gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-io.c				gdk-pixbuf-xlib-render.c		gdk-pixbuf-xlib-drawable.c		gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-xlibrgb.c			$(extra_sources)
+libgdk_pixbuf_xlib_la_SOURCES =  	gdk-pixbuf.c				gdk-pixbuf-xlib.c			gdk-pixbuf-animation.c			gdk-pixbuf-data.c			gdk-pixbuf-io.c				gdk-pixbuf-xlib-render.c		gdk-pixbuf-xlib-drawable.c		gdk-pixbuf-scale.c			gdk-pixbuf-util.c			gdk-pixbuf-xlibrgb.c			gdk-pixbuf-parse-color.c		$(extra_sources)
 
 
-libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 $(GLIB_LIBS) $(X11_LIBS)
+libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(X11_LIBS)
 libgdk_pixbuf_xlib_la_LIBADD = pixops/libpixops.la
 
 libgdk_pixbufinclude_HEADERS =  	gdk-pixbuf.h				gdk-pixbuf-loader.h			gdk-pixbuf-features.h			gdk-pixbuf-xlib.h			gdk-pixbuf-xlibrgb.h			$(CANVAS_PIXBUF_HEADERFILES)
@@ -275,15 +284,17 @@ libgdk_pixbuf_la_DEPENDENCIES =  pixops/libpixops.la
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-drawable.lo gdk-pixbuf-io.lo \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-loader.lo gdk-pixbuf-render.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 @BUILD_DYNAMIC_MODULES_FALSE@libgdk_pixbuf_la_OBJECTS =  gdk-pixbuf.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-drawable.lo gdk-pixbuf-io.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-loader.lo gdk-pixbuf-render.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@io-png.lo io-jpeg.lo io-xpm.lo io-gif.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@io-ico.lo io-ras.lo io-tiff.lo io-pnm.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@io-bmp.lo
+@BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-parse-color.lo io-png.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-jpeg.lo io-xpm.lo io-gif.lo io-ico.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-ras.lo io-tiff.lo io-pnm.lo io-bmp.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-xbm.lo
 libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la
 @BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_xlib_la_OBJECTS =  \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
@@ -291,16 +302,19 @@ libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-io.lo gdk-pixbuf-xlib-render.lo \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlib-drawable.lo \
 @BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlibrgb.lo
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlibrgb.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 @BUILD_DYNAMIC_MODULES_FALSE@libgdk_pixbuf_xlib_la_OBJECTS =  \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-io.lo gdk-pixbuf-xlib-render.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-xlib-drawable.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-xlibrgb.lo io-png.lo io-jpeg.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@io-xpm.lo io-gif.lo io-ico.lo io-ras.lo \
-@BUILD_DYNAMIC_MODULES_FALSE@io-tiff.lo io-pnm.lo io-bmp.lo
+@BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-xlibrgb.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-parse-color.lo io-png.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-jpeg.lo io-xpm.lo io-gif.lo io-ico.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-ras.lo io-tiff.lo io-pnm.lo io-bmp.lo \
+@BUILD_DYNAMIC_MODULES_FALSE@io-xbm.lo
 libgnomecanvaspixbuf_la_LIBADD = 
 @BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf_la_OBJECTS =  \
 @BUILD_CANVAS_ITEM_TRUE@gnome-canvas-pixbuf.lo
@@ -322,6 +336,8 @@ libpixbufloader_pnm_la_DEPENDENCIES =
 libpixbufloader_pnm_la_OBJECTS =  io-pnm.lo
 libpixbufloader_bmp_la_DEPENDENCIES = 
 libpixbufloader_bmp_la_OBJECTS =  io-bmp.lo
+libpixbufloader_xbm_la_DEPENDENCIES = 
+libpixbufloader_xbm_la_OBJECTS =  io-xbm.lo
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_gdk_pixbuf_SOURCES = test-gdk-pixbuf.c
@@ -368,8 +384,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgdk_pixbuf_la_SOURCES) $(libgdk_pixbuf_xlib_la_SOURCES) $(libgnomecanvaspixbuf_la_SOURCES) $(libpixbufloader_png_la_SOURCES) $(libpixbufloader_jpeg_la_SOURCES) $(libpixbufloader_gif_la_SOURCES) $(libpixbufloader_ico_la_SOURCES) $(libpixbufloader_ras_la_SOURCES) $(libpixbufloader_xpm_la_SOURCES) $(libpixbufloader_tiff_la_SOURCES) $(libpixbufloader_pnm_la_SOURCES) $(libpixbufloader_bmp_la_SOURCES) test-gdk-pixbuf.c testpixbuf.c testpixbuf-drawable.c testanimation.c testpixbuf-scale.c
-OBJECTS = $(libgdk_pixbuf_la_OBJECTS) $(libgdk_pixbuf_xlib_la_OBJECTS) $(libgnomecanvaspixbuf_la_OBJECTS) $(libpixbufloader_png_la_OBJECTS) $(libpixbufloader_jpeg_la_OBJECTS) $(libpixbufloader_gif_la_OBJECTS) $(libpixbufloader_ico_la_OBJECTS) $(libpixbufloader_ras_la_OBJECTS) $(libpixbufloader_xpm_la_OBJECTS) $(libpixbufloader_tiff_la_OBJECTS) $(libpixbufloader_pnm_la_OBJECTS) $(libpixbufloader_bmp_la_OBJECTS) test-gdk-pixbuf.o testpixbuf.o testpixbuf-drawable.o testanimation.o testpixbuf-scale.o
+SOURCES = $(libgdk_pixbuf_la_SOURCES) $(libgdk_pixbuf_xlib_la_SOURCES) $(libgnomecanvaspixbuf_la_SOURCES) $(libpixbufloader_png_la_SOURCES) $(libpixbufloader_jpeg_la_SOURCES) $(libpixbufloader_gif_la_SOURCES) $(libpixbufloader_ico_la_SOURCES) $(libpixbufloader_ras_la_SOURCES) $(libpixbufloader_xpm_la_SOURCES) $(libpixbufloader_tiff_la_SOURCES) $(libpixbufloader_pnm_la_SOURCES) $(libpixbufloader_bmp_la_SOURCES) $(libpixbufloader_xbm_la_SOURCES) test-gdk-pixbuf.c testpixbuf.c testpixbuf-drawable.c testanimation.c testpixbuf-scale.c
+OBJECTS = $(libgdk_pixbuf_la_OBJECTS) $(libgdk_pixbuf_xlib_la_OBJECTS) $(libgnomecanvaspixbuf_la_OBJECTS) $(libpixbufloader_png_la_OBJECTS) $(libpixbufloader_jpeg_la_OBJECTS) $(libpixbufloader_gif_la_OBJECTS) $(libpixbufloader_ico_la_OBJECTS) $(libpixbufloader_ras_la_OBJECTS) $(libpixbufloader_xpm_la_OBJECTS) $(libpixbufloader_tiff_la_OBJECTS) $(libpixbufloader_pnm_la_OBJECTS) $(libpixbufloader_bmp_la_OBJECTS) $(libpixbufloader_xbm_la_OBJECTS) test-gdk-pixbuf.o testpixbuf.o testpixbuf-drawable.o testanimation.o testpixbuf-scale.o
 
 all: all-redirect
 .SUFFIXES:
@@ -507,6 +523,9 @@ libpixbufloader-pnm.la: $(libpixbufloader_pnm_la_OBJECTS) $(libpixbufloader_pnm_
 
 libpixbufloader-bmp.la: $(libpixbufloader_bmp_la_OBJECTS) $(libpixbufloader_bmp_la_DEPENDENCIES)
 	$(LINK) -rpath $(libexecdir) $(libpixbufloader_bmp_la_LDFLAGS) $(libpixbufloader_bmp_la_OBJECTS) $(libpixbufloader_bmp_la_LIBADD) $(LIBS)
+
+libpixbufloader-xbm.la: $(libpixbufloader_xbm_la_OBJECTS) $(libpixbufloader_xbm_la_DEPENDENCIES)
+	$(LINK) -rpath $(libexecdir) $(libpixbufloader_xbm_la_LDFLAGS) $(libpixbufloader_xbm_la_OBJECTS) $(libpixbufloader_xbm_la_LIBADD) $(LIBS)
 
 mostlyclean-noinstPROGRAMS:
 
@@ -681,6 +700,11 @@ gdk-pixbuf-loader.lo gdk-pixbuf-loader.o : gdk-pixbuf-loader.c \
 	../config.h gdk-pixbuf-private.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h \
 	gdk-pixbuf-io.h
+gdk-pixbuf.lo gdk-pixbuf.o : gdk-pixbuf.c ../config.h gdk-pixbuf.h \
+	gdk-pixbuf-features.h gdk-pixbuf-private.h
+gdk-pixbuf-parse-color.lo gdk-pixbuf-parse-color.o : \
+	gdk-pixbuf-parse-color.c ../config.h gdk-pixbuf.h \
+	gdk-pixbuf-features.h gdk-pixbuf-private.h
 gdk-pixbuf-render.lo gdk-pixbuf-render.o : gdk-pixbuf-render.c \
 	../config.h gdk-pixbuf-private.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h
@@ -693,18 +717,16 @@ gdk-pixbuf-xlib-drawable.lo gdk-pixbuf-xlib-drawable.o : \
 	gdk-pixbuf-xlib-drawable.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-xlib-private.h \
 	gdk-pixbuf-xlib.h gdk-pixbuf-xlibrgb.h
-gdk-pixbuf-xlib-render.lo gdk-pixbuf-xlib-render.o : \
-	gdk-pixbuf-xlib-render.c ../config.h gdk-pixbuf-private.h \
-	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-xlib-private.h \
-	gdk-pixbuf-xlib.h gdk-pixbuf-xlibrgb.h
 gdk-pixbuf-xlib.lo gdk-pixbuf-xlib.o : gdk-pixbuf-xlib.c ../config.h \
 	gdk-pixbuf-private.h gdk-pixbuf.h gdk-pixbuf-features.h \
 	gdk-pixbuf-xlib-private.h gdk-pixbuf-xlib.h \
 	gdk-pixbuf-xlibrgb.h
+gdk-pixbuf-xlib-render.lo gdk-pixbuf-xlib-render.o : \
+	gdk-pixbuf-xlib-render.c ../config.h gdk-pixbuf-private.h \
+	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-xlib-private.h \
+	gdk-pixbuf-xlib.h gdk-pixbuf-xlibrgb.h
 gdk-pixbuf-xlibrgb.lo gdk-pixbuf-xlibrgb.o : gdk-pixbuf-xlibrgb.c \
 	../config.h gdk-pixbuf-xlibrgb.h
-gdk-pixbuf.lo gdk-pixbuf.o : gdk-pixbuf.c ../config.h gdk-pixbuf.h \
-	gdk-pixbuf-features.h gdk-pixbuf-private.h
 gnome-canvas-pixbuf.lo gnome-canvas-pixbuf.o : gnome-canvas-pixbuf.c \
 	../config.h gdk-pixbuf-private.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gnome-canvas-pixbuf.h
@@ -724,18 +746,22 @@ io-ras.lo io-ras.o : io-ras.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-io.h
 io-tiff.lo io-tiff.o : io-tiff.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-io.h
-io-xpm.lo io-xpm.o : io-xpm.c ../config.h gdk-pixbuf-private.h \
+io-xbm.lo io-xbm.o : io-xbm.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-io.h
-test-gdk-pixbuf.o: test-gdk-pixbuf.c ../config.h gdk-pixbuf.h \
-	gdk-pixbuf-features.h
+io-xpm.lo io-xpm.o : io-xpm.c ../config.h gdk-pixbuf-private.h \
+	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-io.h \
+	gdk-pixbuf-xlib-private.h gdk-pixbuf-xlib.h \
+	gdk-pixbuf-xlibrgb.h
 testanimation.o: testanimation.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h
-testpixbuf-drawable.o: testpixbuf-drawable.c ../config.h gdk-pixbuf.h \
+test-gdk-pixbuf.o: test-gdk-pixbuf.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h
-testpixbuf-scale.o: testpixbuf-scale.c gdk-pixbuf.h \
+testpixbuf-drawable.o: testpixbuf-drawable.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h
 testpixbuf.o: testpixbuf.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h
+testpixbuf-scale.o: testpixbuf-scale.c gdk-pixbuf.h \
+	gdk-pixbuf-features.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

@@ -22,13 +22,13 @@ AC_ARG_ENABLE(gdk_pixbuftest, [  --disable-gdk_pixbuftest       Do not try to co
 
   if test x$gdk_pixbuf_exec_prefix != x ; then
      gdk_pixbuf_args="$gdk_pixbuf_args --exec-prefix=$gdk_pixbuf_exec_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} != xset ; then
-        GDK_PIXBUF_CONFIG=$gdk_pixbuf_exec_prefix/bin/gdk-pixbuf-config
+     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
+        GDK_PIXBUF_CONFIG=$gdk_pixbuf_exec_prefix/gdk-pixbuf-config
      fi
   fi
   if test x$gdk_pixbuf_prefix != x ; then
      gdk_pixbuf_args="$gdk_pixbuf_args --prefix=$gdk_pixbuf_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} != xset ; then
+     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
         GDK_PIXBUF_CONFIG=$gdk_pixbuf_prefix/bin/gdk-pixbuf-config
      fi
   fi

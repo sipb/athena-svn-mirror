@@ -83,6 +83,13 @@ libpixbufloader_bmp_la_SOURCES = io-bmp.c
 libpixbufloader_bmp_la_LDFLAGS = -version-info 1:0:0 -module
 libpixbufloader_bmp_la_LIBADD =
 
+#
+# The XBM loader
+#
+libpixbufloader_xbm_la_SOURCES = io-xbm.c
+libpixbufloader_xbm_la_LDFLAGS = -version-info 1:0:0 -module
+libpixbufloader_xbm_la_LIBADD =
+
 if HAVE_PNG
 PNG_LIB = libpixbufloader-png.la
 endif
@@ -107,6 +114,8 @@ PNM_LIB = libpixbufloader-pnm.la
 
 BMP_LIB = libpixbufloader-bmp.la
 
+XBM_LIB = libpixbufloader-xbm.la
+
 if BUILD_DYNAMIC_MODULES
 
 libexec_LTLIBRARIES = 	\
@@ -118,7 +127,8 @@ libexec_LTLIBRARIES = 	\
 	$(XPM_LIB)	\
 	$(TIFF_LIB)	\
 	$(PNM_LIB)	\
-	$(BMP_LIB)
+	$(BMP_LIB)	\
+	$(XBM_LIB)
 
 
 extra_sources = 
@@ -134,7 +144,8 @@ extra_sources = $(libpixbufloader_png_la_SOURCES) 	\
 		$(libpixbufloader_ras_la_SOURCES) 	\
 		$(libpixbufloader_tiff_la_SOURCES) 	\
 		$(libpixbufloader_pnm_la_SOURCES) 	\
-		$(libpixbufloader_bmp_la_SOURCES)
+		$(libpixbufloader_bmp_la_SOURCES)	\
+		$(libpixbufloader_xbm_la_SOURCES)
 
 builtin_libraries = 
 endif
@@ -175,19 +186,20 @@ GDK_PIXBUF_LIBS = $(GLIB_LIBS) $(GTK_LIBS)
 
 libgdk_pixbufincludedir = $(includedir)/gdk-pixbuf
 
-libgdk_pixbuf_la_SOURCES = 	\
-	gdk-pixbuf.c		\
-	gdk-pixbuf-animation.c	\
-	gdk-pixbuf-data.c	\
-	gdk-pixbuf-drawable.c	\
-	gdk-pixbuf-io.c		\
-	gdk-pixbuf-loader.c	\
-	gdk-pixbuf-render.c	\
-	gdk-pixbuf-scale.c	\
-	gdk-pixbuf-util.c	\
+libgdk_pixbuf_la_SOURCES =		\
+	gdk-pixbuf.c			\
+	gdk-pixbuf-animation.c		\
+	gdk-pixbuf-data.c		\
+	gdk-pixbuf-drawable.c		\
+	gdk-pixbuf-io.c			\
+	gdk-pixbuf-loader.c		\
+	gdk-pixbuf-render.c		\
+	gdk-pixbuf-scale.c		\
+	gdk-pixbuf-util.c		\
+	gdk-pixbuf-parse-color.c	\
 	$(extra_sources)
 
-libgdk_pixbuf_la_LDFLAGS = -version-info 2:0:0 $(GLIB_LIBS) $(GTK_LIBS)
+libgdk_pixbuf_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(GTK_LIBS)
 libgdk_pixbuf_la_LIBADD = pixops/libpixops.la
 
 #
@@ -205,9 +217,10 @@ libgdk_pixbuf_xlib_la_SOURCES =		\
 	gdk-pixbuf-scale.c		\
 	gdk-pixbuf-util.c		\
 	gdk-pixbuf-xlibrgb.c		\
+	gdk-pixbuf-parse-color.c	\
 	$(extra_sources)
 
-libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 $(GLIB_LIBS) $(X11_LIBS)
+libgdk_pixbuf_xlib_la_LDFLAGS = -version-info 2:0:0 -export-dynamic $(GLIB_LIBS) $(X11_LIBS)
 libgdk_pixbuf_xlib_la_LIBADD = pixops/libpixops.la
 
 

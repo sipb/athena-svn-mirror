@@ -25,8 +25,19 @@
 #include <config.h>
 #include <math.h>
 #include <stdlib.h>
+#include <X11/Xlib.h>
 #include "gdk-pixbuf.h"
 #include "gdk-pixbuf-private.h"
+
+
+
+/* Display and screen variables for the Xlib version.  I know this should not be
+ * here, but dynamic linking is a pain.  Don't fuck with this.  It will come
+ * back and bite you in the ass.
+ */
+
+Display *gdk_pixbuf_dpy = NULL;
+int gdk_pixbuf_screen = -1;
 
 
 
