@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.8 1989-04-06 23:25:20 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.9 1989-05-04 14:10:54 jik Exp $";
 #endif
 
 /*
@@ -185,7 +185,10 @@ int num;
 	  }
 	  else {
 	       start_dir = "";
-	       file_re = parse_pattern(files[num - 1]);
+	       if ((*files[num - 1] == '.') && (! *(files[num - 1] + 1)))
+		    file_re = parse_pattern("*");
+	       else
+		    file_re = parse_pattern(files[num - 1]);
 	  }
 	  if (! file_re)
 	       return(ERROR_MASK);
@@ -247,17 +250,27 @@ filerec *leaf;
 {
      int status = 0;
 
-     if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR))
+     if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR)) {
 	  status = do_directory_expunge(leaf);
-     /* the "do_directory_expunge" really only asks the user if he */
-     /* wants to expunge the directory, it doesn't do any deleting. */
+	  /* the "do_directory_expunge" really only asks the user if he */
+	  /* wants to expunge the directory, it doesn't do any deleting. */
+     }
+     /* "But wait," you're saying to yourself as you ponder this code, */
+     /* "Why isn't this next if statement included inside the if       */
+     /* statement above, since they both refer to directories."  Well, */
+     /* I wondered about the same thing a week after I wrote the code. */
+     /* Keep in mind that a directory passed to this function may not  */
+     /* be specified, but some of its children may be.  Therefore, we  */
+     /* have to recursively descend even unspecified directories to    */
+     /* find specified files, hence this is outside of the if          */
+     /* statement above.					       */
      if (! status) {
 	  if (leaf->dirs)
 	       status |= expunge_specified(leaf->dirs);
 	  if (leaf->files)
 	       status |= expunge_specified(leaf->files);
      }
-     if (leaf->specified)
+     if ((leaf->specified) && (! status))
 	  status |= really_do_expunge(leaf);
      if (leaf->next)
 	  status |= expunge_specified(leaf->next);
