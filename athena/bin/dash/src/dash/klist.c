@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.6 1993-07-02 04:36:20 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.7 1996-06-26 20:00:50 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -36,8 +36,6 @@ extern int sys_nerr;
 
 char   *tkt_string();
 char   *getenv();
-
-extern char *krb_err_txt[];
 
 #ifndef TICKET_GRANTING_TICKET
 #define TICKET_GRANTING_TICKET	"krbtgt"
