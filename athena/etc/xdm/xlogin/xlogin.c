@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.6 1990-11-28 14:38:56 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.7 1990-11-28 15:06:40 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -248,9 +248,13 @@ main(argc, argv)
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
-  activation_state = ACTIVATED;
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
+
+  if (access("/srvd/.rvdinfo", F_OK) != 0)
+    start_reactivate(NULL, NULL);
+  else
+    activation_state = ACTIVATED;
 
   /* make another connection to the X server so that there won't be a
    * window where there are no connections and the server resets.
