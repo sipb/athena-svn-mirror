@@ -38,11 +38,9 @@ char *LOCAL_REALMS[] =
 #ifndef TESTHOST
 char *OLC_PROMPT = "olc> ";
 char *OLCR_PROMPT = "olcr> ";
-char *OLCA_PROMPT = "olca> ";
 #else TESTHOST
 char *OLC_PROMPT = "olc test> ";
 char *OLCR_PROMPT = "olcr test> ";
-char *OLCA_PROMPT = "olca test> ";
 #endif TESTHOST
 
 /* Where to find help. */
@@ -54,10 +52,6 @@ char *OLC_HELP_FILE =   "olc";
 char *OLCR_HELP_DIR  =   "/usr/athena/lib/olc/olcr_help";
 char *OLCR_HELP_EXT  =   ".help";
 char *OLCR_HELP_FILE =   "olcr";
-
-char *OLCA_HELP_DIR  =   "/usr/athena/lib/olc/olca_help";
-char *OLCA_HELP_EXT  =   ".help";
-char *OLCA_HELP_FILE =   "olca";
 
 char *HELP_FILE;
 char *HELP_EXT;
