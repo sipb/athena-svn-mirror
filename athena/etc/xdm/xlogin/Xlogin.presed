@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.9 1990-12-04 17:36:29 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.10 1990-12-13 12:45:09 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -433,7 +433,7 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
 *omenuEntry9.callback:		runCB(/usr/athena/lib/login/moira)
-*omenuEntry10.label:		Electronic Ombudsman (Lucy)
+*omenuEntry10.label:		Electronic Ombudsperson (Lucy)
 *omenuEntry10.callback:		runCB(/usr/athena/lib/login/lucy)
 *omenuEntry10a.label:		Display Console Window
 *omenuEntry10a.callback:	signalConsoleCB(show)
