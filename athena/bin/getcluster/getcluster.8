@@ -30,17 +30,17 @@ also returns an exit status of -1 if any errors were encountered.
 is usually invoked from a suitable shell script in /etc/rc
 to retrieve environment variables which will be used by applications during
 the session.  These are placed, if successful, in the files
-.I /etc/clusterinfo
+.I /etc/athena/clusterinfo
 and
-.I /etc/clusterinfo.bsh
+.I /etc/athena/clusterinfo.bsh
 to be accessed by the C shell in a user's .login file
 and the Bourne shell in a user's .profile, respectively.
 It may also be invoked directly by any user.
 .PP
 Getcluster uses the Hesiodnametypes "clustername" and "cluster".
 .SH FILES
-/etc/clusterinfo
-/etc/clusterinfo.bsh
+/etc/athena/clusterinfo
+/etc/athena/clusterinfo.bsh
 .SH "SEE ALSO"
 `Hesiod - Project Athena Technical Plan -- Name Service'
 .SH AUTHOR
