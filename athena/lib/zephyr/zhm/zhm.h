@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: jtkohl $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.9 1988-10-03 15:57:21 jtkohl Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.10 1989-10-19 12:49:38 jtkohl Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -50,13 +50,36 @@ extern void init_queue(), retransmit_queue();
 #ifdef vax
 #define MACHINE "vax"
 #define ok
-#endif vax
+#endif /* vax */
+
 #ifdef ibm032
 #define MACHINE "rt"
 #define ok
-#endif ibm032
+#endif /* ibm032 */
+
+#ifdef NeXT
+#define MACHINE "NeXT"
+#define ok
+#endif /* NeXT */
+
+#ifdef SUN2_ARCH
+#define MACHINE "sun2"
+#define ok
+#endif /* SUN2_ARCH */
+
+#ifdef SUN3_ARCH
+#define MACHINE "sun3"
+#define ok
+#endif /* SUN3_ARCH */
+
+#ifdef SUN4_ARCH
+#define MACHINE "sun4"
+#define ok
+#endif /* SUN4_ARCH */
+
 #ifndef ok
 #define MACHINE "unknown"
 #endif ok
+#undef ok
 
 #endif !__HM_H__
