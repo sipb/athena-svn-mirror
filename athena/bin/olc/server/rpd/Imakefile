@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
- * $Id: Imakefile,v 1.14 1991-04-08 21:20:59 lwvanels Exp $
+ * $Id: Imakefile,v 1.15 1991-04-10 10:48:23 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -10,9 +10,9 @@ LIBSUFFIX=_p
 EXTRA_LOAD_FLAGS=-pg
 #endif
 
-SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c kopt.c get_nm.c
+SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c get_nm.c
 
-OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o kopt.o get_nm.o
+OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o get_nm.o
 
 #ifdef Profiling
 DEFINES= -DPROFILE
