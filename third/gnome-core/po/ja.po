@@ -6,13 +6,14 @@
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 1999-2001
 # Yuusuke Tahara <tahara@gnome.gr.jp>, 2000
 # Shingo Akagaki <dora@kondara.org>, 2000
+# Akira TAGOH <tagoh@gnome.gr.jp>, 2001
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-core 1.3.0cvs\n"
-"POT-Creation-Date: 2001-03-15 11:38-0500\n"
-"PO-Revision-Date: 2001-03-13 23:29+09:00\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"Project-Id-Version: gnome-core 1.4.0\n"
+"POT-Creation-Date: 2001-03-28 11:49-0500\n"
+"PO-Revision-Date: 2001-03-23 02:21+0900\n"
+"Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -308,7 +309,7 @@ msgid "The Animation Filename:"
 msgstr "¥¢¥Ë¥á¡¼¥·¥ç¥ó¥Õ¥¡¥¤¥ë¤ÎÌ¾Á°"
 
 #: applets/fish/fish.c:535 applets/gen_util/mailcheck.c:1006
-#: gnome-hint/gnome-hint-properties.c:163 panel/menu-properties.c:596
+#: gnome-hint/gnome-hint-properties.c:146 panel/menu-properties.c:596
 #: panel/menu-properties.c:634 panel/panel-util.c:192
 #: panel/panel_config.c:1554 panel/swallow.c:261
 msgid "Browse"
@@ -390,7 +391,7 @@ msgstr "%p %I:%M"
 #. This format string is used, to display the actual time in
 #. 24 hour format.
 #: applets/gen_util/clock.c:198 applets/gen_util/clock.c:400
-#: panel/foobar-widget.c:544 panel/foobar-widget.c:940
+#: panel/foobar-widget.c:545 panel/foobar-widget.c:941
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -872,7 +873,7 @@ msgstr "¥¦¥¤¥ó¥É¥¦¤ò»¦¤¹Á°¤Ë³ÎÇ§"
 
 #: applets/tasklist/tasklist_properties.c:341
 msgid "Move iconified tasks to current workspace when restoring"
-msgstr "¥ê¥¹¥È¥¢»þ¤Ë¡¢¥¢¥¤¥³¥ó¤«¤µ¤ì¤¿¥¿¥¹¥¯¤ò¸½ºß¤Î¥ï¡¼¥¯¥¹¥Ú¡¼¥¹¤Ø°ÜÆ°"
+msgstr "¥ê¥¹¥È¥¢»þ¤Ë¡¢¥¢¥¤¥³¥ó²½¤µ¤ì¤¿¥¿¥¹¥¯¤ò¸½ºß¤Î¥ï¡¼¥¯¥¹¥Ú¡¼¥¹¤Ø°ÜÆ°"
 
 #: applets/tasklist/tasklist_properties.c:349
 msgid "Enable task grouping"
@@ -1134,52 +1135,52 @@ msgstr "Szabolcs 'Shooby' Ban"
 msgid "Gergõ Érdi"
 msgstr "Gergo Erdi"
 
-#: gnome-about/contributors.h:87
+#: gnome-about/contributors.h:88
 msgid "The Mysterious GEGL"
 msgstr "¤Õ¤·¤®¤Ê GEGL"
 
 #. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:175
 msgid "Alexandre Muñiz"
 msgstr "Alexandre Muniz"
 
-#: gnome-about/contributors.h:174
+#: gnome-about/contributors.h:176
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. languages that can't display adiaeresis, replace 'ä' with 'ae'
-#: gnome-about/contributors.h:179
+#: gnome-about/contributors.h:181
 msgid "Martin Norbäck"
 msgstr "Martin Norbaeck"
 
 #. languages that can't display Odiaeresis, replace 'Ö' with 'Oe'
-#: gnome-about/contributors.h:185
+#: gnome-about/contributors.h:187
 msgid "Tomas Ögren"
 msgstr "Tomas Oegren"
 
-#: gnome-about/contributors.h:214
+#: gnome-about/contributors.h:216
 msgid "Kazuhiro Sasayama"
 msgstr "ºû»³ ÏÂ¹¨"
 
 #. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:221
+#: gnome-about/contributors.h:223
 msgid "Iñigo Serna"
 msgstr "Inigo Serna"
 
 #. not really a person name :)
-#: gnome-about/contributors.h:234
+#: gnome-about/contributors.h:236
 msgid "The Squeaky Rubber Gnome"
 msgstr "The Squeaky Rubber Gnome"
 
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:261
 msgid "Wanda the GNOME Fish"
 msgstr "GNOME¤µ¤«¤Ê·¯ Wanda"
 
-#: gnome-about/contributors.h:272
+#: gnome-about/contributors.h:274
 msgid "... and many more"
 msgstr "... and many more"
 
-#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:244
+#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:245
 msgid "About GNOME"
 msgstr "GNOME ¤Ë¤Ä¤¤¤Æ"
 
@@ -1295,37 +1296,25 @@ msgstr "Gnome ¥Ò¥ó¥È"
 msgid "Display this dialog next time"
 msgstr "¼¡¤â¤³¤Î¥À¥¤¥¢¥í¥°¤òÉ½¼¨"
 
-#: gnome-hint/gnome-hint-properties.c:57 gsm/session-properties-capplet.c:448
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-"¤³¤ÎÀßÄê¤Î¥Ø¥ë¥×¤¬¤Ê¤¤¤«¡¢¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£\n"
-"GNOME ¥æ¡¼¥¶¡¼¥º¥¬¥¤¥É¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤Æ¤ß¤Æ¤¯¤À¤µ¤¤¡£"
-
-#: gnome-hint/gnome-hint-properties.c:59 gsm/session-properties-capplet.c:450
-msgid "Close"
-msgstr "ÊÄ¤¸¤ë"
-
 #. add the enable box
-#: gnome-hint/gnome-hint-properties.c:127
+#: gnome-hint/gnome-hint-properties.c:110
 msgid "Enable login hints"
 msgstr "¥í¥°¥¤¥ó¥Ò¥ó¥È¤òÍ­¸ú¤Ë¤¹¤ë"
 
 #. add the hint box
-#: gnome-hint/gnome-hint-properties.c:134
+#: gnome-hint/gnome-hint-properties.c:117
 msgid "Display normal hints"
 msgstr "ÉáÄÌ¤Î¥Ò¥ó¥È¤òÉ½¼¨"
 
-#: gnome-hint/gnome-hint-properties.c:143
+#: gnome-hint/gnome-hint-properties.c:126
 msgid "Display fortunes instead of hints"
 msgstr "¥Ò¥ó¥È¤ÎÂå¤ï¤ê¤Ë¡¢¥Õ¥©¡¼¥Á¥å¡¼¥ó¥á¥Ã¥»¡¼¥¸¤òÉ½¼¨"
 
-#: gnome-hint/gnome-hint-properties.c:152
+#: gnome-hint/gnome-hint-properties.c:135
 msgid "Display message of the day instead of hints"
 msgstr "¥Ò¥ó¥È¤ÎÂå¤ï¤ê¤Ë¡¢º£Æü¤Î¥á¥Ã¥»¡¼¥¸¤òÉ½¼¨"
 
-#: gnome-hint/gnome-hint-properties.c:161
+#: gnome-hint/gnome-hint-properties.c:144
 msgid "Message of the day file to use: "
 msgstr "º£Æü¤Î¥á¥Ã¥»¡¼¥¸¤Ë»ÈÍÑ¤¹¤ë¥Õ¥¡¥¤¥ë: "
 
@@ -1479,7 +1468,7 @@ msgid "Edit"
 msgstr "ÊÔ½¸"
 
 #: gnome-terminal/gnome-terminal.c:1582 gsm/gsm-client-row.c:59
-#: panel/foobar-widget.c:996
+#: panel/foobar-widget.c:997
 msgid "Settings"
 msgstr "ÀßÄê"
 
@@ -1891,31 +1880,27 @@ msgstr "¥í¥°¥¤¥ó¤Î¤¿¤Ó¤Ë¾ï¤Ë³«»Ï¤µ¤ì¤Þ¤¹¡£"
 msgid "Remove Program"
 msgstr "¥×¥í¥°¥é¥à¤Îºï½ü"
 
-#: gsm/logout.c:177 gsm/save-session.c:92
-msgid "Could not connect to the session manager"
-msgstr "save-ssession: ¥»¥Ã¥·¥ç¥ó¥Þ¥Í¡¼¥¸¥ã¤ËÀÜÂ³¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
-
-#: gsm/logout.c:210
+#: gsm/logout.c:198
 msgid "Really log out?"
 msgstr "ËÜÅö¤Ë¥í¥°¥¢¥¦¥È¤·¤Þ¤¹¤«?"
 
-#: gsm/logout.c:231
+#: gsm/logout.c:219
 msgid "Save current setup"
 msgstr "¸½ºß¤ÎÀßÄê¤òÊÝÂ¸"
 
-#: gsm/logout.c:250
+#: gsm/logout.c:238
 msgid "Action"
 msgstr "¥¢¥¯¥·¥ç¥ó"
 
-#: gsm/logout.c:258
+#: gsm/logout.c:246
 msgid "Logout"
 msgstr "¥í¥°¥¢¥¦¥È"
 
-#: gsm/logout.c:261
+#: gsm/logout.c:249
 msgid "Halt"
 msgstr "Ää»ß"
 
-#: gsm/logout.c:264
+#: gsm/logout.c:252
 msgid "Reboot"
 msgstr "ºÆµ¯Æ°"
 
@@ -1971,6 +1956,10 @@ msgstr "¥»¥Ã¥·¥ç¥ó¤ò¶¯À©½ªÎ»"
 #: gsm/save-session.c:43
 msgid "Use dialog boxes"
 msgstr "¥À¥¤¥¢¥í¥°¥Ü¥Ã¥¯¥¹¤ò»È¤¦"
+
+#: gsm/save-session.c:92
+msgid "Could not connect to the session manager"
+msgstr "save-ssession: ¥»¥Ã¥·¥ç¥ó¥Þ¥Í¡¼¥¸¥ã¤ËÀÜÂ³¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
 
 #: gsm/save-session.c:107
 msgid "Could not connect to gnome-session"
@@ -2096,6 +2085,18 @@ msgstr "¸½ºßÆ°ºîÃæ¤Î¥×¥í¥°¥é¥à¤ò±ÜÍ÷..."
 #: gsm/session-properties-capplet.c:330
 msgid "Startup Programs"
 msgstr "¼«Æ°µ¯Æ°¥×¥í¥°¥é¥à"
+
+#: gsm/session-properties-capplet.c:448
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"¤³¤ÎÀßÄê¤Î¥Ø¥ë¥×¤¬¤Ê¤¤¤«¡¢¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£\n"
+"GNOME ¥æ¡¼¥¶¡¼¥º¥¬¥¤¥É¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤Æ¤ß¤Æ¤¯¤À¤µ¤¤¡£"
+
+#: gsm/session-properties-capplet.c:450
+msgid "Close"
+msgstr "ÊÄ¤¸¤ë"
 
 #: gsm/splash.c:54
 msgid "Audio Settings"
@@ -2749,7 +2750,7 @@ msgstr "¤°¤Ï¤¡! ¤Ê¤ó¤«¥Ñ¥Í¥ë¤òÄÉ²Ã¤Ç¤­¤Ê¤¤¤Ã¤¹"
 msgid "No socket was created"
 msgstr "¥½¥±¥Ã¥È¤¬ºîÀ®¤µ¤ì¤Þ¤»¤ó¤Ç¤·¤¿"
 
-#: panel/foobar-widget.c:201
+#: panel/foobar-widget.c:202
 msgid ""
 "Cannot execute the gmc-client program,\n"
 "perhaps gmc is not installed"
@@ -2757,7 +2758,7 @@ msgstr ""
 "gmc-client ¤ò¼Â¹Ô¤Ç¤­¤Þ¤»¤ó¡£\n"
 "¤¿¤Ö¤ó gmc ¤¬¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤»¤ó"
 
-#: panel/foobar-widget.c:211
+#: panel/foobar-widget.c:212
 msgid ""
 "Cannot execute the gnome calendar,\n"
 "perhaps it's not installed.\n"
@@ -2767,152 +2768,152 @@ msgstr ""
 "¤ª¤½¤é¤¯¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£<\n"
 "gnome-pim ¥Ñ¥Ã¥±¡¼¥¸¤Ë¤¢¤ê¤Þ¤¹¤è¡£"
 
-#: panel/foobar-widget.c:224
+#: panel/foobar-widget.c:225
 msgid "News (www)"
 msgstr "¿·Ãå¾ðÊó(www)"
 
-#: panel/foobar-widget.c:224
+#: panel/foobar-widget.c:225
 msgid "http://gnotices.gnome.org/gnome-news/"
 msgstr "http://gnotices.gnome.org/gnome-news/"
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:226
 msgid "FAQ (www)"
 msgstr "FAQ (www)"
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:226
 msgid "http://www.gnome.org/gnomefaq/html/"
 msgstr "http://www.gnome.org/gnomefaq/html/"
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:227
 msgid "Mailing Lists (www)"
 msgstr "¥á¡¼¥ê¥ó¥°¥ê¥¹¥È (www)"
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:227
 msgid "http://mail.gnome.org/mailman/listinfo/"
 msgstr "http://www.gnome.gr.jp/comm/ml.html"
 
-#: panel/foobar-widget.c:228
+#: panel/foobar-widget.c:229
 msgid "Software (www)"
 msgstr "¥½¥Õ¥È¥¦¥§¥¢ (www)"
 
-#: panel/foobar-widget.c:228
+#: panel/foobar-widget.c:229
 msgid "http://www.gnome.org/applist/list-martin.phtml"
 msgstr "http://www.gnome.org/applist/list-martin.phtml"
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:230
 msgid "Development (www)"
 msgstr "³«È¯ (www)"
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:230
 msgid "http://developer.gnome.org/"
 msgstr "http://developer.gnome.org/"
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:231
 msgid "Bug Tracking System (www)"
 msgstr "¥Ð¥°ÄÉÀ×¥·¥¹¥Æ¥à (www)"
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:231
 msgid "http://bugs.gnome.org/"
 msgstr "http://bugs.gnome.org/"
 
-#: panel/foobar-widget.c:324
+#: panel/foobar-widget.c:325
 msgid "By Name"
 msgstr "Ì¾Á°½ç"
 
-#: panel/foobar-widget.c:325
+#: panel/foobar-widget.c:326
 msgid "By Type"
 msgstr "¼ïÎà½ç"
 
-#: panel/foobar-widget.c:326
+#: panel/foobar-widget.c:327
 msgid "By Size"
 msgstr "Âç¤­¤µ½ç"
 
-#: panel/foobar-widget.c:327
+#: panel/foobar-widget.c:328
 msgid "By Time Last Accessed"
 msgstr "¥¢¥¯¥»¥¹Æü»þ½ç"
 
-#: panel/foobar-widget.c:328
+#: panel/foobar-widget.c:329
 msgid "By Time Last Modified"
 msgstr "¹¹¿·Æü»þ½ç"
 
-#: panel/foobar-widget.c:329
+#: panel/foobar-widget.c:330
 msgid "By Time Last Changed"
 msgstr "ºîÀ®Æü»þ½ç"
 
-#: panel/foobar-widget.c:339
+#: panel/foobar-widget.c:340
 msgid "Arrange Icons"
 msgstr "¥¢¥¤¥³¥ó¤ÎÊÂ¤Ù¤«¤¨"
 
-#: panel/foobar-widget.c:352
+#: panel/foobar-widget.c:353
 msgid "Rescan Desktop Directory"
 msgstr "¥Ç¥£¥ì¥¯¥È¥ê¤ÎºÆ¥¹¥­¥ã¥ó"
 
-#: panel/foobar-widget.c:355
+#: panel/foobar-widget.c:356
 msgid "Rescan Desktop Devices"
 msgstr "¥Ç¥Ð¥¤¥¹¤ÎºÆ¥¹¥­¥ã¥ó"
 
-#: panel/foobar-widget.c:364
+#: panel/foobar-widget.c:365
 msgid "Lock Screen"
 msgstr "¥¹¥¯¥ê¡¼¥ó¤Î¥í¥Ã¥¯"
 
-#: panel/foobar-widget.c:374
+#: panel/foobar-widget.c:375
 msgid "Log Out"
 msgstr "¥í¥°¥¢¥¦¥È"
 
-#: panel/foobar-widget.c:382
+#: panel/foobar-widget.c:383
 msgid " Desktop "
 msgstr "¥Ç¥¹¥¯¥È¥Ã¥× "
 
-#: panel/foobar-widget.c:407
+#: panel/foobar-widget.c:408
 msgid "can't fine real path"
 msgstr "¼ÂºÝ¤Î¥Ñ¥¹¤ò¸«¤Ä¤±¤é¤ì¤Þ¤»¤ó"
 
-#: panel/foobar-widget.c:416
+#: panel/foobar-widget.c:417
 msgid "menu wasn't created"
 msgstr "¥á¥Ë¥å¡¼¤¬ºîÀ®¤µ¤ì¤Þ¤»¤ó¤Ç¤·¤¿"
 
-#: panel/foobar-widget.c:458
+#: panel/foobar-widget.c:459
 msgid "%A %B %d"
 msgstr "%m·î%dÆü (%a)"
 
-#: panel/foobar-widget.c:537
+#: panel/foobar-widget.c:538
 msgid "Today"
 msgstr "º£Æü"
 
-#: panel/foobar-widget.c:538
+#: panel/foobar-widget.c:539
 msgid "This Week"
 msgstr "º£½µ"
 
-#: panel/foobar-widget.c:539
+#: panel/foobar-widget.c:540
 msgid "This Month"
 msgstr "º£·î"
 
-#: panel/foobar-widget.c:545
+#: panel/foobar-widget.c:546
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
-#: panel/foobar-widget.c:546
+#: panel/foobar-widget.c:547
 msgid "%l:%M %p"
 msgstr "%p %l:%M"
 
-#: panel/foobar-widget.c:547
+#: panel/foobar-widget.c:548
 msgid "%l:%M:%S %p"
 msgstr "%p %l:%M:%S"
 
-#: panel/foobar-widget.c:554
+#: panel/foobar-widget.c:555
 msgid "Add appointement..."
 msgstr "¥¢¥Ý¥¤¥ó¥È¥á¥ó¥È¤òÄÉ²Ã..."
 
-#: panel/foobar-widget.c:571
+#: panel/foobar-widget.c:572
 msgid "Format"
 msgstr "»þ´Ö¤ÎÉ½µ­"
 
-#: panel/foobar-widget.c:979 panel/menu.c:3443 panel/menu.c:3450
+#: panel/foobar-widget.c:980 panel/menu.c:3443 panel/menu.c:3450
 #: panel/menu.c:5169
 msgid "Programs"
 msgstr "¥×¥í¥°¥é¥à"
 
-#: panel/foobar-widget.c:993 panel/menu.c:3587 panel/menu.c:5138
+#: panel/foobar-widget.c:994 panel/menu.c:3587 panel/menu.c:5138
 #: panel/menu.c:5181 panel/menu.c:5187
 msgid "Favorites"
 msgstr "¤ªµ¤¤ËÆþ¤ê"
@@ -4119,98 +4120,3 @@ msgstr "½ÐÎÏ¤Ç¥¹¥¯¥í¡¼¥ë"
 #: gnome-terminal/gnome-terminal.glade.h:56
 msgid "Scrolling"
 msgstr "¥¹¥¯¥í¡¼¥ë"
-
-#~ msgid "Start chooser and pick the session"
-#~ msgstr "chooser ¤òµ¯Æ°¤·¤Æ¥»¥Ã¥·¥ç¥ó¤òÁª¤Ö"
-
-#~ msgid "done"
-#~ msgstr "´°Î»"
-
-#~ msgid "Padding"
-#~ msgstr "´Ö³Ö"
-
-#~ msgid "Application"
-#~ msgstr "¥¢¥×¥ê¥±¡¼¥·¥ç¥ó"
-
-#~ msgid "PanelApplet"
-#~ msgstr "¥Ñ¥Í¥ë¡¦¥¢¥×¥ì¥Ã¥È"
-
-#~ msgid "Can't execute copy (cp)"
-#~ msgstr "¥³¥Ô¡¼¥³¥Þ¥ó¥É(cp)¤¬¼Â¹Ô¤Ç¤­¤Þ¤»¤ó"
-
-#~ msgid "Drawing"
-#~ msgstr "ÉÁ²è"
-
-#~ msgid "Draw desktops double-buffered (recommended)"
-#~ msgstr "¥Ç¥¹¥¯¥È¥Ã¥×¤ò¥À¥Ö¥ë¥Ð¥Ã¥Õ¥¡¤ÇÉÁ²è (¿ä¾©)"
-
-#~ msgid "AnotherLevel menus"
-#~ msgstr "AnotherLevel¥á¥Ë¥å¡¼"
-
-#~ msgid "AnotherLevel menu (if found): "
-#~ msgstr "AnotherLevel¥á¥Ë¥å¡¼ (¸¡½Ð»þ): "
-
-#~ msgid "AnotherLevel: "
-#~ msgstr "AnotherLevel: "
-
-#~ msgid "Debian: "
-#~ msgstr "Debian: "
-
-#~ msgid "Keep saturation low when cursor is not on the button"
-#~ msgstr "¥«¡¼¥½¥ë¤¬¾å¤ËÍè¤¿¤È¤­¤Ë¥Ï¥¤¥é¥¤¥È¤¹¤ë"
-
-#~ msgid "Ok"
-#~ msgstr "OK"
-
-#~ msgid "<br><br><h2>Info Pages</h2>\n"
-#~ msgstr "<br><br><h2>Info¥Ú¡¼¥¸</h2>\n"
-
-#~ msgid ""
-#~ "Press the foot in the lower left corner\n"
-#~ "to start working with GNOME"
-#~ msgstr ""
-#~ "º¸²¼¶ù¤Î\"Â­\"¤ò²¡¤¹¤È\n"
-#~ "GNOME ¤ò»È¤Ã¤Æºî¶È¤ò³«»Ï¤Ç¤­¤Þ¤¹¡£"
-
-#~ msgid "Show properties `?' button"
-#~ msgstr "`?'¥Ü¥¿¥ó¤Î¥×¥í¥Ñ¥Æ¥£¤òÉ½¼¨"
-
-#~ msgid "Cannot lock screen using xscreensaver!"
-#~ msgstr "xscreensaver¤Ç²èÌÌ¤Î¥í¥Ã¥¯¤¬¤Ç¤­¤Þ¤»¤ó¡£"
-
-#~ msgid ""
-#~ "In order to lock the screen, you must have the xscreensaver\n"
-#~ "or xlockmore package installed"
-#~ msgstr ""
-#~ "²èÌÌ¤ò¥í¥Ã¥¯¤¹¤ë¤Ë¤Ï¡¢xscreensaver¤«xlockmore\n"
-#~ "¥Ñ¥Ã¥±¡¼¥¸¤Î¤É¤Á¤é¤«¤¬¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹¡£"
-
-#~ msgid "Stop"
-#~ msgstr "Ää»ß"
-
-#~ msgid "Exist window"
-#~ msgstr "¸½ºß¤Î¥¦¥£¥ó¥É¥¦¤Ç³«¤¯"
-
-#~ msgid "E"
-#~ msgstr "E"
-
-#~ msgid "Use HTTP"
-#~ msgstr "HTTP ¤ò»È¤¦"
-
-#~ msgid "Use Proxy"
-#~ msgstr "¥×¥í¥¯¥·¤ò»È¤¦"
-
-#~ msgid "Proxy server"
-#~ msgstr "¥×¥í¥¯¥·¥µ¡¼¥Ð"
-
-#~ msgid "Proxy port"
-#~ msgstr "¥×¥í¥¯¥·¤Î¥Ý¡¼¥È"
-
-#~ msgid "Accept lang"
-#~ msgstr "¼õ¤±Æþ¤ì¤ë¸À¸ì"
-
-#~ msgid "Setting"
-#~ msgstr "ÀßÄê"
-
-#~ msgid "Open IM(input method)"
-#~ msgstr "IM(¥¤¥ó¥×¥Ã¥È¥á¥½¥Ã¥É)¤ò»È¤¦"

@@ -22,7 +22,7 @@
    <title>Tasklist</title>
    <screenshot>
     <screeninfo>Tasklist</screeninfo>
-    <graphic format="png" fileref="tasklist-fig" srccredit="John Fleck">
+    <graphic format="png" fileref="figures/tasklist-fig" srccredit="John Fleck">
     </graphic>
    </screenshot>
    </figure>
@@ -44,7 +44,7 @@
       <title>Tasklist Right-Click Options</title>
       <screenshot>
 	<screeninfo>Tasklist Right-Click Options</screeninfo>
-	<graphic format="png" fileref="tasklist-rightclick-fig"
+	<graphic format="png" fileref="figures/tasklist-rightclick-fig"
 		 srccredit="John Fleck">
     </graphic>
    </screenshot>
@@ -101,7 +101,7 @@
      <title>Task Grouping</title>
      <screenshot>
       <screeninfo>Task Grouping</screeninfo> 
-      <graphic format="png" fileref="tasklist-grouping"
+      <graphic format="png" fileref="figures/tasklist-grouping"
 	       srccredit="John Fleck">
       </graphic>
      </screenshot>
@@ -140,7 +140,7 @@
      <title>Properties Dialog</title>
      <screenshot>
       <screeninfo>Properties Dialog</screeninfo> 
-      <graphic format="png" fileref="tasklist-properties"
+      <graphic format="png" fileref="figures/tasklist-properties"
 	       srccredit="John Fleck">
       </graphic>
      </screenshot>
@@ -210,7 +210,7 @@
      <title>Properties Dialog - Size</title>
      <screenshot>
       <screeninfo>Properties Dialog - Size</screeninfo> 
-      <graphic format="png" fileref="tasklist-properties-size"
+      <graphic format="png" fileref="figures/tasklist-properties-size"
 	       srccredit="John Fleck">
       </graphic>
      </screenshot>

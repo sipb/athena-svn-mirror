@@ -38,30 +38,13 @@ cb_enable_cb(GtkWidget *button, GtkWidget *enable)
 	gtk_widget_set_sensitive(enable, GTK_TOGGLE_BUTTON(button)->active);
 }
 
-/*FIXME: we need some help for this I guess*/
-#if 0
 static void
 help(GtkWidget *crapplet)
 {
-  gchar *tmp, *helpfile;
-
-  helpfile = "blahblah.html#BLAHBLAH";
-
-  tmp = gnome_help_file_find_file ("users-guide", helpfile);
-  if (tmp) {
-    gnome_help_goto(0, tmp);
-    g_free(tmp);
-  } else {
-    GtkWidget *mbox;
-
-    mbox = gnome_message_box_new(_("No help is available/installed for these settings. Please make sure you\nhave the GNOME User's Guide installed on your system."),
-				 GNOME_MESSAGE_BOX_ERROR,
-				 _("Close"), NULL);
-
-    gtk_widget_show(mbox);
-  }
+  GnomeHelpMenuEntry help_entry= {"control-center",
+  "session.html#STARTUP-HINTS"};
+  gnome_help_display (NULL, &help_entry);
 }
-#endif
 
 static gboolean hints_enabled = TRUE;
 static gboolean display_fortune = FALSE;

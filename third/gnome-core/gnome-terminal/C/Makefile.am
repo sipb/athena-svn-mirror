@@ -1,6 +1,8 @@
 figs =
-app = gnome-terminal
+docname = gnome-terminal
 lang = C
-omffiles = gnome-terminal-C.omf
-include $(top_srcdir)/app-docs.make
+omffile = gnome-terminal-C.omf
+sgml_ents =
+include $(top_srcdir)/sgmldocs.make
 dist-hook: app-dist-hook
+

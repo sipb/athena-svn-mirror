@@ -749,7 +749,7 @@ fi
 
 PACKAGE=gnome-core
 
-VERSION=1.4.0
+VERSION=1.4.0.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -3742,7 +3742,7 @@ else
   FALSE_FALSE=
 fi
 
-ALL_LINGUAS="az bg_BG.cp1251 ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk wa zh_TW.Big5 zh_CN.GB2312"
+ALL_LINGUAS="az bg_BG.cp1251 ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk wa zh_TW.Big5 zh_CN.GB2312"
 echo $ac_n "checking for working const""... $ac_c" 1>&6
 echo "configure:3748: checking for working const" >&5
 if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
@@ -6374,6 +6374,47 @@ cat >> confdefs.h <<EOF
 EOF
 
 
+# Extract the first word of "scrollkeeper-config", so it can be a program name with args.
+set dummy scrollkeeper-config; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:6381: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_SCROLLKEEPER_CONFIG'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$SCROLLKEEPER_CONFIG" in
+  /*)
+  ac_cv_path_SCROLLKEEPER_CONFIG="$SCROLLKEEPER_CONFIG" # Let the user override the test with a path.
+  ;;
+  ?:/*)			 
+  ac_cv_path_SCROLLKEEPER_CONFIG="$SCROLLKEEPER_CONFIG" # Let the user override the test with a dos path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+  ac_dummy="$PATH"
+  for ac_dir in $ac_dummy; do 
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_SCROLLKEEPER_CONFIG="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_SCROLLKEEPER_CONFIG" && ac_cv_path_SCROLLKEEPER_CONFIG="no"
+  ;;
+esac
+fi
+SCROLLKEEPER_CONFIG="$ac_cv_path_SCROLLKEEPER_CONFIG"
+if test -n "$SCROLLKEEPER_CONFIG"; then
+  echo "$ac_t""$SCROLLKEEPER_CONFIG" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+if test x$SCROLLKEEPER_CONFIG = xno; then
+  { echo "configure: error: Couldn't find scrollkeeper-config" 1>&2; exit 1; }
+fi
+SCROLLKEEPER_REQUIRED=0.1.4
+
 
 
 
@@ -6381,7 +6422,7 @@ EOF
 # Extract the first word of "gtkdoc-mkdb", so it can be a program name with args.
 set dummy gtkdoc-mkdb; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:6385: checking for $ac_word" >&5
+echo "configure:6426: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_GTKDOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -6441,12 +6482,12 @@ LIBS="$GNOMEUI_LIBS $GNOME_LIBDIR"
 for ac_func in _IceTransNoListen
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:6445: checking for $ac_func" >&5
+echo "configure:6486: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 6450 "configure"
+#line 6491 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -6469,7 +6510,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:6473: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:6514: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -6705,6 +6746,7 @@ pixmaps/Makefile
 gsm/Makefile
 gsm/help/Makefile
 gsm/help/C/Makefile
+gsm/help/ja/Makefile
 gsm/default.session.5
 gsm/gnome-session.1
 smproxy/Makefile
@@ -6859,6 +6901,8 @@ s%@HELP_USE_GTKHTML_TRUE@%$HELP_USE_GTKHTML_TRUE%g
 s%@HELP_USE_GTKHTML_FALSE@%$HELP_USE_GTKHTML_FALSE%g
 s%@RES_LIBS@%$RES_LIBS%g
 s%@BZ_LIBS@%$BZ_LIBS%g
+s%@SCROLLKEEPER_CONFIG@%$SCROLLKEEPER_CONFIG%g
+s%@SCROLLKEEPER_REQUIRED@%$SCROLLKEEPER_REQUIRED%g
 s%@GTKDOC@%$GTKDOC%g
 s%@HAVE_GTK_DOC_TRUE@%$HAVE_GTK_DOC_TRUE%g
 s%@HAVE_GTK_DOC_FALSE@%$HAVE_GTK_DOC_FALSE%g
@@ -6990,6 +7034,7 @@ pixmaps/Makefile
 gsm/Makefile
 gsm/help/Makefile
 gsm/help/C/Makefile
+gsm/help/ja/Makefile
 gsm/default.session.5
 gsm/gnome-session.1
 smproxy/Makefile
