@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *      $Author: raeburn $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.4 1990-01-05 06:13:27 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.5 1990-01-17 03:29:18 vanharen Exp $
  */
 
 #include <olc/lang.h>
@@ -77,15 +77,6 @@ typedef int     RESPONSE;       /* A response code. */
 #define isme(r) string_eq(r->target.username, r->requester.username)
 
 /* Size constants. */
-
-#define STRING_LENGTH   16
-#define LABEL_LENGTH    32
-#define NAME_LENGTH     64      /* Maximum length for a filename. */
-#define LINE_LENGTH     128     /* Maximum length for an input line. */
-#define BUFSIZE         1024    /* Size of a message buffer. */
-#define ERRSIZE         512     /* Size of an error message. */
-
-/* the above names will be phased out */
 
 #define LOGIN_SIZE      9       /* Length of a username, plus NULL. */
 #define REALNAME_SIZE   40      /* Arbitrary length of a real name. */
