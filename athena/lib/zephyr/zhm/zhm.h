@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
  *      $Author: opus $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.1 1987-06-29 20:38:59 opus Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.2 1987-07-01 03:24:42 opus Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,22 +16,26 @@
 
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr.h>
+#include <syslog.h>
 
 #ifdef DEBUG
 #define DPR(a) fprintf(stderr, a); fflush(stderr)
 #define DPR2(a,b) fprintf(stderr, a, b); fflush(stderr)
+#define Zperr(e) fprintf(stderr, "Error = %d\n", e)
 #else
 #define DPR(a)
 #define DPR2(a,b)
+#define Zperr(e)
 #endif
 
 #define ever (;;)
-#define Zperr(e) fprintf(stderr, "Error = %d\n", e)
 
 #define SERV_TIMEOUT 20
-#define NOTICE_TIMEOUT 5
+#define NOTICE_TIMEOUT 10
 #define BOOTING 1
 #define NOTICES 2
+
+#define MAXRETRIES 5
 
 extern char *malloc();
 
