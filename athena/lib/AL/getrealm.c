@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: lwvanels $
+ * $Author: cfields $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,10 +12,11 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Id: getrealm.c,v 4.7 1991-08-07 16:04:35 lwvanels Exp $";
+"$Id: getrealm.c,v 4.8 1994-08-21 19:35:38 cfields Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
+#include <netdb.h>
 #include <strings.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -46,6 +47,7 @@ static char rcsid_getrealm_c[] =
  */
 
 static char ret_realm[REALM_SZ+1];
+int krb_ReverseResolve=1;
 
 char *
 krb_realmofhost(host)
@@ -56,6 +58,16 @@ char *host;
 	char trans_host[MAXHOSTNAMELEN+1];
 	char trans_realm[REALM_SZ+1];
 	int retval;
+	struct hostent *h;
+
+	/* reverse-resolve the address */
+	if (krb_ReverseResolve) {
+	  if ((h=gethostbyname(host)) != (struct hostent *)0 ) {
+	    if ((h=gethostbyaddr(h->h_addr, h->h_length, h->h_addrtype))
+		!= (struct hostent *)0)
+	      host = h->h_name;
+	  }
+	}
 
 	domain = index(host, '.');
 
