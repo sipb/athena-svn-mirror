@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.15 2001-07-19 21:23:37 zacheiss Exp $
+### $Id: install1.sh,v 1.16 2001-08-02 16:40:05 zacheiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -91,10 +91,10 @@ case $CUSTOM in
 N)
   echo "standard installation - 9.0"
   REV=9.0
-  ln -s /afs/dev.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
-  ln -s /afs/dev.mit.edu/system/sun4x_58/os /tmp/os
-  ln -s /afs/dev.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
-  ln -s /afs/dev.mit.edu/system/sun4x_58/install/patches /tmp/patches
+  ln -s /afs/athena.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_58/os /tmp/os
+  ln -s /afs/athena.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
+  ln -s /afs/athena.mit.edu/system/sun4x_58/install/patches /tmp/patches
   ;;
 
 Y)
@@ -142,18 +142,18 @@ Y)
     9.0)
        echo "standard installation - 9.0"
        REV=9.0
-       ln -s /afs/dev.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
-       ln -s /afs/dev.mit.edu/system/sun4x_58/os /tmp/os
-       ln -s /afs/dev.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
-       ln -s /afs/dev.mit.edu/system/sun4x_58/install/patches /tmp/patches
+       ln -s /afs/athena.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_58/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_58/install/patches /tmp/patches
        ;;
     *)
-       echo "installing 8.4"
-       REV=8.4
-       ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
-       ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
-       ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
-       ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
+       echo "installing 9.0"
+       REV=9.0
+       ln -s /afs/athena.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_58/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_58/install/patches /tmp/patches
        ;;
    esac
    echo "done choosing rev"
@@ -391,7 +391,7 @@ type=install; export type
 date >/tmp/install.log
 
 case $REV in
- 8.4)
+ 8.4|9.0)
     sh /srvd/install/install2.sh | tee -a /tmp/install.log
     ;;
  *)
