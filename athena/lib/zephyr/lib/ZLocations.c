@@ -11,7 +11,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.11 1987-07-29 14:59:37 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.12 1987-07-29 15:16:57 rfrench Exp $ */
+
+#ifndef lint
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.12 1987-07-29 15:16:57 rfrench Exp $";
+#endif lint
 
 #include <zephyr/mit-copyright.h>
 

@@ -10,7 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.4 1987-07-09 01:52:03 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.5 1987-07-29 15:16:24 rfrench Exp $ */
+
+#ifndef lint
+static char rcsid_ZGetSender_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.5 1987-07-29 15:16:24 rfrench Exp $";
+#endif lint
 
 #include <zephyr/mit-copyright.h>
 
@@ -37,8 +41,8 @@ char *ZGetSender()
 		   wants an int. AARGH! */
 		pw = getpwuid((int) getuid());
 		if (!pw)
-			return ("unauth");
-		(void) sprintf(sender,"%s@UNAUTH",pw->pw_name);
+			return ("unknown");
+		(void) sprintf(sender,"%s@%s",pw->pw_name,__Zephyr_realm);
 		return (sender);
 	} 
         readstr(fp,pname,ANAME_SZ);

@@ -10,7 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.3 1987-06-24 04:20:02 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.4 1987-07-29 15:16:38 rfrench Exp $ */
+
+#ifndef lint
+static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.4 1987-07-29 15:16:38 rfrench Exp $";
+#endif lint
 
 #include <zephyr/mit-copyright.h>
 

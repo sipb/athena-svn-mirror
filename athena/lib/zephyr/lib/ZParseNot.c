@@ -10,7 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.10 1987-07-06 02:09:33 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.11 1987-07-29 15:17:22 rfrench Exp $ */
+
+#ifndef lint
+static char rcsid_ZParseNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.11 1987-07-29 15:17:22 rfrench Exp $";
+#endif lint
 
 #include <zephyr/mit-copyright.h>
 

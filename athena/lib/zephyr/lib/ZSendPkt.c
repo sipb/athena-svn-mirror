@@ -10,7 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.16 1987-07-09 20:03:55 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.17 1987-07-29 15:18:29 rfrench Exp $ */
+
+#ifndef lint
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.17 1987-07-29 15:18:29 rfrench Exp $";
+#endif lint
 
 #include <zephyr/mit-copyright.h>
 
