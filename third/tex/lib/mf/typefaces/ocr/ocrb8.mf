@@ -1,5 +1,6 @@
 % This is OCRB8_mf   (OCRB small at 8pt)
 %
+mode_setup;
 
 font_identifier:="OCRB8";
 font_size  8pt#;

@@ -1,5 +1,6 @@
 % This is OCRB10l_mf   (slanted)
 %
+mode_setup;
 
 font_identifier:="OCRB10L";
 font_size 10pt#;
