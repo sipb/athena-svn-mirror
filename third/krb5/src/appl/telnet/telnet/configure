@@ -6246,7 +6246,7 @@ fi; if test $with_afs != no; then
 #define SETPAG 1
 _ACEOF
 
-	EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
+	EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil"
 fi
 # Make sure we can run config.sub.
 $ac_config_sub sun4 >/dev/null 2>&1 ||
