@@ -46,6 +46,7 @@
 #include <sys/utsname.h>
 #endif
 
+
 #if defined(SYSV) && defined(SYSV386)
 # include <sys/stream.h>
 # ifdef ISC
@@ -120,7 +121,7 @@ findProtocol (name_length, name)
 
     for (i = 0; i < NUM_AUTHORIZATION; i++)
 	if (AuthProtocols[i].name_length == name_length &&
-	    bcmp (AuthProtocols[i].name, name, name_length) == 0)
+	    memcmp (AuthProtocols[i].name, name, name_length) == 0)
 	{
 	    return &AuthProtocols[i];
 	}
@@ -494,7 +495,7 @@ saveEntry (auth)
 			free ((char *) new);
 			return;
 		}
-		bcopy (auth->address, new->address, (int) auth->address_length);
+		memcpy (new->address, auth->address, (int) auth->address_length);
 	} else
 		new->address = 0;
 	if ((new->number_length = auth->number_length) > 0) {
@@ -505,7 +506,7 @@ saveEntry (auth)
 			free ((char *) new);
 			return;
 		}
-		bcopy (auth->number, new->number, (int) auth->number_length);
+		memcpy (new->number, auth->number, (int) auth->number_length);
 	} else
 		new->number = 0;
 	if ((new->name_length = auth->name_length) > 0) {
@@ -517,7 +518,7 @@ saveEntry (auth)
 			free ((char *) new);
 			return;
 		}
-		bcopy (auth->name, new->name, (int) auth->name_length);
+		memcpy (new->name, auth->name, (int) auth->name_length);
 	} else
 		new->name = 0;
 	new->family = auth->family;
@@ -744,7 +745,7 @@ DefineSelf (fd, file, auth)
     if (hp != NULL) {
 	saddr.sa.sa_family = hp->h_addrtype;
 	inetaddr = (struct sockaddr_in *) (&(saddr.sa));
-	bcopy ( (char *) hp->h_addr, (char *) &(inetaddr->sin_addr), (int) hp->h_length);
+	memcpy ( (char *) &(inetaddr->sin_addr), (char *) hp->h_addr, (int) hp->h_length);
 	family = ConvertAddr ( &(saddr.sa), &len, &addr);
 	if ( family >= 0) {
 	    writeAddr (FamilyInternet, sizeof (inetaddr->sin_addr),

@@ -154,7 +154,8 @@ int	len;
 	value = len;
 	if (value > sizeof (key))
 	    value = sizeof (key);
-    	bcopy (auth, (char *) key, value);
+	memcpy ((char *) key, auth, value);
+
     }
 #endif
 }

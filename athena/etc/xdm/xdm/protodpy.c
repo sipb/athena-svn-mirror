@@ -113,7 +113,7 @@ NewProtoDisplay (address, addrlen, displayNumber,
 	return NULL;
     }
     pdpy->addrlen = addrlen;
-    bcopy (address, pdpy->address, addrlen);
+    memcpy (pdpy->address, address, addrlen);
     pdpy->displayNumber = displayNumber;
     pdpy->connectionType = connectionType;
     pdpy->date = date;

@@ -124,7 +124,7 @@ Willing (addr, connectionType, authenticationName, status, type)
     if (!status->data)
 	status->length = 0;
     else
-	bcopy (statusBuf, status->data, status->length);
+      memcpy (status->data, statusBuf, status->length);
     return ret;
 }
 

@@ -267,7 +267,7 @@ GetRemoteAddress (d, fd)
 	d->peer = (XdmcpNetaddr) malloc (len);
 	if (d->peer)
 	{
-	    bcopy (buf, (char *) d->peer, len);
+            memcpy ((char *) d->peer, buf,  len);
 	    d->peerlen = len;
 	}
     }
