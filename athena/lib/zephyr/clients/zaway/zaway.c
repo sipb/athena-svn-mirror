@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,16 +20,20 @@
 #include <signal.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.7 1989-09-06 15:06:16 jtkohl Exp $";
-#endif lint
+static char rcsid_zaway_c[] = "$Id: zaway.c,v 1.8 1991-06-20 08:15:29 jfc Exp $";
+#endif
 
 #define MESSAGE_CLASS "MESSAGE"
 #define DEFAULT_MSG "I'm sorry, but I am currently away from the terminal and am\nnot able to receive your message.\n"
 
-extern char *getenv(), *malloc();
+#ifdef _POSIX_SOURCE
+#include <stdlib.h>
+#else
+extern char *getenv(), *malloc(), *realloc();
+#endif
 extern uid_t getuid();
 
-#ifdef ULTRIX30
+#if defined(ultrix) || defined(_POSIX_SOURCE)
 void cleanup();
 #else
 int cleanup();
@@ -44,9 +48,10 @@ main(argc,argv)
 	FILE *fp;
 	ZNotice_t notice;
 	ZSubscription_t sub;
-	int retval;
+	register int retval;
 	struct passwd *pw;
-	char awayfile[BUFSIZ],*ptr,*msg[2],*envptr;
+	register char *ptr;
+	char awayfile[BUFSIZ],*msg[2],*envptr;
 	char *find_message();
 	
 	if ((retval = ZInitialize()) != ZERR_NONE) {
@@ -60,9 +65,9 @@ main(argc,argv)
 		exit(1);
 	}
 
-	sub.class = MESSAGE_CLASS;
-	sub.classinst = "*";
-	sub.recipient = ZGetSender();
+	sub.zsub_class = MESSAGE_CLASS;
+	sub.zsub_classinst = "*";
+	sub.zsub_recipient = ZGetSender();
 
 	if (argc > 1)
 		(void) strcpy(awayfile,argv[1]);
@@ -139,11 +144,11 @@ main(argc,argv)
 
 char *find_message(notice,fp)
 	ZNotice_t *notice;
-	FILE *fp;
+	register FILE *fp;
 {
-	char bfr[BUFSIZ],*ptr,*ptr2,sender[BUFSIZ];
+	register char *ptr,*ptr2;
+	char bfr[BUFSIZ],sender[BUFSIZ];
 	int gotone,lastwasnt;
-	char *realloc();
 	
 	rewind(fp);
 
@@ -187,7 +192,7 @@ char *find_message(notice,fp)
 	return (ptr);
 }
 
-#ifdef ULTRIX30
+#if defined(ultrix) || defined(_POSIX_SOURCE)
 void
 #else
 int
