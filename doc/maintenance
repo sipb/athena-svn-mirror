@@ -150,6 +150,17 @@ To set up a build machine, follow these instructions after installing:
     and follow the directions in
     /afs/dev.mit.edu/reference/sunpro8/README.  Repeat for /rel/wash.
 
+Right now we have an issue doing a complete build of the source tree
+from scratch, because programs which use gdk-pixbuf-csource at build
+time (like gnome-panel) require /etc/athena/gtk-2.0/gdk-pixbuf.loaders
+to be set up.  Since we lack machinery to deal with that kind of
+problem, the workaround is to run the build at least as far as
+third/gtk2 and then run, from within the chrooted environment:
+
+  mkdir -p /etc/athena/gtk-2.0
+  gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loaders
+  gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
+
 The wash process
 ----------------
 
