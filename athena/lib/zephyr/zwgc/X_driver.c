@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: marc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.13 1992-05-07 22:37:55 marc Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.14 1993-09-24 21:32:18 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -366,7 +366,7 @@ int X_driver_init(drivername, notfirst, pargc, argv)
     if (temp = get_string_resource("geometry", "Geometry"))
       var_set_variable("default_X_geometry", temp);
 
-    temp=rindex(argv[0],'/');
+    temp=strrchr(argv[0],'/');
 
     app_instance=string_Copy(temp?temp+1:argv[0]);
 
