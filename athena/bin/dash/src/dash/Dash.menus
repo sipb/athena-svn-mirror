@@ -43,7 +43,7 @@ item deans:		"   Dean's office"				[ehelp]									;
 item psych:		"   Psychiatric services"			[ehelp]									;
 
 item xinfo:		"* Campus Map"					[mhelp/60]			add("xmit"),exec("xinfo")  	        ;
-item techinfo:		"* TechInfo"					[mhelp/50]			add("techinfo"),exec("xterm -e techinfo") ;
+item techinfo:		"* TechInfo"					[mhelp/50]			exec("xterm -e techinfo") ;
 ! item lucy:		"   Advice from Lucy"				[mhelp/40]								;
 item mitdir:		"   MIT Directory"				[mhelp/100]					                        ;
 
@@ -185,7 +185,7 @@ item xessann:		"   Xess is now available"			[announce]								;
 item lucidann:		"   Lucid Common Lisp is now available"		[announce]								;
 !item lucyann:		"   Lucy is available"				[announce]								;
 
-item maple:		"* Maple"		[newsoft][plotting]  -verify -rt exec("dash -name Maple -appdefs /afs/.athena/system/config/dash/maple.yesno");
+item maple:		"* Maple"		[newsoft][plotting]  -verify -rt exec("dash -name Maple -appdefs /afs/.athena/system/config/dash/maple.yesno.%M");
 item xess:		"* Xess"		[newsoft][spreadsheets/10]  -verify -rt exec("dash -name Xess -appdefs /afs/.athena/system/config/dash/xess.yesno");
 
 item aboutcw:		"   About Courseware"				[courseware/1]								;
@@ -286,7 +286,7 @@ help techinfo:
 on course schedules and descriptions, Institute policies,
 activities, _Tech Talk_, network resources, and more.
 
-To run:    add techinfo ; techinfo";
+To run:    techinfo";
 
 help xcluster:
 "The xcluster program displays a map of the MIT campus and
