@@ -3,7 +3,7 @@ Summary: A utility to obtain tokens for access to AFS on Athena workstations
 Copyright: MIT
 Group: Applications/Internet
 
-Requires: athena-krb5 athena-afs athena-libet
+Requires: athena-krb5 athena-openafs athena-libet
 
 %description
 The aklog utility obtains AFS tokens from the user's existing kerberos

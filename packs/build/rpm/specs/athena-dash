@@ -3,7 +3,7 @@ Summary: The Athena dashboard; a pull-down menu implementation
 Copyright: MIT
 Group: User Interface/Desktops
 
-Requires: athena-libXj athena-krb5 athena-libathdir athena-afs
+Requires: athena-libXj athena-krb5 athena-libathdir athena-openafs
 
 %description
 The dash utility places a menu bar at the top of the screen which

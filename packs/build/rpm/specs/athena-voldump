@@ -3,7 +3,7 @@ Summary: Print AFS volume information
 Copyright: Transarc and MIT
 Group: Applications/Internet
 
-Requires: athena-afs athena-hesiod
+Requires: athena-openafs athena-hesiod
 
 %description
 The voldump utility does a similar task to the `vos info' command, but

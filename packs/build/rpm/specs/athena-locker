@@ -3,7 +3,7 @@ Summary: Locker management library functions for Athena
 Copyright: MIT
 Group: System Environment/Libraries
 
-Requires: athena-zephyr athena-krb5 athena-hesiod athena-afs athena-libet
+Requires: athena-zephyr athena-krb5 athena-hesiod athena-openafs athena-libet
 
 %description
 Locker management library functions for Athena

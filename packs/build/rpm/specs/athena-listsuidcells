@@ -3,7 +3,7 @@ Summary: An Athena tool to find out what AFS cells are trusted with suid binarie
 Copyright: MIT
 Group: Applications/Internet
 
-Requires: athena-afs
+Requires: athena-openafs
 
 %description
 An Athena tool to find out what AFS cells are trusted with suid binaries

@@ -3,7 +3,7 @@ Summary: Print disk usage and quota limits
 Copyright: MIT
 Group: System Environment/Base
 
-Requires: athena-locker athena-afs
+Requires: athena-locker athena-openafs
 
 %description
 Quota displays a user's disk usage and limits on local and NFS mounted

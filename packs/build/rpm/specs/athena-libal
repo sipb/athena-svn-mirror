@@ -3,7 +3,7 @@ Summary: The Athena login library
 Copyright: MIT
 Group: System Environment/Libraries
 
-Requires: athena-hesiod athena-afs
+Requires: athena-hesiod athena-openafs
 
 %description
 A library of functions used to implement login functionality on Athena

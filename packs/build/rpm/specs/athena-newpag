@@ -3,7 +3,7 @@ Summary: A simple Athena utility to create a new AFS Process Authentication Grou
 Copyright: MIT
 Group: Applications/Internet
 
-Requires: athena-afs
+Requires: athena-openafs
 
 %description
 A simple Athena utility to create a new AFS Process Authentication Group.

@@ -3,7 +3,7 @@ Summary: A friendlier version of rm for Athena.
 Copyright: MIT
 Group: Applications/File
 
-Requires: athena-afs athena-libet
+Requires: athena-openafs athena-libet
 
 %description
 The delete utility marks files and directories for later permanent

@@ -3,8 +3,7 @@ Summary: A file manager and graphical shell, for Athena
 Copyright: GPL
 Group: User Interface/Desktop
 
-Requires: athena-freetype athena-ammonite athena-bonobo athena-gnome-vfs
-Requires: athena-libghttp
+Requires: athena-freetype athena-bonobo athena-gnome-vfs
 
 %description
 Nautilus is an open-source file manager and graphical shell being
