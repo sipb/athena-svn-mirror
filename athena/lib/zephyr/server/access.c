@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.3 1987-07-07 13:55:34 jtkohl Exp $";
+static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.4 1987-07-15 15:26:58 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -55,8 +55,10 @@ ZAccess_t accesstype;
 		syslog(LOG_ERR, "unknown access type %d", accesstype);
 		return(0);
 	}
-	(void) sprintf(buf, "%s.%s", acl->acl_filename,
-		(accesstype == TRANSMIT) ? "xmt" : "sub");
+	(void) sprintf(buf, "%s%s-%s", 
+		       ZEPHYR_ACL_DIR,
+		       (accesstype == TRANSMIT) ? "xmt" : "sub",
+		       acl->acl_filename);
 
 	return(acl_check(buf, notice->z_sender));
 }
