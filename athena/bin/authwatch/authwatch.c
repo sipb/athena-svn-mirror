@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.2 2002-06-04 17:37:15 mwhitson Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.3 2002-06-13 18:43:54 mwhitson Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -159,6 +159,7 @@ gint timeout_cb(gpointer unused)
 			     GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 			     &dialog);
 
+	  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	  gtk_widget_show(dialog);
 	}
     }
