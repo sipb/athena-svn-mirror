@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.9 1997-06-27 23:10:17 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.10 1998-06-08 21:38:02 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.9 1997-06-27 23:10:17 ghudson Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.10 1998-06-08 21:38:02 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -178,6 +178,8 @@ main(argc, argv, envp)
 	struct sigaction sa;
 	register int tmpint;
 	FILE *pidfile;
+	struct sockaddr_in foreign_addr;
+	int foreign_addr_len;
 
 	Argv = argv;
 	if (envp == 0 || *envp == 0)
@@ -278,8 +280,15 @@ nextopt:
 		if (debug)
 			fprintf(stderr, "someone wants %s\n", sep->se_service);
 		if (!sep->se_wait && sep->se_socktype == SOCK_STREAM) {
-			ctrl = accept(sep->se_fd, (struct sockaddr *)0,
-			    (int *)0);
+		        memset((char *) &foreign_addr, 0,
+			       sizeof(foreign_addr));
+			foreign_addr_len = sizeof(foreign_addr);
+		        ctrl = accept(sep->se_fd,
+				      (struct sockaddr *) &foreign_addr,
+				      &foreign_addr_len);
+			syslog(LOG_DEBUG, "accepted %s connection from %s\n",
+			       sep->se_service, 
+			       inet_ntoa(foreign_addr.sin_addr));
 			if (debug)
 				fprintf(stderr, "accept, ctrl %d\n", ctrl);
 			if (ctrl < 0) {
