@@ -164,6 +164,9 @@ bashref.dvi: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 bashref.html: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/bashref.texi
 
+bash.info: bashref.info
+	${SHELL} ${INFOPOST} < $(srcdir)/bashref.info > $@ ; \
+
 bash.txt: bash.1
 bash.ps: bash.1
 bash.html: bash.1 $(MAN2HTML)
