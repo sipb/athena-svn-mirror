@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements NFS lockers. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.2 1999-03-29 17:33:24 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.3 1999-06-04 14:06:42 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -206,8 +206,8 @@ static int nfs_parse(locker_context context, char *name, char *desc,
 	goto mem_error;
     }
 
-  status = locker__canonicalize_path(context, 1, &(at->mountpoint),
-				     &(at->buildfrom));
+  status = locker__canonicalize_path(context, LOCKER_CANON_CHECK_ALL,
+				     &(at->mountpoint), &(at->buildfrom));
   if (status != LOCKER_SUCCESS)
     goto cleanup;
 

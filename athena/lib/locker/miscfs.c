@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements UFS and ERR lockers. */
 
-static const char rcsid[] = "$Id: miscfs.c,v 1.2 1999-03-29 17:33:23 danw Exp $";
+static const char rcsid[] = "$Id: miscfs.c,v 1.3 1999-06-04 14:06:41 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -143,8 +143,8 @@ static int ufs_parse(locker_context context, char *name, char *desc,
       dup = NULL;
     }
 
-  status = locker__canonicalize_path(context, 1, &(at->mountpoint),
-				     &(at->buildfrom));
+  status = locker__canonicalize_path(context, LOCKER_CANON_CHECK_ALL,
+				     &(at->mountpoint), &(at->buildfrom));
   if (status != LOCKER_SUCCESS)
     goto cleanup;
 

@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.4 1999-05-12 18:30:40 danw Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.5 1999-06-04 14:06:42 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -106,7 +106,7 @@ int locker__canonicalize_path(locker_context context, int check,
     seteuid(context->user);
 
   /* Expand symlinks. */
-  while (1)
+  do
     {
       end = strchr(cur, '/');
       if (end)
@@ -163,11 +163,8 @@ int locker__canonicalize_path(locker_context context, int check,
 	  continue;
 	}
 
-      /* Don't resolve the final component, since it may be a symlink
-       * (for an AFS mountpoint), and the fs-specific attach/detach
-       * routine will deal with it.
-       */
-      if (!end)
+      /* Don't resolve the final component unless we need to check it. */
+      if (!end && (check != LOCKER_CANON_CHECK_ALL))
 	break;
 
       /* Check if current component is a symlink. */
@@ -184,7 +181,8 @@ int locker__canonicalize_path(locker_context context, int check,
 		  status = LOCKER_ENOMEM;
 		  goto cleanup;
 		}
-	      *end = '/';
+	      if (end)
+		*end = '/';
 	      break;
 	    }
 	  else
@@ -194,6 +192,13 @@ int locker__canonicalize_path(locker_context context, int check,
 	      status = LOCKER_EBADPATH;
 	      goto cleanup;
 	    }
+	}
+      else if (!end && !S_ISDIR(st.st_mode))
+	{
+	  locker__error(context, "Final path component is not a directory "
+			"in \"%s\".\n", path);
+	  status = LOCKER_EBADPATH;
+	  goto cleanup;
 	}
       else if (S_ISLNK(st.st_mode))
 	{
@@ -257,7 +262,7 @@ int locker__canonicalize_path(locker_context context, int check,
 	}
       else
 	{
-	  if (check)
+	  if (check != LOCKER_CANON_CHECK_NONE)
 	    {
 	      /* Check that we can build in this directory. */
 	      if (last_dev && st.st_dev != last_dev)
@@ -289,12 +294,16 @@ int locker__canonicalize_path(locker_context context, int check,
 	    }
 
 	  /* Replace *end, update cur. */
-	  *end = '/';
-	  cur = end + 1;
+	  if (end)
+	    {
+	      *end = '/';
+	      cur = end + 1;
+	    }
 	}
     }
+  while (end);
 
-  if (check)
+  if (check != LOCKER_CANON_CHECK_NONE)
     {
       int len = strlen(context->attachtab);
       if (!strncmp(context->attachtab, path, len) &&
@@ -354,16 +363,20 @@ int locker__build_mountpoint(locker_context context, locker_attachent *at)
     {
       /* Create any remaining directories. */
       p = q = at->mountpoint + (strrchr(at->buildfrom, '/') - at->buildfrom);
-      while (!status && (q = strchr(q + 1, '/')))
+      while (!status)
 	{
-	  *q = '\0';
+	  q = strchr(q + 1, '/');
+	  if (q)
+	    *q = '\0';
+	  else if (!(at->fs->flags & LOCKER_FS_NEEDS_MOUNTDIR))
+	    break;
 	  status = mountpoint_mkdir(context, at, at->mountpoint);
-	  *q = '/';
+	  if (q)
+	    *q = '/';
+	  else
+	    break;
 	}
     }
-
-  if (!status && (at->fs->flags & LOCKER_FS_NEEDS_MOUNTDIR))
-    status = mountpoint_mkdir(context, at, at->mountpoint);
 
   /* We do not release the dirlock now, to guarantee that no one
    * else deletes our directories before we're done mounting
@@ -389,9 +402,9 @@ int locker__remove_mountpoint(locker_context context, locker_attachent *at)
   if (status)
     return status;
 
-  status = LOCKER_SUCCESS;
-  if (at->fs->flags & LOCKER_FS_NEEDS_MOUNTDIR)
-    status = mountpoint_rmdir(context, at, at->mountpoint);
+  status = mountpoint_rmdir(context, at, at->mountpoint);
+  if (status == LOCKER_ENOENT)
+    status = LOCKER_SUCCESS;
   while (!status && (q = p) && (q != at->mountpoint))
     {
       *q = '\0';

@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.2 1999-03-29 17:33:20 danw Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.3 1999-06-04 14:06:40 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -234,7 +234,8 @@ int locker_init(locker_context *contextp, uid_t user,
       return status;
     }
 
-  status = locker__canonicalize_path(context, 0, &context->attachtab, NULL);
+  status = locker__canonicalize_path(context, LOCKER_CANON_CHECK_NONE,
+				     &context->attachtab, NULL);
   if (status)
     {
       locker_end(context);

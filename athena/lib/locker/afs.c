@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.4 1999-04-15 05:53:33 tb Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.5 1999-06-04 14:06:40 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -189,8 +189,8 @@ static int afs_parse(locker_context context, char *name, char *desc,
       dup = NULL;
     }
 
-  status = locker__canonicalize_path(context, 1, &(at->mountpoint),
-				     &(at->buildfrom));
+  status = locker__canonicalize_path(context, LOCKER_CANON_CHECK_MOST,
+				     &(at->mountpoint), &(at->buildfrom));
   if (status != LOCKER_SUCCESS)
     goto cleanup;
 

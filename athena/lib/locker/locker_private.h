@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.3 1999-03-29 17:33:22 danw Exp $ */
+/* $Id: locker_private.h,v 1.4 1999-06-04 14:06:41 danw Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -90,6 +90,11 @@ struct locker_context {
 #define LOCKER_DIRECTORY 3
 /* Already a full path: don't touch it. */
 #define LOCKER_FULL_PATH 4
+
+/* options for locker__canonicalize_path */
+#define LOCKER_CANON_CHECK_NONE 0
+#define LOCKER_CANON_CHECK_MOST 1
+#define LOCKER_CANON_CHECK_ALL 2
 
 /* Prototypes from attachtab.c */
 locker_attachent *locker__new_attachent(locker_context context,
