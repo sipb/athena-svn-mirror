@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.h,v 1.3 1989-03-27 12:07:57 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.h,v 1.4 1989-10-23 13:32:29 jik Exp $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -12,13 +12,12 @@
  */
 #include "mit-copyright.h"
 
-char **add_str();
-char **find_contents();
-char **find_deleted_contents();
-char **find_deleted_contents_recurs();
-char **find_matches();
-char **find_deleted_matches();
-char **find_recurses();
-char **find_deleted_recurses();
-
-char *parse_pattern();
+int add_str();
+int add_arrays();
+int find_contents();
+int find_deleted_contents();
+int find_deleted_contents_recurs();
+int find_matches();
+int find_deleted_matches();
+int find_recurses();
+int find_deleted_recurses();
