@@ -5,10 +5,10 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v $
 /**/#	$Author: probe $
-/**/#	$Id: Imakefile,v 1.6 1993-11-19 15:27:25 probe Exp $
+/**/#	$Id: Imakefile,v 1.7 1993-11-21 04:11:48 probe Exp $
 /**/#
 
-#if defined(KERBEROS) && defined(HESIOD)
+#if defined(KERBEROS)
 XDEFS= -DKPOP
 
 SRCS = zmailnotify.c
