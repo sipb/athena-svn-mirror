@@ -1,15 +1,14 @@
 /* 
  * Imakefile for turnin and related clients; Athena release
  *
- * $Author: probe $
- * $Id: Imakefile,v 1.2 1991-06-30 15:31:17 probe Exp $
+ * $Id: Imakefile,v 1.3 1991-07-22 01:29:51 probe Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  *
  */
 
-#if defined(_IBMR2)
-#define ISUBDIRS ets protocol lib clients man
-#else
-#define ISUBDIRS rpc3.9 ets protocol lib clients man
+#if !defined(_IBMR2)
+RPCDIR = rpc3.9
 #endif
+
+#define ISUBDIRS $(RPCDIR) ets include protocol lib clients man
