@@ -6,7 +6,7 @@
 #define CcFlags LintFlags
 #define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L$(ATHLIBDIR)
 #define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
-#define CcCmd /usr/gcc/bin/gcc -traditional
+#define CcCmd /usr/gcc/bin/gcc
 #define LdCmd /usr/gcc/bin/gcc
 #define AnsiCcCmd /usr/gcc/bin/gcc
 #define AnsiLdCmd /usr/gcc/bin/gcc
