@@ -154,6 +154,14 @@ sgi)
 	echo "k same"					>> "$applocal"
 	echo "k D"					>> "$applocal"
 
+	# Install local patches.
+	patchlocal="$LOCALPACKAGES.patches"
+	echo "i patchSG0003913.eoe_sw.base"		>> "$patchlocal"
+	# Deselect packages that are the same version or a downgrade
+	# from what is installed.
+	echo "k same"					>> "$patchlocal"
+	echo "k D"					>> "$patchlocal"
+
 	if [ "6.5" = "$osrel" ]; then
 	    dists="foundation applications dev pcp patches"
 	else
@@ -224,6 +232,7 @@ sgi)
 	    echo "k desktop_base.sw.dso6_2"		>> "$linkpkgs"
 	    echo "k media_warehouse.sw.viewers"		>> "$linkpkgs"
 	    echo "k webviewer.sw.eoe"			>> "$linkpkgs"
+	    echo "k patchSG0003913.eoe_sw.base"		>> "$linkpkgs"
 
 	    # Deselect packages that are the same version or a downgrade
 	    # from what is installed, and overlays of packages we
