@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.9 1991-06-24 15:18:13 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.10 1991-07-18 12:51:31 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.9  91/06/24  15:18:13  epeisach
+ * POSIX dirent handling
+ * 
  * Revision 4.8  91/03/14  13:28:36  epeisach
  * Under AIX don't perform the umount.
  * 
@@ -143,13 +146,16 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.9 1991-06-24 15:18:13 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.10 1991-07-18 12:51:31 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
 #include "mit-copyright.h"
 
 #include "track.h"
+#ifdef ultrix
+#include <sys/mount.h>
+#endif
 
 char admin[WORDLEN] = DEF_ADM;		/* track administrator */
 char workdir[LINELEN];			/* working directory under src/dest
@@ -522,6 +528,13 @@ readstat( types) char *types; {
 	 */
 #if !defined(ultrix) && !defined(_AIX)
 	unmount("/");		/* XXX */
+#endif
+#ifdef ultrix
+        {
+		dev_t dev;
+		struct fs_data fsd;
+		if(statfs("/",&fsd) == 1) umount(fsd.fd_dev);
+	}
 #endif
 	/* then make sure that the file-systems' superblocks are up-to-date.
 	 */
