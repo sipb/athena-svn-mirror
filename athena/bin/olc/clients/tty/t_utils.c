@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.17 1990-10-22 04:16:55 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.18 1990-11-15 08:36:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.17 1990-10-22 04:16:55 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.18 1990-11-15 08:36:43 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -38,8 +41,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sgtty.h>
 
 
-
-char get_key_input();
 struct sgttyb mode;
 
 /*
@@ -55,9 +56,8 @@ struct sgttyb mode;
  */
 
 ERRCODE
-display_file(filename,flag)
+display_file(filename)
      char *filename;
-     int flag;
 {
   FILE *file;                  /* File structure pointer. */
   char line[LINE_SIZE];      /* Input line buffer. */
@@ -98,6 +98,7 @@ cat_file(file)
     write(1,buf,len);
 
   close(fd);
+  return(SUCCESS);
 }
 
 enter_message(file,editor)
@@ -245,8 +246,9 @@ handle_response(response, req)
      REQUEST *req;
 {
 #ifdef KERBEROS
-  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc.  If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
-#endif KERBEROS
+  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc.  If you were having trouble\nwith a program, try again.\n\n";
+  char *kmessage2 = "If you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
+#endif /* KERBEROS */
 
   switch(response)
     {
@@ -344,7 +346,9 @@ handle_response(response, req)
       break;
 
     case ERROR_SLOC:
-      fprintf(stderr,"Unable to locate OLC service. Seek help.\n");
+      fprintf(stderr,"Unable to locate OLC service. The /etc/services file\n");
+      fprintf(stderr,"may be corrupt on this workstation; try another\n");
+      fprintf(stderr,"workstation.  If the error persists, seek help.\n");
       if(OLC)
 	exit(ERROR);
       else
@@ -368,14 +372,16 @@ handle_response(response, req)
       printf(" To renew your Kerberos tickets,\n");
       printf("type:    kinit\n");
       if(OLC)
-	printf("%s\n",kmessage);
+	printf("%s",kmessage);
+	printf("%s\n",kmessage2);
       exit(ERROR);
     case NO_TKT_FIL: 
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("You do not have a Kerberos ticket file.  To ");
       printf("get one, \ntype:    kinit\n");
       if(OLC)
-	printf("%s\n",kmessage);
+	printf("%s",kmessage);
+	printf("%s\n",kmessage2);
       exit(ERROR);
     case TKT_FIL_ACC:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
@@ -383,7 +389,8 @@ handle_response(response, req)
       printf("Try:              setenv   KRBTKFILE  /tmp/random\n");
       printf("                  kinit\n");
       if(OLC)
-	printf("%s\n",kmessage);
+	printf("%s",kmessage);
+	printf("%s\n",kmessage2);
       exit(ERROR);
     case RD_AP_TIME:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
@@ -391,9 +398,10 @@ handle_response(response, req)
       printf("incorrect.\nPlease contact Athena operations and move to ");
       printf("another workstation.\n");
       if(OLC)
-	printf("%s\n",kmessage);
+	printf("%s",kmessage);
+	printf("%s\n",kmessage2);
       exit(ERROR);
-#endif KERBEROS
+#endif /* KERBEROS */
 
     case SUCCESS:
       return(SUCCESS);     
@@ -402,9 +410,9 @@ handle_response(response, req)
       if(response < 100)   /* this isn't so great */
 	fprintf(stderr,"%s\n",krb_err_txt[response]);
       else
-	fprintf(stderr, "Unknown response %d (fascinating)\n", response);
-      return(ERROR); 	   
+	fprintf(stderr, "Unknown response %d\n", response);
     }
+  return(ERROR); 	   
 }
 
 
@@ -524,7 +532,7 @@ what_now(file, edit_first, editor)
 	       string_equiv(inbuf,"snde",max(strlen(inbuf),1)))
 	return(SUCCESS);
       else if (string_equiv(inbuf,"list",max(strlen(inbuf),1)))
-	display_file(file,TRUE);
+	display_file(file);
       else if (*inbuf == 'a')
 	printf("hello!\n");
 	  
@@ -547,11 +555,11 @@ edit_message(file, editor)
      char *file;
      char *editor;
 {
-  if(editor != (char *) NULL)
+  if (editor != (char *) NULL) 
     if(string_eq(editor,NO_EDITOR))
       editor = (char *) NULL;
 
-  if (editor == (char *) NULL) 
+  if (editor == (char *) NULL)
     {
       if (editor_name == (char *) NULL) 
 	{
@@ -562,10 +570,6 @@ edit_message(file, editor)
     }
   (void) call_program(editor, file);
 }
-
-
-
-
 
 
 /*
@@ -586,7 +590,7 @@ mail_message(user, consultant, msgfile, args)
      char **args;
 {
   int fd;			/* File descriptor for sendmail. */
-  int filedes;		        /* File desriptor for msgfile. */
+  int filedes;		        /* File descriptor for msgfile. */
   int nbytes;		        /* Number of bytes in message. */
   char *msgbuf;		        /* Ptr. to mail message buffer. */
 
@@ -594,7 +598,7 @@ mail_message(user, consultant, msgfile, args)
   char **hp;
   char buf[LINE_SIZE];
   char resp[LINE_SIZE];
-#endif HESIOD
+#endif /* HESIOD */
 
 #ifdef ATHENA
 #ifdef HESIOD
@@ -607,8 +611,8 @@ mail_message(user, consultant, msgfile, args)
 	return(ABORT);
       printf("continuing...\n");
     }
-#endif HESIOD
-#endif ATHENA
+#endif /* HESIOD */
+#endif /* ATHENA */
 
   if ((nbytes = file_length(msgfile)) == ERROR)
     {
@@ -716,7 +720,6 @@ article(word)
 	default:
 	  return("an");
 	}
-      break;
     default:
       return("a");
     }
