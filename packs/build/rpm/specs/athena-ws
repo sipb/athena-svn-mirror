@@ -77,6 +77,10 @@ done
 # Make sure the permissions on the sound devices are appropriate
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 
+#triggerin -- finger-server
+sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
+mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
+
 %post
 chkconfig --add athena-ws
 chkconfig --add athena-verify
