@@ -1,10 +1,10 @@
-# $Id: Makefile,v 1.5 2000-03-16 15:09:25 miki Exp $
+# $Id: Makefile,v 1.6 2000-03-22 18:22:18 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
 RC0=/etc/rc0.d
-RC2=/etc/rc2.d
 RC1=/etc/rc1.d
+RC2=/etc/rc2.d
 RCS=/etc/rcS.d
 
 all:
@@ -14,7 +14,9 @@ check:
 install:
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
+	mkdir -p ${DESTDIR}${RC1}
 	mkdir -p ${DESTDIR}${RC2}
+	mkdir -p ${DESTDIR}${RCS}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 bind ${DESTDIR}${INITD}
