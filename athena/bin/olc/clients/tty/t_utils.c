@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.6 1989-08-10 00:49:10 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.7 1989-08-10 23:35:14 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -360,7 +360,7 @@ handle_response(response, req)
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Kerberos authentication failed: workstation clock is ");
       printf("incorrect.\nPlease contact Athena operations and move to ");
-      printf("another worstation.\n");
+      printf("another workstation.\n");
       if(OLC)
 	printf("%s\n",kmessage);
       exit(ERROR);
