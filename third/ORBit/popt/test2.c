@@ -109,18 +109,18 @@ main(int argc, const char ** argv) {
     };
 
     struct poptOption optionsTable[] = {
-	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL /*transactOptionsTable*/, 0,
+	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL, 0,
             "Transact Options (not all will apply)", NULL },
-	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL /*databaseOptionsTable*/, 0,
+	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL, 0,
             "Transact Database Names", NULL },
-	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL /*userOptionsTable*/, 0,
+	{ NULL, '\0', POPT_ARG_INCLUDE_TABLE,  NULL, 0,
             "User Fields", NULL },
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
-    optionsTable[0].arg=transactOptionsTable;
-    optionsTable[1].arg=databaseOptionsTable;
-    optionsTable[2].arg=userOptionsTable;
+    optionsTable[0].arg = transactOptionsTable;
+    optionsTable[1].arg = databaseOptionsTable;
+    optionsTable[2].arg = userOptionsTable;
 
 #if HAVE_MCHECK_H && HAVE_MTRACE
     mtrace();   /* Trace malloc only if MALLOC_TRACE=mtrace-output-file. */
