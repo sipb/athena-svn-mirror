@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.19 1990-12-17 16:27:37 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.20 1990-12-23 20:51:45 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -126,31 +126,16 @@ if (! $?skip_initial_xterm) then
 endif
 
 
-# Run the Athena Dashboard.
-# If the user has not set $skip_xlogout, create a logout button
-# If the user has a ~/.dashrc file, create default widgets
-# with any additions or overrides in ~/.dashrc
+# Run the Athena Dashboard as the logout button.
+# To skip this, put the command "set skip_xlogout" in
+# your ~/.environment file.
 
-	if ((! $?skip_xlogout) && (! -r ~/.dashrc)) then
+if (! $?skip_xlogout) then
 	if ($?verbose_login) echo "Creating logout button..."
-	(/usr/athena/dash -l &)
+	(/usr/athena/dash -logout &)
 	sleep $sleep_time
 	sleep $sleep_time
-	else if ((! $?skip_xlogout) && (-r ~/.dashrc)) then
-	if ($?verbose_login) \
-		echo "Starting Athena Dashboard with logout button..."
-	(/usr/athena/dash -all &)
-	sleep $sleep_time
-	sleep $sleep_time
-	else if (($?skip_xlogout) && (! -r ~/.dashrc)) then
-	# run nothing 
-	else if (($?skip_xlogout) && (-r ~/.dashrc)) then
-	if ($?verbose_login) echo "Starting Athena Dashboard..."
-	(/usr/athena/dash &)
-	sleep $sleep_time
-	sleep $sleep_time
-	else echo Error in xsession - we should never arrive here!
-	endif
+endif
 
 
 # Run default system startup activities.  To skip these, put the command
