@@ -6,14 +6,11 @@
  *
 */ 
 
-#if (defined(_IBMR2) || (sun))
+#if defined(_IBMR2) || defined(sun)
 
 DEFINES =
-
 SRCS = vers_ctl.c
-
 OBJS = vers_ctl.o
-
 HDRS = 
 
 #else
@@ -52,7 +49,7 @@ all:: $(HDRS) libfxrpc.a
 	-mkdir ../usr/include/rpc && \
 		/etc/chown bin ../usr/include/rpc && \
 		chmod 755 ../usr/include/rpc
-#if (!defined(_IBMR2) || !defined(sun))
+#if !defined(_IBMR2) && !defined(sun)
 	@echo "Installing RPC header files"
 	-set -x;for i in $(HDRS) ; do \
 		($(INSTALL) -m 644 $$i ../usr/include/rpc) done
