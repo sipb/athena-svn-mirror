@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.7 1989-11-17 14:20:41 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.8 1990-01-30 17:08:41 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -75,8 +75,9 @@ OWho(Request,data)
 {
   int fd;
   int status;
-  
-  if(((time(0) - lc_time) < LIST_LIFETIME) && (data->user.instance == Request->requester.instance)) 
+
+  if (((time(0) - lc_time) < LIST_LIFETIME)
+      && (list_cache.user.instance == Request->requester.instance))
     {
       *data = list_cache;
       return(SUCCESS);
