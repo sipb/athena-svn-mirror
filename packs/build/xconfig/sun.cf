@@ -6,6 +6,7 @@ XCOMM operating system:  OSName
 #define OSMajorVersion    5
 #define OSMinorVersion    1
 #define OSTeenyVersion    0
+#define BuildServer NO
 #else
 #define OSName            SunOS 4.1.2
 XCOMM operating system:  OSName
