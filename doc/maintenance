@@ -64,8 +64,8 @@ Here are descriptions of the mailing lists related to the source tree:
   * release-team
 
     The mailing list for the release team, which sets policy for
-    releases.  There is a public archive on menelaus (currently, it
-    has the name "release-77").
+    releases.  There is a public archive on menelaus, with the name
+    "release-77".
 
 Permissions
 -----------
@@ -158,18 +158,10 @@ general architecture of the wash process is:
     write:update.
 
   * Each night at 4:30am, a machine of each architecture performs a
-    build of the tree into /var/srvd.new, using the build directory
-    /var/build.  If the build fails, the wash script copies the log of
-    the failed build into AFS and sends mail to source-wash@mit.edu
-    with the last few lines of the log.  If the build succeeds, the
-    wash script moves /var/srvd.new to /var/srvd, so that /var/srvd is
-    always the last successful build of the source tree.
-
-  * Each Sunday at 1:00am, the wash machines make a copy of their last
-    successful builds into a "srvd-current" directory in AFS.  The
-    copy is done without system:administrator privileges, so the file
-    permissions on srvd-current are all wrong, but the current srvd is
-    useful for development work.
+    build of the tree in /rel/wash/build, using the /rel/wash chroot
+    environment.  If the build fails, the wash script copies the log
+    of the failed build into AFS and sends mail to source-wash@mit.edu
+    with the last few lines of the log.
 
 Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines.  Logs of the
@@ -187,7 +179,7 @@ To set up the source update on a machine:
   * Set up the cron job on the machine according to
     /afs/dev.mit.edu/service/wash/README.
 
-  * Ensure that the machine has a host key or rcmd srvtab.
+  * Ensure that the machine has a host key.
 
   * Ensure that rcmd.machinename has a PTS identity in the dev cell.
 
@@ -199,10 +191,10 @@ To set up the wash on a build machine:
     /afs/dev.mit.edu/service/wash/inst, and run that script to install
     the wash scripts onto that machine.
 
-  * Set up cron jobs on the machine according to
+  * Set up the cron job on the machine according to
     /afs/dev.mit.edu/service/wash/README.
 
-  * Ensure that the machine has a host key or rcmd srvtab.
+  * Ensure that the machine has a host key.
 
   * Ensure that rcmd.machinename has a PTS identity in the dev cell.
 
@@ -211,10 +203,6 @@ To set up the wash on a build machine:
   * Ensure that
     /afs/dev.mit.edu/service/wash/status/machinename.mit.edu exists
     and that rcmd.machinename has write access to it.
-
-  * Ensure that /afs/dev.mit.edu/system/systemtype/srvd-current exists
-    as a separate volume with adequate quota, and that
-    rcmd.machinename has write access to it.
 
 Imake templates
 ---------------
@@ -297,8 +285,6 @@ following guidelines should help the release go smoothly:
     regenerated at will.  The system packs volume does not need any
     replication.
 
-    System release notes should be prepared during this phase.
-
     Before the transition from crash and burn to alpha, the release
     engineer should do a sanity check on the new packs by comparing a
     file listing of the new packs to a file listing of the previous
@@ -307,11 +293,7 @@ following guidelines should help the release go smoothly:
     packs/update/platform/*/configfiles) and make sure that any
     configuration files which have changed are listed as changed in
     the version script.  Finally, the release should be checked to
-    make sure it won't overflow partitions on any client machines;
-    currently, SGIs are not a problem (because they have one big
-    partition) and the most restrictive sizes on Solaris clients are
-    27713K and 51903K of useable space for the root and /usr
-    partitions.
+    make sure it won't overflow partitions on any client machines.
 
     A note on the wash: it is not especially important that the wash
     be running during the release cycle, but currently the wash can
@@ -330,7 +312,7 @@ following guidelines should help the release go smoothly:
     ensure consistency by forcing repeat updates or reinstalling their
     machines.
 
-    User release notes should be prepared during this phase.
+    System release notes should be prepared during this phase.
 
     Before the transition from alpha to beta, doc/third-party should
     be checked to see if miscellaneous third-party files (the ones not
@@ -345,10 +327,9 @@ following guidelines should help the release go smoothly:
     group).  Changes to the packs must be propagated by patch
     releases.
 
-    User release notes should be essentially finished by the end of
-    this phase.  System release notes may continue to be updated as
-    bug fixes occur.  Ideally, no new features should be committed to
-    the source tree during the beta phase.
+    User release notes should be prepared during this phase.  Ideally,
+    no new features should be committed to the source tree during the
+    beta phase.
 
     For the transition from beta to early:
 
@@ -544,11 +525,11 @@ There are three rel-eng machines for each platform:
 
 Here is a list of the rel-eng machines for each platform:
 
-                       Sun                  O2          Linux
+                       Sun       Linux
 
-Current release build  downy                bounce      snuggle
-New release build      maytag               whirlpool   kenmore
-Crash and burn         the-colour-of-magic  reaper-man  men-at-arms
+Current release build  maytag    kenmore
+New release build      downy     snuggle
+Crash and burn         pyramids  men-at-arms
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
@@ -581,15 +562,13 @@ alpha, beta, early, public) and PLATFORM is the machtype name of the
 platform.  There are two filsys entries for each platform and release
 pointing to the athena cell and dev cell system packs for the release;
 they have the form athena-PLATFORMsys-XY and dev-PLATFORMsys-XY, where
-X and Y are the major and minor numbers of the release.  For the SGI,
-we currently also have athena-sgi-inst-XY and dev-sgi-inst-XY.
+X and Y are the major and minor numbers of the release.
 
 At the crash and burn, alpha, and beta phases of the release cycle,
 the appropriate cluster (PHASE-PLATFORM) should be updated to include
 data records of the form:
 
        Label: syslib     Data: dev-PLATFORMsys-XY X.Y t
-(SGI)  Label: instlib    Data: dev-sgi-inst-XY X.Y t
 
 This change will cause console messages to appear on the appropriate
 machines informing their maintainers of a new testing release which
@@ -601,7 +580,6 @@ clusters, and the appropriate cluster (early-PLATFORM or
 public-PLATFORM) should be updated to include data records:
 
        Label: syslib     Data: athena-PLATFORMsys-XY X.Y
-(SGI)  Label: instlib    Data: athena-sgi-inst-XY X.Y
 
 This change will cause AUTOUPDATE machines in the appropriate cluster
 (as well as the crash, alpha, and beta clusters) to take the new
