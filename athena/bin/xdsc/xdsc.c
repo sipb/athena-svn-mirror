@@ -610,6 +610,8 @@ XtPointer	call_data;
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
 		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
+		InvalidateHeaders();
+		topscreen = MAIN;
 		MoveToMeeting(INITIALIZE);
 		break;
 
@@ -1005,17 +1007,7 @@ READLINE:
 	if (debug)
 		fprintf (stderr, "edsc: %s\n",message);
 
-/*
-** The 'Disc quota exceeded' and 'Permission denied' errors still produce 
-** output, so they are treated as warnings.
-*/
 	if (message[0] == ';' ) {
-		if (	!strcmp (message, ";Disc quota exceeded") ||
-			!strcmp (message, ";Permission denied")) {
-			PutUpWarning("WARNING", message + 1, False);
-			myfree (message);
-			goto READLINE;
-		}
 		PutUpWarning("ERROR", message + 1, False);
 		myfree (message);
 		return ((char *)-1);
