@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.c: Nautilus directory model.
+   nautilus-directory-async.c: Nautilus directory model state machine.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -24,6 +24,7 @@
 
 #include <config.h>
 
+#include "nautilus-metafile.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
@@ -49,6 +50,11 @@
 /* turn this on to check if async. job calls are balanced */
 #if 0
 #define DEBUG_ASYNC_JOBS
+#endif
+
+/* turn this on to log things starting and stopping */
+#if 0
+#define DEBUG_START_STOP
 #endif
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
@@ -200,6 +206,10 @@ async_job_start (NautilusDirectory *directory,
 	char *key;
 #endif
 
+#ifdef DEBUG_START_STOP
+	g_message ("starting %s in %s", job, directory->details->uri);
+#endif
+
 	g_assert (async_job_count >= 0);
 	g_assert (async_job_count <= MAX_ASYNC_JOBS);
 
@@ -244,6 +254,10 @@ async_job_end (NautilusDirectory *directory,
 #ifdef DEBUG_ASYNC_JOBS
 	char *key;
 	gpointer table_key, value;
+#endif
+
+#ifdef DEBUG_START_STOP
+	g_message ("stopping %s in %s", job, directory->details->uri);
 #endif
 
 	g_assert (async_job_count > 0);
@@ -454,10 +468,10 @@ metafile_read_mark_done (NautilusDirectory *directory)
 	directory->details->metafile_read = TRUE;
 
 	/* Move over the changes to the metafile that were in the hash table. */
-	nautilus_directory_metafile_apply_pending_changes (directory);
+	nautilus_metafile_apply_pending_changes (directory);
 
 	/* Tell change-watchers that we have update information. */
-	nautilus_directory_emit_metadata_changed (directory);
+	nautilus_metafile_notify_metafile_ready (directory);
 
 	/* Let the callers that were waiting for the metafile know. */
 	nautilus_directory_async_state_changed (directory);
@@ -604,8 +618,8 @@ metafile_read_done_callback (GnomeVFSResult result,
 	/* The gnome-xml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, size + 1);
 	buffer[size] = '\0';
-	nautilus_directory_set_metafile_contents (directory,
-						  xmlParseMemory (buffer, size));
+	nautilus_metafile_set_metafile_contents (directory,
+						 xmlParseMemory (buffer, size));
 	g_free (buffer);
 
 	metafile_read_done (directory);
@@ -704,7 +718,7 @@ metafile_read_start (NautilusDirectory *directory)
 
 	g_assert (directory->details->metafile == NULL);
 
-	if (!is_anyone_waiting_for_metafile (directory)) {
+	if (!directory->details->load_metafile_for_server) {
 		return;
 	}
 
@@ -1121,7 +1135,14 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 			nautilus_file_list_free (file_list);
 		}
 	}
-
+	
+	/* We could just call update_metadata_monitors here, but we can be smarter
+	 * since we know what monitor was just added.
+	 */
+	if (monitor->request.metafile && directory->details->metafile_monitor == NULL) {
+		nautilus_directory_register_metadata_monitor (directory);	
+	}
+	
 	/* Kick off I/O. */
 	nautilus_directory_async_state_changed (directory);
 }
@@ -1173,10 +1194,10 @@ get_filter_options_for_directory_count (void)
 		| GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
 
 	/* Add the callback once for the life of our process */
-	if (show_hidden_files_changed_callback_installed == FALSE) {
-		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-									    show_hidden_files_changed_callback,
-									    NULL);
+	if (!show_hidden_files_changed_callback_installed) {
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						   show_hidden_files_changed_callback,
+						   NULL);
 		show_hidden_files_changed_callback_installed = TRUE;
 		
 		/* Peek for the first time */
@@ -1184,10 +1205,10 @@ get_filter_options_for_directory_count (void)
 	}
 
 	/* Add the callback once for the life of our process */
-	if (show_backup_files_changed_callback_installed == FALSE) {
-		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-									    show_backup_files_changed_callback,
-									    NULL);
+	if (!show_backup_files_changed_callback_installed) {
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						   show_backup_files_changed_callback,
+						   NULL);
 		show_backup_files_changed_callback_installed = TRUE;
 		
 		/* Peek for the first time */
@@ -1205,7 +1226,7 @@ get_filter_options_for_directory_count (void)
 }
 
 static void
-load_directory_done (NautilusDirectory *directory)
+load_directory_state_destroy (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 
@@ -1228,7 +1249,12 @@ load_directory_done (NautilusDirectory *directory)
 
 	gnome_vfs_directory_filter_destroy (directory->details->load_file_count_filter);
 	directory->details->load_file_count_filter = NULL;
-	
+}
+
+static void
+load_directory_done (NautilusDirectory *directory)
+{
+	load_directory_state_destroy (directory);
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1244,6 +1270,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	nautilus_directory_ref (directory);
+
 	directory->details->dequeue_pending_idle_id = 0;
 
 	/* Handle the files in the order we saw them. */
@@ -1252,9 +1280,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
-		gnome_vfs_file_info_list_free (pending_file_info);
 		load_directory_done (directory);
-		return FALSE;
+		goto drain;
 	}
 
 	added_files = NULL;
@@ -1277,7 +1304,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		}
 
 		/* Add the MIME type to the set. */
-		if (directory->details->load_mime_list_hash != NULL) {
+		if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+			&& directory->details->load_mime_list_hash != NULL) {
 			istr_set_insert (directory->details->load_mime_list_hash,
 					 file_info->mime_type);
 		}
@@ -1300,7 +1328,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		}
 		added_files = g_list_prepend (added_files, file);
 	}
-	gnome_vfs_file_info_list_free (pending_file_info);
 
 	/* If we are done loading, then we assume that any unconfirmed
          * files are gone.
@@ -1322,7 +1349,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	}
 
 	/* Send the changed and added signals. */
-	nautilus_directory_emit_change_signals_deep (directory, changed_files);
+	nautilus_directory_emit_change_signals (directory, changed_files);
 	nautilus_file_list_free (changed_files);
 	nautilus_directory_emit_files_added (directory, added_files);
 	nautilus_file_list_free (added_files);
@@ -1352,8 +1379,13 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		directory->details->directory_loaded_sent_notification = TRUE;
 	}
 
+ drain:
+	gnome_vfs_file_info_list_free (pending_file_info);
+
 	/* Get the state machine running again. */
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 	return FALSE;
 }
 
@@ -1382,7 +1414,7 @@ directory_load_one (NautilusDirectory *directory,
 }
 
 static void
-file_list_cancel (NautilusDirectory *directory)
+directory_load_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
@@ -1392,12 +1424,30 @@ file_list_cancel (NautilusDirectory *directory)
 }
 
 static void
+file_list_cancel (NautilusDirectory *directory)
+{
+	directory_load_cancel (directory);
+	
+	if (directory->details->dequeue_pending_idle_id != 0) {
+		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		directory->details->dequeue_pending_idle_id = 0;
+	}
+
+	if (directory->details->pending_file_info != NULL) {
+		gnome_vfs_file_info_list_free (directory->details->pending_file_info);
+		directory->details->pending_file_info = NULL;
+	}
+
+	load_directory_state_destroy (directory);
+}
+
+static void
 directory_load_done (NautilusDirectory *directory,
 		     GnomeVFSResult result)
 {
 	GList *node;
 
-	file_list_cancel (directory);
+	directory_load_cancel (directory);
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
 
@@ -1428,54 +1478,46 @@ directory_load_done (NautilusDirectory *directory,
 	dequeue_pending_idle_callback (directory);
 }
 
-static GnomeVFSDirectoryListPosition
-directory_list_get_next_position (GnomeVFSDirectoryList *list,
-				  GnomeVFSDirectoryListPosition position)
-{
-	if (position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		return gnome_vfs_directory_list_position_next (position);
-	}
-	if (list == NULL) {
-		return GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	}
-	return gnome_vfs_directory_list_get_first_position (list);
-}
-
 static void
 directory_load_callback (GnomeVFSAsyncHandle *handle,
 			 GnomeVFSResult result,
-			 GnomeVFSDirectoryList *list,
+			 GList *list,
 			 guint entries_read,
 			 gpointer callback_data)
 {
 	NautilusDirectory *directory;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	g_assert (directory->details->directory_load_in_progress != NULL);
 	g_assert (directory->details->directory_load_in_progress == handle);
 
-	/* Move items from the list onto our pending queue.
-	 * We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->directory_load_list_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		directory_load_one
-			(directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		directory_load_one (directory, element->data);
 	}
-	directory->details->directory_load_list_last_handled = last_handled;
 
-	if (nautilus_directory_file_list_length_reached (directory) ||
-	    result != GNOME_VFS_OK) {
-		directory_load_done (directory, 
-				     result);
+	if (nautilus_directory_file_list_length_reached (directory)
+	    || result != GNOME_VFS_OK) {
+		directory_load_done (directory, result);
+	}
+}
+
+static void
+update_metadata_monitors (NautilusDirectory *directory)
+{
+	gboolean is_metadata_monitored;
+	
+	is_metadata_monitored = is_anyone_waiting_for_metafile (directory);
+	
+	if (directory->details->metafile_monitor == NULL) {
+		if (is_metadata_monitored) {
+			nautilus_directory_register_metadata_monitor (directory);	
+		}
+	} else {
+		if (!is_metadata_monitored) {
+			nautilus_directory_unregister_metadata_monitor (directory);	
+		}
 	}
 }
 
@@ -1489,6 +1531,8 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 	g_assert (client != NULL);
 
 	remove_monitor (directory, file, client);
+
+	update_metadata_monitors (directory);
 
 	nautilus_directory_async_state_changed (directory);
 }
@@ -1601,6 +1645,14 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		(directory->details->call_when_ready_list,
 		 g_memdup (&callback, sizeof (callback)));
 
+	/* When we change the ready list we need to sync up metadata monitors.
+	 * We could just call update_metadata_monitors here, but we can be smarter
+	 * since we know what was just added.
+	 */
+	if (callback.request.metafile && directory->details->metafile_monitor == NULL) {
+		nautilus_directory_register_metadata_monitor (directory);	
+	}
+
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1668,6 +1720,9 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 				ready_callback_key_compare);
 	if (node != NULL) {
 		remove_callback_link (directory, node);
+		/* When we change the ready list we need to sync up metadata monitors. */
+		update_metadata_monitors (directory);
+		
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -1675,7 +1730,7 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 static void
 directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSResult result,
-			  GnomeVFSDirectoryList *list,
+			  GList *list,
 			  guint entries_read,
 			  gpointer callback_data)
 {
@@ -1796,6 +1851,11 @@ nautilus_async_destroying_file (NautilusFile *file)
 		}
 	}
 
+	/* When we change the monitor or ready list we need to sync up metadata monitors */
+	if (changed) {
+		update_metadata_monitors (directory);
+	}
+
 	/* Check if it's a file that's currently being worked on.
 	 * If so, make that NULL so it gets canceled right away.
 	 */
@@ -1836,11 +1896,12 @@ static gboolean
 lacks_directory_count (NautilusFile *file)
 {
 	return nautilus_file_is_directory (file)
+		&& nautilus_file_should_show_directory_item_count (file)
 		&& !file->details->directory_count_is_up_to_date;
 }
 
 static gboolean
-should_get_directory_count (NautilusFile *file)
+should_get_directory_count_now (NautilusFile *file)
 {
 	return lacks_directory_count (file)
 		&& !file->details->loading_directory;
@@ -1950,7 +2011,7 @@ request_is_satisfied (NautilusDirectory *directory,
 		      NautilusFile *file,
 		      Request *request)
 {
-	if (request->metafile && !directory->details->metafile_read) {
+	if (request->metafile && !nautilus_directory_is_metadata_read (directory)) {
 		return FALSE;
 	}
 
@@ -1996,7 +2057,7 @@ request_is_satisfied (NautilusDirectory *directory,
 	}
 
 	return TRUE;
-}		      
+}
 
 static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
@@ -2019,6 +2080,10 @@ call_ready_callbacks (NautilusDirectory *directory)
 			}
 		}
 		if (node == NULL) {
+			if (called_any) {
+				/* When we change the ready list we need to sync up metadata monitors. */
+				update_metadata_monitors (directory);
+			}
 			return called_any;
 		}
 		
@@ -2163,10 +2228,9 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	mark_all_files_unconfirmed (directory);
 
 	g_assert (directory->details->uri != NULL);
-	directory->details->directory_load_list_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
         directory->details->load_directory_file =
 		nautilus_directory_get_corresponding_file (directory);
+
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
 	directory->details->load_file_count_filter = get_file_count_filter (directory);
@@ -2179,8 +2243,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		 directory->details->uri,                         /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 NULL, 					          /* sort_rules */
-		 FALSE, 				          /* reverse_order */
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
@@ -2215,8 +2277,14 @@ file_list_start (NautilusDirectory *directory)
 	}
 }
 
+/* Reset count and mime list. Invalidating deep counts is handled by
+ * itself elsewhere because it's a relatively heavyweight and
+ * special-purpose operation (see bug 5863). Also, the shallow count
+ * needs to be refreshed when filtering changes, but the deep count
+ * deliberately does not take filtering into account.
+ */
 void
-nautilus_directory_invalidate_counts (NautilusDirectory *directory)
+nautilus_directory_invalidate_count_and_mime_list (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	NautilusDirectory *parent_directory;
@@ -2228,15 +2296,11 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 		if (parent_directory->details->count_file == file) {
 			directory_count_cancel (parent_directory);
 		}
-		if (parent_directory->details->deep_count_file == file) {
-			deep_count_cancel (parent_directory);
-		}
 		if (parent_directory->details->mime_list_file == file) {
 			mime_list_cancel (parent_directory);
 		}
 
 		file->details->directory_count_is_up_to_date = FALSE;
-		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
 		file->details->mime_list_is_up_to_date = FALSE;
 
 		nautilus_file_unref (file);
@@ -2265,8 +2329,8 @@ nautilus_directory_invalidate_file_attributes (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_force_reload (NautilusDirectory *directory,
-				 GList             *file_attributes)
+nautilus_directory_force_reload_internal (NautilusDirectory *directory,
+					  GList *file_attributes)
 {
 	/* invalidate attributes that are getting reloaded for all files */
 	nautilus_directory_invalidate_file_attributes (directory, file_attributes);
@@ -2276,7 +2340,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory,
 	directory->details->directory_loaded = FALSE;
 
 	/* Start a new directory count. */
-	nautilus_directory_invalidate_counts (directory);
+	nautilus_directory_invalidate_count_and_mime_list (directory);
 
 	nautilus_directory_async_state_changed (directory);
 }
@@ -2449,7 +2513,7 @@ directory_count_start (NautilusDirectory *directory)
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
 			if (is_needy (file,
-				      should_get_directory_count,
+				      should_get_directory_count_now,
 				      wants_directory_count)) {
 				return;
 			}
@@ -2461,7 +2525,7 @@ directory_count_start (NautilusDirectory *directory)
 
 	/* Figure out which file to get a count for. */
 	file = select_needy_file (directory,
-				  should_get_directory_count,
+				  should_get_directory_count_now,
 				  wants_directory_count);
 	if (file == NULL) {
 		return;
@@ -2481,8 +2545,6 @@ directory_count_start (NautilusDirectory *directory)
 		(&directory->details->count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 get_filter_options_for_directory_count (),
 		 NULL,
@@ -2526,13 +2588,13 @@ deep_count_one (NautilusDirectory *directory,
 static void
 deep_count_callback (GnomeVFSAsyncHandle *handle,
 		     GnomeVFSResult result,
-		     GnomeVFSDirectoryList *list,
+		     GList *list,
 		     guint entries_read,
 		     gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 	char *uri;
 	gboolean done;
 
@@ -2541,19 +2603,9 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 	file = directory->details->deep_count_file;
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->deep_count_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		deep_count_one (directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		deep_count_one (directory, element->data);
 	}
-	directory->details->deep_count_last_handled = last_handled;
 
 	done = FALSE;
 	if (result != GNOME_VFS_OK) {
@@ -2579,9 +2631,10 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 		}
 	}
 
-	nautilus_file_changed (file);
+	nautilus_file_updated_deep_count_in_progress (file);
 
 	if (done) {
+		nautilus_file_changed (file);
 		async_job_end (directory, "deep count");
 		nautilus_directory_async_state_changed (directory);
 	}
@@ -2592,8 +2645,6 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 {
 	g_assert (directory->details->deep_count_uri == NULL);
 	directory->details->deep_count_uri = g_strdup (uri);
-	directory->details->deep_count_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 #ifdef DEBUG_LOAD_DIRECTORY		
 	g_message ("load_directory called to get deep file count for %s", uri);
 #endif	
@@ -2601,8 +2652,6 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->deep_count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
@@ -2665,38 +2714,30 @@ static void
 mime_list_one (NautilusDirectory *directory,
 	       GnomeVFSFileInfo *info)
 {
-	istr_set_insert (directory->details->mime_list_hash, info->mime_type);
+	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
+		istr_set_insert (directory->details->mime_list_hash, info->mime_type);
+	}
 }
 
 static void
 mime_list_callback (GnomeVFSAsyncHandle *handle,
 		    GnomeVFSResult result,
-		    GnomeVFSDirectoryList *list,
+		    GList *list,
 		    guint entries_read,
 		    gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (directory->details->mime_list_in_progress == handle);
 	file = directory->details->mime_list_file;
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->mime_list_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		mime_list_one (directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		mime_list_one (directory, element->data);
 	}
-	directory->details->mime_list_last_handled = last_handled;
 
 	if (result == GNOME_VFS_OK) {
 		return;
@@ -2734,8 +2775,6 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 static void
 mime_list_load (NautilusDirectory *directory, const char *uri)
 {
-	directory->details->mime_list_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	directory->details->mime_list_hash = istr_set_new ();
 #ifdef DEBUG_LOAD_DIRECTORY		
 	g_message ("load_directory called to get MIME list of %s", uri);
@@ -2744,8 +2783,6 @@ mime_list_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->mime_list_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
@@ -3049,6 +3086,8 @@ activation_uri_done (NautilusDirectory *directory,
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
 
+	nautilus_file_changed (file);
+
 	async_job_end (directory, "activation URI");
 	nautilus_directory_async_state_changed (directory);
 }
@@ -3241,10 +3280,24 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	 * I/O state again so that we can release or cancel I/O that
 	 * is not longer needed once the callbacks are satisfied.
 	 */
+
+	if (GTK_OBJECT_DESTROYED (directory)) {
+		return;
+	}
+	if (directory->details->in_async_service_loop) {
+		directory->details->state_changed = TRUE;
+		return;
+	}
+	directory->details->in_async_service_loop = TRUE;
 	nautilus_directory_ref (directory);
 	do {
+		directory->details->state_changed = FALSE;
 		start_or_stop_io (directory);
-	} while (call_ready_callbacks (directory));
+		if (call_ready_callbacks (directory)) {
+			directory->details->state_changed = TRUE;
+		}
+	} while (directory->details->state_changed);
+	directory->details->in_async_service_loop = FALSE;
 	nautilus_directory_unref (directory);
 
 	/* Check if any directories should wake up. */
@@ -3363,6 +3416,8 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement invalidating metadata */
+
+	nautilus_directory_async_state_changed (directory);
 }
 
 void
@@ -3396,4 +3451,6 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement invalidating metadata */
+
+	nautilus_directory_async_state_changed (directory);
 }

@@ -15,6 +15,52 @@ extern "C"
 
 /** typedefs **/
 #include <bonobo/Bonobo.h>
+#if !defined(ORBIT_DECL_Trilobite_Eazel_InventoryUploadCallback) && !defined(_Trilobite_Eazel_InventoryUploadCallback_defined)
+#define ORBIT_DECL_Trilobite_Eazel_InventoryUploadCallback 1
+#define _Trilobite_Eazel_InventoryUploadCallback_defined 1
+#define Trilobite_Eazel_InventoryUploadCallback__free CORBA_Object__free
+   typedef CORBA_Object Trilobite_Eazel_InventoryUploadCallback;
+   extern CORBA_unsigned_long
+      Trilobite_Eazel_InventoryUploadCallback__classid;
+#if !defined(TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_0)
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_0 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_1 'a'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_2 'z'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_3 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_4 'l'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_5 '_'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_6 'i'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_7 'n'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_8 'v'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_9 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_10 'n'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_11 't'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_12 'o'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_13 'r'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_14 'y'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_15 '_'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_16 's'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_17 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_18 'r'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_19 'v'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_20 'i'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_21 'c'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_22 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_23 '_'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_24 'i'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_25 'n'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_26 't'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_27 'e'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_28 'r'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_29 'f'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_30 'a'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_31 'c'
+#define TC_IMPL_TC_Trilobite_Eazel_InventoryUploadCallback_32 'e'
+   extern const struct CORBA_TypeCode_struct
+      TC_Trilobite_Eazel_InventoryUploadCallback_struct;
+#define TC_Trilobite_Eazel_InventoryUploadCallback ((CORBA_TypeCode)&TC_Trilobite_Eazel_InventoryUploadCallback_struct)
+#endif
+#endif
 #if !defined(ORBIT_DECL_Trilobite_Eazel_Inventory) && !defined(_Trilobite_Eazel_Inventory_defined)
 #define ORBIT_DECL_Trilobite_Eazel_Inventory 1
 #define _Trilobite_Eazel_Inventory_defined 1
@@ -65,24 +111,48 @@ extern "C"
    typedef struct
    {
       void *_private;
+      void (*done_uploading) (PortableServer_Servant _servant,
+			      const CORBA_boolean succeeded,
+			      CORBA_Environment * ev);
+   }
+   POA_Trilobite_Eazel_InventoryUploadCallback__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
+      POA_Trilobite_Eazel_InventoryUploadCallback__epv
+	 *Trilobite_Eazel_InventoryUploadCallback_epv;
+   }
+   POA_Trilobite_Eazel_InventoryUploadCallback__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_Trilobite_Eazel_InventoryUploadCallback__vepv *vepv;
+   }
+   POA_Trilobite_Eazel_InventoryUploadCallback;
+   extern void
+      POA_Trilobite_Eazel_InventoryUploadCallback__init(PortableServer_Servant
+							servant,
+							CORBA_Environment *
+							ev);
+   extern void
+      POA_Trilobite_Eazel_InventoryUploadCallback__fini(PortableServer_Servant
+							servant,
+							CORBA_Environment *
+							ev);
+   typedef struct
+   {
+      void *_private;
       
 	 CORBA_boolean(*_get_enabled) (PortableServer_Servant _servant,
 				       CORBA_Environment * ev);
       void (*_set_enabled) (PortableServer_Servant _servant,
 			    const CORBA_boolean value,
 			    CORBA_Environment * ev);
-      CORBA_char *(*_get_machine_name) (PortableServer_Servant _servant,
-					CORBA_Environment * ev);
-      void (*_set_machine_name) (PortableServer_Servant _servant,
-				 const CORBA_char * value,
-				 CORBA_Environment * ev);
-       CORBA_boolean(*_get_warn_before_upload) (PortableServer_Servant
-						_servant,
-						CORBA_Environment * ev);
-      void (*_set_warn_before_upload) (PortableServer_Servant _servant,
-				       const CORBA_boolean value,
-				       CORBA_Environment * ev);
+      CORBA_char *(*_get_machine_id) (PortableServer_Servant _servant,
+				      CORBA_Environment * ev);
       void (*upload) (PortableServer_Servant _servant,
+		      const Trilobite_Eazel_InventoryUploadCallback listener,
 		      CORBA_Environment * ev);
    }
    POA_Trilobite_Eazel_Inventory__epv;
@@ -107,6 +177,13 @@ extern "C"
 						   CORBA_Environment * ev);
 
 /** prototypes **/
+#define Trilobite_Eazel_InventoryUploadCallback_ref Bonobo_Unknown_ref
+#define Trilobite_Eazel_InventoryUploadCallback_unref Bonobo_Unknown_unref
+#define Trilobite_Eazel_InventoryUploadCallback_queryInterface Bonobo_Unknown_queryInterface
+   void
+      Trilobite_Eazel_InventoryUploadCallback_done_uploading
+      (Trilobite_Eazel_InventoryUploadCallback _obj,
+       const CORBA_boolean succeeded, CORBA_Environment * ev);
 #define Trilobite_Eazel_Inventory_ref Bonobo_Unknown_ref
 #define Trilobite_Eazel_Inventory_unref Bonobo_Unknown_unref
 #define Trilobite_Eazel_Inventory_queryInterface Bonobo_Unknown_queryInterface
@@ -117,23 +194,21 @@ extern "C"
 					       const CORBA_boolean value,
 					       CORBA_Environment * ev);
    CORBA_char
-      *Trilobite_Eazel_Inventory__get_machine_name(Trilobite_Eazel_Inventory
-						   _obj,
-						   CORBA_Environment * ev);
-   void Trilobite_Eazel_Inventory__set_machine_name(Trilobite_Eazel_Inventory
-						    _obj,
-						    const CORBA_char * value,
-						    CORBA_Environment * ev);
-   CORBA_boolean
-      Trilobite_Eazel_Inventory__get_warn_before_upload
-      (Trilobite_Eazel_Inventory _obj, CORBA_Environment * ev);
-   void
-      Trilobite_Eazel_Inventory__set_warn_before_upload
-      (Trilobite_Eazel_Inventory _obj, const CORBA_boolean value,
-       CORBA_Environment * ev);
+      *Trilobite_Eazel_Inventory__get_machine_id(Trilobite_Eazel_Inventory
+						 _obj,
+						 CORBA_Environment * ev);
    void Trilobite_Eazel_Inventory_upload(Trilobite_Eazel_Inventory _obj,
-					 CORBA_Environment * ev);
+					 const
+					 Trilobite_Eazel_InventoryUploadCallback
+					 listener, CORBA_Environment * ev);
 
+   void
+      _ORBIT_skel_Trilobite_Eazel_InventoryUploadCallback_done_uploading
+      (POA_Trilobite_Eazel_InventoryUploadCallback * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_done_uploading) (PortableServer_Servant _servant,
+				     const CORBA_boolean succeeded,
+				     CORBA_Environment * ev));
    void
       _ORBIT_skel_Trilobite_Eazel_Inventory__get_enabled
       (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
@@ -148,40 +223,18 @@ extern "C"
 				   const CORBA_boolean value,
 				   CORBA_Environment * ev));
    void
-      _ORBIT_skel_Trilobite_Eazel_Inventory__get_machine_name
+      _ORBIT_skel_Trilobite_Eazel_Inventory__get_machine_id
       (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_char *
-       (*_impl__get_machine_name) (PortableServer_Servant _servant,
-				   CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Trilobite_Eazel_Inventory__set_machine_name
-      (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl__set_machine_name) (PortableServer_Servant _servant,
-					const CORBA_char * value,
-					CORBA_Environment * ev));
-   void
-      _ORBIT_skel_Trilobite_Eazel_Inventory__get_warn_before_upload
-      (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_boolean(*_impl__get_warn_before_upload) (PortableServer_Servant
-						      _servant,
-						      CORBA_Environment *
-						      ev));
-   void
-      _ORBIT_skel_Trilobite_Eazel_Inventory__set_warn_before_upload
-      (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl__set_warn_before_upload) (PortableServer_Servant _servant,
-					      const CORBA_boolean value,
+       CORBA_char * (*_impl__get_machine_id) (PortableServer_Servant _servant,
 					      CORBA_Environment * ev));
    void
       _ORBIT_skel_Trilobite_Eazel_Inventory_upload
       (POA_Trilobite_Eazel_Inventory * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
        void (*_impl_upload) (PortableServer_Servant _servant,
-			     CORBA_Environment * ev));
+			     const Trilobite_Eazel_InventoryUploadCallback
+			     listener, CORBA_Environment * ev));
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

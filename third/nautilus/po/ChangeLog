@@ -1,6 +1,685 @@
-2001-01-26  Christian Rose  <menthos@menthos.com>
+2001-03-12  Darin Adler  <darin@eazel.com>
+
+	* hu.po: Rolled updated translation by Emese
+	Kovacs <emese@gnome.hu> from HEAD.
+
+2001-03-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-03-11  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* gl.po: Partially updated Galician translation.
+
+2001-03-11  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-09  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Copied from the HEAD. I'm in time?, sorry if not...
+
+2001-03-09  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation
+		by Görkem Cetin.
+
+2001-03-09  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.po: Commited the result of make update-po to speed up
+	the hourly builds for tinderbox.
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-03-08  Darin Adler  <darin@eazel.com>
+
+	* sv.po: Added missing \n characters to some long lines
+	in the first time druid indexing messages to fix wide
+	druid window.
+
+2001-03-08  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po & ko.po: Committed updated Korean and 
+		Turkish translations.
+
+2001-03-08  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by Emese Kovacs <emese@gnome.hu>.
+
+2001-03-08  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Use French quote for Loser like in Nautilus HEAD.
+
+2001-03-08  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation with po file from
+	nautilus HEAD.
+
+2001-03-08  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation. Removed obsolete messages.
+
+2001-03-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-03-06  Christian Rose  <menthos@menthos.com>
 
 	* sv.po: Updated Swedish translation.
+
+2001-03-06  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-03-06  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-05  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * Updated Spanish Translation
+
+2001-03-06  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish 
+
+2001-03-05  Darin Adler  <darin@eazel.com>
+
+	* en_GB.po: Update of "make check" test results.
+
+2001-03-05  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* ja.po: Updated Japanese translation.  The only
+	thing I updated was the localized fonts strings to
+	make my latest round of localization fixes in nautilus
+	work in the ja locale.
+
+2001-03-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-02  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish Translation.
+
+2001-03-02  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.	
+
+2001-03-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-03-02  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-03-02  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-03-02  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-03-02  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-01  Darin Adler  <darin@eazel.com>
+
+	Work around bug in xml-i18n-tools that created bug
+	7230 (opening images fails).
+
+	* hu.po: Use single quotes for now until we have
+	the xml-i18n-tools that can handle \" characters
+	widely enough distributed.
+
+2001-03-01  Darin Adler  <darin@eazel.com>
+
+	* hu.po: Fix entry that was missing "\n".
+
+2001-03-01  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-03-01  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-03-01  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-03-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Added missing files.
+	
+2001-02-28  Takuo KITAME  <kitame@debian.org>
+
+	* ja.po: Updated Japanese translation.
+
+2001-02-28  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* da.po:
+	Updated the View as XXX strings, not that it helped.
+
+2001-02-28  Darin Adler  <darin@eazel.com>
+
+	* POTFILES.in: Added nautilus-password-dialog.c
+
+2001-03-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-02-28  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-28  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-02-27 Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish Translation
+
+2001-02-27  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-02-27  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-27  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-02-27  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Fix, fix, update, fix, fix.
+
+2001-02-27  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-27  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-26  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+	* es.po: Updated Spanish Translation
+
+2001-02-27  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation
+
+2001-02-26  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation by emese.
+
+2001-02-26  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-26  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Translated more messages to Greek :)
+
+2001-02-25  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Updated again. Strings keep changing! This is
+	mayhem. Someone please do some peer review. There are just about
+	two or three days left.
+
+2001-02-25  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-02-25  Fatih Demir	<kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation.
+
+2001-02-25  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-24 Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish Translation
+
+2001-02-24  Gene Z. Ragan  <gzr@eazel.com>
+
+	* POTFILES.in:
+	Added libnautilus-extensions/nautulus-drag.c
+
+2001-02-24  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation
+
+2001-02-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2001-02-24  Christian Rose  <menthos@menthos.com>
+
+	* POTFILES.in: Added missing music view files.
+	* sv.po: Updated Swedish translation.
+
+2001-02-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-24  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation.
+
+2001-02-24  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2001-02-23  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Fixes and updates to German l10n.
+
+2001-02-23  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* POTFILES.in:
+	components/help/hyperbola-filefmt.c added
+
+2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* POTFILES.in: Add more missing files.  This three have (or soon
+	will have) font names for localization.
+
+2001-02-23  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-23  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: More updates in messages.
+
+	* el.po: Updated Greek translation.
+
+2001-02-22 Yukihiro Nakai <nakai@gnome.gr.jp>
+
+	* ja.po: Update Japanese translation.
+
+2001-02-22  Pablo Gonzalo del Campo
+
+        * es.po: Updated Spanish Translation
+
+2001-02-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-02-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* po/POTFILES.in: Added new file with mozilla charset encoding
+	strings tables.
+
+2001-02-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-02-21  Akira TAGOH  <tagoh@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2001-02-21  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-02-22  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* da.po: Committed an update from Kenneth.
+	
+2001-02-21  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* ja.po: Update Japanese translation.
+
+2001-02-21  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-21  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Updated for freeze etc.
+
+2001-02-21  Fatih Demir	<kabalak@gtranslator.org>
+
+	* ko.po: Committed updated Korean translation.
+
+2001-02-20  Darin Adler  <darin@eazel.com>
+
+	* da.po: Another update from Kjenneth.
+
+2001-02-21  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-20  Darin Adler  <darin@eazel.com>
+
+	* da.po: Update of Danish translation from
+	Kjenneth Christiansen <kenneth@gnu.org>.
+
+2001-02-20  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Update of Greek translation.
+
+2001-02-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Update.
+	
+2001-02-19 Pablo Gonzalo del Campo
+
+        * es.po: Updated Spanish Translation
+
+2001-02-19  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-02-19  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-19  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Update of Hungarian translation.
+
+2001-02-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-02-19  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-19  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Update of Greek translation.
+
+2001-02-18  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-17  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* POTFILES.in:
+	Add some mozilla stuff that needs to be localized.
+	
+2001-02-16  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-16  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-02-15  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-14  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* nn.po: Added Norwegian (nynorsk) translation.
+	
+2001-02-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-14  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-13  Pablo Gonzalo del Campo
+
+        * es.po: Updated Spanish Translation
+
+2001-02-13  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-12  John Sullivan  <sullivan@eazel.com>
+
+	* sk.po: Removed an extra "\n" that didn't match between
+	msgid and msgstr, breaking "make dist"
+
+2001-02-12  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-12  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-10  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Severely updated German translation ;)
+
+2001-02-10  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish translation.
+
+2001-02-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-07  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-02-07  Pablo Gonzalo del Campo
+
+        * Updated Spanish Translation
+
+2001-02-07  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-02-07  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation
+
+2001-02-06  Pablo Gonzalo del Campo
+
+        * es.po: Updated Spanish Translation
+
+2001-02-06  Fatih Demir	<kabalak@gmx.net>
+
+	* ko.po: Committed updated Korean translation.
+
+2001-02-05  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-05  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-04  Fatih Demir	<kabalak@gmx.net>
+
+	* tr.po: Committed updated Turkish translation
+		by Görkem Cetin.
+
+2001-02-03  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish Translation.
+
+2001-02-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-02  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Fixed some errors in the translation
+
+2001-02-02  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-02  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-02  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Updated and ran it through sort.	
+
+2001-02-01  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-02-01  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-31  Szabolcs Ban  <shooby@gnome.hu>
+
+        * hu.po: Terminology fixes by Andras Timar <timar@gnome.hu>
+
+2001-01-31  Carlos Perelló Marín <carlos@gnome-db.org>
+
+        * es.po: Updated Spanish translation from Pablo del
+          Campo <pablodc@mapfre.com.ar>
+
+2001-01-31  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-31  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-22  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-30  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Addition of initial Greek translation.
+
+2001-01-30  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-01-29  Fatih Demir	<kabalak@gmx.net>
+
+	* ko.po: Committed updated Korean
+		translation.
+
+2001-01-29  Manuel de Vega Barreiro <barreiro@arrakis.es>
+
+        * es.po: Updated Spanish translation 
+
+2001-01-29  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-29  Fatih Demir	<kabalak@gmx.net>
+
+	* tr.po: Committed updated Turkish
+		translation by Gorkem Cetin.
+
+2001-01-28  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-27  Fatih Demir	<kabalak@gmx.net>
+
+	* ko.po: Committed updated Korean translation.
+
+2001-01-26  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Added Azeri file
+	* {ga,ko,pl,ta,uk}.po: corrected headers and syntax errors
+
+2001-01-26  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-01-26  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-25  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-24  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-24  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation
+
+2001-01-24  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Big update. This is NOT yet release quality, though.
+
+2001-01-24  Szabolcs Ban  <shooby@gnome.hu>
+
+        * hu.po: Tons of fixes by Andras and Emese (spelling,
+          terminology, headers)
+
+2001-01-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-23  Fatih Demir	<kabalak@gmx.net>
+
+	* tr.po: Committed updated Turkish translation.
 
 2001-01-22  Manuel de Vega Barreiro <barreiro@arrakis.es>
 

@@ -417,6 +417,236 @@ _ORBIT_skel_Nautilus_ViewFrame_open_location_force_new_window
 }
 
 void
+_ORBIT_skel_Nautilus_ViewFrame_report_location_change(POA_Nautilus_ViewFrame *
+						      _ORBIT_servant,
+						      GIOPRecvBuffer *
+						      _ORBIT_recv_buffer,
+						      CORBA_Environment * ev,
+						      void
+						      (*_impl_report_location_change)
+						      (PortableServer_Servant
+						       _servant,
+						       const Nautilus_URI
+						       location,
+						       const Nautilus_URIList
+						       * selection,
+						       const CORBA_char *
+						       title,
+						       CORBA_Environment *
+						       ev))
+{
+   Nautilus_URI location;
+   Nautilus_URIList selection = { 0, 0, NULL, CORBA_FALSE };
+   CORBA_char *title;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+      register CORBA_unsigned_long _ORBIT_tmpvar_12;
+      CORBA_unsigned_long _ORBIT_tmpvar_13;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_8))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(location[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (selection._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 selection._buffer =
+	    alloca(sizeof(selection._buffer[_ORBIT_tmpvar_9]) *
+		   selection._length);
+	 selection._release = CORBA_FALSE;
+	 for (_ORBIT_tmpvar_9 = 0; _ORBIT_tmpvar_9 < selection._length;
+	      _ORBIT_tmpvar_9++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    selection._buffer[_ORBIT_tmpvar_9] = (void *) _ORBIT_curptr;
+	    _ORBIT_curptr +=
+	       sizeof(selection._buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+	       _ORBIT_tmpvar_11;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_13))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 title = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(title[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_8 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(location[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 selection._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 selection._buffer =
+	    alloca(sizeof(selection._buffer[_ORBIT_tmpvar_9]) *
+		   selection._length);
+	 selection._release = CORBA_FALSE;
+	 for (_ORBIT_tmpvar_9 = 0; _ORBIT_tmpvar_9 < selection._length;
+	      _ORBIT_tmpvar_9++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    selection._buffer[_ORBIT_tmpvar_9] = (void *) _ORBIT_curptr;
+	    _ORBIT_curptr +=
+	       sizeof(selection._buffer[_ORBIT_tmpvar_9][_ORBIT_tmpvar_10]) *
+	       _ORBIT_tmpvar_11;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_13 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 title = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(title[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13;
+      }
+   }
+   _impl_report_location_change(_ORBIT_servant, location, &(selection), title,
+				ev);
+}
+
+void
+_ORBIT_skel_Nautilus_ViewFrame_report_redirect(POA_Nautilus_ViewFrame *
+					       _ORBIT_servant,
+					       GIOPRecvBuffer *
+					       _ORBIT_recv_buffer,
+					       CORBA_Environment * ev,
+					       void (*_impl_report_redirect)
+					       (PortableServer_Servant
+						_servant,
+						const Nautilus_URI
+						from_location,
+						const Nautilus_URI
+						to_location,
+						const Nautilus_URIList *
+						selection,
+						const CORBA_char * title,
+						CORBA_Environment * ev))
+{
+   Nautilus_URI from_location;
+   Nautilus_URI to_location;
+   Nautilus_URIList selection = { 0, 0, NULL, CORBA_FALSE };
+   CORBA_char *title;
+
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      CORBA_unsigned_long _ORBIT_tmpvar_10;
+      register CORBA_unsigned_long _ORBIT_tmpvar_11;
+      CORBA_unsigned_long _ORBIT_tmpvar_12;
+      register CORBA_unsigned_long _ORBIT_tmpvar_13;
+      register CORBA_unsigned_long _ORBIT_tmpvar_14;
+      CORBA_unsigned_long _ORBIT_tmpvar_15;
+      register CORBA_unsigned_long _ORBIT_tmpvar_16;
+      CORBA_unsigned_long _ORBIT_tmpvar_17;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_10))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 from_location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(from_location[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_12))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 to_location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(to_location[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (selection._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 selection._buffer =
+	    alloca(sizeof(selection._buffer[_ORBIT_tmpvar_13]) *
+		   selection._length);
+	 selection._release = CORBA_FALSE;
+	 for (_ORBIT_tmpvar_13 = 0; _ORBIT_tmpvar_13 < selection._length;
+	      _ORBIT_tmpvar_13++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_15))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    selection._buffer[_ORBIT_tmpvar_13] = (void *) _ORBIT_curptr;
+	    _ORBIT_curptr +=
+	       sizeof(selection._buffer[_ORBIT_tmpvar_13][_ORBIT_tmpvar_14]) *
+	       _ORBIT_tmpvar_15;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_17))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 title = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(title[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_10 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 from_location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(from_location[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_12 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 to_location = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr +=
+	    sizeof(to_location[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 selection._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 selection._buffer =
+	    alloca(sizeof(selection._buffer[_ORBIT_tmpvar_13]) *
+		   selection._length);
+	 selection._release = CORBA_FALSE;
+	 for (_ORBIT_tmpvar_13 = 0; _ORBIT_tmpvar_13 < selection._length;
+	      _ORBIT_tmpvar_13++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_15 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    selection._buffer[_ORBIT_tmpvar_13] = (void *) _ORBIT_curptr;
+	    _ORBIT_curptr +=
+	       sizeof(selection._buffer[_ORBIT_tmpvar_13][_ORBIT_tmpvar_14]) *
+	       _ORBIT_tmpvar_15;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_17 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 title = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(title[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17;
+      }
+   }
+   _impl_report_redirect(_ORBIT_servant, from_location, to_location,
+			 &(selection), title, ev);
+}
+
+void
 _ORBIT_skel_Nautilus_ViewFrame_report_selection_change(POA_Nautilus_ViewFrame
 						       * _ORBIT_servant,
 						       GIOPRecvBuffer *
@@ -640,6 +870,18 @@ _ORBIT_skel_Nautilus_ViewFrame_set_title(POA_Nautilus_ViewFrame *
    }
    _impl_set_title(_ORBIT_servant, new_title, ev);
 }
+
+void
+_ORBIT_skel_Nautilus_ViewFrame_go_back(POA_Nautilus_ViewFrame *
+				       _ORBIT_servant,
+				       GIOPRecvBuffer * _ORBIT_recv_buffer,
+				       CORBA_Environment * ev,
+				       void (*_impl_go_back)
+				       (PortableServer_Servant _servant,
+					CORBA_Environment * ev))
+{
+   _impl_go_back(_ORBIT_servant, ev);
+}
 static ORBitSkeleton
 get_skel_Nautilus_View(POA_Nautilus_View * servant,
 		       GIOPRecvBuffer * _ORBIT_recv_buffer, gpointer * impl)
@@ -751,6 +993,12 @@ get_skel_Nautilus_ViewFrame(POA_Nautilus_ViewFrame * servant,
    gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
 
    switch (opname[0]) {
+     case 'g':
+	if (strcmp((opname + 1), "o_back"))
+	   break;
+	*impl = (gpointer) servant->vepv->Nautilus_ViewFrame_epv->go_back;
+	return (ORBitSkeleton) _ORBIT_skel_Nautilus_ViewFrame_go_back;
+	break;
      case 'o':
 	switch (opname[1]) {
 	  case 'p':
@@ -1027,6 +1275,19 @@ get_skel_Nautilus_ViewFrame(POA_Nautilus_ViewFrame * servant,
 							  break;
 						     }
 						     break;
+						  case 'c':
+						     if (strcmp
+							 ((opname + 10),
+							  "ation_change"))
+							   break;
+						     *impl =
+							(gpointer) servant->
+							vepv->
+							Nautilus_ViewFrame_epv->
+							report_location_change;
+						     return (ORBitSkeleton)
+							_ORBIT_skel_Nautilus_ViewFrame_report_location_change;
+						     break;
 						  default:
 						     break;
 						}
@@ -1034,6 +1295,17 @@ get_skel_Nautilus_ViewFrame(POA_Nautilus_ViewFrame * servant,
 					     default:
 						break;
 					   }
+					   break;
+					case 'r':
+					   if (strcmp
+					       ((opname + 8),
+						"edirect")) break;
+					   *impl =
+					      (gpointer) servant->vepv->
+					      Nautilus_ViewFrame_epv->
+					      report_redirect;
+					   return (ORBitSkeleton)
+					      _ORBIT_skel_Nautilus_ViewFrame_report_redirect;
 					   break;
 					case 's':
 					   switch (opname[8]) {

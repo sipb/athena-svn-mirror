@@ -514,35 +514,31 @@ esac
 ])
 
 # AC_LIBLTDL_CONVENIENCE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl convenience library and INCLTDL to the include flags for
-# the libltdl header and adds --enable-ltdl-convenience to the
-# configure arguments.  Note that LIBLTDL and INCLTDL are not
-# AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If DIR is not
-# provided, it is assumed to be `libltdl'.  LIBLTDL will be prefixed
-# with '${top_builddir}/' and INCLTDL will be prefixed with
-# '${top_srcdir}/' (note the single quotes!).  If your package is not
-# flat and you're not using automake, define top_builddir and
-# top_srcdir appropriately in the Makefiles.
+# the libltdl convenience library, adds --enable-ltdl-convenience to
+# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
+# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
+# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
+# '${top_builddir}/' (note the single quotes!) if your package is not
+# flat, and, if you're not using automake, define top_builddir as
+# appropriate in the Makefiles.
 AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   case "$enable_ltdl_convenience" in
   no) AC_MSG_ERROR([this package needs a convenience libltdl]) ;;
   "") enable_ltdl_convenience=yes
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
-  LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
-  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+  LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
+  INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl installable library and INCLTDL to the include flags for
-# the libltdl header and adds --enable-ltdl-install to the configure
-# arguments.  Note that LIBLTDL and INCLTDL are not AC_SUBSTed, nor is
-# AC_CONFIG_SUBDIRS called.  If DIR is not provided and an installed
-# libltdl is not found, it is assumed to be `libltdl'.  LIBLTDL will
-# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed
-# with '${top_srcdir}/' (note the single quotes!).  If your package is
-# not flat and you're not using automake, define top_builddir and
-# top_srcdir appropriately in the Makefiles.
+# the libltdl installable library, and adds --enable-ltdl-install to
+# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
+# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
+# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
+# '${top_builddir}/' (note the single quotes!) if your package is not
+# flat, and, if you're not using automake, define top_builddir as
+# appropriate in the Makefiles.
 # In the future, this macro may have to be called after AC_PROG_LIBTOOL.
 AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   AC_CHECK_LIB(ltdl, main,
@@ -555,8 +551,8 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   ])
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
-    LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
-    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+    LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
+    INCLTDL=ifelse($#,1,-I$1,['-I${top_builddir}/libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
@@ -580,46 +576,61 @@ ifelse([AC_DISABLE_FAST_INSTALL])dnl
 # serial 1 AC_PROG_XML_I18N_TOOLS
 AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
 [
-# Always use our own xml-i18n-tools.
-
-XML_I18N_EXTRACT='$(top_srcdir)/xml-i18n-extract'
-AC_SUBST(XML_I18N_EXTRACT)dnl
-
-XML_I18N_MERGE='$(top_srcdir)/xml-i18n-merge'
-AC_SUBST(XML_I18N_MERGE)dnl
-
-XML_I18N_UPDATE='$(top_srcdir)/xml-i18n-update'
-AC_SUBST(XML_I18N_UPDATE)dnl
 
 dnl This is a hack - we use the expansion of AC_SUBST instead of
 dnl AC_SUBST itself to avoid automake putting 
 dnl XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
 dnl in all the Makefile.in's
-XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
+XML_I18N_MERGE_OAF_RULE='\%.oaf : \%.oaf.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -o $(top_srcdir)/po $< [$]*.oaf'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_OAF_RULE@%[$]XML_I18N_MERGE_OAF_RULE%g
 AC_DIVERT_POP()dnl
 
-dnl This is a hack - we use the expansion of AC_SUBST instead of
-dnl AC_SUBST itself to avoid automake putting
-dnl XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-dnl in all the Makefile.in's
-XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
+dnl same deal
+XML_I18N_MERGE_KEYS_RULE='\%.keys : \%.keys.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -k $(top_srcdir)/po $< [$]*.keys'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_KEYS_RULE@%[$]XML_I18N_MERGE_KEYS_RULE%g
 AC_DIVERT_POP()dnl
 
-dnl This is a hack - we use the expansion of AC_SUBST instead of   
-dnl AC_SUBST itself to avoid automake putting
-dnl XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-dnl in all the Makefile.in's
-XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_srcdir)/xml-i18n-merge $(top_srcdir)/po/*.po\
-	$(top_srcdir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
+dnl same deal
+XML_I18N_MERGE_DESKTOP_RULE='\%.desktop : \%.desktop.in $(top_builddir)/xml-i18n-merge $(top_srcdir)/po/*.po\
+	$(top_builddir)/xml-i18n-merge -d $(top_srcdir)/po $< [$]*.desktop'
 AC_DIVERT_PUSH(AC_DIVERSION_SED)dnl
 s%@XML_I18N_MERGE_DESKTOP_RULE@%[$]XML_I18N_MERGE_DESKTOP_RULE%g
 AC_DIVERT_POP()dnl
+
+# Always use our own xml-i18n-tools.
+XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
+AC_SUBST(XML_I18N_EXTRACT)dnl
+
+XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
+AC_SUBST(XML_I18N_MERGE)dnl
+
+XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
+AC_SUBST(XML_I18N_UPDATE)dnl
+
+AC_PATH_PROG(XML_I18N_TOOLS_PERL, perl)
+if test -z "$XML_I18N_TOOLS_PERL"; then
+   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
+fi
+if test -z "`$XML_I18N_TOOLS_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
+fi
+
+dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
+dnl  AC_OUTPUT
+AC_OUTPUT_COMMANDS([
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-extract.in > xml-i18n-extract;
+chmod ugo+x xml-i18n-extract;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-merge.in > xml-i18n-merge;
+chmod ugo+x xml-i18n-merge;
+
+sed -e "s:@XML_I18N_TOOLS_PERL@:${XML_I18N_TOOLS_PERL}:;" < ${ac_given_srcdir}/xml-i18n-update.in > xml-i18n-update;
+chmod ugo+x xml-i18n-update;
+], XML_I18N_TOOLS_PERL=${XML_I18N_TOOLS_PERL})
 
 # Redirect the config.log output again, so that the ltconfig log is not
 # clobbered by the next message.
@@ -2228,13 +2239,13 @@ AC_ARG_ENABLE(gdk_pixbuftest, [  --disable-gdk_pixbuftest       Do not try to co
 
   if test x$gdk_pixbuf_exec_prefix != x ; then
      gdk_pixbuf_args="$gdk_pixbuf_args --exec-prefix=$gdk_pixbuf_exec_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} != xset ; then
-        GDK_PIXBUF_CONFIG=$gdk_pixbuf_exec_prefix/bin/gdk-pixbuf-config
+     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
+        GDK_PIXBUF_CONFIG=$gdk_pixbuf_exec_prefix/gdk-pixbuf-config
      fi
   fi
   if test x$gdk_pixbuf_prefix != x ; then
      gdk_pixbuf_args="$gdk_pixbuf_args --prefix=$gdk_pixbuf_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} != xset ; then
+     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
         GDK_PIXBUF_CONFIG=$gdk_pixbuf_prefix/bin/gdk-pixbuf-config
      fi
   fi

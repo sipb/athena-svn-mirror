@@ -131,7 +131,7 @@ nautilus_hardware_view_destroy (GtkObject *object)
 
 	g_free (hardware_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Component embedding support */
@@ -504,7 +504,7 @@ setup_overview_form (NautilusHardwareView *view)
 /* set up the widgetry for the CPU page */
 
 static void
-setup_CPU_form(NautilusHardwareView *view)
+setup_CPU_form (NautilusHardwareView *view)
 {
 	char *message;
 	GtkWidget *temp_widget;
@@ -517,7 +517,7 @@ setup_CPU_form(NautilusHardwareView *view)
 	/* set up the title */	
 	setup_form_title (view, NULL, "CPU");
 	
-	message = "This is a placeholder for the CPU page.";
+	message = _("This is a placeholder for the CPU page.");
 	temp_widget = nautilus_label_new (message);
 	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
  	nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
@@ -529,7 +529,7 @@ setup_CPU_form(NautilusHardwareView *view)
 /* set up the widgetry for the RAM page */
 
 static void
-setup_RAM_form(NautilusHardwareView *view)
+setup_RAM_form (NautilusHardwareView *view)
 {
 	char *message;
 	GtkWidget *temp_widget;
@@ -542,7 +542,7 @@ setup_RAM_form(NautilusHardwareView *view)
 	/* set up the title */	
 	setup_form_title (view, NULL, "RAM");
 	
-	message = "This is a placeholder for the RAM page.";
+	message = _("This is a placeholder for the RAM page.");
 	temp_widget = nautilus_label_new (message);
 	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
  	nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
@@ -554,7 +554,7 @@ setup_RAM_form(NautilusHardwareView *view)
 /* set up the widgetry for the IDE page */
 
 static void
-setup_IDE_form(NautilusHardwareView *view)
+setup_IDE_form (NautilusHardwareView *view)
 {
         char *message;
         GtkWidget *temp_widget;
@@ -567,7 +567,7 @@ setup_IDE_form(NautilusHardwareView *view)
         /* set up the title */  
         setup_form_title (view, NULL, "IDE");
         
-        message = "This is a placeholder for the IDE page.";
+        message = _("This is a placeholder for the IDE page.");
         temp_widget = nautilus_label_new (message);
 	nautilus_label_make_larger (NAUTILUS_LABEL (temp_widget), 2);
         nautilus_label_set_wrap(NAUTILUS_LABEL(temp_widget), TRUE);
@@ -628,6 +628,7 @@ hardware_view_load_location_callback (NautilusView *view,
                                       NautilusHardwareView *hardware_view)
 {
 	nautilus_view_report_load_underway (hardware_view->details->nautilus_view);
+	nautilus_view_set_title (hardware_view->details->nautilus_view, _("Hardware"));	
 	nautilus_hardware_view_load_uri (hardware_view, location);
 	nautilus_view_report_load_complete (hardware_view->details->nautilus_view);
 }

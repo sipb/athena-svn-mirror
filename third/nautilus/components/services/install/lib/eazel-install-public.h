@@ -49,10 +49,10 @@ extern "C" {
 #define EAZEL_IS_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
 typedef enum {
-	EAZEL_INSTALL_NOTHING = 0,
-	EAZEL_INSTALL_INSTALL_OK = 1<<0,
-	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
-	EAZEL_INSTALL_REVERSION_OK = 1<<2
+	EAZEL_INSTALL_NOTHING = 0x0,
+	EAZEL_INSTALL_INSTALL_OK = 0x1,
+	EAZEL_INSTALL_UNINSTALL_OK = 0x2,
+	EAZEL_INSTALL_REVERSION_OK = 0x4
 } EazelInstallOperationStatus;
 
 typedef enum {
@@ -74,17 +74,27 @@ struct _EazelInstallClass
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
 	void (*download_progress) (EazelInstall *service, const PackageData *package, int amount, int total);
+	void (*file_conflict_check) (EazelInstall *service, const PackageData *package);
+	void (*file_uniqueness_check) (EazelInstall *service, const PackageData *package);
+	void (*feature_consistency_check) (EazelInstall *service, const PackageData *package);
 
 	gboolean (*preflight_check) (EazelInstall *service, 
 				     GList *packages,
 				     int total_bytes, 
 				     int total_packages);
+	gboolean (*save_transaction) (EazelInstall *service, 
+				      GList *packages);
 
 	void (*install_progress)  (EazelInstall *service, 
 				   const PackageData *pack, 
 				   int package_num, int num_packages, 
 				   int package_size_completed, int package_size_total,
 				   int total_size_completed, int total_size);
+	void (*uninstall_progress)  (EazelInstall *service, 
+				     const PackageData *pack, 
+				     int package_num, int num_packages, 
+				     int package_size_completed, int package_size_total,
+				     int total_size_completed, int total_size);
 	void (*dependency_check) (EazelInstall *service, const PackageData *pack, const PackageData *needed);
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
@@ -145,17 +155,30 @@ gboolean eazel_install_lock_tmp_dir               (EazelInstall *service);
 /* This sets mode 700 on tmpdir and downloaded files */
 gboolean eazel_install_unlock_tmp_dir               (EazelInstall *service);
 
+void eazel_install_emit_file_conflict_check       (EazelInstall *service,
+						   const PackageData *pack);
+void eazel_install_emit_file_uniqueness_check     (EazelInstall *service,
+						   const PackageData *pack);
+void eazel_install_emit_feature_consistency_check (EazelInstall *service,
+						   const PackageData *pack);
 void eazel_install_emit_install_progress          (EazelInstall *service, 
 						   const PackageData *pack,
 						   int package_num, int num_packages, 
 						   int package_size_completed, int package_size_total,
 						   int total_size_completed, int total_size);
+void eazel_install_emit_uninstall_progress      (EazelInstall *service, 
+						 const PackageData *pack,
+						 int package_num, int num_packages, 
+						 int package_size_completed, int package_size_total,
+						 int total_size_completed, int total_size);
 void eazel_install_emit_download_progress         (EazelInstall *service,
 						   const PackageData *package,
 						   int amount, 
 						   int total);
 gboolean eazel_install_emit_preflight_check     (EazelInstall *service, 
 						 GList *packages);
+gboolean eazel_install_emit_save_transaction     (EazelInstall *service, 
+						  GList *packages);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
 						   const PackageData *package);
 void eazel_install_emit_md5_check_failed          (EazelInstall *service, 
@@ -202,6 +225,8 @@ void eazel_install_revert_transaction_from_file (EazelInstall *service,
 
 void eazel_install_delete_downloads (EazelInstall *service);
 
+void eazel_install_init_transaction (EazelInstall *service);
+void eazel_install_save_transaction_report (EazelInstall *service);
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */
@@ -237,7 +262,7 @@ type eazel_install_get_##name (EazelInstall *service) { \
 void eazel_install_set_##name (EazelInstall *service, \
                                          const type name)
 
-#define ei_mutator_impl(name, type,var) \
+#define ei_mutator_impl(name, type, var) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         EAZEL_INSTALL_SANITY (service); \
@@ -268,7 +293,7 @@ ei_mutator_decl (debug, gboolean);
 ei_mutator_decl (test, gboolean);
 ei_mutator_decl (force, gboolean);
 ei_mutator_decl (depend, gboolean);
-ei_mutator_decl (update, gboolean);
+ei_mutator_decl (upgrade, gboolean);
 ei_mutator_decl (uninstall, gboolean);
 ei_mutator_decl (downgrade, gboolean);
 ei_mutator_decl (protocol, URLType);
@@ -293,7 +318,7 @@ ei_access_decl (debug, gboolean);
 ei_access_decl (test, gboolean);
 ei_access_decl (force, gboolean);
 ei_access_decl (depend, gboolean);
-ei_access_decl (update, gboolean);
+ei_access_decl (upgrade, gboolean);
 ei_access_decl (uninstall, gboolean);
 ei_access_decl (downgrade, gboolean);
 ei_access_decl (protocol, URLType );

@@ -1,7 +1,9 @@
+#undef NAUTILUS_BUILD_MESSAGE
 #undef EAZEL_BUILD_TIMESTAMP
 #undef EAZEL_SERVICES
 #undef ENABLE_NLS
 #undef ENABLE_PROFILER
+#undef ENABLE_INSTALLER
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
@@ -11,6 +13,7 @@
 #undef HAVE_RPM_30
 #undef HAVE_RPM_40
 #undef HAVE_STPCPY
+#undef HAVE_LIBBZ2
 #undef bzCompress
 #undef bzCompressInit
 #undef bzDecompress
@@ -22,3 +25,9 @@
 #undef bzopen
 #undef bzread
 #undef bzwrite
+#undef HAVE_DEV
+#undef HAVE_VOL_DEV
+#undef HAVE_VOL
+#undef HAVE_ETC_MNTTAB
+#undef HAVE_PROC_MOUNTS
+#undef HAVE_PROC_PROCESS_FILES

@@ -135,7 +135,7 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 
 		case LOCATION:
 		{
-			char *location = nautilus_theme_get_theme_data ("throbber", "URL");
+			char *location = nautilus_theme_get_theme_data ("throbber", "url");
 			if (location != NULL) {
 				BONOBO_ARG_SET_STRING (arg, location);
 				g_free (location);
@@ -200,14 +200,9 @@ nautilus_throbber_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
 	}
 	
-	if (throbber->details->control) {
-		bonobo_object_unref (BONOBO_OBJECT (throbber->details->control));
-	}
-
-
 	g_free (throbber->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 BonoboObject*
@@ -256,7 +251,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
 {
-	GtkWidget *box;
 	char *delay_str;
 	GtkWidget *widget = GTK_WIDGET (throbber);
 	
@@ -272,14 +266,8 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	/* set up the instance variables to appropriate defaults */
 	throbber->details->timer_task = -1;
 
-	/* put it in a box to add some margin */
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-	gtk_widget_show (box);
-	gtk_container_add (GTK_CONTAINER (box), widget);
-
 	/* set up the delay from the theme */
-	delay_str = nautilus_theme_get_theme_data ("throbber", "DELAY");
+	delay_str = nautilus_theme_get_theme_data ("throbber", "delay");
 	
 	if (delay_str) {
 		throbber->details->delay = atoi (delay_str);
@@ -289,11 +277,13 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	}
 	
 	/* make the bonobo control */
-	throbber->details->control = (BonoboObject*) bonobo_control_new (box);
+	throbber->details->control = (BonoboObject*) bonobo_control_new (widget);
 	
 	/* attach a property bag with the configure property */
-	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, throbber);
-	bonobo_control_set_properties (BONOBO_CONTROL(throbber->details->control), throbber->details->property_bag);
+	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
+								   set_bonobo_properties, throbber);
+	bonobo_control_set_properties (BONOBO_CONTROL (throbber->details->control), 
+				       throbber->details->property_bag);
 	
 	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
@@ -367,15 +357,32 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 {
 	NautilusThrobber *throbber;
 	GdkPixbuf *pixbuf;
+	int window_width, window_height;
+	int x_offset, y_offset;
 		
 	throbber = NAUTILUS_THROBBER (widget);
 	if (!throbber->details->ready) {
 		return;
 	}
+		
+	/* clear the entire gdk window to avoid messing up gradient themes due to bonobo bug  */
+	/* only do this once per cycle to minimize flashing */
+	gdk_window_get_size (widget->window, &window_width, &window_height);
+	
+	if (throbber->details->current_frame == 0) {
+		gdk_window_clear_area (widget->window,
+			       0,
+			       0,
+			       window_width,
+			       window_height);
+	}
 	
 	pixbuf = select_throbber_image (throbber);
-	
-	draw_pixbuf (pixbuf, widget->window, box->x, box->y);
+
+	/* center the throbber image in the gdk window */	
+	x_offset = (window_width - gdk_pixbuf_get_width (pixbuf)) / 2;
+	y_offset = (window_height - gdk_pixbuf_get_height (pixbuf)) / 2;		
+	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
 }
 
 static void
@@ -412,7 +419,7 @@ nautilus_throbber_map (GtkWidget *widget)
 	
 	throbber = NAUTILUS_THROBBER (widget);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, map, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 	throbber->details->ready = TRUE;
 }
 
@@ -548,12 +555,12 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	
 	nautilus_throbber_unload_images (throbber);
 
-	image_theme = nautilus_theme_get_theme_data ("throbber", "IMAGE_THEME");
+	image_theme = nautilus_theme_get_theme_data ("throbber", "image_theme");
 	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", image_theme, throbber->details->small_mode);
 
 	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list */
 
-	frames = nautilus_theme_get_theme_data ("throbber", "FRAME_COUNT");
+	frames = nautilus_theme_get_theme_data ("throbber", "frame_count");
 	if (frames != NULL) {
 		throbber->details->max_frame = atoi (frames);
 		g_free (frames);
@@ -586,7 +593,7 @@ nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 	BonoboArg *location_arg;
 	
 	throbber = NAUTILUS_THROBBER (widget);
-	location = nautilus_theme_get_theme_data ("throbber", "URL");
+	location = nautilus_theme_get_theme_data ("throbber", "url");
 	if (location != NULL) {
 		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (location_arg, location);			
@@ -620,11 +627,12 @@ nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	int throbber_width, throbber_height;
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	
-	widget->allocation.width = throbber_width;
+	/* allocate some extra margin so we don't butt up against toolbar edges */	
+	widget->allocation.width = throbber_width + 8;
    	widget->allocation.height = throbber_height;	
 }
 
@@ -637,6 +645,7 @@ nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	
-	requisition->width = throbber_width;
+	/* allocate some extra margin so we don't butt up against toolbar edges */
+	requisition->width = throbber_width + 8;
    	requisition->height = throbber_height;	
 }

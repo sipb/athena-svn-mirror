@@ -31,7 +31,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 
-static gboolean supress_out_of_bounds_warning;
+static gboolean suppress_out_of_bounds_warning;
 
 struct _NautilusStringList
 {
@@ -130,7 +130,7 @@ nautilus_string_list_new_from_tokens (const char	*string,
 
 	if (string != NULL) {
 		char  **string_array;
-		guint i;
+		int i;
 
 		string_array = g_strsplit (string, delimiter, -1);
 		
@@ -204,11 +204,44 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 		g_assert (s != NULL);
 		
 		return g_strdup (s);
-	} else if (!supress_out_of_bounds_warning) {
+	} else if (!suppress_out_of_bounds_warning) {
 		g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 	}
 	
 	return NULL;
+}
+
+/**
+ * nautilus_string_list_nth_as_integer
+ *
+ * @string_list: A NautilusStringList
+ * @n: Index of string to convert.
+ * @integer_result: Where to store the conversion result.
+ *
+ * Convert the nth string to an integer and store the result in &integer_result.
+ *
+ * Return value: Returns TRUE if the string to integer conversion was successful,
+ * FALSE otherwise.
+ */
+gboolean
+nautilus_string_list_nth_as_integer (const NautilusStringList *string_list,
+				     guint n,
+				     int *integer_result)
+{
+	const char *string;
+
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (integer_result != NULL, FALSE);
+
+	if (n >= g_list_length (string_list->strings)) {
+		if (!suppress_out_of_bounds_warning) {
+			g_warning ("(n = %d) is out of bounds.", n);
+		}
+		return FALSE;
+	}
+
+	string = g_list_nth_data (string_list->strings, n);
+	return nautilus_str_to_int (string, integer_result);
 }
 
 /**
@@ -231,7 +264,7 @@ nautilus_string_list_modify_nth (NautilusStringList *string_list,
 	g_return_if_fail (string != NULL);
 
 	if (n >= g_list_length (string_list->strings)) {
-		if (!supress_out_of_bounds_warning) {
+		if (!suppress_out_of_bounds_warning) {
 			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 		}
 
@@ -262,7 +295,7 @@ nautilus_string_list_remove_nth (NautilusStringList *string_list,
 	g_return_if_fail (string_list != NULL);
 
 	if (n >= g_list_length (string_list->strings)) {
-		if (!supress_out_of_bounds_warning) {
+		if (!suppress_out_of_bounds_warning) {
 			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 		}
 
@@ -403,7 +436,7 @@ int
 nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list,
 					   const char			*string)
 {
-	gint	n = 0;
+	int	n = 0;
 	GList	*iterator;
 
 	g_return_val_if_fail (string_list != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
@@ -435,14 +468,14 @@ nautilus_string_list_as_concatenated_string (const NautilusStringList *string_li
 					     const char               *delimiter)
 {
 	char *result = NULL;
-	guint length;
+	int length;
 	
 	g_return_val_if_fail (string_list != NULL, NULL);
 	
 	length = nautilus_string_list_get_length (string_list);
 	
 	if (length > 0) {
-		guint	n;
+		int	n;
 		GList	*iterator;
 		GString	*tokens;
 
@@ -538,10 +571,10 @@ nautilus_string_list_for_each (const NautilusStringList *string_list,
 char *
 nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
 {
-	guint	longest_length = 0;
-	guint	longest_index = 0;
+	int	longest_length = 0;
+	int	longest_index = 0;
 	GList	*iterator;
-	guint	i;
+	int	i;
 
 	g_return_val_if_fail (string_list != NULL, NULL);
 
@@ -550,7 +583,7 @@ nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
 	}
 	
 	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
-		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		int current_length = nautilus_strlen ((const char *) iterator->data);
 		
 		if (current_length > longest_length) {
 			longest_index = i;
@@ -568,12 +601,12 @@ nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
  *
  * Return value: The length of the longest string in the collection.
  */
-guint
+int
 nautilus_string_list_get_longest_string_length (const NautilusStringList *string_list)
 {
-	guint	longest_length = 0;
+	int	longest_length = 0;
 	GList	*iterator;
-	guint	i;
+	int	i;
 
 	g_return_val_if_fail (string_list != NULL, 0);
 
@@ -582,7 +615,7 @@ nautilus_string_list_get_longest_string_length (const NautilusStringList *string
 	}
 	
 	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
-		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		int current_length = nautilus_strlen ((const char *) iterator->data);
 		
 		if (current_length > longest_length) {
 			longest_length = current_length;
@@ -724,9 +757,9 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 2), "strawberry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 3), "cherry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 5), "watermelon");
-	supress_out_of_bounds_warning = TRUE;
+	suppress_out_of_bounds_warning = TRUE;
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 6), NULL);
-	supress_out_of_bounds_warning = FALSE;
+	suppress_out_of_bounds_warning = FALSE;
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (fruits), 6);
 
@@ -1016,7 +1049,7 @@ nautilus_self_check_string_list (void)
 
 		const char lines_string[] = "This\nAre\nSome\n\nLines";
 		const char thick_lines_string[] = "This####Are####Some########Lines";
-		const guint num_lines = nautilus_str_count_characters (lines_string, '\n') + 1;
+		const int num_lines = nautilus_str_count_characters (lines_string, '\n') + 1;
 
 		lines = nautilus_string_list_new_from_tokens (lines_string, "\n", TRUE);
 		thick_lines = nautilus_string_list_new_from_tokens (thick_lines_string, "####", TRUE);
@@ -1139,6 +1172,51 @@ nautilus_self_check_string_list (void)
 
 		nautilus_string_list_free (list);
 		nautilus_string_list_free (sorted_list);
+	}
+
+	/*
+	 * nautilus_string_list_nth_as_integer
+	 */
+	{
+		NautilusStringList *list;
+		const int untouched = 666;
+		int result;
+
+		list = nautilus_string_list_new_from_tokens ("word,c,0,1,20,xxx,foo,bar,-1", ",", TRUE);
+		
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 0, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 1, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 5, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 6, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 7, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 2, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 0);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 3, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 1);
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 4, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 20);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 8, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, -1);
+		
+		nautilus_string_list_free (list);
 	}
 }
 

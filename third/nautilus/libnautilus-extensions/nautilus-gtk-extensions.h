@@ -71,6 +71,14 @@ void              nautilus_gtk_signal_connect_full_while_alive         (GtkObjec
 									gboolean                  after,
 									GtkObject                *alive_object);
 
+void              nautilus_gtk_signal_connect_while_realized           (GtkObject                *object,
+									const char               *name,
+									GtkSignalFunc             callback,
+									gpointer                  callback_data,
+									GtkWidget                *realized_widget);
+void		  nautilus_nullify_when_destroyed	      	       (gpointer		  object_pointer_address);
+void		  nautilus_nullify_cancel			       (gpointer		  object_pointer_address);
+
 /* list of GtkObject */
 GList *           nautilus_gtk_object_list_ref                         (GList                    *list);
 void              nautilus_gtk_object_list_unref                       (GList                    *list);
@@ -78,6 +86,8 @@ void              nautilus_gtk_object_list_free                        (GList   
 GList *           nautilus_gtk_object_list_copy                        (GList                    *list);
 
 /* GtkWidget */
+void              nautilus_gtk_widget_set_shown                        (GtkWidget                *widget,
+									gboolean                 shown);
 gboolean          nautilus_point_in_allocation                         (const GtkAllocation      *allocation,
 									int                       x,
 									int                       y);
@@ -163,21 +173,25 @@ void              nautilus_gtk_style_shade                             (GdkColor
 void              nautilus_gtk_class_name_make_like_existing_type      (const char               *class_name,
 									GtkType                   existing_gtk_type);
 
+GList		  *nautilus_get_window_list_ordered_front_to_back      (void);
+
 /* marshals */
 
-#define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
-#define nautilus_gtk_marshal_NONE__POINTER_STRING_STRING nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER
-#define nautilus_gtk_marshal_NONE__STRING_POINTER gtk_marshal_NONE__POINTER_POINTER
 #define nautilus_gtk_marshal_BOOL__POINTER_POINTER nautilus_gtk_marshal_INT__POINTER_POINTER
 #define nautilus_gtk_marshal_INT__POINTER_STRING nautilus_gtk_marshal_INT__POINTER_POINTER
-#define nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__POINTER_STRING_STRING gtk_marshal_NONE__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__STRING_POINTER gtk_marshal_NONE__POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__STRING_POINTER_STRING gtk_marshal_NONE__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__STRING_STRING_POINTER_STRING nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_POINTER__POINTER_INT_INT_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_INT_INT_POINTER_POINTER
+#define nautilus_gtk_marshal_POINTER__POINTER_STRING_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__NONE nautilus_gtk_marshal_POINTER__NONE
 #define nautilus_gtk_marshal_STRING__POINTER nautilus_gtk_marshal_POINTER__POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER
-#define nautilus_gtk_marshal_STRING__POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER
 
 void nautilus_gtk_marshal_INT__NONE                                             (GtkObject     *object,
 										 GtkSignalFunc  func,
@@ -215,7 +229,7 @@ void nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT                        
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
 										 GtkArg        *args);
-void nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER                         (GtkObject     *object,
+void nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER                 (GtkObject     *object,
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
 										 GtkArg        *args);

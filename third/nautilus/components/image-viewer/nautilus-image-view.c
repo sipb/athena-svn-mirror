@@ -94,10 +94,6 @@ release_pixbuf (bonobo_object_data_t *bod)
 static void
 control_destroy_callback (BonoboControl *control, bonobo_object_data_t *bod)
 {
-	/* FIXME bugzilla.eazel.com 5966:
-	 * This fn never gets called. This means we are leaking.
-	 */
-
         if (bod == NULL) {
 		return;
 	}
@@ -215,7 +211,7 @@ redraw_control (bonobo_object_data_t *bod, GdkRectangle *rect)
 	 * an unscaled image too early.
 	 */
 	if (bod->size_allocated) {
-	        render_pixbuf (buf, bod->drawing_area, rect);
+		render_pixbuf (buf, bod->drawing_area, rect);
 	}
 }
 
@@ -253,14 +249,14 @@ configure_size (bonobo_object_data_t *bod, GdkRectangle *rect)
 }
 
 static float preferred_zoom_levels[] = {
-	1.0 / 10.0, 1.0 / 9.0, 1.0 / 8.0, 1.0 / 7.0, 1.0 / 6.0,
-	1.0 / 5.0, 1.0 / 4.0, 1.0 / 3.0, 1.0 / 2.0, 1.0, 2.0,
-	3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0
+	1.0 / 10.0,  1.0 / 8.0, 1.0 / 6.0, 1.0 / 5.0, 
+	1.0 / 4.0, 1.0 / 3.0, 1.0 / 2.0, 2.0 / 3.0, 1.0, 1.5, 2.0,
+	3.0, 4.0, 5.0, 6.0, 8.0, 10.0
 };
 static const gchar *preferred_zoom_level_names[] = {
-	"1:10", "1:9", "1:8", "1:7", "1:6", "1:5", "1:4", "1:3",
-	"1:2", "1:1", "2:1", "3:1", "4:1", "5:1", "6:1", "7:1",
-	"8:1", "9:1", "10:1"
+	"1:10", "1:8", "1:6", "1:5", "1:4", "1:3",
+	"1:2", "2:3",  "1:1", "3:2", "2:1", "3:1", "4:1", "5:1", "6:1",
+	"8:1", "10:1"
 };
 
 static const gint max_preferred_zoom_levels = (sizeof (preferred_zoom_levels) /
@@ -359,13 +355,6 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 	y_level = vadj->page_size / height;
 
 	new_zoom_level = (x_level < y_level) ? x_level : y_level;
-
-#if 0
-	g_message ("zoom_to_fit: (%g,%g) - (%g,%g) - (%g,%g) - %g",
-		   width, height, hadj->page_size, vadj->page_size,
-		   x_level, y_level, new_zoom_level);
-#endif
-
 	if (new_zoom_level > 0) {
 		gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
@@ -419,7 +408,7 @@ rezoom_control (bonobo_object_data_t *bod, float new_zoom_level)
 
 	if (new_width >= 1 && new_height >= 1) {
 		bod->zoomed = gdk_pixbuf_scale_simple (pixbuf, new_width, 
-						       new_height, ART_FILTER_NEAREST);
+						       new_height, GDK_INTERP_BILINEAR);
 	}
 
 	resize_control (bod);
@@ -518,6 +507,12 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		gtk_object_unref (GTK_OBJECT (loader));
 	} else {
 		gdk_pixbuf_ref (bod->pixbuf);
+		
+		/* Restore current zoomed pixbuf cache. */
+		if (bod->zoom_level != 1.0) {
+			rezoom_control (bod, bod->zoom_level);
+		}
+		
 		resize_control (bod);
 	}
 }
@@ -544,8 +539,7 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 {
 	const GdkPixbuf *buf;
 	GdkPixbuf       *control_buf;
-	GdkInterpType    type;
-
+	
 	g_return_if_fail (bod != NULL);
 	g_return_if_fail (allocation != NULL);
 
@@ -577,17 +571,10 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 			control_buf = NULL;
 		}
 	}
-
-	/* Too slow below this */
-	if (allocation->width < gdk_pixbuf_get_width (buf) / 4 ||
-	    allocation->width < gdk_pixbuf_get_width (buf) / 4)
-		type = ART_FILTER_NEAREST;
-	else
-		type = ART_FILTER_TILES;
-
+	
 	if (allocation->width >= 1 && allocation->height >= 1) {
 		bod->scaled = gdk_pixbuf_scale_simple (buf, allocation->width,
-					       	       allocation->height, type);
+					       	       allocation->height, GDK_INTERP_BILINEAR);
 	}
 	
 	control_update (bod);
@@ -605,30 +592,24 @@ scrolled_control_size_allocate_callback (GtkWidget *drawing_area,
 	control_update (bod);
 }
 
-/* utility routine to determine if the image is bigger than the current viewer */
+/*
+ * determine if the image is larger than the display area *
+ */
 static gboolean
-image_bigger_than_viewer (bonobo_object_data_t *bod)
+image_fits_in_container (bonobo_object_data_t *bod)
 {
-	int width, height;
 	GtkAdjustment *hadj, *vadj;
-	
-	if (bod->pixbuf == NULL) {
-		return FALSE;
-	}
-	
+	float width, height;
+
 	width = gdk_pixbuf_get_width (bod->pixbuf);
 	height = gdk_pixbuf_get_height (bod->pixbuf);
 
 	hadj = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
 	vadj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
 
-	if (hadj == NULL || vadj == NULL) {
-		return FALSE;
-	}
-	
-	return width > hadj->page_size || height > vadj->page_size;
+	return width <= hadj->page_size && height <= vadj->page_size;
 }
-
+ 
 /*
  * This callback will be invoked when the container assigns us a size.
  */
@@ -639,16 +620,17 @@ scrolled_window_size_allocate_callback (GtkWidget *drawing_area,
 {	
 	/* implement initial shrink-to-fit if necessary.  It's hard to tell when resizing
 	 * is complete, inspiring this hackish solution determining when; it should
-	 * be replaced with a cleaner approach when the framework is improve.
+	 * be replaced with a cleaner approach when the framework is improved.
 	 */
 
-	if (bod->resize_flag && bod->initial_flag && allocation->width > 1 && allocation->height > 1) {
-		if (image_bigger_than_viewer (bod)) {
-			zoomable_zoom_to_fit_callback (bod->zoomable, bod);		
-			control_update (bod);
-		}
+	if (bod->resize_flag && bod->initial_flag && allocation->width > 1 && allocation->height > 1)
+	 {
 		bod->initial_flag = FALSE;
-	} else if (!bod->resize_flag && allocation->width == 1 && allocation->height == 1) {
+	 	if (!image_fits_in_container (bod)) {
+			zoomable_zoom_to_fit_callback (bod->zoomable, bod);
+	 	}
+	 }
+	 else if (!bod->resize_flag && allocation->width == 1 && allocation->height == 1) {
 		bod->resize_flag = TRUE;
 	}
 }
@@ -772,8 +754,8 @@ scrollable_control_factory (void)
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
-					GTK_POLICY_ALWAYS,
-					GTK_POLICY_ALWAYS);
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
 
 	bod = control_factory_common (scroll);
 
@@ -834,13 +816,16 @@ init_server_factory (int argc, char **argv)
 {
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
+	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 
-        gnome_init_with_popt_table("bonobo-image-generic", VERSION,
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-	gdk_rgb_init ();
-
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	oaf_init (argc, argv);
+
+        gnome_init ("bonobo-image-generic", VERSION,
+		    argc, argv); 
+	gdk_rgb_init ();
 
 	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
 		g_error (_("I could not initialize Bonobo"));
@@ -851,6 +836,12 @@ init_server_factory (int argc, char **argv)
 int
 main (int argc, char *argv [])
 {
+	/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	init_server_factory (argc, argv);
 
 	init_bonobo_image_generic_factory ();

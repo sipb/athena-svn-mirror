@@ -7,9 +7,9 @@
 %define sysconfdir	/etc
 
 Name:		%name
-Summary:	Nautilus is a free file manager and graphical shell.
 Vendor:		GNOME
 Distribution:	CVS
+Summary:	Nautilus is a network user environment
 Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
@@ -18,29 +18,32 @@ Source: 	%{name}-%{ver}.tar.gz
 URL: 		http://nautilus.eazel.com/
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
 Docdir: 	%{prefix}/doc
-Requires:	ORBit = 0.5.6
-Requires:	glib >= 1.2.8
-Requires:	gtk+ >= 1.2.8
-Requires:	imlib >= 1.9.8
-Requires:	libxml >= 1.8.10
-Requires:	gnome-libs >= 1.2.8
-Requires:	GConf >= 0.12
-Requires:	oaf >= 0.6.2
-Requires:	gnome-vfs >= 0.4.2
-Requires:	gdk-pixbuf >= 0.9.0
-Requires:	bonobo >= 0.33
-Requires:	popt >= 1.5
-Requires:	freetype2 >= 2.0
-Requires:	medusa >= 0.2.2
-Requires:	esound >= 0.2
-Requires:	libghttp >= 1.0.9
+Requires:	glib >= @GLIB_REQUIRED@
+Requires:	gtk+ >= @GTK_REQUIRED@
+Requires:	imlib >= @IMLIB_REQUIRED@
+Requires:	libxml >= @LIBXML_REQUIRED@
+Requires:	gnome-libs >= @GNOME_LIBS_REQUIRED@
+Requires:	GConf >= @GCONF_REQUIRED@
+Requires:	ORBit >= @ORBIT_REQUIRED@
+Requires:	oaf >= @OAF_REQUIRED@
+Requires:	gnome-vfs >= @GNOME_VFS_REQUIRED@
+Requires:	gdk-pixbuf >= @GDK_PIXBUF_REQUIRED@
+Requires:	bonobo >= @BONOBO_REQUIRED@
+Requires:	popt >= @POPT_REQUIRED@
+Requires:	freetype >= @FREETYPE_REQUIRED@
+Requires:	medusa >= @MEDUSA_REQUIRED@
+Requires:	esound >= @ESOUND_REQUIRED@
+Requires:	libghttp >= @LIBGHTTP_REQUIRED@
+Requires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
+Requires:	libpng
+Requires:	control-center >= @CONTROL_CENTER_REQUIRED@
 
 %description
-Nautilus is an open-source file manager and graphical shell being
-developed by Eazel, Inc. and others. It is part of the GNOME project, and its
-source code can be found in the GNOME CVS repository. Nautilus is still in
-the early stages of development. It will become an integral part of the
-GNOME desktop environment when it is finished.
+Nautilus integrates access to files, applications, media, Internet-based
+resources and the Web.  Nautilus delivers a dynamic and rich user
+experience.  Nautilus is an free software project developed under the
+GNU General Public License and is a core component of the GNOME desktop
+project.
 
 %package devel
 Summary:	Libraries and include files for developing Nautilus components
@@ -51,22 +54,28 @@ Requires:	%name = %{PACKAGE_VERSION}
 Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	mozilla = 0.7
-Requires:	mozilla-mail = 0.7
-Requires:	mozilla-psm = 0.7
+Requires:	mozilla >= 0.8
+Requires:	mozilla-mail >= 0.8
+Requires:	mozilla-psm >= 0.8
+Conflicts:	mozilla = M18
+Conflicts:	mozilla = M17
 
 %package trilobite
 Summary:        Nautilus component framework for services
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	ammonite >= 0.1
+Requires:	ammonite >= @AMMONITE_REQUIRED@
 Requires:	rpm >= @RPM_VERSION@
-Requires:	usermode >= 1.35
+Requires:	usermode >= 1.37
+Requires:	pam >= 0.72
 
 %package extras
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
+Requires:	mpg123
+Requires:	sox
+Requires:	gnome-user-docs >= 1.3
 
 %package suggested
 Summary:	Nautilus and a suggested set of components
@@ -75,6 +84,8 @@ Requires:       %name = %{PACKAGE_VERSION}
 Requires:	%name-mozilla = %{PACKAGE_VERSION}
 Requires:	%name-trilobite = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
+Requires:	mozilla-mail >= 0.8
+Requires:	mozilla-psm >= 0.8
 
 %description devel
 This package provides the necessary development libraries and include
@@ -85,7 +96,7 @@ This enables the use of embedded Mozilla as a Nautilus component.
 
 %description trilobite
 This is a framework library for service components in Nautilus.  It is
-required by all Eazel services, including the package installer, and
+required by all Eazel Services, including the package installer, and
 can be used to develop new services.
 
 %description suggested
@@ -118,12 +129,13 @@ export LC_ALL LINGUAS LANG
 
 ## Warning!  Make sure there are no spaces or tabs after the \ 
 ## continuation character, or else the rpm demons will eat you.
-CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
+CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--enable-eazel-services \
 	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
 
-make -k check
+make -k
+make check
 
 %install
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
@@ -140,14 +152,17 @@ if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
 	echo "%{prefix}/lib" >> /etc/ld.so.conf
 fi
 /sbin/ldconfig
+scrollkeeper-update
 
 %postun -p /sbin/ldconfig
+scrollkeeper-update
 
 %files
 
 %defattr(0555, bin, bin)
-%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
-%{prefix}/bin/*.sh
+%doc AUTHORS COPYING COPYING-DOCS COPYING.LIB TRADEMARK_NOTICE ChangeLog NEWS README
+%{prefix}/bin/nautilus-clean.sh
+%{prefix}/bin/nautilus-verify-rpm.sh
 %{prefix}/bin/eazel-helper
 %{prefix}/bin/gnome-db2html2
 %{prefix}/bin/gnome-info2html2
@@ -170,6 +185,7 @@ fi
 %{prefix}/bin/nautilus-throbber
 %{prefix}/bin/run-nautilus
 %{prefix}/bin/nautilus-launcher-applet
+%{prefix}/bin/nautilus-xml-migrate
 %{prefix}/idl/*.idl
 %{prefix}/lib/libnautilus-adapter.so.0
 %{prefix}/lib/libnautilus-adapter.so.0.0.0
@@ -194,7 +210,8 @@ fi
 %config %{sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
 %{prefix}/share/gnome/apps/Applications/*.desktop
 %{prefix}/share/gnome/ui/*.xml
-%{prefix}/share/hyperbola/maps/*.map
+%{prefix}/share/nautilus/components/hyperbola/maps/*.map
+%{prefix}/share/nautilus/components/hyperbola/*.xml
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/emblems/*.png
@@ -207,9 +224,6 @@ fi
 %{prefix}/share/nautilus/patterns/*.png
 %{prefix}/share/nautilus/patterns/.*.png
 %{prefix}/share/nautilus/services/text/*.xml
-%{prefix}/share/nautilus/top/.*.xml
-%{prefix}/share/nautilus/top/Computer
-%{prefix}/share/nautilus/top/Services
 %{prefix}/share/pixmaps/*.png
 %{prefix}/share/pixmaps/nautilus/*.gif
 %{prefix}/share/pixmaps/nautilus/*.png
@@ -227,6 +241,10 @@ fi
 %{prefix}/share/pixmaps/nautilus/crux_eggplant/throbber/*.png
 %{prefix}/share/pixmaps/nautilus/crux_eggplant/backgrounds/*.png
 %{prefix}/share/pixmaps/nautilus/crux_eggplant/sidebar_tab_pieces/*.png
+@EAZEL_LOGOS_PNG@
+@EAZEL_LOGOS_XML@
+@EAZEL_LOGOS_THROB@
+@EAZEL_LOGOS_LICENSE@
 %{prefix}/share/pixmaps/nautilus/gnome/*.png
 %{prefix}/share/pixmaps/nautilus/gnome/*.xml
 %{prefix}/share/pixmaps/nautilus/gnome/throbber/*.png
@@ -249,8 +267,10 @@ fi
 %{prefix}/share/oaf/Nautilus_View_tree.oaf
 %{prefix}/share/oaf/Nautilus_shell.oaf
 %{prefix}/share/oaf/Nautilus_Control_throbber.oaf
-%{prefix}/share/gnome/help/nautilus/C/*
-%{prefix}/share/gnome/help/gnufdl/C/*
+
+%defattr (-, root, root)
+%{prefix}/share/gnome/help
+%{prefix}/share/omf/nautilus
 
 %files devel
 
@@ -279,9 +299,10 @@ fi
 %{prefix}/bin/trilobite-eazel-install-service
 %{prefix}/bin/nautilus-summary-view
 %{prefix}/bin/nautilus-change-password-view
-%{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/eazel-gen-xml
-%{prefix}/bin/eazel-vault
+%{prefix}/bin/eazel-inventory-client
+%{prefix}/bin/trilobite-inventory-service
+%{prefix}/bin/nautilus-inventory-view
 %{prefix}/lib/libeazelinstall.so.0
 %{prefix}/lib/libeazelinstall.so.0.0.0
 %{prefix}/lib/libeazelpackagesystem.so
@@ -290,6 +311,7 @@ fi
 %{prefix}/lib/libeazelpackagesystem-rpm*.so
 %{prefix}/lib/libeazelpackagesystem-rpm*.so.0
 %{prefix}/lib/libeazelpackagesystem-rpm*.so.0.0.0
+%{prefix}/lib/libtrilobite-inventory-service*so*
 %{prefix}/lib/libtrilobite-service.so.0
 %{prefix}/lib/libtrilobite-service.so.0.0.0
 %{prefix}/lib/libtrilobite.so.0
@@ -305,7 +327,8 @@ fi
 %{prefix}/share/oaf/Trilobite_Service_install.oaf
 %{prefix}/share/oaf/Nautilus_View_change-password.oaf
 %{prefix}/share/oaf/Nautilus_View_services-summary.oaf
-%{prefix}/share/oaf/Nautilus_View_rpm.oaf
+%{prefix}/share/oaf/Trilobite_Service_inventory.oaf
+%{prefix}/share/oaf/Nautilus_View_inventory.oaf
 
 %files extras
 
@@ -316,3 +339,4 @@ fi
 
 %defattr(0444, bin, bin)
 %{prefix}/share/nautilus/nautilus-suggested.placeholder
+

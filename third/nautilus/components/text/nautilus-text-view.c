@@ -46,21 +46,26 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include <gnome.h>
+#include <gtk/gtkeventbox.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
-#include <limits.h>
-
 #include <ghttp.h>
+
+#include <limits.h>
 
 #define MAX_SERVICE_ITEMS 32
 #define TEXT_VIEW_CHUNK_SIZE 65536
 #define MAX_FILE_SIZE	1024*1024
+#define MAX_SELECTION_SIZE 256
 
-struct _NautilusTextViewDetails {
+#define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
+
+struct NautilusTextViewDetails {
 	NautilusFile *file;
-	NautilusView *nautilus_view;
+        GtkWidget *event_box;
 	GnomeVFSAsyncHandle *file_handle;	
 	char *buffer;
 	
@@ -83,10 +88,7 @@ typedef struct {
 	NautilusTextView *text_view;
 	char *service_template;
 	char *source_mode;
-	
 } ServiceMenuItemParameters;
-
-#define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
 
 static void nautilus_text_view_initialize_class			(NautilusTextViewClass *klass);
 static void nautilus_text_view_initialize			(NautilusTextView      *view);
@@ -116,24 +118,25 @@ static void zoomable_zoom_out_callback				(BonoboZoomable       *zoomable,
 static void zoomable_zoom_to_fit_callback			(BonoboZoomable       *zoomable,
 								 NautilusTextView      *directory_view);
 
+static void nautilus_text_view_load_uri                         (NautilusTextView *view,
+                                                                 const char *uri);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
                                    nautilus_text_view,
-                                   GTK_TYPE_EVENT_BOX)
+                                   NAUTILUS_TYPE_VIEW)
 
 static float text_view_preferred_zoom_levels[] = { .25, .50, .75, 1.0, 1.5, 2.0, 4.0 };
 static int   text_view_preferred_font_sizes[] = { 9, 10, 12, 14, 18, 24, 36 };
 
-static const gint max_preferred_zoom_levels = (sizeof (text_view_preferred_zoom_levels) /
-					       sizeof (float)) - 1;
+static const int max_preferred_zoom_levels = (sizeof (text_view_preferred_zoom_levels) /
+                                              sizeof (float)) - 1;
 
 static void
 nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
 {
 	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
 	
 	object_class->destroy = nautilus_text_view_destroy;
 }
@@ -147,7 +150,9 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	
 	text_view->details = g_new0 (NautilusTextViewDetails, 1);
 
-	text_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (text_view));
+        text_view->details->event_box = gtk_event_box_new ();
+
+        nautilus_view_construct (NAUTILUS_VIEW (text_view), text_view->details->event_box);
 
 	/* set up the zoomable interface */
 	text_view->details->zoomable = bonobo_zoomable_new ();
@@ -167,37 +172,39 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 					     text_view_preferred_zoom_levels, NULL,
 					     NAUTILUS_N_ELEMENTS (text_view_preferred_zoom_levels));
 	
-	bonobo_object_add_interface (BONOBO_OBJECT (text_view->details->nautilus_view),
+	bonobo_object_add_interface (BONOBO_OBJECT (text_view),
 				     BONOBO_OBJECT (text_view->details->zoomable));
  
     	
-	gtk_signal_connect (GTK_OBJECT (text_view->details->nautilus_view), 
+	gtk_signal_connect (GTK_OBJECT (text_view), 
 			    "load_location",
 			    text_view_load_location_callback, 
 			    text_view);
 			    	
+        /* FIXME: eventually, get this from preferences */
 	/* set up the default font */
-	text_view->details->font_name = g_strdup ("helvetica"); /* eventually, get this from preferences */	
+	text_view->details->font_name = g_strdup (_("helvetica")); 
 
 	/* allocate a vbox to contain the text widget */
 	
 	text_view->details->container = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (text_view->details->container), 0);
-	gtk_container_add (GTK_CONTAINER (text_view), GTK_WIDGET (text_view->details->container));
+	gtk_container_add (GTK_CONTAINER (text_view->details->event_box), GTK_WIDGET (text_view->details->container));
 	
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
+        gtk_widget_ref (text_view->details->text_display);
 	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), FALSE);
 
 	/* add signal handlers to the text field to enable/disable the service menu items */
 	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
-			    "button_release_event",
-			    GTK_SIGNAL_FUNC (update_service_menu_items), 
-			    text_view);
+                                  "button_release_event",
+                                  GTK_SIGNAL_FUNC (update_service_menu_items), 
+                                  text_view);
 	gtk_signal_connect_after (GTK_OBJECT (text_view->details->text_display),
-			    "key_press_event",
-			    GTK_SIGNAL_FUNC (update_service_menu_items), 
-			    text_view);
+                                  "key_press_event",
+                                  GTK_SIGNAL_FUNC (update_service_menu_items), 
+                                  text_view);
 
 	/* set the font of the text object */
 	nautilus_text_view_update_font (text_view);
@@ -211,22 +218,20 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 
 	/* get notified when we are activated so we can merge in our menu items */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(text_view->details->nautilus_view)),
+					(NAUTILUS_VIEW (text_view))),
                             "activate",
                             merge_bonobo_menu_items,
                             text_view);
 		 	
 	/* finally, we can show everything */	
-	gtk_widget_show_all (GTK_WIDGET (text_view));
+	gtk_widget_show_all (GTK_WIDGET (text_view->details->event_box));
 }
 
 static void
 detach_file (NautilusTextView *text_view)
 {
-        if (text_view->details->file != NULL) {
-                nautilus_file_unref (text_view->details->file);
-                text_view->details->file = NULL;
-        }
+        nautilus_file_unref (text_view->details->file);
+        text_view->details->file = NULL;
 }
 
 static void
@@ -243,19 +248,20 @@ nautilus_text_view_destroy (GtkObject *object)
 		gnome_vfs_async_cancel (text_view->details->file_handle);
 	}
 	
+        gtk_widget_unref (text_view->details->text_display);
 	g_free (text_view->details->buffer);
 	 
 	g_free (text_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
-/* Component embedding support */
-NautilusView *
-nautilus_text_view_get_nautilus_view (NautilusTextView *text_view)
+/* here's a callback for the async close, which does nothing */
+static void
+file_close_callback (GnomeVFSAsyncHandle *handle,
+			  GnomeVFSResult result,
+			  gpointer callback_data)
 {
-	return text_view->details->nautilus_view;
 }
 
 /* this routine is called when we're finished reading to deallocate the buffer and
@@ -267,6 +273,12 @@ done_file_read (NautilusTextView *text_view, gboolean succeeded)
 	if (text_view->details->buffer != NULL) {
 		g_free (text_view->details->buffer);
 		text_view->details->buffer = NULL;		
+	}
+	
+	if (text_view->details->file_handle != NULL) {
+		gnome_vfs_async_close (text_view->details->file_handle,
+				       file_close_callback,
+				       NULL);
 	}
 }
  
@@ -280,46 +292,45 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		    GnomeVFSFileSize bytes_read,
 		    gpointer callback_data)
 {
-	int byte_count;
 	NautilusTextView *text_view;
+        GtkText *display;
+        char *name, *message;
+
 	text_view = NAUTILUS_TEXT_VIEW (callback_data);
 
-	byte_count = bytes_read;
 	text_view->details->file_size += bytes_read;
 	
-	if (result == GNOME_VFS_OK && bytes_read != 0) {
-		/* write the buffer into the text field */	
-		gtk_text_freeze (GTK_TEXT (text_view->details->text_display));
-	
-		gtk_text_set_point (GTK_TEXT (text_view->details->text_display),
-			    gtk_text_get_length (GTK_TEXT (text_view->details->text_display)));
-
-		gtk_text_insert (GTK_TEXT (text_view->details->text_display),
-			 NULL, NULL, NULL,
-			 buffer, bytes_read);
-
-		gtk_text_set_point (GTK_TEXT (text_view->details->text_display), 0);		
-		gtk_text_thaw (GTK_TEXT (text_view->details->text_display));
-				
+	if (result == GNOME_VFS_OK) {
+		/* write the buffer into the text field */
+                display = GTK_TEXT (text_view->details->text_display);
+		if (!GTK_OBJECT_DESTROYED (display)) {
+                        gtk_text_freeze (display);
+                        gtk_text_set_point (display,
+                                            gtk_text_get_length (display));
+                        gtk_text_insert (display,
+                                         NULL, NULL, NULL,
+                                         buffer, bytes_read);
+                        gtk_text_thaw (display);
+                }
+                
 		/* read more if necessary */		
 		if (text_view->details->file_size < MAX_FILE_SIZE) {
-			if (bytes_read == bytes_requested) {
-				gnome_vfs_async_read (text_view->details->file_handle,
-				      text_view->details->buffer,
-				      TEXT_VIEW_CHUNK_SIZE,
-				      file_read_callback,
-				      callback_data);
-				return;
-			}
+                        gnome_vfs_async_read (text_view->details->file_handle,
+                                              text_view->details->buffer,
+                                              TEXT_VIEW_CHUNK_SIZE,
+                                              file_read_callback,
+                                              callback_data);
+                        return;
 		} else {
-			char *filename = nautilus_file_get_name(text_view->details->file);
-			char *message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."), filename);
-			nautilus_error_dialog (message, _("File too large"), NULL);
-		
-			g_free (filename);
+                        name = nautilus_file_get_name (text_view->details->file);
+                        message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."),
+                                                   name);
+                        
+			nautilus_show_error_dialog (message, _("File too large"), NULL);
+                        
+			g_free (name);
 			g_free (message);
 		}
-		
 	}
 
 	done_file_read (text_view, result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF);
@@ -383,8 +394,9 @@ nautilus_text_view_update (NautilusTextView *text_view)
 }
 
 
-void
-nautilus_text_view_load_uri (NautilusTextView *text_view, const char *uri)
+static void
+nautilus_text_view_load_uri (NautilusTextView *text_view, 
+                             const char *uri)
 {
  
 	detach_file (text_view);
@@ -398,9 +410,9 @@ text_view_load_location_callback (NautilusView *view,
                                    const char *location,
                                    NautilusTextView *text_view)
 {
-	nautilus_view_report_load_underway (text_view->details->nautilus_view);
+	nautilus_view_report_load_underway (NAUTILUS_VIEW (text_view));
 	nautilus_text_view_load_uri (text_view, location);
-	nautilus_view_report_load_complete (text_view->details->nautilus_view);
+	nautilus_view_report_load_complete (NAUTILUS_VIEW (text_view));
 }
 
 /* update the font and redraw */
@@ -414,8 +426,10 @@ nautilus_text_view_update_font (NautilusTextView *text_view)
 		gdk_font_unref (text_view->details->current_font);
 	}
 	
-	text_view->details->current_font =  nautilus_font_factory_get_font_by_family (text_view->details->font_name, point_size);
-	nautilus_gtk_widget_set_font (text_view->details->text_display, text_view->details->current_font);
+	text_view->details->current_font = nautilus_font_factory_get_font_by_family
+                (text_view->details->font_name, point_size);
+	nautilus_gtk_widget_set_font (text_view->details->text_display,
+                                      text_view->details->current_font);
 
 	gtk_editable_changed (GTK_EDITABLE (text_view->details->text_display));
 }
@@ -453,13 +467,12 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			g_free (mapped_text);
 			
 			/* load the resultant page through gnome-vfs */
-
+                        /* FIXME: This uses sync. I/O. */
 			if (nautilus_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
  				gtk_editable_delete_text (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);   
 				gtk_text_insert (GTK_TEXT (parameters->text_view->details->text_display),
-			 					NULL, NULL, NULL,
-			 					text_ptr, text_size);
-        			
+                                                 NULL, NULL, NULL,
+                                                 text_ptr, text_size);
 				g_free (text_ptr);
 			}
 			
@@ -468,14 +481,18 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 		g_free (selected_text);
 	} else {
 		selected_text = get_selected_text (GTK_EDITABLE (parameters->text_view->details->text_display));
-	
 		if (selected_text != NULL) {
+			/* truncate the selection to a reasonable size */
+			if (strlen (selected_text) > MAX_SELECTION_SIZE) {
+				selected_text [MAX_SELECTION_SIZE] = '\0';
+			}
+			
 			/* formulate the url */
 			mapped_text = gnome_vfs_escape_string (selected_text);
 			uri = g_strdup_printf (parameters->service_template, mapped_text);
 			
 			/* goto the url */	
-			nautilus_view_open_location_in_this_window (parameters->text_view->details->nautilus_view, uri);
+			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (parameters->text_view), uri);
 
 			g_free (uri);
 			g_free (selected_text);
@@ -489,12 +506,17 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 static void
 nautilus_text_view_set_font (NautilusTextView *text_view, const char *font_family)
 {
-	if (nautilus_strcmp (text_view->details->font_name, font_family) == 0) {
+        /* FIXME: It is just plain strange to call gettext on the font
+         * family passed in here. This is a confused mess. The gettext
+         * framework should not be used to map one font onto another in
+         * this way, since the font name could come from the UI.
+         */
+	if (nautilus_strcmp (text_view->details->font_name, _(font_family)) == 0) {
 		return;
 	}
 
 	g_free (text_view->details->font_name);
-	text_view->details->font_name = g_strdup (font_family);
+	text_view->details->font_name = g_strdup (_(font_family));
 	
 	nautilus_text_view_update_font (text_view);				
 }
@@ -559,9 +581,9 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		service_node = xmlDocGetRootElement (service_definition);
 	
 		/* extract the label and template */
-		label = xmlGetProp (service_node, "label");
+		label = nautilus_xml_get_property_translated (service_node, "label");	
+		tooltip = nautilus_xml_get_property_translated (service_node, "tooltip");	
 		template = xmlGetProp (service_node, "template");
-		tooltip = xmlGetProp (service_node, "tooltip");
 		source_mode = xmlGetProp (service_node, "source");
 		
 		if (label != NULL && template != NULL) {
@@ -616,12 +638,18 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 	}
 }
 
-/* iterate through the passed in services directory */
-static void
-add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const char *services_directory, int* index)
+/* iterate through the passed in services directory to add services to the menu.
+ * Don't add a service with the same name as one that has already been added.
+ */
+static GList *
+add_services_to_menu (NautilusTextView *text_view,
+			BonoboControl *control,
+			const char *services_directory,
+			GList *added_services,
+			int* index)
 {
 	GnomeVFSResult result;
-	GnomeVFSDirectoryList *file_list;	
+	GList *file_list, *element;	
 	GnomeVFSFileInfo *current_file_info;
 	char *services_uri, *service_xml_path;
 	
@@ -630,28 +658,31 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 	
 	if (result != GNOME_VFS_OK) {
 		g_free (services_uri);
-		return;
+		return added_services;
 	}
 
 	/* iterate through the directory */
-	current_file_info = gnome_vfs_directory_list_first (file_list);
-	while (current_file_info != NULL) {
+	for (element = file_list; element != NULL; element = element->next) {
+		current_file_info = element->data;
+
 		if (*index >= MAX_SERVICE_ITEMS) {
 			break;
 		}
 		
 		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {		
-			service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
-			add_one_service (text_view, control, service_xml_path, index);
-			g_free (service_xml_path);
+			if (g_list_find_custom (added_services, current_file_info->name,
+						(GCompareFunc) strcmp) == NULL) {
+				service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
+				add_one_service (text_view, control, service_xml_path, index);
+				added_services = g_list_prepend (added_services, g_strdup (current_file_info->name));
+				g_free (service_xml_path);
+			}
 		}
-			
-		current_file_info = gnome_vfs_directory_list_next (file_list);
 	}
 	
 	g_free (services_uri);
-	gnome_vfs_directory_list_destroy (file_list);	
-
+	gnome_vfs_file_info_list_free (file_list);	
+	return added_services;
 }
 
 /* build the services menu from the shared and private services/text directories */
@@ -659,25 +690,34 @@ static void
 nautilus_text_view_build_service_menu (NautilusTextView *text_view, BonoboControl *control)
 {
 	char *services_directory, *user_directory, *nautilus_datadir;
+	GList *added_services;
 	int index;
-	
+
 	index = 0;
 	
 	/* first, add the services from the global directory */
 	nautilus_datadir = nautilus_make_path (DATADIR, "nautilus");
 	services_directory = nautilus_make_path (nautilus_datadir, "services/text");
-	add_services_to_menu (text_view, control, services_directory, &index);
+	added_services = add_services_to_menu (text_view, control, services_directory, NULL, &index);
 	g_free (nautilus_datadir);
 	g_free (services_directory);
 	
 	/* now add services from the user-specific directory, if any */	
 	user_directory = nautilus_get_user_directory ();
 	services_directory = nautilus_make_path (user_directory, "services/text");
-	add_services_to_menu (text_view, control, services_directory, &index);
-
-	text_view->details->service_item_count = index;	
+	added_services = add_services_to_menu (text_view, control, services_directory, added_services, &index);
 	g_free (services_directory);
 	g_free (user_directory);
+
+	/* add any services that are present in the updates folder */
+	user_directory = nautilus_get_user_directory ();
+	services_directory = nautilus_make_path (user_directory, "updates/services/text");
+	added_services = add_services_to_menu (text_view, control, services_directory, added_services, &index);
+	g_free (services_directory);
+	g_free (user_directory);
+	
+	text_view->details->service_item_count = index;	
+	nautilus_g_list_free_deep (added_services);
 }
 
 /* handle updating the service menu items according to the selection state of the text display */
@@ -693,7 +733,7 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 	int index;
 	
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
-	control = nautilus_view_get_bonobo_control (text_view->details->nautilus_view);	
+	control = nautilus_view_get_bonobo_control (NAUTILUS_VIEW (text_view));	
 	ui = bonobo_control_get_ui_component (control);
 	
 	/* determine if there is a selection */
@@ -709,8 +749,8 @@ update_service_menu_items (GtkWidget *widget, GdkEventButton *event, gpointer *u
 		verb_path = g_strdup_printf ("/commands/%s", verb_name);
 		if (text_view->details->service_item_uses_selection[index]) {
 			nautilus_bonobo_set_sensitive (ui, 
-				       verb_path,
-				       has_selection);
+                                                       verb_path,
+                                                       has_selection);
 		}
 		g_free (verb_name);
 		g_free (verb_path);
@@ -730,7 +770,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
 
 	if (state) {
-		nautilus_view_set_up_ui (text_view->details->nautilus_view,
+		nautilus_view_set_up_ui (NAUTILUS_VIEW (text_view),
 				         DATADIR,
 					 "nautilus-text-view-ui.xml",
 					 "nautilus-text-view");
@@ -766,7 +806,8 @@ nautilus_text_view_zoom_to_level (NautilusTextView *text_view, int zoom_index)
 	
 	if (pinned_zoom_index != text_view->details->zoom_index) {
 		text_view->details->zoom_index = pinned_zoom_index;
-		bonobo_zoomable_report_zoom_level_changed (text_view->details->zoomable, text_view_preferred_zoom_levels[pinned_zoom_index]);		
+		bonobo_zoomable_report_zoom_level_changed (text_view->details->zoomable,
+                                                           text_view_preferred_zoom_levels[pinned_zoom_index]);		
 		nautilus_text_view_update_font (text_view);		
 	}
  }

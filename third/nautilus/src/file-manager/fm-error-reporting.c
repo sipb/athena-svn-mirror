@@ -29,74 +29,122 @@
 #include <string.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 #define NEW_NAME_TAG "Nautilus: new name"
+#define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50
 
 static void cancel_rename (NautilusFile *file);
 
 void
-fm_report_error_renaming_file (NautilusFile *file,
-			       const char *new_name,
-			       GnomeVFSResult error)
+fm_report_error_loading_directory (NautilusFile *file,
+			           GnomeVFSResult error,
+			           GtkWindow *parent_window)
 {
-	char *original_name;
+	char *file_name;
 	char *message;
 
 	if (error == GNOME_VFS_OK) {
 		return;
 	}
 
+	file_name = nautilus_file_get_name (file);
+
+	switch (error) {
+	case GNOME_VFS_ERROR_ACCESS_DENIED:
+		message = g_strdup_printf (_("You do not have the permissions necessary to view the contents of \"%s\"."),
+					   file_name);
+		break;
+	default:
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory, tell sullivan@eazel.com", 
+			   error, gnome_vfs_result_to_string (error));
+		message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
+	}
+
+	nautilus_show_error_dialog (message, _("Error Displaying Folder"), parent_window);
+
+	g_free (file_name);
+	g_free (message);
+}		
+
+void
+fm_report_error_renaming_file (NautilusFile *file,
+			       const char *new_name,
+			       GnomeVFSResult error,
+			       GtkWindow *parent_window)
+{
+	char *original_name, *original_name_truncated;
+	char *new_name_truncated;
+	char *message;
+
+	if (error == GNOME_VFS_OK) {
+		return;
+	}
+
+	/* Truncate names for display since very long file names with no spaces
+	 * in them won't get wrapped, and can create insanely wide dialog boxes.
+	 */
 	original_name = nautilus_file_get_name (file);
+	original_name_truncated = nautilus_str_middle_truncate (original_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+	g_free (original_name);
+	
+	new_name_truncated = nautilus_str_middle_truncate (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 	
 	switch (error) {
 	case GNOME_VFS_ERROR_FILE_EXISTS:
 		message = g_strdup_printf (_("The name \"%s\" is already used in this folder. "
 					     "Please use a different name."), 
-					   new_name);
+					   new_name_truncated);
 		break;
 	case GNOME_VFS_ERROR_NOT_FOUND:
 		message = g_strdup_printf (_("There is no \"%s\" in this folder. "
 					     "Perhaps it was just moved or deleted?"), 
-					   original_name);
+					   original_name_truncated);
 		break;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:
 		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s\"."),
-					   original_name);
+					   original_name_truncated);
 		break;
 	case GNOME_VFS_ERROR_NOT_PERMITTED:
 		if (strchr (new_name, '/') != NULL) {
 			message = g_strdup_printf (_("The name \"%s\" is not valid because it contains the character \"/\". "
 						     "Please use a different name."),
-						   new_name);
+						   new_name_truncated);
 		} else {
 			message = g_strdup_printf (_("The name \"%s\" is not valid. "
 						     "Please use a different name."),
-						   new_name);
+						   new_name_truncated);
 		}
 		break;
 	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
 		message = g_strdup_printf (_("Couldn't change the name of \"%s\" because it is on a read-only disk"),
-					   original_name);
+					   original_name_truncated);
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_renaming_file, tell sullivan@eazel.com", 
+			   error, gnome_vfs_result_to_string (error));
 		/* fall through */
+	case GNOME_VFS_ERROR_GENERIC:
 		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."),
-					   original_name, new_name);
+					   original_name_truncated, new_name_truncated);
 	}
 
-	g_free (original_name);
+	g_free (original_name_truncated);
+	g_free (new_name_truncated);
 
-	nautilus_error_dialog (message, _("Renaming Error"), NULL);
+	nautilus_show_error_dialog (message, _("Renaming Error"), parent_window);
 	g_free (message);
 }
 
 void
 fm_report_error_setting_group (NautilusFile *file,
-			       GnomeVFSResult error)
+			       GnomeVFSResult error,
+			       GtkWindow *parent_window)
 {
 	char *file_name;
 	char *message;
@@ -118,13 +166,14 @@ fm_report_error_setting_group (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d in fm_report_error_setting_group, tell sullivan@eazel.com", error);
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group, tell sullivan@eazel.com", 
+			   error, gnome_vfs_result_to_string (error));
 		file_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\"."), file_name);
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Group"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Group"), parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -132,7 +181,8 @@ fm_report_error_setting_group (NautilusFile *file,
 
 void
 fm_report_error_setting_owner (NautilusFile *file,
-			       GnomeVFSResult error)
+			       GnomeVFSResult error,
+			       GtkWindow *parent_window)
 {
 	char *file_name;
 	char *message;
@@ -150,11 +200,12 @@ fm_report_error_setting_owner (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d in fm_report_error_setting_owner, tell sullivan@eazel.com", error);
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_owner, tell sullivan@eazel.com", 
+			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Owner"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Owner"), parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -162,7 +213,8 @@ fm_report_error_setting_owner (NautilusFile *file,
 
 void
 fm_report_error_setting_permissions (NautilusFile *file,
-			       	     GnomeVFSResult error)
+			       	     GnomeVFSResult error,
+			       	     GtkWindow *parent_window)
 {
 	char *file_name;
 	char *message;
@@ -180,11 +232,12 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d in fm_report_error_setting_permissions, tell sullivan@eazel.com", error);
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_permissions, tell sullivan@eazel.com", 
+			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Permissions"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Permissions"), parent_window);
 
 	g_free (file_name);
 	g_free (message);
@@ -201,7 +254,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 	g_assert (name != NULL);
 
 	/* If rename failed, notify the user. */
-	fm_report_error_renaming_file (file, name, result);
+	fm_report_error_renaming_file (file, name, result, NULL);
 
 	cancel_rename (file);
 }

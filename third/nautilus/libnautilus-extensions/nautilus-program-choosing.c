@@ -32,8 +32,10 @@
 #include "nautilus-program-chooser.h"
 #include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
@@ -330,7 +332,7 @@ choose_application_callback (NautilusFile *file,
 	application = NULL;
 	dialog = NULL;
 
-	if (nautilus_mime_has_any_applications_for_file (file)) {
+	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
 		if (gnome_dialog_run (dialog) == GNOME_OK) {
@@ -405,34 +407,165 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	g_list_free (attributes);
 }
 
+
+typedef struct {
+	NautilusFile *file;
+	GtkWindow *parent_window;
+} LaunchParameters;
+
+static LaunchParameters *
+launch_parameters_new (NautilusFile *file,
+		       GtkWindow *parent_window)
+{
+	LaunchParameters *launch_parameters;
+
+	launch_parameters = g_new0 (LaunchParameters, 1);
+	nautilus_file_ref (file);
+	launch_parameters->file = file;
+	gtk_widget_ref (GTK_WIDGET (parent_window));
+	launch_parameters->parent_window = parent_window;
+
+	return launch_parameters;
+}
+
+static void
+launch_parameters_free (LaunchParameters *launch_parameters)
+{
+	g_assert (launch_parameters != NULL);
+
+	nautilus_file_unref (launch_parameters->file);
+	gtk_widget_unref (GTK_WIDGET (launch_parameters->parent_window));
+	
+	g_free (launch_parameters);
+}
+
+static void
+launch_application_callback (GnomeVFSMimeApplication *application,
+			     gpointer callback_data)
+{
+	LaunchParameters *launch_parameters;
+
+	g_assert (callback_data != NULL);
+
+	launch_parameters = (LaunchParameters *) callback_data;
+
+	if (application != NULL) {
+		g_assert (NAUTILUS_IS_FILE (launch_parameters->file));
+		
+		nautilus_launch_application (application, 
+					     launch_parameters->file,
+					     launch_parameters->parent_window);
+	}
+
+	launch_parameters_free (launch_parameters);
+	
+}
+
+/**
+ * application_cannot_open_location
+ * 
+ * Handle the case where an application has been selected to be launched,
+ * and it cannot handle the current uri scheme.  This can happen
+ * because the default application for a file type may not be able
+ * to handle some kinds of locations.   We want to tell users that their
+ * default application doesn't work here, rather than switching off to
+ * a different one without them noticing.
+ * 
+ * @application: The application that was to be launched.
+ * @file: The file whose location was passed as a parameter to the application
+ * @parent_window: A window to use as the parent for any error dialogs.
+ *  */
+static void
+application_cannot_open_location (GnomeVFSMimeApplication *application,
+				  NautilusFile *file,
+				  const char *uri_scheme,
+				  GtkWindow *parent_window)
+{
+	GnomeDialog *message_dialog;
+	LaunchParameters *launch_parameters;
+	char *message;
+	char *file_name;
+
+	file_name = nautilus_file_get_name (file);
+
+	if (nautilus_mime_has_any_applications_for_file (file)) {
+		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+					     "locations.  Would you like to choose another application?"),
+					   application->name, file_name, 
+					   application->name, uri_scheme);
+		message_dialog = nautilus_show_yes_no_dialog (message, 
+							       _("Can't Open Location"), 
+							       GNOME_STOCK_BUTTON_OK, 
+							       GNOME_STOCK_BUTTON_CANCEL,
+							       parent_window);
+		if (gnome_dialog_run (message_dialog) == GNOME_OK) {
+			launch_parameters = launch_parameters_new (file, parent_window);
+			nautilus_choose_application_for_file 
+				(file,
+				 parent_window,
+				 launch_application_callback,
+				 launch_parameters);
+				 
+		}
+		
+	}
+	else {
+		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+					     "locations.  No other applications are available to view this file.  "
+					     "If you copy this file onto your computer, you may be able to open "
+					     "it."), application->name, file_name, 
+					   application->name, uri_scheme);
+		nautilus_show_info_dialog (message, _("Can't Open Location"), parent_window);
+	}
+
+	g_free (file_name);
+	g_free (message);
+}
+
 /**
  * nautilus_launch_application:
  * 
- * Fork off a process to launch an application with a given uri as
- * a parameter. Provide a parent window for error dialogs.
+ * Fork off a process to launch an application with a given file as a
+ * parameter. Provide a parent window for error dialogs. 
  * 
  * @application: The application to be launched.
- * @uri: Passed as a parameter to the application.
+ * @file: The file whose location should be passed as a parameter to the application
  * @parent_window: A window to use as the parent for any error dialogs.
- * 
  */
 void
 nautilus_launch_application (GnomeVFSMimeApplication *application, 
-			     const char *uri, 
+			     NautilusFile *file,
 			     GtkWindow *parent_window)
 {
-	GnomeDialog *dialog;
 	char *parameter;
-	char *prompt;
+	char *uri_scheme, *uri;
+
+	uri_scheme = nautilus_file_get_uri_scheme (file);
 
 	/* If the program can open URIs, always use a URI. This
 	 * prevents any possible ambiguity for cases where a path
 	 * would looks like a URI.
 	 */
-	if (application->can_open_uris) {
-		parameter = g_strdup (uri);
+	if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ||
+	    ((application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES) &&
+	     nautilus_strcasecmp (uri_scheme, "file:") != 0)) {
+		/* Check to be sure that the application also supports this particular URI scheme */
+		if (g_list_find_custom (application->supported_uri_schemes,
+					uri_scheme,
+					nautilus_strcmp_compare_func) == NULL) {
+			application_cannot_open_location (application,
+							  file,
+							  uri_scheme,
+							  parent_window);
+			g_free (uri_scheme);
+			return;
+		}
+		parameter = nautilus_file_get_uri (file);
 	} else {
+		uri = nautilus_file_get_uri (file);
 		parameter = gnome_vfs_get_local_path_from_uri (uri);
+		g_free (uri);
+
 		if (parameter == NULL) {
 			/* This application can't deal with this URI,
 			 * because it can only handle local
@@ -441,20 +574,20 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			 * where to put it, and who would delete it
 			 * when done.
 			 */
-			prompt = g_strdup_printf (_("Sorry, %s can only open local files, and "
-						    "\"%s\" is remote. If you want to open it "
-						    "with %s, make a local copy first."), 
-						  application->name, uri, application->name);
-			dialog = nautilus_error_dialog (prompt, _("Can't open remote file"), parent_window);
-			g_free (prompt);
+			application_cannot_open_location (application,
+							  file,
+							  uri_scheme,
+							  parent_window);
+			g_free (uri_scheme);
 			return;
 		}
 	}
-	
+	g_free (uri_scheme);
+
 	nautilus_launch_application_from_command (application->command,
 						  parameter, 
 						  application->requires_terminal);
-	
+
 	g_free (parameter);
 }
 

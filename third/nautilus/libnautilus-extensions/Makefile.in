@@ -71,6 +71,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,25 +79,35 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
+EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
+EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
+EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
 EAZEL_SERVICES = @EAZEL_SERVICES@
+ENABLE_INSTALLER = @ENABLE_INSTALLER@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
+FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
@@ -106,27 +117,34 @@ GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_LIBS = @GNOME_LIBS@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
+GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
 IDL_CFLAGS = @IDL_CFLAGS@
+IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
 LIBPNG = @LIBPNG@
 LIBTOOL = @LIBTOOL@
+LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_CFLAGS = @MEDUSA_CFLAGS@
 MEDUSA_LIBS = @MEDUSA_LIBS@
+MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MOZILLA_COMPONENT_CFLAGS = @MOZILLA_COMPONENT_CFLAGS@
 MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
@@ -134,22 +152,30 @@ MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
 MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
+MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
+OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
 PACKAGESYSTEM = @PACKAGESYSTEM@
+PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
+PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
 PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
+POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 RPM_LIBS = @RPM_LIBS@
 RPM_VERSION = @RPM_VERSION@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -159,6 +185,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
@@ -170,7 +197,7 @@ NULL =
 
 lib_LTLIBRARIES = libnautilus-extensions.la
 
-INCLUDES =  	-I$(top_srcdir) 					-I$(top_srcdir)/src/file-manager 			-I$(top_builddir) 					-I$(top_builddir)/libnautilus 				-I$(top_srcdir)/cut-n-paste-code 			$(BONOBO_PRINT_CFLAGS) 					$(BONOBOX_CFLAGS) 					$(ESD_CFLAGS)						$(GCONF_CFLAGS) 					$(GHTTP_CFLAGS) 					$(GNOME_CFLAGS) 					$(MEDUSA_CFLAGS) 					$(OAF_CFLAGS) 						$(VFS_CFLAGS) 						$(XML_CFLAGS) 						-D_REENTRANT 						-DDATADIR=\""$(datadir)"\" 				-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		$(NULL)
+INCLUDES =  	-I$(top_srcdir) 					-I$(top_srcdir)/src/file-manager 			-I$(top_builddir) 					-I$(top_builddir)/libnautilus 				-I$(top_srcdir)/cut-n-paste-code 			$(BONOBO_PRINT_CFLAGS) 					$(BONOBOX_CFLAGS) 					$(ESD_CFLAGS)						$(GCONF_CFLAGS) 					$(GHTTP_CFLAGS) 					$(GNOMEUI_CFLAGS) 					$(MEDUSA_CFLAGS) 					$(OAF_CFLAGS) 						$(VFS_CFLAGS) 						$(XML_CFLAGS) 						-D_REENTRANT 						-DDATADIR=\""$(datadir)"\" 				-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		-DSOURCE_DATADIR=\""$(top_srcdir)/data"\" 		$(NULL)
 
 
 dependency_static_libs =  	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la 	$(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la 	$(top_builddir)/librsvg/librsvg.la 	$(NULL)
@@ -179,11 +206,23 @@ dependency_static_libs =  	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe
 libnautilus_extensions_la_LDFLAGS =  	$(dependency_static_libs)		$(BONOBO_PRINT_LIBS) 			$(BONOBOX_LIBS) 			$(ESD_LIBS)				$(FREETYPE2_LIBS)			$(GCONF_LIBS)				$(GHTTP_LIBS) 				$(GNOMECANVASPIXBUF_LIBS)		$(GNOME_LIBS) 				$(LIBPNG) 				$(MEDUSA_LIBS) 				$(OAF_LIBS) 				$(VFS_LIBS) 				$(XML_LIBS) 				$(NULL)
 
 
-libnautilus_extensions_la_SOURCES =  	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c 	bug-5712-pr3-workaround--gdkimage.c 	bug-5712-pr3-workaround--gdk-pixbuf-private.h 	nautilus-art-extensions.c			nautilus-art-gtk-extensions.c			nautilus-background-canvas-group.c		nautilus-background.c				nautilus-bonobo-extensions.c			nautilus-bookmark.c				nautilus-caption-table.c			nautilus-caption.c				nautilus-ctree.c				nautilus-customization-data.c			nautilus-dateedit-extensions.c			nautilus-debug-drawing.c			nautilus-debug.c				nautilus-default-file-icon.c			nautilus-directory-async.c			nautilus-directory-background.c			nautilus-directory-metafile.c			nautilus-directory.c				nautilus-drag-window.c				nautilus-drag.c					nautilus-druid-page-eazel.c			nautilus-druid.c				nautilus-entry.c				nautilus-enumeration.c				nautilus-file-changes-queue.c			nautilus-file-operations-progress.c		nautilus-file-operations.c			nautilus-file-utilities.c			nautilus-file.c					nautilus-font-factory.c				nautilus-font-picker.c				nautilus-gconf-extensions.c			nautilus-gdk-extensions.c			nautilus-gdk-font-extensions.c			nautilus-gdk-pixbuf-extensions.c		nautilus-generous-bin.c				nautilus-glib-extensions.c			nautilus-global-preferences.c			nautilus-gnome-extensions.c			nautilus-graphic-effects.c			nautilus-gtk-extensions.c			nautilus-horizontal-splitter.c			nautilus-icon-canvas-item.c       		nautilus-icon-container.c			nautilus-icon-dnd.c				nautilus-icon-factory.c				nautilus-icon-text-item.c			nautilus-image-with-background.c		nautilus-image.c				nautilus-keep-last-vertical-box.c		nautilus-label-with-background.c		nautilus-label.c				nautilus-lib-self-check-functions.c		nautilus-link-set.c				nautilus-link.c					nautilus-list-column-title.c			nautilus-list.c                         	nautilus-merged-directory.c			nautilus-mime-actions.c				nautilus-password-dialog.c			nautilus-preferences-box.c			nautilus-preferences-dialog.c			nautilus-preferences-group.c			nautilus-preferences-item.c			nautilus-preferences-pane.c			nautilus-preferences.c				nautilus-program-chooser.c			nautilus-program-choosing.c			nautilus-radio-button-group.c			nautilus-scalable-font.c			nautilus-search-uri.c				nautilus-self-checks.c				nautilus-smooth-widget.c			nautilus-sound.c				nautilus-stock-dialogs.c			nautilus-string-list.c				nautilus-string-map.c				nautilus-string-picker.c			nautilus-string.c				nautilus-tabs.c					nautilus-text-caption.c				nautilus-theme.c				nautilus-thumbnails.c				nautilus-trash-directory.c			nautilus-trash-file.c				nautilus-trash-monitor.c			nautilus-undo-context.c				nautilus-undo-manager.c				nautilus-undo-signal-handlers.c			nautilus-vfs-directory.c			nautilus-vfs-file.c				nautilus-view-identifier.c			nautilus-viewport.c				nautilus-volume-monitor.c			nautilus-xml-extensions.c			$(NULL)
+nautilus_metafile_server_idl_sources =  	nautilus-metafile-server-stubs.c		nautilus-metafile-server-skels.c		nautilus-metafile-server.h			nautilus-metafile-server-common.c
+
+
+libnautilus_extensions_la_SOURCES =  	$(nautilus_metafile_server_idl_sources)		nautilus-art-extensions.c			nautilus-art-gtk-extensions.c			nautilus-background-canvas-group.c		nautilus-background.c				nautilus-bonobo-extensions.c			nautilus-bookmark.c				nautilus-caption-table.c			nautilus-caption.c				nautilus-clickable-image.c			nautilus-ctree.c				nautilus-customization-data.c			nautilus-dateedit-extensions.c			nautilus-debug-drawing.c			nautilus-debug.c				nautilus-default-file-icon.c			nautilus-directory-async.c			nautilus-directory-background.c			nautilus-directory-metafile-monitor.c   	nautilus-directory-metafile.c			nautilus-directory.c				nautilus-drag-window.c				nautilus-drag.c					nautilus-druid-page-eazel.c			nautilus-druid.c				nautilus-ellipsizing-label.c			nautilus-entry.c				nautilus-enumeration.c				nautilus-file-changes-queue.c			nautilus-file-operations-progress.c		nautilus-file-operations.c			nautilus-file-utilities.c			nautilus-file.c					nautilus-font-factory.c				nautilus-font-manager.c				nautilus-font-picker.c				nautilus-gconf-extensions.c			nautilus-gdk-extensions.c			nautilus-gdk-font-extensions.c			nautilus-gdk-pixbuf-extensions.c		nautilus-generous-bin.c				nautilus-glib-extensions.c			nautilus-global-preferences.c			nautilus-glyph.c				nautilus-gnome-extensions.c			nautilus-graphic-effects.c			nautilus-gtk-extensions.c			nautilus-horizontal-splitter.c			nautilus-icon-canvas-item.c       		nautilus-icon-container.c			nautilus-icon-dnd.c				nautilus-icon-factory.c				nautilus-icon-text-item.c			nautilus-image-table.c				nautilus-image-with-background.c		nautilus-image.c				nautilus-keep-last-vertical-box.c		nautilus-label-with-background.c		nautilus-label.c				nautilus-labeled-image.c			nautilus-lib-self-check-functions.c		nautilus-link-set.c				nautilus-link.c					nautilus-list-column-title.c			nautilus-list.c                         	nautilus-medusa-support.c			nautilus-merged-directory.c			nautilus-metafile-factory.c             	nautilus-metafile.c                     	nautilus-mime-actions.c				nautilus-password-dialog.c			nautilus-preferences-box.c			nautilus-preferences-dialog.c			nautilus-preferences-group.c			nautilus-preferences-item.c			nautilus-preferences-pane.c			nautilus-preferences.c				nautilus-program-chooser.c			nautilus-program-choosing.c			nautilus-radio-button-group.c			nautilus-region.c				nautilus-scalable-font.c			nautilus-search-uri.c				nautilus-self-checks.c				nautilus-smooth-text-layout.c			nautilus-smooth-text-layout-cache.c		nautilus-smooth-widget.c			nautilus-sound.c				nautilus-stock-dialogs.c			nautilus-string-list.c				nautilus-string-map.c				nautilus-string-picker.c			nautilus-string.c				nautilus-tabs.c					nautilus-text-caption.c				nautilus-theme.c				nautilus-thumbnails.c				nautilus-trash-directory.c			nautilus-trash-file.c				nautilus-trash-monitor.c			nautilus-undo-context.c				nautilus-undo-manager.c				nautilus-undo-signal-handlers.c			nautilus-vfs-directory.c			nautilus-vfs-file.c				nautilus-view-identifier.c			nautilus-viewport.c				nautilus-volume-monitor.c			nautilus-wrap-table.c				nautilus-xml-extensions.c			$(NULL)
 
 
 # Everything is private for now
-noinst_HEADERS =  	nautilus-art-extensions.h			nautilus-art-gtk-extensions.h			nautilus-background-canvas-group.h		nautilus-background.h				nautilus-bonobo-extensions.h			nautilus-bookmark.h				nautilus-caption-table.h			nautilus-caption.h				nautilus-cdrom-extensions.h			nautilus-ctree.h				nautilus-customization-data.h			nautilus-dateedit-extensions.h 			nautilus-debug-drawing.h			nautilus-debug.h				nautilus-default-file-icon.h			nautilus-directory-background.h			nautilus-directory-metafile.h			nautilus-directory-notify.h			nautilus-directory-private.h			nautilus-directory.h				nautilus-drag-window.h				nautilus-drag.h					nautilus-druid-page-eazel.h			nautilus-druid.h				nautilus-entry.h				nautilus-enumeration.h				nautilus-file-attributes.h			nautilus-file-changes-queue.h			nautilus-file-operations-progress.h 		nautilus-file-operations.h 			nautilus-file-private.h				nautilus-file-utilities.h			nautilus-file.h					nautilus-font-factory.h				nautilus-font-picker.h				nautilus-gconf-extensions.h			nautilus-gdk-extensions.h			nautilus-gdk-font-extensions.h			nautilus-gdk-pixbuf-extensions.h		nautilus-generous-bin.h				nautilus-glib-extensions.h			nautilus-global-preferences.h			nautilus-gnome-extensions.h			nautilus-graphic-effects.h			nautilus-gtk-extensions.h			nautilus-gtk-macros.h				nautilus-horizontal-splitter.h			nautilus-icon-canvas-item.h			nautilus-icon-container.h			nautilus-icon-dnd.h				nautilus-icon-factory-private.h			nautilus-icon-factory.h				nautilus-icon-private.h				nautilus-icon-text-item.h			nautilus-image-with-background.h		nautilus-image.h				nautilus-iso9660.h				nautilus-keep-last-vertical-box.h		nautilus-label-with-background.h		nautilus-label.h				nautilus-lib-self-check-functions.h		nautilus-link-set.h				nautilus-link.h					nautilus-list-column-title.h			nautilus-list.h                         	nautilus-merged-directory.h			nautilus-metadata.h				nautilus-mime-actions.h				nautilus-password-dialog.h			nautilus-preferences-box.h			nautilus-preferences-dialog.h			nautilus-preferences-group.h			nautilus-preferences-item.h			nautilus-preferences-pane.h			nautilus-preferences-private.h			nautilus-preferences.h				nautilus-program-chooser.h			nautilus-program-choosing.h			nautilus-radio-button-group.h			nautilus-scalable-font-private.h		nautilus-scalable-font-private.h		nautilus-scalable-font.h			nautilus-search-uri.h				nautilus-self-checks.h				nautilus-smooth-widget.h			nautilus-sound.h				nautilus-stock-dialogs.h			nautilus-string-list.h				nautilus-string-map.h				nautilus-string-picker.h			nautilus-string.h				nautilus-tabs.h					nautilus-text-caption.h				nautilus-theme.h				nautilus-thumbnails.h				nautilus-trash-directory.h			nautilus-trash-file.h				nautilus-trash-monitor.h			nautilus-undo-context.h				nautilus-undo-manager.h				nautilus-undo-signal-handlers.h			nautilus-vfs-directory.h			nautilus-vfs-file.h				nautilus-view-identifier.h			nautilus-viewport.h				nautilus-volume-monitor.h			nautilus-xml-extensions.h			$(NULL)
+noinst_HEADERS =  	nautilus-art-extensions.h			nautilus-art-gtk-extensions.h			nautilus-background-canvas-group.h		nautilus-background.h				nautilus-bonobo-extensions.h			nautilus-bookmark.h				nautilus-caption-table.h			nautilus-caption.h				nautilus-cdrom-extensions.h			nautilus-clickable-image.h			nautilus-ctree.h				nautilus-customization-data.h			nautilus-dateedit-extensions.h 			nautilus-debug-drawing.h			nautilus-debug.h				nautilus-default-file-icon.h			nautilus-directory-background.h			nautilus-directory-metafile-monitor.h   	nautilus-directory-metafile.h			nautilus-directory-notify.h			nautilus-directory-private.h			nautilus-directory.h				nautilus-drag-window.h				nautilus-drag.h					nautilus-druid-page-eazel.h			nautilus-druid.h				nautilus-ellipsizing-label.h			nautilus-entry.h				nautilus-enumeration.h				nautilus-file-attributes.h			nautilus-file-changes-queue.h			nautilus-file-operations-progress.h 		nautilus-file-operations.h 			nautilus-file-private.h				nautilus-file-utilities.h			nautilus-file.h					nautilus-font-factory.h				nautilus-font-manager.h				nautilus-font-picker.h				nautilus-gconf-extensions.h			nautilus-gdk-extensions.h			nautilus-gdk-font-extensions.h			nautilus-gdk-pixbuf-extensions.h		nautilus-generous-bin.h				nautilus-glib-extensions.h			nautilus-global-preferences.h			nautilus-glyph.h				nautilus-gnome-extensions.h			nautilus-graphic-effects.h			nautilus-gtk-extensions.h			nautilus-gtk-macros.h				nautilus-horizontal-splitter.h			nautilus-icon-canvas-item.h			nautilus-icon-container.h			nautilus-icon-dnd.h				nautilus-icon-factory-private.h			nautilus-icon-factory.h				nautilus-icon-private.h				nautilus-icon-text-item.h			nautilus-image-table.h				nautilus-image-with-background.h		nautilus-image.h				nautilus-iso9660.h				nautilus-keep-last-vertical-box.h		nautilus-label-with-background.h		nautilus-label.h				nautilus-labeled-image.h			nautilus-lib-self-check-functions.h		nautilus-link-set.h				nautilus-link.h					nautilus-list-column-title.h			nautilus-list.h                         	nautilus-medusa-support.h			nautilus-merged-directory.h			nautilus-metadata.h				nautilus-metafile-factory.h             	nautilus-metafile.h                     	nautilus-mime-actions.h				nautilus-password-dialog.h			nautilus-preferences-box.h			nautilus-preferences-dialog.h			nautilus-preferences-group.h			nautilus-preferences-item.h			nautilus-preferences-pane.h			nautilus-preferences-private.h			nautilus-preferences.h				nautilus-program-chooser.h			nautilus-program-choosing.h			nautilus-radio-button-group.h			nautilus-region.h				nautilus-scalable-font-private.h		nautilus-scalable-font-private.h		nautilus-scalable-font.h			nautilus-search-uri.h				nautilus-self-checks.h				nautilus-smooth-text-layout.h			nautilus-smooth-text-layout-cache.h		nautilus-smooth-widget.h			nautilus-sound.h				nautilus-stock-dialogs.h			nautilus-string-list.h				nautilus-string-map.h				nautilus-string-picker.h			nautilus-string.h				nautilus-tabs.h					nautilus-text-caption.h				nautilus-theme.h				nautilus-thumbnails.h				nautilus-trash-directory.h			nautilus-trash-file.h				nautilus-trash-monitor.h			nautilus-undo-context.h				nautilus-undo-manager.h				nautilus-undo-signal-handlers.h			nautilus-vfs-directory.h			nautilus-vfs-file.h				nautilus-view-identifier.h			nautilus-viewport.h				nautilus-volume-monitor.h			nautilus-wrap-table.h				nautilus-xml-extensions.h			$(NULL)
+
+
+EXTRA_DIST =  	nautilus-metafile-server.idl		$(NULL)
+
+
+BUILT_SOURCES =  	$(nautilus_metafile_server_idl_sources)			$(NULL)
+
+
+CLEANFILES =  	$(nautilus_metafile_server_idl_sources)			nautilus_metafile_server_idl_stamp			$(NULL)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -196,43 +235,50 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libnautilus_extensions_la_LIBADD = 
-libnautilus_extensions_la_OBJECTS =  \
-bug-5712-pr3-workaround--gdk-pixbuf-drawable.lo \
-bug-5712-pr3-workaround--gdkimage.lo nautilus-art-extensions.lo \
-nautilus-art-gtk-extensions.lo nautilus-background-canvas-group.lo \
-nautilus-background.lo nautilus-bonobo-extensions.lo \
-nautilus-bookmark.lo nautilus-caption-table.lo nautilus-caption.lo \
-nautilus-ctree.lo nautilus-customization-data.lo \
-nautilus-dateedit-extensions.lo nautilus-debug-drawing.lo \
-nautilus-debug.lo nautilus-default-file-icon.lo \
-nautilus-directory-async.lo nautilus-directory-background.lo \
+libnautilus_extensions_la_OBJECTS =  nautilus-metafile-server-stubs.lo \
+nautilus-metafile-server-skels.lo nautilus-metafile-server-common.lo \
+nautilus-art-extensions.lo nautilus-art-gtk-extensions.lo \
+nautilus-background-canvas-group.lo nautilus-background.lo \
+nautilus-bonobo-extensions.lo nautilus-bookmark.lo \
+nautilus-caption-table.lo nautilus-caption.lo \
+nautilus-clickable-image.lo nautilus-ctree.lo \
+nautilus-customization-data.lo nautilus-dateedit-extensions.lo \
+nautilus-debug-drawing.lo nautilus-debug.lo \
+nautilus-default-file-icon.lo nautilus-directory-async.lo \
+nautilus-directory-background.lo nautilus-directory-metafile-monitor.lo \
 nautilus-directory-metafile.lo nautilus-directory.lo \
 nautilus-drag-window.lo nautilus-drag.lo nautilus-druid-page-eazel.lo \
-nautilus-druid.lo nautilus-entry.lo nautilus-enumeration.lo \
-nautilus-file-changes-queue.lo nautilus-file-operations-progress.lo \
-nautilus-file-operations.lo nautilus-file-utilities.lo nautilus-file.lo \
-nautilus-font-factory.lo nautilus-font-picker.lo \
+nautilus-druid.lo nautilus-ellipsizing-label.lo nautilus-entry.lo \
+nautilus-enumeration.lo nautilus-file-changes-queue.lo \
+nautilus-file-operations-progress.lo nautilus-file-operations.lo \
+nautilus-file-utilities.lo nautilus-file.lo nautilus-font-factory.lo \
+nautilus-font-manager.lo nautilus-font-picker.lo \
 nautilus-gconf-extensions.lo nautilus-gdk-extensions.lo \
 nautilus-gdk-font-extensions.lo nautilus-gdk-pixbuf-extensions.lo \
 nautilus-generous-bin.lo nautilus-glib-extensions.lo \
-nautilus-global-preferences.lo nautilus-gnome-extensions.lo \
-nautilus-graphic-effects.lo nautilus-gtk-extensions.lo \
-nautilus-horizontal-splitter.lo nautilus-icon-canvas-item.lo \
-nautilus-icon-container.lo nautilus-icon-dnd.lo \
-nautilus-icon-factory.lo nautilus-icon-text-item.lo \
+nautilus-global-preferences.lo nautilus-glyph.lo \
+nautilus-gnome-extensions.lo nautilus-graphic-effects.lo \
+nautilus-gtk-extensions.lo nautilus-horizontal-splitter.lo \
+nautilus-icon-canvas-item.lo nautilus-icon-container.lo \
+nautilus-icon-dnd.lo nautilus-icon-factory.lo \
+nautilus-icon-text-item.lo nautilus-image-table.lo \
 nautilus-image-with-background.lo nautilus-image.lo \
 nautilus-keep-last-vertical-box.lo nautilus-label-with-background.lo \
-nautilus-label.lo nautilus-lib-self-check-functions.lo \
-nautilus-link-set.lo nautilus-link.lo nautilus-list-column-title.lo \
-nautilus-list.lo nautilus-merged-directory.lo nautilus-mime-actions.lo \
-nautilus-password-dialog.lo nautilus-preferences-box.lo \
-nautilus-preferences-dialog.lo nautilus-preferences-group.lo \
-nautilus-preferences-item.lo nautilus-preferences-pane.lo \
-nautilus-preferences.lo nautilus-program-chooser.lo \
-nautilus-program-choosing.lo nautilus-radio-button-group.lo \
+nautilus-label.lo nautilus-labeled-image.lo \
+nautilus-lib-self-check-functions.lo nautilus-link-set.lo \
+nautilus-link.lo nautilus-list-column-title.lo nautilus-list.lo \
+nautilus-medusa-support.lo nautilus-merged-directory.lo \
+nautilus-metafile-factory.lo nautilus-metafile.lo \
+nautilus-mime-actions.lo nautilus-password-dialog.lo \
+nautilus-preferences-box.lo nautilus-preferences-dialog.lo \
+nautilus-preferences-group.lo nautilus-preferences-item.lo \
+nautilus-preferences-pane.lo nautilus-preferences.lo \
+nautilus-program-chooser.lo nautilus-program-choosing.lo \
+nautilus-radio-button-group.lo nautilus-region.lo \
 nautilus-scalable-font.lo nautilus-search-uri.lo \
-nautilus-self-checks.lo nautilus-smooth-widget.lo nautilus-sound.lo \
-nautilus-stock-dialogs.lo nautilus-string-list.lo \
+nautilus-self-checks.lo nautilus-smooth-text-layout.lo \
+nautilus-smooth-text-layout-cache.lo nautilus-smooth-widget.lo \
+nautilus-sound.lo nautilus-stock-dialogs.lo nautilus-string-list.lo \
 nautilus-string-map.lo nautilus-string-picker.lo nautilus-string.lo \
 nautilus-tabs.lo nautilus-text-caption.lo nautilus-theme.lo \
 nautilus-thumbnails.lo nautilus-trash-directory.lo \
@@ -240,7 +286,8 @@ nautilus-trash-file.lo nautilus-trash-monitor.lo \
 nautilus-undo-context.lo nautilus-undo-manager.lo \
 nautilus-undo-signal-handlers.lo nautilus-vfs-directory.lo \
 nautilus-vfs-file.lo nautilus-view-identifier.lo nautilus-viewport.lo \
-nautilus-volume-monitor.lo nautilus-xml-extensions.lo
+nautilus-volume-monitor.lo nautilus-wrap-table.lo \
+nautilus-xml-extensions.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -410,12 +457,14 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
@@ -458,6 +507,12 @@ mostlyclean distclean maintainer-clean
 
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
+
+$(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
+
+nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-metafile-server.idl
+	touch nautilus_metafile_server_idl_stamp
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

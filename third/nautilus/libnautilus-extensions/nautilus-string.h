@@ -76,8 +76,6 @@ gboolean nautilus_str_has_suffix                (const char    *target,
 						 const char    *suffix);
 gboolean nautilus_istr_has_suffix               (const char    *target,
 						 const char    *suffix);
-char *   nautilus_str_get_prefix                (const char    *source,
-						 const char    *delimiter);
 char *   nautilus_str_strip_chr                 (const char    *str,
 						 char           remove_this);
 char *   nautilus_str_strip_trailing_chr        (const char    *str,
@@ -116,5 +114,13 @@ char *   nautilus_str_strip_substring_and_after (const char    *str,
 char *   nautilus_str_replace_substring         (const char    *str,
 						 const char    *substring,
 						 const char    *replacement);
+
+/* Remove all text in brackets.  Used where context is included in strings to 
+ * be internationalized, to help translators, and to make sure that strings
+ * that may be used in different places with a different meaning may be 
+ * translated separately.  If brackets are not even, it will just return a 
+ * copy of the original string. 
+ */
+char *   nautilus_str_remove_bracketed_text     (const char    *text);
 
 #endif /* NAUTILUS_STRING_H */

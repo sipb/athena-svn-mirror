@@ -23,49 +23,47 @@
 */
 
 #include "nautilus-directory.h"
-#include <gnome-xml/tree.h>
-
-void     nautilus_directory_set_metafile_contents          (NautilusDirectory *directory,
-							    xmlDocPtr          metafile_contents);
 
 /* Interface for file metadata. */
-char *   nautilus_directory_get_file_metadata              (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    const char        *default_metadata);
-GList *  nautilus_directory_get_file_metadata_list         (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *list_key,
-							    const char        *list_subkey);
-gboolean nautilus_directory_get_boolean_file_metadata      (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    gboolean           default_metadata);
-int      nautilus_directory_get_integer_file_metadata      (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    int                default_metadata);
+gboolean nautilus_directory_is_metadata_read	      (NautilusDirectory *directory);
 
-gboolean nautilus_directory_set_file_metadata              (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    const char        *default_metadata,
-							    const char        *metadata);
-gboolean nautilus_directory_set_file_metadata_list         (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *list_key,
-							    const char        *list_subkey,
-							    GList             *list);
-gboolean nautilus_directory_set_boolean_file_metadata      (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    gboolean           default_metadata,
-							    gboolean           metadata);
-gboolean nautilus_directory_set_integer_file_metadata      (NautilusDirectory *directory,
-							    const char        *file_name,
-							    const char        *key,
-							    int                default_metadata,
-							    int                metadata);
+char *   nautilus_directory_get_file_metadata         (NautilusDirectory *directory,
+						       const char        *file_name,
+						       const char        *key,
+						       const char        *default_metadata);
+GList *  nautilus_directory_get_file_metadata_list    (NautilusDirectory *directory,
+						       const char        *file_name,
+						       const char        *list_key,
+						       const char        *list_subkey);
+gboolean nautilus_directory_get_boolean_file_metadata (NautilusDirectory *directory,
+						       const char        *file_name,
+						       const char        *key,
+						       gboolean           default_metadata);
+int      nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
+						       const char        *file_name,
+						       const char        *key,
+						       int                default_metadata);
+
+void nautilus_directory_set_file_metadata         (NautilusDirectory *directory,
+						   const char        *file_name,
+						   const char        *key,
+						   const char        *default_metadata,
+						   const char        *metadata);
+void nautilus_directory_set_file_metadata_list    (NautilusDirectory *directory,
+						   const char        *file_name,
+						   const char        *list_key,
+						   const char        *list_subkey,
+						   GList             *list);
+void nautilus_directory_set_boolean_file_metadata (NautilusDirectory *directory,
+						   const char        *file_name,
+						   const char        *key,
+						   gboolean           default_metadata,
+						   gboolean           metadata);
+void nautilus_directory_set_integer_file_metadata (NautilusDirectory *directory,
+						   const char        *file_name,
+						   const char        *key,
+						   int                default_metadata,
+						   int                metadata);
 
 void     nautilus_directory_copy_file_metadata             (NautilusDirectory *source_directory,
 							    const char        *source_file_name,
@@ -77,6 +75,7 @@ void     nautilus_directory_rename_file_metadata           (NautilusDirectory *d
 							    const char        *old_file_name,
 							    const char        *new_file_name);
 
-/* Interface for housekeeping. */
-void     nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory);
-void     nautilus_directory_metafile_destroy               (NautilusDirectory *directory);
+void nautilus_directory_register_metadata_monitor   (NautilusDirectory *directory);
+void nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory);
+
+void	 nautilus_directory_use_self_contained_metafile_factory (void);

@@ -26,6 +26,8 @@
 #include <config.h>
 
 #include "eazel-inventory-utils.h"
+#include "eazel-inventory-collect-hardware.h"
+#include "eazel-inventory-collect-software.h"
 
 #include <gdk/gdk.h>
 #include <stdio.h>
@@ -42,11 +44,11 @@
 #include <libtrilobite/trilobite-md5-tools.h>
 #include <libtrilobite/trilobite-core-distribution.h>
 
-#define notDEBUG_pepper		1
+#define DEBUG_pepper		1
 
 #define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
-#define DIGEST_GCONF_KEY	"inventory_digest_value"
-
+#define DIGEST_GCONF_KEY	DIGEST_GCONF_PATH "/inventory_digest_value"
+#define PACKAGE_DB_MTIME_KEY	DIGEST_GCONF_PATH "/package-db-mtime"
 
 static GConfEngine *conf_engine = NULL;
 
@@ -79,281 +81,76 @@ check_gconf_init (void)
 	}
 }
 
-
-
-/* ripped straight out of libnautilus-extensions because we didn't want the
- * dependency for one small function
- */
-static gboolean
-str_has_prefix (const char *haystack, const char *needle)
+/* return the (optionally cached) software inventory */
+static xmlNodePtr
+get_software_inventory (void) 
 {
-	const char *h, *n;
+	EazelPackageSystem *package_system;
+	time_t previous_mtime, database_mtime;
+	gboolean regenerate = TRUE;
+	xmlNodePtr result = NULL;
+	xmlDocPtr software_inventory_cache;
+	GError *error;
+	char *cache_path = g_strdup_printf 
+		("%s/.nautilus/software-inventory-cache.xml", 
+		 g_get_home_dir ());
 
-	/* Eat one character at a time. */
-	h = haystack == NULL ? "" : haystack;
-	n = needle == NULL ? "" : needle;
-	do {
-		if (*n == '\0') {
-			return TRUE;
-		}
-		if (*h == '\0') {
-			return FALSE;
-		}
-	} while (*h++ == *n++);
-	return FALSE;
-}
+	check_gconf_init ();
 
-/* eazel package system method to query the rpmdb for
- * all packages and return a GList of PackageData structs.
- */
-
-static GList *
-get_package_list (EazelPackageSystem *package_system)
-{
-	GList		*packages;
-
-	packages = NULL;
-
-	packages = eazel_package_system_query	(package_system,
-					 	 NULL,
-						 "",
-						 EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR,
-						 0);
-
-	return packages;
-}
-
-/* add package data from the package database to the passed in xml document */
-static void
-add_package_info (xmlDocPtr	configuration_metafile, xmlNodePtr	node)
-{
-
-	char			package_count_str[32];
-	xmlNodePtr		packages_node;
-	xmlNodePtr		current_package_node;
- 	int			package_count;
-	EazelPackageSystem	*package_system;
-	GList			*packages;
-	GList			*iterator;
-	PackageData		*package;
-	char			*package_name;
-	char			*package_version;
-	char			*package_release;
-	char			*package_arch;
-
-
-	package_count = 0;
-
+	previous_mtime = gconf_engine_get_int (conf_engine, 
+			PACKAGE_DB_MTIME_KEY, &error);
 	package_system = eazel_package_system_new (NULL);
-
-	packages = get_package_list (package_system);
-
-    	/* add the PACKAGES node */
-	packages_node = xmlNewChild (node, NULL, "PACKAGES", NULL);
-    
-	/* iterate through all of the installed packages */
-
-	for (iterator = packages; iterator != NULL; iterator = g_list_next (iterator)) {
-
-		package = (PackageData*) iterator->data;
-
-		package_name = g_strdup (package->name);
-		package_version = g_strdup (package->version);
-		package_release = g_strdup (package->minor);
-		package_arch = g_strdup (package->archtype);
-
- 		/* add a node for this package */
-        
-		current_package_node = xmlNewChild (packages_node, NULL, "PACKAGE", NULL);
-		package_count += 1;
-        
-		xmlSetProp (current_package_node, "name", package_name);
-		xmlSetProp (current_package_node, "version", package_version);
-		xmlSetProp (current_package_node, "release", package_release);
-		xmlSetProp (current_package_node, "epoch", package_arch);
-
-		g_free (package_name);
-		g_free (package_version);
-		g_free (package_release);
-		g_free (package_arch);
-		packagedata_destroy (package, TRUE);
-
-	  }
-    
-    	/* update the count */
-    
-    	sprintf (package_count_str, "%d", package_count);
-	xmlSetProp (packages_node, "count", package_count_str);
-    
-	/* clean up*/   
+	database_mtime = eazel_package_system_database_mtime (package_system);
 	gtk_object_unref (GTK_OBJECT (package_system));
-	g_list_free (packages);
 
-}
+	if (error == NULL || previous_mtime == 0) {
+		g_print ("database mtime not set.\n");
+		regenerate = TRUE;
+	} else {
 
-/* utility routine to read a proc file into a string */
-static char*
-read_proc_info	(const char	*proc_filename)
-{
-
-	FILE	*thisFile;
-	char	*result;
-	char	buffer[256];
-	char	*path_name;
-	GString	*string_data;
-	
-	path_name = g_strdup_printf ("/proc/%s", proc_filename);	
-	string_data = g_string_new ("");
-	thisFile = fopen (path_name, "r");
-	
-	while (fgets (buffer, 255, thisFile) != NULL) {
-		g_string_append (string_data, buffer);		
+		if (database_mtime != previous_mtime) {
+			g_print ("database has changed\n");
+			regenerate = TRUE;
+		} else {
+			g_print ("database hasn't changed\n");
+			regenerate = FALSE;
+		}
 	}
-	fclose (thisFile);
+
+	gconf_engine_set_int (conf_engine, 
+			PACKAGE_DB_MTIME_KEY, database_mtime,
+			&error);
 	
-	result = g_strdup (string_data->str);
-	g_string_free (string_data, TRUE);
-	g_free (path_name);
+	if (!regenerate) {
+		g_print ("using cached software inventory\n");
+		software_inventory_cache = xmlParseFile (cache_path);
+		if (software_inventory_cache == NULL) {
+			g_print ("couldn't load cache\n");
+			regenerate = TRUE;
+		} else {
+			g_print ("duplicating cache\n");
+			result = xmlCopyNode (software_inventory_cache->root,
+					1);
+			g_print ("freeing cache\n");
+			xmlFreeDoc (software_inventory_cache);
+		}
+	}
+
+	if (regenerate) {
+		g_print ("generating software inventory\n");
+		result = eazel_inventory_collect_software ();
+		software_inventory_cache = xmlNewDoc ("1.0");
+		xmlDocSetRootElement (software_inventory_cache,
+				xmlCopyNode (result, 1));
+		xmlSaveFile (cache_path, software_inventory_cache);
+		xmlFreeDoc (software_inventory_cache);
+	}
+
+	g_print ("returning result (%p)\n", result);
 
 	return result;
+	
 }
-
-/* utility routine to extract information from a string and add it to an XML node */
-static void
-add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_name)
-{
-
-	int	index;
-	char	**info_array;
-	char	*field_data;
-
-	field_data = NULL;
-	
-	/* parse the data into a string array */
-	info_array = g_strsplit (data, "\n", 32);
-	/* iterate through the data isolating the field */
-	for (index = 0; index < 32; index++) {
-		if (info_array[index] == NULL)
-			break;
-		if (str_has_prefix (info_array[index], field_name)) {
-			field_data = info_array[index] + strlen(field_name);
-			field_data = strchr (field_data, ':') + 1;
-			field_data = g_strchug (field_data);
-			break;
-		}
-	}
-	
-	/* add the requested node if the field was found */
-	if (field_data) {
-		xmlNodePtr new_node;
-		new_node = xmlNewChild (node_ptr, NULL, tag, NULL);
-		xmlNodeSetContent (new_node, field_data);
-	}
-	g_strfreev (info_array);
-}
-
-/* utility routine to process io info */
-static void
-add_io_info (xmlNodePtr	node_ptr, char	*io_data)
-{
-
-	int		index;
-	char		*temp_str;
-	xmlNodePtr	new_node;
-	char		**info_array;
-	
-	/* parse the data into a string array */
-	info_array = g_strsplit (io_data, "\n", 64);
-	/* iterate through the data creating a record for each line */
-	for (index = 0; index < 64; index++) {
-		if (info_array[index] == NULL)
-			break;
-		new_node = xmlNewChild (node_ptr, NULL, "IORANGE", NULL);
-		temp_str = strchr (info_array[index], ':');
-		if (temp_str) {
-			*temp_str = '\0';
-			xmlSetProp (new_node, "RANGE", g_strstrip (info_array[index]));
-			xmlSetProp (new_node, "TYPE",  g_strstrip (temp_str + 1));
-		}
-		
-	}
-	
-	g_strfreev (info_array);
-}
-
-/* add hardware info from the /proc directory to the passed in xml document */
-static void
-add_hardware_info (xmlDocPtr	configuration_metafile)
-{
-
-    	xmlNodePtr	cpu_node;
-	xmlNodePtr	this_node;
-	xmlNodePtr	hardware_node;
-	char		*temp_string;
-	
-	/* add the HARDWARE node */
-	hardware_node = xmlNewChild (configuration_metafile->root, NULL, "HARDWARE", NULL);
- 	
-	/* capture various information from the /proc filesystem */
-	/* first, capture memory info */
-	
-	temp_string = read_proc_info ("meminfo");
-	add_info (hardware_node, temp_string, "MEMORYSIZE", "MemTotal");
-	add_info (hardware_node, temp_string, "SWAPSIZE", "SwapTotal");
-	g_free (temp_string);	
-
-	/* now handle CPU info */
-	cpu_node = xmlNewChild (hardware_node, NULL, "CPU", NULL);
-	temp_string = read_proc_info ("cpuinfo");
-	add_info (cpu_node, temp_string, "TYPE", "processor");
-	add_info (cpu_node, temp_string, "VENDOR", "vendor_id");
-	add_info (cpu_node, temp_string, "FAMILY", "cpu family");
-	add_info (cpu_node, temp_string, "MODEL", "model");
-	add_info (cpu_node, temp_string, "MODELNAME", "model name");
-	add_info (cpu_node, temp_string, "STEPPING", "stepping");
-	add_info (cpu_node, temp_string, "SPEED", "cpu MHz");
-	add_info (cpu_node, temp_string, "CACHE", "cache size");
-	add_info (cpu_node, temp_string, "BOGOMIPS", "bogomips");
-	add_info (cpu_node, temp_string, "FLAGS", "flags");
-	g_free (temp_string);	
-
-	/* now handle IO port info */
-	this_node = xmlNewChild (hardware_node, NULL, "IOPORTS", NULL);
-	temp_string = read_proc_info ("ioports");
-	add_io_info (this_node, temp_string);
-	g_free (temp_string);	
-}
-
-/* add hardware info from the /proc directory to the passed in xml document */
-static void
-add_software_info (xmlDocPtr	configuration_metafile)
-{
-
-    	xmlNodePtr		distribution_node;
-	xmlNodePtr		software_node;
-	DistributionInfo	distro;
-	char			*distro_string;
-	
-	/* add the SOFTWARE node */
-	software_node = xmlNewChild (configuration_metafile->root, NULL, "SOFTWARE", NULL);
-
-	/* add the distribution string */
-	distro = trilobite_get_distribution ();
-	distro_string = trilobite_get_distribution_name (distro, TRUE, FALSE);
-	distribution_node = xmlNewChild (software_node, NULL, "DISTRIBUTION", NULL);
-	if (!distro_string) {
-		distro_string = g_strdup_printf ("Unknown Distribution");
-	}
-	xmlNodeSetContent (distribution_node, distro_string);
-
-	/* add the package info */
-	add_package_info (configuration_metafile, software_node);
-
-	g_free (distro_string);
-}
-
-#define KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME "/apps/eazel-trilobite/inventory/machine_name"
-
 
 /* create the configuration metafile and add package and hardware configuration info to it */
 static xmlDocPtr
@@ -388,10 +185,12 @@ eazel_create_configuration_metafile (void)
 	g_free (time_string);
 	
 	/* add the software info */
-	add_software_info (configuration_metafile);
-	
+	xmlAddChild (container_node, get_software_inventory ());
+
 	/* add the hardware info */
-	add_hardware_info (configuration_metafile);
+	/* Disable the hardware inventory for 1.0
+	xmlAddChild (container_node, eazel_inventory_collect_hardware ());
+	*/
 	
 	return configuration_metafile;
 }
@@ -402,27 +201,18 @@ static char *
 get_digest_from_gconf (const char *key)
 {
 	GError	*error;
-	char	*full_key;
-	char	*helper;
 	char	*value;
 
 	error = NULL;
 	value = NULL;
 
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, key);
 
-	/* convert all spaces to underscores */
-	while ((helper = strchr (full_key, ' ')) != NULL) {
-		*helper = '_';
-	}
-
-	value = gconf_engine_get_string (conf_engine, full_key, &error);
+	value = gconf_engine_get_string (conf_engine, key, &error);
 	if (error != NULL) {
-		g_warning ("inventory cannot find key: '%s': %s", full_key, error->message);
+		g_warning ("inventory cannot find key: '%s': %s", key, error->message);
 		g_error_free (error);
 	}
-	g_free (full_key);
 	return value;
 }
 
@@ -436,7 +226,6 @@ update_gconf_inventory_digest (unsigned char value[16])
 {
 	GError *error;
 	char *full_key;
-	char *helper;
 	const char *digest_string;
 	gboolean return_val;
 
@@ -446,16 +235,7 @@ update_gconf_inventory_digest (unsigned char value[16])
 
 	digest_string = trilobite_md5_get_string_from_md5_digest (value);
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, DIGEST_GCONF_KEY);
-
-	/* convert all spaces to underscores */
-	while ((helper = strchr (full_key, ' ')) != NULL) {
-		*helper = '_';
-	}
-
-#ifdef DEBUG_pepper
-	g_print ("Key: %s Digest: %s\n", full_key, digest_string);
-#endif
+	full_key = DIGEST_GCONF_KEY;
 
 	gconf_engine_unset (conf_engine, full_key, &error);
 	if (error != NULL) {
@@ -470,7 +250,6 @@ update_gconf_inventory_digest (unsigned char value[16])
 		g_error_free (error);
 		return_val = FALSE;
 	}
-	g_free (full_key);
 
 	return return_val;
 }
@@ -538,4 +317,30 @@ eazel_gather_inventory (void)
 /* return the local path to store and retrieve the inventory XML from */
 gchar *eazel_inventory_local_path			(void) {
 	return g_strdup_printf ("%s/.nautilus/configuration.xml", g_get_home_dir ());
+}
+
+void eazel_inventory_update_md5 () {
+	unsigned char	md5_digest[16];
+	char *inventory_file_name;
+
+	inventory_file_name = eazel_inventory_local_path();
+	trilobite_md5_get_digest_from_file (inventory_file_name, md5_digest);
+	if (!update_gconf_inventory_digest (md5_digest)) {
+		g_print ("failed to update digest\n");
+	}
+	g_free (inventory_file_name);
+
+}
+
+void eazel_inventory_clear_md5 () {
+	GError *error = NULL;
+
+	check_gconf_init ();
+
+	gconf_engine_unset (conf_engine, DIGEST_GCONF_KEY, &error);
+
+	if (error != NULL) {
+		/* What, me worry? */
+		g_error_free (error);
+	}
 }

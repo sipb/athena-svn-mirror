@@ -52,6 +52,7 @@ struct NautilusTreeViewDetails {
 	NautilusTreeModel *model;
 
 	GHashTable *file_to_node_map;
+	GHashTable *view_node_to_uri_map;
 
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
@@ -64,6 +65,8 @@ struct NautilusTreeViewDetails {
 	NautilusTreeChangeQueue *change_queue;
 	guint pending_idle_id;
 
+	GList *unparented_tree_nodes;
+
 	TreeViewCallback root_seen_callback;
 	char *wait_uri;
 	NautilusTreeNode *wait_node;
@@ -72,6 +75,10 @@ struct NautilusTreeViewDetails {
         gboolean root_seen;
 
 	gboolean got_first_size_allocate;
+
+	gboolean inserting_node;
+
+	NautilusFile *activation_uri_wait_file;
 
 	NautilusTreeViewDndDetails *dnd;
 };

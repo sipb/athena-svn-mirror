@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
  * Copyright (C) 2000 Helix Code, Inc
@@ -53,11 +53,13 @@ typedef enum _PackageSystemStatus PackageSystemStatus;
   trilobite-eazel-install.idl
   eazel-install-corba-types.c 
     - packagedata_from_corba_packagedatastruct
-    - corba_packagedatastruct_from_packagedata)
+    - corba_packagedatastruct_from_packagedata
   and
   eazel-package-system-types.c
     - packagedata_status_enum_to_str
     - packagedata_status_str_to_enum
+  and
+  eazel-install-problem.c
  */
 enum _PackageSystemStatus {
 	PACKAGE_UNKNOWN_STATUS=0,
@@ -70,7 +72,9 @@ enum _PackageSystemStatus {
 	PACKAGE_PARTLY_RESOLVED,
 	PACKAGE_ALREADY_INSTALLED,
 	PACKAGE_CIRCULAR_DEPENDENCY,
-	PACKAGE_RESOLVED
+	PACKAGE_RESOLVED,
+	PACKAGE_CANCELLED,
+	PACKAGE_PACKSYS_FAILURE
 };
 /* Methods to convert enum to/from char* val. The returned
    char* must not be freed */
@@ -109,6 +113,7 @@ enum _PackageFillFlags {
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
 	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
 	PACKAGE_FILL_NO_DIRS_IN_PROVIDES = 0x8, /* only used if PACKAGE_FILL_NO_PROVIDES is not set */
+	PACKAGE_FILL_NO_FEATURES = 0x10,
 	PACKAGE_FILL_MINIMAL = 0x7fff,
 	PACKAGE_FILL_INVALID = 0x8000
 };
@@ -169,6 +174,7 @@ typedef struct _PackageDataClass PackageDataClass;
 
 struct _PackageDataClass {
 	GtkObjectClass parent_class;
+	void (*finalize) (GtkObject *obj);
 };
 
 struct _PackageData {
@@ -179,20 +185,22 @@ struct _PackageData {
 	char* minor;
 	char* archtype;
 	DistributionInfo distribution;
-	int bytesize;
+	guint32 bytesize;
+	guint32 filesize;
+
 	char* summary;
 	char* description;	
-	GList* soft_depends;
-	GList* hard_depends;
 	GList* depends;		/* GList<PackageDependency *> */
-	GList* breaks; 	
+	GList* breaks; 	        /* GList<PackageBreaks*> */
 
 	char *filename;
 	char *remote_url;		/* url where we can get this rpm */
 	char *md5;
 	char *install_root;
 	
+	/* various odd ways to look up packages in softcat */
 	char *eazel_id;
+	char *suite_id;
 
 	gboolean source_package;
 	gboolean conflicts_checked; /* set to TRUE when the files provided by the package
@@ -226,7 +234,7 @@ struct _PackageData {
 	/* List of packages that this package modifies */
 	GList *modifies;
 	/* how was the package modified 
-	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "soft/hard_depends."
+	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "depends".
 	   if "modifies" has elements, these have the following meaning ;
  	     DOWNGRADED means that the package was replaced with an older version
 	     UPGRADED means that the package was replaced with a never version
@@ -239,11 +247,16 @@ struct _PackageData {
 	 * list will contain "/bin/sh".
 	 */
 	GList *features;
+
+	/* This identifies a package (by name) that should be deleted if installing this package */
+        GList *obsoletes;
+
+	/* if set, the package has an epoch, currently only set for stuff read from the local db system */
+	guint32 epoch;
 };
 
 PackageData* packagedata_new (void);
 GtkType packagedata_get_type (void);
-void packagedata_finalize (GtkObject *obj);
 
 PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
@@ -264,14 +277,7 @@ char *packagedata_get_readable_name (const PackageData *pack);
    from a given package, real meanign name[-version-[release]] string */
 char *packagedata_get_name (const PackageData *pack);
 
-void packagedata_destroy (PackageData *pd, gboolean deep);
-
 int packagedata_hash_equal (PackageData *a, PackageData *b);
-
-void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
 GList *flatten_packagedata_dependency_tree (GList *packages);
 
@@ -305,9 +311,92 @@ PackageDependency *packagedependency_new (void);
 PackageDependency *packagedependency_copy (const PackageDependency *dep, gboolean deep);
 void packagedependency_destroy (PackageDependency *dep);
 
+/* WAAH! */
 #define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
 #define IS_PACKAGEDEPENDENCY(obj) (1)
+
 /*************************************************************************************************/
+
+#define TYPE_PACKAGEBREAKS           (packagebreaks_get_type ())
+#define PACKAGEBREAKS(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEBREAKS, PackageBreaks))
+#define PACKAGEBREAKS_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEBREAKS, PackageBreaksClass))
+#define IS_PACKAGEBREAKS(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEBREAKS))
+#define IS_PACKAGEBREAKS_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEBREAKS))
+
+typedef struct _PackageBreaks PackageBreaks;
+typedef struct _PackageBreaksClass PackageBreaksClass;
+
+struct _PackageBreaksClass {
+	GtkObjectClass parent_class;
+	void (*finalize) (GtkObject *obj);
+};
+
+struct _PackageBreaks {
+	GtkObject parent;
+	PackageData *__package;
+};
+
+PackageBreaks* packagebreaks_new (void);
+GtkType packagebreaks_get_type (void);
+void packagebreaks_set_package (PackageBreaks *breaks, PackageData *pack);
+PackageData *packagebreaks_get_package (PackageBreaks *breaks);
+
+#define TYPE_PACKAGEFILECONFLICT           (packagefileconflict_get_type ())
+#define PACKAGEFILECONFLICT(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEFILECONFLICT, PackageFileConflict))
+#define PACKAGEFILECONFLICT_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEFILECONFLICT, PackageFileConflictClass))
+#define IS_PACKAGEFILECONFLICT(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEFILECONFLICT))
+#define IS_PACKAGEFILECONFLICT_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEFILECONFLICT))
+
+typedef struct _PackageFileConflict PackageFileConflict;
+typedef struct _PackageFileConflictClass PackageFileConflictClass;
+
+struct _PackageFileConflictClass {
+	PackageBreaksClass parent_class;
+	void (*finalize) (GtkObject *obj);
+};
+
+struct _PackageFileConflict {
+	PackageBreaks parent;
+	GList *files;
+};
+
+PackageFileConflict* packagefileconflict_new (void);
+GtkType packagefileconflict_get_type (void);
+
+#define TYPE_PACKAGEFEATUREMISSING           (packagefeaturemissing_get_type ())
+#define PACKAGEFEATUREMISSING(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEFEATUREMISSING, PackageFeatureMissing))
+#define PACKAGEFEATUREMISSING_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEFEATUREMISSING, PackageFeatureMissingClass))
+#define IS_PACKAGEFEATUREMISSING(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEFEATUREMISSING))
+#define IS_PACKAGEFEATUREMISSING_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEFEATUREMISSING))
+
+typedef struct _PackageFeatureMissing PackageFeatureMissing;
+typedef struct _PackageFeatureMissingClass PackageFeatureMissingClass;
+
+struct _PackageFeatureMissingClass {
+	PackageBreaksClass parent_class;
+	void (*finalize) (GtkObject *obj);
+};
+
+struct _PackageFeatureMissing {
+	PackageBreaks parent;
+	GList *features;
+};
+
+#define IS_VALID_PACKAGEBREAKS(obj)		(IS_PACKAGEFEATUREMISSING (obj) || IS_PACKAGEFILECONFLICT (obj))
+
+PackageFeatureMissing* packagefeaturemissing_new (void);
+GtkType packagefeaturemissing_get_type (void);
+
+
+/*************************************************************************************************/
+
+void packagedata_add_to_breaks (PackageData *pack, PackageBreaks *b);
+void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_depends (PackageData *pack, PackageDependency *b);
+void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
+
+/*************************************************************************************************/
+/* FIXME: deprecating eazel-install-logic.c will also deprecate this structure */
 
 typedef struct {
 	PackageData *package;
@@ -341,6 +430,15 @@ void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject 
 								      GtkSignalFunc func,
 								      gpointer func_data, GtkArg * args);
 
+void eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
+							   GtkSignalFunc func,
+							   gpointer func_data, GtkArg * args);
+
+void eazel_install_gtk_marshal_BOOL__ENUM_POINTER (GtkObject * object,
+                                                   GtkSignalFunc func,
+                                                   gpointer func_data, GtkArg * args);
+
+char *packagedata_dump_tree (const GList *packlst, int indent_level);
 char *packagedata_dump (const PackageData *package, gboolean deep);
 
 #ifdef __cplusplus

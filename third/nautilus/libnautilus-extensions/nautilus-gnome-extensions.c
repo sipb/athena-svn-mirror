@@ -30,10 +30,16 @@
 
 #include "nautilus-gnome-extensions.h"
 
+#include <gtk/gtkwidget.h>
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rect.h>
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-stock-dialogs.h"
+#include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-file-entry.h>
+#include <libgnomeui/gnome-icon-list.h>
+#include <libgnomeui/gnome-icon-sel.h>
 #include <limits.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -42,6 +48,19 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+
+/* structure for the icon selection dialog */
+struct IconSelectionData {
+        GtkWidget *icon_selection;
+	GtkWidget *file_entry;
+	GtkWidget *top_level_window;
+	GtkWindow *owning_window;
+	gboolean dismissed;
+	NautilusIconSelectionFunction selection_function;
+	gpointer callback_data;
+};
+
+typedef struct IconSelectionData IconSelectionData;
 
 void
 nautilus_gnome_canvas_world_to_window_rectangle (GnomeCanvas *canvas,
@@ -441,8 +460,8 @@ max_open_files (void)
 	return files;
 }
 
-static int 
-nautilus_gnome_terminal_shell_execute (const char *command)
+int 
+nautilus_gnome_shell_execute (const char *command)
 {
 	struct sigaction ignore, save_intr, save_quit, save_stop;
 	int status, i;
@@ -512,25 +531,14 @@ nautilus_gnome_terminal_shell_execute (const char *command)
 	return WEXITSTATUS(status);
 }
 
-void
-nautilus_gnome_open_terminal (const char *command)
+/* Return a command string containing the path to a terminal on this system. */
+char *
+nautilus_gnome_get_terminal_path (void)
 {
 	char *terminal_path;
-	char *terminal_path_with_flags;
-	char *terminal_flags;
-	gboolean using_gnome_terminal;
-	char *command_line;
-
-
-	using_gnome_terminal = FALSE;
-
+	
 	/* Look up a well-known terminal app */
 	terminal_path = gnome_is_program_in_path ("gnome-terminal");
-	if (terminal_path != NULL) {
-		/* gnome-terminal has different command-line options than the others
-		 */
-		using_gnome_terminal = TRUE;
-	}
 	
 	if (terminal_path == NULL) {
 		terminal_path = gnome_is_program_in_path ("nxterm");
@@ -553,32 +561,236 @@ nautilus_gnome_open_terminal (const char *command)
 	}
 
 	
+	return terminal_path;
+}
+
+void
+nautilus_gnome_open_terminal (const char *command)
+{
+	char *terminal_path;
+	char *terminal_path_with_flags;
+	char *terminal_flags;
+	gboolean using_gnome_terminal;
+	char *command_line;
+	
+	terminal_path = nautilus_gnome_get_terminal_path ();
 	if (terminal_path == NULL){
 		g_message (" Could not start a terminal ");
-	} else if (command) {
+		g_free (terminal_path);
+		return;
+	}
+	
+	using_gnome_terminal = strstr (terminal_path, "gnome-terminal") != NULL;
+	
+	if (command != NULL) {
 		if (using_gnome_terminal) {
 			command_line = g_strconcat (terminal_path, " -x ", command, NULL);
 		} else {
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
-		
-		nautilus_gnome_terminal_shell_execute (command_line);
+				
+		nautilus_gnome_shell_execute (command_line);
 		g_free (command_line);
 	} else {
 	        if (using_gnome_terminal) {
 			terminal_flags = " --login";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags,  NULL);
-		        nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
+		        nautilus_gnome_shell_execute (terminal_path_with_flags);
 		        g_free (terminal_path_with_flags);
 		} else {
 			terminal_flags = " -ls";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags, NULL);
-			nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
+			nautilus_gnome_shell_execute (terminal_path_with_flags);
 		}
 	}
 
-
 	g_free (terminal_path);
+}
+
+/* create a new icon selection dialog */
+
+
+static gboolean
+widget_destroy_callback (gpointer callback_data)
+{
+	IconSelectionData *selection_data = (IconSelectionData*) callback_data;
+	gtk_widget_destroy (selection_data->top_level_window);
+	g_free (selection_data);	
+	return FALSE;
+}
+
+/* set the image of the file object to the selected file */
+static void
+icon_selected_callback (GtkWidget *button, IconSelectionData *selection_data)
+{
+	const gchar *icon_path;
+	GtkWidget *entry;
+	struct stat buf;
+	
+	gnome_icon_selection_stop_loading ( GNOME_ICON_SELECTION (selection_data->icon_selection));
+
+	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (selection_data->file_entry));
+	icon_path = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	/* if a specific file wasn't selected, put up a dialog to tell the
+	 * user to pick something, and leave the picker up
+	 */
+	stat (icon_path, &buf);
+	if (S_ISDIR (buf.st_mode)) {
+		nautilus_show_error_dialog (_("No image was selected.  You must click on an image to select it."),
+					    _("No selection made"),
+					    selection_data->owning_window);
+	} else {	 
+		/* invoke the callback to inform it of the file path */
+		selection_data->selection_function (icon_path, selection_data->callback_data);
+	}
+		
+	/* we have to get rid of the icon selection dialog, but we can't do it now, since the
+	 * file entry might still need it.  Do it when the next idle rolls around
+	 */ 
+	selection_data->dismissed = TRUE;
+	selection_data->top_level_window = gtk_widget_get_toplevel (button);
+	gtk_idle_add ((GtkFunction) widget_destroy_callback, selection_data);
+}
+
+/* handle the cancel button being pressed */
+static void
+icon_cancel_pressed (GtkWidget *button, IconSelectionData *selection_data)
+{
+	/* nothing to do if it's already been dismissed */
+	if (selection_data->dismissed) {
+		return;
+	}
+	
+	gnome_icon_selection_stop_loading(GNOME_ICON_SELECTION (selection_data->icon_selection));	
+	/* remove pending idle routine, if necessary */
+	g_free (selection_data);
+	gtk_widget_destroy (gtk_widget_get_toplevel (button));
+}
+
+/* handle an icon being selected by updating the file entry */
+static void
+list_icon_selected_callback (GnomeIconList *gil, gint num, GdkEvent *event, IconSelectionData *selection_data)
+{
+	const gchar *icon;
+	GtkWidget *entry;
+	
+	icon = gnome_icon_selection_get_icon (GNOME_ICON_SELECTION (selection_data->icon_selection), TRUE);
+
+	if (icon != NULL) {
+		entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (selection_data->file_entry));
+		gtk_entry_set_text(GTK_ENTRY (entry), icon);
+	}
+
+	/* handle double-clicks as if the user pressed OK */
+	if(event && event->type == GDK_2BUTTON_PRESS && ((GdkEventButton *)event)->button == 1) {
+		icon_selected_callback (selection_data->file_entry, selection_data);
+	}
+}
+
+/* handle the file entry changing */
+static void
+entry_activated (GtkWidget *widget, IconSelectionData *selection_data)
+{
+	struct stat buf;
+	GtkWidget *icon_selection;
+	gchar *filename;
+
+	filename = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (!filename) {
+		return;
+	}
+	
+	stat (filename, &buf);
+	if (S_ISDIR (buf.st_mode)) {
+		icon_selection = selection_data->icon_selection;
+		gnome_icon_selection_clear (GNOME_ICON_SELECTION (icon_selection), TRUE);
+		gnome_icon_selection_add_directory (GNOME_ICON_SELECTION (icon_selection), filename);
+		gnome_icon_selection_show_icons(GNOME_ICON_SELECTION (icon_selection));
+	} else {
+		/* We pretend like ok has been called */
+		icon_selected_callback (selection_data->file_entry, selection_data);
+	}
+}
+
+/* here's the actual routine that creates the icon selector */
+
+GtkWidget *
+nautilus_gnome_icon_selector_new (const char *title,
+				  const char *icon_directory,
+				  GtkWindow *owner,
+				  NautilusIconSelectionFunction selected,
+				  gpointer callback_data)
+{
+	GtkWidget *dialog, *icon_selection;
+	GtkWidget *entry, *file_entry;
+	IconSelectionData *selection_data;
+	
+	dialog = gnome_dialog_new (title,
+					GNOME_STOCK_BUTTON_OK,
+					GNOME_STOCK_BUTTON_CANCEL,
+					NULL);
+
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+	gnome_dialog_set_close  (GNOME_DIALOG(dialog), TRUE);
+
+	gtk_window_set_policy (GTK_WINDOW (dialog), TRUE, TRUE, TRUE);
+
+	icon_selection = gnome_icon_selection_new();
+
+	file_entry = gnome_file_entry_new (NULL,NULL);
+	
+	selection_data = g_new0 (IconSelectionData, 1);
+ 	selection_data->icon_selection = icon_selection;
+ 	selection_data->file_entry = file_entry;
+ 	selection_data->owning_window = owner;
+	selection_data->selection_function = selected;
+ 	selection_data->callback_data = callback_data;
+ 	
+	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox),
+				   file_entry, FALSE, FALSE, 0);
+
+	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox),
+				   icon_selection, TRUE, TRUE, 0);
+
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_MOUSE);
+	if (owner != NULL) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), owner);
+ 	}
+ 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "file_selector", "Nautilus");
+	gtk_widget_show_all (dialog);
+	
+	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (file_entry));
+	
+	if (icon_directory == NULL) {
+		gtk_entry_set_text(GTK_ENTRY (entry), DATADIR "/pixmaps");
+		gnome_icon_selection_add_directory(GNOME_ICON_SELECTION (icon_selection), DATADIR "/pixmaps");	
+	} else {
+		gtk_entry_set_text(GTK_ENTRY (entry), icon_directory);
+		gnome_icon_selection_add_directory(GNOME_ICON_SELECTION (icon_selection), icon_directory);
+	}
+	
+	gnome_icon_selection_show_icons( GNOME_ICON_SELECTION (icon_selection));	
+	gnome_dialog_button_connect(GNOME_DIALOG(dialog), 
+					    0, /* OK button */
+					    GTK_SIGNAL_FUNC (icon_selected_callback),
+					    selection_data);
+	
+	gnome_dialog_button_connect (GNOME_DIALOG(dialog), 
+					    1, /* Cancel button */
+					    GTK_SIGNAL_FUNC (icon_cancel_pressed),
+					    selection_data);
+	
+	gtk_signal_connect_after(GTK_OBJECT (GNOME_ICON_SELECTION (selection_data->icon_selection)->gil),
+					 "select_icon",
+					 GTK_SIGNAL_FUNC(list_icon_selected_callback),
+					 selection_data);
+
+	gtk_signal_connect_while_alive( GTK_OBJECT (entry), "activate",
+				       GTK_SIGNAL_FUNC(entry_activated),
+				       selection_data, GTK_OBJECT (file_entry));
+
+	return dialog;
 }
 
 

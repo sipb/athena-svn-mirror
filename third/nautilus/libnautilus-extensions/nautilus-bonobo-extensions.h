@@ -28,73 +28,106 @@
 #define NAUTILUS_BONOBO_EXTENSIONS_H
 
 #include <bonobo/bonobo-ui-component.h>
+#include <bonobo/bonobo-xobject.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-void     nautilus_bonobo_set_accelerator         (BonoboUIComponent *ui,
-						  const char        *path,
-						  const char        *accelerator);
-char *   nautilus_bonobo_get_label               (BonoboUIComponent *ui,
-						  const char        *path);
-void     nautilus_bonobo_set_label               (BonoboUIComponent *ui,
-						  const char        *path,
-						  const char        *label);
-void     nautilus_bonobo_set_tip                 (BonoboUIComponent *ui,
-						  const char        *path,
-						  const char        *tip);
-void     nautilus_bonobo_set_sensitive           (BonoboUIComponent *ui,
-						  const char        *path,
-						  gboolean           sensitive);
-void     nautilus_bonobo_set_toggle_state        (BonoboUIComponent *ui,
-						  const char        *path,
-						  gboolean           state);
-void     nautilus_bonobo_set_hidden              (BonoboUIComponent *ui,
-						  const char        *path,
-						  gboolean           hidden);
-gboolean nautilus_bonobo_get_hidden              (BonoboUIComponent *ui,
-						  const char        *path);
-void     nautilus_bonobo_add_numbered_menu_item (BonoboUIComponent *ui,
-						  const char        *container_path,
-						  guint		     index,
-						  const char        *label,
-						  GdkPixbuf 	    *pixbuf);
-void     nautilus_bonobo_add_numbered_toggle_menu_item (BonoboUIComponent *ui,
-						         const char        *container_path,
-						         guint		    index,
-						         const char        *label);
-char	*nautilus_bonobo_get_numbered_menu_item_command
-						 (BonoboUIComponent *ui,
-						  const char	    *container_path,
-						  guint		     index);
-char	*nautilus_bonobo_get_numbered_menu_item_path
-						 (BonoboUIComponent *ui,
-						  const char	    *container_path,
-						  guint		     index);
-void     nautilus_bonobo_add_submenu             (BonoboUIComponent *ui,
-						  const char        *container_path,
-						  const char        *label);
-void     nautilus_bonobo_add_menu_separator      (BonoboUIComponent *ui,
-						  const char        *path);
-void     nautilus_bonobo_remove_menu_items_and_commands
-						 (BonoboUIComponent *ui,
-						  const char        *container_path);
-void	 nautilus_bonobo_set_label_for_menu_item_and_command
-						 (BonoboUIComponent *ui,
-						  const char	    *menu_item_path,
-						  const char	    *command_path,
-						  const char	    *label_with_underscore);
-void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
-						  const char        *path,
-						  const char        *icon_relative_path);
+typedef struct NautilusBonoboActivationHandle NautilusBonoboActivationHandle;
 
-typedef struct _NautilusBonoboActivate NautilusBonoboActivate;
+typedef void (*NautilusBonoboActivationCallback) (NautilusBonoboActivationHandle *handle,
+						  Bonobo_Unknown activated_object,
+						  gpointer callback_data);
 
-typedef void (*NautilusBonoboActivateCallback) (CORBA_Object object_reference, gpointer data);
+void                            nautilus_bonobo_set_accelerator                     (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     const char                       *accelerator);
+char *                          nautilus_bonobo_get_label                           (BonoboUIComponent                *ui,
+										     const char                       *path);
+void                            nautilus_bonobo_set_label                           (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     const char                       *label);
+void                            nautilus_bonobo_set_tip                             (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     const char                       *tip);
+void                            nautilus_bonobo_set_sensitive                       (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     gboolean                          sensitive);
+void                            nautilus_bonobo_set_toggle_state                    (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     gboolean                          state);
+void                            nautilus_bonobo_set_hidden                          (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     gboolean                          hidden);
+gboolean                        nautilus_bonobo_get_hidden                          (BonoboUIComponent                *ui,
+										     const char                       *path);
+void                            nautilus_bonobo_add_numbered_menu_item              (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     guint                             index,
+										     const char                       *label,
+										     GdkPixbuf                        *pixbuf);
+void                            nautilus_bonobo_add_numbered_toggle_menu_item       (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     guint                             index,
+										     const char                       *label);
+char *                          nautilus_bonobo_get_numbered_menu_item_command      (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     guint                             index);
+char *                          nautilus_bonobo_get_numbered_menu_item_path         (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     guint                             index);
+void                            nautilus_bonobo_add_submenu                         (BonoboUIComponent                *ui,
+										     const char                       *container_path,
+										     const char                       *label);
+void                            nautilus_bonobo_add_menu_separator                  (BonoboUIComponent                *ui,
+										     const char                       *path);
+void                            nautilus_bonobo_remove_menu_items_and_commands      (BonoboUIComponent                *ui,
+										     const char                       *container_path);
+void                            nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent                *ui,
+										     const char                       *menu_item_path,
+										     const char                       *command_path,
+										     const char                       *label_with_underscore);
+void                            nautilus_bonobo_set_icon                            (BonoboUIComponent                *ui,
+										     const char                       *path,
+										     const char                       *icon_relative_path);
 
-NautilusBonoboActivate *nautilus_bonobo_activate_from_id (const char *iid, 
-							 NautilusBonoboActivateCallback callback, 
-							 gpointer user_data);
-void nautilus_bonobo_activate_stop (NautilusBonoboActivate *activate_structure);
-void nautilus_bonobo_activate_free (NautilusBonoboActivate *activate_structure);
+NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                    (const char                       *iid,
+										     NautilusBonoboActivationCallback  callback,
+										     gpointer                          callback_data);
+void                            nautilus_bonobo_activate_cancel                     (NautilusBonoboActivationHandle   *handle);
+
+
+/* This macro is a copy of BONOBO_X_TYPE_FUNC_FULL (from bonobo-xobject.h)
+ * with the addition of support for the parent_class which is defined by
+ * NAUTILUS_DEFINE_CLASS_BOILERPLATE and used by NAUTILUS_CALL_PARENT.
+ * 
+ * Note: the argument order matches BONOBO_X_TYPE_FUNC_FULL which is different
+ * than NAUTILUS_DEFINE_CLASS_BOILERPLATE.
+ */
+#define NAUTILUS_BONOBO_X_BOILERPLATE(class_name, corba_name, parent, prefix) \
+static gpointer parent_class;                          /* Nautilus change */  \
+GtkType                                                                       \
+prefix##_get_type (void)                                                      \
+{                                                                             \
+	GtkType ptype;                                                        \
+	static GtkType type = 0;                                              \
+                                                                              \
+	if (type == 0) {                                                      \
+		static GtkTypeInfo info = {                                   \
+			#class_name,                                          \
+			sizeof (class_name),                                  \
+			sizeof (class_name##Class),                           \
+			(GtkClassInitFunc)prefix##_class_init,                \
+			(GtkObjectInitFunc)prefix##_init,                     \
+			NULL, NULL, (GtkClassInitFunc) NULL                   \
+		};                                                            \
+		ptype = (parent);                                             \
+		type = bonobo_x_type_unique (ptype,                           \
+			POA_##corba_name##__init, POA_##corba_name##__fini,   \
+			GTK_STRUCT_OFFSET (class_name##Class, epv),           \
+			&info);                                               \
+		parent_class = gtk_type_class (ptype); /* Nautilus change */  \
+	}                                                                     \
+	return type;                                                          \
+}
 
 
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */

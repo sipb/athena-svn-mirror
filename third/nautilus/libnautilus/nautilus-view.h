@@ -74,6 +74,15 @@ void               nautilus_view_open_location_prefer_existing_window (NautilusV
 void               nautilus_view_open_location_force_new_window       (NautilusView           *view,
 								       const char             *location_uri,
 								       GList                  *selection); /* list of URI char *s */
+void               nautilus_view_report_location_change               (NautilusView           *view,
+								       const char             *location_uri,
+								       GList                  *selection, /* list of URI char *s */
+								       const char             *title);
+void               nautilus_view_report_redirect                      (NautilusView           *view,
+								       const char             *from_location_uri,
+								       const char             *to_location_uri,
+								       GList                  *selection, /* list of URI char *s */
+								       const char             *title);
 void               nautilus_view_report_selection_change              (NautilusView           *view,
 								       GList                  *selection); /* list of URI char *s */
 void               nautilus_view_report_status                        (NautilusView           *view,
@@ -85,13 +94,14 @@ void               nautilus_view_report_load_complete                 (NautilusV
 void               nautilus_view_report_load_failed                   (NautilusView           *view);
 void               nautilus_view_set_title                            (NautilusView           *view,
 								       const char             *title);
+void               nautilus_view_go_back                              (NautilusView           *view);
 
 /* Some utility functions useful for doing the CORBA work directly.
  * Not needed by most components, but shared with the view frame code,
  * which is why they are public.
  */
 Nautilus_URIList * nautilus_uri_list_from_g_list                      (GList                  *list);
-GList *            nautilus_shallow_g_list_from_uri_list              (const Nautilus_URIList *uri_list);
+GList *            nautilus_g_list_from_uri_list                      (const Nautilus_URIList *uri_list);
 
 /* Simpler API for setting up and getting the UI component. */
 BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusView           *view,

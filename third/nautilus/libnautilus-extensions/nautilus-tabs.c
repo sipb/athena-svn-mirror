@@ -179,9 +179,9 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	tabs->details->selected_tab = -1;
 		
 	/* FIXME bugzilla.eazel.com 5456: 
-	 * Hard coded font family and size.
+	 * Hard coded font size.
 	 */
-	tabs->details->tab_font = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
+	tabs->details->tab_font = nautilus_scalable_font_get_default_bold_font ();
 	tabs->details->font_size = 14;
 	
 	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");
@@ -233,7 +233,7 @@ nautilus_tabs_destroy (GtkObject *object)
 					  NULL);
 	g_free (tabs->details);
   	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* unload the tab piece images, if any */
@@ -370,7 +370,7 @@ draw_tab_piece_aa (NautilusTabs *tabs, GdkPixbuf *dest_pixbuf, int x, int y, int
 	widget = GTK_WIDGET (tabs);
 	pixbuf = tabs->details->tab_piece_images[which_piece];
 
-	// if there's no pixbuf, just exit, returning a nominal size
+	/* if there's no pixbuf, just exit, returning a nominal size */
 	if (pixbuf == NULL) {
 		return 32;
 	}
@@ -380,7 +380,7 @@ draw_tab_piece_aa (NautilusTabs *tabs, GdkPixbuf *dest_pixbuf, int x, int y, int
 	dest_width = gdk_pixbuf_get_width (dest_pixbuf);
 	dest_height = gdk_pixbuf_get_height (dest_pixbuf);
 	
-	// trim tab piece to fit within the destination and the passed in limits
+	/* trim tab piece to fit within the destination and the passed in limits */
 
 	if (x_limit > 0) {
 		if (x_limit < dest_width) {
@@ -481,15 +481,10 @@ allocate_cleared_pixbuf (int width, int height)
 static int
 measure_tab_name (NautilusTabs *tabs, const char *tab_name)
 {
-	int name_width, name_height;
-	nautilus_scalable_font_measure_text (tabs->details->tab_font,
-					     tabs->details->font_size,
-					     tabs->details->font_size,
-					     tab_name,
-					     strlen (tab_name),
-					     &name_width, 
-					     &name_height);
-	return name_width;
+	return nautilus_scalable_font_text_width (tabs->details->tab_font,
+						  tabs->details->font_size,
+						  tab_name,
+						  strlen (tab_name));
 }
 
 /* utility to draw the tab label */
@@ -500,34 +495,37 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	uint text_color;
 	
 	text_x = x_pos + 1;
-	text_y = 7; /* calculate this to center font in label? */
-		
-	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
+	text_y = 5; /* calculate this to center font in label? */
+	
+	/* make sure we can draw at least some of it */
+	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
+		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
-					  tabs->details->font_size, tabs->details->font_size,
+					  tabs->details->font_size,
 					  label, strlen (label),
 					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
-	text_x -= 1;
-	text_y -= 1;
+		text_x -= 1;
+		text_y -= 1;
 
-	if (is_active) {
-		text_color = NAUTILUS_RGB_COLOR_WHITE;
-	} else {
-		if (is_prelit) {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
+		if (is_active) {
+			text_color = NAUTILUS_RGB_COLOR_WHITE;
 		} else {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+			if (is_prelit) {
+				text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
+			} else {
+				text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+			}
 		}
-	}
 	
-	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
+		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
 					  text_x, text_y,
 					  NULL,
-					  tabs->details->font_size, tabs->details->font_size,
+					  tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);
+	}
 }
 
 /* draw or layout all of the tabs.

@@ -106,7 +106,7 @@ eazel_package_system_rpm4_query_impl (EazelPackageSystemRpm4 *system,
 						pack, 
 						(GCompareFunc)eazel_install_package_compare)!=NULL) {
 				info (system, "%s already in set", pack->name);
-				packagedata_destroy (pack, TRUE);
+				gtk_object_unref (GTK_OBJECT (pack));
 			} else {
 				(*result) = g_list_prepend (*result, pack);
 			}
@@ -184,6 +184,13 @@ eazel_package_system_rpm4_query_foreach (const char *dbpath,
 							  pig->key,
 							  pig->detail_level,
 							  pig->result);
+		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES_FEATURE:
+		eazel_package_system_rpm3_query_requires_feature (EAZEL_PACKAGE_SYSTEM_RPM3 (pig->system),
+								  dbpath,
+								  pig->key,
+								  pig->detail_level,
+								  pig->result);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR:
 		eazel_package_system_rpm4_query_substr (EAZEL_PACKAGE_SYSTEM_RPM4 (pig->system),
@@ -304,6 +311,8 @@ eazel_package_system_implementation (GList *dbpaths)
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;
 	result->private->compare_version = 
 		(EazelPackageSystemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
+	result->private->database_mtime = 
+		(EazelPackageSystemDatabaseMtimeFunc)eazel_package_system_rpm3_database_mtime;
 
 	return result;
 }

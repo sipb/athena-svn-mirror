@@ -5,9 +5,30 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus Inventory view factory"/>
-
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#252;&#248;&#231;&#242; &#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222;&#242; &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus beholdningsvisningsfabrik"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus E&#254;ya G&#246;r&#252;nt&#252;leme Mimarisi"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica de visualiza&#231;&#227;o de invent&#225;rio do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Vista de Inventario Nautilus Original"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus invertarievyfabrik"/>
+	<oaf_attribute name="name-de" type="string" value="Nautilus-Inventaransichten-Factory"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for Nautilus inventarvisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Invent&#225;rov&#253; poh&#181;ad pre Nautilus"/>
+	<oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusovih pogledov inventarja"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen sis&#228;llysluettelon&#228;kym&#228;tehdas"/>
 	<oaf_attribute name="description" type="string" value="Nautilus System Inventory component's component's factory"/>
-
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222;&#242; &#211;&#245;&#243;&#244;&#222;&#236;&#225;&#244;&#239;&#242; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="description-da" type="string" value="Nautilus beholdningsvisnings-komponentfabrik"/>
+	<oaf_attribute name="description-tr" type="string" value="Nautilus Sistem E&#254;ya bile&#254;en mimarisi"/>
+	<oaf_attribute name="description-es" type="string" value="Original del componente de Inventario del Sistema Nautilus"/>
+	<oaf_attribute name="description-sv" type="string" value="Nautilus systeminventariekomponentfabrik"/>
+	<oaf_attribute name="description-de" type="string" value="Nautilus-Systeminventar-Komponenten-Factory"/>
+	<oaf_attribute name="description-ja" type="string" value="Nautilus &#165;&#183;&#165;&#185;&#165;&#198;&#165;&#224;&#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for Nautilus syteminventarkomponent"/>
+	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent Syst&#233;mov&#253; invent&#225;r pre Nautilus"/>
+	<oaf_attribute name="description-sl" type="string" value="Tovarna komponent komponent Nautilusovih pogledov inventarja"/>
+	<oaf_attribute name="description-fi" type="string" value="Nautiluksen sis&#228;llysluettelon&#228;kym&#228;komponenttikomponenttitehdas"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_inventory_view:c6f2baf8-f563-4b84-8b02-81fb355d3fb5" type="factory" location="OAFIID:nautilus_inventory_view_factory:abf7f064-bcd0-4ac5-93a2-35d5a676e7cc">
@@ -17,14 +38,86 @@
 		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus Inventory view"/>
-
+	<oaf_attribute name="name-el" type="string" value="&#188;&#248;&#231; &#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222;&#242; &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus beholdningsvisning"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus E&#254;ya g&#246;r&#252;n&#252;m&#252;"/>
+	<oaf_attribute name="name-ru" type="string" value="&#240;&#210;&#207;&#211;&#205;&#207;&#210;&#212; &#201;&#206;&#215;&#197;&#206;&#212;&#193;&#210;&#209; Nautilus"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="Visualiza&#231;&#227;o de invent&#225;rio do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Vista de Inventario Nautilus"/>
+	<oaf_attribute name="name-fr" type="string" value="Vue d'Inventaire de Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus invertarievy"/>
+	<oaf_attribute name="name-de" type="string" value="Nautilus-Inventaransicht"/>
+	<oaf_attribute name="name-ko" type="string" value="&#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#192;&#206;&#186;&#165;&#197;&#228;&#184;&#174; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-hu" type="string" value="Nautilus lelt&#225;rn&#233;zet"/>
+	<oaf_attribute name="name-no" type="string" value="Nautilus inventarvisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Invent&#225;rov&#253; poh&#181;ad pre Nautilus"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen sis&#228;llysluettelon&#228;kym&#228;"/>
+	<oaf_attribute name="name-sl" type="string" value="Nautilusov pogled inventarja"/>
 	<oaf_attribute name="description" type="string" value="System inventory view component"/>
-
+	<oaf_attribute name="description-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#252;&#248;&#231;&#242; &#225;&#240;&#239;&#227;&#241;&#225;&#246;&#222;&#242; &#243;&#245;&#243;&#244;&#222;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="description-da" type="string" value="Nautilus systembeholdningsvisning"/>
+	<oaf_attribute name="description-tr" type="string" value="Sistem e&#254;yas&#253; g&#246;r&#252;n&#252;m bile&#254;eni"/>
+	<oaf_attribute name="description-ru" type="string" value="&#239;&#203;&#206;&#207; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#193; &#211;&#201;&#211;&#212;&#197;&#205;&#206;&#207;&#199;&#207; &#201;&#206;&#215;&#197;&#210;&#206;&#212;&#193;&#210;&#209;"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="Componente de visualiza&#231;&#227;o de invent&#225;rio do sistema"/>
+	<oaf_attribute name="description-es" type="string" value="Componente de vista de inventario del sistema"/>
+	<oaf_attribute name="description-sv" type="string" value="Systeminventarievykomponent"/>
+	<oaf_attribute name="description-de" type="string" value="Systeminventar-Ansichtskomponente"/>
+	<oaf_attribute name="description-ko" type="string" value="&#189;&#195;&#189;&#186;&#197;&#219; &#192;&#206;&#186;&#165;&#197;&#228;&#184;&#174; &#186;&#184;&#177;&#226; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#183;&#165;&#185;&#165;&#198;&#165;&#224;&#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="description-no" type="string" value="Komponent for systeminventar"/>
+	<oaf_attribute name="description-hu" type="string" value="Redszerlelt&#225;rn&#233;zet-komponens"/>
+	<oaf_attribute name="description-sk" type="string" value="Komponent poh&#181;adu Syst&#233;mov&#233;ho invent&#225;ra"/>
+	<oaf_attribute name="description-fi" type="string" value="J&#228;rjestelm&#228;n sis&#228;llysluettelokomponentti"/>
+	<oaf_attribute name="description-sl" type="string" value="Komponenta pogleda sistemskega inventarja"/>
 	<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
 		<item value="eazel-inventory"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" value="System Inventory"/>
-
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222; &#211;&#245;&#243;&#244;&#222;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Systembeholdning"/>
+	<oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Sistem E&#254;yalar&#253;"/>
+	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="&#243;&#201;&#211;&#212;&#197;&#205;&#206;&#217;&#202; &#201;&#206;&#215;&#197;&#206;&#212;&#193;&#210;&#216;"/>
+	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Invent&#225;rio do sistema"/>
+	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Inventaire syst&#232;me"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Inventario del Sistema"/>
+	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Systeminventarie"/>
+	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Systeminventar"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#189;&#195;&#189;&#186;&#197;&#219; &#192;&#206;&#186;&#165;&#197;&#228;&#184;&#174;"/>
+	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#183;&#165;&#185;&#165;&#198;&#165;&#224;&#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Systeminventar"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Rendszerlelt&#225;r"/>
+	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Syst&#233;mov&#253; invent&#225;r"/>
+	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="J&#228;rjestelm&#228;n sis&#228;llysluettelo"/>
+	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Sistemski inventar"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" value="View as System Inventory"/>
+	<oaf_attribute name="nautilus:view_as_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#249;&#242; &#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222; &#211;&#245;&#243;&#244;&#222;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="nautilus:view_as_label-tr" type="string" value="Sistem E&#254;yalar&#253; Olarak G&#246;ster"/>
+	<oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant qu'Inventaire syst&#232;me"/>
+	<oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como Inventario del Sistema"/>
+	<oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som systeminventarie"/>
+	<oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Systeminventar betrachten"/>
+	<oaf_attribute name="nautilus:view_as_label-ko" type="string" value="&#189;&#195;&#189;&#186;&#197;&#219; &#192;&#206;&#186;&#165;&#197;&#228;&#184;&#174;&#183;&#206; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:view_as_label-ja" type="string" value="&#165;&#183;&#165;&#185;&#165;&#198;&#165;&#224;&#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#164;&#199;&#201;&#189;&#188;&#168;"/>
+	<oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som systeminventar"/>
+	<oaf_attribute name="nautilus:view_as_label-hu" type="string" value="Rendszerlelt&#225;rk&#233;nt"/>
+	<oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobrazi&#187; ako syst&#233;mov&#253; invent&#225;r"/>
+	<oaf_attribute name="nautilus:view_as_label-fi" type="string" value="N&#228;yt&#228; j&#228;rjestelm&#228;n sis&#228;llysluettelona"/>
+	<oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot sistemski inventar"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" value="System Inventory Viewer"/>
+	<oaf_attribute name="nautilus:viewer_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#193;&#240;&#239;&#227;&#241;&#225;&#246;&#222;&#242; &#211;&#245;&#243;&#244;&#222;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Sistem E&#254;yalar&#253; G&#246;r&#252;nt&#252;leyici"/>
+	<oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur d'inventaire syst&#232;me"/>
+	<oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visualizador Inventario del Sistema"/>
+	<oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Systeminventarievisare"/>
+	<oaf_attribute name="nautilus:viewer_label-de" type="string" value="Systeminventar-Betrachter"/>
+	<oaf_attribute name="nautilus:viewer_label-ko" type="string" value="&#189;&#195;&#189;&#186;&#197;&#219; &#192;&#206;&#186;&#165;&#197;&#228;&#184;&#174; &#186;&#184;&#177;&#226; &#199;&#193;&#183;&#206;&#177;&#215;&#183;&#165;"/>
+	<oaf_attribute name="nautilus:viewer_label-ja" type="string" value="&#165;&#183;&#165;&#185;&#165;&#198;&#165;&#224;&#165;&#164;&#165;&#243;&#165;&#217;&#165;&#243;&#165;&#200;&#165;&#234;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:viewer_label-no" type="string" value="Systeminventarvisning"/>
+	<oaf_attribute name="nautilus:viewer_label-hu" type="string" value="Rendszerlelt&#225;r-n&#233;z&#245;"/>
+	<oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Poh&#181;ad Syst&#233;mov&#253; invent&#225;r"/>
+	<oaf_attribute name="nautilus:viewer_label-fi" type="string" value="J&#228;rjestelm&#228;n sis&#228;llysluettelokatselin"/>
+	<oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik sistemskega inventarja"/>
 </oaf_server>
 
 </oaf_info>

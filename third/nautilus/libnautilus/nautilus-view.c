@@ -4,7 +4,7 @@
  *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           Maciej Stachowiak <mjs@eazel.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 
@@ -32,11 +33,14 @@
 #include "nautilus-view.h"
 
 #include "nautilus-bonobo-workarounds.h"
+#include "nautilus-idle-queue.h"
 #include "nautilus-undo.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum {
@@ -52,12 +56,24 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusViewDetails {
 	BonoboControl *control;
+	NautilusIdleQueue *incoming_queue;
+	NautilusIdleQueue *outgoing_queue;
 };
 
 typedef struct {
 	POA_Nautilus_View servant;
 	NautilusView *bonobo_object;
 } impl_POA_Nautilus_View;
+
+typedef void (* ViewFunction) (NautilusView *view,
+			       gpointer callback_data);
+
+typedef struct {
+	char *from_location;
+	char *location;
+	GList *selection;
+	char *title;
+} LocationPlus;
 
 static void impl_Nautilus_View_load_location     (PortableServer_Servant  servant,
 						  CORBA_char             *location,
@@ -97,11 +113,38 @@ static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 	&libnautilus_Nautilus_View_epv
 };
 
-/* Makes a GList but does not copy the strings.
- * Free the list with g_list_free.
- */
+static void
+queue_incoming_call (PortableServer_Servant servant,
+		     ViewFunction call,
+		     gpointer callback_data,
+		     GDestroyNotify destroy_callback_data)
+{
+	NautilusView *view;
+
+	view = ((impl_POA_Nautilus_View *) servant)->bonobo_object;
+
+	nautilus_idle_queue_add (view->details->incoming_queue,
+				 (GFunc) call,
+				 view,
+				 callback_data,
+				 destroy_callback_data);
+}
+
+static void
+queue_outgoing_call (NautilusView *view,
+		     ViewFunction call,
+		     gpointer callback_data,
+		     GDestroyNotify destroy_callback_data)
+{
+	nautilus_idle_queue_add (view->details->outgoing_queue,
+				 (GFunc) call,
+				 view,
+				 callback_data,
+				 destroy_callback_data);
+}
+
 GList *
-nautilus_shallow_g_list_from_uri_list (const Nautilus_URIList *uri_list)
+nautilus_g_list_from_uri_list (const Nautilus_URIList *uri_list)
 {
 	GList *list;
 	guint i;
@@ -109,7 +152,7 @@ nautilus_shallow_g_list_from_uri_list (const Nautilus_URIList *uri_list)
 	list = NULL;
 	for (i = 0; i < uri_list->_length; i++) {
 		list = g_list_prepend
-			(list, uri_list->_buffer[i]);
+			(list, g_strdup (uri_list->_buffer[i]));
 	}
 	return g_list_reverse (list);
 }
@@ -141,21 +184,96 @@ nautilus_uri_list_from_g_list (GList *list)
 }
 
 static void
+call_load_location (NautilusView *view,
+		    gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[LOAD_LOCATION],
+			 callback_data);
+}
+
+static void
+call_stop_loading (NautilusView *view,
+		   gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[STOP_LOADING]);
+}
+
+static void
+call_selection_changed (NautilusView *view,
+			gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[SELECTION_CHANGED],
+			 callback_data);
+}
+
+static void
+call_title_changed (NautilusView *view,
+		    gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[TITLE_CHANGED],
+			 callback_data);
+}
+
+static void
+call_history_changed (NautilusView *view,
+		      gpointer callback_data)
+{
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[HISTORY_CHANGED],
+			 callback_data);
+}
+
+static void
+list_deep_free_cover (gpointer callback_data)
+{
+	gnome_vfs_list_deep_free (callback_data);
+}
+
+static Nautilus_History *
+history_dup (const Nautilus_History *history)
+{
+	Nautilus_History *dup;
+	int length, i;
+
+	length = history->_length;
+
+	dup = Nautilus_History__alloc ();
+	dup->_maximum = length;
+	dup->_length = length;
+	dup->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	for (i = 0; i < length; i++) {
+		dup->_buffer[i].title = CORBA_string_dup (history->_buffer[i].title);
+		dup->_buffer[i].location = CORBA_string_dup (history->_buffer[i].location);
+		dup->_buffer[i].icon = CORBA_string_dup (history->_buffer[i].icon);
+	}
+	CORBA_sequence_set_release (dup, CORBA_TRUE);
+
+	return dup;
+}
+
+static void
 impl_Nautilus_View_load_location (PortableServer_Servant servant,
 				  CORBA_char *location,
 				  CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[LOAD_LOCATION],
-			 location);
+	queue_incoming_call (servant,
+			     call_load_location,
+			     g_strdup (location),
+			     g_free);
 }
 
 static void
 impl_Nautilus_View_stop_loading (PortableServer_Servant servant,
 				 CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[STOP_LOADING]);
+	queue_incoming_call (servant,
+			     call_stop_loading,
+			     NULL,
+			     NULL);
 }
 
 static void
@@ -163,15 +281,10 @@ impl_Nautilus_View_selection_changed (PortableServer_Servant servant,
 				      const Nautilus_URIList *selection,
 				      CORBA_Environment *ev)
 {
-	GList *selection_as_g_list;
-
-	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
-
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[SELECTION_CHANGED],
-			 selection_as_g_list);
-
-	g_list_free (selection_as_g_list);
+	queue_incoming_call (servant,
+			     call_selection_changed,
+			     nautilus_g_list_from_uri_list (selection),
+			     list_deep_free_cover);
 }
 
 static void 
@@ -179,9 +292,10 @@ impl_Nautilus_View_title_changed (PortableServer_Servant servant,
 				  const CORBA_char *title,
 				  CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[TITLE_CHANGED],
-			 title);
+	queue_incoming_call (servant,
+			     call_title_changed,
+			     g_strdup (title),
+			     g_free);
 }
 
 static void 
@@ -189,13 +303,15 @@ impl_Nautilus_View_history_changed (PortableServer_Servant servant,
 				    const Nautilus_History *history,
 				    CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[HISTORY_CHANGED],
-			 history);
+	queue_incoming_call (servant,
+			     call_history_changed,
+			     history_dup (history),
+			     CORBA_free);
 }
 
 static void
-impl_Nautilus_View__destroy (BonoboObject *object, PortableServer_Servant servant)
+impl_Nautilus_View__destroy (BonoboObject *object,
+			     PortableServer_Servant servant)
 {
 	PortableServer_ObjectId *object_id;
 	CORBA_Environment ev;
@@ -286,14 +402,15 @@ nautilus_view_initialize (NautilusView *view)
 {
 	CORBA_Environment ev;
 
-	CORBA_exception_init (&ev);
-	
 	view->details = g_new0 (NautilusViewDetails, 1);
 	
+	view->details->incoming_queue = nautilus_idle_queue_new ();
+	view->details->outgoing_queue = nautilus_idle_queue_new ();
+
+	CORBA_exception_init (&ev);
 	bonobo_object_construct
 		(BONOBO_OBJECT (view),
 		 impl_Nautilus_View__create (view, &ev));
-	
 	CORBA_exception_free (&ev);
 }
 
@@ -320,7 +437,6 @@ nautilus_view_construct (NautilusView   *view,
 		(view, bonobo_control_new (widget));
 }
 
-
 NautilusView *
 nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 					     BonoboControl  *control)
@@ -335,14 +451,19 @@ nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 	return view;
 }
 
-
-
 static void
 nautilus_view_destroy (GtkObject *object)
 {
-	g_free (NAUTILUS_VIEW (object)->details);
+	NautilusView *view;
+
+	view = NAUTILUS_VIEW (object);
+
+	nautilus_idle_queue_destroy (view->details->incoming_queue);
+	nautilus_idle_queue_destroy (view->details->outgoing_queue);
+
+	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static Nautilus_ViewFrame
@@ -369,15 +490,47 @@ static void
 view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 {
 	if (frame != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (frame, ev);
+		bonobo_object_release_unref (frame, NULL);
 	}
 
 	CORBA_exception_free (ev);
 }
 
-void
-nautilus_view_open_location_in_this_window (NautilusView *view,
-					    const char *location)
+/* Can't use the one in libnautilus-extensions. */
+static GList *
+str_list_copy (GList *original)
+{
+	GList *copy, *node;
+	
+	copy = NULL;
+	for (node = original; node != NULL; node = node->next) {
+		copy = g_list_prepend (copy, g_strdup (node->data));
+	}
+	return g_list_reverse (copy);
+}
+
+static void
+list_free_deep_callback (gpointer callback_data)
+{
+	gnome_vfs_list_deep_free (callback_data);
+}
+
+static void
+free_location_plus_callback (gpointer callback_data)
+{
+	LocationPlus *location_plus;
+
+	location_plus = callback_data;
+	g_free (location_plus->from_location);
+	g_free (location_plus->location);
+	gnome_vfs_list_deep_free (location_plus->selection);
+	g_free (location_plus->title);
+	g_free (location_plus);
+}
+
+static void
+call_open_location_in_this_window (NautilusView *view,
+				   gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -385,14 +538,14 @@ nautilus_view_open_location_in_this_window (NautilusView *view,
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
 		Nautilus_ViewFrame_open_location_in_this_window
-			(view_frame, (CORBA_char *) location, &ev);
+			(view_frame, callback_data, &ev);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_open_location_prefer_existing_window (NautilusView *view,
-						    const char *location)
+static void
+call_open_location_prefer_existing_window (NautilusView *view,
+					   gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -400,33 +553,86 @@ nautilus_view_open_location_prefer_existing_window (NautilusView *view,
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
 		Nautilus_ViewFrame_open_location_prefer_existing_window
-			(view_frame, (CORBA_char *) location, &ev);
+			(view_frame, callback_data, &ev);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_open_location_force_new_window (NautilusView *view,
-					      const char *location,
-					      GList *selection)
+static void
+call_open_location_force_new_window (NautilusView *view,
+				     gpointer callback_data)
 {
+	LocationPlus *location_plus;
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
 	Nautilus_URIList *uri_list;
+
+	location_plus = callback_data;
 	
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
-		uri_list = nautilus_uri_list_from_g_list (selection);
+		uri_list = nautilus_uri_list_from_g_list (location_plus->selection);
 		Nautilus_ViewFrame_open_location_force_new_window
-			(view_frame, (CORBA_char *) location, uri_list, &ev);
+			(view_frame, location_plus->location, uri_list, &ev);
 		CORBA_free (uri_list);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_selection_change (NautilusView *view,
-				       GList *selection)
+static void
+call_report_location_change (NautilusView *view,
+			     gpointer callback_data)
+{
+	LocationPlus *location_plus;
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	Nautilus_URIList *uri_list;
+
+	location_plus = callback_data;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		uri_list = nautilus_uri_list_from_g_list (location_plus->selection);
+		Nautilus_ViewFrame_report_location_change
+			(view_frame,
+			 location_plus->location,
+			 uri_list,
+			 location_plus->title,
+			 &ev);
+		CORBA_free (uri_list);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+static void
+call_report_redirect (NautilusView *view,
+		      gpointer callback_data)
+{
+	LocationPlus *location_plus;
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	Nautilus_URIList *uri_list;
+
+	location_plus = callback_data;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		uri_list = nautilus_uri_list_from_g_list (location_plus->selection);
+		Nautilus_ViewFrame_report_redirect
+			(view_frame,
+			 location_plus->from_location,
+			 location_plus->location,
+			 uri_list,
+			 location_plus->title,
+			 &ev);
+		CORBA_free (uri_list);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+static void
+call_report_selection_change (NautilusView *view,
+			      gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -434,29 +640,30 @@ nautilus_view_report_selection_change (NautilusView *view,
 	
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
-		uri_list = nautilus_uri_list_from_g_list (selection);
+		uri_list = nautilus_uri_list_from_g_list (callback_data);
 		Nautilus_ViewFrame_report_selection_change (view_frame, uri_list, &ev);
 		CORBA_free (uri_list);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_status (NautilusView *view,
-			     const char *status)
+static void
+call_report_status (NautilusView *view,
+		    gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
 	
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_report_status (view_frame, status, &ev);
+		Nautilus_ViewFrame_report_status (view_frame, callback_data, &ev);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_load_underway (NautilusView *view)
+static void
+call_report_load_underway (NautilusView *view,
+			   gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -468,22 +675,24 @@ nautilus_view_report_load_underway (NautilusView *view)
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_load_progress (NautilusView *view,
-				    double fraction_done)
+static void
+call_report_load_progress (NautilusView *view,
+			   gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
 	
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_report_load_progress (view_frame, fraction_done, &ev);
+		Nautilus_ViewFrame_report_load_progress
+			(view_frame, * (double *) callback_data, &ev);
 	}
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_load_complete (NautilusView *view)
+static void
+call_report_load_complete (NautilusView *view,
+			   gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -495,8 +704,9 @@ nautilus_view_report_load_complete (NautilusView *view)
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_report_load_failed (NautilusView *view)
+static void
+call_report_load_failed (NautilusView *view,
+			 gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
@@ -508,18 +718,185 @@ nautilus_view_report_load_failed (NautilusView *view)
 	view_frame_call_end (view_frame, &ev);
 }
 
-void
-nautilus_view_set_title (NautilusView *view,
-			 const char *title)
+static void
+call_set_title (NautilusView *view,
+		gpointer callback_data)
 {
 	CORBA_Environment ev;
 	Nautilus_ViewFrame view_frame;
 	
 	view_frame = view_frame_call_begin (view, &ev);
 	if (view_frame != CORBA_OBJECT_NIL) {
-		Nautilus_ViewFrame_set_title (view_frame, title, &ev);
+		Nautilus_ViewFrame_set_title (view_frame, callback_data, &ev);
 	}
 	view_frame_call_end (view_frame, &ev);
+}
+
+static void
+call_go_back (NautilusView *view,
+	      gpointer callback_data)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		Nautilus_ViewFrame_go_back (view_frame, &ev);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+void
+nautilus_view_open_location_in_this_window (NautilusView *view,
+					    const char *location)
+{
+	queue_outgoing_call (view,
+			     call_open_location_in_this_window,
+			     g_strdup (location),
+			     g_free);
+}
+
+void
+nautilus_view_open_location_prefer_existing_window (NautilusView *view,
+						    const char *location)
+{
+	queue_outgoing_call (view,
+			     call_open_location_prefer_existing_window,
+			     g_strdup (location),
+			     g_free);
+}
+
+void
+nautilus_view_open_location_force_new_window (NautilusView *view,
+					      const char *location,
+					      GList *selection)
+{
+	LocationPlus *location_plus;
+
+	location_plus = g_new0 (LocationPlus, 1);
+	location_plus->location = g_strdup (location);
+	location_plus->selection = str_list_copy (selection);
+
+	queue_outgoing_call (view,
+			     call_open_location_force_new_window,
+			     location_plus,
+			     free_location_plus_callback);
+}
+
+void
+nautilus_view_report_location_change (NautilusView *view,
+				      const char *location,
+				      GList *selection,
+				      const char *title)
+{
+	LocationPlus *location_plus;
+
+	location_plus = g_new0 (LocationPlus, 1);
+	location_plus->location = g_strdup (location);
+	location_plus->selection = str_list_copy (selection);
+	location_plus->title = g_strdup (title);
+
+	queue_outgoing_call (view,
+			     call_report_location_change,
+			     location_plus,
+			     free_location_plus_callback);
+}
+
+void
+nautilus_view_report_redirect (NautilusView *view,
+			       const char *from_location,
+			       const char *to_location,
+			       GList *selection,
+			       const char *title)
+{
+	LocationPlus *location_plus;
+
+	location_plus = g_new0 (LocationPlus, 1);
+	location_plus->from_location = g_strdup (from_location);
+	location_plus->location = g_strdup (to_location);
+	location_plus->selection = str_list_copy (selection);
+	location_plus->title = g_strdup (title);
+
+	queue_outgoing_call (view,
+			     call_report_redirect,
+			     location_plus,
+			     free_location_plus_callback);
+}
+
+void
+nautilus_view_report_selection_change (NautilusView *view,
+				       GList *selection)
+{
+	queue_outgoing_call (view,
+			     call_report_selection_change,
+			     str_list_copy (selection),
+			     list_free_deep_callback);
+}
+
+void
+nautilus_view_report_status (NautilusView *view,
+			     const char *status)
+{
+	queue_outgoing_call (view,
+			     call_report_status,
+			     g_strdup (status),
+			     g_free);
+}
+
+void
+nautilus_view_report_load_underway (NautilusView *view)
+{
+	queue_outgoing_call (view,
+			     call_report_load_underway,
+			     NULL,
+			     NULL);
+}
+
+void
+nautilus_view_report_load_progress (NautilusView *view,
+				    double fraction_done)
+{
+	queue_outgoing_call (view,
+			     call_report_load_progress,
+			     g_memdup (&fraction_done, sizeof (double)),
+			     g_free);
+}
+
+void
+nautilus_view_report_load_complete (NautilusView *view)
+{
+	queue_outgoing_call (view,
+			     call_report_load_complete,
+			     NULL,
+			     NULL);
+}
+
+void
+nautilus_view_report_load_failed (NautilusView *view)
+{
+	queue_outgoing_call (view,
+			     call_report_load_failed,
+			     NULL,
+			     NULL);
+}
+
+void
+nautilus_view_set_title (NautilusView *view,
+			 const char *title)
+{
+	queue_outgoing_call (view,
+			     call_set_title,
+			     g_strdup (title),
+			     g_free);
+}
+
+void
+nautilus_view_go_back (NautilusView *view)
+{
+	queue_outgoing_call (view,
+			     call_go_back,
+			     NULL,
+			     NULL);
 }
 
 BonoboControl *

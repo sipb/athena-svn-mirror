@@ -26,9 +26,12 @@
 #include <config.h>
 
 #include "nautilus-art-extensions.h"
+#include "nautilus-lib-self-check-functions.h"
+#include <math.h>
 
 ArtIRect NAUTILUS_ART_IRECT_EMPTY = { 0, 0, 0, 0 };
 NautilusArtIPoint NAUTILUS_ART_IPOINT_ZERO = { 0, 0 };
+NautilusDimensions NAUTILUS_DIMENSIONS_EMPTY = { 0, 0 };
 
 gboolean
 nautilus_art_irect_contains_irect (const ArtIRect *outer_rect,
@@ -106,6 +109,12 @@ nautilus_art_drect_equal (const ArtDRect *rect_a,
 		&& rect_a->y1 == rect_b->y1;
 }
 
+gboolean
+nautilus_art_irect_is_valid (const ArtIRect *rect)
+{
+	return rect && !art_irect_empty (rect);
+}
+
 void
 nautilus_art_irect_assign (ArtIRect *rect,
 			   int x,
@@ -119,17 +128,6 @@ nautilus_art_irect_assign (ArtIRect *rect,
 	rect->y0 = y;
 	rect->x1 = rect->x0 + width;
 	rect->y1 = rect->y0 + height;
-}
-
-void
-nautilus_art_ipoint_assign (NautilusArtIPoint *point,
-			   int x,
-			   int y)
-{
-	g_return_if_fail (point != NULL);
-
-	point->x = x;
-	point->y = y;
 }
 
 /**
@@ -172,8 +170,6 @@ nautilus_art_irect_get_height (const ArtIRect *rectangle)
  * @aligned_height: Height of rectangle being algined.
  * @x_alignment: X alignment.
  * @y_alignment: Y alignment.
- * @x_padding: X padding.
- * @y_padding: Y padding.
  *
  * Returns: A rectangle aligned within a container rectangle
  *          using the given alignment parameters.
@@ -183,11 +179,11 @@ nautilus_art_irect_align (const ArtIRect *container,
 			  int aligned_width,
 			  int aligned_height,
 			  float x_alignment,
-			  float y_alignment,
-			  int x_padding,
-			  int y_padding)
+			  float y_alignment)
 {
 	ArtIRect aligned;
+	int available_width;
+	int available_height;
 
 	g_return_val_if_fail (container != NULL, NAUTILUS_ART_IRECT_EMPTY);
 
@@ -200,25 +196,278 @@ nautilus_art_irect_align (const ArtIRect *container,
 	}
 
 	/* Make sure the aligment parameters are within range */
-	x_padding = MAX (0, x_padding);
-	y_padding = MAX (0, y_padding);
 	x_alignment = MAX (0, x_alignment);
 	x_alignment = MIN (1.0, x_alignment);
 	y_alignment = MAX (0, y_alignment);
 	y_alignment = MIN (1.0, y_alignment);
-	
-	aligned.x0 = (container->x0 * (1.0 - x_alignment) +
-		      (container->x0 + nautilus_art_irect_get_width (container)
-		       - (aligned_width - x_padding * 2)) *
-		      x_alignment) + 0.5;
-	
-	aligned.y0 = (container->y0 * (1.0 - y_alignment) +
-		      (container->y0 + nautilus_art_irect_get_height (container)
-		       - (aligned_height - y_padding * 2)) *
-		      y_alignment) + 0.5;
-	
+
+	available_width = nautilus_art_irect_get_width (container) - aligned_width;
+	available_height = nautilus_art_irect_get_height (container) - aligned_height;
+
+	aligned.x0 = floor (container->x0 + (available_width * x_alignment) + 0.5);
+	aligned.y0 = floor (container->y0 + (available_height * y_alignment) + 0.5);
 	aligned.x1 = aligned.x0 + aligned_width;
 	aligned.y1 = aligned.y0 + aligned_height;
 
 	return aligned;
 }
+
+/**
+ * nautilus_dimensions_empty:
+ * 
+ * @dimensions: A NautilusDimensions structure.
+ *
+ * Returns: Whether the dimensions are empty.
+ */
+gboolean
+nautilus_dimensions_empty (const NautilusDimensions *dimensions)
+{
+	g_return_val_if_fail (dimensions != NULL, TRUE);
+
+	return dimensions->width <= 0 || dimensions->height <= 0;
+}
+
+/**
+ * nautilus_art_irect_assign_dimensions:
+ * 
+ * @x: X coodinate for resulting rectangle.
+ * @y: Y coodinate for resulting rectangle.
+ * @dimensions: A NautilusDimensions structure for the rect's width and height.
+ *
+ * Returns: An ArtIRect with the given coordinates and dimensions.
+ */
+ArtIRect
+nautilus_art_irect_assign_dimensions (int x,
+				      int y,
+				      const NautilusDimensions *dimensions)
+{
+	ArtIRect rectangle;
+
+	g_return_val_if_fail (dimensions != NULL, NAUTILUS_ART_IRECT_EMPTY);
+
+	rectangle.x0 = x;
+	rectangle.y0 = y;
+	rectangle.x1 = rectangle.x0 + dimensions->width;
+	rectangle.y1 = rectangle.y0 + dimensions->height;
+
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_by (ArtIRect rectangle, int x, int y)
+{
+	rectangle.x0 += x;
+	rectangle.x1 += x;
+	rectangle.y0 += y;
+	rectangle.y1 += y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_to (ArtIRect rectangle, int x, int y)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + x;
+	rectangle.x0 = x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + y;
+	rectangle.y0 = y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_scale_by (ArtIRect rectangle, double scale)
+{
+	rectangle.x0 *= scale;
+	rectangle.x1 *= scale;
+	rectangle.y0 *= scale;
+	rectangle.y1 *= scale;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_inset (ArtIRect rectangle, int horizontal_inset, int vertical_inset)
+{
+	rectangle.x0 += horizontal_inset;
+	rectangle.x1 -= horizontal_inset;
+	rectangle.y0 += vertical_inset;
+	rectangle.y1 -= vertical_inset;
+	
+	return rectangle;
+}
+
+
+ArtDRect 
+nautilus_art_drect_offset_by (ArtDRect rectangle, double x, double y)
+{
+	rectangle.x0 += x;
+	rectangle.x1 += x;
+	rectangle.y0 += y;
+	rectangle.y1 += y;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_offset_to (ArtDRect rectangle, double x, double y)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + x;
+	rectangle.x0 = x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + y;
+	rectangle.y0 = y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_by_point (ArtIRect rectangle, NautilusArtIPoint point)
+{
+	rectangle.x0 += point.x;
+	rectangle.x1 += point.x;
+	rectangle.y0 += point.y;
+	rectangle.y1 += point.y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_to_point (ArtIRect rectangle, NautilusArtIPoint point)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + point.x;
+	rectangle.x0 = point.x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + point.y;
+	rectangle.y0 = point.y;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_scale_by (ArtDRect rectangle, double scale)
+{
+	rectangle.x0 *= scale;
+	rectangle.x1 *= scale;
+	rectangle.y0 *= scale;
+	rectangle.y1 *= scale;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_inset (ArtDRect rectangle, double horizontal_inset, double vertical_inset)
+{
+	rectangle.x0 += horizontal_inset;
+	rectangle.x1 -= horizontal_inset;
+	rectangle.y0 += vertical_inset;
+	rectangle.y1 -= vertical_inset;
+	
+	return rectangle;
+}
+
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+void
+nautilus_self_check_art_extensions (void)
+{
+	ArtIRect one;
+	ArtIRect two;
+	ArtIRect empty_rect = NAUTILUS_ART_IRECT_EMPTY;
+	ArtIRect inside;
+	ArtIRect outside;
+	ArtIRect container;
+	NautilusDimensions empty_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
+	NautilusDimensions dim1;
+
+	nautilus_art_irect_assign (&one, 10, 10, 20, 20);
+	nautilus_art_irect_assign (&two, 10, 10, 20, 20);
+	nautilus_art_irect_assign (&inside, 11, 11, 18, 18);
+	nautilus_art_irect_assign (&outside, 31, 31, 10, 10);
+	nautilus_art_irect_assign (&container, 0, 0, 100, 100);
+
+	/* nautilus_art_irect_equal */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_equal (&one, &two), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_equal (&one, &empty_rect), FALSE);
+
+	/* nautilus_art_irect_is_valid */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (NULL), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&empty_rect), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&one), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&two), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&inside), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&outside), TRUE);
+
+	/* nautilus_art_irect_hits_irect */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_hits_irect (&one, &two), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_hits_irect (&one, &inside), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_hits_irect (&one, &outside), FALSE);
+
+	/* nautilus_art_irect_contains_point */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 9, 9), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 9, 10), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 10, 9), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 10, 10), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 11, 10), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 10, 11), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 11, 11), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 30, 30), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 29, 30), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 30, 29), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_contains_point (&one, 31, 31), FALSE);
+
+	/* nautilus_art_irect_get_width */
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_art_irect_get_width (&one), 20);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_art_irect_get_width (&empty_rect), 0);
+
+	/* nautilus_art_irect_get_height */
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_art_irect_get_height (&one), 20);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_art_irect_get_height (&empty_rect), 0);
+
+	/* nautilus_art_irect_align */
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&empty_rect, 1, 1, 0.0, 0.0), 0, 0, 0, 0);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 0, 0, 0.0, 0.0), 0, 0, 0, 0);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 0, 0.0, 0.0), 0, 0, 0, 0);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 0, 9, 0.0, 0.0), 0, 0, 0, 0);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.0, 0.0), 0, 0, 10, 10);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 1.0, 0.0), 90, 0, 100, 10);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.0, 1.0), 0, 90, 10, 100);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 1.0, 1.0), 90, 90, 100, 100);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.0, 0.0), 0, 0, 9, 9);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 1.0, 0.0), 91, 0, 100, 9);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.0, 1.0), 0, 91, 9, 100);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 1.0, 1.0), 91, 91, 100, 100);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.5, 0.0), 45, 0, 55, 10);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.5, 0.0), 45, 0, 55, 10);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.0, 0.5), 0, 45, 10, 55);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 10, 10, 0.5, 0.5), 45, 45, 55, 55);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.5, 0.0), 46, 0, 55, 9);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.5, 0.0), 46, 0, 55, 9);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.0, 0.5), 0, 46, 9, 55);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 9, 9, 0.5, 0.5), 46, 46, 55, 55);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 120, 120, 0.0, 0.0), 0, 0, 120, 120);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_align (&container, 120, 120, 0.5, 0.5), -10, -10, 110, 110);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_dimensions_empty (&empty_dimensions), TRUE);
+
+	dim1.width = 10; dim1.height = 10;
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_dimensions_empty (&dim1), FALSE);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (0, 0, &dim1), 0, 0, 10, 10);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (1, 1, &dim1), 1, 1, 11, 11);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (-1, 1, &dim1), -1, 1, 9, 11);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (1, -1, &dim1), 1, -1, 11, 9);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (-1, -1, &dim1), -1, -1, 9, 9);
+
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (2, 2, &dim1), 2, 2, 12, 12);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (-2, 2, &dim1), -2, 2, 8, 12);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (2, -2, &dim1), 2, -2, 12, 8);
+	NAUTILUS_CHECK_RECTANGLE_RESULT (nautilus_art_irect_assign_dimensions (-2, -2, &dim1), -2, -2, 8, 8);
+}
+
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */

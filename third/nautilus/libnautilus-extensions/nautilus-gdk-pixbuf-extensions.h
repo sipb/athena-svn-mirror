@@ -139,7 +139,11 @@ void                      nautilus_gdk_pixbuf_draw_to_drawable_tiled    (const G
 /* Create a pixbuf from a sub area of another pixbuf */
 GdkPixbuf *               nautilus_gdk_pixbuf_new_from_pixbuf_sub_area  (GdkPixbuf                  *pixbuf,
 									 const ArtIRect             *area);
-
+/* Create a pixbuf from an existing buffer. */
+GdkPixbuf *               nautilus_gdk_pixbuf_new_from_existing_buffer  (guchar                     *buffer,
+									 int                         buffer_rowstride,
+									 gboolean                    buffer_has_alpha,
+									 const ArtIRect             *area);
 
 /* Access a global buffer for temporary GdkPixbuf operations.  
  * The returned buffer will be at least as big as the passed in 
@@ -159,7 +163,13 @@ GdkPixbuf *               nautilus_gdk_pixbuf_get_from_window_safe      (GdkWind
 /* Determine whether a pixbuf is valid or not */
 gboolean                  nautilus_gdk_pixbuf_is_valid                  (const GdkPixbuf            *pixbuf);
 
-/* Access the dimensions of a pixbuf as a ArtIRect frame. */
-ArtIRect                  nautilus_gdk_pixbuf_get_frame                 (const GdkPixbuf            *pixbuf);
+/* Access the dimensions of a pixbuf. */
+NautilusDimensions        nautilus_gdk_pixbuf_get_dimensions            (const GdkPixbuf            *pixbuf);
+
+/* Return the intersection of the pixbuf with the given rectangle. */
+ArtIRect                  nautilus_gdk_pixbuf_intersect                 (const GdkPixbuf            *pixbuf,
+									 int                         pixbuf_x,
+									 int                         pixbuf_y,
+									 const ArtIRect             *rectangle);
 
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

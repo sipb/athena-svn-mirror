@@ -41,11 +41,10 @@ void free_categories (GList* categories);
 gboolean generate_xml_package_list (const char* pkg_template_file,
                                     const char* target_file);
 
-xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, char *title, 
-					     xmlNodePtr droot, gboolean include_provides);
+xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, gboolean include_provides);
 xmlNodePtr eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides);
 xmlNodePtr eazel_install_categorydata_to_xml (const CategoryData *category);
 
-gboolean eazel_install_packagelist_parse (GList **list, const char *mem, int size);
+gboolean eazel_install_packagelist_parse (GList **list, const char *mem, int size, char **db_revision);
 
 #endif /* EAZEL_INSTALL_XML_PACKAGE_LIST_H */

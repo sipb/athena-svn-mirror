@@ -2,7 +2,7 @@
 
 /* nautilus-preferences-dialog.c - Implementation for preferences dialog.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -24,16 +24,13 @@
 
 #include <config.h>
 #include "nautilus-preferences-dialog.h"
+
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
-
-/* #include "caption-table.h" */
-
-#include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-
-#include <gnome.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
 
 enum
 {
@@ -48,7 +45,7 @@ struct _NautilusPreferencesDialogDetails
 
 static const gchar * stock_buttons[] =
 {
-	"OK",
+	GNOME_STOCK_BUTTON_OK,
 	NULL
 };
 
@@ -120,25 +117,25 @@ nautilus_preferences_dialog_initialize (NautilusPreferencesDialog * prefs_dialog
 }
 
 static void
-dialog_clicked(GtkWidget * widget, gint n, gpointer data)
+dialog_clicked (GtkWidget * widget, gint n, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
 	g_assert(prefs_dialog);
 
-	gtk_widget_hide(GTK_WIDGET(prefs_dialog));
+	gtk_widget_hide (GTK_WIDGET(prefs_dialog));
 }
 
 static void
-dialog_show(GtkWidget * widget, gpointer data)
+dialog_show (GtkWidget * widget, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
-	g_assert(prefs_dialog);
+	g_assert (prefs_dialog);
 }
 
 static void
-dialog_destroy(GtkWidget * widget, gpointer data)
+dialog_destroy (GtkWidget * widget, gpointer data)
 {
 	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
 
@@ -147,7 +144,7 @@ dialog_destroy(GtkWidget * widget, gpointer data)
 
 static void
 nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
-				 const gchar	     *dialog_title)
+				       const gchar *dialog_title)
 {
 	GnomeDialog *gnome_dialog;
 
@@ -166,17 +163,15 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 			       TRUE,			 /* allow_grow */
 			       FALSE);			 /* auto_shrink */
 
- 	gtk_widget_set_usize (GTK_WIDGET (prefs_dialog), 
-			      PREFS_DIALOG_DEFAULT_WIDTH, 
-			      PREFS_DIALOG_DEFAULT_HEIGHT);
+	gtk_window_set_default_size (GTK_WINDOW (prefs_dialog),
+				     510,
+				     406);
 
 	/* Doesnt work in enlightenment or sawmill */
 #if 0
 	/* This is supposed to setup the window manager functions */
 	gdk_window_set_functions (GTK_WIDGET (prefs_dialog)->window, GDK_FUNC_MOVE | GDK_FUNC_RESIZE);
 #endif
-
- 	gtk_window_set_position (GTK_WINDOW (prefs_dialog), GTK_WIN_POS_CENTER);
 
  	gtk_container_set_border_width (GTK_CONTAINER(prefs_dialog), 
 					DEFAULT_BORDER_WIDTH);
@@ -189,17 +184,17 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (dialog_clicked),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "show",
 			    GTK_SIGNAL_FUNC(dialog_show),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 	
 	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
 			    "destroy",
 			    GTK_SIGNAL_FUNC (dialog_destroy),
-			    (gpointer) prefs_dialog);
+			    prefs_dialog);
 
 	/* Configure the GNOME_DIALOG's vbox */
  	g_assert (gnome_dialog->vbox);
@@ -237,7 +232,7 @@ nautilus_preferences_dialog_destroy(GtkObject* object)
 	NautilusPreferencesDialog * prefs_dialog;
 	
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (object));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (object));
 	
 	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG(object);
 
@@ -254,7 +249,7 @@ GtkWidget*
 nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dialog)
 {
 	g_return_val_if_fail (prefs_dialog != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_PREFS_DIALOG (prefs_dialog), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (prefs_dialog), NULL);
 
 	return prefs_dialog->details->prefs_box;
 }
@@ -262,7 +257,7 @@ nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dial
 void
 nautilus_preferences_dialog_update (NautilusPreferencesDialog *preferences_dialog)
 {
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (preferences_dialog));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (preferences_dialog));
 
 	nautilus_preferences_box_update (NAUTILUS_PREFERENCES_BOX (preferences_dialog->details->prefs_box));
 }
@@ -270,7 +265,7 @@ nautilus_preferences_dialog_update (NautilusPreferencesDialog *preferences_dialo
 static void
 user_level_changed_callback (gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (callback_data));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (callback_data));
 
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (callback_data));
 }

@@ -2,7 +2,7 @@
 
    nautilus-directory-private.h: Nautilus directory model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -32,6 +32,8 @@
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-directory-metafile-monitor.h"
+#include "nautilus-metafile-server.h"
 
 typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct MetafileReadState MetafileReadState;
@@ -68,11 +70,17 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
+	NautilusMetafileMonitor *metafile_monitor;
+	gboolean load_metafile_for_server;
+	Nautilus_Metafile metafile_corba_object;
+
+	gboolean in_async_service_loop;
+	gboolean state_changed;
+
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	gboolean directory_loaded_sent_notification;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
-	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 
 	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
 	int confirmed_file_count;
@@ -91,12 +99,10 @@ struct NautilusDirectoryDetails
 	NautilusFile *deep_count_file;
 	GnomeVFSAsyncHandle *deep_count_in_progress;
 	char *deep_count_uri;
-	GnomeVFSDirectoryListPosition deep_count_last_handled;
 	GList *deep_count_subdirectories;
 
 	NautilusFile *mime_list_file;
 	GnomeVFSAsyncHandle *mime_list_in_progress;
-	GnomeVFSDirectoryListPosition mime_list_last_handled;
 	GHashTable *mime_list_hash;
 
 	NautilusFile *get_info_file;
@@ -150,7 +156,7 @@ void               nautilus_directory_monitor_remove_internal         (NautilusD
 void               nautilus_directory_get_info_for_new_files          (NautilusDirectory         *directory,
 								       GList                     *vfs_uris);
 NautilusFile *     nautilus_directory_get_existing_corresponding_file (NautilusDirectory         *directory);
-void               nautilus_directory_invalidate_counts               (NautilusDirectory         *directory);
+void               nautilus_directory_invalidate_count_and_mime_list  (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_file_list_monitored          (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
 void               nautilus_directory_remove_file_monitor_link        (NautilusDirectory         *directory,
@@ -161,20 +167,20 @@ void               nautilus_directory_stop_monitoring_file_list       (NautilusD
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
 void               nautilus_metafile_write_start                      (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
-void               nautilus_directory_force_reload                    (NautilusDirectory         *directory,
+void               nautilus_directory_force_reload_internal           (NautilusDirectory         *directory,
 								       GList                     *file_attributes);
 void               nautilus_directory_cancel_loading_file_attributes  (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       GList                     *file_attributes);
 
 /* Calls shared between directory, file, and async. code. */
-void               nautilus_directory_emit_metadata_changed           (NautilusDirectory         *directory);
 void               nautilus_directory_emit_files_added                (NautilusDirectory         *directory,
 								       GList                     *added_files);
 void               nautilus_directory_emit_files_changed              (NautilusDirectory         *directory,
 								       GList                     *changed_files);
-void               nautilus_directory_emit_change_signals_deep        (NautilusDirectory         *directory,
+void               nautilus_directory_emit_change_signals             (NautilusDirectory         *directory,
 								       GList                     *changed_files);
+void               emit_change_signals_for_all_files		      (NautilusDirectory	 *directory);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
 								       GnomeVFSResult             error_result);
@@ -188,6 +194,8 @@ void               nautilus_directory_set_up_request                  (Request  
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
 								       const char                *relative_uri);
 NautilusFile *     nautilus_directory_find_file_by_relative_uri       (NautilusDirectory         *directory,
+								       const char                *relative_uri);
+NautilusFile *     nautilus_directory_find_file_by_internal_uri       (NautilusDirectory         *directory,
 								       const char                *relative_uri);
 void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);

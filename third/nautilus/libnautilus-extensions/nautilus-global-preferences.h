@@ -35,8 +35,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"icon_view/captions"
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
+
 /* Keep track of the sound playing process */
 #define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
+/* Does the system have audio output capability */
+#define NAUTILUS_PREFERENCES_HAS_AUDIO_OUT			"preferences/audio_out"
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
@@ -68,11 +71,14 @@ BEGIN_GNOME_DECLS
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
+/* Activating executable text files */
+#define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
+
 /* Smooth graphics mode (smoother but slower) */
 #define NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE		"preferences/smooth_graphics_mode"
 
 /* Which views should be displayed for new windows */
-#define NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR		"preferences/start_with_tool_bar"
+#define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
 #define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
@@ -85,10 +91,12 @@ BEGIN_GNOME_DECLS
 
 /* Directory view */
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
+#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT		"directory-view/smooth_font"
 
 /* File Indexing */
-#define NAUTILUS_PREFERENCES_SEARCH_METHOD			"preferences/also_do_slow_search"
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
+#define NAUTILUS_PREFERENCES_MEDUSA_BLOCKED                     "preferences/medusa_blocked"
+#define NAUTILUS_PREFERENCES_USE_FAST_SEARCH                    "preferences/use_fast_search"
 
 /* searching */
 #define NAUTILUS_PREFERENCES_SEARCH_WEB_URI			"preferences/search_web_uri"			
@@ -99,6 +107,13 @@ enum
 	NAUTILUS_CLICK_POLICY_DOUBLE
 };
 
+enum
+{
+	NAUTILUS_EXECUTABLE_TEXT_LAUNCH,
+	NAUTILUS_EXECUTABLE_TEXT_DISPLAY,
+	NAUTILUS_EXECUTABLE_TEXT_ASK
+};
+
 typedef enum
 {
 	NAUTILUS_SPEED_TRADEOFF_ALWAYS,
@@ -107,6 +122,7 @@ typedef enum
 } NautilusSpeedTradeoffValue;
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS		"preferences/show_icon_text"
+#define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "preferences/show_directory_item_counts"
 #define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
 #define NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA	"preferences/use_public_metadata"
 #define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preferences/preview_sound"
@@ -117,13 +133,18 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-void   nautilus_global_preferences_initialize                                 (void);
-void   nautilus_global_preferences_show_dialog                                (void);
-void   nautilus_global_preferences_hide_dialog                                (void);
-void   nautilus_global_preferences_set_dialog_title                           (const char *title);
+/* Gnome session management */
+#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
+
+void                         nautilus_global_preferences_initialize                                 (void);
+void                         nautilus_global_preferences_show_dialog                                (void);
+void                         nautilus_global_preferences_hide_dialog                                (void);
+void                         nautilus_global_preferences_set_dialog_title                           (const char *title);
 
 /* Sidebar */
-GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
+GList *                      nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_smooth_font                            (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_smooth_bold_font                       (void);
 
 END_GNOME_DECLS
 

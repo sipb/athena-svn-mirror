@@ -5,18 +5,33 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus content loser factory"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#225;&#240;&#239;&#244;&#245;&#247;&#223;&#225;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus indholdstaber-komponent"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus i&#231;erik izleme mimarisi"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica do perdedor de conte&#250;do do Nautilus"/>
 	<oaf_attribute name="name-es" type="string" value="Original para contenido perdido Nautilus"/>
-	<oaf_attribute name="name-sv" type="string" value="Nautilus-inneh&#229;llsf&#246;rlorarfabriken"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus inneh&#229;llsf&#246;rlorarfabrik"/>
 	<oaf_attribute name="name-de" type="string" value="Nautilus-Inhalts-Verlierer-Factory"/>
 	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-hu" type="string" value="Factory a Nautilus Content Loserhez"/>
+	<oaf_attribute name="name-no" type="string" value="Nautilus innholdstaper factory"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Z&#225;budlivca obsahu pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusovega izgubljalnika vsebine"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen hukkasis&#228;lt&#246;tehdas"/>
 	<oaf_attribute name="description" type="string" value="Nautilus content loser component's factory"/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#225;&#240;&#239;&#244;&#245;&#247;&#223;&#225;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="description-da" type="string" value="Fabrik for Nautilus indholdstaber-komponenten"/>
+	<oaf_attribute name="description-tr" type="string" value="Nautilus i&#231;erik izleme bile&#254;en mimarisi"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica do componente perdedor de conte&#250;do do Nautilus"/>
 	<oaf_attribute name="description-es" type="string" value="Original del componente de contenido perdido Nautilus"/>
 	<oaf_attribute name="description-sv" type="string" value="Nautilus-fabriken f&#246;r inneh&#229;llsf&#246;rlorarkomponenten"/>
 	<oaf_attribute name="description-de" type="string" value="Nautilus-Inhalts-Verlierer-Komponenten-Factory"/>
+	<oaf_attribute name="description-ja" type="string" value="Nautilus &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for Nautilus innholdstaperkomponent"/>
+	<oaf_attribute name="description-hu" type="string" value="Factory a Nautilus Content Loserhez"/>
 	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent Z&#225;budlivec obsahu pre Nautilus"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Tovarna komponent Nautilusovega izgubljalnika vsebine"/>
+	<oaf_attribute name="description-fi" type="string" value="Nautiluksen hukkasis&#228;lt&#246;komponenttien tehdas"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d" type="factory" location="OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69">
@@ -26,22 +41,38 @@
 		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus Content Loser"/>
+	<oaf_attribute name="name-el" type="string" value="&#193;&#240;&#239;&#244;&#245;&#247;&#223;&#225; &#208;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus indholdstaber"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus &#221;&#231;erik &#221;zleyici"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="Perdedor de conte&#250;do do Nautilus"/>
+	<oaf_attribute name="name-fr" type="string" value="&#171; Content Loser &#187; de Nautilus"/>
 	<oaf_attribute name="name-es" type="string" value="Contenido perdido Nautilus"/>
-	<oaf_attribute name="name-sv" type="string" value="Nautilus-inneh&#229;llsf&#246;rloraren"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus inneh&#229;llsf&#246;rlorare"/>
 	<oaf_attribute name="name-de" type="string" value="Nautilus-Inhalts-Verlierer"/>
 	<oaf_attribute name="name-ko" type="string" value="&#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#190;&#181;&#184;&#240;&#190;&#248;&#180;&#194; &#179;&#187;&#191;&#235;"/>
 	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;"/>
-	<oaf_attribute name="name-da" type="string" value="Nautilus indholdstaber"/>
+	<oaf_attribute name="name-no" type="string" value="Nautilus innholdstaper"/>
+	<oaf_attribute name="name-hu" type="string" value="Nautilus Content Loser"/>
 	<oaf_attribute name="name-sk" type="string" value="Z&#225;budlivec obsahu pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Nautilusov izgubljalnik vsebine"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen hukkasis&#228;lt&#246;"/>
 	<oaf_attribute name="description" type="string" value="Nautilus content view that fails on command"/>
+	<oaf_attribute name="description-el" type="string" value="&#188;&#248;&#231; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245; &#240;&#239;&#245; &#225;&#240;&#239;&#244;&#245;&#227;&#247;&#220;&#237;&#229;&#233; &#234;&#225;&#244;&#220; &#226;&#239;&#253;&#235;&#231;&#243;&#231; &#247;&#241;&#222;&#243;&#244;&#231;"/>
+	<oaf_attribute name="description-da" type="string" value="Nautilus indholdsvisning som fejlede ved kommando"/>
+	<oaf_attribute name="description-tr" type="string" value="Nautilus i&#231;erik g&#246;r&#252;nt&#252;leyici"/>
+	<oaf_attribute name="description-ru" type="string" value="&#252;&#212;&#207; &#207;&#203;&#206;&#207; &#211;&#207;&#196;&#197;&#210;&#214;&#193;&#206;&#201;&#209; &#238;&#193;&#213;&#212;&#201;&#204;&#213;&#211;, &#203;&#207;&#212;&#207;&#210;&#207;&#197; &#208;&#193;&#196;&#193;&#197;&#212; &#208;&#207; &#212;&#210;&#197;&#194;&#207;&#215;&#193;&#206;&#201;&#192;."/>
+	<oaf_attribute name="description-pt_BR" type="string" value="Visualiza&#231;&#227;o de conte&#250;do do Nautilus que falha quando ordenado"/>
 	<oaf_attribute name="description-es" type="string" value="Vista de contenido Nautilus que falla al usarla"/>
+	<oaf_attribute name="description-fr" type="string" value="Vue de Nautilus qui &#233;choue &#224; la demande. Utilis&#233;e pour d&#233;bugger."/>
 	<oaf_attribute name="description-sv" type="string" value="Nautilus-inneh&#229;llsvy som misslyckas p&#229; beg&#228;ran"/>
 	<oaf_attribute name="description-de" type="string" value="Nautilus-Inhaltsansicht, die auf Befehl fehlschl&#228;gt"/>
 	<oaf_attribute name="description-ko" type="string" value="&#189;&#199;&#198;&#208;&#199;&#209; &#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#199;&#215;&#184;&#241; &#186;&#184;&#177;&#226;"/>
-	<oaf_attribute name="description-ja" type="string" value="&#165;&#179;&#165;&#222;&#165;&#243;&#165;&#201;&#164;&#172;&#188;&#186;&#199;&#212;&#164;&#183;&#164;&#191; Nautilus &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#211;&#165;&#229;&#161;&#188;&#164;&#199;&#164;&#185;"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#179;&#165;&#222;&#165;&#243;&#165;&#201;&#164;&#203;&#188;&#186;&#199;&#212;&#164;&#183;&#164;&#191; Nautilus &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#211;&#165;&#229;&#161;&#188;&#164;&#199;&#164;&#185;"/>
+	<oaf_attribute name="description-hu" type="string" value="Ez egy Nautilus tartalom n&#233;zet. Annyit tud, hogy k&#233;r&#233;sre elpusztul."/>
+	<oaf_attribute name="description-no" type="string" value="Innholdsvisningskomponent for Nautilus som feiler p&#229; ettersp&#248;rsel"/>
 	<oaf_attribute name="description-sk" type="string" value="Poh&#181;ad pre Nautilus, ktor&#253; zlyh&#225; pri pr&#237;kazoch"/>
-
+	<oaf_attribute name="description-fi" type="string" value="Nautiluksen sis&#228;lt&#246;n&#228;kym&#228;, joka ep&#228;onnistuu haluttaessa."/>
+	<oaf_attribute name="description-sl" type="string" value="Nautilusov pogled vsebine, ki ne uspe ob ukazu"/>
 	<oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
 		<item value="*"/>
 	</oaf_attribute>
@@ -49,14 +80,46 @@
 		<item value="*"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" value="Content Loser"/>
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#193;&#240;&#239;&#244;&#245;&#247;&#223;&#225; &#208;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Indholdstaber"/>
+	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Perdedor de conte&#250;do"/>
+	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Content Loser"/>
 	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Contenido perdido"/>
 	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Inneh&#229;llsf&#246;rlorare"/>
 	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Inhalts-Verlierer"/>
 	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#190;&#181;&#184;&#240;&#190;&#248;&#180;&#194; &#179;&#187;&#191;&#235;"/>
 	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;"/>
-	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Indholdstaber"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Innholdstaper"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Content Loser"/>
 	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Z&#225;budlivec obsahu"/>
-
+	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="Sis&#228;ll&#246;nhukkaaja"/>
+	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Izgubljalnik vsebine"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" value="View as Content Loser"/>
+	<oaf_attribute name="nautilus:view_as_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#249;&#242; &#193;&#240;&#239;&#244;&#245;&#247;&#223;&#225; &#208;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245;"/>
+	<oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant que &#171; Content Loser &#187;"/>
+	<oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como Contenido Perdido"/>
+	<oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som inneh&#229;llsf&#246;rlorare"/>
+	<oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Inhalts-Verlierer betrachten"/>
+	<oaf_attribute name="nautilus:view_as_label-ko" type="string" value="&#190;&#181;&#184;&#240;&#190;&#248;&#180;&#194; &#179;&#187;&#191;&#235;&#192;&#184;&#183;&#206; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:view_as_label-ja" type="string" value="&#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;&#164;&#199;&#201;&#189;&#188;&#168;"/>
+	<oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som innholdstaper"/>
+	<oaf_attribute name="nautilus:view_as_label-hu" type="string" value="Tartalomveszt&#245;k&#233;nt"/>
+	<oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobrazi&#187; ako Z&#225;budlivca obsahu"/>
+	<oaf_attribute name="nautilus:view_as_label-fi" type="string" value="N&#228;yt&#228; hukkasis&#228;lt&#246;n&#228;"/>
+	<oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot izgubljalnika vsebine"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" value="Content Loser Viewer"/>
+	<oaf_attribute name="nautilus:viewer_label-el" type="string" value="&#208;&#225;&#241;&#239;&#245;&#243;&#223;&#225;&#243;&#231; &#193;&#240;&#239;&#244;&#245;&#247;&#223;&#225;&#242; &#208;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245;"/>
+	<oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur &#171; Content Loser &#187;"/>
+	<oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visualizador Contenido Perdido"/>
+	<oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Inneh&#229;llsf&#246;rlorarvisare"/>
+	<oaf_attribute name="nautilus:viewer_label-de" type="string" value="Inhalts-Verlierer-Betrachter"/>
+	<oaf_attribute name="nautilus:viewer_label-ko" type="string" value="&#190;&#181;&#184;&#240;&#190;&#248;&#180;&#194; &#179;&#187;&#191;&#235;&#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:viewer_label-ja" type="string" value="&#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#235;&#161;&#188;&#165;&#182;&#161;&#188;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:viewer_label-no" type="string" value="Innholdstaper-visning"/>
+	<oaf_attribute name="nautilus:viewer_label-hu" type="string" value="Content Loser n&#233;zet"/>
+	<oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Z&#225;budlivec obsahu"/>
+	<oaf_attribute name="nautilus:viewer_label-fi" type="string" value="Sis&#228;ll&#246;nhukkaajakatselin"/>
+	<oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik izgubljalnika vsebine"/>
 	<oaf_attribute name="test_only" type="boolean" value="true"/>
 </oaf_server>
 

@@ -39,7 +39,7 @@ BEGIN_GNOME_DECLS
 
 typedef struct _NautilusLabel	       NautilusLabel;
 typedef struct _NautilusLabelClass     NautilusLabelClass;
-typedef struct _NautilusLabelDetail    NautilusLabelDetail;
+typedef struct _NautilusLabelDetails   NautilusLabelDetails;
 
 struct _NautilusLabel
 {
@@ -47,7 +47,7 @@ struct _NautilusLabel
 	GtkLabel gtk_label;
 
 	/* Private things */
-	NautilusLabelDetail *detail;
+	NautilusLabelDetails *details;
 };
 
 struct _NautilusLabelClass
@@ -67,8 +67,8 @@ void                         nautilus_label_set_smooth_font                (Naut
 									    NautilusScalableFont         *font);
 NautilusScalableFont *       nautilus_label_get_smooth_font                (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_font_size           (NautilusLabel                *label,
-									    guint                         font_size);
-guint                        nautilus_label_get_smooth_font_size           (const NautilusLabel          *label);
+									    int                           font_size);
+int                          nautilus_label_get_smooth_font_size           (const NautilusLabel          *label);
 void                         nautilus_label_set_text_opacity               (NautilusLabel                *label,
 									    int                           opacity);
 int                          nautilus_label_get_text_opacity               (const NautilusLabel          *label);
@@ -82,14 +82,14 @@ void                         nautilus_label_set_text_color                 (Naut
 									    guint32                       color);
 guint32                      nautilus_label_get_text_color                 (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_drop_shadow_offset  (NautilusLabel                *label,
-									    guint                         offset);
-guint                        nautilus_label_get_smooth_drop_shadow_offset  (const NautilusLabel          *label);
+									    int                           offset);
+int                          nautilus_label_get_smooth_drop_shadow_offset  (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_drop_shadow_color   (NautilusLabel                *label,
 									    guint32                       color);
 guint32                      nautilus_label_get_smooth_drop_shadow_color   (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_line_wrap_width     (NautilusLabel                *label,
-									    guint                         line_wrap_width);
-guint                        nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
+									    int                           line_wrap_width);
+int                          nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
 void                         nautilus_label_set_text                       (NautilusLabel                *label,
 									    const char                   *text);
 char*                        nautilus_label_get_text                       (const NautilusLabel          *label);
@@ -99,8 +99,8 @@ GtkJustification             nautilus_label_get_text_justify               (cons
 void                         nautilus_label_set_wrap                       (NautilusLabel                *label,
 									    gboolean                      line_wrap);
 gboolean                     nautilus_label_get_wrap                       (const NautilusLabel          *label);
-GtkWidget *                  nautilus_label_new_solid                       (const char                   *text,
-									    guint                         drop_shadow_offset,
+GtkWidget *                  nautilus_label_new_solid                      (const char                   *text,
+									    int                           drop_shadow_offset,
 									    guint32                       drop_shadow_color,
 									    guint32                       text_color,
 									    float                         xalign,
@@ -134,6 +134,11 @@ NautilusSmoothTileMode       nautilus_label_get_tile_mode_vertical         (cons
 void                         nautilus_label_set_tile_mode_horizontal       (NautilusLabel                *label,
 									    NautilusSmoothTileMode        horizontal_tile_mode);
 NautilusSmoothTileMode       nautilus_label_get_tile_mode_horizontal       (const NautilusLabel          *label);
+void                         nautilus_label_set_never_smooth               (NautilusLabel                *label,
+									    gboolean                      never_smooth);
+void                         nautilus_label_set_adjust_wrap_on_resize      (NautilusLabel                *label,
+									    gboolean                      adjust_wrap_on_resize);
+gboolean                     nautilus_label_get_adjust_wrap_on_resize      (const NautilusLabel          *label);
 
 END_GNOME_DECLS
 

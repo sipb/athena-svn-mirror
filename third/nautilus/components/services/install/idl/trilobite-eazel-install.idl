@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 #include <Bonobo.idl>
 
@@ -17,6 +17,7 @@ module Trilobite {
 		   
 		enum PackageStatusEnum {
 			UNKNOWN_STATUS,
+			CANCELLED,            /* medium: Package cancelled, eg wrong password or such */
 			SOURCE_NOT_SUPPORTED, /* bad: we don't install source packages */
 			DEPENDENCY_FAIL,      /* bad: a dependency failed in next level */
 			FILE_CONFLICT,        /* bad: this file owns a file that the
@@ -27,7 +28,22 @@ module Trilobite {
 			PARTLY_RESOLVED,      /* perhaps: the immediate deps where ok, check all in PackageDataStruct.soft/hard_depends */
 			RESOLVED,             /* good: all deps ok */
 			ALREADY_INSTALLED,    /* medium: you don't get to install it, but then again... */
-			CIRCULAR_DEPENDENCY   /* bad: two packages are fighting it out */
+			CIRCULAR_DEPENDENCY,  /* bad: two packages are fighting it out */
+			PACKSYS_FAILURE	      /* bad: can't lock rpmdb (usually) */
+		};
+
+		enum PackageModificationStatus {
+			UNTOUCHED,
+			INSTALLED,
+			UNINSTALLED,
+			UPGRADED,
+			DOWNGRADED
+		};
+
+		enum Operation {
+			OPERATION_INSTALL,
+			OPERATION_UNINSTALL,
+			OPERATION_REVERT
 		};
 		
 		enum ProtocolEnum {
@@ -45,6 +61,32 @@ module Trilobite {
 		exception NoAccess {};         /* Raised if access to the package system wasn't allowed */
 		exception PackagesFailed {};   /* Raised if some packages failed (un)install */
 
+		/* ORBit is unable to cope with recursive struct definitions, so we refer to other
+		 * packages using a "soft pointer" (their MD5).  it sucks, but it works.
+		 */
+
+		struct PackageDependencyStruct {
+			string sense;
+			string version;
+			string package_md5;
+		};
+
+		enum PackageBreaksEnum {
+			PACKAGE_FILE_CONFLICT,
+			PACKAGE_FEATURE_MISSING
+		};
+		union PackageBreaksUnion switch (PackageBreaksEnum) {
+		case PACKAGE_FILE_CONFLICT:
+			sequence <string> files;
+		case PACKAGE_FEATURE_MISSING:
+			sequence <string> features;
+		};
+
+		struct PackageBreaksStruct {
+			string package_md5;
+			PackageBreaksUnion u;
+		};
+
 		struct PackageDataStruct {
 			/*
 			  These fields should be set when passed to 
@@ -56,8 +98,11 @@ module Trilobite {
 			   still use eg. protocol HTTP to do dep stuff */
 			string filename;
 			/*
-			  Or this if you want to use a eazel package id */
+			  Or this if you want to use an Eazel package id */
 			string eazel_id;
+			/*
+			  Or this if you want to use an Eazel suite id */
+			string suite_id;
 
 			/*
 			  Eazel:Install::install ()
@@ -75,7 +120,9 @@ module Trilobite {
 			string summary;
 			string description;
 			long bytesize;
+			long filesize;
 			boolean toplevel;
+			boolean anchor;		/* internal use only */
 
 			/* The location the rpm is installed (if installed) */
 			string install_root;
@@ -85,7 +132,7 @@ module Trilobite {
 
 			/* When Eazel::IntallCallback::install_failed is
 			   called, this is set. The toplevel will have
-			   PARTLY_RESOLVED and in soft_ & hard_depends,
+			   PARTLY_RESOLVED and in depends,
 			   packages will have typically eiter
 			   RESOLVED for the good deps, 
 			   bad deps will have one of the
@@ -93,16 +140,13 @@ module Trilobite {
 			*/
 			PackageStatusEnum status;
 
-			/* FIXME bugzilla.eazel.com 1542:
-			   This is legal IDL, but not supported by wannabe idl compiler
-			   orbit-idl. Therefore I have to encode these
-			   trees as xml...
-			   When orbit-idl parses IDL, we can loose the xml.
-			sequence <PackageDataStruct> soft_depends;
-			sequence <PackageDataStruct> hard_depends;
-			sequence <PackageDataStruct> breaks;
-			*/	
-			sequence <string> provides;
+			PackageModificationStatus modify_status;
+
+			sequence <PackageDependencyStruct> depends;
+			sequence <PackageBreaksStruct> breaks;
+			sequence <string> modifies;	/* MD5 identifiers */
+			sequence <string> provides;	/* file list */
+			sequence <string> features;	/* feature list */
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 
@@ -112,6 +156,23 @@ module Trilobite {
 		};
 		typedef sequence <CategoryStruct> CategoryStructList;
 
+		/* 
+		   When adding a signal :
+		   - add signal to EazelInstallCallback in eazel-install-corba-callback.c
+		   - add signal to EazelInstall in eazel-install-public.h and eazel-install-object.c
+		   - add emitters to EazelInstall in eazel-install-public.h and eazel-install-object.c
+		   - call them...
+		   
+		   When modifying a signal :
+		   - change interface in EazelInstallCallback in eazel-install-corba-callback.c
+		   - change interface in  EazelInstall in eazel-install-public.h and eazel-install-object.c
+		   - change interface in EazelInstall in eazel-install-public.h and eazel-install-object.c
+		   - find and change all calls 
+
+		   Getting the klass functions and the gtk_signal_new into both eazel-install-object.c
+		   and eazel-install-corba-callback.c can be optimized by using Cut'n'Paste<tm> Technology
+		*/
+
 		interface InstallCallback : Bonobo::Unknown {
 			/* Called during download of a file */
 			/* make it 2-way so that it will process incoming corba calls */
@@ -120,47 +181,49 @@ module Trilobite {
 			/* Called when dependency check is being handled */
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
 
-			/* Called when a package is being file conflict checked */
-			/* FIXME: bugzilla.eazel.com 3459 */
+			/* Called when a package is being file/feature/unique checked */
 			oneway void file_conflict_check (in PackageDataStruct package);
+			oneway void file_uniqueness_check (in PackageDataStruct package);
+			oneway void feature_consistency_check (in PackageDataStruct package);
 
 			/* Called after download is complete, and before the (un)install begins.
 			   Typically while heating up RPM */
-			boolean preflight_check (in string xml_packages,
+			boolean preflight_check (in Operation op,
+						 in PackageDataStructList package_tree,
 						 in long total_size, 
 						 in long num_packages);
-			/* should be "in PackageDataStructList packages"
-			   instead of a string, 
-			   FIXME: bugzilla.eazel.com 1542 */
+
+                        /* On a successfull operation, this is called and should
+                           return TRUE if a transaction log should be kept */
+                        boolean save_transaction (in Operation op,
+                                                  in PackageDataStructList package_tree);
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 
-							in long package_num, in long num_packages, 
-							in long package_size_completed, in long package_size_total,
-							in long total_size_completed, in long total_size);
+						      in long package_num, 
+						      in long num_packages, 
+						      in long package_size_completed, 
+						      in long package_size_total,
+						      in long total_size_completed, 
+						      in long total_size);
 			oneway void uninstall_progress (in PackageDataStruct package, 
-							in long amount, in long total);
+							in long package_num, 
+							in long num_packages, 
+							in long package_size_completed, 
+							in long package_size_total,
+							in long total_size_completed, 
+							in long total_size);
 
 			/* Called whenever a package (un)install fails
 			*/
 			void download_failed (in PackageDataStruct package);
-			/* FIXME bugzilla.eazel.com 1542:
-			   This is what they should be, but orbit-idl's lack of
-			   recursive structures, forces us to encode the structures
-			   as xml and transfer these instead. 
-			void install_failed (in PackageDataStruct package);
-			void uninstall_failed (in PackageDataStruct package);
-			*/
-			void install_failed (in string xml_package);
-			void uninstall_failed (in string xml_package);
+			void install_failed (in PackageDataStructList package_tree);
+			void uninstall_failed (in PackageDataStructList package_tree);
 
 			/* Emitted when a package fails the md5 check.
 			   The package structure contains the md5 it should have,
 			   and actual_md5 contains the md5 checksum of the rpmfile */
 			void md5_check_failed (in PackageDataStruct package, in string actual_md5);
-
-			/* Called to find out whether to delete the rpms or not, after finishing */
-			boolean delete_files ();
 
 			/* Called when the operation is finished */
 			void done (in boolean result);
@@ -172,8 +235,8 @@ module Trilobite {
 			attribute boolean silent;      /* Minimal log output */
 			attribute boolean test_mode;   /* dry run, do not install, but act as if... */
 			attribute boolean force;       /* force install specified package (DANGER WILL ROBINSON) */
-			attribute boolean update;      /* enable update (default is FALSE) */
-			attribute boolean downgrade;   /* enable update (default is FALSE) */
+			attribute boolean upgrade;     /* enable upgrade (default is FALSE) */
+			attribute boolean downgrade;   /* enable downgrade (default is FALSE) */
 			attribute string package_list; /* Local package list to use, rather then download 
 							  from server */
 
@@ -183,7 +246,7 @@ module Trilobite {
 			attribute boolean auth; 
 			attribute long server_port;   /*  */
 
-			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout */
+			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout) */
 			attribute string tmp_dir;   /* directory to store tmp files in (/tmp/eazel-install) */
 
 			attribute ProtocolEnum protocol; /* */
@@ -207,6 +270,20 @@ module Trilobite {
 			oneway void uninstall_packages (in CategoryStructList categories, 
 							in string root,
 							in InstallCallback cb);
+
+			/* These are for installing/uninstalling specific packages */
+/*
+  This is for bug 5267
+			oneway void prepare_operation (in PackageDataStructList packages,
+						       in string root,
+						       in Operation op,
+						       in InstallCallback cb);
+
+			oneway void perform_operation (in PackageDataStructList packages,
+						       in string root,
+						       in Operation op,
+						       in InstallCallback cb);
+*/
 
 			boolean query_server (in PackageDataStruct q, 
 					      out PackageDataStruct result);

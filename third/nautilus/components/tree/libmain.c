@@ -66,7 +66,7 @@ tree_shlib_make_object (PortableServer_POA poa,
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_shlib_object_destroyed, NULL);
 
-	gtk_object_set_user_data (GTK_OBJECT (view), impl_ptr);
+	gtk_object_set_user_data (GTK_OBJECT (nautilus_view), impl_ptr);
 
 	oaf_plugin_use (poa, impl_ptr);
 

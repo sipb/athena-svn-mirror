@@ -79,7 +79,7 @@ header_destroy (GtkObject *object)
 	g_free (header->details);
 	
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* EazelServicesHeader public methods */
@@ -95,7 +95,7 @@ eazel_services_header_title_new (const char *left_text)
 	header->details->left_text = eazel_services_label_new (left_text,
 							       1,
 							       0.1,
-							       0.3,
+							       0.1,
 							       10,
 							       0,
 							       EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,

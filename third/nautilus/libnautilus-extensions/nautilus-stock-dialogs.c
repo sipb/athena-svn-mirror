@@ -37,8 +37,10 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
-#define TIMED_WAIT_STANDARD_DURATION 5000
+#define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
+
+#define TIMED_WAIT_MINIMUM_DIALOG_WIDTH 300
 
 typedef struct {
 	NautilusCancelCallback cancel_callback;
@@ -65,7 +67,7 @@ static GHashTable *timed_wait_hash_table;
 static void find_message_label_callback (GtkWidget *widget,
 					 gpointer   callback_data);
 
-static void timed_wait_cancel_callback (GtkObject *object, gpointer callback_data);
+static void timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data);
 
 
 static guint
@@ -109,17 +111,32 @@ add_label_to_dialog (GnomeDialog *dialog, const char *message)
 			    TRUE, TRUE, GNOME_PAD);
 }
 
+static void
+timed_wait_delayed_close_destroy_dialog_callback (GtkObject *object, gpointer callback_data)
+{
+	gtk_timeout_remove (GPOINTER_TO_UINT (callback_data));
+}
+
 static gboolean
-timed_wait_delayed_destroy_dialog_callback (gpointer callback_data)
-{	
+timed_wait_delayed_close_timeout_callback (gpointer callback_data)
+{
+	guint handler_id;
+
+	handler_id = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (callback_data), "delayed_close_handler_timeout_id"));
+	
+	gtk_signal_disconnect_by_func (GTK_OBJECT (callback_data),
+			    	       timed_wait_delayed_close_destroy_dialog_callback,
+			    	       GUINT_TO_POINTER (handler_id));
+			    	       
 	gtk_object_destroy (GTK_OBJECT (callback_data));
 
 	return FALSE;
 }
 
 static void
-timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
+timed_wait_free (TimedWait *wait)
 {
+	guint delayed_close_handler_id;
 	guint32 time_up;
 
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) != NULL);
@@ -135,20 +152,26 @@ timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
 		gtk_timeout_remove (wait->timeout_handler_id);
 	}
 	if (wait->dialog != NULL) {
-
 		/* Make sure to detach from the "destroy" signal, or we'll
-		 * double-free
+		 * double-free.
 		 */
-		 
 		gtk_signal_disconnect_by_func (GTK_OBJECT (wait->dialog),
-				    timed_wait_cancel_callback, wait);
+					       timed_wait_dialog_destroy_callback,
+					       wait);
 
-		/* compute time up in milliseconds
-		 */
+		/* compute time up in milliseconds */
 		time_up = (nautilus_get_system_time () - wait->dialog_creation_time) / 1000;
 		
-		if (do_min_time_up_test && time_up < TIMED_WAIT_MIN_TIME_UP) {
-			gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up, timed_wait_delayed_destroy_dialog_callback, wait->dialog);
+		if (time_up < TIMED_WAIT_MIN_TIME_UP) {
+			delayed_close_handler_id = gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up,
+			                                            timed_wait_delayed_close_timeout_callback,
+			                                            wait->dialog);
+			gtk_object_set_data (GTK_OBJECT (wait->dialog),
+					     "delayed_close_handler_timeout_id",
+					     GUINT_TO_POINTER (delayed_close_handler_id));
+			gtk_signal_connect (GTK_OBJECT (wait->dialog), "destroy",
+					    timed_wait_delayed_close_destroy_dialog_callback,
+					    GUINT_TO_POINTER (delayed_close_handler_id));
 		} else {
 			gtk_object_destroy (GTK_OBJECT (wait->dialog));
 		}
@@ -159,7 +182,7 @@ timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
 }
 
 static void
-timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
+timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data)
 {
 	TimedWait *wait;
 
@@ -167,11 +190,16 @@ timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
 
 	g_assert (GNOME_DIALOG (object) == wait->dialog);
 
+	wait->dialog = NULL;
+	
+	/* When there's no cancel_callback, the originator will/must
+	 * call nautilus_timed_wait_stop which will call timed_wait_free.
+	 */
+
 	if (wait->cancel_callback != NULL) {
 		(* wait->cancel_callback) (wait->callback_data);
+		timed_wait_free (wait);
 	}
-	
-	timed_wait_free (wait, FALSE);
 }
 
 static gboolean
@@ -179,13 +207,22 @@ timed_wait_callback (gpointer callback_data)
 {
 	TimedWait *wait;
 	GnomeDialog *dialog;
+	const char *button;
 
 	wait = callback_data;
 
 	/* Put up the timed wait window. */
-	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
-						 wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : NULL,
-						 NULL));
+	button = wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : GNOME_STOCK_BUTTON_OK;
+	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title, button, NULL));
+
+	/* The contents are often very small, causing tiny little
+	 * dialogs with their titles clipped if you just let gtk
+	 * sizing do its thing. This enforces a minimum width to
+	 * make it more likely that the title won't be clipped.
+	 */
+	gtk_widget_set_usize (GTK_WIDGET (dialog),
+			      TIMED_WAIT_MINIMUM_DIALOG_WIDTH,
+			      -1);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Nautilus");
 	add_label_to_dialog (dialog, wait->wait_message);
 	gnome_dialog_set_close (dialog, TRUE);
@@ -203,7 +240,7 @@ timed_wait_callback (gpointer callback_data)
 	 * to be called no matter how the dialog goes away.
 	 */
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    timed_wait_cancel_callback, wait);
+			    timed_wait_dialog_destroy_callback, wait);
 
 	wait->timeout_handler_id = 0;
 	wait->dialog = dialog;
@@ -243,8 +280,8 @@ nautilus_timed_wait_start_with_duration (int duration,
 
 	/* Put in the hash table so we can find it later. */
 	if (timed_wait_hash_table == NULL) {
-		timed_wait_hash_table = g_hash_table_new
-			(timed_wait_hash, timed_wait_hash_equal);
+		timed_wait_hash_table = nautilus_g_hash_table_new_free_at_exit
+			(timed_wait_hash, timed_wait_hash_equal, __FILE__ ": timed wait");
 	}
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
 	g_hash_table_insert (timed_wait_hash_table, wait, wait);
@@ -279,7 +316,7 @@ nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
 
 	g_return_if_fail (wait != NULL);
 
-	timed_wait_free (wait, TRUE);
+	timed_wait_free (wait);
 }
 
 static const char **
@@ -314,7 +351,7 @@ delete_event_callback (gpointer data,
 }
 
 int
-nautilus_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
+nautilus_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 			const char *text, const char *title, ...)
 {
 	va_list button_title_args;
@@ -347,7 +384,7 @@ nautilus_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 	/* Parent it if asked to. */
         if (parent != NULL) {
 		top_widget = gtk_widget_get_toplevel (parent);
-		if (GTK_IS_WINDOW (top_widget)) {
+		if (GTK_IS_WINDOW (top_widget) && !GTK_OBJECT_DESTROYED (top_widget)) {
 			gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
 		}
 	}
@@ -397,11 +434,11 @@ find_message_label_callback (GtkWidget *widget, gpointer callback_data)
 }
 
 static GnomeDialog *
-show_message_box (const char *message,
+create_message_box (const char *message,
 		  const char *dialog_title,
 		  const char *type,
-		  const char *button_one,
-		  const char *button_two,
+		  const char *button_0,
+		  const char *button_1,
 		  GtkWindow *parent)
 {  
 	GtkWidget *box;
@@ -409,7 +446,7 @@ show_message_box (const char *message,
 
 	g_assert (dialog_title != NULL);
 
-	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
+	box = gnome_message_box_new (message, type, button_0, button_1, NULL);
 	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
 	gtk_window_set_wmclass (GTK_WINDOW (box), "stock_dialog", "Nautilus");
 	
@@ -421,11 +458,27 @@ show_message_box (const char *message,
 	message_label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (box), "message label"));
 	gtk_label_set_line_wrap (message_label, TRUE);
 
-	if (parent != NULL) {
+	if (parent != NULL && !GTK_OBJECT_DESTROYED (parent)) {
 		gnome_dialog_set_parent (GNOME_DIALOG (box), parent);
 	}
-	gtk_widget_show (box);
 	return GNOME_DIALOG (box);
+}
+
+static GnomeDialog *
+show_message_box (const char *message,
+		  const char *dialog_title,
+		  const char *type,
+		  const char *button_0,
+		  const char *button_1,
+		  GtkWindow *parent)
+{
+	GnomeDialog *dialog;
+
+	dialog = create_message_box (message, dialog_title, type, 
+				     button_0, button_1, parent);  
+	gtk_widget_show (GTK_WIDGET (dialog));
+
+	return dialog;
 }
 
 static GnomeDialog *
@@ -438,46 +491,37 @@ show_ok_box (const char *message,
 }
 
 GnomeDialog *
-nautilus_info_dialog (const char *info,
-	 	      const char *dialog_title,
-		      GtkWindow *parent)
+nautilus_create_info_dialog (const char *info,
+			     const char *dialog_title,
+			     GtkWindow *parent)
+{
+	return create_message_box (info, dialog_title, 
+				   GNOME_MESSAGE_BOX_INFO,
+				   GNOME_STOCK_BUTTON_OK, NULL, parent);
+				     
+}
+
+GnomeDialog *
+nautilus_show_info_dialog (const char *info,
+	 	      	   const char *dialog_title,
+		      	   GtkWindow *parent)
 {
 	return show_ok_box (info, 
 			    dialog_title == NULL ? _("Info") : dialog_title, 
 			    GNOME_MESSAGE_BOX_INFO, parent);
 }
 
-GnomeDialog *
-nautilus_warning_dialog (const char *warning,
-	 	      	 const char *dialog_title,
-			 GtkWindow *parent)
-{
-	return show_ok_box (warning, 
-			    dialog_title == NULL ? _("Warning") : dialog_title, 
-			    GNOME_MESSAGE_BOX_WARNING, parent);
-}
-
-GnomeDialog *
-nautilus_error_dialog (const char *error,
-	 	       const char *dialog_title,
-		       GtkWindow *parent)
-{
-	return show_ok_box (error,
-			    dialog_title == NULL ? _("Error") : dialog_title, 
-			    GNOME_MESSAGE_BOX_ERROR, parent);
-}
-
 static void
-clicked_callback (GnomeDialog *dialog,
-		  int button_number,
-		  const char *detailed_error_message)
+details_dialog_clicked_callback (GnomeDialog *dialog,
+				 int button_number,
+				 const char *detailed_message)
 {
 	GtkLabel *label;
 
 	switch (button_number) {
 	case 0: /* Details */
 		label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (dialog), "message label"));
-		gtk_label_set_text (label, detailed_error_message);
+		gtk_label_set_text (label, detailed_message);
 		gtk_widget_hide (GTK_WIDGET (nautilus_gnome_dialog_get_button_by_index (dialog, 0)));
 		break;
 	case 1: /* OK */
@@ -486,11 +530,62 @@ clicked_callback (GnomeDialog *dialog,
 	}
 }
 
+
 GnomeDialog *
-nautilus_error_dialog_with_details (const char *error_message,
-				    const char *dialog_title,
-				    const char *detailed_error_message,
-				    GtkWindow *parent)
+nautilus_show_info_dialog_with_details (const char *info,
+					const char *dialog_title,
+					const char *detailed_info,
+					GtkWindow *parent)
+{
+	GnomeDialog *dialog;
+
+	if (detailed_info == NULL
+	    || strcmp (info, detailed_info) == 0) {
+		return nautilus_show_info_dialog (info, dialog_title, parent);
+	}
+
+	dialog = show_message_box (info, 
+				   dialog_title == NULL ? _("Info") : dialog_title, 
+				   GNOME_MESSAGE_BOX_INFO, 
+				   _("Details"), GNOME_STOCK_BUTTON_OK, parent);
+
+	gnome_dialog_set_close (dialog, FALSE);
+	gtk_signal_connect_full (GTK_OBJECT (dialog), "clicked",
+				 details_dialog_clicked_callback, NULL, g_strdup (detailed_info),
+				 g_free, FALSE, FALSE);
+
+	return dialog;
+
+}
+
+
+GnomeDialog *
+nautilus_show_warning_dialog (const char *warning,
+	 	      	      const char *dialog_title,
+			      GtkWindow *parent)
+{
+	return show_ok_box (warning, 
+			    dialog_title == NULL ? _("Warning") : dialog_title, 
+			    GNOME_MESSAGE_BOX_WARNING, parent);
+}
+
+
+GnomeDialog *
+nautilus_show_error_dialog (const char *error,
+	 	       	    const char *dialog_title,
+		       	    GtkWindow *parent)
+{
+	return show_ok_box (error,
+			    dialog_title == NULL ? _("Error") : dialog_title, 
+			    GNOME_MESSAGE_BOX_ERROR, parent);
+}
+
+
+GnomeDialog *
+nautilus_show_error_dialog_with_details (const char *error_message,
+				    	 const char *dialog_title,
+				    	 const char *detailed_error_message,
+				    	 GtkWindow *parent)
 {
 	GnomeDialog *dialog;
 
@@ -499,7 +594,7 @@ nautilus_error_dialog_with_details (const char *error_message,
 
 	if (detailed_error_message == NULL
 	    || strcmp (error_message, detailed_error_message) == 0) {
-		return nautilus_error_dialog (error_message, dialog_title, parent);
+		return nautilus_show_error_dialog (error_message, dialog_title, parent);
 	}
 
 	dialog = show_message_box (error_message, 
@@ -510,29 +605,30 @@ nautilus_error_dialog_with_details (const char *error_message,
 	/* Show the details when you click on the details button. */
 	gnome_dialog_set_close (dialog, FALSE);
 	gtk_signal_connect_full (GTK_OBJECT (dialog), "clicked",
-				 clicked_callback, NULL, g_strdup (detailed_error_message),
+				 details_dialog_clicked_callback, NULL, g_strdup (detailed_error_message),
 				 g_free, FALSE, FALSE);
 
 	return dialog;
 }
 
 /**
- * nautilus_yes_no_dialog:
+ * nautilus_show_yes_no_dialog:
  * 
- * Create a dialog asking a question with two choices.
+ * Create and show a dialog asking a question with two choices.
  * The caller needs to set up any necessary callbacks 
- * for the buttons.
+ * for the buttons. Use nautilus_create_question_dialog instead
+ * if any visual changes need to be made, to avoid flashiness.
  * @question: The text of the question.
  * @yes_label: The label of the "yes" button.
  * @no_label: The label of the "no" button.
  * @parent: The parent window for this dialog.
  */
 GnomeDialog *
-nautilus_yes_no_dialog (const char *question, 
-		    	const char *dialog_title,
-			const char *yes_label,
-			const char *no_label,
-			GtkWindow *parent)
+nautilus_show_yes_no_dialog (const char *question, 
+		    	     const char *dialog_title,
+			     const char *yes_label,
+			     const char *no_label,
+			     GtkWindow *parent)
 {
 	return show_message_box (question,
 				 dialog_title == NULL ? _("Question") : dialog_title, 
@@ -541,3 +637,31 @@ nautilus_yes_no_dialog (const char *question,
 				 no_label,
 				 parent);
 }
+
+/**
+ * nautilus_create_question_dialog:
+ * 
+ * Create a dialog asking a question with at least two choices.
+ * The caller needs to set up any necessary callbacks 
+ * for the buttons. The dialog is not yet shown, so that the
+ * caller can add additional buttons or make other visual changes
+ * without causing flashiness.
+ * @question: The text of the question.
+ * @answer_0: The label of the leftmost button (index 0)
+ * @answer_1: The label of the 2nd-to-leftmost button (index 1)
+ * @parent: The parent window for this dialog.
+ */
+GnomeDialog *
+nautilus_create_question_dialog (const char *question,
+				 const char *dialog_title,
+				 const char *answer_0,
+				 const char *answer_1,
+				 GtkWindow *parent)
+{
+	return create_message_box (question,
+				   dialog_title == NULL ? _("Question") : dialog_title, 
+				   GNOME_MESSAGE_BOX_QUESTION,
+				   answer_0,
+				   answer_1,
+				   parent);
+}				 

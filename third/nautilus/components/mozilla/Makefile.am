@@ -1,10 +1,12 @@
 include $(top_srcdir)/Makefile.shared
 
 INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
+	$(MOZILLA_PROFILES_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(BONOBO_CFLAGS) \
@@ -20,22 +22,29 @@ bin_PROGRAMS =\
 	$(NULL)
 
 nautilus_mozilla_content_view_SOURCES = \
+	bonobo-extensions.c \
 	main.c \
 	mozilla-components.cpp \
 	mozilla-events.cpp \
 	mozilla-preferences.cpp \
 	nautilus-mozilla-content-view.c \
+	nautilus-mozilla-embed-extensions.cpp \
+	nautilus-mozilla-encoding-tables.c \
 	$(NULL)
 
 noinst_HEADERS =\
+	bonobo-extensions.h \
 	mozilla-components.h \
 	mozilla-events.h \
 	mozilla-preferences.h \
 	nautilus-mozilla-content-view.h \
+	nautilus-mozilla-embed-extensions.h \
+	nautilus-mozilla-encoding-tables.h \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(BONOBO_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
@@ -67,12 +76,3 @@ ui_DATA =					\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(oaf_in_files)
-
-
-
-
-
-
-
-
-

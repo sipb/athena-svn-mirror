@@ -43,10 +43,16 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
+#undef NAUTILUS_BUILD_MESSAGE
 #undef EAZEL_BUILD_TIMESTAMP
 #undef EAZEL_SERVICES
 #undef ENABLE_NLS
 #undef ENABLE_PROFILER
+#undef ENABLE_INSTALLER
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
@@ -56,6 +62,7 @@
 #undef HAVE_RPM_30
 #undef HAVE_RPM_40
 #undef HAVE_STPCPY
+#undef HAVE_LIBBZ2
 #undef bzCompress
 #undef bzCompressInit
 #undef bzDecompress
@@ -67,6 +74,12 @@
 #undef bzopen
 #undef bzread
 #undef bzwrite
+#undef HAVE_DEV
+#undef HAVE_VOL_DEV
+#undef HAVE_VOL
+#undef HAVE_ETC_MNTTAB
+#undef HAVE_PROC_MOUNTS
+#undef HAVE_PROC_PROCESS_FILES
 
 /* Define if you have the __argz_count function.  */
 #undef HAVE___ARGZ_COUNT
@@ -134,11 +147,17 @@
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
+/* Define if you have the <mntent.h> header file.  */
+#undef HAVE_MNTENT_H
+
 /* Define if you have the <nl_types.h> header file.  */
 #undef HAVE_NL_TYPES_H
 
 /* Define if you have the <string.h> header file.  */
 #undef HAVE_STRING_H
+
+/* Define if you have the <sys/cdio.h> header file.  */
+#undef HAVE_SYS_CDIO_H
 
 /* Define if you have the <sys/mnttab.h> header file.  */
 #undef HAVE_SYS_MNTTAB_H

@@ -2,6 +2,7 @@ NULL =
 
 bin_PROGRAMS = trilobite-inventory-service eazel-inventory-client
 
+
 lib_LTLIBRARIES = libtrilobite-inventory-service.la
 
 INCLUDES =								\
@@ -32,6 +33,10 @@ trilobite_inventory_service_SOURCES =		\
 	eazel-inventory-service.c		\
 	eazel-inventory-utils.h			\
 	eazel-inventory-utils.c			\
+	eazel-inventory-collect-hardware.h	\
+	eazel-inventory-collect-hardware.c	\
+	eazel-inventory-collect-software.h	\
+	eazel-inventory-collect-software.c	\
 	main.c					\
 	$(NULL)
 
@@ -88,7 +93,11 @@ trilobiteinclude_HEADERS =			\
 	$(NULL)
 
 libtrilobite_inventory_service_la_SOURCES =	\
-	$(CORBA_GENERATED)	\
+	$(CORBA_GENERATED)			\
+	eazel-inventory.c			\
+	eazel-inventory.h			\
+	eazel-inventory-upload-callback.c	\
+	eazel-inventory-upload-callback.h	\
 	$(NULL)
 
 

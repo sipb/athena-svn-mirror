@@ -31,8 +31,10 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libgnome/gnome-i18n.h>
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtkmain.h>
@@ -41,6 +43,8 @@
 #include "nautilus-link.h"
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
+
+#define NAUTILUS_COMMAND_SPECIFIER "command:"
 
 void
 nautilus_drag_init (NautilusDragInfo *drag_info,
@@ -188,6 +192,7 @@ gboolean
 nautilus_drag_items_local (const char *target_uri_string, const GList *selection_list)
 {
 	/* check if the first item on the list has target_uri_string as a parent
+	 * FIXME:
 	 * we should really test each item but that would be slow for large selections
 	 * and currently dropped items can only be from the same container
 	 */
@@ -210,6 +215,17 @@ nautilus_drag_items_local (const char *target_uri_string, const GList *selection
 	gnome_vfs_uri_unref (target_uri);
 	
 	return result;
+}
+
+gboolean
+nautilus_drag_items_in_trash (const GList *selection_list)
+{
+	/* check if the first item on the list is in trash.
+	 * FIXME:
+	 * we should really test each item but that would be slow for large selections
+	 * and currently dropped items can only be from the same container
+	 */
+	return nautilus_uri_is_in_trash (((DragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean
@@ -306,8 +322,24 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*non_default_action = 0;
 			return;
 		}
+
+		/* Only move to Trash */
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_MOVE;
+		return;
+
+	} else if (nautilus_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)) {
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_MOVE;
+		return;
 	} else {
 		target_uri = gnome_vfs_uri_new (target_uri_string);
+	}
+
+	if (target_uri == NULL) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
 	}
 
 	/* Compare the first dropped uri with the target uri for same fs match. */
@@ -355,13 +387,19 @@ add_one_uri_list (const char *uri, int x, int y, int w, int h,
 	g_string_append (result, "\r\n");
 }
 
-/* Encode a "_NETSCAPE_URL_" selection.  */
+/* Encode a "_NETSCAPE_URL_" selection.
+ * As far as I can tell, Netscape is expecting a single
+ * URL to be returned.  I cannot discover a way to construct
+ * a list to be returned that Netscape can understand.
+ * GMC also fails to do this as well.
+ */
 static void
-add_one_url_list (const char *url, int x, int y, int w, int h, gpointer data)
+add_one_netscape_url_list (const char *url, int x, int y, int w, int h, gpointer data)
 {
-	GString *result = (GString *)data;	
-	g_string_append (result, url);
-	g_string_append (result, "\n");
+	GString *result = (GString *)data;
+	if (result->len == 0) {
+		g_string_append (result, url);
+	}
 }
 
 /* Encode a "text/path" selection.  */
@@ -369,27 +407,17 @@ static void
 add_one_path_list (const char *uri, int x, int y, int w, int h, gpointer data)
 {
 	GString *result = (GString *)data;
-	const char *path, *scheme;
-	GnomeVFSURI *vfs_uri;
+	char *local_path;
 	
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
+	g_return_if_fail (uri != NULL);
+
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
+	if (local_path == NULL)
 		return;
-	}
-	
-	/* Only accept the file scheme */
-	scheme = gnome_vfs_uri_get_scheme (vfs_uri);
-	if (strncmp (scheme, "file", strlen ("file") != 0)) {
-		gnome_vfs_uri_unref (vfs_uri);
-		return;
-	}
-	
-	path = gnome_vfs_uri_get_path (vfs_uri);
-	
-	g_string_append (result, path);
-	g_string_append (result, " ");
-	
-	gnome_vfs_uri_unref (vfs_uri);
+		
+	g_string_append (result, local_path);
+	g_string_append (result, "\r\n");
+	g_free (local_path);
 }
 
 
@@ -406,7 +434,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 			     NautilusDragEachSelectedItemIterator each_selected_item_iterator)
 {
 	GString *result;
-
+		
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		result = g_string_new (NULL);
@@ -425,7 +453,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 		
 	case NAUTILUS_ICON_DND_URL:
 		result = g_string_new (NULL);
-		each_selected_item_iterator (add_one_url_list, container_context, result);
+		each_selected_item_iterator (add_one_netscape_url_list, container_context, result);
 		break;
 		
 	default:
@@ -458,11 +486,11 @@ nautilus_drag_modifier_based_action (int default_action, int non_default_action)
 
 /* The menu of DnD actions */
 static GnomeUIInfo menu_items[] = {
-	GNOMEUIINFO_ITEM_NONE ("_Move here", NULL, NULL),
-	GNOMEUIINFO_ITEM_NONE ("_Copy here", NULL, NULL),
-	GNOMEUIINFO_ITEM_NONE ("_Link here", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Move here"), NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Copy here"), NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Link here"), NULL, NULL),
 	GNOMEUIINFO_SEPARATOR,
-	GNOMEUIINFO_ITEM_NONE ("Cancel", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("Cancel"), NULL, NULL),
 	GNOMEUIINFO_END
 };
 

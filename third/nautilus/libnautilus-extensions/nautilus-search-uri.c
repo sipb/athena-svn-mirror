@@ -27,18 +27,18 @@
 /* Must be included before other libgnome headers. */
 #include <libgnome/gnome-defs.h>
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-static const char *       strip_uri_beginning         (const char *location_uri);
-static GSList *           tokenize_uri                (const char *string);
-static char *             get_translated_criterion    (const GSList *criterion);
-static char *             get_first_criterion_prefix  (GSList *criterion);
-static char *             get_nth_criterion_prefix    (GSList *criterion);
-static char *             parse_uri                   (const char *search_uri);
-static void               free_tokenized_uri          (GSList *list);
+static const char *strip_uri_beginning      (const char *location_uri);
+static GList *     tokenize_uri             (const char *string);
+static char *      get_translated_criterion (GList      *criterion);
+static char *      get_nth_criterion_prefix (GList      *criterion);
+static char *      parse_uri                (const char *search_uri);
+static void        free_tokenized_uri       (GList      *list);
 
 /**
  * strip_uri_beginning:
@@ -80,22 +80,14 @@ strip_uri_beginning (const char *location_uri)
  *
  */
 static void
-free_tokenized_uri (GSList *list)
+free_tokenized_uri (GList *list)
 {
-        GSList *temp_list;
+        GList *node;
 
-        for (temp_list = list; temp_list != NULL; temp_list = temp_list->next) {
-                GSList *inner_list, *temp_inner_list;
-                
-                inner_list = (GSList *)temp_list->data;
-                for (temp_inner_list = inner_list; temp_inner_list != NULL; 
-                     temp_inner_list = temp_inner_list->next) {
-                        g_free ((char *)temp_inner_list->data);
-                }
-                
-                g_slist_free (inner_list);
+        for (node = list; node != NULL; node = node->next) {
+                nautilus_g_list_free_deep (node->data);
         }
-        g_slist_free (list);
+        g_list_free (list);
 }
 
 
@@ -111,12 +103,12 @@ free_tokenized_uri (GSList *list)
  *               each criterin sinlgly linked list is made of the different tokens
  *               of the criterion.
  */
-static GSList *
+static GList *
 tokenize_uri (const char *string) 
 {
         const char *temp_string;
         char **criteria;
-        GSList *criterion_list;
+        GList *criterion_list;
         int i, j;
 
         if (string == NULL) {
@@ -144,16 +136,16 @@ tokenize_uri (const char *string)
              i++, temp_string = criteria[i]) {
                 char **tokens;
                 char *token;
-                GSList *token_list;
+                GList *token_list;
 
                 /* split a criterion in different tokens */
                 token_list = NULL;
                 tokens = g_strsplit (temp_string, " ", 2);
                 for (j = 0, token = tokens[0]; token != NULL; j++, token = tokens[j]) {
                         /* g_strstrip does not return a newly allocated string. */
-                        token_list = g_slist_append (token_list, g_strdup(g_strstrip (token)));
+                        token_list = g_list_append (token_list, g_strdup (g_strstrip (token)));
                 }
-                criterion_list = g_slist_append (criterion_list, token_list);
+                criterion_list = g_list_append (criterion_list, token_list);
                 g_strfreev (tokens);
         }
         g_strfreev (criteria);
@@ -173,7 +165,13 @@ typedef field_criterion_item *field_criterion_table;
 /* toplevel structure each entry points to a level 2 structure */
 struct _field_criterion_item {
 	char *id;
-        char *prefix;
+        /* FIXME: This field is necessary so that
+           the size of this structure is the same
+           as the size of the other structures.
+           see the comment in the definition of "value_criterion_item"
+           to see what I mean.  Yay, evil! 
+           someone should make this go away. */
+        char *unused_field_for_hack_compatibility;
 	operand_criterion_table items;
 };
 /* second level structure. if items is NULL, the entry is a leaf
@@ -202,35 +200,39 @@ struct _value_criterion_item {
 
 static operand_criterion_item file_name2_table [] = {
         {"contains",  
-         /* Part of a window title for search results: a
-            description of the set of files that contains a string */
-         N_("containing \"%s\" in their names"),
+         /* Human readable description for a criterion in a search for
+            files. Bracketed items are context, and are message
+            strings elsewhere.  You don't have to translate the whole
+            string, and only the translation for "containing '%s' will
+            be used.  If you do translate the whole string, leave the
+            translations of the rest of the text in brackets, so it
+            will not be used.  
+            "%s" here is a pattern the file name
+            matched, such as "nautilus" */
+         N_("[Items ]containing \"%s\" in their names"),
          NULL},
         {"starts_with",
-         /* Part of a window title for search results: a
-            description of the set of files that start with a string */
-         N_("starting with \"%s\""),
+         /* "%s" here is a pattern the file name started with, such as
+            "nautilus" */
+         N_("[Items ]starting with \"%s\""),
          NULL},
         {"ends_with",
-         /* Part of a window title for search results: a
-            description of the set of files that end with a string */
-         N_("ending with %s"),
+         /* "%s" here is a pattern the file name ended with, such as
+            "mime" */
+         N_("[Items ]ending with %s"),
          NULL},
         {"does_not_contain",
-         /* Part of a window title for search results: a
-            description of the set of files that end with a string */
-         N_("containing \"%s\" in their names"),
+         /* "%s" here is a pattern the file name did not match, such
+            as "nautilus" */
+         N_("[Items ]not containing \"%s\" in their names"),
          NULL},
         {"regexp_matches",
-         /* Part of a window title for search results: a
-            description of the set of files that match a regular
-            expression */
-         N_("matching the regular expression \"%s\""),
+         /* "%s" is a regular expression string, for example "[abc]" */
+         N_("[Items ]matching the regular expression \"%s\""),
          NULL},
         {"matches",
-         /* Part of a window title for search results: a
-            description of the set of files that match a glob pattern */
-         N_("matching the file pattern \"%s\""),
+         /* "%s" is a file glob, for example "*.txt" */
+         N_("[Items ]matching the file pattern \"%s\""),
          NULL},
         {NULL, NULL, NULL}
         
@@ -243,52 +245,34 @@ static operand_criterion_item file_name2_table [] = {
 */
 static value_criterion_item file_type_options3_table [] = {
         {"file",
-         /* Part of a window title for search results: a
-            description of the set of files that are not directories,
-            sockets, etc. */
-         N_("regular files"),
+         N_("[Items that are ]regular files"),
          NULL},
         {"text_file",
-         /* Part of a window title for search results: a
-            description of the set of files that are stored as plain
-            text */
-         N_("text files"),
+         N_("[Items that are ]text files"),
          NULL},
         {"application",
-         /* Part of a window title for search results: a
-            description of the set of files that are binary files or
-            applications you can run */
-         N_("applications"),
+         N_("[Items that are ]applications"),
          NULL},
         {"directory",
-         /* Part of a window title for search results: a
-            description of the set of items that are folders
-            (directories) */
-         N_("folders"),
+         N_("[Items that are ]folders"),
          NULL},
         {"music",
-         /* Part of a window title for search results: a
-            description of the set of items that are music files
-            (mp3s, wavs) */
-         N_("music"),
+         N_("[Items that are ]music"),
          NULL},
         {NULL, NULL, NULL}
 };
 static operand_criterion_item file_type2_table [] = {
         {"is_not",  
-         /* Part of a window title for search results: way of
-            describing the fact that files are not of a certain type
-            (folder, music, etc).  Context is "files that are [folder,
-            music]" */
-         N_("that are %s"),
+         /* "%s" here is a word describing a file type, for example
+            "folder" */
+         N_("[Items ]that are not %s"),
          file_type_options3_table},
-        {"is", 
-         /* Part of a window title for search results: way of
-            describing the fact that files are of a certain type
-            (folder, music, etc).  Context is "files that are not
-            [folder, music]" */
-         N_("that are %s"),
+        {"is",
+         /* "%s" here is a word describing a file type, for example
+            "folder" */
+         N_("[Items ]that are %s"),
          file_type_options3_table},
+        {NULL, NULL, NULL}
 };
 	
 
@@ -298,29 +282,20 @@ static operand_criterion_item file_type2_table [] = {
 */
 static operand_criterion_item owner2_table [] = {
         {"is_not",
-         /* Part of a window title for search results: way of
-            describing the fact that files are not owned by someone,
-            Context is files not ownd by xxx */
-         N_("not owned by \"%s\""),
+         /* "%s" here is the name of user on a Linux machine, such as
+            "root" */
+         N_("[Items ]not owned by \"%s\""),
          NULL},
         {"is",
-         /* Part of a window title for search results: way of
-            describing the fact that files are owned by someone.
-            Context is files owned by root */
-         N_("owned by \"%s\""),
+         /* "%s" here is the name of user on a Linux machine, such as
+            "root" */
+         N_("[Items ]owned by \"%s\""),
          NULL},
         {"has_uid",
-         /* Part of a window title for search results: way of
-            describing the fact that files have a specific owner uid.
-            Context is "files with owner UID xx" */
-         N_("with owner UID \"%s\""),
+         N_("[Items ]with owner UID \"%s\""),
          NULL},
         {"does_not_have_uid",
-         /* Part of a window title for search results: way of
-            describing the fact that files have a specific owner uid
-            other than this one.  Context is "files with owner uid
-            other than xx" */
-         N_("with owner UID other than \"%s\""),
+         N_("[Items ]with owner UID other than \"%s\""),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -331,22 +306,13 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
-         /* Part of a window title for search results: way of
-            describing that the files are larger than a certain size.
-            Context is "files larger than %s bytes" */
-         N_("larger than %s bytes"),
+         N_("[Items ]larger than %s bytes"),
          NULL},
         {"smaller_than",
-         /* Part of a window title for search results: way of
-            describing that the files are larger than a certain size.
-            Context is "files smaller than %s bytes" */
-         N_("smaller than %s bytes"),
+         N_("[Items ]smaller than %s bytes"),
          NULL},
         {"is",
-         /* Part of a window title for search results: way of
-            describing that the files are larger than a certain size.
-            Context is "files of %s bytes" */
-         N_("of %s bytes"),
+         N_("[Items ]of %s bytes"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -357,58 +323,27 @@ static operand_criterion_item size2_table [] = {
 */
 static operand_criterion_item mod_time2_table [] = {
         {"is today", 
-         /* Part of a window title for search results: way of
-            describing that the files were modified since midnight of
-            the current day.  Context is "files modified today" */
-         N_("modified today"), 
+         N_("[Items ]modified today"), 
          NULL},
         {"is yesterday",
-         /* Part of a window title for search results: way of
-            describing that the files were modified since midnight of
-            the previous day.  Context is "files modified yesterday" */
-         N_("modified yesterday"),
+         N_("[Items ]modified yesterday"),
          NULL},
         {"is",
-         /* Part of a window title for search results: way of
-            describing that the files were modified since midnight of
-            the date that will replace the %s.  Context is "files
-            modified on 11/20/00" */
-         N_("modified on %s"),
-         NULL},
+         N_("[Items ]modified on %s"), NULL},
         {"is_not", 
-         /* Part of a window title for search results: way of
-            describing that the files were not modified since midnight
-            of the date that will replace the %s.  Context is "files
-            not modified on 11/20/00" */
-         N_("not modified on %s"), 
+         N_("[Items ]not modified on %s"), 
          NULL},
         {"is_before",
-         /* Part of a window title for search results: way of
-            describing that the files were not modified since midnight
-            of the date that will replace the %s. Context is "files
-            modified before 11/20/00" */
-         N_("modified before %s"),
+         N_("[Items ]modified before %s"),
          NULL},
         {"is_after",
-         /* Part of a window title for search results: way of
-            describing that the files were modified after midnight of
-            the date field that will replace the %s.  Context is
-            "files modified after 11/20/00" */
-         N_("modified after %s"),
+         N_("[Items ]modified after %s"),
          NULL},
         {"is_within_a_week_of",
-         /* Part of a window title for search results: way of
-            describing that the files were modified within a week of 
-            the date field that will replace the %s.  Context is
-            "files within a week of 11/20/00" */
-         N_("modified within a week of %s"),
+         N_("[Items ]modified within a week of %s"),
          NULL},
         {"is_within_a_month_of",
-         /* Part of a window title for search results: way of
-            describing that the files were modified within a week of 
-            the date field that will replace the %s.  Context is
-            "files within a month of 11/20/00" */
-         N_("modified within a month of %s"),
+         N_("[Items ]modified within a month of %s"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -420,18 +355,12 @@ static operand_criterion_item mod_time2_table [] = {
 
 static operand_criterion_item emblem2_table [] = {
         { "include",
-         /* Part of a window title for search results: way of
-            describing that the files have emblems attached that include
-            the one that will replace the %s.  Context is "files
-            marked with Important" */
-          N_("marked with \"%s\""),
+          /* "%s" here is the name of an Emblem */
+          N_("[Items ]marked with \"%s\""),
           NULL},
         { "do_not_include",
-         /* Part of a window title for search results: way of
-            describing that the files have emblems attached that don't
-            include the one that will replace the %s.  Context is
-            "files not marked with Important" */
-          N_("not marked with \"%s\""),
+          /* "%s" here is the name of an Emblem */
+          N_("[Items ]not marked with \"%s\""),
           NULL},
         {NULL, NULL, NULL}
 };
@@ -445,32 +374,24 @@ static operand_criterion_item emblem2_table [] = {
 
 static operand_criterion_item contains2_table [] = {
         {"includes_all_of",
-         /* Part of a window title for search results: way of
-            describing that the (text) files searched for contain the
-            word or words that will replace the %s.  Context is "files
-            with all the word "bob frank" */
-         N_("with all the words \"%s\""),
+         /* "%s" here is a word or words present in the file, for
+            example "nautilus" or "apple orange" */
+         N_("[Items ]with all the words \"%s\""),
          NULL},
         {"includes_any_of",
-         /* Part of a window title for search results: way of
-            describing that the (text) files searched for contain the
-            word or one or more of the words that will replace the %s.
-            Context is "files containing one of the words "bob frank" */
-         N_("containing one of the words \"%s\""),
+         /* "%s" here is a word or words present in the file, for
+            example "nautilus" or "apple orange" */
+         N_("[Items ]containing one of the words \"%s\""),
          NULL},
         {"does_not_include_all_of",
-         /* Part of a window title for search results: way of
-            describing that the (text) files searched for don't
-            contain the word or all of the words that will replace the
-            %s.  Context is "files without all the word "bob frank" */
-         N_("without all the words \"%s\""),
+         /* "%s" here is a word or words present in the file, for
+            example "nautilus" or "apple orange" */
+         N_("[Items ]without all the words \"%s\""),
          NULL},
         {"does_not_include_any_of",
-         /* Part of a window title for search results: way of
-            describing that the (text) files searched for contain none of 
-            the word or words that will replace the %s.  Context is "files
-            with none of the words "bob frank" */
-         N_("without any of the words \"%s\""),
+         /* "%s" here is a word or words present in the file, for
+            example "nautilus" or "apple orange" */
+         N_("[Items ]without any of the words \"%s\""),
          NULL},
         {NULL, NULL, NULL},
 };
@@ -480,63 +401,29 @@ static operand_criterion_item contains2_table [] = {
 /* -------------------------------------------------------
    -       main table                                    -
    ------------------------------------------------------- */
-
 static field_criterion_item main_table[] = {
         {"file_name",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the file
-            name attribute matched.  Context is after "files" and
-            before the translation for "containing xx in the name" */
-         N_(""),
+         NULL,
          file_name2_table},
         {"file_type",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the file
-            type attribute matched.  Context is after "files" and
-            before the translation for "that are music" */
-         N_(""),
+         NULL,
          file_type2_table},
         {"owner",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the
-            properties of the file's owner that the search matched.
-            Context is after "files" and before the translation for
-            "owned by xx" */
-         N_(""),
+         NULL,
          owner2_table},
         {"size",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the
-            properties of the file's size that the search matched.
-            Context is after "files" and before the translation for
-            "larger than 500 bytes" */
-         N_(""),
+         NULL,
          size2_table},
         {"content",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the
-            properties of the file's content that the search matched.
-            Context is after "files" and before the translation for
-            "containing all the words" */
-         N_(""),
+         NULL,
          contains2_table},
         {"modified",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the
-            properties of the file's modification date that the search
-            matched.  Context is after "files" and before the
-            translation for "modified today" */
-         N_(""),
+         NULL,
          mod_time2_table},
         {"keywords",
-         /* Part of a window title for search results: Optional
-            preposition that precedes the clause describing the
-            properties of the file's attached emblems that the search
-            matched.  Context is after "files" and before the
-            translation for "marked with Important" */
-         N_(""),
+         NULL,
          emblem2_table},
-        {NULL, NULL, NULL}
+        {NULL, NULL}
 };
 
 
@@ -575,16 +462,17 @@ get_item_number (field_criterion_item *current_table, char *item)
  * Returns a translated string for a given criterion uri.
  */
 static char *
-get_translated_criterion (const GSList *criterion)
+get_translated_criterion (GList *criterion)
 {
-
+        
         int item_number, value_item_number;
         operand_criterion_item *operand_table;
         value_criterion_item *value_table;
         char *ret_val;
+        char *context_stripped_operand, *context_stripped_value;
 
         /* make sure we got a valid criterion */
-        if (g_slist_length ((GSList *) criterion) != 3) {
+        if (g_list_length (criterion) != 3) {
                 return NULL;
         }
 
@@ -605,7 +493,7 @@ get_translated_criterion (const GSList *criterion)
         }
         value_table = operand_table[item_number].items;
         criterion = criterion->next;
-
+        
         /* get through value criterion structure.
            The fun begins NOW. */
         
@@ -615,12 +503,14 @@ get_translated_criterion (const GSList *criterion)
                    we output a concat of the translation and the 
                    last part of the uri.
                 */
-                ret_val = g_strdup_printf (_(operand_table[item_number].translation), 
+                context_stripped_operand = nautilus_str_remove_bracketed_text (_(operand_table[item_number].translation));
+                ret_val = g_strdup_printf (context_stripped_operand,
 					   (char *) criterion->data);
+                g_free (context_stripped_operand);
                 return ret_val;
         } else if (value_table != NULL) {
                 /* get through level 3 structure */
-
+                
                 value_item_number = get_item_number ((field_criterion_item *) value_table, 
                                                      (char *) criterion->data);
                 if (value_item_number == -1) {
@@ -629,56 +519,46 @@ get_translated_criterion (const GSList *criterion)
 
                 if (operand_table[item_number].translation == NULL) {
                         /* if we had no translation in operand criterion table */
-                        ret_val = g_strdup (_(value_table[value_item_number].translation));
+                        ret_val = nautilus_str_remove_bracketed_text (_(value_table[value_item_number].translation));
                 } else {
                         /* if we have both some translation in level 2 and level 3 */
-                        ret_val = g_strdup_printf (_(operand_table[item_number].translation), 
-                                                   _(value_table[value_item_number].translation));
+                        context_stripped_operand = nautilus_str_remove_bracketed_text (_(operand_table[item_number].translation));
+                        context_stripped_value = nautilus_str_remove_bracketed_text (_(value_table[value_item_number].translation));
+                        ret_val = g_strdup_printf (context_stripped_operand, context_stripped_value);
+                        g_free (context_stripped_operand);
+                        g_free (context_stripped_value);
                 }
                 return ret_val;
         }
-
-        return g_strdup (_("are folders"));
+        
+        return g_strdup ("");
 }
 
-/**
- * get_first_criterion_prefix:
- * @criterion: The GSList whose data field points to the criterion GSList.
- *
- * calculates the prefix for a given criterion */
-static char *
-get_first_criterion_prefix (GSList *criterion) 
-{
-        GSList *criterion_list;
-        char *criterion_type;
-        int item_number;
-        
-        criterion_list = (GSList *) criterion->data;
-        criterion_type = (char *) criterion_list->data;
-        
-
-        item_number = get_item_number (main_table, criterion_type);
-
-        return g_strdup (_(main_table[item_number].prefix));
-}
 
 /**
  * get_nth_criterion_prefix:
- * @criterion: The GSList whose data field points to the criterion GSList.
+ * @criterion: The GList whose data field points to the criterion GList.
  *
  * calculates the "," or "and" prefix for any criterion.
  *
  * return value: the translated prefix.
  */
 static char *
-get_nth_criterion_prefix (GSList *criterion)
+get_nth_criterion_prefix (GList *criterion)
 {
         /* if we are the last criterion, put it here. */
 
+         /* Human readable description for a criterion in a search for
+            files. Bracketed items are context, and are message
+            strings elsewhere.  Translate only the words "and" here. */
         if (criterion->next == NULL) {
-                return g_strdup (_(" and "));
+                
+                return nautilus_str_remove_bracketed_text (_("[Items larger than 400K] and [without all the words \"apple orange\"]"));
         }
-        return g_strdup (", ");
+        /* Human readable description for a criterion in a search for
+           files. Bracketed items are context, and are message
+           strings elsewhere.  Translate only the words "and" here. */
+        return nautilus_str_remove_bracketed_text (_("[Items larger than 400K], [owned by root and without all the words \"apple orange\"]"));
 }
 
 /**
@@ -690,7 +570,7 @@ get_nth_criterion_prefix (GSList *criterion)
 static char *
 parse_uri (const char *search_uri)
 {
-        GSList *criteria, *criterion;
+        GList *criteria, *criterion;
         char *translated_criterion, *translated_prefix;
         char *ret_val, *temp;
         
@@ -700,25 +580,21 @@ parse_uri (const char *search_uri)
         }
 
         /* processes the first criterion and add the necessary "whose" prefix */
-        translated_criterion = get_translated_criterion ((GSList *)criteria->data);
+        translated_criterion = get_translated_criterion ((GList *)criteria->data);
         if (translated_criterion == NULL) {
                 free_tokenized_uri (criteria);
                 return NULL;
         }
-        translated_prefix = get_first_criterion_prefix (criteria);
-        if (strcmp (translated_prefix, "") == 0) {
-                ret_val = g_strdup_printf (_("Items %s"),
-                                           translated_criterion);
-        } else {
-                ret_val = g_strdup_printf (_("Items %s %s"),
-                                           translated_prefix, translated_criterion);
-        }
+        /* The beginning of the description of a search that has just been
+           performed.  The "%s" here is a description of a single criterion,
+           which in english might be "that contain the word 'foo'" */
+        ret_val = g_strdup_printf (_("Items %s"),
+                                   translated_criterion);
         g_free (translated_criterion);
-        g_free (translated_prefix);
         
         /* processes the other criteria and add the necessary "and" prefixes */
         for (criterion = criteria->next; criterion != NULL; criterion = criterion->next) {
-                translated_criterion = get_translated_criterion ((const GSList *)criterion->data);
+                translated_criterion = get_translated_criterion (criterion->data);
                 if (translated_criterion == NULL) {
                         g_free (ret_val);
                         free_tokenized_uri (criteria);
@@ -823,6 +699,8 @@ nautilus_self_check_search_uri (void)
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
                                       _("Items containing \"stuff\" in their names"));
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_type is file"), 
+                                      _("Items that are regular files"));
         /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
                                       _("Items containing \"stuff\" in their names and that are regular files"));
@@ -847,3 +725,4 @@ nautilus_self_check_search_uri (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
+

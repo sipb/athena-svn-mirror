@@ -32,6 +32,8 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include <gtkmozembed.h>
+
 
 #include <gconf/gconf.h>
 
@@ -43,23 +45,64 @@
 
 #define nopeDEBUG_mfleming 1
 
+#ifdef DEBUG_mfleming
+#define DEBUG_MSG(x)	g_print x
+#else
+#define DEBUG_MSG(x)	
+#endif
+
+/* Hold the process for a half hour after the last mozilla component has
+ * been freed
+ */ 
+#define MOZILLA_QUIT_TIMEOUT_DELAY (30 * 60 * 1000)
+
 static int object_count = 0;
+static guint quit_timeout_id = 0;
+static gboolean quit_timeout_pending = FALSE;
+
+static guint /*GtkFunction*/
+mozilla_process_delayed_exit (gpointer data)
+{
+	DEBUG_MSG (("mozilla_object_delayed_exit\n"));
+
+	if (object_count == 0) {
+		DEBUG_MSG (("mozilla_object_delayed_exit: object count 0, exiting\n"));
+
+		gtk_moz_embed_pop_startup();
+
+		gtk_main_quit();
+	}
+	return FALSE;
+}
 
 static void
 mozilla_object_destroyed (GtkObject *obj)
 {
+	static guint32 delayed_exit_interval = 0;
 	object_count--;
 
-#ifdef DEBUG_mfleming
-	g_print ("mozilla_object_destroyed\n");
-#endif
+	DEBUG_MSG (("mozilla_object_destroyed\n"));
 
-	if (object_count <= 0) {
-#ifdef DEBUG_mfleming
-	g_print ("...final mozilla_object_destroyed, quiting\n");
-#endif
+	if (delayed_exit_interval == 0) {
+		if (getenv ("NAUTILUS_MOZILLA_COMPONENT_DONT_DELAY_EXIT")) {
+			delayed_exit_interval = 1;
+		} else {
+			delayed_exit_interval = MOZILLA_QUIT_TIMEOUT_DELAY;
+		}
+	}
+	
+	if (object_count == 0) {
+		DEBUG_MSG (("mozilla_object_destroyed: 0 objects remaining, scheduling quit\n"));
 
-		gtk_main_quit ();
+		if (quit_timeout_pending) {
+			gtk_timeout_remove (quit_timeout_id);
+		}
+
+		quit_timeout_pending = TRUE;
+		
+		quit_timeout_id = gtk_timeout_add (delayed_exit_interval,
+						   (GtkFunction) mozilla_process_delayed_exit,
+						   NULL);
 	}
 }
 
@@ -68,30 +111,29 @@ mozilla_make_object (BonoboGenericFactory *factory,
 		     const char *goad_id, 
 		     void *closure)
 {
-	NautilusMozillaContentView *view;
-	NautilusView *nautilus_view;
+	BonoboObject *bonobo_object;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1")) {
 		return NULL;
 	}
 
-#ifdef DEBUG_mfleming
-	g_print ("+mozilla_make_object\n");
-#endif
-	
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NULL));
+	DEBUG_MSG (("+mozilla_make_object\n"));
 
 	object_count++;
 
-	nautilus_view = nautilus_mozilla_content_view_get_nautilus_view (view);
+	bonobo_object = nautilus_mozilla_content_view_new ();
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", mozilla_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy", mozilla_object_destroyed, NULL);
 
-#ifdef DEBUG_mfleming
-	g_print ("-mozilla_make_object\n");
-#endif
+	/* Remove any pending quit-timeout callback */
+	if (quit_timeout_pending) {
+		gtk_timeout_remove (quit_timeout_id);
+	}
+	quit_timeout_pending = FALSE;
 
-	return BONOBO_OBJECT (nautilus_view);
+	DEBUG_MSG (("-mozilla_make_object\n"));
+
+	return BONOBO_OBJECT (bonobo_object);
 }
 
 extern gboolean test_make_full_uri_from_relative (void);
@@ -102,11 +144,6 @@ run_test_cases (void)
 	return test_make_full_uri_from_relative ();
 }
 
-#ifdef EAZEL_SERVICES
-/*Defined in nautilus-mozilla-content-view.c*/
-extern EazelProxy_UserControl nautilus_mozilla_content_view_user_control;
-#endif
-
 int
 main (int argc, char *argv[])
 {
@@ -116,9 +153,7 @@ main (int argc, char *argv[])
 	GError *error_gconf = NULL;
 	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
 
-#ifdef DEBUG_mfleming
-	g_print ("nautilus-mozilla-content-view: starting...\n");
-#endif
+	DEBUG_MSG (("nautilus-mozilla-content-view: starting...\n"));
 
 	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
 		gboolean success;
@@ -127,13 +162,16 @@ main (int argc, char *argv[])
 
 		exit (success ? 0 : -1);
 	}
-
-	gnome_init_with_popt_table ("nautilus-mozilla-content-view", VERSION, 
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
-	gdk_rgb_init ();
 	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
+	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
 	orb = oaf_init (argc, argv);
+
+	gnome_init ("nautilus-mozilla-content-view", VERSION, 
+		    argc, argv); 
+	gdk_rgb_init ();
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
@@ -149,18 +187,27 @@ main (int argc, char *argv[])
 						    mozilla_make_object,
 						    NULL);
 	g_free (registration_id);
-	
+
+	/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	gnome_vfs_init ();
 
 #ifdef EAZEL_SERVICES
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		nautilus_mozilla_content_view_user_control = ammonite_get_user_control ();
-	}
+	ammonite_init ((PortableServer_POA) bonobo_poa);
 #endif
 
-#ifdef DEBUG_mfleming
-	g_print ("nautilus-mozilla-content-view: OAF registration complete.\n");
-#endif
+	/* We want the XPCOM runtime to stick around longer than
+	 * the lifetime of a gtkembedmoz widget.
+	 * The corresponding pop_startup is in mozilla_process_delayed_exit
+	 * above
+	 */
+	gtk_moz_embed_push_startup ();
+
+	DEBUG_MSG (("nautilus-mozilla-content-view: OAF registration complete.\n"));
 
 	do {
 		bonobo_main ();

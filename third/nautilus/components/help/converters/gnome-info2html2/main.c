@@ -6,6 +6,9 @@
 #include <string.h>
 #include <gnome.h>
 #include <zlib.h>
+#ifdef HAVE_LIBBZ2
+#include <bzlib.h>
+#endif
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -33,6 +36,7 @@ static int
 file_exists(const char *fn)
 {
   struct stat sbuf;
+
   return (stat(fn, &sbuf) == 0);
 }
 
@@ -40,6 +44,10 @@ int
 main(int argc, char **argv)
 {
 	gzFile f = NULL;
+	int bz = 0;
+#ifdef HAVE_LIBBZ2
+	BZFILE *bf=NULL;
+#endif
 	char line[250];
 	poptContext ctx;
 	int result;
@@ -94,9 +102,21 @@ main(int argc, char **argv)
 		sprintf(buf, "%s/%s.info.gz", dirs[i], args[0]);
 		if(file_exists(buf))
 		  break;
+#ifdef HAVE_LIBBZ2
+		ext = ".bz2";
+		sprintf(buf, "%s/%s.info.bz2", dirs[i], args[0]);		
+		if(file_exists(buf)) {
+		  bz = 1;
+		  break;
+		}
+#endif
 	      }
-	    if(i >= ndirs)
-	      return 2;
+	    if(i >= ndirs) {
+		    printf ("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
+			    "</HEAD><BODY BGCOLOR=\"#FFFFFF\">The info document \"%s\" could not be found. It may have been removed from your system.\n"
+			    "</BODY></HTML>\n", args[0]);
+		    return 2;
+	    }
 
 	    n = i;
 
@@ -106,6 +126,7 @@ main(int argc, char **argv)
 		  sprintf(buf, "%s/%s.info-%d%s", dirs[n], args[0], i, ext);
 		else
 		  sprintf(buf, "%s/%s.info%s", dirs[n], args[0], ext);
+
 		if(!file_exists(buf))
 		  {
 		    fixup_args[i] = NULL;
@@ -116,7 +137,7 @@ main(int argc, char **argv)
 	      }
 	    args = (const char **)fixup_args;
 	  }
-
+	
 	if(requested_nodename)
 	  {
 	    char *s, *t;
@@ -147,25 +168,57 @@ main(int argc, char **argv)
 	/* No need to store all nodes, etc since we let web server */
 	/* handle resolving tags!                                  */
 	for (;1 || !foundit || !requested_nodename;) {
-	  if(!f) {
-	    if(args && args[curarg])
-	      {
-		f = gzopen(args[curarg++], "r");
-		if(!f)
-		  break;
-		num_files_left = args[curarg]?1:0;
-		for(work_line_number = 0, gzgets(f, line, sizeof(line)); *line != INFO_COOKIE;
-		    gzgets(f, line, sizeof(line)), work_line_number++)
-		  /**/ ;
-	      }
-	    else
-	      break;
-	  }
-	  if(!gzgets(f, line, sizeof(line)))
+	  if(bz)
 	    {
-	      gzclose(f);
-	      f = NULL;
-	      continue;
+#ifdef HAVE_LIBBZ2
+	      if(!bf)
+		{
+		  if(args && args[curarg])
+		    {
+		      bf = bzopen(args[curarg++], "r");
+		      if(!f)
+			break;
+		      num_files_left = args[curarg]?1:0;
+		      for(work_line_number = 0, bzread(bf, line, sizeof(line)); *line != INFO_COOKIE;
+			  bzread(bf, line, sizeof(line)), work_line_number++)
+			/**/ ;
+		    }
+		  else
+		    break;
+		}
+	      if(!bzread(bf, line, sizeof(line)))
+		{
+		  bzclose(bf);
+		  bf = NULL;
+		  continue;
+		}
+#else
+	      g_assert_not_reached();
+#endif
+	    }
+	  else
+	    {
+	      if(!f)
+		{
+		  if(args && args[curarg])
+		    {
+		      f = gzopen(args[curarg++], "r");
+		      if(!f)
+			break;
+		      num_files_left = args[curarg]?1:0;
+		      for(work_line_number = 0, gzgets(f, line, sizeof(line)); *line != INFO_COOKIE;
+			  gzgets(f, line, sizeof(line)), work_line_number++)
+			/**/ ;
+		    }
+		  else
+		    break;
+		}
+	      if(!gzgets(f, line, sizeof(line)))
+		{
+		  gzclose(f);
+		  f = NULL;
+		  continue;
+		}
 	    }
 		
 	  work_line_number++;

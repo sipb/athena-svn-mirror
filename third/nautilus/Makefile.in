@@ -71,6 +71,7 @@ BONOBO_CFLAGS = @BONOBO_CFLAGS@
 BONOBO_LIBS = @BONOBO_LIBS@
 BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
 BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+BZ_LIBS = @BZ_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -78,25 +79,35 @@ CPP = @CPP@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+EAZEL_LOGOS_LICENSE = @EAZEL_LOGOS_LICENSE@
+EAZEL_LOGOS_PNG = @EAZEL_LOGOS_PNG@
+EAZEL_LOGOS_THROB = @EAZEL_LOGOS_THROB@
+EAZEL_LOGOS_XML = @EAZEL_LOGOS_XML@
 EAZEL_SERVICES = @EAZEL_SERVICES@
+ENABLE_INSTALLER = @ENABLE_INSTALLER@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+ESOUND_REQUIRED = @ESOUND_REQUIRED@
 FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
 FREETYPE2_LIBS = @FREETYPE2_LIBS@
+FREETYPE_REQUIRED = @FREETYPE_REQUIRED@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
@@ -106,27 +117,34 @@ GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_CFLAGS = @GNOME_CFLAGS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_LIBS = @GNOME_LIBS@
+GNOME_REQUIRED = @GNOME_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_LIBS = @GTK_LIBS@
+GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_APPLETS = @HAVE_APPLETS@
 IDL_CFLAGS = @IDL_CFLAGS@
+IMLIB_REQUIRED = @IMLIB_REQUIRED@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+LIBGHTTP_REQUIRED = @LIBGHTTP_REQUIRED@
 LIBPNG = @LIBPNG@
 LIBTOOL = @LIBTOOL@
+LIBXML_REQUIRED = @LIBXML_REQUIRED@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_CFLAGS = @MEDUSA_CFLAGS@
 MEDUSA_LIBS = @MEDUSA_LIBS@
+MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MOZILLA_COMPONENT_CFLAGS = @MOZILLA_COMPONENT_CFLAGS@
 MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
@@ -134,22 +152,30 @@ MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
 MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
 MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
 MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
+MOZILLA_PROFILES_CFLAGS = @MOZILLA_PROFILES_CFLAGS@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
+OAF_REQUIRED = @OAF_REQUIRED@
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 PACKAGE = @PACKAGE@
 PACKAGESYSTEM = @PACKAGESYSTEM@
+PACKAGE_SYSTEM_OBJECT = @PACKAGE_SYSTEM_OBJECT@
+PACKAGE_SYSTEM_SOURCE = @PACKAGE_SYSTEM_SOURCE@
 PAM_LIBS = @PAM_LIBS@
 POFILES = @POFILES@
+POPT_REQUIRED = @POPT_REQUIRED@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 RPM_LIBS = @RPM_LIBS@
 RPM_VERSION = @RPM_VERSION@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -159,6 +185,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
@@ -173,10 +200,10 @@ DESKTOP_FILES = $(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 @HAVE_APPLETS_TRUE@APPLETS_SUBDIRS = applets
 
-SUBDIRS =  	data 				icons 				intl 				cut-n-paste-code 		librsvg 			libnautilus 			libnautilus-adapter		libnautilus-extensions 		helper-utilities 		helper-scripts			src 				components			$(APPLETS_SUBDIRS)		test 				user-guide			po 				$(NULL)
+SUBDIRS =  	data 				icons 				intl 				cut-n-paste-code 		librsvg 			libnautilus 			libnautilus-adapter		libnautilus-extensions 		helper-utilities 		helper-scripts			src 				components			$(APPLETS_SUBDIRS)		nautilus-installer		test 				user-guide			help				po 				omf-install			$(NULL)
 
 
-EXTRA_DIST =  	COPYING.LIB					RPMs-README					HACKING						MAINTAINERS					nautilus.spec.in				nautilus-clean.sh				nautilus.desktop				nautilus.desktop.in				nautilus-launch-icon.png			ChangeLog-20000414				ChangeLog-20000625				ChangeLog-20000831				ChangeLog-20001018				xml-i18n-extract				xml-i18n-merge					xml-i18n-update					Makefile.shared					$(DESKTOP_IN_FILES)				$(DESKTOP_FILES)				$(NULL)
+EXTRA_DIST =  	TRADEMARK_NOTICE				COPYING.LIB					COPYING-DOCS					RPMs-README					HACKING						MAINTAINERS					nautilus.spec.in				nautilus-clean.sh				nautilus.desktop				nautilus.desktop.in				nautilus-launch-icon.png			ChangeLog-20000414				ChangeLog-20000625				ChangeLog-20000831				ChangeLog-20001018				xml-i18n-extract.in				xml-i18n-merge.in				xml-i18n-update.in				Makefile.shared					$(DESKTOP_IN_FILES)				$(DESKTOP_FILES)				nautilus-installer				$(NULL)
 
 
 appicondir = $(datadir)/pixmaps
@@ -184,16 +211,37 @@ appicon_DATA = nautilus-launch-icon.png
 
 Applicationsdir = $(datadir)/gnome/apps/Applications
 Applications_DATA = $(DESKTOP_FILES)
+
+##################################################################
+#
+# eazel-logos/*, if it exists
+#
+##################################################################
+
+icondir = $(datadir)/pixmaps/nautilus/eazel-logos
+
+@HAVE_EAZEL_LOGOS_TRUE@EAZEL_LOGOS_ICONS = 	$(top_srcdir)/eazel-logos/LICENSE 	$(top_srcdir)/eazel-logos/About_Image.png 	$(top_srcdir)/eazel-logos/about_background.png 	$(top_srcdir)/eazel-logos/default.xml 	$(top_srcdir)/eazel-logos/druid_header.png 	$(top_srcdir)/eazel-logos/eazel-logo-right-side-logo.png 	$(NULL)
+
+##################################################################
+#
+# eazel-logos/throbber/*, if it exists
+#
+##################################################################
+
+throbberdir = $(datadir)/pixmaps/nautilus/eazel-logos/throbber
+
+@HAVE_EAZEL_LOGOS_TRUE@EAZEL_LOGOS_THROBBER = 	$(top_srcdir)/eazel-logos/throbber/001.png 	$(top_srcdir)/eazel-logos/throbber/002.png 	$(top_srcdir)/eazel-logos/throbber/003.png 	$(top_srcdir)/eazel-logos/throbber/004.png 	$(top_srcdir)/eazel-logos/throbber/005.png 	$(top_srcdir)/eazel-logos/throbber/006.png 	$(top_srcdir)/eazel-logos/throbber/007.png 	$(top_srcdir)/eazel-logos/throbber/008.png 	$(top_srcdir)/eazel-logos/throbber/009.png 	$(top_srcdir)/eazel-logos/throbber/010.png 	$(top_srcdir)/eazel-logos/throbber/011.png 	$(top_srcdir)/eazel-logos/throbber/012.png 	$(top_srcdir)/eazel-logos/throbber/013.png 	$(top_srcdir)/eazel-logos/throbber/014.png 	$(top_srcdir)/eazel-logos/throbber/015.png 	$(top_srcdir)/eazel-logos/throbber/rest.png 	$(NULL)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  nautilus.spec
+CONFIG_CLEAN_FILES =  nautilus.spec nautilus-installer.spec
 DATA =  $(Applications_DATA) $(appicon_DATA)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
 ChangeLog INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h \
 aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-install-sh ltconfig ltmain.sh missing mkinstalldirs nautilus.spec.in
+install-sh ltconfig ltmain.sh missing mkinstalldirs \
+nautilus-installer.spec.in nautilus.spec.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -202,7 +250,8 @@ TAR = gtar
 GZIP_ENV = --best
 DIST_SUBDIRS =  data icons intl cut-n-paste-code librsvg libnautilus \
 libnautilus-adapter libnautilus-extensions helper-utilities \
-helper-scripts src components applets test user-guide po
+helper-scripts src components applets nautilus-installer test \
+user-guide help po omf-install
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.shared
@@ -248,6 +297,8 @@ distclean-hdr:
 
 maintainer-clean-hdr:
 nautilus.spec: $(top_builddir)/config.status nautilus.spec.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+nautilus-installer.spec: $(top_builddir)/config.status nautilus-installer.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 install-ApplicationsDATA: $(Applications_DATA)
@@ -518,8 +569,37 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @XML_I18N_MERGE_DESKTOP_RULE@
 
+##################################################################
+#
+# dist-hook
+#
+##################################################################
+
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
+
+# This is ridiculous, but automake apparently won't allow conditionals
+# in EXTRA_DIST.
+
+	mkdir -p $(distdir)/eazel-logos
+	list='$(EAZEL_LOGOS_ICONS)'; \
+	for i in $$list; \
+	do \
+		cp $$i $(distdir)/eazel-logos; \
+	done
+
+	mkdir -p $(distdir)/eazel-logos/throbber
+	list='$(EAZEL_LOGOS_THROBBER)'; \
+	for i in $$list; \
+	do \
+		cp $$i $(distdir)/eazel-logos/throbber; \
+	done
+
+##################################################################
+#
+# install-data-hook
+#
+##################################################################
 
 install-data-hook: nautilus-clean.sh
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
@@ -528,6 +608,26 @@ install-data-hook: nautilus-clean.sh
 	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
 	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
+	done
+
+# This is slightly less ridiculous.  I'm doing it this way instead of with
+# an automake DATA rule because it's easier to deal with the relative paths
+# like this.
+
+	$(mkinstalldirs) $(icondir)
+	@list='$(EAZEL_LOGOS_ICONS)'; \
+	for i in $$list; \
+	do \
+		echo $(INSTALL_PROGRAM) $$i $(icondir)/`basename $$i`; \
+		$(INSTALL_PROGRAM) $$i $(icondir)/`basename $$i`; \
+	done
+
+	$(mkinstalldirs) $(throbberdir)
+	@list='$(EAZEL_LOGOS_THROBBER)'; \
+	for i in $$list; \
+	do \
+		echo $(INSTALL_PROGRAM) $$i $(throbberdir)/`basename $$i`; \
+		$(INSTALL_PROGRAM) $$i $(throbberdir)/`basename $$i`; \
 	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

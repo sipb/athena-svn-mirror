@@ -118,7 +118,6 @@ create_selection_shadow (NautilusIconContainer *container,
 	int max_x, max_y;
 	int min_x, min_y;
 	GList *p;
-	double pixels_per_unit;
 
 	if (list == NULL) {
 		return NULL;
@@ -151,7 +150,6 @@ create_selection_shadow (NautilusIconContainer *container,
 					gnome_canvas_group_get_type (),
 					NULL));
 	
-	pixels_per_unit = canvas->pixels_per_unit;
 	for (p = list; p != NULL; p = p->next) {
 		DragSelectionItem *item;
 		int x1, y1, x2, y2;
@@ -171,10 +169,10 @@ create_selection_shadow (NautilusIconContainer *container,
 			gnome_canvas_item_new
 				(group,
 				 gnome_canvas_rect_get_type (),
-				 "x1", (double) x1 / pixels_per_unit,
-				 "y1", (double) y1 / pixels_per_unit,
-				 "x2", (double) x2 / pixels_per_unit,
-				 "y2", (double) y2 / pixels_per_unit,
+				 "x1", (double) x1,
+				 "y1", (double) y1,
+				 "x2", (double) x2,
+				 "y2", (double) y2,
 				 "outline_color", "black",
 				 "outline_stipple", stipple,
 				 "width_pixels", 1,
@@ -239,10 +237,17 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 		return TRUE;
 	}
 
+	window_rect = nautilus_art_irect_offset_by (window_rect, 
+		- container->details->dnd_info->drag_info.start_x,
+		- container->details->dnd_info->drag_info.start_y);
+
+	window_rect = nautilus_art_irect_scale_by (window_rect, 
+		1 / GNOME_CANVAS (container)->pixels_per_unit);
+	
 	/* pass the uri, mouse-relative x/y and icon width/height */
 	context->iteratee (uri, 
-			   (int) (window_rect.x0 - container->details->dnd_info->drag_info.start_x),
-			   (int) (window_rect.y0 - container->details->dnd_info->drag_info.start_y),
+			   (int) window_rect.x0,
+			   (int) window_rect.y0,
 			   window_rect.x1 - window_rect.x0,
 			   window_rect.y1 - window_rect.y0,
 			   context->iteratee_data);
@@ -345,7 +350,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	dnd_info = container->details->dnd_info;
-
+	
 	/* Delete old selection list. */
 	nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
 	dnd_info->drag_info.selection_list = NULL;
@@ -492,23 +497,31 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 				 int x, int y)
 {
 	GList *p;
+	int size;
 	ArtDRect point;
+	ArtIRect canvas_point;
 
-	/* hit test a single pixel rectangle */
+	/* build the hit-test rectangle. Base the size on the scale factor to ensure that it is
+	 * non-empty even at the smallest scale factor
+	 */
+	
+	size = MAX (1, 1 + (1 / GNOME_CANVAS (container)->pixels_per_unit));
 	point.x0 = x;
 	point.y0 = y;
-	point.x1 = x + 1;
-	point.y1 = y + 1;
+	point.x1 = x + size;
+	point.y1 = y + size;
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		NautilusIcon *icon;
 		icon = p->data;
-		if (nautilus_icon_canvas_item_hit_test_rectangle
-			(icon->item, &point)) {
+		
+		nautilus_gnome_canvas_world_to_canvas_rectangle (GNOME_CANVAS_ITEM (icon->item)->canvas, &point, &canvas_point);
+		
+		if (nautilus_icon_canvas_item_hit_test_rectangle (icon->item, &canvas_point)) {
 			return icon;
 		}
 	}
-
+	
 	return NULL;
 }
 
@@ -537,7 +550,15 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 
 	/* get the URI associated with the container */
 	container_uri_string = get_container_uri (container);
-	result = nautilus_drag_items_local (container_uri_string, items);
+	
+	if (nautilus_uri_is_trash (container_uri_string)) {
+		/* Special-case "trash:" because the nautilus_drag_items_local
+		 * would not work for it.
+		 */
+		result = nautilus_drag_items_in_trash (items);
+	} else {
+		result = nautilus_drag_items_local (container_uri_string, items);
+	}
 	g_free (container_uri_string);
 	
 	return result;
@@ -735,10 +756,10 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 		}
 	}
 
-	dialog = nautilus_yes_no_dialog (message, _("Switch to Manual Layout?"),
-					 _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
-					 GTK_WINDOW (gtk_widget_get_ancestor 
-					 	(GTK_WIDGET (container), GTK_TYPE_WINDOW)));
+	dialog = nautilus_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
+					      _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
+					      GTK_WINDOW (gtk_widget_get_ancestor 
+					 	    (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
 
 	return gnome_dialog_run (dialog) == GNOME_OK;
 }
@@ -1331,7 +1352,7 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	NautilusIconDndInfo *dnd_info;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
+		
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 	stop_auto_scroll (container);

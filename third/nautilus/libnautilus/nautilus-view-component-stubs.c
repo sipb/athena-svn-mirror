@@ -786,6 +786,327 @@ open_location_force_new_window(_obj->servant, location, selection, ev);
 }
 
 void
+Nautilus_ViewFrame_report_location_change(Nautilus_ViewFrame _obj,
+					  const Nautilus_URI location,
+					  const Nautilus_URIList * selection,
+					  const CORBA_char * title,
+					  CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Nautilus_ViewFrame__classid) {
+      
+	 ((POA_Nautilus_ViewFrame__epv *) _obj->
+       vepv[Nautilus_ViewFrame__classid])->report_location_change(_obj->
+								  servant,
+								  location,
+								  selection,
+								  title, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[23];
+      }
+      _ORBIT_operation_name_data =
+      {
+      23, "report_location_change"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 27 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      register CORBA_unsigned_long _ORBIT_tmpvar_3;
+      CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_FALSE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(location) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (location),
+				     sizeof(location[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*selection)._length));
+	 memcpy(_ORBIT_t, &((*selection)._length),
+		sizeof((*selection)._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*selection)._length));
+      }
+      for (_ORBIT_tmpvar_2 = 0; _ORBIT_tmpvar_2 < (*selection)._length;
+	   _ORBIT_tmpvar_2++) {
+	 _ORBIT_tmpvar_4 = strlen((*selection)._buffer[_ORBIT_tmpvar_2]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_4));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*selection).
+		       _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
+		      _ORBIT_tmpvar_4);
+	       memcpy(_ORBIT_t, ((*selection)._buffer[_ORBIT_tmpvar_2]),
+		      sizeof((*selection).
+			     _buffer[_ORBIT_tmpvar_2][_ORBIT_tmpvar_3]) *
+		      _ORBIT_tmpvar_4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*selection).
+						  _buffer[_ORBIT_tmpvar_2]
+						  [_ORBIT_tmpvar_3]) *
+					   _ORBIT_tmpvar_4);
+	 }
+      }
+
+      _ORBIT_tmpvar_6 = strlen(title) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_6));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (title),
+				     sizeof(title[_ORBIT_tmpvar_5]) *
+				     _ORBIT_tmpvar_6);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   return;
+ _ORBIT_system_exception:
+   CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+			      _ORBIT_completion_status);
+   giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+   giop_send_buffer_unuse(_ORBIT_send_buffer);
+   return;
+}
+
+void
+Nautilus_ViewFrame_report_redirect(Nautilus_ViewFrame _obj,
+				   const Nautilus_URI from_location,
+				   const Nautilus_URI to_location,
+				   const Nautilus_URIList * selection,
+				   const CORBA_char * title,
+				   CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Nautilus_ViewFrame__classid) {
+      
+	 ((POA_Nautilus_ViewFrame__epv *) _obj->
+       vepv[Nautilus_ViewFrame__classid])->report_redirect(_obj->servant,
+							   from_location,
+							   to_location,
+							   selection, title,
+							   ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[16];
+      }
+      _ORBIT_operation_name_data =
+      {
+      16, "report_redirect"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 20 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_FALSE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen(from_location) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (from_location),
+				     sizeof(from_location[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      _ORBIT_tmpvar_3 = strlen(to_location) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_3));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (to_location),
+				     sizeof(to_location[_ORBIT_tmpvar_2]) *
+				     _ORBIT_tmpvar_3);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*selection)._length));
+	 memcpy(_ORBIT_t, &((*selection)._length),
+		sizeof((*selection)._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*selection)._length));
+      }
+      for (_ORBIT_tmpvar_4 = 0; _ORBIT_tmpvar_4 < (*selection)._length;
+	   _ORBIT_tmpvar_4++) {
+	 _ORBIT_tmpvar_6 = strlen((*selection)._buffer[_ORBIT_tmpvar_4]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_6));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*selection).
+		       _buffer[_ORBIT_tmpvar_4][_ORBIT_tmpvar_5]) *
+		      _ORBIT_tmpvar_6);
+	       memcpy(_ORBIT_t, ((*selection)._buffer[_ORBIT_tmpvar_4]),
+		      sizeof((*selection).
+			     _buffer[_ORBIT_tmpvar_4][_ORBIT_tmpvar_5]) *
+		      _ORBIT_tmpvar_6);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*selection).
+						  _buffer[_ORBIT_tmpvar_4]
+						  [_ORBIT_tmpvar_5]) *
+					   _ORBIT_tmpvar_6);
+	 }
+      }
+
+      _ORBIT_tmpvar_8 = strlen(title) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_8));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_8), sizeof(_ORBIT_tmpvar_8));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_8));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     (title),
+				     sizeof(title[_ORBIT_tmpvar_7]) *
+				     _ORBIT_tmpvar_8);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   return;
+ _ORBIT_system_exception:
+   CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+			      _ORBIT_completion_status);
+   giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+   giop_send_buffer_unuse(_ORBIT_send_buffer);
+   return;
+}
+
+void
 Nautilus_ViewFrame_report_selection_change(Nautilus_ViewFrame _obj,
 					   const Nautilus_URIList * selection,
 					   CORBA_Environment * ev)
@@ -1281,6 +1602,63 @@ Nautilus_ViewFrame_set_title(Nautilus_ViewFrame _obj,
 				     (new_title),
 				     sizeof(new_title[_ORBIT_tmpvar_0]) *
 				     _ORBIT_tmpvar_1);
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   return;
+ _ORBIT_system_exception:
+   CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+			      _ORBIT_completion_status);
+   giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+   giop_send_buffer_unuse(_ORBIT_send_buffer);
+   return;
+}
+
+void
+Nautilus_ViewFrame_go_back(Nautilus_ViewFrame _obj, CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv && Nautilus_ViewFrame__classid) {
+      
+	 ((POA_Nautilus_ViewFrame__epv *) _obj->
+       vepv[Nautilus_ViewFrame__classid])->go_back(_obj->servant, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[8];
+      }
+      _ORBIT_operation_name_data =
+      {
+      8, "go_back"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 12 };
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_FALSE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);

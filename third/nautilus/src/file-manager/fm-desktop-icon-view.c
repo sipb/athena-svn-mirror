@@ -2,7 +2,7 @@
 
 /* fm-desktop-icon-view.c - implementation of icon view for managing the desktop.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000 Eazel, Inc.mou
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -54,7 +54,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
-#include <src/nautilus-application.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -76,14 +75,6 @@ struct FMDesktopIconViewDetails
 	BonoboUIComponent *ui;
 	GList *mount_black_list;
 };
-
-typedef struct {
-	GnomeVFSResult expected_result;
-	char *uri;
-	char *target_uri;
-	GdkPoint point;
-	GnomeDesktopEntry *entry;
-} CreateLinkData;
 
 typedef struct {
 	FMDesktopIconView *view;
@@ -160,7 +151,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	
 	g_free (icon_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -234,6 +225,8 @@ volume_in_black_list (FMDesktopIconView *icon_view,
 		      const NautilusVolume *volume)
 {
 	GList *p;
+	
+	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), TRUE);
 
 	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
 		if (strcmp ((char *) p->data, volume->mount_path) == 0) {
@@ -242,6 +235,59 @@ volume_in_black_list (FMDesktopIconView *icon_view,
 	}
 
 	return FALSE;
+}
+
+
+static char *
+create_unique_volume_name (const char *desktop_path, const NautilusVolume *volume)
+{
+	GnomeVFSURI *uri;
+	char *uri_path, *new_name;
+	int index;
+	char *volume_name, *original_volume_name;
+	
+	new_name = NULL;
+
+	/* Start with an index of one. If we collide, the file collided with will be the actual
+	 * number one. We will rename with the next available number.
+	 */	   
+	index = 1;
+			
+	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
+	
+	uri_path = g_strdup_printf ("%s/%s",desktop_path, volume_name);		
+	uri = gnome_vfs_uri_new (uri_path);
+	
+	/* Check for existing filename and create a unique name. */
+	while (gnome_vfs_uri_exists (uri)) {
+		gnome_vfs_uri_unref (uri);
+		g_free (uri_path);
+		
+		index++;
+		
+		g_free (new_name);
+		new_name = g_strdup_printf ("%s (%d)", volume_name, index);
+		
+		uri_path = g_strdup_printf ("%s/%s", desktop_path, new_name);
+		uri = gnome_vfs_uri_new (uri_path);		
+	}
+	
+	if (new_name != NULL) {
+		g_free (volume_name);
+		volume_name = new_name;	
+	}
+	
+	original_volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	if (strcmp (volume_name, original_volume_name) != 0) {
+		nautilus_volume_monitor_set_volume_name (nautilus_volume_monitor_get (),
+							 volume, volume_name);
+	}
+	g_free (original_volume_name);
+
+	gnome_vfs_uri_unref (uri);
+	g_free (uri_path);
+	
+	return volume_name;
 }
 
 static void
@@ -256,7 +302,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 	
 	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
-	if (!nautilus_volume_monitor_volume_is_removable (nautilus_volume_monitor_get (), volume)) {
+	if (!nautilus_volume_monitor_volume_is_removable (volume)) {
 		return;
 	}
 	
@@ -277,11 +323,12 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 
 	desktop_path = nautilus_get_desktop_directory ();
-	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
 	target_uri =  nautilus_volume_monitor_get_target_uri (volume);
-
+	
+	volume_name = create_unique_volume_name (desktop_path, volume);
+	
 	/* Create link */
-	nautilus_link_local_create (desktop_path, volume_name, icon_name, target_uri, NAUTILUS_LINK_MOUNT);
+	nautilus_link_local_create (desktop_path, volume_name, icon_name, target_uri, NULL, NAUTILUS_LINK_MOUNT);
 				    
 	g_free (desktop_path);
 	g_free (target_uri);
@@ -370,27 +417,31 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    GTK_SIGNAL_FUNC (event_callback),
 			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_trash_monitor_get ()),
-			    "trash_state_changed",
-			    fm_desktop_icon_view_trash_state_changed_callback,
-			    desktop_icon_view);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
-			    "volume_mounted",
-			    volume_mounted_callback,
-			    desktop_icon_view);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
-			    "volume_unmounted",
-			    volume_unmounted_callback,
-			    desktop_icon_view);
-			    
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
+					"trash_state_changed",
+					fm_desktop_icon_view_trash_state_changed_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+					"volume_mounted",
+					volume_mounted_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+					"volume_unmounted",
+					volume_unmounted_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "create_nautilus_links",
 			    GTK_SIGNAL_FUNC (icon_view_create_nautilus_links),
 			    desktop_icon_view);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI, home_uri_changed,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
+					   home_uri_changed,
 				  	   desktop_icon_view);
 }
 
@@ -582,7 +633,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	if (volume_name == NULL) {
 		return;
 	}
-
+	
 	desktop_path = nautilus_get_desktop_directory ();
 	link_path = nautilus_make_path (desktop_path, volume_name);
 	unlink_and_notify (link_path);
@@ -593,151 +644,30 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 }
 
 static void
-create_link_callback (GnomeVFSAsyncHandle *handle,
-		      GnomeVFSResult result,
-		      gpointer callback_data)
-{
-	char *uri, *target_uri, *position;
-	GnomeVFSResult expected_result;
-	CreateLinkData *info;
-	GList one_item_list;
-	NautilusFile *file;
-
-	info = (CreateLinkData *) callback_data;
-	
-	uri = info->uri;
-	target_uri = info->target_uri;
-	expected_result = info->expected_result;
-
-	/* Set metadata attributes */
-	file = nautilus_file_get (uri);
-	position = g_strdup_printf ("%d,%d", info->point.x, info->point.y);
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_POSITION, NULL, position);
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, info->entry->icon);
-
-	/* Notify directory that this new file has been created. */
-	one_item_list.data = uri;
-	one_item_list.next = NULL;
-	one_item_list.prev = NULL;
-	nautilus_directory_notify_files_added (&one_item_list);
-	
-	g_free (uri);
-	g_free (position);
-	g_free (target_uri);
-	gnome_desktop_entry_free (info->entry);
-	g_free (callback_data);
-}
-
-
-static void
 icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *item_uris,
 			   	 int x, int y, FMDirectoryView *view)
 {
 	const GList *element;
-	char *desktop_path, *target_uri, *link_path, *link_uri, *program_path;
-	GnomeVFSURI *uri;
+	char *desktop_path;	
 	GnomeDesktopEntry *entry;
-	CreateLinkData *info;
-	GnomeVFSAsyncHandle *handle;
 	int index;
-	gboolean make_nautilus_link;
-	char *link_name, *last_slash, *message;
-	const char *icon_name;
+	GdkPoint point;
 	
 	if (item_uris == NULL) {
 		return;
 	}
-
-	make_nautilus_link = FALSE;
-	program_path = NULL;
 	
 	desktop_path = nautilus_get_desktop_directory ();
-
+	point.x = x;
+	point.y = y;
+	
 	/* Iterate through all of the URIs in the list */
 	for (element = item_uris, index = 0; element != NULL; element = element->next, index++) {
 		entry = gnome_desktop_entry_load ((char *)element->data);
-		if (entry != NULL) {
-			if (entry->terminal) {
-				/* FIXME bugzilla.eazel.com 5623: Create better text here */				
-				message = _("Nautilus does not currently support "
-					    "launchers that require a terminal.");
-				nautilus_warning_dialog (message, _("Unable to Create Link"),
-					  fm_directory_view_get_containing_window (view));
-				break;
-			}
-			
-			/* Verify that have an actual path */			
-			if (entry->exec[index][0] != '/') {
-				program_path = gnome_is_program_in_path(entry->exec[index]);
-				if (program_path != NULL) {
-					target_uri = gnome_vfs_get_uri_from_local_path (program_path);
-					g_free (program_path);
-					program_path = NULL;
-				} else {
-					/* We may have a link or other unknown url here.  Assign it to the target uri */
-					target_uri = g_strdup (entry->exec[index]);
-					make_nautilus_link = TRUE;
-				}
-			} else {
-				/* Create a URI path from the entry's executable local path */
-				target_uri = gnome_vfs_get_uri_from_local_path (entry->exec[index]);
-			}
-
-			if (target_uri != NULL) {
-				if (make_nautilus_link) {
-					/* We just punt and create a NautilusLink if we have determined
-					 * that the data will not be valid for a GnomeVFS symbolic link. */
-
-					last_slash = strrchr (target_uri, '/');
-					if (last_slash != NULL) {
-						/* Make sure that the string contains more that the final slash */
-						if (strlen (last_slash) > 1) {
-							link_name = g_strdup_printf (_("Link to %s"), last_slash + 1);
-						} else {
-							link_name = g_strdup (_("Link to Unknown"));
-						}
-					} else {
-						link_name = g_strdup_printf (_("Link to %s"), target_uri);
-					}
-
-					if (link_name != NULL) {
-						if (entry->icon != NULL) {
-							icon_name = entry->icon;
-						} else {
-							icon_name = "gnome-unknown.png";
-						}
-						nautilus_link_local_create (desktop_path, link_name, icon_name, 
-								    	    target_uri, NAUTILUS_LINK_GENERIC);
-						g_free (link_name);
-					}
-					g_free (target_uri);
-				} else {
-					/* Create an actual GnomeVFS symbolic link. */						
-					uri = gnome_vfs_uri_new (target_uri);
-					if (uri != NULL) {
-						link_path = g_strdup_printf ("%s/%s", desktop_path, entry->name);			
-						link_uri = gnome_vfs_get_uri_from_local_path (link_path);
-						
-						/* Create symbolic link */
-						info = g_malloc (sizeof (CreateLinkData));
-						info->uri = link_uri;			
-						info->target_uri = target_uri;
-						info->expected_result = GNOME_VFS_OK;
-						info->point.x = x;
-						info->point.y = y;
-						info->entry = entry;
-						
-						gnome_vfs_async_create_symbolic_link (&handle, gnome_vfs_uri_new (link_path), 
-										      target_uri, create_link_callback, info);
-															
-						g_free (link_path);
-						gnome_vfs_uri_unref (uri);
-					}
-				}
-			}
-		}
+		nautilus_link_local_create_from_gnome_entry (entry, desktop_path, &point);
+		gnome_desktop_entry_free (entry);
 	}
-
+	
 	g_free (desktop_path);
 }
 
@@ -813,6 +743,7 @@ update_home_link_and_delete_copies (void)
 					    home_link_name,
 					    "temp-home.png", 
 					    home_uri,
+					    NULL,
 					    NAUTILUS_LINK_HOME);
 	}
 	
@@ -838,8 +769,15 @@ update_trash_link_and_delete_copies (void)
 				    TRASH_LINK_NAME,
 				    "trash-empty.png", 
 				    NAUTILUS_TRASH_URI,
-				    NAUTILUS_LINK_TRASH);
+				    NULL,
+				    NAUTILUS_LINK_TRASH);				    				    
 	g_free (desktop_path);
+	
+	/* Make sure link represents current trash state */
+	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
+						   	   nautilus_trash_monitor_is_empty (),
+						   	   NULL);
+
 }
 
 static void
@@ -914,13 +852,12 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 				FMDesktopIconView *icon_view)
 {
 	SortCategory category_a, category_b;
-
+	
 	category_a = get_sort_category (file_a);
 	category_b = get_sort_category (file_b);
 
-	/* Let the previous handler do the compare. */
 	if (category_a == category_b) {
-		return 0;
+		return nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME);
 	}
 
 	/* We know the answer, so prevent the other handlers
@@ -995,14 +932,13 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 static void
 update_disks_menu (FMDesktopIconView *view)
 {
-	GList *disk_list;
-	GList *element;
+	const GList *disk_list, *element;
 	guint index;
 	char *name;
 	char *command_name;
 	char *command_path;
 	NautilusVolume *volume;
-
+	
 	/* Clear any previously inserted items */
 	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, DESKTOP_BACKGROUND_POPUP_PATH_DISKS);
@@ -1017,18 +953,14 @@ update_disks_menu (FMDesktopIconView *view)
 		volume = element->data;
 		
 		/* Determine human-readable name from mount path */
-		name = strrchr (volume->mount_path, '/');
-		if (name != NULL) {
-			name = name + 1;
-		} else {
-			name = volume->mount_path;
-		}
-
+		name = nautilus_volume_monitor_get_mount_name_for_display (nautilus_volume_monitor_get (), volume);
+		
 		nautilus_bonobo_add_numbered_toggle_menu_item 
 			(view->details->ui,
 			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
 			 index,
 			 name);
+		g_free (name);
 
 		command_name = nautilus_bonobo_get_numbered_menu_item_command
 			(view->details->ui,
@@ -1047,12 +979,10 @@ update_disks_menu (FMDesktopIconView *view)
 			 command_name,
 			 mount_or_unmount_removable_volume,
 			 mount_parameters_new (view, volume->mount_path),
-			 mount_parameters_free_wrapper);
+			 mount_parameters_free_wrapper);			 
 		g_free (command_name);
 		
-		nautilus_volume_monitor_free_volume (volume);
 	}
-	g_list_free (disk_list);
 }
 
 static void
@@ -1064,7 +994,7 @@ real_update_menus (FMDirectoryView *view)
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
@@ -1137,7 +1067,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 

@@ -85,8 +85,32 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -166,7 +190,7 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -179,11 +203,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -196,19 +220,13 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -219,13 +237,19 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -236,11 +260,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -253,19 +277,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -278,11 +294,25 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -295,15 +325,410 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -314,20 +739,20 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -335,19 +760,68 @@ GNOME_Trilobite_Eazel_InstallCallback_download_progress
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
@@ -461,8 +935,8 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
       register CORBA_unsigned_long _ORBIT_tmpvar_25;
       CORBA_unsigned_long _ORBIT_tmpvar_26;
       register CORBA_unsigned_long _ORBIT_tmpvar_27;
@@ -470,24 +944,72 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
       register CORBA_unsigned_long _ORBIT_tmpvar_29;
       CORBA_unsigned_long _ORBIT_tmpvar_30;
       register CORBA_unsigned_long _ORBIT_tmpvar_31;
-      CORBA_unsigned_long _ORBIT_tmpvar_32;
-      register CORBA_unsigned_long _ORBIT_tmpvar_33;
-      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
       register CORBA_unsigned_long _ORBIT_tmpvar_35;
       CORBA_unsigned_long _ORBIT_tmpvar_36;
       register CORBA_unsigned_long _ORBIT_tmpvar_37;
-      CORBA_unsigned_long _ORBIT_tmpvar_38;
-      register CORBA_unsigned_long _ORBIT_tmpvar_39;
-      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
       register CORBA_unsigned_long _ORBIT_tmpvar_41;
       CORBA_unsigned_long _ORBIT_tmpvar_42;
       register CORBA_unsigned_long _ORBIT_tmpvar_43;
-      CORBA_unsigned_long _ORBIT_tmpvar_44;
-      register CORBA_unsigned_long _ORBIT_tmpvar_45;
-      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
       register CORBA_unsigned_long _ORBIT_tmpvar_47;
-      register CORBA_unsigned_long _ORBIT_tmpvar_48;
-      CORBA_unsigned_long _ORBIT_tmpvar_49;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
+      register CORBA_unsigned_long _ORBIT_tmpvar_49;
+      CORBA_unsigned_long _ORBIT_tmpvar_50;
+      register CORBA_unsigned_long _ORBIT_tmpvar_51;
+      CORBA_unsigned_long _ORBIT_tmpvar_52;
+      register CORBA_unsigned_long _ORBIT_tmpvar_53;
+      CORBA_unsigned_long _ORBIT_tmpvar_54;
+      register CORBA_unsigned_long _ORBIT_tmpvar_55;
+      CORBA_unsigned_long _ORBIT_tmpvar_56;
+      register CORBA_unsigned_long _ORBIT_tmpvar_57;
+      CORBA_unsigned_long _ORBIT_tmpvar_58;
+      register CORBA_unsigned_long _ORBIT_tmpvar_59;
+      CORBA_unsigned_long _ORBIT_tmpvar_60;
+      register CORBA_unsigned_long _ORBIT_tmpvar_61;
+      CORBA_unsigned_long _ORBIT_tmpvar_62;
+      register CORBA_unsigned_long _ORBIT_tmpvar_63;
+      CORBA_unsigned_long _ORBIT_tmpvar_64;
+      register CORBA_unsigned_long _ORBIT_tmpvar_65;
+      CORBA_unsigned_long _ORBIT_tmpvar_66;
+      register CORBA_unsigned_long _ORBIT_tmpvar_67;
+      CORBA_unsigned_long _ORBIT_tmpvar_68;
+      register CORBA_unsigned_long _ORBIT_tmpvar_69;
+      CORBA_unsigned_long _ORBIT_tmpvar_70;
+      register CORBA_unsigned_long _ORBIT_tmpvar_71;
+      CORBA_unsigned_long _ORBIT_tmpvar_72;
+      register CORBA_unsigned_long _ORBIT_tmpvar_73;
+      register CORBA_unsigned_long _ORBIT_tmpvar_74;
+      CORBA_unsigned_long _ORBIT_tmpvar_75;
+      register CORBA_unsigned_long _ORBIT_tmpvar_76;
+      CORBA_unsigned_long _ORBIT_tmpvar_77;
+      register CORBA_unsigned_long _ORBIT_tmpvar_78;
+      CORBA_unsigned_long _ORBIT_tmpvar_79;
+      register CORBA_unsigned_long _ORBIT_tmpvar_80;
+      register CORBA_unsigned_long _ORBIT_tmpvar_81;
+      CORBA_unsigned_long _ORBIT_tmpvar_82;
+      register CORBA_unsigned_long _ORBIT_tmpvar_83;
+      register CORBA_unsigned_long _ORBIT_tmpvar_84;
+      CORBA_unsigned_long _ORBIT_tmpvar_85;
+      register CORBA_unsigned_long _ORBIT_tmpvar_86;
+      register CORBA_unsigned_long _ORBIT_tmpvar_87;
+      CORBA_unsigned_long _ORBIT_tmpvar_88;
+      register CORBA_unsigned_long _ORBIT_tmpvar_89;
+      register CORBA_unsigned_long _ORBIT_tmpvar_90;
+      CORBA_unsigned_long _ORBIT_tmpvar_91;
+      register CORBA_unsigned_long _ORBIT_tmpvar_92;
+      register CORBA_unsigned_long _ORBIT_tmpvar_93;
+      CORBA_unsigned_long _ORBIT_tmpvar_94;
+      register CORBA_unsigned_long _ORBIT_tmpvar_95;
+      register CORBA_unsigned_long _ORBIT_tmpvar_96;
+      CORBA_unsigned_long _ORBIT_tmpvar_97;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -567,7 +1089,7 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -580,11 +1102,11 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -597,19 +1119,13 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -620,13 +1136,19 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -637,11 +1159,11 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -654,19 +1176,11 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -679,11 +1193,25 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -696,15 +1224,410 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -715,20 +1638,20 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -736,123 +1659,189 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
 	 }
       }
 
-      _ORBIT_tmpvar_26 = strlen((*needs).name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_26));
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
+	 }
+      }
+
+      _ORBIT_tmpvar_50 = strlen((*needs).name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_50));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_50), sizeof(_ORBIT_tmpvar_50));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_50));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).name),
-				     sizeof((*needs).name[_ORBIT_tmpvar_25]) *
-				     _ORBIT_tmpvar_26);
-      _ORBIT_tmpvar_28 = strlen((*needs).version) + 1;
+				     sizeof((*needs).name[_ORBIT_tmpvar_49]) *
+				     _ORBIT_tmpvar_50);
+      _ORBIT_tmpvar_52 = strlen((*needs).version) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_52));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_52), sizeof(_ORBIT_tmpvar_52));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_28));
+					sizeof(_ORBIT_tmpvar_52));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).version),
 				     sizeof((*needs).
-					    version[_ORBIT_tmpvar_27]) *
-				     _ORBIT_tmpvar_28);
-      _ORBIT_tmpvar_30 = strlen((*needs).filename) + 1;
+					    version[_ORBIT_tmpvar_51]) *
+				     _ORBIT_tmpvar_52);
+      _ORBIT_tmpvar_54 = strlen((*needs).filename) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_54));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_54), sizeof(_ORBIT_tmpvar_54));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_30));
+					sizeof(_ORBIT_tmpvar_54));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).filename),
 				     sizeof((*needs).
-					    filename[_ORBIT_tmpvar_29]) *
-				     _ORBIT_tmpvar_30);
-      _ORBIT_tmpvar_32 = strlen((*needs).eazel_id) + 1;
+					    filename[_ORBIT_tmpvar_53]) *
+				     _ORBIT_tmpvar_54);
+      _ORBIT_tmpvar_56 = strlen((*needs).eazel_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_32));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_32), sizeof(_ORBIT_tmpvar_32));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_56));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_56), sizeof(_ORBIT_tmpvar_56));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_32));
+					sizeof(_ORBIT_tmpvar_56));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).eazel_id),
 				     sizeof((*needs).
-					    eazel_id[_ORBIT_tmpvar_31]) *
-				     _ORBIT_tmpvar_32);
-      _ORBIT_tmpvar_34 = strlen((*needs).archtype) + 1;
+					    eazel_id[_ORBIT_tmpvar_55]) *
+				     _ORBIT_tmpvar_56);
+      _ORBIT_tmpvar_58 = strlen((*needs).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34), sizeof(_ORBIT_tmpvar_34));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_58));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_58), sizeof(_ORBIT_tmpvar_58));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_34));
+					sizeof(_ORBIT_tmpvar_58));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*needs).suite_id),
+				     sizeof((*needs).
+					    suite_id[_ORBIT_tmpvar_57]) *
+				     _ORBIT_tmpvar_58);
+      _ORBIT_tmpvar_60 = strlen((*needs).archtype) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_60));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_60), sizeof(_ORBIT_tmpvar_60));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_60));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).archtype),
 				     sizeof((*needs).
-					    archtype[_ORBIT_tmpvar_33]) *
-				     _ORBIT_tmpvar_34);
-      _ORBIT_tmpvar_36 = strlen((*needs).distribution.name) + 1;
+					    archtype[_ORBIT_tmpvar_59]) *
+				     _ORBIT_tmpvar_60);
+      _ORBIT_tmpvar_62 = strlen((*needs).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36), sizeof(_ORBIT_tmpvar_36));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_62));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_62), sizeof(_ORBIT_tmpvar_62));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_36));
+					sizeof(_ORBIT_tmpvar_62));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).distribution.name),
 				     sizeof((*needs).distribution.
-					    name[_ORBIT_tmpvar_35]) *
-				     _ORBIT_tmpvar_36);
+					    name[_ORBIT_tmpvar_61]) *
+				     _ORBIT_tmpvar_62);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
@@ -861,101 +1850,481 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*needs).distribution.minor),
 				     sizeof((*needs).distribution.minor));
-      _ORBIT_tmpvar_38 = strlen((*needs).release) + 1;
+      _ORBIT_tmpvar_64 = strlen((*needs).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_38));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_38), sizeof(_ORBIT_tmpvar_38));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_64));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_64), sizeof(_ORBIT_tmpvar_64));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_38));
+					sizeof(_ORBIT_tmpvar_64));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).release),
 				     sizeof((*needs).
-					    release[_ORBIT_tmpvar_37]) *
-				     _ORBIT_tmpvar_38);
-      _ORBIT_tmpvar_40 = strlen((*needs).summary) + 1;
+					    release[_ORBIT_tmpvar_63]) *
+				     _ORBIT_tmpvar_64);
+      _ORBIT_tmpvar_66 = strlen((*needs).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40), sizeof(_ORBIT_tmpvar_40));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_66));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_66), sizeof(_ORBIT_tmpvar_66));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_40));
+					sizeof(_ORBIT_tmpvar_66));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).summary),
 				     sizeof((*needs).
-					    summary[_ORBIT_tmpvar_39]) *
-				     _ORBIT_tmpvar_40);
-      _ORBIT_tmpvar_42 = strlen((*needs).description) + 1;
+					    summary[_ORBIT_tmpvar_65]) *
+				     _ORBIT_tmpvar_66);
+      _ORBIT_tmpvar_68 = strlen((*needs).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_68));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_68), sizeof(_ORBIT_tmpvar_68));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_42));
+					sizeof(_ORBIT_tmpvar_68));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).description),
 				     sizeof((*needs).
-					    description[_ORBIT_tmpvar_41]) *
-				     _ORBIT_tmpvar_42);
+					    description[_ORBIT_tmpvar_67]) *
+				     _ORBIT_tmpvar_68);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*needs).bytesize),
 				     sizeof((*needs).bytesize));
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*needs).filesize),
+				     sizeof((*needs).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*needs).toplevel),
 				     sizeof((*needs).toplevel));
-      _ORBIT_tmpvar_44 = strlen((*needs).install_root) + 1;
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*needs).anchor),
+				     sizeof((*needs).anchor));
+      _ORBIT_tmpvar_70 = strlen((*needs).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_44));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_44), sizeof(_ORBIT_tmpvar_44));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_70));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_70), sizeof(_ORBIT_tmpvar_70));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_44));
+					sizeof(_ORBIT_tmpvar_70));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).install_root),
 				     sizeof((*needs).
-					    install_root[_ORBIT_tmpvar_43]) *
-				     _ORBIT_tmpvar_44);
-      _ORBIT_tmpvar_46 = strlen((*needs).md5) + 1;
+					    install_root[_ORBIT_tmpvar_69]) *
+				     _ORBIT_tmpvar_70);
+      _ORBIT_tmpvar_72 = strlen((*needs).md5) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46), sizeof(_ORBIT_tmpvar_46));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_72));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_72), sizeof(_ORBIT_tmpvar_72));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_46));
+					sizeof(_ORBIT_tmpvar_72));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*needs).md5),
-				     sizeof((*needs).md5[_ORBIT_tmpvar_45]) *
-				     _ORBIT_tmpvar_46);
+				     sizeof((*needs).md5[_ORBIT_tmpvar_71]) *
+				     _ORBIT_tmpvar_72);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*needs).status),
 				     sizeof((*needs).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*needs).modify_status),
+				     sizeof((*needs).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*needs).depends._length));
+	 memcpy(_ORBIT_t, &((*needs).depends._length),
+		sizeof((*needs).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*needs).depends._length));
+      }
+      for (_ORBIT_tmpvar_73 = 0; _ORBIT_tmpvar_73 < (*needs).depends._length;
+	   _ORBIT_tmpvar_73++) {
+	 _ORBIT_tmpvar_75 =
+	    strlen((*needs).depends._buffer[_ORBIT_tmpvar_73].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_75));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_75), sizeof(_ORBIT_tmpvar_75));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_75));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).depends._buffer[_ORBIT_tmpvar_73].
+		       sense[_ORBIT_tmpvar_74]) * _ORBIT_tmpvar_75);
+	    memcpy(_ORBIT_t,
+		   ((*needs).depends._buffer[_ORBIT_tmpvar_73].sense),
+		   sizeof((*needs).depends._buffer[_ORBIT_tmpvar_73].
+			  sense[_ORBIT_tmpvar_74]) * _ORBIT_tmpvar_75);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).depends.
+						  _buffer[_ORBIT_tmpvar_73].
+						  sense[_ORBIT_tmpvar_74]) *
+					   _ORBIT_tmpvar_75);
+	 }
+	 _ORBIT_tmpvar_77 =
+	    strlen((*needs).depends._buffer[_ORBIT_tmpvar_73].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_77));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_77), sizeof(_ORBIT_tmpvar_77));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_77));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).depends._buffer[_ORBIT_tmpvar_73].
+		       version[_ORBIT_tmpvar_76]) * _ORBIT_tmpvar_77);
+	    memcpy(_ORBIT_t,
+		   ((*needs).depends._buffer[_ORBIT_tmpvar_73].version),
+		   sizeof((*needs).depends._buffer[_ORBIT_tmpvar_73].
+			  version[_ORBIT_tmpvar_76]) * _ORBIT_tmpvar_77);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).depends.
+						  _buffer[_ORBIT_tmpvar_73].
+						  version[_ORBIT_tmpvar_76]) *
+					   _ORBIT_tmpvar_77);
+	 }
+	 _ORBIT_tmpvar_79 =
+	    strlen((*needs).depends._buffer[_ORBIT_tmpvar_73].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_79));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_79), sizeof(_ORBIT_tmpvar_79));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_79));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).depends._buffer[_ORBIT_tmpvar_73].
+		       package_md5[_ORBIT_tmpvar_78]) * _ORBIT_tmpvar_79);
+	    memcpy(_ORBIT_t,
+		   ((*needs).depends._buffer[_ORBIT_tmpvar_73].package_md5),
+		   sizeof((*needs).depends._buffer[_ORBIT_tmpvar_73].
+			  package_md5[_ORBIT_tmpvar_78]) * _ORBIT_tmpvar_79);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).depends.
+						  _buffer[_ORBIT_tmpvar_73].
+						  package_md5
+						  [_ORBIT_tmpvar_78]) *
+					   _ORBIT_tmpvar_79);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*needs).breaks._length));
+	 memcpy(_ORBIT_t, &((*needs).breaks._length),
+		sizeof((*needs).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*needs).breaks._length));
+      }
+      for (_ORBIT_tmpvar_80 = 0; _ORBIT_tmpvar_80 < (*needs).breaks._length;
+	   _ORBIT_tmpvar_80++) {
+	 _ORBIT_tmpvar_82 =
+	    strlen((*needs).breaks._buffer[_ORBIT_tmpvar_80].package_md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_82));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_82), sizeof(_ORBIT_tmpvar_82));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_82));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).breaks._buffer[_ORBIT_tmpvar_80].
+		       package_md5[_ORBIT_tmpvar_81]) * _ORBIT_tmpvar_82);
+	    memcpy(_ORBIT_t,
+		   ((*needs).breaks._buffer[_ORBIT_tmpvar_80].package_md5),
+		   sizeof((*needs).breaks._buffer[_ORBIT_tmpvar_80].
+			  package_md5[_ORBIT_tmpvar_81]) * _ORBIT_tmpvar_82);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).breaks.
+						  _buffer[_ORBIT_tmpvar_80].
+						  package_md5
+						  [_ORBIT_tmpvar_81]) *
+					   _ORBIT_tmpvar_82);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._d),
+		      sizeof((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).breaks.
+						  _buffer[_ORBIT_tmpvar_80].u.
+						  _d));
+	 }
+	 switch ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			     files._length),
+			   sizeof((*needs).breaks._buffer[_ORBIT_tmpvar_80].u.
+				  _u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*needs).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_80].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_83 = 0;
+		   _ORBIT_tmpvar_83 <
+		   (*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.files.
+		   _length; _ORBIT_tmpvar_83++) {
+		 _ORBIT_tmpvar_85 =
+		    strlen((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			   files._buffer[_ORBIT_tmpvar_83]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_85));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_85),
+			   sizeof(_ORBIT_tmpvar_85));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_85));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			       files.
+			       _buffer[_ORBIT_tmpvar_83][_ORBIT_tmpvar_84]) *
+			      _ORBIT_tmpvar_85);
+		       memcpy(_ORBIT_t,
+			      ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			       files._buffer[_ORBIT_tmpvar_83]),
+			      sizeof((*needs).breaks.
+				     _buffer[_ORBIT_tmpvar_80].u._u.files.
+				     _buffer[_ORBIT_tmpvar_83]
+				     [_ORBIT_tmpvar_84]) * _ORBIT_tmpvar_85);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*needs).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_80].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_83]
+							  [_ORBIT_tmpvar_84])
+						   * _ORBIT_tmpvar_85);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			     features._length),
+			   sizeof((*needs).breaks._buffer[_ORBIT_tmpvar_80].u.
+				  _u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*needs).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_80].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_86 = 0;
+		   _ORBIT_tmpvar_86 <
+		   (*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.features.
+		   _length; _ORBIT_tmpvar_86++) {
+		 _ORBIT_tmpvar_88 =
+		    strlen((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			   features._buffer[_ORBIT_tmpvar_86]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_88));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_88),
+			   sizeof(_ORBIT_tmpvar_88));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_88));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			       features.
+			       _buffer[_ORBIT_tmpvar_86][_ORBIT_tmpvar_87]) *
+			      _ORBIT_tmpvar_88);
+		       memcpy(_ORBIT_t,
+			      ((*needs).breaks._buffer[_ORBIT_tmpvar_80].u._u.
+			       features._buffer[_ORBIT_tmpvar_86]),
+			      sizeof((*needs).breaks.
+				     _buffer[_ORBIT_tmpvar_80].u._u.features.
+				     _buffer[_ORBIT_tmpvar_86]
+				     [_ORBIT_tmpvar_87]) * _ORBIT_tmpvar_88);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*needs).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_80].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_86]
+							  [_ORBIT_tmpvar_87])
+						   * _ORBIT_tmpvar_88);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*needs).modifies._length));
+	 memcpy(_ORBIT_t, &((*needs).modifies._length),
+		sizeof((*needs).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*needs).modifies._length));
+      }
+      for (_ORBIT_tmpvar_89 = 0; _ORBIT_tmpvar_89 < (*needs).modifies._length;
+	   _ORBIT_tmpvar_89++) {
+	 _ORBIT_tmpvar_91 =
+	    strlen((*needs).modifies._buffer[_ORBIT_tmpvar_89]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_91));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_91), sizeof(_ORBIT_tmpvar_91));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_91));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).modifies.
+		       _buffer[_ORBIT_tmpvar_89][_ORBIT_tmpvar_90]) *
+		      _ORBIT_tmpvar_91);
+	       memcpy(_ORBIT_t, ((*needs).modifies._buffer[_ORBIT_tmpvar_89]),
+		      sizeof((*needs).modifies.
+			     _buffer[_ORBIT_tmpvar_89][_ORBIT_tmpvar_90]) *
+		      _ORBIT_tmpvar_91);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).modifies.
+						  _buffer[_ORBIT_tmpvar_89]
+						  [_ORBIT_tmpvar_90]) *
+					   _ORBIT_tmpvar_91);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -966,20 +2335,20 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*needs).provides._length));
       }
-      for (_ORBIT_tmpvar_47 = 0; _ORBIT_tmpvar_47 < (*needs).provides._length;
-	   _ORBIT_tmpvar_47++) {
-	 _ORBIT_tmpvar_49 =
-	    strlen((*needs).provides._buffer[_ORBIT_tmpvar_47]) + 1;
+      for (_ORBIT_tmpvar_92 = 0; _ORBIT_tmpvar_92 < (*needs).provides._length;
+	   _ORBIT_tmpvar_92++) {
+	 _ORBIT_tmpvar_94 =
+	    strlen((*needs).provides._buffer[_ORBIT_tmpvar_92]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49), sizeof(_ORBIT_tmpvar_49));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_94));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_94), sizeof(_ORBIT_tmpvar_94));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_49));
+					   sizeof(_ORBIT_tmpvar_94));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -987,18 +2356,66 @@ GNOME_Trilobite_Eazel_InstallCallback_dependency_check
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*needs).provides.
-		       _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
-		      _ORBIT_tmpvar_49);
-	       memcpy(_ORBIT_t, ((*needs).provides._buffer[_ORBIT_tmpvar_47]),
+		       _buffer[_ORBIT_tmpvar_92][_ORBIT_tmpvar_93]) *
+		      _ORBIT_tmpvar_94);
+	       memcpy(_ORBIT_t, ((*needs).provides._buffer[_ORBIT_tmpvar_92]),
 		      sizeof((*needs).provides.
-			     _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
-		      _ORBIT_tmpvar_49);
+			     _buffer[_ORBIT_tmpvar_92][_ORBIT_tmpvar_93]) *
+		      _ORBIT_tmpvar_94);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*needs).provides.
-						  _buffer[_ORBIT_tmpvar_47]
-						  [_ORBIT_tmpvar_48]) *
-					   _ORBIT_tmpvar_49);
+						  _buffer[_ORBIT_tmpvar_92]
+						  [_ORBIT_tmpvar_93]) *
+					   _ORBIT_tmpvar_94);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*needs).features._length));
+	 memcpy(_ORBIT_t, &((*needs).features._length),
+		sizeof((*needs).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*needs).features._length));
+      }
+      for (_ORBIT_tmpvar_95 = 0; _ORBIT_tmpvar_95 < (*needs).features._length;
+	   _ORBIT_tmpvar_95++) {
+	 _ORBIT_tmpvar_97 =
+	    strlen((*needs).features._buffer[_ORBIT_tmpvar_95]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_97));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_97), sizeof(_ORBIT_tmpvar_97));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_97));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*needs).features.
+		       _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		      _ORBIT_tmpvar_97);
+	       memcpy(_ORBIT_t, ((*needs).features._buffer[_ORBIT_tmpvar_95]),
+		      sizeof((*needs).features.
+			     _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		      _ORBIT_tmpvar_97);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*needs).features.
+						  _buffer[_ORBIT_tmpvar_95]
+						  [_ORBIT_tmpvar_96]) *
+					   _ORBIT_tmpvar_97);
 	 }
       }
 
@@ -1075,8 +2492,32 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -1156,7 +2597,7 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1169,11 +2610,11 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1186,19 +2627,13 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -1209,13 +2644,19 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -1226,11 +2667,11 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1243,19 +2684,11 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1268,11 +2701,25 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1285,15 +2732,410 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -1304,20 +3146,20 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -1325,19 +3167,1694 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
+	 }
+      }
+
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   return;
+ _ORBIT_system_exception:
+   CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+			      _ORBIT_completion_status);
+   giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+   giop_send_buffer_unuse(_ORBIT_send_buffer);
+   return;
+}
+
+void
+GNOME_Trilobite_Eazel_InstallCallback_file_uniqueness_check
+   (GNOME_Trilobite_Eazel_InstallCallback _obj,
+    const GNOME_Trilobite_Eazel_PackageDataStruct * package,
+    CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv
+       && GNOME_Trilobite_Eazel_InstallCallback__classid) {
+      ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
+       vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
+	 file_uniqueness_check(_obj->servant, package, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[22];
+      }
+      _ORBIT_operation_name_data =
+      {
+      22, "file_uniqueness_check"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 26 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      CORBA_unsigned_long _ORBIT_tmpvar_5;
+      register CORBA_unsigned_long _ORBIT_tmpvar_6;
+      CORBA_unsigned_long _ORBIT_tmpvar_7;
+      register CORBA_unsigned_long _ORBIT_tmpvar_8;
+      CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+      register CORBA_unsigned_long _ORBIT_tmpvar_12;
+      CORBA_unsigned_long _ORBIT_tmpvar_13;
+      register CORBA_unsigned_long _ORBIT_tmpvar_14;
+      CORBA_unsigned_long _ORBIT_tmpvar_15;
+      register CORBA_unsigned_long _ORBIT_tmpvar_16;
+      CORBA_unsigned_long _ORBIT_tmpvar_17;
+      register CORBA_unsigned_long _ORBIT_tmpvar_18;
+      CORBA_unsigned_long _ORBIT_tmpvar_19;
+      register CORBA_unsigned_long _ORBIT_tmpvar_20;
+      CORBA_unsigned_long _ORBIT_tmpvar_21;
+      register CORBA_unsigned_long _ORBIT_tmpvar_22;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_FALSE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen((*package).name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).name),
+				     sizeof((*package).
+					    name[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      _ORBIT_tmpvar_3 = strlen((*package).version) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_3));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).version),
+				     sizeof((*package).
+					    version[_ORBIT_tmpvar_2]) *
+				     _ORBIT_tmpvar_3);
+      _ORBIT_tmpvar_5 = strlen((*package).filename) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_5));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_5), sizeof(_ORBIT_tmpvar_5));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_5));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).filename),
+				     sizeof((*package).
+					    filename[_ORBIT_tmpvar_4]) *
+				     _ORBIT_tmpvar_5);
+      _ORBIT_tmpvar_7 = strlen((*package).eazel_id) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_7));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_7), sizeof(_ORBIT_tmpvar_7));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_7));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).eazel_id),
+				     sizeof((*package).
+					    eazel_id[_ORBIT_tmpvar_6]) *
+				     _ORBIT_tmpvar_7);
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_9));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_9), sizeof(_ORBIT_tmpvar_9));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_9));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).suite_id),
+				     sizeof((*package).
+					    suite_id[_ORBIT_tmpvar_8]) *
+				     _ORBIT_tmpvar_9);
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_11));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_11), sizeof(_ORBIT_tmpvar_11));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_11));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
+				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_13));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_13), sizeof(_ORBIT_tmpvar_13));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_13));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
+				     _ORBIT_tmpvar_13);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_15));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_15), sizeof(_ORBIT_tmpvar_15));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_15));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).release),
+				     sizeof((*package).
+					    release[_ORBIT_tmpvar_14]) *
+				     _ORBIT_tmpvar_15);
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17), sizeof(_ORBIT_tmpvar_17));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_17));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).summary),
+				     sizeof((*package).
+					    summary[_ORBIT_tmpvar_16]) *
+				     _ORBIT_tmpvar_17);
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_19));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_19), sizeof(_ORBIT_tmpvar_19));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_19));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).description),
+				     sizeof((*package).
+					    description[_ORBIT_tmpvar_18]) *
+				     _ORBIT_tmpvar_19);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_21));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_21), sizeof(_ORBIT_tmpvar_21));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_21));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).md5),
+				     sizeof((*package).
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).status),
+				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).provides._length));
+	 memcpy(_ORBIT_t, &((*package).provides._length),
+		sizeof((*package).provides._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).provides._length));
+      }
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_45));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).provides.
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
+	       memcpy(_ORBIT_t,
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
+		      sizeof((*package).provides.
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).provides.
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
+	 }
+      }
+
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   return;
+ _ORBIT_system_exception:
+   CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+			      _ORBIT_completion_status);
+   giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+   giop_send_buffer_unuse(_ORBIT_send_buffer);
+   return;
+}
+
+void
+GNOME_Trilobite_Eazel_InstallCallback_feature_consistency_check
+   (GNOME_Trilobite_Eazel_InstallCallback _obj,
+    const GNOME_Trilobite_Eazel_PackageDataStruct * package,
+    CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+
+   if (_obj->servant && _obj->vepv
+       && GNOME_Trilobite_Eazel_InstallCallback__classid) {
+      ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
+       vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
+	 feature_consistency_check(_obj->servant, package, ev);
+      return;
+   }
+   _cnx = ORBit_object_get_connection(_obj);
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[26];
+      }
+      _ORBIT_operation_name_data =
+      {
+      26, "feature_consistency_check"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 30 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      CORBA_unsigned_long _ORBIT_tmpvar_5;
+      register CORBA_unsigned_long _ORBIT_tmpvar_6;
+      CORBA_unsigned_long _ORBIT_tmpvar_7;
+      register CORBA_unsigned_long _ORBIT_tmpvar_8;
+      CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_10;
+      CORBA_unsigned_long _ORBIT_tmpvar_11;
+      register CORBA_unsigned_long _ORBIT_tmpvar_12;
+      CORBA_unsigned_long _ORBIT_tmpvar_13;
+      register CORBA_unsigned_long _ORBIT_tmpvar_14;
+      CORBA_unsigned_long _ORBIT_tmpvar_15;
+      register CORBA_unsigned_long _ORBIT_tmpvar_16;
+      CORBA_unsigned_long _ORBIT_tmpvar_17;
+      register CORBA_unsigned_long _ORBIT_tmpvar_18;
+      CORBA_unsigned_long _ORBIT_tmpvar_19;
+      register CORBA_unsigned_long _ORBIT_tmpvar_20;
+      CORBA_unsigned_long _ORBIT_tmpvar_21;
+      register CORBA_unsigned_long _ORBIT_tmpvar_22;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_FALSE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_tmpvar_1 = strlen((*package).name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_1));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).name),
+				     sizeof((*package).
+					    name[_ORBIT_tmpvar_0]) *
+				     _ORBIT_tmpvar_1);
+      _ORBIT_tmpvar_3 = strlen((*package).version) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_3));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_3), sizeof(_ORBIT_tmpvar_3));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_3));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).version),
+				     sizeof((*package).
+					    version[_ORBIT_tmpvar_2]) *
+				     _ORBIT_tmpvar_3);
+      _ORBIT_tmpvar_5 = strlen((*package).filename) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_5));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_5), sizeof(_ORBIT_tmpvar_5));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_5));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).filename),
+				     sizeof((*package).
+					    filename[_ORBIT_tmpvar_4]) *
+				     _ORBIT_tmpvar_5);
+      _ORBIT_tmpvar_7 = strlen((*package).eazel_id) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_7));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_7), sizeof(_ORBIT_tmpvar_7));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_7));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).eazel_id),
+				     sizeof((*package).
+					    eazel_id[_ORBIT_tmpvar_6]) *
+				     _ORBIT_tmpvar_7);
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_9));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_9), sizeof(_ORBIT_tmpvar_9));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_9));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).suite_id),
+				     sizeof((*package).
+					    suite_id[_ORBIT_tmpvar_8]) *
+				     _ORBIT_tmpvar_9);
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_11));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_11), sizeof(_ORBIT_tmpvar_11));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_11));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
+				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_13));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_13), sizeof(_ORBIT_tmpvar_13));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_13));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
+				     _ORBIT_tmpvar_13);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_15));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_15), sizeof(_ORBIT_tmpvar_15));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_15));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).release),
+				     sizeof((*package).
+					    release[_ORBIT_tmpvar_14]) *
+				     _ORBIT_tmpvar_15);
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17), sizeof(_ORBIT_tmpvar_17));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_17));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).summary),
+				     sizeof((*package).
+					    summary[_ORBIT_tmpvar_16]) *
+				     _ORBIT_tmpvar_17);
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_19));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_19), sizeof(_ORBIT_tmpvar_19));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_19));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).description),
+				     sizeof((*package).
+					    description[_ORBIT_tmpvar_18]) *
+				     _ORBIT_tmpvar_19);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_21));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_21), sizeof(_ORBIT_tmpvar_21));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_21));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).md5),
+				     sizeof((*package).
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).status),
+				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).provides._length));
+	 memcpy(_ORBIT_t, &((*package).provides._length),
+		sizeof((*package).provides._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).provides._length));
+      }
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_45));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).provides.
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
+	       memcpy(_ORBIT_t,
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
+		      sizeof((*package).provides.
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).provides.
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
@@ -1358,8 +4875,10 @@ GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check
 CORBA_boolean
 GNOME_Trilobite_Eazel_InstallCallback_preflight_check
    (GNOME_Trilobite_Eazel_InstallCallback _obj,
-    const CORBA_char * xml_packages, const CORBA_long total_size,
-    const CORBA_long num_packages, CORBA_Environment * ev)
+    const GNOME_Trilobite_Eazel_Operation op,
+    const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+    const CORBA_long total_size, const CORBA_long num_packages,
+    CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -1374,7 +4893,7 @@ GNOME_Trilobite_Eazel_InstallCallback_preflight_check
       _ORBIT_retval =
 	 ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
 	  vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
-	 preflight_check(_obj->servant, xml_packages, total_size,
+	 preflight_check(_obj->servant, op, package_tree, total_size,
 			 num_packages, ev);
       return _ORBIT_retval;
    }
@@ -1398,7 +4917,55 @@ GNOME_Trilobite_Eazel_InstallCallback_preflight_check
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 20 };
       register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_1;
+      CORBA_unsigned_long _ORBIT_tmpvar_2;
+      register CORBA_unsigned_long _ORBIT_tmpvar_3;
+      CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      CORBA_unsigned_long _ORBIT_tmpvar_10;
+      register CORBA_unsigned_long _ORBIT_tmpvar_11;
+      CORBA_unsigned_long _ORBIT_tmpvar_12;
+      register CORBA_unsigned_long _ORBIT_tmpvar_13;
+      CORBA_unsigned_long _ORBIT_tmpvar_14;
+      register CORBA_unsigned_long _ORBIT_tmpvar_15;
+      CORBA_unsigned_long _ORBIT_tmpvar_16;
+      register CORBA_unsigned_long _ORBIT_tmpvar_17;
+      CORBA_unsigned_long _ORBIT_tmpvar_18;
+      register CORBA_unsigned_long _ORBIT_tmpvar_19;
+      CORBA_unsigned_long _ORBIT_tmpvar_20;
+      register CORBA_unsigned_long _ORBIT_tmpvar_21;
+      CORBA_unsigned_long _ORBIT_tmpvar_22;
+      register CORBA_unsigned_long _ORBIT_tmpvar_23;
+      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      register CORBA_unsigned_long _ORBIT_tmpvar_26;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_29;
+      register CORBA_unsigned_long _ORBIT_tmpvar_30;
+      CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -1410,28 +4977,2473 @@ GNOME_Trilobite_Eazel_InstallCallback_preflight_check
       _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
       if (!_ORBIT_send_buffer)
 	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(xml_packages) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(op), sizeof(op));
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 _ORBIT_t = alloca(sizeof((*package_tree)._length));
+	 memcpy(_ORBIT_t, &((*package_tree)._length),
+		sizeof((*package_tree)._length));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
+					sizeof((*package_tree)._length));
       }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (xml_packages),
-				     sizeof(xml_packages[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
+      for (_ORBIT_tmpvar_0 = 0; _ORBIT_tmpvar_0 < (*package_tree)._length;
+	   _ORBIT_tmpvar_0++) {
+	 _ORBIT_tmpvar_2 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2), sizeof(_ORBIT_tmpvar_2));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_2));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  name[_ORBIT_tmpvar_1]) *
+					   _ORBIT_tmpvar_2);
+	 }
+	 _ORBIT_tmpvar_4 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_4));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].version),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  version[_ORBIT_tmpvar_3]) *
+					   _ORBIT_tmpvar_4);
+	 }
+	 _ORBIT_tmpvar_6 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].filename) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_6));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].filename),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filename[_ORBIT_tmpvar_5]) *
+					   _ORBIT_tmpvar_6);
+	 }
+	 _ORBIT_tmpvar_8 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_8));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_8), sizeof(_ORBIT_tmpvar_8));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_8));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  eazel_id[_ORBIT_tmpvar_7]) *
+					   _ORBIT_tmpvar_8);
+	 }
+	 _ORBIT_tmpvar_10 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_10));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_10), sizeof(_ORBIT_tmpvar_10));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_10));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  suite_id[_ORBIT_tmpvar_9]) *
+					   _ORBIT_tmpvar_10);
+	 }
+	 _ORBIT_tmpvar_12 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_12));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_12), sizeof(_ORBIT_tmpvar_12));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_12));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  archtype[_ORBIT_tmpvar_11])
+					   * _ORBIT_tmpvar_12);
+	 }
+	 _ORBIT_tmpvar_14 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		   name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_14));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_14), sizeof(_ORBIT_tmpvar_14));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_14));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       name[_ORBIT_tmpvar_13]) * _ORBIT_tmpvar_14);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		    name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  distribution.name[_ORBIT_tmpvar_13]) *
+		   _ORBIT_tmpvar_14);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.
+						  name[_ORBIT_tmpvar_13]) *
+					   _ORBIT_tmpvar_14);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       major));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			major),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.major));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.major));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       minor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			minor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.minor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.minor));
+	 }
+	 _ORBIT_tmpvar_16 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].release) + 1;
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_16));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_16), sizeof(_ORBIT_tmpvar_16));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_16));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].release),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  release[_ORBIT_tmpvar_15]) *
+					   _ORBIT_tmpvar_16);
+	 }
+	 _ORBIT_tmpvar_18 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].summary) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_18));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_18), sizeof(_ORBIT_tmpvar_18));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_18));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].summary),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  summary[_ORBIT_tmpvar_17]) *
+					   _ORBIT_tmpvar_18);
+	 }
+	 _ORBIT_tmpvar_20 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].description) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_20));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_20), sizeof(_ORBIT_tmpvar_20));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_20));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].description),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  description
+						  [_ORBIT_tmpvar_19]) *
+					   _ORBIT_tmpvar_20);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     bytesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  bytesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     filesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     toplevel));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  toplevel));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     anchor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  anchor));
+	 }
+	 _ORBIT_tmpvar_22 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_22));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_22), sizeof(_ORBIT_tmpvar_22));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_22));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  install_root
+						  [_ORBIT_tmpvar_21]) *
+					   _ORBIT_tmpvar_22);
+	 }
+	 _ORBIT_tmpvar_24 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_24));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].md5),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  md5[_ORBIT_tmpvar_23]) *
+					   _ORBIT_tmpvar_24);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       modify_status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			modify_status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modify_status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modify_status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  depends._length));
+	 }
+	 for (_ORBIT_tmpvar_25 = 0;
+	      _ORBIT_tmpvar_25 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].depends._length;
+	      _ORBIT_tmpvar_25++) {
+	    _ORBIT_tmpvar_27 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].sense) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				depends._buffer[_ORBIT_tmpvar_25].
+				sense[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     sense[_ORBIT_tmpvar_26])
+					      * _ORBIT_tmpvar_27);
+	    }
+	    _ORBIT_tmpvar_29 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].version) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_29));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_29),
+		      sizeof(_ORBIT_tmpvar_29));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_29));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].version),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     version
+						     [_ORBIT_tmpvar_28]) *
+					      _ORBIT_tmpvar_29);
+	    }
+	    _ORBIT_tmpvar_31 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_31));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_31),
+		      sizeof(_ORBIT_tmpvar_31));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_31));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  package_md5[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     package_md5[_ORBIT_tmpvar_30]) *
+		      _ORBIT_tmpvar_31);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     package_md5
+						     [_ORBIT_tmpvar_30]) *
+					      _ORBIT_tmpvar_31);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  breaks._length));
+	 }
+	 for (_ORBIT_tmpvar_32 = 0;
+	      _ORBIT_tmpvar_32 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks._length;
+	      _ORBIT_tmpvar_32++) {
+	    _ORBIT_tmpvar_34 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+		      sizeof(_ORBIT_tmpvar_34));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_34));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].
+			  package_md5[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _buffer[_ORBIT_tmpvar_32].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].
+			     package_md5[_ORBIT_tmpvar_33]) *
+		      _ORBIT_tmpvar_34);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].
+						     package_md5
+						     [_ORBIT_tmpvar_33]) *
+					      _ORBIT_tmpvar_34);
+	    }
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_buffer[_ORBIT_tmpvar_32].u._d),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].u._d));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].u.
+						     _d));
+	    }
+	    switch ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		    _buffer[_ORBIT_tmpvar_32].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				_length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.files.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_35 = 0;
+		      _ORBIT_tmpvar_35 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.files._length;
+		      _ORBIT_tmpvar_35++) {
+		    _ORBIT_tmpvar_37 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.files.
+			      _buffer[_ORBIT_tmpvar_35]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			      sizeof(_ORBIT_tmpvar_37));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_37));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				  _buffer[_ORBIT_tmpvar_35][_ORBIT_tmpvar_36])
+				 * _ORBIT_tmpvar_37);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _buffer[_ORBIT_tmpvar_35]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files.
+				     _buffer[_ORBIT_tmpvar_35]
+				     [_ORBIT_tmpvar_36]) * _ORBIT_tmpvar_37);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.files.
+							     _buffer
+							     [_ORBIT_tmpvar_35]
+							     [_ORBIT_tmpvar_36])
+						      * _ORBIT_tmpvar_37);
+		    }
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				features._length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.features.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_38 = 0;
+		      _ORBIT_tmpvar_38 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.features._length;
+		      _ORBIT_tmpvar_38++) {
+		    _ORBIT_tmpvar_40 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.features.
+			      _buffer[_ORBIT_tmpvar_38]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+			      sizeof(_ORBIT_tmpvar_40));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_40));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				  features.
+				  _buffer[_ORBIT_tmpvar_38][_ORBIT_tmpvar_39])
+				 * _ORBIT_tmpvar_40);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _buffer[_ORBIT_tmpvar_38]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.features.
+							     _buffer
+							     [_ORBIT_tmpvar_38]
+							     [_ORBIT_tmpvar_39])
+						      * _ORBIT_tmpvar_40);
+		    }
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modifies._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modifies._length));
+	 }
+	 for (_ORBIT_tmpvar_41 = 0;
+	      _ORBIT_tmpvar_41 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].modifies._length;
+	      _ORBIT_tmpvar_41++) {
+	    _ORBIT_tmpvar_43 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		      _buffer[_ORBIT_tmpvar_41]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+		      sizeof(_ORBIT_tmpvar_43));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_43));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				modifies.
+				_buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     modifies.
+						     _buffer[_ORBIT_tmpvar_41]
+						     [_ORBIT_tmpvar_42]) *
+					      _ORBIT_tmpvar_43);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     provides._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  provides._length));
+	 }
+	 for (_ORBIT_tmpvar_44 = 0;
+	      _ORBIT_tmpvar_44 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].provides._length;
+	      _ORBIT_tmpvar_44++) {
+	    _ORBIT_tmpvar_46 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		      _buffer[_ORBIT_tmpvar_44]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+		      sizeof(_ORBIT_tmpvar_46));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_46));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				provides.
+				_buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     provides.
+						     _buffer[_ORBIT_tmpvar_44]
+						     [_ORBIT_tmpvar_45]) *
+					      _ORBIT_tmpvar_46);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     features._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  features._length));
+	 }
+	 for (_ORBIT_tmpvar_47 = 0;
+	      _ORBIT_tmpvar_47 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].features._length;
+	      _ORBIT_tmpvar_47++) {
+	    _ORBIT_tmpvar_49 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		      _buffer[_ORBIT_tmpvar_47]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+		      sizeof(_ORBIT_tmpvar_49));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_49));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				features.
+				_buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     features.
+						     _buffer[_ORBIT_tmpvar_47]
+						     [_ORBIT_tmpvar_48]) *
+					      _ORBIT_tmpvar_49);
+	    }
+	 }
+
+      }
+
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &(total_size), sizeof(total_size));
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &(num_packages), sizeof(num_packages));
+      giop_send_buffer_write(_ORBIT_send_buffer);
+      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      _ORBIT_send_buffer = NULL;
+   }
+   {				/* demarshalling */
+      register guchar *_ORBIT_curptr;
+
+      _ORBIT_recv_buffer =
+	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
+      if (!_ORBIT_recv_buffer)
+	 goto _ORBIT_system_exception;
+      _ORBIT_completion_status = CORBA_COMPLETED_YES;
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
+      } else {
+	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
+      }
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      return _ORBIT_retval;
+    _ORBIT_system_exception:
+      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
+				 _ORBIT_completion_status);
+      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+      giop_send_buffer_unuse(_ORBIT_send_buffer);
+      return _ORBIT_retval;
+    _ORBIT_msg_exception:
+      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
+	  GIOP_LOCATION_FORWARD) {
+	 if (_obj->forward_locations != NULL)
+	    ORBit_delete_profiles(_obj->forward_locations);
+	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
+	 _cnx = ORBit_object_get_forwarded_connection(_obj);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+
+	 goto _ORBIT_retry_request;
+      } else {
+	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
+	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
+	 return _ORBIT_retval;
+      }
+   }
+}
+CORBA_boolean
+GNOME_Trilobite_Eazel_InstallCallback_save_transaction
+   (GNOME_Trilobite_Eazel_InstallCallback _obj,
+    const GNOME_Trilobite_Eazel_Operation op,
+    const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+    CORBA_Environment * ev)
+{
+   register GIOP_unsigned_long _ORBIT_request_id,
+    _ORBIT_system_exception_minor;
+   register CORBA_completion_status _ORBIT_completion_status;
+   register GIOPSendBuffer *_ORBIT_send_buffer;
+   register GIOPRecvBuffer *_ORBIT_recv_buffer;
+   register GIOPConnection *_cnx;
+   CORBA_boolean _ORBIT_retval;
+
+   if (_obj->servant && _obj->vepv
+       && GNOME_Trilobite_Eazel_InstallCallback__classid) {
+      _ORBIT_retval =
+	 ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
+	  vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
+	 save_transaction(_obj->servant, op, package_tree, ev);
+      return _ORBIT_retval;
+   }
+   if (0)
+      return *(&_ORBIT_retval);
+   _cnx = ORBit_object_get_connection(_obj);
+ _ORBIT_retry_request:
+   _ORBIT_send_buffer = NULL;
+   _ORBIT_recv_buffer = NULL;
+   _ORBIT_completion_status = CORBA_COMPLETED_NO;
+   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
+   {				/* marshalling */
+      static const struct
+      {
+	 CORBA_unsigned_long len;
+	 char opname[17];
+      }
+      _ORBIT_operation_name_data =
+      {
+      17, "save_transaction"};
+      static const struct iovec _ORBIT_operation_vec =
+	 { (gpointer) & _ORBIT_operation_name_data, 21 };
+      register CORBA_unsigned_long _ORBIT_tmpvar_0;
+      register CORBA_unsigned_long _ORBIT_tmpvar_1;
+      CORBA_unsigned_long _ORBIT_tmpvar_2;
+      register CORBA_unsigned_long _ORBIT_tmpvar_3;
+      CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      CORBA_unsigned_long _ORBIT_tmpvar_10;
+      register CORBA_unsigned_long _ORBIT_tmpvar_11;
+      CORBA_unsigned_long _ORBIT_tmpvar_12;
+      register CORBA_unsigned_long _ORBIT_tmpvar_13;
+      CORBA_unsigned_long _ORBIT_tmpvar_14;
+      register CORBA_unsigned_long _ORBIT_tmpvar_15;
+      CORBA_unsigned_long _ORBIT_tmpvar_16;
+      register CORBA_unsigned_long _ORBIT_tmpvar_17;
+      CORBA_unsigned_long _ORBIT_tmpvar_18;
+      register CORBA_unsigned_long _ORBIT_tmpvar_19;
+      CORBA_unsigned_long _ORBIT_tmpvar_20;
+      register CORBA_unsigned_long _ORBIT_tmpvar_21;
+      CORBA_unsigned_long _ORBIT_tmpvar_22;
+      register CORBA_unsigned_long _ORBIT_tmpvar_23;
+      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      register CORBA_unsigned_long _ORBIT_tmpvar_26;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_29;
+      register CORBA_unsigned_long _ORBIT_tmpvar_30;
+      CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
+
+      _ORBIT_send_buffer =
+	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
+				      CORBA_TRUE,
+				      &(_obj->active_profile->object_key_vec),
+				      &_ORBIT_operation_vec,
+				      &ORBit_default_principal_iovec);
+
+      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
+      if (!_ORBIT_send_buffer)
+	 goto _ORBIT_system_exception;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(op), sizeof(op));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package_tree)._length));
+	 memcpy(_ORBIT_t, &((*package_tree)._length),
+		sizeof((*package_tree)._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package_tree)._length));
+      }
+      for (_ORBIT_tmpvar_0 = 0; _ORBIT_tmpvar_0 < (*package_tree)._length;
+	   _ORBIT_tmpvar_0++) {
+	 _ORBIT_tmpvar_2 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2), sizeof(_ORBIT_tmpvar_2));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_2));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  name[_ORBIT_tmpvar_1]) *
+					   _ORBIT_tmpvar_2);
+	 }
+	 _ORBIT_tmpvar_4 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_4));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].version),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  version[_ORBIT_tmpvar_3]) *
+					   _ORBIT_tmpvar_4);
+	 }
+	 _ORBIT_tmpvar_6 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].filename) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_6));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].filename),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filename[_ORBIT_tmpvar_5]) *
+					   _ORBIT_tmpvar_6);
+	 }
+	 _ORBIT_tmpvar_8 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_8));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_8), sizeof(_ORBIT_tmpvar_8));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_8));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  eazel_id[_ORBIT_tmpvar_7]) *
+					   _ORBIT_tmpvar_8);
+	 }
+	 _ORBIT_tmpvar_10 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_10));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_10), sizeof(_ORBIT_tmpvar_10));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_10));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  suite_id[_ORBIT_tmpvar_9]) *
+					   _ORBIT_tmpvar_10);
+	 }
+	 _ORBIT_tmpvar_12 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_12));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_12), sizeof(_ORBIT_tmpvar_12));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_12));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  archtype[_ORBIT_tmpvar_11])
+					   * _ORBIT_tmpvar_12);
+	 }
+	 _ORBIT_tmpvar_14 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		   name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_14));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_14), sizeof(_ORBIT_tmpvar_14));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_14));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       name[_ORBIT_tmpvar_13]) * _ORBIT_tmpvar_14);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		    name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  distribution.name[_ORBIT_tmpvar_13]) *
+		   _ORBIT_tmpvar_14);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.
+						  name[_ORBIT_tmpvar_13]) *
+					   _ORBIT_tmpvar_14);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       major));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			major),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.major));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.major));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       minor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			minor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.minor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.minor));
+	 }
+	 _ORBIT_tmpvar_16 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].release) + 1;
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_16));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_16), sizeof(_ORBIT_tmpvar_16));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_16));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].release),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  release[_ORBIT_tmpvar_15]) *
+					   _ORBIT_tmpvar_16);
+	 }
+	 _ORBIT_tmpvar_18 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].summary) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_18));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_18), sizeof(_ORBIT_tmpvar_18));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_18));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].summary),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  summary[_ORBIT_tmpvar_17]) *
+					   _ORBIT_tmpvar_18);
+	 }
+	 _ORBIT_tmpvar_20 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].description) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_20));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_20), sizeof(_ORBIT_tmpvar_20));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_20));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].description),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  description
+						  [_ORBIT_tmpvar_19]) *
+					   _ORBIT_tmpvar_20);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     bytesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  bytesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     filesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     toplevel));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  toplevel));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     anchor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  anchor));
+	 }
+	 _ORBIT_tmpvar_22 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_22));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_22), sizeof(_ORBIT_tmpvar_22));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_22));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  install_root
+						  [_ORBIT_tmpvar_21]) *
+					   _ORBIT_tmpvar_22);
+	 }
+	 _ORBIT_tmpvar_24 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_24));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].md5),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  md5[_ORBIT_tmpvar_23]) *
+					   _ORBIT_tmpvar_24);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       modify_status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			modify_status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modify_status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modify_status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  depends._length));
+	 }
+	 for (_ORBIT_tmpvar_25 = 0;
+	      _ORBIT_tmpvar_25 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].depends._length;
+	      _ORBIT_tmpvar_25++) {
+	    _ORBIT_tmpvar_27 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].sense) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				depends._buffer[_ORBIT_tmpvar_25].
+				sense[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     sense[_ORBIT_tmpvar_26])
+					      * _ORBIT_tmpvar_27);
+	    }
+	    _ORBIT_tmpvar_29 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].version) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_29));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_29),
+		      sizeof(_ORBIT_tmpvar_29));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_29));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].version),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     version
+						     [_ORBIT_tmpvar_28]) *
+					      _ORBIT_tmpvar_29);
+	    }
+	    _ORBIT_tmpvar_31 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_31));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_31),
+		      sizeof(_ORBIT_tmpvar_31));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_31));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  package_md5[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     package_md5[_ORBIT_tmpvar_30]) *
+		      _ORBIT_tmpvar_31);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     package_md5
+						     [_ORBIT_tmpvar_30]) *
+					      _ORBIT_tmpvar_31);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  breaks._length));
+	 }
+	 for (_ORBIT_tmpvar_32 = 0;
+	      _ORBIT_tmpvar_32 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks._length;
+	      _ORBIT_tmpvar_32++) {
+	    _ORBIT_tmpvar_34 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+		      sizeof(_ORBIT_tmpvar_34));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_34));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].
+			  package_md5[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _buffer[_ORBIT_tmpvar_32].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].
+			     package_md5[_ORBIT_tmpvar_33]) *
+		      _ORBIT_tmpvar_34);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].
+						     package_md5
+						     [_ORBIT_tmpvar_33]) *
+					      _ORBIT_tmpvar_34);
+	    }
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_buffer[_ORBIT_tmpvar_32].u._d),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].u._d));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].u.
+						     _d));
+	    }
+	    switch ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		    _buffer[_ORBIT_tmpvar_32].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				_length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.files.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_35 = 0;
+		      _ORBIT_tmpvar_35 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.files._length;
+		      _ORBIT_tmpvar_35++) {
+		    _ORBIT_tmpvar_37 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.files.
+			      _buffer[_ORBIT_tmpvar_35]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			      sizeof(_ORBIT_tmpvar_37));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_37));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				  _buffer[_ORBIT_tmpvar_35][_ORBIT_tmpvar_36])
+				 * _ORBIT_tmpvar_37);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _buffer[_ORBIT_tmpvar_35]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files.
+				     _buffer[_ORBIT_tmpvar_35]
+				     [_ORBIT_tmpvar_36]) * _ORBIT_tmpvar_37);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.files.
+							     _buffer
+							     [_ORBIT_tmpvar_35]
+							     [_ORBIT_tmpvar_36])
+						      * _ORBIT_tmpvar_37);
+		    }
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				features._length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.features.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_38 = 0;
+		      _ORBIT_tmpvar_38 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.features._length;
+		      _ORBIT_tmpvar_38++) {
+		    _ORBIT_tmpvar_40 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.features.
+			      _buffer[_ORBIT_tmpvar_38]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+			      sizeof(_ORBIT_tmpvar_40));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_40));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				  features.
+				  _buffer[_ORBIT_tmpvar_38][_ORBIT_tmpvar_39])
+				 * _ORBIT_tmpvar_40);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _buffer[_ORBIT_tmpvar_38]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.features.
+							     _buffer
+							     [_ORBIT_tmpvar_38]
+							     [_ORBIT_tmpvar_39])
+						      * _ORBIT_tmpvar_40);
+		    }
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modifies._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modifies._length));
+	 }
+	 for (_ORBIT_tmpvar_41 = 0;
+	      _ORBIT_tmpvar_41 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].modifies._length;
+	      _ORBIT_tmpvar_41++) {
+	    _ORBIT_tmpvar_43 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		      _buffer[_ORBIT_tmpvar_41]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+		      sizeof(_ORBIT_tmpvar_43));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_43));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				modifies.
+				_buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     modifies.
+						     _buffer[_ORBIT_tmpvar_41]
+						     [_ORBIT_tmpvar_42]) *
+					      _ORBIT_tmpvar_43);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     provides._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  provides._length));
+	 }
+	 for (_ORBIT_tmpvar_44 = 0;
+	      _ORBIT_tmpvar_44 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].provides._length;
+	      _ORBIT_tmpvar_44++) {
+	    _ORBIT_tmpvar_46 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		      _buffer[_ORBIT_tmpvar_44]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+		      sizeof(_ORBIT_tmpvar_46));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_46));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				provides.
+				_buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     provides.
+						     _buffer[_ORBIT_tmpvar_44]
+						     [_ORBIT_tmpvar_45]) *
+					      _ORBIT_tmpvar_46);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     features._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  features._length));
+	 }
+	 for (_ORBIT_tmpvar_47 = 0;
+	      _ORBIT_tmpvar_47 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].features._length;
+	      _ORBIT_tmpvar_47++) {
+	    _ORBIT_tmpvar_49 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		      _buffer[_ORBIT_tmpvar_47]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+		      sizeof(_ORBIT_tmpvar_49));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_49));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				features.
+				_buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     features.
+						     _buffer[_ORBIT_tmpvar_47]
+						     [_ORBIT_tmpvar_48]) *
+					      _ORBIT_tmpvar_49);
+	    }
+	 }
+
+      }
+
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);
@@ -1543,8 +7555,32 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -1624,7 +7660,7 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1637,11 +7673,11 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1654,19 +7690,13 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -1677,13 +7707,19 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -1694,11 +7730,11 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1711,19 +7747,11 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1736,11 +7764,25 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1753,15 +7795,410 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -1772,20 +8209,20 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -1793,19 +8230,68 @@ GNOME_Trilobite_Eazel_InstallCallback_install_progress
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
@@ -1844,7 +8330,11 @@ void
 GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
    (GNOME_Trilobite_Eazel_InstallCallback _obj,
     const GNOME_Trilobite_Eazel_PackageDataStruct * package,
-    const CORBA_long amount, const CORBA_long total, CORBA_Environment * ev)
+    const CORBA_long package_num, const CORBA_long num_packages,
+    const CORBA_long package_size_completed,
+    const CORBA_long package_size_total,
+    const CORBA_long total_size_completed, const CORBA_long total_size,
+    CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -1857,7 +8347,9 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
        && GNOME_Trilobite_Eazel_InstallCallback__classid) {
       ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
        vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
-	 uninstall_progress(_obj->servant, package, amount, total, ev);
+	 uninstall_progress(_obj->servant, package, package_num, num_packages,
+			    package_size_completed, package_size_total,
+			    total_size_completed, total_size, ev);
       return;
    }
    _cnx = ORBit_object_get_connection(_obj);
@@ -1899,8 +8391,32 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -1980,7 +8496,7 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -1993,11 +8509,11 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2010,19 +8526,13 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2033,13 +8543,19 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2050,11 +8566,11 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2067,19 +8583,11 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2092,11 +8600,25 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2109,15 +8631,410 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -2128,20 +9045,20 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -2149,28 +9066,88 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_progress
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &(amount), sizeof(amount));
+				     &(package_num), sizeof(package_num));
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &(total), sizeof(total));
+				     &(num_packages), sizeof(num_packages));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(package_size_completed),
+				     sizeof(package_size_completed));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(package_size_total),
+				     sizeof(package_size_total));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(total_size_completed),
+				     sizeof(total_size_completed));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &(total_size), sizeof(total_size));
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);
@@ -2245,8 +9222,32 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -2326,7 +9327,7 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2339,11 +9340,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2356,19 +9357,13 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2379,13 +9374,19 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2396,11 +9397,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2413,19 +9414,11 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2438,11 +9431,25 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2455,15 +9462,410 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -2474,20 +9876,20 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -2495,19 +9897,68 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
@@ -2558,7 +10009,8 @@ GNOME_Trilobite_Eazel_InstallCallback_download_failed
 void
 GNOME_Trilobite_Eazel_InstallCallback_install_failed
    (GNOME_Trilobite_Eazel_InstallCallback _obj,
-    const CORBA_char * xml_package, CORBA_Environment * ev)
+    const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+    CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -2571,7 +10023,7 @@ GNOME_Trilobite_Eazel_InstallCallback_install_failed
        && GNOME_Trilobite_Eazel_InstallCallback__classid) {
       ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
        vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
-	 install_failed(_obj->servant, xml_package, ev);
+	 install_failed(_obj->servant, package_tree, ev);
       return;
    }
    _cnx = ORBit_object_get_connection(_obj);
@@ -2592,7 +10044,55 @@ GNOME_Trilobite_Eazel_InstallCallback_install_failed
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 19 };
       register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_1;
+      CORBA_unsigned_long _ORBIT_tmpvar_2;
+      register CORBA_unsigned_long _ORBIT_tmpvar_3;
+      CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      CORBA_unsigned_long _ORBIT_tmpvar_10;
+      register CORBA_unsigned_long _ORBIT_tmpvar_11;
+      CORBA_unsigned_long _ORBIT_tmpvar_12;
+      register CORBA_unsigned_long _ORBIT_tmpvar_13;
+      CORBA_unsigned_long _ORBIT_tmpvar_14;
+      register CORBA_unsigned_long _ORBIT_tmpvar_15;
+      CORBA_unsigned_long _ORBIT_tmpvar_16;
+      register CORBA_unsigned_long _ORBIT_tmpvar_17;
+      CORBA_unsigned_long _ORBIT_tmpvar_18;
+      register CORBA_unsigned_long _ORBIT_tmpvar_19;
+      CORBA_unsigned_long _ORBIT_tmpvar_20;
+      register CORBA_unsigned_long _ORBIT_tmpvar_21;
+      CORBA_unsigned_long _ORBIT_tmpvar_22;
+      register CORBA_unsigned_long _ORBIT_tmpvar_23;
+      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      register CORBA_unsigned_long _ORBIT_tmpvar_26;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_29;
+      register CORBA_unsigned_long _ORBIT_tmpvar_30;
+      CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -2604,22 +10104,1160 @@ GNOME_Trilobite_Eazel_InstallCallback_install_failed
       _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
       if (!_ORBIT_send_buffer)
 	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(xml_package) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 _ORBIT_t = alloca(sizeof((*package_tree)._length));
+	 memcpy(_ORBIT_t, &((*package_tree)._length),
+		sizeof((*package_tree)._length));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
+					sizeof((*package_tree)._length));
       }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (xml_package),
-				     sizeof(xml_package[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
+      for (_ORBIT_tmpvar_0 = 0; _ORBIT_tmpvar_0 < (*package_tree)._length;
+	   _ORBIT_tmpvar_0++) {
+	 _ORBIT_tmpvar_2 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2), sizeof(_ORBIT_tmpvar_2));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_2));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  name[_ORBIT_tmpvar_1]) *
+					   _ORBIT_tmpvar_2);
+	 }
+	 _ORBIT_tmpvar_4 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_4));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].version),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  version[_ORBIT_tmpvar_3]) *
+					   _ORBIT_tmpvar_4);
+	 }
+	 _ORBIT_tmpvar_6 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].filename) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_6));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].filename),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filename[_ORBIT_tmpvar_5]) *
+					   _ORBIT_tmpvar_6);
+	 }
+	 _ORBIT_tmpvar_8 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_8));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_8), sizeof(_ORBIT_tmpvar_8));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_8));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  eazel_id[_ORBIT_tmpvar_7]) *
+					   _ORBIT_tmpvar_8);
+	 }
+	 _ORBIT_tmpvar_10 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_10));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_10), sizeof(_ORBIT_tmpvar_10));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_10));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  suite_id[_ORBIT_tmpvar_9]) *
+					   _ORBIT_tmpvar_10);
+	 }
+	 _ORBIT_tmpvar_12 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_12));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_12), sizeof(_ORBIT_tmpvar_12));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_12));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  archtype[_ORBIT_tmpvar_11])
+					   * _ORBIT_tmpvar_12);
+	 }
+	 _ORBIT_tmpvar_14 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		   name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_14));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_14), sizeof(_ORBIT_tmpvar_14));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_14));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       name[_ORBIT_tmpvar_13]) * _ORBIT_tmpvar_14);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		    name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  distribution.name[_ORBIT_tmpvar_13]) *
+		   _ORBIT_tmpvar_14);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.
+						  name[_ORBIT_tmpvar_13]) *
+					   _ORBIT_tmpvar_14);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       major));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			major),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.major));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.major));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       minor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			minor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.minor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.minor));
+	 }
+	 _ORBIT_tmpvar_16 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].release) + 1;
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_16));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_16), sizeof(_ORBIT_tmpvar_16));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_16));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].release),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  release[_ORBIT_tmpvar_15]) *
+					   _ORBIT_tmpvar_16);
+	 }
+	 _ORBIT_tmpvar_18 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].summary) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_18));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_18), sizeof(_ORBIT_tmpvar_18));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_18));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].summary),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  summary[_ORBIT_tmpvar_17]) *
+					   _ORBIT_tmpvar_18);
+	 }
+	 _ORBIT_tmpvar_20 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].description) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_20));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_20), sizeof(_ORBIT_tmpvar_20));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_20));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].description),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  description
+						  [_ORBIT_tmpvar_19]) *
+					   _ORBIT_tmpvar_20);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     bytesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  bytesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     filesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     toplevel));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  toplevel));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     anchor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  anchor));
+	 }
+	 _ORBIT_tmpvar_22 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_22));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_22), sizeof(_ORBIT_tmpvar_22));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_22));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  install_root
+						  [_ORBIT_tmpvar_21]) *
+					   _ORBIT_tmpvar_22);
+	 }
+	 _ORBIT_tmpvar_24 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_24));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].md5),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  md5[_ORBIT_tmpvar_23]) *
+					   _ORBIT_tmpvar_24);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       modify_status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			modify_status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modify_status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modify_status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  depends._length));
+	 }
+	 for (_ORBIT_tmpvar_25 = 0;
+	      _ORBIT_tmpvar_25 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].depends._length;
+	      _ORBIT_tmpvar_25++) {
+	    _ORBIT_tmpvar_27 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].sense) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				depends._buffer[_ORBIT_tmpvar_25].
+				sense[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     sense[_ORBIT_tmpvar_26])
+					      * _ORBIT_tmpvar_27);
+	    }
+	    _ORBIT_tmpvar_29 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].version) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_29));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_29),
+		      sizeof(_ORBIT_tmpvar_29));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_29));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].version),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     version
+						     [_ORBIT_tmpvar_28]) *
+					      _ORBIT_tmpvar_29);
+	    }
+	    _ORBIT_tmpvar_31 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_31));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_31),
+		      sizeof(_ORBIT_tmpvar_31));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_31));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  package_md5[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     package_md5[_ORBIT_tmpvar_30]) *
+		      _ORBIT_tmpvar_31);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     package_md5
+						     [_ORBIT_tmpvar_30]) *
+					      _ORBIT_tmpvar_31);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  breaks._length));
+	 }
+	 for (_ORBIT_tmpvar_32 = 0;
+	      _ORBIT_tmpvar_32 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks._length;
+	      _ORBIT_tmpvar_32++) {
+	    _ORBIT_tmpvar_34 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+		      sizeof(_ORBIT_tmpvar_34));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_34));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].
+			  package_md5[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _buffer[_ORBIT_tmpvar_32].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].
+			     package_md5[_ORBIT_tmpvar_33]) *
+		      _ORBIT_tmpvar_34);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].
+						     package_md5
+						     [_ORBIT_tmpvar_33]) *
+					      _ORBIT_tmpvar_34);
+	    }
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_buffer[_ORBIT_tmpvar_32].u._d),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].u._d));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].u.
+						     _d));
+	    }
+	    switch ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		    _buffer[_ORBIT_tmpvar_32].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				_length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.files.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_35 = 0;
+		      _ORBIT_tmpvar_35 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.files._length;
+		      _ORBIT_tmpvar_35++) {
+		    _ORBIT_tmpvar_37 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.files.
+			      _buffer[_ORBIT_tmpvar_35]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			      sizeof(_ORBIT_tmpvar_37));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_37));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				  _buffer[_ORBIT_tmpvar_35][_ORBIT_tmpvar_36])
+				 * _ORBIT_tmpvar_37);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _buffer[_ORBIT_tmpvar_35]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files.
+				     _buffer[_ORBIT_tmpvar_35]
+				     [_ORBIT_tmpvar_36]) * _ORBIT_tmpvar_37);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.files.
+							     _buffer
+							     [_ORBIT_tmpvar_35]
+							     [_ORBIT_tmpvar_36])
+						      * _ORBIT_tmpvar_37);
+		    }
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				features._length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.features.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_38 = 0;
+		      _ORBIT_tmpvar_38 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.features._length;
+		      _ORBIT_tmpvar_38++) {
+		    _ORBIT_tmpvar_40 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.features.
+			      _buffer[_ORBIT_tmpvar_38]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+			      sizeof(_ORBIT_tmpvar_40));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_40));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				  features.
+				  _buffer[_ORBIT_tmpvar_38][_ORBIT_tmpvar_39])
+				 * _ORBIT_tmpvar_40);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _buffer[_ORBIT_tmpvar_38]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.features.
+							     _buffer
+							     [_ORBIT_tmpvar_38]
+							     [_ORBIT_tmpvar_39])
+						      * _ORBIT_tmpvar_40);
+		    }
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modifies._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modifies._length));
+	 }
+	 for (_ORBIT_tmpvar_41 = 0;
+	      _ORBIT_tmpvar_41 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].modifies._length;
+	      _ORBIT_tmpvar_41++) {
+	    _ORBIT_tmpvar_43 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		      _buffer[_ORBIT_tmpvar_41]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+		      sizeof(_ORBIT_tmpvar_43));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_43));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				modifies.
+				_buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     modifies.
+						     _buffer[_ORBIT_tmpvar_41]
+						     [_ORBIT_tmpvar_42]) *
+					      _ORBIT_tmpvar_43);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     provides._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  provides._length));
+	 }
+	 for (_ORBIT_tmpvar_44 = 0;
+	      _ORBIT_tmpvar_44 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].provides._length;
+	      _ORBIT_tmpvar_44++) {
+	    _ORBIT_tmpvar_46 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		      _buffer[_ORBIT_tmpvar_44]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+		      sizeof(_ORBIT_tmpvar_46));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_46));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				provides.
+				_buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     provides.
+						     _buffer[_ORBIT_tmpvar_44]
+						     [_ORBIT_tmpvar_45]) *
+					      _ORBIT_tmpvar_46);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     features._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  features._length));
+	 }
+	 for (_ORBIT_tmpvar_47 = 0;
+	      _ORBIT_tmpvar_47 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].features._length;
+	      _ORBIT_tmpvar_47++) {
+	    _ORBIT_tmpvar_49 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		      _buffer[_ORBIT_tmpvar_47]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+		      sizeof(_ORBIT_tmpvar_49));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_49));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				features.
+				_buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     features.
+						     _buffer[_ORBIT_tmpvar_47]
+						     [_ORBIT_tmpvar_48]) *
+					      _ORBIT_tmpvar_49);
+	    }
+	 }
+
+      }
+
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);
@@ -2667,7 +11305,8 @@ GNOME_Trilobite_Eazel_InstallCallback_install_failed
 void
 GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
    (GNOME_Trilobite_Eazel_InstallCallback _obj,
-    const CORBA_char * xml_package, CORBA_Environment * ev)
+    const GNOME_Trilobite_Eazel_PackageDataStructList * package_tree,
+    CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -2680,7 +11319,7 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
        && GNOME_Trilobite_Eazel_InstallCallback__classid) {
       ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
        vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
-	 uninstall_failed(_obj->servant, xml_package, ev);
+	 uninstall_failed(_obj->servant, package_tree, ev);
       return;
    }
    _cnx = ORBit_object_get_connection(_obj);
@@ -2701,7 +11340,55 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 21 };
       register CORBA_unsigned_long _ORBIT_tmpvar_0;
-      CORBA_unsigned_long _ORBIT_tmpvar_1;
+      register CORBA_unsigned_long _ORBIT_tmpvar_1;
+      CORBA_unsigned_long _ORBIT_tmpvar_2;
+      register CORBA_unsigned_long _ORBIT_tmpvar_3;
+      CORBA_unsigned_long _ORBIT_tmpvar_4;
+      register CORBA_unsigned_long _ORBIT_tmpvar_5;
+      CORBA_unsigned_long _ORBIT_tmpvar_6;
+      register CORBA_unsigned_long _ORBIT_tmpvar_7;
+      CORBA_unsigned_long _ORBIT_tmpvar_8;
+      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      CORBA_unsigned_long _ORBIT_tmpvar_10;
+      register CORBA_unsigned_long _ORBIT_tmpvar_11;
+      CORBA_unsigned_long _ORBIT_tmpvar_12;
+      register CORBA_unsigned_long _ORBIT_tmpvar_13;
+      CORBA_unsigned_long _ORBIT_tmpvar_14;
+      register CORBA_unsigned_long _ORBIT_tmpvar_15;
+      CORBA_unsigned_long _ORBIT_tmpvar_16;
+      register CORBA_unsigned_long _ORBIT_tmpvar_17;
+      CORBA_unsigned_long _ORBIT_tmpvar_18;
+      register CORBA_unsigned_long _ORBIT_tmpvar_19;
+      CORBA_unsigned_long _ORBIT_tmpvar_20;
+      register CORBA_unsigned_long _ORBIT_tmpvar_21;
+      CORBA_unsigned_long _ORBIT_tmpvar_22;
+      register CORBA_unsigned_long _ORBIT_tmpvar_23;
+      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      register CORBA_unsigned_long _ORBIT_tmpvar_26;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_29;
+      register CORBA_unsigned_long _ORBIT_tmpvar_30;
+      CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -2713,22 +11400,1160 @@ GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed
       _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
       if (!_ORBIT_send_buffer)
 	 goto _ORBIT_system_exception;
-      _ORBIT_tmpvar_1 = strlen(xml_package) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_1));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_1), sizeof(_ORBIT_tmpvar_1));
+	 _ORBIT_t = alloca(sizeof((*package_tree)._length));
+	 memcpy(_ORBIT_t, &((*package_tree)._length),
+		sizeof((*package_tree)._length));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_1));
+					sizeof((*package_tree)._length));
       }
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     (xml_package),
-				     sizeof(xml_package[_ORBIT_tmpvar_0]) *
-				     _ORBIT_tmpvar_1);
+      for (_ORBIT_tmpvar_0 = 0; _ORBIT_tmpvar_0 < (*package_tree)._length;
+	   _ORBIT_tmpvar_0++) {
+	 _ORBIT_tmpvar_2 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2), sizeof(_ORBIT_tmpvar_2));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_2));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  name[_ORBIT_tmpvar_1]) *
+					   _ORBIT_tmpvar_2);
+	 }
+	 _ORBIT_tmpvar_4 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4), sizeof(_ORBIT_tmpvar_4));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_4));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].version),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  version[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  version[_ORBIT_tmpvar_3]) *
+					   _ORBIT_tmpvar_4);
+	 }
+	 _ORBIT_tmpvar_6 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].filename) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_6));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_6), sizeof(_ORBIT_tmpvar_6));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_6));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].filename),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  filename[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filename[_ORBIT_tmpvar_5]) *
+					   _ORBIT_tmpvar_6);
+	 }
+	 _ORBIT_tmpvar_8 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_8));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_8), sizeof(_ORBIT_tmpvar_8));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_8));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].eazel_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  eazel_id[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  eazel_id[_ORBIT_tmpvar_7]) *
+					   _ORBIT_tmpvar_8);
+	 }
+	 _ORBIT_tmpvar_10 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_10));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_10), sizeof(_ORBIT_tmpvar_10));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_10));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].suite_id),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  suite_id[_ORBIT_tmpvar_9]) * _ORBIT_tmpvar_10);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  suite_id[_ORBIT_tmpvar_9]) *
+					   _ORBIT_tmpvar_10);
+	 }
+	 _ORBIT_tmpvar_12 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_12));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_12), sizeof(_ORBIT_tmpvar_12));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_12));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].archtype),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  archtype[_ORBIT_tmpvar_11]) * _ORBIT_tmpvar_12);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  archtype[_ORBIT_tmpvar_11])
+					   * _ORBIT_tmpvar_12);
+	 }
+	 _ORBIT_tmpvar_14 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		   name) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_14));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_14), sizeof(_ORBIT_tmpvar_14));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_14));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       name[_ORBIT_tmpvar_13]) * _ORBIT_tmpvar_14);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		    name),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  distribution.name[_ORBIT_tmpvar_13]) *
+		   _ORBIT_tmpvar_14);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.
+						  name[_ORBIT_tmpvar_13]) *
+					   _ORBIT_tmpvar_14);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       major));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			major),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.major));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.major));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+		       minor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].distribution.
+			minor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     distribution.minor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  distribution.minor));
+	 }
+	 _ORBIT_tmpvar_16 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].release) + 1;
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_16));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_16), sizeof(_ORBIT_tmpvar_16));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_16));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].release),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  release[_ORBIT_tmpvar_15]) * _ORBIT_tmpvar_16);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  release[_ORBIT_tmpvar_15]) *
+					   _ORBIT_tmpvar_16);
+	 }
+	 _ORBIT_tmpvar_18 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].summary) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_18));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_18), sizeof(_ORBIT_tmpvar_18));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_18));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].summary),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  summary[_ORBIT_tmpvar_17]) * _ORBIT_tmpvar_18);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  summary[_ORBIT_tmpvar_17]) *
+					   _ORBIT_tmpvar_18);
+	 }
+	 _ORBIT_tmpvar_20 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].description) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_20));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_20), sizeof(_ORBIT_tmpvar_20));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_20));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].description),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  description[_ORBIT_tmpvar_19]) * _ORBIT_tmpvar_20);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  description
+						  [_ORBIT_tmpvar_19]) *
+					   _ORBIT_tmpvar_20);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].bytesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     bytesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  bytesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].filesize),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     filesize));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  filesize));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].toplevel),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     toplevel));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  toplevel));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].anchor),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     anchor));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  anchor));
+	 }
+	 _ORBIT_tmpvar_22 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_22));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_22), sizeof(_ORBIT_tmpvar_22));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_22));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    memcpy(_ORBIT_t,
+		   ((*package_tree)._buffer[_ORBIT_tmpvar_0].install_root),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  install_root[_ORBIT_tmpvar_21]) * _ORBIT_tmpvar_22);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  install_root
+						  [_ORBIT_tmpvar_21]) *
+					   _ORBIT_tmpvar_22);
+	 }
+	 _ORBIT_tmpvar_24 =
+	    strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_24));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    memcpy(_ORBIT_t, ((*package_tree)._buffer[_ORBIT_tmpvar_0].md5),
+		   sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			  md5[_ORBIT_tmpvar_23]) * _ORBIT_tmpvar_24);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  md5[_ORBIT_tmpvar_23]) *
+					   _ORBIT_tmpvar_24);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+		       modify_status));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			modify_status),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modify_status));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modify_status));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  depends._length));
+	 }
+	 for (_ORBIT_tmpvar_25 = 0;
+	      _ORBIT_tmpvar_25 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].depends._length;
+	      _ORBIT_tmpvar_25++) {
+	    _ORBIT_tmpvar_27 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].sense) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].sense),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				depends._buffer[_ORBIT_tmpvar_25].
+				sense[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     sense[_ORBIT_tmpvar_26])
+					      * _ORBIT_tmpvar_27);
+	    }
+	    _ORBIT_tmpvar_29 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].version) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_29));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_29),
+		      sizeof(_ORBIT_tmpvar_29));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_29));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].version),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     version[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     version
+						     [_ORBIT_tmpvar_28]) *
+					      _ORBIT_tmpvar_29);
+	    }
+	    _ORBIT_tmpvar_31 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		      _buffer[_ORBIT_tmpvar_25].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_31));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_31),
+		      sizeof(_ORBIT_tmpvar_31));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_31));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			  _buffer[_ORBIT_tmpvar_25].
+			  package_md5[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+		       _buffer[_ORBIT_tmpvar_25].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].depends.
+			     _buffer[_ORBIT_tmpvar_25].
+			     package_md5[_ORBIT_tmpvar_30]) *
+		      _ORBIT_tmpvar_31);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     depends.
+						     _buffer
+						     [_ORBIT_tmpvar_25].
+						     package_md5
+						     [_ORBIT_tmpvar_30]) *
+					      _ORBIT_tmpvar_31);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  breaks._length));
+	 }
+	 for (_ORBIT_tmpvar_32 = 0;
+	      _ORBIT_tmpvar_32 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks._length;
+	      _ORBIT_tmpvar_32++) {
+	    _ORBIT_tmpvar_34 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].package_md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+		      sizeof(_ORBIT_tmpvar_34));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_34));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].
+			  package_md5[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+	       memcpy(_ORBIT_t,
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		       _buffer[_ORBIT_tmpvar_32].package_md5),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].
+			     package_md5[_ORBIT_tmpvar_33]) *
+		      _ORBIT_tmpvar_34);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].
+						     package_md5
+						     [_ORBIT_tmpvar_33]) *
+					      _ORBIT_tmpvar_34);
+	    }
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			  _buffer[_ORBIT_tmpvar_32].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			_buffer[_ORBIT_tmpvar_32].u._d),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			     _buffer[_ORBIT_tmpvar_32].u._d));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     breaks.
+						     _buffer
+						     [_ORBIT_tmpvar_32].u.
+						     _d));
+	    }
+	    switch ((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		    _buffer[_ORBIT_tmpvar_32].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				_length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.files.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_35 = 0;
+		      _ORBIT_tmpvar_35 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.files._length;
+		      _ORBIT_tmpvar_35++) {
+		    _ORBIT_tmpvar_37 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.files.
+			      _buffer[_ORBIT_tmpvar_35]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			      sizeof(_ORBIT_tmpvar_37));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_37));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+				  _buffer[_ORBIT_tmpvar_35][_ORBIT_tmpvar_36])
+				 * _ORBIT_tmpvar_37);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.files.
+			       _buffer[_ORBIT_tmpvar_35]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     files.
+				     _buffer[_ORBIT_tmpvar_35]
+				     [_ORBIT_tmpvar_36]) * _ORBIT_tmpvar_37);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.files.
+							     _buffer
+							     [_ORBIT_tmpvar_35]
+							     [_ORBIT_tmpvar_36])
+						      * _ORBIT_tmpvar_37);
+		    }
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _length));
+		       memcpy(_ORBIT_t,
+			      &((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				features._length),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features._length));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package_tree).
+							  _buffer
+							  [_ORBIT_tmpvar_0].
+							  breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_32].
+							  u._u.features.
+							  _length));
+		 }
+		 for (_ORBIT_tmpvar_38 = 0;
+		      _ORBIT_tmpvar_38 <
+		      (*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+		      _buffer[_ORBIT_tmpvar_32].u._u.features._length;
+		      _ORBIT_tmpvar_38++) {
+		    _ORBIT_tmpvar_40 =
+		       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].breaks.
+			      _buffer[_ORBIT_tmpvar_32].u._u.features.
+			      _buffer[_ORBIT_tmpvar_38]) + 1;
+		    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						     (_ORBIT_send_buffer), 4);
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+		       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+			      sizeof(_ORBIT_tmpvar_40));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof
+						      (_ORBIT_tmpvar_40));
+		    }
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				  breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				  features.
+				  _buffer[_ORBIT_tmpvar_38][_ORBIT_tmpvar_39])
+				 * _ORBIT_tmpvar_40);
+		       memcpy(_ORBIT_t,
+			      ((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			       breaks._buffer[_ORBIT_tmpvar_32].u._u.features.
+			       _buffer[_ORBIT_tmpvar_38]),
+			      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				     breaks._buffer[_ORBIT_tmpvar_32].u._u.
+				     features.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*package_tree).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_32].
+							     u._u.features.
+							     _buffer
+							     [_ORBIT_tmpvar_38]
+							     [_ORBIT_tmpvar_39])
+						      * _ORBIT_tmpvar_40);
+		    }
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     modifies._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  modifies._length));
+	 }
+	 for (_ORBIT_tmpvar_41 = 0;
+	      _ORBIT_tmpvar_41 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].modifies._length;
+	      _ORBIT_tmpvar_41++) {
+	    _ORBIT_tmpvar_43 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+		      _buffer[_ORBIT_tmpvar_41]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+		      sizeof(_ORBIT_tmpvar_43));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_43));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].modifies.
+			  _buffer[_ORBIT_tmpvar_41]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				modifies.
+				_buffer[_ORBIT_tmpvar_41][_ORBIT_tmpvar_42]) *
+			 _ORBIT_tmpvar_43);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     modifies.
+						     _buffer[_ORBIT_tmpvar_41]
+						     [_ORBIT_tmpvar_42]) *
+					      _ORBIT_tmpvar_43);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     provides._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  provides._length));
+	 }
+	 for (_ORBIT_tmpvar_44 = 0;
+	      _ORBIT_tmpvar_44 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].provides._length;
+	      _ORBIT_tmpvar_44++) {
+	    _ORBIT_tmpvar_46 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+		      _buffer[_ORBIT_tmpvar_44]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+		      sizeof(_ORBIT_tmpvar_46));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_46));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].provides.
+			  _buffer[_ORBIT_tmpvar_44]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				provides.
+				_buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			 _ORBIT_tmpvar_46);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     provides.
+						     _buffer[_ORBIT_tmpvar_44]
+						     [_ORBIT_tmpvar_45]) *
+					      _ORBIT_tmpvar_46);
+	    }
+	 }
+
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		       _length));
+	       memcpy(_ORBIT_t,
+		      &((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			_length),
+		      sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+			     features._length));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package_tree).
+						  _buffer[_ORBIT_tmpvar_0].
+						  features._length));
+	 }
+	 for (_ORBIT_tmpvar_47 = 0;
+	      _ORBIT_tmpvar_47 <
+	      (*package_tree)._buffer[_ORBIT_tmpvar_0].features._length;
+	      _ORBIT_tmpvar_47++) {
+	    _ORBIT_tmpvar_49 =
+	       strlen((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+		      _buffer[_ORBIT_tmpvar_47]) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+		      sizeof(_ORBIT_tmpvar_49));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_49));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+		  memcpy(_ORBIT_t,
+			 ((*package_tree)._buffer[_ORBIT_tmpvar_0].features.
+			  _buffer[_ORBIT_tmpvar_47]),
+			 sizeof((*package_tree)._buffer[_ORBIT_tmpvar_0].
+				features.
+				_buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			 _ORBIT_tmpvar_49);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*package_tree).
+						     _buffer[_ORBIT_tmpvar_0].
+						     features.
+						     _buffer[_ORBIT_tmpvar_47]
+						     [_ORBIT_tmpvar_48]) *
+					      _ORBIT_tmpvar_49);
+	    }
+	 }
+
+      }
+
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);
@@ -2833,10 +12658,34 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
       register CORBA_unsigned_long _ORBIT_tmpvar_25;
       CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
+      register CORBA_unsigned_long _ORBIT_tmpvar_49;
+      CORBA_unsigned_long _ORBIT_tmpvar_50;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -2916,7 +12765,7 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 				     sizeof((*package).
 					    eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*package).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*package).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2929,11 +12778,11 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).archtype),
+				     ((*package).suite_id),
 				     sizeof((*package).
-					    archtype[_ORBIT_tmpvar_8]) *
+					    suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*package).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*package).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -2946,19 +12795,13 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).distribution.name),
-				     sizeof((*package).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*package).archtype),
+				     sizeof((*package).
+					    archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*package).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.major),
-				     sizeof((*package).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).distribution.minor),
-				     sizeof((*package).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2969,13 +12812,19 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).release),
-				     sizeof((*package).
-					    release[_ORBIT_tmpvar_12]) *
+				     ((*package).distribution.name),
+				     sizeof((*package).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.major),
+				     sizeof((*package).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).distribution.minor),
+				     sizeof((*package).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*package).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -2986,11 +12835,11 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).summary),
+				     ((*package).release),
 				     sizeof((*package).
-					    summary[_ORBIT_tmpvar_14]) *
+					    release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*package).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*package).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -3003,19 +12852,11 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).description),
+				     ((*package).summary),
 				     sizeof((*package).
-					    description[_ORBIT_tmpvar_16]) *
+					    summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).bytesize),
-				     sizeof((*package).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*package).toplevel),
-				     sizeof((*package).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*package).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*package).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -3028,11 +12869,25 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*package).install_root),
+				     ((*package).description),
 				     sizeof((*package).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).bytesize),
+				     sizeof((*package).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).filesize),
+				     sizeof((*package).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).toplevel),
+				     sizeof((*package).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).anchor),
+				     sizeof((*package).anchor));
+      _ORBIT_tmpvar_21 = strlen((*package).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -3045,15 +12900,410 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*package).install_root),
+				     sizeof((*package).
+					    install_root[_ORBIT_tmpvar_20]) *
+				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*package).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     ((*package).md5),
 				     sizeof((*package).
-					    md5[_ORBIT_tmpvar_20]) *
-				     _ORBIT_tmpvar_21);
+					    md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*package).status),
 				     sizeof((*package).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*package).modify_status),
+				     sizeof((*package).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).depends._length));
+	 memcpy(_ORBIT_t, &((*package).depends._length),
+		sizeof((*package).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0;
+	   _ORBIT_tmpvar_24 < (*package).depends._length; _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*package).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*package).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).breaks._length));
+	 memcpy(_ORBIT_t, &((*package).breaks._length),
+		sizeof((*package).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*package).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5) +
+	    1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*package).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t,
+		      &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			     _d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    files._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     files._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+		   _length; _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   files._buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*package).breaks._buffer[_ORBIT_tmpvar_31].
+				  u._u.features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*package).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*package).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*package).breaks._buffer[_ORBIT_tmpvar_31].u.
+			       _u.features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*package).breaks.
+				     _buffer[_ORBIT_tmpvar_31].u._u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*package).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*package).modifies._length));
+	 memcpy(_ORBIT_t, &((*package).modifies._length),
+		sizeof((*package).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*package).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0;
+	   _ORBIT_tmpvar_40 < (*package).modifies._length; _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*package).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t,
+		      ((*package).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*package).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -3064,20 +13314,20 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*package).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0;
-	   _ORBIT_tmpvar_22 < (*package).provides._length; _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*package).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0;
+	   _ORBIT_tmpvar_43 < (*package).provides._length; _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*package).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -3085,38 +13335,87 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*package).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	       memcpy(_ORBIT_t,
-		      ((*package).provides._buffer[_ORBIT_tmpvar_22]),
+		      ((*package).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*package).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*package).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
 	 }
       }
 
-      _ORBIT_tmpvar_26 = strlen(actual_md5) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	 _ORBIT_t = alloca(sizeof((*package).features._length));
+	 memcpy(_ORBIT_t, &((*package).features._length),
+		sizeof((*package).features._length));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_26));
+					sizeof((*package).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0;
+	   _ORBIT_tmpvar_46 < (*package).features._length; _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*package).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*package).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t,
+		      ((*package).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*package).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*package).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
+	 }
+      }
+
+      _ORBIT_tmpvar_50 = strlen(actual_md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_50));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_50), sizeof(_ORBIT_tmpvar_50));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_50));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     (actual_md5),
-				     sizeof(actual_md5[_ORBIT_tmpvar_25]) *
-				     _ORBIT_tmpvar_26);
+				     sizeof(actual_md5[_ORBIT_tmpvar_49]) *
+				     _ORBIT_tmpvar_50);
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
       giop_send_buffer_unuse(_ORBIT_send_buffer);
@@ -3158,102 +13457,6 @@ GNOME_Trilobite_Eazel_InstallCallback_md5_check_failed
 	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
 	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
 	 return;
-      }
-   }
-}
-CORBA_boolean
-GNOME_Trilobite_Eazel_InstallCallback_delete_files
-   (GNOME_Trilobite_Eazel_InstallCallback _obj, CORBA_Environment * ev)
-{
-   register GIOP_unsigned_long _ORBIT_request_id,
-    _ORBIT_system_exception_minor;
-   register CORBA_completion_status _ORBIT_completion_status;
-   register GIOPSendBuffer *_ORBIT_send_buffer;
-   register GIOPRecvBuffer *_ORBIT_recv_buffer;
-   register GIOPConnection *_cnx;
-   CORBA_boolean _ORBIT_retval;
-
-   if (_obj->servant && _obj->vepv
-       && GNOME_Trilobite_Eazel_InstallCallback__classid) {
-      _ORBIT_retval =
-	 ((POA_GNOME_Trilobite_Eazel_InstallCallback__epv *) _obj->
-	  vepv[GNOME_Trilobite_Eazel_InstallCallback__classid])->
-	 delete_files(_obj->servant, ev);
-      return _ORBIT_retval;
-   }
-   if (0)
-      return *(&_ORBIT_retval);
-   _cnx = ORBit_object_get_connection(_obj);
- _ORBIT_retry_request:
-   _ORBIT_send_buffer = NULL;
-   _ORBIT_recv_buffer = NULL;
-   _ORBIT_completion_status = CORBA_COMPLETED_NO;
-   _ORBIT_request_id = GPOINTER_TO_UINT(alloca(0));
-   {				/* marshalling */
-      static const struct
-      {
-	 CORBA_unsigned_long len;
-	 char opname[13];
-      }
-      _ORBIT_operation_name_data =
-      {
-      13, "delete_files"};
-      static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 17 };
-
-      _ORBIT_send_buffer =
-	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
-				      CORBA_TRUE,
-				      &(_obj->active_profile->object_key_vec),
-				      &_ORBIT_operation_vec,
-				      &ORBit_default_principal_iovec);
-
-      _ORBIT_system_exception_minor = ex_CORBA_COMM_FAILURE;
-      if (!_ORBIT_send_buffer)
-	 goto _ORBIT_system_exception;
-      giop_send_buffer_write(_ORBIT_send_buffer);
-      _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      _ORBIT_send_buffer = NULL;
-   }
-   {				/* demarshalling */
-      register guchar *_ORBIT_curptr;
-
-      _ORBIT_recv_buffer =
-	 giop_recv_reply_buffer_use_2(_cnx, _ORBIT_request_id, TRUE);
-      if (!_ORBIT_recv_buffer)
-	 goto _ORBIT_system_exception;
-      _ORBIT_completion_status = CORBA_COMPLETED_YES;
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
-      } else {
-	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
-      }
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      return _ORBIT_retval;
-    _ORBIT_system_exception:
-      CORBA_exception_set_system(ev, _ORBIT_system_exception_minor,
-				 _ORBIT_completion_status);
-      giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-      giop_send_buffer_unuse(_ORBIT_send_buffer);
-      return _ORBIT_retval;
-    _ORBIT_msg_exception:
-      if (_ORBIT_recv_buffer->message.u.reply.reply_status ==
-	  GIOP_LOCATION_FORWARD) {
-	 if (_obj->forward_locations != NULL)
-	    ORBit_delete_profiles(_obj->forward_locations);
-	 _obj->forward_locations = ORBit_demarshal_IOR(_ORBIT_recv_buffer);
-	 _cnx = ORBit_object_get_forwarded_connection(_obj);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-
-	 goto _ORBIT_retry_request;
-      } else {
-	 ORBit_handle_exception(_ORBIT_recv_buffer, ev, NULL, _obj->orb);
-	 giop_recv_buffer_unuse(_ORBIT_recv_buffer);
-	 return _ORBIT_retval;
       }
    }
 }
@@ -4304,8 +14507,8 @@ GNOME_Trilobite_Eazel_Install__set_force(GNOME_Trilobite_Eazel_Install _obj,
    }
 }
 CORBA_boolean
-GNOME_Trilobite_Eazel_Install__get_update(GNOME_Trilobite_Eazel_Install _obj,
-					  CORBA_Environment * ev)
+GNOME_Trilobite_Eazel_Install__get_upgrade(GNOME_Trilobite_Eazel_Install _obj,
+					   CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -4318,9 +14521,9 @@ GNOME_Trilobite_Eazel_Install__get_update(GNOME_Trilobite_Eazel_Install _obj,
    if (_obj->servant && _obj->vepv && GNOME_Trilobite_Eazel_Install__classid) {
       _ORBIT_retval =
 	 ((POA_GNOME_Trilobite_Eazel_Install__epv *) _obj->
-	  vepv[GNOME_Trilobite_Eazel_Install__classid])->_get_update(_obj->
-								     servant,
-								     ev);
+	  vepv[GNOME_Trilobite_Eazel_Install__classid])->_get_upgrade(_obj->
+								      servant,
+								      ev);
       return _ORBIT_retval;
    }
    if (0)
@@ -4335,13 +14538,13 @@ GNOME_Trilobite_Eazel_Install__get_update(GNOME_Trilobite_Eazel_Install _obj,
       static const struct
       {
 	 CORBA_unsigned_long len;
-	 char opname[12];
+	 char opname[13];
       }
       _ORBIT_operation_name_data =
       {
-      12, "_get_update"};
+      13, "_get_upgrade"};
       static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+	 { (gpointer) & _ORBIT_operation_name_data, 17 };
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -4400,9 +14603,9 @@ GNOME_Trilobite_Eazel_Install__get_update(GNOME_Trilobite_Eazel_Install _obj,
    }
 }
 void
-GNOME_Trilobite_Eazel_Install__set_update(GNOME_Trilobite_Eazel_Install _obj,
-					  const CORBA_boolean value,
-					  CORBA_Environment * ev)
+GNOME_Trilobite_Eazel_Install__set_upgrade(GNOME_Trilobite_Eazel_Install _obj,
+					   const CORBA_boolean value,
+					   CORBA_Environment * ev)
 {
    register GIOP_unsigned_long _ORBIT_request_id,
     _ORBIT_system_exception_minor;
@@ -4414,9 +14617,9 @@ GNOME_Trilobite_Eazel_Install__set_update(GNOME_Trilobite_Eazel_Install _obj,
    if (_obj->servant && _obj->vepv && GNOME_Trilobite_Eazel_Install__classid) {
       
 	 ((POA_GNOME_Trilobite_Eazel_Install__epv *) _obj->
-       vepv[GNOME_Trilobite_Eazel_Install__classid])->_set_update(_obj->
-								  servant,
-								  value, ev);
+       vepv[GNOME_Trilobite_Eazel_Install__classid])->_set_upgrade(_obj->
+								   servant,
+								   value, ev);
       return;
    }
    _cnx = ORBit_object_get_connection(_obj);
@@ -4429,13 +14632,13 @@ GNOME_Trilobite_Eazel_Install__set_update(GNOME_Trilobite_Eazel_Install _obj,
       static const struct
       {
 	 CORBA_unsigned_long len;
-	 char opname[12];
+	 char opname[13];
       }
       _ORBIT_operation_name_data =
       {
-      12, "_set_update"};
+      13, "_set_upgrade"};
       static const struct iovec _ORBIT_operation_vec =
-	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+	 { (gpointer) & _ORBIT_operation_name_data, 17 };
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -7416,10 +17619,34 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
       register CORBA_unsigned_long _ORBIT_tmpvar_24;
       CORBA_unsigned_long _ORBIT_tmpvar_25;
       register CORBA_unsigned_long _ORBIT_tmpvar_26;
-      register CORBA_unsigned_long _ORBIT_tmpvar_27;
-      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
       register CORBA_unsigned_long _ORBIT_tmpvar_29;
       CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
+      register CORBA_unsigned_long _ORBIT_tmpvar_50;
+      register CORBA_unsigned_long _ORBIT_tmpvar_51;
+      CORBA_unsigned_long _ORBIT_tmpvar_52;
+      register CORBA_unsigned_long _ORBIT_tmpvar_53;
+      CORBA_unsigned_long _ORBIT_tmpvar_54;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -7660,7 +17887,7 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 	    }
 	    _ORBIT_tmpvar_13 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].archtype) + 1;
+		      _buffer[_ORBIT_tmpvar_3].suite_id) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -7681,13 +17908,13 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  archtype[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
+			  suite_id[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].archtype),
+		       _buffer[_ORBIT_tmpvar_3].suite_id),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     archtype[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
+			     suite_id[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -7695,13 +17922,13 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     archtype
+						     suite_id
 						     [_ORBIT_tmpvar_12]) *
 					      _ORBIT_tmpvar_13);
 	    }
 	    _ORBIT_tmpvar_15 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].distribution.name) + 1;
+		      _buffer[_ORBIT_tmpvar_3].archtype) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -7721,14 +17948,55 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].
+			  archtype[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].archtype),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     archtype[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     archtype
+						     [_ORBIT_tmpvar_14]) *
+					      _ORBIT_tmpvar_15);
+	    }
+	    _ORBIT_tmpvar_17 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].distribution.name) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17),
+		      sizeof(_ORBIT_tmpvar_17));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_17));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].distribution.
-			  name[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+			  name[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		       _buffer[_ORBIT_tmpvar_3].distribution.name),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].distribution.
-			     name[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+			     name[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -7737,8 +18005,8 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
 						     distribution.
-						     name[_ORBIT_tmpvar_14]) *
-					      _ORBIT_tmpvar_15);
+						     name[_ORBIT_tmpvar_16]) *
+					      _ORBIT_tmpvar_17);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -7786,50 +18054,9 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_3].
 						     distribution.minor));
 	    }
-	    _ORBIT_tmpvar_17 =
-	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].release) + 1;
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17),
-		      sizeof(_ORBIT_tmpvar_17));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_17));
-	    }
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t =
-		  alloca(sizeof
-			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].
-			  release[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
-	       memcpy(_ORBIT_t,
-		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].release),
-		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			     _buffer[_ORBIT_tmpvar_3].
-			     release[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*categories).
-						     _buffer[_ORBIT_tmpvar_0].
-						     packages.
-						     _buffer[_ORBIT_tmpvar_3].
-						     release
-						     [_ORBIT_tmpvar_16]) *
-					      _ORBIT_tmpvar_17);
-	    }
 	    _ORBIT_tmpvar_19 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].summary) + 1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
+		      _buffer[_ORBIT_tmpvar_3].release) + 1;
 	    {
 	       guchar *_ORBIT_t;
 
@@ -7848,13 +18075,13 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  summary[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
+			  release[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].summary),
+		       _buffer[_ORBIT_tmpvar_3].release),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     summary[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
+			     release[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -7862,13 +18089,13 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     summary
+						     release
 						     [_ORBIT_tmpvar_18]) *
 					      _ORBIT_tmpvar_19);
 	    }
 	    _ORBIT_tmpvar_21 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].description) + 1;
+		      _buffer[_ORBIT_tmpvar_3].summary) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -7889,14 +18116,55 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  description[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+			  summary[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].summary),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     summary[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     summary
+						     [_ORBIT_tmpvar_20]) *
+					      _ORBIT_tmpvar_21);
+	    }
+	    _ORBIT_tmpvar_23 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].description) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23),
+		      sizeof(_ORBIT_tmpvar_23));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_23));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].
+			  description[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		       _buffer[_ORBIT_tmpvar_3].description),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     description[_ORBIT_tmpvar_20]) *
-		      _ORBIT_tmpvar_21);
+			     description[_ORBIT_tmpvar_22]) *
+		      _ORBIT_tmpvar_23);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -7905,8 +18173,8 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
 						     description
-						     [_ORBIT_tmpvar_20]) *
-					      _ORBIT_tmpvar_21);
+						     [_ORBIT_tmpvar_22]) *
+					      _ORBIT_tmpvar_23);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -7937,6 +18205,27 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].filesize));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].filesize),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].filesize));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     filesize));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].toplevel));
 		  memcpy(_ORBIT_t,
 			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
@@ -7952,37 +18241,18 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_3].
 						     toplevel));
 	    }
-	    _ORBIT_tmpvar_23 =
-	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].install_root) + 1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23),
-		      sizeof(_ORBIT_tmpvar_23));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_23));
-	    }
 	    {
 	       guchar *_ORBIT_t;
 
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].
-			  install_root[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
-	       memcpy(_ORBIT_t,
-		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].install_root),
-		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			     _buffer[_ORBIT_tmpvar_3].
-			     install_root[_ORBIT_tmpvar_22]) *
-		      _ORBIT_tmpvar_23);
+			  _buffer[_ORBIT_tmpvar_3].anchor));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].anchor),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].anchor));
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -7990,13 +18260,11 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     install_root
-						     [_ORBIT_tmpvar_22]) *
-					      _ORBIT_tmpvar_23);
+						     anchor));
 	    }
 	    _ORBIT_tmpvar_25 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].md5) + 1;
+		      _buffer[_ORBIT_tmpvar_3].install_root) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -8016,14 +18284,15 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].md5[_ORBIT_tmpvar_24]) *
-			 _ORBIT_tmpvar_25);
-		  memcpy(_ORBIT_t,
-			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].md5),
-			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
-				packages._buffer[_ORBIT_tmpvar_3].
-				md5[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25);
+			  _buffer[_ORBIT_tmpvar_3].
+			  install_root[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].install_root),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     install_root[_ORBIT_tmpvar_24]) *
+		      _ORBIT_tmpvar_25);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8031,8 +18300,49 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     md5[_ORBIT_tmpvar_24]) *
+						     install_root
+						     [_ORBIT_tmpvar_24]) *
 					      _ORBIT_tmpvar_25);
+	    }
+	    _ORBIT_tmpvar_27 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].md5[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].md5),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].
+				md5[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     md5[_ORBIT_tmpvar_26]) *
+					      _ORBIT_tmpvar_27);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -8063,6 +18373,619 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].modify_status));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].modify_status),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].
+				modify_status));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     modify_status));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].depends._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     depends._length));
+	    }
+	    for (_ORBIT_tmpvar_28 = 0;
+		 _ORBIT_tmpvar_28 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].depends._length; _ORBIT_tmpvar_28++) {
+	       _ORBIT_tmpvar_30 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].sense) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30),
+			 sizeof(_ORBIT_tmpvar_30));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_30));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     sense[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends.
+			  _buffer[_ORBIT_tmpvar_28].sense),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_buffer[_ORBIT_tmpvar_28].
+				sense[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							sense
+							[_ORBIT_tmpvar_29]) *
+						 _ORBIT_tmpvar_30);
+	       }
+	       _ORBIT_tmpvar_32 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].version) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_32));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_32),
+			 sizeof(_ORBIT_tmpvar_32));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_32));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     version[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends.
+			  _buffer[_ORBIT_tmpvar_28].version),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_buffer[_ORBIT_tmpvar_28].
+				version[_ORBIT_tmpvar_31]) *
+			 _ORBIT_tmpvar_32);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							version
+							[_ORBIT_tmpvar_31]) *
+						 _ORBIT_tmpvar_32);
+	       }
+	       _ORBIT_tmpvar_34 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].package_md5) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+			 sizeof(_ORBIT_tmpvar_34));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_34));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     package_md5[_ORBIT_tmpvar_33]) *
+			    _ORBIT_tmpvar_34);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].package_md5),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].depends.
+				   _buffer[_ORBIT_tmpvar_28].
+				   package_md5[_ORBIT_tmpvar_33]) *
+			    _ORBIT_tmpvar_34);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							package_md5
+							[_ORBIT_tmpvar_33]) *
+						 _ORBIT_tmpvar_34);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].breaks._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].breaks._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].breaks.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     breaks._length));
+	    }
+	    for (_ORBIT_tmpvar_35 = 0;
+		 _ORBIT_tmpvar_35 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].breaks._length; _ORBIT_tmpvar_35++) {
+	       _ORBIT_tmpvar_37 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].package_md5) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			 sizeof(_ORBIT_tmpvar_37));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_37));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].
+			     package_md5[_ORBIT_tmpvar_36]) *
+			    _ORBIT_tmpvar_37);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].package_md5),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].
+				   package_md5[_ORBIT_tmpvar_36]) *
+			    _ORBIT_tmpvar_37);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							breaks.
+							_buffer
+							[_ORBIT_tmpvar_35].
+							package_md5
+							[_ORBIT_tmpvar_36]) *
+						 _ORBIT_tmpvar_37);
+	       }
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].u._d));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].breaks.
+			   _buffer[_ORBIT_tmpvar_35].u._d),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].breaks.
+				_buffer[_ORBIT_tmpvar_35].u._d));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							breaks.
+							_buffer
+							[_ORBIT_tmpvar_35].u.
+							_d));
+	       }
+	       switch ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].breaks.
+		       _buffer[_ORBIT_tmpvar_35].u._d) {
+		 case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.files.
+				  _length));
+			  memcpy(_ORBIT_t,
+				 &((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].u._u.files.
+				   _length),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.files.
+					_length));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*categories).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     packages.
+							     _buffer
+							     [_ORBIT_tmpvar_3].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_35].
+							     u._u.files.
+							     _length));
+		    }
+		    for (_ORBIT_tmpvar_38 = 0;
+			 _ORBIT_tmpvar_38 <
+			 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].u._u.files._length;
+			 _ORBIT_tmpvar_38++) {
+		       _ORBIT_tmpvar_40 =
+			  strlen((*categories)._buffer[_ORBIT_tmpvar_0].
+				 packages._buffer[_ORBIT_tmpvar_3].breaks.
+				 _buffer[_ORBIT_tmpvar_35].u._u.files.
+				 _buffer[_ORBIT_tmpvar_38]) + 1;
+		       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+							(_ORBIT_send_buffer),
+							4);
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+			  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+				 sizeof(_ORBIT_tmpvar_40));
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof
+							 (_ORBIT_tmpvar_40));
+		       }
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t =
+			     alloca(sizeof
+				    ((*categories)._buffer[_ORBIT_tmpvar_0].
+				     packages._buffer[_ORBIT_tmpvar_3].breaks.
+				     _buffer[_ORBIT_tmpvar_35].u._u.files.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+			  memcpy(_ORBIT_t,
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.files.
+				  _buffer[_ORBIT_tmpvar_38]),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.files.
+					_buffer[_ORBIT_tmpvar_38]
+					[_ORBIT_tmpvar_39]) *
+				 _ORBIT_tmpvar_40);
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof((*categories).
+								_buffer
+								[_ORBIT_tmpvar_0].
+								packages.
+								_buffer
+								[_ORBIT_tmpvar_3].
+								breaks.
+								_buffer
+								[_ORBIT_tmpvar_35].
+								u._u.files.
+								_buffer
+								[_ORBIT_tmpvar_38]
+								[_ORBIT_tmpvar_39])
+							 * _ORBIT_tmpvar_40);
+		       }
+		    }
+
+		    break;
+		 case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.features.
+				  _length));
+			  memcpy(_ORBIT_t,
+				 &((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].u._u.features.
+				   _length),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.
+					features._length));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*categories).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     packages.
+							     _buffer
+							     [_ORBIT_tmpvar_3].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_35].
+							     u._u.features.
+							     _length));
+		    }
+		    for (_ORBIT_tmpvar_41 = 0;
+			 _ORBIT_tmpvar_41 <
+			 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].u._u.features._length;
+			 _ORBIT_tmpvar_41++) {
+		       _ORBIT_tmpvar_43 =
+			  strlen((*categories)._buffer[_ORBIT_tmpvar_0].
+				 packages._buffer[_ORBIT_tmpvar_3].breaks.
+				 _buffer[_ORBIT_tmpvar_35].u._u.features.
+				 _buffer[_ORBIT_tmpvar_41]) + 1;
+		       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+							(_ORBIT_send_buffer),
+							4);
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+			  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+				 sizeof(_ORBIT_tmpvar_43));
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof
+							 (_ORBIT_tmpvar_43));
+		       }
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t =
+			     alloca(sizeof
+				    ((*categories)._buffer[_ORBIT_tmpvar_0].
+				     packages._buffer[_ORBIT_tmpvar_3].breaks.
+				     _buffer[_ORBIT_tmpvar_35].u._u.features.
+				     _buffer[_ORBIT_tmpvar_41]
+				     [_ORBIT_tmpvar_42]) * _ORBIT_tmpvar_43);
+			  memcpy(_ORBIT_t,
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.features.
+				  _buffer[_ORBIT_tmpvar_41]),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.
+					features.
+					_buffer[_ORBIT_tmpvar_41]
+					[_ORBIT_tmpvar_42]) *
+				 _ORBIT_tmpvar_43);
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof((*categories).
+								_buffer
+								[_ORBIT_tmpvar_0].
+								packages.
+								_buffer
+								[_ORBIT_tmpvar_3].
+								breaks.
+								_buffer
+								[_ORBIT_tmpvar_35].
+								u._u.features.
+								_buffer
+								[_ORBIT_tmpvar_41]
+								[_ORBIT_tmpvar_42])
+							 * _ORBIT_tmpvar_43);
+		       }
+		    }
+
+		    break;
+		 default:
+		    break;
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].modifies._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].modifies._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].modifies.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     modifies._length));
+	    }
+	    for (_ORBIT_tmpvar_44 = 0;
+		 _ORBIT_tmpvar_44 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].modifies._length;
+		 _ORBIT_tmpvar_44++) {
+	       _ORBIT_tmpvar_46 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].modifies.
+			 _buffer[_ORBIT_tmpvar_44]) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+			 sizeof(_ORBIT_tmpvar_46));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_46));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].modifies.
+			     _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			    _ORBIT_tmpvar_46);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].modifies.
+			     _buffer[_ORBIT_tmpvar_44]),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].modifies.
+				   _buffer[_ORBIT_tmpvar_44]
+				   [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							modifies.
+							_buffer
+							[_ORBIT_tmpvar_44]
+							[_ORBIT_tmpvar_45]) *
+						 _ORBIT_tmpvar_46);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].provides._length));
 		  memcpy(_ORBIT_t,
 			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
@@ -8079,27 +19002,27 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 						     _buffer[_ORBIT_tmpvar_3].
 						     provides._length));
 	    }
-	    for (_ORBIT_tmpvar_26 = 0;
-		 _ORBIT_tmpvar_26 <
+	    for (_ORBIT_tmpvar_47 = 0;
+		 _ORBIT_tmpvar_47 <
 		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		 _buffer[_ORBIT_tmpvar_3].provides._length;
-		 _ORBIT_tmpvar_26++) {
-	       _ORBIT_tmpvar_28 =
+		 _ORBIT_tmpvar_47++) {
+	       _ORBIT_tmpvar_49 =
 		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			 _buffer[_ORBIT_tmpvar_3].provides.
-			 _buffer[_ORBIT_tmpvar_26]) + 1;
+			 _buffer[_ORBIT_tmpvar_47]) + 1;
 	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 						(_ORBIT_send_buffer), 4);
 	       {
 		  guchar *_ORBIT_t;
 
-		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
-		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28),
-			 sizeof(_ORBIT_tmpvar_28));
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+			 sizeof(_ORBIT_tmpvar_49));
 		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 						 (_ORBIT_send_buffer),
 						 (_ORBIT_t),
-						 sizeof(_ORBIT_tmpvar_28));
+						 sizeof(_ORBIT_tmpvar_49));
 	       }
 	       {
 		  guchar *_ORBIT_t;
@@ -8108,16 +19031,16 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 		     alloca(sizeof
 			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].provides.
-			     _buffer[_ORBIT_tmpvar_26][_ORBIT_tmpvar_27]) *
-			    _ORBIT_tmpvar_28);
+			     _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			    _ORBIT_tmpvar_49);
 		     memcpy(_ORBIT_t,
 			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].provides.
-			     _buffer[_ORBIT_tmpvar_26]),
+			     _buffer[_ORBIT_tmpvar_47]),
 			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
 				   packages._buffer[_ORBIT_tmpvar_3].provides.
-				   _buffer[_ORBIT_tmpvar_26]
-				   [_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+				   _buffer[_ORBIT_tmpvar_47]
+				   [_ORBIT_tmpvar_48]) * _ORBIT_tmpvar_49);
 		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 						 (_ORBIT_send_buffer),
 						 (_ORBIT_t),
@@ -8129,9 +19052,89 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 							[_ORBIT_tmpvar_3].
 							provides.
 							_buffer
-							[_ORBIT_tmpvar_26]
-							[_ORBIT_tmpvar_27]) *
-						 _ORBIT_tmpvar_28);
+							[_ORBIT_tmpvar_47]
+							[_ORBIT_tmpvar_48]) *
+						 _ORBIT_tmpvar_49);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].features._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].features._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].features.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     features._length));
+	    }
+	    for (_ORBIT_tmpvar_50 = 0;
+		 _ORBIT_tmpvar_50 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].features._length;
+		 _ORBIT_tmpvar_50++) {
+	       _ORBIT_tmpvar_52 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].features.
+			 _buffer[_ORBIT_tmpvar_50]) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_52));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_52),
+			 sizeof(_ORBIT_tmpvar_52));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_52));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].features.
+			     _buffer[_ORBIT_tmpvar_50][_ORBIT_tmpvar_51]) *
+			    _ORBIT_tmpvar_52);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].features.
+			     _buffer[_ORBIT_tmpvar_50]),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].features.
+				   _buffer[_ORBIT_tmpvar_50]
+				   [_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							features.
+							_buffer
+							[_ORBIT_tmpvar_50]
+							[_ORBIT_tmpvar_51]) *
+						 _ORBIT_tmpvar_52);
 	       }
 	    }
 
@@ -8139,22 +19142,22 @@ GNOME_Trilobite_Eazel_Install_install_packages(GNOME_Trilobite_Eazel_Install
 
       }
 
-      _ORBIT_tmpvar_30 = strlen(root) + 1;
+      _ORBIT_tmpvar_54 = strlen(root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_54));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_54), sizeof(_ORBIT_tmpvar_54));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_30));
+					sizeof(_ORBIT_tmpvar_54));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     (root),
-				     sizeof(root[_ORBIT_tmpvar_29]) *
-				     _ORBIT_tmpvar_30);
+				     sizeof(root[_ORBIT_tmpvar_53]) *
+				     _ORBIT_tmpvar_54);
       ORBit_marshal_object(_ORBIT_send_buffer, cb);
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
@@ -8238,10 +19241,34 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
       register CORBA_unsigned_long _ORBIT_tmpvar_24;
       CORBA_unsigned_long _ORBIT_tmpvar_25;
       register CORBA_unsigned_long _ORBIT_tmpvar_26;
-      register CORBA_unsigned_long _ORBIT_tmpvar_27;
-      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      CORBA_unsigned_long _ORBIT_tmpvar_27;
+      register CORBA_unsigned_long _ORBIT_tmpvar_28;
       register CORBA_unsigned_long _ORBIT_tmpvar_29;
       CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      CORBA_unsigned_long _ORBIT_tmpvar_32;
+      register CORBA_unsigned_long _ORBIT_tmpvar_33;
+      CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      register CORBA_unsigned_long _ORBIT_tmpvar_36;
+      CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      register CORBA_unsigned_long _ORBIT_tmpvar_39;
+      CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      register CORBA_unsigned_long _ORBIT_tmpvar_42;
+      CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      register CORBA_unsigned_long _ORBIT_tmpvar_45;
+      CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      register CORBA_unsigned_long _ORBIT_tmpvar_48;
+      CORBA_unsigned_long _ORBIT_tmpvar_49;
+      register CORBA_unsigned_long _ORBIT_tmpvar_50;
+      register CORBA_unsigned_long _ORBIT_tmpvar_51;
+      CORBA_unsigned_long _ORBIT_tmpvar_52;
+      register CORBA_unsigned_long _ORBIT_tmpvar_53;
+      CORBA_unsigned_long _ORBIT_tmpvar_54;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -8482,7 +19509,7 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 	    }
 	    _ORBIT_tmpvar_13 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].archtype) + 1;
+		      _buffer[_ORBIT_tmpvar_3].suite_id) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -8503,13 +19530,13 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  archtype[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
+			  suite_id[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].archtype),
+		       _buffer[_ORBIT_tmpvar_3].suite_id),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     archtype[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
+			     suite_id[_ORBIT_tmpvar_12]) * _ORBIT_tmpvar_13);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8517,13 +19544,13 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     archtype
+						     suite_id
 						     [_ORBIT_tmpvar_12]) *
 					      _ORBIT_tmpvar_13);
 	    }
 	    _ORBIT_tmpvar_15 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].distribution.name) + 1;
+		      _buffer[_ORBIT_tmpvar_3].archtype) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -8543,14 +19570,55 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].
+			  archtype[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].archtype),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     archtype[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     archtype
+						     [_ORBIT_tmpvar_14]) *
+					      _ORBIT_tmpvar_15);
+	    }
+	    _ORBIT_tmpvar_17 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].distribution.name) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17),
+		      sizeof(_ORBIT_tmpvar_17));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_17));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].distribution.
-			  name[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+			  name[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		       _buffer[_ORBIT_tmpvar_3].distribution.name),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].distribution.
-			     name[_ORBIT_tmpvar_14]) * _ORBIT_tmpvar_15);
+			     name[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8559,8 +19627,8 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
 						     distribution.
-						     name[_ORBIT_tmpvar_14]) *
-					      _ORBIT_tmpvar_15);
+						     name[_ORBIT_tmpvar_16]) *
+					      _ORBIT_tmpvar_17);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -8608,50 +19676,9 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_3].
 						     distribution.minor));
 	    }
-	    _ORBIT_tmpvar_17 =
-	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].release) + 1;
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_17));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_17),
-		      sizeof(_ORBIT_tmpvar_17));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_17));
-	    }
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t =
-		  alloca(sizeof
-			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].
-			  release[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
-	       memcpy(_ORBIT_t,
-		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].release),
-		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			     _buffer[_ORBIT_tmpvar_3].
-			     release[_ORBIT_tmpvar_16]) * _ORBIT_tmpvar_17);
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*categories).
-						     _buffer[_ORBIT_tmpvar_0].
-						     packages.
-						     _buffer[_ORBIT_tmpvar_3].
-						     release
-						     [_ORBIT_tmpvar_16]) *
-					      _ORBIT_tmpvar_17);
-	    }
 	    _ORBIT_tmpvar_19 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].summary) + 1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
+		      _buffer[_ORBIT_tmpvar_3].release) + 1;
 	    {
 	       guchar *_ORBIT_t;
 
@@ -8670,13 +19697,13 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  summary[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
+			  release[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].summary),
+		       _buffer[_ORBIT_tmpvar_3].release),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     summary[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
+			     release[_ORBIT_tmpvar_18]) * _ORBIT_tmpvar_19);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8684,13 +19711,13 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     summary
+						     release
 						     [_ORBIT_tmpvar_18]) *
 					      _ORBIT_tmpvar_19);
 	    }
 	    _ORBIT_tmpvar_21 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].description) + 1;
+		      _buffer[_ORBIT_tmpvar_3].summary) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -8711,14 +19738,55 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].
-			  description[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+			  summary[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].summary),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     summary[_ORBIT_tmpvar_20]) * _ORBIT_tmpvar_21);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     summary
+						     [_ORBIT_tmpvar_20]) *
+					      _ORBIT_tmpvar_21);
+	    }
+	    _ORBIT_tmpvar_23 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].description) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23),
+		      sizeof(_ORBIT_tmpvar_23));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_23));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].
+			  description[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
 	       memcpy(_ORBIT_t,
 		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		       _buffer[_ORBIT_tmpvar_3].description),
 		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].
-			     description[_ORBIT_tmpvar_20]) *
-		      _ORBIT_tmpvar_21);
+			     description[_ORBIT_tmpvar_22]) *
+		      _ORBIT_tmpvar_23);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8727,8 +19795,8 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
 						     description
-						     [_ORBIT_tmpvar_20]) *
-					      _ORBIT_tmpvar_21);
+						     [_ORBIT_tmpvar_22]) *
+					      _ORBIT_tmpvar_23);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -8759,6 +19827,27 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].filesize));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].filesize),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].filesize));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     filesize));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].toplevel));
 		  memcpy(_ORBIT_t,
 			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
@@ -8774,37 +19863,18 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_3].
 						     toplevel));
 	    }
-	    _ORBIT_tmpvar_23 =
-	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].install_root) + 1;
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
-	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23),
-		      sizeof(_ORBIT_tmpvar_23));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_tmpvar_23));
-	    }
 	    {
 	       guchar *_ORBIT_t;
 
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].
-			  install_root[_ORBIT_tmpvar_22]) * _ORBIT_tmpvar_23);
-	       memcpy(_ORBIT_t,
-		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		       _buffer[_ORBIT_tmpvar_3].install_root),
-		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			     _buffer[_ORBIT_tmpvar_3].
-			     install_root[_ORBIT_tmpvar_22]) *
-		      _ORBIT_tmpvar_23);
+			  _buffer[_ORBIT_tmpvar_3].anchor));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].anchor),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].anchor));
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8812,13 +19882,11 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     install_root
-						     [_ORBIT_tmpvar_22]) *
-					      _ORBIT_tmpvar_23);
+						     anchor));
 	    }
 	    _ORBIT_tmpvar_25 =
 	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-		      _buffer[_ORBIT_tmpvar_3].md5) + 1;
+		      _buffer[_ORBIT_tmpvar_3].install_root) + 1;
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
 	    {
@@ -8838,14 +19906,15 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].md5[_ORBIT_tmpvar_24]) *
-			 _ORBIT_tmpvar_25);
-		  memcpy(_ORBIT_t,
-			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
-			  _buffer[_ORBIT_tmpvar_3].md5),
-			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
-				packages._buffer[_ORBIT_tmpvar_3].
-				md5[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25);
+			  _buffer[_ORBIT_tmpvar_3].
+			  install_root[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25);
+	       memcpy(_ORBIT_t,
+		      ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].install_root),
+		      sizeof((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].
+			     install_root[_ORBIT_tmpvar_24]) *
+		      _ORBIT_tmpvar_25);
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
@@ -8853,8 +19922,49 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_0].
 						     packages.
 						     _buffer[_ORBIT_tmpvar_3].
-						     md5[_ORBIT_tmpvar_24]) *
+						     install_root
+						     [_ORBIT_tmpvar_24]) *
 					      _ORBIT_tmpvar_25);
+	    }
+	    _ORBIT_tmpvar_27 =
+	       strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		      _buffer[_ORBIT_tmpvar_3].md5) + 1;
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_27));
+	       memcpy(_ORBIT_t, &(_ORBIT_tmpvar_27),
+		      sizeof(_ORBIT_tmpvar_27));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_tmpvar_27));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].md5[_ORBIT_tmpvar_26]) *
+			 _ORBIT_tmpvar_27);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].md5),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].
+				md5[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27);
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     md5[_ORBIT_tmpvar_26]) *
+					      _ORBIT_tmpvar_27);
 	    }
 	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					     (_ORBIT_send_buffer), 4);
@@ -8885,6 +19995,619 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 	       _ORBIT_t =
 		  alloca(sizeof
 			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].modify_status));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].modify_status),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].
+				modify_status));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     modify_status));
+	    }
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].depends._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     depends._length));
+	    }
+	    for (_ORBIT_tmpvar_28 = 0;
+		 _ORBIT_tmpvar_28 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].depends._length; _ORBIT_tmpvar_28++) {
+	       _ORBIT_tmpvar_30 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].sense) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30),
+			 sizeof(_ORBIT_tmpvar_30));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_30));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     sense[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends.
+			  _buffer[_ORBIT_tmpvar_28].sense),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_buffer[_ORBIT_tmpvar_28].
+				sense[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							sense
+							[_ORBIT_tmpvar_29]) *
+						 _ORBIT_tmpvar_30);
+	       }
+	       _ORBIT_tmpvar_32 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].version) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_32));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_32),
+			 sizeof(_ORBIT_tmpvar_32));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_32));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     version[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32);
+		  memcpy(_ORBIT_t,
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].depends.
+			  _buffer[_ORBIT_tmpvar_28].version),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].depends.
+				_buffer[_ORBIT_tmpvar_28].
+				version[_ORBIT_tmpvar_31]) *
+			 _ORBIT_tmpvar_32);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							version
+							[_ORBIT_tmpvar_31]) *
+						 _ORBIT_tmpvar_32);
+	       }
+	       _ORBIT_tmpvar_34 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].depends.
+			 _buffer[_ORBIT_tmpvar_28].package_md5) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_34));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_34),
+			 sizeof(_ORBIT_tmpvar_34));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_34));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].
+			     package_md5[_ORBIT_tmpvar_33]) *
+			    _ORBIT_tmpvar_34);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].depends.
+			     _buffer[_ORBIT_tmpvar_28].package_md5),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].depends.
+				   _buffer[_ORBIT_tmpvar_28].
+				   package_md5[_ORBIT_tmpvar_33]) *
+			    _ORBIT_tmpvar_34);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							depends.
+							_buffer
+							[_ORBIT_tmpvar_28].
+							package_md5
+							[_ORBIT_tmpvar_33]) *
+						 _ORBIT_tmpvar_34);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].breaks._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].breaks._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].breaks.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     breaks._length));
+	    }
+	    for (_ORBIT_tmpvar_35 = 0;
+		 _ORBIT_tmpvar_35 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].breaks._length; _ORBIT_tmpvar_35++) {
+	       _ORBIT_tmpvar_37 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].package_md5) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_37));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_37),
+			 sizeof(_ORBIT_tmpvar_37));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_37));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].
+			     package_md5[_ORBIT_tmpvar_36]) *
+			    _ORBIT_tmpvar_37);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].package_md5),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].
+				   package_md5[_ORBIT_tmpvar_36]) *
+			    _ORBIT_tmpvar_37);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							breaks.
+							_buffer
+							[_ORBIT_tmpvar_35].
+							package_md5
+							[_ORBIT_tmpvar_36]) *
+						 _ORBIT_tmpvar_37);
+	       }
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].breaks.
+			     _buffer[_ORBIT_tmpvar_35].u._d));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].breaks.
+			   _buffer[_ORBIT_tmpvar_35].u._d),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].breaks.
+				_buffer[_ORBIT_tmpvar_35].u._d));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							breaks.
+							_buffer
+							[_ORBIT_tmpvar_35].u.
+							_d));
+	       }
+	       switch ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		       _buffer[_ORBIT_tmpvar_3].breaks.
+		       _buffer[_ORBIT_tmpvar_35].u._d) {
+		 case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.files.
+				  _length));
+			  memcpy(_ORBIT_t,
+				 &((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].u._u.files.
+				   _length),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.files.
+					_length));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*categories).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     packages.
+							     _buffer
+							     [_ORBIT_tmpvar_3].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_35].
+							     u._u.files.
+							     _length));
+		    }
+		    for (_ORBIT_tmpvar_38 = 0;
+			 _ORBIT_tmpvar_38 <
+			 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].u._u.files._length;
+			 _ORBIT_tmpvar_38++) {
+		       _ORBIT_tmpvar_40 =
+			  strlen((*categories)._buffer[_ORBIT_tmpvar_0].
+				 packages._buffer[_ORBIT_tmpvar_3].breaks.
+				 _buffer[_ORBIT_tmpvar_35].u._u.files.
+				 _buffer[_ORBIT_tmpvar_38]) + 1;
+		       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+							(_ORBIT_send_buffer),
+							4);
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_40));
+			  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_40),
+				 sizeof(_ORBIT_tmpvar_40));
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof
+							 (_ORBIT_tmpvar_40));
+		       }
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t =
+			     alloca(sizeof
+				    ((*categories)._buffer[_ORBIT_tmpvar_0].
+				     packages._buffer[_ORBIT_tmpvar_3].breaks.
+				     _buffer[_ORBIT_tmpvar_35].u._u.files.
+				     _buffer[_ORBIT_tmpvar_38]
+				     [_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+			  memcpy(_ORBIT_t,
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.files.
+				  _buffer[_ORBIT_tmpvar_38]),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.files.
+					_buffer[_ORBIT_tmpvar_38]
+					[_ORBIT_tmpvar_39]) *
+				 _ORBIT_tmpvar_40);
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof((*categories).
+								_buffer
+								[_ORBIT_tmpvar_0].
+								packages.
+								_buffer
+								[_ORBIT_tmpvar_3].
+								breaks.
+								_buffer
+								[_ORBIT_tmpvar_35].
+								u._u.files.
+								_buffer
+								[_ORBIT_tmpvar_38]
+								[_ORBIT_tmpvar_39])
+							 * _ORBIT_tmpvar_40);
+		       }
+		    }
+
+		    break;
+		 case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		    {
+		       guchar *_ORBIT_t;
+
+		       _ORBIT_t =
+			  alloca(sizeof
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.features.
+				  _length));
+			  memcpy(_ORBIT_t,
+				 &((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].breaks.
+				   _buffer[_ORBIT_tmpvar_35].u._u.features.
+				   _length),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.
+					features._length));
+		       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						      (_ORBIT_send_buffer),
+						      (_ORBIT_t),
+						      sizeof((*categories).
+							     _buffer
+							     [_ORBIT_tmpvar_0].
+							     packages.
+							     _buffer
+							     [_ORBIT_tmpvar_3].
+							     breaks.
+							     _buffer
+							     [_ORBIT_tmpvar_35].
+							     u._u.features.
+							     _length));
+		    }
+		    for (_ORBIT_tmpvar_41 = 0;
+			 _ORBIT_tmpvar_41 <
+			 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].breaks.
+			 _buffer[_ORBIT_tmpvar_35].u._u.features._length;
+			 _ORBIT_tmpvar_41++) {
+		       _ORBIT_tmpvar_43 =
+			  strlen((*categories)._buffer[_ORBIT_tmpvar_0].
+				 packages._buffer[_ORBIT_tmpvar_3].breaks.
+				 _buffer[_ORBIT_tmpvar_35].u._u.features.
+				 _buffer[_ORBIT_tmpvar_41]) + 1;
+		       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+							(_ORBIT_send_buffer),
+							4);
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_43));
+			  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_43),
+				 sizeof(_ORBIT_tmpvar_43));
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof
+							 (_ORBIT_tmpvar_43));
+		       }
+		       {
+			  guchar *_ORBIT_t;
+
+			  _ORBIT_t =
+			     alloca(sizeof
+				    ((*categories)._buffer[_ORBIT_tmpvar_0].
+				     packages._buffer[_ORBIT_tmpvar_3].breaks.
+				     _buffer[_ORBIT_tmpvar_35].u._u.features.
+				     _buffer[_ORBIT_tmpvar_41]
+				     [_ORBIT_tmpvar_42]) * _ORBIT_tmpvar_43);
+			  memcpy(_ORBIT_t,
+				 ((*categories)._buffer[_ORBIT_tmpvar_0].
+				  packages._buffer[_ORBIT_tmpvar_3].breaks.
+				  _buffer[_ORBIT_tmpvar_35].u._u.features.
+				  _buffer[_ORBIT_tmpvar_41]),
+				 sizeof((*categories).
+					_buffer[_ORBIT_tmpvar_0].packages.
+					_buffer[_ORBIT_tmpvar_3].breaks.
+					_buffer[_ORBIT_tmpvar_35].u._u.
+					features.
+					_buffer[_ORBIT_tmpvar_41]
+					[_ORBIT_tmpvar_42]) *
+				 _ORBIT_tmpvar_43);
+			  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+							 (_ORBIT_send_buffer),
+							 (_ORBIT_t),
+							 sizeof((*categories).
+								_buffer
+								[_ORBIT_tmpvar_0].
+								packages.
+								_buffer
+								[_ORBIT_tmpvar_3].
+								breaks.
+								_buffer
+								[_ORBIT_tmpvar_35].
+								u._u.features.
+								_buffer
+								[_ORBIT_tmpvar_41]
+								[_ORBIT_tmpvar_42])
+							 * _ORBIT_tmpvar_43);
+		       }
+		    }
+
+		    break;
+		 default:
+		    break;
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].modifies._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].modifies._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].modifies.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     modifies._length));
+	    }
+	    for (_ORBIT_tmpvar_44 = 0;
+		 _ORBIT_tmpvar_44 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].modifies._length;
+		 _ORBIT_tmpvar_44++) {
+	       _ORBIT_tmpvar_46 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].modifies.
+			 _buffer[_ORBIT_tmpvar_44]) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_46));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_46),
+			 sizeof(_ORBIT_tmpvar_46));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_46));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].modifies.
+			     _buffer[_ORBIT_tmpvar_44][_ORBIT_tmpvar_45]) *
+			    _ORBIT_tmpvar_46);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].modifies.
+			     _buffer[_ORBIT_tmpvar_44]),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].modifies.
+				   _buffer[_ORBIT_tmpvar_44]
+				   [_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							modifies.
+							_buffer
+							[_ORBIT_tmpvar_44]
+							[_ORBIT_tmpvar_45]) *
+						 _ORBIT_tmpvar_46);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			  _buffer[_ORBIT_tmpvar_3].provides._length));
 		  memcpy(_ORBIT_t,
 			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
@@ -8901,27 +20624,27 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 						     _buffer[_ORBIT_tmpvar_3].
 						     provides._length));
 	    }
-	    for (_ORBIT_tmpvar_26 = 0;
-		 _ORBIT_tmpvar_26 <
+	    for (_ORBIT_tmpvar_47 = 0;
+		 _ORBIT_tmpvar_47 <
 		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
 		 _buffer[_ORBIT_tmpvar_3].provides._length;
-		 _ORBIT_tmpvar_26++) {
-	       _ORBIT_tmpvar_28 =
+		 _ORBIT_tmpvar_47++) {
+	       _ORBIT_tmpvar_49 =
 		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			 _buffer[_ORBIT_tmpvar_3].provides.
-			 _buffer[_ORBIT_tmpvar_26]) + 1;
+			 _buffer[_ORBIT_tmpvar_47]) + 1;
 	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 						(_ORBIT_send_buffer), 4);
 	       {
 		  guchar *_ORBIT_t;
 
-		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
-		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28),
-			 sizeof(_ORBIT_tmpvar_28));
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_49));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_49),
+			 sizeof(_ORBIT_tmpvar_49));
 		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 						 (_ORBIT_send_buffer),
 						 (_ORBIT_t),
-						 sizeof(_ORBIT_tmpvar_28));
+						 sizeof(_ORBIT_tmpvar_49));
 	       }
 	       {
 		  guchar *_ORBIT_t;
@@ -8930,16 +20653,16 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 		     alloca(sizeof
 			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].provides.
-			     _buffer[_ORBIT_tmpvar_26][_ORBIT_tmpvar_27]) *
-			    _ORBIT_tmpvar_28);
+			     _buffer[_ORBIT_tmpvar_47][_ORBIT_tmpvar_48]) *
+			    _ORBIT_tmpvar_49);
 		     memcpy(_ORBIT_t,
 			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
 			     _buffer[_ORBIT_tmpvar_3].provides.
-			     _buffer[_ORBIT_tmpvar_26]),
+			     _buffer[_ORBIT_tmpvar_47]),
 			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
 				   packages._buffer[_ORBIT_tmpvar_3].provides.
-				   _buffer[_ORBIT_tmpvar_26]
-				   [_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+				   _buffer[_ORBIT_tmpvar_47]
+				   [_ORBIT_tmpvar_48]) * _ORBIT_tmpvar_49);
 		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 						 (_ORBIT_send_buffer),
 						 (_ORBIT_t),
@@ -8951,9 +20674,89 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 							[_ORBIT_tmpvar_3].
 							provides.
 							_buffer
-							[_ORBIT_tmpvar_26]
-							[_ORBIT_tmpvar_27]) *
-						 _ORBIT_tmpvar_28);
+							[_ORBIT_tmpvar_47]
+							[_ORBIT_tmpvar_48]) *
+						 _ORBIT_tmpvar_49);
+	       }
+	    }
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t =
+		  alloca(sizeof
+			 ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			  _buffer[_ORBIT_tmpvar_3].features._length));
+		  memcpy(_ORBIT_t,
+			 &((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			   _buffer[_ORBIT_tmpvar_3].features._length),
+			 sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				packages._buffer[_ORBIT_tmpvar_3].features.
+				_length));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof((*categories).
+						     _buffer[_ORBIT_tmpvar_0].
+						     packages.
+						     _buffer[_ORBIT_tmpvar_3].
+						     features._length));
+	    }
+	    for (_ORBIT_tmpvar_50 = 0;
+		 _ORBIT_tmpvar_50 <
+		 (*categories)._buffer[_ORBIT_tmpvar_0].packages.
+		 _buffer[_ORBIT_tmpvar_3].features._length;
+		 _ORBIT_tmpvar_50++) {
+	       _ORBIT_tmpvar_52 =
+		  strlen((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			 _buffer[_ORBIT_tmpvar_3].features.
+			 _buffer[_ORBIT_tmpvar_50]) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_52));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_52),
+			 sizeof(_ORBIT_tmpvar_52));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_52));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].features.
+			     _buffer[_ORBIT_tmpvar_50][_ORBIT_tmpvar_51]) *
+			    _ORBIT_tmpvar_52);
+		     memcpy(_ORBIT_t,
+			    ((*categories)._buffer[_ORBIT_tmpvar_0].packages.
+			     _buffer[_ORBIT_tmpvar_3].features.
+			     _buffer[_ORBIT_tmpvar_50]),
+			    sizeof((*categories)._buffer[_ORBIT_tmpvar_0].
+				   packages._buffer[_ORBIT_tmpvar_3].features.
+				   _buffer[_ORBIT_tmpvar_50]
+				   [_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*categories).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							packages.
+							_buffer
+							[_ORBIT_tmpvar_3].
+							features.
+							_buffer
+							[_ORBIT_tmpvar_50]
+							[_ORBIT_tmpvar_51]) *
+						 _ORBIT_tmpvar_52);
 	       }
 	    }
 
@@ -8961,22 +20764,22 @@ uninstall_packages(_obj->servant, categories, root, cb, ev);
 
       }
 
-      _ORBIT_tmpvar_30 = strlen(root) + 1;
+      _ORBIT_tmpvar_54 = strlen(root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
-	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
-	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_54));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_54), sizeof(_ORBIT_tmpvar_54));
 	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					(_ORBIT_send_buffer), (_ORBIT_t),
-					sizeof(_ORBIT_tmpvar_30));
+					sizeof(_ORBIT_tmpvar_54));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     (root),
-				     sizeof(root[_ORBIT_tmpvar_29]) *
-				     _ORBIT_tmpvar_30);
+				     sizeof(root[_ORBIT_tmpvar_53]) *
+				     _ORBIT_tmpvar_54);
       ORBit_marshal_object(_ORBIT_send_buffer, cb);
       giop_send_buffer_write(_ORBIT_send_buffer);
       _ORBIT_completion_status = CORBA_COMPLETED_MAYBE;
@@ -9007,31 +20810,55 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
    register GIOPRecvBuffer *_ORBIT_recv_buffer;
    register GIOPConnection *_cnx;
    CORBA_boolean _ORBIT_retval;
-   register CORBA_unsigned_long _ORBIT_tmpvar_50;
-   CORBA_unsigned_long _ORBIT_tmpvar_51;
-   register CORBA_unsigned_long _ORBIT_tmpvar_52;
-   CORBA_unsigned_long _ORBIT_tmpvar_53;
-   register CORBA_unsigned_long _ORBIT_tmpvar_54;
-   CORBA_unsigned_long _ORBIT_tmpvar_55;
-   register CORBA_unsigned_long _ORBIT_tmpvar_56;
-   CORBA_unsigned_long _ORBIT_tmpvar_57;
-   register CORBA_unsigned_long _ORBIT_tmpvar_58;
-   CORBA_unsigned_long _ORBIT_tmpvar_59;
-   register CORBA_unsigned_long _ORBIT_tmpvar_60;
-   CORBA_unsigned_long _ORBIT_tmpvar_61;
-   register CORBA_unsigned_long _ORBIT_tmpvar_62;
-   CORBA_unsigned_long _ORBIT_tmpvar_63;
-   register CORBA_unsigned_long _ORBIT_tmpvar_64;
-   CORBA_unsigned_long _ORBIT_tmpvar_65;
-   register CORBA_unsigned_long _ORBIT_tmpvar_66;
-   CORBA_unsigned_long _ORBIT_tmpvar_67;
-   register CORBA_unsigned_long _ORBIT_tmpvar_68;
-   CORBA_unsigned_long _ORBIT_tmpvar_69;
-   register CORBA_unsigned_long _ORBIT_tmpvar_70;
-   CORBA_unsigned_long _ORBIT_tmpvar_71;
-   register CORBA_unsigned_long _ORBIT_tmpvar_72;
-   register CORBA_unsigned_long _ORBIT_tmpvar_73;
-   CORBA_unsigned_long _ORBIT_tmpvar_74;
+   register CORBA_unsigned_long _ORBIT_tmpvar_98;
+   CORBA_unsigned_long _ORBIT_tmpvar_99;
+   register CORBA_unsigned_long _ORBIT_tmpvar_100;
+   CORBA_unsigned_long _ORBIT_tmpvar_101;
+   register CORBA_unsigned_long _ORBIT_tmpvar_102;
+   CORBA_unsigned_long _ORBIT_tmpvar_103;
+   register CORBA_unsigned_long _ORBIT_tmpvar_104;
+   CORBA_unsigned_long _ORBIT_tmpvar_105;
+   register CORBA_unsigned_long _ORBIT_tmpvar_106;
+   CORBA_unsigned_long _ORBIT_tmpvar_107;
+   register CORBA_unsigned_long _ORBIT_tmpvar_108;
+   CORBA_unsigned_long _ORBIT_tmpvar_109;
+   register CORBA_unsigned_long _ORBIT_tmpvar_110;
+   CORBA_unsigned_long _ORBIT_tmpvar_111;
+   register CORBA_unsigned_long _ORBIT_tmpvar_112;
+   CORBA_unsigned_long _ORBIT_tmpvar_113;
+   register CORBA_unsigned_long _ORBIT_tmpvar_114;
+   CORBA_unsigned_long _ORBIT_tmpvar_115;
+   register CORBA_unsigned_long _ORBIT_tmpvar_116;
+   CORBA_unsigned_long _ORBIT_tmpvar_117;
+   register CORBA_unsigned_long _ORBIT_tmpvar_118;
+   CORBA_unsigned_long _ORBIT_tmpvar_119;
+   register CORBA_unsigned_long _ORBIT_tmpvar_120;
+   CORBA_unsigned_long _ORBIT_tmpvar_121;
+   register CORBA_unsigned_long _ORBIT_tmpvar_122;
+   register CORBA_unsigned_long _ORBIT_tmpvar_123;
+   CORBA_unsigned_long _ORBIT_tmpvar_124;
+   register CORBA_unsigned_long _ORBIT_tmpvar_125;
+   CORBA_unsigned_long _ORBIT_tmpvar_126;
+   register CORBA_unsigned_long _ORBIT_tmpvar_127;
+   CORBA_unsigned_long _ORBIT_tmpvar_128;
+   register CORBA_unsigned_long _ORBIT_tmpvar_129;
+   register CORBA_unsigned_long _ORBIT_tmpvar_130;
+   CORBA_unsigned_long _ORBIT_tmpvar_131;
+   register CORBA_unsigned_long _ORBIT_tmpvar_132;
+   register CORBA_unsigned_long _ORBIT_tmpvar_133;
+   CORBA_unsigned_long _ORBIT_tmpvar_134;
+   register CORBA_unsigned_long _ORBIT_tmpvar_135;
+   register CORBA_unsigned_long _ORBIT_tmpvar_136;
+   CORBA_unsigned_long _ORBIT_tmpvar_137;
+   register CORBA_unsigned_long _ORBIT_tmpvar_138;
+   register CORBA_unsigned_long _ORBIT_tmpvar_139;
+   CORBA_unsigned_long _ORBIT_tmpvar_140;
+   register CORBA_unsigned_long _ORBIT_tmpvar_141;
+   register CORBA_unsigned_long _ORBIT_tmpvar_142;
+   CORBA_unsigned_long _ORBIT_tmpvar_143;
+   register CORBA_unsigned_long _ORBIT_tmpvar_144;
+   register CORBA_unsigned_long _ORBIT_tmpvar_145;
+   CORBA_unsigned_long _ORBIT_tmpvar_146;
 
    if (_obj->servant && _obj->vepv && GNOME_Trilobite_Eazel_Install__classid) {
       _ORBIT_retval =
@@ -9085,8 +20912,32 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
       register CORBA_unsigned_long _ORBIT_tmpvar_20;
       CORBA_unsigned_long _ORBIT_tmpvar_21;
       register CORBA_unsigned_long _ORBIT_tmpvar_22;
-      register CORBA_unsigned_long _ORBIT_tmpvar_23;
-      CORBA_unsigned_long _ORBIT_tmpvar_24;
+      CORBA_unsigned_long _ORBIT_tmpvar_23;
+      register CORBA_unsigned_long _ORBIT_tmpvar_24;
+      register CORBA_unsigned_long _ORBIT_tmpvar_25;
+      CORBA_unsigned_long _ORBIT_tmpvar_26;
+      register CORBA_unsigned_long _ORBIT_tmpvar_27;
+      CORBA_unsigned_long _ORBIT_tmpvar_28;
+      register CORBA_unsigned_long _ORBIT_tmpvar_29;
+      CORBA_unsigned_long _ORBIT_tmpvar_30;
+      register CORBA_unsigned_long _ORBIT_tmpvar_31;
+      register CORBA_unsigned_long _ORBIT_tmpvar_32;
+      CORBA_unsigned_long _ORBIT_tmpvar_33;
+      register CORBA_unsigned_long _ORBIT_tmpvar_34;
+      register CORBA_unsigned_long _ORBIT_tmpvar_35;
+      CORBA_unsigned_long _ORBIT_tmpvar_36;
+      register CORBA_unsigned_long _ORBIT_tmpvar_37;
+      register CORBA_unsigned_long _ORBIT_tmpvar_38;
+      CORBA_unsigned_long _ORBIT_tmpvar_39;
+      register CORBA_unsigned_long _ORBIT_tmpvar_40;
+      register CORBA_unsigned_long _ORBIT_tmpvar_41;
+      CORBA_unsigned_long _ORBIT_tmpvar_42;
+      register CORBA_unsigned_long _ORBIT_tmpvar_43;
+      register CORBA_unsigned_long _ORBIT_tmpvar_44;
+      CORBA_unsigned_long _ORBIT_tmpvar_45;
+      register CORBA_unsigned_long _ORBIT_tmpvar_46;
+      register CORBA_unsigned_long _ORBIT_tmpvar_47;
+      CORBA_unsigned_long _ORBIT_tmpvar_48;
 
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
@@ -9162,7 +21013,7 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 				     ((*q).eazel_id),
 				     sizeof((*q).eazel_id[_ORBIT_tmpvar_6]) *
 				     _ORBIT_tmpvar_7);
-      _ORBIT_tmpvar_9 = strlen((*q).archtype) + 1;
+      _ORBIT_tmpvar_9 = strlen((*q).suite_id) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -9175,10 +21026,10 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_9));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).archtype),
-				     sizeof((*q).archtype[_ORBIT_tmpvar_8]) *
+				     ((*q).suite_id),
+				     sizeof((*q).suite_id[_ORBIT_tmpvar_8]) *
 				     _ORBIT_tmpvar_9);
-      _ORBIT_tmpvar_11 = strlen((*q).distribution.name) + 1;
+      _ORBIT_tmpvar_11 = strlen((*q).archtype) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -9191,19 +21042,12 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_11));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).distribution.name),
-				     sizeof((*q).distribution.
-					    name[_ORBIT_tmpvar_10]) *
+				     ((*q).archtype),
+				     sizeof((*q).archtype[_ORBIT_tmpvar_10]) *
 				     _ORBIT_tmpvar_11);
+      _ORBIT_tmpvar_13 = strlen((*q).distribution.name) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*q).distribution.major),
-				     sizeof((*q).distribution.major));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*q).distribution.minor),
-				     sizeof((*q).distribution.minor));
-      _ORBIT_tmpvar_13 = strlen((*q).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -9214,12 +21058,19 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_13));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).release),
-				     sizeof((*q).release[_ORBIT_tmpvar_12]) *
+				     ((*q).distribution.name),
+				     sizeof((*q).distribution.
+					    name[_ORBIT_tmpvar_12]) *
 				     _ORBIT_tmpvar_13);
-      _ORBIT_tmpvar_15 = strlen((*q).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).distribution.major),
+				     sizeof((*q).distribution.major));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).distribution.minor),
+				     sizeof((*q).distribution.minor));
+      _ORBIT_tmpvar_15 = strlen((*q).release) + 1;
       {
 	 guchar *_ORBIT_t;
 
@@ -9230,10 +21081,10 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_15));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).summary),
-				     sizeof((*q).summary[_ORBIT_tmpvar_14]) *
+				     ((*q).release),
+				     sizeof((*q).release[_ORBIT_tmpvar_14]) *
 				     _ORBIT_tmpvar_15);
-      _ORBIT_tmpvar_17 = strlen((*q).description) + 1;
+      _ORBIT_tmpvar_17 = strlen((*q).summary) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -9246,17 +21097,10 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_17));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).description),
-				     sizeof((*q).
-					    description[_ORBIT_tmpvar_16]) *
+				     ((*q).summary),
+				     sizeof((*q).summary[_ORBIT_tmpvar_16]) *
 				     _ORBIT_tmpvar_17);
-      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-				       (_ORBIT_send_buffer), 4);
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*q).bytesize), sizeof((*q).bytesize));
-      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     &((*q).toplevel), sizeof((*q).toplevel));
-      _ORBIT_tmpvar_19 = strlen((*q).install_root) + 1;
+      _ORBIT_tmpvar_19 = strlen((*q).description) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -9269,11 +21113,21 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_19));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).install_root),
+				     ((*q).description),
 				     sizeof((*q).
-					    install_root[_ORBIT_tmpvar_18]) *
+					    description[_ORBIT_tmpvar_18]) *
 				     _ORBIT_tmpvar_19);
-      _ORBIT_tmpvar_21 = strlen((*q).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).bytesize), sizeof((*q).bytesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).filesize), sizeof((*q).filesize));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).toplevel), sizeof((*q).toplevel));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).anchor), sizeof((*q).anchor));
+      _ORBIT_tmpvar_21 = strlen((*q).install_root) + 1;
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       {
@@ -9286,13 +21140,400 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					sizeof(_ORBIT_tmpvar_21));
       }
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
-				     ((*q).md5),
-				     sizeof((*q).md5[_ORBIT_tmpvar_20]) *
+				     ((*q).install_root),
+				     sizeof((*q).
+					    install_root[_ORBIT_tmpvar_20]) *
 				     _ORBIT_tmpvar_21);
+      _ORBIT_tmpvar_23 = strlen((*q).md5) + 1;
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_23));
+	 memcpy(_ORBIT_t, &(_ORBIT_tmpvar_23), sizeof(_ORBIT_tmpvar_23));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof(_ORBIT_tmpvar_23));
+      }
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     ((*q).md5),
+				     sizeof((*q).md5[_ORBIT_tmpvar_22]) *
+				     _ORBIT_tmpvar_23);
       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 				       (_ORBIT_send_buffer), 4);
       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
 				     &((*q).status), sizeof((*q).status));
+      giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER(_ORBIT_send_buffer),
+				     &((*q).modify_status),
+				     sizeof((*q).modify_status));
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*q).depends._length));
+	 memcpy(_ORBIT_t, &((*q).depends._length),
+		sizeof((*q).depends._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*q).depends._length));
+      }
+      for (_ORBIT_tmpvar_24 = 0; _ORBIT_tmpvar_24 < (*q).depends._length;
+	   _ORBIT_tmpvar_24++) {
+	 _ORBIT_tmpvar_26 =
+	    strlen((*q).depends._buffer[_ORBIT_tmpvar_24].sense) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_26));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_26), sizeof(_ORBIT_tmpvar_26));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_26));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).depends._buffer[_ORBIT_tmpvar_24].
+		       sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    memcpy(_ORBIT_t, ((*q).depends._buffer[_ORBIT_tmpvar_24].sense),
+		   sizeof((*q).depends._buffer[_ORBIT_tmpvar_24].
+			  sense[_ORBIT_tmpvar_25]) * _ORBIT_tmpvar_26);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  sense[_ORBIT_tmpvar_25]) *
+					   _ORBIT_tmpvar_26);
+	 }
+	 _ORBIT_tmpvar_28 =
+	    strlen((*q).depends._buffer[_ORBIT_tmpvar_24].version) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_28));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_28), sizeof(_ORBIT_tmpvar_28));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_28));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).depends._buffer[_ORBIT_tmpvar_24].
+		       version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    memcpy(_ORBIT_t, ((*q).depends._buffer[_ORBIT_tmpvar_24].version),
+		   sizeof((*q).depends._buffer[_ORBIT_tmpvar_24].
+			  version[_ORBIT_tmpvar_27]) * _ORBIT_tmpvar_28);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  version[_ORBIT_tmpvar_27]) *
+					   _ORBIT_tmpvar_28);
+	 }
+	 _ORBIT_tmpvar_30 =
+	    strlen((*q).depends._buffer[_ORBIT_tmpvar_24].package_md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_30));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_30), sizeof(_ORBIT_tmpvar_30));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_30));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).depends._buffer[_ORBIT_tmpvar_24].
+		       package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    memcpy(_ORBIT_t,
+		   ((*q).depends._buffer[_ORBIT_tmpvar_24].package_md5),
+		   sizeof((*q).depends._buffer[_ORBIT_tmpvar_24].
+			  package_md5[_ORBIT_tmpvar_29]) * _ORBIT_tmpvar_30);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).depends.
+						  _buffer[_ORBIT_tmpvar_24].
+						  package_md5
+						  [_ORBIT_tmpvar_29]) *
+					   _ORBIT_tmpvar_30);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*q).breaks._length));
+	 memcpy(_ORBIT_t, &((*q).breaks._length),
+		sizeof((*q).breaks._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*q).breaks._length));
+      }
+      for (_ORBIT_tmpvar_31 = 0; _ORBIT_tmpvar_31 < (*q).breaks._length;
+	   _ORBIT_tmpvar_31++) {
+	 _ORBIT_tmpvar_33 =
+	    strlen((*q).breaks._buffer[_ORBIT_tmpvar_31].package_md5) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_33));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_33), sizeof(_ORBIT_tmpvar_33));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_33));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).breaks._buffer[_ORBIT_tmpvar_31].
+		       package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    memcpy(_ORBIT_t,
+		   ((*q).breaks._buffer[_ORBIT_tmpvar_31].package_md5),
+		   sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].
+			  package_md5[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).breaks.
+						  _buffer[_ORBIT_tmpvar_31].
+						  package_md5
+						  [_ORBIT_tmpvar_32]) *
+					   _ORBIT_tmpvar_33);
+	 }
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	       memcpy(_ORBIT_t, &((*q).breaks._buffer[_ORBIT_tmpvar_31].u._d),
+		      sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u._d));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).breaks.
+						  _buffer[_ORBIT_tmpvar_31].u.
+						  _d));
+	 }
+	 switch ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._d) {
+	   case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+			    _length));
+		    memcpy(_ORBIT_t,
+			   &((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+			     _length),
+			   sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+				  files._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*q).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.files._length));
+	      }
+	      for (_ORBIT_tmpvar_34 = 0;
+		   _ORBIT_tmpvar_34 <
+		   (*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.files._length;
+		   _ORBIT_tmpvar_34++) {
+		 _ORBIT_tmpvar_36 =
+		    strlen((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.files.
+			   _buffer[_ORBIT_tmpvar_34]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_36));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_36),
+			   sizeof(_ORBIT_tmpvar_36));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_36));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			       files.
+			       _buffer[_ORBIT_tmpvar_34][_ORBIT_tmpvar_35]) *
+			      _ORBIT_tmpvar_36);
+		       memcpy(_ORBIT_t,
+			      ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			       files._buffer[_ORBIT_tmpvar_34]),
+			      sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u.
+				     _u.files.
+				     _buffer[_ORBIT_tmpvar_34]
+				     [_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*q).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.files.
+							  _buffer
+							  [_ORBIT_tmpvar_34]
+							  [_ORBIT_tmpvar_35])
+						   * _ORBIT_tmpvar_36);
+		 }
+	      }
+
+	      break;
+	   case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	      {
+		 guchar *_ORBIT_t;
+
+		 _ORBIT_t =
+		    alloca(sizeof
+			   ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			    features._length));
+		    memcpy(_ORBIT_t,
+			   &((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			     features._length),
+			   sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+				  features._length));
+		 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer),
+						(_ORBIT_t),
+						sizeof((*q).breaks.
+						       _buffer
+						       [_ORBIT_tmpvar_31].u.
+						       _u.features._length));
+	      }
+	      for (_ORBIT_tmpvar_37 = 0;
+		   _ORBIT_tmpvar_37 <
+		   (*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.features.
+		   _length; _ORBIT_tmpvar_37++) {
+		 _ORBIT_tmpvar_39 =
+		    strlen((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			   features._buffer[_ORBIT_tmpvar_37]) + 1;
+		 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						  (_ORBIT_send_buffer), 4);
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_39));
+		    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_39),
+			   sizeof(_ORBIT_tmpvar_39));
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof(_ORBIT_tmpvar_39));
+		 }
+		 {
+		    guchar *_ORBIT_t;
+
+		    _ORBIT_t =
+		       alloca(sizeof
+			      ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			       features.
+			       _buffer[_ORBIT_tmpvar_37][_ORBIT_tmpvar_38]) *
+			      _ORBIT_tmpvar_39);
+		       memcpy(_ORBIT_t,
+			      ((*q).breaks._buffer[_ORBIT_tmpvar_31].u._u.
+			       features._buffer[_ORBIT_tmpvar_37]),
+			      sizeof((*q).breaks._buffer[_ORBIT_tmpvar_31].u.
+				     _u.features.
+				     _buffer[_ORBIT_tmpvar_37]
+				     [_ORBIT_tmpvar_38]) * _ORBIT_tmpvar_39);
+		    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						   (_ORBIT_send_buffer),
+						   (_ORBIT_t),
+						   sizeof((*q).breaks.
+							  _buffer
+							  [_ORBIT_tmpvar_31].
+							  u._u.features.
+							  _buffer
+							  [_ORBIT_tmpvar_37]
+							  [_ORBIT_tmpvar_38])
+						   * _ORBIT_tmpvar_39);
+		 }
+	      }
+
+	      break;
+	   default:
+	      break;
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*q).modifies._length));
+	 memcpy(_ORBIT_t, &((*q).modifies._length),
+		sizeof((*q).modifies._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*q).modifies._length));
+      }
+      for (_ORBIT_tmpvar_40 = 0; _ORBIT_tmpvar_40 < (*q).modifies._length;
+	   _ORBIT_tmpvar_40++) {
+	 _ORBIT_tmpvar_42 =
+	    strlen((*q).modifies._buffer[_ORBIT_tmpvar_40]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_42));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_42), sizeof(_ORBIT_tmpvar_42));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_42));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).modifies.
+		       _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	       memcpy(_ORBIT_t, ((*q).modifies._buffer[_ORBIT_tmpvar_40]),
+		      sizeof((*q).modifies.
+			     _buffer[_ORBIT_tmpvar_40][_ORBIT_tmpvar_41]) *
+		      _ORBIT_tmpvar_42);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).modifies.
+						  _buffer[_ORBIT_tmpvar_40]
+						  [_ORBIT_tmpvar_41]) *
+					   _ORBIT_tmpvar_42);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
       {
 	 guchar *_ORBIT_t;
 
@@ -9303,20 +21544,20 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 					(_ORBIT_send_buffer), (_ORBIT_t),
 					sizeof((*q).provides._length));
       }
-      for (_ORBIT_tmpvar_22 = 0; _ORBIT_tmpvar_22 < (*q).provides._length;
-	   _ORBIT_tmpvar_22++) {
-	 _ORBIT_tmpvar_24 =
-	    strlen((*q).provides._buffer[_ORBIT_tmpvar_22]) + 1;
+      for (_ORBIT_tmpvar_43 = 0; _ORBIT_tmpvar_43 < (*q).provides._length;
+	   _ORBIT_tmpvar_43++) {
+	 _ORBIT_tmpvar_45 =
+	    strlen((*q).provides._buffer[_ORBIT_tmpvar_43]) + 1;
 	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
 					  (_ORBIT_send_buffer), 4);
 	 {
 	    guchar *_ORBIT_t;
 
-	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_24));
-	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_24), sizeof(_ORBIT_tmpvar_24));
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_45));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_45), sizeof(_ORBIT_tmpvar_45));
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
-					   sizeof(_ORBIT_tmpvar_24));
+					   sizeof(_ORBIT_tmpvar_45));
 	 }
 	 {
 	    guchar *_ORBIT_t;
@@ -9324,18 +21565,66 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 	    _ORBIT_t =
 	       alloca(sizeof
 		      ((*q).provides.
-		       _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
-	       memcpy(_ORBIT_t, ((*q).provides._buffer[_ORBIT_tmpvar_22]),
+		       _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
+	       memcpy(_ORBIT_t, ((*q).provides._buffer[_ORBIT_tmpvar_43]),
 		      sizeof((*q).provides.
-			     _buffer[_ORBIT_tmpvar_22][_ORBIT_tmpvar_23]) *
-		      _ORBIT_tmpvar_24);
+			     _buffer[_ORBIT_tmpvar_43][_ORBIT_tmpvar_44]) *
+		      _ORBIT_tmpvar_45);
 	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					   (_ORBIT_send_buffer), (_ORBIT_t),
 					   sizeof((*q).provides.
-						  _buffer[_ORBIT_tmpvar_22]
-						  [_ORBIT_tmpvar_23]) *
-					   _ORBIT_tmpvar_24);
+						  _buffer[_ORBIT_tmpvar_43]
+						  [_ORBIT_tmpvar_44]) *
+					   _ORBIT_tmpvar_45);
+	 }
+      }
+
+      giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+				       (_ORBIT_send_buffer), 4);
+      {
+	 guchar *_ORBIT_t;
+
+	 _ORBIT_t = alloca(sizeof((*q).features._length));
+	 memcpy(_ORBIT_t, &((*q).features._length),
+		sizeof((*q).features._length));
+	 giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					(_ORBIT_send_buffer), (_ORBIT_t),
+					sizeof((*q).features._length));
+      }
+      for (_ORBIT_tmpvar_46 = 0; _ORBIT_tmpvar_46 < (*q).features._length;
+	   _ORBIT_tmpvar_46++) {
+	 _ORBIT_tmpvar_48 =
+	    strlen((*q).features._buffer[_ORBIT_tmpvar_46]) + 1;
+	 giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					  (_ORBIT_send_buffer), 4);
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_48));
+	    memcpy(_ORBIT_t, &(_ORBIT_tmpvar_48), sizeof(_ORBIT_tmpvar_48));
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof(_ORBIT_tmpvar_48));
+	 }
+	 {
+	    guchar *_ORBIT_t;
+
+	    _ORBIT_t =
+	       alloca(sizeof
+		      ((*q).features.
+		       _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	       memcpy(_ORBIT_t, ((*q).features._buffer[_ORBIT_tmpvar_46]),
+		      sizeof((*q).features.
+			     _buffer[_ORBIT_tmpvar_46][_ORBIT_tmpvar_47]) *
+		      _ORBIT_tmpvar_48);
+	    giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					   (_ORBIT_send_buffer), (_ORBIT_t),
+					   sizeof((*q).features.
+						  _buffer[_ORBIT_tmpvar_46]
+						  [_ORBIT_tmpvar_47]) *
+					   _ORBIT_tmpvar_48);
 	 }
       }
 
@@ -9361,74 +21650,87 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_51))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_99))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).name = CORBA_string_alloc(_ORBIT_tmpvar_51);
+	 ((**result)).name = CORBA_string_alloc(_ORBIT_tmpvar_99);
 	 memcpy(((**result)).name, _ORBIT_curptr,
-		sizeof(((**result)).name[_ORBIT_tmpvar_50]) *
-		_ORBIT_tmpvar_51);
+		sizeof(((**result)).name[_ORBIT_tmpvar_98]) *
+		_ORBIT_tmpvar_99);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).name[_ORBIT_tmpvar_50]) * _ORBIT_tmpvar_51;
+	    sizeof(((**result)).name[_ORBIT_tmpvar_98]) * _ORBIT_tmpvar_99;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_53))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_101))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).version = CORBA_string_alloc(_ORBIT_tmpvar_53);
+	 ((**result)).version = CORBA_string_alloc(_ORBIT_tmpvar_101);
 	 memcpy(((**result)).version, _ORBIT_curptr,
-		sizeof(((**result)).version[_ORBIT_tmpvar_52]) *
-		_ORBIT_tmpvar_53);
+		sizeof(((**result)).version[_ORBIT_tmpvar_100]) *
+		_ORBIT_tmpvar_101);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).version[_ORBIT_tmpvar_52]) * _ORBIT_tmpvar_53;
+	    sizeof(((**result)).version[_ORBIT_tmpvar_100]) *
+	    _ORBIT_tmpvar_101;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_55))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_103))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).filename = CORBA_string_alloc(_ORBIT_tmpvar_55);
+	 ((**result)).filename = CORBA_string_alloc(_ORBIT_tmpvar_103);
 	 memcpy(((**result)).filename, _ORBIT_curptr,
-		sizeof(((**result)).filename[_ORBIT_tmpvar_54]) *
-		_ORBIT_tmpvar_55);
+		sizeof(((**result)).filename[_ORBIT_tmpvar_102]) *
+		_ORBIT_tmpvar_103);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).filename[_ORBIT_tmpvar_54]) *
-	    _ORBIT_tmpvar_55;
+	    sizeof(((**result)).filename[_ORBIT_tmpvar_102]) *
+	    _ORBIT_tmpvar_103;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_57))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_105))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).eazel_id = CORBA_string_alloc(_ORBIT_tmpvar_57);
+	 ((**result)).eazel_id = CORBA_string_alloc(_ORBIT_tmpvar_105);
 	 memcpy(((**result)).eazel_id, _ORBIT_curptr,
-		sizeof(((**result)).eazel_id[_ORBIT_tmpvar_56]) *
-		_ORBIT_tmpvar_57);
+		sizeof(((**result)).eazel_id[_ORBIT_tmpvar_104]) *
+		_ORBIT_tmpvar_105);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).eazel_id[_ORBIT_tmpvar_56]) *
-	    _ORBIT_tmpvar_57;
+	    sizeof(((**result)).eazel_id[_ORBIT_tmpvar_104]) *
+	    _ORBIT_tmpvar_105;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_59))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_107))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).archtype = CORBA_string_alloc(_ORBIT_tmpvar_59);
+	 ((**result)).suite_id = CORBA_string_alloc(_ORBIT_tmpvar_107);
+	 memcpy(((**result)).suite_id, _ORBIT_curptr,
+		sizeof(((**result)).suite_id[_ORBIT_tmpvar_106]) *
+		_ORBIT_tmpvar_107);
+	 _ORBIT_curptr +=
+	    sizeof(((**result)).suite_id[_ORBIT_tmpvar_106]) *
+	    _ORBIT_tmpvar_107;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_109))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 ((**result)).archtype = CORBA_string_alloc(_ORBIT_tmpvar_109);
 	 memcpy(((**result)).archtype, _ORBIT_curptr,
-		sizeof(((**result)).archtype[_ORBIT_tmpvar_58]) *
-		_ORBIT_tmpvar_59);
+		sizeof(((**result)).archtype[_ORBIT_tmpvar_108]) *
+		_ORBIT_tmpvar_109);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).archtype[_ORBIT_tmpvar_58]) *
-	    _ORBIT_tmpvar_59;
+	    sizeof(((**result)).archtype[_ORBIT_tmpvar_108]) *
+	    _ORBIT_tmpvar_109;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_61))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_111))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).distribution.name = CORBA_string_alloc(_ORBIT_tmpvar_61);
+	 ((**result)).distribution.name = CORBA_string_alloc(_ORBIT_tmpvar_111);
 	 memcpy(((**result)).distribution.name, _ORBIT_curptr,
-		sizeof(((**result)).distribution.name[_ORBIT_tmpvar_60]) *
-		_ORBIT_tmpvar_61);
+		sizeof(((**result)).distribution.name[_ORBIT_tmpvar_110]) *
+		_ORBIT_tmpvar_111);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).distribution.name[_ORBIT_tmpvar_60]) *
-	    _ORBIT_tmpvar_61;
+	    sizeof(((**result)).distribution.name[_ORBIT_tmpvar_110]) *
+	    _ORBIT_tmpvar_111;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (((**result)).distribution.major))) =
@@ -9439,73 +21741,320 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_63))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_113))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).release = CORBA_string_alloc(_ORBIT_tmpvar_63);
+	 ((**result)).release = CORBA_string_alloc(_ORBIT_tmpvar_113);
 	 memcpy(((**result)).release, _ORBIT_curptr,
-		sizeof(((**result)).release[_ORBIT_tmpvar_62]) *
-		_ORBIT_tmpvar_63);
+		sizeof(((**result)).release[_ORBIT_tmpvar_112]) *
+		_ORBIT_tmpvar_113);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).release[_ORBIT_tmpvar_62]) * _ORBIT_tmpvar_63;
+	    sizeof(((**result)).release[_ORBIT_tmpvar_112]) *
+	    _ORBIT_tmpvar_113;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_65))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_115))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).summary = CORBA_string_alloc(_ORBIT_tmpvar_65);
+	 ((**result)).summary = CORBA_string_alloc(_ORBIT_tmpvar_115);
 	 memcpy(((**result)).summary, _ORBIT_curptr,
-		sizeof(((**result)).summary[_ORBIT_tmpvar_64]) *
-		_ORBIT_tmpvar_65);
+		sizeof(((**result)).summary[_ORBIT_tmpvar_114]) *
+		_ORBIT_tmpvar_115);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).summary[_ORBIT_tmpvar_64]) * _ORBIT_tmpvar_65;
+	    sizeof(((**result)).summary[_ORBIT_tmpvar_114]) *
+	    _ORBIT_tmpvar_115;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_67))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_117))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).description = CORBA_string_alloc(_ORBIT_tmpvar_67);
+	 ((**result)).description = CORBA_string_alloc(_ORBIT_tmpvar_117);
 	 memcpy(((**result)).description, _ORBIT_curptr,
-		sizeof(((**result)).description[_ORBIT_tmpvar_66]) *
-		_ORBIT_tmpvar_67);
+		sizeof(((**result)).description[_ORBIT_tmpvar_116]) *
+		_ORBIT_tmpvar_117);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).description[_ORBIT_tmpvar_66]) *
-	    _ORBIT_tmpvar_67;
+	    sizeof(((**result)).description[_ORBIT_tmpvar_116]) *
+	    _ORBIT_tmpvar_117;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (((**result)).bytesize))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 
+	    (*((guint32 *) & (((**result)).filesize))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
 	 ((**result)).toplevel = *((CORBA_boolean *) _ORBIT_curptr);
+	 _ORBIT_curptr += 1;
+	 ((**result)).anchor = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_69))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_119))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).install_root = CORBA_string_alloc(_ORBIT_tmpvar_69);
+	 ((**result)).install_root = CORBA_string_alloc(_ORBIT_tmpvar_119);
 	 memcpy(((**result)).install_root, _ORBIT_curptr,
-		sizeof(((**result)).install_root[_ORBIT_tmpvar_68]) *
-		_ORBIT_tmpvar_69);
+		sizeof(((**result)).install_root[_ORBIT_tmpvar_118]) *
+		_ORBIT_tmpvar_119);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).install_root[_ORBIT_tmpvar_68]) *
-	    _ORBIT_tmpvar_69;
+	    sizeof(((**result)).install_root[_ORBIT_tmpvar_118]) *
+	    _ORBIT_tmpvar_119;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_71))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_121))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 ((**result)).md5 = CORBA_string_alloc(_ORBIT_tmpvar_71);
+	 ((**result)).md5 = CORBA_string_alloc(_ORBIT_tmpvar_121);
 	 memcpy(((**result)).md5, _ORBIT_curptr,
-		sizeof(((**result)).md5[_ORBIT_tmpvar_70]) *
-		_ORBIT_tmpvar_71);
+		sizeof(((**result)).md5[_ORBIT_tmpvar_120]) *
+		_ORBIT_tmpvar_121);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).md5[_ORBIT_tmpvar_70]) * _ORBIT_tmpvar_71;
+	    sizeof(((**result)).md5[_ORBIT_tmpvar_120]) * _ORBIT_tmpvar_121;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (((**result)).status))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 
+	    (*((guint32 *) & (((**result)).modify_status))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 
+	    (*((guint32 *) & (((**result)).depends._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 ((**result)).depends._maximum = ((**result)).depends._length;
+	 
+	    ((**result)).depends._buffer =
+	    CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+	    (((**result)).depends._length);
+	 ((**result)).depends._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_122 = 0;
+	      _ORBIT_tmpvar_122 < ((**result)).depends._length;
+	      _ORBIT_tmpvar_122++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_124))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].sense =
+	       CORBA_string_alloc(_ORBIT_tmpvar_124);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].sense,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  sense[_ORBIT_tmpvar_123]) * _ORBIT_tmpvar_124);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      sense[_ORBIT_tmpvar_123]) * _ORBIT_tmpvar_124;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_126))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].version =
+	       CORBA_string_alloc(_ORBIT_tmpvar_126);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].version,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  version[_ORBIT_tmpvar_125]) * _ORBIT_tmpvar_126);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      version[_ORBIT_tmpvar_125]) * _ORBIT_tmpvar_126;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_128))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].package_md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_128);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		   package_md5, _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  package_md5[_ORBIT_tmpvar_127]) *
+		   _ORBIT_tmpvar_128);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      package_md5[_ORBIT_tmpvar_127]) * _ORBIT_tmpvar_128;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (((**result)).breaks._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 ((**result)).breaks._maximum = ((**result)).breaks._length;
+	 
+	    ((**result)).breaks._buffer =
+	    CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf(
+									      (
+									       (**result)).
+									      breaks.
+									      _length);
+	 ((**result)).breaks._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_129 = 0;
+	      _ORBIT_tmpvar_129 < ((**result)).breaks._length;
+	      _ORBIT_tmpvar_129++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_131))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].package_md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_131);
+	    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].package_md5,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			  package_md5[_ORBIT_tmpvar_130]) *
+		   _ORBIT_tmpvar_131);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+		      package_md5[_ORBIT_tmpvar_130]) * _ORBIT_tmpvar_131;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*
+	     ((guint32 *) &
+	   (((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._d))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    switch (((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 
+		    (*
+		  ((guint32 *) &
+		(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		 _length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _maximum =
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _length;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _buffer =
+		    CORBA_sequence_CORBA_string_allocbuf(((**result)).breaks.
+							 _buffer
+							 [_ORBIT_tmpvar_129].
+							 u._u.files._length);
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_132 = 0;
+		      _ORBIT_tmpvar_132 <
+		      ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		      files._length; _ORBIT_tmpvar_132++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    
+		       (*((guint32 *) & (_ORBIT_tmpvar_134))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		       files._buffer[_ORBIT_tmpvar_132] =
+		       CORBA_string_alloc(_ORBIT_tmpvar_134);
+		    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u.
+			   _u.files._buffer[_ORBIT_tmpvar_132], _ORBIT_curptr,
+			   sizeof(((**result)).breaks.
+				  _buffer[_ORBIT_tmpvar_129].u._u.files.
+				  _buffer[_ORBIT_tmpvar_132]
+				  [_ORBIT_tmpvar_133]) * _ORBIT_tmpvar_134);
+		    _ORBIT_curptr +=
+		       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			      u._u.files.
+			      _buffer[_ORBIT_tmpvar_132][_ORBIT_tmpvar_133]) *
+		       _ORBIT_tmpvar_134;
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 
+		    (*
+		  ((guint32 *) &
+		(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		 _length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		    _maximum =
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		    features._length;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		    _buffer =
+		    CORBA_sequence_CORBA_string_allocbuf(((**result)).breaks.
+							 _buffer
+							 [_ORBIT_tmpvar_129].
+							 u._u.features.
+							 _length);
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		    _release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_135 = 0;
+		      _ORBIT_tmpvar_135 <
+		      ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		      features._length; _ORBIT_tmpvar_135++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    
+		       (*((guint32 *) & (_ORBIT_tmpvar_137))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		       features._buffer[_ORBIT_tmpvar_135] =
+		       CORBA_string_alloc(_ORBIT_tmpvar_137);
+		    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u.
+			   _u.features._buffer[_ORBIT_tmpvar_135],
+			   _ORBIT_curptr,
+			   sizeof(((**result)).breaks.
+				  _buffer[_ORBIT_tmpvar_129].u._u.features.
+				  _buffer[_ORBIT_tmpvar_135]
+				  [_ORBIT_tmpvar_136]) * _ORBIT_tmpvar_137);
+		    _ORBIT_curptr +=
+		       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			      u._u.features.
+			      _buffer[_ORBIT_tmpvar_135][_ORBIT_tmpvar_136]) *
+		       _ORBIT_tmpvar_137;
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (((**result)).modifies._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 ((**result)).modifies._maximum = ((**result)).modifies._length;
+	 
+	    ((**result)).modifies._buffer =
+	    CORBA_sequence_CORBA_string_allocbuf(((**result)).modifies.
+						 _length);
+	 ((**result)).modifies._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_138 = 0;
+	      _ORBIT_tmpvar_138 < ((**result)).modifies._length;
+	      _ORBIT_tmpvar_138++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_140))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).modifies._buffer[_ORBIT_tmpvar_138] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_140);
+	    memcpy(((**result)).modifies._buffer[_ORBIT_tmpvar_138],
+		   _ORBIT_curptr,
+		   sizeof(((**result)).modifies.
+			  _buffer[_ORBIT_tmpvar_138][_ORBIT_tmpvar_139]) *
+		   _ORBIT_tmpvar_140);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).modifies.
+		      _buffer[_ORBIT_tmpvar_138][_ORBIT_tmpvar_139]) *
+	       _ORBIT_tmpvar_140;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (((**result)).provides._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
@@ -9516,148 +22065,417 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 	    CORBA_sequence_CORBA_string_allocbuf(((**result)).provides.
 						 _length);
 	 ((**result)).provides._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_72 = 0;
-	      _ORBIT_tmpvar_72 < ((**result)).provides._length;
-	      _ORBIT_tmpvar_72++) {
+	 for (_ORBIT_tmpvar_141 = 0;
+	      _ORBIT_tmpvar_141 < ((**result)).provides._length;
+	      _ORBIT_tmpvar_141++) {
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_74))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_143))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       ((**result)).provides._buffer[_ORBIT_tmpvar_72] =
-	       CORBA_string_alloc(_ORBIT_tmpvar_74);
-	    memcpy(((**result)).provides._buffer[_ORBIT_tmpvar_72],
+	       ((**result)).provides._buffer[_ORBIT_tmpvar_141] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_143);
+	    memcpy(((**result)).provides._buffer[_ORBIT_tmpvar_141],
 		   _ORBIT_curptr,
 		   sizeof(((**result)).provides.
-			  _buffer[_ORBIT_tmpvar_72][_ORBIT_tmpvar_73]) *
-		   _ORBIT_tmpvar_74);
+			  _buffer[_ORBIT_tmpvar_141][_ORBIT_tmpvar_142]) *
+		   _ORBIT_tmpvar_143);
 	    _ORBIT_curptr +=
 	       sizeof(((**result)).provides.
-		      _buffer[_ORBIT_tmpvar_72][_ORBIT_tmpvar_73]) *
-	       _ORBIT_tmpvar_74;
+		      _buffer[_ORBIT_tmpvar_141][_ORBIT_tmpvar_142]) *
+	       _ORBIT_tmpvar_143;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 
+	    (*((guint32 *) & (((**result)).features._length))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 ((**result)).features._maximum = ((**result)).features._length;
+	 
+	    ((**result)).features._buffer =
+	    CORBA_sequence_CORBA_string_allocbuf(((**result)).features.
+						 _length);
+	 ((**result)).features._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_144 = 0;
+	      _ORBIT_tmpvar_144 < ((**result)).features._length;
+	      _ORBIT_tmpvar_144++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_146))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).features._buffer[_ORBIT_tmpvar_144] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_146);
+	    memcpy(((**result)).features._buffer[_ORBIT_tmpvar_144],
+		   _ORBIT_curptr,
+		   sizeof(((**result)).features.
+			  _buffer[_ORBIT_tmpvar_144][_ORBIT_tmpvar_145]) *
+		   _ORBIT_tmpvar_146);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).features.
+		      _buffer[_ORBIT_tmpvar_144][_ORBIT_tmpvar_145]) *
+	       _ORBIT_tmpvar_146;
 	 }
 
       } else {
 	 _ORBIT_retval = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_51 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_99 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).name = CORBA_string_alloc(_ORBIT_tmpvar_51);
+	 ((**result)).name = CORBA_string_alloc(_ORBIT_tmpvar_99);
 	 memcpy(((**result)).name, _ORBIT_curptr,
-		sizeof(((**result)).name[_ORBIT_tmpvar_50]) *
-		_ORBIT_tmpvar_51);
+		sizeof(((**result)).name[_ORBIT_tmpvar_98]) *
+		_ORBIT_tmpvar_99);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).name[_ORBIT_tmpvar_50]) * _ORBIT_tmpvar_51;
+	    sizeof(((**result)).name[_ORBIT_tmpvar_98]) * _ORBIT_tmpvar_99;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_53 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_101 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).version = CORBA_string_alloc(_ORBIT_tmpvar_53);
+	 ((**result)).version = CORBA_string_alloc(_ORBIT_tmpvar_101);
 	 memcpy(((**result)).version, _ORBIT_curptr,
-		sizeof(((**result)).version[_ORBIT_tmpvar_52]) *
-		_ORBIT_tmpvar_53);
+		sizeof(((**result)).version[_ORBIT_tmpvar_100]) *
+		_ORBIT_tmpvar_101);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).version[_ORBIT_tmpvar_52]) * _ORBIT_tmpvar_53;
+	    sizeof(((**result)).version[_ORBIT_tmpvar_100]) *
+	    _ORBIT_tmpvar_101;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_55 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_103 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).filename = CORBA_string_alloc(_ORBIT_tmpvar_55);
+	 ((**result)).filename = CORBA_string_alloc(_ORBIT_tmpvar_103);
 	 memcpy(((**result)).filename, _ORBIT_curptr,
-		sizeof(((**result)).filename[_ORBIT_tmpvar_54]) *
-		_ORBIT_tmpvar_55);
+		sizeof(((**result)).filename[_ORBIT_tmpvar_102]) *
+		_ORBIT_tmpvar_103);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).filename[_ORBIT_tmpvar_54]) *
-	    _ORBIT_tmpvar_55;
+	    sizeof(((**result)).filename[_ORBIT_tmpvar_102]) *
+	    _ORBIT_tmpvar_103;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_57 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_105 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).eazel_id = CORBA_string_alloc(_ORBIT_tmpvar_57);
+	 ((**result)).eazel_id = CORBA_string_alloc(_ORBIT_tmpvar_105);
 	 memcpy(((**result)).eazel_id, _ORBIT_curptr,
-		sizeof(((**result)).eazel_id[_ORBIT_tmpvar_56]) *
-		_ORBIT_tmpvar_57);
+		sizeof(((**result)).eazel_id[_ORBIT_tmpvar_104]) *
+		_ORBIT_tmpvar_105);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).eazel_id[_ORBIT_tmpvar_56]) *
-	    _ORBIT_tmpvar_57;
+	    sizeof(((**result)).eazel_id[_ORBIT_tmpvar_104]) *
+	    _ORBIT_tmpvar_105;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_59 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_107 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).archtype = CORBA_string_alloc(_ORBIT_tmpvar_59);
+	 ((**result)).suite_id = CORBA_string_alloc(_ORBIT_tmpvar_107);
+	 memcpy(((**result)).suite_id, _ORBIT_curptr,
+		sizeof(((**result)).suite_id[_ORBIT_tmpvar_106]) *
+		_ORBIT_tmpvar_107);
+	 _ORBIT_curptr +=
+	    sizeof(((**result)).suite_id[_ORBIT_tmpvar_106]) *
+	    _ORBIT_tmpvar_107;
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_109 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).archtype = CORBA_string_alloc(_ORBIT_tmpvar_109);
 	 memcpy(((**result)).archtype, _ORBIT_curptr,
-		sizeof(((**result)).archtype[_ORBIT_tmpvar_58]) *
-		_ORBIT_tmpvar_59);
+		sizeof(((**result)).archtype[_ORBIT_tmpvar_108]) *
+		_ORBIT_tmpvar_109);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).archtype[_ORBIT_tmpvar_58]) *
-	    _ORBIT_tmpvar_59;
+	    sizeof(((**result)).archtype[_ORBIT_tmpvar_108]) *
+	    _ORBIT_tmpvar_109;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_61 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_111 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).distribution.name = CORBA_string_alloc(_ORBIT_tmpvar_61);
+	 ((**result)).distribution.name = CORBA_string_alloc(_ORBIT_tmpvar_111);
 	 memcpy(((**result)).distribution.name, _ORBIT_curptr,
-		sizeof(((**result)).distribution.name[_ORBIT_tmpvar_60]) *
-		_ORBIT_tmpvar_61);
+		sizeof(((**result)).distribution.name[_ORBIT_tmpvar_110]) *
+		_ORBIT_tmpvar_111);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).distribution.name[_ORBIT_tmpvar_60]) *
-	    _ORBIT_tmpvar_61;
+	    sizeof(((**result)).distribution.name[_ORBIT_tmpvar_110]) *
+	    _ORBIT_tmpvar_111;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**result)).distribution.major = *((CORBA_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 ((**result)).distribution.minor = *((CORBA_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 _ORBIT_tmpvar_63 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_113 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).release = CORBA_string_alloc(_ORBIT_tmpvar_63);
+	 ((**result)).release = CORBA_string_alloc(_ORBIT_tmpvar_113);
 	 memcpy(((**result)).release, _ORBIT_curptr,
-		sizeof(((**result)).release[_ORBIT_tmpvar_62]) *
-		_ORBIT_tmpvar_63);
+		sizeof(((**result)).release[_ORBIT_tmpvar_112]) *
+		_ORBIT_tmpvar_113);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).release[_ORBIT_tmpvar_62]) * _ORBIT_tmpvar_63;
+	    sizeof(((**result)).release[_ORBIT_tmpvar_112]) *
+	    _ORBIT_tmpvar_113;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_65 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_115 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).summary = CORBA_string_alloc(_ORBIT_tmpvar_65);
+	 ((**result)).summary = CORBA_string_alloc(_ORBIT_tmpvar_115);
 	 memcpy(((**result)).summary, _ORBIT_curptr,
-		sizeof(((**result)).summary[_ORBIT_tmpvar_64]) *
-		_ORBIT_tmpvar_65);
+		sizeof(((**result)).summary[_ORBIT_tmpvar_114]) *
+		_ORBIT_tmpvar_115);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).summary[_ORBIT_tmpvar_64]) * _ORBIT_tmpvar_65;
+	    sizeof(((**result)).summary[_ORBIT_tmpvar_114]) *
+	    _ORBIT_tmpvar_115;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_67 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_117 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).description = CORBA_string_alloc(_ORBIT_tmpvar_67);
+	 ((**result)).description = CORBA_string_alloc(_ORBIT_tmpvar_117);
 	 memcpy(((**result)).description, _ORBIT_curptr,
-		sizeof(((**result)).description[_ORBIT_tmpvar_66]) *
-		_ORBIT_tmpvar_67);
+		sizeof(((**result)).description[_ORBIT_tmpvar_116]) *
+		_ORBIT_tmpvar_117);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).description[_ORBIT_tmpvar_66]) *
-	    _ORBIT_tmpvar_67;
+	    sizeof(((**result)).description[_ORBIT_tmpvar_116]) *
+	    _ORBIT_tmpvar_117;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**result)).bytesize = *((CORBA_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**result)).filesize = *((CORBA_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
 	 ((**result)).toplevel = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
+	 ((**result)).anchor = *((CORBA_boolean *) _ORBIT_curptr);
+	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_69 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_119 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).install_root = CORBA_string_alloc(_ORBIT_tmpvar_69);
+	 ((**result)).install_root = CORBA_string_alloc(_ORBIT_tmpvar_119);
 	 memcpy(((**result)).install_root, _ORBIT_curptr,
-		sizeof(((**result)).install_root[_ORBIT_tmpvar_68]) *
-		_ORBIT_tmpvar_69);
+		sizeof(((**result)).install_root[_ORBIT_tmpvar_118]) *
+		_ORBIT_tmpvar_119);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).install_root[_ORBIT_tmpvar_68]) *
-	    _ORBIT_tmpvar_69;
+	    sizeof(((**result)).install_root[_ORBIT_tmpvar_118]) *
+	    _ORBIT_tmpvar_119;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_71 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_121 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 ((**result)).md5 = CORBA_string_alloc(_ORBIT_tmpvar_71);
+	 ((**result)).md5 = CORBA_string_alloc(_ORBIT_tmpvar_121);
 	 memcpy(((**result)).md5, _ORBIT_curptr,
-		sizeof(((**result)).md5[_ORBIT_tmpvar_70]) *
-		_ORBIT_tmpvar_71);
+		sizeof(((**result)).md5[_ORBIT_tmpvar_120]) *
+		_ORBIT_tmpvar_121);
 	 _ORBIT_curptr +=
-	    sizeof(((**result)).md5[_ORBIT_tmpvar_70]) * _ORBIT_tmpvar_71;
+	    sizeof(((**result)).md5[_ORBIT_tmpvar_120]) * _ORBIT_tmpvar_121;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**result)).status = *((GNOME_Trilobite_Eazel_PackageStatusEnum *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 
+	    ((**result)).modify_status =
+	    *((GNOME_Trilobite_Eazel_PackageModificationStatus *)
+	      _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).depends._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).depends._maximum = ((**result)).depends._length;
+	 
+	    ((**result)).depends._buffer =
+	    CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+	    (((**result)).depends._length);
+	 ((**result)).depends._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_122 = 0;
+	      _ORBIT_tmpvar_122 < ((**result)).depends._length;
+	      _ORBIT_tmpvar_122++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_124 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].sense =
+	       CORBA_string_alloc(_ORBIT_tmpvar_124);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].sense,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  sense[_ORBIT_tmpvar_123]) * _ORBIT_tmpvar_124);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      sense[_ORBIT_tmpvar_123]) * _ORBIT_tmpvar_124;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_126 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].version =
+	       CORBA_string_alloc(_ORBIT_tmpvar_126);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].version,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  version[_ORBIT_tmpvar_125]) * _ORBIT_tmpvar_126);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      version[_ORBIT_tmpvar_125]) * _ORBIT_tmpvar_126;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_128 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).depends._buffer[_ORBIT_tmpvar_122].package_md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_128);
+	    memcpy(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		   package_md5, _ORBIT_curptr,
+		   sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+			  package_md5[_ORBIT_tmpvar_127]) *
+		   _ORBIT_tmpvar_128);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).depends._buffer[_ORBIT_tmpvar_122].
+		      package_md5[_ORBIT_tmpvar_127]) * _ORBIT_tmpvar_128;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 ((**result)).breaks._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).breaks._maximum = ((**result)).breaks._length;
+	 
+	    ((**result)).breaks._buffer =
+	    CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf(
+									      (
+									       (**result)).
+									      breaks.
+									      _length);
+	 ((**result)).breaks._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_129 = 0;
+	      _ORBIT_tmpvar_129 < ((**result)).breaks._length;
+	      _ORBIT_tmpvar_129++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_131 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].package_md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_131);
+	    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].package_md5,
+		   _ORBIT_curptr,
+		   sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			  package_md5[_ORBIT_tmpvar_130]) *
+		   _ORBIT_tmpvar_131);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+		      package_md5[_ORBIT_tmpvar_130]) * _ORBIT_tmpvar_131;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._d =
+	       *((GNOME_Trilobite_Eazel_PackageBreaksEnum *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    switch (((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._d) {
+	      case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		 
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _maximum =
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _length;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _buffer =
+		    CORBA_sequence_CORBA_string_allocbuf(((**result)).breaks.
+							 _buffer
+							 [_ORBIT_tmpvar_129].
+							 u._u.files._length);
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.files.
+		    _release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_132 = 0;
+		      _ORBIT_tmpvar_132 <
+		      ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		      files._length; _ORBIT_tmpvar_132++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    _ORBIT_tmpvar_134 =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		       files._buffer[_ORBIT_tmpvar_132] =
+		       CORBA_string_alloc(_ORBIT_tmpvar_134);
+		    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u.
+			   _u.files._buffer[_ORBIT_tmpvar_132], _ORBIT_curptr,
+			   sizeof(((**result)).breaks.
+				  _buffer[_ORBIT_tmpvar_129].u._u.files.
+				  _buffer[_ORBIT_tmpvar_132]
+				  [_ORBIT_tmpvar_133]) * _ORBIT_tmpvar_134);
+		    _ORBIT_curptr +=
+		       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			      u._u.files.
+			      _buffer[_ORBIT_tmpvar_132][_ORBIT_tmpvar_133]) *
+		       _ORBIT_tmpvar_134;
+		 }
+
+		 break;
+	      case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		 
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		    features._length =
+		    *((CORBA_unsigned_long *) _ORBIT_curptr);
+		 _ORBIT_curptr += 4;
+		 
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		    features._maximum =
+		    ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		    features._length;
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		    _buffer =
+		    CORBA_sequence_CORBA_string_allocbuf(((**result)).breaks.
+							 _buffer
+							 [_ORBIT_tmpvar_129].
+							 u._u.features.
+							 _length);
+		 ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.features.
+		    _release = CORBA_TRUE;
+		 for (_ORBIT_tmpvar_135 = 0;
+		      _ORBIT_tmpvar_135 <
+		      ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		      features._length; _ORBIT_tmpvar_135++) {
+		    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		    _ORBIT_tmpvar_137 =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       ((**result)).breaks._buffer[_ORBIT_tmpvar_129].u._u.
+		       features._buffer[_ORBIT_tmpvar_135] =
+		       CORBA_string_alloc(_ORBIT_tmpvar_137);
+		    memcpy(((**result)).breaks._buffer[_ORBIT_tmpvar_129].u.
+			   _u.features._buffer[_ORBIT_tmpvar_135],
+			   _ORBIT_curptr,
+			   sizeof(((**result)).breaks.
+				  _buffer[_ORBIT_tmpvar_129].u._u.features.
+				  _buffer[_ORBIT_tmpvar_135]
+				  [_ORBIT_tmpvar_136]) * _ORBIT_tmpvar_137);
+		    _ORBIT_curptr +=
+		       sizeof(((**result)).breaks._buffer[_ORBIT_tmpvar_129].
+			      u._u.features.
+			      _buffer[_ORBIT_tmpvar_135][_ORBIT_tmpvar_136]) *
+		       _ORBIT_tmpvar_137;
+		 }
+
+		 break;
+	      default:
+		 break;
+	    }
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 ((**result)).modifies._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).modifies._maximum = ((**result)).modifies._length;
+	 
+	    ((**result)).modifies._buffer =
+	    CORBA_sequence_CORBA_string_allocbuf(((**result)).modifies.
+						 _length);
+	 ((**result)).modifies._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_138 = 0;
+	      _ORBIT_tmpvar_138 < ((**result)).modifies._length;
+	      _ORBIT_tmpvar_138++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_140 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).modifies._buffer[_ORBIT_tmpvar_138] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_140);
+	    memcpy(((**result)).modifies._buffer[_ORBIT_tmpvar_138],
+		   _ORBIT_curptr,
+		   sizeof(((**result)).modifies.
+			  _buffer[_ORBIT_tmpvar_138][_ORBIT_tmpvar_139]) *
+		   _ORBIT_tmpvar_140);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).modifies.
+		      _buffer[_ORBIT_tmpvar_138][_ORBIT_tmpvar_139]) *
+	       _ORBIT_tmpvar_140;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**result)).provides._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 ((**result)).provides._maximum = ((**result)).provides._length;
@@ -9666,24 +22484,53 @@ GNOME_Trilobite_Eazel_Install_query_server(GNOME_Trilobite_Eazel_Install _obj,
 	    CORBA_sequence_CORBA_string_allocbuf(((**result)).provides.
 						 _length);
 	 ((**result)).provides._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_72 = 0;
-	      _ORBIT_tmpvar_72 < ((**result)).provides._length;
-	      _ORBIT_tmpvar_72++) {
+	 for (_ORBIT_tmpvar_141 = 0;
+	      _ORBIT_tmpvar_141 < ((**result)).provides._length;
+	      _ORBIT_tmpvar_141++) {
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_74 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_143 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       ((**result)).provides._buffer[_ORBIT_tmpvar_72] =
-	       CORBA_string_alloc(_ORBIT_tmpvar_74);
-	    memcpy(((**result)).provides._buffer[_ORBIT_tmpvar_72],
+	       ((**result)).provides._buffer[_ORBIT_tmpvar_141] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_143);
+	    memcpy(((**result)).provides._buffer[_ORBIT_tmpvar_141],
 		   _ORBIT_curptr,
 		   sizeof(((**result)).provides.
-			  _buffer[_ORBIT_tmpvar_72][_ORBIT_tmpvar_73]) *
-		   _ORBIT_tmpvar_74);
+			  _buffer[_ORBIT_tmpvar_141][_ORBIT_tmpvar_142]) *
+		   _ORBIT_tmpvar_143);
 	    _ORBIT_curptr +=
 	       sizeof(((**result)).provides.
-		      _buffer[_ORBIT_tmpvar_72][_ORBIT_tmpvar_73]) *
-	       _ORBIT_tmpvar_74;
+		      _buffer[_ORBIT_tmpvar_141][_ORBIT_tmpvar_142]) *
+	       _ORBIT_tmpvar_143;
+	 }
+
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 ((**result)).features._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 ((**result)).features._maximum = ((**result)).features._length;
+	 
+	    ((**result)).features._buffer =
+	    CORBA_sequence_CORBA_string_allocbuf(((**result)).features.
+						 _length);
+	 ((**result)).features._release = CORBA_TRUE;
+	 for (_ORBIT_tmpvar_144 = 0;
+	      _ORBIT_tmpvar_144 < ((**result)).features._length;
+	      _ORBIT_tmpvar_144++) {
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_146 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       ((**result)).features._buffer[_ORBIT_tmpvar_144] =
+	       CORBA_string_alloc(_ORBIT_tmpvar_146);
+	    memcpy(((**result)).features._buffer[_ORBIT_tmpvar_144],
+		   _ORBIT_curptr,
+		   sizeof(((**result)).features.
+			  _buffer[_ORBIT_tmpvar_144][_ORBIT_tmpvar_145]) *
+		   _ORBIT_tmpvar_146);
+	    _ORBIT_curptr +=
+	       sizeof(((**result)).features.
+		      _buffer[_ORBIT_tmpvar_144][_ORBIT_tmpvar_145]) *
+	       _ORBIT_tmpvar_146;
 	 }
 
       }
@@ -9725,32 +22572,56 @@ GNOME_Trilobite_Eazel_Install_simple_query(GNOME_Trilobite_Eazel_Install _obj,
    register GIOPRecvBuffer *_ORBIT_recv_buffer;
    register GIOPConnection *_cnx;
    GNOME_Trilobite_Eazel_PackageDataStructList *_ORBIT_retval;
-   register CORBA_unsigned_long _ORBIT_tmpvar_30;
-   register CORBA_unsigned_long _ORBIT_tmpvar_31;
-   CORBA_unsigned_long _ORBIT_tmpvar_32;
-   register CORBA_unsigned_long _ORBIT_tmpvar_33;
-   CORBA_unsigned_long _ORBIT_tmpvar_34;
-   register CORBA_unsigned_long _ORBIT_tmpvar_35;
-   CORBA_unsigned_long _ORBIT_tmpvar_36;
-   register CORBA_unsigned_long _ORBIT_tmpvar_37;
-   CORBA_unsigned_long _ORBIT_tmpvar_38;
-   register CORBA_unsigned_long _ORBIT_tmpvar_39;
-   CORBA_unsigned_long _ORBIT_tmpvar_40;
-   register CORBA_unsigned_long _ORBIT_tmpvar_41;
-   CORBA_unsigned_long _ORBIT_tmpvar_42;
-   register CORBA_unsigned_long _ORBIT_tmpvar_43;
-   CORBA_unsigned_long _ORBIT_tmpvar_44;
-   register CORBA_unsigned_long _ORBIT_tmpvar_45;
-   CORBA_unsigned_long _ORBIT_tmpvar_46;
-   register CORBA_unsigned_long _ORBIT_tmpvar_47;
-   CORBA_unsigned_long _ORBIT_tmpvar_48;
-   register CORBA_unsigned_long _ORBIT_tmpvar_49;
-   CORBA_unsigned_long _ORBIT_tmpvar_50;
-   register CORBA_unsigned_long _ORBIT_tmpvar_51;
-   CORBA_unsigned_long _ORBIT_tmpvar_52;
-   register CORBA_unsigned_long _ORBIT_tmpvar_53;
    register CORBA_unsigned_long _ORBIT_tmpvar_54;
-   CORBA_unsigned_long _ORBIT_tmpvar_55;
+   register CORBA_unsigned_long _ORBIT_tmpvar_55;
+   CORBA_unsigned_long _ORBIT_tmpvar_56;
+   register CORBA_unsigned_long _ORBIT_tmpvar_57;
+   CORBA_unsigned_long _ORBIT_tmpvar_58;
+   register CORBA_unsigned_long _ORBIT_tmpvar_59;
+   CORBA_unsigned_long _ORBIT_tmpvar_60;
+   register CORBA_unsigned_long _ORBIT_tmpvar_61;
+   CORBA_unsigned_long _ORBIT_tmpvar_62;
+   register CORBA_unsigned_long _ORBIT_tmpvar_63;
+   CORBA_unsigned_long _ORBIT_tmpvar_64;
+   register CORBA_unsigned_long _ORBIT_tmpvar_65;
+   CORBA_unsigned_long _ORBIT_tmpvar_66;
+   register CORBA_unsigned_long _ORBIT_tmpvar_67;
+   CORBA_unsigned_long _ORBIT_tmpvar_68;
+   register CORBA_unsigned_long _ORBIT_tmpvar_69;
+   CORBA_unsigned_long _ORBIT_tmpvar_70;
+   register CORBA_unsigned_long _ORBIT_tmpvar_71;
+   CORBA_unsigned_long _ORBIT_tmpvar_72;
+   register CORBA_unsigned_long _ORBIT_tmpvar_73;
+   CORBA_unsigned_long _ORBIT_tmpvar_74;
+   register CORBA_unsigned_long _ORBIT_tmpvar_75;
+   CORBA_unsigned_long _ORBIT_tmpvar_76;
+   register CORBA_unsigned_long _ORBIT_tmpvar_77;
+   CORBA_unsigned_long _ORBIT_tmpvar_78;
+   register CORBA_unsigned_long _ORBIT_tmpvar_79;
+   register CORBA_unsigned_long _ORBIT_tmpvar_80;
+   CORBA_unsigned_long _ORBIT_tmpvar_81;
+   register CORBA_unsigned_long _ORBIT_tmpvar_82;
+   CORBA_unsigned_long _ORBIT_tmpvar_83;
+   register CORBA_unsigned_long _ORBIT_tmpvar_84;
+   CORBA_unsigned_long _ORBIT_tmpvar_85;
+   register CORBA_unsigned_long _ORBIT_tmpvar_86;
+   register CORBA_unsigned_long _ORBIT_tmpvar_87;
+   CORBA_unsigned_long _ORBIT_tmpvar_88;
+   register CORBA_unsigned_long _ORBIT_tmpvar_89;
+   register CORBA_unsigned_long _ORBIT_tmpvar_90;
+   CORBA_unsigned_long _ORBIT_tmpvar_91;
+   register CORBA_unsigned_long _ORBIT_tmpvar_92;
+   register CORBA_unsigned_long _ORBIT_tmpvar_93;
+   CORBA_unsigned_long _ORBIT_tmpvar_94;
+   register CORBA_unsigned_long _ORBIT_tmpvar_95;
+   register CORBA_unsigned_long _ORBIT_tmpvar_96;
+   CORBA_unsigned_long _ORBIT_tmpvar_97;
+   register CORBA_unsigned_long _ORBIT_tmpvar_98;
+   register CORBA_unsigned_long _ORBIT_tmpvar_99;
+   CORBA_unsigned_long _ORBIT_tmpvar_100;
+   register CORBA_unsigned_long _ORBIT_tmpvar_101;
+   register CORBA_unsigned_long _ORBIT_tmpvar_102;
+   CORBA_unsigned_long _ORBIT_tmpvar_103;
 
    if (_obj->servant && _obj->vepv && GNOME_Trilobite_Eazel_Install__classid) {
       _ORBIT_retval =
@@ -9858,242 +22729,599 @@ GNOME_Trilobite_Eazel_Install_simple_query(GNOME_Trilobite_Eazel_Install _obj,
 									    (*_ORBIT_retval).
 									    _length);
 	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_30 = 0;
-	      _ORBIT_tmpvar_30 < (*_ORBIT_retval)._length; _ORBIT_tmpvar_30++) {
+	 for (_ORBIT_tmpvar_54 = 0;
+	      _ORBIT_tmpvar_54 < (*_ORBIT_retval)._length; _ORBIT_tmpvar_54++) {
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_32))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_56))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].name =
-	       CORBA_string_alloc(_ORBIT_tmpvar_32);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].name,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].name =
+	       CORBA_string_alloc(_ORBIT_tmpvar_56);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].name,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  name[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  name[_ORBIT_tmpvar_55]) * _ORBIT_tmpvar_56);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      name[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      name[_ORBIT_tmpvar_55]) * _ORBIT_tmpvar_56;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_34))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_58))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].version =
-	       CORBA_string_alloc(_ORBIT_tmpvar_34);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].version,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].version =
+	       CORBA_string_alloc(_ORBIT_tmpvar_58);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].version,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  version[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  version[_ORBIT_tmpvar_57]) * _ORBIT_tmpvar_58);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      version[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      version[_ORBIT_tmpvar_57]) * _ORBIT_tmpvar_58;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_36))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_60))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].filename =
-	       CORBA_string_alloc(_ORBIT_tmpvar_36);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].filename,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filename =
+	       CORBA_string_alloc(_ORBIT_tmpvar_60);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filename,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  filename[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  filename[_ORBIT_tmpvar_59]) * _ORBIT_tmpvar_60);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      filename[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      filename[_ORBIT_tmpvar_59]) * _ORBIT_tmpvar_60;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_38))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_62))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].eazel_id =
-	       CORBA_string_alloc(_ORBIT_tmpvar_38);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].eazel_id,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].eazel_id =
+	       CORBA_string_alloc(_ORBIT_tmpvar_62);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].eazel_id,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  eazel_id[_ORBIT_tmpvar_37]) * _ORBIT_tmpvar_38);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  eazel_id[_ORBIT_tmpvar_61]) * _ORBIT_tmpvar_62);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      eazel_id[_ORBIT_tmpvar_37]) * _ORBIT_tmpvar_38;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      eazel_id[_ORBIT_tmpvar_61]) * _ORBIT_tmpvar_62;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_40))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_64))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].archtype =
-	       CORBA_string_alloc(_ORBIT_tmpvar_40);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].archtype,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].suite_id =
+	       CORBA_string_alloc(_ORBIT_tmpvar_64);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].suite_id,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  archtype[_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  suite_id[_ORBIT_tmpvar_63]) * _ORBIT_tmpvar_64);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      archtype[_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      suite_id[_ORBIT_tmpvar_63]) * _ORBIT_tmpvar_64;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_42))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_66))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.name =
-	       CORBA_string_alloc(_ORBIT_tmpvar_42);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].archtype =
+	       CORBA_string_alloc(_ORBIT_tmpvar_66);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].archtype,
+		   _ORBIT_curptr,
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  archtype[_ORBIT_tmpvar_65]) * _ORBIT_tmpvar_66);
+	    _ORBIT_curptr +=
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      archtype[_ORBIT_tmpvar_65]) * _ORBIT_tmpvar_66;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*((guint32 *) & (_ORBIT_tmpvar_68))) =
+	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.name =
+	       CORBA_string_alloc(_ORBIT_tmpvar_68);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.
 		   name, _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  distribution.name[_ORBIT_tmpvar_41]) *
-		   _ORBIT_tmpvar_42);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  distribution.name[_ORBIT_tmpvar_67]) *
+		   _ORBIT_tmpvar_68);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.
-		      name[_ORBIT_tmpvar_41]) * _ORBIT_tmpvar_42;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.
+		      name[_ORBIT_tmpvar_67]) * _ORBIT_tmpvar_68;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
 	       (*
 	     ((guint32 *) &
-	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.major))) =
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.major))) =
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
 	       (*
 	     ((guint32 *) &
-	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.minor))) =
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.minor))) =
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_44))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_70))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].release =
-	       CORBA_string_alloc(_ORBIT_tmpvar_44);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].release,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].release =
+	       CORBA_string_alloc(_ORBIT_tmpvar_70);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].release,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  release[_ORBIT_tmpvar_43]) * _ORBIT_tmpvar_44);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  release[_ORBIT_tmpvar_69]) * _ORBIT_tmpvar_70);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      release[_ORBIT_tmpvar_43]) * _ORBIT_tmpvar_44;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      release[_ORBIT_tmpvar_69]) * _ORBIT_tmpvar_70;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_46))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_72))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].summary =
-	       CORBA_string_alloc(_ORBIT_tmpvar_46);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].summary,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].summary =
+	       CORBA_string_alloc(_ORBIT_tmpvar_72);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].summary,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  summary[_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  summary[_ORBIT_tmpvar_71]) * _ORBIT_tmpvar_72);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      summary[_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      summary[_ORBIT_tmpvar_71]) * _ORBIT_tmpvar_72;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_48))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_74))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].description =
-	       CORBA_string_alloc(_ORBIT_tmpvar_48);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].description,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].description =
+	       CORBA_string_alloc(_ORBIT_tmpvar_74);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].description,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  description[_ORBIT_tmpvar_47]) * _ORBIT_tmpvar_48);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  description[_ORBIT_tmpvar_73]) * _ORBIT_tmpvar_74);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      description[_ORBIT_tmpvar_47]) * _ORBIT_tmpvar_48;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      description[_ORBIT_tmpvar_73]) * _ORBIT_tmpvar_74;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
 	       (*
 	     ((guint32 *) &
-	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].bytesize))) =
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].bytesize))) =
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].toplevel =
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filesize))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].toplevel =
+	       *((CORBA_boolean *) _ORBIT_curptr);
+	    _ORBIT_curptr += 1;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].anchor =
 	       *((CORBA_boolean *) _ORBIT_curptr);
 	    _ORBIT_curptr += 1;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_50))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_76))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].install_root =
-	       CORBA_string_alloc(_ORBIT_tmpvar_50);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].install_root,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].install_root =
+	       CORBA_string_alloc(_ORBIT_tmpvar_76);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].install_root,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  install_root[_ORBIT_tmpvar_49]) * _ORBIT_tmpvar_50);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  install_root[_ORBIT_tmpvar_75]) * _ORBIT_tmpvar_76);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      install_root[_ORBIT_tmpvar_49]) * _ORBIT_tmpvar_50;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      install_root[_ORBIT_tmpvar_75]) * _ORBIT_tmpvar_76;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*((guint32 *) & (_ORBIT_tmpvar_52))) =
+	       (*((guint32 *) & (_ORBIT_tmpvar_78))) =
 	       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].md5 =
-	       CORBA_string_alloc(_ORBIT_tmpvar_52);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].md5,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_78);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].md5,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  md5[_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  md5[_ORBIT_tmpvar_77]) * _ORBIT_tmpvar_78);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      md5[_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      md5[_ORBIT_tmpvar_77]) * _ORBIT_tmpvar_78;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
 	       (*
 	     ((guint32 *) &
-	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].status))) =
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].status))) =
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
 	       (*
 	     ((guint32 *) &
-	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length))) =
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modify_status))) =
 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._maximum =
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length;
-	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-						    _buffer[_ORBIT_tmpvar_30].
-						    provides._length);
-	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._release =
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._buffer =
+	       CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+	       ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._release =
 	       CORBA_TRUE;
-	    for (_ORBIT_tmpvar_53 = 0;
-		 _ORBIT_tmpvar_53 <
-		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length;
-		 _ORBIT_tmpvar_53++) {
+	    for (_ORBIT_tmpvar_79 = 0;
+		 _ORBIT_tmpvar_79 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length;
+		 _ORBIT_tmpvar_79++) {
 	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	       
-		  (*((guint32 *) & (_ORBIT_tmpvar_55))) =
+		  (*((guint32 *) & (_ORBIT_tmpvar_81))) =
 		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       _ORBIT_curptr += 4;
 	       
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-		  _buffer[_ORBIT_tmpvar_53] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_55);
-	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-		      _buffer[_ORBIT_tmpvar_53], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			     provides.
-			     _buffer[_ORBIT_tmpvar_53][_ORBIT_tmpvar_54]) *
-		      _ORBIT_tmpvar_55);
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].sense =
+		  CORBA_string_alloc(_ORBIT_tmpvar_81);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].sense, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     sense[_ORBIT_tmpvar_80]) * _ORBIT_tmpvar_81);
 	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-			 _buffer[_ORBIT_tmpvar_53][_ORBIT_tmpvar_54]) *
-		  _ORBIT_tmpvar_55;
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].sense[_ORBIT_tmpvar_80]) *
+		  _ORBIT_tmpvar_81;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_83))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].version =
+		  CORBA_string_alloc(_ORBIT_tmpvar_83);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].version, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     version[_ORBIT_tmpvar_82]) * _ORBIT_tmpvar_83);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].
+			 version[_ORBIT_tmpvar_82]) * _ORBIT_tmpvar_83;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_85))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].package_md5 =
+		  CORBA_string_alloc(_ORBIT_tmpvar_85);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].package_md5, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     package_md5[_ORBIT_tmpvar_84]) *
+		      _ORBIT_tmpvar_85);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].
+			 package_md5[_ORBIT_tmpvar_84]) * _ORBIT_tmpvar_85;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._buffer =
+	       CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf
+	       ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_86 = 0;
+		 _ORBIT_tmpvar_86 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length;
+		 _ORBIT_tmpvar_86++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_88))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		  _buffer[_ORBIT_tmpvar_86].package_md5 =
+		  CORBA_string_alloc(_ORBIT_tmpvar_88);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		      _buffer[_ORBIT_tmpvar_86].package_md5, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     breaks._buffer[_ORBIT_tmpvar_86].
+			     package_md5[_ORBIT_tmpvar_87]) *
+		      _ORBIT_tmpvar_88);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].
+			 package_md5[_ORBIT_tmpvar_87]) * _ORBIT_tmpvar_88;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*
+		((guint32 *) &
+	      ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+	       _buffer[_ORBIT_tmpvar_86].u._d))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._d) {
+		 case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		    
+		       (*
+		     ((guint32 *) &
+		   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		    _buffer[_ORBIT_tmpvar_86].u._u.files._length))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._maximum =
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._length;
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_54].
+							    breaks.
+							    _buffer
+							    [_ORBIT_tmpvar_86].
+							    u._u.files.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_89 = 0;
+			 _ORBIT_tmpvar_89 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].u._u.files._length;
+			 _ORBIT_tmpvar_89++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       
+			  (*((guint32 *) & (_ORBIT_tmpvar_91))) =
+			  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			  _buffer[_ORBIT_tmpvar_86].u._u.files.
+			  _buffer[_ORBIT_tmpvar_89] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_91);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			      breaks._buffer[_ORBIT_tmpvar_86].u._u.files.
+			      _buffer[_ORBIT_tmpvar_89], _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_54].breaks.
+				     _buffer[_ORBIT_tmpvar_86].u._u.files.
+				     _buffer[_ORBIT_tmpvar_89]
+				     [_ORBIT_tmpvar_90]) * _ORBIT_tmpvar_91);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+				 breaks._buffer[_ORBIT_tmpvar_86].u._u.files.
+				 _buffer[_ORBIT_tmpvar_89][_ORBIT_tmpvar_90])
+			  * _ORBIT_tmpvar_91;
+		    }
+
+		    break;
+		 case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		    
+		       (*
+		     ((guint32 *) &
+		   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		    _buffer[_ORBIT_tmpvar_86].u._u.features._length))) =
+		       GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._maximum =
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._length;
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_54].
+							    breaks.
+							    _buffer
+							    [_ORBIT_tmpvar_86].
+							    u._u.features.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_92 = 0;
+			 _ORBIT_tmpvar_92 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].u._u.features._length;
+			 _ORBIT_tmpvar_92++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       
+			  (*((guint32 *) & (_ORBIT_tmpvar_94))) =
+			  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			  _buffer[_ORBIT_tmpvar_86].u._u.features.
+			  _buffer[_ORBIT_tmpvar_92] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_94);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			      breaks._buffer[_ORBIT_tmpvar_86].u._u.features.
+			      _buffer[_ORBIT_tmpvar_92], _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_54].breaks.
+				     _buffer[_ORBIT_tmpvar_86].u._u.features.
+				     _buffer[_ORBIT_tmpvar_92]
+				     [_ORBIT_tmpvar_93]) * _ORBIT_tmpvar_94);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+				 breaks._buffer[_ORBIT_tmpvar_86].u._u.
+				 features.
+				 _buffer[_ORBIT_tmpvar_92][_ORBIT_tmpvar_93])
+			  * _ORBIT_tmpvar_94;
+		    }
+
+		    break;
+		 default:
+		    break;
+	       }
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    modifies._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_95 = 0;
+		 _ORBIT_tmpvar_95 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length;
+		 _ORBIT_tmpvar_95++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_97))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+		  _buffer[_ORBIT_tmpvar_95] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_97);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+		      _buffer[_ORBIT_tmpvar_95], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     modifies.
+			     _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		      _ORBIT_tmpvar_97);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+			 _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		  _ORBIT_tmpvar_97;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    provides._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_98 = 0;
+		 _ORBIT_tmpvar_98 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length;
+		 _ORBIT_tmpvar_98++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_100))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+		  _buffer[_ORBIT_tmpvar_98] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_100);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+		      _buffer[_ORBIT_tmpvar_98], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     provides.
+			     _buffer[_ORBIT_tmpvar_98][_ORBIT_tmpvar_99]) *
+		      _ORBIT_tmpvar_100);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+			 _buffer[_ORBIT_tmpvar_98][_ORBIT_tmpvar_99]) *
+		  _ORBIT_tmpvar_100;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*
+	     ((guint32 *) &
+	   ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length))) =
+GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    features._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_101 = 0;
+		 _ORBIT_tmpvar_101 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length;
+		 _ORBIT_tmpvar_101++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*((guint32 *) & (_ORBIT_tmpvar_103))) =
+		  GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+		  _buffer[_ORBIT_tmpvar_101] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_103);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+		      _buffer[_ORBIT_tmpvar_101], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     features.
+			     _buffer[_ORBIT_tmpvar_101][_ORBIT_tmpvar_102]) *
+		      _ORBIT_tmpvar_103);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+			 _buffer[_ORBIT_tmpvar_101][_ORBIT_tmpvar_102]) *
+		  _ORBIT_tmpvar_103;
 	    }
 
 	 }
@@ -10109,208 +23337,533 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 									    (*_ORBIT_retval).
 									    _length);
 	 (*_ORBIT_retval)._release = CORBA_TRUE;
-	 for (_ORBIT_tmpvar_30 = 0;
-	      _ORBIT_tmpvar_30 < (*_ORBIT_retval)._length; _ORBIT_tmpvar_30++) {
+	 for (_ORBIT_tmpvar_54 = 0;
+	      _ORBIT_tmpvar_54 < (*_ORBIT_retval)._length; _ORBIT_tmpvar_54++) {
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_32 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_56 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].name =
-	       CORBA_string_alloc(_ORBIT_tmpvar_32);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].name,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].name =
+	       CORBA_string_alloc(_ORBIT_tmpvar_56);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].name,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  name[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  name[_ORBIT_tmpvar_55]) * _ORBIT_tmpvar_56);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      name[_ORBIT_tmpvar_31]) * _ORBIT_tmpvar_32;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      name[_ORBIT_tmpvar_55]) * _ORBIT_tmpvar_56;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_34 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_58 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].version =
-	       CORBA_string_alloc(_ORBIT_tmpvar_34);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].version,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].version =
+	       CORBA_string_alloc(_ORBIT_tmpvar_58);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].version,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  version[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  version[_ORBIT_tmpvar_57]) * _ORBIT_tmpvar_58);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      version[_ORBIT_tmpvar_33]) * _ORBIT_tmpvar_34;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      version[_ORBIT_tmpvar_57]) * _ORBIT_tmpvar_58;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_36 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_60 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].filename =
-	       CORBA_string_alloc(_ORBIT_tmpvar_36);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].filename,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filename =
+	       CORBA_string_alloc(_ORBIT_tmpvar_60);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filename,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  filename[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  filename[_ORBIT_tmpvar_59]) * _ORBIT_tmpvar_60);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      filename[_ORBIT_tmpvar_35]) * _ORBIT_tmpvar_36;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      filename[_ORBIT_tmpvar_59]) * _ORBIT_tmpvar_60;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_38 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_62 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].eazel_id =
-	       CORBA_string_alloc(_ORBIT_tmpvar_38);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].eazel_id,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].eazel_id =
+	       CORBA_string_alloc(_ORBIT_tmpvar_62);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].eazel_id,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  eazel_id[_ORBIT_tmpvar_37]) * _ORBIT_tmpvar_38);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  eazel_id[_ORBIT_tmpvar_61]) * _ORBIT_tmpvar_62);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      eazel_id[_ORBIT_tmpvar_37]) * _ORBIT_tmpvar_38;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      eazel_id[_ORBIT_tmpvar_61]) * _ORBIT_tmpvar_62;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_40 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_64 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].archtype =
-	       CORBA_string_alloc(_ORBIT_tmpvar_40);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].archtype,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].suite_id =
+	       CORBA_string_alloc(_ORBIT_tmpvar_64);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].suite_id,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  archtype[_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  suite_id[_ORBIT_tmpvar_63]) * _ORBIT_tmpvar_64);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      archtype[_ORBIT_tmpvar_39]) * _ORBIT_tmpvar_40;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      suite_id[_ORBIT_tmpvar_63]) * _ORBIT_tmpvar_64;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_42 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_66 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.name =
-	       CORBA_string_alloc(_ORBIT_tmpvar_42);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].archtype =
+	       CORBA_string_alloc(_ORBIT_tmpvar_66);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].archtype,
+		   _ORBIT_curptr,
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  archtype[_ORBIT_tmpvar_65]) * _ORBIT_tmpvar_66);
+	    _ORBIT_curptr +=
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      archtype[_ORBIT_tmpvar_65]) * _ORBIT_tmpvar_66;
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    _ORBIT_tmpvar_68 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.name =
+	       CORBA_string_alloc(_ORBIT_tmpvar_68);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.
 		   name, _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  distribution.name[_ORBIT_tmpvar_41]) *
-		   _ORBIT_tmpvar_42);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  distribution.name[_ORBIT_tmpvar_67]) *
+		   _ORBIT_tmpvar_68);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.
-		      name[_ORBIT_tmpvar_41]) * _ORBIT_tmpvar_42;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.
+		      name[_ORBIT_tmpvar_67]) * _ORBIT_tmpvar_68;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.major =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.major =
 	       *((CORBA_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].distribution.minor =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].distribution.minor =
 	       *((CORBA_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
-	    _ORBIT_tmpvar_44 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_70 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].release =
-	       CORBA_string_alloc(_ORBIT_tmpvar_44);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].release,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].release =
+	       CORBA_string_alloc(_ORBIT_tmpvar_70);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].release,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  release[_ORBIT_tmpvar_43]) * _ORBIT_tmpvar_44);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  release[_ORBIT_tmpvar_69]) * _ORBIT_tmpvar_70);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      release[_ORBIT_tmpvar_43]) * _ORBIT_tmpvar_44;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      release[_ORBIT_tmpvar_69]) * _ORBIT_tmpvar_70;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_46 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_72 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].summary =
-	       CORBA_string_alloc(_ORBIT_tmpvar_46);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].summary,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].summary =
+	       CORBA_string_alloc(_ORBIT_tmpvar_72);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].summary,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  summary[_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  summary[_ORBIT_tmpvar_71]) * _ORBIT_tmpvar_72);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      summary[_ORBIT_tmpvar_45]) * _ORBIT_tmpvar_46;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      summary[_ORBIT_tmpvar_71]) * _ORBIT_tmpvar_72;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_48 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_74 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].description =
-	       CORBA_string_alloc(_ORBIT_tmpvar_48);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].description,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].description =
+	       CORBA_string_alloc(_ORBIT_tmpvar_74);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].description,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  description[_ORBIT_tmpvar_47]) * _ORBIT_tmpvar_48);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  description[_ORBIT_tmpvar_73]) * _ORBIT_tmpvar_74);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      description[_ORBIT_tmpvar_47]) * _ORBIT_tmpvar_48;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      description[_ORBIT_tmpvar_73]) * _ORBIT_tmpvar_74;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].bytesize =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].bytesize =
 	       *((CORBA_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].toplevel =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].filesize =
+	       *((CORBA_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].toplevel =
+	       *((CORBA_boolean *) _ORBIT_curptr);
+	    _ORBIT_curptr += 1;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].anchor =
 	       *((CORBA_boolean *) _ORBIT_curptr);
 	    _ORBIT_curptr += 1;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_50 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_76 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].install_root =
-	       CORBA_string_alloc(_ORBIT_tmpvar_50);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].install_root,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].install_root =
+	       CORBA_string_alloc(_ORBIT_tmpvar_76);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].install_root,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  install_root[_ORBIT_tmpvar_49]) * _ORBIT_tmpvar_50);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  install_root[_ORBIT_tmpvar_75]) * _ORBIT_tmpvar_76);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      install_root[_ORBIT_tmpvar_49]) * _ORBIT_tmpvar_50;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      install_root[_ORBIT_tmpvar_75]) * _ORBIT_tmpvar_76;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	    _ORBIT_tmpvar_52 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_tmpvar_78 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].md5 =
-	       CORBA_string_alloc(_ORBIT_tmpvar_52);
-	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].md5,
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].md5 =
+	       CORBA_string_alloc(_ORBIT_tmpvar_78);
+	    memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].md5,
 		   _ORBIT_curptr,
-		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			  md5[_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52);
+		   sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			  md5[_ORBIT_tmpvar_77]) * _ORBIT_tmpvar_78);
 	    _ORBIT_curptr +=
-	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-		      md5[_ORBIT_tmpvar_51]) * _ORBIT_tmpvar_52;
+	       sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+		      md5[_ORBIT_tmpvar_77]) * _ORBIT_tmpvar_78;
 	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].status =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].status =
 	       *((GNOME_Trilobite_Eazel_PackageStatusEnum *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modify_status =
+	       *((GNOME_Trilobite_Eazel_PackageModificationStatus *)
+		 _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length =
 	       *((CORBA_unsigned_long *) _ORBIT_curptr);
 	    _ORBIT_curptr += 4;
 	    
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._maximum =
-	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length;
-	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._buffer =
-	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
-						    _buffer[_ORBIT_tmpvar_30].
-						    provides._length);
-	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._release =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._buffer =
+	       CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+	       ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._release =
 	       CORBA_TRUE;
-	    for (_ORBIT_tmpvar_53 = 0;
-		 _ORBIT_tmpvar_53 <
-		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides._length;
-		 _ORBIT_tmpvar_53++) {
+	    for (_ORBIT_tmpvar_79 = 0;
+		 _ORBIT_tmpvar_79 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends._length;
+		 _ORBIT_tmpvar_79++) {
 	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	       _ORBIT_tmpvar_55 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_tmpvar_81 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	       _ORBIT_curptr += 4;
 	       
-		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-		  _buffer[_ORBIT_tmpvar_53] =
-		  CORBA_string_alloc(_ORBIT_tmpvar_55);
-	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-		      _buffer[_ORBIT_tmpvar_53], _ORBIT_curptr,
-		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].
-			     provides.
-			     _buffer[_ORBIT_tmpvar_53][_ORBIT_tmpvar_54]) *
-		      _ORBIT_tmpvar_55);
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].sense =
+		  CORBA_string_alloc(_ORBIT_tmpvar_81);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].sense, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     sense[_ORBIT_tmpvar_80]) * _ORBIT_tmpvar_81);
 	       _ORBIT_curptr +=
-		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_30].provides.
-			 _buffer[_ORBIT_tmpvar_53][_ORBIT_tmpvar_54]) *
-		  _ORBIT_tmpvar_55;
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].sense[_ORBIT_tmpvar_80]) *
+		  _ORBIT_tmpvar_81;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_83 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].version =
+		  CORBA_string_alloc(_ORBIT_tmpvar_83);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].version, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     version[_ORBIT_tmpvar_82]) * _ORBIT_tmpvar_83);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].
+			 version[_ORBIT_tmpvar_82]) * _ORBIT_tmpvar_83;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_85 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		  _buffer[_ORBIT_tmpvar_79].package_md5 =
+		  CORBA_string_alloc(_ORBIT_tmpvar_85);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+		      _buffer[_ORBIT_tmpvar_79].package_md5, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     depends._buffer[_ORBIT_tmpvar_79].
+			     package_md5[_ORBIT_tmpvar_84]) *
+		      _ORBIT_tmpvar_85);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].depends.
+			 _buffer[_ORBIT_tmpvar_79].
+			 package_md5[_ORBIT_tmpvar_84]) * _ORBIT_tmpvar_85;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length =
+	       *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._buffer =
+	       CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf
+	       ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_86 = 0;
+		 _ORBIT_tmpvar_86 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks._length;
+		 _ORBIT_tmpvar_86++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_88 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		  _buffer[_ORBIT_tmpvar_86].package_md5 =
+		  CORBA_string_alloc(_ORBIT_tmpvar_88);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		      _buffer[_ORBIT_tmpvar_86].package_md5, _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     breaks._buffer[_ORBIT_tmpvar_86].
+			     package_md5[_ORBIT_tmpvar_87]) *
+		      _ORBIT_tmpvar_88);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].
+			 package_md5[_ORBIT_tmpvar_87]) * _ORBIT_tmpvar_88;
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		  _buffer[_ORBIT_tmpvar_86].u._d =
+		  *((GNOME_Trilobite_Eazel_PackageBreaksEnum *)
+		    _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       switch ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._d) {
+		 case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._length =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._maximum =
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._length;
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_54].
+							    breaks.
+							    _buffer
+							    [_ORBIT_tmpvar_86].
+							    u._u.files.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.files._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_89 = 0;
+			 _ORBIT_tmpvar_89 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].u._u.files._length;
+			 _ORBIT_tmpvar_89++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       _ORBIT_tmpvar_91 =
+			  *((CORBA_unsigned_long *) _ORBIT_curptr);
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			  _buffer[_ORBIT_tmpvar_86].u._u.files.
+			  _buffer[_ORBIT_tmpvar_89] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_91);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			      breaks._buffer[_ORBIT_tmpvar_86].u._u.files.
+			      _buffer[_ORBIT_tmpvar_89], _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_54].breaks.
+				     _buffer[_ORBIT_tmpvar_86].u._u.files.
+				     _buffer[_ORBIT_tmpvar_89]
+				     [_ORBIT_tmpvar_90]) * _ORBIT_tmpvar_91);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+				 breaks._buffer[_ORBIT_tmpvar_86].u._u.files.
+				 _buffer[_ORBIT_tmpvar_89][_ORBIT_tmpvar_90])
+			  * _ORBIT_tmpvar_91;
+		    }
+
+		    break;
+		 case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._length =
+		       *((CORBA_unsigned_long *) _ORBIT_curptr);
+		    _ORBIT_curptr += 4;
+		    
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._maximum =
+		       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._length;
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._buffer =
+		       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+							    _buffer
+							    [_ORBIT_tmpvar_54].
+							    breaks.
+							    _buffer
+							    [_ORBIT_tmpvar_86].
+							    u._u.features.
+							    _length);
+		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+		       _buffer[_ORBIT_tmpvar_86].u._u.features._release =
+		       CORBA_TRUE;
+		    for (_ORBIT_tmpvar_92 = 0;
+			 _ORBIT_tmpvar_92 <
+			 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			 _buffer[_ORBIT_tmpvar_86].u._u.features._length;
+			 _ORBIT_tmpvar_92++) {
+		       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+		       _ORBIT_tmpvar_94 =
+			  *((CORBA_unsigned_long *) _ORBIT_curptr);
+		       _ORBIT_curptr += 4;
+		       
+			  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].breaks.
+			  _buffer[_ORBIT_tmpvar_86].u._u.features.
+			  _buffer[_ORBIT_tmpvar_92] =
+			  CORBA_string_alloc(_ORBIT_tmpvar_94);
+		       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			      breaks._buffer[_ORBIT_tmpvar_86].u._u.features.
+			      _buffer[_ORBIT_tmpvar_92], _ORBIT_curptr,
+			      sizeof((*_ORBIT_retval).
+				     _buffer[_ORBIT_tmpvar_54].breaks.
+				     _buffer[_ORBIT_tmpvar_86].u._u.features.
+				     _buffer[_ORBIT_tmpvar_92]
+				     [_ORBIT_tmpvar_93]) * _ORBIT_tmpvar_94);
+		       _ORBIT_curptr +=
+			  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+				 breaks._buffer[_ORBIT_tmpvar_86].u._u.
+				 features.
+				 _buffer[_ORBIT_tmpvar_92][_ORBIT_tmpvar_93])
+			  * _ORBIT_tmpvar_94;
+		    }
+
+		    break;
+		 default:
+		    break;
+	       }
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length =
+	       *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    modifies._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_95 = 0;
+		 _ORBIT_tmpvar_95 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies._length;
+		 _ORBIT_tmpvar_95++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_97 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+		  _buffer[_ORBIT_tmpvar_95] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_97);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+		      _buffer[_ORBIT_tmpvar_95], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     modifies.
+			     _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		      _ORBIT_tmpvar_97);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].modifies.
+			 _buffer[_ORBIT_tmpvar_95][_ORBIT_tmpvar_96]) *
+		  _ORBIT_tmpvar_97;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length =
+	       *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    provides._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_98 = 0;
+		 _ORBIT_tmpvar_98 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides._length;
+		 _ORBIT_tmpvar_98++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_100 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+		  _buffer[_ORBIT_tmpvar_98] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_100);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+		      _buffer[_ORBIT_tmpvar_98], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     provides.
+			     _buffer[_ORBIT_tmpvar_98][_ORBIT_tmpvar_99]) *
+		      _ORBIT_tmpvar_100);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].provides.
+			 _buffer[_ORBIT_tmpvar_98][_ORBIT_tmpvar_99]) *
+		  _ORBIT_tmpvar_100;
+	    }
+
+	    _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length =
+	       *((CORBA_unsigned_long *) _ORBIT_curptr);
+	    _ORBIT_curptr += 4;
+	    
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._maximum =
+	       (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length;
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._buffer =
+	       CORBA_sequence_CORBA_string_allocbuf((*_ORBIT_retval).
+						    _buffer[_ORBIT_tmpvar_54].
+						    features._length);
+	    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._release =
+	       CORBA_TRUE;
+	    for (_ORBIT_tmpvar_101 = 0;
+		 _ORBIT_tmpvar_101 <
+		 (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features._length;
+		 _ORBIT_tmpvar_101++) {
+	       _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	       _ORBIT_tmpvar_103 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	       _ORBIT_curptr += 4;
+	       
+		  (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+		  _buffer[_ORBIT_tmpvar_101] =
+		  CORBA_string_alloc(_ORBIT_tmpvar_103);
+	       memcpy((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+		      _buffer[_ORBIT_tmpvar_101], _ORBIT_curptr,
+		      sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].
+			     features.
+			     _buffer[_ORBIT_tmpvar_101][_ORBIT_tmpvar_102]) *
+		      _ORBIT_tmpvar_103);
+	       _ORBIT_curptr +=
+		  sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_54].features.
+			 _buffer[_ORBIT_tmpvar_101][_ORBIT_tmpvar_102]) *
+		  _ORBIT_tmpvar_103;
 	    }
 
 	 }

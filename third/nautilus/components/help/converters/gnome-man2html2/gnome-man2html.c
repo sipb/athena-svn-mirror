@@ -136,6 +136,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <zlib.h>
+#ifdef HAVE_LIBBZ2
+#include <bzlib.h>
+#endif
 
 static char *URLbasename = NULL;
 
@@ -364,6 +367,9 @@ static STRDEF standardchar[] = {
 static char escapesym='\\', nobreaksym='\'', controlsym='.', fieldsym=0, padsym=0;
 
 static gzFile infh = NULL;
+#ifdef HAVE_LIBBZ2
+static BZFILE * inbfh = NULL;
+#endif
 static char *buffer=NULL;
 static int buffpos=0, buffmax=0;
 static int scaninbuff=0;
@@ -430,7 +436,12 @@ static char
 	int bytes;
 
 	/* input from stdin */
-	bytes = gzread(infh, buf, sizeof(buf));
+#ifdef HAVE_LIBBZ2
+	if (inbfh) 
+	  bytes = bzread(inbfh, buf, sizeof(buf));
+	else
+#endif
+	  bytes = gzread(infh, buf, sizeof(buf));
 	while (bytes > 0) {
 		if (!man_buf) {
 			man_buf = malloc(bytes+1);
@@ -442,6 +453,11 @@ static char
 
 		memcpy(man_buf+buf_size, buf, bytes);
 		buf_size += bytes;
+#ifdef HAVE_LIBBZ2
+		if (inbfh) 
+		  bytes = bzread(inbfh, buf, sizeof(buf));
+		else
+#endif
 		bytes = gzread(infh, buf, sizeof(buf));
 	}
 
@@ -1924,6 +1940,22 @@ static char
 	} else {
 		i=V(c[0],c[1]);
 		switch (i) {
+		case V('`',' '):
+			out_html(change_to_font('B'));
+			out_html("`");
+			trans_char(c,'"','\a');
+			c=c+j;
+			if (*c!='\n')
+				c++;
+			c=scan_troff(c, 1, NULL);
+			out_html("'");
+			out_html(change_to_font('R'));
+			out_html(NEWLINE);
+			if (fillout)
+				curpos++;
+			else
+				curpos=0;
+			break;
 		case V('a','b'):
 			h=c+j;
 			while (*h && *h !='\n')
@@ -3667,8 +3699,17 @@ main(int argc, char **argv)
 	  infh = gzdopen(0, "r");
 	else
 	  {
+#ifdef HAVE_LIBBZ2
+	    if (strstr(infile,".bz2"))
+	      inbfh = bzopen(infile, "r");
+	    else
+#endif
 	    infh = gzopen(infile, "r");
+#ifdef HAVE_LIBBZ2
+	    if(!infh && !inbfh)
+#else
 	    if(!infh)
+#endif
 	      {
 		FILE *fh;
 		char cmdline[512], *ctmp, output[512];
@@ -3693,12 +3734,27 @@ main(int argc, char **argv)
 		i = strlen(output) - 1;
 		while(isspace(output[i])) output[i--] = '\0';
 
-		if(output[0])
+		if (output[0]) {
+#ifdef HAVE_LIBBZ2
+		  if(strstr(output,".bz2"))
+		    inbfh = bzopen(output, "r");
+		  else
+#endif
 		  infh = gzopen(output, "r");
+		}
 	      }
 	  }
-	if(!infh)
-	  return 3;
+#ifdef HAVE_LIBBZ2
+	if(!infh && !inbfh) {
+#else	  
+	if(!infh) {
+#endif
+		printf("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
+		       "</HEAD><BODY>The document \"%s\" couldn't be found. It may have been removed from your system.\n"
+		       "</BODY></HTML>\n", infile);
+
+		return 3;
+	}
 
 	buf=read_man_page();
 	if (!buf) {

@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 struct NautilusAboutDetails {
@@ -73,6 +74,7 @@ static void     nautilus_about_draw_info        (NautilusAbout       *about,
 						 const char          *copyright,
 						 const char         **authors,
 						 const char          *comments,
+						 const char	     *translators,
 						 const char          *time_stamp);
 static int      update_authors_if_necessary     (gpointer             callback_data);
 
@@ -117,7 +119,7 @@ nautilus_about_destroy (GtkObject *object)
 	
 	g_free (about->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -154,7 +156,8 @@ nautilus_about_initialize (NautilusAbout *about)
 	area_width  = gdk_pixbuf_get_width  (about->details->background_pixbuf);
 	area_height = gdk_pixbuf_get_height (about->details->background_pixbuf);
 	
-	gtk_widget_set_usize ( GTK_WIDGET (about->details->drawing_area), area_width, area_height);
+	gtk_widget_set_usize (GTK_WIDGET (about->details->drawing_area),
+			      area_width, area_height);
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
 	gtk_signal_connect (GTK_OBJECT (about->details->drawing_area), "expose_event",
@@ -187,6 +190,7 @@ nautilus_about_new (const char *title,
 		    const char *copyright,
 		    const char **authors,
 		    const char *comments,
+		    const char *translators,
 		    const char *time_stamp)
 {
 	NautilusAbout *about;
@@ -194,7 +198,8 @@ nautilus_about_new (const char *title,
 	about = NAUTILUS_ABOUT (gtk_widget_new (nautilus_about_get_type (), NULL));
 	
 	/* draw the info onto the pixbuf, once and for all */
-	nautilus_about_draw_info (about, title, version, copyright, authors, comments, time_stamp);
+	nautilus_about_draw_info (about, title, version, copyright,
+				  authors, comments, translators, time_stamp);
 	
 	return GTK_WIDGET (about);
 }
@@ -240,13 +245,13 @@ draw_aa_string (NautilusScalableFont *font,
 		nautilus_scalable_font_draw_text (font, pixbuf,
 						  x_pos + shadow_offset, y_pos + shadow_offset,
 						  NULL,
-						  font_size, font_size,
+						  font_size,
 						  text, strlen (text),
 						  shadow_color, NAUTILUS_OPACITY_FULLY_OPAQUE);	
 	}
 	
 	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
-					  font_size, font_size,
+					  font_size,
 					  text, strlen (text), color, NAUTILUS_OPACITY_FULLY_OPAQUE);
 }
 
@@ -323,6 +328,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 			  const char *copyright,
 			  const char **authors,
 			  const char *comments,
+			  const char *translators,
 			  const char *time_stamp)
 {
 	char *display_str, *temp_str;
@@ -345,7 +351,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the name and version */
 	display_str = g_strdup_printf ("%s %s", title, version);
-	draw_aa_string (bold_font, pixbuf, 24, 12, 10, white, black, display_str, 1);
+	draw_aa_string (bold_font, pixbuf, 24, 12, 5, white, black, display_str, 1);
 	g_free (display_str);
 	
 	/* draw the copyright notice */
@@ -356,6 +362,26 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the time stamp */
 	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, time_stamp, 0);
+
+	/* draw the translator's credit, if necessary */
+	if (nautilus_strcmp (translators, "Translator Credits") != 0) {
+		comment_array = g_strsplit (translators, "\n", 10);
+		index = 0;
+		while (comment_array[index] != NULL) {
+			index += 1;
+		}
+		
+		xpos = 6;
+		ypos = total_height - (14 * index);
+		
+		index = 0;
+		while (comment_array[index] != NULL) {
+			draw_aa_string (plain_font, pixbuf, 11, xpos, ypos, black, black, comment_array[index], 0);
+			ypos += 14;
+			index++;	
+		}
+		g_strfreev (comment_array);
+	}
 	
 	/* remember the authors */
 	g_strfreev (about->details->authors);
@@ -378,7 +404,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 		index++;	
 	}
 	g_strfreev (comment_array);
-	
+		
 	/* release the fonts */	
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	gtk_object_unref (GTK_OBJECT(bold_font));
@@ -430,7 +456,7 @@ static gboolean
 nautilus_about_close (NautilusAbout *about, gpointer  *unused)
 {
 	if (about->details->timer_task != 0) {
-		gtk_timeout_remove(about->details->timer_task);
+		gtk_timeout_remove (about->details->timer_task);
 		about->details->timer_task = 0;
 	}  
 	return FALSE;
@@ -452,4 +478,3 @@ update_authors_if_necessary (gpointer callback_data)
 	}
 	return TRUE;
 }
-

@@ -31,18 +31,98 @@
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageStatusEnum)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageStatusEnum 1
 static const char *anon_subnames_array1[] =
-   { "UNKNOWN_STATUS", "SOURCE_NOT_SUPPORTED", "DEPENDENCY_FAIL",
+   { "UNKNOWN_STATUS", "CANCELLED", "SOURCE_NOT_SUPPORTED", "DEPENDENCY_FAIL",
       "FILE_CONFLICT", "BREAKS_DEPENDENCY", "INVALID", "CANNOT_OPEN",
       "PARTLY_RESOLVED", "RESOLVED", "ALREADY_INSTALLED",
-      "CIRCULAR_DEPENDENCY" };
+      "CIRCULAR_DEPENDENCY", "PACKSYS_FAILURE" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Trilobite_Eazel_PackageStatusEnum_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_enum, "PackageStatusEnum",
       "IDL:GNOME/Trilobite/Eazel/PackageStatusEnum:1.0",
-   0, 11,
+   0, 13,
    (const char **) anon_subnames_array1,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageModificationStatus_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageModificationStatus)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageModificationStatus 1
+static const char *anon_subnames_array5[] =
+   { "UNTOUCHED", "INSTALLED", "UNINSTALLED", "UPGRADED", "DOWNGRADED" };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Trilobite_Eazel_PackageModificationStatus_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_enum, "PackageModificationStatus",
+      "IDL:GNOME/Trilobite/Eazel/PackageModificationStatus:1.0",
+   0, 5,
+   (const char **) anon_subnames_array5,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_Operation_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_Operation)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_Operation 1
+static const char *anon_subnames_array9[] =
+   { "OPERATION_INSTALL", "OPERATION_UNINSTALL", "OPERATION_REVERT" };
+const struct CORBA_TypeCode_struct TC_GNOME_Trilobite_Eazel_Operation_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_enum, "Operation", "IDL:GNOME/Trilobite/Eazel/Operation:1.0",
+   0, 3,
+   (const char **) anon_subnames_array9,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -73,7 +153,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_ProtocolEnum_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_ProtocolEnum)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_ProtocolEnum 1
-static const char *anon_subnames_array5[] =
+static const char *anon_subnames_array13[] =
    { "PROTOCOL_HTTP", "PROTOCOL_FTP", "PROTOCOL_LOCAL" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Trilobite_Eazel_ProtocolEnum_struct = {
@@ -83,7 +163,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Trilobite/Eazel/ProtocolEnum:1.0",
 
    0, 3,
-   (const char **) anon_subnames_array5,
+   (const char **) anon_subnames_array13,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -114,8 +194,8 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_DistributionStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_DistributionStruct)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_DistributionStruct 1
-static const char *anon_subnames_array9[] = { "name", "major", "minor" };
-static const CORBA_TypeCode anon_subtypes_array10[] =
+static const char *anon_subnames_array17[] = { "name", "major", "minor" };
+static const CORBA_TypeCode anon_subtypes_array18[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct };
@@ -126,8 +206,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "DistributionStruct",
       "IDL:GNOME/Trilobite/Eazel/DistributionStruct:1.0",
    0, 3,
-   (const char **) anon_subnames_array9,
-   (CORBA_TypeCode *) anon_subtypes_array10,
+   (const char **) anon_subnames_array17,
+   (CORBA_TypeCode *) anon_subtypes_array18,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -208,6 +288,90 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDependencyStruct 1
+static const char *anon_subnames_array29[] =
+   { "sense", "version", "package_md5" };
+static const CORBA_TypeCode anon_subtypes_array30[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_struct, "PackageDependencyStruct",
+      "IDL:GNOME/Trilobite/Eazel/PackageDependencyStruct:1.0",
+   0, 3,
+   (const char **) anon_subnames_array29,
+   (CORBA_TypeCode *) anon_subtypes_array30,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksEnum 1
+static const char *anon_subnames_array33[] =
+   { "PACKAGE_FILE_CONFLICT", "PACKAGE_FEATURE_MISSING" };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_enum, "PackageBreaksEnum",
+      "IDL:GNOME/Trilobite/Eazel/PackageBreaksEnum:1.0",
+   0, 2,
+   (const char **) anon_subnames_array33,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 't') \
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'r') \
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'i') \
@@ -233,7 +397,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_22 == 'l') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array22[] =
+static const CORBA_TypeCode anon_subtypes_array38[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    
@@ -243,7 +407,342 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array22,
+   (CORBA_TypeCode *) anon_subtypes_array38,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array42[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array42,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksUnion 1
+static const GNOME_Trilobite_Eazel_PackageBreaksEnum
+   anon_sublabel_values_array48[] =
+   { GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT,
+      GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING };
+static const char *anon_subnames_array45[] = { "files", "features" };
+static const CORBA_TypeCode anon_subtypes_array46[] =
+   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
+static const CORBA_any anon_sublabels_array47[] =
+   { {(CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct,
+      (gpointer) & anon_sublabel_values_array48[0], CORBA_FALSE},
+   {(CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct,
+    (gpointer) & anon_sublabel_values_array48[1], CORBA_FALSE} };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_union, "PackageBreaksUnion",
+      "IDL:GNOME/Trilobite/Eazel/PackageBreaksUnion:1.0",
+   0, 2,
+   (const char **) anon_subnames_array45,
+   (CORBA_TypeCode *) anon_subtypes_array46,
+   (CORBA_any *) anon_sublabels_array47,
+   
+      (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageBreaksEnum_struct, 0,
+      -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 == 'r') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 == 'o') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 == 'b') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 == 'z') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 == '_') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 == 'i') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 == 'n') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 == 's') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 == 't') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 == 'a') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 == 'l') \
+&& (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct)
+#define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageBreaksStruct 1
+static const char *anon_subnames_array50[] = { "package_md5", "u" };
+static const CORBA_TypeCode anon_subtypes_array51[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageBreaksUnion_struct };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_struct, "PackageBreaksStruct",
+      "IDL:GNOME/Trilobite/Eazel/PackageBreaksStruct:1.0",
+   0, 2,
+   (const char **) anon_subnames_array50,
+   (CORBA_TypeCode *) anon_subtypes_array51,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct 1
+static const CORBA_TypeCode anon_subtypes_array55[] =
+   { (CORBA_TypeCode) &
+
+TC_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array55,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct 1
+static const CORBA_TypeCode anon_subtypes_array59[] =
+   { (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array59,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array63[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array63,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array67[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array67,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_7 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_9 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_15 == '_') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_18 == 's') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_19 == 't') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
+#define TC_DEF_TC_CORBA_sequence_CORBA_string 1
+static const CORBA_TypeCode anon_subtypes_array71[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array71,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -273,12 +772,16 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDataStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDataStruct)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDataStruct 1
-static const char *anon_subnames_array25[] =
-   { "name", "version", "filename", "eazel_id", "archtype", "distribution",
-      "release", "summary", "description", "bytesize", "toplevel",
-      "install_root", "md5", "status", "provides" };
-static const CORBA_TypeCode anon_subtypes_array26[] =
+static const char *anon_subnames_array74[] =
+   { "name", "version", "filename", "eazel_id", "suite_id", "archtype",
+      "distribution", "release", "summary", "description", "bytesize",
+      "filesize", "toplevel", "anchor", "install_root", "md5", "status",
+      "modify_status", "depends", "breaks", "modifies", "provides",
+
+      "features" };
+static const CORBA_TypeCode anon_subtypes_array75[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
@@ -288,10 +791,20 @@ static const CORBA_TypeCode anon_subtypes_array26[] =
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_long_struct,
+      (CORBA_TypeCode) & TC_CORBA_long_struct,
+      (CORBA_TypeCode) & TC_CORBA_boolean_struct,
       (CORBA_TypeCode) & TC_CORBA_boolean_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageStatusEnum_struct,
+      (CORBA_TypeCode) &
+      TC_GNOME_Trilobite_Eazel_PackageModificationStatus_struct,
+      (CORBA_TypeCode) &
+      TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_struct,
+      (CORBA_TypeCode) &
+      TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_struct,
+      (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct,
+      (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct,
       (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Trilobite_Eazel_PackageDataStruct_struct = {
@@ -299,9 +812,9 @@ const struct CORBA_TypeCode_struct
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_struct, "PackageDataStruct",
       "IDL:GNOME/Trilobite/Eazel/PackageDataStruct:1.0",
-   0, 15,
-   (const char **) anon_subnames_array25,
-   (CORBA_TypeCode *) anon_subtypes_array26,
+   0, 23,
+   (const char **) anon_subnames_array74,
+   (CORBA_TypeCode *) anon_subtypes_array75,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -331,7 +844,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct)
 #define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct 1
-static const CORBA_TypeCode anon_subtypes_array30[] =
+static const CORBA_TypeCode anon_subtypes_array79[] =
    { (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageDataStruct_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_struct = {
@@ -340,7 +853,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array30,
+   (CORBA_TypeCode *) anon_subtypes_array79,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -370,7 +883,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct)
 #define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct 1
-static const CORBA_TypeCode anon_subtypes_array39[] =
+static const CORBA_TypeCode anon_subtypes_array88[] =
    { (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageDataStruct_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_struct = {
@@ -379,7 +892,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array39,
+   (CORBA_TypeCode *) anon_subtypes_array88,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -409,7 +922,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_PackageDataStructList_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDataStructList)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_PackageDataStructList 1
-static const CORBA_TypeCode anon_subtypes_array43[] =
+static const CORBA_TypeCode anon_subtypes_array92[] =
    { (CORBA_TypeCode) &
 
 TC_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_struct };
@@ -421,7 +934,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Trilobite/Eazel/PackageDataStructList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array43,
+   (CORBA_TypeCode *) anon_subtypes_array92,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -451,8 +964,8 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_CategoryStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_CategoryStruct)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_CategoryStruct 1
-static const char *anon_subnames_array46[] = { "name", "packages" };
-static const CORBA_TypeCode anon_subtypes_array47[] =
+static const char *anon_subnames_array95[] = { "name", "packages" };
+static const CORBA_TypeCode anon_subtypes_array96[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
       (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_PackageDataStructList_struct
 
@@ -464,8 +977,8 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "CategoryStruct",
       "IDL:GNOME/Trilobite/Eazel/CategoryStruct:1.0",
    0, 2,
-   (const char **) anon_subnames_array46,
-   (CORBA_TypeCode *) anon_subtypes_array47,
+   (const char **) anon_subnames_array95,
+   (CORBA_TypeCode *) anon_subtypes_array96,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -495,7 +1008,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct)
 #define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct 1
-static const CORBA_TypeCode anon_subtypes_array51[] =
+static const CORBA_TypeCode anon_subtypes_array100[] =
    { (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_CategoryStruct_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_struct = {
@@ -504,7 +1017,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array51,
+   (CORBA_TypeCode *) anon_subtypes_array100,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -534,7 +1047,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_22 == 'l') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct)
 #define TC_DEF_TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct 1
-static const CORBA_TypeCode anon_subtypes_array60[] =
+static const CORBA_TypeCode anon_subtypes_array109[] =
    { (CORBA_TypeCode) & TC_GNOME_Trilobite_Eazel_CategoryStruct_struct };
 const struct CORBA_TypeCode_struct
    TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_struct = {
@@ -543,7 +1056,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_sequence, NULL, NULL,
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array60,
+   (CORBA_TypeCode *) anon_subtypes_array109,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -573,7 +1086,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Trilobite_Eazel_CategoryStructList_22 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Trilobite_Eazel_CategoryStructList)
 #define TC_DEF_TC_GNOME_Trilobite_Eazel_CategoryStructList 1
-static const CORBA_TypeCode anon_subtypes_array64[] =
+static const CORBA_TypeCode anon_subtypes_array113[] =
    { (CORBA_TypeCode) &
 
 TC_CORBA_sequence_GNOME_Trilobite_Eazel_CategoryStruct_struct };
@@ -585,7 +1098,7 @@ const struct CORBA_TypeCode_struct
       "IDL:GNOME/Trilobite/Eazel/CategoryStructList:1.0",
    0, 1,
    NULL,
-   (CORBA_TypeCode *) anon_subtypes_array64,
+   (CORBA_TypeCode *) anon_subtypes_array113,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -710,6 +1223,652 @@ GNOME_Trilobite_Eazel_PackagesFailed__free(gpointer mem, gpointer dat,
    return (gpointer) (var + 1);
 }
 
+gpointer
+GNOME_Trilobite_Eazel_PackageDependencyStruct__free(gpointer mem,
+						    gpointer dat,
+						    CORBA_boolean
+						    free_strings)
+{
+   GNOME_Trilobite_Eazel_PackageDependencyStruct *var = mem;
+
+   if (free_strings) {
+      CORBA_string__free(&(var->sense), NULL, free_strings);
+   }
+   if (free_strings) {
+      CORBA_string__free(&(var->version), NULL, free_strings);
+   }
+   if (free_strings) {
+      CORBA_string__free(&(var->package_md5), NULL, free_strings);
+   }
+   return (gpointer) (var + 1);
+}
+
+GNOME_Trilobite_Eazel_PackageDependencyStruct *
+GNOME_Trilobite_Eazel_PackageDependencyStruct__alloc(void)
+{
+   GNOME_Trilobite_Eazel_PackageDependencyStruct *retval;
+
+   retval =
+      ORBit_alloc(sizeof(GNOME_Trilobite_Eazel_PackageDependencyStruct),
+		  (ORBit_free_childvals)
+		  GNOME_Trilobite_Eazel_PackageDependencyStruct__free,
+		  GUINT_TO_POINTER(1));
+   memset(&(retval->sense), '\0', sizeof(retval->sense));
+   memset(&(retval->version), '\0', sizeof(retval->version));
+   memset(&(retval->package_md5), '\0', sizeof(retval->package_md5));
+   return retval;
+}
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
+gpointer
+GNOME_Trilobite_Eazel_PackageBreaksUnion__free(gpointer mem, gpointer dat,
+					       CORBA_boolean free_strings)
+{
+   GNOME_Trilobite_Eazel_PackageBreaksUnion *val = mem;
+
+   switch (val->_d) {
+     case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+	CORBA_sequence_CORBA_string__free(&(val->_u.files), NULL,
+					  free_strings);
+	break;
+     case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+	CORBA_sequence_CORBA_string__free(&(val->_u.features), NULL,
+					  free_strings);
+	break;
+     default:
+	break;
+   }
+   return (gpointer) (val + 1);
+}
+
+GNOME_Trilobite_Eazel_PackageBreaksUnion *
+GNOME_Trilobite_Eazel_PackageBreaksUnion__alloc(void)
+{
+   GNOME_Trilobite_Eazel_PackageBreaksUnion *retval;
+
+   retval =
+      ORBit_alloc(sizeof(GNOME_Trilobite_Eazel_PackageBreaksUnion),
+		  (ORBit_free_childvals)
+		  GNOME_Trilobite_Eazel_PackageBreaksUnion__free,
+		  GUINT_TO_POINTER(1));
+   memset(retval, '\0', sizeof(GNOME_Trilobite_Eazel_PackageBreaksUnion));
+   return retval;
+}
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
+gpointer
+GNOME_Trilobite_Eazel_PackageBreaksStruct__free(gpointer mem, gpointer dat,
+						CORBA_boolean free_strings)
+{
+   GNOME_Trilobite_Eazel_PackageBreaksStruct *var = mem;
+
+   if (free_strings) {
+      CORBA_string__free(&(var->package_md5), NULL, free_strings);
+   }
+   {
+      GNOME_Trilobite_Eazel_PackageBreaksUnion__free(&(var->u), NULL,
+						     free_strings);
+   }
+   return (gpointer) (var + 1);
+}
+
+GNOME_Trilobite_Eazel_PackageBreaksStruct *
+GNOME_Trilobite_Eazel_PackageBreaksStruct__alloc(void)
+{
+   GNOME_Trilobite_Eazel_PackageBreaksStruct *retval;
+
+   retval =
+      ORBit_alloc(sizeof(GNOME_Trilobite_Eazel_PackageBreaksStruct),
+		  (ORBit_free_childvals)
+		  GNOME_Trilobite_Eazel_PackageBreaksStruct__free,
+		  GUINT_TO_POINTER(1));
+   memset(&(retval->package_md5), '\0', sizeof(retval->package_md5));
+   memset(&(retval->u), '\0', sizeof(retval->u));
+   return retval;
+}
+
+#if ( (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct)
+#define ORBIT_DEF_CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct 1
+
+gpointer
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__free(gpointer
+								   mem,
+								   gpointer
+								   dat,
+								   CORBA_boolean
+								   free_strings)
+{
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct *
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__alloc(void)
+{
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct *retval;
+
+   retval =
+      ORBit_alloc(sizeof
+		  (CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct),
+		  (ORBit_free_childvals)
+		  CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+GNOME_Trilobite_Eazel_PackageDependencyStruct *
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf
+   (CORBA_unsigned_long len)
+{
+   GNOME_Trilobite_Eazel_PackageDependencyStruct *retval =
+      ORBit_alloc(sizeof(GNOME_Trilobite_Eazel_PackageDependencyStruct) * len,
+		  (ORBit_free_childvals)
+		  GNOME_Trilobite_Eazel_PackageDependencyStruct__free,
+		  GUINT_TO_POINTER(len));
+
+   memset(retval, '\0',
+	  sizeof(GNOME_Trilobite_Eazel_PackageDependencyStruct) * len);
+   return retval;
+}
+#endif
+
+#if ( (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct)
+#define ORBIT_DEF_CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct 1
+
+gpointer
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__free(gpointer mem,
+							       gpointer dat,
+							       CORBA_boolean
+							       free_strings)
+{
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct *
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__alloc(void)
+{
+   CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct *retval;
+
+   retval =
+      ORBit_alloc(sizeof
+		  (CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct),
+		  (ORBit_free_childvals)
+		  CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+GNOME_Trilobite_Eazel_PackageBreaksStruct *
+CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf
+   (CORBA_unsigned_long len)
+{
+   GNOME_Trilobite_Eazel_PackageBreaksStruct *retval =
+      ORBit_alloc(sizeof(GNOME_Trilobite_Eazel_PackageBreaksStruct) * len,
+		  (ORBit_free_childvals)
+		  GNOME_Trilobite_Eazel_PackageBreaksStruct__free,
+		  GUINT_TO_POINTER(len));
+
+   memset(retval, '\0',
+	  sizeof(GNOME_Trilobite_Eazel_PackageBreaksStruct) * len);
+   return retval;
+}
+#endif
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
+#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'o') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_5 == 'b') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_6 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_7 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_8 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_9 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_10 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_11 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_12 == 'z') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_13 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_14 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_15 == '_') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_16 == 'i') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_17 == 'n') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_18 == 's') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_19 == 't') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_20 == 'a') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_21 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_22 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
+#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
+
+gpointer
+CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
+				  CORBA_boolean free_strings)
+{
+   CORBA_sequence_CORBA_string *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_CORBA_string *
+CORBA_sequence_CORBA_string__alloc(void)
+{
+   CORBA_sequence_CORBA_string *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
+		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+CORBA_char **
+CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
+{
+   CORBA_char **retval =
+      ORBit_alloc(sizeof(CORBA_char *) * len,
+		  (ORBit_free_childvals) CORBA_string__free,
+
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(CORBA_char *) * len);
+   return retval;
+}
+#endif
+
 #if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 't') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'r') \
 && (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'i') \
@@ -795,6 +1954,9 @@ GNOME_Trilobite_Eazel_PackageDataStruct__free(gpointer mem, gpointer dat,
       CORBA_string__free(&(var->eazel_id), NULL, free_strings);
    }
    if (free_strings) {
+      CORBA_string__free(&(var->suite_id), NULL, free_strings);
+   }
+   if (free_strings) {
       CORBA_string__free(&(var->archtype), NULL, free_strings);
    }
    {
@@ -817,7 +1979,25 @@ GNOME_Trilobite_Eazel_PackageDataStruct__free(gpointer mem, gpointer dat,
       CORBA_string__free(&(var->md5), NULL, free_strings);
    }
    {
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct__free(&
+									 (var->
+									  depends),
+NULL, free_strings);
+   }
+   {
+      CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct__free(&
+								     (var->
+								      breaks),
+NULL, free_strings);
+   }
+   {
+      CORBA_sequence_CORBA_string__free(&(var->modifies), NULL, free_strings);
+   }
+   {
       CORBA_sequence_CORBA_string__free(&(var->provides), NULL, free_strings);
+   }
+   {
+      CORBA_sequence_CORBA_string__free(&(var->features), NULL, free_strings);
    }
    return (gpointer) (var + 1);
 }
@@ -836,6 +2016,7 @@ GNOME_Trilobite_Eazel_PackageDataStruct__alloc(void)
    memset(&(retval->version), '\0', sizeof(retval->version));
    memset(&(retval->filename), '\0', sizeof(retval->filename));
    memset(&(retval->eazel_id), '\0', sizeof(retval->eazel_id));
+   memset(&(retval->suite_id), '\0', sizeof(retval->suite_id));
    memset(&(retval->archtype), '\0', sizeof(retval->archtype));
    memset(&(retval->distribution), '\0', sizeof(retval->distribution));
    memset(&(retval->release), '\0', sizeof(retval->release));
@@ -843,7 +2024,11 @@ GNOME_Trilobite_Eazel_PackageDataStruct__alloc(void)
    memset(&(retval->description), '\0', sizeof(retval->description));
    memset(&(retval->install_root), '\0', sizeof(retval->install_root));
    memset(&(retval->md5), '\0', sizeof(retval->md5));
+   memset(&(retval->depends), '\0', sizeof(retval->depends));
+   memset(&(retval->breaks), '\0', sizeof(retval->breaks));
+   memset(&(retval->modifies), '\0', sizeof(retval->modifies));
    memset(&(retval->provides), '\0', sizeof(retval->provides));
+   memset(&(retval->features), '\0', sizeof(retval->features));
    return retval;
 }
 

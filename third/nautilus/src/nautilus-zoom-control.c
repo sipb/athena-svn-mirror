@@ -189,7 +189,7 @@ nautilus_zoom_control_destroy (GtkObject *object)
 
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -292,9 +292,9 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	number_pixbuf = NULL;
 	
-	num_v_offset = get_zoom_offset ("NUMBER_V_OFFSET");
-	num_h_offset = get_zoom_offset ("NUMBER_H_OFFSET");
-	char_width = get_zoom_offset ("DIGIT_WIDTH");
+	num_v_offset = get_zoom_offset ("number_v_offset");
+	num_h_offset = get_zoom_offset ("number_h_offset");
+	char_width = get_zoom_offset ("digit_width");
 	if (char_width == 0)
 		char_width = 6;
 		
@@ -525,6 +525,9 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
 	
 	if (zoom_control->details->number_strip == NULL) {
+		/* Note to localizers: this font is used for the number in the
+		 * zoom control widget.
+		 */
 		zoom_control->details->label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
 	}
 
@@ -573,7 +576,8 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 	double    *zoom_level_ptr;
 	NautilusZoomControl *zoom_control;
 	GSList	  *radio_item_group;
-
+	int	  percent;
+	
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
 	/* Set flag so that callback isn't activated when set_active called
@@ -584,7 +588,8 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 	/* This is marked for localization in case the % sign is not
 	 * appropriate in some locale. I guess that's unlikely.
 	 */
-	item_text = g_strdup_printf (_("%.0f%%"), 100.0 * zoom_level);
+	percent = floor((100.0 * zoom_level) + .5);
+	item_text = g_strdup_printf (_("%d%%"), percent);
 
 	radio_item_group = previous_radio_item == NULL
 		? NULL
@@ -712,11 +717,11 @@ static gboolean nautilus_zoom_control_motion_notify (GtkWidget *widget, GdkEvent
 
 /* handle setting the size */
 static void
-nautilus_zoom_control_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_zoom_control_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	widget->allocation.width = get_zoom_width (zoom_control);
    	widget->allocation.height = allocation->height;

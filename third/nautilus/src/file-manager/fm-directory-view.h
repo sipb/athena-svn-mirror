@@ -2,7 +2,7 @@
 /* fm-directory-view.h
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
- * Copyright (C) 2000  Eazel, Inc.
+ * Copyright (C) 2000, 2001  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,7 +19,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Ettore Perazzoli
+ * Authors: Ettore Perazzoli
+ * 	    Darin Adler <darin@eazel.com>
+ * 	    John Sullivan <sullivan@eazel.com>
+ *          Pavel Cisler <pavel@eazel.com>
  */
 
 #ifndef FM_DIRECTORY_VIEW_H
@@ -125,10 +128,12 @@ struct FMDirectoryViewClass {
 	void 	(* end_loading) 	 (FMDirectoryView *view);
 
 	/* The 'load_error' signal is emitted when the directory model
-	   reports an error in the process of monitoring the directory's
-	   contents.  The load error indicates that the process of 
-	   load the contents has ended, but the directory is still
-	   being monitored*/
+	 * reports an error in the process of monitoring the directory's
+	 * contents.  The load error indicates that the process of 
+	 * loading the contents has ended, but the directory is still
+	 * being monitored. The default implementation handles common
+	 * load failures like ACCESS_DENIED.
+	 */
 	void    (* load_error)           (FMDirectoryView *view,
 					  GnomeVFSResult result);
 
@@ -202,6 +207,15 @@ struct FMDirectoryViewClass {
          */
         void    (* update_menus)         	(FMDirectoryView *view);
 
+	/* display_pending_files is a function pointer that subclasses can override
+	   to have files delivered in different sized "chunks" when they arrive from
+	   the directory model.  The default directory view method will deliver
+	   all available files at once.  The list of pending files added and changed
+	   may be modified by the subclass, to remove files that are no longer pending. */
+	gboolean (* display_pending_files)      (FMDirectoryView *view,
+						 GList           **pending_files_added,
+						 GList           **pending_files_changed);
+
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
 	 * be displayed with each file. By default, all emblems returned by
@@ -270,6 +284,7 @@ struct FMDirectoryViewClass {
 	void	(* embedded_text_policy_changed)(FMDirectoryView *view);
 	void	(* image_display_policy_changed)(FMDirectoryView *view);
 	void	(* font_family_changed)		(FMDirectoryView *view);
+	void	(* smooth_font_changed)		(FMDirectoryView *view);
 	void	(* click_policy_changed)	(FMDirectoryView *view);
 	void	(* smooth_graphics_mode_changed)(FMDirectoryView *view);
 };
@@ -350,6 +365,7 @@ void                fm_directory_view_pop_up_background_context_menu   (FMDirect
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
 									GdkEventButton   *event); 
+void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
