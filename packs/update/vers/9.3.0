@@ -13,6 +13,10 @@ echo "/var/sadm/install/contents"			>> $DEADFILES
 
 cat $LIBDIR/solaris-9.2-os-symlinks			>> $DEADFILES
 
+# Leftover from 9.1; if we leave it around, it sends the 9.3 update
+# into an infinite reboot cycle trying to run a nonexistent syncconf.
+echo "/etc/init.d/athena.config"			>> $DEADFILES
+
 # Create the lists of packages and patches to install.
 cat $LIBDIR/solaris-9.3-pkgs				> $PACKAGES
 cat $LIBDIR/solaris-9.3-patches				> $PATCHES
