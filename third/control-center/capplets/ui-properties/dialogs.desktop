@@ -20,8 +20,8 @@ Name[pl]=Okna dialogowe
 Name[pt]=Di·logos
 Name[ru]=‰…¡Ãœ«…
 Name[sk]=DialÛgy
+Name[sl]=Dialogi
 Name[sv]=Dialogrutor
-Name[tr]=Diyaloklar
 Name[uk]=‰¶¡Ãœ«…
 Name[wa]=Purneas di cweriaedje
 Exec=ui-properties --cap-id=0

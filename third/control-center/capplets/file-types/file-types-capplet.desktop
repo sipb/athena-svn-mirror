@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=File Types and Programs
+Name[da]=Filtypeassocieringer
 Name[de]=Dateitypen und Programme
 Name[es]=Tipos de archivos y programas
 Name[fi]=Tiedostotyypit ja ohjelmat
@@ -7,8 +8,11 @@ Name[fr]=Types de fichiers et programmes
 Name[hu]=FАjltМpusok Иs programok
 Name[ja]=╔у╔║╔╓╔К╓н╪ОнЮ╓х╔в╔М╔╟╔И╔Ю
 Name[no]=Filtyper og programmer
+Name[ru]=Типы файлов и программы
 Name[sk]=Typy sЗborov a programy
+Name[sl]=Vrste datotek in programi
 Name[sv]=Filtyper och program
+Name[uk]=Типи файл╕в ╕ програми
 Name[wa]=SТres di fitchНs Хt programes
 Comment=Specify which programs are used to open or view each file type
 Comment[es]=Especifica que programas se usan para abrir o ver cada tipo de archivo

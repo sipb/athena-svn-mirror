@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.2.1\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
 "PO-Revision-Date: 2001-03-12 23:32+0100\n"
 "Last-Translator: Carlos Perelló Marín <carlos@gnome-db.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -79,9 +79,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "No puedo encontrar un hbox, usando un selector de archivos normal"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -97,9 +97,9 @@ msgstr " Buscar... "
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "ninguno"
 
@@ -123,90 +123,56 @@ msgstr "Centrado"
 msgid "Tiled"
 msgstr "Mosaico"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-"No hay ayuda disponible/instalada para esas opciones. Asegúrese que\n"
-"tiene instalada en sus sistema la Guía del Usuario de GNOME."
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Cerrar"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 msgid "Use GNOME to set background"
 msgstr "Usar GNOME para definir el fondo"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr "Usa los parámetros que se tenían guardados y terminar"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr "IMAGEN"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr "Ajusta el fondo al valor indicado"
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "COLOR"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Indica el color de fondo"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr "Indica el color de fondo final para el degradado"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
 msgstr "ORIENT"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Orientación del degradado: vertical u horizontal"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
 msgstr "Usar un color unido para el fondo"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
 msgstr "Usar un degradado de colores para el fondo"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
 msgstr "MODO"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Imagen de fondo: mosaico, centrada, redimensionada o ratio"
 
@@ -327,7 +293,7 @@ msgid "File Extensions "
 msgstr "Extensiones de archivos "
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Añadir..."
 
@@ -421,53 +387,53 @@ msgstr "Puede abrir múltiples archivos"
 msgid "Can open from URI"
 msgstr "Puede abrir desde URI"
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 msgid "MIME Type"
 msgstr "Tipo MIME"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 msgid "Change Icon"
 msgstr "Cambiar icono"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 msgid "Change File Extensions"
 msgstr "Cambiar extensiones de los archivos"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
 msgstr "Acción predeterminada:"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr "Utilizar visualizador"
 
-#: capplets/file-types/file-types-capplet.c:775
+#: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
 msgstr "Abrir con la aplicación"
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 msgid "Edit List"
 msgstr "Editar lista"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
 msgstr "Añadir un nuevo tipo MIME..."
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
 msgstr "Borrar este tipo MIME"
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr "Revertir a los valores predeterminados del sistema"
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 msgid "None"
 msgstr "Ninguno"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
@@ -478,22 +444,22 @@ msgstr ""
 "de archivos y programas.\n"
 "¿Revertir de todas formas?"
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr "Ver como %s"
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr "Descripción"
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Extensión"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 msgid "Default Action"
 msgstr "Acción predeterminada"
 
@@ -509,11 +475,11 @@ msgstr "Especifica que programas se usan para abrir o ver cada tipo de archivo"
 msgid "Select an icon"
 msgstr "Seleccione un icono"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Editor de Gnome"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Lanzar en una terminal"
 
@@ -525,59 +491,73 @@ msgstr "Elegir el editor invocado por gnome-edit."
 msgid "Default Editor"
 msgstr "Propiedades Gnome Edit"
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
 msgstr "Bip del teclado"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
 msgstr "Volumen"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr "Tono (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Duración (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Prueba"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 msgid "Keyboard repeat rate"
 msgstr "Velocidad de repetición"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
 msgstr "Activar auto-repetición"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
 msgstr "Velocidad de repetición"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr "Tiempo antes de repetición"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr "Clic del teclado"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
 msgstr "Clic al teclear"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr "Volumen del clic"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
 msgstr "Probar la configuración"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"No hay ayuda disponible/instalada para esas opciones. Asegúrese que\n"
+"tiene instalada en sus sistema la Guía del Usuario de GNOME."
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Cerrar"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -594,35 +574,35 @@ msgstr "Propiedades del Teclado"
 msgid "Keyboard Properties"
 msgstr "Modifica las propiedades del teclado"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Botones del ratón"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
 msgstr "Zurdo"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr "Diestro"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Movimiento del ratón"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Aceleración"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Rápido"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
@@ -630,26 +610,26 @@ msgid "Slow"
 msgstr "Lento"
 
 # una mejor traducción ?
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
 msgstr "Punto de activación"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Grande"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Pequeño"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -3479,11 +3459,11 @@ msgstr ""
 "Esta copia del centro de control de GNOME fue compilada sin soporte para el "
 "sonido"
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr "El archivo de sonido para este evento no existe."
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3985,9 +3965,9 @@ msgstr ""
 "el logotipo de Gnome en forma de pié\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "Aceptar"
 
@@ -4031,52 +4011,52 @@ msgstr ""
 "«Configuración» del menú principal de Gnome, o activando\n"
 "«Guardar configuración actual» al quitar la sesión.\n"
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr "Añadir un nuevo gestor de ventanas"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Nombre:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Comando:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr "Comando para la configuración:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr "El gestor de ventanas es manejado por el gestor de sesiones"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "El nombre no puede quedar en blanco"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "El comando no puede quedar en blanco"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr "Editar Gestor de Ventanas"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr "No puede borrar el gestor de ventanas en uso"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Editar..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Borrar"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"

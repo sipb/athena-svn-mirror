@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.2.0\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
 "PO-Revision-Date: Mon Dec 20 1999 21:34:11+0200\n"
 "Last-Translator: Vladimir Vuksan <vuksan@veus.hr>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -78,9 +78,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr ""
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -96,9 +96,9 @@ msgstr " Potra¾i..."
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "ni¹ta"
 
@@ -122,89 +122,57 @@ msgstr "Centrirano"
 msgid "Tiled"
 msgstr "Poploèano"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Zatvori"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 #, fuzzy
 msgid "Use GNOME to set background"
 msgstr "Koristi stupnjevitu ispunu za pozadinu"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr "SLIKA"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "BOJA"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Izabire boju pozadine"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr "Izabire krajnju boje pozadine kod stupnjevitog prijelaza"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
 msgstr "USMJERI"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Usmjerenje prijelaza: okomito ili vodoravno"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
 msgstr "Koristi jednu boju za pozadinu"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
 msgstr "Koristi stupnjevitu ispunu za pozadinu"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr ""
 
@@ -330,7 +298,7 @@ msgid "File Extensions "
 msgstr "Sufiks"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Dodavanje..."
 
@@ -424,81 +392,81 @@ msgstr ""
 msgid "Can open from URI"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 #, fuzzy
 msgid "MIME Type"
 msgstr "Mime tip"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 #, fuzzy
 msgid "Change Icon"
 msgstr "Odustani"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 #, fuzzy
 msgid "Change File Extensions"
 msgstr "Sufiks"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 msgid "Default Action:"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:775
+#: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 #, fuzzy
 msgid "Edit List"
 msgstr "Uredi"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 #, fuzzy
 msgid "Add New MIME Type..."
 msgstr "Dodaj mime tip"
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 #, fuzzy
 msgid "None"
 msgstr "ni¹ta"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Sufiks"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 msgid "Default Action"
 msgstr ""
 
@@ -515,11 +483,11 @@ msgstr ""
 msgid "Select an icon"
 msgstr "Izaberi ikonu..."
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Gnome ureðivaè"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Pokreni u terminalu"
 
@@ -531,60 +499,72 @@ msgstr ""
 msgid "Default Editor"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 msgid "Keyboard bell"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
 msgstr "Jakost glasa"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr "Visina glasa (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Trajanje (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Isku¹aj"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 #, fuzzy
 msgid "Keyboard repeat rate"
 msgstr "Uèestalost ponavljanja"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
 msgstr "Omoguæi auto-ponavljanje"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
 msgstr "Uèestalost ponavljanja"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr "Razmak ponavljanja"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
 msgstr "Isku¹aj postavke"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Zatvori"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -601,61 +581,61 @@ msgstr "Uèestalost ponavljanja"
 msgid "Keyboard Properties"
 msgstr "Uèestalost ponavljanja"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Gumbi mi¹a"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
 msgstr "Ljevak"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr "De¹njak"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Pokret mi¹a"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Ubrzanje"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Brzo"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Sporo"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
 msgstr "Prag"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Veliko"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Malo"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -3511,11 +3491,11 @@ msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -4002,9 +3982,9 @@ msgid ""
 msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "U redu"
 
@@ -4036,52 +4016,52 @@ msgid ""
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Ime:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Naredba:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "Ime ne mo¾e biti prazno"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "Naredba ne mo¾e biti prazna"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Promijeni..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Obri¹i"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"

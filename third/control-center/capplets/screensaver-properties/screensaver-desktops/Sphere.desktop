@@ -1,16 +1,19 @@
 [Desktop Entry]
 Name=Sphere
 Name[ca]=Esfera
-Name[da]=Sfære
+Name[da]=Kugle
 Name[de]=Sphäre
 Name[es]=Esfera
 Name[fi]=Pallot
 Name[fr]=Sphère
+Name[hu]=Sphere
 Name[ja]=µåÂÎ
 Name[no]=Sfære
 Name[ru]=óÆÅÒÙ
 Name[sk]=Guµa
+Name[sl]=Sfera
 Name[sv]=Sfär
+Name[uk]=óÆÅÒÁ
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=sphere

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.0\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
 "PO-Revision-Date: 2001-03-11 13:07+0100\n"
 "Last-Translator: Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>\n"
 "Language-Team: EUSKARA <linux-eu@chanae.alphanet.ch>\n"
@@ -83,9 +83,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "hbox-ik ezin aurkitu, fitxategi aukera arruntaz"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -102,9 +102,9 @@ msgstr "Aztertu..."
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "batez"
 
@@ -132,92 +132,60 @@ msgstr "Erdigunea"
 msgid "Tiled"
 msgstr "Fitxategia"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Itxi"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 msgid "Use GNOME to set background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "KOLOREA"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 #, fuzzy
 msgid "Specifies the background color"
 msgstr "Azpiko kolorea"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 #, fuzzy
 msgid "ORIENT"
 msgstr "FONT"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 #, fuzzy
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Panela etzanda"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
 msgstr ""
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 #, fuzzy
 msgid "MODE"
 msgstr "MODULU"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr ""
 
@@ -343,7 +311,7 @@ msgid "File Extensions "
 msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 #, fuzzy
 msgid "Add..."
 msgstr "..."
@@ -440,83 +408,83 @@ msgstr "Gaitu multi profilak"
 msgid "Can open from URI"
 msgstr "RAIDtik ken"
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 #, fuzzy
 msgid "MIME Type"
 msgstr "Moeta"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 #, fuzzy
 msgid "Change Icon"
 msgstr "Aldatu monitorea"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 #, fuzzy
 msgid "Change File Extensions"
 msgstr "Aldatu zerbitzariaren aukerak"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 #, fuzzy
 msgid "Default Action:"
 msgstr "Lanen jatorrizko tamaina:"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:775
+#: capplets/file-types/file-types-capplet.c:785
 #, fuzzy
 msgid "Open With Application"
 msgstr "Aplikazioa konfiguratu"
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 #, fuzzy
 msgid "Edit List"
 msgstr "Instalaziotik irten"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 msgid "Add New MIME Type..."
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 #, fuzzy
 msgid "Delete This MIME Type"
 msgstr "Menu item hau ezabatu?"
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 msgid "None"
 msgstr "Bat ere ez"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr "Azalpena"
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 #, fuzzy
 msgid "Extension"
 msgstr "Sesio"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 #, fuzzy
 msgid "Default Action"
 msgstr "Jatorrizkoa"
@@ -534,12 +502,12 @@ msgstr ""
 msgid "Select an icon"
 msgstr "Aukeratu animazioa"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 #, fuzzy
 msgid "Gnome editor"
 msgstr "Gnome laguntza historia"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 #, fuzzy
 msgid "Run In Terminal"
 msgstr "Terminalean ekin"
@@ -553,70 +521,82 @@ msgstr ""
 msgid "Default Editor"
 msgstr "Jatorrizkoa"
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 #, fuzzy
 msgid "Keyboard bell"
 msgstr "Teklatua"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 #, fuzzy
 msgid "Volume"
 msgstr "Balioa:"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 #, fuzzy
 msgid "Duration (ms)"
 msgstr "Atzerapena (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 #, fuzzy
 msgid "Test"
 msgstr "Testua"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 #, fuzzy
 msgid "Keyboard repeat rate"
 msgstr "Teklatuaren itxura: %s\n"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 #, fuzzy
 msgid "Enable auto-repeat"
 msgstr "Baimendu berez-eskutatzea"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 #, fuzzy
 msgid "Repeat rate"
 msgstr "Berrosatu iragazkia"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 #, fuzzy
 msgid "Keyboard click"
 msgstr "Teklatua"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 #, fuzzy
 msgid "Click on keypress"
 msgstr "Erlojuaren ezaugarriak"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 #, fuzzy
 msgid "Click volume"
 msgstr "Gorbata klikatua"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 #, fuzzy
 msgid "Test settings"
 msgstr "Sare ezarketak:"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Itxi"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -632,52 +612,52 @@ msgstr "Teklatua"
 msgid "Keyboard Properties"
 msgstr "WebControl-aren Propietateak"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 #, fuzzy
 msgid "Mouse buttons"
 msgstr "2 botoi"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 #, fuzzy
 msgid "Left handed"
 msgstr "orientatu. aldatua"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr ""
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 #, fuzzy
 msgid "Mouse motion"
 msgstr "Muduluaren aukerak:"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #, fuzzy
 msgid "Acceleration"
 msgstr "Azkarrarazlea"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Arin"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Astiro"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 #, fuzzy
 msgid "Threshold"
 msgstr "Karga bajuko muga:"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
@@ -685,7 +665,7 @@ msgstr "Karga bajuko muga:"
 msgid "Large"
 msgstr "zarama"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
@@ -693,7 +673,7 @@ msgstr "zarama"
 msgid "Small"
 msgstr "Txikia (%dMB)"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -3697,11 +3677,11 @@ msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr ""
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -4234,9 +4214,9 @@ msgid ""
 msgstr ""
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "Ados"
 
@@ -4270,58 +4250,58 @@ msgid ""
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 #, fuzzy
 msgid "Add New Window Manager"
 msgstr "_Lehio berria"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Izena:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Komandoa:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 #, fuzzy
 msgid "Configuration Command:"
 msgstr "Konfigurazioa"
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 #, fuzzy
 msgid "Window manager is session managed"
 msgstr "Lehio-kudeatzailearen sasibideak"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 #, fuzzy
 msgid "Command cannot be empty"
 msgstr "Komando lerroaren garaiera:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 #, fuzzy
 msgid "Edit Window Manager"
 msgstr "Lehio menua ez"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 #, fuzzy
 msgid "Edit..."
 msgstr "Argitaratu"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Ezabatu"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"

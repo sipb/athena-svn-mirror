@@ -1,12 +1,17 @@
 [Desktop Entry]
 Name=Swirl
 Name[ca]=Remolí
-Name[da]=Hvirvel
+Name[da]=Turbulens
 Name[de]=Wirbeln
 Name[fi]=Pyörre
 Name[fr]=Tourbillon
+Name[hu]=Swirl
+Name[no]=Swirl
+Name[ru]=óĞÉÒÁÌØ
 Name[sk]=Vír
+Name[sl]=Interferenca
 Name[sv]=Snurra
+Name[uk]=óĞ¦ÒÁÌØ
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=swirl

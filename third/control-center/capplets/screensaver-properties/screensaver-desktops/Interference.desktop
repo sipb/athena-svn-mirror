@@ -1,14 +1,18 @@
 [Desktop Entry]
 Name=Interference
 Name[ca]=Interferències
-Name[da]=Forstyrrelser
+Name[da]=Interferens
+Name[de]=Störung
 Name[es]=Interferencias
 Name[fi]=Interferenssi
 Name[fr]=Interférences
+Name[hu]=Interference
 Name[no]=Forstyrrelser
 Name[ru]=éÎÔÅÒÆÅÒÅÎÃÉÑ
 Name[sk]=Interferencia
+Name[sl]=Interferenca
 Name[sv]=Interferens
+Name[uk]=¶ÎÔÅÒÆÅÒÅÎÃ¦Ñ
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=interference

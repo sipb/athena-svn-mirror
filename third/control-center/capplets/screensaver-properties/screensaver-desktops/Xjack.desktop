@@ -1,13 +1,17 @@
 [Desktop Entry]
 Name=Xjack
 Name[ca]=XJack
-Name[da]=XJack
+Name[da]=Jack
 Name[de]=Xjack
 Name[fi]=Xjack
 Name[fr]=Xjack
+Name[hu]=Xjack
 Name[no]=Xjack
+Name[ru]=X-Джек
 Name[sk]=XJack
+Name[sl]=Xjaka
 Name[sv]=Xjack
+Name[uk]=Xjack
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=xjack

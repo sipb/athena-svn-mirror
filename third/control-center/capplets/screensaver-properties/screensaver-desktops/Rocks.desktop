@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Rocks
 Name[ca]=Roques
-Name[da]=Sten
+Name[da]=Klippestykker
 Name[de]=Felsen
 Name[es]=Rocas
 Name[eu]=Harriak
@@ -11,7 +11,9 @@ Name[ja]=╢Д
 Name[no]=Steiner
 Name[ru]=Камни
 Name[sk]=Kamene
+Name[sl]=Kamni
 Name[sv]=Stenar
+Name[uk]=Скали
 Name[wa]=Rotches
 Comment=
 Exec=xscreensaver-command -activate

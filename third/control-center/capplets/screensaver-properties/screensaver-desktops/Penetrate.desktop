@@ -1,17 +1,27 @@
 [Desktop Entry]
 Name=Penetrate
+Name[da]=GennemtrФngning
 Name[de]=Durchdringen
 Name[fi]=LДpДisy
+Name[hu]=Penetrate
 Name[no]=Gjennomtreng
+Name[ru]=Вторжение
 Name[sk]=Hra Penetrate
+Name[sl]=Preboj
 Name[sv]=Penetrera
+Name[uk]=Вторгнення
 Comment=Display an arcade game
+Comment[da]=Viser et arkadespil.
 Comment[de]=Ein Arcade-Spiel anzeigen
 Comment[fi]=Videopeli
 Comment[fr]=Affiche un jeu d'arcade
 Comment[ja]=╔╒║╪╔╠║╪╔и╔╡║╪╔Ю╓Ри╫╪╗
+Comment[no]=Viser et arkadespill
+Comment[ru]=Показывает увлекательную игру
 Comment[sk]=Zobrazuje arkАdu
+Comment[sl]=Ka╬e arkadno igro
 Comment[sv]=Visar ett arkadspel
+Comment[uk]=Показу╓ аркадну гру
 Exec=xscreensaver-command -activate
 TryExec=penetrate
 Terminal=0

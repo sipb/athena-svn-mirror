@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.0.6\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
 "PO-Revision-Date: 1999-09-16 14:03+0300\n"
 "Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
 "Language-Team: Estonian <linux-l@eenet.ee>\n"
@@ -80,9 +80,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Ei leia hbox-i, kasutame tavalist failiselektorit"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -98,9 +98,9 @@ msgstr "Vali..."
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
 msgid "none"
 msgstr "ei ole"
 
@@ -124,91 +124,57 @@ msgstr "Ekraani keskel"
 msgid "Tiled"
 msgstr "Parkett"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-"Nende määrangute kohta dokumentatsiooni ei ole. Veenduge, et Teie\n"
-"arvutisse on GNOME kasutusjuhend installeeritud."
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Sulge"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
 #, fuzzy
 msgid "Use GNOME to set background"
 msgstr "Määrab värviüleminekuga tausta"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr "Taastab salvestatud määrangud ja sulgeb akna"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr "IMAGE"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr "Paneb valitud pildi töölaua tapeediks"
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "COLOR"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Määrab tausta värvi"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr "Määrab tausta värviülemineku lõpu"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
 msgstr "ORIENT"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Ülemineku suund - vertikaalne või horisontaalne"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
 msgid "Use a solid fill for the background"
 msgstr "Määrab ühevärvilise tausta"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
 msgid "Use a gradient fill for the background"
 msgstr "Määrab värviüleminekuga tausta"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
 msgstr "MODE"
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Määrab tapeedi: parkett, keskel, venitatud või proprtsioonis"
 
@@ -336,7 +302,7 @@ msgid "File Extensions "
 msgstr "Laiendused"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Lisa..."
 
@@ -436,83 +402,83 @@ msgstr ""
 msgid "Can open from URI"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 #, fuzzy
 msgid "MIME Type"
 msgstr "MIME tüüp"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 #, fuzzy
 msgid "Change Icon"
 msgstr "Vabandust"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 #, fuzzy
 msgid "Change File Extensions"
 msgstr "Laiendused"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 #, fuzzy
 msgid "Default Action:"
 msgstr "GNOME tekstiredaktor"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:775
+#: capplets/file-types/file-types-capplet.c:785
 #, fuzzy
 msgid "Open With Application"
 msgstr "Rakendused"
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 #, fuzzy
 msgid "Edit List"
 msgstr "Redigeeri"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 #, fuzzy
 msgid "Add New MIME Type..."
 msgstr "Lisa MIME tüüp"
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 #, fuzzy
 msgid "None"
 msgstr "ei ole"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Laiendus"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 #, fuzzy
 msgid "Default Action"
 msgstr "GNOME tekstiredaktor"
@@ -530,11 +496,11 @@ msgstr ""
 msgid "Select an icon"
 msgstr "Valige ikoon..."
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Gnome tekstiredaktor"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Käivita terminaliaknas"
 
@@ -546,61 +512,75 @@ msgstr "Võimaldab valida vaikimisi kasutatavat tekstiredaktorit"
 msgid "Default Editor"
 msgstr "GNOME tekstiredaktor"
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
 #, fuzzy
 msgid "Keyboard bell"
 msgstr "Klaviatuuri piiks"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
 msgstr "Valjus"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr "Kõrgus (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Kestus (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Proovi"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
 #, fuzzy
 msgid "Keyboard repeat rate"
 msgstr "Korduse kiirus"
 
-#: capplets/keyboard-properties/keyboard-properties.c:316
+#: capplets/keyboard-properties/keyboard-properties.c:304
 msgid "Enable auto-repeat"
 msgstr "Korda märke"
 
-#: capplets/keyboard-properties/keyboard-properties.c:325
+#: capplets/keyboard-properties/keyboard-properties.c:313
 msgid "Repeat rate"
 msgstr "Korduse kiirus"
 
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#: capplets/keyboard-properties/keyboard-properties.c:316
 msgid "Repeat Delay"
 msgstr "Esmane viivitus"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr "Klaviatuuri klõps"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
 msgstr "Tee nupuvajutuse peale klõpsu"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr "Klõpsu valjus"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
 msgid "Test settings"
 msgstr "Proovi häälestust"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"Nende määrangute kohta dokumentatsiooni ei ole. Veenduge, et Teie\n"
+"arvutisse on GNOME kasutusjuhend installeeritud."
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Sulge"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -618,61 +598,61 @@ msgstr "Klaviatuur"
 msgid "Keyboard Properties"
 msgstr "Klaviatuuri häälestus"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Hiirenupud"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
 msgstr "Vasakukäeline"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr "Paremakäeline"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Hiire liikumine"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Kiirendus"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Kiire"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Aeglane"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
 msgstr "Lävikiirus"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Suur"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Väike"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -3540,11 +3520,11 @@ msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "See GNOME juhtpaneeli versioon on kompileeritud ilma heli toetuseta"
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr "Selle sündmuse helifaili ei ole."
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -4044,9 +4024,9 @@ msgstr ""
 "\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "Sobib"
 
@@ -4078,52 +4058,52 @@ msgid ""
 "\"Save Current Setup\" when you log out.\n"
 msgstr ""
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr "Lisa uus aknahaldur"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Nimi:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Käsk:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr "Häälestuskäsk:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr "Aknahaldurit haldab sessioonihaldur"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "Nimi ei tohi puududa"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "Käsk ei tohi puududa"
 
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr "Redigeeri aknahaldurit"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr "Te ei saa vaikimisi määratud aknahaldurit kustutada"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Redigeeri..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Kustuta"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"

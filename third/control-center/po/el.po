@@ -1,20 +1,25 @@
 # control-center Greek translations.
-# Copyright (C) 2000-2001 Free Software Foundation, Inc.
+# Copyright (C) 2000 Free Software Foundation, Inc.
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
-# Simos Xenitellis <simos@hellug.gr>, 2001.
+# Simos Xenitellis <simos@hellug.gr>, 2000.
 #
 # Note: Some items are unfinished and there are a few
 # (linguistic) improvements necessary. Please see comments
 # on each message... - Spiros
 #
-# Translation by spyros, simos unfuzzied 18, translated 3.
-# simos: 317 messages, 5Feb2001
+# For screensaver, picked: profilaji o8onis -simos.
+#
+# spyros did: initial translation, around 300 messages
+# simos did: 19Aug2k
+#   277 translated messages, 24 fuzzy translations, 40 untranslated messages.
+# simos: 358 messages. 5Dec2000.
+# simos: 515 messages, 28Mar2001, (beasgpplplpl).
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: control-center 1.2.0\n"
-"POT-Creation-Date: 2001-03-15 14:08-0500\n"
-"PO-Revision-Date: 2001-02-05 00:43:13+0900\n"
+"Project-Id-Version: control-center 1.4.0\n"
+"POT-Creation-Date: 2001-03-28 14:47-0500\n"
+"PO-Revision-Date: 2001-03-28 14:56:11+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -41,24 +46,26 @@ msgstr ""
 
 #: capplets/background-properties/background-properties.desktop.in.h:1
 msgid "Background"
-msgstr "Φόντο"
+msgstr ""
 
 #: capplets/background-properties/background-properties.desktop.in.h:2
 msgid "Configuration of the desktop's background"
-msgstr "Ρύθμιση του φόντου της οθόνης"
+msgstr ""
 
 #: capplets/background-properties/property-background.c:116
 msgid "Disabled"
 msgstr "Ανενεργό"
 
 #: capplets/background-properties/property-background.c:321
+#, fuzzy
 msgid "Color"
-msgstr "Χρώμα"
+msgstr "Χρώματα"
 
 #: capplets/background-properties/property-background.c:330
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:23
+#, fuzzy
 msgid "Solid"
-msgstr "Συμπαγές"
+msgstr "Περισσότερο Συμπαγές"
 
 #: capplets/background-properties/property-background.c:336
 msgid "Horizontal Gradient"
@@ -69,12 +76,14 @@ msgid "Vertical Gradient"
 msgstr "Κάθετη Διαβάθμιση"
 
 #: capplets/background-properties/property-background.c:378
+#, fuzzy
 msgid "Primary Color"
-msgstr "Πρωτεύων Χρώμα"
+msgstr "Πρωτεύων χρώμα"
 
 #: capplets/background-properties/property-background.c:380
+#, fuzzy
 msgid "Secondary Color"
-msgstr "Δευτερεύων Χρώμα"
+msgstr "Συγκεκριμένο Χρώμα"
 
 #: capplets/background-properties/property-background.c:568
 msgid "Wallpaper Selection"
@@ -86,9 +95,9 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Δε βρέθηκε hbox, χρήση απλού επιλογέα αρχείων"
 
 #: capplets/background-properties/property-background.c:578
-#: capplets/background-properties/property-background.c:1090
+#: capplets/background-properties/property-background.c:1078
 #: capplets/file-types/file-types-icon-entry.c:264
-#: capplets/keyboard-properties/keyboard-properties.c:354
+#: capplets/keyboard-properties/keyboard-properties.c:342
 #: capplets/screensaver-properties/screensaver-dialog.c:25
 #: capplets/theme-switcher/gui.c:230 capplets/theme-switcher/gui.c:302
 msgid "Preview"
@@ -99,139 +108,110 @@ msgid "Wallpaper"
 msgstr "Επένδυση"
 
 #: capplets/background-properties/property-background.c:638
+#, fuzzy
 msgid " Browse... "
-msgstr " Εξερεύνηση..."
+msgstr "Εξερεύνηση..."
 
 #. Add default action to fourth column
 #: capplets/background-properties/property-background.c:643
-#: capplets/file-types/file-types-capplet.c:1387
-#: capplets/file-types/file-types-capplet.c:1587
-#: capplets/file-types/file-types-capplet.c:1713
+#: capplets/file-types/file-types-capplet.c:1400
+#: capplets/file-types/file-types-capplet.c:1600
+#: capplets/file-types/file-types-capplet.c:1726
+#, fuzzy
 msgid "none"
-msgstr "κενό"
+msgstr "(Κενό)"
 
 #: capplets/background-properties/property-background.c:688
 msgid "Embossed Logo"
-msgstr "Τυπωμένο Λογότυπο"
+msgstr ""
 
 # For lack of a better term...?  Anaklimakwsh ???
 #: capplets/background-properties/property-background.c:699
 msgid "Scaled"
-msgstr "Σε κλίμακα"
+msgstr "Νέα κλίμακα"
 
 #: capplets/background-properties/property-background.c:709
+#, fuzzy
 msgid "Scaled (keep aspect)"
 msgstr "Σε κλίμακα (διατήρηση αναλογιών)"
 
 #: capplets/background-properties/property-background.c:721
 msgid "Centered"
-msgstr "Κέντρο"
+msgstr "Κεντραρισμένο"
 
 #: capplets/background-properties/property-background.c:733
 msgid "Tiled"
-msgstr "Μωσαϊκό"
+msgstr "Πλακόστρωτο"
 
-#: capplets/background-properties/property-background.c:831
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:180
-#: capplets/keyboard-properties/keyboard-properties.c:97
-#: capplets/keyboard-properties/keyboard-properties.c:422
-#: capplets/mouse-properties/mouse-properties.c:112
-#: capplets/screensaver-properties/callbacks.c:802
-#: capplets/sound-properties/sound-properties.c:693
-#: capplets/theme-switcher/gui.c:367
-#: capplets/ui-properties/ui-properties.c:516
-#: capplets/url-properties/url-properties.c:272
-#: capplets/wm-properties/wm-properties-capplet.c:649
-msgid ""
-"No help is available/installed for these settings. Please make sure you\n"
-"have the GNOME User's Guide installed on your system."
-msgstr ""
-"Βοήθεια για τις παρούσες ρυθμίσεις ανύπαρκτη ή μη εγκατεστημένη. Παρακαλώ\n"
-"βεβαιωθείτε ότι ο Οδηγός Χρήσης του GNOME είναι εγκατεστημένος στο σύστημα "
-"σας."
-
-#: capplets/background-properties/property-background.c:833
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:182
-#: capplets/keyboard-properties/keyboard-properties.c:99
-#: capplets/keyboard-properties/keyboard-properties.c:424
-#: capplets/mouse-properties/mouse-properties.c:114
-#: capplets/screensaver-properties/callbacks.c:804
-#: capplets/sound-properties/sound-properties.c:695
-#: capplets/sound-properties/sound-properties.c:756
-#: capplets/theme-switcher/gui.c:369
-#: capplets/ui-properties/ui-properties.c:518
-#: capplets/url-properties/url-properties.c:274
-#: capplets/wm-properties/wm-properties-capplet.c:651
-#: control-center/capplet-widget.c:273
-msgid "Close"
-msgstr "Κλείσιμο"
-
-#: capplets/background-properties/property-background.c:1102
+#: capplets/background-properties/property-background.c:1090
+#, fuzzy
 msgid "Use GNOME to set background"
-msgstr "Να καθορίζει το GNOME την επιλογή του φόντου"
+msgstr "Χρήση του GNOME για την ρύθμιση του παρασκηνίου"
 
-#: capplets/background-properties/property-background.c:1152
+#: capplets/background-properties/property-background.c:1140
 msgid "Set parameters from saved state and exit"
 msgstr "Παράμετροι από αποθηκευμένη κατάσταση και έξοδος"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "IMAGE"
 msgstr "ΕΙΚΟΝΑ"
 
-#: capplets/background-properties/property-background.c:1153
+#: capplets/background-properties/property-background.c:1141
 msgid "Sets the wallpaper to the value specified"
 msgstr "Χρήση επένδυσης βάσει καθορισμένων παραμέτρων"
 
-#: capplets/background-properties/property-background.c:1154
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1142
+#: capplets/background-properties/property-background.c:1143
 msgid "COLOR"
 msgstr "ΧΡΩΜΑ"
 
-#: capplets/background-properties/property-background.c:1154
+#: capplets/background-properties/property-background.c:1142
 msgid "Specifies the background color"
 msgstr "Καθορισμός χρώματος φόντου"
 
-#: capplets/background-properties/property-background.c:1155
+#: capplets/background-properties/property-background.c:1143
 msgid "Specifies end background color for gradient"
 msgstr "Καθορισμός τελικού χρώματος διαβάθμισης για το φόντο"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "ORIENT"
 msgstr "ΠΡΟΣΑΝΑΤΟΛΙΣΜΟΣ"
 
-#: capplets/background-properties/property-background.c:1156
+#: capplets/background-properties/property-background.c:1144
 msgid "Gradient orientation: vertical or horizontal"
 msgstr "Προσανατολισμός διαβάθμισης: κατακόρυφη ή οριζόντια"
 
-#: capplets/background-properties/property-background.c:1157
+#: capplets/background-properties/property-background.c:1145
+#, fuzzy
 msgid "Use a solid fill for the background"
-msgstr "Χρήση συμπαγούς χρώματος στο φόντο"
+msgstr "Χρήση του GNOME για την ρύθμιση του παρασκηνίου"
 
-#: capplets/background-properties/property-background.c:1158
+#: capplets/background-properties/property-background.c:1146
+#, fuzzy
 msgid "Use a gradient fill for the background"
-msgstr "Χρήση διαβάθμισης χρωμάτων στο φόντο"
+msgstr "Χρήση διαβάθμισης χρωμάτων μεταξύ των κύκλων."
 
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "MODE"
 msgstr "ΚΑΤΑΣΤΑΣΗ"
 
 # see prev comment about translation of scaled
-#: capplets/background-properties/property-background.c:1159
+#: capplets/background-properties/property-background.c:1147
 msgid "Display wallpaper: tiled, centered, scaled or ratio"
 msgstr "Εμφάνιση επένδυσης: μωσαϊκό, κέντρο, νέα κλίμακα"
 
 #: capplets/desktop-links/Desktop.directory.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:1
 msgid "Desktop"
-msgstr "Επιφάνεια Εργασίας"
+msgstr ""
 
 #: capplets/desktop-links/Documents.directory.in.h:1
 msgid "Configure how document types are handled"
-msgstr "Ρύθμιση του τρόπου χειρισμού των ειδών των εγγράφων"
+msgstr ""
 
 #: capplets/desktop-links/Documents.directory.in.h:2
 msgid "Document Handlers"
-msgstr "Χειριστές Εγγράφων"
+msgstr ""
 
 #. create the app
 #: capplets/desktop-links/Gnome.directory.in.h:1 control-center/main.c:197
@@ -240,24 +220,25 @@ msgid "Control Center"
 msgstr "Κέντρο Ελέγχου"
 
 #: capplets/desktop-links/Gnome.directory.in.h:2
+#, fuzzy
 msgid "Control Center Menu"
-msgstr "Μενού Κέντρο Ελέγχου"
+msgstr "Κέντρο Ελέγχου"
 
 #: capplets/desktop-links/Multimedia.directory.in.h:1
 msgid "Configure the settings of your Multimedia devices"
-msgstr "Ρύθμιση των ιδιοτήτων των συσκευών Πολυμέσων."
+msgstr ""
 
 #: capplets/desktop-links/Multimedia.directory.in.h:2
 msgid "Multimedia"
-msgstr "Πολυμέσα"
+msgstr ""
 
 #: capplets/desktop-links/Peripherals.directory.in.h:1
 msgid "Configure your external devices"
-msgstr "Ρύθμιση των περιφερειακών συσκευών."
+msgstr ""
 
 #: capplets/desktop-links/Peripherals.directory.in.h:2
 msgid "Peripherals"
-msgstr "Περιφερειακά"
+msgstr ""
 
 #: capplets/desktop-links/Session.directory.in.h:1
 msgid "Session"
@@ -265,20 +246,20 @@ msgstr "Συνεδρία"
 
 #: capplets/desktop-links/Session.directory.in.h:2
 msgid "Session Management Settings"
-msgstr "Ρυθμίσεις Διαχείρησης Συνεδρίας"
+msgstr ""
 
 #: capplets/desktop-links/UIOptions.directory.in.h:1
 msgid "Configure the global settings of your GNOME applications"
-msgstr "Τροποποίηση των καθολικών ρυθμίσεων των εφαρμογών του GNOME."
+msgstr ""
 
 #: capplets/desktop-links/UIOptions.directory.in.h:2
+#, fuzzy
 msgid "User Interface"
-msgstr "Διασύνδεση Χρήστη"
+msgstr "Διασύνδεση"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:387
-#, fuzzy
 msgid "Edit Applications List"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #. Add label
 #: capplets/file-types/file-types-capplet-dialogs.c:409
@@ -287,19 +268,16 @@ msgid "Select applications to appear in menu for MIME type \"%s\""
 msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:433
-#, fuzzy
 msgid "Add Application..."
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:440
-#, fuzzy
 msgid "Edit Application..."
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:446
-#, fuzzy
 msgid "Delete Application"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:480
 msgid "Edit Components List"
@@ -341,7 +319,7 @@ msgid "File Extensions "
 msgstr "Επεκτάσεις"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:967
-#: capplets/wm-properties/wm-properties-capplet.c:1088
+#: capplets/wm-properties/wm-properties-capplet.c:1076
 msgid "Add..."
 msgstr "Νέος..."
 
@@ -395,30 +373,26 @@ msgid ""
 msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1225
-#, fuzzy
 msgid "Bad Application Name"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1226
 #, fuzzy
 msgid "Bad Application Command"
-msgstr "Εφαρμογές"
+msgstr "Πρόγραμμα ρυθμίσεων:"
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1258
-#, fuzzy
 msgid "Add Application"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/file-types/file-types-capplet-dialogs.c:1259
-#, fuzzy
 msgid "Edit Application"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #. Application Name label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1271
-#, fuzzy
 msgid "Application Name:"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #. Application Command label and entry
 #: capplets/file-types/file-types-capplet-dialogs.c:1282
@@ -441,86 +415,85 @@ msgstr ""
 msgid "Can open from URI"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:735
-#: capplets/file-types/file-types-capplet.c:1877
+#: capplets/file-types/file-types-capplet.c:745
+#: capplets/file-types/file-types-capplet.c:1890
 #, fuzzy
 msgid "MIME Type"
 msgstr "Τύπος MIME"
 
-#: capplets/file-types/file-types-capplet.c:742
+#: capplets/file-types/file-types-capplet.c:752
 #, fuzzy
 msgid "Change Icon"
-msgstr "Ακύρωση Έναρξης Συνεδρίας"
+msgstr "Ακύρωση Αυθεντικοποίησης"
 
-#: capplets/file-types/file-types-capplet.c:749
+#: capplets/file-types/file-types-capplet.c:759
 #, fuzzy
 msgid "Change File Extensions"
 msgstr "Επεκτάσεις"
 
-#: capplets/file-types/file-types-capplet.c:757
+#: capplets/file-types/file-types-capplet.c:767
 #, fuzzy
 msgid "Default Action:"
-msgstr "Εξ' ορισμού Διορθωτής Κειμένου"
+msgstr "Εξ' Ορισμού Κατάσταση MDI:"
 
-#: capplets/file-types/file-types-capplet.c:769
+#: capplets/file-types/file-types-capplet.c:779
 msgid "Use Viewer"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:775
-#, fuzzy
+#: capplets/file-types/file-types-capplet.c:785
 msgid "Open With Application"
-msgstr "Εφαρμογές"
+msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:786
+#: capplets/file-types/file-types-capplet.c:796
 #, fuzzy
 msgid "Edit List"
 msgstr "Διόρθωση"
 
-#: capplets/file-types/file-types-capplet.c:811
+#: capplets/file-types/file-types-capplet.c:821
 #, fuzzy
 msgid "Add New MIME Type..."
 msgstr "Νέος τύπος MIME"
 
-#: capplets/file-types/file-types-capplet.c:817
+#: capplets/file-types/file-types-capplet.c:827
 msgid "Delete This MIME Type"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:828
+#: capplets/file-types/file-types-capplet.c:838
 msgid "Revert to System Defaults"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1069
-#: capplets/file-types/file-types-capplet.c:1213
+#: capplets/file-types/file-types-capplet.c:1082
+#: capplets/file-types/file-types-capplet.c:1226
 #, fuzzy
 msgid "None"
-msgstr "κενό"
+msgstr "(Κενό)"
 
-#: capplets/file-types/file-types-capplet.c:1318
+#: capplets/file-types/file-types-capplet.c:1331
 msgid ""
 "Reverting to system settings will lose any changes\n"
 "you have ever made to File Types and Programs.\n"
 "Revert anyway?"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1428
-#: capplets/file-types/file-types-capplet.c:1614
-#: capplets/file-types/file-types-capplet.c:1757
+#: capplets/file-types/file-types-capplet.c:1441
+#: capplets/file-types/file-types-capplet.c:1627
+#: capplets/file-types/file-types-capplet.c:1770
 #, c-format
 msgid "View as %s"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:1876
+#: capplets/file-types/file-types-capplet.c:1889
 msgid "Description"
-msgstr ""
+msgstr "Περιγραφή"
 
-#: capplets/file-types/file-types-capplet.c:1878
+#: capplets/file-types/file-types-capplet.c:1891
 msgid "Extension"
 msgstr "Επέκταση"
 
-#: capplets/file-types/file-types-capplet.c:1879
+#: capplets/file-types/file-types-capplet.c:1892
 #, fuzzy
 msgid "Default Action"
-msgstr "Εξ' ορισμού Διορθωτής Κειμένου"
+msgstr "Επιλογή"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
 msgid "File Types and Programs"
@@ -535,75 +508,96 @@ msgstr ""
 msgid "Select an icon"
 msgstr "Επιλογή εικονιδίου..."
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:238
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:226
 msgid "Gnome editor"
 msgstr "Διορθωτής του GNOME"
 
-#: capplets/gnome-edit-properties/gnome-edit-properties.c:249
+#: capplets/gnome-edit-properties/gnome-edit-properties.c:237
 msgid "Run In Terminal"
 msgstr "Εκτέλεση εντός τερματικού"
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:1
 msgid "Choose the editor that is invoked by gnome-edit"
-msgstr "Επιλογή του διορθωτή κειμένου που θα καλεί το gnome-edit"
+msgstr ""
 
 #: capplets/gnome-edit-properties/gnome-edit-properties.desktop.in.h:2
 msgid "Default Editor"
-msgstr "Εξ' ορισμού Διορθωτής Κειμένου"
+msgstr ""
 
-#: capplets/keyboard-properties/keyboard-properties.c:262
+#: capplets/keyboard-properties/keyboard-properties.c:250
+#, fuzzy
 msgid "Keyboard bell"
 msgstr "Κουδούνι πληκτρολογίου"
 
-#: capplets/keyboard-properties/keyboard-properties.c:270
+#: capplets/keyboard-properties/keyboard-properties.c:258
 msgid "Volume"
 msgstr "Ένταση"
 
-#: capplets/keyboard-properties/keyboard-properties.c:273
+#: capplets/keyboard-properties/keyboard-properties.c:261
 msgid "Pitch (Hz)"
 msgstr "Συχνότητα (Hz)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:276
+#: capplets/keyboard-properties/keyboard-properties.c:264
 msgid "Duration (ms)"
 msgstr "Διάρκεια (ms)"
 
-#: capplets/keyboard-properties/keyboard-properties.c:288
+#: capplets/keyboard-properties/keyboard-properties.c:276
 msgid "Test"
 msgstr "Δοκιμή"
 
-#: capplets/keyboard-properties/keyboard-properties.c:306
+#: capplets/keyboard-properties/keyboard-properties.c:294
+#, fuzzy
 msgid "Keyboard repeat rate"
-msgstr "Ρυθμός επανάληψης πληκτρολογίου"
+msgstr "Ρυθμός Επανάληψης Πλήκτρων"
+
+#: capplets/keyboard-properties/keyboard-properties.c:304
+#, fuzzy
+msgid "Enable auto-repeat"
+msgstr "Ενεργοποίηση Επανάληψης Πληκτρολογίου"
+
+#: capplets/keyboard-properties/keyboard-properties.c:313
+#, fuzzy
+msgid "Repeat rate"
+msgstr "Ρυθμός Επανάληψης Πλήκτρων"
 
 #: capplets/keyboard-properties/keyboard-properties.c:316
-msgid "Enable auto-repeat"
-msgstr "Ενεργοποίηση επανάληψης"
-
-#: capplets/keyboard-properties/keyboard-properties.c:325
-msgid "Repeat rate"
-msgstr "Ρυθμός επανάληψης"
-
-#: capplets/keyboard-properties/keyboard-properties.c:328
+#, fuzzy
 msgid "Repeat Delay"
 msgstr "Υστέρηση επανάληψης"
 
-#: capplets/keyboard-properties/keyboard-properties.c:330
+#: capplets/keyboard-properties/keyboard-properties.c:318
 msgid "Keyboard click"
 msgstr "Κλίκ πληκτρολογίου"
 
-#: capplets/keyboard-properties/keyboard-properties.c:339
+#: capplets/keyboard-properties/keyboard-properties.c:327
 msgid "Click on keypress"
 msgstr "Κλίκ κατά την πίεση"
 
-#: capplets/keyboard-properties/keyboard-properties.c:348
+#: capplets/keyboard-properties/keyboard-properties.c:336
 msgid "Click volume"
 msgstr "Ένταση κλίκ"
 
-#: capplets/keyboard-properties/keyboard-properties.c:359
+#: capplets/keyboard-properties/keyboard-properties.c:347
+#, fuzzy
 msgid "Test settings"
-msgstr "Δοκιμή ρυθμίσεων"
+msgstr "Ρυθμίσεις"
 
-#: capplets/keyboard-properties/keyboard-properties.c:466
+#: capplets/keyboard-properties/keyboard-properties.c:410
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"Βοήθεια για τις παρούσες ρυθμίσεις ανύπαρκτη ή μη εγκατεστημένη. Παρακαλώ\n"
+"βεβαιωθείτε ότι ο Οδηγός Χρήσης του GNOME είναι εγκατεστημένος στο σύστημα "
+"σας."
+
+#: capplets/keyboard-properties/keyboard-properties.c:412
+#: capplets/sound-properties/sound-properties.c:745
+#: control-center/capplet-widget.c:273
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: capplets/keyboard-properties/keyboard-properties.c:454
 msgid ""
 "an initialization error occurred while starting "
 "'keyboard-properties-capplet'.\n"
@@ -613,68 +607,70 @@ msgstr ""
 "τερματισμός...\n"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:1
+#, fuzzy
 msgid "Keyboard"
-msgstr "Πληκτρολόγιο"
+msgstr "Κουδούνι πληκτρολογίου"
 
 #: capplets/keyboard-properties/keyboard-properties.desktop.in.h:2
+#, fuzzy
 msgid "Keyboard Properties"
-msgstr "Ιδιότητες Πληκτρολογίου"
+msgstr "Γενικές Ιδιότητες"
 
-#: capplets/mouse-properties/mouse-properties.c:267
+#: capplets/mouse-properties/mouse-properties.c:254
 msgid "Mouse buttons"
 msgstr "Πλήκτρα ποντικιού"
 
-#: capplets/mouse-properties/mouse-properties.c:276
+#: capplets/mouse-properties/mouse-properties.c:263
 msgid "Left handed"
 msgstr "Αριστερόχειρας"
 
-#: capplets/mouse-properties/mouse-properties.c:278
+#: capplets/mouse-properties/mouse-properties.c:265
 msgid "Right handed"
 msgstr "Δεξιόχειρας"
 
 #. Mouse motion
-#: capplets/mouse-properties/mouse-properties.c:304
+#: capplets/mouse-properties/mouse-properties.c:291
 msgid "Mouse motion"
 msgstr "Κίνηση ποντικιού"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 msgid "Acceleration"
 msgstr "Επιτάχυνση"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:11
 msgid "Fast"
 msgstr "Ταχεία"
 
-#: capplets/mouse-properties/mouse-properties.c:314
+#: capplets/mouse-properties/mouse-properties.c:301
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:19
 msgid "Slow"
 msgstr "Αργή"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:30
 msgid "Threshold"
 msgstr "Κατώφλι"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:10
 msgid "Large"
 msgstr "Μεγάλο"
 
-#: capplets/mouse-properties/mouse-properties.c:325
+#: capplets/mouse-properties/mouse-properties.c:312
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:22
 msgid "Small"
 msgstr "Μικρό"
 
-#: capplets/mouse-properties/mouse-properties.c:350
+#: capplets/mouse-properties/mouse-properties.c:337
 msgid ""
 "an initialization error occurred while starting 'mouse-properties-capplet'.\n"
 "aborting...\n"
@@ -683,29 +679,35 @@ msgstr ""
 "τερματισμός...\n"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:1
+#, fuzzy
 msgid "Mouse"
-msgstr "Ποντίκι"
+msgstr "Α μπε"
 
 #: capplets/mouse-properties/mouse-properties.desktop.in.h:2
+#, fuzzy
 msgid "Mouse Properties"
-msgstr "Ιδιότητες Ποντικιού"
+msgstr "Γενικές Ιδιότητες"
 
 #: capplets/screensaver-properties/callbacks.c:102
+#, fuzzy
 msgid "Require Password"
-msgstr "Απαίτηση κωδικού"
+msgstr "Απαίτηση κωδικού για ξεκλείδωμα"
 
 #: capplets/screensaver-properties/callbacks.c:154
+#, fuzzy
 msgid "Use power management."
-msgstr "Χρήση διαχείρισης ενέρχειας."
+msgstr "Ενεργοποίηση διαχείρισης ενέργειας"
 
 # Haven't come up (yet) with a satisfactory xlation of screensaver...
 #: capplets/screensaver-properties/callbacks.c:309
+#, fuzzy
 msgid "No Screensaver"
-msgstr "Κανείς screensaver"
+msgstr "Νέα προφυλ. οθόνης"
 
 #: capplets/screensaver-properties/callbacks.c:314
+#, fuzzy
 msgid "Random Screensaver"
-msgstr "Τυχαίος screensaver"
+msgstr "Προσθήκη νέας προφύλ. οθόνης"
 
 #: capplets/screensaver-properties/callbacks.c:483
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:56
@@ -724,7 +726,7 @@ msgstr "Ρυθμίσεις %s..."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:1
 msgid "3D Clock"
-msgstr "Ρολόι 3Δ"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:2
 msgid "Bernd Paysan"
@@ -732,27 +734,27 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:3
 msgid "Changes the magnification of original picture."
-msgstr "Αλλάζει την μεγένθυνση της αρχικής εικόνας."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:5
 msgid "High"
-msgstr "Υψηλά"
+msgstr "Υψηλή"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:7
 msgid "Low"
-msgstr "Χαμηλά"
+msgstr "Χαμηλή"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:8
 msgid "Modifies the direction move."
-msgstr "Μεταβάλει την κατεύθυνση κίνησης."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:9
 msgid "Modifies the wobbling."
-msgstr "Τροποποιεί τον κλυδωνισμό."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:10
 msgid "Sets the moving cycle time."
-msgstr "Θέτει την ταχύτητα κίνησης."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:13
@@ -774,12 +776,12 @@ msgstr "Μέγεθος:"
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:24
 msgid "Speed"
-msgstr ""
+msgstr "Ταχύτητα"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:16
 msgid ""
 "This draws a working analog clock composed of floating, throbbing bubbles."
-msgstr "Τρισδιάστατο αναλογικό ρολόι από φυσσαλίδες που επιπλέουν."
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:17
 msgid ""
@@ -787,9 +789,6 @@ msgid ""
 "move and wobble around to give you the impression your graphic workstation "
 "with its many XStone is doing something."
 msgstr ""
-"Το Ρολόι 3Δ είναι ένα ρολόι. Κάνει χρήση ιπτάμενων φυσσαλιδών για να δείξει "
-"την ώρα. Οι φυσσαλίδες περιφέρονται στο χώρο δίνοντας μια πραγματική αίσθηση "
-"του βάθους."
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:18
 #, fuzzy
@@ -807,11 +806,11 @@ msgstr "Συστροφή:"
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:21
 #, fuzzy
 msgid "Wobble"
-msgstr "Κλυδωνισμός:"
+msgstr "Ταλάντευση:"
 
 #: capplets/screensaver-properties/screensaver-desktops/3d.desktop.in.h:22
 msgid "Wobble:"
-msgstr "Κλυδωνισμός:"
+msgstr "Ταλάντευση:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:1
 msgid ""
@@ -821,21 +820,22 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:2
+#, fuzzy
 msgid "Ant"
-msgstr ""
+msgstr "Οτιδήποτε"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:3
+#, fuzzy
 msgid "Ants:"
-msgstr ""
+msgstr "Σημεία:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:4
 msgid "Changes the number of ants marching across the screen."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:5
-#, fuzzy
 msgid "Changes the size of the ants."
-msgstr "Ρύθμιση των ιδιοτήτων της προφύλαξης οθόνης"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:10
@@ -857,7 +857,7 @@ msgstr "Ρύθμιση των ιδιοτήτων της προφύλαξης οθόνης"
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:8
 #, fuzzy
 msgid "Count"
-msgstr "Σχετικά με"
+msgstr "Μετρητής:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:7
 msgid "David Bagely"
@@ -874,8 +874,9 @@ msgid "Little Ants walk around, leaving colored trails."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:11
+#, fuzzy
 msgid "Number of ants."
-msgstr ""
+msgstr "Αριθμός σημείων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:12
 msgid "Print the path that the ant took in the trail."
@@ -883,13 +884,13 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Ant.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Truchet.desktop.in.h:1
+#, fuzzy
 msgid "Truchet"
-msgstr ""
+msgstr "Γραμμές truchet"
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:1
-#, fuzzy
 msgid "Atlantis"
-msgstr "Εφαρμογές"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Atlantis.desktop.in.h:2
 msgid "Whales, dolphins and sharks swimming around, in 3D"
@@ -902,7 +903,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:2
 #, fuzzy
 msgid "Attraction"
-msgstr "Επιτάχυνση"
+msgstr "Επαναλήψεις:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:3
 msgid ""
@@ -915,8 +916,9 @@ msgid "Change distance at which attractive force becomes repulsive."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:5
+#, fuzzy
 msgid "Change size of points."
-msgstr ""
+msgstr "Αριθμός σημείων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:5
@@ -944,13 +946,15 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:1
+#, fuzzy
 msgid "Change the delay in cycles."
-msgstr ""
+msgstr "Αλλαγή εμφάνισης σε μονόχρωμο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:4
+#, fuzzy
 msgid "Change the number of points to use."
-msgstr ""
+msgstr "Αριθμός πλανητών προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:8
 msgid "Change the spacing radius of the points."
@@ -958,9 +962,8 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:5
-#, fuzzy
 msgid "Closer"
-msgstr "Κλείσιμο"
+msgstr "Πλησιέστερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:12
@@ -977,9 +980,8 @@ msgstr "Κλείσιμο"
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:9
-#, fuzzy
 msgid "Count:"
-msgstr "Περί..."
+msgstr "Μετρητής:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:6
@@ -1008,7 +1010,7 @@ msgstr "Περί..."
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:8
 #, fuzzy
 msgid "Delay"
-msgstr "Εκτέλεση"
+msgstr "Λιγότερη Καθυστέρηση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:13
 msgid "Distance of attraction."
@@ -1017,7 +1019,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:10
 msgid "Farther"
-msgstr ""
+msgstr "Μακρύτερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:9
@@ -1051,9 +1053,8 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:13
-#, fuzzy
 msgid "Faster"
-msgstr "Ταχεία"
+msgstr "Πιο γρήγορα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:16
 #, fuzzy
@@ -1081,13 +1082,13 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:21
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:11
-#, fuzzy
 msgid "Larger"
-msgstr "Μεγάλο"
+msgstr "Μεγαλύτερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:22
+#, fuzzy
 msgid "Number of points to use."
-msgstr ""
+msgstr "Αριθμός πλανητών προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:23
 msgid "Orbit"
@@ -1098,8 +1099,9 @@ msgid "Radius"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:26
+#, fuzzy
 msgid "Size of point."
-msgstr ""
+msgstr "Μέγεθος αντικειμένου."
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:27
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:13
@@ -1133,16 +1135,14 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:13
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:18
-#, fuzzy
 msgid "Slower"
-msgstr "Αργή"
+msgstr "Αργότερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:28
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:19
-#, fuzzy
 msgid "Smaller"
-msgstr "Μικρό"
+msgstr "Μικρότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Attraction.desktop.in.h:29
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:21
@@ -1169,7 +1169,7 @@ msgstr "Μικρό"
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:19
 msgid "Speed of Motion."
-msgstr ""
+msgstr "Ταχύτητα Κίνησης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:1
 msgid "Blitspin"
@@ -1182,8 +1182,9 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:3
+#, fuzzy
 msgid "Change the delay between each 90 degree rotation."
-msgstr ""
+msgstr "Ταχύτητα περιστρογής 90 μοιρών."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:4
 msgid "Change the delay between steps of rotation process."
@@ -1228,13 +1229,14 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:1
 msgid "Change to display in monochrome."
-msgstr ""
+msgstr "Αλλαγή εμφάνισης σε μονόχρωμο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:7
 #, fuzzy
 msgid "Delay2"
-msgstr "Εκτέλεση"
+msgstr "Λιγότερη Καθυστέρηση"
 
+# Haven't come up (yet) with a satisfactory xlation of screensaver...
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:6
@@ -1273,7 +1275,7 @@ msgstr "Εκτέλεση"
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:5
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:2
 msgid "Display screensaver in monochrome."
-msgstr ""
+msgstr "Εμφάνιση της προφύλαξης οθόνης σε μονόχρωμο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:17
@@ -1313,19 +1315,20 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:4
 msgid "Monochrome"
-msgstr ""
+msgstr "Μονόχρωμο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:12
 msgid "Rotates a bitmap in an interesting way."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:14
+#, fuzzy
 msgid "Speed of rotation"
-msgstr ""
+msgstr "Ταχύτητα περιστροφής."
 
 #: capplets/screensaver-properties/screensaver-desktops/Blitspin.desktop.in.h:15
 msgid "Speed of the 90 degree rotation."
-msgstr ""
+msgstr "Ταχύτητα περιστρογής 90 μοιρών."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:1
@@ -1347,8 +1350,9 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:4
+#, fuzzy
 msgid "Change the number of bubbles to use."
-msgstr ""
+msgstr "Αριθμός φυσσαλίδων για χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:2
@@ -1372,8 +1376,9 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:2
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:1
+#, fuzzy
 msgid "Change the number of colors to use."
-msgstr ""
+msgstr "Αριθμός πολυγώνων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:4
@@ -1397,9 +1402,8 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:6
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:3
-#, fuzzy
 msgid "Colors"
-msgstr "Χρώμα"
+msgstr "Χρώματα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:5
@@ -1423,9 +1427,8 @@ msgstr "Χρώμα"
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:7
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:4
-#, fuzzy
 msgid "Colors:"
-msgstr "Χρώμα"
+msgstr "Χρώματα:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:16
 msgid "Jeremie Petit <jpetit@essi.fr>"
@@ -1449,20 +1452,21 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:16
 msgid "Number of Colors."
-msgstr ""
+msgstr "Αριθμός Χρωμάτων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:19
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:16
 msgid "Number of bubbles to use."
-msgstr ""
+msgstr "Αριθμός φυσσαλίδων για χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bouboule.desktop.in.h:22
 msgid "Use red/blue 3d seperation."
-msgstr ""
+msgstr "Χρήση διαχώρισης 3Δ κόκκινου/μπλε."
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:1
+#, fuzzy
 msgid "Braid"
-msgstr ""
+msgstr "Βασικό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:7
 msgid "John Neil <neil@math.idbsu.edu>"
@@ -1475,7 +1479,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:8
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:7
 msgid "Number of Colors"
-msgstr ""
+msgstr "Αριθμός Χρωμάτων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Braid.desktop.in.h:11
 msgid "Random color-cycling braids in a circle."
@@ -1519,7 +1523,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:4
 msgid "Bubbles exist in three dimensions."
-msgstr ""
+msgstr "Οι φυσσαλίδες να εμφανίζονται σε 3Δ."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:5
 msgid "Bubbles sprays tiny bubbles which grow until they go pop."
@@ -1527,23 +1531,25 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:10
 msgid "Don't hide bubbles when they pop."
-msgstr ""
+msgstr "Να μην αποκρύπτονται οι φυσσαλίδες όταν σκάνε."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:11
 msgid "Draw circles instead of pixmap bubbles."
-msgstr ""
+msgstr "Σχεδίαση κύκλων αντί εικόνων για τις φυσσαλίδες."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:13
 msgid "James Macnicol <J.Macnicol@student.anu.edu.au>"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:14
+#, fuzzy
 msgid "Lots of random bubbles grow until they pop."
-msgstr ""
+msgstr "Να μην αποκρύπτονται οι φυσσαλίδες όταν σκάνε."
 
 #: capplets/screensaver-properties/screensaver-desktops/Bubbles.desktop.in.h:16
+#, fuzzy
 msgid "Simple"
-msgstr ""
+msgstr "Παντογράφοι καμπυλών"
 
 #: capplets/screensaver-properties/screensaver-desktops/Bumps.desktop.in.h:1
 msgid "Bumps"
@@ -1582,7 +1588,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:3
 #, fuzzy
 msgid "Change the number of seeds."
-msgstr "Ρύθμιση των ιδιοτήτων της προφύλαξης οθόνης"
+msgstr "Αριθμός σπόρων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:4
 #, fuzzy
@@ -1590,13 +1596,12 @@ msgid "Coral"
 msgstr "Κανονικό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:6
-#, fuzzy
 msgid "Denser"
-msgstr "Γενικά"
+msgstr "Πυκνότερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:7
 msgid "Density"
-msgstr ""
+msgstr "Πυκνότητα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:9
 msgid "Frederick Roeber"
@@ -1604,11 +1609,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:10
 msgid "Number of seeds"
-msgstr ""
+msgstr "Αριθμός σπόρων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:11
 msgid "Seeds"
-msgstr ""
+msgstr "Σπόρια"
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:12
 msgid "Simulates coral growth"
@@ -1619,9 +1624,8 @@ msgid "Simulates coral growth."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in.h:16
-#, fuzzy
 msgid "Thinner"
-msgstr "Μπλομ"
+msgstr "Αραιότερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Critical.desktop.in.h:1
 #, fuzzy
@@ -1634,21 +1638,21 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:1
 msgid "Cell"
-msgstr ""
+msgstr "Κύτταρο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:2
-#, fuzzy
 msgid "Center image."
-msgstr "Κέντρο"
+msgstr "Εικόνα στο κέντρο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:3
 #, fuzzy
 msgid "Centre"
-msgstr "Κέντρο"
+msgstr "Κεντραρισμένο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:6
+#, fuzzy
 msgid "Change the number of polygons to use."
-msgstr ""
+msgstr "Αριθμός πολυγώνων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:12
 msgid "Crystal"
@@ -1656,7 +1660,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:16
 msgid "Have at maximum size"
-msgstr ""
+msgstr "Να είναι στο μέγιστο μέγεθος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:17
 msgid "Jouk Jansen"
@@ -1672,11 +1676,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Crystal.desktop.in.h:22
 msgid "Number of polygons to use."
-msgstr ""
+msgstr "Αριθμός πολυγώνων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:3
+#, fuzzy
 msgid "Change the number of iterations."
-msgstr ""
+msgstr "Αριθμός επαναλήψεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:7
 #, fuzzy
@@ -1694,7 +1699,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:13
 #, fuzzy
 msgid "Iterations"
-msgstr "Επιτάχυνση"
+msgstr "Επαναλήψεις:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:14
@@ -1703,7 +1708,7 @@ msgstr "Επιτάχυνση"
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:10
 msgid "Less"
-msgstr ""
+msgstr "Λιγότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:19
@@ -1712,13 +1717,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:11
-#, fuzzy
 msgid "More"
-msgstr "Α μπε"
+msgstr "Περισσότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:18
 msgid "Number of iterations."
-msgstr ""
+msgstr "Αριθμός επαναλήψεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Cynosure.desktop.in.h:21
 msgid "Stephen Linhart, Ozymandias Desiderata, Jamie Zawinski"
@@ -1747,11 +1751,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:2
 msgid "Cycle through colors."
-msgstr ""
+msgstr "Αλλαγή του χρώματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:3
+#, fuzzy
 msgid "Deco"
-msgstr ""
+msgstr "Δείγμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:4
 msgid "Deco draws tacky 70s basement wall panelling."
@@ -1778,16 +1783,16 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:22
 msgid "Time between redraws:"
-msgstr ""
+msgstr "Χρόνος μεταξύ επανασχεδιάσεων:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:10
 msgid "Use color when drawing."
-msgstr ""
+msgstr "Χρήση χρώματος κατά τη σχεδίαση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:11
 #, fuzzy
 msgid "color"
-msgstr "Χρώμα"
+msgstr "Χρώματα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:12
 msgid "color-cycle"
@@ -1801,7 +1806,7 @@ msgstr "Εκτέλεση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deco.desktop.in.h:14
 msgid "seconds"
-msgstr ""
+msgstr "δευτερόλεπτα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Deluxe.desktop.in.h:1
 #, fuzzy
@@ -1819,30 +1824,34 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Demon.desktop.in.h:2
+#, fuzzy
 msgid "Demon"
-msgstr ""
+msgstr "Δείγμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:3
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:4
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:3
+#, fuzzy
 msgid "Change the number to use."
-msgstr ""
+msgstr "Αριθμός προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:10
+#, fuzzy
 msgid "Discrete"
-msgstr ""
+msgstr "Διακριτές Γραμμές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:11
+#, fuzzy
 msgid "Discrete map systems"
-msgstr ""
+msgstr "Διακριτές Γραμμές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:16
 #: capplets/screensaver-properties/screensaver-desktops/Julia.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:20
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:16
 msgid "Number to use."
-msgstr ""
+msgstr "Αριθμός προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Discrete.desktop.in.h:19
 msgid "Tim Auckland"
@@ -1855,7 +1864,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Distort.desktop.in.h:2
 #, fuzzy
 msgid "Distort the screen"
-msgstr "Στο κέντρο της οθόνης"
+msgstr "Ταχύτητα καθαρισμού οθόνης"
 
 #: capplets/screensaver-properties/screensaver-desktops/Distort.desktop.in.h:3
 msgid ""
@@ -1864,12 +1873,14 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:5
+#, fuzzy
 msgid "Change whether fractals should grow."
-msgstr ""
+msgstr "Τα φράκταλ να μεγαλώνουν."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:6
+#, fuzzy
 msgid "Change whether to use lissajous figures to get points."
-msgstr ""
+msgstr "Χρήση σχημάτων lissajous για τα σημεία."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:13
 msgid "Drift"
@@ -1885,11 +1896,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:17
 msgid "Fractals should grow."
-msgstr ""
+msgstr "Τα φράκταλ να μεγαλώνουν."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:18
+#, fuzzy
 msgid "Grow"
-msgstr ""
+msgstr "Στενό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:19
 msgid "Lissajous"
@@ -1897,7 +1909,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:22
 msgid "Number of pixels to use."
-msgstr ""
+msgstr "Αριθμός εικονοστοιχείων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:23
 msgid "Scot Draves <spot@cs.cmu.edu>"
@@ -1905,16 +1917,15 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Drift.desktop.in.h:26
 msgid "Use lissajous figures to get points."
-msgstr ""
+msgstr "Χρήση σχημάτων lissajous για τα σημεία."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:5
 msgid "Draws a point moving around a circle which moves around a circle."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:6
-#, fuzzy
 msgid "Epicycle"
-msgstr "Κλείσιμο"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:7
 msgid ""
@@ -1933,13 +1944,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:12
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:17
-#, fuzzy
 msgid "Seconds"
-msgstr "Ήχος"
+msgstr "Δευτερόλεπτα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:15
 msgid "Time finished product is shown."
-msgstr ""
+msgstr "Χρόνο εμφάνισης του αποτελέσματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in.h:16
 msgid "When the figure is complete, epicycle pauses this number of seconds."
@@ -1956,11 +1966,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:3
 #, fuzzy
 msgid "Change the delay in movement."
-msgstr "Ενεργ. απόσπασης και μετακίνησης μενού"
+msgstr "Αλλαγή εμφάνισης σε μονόχρωμο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:5
+#, fuzzy
 msgid "Change the number of cycles."
-msgstr ""
+msgstr "Αριθμός επαναλήψεων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:7
 msgid "Changes the count."
@@ -1988,16 +1999,16 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:20
 msgid "Number"
-msgstr ""
+msgstr "Αριθμός"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:22
 msgid "Number of cycles"
-msgstr ""
+msgstr "Αριθμός επαναλήψεων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Fadeplot.desktop.in.h:24
 #: capplets/screensaver-properties/screensaver-desktops/Sierpinski.desktop.in.h:14
 msgid "Speed of Motion"
-msgstr ""
+msgstr "Ταχύτητα Κίνησης"
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:1
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:1
@@ -2016,8 +2027,9 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:9
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:9
+#, fuzzy
 msgid "Delay between switches."
-msgstr ""
+msgstr "Υστέρηση μεταξύ επανασχεδιάσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:11
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:11
@@ -2036,8 +2048,9 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Flag.desktop.in.h:18
 #: capplets/screensaver-properties/screensaver-desktops/Flame.desktop.in.h:18
+#, fuzzy
 msgid "Size of pixels"
-msgstr ""
+msgstr "Μέγεθος έκρηξης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Flow.desktop.in.h:1
 msgid "Draws a flow of colored points"
@@ -2049,12 +2062,13 @@ msgid "Flow"
 msgstr "Αργή"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:3
+#, fuzzy
 msgid "Change the number of trees to use."
-msgstr ""
+msgstr "Αριθμός δέντρων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:10
 msgid "Delay between redraws."
-msgstr ""
+msgstr "Υστέρηση μεταξύ επανασχεδιάσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:12
 msgid "Draws a fractal forest."
@@ -2063,7 +2077,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:14
 #, fuzzy
 msgid "Forest"
-msgstr "Ταχεία"
+msgstr "Δοκιμή"
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:15
 msgid "Fractal draws a fractal forest."
@@ -2071,7 +2085,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:18
 msgid "Number of trees to use."
-msgstr ""
+msgstr "Αριθμός δέντρων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Forest.desktop.in.h:19
 msgid "Pascal Pensa <pensa@aurora.unice.fr>"
@@ -2116,7 +2130,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:13
 msgid "Have transparent bubbles."
-msgstr ""
+msgstr "Χρήση διαφανών φυσσαλίδων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:9
@@ -2130,28 +2144,33 @@ msgid "Jamie Zawinski <jwz@jwz.org>"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:19
+#, fuzzy
 msgid "Transparent"
-msgstr ""
+msgstr "Περισσότερο Διαφανές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:20
 msgid "Use additive color model."
-msgstr ""
+msgstr "Χρήση μοντέλου προσθετικού χρώματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Goop.desktop.in.h:21
+#, fuzzy
 msgid "squishy transparent oil and bubbles"
-msgstr ""
+msgstr "Χρήση διαφανών φυσσαλίδων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:2
+#, fuzzy
 msgid "Change the number of planets to use."
-msgstr ""
+msgstr "Αριθμός πλανητών προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:4
+#, fuzzy
 msgid "Change whether objects should leave a trail."
-msgstr ""
+msgstr "Τα αντικείμενα να αφήνουν ίχνη πίσω τους."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:5
+#, fuzzy
 msgid "Change whether orbit should decay."
-msgstr ""
+msgstr "Η τροχιά να φθίνει."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:10
 msgid "Decay"
@@ -2175,20 +2194,20 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:18
 msgid "Number of planets to use."
-msgstr ""
+msgstr "Αριθμός πλανητών προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:19
 msgid "Objects should leave trails behind them."
-msgstr ""
+msgstr "Τα αντικείμενα να αφήνουν ίχνη πίσω τους."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:20
 msgid "Orbit should decay."
-msgstr ""
+msgstr "Η τροχιά να φθίνει."
 
 #: capplets/screensaver-properties/screensaver-desktops/Grav.desktop.in.h:21
 #, fuzzy
 msgid "Trail"
-msgstr "Μωσαϊκό"
+msgstr "Ουρές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Greynetic.desktop.in.h:5
 msgid "Draws random color rectangles."
@@ -2203,28 +2222,32 @@ msgid "Greynetic draws random rectangles."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:1
+#, fuzzy
 msgid "Animate"
-msgstr ""
+msgstr "Κίνηση κύκλων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:2
 msgid "Animate circles."
-msgstr ""
+msgstr "Κίνηση κύκλων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:4
+#, fuzzy
 msgid "Change the number of circles to use."
-msgstr ""
+msgstr "Αριθμός κύκλων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:6
 msgid "Change to alternating striped curves."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:7
+#, fuzzy
 msgid "Change to animated circles."
-msgstr ""
+msgstr "Κίνηση κύκλων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:8
+#, fuzzy
 msgid "Change to cycle through colormap."
-msgstr ""
+msgstr "Αλλαγή ανάμεσα όλων των χρωμάτων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:14
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:2
@@ -2234,7 +2257,7 @@ msgstr "Κλείσιμο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:15
 msgid "Cycle through colormap."
-msgstr ""
+msgstr "Αλλαγή ανάμεσα όλων των χρωμάτων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:18
 msgid "Draw circular patterns."
@@ -2255,12 +2278,11 @@ msgstr "Α μπε"
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:26
 msgid "Number of circles to use."
-msgstr ""
+msgstr "Αριθμός κύκλων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Halo.desktop.in.h:29
-#, fuzzy
 msgid "Use a gradient of colors between circles."
-msgstr "Χρήση διαβάθμισης χρωμάτων στο φόντο"
+msgstr "Χρήση διαβάθμισης χρωμάτων μεταξύ των κύκλων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:5
 msgid "Draws helical string-art patterns"
@@ -2281,11 +2303,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Helix.desktop.in.h:12
 msgid "Time between redraws."
-msgstr ""
+msgstr "Χρόνος μεταξύ επανασχεδιάσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:3
+#, fuzzy
 msgid "Change the number of pixels before a color change."
-msgstr ""
+msgstr "Αριθμός από εικονοστοιχεία πριν την αλλαγή χρώματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:10
 msgid "Draws real plane fractals"
@@ -2301,7 +2324,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:18
 msgid "Number of pixels before a color change."
-msgstr ""
+msgstr "Αριθμός από εικονοστοιχεία πριν την αλλαγή χρώματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Hopalong.desktop.in.h:19
 msgid "Patrick J. Naughton <naughton@eng.sun.com>"
@@ -2312,8 +2335,9 @@ msgid "2D projection of a hypercube"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:3
+#, fuzzy
 msgid "Change the distance from center of cube"
-msgstr ""
+msgstr "Απόσταση από το κέντρο του κύβου"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:8
 #, fuzzy
@@ -2322,7 +2346,7 @@ msgstr "Ανενεργό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:9
 msgid "Distance from center of cube"
-msgstr ""
+msgstr "Απόσταση από το κέντρο του κύβου"
 
 #: capplets/screensaver-properties/screensaver-desktops/Hypercube.desktop.in.h:12
 msgid "Hypercube"
@@ -2355,7 +2379,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Interference.desktop.in.h:1
 #, fuzzy
 msgid "Interference"
-msgstr "Διασύνδεση Χρήστη"
+msgstr "Διασύνδεση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Jigsaw.desktop.in.h:5
 msgid "Jigsaw"
@@ -2388,12 +2412,14 @@ msgid "Sean McCullough <bankshot@mailhost.nmt.edu>"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:1
+#, fuzzy
 msgid "Change number of segments."
-msgstr ""
+msgstr "Αριθμός κατατμήσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:2
+#, fuzzy
 msgid "Change number of trails."
-msgstr ""
+msgstr "Αριθμός ίχνων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:7
 msgid "Draws rotating line segments."
@@ -2409,11 +2435,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:14
 msgid "Number of segments."
-msgstr ""
+msgstr "Αριθμός κατατμήσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:15
 msgid "Number of trails."
-msgstr ""
+msgstr "Αριθμός ίχνων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:16
 msgid "Ron Tapia <tapia@nmia.com>"
@@ -2422,12 +2448,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:17
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:16
 msgid "Segments"
-msgstr ""
+msgstr "Κατατμήσεις"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kaleidescope.desktop.in.h:20
 #, fuzzy
 msgid "Trails"
-msgstr "Μίας χρήσης"
+msgstr "Ουρές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Kumppa.desktop.in.h:1
 msgid "Kumppa"
@@ -2440,7 +2466,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Lament.desktop.in.h:2
 #, fuzzy
 msgid "Lament"
-msgstr "Αριστερά"
+msgstr "Μήκος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:4
 msgid ""
@@ -2460,7 +2486,7 @@ msgstr "Διάρκεια (ms)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:7
 msgid "Duration of laser burst."
-msgstr ""
+msgstr "Διάρκεια ριππής λέιζερ."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:8
 msgid ""
@@ -2471,21 +2497,21 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:9
 #, fuzzy
 msgid "Laser"
-msgstr "Μεγάλο"
+msgstr "Πιο γρήγορα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:10
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:10
-#, fuzzy
 msgid "Longer"
-msgstr "κενό"
+msgstr "Μακρύτερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:11
 msgid "Mono"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:12
+#, fuzzy
 msgid "Number of segments per laser burst."
-msgstr ""
+msgstr "Αριθμός κατατμήσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:13
 msgid "Pascal Pensa"
@@ -2493,16 +2519,16 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:14
 msgid "Segments:"
-msgstr ""
+msgstr "Τμήματα:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:15
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:18
 msgid "Shorter"
-msgstr ""
+msgstr "Κοντύτερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Laser.desktop.in.h:16
 msgid "Size of burst."
-msgstr ""
+msgstr "Μέγεθος έκρηξης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lightning.desktop.in.h:6
 msgid "Draws fractal lightning bolts."
@@ -2525,16 +2551,18 @@ msgid "Caleb Cullen"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:5
+#, fuzzy
 msgid "Change the size of object."
-msgstr ""
+msgstr "Μέγεθος αντικειμένου."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:13
 msgid "Draws animated full-loop lisajous figures"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:16
+#, fuzzy
 msgid "Lisa"
-msgstr ""
+msgstr "Γραμμές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:17
 msgid "Lisa draws animated full-loop lisajous figures."
@@ -2542,19 +2570,21 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lisa.desktop.in.h:22
 msgid "Size of object."
-msgstr ""
+msgstr "Μέγεθος αντικειμένου."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lissie.desktop.in.h:1
+#, fuzzy
 msgid "Lissie"
-msgstr ""
+msgstr "Λιγότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:1
 msgid "Change from closed to open figures."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:2
+#, fuzzy
 msgid "Change number of interpolation steps."
-msgstr ""
+msgstr "Αριθμός βημάτων παρεμβολής."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:9
 msgid "Figtype"
@@ -2574,29 +2604,29 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:16
 msgid "Number of interpolation steps."
-msgstr ""
+msgstr "Αριθμός βημάτων παρεμβολής."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:17
 msgid "Number of points."
-msgstr ""
+msgstr "Αριθμός σημείων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:18
 msgid "Open figures."
-msgstr ""
+msgstr "Ανοιχτές φιγούρες."
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:19
+#, fuzzy
 msgid "Points"
-msgstr ""
+msgstr "Σημεία:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:20
-#, fuzzy
 msgid "Points:"
-msgstr "Προτεραιότητα:"
+msgstr "Σημεία:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:23
 #, fuzzy
 msgid "Steps"
-msgstr "Είδος"
+msgstr "Σπόρια"
 
 #: capplets/screensaver-properties/screensaver-desktops/Lmorph.desktop.in.h:24
 msgid ""
@@ -2613,8 +2643,9 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:1
+#, fuzzy
 msgid "Bridge"
-msgstr ""
+msgstr "Πλατύ"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:2
 msgid "Color for filling completely closed off areas."
@@ -2631,7 +2662,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:5
 #, fuzzy
 msgid "Color of path"
-msgstr "Χρώμα 1"
+msgstr "Αντίθεση Χρώματος"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:6
 msgid "Color of surrounded area"
@@ -2648,19 +2679,19 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:9
 #, fuzzy
 msgid "Dead Color"
-msgstr "Χρώμα"
+msgstr "Συγκεκριμένο Χρώμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:10
 msgid "Delay between drawing the maze and starting the solution."
-msgstr ""
+msgstr "Καθυστέρηση μεταξύ σχεδίασης του λαβυρίνθου και εκκίνησης της λύσης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:11
 msgid "Delay between each step in the maze."
-msgstr ""
+msgstr "Καθυστέρηση μεταξή κάθε βήματος στο λαβύρινθο."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:12
 msgid "Delay between finishing the maze and starting a new one."
-msgstr ""
+msgstr "Καθυστέρηση μεταξύ του τερματισμού ενός λαβυρίνθου και εκκίνησης νέου."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:13
 msgid "If the solver can "
@@ -2671,23 +2702,21 @@ msgid " the end of a corridor it will color it this color."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:14
-#, fuzzy
 msgid "Less Delay"
-msgstr "Υστέρηση επανάληψης"
+msgstr "Λιγότερη Καθυστέρηση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:15
 #, fuzzy
 msgid "Live Color"
-msgstr "Χρώμα"
+msgstr "Συγκεκριμένο Χρώμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:16
 msgid "Maze"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:17
-#, fuzzy
 msgid "More Delay"
-msgstr "Υστέρηση επανάληψης"
+msgstr "Περισσότερη Καθυστέρηση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:18
 msgid "Post-Solving Delay"
@@ -2699,7 +2728,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:20
 msgid "Put a bridge over the logo?"
-msgstr ""
+msgstr "Τοποθέτηση γέφυρας επάνω από το λογότυπο;"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:21
 msgid "Repeatedly create and solve a maze"
@@ -2708,17 +2737,17 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:22
 #, fuzzy
 msgid "Skip Color"
-msgstr "Χρώμα"
+msgstr "Συγκεκριμένο Χρώμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:23
 #, fuzzy
 msgid "Speed Delay"
-msgstr "Υστέρηση επανάληψης"
+msgstr "Λιγότερη Καθυστέρηση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:24
 #, fuzzy
 msgid "Surround Color"
-msgstr "Δευτερεύων Χρώμα"
+msgstr "Συγκεκριμένο Χρώμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:26
 #, no-c-format
@@ -2740,10 +2769,11 @@ msgid "The delay (in microseconds) between each step of the solution path."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:30
+#, fuzzy
 msgid ""
 "The delay (in microseconds) between generating a maze and starting to solve "
 "it."
-msgstr ""
+msgstr "Καθυστέρηση μεταξύ σχεδίασης του λαβυρίνθου και εκκίνησης της λύσης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Maze.desktop.in.h:31
 msgid ""
@@ -2758,7 +2788,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Moebius.desktop.in.h:2
 #, fuzzy
 msgid "Moebius"
-msgstr "Ποντίκι"
+msgstr "Μενού"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:8
 msgid "Draw circular interference patterns"
@@ -2770,12 +2800,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:12
 msgid "Maximum radius increment"
-msgstr ""
+msgstr "Μέγιστη αύξηση ακτίνας"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:13
 #, fuzzy
 msgid "Moire"
-msgstr "Α μπε"
+msgstr "Περισσότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:14
 msgid "Moire draws circular interference patterns."
@@ -2783,12 +2813,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire.desktop.in.h:17
 msgid "Offset"
-msgstr ""
+msgstr "Μετατόπιση"
 
 #: capplets/screensaver-properties/screensaver-desktops/Moire2.desktop.in.h:1
 #, fuzzy
 msgid "Moire2"
-msgstr "Α μπε"
+msgstr "Περισσότερο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Morph3d.desktop.in.h:1
 msgid "A 3d flower morphs into a sphear"
@@ -2804,16 +2834,18 @@ msgid "Mountain"
 msgstr "Κίνηση ποντικιού"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:3
+#, fuzzy
 msgid "Change to draw square at weird starting points."
-msgstr ""
+msgstr "Σχεδίαση τετραγώνου σε παράξενα σημεία εκκίνησης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:4
+#, fuzzy
 msgid "Change to use XOR drawing function."
-msgstr ""
+msgstr "Χρήση λειτουργίας σχεδίασης XOR."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:7
 msgid "Draw square at weird starting points."
-msgstr ""
+msgstr "Σχεδίαση τετραγώνου σε παράξενα σημεία εκκίνησης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:10
 msgid "Munch"
@@ -2828,8 +2860,9 @@ msgid "Munching squares."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:13
+#, fuzzy
 msgid "Shift"
-msgstr ""
+msgstr "Σύντομη"
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:16
 msgid "Tim  Showalter  <tjs@andrew.cmu.edu>"
@@ -2837,7 +2870,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:17
 msgid "Use XOR drawing function."
-msgstr ""
+msgstr "Χρήση λειτουργίας σχεδίασης XOR."
 
 #: capplets/screensaver-properties/screensaver-desktops/Munch.desktop.in.h:18
 #, fuzzy
@@ -2849,16 +2882,18 @@ msgid "Noseguy"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:1
+#, fuzzy
 msgid "Change maximum number of lines."
-msgstr ""
+msgstr "Μέγιστος αριθμός γραμμών."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:2
 msgid "Change the time each picture is shown."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:3
+#, fuzzy
 msgid "Change time to fade away."
-msgstr ""
+msgstr "Χρόνος για ξεθώριασμα."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:5
 msgid "Dale Moore <Dale.Moore@cs.cmu.edu>"
@@ -2870,11 +2905,12 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:11
 msgid "Maximum number of lines."
-msgstr ""
+msgstr "Μέγιστος αριθμός γραμμών."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:12
+#, fuzzy
 msgid "Maxlines"
-msgstr ""
+msgstr "Παντογράφοι καμπυλών"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:15
 #, fuzzy
@@ -2891,11 +2927,11 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:19
 msgid "Time to fade away."
-msgstr ""
+msgstr "Χρόνος για ξεθώριασμα."
 
 #: capplets/screensaver-properties/screensaver-desktops/Pedal.desktop.in.h:20
 msgid "Time to show each picture."
-msgstr ""
+msgstr "Χρόνος εμφάνισης κάθε εικόνας."
 
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:1
 msgid "Display an arcade game"
@@ -2904,11 +2940,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Penetrate.desktop.in.h:2
 #, fuzzy
 msgid "Penetrate"
-msgstr "Ρυθμός επανάληψης"
+msgstr "Γενικά"
 
 #: capplets/screensaver-properties/screensaver-desktops/Penrose.desktop.in.h:1
+#, fuzzy
 msgid "Penrose"
-msgstr ""
+msgstr "Πυκνότερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Phosphor.desktop.in.h:1
 msgid ""
@@ -2921,17 +2958,19 @@ msgid "Phosphor"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:1
+#, fuzzy
 msgid "3d pipes flow around the screen"
-msgstr ""
+msgstr "Ταχύτητα καθαρισμού οθόνης"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pipes.desktop.in.h:2
 #, fuzzy
 msgid "Pipes"
-msgstr "Περιφερειακά"
+msgstr "Γραμμές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:1
+#, fuzzy
 msgid "Changes frequency of missile launch."
-msgstr ""
+msgstr "Συχνότητα εκκίνησης πυραύλων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:5
 msgid "Frequency"
@@ -2939,7 +2978,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:6
 msgid "Frequency of missile launch"
-msgstr ""
+msgstr "Συχνότητα εκκίνησης πυραύλων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:7
 msgid "How many particles should appear when a missile explodes."
@@ -2956,15 +2995,16 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:12
 msgid "Number of particles"
-msgstr ""
+msgstr "Αριθμός σωματιδίων"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:13
 msgid "Particles on screen"
-msgstr ""
+msgstr "Κόκκοι στην οθόνη"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:14
+#, fuzzy
 msgid "Pyro"
-msgstr ""
+msgstr "Προτροπή"
 
 #: capplets/screensaver-properties/screensaver-desktops/Pyro.desktop.in.h:15
 #, fuzzy
@@ -3004,11 +3044,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:11
 #, fuzzy
 msgid "Length of the Trail:"
-msgstr "Στο κέντρο της οθόνης"
+msgstr "Μήκος Ίχνους"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:12
+#, fuzzy
 msgid "Number of Qix:"
-msgstr ""
+msgstr "Αριθμός σημείων:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:13
 msgid "Qix"
@@ -3022,7 +3063,7 @@ msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:15
 msgid "Random"
-msgstr ""
+msgstr "Τυχαίο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:17
 msgid "Set random motion for the Qix."
@@ -3041,20 +3082,24 @@ msgid "Sets the number of line segments to be drawn."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:25
+#, fuzzy
 msgid "Speed:"
-msgstr ""
+msgstr "Ταχύτητα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:26
+#, fuzzy
 msgid "Spread"
-msgstr ""
+msgstr "Άπλωμα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Qix.desktop.in.h:27
+#, fuzzy
 msgid "Width of segment:"
-msgstr ""
+msgstr "Αριθμός κατατμήσεων."
 
 #: capplets/screensaver-properties/screensaver-desktops/Rd-bomb.desktop.in.h:1
+#, fuzzy
 msgid "Rd-bomb"
-msgstr ""
+msgstr "Τυχαίο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Ripples.desktop.in.h:2
 msgid "Display oily drops."
@@ -3101,9 +3146,8 @@ msgid "Rorschach"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rotor.desktop.in.h:1
-#, fuzzy
 msgid "Rotor"
-msgstr "Χρώμα"
+msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Rubik.desktop.in.h:1
 msgid "A 3d Rubiks cube floats and twists around"
@@ -3141,7 +3185,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Slip.desktop.in.h:1
 #, fuzzy
 msgid "Slip"
-msgstr "Συμπαγές"
+msgstr "Λεπτό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:1
 msgid "Display a Sonar scope."
@@ -3150,11 +3194,12 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Sonar.desktop.in.h:2
 #, fuzzy
 msgid "Sonar"
-msgstr "Ήχος"
+msgstr "Σύντομη"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sphere.desktop.in.h:1
+#, fuzzy
 msgid "Sphere"
-msgstr ""
+msgstr "Ταχύτητα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Spiral.desktop.in.h:11
 msgid "Darrick Brown, Peter Schmitzberger, and Jamie Zawinski"
@@ -3177,8 +3222,9 @@ msgid "Spotlight"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Sproingies.desktop.in.h:1
+#, fuzzy
 msgid "Sproingies"
-msgstr ""
+msgstr "Παντογράφοι καμπυλών"
 
 #: capplets/screensaver-properties/screensaver-desktops/Sproingies.desktop.in.h:2
 msgid "Uhm.. *poing*"
@@ -3201,8 +3247,9 @@ msgid "The famous, M.C. Escher, impossible stairs"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:1
+#, fuzzy
 msgid " Random)"
-msgstr ""
+msgstr "Τυχαίο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:2
 msgid "Blob"
@@ -3213,20 +3260,23 @@ msgid "Change the animation step delay."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:4
+#, fuzzy
 msgid "Change the number of colors to use in star."
-msgstr ""
+msgstr "Αριθμός πολυγώνων προς χρήση."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:5
+#, fuzzy
 msgid "Change the quickness of rotation at each step."
-msgstr ""
+msgstr "Ταχύτητα περιστροφής σε κάθε βήμα (0 = Τυχαίο)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:6
+#, fuzzy
 msgid "Change the thickness of color bands."
-msgstr ""
+msgstr "Πάχος χρωματικών λωρίδων (0 = Τυχαίο)"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:10
 msgid "Duration of current shape."
-msgstr ""
+msgstr "Διάρκεια τρέχοντος σχήματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:12
 msgid "How long to run before choosing a new shape."
@@ -3239,16 +3289,15 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:16
 #, fuzzy
 msgid "Rotation"
-msgstr "Εκκινείται"
+msgstr "Επαναλήψεις:"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:18
-#, fuzzy
 msgid "Slim"
-msgstr "Συμπαγές"
+msgstr "Λεπτό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:20
 msgid "Speed of animation."
-msgstr ""
+msgstr "Ταχύτητα κίνησης."
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:21
 #, fuzzy
@@ -3262,16 +3311,17 @@ msgid ""
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:23
+#, fuzzy
 msgid "Thickness"
-msgstr ""
+msgstr "Αραιότερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:24
 msgid "Use raw shapes "
-msgstr ""
+msgstr "Χρήση απλών σχημάτων "
 
 #: capplets/screensaver-properties/screensaver-desktops/Starfish.desktop.in.h:25
 msgid "Wide"
-msgstr ""
+msgstr "Πλατύ"
 
 #: capplets/screensaver-properties/screensaver-desktops/Strange.desktop.in.h:1
 #, fuzzy
@@ -3303,7 +3353,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Triangle.desktop.in.h:11
 #, fuzzy
 msgid "Triangle"
-msgstr "Μωσαϊκό"
+msgstr "Πλακόστρωτο"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:8
 msgid ""
@@ -3319,7 +3369,7 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:10
 #, fuzzy
 msgid "Vines"
-msgstr "Εμφάνιση"
+msgstr "Γραμμές"
 
 #: capplets/screensaver-properties/screensaver-desktops/Vines.desktop.in.h:11
 msgid "draws pseudo-fractal geometric patterns"
@@ -3331,8 +3381,9 @@ msgid "Worm"
 msgstr "Κανονικό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:1
+#, fuzzy
 msgid "Display flames at the bottom of the screen"
-msgstr ""
+msgstr "Στο κέντρο της οθόνης"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xflame.desktop.in.h:2
 msgid "Xflame"
@@ -3367,27 +3418,30 @@ msgstr ""
 #: capplets/screensaver-properties/screensaver-desktops/Xroger.desktop.in.h:7
 #, fuzzy
 msgid "Xroger"
-msgstr "Πρόγραμμα"
+msgstr "Μακρύτερα"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:1
+#, fuzzy
 msgid "Bars"
-msgstr ""
+msgstr "Βασικό"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:3
 msgid "Cycle modes."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:4
+#, fuzzy
 msgid "Cycle through all the available modes."
-msgstr ""
+msgstr "Αλλαγή του χρώματος."
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:5
 msgid "Display color bars."
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:6
+#, fuzzy
 msgid "Display static."
-msgstr ""
+msgstr "Στυλ Εμφάνισης"
 
 #: capplets/screensaver-properties/screensaver-desktops/Xteevee.desktop.in.h:7
 msgid "Greg Knauss"
@@ -3423,8 +3477,9 @@ msgid "Xteevee"
 msgstr ""
 
 #: capplets/screensaver-properties/screensaver-dialog.c:46
+#, fuzzy
 msgid "About:"
-msgstr "Περί..."
+msgstr "Περί"
 
 #: capplets/screensaver-properties/screensaver-dialog.c:51
 msgid "Author:"
@@ -3456,48 +3511,56 @@ msgstr ""
 
 #. set up the initial frame, and get a vbox in which to pack things.
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:88
+#, fuzzy
 msgid "Screen Saver Settings"
-msgstr "Ρυθμίσεις screensaver"
+msgstr "Επιλογή Προφύλαξης Οθόνης"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:96
 msgid "Start After "
 msgstr "Εκκίνηση μετά από"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:102
+#, fuzzy
 msgid " Minutes."
-msgstr " λεπτά."
+msgstr "λεπτά"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:117
+#, fuzzy
 msgid "Priority:"
-msgstr "Προτεραιότητα:"
+msgstr "Προτεραιότητα"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:124
+#, fuzzy
 msgid "Low "
-msgstr "Χαμηλή "
+msgstr "Χαμηλή"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:126
 msgid " Normal"
 msgstr " Κανονική"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:137
+#, fuzzy
 msgid "Shutdown monitor "
-msgstr "Σβήσιμο οθόνης "
+msgstr "Σβήσιμο οθόνης μετά από"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:139
+#, fuzzy
 msgid " minutes after screen saver has started."
-msgstr " λεπτά μετά την έναρξη του [screen saver]."
+msgstr "Μόνο μετά την εκτέλεση της προφύλαξης οθόνης για"
 
 #: capplets/screensaver-properties/screensaver-properties-capplet.c:152
 msgid "Screen Saver Demo"
 msgstr "Επίδειξη screensaver"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:1
+#, fuzzy
 msgid "Configure the settings of the screensaver"
-msgstr "Ρύθμιση των ιδιοτήτων της προφύλαξης οθόνης"
+msgstr "Στο κέντρο της οθόνης"
 
 #: capplets/screensaver-properties/screensaver-properties.desktop.in.h:2
+#, fuzzy
 msgid "Screensaver"
-msgstr "Προφύλαξη Οθόνης"
+msgstr "Screensaver"
 
 #: capplets/sound-properties/sound-properties.c:97
 msgid ""
@@ -3545,11 +3608,11 @@ msgid ""
 "This copy of the GNOME control center was not compiled with sound support"
 msgstr "Το παρόν κέντρο ελέγχου του GNOME δεν περιλαμβάνει υποστήριξη ήχου"
 
-#: capplets/sound-properties/sound-properties.c:748
+#: capplets/sound-properties/sound-properties.c:737
 msgid "The sound file for this event does not exist."
 msgstr "Το αρχείο ήχου για το παρόν συμβάν δεν υπάρχει."
 
-#: capplets/sound-properties/sound-properties.c:750
+#: capplets/sound-properties/sound-properties.c:739
 msgid ""
 "The sound file for this event does not exist.\n"
 "You may want to install the gnome-audio package\n"
@@ -3561,11 +3624,12 @@ msgstr ""
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:1
 msgid "Configure GNOME's use of sound"
-msgstr "Ρύθμιση της χρήσης ήχου από το GNOME."
+msgstr ""
 
 #: capplets/sound-properties/sound-properties.desktop.in.h:2
+#, fuzzy
 msgid "Sound"
-msgstr "Ήχος"
+msgstr "Δευτερόλεπτα"
 
 #: capplets/theme-switcher/demo.c:50
 msgid "One"
@@ -3693,7 +3757,7 @@ msgstr "Γραμματοσειρά χρήστη"
 #. for now we just assume default gtk font
 #: capplets/theme-switcher/gui.c:257
 msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
-msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
+msgstr "-greek-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
 
 # TODO
 #: capplets/theme-switcher/gui.c:276
@@ -3718,20 +3782,23 @@ msgid "Unknown file format"
 msgstr "Άγνωστος τύπος αρχείου"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:1
+#, fuzzy
 msgid "Select which desktop theme to use"
-msgstr "Επιλέγει το θέμα της επιφάνειας εργασίας"
+msgstr "Επιλογή θέματος προς εγκατάσταση"
 
 #: capplets/theme-switcher/theme-selector.desktop.in.h:2
+#, fuzzy
 msgid "Theme Selector"
-msgstr "Επιλογέας Θέματος"
+msgstr "Επιλογή"
 
 #: capplets/ui-properties/application.desktop.in.h:1
+#, fuzzy
 msgid "Applications"
-msgstr "Εφαρμογές"
+msgstr "Επιλογές"
 
 #: capplets/ui-properties/application.desktop.in.h:2
 msgid "Sets the default feel of GNOME applications"
-msgstr "Ρύθμιση της εξ' ορισμού αίσθησης των εφαρμογών του GNOME."
+msgstr ""
 
 #: capplets/ui-properties/dialogs.desktop.in.h:1
 msgid "Dialogs"
@@ -3739,7 +3806,7 @@ msgstr "Διάλογοι"
 
 #: capplets/ui-properties/mdi.desktop.in.h:1
 msgid "MDI"
-msgstr "Διασύνδεση Πολλαπλών Εγγράφων"
+msgstr ""
 
 # TODO
 #: capplets/ui-properties/ui-properties.c:54
@@ -3747,42 +3814,50 @@ msgid "Can detach and move toolbars"
 msgstr "Ενεργ. απόσπασης και μετακίνησης εργαλειοθηκών"
 
 #: capplets/ui-properties/ui-properties.c:59
+#, fuzzy
 msgid "Toolbars have relieved border"
-msgstr "Εργαλειοθήκες με ανάγλυφο πλαίσιο"
+msgstr "Εργαλειοθήκες με περίγραμμα"
 
 #: capplets/ui-properties/ui-properties.c:64
+#, fuzzy
 msgid "Toolbar buttons have relieved border"
-msgstr "Κουμπία εργαλειοθηκών με ανάγλυφο πλαίσιο"
+msgstr "Εργαλειοθήκες με περίγραμμα"
 
 #: capplets/ui-properties/ui-properties.c:69
+#, fuzzy
 msgid "Toolbars have line separators"
-msgstr "Εργαλειοθήκες με διαχωριστικά"
+msgstr "Εργαλειοθήκες με διαχωριστικές γραμμές"
 
 #: capplets/ui-properties/ui-properties.c:74
+#, fuzzy
 msgid "Toolbars have text labels"
-msgstr "Εργαλειοθήκες με ετικέτες"
+msgstr "Εργαλειοθήκες με περίγραμμα"
 
 #: capplets/ui-properties/ui-properties.c:103
 msgid "Can detach and move menus"
 msgstr "Ενεργ. απόσπασης και μετακίνησης μενού"
 
 #: capplets/ui-properties/ui-properties.c:108
+#, fuzzy
 msgid "Menus have relieved border"
-msgstr "Μενού με ανάγλυφο πλαίσιο"
+msgstr "Οι μπάρες των μενού να έχουν περίγραμμα"
 
 #: capplets/ui-properties/ui-properties.c:112
+#, fuzzy
 msgid "Submenus can be torn off"
-msgstr "Ενεργ. απόσπασης υπομενού"
+msgstr "Τα μενού να μπορούν να αποσπώνται"
 
 #: capplets/ui-properties/ui-properties.c:116
 msgid "Menu items have icons"
 msgstr "Επιλογές μενού με εικονίδια"
 
 #: capplets/ui-properties/ui-properties.c:140
+#, fuzzy
 msgid "Statusbar is interactive when possible"
 msgstr "Διαδραστική γραμμή κατάστασης όποτε είναι δυνατόν"
 
 #: capplets/ui-properties/ui-properties.c:145
+#, fuzzy
 msgid "Statusbar progress meter is on the right"
 msgstr "Μετρητής προόδου δεξιά στη γραμμή κατάστασης"
 
@@ -3799,16 +3874,18 @@ msgid "Toolbar Options"
 msgstr "Επιλογές Εργαλειοθήκης"
 
 #: capplets/ui-properties/ui-properties.c:170
+#, fuzzy
 msgid "Dialog buttons"
-msgstr "Κουμπιά διαλόγων"
+msgstr "Κουμπιά Διαλόγων"
 
 #: capplets/ui-properties/ui-properties.c:171
 msgid "Default value"
 msgstr "Εξ' ορισμού τιμή"
 
 #: capplets/ui-properties/ui-properties.c:172
+#, fuzzy
 msgid "Spread buttons out"
-msgstr "Άπλωμα κουμπιών"
+msgstr "Άπλωμα"
 
 #: capplets/ui-properties/ui-properties.c:173
 msgid "Put buttons on edges"
@@ -3827,18 +3904,22 @@ msgid "Dialog buttons have icons"
 msgstr "Κουμπιά διαλόγων με εικονίδια"
 
 #: capplets/ui-properties/ui-properties.c:185
+#, fuzzy
 msgid "Use statusbar instead of dialog when possible"
-msgstr "Χρήση γραμμής κατάστασης αντί διαλόγων όποτε είναι δυνατόν"
+msgstr "Χρήση γραμμής κατάστασης αντί διαλόγου όποτε είναι δυνατόν"
 
 #: capplets/ui-properties/ui-properties.c:207
+#, fuzzy
 msgid "Dialog position"
-msgstr "Τοποθέτηση διαλόγων"
+msgstr "Θέση διαλόγων:"
 
 #: capplets/ui-properties/ui-properties.c:208
+#, fuzzy
 msgid "Let window manager decide"
-msgstr "Κατά την επιλογή του διαχ. παραθύρων"
+msgstr "Ο προηγούμενος διαχειριστής παραθύρων δεν τερματίστηκε\n"
 
 #: capplets/ui-properties/ui-properties.c:209
+#, fuzzy
 msgid "Center of the screen"
 msgstr "Στο κέντρο της οθόνης"
 
@@ -3847,16 +3928,21 @@ msgid "At the mouse pointer"
 msgstr "Στη θέση του δείκτη ποντικιού"
 
 #: capplets/ui-properties/ui-properties.c:215
+#, fuzzy
 msgid "Dialog hints"
-msgstr "Υποδείξεις διαλόγων"
+msgstr "Διάλογοι"
 
 #: capplets/ui-properties/ui-properties.c:216
+#, fuzzy
 msgid "Dialogs are like other windows"
-msgstr "Οι διάλογοι είναι όπως τα άλλα παράθυρα"
+msgstr "Μεταχείρηση διαλόγων"
 
 #: capplets/ui-properties/ui-properties.c:217
+#, fuzzy
 msgid "Dialogs are treated specially by window manager"
-msgstr "Ειδική μεταχείριση διαλόγων από το διαχ. παραθύρων"
+msgstr ""
+"Οι διάλογοι είναι όπως τα υπόλοιπα παράθυρα\n"
+"Ειδική μεταχείριση διαλόγων από το διαχ. παραθύρων\n"
 
 #: capplets/ui-properties/ui-properties.c:222
 msgid "Place dialogs over application window when possible"
@@ -3871,13 +3957,15 @@ msgid "Dialog Behavior"
 msgstr "Συμπεριφορά Διαλόγων"
 
 #: capplets/ui-properties/ui-properties.c:250
+#, fuzzy
 msgid "Default MDI Mode"
-msgstr "Εξ' Ορισμού Κατάσταση MDI"
+msgstr "Εξ' Ορισμού Κατάσταση MDI:"
 
 # Please use this term consistently for this MDI option...
 #: capplets/ui-properties/ui-properties.c:251
+#, fuzzy
 msgid "Notebook"
-msgstr "Τετράδιο"
+msgstr "Σελιδοδείκτες τετραδίου"
 
 #: capplets/ui-properties/ui-properties.c:252
 msgid "Toplevel"
@@ -3889,8 +3977,9 @@ msgstr "Αποκλειστικό"
 
 # Please use "tetradio" for "(MDI) notebook" consistently... 
 #: capplets/ui-properties/ui-properties.c:258
+#, fuzzy
 msgid "MDI notebook tab position"
-msgstr "Θέση σελιδοδεικτών τετραδίου"
+msgstr "Θέση σελιδοδεικτών τετραδίου MDI:"
 
 #: capplets/ui-properties/ui-properties.c:259
 msgid "Left"
@@ -3914,11 +4003,12 @@ msgstr "Επιλογές GNOME MDI"
 
 #: capplets/ui-properties/ui-properties.directory.in.h:1
 msgid "Look and Feel"
-msgstr "Αίσθηση χρήσης"
+msgstr ""
 
 #: capplets/ui-properties/ui-properties.directory.in.h:2
+#, fuzzy
 msgid "Look and Feel Properties"
-msgstr "Ρυθμίσεις της αίσθησης χρήσης του περιβάλλοντος εργασίας."
+msgstr "Γενικές Ιδιότητες"
 
 #: capplets/url-properties/url-properties.c:51
 msgid "Error initializing the `url-properties' capplet."
@@ -3964,15 +4054,16 @@ msgstr "Διαγραφή"
 
 #: capplets/url-properties/url-properties.desktop.in.h:1
 msgid "Configure which programs are used to display URLs"
-msgstr "Ρύθμιση των προγράμμάτων για την εμφάνιση URL."
+msgstr ""
 
 #: capplets/url-properties/url-properties.desktop.in.h:2
+#, fuzzy
 msgid "URL Handlers"
-msgstr "Χειριστές URL"
+msgstr "διαχειριστής:"
 
 #: capplets/wm-properties/wm-desktops/Enlightenment.desktop.in.h:1
 msgid "Enlightenment"
-msgstr "Enlightenment"
+msgstr ""
 
 #: capplets/wm-properties/wm-desktops/IceWM.desktop.in.h:1
 msgid "Ice WM"
@@ -3982,10 +4073,11 @@ msgstr ""
 msgid "Scwm"
 msgstr ""
 
+# TODO
 #: capplets/wm-properties/wm-desktops/WindowMaker.desktop.in.h:1
 #, fuzzy
 msgid "Window Maker"
-msgstr "Διαχειριστής Παραθύρων"
+msgstr "Διόρθωση Διαχ. Παραθύρων"
 
 #: capplets/wm-properties/wm-desktops/twm.desktop.in.h:1
 msgid "twm"
@@ -4057,9 +4149,9 @@ msgstr ""
 "κεντρικό μενού του GNOME\n"
 
 #: capplets/wm-properties/wm-properties-capplet.c:502
-#: capplets/wm-properties/wm-properties-capplet.c:868
-#: capplets/wm-properties/wm-properties-capplet.c:875
-#: capplets/wm-properties/wm-properties-capplet.c:1021
+#: capplets/wm-properties/wm-properties-capplet.c:856
+#: capplets/wm-properties/wm-properties-capplet.c:863
+#: capplets/wm-properties/wm-properties-capplet.c:1009
 msgid "OK"
 msgstr "Εντάξει"
 
@@ -4105,54 +4197,54 @@ msgstr ""
 "στο κεντρικό μενού του GNOME, είτε επιλέγοντας \"Αποθήκευση συνεδρίας\"\n"
 "στο πλαίσιο διαλόγου κατά τον τερματισμό.\n"
 
-#: capplets/wm-properties/wm-properties-capplet.c:757
+#: capplets/wm-properties/wm-properties-capplet.c:745
 msgid "Add New Window Manager"
 msgstr "Νέος διαχειριστής παραθύρων"
 
-#: capplets/wm-properties/wm-properties-capplet.c:771
+#: capplets/wm-properties/wm-properties-capplet.c:759
 msgid "Name:"
 msgstr "Όνομα:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:784
+#: capplets/wm-properties/wm-properties-capplet.c:772
 msgid "Command:"
 msgstr "Εντολή:"
 
-#: capplets/wm-properties/wm-properties-capplet.c:797
+#: capplets/wm-properties/wm-properties-capplet.c:785
 msgid "Configuration Command:"
 msgstr "Πρόγραμμα ρυθμίσεων:"
 
 # TODO
-#: capplets/wm-properties/wm-properties-capplet.c:816
+#: capplets/wm-properties/wm-properties-capplet.c:804
 msgid "Window manager is session managed"
 msgstr "Ο διαχ. συνεδρίας αναλαμβάνει το διαχ. παραθύρων"
 
-#: capplets/wm-properties/wm-properties-capplet.c:866
+#: capplets/wm-properties/wm-properties-capplet.c:854
 msgid "Name cannot be empty"
 msgstr "Δεν επιτρέπεται κενό όνομα"
 
-#: capplets/wm-properties/wm-properties-capplet.c:873
+#: capplets/wm-properties/wm-properties-capplet.c:861
 msgid "Command cannot be empty"
 msgstr "Δεν επιτρέπεται κενή εντολή"
 
 # TODO
-#: capplets/wm-properties/wm-properties-capplet.c:922
-#: capplets/wm-properties/wm-properties-capplet.c:964
+#: capplets/wm-properties/wm-properties-capplet.c:910
+#: capplets/wm-properties/wm-properties-capplet.c:952
 msgid "Edit Window Manager"
 msgstr "Διόρθωση Διαχ. Παραθύρων"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1020
+#: capplets/wm-properties/wm-properties-capplet.c:1008
 msgid "You cannot delete the current Window Manager"
 msgstr "Διαγραφή τρέχοντος διαχειριστή παραθύρων δεν επιτρέπεται"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1093
+#: capplets/wm-properties/wm-properties-capplet.c:1081
 msgid "Edit..."
 msgstr "Διόρθωση..."
 
-#: capplets/wm-properties/wm-properties-capplet.c:1098
+#: capplets/wm-properties/wm-properties-capplet.c:1086
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: capplets/wm-properties/wm-properties-capplet.c:1134
+#: capplets/wm-properties/wm-properties-capplet.c:1122
 msgid ""
 "an initialization error occurred while starting 'wm-properties-capplet'.\n"
 "aborting...\n"
@@ -4161,20 +4253,24 @@ msgstr ""
 "τερματισμός...\n"
 
 #: capplets/wm-properties/wm-properties.desktop.in.h:1
+#, fuzzy
 msgid "Choose a window manager"
-msgstr "Επιτρέπει την επιλογή του διαχειριστή παραθύρων για το GNOME"
+msgstr "Ειδικά από το διαχ. παραθύρων"
 
+# TODO
 #: capplets/wm-properties/wm-properties.desktop.in.h:2
+#, fuzzy
 msgid "Window Manager"
-msgstr "Διαχειριστής Παραθύρων"
+msgstr "Διόρθωση Διαχ. Παραθύρων"
 
 #: control-center/callbacks.c:102 control-center/gnomecc.desktop.in.h:1
 msgid "GNOME Control Center"
 msgstr "Κέντρο Ελέγχου GNOME"
 
 #: control-center/callbacks.c:105
+#, fuzzy
 msgid "Desktop Properties manager."
-msgstr "Ρυθμίσεις επιφάνειας εργασίας."
+msgstr "Διαχειρηστής ρυθμίσεων επιφάνειας εργασίας."
 
 #: control-center/capplet-manager.c:179
 msgid "Try"
@@ -4188,7 +4284,7 @@ msgstr "Επαναφορά"
 #: control-center/capplet-manager.c:208
 #, c-format
 msgid "Help with '%s' settings"
-msgstr "Βοήθεια στη ρύθμιση '%s'"
+msgstr ""
 
 #: control-center/capplet-widget-libs.c:46
 msgid "id of the capplet -- assigned by the control-center"
@@ -4245,27 +4341,29 @@ msgstr "CAPPLET"
 
 #: control-center/gnomecc.desktop.in.h:2
 msgid "The GNOME configuration tool"
-msgstr "Το εργαλείο ρύθμισης του GNOME"
+msgstr ""
 
 #: control-center/main.c:36
+#, fuzzy
 msgid "Help on control-center"
-msgstr "Βοήθεια για το κέντρο ελέγχου"
+msgstr "Νέο-κέντρο-ελέγχου"
 
 #: control-center/main.c:36
 msgid "Help with the GNOME control-center."
 msgstr "Βοήθεια για το κέντρο ελέγχου του GNOME."
 
 #: control-center/main.c:38
+#, fuzzy
 msgid "Help with the current configuration page."
-msgstr "Βοήθεια για τη τρέχουσα σελίδα ρυθμίσεων."
+msgstr "Βοήθεια για το κέντρο ελέγχου του GNOME."
 
 #: control-center/main.c:41
 msgid "About"
-msgstr "Σχετικά με"
+msgstr "Περί"
 
 #: control-center/main.c:41
 msgid "About the GNOME control-center."
-msgstr "Σχετικά με το κέντρο ελέγχου του GNOME."
+msgstr "Πέρι του κέντρου ελέγχου του GNOME."
 
 #. we create the widgets
 #: control-center/main.c:69
@@ -4287,23 +4385,25 @@ msgstr ""
 
 #: control-center/splash.c:48
 msgid "Operating System:"
-msgstr "Λειτουργικό Σύστημα:"
+msgstr ""
 
 #: control-center/splash.c:49
 msgid "Distribution Version:"
-msgstr "Έκδοση Διανομής:"
+msgstr ""
 
 #: control-center/splash.c:50
 msgid "Processor Type:"
-msgstr "Τύπος Επεξεργαστή:"
+msgstr ""
 
 #: control-center/splash.c:51
+#, fuzzy
 msgid "User Name:"
-msgstr "Όνομα Χρήστη:"
+msgstr "Όνομα:"
 
 #: control-center/splash.c:52
+#, fuzzy
 msgid "Host Name:"
-msgstr "Όνομα Συστήματος:"
+msgstr "Όνομα:"
 
 #. This is about the only case where we'll put Unknown instead
 #. of simply not showing the info.
@@ -4334,6 +4434,9 @@ msgstr "Άγνωστο"
 
 #~ msgid "Select a file..."
 #~ msgstr "Επιλογή αρχείου..."
+
+#~ msgid "View"
+#~ msgstr "Εμφάνιση"
 
 #~ msgid "Set actions for %s"
 #~ msgstr "Καθορισμός ενεργειών για: %s"
@@ -4395,24 +4498,37 @@ msgstr "Άγνωστο"
 #~ "Αδύνατη η αποθήκευση ρυθμίσεων."
 
 #~ msgid ""
+#~ "We are unable to create the directory\n"
+#~ "~/.gnome/mime-info.\n"
+#~ "\n"
+#~ "We will not be able to save the state."
+#~ msgstr ""
+#~ "Αποτυχία δημιουργίας του καταλόγου\n"
+#~ "~/.gnome/mime-info.\n"
+#~ "\n"
+#~ "Αδύνατη η αποθήκευση ρυθμίσεων."
+
+#~ msgid ""
+#~ "We are unable to access the directory\n"
+#~ "~/.gnome/mime-info.\n"
+#~ "\n"
+#~ "We will not be able to save the state."
+#~ msgstr ""
+#~ "Αποτυχία πρόσβασης στον κατάλογο\n"
+#~ "~/.gnome/mime-info.\n"
+#~ "\n"
+#~ "Αδύνατη η αποθήκευση ρυθμίσεων."
+
+#~ msgid ""
 #~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.keys\n"
+#~ "~/.gnome/mime-info/user.keys.\n"
 #~ "\n"
 #~ "We will not be able to save the state"
 #~ msgstr ""
 #~ "Αποτυχία δημιουργίας του αρχείου\n"
-#~ "~/.gnome/mime-info/user.keys\n"
+#~ "~/.gnome/mime-info/user.keys.\n"
 #~ "\n"
-#~ "Δε θα μπορέσει να αποθηκευτεί η κατάσταση"
-
-#~ msgid ""
-#~ "No help is available/installed for these settings. Please make sure you\n"
-#~ "have the Control Center documentation installed on your system."
-#~ msgstr ""
-#~ "Δεν υπάρχει βοήθεια εγκατεστημένη/διαθέσιμη για αυτές τις ρυθμίσεις. "
-#~ "Παρακαλώ\n"
-#~ "βεβαιωθείτε ότι ο Οδηγός Χρήσης του Κέντρου Ελέγχου είναι εγκατεστημένος στο "
-#~ "σύστημα σας."
+#~ "Αδύνατη η αποθήκευση ρυθμίσεων."
 
 #~ msgid ""
 #~ "Add a new Mime Type\n"
@@ -4434,11 +4550,355 @@ msgstr "Άγνωστο"
 #~ "Μπορειτε να εισάγετε δύο κανονικές εκφράσεις για αναγνώριση του τύπου\n"
 #~ "MIME.  Τα πεδία αυτά είναι προαιρετικά."
 
+#~ msgid "Could not load pixbuf \"%s\"; disabling wallpaper."
+#~ msgstr "Αδύνατη η φόρτωση του \"%s\"· απενεργοποίηση της επένδυσης."
+
+#~ msgid "window2"
+#~ msgstr "window2"
+
+#~ msgid "Effect"
+#~ msgstr "Εφφέ"
+
+#~ msgid "Right or bottom color"
+#~ msgstr "Χρώμα δεξιά ή κάτω"
+
+#~ msgid "Pick a color"
+#~ msgstr "Επιλογή χρώματος"
+
+#~ msgid "Apply changes automatically"
+#~ msgstr "Αυτόματη ενεργοποίηση αλλαγών"
+
+#~ msgid "File"
+#~ msgstr "Αρχείο"
+
+#~ msgid "Stretched (change aspect ratio)"
+#~ msgstr "Τεντωμένο (αλλαγή αναλογιών)"
+
+#~ msgid "Adjust wallpaper's transparency"
+#~ msgstr "Ρύθμιση της διαφάνειας της επένδυσης"
+
+#~ msgid "window1"
+#~ msgstr "window1"
+
+#~ msgid "Delay Until Repeat"
+#~ msgstr "Καθυστέρηση Μέχρι Επανάληψη"
+
+#~ msgid "....a"
+#~ msgstr "....α"
+
+#~ msgid "...a"
+#~ msgstr "...α"
+
+#~ msgid "..a"
+#~ msgstr "..α"
+
+#~ msgid ".a"
+#~ msgstr ".α"
+
+#~ msgid "a....a"
+#~ msgstr "α....α"
+
+#~ msgid "a...a"
+#~ msgstr "α...α"
+
+#~ msgid "a..a"
+#~ msgstr "α..α"
+
+#~ msgid "a.a"
+#~ msgstr "α.α"
+
+#~ msgid "Enable Keyboard Click"
+#~ msgstr "Ενεργοποίηση Κλίκ Πληκτρολογίου"
+
+#~ msgid "Type here to test setting"
+#~ msgstr "Πληκτρολογίστε εδώ για να δοκιμάσετε τις ρυθμίσεις"
+
+#~ msgid "Custom screensaver. No description available"
+#~ msgstr "Παραμετροποιημένη προφύλαξη οθόνης. Δεν υπάρχει διαθέσιμη περιγραφή"
+
+# Haven't come up (yet) with a satisfactory xlation of screensaver...
+#~ msgid "Disable screensaver"
+#~ msgstr "Απενεργοποίηση προφύλαξης οθόνης"
+
+#~ msgid "Black screen only"
+#~ msgstr "Μόνο μαύρη οθόνη"
+
+#~ msgid "One screensaver all the time"
+#~ msgstr "Μόνο μια προφύλαξη οθόνης τη φορά"
+
+#~ msgid "Choose randomly from those checked off"
+#~ msgstr "Χρήση τυχαίας από τις επιλεγμένες"
+
+#~ msgid "Choose randomly among all screensavers"
+#~ msgstr "Χρήση τυχαίας από όλες τις προφυλάξεις οθόνης"
+
+#~ msgid "Demo Next"
+#~ msgstr "Επόμενο Δείγμα"
+
+#~ msgid "Demo Previous"
+#~ msgstr "Προηγούμενο Δείγμα"
+
+#~ msgid "Start screensaver after"
+#~ msgstr "Εκκίνηση προφύλαξης οθόνης μετά από "
+
+#~ msgid "Switch screensavers every"
+#~ msgstr "Εναλλαγή μεταξύ προφυλάξεων οθόνης κάθε"
+
+#~ msgid "Security"
+#~ msgstr "Ασφάλεια"
+
+#~ msgid "Power Management"
+#~ msgstr "Διαχείριση Ενέργειας"
+
+#~ msgid "Go to standby mode after"
+#~ msgstr "Πήγαινε σε κατάσταση αναμονής μετά από"
+
+#~ msgid "Go to suspend mode after"
+#~ msgstr "Πήγαινε σε κατάσταση ύπνου μετά από"
+
+#~ msgid "Be verbose"
+#~ msgstr "Διαλογικότητα"
+
+#~ msgid "Effects"
+#~ msgstr "Εφφέ"
+
+#~ msgid "Install colormap"
+#~ msgstr "Εγκατάσταση χάρτη χρωμάτων"
+
+#~ msgid "Fade to black when activating screensaver"
+#~ msgstr "Σκοτείνιασμα οθόνης κατά την ενεργοποίηση της προφυλ. οθόνης"
+
+#~ msgid "Fade desktop back when deactivating screensaver"
+#~ msgstr "Επαναφορά οθόνης κατά την απενεργ. της προφυλ. οθόνης"
+
+#~ msgid "Fade Duration"
+#~ msgstr "Διάρκεια Σκοτεινιάσματος"
+
+#~ msgid "Fade Smoothness"
+#~ msgstr "Ομαλότητα Σκοτεινιάσματος"
+
+#~ msgid "Long"
+#~ msgstr "Μεγάλη"
+
+#~ msgid "Smooth"
+#~ msgstr "Ομαλή"
+
+#~ msgid "Jerky"
+#~ msgstr "Ανώμαλη"
+
+#~ msgid "Advanced Properties"
+#~ msgstr "Προηγμένες Επιλογές"
+
+#~ msgid "label1"
+#~ msgstr "label1"
+
+#~ msgid ""
+#~ "Cannot find the data to configure this screensaver. Please edit the command "
+#~ "line below."
+#~ msgstr ""
+#~ "Δεν μπορούν να βρεθούν τα δεδομένα για να ρυθμιστεί η προφύλ. οθόνης. "
+#~ "Παρακαλώ τροποποιήστε την παρακάτω γραμμή εντολών κατάλληλα."
+
+#~ msgid "Please enter a command line below."
+#~ msgstr "Παρακαλώ εισαγάγετε μια γραμμή εντολών παρακάτω."
+
+#~ msgid "Visual:"
+#~ msgstr "Οπτικό:"
+
+#~ msgid "Sharp turns"
+#~ msgstr "Απότομες στροφές"
+
+#~ msgid "Timeout"
+#~ msgstr "Χρονικό περιθώριο"
+
+#~ msgid "Specific"
+#~ msgstr "Συγκεκριμένο"
+
+#~ msgid "number of Ants"
+#~ msgstr "αριθμός Μυρμηγκιών"
+
+#~ msgid "Random size upto"
+#~ msgstr "Τυχαίο μέγεθος μέχρι"
+
+#~ msgid "Specific size of"
+#~ msgstr "Συγκεκριμένο μέγεθος των "
+
+#~ msgid "Number of colours"
+#~ msgstr "Αριθμός χρωμάτων"
+
+#~ msgid "Many"
+#~ msgstr "Πολλά"
+
+#~ msgid "Randomize"
+#~ msgstr "Τυχαιότητα"
+
+#~ msgid "Three Sided cells"
+#~ msgstr "Κελιά Τριών Πλευρών"
+
+#~ msgid "Four Sided cells"
+#~ msgstr "Κελιά Τεσσάρων Πλευρών"
+
+#~ msgid "Six Sided cells"
+#~ msgstr "Κελιά Έξη Πλευρών"
+
+#~ msgid "Nine Sided cells"
+#~ msgstr "Κελιά Εννιά Πλευρών"
+
+#~ msgid "Twelve Sided cells"
+#~ msgstr "Κελιά Δώδεκα Πλευρών"
+
+#~ msgid "Full Color"
+#~ msgstr "Με Χρώμα"
+
+#~ msgid "Balls"
+#~ msgstr "Σφαίρες"
+
+#~ msgid "Polygons"
+#~ msgstr "Πολύγωνα"
+
+#~ msgid "Threshold of repulsion"
+#~ msgstr "Κατώφλι απώθησης"
+
+#~ msgid "Use double buffering"
+#~ msgstr "Χρήση διπλής ενταμίευσης"
+
+#~ msgid "Don't use double bufferinge"
+#~ msgstr "Χωρίς χρήση διπλής ενταμίευσης"
+
+#~ msgid "Text for flag"
+#~ msgstr "Κείμενο στη σημαία"
+
+#~ msgid "Bitmap for flag"
+#~ msgstr "Εικόνα στη σημαία"
+
+#~ msgid "Random size up to"
+#~ msgstr "Τυχαίο μέγεθος μέχρι "
+
+#~ msgid "Number of fractals to generate."
+#~ msgstr "Αριθμός φράκταλ προς δημιουργία."
+
+#~ msgid "Pixels per fractal."
+#~ msgstr "Εικονοστοιχεία ανά φράκταλ."
+
+#~ msgid "Solid Trails"
+#~ msgstr "Διατηρούμενα Ίχνη"
+
+#~ msgid "Transparent Trails"
+#~ msgstr "Διαφανή Ίχνη"
+
+#~ msgid "XOR Trails"
+#~ msgstr "Ίχνη XOR"
+
+#~ msgid "Trails attract each other"
+#~ msgstr "Ίχνη που έλκονται μεταξύ τους"
+
+#~ msgid "Width"
+#~ msgstr "Πλάτος"
+
+#~ msgid "Spread between lines"
+#~ msgstr "Διάχυση μεταξύ γραμμών"
+
+#~ msgid "Number of trails:"
+#~ msgstr "Αριθμός ίχνων:"
+
+#~ msgid "Color contrast"
+#~ msgstr "Αντίθεση χρώματος"
+
+#~ msgid "Number of Iterations"
+#~ msgstr "Αριθμός Επαναλήψεων"
+
+#~ msgid "With X-axis Symmetry"
+#~ msgstr "Συμμετρία ως προς τον άξονα Χ"
+
+#~ msgid "With Y-axis Symmetry"
+#~ msgstr "Συμμετρία ως προς τον άξονα Υ"
+
+#~ msgid "Delay before next redraw"
+#~ msgstr "Υστέρηση μέχρι την επόμενη επανασχεδίαση"
+
+#~ msgid "Select the screensaver to run from the list below:"
+#~ msgstr "Επιλογή προφύλ. οθόνης προς εκτέλεση από την παρακάτω λίστα:"
+
+#~ msgid "Custom"
+#~ msgstr "Παραμετροποιημένο"
+
+#~ msgid "window4"
+#~ msgstr "window4"
+
+#~ msgid "Menu bars are detachable"
+#~ msgstr "Οι μπάρες των μενού είναι αποκολλήσιμες"
+
+#~ msgid "Status Bar"
+#~ msgstr "Γραμμή Κατάστασης"
+
+#~ msgid "Progress bar is on the left"
+#~ msgstr "Μετρητής προόδου αριστερά στη γραμμή κατάστασης"
+
+#~ msgid "Tool Bars"
+#~ msgstr "Εργαλειοθήκες"
+
+#~ msgid "Tool bar buttons pop up on mouse over"
+#~ msgstr ""
+#~ "Κουμπιά εργαλειοθηκών που ανασηκώνονται με την επίδραση του ποντικιού"
+
+#~ msgid "Tool bars are detachable"
+#~ msgstr "Αποσπώμενες εργαλειοθήκες"
+
+#~ msgid "Tool bar buttons are icons only"
+#~ msgstr "Κουμπιά εργαλειοθηκών που είναι μόνο εικονίδια"
+
+#~ msgid "Tool bar buttons are text below icons"
+#~ msgstr "Κουμπιά εργαλειοθηκών με ετικέτες κάτω από τα εικονίδια"
+
+#~ msgid "Dialogs open"
+#~ msgstr "Ανοίγουν διαλόγοι"
+
+#~ msgid "Wherever the Window Manager places them"
+#~ msgstr "Όπου τους τοποθετεί ο Διαχειριστής Παραθύρων"
+
+#~ msgid "Like any other window"
+#~ msgstr "Όπως τα άλλα παράθυρα"
+
+#~ msgid "Default  (Spread out - big)"
+#~ msgstr "Εξ' ορισμού (Σε ανάπτυξη - μεγάλο)"
+
+#~ msgid "Spread out (big)"
+#~ msgstr "Άπλωμα (μεγάλο)"
+
+#~ msgid "Left aligned"
+#~ msgstr "Στοίχιση στα αριστερά"
+
+#~ msgid "Right aligned"
+#~ msgstr "Στοίχιση στα δεξιά"
+
+#~ msgid "Multiple Documents"
+#~ msgstr "Πολλαπλά Έγγραφα"
+
+#~ msgid "Seperate windows"
+#~ msgstr "Ξεχωριστά παράθυρα"
+
+#~ msgid "The same window"
+#~ msgstr "Το ίδιο παράθυρο"
+
+#~ msgid "When opening Multiple documents, use"
+#~ msgstr "Κατά το άνοιγμα Πολλαπλών εγγράφων, χρήση"
+
+#~ msgid "When using Notebook tabs, place the tabs on the"
+#~ msgstr ""
+#~ "Κατά τη χρήση σελιδοδεικτών Τετραδίου, τοποθέτηση των σελ/κτών πάνω στο"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Διάφορα"
+
+#~ msgid "Settings will not take effect until applications restart"
+#~ msgstr ""
+#~ "Οι ρυθμίσεις δε θα ενεργοποιηθούν πριν την επανεκκίνηση των εφαρμογών"
+
 #~ msgid "Session Chooser"
-#~ msgstr "Επιλογέας συνεδρίας"
+#~ msgstr "Επιλογή Συνεδρίας"
 
 #~ msgid "Start Session"
-#~ msgstr "Εκκίνηση συνεδρίας"
+#~ msgstr "Έναρξη Συνεδρίας"
 
 #~ msgid "Order: "
 #~ msgstr "Σειρά: "
@@ -4486,6 +4946,12 @@ msgstr "Άγνωστο"
 #~ msgid "Order"
 #~ msgstr "Σειρά"
 
+#~ msgid "Style"
+#~ msgstr "Είδος"
+
+#~ msgid "Program"
+#~ msgstr "Πρόγραμμα"
+
 #~ msgid "Inactive"
 #~ msgstr "Ανενεργό"
 
@@ -4519,6 +4985,9 @@ msgstr "Άγνωστο"
 #~ msgid "Never allowed to die."
 #~ msgstr "Δεν επιτρέπεται να τερματίσει ποτέ."
 
+#~ msgid "Trash"
+#~ msgstr "Μίας χρήσης"
+
 #~ msgid "Discarded on logout and can die."
 #~ msgstr "Δεν παραμένει μετά την έξοδο από GNOME."
 
@@ -4527,12 +4996,6 @@ msgstr "Άγνωστο"
 
 #~ msgid "Remove Program"
 #~ msgstr "Αφαίρεση προγράμματος"
-
-#~ msgid "Options"
-#~ msgstr "Επιλογές"
-
-#~ msgid "Show splash screen on login"
-#~ msgstr "Εμφάνιση εικόνας παφλασμού κατά την έναρξη συνεδρίας"
 
 #~ msgid "Prompt on logout"
 #~ msgstr "Ερώτηση κατά τον τερματισμό του GNOME"
@@ -4543,9 +5006,6 @@ msgstr "Άγνωστο"
 # It is getting late and the translation sucks more and more...
 #~ msgid "Non-session-managed Startup Programs"
 #~ msgstr "Προγράμματα εκτός διαχειριστή συνεδρίας"
-
-#~ msgid "Priority"
-#~ msgstr "Προτεραιότητα"
 
 #~ msgid "Browse Currently Running Programs..."
 #~ msgstr "Εμφάνιση Εκτελούμενων Προγραμμάτων..."
@@ -4572,6 +5032,9 @@ msgstr "Άγνωστο"
 #~ msgid "Edit Startup Program"
 #~ msgstr "Διόρθωση Προγράμματος Εκκίνησης"
 
+#~ msgid "Cancel"
+#~ msgstr "Άκυρο"
+
 #~ msgid ""
 #~ "No help is available/installed. Please make sure you\n"
 #~ "have the GNOME User's Guide installed on your system."
@@ -4579,11 +5042,256 @@ msgstr "Άγνωστο"
 #~ "Δεν υπάρχει βοήθεια διαθέσιμη/εγκατεστημένη. Παρακαλώ βεβαιωθείτε\n"
 #~ "ότι ο Οδηγός Χρήστη του GNOME είναι εγκατεστημένος στο σύστημά σας."
 
+#~ msgid "Launch control panels in separate windows"
+#~ msgstr "Εκκίνηση ταμπλώ ελέγχου σε ξεχωριστά παράθυρα"
+
+#~ msgid "Put control panels in the control center's window"
+#~ msgstr "Τοποθέτηση ταμπλώ ελέγχου στο παράθυρο του κέντρου ελέγχου"
+
+#~ msgid "Display control panels as HTML"
+#~ msgstr "Εμφάνιση των ταμπλώ ελέγχου ως HTML"
+
+#~ msgid "Display control panels as a set of icons"
+#~ msgstr "Εμφάνιση των ταμπλώ ελέγχου ως σύνολο εικονιδίων"
+
+#~ msgid "Display control panels as a tree"
+#~ msgstr "Εμφάνιση των ταμπλώ ελέγχου ως δέντρο"
+
+#~ msgid "Browse with single window"
+#~ msgstr "Εξερεύνηση με ένα παράθυρο"
+
+#~ msgid "Browse with multiple windows"
+#~ msgstr "Περιήγηση με πολλαπλά παράθυρα"
+
+#~ msgid "Appearance"
+#~ msgstr "Εμφάνιση"
+
+#~ msgid "HTML"
+#~ msgstr "HTML"
+
+#~ msgid "Icon List"
+#~ msgstr "Λίστα Εικονιδίων"
+
+#~ msgid "Tree"
+#~ msgstr "Δέντρο"
+
+#~ msgid "Got error %d.\n"
+#~ msgstr "Παρουσιάστηκε σφάλμα %d.\n"
+
+#~ msgid "Password for %s"
+#~ msgstr "Κωδικός για %s"
+
+#~ msgid "Consistency checking is not turned on."
+#~ msgstr "Ο έλεγχος συνέπειας δεν είναι ενεργοποιημένος."
+
+#~ msgid "Block is fine."
+#~ msgstr "Το μπλοκ είναι εντάξει."
+
+#~ msgid "Block freed twice."
+#~ msgstr "Το μπλοκ απελευθερώθηκε δύο φορές."
+
+#~ msgid "Memory before the block was clobbered."
+#~ msgstr "Η μνήμη πριν το μπλοκ έχει αλλοιωθεί."
+
+#~ msgid "Memory after the block was clobbered."
+#~ msgstr "Η μνήμη μετά το μπλοκ έχει αλλοιωθεί."
+
+#~ msgid "userhelper must be setuid root\n"
+#~ msgstr "Το userhelper πρέπει να εκτελείτε ως διαχειριστής\n"
+
+#~ msgid "Usage: root-helper fd\n"
+#~ msgstr "Χρήση: root-helper περιγραφέας-αρχείου\n"
+
+#~ msgid "PAM returned = %d\n"
+#~ msgstr "Το PAM επέστρεψε = %d\n"
+
+#~ msgid "about to authenticate \"%s\"\n"
+#~ msgstr "προς αυθεντικοποίηση του \"%s\"\n"
+
+#~ msgid "about to exec \"%s\"\n"
+#~ msgstr "προς εκτέλεση του \"%s\"\n"
+
+#~ msgid "Pipe error.\n"
+#~ msgstr "Σφάλμα σωλήνωσης.\n"
+
+#~ msgid "Cannot fork().\n"
+#~ msgstr "Αδύνατη η δικράνωση fork().\n"
+
+#~ msgid "dup2() error.\n"
+#~ msgstr "Σφάλμα στην dup2().\n"
+
+#~ msgid "execl() error, errno=%d\n"
+#~ msgstr "Σφάλμα στην execl(), errno=%d\n"
+
+#~ msgid "Information updated."
+#~ msgstr "Η πληροφορίες ενημερώθηκαν."
+
+#~ msgid ""
+#~ "The password you typed is invalid.\n"
+#~ "Please try again."
+#~ msgstr ""
+#~ "Ο κωδικός που πληκτρολογίσατε δεν είναι έγκυρος.\n"
+#~ "Παρακαλώ δοκιμάστε ξανά."
+
+#~ msgid ""
+#~ "One or more of the changed fields is invalid.\n"
+#~ "This is probably due to either colons or commas in one of the fields.\n"
+#~ "Please remove those and try again."
+#~ msgstr ""
+#~ "Ένα ή περισσότερα από τα αλλαγμένα πεδία δεν είναι έγκυρα.\n"
+#~ "Αυτό πιθανότατα συμβαίνει διότι υπάρχουν είτε επεξηγηματικά είτε\n"
+#~ "κόμματα σε κάποιο από τα πεδία.\n"
+#~ "Παρακαλώ αφαιρέστε τα και δοκιμάστε ξανά."
+
+#~ msgid "Password resetting error."
+#~ msgstr "Σφάλμα διαγραφής κωδικού."
+
+#~ msgid ""
+#~ "Some systems files are locked.\n"
+#~ "Please try again in a few moments."
+#~ msgstr ""
+#~ "Μερικά αρχεία συστήματος είναι κλειδωμένα.\n"
+#~ "Παρακαλώ δοκιμάστε ξανά σε λίγη ώρα."
+
+#~ msgid "Unknown user."
+#~ msgstr "Άγνωστος χρήστης."
+
+#~ msgid "Insufficient rights."
+#~ msgstr "Ανεπαρκή δικαιώματα."
+
+#~ msgid "Invalid call to sub process."
+#~ msgstr "Μη έγκυρο κλήση σε θυγατρική διεργασία."
+
+#~ msgid ""
+#~ "Your current shell is not listed in /etc/shells.\n"
+#~ "You are not allowed to change your shell.\n"
+#~ "Consult your system administrator."
+#~ msgstr ""
+#~ "Ο τρέχον φλοιός σας δεν εμφανίζετε στο /etc/shells.\n"
+#~ "Δεν έχετε το δικαίωμα να αλλάξετε το φλοιό σας.\n"
+#~ "Αποτανθείτε στο διαχειριστή συστήματος σας."
+
+#~ msgid "Out of memory."
+#~ msgstr "Η μνήμη εξαντλήθηκε."
+
+#~ msgid "The exec() call failed."
+#~ msgstr "Η κλήση exec() απέτυχε."
+
+#~ msgid "Failed to find selected program."
+#~ msgstr "Αποτυχία εύρεση του επιλεγμένου προγράμματος."
+
+#~ msgid "Unknown error."
+#~ msgstr "Άγνωστο σφάλμα."
+
+#~ msgid "Unknown exit code."
+#~ msgstr "Άγνωστος κωδικός εξόδου."
+
+#~ msgid "Input"
+#~ msgstr "Είσοδος"
+
+#~ msgid "Need %d responses.\n"
+#~ msgstr "Απαιτούνται %d αποκρίσεις.\n"
+
+#~ msgid ""
+#~ "In order to make changes to your system, you\n"
+#~ "must enter the administrator (root) password."
+#~ msgstr ""
+#~ "Για να κάνετε αλλαγές στο σύστημά σας, πρέπει\n"
+#~ "να εισάγετε τον κωδικό του διαχειριστή (root)."
+
+#~ msgid "Error"
+#~ msgstr "Σφάλμα"
+
+#~ msgid "You want %d response(s) from %d entry fields!?!?!\n"
+#~ msgstr "Θέλετε %d αποκρίσεις(η) από %d πεδία εισόδου;;;\n"
+
+#~ msgid "Run Unprivileged"
+#~ msgstr "Εκτέλεση Χωρίς Δικαιώματα"
+
+#~ msgid "Color 1"
+#~ msgstr "Χρώμα 1"
+
 #~ msgid "Color 2"
 #~ msgstr "Χρώμα 2"
 
+#~ msgid "(None)\n"
+#~ msgstr "(Κενό)\n"
+
 #~ msgid "Disable background selection"
 #~ msgstr "Απενεργοποίηση επιλογής φόντου"
+
+#~ msgid "Auto-repeat"
+#~ msgstr "Επανάληψη"
+
+#~ msgid ""
+#~ "Default value\n"
+#~ "Spread buttons out\n"
+#~ "Put buttons on edges\n"
+#~ "Left-justify buttons\n"
+#~ "Right-justify buttons\n"
+#~ msgstr ""
+#~ "Εξ' ορισμού τιμή\n"
+#~ "Διάχυση των κουμπιών προς τα έξω\n"
+#~ "Τοποθέτηση των κουμπιών στις άκρες\n"
+#~ "Στοίχιση κουμπιών στα αριστερά\n"
+#~ "Στοίχιση κουμπιών στα δεξιά\n"
+
+#~ msgid ""
+#~ "Let window manager decide\n"
+#~ "Center of the screen\n"
+#~ "At the mouse pointer\n"
+#~ msgstr ""
+#~ "Η επιλογή στο διαχειριστή παραθύρων\n"
+#~ "Στο κέντρο της οθόνης\n"
+#~ "Στο δείκτη του ποντικιού\n"
+
+#~ msgid "window3"
+#~ msgstr "παράθυρο3"
+
+#~ msgid ""
+#~ "Notebook\n"
+#~ "Toplevel\n"
+#~ "Modal\n"
+#~ msgstr ""
+#~ "Τετράδιο\n"
+#~ "Κορυφής\n"
+#~ "Αποκλειστικό\n"
+
+#~ msgid ""
+#~ "Left\n"
+#~ "Right\n"
+#~ "Top\n"
+#~ "Bottom\n"
+#~ msgstr ""
+#~ "Αριστερά\n"
+#~ "Δεξιά\n"
+#~ "Επάνω\n"
+#~ "Κάτω\n"
+
+#~ msgid "Get an XML description of the capplet's state"
+#~ msgstr "Λήψη περιγραφής XML της κατάσταση εφαρμογιδίου"
+
+#~ msgid "DO_GET"
+#~ msgstr "DO_GET"
+
+#~ msgid "Read an XML description of the capplet's state and apply it"
+#~ msgstr ""
+#~ "Ανάγνωση περιγραφής XML από την κατάσταση του εφαρμογιδίου και εκτέλεσή της"
+
+#~ msgid "DO_SET"
+#~ msgstr "DO_SET"
+
+#~ msgid "Up"
+#~ msgstr "Πάνω"
+
+#~ msgid "Parent Group"
+#~ msgstr "Πατρική Ομάδα"
+
+#~ msgid "Preferences"
+#~ msgstr "Προτιμήσεις"
+
+#~ msgid "Control Center Preferences"
+#~ msgstr "Προτιμίσεις Κέντρου Ελέγχου"
 
 #~ msgid ""
 #~ "an initialization error occurred while starting 'bell-properties-capplet'.\n"
@@ -4591,28 +5299,3 @@ msgstr "Άγνωστο"
 #~ msgstr ""
 #~ "σφάλμα αρχικοποίησης κατά την εκκίνηση του 'bell-properties-capplet'.\n"
 #~ "τερματισμός...\n"
-
-#~ msgid "Auto-repeat"
-#~ msgstr "Επανάληψη"
-
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Αποτυχία δημιουργίας του καταλόγου\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "Αδύνατη η αποθήκευση ρυθμίσεων."
-
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Αποτυχία πρόσβασης στον κατάλογο\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "Αδύνατη η αποθήκευση ρυθμίσεων."

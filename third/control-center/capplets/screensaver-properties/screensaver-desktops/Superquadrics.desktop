@@ -1,14 +1,22 @@
 [Desktop Entry]
 Name=Superquadrics
-Name[da]=Superkvadrater
+Name[da]=Superquadric
 Name[fr]=Superquadriques
+Name[no]=Superkvadrat
+Name[ru]=Суперквадрат
 Name[sk]=Superquadrics
+Name[sl]=Superkvadri
 Name[sv]=Superkvadrater
+Name[uk]=Суперквадрат
 Comment=Superquadrics
-Comment[da]=Superkvadrater
+Comment[da]=Superquadric
 Comment[fr]=Superquadriques
+Comment[no]=Superkvadrat
+Comment[ru]=Суперквадрат
 Comment[sk]=Superquadrics
+Comment[sl]=Superkvadri
 Comment[sv]=Superkvadrater
+Comment[uk]=Суперквадрат
 Exec=xscreensaver-command -activate
 TryExec=superquadrics
 Terminal=0

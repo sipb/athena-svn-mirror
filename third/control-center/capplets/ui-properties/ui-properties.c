@@ -492,6 +492,7 @@ static void
 help (GtkWidget *capplet)
 {
   gchar *tmp, *helpfile;
+  GnomeHelpMenuEntry help_entry= {"control-center",NULL};
 
   switch(CAPPLET_WIDGET(capplet)->capid) {
   case 0: /* Dialogs */
@@ -506,19 +507,9 @@ help (GtkWidget *capplet)
     break;
   }
 
-  tmp = gnome_help_file_find_file ("control-center", helpfile);
-  if (tmp) {
-    gnome_help_goto(0, tmp);
-    g_free(tmp);
-  } else {
-    GtkWidget *mbox;
+  help_entry.path = helpfile;
 
-    mbox = gnome_message_box_new(_("No help is available/installed for these settings. Please make sure you\nhave the GNOME User's Guide installed on your system."),
-				 GNOME_MESSAGE_BOX_ERROR,
-				 _("Close"), NULL);
-
-    gtk_widget_show(mbox);
-  }
+  gnome_help_display (NULL, &help_entry);
 }
 
 static void

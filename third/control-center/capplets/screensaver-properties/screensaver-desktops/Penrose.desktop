@@ -1,15 +1,18 @@
 [Desktop Entry]
 Name=Penrose
 Name[ca]=Penrose
-Name[da]=Penrose
+Name[da]=Isometriske roser
 Name[de]=Penrose
 Name[fi]=Penrose
 Name[fr]=Penrose
+Name[hu]=Penrose
 Name[ja]=╔з╔С╔М║╪╔╨
 Name[no]=Pennerose
-Name[ru]=Пеннроуз
+Name[ru]=Пенроуз
 Name[sk]=Penrose
+Name[sl]=Tlakovanje
 Name[sv]=Penrose
+Name[uk]=Пенроуз
 Comment=
 Exec=xscreensaver-command -activate
 TryExec=penrose

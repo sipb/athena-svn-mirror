@@ -1,16 +1,26 @@
 [Desktop Entry]
 Name=Xflame
+Name[da]=Flammer
 Name[de]=Xflame
 Name[fi]=Xliekki
 Name[fr]=Xflame
+Name[hu]=Xflame
 Name[no]=Xflamme
+Name[ru]=Х-пламя
 Name[sk]=PlameР
+Name[sl]=Xplamen
 Name[sv]=XlЕgor
+Name[uk]=Xflame
 Comment=Display flames at the bottom of the screen
+Comment[da]=Lader bunden af skФrmen gЕ op i flammer
 Comment[de]=Flammen am unteren Bildschirmrand anzeigen
 Comment[fi]=PiirtДД liekkejД nДytЖn alaosaan
+Comment[no]=Vis flammer nederst pЕ skjermen
+Comment[ru]=Показывает пламя внизу экрана
 Comment[sk]=Zobrazuje plamene na spodku obrazovky
+Comment[sl]=Ka╬e plamena na dnu zaslona
 Comment[sv]=Visar lЕgor lДngst ner pЕ skДrmen
+Comment[uk]=В╕добража╓ вогнище в низу екрана
 Exec=xscreensaver-command -activate
 TryExec=xflame
 Terminal=0
