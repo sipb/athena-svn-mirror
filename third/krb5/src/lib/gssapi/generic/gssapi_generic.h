@@ -24,20 +24,24 @@
 #define _GSSAPI_GENERIC_H_
 
 /*
- * $Id: gssapi_generic.h,v 1.1.1.3 1999-10-05 16:12:08 ghudson Exp $
+ * $Id: gssapi_generic.h,v 1.1.1.4 2001-12-05 20:48:05 rbasch Exp $
  */
 
-#if defined(__MWERKS__) || defined(applec) || defined(THINK_C)
-#include <gssapi.h>
+#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
+#include <GSS/gssapi.h>
 #else
 #include <gssapi/gssapi.h>
 #endif
 
+/* Deprecated MIT krb5 oid names provided for compatibility.
+ * The correct oids (GSS_C_NT_USER_NAME, etc) from rfc 2744 
+ * are defined in gssapi.h. */
+
 GSS_DLLIMP extern gss_OID gss_nt_user_name;
 GSS_DLLIMP extern gss_OID gss_nt_machine_uid_name;
 GSS_DLLIMP extern gss_OID gss_nt_string_uid_name;
+GSS_DLLIMP extern gss_OID gss_nt_service_name_v2;
 GSS_DLLIMP extern gss_OID gss_nt_service_name;
 GSS_DLLIMP extern gss_OID gss_nt_exported_name;
-GSS_DLLIMP extern gss_OID gss_nt_service_name_v2;
 
 #endif /* _GSSAPI_GENERIC_H_ */

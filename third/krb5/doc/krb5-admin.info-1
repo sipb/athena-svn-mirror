@@ -24,7 +24,7 @@ File: krb5-admin.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: T
 Copyright
 *********
 
-Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
+Copyright (C) 1985-2001 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -578,15 +578,15 @@ default_realm
 default_tgs_enctypes
      Identifies the supported list of session key encryption types that
      should be returned by the KDC.  The list may be delimited with
-     commas or whitespace.  Currently, the only supported encryption
-     type is "des-cbc-crc".  Support for other encryption types is
-     planned in the future.
+     commas or whitespace.  Currently, the supported encryption types
+     are "des3-hmac-sha1" and "des-cbc-crc".  Support for other
+     encryption types is planned in the future.
 
 default_tkt_enctypes
      Identifies the supported list of session key encryption types that
      should be requested by the client.  The format is the same as for
-     *default_tkt_enctypes*.  Again, the only supported encryption type
-     is "des-cbc-crc".
+     *default_tkt_enctypes*.  Again, the only supported encryption
+     types are "des3-hmac-sha1" and "des-cbc-crc".
 
 clockskew
      Sets the maximum allowable amount of clockskew in seconds that the
@@ -607,6 +607,51 @@ ccache_type
      some versions of DCE do not support the default cache as created
      by this version of Kerberos.  Use a value of 1 on DCE 1.0.3a
      systems, and a value of 2 on DCE 1.1 systems.
+
+dns_lookup_kdc
+     Indicate whether DNS SRV records should be used to locate the KDCs
+     and other servers for a realm, if they are not listed in the
+     information for the realm.  (Note that the `admin_server' entry
+     must be in the file, because the DNS implementation for it is
+     incomplete.)
+
+     Enabling this option does open up a type of denial-of-service
+     attack, if someone spoofs the DNS records and redirects you to
+     another server.  However, it's no worse than a denial of service,
+     because that fake KDC will be unable to decode anything you send
+     it (besides the initial ticket request, which has no encrypted
+     data), and anything the fake KDC sends will not be trusted without
+     verification using some secret that it won't know.
+
+     If this option is not specified but `dns_fallback' is, that value
+     will be used instead.  If neither option is specified, the behavior
+     depends on configure-time options; if none were given, the default
+     is to enable this option.  If the DNS support is not compiled in,
+     this entry has no effect.
+
+dns_lookup_realm
+     Indicate whether DNS TXT records should be used to determine the
+     Kerberos realm of a host.
+
+     Enabling this option may permit a redirection attack, where
+     spoofed DNS replies persuade a client to authenticate to the wrong
+     realm, when talking to the wrong host (either by spoofing yet more
+     DNS records or by intercepting the net traffic).  Depending on how
+     the client software manages hostnames, however, it could already
+     be vulnerable to such attacks.  We are looking at possible ways to
+     minimize or eliminate this exposure.  For now, we encourage more
+     adventurous sites to try using Secure DNS.
+
+     If this option is not specified but `dns_fallback' is, that value
+     will be used instead.  If neither option is specified, the behavior
+     depends on configure-time options; if none were given, the default
+     is to disable this option.  If the DNS support is not compiled in,
+     this entry has no effect.
+
+dns_fallback
+     General flag controlling the use of DNS for Kerberos information.
+     If both of the preceding options are specified, this option has no
+     effect.
 
 
 File: krb5-admin.info,  Node: appdefaults,  Next: realms (krb5.conf),  Prev: libdefaults,  Up: krb5.conf
@@ -857,8 +902,8 @@ Here is an example of a generic `krb5.conf' file:
      [libdefaults]
          ticket_lifetime = 600
          default_realm = ATHENA.MIT.EDU
-         default_tkt_enctypes = des-cbc-crc
-         default_tgs_enctypes = des-cbc-crc
+         default_tkt_enctypes = des3-hmac-sha1 des-cbc-crc
+         default_tgs_enctypes = des3-hmac-sha1 des-cbc-crc
      
      [realms]
          ATHENA.MIT.EDU = {
@@ -988,8 +1033,8 @@ master_key_name
      (String.)  Specifies the name of the master key.
 
 master_key_type
-     (Key type string.)  Specifies the master key's key type.  Only
-     "des-cbc-crc" is supported at this time.
+     (Key type string.)  Specifies the master key's key type.  Either
+     "des3-hmac-sha1" or "des-cbc-crc" may be used at this time.
 
 max_life
      (Delta time string.)  Specifes the maximum time period for which a
@@ -1002,22 +1047,48 @@ max_renewable_life
 supported_enctypes
      List of key:salt strings.  Specifies the default key/salt
      combinations of principals for this realm.  Any principals created
-     through `kadmin' will have keys of these types.  Since only the
-     encryption type "des-cbc-crc" is supported, you should set this
-     tag to `des-cbc-crc:normal des-cbc-crc:v4'.
+     through `kadmin' will have keys of these types.  If you do not yet
+     wish to enable triple-DES support, you should set this tag to
+     `des-cbc-crc:normal des-cbc-crc:v4'; otherwise, put
+     `des3-hmac-sha1:normal' at the beginning of the list.
 
 kdc_supported_enctypes
      List of key:salt strings.  Specifies the permitted key/salt
      combinations of principals for this realm.  You should set this
-     tag to `des-cbc-crc:normal des-cbc-crc:v4'.
+     tag to `des3-hmac-sha1:normal des-cbc-crc:normal des-cbc-crc:v4'.
 
-     Note: You may also use `des3-cbc-sha1:normal' before
-     `des-cbc-crc:normal' if you wish to support triple-DES service keys
-     in addition to DES service keys.  In order to create such service
-     keys, you must use the `-e' option to `kadmin.local', running on
-     the KDC system itself; the remote `kadmin' client does not allow
-     this option.  We do not currently support the use of triple-DES
-     keys anywhere other than for service keys.
+reject_bad_transit
+     A boolean value (`true', `false').  If set to `true', the KDC will
+     check the list of transited realms for cross-realm tickets against
+     the transit path computed from the realm names and the `capaths'
+     section of its `krb5.conf' file; if the path in the ticket to be
+     issued contains any realms not in the computed path, the ticket
+     will not be issued, and an error will be returned to the client
+     instead.  If this value is set to `false', such tickets will be
+     issued anyways, and it will be left up to the application server to
+     validate the realm transit path.
+
+     If the `disable-transited-check' flag is set in the incoming
+     request, this check is not performed at all.  Having the
+     `reject_bad_transit' option will cause such ticket requests to be
+     rejected always.
+
+     This transit path checking and config file option currently apply
+     only to TGS requests.
+
+     Earlier versions of the MIT release (before 1.2.3) had bugs in the
+     application server support such that the server-side checks may
+     not be performed correctly.  We recommend turning this option on,
+     unless you know that all application servers in this realm have
+     been updated to fixed versions of the software, and for whatever
+     reason, you don't want the KDC to do the validation.
+
+     This is a per-realm option so that multiple-realm KDCs may control
+     it separately for each realm, in case (for example) one realm has
+     had the software on its application servers updated but another
+     has not.
+
+     This option defaults to `true'.
 
 
 File: krb5-admin.info,  Node: Sample kdc.conf File,  Prev: realms (kdc.conf),  Up: kdc.conf
@@ -1035,9 +1106,9 @@ Here's an example of a `kdc.conf' file:
              kadmind_port = 749
              max_life = 10h 0m 0s
              max_renewable_life = 7d 0h 0m 0s
-             master_key_type = des-cbc-crc
-             supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
-             kdc_supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
+             master_key_type = des3-hmac-sha1
+             supported_enctypes = des3-hmac-sha1:normal des-cbc-crc:normal des-cbc-crc:v4
+             kdc_supported_enctypes = des3-hmac-sha1:normal des-cbc-crc:normal des-cbc-crc:v4
          }
      
      [logging]
@@ -1140,10 +1211,7 @@ You can invoke `kadmin' with any of the following options:
      (For `kadmin.local' only.)  Sets the list of cryptosystem and salt
      types to be used for any new keys created.  Available types
      include `des3-cbc-sha1:normal', `des-cbc-crc:normal', and
-     `des-cbc-crc:v4'.  In this release, the `des3-cbc-sha1:normal'
-     type should only be used when registering service principals; for
-     any services that may request tickets themselves to initiate some
-     action, it should be combined with one or more of the other types.
+     `des-cbc-crc:v4'.
 
 
 File: krb5-admin.info,  Node: Date Format,  Next: Principals,  Prev: Kadmin Options,  Up: Administrating Kerberos Database Entries
@@ -1221,7 +1289,6 @@ that principal.
 * Adding or Modifying Principals::
 * Deleting Principals::
 * Changing Passwords::
-* Renaming Principals::
 
 
 File: krb5-admin.info,  Node: Retrieving Information About a Principal,  Next: Privileges,  Prev: Principals,  Up: Principals
@@ -1233,74 +1300,4 @@ Retrieving Information About a Principal
 
 * Attributes::
 * Retrieving a List of Principals::
-
-
-File: krb5-admin.info,  Node: Attributes,  Next: Retrieving a List of Principals,  Prev: Retrieving Information About a Principal,  Up: Retrieving Information About a Principal
-
-Attributes
-..........
-
-To retrieve a listing of the attributes and/or policies associated with
-a principal, use the `kadmin' `get_principal' command, which requires
-the "inquire" administrative privilege.  The syntax is:
-
-     get_principal principal
-
-The `get_principal' command has the alias `getprinc'.
-
-For example, suppose you wanted to view the attributes of the principals
-`jennifer/root@ATHENA.MIT.EDU' and `systest@ATHENA.MIT.EDU'.  You would
-type:
-
-     shell% kadmin
-     kadmin: getprinc jennifer/root
-     Principal: jennifer/root@ATHENA.MIT.EDU
-     Key version: 3
-     Maximum life: 1 day 00:00:00
-     Maximum renewable life: 7 days 00:00:00
-     Master key version: 1
-     Expires: Mon Jan 18 22:14:07 EDT 2038
-     Password expires: Mon Sep 19 14:40:00 EDT 1996
-     Password last changed: Mon Jan 31 02:06:40 EDT 1996
-     Last modified: by joeadmin/admin@ATHENA.MIT.EDU
-     	on Wed Jul 13 18:27:08 EDT 1996
-     Attributes: DISALLOW_FORWARDABLE, DISALLOW_PROXIABLE,
-     	REQUIRES_HW_AUTH
-     Salt type: DEFAULT
-     kadmin:
-
-The `get_principal' command has a `-terse' option, which lists the
-fields as a quoted, tab-separated string.  For example:
-
-     kadmin: getprinc -terse systest
-     systest@ATHENA.MIT.EDU	3	86400	604800	1
-     785926535	753241234	785900000
-     joeadmin/admin@ATHENA.MIT.EDU	786100034	0
-     0
-     kadmin:
-
-
-File: krb5-admin.info,  Node: Retrieving a List of Principals,  Prev: Attributes,  Up: Retrieving Information About a Principal
-
-Retrieving a List of Principals
-...............................
-
-To generate a listing of principals, use the `kadmin' `list_principals'
-command, which requires the "list" privilege.  The syntax is:
-
-     list_principals [expression]
-
-where expression is a shell-style glob expression that can contain the
-characters `*', `?', `[', and `]'.  All policy names matching the
-expression are displayed.  The `list_principals' command has the alias
-`listprincs'.  For example:
-
-     kadmin: listprincs test*
-     test3@mit.edu
-     test2@mit.edu
-     test1@mit.edu
-     testuser@mit.edu
-     kadmin:
-
-If no expression is provided, all principals are printed.
 

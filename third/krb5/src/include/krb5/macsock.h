@@ -22,9 +22,9 @@
 #ifndef macsock_h
 #define macsock_h
 
-#include <Sockets.h>
-#include <ErrorLib.h>
-#include <netdb.h>
+#include <KerberosSupport/Sockets.h>
+#include <KerberosSupport/ErrorLib.h>
+#include <KerberosSupport/netdb.h>
 
 /* Handle ANSI C versus traditional C */
 #ifndef __STDC__
@@ -82,7 +82,9 @@ typedef int SOCKET;
 #define SOCKET_EINTR		EINTR
 #define WSAECONNABORTED     kECONNABORTEDErr
 
+#ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN      MAXHOSTNAMESIZE
+#endif
 
 #define	SOCKET_NFDS(f)		(FD_SETSIZE)	/* select()'s first arg is maxed out */
 
@@ -91,7 +93,7 @@ typedef int SOCKET;
 #define	SOCKET_ERRNO		(GetMITLibError())
 #define	SOCKET_SET_ERRNO(x)	(SetMITLibError(x))
 
-#define local_addr_fallback_kludge() (0)
+#define local_addr_fallback_kludge() 0
 
 
 #endif /* macsock_h */

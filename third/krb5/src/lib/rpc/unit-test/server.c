@@ -1,18 +1,20 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server.c,v 1.1.1.4 1999-10-05 16:15:20 ghudson Exp $
+ * $Id: server.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.4 1999-10-05 16:15:20 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $";
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <gssrpc/rpc.h>
+#include <gssrpc/pmap_clnt.h>
 #include <arpa/inet.h>  /* inet_ntoa */
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
@@ -44,12 +46,20 @@ void usage()
      exit(1);
 }
 
+void handlesig(void)
+{
+    exit(0);
+}
+
 main(int argc, char **argv)
 {
      int c, prot;
      auth_gssapi_name names[2];
      register SVCXPRT *transp;
      extern int optind;
+#ifdef POSIX_SIGNALS
+     struct sigaction sa;
+#endif     
 
      names[0].name = SERVICE_NAME;
      names[0].type = (gss_OID) gss_nt_service_name;
@@ -115,6 +125,18 @@ main(int argc, char **argv)
      _svcauth_gssapi_set_log_badverf_func(rpc_test_badverf, NULL);
      _svcauth_gssapi_set_log_miscerr_func(log_miscerr, NULL);
 
+#ifdef POSIX_SIGNALS
+     (void) sigemptyset(&sa.sa_mask);
+     sa.sa_flags = 0;
+     sa.sa_handler = handlesig;
+     (void) sigaction(SIGHUP, &sa, NULL);
+     (void) sigaction(SIGINT, &sa, NULL);
+     (void) sigaction(SIGTERM, &sa, NULL);
+#else
+     signal(SIGHUP, handlesig);
+     signal(SIGINT, handlesig);
+     signal(SIGTERM, handlesig);
+#endif
      printf("running\n");
      
      svc_run();

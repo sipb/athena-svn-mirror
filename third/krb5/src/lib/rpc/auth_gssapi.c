@@ -292,7 +292,7 @@ next_token:
 	  
 	  if (callstat != RPC_SUCCESS) {
 	       struct rpc_err err;
-	       
+
 	       clnt_geterr(clnt, &err);
 	       if (callstat == RPC_AUTHERROR &&
 		   (err.re_why == AUTH_BADCRED || err.re_why == AUTH_FAILED)

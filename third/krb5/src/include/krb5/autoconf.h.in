@@ -38,8 +38,18 @@
 /* Define if Kerberos V4 backwards compatibility should be supported */
 #undef KRB5_KRB4_COMPAT
 
+/* Define if DNS support for finding realms and KDC locations should
+   be compiled in.  */
+#undef KRB5_DNS_LOOKUP
+#undef KRB5_DNS_LOOKUP_KDC
+#undef KRB5_DNS_LOOKUP_REALM
+
 /* Define to `long' if <sys/types.h> doesn't define. */
 #undef time_t
+
+/* Define if we should compile in IPv6 support (even if we may find we
+   can't use it at run time).  */
+#undef KRB5_USE_INET6
 
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
@@ -52,6 +62,30 @@
 
 /* Define if you have the bcopy function.  */
 #undef HAVE_BCOPY
+
+/* Define if you have the getaddrinfo function.  */
+#undef HAVE_GETADDRINFO
+
+/* Define if you have the getipnodebyaddr function.  */
+#undef HAVE_GETIPNODEBYADDR
+
+/* Define if you have the getipnodebyname function.  */
+#undef HAVE_GETIPNODEBYNAME
+
+/* Define if you have the getnameinfo function.  */
+#undef HAVE_GETNAMEINFO
+
+/* Define if you have the inet_aton function.  */
+#undef HAVE_INET_ATON
+
+/* Define if you have the inet_ntoa function.  */
+#undef HAVE_INET_NTOA
+
+/* Define if you have the inet_ntop function.  */
+#undef HAVE_INET_NTOP
+
+/* Define if you have the inet_pton function.  */
+#undef HAVE_INET_PTON
 
 /* Define if you have the labs function.  */
 #undef HAVE_LABS
@@ -85,6 +119,9 @@
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
+
+/* Define if you have the <sys/socket.h> header file.  */
+#undef HAVE_SYS_SOCKET_H
 
 /* Define if you have the <sys/stat.h> header file.  */
 #undef HAVE_SYS_STAT_H

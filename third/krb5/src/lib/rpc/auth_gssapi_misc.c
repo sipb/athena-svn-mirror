@@ -162,15 +162,17 @@ static void auth_gssapi_display_status_1(m, code, type, rec)
 		    auth_gssapi_display_status_1(m,gssstat,GSS_C_GSS_CODE,1); 
 		    auth_gssapi_display_status_1(m, minor_stat,
 						 GSS_C_MECH_CODE, 1);
-	       } else
-		    fprintf(stderr,
-			    "GSS-API authentication error %s: recursive failure!\n",
-			    msg);
+	       } else {
+		   fputs ("GSS-API authentication error ", stderr);
+		   fwrite (msg.value, msg.length, 1, stderr);
+		   fputs (": recursive failure!\n", stderr);
+	       }
 	       return;
 	  }
-	  
-	  fprintf(stderr, "GSS-API authentication error %s: %s\n", m,
-		  (char *)msg.value); 
+
+	  fprintf (stderr, "GSS-API authentication error %s: ", m);
+	  fwrite (msg.value, msg.length, 1, stderr);
+	  putc ('\n', stderr);
 	  (void) gss_release_buffer(&minor_stat, &msg);
 	  
 	  if (!msg_ctx)
@@ -264,11 +266,14 @@ bool_t auth_gssapi_unwrap_data(major, minor, context, seq_num,
      
      in_buf.value = NULL;
      out_buf.value = NULL;
-     
      if (! xdr_bytes(in_xdrs, (char **) &in_buf.value, 
 		     (unsigned int *) &in_buf.length, (unsigned int) -1)) {
-	  PRINTF(("gssapi_unwrap_data: deserializing encrypted data failed\n"));
-	  return FALSE;
+	 PRINTF(("gssapi_unwrap_data: deserializing encrypted data failed\n"));
+	 temp_xdrs.x_op = XDR_FREE;
+	 (void)xdr_bytes(&temp_xdrs, (char **) &in_buf.value,
+			 (unsigned int *) &in_buf.length,
+			 (unsigned int) -1);
+	 return FALSE;
      }
      
      *major = gss_unseal(minor, context, &in_buf, &out_buf, &conf,
@@ -302,6 +307,7 @@ bool_t auth_gssapi_unwrap_data(major, minor, context, seq_num,
      if (! (*xdr_func)(&temp_xdrs, xdr_ptr)) {
 	  PRINTF(("gssapi_unwrap_data: deserializing arguments failed\n"));
 	  gss_release_buffer(minor, &out_buf);
+	  gssrpc_xdr_free(xdr_func, xdr_ptr);
 	  XDR_DESTROY(&temp_xdrs);
 	  return FALSE;
      }

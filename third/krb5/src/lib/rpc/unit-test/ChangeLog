@@ -1,9 +1,41 @@
+2000-06-21  Tom Yu  <tlyu@mit.edu>
+
+	* server.c: Include gssrpc/pmap_clnt.h in order to get renaming of
+	pmap_unset().  From Nathan Neulinger.
+
+2000-06-08  Tom Yu  <tlyu@mit.edu>
+
+	* lib/helpers.exp (kinit): Move "expect eof" into the commands
+	that send the prompt.  Don't "expect eof" outside of the main
+	expect, as the main expect may have already read eof.
+
+2000-02-15  Tom Yu  <tlyu@mit.edu>
+
+	* server.c: Add code to set a signal handler for SIGHUP and a few
+	others so that purify will actually generate memory leak reports.
+
+	* configure.in: Add CHECK_SIGNALS.
+
+2000-02-07  Tom Yu  <tlyu@mit.edu>
+
+	* config/unix.exp: Call send_error instead of fail to prevent
+	referencing variables not yet set up by the test framework.
+
+	* lib/helpers.exp: Call kinit and kdestroy with the -5 flag to
+	deal with new program behavior.  Also call perror rather than
+	error to avoid spewing a stack trace.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
+
+1999-09-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (unit-test-body-tcp, unit-test-body-udp): Pass
+	$(RUNTESTFLAGS) to runtest.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

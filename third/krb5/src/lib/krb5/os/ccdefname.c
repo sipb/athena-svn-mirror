@@ -31,8 +31,8 @@
 #include "k5-int.h"
 #include <stdio.h>
 
-#ifdef macintosh
-#include "Krb5Globals.h"
+#if TARGET_OS_MAC
+#include <CredentialsCache/CredentialsCache.h>
 #endif
 
 #if defined(_WIN32)
@@ -160,7 +160,7 @@ static krb5_error_code get_from_os(char *name_buf, int name_size)
 	if (get_from_registry_indirect(name_buf, name_size) != 0)
 		return 0;
 
-        strncpy(name_buf, prefix, name_size);       
+        strncpy(name_buf, prefix, name_size - 1);
         name_buf[name_size - 1] = 0;
         size = name_size - strlen(prefix);
         if (size > 0)
@@ -186,15 +186,38 @@ static krb5_error_code get_from_os(char *name_buf, int name_size)
 }
 #endif
 
-#if defined (macintosh)
+#if defined (macintosh) || defined(__MACH__)
 
 static krb5_error_code get_from_os(char *name_buf, int name_size)
 {
-	if (name_size < 4)
-		return ENOMEM;
-	Krb5GlobalsGetDefaultCacheName (name_buf + 4, name_size - 4);
-	memcpy (name_buf, "API:", 4);
-	return 0;
+	krb5_error_code result = 0;
+	cc_context_t cc_context = NULL;
+	cc_string_t default_name = NULL;
+
+	cc_int32 ccerr = cc_initialize (&cc_context, ccapi_version_3, NULL, NULL);
+	if (ccerr == ccNoError) {
+		ccerr = cc_context_get_default_ccache_name (cc_context, &default_name);
+	}
+	
+	if (ccerr == ccNoError) {
+		if (strlen (default_name -> data) + 5 > name_size) {
+			result = ENOMEM;
+			goto cleanup;
+		} else {
+			sprintf (name_buf, "API:%s", default_name -> data);
+		}
+	}
+	
+cleanup:
+	if (cc_context != NULL) {
+		cc_context_release (cc_context);
+	}
+	
+	if (default_name != NULL) {
+		cc_string_release (default_name);
+	}
+	
+	return result;
 }
 
 #else
@@ -237,6 +260,13 @@ krb5_cc_set_default_name(context, name)
 	if (!new_name)
 		return ENOMEM;
 	strcpy(new_name, name_buf);
+	
+	if (!os_ctx->default_ccname || (strcmp(os_ctx->default_ccname, new_name) != 0)) {
+		/* the ccache changed... forget the old principal */
+		if (os_ctx->default_ccprincipal)
+			krb5_free_principal (context, os_ctx->default_ccprincipal);
+		os_ctx->default_ccprincipal = 0;  /* we don't care until we use it */
+	}
 	
 	if (os_ctx->default_ccname)
 		free(os_ctx->default_ccname);

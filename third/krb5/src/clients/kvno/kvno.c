@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* we need a native ticket */
-	if (ret = decode_krb5_ticket(&out_creds->ticket, &ticket)) {
+	if (ret = krb5_decode_ticket(&out_creds->ticket, &ticket)) {
 	    fprintf(stderr, "%s: %s while decoding ticket\n",
 		    princ, error_message(ret));
 
@@ -156,11 +156,12 @@ int main(int argc, char *argv[])
 
 	krb5_free_ticket(context, ticket);
 	krb5_free_creds(context, out_creds);
-	free(princ);
+	krb5_free_unparsed_name(context, princ);
     }
 
     krb5_free_principal(context, me);
     krb5_cc_close(context, ccache);
+    krb5_free_context(context);
 
     if (errors)
 	exit(1);

@@ -38,7 +38,7 @@
 /* this can be replaced with another encryption provider, since
    everything below uses it abstractly */
 
-struct krb5_enc_provider *enc = &krb5_enc_des;
+static const struct krb5_enc_provider *const enc = &krb5_enc_des;
 
 /* XXX state.  Should it be in krb5_context? */
 
@@ -118,7 +118,7 @@ krb5_c_random_make_octets(krb5_context context, krb5_data *data)
 	    key.contents = KEYCONTENTS;
 
 	    /* fill it in */
-	    if (ret = ((*(enc->make_key))(&data1, &key)))
+	    if ((ret = ((*(enc->make_key))(&data1, &key))))
 		return(ret);
 
 	    /* encrypt the block */
@@ -126,7 +126,7 @@ krb5_c_random_make_octets(krb5_context context, krb5_data *data)
 	    data1.data = STATEBLOCK;
 	    data2.length = blocksize;
 	    data2.data = RANDBLOCK;
-	    if (ret = ((*(enc->encrypt))(&key, NULL, &data1, &data2)))
+	    if ((ret = ((*(enc->encrypt))(&key, NULL, &data1, &data2))))
 		return(ret);
 
 	    /* fold the new output back into the state */
@@ -152,4 +152,10 @@ krb5_c_random_make_octets(krb5_context context, krb5_data *data)
     }
 
     return(0);
+}
+
+void prng_cleanup (void)
+{
+	free (random_state);
+	inited = 0;
 }

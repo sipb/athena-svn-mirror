@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: svc_auth_gssapi.c,v 1.1.1.4 1999-10-05 16:15:11 ghudson Exp $
+ * $Id: svc_auth_gssapi.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $
  *
  */
 
@@ -134,7 +134,6 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
      svc_auth_gssapi_data *client_data;
      int ret_flags, ret, i;
      rpc_u_int32 seq_num;
-     int flag;
 
      PRINTF(("svcauth_gssapi: starting\n"));
      
@@ -162,6 +161,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
      if (! xdr_authgssapi_creds(&xdrs, &creds)) {
 	  PRINTF(("svcauth_gssapi: failed decoding creds\n"));
 	  LOG_MISCERR("protocol error in client credentials");
+	  gssrpc_xdr_free(xdr_authgssapi_creds, &creds);
 	  XDR_DESTROY(&xdrs);
 	  ret = AUTH_BADCRED;
 	  goto error;
@@ -306,8 +306,6 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 #endif
 
 	  if (call_arg.version >= 3) {
-	       int len;
-
 	       memset(&bindings, 0, sizeof(bindings));
 	       bindings.application_data.length = 0;
 	       bindings.initiator_addrtype = GSS_C_AF_INET;
@@ -550,6 +548,7 @@ enum auth_stat _svcauth_gssapi(rqst, msg, no_dispatch)
 				      &call_arg)) {
 			 PRINTF(("svcauth_gssapi: cannot decode args\n"));
 			 LOG_MISCERR("protocol error in call arguments");
+			 gssrpc_xdr_free(xdr_authgssapi_init_arg, &call_arg);
 			 ret = AUTH_BADCRED;
 			 goto error;
 		    }
@@ -655,7 +654,6 @@ static svc_auth_gssapi_data *create_client()
      client_list *c;
      svc_auth_gssapi_data *client_data;
      static int client_key = 1;
-     int ret;
      
      PRINTF(("svcauth_gssapi: empty creds, creating\n"));
 
@@ -663,7 +661,7 @@ static svc_auth_gssapi_data *create_client()
      if (client_data == NULL)
 	  return NULL;
      memset((char *) client_data, 0, sizeof(*client_data));
-     L_PRINTF(2, ("create_client: new client_data = %#x\n", client_data));
+     L_PRINTF(2, ("create_client: new client_data = %p\n", client_data));
      
      /* set up client data structure */
      client_data->established = 0;
@@ -781,10 +779,9 @@ static void destroy_client(client_data)
      OM_uint32 gssstat, minor_stat;
      gss_buffer_desc out_buf;
      client_list *c, *c2;
-     int ret;
 
      PRINTF(("destroy_client: destroying client_data\n"));
-     L_PRINTF(2, ("destroy_client: client_data = %#x\n", client_data));
+     L_PRINTF(2, ("destroy_client: client_data = %p\n", client_data));
 
 #ifdef DEBUG_GSSAPI
      if (svc_debug_gssapi >= 3)
@@ -850,7 +847,7 @@ static void dump_db(msg)
      c = clients;
      while (c) {
 	  client_data = c->client;
-	  L_PRINTF(3, ("\tclient_data = %#x, exp = %d\n",
+	  L_PRINTF(3, ("\tclient_data = %p, exp = %d\n",
 		       client_data, client_data->expiration));
 	  c = c->next;
      }
@@ -869,7 +866,7 @@ static void clean_client()
      while (c) {
 	  client_data = c->client;
 	  
-	  L_PRINTF(2, ("clean_client: client_data = %#x\n",
+	  L_PRINTF(2, ("clean_client: client_data = %p\n",
 		       client_data));
 	  
 	  if (client_data->expiration < time(0)) {
@@ -882,7 +879,6 @@ static void clean_client()
 	  }
      }
 
-done:
      PRINTF(("clean_client: done\n"));
 }
 

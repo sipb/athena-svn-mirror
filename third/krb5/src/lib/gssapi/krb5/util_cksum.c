@@ -21,12 +21,13 @@
  */
 
 /*
- * $Id: util_cksum.c,v 1.1.1.2 1999-10-05 16:12:21 ghudson Exp $
+ * $Id: util_cksum.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
  */
 
 #include "gssapiP_krb5.h"
 #include <memory.h>
 
+/* Checksumming the channel bindings always uses plain MD5.  */
 krb5_error_code
 kg_checksum_channel_bindings(context, cb, cksum, bigend)
      krb5_context context;

@@ -1,7 +1,7 @@
 /*
  * kdc/main.c
  *
- * Copyright 1990 by the Massachusetts Institute of Technology.
+ * Copyright 1990,2001 by the Massachusetts Institute of Technology.
  *
  * Export of this software from the United States of America may
  *   require a specific license from the United States Government.
@@ -44,8 +44,6 @@
 #include <netinet/in.h>
 #endif
 
-kdc_realm_t *find_realm_data PROTOTYPE((char *, krb5_ui_4));
-
 void usage PROTOTYPE((char *));
 
 krb5_sigtype request_exit PROTOTYPE((int));
@@ -53,12 +51,13 @@ krb5_sigtype request_hup  PROTOTYPE((int));
 
 void setup_signal_handlers PROTOTYPE((void));
 
+krb5_error_code setup_sam PROTOTYPE((void));
+
 void initialize_realms PROTOTYPE((krb5_context, int, char **));
 
 void finish_realms PROTOTYPE((char *));
 
 static int nofork = 0;
-static char *kdc_current_rcname = (char *) NULL;
 static int rkey_init_done = 0;
 
 #ifdef POSIX_SIGNALS
@@ -66,44 +65,6 @@ static struct sigaction s_action;
 #endif /* POSIX_SIGNALS */
 
 #define	KRB5_KDC_MAX_REALMS	32
-
-#ifdef USE_RCACHE
-/*
- * initialize the replay cache.
- */
-krb5_error_code
-kdc_initialize_rcache(kcontext, rcache_name)
-    krb5_context	kcontext;
-    char 		*rcache_name;
-{
-    krb5_error_code	retval;
-    char		*rcname;
-    char		*sname;
-
-    rcname = (rcache_name) ? rcache_name : kdc_current_rcname;
-    if (!rcname)
-	rcname = KDCRCACHE;
-    if (!(retval = krb5_rc_resolve_full(kcontext, &kdc_rcache, rcname))) {
-	/* Recover or initialize the replay cache */
-	if (!(retval = krb5_rc_recover(kcontext, kdc_rcache)) ||
-	    !(retval = krb5_rc_initialize(kcontext,
-					  kdc_rcache,
-					  kcontext->clockskew))
-	    ) {
-	    /* Expunge the replay cache */
-	    if (!(retval = krb5_rc_expunge(kcontext, kdc_rcache))) {
-		sname = kdc_current_rcname;
-		kdc_current_rcname = strdup(rcname);
-		if (sname)
-		    free(sname);
-	    }
-	}
-	if (retval)
-	    krb5_rc_close(kcontext, kdc_rcache);
-    }
-    return(retval);
-}
-#endif
 
 /*
  * Find the realm entry for a given realm.
@@ -266,6 +227,12 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
 	rdp->realm_mkey.enctype = (krb5_enctype) rparams->realm_enctype;
     else
 	rdp->realm_mkey.enctype = manual ? def_enctype : ENCTYPE_UNKNOWN;
+
+    /* Handle reject-bad-transit flag */
+    if (rparams && rparams->realm_reject_bad_transit_valid)
+	rdp->realm_reject_bad_transit = rparams->realm_reject_bad_transit;
+    else
+	rdp->realm_reject_bad_transit = 1;
 
     /* Handle ticket maximum life */
     rdp->realm_maxlife = (rparams && rparams->realm_max_life_valid) ?
@@ -582,6 +549,12 @@ setup_signal_handlers()
     return;
 }
 
+krb5_error_code
+setup_sam()
+{
+    return krb5_c_make_random_key(kdc_context, ENCTYPE_DES_CBC_MD5, &psr_key);
+}
+
 void
 usage(name)
 char *name;
@@ -793,8 +766,8 @@ finish_realms(prog)
  */
 
 int main(argc, argv)
-int argc;
-char *argv[];
+     int argc;
+     char *argv[];
 {
     krb5_error_code	retval;
     krb5_context	kcontext;
@@ -833,6 +806,12 @@ char *argv[];
     initialize_realms(kcontext, argc, argv);
 
     setup_signal_handlers();
+
+    if (retval = setup_sam()) {
+	com_err(argv[0], retval, "while initializing SAM");
+	finish_realms(argv[0]);
+	return 1;
+    }
 
     if ((retval = setup_network(argv[0]))) {
 	com_err(argv[0], retval, "while initializing network");

@@ -1,3 +1,22 @@
+2001-10-29  Miro Jurisic  <meeroh@mit.edu>
+	* pullup from krb5-1-2 branch after krb5-1-2-2-bp
+	* des_int.h: use "" includes for k5-int.h
+
+2000-02-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_verify.c: Add "const" to casts in calls to mit_des_cbc_encrypt().
+
+	* destest.c: Declare zeroblock as krb5_octet * instead of char * as
+	argument to mit_des_cbc_encrypt.
+	
+2000-01-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* f_sched.c (PC2_C, PC2_D): Put braces around sub-arrays.
+	* f_tables.c (des_SP_table): Ditto.
+
+	* weak_key.c (weak): Now const.
+	(mit_des_is_weak_key): Adjust pointer type accordingly.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,

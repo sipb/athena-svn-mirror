@@ -21,12 +21,17 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.3 1999-02-09 21:02:08 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-misc.c,v 1.1.1.4 2001-12-05 20:47:22 rbasch Exp $";
 #endif
 
 #include <stdio.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <winsock.h>
+#else
 #include <sys/types.h>
 #include <netinet/in.h>
+#endif
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -44,6 +49,9 @@ extern char *malloc();
 
 FILE *display_file;
 
+gss_buffer_desc empty_token_buf = { 0, (void *) "" };
+gss_buffer_t empty_token = &empty_token_buf;
+
 static void display_status_1
 	PROTOTYPE( (char *m, OM_uint32 code, int type) );
 
@@ -53,7 +61,7 @@ static int write_all(int fildes, char *buf, unsigned int nbyte)
      char *ptr;
 
      for (ptr = buf; nbyte; ptr += ret, nbyte -= ret) {
-	  ret = write(fildes, ptr, nbyte);
+	  ret = send(fildes, ptr, nbyte, 0);
 	  if (ret < 0) {
 	       if (errno == EINTR)
 		    continue;
@@ -72,7 +80,7 @@ static int read_all(int fildes, char *buf, unsigned int nbyte)
      char *ptr;
 
      for (ptr = buf; nbyte; ptr += ret, nbyte -= ret) {
-	  ret = read(fildes, ptr, nbyte);
+	  ret = recv(fildes, ptr, nbyte, 0);
 	  if (ret < 0) {
 	       if (errno == EINTR)
 		    continue;
@@ -93,21 +101,32 @@ static int read_all(int fildes, char *buf, unsigned int nbyte)
  * Arguments:
  *
  * 	s		(r) an open file descriptor
+ *	flags		(r) the flags to write
  * 	tok		(r) the token to write
  *
  * Returns: 0 on success, -1 on failure
  *
  * Effects:
  *
- * send_token writes the token length (as a network long) and then the
- * token data to the file descriptor s.  It returns 0 on success, and
- * -1 if an error occurs or if it could not write all the data.
+ * send_token writes the token flags (a single byte, even though
+ * they're passed in in an integer), then the token length (as a
+ * network long) and then the token data to the file descriptor s.  It
+ * returns 0 on success, and -1 if an error occurs or if it could not
+ * write all the data.
  */
-int send_token(s, tok)
+int send_token(s, flags, tok)
      int s;
+     int flags;
      gss_buffer_t tok;
 {
      int len, ret;
+     unsigned char char_flags = (unsigned char) flags;
+
+     ret = write_all(s, (char *)&char_flags, 1);
+     if (ret != 1) {
+       perror("sending token flags");
+       return -1;
+     }
 
      len = htonl(tok->length);
 
@@ -146,24 +165,40 @@ int send_token(s, tok)
  * Arguments:
  *
  * 	s		(r) an open file descriptor
+ *	flags		(w) the read flags
  * 	tok		(w) the read token
  *
  * Returns: 0 on success, -1 on failure
  *
  * Effects:
  * 
- * recv_token reads the token length (as a network long), allocates
- * memory to hold the data, and then reads the token data from the
- * file descriptor s.  It blocks to read the length and data, if
- * necessary.  On a successful return, the token should be freed with
- * gss_release_buffer.  It returns 0 on success, and -1 if an error
- * occurs or if it could not read all the data.
+ * recv_token reads the token flags (a single byte, even though
+ * they're stored into an integer, then reads the token length (as a
+ * network long), allocates memory to hold the data, and then reads
+ * the token data from the file descriptor s.  It blocks to read the
+ * length and data, if necessary.  On a successful return, the token
+ * should be freed with gss_release_buffer.  It returns 0 on success,
+ * and -1 if an error occurs or if it could not read all the data.
  */
-int recv_token(s, tok)
+int recv_token(s, flags, tok)
      int s;
+     int *flags;
      gss_buffer_t tok;
 {
      int ret;
+     unsigned char char_flags;
+
+     ret = read_all(s, (char *) &char_flags, 1);
+     if (ret < 0) {
+       perror("reading token flags");
+       return -1;
+     } else if (! ret) {
+       if (display_file)
+	 fputs("reading token flags: 0 bytes read\n", display_file);
+       return -1;
+     } else {
+       *flags = (int) char_flags;
+     }
 
      ret = read_all(s, (char *) &tok->length, 4);
      if (ret < 0) {
@@ -179,7 +214,7 @@ int recv_token(s, tok)
 	  
      tok->length = ntohl(tok->length);
      tok->value = (char *) malloc(tok->length);
-     if (tok->value == NULL) {
+     if (tok->length && tok->value == NULL) {
 	 if (display_file)
 	     fprintf(display_file, 
 		     "Out of memory allocating token data\n");
@@ -301,3 +336,20 @@ void print_token(tok)
     fprintf(display_file, "\n");
     fflush(display_file);
 }
+
+#ifdef _WIN32
+#include <sys\timeb.h>
+#include <time.h>
+
+int gettimeofday (struct timeval *tv, void *ignore_tz)
+{
+    struct _timeb tb;
+    _tzset();
+    _ftime(&tb);
+    if (tv) {
+	tv->tv_sec = tb.time;
+	tv->tv_usec = tb.millitm * 1000;
+    }
+    return 0;
+}
+#endif /* _WIN32 */

@@ -45,7 +45,7 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
 {
     krb5_error_code ret;
     size_t blocksize, hashsize, plainsize;
-    unsigned char *plaintext, *cksumdata;
+    unsigned char *cksumdata, *cn;
     krb5_data output, cksum, crcivec;
     int alloced;
 
@@ -82,6 +82,17 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
 
     /* decrypt it */
 
+    /* save last ciphertext block in case we decrypt in place */
+    if (ivec != NULL && ivec->length == blocksize) {
+	cn = malloc(blocksize);
+	if (cn == NULL) {
+	    ret = ENOMEM;
+	    goto cleanup;
+	}
+	memcpy(cn, input->data + input->length - blocksize, blocksize);
+    } else
+	cn = NULL;
+
     /* XXX this is gross, but I don't have much choice */
     if ((key->enctype == ENCTYPE_DES_CBC_CRC) && (ivec == 0)) {
 	crcivec.length = key->length;
@@ -89,7 +100,7 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
 	ivec = &crcivec;
     }
 
-    if (ret = ((*(enc->decrypt))(key, ivec, input, &output)))
+    if ((ret = ((*(enc->decrypt))(key, ivec, input, &output))))
 	goto cleanup;
 
     /* verify the checksum */
@@ -100,7 +111,7 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
     cksum.length = hashsize;
     cksum.data = output.data+blocksize;
 
-    if (ret = ((*(hash->hash))(1, &output, &cksum)))
+    if ((ret = ((*(hash->hash))(1, &output, &cksum))))
 	goto cleanup;
 
     if (memcmp(cksum.data, cksumdata, cksum.length) != 0) {
@@ -119,6 +130,10 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
     }
     arg_output->length = plainsize;
 
+    /* update ivec */
+    if (cn != NULL)
+	memcpy(ivec->data, cn, blocksize);
+
     ret = 0;
 
 cleanup:
@@ -127,8 +142,9 @@ cleanup:
 	free(output.data);
     }
 
+    if (cn != NULL)
+	free(cn);
     memset(cksumdata, 0, hashsize);
     free(cksumdata);
     return(ret);
 }
-

@@ -120,7 +120,7 @@ static int yyerror ();
 
 #if	!defined(lint) && !defined(SABER)
 static char RCS[] =
-	"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/getdate.y,v 1.1.1.4 1999-10-05 16:11:21 ghudson Exp $";
+	"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/getdate.y,v 1.1.1.5 2001-12-05 20:47:43 rbasch Exp $";
 #endif	/* !defined(lint) && !defined(SABER) */
 
 

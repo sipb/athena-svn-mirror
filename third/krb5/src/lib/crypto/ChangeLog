@@ -1,3 +1,51 @@
+2001-01-29  Ken Raeburn  <raeburn@mit.edu>
+
+	* make_checksum.c (krb5_c_make_checksum): Clear checksum contents
+	pointer after freeing it in error case.
+
+2000-06-03  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in(LIBMAJOR, LIBMINOR): Bump library version.
+
+2000-01-24  Tom Yu  <tlyu@mit.edu>
+
+	* crypto_libinit.c: Add terminating newline; use 0 and 1 instead
+	of false and true.
+
+Fri Jan 21 22:47:00 2000  Miro Jurisic  <meeroh@mit.edu>
+
+	* Makefile.in: added crypto_libinit.[co]
+	* crypto_libinit.[ch]: new files, contain library initialization
+		and cleanup code
+
+2000-01-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* cksumtypes.c (krb5_cksumtypes_list, krb5_cksumtypes_length): Now
+	const.
+	* cksumtypes.h (krb5_cksumtypes_list, krb5_cksumtypes_length):
+	Updated decls.
+	* etypes.c (krb5_enctypes_list, krb5_enctypes_length): Now const.
+	* etypes.h (krb5_enctypes_list, krb5_enctypes_length): Updated
+	decls.
+	* make_random_key.c (krb5_c_make_random_key): Pointers to
+	enc_provider table now point to const.
+	* prng.c (enc): Now static and const, and points to const.
+	* string_to_key.c (krb5_c_string_to_key): Ditto.
+
+	* hmac.c (krb5_hmac): Put extra parens around if(a=b) constructs
+	to keep gcc happy.
+	* make_random_key.c (krb5_c_make_random_key): Ditto.
+	* old_api_glue.c (krb5_encrypt, krb5_decrypt, krb5_random_key,
+	krb5_calculate_checksum, krb5_verify_checksum, krb5_encrypt_data,
+	krb5_decrypt_data): Ditto.
+	* prng.c (krb5_c_random_make_octets): Ditto.
+	* string_to_key.c (krb5_c_string_to_key): Ditto.
+	* verify_checksum.c (krb5_c_verify_checksum): Ditto.
+
+	* make_checksum.c: Include dk.h.
+
+	* nfold.c (krb5_nfold): Delete unused variables.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
