@@ -2,7 +2,7 @@
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
  *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.1 1990-04-19 12:02:20 jfc Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.2 1990-04-19 12:02:26 jfc Exp $
  */
 
 /*
@@ -23,14 +23,20 @@
  * kerberos libraries.
  */
 #define NFS
-#define RVD
 #define AFS
+#ifndef AIX
+#define	RVD
 #define UFS
+#endif
 #define ZEPHYR
 #define HESIOD
 #define KERBEROS
-/* #define OLD_KERBEROS */
-/* #undef NEED_STRTOK */
+
+#ifdef AIX
+#define	_BSD
+#define	BSD
+#define	BSD_INCLUDES
+#endif
 
 /*
  * Other external filenames
@@ -41,7 +47,11 @@
 #define MTAB		"/etc/mtab"
 #define FSCK_FULLNAME "/etc/fsck"
 #define FSCK_SHORTNAME "fsck"
+#ifdef AIX
+#define AKLOG_FULLNAME "/usr/athena/aklog"
+#else
 #define AKLOG_FULLNAME "/afs/athena.mit.edu/service/aklog"
+#endif
 #define AKLOG_SHORTNAME "aklog"
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
@@ -113,3 +123,8 @@ struct mntent {
 #define DEFPGTHRESH	64	/* default page threshhold */
 
 #endif /* ultrix compat stuff */
+
+#ifdef AIX
+#define	MOUNT_UFS	1
+#define	MOUNT_NFS	2
+#endif
