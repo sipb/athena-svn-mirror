@@ -4,8 +4,8 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v $
-/**/#	$Author: jfc $
-/**/#	$Id: Imakefile,v 1.4 1991-09-02 19:02:51 jfc Exp $
+/**/#	$Author: lwvanels $
+/**/#	$Id: Imakefile,v 1.5 1991-12-05 15:30:31 lwvanels Exp $
 /**/#
 
 LIBS= ${ZEPHYR_LIB} ${KRB_LIB} ${DES_LIB} ${COMERR_LIB} ${HES_LIB}
@@ -23,7 +23,7 @@ normal_obj_rule()
 program(zmailnotify,${OBJS},,${LIBS},${CLIENTDIR})
 
 #ifdef ATHENA_COMPAT
-all::
+install::
 	$(RM) $(DESTDIR)/usr/athena/zmailnotify
 	ln -s $(CLIENTDIR)/zmailnotify $(DESTDIR)/usr/athena/zmailnofity
 #endif
