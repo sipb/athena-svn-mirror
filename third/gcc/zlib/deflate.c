@@ -47,7 +47,7 @@
  *
  */
 
-/* @(#) $Id: deflate.c,v 1.1.1.3 2004-02-10 14:07:28 zacheiss Exp $ */
+/* @(#) $Id: deflate.c,v 1.1.1.4 2004-12-23 15:41:35 ghudson Exp $ */
 
 #include "deflate.h"
 
