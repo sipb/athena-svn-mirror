@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.12 1991-02-24 11:26:19 lwvanels Exp $
+ *	$Id: c_io.c,v 1.13 1991-04-08 20:57:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.12 1991-02-24 11:26:19 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.13 1991-04-08 20:57:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,8 +45,11 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <olc/olc.h>
 
-extern char DaemonHost[];			
-extern int errno;
+#ifdef NEEDS_ERRNO_DEFS
+extern int      errno;
+extern char     *sys_errlist[];
+extern int      sys_nerr;
+#endif
 
 struct hostent *gethostbyname(); /* Get host entry of a host. */
 
@@ -57,7 +60,7 @@ static ERRCODE write_chars_to_fd (int, char *, int);
 static ERRCODE read_chars_from_fd (int, char *, int);
 #endif
 
-#ifdef m68k
+#ifdef NEEDS_SELECT_MACROS
 #define NBBY    8 /* number of bits in a byte */
 #define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
 
@@ -166,10 +169,6 @@ write_int_to_fd(fd, response)
      int fd;
      int response;
 {
-#ifdef	TEST
-  printf("write_int_to_fd(%d, %d)\n", fd, response);
-#endif	/* TEST */
-  
   response = htonl((u_long) response);
   if (swrite(fd, (char *) &response, sizeof(int)) != sizeof(int))
     return(ERROR);
@@ -228,13 +227,9 @@ read_text_into_file(fd, filename)
   int filedes;		/* Output file descriptor. */
   char error[ERROR_SIZE];	/* Error message. */
   
-#ifdef	TEST
-  printf("read_text_into_file(%d, %s)\n", fd, filename);
-#endif	/* TEST */
-	
   if (read_int_from_fd(fd, &nbytes) != SUCCESS) 
     {
-      perror("read_text_into_file: unable to read nbytes from socket");
+      olc_perror("read_text_into_file: unable to read nbytes from socket");
       return(ERROR);
     }
   
@@ -242,7 +237,7 @@ read_text_into_file(fd, filename)
     {
       (void) sprintf(error, "read_text_into_file: Unable to open file %s",
 		     filename);
-      perror(error);
+      olc_perror(error);
       return(ERROR);
     }
   
@@ -256,10 +251,7 @@ read_text_into_file(fd, filename)
 	      (void) sprintf(error,
 			     "read_text_into_file: Error reading text, n=%d",
 			     n);
-	      perror(error);
-#ifdef	TEST
-	      fprintf(stderr, "n=%d\n", n);
-#endif	/* TEST */
+	      olc_perror(error);
 	      (void) unlink(filename);
 	      (void) close(filedes);
 	      return(ERROR);
@@ -270,7 +262,7 @@ read_text_into_file(fd, filename)
 	      (void) sprintf(error, 
 		     "read_text_into_file: Error writing text to file %s",
 		     filename);
-	      perror(error);
+	      olc_perror(error);
 	      (void) unlink(filename);
 	      (void) close(filedes);
 	      return(ERROR);
@@ -308,23 +300,15 @@ write_file_to_fd(fd, filename)
   char inbuf[BUFSIZ];	/* Input buffer. */
   char error[ERROR_SIZE];	/* Error message. */
 
-#ifdef	TEST
-  printf("write_file_to_fd: fd %d, fn %s\n", fd, filename);
-#endif	/* TEST */
-
   if (stat(filename, &statbuf) != 0) 
     {
       (void) sprintf(error, "write_file_to_fd: bad stat value on file %s",
 		     filename);
-      perror(error);
+      olc_perror(error);
       nbytes = 0;
     }
   else
     nbytes = statbuf.st_size;
-
-#ifdef	TEST
-  printf("nbytes=%d\n", nbytes);
-#endif	/* TEST */
 
   if (nbytes <= 0) 
     {
@@ -336,13 +320,13 @@ write_file_to_fd(fd, filename)
     {
       (void) sprintf(error, "write_file_to_fd: Unable to open file %s",
 		     filename);
-      perror(error);
+      olc_perror(error);
       return(ERROR);
     }
   
   if (write_int_to_fd(fd, nbytes) != SUCCESS) 
     {
-      perror("write_file_to_fd: Error writing size.");
+      olc_perror("write_file_to_fd: Error writing size.");
       close(filedes);
       return(ERROR);
     }
@@ -356,7 +340,7 @@ write_file_to_fd(fd, filename)
 	  (void) sprintf(error,
 		 "write_file_to_fd: Error reading text from file %s, n=%d",
 		 filename, n_read);
-	  perror(error);
+	  olc_perror(error);
 	  (void) close(filedes);
 	  return(ERROR);
 	}
@@ -366,14 +350,8 @@ write_file_to_fd(fd, filename)
 	  (void) sprintf(error,
 		 "write_file_to_fd: Error writing text, n_read=%d, n_wrote=%d",
 		 n_read, n_wrote);
-	  perror(error);
+	  olc_perror(error);
 
-#ifdef	TEST
-	  fprintf(stderr, "n_read = %d, n_wrote = %d\n", n_read, n_wrote);
-#else   /* TEST */
-	  n_wrote = n_wrote;
-#endif	/* TEST */
-		
 	  (void) close(filedes);
 	  return(ERROR);
 	}
@@ -402,10 +380,6 @@ write_text_to_fd(fd, buf)
 {
   int nchars;		/* Number of characters in string. */
 
-#ifdef	TEST
-  printf("write_text_to_fd(%d, 0x%x)\n", fd, buf);
-#endif	/* TEST */
-	
   if (buf != NULL)
     nchars = strlen(buf);
   else
@@ -413,7 +387,7 @@ write_text_to_fd(fd, buf)
 
   if (write_int_to_fd(fd, nchars) != SUCCESS) 
     {
-      perror("write_text_to_fd: write_int_to_fd");
+      olc_perror("write_text_to_fd: write_int_to_fd");
       return(ERROR);
     }
   
@@ -448,13 +422,13 @@ read_text_from_fd(fd)
   
   if (read_int_from_fd(fd, &nchars) != SUCCESS) 
     {
-      perror("read_text: read_int");
+      olc_perror("read_text: read_int");
       return((char *) NULL);
     }
 
   if ((rtff_buf = (char *)malloc((unsigned) (nchars + 1))) == (char *) NULL) 
     {
-      perror("read_text: Can't allocate memory.");
+      olc_perror("read_text: Can't allocate memory.");
       return((char *) NULL);
     }
 
@@ -466,14 +440,6 @@ read_text_from_fd(fd)
   else
     return((char *) NULL);
 }	
-
-
-
-#ifdef	TEST
-#undef	BUFSIZ
-#define	BUFSIZ 64
-#endif	/* TEST */
-
 
 
 /*
@@ -495,15 +461,11 @@ write_chars_to_fd(fd, buf, nchars)
      int nchars;
 {
 
-#ifdef	TEST
-  printf("write_chars_to_fd(%d, 0x%x, %d)\n", fd, buf, nchars);
-#endif	/* TEST */
-
   while (nchars > BUFSIZ) 
     {
       if (swrite(fd, buf, BUFSIZ) != BUFSIZ) 
 	{
-	  perror("write_chars: Error writing text.");
+	  olc_perror("write_chars: Error writing text.");
 	  return(ERROR);
 	}
       buf += BUFSIZ;
@@ -512,7 +474,7 @@ write_chars_to_fd(fd, buf, nchars)
 
   if (swrite(fd, buf, nchars) != nchars) 
     {
-      perror("write_chars: Error writing text.");
+      olc_perror("write_chars: Error writing text.");
       return(ERROR);
     }
   return(SUCCESS);
@@ -540,21 +502,14 @@ read_chars_from_fd(fd, buf, nchars)
   int n;
   char error[ERROR_SIZE];	/* Error message. */
 
-#ifdef	TEST
-  printf("read_chars_from_fd(%d, 0x%x, %d)\n", fd, buf, nchars);
-#endif	/* TEST */
-  
   while (nchars) 
     {
       if ((n = sread(fd, buf, MIN(BUFSIZ, nchars))) < 1) 
 	{
 	  (void) sprintf(error,
 			 "read_chars_from_fd: Error reading text, n=%d", n);
-	  perror(error);
+	  olc_perror(error);
 
-#ifdef	TEST
-	  fprintf(stderr, "sread=%d\n", n);
-#endif	/* TEST */
 	  return(ERROR);
 	}
       
@@ -605,7 +560,7 @@ int sread(fd, buf, nbytes)
       if (s_val == 0)
 	errno = ETIMEDOUT;
 
-      perror("sread: select");
+      olc_perror("sread: select");
       return(-1);
     }
 
@@ -650,21 +605,12 @@ int swrite(fd, buf, nbytes)
       if (s_val == 0)
 	errno = ETIMEDOUT;
 
-#ifdef	TEST
-      perror("swrite: select");
-#endif	/* TEST */
+      olc_perror("swrite: select");
       return(-1);
     }
   
   n_wrote = write(fd, buf, nbytes);
 
-#ifdef	TEST
-  if (n_wrote != nbytes) 
-    {
-      fprintf(stderr, "%d wrote of %d\n", n_wrote, nbytes);
-    }
-#endif	/* TEST */
-  
   return(n_wrote);
 }
 
