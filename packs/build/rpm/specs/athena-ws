@@ -26,9 +26,6 @@ MESSAGE
 exit 1
 fi
 
-cc -static -g -I/usr/include/rpm rpmupdate.c -o rpmupdate -lrpm -lpopt -ldb1 \
-	-lz -lbz2
-
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
   cat 1>&2 << MESSAGE
@@ -50,7 +47,6 @@ cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
-cp rpmupdate $RPM_BUILD_ROOT/etc/athena/rpmupdate
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
