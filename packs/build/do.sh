@@ -1,23 +1,27 @@
 #!/bin/sh
-# $Id: do.sh,v 1.47 2000-03-01 22:21:01 ghudson Exp $
+# $Id: do.sh,v 1.48 2000-03-06 16:25:54 tb Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
-athtoolroot=
+athtoolroot=$ATHTOOLROOT
 contained=false
+mungepath=true
 n=""
 maybe=""
 
 usage() {
-	echo "Usage: do [-cn] [-s srcdir] [-d destdir] [-t toolroot]" 1>&2
+	echo "Usage: do [-cnp] [-s srcdir] [-d destdir] [-t toolroot]" 1>&2
 	echo "	[prepare|clean|all|check|install]" 1>&2
 	exit 1
 }
 
-while getopts cd:ns:t: opt; do
+while getopts pcd:ns:t: opt; do
 	case "$opt" in
 	c)
 		contained=true
+		;;
+	p)
+		mungepath=false
 		;;
 	d)
 		srvd=$OPTARG
@@ -118,6 +122,8 @@ case `uname -sm` in
 	;;
 esac
 
+savepath=$PATH
+
 # Determine operating system, appropriate path, and compiler for use
 # with plain Makefiles and some third-party packages.
 case `uname -s` in
@@ -145,6 +151,10 @@ Linux)
 	;;
 esac
 PATH=$athtoolroot/usr/athena/bin:$PATH
+
+if [ false = "$mungepath" ]; then
+	PATH=$savepath
+fi
 
 # Determine the Athena version
 . $source/packs/build/version
@@ -216,6 +226,8 @@ elif [ -r Imakefile ]; then
 	case $operation in
 	prepare)
 		$maybe imake "-I$source/packs/build/xconfig" -DUseInstalled \
+			"-DTOPDIR=$source/packs/build" \
+			"-DTOOLROOT=$athtoolroot"
 			"-DXCONFIGDIR=$source/packs/build/xconfig"
 		$maybe $MAKE Makefiles
 		;;
@@ -223,12 +235,14 @@ elif [ -r Imakefile ]; then
 		$MAKE $n clean
 		;;
 	all)
-		$MAKE $n includes depend all
+		$MAKE $n includes depend  all \
+		    TOP=`pwd` MAKE="$MAKE TOP=`pwd`" ATHTOOLROOT=$ATHTOOLROOT
 		;;
 	check)
 		;;
 	install)
-		$MAKE $n install install.man "DESTDIR=$srvd"
+		$MAKE $n install install.man "DESTDIR=$srvd" TOP=`pwd` \
+			MAKE="$MAKE TOP=`pwd`" ATHTOOLROOT=$ATHTOOLROOT
 		;;
 	esac
 elif [ -r Makefile ]; then
