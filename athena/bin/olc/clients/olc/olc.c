@@ -20,11 +20,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.13 1989-11-17 14:04:55 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.14 1990-01-17 03:13:51 vanharen Exp $";
 #endif 
 
 
@@ -265,7 +265,7 @@ do_olc_init()
   REQUEST Request;
   ERRCODE errcode=0;	        /* Error code to return. */
   int n,first=0;
-  char file[NAME_LENGTH];
+  char file[NAME_SIZE];
   char topic[TOPIC_SIZE];
   int status;
 
