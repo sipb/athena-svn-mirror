@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.21 1990-12-31 10:59:51 lwvanels Exp $
+ *	$Id: olc.c,v 1.22 1991-01-03 15:45:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.21 1990-12-31 10:59:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.22 1991-01-03 15:45:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -43,38 +43,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netdb.h>
-
-
-/* External declarations for OLC functions. */
-
-extern do_quit();			/* Quit olc. */
-extern do_olc_list_cmds();		/* List commands, giving brief info. */
-extern do_olc_help();			/* Give extended help. */
-extern do_olc_send();			/* Send a message. */
-extern do_olc_replay();			/* Print the log up to this point. */
-extern do_olc_show();			/* Print any unseen messages. */
-extern do_olc_done();			/* Mark problem as solved. */
-extern do_olc_cancel();
-extern do_olc_ask();
-extern do_olc_list();
-extern do_olc_comment();
-extern do_olc_describe();
-extern do_olc_topic();
-extern do_olc_instance();
-extern do_olc_grab();
-extern do_olc_on();
-extern do_olc_off();
-extern do_olc_forward();
-extern do_olc_motd();
-extern do_olc_stock();
-extern do_olc_mail();
-extern do_olc_status();
-extern do_olc_live();
-extern do_olc_whoami();
-extern do_olc_load_user();
-extern do_olc_who();
-extern do_olc_dbinfo();
-extern do_olc_queue();
 
 #ifdef KERBEROS
 extern int krb_ap_req_debug;
@@ -107,6 +75,7 @@ COMMAND OLC_Command_Table[] = {
   "cancel",	do_olc_cancel,		"Cancel your question",
   "done",	do_olc_done,		"Mark your question resolved",
   "exit",	do_quit,		"Temporarily exit OLC",
+  "hours",      do_olc_hours,		"Print hours OLC is staffed",
   "motd",	do_olc_motd,		"See message of the day",
   "quit",	do_quit,		"Temporarily exit OLC",
   "replay",	do_olc_replay,		"Replay the conversation so far",
@@ -135,6 +104,7 @@ COMMAND OLCR_Command_Table[] = {
   "exit",	do_quit,		"Quit",
   "forward",	do_olc_forward,		"Forward a question",
   "grab",	do_olc_grab,		"Grab a user",
+  "hours",      do_olc_hours,		"Print hours OLC is staffed",
   "instance",	do_olc_instance,	"Show/Change default instance",
   "list",	do_olc_list,		"List the world",
   "mail",	do_olc_mail,		"Mail a message",
@@ -376,13 +346,15 @@ do_olc_init()
   (void) close(fd);
 
   make_temp_name(file);
-  t_get_motd(&Request,OLC,file,FALSE);
+  Request.request_type = OLC_MOTD;
+  t_get_file(&Request,OLC,file,FALSE);
   unlink(file);
 
   if(OLC)
     {
 #ifndef LAVIN
       printf("\nTo see answers to common questions, type:      answers\n");
+      printf("To see the hours OLC is staffed, type:         hours\n");
 #endif
       if (first)
 	{
