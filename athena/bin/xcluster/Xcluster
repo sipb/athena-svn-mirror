@@ -18,6 +18,7 @@
 *xclusterWindow.minHeight:	400
 *xclusterWindow.geometry:	1000x755
 *xclusterWindow.defGeometry:	1000x755
+*xclusterWindow.deleteProc:	quit()
 
 *label1.label:			XCLUSTER           Cluster Monitor
 *label1.font:			*-helvetica-bold-r-*--18-*
