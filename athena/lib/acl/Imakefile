@@ -1,3 +1,4 @@
+create_dir(${ATHLIBDIR})
 SimpleLint(acl,acl_files.c)
 SimpleLibrary(acl,acl_files.o,${ATHLIBDIR})
 create_depend(acl_files.c)
