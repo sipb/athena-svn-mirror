@@ -1,5 +1,5 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.5 1991-01-23 15:10:09 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.6 1991-02-11 09:59:48 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.5 1991-01-23 15:10:09 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.6 1991-02-11 09:59:48 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -189,8 +189,9 @@ char *name;
 	return;
     }
 
-
+    PROTECT();
     if(logger_journal_add_entry(&out, upt, (Pointer) pos)) {
+	UNPROTECT();
 	syslog(LOG_INFO, "Error in updating journal file");
 	(void) fclose(acct);
 	return;
@@ -198,10 +199,12 @@ char *name;
 
     /* If we succeeded, we need to get te header again */
     if(logger_journal_get_header(&jhead)) {
+	UNPROTECT();
 	syslog(LOG_INFO, "Unable to read header from journal db.");
 	(void) fclose(acct);
 	exit(1);
     }
+    UNPROTECT();
 
     (void) fclose(acct);
 
