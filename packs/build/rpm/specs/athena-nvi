@@ -2,6 +2,7 @@ Name: athena-nvi
 Summary: An implementation of the vi editor from Keith Bostic
 Copyright: BSD
 Group: Applications/Editors
+Provides: nvi = 1.79
 
 %description
 nex/nvi is a freely redistributable implementation of the ex/vi text
