@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version SYSTEM "version.xml">
+]>
+<refentry id="GtkSourceStyleScheme">
+<refmeta>
+<refentrytitle>GtkSourceStyleScheme</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKSOURCEVIEW Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkSourceStyleScheme</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtksourceview/gtksourcestylescheme.h&gt;
+
+
+struct      <link linkend="GtkSourceStyleScheme-struct">GtkSourceStyleScheme</link>;
+struct      <link linkend="GtkSourceStyleSchemeClass">GtkSourceStyleSchemeClass</link>;
+<link linkend="GtkSourceTagStyle">GtkSourceTagStyle</link>* <link linkend="gtk-source-style-scheme-get-tag-style">gtk_source_style_scheme_get_tag_style</link>
+                                            (<link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link> *scheme,
+                                             const <link linkend="gchar">gchar</link> *style_name);
+const <link linkend="gchar">gchar</link>* <link linkend="gtk-source-style-scheme-get-name">gtk_source_style_scheme_get_name</link>
+                                            (<link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link> *scheme);
+<link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link>* <link linkend="gtk-source-style-scheme-get-default">gtk_source_style_scheme_get_default</link>
+                                            (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GInterface">GInterface</link>
+   +----GtkSourceStyleScheme
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkSourceStyleScheme-struct"/>struct GtkSourceStyleScheme</title>
+<indexterm><primary>GtkSourceStyleScheme</primary></indexterm><programlisting>struct GtkSourceStyleScheme;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkSourceStyleSchemeClass"/>struct GtkSourceStyleSchemeClass</title>
+<indexterm><primary>GtkSourceStyleSchemeClass</primary></indexterm><programlisting>struct GtkSourceStyleSchemeClass {
+
+	GTypeInterface	base_iface;
+
+	/* signals */
+	void                      (* style_changed)     (GtkSourceStyleScheme *scheme,
+							 const gchar          *tag_id);
+
+	/* vtable */
+	const gchar		* (* get_name)		(GtkSourceStyleScheme *scheme);
+	GtkSourceTagStyle       * (* get_tag_style) 	(GtkSourceStyleScheme *scheme,
+						     	 const gchar          *style_name);
+	GSList                  * (* get_style_names)   (GtkSourceStyleScheme *scheme);
+
+	/* Padding for future expansion */
+	void (*_gtk_source_reserved1) (void);
+	void (*_gtk_source_reserved2) (void);
+	void (*_gtk_source_reserved3) (void);
+	void (*_gtk_source_reserved4) (void);	
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-style-scheme-get-tag-style"/>gtk_source_style_scheme_get_tag_style ()</title>
+<indexterm><primary>gtk_source_style_scheme_get_tag_style</primary></indexterm><programlisting><link linkend="GtkSourceTagStyle">GtkSourceTagStyle</link>* gtk_source_style_scheme_get_tag_style
+                                            (<link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link> *scheme,
+                                             const <link linkend="gchar">gchar</link> *style_name);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scheme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>style_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-style-scheme-get-name"/>gtk_source_style_scheme_get_name ()</title>
+<indexterm><primary>gtk_source_style_scheme_get_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gtk_source_style_scheme_get_name
+                                            (<link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link> *scheme);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>scheme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-style-scheme-get-default"/>gtk_source_style_scheme_get_default ()</title>
+<indexterm><primary>gtk_source_style_scheme_get_default</primary></indexterm><programlisting><link linkend="GtkSourceStyleScheme">GtkSourceStyleScheme</link>* gtk_source_style_scheme_get_default
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

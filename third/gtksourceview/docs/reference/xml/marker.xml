@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version SYSTEM "version.xml">
+]>
+<refentry id="gtksourceview-GtkSourceMarker">
+<refmeta>
+<refentrytitle>GtkSourceMarker</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKSOURCEVIEW Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkSourceMarker</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtksourceview/gtksourcemarker.h&gt;
+
+
+typedef     <link linkend="GtkSourceMarker">GtkSourceMarker</link>;
+<link linkend="void">void</link>        <link linkend="gtk-source-marker-set-marker-type">gtk_source_marker_set_marker_type</link>
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker,
+                                             const <link linkend="gchar">gchar</link> *type);
+<link linkend="gchar">gchar</link>*      <link linkend="gtk-source-marker-get-marker-type">gtk_source_marker_get_marker_type</link>
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+<link linkend="gint">gint</link>        <link linkend="gtk-source-marker-get-line">gtk_source_marker_get_line</link>      (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-source-marker-get-name">gtk_source_marker_get_name</link>
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+<link linkend="GtkSourceBuffer">GtkSourceBuffer</link>* <link linkend="gtk-source-marker-get-buffer">gtk_source_marker_get_buffer</link>
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+<link linkend="GtkSourceMarker">GtkSourceMarker</link>* <link linkend="gtk-source-marker-next">gtk_source_marker_next</link>     (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+<link linkend="GtkSourceMarker">GtkSourceMarker</link>* <link linkend="gtk-source-marker-prev">gtk_source_marker_prev</link>     (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkSourceMarker"/>GtkSourceMarker</title>
+<indexterm><primary>GtkSourceMarker</primary></indexterm><programlisting>typedef GtkTextMark      GtkSourceMarker;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-set-marker-type"/>gtk_source_marker_set_marker_type ()</title>
+<indexterm><primary>gtk_source_marker_set_marker_type</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_source_marker_set_marker_type
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker,
+                                             const <link linkend="gchar">gchar</link> *type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-get-marker-type"/>gtk_source_marker_get_marker_type ()</title>
+<indexterm><primary>gtk_source_marker_get_marker_type</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_source_marker_get_marker_type
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-get-line"/>gtk_source_marker_get_line ()</title>
+<indexterm><primary>gtk_source_marker_get_line</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_source_marker_get_line      (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-get-name"/>gtk_source_marker_get_name ()</title>
+<indexterm><primary>gtk_source_marker_get_name</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_source_marker_get_name
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-get-buffer"/>gtk_source_marker_get_buffer ()</title>
+<indexterm><primary>gtk_source_marker_get_buffer</primary></indexterm><programlisting><link linkend="GtkSourceBuffer">GtkSourceBuffer</link>* gtk_source_marker_get_buffer
+                                            (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-next"/>gtk_source_marker_next ()</title>
+<indexterm><primary>gtk_source_marker_next</primary></indexterm><programlisting><link linkend="GtkSourceMarker">GtkSourceMarker</link>* gtk_source_marker_next     (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-marker-prev"/>gtk_source_marker_prev ()</title>
+<indexterm><primary>gtk_source_marker_prev</primary></indexterm><programlisting><link linkend="GtkSourceMarker">GtkSourceMarker</link>* gtk_source_marker_prev     (<link linkend="GtkSourceMarker">GtkSourceMarker</link> *marker);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>marker</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
