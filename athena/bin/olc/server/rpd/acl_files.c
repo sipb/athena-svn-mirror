@@ -1,9 +1,18 @@
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.2 1990-12-02 13:25:04 lwvanels Exp $";
+  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.3 1991-03-28 13:32:20 lwvanels Exp $";
 #endif
 #endif
 
+
+#include "rpd.h"
+
+#ifndef KERBEROS
+#define         ANAME_SZ        40
+#define         REALM_SZ        40
+#define         INST_SZ         40
+#define		DEFAULT_REALM	"ATHENA.MIT.EDU"
+#endif
 
 /* "aname.inst@realm" */
 #define MAX_PRINCIPAL_SIZE  (ANAME_SZ + INST_SZ + REALM_SZ + 3)
@@ -20,8 +29,6 @@ struct hashtbl {
   int entries;		/* Actual number of entries */
   char **tbl;			/* Pointer to start of table */
 };
-
-#include "rpd.h"
 
 #ifdef __STDC__
 # define        P(s) s
@@ -112,7 +119,7 @@ char *canon;
     strcpy(canon, KRB_REALM);
   }
 #else
-  else strcpy(canon, KRB_REALM);
+  else strcpy(canon, DEFAULT_REALM);
 #endif
 }
 
