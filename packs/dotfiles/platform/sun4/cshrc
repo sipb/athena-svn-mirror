@@ -1,11 +1,10 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.1 1993-07-19 16:00:34 vrt Exp $
+# $Id: cshrc,v 1.2 1993-07-19 16:00:50 vrt Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
 
-setenv TZ   US/Eastern
 set initdir=/usr/athena/lib/init
 
 # *******************   ENVIRONMENT SETUP   *******************
