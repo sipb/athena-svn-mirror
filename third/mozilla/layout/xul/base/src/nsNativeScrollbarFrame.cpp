@@ -111,12 +111,11 @@ nsNativeScrollbarFrame::Init(nsIPresContext* aPresContext, nsIContent* aContent,
   // suit. We don't have to lift a finger!
   static NS_DEFINE_IID(kScrollbarCID,  NS_NATIVESCROLLBAR_CID);
   if ( NS_SUCCEEDED(CreateViewForFrame(aPresContext, this, aContext, PR_TRUE)) ) {
-    nsIView* myView = nsnull;
-    GetView(aPresContext, &myView);
+    nsIView* myView = GetView();
     if ( myView ) {
       nsWidgetInitData widgetData;
       if ( NS_SUCCEEDED(myView->CreateWidget(kScrollbarCID, &widgetData, nsnull)) ) {
-        myView->GetWidget(*getter_AddRefs(mScrollbar));
+        mScrollbar = myView->GetWidget();
         if (mScrollbar) {
           mScrollbar->Show(PR_TRUE);
           mScrollbar->Enable(PR_TRUE);
@@ -151,15 +150,14 @@ nsNativeScrollbarFrame::FindScrollbar(nsIFrame* start, nsIFrame** outFrame, nsIC
   *outFrame = nsnull;
   
   while ( start ) {
-    start->GetParent(&start);
+    start = start->GetParent();
     if ( start ) {
       // get the content node
-      nsCOMPtr<nsIContent> currContent;  
-      start->GetContent(getter_AddRefs(currContent));
+      nsIContent* currContent = start->GetContent();
 
       nsCOMPtr<nsIAtom> atom;
-      if (currContent && currContent->GetTag(*getter_AddRefs(atom)) == NS_OK && atom.get() == nsXULAtoms::scrollbar) {
-        *outContent = currContent.get();
+      if (currContent && currContent->GetTag(getter_AddRefs(atom)) == NS_OK && atom.get() == nsXULAtoms::scrollbar) {
+        *outContent = currContent;
         *outFrame = start;
         NS_IF_ADDREF(*outContent);
         return NS_OK;
@@ -180,12 +178,15 @@ nsNativeScrollbarFrame::FindScrollbar(nsIFrame* start, nsIFrame** outFrame, nsIC
 // our native scrollbar with the correct values.
 //
 NS_IMETHODIMP
-nsNativeScrollbarFrame::AttributeChanged(nsIPresContext* aPresContext, nsIContent* aChild,
-                                           PRInt32 aNameSpaceID, nsIAtom* aAttribute, PRInt32 aModType, 
-                                           PRInt32 aHint)
+nsNativeScrollbarFrame::AttributeChanged(nsIPresContext* aPresContext,
+                                         nsIContent* aChild,
+                                         PRInt32 aNameSpaceID,
+                                         nsIAtom* aAttribute,
+                                         PRInt32 aModType)
 {
   nsresult rv = nsBoxFrame::AttributeChanged(aPresContext, aChild,
-                                              aNameSpaceID, aAttribute, aModType, aHint);
+                                             aNameSpaceID, aAttribute,
+                                             aModType);
   
   if (  aAttribute == nsXULAtoms::curpos ||
         aAttribute == nsXULAtoms::maxpos || 

@@ -18,7 +18,7 @@ Communications Corporation. Portions created by Netscape are
  Copyright (C) 1998-1999 Netscape Communications Corporation. All
 Rights Reserved.
 
-Contributor(s):  Hkan Waara <hwaara@chello.se>
+Contributor(s):  Håkan Waara <hwaara@chello.se>
                  Seth Spitzer <sspitzer@netscape.com>
 -->
 
@@ -115,7 +115,6 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
           <tree id="filterTree" flex="1" hidecolumnpicker="true"
                 onselect="onFilterSelect(event);"
                 onkeypress="onFilterTreeKeyPress(event);"
-                onclick="onFilterClick(event);"
                 ondblclick="onFilterDoubleClick(event);"
                 datasources="rdf:msgfilters rdf:msgaccountmanager" flags="dont-build-content">
 
@@ -127,7 +126,7 @@ Contributor(s):  Hkan Waara <hwaara@chello.se>
             <template>
               <rule>
                 <conditions>
-                  <treeitem uri="?container"/>
+                  <content uri="?container"/>
                   <member container="?container" child="?member"/>
                 </conditions>
                 

@@ -216,8 +216,7 @@ nsXPathResult::AttributeChanged(nsIDocument* aDocument,
                                 nsIContent* aContent,
                                 PRInt32 aNameSpaceID,
                                 nsIAtom* aAttribute,
-                                PRInt32 aModType,
-                                nsChangeHint aHint)
+                                PRInt32 aModType)
 {
     Invalidate();
     return NS_OK;
@@ -264,7 +263,7 @@ nsXPathResult::ContentRemoved(nsIDocument* aDocument,
 }
 
 NS_IMETHODIMP
-nsXPathResult::SetExprResult(ExprResult* aExprResult, PRUint16 aResultType)
+nsXPathResult::SetExprResult(txAExprResult* aExprResult, PRUint16 aResultType)
 {
     Reset();
  
@@ -287,7 +286,7 @@ nsXPathResult::SetExprResult(ExprResult* aExprResult, PRUint16 aResultType)
         return NS_OK;
     }
 
-    if (aExprResult->getResultType() == ExprResult::NODESET) {
+    if (aExprResult->getResultType() == txAExprResult::NODESET) {
         nsresult rv = NS_OK;
         NodeSet* nodeSet = (NodeSet*)aExprResult;
 

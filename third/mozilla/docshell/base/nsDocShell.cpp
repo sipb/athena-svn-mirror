@@ -1009,7 +1009,9 @@ nsresult nsDocShell::FindTarget(const PRUnichar *aWindowTarget,
         if(!treeItem)
             *aResult = this;
     }
-    else if(name.EqualsIgnoreCase("_content"))
+    // _main is an IE target which should be case-insensitive but isn't
+    // see bug 217886 for details
+    else if(name.EqualsIgnoreCase("_content") || name.Equals(NS_LITERAL_STRING("_main")))
     {
         if (mTreeOwner) {
             mTreeOwner->FindItemWithName(name.get(), nsnull, 
@@ -1113,13 +1115,13 @@ nsresult nsDocShell::FindTarget(const PRUnichar *aWindowTarget,
               muCV = do_QueryInterface(cv);            
               target_muCV = do_QueryInterface(target_cv);            
               if (muCV && target_muCV) {
-                nsXPIDLString defaultCharset;
-                nsXPIDLString prevDocCharset;
-                rv = muCV->GetDefaultCharacterSet(getter_Copies(defaultCharset));
+                nsCAutoString defaultCharset;
+                nsCAutoString prevDocCharset;
+                rv = muCV->GetDefaultCharacterSet(defaultCharset);
                 if(NS_SUCCEEDED(rv)) {
                   target_muCV->SetDefaultCharacterSet(defaultCharset);
                 }
-                rv = muCV->GetPrevDocCharacterSet(getter_Copies(prevDocCharset));
+                rv = muCV->GetPrevDocCharacterSet(prevDocCharset);
                 if(NS_SUCCEEDED(rv)) {
                   target_muCV->SetPrevDocCharacterSet(prevDocCharset);
                 }
@@ -1161,7 +1163,7 @@ nsDocShell::GetEldestPresContext(nsIPresContext** aPresContext)
         else {
             nsCOMPtr<nsIDocumentViewer> docv(do_QueryInterface(viewer));
             if (docv)
-                rv = docv->GetPresContext(*aPresContext);
+                rv = docv->GetPresContext(aPresContext);
             break;
         }
     }
@@ -1181,7 +1183,7 @@ nsDocShell::GetPresContext(nsIPresContext ** aPresContext)
         nsCOMPtr<nsIDocumentViewer> docv(do_QueryInterface(mContentViewer));
 
         if (docv) {
-            rv = docv->GetPresContext(*aPresContext);
+            rv = docv->GetPresContext(aPresContext);
         }
     }
 
@@ -1326,7 +1328,7 @@ nsDocShell::SetCurrentURI(nsIURI *aURI)
 }
 
 NS_IMETHODIMP
-nsDocShell::GetCharset(PRUnichar** aCharset)
+nsDocShell::GetCharset(char** aCharset)
 {
     NS_ENSURE_ARG_POINTER(aCharset);
     *aCharset = nsnull; 
@@ -1337,15 +1339,18 @@ nsDocShell::GetCharset(PRUnichar** aCharset)
     NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
     presShell->GetDocument(getter_AddRefs(doc));
     NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
-    nsAutoString charset;
+    nsCAutoString charset;
     NS_ENSURE_SUCCESS(doc->GetDocumentCharacterSet(charset), NS_ERROR_FAILURE);
-    *aCharset = ToNewUnicode(charset);
+    *aCharset = ToNewCString(charset);
+    if (!*aCharset) {
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
 
     return NS_OK;
 }
 
 NS_IMETHODIMP
-nsDocShell::SetCharset(const PRUnichar* aCharset)
+nsDocShell::SetCharset(const char* aCharset)
 {
     // set the default charset
     nsCOMPtr<nsIContentViewer> viewer;
@@ -1353,8 +1358,8 @@ nsDocShell::SetCharset(const PRUnichar* aCharset)
     if (viewer) {
       nsCOMPtr<nsIMarkupDocumentViewer> muDV(do_QueryInterface(viewer));
       if (muDV) {
-        NS_ENSURE_SUCCESS(muDV->SetDefaultCharacterSet(aCharset),
-                                                       NS_ERROR_FAILURE);
+        NS_ENSURE_SUCCESS(muDV->SetDefaultCharacterSet(nsDependentCString(aCharset)),
+                          NS_ERROR_FAILURE);
       }
     }
 
@@ -1363,7 +1368,7 @@ nsDocShell::SetCharset(const PRUnichar* aCharset)
     GetDocumentCharsetInfo(getter_AddRefs(dcInfo));
     if (dcInfo) {
       nsCOMPtr<nsIAtom> csAtom;
-      csAtom = dont_AddRef(NS_NewAtom(aCharset));
+      csAtom = do_GetAtom(aCharset);
       dcInfo->SetForcedCharset(csAtom);
     }
 
@@ -1770,7 +1775,7 @@ nsDocShell::GetSameTypeRootTreeItem(nsIDocShellTreeItem ** aRootTreeItem)
 }
 
 static PRBool
-IsItemActive(nsIDocShellTreeItem *aItem)
+ItemIsActive(nsIDocShellTreeItem *aItem)
 {
     nsCOMPtr<nsIDOMWindow> tmp(do_GetInterface(aItem));
     nsCOMPtr<nsIDOMWindowInternal> window(do_QueryInterface(tmp));
@@ -1802,7 +1807,7 @@ nsDocShell::FindItemWithName(const PRUnichar * aName,
         reqAsTreeItem(do_QueryInterface(aRequestor));
 
     // First we check our name.
-    if (mName.Equals(aName) && IsItemActive(this)) {
+    if (mName.Equals(aName) && ItemIsActive(this)) {
         *_retval = this;
         NS_ADDREF(*_retval);
         return NS_OK;
@@ -2078,16 +2083,16 @@ nsDocShell::AddChild(nsIDocShellTreeItem * aChild)
     if (!docv)
         return NS_OK;
     nsCOMPtr<nsIDocument> doc;
-    res = docv->GetDocument(*getter_AddRefs(doc));
+    res = docv->GetDocument(getter_AddRefs(doc));
     if (NS_FAILED(res) || (!doc))
         return NS_OK;
-    nsAutoString parentCS;
+    nsCAutoString parentCS;
     res = doc->GetDocumentCharacterSet(parentCS);
     if (NS_FAILED(res))
         return NS_OK;
 
     // set the child's parentCharset
-    nsCOMPtr<nsIAtom> parentCSAtom(dont_AddRef(NS_NewAtom(parentCS)));
+    nsCOMPtr<nsIAtom> parentCSAtom(do_GetAtom(parentCS));
     res = dcInfo->SetParentCharset(parentCSAtom);
     if (NS_FAILED(res))
         return NS_OK;
@@ -2159,7 +2164,7 @@ nsDocShell::FindChildWithName(const PRUnichar * aName,
 
         PRBool childNameEquals = PR_FALSE;
         child->NameEquals(aName, &childNameEquals);
-        if (childNameEquals && IsItemActive(child)) {
+        if (childNameEquals && ItemIsActive(child)) {
             *_retval = child;
             NS_ADDREF(*_retval);
             break;
@@ -2462,7 +2467,7 @@ nsDocShell::LoadURI(const PRUnichar * aURI,
     }
     if (mURIFixup) {
         // Call the fixup object
-        rv = mURIFixup->CreateFixupURI(nsDependentString(aURI),
+        rv = mURIFixup->CreateFixupURI(NS_ConvertUCS2toUTF8(aURI),
                                        nsIURIFixup::FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP,
                                        getter_AddRefs(uri));
     }
@@ -3142,7 +3147,7 @@ nsDocShell::Repaint(PRBool aForce)
     NS_ENSURE_TRUE(docViewer, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIPresContext> context;
-    docViewer->GetPresContext(*getter_AddRefs(context));
+    docViewer->GetPresContext(getter_AddRefs(context));
     NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIPresShell> shell;
@@ -3269,20 +3274,10 @@ nsDocShell::GetVisibility(PRBool * aVisibility)
         if (frame) {
             nsCOMPtr<nsIPresContext> pc;
             pPresShell->GetPresContext(getter_AddRefs(pc));
-            frame->GetView(pc, &view);
-            if (!view) {
-                nsIFrame* parentWithView;
-                frame->GetParentWithView(pc, &parentWithView);
-                parentWithView->GetView(pc, &view);
-            }
 
-            while (view) {
-                view->GetVisibility(vis);
-                if (vis == nsViewVisibility_kHide) {
-                    *aVisibility = PR_FALSE;
-                    return NS_OK;
-                }
-                view->GetParent(view);
+            if (!frame->AreAncestorViewsVisible(pc)) {
+                *aVisibility = PR_FALSE;
+                return NS_OK;
             }
         }
 
@@ -4663,11 +4658,11 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
                       NS_ERROR_FAILURE);
     nsCOMPtr<nsIDocShell> parent(do_QueryInterface(parentAsItem));
 
-    nsXPIDLString defaultCharset;
-    nsXPIDLString forceCharset;
-    nsXPIDLString hintCharset;
+    nsCAutoString defaultCharset;
+    nsCAutoString forceCharset;
+    nsCAutoString hintCharset;
     PRInt32 hintCharsetSource;
-    nsXPIDLString prevDocCharset;
+    nsCAutoString prevDocCharset;
     float textZoom;
     // |newMUDV| also serves as a flag to set the data from the above vars
     nsCOMPtr<nsIMarkupDocumentViewer> newMUDV;
@@ -4693,14 +4688,13 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
             newMUDV = do_QueryInterface(aNewViewer,&rv);
             if (newMUDV) {
                 NS_ENSURE_SUCCESS(oldMUDV->
-                                  GetDefaultCharacterSet(getter_Copies
-                                                         (defaultCharset)),
+                                  GetDefaultCharacterSet(defaultCharset),
                                   NS_ERROR_FAILURE);
                 NS_ENSURE_SUCCESS(oldMUDV->
-                                  GetForceCharacterSet(getter_Copies(forceCharset)),
+                                  GetForceCharacterSet(forceCharset),
                                   NS_ERROR_FAILURE);
                 NS_ENSURE_SUCCESS(oldMUDV->
-                                  GetHintCharacterSet(getter_Copies(hintCharset)),
+                                  GetHintCharacterSet(hintCharset),
                                   NS_ERROR_FAILURE);
                 NS_ENSURE_SUCCESS(oldMUDV->
                                   GetHintCharacterSetSource(&hintCharsetSource),
@@ -4709,7 +4703,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
                                   GetTextZoom(&textZoom),
                                   NS_ERROR_FAILURE);
                 NS_ENSURE_SUCCESS(oldMUDV->
-                                  GetPrevDocCharacterSet(getter_Copies(prevDocCharset)),
+                                  GetPrevDocCharacterSet(prevDocCharset),
                                   NS_ERROR_FAILURE);
             }
         }
@@ -4767,7 +4761,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
             }
 
             if (ourFocusedWindow == focusedWindow || isSubWindow)
-              focusController->SetFocusedElement(nsnull);
+              focusController->ResetElementFocus();
         }
     }
 
@@ -4788,7 +4782,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
 
         if (docviewer) {
             nsCOMPtr<nsIPresShell> shell;
-            docviewer->GetPresShell(*getter_AddRefs(shell));
+            docviewer->GetPresShell(getter_AddRefs(shell));
 
             if (shell) {
                 nsCOMPtr<nsIViewManager> vm;
@@ -4866,7 +4860,7 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
 
         if (docviewer) {
             nsCOMPtr<nsIPresShell> shell;
-            docviewer->GetPresShell(*getter_AddRefs(shell));
+            docviewer->GetPresShell(getter_AddRefs(shell));
 
             if (shell) {
                 nsCOMPtr<nsIViewManager> vm;
@@ -4923,6 +4917,8 @@ nsDocShell::InternalLoad(nsIURI * aURI,
     if (!aURI) {
         return NS_ERROR_NULL_POINTER;
     }
+
+    NS_ENSURE_TRUE(IsValidLoadType(aLoadType), NS_ERROR_INVALID_ARG);
 
     // wyciwyg urls can only be loaded through history. Any normal load of
     // wyciwyg through docshell is  illegal. Disallow such loads.
@@ -4984,8 +4980,10 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         //
         if (mUseExternalProtocolHandler && aLoadType == LOAD_LINK) {
             // don't do it for javascript urls!
+            // _main is an IE target which should be case-insensitive but isn't
+            // see bug 217886 for details            
             if (!bIsJavascript &&
-                (name.EqualsIgnoreCase("_content") || 
+                (name.EqualsIgnoreCase("_content") || name.Equals(NS_LITERAL_STRING("_main")) ||
                  name.EqualsIgnoreCase("_blank"))) 
             {
                 nsCOMPtr<nsIExternalProtocolService> extProtService;
@@ -5013,7 +5011,8 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         //
         if (mDisallowPopupWindows) {
             PRBool bIsChromeOrResource = PR_FALSE;
-            mCurrentURI->SchemeIs("chrome", &bIsChromeOrResource);
+            if (mCurrentURI)
+                mCurrentURI->SchemeIs("chrome", &bIsChromeOrResource);
             if (!bIsChromeOrResource) {
                 aURI->SchemeIs("chrome", &bIsChromeOrResource);
                 if (!bIsChromeOrResource) {
@@ -5025,9 +5024,12 @@ nsDocShell::InternalLoad(nsIURI * aURI,
                     name.EqualsIgnoreCase("_new")) {
                     name.Assign(NS_LITERAL_STRING("_top"));
                 }
+                // _main is an IE target which should be case-insensitive but isn't
+                // see bug 217886 for details
                 else if (!name.EqualsIgnoreCase("_parent") &&
                          !name.EqualsIgnoreCase("_self") &&
-                         !name.EqualsIgnoreCase("_content")) {
+                         !name.EqualsIgnoreCase("_content") &&
+                         !name.Equals(NS_LITERAL_STRING("_main"))) {
                     nsCOMPtr<nsIDocShellTreeItem> targetTreeItem;
                     FindItemWithName(name.get(),
                                      NS_STATIC_CAST(nsIInterfaceRequestor *, this),
@@ -5257,7 +5259,7 @@ nsDocShell::GetCurrentDocumentOwner(nsISupports ** aOwner)
             docViewer(do_QueryInterface(mContentViewer));
         if (!docViewer)
             return NS_ERROR_FAILURE;
-        rv = docViewer->GetDocument(*getter_AddRefs(document));
+        rv = docViewer->GetDocument(getter_AddRefs(document));
     }
     else //-- If there's no document loaded yet, look at the parent (frameset)
     {
@@ -5777,6 +5779,9 @@ nsDocShell::ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
         return NS_OK;           // URIs not the same
     }
 
+    // Now we know we are dealing with an anchor
+    *aWasAnchor = PR_TRUE;
+
     // Both the new and current URIs refer to the same page. We can now
     // browse to the hash stored in the new URI.
     //
@@ -5787,14 +5792,15 @@ nsDocShell::ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
     GetCurScrollPos(ScrollOrientation_Y, cy);
 
     if (!sNewRef.IsEmpty()) {
-        *aWasAnchor = PR_TRUE;
-
         // anchor is there, but if it's a load from history,
         // we don't have any anchor jumping to do
         PRBool scroll = aLoadType != LOAD_HISTORY &&
                         aLoadType != LOAD_RELOAD_NORMAL;
 
         char *str = ToNewCString(sNewRef);
+        if (!str) {
+            return NS_ERROR_OUT_OF_MEMORY;
+        }
 
         // nsUnescape modifies the string that is passed into it.
         nsUnescape(str);
@@ -5825,31 +5831,33 @@ nsDocShell::ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
                 docv(do_QueryInterface(mContentViewer));
             NS_ENSURE_TRUE(docv, NS_ERROR_FAILURE);
             nsCOMPtr<nsIDocument> doc;
-            rv = docv->GetDocument(*getter_AddRefs(doc));
-            NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
-            nsAutoString aCharset;
+            rv = docv->GetDocument(getter_AddRefs(doc));
+            NS_ENSURE_SUCCESS(rv, rv);
+            nsCAutoString aCharset;
             rv = doc->GetDocumentCharacterSet(aCharset);
-            NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
+            NS_ENSURE_SUCCESS(rv, rv);
 
             nsCOMPtr<nsITextToSubURI> textToSubURI =
                 do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
-            if (NS_FAILED(rv))
-                return NS_ERROR_FAILURE;
+            NS_ENSURE_SUCCESS(rv, rv);
 
             // Unescape and convert to unicode
             nsXPIDLString uStr;
-            NS_LossyConvertUCS2toASCII charset(aCharset);
 
-            rv = textToSubURI->UnEscapeAndConvert(charset.get(),
+            rv = textToSubURI->UnEscapeAndConvert(aCharset.get(),
                                                   PromiseFlatCString(sNewRef).get(),
                                                   getter_Copies(uStr));
-            NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
+            NS_ENSURE_SUCCESS(rv, rv);
 
-            rv = shell->GoToAnchor(uStr, scroll);
+            // Ignore return value of GoToAnchor, since it will return an error
+            // if there is no such anchor in the document, which is actually a
+            // success condition for us (we want to update the session history
+            // with the new URI no matter whether we actually scrolled
+            // somewhere).
+            shell->GoToAnchor(uStr, scroll);
         }
     }
     else {
-        *aWasAnchor = PR_TRUE;
 
         // Tell the shell it's at an anchor, without scrolling.
         shell->GoToAnchor(NS_LITERAL_STRING(""), PR_FALSE);
@@ -6551,6 +6559,26 @@ nsDocShell::AddToGlobalHistory(nsIURI * aURI, PRBool aHidden)
 
     NS_ENSURE_SUCCESS(mGlobalHistory->AddPage(spec.get()), NS_ERROR_FAILURE);
 
+    // Only save last page visited if it is not a frame and one of the
+    // startup, new window or new tab prefs is set to last page visited.
+    // See bug 58613 for more details.
+    if (mPrefs && !IsFrame()) {
+      PRInt32 choice = 0;
+      if (NS_SUCCEEDED(mPrefs->GetIntPref("browser.startup.page", &choice))) {
+        if (choice != 2) {
+          if (NS_SUCCEEDED(mPrefs->GetIntPref("browser.windows.loadOnNewWindow", &choice))) {
+            if (choice != 2)
+              mPrefs->GetIntPref("browser.tabs.loadOnNewTab", &choice);
+          }
+        }
+      }
+      if (choice == 2) {
+        browserHistory = do_QueryInterface(mGlobalHistory);
+        if (browserHistory)
+          browserHistory->SetLastPageVisited(spec.get());
+      }
+    }
+
     // this is a redirect, hide the page from
     // being enumerated in history
     if (aHidden && browserHistory) {                
@@ -6888,8 +6916,7 @@ nsDocShell::SetCanvasHasFocus(PRBool aCanvasHasFocus)
         nsCOMPtr<nsIPresContext> presContext;
         GetPresContext(getter_AddRefs(presContext));
         
-        nsIView* canvasView = nsnull;
-        frame->GetView(presContext, &canvasView);
+        nsIView* canvasView = frame->GetViewExternal(presContext);
 
         nsCOMPtr<nsIViewManager> viewManager;
         canvasView->GetViewManager(*getter_AddRefs(viewManager));
@@ -7061,7 +7088,7 @@ nsDocShellFocusController::ClosingDown(nsIDocShell* aDocShell)
 nsDocShell::InterfaceRequestorProxy::InterfaceRequestorProxy(nsIInterfaceRequestor* p)
 {
     if (p) {
-        mWeakPtr = getter_AddRefs(NS_GetWeakReference(p));
+        mWeakPtr = do_GetWeakReference(p);
     }
 }
  
@@ -7105,7 +7132,7 @@ nsDocShell::SetBaseUrlForWyciwyg(nsIContentViewer * aContentViewer)
     if (baseURI) {
         nsCOMPtr<nsIDocumentViewer> docViewer(do_QueryInterface(aContentViewer));
         if (docViewer) {
-            rv = docViewer->GetDocument(*getter_AddRefs(document));
+            rv = docViewer->GetDocument(getter_AddRefs(document));
             if (document)
                 rv = document->SetBaseURL(baseURI);
         }

@@ -93,7 +93,7 @@ nsAreaFrame::RegUnregAccessKey(nsIPresContext* aPresContext,
 
   // find out what type of element this is
   nsCOMPtr<nsIAtom> atom;
-  nsresult rv = mContent->GetTag(*getter_AddRefs(atom));
+  nsresult rv = mContent->GetTag(getter_AddRefs(atom));
   if (NS_FAILED(rv))
     return rv;
 
@@ -171,12 +171,11 @@ nsAreaFrame::AttributeChanged(nsIPresContext* aPresContext,
                               nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType,
-                              PRInt32 aHint)
+                              PRInt32 aModType)
 {
   nsresult rv = nsBlockFrame::AttributeChanged(aPresContext, aChild,
                                                aNameSpaceID, aAttribute,
-                                               aModType, aHint);
+                                               aModType);
 
   // If the accesskey changed, register for the new value
   // The old value has been unregistered in nsXULElement::SetAttr

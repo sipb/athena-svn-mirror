@@ -56,12 +56,11 @@ public:
   static nsIDOMWindowInternal* GetWindowFor(nsIDOMDocument* aDoc);
   static nsIPresShell* GetPresShellFor(nsISupports* aThing);
   static nsIFrame* GetFrameFor(nsIDOMElement* aElement, nsIPresShell* aShell);
-  static nsIRenderingContext* GetRenderingContextFor(nsIPresShell* aShell);
+  static already_AddRefed<nsIRenderingContext> GetRenderingContextFor(nsIPresShell* aShell);
   static nsIEventStateManager* GetEventStateManagerFor(nsIDOMElement *aElement);
   static nsIBindingManager* GetBindingManagerFor(nsIDOMNode* aNode);
   static nsIDOMDocument* GetSubDocumentFor(nsIDOMNode* aNode);
   static nsIDOMNode* GetContainerFor(nsIDOMDocument* aDoc);
-  static PRBool IsDocumentElement(nsIDOMNode* aNode);
   /**
    * This function returns the offset of a frame with respect to the
    * root view of the aPresContext's viewmanager (for use by

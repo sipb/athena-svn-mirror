@@ -41,12 +41,13 @@ REQUIRES	= xpcom \
 		  docshell \
 		  appshell \
 		  dom \
+		  js \
 		  uriloader \
 		  pref \
 		  appcomps \
 		  webbrwsr \
-		  chardet \
 		  windowwatcher \
+		  history \
 		  $(NULL)
 
 ifdef MOZ_PHOENIX

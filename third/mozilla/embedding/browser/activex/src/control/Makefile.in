@@ -56,30 +56,27 @@ REQUIRES = \
     helperAppDlg \
     exthandler \
     mimetype \
+    ax_common \
     $(NULL)
 
 CPPSRCS = \
     StdAfx.cpp             \
-    ItemContainer.cpp      \
-    PropertyBag.cpp        \
     MozillaControl.cpp     \
     MozillaBrowser.cpp     \
     WebBrowserContainer.cpp  \
-    IEHtmlNode.cpp         \
-    IEHtmlElementCollection.cpp \
-    IEHtmlElement.cpp      \
     IEHtmlDocument.cpp     \
     DropTarget.cpp         \
     PropertyDlg.cpp        \
     PromptService.cpp      \
     HelperAppDlg.cpp       \
     WindowCreator.cpp      \
-    guids.cpp              \
     $(NULL)
+
 
 EXTRA_DSO_LDOPTS = \
 	$(DIST)/lib/$(LIB_PREFIX)gkgfx.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)embed_base_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)ax_common_s.$(LIB_SUFFIX) \
 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(XPCOM_LIBS) \
 	$(NSPR_LIBS) \
@@ -115,7 +112,7 @@ $(DEFFILE): mkctldef.sh
 	$(srcdir)/mkctldef.sh $@
 
 done_gen: MozillaControl.idl
-	"$(MIDL)" /Oicf /h MozillaControl.h /iid MozillaControl_i.c $(srcdir)/MozillaControl.idl
+	$(MIDL) /Oicf /h MozillaControl.h /iid MozillaControl_i.c $(srcdir)/MozillaControl.idl
 	touch $@
 
 $(MIDL_GENERATED_FILES): done_gen

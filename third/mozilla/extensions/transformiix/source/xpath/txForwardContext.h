@@ -40,8 +40,8 @@
 #define __TX_XPATH_CONTEXT
 
 #include "txIXPathContext.h"
-
-class NodeSet;
+#include "nsAutoPtr.h"
+#include "NodeSet.h"
 
 class txForwardContext : public txIEvalContext
 {
@@ -58,7 +58,7 @@ public:
 
 private:
     Node* mContext;
-    NodeSet* mContextSet;
+    nsRefPtr<NodeSet> mContextSet;
     txIMatchContext* mInner;
 };
 

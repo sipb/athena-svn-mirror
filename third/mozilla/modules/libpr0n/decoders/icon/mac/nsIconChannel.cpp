@@ -330,16 +330,11 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
 
     // if we were given an explicit content type, use it....
     nsCOMPtr<nsIMIMEInfo> mimeInfo;
-    if (mimeService)
+    if (mimeService && (!contentType.IsEmpty() || !fileExtension.IsEmpty()))
     {
-      if (!contentType.IsEmpty())
-      {
-        mimeService->GetFromMIMEType(contentType.get(), getter_AddRefs(mimeInfo));
-      }
-      if (!mimeInfo) // try to grab an extension for the dummy file in the url.
-      {
-        mimeService->GetFromExtension(fileExtension.get(), getter_AddRefs(mimeInfo));  
-      }
+      mimeService->GetFromTypeAndExtension(contentType.get(),
+                                           fileExtension.get(),
+                                           getter_AddRefs(mimeInfo));
     }
 
     // if we don't have enough info to fetch an application icon, bail
@@ -496,12 +491,15 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
   aListener->OnStartRequest(this, ctxt);
 
   // turn our string into a stream...
-  nsCOMPtr<nsISupports> streamSupports;
-  NS_NewByteInputStream(getter_AddRefs(streamSupports), iconBuffer.get(), iconBuffer.Length());
+  nsCOMPtr<nsIInputStream> inputStr;
+  rv = NS_NewByteInputStream(getter_AddRefs(inputStr), iconBuffer.get(),
+                             iconBuffer.Length());
 
-  nsCOMPtr<nsIInputStream> inputStr (do_QueryInterface(streamSupports));
-  aListener->OnDataAvailable(this, ctxt, inputStr, 0, iconBuffer.Length());
-  aListener->OnStopRequest(this, ctxt, NS_OK);
+  if (NS_SUCCEEDED(rv))
+  {
+      aListener->OnDataAvailable(this, ctxt, inputStr, 0, iconBuffer.Length());
+  }
+  aListener->OnStopRequest(this, ctxt, rv);
   return NS_OK;
 }
 

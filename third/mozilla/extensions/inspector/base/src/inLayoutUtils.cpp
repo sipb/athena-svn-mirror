@@ -103,7 +103,7 @@ inLayoutUtils::GetFrameFor(nsIDOMElement* aElement, nsIPresShell* aShell)
   return frame;
 }
 
-nsIRenderingContext*
+already_AddRefed<nsIRenderingContext>
 inLayoutUtils::GetRenderingContextFor(nsIPresShell* aShell)
 {
   nsCOMPtr<nsIViewManager> viewman;
@@ -174,8 +174,7 @@ inLayoutUtils::GetScreenOrigin(nsIDOMElement* aElement)
   nsRect* rect = new nsRect(0,0,0,0);
  
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
-  nsCOMPtr<nsIDocument> doc;
-  content->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = content->GetDocument();
 
   if (doc) {
     // Get Presentation shell 0
@@ -199,9 +198,8 @@ inLayoutUtils::GetScreenOrigin(nsIDOMElement* aElement)
         
         while (frame) {
           // Look for a widget so we can get screen coordinates
-          nsIView* view = nsnull;
-          rv = frame->GetView(presContext, &view);
-          if (NS_SUCCEEDED(rv) && view) {
+          nsIView* view = frame->GetViewExternal(presContext);
+          if (view) {
             rv = view->GetWidget(*getter_AddRefs(widget));
             if (widget)
               break;
@@ -261,8 +259,7 @@ inLayoutUtils::GetSubDocumentFor(nsIDOMNode* aNode)
 {
   nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
   if (content) {
-    nsCOMPtr<nsIDocument> doc;
-    content->GetDocument(*getter_AddRefs(doc));
+    nsCOMPtr<nsIDocument> doc = content->GetDocument();
     if (doc) {
       nsCOMPtr<nsIDocument> sub_doc;
       doc->GetSubDocumentFor(content, getter_AddRefs(sub_doc));
@@ -286,22 +283,5 @@ inLayoutUtils::GetContainerFor(nsIDOMDocument* aDoc)
   win->GetFrameElement(getter_AddRefs(elem));
 
   return elem;
-}
-
-PRBool
-inLayoutUtils::IsDocumentElement(nsIDOMNode* aNode)
-{
-  PRBool result = PR_FALSE;
-
-  nsCOMPtr<nsIDOMNode> parent;
-  aNode->GetParentNode(getter_AddRefs(parent));
-  if (parent) {
-    PRUint16 nodeType;
-    parent->GetNodeType(&nodeType);
-    if (nodeType == nsIDOMNode::DOCUMENT_NODE)
-      result = PR_TRUE;
-  }
-
-  return result;
 }
 

@@ -19,12 +19,12 @@
  * Contributor(s):
  */
 
-#ifndef nsDebugObject_h__
-#define nsDebugObject_h__
+#ifndef nsRegressionTester_h__
+#define nsRegressionTester_h__
 
 #include "nsCOMPtr.h"
 
-#include "nsIFrameDebugObject.h"  
+#include "nsILayoutRegressionTester.h"  
 #include "nsILayoutDebugger.h"
 
 class nsIDOMWindow;
@@ -33,37 +33,21 @@ class nsIDocShell;
 class nsIDocShellTreeItem;
 
 //*****************************************************************************
-//***    nsDebugObject
+//***    nsRegressionTester
 //*****************************************************************************
-class  nsDebugObject : public nsIFrameDebugObject
+class  nsRegressionTester : public nsILayoutRegressionTester
 {
 public:
   NS_DECL_ISUPPORTS
-  NS_DECL_NSIFRAMEDEBUGOBJECT
+  NS_DECL_NSILAYOUTREGRESSIONTESTER
 
-  nsDebugObject();
-  virtual ~nsDebugObject();
+  nsRegressionTester();
+  virtual ~nsRegressionTester();
 
 protected:
-  
-  nsresult    EnsureLayoutDebugger();
-  nsresult    RefreshAllWindows();
-
   nsresult    GetDocShellFromWindow(nsIDOMWindow* inWindow, nsIDocShell** outShell);
-  nsresult    GetPresShellFromWindow(nsIDOMWindow* inWindow, nsIPresShell** outShell);
-
-  void        DumpAWebShell(nsIDocShellTreeItem* inShellItem, FILE* inDestFile, PRInt32 inIndent = 0);
-  void        DumpMultipleWebShells(nsIDOMWindow* inWindow, FILE* inDestFile);
-  void        DumpContentRecurse(nsIDocShell* inDocShell, FILE* inDestFile);
-  void        DumpFramesRecurse(nsIDocShell* aDocShell, FILE* inDestFile);
-  void        DumpViewsRecurse(nsIDocShell* aDocShell, FILE* inDestFile);
-  
-protected:
-
-  nsCOMPtr<nsILayoutDebugger> mLayoutDebugger;
-  
 };
 
 
 
-#endif /* nsDebugObject_h__ */
+#endif /* nsRegressionTester_h__ */

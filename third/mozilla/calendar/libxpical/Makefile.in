@@ -53,6 +53,8 @@ REQUIRES	= xpcom \
 		  necko \
 		  msgcompose \
 		  addrbook \
+                  dom \
+                  pref \
 		  ical \
 		  icalss \
 		  $(NULL)

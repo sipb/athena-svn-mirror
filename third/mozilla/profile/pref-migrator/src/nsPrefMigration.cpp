@@ -221,12 +221,6 @@ typedef struct
 
 } MigrateProfileItem;
 
-typedef struct
-{
-  nsIPref *prefs;
-  nsAutoString charSet;
-} prefConversionClosure;
-
 /* 
  * In 4.x the mac cookie file used expiration times starting from
  * 1900 whereas all the other platforms started from
@@ -248,11 +242,7 @@ typedef struct
 /*-----------------------------------------------------------------
  * Globals
  *-----------------------------------------------------------------*/
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIFactoryIID, NS_IFACTORY_IID);
 static NS_DEFINE_IID(kProxyObjectManagerCID, NS_PROXYEVENT_MANAGER_CID);
-static NS_DEFINE_IID(kIPrefMigrationIID, NS_IPREFMIGRATION_IID);
-static NS_DEFINE_IID(kPrefMigrationCID,  NS_PREFMIGRATION_CID);
 
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 
@@ -1906,7 +1896,7 @@ Fix4xCookies(nsIFileSpec * profilePath) {
   while (GetCookieLine(inStream,inBuffer) != -1){
 
     /* skip line if it is a comment or null line */
-    if (inBuffer.Length() == 0 || inBuffer.CharAt(0) == '#' ||
+    if (inBuffer.IsEmpty() || inBuffer.CharAt(0) == '#' ||
         inBuffer.CharAt(0) == nsCRT::CR || inBuffer.CharAt(0) == nsCRT::LF) {
       PutCookieLine(outStream, inBuffer);
       continue;
@@ -2330,7 +2320,7 @@ NS_IMPL_ISUPPORTS1(nsPrefConverter, nsIPrefConverter)
 // Apply a charset conversion from the given charset to UTF-8 for the input C string.
 static
 nsresult 
-ConvertStringToUTF8(nsAutoString& aCharset, const char* inString, char** outString)
+ConvertStringToUTF8(const char* aCharset, const char* inString, char** outString)
 {
   if (nsnull == outString)
     return NS_ERROR_NULL_POINTER;
@@ -2343,7 +2333,7 @@ ConvertStringToUTF8(nsAutoString& aCharset, const char* inString, char** outStri
   if(NS_SUCCEEDED(rv)) {
     nsCOMPtr <nsIUnicodeDecoder> decoder; // this may be cached
 
-    rv = ccm->GetUnicodeDecoder(&aCharset, getter_AddRefs(decoder));
+    rv = ccm->GetUnicodeDecoderRaw(aCharset, getter_AddRefs(decoder));
     if(NS_SUCCEEDED(rv) && decoder) {
       PRInt32 uniLength = 0;
       PRInt32 srcLength = strlen(inString);
@@ -2373,7 +2363,7 @@ ConvertStringToUTF8(nsAutoString& aCharset, const char* inString, char** outStri
 }
 
 nsresult
-ConvertPrefToUTF8(const char *prefname, nsIPref *prefs, nsAutoString &charSet)
+ConvertPrefToUTF8(const char *prefname, nsIPref *prefs, const char* charSet)
 {
     nsresult rv;
 
@@ -2455,7 +2445,7 @@ void ldapPrefEnumerationFunction(const char *name, void *data)
 
 typedef struct {
     nsIPref *prefs;
-    nsAutoString charSet;
+    const char* charSet;
 } PrefEnumerationClosure;
 
 PRBool
@@ -2479,8 +2469,9 @@ nsPrefConverter::ConvertPrefsToUTF8()
   if(NS_FAILED(rv)) return rv;
   if (!prefs) return NS_ERROR_FAILURE;
 
-  nsAutoString charSet;
+  nsCAutoString charSet;
   rv = GetPlatformCharset(charSet);
+  
   if (NS_FAILED(rv)) return rv;
 
   for (PRUint32 i = 0; prefsToConvert[i]; i++) {
@@ -2494,7 +2485,7 @@ nsPrefConverter::ConvertPrefsToUTF8()
   PrefEnumerationClosure closure;
 
   closure.prefs = prefs;
-  closure.charSet = charSet;
+  closure.charSet = charSet.get();
 
   prefsToMigrate.EnumerateForwards((nsCStringArrayEnumFunc)convertPref, (void *)(&closure));
 
@@ -2504,7 +2495,7 @@ nsPrefConverter::ConvertPrefsToUTF8()
 
 // A wrapper function to call the interface to get a platform file charset.
 nsresult 
-nsPrefConverter::GetPlatformCharset(nsAutoString& aCharset)
+nsPrefConverter::GetPlatformCharset(nsCString& aCharset)
 {
   nsresult rv;
 
@@ -2514,7 +2505,7 @@ nsPrefConverter::GetPlatformCharset(nsAutoString& aCharset)
    rv = platformCharset->GetCharset(kPlatformCharsetSel_4xPrefsJS, aCharset);
   }
   if (NS_FAILED(rv)) {
-   aCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));  // use ISO-8859-1 in case of any error
+   aCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));  // use ISO-8859-1 in case of any error
   }
  
   return rv;

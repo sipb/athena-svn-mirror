@@ -75,7 +75,9 @@ nsInspectorCSSUtils::GetRuleNodeParent(nsRuleNode *aNode, nsRuleNode **aParent)
 NS_IMETHODIMP
 nsInspectorCSSUtils::GetRuleNodeRule(nsRuleNode *aNode, nsIStyleRule **aRule)
 {
-    return aNode->GetRule(aRule);
+    *aRule = aNode->GetRule();
+    NS_IF_ADDREF(*aRule);
+    return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -150,8 +152,7 @@ nsInspectorCSSUtils::GetStyleContextForContent(nsIContent* aContent,
 
     // No frame has been created, so resolve the style ourselves
     nsRefPtr<nsStyleContext> parentContext;
-    nsCOMPtr<nsIContent> parent;
-    aContent->GetParent(*getter_AddRefs(parent));
+    nsCOMPtr<nsIContent> parent = aContent->GetParent();
     if (parent)
         parentContext = GetStyleContextForContent(parent, aPresShell);
 
@@ -172,8 +173,7 @@ nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
 {
     *aRuleNode = nsnull;
 
-    nsCOMPtr<nsIDocument> doc;
-    aContent->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = aContent->GetDocument();
     NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
     nsCOMPtr<nsIPresShell> presShell;
@@ -181,6 +181,6 @@ nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
     NS_ENSURE_TRUE(presShell, NS_ERROR_UNEXPECTED);
 
     nsRefPtr<nsStyleContext> sContext = GetStyleContextForContent(aContent, presShell);
-    sContext->GetRuleNode(aRuleNode);
+    *aRuleNode = sContext->GetRuleNode();
     return NS_OK;
 }

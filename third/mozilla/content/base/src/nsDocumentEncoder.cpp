@@ -61,7 +61,6 @@
 #include "nsIDOMRange.h"
 #include "nsIDOMDocument.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
 #include "nsHTMLAtoms.h"
 #include "nsITextContent.h"
 #include "nsIEnumerator.h"
@@ -74,9 +73,7 @@
 #include "nsIScriptSecurityManager.h"
 #include "nsContentUtils.h"
 #include "nsUnicharUtils.h"
-
-static NS_DEFINE_CID(kCharsetConverterManagerCID,
-                     NS_ICHARSETCONVERTERMANAGER_CID);
+#include "nsReadableUtils.h"
 
 nsresult NS_NewDomSelection(nsISelection **aDomSelection);
 
@@ -109,7 +106,7 @@ public:
   NS_IMETHOD SetRange(nsIDOMRange* aRange);
   NS_IMETHOD SetNode(nsIDOMNode* aNode);
   NS_IMETHOD SetWrapColumn(PRUint32 aWC);
-  NS_IMETHOD SetCharset(const nsAString& aCharset);
+  NS_IMETHOD SetCharset(const nsACString& aCharset);
   NS_IMETHOD GetMimeType(nsAString& aMimeType);
   NS_IMETHOD EncodeToStream(nsIOutputStream* aStream);
   NS_IMETHOD EncodeToString(nsAString& aOutputString);
@@ -150,10 +147,10 @@ protected:
   nsCOMPtr<nsIUnicodeEncoder>    mUnicodeEncoder;
   nsCOMPtr<nsIDOMNode>           mCommonParent;
   nsCOMPtr<nsIDocumentEncoderNodeFixup> mNodeFixup;
-  nsCOMPtr<nsICharsetConverterManager2> mCharsetConverterManager;
+  nsCOMPtr<nsICharsetConverterManager> mCharsetConverterManager;
 
   nsString          mMimeType;
-  nsString          mCharset;
+  nsCString         mCharset;
   PRUint32          mFlags;
   PRUint32          mWrapColumn;
   PRUint32          mStartDepth;
@@ -196,34 +193,6 @@ nsDocumentEncoder::nsDocumentEncoder()
 
 nsDocumentEncoder::~nsDocumentEncoder()
 {
-}
-
-static PRBool
-IsScriptEnabled(nsIDocument *aDoc)
-{
-  NS_ENSURE_TRUE(aDoc, PR_TRUE);
-
-  nsCOMPtr<nsIScriptSecurityManager> sm(do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID));
-  NS_ENSURE_TRUE(sm, PR_TRUE);
-
-  nsCOMPtr<nsIPrincipal> principal;
-  aDoc->GetPrincipal(getter_AddRefs(principal));
-  NS_ENSURE_TRUE(principal, PR_TRUE);
-
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  aDoc->GetScriptGlobalObject(getter_AddRefs(globalObject));
-  NS_ENSURE_TRUE(globalObject, PR_TRUE);
-
-  nsCOMPtr<nsIScriptContext> scriptContext;
-  globalObject->GetContext(getter_AddRefs(scriptContext));
-  NS_ENSURE_TRUE(scriptContext, PR_TRUE);
-
-  JSContext* cx = (JSContext *) scriptContext->GetNativeContext();
-  NS_ENSURE_TRUE(cx, PR_TRUE);
-
-  PRBool enabled = PR_TRUE;
-  sm->CanExecuteScripts(cx, principal, &enabled);
-  return enabled;
 }
 
 NS_IMETHODIMP
@@ -273,7 +242,7 @@ nsDocumentEncoder::SetNode(nsIDOMNode* aNode)
 }
 
 NS_IMETHODIMP
-nsDocumentEncoder::SetCharset(const nsAString& aCharset)
+nsDocumentEncoder::SetCharset(const nsACString& aCharset)
 {
   mCharset = aCharset;
   return NS_OK;
@@ -424,7 +393,7 @@ nsDocumentEncoder::IsTag(nsIDOMNode* aNode, nsIAtom* aAtom)
     nsCOMPtr<nsIAtom> atom;
     nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
     if (content)
-      content->GetTag(*getter_AddRefs(atom));
+      content->GetTag(getter_AddRefs(atom));
     if (atom)
     {
       if (atom.get() == aAtom)
@@ -532,7 +501,7 @@ static nsresult ChildAt(nsIDOMNode* aNode, PRInt32 aIndex, nsIDOMNode*& aChild)
 
   NS_ENSURE_TRUE(node, NS_ERROR_FAILURE);
 
-  node->ChildAt(aIndex, *getter_AddRefs(child));
+  node->ChildAt(aIndex, getter_AddRefs(child));
 
   if (child)
     return CallQueryInterface(child, &aChild);
@@ -767,7 +736,7 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
       // serialize the children of this node that are in the range
       for (j=startOffset; j<endOffset; j++)
       {
-        rv = content->ChildAt(j, *getter_AddRefs(child));
+        rv = content->ChildAt(j, getter_AddRefs(child));
         childAsNode = do_QueryInterface(child);
         NS_ENSURE_SUCCESS(rv, rv);
         if ((j==startOffset) || (j==endOffset-1))
@@ -926,10 +895,8 @@ nsDocumentEncoder::EncodeToString(nsAString& aOutputString)
       mCharsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
       NS_ENSURE_SUCCESS(rv, rv);
     }
-    rv = mCharsetConverterManager->GetCharsetAtom(mCharset.get(), getter_AddRefs(charsetAtom));
-    NS_ENSURE_SUCCESS(rv, rv);
   }
-  mSerializer->Init(mFlags, mWrapColumn, charsetAtom, mIsCopying);
+  mSerializer->Init(mFlags, mWrapColumn, mCharset.get(), mIsCopying);
 
   if (mSelection) {
     nsCOMPtr<nsIDOMRange> range;
@@ -983,11 +950,7 @@ nsDocumentEncoder::EncodeToStream(nsIOutputStream* aStream)
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  nsCOMPtr<nsIAtom> charsetAtom;
-  rv = mCharsetConverterManager->GetCharsetAtom(mCharset.get(), getter_AddRefs(charsetAtom));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = mCharsetConverterManager->GetUnicodeEncoder(charsetAtom,
+  rv = mCharsetConverterManager->GetUnicodeEncoder(mCharset.get(),
                                                    getter_AddRefs(mUnicodeEncoder));
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1118,7 +1081,7 @@ nsHTMLCopyEncoder::Init(nsIDocument* aDocument,
   // (see related bugs #57296, #41924, #58646, #32768)
   mFlags = aFlags | OutputAbsoluteLinks;
 
-  if (!IsScriptEnabled(mDocument))
+  if (!mDocument->IsScriptEnabled())
     mFlags |= OutputNoScriptContent;
 
   return NS_OK;
@@ -1154,12 +1117,13 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
     return NS_ERROR_NULL_POINTER;
   range->GetCommonAncestorContainer(getter_AddRefs(commonParent));
 
-  nsCOMPtr<nsIContent> tmp, selContent( do_QueryInterface(commonParent) );
-  while (selContent)
+  for (nsCOMPtr<nsIContent> selContent(do_QueryInterface(commonParent));
+       selContent;
+       selContent = selContent->GetParent())
   {
     // checking for selection inside a plaintext form widget
     nsCOMPtr<nsIAtom> atom;
-    selContent->GetTag(*getter_AddRefs(atom));
+    selContent->GetTag(getter_AddRefs(atom));
     if (atom.get() == nsHTMLAtoms::input ||
         atom.get() == nsHTMLAtoms::textarea)
     {
@@ -1180,8 +1144,6 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
         break;
       }
     }
-    selContent->GetParent(*getter_AddRefs(tmp));
-    selContent = tmp;
   }
   
   // also consider ourselves in a text widget if we can't find an html document
@@ -1309,7 +1271,7 @@ nsHTMLCopyEncoder::IncludeInContext(nsIDOMNode *aNode)
 
   nsCOMPtr<nsIAtom> tag;
 
-  content->GetTag(*getter_AddRefs(tag));
+  content->GetTag(getter_AddRefs(tag));
 
   if (tag.get() == nsHTMLAtoms::b        ||
       tag.get() == nsHTMLAtoms::i        ||
@@ -1497,16 +1459,16 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
       {
         if (bResetPromotion)
         {
-          nsAutoString tag;
-          nsCOMPtr<nsIAtom> atom;
           nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
           if (content)
           {
-            PRBool isBlock = PR_FALSE;
+            nsCOMPtr<nsIAtom> atom;
+            content->GetTag(getter_AddRefs(atom));
+
             PRInt32 id;
-            content->GetTag(*getter_AddRefs(atom));
-            atom->ToString(tag);
-            parserService->HTMLStringTagToId(tag, &id);
+            parserService->HTMLAtomTagToId(atom, &id);
+
+            PRBool isBlock = PR_FALSE;
             parserService->IsBlock(id, isBlock);
             if (isBlock)
             {
@@ -1586,16 +1548,16 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
       {
         if (bResetPromotion)
         {
-          nsAutoString tag;
-          nsCOMPtr<nsIAtom> atom;
           nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
           if (content)
           {
-            PRBool isBlock = PR_FALSE;
+            nsCOMPtr<nsIAtom> atom;
+            content->GetTag(getter_AddRefs(atom));
+
             PRInt32 id;
-            content->GetTag(*getter_AddRefs(atom));
-            atom->ToString(tag);
-            parserService->HTMLStringTagToId(tag, &id);
+            parserService->HTMLAtomTagToId(atom, &id);
+
+            PRBool isBlock = PR_FALSE;
             parserService->IsBlock(id, isBlock);
             if (isBlock)
             {
@@ -1645,7 +1607,7 @@ nsHTMLCopyEncoder::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
   nsCOMPtr<nsIContent> cChild;
   NS_PRECONDITION(content, "null content in nsHTMLCopyEncoder::GetChildAt");
   
-  if (NS_FAILED(content->ChildAt(aOffset, *getter_AddRefs(cChild))))
+  if (NS_FAILED(content->ChildAt(aOffset, getter_AddRefs(cChild))))
     return resultNode;
   
   resultNode = do_QueryInterface(cChild);

@@ -58,7 +58,6 @@
 #include "nsDTDUtils.h"
 #include "nsHTMLTokenizer.h"
 #include "nsTime.h"
-#include "nsViewSourceHTML.h"
 #include "nsParserNode.h"
 #include "nsHTMLEntities.h"
 #include "nsLinebreakConverter.h"
@@ -74,7 +73,6 @@
 #endif
 
 
-static NS_DEFINE_IID(kIHTMLContentSinkIID, NS_IHTML_CONTENT_SINK_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);                 
 static NS_DEFINE_IID(kIDTDIID,      NS_IDTD_IID);
 static NS_DEFINE_IID(kClassIID,     NS_INAVHTML_DTD_IID); 
@@ -642,7 +640,7 @@ nsresult CNavDTD::DidBuildModel(nsresult anErrorCode,
         result = CloseContainersTo(mBodyContext->Last(), PR_FALSE);
         if (NS_FAILED(result)) {
           //No matter what, you need to call did build model.
-          aSink->DidBuildModel(0);
+          aSink->DidBuildModel();
           return result;
         }
       } 
@@ -679,11 +677,11 @@ nsresult CNavDTD::DidBuildModel(nsresult anErrorCode,
       if (mComputedCRC32 != mExpectedCRC32) { 
         if (mExpectedCRC32 != 0) { 
           printf("CRC Computed: %u  Expected CRC: %u\n,",mComputedCRC32,mExpectedCRC32); 
-          result = aSink->DidBuildModel(2); 
+          result = aSink->DidBuildModel(); 
         } 
         else { 
           printf("Computed CRC: %u.\n",mComputedCRC32); 
-          result = aSink->DidBuildModel(3); 
+          result = aSink->DidBuildModel(); 
           NS_ENSURE_SUCCESS(result, result);
         } 
       } 
@@ -703,7 +701,7 @@ nsresult CNavDTD::DidBuildModel(nsresult anErrorCode,
   } //if aparser
 
   //No matter what, you need to call did build model.
-  return aSink->DidBuildModel(0); 
+  return aSink->DidBuildModel(); 
 }
 
 NS_IMETHODIMP_(void) 
@@ -758,6 +756,82 @@ PRBool DoesRequireBody(CToken* aToken,nsITokenizer* aTokenizer) {
  
   return result;
 }
+
+static void
+InPlaceConvertLineEndings( nsAString& aString )
+{
+    // go from '\r\n' or '\r' to '\n'
+  nsAString::iterator iter;
+  aString.BeginWriting(iter);
+
+  PRUnichar* S = iter.get();
+  size_t N = iter.size_forward();
+
+    // this fragment must be the entire string because
+    //  (a) no multi-fragment string is writable, so only an illegal cast could give us one, and
+    //  (b) else we would have to do more work (watching for |to| to fall off the end)
+  NS_ASSERTION(aString.Length() == N, "You cheated... multi-fragment strings are never writable!");
+
+    // we scan/convert in two phases (but only one pass over the string)
+    // until we have to skip a character, we only need to touch end-of-line chars
+    // after that, we'll have to start moving every character we want to keep
+
+    // use array indexing instead of pointers, because compilers optimize that better
+
+
+    // this first loop just converts line endings... no characters get moved
+  size_t i = 0;
+  PRBool just_saw_cr = PR_FALSE;
+  for ( ; i < N; ++i )
+    {
+        // if it's something we need to convert...
+      if ( S[i] == '\r' )
+        {
+          S[i] = '\n';
+          just_saw_cr = PR_TRUE;
+        }
+      else
+        {
+            // else, if it's something we need to skip...
+            //   i.e., a '\n' immediately following a '\r',
+            //   then we need to start moving any character we want to keep
+            //   and we have a second loop for that, so get out of this one
+          if ( S[i] == '\n' && just_saw_cr )
+            break;
+
+          just_saw_cr = PR_FALSE;
+        }
+    }
+
+
+    // this second loop handles the rest of the buffer, moving characters down
+    //  _and_ converting line-endings as it goes
+    //  start the loop at |from = i| so that that |just_saw_cr| gets cleared automatically
+  size_t to = i;
+  for ( size_t from = i; from < N; ++from )
+    {
+        // if it's something we need to convert...
+      if ( S[from] == '\r' )
+        {
+          S[to++] = '\n';
+          just_saw_cr = PR_TRUE;
+        }
+      else
+        {
+            // else, if it's something we need to copy...
+            //  i.e., NOT a '\n' immediately following a '\r'
+          if ( S[from] != '\n' || !just_saw_cr )
+            S[to++] = S[from];
+
+          just_saw_cr = PR_FALSE;
+        }
+    }
+
+    // if we chopped characters out of the string, we need to shorten it logically
+  if ( to < N )
+    aString.SetLength(to);
+}
+
 /**
  *  This big dispatch method is used to route token handler calls to the right place.
  *  What's wrong with it? This table, and the dispatch methods themselves need to be 
@@ -837,7 +911,7 @@ nsresult CNavDTD::HandleToken(CToken* aToken,nsIParser* aParser){
         eHTMLTags theParentTag=mBodyContext->Last();
         theTag=(eHTMLTags)theToken->GetTypeID();
         if((FindTagInSet(theTag,gLegalElements,sizeof(gLegalElements)/sizeof(theTag))) ||
-          (gHTMLElements[theParentTag].CanContain(theTag)) && (theTag!=eHTMLTag_comment)) { // Added comment -> bug 40855
+          (gHTMLElements[theParentTag].CanContain(theTag,mDTDMode)) && (theTag!=eHTMLTag_comment)) { // Added comment -> bug 40855
             
           mFlags &= ~NS_DTD_FLAG_MISPLACED_CONTENT; // reset the state since all the misplaced tokens are about to get handled.
 
@@ -1814,7 +1888,7 @@ PRBool HasCloseablePeerAboveRoot(const TagList& aRootTagList,nsDTDContext& aCont
  *  @return  PR_TRUE if autoclosure should occur
  */ 
 static
-eHTMLTags FindAutoCloseTargetForEndTag(eHTMLTags aCurrentTag,nsDTDContext& aContext) {
+eHTMLTags FindAutoCloseTargetForEndTag(eHTMLTags aCurrentTag,nsDTDContext& aContext,nsDTDMode aMode) {
   int theTopIndex=aContext.GetCount();
   eHTMLTags thePrevTag=aContext.Last();
  
@@ -1873,7 +1947,7 @@ eHTMLTags FindAutoCloseTargetForEndTag(eHTMLTags aCurrentTag,nsDTDContext& aCont
       else{
         //Ok, a much more sensible approach for non-block closers; use the tag group to determine closure:
         //For example: %phrasal closes %phrasal, %fontstyle and %special
-        return gHTMLElements[aCurrentTag].GetCloseTargetForEndTag(aContext,theChildIndex);
+        return gHTMLElements[aCurrentTag].GetCloseTargetForEndTag(aContext,theChildIndex,aMode);
       }
     }//if
   } //if
@@ -2010,7 +2084,7 @@ nsresult CNavDTD::HandleEndToken(CToken* aToken) {
             return result;
           }
           if(result==NS_OK) {
-            eHTMLTags theTarget=FindAutoCloseTargetForEndTag(theChildTag,*mBodyContext);
+            eHTMLTags theTarget=FindAutoCloseTargetForEndTag(theChildTag,*mBodyContext,mDTDMode);
             if(eHTMLTag_unknown!=theTarget) {
               if (nsHTMLElement::IsResidualStyleTag(theChildTag)) {
                 result=OpenTransientStyles(theChildTag); 
@@ -2457,7 +2531,7 @@ CNavDTD::CollectSkippedContent(PRInt32 aTag, nsAString& aContent, PRInt32 &aLine
  */
 PRBool CNavDTD::CanContain(PRInt32 aParent,PRInt32 aChild) const 
 {
-  PRBool result=gHTMLElements[aParent].CanContain((eHTMLTags)aChild);
+  PRBool result=gHTMLElements[aParent].CanContain((eHTMLTags)aChild,mDTDMode);
 
 #ifdef ALLOW_TR_AS_CHILD_OF_TABLE
   if(!result) {
@@ -2665,7 +2739,7 @@ PRBool CNavDTD::CanOmit(eHTMLTags aParent,eHTMLTags aChild,PRBool& aParentContai
 
     if(-1==aParentContains) {    
       //we need to compute parent containment here, since it wasn't given...
-      if(!gHTMLElements[aParent].CanContain(aChild)){
+      if(!gHTMLElements[aParent].CanContain(aChild,mDTDMode)){
         return PR_TRUE;
       }
     }
@@ -2882,7 +2956,7 @@ nsresult CNavDTD::OpenTransientStyles(eHTMLTags aChildTag){
             nsCParserNode* theNode=(nsCParserNode*)theEntry->mNode;
             if(1==theNode->mUseCount) {
               eHTMLTags theNodeTag=(eHTMLTags)theNode->GetNodeType();
-              if(gHTMLElements[theNodeTag].CanContain(aChildTag)) {
+              if(gHTMLElements[theNodeTag].CanContain(aChildTag,mDTDMode)) {
                 theEntry->mParent = theStack;  //we do this too, because this entry differs from the new one we're pushing...
                 if(gHTMLElements[mBodyContext->Last()].IsMemberOf(kHeading)) {
                   // Bug 77352
@@ -3353,11 +3427,13 @@ CNavDTD::OpenContainer(const nsCParserNode *aNode,
       break;
     
     case eHTMLTag_noscript:
+      // we want to make sure that OpenContainer gets called below since we're
+      // not doing it here
+      done=PR_FALSE;
       // If the script is disabled noscript should not be
       // in the content model until the layout can somehow
       // turn noscript's display property to block <-- bug 67899
       if(mFlags & NS_DTD_FLAG_SCRIPT_ENABLED) {
-        done=PR_FALSE;
         mScratch.Truncate();
         mFlags |= NS_DTD_FLAG_ALTERNATE_CONTENT;
       }

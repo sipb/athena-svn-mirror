@@ -38,17 +38,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "EditTxn.h"
-#include "nsCOMPtr.h"
-#include "nsIDOMNode.h"
-#include "nsIDOMNodeList.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kITransactionIID, NS_ITRANSACTION_IID);
+NS_IMPL_ISUPPORTS2(EditTxn, nsITransaction, nsPIEditorTransaction)
 
-NS_IMPL_ADDREF(EditTxn)
-NS_IMPL_RELEASE(EditTxn)
-
-// note that aEditor is not refcounted
 EditTxn::EditTxn()
 {
 }
@@ -74,7 +66,7 @@ NS_IMETHODIMP EditTxn::RedoTransaction(void)
 
 NS_IMETHODIMP EditTxn::GetIsTransient(PRBool *aIsTransient)
 {
-  if (nsnull!=aIsTransient)
+  if (aIsTransient)
     *aIsTransient = PR_FALSE;
   return NS_OK;
 }
@@ -89,35 +81,4 @@ NS_IMETHODIMP EditTxn::GetTxnDescription(nsAString& aString)
   aString.Assign(NS_LITERAL_STRING("EditTxn"));
   return NS_OK;
 }
-
-NS_IMETHODIMP
-EditTxn::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (NULL == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(kISupportsIID)) {
-    nsITransaction *tmp = this;
-    nsISupports *tmp2 = tmp;
-    *aInstancePtr = (void*)(nsISupports*)tmp2;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(kITransactionIID)) {
-    *aInstancePtr = (void*)(nsITransaction*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsPIEditorTransaction))) {
-    *aInstancePtr = (void*)(nsPIEditorTransaction*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  
-  
-  *aInstancePtr = 0;
-  return NS_NOINTERFACE;
-}
-
-
 

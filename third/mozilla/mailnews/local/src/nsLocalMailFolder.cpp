@@ -98,6 +98,7 @@
 #include "nsLocalStringBundle.h"
 #include "nsIMsgMailNewsUrl.h"
 #include "nsISpamSettings.h"
+#include "nsINoIncomingServer.h"
 
 static NS_DEFINE_CID(kMailboxServiceCID,					NS_MAILBOXSERVICE_CID);
 static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
@@ -571,20 +572,6 @@ nsMsgLocalMailFolder::GetSubFolders(nsIEnumerator* *result)
   return rv;
 }
 
-NS_IMETHODIMP
-nsMsgLocalMailFolder::AddUnique(nsISupports* element)
-{
-  PR_ASSERT(0);
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsMsgLocalMailFolder::ReplaceElement(nsISupports* element, nsISupports* newElement)
-{
-  PR_ASSERT(0);
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 
 //Makes sure the database is open and exists.  If the database is valid then
 //returns NS_OK.  Otherwise returns a failure error value.
@@ -675,6 +662,43 @@ nsMsgLocalMailFolder::UpdateFolder(nsIMsgWindow *aWindow)
 {
   (void) RefreshSizeOnDisk();
   nsresult rv;
+
+  nsCOMPtr<nsIMsgAccountManager> accountManager = 
+           do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  PRBool userNeedsToAuthenticate = PR_FALSE;
+  // if we're PasswordProtectLocalCache, then we need to find out if the server is authenticated.
+  (void) accountManager->GetUserNeedsToAuthenticate(&userNeedsToAuthenticate);
+  if (userNeedsToAuthenticate)
+  {
+    nsCOMPtr<nsIMsgIncomingServer> server;
+    rv = GetServer(getter_AddRefs(server)); 
+    if (NS_FAILED(rv)) return rv;
+    if (!server) 
+      return NS_MSG_INVALID_OR_MISSING_SERVER;
+    // need to check if this is a pop3 or no mail server to determine which password
+    // we should challenge the user with.
+    nsCOMPtr<nsIMsgIncomingServer> serverToAuthenticateAgainst;
+    nsCOMPtr<nsINoIncomingServer> noIncomingServer = do_QueryInterface(server, &rv);
+    if (noIncomingServer)
+    {
+      nsCOMPtr<nsIMsgAccount> defaultAccount;
+      accountManager->GetDefaultAccount(getter_AddRefs(defaultAccount));
+      if (defaultAccount)
+        defaultAccount->GetIncomingServer(getter_AddRefs(serverToAuthenticateAgainst));
+    }
+    else
+    {
+      GetServer(getter_AddRefs(serverToAuthenticateAgainst));
+    }
+    if (serverToAuthenticateAgainst)
+    {
+      PRBool passwordMatches = PR_FALSE;
+      rv = PromptForCachePassword(serverToAuthenticateAgainst, aWindow, passwordMatches);
+      if (!passwordMatches)
+        return NS_ERROR_FAILURE;
+    }
+  }
   //If we don't currently have a database, get it.  Otherwise, the folder has been updated (presumably this
   //changes when we download headers when opening inbox).  If it's updated, send NotifyFolderLoaded.
   if(!mDatabase)
@@ -881,7 +905,7 @@ nsMsgLocalMailFolder::CreateSubfolder(const PRUnichar *folderName, nsIMsgWindow 
   nsXPIDLCString nativeFolderName;
   rv = ConvertFromUnicode(nsMsgI18NFileSystemCharset(), nsAutoString(folderName),
                      getter_Copies(nativeFolderName));
-  if (NS_FAILED(rv) || (nativeFolderName.Length() == 0)) {
+  if (NS_FAILED(rv) || nativeFolderName.IsEmpty()) {
      ThrowAlertMsg("folderCreationFailed", msgWindow);
      // I'm returning this value so the dialog stays up
      return NS_MSG_FOLDER_EXISTS;
@@ -1121,7 +1145,6 @@ NS_IMETHODIMP nsMsgLocalMailFolder::Delete()
   
   if(mDatabase)
   {
-    NotifyStoreClosedAllHeaders();
     mDatabase->ForceClosed();
     mDatabase = nsnull;
   }
@@ -1274,7 +1297,6 @@ NS_IMETHODIMP nsMsgLocalMailFolder::Rename(const PRUnichar *aNewName, nsIMsgWind
       return rv;
   }
     
-	NotifyStoreClosedAllHeaders();
 	ForceDBClosed();
   
   nsCAutoString newNameDirStr(newDiskName.get());  //save of dir name before appending .msf 
@@ -1326,7 +1348,7 @@ NS_IMETHODIMP nsMsgLocalMailFolder::Rename(const PRUnichar *aNewName, nsIMsgWind
           NotifyItemAdded(parentSupports, newFolderSupports, "folderView");
         }
       }
-      folderRenameAtom = getter_AddRefs(NS_NewAtom("RenameCompleted"));
+      folderRenameAtom = do_GetAtom("RenameCompleted");
       newFolder->NotifyFolderEvent(folderRenameAtom);
     }
   }
@@ -1380,7 +1402,13 @@ NS_IMETHODIMP nsMsgLocalMailFolder::SetPrettyName(const PRUnichar *aName)
   NS_ENSURE_ARG_POINTER(aName);
   nsresult rv = nsMsgFolder::SetPrettyName(aName);
   NS_ENSURE_SUCCESS(rv, rv);
-  return SetStringProperty("folderName", NS_ConvertUCS2toUTF8(mName).get());
+  nsXPIDLCString folderName;
+  rv = GetStringProperty("folderName", getter_Copies(folderName));
+  NS_ConvertUCS2toUTF8 utf8FolderName(mName);
+  if (!NS_SUCCEEDED(rv) || !folderName.Equals(utf8FolderName.get()))
+    return SetStringProperty("folderName", utf8FolderName.get());
+  else
+    return rv;
 }
 
 NS_IMETHODIMP nsMsgLocalMailFolder::GetName(PRUnichar **aName)
@@ -1519,99 +1547,24 @@ NS_IMETHODIMP nsMsgLocalMailFolder::GetSizeOnDisk(PRUint32* aSize)
     return rv;
 }
 
-NS_IMETHODIMP nsMsgLocalMailFolder::UserNeedsToAuthenticateForFolder(PRBool displayOnly, PRBool *authenticate)
-{
-#ifdef HAVE_PORT
-    PRBool ret = PR_FALSE;
-  if (m_master->IsCachePasswordProtected() && !m_master->IsUserAuthenticated() && !m_master->AreLocalFoldersAuthenticated())
-  {
-    char *savedPassword = GetRememberedPassword();
-    if (savedPassword && strlen(savedPassword))
-      ret = PR_TRUE;
-    FREEIF(savedPassword);
-  }
-  return ret;
-#endif
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsMsgLocalMailFolder::RememberPassword(const char *password)
-{
-#ifdef HAVE_DB
-    MailDB *mailDb = NULL;
-  MailDB::Open(m_pathName, PR_TRUE, &mailDb);
-  if (mailDb)
-  {
-    mailDb->SetCachedPassword(password);
-    mailDb->Close();
-  }
-#endif
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsMsgLocalMailFolder::GetRememberedPassword(char ** password)
-{
-#ifdef HAVE_PORT
-  PRBool serverIsIMAP = m_master->GetPrefs()->GetMailServerIsIMAP4();
-  char *savedPassword = NULL; 
-  if (serverIsIMAP)
-  {
-    MSG_IMAPHost *defaultIMAPHost = m_master->GetIMAPHostTable()->GetDefaultHost();
-    if (defaultIMAPHost)
-    {
-      MSG_FolderInfo *hostFolderInfo = defaultIMAPHost->GetHostFolderInfo();
-      MSG_FolderInfo *defaultHostIMAPInbox = NULL;
-      if (hostFolderInfo->GetFoldersWithFlag(MSG_FOLDER_FLAG_INBOX, &defaultHostIMAPInbox, 1) == 1 
-        && defaultHostIMAPInbox != NULL)
-      {
-        savedPassword = defaultHostIMAPInbox->GetRememberedPassword();
-      }
-    }
-  }
-  else
-  {
-    MSG_FolderInfo *offlineInbox = NULL;
-    if (m_flags & MSG_FOLDER_FLAG_INBOX)
-    {
-      char *retPassword = NULL;
-      MailDB *mailDb = NULL;
-      MailDB::Open(m_pathName, PR_FALSE, &mailDb, PR_FALSE);
-      if (mailDb)
-      {
-        mailDb->GetCachedPassword(cachedPassword);
-        retPassword = nsCRT::strdup(cachedPassword);
-        mailDb->Close();
-
-      }
-      return retPassword;
-    }
-    if (m_master->GetLocalMailFolderTree()->GetFoldersWithFlag(MSG_FOLDER_FLAG_INBOX, &offlineInbox, 1) && offlineInbox)
-      savedPassword = offlineInbox->GetRememberedPassword();
-  }
-  return savedPassword;
-#endif
-  return NS_OK;
-}
-
 nsresult
 nsMsgLocalMailFolder::GetTrashFolder(nsIMsgFolder** result)
 {
-    nsresult rv = NS_ERROR_NULL_POINTER;
-
-    if (!result) return rv;
-
-		nsCOMPtr<nsIMsgFolder> rootFolder;
-		rv = GetRootFolder(getter_AddRefs(rootFolder));
-		if(NS_SUCCEEDED(rv))
-		{
-			PRUint32 numFolders;
-			rv = rootFolder->GetFoldersWithFlag(MSG_FOLDER_FLAG_TRASH,
-                                          1, &numFolders, result);
-      if (NS_SUCCEEDED(rv) && numFolders != 1)
-        rv = NS_ERROR_FAILURE;
-    }
-    return rv;
+  nsresult rv = NS_ERROR_NULL_POINTER;
+  
+  if (!result) return rv;
+  
+  nsCOMPtr<nsIMsgFolder> rootFolder;
+  rv = GetRootFolder(getter_AddRefs(rootFolder));
+  if(NS_SUCCEEDED(rv))
+  {
+    PRUint32 numFolders;
+    rv = rootFolder->GetFoldersWithFlag(MSG_FOLDER_FLAG_TRASH,
+      1, &numFolders, result);
+    if (NS_SUCCEEDED(rv) && numFolders != 1)
+      rv = NS_ERROR_FAILURE;
+  }
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -2014,6 +1967,12 @@ nsMsgLocalMailFolder::CopyFolderAcrossServer(nsIMsgFolder* srcFolder, nsIMsgWind
     nsCOMPtr <nsIMsgLocalMailFolder> localFolder = do_QueryInterface(newMsgFolder);
     if (localFolder)
       localFolder->DoNextSubFolder(srcFolder, msgWindow, listener);
+
+    // We need to call OnCopyCompleted() here because if it's an empty folder then
+    // we'll never get a callback to nsMailboxProtocol::OnStopRequest() which will
+    // eventually call OnCopyCompleted() to clean up the copy request.
+    nsCOMPtr<nsISupports> srcSupport = do_QueryInterface(srcFolder);
+    return OnCopyCompleted(srcSupport, PR_FALSE);
   }	    
   return NS_OK;  // otherwise the front-end will say Exception::CopyFolder
 }
@@ -2445,9 +2404,9 @@ NS_IMETHODIMP nsMsgLocalMailFolder::CopyData(nsIInputStream *aIStream, PRInt32 a
   mCopyState->m_leftOver += readCount;
   mCopyState->m_dataBuffer[mCopyState->m_leftOver] ='\0';
   start = mCopyState->m_dataBuffer;
-  end = strchr(start, '\r');
+  end = (char *) memchr(start, '\r', mCopyState->m_leftOver);
   if (!end)
-   	end = strchr(start, '\n');
+   	end = (char *) memchr(start, '\n', mCopyState->m_leftOver);
   else if (*(end+1) == nsCRT::LF && linebreak_len == 0)
     linebreak_len = 2;
 
@@ -2514,7 +2473,8 @@ NS_IMETHODIMP nsMsgLocalMailFolder::CopyData(nsIInputStream *aIStream, PRInt32 a
       mCopyState->m_leftOver = 0;
       break;
     }
-    end = strchr(start, '\r');
+    char *endBuffer = mCopyState->m_dataBuffer + mCopyState->m_leftOver;
+    end = (char *) memchr(start, '\r', endBuffer - start + 1);
     if (end)
     {
       if (*(end+1) == nsCRT::LF)  //need to set the linebreak_len each time
@@ -2524,7 +2484,7 @@ NS_IMETHODIMP nsMsgLocalMailFolder::CopyData(nsIInputStream *aIStream, PRInt32 a
     }
     if (!end)
     {
-      end = strchr(start, '\n');
+      end = (char *) memchr(start, '\n', endBuffer - start + 1);
       if (end)
         linebreak_len = 1;   //LF
       else
@@ -2899,19 +2859,19 @@ nsresult nsMsgLocalMailFolder::CopyMessagesTo(nsISupportsArray *messages,
   
   if (NS_SUCCEEDED(rv) && mCopyState->m_messageService)
   {
-	nsMsgKeyArray keyArray;
-	PRUint32 numMessages = 0;
-	messages->Count(&numMessages);
-	for (PRUint32 i = 0; i < numMessages; i++)
-	{
-		nsCOMPtr<nsIMsgDBHdr> aMessage = do_QueryElementAt(messages, i, &rv);
-		if(NS_SUCCEEDED(rv) && aMessage)
-		{
-			nsMsgKey key;
-			aMessage->GetMessageKey(&key);
-			keyArray.Add(key);
-		}
-	}
+    nsMsgKeyArray keyArray;
+    PRUint32 numMessages = 0;
+    messages->Count(&numMessages);
+    for (PRUint32 i = 0; i < numMessages; i++)
+    {
+      nsCOMPtr<nsIMsgDBHdr> aMessage = do_QueryElementAt(messages, i, &rv);
+      if(NS_SUCCEEDED(rv) && aMessage)
+      {
+        nsMsgKey key;
+        aMessage->GetMessageKey(&key);
+        keyArray.Add(key);
+      }
+    }
     keyArray.QuickSort();
     rv = SortMessagesBasedOnKey(messages, &keyArray, srcFolder);
     NS_ENSURE_SUCCESS(rv,rv);
@@ -3189,11 +3149,7 @@ nsMsgLocalMailFolder::GetIncomingServerType()
 
 nsresult nsMsgLocalMailFolder::CreateBaseMessageURI(const char *aURI)
 {
-	nsresult rv;
-
-	rv = nsCreateLocalBaseMessageURI(aURI, &mBaseMessageURI);
-	return rv;
-
+  return nsCreateLocalBaseMessageURI(aURI, &mBaseMessageURI);
 }
 
 NS_IMETHODIMP
@@ -3386,7 +3342,7 @@ nsMsgLocalMailFolder::SetFlagsOnDefaultMailboxes(PRUint32 flags)
   if (flags & MSG_FOLDER_FLAG_JUNK)
     setSubfolderFlag(NS_LITERAL_STRING("Junk").get(), MSG_FOLDER_FLAG_JUNK);
 
-	return NS_OK;
+  return NS_OK;
 }
 
 nsresult
@@ -3406,7 +3362,7 @@ nsMsgLocalMailFolder::setSubfolderFlag(const PRUnichar *aFolderName,
   if (!folder) 
     return NS_ERROR_FAILURE;
   
- 	nsCOMPtr<nsIMsgFolder> msgFolder = do_QueryInterface(folder);
+  nsCOMPtr<nsIMsgFolder> msgFolder = do_QueryInterface(folder);
   if (!msgFolder) 
     return NS_ERROR_FAILURE;
   
@@ -3439,7 +3395,7 @@ nsMsgLocalMailFolder::NotifyCompactCompleted()
 {
   (void) RefreshSizeOnDisk();
   nsCOMPtr <nsIAtom> compactCompletedAtom;
-  compactCompletedAtom = getter_AddRefs(NS_NewAtom("CompactCompleted"));
+  compactCompletedAtom = do_GetAtom("CompactCompleted");
   NotifyFolderEvent(compactCompletedAtom);
   return NS_OK;
 }

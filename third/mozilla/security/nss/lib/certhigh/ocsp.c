@@ -35,7 +35,7 @@
  * Implementation of OCSP services, for both client and server.
  * (XXX, really, mostly just for client right now, but intended to do both.)
  *
- * $Id: ocsp.c,v 1.1.1.1.2.1 2003-07-14 19:06:24 ghudson Exp $
+ * $Id: ocsp.c,v 1.1.1.1.2.2 2004-01-02 19:58:41 ghudson Exp $
  */
 
 #include "prerror.h"

@@ -49,32 +49,40 @@ function calendarPrefObserver( CalendarPreferences )
 
 calendarPrefObserver.prototype =
 {
-   domain: "calendar.",
-   observe: function(subject, topic, prefName)
-   {
-      // when calendar pref was changed, we reinitialize 
-      switch( prefName )
-      {
-      case "calendar.event.defaultstarthour":
-      case "calendar.event.defaultendhour":
-      case "calendar.weeks.inview":
-      case "calendar.previousweeks.inview":
-      case "calendar.week.start":
-            this.CalendarPreferences.calendarWindow.currentView.refresh();
-            break;
+    domain: "calendar.",
+    observe: function(subject, topic, prefName)
+    {
+        // when calendar pref was changed, we reinitialize 
+        switch( prefName )
+        {
+            case "calendar.event.defaultstarthour":
+            case "calendar.event.defaultendhour":
+            case "calendar.weeks.inview":
+            case "calendar.previousweeks.inview":
+            case "calendar.week.start":
+                this.CalendarPreferences.calendarWindow.currentView.refresh();
+                break;
 
-         case "calendar.date.format" :
-            this.CalendarPreferences.calendarWindow.currentView.refresh();
-            refreshEventTree( getAndSetEventTable() );
-            toDoUnifinderRefresh();
-         default :
-            break;
+            case "calendar.date.format" :
+                this.CalendarPreferences.calendarWindow.currentView.refresh();
+                refreshEventTree( getAndSetEventTable() );
+                toDoUnifinderRefresh();
 
-      }
+            case "calendar.alarms.showmissed":
+                if( subject.getBoolPref( prefName ) ) {
+                    //this triggers the alarmmanager if show missed is turned on
+                    gICalLib.batchMode = true; 
+                    gICalLib.batchMode = false;
+                }
+                break;
+
+            default :
+                break;
+        }
      
-      //this causes Mozilla to freeze
-      //firePendingEvents(); 
-   }
+        //this causes Mozilla to freeze
+        //firePendingEvents(); 
+    }
 }
 
 function getDefaultCategories()
@@ -100,8 +108,10 @@ function calendarPreferences( CalendarWindow )
    //go through all the preferences and set default values?
    getBoolPref( this.calendarPref, "servers.reloadonlaunch", categoriesStringBundle.GetStringFromName("reloadServersOnLaunch" ) );
    getBoolPref( this.calendarPref, "alarms.show", categoriesStringBundle.GetStringFromName("showAlarms" ) );
+   getBoolPref( this.calendarPref, "alarms.showmissed", categoriesStringBundle.GetStringFromName("showMissed" ) );
    getBoolPref( this.calendarPref, "alarms.playsound", categoriesStringBundle.GetStringFromName("playAlarmSound" ) );
-   getCharPref( this.calendarPref, "categories.names", getDefaultCategories() );
+   GetUnicharPref( this.calendarPref, "categories.names", getDefaultCategories() );
+   getCharPref( this.calendarPref, "timezone.default", categoriesStringBundle.GetStringFromName("defaultzone"));
    getIntPref( this.calendarPref, "event.defaultlength", categoriesStringBundle.GetStringFromName("defaultEventLength" ) );
    getIntPref( this.calendarPref, "alarms.defaultsnoozelength", categoriesStringBundle.GetStringFromName("defaultSnoozeAlarmLength" ) );
    getIntPref( this.calendarPref, "date.format", categoriesStringBundle.GetStringFromName("dateFormat" ) );
@@ -110,5 +120,7 @@ function calendarPreferences( CalendarWindow )
    getIntPref( this.calendarPref, "week.start", categoriesStringBundle.GetStringFromName("defaultWeekStart" ) );
    getIntPref( this.calendarPref, "weeks.inview", categoriesStringBundle.GetStringFromName("defaultWeeksInView" ) );
    getIntPref( this.calendarPref, "previousweeks.inview", categoriesStringBundle.GetStringFromName("defaultPreviousWeeksInView" ) );
+   getIntPref( this.calendarPref, "alarms.onforevents", 0 );
+   getIntPref( this.calendarPref, "alarms.onfortodos", 0 );
 }
 

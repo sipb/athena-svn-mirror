@@ -40,7 +40,6 @@
 
 #include "nsWindowWatcher.h"
 
-#include "jscntxt.h"
 #include "nsAutoLock.h"
 #include "nsCRT.h"
 #include "nsNetUtil.h"
@@ -115,7 +114,7 @@ struct nsWatcherWindowEntry {
 
   nsWatcherWindowEntry(nsIDOMWindow *inWindow, nsIWebBrowserChrome *inChrome) {
 #ifdef USEWEAKREFS
-    mWindow = getter_AddRefs(NS_GetWeakReference(inWindow));
+    mWindow = do_GetWeakReference(inWindow);
 #else
     mWindow = inWindow;
 #endif
@@ -190,9 +189,9 @@ private:
   nsWatcherWindowEntry *mCurrentPosition;
 };
 
-NS_IMPL_ADDREF(nsWatcherWindowEnumerator);
-NS_IMPL_RELEASE(nsWatcherWindowEnumerator);
-NS_IMPL_QUERY_INTERFACE1(nsWatcherWindowEnumerator, nsISimpleEnumerator);
+NS_IMPL_ADDREF(nsWatcherWindowEnumerator)
+NS_IMPL_RELEASE(nsWatcherWindowEnumerator)
+NS_IMPL_QUERY_INTERFACE1(nsWatcherWindowEnumerator, nsISimpleEnumerator)
 
 nsWatcherWindowEnumerator::nsWatcherWindowEnumerator(nsWindowWatcher *inWatcher)
   : mWindowWatcher(inWatcher),
@@ -407,8 +406,8 @@ private:
  *********************** nsWindowWatcher ************************
  ****************************************************************/
 
-NS_IMPL_ADDREF(nsWindowWatcher);
-NS_IMPL_RELEASE(nsWindowWatcher);
+NS_IMPL_ADDREF(nsWindowWatcher)
+NS_IMPL_RELEASE(nsWindowWatcher)
 NS_IMPL_QUERY_INTERFACE2(nsWindowWatcher, nsIWindowWatcher, nsPIWindowWatcher)
 
 nsWindowWatcher::nsWindowWatcher() :
@@ -696,13 +695,13 @@ nsWindowWatcher::OpenWindowJS(nsIDOMWindow *aParent,
       nsCOMPtr<nsIDocumentViewer> parentDocViewer(do_QueryInterface(parentContentViewer));
       if (parentDocViewer) {
         nsCOMPtr<nsIDocument> doc;
-        parentDocViewer->GetDocument(*getter_AddRefs(doc));
+        parentDocViewer->GetDocument(getter_AddRefs(doc));
         
         nsCOMPtr<nsIContentViewer> newContentViewer;
         newDocShell->GetContentViewer(getter_AddRefs(newContentViewer));
         nsCOMPtr<nsIMarkupDocumentViewer> newMarkupDocViewer(do_QueryInterface(newContentViewer));
         if (doc && newMarkupDocViewer) {
-          nsXPIDLString charset;
+          nsCAutoString charset;
           rv = doc->GetDocumentCharacterSet(charset);
           if (NS_SUCCEEDED(rv))
             newMarkupDocViewer->SetDefaultCharacterSet(charset);
@@ -886,8 +885,12 @@ nsWindowWatcher::GetActiveWindow(nsIDOMWindow **aActiveWindow)
 NS_IMETHODIMP
 nsWindowWatcher::SetActiveWindow(nsIDOMWindow *aActiveWindow)
 {
-  mActiveWindow = aActiveWindow;
-  return NS_OK;
+  if (FindWindowEntry(aActiveWindow)) {
+    mActiveWindow = aActiveWindow;
+    return NS_OK;
+  }
+  NS_ERROR("invalid active window");
+  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
@@ -1115,8 +1118,8 @@ nsWindowWatcher::URIfromURL(const char *aURL,
      in nsGlobalWindow.cpp.) */
   JSContext *cx = GetJSContextFromCallStack();
   if (cx) {
-    nsISupports *cxsup = (nsISupports *) JS_GetContextPrivate(cx);
-    nsCOMPtr<nsIScriptContext> scriptcx(do_QueryInterface(cxsup));
+    nsCOMPtr<nsIScriptContext> scriptcx;
+    nsWWJSUtils::nsGetDynamicScriptContext(cx, getter_AddRefs(scriptcx));
     if (scriptcx) {
       nsCOMPtr<nsIScriptGlobalObject> gobj;
       scriptcx->GetGlobalObject(getter_AddRefs(gobj));
@@ -1140,11 +1143,7 @@ nsWindowWatcher::URIfromURL(const char *aURL,
       nsCOMPtr<nsIDocument> doc;
       doc = do_QueryInterface(domDoc);
       if (doc) {
-        doc->GetBaseURL(*getter_AddRefs(baseURI));
-
-        if (!baseURI) {
-          doc->GetDocumentURL(getter_AddRefs(baseURI));
-        }
+        doc->GetBaseURL(getter_AddRefs(baseURI));
       }
     }
   }
@@ -1408,7 +1407,7 @@ nsWindowWatcher::FindItemWithName(
   *aFoundItem = 0;
 
   /* special cases */
-  if(name.Length() == 0)
+  if(name.IsEmpty())
     return NS_OK;
   if(name.EqualsIgnoreCase("_blank") || name.EqualsIgnoreCase("_new"))
     return NS_OK;
@@ -1523,13 +1522,13 @@ nsWindowWatcher::SizeOpenedDocShellItem(nsIDocShellTreeItem *aDocShellItem,
   PRBool sizeChrome = PR_FALSE;
   PRBool sizeSpecified = PR_FALSE;
 
-  if (temp = WinHasOption(aFeatures, "outerWidth", chromeCX, nsnull)) {
+  if ((temp = WinHasOption(aFeatures, "outerWidth", chromeCX, nsnull))) {
     chromeCX = temp;
     sizeChrome = PR_TRUE;
     sizeSpecified = PR_TRUE;
   }
 
-  if (temp = WinHasOption(aFeatures, "outerHeight", chromeCY, nsnull)) {
+  if ((temp = WinHasOption(aFeatures, "outerHeight", chromeCY, nsnull))) {
     chromeCY = temp;
     sizeChrome = PR_TRUE;
     sizeSpecified = PR_TRUE;
@@ -1537,18 +1536,18 @@ nsWindowWatcher::SizeOpenedDocShellItem(nsIDocShellTreeItem *aDocShellItem,
 
   // We haven't switched to chrome sizing so we need to get the content area
   if (!sizeChrome) {
-    if (temp = WinHasOption(aFeatures, "width", chromeCX, nsnull)) {
+    if ((temp = WinHasOption(aFeatures, "width", chromeCX, nsnull))) {
       contentCX = temp;
       sizeSpecified = PR_TRUE;
-    } else if (temp = WinHasOption(aFeatures, "innerWidth", chromeCX, nsnull)) {
+    } else if ((temp = WinHasOption(aFeatures, "innerWidth", chromeCX, nsnull))) {
       contentCX = temp;
       sizeSpecified = PR_TRUE;
     }
 
-    if (temp = WinHasOption(aFeatures, "height", chromeCY, nsnull)) {
+    if ((temp = WinHasOption(aFeatures, "height", chromeCY, nsnull))) {
       contentCY = temp;
       sizeSpecified = PR_TRUE;
-    } else if (temp = WinHasOption(aFeatures, "innerHeight", chromeCY, nsnull)) {
+    } else if ((temp = WinHasOption(aFeatures, "innerHeight", chromeCY, nsnull))) {
       contentCY = temp;
       sizeSpecified = PR_TRUE;
     }

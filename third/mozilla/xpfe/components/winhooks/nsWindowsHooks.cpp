@@ -55,9 +55,6 @@
 #include "nsString.h"
 #include "nsMemory.h"
 #include "nsNetUtil.h"
-// The order of these headers is important on Win2K because CreateDirectory
-// is |#undef|-ed in nsFileSpec.h, so we need to pull in windows.h for the
-// first time after nsFileSpec.h.
 #include "nsWindowsHooksUtil.cpp"
 #include "nsWindowsHooks.h"
 #include <windows.h>
@@ -75,7 +72,6 @@
 #include "imgIRequest.h"
 #include "imgIContainer.h"
 #include "gfxIImageFrame.h"
-#include "nsIFileStream.h"
 
 #define RUNKEY "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
@@ -115,7 +111,7 @@ static EditableFileTypeRegistryEntry
 
 // Implementation of the nsIWindowsHooksSettings interface.
 // Use standard implementation of nsISupports stuff.
-NS_IMPL_ISUPPORTS1( nsWindowsHooksSettings, nsIWindowsHooksSettings );
+NS_IMPL_ISUPPORTS1( nsWindowsHooksSettings, nsIWindowsHooksSettings )
 
 nsWindowsHooksSettings::nsWindowsHooksSettings() {
 }
@@ -174,7 +170,7 @@ DEFINE_GETTER_AND_SETTER( HaveBeenSet,      mHaveBeenSet  )
 
 // Implementation of the nsIWindowsHooks interface.
 // Use standard implementation of nsISupports stuff.
-NS_IMPL_ISUPPORTS2( nsWindowsHooks, nsIWindowsHooks, nsIWindowsRegistry );
+NS_IMPL_ISUPPORTS2( nsWindowsHooks, nsIWindowsHooks, nsIWindowsRegistry )
 
 nsWindowsHooks::nsWindowsHooks() {
 }

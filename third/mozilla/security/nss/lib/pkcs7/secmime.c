@@ -35,7 +35,7 @@
  * Stuff specific to S/MIME policy and interoperability.
  * Depends on PKCS7, but there should be no dependency the other way around.
  *
- * $Id: secmime.c,v 1.1.1.1.2.1 2003-07-14 19:06:51 ghudson Exp $
+ * $Id: secmime.c,v 1.1.1.1.2.2 2004-01-02 19:59:16 ghudson Exp $
  */
 
 #include "secmime.h"

@@ -58,7 +58,6 @@
 #include "nsIWebShellWindow.h"
 #include "nsWebShellWindow.h"
 
-#include "nsIRegistry.h"
 #include "nsIEnumerator.h"
 #include "nsICmdLineService.h"
 #include "nsCRT.h"
@@ -97,7 +96,6 @@ static PRBool OnMacOSX();
 static NS_DEFINE_CID(kAppShellCID,          NS_APPSHELL_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kWindowMediatorCID, NS_WINDOWMEDIATOR_CID);
-static NS_DEFINE_CID(kXPConnectCID, NS_XPCONNECT_CID);
 
 #define gEQActivatedNotification       "nsIEventQueueActivated"
 #define gEQDestroyedNotification       "nsIEventQueueDestroyed"
@@ -108,7 +106,7 @@ static NS_DEFINE_CID(kXPConnectCID, NS_XPCONNECT_CID);
 #define gProfileInitialStateTopic      "profile-initial-state"
 
 // Static Function Prototypes
-static nsresult ConvertToUnicode(nsString& aCharset, const char* inString, nsAString& outString); 
+static nsresult ConvertToUnicode(nsCString& aCharset, const char* inString, nsAString& outString); 
 
 nsAppShellService::nsAppShellService() : 
   mDeleteCalled(PR_FALSE),
@@ -427,9 +425,16 @@ nsAppShellService::CreateHiddenWindow()
 {
   nsresult rv;
   PRInt32 initialHeight = 100, initialWidth = 100;
+    
 #if defined(XP_MAC) || defined(XP_MACOSX)
-  const char* hiddenWindowURL = "chrome://global/content/hiddenWindow.xul";
+  const char* defaultHiddenWindowURL = "chrome://global/content/hiddenWindow.xul";
   PRUint32    chromeMask = 0;
+  nsCOMPtr<nsIPrefBranch> prefBranch;
+  nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  prefs->GetBranch(nsnull, getter_AddRefs(prefBranch));
+  nsXPIDLCString prefVal;
+  rv = prefBranch->GetCharPref("browser.hiddenWindowChromeURL", getter_Copies(prefVal));
+  const char* hiddenWindowURL = prefVal.get() ? prefVal.get() : defaultHiddenWindowURL;
 #else
   const char* hiddenWindowURL = "about:blank";
   PRUint32    chromeMask =  nsIWebBrowserChrome::CHROME_ALL;
@@ -727,11 +732,9 @@ nsAppShellService::JustCreateTopWindow(nsIXULWindow *aParent,
   else {
     nsWidgetInitData widgetInitData;
 
-#if TARGET_CARBON
     if (aIsHiddenWindow)
       widgetInitData.mWindowType = eWindowType_invisible;
     else
-#endif
       widgetInitData.mWindowType = aChromeMask & nsIWebBrowserChrome::CHROME_OPENAS_DIALOG ?
                                     eWindowType_dialog : eWindowType_toplevel;
 
@@ -1114,10 +1117,36 @@ nsAppShellService::LaunchTask(const char *aParam, PRInt32 height, PRInt32 width,
   PRBool handlesArgs = PR_FALSE;
   rv = handler->GetHandlesArgs(&handlesArgs);
   if (handlesArgs) {
+#ifndef MOZ_THUNDERBIRD
     nsXPIDLString defaultArgs;
     rv = handler->GetDefaultArgs(getter_Copies(defaultArgs));
     if (NS_FAILED(rv)) return rv;
     rv = OpenWindow(chromeUrlForTask, defaultArgs, SIZE_TO_CONTENT, SIZE_TO_CONTENT);
+#else
+    // XXX horibble thunderbird hack. Don't pass in the default args if the cmd line service
+    // says we have real arguments! Use those instead.
+    nsXPIDLCString args;
+    nsXPIDLCString cmdLineArgument; // -mail, -compose, etc. 
+    rv = handler->GetCommandLineArgument(getter_Copies(cmdLineArgument));
+    if (NS_SUCCEEDED(rv)) {
+      rv = cmdLine->GetCmdLineValue(cmdLineArgument, getter_Copies(args));
+      if (NS_SUCCEEDED(rv) && args.get() && strcmp(args.get(), "1")) {
+        nsAutoString cmdArgs; cmdArgs.AssignWithConversion(args);
+        rv = OpenWindow(chromeUrlForTask, cmdArgs, height, width);
+      }
+      else
+        rv = NS_ERROR_FAILURE;
+    }
+    
+    // any failure case, do what we used to do:
+    if (NS_FAILED(rv)) {
+      nsXPIDLString defaultArgs;
+      rv = handler->GetDefaultArgs(getter_Copies(defaultArgs));
+      if (NS_FAILED(rv)) return rv;
+      rv = OpenWindow(chromeUrlForTask, defaultArgs, SIZE_TO_CONTENT, SIZE_TO_CONTENT);
+    }
+#endif
+
   }
   else {
     rv = OpenWindow(chromeUrlForTask, nsString(), width, height);
@@ -1233,10 +1262,11 @@ nsAppShellService::Ensure1Window(nsICmdLineService *aCmdLineService)
 
 #ifdef MOZ_THUNDERBIRD
       PRBool windowOpened = PR_FALSE;
+      
       rv = LaunchTask(NULL, height, width, &windowOpened); 
+      
       if (NS_FAILED(rv) || !windowOpened)
         rv = LaunchTask("mail", height, width, &windowOpened);
-
 #else
       rv = OpenBrowserWindow(height, width);
 #endif
@@ -1275,7 +1305,7 @@ nsAppShellService::OpenBrowserWindow(PRInt32 height, PRInt32 width)
       }
       else {
         // get a platform charset
-        nsAutoString charSet;
+        nsCAutoString charSet;
         nsCOMPtr <nsIPlatformCharset> platformCharset(do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv));
         if (NS_FAILED(rv)) {
           NS_ASSERTION(0, "Failed to get a platform charset");
@@ -1449,7 +1479,7 @@ OnMacOSX()
 }
 #endif
 
-static nsresult ConvertToUnicode(nsString& aCharset, const char* inString, nsAString& outString)
+static nsresult ConvertToUnicode(nsCString& aCharset, const char* inString, nsAString& outString)
 {
   nsresult rv;
 
@@ -1459,7 +1489,7 @@ static nsresult ConvertToUnicode(nsString& aCharset, const char* inString, nsASt
     return rv;
 
   nsCOMPtr <nsIUnicodeDecoder> decoder; 
-  rv = ccm->GetUnicodeDecoder(&aCharset, getter_AddRefs(decoder));
+  rv = ccm->GetUnicodeDecoderRaw(aCharset.get(), getter_AddRefs(decoder));
   if (NS_FAILED(rv))
     return rv;
 

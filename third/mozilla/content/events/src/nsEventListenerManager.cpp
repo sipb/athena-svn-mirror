@@ -103,16 +103,15 @@ nsIDOMEventGroup* gDOM2EventGroup;
 
 PRUint32 nsEventListenerManager::mInstanceCount = 0;
 
-nsEventListenerManager::nsEventListenerManager() 
+nsEventListenerManager::nsEventListenerManager() :
+  mManagerType(NS_ELM_NONE),
+  mListenersRemoved(PR_FALSE),
+  mSingleListenerType(eEventArrayType_None),
+  mSingleListener(nsnull),
+  mMultiListeners(nsnull),
+  mGenericListeners(nsnull),
+  mTarget(nsnull)
 {
-  mManagerType = NS_ELM_NONE;
-  mSingleListener = nsnull;
-  mSingleListenerType = eEventArrayType_None;
-  mMultiListeners = nsnull;
-  mGenericListeners = nsnull;
-  mListenersRemoved = PR_FALSE;
-
-  mTarget = nsnull;
   ++mInstanceCount;
 }
 
@@ -429,7 +428,7 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
     nsCOMPtr<nsIDocument> document;
     nsCOMPtr<nsIContent> content(do_QueryInterface(mTarget));
     if (content)
-      content->GetDocument(*getter_AddRefs(document));
+      document = content->GetDocument();
     else document = do_QueryInterface(mTarget);
     if (document)
       document->GetScriptGlobalObject(getter_AddRefs(global));
@@ -925,10 +924,11 @@ nsEventListenerManager::AddScriptEventListener(nsIScriptContext* aContext,
         // Always let the handler owner compile the event handler, as
         // it may want to use a special context or scope object.
         rv = handlerOwner->CompileEventHandler(aContext, scriptObject, aName,
-                                               aBody, &handler);
+                                               aBody, nsnull, 0, &handler);
       }
       else {
         rv = aContext->CompileEventHandler(scriptObject, aName, aBody,
+                                           nsnull, 0,
                                            (handlerOwner != nsnull),
                                            &handler);
       }
@@ -1116,10 +1116,13 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
           // handler, as it may want to use a special
           // context or scope object.
           result = handlerOwner->CompileEventHandler(aContext, jsobj, aName,
-                                                     handlerBody, &handler);
+                                                     handlerBody,
+                                                     nsnull, 0,
+                                                     &handler);
         }
         else {
           result = aContext->CompileEventHandler(jsobj, aName, handlerBody,
+                                                 nsnull, 0,
                                                  (handlerOwner != nsnull),
                                                  &handler);
         }
@@ -2365,7 +2368,9 @@ nsEventListenerManager::ReleaseEvent(PRInt32 aEventTypes)
   return FlipCaptureBit(aEventTypes, PR_FALSE);
 }
 
-nsresult nsEventListenerManager::FlipCaptureBit(PRInt32 aEventTypes, PRBool aInitCapture)
+nsresult
+nsEventListenerManager::FlipCaptureBit(PRInt32 aEventTypes,
+                                       PRBool aInitCapture)
 {
   EventArrayType arrayType;
   nsListenerStruct *ls;
@@ -2663,14 +2668,14 @@ nsEventListenerManager::DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval)
     return NS_ERROR_FAILURE;
   }
   
-  nsCOMPtr<nsIDocument> document;
-  targetContent->GetDocument(*getter_AddRefs(document));
+  nsCOMPtr<nsIDocument> document = targetContent->GetDocument();
 
   if (!document) {
+    // XXXbz GetOwnerDocument
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    targetContent->GetNodeInfo(*getter_AddRefs(nodeInfo));
+    targetContent->GetNodeInfo(getter_AddRefs(nodeInfo));
     if (nodeInfo) {
-      nodeInfo->GetDocument(*getter_AddRefs(document));
+      document = nodeInfo->GetDocument();
     }
   }
 
@@ -2787,8 +2792,7 @@ void nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl,
     // menu away from the top left corner of the frame. If we always 
     // used the frame height, the context menu could end up far away,
     // for example when we're focused on linked images.
-    nsCOMPtr<nsIViewManager> vm;
-    aPresShell->GetViewManager(getter_AddRefs(vm));
+    nsIViewManager* vm = aPresShell->GetViewManager();
     if (vm) {
       nsIScrollableView* scrollableView = nsnull;
       vm->GetRootScrollableView(&scrollableView);
@@ -2798,9 +2802,7 @@ void nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl,
       }
       else {
         // No scrollable view, use height of frame as fallback
-        nsRect frameRect;
-        frame->GetRect(frameRect);
-        extraDistance = frameRect.height;
+        extraDistance = frame->GetSize().height;
       }
       aTargetPt.x += extraDistance;
       aTargetPt.y += extraDistance;

@@ -99,7 +99,6 @@ const SEC_ASN1Template SECKEY_PQGParamsTemplate[] = {
 };
 
 
-static NS_DEFINE_IID(kFormProcessorIID,   NS_IFORMPROCESSOR_IID); 
 static NS_DEFINE_IID(kIDOMHTMLSelectElementIID, NS_IDOMHTMLSELECTELEMENT_IID);
 static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
 
@@ -161,7 +160,7 @@ done:
     return primeBits;
 }
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsKeygenFormProcessor, nsIFormProcessor);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsKeygenFormProcessor, nsIFormProcessor)
 MOZ_DECL_CTOR_COUNTER(nsKeygenFormProcessor)
 
 nsKeygenFormProcessor::nsKeygenFormProcessor()

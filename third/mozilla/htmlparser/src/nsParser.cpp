@@ -48,7 +48,6 @@
 #include "nsCRT.h" 
 #include "nsScanner.h"
 #include "plstr.h"
-#include "nsViewSourceHTML.h" 
 #include "nsIStringStream.h"
 #include "nsIChannel.h"
 #include "nsICachingChannel.h"
@@ -67,6 +66,10 @@
 #include "nsIServiceManager.h"
 //#define rickgdebug 
 
+#ifdef MOZ_VIEW_SOURCE
+#include "nsViewSourceHTML.h" 
+#endif
+
 #define NS_PARSER_FLAG_DTD_VERIFICATION       0x00000001
 #define NS_PARSER_FLAG_PARSER_ENABLED         0x00000002
 #define NS_PARSER_FLAG_OBSERVERS_ENABLED      0x00000004
@@ -79,9 +82,6 @@ static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kCParserCID, NS_PARSER_CID); 
 static NS_DEFINE_IID(kIParserIID, NS_IPARSER_IID);
 
-static NS_DEFINE_IID(kExpatDriverCID, NS_EXPAT_DRIVER_CID);
-static NS_DEFINE_CID(kNavDTDCID, NS_CNAVDTD_CID);
-static NS_DEFINE_CID(kViewSourceDTDCID, NS_VIEWSOURCE_DTD_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
 //-------------------------------------------------------------------
@@ -305,7 +305,7 @@ nsParser::nsParser() {
   }
 #endif
 
-  mCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+  mCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
   mParserContext=0;
   mStreamStatus=0;
   mCharsetSource=kCharsetUninitialized;
@@ -487,7 +487,7 @@ NS_IMETHODIMP_(void) nsParser::SetCommand(eParserCommands aParserCommand)
  *  @return	 nada
  */
 NS_IMETHODIMP_(void)
-nsParser::SetDocumentCharset(const nsAString& aCharset, PRInt32 aCharsetSource)
+nsParser::SetDocumentCharset(const nsACString& aCharset, PRInt32 aCharsetSource)
 {
   mCharset = aCharset;
   mCharsetSource = aCharsetSource; 
@@ -495,7 +495,7 @@ nsParser::SetDocumentCharset(const nsAString& aCharset, PRInt32 aCharsetSource)
      mParserContext->mScanner->SetDocumentCharset(aCharset, aCharsetSource);
 }
 
-void nsParser::SetSinkCharset(nsAString& aCharset)
+void nsParser::SetSinkCharset(nsACString& aCharset)
 {
   if (mSink) {
     mSink->SetDocumentCharset(aCharset);
@@ -1157,6 +1157,7 @@ FindSuitableDTD(CParserContext& aParserContext,
         sharedObjects->mDTDDeque.Push(theDTD);
         sharedObjects->mHasXMLDTD = PR_TRUE;
       }
+#ifdef MOZ_VIEW_SOURCE
       else if (!sharedObjects->mHasViewSourceDTD) {
         rv = NS_NewViewSourceHTML(&theDTD);  //do this so all non-html files can be viewed...
         NS_ENSURE_SUCCESS(rv, rv);
@@ -1164,6 +1165,7 @@ FindSuitableDTD(CParserContext& aParserContext,
         sharedObjects->mDTDDeque.Push(theDTD);
         sharedObjects->mHasViewSourceDTD = PR_TRUE;
       }
+#endif
     }
   }
 
@@ -1281,17 +1283,22 @@ void nsParser::PushContext(CParserContext& aContext) {
  * @update	gess7/22/98
  * @return  prev. context
  */
-CParserContext* nsParser::PopContext() {
-  CParserContext* oldContext=mParserContext;
-  if(oldContext) {
-    mParserContext=oldContext->mPrevContext;
-    // If the old context was blocked, propagate the blocked state
-    // back to the new one. Also, propagate the stream listener state
-    // but don't override onStop state to guarantee the call to DidBuildModel().
+CParserContext* nsParser::PopContext() 
+{
+  CParserContext* oldContext = mParserContext;
+  if (oldContext) {
+    mParserContext = oldContext->mPrevContext;
     if (mParserContext) {
-      if(mParserContext->mStreamListenerState!=eOnStop) {
+      // If the old context was blocked, propagate the blocked state
+      // back to the new one. Also, propagate the stream listener state
+      // but don't override onStop state to guarantee the call to DidBuildModel().
+      if (mParserContext->mStreamListenerState != eOnStop) {
         mParserContext->mStreamListenerState = oldContext->mStreamListenerState;
       }
+      // Preserve tokenizer state so that information is not lost
+      // between document.write. This fixes bug 99467
+      if (mParserContext->mTokenizer)
+        mParserContext->mTokenizer->CopyState(oldContext->mTokenizer);
     }
   }
   return oldContext;
@@ -1567,7 +1574,7 @@ nsParser::Parse(const nsAString& aSourceBuffer,
 
   nsresult result=NS_OK;
 
-  if(aLastCall && (0==aSourceBuffer.Length())) {
+  if(aLastCall && aSourceBuffer.IsEmpty()) {
     // Nothing is being passed to the parser so return
     // immediately. mUnusedInput will get processed when
     // some data is actually passed in.
@@ -1583,7 +1590,7 @@ nsParser::Parse(const nsAString& aSourceBuffer,
   // till we're completely done. 
   nsCOMPtr<nsIParser> kungFuDeathGrip(this);
 
-  if(aSourceBuffer.Length() || mUnusedInput.Length()) { 
+  if(!aSourceBuffer.IsEmpty() || !mUnusedInput.IsEmpty()) {
     
     if (aVerifyEnabled) {
       mFlags |= NS_PARSER_FLAG_DTD_VERIFICATION;
@@ -1747,7 +1754,7 @@ nsresult nsParser::ResumeParse(PRBool allowIteration, PRBool aIsFinalChunk, PRBo
        
       while((result==NS_OK) && (theIterationIsOk)) {
         theFirstTime=PR_FALSE;
-        if(mUnusedInput.Length()>0) {
+        if(!mUnusedInput.IsEmpty()) {
           if(mParserContext->mScanner) {
             // -- Ref: Bug# 22485 --
             // Insert the unused input into the source buffer 
@@ -1993,7 +2000,7 @@ static inline PRBool IsSecondMarker(unsigned char aChar)
   }
 }
 
-static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsString& oCharset, PRInt32& oCharsetSource) {
+static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsCString& oCharset, PRInt32& oCharsetSource) {
  oCharsetSource= kCharsetFromAutoDetection;
  oCharset.Truncate();
  // See http://www.w3.org/TR/2000/REC-xml-20001006#sec-guessing
@@ -2008,26 +2015,26 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
         // 00 00
         if((0xFE==aBytes[2]) && (0xFF==aBytes[3])) {
            // 00 00 FE FF UCS-4, big-endian machine (1234 order)
-           oCharset.AssignWithConversion(UCS4_BE);
+           oCharset.Assign(UCS4_BE);
         } else if((0x00==aBytes[2]) && (0x3C==aBytes[3])) {
            // 00 00 00 3C UCS-4, big-endian machine (1234 order)
-           oCharset.AssignWithConversion(UCS4_BE);
+           oCharset.Assign(UCS4_BE);
         } else if((0xFF==aBytes[2]) && (0xFE==aBytes[3])) {
            // 00 00 FF FE UCS-4, unusual octet order (2143)
-           oCharset.AssignWithConversion(UCS4_2143);
+           oCharset.Assign(UCS4_2143);
         } else if((0x3C==aBytes[2]) && (0x00==aBytes[3])) {
            // 00 00 3C 00 UCS-4, unusual octet order (2143)
-           oCharset.AssignWithConversion(UCS4_2143);
+           oCharset.Assign(UCS4_2143);
         } 
         oCharsetSource = kCharsetFromByteOrderMark;
      } else if((0x3C==aBytes[1]) && (0x00==aBytes[2])) {
         // 00 3C 00
         if(IsSecondMarker(aBytes[3])) {
            // 00 3C 00 SM UTF-16,  big-endian, no Byte Order Mark 
-           oCharset.AssignWithConversion(UTF16_BE); 
+           oCharset.Assign(UTF16_BE); 
         } else if((0x00==aBytes[3])) {
            // 00 3C 00 00 UCS-4, unusual octet order (3412)
-           oCharset.AssignWithConversion(UCS4_3412);
+           oCharset.Assign(UCS4_3412);
         } 
         oCharsetSource = kCharsetFromByteOrderMark;
      }
@@ -2037,10 +2044,10 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
         // 3C 00 XX 00
         if(IsSecondMarker(aBytes[2])) {
            // 3C 00 SM 00 UTF-16,  little-endian, no Byte Order Mark 
-           oCharset.AssignWithConversion(UTF16_LE); 
+           oCharset.Assign(UTF16_LE); 
         } else if((0x00==aBytes[2])) {
            // 3C 00 00 00 UCS-4, little-endian machine (4321 order)
-           oCharset.AssignWithConversion(UCS4_LE); 
+           oCharset.Assign(UCS4_LE); 
         } 
         oCharsetSource = kCharsetFromByteOrderMark;
      // For html, meta tag detector is invoked before this so that we have 
@@ -2110,7 +2117,7 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
                    // encoding value is invalid if it is UTF-16
                    if (count > 0 && 
                      (0 != PL_strcmp("UTF-16", (char*)(aBytes+encStart)))) {
-                     oCharset.AssignWithConversion((char*)(aBytes+encStart),count);
+                     oCharset.Assign((char*)(aBytes+encStart),count);
                      oCharsetSource = kCharsetFromMetaTag;
                    }
                    encodingFound = PR_TRUE;
@@ -2130,7 +2137,7 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
      if((0xBB==aBytes[1]) && (0xBF==aBytes[2])) {
         // EF BB BF
         // Win2K UTF-8 BOM
-        oCharset.AssignWithConversion(UTF8); 
+        oCharset.Assign(UTF8); 
         oCharsetSource= kCharsetFromByteOrderMark;
      }
    break;
@@ -2138,10 +2145,10 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
      if(0xFF==aBytes[1]) {
         if(0x00==aBytes[2] && 0x00==aBytes[3]) {
           // FE FF 00 00  UCS-4, unusual octet order (3412)
-          oCharset.AssignWithConversion(UCS4_3412);
+          oCharset.Assign(UCS4_3412);
         } else {
           // FE FF UTF-16, big-endian 
-          oCharset.AssignWithConversion(UTF16_BE); 
+          oCharset.Assign(UTF16_BE); 
         }
         oCharsetSource= kCharsetFromByteOrderMark;
      }
@@ -2150,11 +2157,11 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
      if(0xFE==aBytes[1]) {
         if(0x00==aBytes[2] && 0x00==aBytes[3]) 
          // FF FE 00 00  UTF-32, little-endian
-           oCharset.AssignWithConversion(UCS4_LE); 
+           oCharset.Assign(UCS4_LE); 
         else
         // FF FE
         // UTF-16, little-endian 
-           oCharset.AssignWithConversion(UTF16_LE); 
+           oCharset.Assign(UTF16_LE); 
         oCharsetSource= kCharsetFromByteOrderMark;
      }
    break;
@@ -2163,7 +2170,7 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
    // }
    // break;
  }  // switch
- return oCharset.Length() > 0;
+ return !oCharset.IsEmpty();
 }
 
 inline const char GetNextChar(nsACString::const_iterator& aStart,
@@ -2176,7 +2183,7 @@ inline const char GetNextChar(nsACString::const_iterator& aStart,
 PRBool 
 nsParser::DetectMetaTag(const char* aBytes, 
                         PRInt32 aLen, 
-                        nsString& aCharset, 
+                        nsCString& aCharset, 
                         PRInt32& aCharsetSource) 
 {
   aCharsetSource= kCharsetFromMetaTag;
@@ -2275,7 +2282,7 @@ nsParser::DetectMetaTag(const char* aBytes,
 
     // return true if we successfully got something for charset
     if (currPos != tokEnd) {
-      aCharset.Assign(NS_ConvertASCIItoUCS2(currPos.get(), tokEnd.get() - currPos.get()));
+      aCharset.Assign(currPos.get(), tokEnd.get() - currPos.get());
       return PR_TRUE;
     } 
     
@@ -2318,8 +2325,9 @@ ParserWriteFunc(nsIInputStream* in,
   }
 
   if(pws->mNeedCharsetCheck) { 
-    PRInt32 guessSource; 
-    nsAutoString guess, preferred; 
+    PRInt32 guessSource;
+    nsCAutoString guess;
+    nsCAutoString preferred; 
   
     pws->mNeedCharsetCheck = PR_FALSE; 
     if(pws->mParser->DetectMetaTag(buf, theNumRead,
@@ -2333,14 +2341,14 @@ ParserWriteFunc(nsIInputStream* in,
       // one of a designated set that we ignore.
       if (NS_SUCCEEDED(result) &&
           ((kCharsetFromByteOrderMark == guessSource) ||
-           (!preferred.Equals(NS_LITERAL_STRING("UTF-16")) &&
-            !preferred.Equals(NS_LITERAL_STRING("UTF-16BE")) &&
-            !preferred.Equals(NS_LITERAL_STRING("UTF-16LE")) &&
-            !preferred.Equals(NS_LITERAL_STRING("UTF-32BE")) &&
-            !preferred.Equals(NS_LITERAL_STRING("UTF-32LE"))))) {
-        guess.Assign(preferred);
+           (!preferred.Equals(NS_LITERAL_CSTRING("UTF-16")) &&
+            !preferred.Equals(NS_LITERAL_CSTRING("UTF-16BE")) &&
+            !preferred.Equals(NS_LITERAL_CSTRING("UTF-16LE")) &&
+            !preferred.Equals(NS_LITERAL_CSTRING("UTF-32BE")) &&
+            !preferred.Equals(NS_LITERAL_CSTRING("UTF-32LE"))))) {
+        guess = preferred;
         pws->mParser->SetDocumentCharset(guess, guessSource); 
-        pws->mParser->SetSinkCharset(guess);
+        pws->mParser->SetSinkCharset(preferred);
         nsCOMPtr<nsICachingChannel> channel(do_QueryInterface(pws->mRequest));
         if (channel) {
           nsCOMPtr<nsISupports> cacheToken;
@@ -2352,7 +2360,7 @@ ParserWriteFunc(nsIInputStream* in,
               nsresult rv =
 #endif
                 cacheDescriptor->SetMetaDataElement("charset",
-                                                    NS_ConvertUCS2toUTF8(guess).get());
+                                                    guess.get());
               NS_ASSERTION(NS_SUCCEEDED(rv),"cannot SetMetaDataElement");
             }
           }

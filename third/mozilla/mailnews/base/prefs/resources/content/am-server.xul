@@ -21,7 +21,7 @@ Communications Corporation. Portions created by Netscape are
 Rights Reserved.
 
 Contributors:
-  Håkan Waara <hwaara@chello.se>
+  HÃ¥kan Waara <hwaara@chello.se>
 
 -->
 
@@ -98,6 +98,10 @@ Contributors:
             label="&isSecure.label;" oncommand="secureSelect();"
             prefattribute="value"
             prefstring="mail.server.%serverkey%.isSecure"/>
+  <checkbox iscontrolcontainer="true" wsm_persist="true" id="server.useSecAuth"
+            label="&useSecAuth.label;" hidable="true" hidefor="nntp,movemail"
+            prefattribute="value"
+            prefstring="mail.server.%serverkey%.useSecAuth"/>
   <checkbox iscontrolcontainer="true" hidable="true" wsm_persist="true"
             id="server.loginAtStartUp" hidefor="nntp"
             label="&loginAtStartup.label;"
@@ -161,14 +165,6 @@ Contributors:
             prefstring="mail.server.%serverkey%.empty_trash_on_exit"/>
 
   <hbox iscontrolcontainer="true" flex="1">
-    <hbox flex="1">
-      <spacer flex="1"/>
-      <button label="&advancedButton.label;"
-              oncommand="openImapAdvanced(event);"
-              wsm_persist="true" id="server.advancedbutton" 
-              prefstring="mail.server.%serverkey%.advanced.disable"/>
-    </hbox>
-
     <checkbox hidable="true" hidefor="pop3,nntp,movemail" hidden="true" wsm_persist="true" id="imap.dualUseFolders"
               prefattribute="value"
               prefstring="mail.server.%serverkey%.dual_use_folders"/>
@@ -229,14 +225,25 @@ Contributors:
                datatype="nsIFileSpec"
                prefstring="mail.server.%serverkey%.newsrc.file" class="uri-element"/>
   </vbox>
+
+  <hbox flex="1">
+    <spacer flex="1"/>
+    <button label="&advancedButton.label;"
+            oncommand="onAdvanced();"
+            wsm_persist="true" id="server.advancedbutton" 
+            prefstring="mail.server.%serverkey%.advanced.disable"/>
+    <label hidden="true" wsm_persist="true" id="identity.smtpServerKey"/>
+  </hbox>
+
   </vbox>
   </groupbox>
-  <spacer flex="100%"/>
-    <vbox>
+
+  <separator class="thin"/>
+  <vbox>
     <label value="&localPath.label;" control="server.localPath"/>
     <textbox wsm_persist="true" id="server.localPath"
-            datatype="nsIFileSpec"
-            class="uri-element"
-            prefstring="mail.server.%serverkey%.directory"/>
-    </vbox>
+             datatype="nsIFileSpec"
+             class="uri-element"
+             prefstring="mail.server.%serverkey%.directory"/>
+  </vbox>
 </page>

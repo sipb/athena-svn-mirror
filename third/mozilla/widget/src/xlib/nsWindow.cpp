@@ -349,7 +349,7 @@ NS_IMETHODIMP nsWindow::CaptureRollupEvents(nsIRollupListener * aListener,
 
     gRollupConsumeRollupEvent = PR_TRUE;
     gRollupListener = aListener;
-    gRollupWidget = getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIWidget*, this)));
+    gRollupWidget = do_GetWeakReference(NS_STATIC_CAST(nsIWidget*, this));
   }else{
     // Release Grab
     if (sGrabWindow == this)
@@ -793,18 +793,21 @@ NS_IMETHODIMP nsWindow::SetTitle(const nsString& aTitle)
 
   nsCOMPtr<nsIUnicodeEncoder> encoder;
   /* get the charset */
-  nsAutoString platformCharset;
+  nsCAutoString platformCharset;
   nsCOMPtr <nsIPlatformCharset> platformCharsetService = do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv))
     rv = platformCharsetService->GetCharset(kPlatformCharsetSel_Menu, platformCharset);
   
   if (NS_FAILED(rv))
-    platformCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+    platformCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
 
   /* get the encoder */
   nsCOMPtr<nsICharsetConverterManager> ccm = 
            do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);  
-  rv = ccm->GetUnicodeEncoder(&platformCharset, getter_AddRefs(encoder));
+  rv = ccm->GetUnicodeEncoderRaw(platformCharset.get(), getter_AddRefs(encoder));
+  NS_ASSERTION(NS_SUCCEEDED(rv), "GetUnicodeEncoderRaw failed.");
+  if (NS_FAILED(rv))
+    return NS_ERROR_FAILURE;
 
   /* Estimate out length and allocate the buffer based on a worst-case estimate, then do
      the conversion. */

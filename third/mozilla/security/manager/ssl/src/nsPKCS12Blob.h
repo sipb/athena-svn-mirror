@@ -31,7 +31,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: nsPKCS12Blob.h,v 1.1.1.1.2.1 2003-07-14 19:05:59 ghudson Exp $
+ * $Id: nsPKCS12Blob.h,v 1.1.1.1.2.2 2004-01-02 19:58:15 ghudson Exp $
  */
 
 #ifndef _NS_PKCS12BLOB_H_

@@ -3,7 +3,7 @@
     FILE: icalcstps.c
     CREATOR: ebusboom 23 Jun 2000
   
-    $Id: icalcstpclient.c,v 1.1.1.1.2.1 2003-07-14 19:05:16 ghudson Exp $
+    $Id: icalcstpclient.c,v 1.1.1.1.2.2 2004-01-02 19:56:31 ghudson Exp $
     $Locker:  $
     
     (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org

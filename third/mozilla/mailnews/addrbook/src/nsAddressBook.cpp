@@ -111,10 +111,10 @@ nsAddressBook::~nsAddressBook()
 {
 }
 
-NS_IMPL_THREADSAFE_ADDREF(nsAddressBook);
-NS_IMPL_THREADSAFE_RELEASE(nsAddressBook);
+NS_IMPL_THREADSAFE_ADDREF(nsAddressBook)
+NS_IMPL_THREADSAFE_RELEASE(nsAddressBook)
 
-NS_IMPL_QUERY_INTERFACE2(nsAddressBook, nsIAddressBook, nsICmdLineHandler);
+NS_IMPL_QUERY_INTERFACE2(nsAddressBook, nsIAddressBook, nsICmdLineHandler)
 
 //
 // nsIAddressBook
@@ -734,8 +734,8 @@ nsresult AddressBookParser::ParseLDIFFile()
         }
     }
     //last row
-    if (mLine.Length() > 0 && mLine.Find("groupOfNames") == kNotFound)
-        AddLdifRowToDatabase(PR_FALSE); 
+    if (!mLine.IsEmpty() && mLine.Find("groupOfNames") == kNotFound)
+        AddLdifRowToDatabase(PR_FALSE);
 
     // mail Lists
     PRInt32 i, pos, size;
@@ -824,7 +824,7 @@ void AddressBookParser::AddLdifRowToDatabase(PRBool bIsList)
 
 void AddressBookParser::ClearLdifRecordBuffer()
 {
-  if (mLine.Length() > 0)
+  if (!mLine.IsEmpty())
   {
       mLine.Truncate();
       mLFCount = 0;
@@ -1263,7 +1263,7 @@ enum ADDRESSBOOK_EXPORT_FILE_TYPE
 {
  LDIF_EXPORT_TYPE =  0,
  CSV_EXPORT_TYPE = 1,
- TAB_EXPORT_TYPE = 2,
+ TAB_EXPORT_TYPE = 2
 };
 
 NS_IMETHODIMP nsAddressBook::ExportAddressBook(nsIAbDirectory *aDirectory)

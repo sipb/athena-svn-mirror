@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: cmpcert.c,v 1.1.1.1.2.1 2003-07-14 19:07:30 ghudson Exp $
+ * $Id: cmpcert.c,v 1.1.1.1.2.2 2004-01-02 20:00:06 ghudson Exp $
  */
 
 #include <stdio.h>

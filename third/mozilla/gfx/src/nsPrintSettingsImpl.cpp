@@ -129,7 +129,7 @@ NS_IMETHODIMP nsPrintSettings::SetPrintSession(nsIPrintSession *aPrintSession)
   // use a weak ref so that it doesn't have to be cleared.
   NS_ENSURE_ARG(aPrintSession);
   
-  mSession = getter_AddRefs(NS_GetWeakReference(aPrintSession));
+  mSession = do_GetWeakReference(aPrintSession);
   if (!mSession) {
     // This may happen if the implementation of this object does
     // not support weak references - programmer error.
@@ -442,7 +442,7 @@ NS_IMETHODIMP nsPrintSettings::SetPrintRange(PRInt16 aPrintRange)
 NS_IMETHODIMP nsPrintSettings::GetTitle(PRUnichar * *aTitle)
 {
   NS_ENSURE_ARG_POINTER(aTitle);
-  if (mTitle.Length() > 0) {
+  if (!mTitle.IsEmpty()) {
     *aTitle = ToNewUnicode(mTitle);
   } else {
     *aTitle = nsnull;
@@ -463,7 +463,7 @@ NS_IMETHODIMP nsPrintSettings::SetTitle(const PRUnichar * aTitle)
 NS_IMETHODIMP nsPrintSettings::GetDocURL(PRUnichar * *aDocURL)
 {
   NS_ENSURE_ARG_POINTER(aDocURL);
-  if (mURL.Length() > 0) {
+  if (!mURL.IsEmpty()) {
     *aDocURL = ToNewUnicode(mURL);
   } else {
     *aDocURL = nsnull;
@@ -694,7 +694,7 @@ NS_IMETHODIMP nsPrintSettings::SetShowPrintProgress(PRBool aShowPrintProgress)
 NS_IMETHODIMP nsPrintSettings::GetPaperName(PRUnichar * *aPaperName)
 {
   NS_ENSURE_ARG_POINTER(aPaperName);
-  if (mPaperName.Length()) {
+  if (!mPaperName.IsEmpty()) {
     *aPaperName = ToNewUnicode(mPaperName);
   } else {
     *aPaperName = nsnull;
@@ -707,6 +707,27 @@ NS_IMETHODIMP nsPrintSettings::SetPaperName(const PRUnichar * aPaperName)
     mPaperName = aPaperName;
   } else {
     mPaperName.SetLength(0);
+  }
+  return NS_OK;
+}
+
+/* attribute wstring plexName; */
+NS_IMETHODIMP nsPrintSettings::GetPlexName(PRUnichar * *aPlexName)
+{
+  NS_ENSURE_ARG_POINTER(aPlexName);
+  if (!mPlexName.IsEmpty()) {
+    *aPlexName = ToNewUnicode(mPlexName);
+  } else {
+    *aPlexName = nsnull;
+  }
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetPlexName(const PRUnichar * aPlexName)
+{
+  if (aPlexName) {
+    mPlexName = aPlexName;
+  } else {
+    mPlexName.SetLength(0);
   }
   return NS_OK;
 }
@@ -898,6 +919,7 @@ nsPrintSettings& nsPrintSettings::operator=(const nsPrintSettings& rhs)
   mShrinkToFit         = rhs.mShrinkToFit;
   mShowPrintProgress   = rhs.mShowPrintProgress;
   mPaperName           = rhs.mPaperName;
+  mPlexName            = rhs.mPlexName;
   mPaperSizeType       = rhs.mPaperSizeType;
   mPaperData           = rhs.mPaperData;
   mPaperWidth          = rhs.mPaperWidth;

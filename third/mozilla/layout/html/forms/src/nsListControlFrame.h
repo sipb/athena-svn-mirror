@@ -209,7 +209,6 @@ public:
   NS_IMETHOD DidReflow(nsIPresContext*           aPresContext, 
                        const nsHTMLReflowState*  aReflowState, 
                        nsDidReflowStatus         aStatus);
-  NS_IMETHOD MoveTo(nsIPresContext* aPresContext, nscoord aX, nscoord aY);
   NS_IMETHOD Destroy(nsIPresContext *aPresContext);
 
   NS_IMETHOD Paint(nsIPresContext*      aPresContext,
@@ -337,6 +336,7 @@ public:
 
 protected:
 
+  void       DropDownToggleKey(nsIDOMEvent* aKeyEvent);
   nsresult   IsOptionDisabled(PRInt32 anIndex, PRBool &aIsDisabled);
   nsresult   ScrollToFrame(nsIContent * aOptElement);
   nsresult   ScrollToIndex(PRInt32 anIndex);
@@ -394,7 +394,6 @@ protected:
   PRPackedBool mButtonDown;
   nscoord      mMaxWidth;
   nscoord      mMaxHeight;
-  PRPackedBool mIsCapturingMouseEvents;
   PRInt32      mNumDisplayRows;
 
   PRBool       mIsAllContentHere;

@@ -547,7 +547,7 @@ NS_IMETHODIMP CViewSourceHTML::BuildModel(nsIParser* aParser,nsITokenizer* aToke
       mSink->OpenHead(headNode);
 
       // Note that XUL will automatically add the prefix "Source of: "
-      if (Substring(mFilename, 0, 5).Equals(NS_LITERAL_STRING("data:")) &&
+      if (StringBeginsWith(mFilename, NS_LITERAL_STRING("data:")) &&
           mFilename.Length() > 50) {
         nsAutoString dataFilename(Substring(mFilename, 0, 50));
         dataFilename.Append(NS_LITERAL_STRING("..."));
@@ -784,7 +784,7 @@ NS_IMETHODIMP CViewSourceHTML::DidBuildModel(nsresult anErrorCode,PRBool aNotify
         nsCParserNode htmlNode(&htmlToken, 0/*stack token*/);
         mSink->CloseHTML();
       }
-      result = mSink->DidBuildModel(1);
+      result = mSink->DidBuildModel();
     }
 
     START_TIMER();

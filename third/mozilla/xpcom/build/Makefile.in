@@ -33,8 +33,7 @@ LIBRARY_NAME	= xpcom
 #EXPORT_LIBRARY = 1
 GRE_MODULE	= 1
 
-REQUIRES	= libreg \
-		  string \
+REQUIRES	= string \
 		  $(NULL)
 
 # pull in MoreFiles for MacOSX
@@ -73,6 +72,7 @@ SHARED_LIBRARY_LIBS = \
 		$(NULL)
 
 LOCAL_INCLUDES	= \
+		-I.. \
 		-I$(srcdir)/../glue \
 		-I$(srcdir)/../base \
 		-I$(srcdir)/../ds \
@@ -103,10 +103,6 @@ endif
 FORCE_USE_PIC	= 1 
 
 FORCE_SHARED_LIB = 1
-
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-OS_LIBS += libconv.lib libuls.lib
-endif
 
 ifeq ($(MOZ_OS2_TOOLS),EMX)
 OS_LIBS += -luconv

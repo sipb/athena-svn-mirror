@@ -169,15 +169,15 @@ nsNativeThemeWin::nsNativeThemeWin() {
     getThemeColor = (GetThemeColorPtr)GetProcAddress(mThemeDLL, "GetThemeColor");
   }
 
-  mCheckedAtom = getter_AddRefs(NS_NewAtom("checked"));
-  mInputAtom = getter_AddRefs(NS_NewAtom("input"));
-  mInputCheckedAtom = getter_AddRefs(NS_NewAtom("_moz-input-checked"));
-  mDisabledAtom = getter_AddRefs(NS_NewAtom("disabled"));
-  mSelectedAtom = getter_AddRefs(NS_NewAtom("selected"));
-  mTypeAtom = getter_AddRefs(NS_NewAtom("type"));
-  mReadOnlyAtom = getter_AddRefs(NS_NewAtom("readonly"));
-  mDefaultAtom = getter_AddRefs(NS_NewAtom("default"));
-  mClassAtom = getter_AddRefs(NS_NewAtom("class"));
+  mCheckedAtom = do_GetAtom("checked");
+  mInputAtom = do_GetAtom("input");
+  mInputCheckedAtom = do_GetAtom("_moz-input-checked");
+  mDisabledAtom = do_GetAtom("disabled");
+  mSelectedAtom = do_GetAtom("selected");
+  mTypeAtom = do_GetAtom("type");
+  mReadOnlyAtom = do_GetAtom("readonly");
+  mDefaultAtom = do_GetAtom("default");
+  mClassAtom = do_GetAtom("class");
 }
 
 nsNativeThemeWin::~nsNativeThemeWin() {
@@ -307,10 +307,9 @@ static void GetPrimaryPresShell(nsIFrame* aFrame, nsIPresShell** aResult)
   if (!aFrame)
     return;
  
-  nsCOMPtr<nsIDocument> doc;
   nsCOMPtr<nsIContent> content;
   aFrame->GetContent(getter_AddRefs(content));
-  content->GetDocument(*getter_AddRefs(doc));
+  nsIDocument* doc = content->GetDocument();
   if (doc)
     doc->GetShellAt(0, aResult); // Addref happens here.
 }
@@ -1349,7 +1348,11 @@ nsNativeThemeWin::ClassicGetMinimumWidgetSize(nsIRenderingContext* aContext, nsI
       *aIsOverridable = PR_FALSE;
       break;
     case NS_THEME_SCROLLBAR_TRACK_VERTICAL:
-      (*aResult).height = ::GetSystemMetrics(SM_CYVTHUMB) << 1;
+      // XXX HACK We should be able to have a minimum height for the scrollbar
+      // track.  However, this causes problems when uncollapsing a scrollbar
+      // inside a tree.  See bug 201379 for details.
+
+        //      (*aResult).height = ::GetSystemMetrics(SM_CYVTHUMB) << 1;
       break;
     case NS_THEME_SCROLLBAR_TRACK_HORIZONTAL:
       (*aResult).width = ::GetSystemMetrics(SM_CXHTHUMB) << 1;

@@ -45,7 +45,6 @@
 *   Garth Smedley
 *
 * REQUIRED INCLUDES 
-*        <script type="application/x-javascript" src="chrome://global/content/strres.js"/>
 *        <script type="application/x-javascript" src="chrome://calendar/content/calendarEvent.js"/>
 *
 * NOTES
@@ -83,6 +82,9 @@ var gEventSource = null;
 
 // single global instance of CalendarWindow
 var gCalendarWindow;
+
+// style sheet number for calendar
+var gCalendarStyleSheet;
 
 //an array of indexes to boxes for the week view
 var gHeaderDateItemArray = null;
@@ -123,6 +125,9 @@ function calendarInit()
    
    // get the Ical Library
    gICalLib = gEventSource.getICalLib();
+
+   // this suspends feedbacks to observers until all is settled
+   gICalLib.batchMode = true;
    
    // set up the CalendarWindow instance
    
@@ -145,6 +150,44 @@ function calendarInit()
    	
 	checkForMailNews();
 
+   // Change made by CofC for Calendar Coloring
+   // initialize calendar color style rules in the calendar's styleSheet
+
+   // find calendar's style sheet index
+   for (var i=0; i<document.styleSheets.length; i++)
+   {
+      if (document.styleSheets[i].href == "chrome://calendar/skin/calendar.css")
+	  {
+          gCalendarStyleSheet = document.styleSheets[i];
+		  break;
+	  }
+   }
+
+   var calendarNode;
+   var calendarColor;
+
+   // loop through the calendars via the rootSequence of the RDF datasource
+   var seq = gCalendarWindow.calendarManager.rdf.getRootSeq("urn:calendarcontainer");
+   var list = seq.getSubNodes();
+
+	for(var i=0; i<list.length;i++)
+	{
+
+     calendarNode = gCalendarWindow.calendarManager.rdf.getNode( list[i].subject );
+     
+	 // grab the container name and use it for the name of the style rule
+	 containerName = list[i].subject.split(":")[2];
+
+	 // obtain calendar color from the rdf datasource
+     calendarColor = calendarNode.getAttribute("http://home.netscape.com/NC-rdf#color");
+
+	 // if the calendar had a color attribute create a style sheet for it
+     if (calendarColor != null)
+       gCalendarStyleSheet.insertRule("." + containerName + " { background-color:" + calendarColor + "!important;}", 1);
+
+   }
+   // CofC Calendar Coloring Change
+
    if( window.arguments && window.arguments[0].channel )
    {
       gCalendarWindow.calendarManager.checkCalendarURL( window.arguments[0].channel );
@@ -153,6 +196,11 @@ function calendarInit()
    //a bit of a hack since the menulist doesn't remember the selected value     
    var value = document.getElementById( 'event-filter-menulist' ).value;
    document.getElementById( 'event-filter-menulist' ).selectedItem = document.getElementById( 'event-filter-'+value );
+
+   gEventSource.alarmObserver.firePendingAlarms();
+
+   //All is settled, enable feedbacks to observers
+   gICalLib.batchMode = false;
 }
 
 // Set the date and time on the clock and set up a timeout to refresh the clock when the 
@@ -189,7 +237,7 @@ function calendarFinish()
 
 function launchPreferences()
 {
-   goPreferences( "calendarPanel", "chrome://calendar/content/pref/calendarPref.xul", "calendar" );
+   goPreferences( "calendarPanel", "chrome://calendar/content/pref/calendarPref.xul", "calendarPanel" );
 }
 
 
@@ -548,33 +596,35 @@ function newEventCommand( event )
 
 function newToDoCommand()
 {
-   var calendarToDo = createToDo();
+    var calendarToDo = createToDo();
 
-   var dueDate = gCalendarWindow.currentView.getNewEventDate();
+    var startDate = gCalendarWindow.currentView.getNewEventDate();
    
+    var Minutes = Math.ceil( startDate.getMinutes() / 5 ) * 5 ;
    
-   var Minutes = Math.ceil( dueDate.getMinutes() / 5 ) * 5 ;
-   
-   dueDate = new Date( dueDate.getFullYear(),
-                       dueDate.getMonth(),
-                       dueDate.getDate(),
-                       dueDate.getHours(),
+    startDate = new Date( startDate.getFullYear(),
+                       startDate.getMonth(),
+                       startDate.getDate(),
+                       startDate.getHours(),
                        Minutes,
                        0);
+
+    calendarToDo.start.setTime( startDate );
    
+    var MinutesToAddOn = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "event.defaultlength", gCalendarBundle.getString("defaultEventLength" ) );
 
-   calendarToDo.due.setTime( dueDate );
+    var dueDateTime = startDate.getTime() + ( 1000 * 60 * MinutesToAddOn );
 
-   calendarToDo.start.setTime( dueDate );
-   
-   var args = new Object();
-   args.mode = "new";
-   args.onOk =  self.addToDoDialogResponse;
-   args.calendarToDo = calendarToDo;
+    calendarToDo.due.setTime( dueDateTime );
 
-   window.setCursor( "wait" );
-   // open the dialog modally
-   openDialog("chrome://calendar/content/toDoDialog.xul", "caEditEvent", "chrome,modal", args );
+    var args = new Object();
+    args.mode = "new";
+    args.onOk =  self.addToDoDialogResponse;
+    args.calendarEvent = calendarToDo;
+
+    window.setCursor( "wait" );
+    // open the dialog modally
+    openDialog("chrome://calendar/content/toDoDialog.xul", "caEditEvent", "chrome,modal", args );
 }
 
 
@@ -621,9 +671,7 @@ function newEvent( startDate, endDate )
    
    if( !endDate )
    {
-      var categoriesStringBundle = srGetStrBundle("chrome://calendar/locale/calendar.properties");
-   
-      var MinutesToAddOn = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "event.defaultlength", categoriesStringBundle.GetStringFromName("defaultEventLength" ) );
+     var MinutesToAddOn = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "event.defaultlength", gCalendarBundle.getString("defaultEventLength" ) );
    
       var endDateTime = startDate.getTime() + ( 1000 * 60 * MinutesToAddOn );
    
@@ -728,7 +776,7 @@ function editToDo( calendarToDo )
    var args = new Object();
    args.mode = "edit";
    args.onOk = self.modifyToDoDialogResponse;           
-   args.calendarToDo = calendarToDo;
+   args.calendarEvent = calendarToDo;
    
    window.setCursor( "wait" );
    // open the dialog modally
@@ -977,11 +1025,10 @@ function launchWizard()
 *  Called when a user hovers over a todo element and the text for the mouse over is changed.
 */
 
-function getPreviewTextForTask( calendarEventDisplay )
+function getPreviewTextForTask( toDoItem )
 {
-  var toDoItem = calendarEventDisplay ;
-
    var HolderBox = document.createElement( "vbox" );
+   var textString ;
 
    if( toDoItem )
    {
@@ -990,26 +1037,32 @@ function getPreviewTextForTask( calendarEventDisplay )
       if (toDoItem.title)
       {
          var TitleHtml = document.createElement( "description" );
-         var TitleText = document.createTextNode( "Title: "+toDoItem.title );
+	 textString = gCalendarBundle.getFormattedString("tooltipTitleElement", [toDoItem.title]);
+	 var TitleText = document.createTextNode( textString );
          TitleHtml.appendChild( TitleText );
          HolderBox.appendChild( TitleHtml );
       }
    
       var DateHtml = document.createElement( "description" );
       var startDate = new Date( toDoItem.start.getTime() );
-      var DateText = document.createTextNode( "Start Date: "+gCalendarWindow.dateFormater.getFormatedDate( startDate ) );
+      textString = gCalendarBundle.getFormattedString("tooltipTaskStart", 
+						   [gCalendarWindow.dateFormater.getFormatedDate( startDate )]);
+      var DateText = document.createTextNode( textString );
       DateHtml.appendChild( DateText );
       HolderBox.appendChild( DateHtml );
    
       DateHtml = document.createElement( "description" );
       var dueDate = new Date( toDoItem.due.getTime() );
-      DateText = document.createTextNode( "Due Date: "+gCalendarWindow.dateFormater.getFormatedDate( dueDate ) );
+      textString = gCalendarBundle.getFormattedString("tooltipTaskEnd", 
+						      [gCalendarWindow.dateFormater.getFormatedDate( dueDate )]);
+      DateText = document.createTextNode( textString );
       DateHtml.appendChild( DateText );
       HolderBox.appendChild( DateHtml );
    
       if (toDoItem.description)
       {
-	var text = "Description: "+toDoItem.description ;
+	var text = gCalendarBundle.getFormattedString("tooltipTaskDescription", [toDoItem.description]);
+	
 	var lines = text.split("\n");
 	var nbmaxlines = 5 ;
 	var nblines = lines.length ;
@@ -1024,10 +1077,6 @@ function getPreviewTextForTask( calendarEventDisplay )
 	  DescriptionHtml.appendChild(DescriptionText);
 	  HolderBox.appendChild(DescriptionHtml);
 	}
-//          var DescriptionHtml = document.createElement( "description" );
-//          var DescriptionText = document.createTextNode( "Description: "+toDoItem.description );
-//          DescriptionHtml.appendChild( DescriptionText );
-//          HolderBox.appendChild( DescriptionHtml );
       }
       
       return ( HolderBox );
@@ -1047,11 +1096,12 @@ function getPreviewTextForRepeatingEvent( calendarEventDisplay )
 	showTooltip = true;
       
    var HolderBox = document.createElement( "vbox" );
+  var textString ;
     
    if (calendarEventDisplay.event.title)
    {
       var TitleHtml = document.createElement( "description" );
-      var TitleText = "Title: "+calendarEventDisplay.event.title;
+      textString = gCalendarBundle.getFormattedString("tooltipTitleElement", [calendarEventDisplay.event.title]);
       
       /*
       if( calendarEventDisplay.event.recurUnits == "years" )
@@ -1060,28 +1110,47 @@ function getPreviewTextForRepeatingEvent( calendarEventDisplay )
          
          TitleText = TitleText+" "+getNumberOfRepeatTimes( calendarEventDisplay.event, false );
       }*/
-      var TitleTextNode = document.createTextNode( TitleText );
+      var TitleTextNode = document.createTextNode( textString );
       TitleHtml.appendChild( TitleTextNode );
       HolderBox.appendChild( TitleHtml );
    }
 
-   var DateHtml = document.createElement( "description" );
    var startDate = new Date( calendarEventDisplay.displayDate );
-   var DateText = document.createTextNode( "Start: "+gCalendarWindow.dateFormater.getFormatedDate( startDate )+" "+gCalendarWindow.dateFormater.getFormatedTime( startDate ) );
+   var endDate = new Date( calendarEventDisplay.displayEndDate );
+
+   var DateHtml = document.createElement( "description" );
+   if (!calendarEventDisplay.event.allDay) {
+     textString = gCalendarBundle.getFormattedString("tooltipEventStart", 
+						  ["",
+					           gCalendarWindow.dateFormater.getFormatedTime( startDate )]);
+   
+     var DateText = document.createTextNode( textString );
    DateHtml.appendChild( DateText );
    HolderBox.appendChild( DateHtml );
 
    DateHtml = document.createElement( "description" );
-   startDate = new Date( calendarEventDisplay.displayEndDate );
-   DateText = document.createTextNode( "End: "+gCalendarWindow.dateFormater.getFormatedDate( startDate )+" "+gCalendarWindow.dateFormater.getFormatedTime( startDate ) );
+     textString = gCalendarBundle.getFormattedString("tooltipEventEnd", 
+						  ["",
+						   gCalendarWindow.dateFormater.getFormatedTime( endDate )]);
+
+     DateText = document.createTextNode( textString );
    DateHtml.appendChild( DateText );
    HolderBox.appendChild( DateHtml );
+   }
    
+   if (calendarEventDisplay.event.location)
+   {
+      var LocationHtml = document.createElement( "description" );
+      textString = gCalendarBundle.getFormattedString("tooltipEventLocation", [calendarEventDisplay.event.location]);
+      var LocationText = document.createTextNode( textString );
+      LocationHtml.appendChild( LocationText );
+      HolderBox.appendChild( LocationHtml );
+   }
 
    if (calendarEventDisplay.event.description)
    {
-     var Description =  "Description: "+calendarEventDisplay.event.description;
-     var lines = Description.split("\n");
+     textString = gCalendarBundle.getFormattedString("tooltipEventDescription", [calendarEventDisplay.event.description]);
+     var lines = textString.split("\n");
      var nbmaxlines = 5 ;
      var nblines = lines.length ;
      if( nblines > nbmaxlines ) {
@@ -1175,15 +1244,17 @@ function print()
    args.selectedEvents = gCalendarWindow.EventSelection.selectedEvents ;
    args.selectedDate=gNewDateVariable = gCalendarWindow.getSelectedDate();
 
-   var categoriesStringBundle = srGetStrBundle("chrome://calendar/locale/calendar.properties");
-   var defaultWeekStart = categoriesStringBundle.GetStringFromName("defaultWeekStart" );
-   var Offset = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "week.start", defaultWeekStart );
-   var defaultWeeksInView = categoriesStringBundle.GetStringFromName("defaultWeeksInView" );
-   var WeeksInView = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "weeks.inview", defaultWeeksInView );
+   var Offset = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, 
+			   "week.start", 
+			   gCalendarBundle.getString("defaultWeekStart" ) );
+   var WeeksInView = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, 
+				"weeks.inview", 
+				gCalendarBundle.getString("defaultWeeksInView" ) );
    WeeksInView = ( WeeksInView >= 6 ) ? 6 : WeeksInView ;
 
-   var defaultPreviousWeeksInView = categoriesStringBundle.GetStringFromName("defaultPreviousWeeksInView" );
-   var PreviousWeeksInView = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, "previousweeks.inview", defaultPreviousWeeksInView );
+   var PreviousWeeksInView = getIntPref(gCalendarWindow.calendarPreferences.calendarPref, 
+					"previousweeks.inview", 
+					gCalendarBundle.getString("defaultPreviousWeeksInView" ) );
    PreviousWeeksInView = ( PreviousWeeksInView >= WeeksInView - 1 ) ? WeeksInView - 1 : PreviousWeeksInView ;
 
    args.startOfWeek=Offset;
@@ -1191,8 +1262,6 @@ function print()
    args.prevWeeksInView=PreviousWeeksInView;
 
    window.openDialog("chrome://calendar/content/printDialog.xul","printdialog","chrome",args);
-   
-   //printEventArray( gCalendarWindow.EventSelection.selectedEvents, "chrome://calendar/content/converters/sortEvents.xsl" );
 }
 
 
@@ -1321,6 +1390,7 @@ function GetUnicharPref(prefObj, prefName, defaultValue)
     }
     catch(e)
     {
+      SetUnicharPref(prefObj, prefName, defaultValue);
         return defaultValue;
     }
 }
@@ -1358,6 +1428,7 @@ function changeOnlyWorkdayCheckbox( menuindex ) {
     gOnlyWorkdayChecked = "false" ;
   }
   gCalendarWindow.currentView.refreshDisplay( );
+  gCalendarWindow.currentView.refreshEvents( );
 }
 
 /* Change the display-todo-inview checkbox */
@@ -1382,4 +1453,15 @@ function changeDisplayToDoInViewCheckbox( menuindex ) {
     gDisplayToDoInViewChecked = "false" ;
   }
   gCalendarWindow.currentView.refreshEvents( );
+}
+
+function openAboutDialog()
+{
+  window.openDialog("chrome://calendar/content/aboutDialog.xul", "About", "modal,centerscreen,chrome,resizable=no");
+}
+
+function openPreferences()
+{
+  openDialog("chrome://calendar/content/pref/pref.xul","PrefWindow",
+             "chrome,titlebar,resizable,modal");
 }

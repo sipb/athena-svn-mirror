@@ -99,21 +99,11 @@ public:
                               nsIContent*     aChild,
                               PRInt32         aNameSpaceID,
                               nsIAtom*        aAttribute,
-                              PRInt32         aModType, 
-                              PRInt32         aHint);
+                              PRInt32         aModType);
 
 protected:
   NS_IMETHOD AddComputedBorderPaddingToDesiredSize(nsHTMLReflowMetrics& aDesiredSize,
                                                    const nsHTMLReflowState& aSuggestedReflowState);
-  nsresult DoNavQuirksReflow(nsIPresContext*          aPresContext, 
-                             nsHTMLReflowMetrics&     aDesiredSize,
-                             const nsHTMLReflowState& aReflowState, 
-                             nsReflowStatus&          aStatus);
-  void CalcNavQuirkSizing(nsIPresContext* aPresContext,
-                          nsIRenderingContext* aRendContext,
-                          nsString&       aValue,
-                          nsSize&         aSize);
-
   nsresult GetDefaultLabel(nsString& aLabel);
 
   PRBool IsFileBrowseButton(PRInt32 type); // Browse button of file input

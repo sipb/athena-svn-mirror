@@ -448,12 +448,12 @@ void RectArea::ParseCoords(const nsAString& aSpec)
     if (NS_FAILED(rv))
       return;
 
+    // XXX GetOwnerDocument
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    mArea->GetNodeInfo(*getter_AddRefs(nodeInfo));
+    mArea->GetNodeInfo(getter_AddRefs(nodeInfo));
     NS_ASSERTION(nodeInfo, "Element with no nodeinfo");
     
-    nsCOMPtr<nsIDocument> doc;
-    nodeInfo->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = nodeInfo->GetDocument();
     nsCAutoString urlSpec;
     if (doc) {
       nsCOMPtr<nsIURI> uri;
@@ -737,10 +737,12 @@ void CircleArea::GetRect(nsIPresContext* aCX, nsRect& aRect)
 //----------------------------------------------------------------------
 
 
-nsImageMap::nsImageMap()
+nsImageMap::nsImageMap() :
+  mPresShell(nsnull),
+  mImageFrame(nsnull),
+  mDocument(nsnull),
+  mContainsBlockContents(PR_FALSE)
 {
-  mDocument = nsnull;
-  mContainsBlockContents = PR_FALSE;
 }
 
 nsImageMap::~nsImageMap()
@@ -760,8 +762,8 @@ nsImageMap::~nsImageMap()
   }
 
   FreeAreas();
-  if (nsnull != mDocument) {
-    mDocument->RemoveObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
+  if (mDocument) {
+    mDocument->RemoveObserver(this);
   }
 }
 
@@ -769,7 +771,7 @@ NS_IMPL_ISUPPORTS4(nsImageMap,
                    nsIDocumentObserver,
                    nsIDOMFocusListener,
                    nsIDOMEventListener,
-                   nsIImageMap);
+                   nsIImageMap)
 
 NS_IMETHODIMP
 nsImageMap::GetBoundsForAreaContent(nsIContent *aContent, 
@@ -816,12 +818,9 @@ nsImageMap::Init(nsIPresShell* aPresShell, nsIFrame* aImageFrame, nsIDOMHTMLMapE
   nsresult rv;
   mMap = do_QueryInterface(aMap, &rv);
   NS_ASSERTION(mMap, "aMap is not an nsIHTMLContent!");
-  rv = mMap->GetDocument(mDocument);
-  if (NS_SUCCEEDED(rv) && (nsnull != mDocument)) {
-    mDocument->AddObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
-    // mDocument is a weak reference, so release the reference we got
-    nsIDocument *temp = mDocument;
-    NS_RELEASE(temp);
+  mDocument = mMap->GetDocument();
+  if (mDocument) {
+    mDocument->AddObserver(this);
   }
 
   // "Compile" the areas in the map into faster access versions
@@ -838,7 +837,7 @@ nsImageMap::UpdateAreasForBlock(nsIContent* aParent, PRBool* aFoundAnchor)
   aParent->ChildCount(n);
   for (i = 0; (i < n) && NS_SUCCEEDED(rv); i++) {
     nsCOMPtr<nsIContent> child;
-    rv = aParent->ChildAt(i, *getter_AddRefs(child));
+    rv = aParent->ChildAt(i, getter_AddRefs(child));
     if (NS_SUCCEEDED(rv)) {
       nsCOMPtr<nsIDOMHTMLAnchorElement> area = do_QueryInterface(child, &rv);
       if (NS_SUCCEEDED(rv)) {
@@ -866,7 +865,7 @@ nsImageMap::UpdateAreas()
   mMap->ChildCount(n);
   for (i = 0; i < n; i++) {
     nsCOMPtr<nsIContent> child;
-    mMap->ChildAt(i, *getter_AddRefs(child));
+    mMap->ChildAt(i, getter_AddRefs(child));
 
     // Only look at elements and not text, comments, etc.
     nsCOMPtr<nsIDOMHTMLElement> element = do_QueryInterface(child);
@@ -916,7 +915,7 @@ nsImageMap::AddArea(nsIContent* aArea)
   frameManager->SetPrimaryFrameFor(aArea, mImageFrame);
 
   Area* area;
-  if ((0 == shape.Length()) ||
+  if (shape.IsEmpty() ||
       shape.EqualsIgnoreCase("rect") ||
       shape.EqualsIgnoreCase("rectangle")) {
     area = new RectArea(aArea, hasURL);
@@ -959,7 +958,7 @@ nsImageMap::IsInside(nscoord aX, nscoord aY,
         // Set the image loader's source URL and base URL
         nsCOMPtr<nsIURI> baseUri;
 
-        mMap->GetBaseURL(*getter_AddRefs(baseUri));
+        mMap->GetBaseURL(getter_AddRefs(baseUri));
 
         if (!baseUri) {
           return PR_FALSE;
@@ -994,7 +993,7 @@ nsImageMap::IsInside(nscoord aX, nscoord aY) const
     if (area->IsInside(aX, aY)) {
       nsAutoString href;
       area->GetHREF(href);
-      if (href.Length() > 0) {
+      if (!href.IsEmpty()) {
         return PR_TRUE;
       }
       else {
@@ -1027,8 +1026,7 @@ PRBool
 nsImageMap::IsAncestorOf(nsIContent* aContent,
                          nsIContent* aAncestorContent)
 {
-  nsCOMPtr<nsIContent> parent;
-  aContent->GetParent(*getter_AddRefs(parent));
+  nsCOMPtr<nsIContent> parent = aContent->GetParent();
   if (parent) {
     return parent == aAncestorContent ||
            IsAncestorOf(parent, aAncestorContent);
@@ -1044,9 +1042,8 @@ nsImageMap::ContentChanged(nsIDocument *aDocument,
 {
   // If the parent of the changing content node is our map then update
   // the map.
-  nsCOMPtr<nsIContent> parent;
-  nsresult rv = aContent->GetParent(*getter_AddRefs(parent));
-  if (NS_SUCCEEDED(rv) && (nsnull != parent)) {
+  nsIContent* parent = aContent->GetParent();
+  if (parent) {
     if ((parent == mMap) || 
         (mContainsBlockContents && IsAncestorOf(parent, mMap))) {
       UpdateAreas();
@@ -1060,13 +1057,11 @@ nsImageMap::AttributeChanged(nsIDocument *aDocument,
                              nsIContent*  aContent,
                              PRInt32      aNameSpaceID,
                              nsIAtom*     aAttribute,
-                             PRInt32      aModType, 
-                             nsChangeHint aHint)
+                             PRInt32      aModType)
 {
   // If the parent of the changing content node is our map then update
   // the map.
-  nsCOMPtr<nsIContent> parent;
-  aContent->GetParent(*getter_AddRefs(parent));
+  nsIContent* parent = aContent->GetParent();
   if ((parent == mMap) || 
       (mContainsBlockContents && IsAncestorOf(parent, mMap))) {
     UpdateAreas();
@@ -1155,9 +1150,9 @@ nsImageMap::ChangeFocus(nsIDOMEvent* aEvent, PRBool aFocus) {
             //Set or Remove internal focus
             area->HasFocus(aFocus);
             //Now invalidate the rect
-            nsCOMPtr<nsIDocument> doc;
+            nsCOMPtr<nsIDocument> doc = targetContent->GetDocument();
             //This check is necessary to see if we're still attached to the doc
-            if (NS_SUCCEEDED(targetContent->GetDocument(*getter_AddRefs(doc))) && doc) {
+            if (doc) {
               nsCOMPtr<nsIPresShell> presShell;
               doc->GetShellAt(0, getter_AddRefs(presShell));
               if (presShell) {
@@ -1189,25 +1184,21 @@ nsImageMap::HandleEvent(nsIDOMEvent* aEvent)
 nsresult
 nsImageMap::Invalidate(nsIPresContext* aPresContext, nsIFrame* aFrame, nsRect& aRect)
 {
-  nsCOMPtr<nsIViewManager> viewManager;
   PRUint32 flags = NS_VMREFRESH_IMMEDIATE;
   nsIView* view;
   nsRect damageRect(aRect);
 
-  aFrame->GetView(aPresContext, &view);
-  if (view) {
-    view->GetViewManager(*getter_AddRefs(viewManager));
-    viewManager->UpdateView(view, damageRect, flags);   
+  if (aFrame->HasView()) {
+    view = aFrame->GetView();
   }
   else {
-    nsPoint   offset;
-
+    nsPoint offset;
     aFrame->GetOffsetFromView(aPresContext, offset, &view);
-    NS_ASSERTION(nsnull != view, "no view");
+    NS_ASSERTION(view, "no view");
     damageRect += offset;
-    view->GetViewManager(*getter_AddRefs(viewManager));
-    viewManager->UpdateView(view, damageRect, flags);
   }
+  view->GetViewManager()->UpdateView(view, damageRect, flags);
+
   return NS_OK;
 
 }

@@ -47,16 +47,10 @@
 #include "TransactionFactory.h"
 #include "nsIContentIterator.h"
 #include "nsIContent.h"
-#include "nsLayoutCID.h"
-
-#ifdef NS_DEBUG
-#include "nsIDOMElement.h"
-#endif
+#include "nsComponentManagerUtils.h"
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
-#else
-static const PRBool gNoisy = PR_FALSE;
 #endif
 
 // note that aEditor is not refcounted
@@ -98,8 +92,7 @@ NS_IMETHODIMP DeleteRangeTxn::Init(nsIEditor *aEditor,
 #ifdef NS_DEBUG
   {
     PRUint32 count;
-    nsCOMPtr<nsIDOMCharacterData> textNode;
-    textNode = do_QueryInterface(mStartParent);
+    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(mStartParent);
     if (textNode)
       textNode->GetLength(&count);
     else
@@ -122,11 +115,14 @@ NS_IMETHODIMP DeleteRangeTxn::Init(nsIEditor *aEditor,
       children->GetLength(&count);
     }
     NS_ASSERTION(mEndOffset<=(PRInt32)count, "bad end offset");
+
+#ifdef NS_DEBUG
     if (gNoisy)
     {
       printf ("DeleteRange: %d of %p to %d of %p\n", 
                mStartOffset, (void *)mStartParent, mEndOffset, (void *)mEndParent);
     }         
+#endif
   }
 #endif
   return result;
@@ -139,7 +135,10 @@ DeleteRangeTxn::~DeleteRangeTxn()
 
 NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("Do Delete Range\n"); }
+#endif
+
   if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
     return NS_ERROR_NOT_INITIALIZED;
 
@@ -194,28 +193,32 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
 
 NS_IMETHODIMP DeleteRangeTxn::UndoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("Undo Delete Range\n"); }
+#endif
+
   if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
     return NS_ERROR_NOT_INITIALIZED;
 
-  nsresult result = EditAggregateTxn::UndoTransaction();
-  return result;
+  return EditAggregateTxn::UndoTransaction();
 }
 
 NS_IMETHODIMP DeleteRangeTxn::RedoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("Redo Delete Range\n"); }
+#endif
+
   if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
     return NS_ERROR_NOT_INITIALIZED;
 
-  nsresult result = EditAggregateTxn::RedoTransaction();
-  return result;
+  return EditAggregateTxn::RedoTransaction();
 }
 
 NS_IMETHODIMP DeleteRangeTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMerge)
 {
-  if (nsnull!=aDidMerge)
-    *aDidMerge=PR_FALSE;
+  if (aDidMerge)
+    *aDidMerge = PR_FALSE;
   return NS_OK;
 }
 
@@ -232,8 +235,7 @@ DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
 {
   nsresult result;
   // see what kind of node we have
-  nsCOMPtr<nsIDOMCharacterData> textNode;
-  textNode =  do_QueryInterface(aStartParent);
+  nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aStartParent);
   if (textNode)
   { // if the node is a text node, then delete text content
     DeleteTextTxn *txn;
@@ -252,12 +254,12 @@ DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
   }
   else
   {
-    PRUint32 childCount;
     nsCOMPtr<nsIDOMNodeList> children;
     result = aStartParent->GetChildNodes(getter_AddRefs(children));
     if (NS_FAILED(result)) return result;
     if (!children) return NS_ERROR_NULL_POINTER;
 
+    PRUint32 childCount;
     children->GetLength(&childCount);
     NS_ASSERTION(aEndOffset<=childCount, "bad aEndOffset");
     PRUint32 i;
@@ -287,8 +289,7 @@ NS_IMETHODIMP DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent,
 {
   nsresult result = NS_OK;
   // see what kind of node we have
-  nsCOMPtr<nsIDOMCharacterData> textNode;
-  textNode = do_QueryInterface(aParent);
+  nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aParent);
   if (textNode)
   { // if the node is a text node, then delete text content
     PRUint32 start, numToDelete;
@@ -320,31 +321,20 @@ NS_IMETHODIMP DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent,
   return result;
 }
 
-static NS_DEFINE_IID(kSubtreeIteratorCID, NS_SUBTREEITERATOR_CID);
-
 NS_IMETHODIMP DeleteRangeTxn::CreateTxnsToDeleteNodesBetween()
 {
-  nsresult result;
-
-  nsCOMPtr<nsIContentIterator> iter;
-  
-  result = nsComponentManager::CreateInstance(kSubtreeIteratorCID,
-                                        nsnull,
-                                        NS_GET_IID(nsIContentIterator), 
-                                        getter_AddRefs(iter));
-  if (NS_FAILED(result)) return result;
+  nsCOMPtr<nsIContentIterator> iter = do_CreateInstance("@mozilla.org/content/subtree-content-iterator;1");
   if (!iter) return NS_ERROR_NULL_POINTER;
 
-  result = iter->Init(mRange);
+  nsresult result = iter->Init(mRange);
   if (NS_FAILED(result)) return result;
     
   while (NS_ENUMERATOR_FALSE == iter->IsDone())
   {
-    nsCOMPtr<nsIDOMNode> node;
     nsCOMPtr<nsIContent> content;
     result = iter->CurrentNode(getter_AddRefs(content));
-    node = do_QueryInterface(content);
     if (NS_FAILED(result)) return result;
+    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(content);
     if (!node) return NS_ERROR_NULL_POINTER;
 
     DeleteElementTxn *txn;

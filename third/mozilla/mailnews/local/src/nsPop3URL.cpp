@@ -65,7 +65,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsPop3URL, nsMsgMailNewsUrl, nsIPop3URL)
 nsresult nsPop3URL::SetPop3Sink(nsIPop3Sink* aPop3Sink)
 {
     if (aPop3Sink)
-        m_pop3Sink = dont_QueryInterface(aPop3Sink);
+        m_pop3Sink = aPop3Sink;
     return NS_OK;
 }
 
@@ -82,7 +82,7 @@ nsresult nsPop3URL::GetPop3Sink(nsIPop3Sink** aPop3Sink)
 NS_IMETHODIMP
 nsPop3URL::GetMessageUri(char ** aMessageUri)
 {
-    if(!aMessageUri || m_messageUri.Length() == 0)
+    if(!aMessageUri || m_messageUri.IsEmpty())
         return NS_ERROR_NULL_POINTER;
     *aMessageUri = ToNewCString(m_messageUri);
     return NS_OK;

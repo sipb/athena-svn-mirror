@@ -209,7 +209,7 @@ nsLanguageAtomService::LookupLanguage(const PRUnichar* aLanguage,
         }
       }
     }
-    nsCOMPtr<nsIAtom> langGroup = getter_AddRefs(NS_NewAtom(langGroupStr));
+    nsCOMPtr<nsIAtom> langGroup = do_GetAtom(langGroupStr);
     language->Init(lowered, langGroup);
     lang = language;
     mLangs->AppendElement(lang);
@@ -221,8 +221,8 @@ nsLanguageAtomService::LookupLanguage(const PRUnichar* aLanguage,
 }
 
 NS_IMETHODIMP
-nsLanguageAtomService::LookupCharSet(const PRUnichar* aCharSet,
-  nsILanguageAtom** aResult)
+nsLanguageAtomService::LookupCharSet(const char* aCharSet,
+                                     nsILanguageAtom** aResult)
 {
   nsresult res;
   NS_ENSURE_ARG_POINTER(aResult);
@@ -237,12 +237,12 @@ nsLanguageAtomService::LookupCharSet(const PRUnichar* aCharSet,
     NS_ENSURE_TRUE(mCharSets, NS_ERROR_FAILURE);
   }
   if (!mUnicode) {
-    mUnicode = getter_AddRefs(NS_NewAtom("x-unicode"));
+    mUnicode = do_GetAtom("x-unicode");
   }
-  nsCOMPtr<nsIAtom> charset;
-  mCharSets->GetCharsetAtom(aCharSet, getter_AddRefs(charset));
+
   nsCOMPtr<nsIAtom> langGroup;
-  mCharSets->GetCharsetLangGroup(charset, getter_AddRefs(langGroup));
+  mCharSets->GetCharsetLangGroup(aCharSet,
+                                 getter_AddRefs(langGroup));
   if (!langGroup) {
     return NS_ERROR_FAILURE;
   }

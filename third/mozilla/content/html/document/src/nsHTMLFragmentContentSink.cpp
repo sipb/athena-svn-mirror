@@ -59,6 +59,7 @@
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsContentUtils.h"
+#include "nsEscape.h"
 
 //
 // XXX THIS IS TEMPORARY CODE
@@ -77,12 +78,12 @@ public:
 
   // nsIContentSink
   NS_IMETHOD WillBuildModel(void);
-  NS_IMETHOD DidBuildModel(PRInt32 aQualityLevel);
+  NS_IMETHOD DidBuildModel(void);
   NS_IMETHOD WillInterrupt(void);
   NS_IMETHOD WillResume(void);
   NS_IMETHOD SetParser(nsIParser* aParser);  
   NS_IMETHOD FlushPendingNotifications() { return NS_OK; }
-  NS_IMETHOD SetDocumentCharset(nsAString& aCharset) { return NS_OK; }
+  NS_IMETHOD SetDocumentCharset(nsACString& aCharset) { return NS_OK; }
 
   // nsIHTMLContentSink
   NS_IMETHOD BeginContext(PRInt32 aID);
@@ -123,9 +124,6 @@ public:
   PRInt32 PushContent(nsIContent *aContent);
   nsIContent* PopContent();
 
-  void GetAttributeValueAt(const nsIParserNode& aNode,
-                           PRInt32 aIndex,
-                           nsString& aResult);
   nsresult AddAttributes(const nsIParserNode& aNode,
                          nsIContent* aContent);
 
@@ -283,7 +281,7 @@ nsHTMLFragmentContentSink::WillBuildModel(void)
 }
 
 NS_IMETHODIMP 
-nsHTMLFragmentContentSink::DidBuildModel(PRInt32 aQualityLevel)
+nsHTMLFragmentContentSink::DidBuildModel(void)
 {
   FlushText();
 
@@ -338,7 +336,7 @@ nsHTMLFragmentContentSink::SetTitle(const nsString& aValue)
   nsCOMPtr<nsINodeInfo> nodeInfo;
   result = mNodeInfoManager->GetNodeInfo(nsHTMLAtoms::title, nsnull, 
                                          kNameSpaceID_None,
-                                         *getter_AddRefs(nodeInfo));
+                                         getter_AddRefs(nodeInfo));
   if(NS_SUCCEEDED(result)) {
     nsCOMPtr<nsIHTMLContent> content=nsnull;
     result = NS_NewHTMLTitleElement(getter_AddRefs(content), nodeInfo);
@@ -492,7 +490,7 @@ nsHTMLFragmentContentSink::OpenContainer(const nsIParserNode& aNode)
       result =
         mNodeInfoManager->GetNodeInfo(aNode.GetText(), nsnull,
                                       kNameSpaceID_None,
-                                      *getter_AddRefs(nodeInfo));
+                                      getter_AddRefs(nodeInfo));
     } else {
       nsIParserService* parserService =
         nsContentUtils::GetParserServiceWeakRef();
@@ -507,7 +505,7 @@ nsHTMLFragmentContentSink::OpenContainer(const nsIParserNode& aNode)
       result =
         mNodeInfoManager->GetNodeInfo(nsDependentString(name), nsnull,
                                       kNameSpaceID_None,
-                                      *getter_AddRefs(nodeInfo));
+                                      getter_AddRefs(nodeInfo));
     }
 
     NS_ENSURE_SUCCESS(result, result);
@@ -587,7 +585,7 @@ nsHTMLFragmentContentSink::AddLeaf(const nsIParserNode& aNode)
           result =
             mNodeInfoManager->GetNodeInfo(aNode.GetText(), nsnull,
                                           kNameSpaceID_None,
-                                          *getter_AddRefs(nodeInfo));
+                                          getter_AddRefs(nodeInfo));
         } else {
           const PRUnichar *name = nsnull;
           result = parserService->HTMLIdToStringTag(nodeType, &name);
@@ -596,7 +594,7 @@ nsHTMLFragmentContentSink::AddLeaf(const nsIParserNode& aNode)
           result =
             mNodeInfoManager->GetNodeInfo(nsDependentString(name), nsnull,
                                           kNameSpaceID_None,
-                                          *getter_AddRefs(nodeInfo));
+                                          getter_AddRefs(nodeInfo));
         }
 
         NS_ENSURE_SUCCESS(result, result);
@@ -728,7 +726,7 @@ NS_IMETHODIMP
 nsHTMLFragmentContentSink::SetTargetDocument(nsIDocument* aTargetDocument)
 {
   if (aTargetDocument) {
-    aTargetDocument->GetNodeInfoManager(*getter_AddRefs(mNodeInfoManager));
+    aTargetDocument->GetNodeInfoManager(getter_AddRefs(mNodeInfoManager));
   }
 
   if (mNodeInfoManager) {
@@ -877,57 +875,58 @@ nsHTMLFragmentContentSink::FlushText()
 }
 
 // XXX Code copied from nsHTMLContentSink. It should be shared.
-void
-nsHTMLFragmentContentSink::GetAttributeValueAt(const nsIParserNode& aNode,
-                                               PRInt32 aIndex,
-                                               nsString& aResult)
-{
-  // Copy value
-  const nsAString& value = aNode.GetValueAt(aIndex);
-  aResult.Truncate();
-  aResult.Append(value);
-
-  // Strip quotes if present
-  if (!aResult.IsEmpty()) {
-    PRUnichar first = aResult.First();
-    if ((first == '\"') || (first == '\'')) {
-      if (aResult.Last() == first) {
-        aResult.Cut(0, 1);
-        PRInt32 pos = aResult.Length() - 1;
-        if (pos >= 0) {
-          aResult.Cut(pos, 1);
-        }
-      } else {
-        // Mismatched quotes - leave them in
-      }
-    }
-  }
-}
-
-// XXX Code copied from nsHTMLContentSink. It should be shared.
 nsresult
 nsHTMLFragmentContentSink::AddAttributes(const nsIParserNode& aNode,
                                          nsIContent* aContent)
 {
   // Add tag attributes to the content attributes
-  nsAutoString k, v;
+
   PRInt32 ac = aNode.GetAttributeCount();
-  for (PRInt32 i = 0; i < ac; i++) {
-    // Get upper-cased key
+
+  if (ac == 0) {
+    // No attributes, nothing to do. Do an early return to avoid
+    // constructing the nsAutoString object for nothing.
+
+    return NS_OK;
+  }
+
+  nsAutoString k;
+  nsHTMLTag nodeType = nsHTMLTag(aNode.GetNodeType());
+
+  // The attributes are on the parser node in the order they came in in the
+  // source.  What we want to happen if a single attribute is set multiple
+  // times on an element is that the first time should "win".  That is, <input
+  // value="foo" value="bar"> should show "foo".  So we loop over the
+  // attributes backwards; this ensures that the first attribute in the set
+  // wins.  This does mean that we do some extra work in the case when the same
+  // attribute is set multiple times, but we save a HasAttr call in the much
+  // more common case of reasonable HTML.
+  
+  for (PRInt32 i = ac - 1; i >= 0; i--) {
+    // Get lower-cased key
     const nsAString& key = aNode.GetKeyAt(i);
     k.Assign(key);
     ToLowerCase(k);
 
     nsCOMPtr<nsIAtom> keyAtom = do_GetAtom(k);
-    
-    if (NS_CONTENT_ATTR_NOT_THERE == 
-        aContent->GetAttr(kNameSpaceID_None, keyAtom, v)) {
-      // Get value and remove mandatory quotes
-      GetAttributeValueAt(aNode, i, v);
 
+    // Get value and remove mandatory quotes
+    static const char* kWhitespace = "\n\r\t\b";
+    const nsAString& v =
+      nsContentUtils::TrimCharsInSet(kWhitespace, aNode.GetValueAt(i));
+
+    if (nodeType == eHTMLTag_a && keyAtom == nsHTMLAtoms::name) {
+      NS_ConvertUCS2toUTF8 cname(v);
+      NS_ConvertUTF8toUCS2 uv(nsUnescape(NS_CONST_CAST(char *,
+                                                       cname.get())));
+
+      // Add attribute to content
+      aContent->SetAttr(kNameSpaceID_None, keyAtom, uv, PR_FALSE);
+    } else {
       // Add attribute to content
       aContent->SetAttr(kNameSpaceID_None, keyAtom, v, PR_FALSE);
     }
   }
+
   return NS_OK;
 }

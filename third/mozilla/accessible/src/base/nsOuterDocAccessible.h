@@ -39,26 +39,27 @@
 #ifndef _nsOuterDocAccessible_H_
 #define _nsOuterDocAccessible_H_
 
-#include "nsBaseWidgetAccessible.h"
+#include "nsAccessibleWrap.h"
 #include "nsIAccessible.h"
 
 class nsIWeakReference;
 
-class nsOuterDocAccessible : public nsBlockAccessible
+class nsOuterDocAccessible : public nsAccessibleWrap
 {
   NS_DECL_ISUPPORTS_INHERITED
 
   public:
     nsOuterDocAccessible(nsIDOMNode* aNode, 
-                         nsIAccessible* aInnerDocAccessible, 
                          nsIWeakReference* aShell);
 
-    NS_IMETHOD GetAccName(nsAString& aAccName);
-    NS_IMETHOD GetAccValue(nsAString& AccValue);
-    NS_IMETHOD GetAccRole(PRUint32 *aAccRole);
-    NS_IMETHOD GetAccState(PRUint32 *aAccState);
-    NS_IMETHOD AccGetBounds(PRInt32 *x, PRInt32 *y, 
+    NS_IMETHOD GetName(nsAString& aName);
+    NS_IMETHOD GetValue(nsAString& Value);
+    NS_IMETHOD GetRole(PRUint32 *aRole);
+    NS_IMETHOD GetState(PRUint32 *aState);
+    NS_IMETHOD GetBounds(PRInt32 *x, PRInt32 *y, 
                             PRInt32 *width, PRInt32 *height);
+
+    NS_IMETHOD Init();
 };
 
 #endif  

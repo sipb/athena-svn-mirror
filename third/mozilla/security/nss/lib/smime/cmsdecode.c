@@ -34,7 +34,7 @@
 /*
  * CMS decoding.
  *
- * $Id: cmsdecode.c,v 1.1.1.1.2.1 2003-07-14 19:07:24 ghudson Exp $
+ * $Id: cmsdecode.c,v 1.1.1.1.2.2 2004-01-02 20:00:00 ghudson Exp $
  */
 
 #include "cmslocal.h"

@@ -262,10 +262,9 @@ nsImageBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
                                nsIContent* aChild,
                                PRInt32 aNameSpaceID,
                                nsIAtom* aAttribute,
-                               PRInt32 aModType, 
-                               PRInt32 aHint)
+                               PRInt32 aModType)
 {
-  nsresult rv = nsLeafBoxFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType, aHint);
+  nsresult rv = nsLeafBoxFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType);
 
   PRBool aResize;
   PRBool aRedraw;
@@ -376,7 +375,7 @@ nsImageBoxFrame::GetImageSource()
     // get the list-style-image
     const nsStyleList* myList = GetStyleList();
   
-    if (myList->mListStyleImage.Length() > 0) {
+    if (!myList->mListStyleImage.IsEmpty()) {
       mSrc = myList->mListStyleImage;
     }
   }
@@ -431,13 +430,23 @@ nsImageBoxFrame::UpdateImage(nsIPresContext*  aPresContext, PRBool& aResize)
   }
 
   nsCOMPtr<nsIURI> baseURI;
-  GetBaseURI(getter_AddRefs(baseURI));
+  if (mContent) {
+    mContent->GetBaseURL(getter_AddRefs(baseURI));
+  }
   nsCOMPtr<nsIURI> srcURI;
-  NS_NewURI(getter_AddRefs(srcURI), mSrc, nsnull, baseURI);
+  nsresult rv = NS_NewURI(getter_AddRefs(srcURI), mSrc, nsnull, baseURI);
+
+  if (NS_FAILED(rv)) {
+    if (mImageRequest) {
+      mImageRequest->Cancel(NS_ERROR_FAILURE);
+      mImageRequest = nsnull;
+    }
+    return;
+  }
 
   if (mImageRequest) {
     nsCOMPtr<nsIURI> requestURI;
-    nsresult rv = mImageRequest->GetURI(getter_AddRefs(requestURI));
+    rv = mImageRequest->GetURI(getter_AddRefs(requestURI));
     NS_ASSERTION(NS_SUCCEEDED(rv) && requestURI,"no request URI");
     if (NS_FAILED(rv) || !requestURI) return;
 
@@ -457,7 +466,6 @@ nsImageBoxFrame::UpdateImage(nsIPresContext*  aPresContext, PRBool& aResize)
     mImageRequest = nsnull;
   }
 
-  nsresult rv;
   nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
   if (NS_FAILED(rv)) return;
 
@@ -468,7 +476,7 @@ nsImageBoxFrame::UpdateImage(nsIPresContext*  aPresContext, PRBool& aResize)
   nsCOMPtr<nsIURI> documentURI;
   nsCOMPtr<nsIDocument> doc;
   if (mContent) {
-    (void) mContent->GetDocument(*getter_AddRefs(doc));
+    doc = mContent->GetDocument();
     if (doc) {
       doc->GetDocumentURL(getter_AddRefs(documentURI));
     }
@@ -702,26 +710,6 @@ nsImageBoxFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-
-void
-nsImageBoxFrame::GetBaseURI(nsIURI **uri)
-{
-  nsresult rv;
-  nsCOMPtr<nsIURI> baseURI;
-  nsCOMPtr<nsIHTMLContent> htmlContent(do_QueryInterface(mContent, &rv));
-  if (NS_SUCCEEDED(rv)) {
-    htmlContent->GetBaseURL(*getter_AddRefs(baseURI));
-  }
-  else {
-    nsCOMPtr<nsIDocument> doc;
-    mContent->GetDocument(*getter_AddRefs(doc));
-    if (doc) {
-      doc->GetBaseURL(*getter_AddRefs(baseURI));
-    }
-  }
-  *uri = baseURI;
-  NS_IF_ADDREF(*uri);
-}
 
 void
 nsImageBoxFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGroup)

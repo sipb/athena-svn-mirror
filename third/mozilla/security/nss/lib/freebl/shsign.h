@@ -32,7 +32,7 @@
  *
  * shsign.h - header to build softoken signature files.
  *
- * $Id: shsign.h,v 1.1.2.1 2003-07-14 19:06:42 ghudson Exp $
+ * $Id: shsign.h,v 1.1.2.2 2004-01-02 19:59:07 ghudson Exp $
  */
 
 #ifndef _SHSIGN_H_

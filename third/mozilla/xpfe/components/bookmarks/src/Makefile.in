@@ -41,10 +41,11 @@ REQUIRES	= xpcom \
 		  profile \
 		  dom \
 		  intl \
-		  webshell \
 		  windowwatcher \
 		  unicharutil \
 		  txmgr \
+		  chardet \
+		  htmlparser \
 		  locale \
 		  $(NULL)
 

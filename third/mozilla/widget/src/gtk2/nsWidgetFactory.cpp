@@ -80,7 +80,7 @@ static const nsModuleComponentInfo components[] =
       nsAppShellConstructor },
     { "Gtk2 Look And Feel",
       NS_LOOKANDFEEL_CID,
-      "@mozilla.org/widget/lookandfeel/gtk;1",
+      "@mozilla.org/widget/lookandfeel;1",
       nsLookAndFeelConstructor },
     { "Gtk2 Sound",
       NS_SOUND_CID,
@@ -108,7 +108,7 @@ static const nsModuleComponentInfo components[] =
     nsDragServiceConstructor },
   { "HTML Format Converter",
     NS_HTMLFORMATCONVERTER_CID,
-    "@mozilla.org/widget/htmlformatconverter/gtk;1",
+    "@mozilla.org/widget/htmlformatconverter;1",
     nsHTMLFormatConverterConstructor },
   { "Gtk2 Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
@@ -119,6 +119,8 @@ static const nsModuleComponentInfo components[] =
 PR_STATIC_CALLBACK(void)
 nsWidgetGtk2ModuleDtor(nsIModule *aSelf)
 {
+  nsWindow::ReleaseGlobals();
+  nsAppShell::ReleaseGlobals();
 }
 
 NS_IMPL_NSGETMODULE_WITH_DTOR(nsWidgetGtk2Module,

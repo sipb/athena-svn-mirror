@@ -94,6 +94,10 @@ var unifinderToDoDataSourceObserver =
    onAlarm : function( calendarToDo )
    {
       
+   },
+
+   onError : function()
+   {
    }
 
 };
@@ -413,7 +417,7 @@ var toDoTreeView =
          case "unifinder-todo-tree-col-title":
             var titleText;
             if( calendarToDo.title == "" )
-               titleText = "Untitled";
+               titleText = gCalendarBundle.getString( "eventUntitled" );
             else  
                titleText = calendarToDo.title;
             return( titleText );
@@ -505,7 +509,7 @@ function refreshToDoTree( taskArray )
 
    toDoTreeView.rowCount = gTaskArray.length;
    
-   var ArrayOfTreeCols = document.getElementById( UnifinderTreeName ).getElementsByTagName( "treecol" );
+   var ArrayOfTreeCols = document.getElementById( ToDoUnifinderTreeName ).getElementsByTagName( "treecol" );
    
    for( var i = 0; i < ArrayOfTreeCols.length; i++ )
    {
@@ -584,57 +588,8 @@ function changeToolTipTextForToDo( event )
    {
       Html.removeChild( Html.firstChild ); 
    }
-   
-   var HolderBox = document.createElement( "vbox" );
-
-   if( toDoItem )
-   {
-      showTooltip = true; //needed to show the tooltip.
-         
-      if (toDoItem.title)
-      {
-         var TitleHtml = document.createElement( "description" );
-         var TitleText = document.createTextNode( "Title: "+toDoItem.title );
-         TitleHtml.appendChild( TitleText );
-         HolderBox.appendChild( TitleHtml );
-      }
-   
-      var DateHtml = document.createElement( "description" );
-      var startDate = new Date( toDoItem.start.getTime() );
-      var DateText = document.createTextNode( "Start Date: "+gCalendarWindow.dateFormater.getFormatedDate( startDate ) );
-      DateHtml.appendChild( DateText );
-      HolderBox.appendChild( DateHtml );
-   
-      DateHtml = document.createElement( "description" );
-      var dueDate = new Date( toDoItem.due.getTime() );
-      DateText = document.createTextNode( "Due Date: "+gCalendarWindow.dateFormater.getFormatedDate( dueDate ) );
-      DateHtml.appendChild( DateText );
-      HolderBox.appendChild( DateHtml );
-   
-      if (toDoItem.description)
-      {
-	var text = "Description: "+toDoItem.description ;
-	var lines = text.split("\n");
-	var nbmaxlines = 5 ;
-	var nblines = lines.length ;
-	if( nblines > nbmaxlines ) {
-	  var nblines = nbmaxlines ;
-	  lines[ nblines - 1 ] = "..." ;
-	}
-	for (var i = 0; i < nblines; i++) {
-	  var DescriptionHtml = document.createElement("description");
-	  var DescriptionText = document.createTextNode(lines[i]);
-	  DescriptionHtml.appendChild(DescriptionText);
-	  HolderBox.appendChild(DescriptionHtml);
-	}
-      }
-      
-      Html.appendChild( HolderBox );
-   } 
-   else
-   {
-      showTooltip = false; //Don't show the tooltip
-   }
+   var HolderBox = getPreviewTextForTask( toDoItem ) ;
+   if( HolderBox ) Html.appendChild( HolderBox ) ;
 }
 
 function changeContextMenuForToDo( event )

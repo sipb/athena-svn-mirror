@@ -61,7 +61,7 @@
 #include "nsplugindefs.h"
 #include "nsMacEventHandler.h"
 #include "nsMacResources.h"
-#include "nsRegionMac.h"
+#include "nsIRegion.h"
 #include "nsIRollupListener.h"
 
 #include "nsCarbonHelpers.h"
@@ -342,7 +342,7 @@ nsWindow::~nsWindow()
 	}
 }
 
-NS_IMPL_ISUPPORTS_INHERITED2(nsWindow, nsBaseWidget, nsIKBStateControl, nsIPluginWidget);
+NS_IMPL_ISUPPORTS_INHERITED2(nsWindow, nsBaseWidget, nsIKBStateControl, nsIPluginWidget)
 
 //-------------------------------------------------------------------------
 //

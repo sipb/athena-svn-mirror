@@ -37,53 +37,92 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsOuterDocAccessible.h"
+#include "nsIAccessibilityService.h"
+#include "nsIAccessibleDocument.h"
+#include "nsIDocument.h"
+#include "nsIPresShell.h"
+#include "nsIServiceManager.h"
+#include "nsIContent.h"
 
-NS_IMPL_ISUPPORTS_INHERITED0(nsOuterDocAccessible, nsBlockAccessible)
+NS_IMPL_ISUPPORTS_INHERITED0(nsOuterDocAccessible, nsAccessible)
 
 nsOuterDocAccessible::nsOuterDocAccessible(nsIDOMNode* aNode, 
-                                          nsIAccessible* aDocAccessible, 
-                                          nsIWeakReference* aShell):
-  nsBlockAccessible(aNode, aShell)
+                                           nsIWeakReference* aShell):
+  nsAccessibleWrap(aNode, aShell)
 {
-  SetAccFirstChild(aDocAccessible); // weak ref
-  if (aDocAccessible) {
-    aDocAccessible->SetAccParent(this);
-  }
   mAccChildCount = 1;
 }
 
   /* attribute wstring accName; */
-NS_IMETHODIMP nsOuterDocAccessible::GetAccName(nsAString& aAccName) 
+NS_IMETHODIMP nsOuterDocAccessible::GetName(nsAString& aName) 
 { 
   nsCOMPtr<nsIAccessibleDocument> accDoc(do_QueryInterface(mFirstChild));
   if (!accDoc) {
     return NS_ERROR_FAILURE;
   }
-  nsresult rv = accDoc->GetTitle(aAccName);
-  if (NS_FAILED(rv) || aAccName.IsEmpty())
-    rv = accDoc->GetURL(aAccName);
+  nsresult rv = accDoc->GetTitle(aName);
+  if (NS_FAILED(rv) || aName.IsEmpty())
+    rv = accDoc->GetURL(aName);
   return rv;
 }
 
-NS_IMETHODIMP nsOuterDocAccessible::GetAccValue(nsAString& aAccValue) 
+NS_IMETHODIMP nsOuterDocAccessible::GetValue(nsAString& aValue) 
 { 
   return NS_OK;
 }
 
-/* unsigned long getAccRole (); */
-NS_IMETHODIMP nsOuterDocAccessible::GetAccRole(PRUint32 *_retval)
+/* unsigned long getRole (); */
+NS_IMETHODIMP nsOuterDocAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_CLIENT;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsOuterDocAccessible::GetAccState(PRUint32 *aAccState)
+NS_IMETHODIMP nsOuterDocAccessible::GetState(PRUint32 *aState)
 {
-  return nsAccessible::GetAccState(aAccState);
+  return nsAccessible::GetState(aState);
 }
 
-NS_IMETHODIMP nsOuterDocAccessible::AccGetBounds(PRInt32 *x, PRInt32 *y, 
+NS_IMETHODIMP nsOuterDocAccessible::GetBounds(PRInt32 *x, PRInt32 *y, 
                                                  PRInt32 *width, PRInt32 *height)
 {
-  return mFirstChild? mFirstChild->AccGetBounds(x, y, width, height): NS_ERROR_FAILURE;
+  return mFirstChild? mFirstChild->GetBounds(x, y, width, height): NS_ERROR_FAILURE;
+}
+
+NS_IMETHODIMP nsOuterDocAccessible::Init()
+{
+  nsresult rv = nsAccessibleWrap::Init(); 
+  
+  // We're in the accessibility cache now
+  // In these variable names, "outer" relates to the nsOuterDocAccessible
+  // as opposed to the nsDocAccessibleWrap which is "inner".
+  // The outer node is a <browser>, <iframe> or <editor> tag, whereas the inner node
+  // corresponds to the inner document root.
+
+  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
+  NS_ASSERTION(content, "No nsIContent for <browser>/<iframe>/<editor> dom node");
+
+  nsCOMPtr<nsIDocument> outerDoc = content->GetDocument();
+  NS_ENSURE_TRUE(outerDoc, NS_ERROR_FAILURE);
+
+  nsCOMPtr<nsIDocument> innerDoc;
+  outerDoc->GetSubDocumentFor(content, getter_AddRefs(innerDoc));
+  nsCOMPtr<nsIDOMNode> innerNode(do_QueryInterface(innerDoc));
+  NS_ENSURE_TRUE(innerNode, NS_ERROR_FAILURE);
+
+  nsCOMPtr<nsIPresShell> innerPresShell;
+  innerDoc->GetShellAt(0, getter_AddRefs(innerPresShell));
+  NS_ENSURE_TRUE(innerPresShell, NS_ERROR_FAILURE);
+
+  nsCOMPtr<nsIAccessible> innerAccessible;
+  nsCOMPtr<nsIAccessibilityService> accService = 
+    do_GetService("@mozilla.org/accessibilityService;1");
+  accService->GetAccessibleInShell(innerNode, innerPresShell, 
+                                   getter_AddRefs(innerAccessible));
+  NS_ENSURE_TRUE(innerAccessible, NS_ERROR_FAILURE);
+
+  SetFirstChild(innerAccessible); // weak ref
+  nsCOMPtr<nsPIAccessible> privateInnerAccessible = 
+    do_QueryInterface(innerAccessible);
+  return privateInnerAccessible->SetParent(this);
 }

@@ -143,6 +143,8 @@
 
     <menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatmenu.accesskey;">
       <menupopup id="formatMenuPopup">
+        <menuitem id="snapToGrid"/>
+        <menuseparator/>
         <menuitem id="objectProperties"/>
         <menuitem id="colorsAndBackground"/>
         <menuitem id="pageProperties"/>
@@ -230,6 +232,10 @@
     <toolbarbutton id="align-right-button"/>
     <toolbarbutton id="align-justify-button"/>
 
+    <toolbarbutton id="absolutePositionButton"/>
+    <toolbarbutton id="decreaseZIndexButton"/>
+    <toolbarbutton id="increaseZIndexButton"/>
+
     <!-- TODO: Change to a menulist? -->
     <!-- menu>
       <button id="AlignPopupButton"/>
@@ -259,8 +265,7 @@
       </stack>
       <vbox>
         <label id="doctype-text" crop="right"/>
-        <textbox class="source-editor plain" id="content-source" multiline="true" rows="1"
-                   flex="1" style="width:1em; height:1em;"/>
+        <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
       </vbox>
     </deck>
 

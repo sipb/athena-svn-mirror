@@ -48,7 +48,8 @@
 #include "nsReadableUtils.h"
 #include "nsMutationEvent.h"
 #include "nsINameSpaceManager.h"
-
+#include "nsIDOM3Node.h"
+#include "nsIURI.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMText.h"
@@ -154,7 +155,7 @@ nsGenericDOMDataNode::GetPreviousSibling(nsIDOMNode** aPrevSibling)
     PRInt32 pos;
     parent_weak->IndexOf(this, pos);
     if (pos > 0 ) {
-      parent_weak->ChildAt(--pos, *getter_AddRefs(sibling));
+      parent_weak->ChildAt(--pos, getter_AddRefs(sibling));
     }
   } else if (mDocument) {
     // Nodes that are just below the document (their parent is the
@@ -162,7 +163,7 @@ nsGenericDOMDataNode::GetPreviousSibling(nsIDOMNode** aPrevSibling)
     PRInt32 pos;
     mDocument->IndexOf(this, pos);
     if (pos > 0 ) {
-      mDocument->ChildAt(--pos, *getter_AddRefs(sibling));
+      mDocument->ChildAt(--pos, getter_AddRefs(sibling));
     }
   }
 
@@ -188,7 +189,7 @@ nsGenericDOMDataNode::GetNextSibling(nsIDOMNode** aNextSibling)
     PRInt32 pos;
     parent_weak->IndexOf(this, pos);
     if (pos > -1 ) {
-      parent_weak->ChildAt(++pos, *getter_AddRefs(sibling));
+      parent_weak->ChildAt(++pos, getter_AddRefs(sibling));
     }
   }
   else if (mDocument) {
@@ -197,7 +198,7 @@ nsGenericDOMDataNode::GetNextSibling(nsIDOMNode** aNextSibling)
     PRInt32 pos;
     mDocument->IndexOf(this, pos);
     if (pos > -1 ) {
-      mDocument->ChildAt(++pos, *getter_AddRefs(sibling));
+      mDocument->ChildAt(++pos, getter_AddRefs(sibling));
     }
   }
 
@@ -286,30 +287,21 @@ nsGenericDOMDataNode::IsSupported(const nsAString& aFeature,
 nsresult
 nsGenericDOMDataNode::GetBaseURI(nsAString& aURI)
 {
-  aURI.Truncate();
-  nsresult rv = NS_OK;
+  nsCOMPtr<nsIURI> baseURI;
+  nsresult rv = GetBaseURL(getter_AddRefs(baseURI));
 
-  // DOM Data Node inherits the base from its parent element/document
-  nsCOMPtr<nsIDOM3Node> node;
-
-  nsIContent *parent_weak = GetParentWeak();
-
-  if (parent_weak) {
-    node = do_QueryInterface(parent_weak);
-  } else if (mDocument) {
-    node = do_QueryInterface(mDocument);
+  nsCAutoString spec;
+  if (NS_SUCCEEDED(rv) && baseURI) {
+    baseURI->GetSpec(spec);
   }
-
-  if (node) {
-    rv = node->GetBaseURI(aURI);
-  }
+  CopyUTF8toUTF16(spec, aURI);
 
   return rv;
 }
 
 nsresult
-nsGenericDOMDataNode::LookupNamespacePrefix(const nsAString& aNamespaceURI,
-                                            nsAString& aPrefix)
+nsGenericDOMDataNode::LookupPrefix(const nsAString& aNamespaceURI,
+                                   nsAString& aPrefix)
 {
   aPrefix.Truncate();
 
@@ -317,9 +309,8 @@ nsGenericDOMDataNode::LookupNamespacePrefix(const nsAString& aNamespaceURI,
 
   // DOM Data Node passes the query on to its parent
   nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(parent_weak));
-
   if (node) {
-    return node->LookupNamespacePrefix(aNamespaceURI, aPrefix);
+    return node->LookupPrefix(aNamespaceURI, aPrefix);
   }
 
   return NS_OK;
@@ -637,12 +628,10 @@ nsGenericDOMDataNode::ToCString(nsAString& aBuf, PRInt32 aOffset,
 }
 #endif
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetDocument(nsIDocument*& aResult) const
+NS_IMETHODIMP_(nsIDocument*)
+nsGenericDOMDataNode::GetDocument() const
 {
-  aResult = mDocument;
-  NS_IF_ADDREF(mDocument);
-  return NS_OK;
+  return mDocument;
 }
 
 
@@ -659,13 +648,10 @@ nsGenericDOMDataNode::SetDocument(nsIDocument* aDocument, PRBool aDeep,
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetParent(nsIContent*& aResult) const
+NS_IMETHODIMP_(nsIContent*)
+nsGenericDOMDataNode::GetParent() const
 {
-  aResult = GetParentWeak();
-  NS_IF_ADDREF(aResult);
-
-  return NS_OK;;
+  return GetParentWeak();
 }
 
 NS_IMETHODIMP
@@ -694,17 +680,17 @@ nsGenericDOMDataNode::SetNativeAnonymous(PRBool aAnonymous)
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::GetNameSpaceID(PRInt32& aID) const
+nsGenericDOMDataNode::GetNameSpaceID(PRInt32* aID) const
 {
-  aID = kNameSpaceID_None;
+  *aID = kNameSpaceID_None;
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsGenericDOMDataNode::NormalizeAttrString(const nsAString& aStr,
-                                          nsINodeInfo*& aNodeInfo)
+                                          nsINodeInfo** aNodeInfo)
 {
-  aNodeInfo = nsnull;
+  *aNodeInfo = nsnull;
   return NS_OK;
 }
 
@@ -740,10 +726,10 @@ nsGenericDOMDataNode::GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttr,
 
 NS_IMETHODIMP
 nsGenericDOMDataNode::GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttr,
-                              nsIAtom*& aPrefix,
+                              nsIAtom** aPrefix,
                               nsAString& aResult) const
 {
-  aPrefix = nsnull;
+  *aPrefix = nsnull;
   aResult.Truncate();
 
   return NS_CONTENT_ATTR_NOT_THERE;
@@ -756,12 +742,13 @@ nsGenericDOMDataNode::HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::GetAttrNameAt(PRInt32 aIndex, PRInt32& aNameSpaceID,
-                                    nsIAtom*& aName, nsIAtom*& aPrefix) const
+nsGenericDOMDataNode::GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
+                                    nsIAtom** aName, nsIAtom** aPrefix) const
 {
-  aNameSpaceID = kNameSpaceID_None;
-  aName = nsnull;
-  aPrefix = nsnull;
+  *aNameSpaceID = kNameSpaceID_None;
+  *aName = nsnull;
+  *aPrefix = nsnull;
+
   return NS_ERROR_ILLEGAL_VALUE;
 }
 
@@ -871,9 +858,9 @@ nsGenericDOMDataNode::SetContentID(PRUint32 aID)
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::GetNodeInfo(nsINodeInfo*& aResult) const
+nsGenericDOMDataNode::GetNodeInfo(nsINodeInfo** aResult) const
 {
-  aResult = nsnull;
+  *aResult = nsnull;
   return NS_OK;
 }
 
@@ -892,9 +879,9 @@ nsGenericDOMDataNode::ChildCount(PRInt32& aResult) const
 }
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::ChildAt(PRInt32 aIndex, nsIContent*& aResult) const
+nsGenericDOMDataNode::ChildAt(PRInt32 aIndex, nsIContent** aResult) const
 {
-  aResult = nsnull;
+  *aResult = nsnull;
   return NS_OK;
 }
 
@@ -1018,9 +1005,9 @@ nsGenericDOMDataNode::RangeRemove(nsIDOMRange* aRange)
 
 
 NS_IMETHODIMP
-nsGenericDOMDataNode::GetRangeList(nsVoidArray*& aResult) const
+nsGenericDOMDataNode::GetRangeList(nsVoidArray** aResult) const
 {
-  aResult = LookupRangeList();
+  *aResult = LookupRangeList();
   return NS_OK;
 }
 
@@ -1036,10 +1023,10 @@ nsGenericDOMDataNode::RemoveFocus(nsIPresContext* aPresContext)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsGenericDOMDataNode::GetBindingParent(nsIContent** aContent)
+NS_IMETHODIMP_(nsIContent*)
+nsGenericDOMDataNode::GetBindingParent() const
 {
-  return NS_OK;
+  return nsnull;
 }
 
 NS_IMETHODIMP
@@ -1068,6 +1055,23 @@ nsGenericDOMDataNode::DumpContent(FILE* out, PRInt32 aIndent,
   return NS_OK;
 }
 #endif
+
+NS_IMETHODIMP
+nsGenericDOMDataNode::GetBaseURL(nsIURI** aURI) const
+{
+  // DOM Data Node inherits the base from its parent element/document
+  nsIContent* parent_weak = GetParentWeak();
+  if (parent_weak) {
+    return parent_weak->GetBaseURL(aURI);
+  }
+
+  if (mDocument) {
+    return mDocument->GetBaseURL(aURI);
+  }
+
+  *aURI = nsnull;
+  return NS_OK;
+}
 
 //----------------------------------------------------------------------
 
@@ -1117,8 +1121,7 @@ nsGenericDOMDataNode::SplitText(PRUint32 aOffset, nsIDOMText** aReturn)
     return rv;
   }
 
-  nsCOMPtr<nsIContent> parentNode;
-  GetParent(*getter_AddRefs(parentNode));
+  nsIContent* parentNode = GetParentWeak();
 
   if (parentNode) {
     PRInt32 index;
@@ -1344,6 +1347,21 @@ nsGenericDOMDataNode::CloneContent(PRBool aCloneText, nsITextContent** aClone)
   *aClone = nsnull;
 
   return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsGenericDOMDataNode::AppendTextTo(nsAString& aResult)
+{
+  if (mText.Is2b()) {
+    aResult.Append(mText.Get2b(), mText.GetLength());
+  } else {
+    // XXX we would like to have a AppendASCIItoUCS2 here
+    aResult.Append(NS_ConvertASCIItoUCS2(mText.Get1b(),
+                                         mText.GetLength()).get(),
+                   mText.GetLength());
+  }
+
+  return NS_OK;
 }
 
 void

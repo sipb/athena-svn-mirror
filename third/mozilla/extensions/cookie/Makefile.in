@@ -40,7 +40,6 @@ REQUIRES	= xpcom \
 		  widget \
 		  content \
 		  pref \
-		  intl \
 		  uriloader \
 		  windowwatcher \
 		  docshell \
@@ -55,13 +54,10 @@ CPPSRCS		= \
 		nsModuleFactory.cpp \
 		nsCookie.cpp \
 		nsPermission.cpp \
-		nsCookieManager.cpp \
 		nsCookieService.cpp \
 		nsImgManager.cpp \
 		nsPermissionManager.cpp \
 		nsPopupWindowManager.cpp \
-		nsCookies.cpp \
-		nsCookieHTTPNotify.cpp \
 		nsCookiePromptService.cpp \
 		nsCookiePermission.cpp \
 		$(NULL)
@@ -72,6 +68,7 @@ SDK_XPIDLSRCS   = \
 		$(NULL)
 
 XPIDLSRCS	= \
+		nsICookie2.idl \
 		nsICookieConsent.idl \
 		nsIImgManager.idl \
 		nsIPermissionManager.idl \
@@ -83,8 +80,6 @@ XPIDLSRCS	= \
 		$(NULL)
 
 EXPORTS		= \
-		nsCookieHTTPNotify.h \
-		nsCCookie.h \
 		nsCCookieManager.h \
 		$(NULL)
 
@@ -93,4 +88,3 @@ EXTRA_DSO_LDOPTS = \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
-

@@ -68,8 +68,7 @@ nsMathMLmunderFrame::AttributeChanged(nsIPresContext* aPresContext,
                                       nsIContent*     aContent,
                                       PRInt32         aNameSpaceID,
                                       nsIAtom*        aAttribute,
-                                      PRInt32         aModType, 
-                                      PRInt32         aHint)
+                                      PRInt32         aModType)
 {
   if (nsMathMLAtoms::accentunder_ == aAttribute) {
     // When we have automatic data to update within ourselves, we ask our
@@ -79,7 +78,7 @@ nsMathMLmunderFrame::AttributeChanged(nsIPresContext* aPresContext,
 
   return nsMathMLContainerFrame::
          AttributeChanged(aPresContext, aContent, aNameSpaceID,
-                          aAttribute, aModType, aHint);
+                          aAttribute, aModType);
 }
 
 NS_IMETHODIMP
@@ -133,7 +132,7 @@ nsMathMLmunderFrame::UpdatePresentationDataFromChildAt(nsIPresContext* aPresCont
         aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
     }
     index++;
-    childFrame->GetNextSibling(&childFrame);
+    childFrame = childFrame->GetNextSibling();
   }
   return NS_OK;
 
@@ -179,7 +178,7 @@ XXX The winner is the outermost setting in conflicting settings like these:
   nsIFrame* underscriptFrame = nsnull;
   nsIFrame* baseFrame = mFrames.FirstChild();
   if (baseFrame)
-    baseFrame->GetNextSibling(&underscriptFrame);
+    underscriptFrame = baseFrame->GetNextSibling();
   if (!baseFrame || !underscriptFrame)
     return NS_OK; // a visual error indicator will be reported later during layout
 
@@ -279,8 +278,8 @@ nsMathMLmunderFrame::Place(nsIPresContext*      aPresContext,
   nsIFrame* underFrame = nsnull;
   nsIFrame* baseFrame = mFrames.FirstChild();
   if (baseFrame)
-    baseFrame->GetNextSibling(&underFrame);
-  if (!baseFrame || !underFrame || HasNextSibling(underFrame)) {
+    underFrame = baseFrame->GetNextSibling();
+  if (!baseFrame || !underFrame || underFrame->GetNextSibling()) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
     return ReflowError(aPresContext, aRenderingContext, aDesiredSize);

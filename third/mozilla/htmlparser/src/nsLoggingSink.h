@@ -62,7 +62,7 @@ public:
 
   // nsIContentSink
   NS_IMETHOD WillBuildModel();
-  NS_IMETHOD DidBuildModel(PRInt32 aQualityLevel);
+  NS_IMETHOD DidBuildModel();
   NS_IMETHOD WillInterrupt();
   NS_IMETHOD WillResume();
   NS_IMETHOD SetParser(nsIParser* aParser);
@@ -74,7 +74,7 @@ public:
   NS_IMETHOD AddProcessingInstruction(const nsIParserNode& aNode);
   NS_IMETHOD AddDocTypeDecl(const nsIParserNode& aNode);
   NS_IMETHOD FlushPendingNotifications() { return NS_OK; }
-  NS_IMETHOD SetDocumentCharset(nsAString& aCharset) { return NS_OK; }
+  NS_IMETHOD SetDocumentCharset(nsACString& aCharset) { return NS_OK; }
   NS_IMETHOD NotifyTagObservers(nsIParserNode* aNode) { return NS_OK; }
 
   // nsIHTMLContentSink

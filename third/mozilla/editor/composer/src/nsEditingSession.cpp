@@ -50,6 +50,7 @@
 #include "nsITransactionManager.h"
 
 #include "nsIEditorDocShell.h"
+#include "nsIDocShell.h"
 
 #include "nsIChannel.h"
 #include "nsIWebProgress.h"
@@ -67,13 +68,13 @@
 #include "nsComposerCommandsUpdater.h"
 #include "nsEditingSession.h"
 
-#include "nsIComponentManager.h"
-#include "nsIInterfaceRequestor.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIInterfaceRequestorUtils.h"
 
 #include "nsIContentViewer.h"
 #include "nsISelectionController.h"
 #include "nsIPlaintextEditor.h"
+#include "nsIEditor.h"
 
 #include "nsIDOMNSDocument.h"
 #include "nsIScriptContext.h"
@@ -113,8 +114,8 @@ nsEditingSession::~nsEditingSession()
     mLoadBlankDocTimer->Cancel();
 }
 
-NS_IMPL_ISUPPORTS3(nsEditingSession, nsIEditingSession, nsIWebProgressListener, 
-                   nsISupportsWeakReference)
+NS_IMPL_ISUPPORTS4(nsEditingSession, nsIEditingSession, nsIWebProgressListener, 
+                   nsIURIContentListener, nsISupportsWeakReference)
 
 /*---------------------------------------------------------------------------
 
@@ -129,7 +130,7 @@ nsEditingSession::Init(nsIDOMWindow *aWindow)
   nsresult rv = GetDocShellFromWindow(aWindow, getter_AddRefs(docShell));
   if (NS_FAILED(rv)) return rv;
 
-  mEditingShell = getter_AddRefs(NS_GetWeakReference(docShell));
+  mEditingShell = do_GetWeakReference(docShell);
   if (!mEditingShell) return NS_ERROR_NO_INTERFACE;
 
   return NS_OK;
@@ -153,7 +154,7 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
 {
   mEditorType.Truncate();
   mEditorFlags = 0;
-  mWindowToBeEdited = getter_AddRefs(NS_GetWeakReference(aWindow));
+  mWindowToBeEdited = do_GetWeakReference(aWindow);
 
   // disable plugins
   nsCOMPtr<nsIDocShell> docShell;
@@ -161,6 +162,11 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   if (NS_FAILED(rv)) return rv;
 
   rv = docShell->SetAllowPlugins(PR_FALSE);
+  if (NS_FAILED(rv)) return rv;
+
+  // register as a content listener, so that we can fend off URL
+  // loads from sidebar
+  rv = docShell->SetParentURIContentListener(this);
   if (NS_FAILED(rv)) return rv;
 
   // Disable JavaScript in this document:
@@ -803,6 +809,71 @@ nsEditingSession::OnSecurityChange(nsIWebProgress *aWebProgress,
 #ifdef XP_MAC
 #pragma mark -
 #endif
+
+/* boolean onStartURIOpen (in nsIURI aURI); */
+NS_IMETHODIMP nsEditingSession::OnStartURIOpen(nsIURI *aURI, PRBool *aAbortOpen)
+{
+  return NS_OK;
+}
+
+/* boolean doContent (in string aContentType, in boolean aIsContentPreferred, in nsIRequest aRequest, out nsIStreamListener aContentHandler); */
+NS_IMETHODIMP nsEditingSession::DoContent(const char *aContentType, PRBool aIsContentPreferred, nsIRequest *aRequest, nsIStreamListener **aContentHandler, PRBool *aAbortProcess)
+{
+  NS_ENSURE_ARG_POINTER(aContentHandler);
+  NS_ENSURE_ARG_POINTER(aAbortProcess);
+  *aContentHandler = nsnull;
+  *aAbortProcess = PR_FALSE;
+  return NS_OK;
+}
+
+/* boolean isPreferred (in string aContentType, out string aDesiredContentType); */
+NS_IMETHODIMP nsEditingSession::IsPreferred(const char *aContentType, char **aDesiredContentType, PRBool *_retval)
+{
+  NS_ENSURE_ARG_POINTER(aDesiredContentType);
+  NS_ENSURE_ARG_POINTER(_retval);
+  *aDesiredContentType = nsnull;
+  *_retval = PR_FALSE;
+  return NS_OK;
+}
+
+/* boolean canHandleContent (in string aContentType, in boolean aIsContentPreferred, out string aDesiredContentType); */
+NS_IMETHODIMP nsEditingSession::CanHandleContent(const char *aContentType, PRBool aIsContentPreferred, char **aDesiredContentType, PRBool *_retval)
+{
+  NS_ENSURE_ARG_POINTER(aDesiredContentType);
+  NS_ENSURE_ARG_POINTER(_retval);
+  *aDesiredContentType = nsnull;
+  *_retval = PR_FALSE;
+  return NS_OK;
+}
+
+/* attribute nsISupports loadCookie; */
+NS_IMETHODIMP nsEditingSession::GetLoadCookie(nsISupports * *aLoadCookie)
+{
+  NS_ENSURE_ARG_POINTER(aLoadCookie);
+  *aLoadCookie = nsnull;
+  return NS_OK;
+}
+NS_IMETHODIMP nsEditingSession::SetLoadCookie(nsISupports * aLoadCookie)
+{
+  return NS_OK;
+}
+
+/* attribute nsIURIContentListener parentContentListener; */
+NS_IMETHODIMP nsEditingSession::GetParentContentListener(nsIURIContentListener * *aParentContentListener)
+{
+  NS_ENSURE_ARG_POINTER(aParentContentListener);
+  *aParentContentListener = nsnull;
+  return NS_OK;
+}
+NS_IMETHODIMP nsEditingSession::SetParentContentListener(nsIURIContentListener * aParentContentListener)
+{
+  return NS_OK;
+}
+
+#ifdef XP_MAC
+#pragma mark -
+#endif
+
 
 /*---------------------------------------------------------------------------
 

@@ -36,7 +36,7 @@
  * Encoding Rules).  The routines are found in and used extensively by the
  * security library, but exported for other use.
  *
- * $Id: secasn1.h,v 1.1.1.1.2.1 2003-07-14 19:07:34 ghudson Exp $
+ * $Id: secasn1.h,v 1.1.1.1.2.2 2004-01-02 20:00:11 ghudson Exp $
  */
 
 #ifndef _SECASN1_H_

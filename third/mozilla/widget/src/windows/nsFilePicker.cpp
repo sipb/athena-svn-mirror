@@ -29,6 +29,7 @@
 #include "nsWindow.h"
 #include "nsIServiceManager.h"
 #include "nsIPlatformCharset.h"
+#include "nsICharsetConverterManager.h"
 #include "nsFilePicker.h"
 #include "nsILocalFile.h"
 #include "nsIURL.h"
@@ -97,8 +98,8 @@ NS_IMETHODIMP nsFilePicker::ShowW(PRInt16 *aReturnVal)
   }
 
   PRBool result = PR_FALSE;
-  PRUnichar fileBuffer[MAX_PATH+1];
-  wcsncpy(fileBuffer,  mDefault.get(), MAX_PATH);
+  PRUnichar fileBuffer[FILE_BUFFER_SIZE+1];
+  wcsncpy(fileBuffer,  mDefault.get(), FILE_BUFFER_SIZE);
 
   nsAutoString htmExt(NS_LITERAL_STRING("html"));
   PRUnichar *title = ToNewUnicode(mTitle);
@@ -164,9 +165,9 @@ NS_IMETHODIMP nsFilePicker::ShowW(PRInt16 *aReturnVal)
     ofn.hwndOwner    = (HWND)
       (mParentWidget ? mParentWidget->GetNativeData(NS_NATIVE_WINDOW) : 0); 
     ofn.lpstrFile    = fileBuffer;
-    ofn.nMaxFile     = MAX_PATH;
+    ofn.nMaxFile     = FILE_BUFFER_SIZE;
 
-    ofn.Flags = OFN_NOCHANGEDIR | OFN_SHAREAWARE | OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
+    ofn.Flags = OFN_NOCHANGEDIR | OFN_SHAREAWARE | OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
 
     if (!mDefaultExtension.IsEmpty()) {
       ofn.lpstrDefExt = mDefaultExtension.get();
@@ -495,9 +496,9 @@ NS_IMETHODIMP nsFilePicker::InitNative(nsIWidget *aParent,
 
 
 //-------------------------------------------------------------------------
-void nsFilePicker::GetFileSystemCharset(nsString & fileSystemCharset)
+void nsFilePicker::GetFileSystemCharset(nsCString & fileSystemCharset)
 {
-  static nsAutoString aCharset;
+  static nsCAutoString aCharset;
   nsresult rv;
 
   if (aCharset.Length() < 1) {
@@ -507,7 +508,7 @@ void nsFilePicker::GetFileSystemCharset(nsString & fileSystemCharset)
 
     NS_ASSERTION(NS_SUCCEEDED(rv), "error getting platform charset");
 	  if (NS_FAILED(rv)) 
-		  aCharset.Assign(NS_LITERAL_STRING("windows-1252"));
+		  aCharset.Assign(NS_LITERAL_CSTRING("windows-1252"));
   }
   fileSystemCharset = aCharset;
 }
@@ -520,13 +521,13 @@ char * nsFilePicker::ConvertToFileSystemCharset(const PRUnichar *inString)
 
   // get file system charset and create a unicode encoder
   if (nsnull == mUnicodeEncoder) {
-    nsAutoString fileSystemCharset;
+    nsCAutoString fileSystemCharset;
     GetFileSystemCharset(fileSystemCharset);
 
     nsCOMPtr<nsICharsetConverterManager> ccm = 
              do_GetService(kCharsetConverterManagerCID, &rv); 
     if (NS_SUCCEEDED(rv)) {
-      rv = ccm->GetUnicodeEncoder(&fileSystemCharset, &mUnicodeEncoder);
+      rv = ccm->GetUnicodeEncoderRaw(fileSystemCharset.get(), &mUnicodeEncoder);
     }
   }
 
@@ -558,13 +559,13 @@ PRUnichar * nsFilePicker::ConvertFromFileSystemCharset(const char *inString)
 
   // get file system charset and create a unicode encoder
   if (nsnull == mUnicodeDecoder) {
-    nsAutoString fileSystemCharset;
+    nsCAutoString fileSystemCharset;
     GetFileSystemCharset(fileSystemCharset);
 
     nsCOMPtr<nsICharsetConverterManager> ccm = 
              do_GetService(kCharsetConverterManagerCID, &rv); 
     if (NS_SUCCEEDED(rv)) {
-      rv = ccm->GetUnicodeDecoder(&fileSystemCharset, &mUnicodeDecoder);
+      rv = ccm->GetUnicodeDecoderRaw(fileSystemCharset.get(), &mUnicodeDecoder);
     }
   }
 

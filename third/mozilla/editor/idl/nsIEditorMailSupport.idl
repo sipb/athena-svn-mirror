@@ -89,13 +89,11 @@ interface nsIEditorMailSupport : nsISupports
     * @param aQuotedText  The actual text to be quoted
     * @param aCitation    The "mid" URL of the source message
     * @param aInsertHTML  Insert as html?  (vs plaintext)
-    * @param aCharset     The charset of the text to be inserted
     * @return             The node which was inserted
     */
   nsIDOMNode insertAsCitedQuotation(in AString aQuotedText,
                                     in AString aCitation,
-                                    in boolean aInsertHTML,
-                                    in AString aCharset);
+                                    in boolean aInsertHTML);
 
   /**
    * Rewrap the selected part of the document, re-quoting if necessary.

@@ -155,6 +155,9 @@ public:
   NS_IMETHOD GetScaledPixelsToTwips(float* aScale) const;
   NS_IMETHOD GetDeviceContext(nsIDeviceContext** aResult) const;
   NS_IMETHOD GetEventStateManager(nsIEventStateManager** aManager);
+  nsIEventStateManager* GetEventStateManager() {
+    return nsIPresContext::GetEventStateManager();
+  }
   NS_IMETHOD GetLanguage(nsILanguageAtom** aLanguage);
   NS_IMETHOD GetLanguageSpecificTransformType(
               nsLanguageSpecificTransformType* aType);
@@ -192,7 +195,7 @@ public:
 //Mohamed  17-1-01
   NS_IMETHOD SetIsBidiSystem(PRBool aIsBidi);
   NS_IMETHOD GetIsBidiSystem(PRBool &aResult) const;
-  NS_IMETHOD GetBidiCharset(nsAString &aCharSet) const;
+  NS_IMETHOD GetBidiCharset(nsACString &aCharSet) const;
 //Mohamed End
 #endif // IBMBIDI
 
@@ -208,16 +211,8 @@ protected:
   nsPresContext();
   virtual ~nsPresContext();
 
-  // IMPORTANT: The ownership implicit in the following member variables has been 
-  // explicitly checked and set using nsCOMPtr for owning pointers and raw COM interface 
-  // pointers for weak (ie, non owning) references. If you add any members to this
-  // class, please make the ownership explicit (pinkerton, scc).
-  
-  nsIPresShell*         mShell;         // [WEAK]
   nsCOMPtr<nsIPref>     mPrefs;
   nsRect                mVisibleArea;
-  nsCOMPtr<nsIDeviceContext>  mDeviceContext; // could be weak, but better safe than sorry. Cannot reintroduce cycles
-                                              // since there is no dependency from gfx back to layout.
   nsCOMPtr<nsILanguageAtomService> mLangService;
   nsCOMPtr<nsILanguageAtom> mLanguage;
   nsLanguageSpecificTransformType mLanguageSpecificTransformType;
@@ -257,7 +252,6 @@ protected:
 
   nsSupportsHashtable   mImageLoaders;
 
-  nsCOMPtr<nsIEventStateManager> mEventManager;
   nsCOMPtr<nsIURI>      mBaseURL;
 
   nsCompatibility       mCompatibilityMode;
@@ -276,7 +270,7 @@ protected:
 #ifdef IBMBIDI
   nsBidiPresUtils*      mBidiUtils;
   PRUint32              mBidi;
-  nsAutoString          mCharset;                 // the charset we are using
+  nsCAutoString         mCharset;                 // the charset we are using
 #endif // IBMBIDI
 
 #ifdef DEBUG
@@ -292,7 +286,7 @@ protected:
   void   GetUserPreferences();
   void   GetFontPreferences();
   void   GetDocumentColorPreferences();
-  void   UpdateCharSet(const PRUnichar* aCharSet);
+  void   UpdateCharSet(const char* aCharSet);
   void SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMode);
 
 private:

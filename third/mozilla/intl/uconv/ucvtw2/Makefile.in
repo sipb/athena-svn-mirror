@@ -33,13 +33,16 @@ LIBRARY_NAME	= ucvtw2_s
 FORCE_STATIC_LIB=1
 MODULE_NAME	= nsUCvTW2Module
 REQUIRES	= xpcom \
-		  string \
 		  uconv \
 		  $(NULL)
 
 CPPSRCS		= \
 		nsEUCTWToUnicode.cpp \
 		nsUnicodeToEUCTW.cpp \
+		$(NULL)
+
+ifdef MOZ_EXTRA_X11CONVERTERS
+CPPSRCS		+= \
 		nsUnicodeToCNS11643p1.cpp \
 		nsUnicodeToCNS11643p2.cpp \
 		nsUnicodeToCNS11643p3.cpp \
@@ -48,6 +51,7 @@ CPPSRCS		= \
 		nsUnicodeToCNS11643p6.cpp \
 		nsUnicodeToCNS11643p7.cpp \
 		$(NULL)
+endif
 
 #SHARED_LIBRARY_LIBS = $(DIST)/lib/$(LIB_PREFIX)ucvutil_s.$(LIB_SUFFIX)
 

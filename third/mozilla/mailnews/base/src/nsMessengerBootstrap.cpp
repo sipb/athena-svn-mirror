@@ -54,12 +54,11 @@
 #include "nsString.h"
 #include "nsIURI.h"
 #include "nsIDialogParamBlock.h"
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 
-NS_IMPL_THREADSAFE_ADDREF(nsMessengerBootstrap);
-NS_IMPL_THREADSAFE_RELEASE(nsMessengerBootstrap);
-NS_IMPL_QUERY_INTERFACE2(nsMessengerBootstrap, nsICmdLineHandler, nsIMessengerWindowService);
+NS_IMPL_THREADSAFE_ADDREF(nsMessengerBootstrap)
+NS_IMPL_THREADSAFE_RELEASE(nsMessengerBootstrap)
+NS_IMPL_QUERY_INTERFACE2(nsMessengerBootstrap, nsICmdLineHandler, nsIMessengerWindowService)
 
 nsMessengerBootstrap::nsMessengerBootstrap()
 {
@@ -69,10 +68,11 @@ nsMessengerBootstrap::~nsMessengerBootstrap()
 {
 }
 
-CMDLINEHANDLER3_IMPL(nsMessengerBootstrap,"-mail","general.startup.mail","Start with mail.",NS_MAILSTARTUPHANDLER_CONTRACTID,"Mail Cmd Line Handler",PR_FALSE,"", PR_TRUE)
+CMDLINEHANDLER3_IMPL(nsMessengerBootstrap,"-mail","general.startup.mail","Start with mail.",NS_MAILSTARTUPHANDLER_CONTRACTID,"Mail Cmd Line Handler",PR_TRUE,"", PR_TRUE)
 
 NS_IMETHODIMP nsMessengerBootstrap::GetChromeUrlForTask(char **aChromeUrlForTask) 
 { 
+#ifndef MOZ_THUNDERBIRD
   if (!aChromeUrlForTask) return NS_ERROR_FAILURE; 
   nsresult rv;
   nsCOMPtr<nsIPref> prefService(do_GetService(kPrefServiceCID, &rv));
@@ -92,6 +92,11 @@ NS_IMETHODIMP nsMessengerBootstrap::GetChromeUrlForTask(char **aChromeUrlForTask
     }	
   }
   *aChromeUrlForTask = PL_strdup("chrome://messenger/content/messenger.xul"); 
+#else
+  NS_ENSURE_ARG_POINTER(aChromeUrlForTask);
+  *aChromeUrlForTask = PL_strdup("chrome://messenger/content/"); 
+#endif
+
   return NS_OK; 
 }
 

@@ -84,7 +84,6 @@ static NS_DEFINE_CID(kLocaleServiceCID, NS_LOCALESERVICE_CID);
 static const char sPrintOptionsContractID[] = "@mozilla.org/gfx/printsettings-service;1";
 
 //
-static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
 #include "prlog.h"
 #ifdef PR_LOGGING 
@@ -481,19 +480,19 @@ nsSimplePageSequenceFrame::Reflow(nsIPresContext*          aPresContext,
       }
 
       // Get the next page
-      kidFrame->GetNextSibling(&kidFrame);
+      kidFrame = kidFrame->GetNextSibling();
     }
 
     // Get Total Page Count
     nsIFrame* page;
     PRInt32 pageTot = 0;
-    for (page = mFrames.FirstChild(); nsnull != page; page->GetNextSibling(&page)) {
+    for (page = mFrames.FirstChild(); page; page = page->GetNextSibling()) {
       pageTot++;
     }
 
     // Set Page Number Info
     PRInt32 pageNum = 1;
-    for (page = mFrames.FirstChild(); nsnull != page; page->GetNextSibling(&page)) {
+    for (page = mFrames.FirstChild(); page; page = page->GetNextSibling()) {
       nsPageFrame * pf = NS_STATIC_CAST(nsPageFrame*, page);
       if (pf != nsnull) {
         pf->SetPageNumInfo(pageNum, pageTot);
@@ -560,23 +559,6 @@ nsSimplePageSequenceFrame::GetFrameName(nsAString& aResult) const
 #endif
 
 //----------------------------------------------------------------------
-
-// Helper function that sends the progress notification. Returns PR_TRUE
-// if printing should continue and PR_FALSE otherwise
-static PRBool
-SendStatusNotification(nsIPrintStatusCallback* aStatusCallback,
-                       PRInt32                 aPageNumber,
-                       PRInt32                 aTotalPages,
-                       nsPrintStatus           aStatus)
-{
-  PRBool  ret = PR_TRUE;
-
-  if (nsnull != aStatusCallback) {
-    aStatusCallback->OnProgress(aPageNumber, aTotalPages, aStatus,ret);
-  }
-
-  return ret;
-}
 
 NS_IMETHODIMP
 nsSimplePageSequenceFrame::SetOffsets(nscoord aStartOffset, nscoord aEndOffset)
@@ -691,15 +673,12 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
 
 #if defined(DEBUG_rods) || defined(DEBUG_dcone)
   {
-    nsIView * seqView;
-    GetView(aPresContext, &seqView);
-    nsRect rect;
-    GetRect(rect);
+    nsIView* seqView = GetView();
+    nsRect rect = GetRect();
     PR_PL(("Seq Frame: %p - [%5d,%5d,%5d,%5d] ", this, rect.x, rect.y, rect.width, rect.height));
     PR_PL(("view: %p ", seqView));
-    nsRect viewRect;
     if (seqView) {
-      seqView->GetBounds(viewRect);
+      nsRect viewRect = seqView->GetBounds();
       PR_PL((" [%5d,%5d,%5d,%5d]", viewRect.x, viewRect.y, viewRect.width, viewRect.height));
     }
     PR_PL(("\n"));
@@ -707,14 +686,12 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
 
   {
     PRInt32 pageNum = 1;
-    for (nsIFrame* page = mFrames.FirstChild(); nsnull != page; page->GetNextSibling(&page)) {
-      nsIView*  view;
-      page->GetView(aPresContext, &view);
-      NS_ASSERTION(nsnull != view, "no page view");
-      nsRect rect;
-      page->GetRect(rect);
-      nsRect viewRect;
-      view->GetBounds(viewRect);
+    for (nsIFrame* page = mFrames.FirstChild(); page;
+         page = page->GetNextSibling()) {
+      nsIView* view = page->GetView();
+      NS_ASSERTION(view, "no page view");
+      nsRect rect = page->GetRect();
+      nsRect viewRect = view->GetBounds();
       PR_PL((" Page: %p  No: %d - [%5d,%5d,%5d,%5d] ", page, pageNum, rect.x, rect.y, rect.width, rect.height));
       PR_PL((" [%5d,%5d,%5d,%5d]\n", viewRect.x, viewRect.y, viewRect.width, viewRect.height));
       pageNum++;
@@ -736,14 +713,13 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
     PRInt32 pageNum = 1;
     nscoord y = 0;//mMargin.top;
 
-    for (nsIFrame* page = mFrames.FirstChild(); nsnull != page; page->GetNextSibling(&page)) {
-      nsIView*  view = nsnull;
-      page->GetView(aPresContext, &view);
-      NS_ASSERTION(nsnull != view, "no page view");
+    for (nsIFrame* page = mFrames.FirstChild(); page;
+         page = page->GetNextSibling()) {
+      nsIView* view = page->GetView();
+      NS_ASSERTION(view, "no page view");
 
-      nsCOMPtr<nsIViewManager> vm;
-      view->GetViewManager(*getter_AddRefs(vm));
-      NS_ASSERTION(nsnull != vm, "no view manager");
+      nsIViewManager* vm = view->GetViewManager();
+      NS_ASSERTION(vm, "no view manager");
 
       if (pageNum < mFromPageNum || pageNum > mToPageNum) {
         // Hide the pages that won't be printed to the Viewmanager
@@ -754,14 +730,12 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
         nsRegion emptyRegion;
         vm->SetViewChildClipRegion(view, &emptyRegion);
       } else {
-        nsRect rect;
-        page->GetRect(rect);
+        nsRect rect = page->GetRect();
         rect.y = y;
         rect.height = height;
-        page->SetRect(aPresContext, rect);
+        page->SetRect(rect);
 
-        nsRect viewRect;
-        view->GetBounds(viewRect);
+        nsRect viewRect = view->GetBounds();
         viewRect.y = y;
         viewRect.height = height;
         vm->MoveViewTo(view, viewRect.x, viewRect.y);
@@ -849,12 +823,7 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
   aPresContext->GetDeviceContext(getter_AddRefs(dc));
   NS_ASSERTION(dc, "nsIDeviceContext can't be NULL!");
 
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  NS_ASSERTION(presShell, "nsIPresShell can't be NULL!");
-
-  nsCOMPtr<nsIViewManager> vm;
-  presShell->GetViewManager(getter_AddRefs(vm));
+  nsIViewManager* vm = aPresContext->GetViewManager();
   NS_ASSERTION(vm, "nsIViewManager can't be NULL!");
 
   nsresult rv = NS_OK;
@@ -893,7 +862,6 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
     // currently this does not work for IFrames
     // I will soon improve this to work with IFrames 
     PRBool  continuePrinting = PR_TRUE;
-    nscoord selectionHeight  = mSelectionHeight;
     PRInt32 width, height;
     dc->GetDeviceSurfaceDimensions(width, height);
     nsRect clipRect(0, 0, width, height);
@@ -907,9 +875,9 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
       nsIFrame* childFrame = mFrames.FirstChild();
       nsIFrame* conFrame;
       childFrame->FirstChild(aPresContext, nsnull, &conFrame);
-      conFrame->GetView(aPresContext, &containerView);
-      NS_ASSERTION(containerView != nsnull, "Container view can't be null!");
-      containerView->GetBounds(containerRect);
+      containerView = conFrame->GetView();
+      NS_ASSERTION(containerView, "Container view can't be null!");
+      containerRect = containerView->GetBounds();
       containerRect.y -= mYSelOffset;
       slidingRect.SetRect(0,mYSelOffset,width,height);
       
@@ -940,10 +908,9 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
       }
 
       // Print the page
-      nsIView*  view;
-      mCurrentPageFrame->GetView(aPresContext, &view);
+      nsIView* view = mCurrentPageFrame->GetView();
 
-      NS_ASSERTION(nsnull != view, "no page view");
+      NS_ASSERTION(view, "no page view");
 
       PR_PL(("SeqFr::Paint -> %p PageNo: %d  View: %p", pf, mPageNum, view));
       PR_PL((" At: %d,%d\n", mMargin.left+mOffsetX, mMargin.top+mOffsetY));
@@ -995,7 +962,7 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
     }
 
     mPageNum++;
-    rv = mCurrentPageFrame->GetNextSibling(&mCurrentPageFrame);
+    mCurrentPageFrame = mCurrentPageFrame->GetNextSibling();
   }
 
   return rv;
@@ -1027,8 +994,8 @@ nsSimplePageSequenceFrame::DoPageEnd(nsIPresContext*  aPresContext)
 
   mPageNum++;
   
-  if( nsnull != mCurrentPageFrame){
-    rv = mCurrentPageFrame->GetNextSibling(&mCurrentPageFrame);
+  if (mCurrentPageFrame) {
+    mCurrentPageFrame = mCurrentPageFrame->GetNextSibling();
   }
   
   return rv;
@@ -1037,7 +1004,7 @@ nsSimplePageSequenceFrame::DoPageEnd(nsIPresContext*  aPresContext)
 NS_IMETHODIMP
 nsSimplePageSequenceFrame::SuppressHeadersAndFooters(PRBool aDoSup)
 {
-  for (nsIFrame* f = mFrames.FirstChild(); f != nsnull; f->GetNextSibling(&f)) {
+  for (nsIFrame* f = mFrames.FirstChild(); f; f = f->GetNextSibling()) {
     nsPageFrame * pf = NS_STATIC_CAST(nsPageFrame*, f);
     if (pf != nsnull) {
       pf->SuppressHeadersAndFooters(aDoSup);
@@ -1049,7 +1016,7 @@ nsSimplePageSequenceFrame::SuppressHeadersAndFooters(PRBool aDoSup)
 NS_IMETHODIMP
 nsSimplePageSequenceFrame::SetClipRect(nsIPresContext*  aPresContext, nsRect* aRect)
 {
-  for (nsIFrame* f = mFrames.FirstChild(); f != nsnull; f->GetNextSibling(&f)) {
+  for (nsIFrame* f = mFrames.FirstChild(); f; f = f->GetNextSibling()) {
     nsPageFrame * pf = NS_STATIC_CAST(nsPageFrame*, f);
     if (pf != nsnull) {
       pf->SetClipRect(aRect);
@@ -1082,11 +1049,6 @@ nsSimplePageSequenceFrame::Paint(nsIPresContext*      aPresContext,
   PRBool clipEmpty;
   aRenderingContext.PopState(clipEmpty);
   return rv;
-}
-
-NS_IMETHODIMP nsSimplePageSequenceFrame::SizeTo(nsIPresContext* aPresContext, nscoord aWidth, nscoord aHeight)
-{
-  return nsFrame::SizeTo(aPresContext, aWidth, aHeight);
 }
 
 NS_IMETHODIMP

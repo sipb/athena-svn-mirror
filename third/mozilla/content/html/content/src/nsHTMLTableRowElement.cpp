@@ -97,11 +97,11 @@ nsTableCellCollection::GetLength(PRUint32* aLength)
     nsCOMPtr<nsIContent> child;
     PRUint32 childIndex = 0;
 
-    mParent->ChildAt(childIndex, *getter_AddRefs(child));
+    mParent->ChildAt(childIndex, getter_AddRefs(child));
 
     while (child) {
       nsCOMPtr<nsIAtom> childTag;
-      child->GetTag(*getter_AddRefs(childTag));
+      child->GetTag(getter_AddRefs(childTag));
 
       if ((nsHTMLAtoms::td == childTag.get()) ||
           (nsHTMLAtoms::th == childTag.get())) {
@@ -109,7 +109,7 @@ nsTableCellCollection::GetLength(PRUint32* aLength)
       }
 
       childIndex++;
-      mParent->ChildAt(childIndex, *getter_AddRefs(child));
+      mParent->ChildAt(childIndex, getter_AddRefs(child));
     }
   }
 
@@ -128,12 +128,12 @@ nsTableCellCollection::Item(PRUint32     aIndex,
     nsCOMPtr<nsIContent> child;
     PRUint32 childIndex = 0;
 
-    mParent->ChildAt(childIndex, *getter_AddRefs(child));
+    mParent->ChildAt(childIndex, getter_AddRefs(child));
 
     while (child) {
       nsCOMPtr<nsIAtom> childTag;
 
-      child->GetTag(*getter_AddRefs(childTag));
+      child->GetTag(getter_AddRefs(childTag));
 
       if ((nsHTMLAtoms::td == childTag.get()) ||
           (nsHTMLAtoms::th == childTag.get())) {
@@ -147,7 +147,7 @@ nsTableCellCollection::Item(PRUint32     aIndex,
       }
 
       childIndex++;
-      mParent->ChildAt(childIndex, *getter_AddRefs(child));
+      mParent->ChildAt(childIndex, getter_AddRefs(child));
     }
   }
 
@@ -185,8 +185,7 @@ public:
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
 protected:
   nsresult GetSection(nsIDOMHTMLTableSectionElement** aSection);
@@ -200,7 +199,7 @@ void DebugList(nsIDOMHTMLTableElement* aTable) {
   nsCOMPtr<nsIHTMLContent> content = do_QueryInterface(aTable);
   if (content) {
     nsCOMPtr<nsIDocument> doc;
-    result = content->GetDocument(*getter_AddRefs(doc));
+    result = content->GetDocument(getter_AddRefs(doc));
     if (doc) {
       nsCOMPtr<nsIContent> root;
       doc->GetRootContent(getter_AddRefs(root));
@@ -327,15 +326,17 @@ nsHTMLTableRowElement::GetTable(nsIDOMHTMLTableElement** aTable)
 
   nsCOMPtr<nsIDOMNode> sectionNode;
   nsresult rv = GetParentNode(getter_AddRefs(sectionNode));
-  NS_ENSURE_SUCCESS(rv, rv);
+  if (!sectionNode) {
+    return rv;
+  }
 
   nsCOMPtr<nsIDOMNode> tableNode;
   rv = sectionNode->GetParentNode(getter_AddRefs(tableNode));
-  if (NS_SUCCEEDED(rv) && sectionNode) {
-    rv = CallQueryInterface(tableNode, aTable);
+  if (!tableNode) {
+    return rv;
   }
-
-  return rv;
+  
+  return CallQueryInterface(tableNode, aTable);
 }
 
 NS_IMETHODIMP
@@ -441,7 +442,7 @@ nsHTMLTableRowElement::InsertCell(PRInt32 aIndex, nsIDOMHTMLElement** aValue)
 
   // create the cell
   nsCOMPtr<nsINodeInfo> nodeInfo;
-  mNodeInfo->NameChanged(nsHTMLAtoms::td, *getter_AddRefs(nodeInfo));
+  mNodeInfo->NameChanged(nsHTMLAtoms::td, getter_AddRefs(nodeInfo));
 
   nsCOMPtr<nsIHTMLContent> cellContent;
   nsresult rv = NS_NewHTMLTableCellElement(getter_AddRefs(cellContent),
@@ -554,7 +555,8 @@ nsHTMLTableRowElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::bgcolor) {
-    if (aResult.ParseColor(aValue, mDocument)) {
+    if (aResult.ParseColor(aValue,
+                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -635,26 +637,23 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
-NS_IMETHODIMP
-nsHTMLTableRowElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                                nsChangeHint& aHint) const
+NS_IMETHODIMP_(PRBool)
+nsHTMLTableRowElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::valign, NS_STYLE_HINT_REFLOW }, 
-    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE }
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::align },
+    { &nsHTMLAtoms::valign }, 
+    { &nsHTMLAtoms::height },
+    { nsnull }
   };
 
-  static const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
     sBackgroundAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-  
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 NS_IMETHODIMP

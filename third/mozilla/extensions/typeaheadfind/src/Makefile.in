@@ -38,7 +38,7 @@ SHORT_LIBNAME = typahead
 endif
 GRE_MODULE	= 1
 
-REQUIRES        = appcomps \
+REQUIRES	= appcomps \
 		  embedcomponents \
 		  content \
 		  docshell \
@@ -48,14 +48,12 @@ REQUIRES        = appcomps \
 		  gfx \
 		  layout \
 		  locale \
-		  mozcomps \
 		  necko \
 		  pref \
 		  string \
 		  unicharutil \
 		  uriloader \
 		  view \
-		  webBrowser_core \
 		  webshell \
 		  widget \
 		  webbrwsr \

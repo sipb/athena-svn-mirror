@@ -46,10 +46,10 @@ static PRLibrary *xpcomLib = nsnull;
 static XPCOMFunctions *xpcomFunctions = nsnull;
 static nsIMemory* xpcomMemory = nsnull;
 
-//#define XPCOM_GLUE_NO_DYNAMIC_LOADING
-
 extern nsresult GlueStartupMemory();
 extern void GlueShutdownMemory();
+extern nsresult GlueStartupDebug();
+extern void GlueShutdownDebug();
 
 extern "C"
 nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
@@ -98,8 +98,30 @@ nsresult NS_COM XPCOMGlueStartup(const char* xpcomFile)
         return NS_ERROR_FAILURE;
     }
 
+    rv = GlueStartupDebug();
+
+    if (NS_FAILED(rv)) {
+        free(xpcomFunctions);
+        xpcomFunctions = nsnull;  
+        PR_UnloadLibrary(xpcomLib);
+        xpcomLib = nsnull;
+        return NS_ERROR_FAILURE;
+    }
+
     // startup the nsMemory
-    return GlueStartupMemory();
+    rv = GlueStartupMemory();
+
+    if (NS_FAILED(rv)) {
+        GlueShutdownDebug();
+
+        free(xpcomFunctions);
+        xpcomFunctions = nsnull;  
+        PR_UnloadLibrary(xpcomLib);
+        xpcomLib = nsnull;
+        return NS_ERROR_FAILURE;
+    }
+
+    return rv;
 #endif
 }
 
@@ -115,6 +137,8 @@ nsresult NS_COM XPCOMGlueShutdown()
     }
 
     GlueShutdownMemory();
+
+    GlueShutdownDebug();
 
     if (xpcomLib) {
         PR_UnloadLibrary(xpcomLib);
@@ -207,6 +231,24 @@ NS_UnregisterXPCOMExitRoutine(XPCOMExitRoutine exitRoutine)
         return NS_ERROR_NOT_INITIALIZED;
     return xpcomFunctions->unregisterExitRoutine(exitRoutine);
 }
+
+extern "C" NS_COM nsresult
+NS_GetDebug(nsIDebug* *result)
+{
+    if (!xpcomFunctions)
+        return NS_ERROR_NOT_INITIALIZED;
+    return xpcomFunctions->getDebug(result);
+}
+
+
+extern "C" NS_COM nsresult
+NS_GetTraceRefcnt(nsITraceRefcnt* *result)
+{
+    if (!xpcomFunctions)
+        return NS_ERROR_NOT_INITIALIZED;
+    return xpcomFunctions->getTraceRefcnt(result);
+}
+
 #endif // #ifndef  XPCOM_GLUE_NO_DYNAMIC_LOADING
 
 

@@ -33,7 +33,7 @@
  *
  * shvfy.c - routines to verify signature on a shared library.
  *
- * $Id: shvfy.c,v 1.1.2.1 2003-07-14 19:06:42 ghudson Exp $
+ * $Id: shvfy.c,v 1.1.2.2 2004-01-02 19:59:07 ghudson Exp $
  */
 
 #include "shsign.h"

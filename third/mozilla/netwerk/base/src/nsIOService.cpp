@@ -76,7 +76,6 @@ static NS_DEFINE_CID(kSocketTransportServiceCID, NS_SOCKETTRANSPORTSERVICE_CID);
 static NS_DEFINE_CID(kDNSServiceCID, NS_DNSSERVICE_CID);
 static NS_DEFINE_CID(kErrorServiceCID, NS_ERRORSERVICE_CID);
 static NS_DEFINE_CID(kProtocolProxyServiceCID, NS_PROTOCOLPROXYSERVICE_CID);
-static NS_DEFINE_CID(kStdURLParserCID, NS_STDURLPARSER_CID);
 
 // A general port blacklist.  Connections to these ports will not be avoided unless 
 // the protocol overrides.
@@ -257,7 +256,7 @@ nsIOService::~nsIOService()
 NS_IMPL_THREADSAFE_ISUPPORTS3(nsIOService,
                               nsIIOService,
                               nsIObserver,
-                              nsISupportsWeakReference);
+                              nsISupportsWeakReference)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -281,7 +280,7 @@ nsIOService::CacheProtocolHandler(const char *scheme, nsIProtocolHandler *handle
 #endif /* DEBUG_dp */
                 return NS_ERROR_FAILURE;
             }
-            mWeakHandler[i] = getter_AddRefs(NS_GetWeakReference(handler));
+            mWeakHandler[i] = do_GetWeakReference(handler);
             return NS_OK;
         }
     }
@@ -489,7 +488,7 @@ nsIOService::SetOffline(PRBool offline)
     nsresult rv;
     if (offline) {
         NS_NAMED_LITERAL_STRING(offlineString, "offline");
-    	mOffline = PR_TRUE; // indicate we're trying to shutdown
+        mOffline = PR_TRUE; // indicate we're trying to shutdown
 
         // don't care if notification fails
         // this allows users to attempt a little cleanup before dns and socket transport are shut down.
@@ -580,14 +579,14 @@ nsIOService::PrefsChanged(nsIPrefBranch *prefs, const char *pref)
     if (!prefs) return;
 
     // Look for extra ports to block
-    if (!pref || PL_strcmp(pref, PORT_PREF("banned")) == 0)
+    if (!pref || strcmp(pref, PORT_PREF("banned")) == 0)
         ParsePortList(prefs, PORT_PREF("banned"), PR_FALSE);
 
     // ...as well as previous blocks to remove.
-    if (!pref || PL_strcmp(pref, PORT_PREF("banned.override")) == 0)
+    if (!pref || strcmp(pref, PORT_PREF("banned.override")) == 0)
         ParsePortList(prefs, PORT_PREF("banned.override"), PR_TRUE);
 
-    if (!pref || PL_strcmp(pref, AUTODIAL_PREF) == 0) {
+    if (!pref || strcmp(pref, AUTODIAL_PREF) == 0) {
         PRBool enableAutodial = PR_FALSE;
         nsresult rv = prefs->GetBoolPref(AUTODIAL_PREF, &enableAutodial);
         // If pref not found, default to disabled.

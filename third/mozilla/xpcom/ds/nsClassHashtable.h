@@ -59,25 +59,33 @@ public:
   typedef T* UserDataType;
 
   /**
-   * @copydoc nsBaseHashtable::nsBaseHashtable
+   * @copydoc nsBaseHashtable::Get
+   * @param pData if the key doesn't exist, pData will be set to nsnull.
    */
-  nsClassHashtable() { }
+  PRBool Get(KeyType aKey, UserDataType* pData) const;
+};
 
-  /**
-   * destructor, cleans up properly
-   */
-  ~nsClassHashtable() { }
+
+/**
+ * Thread-safe version of nsClassHashtable
+ * @param KeyClass a wrapper-class for the hashtable key, see nsHashKeys.h
+ *   for a complete specification.
+ * @param Class the class-type being wrapped
+ * @see nsInterfaceHashtable, nsClassHashtable
+ */
+template<class KeyClass,class T>
+class nsClassHashtableMT :
+  public nsBaseHashtableMT< KeyClass, nsAutoPtr<T>, T* >
+{
+public:
+  typedef typename KeyClass::KeyType KeyType;
+  typedef T* UserDataType;
 
   /**
    * @copydoc nsBaseHashtable::Get
    * @param pData if the key doesn't exist, pData will be set to nsnull.
    */
   PRBool Get(KeyType aKey, UserDataType* pData) const;
-
-protected:
-#ifdef HAVE_CPP_AMBIGUITY_RESOLVING_USING
-  using nsBaseHashtable<KeyClass, nsAutoPtr<T>, T*>::mLock;
-#endif
 };
 
 
@@ -89,9 +97,6 @@ template<class KeyClass,class T>
 PRBool
 nsClassHashtable<KeyClass,T>::Get(KeyType aKey, T** retVal) const
 {
-  if (mLock)
-    PR_RWLock_Rlock(mLock);
-
   typename nsBaseHashtable<KeyClass,nsAutoPtr<T>,T*>::EntryType* ent =
     GetEntry(aKey);
 
@@ -100,18 +105,45 @@ nsClassHashtable<KeyClass,T>::Get(KeyType aKey, T** retVal) const
     if (retVal)
       *retVal = ent->mData;
 
-    if (mLock)
-      PR_RWLock_Unlock(mLock);
+    return PR_TRUE;
+  }
+
+  if (retVal)
+    *retVal = nsnull;
+
+  return PR_FALSE;
+}
+
+
+//
+// nsClassHashtableMT definitions
+//
+
+template<class KeyClass,class T>
+PRBool
+nsClassHashtableMT<KeyClass,T>::Get(KeyType aKey, T** retVal) const
+{
+  PR_Lock(this->mLock);
+
+  typename nsBaseHashtableMT<KeyClass,nsAutoPtr<T>,T*>::EntryType* ent =
+    GetEntry(aKey);
+
+  if (ent)
+  {
+    if (retVal)
+      *retVal = ent->mData;
+
+    PR_Unlock(this->mLock);
 
     return PR_TRUE;
   }
 
-  *retVal = nsnull;
+  if (retVal)
+    *retVal = nsnull;
 
-  if (mLock)
-    PR_RWLock_Unlock(mLock);
+  PR_Unlock(this->mLock);
 
   return PR_FALSE;
-};
+}
 
 #endif // nsClassHashtable_h__

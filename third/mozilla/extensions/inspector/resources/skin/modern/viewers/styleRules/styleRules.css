@@ -43,13 +43,12 @@
   list-style-image: url("chrome://inspector/skin/iconImportant.gif");
 }
 
-#olbStyleProps:-moz-tree-image(olcPropPriority, important) {
+#olbStyleProps::-moz-tree-image(olcPropPriority, important) {
   list-style-image: url("chrome://inspector/skin/iconImportant.gif");
 }
 
 /* ::::: default column widths ::::: */
 
-#olcWeight,
 #olcLine {
   width: 5em;
 }

@@ -64,8 +64,6 @@
 #include <photon/PtServer.h>
 
 static NS_DEFINE_CID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
-static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 
 // BGR, not RGB - REVISIT
 #define NSCOLOR_TO_PHCOLOR(g,n) \
@@ -601,8 +599,11 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
 
   PtWidget_t *parentWidget = nsnull;
 
-  nsIWidget *baseParent = aInitData && (aInitData->mWindowType == eWindowType_dialog ||
-    	aInitData->mWindowType == eWindowType_toplevel ) ?  nsnull : aParent;
+  nsIWidget *baseParent = aInitData &&
+                            (aInitData->mWindowType == eWindowType_dialog ||
+                             aInitData->mWindowType == eWindowType_toplevel ||
+                             aInitData->mWindowType == eWindowType_invisible) ?
+                          nsnull : aParent;
 
   BaseCreate( baseParent, aRect, aHandleEventFunction, aContext, aAppShell, aToolkit, aInitData );
 
@@ -1038,8 +1039,9 @@ inline PRBool nsWidget::HandleEvent( PtWidget_t *widget, PtCallbackInfo_t* aCbIn
 
 					// if we're a right-button-up we're trying to popup a context menu. send that event to gecko also
 					if( ptrev->buttons & Ph_BUTTON_MENU ) {
-						InitMouseEvent( ptrev, this, theMouseEvent, NS_CONTEXTMENU );
-						result = DispatchMouseEvent( theMouseEvent );
+						nsMouseEvent contextMenuEvent;
+						InitMouseEvent( ptrev, this, contextMenuEvent, NS_CONTEXTMENU );
+						result = DispatchMouseEvent( contextMenuEvent );
 						}
       	  }
 

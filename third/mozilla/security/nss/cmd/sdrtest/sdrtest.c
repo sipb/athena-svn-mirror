@@ -34,7 +34,7 @@
 /*
  * Test program for SDR (Secret Decoder Ring) functions.
  *
- * $Id: sdrtest.c,v 1.1.1.1.2.1 2003-07-14 19:06:12 ghudson Exp $
+ * $Id: sdrtest.c,v 1.1.1.1.2.2 2004-01-02 19:58:24 ghudson Exp $
  */
 
 #include "nspr.h"

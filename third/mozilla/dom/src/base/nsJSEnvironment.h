@@ -90,6 +90,8 @@ public:
   NS_IMETHOD       CompileEventHandler(void *aTarget,
                                        nsIAtom *aName,
                                        const nsAString& aBody,
+                                       const char *aURL,
+                                       PRUint32 aLineNo,
                                        PRBool aShared,
                                        void** aHandler);
   NS_IMETHOD       CallEventHandler(void *aTarget, void *aHandler, 
@@ -99,7 +101,7 @@ public:
                                             nsIAtom *aName,
                                             void *aHandler);
   NS_IMETHOD       CompileFunction(void* aTarget,
-                                   const nsCString& aName,
+                                   const nsACString& aName,
                                    PRUint32 aArgCount,
                                    const char** aArgArray,
                                    const nsAString& aBody,

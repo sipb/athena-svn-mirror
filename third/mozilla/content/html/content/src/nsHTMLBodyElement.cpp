@@ -121,8 +121,7 @@ public:
                          PRBool aCompileEventHandlers);
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
 protected:
   BodyRule* mContentStyleRule;
@@ -179,22 +178,22 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
     if (eHTMLUnit_Pixel == value.GetUnit()) {
       bodyMarginWidth = value.GetPixelValue();
       if (bodyMarginWidth < 0) bodyMarginWidth = 0;
-      nsCSSRect* margin = aData->mMarginData->mMargin;
-      if (margin->mLeft.GetUnit() == eCSSUnit_Null)
-        margin->mLeft.SetFloatValue((float)bodyMarginWidth, eCSSUnit_Pixel);
-      if (margin->mRight.GetUnit() == eCSSUnit_Null)
-        margin->mRight.SetFloatValue((float)bodyMarginWidth, eCSSUnit_Pixel);
+      nsCSSRect& margin = aData->mMarginData->mMargin;
+      if (margin.mLeft.GetUnit() == eCSSUnit_Null)
+        margin.mLeft.SetFloatValue((float)bodyMarginWidth, eCSSUnit_Pixel);
+      if (margin.mRight.GetUnit() == eCSSUnit_Null)
+        margin.mRight.SetFloatValue((float)bodyMarginWidth, eCSSUnit_Pixel);
     }
 
     mPart->GetHTMLAttribute(nsHTMLAtoms::marginheight, value);
     if (eHTMLUnit_Pixel == value.GetUnit()) {
       bodyMarginHeight = value.GetPixelValue();
       if (bodyMarginHeight < 0) bodyMarginHeight = 0;
-      nsCSSRect* margin = aData->mMarginData->mMargin;
-      if (margin->mTop.GetUnit() == eCSSUnit_Null)
-        margin->mTop.SetFloatValue((float)bodyMarginHeight, eCSSUnit_Pixel);
-      if (margin->mBottom.GetUnit() == eCSSUnit_Null)
-        margin->mBottom.SetFloatValue((float)bodyMarginHeight, eCSSUnit_Pixel);
+      nsCSSRect& margin = aData->mMarginData->mMargin;
+      if (margin.mTop.GetUnit() == eCSSUnit_Null)
+        margin.mTop.SetFloatValue((float)bodyMarginHeight, eCSSUnit_Pixel);
+      if (margin.mBottom.GetUnit() == eCSSUnit_Null)
+        margin.mBottom.SetFloatValue((float)bodyMarginHeight, eCSSUnit_Pixel);
     }
 
     if (eCompatibility_NavQuirks == mode){
@@ -203,9 +202,9 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
       if (eHTMLUnit_Pixel == value.GetUnit()) {
         bodyTopMargin = value.GetPixelValue();
         if (bodyTopMargin < 0) bodyTopMargin = 0;
-        nsCSSRect* margin = aData->mMarginData->mMargin;
-        if (margin->mTop.GetUnit() == eCSSUnit_Null)
-          margin->mTop.SetFloatValue((float)bodyTopMargin, eCSSUnit_Pixel);
+        nsCSSRect& margin = aData->mMarginData->mMargin;
+        if (margin.mTop.GetUnit() == eCSSUnit_Null)
+          margin.mTop.SetFloatValue((float)bodyTopMargin, eCSSUnit_Pixel);
       }
 
       // bottommargin (IE-attribute)
@@ -213,9 +212,9 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
       if (eHTMLUnit_Pixel == value.GetUnit()) {
         bodyBottomMargin = value.GetPixelValue();
         if (bodyBottomMargin < 0) bodyBottomMargin = 0;
-        nsCSSRect* margin = aData->mMarginData->mMargin;
-        if (margin->mBottom.GetUnit() == eCSSUnit_Null)
-          margin->mBottom.SetFloatValue((float)bodyBottomMargin, eCSSUnit_Pixel);
+        nsCSSRect& margin = aData->mMarginData->mMargin;
+        if (margin.mBottom.GetUnit() == eCSSUnit_Null)
+          margin.mBottom.SetFloatValue((float)bodyBottomMargin, eCSSUnit_Pixel);
       }
 
       // leftmargin (IE-attribute)
@@ -223,9 +222,9 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
       if (eHTMLUnit_Pixel == value.GetUnit()) {
         bodyLeftMargin = value.GetPixelValue();
         if (bodyLeftMargin < 0) bodyLeftMargin = 0;
-        nsCSSRect* margin = aData->mMarginData->mMargin;
-        if (margin->mLeft.GetUnit() == eCSSUnit_Null)
-          margin->mLeft.SetFloatValue((float)bodyLeftMargin, eCSSUnit_Pixel);
+        nsCSSRect& margin = aData->mMarginData->mMargin;
+        if (margin.mLeft.GetUnit() == eCSSUnit_Null)
+          margin.mLeft.SetFloatValue((float)bodyLeftMargin, eCSSUnit_Pixel);
       }
 
       // rightmargin (IE-attribute)
@@ -233,9 +232,9 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
       if (eHTMLUnit_Pixel == value.GetUnit()) {
         bodyRightMargin = value.GetPixelValue();
         if (bodyRightMargin < 0) bodyRightMargin = 0;
-        nsCSSRect* margin = aData->mMarginData->mMargin;
-        if (margin->mRight.GetUnit() == eCSSUnit_Null)
-          margin->mRight.SetFloatValue((float)bodyRightMargin, eCSSUnit_Pixel);
+        nsCSSRect& margin = aData->mMarginData->mMargin;
+        if (margin.mRight.GetUnit() == eCSSUnit_Null)
+          margin.mRight.SetFloatValue((float)bodyRightMargin, eCSSUnit_Pixel);
       }
     }
 
@@ -267,19 +266,19 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
         }
 
         if ((bodyMarginWidth == -1) && (frameMarginWidth >= 0)) {
-          nsCSSRect* margin = aData->mMarginData->mMargin;
-          if (margin->mLeft.GetUnit() == eCSSUnit_Null)
-            margin->mLeft.SetFloatValue((float)frameMarginWidth, eCSSUnit_Pixel);
-          if (margin->mRight.GetUnit() == eCSSUnit_Null)
-            margin->mRight.SetFloatValue((float)frameMarginWidth, eCSSUnit_Pixel);
+          nsCSSRect& margin = aData->mMarginData->mMargin;
+          if (margin.mLeft.GetUnit() == eCSSUnit_Null)
+            margin.mLeft.SetFloatValue((float)frameMarginWidth, eCSSUnit_Pixel);
+          if (margin.mRight.GetUnit() == eCSSUnit_Null)
+            margin.mRight.SetFloatValue((float)frameMarginWidth, eCSSUnit_Pixel);
         }
 
         if ((bodyMarginHeight == -1) && (frameMarginHeight >= 0)) {
-          nsCSSRect* margin = aData->mMarginData->mMargin;
-          if (margin->mTop.GetUnit() == eCSSUnit_Null)
-            margin->mTop.SetFloatValue((float)frameMarginHeight, eCSSUnit_Pixel);
-          if (margin->mBottom.GetUnit() == eCSSUnit_Null)
-            margin->mBottom.SetFloatValue((float)frameMarginHeight, eCSSUnit_Pixel);
+          nsCSSRect& margin = aData->mMarginData->mMargin;
+          if (margin.mTop.GetUnit() == eCSSUnit_Null)
+            margin.mTop.SetFloatValue((float)frameMarginHeight, eCSSUnit_Pixel);
+          if (margin.mBottom.GetUnit() == eCSSUnit_Null)
+            margin.mBottom.SetFloatValue((float)frameMarginHeight, eCSSUnit_Pixel);
         }
       }
     }
@@ -380,7 +379,7 @@ nsHTMLBodyElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 }
 
 
-NS_IMPL_STRING_ATTR(nsHTMLBodyElement, Background, background)
+NS_IMPL_URI_ATTR(nsHTMLBodyElement, Background, background)
 
 #define NS_IMPL_HTMLBODY_COLOR_ATTR(attr_, func_, default_)         \
 NS_IMETHODIMP                                                       \
@@ -486,7 +485,8 @@ nsHTMLBodyElement::StringToAttribute(nsIAtom* aAttribute,
       (aAttribute == nsHTMLAtoms::link) ||
       (aAttribute == nsHTMLAtoms::alink) ||
       (aAttribute == nsHTMLAtoms::vlink)) {
-    if (aResult.ParseColor(aValue, mDocument)) {
+    if (aResult.ParseColor(aValue,
+                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -508,7 +508,7 @@ NS_IMETHODIMP
 nsHTMLBodyElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                PRBool aCompileEventHandlers)
 {
-  if (nsnull != mContentStyleRule) {
+  if (aDocument != mDocument && mContentStyleRule) {
     mContentStyleRule->mPart = nsnull;
     mContentStyleRule->mSheet = nsnull;
 
@@ -623,27 +623,28 @@ nsHTMLBodyElement::WalkContentStyleRules(nsRuleWalker* aRuleWalker)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsHTMLBodyElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                            nsChangeHint& aHint) const
+NS_IMETHODIMP_(PRBool)
+nsHTMLBodyElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::link,  NS_STYLE_HINT_VISUAL },
-    { &nsHTMLAtoms::vlink, NS_STYLE_HINT_VISUAL },
-    { &nsHTMLAtoms::alink, NS_STYLE_HINT_VISUAL },
-    { &nsHTMLAtoms::text,  NS_STYLE_HINT_VISUAL },
-    { &nsHTMLAtoms::marginwidth, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::marginheight, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE },
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::link },
+    { &nsHTMLAtoms::vlink },
+    { &nsHTMLAtoms::alink },
+    { &nsHTMLAtoms::text },
+    // These aren't mapped through attribute mapping, but they are
+    // mapped through a style rule, so it is attribute dependent style.
+    // XXXldb But we don't actually replace the body rule when we have
+    // dynamic changes...
+    { &nsHTMLAtoms::marginwidth },
+    { &nsHTMLAtoms::marginheight },
+    { nsnull },
   };
 
-  static const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
     sBackgroundAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }

@@ -34,7 +34,7 @@
 # This file is in part derived from a file "pkcs11f.h" made available
 # by RSA Security at ftp://ftp.rsasecurity.com/pub/pkcs/pkcs-11/pkcs11f.h
 
-CVS_ID "@(#) $RCSfile: ck.api,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:25 $ $Name: not supported by cvs2svn $"
+CVS_ID "@(#) $RCSfile: ck.api,v $ $Revision: 1.1.1.1.2.2 $ $Date: 2004-01-02 19:58:43 $ $Name: not supported by cvs2svn $"
 
 # Fields
 #  FUNCTION introduces a Cryptoki function

@@ -367,7 +367,7 @@ function makeGeneralTab()
   var mode = ("compatMode" in theDocument && theDocument.compatMode == "BackCompat") ? theBundle.getString("generalQuirksMode") : theBundle.getString("generalStrictMode");
   document.getElementById("modetext").value = mode;
 
-  var referrer = (theDocument.referrer) ? theDocument.referrer : theBundle.getString("generalNoReferrer");
+  var referrer = ("referrer" in theDocument && theDocument.referrer) || theBundle.getString("generalNoReferrer");
   document.getElementById('refertext').value = referrer;
 
   // find out the mime type
@@ -514,7 +514,9 @@ function doGrab(iterator, meter, i)
 
 function ensureSelection(view)
 {
-  if (view.selection.count == 0) // only select something if nothing is currently selected
+  // only select something if nothing is currently selected
+  // and if there's anything to select
+  if (view.selection.count == 0 && view.rowCount)
     view.selection.select(0);
 }
 

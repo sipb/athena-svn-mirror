@@ -156,7 +156,7 @@ nsIsIndexFrame::UpdatePromptLabel()
       }
     }
   }
-  if (prompt.Length() == 0) {
+  if (prompt.IsEmpty()) {
     // Generate localized label.
     // We can't make any assumption as to what the default would be
     // because the value is localized for non-english platforms, thus
@@ -227,10 +227,9 @@ nsIsIndexFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   nsresult result;
 
   // Get the node info manager (used to create hr's and input's)
-  nsCOMPtr<nsIDocument> doc;
-  mContent->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
   nsCOMPtr<nsINodeInfoManager> nimgr;
-  result = doc->GetNodeInfoManager(*getter_AddRefs(nimgr));
+  result = doc->GetNodeInfoManager(getter_AddRefs(nimgr));
   NS_ENSURE_SUCCESS(result, result);
 
   nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID,&result));
@@ -239,7 +238,7 @@ nsIsIndexFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   // Create an hr
   nsCOMPtr<nsINodeInfo> hrInfo;
   nimgr->GetNodeInfo(nsHTMLAtoms::hr, nsnull, kNameSpaceID_None,
-                     *getter_AddRefs(hrInfo));
+                     getter_AddRefs(hrInfo));
   nsCOMPtr<nsIContent> content;
   result = ef->CreateInstanceByTag(hrInfo,getter_AddRefs(content));
   NS_ENSURE_SUCCESS(result, result);
@@ -265,7 +264,7 @@ nsIsIndexFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   // Create text input field
   nsCOMPtr<nsINodeInfo> inputInfo;
   nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
-                     *getter_AddRefs(inputInfo));
+                     getter_AddRefs(inputInfo));
 
   result = ef->CreateInstanceByTag(inputInfo,getter_AddRefs(content));
   NS_ENSURE_SUCCESS(result, result);
@@ -347,14 +346,13 @@ nsIsIndexFrame::AttributeChanged(nsIPresContext* aPresContext,
                                        nsIContent*     aChild,
                                        PRInt32         aNameSpaceID,
                                        nsIAtom*        aAttribute,
-                                       PRInt32         aModType, 
-                                       PRInt32         aHint)
+                                       PRInt32         aModType)
 {
   nsresult rv = NS_OK;
   if (nsHTMLAtoms::prompt == aAttribute) {
     rv = UpdatePromptLabel();
   } else {
-    rv = nsAreaFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType, aHint);
+    rv = nsAreaFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType);
   }
   return rv;
 }
@@ -418,13 +416,12 @@ nsIsIndexFrame::OnSubmit(nsIPresContext* aPresContext)
     // Get the document.
     // We'll need it now to form the URL we're submitting to.
     // We'll also need it later to get the DOM window when notifying form submit observers (bug 33203)
-    nsCOMPtr<nsIDocument> document;
-    mContent->GetDocument(*getter_AddRefs(document));
+    nsCOMPtr<nsIDocument> document = mContent->GetDocument();
     if (!document) return NS_OK; // No doc means don't submit, see Bug 28988
 
     // Resolve url to an absolute url
     nsCOMPtr<nsIURI> docURL;
-    document->GetBaseURL(*getter_AddRefs(docURL));
+    document->GetBaseURL(getter_AddRefs(docURL));
     NS_ASSERTION(docURL, "No Base URL found in Form Submit!\n");
     if (!docURL) return NS_OK; // No base URL -> exit early, see Bug 30721
 
@@ -449,7 +446,7 @@ nsIsIndexFrame::OnSubmit(nsIPresContext* aPresContext)
       nsCAutoString relPath;
       docURL->GetSpec(relPath);
       if (!relPath.IsEmpty()) {
-        href = NS_ConvertUTF8toUCS2(relPath);
+        CopyUTF8toUTF16(relPath, href);
 
         // If re-using the same URL, chop off old query string (bug 25330)
         PRInt32 queryStart = href.FindChar('?');
@@ -466,10 +463,10 @@ nsIsIndexFrame::OnSubmit(nsIPresContext* aPresContext)
     nsCOMPtr<nsIURI> actionURL;
     nsXPIDLCString scheme;
     PRBool isJSURL = PR_FALSE;
-    nsAutoString docCharset;
+    nsCAutoString docCharset;
     document->GetDocumentCharacterSet(docCharset);
     if (NS_SUCCEEDED(result = NS_NewURI(getter_AddRefs(actionURL), href,
-                                        NS_LossyConvertUCS2toASCII(docCharset).get(),
+                                        docCharset.get(),
                                         docURL))) {
       result = actionURL->SchemeIs("javascript", &isJSURL);
     }
@@ -486,7 +483,7 @@ nsIsIndexFrame::OnSubmit(nsIPresContext* aPresContext)
     }
     nsCOMPtr<nsIURI> uri;
     result = NS_NewURI(getter_AddRefs(uri), href,
-                       NS_LossyConvertUCS2toASCII(docCharset).get(), docURL);
+                       docCharset.get(), docURL);
     if (NS_FAILED(result)) return result;
 
     // Now pass on absolute url to the click handler
@@ -499,28 +496,24 @@ nsIsIndexFrame::OnSubmit(nsIPresContext* aPresContext)
   return result;
 }
 
-void nsIsIndexFrame::GetSubmitCharset(nsString& oCharset)
+void nsIsIndexFrame::GetSubmitCharset(nsCString& oCharset)
 {
-  oCharset.Assign(NS_LITERAL_STRING("UTF-8")); // default to utf-8
-  nsresult rv;
+  oCharset.Assign(NS_LITERAL_CSTRING("UTF-8")); // default to utf-8
   // XXX
   // We may want to get it from the HTML 4 Accept-Charset attribute first
   // see 17.3 The FORM element in HTML 4 for details
 
   // Get the charset from document
-  nsIDocument* doc = nsnull;
-  mContent->GetDocument(doc);
-  if( nsnull != doc ) {
-    rv = doc->GetDocumentCharacterSet(oCharset);
-    NS_RELEASE(doc);
+  nsIDocument* doc = mContent->GetDocument();
+  if (doc) {
+    doc->GetDocumentCharacterSet(oCharset);
   }
-
 }
 
 NS_IMETHODIMP nsIsIndexFrame::GetEncoder(nsIUnicodeEncoder** encoder)
 {
   *encoder = nsnull;
-  nsAutoString charset;
+  nsCAutoString charset;
   nsresult rv = NS_OK;
   GetSubmitCharset(charset);
   
@@ -530,7 +523,7 @@ NS_IMETHODIMP nsIsIndexFrame::GetEncoder(nsIUnicodeEncoder** encoder)
                                     NS_GET_IID(nsICharsetConverterManager),
                                     (nsISupports**)&ccm);
   if(NS_SUCCEEDED(rv) && (nsnull != ccm)) {
-     rv = ccm->GetUnicodeEncoder(&charset, encoder);
+     rv = ccm->GetUnicodeEncoderRaw(charset.get(), encoder);
      nsServiceManager::ReleaseService( kCharsetConverterManagerCID, ccm);
      if (nsnull == encoder) {
        rv = NS_ERROR_FAILURE;

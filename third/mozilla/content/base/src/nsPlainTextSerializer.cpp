@@ -149,7 +149,7 @@ NS_IMPL_ISUPPORTS4(nsPlainTextSerializer,
 
 NS_IMETHODIMP 
 nsPlainTextSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
-                            nsIAtom* aCharSet, PRBool aIsCopying)
+                            const char* aCharSet, PRBool aIsCopying)
 {
 #ifdef DEBUG
   // Check if the major control flags are set correctly.
@@ -610,6 +610,15 @@ nsPlainTextSerializer::IsEnabled(PRInt32 aTag, PRBool* aReturn)
 nsresult
 nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
 {
+  if (mFlags & nsIDocumentEncoder::OutputRaw) {
+    // Raw means raw.  Don't even think about doing anything fancy
+    // here like indenting, adding line breaks or any other
+    // characters such as list item bullets, quote characters
+    // around <q>, etc.  I mean it!  Don't make me smack you!
+
+    return NS_OK;
+  }
+
   eHTMLTags type = (eHTMLTags)aTag;
 
   if (mTagStackIndex < TagStackSize) {
@@ -913,12 +922,20 @@ nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
   }
 
   return NS_OK;
-
 }
 
 nsresult
 nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
 {
+  if (mFlags & nsIDocumentEncoder::OutputRaw) {
+    // Raw means raw.  Don't even think about doing anything fancy
+    // here like indenting, adding line breaks or any other
+    // characters such as list item bullets, quote characters
+    // around <q>, etc.  I mean it!  Don't make me smack you!
+
+    return NS_OK;
+  }
+
   if (mTagStackIndex > 0) {
     --mTagStackIndex;
   }
@@ -1439,7 +1456,7 @@ nsPlainTextSerializer::AddToLine(const PRUnichar * aLineFragment,
               (
                 restOfLine[0] == '>' ||
                 restOfLine[0] == ' ' ||
-                Substring(restOfLine, 0, 5).Equals(NS_LITERAL_STRING("From "))
+                StringBeginsWith(restOfLine, NS_LITERAL_STRING("From "))
               )
               && mCiteQuoteLevel == 0  // We space-stuff quoted lines anyway
             )
@@ -1843,22 +1860,15 @@ nsPlainTextSerializer::GetIdForContent(nsIContent* aContent,
   }
 
   nsCOMPtr<nsIAtom> tagname;
-  mContent->GetTag(*getter_AddRefs(tagname));
+  mContent->GetTag(getter_AddRefs(tagname));
   if (!tagname) return NS_ERROR_FAILURE;
-  
-  nsAutoString namestr;
-  tagname->ToString(namestr);
   
   nsIParserService* parserService =
     nsContentUtils::GetParserServiceWeakRef();
   if (!parserService)
     return NS_ERROR_FAILURE;
 
-  nsresult rv;
-  rv = parserService->HTMLStringTagToId(namestr, aID);
-  if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-
-  return NS_OK;
+  return parserService->HTMLAtomTagToId(tagname, aID);
 }
 
 /**

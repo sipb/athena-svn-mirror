@@ -69,7 +69,6 @@ static PRLogModuleInfo *gTestSocketIOLog;
 
 static NS_DEFINE_CID(kSocketTransportServiceCID, NS_SOCKETTRANSPORTSERVICE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_IID(kEventQueueCID, NS_EVENTQUEUE_CID);
 
 static PRTime gElapsedTime;
 static int gKeepRunning = 1;
@@ -266,11 +265,7 @@ main(int argc, char* argv[])
 {
     nsresult rv;
 
-#ifdef XP_OS2_VACPP
-    signal(SIGSEGV, (_SigFunc)sighandler);
-#else
     signal(SIGSEGV, sighandler);
-#endif
 
 #if defined(PR_LOGGING)
     gTestSocketIOLog = PR_NewLogModule("TestSocketIO");

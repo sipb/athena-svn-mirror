@@ -68,9 +68,6 @@
 #include "nsMsgBaseCID.h"
 
 
-// CID's needed
-static NS_DEFINE_CID(kPrefCID,            NS_PREF_CID);
-
 //
 // Implementation...
 //
@@ -157,7 +154,7 @@ nsMsgDraft::ProcessDraftOrTemplateOperation(const char *msgURI, nsMimeOutputType
 
   // if we are forwarding a message and that message used a charset over ride
   // then use that over ride charset instead of the charset specified in the message
-  nsXPIDLString mailCharset;
+  nsXPIDLCString mailCharset;
   if (aMsgWindow)
   {
     PRBool charsetOverride;
@@ -167,7 +164,7 @@ nsMsgDraft::ProcessDraftOrTemplateOperation(const char *msgURI, nsMimeOutputType
       {
         nsCOMPtr<nsIMsgI18NUrl> i18nUrl(do_QueryInterface(aURL));
         if (i18nUrl)
-          (void) i18nUrl->SetCharsetOverRide(mailCharset);
+          (void) i18nUrl->SetCharsetOverRide(mailCharset.get());
       }
     }
   }

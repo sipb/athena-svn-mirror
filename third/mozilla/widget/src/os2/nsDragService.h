@@ -19,6 +19,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Rich Walsh <dragtext@e-vertise.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -57,13 +58,16 @@ public:
   NS_IMETHOD GetData(nsITransferable *aTransferable, PRUint32 aItemIndex);
   NS_IMETHOD IsDataFlavorSupported(const char *aDataFlavor, PRBool *_retval);
 
-  BOOL WriteData(PSZ szDest, PSZ szURL);
+  BOOL     WriteData(PSZ szDest, PCSZ szURL);
+  nsresult GetUrlAndTitle(nsISupports *aGenericData, char **aTargetName);
+  nsresult GetUniTextTitle(nsISupports *aGenericData, char **aTargetName);
 
   HWND mDragWnd;
 
   // our source data items
   nsCOMPtr<nsISupportsArray> mSourceDataItems;
-
+  nsCOMPtr<nsISupports> mSourceData;
+  char * mMimeType;
 
   friend MRESULT EXPENTRY nsDragWindowProc( HWND, ULONG, MPARAM, MPARAM);
 };

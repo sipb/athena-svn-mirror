@@ -123,6 +123,8 @@ public:
 class nsSliderFrame : public nsBoxFrame
 {
 public:
+  friend class nsSliderMediator;
+
   nsSliderFrame(nsIPresShell* aShell);
   virtual ~nsSliderFrame();
 
@@ -169,8 +171,7 @@ public:
                               nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType, 
-                              PRInt32 aHint);
+                              PRInt32 aModType);
 
     virtual nsresult CurrentPositionChanged(nsIPresContext* aPresContext);
 
@@ -226,20 +227,17 @@ public:
                            nsEventStatus*  aEventStatus);
 
   NS_IMETHOD_(void) Notify(nsITimer *timer);
-  //friend nsSliderMediator;
-
  
 private:
 
   nsIBox* GetScrollbar();
-  void GetContentOf(nsIBox* aBox, nsIContent** aContent);
 
   void PageUpDown(nsIFrame* aThumbFrame, nscoord change);
   void SetCurrentPosition(nsIContent* scrollbar, nsIFrame* aThumbFrame, nscoord pos, PRBool aIsSmooth);
-  NS_IMETHOD DragThumb(nsIPresContext* aPresContext, PRBool aGrabMouseEvents);
+  void DragThumb(PRBool aGrabMouseEvents);
   void AddListener();
   void RemoveListener();
-  PRBool isDraggingThumb(nsIPresContext* aPresContext);
+  PRBool isDraggingThumb();
 
   float mRatio;
 
@@ -251,9 +249,6 @@ private:
   PRInt32 mSnapMultiplier;
 
   nsIScrollbarListener* mScrollbarListener;
-
-  // XXX Hack
-  nsIPresContext* mPresContext;  // weak reference
 
   nscoord mChange;
   nsPoint mClickPoint;

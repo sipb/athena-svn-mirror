@@ -23,6 +23,7 @@
  *                 Colin Phillips <colinp@oeone.com> 
  *                 Chris Charabaruk <ccharabaruk@meldstar.com>
  *                 ArentJan Banck <ajbanck@planet.nl>
+ *                 Eric Belhaire <eric.belhaire@ief.u-psud.fr>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -113,6 +114,10 @@ function loadCalendarServerDialog()
       document.getElementById( "server-path-textbox" ).setAttribute( "readonly", "true" );
    }
    
+
+   // CofC - calendar coloring change
+   document.getElementById("calendar-color").color = gCalendarObject.color;
+
    document.getElementById( "calendar-local-serverwindow" ).setAttribute( "title", titleDataItem.getAttribute( "value" ) );
 
    document.getElementById( "server-name-textbox" ).value = gCalendarObject.name;
@@ -125,8 +130,7 @@ function loadCalendarServerDialog()
 
    document.getElementById( "server-password-textbox" ).value = gCalendarObject.password;
 
-   document.getElementById( "server-publish-checkbox" ).checked = gCalendarObject.publishAutomatically;
-   
+   document.getElementById( "server-publish-checkbox" ).setAttribute( "checked", gCalendarObject.publishAutomatically );
    // start focus on title
    
    var firstFocus = document.getElementById( "server-name-textbox" );
@@ -155,6 +159,9 @@ function onOKCommand()
 
    gCalendarObject.publishAutomatically = document.getElementById( "server-publish-checkbox" ).checked;
    
+   //Dallas
+   gCalendarObject.color = document.getElementById( "calendar-color" ).color;
+   
    // call caller's on OK function
    gOnOkFunction( gCalendarObject );
       
@@ -168,22 +175,24 @@ function launchFilePicker()
    // No show the 'Save As' dialog and ask for a filename to save to
    const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
+   var gCalendarBundle = document.getElementById("bundle_calendar");
+
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
 
    // caller can force disable of sand box, even if ON globally
 
-   fp.init(window, "Save", nsIFilePicker.modeSave);
+   fp.init(window, gCalendarBundle.getString( "Save" ), nsIFilePicker.modeSave);
 
    var ServerName = document.getElementById( "server-name-textbox" ).value;
 
    if( ServerName == "" )
-      fp.defaultString = "MozillaCalendarFile.ics";
+      fp.defaultString = gCalendarBundle.getString( "filepickerDefString" );
    else
-      fp.defaultString = "MozillaCalendar"+ServerName+".ics";
+      fp.defaultString = gCalendarBundle.getFormattedString( "filepickerDefServerString", [ServerName] );
    
    fp.defaultExtension = "ics";
 
-   const filterCalendar    = "Calendar Files";
+   const filterCalendar    = gCalendarBundle.getString( "filterCalendar" );
    const extensionCalendar = ".ics";
    fp.appendFilter( filterCalendar, "*" + extensionCalendar );
    

@@ -27,7 +27,6 @@
 #include "nsIServiceManager.h"
 #include "nsILanguageAtomService.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
 #include "nsICollation.h"
 #include "nsCollationCID.h"
 #include "nsLocaleCID.h"
@@ -54,7 +53,6 @@
 #define USER_DEFINED "x-user-def"
 
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
-static NS_DEFINE_IID(kIFontMetricsIID, NS_IFONT_METRICS_IID);
 static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
 static NS_DEFINE_CID(kLocaleServiceCID, NS_LOCALESERVICE_CID); 
@@ -74,7 +72,7 @@ int           nsFontMetricsOS2::gCachedIndex = 0;
 nsICollation *nsFontMetricsOS2::gCollation = nsnull;
 
 #ifdef WINCODE
-static nsICharsetConverterManager2 *gCharsetManager = nsnull;
+static nsICharsetConverterManager *gCharsetManager = nsnull;
 #endif
 static nsIPref           *gPref = nsnull;
 static nsIAtom           *gUsersLocale = nsnull;
@@ -291,7 +289,7 @@ public:
   virtual ~nsFontCleanupObserver() {}
 };
 
-NS_IMPL_ISUPPORTS1(nsFontCleanupObserver, nsIObserver);
+NS_IMPL_ISUPPORTS1(nsFontCleanupObserver, nsIObserver)
 
 NS_IMETHODIMP nsFontCleanupObserver::Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *someData)
 {
@@ -308,7 +306,7 @@ InitGlobals(void)
 {
 #ifdef WINCODE
   nsServiceManager::GetService(kCharsetConverterManagerCID,
-    NS_GET_IID(nsICharsetConverterManager2), (nsISupports**) &gCharsetManager);
+    NS_GET_IID(nsICharsetConverterManager), (nsISupports**) &gCharsetManager);
   if (!gCharsetManager) {
     FreeGlobals();
     return NS_ERROR_FAILURE;
@@ -664,16 +662,9 @@ nsFontMetricsOS2::LoadFont( HPS aPS, nsString* aFontname )
     tempname.Append( NS_LITERAL_STRING(" ") );
   }
     
-  PRInt32 res = gCollation->GetSortKeyLen(kCollationCaseInSensitive, 
-                                 tempname, &keylen);
-
-  if( NS_SUCCEEDED(res) )
-  {
-    key = (PRUint8*) nsMemory::Alloc(keylen * sizeof(PRUint8));
-    res = gCollation->CreateRawSortKey( kCollationCaseInSensitive, 
-                                       tempname, key,
-                                       &keylen );
-  }
+  PRInt32 res = gCollation->AllocateRawSortKey( kCollationCaseInSensitive, 
+                                          tempname, &key,
+                                          &keylen );
   NS_ASSERTION( NS_SUCCEEDED(res), "Create collation keys failed!" );
  
   int i = gCachedIndex;
@@ -760,12 +751,9 @@ nsFontMetricsOS2::LoadFont( HPS aPS, nsString* aFontname )
       i = font->nextFamily + count;
   }   // end while
 
+  PR_FREEIF(key);
   if( fh )
-  {
-    if( key )
-      nsMemory::Free(key);
     return fh;
-  }
 
    // If a font was not found, then maybe "familyname" is really a face name.
    // See if a font with that facename exists on system and fake any applied
@@ -993,7 +981,7 @@ AppendGenericFontFromPref(nsString& aFontname,
   MAKE_FONT_PREF_KEY(pref, "font.name.", generic_dot_langGroup);
   res = gPref->CopyUnicharPref(pref.get(), getter_Copies(value));      
   if (NS_SUCCEEDED(res)) {
-    if(aFontname.Length() > 0)
+    if(!aFontname.IsEmpty())
       aFontname.Append((PRUnichar)',');
     aFontname.Append(value);
   }
@@ -1003,7 +991,7 @@ AppendGenericFontFromPref(nsString& aFontname,
   MAKE_FONT_PREF_KEY(pref, "font.name-list.", generic_dot_langGroup);
   res = gPref->CopyUnicharPref(pref.get(), getter_Copies(value));      
   if (NS_SUCCEEDED(res)) {
-    if(aFontname.Length() > 0)
+    if(!aFontname.IsEmpty())
       aFontname.Append((PRUnichar)',');
     aFontname.Append(value);
   }
@@ -1563,6 +1551,12 @@ nsFontMetricsOS2::GetUnicodeFont( HPS aPS )
   return nsnull;
 }
 
+#define IS_SPECIAL(x) ((x == 0x20AC) ||  /* euro */ \
+                       (x == 0x2022) ||  /* bull */ \
+                       (x == 0x201C) ||  /* ldquo */ \
+                       (x == 0x201D) ||  /* rdquo */ \
+                       (x == 0x2014))    /* mdash */
+
 nsresult
 nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
                                   const PRUnichar*     aString,
@@ -1584,7 +1578,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
   {
     while( running && firstChar < lastChar )
     {
-      if(( *currChar > 0x00FF ) && (*currChar != 0x20AC))
+      if (( *currChar > 0x00FF ) && !IS_SPECIAL(*currChar))
       { 
         fh = GetUnicodeFont(aPS);
         NS_ASSERTION(fh, "GetUnicodeFont failed");
@@ -1593,7 +1587,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( ++currChar < lastChar )
         {
-          if( *currChar <= 0x00FF )
+          if (( *currChar <= 0x00FF ) || IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1607,7 +1601,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( ++currChar < lastChar )
         {
-          if( (*currChar > 0x00FF) && (*currChar != 0x20AC) )
+          if (( *currChar > 0x00FF ) && !IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1621,7 +1615,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
   {
     while( running && firstChar < lastChar )
     {
-      if( (*currChar >= 0x0080 && *currChar <= 0x00FF) || (*currChar == 0x20AC)  )
+      if ((*currChar >= 0x0080 && *currChar <= 0x00FF) || IS_SPECIAL(*currChar))
       { 
         fh = new nsFontOS2();
         *fh = *mFontHandle;
@@ -1630,7 +1624,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( ++currChar < lastChar )
         {
-          if(( *currChar < 0x0080 || *currChar > 0x00FF) && (*currChar != 0x20AC) )
+          if ((*currChar < 0x0080 || *currChar > 0x00FF) && !IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1644,7 +1638,7 @@ nsFontMetricsOS2::ResolveForwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( ++currChar < lastChar )
         {
-          if( (*currChar >= 0x0080 && *currChar <= 0x00FF) || (*currChar == 0x20AC)  )
+          if ((*currChar >= 0x0080 && *currChar <= 0x00FF) || IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1679,7 +1673,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
   {
     while( running && firstChar > lastChar )
     {
-      if(( *currChar > 0x00FF ) && (*currChar != 0x20AC))
+      if (( *currChar > 0x00FF ) && !IS_SPECIAL(*currChar))
       { 
         fh = GetUnicodeFont(aPS);
         NS_ASSERTION(fh, "GetUnicodeFont failed");
@@ -1688,7 +1682,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( --currChar > lastChar )
         {
-          if( *currChar <= 0x00FF )
+          if (( *currChar <= 0x00FF ) || IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1702,7 +1696,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( --currChar > lastChar )
         {
-          if(( *currChar > 0x00FF ) && (*currChar != 0x20AC))
+          if (( *currChar > 0x00FF ) && !IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1716,7 +1710,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
   {
     while( running && firstChar > lastChar )
     {
-      if( (*currChar >= 0x0080 && *currChar <= 0x00FF) || (*currChar == 0x20AC)  )
+      if ((*currChar >= 0x0080 && *currChar <= 0x00FF) || IS_SPECIAL(*currChar))
       { 
         fh = new nsFontOS2();
         *fh = *mFontHandle;
@@ -1725,7 +1719,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( --currChar > lastChar )
         {
-          if(( *currChar < 0x0080 || *currChar > 0x00FF) && (*currChar != 0x20AC) )
+          if ((*currChar < 0x0080 || *currChar > 0x00FF) && !IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1739,7 +1733,7 @@ nsFontMetricsOS2::ResolveBackwards(HPS                  aPS,
         fontSwitch.mFont = fh;
         while( --currChar > lastChar )
         {
-          if( (*currChar >= 0x0080 && *currChar <= 0x00FF) || (*currChar == 0x20AC)  )
+          if ((*currChar >= 0x0080 && *currChar <= 0x00FF) || IS_SPECIAL(*currChar))
             break;
         }
 
@@ -1919,16 +1913,11 @@ nsFontMetricsOS2::InitializeGlobalFonts()
     }
 
      // Create collation sort key
-    res = gCollation->GetSortKeyLen(kCollationCaseInSensitive, 
-                                   font->name, &font->len);
+    res = gCollation->AllocateRawSortKey(kCollationCaseInSensitive,
+                                         font->name, &font->key, &font->len);
 
     if (NS_SUCCEEDED(res))
     {
-      font->key = (PRUint8*) nsMemory::Alloc(font->len * sizeof(PRUint8));
-      res = gCollation->CreateRawSortKey( kCollationCaseInSensitive, 
-                                         font->name, font->key,
-                                         &font->len );
-
        // reset DBCS name to actual value
       if (fontptr[0] == '@')
         font->name.Insert( NS_LITERAL_STRING("@"), 0 );

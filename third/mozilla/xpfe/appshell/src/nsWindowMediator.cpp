@@ -335,7 +335,7 @@ nsWindowMediator::MostRecentWindowInfo(const PRUnichar* inType)
 {
   PRInt32       lastTimeStamp = -1;
   nsAutoString  typeString(inType);
-  PRBool        allWindows = !inType || typeString.Length() == 0;
+  PRBool        allWindows = !inType || typeString.IsEmpty();
 
   // Find the most window with the highest time stamp that matches
   // the requested type
@@ -631,9 +631,9 @@ nsWindowMediator::SetZPosition(
 }
 
 // COM
-NS_IMPL_ADDREF( nsWindowMediator );
-NS_IMPL_QUERY_INTERFACE1(nsWindowMediator, nsIWindowMediator);
-NS_IMPL_RELEASE(nsWindowMediator);
+NS_IMPL_ADDREF( nsWindowMediator )
+NS_IMPL_QUERY_INTERFACE1(nsWindowMediator, nsIWindowMediator)
+NS_IMPL_RELEASE(nsWindowMediator)
 
 nsresult
 nsWindowMediator::Init()

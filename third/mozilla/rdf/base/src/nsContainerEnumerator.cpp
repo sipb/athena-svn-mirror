@@ -69,7 +69,6 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-static NS_DEFINE_IID(kISupportsIID,         NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kRDFServiceCID,        NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kRDFContainerUtilsCID, NS_RDFCONTAINERUTILS_CID);
 
@@ -107,10 +106,10 @@ nsIRDFContainerUtils* ContainerEnumeratorImpl::gRDFC;
 
 ContainerEnumeratorImpl::ContainerEnumeratorImpl(nsIRDFDataSource* aDataSource,
                                                  nsIRDFResource* aContainer)
-    : mNextIndex(1)
+    : mDataSource(aDataSource),
+      mContainer(aContainer),
+      mNextIndex(1)
 {
-    mDataSource = dont_QueryInterface(aDataSource);
-    mContainer  = dont_QueryInterface(aContainer);
 }
 
 nsresult

@@ -78,7 +78,6 @@ const char *nsMsgSearchAdapter::m_kImapNotSeen = " UNSEEN ";
 const char *nsMsgSearchAdapter::m_kImapNotAnswered = " UNANSWERED ";
 const char *nsMsgSearchAdapter::m_kImapCharset = " CHARSET ";
 
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 #define PREF_CUSTOM_HEADERS "mailnews.customHeaders"
 
 NS_IMETHODIMP nsMsgSearchAdapter::FindTargetFolder(const nsMsgResultElement *,nsIMsgFolder * *)
@@ -347,9 +346,9 @@ nsMsgSearchAdapter::GetSearchCharsets(PRUnichar **srcCharset, PRUnichar **dstCha
 		// Ask the newsgroup/folder for its csid.
 		if (NS_SUCCEEDED(rv) && folder)
         {
-            nsXPIDLString folderCharset;
+            nsXPIDLCString folderCharset;
             folder->GetCharset(getter_Copies(folderCharset));
-            *dstCharset = nsCRT::strdup(folderCharset);
+            *dstCharset = ToNewUnicode(folderCharset);
         }
 	}
 

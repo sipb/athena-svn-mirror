@@ -35,7 +35,7 @@
  * p7sign -- A command to create a *detached* pkcs7 signature (over a given
  * input file).
  *
- * $Id: p7sign.c,v 1.1.1.1.2.1 2003-07-14 19:06:09 ghudson Exp $
+ * $Id: p7sign.c,v 1.1.1.1.2.2 2004-01-02 19:58:21 ghudson Exp $
  */
 
 #include "nspr.h"

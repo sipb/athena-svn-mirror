@@ -42,11 +42,9 @@
 #include "nsITextServicesFilter.h"
 #include "nsIAtom.h"
 
-class nsIContent;
-
 /**
  * This class implements a filter interface, that enables
- * those usnig it to ski;p over certain nodes when traversing content
+ * those using it to skip over certain nodes when traversing content
  *
  * This filter is used to skip over various form control nodes and
  * mail's cite nodes
@@ -69,6 +67,9 @@ public:
 protected:
   PRBool            mIsForMail;
   nsCOMPtr<nsIAtom> mBlockQuoteAtom;
+  nsCOMPtr<nsIAtom> mPreAtom;          // mail plain text quotes are wrapped in pre tags
+  nsCOMPtr<nsIAtom> mSpanAtom;         //or they may be wrapped in span tags (editor.quotesPreformatted). 
+  nsCOMPtr<nsIAtom> mMozQuoteAtom;     // _moz_quote_
   nsCOMPtr<nsIAtom> mTypeAtom;
   nsCOMPtr<nsIAtom> mScriptAtom;
   nsCOMPtr<nsIAtom> mTextAreaAtom;
@@ -81,6 +82,11 @@ protected:
 {/* {171E72DB-0F8A-412a-8461-E4C927A3A2AC}*/ \
 0x171e72db, 0xf8a, 0x412a, \
 { 0x84, 0x61, 0xe4, 0xc9, 0x27, 0xa3, 0xa2, 0xac} } 
+
+#define NS_COMPOSERTXTSRVFILTERMAIL_CID \
+{/* {7FBD2146-5FF4-4674-B069-A7BBCE66E773}*/ \
+0x7fbd2146, 0x5ff4, 0x4674, \
+{ 0xb0, 0x69, 0xa7, 0xbb, 0xce, 0x66, 0xe7, 0x73} } 
 
 // Generic for the editor
 #define COMPOSER_TXTSRVFILTER_CONTRACTID     "@mozilla.org/editor/txtsrvfilter;1"

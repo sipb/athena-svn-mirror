@@ -106,12 +106,13 @@ RequestMapMatchEntry(PLDHashTable *table, const PLDHashEntryHdr *hdr,
   return entry->r == key;
 }
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 RequestMapInitEntry(PLDHashTable *table, PLDHashEntryHdr *hdr,
                      const void *key)
 {
   RequestHashEntry *entry = NS_STATIC_CAST(RequestHashEntry*, hdr);
   entry->r = (void*)key;
+  return PR_TRUE;
 }
 
 static PLDHashTableOps gMapOps = {
@@ -162,7 +163,7 @@ NS_IMPL_ISUPPORTS6(nsSecureBrowserUIImpl,
                    nsIFormSubmitObserver,
                    nsIObserver,
                    nsISupportsWeakReference,
-                   nsISSLStatusProvider);
+                   nsISSLStatusProvider)
 
 
 NS_IMETHODIMP
@@ -325,12 +326,11 @@ nsSecureBrowserUIImpl::Notify(nsIContent* formNode,
   if (!window || !actionURL || !formNode)
     return NS_OK;
   
-  nsCOMPtr<nsIDocument> document;
-  formNode->GetDocument(*getter_AddRefs(document));
+  nsCOMPtr<nsIDocument> document = formNode->GetDocument();
   if (!document) return NS_OK;
 
   nsCOMPtr<nsIURI> formURL;
-  document->GetBaseURL(*getter_AddRefs(formURL));
+  document->GetBaseURL(getter_AddRefs(formURL));
   
   nsCOMPtr<nsIScriptGlobalObject> globalObject;
   document->GetScriptGlobalObject(getter_AddRefs(globalObject));

@@ -39,7 +39,7 @@
  * you.  If that has a problem, then just move out what you need, changing
  * its name as appropriate!
  *
- * $Id: cmslocal.h,v 1.1.1.1.2.1 2003-07-14 19:07:24 ghudson Exp $
+ * $Id: cmslocal.h,v 1.1.1.1.2.2 2004-01-02 20:00:00 ghudson Exp $
  */
 
 #ifndef _CMSLOCAL_H_

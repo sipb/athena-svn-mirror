@@ -109,9 +109,9 @@ public:
   NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
                                const nsAString& aValue,
                                nsHTMLValue& aResult);
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute,
-                                      PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType,
+                                    nsChangeHint& aHint) const;
 
   // nsIOptionElement
   NS_IMETHOD SetSelectedInternal(PRBool aValue, PRBool aNotify);
@@ -170,12 +170,12 @@ NS_NewHTMLOptionElement(nsIHTMLContent** aInstancePtrResult,
     NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
     nsCOMPtr<nsINodeInfoManager> nodeInfoManager;
-    doc->GetNodeInfoManager(*getter_AddRefs(nodeInfoManager));
+    doc->GetNodeInfoManager(getter_AddRefs(nodeInfoManager));
     NS_ENSURE_TRUE(nodeInfoManager, NS_ERROR_UNEXPECTED);
 
     rv = nodeInfoManager->GetNodeInfo(nsHTMLAtoms::option, nsnull,
                                       kNameSpaceID_None,
-                                      *getter_AddRefs(nodeInfo));
+                                      getter_AddRefs(nodeInfo));
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
@@ -213,8 +213,8 @@ nsHTMLOptionElement::~nsHTMLOptionElement()
 // ISupports
 
 
-NS_IMPL_ADDREF_INHERITED(nsHTMLOptionElement, nsGenericElement);
-NS_IMPL_RELEASE_INHERITED(nsHTMLOptionElement, nsGenericElement);
+NS_IMPL_ADDREF_INHERITED(nsHTMLOptionElement, nsGenericElement)
+NS_IMPL_RELEASE_INHERITED(nsHTMLOptionElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLOptionElement
@@ -491,35 +491,19 @@ nsHTMLOptionElement::StringToAttribute(nsIAtom* aAttribute,
 }
 
 NS_IMETHODIMP
-nsHTMLOptionElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                              nsChangeHint& aHint) const
+nsHTMLOptionElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                            PRInt32 aModType,
+                                            nsChangeHint& aHint) const
 {
-  nsIFormControlFrame* fcFrame = GetSelectFrame();
-  
-  if (fcFrame) {    
-    static const AttributeImpactEntry attributes[] = {
-      { &nsHTMLAtoms::label, NS_STYLE_HINT_REFLOW },
-      { &nsHTMLAtoms::text, NS_STYLE_HINT_REFLOW },
-      { nsnull, NS_STYLE_HINT_NONE }
-    };
+  nsresult rv =
+    nsGenericHTMLContainerElement::GetAttributeChangeHint(aAttribute,
+                                                          aModType, aHint);
 
-    static const AttributeImpactEntry* const map[] = {
-      attributes,
-      sCommonAttributeMap,
-    };
-
-    FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-    
-  } else {
-    // XXX don't we want to try common attributes here?
-    if (aAttribute == nsXULAtoms::menuactive) {
-      aHint = NS_STYLE_HINT_CONTENT;
-    } else {
-      aHint = NS_STYLE_HINT_NONE;
-    }
+  if (aAttribute == nsHTMLAtoms::label ||
+      aAttribute == nsHTMLAtoms::text) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_REFLOW);
   }
-
-  return NS_OK;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -538,7 +522,7 @@ nsHTMLOptionElement::GetText(nsAString& aText)
   for (i = 0; i < numNodes; i++) {
     nsCOMPtr<nsIContent> node;
 
-    ChildAt(i, *getter_AddRefs(node));
+    ChildAt(i, getter_AddRefs(node));
 
     if (node) {
       nsCOMPtr<nsIDOMText> domText(do_QueryInterface(node));
@@ -578,7 +562,7 @@ nsHTMLOptionElement::SetText(const nsAString& aText)
   for (i = 0; i < numNodes; i++) {
     nsCOMPtr<nsIContent> node;
 
-    ChildAt(i, *getter_AddRefs(node));
+    ChildAt(i, getter_AddRefs(node));
 
     nsCOMPtr<nsIDOMText> domText(do_QueryInterface(node));
 
@@ -605,15 +589,6 @@ nsHTMLOptionElement::SetText(const nsAString& aText)
     NS_ENSURE_SUCCESS(rv, rv);
 
     rv = AppendChildTo(text, PR_TRUE, PR_FALSE);
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    nsCOMPtr<nsIDocument> doc;
-
-    GetDocument(*getter_AddRefs(doc));
-
-    if (doc) {
-      rv = text->SetDocument(doc, PR_FALSE, PR_TRUE);
-    }
   }
 
   return rv;
@@ -712,17 +687,11 @@ nsHTMLOptionElement::GetSelect(nsIDOMHTMLSelectElement **aSelectElement) const
 {
   *aSelectElement = nsnull;
 
-  // Get the containing element (Either a select or an optGroup)
-  nsCOMPtr<nsIContent> parent;
-  nsCOMPtr<nsIContent> prevParent;
-  GetParent(*getter_AddRefs(parent));
-  while (parent) {
+  for (nsIContent* parent = mParent; parent; parent = parent->GetParent()) {
     CallQueryInterface(parent, aSelectElement);
     if (*aSelectElement) {
       break;
     }
-    prevParent = parent;
-    prevParent->GetParent(*getter_AddRefs(parent));
   }
 }
 

@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- # $Id: nssinit.c,v 1.1.1.1.2.1 2003-07-14 19:06:46 ghudson Exp $
+ # $Id: nssinit.c,v 1.1.1.1.2.2 2004-01-02 19:59:11 ghudson Exp $
  */
 
 #include <ctype.h>

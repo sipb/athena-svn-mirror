@@ -34,7 +34,7 @@
  * cdbhdl.h - certificate database handle
  *   private to the certdb module
  *
- * $Id: cdbhdl.h,v 1.1.1.1.2.1 2003-07-14 19:07:26 ghudson Exp $
+ * $Id: cdbhdl.h,v 1.1.1.1.2.2 2004-01-02 20:00:03 ghudson Exp $
  */
 #ifndef _CDBHDL_H_
 #define _CDBHDL_H_

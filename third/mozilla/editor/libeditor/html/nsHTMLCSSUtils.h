@@ -123,8 +123,26 @@ public:
   nsresult    SetCSSProperty(nsIDOMElement * aElement, nsIAtom * aProperty,
                              const nsAString & aValue,
                              PRBool aSuppressTransaction);
+  nsresult    SetCSSPropertyPixels(nsIDOMElement *aElement, nsIAtom *aProperty,
+                                   PRInt32 aIntValue, PRBool aSuppressTxn);
   nsresult    RemoveCSSProperty(nsIDOMElement * aElement, nsIAtom * aProperty,
                                 const nsAString & aPropertyValue, PRBool aSuppressTransaction);
+
+  /** directly adds/remove a CSS declaration to the STYLE atrribute carried by
+    * a given element without going through the txn manager
+    *
+    * @param aElement       [IN] a DOM element
+    * @param aProperty      [IN] a string containing the CSS property to set/remove
+    * @param aValue         [IN] a string containing the new value of the CSS property
+    */
+  nsresult    SetCSSProperty(nsIDOMElement * aElement,
+                             const nsAString & aProperty,
+                             const nsAString & aValue);
+  nsresult    SetCSSPropertyPixels(nsIDOMElement * aElement,
+                                   const nsAString & aProperty,
+                                   PRInt32 aIntValue);
+  nsresult    RemoveCSSProperty(nsIDOMElement * aElement,
+                                const nsAString & aProperty);
 
   /** gets the specified/computed style value of a CSS property for a given node (or its element
     * ancestor if it is not an element)
@@ -294,6 +312,14 @@ public:
     */
   nsresult GetElementContainerOrSelf(nsIDOMNode * aNode, nsIDOMElement ** aElement);
 
+  /** Gets the default DOMView for a given node
+   *
+   * @param aNode               the node we want the default DOMView for
+   * @param aViewCSS            [OUT] the default DOMViewCSS
+   */
+  nsresult        GetDefaultViewCSS(nsIDOMNode * aNode, nsIDOMViewCSS ** aViewCSS);
+
+
 private:
 
   /** retrieves the css property atom from an enum
@@ -341,13 +367,6 @@ private:
                                                  nsVoidArray & aPropertyArray,
                                                  nsStringArray & aValueArray,
                                                  PRBool aGetOrRemoveRequest);
-
-  /** Gets the default DOMView for a given node
-   *
-   * @param aNode               the node we want the default DOMView for
-   * @param aViewCSS            [OUT] the default DOMViewCSS
-   */
-  nsresult        GetDefaultViewCSS(nsIDOMNode * aNode, nsIDOMViewCSS ** aViewCSS);
 
   /** creates a Transaction for setting or removing a css property
     *

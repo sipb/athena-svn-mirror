@@ -30,7 +30,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: secdig.c,v 1.1.1.1.2.1 2003-07-14 19:07:34 ghudson Exp $
+ * $Id: secdig.c,v 1.1.1.1.2.2 2004-01-02 20:00:11 ghudson Exp $
  */
 #include "secdig.h"
 

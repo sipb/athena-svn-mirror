@@ -57,6 +57,7 @@
 class nsIDocShell;
 class nsString;
 class nsIClassInfo;
+class nsIStringBundle;
 class nsSystemPrincipal;
 struct ClassPolicy;
 
@@ -64,7 +65,8 @@ struct ClassPolicy;
 // nsIPrincipalKey //
 /////////////////////
 
-class nsIPrincipalKey : public nsHashKey {
+class nsIPrincipalKey : public nsHashKey
+{
 public:
     nsIPrincipalKey(nsIPrincipal* key) {
         mKey = key;
@@ -134,7 +136,7 @@ struct PropertyPolicy : public PLDHashEntryHdr
     SecurityLevel  mSet;
 };
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 InitPropertyPolicyEntry(PLDHashTable *table,
                      PLDHashEntryHdr *entry,
                      const void *key)
@@ -143,6 +145,7 @@ InitPropertyPolicyEntry(PLDHashTable *table,
     pp->key = (jsval)key;
     pp->mGet.level = SCRIPT_SECURITY_UNDEFINED_ACCESS;
     pp->mSet.level = SCRIPT_SECURITY_UNDEFINED_ACCESS;
+    return PR_TRUE;
 }
 
 PR_STATIC_CALLBACK(void)
@@ -157,20 +160,9 @@ ClearPropertyPolicyEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
 
 struct ClassPolicy : public PLDHashEntryHdr
 {
-    char*  key;
+    char* key;
     PLDHashTable* mPolicy;
-    ClassPolicy*  mDefault;
-    ClassPolicy*  mWildcard;
 };
-
-PR_STATIC_CALLBACK(PRBool)
-MatchClassPolicyKey(PLDHashTable *table,
-                    const PLDHashEntryHdr *entry,
-                    const void *key)
-{
-    ClassPolicy* cp = (ClassPolicy *)entry;
-    return (cp->key == (char*)key) || (PL_strcmp(cp->key, (char*)key) == 0);
-}
 
 PR_STATIC_CALLBACK(void)
 ClearClassPolicyEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
@@ -184,7 +176,7 @@ ClearClassPolicyEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
     PL_DHashTableDestroy(cp->mPolicy);
 }
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 InitClassPolicyEntry(PLDHashTable *table,
                      PLDHashEntryHdr *entry,
                      const void *key)
@@ -204,16 +196,25 @@ InitClassPolicyEntry(PLDHashTable *table,
 
     ClassPolicy* cp = (ClassPolicy*)entry;
     cp->key = PL_strdup((const char*)key);
+    if (!cp->key)
+        return PR_FALSE;
     cp->mPolicy = PL_NewDHashTable(&classPolicyOps, nsnull,
-                  sizeof(PropertyPolicy), 16);
-    NS_ASSERTION(cp->mPolicy, "Failed to create hashtable - out of memory?");
+                                   sizeof(PropertyPolicy), 16);
+    if (!cp->mPolicy) {
+        PL_strfree(cp->key);
+        cp->key = nsnull;
+        return PR_FALSE;
+    }
+    return PR_TRUE;
 }
 
 // Domain Policy
 class DomainPolicy : public PLDHashTable
 {
 public:
-    DomainPolicy() : mRefCount(0)
+    DomainPolicy() : mWildcardPolicy(nsnull),
+                     mRefCount(0)
+                     
     {
         static PLDHashTableOps domainPolicyOps =
         {
@@ -221,7 +222,7 @@ public:
             PL_DHashFreeTable,
             PL_DHashGetKeyStub,
             PL_DHashStringKey,
-            MatchClassPolicyKey,
+            PL_DHashMatchStringKey,
             PL_DHashMoveEntryStub,
             ClearClassPolicyEntry,
             PL_DHashFinalizeStub,
@@ -247,6 +248,8 @@ public:
         if (--mRefCount == 0)
             delete this;
     }
+
+    ClassPolicy* mWildcardPolicy;
 
 private:
     PRUint32 mRefCount;
@@ -282,11 +285,6 @@ public:
 
     JSContext* GetSafeJSContext();
 
-    static nsresult
-    SecurityCompareURIs(nsIURI* aSourceURI,
-                        nsIURI* aTargetURI,
-                        PRBool* result);
-
 private:
 
     // GetScriptSecurityManager is the only call that can make one
@@ -321,24 +319,22 @@ private:
                             void** aCachedClassPolicy);
 
     nsresult
+    CheckSameOriginPrincipalInternal(nsIPrincipal* aSubject,
+                                     nsIPrincipal* aObject,
+                                     PRBool aIsCheckConnect);
+
+    nsresult
     CheckSameOriginDOMProp(nsIPrincipal* aSubject, 
                            nsIPrincipal* aObject,
                            PRUint32 aAction,
                            PRBool aIsCheckConnect);
-    
-    PRInt32 
-    GetSecurityLevel(nsIPrincipal *principal,
-                     PRBool aIsDOM,
-                     const char* aClassName, const char* aProperty,
-                     PRUint32 aAction, nsCString &capability, void** aPolicy);
 
     nsresult
-    GetClassPolicy(nsIPrincipal* principal, const char* aClassName,
-                   ClassPolicy** result);
-
-    SecurityLevel
-    GetPropertyPolicy(jsval aProperty, ClassPolicy* aClassPolicy,
-                      PRUint32 aAction);
+    LookupPolicy(nsIPrincipal* principal,
+                 const char* aClassName, jsval aProperty,
+                 PRUint32 aAction,
+                 ClassPolicy** aCachedClassPolicy,
+                 SecurityLevel* result);
 
     nsresult
     CreateCodebasePrincipal(nsIURI* aURI, nsIPrincipal** result);
@@ -362,7 +358,8 @@ private:
                          JSStackFrame** frameResult);
 
     static PRBool
-    CheckConfirmDialog(JSContext* cx, nsIPrincipal* aPrincipal, PRBool *checkValue);
+    CheckConfirmDialog(JSContext* cx, nsIPrincipal* aPrincipal,
+                       const char* aCapability, PRBool *checkValue);
 
     nsresult
     SavePrincipal(nsIPrincipal* aToSave);
@@ -430,7 +427,7 @@ private:
     PRBool mXPCDefaultGrantAll;
     static const char* sXPCDefaultGrantAllName;
 #endif
+
+    static nsIStringBundle *sStrBundle;
 };
-
 #endif /*_NS_SCRIPT_SECURITY_MANAGER_H_*/
-

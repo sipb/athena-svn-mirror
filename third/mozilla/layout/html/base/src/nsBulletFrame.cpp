@@ -135,7 +135,7 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
     GetLoadGroup(aPresContext, getter_AddRefs(loadGroup));
 
     nsCOMPtr<nsIURI> baseURI;
-    GetBaseURI(getter_AddRefs(baseURI));
+    mContent->GetBaseURL(getter_AddRefs(baseURI));
 
     nsCOMPtr<nsIURI> imgURI;
     NS_NewURI(getter_AddRefs(imgURI), myList->mListStyleImage, nsnull, baseURI);
@@ -144,7 +144,7 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
     nsCOMPtr<nsIURI> documentURI;
     nsCOMPtr<nsIDocument> doc;
     if (mContent) {
-      (void) mContent->GetDocument(*getter_AddRefs(doc));
+      doc = mContent->GetDocument();
       if (doc) {
         doc->GetDocumentURL(getter_AddRefs(documentURI));
       }
@@ -479,14 +479,14 @@ static PRBool TamilToText(PRInt32 ordinal,  nsString& result)
 }
 
 
-static const char* gLowerRomanCharsA = "ixcm";
-static const char* gUpperRomanCharsA = "IXCM";
-static const char* gLowerRomanCharsB = "vld?";
-static const char* gUpperRomanCharsB = "VLD?";
+static const char gLowerRomanCharsA[] = "ixcm";
+static const char gUpperRomanCharsA[] = "IXCM";
+static const char gLowerRomanCharsB[] = "vld";
+static const char gUpperRomanCharsB[] = "VLD";
 
 static PRBool RomanToText(PRInt32 ordinal, nsString& result, const char* achars, const char* bchars)
 {
-  if (ordinal < 1) {
+  if (ordinal < 1 || ordinal > 3999) {
     DecimalToText(ordinal, result);
     return PR_FALSE;
   }
@@ -529,7 +529,7 @@ static PRBool RomanToText(PRInt32 ordinal, nsString& result, const char* achars,
 }
 
 #define ALPHA_SIZE 26
-static PRUnichar gLowerAlphaChars[ALPHA_SIZE]  = 
+static const PRUnichar gLowerAlphaChars[ALPHA_SIZE]  = 
 {
 0x0061, 0x0062, 0x0063, 0x0064, 0x0065, // A   B   C   D   E
 0x0066, 0x0067, 0x0068, 0x0069, 0x006A, // F   G   H   I   J
@@ -539,7 +539,7 @@ static PRUnichar gLowerAlphaChars[ALPHA_SIZE]  =
 0x007A                                  // Z
 };
 
-static PRUnichar gUpperAlphaChars[ALPHA_SIZE]  = 
+static const PRUnichar gUpperAlphaChars[ALPHA_SIZE]  = 
 {
 0x0041, 0x0042, 0x0043, 0x0044, 0x0045, // A   B   C   D   E
 0x0046, 0x0047, 0x0048, 0x0049, 0x004A, // F   G   H   I   J
@@ -553,7 +553,7 @@ static PRUnichar gUpperAlphaChars[ALPHA_SIZE]  =
 #define KATAKANA_CHARS_SIZE 48
 // Page 94 Writing Systems of The World
 // after modification by momoi
-static PRUnichar gKatakanaChars[KATAKANA_CHARS_SIZE] =
+static const PRUnichar gKatakanaChars[KATAKANA_CHARS_SIZE] =
 {
 0x30A2, 0x30A4, 0x30A6, 0x30A8, 0x30AA, //  a    i   u    e    o
 0x30AB, 0x30AD, 0x30AF, 0x30B1, 0x30B3, // ka   ki  ku   ke   ko
@@ -569,7 +569,7 @@ static PRUnichar gKatakanaChars[KATAKANA_CHARS_SIZE] =
 };
 
 #define HIRAGANA_CHARS_SIZE 48 
-static PRUnichar gHiraganaChars[HIRAGANA_CHARS_SIZE] =
+static const PRUnichar gHiraganaChars[HIRAGANA_CHARS_SIZE] =
 {
 0x3042, 0x3044, 0x3046, 0x3048, 0x304A, //  a    i    u    e    o
 0x304B, 0x304D, 0x304F, 0x3051, 0x3053, // ka   ki   ku   ke   ko
@@ -587,7 +587,7 @@ static PRUnichar gHiraganaChars[HIRAGANA_CHARS_SIZE] =
 
 #define HIRAGANA_IROHA_CHARS_SIZE 47
 // Page 94 Writing Systems of The World
-static PRUnichar gHiraganaIrohaChars[HIRAGANA_IROHA_CHARS_SIZE] =
+static const PRUnichar gHiraganaIrohaChars[HIRAGANA_IROHA_CHARS_SIZE] =
 {
 0x3044, 0x308D, 0x306F, 0x306B, 0x307B, //  i   ro   ha   ni   ho
 0x3078, 0x3068, 0x3061, 0x308A, 0x306C, // he   to  chi   ri   nu
@@ -602,7 +602,7 @@ static PRUnichar gHiraganaIrohaChars[HIRAGANA_IROHA_CHARS_SIZE] =
 };
 
 #define KATAKANA_IROHA_CHARS_SIZE 47
-static PRUnichar gKatakanaIrohaChars[KATAKANA_IROHA_CHARS_SIZE] =
+static const PRUnichar gKatakanaIrohaChars[KATAKANA_IROHA_CHARS_SIZE] =
 {
 0x30A4, 0x30ED, 0x30CF, 0x30CB, 0x30DB, //  i   ro   ha   ni   ho
 0x30D8, 0x30C8, 0x30C1, 0x30EA, 0x30CC, // he   to  chi   ri   nu
@@ -618,7 +618,7 @@ static PRUnichar gKatakanaIrohaChars[KATAKANA_IROHA_CHARS_SIZE] =
 
 #define LOWER_GREEK_CHARS_SIZE 24
 // Note: 0x03C2 GREEK FINAL SIGMA is not used in here....
-static PRUnichar gLowerGreekChars[LOWER_GREEK_CHARS_SIZE] =
+static const PRUnichar gLowerGreekChars[LOWER_GREEK_CHARS_SIZE] =
 {
 0x03B1, 0x03B2, 0x03B3, 0x03B4, 0x03B5, // alpha  beta  gamma  delta  epsilon
 0x03B6, 0x03B7, 0x03B8, 0x03B9, 0x03BA, // zeta   eta   theta  iota   kappa   
@@ -628,26 +628,26 @@ static PRUnichar gLowerGreekChars[LOWER_GREEK_CHARS_SIZE] =
 };
 
 #define CJK_HEAVENLY_STEM_CHARS_SIZE 10 
-static PRUnichar gCJKHeavenlyStemChars[CJK_HEAVENLY_STEM_CHARS_SIZE] =
+static const PRUnichar gCJKHeavenlyStemChars[CJK_HEAVENLY_STEM_CHARS_SIZE] =
 {
 0x7532, 0x4e59, 0x4e19, 0x4e01, 0x620a,
 0x5df1, 0x5e9a, 0x8f9b, 0x58ec, 0x7678
 };
 #define CJK_EARTHLY_BRANCH_CHARS_SIZE 12 
-static PRUnichar gCJKEarthlyBranchChars[CJK_EARTHLY_BRANCH_CHARS_SIZE] =
+static const PRUnichar gCJKEarthlyBranchChars[CJK_EARTHLY_BRANCH_CHARS_SIZE] =
 {
 0x5b50, 0x4e11, 0x5bc5, 0x536f, 0x8fb0, 0x5df3,
 0x5348, 0x672a, 0x7533, 0x9149, 0x620c, 0x4ea5
 };
 #define HANGUL_CHARS_SIZE 14 
-static PRUnichar gHangulChars[HANGUL_CHARS_SIZE] =
+static const PRUnichar gHangulChars[HANGUL_CHARS_SIZE] =
 {
 0xac00, 0xb098, 0xb2e4, 0xb77c, 0xb9c8, 0xbc14,
 0xc0ac, 0xc544, 0xc790, 0xcc28, 0xce74, 0xd0c0,
 0xd30c, 0xd558
 };
 #define HANGUL_CONSONANT_CHARS_SIZE 14 
-static PRUnichar gHangulConsonantChars[HANGUL_CONSONANT_CHARS_SIZE] =
+static const PRUnichar gHangulConsonantChars[HANGUL_CONSONANT_CHARS_SIZE] =
 {                                      
 0x3131, 0x3134, 0x3137, 0x3139, 0x3141, 0x3142,
 0x3145, 0x3147, 0x3148, 0x314a, 0x314b, 0x314c,
@@ -659,7 +659,7 @@ static PRUnichar gHangulConsonantChars[HANGUL_CONSONANT_CHARS_SIZE] =
 // per Momoi san's suggestion in bug 102252. 
 // For details, refer to http://www.ethiopic.org/Collation/OrderedLists.html.
 #define ETHIOPIC_HALEHAME_CHARS_SIZE 26
-static PRUnichar gEthiopicHalehameChars[ETHIOPIC_HALEHAME_CHARS_SIZE] =
+static const PRUnichar gEthiopicHalehameChars[ETHIOPIC_HALEHAME_CHARS_SIZE] =
 {                                      
 0x1200, 0x1208, 0x1210, 0x1218, 0x1220, 0x1228,
 0x1230, 0x1240, 0x1260, 0x1270, 0x1280, 0x1290,
@@ -668,7 +668,7 @@ static PRUnichar gEthiopicHalehameChars[ETHIOPIC_HALEHAME_CHARS_SIZE] =
 0x1348, 0x1350
 };
 #define ETHIOPIC_HALEHAME_AM_CHARS_SIZE 33
-static PRUnichar gEthiopicHalehameAmChars[ETHIOPIC_HALEHAME_AM_CHARS_SIZE] =
+static const PRUnichar gEthiopicHalehameAmChars[ETHIOPIC_HALEHAME_AM_CHARS_SIZE] =
 {                                      
 0x1200, 0x1208, 0x1210, 0x1218, 0x1220, 0x1228,
 0x1230, 0x1238, 0x1240, 0x1260, 0x1270, 0x1278,
@@ -678,7 +678,7 @@ static PRUnichar gEthiopicHalehameAmChars[ETHIOPIC_HALEHAME_AM_CHARS_SIZE] =
 0x1340, 0x1348, 0x1350
 };
 #define ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE 31
-static PRUnichar gEthiopicHalehameTiErChars[ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE] =
+static const PRUnichar gEthiopicHalehameTiErChars[ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE] =
 {                                      
 0x1200, 0x1208, 0x1210, 0x1218, 0x1228, 0x1230,
 0x1238, 0x1240, 0x1250, 0x1260, 0x1270, 0x1278,
@@ -688,7 +688,7 @@ static PRUnichar gEthiopicHalehameTiErChars[ETHIOPIC_HALEHAME_TI_ER_CHARS_SIZE] 
 0x1350
 };
 #define ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE 34
-static PRUnichar gEthiopicHalehameTiEtChars[ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE] =
+static const PRUnichar gEthiopicHalehameTiEtChars[ETHIOPIC_HALEHAME_TI_ET_CHARS_SIZE] =
 {                                      
 0x1200, 0x1208, 0x1210, 0x1218, 0x1220, 0x1228,
 0x1230, 0x1238, 0x1240, 0x1250, 0x1260, 0x1270,
@@ -725,43 +725,43 @@ static PRBool CharListToText(PRInt32 ordinal, nsString& result, const PRUnichar*
 }
 
 
-static PRUnichar gCJKIdeographicDigit1[10] =
+static const PRUnichar gCJKIdeographicDigit1[10] =
 {
   0x96f6, 0x4e00, 0x4e8c, 0x4e09, 0x56db,  // 0 - 4
   0x4e94, 0x516d, 0x4e03, 0x516b, 0x4e5d   // 5 - 9
 };
-static PRUnichar gCJKIdeographicDigit2[10] =
+static const PRUnichar gCJKIdeographicDigit2[10] =
 {
   0x96f6, 0x58f9, 0x8cb3, 0x53c3, 0x8086,  // 0 - 4
   0x4f0d, 0x9678, 0x67d2, 0x634c, 0x7396   // 5 - 9
 };
-static PRUnichar gCJKIdeographicDigit3[10] =
+static const PRUnichar gCJKIdeographicDigit3[10] =
 {
   0x96f6, 0x58f9, 0x8d30, 0x53c1, 0x8086,  // 0 - 4
   0x4f0d, 0x9646, 0x67d2, 0x634c, 0x7396   // 5 - 9
 };
-static PRUnichar gCJKIdeographicUnit1[4] =
+static const PRUnichar gCJKIdeographicUnit1[4] =
 {
   0x000, 0x5341, 0x767e, 0x5343
 };
-static PRUnichar gCJKIdeographicUnit2[4] =
+static const PRUnichar gCJKIdeographicUnit2[4] =
 {
   0x000, 0x62FE, 0x4F70, 0x4EDF
 };
-static PRUnichar gCJKIdeographic10KUnit1[4] =
+static const PRUnichar gCJKIdeographic10KUnit1[4] =
 {
   0x000, 0x842c, 0x5104, 0x5146
 };
-static PRUnichar gCJKIdeographic10KUnit2[4] =
+static const PRUnichar gCJKIdeographic10KUnit2[4] =
 {
   0x000, 0x4E07, 0x4ebf, 0x5146
 };
-static PRUnichar gCJKIdeographic10KUnit3[4] =
+static const PRUnichar gCJKIdeographic10KUnit3[4] =
 {
   0x000, 0x4E07, 0x5104, 0x5146
 };
 
-static PRBool CJKIdeographicToText(PRInt32 ordinal, nsString& result, 
+static const PRBool CJKIdeographicToText(PRInt32 ordinal, nsString& result, 
                                    const PRUnichar* digits,
                                    const PRUnichar *unit, 
                                    const PRUnichar* unit10k)
@@ -829,7 +829,7 @@ static PRBool CJKIdeographicToText(PRInt32 ordinal, nsString& result,
 #define HEBREW_THROSAND_SEP 0x0020
 #define HEBREW_GERESH       0x05F3
 #define HEBREW_GERSHAYIM    0x05F4
-static PRUnichar gHebrewDigit[22] = 
+static const PRUnichar gHebrewDigit[22] = 
 {
 //   1       2       3       4       5       6       7       8       9
 0x05D0, 0x05D1, 0x05D2, 0x05D3, 0x05D4, 0x05D5, 0x05D6, 0x05D7, 0x05D8,
@@ -1013,7 +1013,7 @@ static PRBool ArmenianToText(PRInt32 ordinal, nsString& result)
 }
 
 
-static PRUnichar gGeorgianValue [ 37 ] = { // 4 * 9 + 1 = 37
+static const PRUnichar gGeorgianValue [ 37 ] = { // 4 * 9 + 1 = 37
 //      1       2       3       4       5       6       7       8       9
    0x10A0, 0x10A1, 0x10A2, 0x10A3, 0x10A4, 0x10A5, 0x10A6, 0x10C1, 0x10A7,
 //     10      20      30      40      50      60      70      80      90
@@ -1051,62 +1051,74 @@ static PRBool GeorgianToText(PRInt32 ordinal, nsString& result)
 
 // Convert ordinal to Ethiopic numeric representation.
 // The detail is available at http://www.ethiopic.org/Numerals/
-// The algorithm used here was almost a verbatim copy of 
-// the pseudo-code put up there by Daniel Yacob <yacob@geez.org>.
-// Another reference is Unicode 3.0 standard section 11.1. 
+// The algorithm used here is based on the pseudo-code put up there by
+// Daniel Yacob <yacob@geez.org>.
+// Another reference is Unicode 3.0 standard section 11.1.
+#define ETHIOPIC_ONE             0x1369
+#define ETHIOPIC_TEN             0x1372
+#define ETHIOPIC_HUNDRED         0x137B
+#define ETHIOPIC_TEN_THOUSAND    0x137C
 
 static PRBool EthiopicToText(PRInt32 ordinal, nsString& result)
-{  
+{
   nsAutoString asciiNumberString;      // decimal string representation of ordinal
   DecimalToText(ordinal, asciiNumberString);
   if (ordinal < 1) {
     result.Append(asciiNumberString);
     return PR_FALSE;
   }
-  PRInt32 n = asciiNumberString.Length() - 1;
+  PRUint8 asciiStringLength = asciiNumberString.Length();
 
-  // Iterate from the lowest digit to higher digits
-  for (PRInt32 place = 0; place <= n; place++) {
-    PRUnichar asciiTen = '0'; 
-    PRUnichar asciiOne = asciiNumberString.CharAt(n - place);
+  // If number length is odd, add a leading "0"
+  // the leading "0" preconditions the string to always have the
+  // leading tens place populated, this avoids a check within the loop.
+  // If we didn't add the leading "0", decrement asciiStringLength so
+  // it will be equivalent to a zero-based index in both cases.
+  if (asciiStringLength & 1) {
+    asciiNumberString.Insert(NS_LITERAL_STRING("0"), 0);
+  } else {
+    asciiStringLength--;
+  }
 
-    place++;
+  // Iterate from the highest digits to lowest
+  // indexFromLeft       indexes digits (0 = most significant)
+  // groupIndexFromRight indexes pairs of digits (0 = least significant)
+  for (PRUint8 indexFromLeft = 0, groupIndexFromRight = asciiStringLength >> 1;
+       indexFromLeft <= asciiStringLength;
+       indexFromLeft += 2, groupIndexFromRight--) {
+    PRUint8 tensValue  = asciiNumberString.CharAt(indexFromLeft) & 0x0F;
+    PRUint8 unitsValue = asciiNumberString.CharAt(indexFromLeft + 1) & 0x0F;
+    PRUint8 groupValue = tensValue * 10 + unitsValue;
 
-    if (place <= n) 
-      asciiTen = asciiNumberString.CharAt(n - place);
+    PRBool oddGroup = (groupIndexFromRight & 1);
 
-    // '00' is not represented and has to be skipped.
-    if (asciiOne == '0' && asciiTen == '0' && place < n) 
-      continue;
-
-    nsAutoString ethioNumber;
-
-    // calculate digits at  10^(2*place) and 10^(2*place+1) 
-    if (asciiTen > '0' || asciiOne > '1' || place == 1) 
-    {
-      if (asciiTen > '0') 
-      {
-        // map onto Ethiopic "tens": U+1372=Ethiopic number ten
-        ethioNumber += (PRUnichar) ((PRInt32) asciiTen +  0x1372 - 0x31); 
-      }
-      if (asciiOne > '0') 
-      {
-        //map onto Ethiopic "ones": 0x1369=Ethiopic digit one
-        ethioNumber += (PRUnichar) ((PRInt32) asciiOne + 0x1369 - 0x31); 
-      }
+    // we want to clear ETHIOPIC_ONE when it is superfluous
+    if (ordinal > 1 &&
+        groupValue == 1 &&                  // one without a leading ten
+        (oddGroup || indexFromLeft == 0)) { // preceding (100) or leading the sequence
+      unitsValue = 0;
     }
 
-   // Now add 'cental-place' specifiers in terms of power of hundred
-
-   // if (place > 1) : The lowest two digits don't need 'cental-place' specifier
-     if (place & 2)   // if odd power of hundred 
-       ethioNumber += (PRUnichar) 0x137B;   // append Ethiopic number hundred 
-
-     // append Ethiopic number ten thousand every four decimal digits
-     for (PRInt32 j = 0; j < place / 4; j++) 
-       ethioNumber += (PRUnichar) 0x137C;   // 0x137C = Ethiopic number ten thousand
-
-     result.Insert(ethioNumber, 0);
+    // put it all together...
+    if (tensValue) {
+      // map onto Ethiopic "tens":
+      result.Append((PRUnichar) (tensValue +  ETHIOPIC_TEN - 1));
+    }
+    if (unitsValue) {
+      //map onto Ethiopic "units":
+      result.Append((PRUnichar) (unitsValue + ETHIOPIC_ONE - 1));
+    }
+    // Add a separator for all even groups except the last,
+    // and for odd groups with non-zero value.
+    if (oddGroup) {
+      if (groupValue) {
+        result.Append((PRUnichar) ETHIOPIC_HUNDRED);
+      }
+    } else {
+      if (groupIndexFromRight) {
+        result.Append((PRUnichar) ETHIOPIC_TEN_THOUSAND);
+      }
+    }
   }
   return PR_TRUE;
 }
@@ -1585,7 +1597,7 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
 
   if (isStyleChange) {
     nsCOMPtr<nsIURI> baseURI;
-    GetBaseURI(getter_AddRefs(baseURI));
+    mContent->GetBaseURL(getter_AddRefs(baseURI));
 
     const nsStyleList* myList = GetStyleList();
 
@@ -1636,7 +1648,7 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
         nsCOMPtr<nsIURI> documentURI;
         nsCOMPtr<nsIDocument> doc;
         if (mContent) {
-          (void) mContent->GetDocument(*getter_AddRefs(doc));
+          doc = mContent->GetDocument();
           if (doc) {
             doc->GetDocumentURL(getter_AddRefs(documentURI));
           }
@@ -1711,10 +1723,7 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest,
         mParent->FirstChild(mPresContext, nsnull, &frame);
         NS_ASSERTION(frame, "No frame to mark dirty for bullet frame.");
         if (frame) {
-          nsFrameState state;
-          frame->GetFrameState(&state);
-          state |= NS_FRAME_IS_DIRTY;
-          frame->SetFrameState(state);
+          frame->AddStateBits(NS_FRAME_IS_DIRTY);
           mParent->ReflowDirtyChild(shell, frame);
         }
       }
@@ -1800,30 +1809,6 @@ NS_IMETHODIMP nsBulletFrame::FrameChanged(imgIContainer *aContainer,
   Invalidate(mPresContext, r, PR_FALSE);
 
   return NS_OK;
-}
-
-
-
-void
-nsBulletFrame::GetBaseURI(nsIURI **aURI)
-{
-  NS_PRECONDITION(nsnull != aURI, "null OUT parameter pointer");
-
-  nsresult rv;
-  nsCOMPtr<nsIURI> baseURI;
-  nsCOMPtr<nsIHTMLContent> htmlContent(do_QueryInterface(mContent, &rv));
-  if (NS_SUCCEEDED(rv)) {
-    htmlContent->GetBaseURL(*getter_AddRefs(baseURI));
-  }
-  else {
-    nsCOMPtr<nsIDocument> doc;
-    mContent->GetDocument(*getter_AddRefs(doc));
-    if (doc) {
-      doc->GetBaseURL(*getter_AddRefs(baseURI));
-    }
-  }
-  *aURI = baseURI;
-  NS_IF_ADDREF(*aURI);
 }
 
 void

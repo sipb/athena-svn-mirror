@@ -63,11 +63,6 @@
 #define LOCK_DOC(doc)
 #define UNLOCK_DOC(doc)
 
-static NS_DEFINE_CID(kCContentIteratorCID, NS_CONTENTITERATOR_CID);
-static NS_DEFINE_CID(kCDOMRangeCID, NS_RANGE_CID);
-
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kITextServicesDocumentIID, NS_ITEXTSERVICESDOCUMENT_IID);
 
 class OffsetEntry
 {
@@ -166,25 +161,7 @@ NS_IMPL_RELEASE(nsTextServicesDocument)
 
 #endif
 
-NS_IMETHODIMP
-nsTextServicesDocument::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(kISupportsIID)) {
-    *aInstancePtr = (void*)(nsISupports*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(kITextServicesDocumentIID)) {
-    *aInstancePtr = (void*)(nsITextServicesDocument*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  *aInstancePtr = 0;
-  return NS_NOINTERFACE;
-}
+NS_IMPL_QUERY_INTERFACE1(nsTextServicesDocument, nsITextServicesDocument)
 
 NS_IMETHODIMP
 nsTextServicesDocument::InitWithDocument(nsIDOMDocument *aDOMDocument, nsIPresShell *aPresShell)
@@ -605,7 +582,7 @@ nsTextServicesDocument::GetCurrentTextBlock(nsString *aStr)
   if (!aStr)
     return NS_ERROR_NULL_POINTER;
 
-  aStr->SetLength(0);
+  aStr->Truncate();
 
   if (!mIterator)
     return NS_ERROR_FAILURE;
@@ -2921,7 +2898,7 @@ nsTextServicesDocument::CreateDocumentContentRange(nsIDOMRange **aRange)
   if (!node)
     return NS_ERROR_NULL_POINTER;
 
-  result = nsComponentManager::CreateInstance(kCDOMRangeCID, nsnull,
+  result = nsComponentManager::CreateInstance("@mozilla.org/content/range;1", nsnull,
                                               NS_GET_IID(nsIDOMRange), 
                                               (void **)aRange);
 
@@ -3011,7 +2988,7 @@ nsTextServicesDocument::CreateDocumentContentRootToNodeOffsetRange(nsIDOMNode *a
     }
   }
 
-  result = nsComponentManager::CreateInstance(kCDOMRangeCID, nsnull,
+  result = nsComponentManager::CreateInstance("@mozilla.org/content/range;1", nsnull,
                                               NS_GET_IID(nsIDOMRange), 
                                               (void **)aRange);
 
@@ -3208,7 +3185,7 @@ nsTextServicesDocument::IsBlockNode(nsIContent *aContent)
 {
   nsCOMPtr<nsIAtom> atom;
 
-  aContent->GetTag(*getter_AddRefs(atom));
+  aContent->GetTag(getter_AddRefs(atom));
 
   if (!atom)
     return PR_TRUE;
@@ -3247,19 +3224,8 @@ nsTextServicesDocument::IsBlockNode(nsIContent *aContent)
 PRBool
 nsTextServicesDocument::HasSameBlockNodeParent(nsIContent *aContent1, nsIContent *aContent2)
 {
-  nsCOMPtr<nsIContent> p1;
-  nsCOMPtr<nsIContent> p2;
-  nsresult result;
-
-  result = aContent1->GetParent(*getter_AddRefs(p1));
-
-  if (NS_FAILED(result))
-    return PR_FALSE;
-
-  result = aContent2->GetParent(*getter_AddRefs(p2));
-
-  if (NS_FAILED(result))
-    return PR_FALSE;
+  nsIContent* p1 = aContent1->GetParent();
+  nsIContent* p2 = aContent2->GetParent();
 
   // Quick test:
 
@@ -3268,26 +3234,14 @@ nsTextServicesDocument::HasSameBlockNodeParent(nsIContent *aContent1, nsIContent
 
   // Walk up the parent hierarchy looking for closest block boundary node:
 
-  nsCOMPtr<nsIContent> tmp;
-
   while (p1 && !IsBlockNode(p1))
   {
-    result = p1->GetParent(*getter_AddRefs(tmp));
-
-    if (NS_FAILED(result))
-      return PR_FALSE;
-
-    p1 = tmp;
+    p1 = p1->GetParent();
   }
 
   while (p2 && !IsBlockNode(p2))
   {
-    result = p2->GetParent(*getter_AddRefs(tmp));
-
-    if (NS_FAILED(result))
-      return PR_FALSE;
-
-    p2 = tmp;
+    p2 = p2->GetParent();
   }
 
   return p1 == p2;
@@ -4224,12 +4178,8 @@ nsTextServicesDocument::ComparePoints(nsIDOMNode* aParent1, PRInt32 aOffset1,
   if (aParent1 == aParent2 && aOffset1 == aOffset2)
     return NS_OK;
 
-  nsCOMPtr<nsIDOMRange> range;
-
-  result = nsComponentManager::CreateInstance(kCDOMRangeCID, nsnull,
-                                              NS_GET_IID(nsIDOMRange), 
-                                              getter_AddRefs(range));
-
+  nsCOMPtr<nsIDOMRange> range =
+                  do_CreateInstance("@mozilla.org/content/range;1", &result);
   if (NS_FAILED(result))
     return result;
 
@@ -4295,7 +4245,7 @@ nsTextServicesDocument::CreateRange(nsIDOMNode *aStartParent, PRInt32 aStartOffs
 {
   nsresult result;
 
-  result = nsComponentManager::CreateInstance(kCDOMRangeCID, nsnull,
+  result = nsComponentManager::CreateInstance("@mozilla.org/content/range;1", nsnull,
                                               NS_GET_IID(nsIDOMRange), 
                                               (void **)aRange);
 
@@ -4617,7 +4567,7 @@ nsTextServicesDocument::CreateOffsetTable(nsVoidArray *aOffsetTable,
   ClearOffsetTable(aOffsetTable);
 
   if (aStr)
-    aStr->SetLength(0);
+    aStr->Truncate();
 
   if (*aIteratorStatus == nsTextServicesDocument::eIsDone)
     return NS_OK;
@@ -5042,7 +4992,7 @@ nsTextServicesDocument::PrintContentNode(nsIContent *aContent)
   nsCOMPtr<nsIAtom> atom;
   nsresult result;
 
-  aContent->GetTag(*getter_AddRefs(atom));
+  aContent->GetTag(getter_AddRefs(atom));
   atom->ToString(tmpStr);
   printf("%s", NS_LossyConvertUCS2toASCII(tmpStr).get());
 

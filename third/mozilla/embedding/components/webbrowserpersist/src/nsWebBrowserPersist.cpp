@@ -40,6 +40,7 @@
 #include "nsEscape.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
+#include "nsSupportsArray.h"
 
 #include "nsCExternalHandlerService.h"
 
@@ -98,6 +99,7 @@ struct DocData
     nsCOMPtr<nsIURI> mDataPath;
     PRPackedBool mDataPathIsRelative;
     nsCString mRelativePathToData;
+    nsCString mCharset;
 };
 
 // Information about a URI
@@ -113,6 +115,7 @@ struct URIData
     nsCOMPtr<nsIURI> mFile;
     nsCOMPtr<nsIURI> mDataPath;
     nsCString mRelativePathToData;
+    nsCString mCharset;
 };
 
 // Information about the output stream
@@ -154,6 +157,15 @@ struct UploadData
         mSelfProgressMax(10000)
     {
     }
+};
+
+struct CleanupData
+{
+    nsCOMPtr<nsILocalFile> mFile;
+    // Snapshot of what the file actually is at the time of creation so that if
+    // it transmutes into something else later on it can be ignored. For example,
+    // catch files that turn into dirs or vice versa.
+    PRPackedBool mIsDirectory;
 };
 
 // Maximum file length constant. The max file name length is
@@ -212,7 +224,7 @@ nsWebBrowserPersist::nsWebBrowserPersist() :
 
 nsWebBrowserPersist::~nsWebBrowserPersist()
 {
-    CleanUp();
+    Cleanup();
 }
 
 //*****************************************************************************
@@ -1275,7 +1287,7 @@ nsWebBrowserPersist::GetExtensionForContentType(const PRUnichar *aContentType, P
     nsCOMPtr<nsIMIMEInfo> mimeInfo;
     nsCAutoString contentType;
     contentType.AssignWithConversion(aContentType);
-    mMIMEService->GetFromMIMEType(contentType.get(), getter_AddRefs(mimeInfo));
+    mMIMEService->GetFromTypeAndExtension(contentType.get(), nsnull, getter_AddRefs(mimeInfo));
     if (mimeInfo)
     {
         nsXPIDLCString ext;
@@ -1327,7 +1339,7 @@ nsWebBrowserPersist::GetDocEncoderContentType(nsIDOMDocument *aDocument, const P
         if (nsDoc)
         {
             nsAutoString type;
-            if (NS_SUCCEEDED(nsDoc->GetContentType(type)) && type.Length() > 0)
+            if (NS_SUCCEEDED(nsDoc->GetContentType(type)) && !type.IsEmpty())
             {
                 contentType.Assign(type);
             }
@@ -1344,7 +1356,7 @@ nsWebBrowserPersist::GetDocEncoderContentType(nsIDOMDocument *aDocument, const P
     //   text/html
     //   text/plain
 
-    if (contentType.Length() > 0 &&
+    if (!contentType.IsEmpty() &&
         !contentType.Equals(defaultContentType, nsCaseInsensitiveStringComparator()))
     {
         // Check if there is an encoder for the desired content type
@@ -1395,9 +1407,11 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
     doc->GetDocumentURL(getter_AddRefs(mURI));
 
     nsCOMPtr<nsIURI> oldBaseURI = mCurrentBaseURI;
+    nsCAutoString oldCharset(mCurrentCharset);
 
-    // Store the base URI
-    doc->GetBaseURL(*getter_AddRefs(mCurrentBaseURI));
+    // Store the base URI and the charset
+    doc->GetBaseURL(getter_AddRefs(mCurrentBaseURI));
+    doc->GetDocumentCharacterSet(mCurrentCharset);
 
     // Does the caller want to fixup the referenced URIs and save those too?
     if (aDataPath)
@@ -1484,6 +1498,7 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
 
         DocData *docData = new DocData;
         docData->mBaseURI = mCurrentBaseURI;
+        docData->mCharset = mCurrentCharset;
         docData->mDocument = aDocument;
         docData->mFile = aFile;
         docData->mRelativePathToData = mCurrentRelativePathToData;
@@ -1515,16 +1530,33 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
         {
             if (localDataPath)
             {
-                localDataPath->Create(nsILocalFile::DIRECTORY_TYPE, 0755);
                 PRBool exists = PR_FALSE;
-                PRBool isDirectory = PR_FALSE;
+                PRBool haveDir = PR_FALSE;
+
                 localDataPath->Exists(&exists);
-                localDataPath->IsDirectory(&isDirectory);
-                if (!exists || !isDirectory)
+                if (exists)
+                {
+                    localDataPath->IsDirectory(&haveDir);
+                }
+                if (!haveDir && NS_SUCCEEDED(localDataPath->Create(nsILocalFile::DIRECTORY_TYPE, 0755)))
+                {
+                    haveDir = PR_TRUE;
+                }
+                if (!haveDir)
                 {
                     EndDownload(NS_ERROR_FAILURE);
                     mCurrentBaseURI = oldBaseURI;
+                    mCurrentCharset = oldCharset;
                     return NS_ERROR_FAILURE;
+                }
+                if (mPersistFlags & PERSIST_FLAGS_CLEANUP_ON_FAILURE)
+                {
+                    // Add to list of things to delete later if all goes wrong
+                    CleanupData *cleanupData = new CleanupData;
+                    NS_ENSURE_TRUE(cleanupData, NS_ERROR_OUT_OF_MEMORY);
+                    cleanupData->mFile = localDataPath;
+                    cleanupData->mIsDirectory = PR_TRUE;
+                    mCleanupList.AppendElement(cleanupData);
                 }
             }
         }
@@ -1542,11 +1574,11 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
         // Get the content type to save with
         nsXPIDLString realContentType;
         GetDocEncoderContentType(aDocument,
-            (mContentType.Length() > 0) ? mContentType.get() : nsnull,
+            !mContentType.IsEmpty() ? mContentType.get() : nsnull,
             getter_Copies(realContentType));
 
         nsCAutoString contentType; contentType.AssignWithConversion(realContentType);
-        nsAutoString charType; // Empty
+        nsCAutoString charType; // Empty
 
         // Save the document
         nsCOMPtr<nsIDocument> docAsDoc = do_QueryInterface(aDocument);
@@ -1562,6 +1594,7 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
     }
 
     mCurrentBaseURI = oldBaseURI;
+    mCurrentCharset = oldCharset;
 
     return NS_OK;
 }
@@ -1586,6 +1619,7 @@ nsresult nsWebBrowserPersist::SaveDocuments()
         }
 
         mCurrentBaseURI = docData->mBaseURI;
+        mCurrentCharset = docData->mCharset;
 
         // Save the document, fixing it up with the new URIs as we do
         
@@ -1599,11 +1633,11 @@ nsresult nsWebBrowserPersist::SaveDocuments()
         // Get the content type
         nsXPIDLString realContentType;
         GetDocEncoderContentType(docData->mDocument,
-            (mContentType.Length() > 0) ? mContentType.get() : nsnull,
+            !mContentType.IsEmpty() ? mContentType.get() : nsnull,
             getter_Copies(realContentType));
 
         nsCAutoString contentType; contentType.AssignWithConversion(realContentType.get());
-        nsAutoString charType; // Empty
+        nsCAutoString charType; // Empty
 
         // Save the document, fixing up the links as it goes out
         rv = SaveDocumentWithFixup(
@@ -1643,7 +1677,7 @@ nsresult nsWebBrowserPersist::SaveDocuments()
     return rv;
 }
 
-void nsWebBrowserPersist::CleanUp()
+void nsWebBrowserPersist::Cleanup()
 {
     mURIMap.Enumerate(EnumCleanupURIMap, this);
     mURIMap.Reset();
@@ -1658,7 +1692,122 @@ void nsWebBrowserPersist::CleanUp()
         delete docData;
     }
     mDocList.Clear();
+    for (i = 0; i < mCleanupList.Count(); i++)
+    {
+        CleanupData *cleanupData = (CleanupData *) mCleanupList.ElementAt(i);
+        delete cleanupData;
+    }
+    mCleanupList.Clear();
     mFilenameList.Clear();
+}
+
+void nsWebBrowserPersist::CleanupLocalFiles()
+{
+    // Two passes, the first pass cleans up files, the second pass tests
+    // for and then deletes empty directories. Directories that are not
+    // empty after the first pass must contain files from something else
+    // and are not deleted.
+    int pass;
+    for (pass = 0; pass < 2; pass++)
+    {
+        PRInt32 i;
+        for (i = 0; i < mCleanupList.Count(); i++)
+        {
+            CleanupData *cleanupData = (CleanupData *) mCleanupList.ElementAt(i);
+            nsCOMPtr<nsILocalFile> file = cleanupData->mFile;
+
+            // Test if the dir / file exists (something in an earlier loop
+            // may have already removed it)
+            PRBool exists = PR_FALSE;
+            file->Exists(&exists);
+            if (!exists)
+                continue;
+
+            // Test if the file has changed in between creation and deletion
+            // in some way that means it should be ignored
+            PRBool isDirectory = PR_FALSE;
+            file->IsDirectory(&isDirectory);
+            if (isDirectory != cleanupData->mIsDirectory)
+                continue; // A file has become a dir or vice versa !
+
+            if (pass == 0 && !isDirectory)
+            {
+                file->Remove(PR_FALSE);
+            }
+            else if (pass == 1 && isDirectory) // Directory
+            {
+                // Directories are more complicated. Enumerate through
+                // children looking for files. Any files created by the
+                // persist object would have been deleted by the first
+                // pass so if there are any there at this stage, the dir
+                // cannot be deleted because it has someone else's files
+                // in it. Empty child dirs are deleted but they must be
+                // recursed through to ensure they are actually empty.
+
+                PRBool isEmptyDirectory = PR_TRUE;
+                nsSupportsArray dirStack;
+                PRUint32 stackSize = 0;
+
+                // Push the top level enum onto the stack
+                nsCOMPtr<nsISimpleEnumerator> pos;
+                if (NS_SUCCEEDED(file->GetDirectoryEntries(getter_AddRefs(pos))))
+                    dirStack.AppendElement(pos);
+
+                while (isEmptyDirectory &&
+                    NS_SUCCEEDED(dirStack.Count(&stackSize)) && stackSize > 0)
+                {
+                    // Pop the last element
+                    nsCOMPtr<nsISimpleEnumerator> curPos;
+                    dirStack.GetElementAt(stackSize - 1, getter_AddRefs(curPos));
+                    dirStack.RemoveElementAt(stackSize - 1);
+                    
+                    // Test if the enumerator has any more files in it
+                    PRBool hasMoreElements = PR_FALSE;
+                    curPos->HasMoreElements(&hasMoreElements);
+                    if (!hasMoreElements)
+                    {
+                        continue;
+                    }
+
+                    // Child files automatically make this code drop out,
+                    // while child dirs keep the loop going.
+                    nsCOMPtr<nsISupports> child;
+                    curPos->GetNext(getter_AddRefs(child));
+                    NS_ASSERTION(child, "No child element, but hasMoreElements says otherwise");
+                    if (!child)
+                        continue;
+                    nsCOMPtr<nsILocalFile> childAsFile = do_QueryInterface(child);
+                    NS_ASSERTION(childAsFile, "This should be a file but isn't");
+
+                    PRBool childIsSymlink = PR_FALSE;
+                    childAsFile->IsSymlink(&childIsSymlink);
+                    PRBool childIsDir = PR_FALSE;
+                    childAsFile->IsDirectory(&childIsDir);                           
+                    if (!childIsDir || childIsSymlink)
+                    {
+                        // Some kind of file or symlink which means dir
+                        // is not empty so just drop out.
+                        isEmptyDirectory = PR_FALSE;
+                        break;
+                    }
+                    // Push parent enumerator followed by child enumerator
+                    nsCOMPtr<nsISimpleEnumerator> childPos;
+                    childAsFile->GetDirectoryEntries(getter_AddRefs(childPos));
+                    dirStack.AppendElement(curPos);
+                    if (childPos)
+                        dirStack.AppendElement(childPos);
+
+                }
+                dirStack.Clear();
+
+                // If after all that walking the dir is deemed empty, delete it
+                if (isEmptyDirectory)
+                {
+                    file->Remove(PR_TRUE);
+                }
+            }
+        }
+    }
 }
 
 nsresult
@@ -1903,7 +2052,7 @@ nsWebBrowserPersist::CalculateAndAppendFileExt(nsIURI *aURI, nsIChannel *aChanne
     aChannel->GetContentType(contentType);
 
     // Get the content type from the MIME service
-    if (contentType.Length() == 0)
+    if (contentType.IsEmpty())
     {
         nsCOMPtr<nsIURI> uri;
         aChannel->GetOriginalURI(getter_AddRefs(uri));
@@ -1914,11 +2063,11 @@ nsWebBrowserPersist::CalculateAndAppendFileExt(nsIURI *aURI, nsIChannel *aChanne
     }
 
     // Append the extension onto the file
-    if (contentType.Length())
+    if (!contentType.IsEmpty())
     {
         nsCOMPtr<nsIMIMEInfo> mimeInfo;
-        mMIMEService->GetFromMIMEType(
-            contentType.get(), getter_AddRefs(mimeInfo));
+        mMIMEService->GetFromTypeAndExtension(
+            contentType.get(), nsnull, getter_AddRefs(mimeInfo));
 
         nsCOMPtr<nsILocalFile> localFile;
         GetLocalFileFromURI(aURI, getter_AddRefs(localFile));
@@ -2043,6 +2192,16 @@ nsWebBrowserPersist::MakeOutputStreamFromFile(
 
     NS_ENSURE_SUCCESS(CallQueryInterface(fileOutputStream, aOutputStream), NS_ERROR_FAILURE);
 
+    if (mPersistFlags & PERSIST_FLAGS_CLEANUP_ON_FAILURE)
+    {
+        // Add to cleanup list in event of failure
+        CleanupData *cleanupData = new CleanupData;
+        NS_ENSURE_TRUE(cleanupData, NS_ERROR_OUT_OF_MEMORY);
+        cleanupData->mFile = aFile;
+        cleanupData->mIsDirectory = PR_FALSE;
+        mCleanupList.AppendElement(cleanupData);
+    }
+
     return NS_OK;
 }
 
@@ -2069,9 +2228,15 @@ nsWebBrowserPersist::EndDownload(nsresult aResult)
         mPersistResult = aResult;
     }
 
+    // Do file cleanup if required
+    if (NS_FAILED(aResult) && (mPersistFlags & PERSIST_FLAGS_CLEANUP_ON_FAILURE))
+    {
+        CleanupLocalFiles();
+    }
+
     // Cleanup the channels
     mCompleted = PR_TRUE;
-    CleanUp();
+    Cleanup();
 }
 
 /* Hack class to get access to nsISupportsKey's protected mKey member */
@@ -2225,7 +2390,10 @@ nsWebBrowserPersist::EnumPersistURIs(nsHashKey *aKey, void *aData, void* closure
 
     // Create a URI from the key
     nsCOMPtr<nsIURI> uri;
-    rv = NS_NewURI(getter_AddRefs(uri), ((nsCStringKey *) aKey)->GetString());
+    rv = NS_NewURI(getter_AddRefs(uri), 
+                   nsDependentCString(((nsCStringKey *) aKey)->GetString(),
+                                      ((nsCStringKey *) aKey)->GetStringLength()),
+                   data->mCharset.get());
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
 
     // Make a URI to save the data to
@@ -2536,7 +2704,7 @@ nsresult nsWebBrowserPersist::OnWalkDOMNode(nsIDOMNode *aNode)
             linkRel.EndReading(end);
 
             // Walk through space delimited string looking for "stylesheet"
-            for (current = start; current != end; current++)
+            for (current = start; current != end; ++current)
             {
                 // Ignore whitespace
                 if (nsCRT::IsAsciiSpace(*current))
@@ -2545,13 +2713,13 @@ nsresult nsWebBrowserPersist::OnWalkDOMNode(nsIDOMNode *aNode)
                 // Grab the next space delimited word
                 nsReadingIterator<PRUnichar> startWord = current;
                 do {
-                    current++;
-                } while (!nsCRT::IsAsciiSpace(*current) && current != end);
+                    ++current;
+                } while (current != end && !nsCRT::IsAsciiSpace(*current));
 
                 // Store the link for fix up if it says "stylesheet"
-                nsAutoString subString; subString = Substring(startWord, current);
-                ToLowerCase(subString);
-                if (subString.Equals(NS_LITERAL_STRING("stylesheet")))
+                if (Substring(startWord, current)
+                        .Equals(NS_LITERAL_STRING("stylesheet"),
+                                nsCaseInsensitiveStringComparator()))
                 {
                     StoreURIAttribute(aNode, "href");
                     return NS_OK;
@@ -2929,7 +3097,8 @@ nsWebBrowserPersist::FixupURI(nsAString &aURI)
 {
     // get the current location of the file (absolutized)
     nsCOMPtr<nsIURI> uri;
-    nsresult rv = NS_NewURI(getter_AddRefs(uri), NS_ConvertUCS2toUTF8(aURI).get(), mCurrentBaseURI);
+    nsresult rv = NS_NewURI(getter_AddRefs(uri), aURI, 
+                            mCurrentCharset.get(), mCurrentBaseURI);
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
     nsCAutoString spec;
     rv = uri->GetSpec(spec);
@@ -3071,7 +3240,8 @@ nsWebBrowserPersist::FixupAnchor(nsIDOMNode *aNode)
                       ? mTargetBaseURI : mCurrentBaseURI;
         // Make a new URI to replace the current one
         nsCOMPtr<nsIURI> newURI;
-        rv = NS_NewURI(getter_AddRefs(newURI), oldCValue.get(), relativeURI);
+        rv = NS_NewURI(getter_AddRefs(newURI), oldCValue, 
+                       mCurrentCharset.get(), relativeURI);
         if (NS_SUCCEEDED(rv) && newURI)
         {
             newURI->SetUserPass(NS_LITERAL_CSTRING(""));
@@ -3158,7 +3328,7 @@ nsresult
 nsWebBrowserPersist::SaveDocumentWithFixup(
     nsIDocument *aDocument, nsIDocumentEncoderNodeFixup *aNodeFixup,
     nsIURI *aFile, PRBool aReplaceExisting, const nsACString &aFormatType,
-    const nsString &aSaveCharset, PRUint32 aFlags)
+    const nsCString &aSaveCharset, PRUint32 aFlags)
 {
     NS_ENSURE_ARG_POINTER(aFile);
     
@@ -3205,13 +3375,13 @@ nsWebBrowserPersist::SaveDocumentWithFixup(
     if (mWrapColumn && (aFlags & ENCODE_FLAGS_WRAP))
         encoder->SetWrapColumn(mWrapColumn);
 
-    nsAutoString charsetStr(aSaveCharset);
-    if (charsetStr.Length() == 0)
+    nsCAutoString charsetStr(aSaveCharset);
+    if (charsetStr.IsEmpty())
     {
         rv = aDocument->GetDocumentCharacterSet(charsetStr);
         if(NS_FAILED(rv))
         {
-            charsetStr.Assign(NS_LITERAL_STRING("ISO-8859-1")); 
+            charsetStr = NS_LITERAL_CSTRING("ISO-8859-1");
         }
     }
     rv = encoder->SetCharset(charsetStr);
@@ -3246,7 +3416,8 @@ nsWebBrowserPersist::MakeAndStoreLocalFilenameInURIMap(
 
     // Make a URI
     nsCOMPtr<nsIURI> uri;
-    rv = NS_NewURI(getter_AddRefs(uri), aURI, mCurrentBaseURI);
+    rv = NS_NewURI(getter_AddRefs(uri), nsDependentCString(aURI), 
+                   mCurrentCharset.get(), mCurrentBaseURI);
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
     nsCAutoString spec;
     rv = uri->GetSpec(spec);
@@ -3280,6 +3451,7 @@ nsWebBrowserPersist::MakeAndStoreLocalFilenameInURIMap(
     data->mDataPath = mCurrentDataPath;
     data->mDataPathIsRelative = mCurrentDataPathIsRelative;
     data->mRelativePathToData = mCurrentRelativePathToData;
+    data->mCharset = mCurrentCharset;
 
     if (aNeedsPersisting)
         mCurrentThingsToPersist++;

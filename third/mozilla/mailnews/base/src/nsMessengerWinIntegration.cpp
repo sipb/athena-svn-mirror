@@ -264,8 +264,8 @@ private:
 
 nsMessengerWinIntegration::nsMessengerWinIntegration()
 {
-  mDefaultServerAtom = getter_AddRefs(NS_NewAtom("DefaultServer"));
-  mTotalUnreadMessagesAtom = getter_AddRefs(NS_NewAtom("TotalUnreadMessages"));
+  mDefaultServerAtom = do_GetAtom("DefaultServer");
+  mTotalUnreadMessagesAtom = do_GetAtom("TotalUnreadMessages");
 
   mFirstTimeFolderUnreadCountChanged = PR_TRUE;
   mInboxURI = nsnull;
@@ -273,7 +273,7 @@ nsMessengerWinIntegration::nsMessengerWinIntegration()
   mStoreUnreadCounts = PR_FALSE; 
   mIntervalTime = 0;
 
-  mBiffStateAtom = getter_AddRefs(NS_NewAtom("BiffState"));
+  mBiffStateAtom = do_GetAtom("BiffState");
   mBiffIconVisible = PR_FALSE;
   mSuppressBiffIcon = PR_FALSE;
   mAlertInProgress = PR_FALSE;
@@ -299,8 +299,8 @@ nsMessengerWinIntegration::~nsMessengerWinIntegration()
   DestroyBiffIcon(); 
 }
 
-NS_IMPL_ADDREF(nsMessengerWinIntegration);
-NS_IMPL_RELEASE(nsMessengerWinIntegration);
+NS_IMPL_ADDREF(nsMessengerWinIntegration)
+NS_IMPL_RELEASE(nsMessengerWinIntegration)
 
 NS_INTERFACE_MAP_BEGIN(nsMessengerWinIntegration)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIMessengerOSIntegration)
@@ -339,6 +339,12 @@ NOTIFYICONDATAW nsMessengerWinIntegration::mWideBiffIconData = { sizeof(NOTIFYIC
                                                     0,
                                                     0 };
 
+#ifdef MOZ_THUNDERBIRD
+#define MAIL_DLL_NAME "mail.dll"
+#else
+#define MAIL_DLL_NAME "msgbase.dll"
+#endif
+
 void nsMessengerWinIntegration::InitializeBiffStatusIcon()
 {
   // initialize our biff status bar icon 
@@ -348,13 +354,13 @@ void nsMessengerWinIntegration::InitializeBiffStatusIcon()
   if (mUseWideCharBiffIcon)
   {
     mWideBiffIconData.hWnd = (HWND) msgWindow;
-    mWideBiffIconData.hIcon =  ::LoadIcon( ::GetModuleHandle( "msgbase.dll" ), MAKEINTRESOURCE(IDI_MAILBIFF) );
+    mWideBiffIconData.hIcon =  ::LoadIcon( ::GetModuleHandle( MAIL_DLL_NAME ), MAKEINTRESOURCE(IDI_MAILBIFF) );
     mWideBiffIconData.szTip[0] = 0;
   }
   else
   {
     mAsciiBiffIconData.hWnd = (HWND) msgWindow;
-    mAsciiBiffIconData.hIcon =  ::LoadIcon( ::GetModuleHandle( "msgbase.dll" ), MAKEINTRESOURCE(IDI_MAILBIFF) );
+    mAsciiBiffIconData.hIcon =  ::LoadIcon( ::GetModuleHandle( MAIL_DLL_NAME ), MAKEINTRESOURCE(IDI_MAILBIFF) );
     mAsciiBiffIconData.szTip[0] = 0;
   }
 

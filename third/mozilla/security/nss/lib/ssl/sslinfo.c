@@ -34,7 +34,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslinfo.c,v 1.1.1.1.2.1 2003-07-14 19:07:32 ghudson Exp $
+ * $Id: sslinfo.c,v 1.1.1.1.2.2 2004-01-02 20:00:08 ghudson Exp $
  */
 #include "ssl.h"
 #include "sslimpl.h"

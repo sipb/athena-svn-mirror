@@ -36,6 +36,7 @@ GRE_MODULE	= 1
 REQUIRES	= xpcom \
 		  string \
 		  dom \
+		  js \
 		  shistory \
 		  necko \
 		  gfx \
@@ -51,9 +52,7 @@ REQUIRES	= xpcom \
 		  composer \
 		  editor \
 		  commandhandler \
-		  $(NULL)
-
-REQUIRES += \
+		  history \
 		  uriloader \
 		  exthandler \
 		  helperAppDlg \
@@ -64,12 +63,6 @@ REQUIRES += \
 
 ifeq ($(OS_ARCH),WINNT)
 EXTRA_DSO_LIBS	= gkgfx
-endif
-
-ifdef MOZ_PHOENIX
-REQUIRES += history
-else
-REQUIRES += appcomps
 endif
 
 CPPSRCS		= \

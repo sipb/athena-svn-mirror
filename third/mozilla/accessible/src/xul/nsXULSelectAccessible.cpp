@@ -43,6 +43,7 @@
 #include "nsIDOMXULSelectCntrlItemEl.h"
 #include "nsIDOMXULSelectCntrlEl.h"
 #include "nsIServiceManager.h"
+#include "nsArray.h"
 
 /**
   * Selects, Listboxes and Comboboxes, are made up of a number of different
@@ -73,9 +74,9 @@ nsAccessibleWrap(aDOMNode, aShell)
 {
 }
 
-NS_IMETHODIMP nsXULSelectableAccessible::GetAccName(nsAString& _retval)
+NS_IMETHODIMP nsXULSelectableAccessible::GetName(nsAString& _retval)
 {
-  return GetXULAccName(_retval);
+  return GetXULName(_retval);
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXULSelectableAccessible, nsAccessible, nsIAccessibleSelectable)
@@ -103,23 +104,24 @@ NS_IMETHODIMP nsXULSelectableAccessible::ChangeSelection(PRInt32 aIndex, PRUint8
 
   nsCOMPtr<nsIDOMXULSelectControlElement> xulSelect(do_QueryInterface(mDOMNode));
   if (xulSelect) {
+    nsresult rv = NS_OK;
     PRInt32 selIndex;
     xulSelect->GetSelectedIndex(&selIndex);
     if (selIndex == aIndex)
       *aSelState = PR_TRUE;
     if (eSelection_Add == aMethod && !(*aSelState))
-      xulSelect->SetSelectedIndex(aIndex);
+      rv = xulSelect->SetSelectedIndex(aIndex);
     else if (eSelection_Remove == aMethod && (*aSelState)) {
-      xulSelect->SetSelectedIndex(-1);
+      rv = xulSelect->SetSelectedIndex(-1);
     }
-    return NS_OK;
+    return rv;
   }
 
   return NS_ERROR_FAILURE;
 }
 
 // Interface methods
-NS_IMETHODIMP nsXULSelectableAccessible::GetSelectedChildren(nsISupportsArray **_retval)
+NS_IMETHODIMP nsXULSelectableAccessible::GetSelectedChildren(nsIArray **_retval)
 {
   *_retval = nsnull;
 
@@ -127,8 +129,8 @@ NS_IMETHODIMP nsXULSelectableAccessible::GetSelectedChildren(nsISupportsArray **
   if (!accService)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsISupportsArray> selectedAccessibles;
-  NS_NewISupportsArray(getter_AddRefs(selectedAccessibles));
+  nsCOMPtr<nsIMutableArray> selectedAccessibles;
+  NS_NewArray(getter_AddRefs(selectedAccessibles));
   if (!selectedAccessibles)
     return NS_ERROR_OUT_OF_MEMORY;
 
@@ -144,13 +146,13 @@ NS_IMETHODIMP nsXULSelectableAccessible::GetSelectedChildren(nsISupportsArray **
       nsCOMPtr<nsIDOMNode> tempDOMNode (do_QueryInterface(tempNode));
       accService->GetAccessibleInWeakShell(tempDOMNode, mWeakShell, getter_AddRefs(tempAccessible));
       if (tempAccessible)
-        selectedAccessibles->AppendElement(tempAccessible);
+        selectedAccessibles->AppendElement(tempAccessible, PR_FALSE);
     }
   }
 
   PRUint32 uLength = 0;
-  selectedAccessibles->Count(&uLength); 
-  if (uLength != 0) { // length of nsISupportsArray containing selected options
+  selectedAccessibles->GetLength(&uLength); 
+  if (uLength != 0) { // length of nsIArray containing selected options
     *_retval = selectedAccessibles;
     NS_ADDREF(*_retval);
   }
@@ -209,13 +211,13 @@ NS_IMETHODIMP nsXULSelectableAccessible::GetSelectionCount(PRInt32 *aSelectionCo
   return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP nsXULSelectableAccessible::AddSelection(PRInt32 aIndex)
+NS_IMETHODIMP nsXULSelectableAccessible::AddChildToSelection(PRInt32 aIndex)
 {
   PRBool isSelected;
   return ChangeSelection(aIndex, eSelection_Add, &isSelected);
 }
 
-NS_IMETHODIMP nsXULSelectableAccessible::RemoveSelection(PRInt32 aIndex)
+NS_IMETHODIMP nsXULSelectableAccessible::RemoveChildFromSelection(PRInt32 aIndex)
 {
   PRBool isSelected;
   return ChangeSelection(aIndex, eSelection_Remove, &isSelected);
@@ -266,7 +268,7 @@ nsXULSelectListAccessible::nsXULSelectListAccessible(nsIDOMNode* aDOMNode,
 {
 }
 
-NS_IMETHODIMP nsXULSelectListAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsXULSelectListAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_LIST;
   return NS_OK;
@@ -277,7 +279,7 @@ NS_IMETHODIMP nsXULSelectListAccessible::GetAccRole(PRUint32 *_retval)
   *     STATE_MULTISELECTABLE
   *     STATE_EXTSELECTABLE
   */
-NS_IMETHODIMP nsXULSelectListAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsXULSelectListAccessible::GetState(PRUint32 *_retval)
 { 
   *_retval = 0;
   nsAutoString selectionTypeString;
@@ -298,7 +300,7 @@ nsXULMenuitemAccessible(aDOMNode, aShell)
 {
 }
 
-NS_IMETHODIMP nsXULSelectOptionAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsXULSelectOptionAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_LISTITEM;
   return NS_OK;
@@ -311,9 +313,9 @@ NS_IMETHODIMP nsXULSelectOptionAccessible::GetAccRole(PRUint32 *_retval)
   *     STATE_FOCUSED
   *     STATE_FOCUSABLE
   */
-NS_IMETHODIMP nsXULSelectOptionAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsXULSelectOptionAccessible::GetState(PRUint32 *_retval)
 {
-  nsXULMenuitemAccessible::GetAccState(_retval);
+  nsXULMenuitemAccessible::GetState(_retval);
 
   nsCOMPtr<nsIDOMXULSelectControlItemElement> item(do_QueryInterface(mDOMNode));
   PRBool isSelected = PR_FALSE;
@@ -339,9 +341,9 @@ nsXULSelectableAccessible(aDOMNode, aShell)
 /**
   * Let Accessible count them up
   */
-NS_IMETHODIMP nsXULListboxAccessible::GetAccChildCount(PRInt32 *_retval)
+NS_IMETHODIMP nsXULListboxAccessible::GetChildCount(PRInt32 *_retval)
 {
-  return nsAccessible::GetAccChildCount(_retval);
+  return nsAccessible::GetChildCount(_retval);
 }
 
 /**
@@ -350,10 +352,10 @@ NS_IMETHODIMP nsXULListboxAccessible::GetAccChildCount(PRInt32 *_retval)
   *     STATE_READONLY
   *     STATE_FOCUSABLE
   */
-NS_IMETHODIMP nsXULListboxAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsXULListboxAccessible::GetState(PRUint32 *_retval)
 {
   // Get focus status from base class
-  nsAccessible::GetAccState(_retval);
+  nsAccessible::GetState(_retval);
 
   *_retval |= STATE_READONLY | STATE_FOCUSABLE;
 
@@ -375,7 +377,7 @@ NS_IMETHODIMP nsXULListboxAccessible::GetAccState(PRUint32 *_retval)
   * Our value is the value of our ( first ) selected child. nsIDOMXULSelectElement
   *     returns this by default with GetValue().
   */
-NS_IMETHODIMP nsXULListboxAccessible::GetAccValue(nsAString& _retval)
+NS_IMETHODIMP nsXULListboxAccessible::GetValue(nsAString& _retval)
 {
   _retval.Truncate();
   nsCOMPtr<nsIDOMXULSelectControlElement> select(do_QueryInterface(mDOMNode));
@@ -388,7 +390,7 @@ NS_IMETHODIMP nsXULListboxAccessible::GetAccValue(nsAString& _retval)
   return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP nsXULListboxAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsXULListboxAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_LIST;
   return NS_OK;
@@ -407,9 +409,9 @@ NS_IMPL_ISUPPORTS_INHERITED0(nsXULListitemAccessible, nsAccessible)
 
 /**
   * If there is a Listcell as a child ( not anonymous ) use it, otherwise
-  *   default to getting the name from GetXULAccName
+  *   default to getting the name from GetXULName
   */
-NS_IMETHODIMP nsXULListitemAccessible::GetAccName(nsAString& _retval)
+NS_IMETHODIMP nsXULListitemAccessible::GetName(nsAString& _retval)
 {
   nsCOMPtr<nsIDOMNode> child;
   if (NS_SUCCEEDED(mDOMNode->GetFirstChild(getter_AddRefs(child)))) {
@@ -423,13 +425,13 @@ NS_IMETHODIMP nsXULListitemAccessible::GetAccName(nsAString& _retval)
       }
     }
   }
-  return GetXULAccName(_retval);
+  return GetXULName(_retval);
 }
 
 /**
   *
   */
-NS_IMETHODIMP nsXULListitemAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsXULListitemAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_LISTITEM;
   return NS_OK;
@@ -438,9 +440,9 @@ NS_IMETHODIMP nsXULListitemAccessible::GetAccRole(PRUint32 *_retval)
 /**
   *
   */
-NS_IMETHODIMP nsXULListitemAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsXULListitemAccessible::GetState(PRUint32 *_retval)
 {
-//  nsAccessible::GetAccState(_retval); // get focused state
+//  nsAccessible::GetState(_retval); // get focused state
 
   nsCOMPtr<nsIDOMXULSelectControlItemElement> listItem (do_QueryInterface(mDOMNode));
   if (listItem) {
@@ -480,7 +482,7 @@ nsXULSelectableAccessible(aDOMNode, aShell)
 }
 
 /** We are a combobox */
-NS_IMETHODIMP nsXULComboboxAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsXULComboboxAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_COMBOBOX;
   return NS_OK;
@@ -495,10 +497,10 @@ NS_IMETHODIMP nsXULComboboxAccessible::GetAccRole(PRUint32 *_retval)
   *     STATE_EXPANDED
   *     STATE_COLLAPSED
   */
-NS_IMETHODIMP nsXULComboboxAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsXULComboboxAccessible::GetState(PRUint32 *_retval)
 {
   // Get focus status from base class
-  nsAccessible::GetAccState(_retval);
+  nsAccessible::GetState(_retval);
 
   nsCOMPtr<nsIDOMXULMenuListElement> menuList(do_QueryInterface(mDOMNode));
   if (menuList) {
@@ -519,11 +521,11 @@ NS_IMETHODIMP nsXULComboboxAccessible::GetAccState(PRUint32 *_retval)
   * Our value is the name of our ( first ) selected child. nsIDOMXULSelectElement
   *     returns this by default with GetValue().
   */
-NS_IMETHODIMP nsXULComboboxAccessible::GetAccValue(nsAString& _retval)
+NS_IMETHODIMP nsXULComboboxAccessible::GetValue(nsAString& _retval)
 {
   // The first accessible child is the text accessible that contains the name of the selected element.
   // This is our value
   nsCOMPtr<nsIAccessible> firstChild;
-  GetAccFirstChild(getter_AddRefs(firstChild));
-  return firstChild->GetAccName(_retval);
+  GetFirstChild(getter_AddRefs(firstChild));
+  return firstChild->GetName(_retval);
 }

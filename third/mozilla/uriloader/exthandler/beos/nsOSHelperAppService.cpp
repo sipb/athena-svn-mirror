@@ -51,17 +51,8 @@
 #include <Entry.h>
 #include <Roster.h>
 
-#ifdef MOZ_LOGGING
-#define FORCE_PR_LOG /* Allow logging in the release build */
-#endif /* MOZ_LOGGING */
-#include "prlog.h"
-
-#ifdef PR_LOGGING
-static PRLogModuleInfo *gOSHelperLog = PR_NewLogModule("nsOSHelperAppService");
-#endif /* PR_LOGGING */
-
-#define LOG(args) PR_LOG(gOSHelperLog, PR_LOG_DEBUG, args)
-#define LOG_ENABLED() PR_LOG_TEST(gOSHelperLog, PR_LOG_DEBUG)
+#define LOG(args) PR_LOG(mLog, PR_LOG_DEBUG, args)
+#define LOG_ENABLED() PR_LOG_TEST(mLog, PR_LOG_DEBUG)
 
 nsOSHelperAppService::nsOSHelperAppService() : nsExternalHelperAppService()
 {
@@ -220,9 +211,9 @@ nsresult nsOSHelperAppService::SetMIMEInfoForType(const char *aMIMEType, nsIMIME
 				rv = GetFileTokenForPath(NS_ConvertUTF8toUCS2(path.Path()).get(), getter_AddRefs(handlerFile));
 
 				if (NS_SUCCEEDED(rv)) {
-					mimeInfo->SetPreferredApplicationHandler(handlerFile);
-					mimeInfo->SetPreferredAction(nsIMIMEInfo::useHelperApp);
-					mimeInfo->SetApplicationDescription(NS_ConvertUTF8toUCS2(path.Leaf()).get());
+					mimeInfo->SetDefaultApplicationHandler(handlerFile);
+					mimeInfo->SetPreferredAction(nsIMIMEInfo::useSystemDefault);
+					mimeInfo->SetDefaultDescription(NS_ConvertUTF8toUCS2(path.Leaf()).get());
 					LOG(("    Preferred App: %s\n",path.Leaf()));
 					doSave = false;
 				}
@@ -243,15 +234,11 @@ nsresult nsOSHelperAppService::SetMIMEInfoForType(const char *aMIMEType, nsIMIME
 	return rv;
 }
 
-NS_IMETHODIMP nsOSHelperAppService::GetFromExtension(const char *aFileExt,
+nsresult nsOSHelperAppService::GetMimeInfoFromExtension(const char *aFileExt,
         nsIMIMEInfo ** _retval) {
 	// if the extension is null, return immediately
 	if (!aFileExt || !*aFileExt)
 		return NS_ERROR_INVALID_ARG;
-
-	// first, see if the base class already has an entry....
-	nsresult rv = nsExternalHelperAppService::GetFromExtension(aFileExt, _retval);
-	if (NS_SUCCEEDED(rv) && *_retval) return NS_OK; // okay we got an entry so we are done.
 
 	LOG(("Here we do an extension lookup for '%s'\n", aFileExt));
 
@@ -287,22 +274,19 @@ NS_IMETHODIMP nsOSHelperAppService::GetFromExtension(const char *aFileExt,
 			mimeIndex++;
 		}
 		if (found) {
-			rv = SetMIMEInfoForType(mimeStr.String(), _retval);
+			return SetMIMEInfoForType(mimeStr.String(), _retval);
 		}
 	}
 
-	return rv;
+	// Extension not found
+	return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP nsOSHelperAppService::GetFromMIMEType(const char *aMIMEType,
+nsresult nsOSHelperAppService::GetMimeInfoFromMIMEType(const char *aMIMEType,
         nsIMIMEInfo ** _retval) {
 	// if the mime type is null, return immediately
-	if (!aMIMEType)
+	if (!aMIMEType || !*aMIMEType)
 		return NS_ERROR_INVALID_ARG;
-
-	// first, see if the base class already has an entry....
-	nsresult rv = nsExternalHelperAppService::GetFromMIMEType(aMIMEType, _retval);
-	if (NS_SUCCEEDED(rv) && *_retval) return NS_OK; // okay we got an entry so we are done.
 
 	LOG(("Here we do a mimetype lookup for '%s'\n", aMIMEType));
 
@@ -320,16 +304,30 @@ NS_IMETHODIMP nsOSHelperAppService::GetFromMIMEType(const char *aMIMEType,
 				index++;
 		}
 		if (found) {
-			rv = SetMIMEInfoForType(aMIMEType, _retval);
+			return SetMIMEInfoForType(aMIMEType, _retval);
 		}
 	}
 
-	return rv;
+	return NS_ERROR_FAILURE;
+}
+
+already_AddRefed<nsIMIMEInfo>
+nsOSHelperAppService::GetMIMEInfoFromOS(const char *aMIMEType, const char *aFileExt)
+{
+  nsIMIMEInfo* mi = nsnull;
+  GetMimeInfoFromMIMEType(aMIMEType, &mi);
+  if (mi)
+    return mi;
+
+  GetMimeInfoFromExtension(aFileExt, &mi);
+  if (mi && aMIMEType && *aMIMEType)
+    mi->SetMIMEType(aMIMEType);
+  return mi;
 }
 
 nsresult nsOSHelperAppService::GetFileTokenForPath(const PRUnichar* platformAppPath, nsIFile ** aFile)
 {
-	LOG(("-- nsOSHelperAppService::GetFileTokenForPath: '%s'\n", NS_ConvertUCS2toUTF8(platformAppPath)));
+	LOG(("-- nsOSHelperAppService::GetFileTokenForPath: '%s'\n", NS_ConvertUCS2toUTF8(platformAppPath).get()));
 	nsCOMPtr<nsILocalFile> localFile (do_CreateInstance(NS_LOCAL_FILE_CONTRACTID));
 	nsresult rv = NS_OK;
 

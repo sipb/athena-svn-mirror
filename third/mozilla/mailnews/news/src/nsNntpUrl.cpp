@@ -65,7 +65,6 @@
 #include "nsINntpService.h"
 #include "nsIMsgMessageService.h"
 
-static NS_DEFINE_CID(kCNewsDB, NS_NEWSDB_CID);
     
 nsNntpUrl::nsNntpUrl()
 {
@@ -224,12 +223,12 @@ NS_IMETHODIMP nsNntpUrl::GetUri(char ** aURI)
 }
 
 
-NS_IMPL_GETSET(nsNntpUrl, AddDummyEnvelope, PRBool, m_addDummyEnvelope);
-NS_IMPL_GETSET(nsNntpUrl, CanonicalLineEnding, PRBool, m_canonicalLineEnding);
+NS_IMPL_GETSET(nsNntpUrl, AddDummyEnvelope, PRBool, m_addDummyEnvelope)
+NS_IMPL_GETSET(nsNntpUrl, CanonicalLineEnding, PRBool, m_canonicalLineEnding)
 
 NS_IMETHODIMP nsNntpUrl::SetMessageFile(nsIFileSpec * aFileSpec)
 {
-	m_messageFileSpec = dont_QueryInterface(aFileSpec);
+	m_messageFileSpec = aFileSpec;
 	return NS_OK;
 }
 
@@ -343,7 +342,7 @@ NS_IMETHODIMP nsNntpUrl::GetFolder(nsIMsgFolder **msgFolder)
 }
 
 NS_IMETHODIMP 
-nsNntpUrl::GetFolderCharset(PRUnichar **aCharacterSet)
+nsNntpUrl::GetFolderCharset(char **aCharacterSet)
 {
   nsCOMPtr<nsIMsgFolder> folder;
   nsresult rv = GetFolder(getter_AddRefs(folder));
@@ -368,16 +367,16 @@ NS_IMETHODIMP nsNntpUrl::GetFolderCharsetOverride(PRBool * aCharacterSetOverride
   return rv;
 }
 
-NS_IMETHODIMP nsNntpUrl::GetCharsetOverRide(PRUnichar ** aCharacterSet)
+NS_IMETHODIMP nsNntpUrl::GetCharsetOverRide(char ** aCharacterSet)
 {
   if (!mCharsetOverride.IsEmpty())
-    *aCharacterSet = ToNewUnicode(mCharsetOverride); 
+    *aCharacterSet = ToNewCString(mCharsetOverride); 
   else
     *aCharacterSet = nsnull;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsNntpUrl::SetCharsetOverRide(const PRUnichar * aCharacterSet)
+NS_IMETHODIMP nsNntpUrl::SetCharsetOverRide(const char * aCharacterSet)
 {
   mCharsetOverride = aCharacterSet;
   return NS_OK;

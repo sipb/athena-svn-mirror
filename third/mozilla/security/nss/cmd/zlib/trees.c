@@ -29,7 +29,7 @@
  *          Addison-Wesley, 1983. ISBN 0-201-06672-6.
  */
 
-/* $Id: trees.c,v 1.1.1.1.2.1 2003-07-14 19:06:19 ghudson Exp $ */
+/* $Id: trees.c,v 1.1.1.1.2.2 2004-01-02 19:58:31 ghudson Exp $ */
 
 #include "deflate.h"
 

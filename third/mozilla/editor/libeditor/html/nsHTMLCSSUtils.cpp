@@ -51,7 +51,9 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMDocumentView.h"
 #include "nsIContent.h"
+#include "nsIAtom.h"
 #include "nsTextEditUtils.h"
+#include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsHTMLCSSUtils.h"
 #include "nsColor.h"
@@ -61,13 +63,8 @@ void ProcessBValue(const nsAString * aInputString, nsAString & aOutputString,
                    const char * aDefaultValueString,
                    const char * aPrependString, const char* aAppendString)
 {
-  if (aInputString) {
-    if (aInputString->Equals(NS_LITERAL_STRING("-moz-editor-invert-value"))) {
+  if (aInputString && aInputString->Equals(NS_LITERAL_STRING("-moz-editor-invert-value"))) {
       aOutputString.Assign(NS_LITERAL_STRING("normal"));
-    }
-    else {
-      aOutputString.Assign(NS_LITERAL_STRING("bold"));
-    }
   }
   else {
     aOutputString.Assign(NS_LITERAL_STRING("bold"));
@@ -79,10 +76,11 @@ void ProcessDefaultValue(const nsAString * aInputString, nsAString & aOutputStri
                          const char * aDefaultValueString,
                          const char * aPrependString, const char* aAppendString)
 {
-  aOutputString.Truncate();
   if (aDefaultValueString) {
     aOutputString.Assign(NS_ConvertASCIItoUCS2(aDefaultValueString));
   }
+  else
+    aOutputString.Truncate();
 }
 
 static
@@ -90,10 +88,11 @@ void ProcessSameValue(const nsAString * aInputString, nsAString & aOutputString,
                       const char * aDefaultValueString,
                       const char * aPrependString, const char* aAppendString)
 {
-  aOutputString.Truncate();
   if (aInputString) {
     aOutputString.Assign(*aInputString);
   }
+  else
+    aOutputString.Truncate();
 }
 
 static
@@ -334,14 +333,20 @@ nsHTMLCSSUtils::IsCSSEditableProperty(nsIDOMNode * aNode,
                                       nsIAtom * aProperty,
                                       const nsAString * aAttribute)
 {
+  NS_ASSERTION(aNode, "Shouldn't you pass aNode? - Bug 214025");
+
   nsCOMPtr<nsIDOMNode> node = aNode;
   // we need an element node here
   if (mHTMLEditor->IsTextNode(aNode)) {
     aNode->GetParentNode(getter_AddRefs(node));
   }
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
+  if (!content) return PR_FALSE;
+
   nsCOMPtr<nsIAtom> tagName;
-  content->GetTag(*getter_AddRefs(tagName));
+  content->GetTag(getter_AddRefs(tagName));
+  // brade: should the above use nsEditor::GetTag(aNode)?
+  // brade: shouldn't some of the above go below the next block?
 
   // html inline styles B I TT U STRIKE and COLOR/FACE on FONT
   if (nsEditProperty::b == aProperty
@@ -369,6 +374,8 @@ nsHTMLCSSUtils::IsCSSEditableProperty(nsIDOMNode * aNode,
        || nsEditProperty::th  == tagName
        || nsEditProperty::table  == tagName
        || nsEditProperty::hr  == tagName
+       // brade: for the above, why not use nsHTMLEditUtils::SupportsAlignAttr
+       // brade: but it also checks for tbody, tfoot, thead
        // Let's add the following elements here even if ALIGN has not
        // the same meaning for them
        || nsEditProperty::legend  == tagName
@@ -478,6 +485,18 @@ nsHTMLCSSUtils::SetCSSProperty(nsIDOMElement *aElement, nsIAtom * aProperty, con
   return result;
 }
 
+nsresult
+nsHTMLCSSUtils::SetCSSPropertyPixels(nsIDOMElement *aElement,
+                                     nsIAtom *aProperty,
+                                     PRInt32 aIntValue,
+                                     PRBool aSuppressTransaction)
+{
+  nsAutoString s;
+  s.AppendInt(aIntValue);
+  return SetCSSProperty(aElement, aProperty, s + NS_LITERAL_STRING("px"),
+                        aSuppressTransaction);
+}
+
 // the lowest level above the transaction; removes the value aValue from the list of values
 // specified for the CSS property aProperty, or totally remove the declaration if this
 // property accepts only one value
@@ -498,7 +517,6 @@ nsHTMLCSSUtils::RemoveCSSProperty(nsIDOMElement *aElement, nsIAtom * aProperty, 
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
   return result;
-  return NS_OK;
 }
 
 nsresult 
@@ -509,7 +527,7 @@ nsHTMLCSSUtils::CreateCSSPropertyTxn(nsIDOMElement *aElement,
                                      PRBool aRemoveProperty)
 {
   nsresult result = NS_ERROR_NULL_POINTER;
-  if (nsnull != aElement)
+  if (aElement)
   {
     result = TransactionFactory::GetNewTransaction(ChangeCSSInlineStyleTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result))  {
@@ -568,7 +586,7 @@ nsHTMLCSSUtils::GetCSSInlinePropertyBase(nsIDOMNode *aNode, nsIAtom *aProperty,
     case SPECIFIED_STYLE_TYPE:
       if (element) {
         nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
-        PRUint32 length = 0;
+        PRUint32 length;
         res = GetInlineStyles(element, getter_AddRefs(cssDecl), &length);
         if (NS_FAILED(res)) return res;
         nsAutoString value, propString;
@@ -597,10 +615,9 @@ nsHTMLCSSUtils::GetDefaultViewCSS(nsIDOMNode *aNode, nsIDOMViewCSS **aViewCSS)
     res = node->GetOwnerDocument(getter_AddRefs(doc));
     if (NS_FAILED(res)) return res;
     if (doc) {
-      nsCOMPtr<nsIDOMDocumentView> documentView;
+      nsCOMPtr<nsIDOMDocumentView> documentView = do_QueryInterface(doc);
       nsCOMPtr<nsIDOMAbstractView> abstractView;
       // from the document, get the abtractView
-      documentView = do_QueryInterface(doc);
       res = documentView->GetDefaultView(getter_AddRefs(abstractView));
       if (NS_FAILED(res)) return res;
       // from the abstractView, get the CSS view
@@ -620,9 +637,8 @@ NS_NewHTMLCSSUtils(nsHTMLCSSUtils** aInstancePtrResult)
     *aInstancePtrResult = rules;
     return NS_OK;
   }
-  else {
-    *aInstancePtrResult = nsnull;
-  }
+
+  *aInstancePtrResult = nsnull;
   return NS_ERROR_OUT_OF_MEMORY;
 }
 
@@ -637,7 +653,7 @@ nsHTMLCSSUtils::RemoveCSSInlineStyle(nsIDOMNode *aNode, nsIAtom *aProperty, cons
   nsresult res = RemoveCSSProperty(elem, aProperty, aPropertyValue, PR_FALSE);
   if (NS_FAILED(res)) return res;
 
-  if (mHTMLEditor->NodeIsType(aNode, nsEditProperty::span)) {
+  if (nsEditor::NodeIsType(aNode, nsEditProperty::span)) {
     PRInt32 attrCount;
     nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
     res = content->GetAttrCount(attrCount);
@@ -651,8 +667,8 @@ nsHTMLCSSUtils::RemoveCSSInlineStyle(nsIDOMNode *aNode, nsIAtom *aProperty, cons
       // incredible hack in case the only remaining attribute is a _moz_dirty...
       PRInt32 nameSpaceID;
       nsCOMPtr<nsIAtom> attrName, prefix;
-      res = content->GetAttrNameAt(0, nameSpaceID, *getter_AddRefs(attrName),
-                                   *getter_AddRefs(prefix));
+      res = content->GetAttrNameAt(0, &nameSpaceID, getter_AddRefs(attrName),
+                                   getter_AddRefs(prefix));
       if (NS_FAILED(res)) return res;
       nsAutoString attrString, tmp;
       attrName->ToString(attrString);
@@ -903,9 +919,10 @@ nsHTMLCSSUtils::GenerateCSSDeclarationsFromHTMLStyle(nsIDOMNode * aNode,
   }
   if (!node) return;
 
+  // brade: use nsEditor::GetTag instead??
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
   nsCOMPtr<nsIAtom> tagName;
-  content->GetTag(*getter_AddRefs(tagName));
+  content->GetTag(getter_AddRefs(tagName));
 
   if (nsEditProperty::b == aHTMLProperty) {
     BuildCSSDeclarations(cssPropertyArray, cssValueArray, boldEquivTable, aValue, aGetOrRemoveRequest);
@@ -1045,7 +1062,6 @@ nsHTMLCSSUtils::RemoveCSSEquivalentToHTMLStyle(nsIDOMNode * aNode,
     for (index = 0; index < count; index++) {
       nsAutoString valueString;
       cssValueArray.StringAt(index, valueString);
-      nsCOMPtr<nsIDOMElement> theElement = do_QueryInterface(aNode);
       res = RemoveCSSProperty(theElement, (nsIAtom *)cssPropertyArray.ElementAt(index), valueString,
                               aSuppressTransaction);
       if (NS_FAILED(res)) return res;
@@ -1069,8 +1085,8 @@ nsHTMLCSSUtils::HasClassOrID(nsIDOMElement * aElement, PRBool & aReturn)
 
   // we need to make sure that if the element has an id or a class attribute,
   // the attribute is not the empty string
-  aReturn = ((isClassSet && (0 != classVal.Length())) ||
-             (isIdSet    && (0 != idVal.Length())));
+  aReturn = ((isClassSet && !classVal.IsEmpty()) ||
+             (isIdSet    && !idVal.IsEmpty()));
   return NS_OK;
 }
 
@@ -1085,32 +1101,31 @@ nsHTMLCSSUtils::GetCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
                                                      nsAString & aValueString,
                                                      PRUint8 aStyleType)
 {
+  aValueString.Truncate();
   nsCOMPtr<nsIDOMElement> theElement;
   nsresult res = GetElementContainerOrSelf(aNode, getter_AddRefs(theElement));
   if (NS_FAILED(res)) return res;
-  nsCOMPtr<nsIDOMNode> theNode = do_QueryInterface(theElement);
-  aValueString.Truncate();
 
-  if (theElement && IsCSSEditableProperty(theNode, aHTMLProperty, aAttribute)) {
+  if (theElement && IsCSSEditableProperty(theElement, aHTMLProperty, aAttribute)) {
     // Yes, the requested HTML style has a CSS equivalence in this implementation
     // Retrieve the default ViewCSS if we are asked for computed styles
     nsCOMPtr<nsIDOMViewCSS> viewCSS = nsnull;
     if (COMPUTED_STYLE_TYPE == aStyleType) {
-      res = GetDefaultViewCSS(theNode, getter_AddRefs(viewCSS));
+      res = GetDefaultViewCSS(theElement, getter_AddRefs(viewCSS));
       if (NS_FAILED(res)) return res;
     }
     nsVoidArray cssPropertyArray;
     nsStringArray cssValueArray;
     // get the CSS equivalence with last param PR_TRUE indicating we want only the
     // "gettable" properties
-    GenerateCSSDeclarationsFromHTMLStyle(theNode, aHTMLProperty, aAttribute, nsnull,
+    GenerateCSSDeclarationsFromHTMLStyle(theElement, aHTMLProperty, aAttribute, nsnull,
                                          cssPropertyArray, cssValueArray, PR_TRUE);
     PRInt32 count = cssPropertyArray.Count();
     PRInt32 index;
     for (index = 0; index < count; index++) {
       nsAutoString valueString;
       // retrieve the specified/computed value of the property
-      res = GetCSSInlinePropertyBase(theNode, (nsIAtom *)cssPropertyArray.ElementAt(index),
+      res = GetCSSInlinePropertyBase(theElement, (nsIAtom *)cssPropertyArray.ElementAt(index),
                                      valueString, viewCSS, aStyleType);
       if (NS_FAILED(res)) return res;
       // append the value to aValueString (possibly with a leading whitespace)
@@ -1139,6 +1154,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
   nsAutoString htmlValueString(valueString);
   aIsSet = PR_FALSE;
   nsCOMPtr<nsIDOMNode> node = aNode;
+  NS_NAMED_LITERAL_STRING(boldStr, "bold");
   do {
     valueString.Assign(htmlValueString);
     // get the value of the CSS equivalent styles
@@ -1150,7 +1166,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
     if (valueString.IsEmpty()) return NS_OK;
 
     if (nsEditProperty::b == aHTMLProperty) {
-      if (valueString.Equals(NS_LITERAL_STRING("bold"))) {
+      if (valueString.Equals(boldStr)) {
         aIsSet = PR_TRUE;
       }
       else if (valueString.Equals(NS_LITERAL_STRING("normal"))) {
@@ -1158,7 +1174,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
       }
       else if (valueString.Equals(NS_LITERAL_STRING("bolder"))) {
         aIsSet = PR_TRUE;
-        valueString.Assign(NS_LITERAL_STRING("bold"));
+        valueString.Assign(boldStr);
       }
       else {
         PRInt32 weight = 0;
@@ -1167,7 +1183,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
         weight = value.ToInteger(&errorCode, 10);
         if (400 < weight) {
           aIsSet = PR_TRUE;
-          valueString.Assign(NS_LITERAL_STRING("bold"));
+          valueString.Assign(boldStr);
         }
         else {
           aIsSet = PR_FALSE;
@@ -1234,7 +1250,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
     }
 
     else if (nsEditProperty::tt == aHTMLProperty) {
-      aIsSet = Substring(valueString, 0, 9).Equals(NS_LITERAL_STRING("monospace"));
+      aIsSet = StringBeginsWith(valueString, NS_LITERAL_STRING("monospace"));
     }
     
     else if ((nsEditProperty::font == aHTMLProperty) && aHTMLAttribute
@@ -1280,12 +1296,7 @@ nsHTMLCSSUtils::IsCSSEquivalentToHTMLInlineStyleSet(nsIDOMNode * aNode,
       res = node->GetParentNode(getter_AddRefs(tmp));
       if (NS_FAILED(res)) return res;
       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(tmp);
-      if (element) {
-        node = tmp;
-      }
-      else {
-        node = nsnull;
-      }
+      node = element;  // set to null if it's not a dom element
     }
   } while ((nsEditProperty::u == aHTMLProperty || nsEditProperty::strike == aHTMLProperty) &&
            !aIsSet && node);
@@ -1407,7 +1418,7 @@ nsHTMLCSSUtils::GetElementContainerOrSelf(nsIDOMNode * aNode, nsIDOMElement ** a
 {
   NS_ENSURE_TRUE(aNode, NS_ERROR_NULL_POINTER);
 
-  nsCOMPtr<nsIDOMNode> node=aNode, parentNode=aNode;
+  nsCOMPtr<nsIDOMNode> node=aNode, parentNode;
   PRUint16 type;
   nsresult res;
   res = node->GetNodeType(&type);
@@ -1429,3 +1440,42 @@ nsHTMLCSSUtils::GetElementContainerOrSelf(nsIDOMNode * aNode, nsIDOMElement ** a
   NS_IF_ADDREF(*aElement);
   return NS_OK;
 }
+
+nsresult
+nsHTMLCSSUtils::SetCSSProperty(nsIDOMElement * aElement,
+                               const nsAString & aProperty,
+                               const nsAString & aValue)
+{
+  nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
+  PRUint32 length;
+  nsresult res = GetInlineStyles(aElement, getter_AddRefs(cssDecl), &length);
+  if (NS_FAILED(res)) return res;
+
+  return cssDecl->SetProperty(aProperty,
+                              aValue,
+                              nsString());
+}
+
+nsresult
+nsHTMLCSSUtils::SetCSSPropertyPixels(nsIDOMElement * aElement,
+                                     const nsAString & aProperty,
+                                     PRInt32 aIntValue)
+{
+  nsAutoString s;
+  s.AppendInt(aIntValue);
+  return SetCSSProperty(aElement, aProperty, s + NS_LITERAL_STRING("px"));
+}
+
+nsresult
+nsHTMLCSSUtils::RemoveCSSProperty(nsIDOMElement * aElement,
+                                  const nsAString & aProperty)
+{
+  nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
+  PRUint32 length;
+  nsresult res = GetInlineStyles(aElement, getter_AddRefs(cssDecl), &length);
+  if (NS_FAILED(res)) return res;
+
+  nsAutoString returnString;
+  return cssDecl->RemoveProperty(aProperty, returnString);
+}
+

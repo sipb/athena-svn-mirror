@@ -47,8 +47,6 @@
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
-#else
-static const PRBool gNoisy = PR_FALSE;
 #endif
 
 
@@ -77,7 +75,10 @@ DeleteElementTxn::~DeleteElementTxn()
 
 NS_IMETHODIMP DeleteElementTxn::DoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("%p Do Delete Element element = %p\n", this, mElement.get()); }
+#endif
+
   if (!mElement) return NS_ERROR_NOT_INITIALIZED;
 
   nsresult result = mElement->GetParentNode(getter_AddRefs(mParent));
@@ -86,13 +87,11 @@ NS_IMETHODIMP DeleteElementTxn::DoTransaction(void)
 
 #ifdef NS_DEBUG
   // begin debug output
-  nsCOMPtr<nsIDOMElement> element;
-  element = do_QueryInterface(mElement);
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(mElement);
   nsAutoString elementTag(NS_LITERAL_STRING("text node"));
   if (element)
     element->GetTagName(elementTag);
-  nsCOMPtr<nsIDOMElement> parentElement;
-  parentElement = do_QueryInterface(mParent);
+  nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(mParent);
   nsAutoString parentElementTag(NS_LITERAL_STRING("text node"));
   if (parentElement)
     parentElement->GetTagName(parentElementTag);
@@ -103,6 +102,7 @@ NS_IMETHODIMP DeleteElementTxn::DoTransaction(void)
   {
     if (gNoisy)
       printf("  DeleteElementTxn:  deleting child %s from parent %s\n", c, p); 
+
     nsCRT::free(c);
     nsCRT::free(p);
   }
@@ -118,26 +118,25 @@ NS_IMETHODIMP DeleteElementTxn::DoTransaction(void)
     mRangeUpdater->SelAdjDeleteNode(mElement);
 
   nsCOMPtr<nsIDOMNode> resultNode;
-  result = mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
-
-  return result;
+  return mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
 }
 
 NS_IMETHODIMP DeleteElementTxn::UndoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("%p Undo Delete Element element = %p, parent = %p\n", this, mElement.get(), mParent.get()); }
+#endif
+
   if (!mParent) { return NS_OK; } // this is a legal state, the txn is a no-op
   if (!mElement) { return NS_ERROR_NULL_POINTER; }
 
 #ifdef NS_DEBUG
   // begin debug output
-  nsCOMPtr<nsIDOMElement> element;
-  element = do_QueryInterface(mElement);
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(mElement);
   nsAutoString elementTag(NS_LITERAL_STRING("text node"));
   if (element)
     element->GetTagName(elementTag);
-  nsCOMPtr<nsIDOMElement> parentElement;
-  parentElement = do_QueryInterface(mParent);
+  nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(mParent);
   nsAutoString parentElementTag(NS_LITERAL_STRING("text node"));
   if (parentElement)
     parentElement->GetTagName(parentElementTag);
@@ -148,6 +147,7 @@ NS_IMETHODIMP DeleteElementTxn::UndoTransaction(void)
   {
     if (gNoisy)
       printf("  DeleteElementTxn:  inserting child %s back into parent %s\n", c, p); 
+
     nsCRT::free(c);
     nsCRT::free(p);
   }
@@ -155,13 +155,15 @@ NS_IMETHODIMP DeleteElementTxn::UndoTransaction(void)
 #endif
 
   nsCOMPtr<nsIDOMNode> resultNode;
-  nsresult result = mParent->InsertBefore(mElement, mRefNode, getter_AddRefs(resultNode));
-  return result;
+  return mParent->InsertBefore(mElement, mRefNode, getter_AddRefs(resultNode));
 }
 
 NS_IMETHODIMP DeleteElementTxn::RedoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("%p Redo Delete Element element = %p, parent = %p\n", this, mElement.get(), mParent.get()); }
+#endif
+
   if (!mParent) { return NS_OK; } // this is a legal state, the txn is a no-op
   if (!mElement) { return NS_ERROR_NULL_POINTER; }
 
@@ -169,15 +171,14 @@ NS_IMETHODIMP DeleteElementTxn::RedoTransaction(void)
     mRangeUpdater->SelAdjDeleteNode(mElement);
 
   nsCOMPtr<nsIDOMNode> resultNode;
-  nsresult result = mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
-  return result;
+  return mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
 }
 
 
 NS_IMETHODIMP DeleteElementTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMerge)
 {
-  if (nsnull!=aDidMerge)
-    *aDidMerge=PR_FALSE;
+  if (aDidMerge)
+    *aDidMerge = PR_FALSE;
   return NS_OK;
 }
 

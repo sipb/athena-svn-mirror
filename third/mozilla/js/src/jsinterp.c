@@ -466,7 +466,7 @@ SetFunctionSlot(JSContext *cx, JSObject *obj, JSPropertyOp setter, jsid id,
     JSBool ok;
 
     slot = (uintN) JSVAL_TO_INT(id);
-    if (!JS_InstanceOf(cx, obj, &js_FunctionClass, NULL)) {
+    if (OBJ_GET_CLASS(cx, obj) != &js_FunctionClass) {
         /*
          * Given a non-function object obj that has a function object in its
          * prototype chain, where an argument or local variable property named
@@ -481,7 +481,7 @@ SetFunctionSlot(JSContext *cx, JSObject *obj, JSPropertyOp setter, jsid id,
             obj = OBJ_GET_PROTO(cx, obj);
             if (!obj)
                 return JS_TRUE;
-        } while (!JS_InstanceOf(cx, obj, &js_FunctionClass, NULL));
+        } while (OBJ_GET_CLASS(cx, obj) != &js_FunctionClass);
 
         JS_LOCK_OBJ(cx, obj);
         scope = OBJ_SCOPE(obj);
@@ -1190,6 +1190,7 @@ js_CheckRedeclaration(JSContext *cx, JSObject *obj, jsid id, uintN attrs,
     uintN oldAttrs, report;
     JSBool isFunction;
     jsval value;
+    const char *type, *name;
 
     if (!OBJ_LOOKUP_PROPERTY(cx, obj, id, &obj2, &prop))
         return JS_FALSE;
@@ -1228,15 +1229,22 @@ js_CheckRedeclaration(JSContext *cx, JSObject *obj, jsid id, uintN attrs,
             return JS_FALSE;
         isFunction = JSVAL_IS_FUNCTION(cx, value);
     }
+    type = (oldAttrs & attrs & JSPROP_GETTER)
+           ? js_getter_str
+           : (oldAttrs & attrs & JSPROP_SETTER)
+           ? js_setter_str
+           : (oldAttrs & JSPROP_READONLY)
+           ? js_const_str
+           : isFunction
+           ? js_function_str
+           : js_var_str;
+    name = js_AtomToPrintableString(cx, (JSAtom *)id);
+    if (!name)
+        return JS_FALSE;
     return JS_ReportErrorFlagsAndNumber(cx, report,
                                         js_GetErrorMessage, NULL,
                                         JSMSG_REDECLARED_VAR,
-                                        isFunction
-                                        ? js_function_str
-                                        : (oldAttrs & JSPROP_READONLY)
-                                        ? js_const_str
-                                        : js_var_str,
-                                        ATOM_BYTES((JSAtom *)id));
+                                        type, name);
 }
 
 #ifndef MAX_INTERP_LEVEL
@@ -1268,13 +1276,12 @@ js_Interpret(JSContext *cx, jsval *result)
     void *mark;
     jsbytecode *pc, *pc2, *endpc;
     JSOp op, op2;
-    JSCodeSpec *cs;
+    const JSCodeSpec *cs;
     JSAtom *atom;
     uintN argc, slot, attrs;
     jsval *vp, lval, rval, ltmp, rtmp;
     jsid id;
     JSObject *withobj, *origobj, *propobj;
-    JSIdArray *ida;
     jsval iter_state;
     JSProperty *prop;
     JSScopeProperty *sprop;
@@ -1286,6 +1293,9 @@ js_Interpret(JSContext *cx, jsval *result)
     JSType type;
 #ifdef DEBUG
     FILE *tracefp;
+#endif
+#if JS_HAS_EXPORT_IMPORT
+    JSIdArray *ida;
 #endif
 #if JS_HAS_SWITCH_STATEMENT
     jsint low, high, off, npairs;
@@ -1380,7 +1390,7 @@ js_Interpret(JSContext *cx, jsval *result)
         if (tracefp) {
             intN nuses, n;
 
-            fprintf(tracefp, "%4u: ", js_PCToLineNumber(script, pc));
+            fprintf(tracefp, "%4u: ", js_PCToLineNumber(cx, script, pc));
             js_Disassemble1(cx, script, pc,
                             PTRDIFF(pc, script->code, jsbytecode), JS_FALSE,
                             tracefp);
@@ -2546,11 +2556,8 @@ js_Interpret(JSContext *cx, jsval *result)
             ok = js_FindProperty(cx, id, &obj, &obj2, &prop);
             if (!ok)
                 goto out;
-            if (!prop) {
-                js_ReportIsNotDefined(cx, ATOM_BYTES(atom));
-                ok = JS_FALSE;
-                goto out;
-            }
+            if (!prop)
+                goto atom_not_defined;
 
             OBJ_DROP_PROPERTY(cx, obj2, prop);
             lval = OBJECT_TO_JSVAL(obj);
@@ -2715,7 +2722,7 @@ js_Interpret(JSContext *cx, jsval *result)
             VALUE_TO_OBJECT(cx, lval, obj);
             rval = FETCH_OPND(-3);
             SAVE_SP(fp);
-            CACHED_SET(OBJ_SET_PROPERTY(cx, obj, id, &rval));
+            ok = OBJ_SET_PROPERTY(cx, obj, id, &rval);
             if (!ok)
                 goto out;
             sp -= 3;
@@ -2873,8 +2880,7 @@ js_Interpret(JSContext *cx, jsval *result)
                  */
                 PUSH_OPND(cx->rval2);
                 cx->rval2set = JS_FALSE;
-                ELEMENT_OP(-1,
-                           CACHED_GET(OBJ_GET_PROPERTY(cx, obj, id, &rval)));
+                ELEMENT_OP(-1, ok = OBJ_GET_PROPERTY(cx, obj, id, &rval));
                 sp--;
                 STORE_OPND(-1, rval);
             }
@@ -2922,9 +2928,7 @@ js_Interpret(JSContext *cx, jsval *result)
                     if (op2 != JSOP_GROUP)
                         break;
                 }
-                js_ReportIsNotDefined(cx, ATOM_BYTES(atom));
-                ok = JS_FALSE;
-                goto out;
+                goto atom_not_defined;
             }
 
             /* Take the slow path if prop was not found in a native object. */
@@ -3357,6 +3361,7 @@ js_Interpret(JSContext *cx, jsval *result)
                 JS_ASSERT(JSVAL_IS_INT(rval));
                 op = (JSOp) JSVAL_TO_INT(rval);
                 JS_ASSERT((uintN)op < (uintN)JSOP_LIMIT);
+                LOAD_INTERRUPT_HANDLER(rt);
                 goto do_op;
               case JSTRAP_RETURN:
                 fp->rval = rval;
@@ -3483,9 +3488,10 @@ js_Interpret(JSContext *cx, jsval *result)
             id = (jsid) fun->atom;
 
             /*
-             * We must be at top-level (default "box", either function body or
-             * global) scope, not inside a with or other compound statement in
-             * the same compilation unit (ECMA Program).
+             * We must be at top-level (either outermost block that forms a
+             * function's body, or a global) scope, not inside an expression
+             * (JSOP_{ANON,NAMED}FUNOBJ) or compound statement (JSOP_CLOSURE)
+             * in the same compilation unit (ECMA Program).
              *
              * However, we could be in a Program being eval'd from inside a
              * with statement, so we need to distinguish variables object from
@@ -4125,7 +4131,7 @@ out:
         /*
          * Look for a try block within this frame that can catch the exception.
          */
-        JSSCRIPT_FIND_CATCH_START(script, pc, pc);
+        SCRIPT_FIND_CATCH_START(script, pc, pc);
         if (pc) {
             len = 0;
             cx->throwing = JS_FALSE;    /* caught */
@@ -4156,4 +4162,13 @@ no_catch:
         JS_SetVersion(cx, originalVersion);
     cx->interpLevel--;
     return ok;
+
+atom_not_defined:
+    {
+        const char *printable = js_AtomToPrintableString(cx, atom);
+        if (printable)
+            js_ReportIsNotDefined(cx, printable);
+        ok = JS_FALSE;
+        goto out;
+    }
 }

@@ -63,7 +63,6 @@
 
 static NS_DEFINE_CID(kSocketTransportServiceCID, NS_SOCKETTRANSPORTSERVICE_CID);
 static NS_DEFINE_CID(kStreamTransportServiceCID, NS_STREAMTRANSPORTSERVICE_CID);
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
 NS_IMPL_THREADSAFE_ADDREF(nsMsgProtocol)
 NS_IMPL_THREADSAFE_RELEASE(nsMsgProtocol)
@@ -77,7 +76,6 @@ NS_INTERFACE_MAP_BEGIN(nsMsgProtocol)
    NS_INTERFACE_MAP_ENTRY(nsITransportEventSink)
 NS_INTERFACE_MAP_END_THREADSAFE
 
-static PRUnichar *GetStringByID(PRInt32 stringID);
 static PRUnichar *FormatStringWithHostNameByID(PRInt32 stringID, nsIMsgMailNewsUrl *msgUri);
 
 
@@ -491,13 +489,13 @@ nsresult nsMsgProtocol::LoadUrl(nsIURI * aURL, nsISupports * aConsumer)
 
 nsresult nsMsgProtocol::SetUrl(nsIURI * aURL)
 {
-	m_url = dont_QueryInterface(aURL);
+	m_url = aURL;
 	return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgProtocol::SetLoadGroup(nsILoadGroup * aLoadGroup)
 {
-	m_loadGroup = dont_QueryInterface(aLoadGroup);
+	m_loadGroup = aLoadGroup;
 	return NS_OK;
 }
 
@@ -578,8 +576,8 @@ NS_IMETHODIMP nsMsgProtocol::GetContentType(nsACString &aContentType)
 
 NS_IMETHODIMP nsMsgProtocol::SetContentType(const nsACString &aContentType)
 {
-    m_ContentType = aContentType;
-    return NS_OK;
+    nsCAutoString charset;
+    return NS_ParseContentType(aContentType, m_ContentType, charset);
 }
 
 NS_IMETHODIMP nsMsgProtocol::GetContentCharset(nsACString &aContentCharset)
@@ -1366,29 +1364,6 @@ PRInt32 nsMsgAsyncWriteProtocol::SendData(nsIURI * aURL, const char * dataBuffer
 }
 
 #define MSGS_URL    "chrome://messenger/locale/messenger.properties"
-
-PRUnichar *GetStringByID(PRInt32 stringID)
-{
-   nsresult rv;
-   nsCOMPtr <nsIStringBundle> sBundle = nsnull;
-
-   nsCOMPtr<nsIStringBundleService> sBundleService = 
-            do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
-   if (NS_FAILED(rv) || (nsnull == sBundleService)) 
-      return nsnull;
-
-   rv = sBundleService->CreateBundle(MSGS_URL, getter_AddRefs(sBundle));
-   if (NS_FAILED(rv)) 
-      return nsnull;
-
-   PRUnichar *ptrv = nsnull;
-   rv = sBundle->GetStringFromID(stringID, &ptrv);
-
-   if (NS_FAILED(rv)) 
-      return nsnull;
-
-   return (ptrv);
-}
 
 PRUnichar *FormatStringWithHostNameByID(PRInt32 stringID, nsIMsgMailNewsUrl *msgUri)
 {

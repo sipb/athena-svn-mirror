@@ -291,7 +291,7 @@ nsMsgAccountManagerDataSource::Init()
     // get a weak ref to the account manager
     if (!mAccountManager) {
         am = do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
-        mAccountManager = getter_AddRefs(NS_GetWeakReference(am));
+        mAccountManager = do_GetWeakReference(am);
     } else
         am = do_QueryReferent(mAccountManager);
 
@@ -403,10 +403,19 @@ nsMsgAccountManagerDataSource::GetTarget(nsIRDFResource *source,
             // make sure the pointer math we're about to do is safe.
             NS_ENSURE_TRUE(sourceValue && (strlen(sourceValue) > strlen(NC_RDF_PAGETITLE_PREFIX)), NS_ERROR_UNEXPECTED);
 
-            nsCAutoString bundleURL;
-            bundleURL = "chrome://messenger/locale/";
-            bundleURL += "am-";
+            nsCOMPtr<nsIMsgAccountManager> am =
+              do_QueryReferent(mAccountManager, &rv);
+            NS_ENSURE_SUCCESS(rv, PR_FALSE);
+            
             // turn NC#PageTitlefoobar into foobar, so we can get the am-foobar.properties bundle
+            nsXPIDLCString chromePackageName;
+            rv = am->GetChromePackageName((sourceValue + strlen(NC_RDF_PAGETITLE_PREFIX)), getter_Copies(chromePackageName));
+            NS_ENSURE_SUCCESS(rv,rv);
+
+            nsCAutoString bundleURL;
+            bundleURL = "chrome://";
+            bundleURL += chromePackageName;
+            bundleURL += "/locale/am-";
             bundleURL += (sourceValue + strlen(NC_RDF_PAGETITLE_PREFIX));
             bundleURL += ".properties";
 
@@ -879,8 +888,8 @@ nsMsgAccountManagerDataSource::createServerResources(nsISupports *element,
   nsresult rv;
   // get parameters out of the data argument
   serverCreationParams *params = (serverCreationParams*)data;
-  nsCOMPtr<nsISupportsArray> servers = dont_QueryInterface(params->serverArray);
-  nsCOMPtr<nsIRDFService> rdf = dont_QueryInterface(params->rdfService);
+  nsCOMPtr<nsISupportsArray> servers = params->serverArray;
+  nsCOMPtr<nsIRDFService> rdf = params->rdfService;
 
   // the server itself is in the element argument
   nsCOMPtr<nsIMsgIncomingServer> server = do_QueryInterface(element, &rv);

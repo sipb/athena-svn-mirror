@@ -38,6 +38,10 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
+<!-- General -->
+<!ENTITY calendar.file.default.name  "My Calendar" >
+
+<!-- Alarm -->
 <!ENTITY alarm.units.minutes  "Minutes" >
 <!ENTITY alarm.units.hours    "Hours" >
 <!ENTITY alarm.units.days     "Days" >
@@ -80,6 +84,7 @@
 <!ENTITY newevent.invite.label       "Invite" >
 <!ENTITY newevent.email.label        "Email Alarm To" >
 <!ENTITY newevent.beforealarm.label  "before the event starts" >
+<!ENTITY newevent.beforealarmends.label  "before the event ends" >
 <!ENTITY newevent.repeat.label       "Repeat every" >
 <!ENTITY newevent.until.label        "Until" >
 <!ENTITY newevent.forever.label      "Forever" >
@@ -102,7 +107,7 @@
 <!ENTITY newevent.status.label "Status" >
 <!ENTITY newevent.status.longlabel "Event Status">
 <!ENTITY newevent.status.needsaction.label "Needs Action" >
-<!ENTITY newevent.status.inprogress.label  "In Progress" >
+<!ENTITY newevent.status.inprogress.label  "In Process" >
 <!ENTITY newevent.status.completed.label   "Completed" >
 <!ENTITY newevent.status.cancelled.label   "Cancelled" >
 <!ENTITY newevent.status.tentative.label   "Tentative" >
@@ -111,6 +116,18 @@
 <!ENTITY newevent.advanced.repeat.dayofmonth.label "On the xth day of the month">          
 <!ENTITY newevent.advanced.repeat.dayofweek.label "4th Tuesday of the month">          
 <!ENTITY newevent.advanced.repeat.lastdayofweek.label "Last Tuesday of the month">          
+<!ENTITY newevent.advanced.repeat.ofthemonth.label " of the month">          
+
+<!ENTITY newevent.advanced.repeat.onthe.label "On the ">                   
+<!ENTITY newevent.advanced.repeat.last.label "Last ">          
+<!ENTITY newevent.advanced.repeat.first.label "First"> 
+<!ENTITY newevent.advanced.repeat.second.label "Second"> 
+<!ENTITY newevent.advanced.repeat.third.label "Third"> 
+<!ENTITY newevent.advanced.repeat.fourth.label "Fourth"> 
+<!ENTITY newevent.advanced.repeat.first.extension "st"> 
+<!ENTITY newevent.advanced.repeat.second.extension "nd"> 
+<!ENTITY newevent.advanced.repeat.third.extension "rd"> 
+<!ENTITY newevent.advanced.repeat.nth.extension "th"> 
 
 <!ENTITY newevent.choosefile.label "Choose File">
 <!ENTITY newevent.removeselectedfile.label "Remove Selected File">
@@ -124,6 +141,12 @@
 <!ENTITY newtodo.starttime.warning "Your start date occurs after your due date.">
 <!ENTITY newtodo.cancelled.label "Cancelled">
 <!ENTITY newtodo.status.label "Status">
+<!ENTITY newtodo.beforealarm.label  "before the task starts" >
+<!ENTITY newtodo.beforealarmends.label  "before the task is due" >
+<!ENTITY newtodo.newtodo.tab.label "Task" >
+<!ENTITY newtodo.status.longlabel "Task Status">
+<!ENTITY newtodo.duetime.warning    "Your start time is after your due time.">
+<!ENTITY newtodo.duedate.warning    "Your start date is after your due date.">
 
 <!ENTITY calendar.confirm.deleteevent "Are you sure you want to delete this event titled: " >        
 <!ENTITY calendar.confirm.deleteuntitledevent "Are you sure you want to delete this untitled event?" >
@@ -153,9 +176,13 @@
 <!ENTITY calendar.flat.topbar.gototoday        "Go To Today" >
 <!ENTITY calendar.flat.topbar.choosedate       "Go To Date" >
 <!ENTITY calendar.flat.topbar.dayview          "Day View" >
+<!ENTITY calendar.dayview.accesskey            "d" >
 <!ENTITY calendar.flat.topbar.weekview         "Week View" >
+<!ENTITY calendar.weekview.accesskey           "w" >
 <!ENTITY calendar.flat.topbar.monthview        "Month View" >
+<!ENTITY calendar.monthview.accesskey          "m" >
 <!ENTITY calendar.flat.topbar.multiweekview   "Multiweek" >
+<!ENTITY calendar.multiweekview.accesskey     "u" >
 
 <!ENTITY calendar.tools.delete.tooltip         "Delete Event" >
 <!ENTITY calendar.tools.modify.tooltip         "Modify Event" >
@@ -173,8 +200,6 @@
 <!ENTITY calendar.calendartab.label "Calendar">
 <!ENTITY calendar.listofcalendarstab.label "Calendars">
 <!ENTITY calendar.gototoday.button.label        "Go To Today" >
-
-<!ENTITY calendar.listofcalendarstab.label "Calendars">
 
 <!ENTITY calendar.calendarlistbox.label "Calendars">
 
@@ -197,6 +222,7 @@
 <!ENTITY calendar.unifinder.tree.categories.label    "Categories">
 <!ENTITY calendar.unifinder.tree.location.label    "Location">
 <!ENTITY calendar.unifinder.tree.status.label    "Status">
+<!ENTITY calendar.unifinder.tree.filename.label    "Calendar Name">
 
 <!ENTITY calendar.gototoday.button.tooltip        "Go to today" >
 <!ENTITY calendar.choosedate.button.tooltip       "Choose date to go to" >
@@ -317,7 +343,7 @@
 <!ENTITY calendar.about.title "About Mozilla Calendar">
 <!ENTITY calendar.about.tab   "About">
 
-<!ENTITY throbber.tooltip "Home page">
+<!ENTITY throbber.tooltip "Go to the Mozilla home page">
 <!ENTITY menuBar.tooltip "Menu bar">
 <!ENTITY navigationToolbar.tooltip "Navigation Toolbar">
 
@@ -342,6 +368,8 @@
 <!ENTITY calendar.server.dialog.browse.label        "Browse For Local File...">
 <!ENTITY calendar.local.calendar.dialog.help.label  "You can optionally specify a file location where the calendar should be created.">
 <!ENTITY calendar.server.dialog.help.label          "You can enter a local file path, or a remote file path like http://www.mozilla.org/projects/calendar/caldata/CanadaHolidays.ics">
+<!-- Calendar Coloring -->
+<!ENTITY calendar.server.dialog.color.label "Color">
 
 <!ENTITY calendar.local.calendar.dialog.optional.label "The following fields are optional, and are used for publishing the calendar to a remote location.">
 
@@ -352,6 +380,8 @@
 <!ENTITY calendar.publish.password.label            "Password">
 <!ENTITY calendar.publish.username.description      "(Optional) The username to upload to this server.">
 <!ENTITY calendar.publish.password.description      "(Optional) The password to upload to this server.">
+<!ENTITY calendar.publish.publish.button      "Publish">
+<!ENTITY calendar.publish.close.button      "Close">
 
 <!ENTITY calendar.publish.example.url.description   "Something like http://www.myserver.com/webdav/test.ics">
 
@@ -365,8 +395,20 @@
 <!ENTITY calendar.wizard.publish.label             "Publish: Publish events to a remote machine (ie. on the Internet) for others to subscribe to.">
 
 <!-- Calendar Import Duplicates Dialog -->
+<!ENTITY calendar.importdupes.dialog.title "Duplicate Management" >
 <!ENTITY calendar.importdupes.caption.label "What to do with duplicates:">
 <!ENTITY calendar.importdupes.autodiscard.label "Automatically discard duplicates">
 <!ENTITY calendar.importdupes.adddupes.label "Add duplicates">
 <!ENTITY calendar.importdupes.prompt.label "Prompt for each">
+
+
+<!-- Calendar Printing -->
+<!ENTITY calendar.print.window.title "Print A Calendar">
+<!ENTITY calendar.print.selectoptions.label "Select your options below, and use OK to print">
+<!ENTITY calendar.print.selectviews.label "Select View to Print">
+<!ENTITY calendar.print.listselected.label "List Selected Events">
+<!ENTITY calendar.print.onlyitemsstatus.label "Print only items with this status:">
+<!ENTITY calendar.print.onlyitemscategory.label "Print only items with this category:">
+
+
 

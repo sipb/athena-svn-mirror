@@ -53,20 +53,6 @@ class txResultBuffer
 public:
     ~txResultBuffer();
 
-    nsrefcnt AddRef()
-    {
-        return ++mRefCnt;
-    }
-    nsrefcnt Release()
-    {
-        if (--mRefCnt == 0) {
-            mRefCnt = 1; //stabilize
-            delete this;
-            return 0;
-        }
-        return mRefCnt;
-    }
-
     nsresult addTransaction(txOutputTransaction* aTransaction);
     nsresult flushToHandler(txAXMLEventHandler* aHandler);
     txOutputTransaction* getLastTransaction();
@@ -75,7 +61,6 @@ public:
 
 private:
     nsVoidArray mTransactions;
-    nsAutoRefCnt mRefCnt;
 };
 
 class txBufferingHandler : public txAXMLEventHandler
@@ -87,7 +72,7 @@ public:
     TX_DECL_TXAXMLEVENTHANDLER
 
 protected:
-    nsRefPtr<txResultBuffer> mBuffer;
+    nsAutoPtr<txResultBuffer> mBuffer;
     PRPackedBool mCanAddAttribute;
 };
 

@@ -64,6 +64,8 @@
 #endif
 #endif /* defined(DEBUG) */
 
+#include "nsTraceRefcntImpl.h"
+
 #define UNLOAD_DEPENDENT_LIBS
 #ifdef HPUX
 #undef UNLOAD_DEPENDENT_LIBS
@@ -131,7 +133,7 @@ PRBool nsDll::Load(void)
     if (m_dllSpec)
     {
 #ifdef NS_BUILD_REFCNT_LOGGING
-        nsTraceRefcnt::SetActivityIsLegal(PR_FALSE);
+        nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
 #endif
         
     // Load any library dependencies
@@ -143,11 +145,6 @@ PRBool nsDll::Load(void)
     //   component is loaded into memory, we can release our hold 
     //   on the dependent libraries with the assumption that the 
     //   component library holds a reference via the OS so loader.
-
-    if (!m_loader->mLoadedDependentLibs) {
-        NS_ERROR("huh?  no dependent libs");
-        return PR_TRUE;
-    }
 
 #if defined(XP_UNIX)
     nsCOMPtr<nsIComponentLoaderManager> manager = do_QueryInterface(m_loader->mCompMgr);
@@ -188,12 +185,12 @@ PRBool nsDll::Load(void)
         while (token!=nsnull)
         {
             nsCStringKey key(token);
-            if (m_loader->mLoadedDependentLibs->Get(&key)) {
+            if (m_loader->mLoadedDependentLibs.Get(&key)) {
                 token = nsCRT::strtok(newStr, " ", &newStr);
                 continue;
             }
 
-            m_loader->mLoadedDependentLibs->Put(&key, (void*)1);
+            m_loader->mLoadedDependentLibs.Put(&key, (void*)1);
 
             nsXPIDLCString libpath;
             file->SetNativeLeafName(nsDependentCString(token));
@@ -255,13 +252,13 @@ PRBool nsDll::Load(void)
 #endif
 
 #ifdef NS_BUILD_REFCNT_LOGGING
-        nsTraceRefcnt::SetActivityIsLegal(PR_TRUE);
+        nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
         if (m_instance) {
             // Inform refcnt tracer of new library so that calls through the
             // new library can be traced.
             nsXPIDLCString displayPath;
             GetDisplayPath(displayPath);
-            nsTraceRefcnt::LoadLibrarySymbols(displayPath.get(), m_instance);
+            nsTraceRefcntImpl::LoadLibrarySymbols(displayPath.get(), m_instance);
         }
 #endif
     }
@@ -287,11 +284,11 @@ PRBool nsDll::Unload(void)
     Shutdown();
 
 #ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcnt::SetActivityIsLegal(PR_FALSE);
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
 #endif
 	PRStatus ret = PR_UnloadLibrary(m_instance);
 #ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcnt::SetActivityIsLegal(PR_TRUE);
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
 #endif
 
 	if (ret == PR_SUCCESS)

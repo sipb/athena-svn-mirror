@@ -4,7 +4,7 @@
   FILE: icalderivedproperty.c
   CREATOR: eric 15 Feb 2001
   
-  $Id: icalderivedproperty.c,v 1.1.1.1.2.1 2003-07-14 19:05:15 ghudson Exp $
+  $Id: icalderivedproperty.c,v 1.1.1.1.2.2 2004-01-02 19:56:29 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org

@@ -61,6 +61,7 @@
 
 */
 
+#include "xpcom-config.h"
 #include NEW_H
 #include "nsCOMPtr.h"
 #include "nsIComponentManager.h"
@@ -209,7 +210,7 @@ CompositeEnumeratorImpl::~CompositeEnumeratorImpl(void)
 
 NS_IMPL_ADDREF(CompositeEnumeratorImpl)
 NS_IMPL_RELEASE_WITH_DESTROY(CompositeEnumeratorImpl, Destroy())
-NS_IMPL_QUERY_INTERFACE1(CompositeEnumeratorImpl, nsISimpleEnumerator);
+NS_IMPL_QUERY_INTERFACE1(CompositeEnumeratorImpl, nsISimpleEnumerator)
 
 NS_IMETHODIMP
 CompositeEnumeratorImpl::HasMoreElements(PRBool* aResult)
@@ -466,8 +467,7 @@ CompositeArcsInOutEnumeratorImpl::Destroy()
 {
     // Keep the datasource alive for the duration of the stack
     // frame so its allocator stays valid.
-    nsCOMPtr<nsIRDFCompositeDataSource> kungFuDeathGrip =
-        dont_QueryInterface(mCompositeDataSource);
+    nsCOMPtr<nsIRDFCompositeDataSource> kungFuDeathGrip = mCompositeDataSource;
 
     nsFixedSizeAllocator& pool = mCompositeDataSource->mAllocator;
     this->~CompositeArcsInOutEnumeratorImpl();
@@ -597,8 +597,7 @@ CompositeAssertionEnumeratorImpl::Destroy()
 {
     // Keep the datasource alive for the duration of the stack
     // frame so its allocator stays valid.
-    nsCOMPtr<nsIRDFCompositeDataSource> kungFuDeathGrip =
-        dont_QueryInterface(mCompositeDataSource);
+    nsCOMPtr<nsIRDFCompositeDataSource> kungFuDeathGrip = mCompositeDataSource;
 
     nsFixedSizeAllocator& pool = mCompositeDataSource->mAllocator;
     this->~CompositeAssertionEnumeratorImpl();
@@ -647,7 +646,7 @@ CompositeDataSourceImpl::CompositeDataSourceImpl(void)
 // nsISupports interface
 //
 
-NS_IMPL_THREADSAFE_ADDREF(CompositeDataSourceImpl);
+NS_IMPL_THREADSAFE_ADDREF(CompositeDataSourceImpl)
 
 NS_IMETHODIMP_(nsrefcnt)
 CompositeDataSourceImpl::Release()

@@ -55,7 +55,6 @@
 #include "nsIMsgAccountManager.h"
 #include "nsIMsgMailSession.h"
 
-static NS_DEFINE_CID(kMsgIdentityCID, NS_MSGIDENTITY_CID);
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 
 NS_IMPL_ISUPPORTS1(nsMsgAccount, nsIMsgAccount)
@@ -184,7 +183,7 @@ nsMsgAccount::SetIncomingServer(nsIMsgIncomingServer * aIncomingServer)
     m_prefs->SetCharPref(serverPrefName.get(), key);
   }
 
-  m_incomingServer = dont_QueryInterface(aIncomingServer);
+  m_incomingServer = aIncomingServer;
 
   nsCOMPtr<nsIMsgAccountManager> accountManager =
     do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
@@ -295,7 +294,7 @@ nsMsgAccount::SetDefaultIdentity(nsIMsgIdentity * aDefaultIdentity)
   if (m_identities->IndexOf(aDefaultIdentity) == -1)
     return NS_ERROR_UNEXPECTED;
   
-  m_defaultIdentity = dont_QueryInterface(aDefaultIdentity);
+  m_defaultIdentity = aDefaultIdentity;
   return NS_OK;
 }
 
@@ -336,7 +335,7 @@ nsMsgAccount::RemoveIdentity(nsIMsgIdentity *identity)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMPL_GETTER_STR(nsMsgAccount::GetKey, m_accountKey);
+NS_IMPL_GETTER_STR(nsMsgAccount::GetKey, m_accountKey)
 
 nsresult
 nsMsgAccount::SetKey(const char *accountKey)

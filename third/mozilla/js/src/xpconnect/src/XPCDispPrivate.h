@@ -1089,6 +1089,17 @@ public:
     static
     JSBool Invoke(XPCCallContext & ccx, CallMode mode);
     /**
+     * Performs the various security checks, caps, hosting flags, etc.
+     * Instantiates the object and will return that object if createdObject 
+     * result is not null
+     * @param ccx an XPConnect call context
+     * @param aCID the class ID to be tested
+     * @param createdObject is the optional object to be returned
+     */
+    static
+    HRESULT SecurityCheck(XPCCallContext & ccx, const CLSID & aCID,
+                          IDispatch ** createdObject = nsnull);
+    /**
      * Instantiates a COM object given a class ID or a prog ID
      * @param ccx an XPConnect call context
      * @param className a prog ID or a class ID in the form of 
@@ -1137,30 +1148,6 @@ public:
      */
     static JSBool Initialize(JSContext * aJSContext,
                              JSObject* aGlobalJSObj);
-    /**
-     * This is the define property for the IDispatch system. It called from
-     * the XPConnect's DefineProperty
-     * @param ccx an XPConnect call context
-     * @param obj the JS object receiving the property
-     * @param idval ID of the property to add
-     * @param wrapperToReflectInterfaceNames the wrapper
-     * @param propFlags JS property flags
-     * @param resolved a pointer to a JSBool, set to true if properly resolved
-     */
-    static JSBool DefineProperty(XPCCallContext & ccx, 
-                                 JSObject *obj, jsval idval,
-                                 XPCWrappedNative* wrapperToReflectInterfaceNames,
-                                 uintN propFlags, JSBool* resolved);
-    /**
-     * IDispatch system's enumeration function. This is called 
-     * from XPC_WN_Shared_Enumerate
-     * @param ccx a XPConnect call context
-     * @param obj pointer to the JSObject
-     * @param wrapper pointer to the wrapper
-     * @return true if the enumeration was successful
-     */
-    static JSBool Enumerate(XPCCallContext& ccx, JSObject* obj, 
-                            XPCWrappedNative * wrapper);
     /**
      * This is the delegated QI called from the wrapped JS class
      * DelegatedQueryInterface

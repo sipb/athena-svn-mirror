@@ -4,7 +4,7 @@
  CREATOR: eric 23 December 1999
 
 
- $Id: icalfileset.h,v 1.1.1.1.2.1 2003-07-14 19:05:17 ghudson Exp $
+ $Id: icalfileset.h,v 1.1.1.1.2.2 2004-01-02 19:56:32 ghudson Exp $
  $Locker:  $
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org

@@ -77,6 +77,14 @@
 #include "nsDOMClassInfo.h"
 #include "nsIAtom.h"
 
+// For locale aware string methods
+#include "nsUnicharUtils.h"
+#include "nsILocaleService.h"
+#include "nsICollation.h"
+#include "nsCollationCID.h"
+
+static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
+
 #ifdef MOZ_LOGGING
 // Force PR_LOGGING so we can get JS strict warnings even in release builds
 #define FORCE_PR_LOG 1
@@ -92,35 +100,40 @@
 const size_t gStackSize = 8192;
 
 #ifdef PR_LOGGING
-static PRLogModuleInfo* gJSDiagnostics = nsnull;
+static PRLogModuleInfo* gJSDiagnostics;
 #endif
 
+// Thank you Microsoft!
+#ifdef CompareString
+#undef CompareString
+#endif
 
 #define NS_GC_DELAY                2000 // ms
 #define NS_FIRST_GC_DELAY          10000 // ms
 
-static nsITimer *sGCTimer = nsnull;
-static PRBool sReadyForGC = PR_FALSE;
+static nsITimer *sGCTimer;
+static PRBool sReadyForGC;
 
 nsScriptNameSpaceManager *gNameSpaceManager;
 
-static nsIJSRuntimeService *sRuntimeService = nsnull;
-JSRuntime *nsJSEnvironment::sRuntime = nsnull;
+static nsIJSRuntimeService *sRuntimeService;
+JSRuntime *nsJSEnvironment::sRuntime;
 
 static const char kJSRuntimeServiceContractID[] =
   "@mozilla.org/js/xpc/RuntimeService;1";
-static const char kScriptSecurityManagerContractID[] =
-  NS_SCRIPTSECURITYMANAGER_CONTRACTID;
 
 static PRThread *gDOMThread;
 
 static JSGCCallback gOldJSGCCallback;
 
-static PRBool sDidShutdown = PR_FALSE;
+static PRBool sDidShutdown;
 
-static PRInt32 sContextCount = 0;
+static PRInt32 sContextCount;
 
-static nsIScriptSecurityManager *sSecurityManager = nsnull;
+static nsIScriptSecurityManager *sSecurityManager;
+
+static nsICollation *gCollation;
+
 
 void JS_DLL_CALLBACK
 NS_ScriptErrorReporter(JSContext *cx,
@@ -165,7 +178,7 @@ NS_ScriptErrorReporter(JSContext *cx,
       nsCOMPtr<nsIDocShell> docShell;
       globalObject->GetDocShell(getter_AddRefs(docShell));
       if (docShell) {
-        static PRInt32 errorDepth = 0; // Recursion prevention
+        static PRInt32 errorDepth; // Recursion prevention
         errorDepth++;
 
         nsCOMPtr<nsIPresContext> presContext;
@@ -253,7 +266,7 @@ NS_ScriptErrorReporter(JSContext *cx,
   if (status != nsEventStatus_eIgnore && !JSREPORT_IS_WARNING(report->flags))
     error.Append(NS_LITERAL_STRING("Error was suppressed by event handler\n"));
 
-#ifdef DEBUG  
+#ifdef DEBUG
   char *errorStr = ToNewCString(error);
   if (errorStr) {
     fprintf(stderr, "%s\n", errorStr);
@@ -284,6 +297,92 @@ NS_ScriptErrorReporter(JSContext *cx,
   // XXX do we really want to be doing this?
   ::JS_ClearPendingException(cx);
 }
+
+static JSBool
+ChangeCase(JSContext *cx, JSString *src, jsval *rval,
+           void(* changeCaseFnc)(const nsAString&, nsAString&))
+{
+  nsDependentString str(NS_REINTERPRET_CAST(const PRUnichar *,
+                                            ::JS_GetStringChars(src)),
+                        ::JS_GetStringLength(src));
+
+  nsAutoString result;
+  changeCaseFnc(str, result);
+
+  JSString *ucstr = JS_NewUCStringCopyN(cx, result.get(), result.Length());
+  if (!ucstr) {
+    return JS_FALSE;
+  }
+
+  *rval = STRING_TO_JSVAL(ucstr);
+
+  return JS_TRUE;
+}
+
+static JSBool JS_DLL_CALLBACK
+LocaleToUpperCase(JSContext *cx, JSString *src, jsval *rval)
+{
+  return ChangeCase(cx, src, rval, ToUpperCase);
+}
+
+static JSBool JS_DLL_CALLBACK
+LocaleToLowerCase(JSContext *cx, JSString *src, jsval *rval)
+{
+  return ChangeCase(cx, src, rval, ToLowerCase);
+}
+
+static JSBool JS_DLL_CALLBACK
+LocaleCompare(JSContext *cx, JSString *src1, JSString *src2, jsval *rval)
+{
+  nsresult rv;
+
+  if (!gCollation) {
+    nsCOMPtr<nsILocaleService> localeService =
+      do_GetService(NS_LOCALESERVICE_CONTRACTID, &rv);
+
+    if (NS_SUCCEEDED(rv)) {
+      nsCOMPtr<nsILocale> locale;
+      rv = localeService->GetApplicationLocale(getter_AddRefs(locale));
+
+      if (NS_SUCCEEDED(rv)) {
+        nsCOMPtr<nsICollationFactory> colFactory =
+          do_CreateInstance(kCollationFactoryCID, &rv);
+
+        if (NS_SUCCEEDED(rv)) {
+          rv = colFactory->CreateCollation(locale, &gCollation);
+        }
+      }
+    }
+
+    if (NS_FAILED(rv)) {
+      nsDOMClassInfo::ThrowJSException(cx, rv);
+
+      return JS_FALSE;
+    }
+  }
+
+  nsDependentString str1(NS_REINTERPRET_CAST(const PRUnichar *,
+                                             ::JS_GetStringChars(src1)),
+                         ::JS_GetStringLength(src1));
+  nsDependentString str2(NS_REINTERPRET_CAST(const PRUnichar *,
+                                             ::JS_GetStringChars(src2)),
+                         ::JS_GetStringLength(src2));
+
+  PRInt32 result;
+  rv = gCollation->CompareString(kCollationStrengthDefault, str1, str2,
+                                 &result);
+
+  if (NS_FAILED(rv)) {
+    nsDOMClassInfo::ThrowJSException(cx, rv);
+
+    return JS_FALSE;
+  }
+
+  *rval = INT_TO_JSVAL(result);
+
+  return JS_TRUE;
+}
+
 
 #define MAYBE_GC_BRANCH_COUNT_MASK 0x00000fff // 4095
 #define MAYBE_STOP_BRANCH_COUNT_MASK 0x003fffff
@@ -408,7 +507,7 @@ nsJSContext::nsJSContext(JSRuntime *aRuntime) : mGCOnDestruction(PR_TRUE)
 
   mContext = ::JS_NewContext(aRuntime, gStackSize);
   if (mContext) {
-    ::JS_SetContextPrivate(mContext, (void *)this);
+    ::JS_SetContextPrivate(mContext, NS_STATIC_CAST(nsIScriptContext *, this));
 
     // Make sure the new context gets the default context options
     ::JS_SetOptions(mContext, mDefaultJSOptions);
@@ -423,6 +522,15 @@ nsJSContext::nsJSContext(JSRuntime *aRuntime) : mGCOnDestruction(PR_TRUE)
     }
 
     ::JS_SetBranchCallback(mContext, DOMBranchCallback);
+
+    static JSLocaleCallbacks localeCallbacks =
+      {
+        LocaleToUpperCase,
+        LocaleToLowerCase,
+        LocaleCompare
+      };
+
+    ::JS_SetLocaleCallbacks(mContext, &localeCallbacks);
   }
   mIsInitialized = PR_FALSE;
   mNumEvaluations = 0;
@@ -472,8 +580,8 @@ nsJSContext::~nsJSContext()
     // the security manager.
 
     NS_IF_RELEASE(sRuntimeService);
-
     NS_IF_RELEASE(sSecurityManager);
+    NS_IF_RELEASE(gCollation);
   }
 }
 
@@ -551,7 +659,7 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
   // from native code via XPConnect uses the right context.  Do this whether
   // or not the SecurityManager said "ok", in order to simplify control flow
   // below where we pop before returning.
-  nsCOMPtr<nsIJSContextStack> stack = 
+  nsCOMPtr<nsIJSContextStack> stack =
            do_GetService("@mozilla.org/js/xpc/ContextStack;1", &rv);
   if (NS_FAILED(rv) || NS_FAILED(stack->Push(mContext))) {
     JSPRINCIPALS_DROP(mContext, jsprin);
@@ -729,7 +837,7 @@ nsJSContext::EvaluateString(const nsAString& aScript,
   // from native code via XPConnect uses the right context.  Do this whether
   // or not the SecurityManager said "ok", in order to simplify control flow
   // below where we pop before returning.
-  nsCOMPtr<nsIJSContextStack> stack = 
+  nsCOMPtr<nsIJSContextStack> stack =
            do_GetService("@mozilla.org/js/xpc/ContextStack;1", &rv);
   if (NS_FAILED(rv) || NS_FAILED(stack->Push(mContext))) {
     JSPRINCIPALS_DROP(mContext, jsprin);
@@ -890,7 +998,7 @@ nsJSContext::ExecuteScript(void* aScriptObject,
 
   // Push our JSContext on our thread's context stack, in case native code
   // called from JS calls back into JS via XPConnect.
-  nsCOMPtr<nsIJSContextStack> stack = 
+  nsCOMPtr<nsIJSContextStack> stack =
            do_GetService("@mozilla.org/js/xpc/ContextStack;1", &rv);
   if (NS_FAILED(rv) || NS_FAILED(stack->Push(mContext))) {
     return NS_ERROR_FAILURE;
@@ -936,32 +1044,31 @@ nsJSContext::ExecuteScript(void* aScriptObject,
 
 const char *gEventArgv[] = {"event"};
 
-void
-AtomToEventHandlerName(nsIAtom *aName, char *charName, PRUint32 charNameSize)
+static inline const char *
+AtomToEventHandlerName(nsIAtom *aName)
 {
-  // optimized to avoid ns*Str*.h explicit/implicit copying and malloc'ing
-  // even nsCAutoString may call an Append that copy-constructs an nsStr from
-  // a const PRUnichar*
   const char *name;
+
   aName->GetUTF8String(&name);
+
+#ifdef DEBUG
+  const char *cp;
   char c;
-  PRUint32 i = 0;
+  for (cp = name; *cp != '\0'; ++cp)
+  {
+    c = *cp;
+    NS_ASSERTION (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z'),
+                  "non-ASCII non-alphabetic event handler name");
+  }
+#endif
 
-  do {
-    NS_ASSERTION(name[i] < 128, "non-ASCII event handler name");
-    c = name[i];
-
-    // The HTML content sink must have folded to lowercase already.
-    NS_ASSERTION(c == '\0' || isalpha(c), "non-alphabetic event handler name");
-
-    NS_ASSERTION(i < charNameSize, "overlong event handler name");
-    charName[i++] = c;
-  } while (c != '\0');
+  return name;
 }
 
 NS_IMETHODIMP
 nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
                                  const nsAString& aBody,
+                                 const char *aURL, PRUint32 aLineNo,
                                  PRBool aShared, void** aHandler)
 {
   if (!sSecurityManager) {
@@ -990,16 +1097,14 @@ nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
     NS_ENSURE_TRUE(jsprin, NS_ERROR_NOT_AVAILABLE);
   }
 
-  char charName[64];
-  AtomToEventHandlerName(aName, charName, sizeof charName);
+  const char *charName = AtomToEventHandlerName(aName);
 
   JSFunction* fun =
       ::JS_CompileUCFunctionForPrincipals(mContext, target, jsprin,
                                           charName, 1, gEventArgv,
                                           (jschar*)(const PRUnichar*)PromiseFlatString(aBody).get(),
                                           aBody.Length(),
-                                          //XXXbe filename, lineno:
-                                          nsnull, 0);
+                                          aURL, aLineNo);
 
   if (jsprin) {
     JSPRINCIPALS_DROP(mContext, jsprin);
@@ -1021,7 +1126,7 @@ nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
 
 NS_IMETHODIMP
 nsJSContext::CompileFunction(void* aTarget,
-                             const nsCString& aName,
+                             const nsACString& aName,
                              PRUint32 aArgCount,
                              const char** aArgArray,
                              const nsAString& aBody,
@@ -1048,7 +1153,8 @@ nsJSContext::CompileFunction(void* aTarget,
   JSObject *target = (JSObject*)aTarget;
   JSFunction* fun =
       ::JS_CompileUCFunctionForPrincipals(mContext, target, jsprin,
-                                          aName.get(), aArgCount, aArgArray,
+                                          PromiseFlatCString(aName).get(),
+                                          aArgCount, aArgArray,
                                           (jschar*)(const PRUnichar*)PromiseFlatString(aBody).get(),
                                           aBody.Length(),
                                           aURL, aLineNo);
@@ -1087,7 +1193,7 @@ nsJSContext::CallEventHandler(void *aTarget, void *aHandler, PRUint32 argc,
   if (NS_FAILED(rv))
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIJSContextStack> stack = 
+  nsCOMPtr<nsIJSContextStack> stack =
            do_GetService("@mozilla.org/js/xpc/ContextStack;1", &rv);
   if (NS_FAILED(rv) || NS_FAILED(stack->Push(mContext)))
     return NS_ERROR_FAILURE;
@@ -1125,8 +1231,7 @@ nsJSContext::CallEventHandler(void *aTarget, void *aHandler, PRUint32 argc,
 NS_IMETHODIMP
 nsJSContext::BindCompiledEventHandler(void *aTarget, nsIAtom *aName, void *aHandler)
 {
-  char charName[64];
-  AtomToEventHandlerName(aName, charName, sizeof charName);
+  const char *charName = AtomToEventHandlerName(aName);
 
   JSObject *funobj = (JSObject*) aHandler;
   JSObject *target = (JSObject*) aTarget;
@@ -1639,7 +1744,7 @@ nsJSContext::GetProcessingScriptTag(PRBool * aResult)
 }
 
 NS_IMETHODIMP
-nsJSContext::SetProcessingScriptTag(PRBool aFlag) 
+nsJSContext::SetProcessingScriptTag(PRBool aFlag)
 {
   mProcessingScriptTag = aFlag;
   return NS_OK;
@@ -1699,7 +1804,7 @@ nsJSContext::FireGCTimer()
 
   static PRBool first = PR_TRUE;
 
-  sGCTimer->InitWithCallback(this, 
+  sGCTimer->InitWithCallback(this,
                              first ? NS_FIRST_GC_DELAY : NS_GC_DELAY,
                              nsITimer::TYPE_ONE_SHOT);
 
@@ -1717,7 +1822,7 @@ DOMGCCallback(JSContext *cx, JSGCStatus status)
 // static
 nsresult nsJSEnvironment::Init()
 {
-  static PRBool isInitialized = PR_FALSE;
+  static PRBool isInitialized;
 
   if (isInitialized) {
     return NS_OK;
@@ -1753,8 +1858,8 @@ nsresult nsJSEnvironment::Init()
   // Set these global xpconnect options...
   nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
   if (NS_SUCCEEDED(rv)) {
-    xpc->SetCollectGarbageOnMainThreadOnly(PR_TRUE); 
-    xpc->SetDeferReleasesUntilAfterGarbageCollection(PR_TRUE); 
+    xpc->SetCollectGarbageOnMainThreadOnly(PR_TRUE);
+    xpc->SetDeferReleasesUntilAfterGarbageCollection(PR_TRUE);
   } else {
     NS_WARNING("Failed to get XPConnect service!");
   }
@@ -1763,7 +1868,7 @@ nsresult nsJSEnvironment::Init()
   // Initialize LiveConnect.  XXXbe use contractid rather than GetCID
   // NOTE: LiveConnect is optional so initialisation will still succeed
   //       even if the service is not present.
-  nsCOMPtr<nsILiveConnectManager> manager = 
+  nsCOMPtr<nsILiveConnectManager> manager =
            do_GetService(nsIJVMManager::GetCID());
 
   // Should the JVM manager perhaps define methods for starting up
@@ -1774,7 +1879,7 @@ nsresult nsJSEnvironment::Init()
   }
 #endif /* OJI */
 
-  rv = CallGetService(kScriptSecurityManagerContractID, &sSecurityManager);
+  rv = CallGetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &sSecurityManager);
 
   isInitialized = NS_SUCCEEDED(rv);
 
@@ -1802,6 +1907,7 @@ void nsJSEnvironment::ShutDown()
 
     NS_IF_RELEASE(sRuntimeService);
     NS_IF_RELEASE(sSecurityManager);
+    NS_IF_RELEASE(gCollation);
   }
 
   sDidShutdown = PR_TRUE;

@@ -34,7 +34,7 @@
 /*
  * Permanent Certificate database handling code 
  *
- * $Id: pcertdb.c,v 1.1.1.1.2.1 2003-07-14 19:07:27 ghudson Exp $
+ * $Id: pcertdb.c,v 1.1.1.1.2.2 2004-01-02 20:00:04 ghudson Exp $
  */
 #include "prtime.h"
 

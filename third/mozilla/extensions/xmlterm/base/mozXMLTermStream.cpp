@@ -53,7 +53,6 @@
 #include "mozXMLTermStream.h"
 
 static NS_DEFINE_CID(kSimpleURICID, NS_SIMPLEURI_CID);
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
 /////////////////////////////////////////////////////////////////////////
 // mozXMLTermStream implementation
@@ -61,7 +60,7 @@ static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
 NS_IMPL_THREADSAFE_ISUPPORTS2(mozXMLTermStream, 
                               mozIXMLTermStream,
-                              nsIInputStream);
+                              nsIInputStream)
 
 mozXMLTermStream::mozXMLTermStream() :
   mUTF8Buffer(""),

@@ -47,10 +47,11 @@
 
 interface nsIURI;
 interface nsIFile;
+interface nsIUTF8StringEnumerator;
 
 typedef long nsMIMEInfoHandleAction;
 
-[scriptable, uuid(6A57EAE0-2FE8-11d3-A164-0050041CAF44)]
+[scriptable, uuid(ca87c4cb-5d1c-49a9-8776-0099df1a7aa8)]
 interface nsIMIMEInfo : nsISupports {
     /**
      * Gives you an array of file types associated with this type.
@@ -58,8 +59,7 @@ interface nsIMIMEInfo : nsISupports {
      * @return Number of elements in the array.
      * @return Array of extensions.
      */
-    void GetFileExtensions(out PRUint32 elementCount,
-                           [array, size_is(elementCount)] out string extensions);
+    nsIUTF8StringEnumerator getFileExtensions();
 
     /**
      * Set File Extensions. Input is a comma delimited list of extensions.
@@ -109,16 +109,6 @@ interface nsIMIMEInfo : nsISupports {
     attribute wstring Description;
 
     /**
-     * Gives you arbitrary data about the MIMEInfo. An example
-     * of this is a generic image graphically representing
-     * this MIME info. This image can be used to generically
-     * and graphically represent the type.
-     *
-     * @return A URI representing the data location.
-     */
-    readonly attribute nsIURI DataURI;
-    
-    /**
      * Mac Type and creator types
      */
     attribute PRUint32 MacType;
@@ -146,10 +136,16 @@ interface nsIMIMEInfo : nsISupports {
     attribute wstring applicationDescription;
 
     /**
+     * Indicates whether a default application handler exists,
+     * i.e. whether the defaultApplicationHandler attribute is valid
+     */
+    readonly attribute boolean hasDefaultHandler;
+
+    /**
      * Returns a nsIFile that points to the application that is associated
      * by default with this content type.  This will usually be specified in
-     * the platform settings somehow.  This is not always guaranteed
-     * to be set!!
+     * the platform settings somehow.  This is only guaranteed to be set if
+     * hasDefaultHandler is true!
      */
     attribute nsIFile defaultApplicationHandler;
 

@@ -49,7 +49,6 @@
 #include "nsBarProps.h"
 
 // Helper Classes
-#include "nsCOMPtr.h"
 #include "nsXPIDLString.h"
 #include "nsJSUtils.h"
 #include "prmem.h"
@@ -179,7 +178,6 @@ static NS_DEFINE_CID(kHTTPHandlerCID, NS_HTTPPROTOCOLHANDLER_CID);
 static NS_DEFINE_CID(kXULControllersCID, NS_XULCONTROLLERS_CID);
 static NS_DEFINE_CID(kCharsetConverterManagerCID,
                      NS_ICHARSETCONVERTERMANAGER_CID);
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kWindowMediatorCID, NS_WINDOWMEDIATOR_CID); // For window.find()
 static NS_DEFINE_CID(kCStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 
@@ -197,17 +195,6 @@ static const char kPkcs11ContractID[] = NS_PKCS11_CONTRACTID;
 
 GlobalWindowImpl::GlobalWindowImpl()
   : mJSObject(nsnull),
-    mNavigator(nsnull),
-    mScreen(nsnull),
-    mHistory(nsnull),
-    mFrames(nsnull),
-    mLocation(nsnull),
-    mMenubar(nsnull),
-    mToolbar(nsnull),
-    mLocationbar(nsnull),
-    mPersonalbar(nsnull),
-    mStatusbar(nsnull),
-    mScrollbars(nsnull),
     mTimeouts(nsnull),
     mTimeoutInsertionPoint(&mTimeouts),
     mRunningTimeout(nsnull),
@@ -218,6 +205,7 @@ GlobalWindowImpl::GlobalWindowImpl()
     mIsDocumentLoaded(PR_FALSE),
     mFullScreen(PR_FALSE),
     mIsClosed(PR_FALSE),
+    mOpenerWasCleared(PR_FALSE),
     mLastMouseButtonAction(LL_ZERO),
     mGlobalObjectOwner(nsnull),
     mDocShell(nsnull),
@@ -279,17 +267,17 @@ GlobalWindowImpl::ShutDown()
 void
 GlobalWindowImpl::CleanUp()
 {
-  NS_IF_RELEASE(mNavigator);
-  NS_IF_RELEASE(mScreen);
-  NS_IF_RELEASE(mHistory);
-  NS_IF_RELEASE(mMenubar);
-  NS_IF_RELEASE(mToolbar);
-  NS_IF_RELEASE(mLocationbar);
-  NS_IF_RELEASE(mPersonalbar);
-  NS_IF_RELEASE(mStatusbar);
-  NS_IF_RELEASE(mScrollbars);
-  NS_IF_RELEASE(mLocation);
-  NS_IF_RELEASE(mFrames);
+  mNavigator = nsnull;
+  mScreen = nsnull;
+  mHistory = nsnull;
+  mMenubar = nsnull;
+  mToolbar = nsnull;
+  mLocationbar = nsnull;
+  mPersonalbar = nsnull;
+  mStatusbar = nsnull;
+  mScrollbars = nsnull;
+  mLocation = nsnull;
+  mFrames = nsnull;
 
   ClearControllers();
 
@@ -385,8 +373,8 @@ GlobalWindowImpl::SetContext(nsIScriptContext* aContext)
 NS_IMETHODIMP
 GlobalWindowImpl::GetContext(nsIScriptContext ** aContext)
 {
-  *aContext = mContext;
-  NS_IF_ADDREF(*aContext);
+  NS_IF_ADDREF(*aContext = mContext);
+
   return NS_OK;
 }
 
@@ -402,19 +390,12 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
                                  PRBool aRemoveEventListeners,
                                  PRBool aClearScopeHint)
 {
-  nsresult rv;
+  if (!aDocument && mDocument) {
+    // Cache the old principal now that the document is being removed.
+    nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
+    NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-  if (!aDocument) {
-    if (mDocument) {
-      // Cache the old principal now that the document is being removed.
-      nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
-      NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
-
-      doc->GetPrincipal(getter_AddRefs(mDocumentPrincipal));
-    }
-  } else {
-    // let go of the old cached principal
-    mDocumentPrincipal = nsnull;
+    doc->GetPrincipal(getter_AddRefs(mDocumentPrincipal));
   }
 
   // Always clear watchpoints, to deal with two cases:
@@ -428,17 +409,50 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
   // when those sub-window objects are finalized, after JS_ClearScope and
   // a GC run that finds them to be garbage.
 
-  if (mContext && mJSObject)
-    ::JS_ClearWatchPointsForObject((JSContext *)mContext->GetNativeContext(),
-                                   mJSObject);
+  JSContext *cx = nsnull;
 
-  // Release the navigator object so that it will be recreated for the
-  // new document The plugins or mime types array may have
-  // changed. See bug 150087
-  if (mNavigator) {
-    mNavigator->SetDocShell(nsnull);
+  if (mContext) {
+    cx = (JSContext *)mContext->GetNativeContext();
 
-    NS_RELEASE(mNavigator);
+    if (mJSObject) {
+      ::JS_ClearWatchPointsForObject(cx, mJSObject);
+    }
+  }
+
+  if (aDocument) {
+    if (mNavigator && mDocumentPrincipal) {
+      // Loading a new document.  Compare its principal against the
+      // old principal to see whether we are allowed to keep the old
+      // navigator object.
+      nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDocument));
+      NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
+
+      nsCOMPtr<nsIPrincipal> newPrincipal;
+      nsresult rv = doc->GetPrincipal(getter_AddRefs(newPrincipal));
+      if (NS_SUCCEEDED(rv)) {
+        rv = sSecMan->CheckSameOriginPrincipal(mDocumentPrincipal,
+                                               newPrincipal);
+      }
+
+      if (NS_SUCCEEDED(rv)) {
+        // Same origins.  Notify the navigator object that we are
+        // loading a new document, so it can make sure it is ready
+        // for the new document.
+        mNavigator->LoadingNewDocument();
+      } else {
+        // Different origins.  Destroy the navigator object so it gets
+        // recreated for the new document.  The plugins or mime types
+        // arrays may have changed. See bug 150087.
+        mNavigatorHolder = nsnull;
+
+        mNavigator->SetDocShell(nsnull);
+
+        mNavigator = nsnull;
+      }
+    }
+
+    // Let go of the cached principal since we no longer need it.
+    mDocumentPrincipal = nsnull;
   }
 
   if (mSidebar) {
@@ -462,7 +476,7 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
 
       if (internal == NS_STATIC_CAST(nsIDOMWindowInternal *, this)) {
         nsCOMPtr<nsIXBLService> xblService =
-                 do_GetService("@mozilla.org/xbl;1", &rv);
+          do_GetService("@mozilla.org/xbl;1");
         if (xblService) {
           nsCOMPtr<nsIDOMEventReceiver> rec =
             do_QueryInterface(mChromeEventHandler);
@@ -520,10 +534,9 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
         isContentWindow = itemType != nsIDocShellTreeItem::typeChrome;
       }
 
-      PRBool isAboutBlank = PR_FALSE;
       nsCAutoString url;
       docURL->GetSpec(url);
-      isAboutBlank = url.Equals(NS_LITERAL_CSTRING("about:blank"));
+      PRBool isAboutBlank = url.Equals(NS_LITERAL_CSTRING("about:blank"));
 
       PRBool isSameOrigin = PR_FALSE;
       if (isAboutBlank && mOpenerScriptURL) {
@@ -532,16 +545,15 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
           nsCOMPtr<nsIURI> newDocURL;
           webNav->GetCurrentURI(getter_AddRefs(newDocURL));
           if (newDocURL && sSecMan) {
-            isSameOrigin =
-              NS_SUCCEEDED(sSecMan->CheckSameOriginURI(mOpenerScriptURL,
-                                                       newDocURL));
+            sSecMan->SecurityCompareURIs(mOpenerScriptURL,
+                                         newDocURL,
+                                         &isSameOrigin);
           }
         }
       }
 
       if (!isAboutBlank ||
-         (isContentWindow && aClearScopeHint && !isSameOrigin))
-      {
+          (isContentWindow && aClearScopeHint && !isSameOrigin)) {
         // the current document is *not* about:blank,
         // or aClearScopeHint is true and the new document
         // has a different origin than the calling script.
@@ -549,7 +561,14 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
         ClearAllTimeouts();
 
         if (mContext && mJSObject) {
-          JSContext* cx = (JSContext *)mContext->GetNativeContext();
+          if (mNavigator) {
+            nsIDOMNavigator* navigator =
+              NS_STATIC_CAST(nsIDOMNavigator*, mNavigator.get());
+            sXPConnect->WrapNative(cx, mJSObject, navigator,
+                                   NS_GET_IID(nsIDOMNavigator),
+                                   getter_AddRefs(mNavigatorHolder));
+          }
+
           ::JS_ClearScope(cx, mJSObject);
           ::JS_ClearRegExpStatics(cx);
 
@@ -560,6 +579,18 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
   }
 
   if (mContext && aDocument) {
+    if (mNavigator && mJSObject) {
+      // Make our JS wrapper hold on to the navigator object so
+      // that it doesn't go away when transitioning from page to
+      // page. We do this by just asking for the navigator
+      // property on the global object. That causes the global
+      // object's resolve hook to cache the property on the
+      // global, and thus root it which prevents GC from getting
+      // rid of the object.
+      jsval dummy;
+      ::JS_GetProperty(cx, mJSObject, "navigator", &dummy);
+    }
+
     // Add an extra ref in case we release mContext during GC.
     nsCOMPtr<nsIScriptContext> kungFuDeathGrip = mContext;
     kungFuDeathGrip->GC();
@@ -568,6 +599,7 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
   mDocument = aDocument;
 
   if (mDocument && mContext) {
+
     if (mIsScopeClear) {
       mContext->InitContext(this);
     } else if (mJSObject) {
@@ -575,8 +607,6 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
       // about:blank) then we need to update the cached document
       // property on the window to reflect the new document and not
       // the old one.
-
-      JSContext *cx = (JSContext *)mContext->GetNativeContext();
 
       nsWindowSH::CacheDocumentProperty(cx, mJSObject, this);
     }
@@ -622,6 +652,8 @@ GlobalWindowImpl::SetDocShell(nsIDocShell* aDocShell)
     }
 
     ClearControllers();
+
+    mNavigatorHolder = nsnull;
 
     mContext->GC();
 
@@ -677,8 +709,8 @@ GlobalWindowImpl::SetDocShell(nsIDocShell* aDocShell)
 NS_IMETHODIMP
 GlobalWindowImpl::GetDocShell(nsIDocShell ** aDocShell)
 {
-  *aDocShell = mDocShell;
-  NS_IF_ADDREF(*aDocShell);
+  NS_IF_ADDREF(*aDocShell = mDocShell);
+
   return NS_OK;
 }
 
@@ -701,8 +733,8 @@ GlobalWindowImpl::GetGlobalObjectOwner(nsIScriptGlobalObjectOwner ** aOwner)
 {
   NS_ENSURE_ARG_POINTER(aOwner);
 
-  *aOwner = mGlobalObjectOwner;
-  NS_IF_ADDREF(*aOwner);
+  NS_IF_ADDREF(*aOwner = mGlobalObjectOwner);
+
   return NS_OK;
 }
 
@@ -989,8 +1021,8 @@ GlobalWindowImpl::GetDocument(nsIDOMDocument** aDocument)
   if (!mDocument && mDocShell)
     nsCOMPtr<nsIDOMDocument> domdoc(do_GetInterface(mDocShell));
 
-  *aDocument = mDocument;
-  NS_IF_ADDREF(*aDocument);
+  NS_IF_ADDREF(*aDocument = mDocument);
+
   return NS_OK;
 }
 
@@ -998,8 +1030,9 @@ GlobalWindowImpl::GetDocument(nsIDOMDocument** aDocument)
 NS_IMETHODIMP GlobalWindowImpl::GetExtantDocument(nsIDOMDocument** aDocument)
 {
   NS_ENSURE_ARG_POINTER(aDocument);
-  *aDocument = mDocument;
-  NS_IF_ADDREF(*aDocument);
+
+  NS_IF_ADDREF(*aDocument = mDocument);
+
   return NS_OK;
 }
 
@@ -1026,14 +1059,16 @@ GlobalWindowImpl::GetSelf(nsIDOMWindowInternal** aWindow)
 NS_IMETHODIMP
 GlobalWindowImpl::GetNavigator(nsIDOMNavigator** aNavigator)
 {
+  *aNavigator = nsnull;
+
   if (!mNavigator) {
     mNavigator = new NavigatorImpl(mDocShell);
-    NS_ENSURE_TRUE(mNavigator, NS_ERROR_OUT_OF_MEMORY);
-    NS_ADDREF(mNavigator);
+    if (!mNavigator) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
 
-  *aNavigator = mNavigator;
-  NS_ADDREF(*aNavigator);
+  NS_ADDREF(*aNavigator = mNavigator);
 
   return NS_OK;
 }
@@ -1041,27 +1076,33 @@ GlobalWindowImpl::GetNavigator(nsIDOMNavigator** aNavigator)
 NS_IMETHODIMP
 GlobalWindowImpl::GetScreen(nsIDOMScreen** aScreen)
 {
+  *aScreen = nsnull;
+
   if (!mScreen && mDocShell) {
     mScreen = new ScreenImpl(mDocShell);
-    NS_ENSURE_TRUE(mScreen, NS_ERROR_OUT_OF_MEMORY);
-    NS_ADDREF(mScreen);
+    if (!mScreen) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
 
-  *aScreen = mScreen;
-  NS_ADDREF(*aScreen);
+  NS_IF_ADDREF(*aScreen = mScreen);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetHistory(nsIDOMHistory** aHistory)
 {
+  *aHistory = nsnull;
+
   if (!mHistory && mDocShell) {
     mHistory = new HistoryImpl(mDocShell);
-    NS_ENSURE_TRUE(mHistory, NS_ERROR_OUT_OF_MEMORY);
-    NS_ADDREF(mHistory);
+    if (!mHistory) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
-  *aHistory = mHistory;
-  NS_ADDREF(*aHistory);
+
+  NS_IF_ADDREF(*aHistory = mHistory);
   return NS_OK;
 }
 
@@ -1124,8 +1165,7 @@ GlobalWindowImpl::GetContent(nsIDOMWindow** aContent)
   treeOwner->GetPrimaryContentShell(getter_AddRefs(primaryContent));
 
   nsCOMPtr<nsIDOMWindowInternal> domWindow(do_GetInterface(primaryContent));
-  *aContent = domWindow;
-  NS_IF_ADDREF(*aContent);
+  NS_IF_ADDREF(*aContent = domWindow);
 
   return NS_OK;
 }
@@ -1169,120 +1209,132 @@ GlobalWindowImpl::GetPrompter(nsIPrompt** aPrompt)
 NS_IMETHODIMP
 GlobalWindowImpl::GetMenubar(nsIDOMBarProp** aMenubar)
 {
+  *aMenubar = nsnull;
+
   if (!mMenubar) {
     mMenubar = new MenubarPropImpl();
-    if (mMenubar) {
-      NS_ADDREF(mMenubar);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mMenubar->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mMenubar) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mMenubar->SetWebBrowserChrome(browserChrome);
   }
 
-  *aMenubar = mMenubar;
-  NS_IF_ADDREF(mMenubar);
+  NS_ADDREF(*aMenubar = mMenubar);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetToolbar(nsIDOMBarProp** aToolbar)
 {
+  *aToolbar = nsnull;
+
   if (!mToolbar) {
     mToolbar = new ToolbarPropImpl();
-    if (mToolbar) {
-      NS_ADDREF(mToolbar);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mToolbar->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mToolbar) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mToolbar->SetWebBrowserChrome(browserChrome);
   }
 
-  *aToolbar = mToolbar;
-  NS_IF_ADDREF(mToolbar);
+  NS_ADDREF(*aToolbar = mToolbar);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetLocationbar(nsIDOMBarProp** aLocationbar)
 {
+  *aLocationbar = nsnull;
+
   if (!mLocationbar) {
     mLocationbar = new LocationbarPropImpl();
-    if (mLocationbar) {
-      NS_ADDREF(mLocationbar);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mLocationbar->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mLocationbar) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mLocationbar->SetWebBrowserChrome(browserChrome);
   }
 
-  *aLocationbar = mLocationbar;
-  NS_IF_ADDREF(mLocationbar);
+  NS_ADDREF(*aLocationbar = mLocationbar);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetPersonalbar(nsIDOMBarProp** aPersonalbar)
 {
+  *aPersonalbar = nsnull;
+
   if (!mPersonalbar) {
     mPersonalbar = new PersonalbarPropImpl();
-    if (mPersonalbar) {
-      NS_ADDREF(mPersonalbar);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mPersonalbar->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mPersonalbar) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mPersonalbar->SetWebBrowserChrome(browserChrome);
   }
 
-  *aPersonalbar = mPersonalbar;
-  NS_IF_ADDREF(mPersonalbar);
+  NS_ADDREF(*aPersonalbar = mPersonalbar);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetStatusbar(nsIDOMBarProp** aStatusbar)
 {
+  *aStatusbar = nsnull;
+
   if (!mStatusbar) {
     mStatusbar = new StatusbarPropImpl();
-    if (mStatusbar) {
-      NS_ADDREF(mStatusbar);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mStatusbar->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mStatusbar) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mStatusbar->SetWebBrowserChrome(browserChrome);
   }
 
-  *aStatusbar = mStatusbar;
-  NS_IF_ADDREF(mStatusbar);
+  NS_ADDREF(*aStatusbar = mStatusbar);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetScrollbars(nsIDOMBarProp** aScrollbars)
 {
+  *aScrollbars = nsnull;
+
   if (!mScrollbars) {
     mScrollbars = new ScrollbarsPropImpl(this);
-    if (mScrollbars) {
-      NS_ADDREF(mScrollbars);
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      if (mDocShell &&
-          NS_SUCCEEDED(GetWebBrowserChrome(getter_AddRefs(browserChrome)))) {
-        mScrollbars->SetWebBrowserChrome(browserChrome);
-      }
+    if (!mScrollbars) {
+      return NS_ERROR_OUT_OF_MEMORY;
     }
+
+    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
+    GetWebBrowserChrome(getter_AddRefs(browserChrome));
+
+    mScrollbars->SetWebBrowserChrome(browserChrome);
   }
 
-  *aScrollbars = mScrollbars;
-  NS_IF_ADDREF(mScrollbars);
+  NS_ADDREF(*aScrollbars = mScrollbars);
+
   return NS_OK;
 }
 
@@ -1305,41 +1357,41 @@ GlobalWindowImpl::GetClosed(PRBool* aClosed)
 NS_IMETHODIMP
 GlobalWindowImpl::GetFrames(nsIDOMWindowCollection** aFrames)
 {
+  *aFrames = nsnull;
+
   if (!mFrames && mDocShell) {
     mFrames = new nsDOMWindowList(mDocShell);
-    NS_ENSURE_TRUE(mFrames, NS_ERROR_OUT_OF_MEMORY);
-    NS_ADDREF(mFrames);
+    if (!mFrames) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
 
   *aFrames = NS_STATIC_CAST(nsIDOMWindowCollection *, mFrames);
-  NS_IF_ADDREF(mFrames);
-
+  NS_IF_ADDREF(*aFrames);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetCrypto(nsIDOMCrypto** aCrypto)
 {
-  nsresult rv;
-
   if (!mCrypto) {
-    mCrypto = do_CreateInstance(kCryptoContractID, &rv);
+    mCrypto = do_CreateInstance(kCryptoContractID);
   }
-  *aCrypto = mCrypto;
-  NS_IF_ADDREF(*aCrypto);
+
+  NS_IF_ADDREF(*aCrypto = mCrypto);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
 GlobalWindowImpl::GetPkcs11(nsIDOMPkcs11** aPkcs11)
 {
-  nsresult rv;
-
   if (!mPkcs11) {
-    mPkcs11 = do_CreateInstance(kPkcs11ContractID, &rv);
+    mPkcs11 = do_CreateInstance(kPkcs11ContractID);
   }
-  *aPkcs11 = mPkcs11;
-  NS_IF_ADDREF(*aPkcs11);
+
+  NS_IF_ADDREF(*aPkcs11 = mPkcs11);
+
   return NS_OK;
 }
 
@@ -1416,6 +1468,9 @@ GlobalWindowImpl::SetOpener(nsIDOMWindowInternal* aOpener)
   if (aOpener && !IsCallerChrome()) {
     return NS_OK;
   }
+  if (mOpener && !aOpener)
+    mOpenerWasCleared = PR_TRUE;
+
   mOpener = aOpener;
 
   return NS_OK;
@@ -2325,9 +2380,7 @@ GlobalWindowImpl::Prompt(const nsAString& aMessage,
   rv = CheckSecurityIsChromeCaller(&isChrome);
   if (NS_FAILED(rv) || !isChrome) {
       MakeScriptDialogTitle(aTitle, title);
-  }
-  else
-  {
+  } else {
       title.Assign(aTitle);
   }
   NS_WARN_IF_FALSE(!isChrome, "chrome shouldn't be calling prompt(), use the prompt service");
@@ -2774,8 +2827,7 @@ GlobalWindowImpl::ScrollByLines(PRInt32 numLines)
   float p2t, t2p;
 
   result = GetScrollInfo(&view, &p2t, &t2p);
-  if (view)
-  {
+  if (view) {
     result = view->ScrollByLines(0, numLines);
   }
 
@@ -2790,8 +2842,7 @@ GlobalWindowImpl::ScrollByPages(PRInt32 numPages)
   float p2t, t2p;
 
   result = GetScrollInfo(&view, &p2t, &t2p);
-  if (view)
-  {
+  if (view) {
     result = view->ScrollByPages(0, numPages);
   }
 
@@ -2989,14 +3040,89 @@ GlobalWindowImpl::CheckForAbusePoint ()
   return PR_FALSE;
 }
 
+/* Allow or deny a window open based on whether popups are suppressed.
+   This method assumes we're in a popup situation; otherwise why call it?
+   Returns PR_TRUE if the window should be opened. */
+PRBool GlobalWindowImpl::CheckOpenAllow(const nsAString &aName)
+{
+  PRBool allowWindow = PR_TRUE;
+  
+  if (IsPopupBlocked(mDocument)) {
+    allowWindow = PR_FALSE;
+    // However it might still not be blocked.
+    // Special case items that don't actually open new windows.
+    nsAutoString name(aName);
+    // _main is an IE target which should be case-insensitive but isn't
+    // see bug 217886 for details
+    if (!name.IsEmpty() &&
+        !name.EqualsIgnoreCase("_top") &&
+        !name.EqualsIgnoreCase("_self") &&
+        !name.EqualsIgnoreCase("_content") &&
+        !name.Equals(NS_LITERAL_STRING("_main"))) {
+
+      nsCOMPtr<nsIWindowWatcher> wwatch =
+          do_GetService(NS_WINDOWWATCHER_CONTRACTID);
+      if (wwatch) {
+        nsCOMPtr<nsIDOMWindow> namedWindow;
+        wwatch->GetWindowByName(PromiseFlatString(aName).get(), this,
+                                getter_AddRefs(namedWindow));
+        if (namedWindow)
+          allowWindow = PR_TRUE;
+      }
+    }
+  }
+
+  return allowWindow;
+}
+
+/* If a window open is blocked, fire the appropriate DOM events.
+   aBlocked signifies we just blocked a popup.
+   aWindow signifies we just opened what is probably a popup.
+*/
+void
+GlobalWindowImpl::FireAbuseEvents(PRBool aBlocked, PRBool aWindow,
+                                  const nsAString &aPopupURL)
+{
+  nsCOMPtr<nsIDOMWindow> topWindow;
+  GetTop(getter_AddRefs(topWindow));
+  nsCOMPtr<nsIDOMDocument> topDoc;
+  topWindow->GetDocument(getter_AddRefs(topDoc));
+
+  nsCOMPtr<nsIURI> requestingURI;
+  nsCOMPtr<nsIURI> popupURI;
+  nsCOMPtr<nsIWebNavigation> webNav(do_GetInterface(topWindow));
+  nsCOMPtr<nsIIOService> ios(do_GetService(NS_IOSERVICE_CONTRACTID));
+  if (webNav)
+    webNav->GetCurrentURI(getter_AddRefs(requestingURI));
+  if (ios)
+    ios->NewURI(NS_ConvertUCS2toUTF8(aPopupURL), 0, 0,
+                getter_AddRefs(popupURI));
+
+  if (aBlocked)
+    FirePopupBlockedEvent(topDoc, requestingURI, popupURI);
+  if (aWindow)
+    FirePopupWindowEvent(topDoc);
+}
+
 NS_IMETHODIMP
 GlobalWindowImpl::Open(const nsAString& aUrl,
                        const nsAString& aName,
                        const nsAString& aOptions,
                        nsIDOMWindow **_retval)
 {
-  return OpenInternal(aUrl, aName, aOptions, PR_FALSE, nsnull, 0, nsnull,
+  PRBool   abusedWindow = CheckForAbusePoint();
+  nsresult rv;
+
+  if (abusedWindow && !CheckOpenAllow(aName)) {
+    FireAbuseEvents(PR_TRUE, PR_FALSE, aUrl);
+    return NS_ERROR_FAILURE; // unlike the public Open method, return an error
+  }
+
+  rv = OpenInternal(aUrl, aName, aOptions, PR_FALSE, nsnull, 0, nsnull,
                       _retval);
+  if (NS_SUCCEEDED(rv) && abusedWindow)
+    FireAbuseEvents(PR_FALSE, PR_TRUE, aUrl);
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -3040,54 +3166,10 @@ GlobalWindowImpl::Open(nsIDOMWindow **_retval)
     }
   }
 
-  /*
-   * If we're in a commonly abused state (top level script, running a timeout,
-   * or onload/onunload), and the preference is enabled, prevent window.open().
-   */
   PRBool abusedWindow = CheckForAbusePoint();
-  
-  nsCOMPtr<nsIDOMWindow> topWindow;
-  GetTop(getter_AddRefs(topWindow));
-  nsCOMPtr<nsIDOMDocument> topDoc;
-  topWindow->GetDocument(getter_AddRefs(topDoc));
-
-  if (abusedWindow) {
-    if (IsPopupBlocked(mDocument)) {
-      nsCOMPtr<nsIURI> requestingURI;
-      nsCOMPtr<nsIURI> popupURI;
-      nsCOMPtr<nsIWebNavigation> webNav(do_GetInterface(topWindow));
-      nsCOMPtr<nsIIOService> ios(do_GetService(NS_IOSERVICE_CONTRACTID));
-      if (webNav)
-        webNav->GetCurrentURI(getter_AddRefs(requestingURI));
-      if (ios)
-        ios->NewURI(NS_ConvertUCS2toUTF8(url), 0, 0,
-                    getter_AddRefs(popupURI));
-      if (name.IsEmpty()) {
-        FirePopupBlockedEvent(topDoc, requestingURI, popupURI);
-        return NS_OK;
-      }
-
-      // Special case items that don't actually open new windows.
-      if (!name.EqualsIgnoreCase("_top") &&
-          !name.EqualsIgnoreCase("_self") &&
-          !name.EqualsIgnoreCase("_content")) {
-
-        nsCOMPtr<nsIWindowWatcher> wwatch =
-            do_GetService(NS_WINDOWWATCHER_CONTRACTID, &rv);
-        // If getting a window watcher fails, we'd fail downstream anyway
-        // when trying to open a new window so just bail here.
-        NS_ENSURE_SUCCESS(rv, rv);
-
-        nsCOMPtr<nsIDOMWindow> namedWindow;
-        wwatch->GetWindowByName(name.get(), this,
-                                getter_AddRefs(namedWindow));
-
-        if (!namedWindow) {
-          FirePopupBlockedEvent(topDoc, requestingURI, popupURI);
-          return NS_OK;
-        }
-      }
-    }
+  if (abusedWindow && !CheckOpenAllow(name)) {
+    FireAbuseEvents(PR_TRUE, PR_FALSE, url);
+    return NS_OK; // don't open the window, but also don't throw a JS exception
   }
 
   rv = OpenInternal(url, name, options, PR_FALSE, nsnull, 0, nsnull, _retval);
@@ -3118,7 +3200,7 @@ GlobalWindowImpl::Open(nsIDOMWindow **_retval)
     }
     
     if (abusedWindow)
-      FirePopupWindowEvent(topDoc);
+      FireAbuseEvents(PR_FALSE, PR_TRUE, url);
   }
 
   return rv;
@@ -3253,7 +3335,7 @@ GlobalWindowImpl::Close()
   // Don't allow scripts from content to close windows
   // that were not opened by script
   nsresult rv;
-  if (!mOpener) {
+  if (!mOpener && !mOpenerWasCleared) {
     nsCOMPtr<nsIScriptSecurityManager> secMan(
       do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv));
     if (NS_SUCCEEDED(rv)) {
@@ -3333,8 +3415,8 @@ GlobalWindowImpl::Close()
   }
 
   if (cx) {
-    nsCOMPtr<nsIScriptContext> currentCX =
-      NS_STATIC_CAST(nsIScriptContext *, ::JS_GetContextPrivate(cx));
+    nsCOMPtr<nsIScriptContext> currentCX;
+    nsJSUtils::GetDynamicScriptContext(cx, getter_AddRefs(currentCX));
 
     if (currentCX && currentCX == mContext) {
       return currentCX->SetTerminationFunction(CloseWindow,
@@ -3469,14 +3551,13 @@ GlobalWindowImpl::ConvertCharset(const nsAString& aStr,
 {
   nsresult result = NS_OK;
   nsCOMPtr<nsIUnicodeEncoder> encoder;
-  nsAutoString charset;
 
   nsCOMPtr<nsICharsetConverterManager>
     ccm(do_GetService(kCharsetConverterManagerCID));
   NS_ENSURE_TRUE(ccm, NS_ERROR_FAILURE);
 
   // Get the document character set
-  charset.Assign(NS_LITERAL_STRING("UTF-8"));        // default to utf-8
+  nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8")); // default to utf-8
   if (mDocument) {
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
 
@@ -3487,7 +3568,8 @@ GlobalWindowImpl::ConvertCharset(const nsAString& aStr,
     return result;
 
   // Get an encoder for the character set
-  result = ccm->GetUnicodeEncoder(&charset, getter_AddRefs(encoder));
+  result = ccm->GetUnicodeEncoderRaw(charset.get(),
+                                     getter_AddRefs(encoder));
   if (NS_FAILED(result))
     return result;
 
@@ -3562,68 +3644,65 @@ NS_IMETHODIMP
 GlobalWindowImpl::Unescape(const nsAString& aStr,
                            nsAString& aReturn)
 {
-  nsresult result = NS_OK;
-  nsCOMPtr<nsIUnicodeDecoder> decoder;
-  nsAutoString charset;
-
+  // To gracefully deal with encoding issues, we have to do the following:
+  // 1)  Convert aStr into the document encoding.
+  // 2)  Unescape the byte buffer
+  // 3)  Convert the byte buffer back into Unicode.
+  
   aReturn.Truncate();
+
+  // encode
+  nsXPIDLCString encodedString;
+  nsresult rv = ConvertCharset(aStr, getter_Copies(encodedString));
+  NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsICharsetConverterManager>
     ccm(do_GetService(kCharsetConverterManagerCID));
-  NS_ENSURE_TRUE(ccm, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(ccm, NS_ERROR_NOT_AVAILABLE);
 
-  // Get the document character set
-  charset.Assign(NS_LITERAL_STRING("UTF-8"));        // default to utf-8
+  // Get the document character set; default to utf-8 if all else fails
+  nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8"));
+
   if (mDocument) {
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
 
-    if (doc)
-      result = doc->GetDocumentCharacterSet(charset);
+    if (doc) {
+      rv = doc->GetDocumentCharacterSet(charset);
+    }
   }
-  if (NS_FAILED(result))
-    return result;
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  // Get an decoder for the character set
-  result = ccm->GetUnicodeDecoder(&charset, getter_AddRefs(decoder));
-  if (NS_FAILED(result))
-    return result;
+  // Get a decoder for the character set
+  nsCOMPtr<nsIUnicodeDecoder> decoder;
+  rv = ccm->GetUnicodeDecoderRaw(charset.get(),
+                                 getter_AddRefs(decoder));
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  result = decoder->Reset();
-  if (NS_FAILED(result))
-    return result;
+  // Unescape
+  // We cast away the const here; after this point, do not attempt to
+  // access encodedString directly -- it exists only to properly
+  // release the data buffer!
+  char *encodedData = NS_CONST_CAST(char*, encodedString.get());
+  PRInt32 unescapedByteCount = nsUnescapeCount(encodedData);
 
-  // Need to copy to do the two-byte to one-byte deflation
-  char *inBuf = ToNewCString(aStr);
-  if (!inBuf)
-    return NS_ERROR_OUT_OF_MEMORY;
-
-  // Unescape the string
-  char *src = nsUnescape(inBuf);
-
-  PRInt32 maxLength, srcLen;
-  srcLen = strlen(src);
+  // Allocate buffer to decode into
+  PRInt32 maxLength;
 
   // Get the expected length of the result string
-  result = decoder->GetMaxLength(src, srcLen, &maxLength);
-  if (NS_FAILED(result) || !maxLength) {
-    nsMemory::Free(src);
-    return result;
-  }
-
+  rv = decoder->GetMaxLength(encodedData, unescapedByteCount, &maxLength);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
   // Allocate a buffer of the maximum length
   PRUnichar *dest = (PRUnichar*)nsMemory::Alloc(sizeof(PRUnichar) * maxLength);
+  NS_ENSURE_TRUE(dest, NS_ERROR_OUT_OF_MEMORY);
+  
   PRInt32 destLen = maxLength;
-  if (!dest) {
-    nsMemory::Free(src);
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
 
   // Convert from character set to unicode
-  result = decoder->Convert(src, &srcLen, dest, &destLen);
-  nsMemory::Free(src);
-  if (NS_FAILED(result)) {
+  rv = decoder->Convert(encodedData, &unescapedByteCount, dest, &destLen);
+  if (NS_FAILED(rv)) {
     nsMemory::Free(dest);
-    return result;
+    return rv;
   }
 
   aReturn.Assign(dest, destLen);
@@ -4097,8 +4176,7 @@ GlobalWindowImpl::GetPrivateParent(nsPIDOMWindow ** aParent)
     if (!chromeElement)
       return NS_OK;             // This is ok, just means a null parent.
 
-    nsCOMPtr<nsIDocument> doc;
-    chromeElement->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = chromeElement->GetDocument();
     if (!doc)
       return NS_OK;             // This is ok, just means a null parent.
 
@@ -4139,8 +4217,7 @@ GlobalWindowImpl::GetPrivateRoot(nsIDOMWindowInternal ** aParent)
 
   nsCOMPtr<nsIContent> chromeElement(do_QueryInterface(mChromeEventHandler));
   if (chromeElement) {
-    nsCOMPtr<nsIDocument> doc;
-    chromeElement->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = chromeElement->GetDocument();
     if (doc) {
       nsCOMPtr<nsIScriptGlobalObject> globalObject;
       doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
@@ -4164,14 +4241,17 @@ GlobalWindowImpl::GetPrivateRoot(nsIDOMWindowInternal ** aParent)
 NS_IMETHODIMP
 GlobalWindowImpl::GetLocation(nsIDOMLocation ** aLocation)
 {
+  *aLocation = nsnull;
+
   if (!mLocation && mDocShell) {
     mLocation = new LocationImpl(mDocShell);
-    NS_IF_ADDREF(mLocation);
+    if (!mLocation) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
 
-  *aLocation = mLocation;
-  NS_IF_ADDREF(mLocation);
-
+  NS_IF_ADDREF(*aLocation = mLocation);
+  
   return NS_OK;
 }
 
@@ -4322,8 +4402,8 @@ GlobalWindowImpl::Deactivate()
 NS_IMETHODIMP
 GlobalWindowImpl::GetChromeEventHandler(nsIChromeEventHandler** aHandler)
 {
-  *aHandler = mChromeEventHandler;
-  NS_IF_ADDREF(*aHandler);
+  NS_IF_ADDREF(*aHandler = mChromeEventHandler);
+
   return NS_OK;
 }
 
@@ -4916,6 +4996,7 @@ GlobalWindowImpl::RunTimeout(nsTimeoutImpl *aTimeout)
 
     nsTimeoutImpl *last_running_timeout = mRunningTimeout;
     mRunningTimeout = timeout;
+    timeout->mRunning = PR_TRUE;
 
     // Hold on to the timeout in case mExpr or mFunObj releases its
     // doc.
@@ -4954,6 +5035,7 @@ GlobalWindowImpl::RunTimeout(nsTimeoutImpl *aTimeout)
 
     --mTimeoutFiringDepth;
     mRunningTimeout = last_running_timeout;
+    timeout->mRunning = PR_FALSE;
 
     // We ignore any failures from calling EvaluateString() or
     // CallEventHandler() on the context here since we're in a loop
@@ -5214,10 +5296,10 @@ GlobalWindowImpl::ClearTimeoutOrInterval()
 
   for (top = &mTimeouts; (timeout = *top) != NULL; top = &timeout->mNext) {
     if (timeout->mPublicId == public_id) {
-      if (mRunningTimeout == timeout) {
+      if (timeout->mRunning) {
         /* We're running from inside the timeout. Mark this
            timeout for deferred deletion by the code in
-           win_run_timeout() */
+           RunTimeout() */
         timeout->mInterval = 0;
       }
       else {
@@ -5361,8 +5443,8 @@ GlobalWindowImpl::GetWebBrowserChrome(nsIWebBrowserChrome **aBrowserChrome)
   GetTreeOwner(getter_AddRefs(treeOwner));
 
   nsCOMPtr<nsIWebBrowserChrome> browserChrome(do_GetInterface(treeOwner));
-  *aBrowserChrome = browserChrome;
-  NS_IF_ADDREF(*aBrowserChrome);
+  NS_IF_ADDREF(*aBrowserChrome = browserChrome);
+
   return NS_OK;
 }
 
@@ -5425,8 +5507,9 @@ GlobalWindowImpl::SecurityCheckURL(const char *aURL)
   nsCOMPtr<nsIURI> baseURI;
   nsCOMPtr<nsIURI> uriToLoad;
 
-  nsCOMPtr<nsIScriptContext> scriptcx =
-    NS_STATIC_CAST(nsIScriptContext *, ::JS_GetContextPrivate(cx));
+  nsCOMPtr<nsIScriptContext> scriptcx;
+  nsJSUtils::GetDynamicScriptContext(cx, getter_AddRefs(scriptcx));
+
   if (scriptcx) {
     nsCOMPtr<nsIScriptGlobalObject> gobj;
     scriptcx->GetGlobalObject(getter_AddRefs(gobj));
@@ -5727,16 +5810,12 @@ NS_NewScriptGlobalObject(PRBool aIsChrome, nsIScriptGlobalObject **aResult)
 //*****************************************************************************
 
 NavigatorImpl::NavigatorImpl(nsIDocShell *aDocShell) :
-  mMimeTypes(nsnull),
-  mPlugins(nsnull),
   mDocShell(aDocShell)
 {
 }
 
 NavigatorImpl::~NavigatorImpl()
 {
-  NS_IF_RELEASE(mMimeTypes);
-  NS_IF_RELEASE(mPlugins);
   sPrefInternal_id = JSVAL_VOID;
 }
 
@@ -5970,11 +6049,12 @@ NavigatorImpl::GetMimeTypes(nsIDOMMimeTypeArray **aMimeTypes)
 {
   if (!mMimeTypes) {
     mMimeTypes = new MimeTypeArrayImpl(this);
-    NS_IF_ADDREF(mMimeTypes);
+    if (!mMimeTypes) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
   }
 
-  *aMimeTypes = mMimeTypes;
-  NS_IF_ADDREF(mMimeTypes);
+  NS_ADDREF(*aMimeTypes = mMimeTypes);
 
   return NS_OK;
 }
@@ -5984,14 +6064,12 @@ NavigatorImpl::GetPlugins(nsIDOMPluginArray **aPlugins)
 {
   if (!mPlugins) {
     mPlugins = new PluginArrayImpl(this, mDocShell);
-    if (!mPlugins)
+    if (!mPlugins) {
       return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(mPlugins);
+    }
   }
 
-  *aPlugins = mPlugins;
-  NS_ADDREF(mPlugins);
+  NS_ADDREF(*aPlugins = mPlugins);
 
   return NS_OK;
 }
@@ -6223,6 +6301,15 @@ NavigatorImpl::Preference()
   return rv;
 }
 
+void
+NavigatorImpl::LoadingNewDocument()
+{
+  // Release these so that they will be recreated for the
+  // new document (if requested).  The plugins or mime types
+  // arrays may have changed.  See bug 150087.
+  mMimeTypes = nsnull;
+  mPlugins = nsnull;
+}
 
 nsresult
 NavigatorImpl::RefreshMIMEArray()

@@ -55,6 +55,7 @@ class nsISupportsArray;
 class nsIDOMRange;
 class nsINodeInfo;
 class nsIEventListenerManager;
+class nsIURI;
 
 // IID for the nsIContent interface
 #define NS_ICONTENT_IID       \
@@ -71,9 +72,9 @@ public:
 
   /**
    * Get the document for this content.
-   * @param aResult the document [OUT]
+   * @return the document
    */
-  NS_IMETHOD GetDocument(nsIDocument*& aResult) const = 0;
+  NS_IMETHOD_(nsIDocument*) GetDocument() const = 0;
 
   /**
    * Set the document for this content.
@@ -87,9 +88,9 @@ public:
 
   /**
    * Get the parent content for this content.
-   * @param aResult the parent, or null if no parent [OUT]
+   * @return the parent, or null if no parent
    */
-  NS_IMETHOD GetParent(nsIContent*& aResult) const = 0;
+  NS_IMETHOD_(nsIContent*) GetParent() const = 0;
 
   /**
    * Set the parent content for this content.  (This does not add the child to
@@ -116,19 +117,19 @@ public:
    * Get the namespace that this element's tag is defined in
    * @param aResult the namespace [OUT]
    */
-  NS_IMETHOD GetNameSpaceID(PRInt32& aResult) const = 0;
+  NS_IMETHOD GetNameSpaceID(PRInt32* aResult) const = 0;
 
   /**
    * Get the tag for this element
    * @param aResult the tag [OUT]
    */
-  NS_IMETHOD GetTag(nsIAtom*& aResult) const = 0;
+  NS_IMETHOD GetTag(nsIAtom** aResult) const = 0;
 
   /**
    * Get the NodeInfo for this element
    * @param aResult the tag [OUT]
    */
-  NS_IMETHOD GetNodeInfo(nsINodeInfo*& aResult) const = 0;
+  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const = 0;
 
   /**
    * Tell whether this element can contain children
@@ -147,7 +148,7 @@ public:
    * @param aIndex the index of the child to get, or null if index out of bounds
    * @param aResult the child [OUT]
    */
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const = 0;
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const = 0;
 
   /**
    * Get the index of a child within this content
@@ -212,7 +213,7 @@ public:
    *        attribute
    */
   NS_IMETHOD NormalizeAttrString(const nsAString& aStr, 
-                                 nsINodeInfo*& aNodeInfo) = 0;
+                                 nsINodeInfo** aNodeInfo) = 0;
 
   /**
    * Set attribute values. All attribute values are assumed to have a
@@ -280,7 +281,7 @@ public:
    */
 
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     nsIAtom*& aPrefix, nsAString& aResult) const = 0;
+                     nsIAtom** aPrefix, nsAString& aResult) const = 0;
 
   /**
    * Determine if an attribute has been set (empty string or otherwise).
@@ -310,13 +311,13 @@ public:
    * @param aIndex the index of the attribute name
    * @param aNameSpace the name space ID of the attribute name [OUT]
    * @param aName the attribute name [OUT]
-   * @param aPrefix the attribute prefix [OUt]
+   * @param aPrefix the attribute prefix [OUT]
    *
    */
   NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
-                           PRInt32& aNameSpaceID, 
-                           nsIAtom*& aName,
-                           nsIAtom*& aPrefix) const = 0;
+                           PRInt32* aNameSpaceID,
+                           nsIAtom** aName,
+                           nsIAtom** aPrefix) const = 0;
 
   /**
    * Get the number of all specified attributes.
@@ -347,7 +348,7 @@ public:
    * Get the list of ranges that have either endpoint in this content item
    * @param aResult the list of ranges owned partially by this content [OUT]
    */
-  NS_IMETHOD GetRangeList(nsVoidArray*& aResult) const = 0;
+  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const = 0;
   
   /**
    * Handle a DOM event for this piece of content.  This method is responsible
@@ -446,9 +447,9 @@ public:
    * existence).  Used by anonymous content (XBL-generated). null for all
    * explicit content.
    *
-   * @param aContent the binding parent [OUT]
+   * @return the binding parent
    */
-  NS_IMETHOD GetBindingParent(nsIContent** aContent) = 0;
+  NS_IMETHOD_(nsIContent*) GetBindingParent() const = 0;
 
   /**
    * Bit-flags to pass (or'ed together) to IsContentOfType()
@@ -463,7 +464,9 @@ public:
     /** form controls */
     eHTML_FORM_CONTROL   = 0x00000008,
     /** XUL elements */
-    eXUL                 = 0x00000010
+    eXUL                 = 0x00000010,
+    /** xml processing instructions */
+    ePROCESSING_INSTRUCTION = 0x00000020
   };
 
   /**
@@ -483,6 +486,16 @@ public:
    * @param aResult the event listener manager [OUT]
    */
   NS_IMETHOD GetListenerManager(nsIEventListenerManager** aResult) = 0;
+
+  /**
+   * Get the base URL for any relative URLs within this piece
+   * of content. Generally, this is the document's base URL,
+   * but certain content carries a local base for backward
+   * compatibility.
+   *
+   * @param aBaseURL the base URL [OUT]
+   */
+  NS_IMETHOD GetBaseURL(nsIURI** aBaseURL) const = 0;
 
   /**
    * This method is called when the parser finishes creating the element.  This

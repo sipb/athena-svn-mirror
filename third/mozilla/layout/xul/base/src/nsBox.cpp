@@ -104,8 +104,7 @@ nsBox::ListBox(nsAutoString& aResult)
     aResult.Append(name);
     aResult.Append(NS_LITERAL_STRING(" "));
 
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
+    nsIContent* content = frame->GetContent();
 
     // add on all the set attributes
     if (content) {
@@ -258,24 +257,18 @@ nsBox::GetInset(nsMargin& margin)
 NS_IMETHODIMP
 nsBox::IsDirty(PRBool& aDirty)
 {
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
-
-  aDirty = (state & NS_FRAME_IS_DIRTY) != 0;
+  aDirty = (frame->GetStateBits() & NS_FRAME_IS_DIRTY) != 0;
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBox::HasDirtyChildren(PRBool& aDirty)
 {
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
-
-  aDirty = (state & NS_FRAME_HAS_DIRTY_CHILDREN) != 0;
+  aDirty = (frame->GetStateBits() & NS_FRAME_HAS_DIRTY_CHILDREN) != 0;
   return NS_OK;
 }
 
@@ -284,28 +277,24 @@ nsBox::MarkDirty(nsBoxLayoutState& aState)
 {
   NeedsRecalc();
 
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
-
   // only reflow if we aren't already dirty.
-  if (state & NS_FRAME_IS_DIRTY) {      
+  if (frame->GetStateBits() & NS_FRAME_IS_DIRTY) {      
 #ifdef DEBUG_COELESCED
       Coelesced();
 #endif
       return NS_OK;
   }
 
-  state |= NS_FRAME_IS_DIRTY;
-  frame->SetFrameState(state);
+  frame->AddStateBits(NS_FRAME_IS_DIRTY);
 
   nsCOMPtr<nsIBoxLayout> layout;
   GetLayoutManager(getter_AddRefs(layout));
   if (layout)
     layout->BecameDirty(this, aState);
 
-  if (state & NS_FRAME_HAS_DIRTY_CHILDREN) {   
+  if (frame->GetStateBits() & NS_FRAME_HAS_DIRTY_CHILDREN) {   
 #ifdef DEBUG_COELESCED
       Coelesced();
 #endif
@@ -317,11 +306,9 @@ nsBox::MarkDirty(nsBoxLayoutState& aState)
   if (parent)
      return parent->RelayoutDirtyChild(aState, this);
   else {
-    nsIFrame* parentFrame = nsnull;
-    frame->GetParent(&parentFrame);
     nsCOMPtr<nsIPresShell> shell;
     aState.GetPresShell(getter_AddRefs(shell));
-    return parentFrame->ReflowDirtyChild(shell, frame);
+    return frame->GetParent()->ReflowDirtyChild(shell, frame);
   }
 }
 
@@ -363,12 +350,9 @@ nsBox::MarkStyleChange(nsBoxLayoutState& aState)
     */
     nsIFrame* frame = nsnull;
     GetFrame(&frame);
-    nsIFrame* parentFrame = nsnull;
-    frame->GetParent(&parentFrame);
     nsCOMPtr<nsIPresShell> shell;
     aState.GetPresShell(getter_AddRefs(shell));
-    return parentFrame->ReflowDirtyChild(shell, frame);
-
+    return frame->GetParent()->ReflowDirtyChild(shell, frame);
   }
 
   return NS_OK;
@@ -387,12 +371,9 @@ nsBox::SetStyleChangeFlag(PRBool aDirty)
 {
   NeedsRecalc();
 
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
-  state |= (NS_FRAME_IS_DIRTY | NS_FRAME_HAS_DIRTY_CHILDREN);
-  frame->SetFrameState(state);
+  frame->AddStateBits(NS_FRAME_IS_DIRTY | NS_FRAME_HAS_DIRTY_CHILDREN);
 }
 
 NS_IMETHODIMP
@@ -425,11 +406,6 @@ nsBox::RelayoutStyleChange(nsBoxLayoutState& aState, nsIBox* aChild)
     NS_ERROR("Don't call this!!");
 
     /*
-    nsFrameState state;
-    nsIFrame* frame;
-    GetFrame(&frame);
-    frame->GetFrameState(&state);
-
     // if we are not dirty mark ourselves dirty and tell our parent we are dirty too.
     if (!HasStyleChange()) {      
       // Mark yourself as dirty and needing to be recalculated
@@ -482,12 +458,11 @@ nsBox::RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild)
     }
 
     // if we are not dirty mark ourselves dirty and tell our parent we are dirty too.
-    if (!(state & NS_FRAME_HAS_DIRTY_CHILDREN)) {      
+    if (!(frame->GetStateBits() & NS_FRAME_HAS_DIRTY_CHILDREN)) {      
       // Mark yourself as dirty and needing to be recalculated
-      state |= NS_FRAME_HAS_DIRTY_CHILDREN;
-      frame->SetFrameState(state);
+      frame->AddStateBits(NS_FRAME_HAS_DIRTY_CHILDREN);
 
-      if (state & NS_FRAME_REFLOW_ROOT) {
+      if (frame->GetStateBits() & NS_FRAME_REFLOW_ROOT) {
         nsCOMPtr<nsIPresShell> shell;
         aState.GetPresShell(getter_AddRefs(shell));
         nsFrame::CreateAndPostReflowCommand(shell, frame, 
@@ -502,11 +477,9 @@ nsBox::RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild)
       GetParentBox(&parentBox);
       if (parentBox)
          return parentBox->RelayoutDirtyChild(aState, this);
-      nsIFrame* parent = nsnull;
-      frame->GetParent(&parent);
       nsCOMPtr<nsIPresShell> shell;
       aState.GetPresShell(getter_AddRefs(shell));
-      return parent->ReflowDirtyChild(shell, frame);
+      return frame->GetParent()->ReflowDirtyChild(shell, frame);
     } else {
 #ifdef DEBUG_COELESCED
       Coelesced();
@@ -576,8 +549,8 @@ nsBox::GetBounds(nsRect& aRect)
 {
    nsIFrame* frame = nsnull;
    GetFrame(&frame);
-
-   return frame->GetRect(aRect);
+   aRect = frame->GetRect();
+   return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -602,9 +575,9 @@ nsBox::SetBounds(nsBoxLayoutState& aState, const nsRect& aRect)
     flags |= stateFlags;
 
     if (flags & NS_FRAME_NO_MOVE_FRAME)
-      frame->SizeTo(presContext, aRect.width, aRect.height);
+      frame->SetSize(nsSize(aRect.width, aRect.height));
     else
-      frame->SetRect(presContext, aRect);
+      frame->SetRect(aRect);
 
     
     if (!(flags & NS_FRAME_NO_MOVE_VIEW))
@@ -618,12 +591,11 @@ nsBox::SetBounds(nsBoxLayoutState& aState, const nsRect& aRect)
    /*  
     // only if the origin changed
     if ((rect.x != aRect.x) || (rect.y != aRect.y))  {
-      nsIView*  view;
-      frame->GetView(presContext, &view);
-      if (view) {
-          nsContainerFrame::PositionFrameView(presContext, frame, view);
+      if (frame->HasView()) {
+        nsContainerFrame::PositionFrameView(presContext, frame,
+                                            frame->GetView());
       } else {
-          nsContainerFrame::PositionChildViews(presContext, frame);
+        nsContainerFrame::PositionChildViews(presContext, frame);
       }
     }
     */
@@ -670,11 +642,9 @@ nsBox::GetBorder(nsMargin& aMargin)
   const nsStyleDisplay* disp = frame->GetStyleDisplay();
   if (disp->mAppearance && gTheme) {
     // Go to the theme for the border.
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
+    nsIContent* content = frame->GetContent();
     if (content) {
-      nsCOMPtr<nsIDocument> doc;
-      content->GetDocument(*getter_AddRefs(doc));    
+      nsCOMPtr<nsIDocument> doc = content->GetDocument();
       if (doc) {
         nsCOMPtr<nsIPresShell> shell;
         doc->GetShellAt(0, getter_AddRefs(shell));
@@ -805,10 +775,7 @@ nsBox::GetWasCollapsed(nsBoxLayoutState& aState)
 {
   nsIFrame* frame = nsnull;
   GetFrame(&frame);
-  nsFrameState state;
-  frame->GetFrameState(&state);
- 
-  return (state & NS_STATE_IS_COLLAPSED) != 0;
+  return (frame->GetStateBits() & NS_STATE_IS_COLLAPSED) != 0;
 }
 
 void
@@ -816,14 +783,10 @@ nsBox::SetWasCollapsed(nsBoxLayoutState& aState, PRBool aCollapsed)
 {
   nsIFrame* frame;
   GetFrame(&frame);
-  nsFrameState state;
-  frame->GetFrameState(&state);
   if (aCollapsed)
-     state |= NS_STATE_IS_COLLAPSED;
+     frame->AddStateBits(NS_STATE_IS_COLLAPSED);
   else
-     state &= ~NS_STATE_IS_COLLAPSED;
-
-  frame->SetFrameState(state);
+     frame->RemoveStateBits(NS_STATE_IS_COLLAPSED);
 }
 
 NS_IMETHODIMP 
@@ -846,29 +809,23 @@ nsBox::CollapseChild(nsBoxLayoutState& aState, nsIFrame* aFrame, PRBool aHide)
       nsIPresContext* presContext = aState.GetPresContext();
 
     // shrink the view
-      nsIView* view = nsnull;
-      aFrame->GetView(presContext, &view);
+      nsIView* view = aFrame->GetView();
 
       // if we find a view stop right here. All views under it
       // will be clipped.
       if (view) {
          // already hidden? We are done.
-         //nsViewVisibility v;
-         //view->GetVisibility(v);
+         //nsViewVisibility v = view->GetVisibility();
          //if (v == nsViewVisibility_kHide)
            //return NS_OK;
 
-         nsCOMPtr<nsIViewManager> vm;
-         view->GetViewManager(*getter_AddRefs(vm));
          if (aHide) {
-           vm->SetViewVisibility(view, nsViewVisibility_kHide);
+           view->GetViewManager()->SetViewVisibility(view, nsViewVisibility_kHide);
          } else {
-           vm->SetViewVisibility(view, nsViewVisibility_kShow);
+           view->GetViewManager()->SetViewVisibility(view, nsViewVisibility_kShow);
          }
 
-         nsCOMPtr<nsIWidget> widget;
-         view->GetWidget(*getter_AddRefs(widget));
-         if (widget) {
+         if (view->HasWidget()) {
            return NS_OK;
          }
       }
@@ -880,8 +837,7 @@ nsBox::CollapseChild(nsBoxLayoutState& aState, nsIFrame* aFrame, PRBool aHide)
       while (nsnull != child) 
       {
          CollapseChild(aState, child, aHide);
-         nsresult rv = child->GetNextSibling(&child);
-         NS_ASSERTION(rv == NS_OK,"failed to get next child");
+         child = child->GetNextSibling();
       }
 
       return NS_OK;
@@ -909,16 +865,10 @@ nsBox::UnCollapseChild(nsBoxLayoutState& aState, nsIBox* aBox)
       aBox->GetChildBox(&child);
 
       if (child == nsnull) {
-          nsFrameState childState;
-          frame->GetFrameState(&childState);
-          childState |= NS_FRAME_IS_DIRTY;
-          frame->SetFrameState(childState);
-      } else {        
+        frame->AddStateBits(NS_FRAME_IS_DIRTY);
+      } else {
           child->GetFrame(&frame);
-          nsFrameState childState;
-          frame->GetFrameState(&childState);
-          childState |= NS_FRAME_HAS_DIRTY_CHILDREN;
-          frame->SetFrameState(childState);
+          frame->AddStateBits(NS_FRAME_HAS_DIRTY_CHILDREN);
        
           while (nsnull != child) 
           {
@@ -1057,9 +1007,7 @@ nsBox::GetOrientation(PRBool& aIsHorizontal)
 {
    nsIFrame* frame = nsnull;
    GetFrame(&frame);
-   nsFrameState state;
-   frame->GetFrameState(&state);
-   aIsHorizontal = (state & NS_STATE_IS_HORIZONTAL) != 0;
+   aIsHorizontal = (frame->GetStateBits() & NS_STATE_IS_HORIZONTAL) != 0;
    return NS_OK;
 }
 
@@ -1068,9 +1016,7 @@ nsBox::GetDirection(PRBool& aIsNormal)
 {
    nsIFrame* frame = nsnull;
    GetFrame(&frame);
-   nsFrameState state;
-   frame->GetFrameState(&state);
-   aIsNormal = (state & NS_STATE_IS_DIRECTION_NORMAL) != 0;
+   aIsNormal = (frame->GetStateBits() & NS_STATE_IS_DIRECTION_NORMAL) != 0;
    return NS_OK;
 }
 
@@ -1092,12 +1038,10 @@ nsBox::SyncLayout(nsBoxLayoutState& aState)
   if (dirty || aState.GetLayoutReason() == nsBoxLayoutState::Initial)
      Redraw(aState);
 
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
-  state &= ~(NS_FRAME_HAS_DIRTY_CHILDREN | NS_FRAME_IS_DIRTY | NS_FRAME_FIRST_REFLOW | NS_FRAME_IN_REFLOW);
-  frame->SetFrameState(state);
+  frame->RemoveStateBits(NS_FRAME_HAS_DIRTY_CHILDREN | NS_FRAME_IS_DIRTY
+                         | NS_FRAME_FIRST_REFLOW | NS_FRAME_IN_REFLOW);
 
   nsIPresContext* presContext = aState.GetPresContext();
   nsRect rect(0,0,0,0);
@@ -1111,8 +1055,7 @@ nsBox::SyncLayout(nsBoxLayoutState& aState)
 
   flags |= stateFlags;
 
-  nsIView*  view;
-  frame->GetView(presContext, &view);
+  nsIView* view = frame->GetView();
 
 /*
       // only if the origin changed
@@ -1166,7 +1109,6 @@ nsBox::Redraw(nsBoxLayoutState& aState,
   nsIFrame* frame = nsnull;
   GetFrame(&frame);
 
-  nsCOMPtr<nsIViewManager> viewManager;
   nsRect damageRect(0,0,0,0);
   if (aDamageRect)
     damageRect = *aDamageRect;
@@ -1182,23 +1124,17 @@ nsBox::Redraw(nsBoxLayoutState& aState,
   }
 
   PRUint32 flags = aImmediate ? NS_VMREFRESH_IMMEDIATE : NS_VMREFRESH_NO_SYNC;
-  nsIView* view;
 
-  frame->GetView(presContext, &view);
-  if (view) {
-    view->GetViewManager(*getter_AddRefs(viewManager));
-    viewManager->UpdateView(view, damageRect, flags);
-    
+  nsIView *view;
+  if (frame->HasView()) {
+    view = frame->GetView();
   } else {
-    nsRect    rect(damageRect);
     nsPoint   offset;
-  
     frame->GetOffsetFromView(presContext, offset, &view);
     NS_BOX_ASSERTION(this, nsnull != view, "no view");
-    rect += offset;
-    view->GetViewManager(*getter_AddRefs(viewManager));
-    viewManager->UpdateView(view, rect, flags);
+    damageRect += offset;
   }
+  view->GetViewManager()->UpdateView(view, damageRect, flags);
 
   return NS_OK;
 }
@@ -1225,9 +1161,7 @@ nsIBox::AddCSSPrefSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
         heightSet = PR_TRUE;
     }
     
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
-
+    nsIContent* content = frame->GetContent();
     // ignore 'height' and 'width' attributes if the actual element is not XUL
     // For example, we might be magic XUL frames whose primary content is an HTML
     // <select>
@@ -1321,9 +1255,7 @@ nsIBox::AddCSSMinSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
         }
     }
 
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
-
+    nsIContent* content = frame->GetContent();
     if (content) {
         nsIPresContext* presContext = aState.GetPresContext();
 
@@ -1387,9 +1319,7 @@ nsIBox::AddCSSMaxSize(nsBoxLayoutState& aState, nsIBox* aBox, nsSize& aSize)
         heightSet = PR_TRUE;
     }
 
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
-
+    nsIContent* content = frame->GetContent();
     if (content) {
         nsIPresContext* presContext = aState.GetPresContext();
 
@@ -1434,9 +1364,7 @@ nsIBox::AddCSSFlex(nsBoxLayoutState& aState, nsIBox* aBox, nscoord& aFlex)
     aBox->GetFrame(&frame);
 
     // get the flexibility
-    nsCOMPtr<nsIContent> content;
-    frame->GetContent(getter_AddRefs(content));
-
+    nsIContent* content = frame->GetContent();
     if (content) {
         PRInt32 error;
         nsAutoString value;
@@ -1480,9 +1408,7 @@ nsIBox::AddCSSOrdinal(nsBoxLayoutState& aState, nsIBox* aBox, PRUint32& aOrdinal
   aBox->GetFrame(&frame);
 
   // get the flexibility
-  nsCOMPtr<nsIContent> content;
-  frame->GetContent(getter_AddRefs(content));
-
+  nsIContent* content = frame->GetContent();
   if (content) {
     PRInt32 error;
     nsAutoString value;

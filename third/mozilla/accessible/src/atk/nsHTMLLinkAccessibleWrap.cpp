@@ -89,10 +89,7 @@ NS_IMETHODIMP nsHTMLLinkAccessibleWrap::GetURI(PRInt32 i, nsIURI **aURI)
 
   nsCOMPtr<nsILink> link(do_QueryInterface(mLinkContent));
   if (link) {
-    nsXPIDLCString hrefValue;
-    if (NS_SUCCEEDED(link->GetHrefCString(*getter_Copies(hrefValue)))) {
-      return NS_NewURI(aURI, hrefValue, nsnull, nsnull);
-    }
+    return link->GetHrefURI(aURI);
   }
 
   return NS_ERROR_FAILURE;
@@ -120,7 +117,7 @@ NS_IMETHODIMP nsHTMLLinkAccessibleWrap::IsValid(PRBool *aIsValid)
 NS_IMETHODIMP nsHTMLLinkAccessibleWrap::IsSelected(PRBool *aIsSelected)
 {
   nsCOMPtr<nsIDOMNode> focusedNode;
-  GetFocusedNode(getter_AddRefs(focusedNode));
+  GetFocusedNode(mDOMNode, getter_AddRefs(focusedNode));
   *aIsSelected = (focusedNode == mDOMNode);
   return NS_OK;
 }
@@ -138,7 +135,7 @@ nsHTMLImageAccessible(aDomNode, aShell)
 /* readonly attribute long anchors; */
 NS_IMETHODIMP nsHTMLImageMapAccessible::GetAnchors(PRInt32 *aAnchors)
 {
-  return GetAccChildCount(aAnchors);
+  return GetChildCount(aAnchors);
 }
 
 /* readonly attribute long startIndex; */
@@ -172,15 +169,12 @@ NS_IMETHODIMP nsHTMLImageMapAccessible::GetURI(PRInt32 aIndex, nsIURI **aURI)
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
   if (content) {
-    nsCOMPtr<nsIDocument> doc;
-    if (NS_SUCCEEDED(content->GetDocument(*getter_AddRefs(doc)))) {
-      nsCOMPtr<nsIURI> baseURI;
-      if (NS_SUCCEEDED(doc->GetBaseURL(*getter_AddRefs(baseURI)))) {
-        nsCOMPtr<nsIDOMElement> area(do_QueryInterface(domNode));
-        nsAutoString hrefValue;
-        if (NS_SUCCEEDED(area->GetAttribute(NS_LITERAL_STRING("href"), hrefValue))) {
-          return NS_NewURI(aURI, hrefValue, nsnull, baseURI);
-        }
+    nsCOMPtr<nsIURI> baseURI;
+    if (NS_SUCCEEDED(content->GetBaseURL(getter_AddRefs(baseURI)))) {
+      nsCOMPtr<nsIDOMElement> area(do_QueryInterface(domNode));
+      nsAutoString hrefValue;
+      if (NS_SUCCEEDED(area->GetAttribute(NS_LITERAL_STRING("href"), hrefValue))) {
+        return NS_NewURI(aURI, hrefValue, nsnull, baseURI);
       }
     }
   }

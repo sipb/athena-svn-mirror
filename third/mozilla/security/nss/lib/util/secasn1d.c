@@ -35,7 +35,7 @@
  * Support for DEcoding ASN.1 data based on BER/DER (Basic/Distinguished
  * Encoding Rules).
  *
- * $Id: secasn1d.c,v 1.1.1.1.2.1 2003-07-14 19:07:34 ghudson Exp $
+ * $Id: secasn1d.c,v 1.1.1.1.2.2 2004-01-02 20:00:11 ghudson Exp $
  */
 
 #include "secasn1.h"

@@ -30,7 +30,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: rijndael.c,v 1.1.1.1.2.1 2003-07-14 19:06:42 ghudson Exp $
+ * $Id: rijndael.c,v 1.1.1.1.2.2 2004-01-02 19:59:06 ghudson Exp $
  */
 
 #include "prinit.h"

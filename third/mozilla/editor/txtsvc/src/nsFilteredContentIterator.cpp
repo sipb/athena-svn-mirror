@@ -38,7 +38,7 @@
 
 #include "nsFilteredContentIterator.h"
 #include "nsIContentIterator.h"
-#include "nsContentCID.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIContent.h"
 #include "nsString.h"
 #include "nsIEnumerator.h"
@@ -48,10 +48,6 @@
 #include "nsIDOMNode.h"
 #include "nsIDOMRange.h"
 
-static NS_DEFINE_CID(kCContentIteratorCID,    NS_CONTENTITERATOR_CID);
-static NS_DEFINE_CID(kCPreContentIteratorCID, NS_PRECONTENTITERATOR_CID);
-static NS_DEFINE_CID(kCDOMRangeCID,           NS_RANGE_CID);
-
 //------------------------------------------------------------
 nsFilteredContentIterator::nsFilteredContentIterator(nsITextServicesFilter* aFilter) :
   mFilter(aFilter),
@@ -59,26 +55,17 @@ nsFilteredContentIterator::nsFilteredContentIterator(nsITextServicesFilter* aFil
   mIsOutOfRange(PR_FALSE),
   mDirection(eDirNotSet)
 {
-  nsComponentManager::CreateInstance(kCContentIteratorCID,
-                                     nsnull,
-                                     NS_GET_IID(nsIContentIterator),
-                                     getter_AddRefs(mIterator));
-
-  nsComponentManager::CreateInstance(kCPreContentIteratorCID,
-                                     nsnull,
-                                     NS_GET_IID(nsIContentIterator),
-                                     getter_AddRefs(mPreIterator));
-
+  mIterator = do_CreateInstance("@mozilla.org/content/post-content-iterator;1");
+  mPreIterator = do_CreateInstance("@mozilla.org/content/pre-content-iterator;1");
 }
 
 //------------------------------------------------------------
 nsFilteredContentIterator::~nsFilteredContentIterator()
 {
-  mIterator = nsnull;
 }
 
 //------------------------------------------------------------
-NS_IMPL_ISUPPORTS1(nsFilteredContentIterator, nsIContentIterator);
+NS_IMPL_ISUPPORTS1(nsFilteredContentIterator, nsIContentIterator)
 
 //------------------------------------------------------------
 NS_IMETHODIMP 
@@ -90,9 +77,8 @@ nsFilteredContentIterator::Init(nsIContent* aRoot)
   mDirection       = eForward;
   mCurrentIterator = mPreIterator;
 
-  nsresult rv = nsComponentManager::CreateInstance(kCDOMRangeCID, nsnull,
-                                              NS_GET_IID(nsIDOMRange), 
-                                              getter_AddRefs(mRange));
+  nsresult rv;
+  mRange = do_CreateInstance("@mozilla.org/content/range;1", &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   nsCOMPtr<nsIDOMRange> domRange(do_QueryInterface(mRange));
   nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(aRoot));
@@ -228,13 +214,12 @@ ContentToParentOffset(nsIContent *aContent, nsIDOMNode **aParent, PRInt32 *aOffs
   if (!aContent)
     return;
 
-  nsCOMPtr<nsIContent> parent;
-  nsresult rv = aContent->GetParent(*getter_AddRefs(parent));
+  nsIContent* parent = aContent->GetParent();
 
-  if (NS_FAILED(rv) || !parent)
+  if (!parent)
     return;
 
-  rv = parent->IndexOf(aContent, *aOffset);
+  nsresult rv = parent->IndexOf(aContent, *aOffset);
 
   if (NS_FAILED(rv))
     return;

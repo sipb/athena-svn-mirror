@@ -131,8 +131,8 @@ NS_INTERFACE_MAP_BEGIN(nsTypeAheadFind)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMEventListener, nsIDOMKeyListener)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_ADDREF(nsTypeAheadFind);
-NS_IMPL_RELEASE(nsTypeAheadFind);
+NS_IMPL_ADDREF(nsTypeAheadFind)
+NS_IMPL_RELEASE(nsTypeAheadFind)
 
 static NS_DEFINE_IID(kRangeCID, NS_RANGE_CID);
 static NS_DEFINE_CID(kStringBundleServiceCID,  NS_STRINGBUNDLESERVICE_CID);
@@ -559,7 +559,9 @@ nsTypeAheadFind::HandleEvent(nsIDOMEvent* aEvent)
     event->GetOriginalTarget(getter_AddRefs(eventTarget));
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(eventTarget));
     nsCOMPtr<nsIPresShell> focusedShell(do_QueryReferent(mFocusedWeakShell));
-    NS_ENSURE_TRUE(focusedShell && doc, NS_ERROR_FAILURE);
+    if (!focusedShell || !doc) {
+      return NS_ERROR_FAILURE;
+    }
 
     PRInt32 numShells = doc->GetNumberOfShells();
     nsCOMPtr<nsIPresShell> shellToBeDestroyed;
@@ -1591,7 +1593,7 @@ nsTypeAheadFind::RangeStartsInsideLink(nsIDOMRange *aRange,
 
   if (NS_SUCCEEDED(startContent->CanContainChildren(canContainChildren)) &&
       canContainChildren) {
-    startContent->ChildAt(startOffset, *getter_AddRefs(childContent));
+    startContent->ChildAt(startOffset, getter_AddRefs(childContent));
     if (childContent) {
       startContent = childContent;
     }
@@ -1649,10 +1651,10 @@ nsTypeAheadFind::RangeStartsInsideLink(nsIDOMRange *aRange,
     }
 
     // Get the parent
-    nsCOMPtr<nsIContent> parent, parentsFirstChild;
-    startContent->GetParent(*getter_AddRefs(parent));
+    nsCOMPtr<nsIContent> parent = startContent->GetParent();
     if (parent) {
-      parent->ChildAt(0, *getter_AddRefs(parentsFirstChild));
+      nsCOMPtr<nsIContent> parentsFirstChild;
+      parent->ChildAt(0, getter_AddRefs(parentsFirstChild));
       nsCOMPtr<nsITextContent> textContent =
         do_QueryInterface(parentsFirstChild);
 
@@ -1661,7 +1663,7 @@ nsTypeAheadFind::RangeStartsInsideLink(nsIDOMRange *aRange,
         PRBool isOnlyWhitespace;
         textContent->IsOnlyWhitespace(&isOnlyWhitespace);
         if (isOnlyWhitespace)
-          parent->ChildAt(1, *getter_AddRefs(parentsFirstChild));
+          parent->ChildAt(1, getter_AddRefs(parentsFirstChild));
       }
 
       if (parentsFirstChild != startContent) {
@@ -2441,7 +2443,7 @@ nsTypeAheadFind::IsTargetContentOkay(nsIContent *aContent)
     // having a table of atoms just for it. Instead, we're paying for 1 extra 
     // string compare per keystroke, which isn't too bad.
     nsCOMPtr<nsIAtom> targetTagAtom;
-    aContent->GetTag(*getter_AddRefs(targetTagAtom));
+    aContent->GetTag(getter_AddRefs(targetTagAtom));
     nsAutoString targetTagString;
     targetTagAtom->ToString(targetTagString);
     if (targetTagString.Equals(NS_LITERAL_STRING("isindex"))) {
@@ -2488,8 +2490,8 @@ nsTypeAheadFind::GetTargetIfTypeAheadOkay(nsIDOMEvent *aEvent,
 
   // ---------- Is the keystroke in a new window? -------------------
 
-  nsCOMPtr<nsIDocument> doc;
-  if (NS_FAILED(targetContent->GetDocument(*getter_AddRefs(doc))) || !doc) {
+  nsCOMPtr<nsIDocument> doc = targetContent->GetDocument();
+  if (!doc) {
     return NS_OK;
   }
 
@@ -2872,6 +2874,10 @@ nsTypeAheadController::nsTypeAheadController(nsIFocusController *aFocusControlle
 {
 }
 
+nsTypeAheadController::~nsTypeAheadController()
+{
+}
+
 NS_IMETHODIMP
 nsTypeAheadController::IsCommandEnabled(const char *aCommand, PRBool *aResult)
 {
@@ -2936,8 +2942,6 @@ nsTypeAheadController::SupportsCommand(const char *aCommand, PRBool *aResult)
 NS_IMETHODIMP
 nsTypeAheadController::DoCommand(const char *aCommand)
 {
-  nsresult rv = NS_OK;
-
   PRBool isLinkSearch = PR_FALSE;
 
   if (nsCRT::strcmp(sLinkFindString, aCommand) == 0) {

@@ -84,7 +84,7 @@ nsCOMPtr<nsIDOMNode> GetDOMNodeFromDocShell(nsIDocShell *aShell)
     nsCOMPtr<nsIDocumentViewer> docv(do_QueryInterface(cv));
     if (docv) {
       nsCOMPtr<nsIDocument> doc;
-      docv->GetDocument(*getter_AddRefs(doc));
+      docv->GetDocument(getter_AddRefs(doc));
       if (doc) {
         nsCOMPtr<nsIDOMDocument> domdoc(do_QueryInterface(doc));
         if (domdoc) {
@@ -204,7 +204,7 @@ void nsWindowInfo::ReferenceSelf(PRBool inAge, PRBool inZ) {
 /*********************** nsAppShellWindowEnumerator *****************/
 /********************************************************************/
 
-NS_IMPL_ISUPPORTS1(nsAppShellWindowEnumerator, nsISimpleEnumerator);
+NS_IMPL_ISUPPORTS1(nsAppShellWindowEnumerator, nsISimpleEnumerator)
 
 nsAppShellWindowEnumerator::nsAppShellWindowEnumerator (
     const PRUnichar* aTypeString,
@@ -275,7 +275,7 @@ NS_IMETHODIMP nsASDOMWindowEnumerator::GetNext(nsISupports **retval) {
     mCurrentPosition = FindNext();
   }
   return NS_OK;
-};
+}
 
 /********************************************************************/
 /*********************** nsASXULWindowEnumerator ********************/
@@ -303,7 +303,7 @@ NS_IMETHODIMP nsASXULWindowEnumerator::GetNext(nsISupports **retval) {
     mCurrentPosition = FindNext();
   }
   return NS_OK;
-};
+}
 
 /********************************************************************/
 /****************** nsASDOMWindowEarlyToLateEnumerator **************/
@@ -326,7 +326,7 @@ nsWindowInfo *nsASDOMWindowEarlyToLateEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   // see nsXULWindowEarlyToLateEnumerator::FindNext
   if (!mCurrentPosition)
@@ -365,7 +365,7 @@ nsWindowInfo *nsASXULWindowEarlyToLateEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   /* mCurrentPosition null is assumed to mean that the enumerator has run
      its course and is now basically useless. It could also be interpreted
@@ -410,7 +410,7 @@ nsWindowInfo *nsASDOMWindowFrontToBackEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   // see nsXULWindowEarlyToLateEnumerator::FindNext
   if (!mCurrentPosition)
@@ -450,7 +450,7 @@ nsWindowInfo *nsASXULWindowFrontToBackEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   // see nsXULWindowEarlyToLateEnumerator::FindNext
   if (!mCurrentPosition)
@@ -490,7 +490,7 @@ nsWindowInfo *nsASDOMWindowBackToFrontEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   // see nsXULWindowEarlyToLateEnumerator::FindNext
   if (!mCurrentPosition)
@@ -533,7 +533,7 @@ nsWindowInfo *nsASXULWindowBackToFrontEnumerator::FindNext() {
 
   nsWindowInfo *info,
                *listEnd;
-  PRBool        allWindows = mType.Length() == 0;
+  PRBool        allWindows = mType.IsEmpty();
 
   // see nsXULWindowEarlyToLateEnumerator::FindNext
   if (!mCurrentPosition)

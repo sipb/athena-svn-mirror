@@ -48,7 +48,6 @@
 #include <string.h>
 
 // XXX many of these statics need to be freed at shutdown time
-static PLHashTable* gFamilies = nsnull;
 static nsHashtable* gFontMetricsCache = nsnull;
 static nsCString **gFontNames = nsnull;
 static FontDetails *gFontDetails = nsnull;
@@ -58,7 +57,6 @@ static nsIPref* gPref = nsnull;
 #undef USER_DEFINED
 #define USER_DEFINED "x-user-def"
 
-static NS_DEFINE_IID(kIFontMetricsIID, NS_IFONT_METRICS_IID);
 static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 nsFontMetricsPh::nsFontMetricsPh()
@@ -294,16 +292,6 @@ printf( "In RealizeFont\n" );
 #endif
 }
 
-NS_IMETHODIMP  nsFontMetricsPh::GetLangGroup(nsIAtom** aLangGroup)
-{
-	if( !aLangGroup ) return NS_ERROR_NULL_POINTER;
-
-	*aLangGroup = mLangGroup;
-	NS_IF_ADDREF(*aLangGroup);
-
-	return NS_OK;
-}
-
 struct nsFontFamily
 {
 	NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
@@ -325,6 +313,7 @@ typedef struct EnumerateFamilyInfo
 }
 EnumerateFamilyInfo;
 
+#if 0
 static PRIntn EnumerateFamily( PLHashEntry* he, PRIntn i, void* arg )
 {
 	EnumerateFamilyInfo* info = (EnumerateFamilyInfo*) arg;
@@ -346,46 +335,7 @@ static PRIntn EnumerateFamily( PLHashEntry* he, PRIntn i, void* arg )
 
 	return HT_ENUMERATE_NEXT;
 }
-
-static int CompareFontNames(const void* aArg1, const void* aArg2, void* aClosure)
-{
-	const PRUnichar* str1 = *((const PRUnichar**) aArg1);
-	const PRUnichar* str2 = *((const PRUnichar**) aArg2);
-
-	// XXX add nsICollation stuff
-	//
-	return nsCRT::strcmp(str1, str2);
-}
-
-NS_IMETHODIMP nsFontEnumeratorPh::EnumerateAllFonts(PRUint32* aCount, PRUnichar*** aResult)
-{
-	if( aCount ) *aCount = 0;
-	else return NS_ERROR_NULL_POINTER;
-	if( aResult ) *aResult = nsnull;
-	else return NS_ERROR_NULL_POINTER;
-
-	if( gFamilies )
-	  {
-		  PRUnichar** array = (PRUnichar**) nsMemory::Alloc(gFamilies->nentries * sizeof(PRUnichar*));
-		  if( !array ) return NS_ERROR_OUT_OF_MEMORY;
-
-		  EnumerateFamilyInfo info = { array, 0 };
-		  PL_HashTableEnumerateEntries(gFamilies, EnumerateFamily, &info);
-		  if( !info.mIndex )
-			{
-				nsMemory::Free(array);
-				return NS_ERROR_OUT_OF_MEMORY;
-			}
-
-		  NS_QuickSort(array, gFamilies->nentries, sizeof(PRUnichar*),
-					   CompareFontNames, nsnull);
-
-		  *aCount = gFamilies->nentries;
-		  *aResult = array;
-		  return NS_OK;
-	  }
-	else return NS_ERROR_FAILURE;
-}
+#endif
 
 NS_IMETHODIMP nsFontEnumeratorPh::EnumerateFonts( const char* aLangGroup, const char* aGeneric, PRUint32* aCount, PRUnichar*** aResult )
 {
@@ -432,18 +382,20 @@ NS_IMETHODIMP nsFontEnumeratorPh::EnumerateFonts( const char* aLangGroup, const 
 		  int nCount = 0;
 		  for(i=0;i<gnFonts;i++)
 			{
-				if(!generic)
+				if(!generic) /* select all fonts */
 				  {
-					  array[nCount++] = ToNewUnicode(*gFontNames[i]);
+					  if (gFontDetails[i].flags & PHFONT_INFO_PROP) /* always use proportional fonts */
+					  	array[nCount++] = ToNewUnicode(*gFontNames[i]);
 				  }
-				else if stricmp(generic, "monospace") == 0)
+				else if(stricmp(generic, "monospace") == 0)
 				  {
 					  if(gFontDetails[i].flags & PHFONT_INFO_FIXED)
 						 array[nCount++] = ToNewUnicode(*gFontNames[i]);
 				  }
+				/* other possible vallues for generic are: serif, sans-serif, cursive, fantasy */
 				else
 				  {
-					  if (gFontDetails[i].flags & PHFONT_INFO_PROP)
+					  if (gFontDetails[i].flags & PHFONT_INFO_PROP) /* always use proportional fonts */
 						 array[nCount++] = ToNewUnicode(*gFontNames[i]);
 				  }
 			}
@@ -452,33 +404,5 @@ NS_IMETHODIMP nsFontEnumeratorPh::EnumerateFonts( const char* aLangGroup, const 
 		  return NS_OK;
 	  }
 
-	return EnumerateAllFonts( aCount, aResult );
-}
-
-NS_IMETHODIMP
-   nsFontEnumeratorPh::HaveFontFor(const char* aLangGroup, PRBool* aResult)
-{
-	NS_ENSURE_ARG_POINTER(aResult);
-	*aResult = PR_TRUE; // always return true for now.
 	return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFontEnumeratorPh::GetDefaultFont(const char *aLangGroup, 
-  const char *aGeneric, PRUnichar **aResult)
-{
-  // aLangGroup=null or ""  means any (i.e., don't care)
-  // aGeneric=null or ""  means any (i.e, don't care)
-
-  NS_ENSURE_ARG_POINTER(aResult);
-  *aResult = nsnull;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-   nsFontEnumeratorPh::UpdateFontList(PRBool *updateFontList)
-{
-  *updateFontList = PR_FALSE; // always return false for now
-  return NS_OK;
 }

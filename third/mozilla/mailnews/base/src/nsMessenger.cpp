@@ -138,13 +138,13 @@
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranchInternal.h"
 #include "nsCExternalHandlerService.h"
+#include "nsIExternalProtocolService.h"
 #include "nsIMIMEService.h"
 
 #include "nsILinkHandler.h"                                                                              
 
 static NS_DEFINE_CID(kRDFServiceCID,	NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kMsgSendLaterCID, NS_MSGSENDLATER_CID); 
-static NS_DEFINE_CID(kMsgPrintEngineCID,		NS_MSG_PRINTENGINE_CID);
 
 #define FOUR_K 4096
 #define MESSENGER_SAVE_DIR_PREF_NAME "messenger.save.dir"
@@ -317,7 +317,7 @@ nsMessenger::~nsMessenger()
 
 
 NS_IMPL_ISUPPORTS3(nsMessenger, nsIMessenger, nsIObserver, nsISupportsWeakReference)
-NS_IMPL_GETSET(nsMessenger, SendingUnsentMsgs, PRBool, mSendingUnsentMsgs);
+NS_IMPL_GETSET(nsMessenger, SendingUnsentMsgs, PRBool, mSendingUnsentMsgs)
 
 NS_IMETHODIMP    
 nsMessenger::SetWindow(nsIDOMWindowInternal *aWin, nsIMsgWindow *aMsgWindow)
@@ -408,7 +408,7 @@ nsMessenger::SetWindow(nsIDOMWindowInternal *aWin, nsIMsgWindow *aMsgWindow)
   return NS_OK;
 }
 
-NS_IMETHODIMP nsMessenger::SetDisplayCharset(const PRUnichar * aCharset)
+NS_IMETHODIMP nsMessenger::SetDisplayCharset(const char * aCharset)
 {
   if (mCurrentDisplayCharset.Equals(aCharset))
     return NS_OK;
@@ -422,7 +422,7 @@ NS_IMETHODIMP nsMessenger::SetDisplayCharset(const PRUnichar * aCharset)
     {
       nsCOMPtr<nsIMarkupDocumentViewer> muDV = do_QueryInterface(cv);
       if (muDV) {
-        muDV->SetForceCharacterSet(aCharset);
+        muDV->SetForceCharacterSet(nsDependentCString(aCharset));
 
       }
 
@@ -555,7 +555,7 @@ nsMessenger::OpenURL(const char *aURL)
   NS_ENSURE_ARG_POINTER(aURL);
 
   // This is to setup the display DocShell as UTF-8 capable...
-  SetDisplayCharset(NS_LITERAL_STRING("UTF-8").get());
+  SetDisplayCharset("UTF-8");
   
   char *unescapedUrl = PL_strdup(aURL);
   if (!unescapedUrl)
@@ -589,12 +589,25 @@ nsMessenger::OpenURL(const char *aURL)
   return rv;
 }
 
+NS_IMETHODIMP nsMessenger::LaunchExternalURL(const char * aURL)
+{
+  nsresult rv = NS_OK;
+  
+  nsCOMPtr<nsIURI> uri;
+  rv = NS_NewURI(getter_AddRefs(uri), aURL);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIExternalProtocolService> extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+  return extProtService->LoadUrl(uri); 
+}
+
 NS_IMETHODIMP
 nsMessenger::LoadURL(nsIDOMWindowInternal *aWin, const char *aURL)
 {
   NS_ENSURE_ARG_POINTER(aURL);
   
-  SetDisplayCharset(NS_LITERAL_STRING("UTF-8").get());
+  SetDisplayCharset("UTF-8");
   
   nsAutoString uriString(NS_ConvertASCIItoUCS2(aURL).get());
   // Cleanup the empty spaces that might be on each end.
@@ -606,24 +619,8 @@ nsMessenger::LoadURL(nsIDOMWindowInternal *aWin, const char *aURL)
   nsCOMPtr<nsIURI> uri;
   nsresult rv = NS_NewURI(getter_AddRefs(uri), uriString);
   NS_ENSURE_SUCCESS(rv, rv);
-  
-  // cheat....if we were given a dom window, then use the docshell from it
-  // and pass the url out as a link...this is really just used by stand alone
-  // mail right now and could be wrapped in a MOZ_THUNDERBIRD ifdef if we needed to.
-  if (aWin)
-  {
-    nsCOMPtr<nsIScriptGlobalObject> globalObj = do_QueryInterface(aWin, &rv);    
-    NS_ENSURE_SUCCESS(rv,rv);                                                    
-    nsCOMPtr <nsIDocShell> docShell; 
-    rv = globalObj->GetDocShell(getter_AddRefs(docShell));  
-    NS_ENSURE_SUCCESS(rv,rv);
-    nsCOMPtr<nsILinkHandler> lh = do_QueryInterface(docShell, &rv);              
-    NS_ENSURE_SUCCESS(rv,rv); 
-    return rv = lh->OnLinkClick(nsnull, eLinkVerb_Replace, uri,nsnull,nsnull,nsnull);                                                     
-  }
-  else
-  {
-    NS_ENSURE_TRUE(mDocShell, NS_ERROR_FAILURE);
+
+  NS_ENSURE_TRUE(mDocShell, NS_ERROR_FAILURE);
   nsCOMPtr<nsIMsgMailNewsUrl> msgurl = do_QueryInterface(uri);
   if (msgurl)
     msgurl->SetMsgWindow(mMsgWindow);
@@ -633,7 +630,6 @@ nsMessenger::LoadURL(nsIDOMWindowInternal *aWin, const char *aURL)
   NS_ENSURE_SUCCESS(rv, rv);
   loadInfo->SetLoadType(nsIDocShellLoadInfo::loadNormal);
   return mDocShell->LoadURI(uri, loadInfo, 0, PR_TRUE);
-  }
 }
 
 nsresult
@@ -665,7 +661,7 @@ nsMessenger::SaveAttachment(nsIFileSpec * fileSpec,
       saveListener->m_saveAllAttachmentsState = saveState;
 
   urlString = unescapedUrl;
-  urlString.ReplaceSubstring(NS_LITERAL_CSTRING("/;section").get(), NS_LITERAL_CSTRING("?section").get());
+  urlString.ReplaceSubstring("/;section", "?section");
   nsresult rv = CreateStartupUrl(urlString.get(), getter_AddRefs(URL));
 
   if (NS_SUCCEEDED(rv))
@@ -1521,7 +1517,7 @@ nsMessenger::GetTransactionManager(nsITransactionManager* *aTxnMgr)
   return NS_OK;
 }
 
-NS_IMETHODIMP nsMessenger::SetDocumentCharset(const PRUnichar *characterSet)
+NS_IMETHODIMP nsMessenger::SetDocumentCharset(const char *characterSet)
 {
 	// We want to redisplay the currently selected message (if any) but forcing the 
   // redisplay to use characterSet
@@ -1571,7 +1567,7 @@ NS_IMPL_ISUPPORTS1(SendLaterListener, nsIMsgSendLaterListener)
 
 SendLaterListener::SendLaterListener(nsIMessenger *aMessenger)
 {
-  m_messenger = getter_AddRefs(NS_GetWeakReference(aMessenger));
+  m_messenger = do_GetWeakReference(aMessenger);
 }
 
 SendLaterListener::~SendLaterListener()
@@ -1808,7 +1804,7 @@ nsSaveMsgListener::OnStartRequest(nsIRequest* request, nsISupports* aSupport)
       if (mimeService)
       {
         nsCOMPtr<nsIMIMEInfo> mimeinfo;
-        if (NS_SUCCEEDED(mimeService->GetFromMIMEType(m_contentType.get(), getter_AddRefs(mimeinfo))))
+        if (NS_SUCCEEDED(mimeService->GetFromTypeAndExtension(m_contentType.get(), nsnull, getter_AddRefs(mimeinfo))))
         {
           PRUint32 aMacType;
           PRUint32 aMacCreator;

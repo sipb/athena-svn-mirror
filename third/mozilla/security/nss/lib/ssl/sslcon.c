@@ -36,7 +36,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslcon.c,v 1.1.1.1.2.1 2003-07-14 19:07:31 ghudson Exp $
+ * $Id: sslcon.c,v 1.1.1.1.2.2 2004-01-02 20:00:07 ghudson Exp $
  */
 
 #include "nssrenam.h"

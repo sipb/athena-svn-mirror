@@ -64,10 +64,17 @@
    
 <!-- Javascript includes -->
 
-<script type="application/x-javascript" src="chrome://global/content/strres.js"/>
 <script type="application/x-javascript" src="chrome://calendar/content/dateUtils.js"/>
 <script type="application/x-javascript" src="chrome://calendar/content/alertDialog.js"/>
 <script type="application/x-javascript" src="chrome://calendar/content/calendarEvent.js"/>
+
+<!-- STRING BUNDLE for calendar properties -->
+<stringbundleset id="stringbundleset">
+   <stringbundle id="bundle_calendar" src="chrome://calendar/locale/calendar.properties"/>
+</stringbundleset>
+<script type="application/x-javascript">
+   var gCalendarBundle = document.getElementById("bundle_calendar");
+</script>  
 
 <!-- Picker popups -->
 
@@ -95,7 +102,7 @@
                   <!-- NOTE: ALL ITEMS USE name INSTEAD OF id BECAUSE THE BOX IS DUPLICATED FOR EACH EVENT -->
                   <vbox align="start" pack="center">
                      <button name="AcknowledgeButton" label="&calendar.alarm.acknowledge.label;" wrap="none" class="alarm-acknowledge-button-class"/>
-                     <button name="EditEvent"         label="&calendar.alarm.editevent.label;"   wrap="none" class="alarm-acknowledge-button-class"/>
+                     <button name="EditEvent"         label="&calendar.edit.button.label;"   wrap="none" class="alarm-acknowledge-button-class"/>
                      <box align="center" pack="center" flex="1">
                         <button name="SnoozeButton"   label="&calendar.alarm.snooze.label;"      wrap="none" class="alarm-acknowledge-button-class"/>
                         <textbox name="alarm-length-field" class="alarm-length-field-class"/>

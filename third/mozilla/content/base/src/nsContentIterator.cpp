@@ -134,13 +134,12 @@ ContentToParentOffset(nsIContent *aContent, nsIDOMNode **aParent, PRInt32 *aOffs
   if (!aContent)
     return;
 
-  nsCOMPtr<nsIContent> parent;
-  nsresult rv = aContent->GetParent(*getter_AddRefs(parent));
+  nsIContent* parent = aContent->GetParent();
 
-  if (NS_FAILED(rv) || !parent)
+  if (!parent)
     return;
 
-  rv = parent->IndexOf(aContent, *aOffset);
+  nsresult rv = parent->IndexOf(aContent, *aOffset);
 
   if (NS_FAILED(rv))
     return;
@@ -478,7 +477,7 @@ nsresult nsContentIterator::Init(nsIDOMRange* aRange)
   nsCOMPtr<nsIContent> cChild;
 
   if (!cData && ContentHasChildren(startCon))
-    startCon->ChildAt(startIndx,*getter_AddRefs(cChild));
+    startCon->ChildAt(startIndx, getter_AddRefs(cChild));
 
   if (!cChild) // no children, must be a text node
   {
@@ -552,7 +551,7 @@ nsresult nsContentIterator::Init(nsIDOMRange* aRange)
   {
     PRInt32 indx = endIndx;
 
-    endCon->ChildAt(--indx, *getter_AddRefs(cChild));
+    endCon->ChildAt(--indx, getter_AddRefs(cChild));
 
     if (!cChild)  // No child at offset!
     {
@@ -601,16 +600,20 @@ nsresult nsContentIterator::RebuildIndexStack()
   // Make sure we start at the right indexes on the stack!  Build array up
   // to common parent of start and end.  Perhaps it's too many entries, but
   // thats far better than too few.
-  nsCOMPtr<nsIContent> parent;
-  nsCOMPtr<nsIContent> current;
-  PRInt32              indx;
+  nsIContent* parent;
+  nsIContent* current;
+  PRInt32     indx;
 
   mIndexes.Clear();
   current = mCurNode;
-  while (current && current != mCommonParent)
+  if (!current) {
+    return NS_OK;
+  }
+
+  while (current != mCommonParent)
   {
-    if (NS_FAILED(current->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
+    parent = current->GetParent();
+    
     if (!parent || NS_FAILED(parent->IndexOf(current, indx)))
       return NS_ERROR_FAILURE;
   
@@ -640,7 +643,7 @@ nsCOMPtr<nsIContent> nsContentIterator::GetDeepFirstChild(nsCOMPtr<nsIContent> a
   {  
     nsCOMPtr<nsIContent> cN = aRoot;
     nsCOMPtr<nsIContent> cChild;
-    cN->ChildAt(0,*getter_AddRefs(cChild));
+    cN->ChildAt(0, getter_AddRefs(cChild));
     while ( cChild )
     {
       if (aIndexes)
@@ -649,7 +652,7 @@ nsCOMPtr<nsIContent> nsContentIterator::GetDeepFirstChild(nsCOMPtr<nsIContent> a
         aIndexes->AppendElement(NS_INT32_TO_PTR(0));
       }
       cN = cChild;
-      cN->ChildAt(0,*getter_AddRefs(cChild));
+      cN->ChildAt(0, getter_AddRefs(cChild));
     }
     deepFirstChild = cN;
   }
@@ -671,7 +674,7 @@ nsCOMPtr<nsIContent> nsContentIterator::GetDeepLastChild(nsCOMPtr<nsIContent> aR
 
     while ( numChildren )
     {
-      cN->ChildAt(--numChildren,*getter_AddRefs(cChild));
+      cN->ChildAt(--numChildren, getter_AddRefs(cChild));
       if (cChild)
       {
         if (aIndexes)
@@ -706,8 +709,9 @@ nsresult nsContentIterator::GetNextSibling(nsCOMPtr<nsIContent> aNode,
   nsCOMPtr<nsIContent> sib;
   nsCOMPtr<nsIContent> parent;
   PRInt32              indx;
-  
-  if (NS_FAILED(aNode->GetParent(*getter_AddRefs(parent))) || !parent)
+
+  parent = aNode->GetParent();
+  if (!parent)
     return NS_ERROR_FAILURE;
 
   if (aIndexes)
@@ -721,7 +725,7 @@ nsresult nsContentIterator::GetNextSibling(nsCOMPtr<nsIContent> aNode,
   // reverify that the index of the current node hasn't changed.
   // not super cheap, but a lot cheaper than IndexOf(), and still O(1).
   // ignore result this time - the index may now be out of range.
-  (void) parent->ChildAt(indx, *getter_AddRefs(sib)); // sib defaults to nsnull
+  (void) parent->ChildAt(indx, getter_AddRefs(sib)); // sib defaults to nsnull
   if (sib != aNode)
   {
     // someone changed our index - find the new index the painful way
@@ -730,7 +734,7 @@ nsresult nsContentIterator::GetNextSibling(nsCOMPtr<nsIContent> aNode,
   }
 
   // indx is now canonically correct
-  if (NS_SUCCEEDED(parent->ChildAt(++indx, *getter_AddRefs(sib))) && sib)
+  if (NS_SUCCEEDED(parent->ChildAt(++indx, getter_AddRefs(sib))) && sib)
   {
     *aSibling = sib;
     // update index cache
@@ -774,8 +778,9 @@ nsresult nsContentIterator::GetPrevSibling(nsCOMPtr<nsIContent> aNode,
   nsCOMPtr<nsIContent> sib;
   nsCOMPtr<nsIContent> parent;
   PRInt32              indx;
-  
-  if (NS_FAILED(aNode->GetParent(*getter_AddRefs(parent))) || !parent)
+
+  parent = aNode->GetParent();
+  if (!parent)
     return NS_ERROR_FAILURE;
 
   if (aIndexes)
@@ -788,7 +793,7 @@ nsresult nsContentIterator::GetPrevSibling(nsCOMPtr<nsIContent> aNode,
   
   // reverify that the index of the current node hasn't changed
   // ignore result this time - the index may now be out of range.
-  (void) parent->ChildAt(indx, *getter_AddRefs(sib)); // sib defaults to nsnull
+  (void) parent->ChildAt(indx, getter_AddRefs(sib)); // sib defaults to nsnull
   if (sib != aNode)
   {
     // someone changed our index - find the new index the painful way
@@ -798,7 +803,7 @@ nsresult nsContentIterator::GetPrevSibling(nsCOMPtr<nsIContent> aNode,
 
   // indx is now canonically correct
   if (indx > 0 && 
-      NS_SUCCEEDED(parent->ChildAt(--indx, *getter_AddRefs(sib))) && sib)
+      NS_SUCCEEDED(parent->ChildAt(--indx, getter_AddRefs(sib))) && sib)
   {
     *aSibling = sib;
     // update index cache
@@ -843,7 +848,7 @@ nsresult nsContentIterator::NextNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     // if it has children then next node is first child
     if (numChildren)
     {
-      if (NS_FAILED(cN->ChildAt(0,*getter_AddRefs(cFirstChild))))
+      if (NS_FAILED(cN->ChildAt(0, getter_AddRefs(cFirstChild))))
         return NS_ERROR_FAILURE;
       if (!cFirstChild)
         return NS_ERROR_FAILURE;
@@ -868,10 +873,8 @@ nsresult nsContentIterator::NextNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     nsCOMPtr<nsIContent> cSibling;
     nsCOMPtr<nsIContent> parent;
     PRInt32              indx;
-  
-    // get next sibling if there is one
-    if (NS_FAILED(cN->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
+
+    parent = cN->GetParent();
       
     // get the cached index
     if (aIndexes)
@@ -886,7 +889,7 @@ nsresult nsContentIterator::NextNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     // not super cheap, but a lot cheaper than IndexOf(), and still O(1).
     // ignore result this time - the index may now be out of range.
     if (indx >= 0)
-      (void) parent->ChildAt(indx, *getter_AddRefs(cSibling));
+      (void) parent->ChildAt(indx, getter_AddRefs(cSibling));
     if (cSibling != cN)
     {
       // someone changed our index - find the new index the painful way
@@ -895,7 +898,7 @@ nsresult nsContentIterator::NextNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     }
 
     // indx is now canonically correct
-    if (NS_SUCCEEDED(parent->ChildAt(++indx,*getter_AddRefs(cSibling))) && cSibling)
+    if (NS_SUCCEEDED(parent->ChildAt(++indx, getter_AddRefs(cSibling))) && cSibling)
     {
       // update cache
       if (aIndexes)
@@ -938,10 +941,8 @@ nsresult nsContentIterator::PrevNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     nsCOMPtr<nsIContent> cSibling;
     nsCOMPtr<nsIContent> parent;
     PRInt32              indx;
-  
-    // get prev sibling if there is one
-    if (NS_FAILED(cN->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
+
+    parent = cN->GetParent();
 
     // get the cached index
     if (aIndexes)
@@ -956,7 +957,7 @@ nsresult nsContentIterator::PrevNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     // not super cheap, but a lot cheaper than IndexOf(), and still O(1).
     // ignore result this time - the index may now be out of range.
     if (indx >= 0)
-      (void) parent->ChildAt(indx, *getter_AddRefs(cSibling));
+      (void) parent->ChildAt(indx, getter_AddRefs(cSibling));
     if (cSibling != cN)
     {
       // someone changed our index - find the new index the painful way
@@ -965,7 +966,7 @@ nsresult nsContentIterator::PrevNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     }
 
     // indx is now canonically correct
-    if (indx && NS_SUCCEEDED(parent->ChildAt(--indx,*getter_AddRefs(cSibling))) && cSibling)
+    if (indx && NS_SUCCEEDED(parent->ChildAt(--indx, getter_AddRefs(cSibling))) && cSibling)
     {
       // update cache
       if (aIndexes)
@@ -1000,7 +1001,7 @@ nsresult nsContentIterator::PrevNode(nsCOMPtr<nsIContent> *ioNextNode, nsVoidArr
     // if it has children then prev node is last child
     if (numChildren)
     {
-      if (NS_FAILED(cN->ChildAt(--numChildren,*getter_AddRefs(cLastChild))))
+      if (NS_FAILED(cN->ChildAt(--numChildren, getter_AddRefs(cLastChild))))
         return NS_ERROR_FAILURE;
       if (!cLastChild)
         return NS_ERROR_FAILURE;
@@ -1173,8 +1174,7 @@ nsresult nsContentIterator::PositionAt(nsIContent* aCurNode)
     // Insert at head since we're walking up
     oldParentStack.InsertElementAt(tempNode,0);
 
-    if (NS_FAILED(tempNode->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
+    parent = tempNode->GetParent();
 
     if (!parent)  // this node has no parent, and thus no index
       break;
@@ -1196,9 +1196,8 @@ nsresult nsContentIterator::PositionAt(nsIContent* aCurNode)
   {
     PRInt32 indx;
 
-    if (NS_FAILED(newCurNode->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
-
+    parent = newCurNode->GetParent();
+    
     if (!parent)  // this node has no parent, and thus no index
       break;
 
@@ -1378,7 +1377,7 @@ nsresult nsContentSubtreeIterator::Init(nsIDOMRange* aRange)
   // short circuit when start node == end node
   if (startParent == endParent)
   {
-    cStartP->ChildAt(0,*getter_AddRefs(cChild));
+    cStartP->ChildAt(0, getter_AddRefs(cChild));
   
     if (!cChild) // no children, must be a text node or empty container
     {
@@ -1582,7 +1581,7 @@ nsresult nsContentSubtreeIterator::Next()
     // as long as we are finding ancestors of the endpoint of the range,
     // dive down into their children
     nsCOMPtr<nsIContent> cChild;
-    nextNode->ChildAt(0,*getter_AddRefs(cChild));
+    nextNode->ChildAt(0, getter_AddRefs(cChild));
     if (!cChild) return NS_ERROR_NULL_POINTER;
     // should be impossible to get a null pointer.  If we went all the 
     // down the child chain to the bottom without finding an interior node, 
@@ -1649,8 +1648,7 @@ nsresult nsContentSubtreeIterator::GetTopAncestorInRange(
   nsCOMPtr<nsIContent> parent, tmp;
   while (aNode)
   {
-    if (NS_FAILED(aNode->GetParent(*getter_AddRefs(parent))))
-      return NS_ERROR_FAILURE;
+    parent = aNode->GetParent();
     if (!parent)
     {
       if (tmp)

@@ -108,14 +108,9 @@ public:
     NS_DECL_ISUPPORTS
 	
     NS_IMETHOD HeaderFetchCompleted(nsIImapProtocol* aProtocol);
-    NS_IMETHOD UpdateSecurityStatus(nsIImapProtocol* aProtocol);
     // ****
     NS_IMETHOD SetBiffStateAndUpdate(nsIImapProtocol* aProtocol,
                                      nsMsgBiffState biffState);
-    NS_IMETHOD GetStoredUIDValidity(nsIImapProtocol* aProtocol,
-                                    uid_validity_info* aInfo);
-    NS_IMETHOD LiteSelectUIDValidity(nsIImapProtocol* aProtocol,
-                                     PRUint32 uidValidity);
 	  NS_IMETHOD ProgressStatus(nsIImapProtocol* aProtocol,
                               PRUint32 statusMsgId, const PRUnichar *extraInfo);
     NS_IMETHOD PercentProgress(nsIImapProtocol* aProtocol,
@@ -202,13 +197,6 @@ struct HeaderFetchCompletedProxyEvent : public nsImapMiscellaneousSinkProxyEvent
     NS_IMETHOD HandleEvent();
 };
 
-struct UpdateSecurityStatusProxyEvent : public nsImapMiscellaneousSinkProxyEvent
-{
-    UpdateSecurityStatusProxyEvent(nsImapMiscellaneousSinkProxy* aProxy);
-    virtual ~UpdateSecurityStatusProxyEvent();
-    NS_IMETHOD HandleEvent();
-};
-
 struct SetBiffStateAndUpdateProxyEvent : public nsImapMiscellaneousSinkProxyEvent
 {
     SetBiffStateAndUpdateProxyEvent(nsImapMiscellaneousSinkProxy* aProxy,
@@ -217,25 +205,6 @@ struct SetBiffStateAndUpdateProxyEvent : public nsImapMiscellaneousSinkProxyEven
     NS_IMETHOD HandleEvent();
     nsMsgBiffState m_biffState;
 };
-
-struct GetStoredUIDValidityProxyEvent : public nsImapMiscellaneousSinkProxyEvent
-{
-    GetStoredUIDValidityProxyEvent(nsImapMiscellaneousSinkProxy* aProxy,
-                                   uid_validity_info* aInfo);
-    virtual ~GetStoredUIDValidityProxyEvent();
-    NS_IMETHOD HandleEvent();
-    uid_validity_info m_uidValidityInfo;
-};
-
-struct LiteSelectUIDValidityProxyEvent : public nsImapMiscellaneousSinkProxyEvent
-{
-    LiteSelectUIDValidityProxyEvent(nsImapMiscellaneousSinkProxy* aProxy,
-                                    PRUint32 uidValidity);
-    virtual ~LiteSelectUIDValidityProxyEvent();
-    NS_IMETHOD HandleEvent();
-    PRUint32 m_uidValidity;
-};
-
 
 struct ProgressStatusProxyEvent : public nsImapMiscellaneousSinkProxyEvent
 {

@@ -18,7 +18,8 @@
  * Copyright (C) 1998 Netscape Communications Corporation. All
  * Rights Reserved.
  *
- * Contributor(s): 
+ * Contributor(s):
+ *   IBM Corp.
  *
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU Public License (the "GPL"), in which case the
@@ -30,13 +31,6 @@
  * and other provisions required by the GPL.  If you do not delete
  * the provisions above, a recipient may use your version of this
  * file under either the NPL or the GPL.
- *
- * This Original Code has been modified by IBM Corporation. Modifications made by IBM
- * described herein are Copyright (c) International Business Machines Corporation, 2000.
- * Modifications to Mozilla code or documentation identified per MPL Section 3.3
- *
- * Date        Modified by     Description of modification
- * 04/10/2000  IBM Corp.       Added DebugBreak() definitions for OS/2
  */
 
 /*
@@ -57,26 +51,6 @@
 #    include <stdarg.h>
 #	 include "jsprf.h"
 #endif
-
-#if defined(XP_OS2) && defined(DEBUG)
-/* Added definitions for DebugBreak() for 2 different OS/2 compilers.  Doing
- * the int3 on purpose for Visual Age so that a developer can step over the
- * instruction if so desired.  Not always possible if trapping due to exception
- * handling IBM-AKR
- */
-#if defined(XP_OS2_VACPP)
-   #include <builtin.h>
-   #define DebugBreak() { _interrupt(3); }
-#elif defined(XP_OS2_EMX)
-   /* Force a trap */
-   #define DebugBreak() { int *pTrap=NULL; *pTrap = 1; }
-#else
-   #define DebugBreak()
-#endif
-
-#elif defined(XP_OS2)
-   #define DebugBreak()
-#endif /* XP_OS2 && DEBUG */
 
 #ifdef XP_MAC
 /*
@@ -166,8 +140,11 @@ JS_PUBLIC_API(void) JS_Assert(const char *s, const char *file, JSIntn ln)
 #else
     fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
 #endif
-#if defined(WIN32) || defined(XP_OS2)
+#if defined(WIN32)
     DebugBreak();
+#endif
+#if defined(XP_OS2)
+    asm("int $3");
 #endif
 #ifndef XP_MAC
     abort();

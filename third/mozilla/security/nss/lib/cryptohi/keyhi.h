@@ -37,7 +37,7 @@
  *
  * key.h - public data structures and prototypes for the private key library
  *
- * $Id: keyhi.h,v 1.1.1.1.2.1 2003-07-14 19:06:35 ghudson Exp $
+ * $Id: keyhi.h,v 1.1.1.1.2.2 2004-01-02 19:58:55 ghudson Exp $
  */
 
 #ifndef _KEYHI_H_

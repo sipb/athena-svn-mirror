@@ -3,7 +3,7 @@
   FILE: icalcstp.h
   CREATOR: eric 20 April 1999
   
-  $Id: icalcstp.h,v 1.1.1.1.2.1 2003-07-14 19:05:16 ghudson Exp $
+  $Id: icalcstp.h,v 1.1.1.1.2.2 2004-01-02 19:56:31 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org

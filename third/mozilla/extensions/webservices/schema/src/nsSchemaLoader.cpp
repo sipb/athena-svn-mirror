@@ -28,6 +28,7 @@
 #include "nsIContent.h"
 #include "nsINodeInfo.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOM3Node.h"
 
 // loading includes
 #include "nsIXMLHttpRequest.h"
@@ -492,7 +493,7 @@ nsBuiltinSchemaCollection::GetBuiltinType(const nsAString& aName,
     rv = CallQueryInterface(sup, aType);
   }
   else {
-    nsCOMPtr<nsIAtom> typeName = dont_AddRef(NS_NewAtom(aName));
+    nsCOMPtr<nsIAtom> typeName = do_GetAtom(aName);
     PRUint16 typeVal;
     if (typeName == nsSchemaAtoms::sAnyType_atom) {
       typeVal = nsISchemaBuiltinType::BUILTIN_TYPE_ANYTYPE;
@@ -1101,7 +1102,7 @@ nsSchemaLoader::GetNewOrUsedType(nsSchema* aSchema,
   // namespace associated with the prefix
   rv = ParseQualifiedName(aContext, aTypeName, prefix, 
                           localName, namespaceURI);
-  if ((prefix.Length() > 0) && NS_FAILED(rv)) {
+  if (!prefix.IsEmpty() && NS_FAILED(rv)) {
     // Unknown prefix
     return NS_ERROR_SCHEMA_UNKNOWN_PREFIX;
   }
@@ -1148,7 +1149,7 @@ nsSchemaLoader::ProcessElement(nsSchema* aSchema,
   // See if it's a reference or an actual element declaration
   nsAutoString ref;
   aElement->GetAttribute(NS_LITERAL_STRING("ref"), ref);
-  if (ref.Length() > 0) {
+  if (!ref.IsEmpty()) {
     nsSchemaElementRef* elementRef;
     
     elementRef = new nsSchemaElementRef(aSchema, ref);
@@ -1672,7 +1673,7 @@ nsSchemaLoader::ProcessSimpleContent(nsSchema* aSchema,
     if ((tagName == nsSchemaAtoms::sRestriction_atom) ||
         (tagName == nsSchemaAtoms::sExtension_atom)) {
       childElement->GetAttribute(NS_LITERAL_STRING("base"), baseStr);
-      if (baseStr.Length() == 0) {
+      if (baseStr.IsEmpty()) {
         return NS_ERROR_SCHEMA_MISSING_TYPE;
       }
       
@@ -1931,7 +1932,7 @@ nsSchemaLoader::ProcessComplexContent(nsSchema* aSchema,
     if ((tagName == nsSchemaAtoms::sRestriction_atom) ||
         (tagName == nsSchemaAtoms::sExtension_atom)) {
       childElement->GetAttribute(NS_LITERAL_STRING("base"), baseStr);
-      if (baseStr.Length() == 0) {
+      if (baseStr.IsEmpty()) {
         return NS_ERROR_SCHEMA_MISSING_TYPE;
       }
       
@@ -2118,7 +2119,7 @@ nsSchemaLoader::ProcessSimpleTypeRestriction(nsSchema* aSchema,
   nsCOMPtr<nsISchemaType> baseType;
   nsAutoString baseStr;
   aElement->GetAttribute(NS_LITERAL_STRING("base"), baseStr);
-  if (baseStr.Length() > 0) {
+  if (!baseStr.IsEmpty()) {
     rv = GetNewOrUsedType(aSchema, aElement, baseStr, 
                           getter_AddRefs(baseType));
     if (NS_FAILED(rv)) {
@@ -2211,7 +2212,7 @@ nsSchemaLoader::ProcessSimpleTypeList(nsSchema* aSchema,
   aElement->GetAttribute(NS_LITERAL_STRING("itemType"), itemTypeStr);
 
   nsCOMPtr<nsISchemaSimpleType> itemType;
-  if (itemTypeStr.Length() > 0) {
+  if (!itemTypeStr.IsEmpty()) {
     nsCOMPtr<nsISchemaType> type;
     rv = GetNewOrUsedType(aSchema, aElement, itemTypeStr, 
                           getter_AddRefs(type));
@@ -2273,7 +2274,7 @@ nsSchemaLoader::ProcessSimpleTypeUnion(nsSchema* aSchema,
   nsCOMPtr<nsISchemaSimpleType> memberType;
   nsAutoString memberTypes;
   aElement->GetAttribute(NS_LITERAL_STRING("memberTypes"), memberTypes);
-  if (memberTypes.Length() > 0) {
+  if (!memberTypes.IsEmpty()) {
     nsReadingIterator<PRUnichar> begin, end, tokenEnd;
 
     memberTypes.BeginReading(tokenEnd);
@@ -2356,7 +2357,7 @@ nsSchemaLoader::ProcessModelGroup(nsSchema* aSchema,
   aElement->GetAttribute(NS_LITERAL_STRING("ref"), ref);
   
   if ((aTagName == nsSchemaAtoms::sModelGroup_atom) &&
-      (ref.Length() > 0)) {
+      !ref.IsEmpty()) {
     nsSchemaModelGroupRef* modelGroupRef = new nsSchemaModelGroupRef(aSchema, 
                                                                      ref);
     if (!modelGroupRef) {
@@ -2583,7 +2584,7 @@ nsSchemaLoader::ProcessAttribute(nsSchema* aSchema,
 
   nsAutoString ref;
   aElement->GetAttribute(NS_LITERAL_STRING("ref"), ref);
-  if (ref.Length() > 0) {
+  if (!ref.IsEmpty()) {
     nsSchemaAttributeRef* attributeRef = new nsSchemaAttributeRef(aSchema,
                                                                   ref);
     if (!attributeRef) {
@@ -2633,7 +2634,7 @@ nsSchemaLoader::ProcessAttribute(nsSchema* aSchema,
       nsAutoString typeStr;
       aElement->GetAttribute(NS_LITERAL_STRING("type"), typeStr);
 
-      if (typeStr.Length() > 0) {
+      if (!typeStr.IsEmpty()) {
         nsCOMPtr<nsISchemaType> schemaType;
         rv = GetNewOrUsedType(aSchema, aElement, typeStr, 
                               getter_AddRefs(schemaType));
@@ -2669,7 +2670,7 @@ nsSchemaLoader::ProcessAttributeGroup(nsSchema* aSchema,
   nsAutoString ref;
   aElement->GetAttribute(NS_LITERAL_STRING("ref"), ref);
 
-  if (ref.Length() > 0) {
+  if (!ref.IsEmpty()) {
     nsSchemaAttributeGroupRef* attrRef = new nsSchemaAttributeGroupRef(aSchema,
                                                                        ref);
     if (!attrRef) {
@@ -2782,7 +2783,7 @@ nsSchemaLoader::ProcessFacet(nsSchema* aSchema,
 
   nsAutoString valueStr;
   aElement->GetAttribute(NS_LITERAL_STRING("value"), valueStr);
-  if (valueStr.Length() == 0) {
+  if (valueStr.IsEmpty()) {
     return NS_ERROR_SCHEMA_FACET_VALUE_ERROR;
   }
 
@@ -2879,14 +2880,14 @@ nsSchemaLoader::GetMinAndMax(nsIDOMElement* aElement,
   aElement->GetAttribute(NS_LITERAL_STRING("maxOccurs"), maxStr);
   
   PRInt32 rv;
-  if (minStr.Length() > 0) {
+  if (!minStr.IsEmpty()) {
     PRInt32 minVal = minStr.ToInteger(&rv);
     if (NS_SUCCEEDED(rv) && (minVal >= 0)) {
       *aMinOccurs = (PRUint32)minVal;
     }
   }
 
-  if (maxStr.Length() > 0) {
+  if (!maxStr.IsEmpty()) {
     if (maxStr.Equals(NS_LITERAL_STRING("unbounded"))) {
       *aMaxOccurs = nsISchemaParticle::OCCURRENCE_UNBOUNDED;
     }

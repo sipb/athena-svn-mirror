@@ -37,20 +37,20 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsAccessNodeWrap.h"
-#include "nsIAccessible.h"
-#include "nsIFrame.h"
-#include "nsIDocument.h"
-#include "nsIPresShell.h"
-#include "nsIDOMNodeList.h"
-#include "nsIScriptGlobalObject.h"
-#include "nsIDOMCSSStyleDeclaration.h"
-#include "nsIDOMViewCSS.h"
-#include "nsIAccessibilityService.h"
-#include "nsIServiceManager.h"
-#include "nsINameSpaceManager.h"
-#include "nsAccessibleWrap.h"
 #include "ISimpleDOMNode_i.c"
+#include "nsIAccessibilityService.h"
+#include "nsIAccessible.h"
+#include "nsIDocument.h"
+#include "nsIDOMCSSStyleDeclaration.h"
+#include "nsIDOMNodeList.h"
+#include "nsIDOMNSHTMLElement.h"
+#include "nsIDOMViewCSS.h"
+#include "nsIFrame.h"
+#include "nsINameSpaceManager.h"
 #include "nsIPref.h"
+#include "nsIPresShell.h"
+#include "nsIScriptGlobalObject.h"
+#include "nsIServiceManager.h"
 #include "nsIServiceManager.h"
 
 /// the accessible library and cached methods
@@ -153,7 +153,7 @@ STDMETHODIMP nsAccessNodeWrap::get_nodeInfo(
   PRInt32 nameSpaceID = 0;
   *aUniqueID = 0; // magic value of 0 means we're on the document node.
   if (content) {
-    content->GetNameSpaceID(nameSpaceID);
+    content->GetNameSpaceID(&nameSpaceID);
     // This is a unique ID for every content node.
     // The 3rd party accessibility application can compare this to the childID we return for 
     // events such as focus events, to correlate back to data nodes in their internal object model.
@@ -200,7 +200,7 @@ STDMETHODIMP nsAccessNodeWrap::get_attributes(
     nsAutoString attributeValue;
     const char *pszAttributeName; 
 
-    if (NS_SUCCEEDED(content->GetAttrNameAt(index, nameSpaceID, *getter_AddRefs(nameAtom), *getter_AddRefs(prefixAtom)))) {
+    if (NS_SUCCEEDED(content->GetAttrNameAt(index, &nameSpaceID, getter_AddRefs(nameAtom), getter_AddRefs(prefixAtom)))) {
       aNameSpaceIDs[index] = NS_STATIC_CAST(short, nameSpaceID);
       nameAtom->GetUTF8String(&pszAttributeName);
       aAttribNames[index] = ::SysAllocString(NS_ConvertUTF8toUCS2(pszAttributeName).get());
@@ -225,10 +225,7 @@ STDMETHODIMP nsAccessNodeWrap::get_attributesForNames(
   if (!domElement || !content) 
     return E_FAIL;
 
-  nsCOMPtr<nsIDocument> doc;
-  content->GetDocument(*getter_AddRefs(doc));
-  
-  if (!doc)
+  if (!content->GetDocument())
     return E_FAIL;
 
   nsCOMPtr<nsINameSpaceManager> nameSpaceManager =
@@ -267,7 +264,7 @@ NS_IMETHODIMP nsAccessNodeWrap::GetComputedStyleDeclaration(nsIDOMCSSStyleDeclar
 
   nsCOMPtr<nsIDocument> doc;
   if (content) 
-    content->GetDocument(*getter_AddRefs(doc));
+    doc = content->GetDocument();
 
   if (!doc) {
     return NS_ERROR_FAILURE;
@@ -383,7 +380,7 @@ ISimpleDOMNode* nsAccessNodeWrap::MakeAccessNode(nsIDOMNode *node)
   nsCOMPtr<nsIDocument> doc;
 
   if (content) 
-    content->GetDocument(*getter_AddRefs(doc));
+    doc = content->GetDocument();
   else {
     // Get the document via QueryInterface, since there is no content node
     doc = do_QueryInterface(node);
@@ -479,6 +476,53 @@ STDMETHODIMP nsAccessNodeWrap::get_nextSibling(ISimpleDOMNode __RPC_FAR *__RPC_F
   return S_OK;
 }
 
+STDMETHODIMP 
+nsAccessNodeWrap::get_childAt(unsigned aChildIndex,
+                              ISimpleDOMNode __RPC_FAR *__RPC_FAR *aNode)
+{
+  *aNode = nsnull;
+
+  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
+  if (!content)
+    return E_FAIL;  // Node already shut down
+
+  nsCOMPtr<nsIContent> childContent;
+  content->ChildAt(aChildIndex, getter_AddRefs(childContent));
+  nsCOMPtr<nsIDOMNode> node(do_QueryInterface(childContent));
+
+  if (!node)
+    return E_FAIL; // No such child
+
+  *aNode = MakeAccessNode(node);
+
+  return S_OK;
+}
+
+STDMETHODIMP 
+nsAccessNodeWrap::get_innerHTML(BSTR __RPC_FAR *aInnerHTML)
+{
+  *aInnerHTML = nsnull;
+
+  nsCOMPtr<nsIDOMNSHTMLElement> domNSElement(do_QueryInterface(mDOMNode));
+  if (!domNSElement)
+    return E_FAIL; // Node already shut down
+
+  nsAutoString innerHTML;
+  domNSElement->GetInnerHTML(innerHTML);
+  *aInnerHTML = ::SysAllocString(innerHTML.get());
+
+  return S_OK;
+}
+
+STDMETHODIMP 
+nsAccessNodeWrap::get_localInterface( 
+    /* [out] */ void __RPC_FAR *__RPC_FAR *localInterface)
+{
+  *localInterface = NS_STATIC_CAST(nsIAccessNode*, this);
+  NS_ADDREF_THIS();
+  return S_OK;
+}
+ 
 void nsAccessNodeWrap::InitAccessibility()
 {
   if (gIsAccessibilityActive) {

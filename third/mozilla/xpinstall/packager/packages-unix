@@ -24,6 +24,7 @@ bin/chrome/en-win.jar
 bin/chrome/US.jar
 bin/defaults/profile/US/*
 bin/defaults/messenger/US/*
+bin/defaults/isp/US/movemail.rdf
 bin/searchplugins/*
 
 [deflenus]
@@ -35,6 +36,7 @@ bin/defaults/profile/localstore.rdf
 bin/defaults/profile/search.rdf
 bin/defaults/profile/mimeTypes.rdf
 bin/defaults/messenger/mailViews.dat
+bin/defaults/isp/movemail.rdf
 
 [xpcom]
 bin/libmozjs.so
@@ -124,7 +126,6 @@ bin/components/libgfx_gtk.so
 bin/components/libgfxps.so
 bin/components/libgfxxprint.so
 bin/components/libimglib2.so
-bin/components/libimgmng.so
 bin/components/libi18n.so
 bin/components/libmork.so
 bin/components/libmozfind.so
@@ -309,6 +310,25 @@ bin/res/quirk.css
 bin/res/forms.css
 bin/res/platform-forms.css
 bin/res/EditorOverride.css
+bin/res/grabber.gif
+bin/res/table-add-column-after-active.gif
+bin/res/table-add-column-after-hover.gif
+bin/res/table-add-column-after.gif
+bin/res/table-add-column-before-active.gif
+bin/res/table-add-column-before-hover.gif
+bin/res/table-add-column-before.gif
+bin/res/table-add-row-after-active.gif
+bin/res/table-add-row-after-hover.gif
+bin/res/table-add-row-after.gif
+bin/res/table-add-row-before-active.gif
+bin/res/table-add-row-before-hover.gif
+bin/res/table-add-row-before.gif
+bin/res/table-remove-column-active.gif
+bin/res/table-remove-column-hover.gif
+bin/res/table-remove-column.gif
+bin/res/table-remove-row-active.gif
+bin/res/table-remove-row-hover.gif
+bin/res/table-remove-row.gif
 bin/res/viewsource.css
 bin/res/mathml.css
 bin/res/rdf/article.gif
@@ -421,3 +441,9 @@ bin/defaults/pref/inspector.js
 bin/res/inspector/viewer-registry.rdf
 bin/res/inspector/search-registry.rdf
 bin/chrome/icons/default/winInspectorMain*.xpm
+
+[spellcheck]
+bin/components/libmyspell.so
+bin/components/libspellchecker.so
+bin/components/spellchecker.xpt
+bin/components/myspell/*

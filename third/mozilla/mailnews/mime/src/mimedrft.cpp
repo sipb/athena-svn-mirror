@@ -93,7 +93,6 @@ static NS_DEFINE_CID(kCMsgComposeServiceCID,  NS_MSGCOMPOSESERVICE_CID);
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 // Define CIDs...
-static NS_DEFINE_CID(kMsgCompFieldsCID,       NS_MSGCOMPFIELDS_CID); 
 static NS_DEFINE_CID(kPrefCID,                NS_PREF_CID);
 
 // safe filename for all OSes
@@ -1894,7 +1893,7 @@ mime_decompose_file_init_fn ( void *stream_closure, MimeHeaders *headers )
     if (NS_SUCCEEDED(rv) && mimeFinder) 
     {
       nsCOMPtr<nsIMIMEInfo> mimeInfo = nsnull;
-      rv = mimeFinder->GetFromMIMEType(contentType.get(), getter_AddRefs(mimeInfo));
+      rv = mimeFinder->GetFromTypeAndExtension(contentType.get(), nsnull, getter_AddRefs(mimeInfo));
       if (NS_SUCCEEDED(rv) && mimeInfo) 
       {
         nsXPIDLCString fileExtension;

@@ -59,19 +59,7 @@ nsUnknownContentTypeHandler::nsUnknownContentTypeHandler( ) {
 nsUnknownContentTypeHandler::~nsUnknownContentTypeHandler( ) { }
 
 
-NS_IMETHODIMP nsUnknownContentTypeHandler::ShowProgressDialog(nsIHelperAppLauncher *aLauncher, nsISupports *aContext ) {
-	nsresult rv = NS_OK;
-
-/* ATENTIE */ //printf("ShowProgressDialog!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n");
-
-	/* we need a dummy listener because the nsExternalAppHandler class verifies that a progress window has been displayed */
-	nsCOMPtr<nsIWebProgressListener> dummy = new nsWebProgressListener;
-	aLauncher->SetWebProgressListener( dummy );
-
-	return rv;
-	}
-
-NS_IMETHODIMP nsUnknownContentTypeHandler::Show( nsIHelperAppLauncher *aLauncher, nsISupports *aContext ) {
+NS_IMETHODIMP nsUnknownContentTypeHandler::Show( nsIHelperAppLauncher *aLauncher, nsISupports *aContext, PRBool aForced ) {
 	nsresult rv = NS_OK;
 /* ATENTIE */ //printf("Show!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n");
 
@@ -127,7 +115,7 @@ NS_IMETHODIMP nsUnknownContentTypeHandler::Show( nsIHelperAppLauncher *aLauncher
 	}
 
 /* only Show() method is used - remove this code */
-NS_IMETHODIMP nsUnknownContentTypeHandler::PromptForSaveToFile( nsISupports * aWindowContext, const PRUnichar * aDefaultFile, const PRUnichar * aSuggestedFileExtension, nsILocalFile ** aNewFile ) {
+NS_IMETHODIMP nsUnknownContentTypeHandler::PromptForSaveToFile(nsIHelperAppLauncher * aLauncher, nsISupports * aWindowContext, const PRUnichar * aDefaultFile, const PRUnichar * aSuggestedFileExtension, nsILocalFile ** aNewFile ) {
 /* ATENTIE */ //printf("PromptForSaveToFile!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n");
 	return NS_OK;
 	}
@@ -162,7 +150,7 @@ PtWidget_t *nsUnknownContentTypeHandler::GetWebBrowser(nsIDOMWindow *aWindow)
 
 
 //###########################################################################
-NS_IMPL_ISUPPORTS2(nsWebProgressListener, nsIWebProgressListener, nsISupportsWeakReference);
+NS_IMPL_ISUPPORTS2(nsWebProgressListener, nsIWebProgressListener, nsISupportsWeakReference)
 
 nsWebProgressListener::nsWebProgressListener() {
   NS_INIT_ISUPPORTS();
@@ -202,7 +190,7 @@ NS_IMETHODIMP nsWebProgressListener::OnSecurityChange(nsIWebProgress *aWebProgre
 /* Component's implementation of Initialize. */
 /* nsISupports Implementation for the class */
 NS_IMPL_ADDREF( className );  
-NS_IMPL_RELEASE( className );
+NS_IMPL_RELEASE( className )
 
 
 /* QueryInterface implementation for this class. */

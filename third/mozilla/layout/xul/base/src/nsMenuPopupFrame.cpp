@@ -71,6 +71,7 @@
 #include "nsIRootBox.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsITimerInternal.h"
+#include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #ifdef XP_WIN
 #include "nsISound.h"
@@ -158,10 +159,7 @@ nsMenuPopupFrame::nsMenuPopupFrame(nsIPresShell* aShell)
   SetIsContextMenu(PR_FALSE);   // we're not a context menu by default
   // Don't allow container frames to automatically position
   // the popup because they will put it in the wrong position.
-  nsFrameState state;
-  GetFrameState(&state);
-  state &= ~NS_FRAME_SYNC_FRAME_AND_VIEW;
-  SetFrameState(state);
+  RemoveStateBits(NS_FRAME_SYNC_FRAME_AND_VIEW);
 } // ctor
 
 
@@ -192,11 +190,8 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
   // Now that we've made a view, remove it and insert it at the correct
   // position in the view hierarchy (as the root view).  We do this so that we
   // can draw the menus outside the confines of the window.
-  nsIView* ourView;
-  GetView(aPresContext, &ourView);
-
-  nsCOMPtr<nsIViewManager> viewManager;
-  ourView->GetViewManager(*getter_AddRefs(viewManager));
+  nsIView* ourView = GetView();
+  nsIViewManager* viewManager = ourView->GetViewManager();
 
   // Remove the view from its old position.
   viewManager->RemoveChild(ourView);
@@ -223,11 +218,10 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
   widgetData.mBorderStyle = eBorderStyle_default;
   widgetData.clipSiblings = PR_TRUE;
 
-  nsCOMPtr<nsIContent> parentContent;
-  aContent->GetParent(*getter_AddRefs(parentContent));
+  nsIContent* parentContent = aContent->GetParent();
   nsCOMPtr<nsIAtom> tag;
   if (parentContent)
-    parentContent->GetTag(*getter_AddRefs(tag));
+    parentContent->GetTag(getter_AddRefs(tag));
   widgetData.mDropShadow = !(tag && tag == nsXULAtoms::menulist);
   
   // XXX make sure we are hidden (shouldn't this be done automatically?)
@@ -283,11 +277,9 @@ nsMenuPopupFrame::MarkStyleChange(nsBoxLayoutState& aState)
     else {
       nsIFrame* frame = nsnull;
       GetFrame(&frame);
-      nsIFrame* parentFrame = nsnull;
-      frame->GetParent(&parentFrame);
       nsCOMPtr<nsIPresShell> shell;
       aState.GetPresShell(getter_AddRefs(shell));
-      return parentFrame->ReflowDirtyChild(shell, frame);
+      return frame->GetParent()->ReflowDirtyChild(shell, frame);
     }
   }
   return NS_OK;
@@ -298,28 +290,25 @@ nsMenuPopupFrame::MarkDirty(nsBoxLayoutState& aState)
 {
   NeedsRecalc();
 
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
 
   // only reflow if we aren't already dirty.
-  if (state & NS_FRAME_IS_DIRTY) {      
+  if (frame->GetStateBits() & NS_FRAME_IS_DIRTY) {      
 #ifdef DEBUG_COELESCED
     Coelesced();
 #endif
     return NS_OK;
   }
 
-  state |= NS_FRAME_IS_DIRTY;
-  frame->SetFrameState(state);
+  frame->AddStateBits(NS_FRAME_IS_DIRTY);
 
   nsCOMPtr<nsIBoxLayout> layout;
   GetLayoutManager(getter_AddRefs(layout));
   if (layout)
     layout->BecameDirty(this, aState);
 
-  if (state & NS_FRAME_HAS_DIRTY_CHILDREN) {   
+  if (frame->GetStateBits() & NS_FRAME_HAS_DIRTY_CHILDREN) {   
 #ifdef DEBUG_COELESCED
     Coelesced();
 #endif
@@ -341,11 +330,9 @@ nsMenuPopupFrame::MarkDirty(nsBoxLayoutState& aState)
       box->MarkDirtyChildren(state); // Mark the popupset as dirty.
     }
     else {
-      nsIFrame* parentFrame = nsnull;
-      frame->GetParent(&parentFrame);
       nsCOMPtr<nsIPresShell> shell;
       aState.GetPresShell(getter_AddRefs(shell));
-      return parentFrame->ReflowDirtyChild(shell, frame);
+      return frame->GetParent()->ReflowDirtyChild(shell, frame);
     }
   }
 
@@ -355,10 +342,8 @@ nsMenuPopupFrame::MarkDirty(nsBoxLayoutState& aState)
 NS_IMETHODIMP
 nsMenuPopupFrame::RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild)
 {
-  nsFrameState state;
   nsIFrame* frame;
   GetFrame(&frame);
-  frame->GetFrameState(&state);
 
   if (aChild != nsnull) {
     nsCOMPtr<nsIBoxLayout> layout;
@@ -368,10 +353,9 @@ nsMenuPopupFrame::RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild)
   }
 
   // if we are not dirty mark ourselves dirty and tell our parent we are dirty too.
-  if (!(state & NS_FRAME_HAS_DIRTY_CHILDREN)) {      
+  if (!(frame->GetStateBits() & NS_FRAME_HAS_DIRTY_CHILDREN)) {      
     // Mark yourself as dirty and needing to be recalculated
-    state |= NS_FRAME_HAS_DIRTY_CHILDREN;
-    frame->SetFrameState(state);
+    frame->AddStateBits(NS_FRAME_HAS_DIRTY_CHILDREN);
     NeedsRecalc();
 
     nsIBox* parentBox = nsnull;
@@ -405,9 +389,8 @@ nsMenuPopupFrame::GetLayoutFlags(PRUint32& aFlags)
 PRBool ParentIsScrollableView(nsIView* aStartView);
 PRBool ParentIsScrollableView(nsIView* aStartView)
 {
-  nsIView* scrollportView = nsnull;
+  nsIView* scrollportView = aStartView->GetParent();
   nsIScrollableView* scrollableView = nsnull;
-  aStartView->GetParent(scrollportView);
   if (scrollportView)
     scrollportView->QueryInterface(NS_GET_IID(nsIScrollableView), (void**) &scrollableView);
   return scrollableView != nsnull;
@@ -439,17 +422,14 @@ nsMenuPopupFrame::GetViewOffset(nsIView* aView, nsPoint& aPoint)
   aPoint.y = 0;
  
   // Keep track of the root view so that we know to stop there
-  nsCOMPtr<nsIViewManager> vm;
-  aView->GetViewManager(*getter_AddRefs(vm));
   nsIView* rootView;
-  vm->GetRootView(rootView);
+  aView->GetViewManager()->GetRootView(rootView);
 
   nsIView *parent;
-  nsRect bounds;
 
   parent = aView;
   while (parent) {
-    parent->GetBounds(bounds);
+    nsRect bounds = parent->GetBounds();
     if ((bounds.y >= 0 && bounds.x >= 0) || !ParentIsScrollableView(parent)) {
       //
       // The Extremely Tall Menu: 
@@ -493,7 +473,7 @@ nsMenuPopupFrame::GetViewOffset(nsIView* aView, nsPoint& aPoint)
     }
     if (parent == rootView)
       break;
-    parent->GetParent(parent);
+    parent = parent->GetParent();
   }
 }
 
@@ -512,40 +492,19 @@ nsMenuPopupFrame::GetRootViewForPopup(nsIPresContext* aPresContext,
 {
   *aResult = nsnull;
 
-  // A frame with a view.
-  nsIFrame* parentWithView = nsnull;
-
-  nsFrameState fs;
-  aStartFrame->GetFrameState(&fs);
-  if (fs & NS_FRAME_HAS_VIEW) {
-    // If the given frame has a view, we don't need to climb anywhere.
-    parentWithView = aStartFrame;
-  }
-  else {
-    // Otherwise, walk up the frame tree looking for the first parent which
-    // has a view.
-    aStartFrame->GetParentWithView(aPresContext, &parentWithView);
-  }
-
-  if (parentWithView) {
-    nsIView* view = nsnull;
-    nsIView* temp = nsnull;
-    parentWithView->GetView(aPresContext, &view);
-    NS_ASSERTION(view, "GetParentWithView returned frame with no view!");
+  nsIView* view = aStartFrame->GetClosestView();
+  NS_ASSERTION(view, "frame must have a closest view!");
+  if (view) {
     nsIView* rootView = nsnull;
     if (aStopAtViewManagerRoot) {
-      nsCOMPtr<nsIViewManager> viewManager;
-      view->GetViewManager(*getter_AddRefs(viewManager));
-      NS_ASSERTION(viewManager, "View must have a viewmanager");
-      viewManager->GetRootView(rootView);
+      view->GetViewManager()->GetRootView(rootView);
     }
     
     while (view) {
       // Walk up the view hierachy looking for a view whose widget has a 
       // window type of eWindowType_popup - in other words a popup window
       // widget. If we find one, this is the view we want. 
-      nsCOMPtr<nsIWidget> widget;
-      view->GetWidget(*getter_AddRefs(widget));
+      nsIWidget* widget = view->GetWidget();
       if (widget) {
         nsWindowType wtype;
         widget->GetWindowType(wtype);
@@ -560,7 +519,7 @@ nsMenuPopupFrame::GetRootViewForPopup(nsIPresContext* aPresContext,
         return;
       }
 
-      view->GetParent(temp);
+      nsIView* temp = view->GetParent();
       if (!temp) {
         // Otherwise, we've walked all the way up to the root view and not
         // found a view for a popup window widget. Just return the root view.
@@ -579,9 +538,11 @@ void GetWidgetForView(nsIView *aView, nsIWidget *&aWidget)
   nsIView *view = aView;
   while (!aWidget && view)
   {
-    view->GetWidget(aWidget);
+    aWidget = view->GetWidget();
     if (!aWidget)
-      view->GetParent(view);
+      view = view->GetParent();
+    else
+      NS_ADDREF(aWidget);
   }
 }
 
@@ -605,8 +566,7 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
 
   // Find the widget associated with the popup's document
   nsCOMPtr<nsIWidget> popupDocumentWidget;
-  nsCOMPtr<nsIViewManager> viewManager;
-  inPopupShell->GetViewManager(getter_AddRefs(viewManager));
+  nsIViewManager* viewManager = inPopupShell->GetViewManager();
   if ( viewManager ) {  
     nsIView* rootView;
     viewManager->GetRootView(rootView);
@@ -622,7 +582,7 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
   // nsXULPopupListener).
 
   nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(*getter_AddRefs(tag));
+  mContent->GetTag(getter_AddRefs(tag));
   nsCOMPtr<nsIDOMNode> targetNode;
   if (tag == nsXULAtoms::tooltip)
     inPopupDoc->GetTooltipNode(getter_AddRefs(targetNode));
@@ -633,12 +593,10 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
   nsCOMPtr<nsIContent> targetAsContent ( do_QueryInterface(targetNode) );
   nsCOMPtr<nsIWidget> targetDocumentWidget;
   if ( targetAsContent ) {
-    nsCOMPtr<nsIDocument> targetDocument;
-    targetAsContent->GetDocument(*getter_AddRefs(targetDocument));
+    nsCOMPtr<nsIDocument> targetDocument = targetAsContent->GetDocument();
     if (targetDocument) {
       nsCOMPtr<nsIPresShell> shell;
       targetDocument->GetShellAt(0, getter_AddRefs(shell));
-      nsCOMPtr<nsIViewManager> viewManagerTarget;
       if ( shell ) {
         // We might be inside a popup widget. If so, we need to use that widget and
         // not the root view's widget.
@@ -656,7 +614,7 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
         if (!targetDocumentWidget) {
           // We aren't inside a popup. This means we should use the root view's
           // widget.
-          shell->GetViewManager(getter_AddRefs(viewManagerTarget));
+          nsIViewManager* viewManagerTarget = shell->GetViewManager();
           if ( viewManagerTarget ) {
             nsIView* rootViewTarget;
             viewManagerTarget->GetRootView(rootViewTarget);
@@ -910,8 +868,7 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
   // |view|
   //   The root view for the popup window widget associated with this frame,
   //   or, the view associated with this frame. 
-  nsIView* view = nsnull;
-  GetView(aPresContext, &view);
+  nsIView* view = GetView();
 
   ///////////////////////////////////////////////////////////////////////////////
   //
@@ -944,8 +901,7 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
   // a window or other view, whose bounds should not be taken into account. 
   //
   if (ParentIsScrollableView(containingView)) {
-    nsRect bounds;
-    containingView->GetBounds(bounds);
+    nsRect bounds = containingView->GetBounds();
     offset += nsPoint(bounds.x, bounds.y);
   }
   
@@ -957,14 +913,12 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
 
   // |parentRect|
   //   The dimensions of the frame invoking the popup. 
-  nsRect parentRect;
-  aFrame->GetRect(parentRect);
+  nsRect parentRect = aFrame->GetRect();
 
   float p2t, t2p;
   aPresContext->GetScaledPixelsToTwips(&p2t);
 
-  nsCOMPtr<nsIViewManager> viewManager;
-  containingView->GetViewManager(*getter_AddRefs(viewManager));
+  nsIViewManager* viewManager = containingView->GetViewManager();
     
   nsCOMPtr<nsIDeviceContext> dx;
   viewManager->GetDeviceContext(*getter_AddRefs(dx));
@@ -978,12 +932,10 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   document->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
   
-  nsCOMPtr<nsIContent> parentContent;
-  aFrame->GetContent(getter_AddRefs(parentContent));
   nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(*getter_AddRefs(tag));
+  mContent->GetTag(getter_AddRefs(tag));
   PRBool sizedToPopup = (tag != nsXULAtoms::tooltip)
-                        && (nsMenuFrame::IsSizedToPopup(parentContent, PR_FALSE));
+                        && (nsMenuFrame::IsSizedToPopup(aFrame->GetContent(), PR_FALSE));
   
   // If we stick to our parent's width, set it here before we move the
   // window around, because moving is done with respect to the width...
@@ -1192,7 +1144,7 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
         // - - - - - - - - - - screenBottomTwips (bottom of the screen)
         //   |    \ 
         //   |     }  moveDistY
-        //   |    /
+        //   |    / 
         //   +----  screenViewLocY + mRect.height
         //
 
@@ -1253,14 +1205,8 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
     }
 
     // ensure it is not even partially offscreen.
-    if ( (screenViewLocX + mRect.width) > screenRightTwips ) {
-      if (tag == nsXULAtoms::tooltip) {
-        //the tooltip is off the screen to the right - shift it to the left as much as needed
-        xpos -= (screenViewLocX + mRect.width) - screenRightTwips;
-      }
-      else        
-        xpos -= mRect.width;      
-    }
+    if ( (screenViewLocX + mRect.width) > screenRightTwips )
+      xpos -= (screenViewLocX + mRect.width) - screenRightTwips;
     if ( (screenViewLocY + mRect.height) > screenBottomTwips )
       ypos -= (mRect.height + margin.top + margin.bottom);
       
@@ -1269,11 +1215,11 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
   viewManager->MoveViewTo(view, xpos, ypos); 
 
   // Now that we've positioned the view, sync up the frame's origin.
-  nsPoint frameOrigin, offsetToView;
-  GetOrigin(frameOrigin);
+  nsPoint frameOrigin = GetPosition();
+  nsPoint offsetToView;
   GetOriginToViewOffset(aPresContext, offsetToView, nsnull);
   frameOrigin -= offsetToView;
-  nsBoxFrame::MoveTo(aPresContext, frameOrigin.x, frameOrigin.y);
+  nsBoxFrame::SetPosition(frameOrigin);
 
   if (sizedToPopup) {
       nsBoxLayoutState state(mPresContext);
@@ -1296,9 +1242,9 @@ static void GetInsertionPoint(nsIPresShell* aShell, nsIFrame* aFrame, nsIFrame* 
 {
   nsCOMPtr<nsIStyleSet> styleSet;
   aShell->GetStyleSet(getter_AddRefs(styleSet));
-  nsCOMPtr<nsIContent> child;
+  nsIContent* child = nsnull;
   if (aChild)
-    aChild->GetContent(getter_AddRefs(child));
+    child = aChild->GetContent();
   styleSet->GetInsertionPoint(aShell, aFrame, child, aResult);
 }
 
@@ -1318,7 +1264,7 @@ nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
     aStart->QueryInterface(NS_GET_IID(nsIFrame), (void**)&currFrame); 
     if (currFrame) {
       startFrame = currFrame;
-      currFrame->GetNextSibling(&currFrame);
+      currFrame = currFrame->GetNextSibling();
     }
   }
   else 
@@ -1328,17 +1274,14 @@ nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 
   
   while (currFrame) {
-    nsCOMPtr<nsIContent> current;
-    currFrame->GetContent(getter_AddRefs(current));
-
     // See if it's a menu item.
-    if (IsValidItem(current)) {
+    if (IsValidItem(currFrame->GetContent())) {
       nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
       *aResult = menuFrame.get();
       NS_IF_ADDREF(*aResult);
       return NS_OK;
     }
-    currFrame->GetNextSibling(&currFrame);
+    currFrame = currFrame->GetNextSibling();
   }
 
   immediateParent->FirstChild(mPresContext,
@@ -1347,18 +1290,15 @@ nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 
   // Still don't have anything. Try cycling from the beginning.
   while (currFrame && currFrame != startFrame) {
-    nsCOMPtr<nsIContent> current;
-    currFrame->GetContent(getter_AddRefs(current));
-    
     // See if it's a menu item.
-    if (IsValidItem(current)) {
+    if (IsValidItem(currFrame->GetContent())) {
       nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
       *aResult = menuFrame.get();
       NS_IF_ADDREF(*aResult);
       return NS_OK;
     }
 
-    currFrame->GetNextSibling(&currFrame);
+    currFrame = currFrame->GetNextSibling();
   }
 
   // No luck. Just return our start value.
@@ -1394,11 +1334,8 @@ nsMenuPopupFrame::GetPreviousMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResu
   else currFrame = frames.LastChild();
 
   while (currFrame) {
-    nsCOMPtr<nsIContent> current;
-    currFrame->GetContent(getter_AddRefs(current));
-
     // See if it's a menu item.
-    if (IsValidItem(current)) {
+    if (IsValidItem(currFrame->GetContent())) {
       nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
       *aResult = menuFrame.get();
       NS_IF_ADDREF(*aResult);
@@ -1411,11 +1348,8 @@ nsMenuPopupFrame::GetPreviousMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResu
 
   // Still don't have anything. Try cycling from the end.
   while (currFrame && currFrame != startFrame) {
-    nsCOMPtr<nsIContent> current;
-    currFrame->GetContent(getter_AddRefs(current));
-    
     // See if it's a menu item.
-    if (IsValidItem(current)) {
+    if (IsValidItem(currFrame->GetContent())) {
       nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
       *aResult = menuFrame.get();
       NS_IF_ADDREF(*aResult);
@@ -1458,12 +1392,11 @@ NS_IMETHODIMP nsMenuPopupFrame::ConsumeOutsideClicks(PRBool& aConsumeOutsideClic
 
   aConsumeOutsideClicks = PR_TRUE;
 
-  nsCOMPtr<nsIContent> parentContent;
-  mContent->GetParent(*getter_AddRefs(parentContent));
+  nsCOMPtr<nsIContent> parentContent = mContent->GetParent();
 
   if (parentContent) {
     nsCOMPtr<nsIAtom> parentTag;
-    parentContent->GetTag(*getter_AddRefs(parentTag));
+    parentContent->GetTag(getter_AddRefs(parentTag));
     if (parentTag == nsXULAtoms::menulist)
       return NS_OK;  // Consume outside clicks for combo boxes on all platforms
     if (parentTag == nsXULAtoms::menu || parentTag == nsXULAtoms::popupset) {
@@ -1491,18 +1424,17 @@ nsIScrollableView* nsMenuPopupFrame::GetScrollableView(nsIFrame* aStart)
     return nsnull;  
 
   nsIFrame* currFrame;
-  nsIView* view=nsnull;
   nsIScrollableView* scrollableView=nsnull;
 
   // try start frame and siblings
   currFrame=aStart;
   do {
-    currFrame->GetView(mPresContext, &view);
+    nsIView* view = currFrame->GetView();
     if ( view )
-      view->QueryInterface(NS_GET_IID(nsIScrollableView), (void**)&scrollableView);
+      CallQueryInterface(view, &scrollableView);
     if ( scrollableView )
       return scrollableView;
-    currFrame->GetNextSibling(&currFrame);
+    currFrame = currFrame->GetNextSibling();
   } while ( currFrame );
 
   // try children
@@ -1513,7 +1445,7 @@ nsIScrollableView* nsMenuPopupFrame::GetScrollableView(nsIFrame* aStart)
     scrollableView=GetScrollableView(childFrame);
     if ( scrollableView )
       return scrollableView;
-    currFrame->GetNextSibling(&currFrame);
+    currFrame = currFrame->GetNextSibling();
   } while ( currFrame );
 
   return nsnull;
@@ -1532,11 +1464,10 @@ void nsMenuPopupFrame::EnsureMenuItemIsVisible(nsIMenuFrame* aMenuItem)
       nsIView* view=nsnull;
       scrollableView->QueryInterface(NS_GET_IID(nsIView), (void**)&view);
       if ( view ) {
-        nsRect viewRect, itemRect;
         nscoord scrollX, scrollY;
 
-        view->GetBounds(viewRect);
-        frame->GetRect(itemRect);
+        nsRect viewRect = view->GetBounds();
+        nsRect itemRect = frame->GetRect();
         scrollableView->GetScrollPosition(scrollX, scrollY);
     
         // scroll down
@@ -1704,11 +1635,10 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
   nsIMenuFrame* frameAfter = nsnull;
   nsIMenuFrame* frameShortcut = nsnull;
 
-  nsCOMPtr<nsIContent> parentContent;
-  mContent->GetParent(*getter_AddRefs(parentContent));
+  nsIContent* parentContent = mContent->GetParent();
   if (parentContent) {
     nsCOMPtr<nsIAtom> tag;
-    parentContent->GetTag(*getter_AddRefs(tag));
+    parentContent->GetTag(getter_AddRefs(tag));
     if (tag != nsXULAtoms::menulist)
       isMenu = PR_TRUE;
   }
@@ -1767,8 +1697,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
   // We start searching from first child. This process is divided into two parts
   //   -- before current and after current -- by the current item
   while (currFrame) {
-    nsCOMPtr<nsIContent> current;
-    currFrame->GetContent(getter_AddRefs(current));
+    nsIContent* current = currFrame->GetContent();
     
     // See if it's a menu item.
     if (IsValidItem(current)) {
@@ -1784,7 +1713,8 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
       else
         isShortcut = PR_TRUE;
 
-      if (Substring(textKey, 0, stringLength).Equals(incrementalString, nsCaseInsensitiveStringComparator())) {
+      if (StringBeginsWith(textKey, incrementalString,
+                           nsCaseInsensitiveStringComparator())) {
         // mIncrementalString is a prefix of textKey
         nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
         if (menuFrame) {
@@ -1825,7 +1755,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
         }
       }
     }
-    currFrame->GetNextSibling(&currFrame);
+    currFrame = currFrame->GetNextSibling();
   }
 
   doAction = (isMenu && (matchCount == 1 || matchShortcutCount == 1));
@@ -1968,11 +1898,9 @@ NS_IMETHODIMP
 nsMenuPopupFrame::GetParentPopup(nsIMenuParent** aMenuParent)
 {
   *aMenuParent = nsnull;
-  nsIFrame* frame;
-  GetParent(&frame);
+  nsIFrame* frame = GetParent();
   if (frame) {
-    nsIFrame* grandparent;
-    frame->GetParent(&grandparent);
+    nsIFrame* grandparent = frame->GetParent();
     if (grandparent) {
       nsCOMPtr<nsIMenuParent> menuParent = do_QueryInterface(grandparent);
       if (menuParent) {
@@ -1996,8 +1924,7 @@ nsMenuPopupFrame::HideChain()
   if (nsMenuFrame::sDismissalListener)
     nsMenuFrame::sDismissalListener->Unregister();
   
-  nsIFrame* frame;
-  GetParent(&frame);
+  nsIFrame* frame = GetParent();
   if (frame) {
     nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(frame);
     if (!menuFrame) {
@@ -2032,8 +1959,7 @@ nsMenuPopupFrame::DismissChain()
     nsMenuFrame::sDismissalListener->Unregister();
   
   // Get our menu parent.
-  nsIFrame* frame;
-  GetParent(&frame);
+  nsIFrame* frame = GetParent();
   if (frame) {
     nsIMenuFrame *menuFrame = nsnull;
     CallQueryInterface(frame, &menuFrame);
@@ -2071,7 +1997,8 @@ nsMenuPopupFrame::GetWidget(nsIWidget **aWidget)
   if (!view)
     return NS_OK;
 
-  view->GetWidget(*aWidget);
+  *aWidget = view->GetWidget();
+  NS_IF_ADDREF(*aWidget);
   return NS_OK;
 }
 
@@ -2091,9 +2018,7 @@ nsMenuPopupFrame::InstallKeyboardNavigator()
   if (mKeyboardNavigator)
     return NS_OK;
 
-  nsCOMPtr<nsIDocument> doc;
-  mContent->GetDocument(*getter_AddRefs(doc));
-  nsCOMPtr<nsIDOMEventReceiver> target = do_QueryInterface(doc);
+  nsCOMPtr<nsIDOMEventReceiver> target = do_QueryInterface(mContent->GetDocument());
   
   mTarget = target;
   mKeyboardNavigator = new nsMenuListener(this);
@@ -2127,7 +2052,7 @@ PRBool
 nsMenuPopupFrame::IsValidItem(nsIContent* aContent)
 {
   nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(*getter_AddRefs(tag));
+  aContent->GetTag(getter_AddRefs(tag));
   if (tag && (tag.get() == nsXULAtoms::menu ||
               tag.get() == nsXULAtoms::menuitem ||
               tag.get() == nsHTMLAtoms::option))
@@ -2151,12 +2076,12 @@ nsMenuPopupFrame::AttributeChanged(nsIPresContext* aPresContext,
                                    nsIContent* aChild,
                                    PRInt32 aNameSpaceID,
                                    nsIAtom* aAttribute,
-                                   PRInt32 aModType, 
-                                   PRInt32 aHint)
+                                   PRInt32 aModType)
 
 {
   nsresult rv = nsBoxFrame::AttributeChanged(aPresContext, aChild,
-                                             aNameSpaceID, aAttribute, aModType, aHint);
+                                             aNameSpaceID, aAttribute,
+                                             aModType);
   
   if (aAttribute == nsXULAtoms::left || aAttribute == nsXULAtoms::top)
     MoveToAttributePosition();
@@ -2343,44 +2268,35 @@ nsMenuPopupFrame::MoveTo(PRInt32 aLeft, PRInt32 aTop)
   mContent->SetAttr(kNameSpaceID_None, nsXULAtoms::left, left, PR_FALSE);
   mContent->SetAttr(kNameSpaceID_None, nsXULAtoms::top, top, PR_FALSE);
 
-  nsIView* view = nsnull;
-  GetView(mPresContext, &view);   
+  nsIView* view = GetView();
   
   // Retrieve screen position of parent view
-  nsIView* parentView = nsnull;
-  view->GetParent(parentView);
   nsPoint screenPos;
-  GetScreenPosition(parentView, screenPos);
+  GetScreenPosition(view->GetParent(), screenPos);
 
   // Move the widget
-  nsCOMPtr<nsIWidget> widget;
-  view->GetWidget(*getter_AddRefs(widget));
-  widget->Move(aLeft - screenPos.x, aTop - screenPos.y);
+  view->GetWidget()->Move(aLeft - screenPos.x, aTop - screenPos.y);
 }
 
 void
 nsMenuPopupFrame::GetScreenPosition(nsIView* aView, nsPoint& aScreenPosition)
 {
   nsPoint screenPos(0,0);
-  nscoord x, y;
 
   nsIView* currView = aView;
   nsIView* nextView = nsnull;
   
   while (1) {
-    currView->GetPosition(&x, &y);
-    screenPos.x += x;
-    screenPos.y += y;
+    screenPos += currView->GetPosition();
 
-    currView->GetParent(nextView);
+    nextView = currView->GetParent();
     if (!nextView) 
       break;
     else 
       currView = nextView;
   }
 
-  nsCOMPtr<nsIWidget> rootWidget;
-  currView->GetWidget(*getter_AddRefs(rootWidget));
+  nsIWidget* rootWidget = currView->GetWidget();
   nsRect bounds, screenBounds;
   rootWidget->GetScreenBounds(bounds);
   rootWidget->WidgetToScreen(bounds, screenBounds);

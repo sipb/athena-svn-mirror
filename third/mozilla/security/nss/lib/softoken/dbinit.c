@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- # $Id: dbinit.c,v 1.1.1.1.2.1 2003-07-14 19:07:26 ghudson Exp $
+ # $Id: dbinit.c,v 1.1.1.1.2.2 2004-01-02 20:00:03 ghudson Exp $
  */
 
 #include <ctype.h>

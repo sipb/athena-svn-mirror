@@ -80,8 +80,8 @@ PyObject *PyObject_FromNSString( const nsAString &s )
 		ret = Py_None;
 		Py_INCREF(Py_None);
 	} else {
-		ret = PyUnicode_FromUnicode( NULL, s.Length() );
-		CopyUnicodeTo(s, 0, PyUnicode_AsUnicode(ret), s.Length());
+		ret = PyUnicodeUCS2_FromUnicode( NULL, s.Length() );
+		CopyUnicodeTo(s, 0, PyUnicodeUCS2_AsUnicode(ret), s.Length());
 	}
 	return ret;
 }
@@ -285,9 +285,9 @@ PRBool FillSingleArray(void *array_ptr, PyObject *sequence_ob, PRUint32 sequence
 					PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 					BREAK_FALSE;
 				}
-				if ((val_use = PyUnicode_FromObject(val))==NULL)
+				if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 					BREAK_FALSE;
-				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 				FILL_SIMPLE_POINTER( PRUnichar, *PyUnicode_AS_UNICODE(val_use) );
 				break;
 
@@ -351,9 +351,9 @@ PRBool FillSingleArray(void *array_ptr, PyObject *sequence_ob, PRUint32 sequence
 					PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 					BREAK_FALSE;
 				}
-				if ((val_use = PyUnicode_FromObject(val))==NULL)
+				if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 					BREAK_FALSE;
-				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 				const PRUnichar *sz = PyUnicode_AS_UNICODE(val_use);
 				int nch = PyUnicode_GET_SIZE(val_use);
 
@@ -459,7 +459,7 @@ PyObject *UnpackSingleArray(void *array_ptr, PRUint32 sequence_size, PRUint8 arr
 					Py_INCREF(Py_None);
 					val = Py_None;
 				} else
-					val = PyUnicode_FromUnicode( *pp, nsCRT::strlen(*pp) );
+					val = PyUnicodeUCS2_FromUnicode( *pp, nsCRT::strlen(*pp) );
 				break;
 				}
 			  case nsXPTType::T_INTERFACE_IS:
@@ -566,7 +566,7 @@ nsIVariant *PyObject_AsVariant( PyObject *ob)
 			nr = v->SetAsStringWithSize(PyString_Size(ob), PyString_AsString(ob));
 			break;
 		case nsIDataType::VTYPE_WSTRING_SIZE_IS:
-			nr = v->SetAsWStringWithSize(PyUnicode_GetSize(ob), PyUnicode_AsUnicode(ob));
+			nr = v->SetAsWStringWithSize(PyUnicodeUCS2_GetSize(ob), PyUnicodeUCS2_AsUnicode(ob));
 			break;
 		case nsIDataType::VTYPE_INTERFACE_IS:
 		{
@@ -1125,10 +1125,10 @@ PRBool PyXPCOM_InterfaceVariantHelper::FillInVariant(const PythonTypeDescriptor 
 				PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 				BREAK_FALSE;
 			}
-			if ((val_use = PyUnicode_FromObject(val))==NULL)
+			if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 				BREAK_FALSE;
 			// Sanity check should PyObject_Str() ever loosen its semantics wrt Unicode!
-			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromUnicode didnt return a unicode object!");
+			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a unicode object!");
 			if (PyUnicode_GET_SIZE(val_use) != 1) {
 				PyErr_SetString(PyExc_ValueError, "Must specify a one character string for a character");
 				BREAK_FALSE;
@@ -1154,10 +1154,10 @@ PRBool PyXPCOM_InterfaceVariantHelper::FillInVariant(const PythonTypeDescriptor 
 					PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 					BREAK_FALSE;
 				}
-				if ((val_use = PyUnicode_FromObject(val))==NULL)
+				if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 					BREAK_FALSE;
 				// Sanity check should PyObject_Str() ever loosen its semantics wrt Unicode!
-				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromUnicode didnt return a unicode object!");
+				NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a unicode object!");
 				ns_v.val.p = new nsString(PyUnicode_AS_UNICODE(val_use), 
 				                          PyUnicode_GET_SIZE(val_use));
 			}
@@ -1246,9 +1246,9 @@ PRBool PyXPCOM_InterfaceVariantHelper::FillInVariant(const PythonTypeDescriptor 
 				PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 				BREAK_FALSE;
 			}
-			if ((val_use = PyUnicode_FromObject(val))==NULL)
+			if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 				BREAK_FALSE;
-			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 			cb_this_buffer_pointer = (PyUnicode_GET_SIZE(val_use)+1) * sizeof(Py_UNICODE);
 			MAKE_VALUE_BUFFER(cb_this_buffer_pointer);
 			memcpy(this_buffer_pointer, PyUnicode_AS_UNICODE(val_use), cb_this_buffer_pointer);
@@ -1328,7 +1328,7 @@ PRBool PyXPCOM_InterfaceVariantHelper::FillInVariant(const PythonTypeDescriptor 
 				PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 				BREAK_FALSE;
 			}
-			if ((val_use = PyUnicode_FromObject(val))==NULL)
+			if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 				BREAK_FALSE;
 			// Sanity check should PyObject_Str() ever loosen its semantics wrt Unicode!
 			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyObject_Unicode didnt return a unicode object!");
@@ -1538,7 +1538,7 @@ PyObject *PyXPCOM_InterfaceVariantHelper::MakeSinglePythonResult(int index)
 		break;
 
 	  case nsXPTType::T_WCHAR:
-		ret = PyUnicode_FromUnicode( ((PRUnichar *)ns_v.ptr), 1 );
+		ret = PyUnicodeUCS2_FromUnicode( ((PRUnichar *)ns_v.ptr), 1 );
 		break;
 //	  case nsXPTType::T_VOID:
 	  case nsXPTType::T_IID: 
@@ -1571,7 +1571,7 @@ PyObject *PyXPCOM_InterfaceVariantHelper::MakeSinglePythonResult(int index)
 			ret = Py_None;
 			Py_INCREF(Py_None);
 		} else
-			ret = PyUnicode_FromUnicode( us, nsCRT::strlen(us));
+			ret = PyUnicodeUCS2_FromUnicode( us, nsCRT::strlen(us));
 		break;
 		}
 	  case nsXPTType::T_INTERFACE: {
@@ -1637,7 +1637,7 @@ PyObject *PyXPCOM_InterfaceVariantHelper::MakeSinglePythonResult(int index)
 			Py_INCREF(Py_None);
 		} else {
 			PRUint32 string_size = GetSizeIs(index, PR_TRUE);
-			ret = PyUnicode_FromUnicode( *((PRUnichar **)ns_v.ptr), string_size );
+			ret = PyUnicodeUCS2_FromUnicode( *((PRUnichar **)ns_v.ptr), string_size );
 		}
 		break;
 	default:
@@ -1659,7 +1659,6 @@ PyObject *PyXPCOM_InterfaceVariantHelper::MakePythonResult()
 	for (i=0;i<m_num_array;i++) {
 		PythonTypeDescriptor &td = m_python_type_desc_array[i];
 		if (!td.is_auto_out) {
-			nsXPTCVariant &ns_v = m_var_array[i];
 			if (XPT_PD_IS_OUT(td.param_flags) || XPT_PD_IS_DIPPER(td.param_flags))
 				n_results++;
 			if (XPT_PD_IS_RETVAL(td.param_flags))
@@ -1887,8 +1886,8 @@ PyObject *PyXPCOM_GatewayVariantHelper::MakeSingleParam(int index, PythonTypeDes
 		break;
 		}
 	  case nsXPTType::T_WCHAR: {
-		wchar_t temp = (wchar_t)DEREF_IN_OR_OUT(ns_v.val.wc, PRUint16);
-		ret = PyUnicode_FromWideChar(&temp, 1);
+		PRUnichar temp = (PRUnichar)DEREF_IN_OR_OUT(ns_v.val.wc, PRUnichar);
+		ret = PyUnicodeUCS2_FromUnicode(&temp, 1);
 		break;
 		}
 //	  case nsXPTType::T_VOID:
@@ -1926,7 +1925,7 @@ PyObject *PyXPCOM_GatewayVariantHelper::MakeSingleParam(int index, PythonTypeDes
 			ret = Py_None;
 			Py_INCREF(Py_None);
 		} else
-			ret = PyUnicode_FromUnicode( us, nsCRT::strlen(us));
+			ret = PyUnicodeUCS2_FromUnicode( us, nsCRT::strlen(us));
 		break;
 		}
 	  case nsXPTType::T_INTERFACE_IS: // our Python code does it :-)
@@ -1952,7 +1951,6 @@ PyObject *PyXPCOM_GatewayVariantHelper::MakeSingleParam(int index, PythonTypeDes
 ****/
 	  case nsXPTType::T_ARRAY: {
 		void *t = DEREF_IN_OR_OUT(ns_v.val.p, void *);
-		PRUint32 seq_size = GetSizeIs(index, PR_FALSE);
 		if (t==NULL) {
 			ret = Py_None;
 			Py_INCREF(Py_None);
@@ -1985,7 +1983,7 @@ PyObject *PyXPCOM_GatewayVariantHelper::MakeSingleParam(int index, PythonTypeDes
 			ret = Py_None;
 			Py_INCREF(Py_None);
 		} else
-			ret = PyUnicode_FromUnicode(t, string_size);
+			ret = PyUnicodeUCS2_FromUnicode(t, string_size);
 		break;
 		}
 	default:
@@ -2074,7 +2072,6 @@ nsresult PyXPCOM_GatewayVariantHelper::BackFillVariant( PyObject *val, int index
 	NS_ABORT_IF_FALSE(pi->IsOut() || pi->IsDipper(), "The value must be marked as [out] (or a dipper) to be back-filled!");
 	NS_ABORT_IF_FALSE(!pi->IsShared(), "Dont know how to back-fill a shared out param");
 	nsXPTCMiniVariant &ns_v = m_params[index];
-	PyObject *ret = NULL;
 
 	nsXPTType typ = pi->GetType();
 	PyObject* val_use = NULL;
@@ -2145,9 +2142,9 @@ nsresult PyXPCOM_GatewayVariantHelper::BackFillVariant( PyObject *val, int index
 			PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 			BREAK_FALSE;
 		}
-		if ((val_use = PyUnicode_FromObject(val))==NULL)
+		if ((val_use = PyUnicodeUCS2_FromObject(val))==NULL)
 			BREAK_FALSE;
-		NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+		NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 		FILL_SIMPLE_POINTER( PRUnichar, *PyUnicode_AS_UNICODE(val_use) );
 		break;
 
@@ -2180,8 +2177,8 @@ nsresult PyXPCOM_GatewayVariantHelper::BackFillVariant( PyObject *val, int index
 				PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 				BREAK_FALSE;
 			}
-			val_use = PyUnicode_FromObject(val);
-			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+			val_use = PyUnicodeUCS2_FromObject(val);
+			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 			const PRUnichar *sz = PyUnicode_AS_UNICODE(val_use);
 			ws->Assign(sz, PyUnicode_GET_SIZE(val_use));
 		}
@@ -2267,8 +2264,8 @@ nsresult PyXPCOM_GatewayVariantHelper::BackFillVariant( PyObject *val, int index
 			PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 			BREAK_FALSE;
 		}
-		val_use = PyUnicode_FromObject(val);
-		NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+		val_use = PyUnicodeUCS2_FromObject(val);
+		NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 		const PRUnichar *sz = PyUnicode_AS_UNICODE(val_use);
 		int nch = PyUnicode_GET_SIZE(val_use);
 
@@ -2393,8 +2390,8 @@ nsresult PyXPCOM_GatewayVariantHelper::BackFillVariant( PyObject *val, int index
 				PyErr_SetString(PyExc_TypeError, "This parameter must be a string or Unicode object");
 				BREAK_FALSE;
 			}
-			val_use = PyUnicode_FromObject(val);
-			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicode_FromObject didnt return a Unicode object!");
+			val_use = PyUnicodeUCS2_FromObject(val);
+			NS_ABORT_IF_FALSE(PyUnicode_Check(val_use), "PyUnicodeUCS2_FromObject didnt return a Unicode object!");
 			sz = PyUnicode_AS_UNICODE(val_use);
 			nch = PyUnicode_GET_SIZE(val_use);
 			nbytes = sizeof(PRUnichar) * nch;

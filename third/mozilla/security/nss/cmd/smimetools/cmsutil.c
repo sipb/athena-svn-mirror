@@ -34,7 +34,7 @@
 /*
  * cmsutil -- A command to work with CMS data
  *
- * $Id: cmsutil.c,v 1.1.1.1.2.1 2003-07-14 19:06:15 ghudson Exp $
+ * $Id: cmsutil.c,v 1.1.1.1.2.2 2004-01-02 19:58:29 ghudson Exp $
  */
 
 #include "nspr.h"

@@ -447,9 +447,9 @@ CHelperAppLauncherDlg::~CHelperAppLauncherDlg()
 {
 }
 
-/* void show (in nsIHelperAppLauncher aLauncher, in nsISupports aContext); */
+/* void show (in nsIHelperAppLauncher aLauncher, in nsISupports aContext, in boolean aForced); */
 NS_IMETHODIMP
-CHelperAppLauncherDlg::Show(nsIHelperAppLauncher *aLauncher, nsISupports *aContext)
+CHelperAppLauncherDlg::Show(nsIHelperAppLauncher *aLauncher, nsISupports *aContext, PRBool aForced)
 {
     NS_ENSURE_ARG_POINTER(aLauncher);
     
@@ -472,9 +472,13 @@ CHelperAppLauncherDlg::Show(nsIHelperAppLauncher *aLauncher, nsISupports *aConte
     }
 }
 
-/* nsILocalFile promptForSaveToFile (in nsISupports aWindowContext, in wstring aDefaultFile, in wstring aSuggestedFileExtension); */
+/* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher aLauncher, in nsISupports aWindowContext, in wstring aDefaultFile, in wstring aSuggestedFileExtension); */
 NS_IMETHODIMP
-CHelperAppLauncherDlg::PromptForSaveToFile(nsISupports *aWindowContext, const PRUnichar *aDefaultFile, const PRUnichar *aSuggestedFileExtension, nsILocalFile **_retval)
+CHelperAppLauncherDlg::PromptForSaveToFile(nsIHelperAppLauncher *aLauncher, 
+                                           nsISupports *aWindowContext, 
+                                           const PRUnichar *aDefaultFile, 
+                                           const PRUnichar *aSuggestedFileExtension, 
+                                           nsILocalFile **_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
     USES_CONVERSION;
@@ -503,20 +507,6 @@ CHelperAppLauncherDlg::PromptForSaveToFile(nsISupports *aWindowContext, const PR
     
     return NS_ERROR_FAILURE;
 }
-
-/* void showProgressDialog (in nsIHelperAppLauncher aLauncher, in nsISupports aContext); */
-NS_IMETHODIMP
-CHelperAppLauncherDlg::ShowProgressDialog(nsIHelperAppLauncher *aLauncher, nsISupports *aContext)
-{
-    // TODO this method isn't called.
-
-//    ProgressDlg *dlg = new ProgressDlg;
-//    nsCOMPtr<nsIWebProgressListener> listener = dlg;
-//    dlg->Show(aLauncher, NULL);
-//    aLauncher->SetWebProgressListener(listener);
-    return NS_OK;
-}
-
 
 //*****************************************************************************
 // CHelperAppLauncherDlgFactory

@@ -39,6 +39,7 @@
 
 #include "nsCOMPtr.h"
 #include "nsXBLPrototypeHandler.h"
+#include "nsXBLPrototypeBinding.h"
 #include "nsIContent.h"
 #include "nsIAtom.h"
 #include "nsIDOMKeyEvent.h"
@@ -104,9 +105,12 @@ nsXBLPrototypeHandler::nsXBLPrototypeHandler(const PRUnichar* aEvent,
                                              const PRUnichar* aModifiers,
                                              const PRUnichar* aButton,
                                              const PRUnichar* aClickCount,
-                                             const PRUnichar* aPreventDefault)
+                                             const PRUnichar* aPreventDefault,
+                                             nsXBLPrototypeBinding* aBinding)
   : mHandlerText(nsnull),
-    mNextHandler(nsnull)
+    mLineNumber(0),
+    mNextHandler(nsnull),
+    mPrototypeBinding(aBinding)
 {
   ++gRefCnt;
   if (gRefCnt == 1)
@@ -119,7 +123,9 @@ nsXBLPrototypeHandler::nsXBLPrototypeHandler(const PRUnichar* aEvent,
 }
 
 nsXBLPrototypeHandler::nsXBLPrototypeHandler(nsIContent* aHandlerElement)
-  : mNextHandler(nsnull)
+  : mLineNumber(0),
+    mNextHandler(nsnull),
+    mPrototypeBinding(nsnull)
 {
   ++gRefCnt;
   if (gRefCnt == 1)
@@ -265,7 +271,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
         nsCOMPtr<nsIContent> elt(do_QueryInterface(aReceiver));
         nsCOMPtr<nsIDocument> doc;
         if (elt)
-          elt->GetDocument(*getter_AddRefs(doc));
+          doc = elt->GetDocument();
 
         if (!doc)
           doc = do_QueryInterface(aReceiver);
@@ -281,8 +287,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
       privateWindow->GetRootFocusController(getter_AddRefs(focusController));
     }
 
-    nsCAutoString command;
-    command.AssignWithConversion(mHandlerText);
+    NS_LossyConvertUCS2toASCII command(mHandlerText);
     if (focusController)
       focusController->GetControllerForCommand(command.get(), getter_AddRefs(controller));
     else
@@ -378,7 +383,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
       nsCOMPtr<nsIContent> content(do_QueryInterface(aReceiver));
       if (!content)
         return NS_OK;
-      content->GetDocument(*getter_AddRefs(boundDocument));
+      boundDocument = content->GetDocument();
       if (!boundDocument)
         return NS_OK;
     }
@@ -397,6 +402,10 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
 
   JSObject* scriptObject = nsnull;
 
+  // strong ref to a GC root we'll need to protect scriptObject in the case
+  // where it is not the global object (!winRoot).
+  nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
+
   if (winRoot) {
     scriptObject = boundGlobal->GetGlobalJSObject();
   } else {
@@ -404,9 +413,6 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
     JSContext *cx = (JSContext *)boundContext->GetNativeContext();
 
     nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
-
-    // root
-    nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
 
     // XXX: Don't use the global object!
     rv = xpc->WrapNative(cx, global, aReceiver, NS_GET_IID(nsISupports),
@@ -419,12 +425,20 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
 
   if (isXULKey)
     boundContext->CompileEventHandler(scriptObject, onEventAtom, xulText,
+                                      nsnull, 0,
                                       PR_TRUE, &handler);
   else {
     nsDependentString handlerText(mHandlerText);
     if (handlerText.IsEmpty())
       return NS_ERROR_FAILURE;
+    
+    nsCAutoString bindingURI;
+    if (mPrototypeBinding)
+      mPrototypeBinding->GetDocURI(bindingURI);
+    
     boundContext->CompileEventHandler(scriptObject, onEventAtom, handlerText,
+                                      bindingURI.get(),
+                                      mLineNumber,
                                       PR_TRUE, &handler);
   }
 
@@ -977,7 +991,7 @@ nsXBLPrototypeHandler::GetTextData(nsIContent *aParent, nsString& aResult)
   nsAutoString answer;
   for (PRInt32 j = 0; j < textCount; j++) {
     // Get the child.
-    aParent->ChildAt(j, *getter_AddRefs(textChild));
+    aParent->ChildAt(j, getter_AddRefs(textChild));
     nsCOMPtr<nsIDOMText> text(do_QueryInterface(textChild));
     if (text) {
       nsAutoString data;

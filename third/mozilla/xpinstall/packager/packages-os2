@@ -143,7 +143,6 @@ bin/components/xultmpl.xpt
 bin/components/gklayout.dll
 bin/components/gkparser.dll
 bin/components/gkplugin.dll
-bin/components/imgmng.dll
 bin/components/imglib2.dll
 bin/components/imglib2.xpt
 bin/components/imgicon.dll
@@ -315,6 +314,25 @@ bin/res/quirk.css
 bin/res/forms.css
 bin/res/platform-forms.css
 bin/res/EditorOverride.css
+bin/res/grabber.gif
+bin/res/table-add-column-after-active.gif
+bin/res/table-add-column-after-hover.gif
+bin/res/table-add-column-after.gif
+bin/res/table-add-column-before-active.gif
+bin/res/table-add-column-before-hover.gif
+bin/res/table-add-column-before.gif
+bin/res/table-add-row-after-active.gif
+bin/res/table-add-row-after-hover.gif
+bin/res/table-add-row-after.gif
+bin/res/table-add-row-before-active.gif
+bin/res/table-add-row-before-hover.gif
+bin/res/table-add-row-before.gif
+bin/res/table-remove-column-active.gif
+bin/res/table-remove-column-hover.gif
+bin/res/table-remove-column.gif
+bin/res/table-remove-row-active.gif
+bin/res/table-remove-row-hover.gif
+bin/res/table-remove-row.gif
 bin/res/viewsource.css
 bin/res/mathml.css
 bin/res/arrow.gif
@@ -442,6 +460,12 @@ bin/chrome/icons/default/winInspectorMain.ico
 bin/defaults/pref/inspector.js
 bin/res/inspector/viewer-registry.rdf
 bin/res/inspector/search-registry.rdf
+
+[spellcheck]
+bin\components\myspell.dll
+bin\components\spellchk.dll
+bin\components\spellchecker.xpt
+bin\components\myspell\*
 
 ;Things that aren't packaged and why (or not why)
 ;accproxy.dll - I don't know

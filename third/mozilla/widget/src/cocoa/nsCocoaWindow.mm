@@ -48,7 +48,6 @@
 #include "nsCarbonHelpers.h"
 #include "nsGFXUtils.h"
 #include "nsMacResources.h"
-#include "nsRegionMac.h"
 #include "nsIRollupListener.h"
 #import "nsChildView.h"
 
@@ -281,7 +280,7 @@ nsCocoaWindow :: DragReceiveHandler (WindowPtr theWindow, void *handlerRefCon,
 #endif
 
 
-NS_IMPL_ISUPPORTS_INHERITED0(nsCocoaWindow, Inherited);
+NS_IMPL_ISUPPORTS_INHERITED0(nsCocoaWindow, Inherited)
 
 
 //-------------------------------------------------------------------------

@@ -83,17 +83,8 @@ ph_getModuleInfo(nsStaticModuleInfo **info, PRUint32 *count);
 #define NS_TO_PH_RGB(ns) (ns & 0xff) << 16 | (ns & 0xff00) | ((ns >> 16) & 0xff)
 #define PH_TO_NS_RGB(ns) (ns & 0xff) << 16 | (ns & 0xff00) | ((ns >> 16) & 0xff)
 
-#define NS_EXTERN_IID(_name) \
-        extern const nsIID _name;
-
-        // Class IDs
-        NS_EXTERN_IID(kHTMLEditorCID);
-        NS_EXTERN_IID(kCookieServiceCID);
-        NS_EXTERN_IID(kWindowCID);
-static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
+// Class IDs
 static NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
-static NS_DEFINE_CID(kSimpleURICID,            NS_SIMPLEURI_CID);
 
 #define NS_PROMPTSERVICE_CID \
  {0xa2112d6a, 0x0e28, 0x421f, {0xb4, 0x6a, 0x25, 0xc0, 0xb3, 0x8, 0xcb, 0xd0}}

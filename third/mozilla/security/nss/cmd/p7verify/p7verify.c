@@ -34,7 +34,7 @@
 /*
  * p7verify -- A command to do a verification of a *detached* pkcs7 signature.
  *
- * $Id: p7verify.c,v 1.1.1.1.2.1 2003-07-14 19:06:11 ghudson Exp $
+ * $Id: p7verify.c,v 1.1.1.1.2.2 2004-01-02 19:58:23 ghudson Exp $
  */
 
 #include "nspr.h"

@@ -33,7 +33,7 @@
 /*
  * certi.h - private data structures for the certificate library
  *
- * $Id: certi.h,v 1.1.1.1.2.1 2003-07-14 19:06:23 ghudson Exp $
+ * $Id: certi.h,v 1.1.1.1.2.2 2004-01-02 19:58:39 ghudson Exp $
  */
 #ifndef _CERTI_H_
 #define _CERTI_H_

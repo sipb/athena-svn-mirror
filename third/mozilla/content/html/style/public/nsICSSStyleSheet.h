@@ -64,12 +64,14 @@ public:
 
   NS_IMETHOD  PrependStyleRule(nsICSSRule* aRule) = 0;
   NS_IMETHOD  AppendStyleRule(nsICSSRule* aRule) = 0;
+  NS_IMETHOD  ReplaceStyleRule(nsICSSRule* aOld, nsICSSRule* aNew) = 0;
 
   NS_IMETHOD  StyleRuleCount(PRInt32& aCount) const = 0;
   NS_IMETHOD  GetStyleRuleAt(PRInt32 aIndex, nsICSSRule*& aRule) const = 0;
 
   NS_IMETHOD  DeleteRuleFromGroup(nsICSSGroupRule* aGroup, PRUint32 aIndex) = 0;
   NS_IMETHOD  InsertRuleIntoGroup(const nsAString & aRule, nsICSSGroupRule* aGroup, PRUint32 aIndex, PRUint32* _retval) = 0;
+  NS_IMETHOD  ReplaceRuleInGroup(nsICSSGroupRule* aGroup, nsICSSRule* aOld, nsICSSRule* aNew) = 0;
 
   NS_IMETHOD  StyleSheetCount(PRInt32& aCount) const = 0;
   NS_IMETHOD  GetStyleSheetAt(PRInt32 aIndex, nsICSSStyleSheet*& aSheet) const = 0;
@@ -81,11 +83,10 @@ public:
   NS_IMETHOD  SetOwningNode(nsIDOMNode* aOwningNode) = 0;
 
   NS_IMETHOD  SetOwnerRule(nsICSSImportRule* aOwnerRule) = 0;
+  NS_IMETHOD  GetOwnerRule(nsICSSImportRule** aOwnerRule) = 0;
   
   // get head of namespace chain for sheet
   NS_IMETHOD  GetNameSpace(nsINameSpace*& aNameSpace) const = 0;
-  // set default namespace for sheet (may be overridden by @namespace)
-  NS_IMETHOD  SetDefaultNameSpaceID(PRInt32 aDefaultNameSpaceID) = 0;
 
   NS_IMETHOD  Clone(nsICSSStyleSheet* aCloneParent,
                     nsICSSImportRule* aCloneOwnerRule,

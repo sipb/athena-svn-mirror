@@ -33,7 +33,6 @@
 #include "nsIDOMStyleSheet.h"
 #include "nsIDOMText.h"
 #include "nsIHTMLContentContainer.h"
-#include "nsINameSpaceManager.h"
 #include "nsIUnicharInputStream.h"
 #include "nsNetUtil.h"
 #include "nsUnicharUtils.h"
@@ -128,24 +127,20 @@ nsStyleLinkElement::GetCharset(nsAString& aCharset)
 void nsStyleLinkElement::ParseLinkTypes(const nsAString& aTypes,
                                         nsStringArray& aResult)
 {
-  nsReadingIterator<PRUnichar> current;
-  nsReadingIterator<PRUnichar> done;
-
-  aTypes.BeginReading(current);
+  nsAString::const_iterator start, done;
+  aTypes.BeginReading(start);
   aTypes.EndReading(done);
-  if (current == done)
+  if (start == done)
     return;
 
-  nsReadingIterator<PRUnichar> start;
+  nsAString::const_iterator current(start);
   PRBool inString = !nsCRT::IsAsciiSpace(*current);
   nsAutoString subString;
 
-  aTypes.BeginReading(start);
   while (current != done) {
     if (nsCRT::IsAsciiSpace(*current)) {
       if (inString) {
-        subString = Substring(start, current);
-        ToLowerCase(subString);
+        ToLowerCase(Substring(start, current), subString);
         aResult.AppendString(subString);
         inString = PR_FALSE;
       }
@@ -159,8 +154,7 @@ void nsStyleLinkElement::ParseLinkTypes(const nsAString& aTypes,
     ++current;
   }
   if (inString) {
-    subString = Substring(start, current);
-    ToLowerCase(subString);
+    ToLowerCase(Substring(start, current), subString);
     aResult.AppendString(subString);
   }
 }
@@ -200,26 +194,26 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
 
   NS_ENSURE_TRUE(thisContent, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocument> doc;
-  thisContent->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = thisContent->GetDocument();
 
   if (!doc) {
     return NS_OK;
   }
 
-  nsAutoString url;
+  nsCOMPtr<nsIURI> uri;
   PRBool isInline;
+  GetStyleSheetURL(&isInline, getter_AddRefs(uri));
 
-  GetStyleSheetURL(&isInline, url);
+  if (mStyleSheet && !isInline && uri) {
+    nsCOMPtr<nsIURI> oldURI;
 
-  nsCOMPtr<nsIDOMStyleSheet> styleSheet(do_QueryInterface(mStyleSheet));
-
-  if (styleSheet && !isInline) {
-    nsAutoString oldHref;
-
-    styleSheet->GetHref(oldHref);
-    if (oldHref.Equals(url)) {
-      return NS_OK; // We already loaded this stylesheet
+    mStyleSheet->GetURL(*getter_AddRefs(oldURI));
+    if (oldURI) {
+      PRBool equal;
+      nsresult rv = oldURI->Equals(uri, &equal);
+      if (NS_SUCCEEDED(rv) && equal) {
+        return NS_OK; // We already loaded this stylesheet
+      }
     }
   }
 
@@ -228,7 +222,7 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     mStyleSheet = nsnull;
   }
 
-  if (url.IsEmpty() && !isInline) {
+  if (!uri && !isInline) {
     return NS_OK; // If href is empty and this is not inline style then just bail
   }
 
@@ -239,17 +233,6 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
 
   if (!type.EqualsIgnoreCase("text/css")) {
     return NS_OK;
-  }
-
-  nsCOMPtr<nsIURI> uri;
-  nsresult rv = NS_OK;
-
-  if (!isInline) {
-    rv = NS_NewURI(getter_AddRefs(uri), url);
-
-    if (NS_FAILED(rv)) {
-      return NS_OK; // The URL is bad, move along, don't propagate the error (for now)
-    }
   }
 
   nsCOMPtr<nsIHTMLContentContainer> htmlContainer(do_QueryInterface(doc));
@@ -286,6 +269,7 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
   }
 
   PRBool doneLoading;
+  nsresult rv = NS_OK;
   if (isInline) {
     PRInt32 count;
     thisContent->ChildCount(count);
@@ -298,7 +282,7 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     PRInt32 i;
     nsCOMPtr<nsIContent> node;
     for (i = 0; i < count; ++i) {
-      thisContent->ChildAt(i, *getter_AddRefs(node));
+      thisContent->ChildAt(i, getter_AddRefs(node));
       nsCOMPtr<nsIDOMText> tc = do_QueryInterface(node);
       // Ignore nodes that are not DOMText.
       if (!tc) {
@@ -324,13 +308,11 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     // Now that we have a url and a unicode input stream, parse the
     // style sheet.
     rv = loader->LoadInlineStyle(thisContent, uin, title, media,
-                                 kNameSpaceID_Unknown,
                                  ((blockParser) ? parser.get() : nsnull),
                                  doneLoading, aObserver);
   }
   else {
     rv = loader->LoadStyleLink(thisContent, uri, title, media,
-                               kNameSpaceID_Unknown,
                                ((blockParser) ? parser.get() : nsnull),
                                doneLoading, aObserver);
   }

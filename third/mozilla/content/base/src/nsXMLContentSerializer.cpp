@@ -87,7 +87,7 @@ NS_IMPL_ISUPPORTS1(nsXMLContentSerializer, nsIContentSerializer)
 
 NS_IMETHODIMP 
 nsXMLContentSerializer::Init(PRUint32 flags, PRUint32 aWrapColumn,
-                             nsIAtom* aCharSet, PRBool aIsCopying)
+                             const char* aCharSet, PRBool aIsCopying)
 {
   return NS_OK;
 }
@@ -496,10 +496,10 @@ nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   // First scan for namespace declarations, pushing each on the stack
   for (index = 0; index < count; index++) {
     
-    content->GetAttrNameAt(index, 
-                           namespaceID,
-                           *getter_AddRefs(attrName),
-                           *getter_AddRefs(attrPrefix));
+    content->GetAttrNameAt(index,
+                           &namespaceID,
+                           getter_AddRefs(attrName),
+                           getter_AddRefs(attrPrefix));
     
     if (namespaceID == kNameSpaceID_XMLNS) {
       content->GetAttr(namespaceID, attrName, uriStr);
@@ -536,10 +536,10 @@ nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   // XXX Unfortunately we need a namespace manager to get
   // attribute URIs.
   for (index = 0; index < count; index++) {
-    content->GetAttrNameAt(index, 
-                           namespaceID,
-                           *getter_AddRefs(attrName),
-                           *getter_AddRefs(attrPrefix));
+    content->GetAttrNameAt(index,
+                           &namespaceID,
+                           getter_AddRefs(attrName),
+                           getter_AddRefs(attrPrefix));
 
     if (attrPrefix) {
       attrPrefix->ToString(prefixStr);
@@ -566,10 +566,10 @@ nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
 
     if (namespaceID == kNameSpaceID_None) {
       PRInt32 elementNsID;
-      content->GetNameSpaceID(elementNsID);
+      content->GetNameSpaceID(&elementNsID);
       if (elementNsID == kNameSpaceID_XHTML) {
         nsCOMPtr<nsIAtom> elementName;
-        content->GetTag(*getter_AddRefs(elementName));
+        content->GetTag(getter_AddRefs(elementName));
         if (IsShorthandAttr(attrName, elementName) &&
             valueStr.IsEmpty()) {
           valueStr = nameStr;
@@ -648,7 +648,7 @@ nsXMLContentSerializer::AppendToString(const PRUnichar aChar,
   aOutputStr.Append(aChar);
 }
 
-static PRUint16 kGTVal = 62;
+static const PRUint16 kGTVal = 62;
 static const char* kEntities[] = {
   "", "", "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "",

@@ -45,6 +45,7 @@
 #include "nsEditorSpellCheck.h"     // for the CID
 #include "nsEditorService.h"
 #include "nsComposeTxtSrvFilter.h"
+#include "nsIController.h"
 #include "nsIControllerContext.h"
 #include "nsIControllerCommandTable.h"
 
@@ -257,7 +258,7 @@ static const nsModuleComponentInfo components[] = {
       COMPOSER_TXTSRVFILTER_CONTRACTID,
       nsComposeTxtSrvFilterConstructorForComposer, },
 
-    { "TxtSrv Filter For Mail", NS_COMPOSERTXTSRVFILTER_CID,
+    { "TxtSrv Filter For Mail", NS_COMPOSERTXTSRVFILTERMAIL_CID,
       COMPOSER_TXTSRVFILTERMAIL_CONTRACTID,
       nsComposeTxtSrvFilterConstructorForMail, },
 };

@@ -47,8 +47,8 @@
 #include "nsRecyclingAllocator.h"
 #include "nsIThread.h"
 #include "nsDeque.h"
-#include "nsObserver.h"
 #include "nsTraceRefcnt.h"
+#include "nsTraceRefcntImpl.h"
 #include "nsXPIDLString.h"
 #include "nsIEnumerator.h"
 #include "nsEnumeratorUtils.h"
@@ -63,7 +63,6 @@
 #include "xptcall.h"
 #include "nsILocalFile.h"
 #include "nsIGenericFactory.h"
-#include "nsHashtableEnumerator.h"
 #include "nsIPipe.h"
 #include "nsStreamUtils.h"
 #include "nsCWeakReference.h"
@@ -106,50 +105,49 @@ void XXXNeverCalled()
     nsValueArray(0);
     nsSupportsArray();
     NS_GetNumberOfAtoms();
-    NS_NewPipe2(NULL, NULL, PR_FALSE, PR_FALSE, 0, 0, NULL);
-    NS_NewInputStreamReadyEvent(NULL, NULL, NULL);
-    NS_NewOutputStreamReadyEvent(NULL, NULL, NULL);
-    NS_AsyncCopy(NULL, NULL, PR_TRUE, PR_TRUE, 0, 0, NULL);
+    NS_NewPipe2(nsnull, nsnull, PR_FALSE, PR_FALSE, 0, 0, nsnull);
+    NS_NewInputStreamReadyEvent(nsnull, nsnull, nsnull);
+    NS_NewOutputStreamReadyEvent(nsnull, nsnull, nsnull);
+    NS_AsyncCopy(nsnull, nsnull, PR_TRUE, PR_TRUE, 0, 0, nsnull);
     PL_DHashStubEnumRemove(nsnull, nsnull, nsnull, nsnull);
-    nsIDHashKey::HashKey(&nsID());
+    nsIDHashKey::HashKey(nsnull);
     nsFixedSizeAllocator a;
     nsRecyclingAllocator recyclingAllocator(2);
     a.Init(0, 0, 0, 0, 0);
     a.Alloc(0);
     a.Free(0, 0);
-    nsIThread::GetCurrent(NULL);
-    nsDeque(NULL);
-    NS_NewObserver(NULL, NULL);
-    nsTraceRefcnt::DumpStatistics();
-    NS_NewEmptyEnumerator(NULL);
-    nsArrayEnumerator(NULL);
-    NS_QuickSort(NULL, 0, 0, NULL, NULL);
+    nsIThread::GetCurrent(nsnull);
+    nsDeque(nsnull);
+    nsTraceRefcnt::LogAddCOMPtr(nsnull, nsnull);
+    nsTraceRefcntImpl::DumpStatistics();
+    NS_NewEmptyEnumerator(nsnull);
+    nsArrayEnumerator(nsnull);
+    NS_QuickSort(nsnull, 0, 0, nsnull, nsnull);
     nsString();
-    nsProxyObject(NULL, 0, NULL);
-    XPT_DoString(NULL, NULL, NULL);
-    XPT_DoHeader(NULL, NULL, NULL);
+    nsProxyObject(nsnull, 0, nsnull);
+    XPT_DoString(nsnull, nsnull, nsnull);
+    XPT_DoHeader(nsnull, nsnull, nsnull);
 #ifdef DEBUG
     PurePrintf(0);
 #endif
-    XPTC_InvokeByIndex(NULL, 0, 0, NULL);
+    XPTC_InvokeByIndex(nsnull, 0, 0, nsnull);
     xptc_dummy();
     xptc_dummy2();
     XPTI_GetInterfaceInfoManager();
-    NS_NewGenericFactory(NULL, NULL);
-    NS_NewGenericModule2(NULL, NULL);
-    NS_NewHashtableEnumerator(NULL, NULL, NULL, NULL);
+    NS_NewGenericFactory(nsnull, nsnull);
+    NS_NewGenericModule2(nsnull, nsnull);
     nsCWeakProxy(0, 0);
     nsCWeakReferent(0);
-    NS_GetWeakReference(NULL);
+    NS_GetWeakReference(nsnull);
     nsCOMPtr<nsISupports> dummyFoo(do_GetInterface(nsnull));
-    NS_NewByteArrayInputStream(NULL, NULL, 0);
+    NS_NewByteArrayInputStream(nsnull, nsnull, 0);
     NS_NewStorageStream(0,0, nsnull);
     nsString foo;
     nsPrintfCString bar("");
     nsLinebreakConverter::ConvertStringLineBreaks(foo, 
     nsLinebreakConverter::eLinebreakAny, nsLinebreakConverter::eLinebreakContent);
-    NS_NewLocalFile(nsString(), PR_FALSE, NULL);
-    NS_NewNativeLocalFile(nsCString(), PR_FALSE, NULL);
+    NS_NewLocalFile(nsString(), PR_FALSE, nsnull);
+    NS_NewNativeLocalFile(nsCString(), PR_FALSE, nsnull);
     nsProcess();
     nsStaticCaseInsensitiveNameTable();
     nsAutoString str1;
@@ -158,9 +156,9 @@ void XXXNeverCalled()
     ToNewUnicode(str2);
     ToNewCString(str1);
     ToNewCString(str2);
-    PL_DHashTableFinish(NULL);
-    nsSlidingString sliding(NULL, NULL, NULL);
-    NS_NewInputStreamTee(NULL, NULL, NULL);
+    PL_DHashTableFinish(nsnull);
+    nsSlidingString sliding(nsnull, nsnull, nsnull);
+    NS_NewInputStreamTee(nsnull, nsnull, nsnull);
     NS_NewArray(nsnull);
     nsCOMArray<nsISupports> dummyArray;
     NS_NewArray(nsnull, dummyArray);

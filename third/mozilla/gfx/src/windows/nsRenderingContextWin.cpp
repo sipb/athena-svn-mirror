@@ -65,8 +65,6 @@
 
 static NS_DEFINE_IID(kIRenderingContextIID, NS_IRENDERING_CONTEXT_IID);
 static NS_DEFINE_IID(kIRenderingContextWinIID, NS_IRENDERING_CONTEXT_WIN_IID);
-static NS_DEFINE_IID(kIDrawingSurfaceIID, NS_IDRAWING_SURFACE_IID);
-static NS_DEFINE_IID(kDrawingSurfaceCID, NS_DRAWING_SURFACE_CID);
 
 #define FLAG_CLIP_VALID       0x0001
 #define FLAG_CLIP_CHANGED     0x0002
@@ -218,7 +216,7 @@ nsRenderingContextWin :: nsRenderingContextWin()
   mOrigFont = NULL;
   mOrigSolidPen = NULL;
   mCurrBrushColor = RGB(255, 255, 255);
-  mCurrFontMetrics = nsnull;
+  mCurrFontWin = nsnull;
   mCurrPenColor = NULL;
   mCurrPen = NULL;
   mNullPen = NULL;
@@ -985,6 +983,7 @@ NS_IMETHODIMP nsRenderingContextWin :: GetLineStyle(nsLineStyle &aLineStyle)
 
 NS_IMETHODIMP nsRenderingContextWin :: SetFont(const nsFont& aFont, nsIAtom* aLangGroup)
 {
+  mCurrFontWin = nsnull; // owned & released by mFontMetrics
   NS_IF_RELEASE(mFontMetrics);
   mContext->GetMetricsFor(aFont, aLangGroup, mFontMetrics);
 
@@ -993,6 +992,7 @@ NS_IMETHODIMP nsRenderingContextWin :: SetFont(const nsFont& aFont, nsIAtom* aLa
 
 NS_IMETHODIMP nsRenderingContextWin :: SetFont(nsIFontMetrics *aFontMetrics)
 {
+  mCurrFontWin = nsnull; // owned & released by mFontMetrics
   NS_IF_RELEASE(mFontMetrics);
   mFontMetrics = aFontMetrics;
   NS_IF_ADDREF(mFontMetrics);
@@ -1516,11 +1516,9 @@ NS_IMETHODIMP nsRenderingContextWin :: GetWidth(const char* aString,
       return mFontMetrics->GetSpaceWidth(aWidth);
     }
 
-    SIZE  size;
-
     SetupFontAndColor();
-    ::GetTextExtentPoint32(mDC, aString, aLength, &size);
-    aWidth = NSToCoordRound(float(size.cx) * mP2T);
+    nscoord pxWidth = mCurrFontWin->GetWidth(mDC, aString, aLength);
+    aWidth = NSToCoordRound(float(pxWidth) * mP2T);
 
     return NS_OK;
   }
@@ -1653,14 +1651,13 @@ nsRenderingContextWin::GetTextDimensions(const char*       aString,
       }
 
       // Measure the text
-      nscoord twWidth = 0;
+      nscoord pxWidth, twWidth = 0;
       if ((1 == numChars) && (aString[start] == ' ')) {
         mFontMetrics->GetSpaceWidth(twWidth);
       } 
       else if (numChars > 0) {
-        SIZE  size;
-        ::GetTextExtentPoint32(mDC, &aString[start], numChars, &size);
-        twWidth = NSToCoordRound(float(size.cx) * mP2T);
+        pxWidth = mCurrFontWin->GetWidth(mDC, &aString[start], numChars);
+        twWidth = NSToCoordRound(float(pxWidth) * mP2T);
       }
 
       // See if the text fits
@@ -1712,9 +1709,8 @@ nsRenderingContextWin::GetTextDimensions(const char*       aString,
             mFontMetrics->GetSpaceWidth(twWidth);
           } 
           else if (numChars > 0) {
-            SIZE  size;
-            ::GetTextExtentPoint32(mDC, &aString[start], numChars, &size);
-            twWidth = NSToCoordRound(float(size.cx) * mP2T);
+            pxWidth = mCurrFontWin->GetWidth(mDC, &aString[start], numChars);
+            twWidth = NSToCoordRound(float(pxWidth) * mP2T);
           }
 
           width -= twWidth;
@@ -2244,7 +2240,8 @@ NS_IMETHODIMP nsRenderingContextWin :: DrawString(const char *aString, PRUint32 
     mTranMatrix->ScaleXCoords(aSpacing, aLength, dx0);
   }
   mTranMatrix->TransformCoord(&x, &y);
-  ::ExtTextOut(mDC, x, y, 0, NULL, aString, aLength, dx0);
+
+  mCurrFontWin->DrawString(mDC, x, y, aString, aLength, dx0);
 
   if (dx0 && (dx0 != dxMem)) {
     delete [] dx0;
@@ -2373,51 +2370,7 @@ nsRenderingContextWin::GetBoundingMetrics(const char*        aString,
   if (!mFontMetrics) return NS_ERROR_FAILURE;
 
   SetupFontAndColor();
-
-  // set glyph transform matrix to identity
-  MAT2 mat2;
-  FIXED zero, one;
-  zero.fract = 0; one.fract = 0;
-  zero.value = 0; one.value = 1; 
-  mat2.eM12 = mat2.eM21 = zero; 
-  mat2.eM11 = mat2.eM22 = one; 
-
-  // measure the string
-  nscoord descent;
-  GLYPHMETRICS gm;
-  DWORD len = GetGlyphOutline(mDC, aString[0], GGO_METRICS, &gm, 0, nsnull, &mat2);
-  if (GDI_ERROR == len) {
-    return NS_ERROR_UNEXPECTED;
-  }
-  // flip sign of descent for cross-platform compatibility
-  descent = -(nscoord(gm.gmptGlyphOrigin.y) - nscoord(gm.gmBlackBoxY));
-  aBoundingMetrics.leftBearing = gm.gmptGlyphOrigin.x;
-  aBoundingMetrics.rightBearing = gm.gmptGlyphOrigin.x + gm.gmBlackBoxX;
-  aBoundingMetrics.ascent = gm.gmptGlyphOrigin.y;
-  aBoundingMetrics.descent = gm.gmptGlyphOrigin.y - gm.gmBlackBoxY;
-  aBoundingMetrics.width = gm.gmCellIncX;
-
-  if (1 < aLength) {
-    // loop over each glyph to get the ascent and descent
-    PRUint32 i;
-    for (i = 1; i < aLength; i++) {
-      len = GetGlyphOutline(mDC, aString[i], GGO_METRICS, &gm, 0, nsnull, &mat2);
-      if (GDI_ERROR == len) {
-        return NS_ERROR_UNEXPECTED;
-      }
-      // flip sign of descent for cross-platform compatibility
-      descent = -(nscoord(gm.gmptGlyphOrigin.y) - nscoord(gm.gmBlackBoxY));
-      if (aBoundingMetrics.ascent < gm.gmptGlyphOrigin.y)
-        aBoundingMetrics.ascent = gm.gmptGlyphOrigin.y;
-      if (aBoundingMetrics.descent > descent)
-        aBoundingMetrics.descent = descent;
-    }
-    // get the final rightBearing and width. Possible kerning is taken into account.
-    SIZE size;
-    ::GetTextExtentPoint32(mDC, aString, aLength, &size);
-    aBoundingMetrics.width = size.cx;
-    aBoundingMetrics.rightBearing = size.cx - gm.gmCellIncX + gm.gmBlackBoxX;
-  }
+  nsresult rv = mCurrFontWin->GetBoundingMetrics(mDC, aString, aLength, aBoundingMetrics);
 
   // convert to app units
   aBoundingMetrics.leftBearing = NSToCoordRound(float(aBoundingMetrics.leftBearing) * mP2T);
@@ -2426,7 +2379,7 @@ nsRenderingContextWin::GetBoundingMetrics(const char*        aString,
   aBoundingMetrics.ascent = NSToCoordRound(float(aBoundingMetrics.ascent) * mP2T);
   aBoundingMetrics.descent = NSToCoordRound(float(aBoundingMetrics.descent) * mP2T);
 
-  return NS_OK;
+  return rv;
 }
 
 struct GetBoundingMetricsData {
@@ -2690,23 +2643,20 @@ HBRUSH nsRenderingContextWin :: SetupSolidBrush(void)
 
 void nsRenderingContextWin :: SetupFontAndColor(void)
 {
-  if (((mFontMetrics != mCurrFontMetrics) || (NULL == mCurrFontMetrics)) &&
-      (nsnull != mFontMetrics))
-  {
+  if (mFontMetrics && (!mCurrFontWin || mCurrFontWin->mFont != mCurrFont)) {
     nsFontHandle  fontHandle;
     mFontMetrics->GetFontHandle(fontHandle);
     HFONT         tfont = (HFONT)fontHandle;
-    
+
     ::SelectObject(mDC, tfont);
 
     mCurrFont = tfont;
+    mCurrFontWin = ((nsFontMetricsWin*)mFontMetrics)->GetFontFor(mCurrFont);
 
     // nsFontMetricsWin vs. nsFontMetricsWinA
     // When making changes in the font code, set |useAFunctions = 1| in nsGfxFactoryWin
     // to verify that the changes didn't let the 'A' versions out of sync. 
-    NS_ASSERTION(((nsFontMetricsWin*)mFontMetrics)->GetFontFor(mCurrFont), "internal error");
-
-    mCurrFontMetrics = mFontMetrics;
+    NS_ASSERTION(mCurrFontWin, "internal error");
   }
 
   if (mCurrentColor != mCurrTextColor)

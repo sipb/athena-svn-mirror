@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: nss.h,v 1.1.1.1.2.1 2003-07-14 19:06:46 ghudson Exp $
+ * $Id: nss.h,v 1.1.1.1.2.2 2004-01-02 19:59:11 ghudson Exp $
  */
 
 #ifndef __nss_h_

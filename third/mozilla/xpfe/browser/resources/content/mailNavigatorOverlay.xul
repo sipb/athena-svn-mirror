@@ -191,7 +191,7 @@
               label="&newMessageCmd.label;"
               accesskey="&newMessageCmd.accesskey;"
               command="cmd_newMessage"
-              key="key_newMessage"
+              key="key_newMessage"           
               insertafter="navBeginGlobalNewItems"/>
   </menupopup>
 

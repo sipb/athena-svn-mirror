@@ -361,15 +361,29 @@ PL_PostSynchronousEvent(PLEventQueue* self, PLEvent* event)
         return NULL;
 
     PR_ASSERT(event != NULL);
-    PR_Lock(event->lock);
 
     if (PR_GetCurrentThread() == self->handlerThread) {
         /* Handle the case where the thread requesting the event handling
-           is also the thread that's supposed to do the handling. */
+         * is also the thread that's supposed to do the handling. */
         result = event->handler(event);
     }
     else {
-        int i, entryCount = PR_GetMonitorEntryCount(self->monitor);
+        int i, entryCount;
+
+        event->lock = PR_NewLock();
+        if (!event->lock) {
+          return NULL;
+        }
+        event->condVar = PR_NewCondVar(event->lock);
+        if(!event->condVar) {
+          PR_DestroyLock(event->lock);
+          event->lock = NULL;
+          return NULL;
+        }
+
+        PR_Lock(event->lock);
+
+        entryCount = PR_GetMonitorEntryCount(self->monitor);
 
         event->synchronousResult = (void*)PR_TRUE;
 
@@ -398,9 +412,8 @@ PL_PostSynchronousEvent(PLEventQueue* self, PLEvent* event)
 
         result = event->synchronousResult;
         event->synchronousResult = NULL;
+        PR_Unlock(event->lock);
     }
-
-    PR_Unlock(event->lock);
 
     /* For synchronous events, they're destroyed here on the caller's
        thread before the result is returned. See PL_HandleEvent. */
@@ -485,6 +498,7 @@ _pl_DestroyEventForOwner(PLEvent* event, void* owner, PLEventQueue* queue)
         PR_LOG(event_lm, PR_LOG_DEBUG,
                ("$$$ \tdestroying event %0x for owner %0x", event, owner));
         PL_DequeueEvent(event, queue);
+
         if (event->synchronousResult == (void*)PR_TRUE) {
             PR_Lock(event->lock);
             event->synchronousResult = NULL;
@@ -631,10 +645,8 @@ PL_InitEvent(PLEvent* self, void* owner,
     self->owner = owner;
     self->synchronousResult = NULL;
     self->handled = PR_FALSE;
-    self->lock = PR_NewLock();
-    PR_ASSERT(self->lock);
-    self->condVar = PR_NewCondVar(self->lock);
-    PR_ASSERT(self->condVar);
+    self->lock = NULL;
+    self->condVar = NULL;
 #if defined(XP_UNIX) && !defined(XP_MACOSX)
     self->id = 0;
 #endif
@@ -684,8 +696,10 @@ PL_DestroyEvent(PLEvent* self)
     /* This event better not be on an event queue anymore. */
     PR_ASSERT(PR_CLIST_IS_EMPTY(&self->link));
 
-    PR_DestroyCondVar(self->condVar);
-    PR_DestroyLock(self->lock);
+    if(self->condVar)
+      PR_DestroyCondVar(self->condVar);
+    if(self->lock)
+      PR_DestroyLock(self->lock);
 
 #ifdef PL_POST_TIMINGS
     s_totalTime += PR_IntervalNow() - self->postTime;
@@ -871,8 +885,10 @@ failed:
      */
     char portname[64];
     char semname[64];
-    sprintf(portname, "event%lx", self->handlerThread);
-    sprintf(semname, "sync%lx", self->handlerThread);
+    PR_snprintf(portname, sizeof(portname), "event%lx", 
+                (long unsigned) self->handlerThread);
+    PR_snprintf(semname, sizeof(semname), "sync%lx", 
+                (long unsigned) self->handlerThread);
 
     if((self->eventport = find_port(portname)) < 0)
     {
@@ -915,9 +931,10 @@ _pl_CleanupNativeNotifier(PLEventQueue* self)
     }
     RemoveProp(self->eventReceiverWindow, _md_GetEventQueuePropName());
 
-    // DestroyWindow doesn't do anything when called from a non ui thread.  Since 
-    // self->eventReceiverWindow was created on the ui thread, it must be destroyed
-    // on the ui thread.
+    /* DestroyWindow doesn't do anything when called from a non ui thread.  Since 
+     * self->eventReceiverWindow was created on the ui thread, it must be destroyed
+     * on the ui thread.
+     */
     SendMessage(self->eventReceiverWindow, WM_CLOSE, 0, 0);
 
 #elif defined(XP_OS2)

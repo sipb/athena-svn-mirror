@@ -67,12 +67,6 @@
 #include "nsIAppShellService.h"
 #include "nsAppShellCIDs.h"
 static NS_DEFINE_CID(kAppShellServiceCID,   NS_APPSHELL_SERVICE_CID);
-#elif defined(LINUX)
-#if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)
-#include <string.h>
-#else
-extern "C" char * strsignal(int);
-#endif
 #endif
 
 #ifdef MOZ_WIDGET_PHOTON
@@ -103,7 +97,7 @@ void abnormal_exit_handler(int signum)
            _progname, getpid(), strsignal(signum));
 
     printf("Sleeping for 5 minutes.\n");
-    printf("Type 'gdb %s %d' to attatch your debugger to this thread.\n",
+    printf("Type 'gdb %s %d' to attach your debugger to this thread.\n",
            _progname, getpid());
 
     sleep(300);
@@ -125,24 +119,16 @@ ah_crap_handler(int signum)
 {
   PR_GetCurrentThread();
 
-  // I don't think strsignal is portable.  If it is, this can be changed.
-#ifdef LINUX
-  printf("\nProgram %s (pid = %d) received %s signal.\n",
-         _progname,
-         getpid(),
-         strsignal(signum));
-#else
   printf("\nProgram %s (pid = %d) received signal %d.\n",
          _progname,
          getpid(),
          signum);
-#endif
   
   printf("Stack:\n");
   DumpStackToFile(stdout);
 
   printf("Sleeping for 5 minutes.\n");
-  printf("Type 'gdb %s %d' to attatch your debugger to this thread.\n",
+  printf("Type 'gdb %s %d' to attach your debugger to this thread.\n",
          _progname,
          getpid());
 

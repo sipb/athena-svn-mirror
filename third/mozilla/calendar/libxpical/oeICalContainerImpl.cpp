@@ -44,6 +44,9 @@ extern "C" {
 extern icalarray *builtin_timezones;
 extern char *gDefaultTzidPrefix;
 }
+
+oeIICalContainer *gContainer=nsnull;
+
 //icaltimetype ConvertFromPrtime( PRTime indate );
 void icaltimezone_init_mozilla_zones (void)
 {
@@ -187,6 +190,8 @@ oeICalContainerImpl::oeICalContainerImpl()
         m_filter->m_calendarArray = m_calendarArray;
 
         icaltimezone_init_mozilla_zones ();
+
+        gContainer = this;
 }
 
 oeICalContainerImpl::~oeICalContainerImpl()
@@ -201,6 +206,7 @@ oeICalContainerImpl::~oeICalContainerImpl()
     m_todoobserverArray = nsnull;
 
     NS_RELEASE( m_filter );
+    gContainer = nsnull;
 }
 
 /**
@@ -214,7 +220,7 @@ oeICalContainerImpl::~oeICalContainerImpl()
  * Notice that the second parameter to the macro is the static IID accessor
  * method, and NOT the #defined IID.
  */
-NS_IMPL_ISUPPORTS1(oeICalContainerImpl, oeIICalContainer);
+NS_IMPL_ISUPPORTS1(oeICalContainerImpl, oeIICalContainer)
 
 NS_IMETHODIMP
 oeICalContainerImpl::AddCalendar( const char *server ) {
@@ -223,7 +229,17 @@ oeICalContainerImpl::AddCalendar( const char *server ) {
 #endif
 
     nsresult rv;
-    nsCOMPtr<oeIICal> calendar = do_CreateInstance(OE_ICAL_CONTRACTID, &rv);
+
+    nsCOMPtr<oeIICal> calendar;
+    GetCalendar( server , getter_AddRefs(calendar) );
+    if( calendar ) {
+        #ifdef ICAL_DEBUG_ALL
+        printf( "oeICalContainerImpl::AddCalendar()-Warning: Calendar already exists\n" );
+        #endif
+        return NS_OK;
+    }
+
+    calendar = do_CreateInstance(OE_ICAL_CONTRACTID, &rv);
     if (NS_FAILED(rv)) {
         return NS_ERROR_FAILURE;
     }
@@ -245,6 +261,8 @@ oeICalContainerImpl::AddCalendar( const char *server ) {
         m_todoobserverArray->GetElementAt( i, (nsISupports **)&tmpobserver );
         calendar->AddTodoObserver( tmpobserver );
     }
+
+    calendar->SetBatchMode( m_batchMode ); //Make sure the current batchmode value is inherited
 
     calendar->SetServer( server );
 
@@ -309,7 +327,7 @@ oeICalContainerImpl::AddCalendars( PRUint32 serverCount, const char **servers ) 
 #ifdef ICAL_DEBUG
     printf( "oeICalContainerImpl::AddCalendars( %d, [Array] )\n", serverCount );
 #endif
-    nsresult rv;
+    nsresult rv=NS_OK;
     for( unsigned int i=0; i<serverCount; i++ ) {
         rv = AddCalendar( servers[i] );
         if( NS_FAILED( rv ) )
@@ -382,7 +400,6 @@ NS_IMETHODIMP oeICalContainerImpl::SetBatchMode(PRBool aBatchMode)
                 #endif
             }
             else {
-                nsresult rv;
                 rv = tmpobserver->OnEndBatch();
                 #ifdef ICAL_DEBUG
                 if( NS_FAILED( rv ) ) {
@@ -970,6 +987,25 @@ oeICalContainerImpl::GetAllTodos(nsISimpleEnumerator **resultList )
     return NS_OK;
 }
 
+NS_IMETHODIMP oeICalContainerImpl::ReportError( PRInt16 severity, PRUint32 errorid, const char *errorstring ) {
+    PRUint32 num;
+    unsigned int i;
+    m_observerArray->Count( &num );
+    for ( i=0; i<num; i++ ) {
+        oeIICalObserver* tmpobserver;
+        m_observerArray->GetElementAt( i, (nsISupports **)&tmpobserver );
+        tmpobserver->OnError( severity, errorid, errorstring );
+    }
+
+    m_todoobserverArray->Count( &num );
+    for ( i=0; i<num; i++ ) {
+        oeIICalTodoObserver* tmpobserver;
+        m_todoobserverArray->GetElementAt( i, (nsISupports **)&tmpobserver );
+        tmpobserver->OnError( severity, errorid, errorstring );
+    }
+    return NS_OK;
+}
+
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 /*************************************************************************************************************/
@@ -1015,6 +1051,11 @@ oeICalContainerFilter::oeICalContainerFilter()
 oeICalContainerFilter::~oeICalContainerFilter()
 {
     NS_RELEASE( m_completed );
+}
+
+NS_IMETHODIMP oeICalContainerFilter::GetType(Componenttype *aRetVal)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP oeICalContainerFilter::GetId(char **aRetVal)
@@ -1439,6 +1480,18 @@ void oeICalContainerFilter::UpdateAllFilters( PRInt32 icaltype )
     default:
         break;
     }
+}
+
+NS_IMETHODIMP oeICalContainerFilter::ReportError( PRInt16 severity, PRUint32 errorid, const char *errorstring ) {
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP oeICalContainerFilter::SetParameter( const char *name, const char *value ) {
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP oeICalContainerFilter::GetParameter( const char *name, char **value ) {
+    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 ///////////////////////////////////////////////////

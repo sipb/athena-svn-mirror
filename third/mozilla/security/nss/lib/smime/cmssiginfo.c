@@ -34,7 +34,7 @@
 /*
  * CMS signerInfo methods.
  *
- * $Id: cmssiginfo.c,v 1.1.1.1.2.1 2003-07-14 19:07:25 ghudson Exp $
+ * $Id: cmssiginfo.c,v 1.1.1.1.2.2 2004-01-02 20:00:01 ghudson Exp $
  */
 
 #include "cmslocal.h"

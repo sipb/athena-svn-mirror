@@ -37,7 +37,7 @@
 ## GPL.
 ## 
 ##
-## $Id: Makefile,v 1.1.1.1.2.1 2003-07-14 19:06:43 ghudson Exp $
+## $Id: Makefile,v 1.1.1.1.2.2 2004-01-02 19:59:09 ghudson Exp $
 ##
 
 ## Define CC to be the C compiler you wish to use.  The GNU cc

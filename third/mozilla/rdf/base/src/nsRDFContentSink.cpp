@@ -108,7 +108,6 @@ static const char kNCNameSpaceURI[] = NC_NAMESPACE_URI;
 
 static NS_DEFINE_IID(kIContentSinkIID,         NS_ICONTENT_SINK_IID); // XXX grr...
 static NS_DEFINE_IID(kIExpatSinkIID,           NS_IEXPATSINK_IID);
-static NS_DEFINE_IID(kIRDFDataSourceIID,       NS_IRDFDATASOURCE_IID);
 static NS_DEFINE_IID(kIRDFServiceIID,          NS_IRDFSERVICE_IID);
 static NS_DEFINE_IID(kISupportsIID,            NS_ISUPPORTS_IID);
 static NS_DEFINE_IID(kIXMLContentSinkIID,      NS_IXMLCONTENT_SINK_IID);
@@ -116,7 +115,6 @@ static NS_DEFINE_IID(kIRDFContentSinkIID,      NS_IRDFCONTENTSINK_IID);
 
 static NS_DEFINE_CID(kRDFServiceCID,            NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kRDFContainerUtilsCID,     NS_RDFCONTAINERUTILS_CID);
-static NS_DEFINE_CID(kRDFInMemoryDataSourceCID, NS_RDFINMEMORYDATASOURCE_CID);
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -158,12 +156,12 @@ public:
 
     // nsIContentSink
     NS_IMETHOD WillBuildModel(void);
-    NS_IMETHOD DidBuildModel(PRInt32 aQualityLevel);
+    NS_IMETHOD DidBuildModel(void);
     NS_IMETHOD WillInterrupt(void);
     NS_IMETHOD WillResume(void);
     NS_IMETHOD SetParser(nsIParser* aParser);  
     NS_IMETHOD FlushPendingNotifications() { return NS_OK; }
-    NS_IMETHOD SetDocumentCharset(nsAString& aCharset) { return NS_OK; }
+    NS_IMETHOD SetDocumentCharset(nsACString& aCharset) { return NS_OK; }
 
     // nsIRDFContentSink
     NS_IMETHOD Init(nsIURI* aURL);
@@ -240,7 +238,6 @@ protected:
     PRUnichar* mText;
     PRInt32 mTextLength;
     PRInt32 mTextSize;
-    PRBool mConstrainSize;
 
     struct NameSpaceEntry {
     public:
@@ -351,7 +348,6 @@ RDFContentSinkImpl::RDFContentSinkImpl()
     : mText(nsnull),
       mTextLength(0),
       mTextSize(0),
-      mConstrainSize(PR_TRUE),
       mNameSpaceStack(nsnull),
       mState(eRDFContentSinkState_InProlog),
       mParseMode(eRDFContentSinkParseMode_Literal),
@@ -469,8 +465,8 @@ RDFContentSinkImpl::~RDFContentSinkImpl()
 ////////////////////////////////////////////////////////////////////////
 // nsISupports interface
 
-NS_IMPL_ADDREF(RDFContentSinkImpl);
-NS_IMPL_RELEASE(RDFContentSinkImpl);
+NS_IMPL_ADDREF(RDFContentSinkImpl)
+NS_IMPL_RELEASE(RDFContentSinkImpl)
 
 NS_IMETHODIMP
 RDFContentSinkImpl::QueryInterface(REFNSIID iid, void** result)
@@ -667,7 +663,7 @@ RDFContentSinkImpl::WillBuildModel(void)
 }
 
 NS_IMETHODIMP 
-RDFContentSinkImpl::DidBuildModel(PRInt32 aQualityLevel)
+RDFContentSinkImpl::DidBuildModel(void)
 {
     if (mDataSource) {
         nsCOMPtr<nsIRDFXMLSink> sink = do_QueryInterface(mDataSource);
@@ -726,7 +722,7 @@ NS_IMETHODIMP
 RDFContentSinkImpl::SetDataSource(nsIRDFDataSource* aDataSource)
 {
     NS_PRECONDITION(aDataSource != nsnull, "SetDataSource null ptr");
-    mDataSource = dont_QueryInterface(aDataSource);
+    mDataSource = aDataSource;
     NS_ASSERTION(mDataSource != nsnull,"Couldn't QI RDF DataSource");
     return NS_OK;
 }
@@ -856,45 +852,36 @@ RDFContentSinkImpl::FlushText(PRBool aCreateTextNode, PRBool* aDidFlush)
 nsresult
 RDFContentSinkImpl::AddText(const PRUnichar* aText, PRInt32 aLength)
 {
-  // Create buffer when we first need it
-  if (0 == mTextSize) {
-      mText = (PRUnichar *) PR_MALLOC(sizeof(PRUnichar) * 4096);
-      if (nsnull == mText) {
-          return NS_ERROR_OUT_OF_MEMORY;
-      }
-      mTextSize = 4096;
-  }
-
-  // Copy data from string into our buffer; flush buffer when it fills up
-  PRInt32 offset = 0;
-  while (0 != aLength) {
-    PRInt32 amount = mTextSize - mTextLength;
-    if (amount > aLength) {
-        amount = aLength;
-    }
-    if (0 == amount) {
-      if (mConstrainSize) {
-        nsresult rv = FlushText();
-        if (NS_OK != rv) {
-            return rv;
-        }
-      }
-      else {
-        mTextSize += aLength;
-        mText = (PRUnichar *) PR_REALLOC(mText, sizeof(PRUnichar) * mTextSize);
-        if (nsnull == mText) {
+    // Create buffer when we first need it
+    if (0 == mTextSize) {
+        mText = (PRUnichar *) PR_MALLOC(sizeof(PRUnichar) * 4096);
+        if (!mText) {
             return NS_ERROR_OUT_OF_MEMORY;
         }
-      }
+        mTextSize = 4096;
     }
-    memcpy(&mText[mTextLength],aText + offset, sizeof(PRUnichar) * amount);
-    
-    mTextLength += amount;
-    offset += amount;
-    aLength -= amount;
-  }
 
-  return NS_OK;
+    // Copy data from string into our buffer; grow the buffer as needed.
+    // It never shrinks, but since the content sink doesn't stick around,
+    // this shouldn't be a bloat issue.
+    PRInt32 amount = mTextSize - mTextLength;
+    if (amount < aLength) {
+        // Grow the buffer by at least a factor of two to prevent thrashing.
+        // Since PR_REALLOC will leave mText intact if the call fails,
+        // don't clobber mText or mTextSize until the new mem is allocated.
+        PRInt32 newSize = (2 * mTextSize > (mTextSize + aLength)) ?
+                          (2 * mTextSize) : (mTextSize + aLength);
+        PRUnichar* newText = 
+            (PRUnichar *) PR_REALLOC(mText, sizeof(PRUnichar) * newSize);
+        if (!newText)
+            return NS_ERROR_OUT_OF_MEMORY;
+        mTextSize = newSize;
+        mText = newText;
+    }
+    memcpy(&mText[mTextLength], aText, sizeof(PRUnichar) * aLength);
+    mTextLength += aLength;
+
+    return NS_OK;
 }
 
 nsresult

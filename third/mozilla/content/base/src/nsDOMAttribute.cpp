@@ -108,10 +108,9 @@ nsDOMAttribute::GetContent(nsIContent** aContent)
 }
 
 NS_IMETHODIMP
-nsDOMAttribute::GetNodeInfo(nsINodeInfo*& aNodeInfo)
+nsDOMAttribute::GetNodeInfo(nsINodeInfo** aNodeInfo)
 {
-  aNodeInfo = mNodeInfo;
-  NS_IF_ADDREF(aNodeInfo);
+  NS_IF_ADDREF(*aNodeInfo = mNodeInfo);
 
   return NS_OK;
 }
@@ -129,23 +128,21 @@ nsDOMAttribute::GetValue(nsAString& aValue)
 {
   NS_ENSURE_TRUE(mNodeInfo, NS_ERROR_FAILURE);
 
-  nsresult result = NS_OK;
   if (mContent) {
-    nsresult attrResult;
-    PRInt32 nameSpaceID;
-    nsCOMPtr<nsIAtom> name;
-
-    mNodeInfo->GetNameAtom(*getter_AddRefs(name));
-    mNodeInfo->GetNamespaceID(nameSpaceID);
+    nsCOMPtr<nsIAtom> name = mNodeInfo->GetNameAtom();
+    PRInt32 nameSpaceID = mNodeInfo->GetNamespaceID();
 
     nsAutoString tmpValue;
-    attrResult = mContent->GetAttr(nameSpaceID, name, tmpValue);
+    nsresult attrResult = mContent->GetAttr(nameSpaceID, name,
+                                            tmpValue);
     if (NS_CONTENT_ATTR_NOT_THERE != attrResult) {
       mValue = tmpValue;
     }
   }
-  aValue=mValue;
-  return result;
+
+  aValue = mValue;
+
+  return NS_OK;
 }
 
 nsresult
@@ -168,28 +165,17 @@ nsDOMAttribute::GetSpecified(PRBool* aSpecified)
   NS_ENSURE_TRUE(mNodeInfo, NS_ERROR_FAILURE);
   NS_ENSURE_ARG_POINTER(aSpecified);
 
-  nsresult result = NS_OK;
-  if (nsnull == mContent) {
+  if (!mContent) {
     *aSpecified = PR_FALSE;
-  } else {
-    nsAutoString value;
-    nsresult attrResult;
-    PRInt32 nameSpaceID;
-    nsCOMPtr<nsIAtom> name;
-
-    mNodeInfo->GetNameAtom(*getter_AddRefs(name));
-    mNodeInfo->GetNamespaceID(nameSpaceID);
-
-    attrResult = mContent->GetAttr(nameSpaceID, name, value);
-    if (NS_CONTENT_ATTR_HAS_VALUE == attrResult) {
-      *aSpecified = PR_TRUE;
-    }
-    else {
-      *aSpecified = PR_FALSE;
-    }
+    return NS_OK;
   }
 
-  return result;
+  nsCOMPtr<nsIAtom> name = mNodeInfo->GetNameAtom();
+  PRInt32 nameSpaceID = mNodeInfo->GetNamespaceID();
+
+  *aSpecified = mContent->HasAttr(nameSpaceID, name);
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -376,13 +362,10 @@ nsDOMAttribute::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   nsDOMAttribute* newAttr;
 
   if (mContent) {
-    nsAutoString value;
-    PRInt32 nameSpaceID;
-    nsCOMPtr<nsIAtom> name;
-
-    mNodeInfo->GetNameAtom(*getter_AddRefs(name));
-    mNodeInfo->GetNamespaceID(nameSpaceID);
+    nsCOMPtr<nsIAtom> name = mNodeInfo->GetNameAtom();
+    PRInt32 nameSpaceID = mNodeInfo->GetNamespaceID();
   
+    nsAutoString value;
     mContent->GetAttr(nameSpaceID, name, value);
     newAttr = new nsDOMAttribute(nsnull, mNodeInfo, value); 
   }
@@ -436,22 +419,19 @@ nsDOMAttribute::SetPrefix(const nsAString& aPrefix)
   NS_ENSURE_TRUE(mNodeInfo, NS_ERROR_FAILURE);
   nsCOMPtr<nsINodeInfo> newNodeInfo;
   nsCOMPtr<nsIAtom> prefix;
-  nsresult rv = NS_OK;
 
-  if (!aPrefix.IsEmpty() && !DOMStringIsNull(aPrefix))
+  if (!aPrefix.IsEmpty() && !DOMStringIsNull(aPrefix)) {
     prefix = do_GetAtom(aPrefix);
+  }
 
-  rv = mNodeInfo->PrefixChanged(prefix, *getter_AddRefs(newNodeInfo));
+  nsresult rv = mNodeInfo->PrefixChanged(prefix, getter_AddRefs(newNodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (mContent) {
-    nsCOMPtr<nsIAtom> name;
-    PRInt32 nameSpaceID;
+    nsCOMPtr<nsIAtom> name = mNodeInfo->GetNameAtom();
+    PRInt32 nameSpaceID = mNodeInfo->GetNamespaceID();
+
     nsAutoString tmpValue;
-
-    mNodeInfo->GetNameAtom(*getter_AddRefs(name));
-    mNodeInfo->GetNamespaceID(nameSpaceID);
-
     rv = mContent->GetAttr(nameSpaceID, name, tmpValue);
     if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
       mContent->UnsetAttr(nameSpaceID, name, PR_TRUE);
@@ -516,8 +496,8 @@ nsDOMAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
     // then based upon order between the root container of each node that
     // is in no container. In this case, the result is disconnected
     // and implementation-dependent.
-    mask |= (nsIDOMNode::DOCUMENT_POSITION_DISCONNECTED |
-             nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
+    mask |= (nsIDOM3Node::DOCUMENT_POSITION_DISCONNECTED |
+             nsIDOM3Node::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
 
     *aReturn = mask;
 
@@ -539,7 +519,7 @@ nsDOMAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
         // nodeType is the same for both determining nodes, then an
         // implementation-dependent order between the determining nodes
         // is returned.
-        mask |= nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC;
+        mask |= nsIDOM3Node::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC;
       }
 
       // If the two nodes being compared are the same node,
@@ -580,8 +560,8 @@ nsDOMAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
       // Throw a party!  Celebrate by returning that it is contained
       // and following this node.
 
-      mask |= (nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED |
-               nsIDOMNode::DOCUMENT_POSITION_FOLLOWING);
+      mask |= (nsIDOM3Node::DOCUMENT_POSITION_CONTAINED_BY |
+               nsIDOM3Node::DOCUMENT_POSITION_FOLLOWING);
 
       *aReturn = mask;
       return NS_OK;
@@ -599,8 +579,8 @@ nsDOMAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
   parent->IsSameNode(aOther, &sameNode);
   if (sameNode) {
     // If the other node contains us, then it precedes us.
-    mask |= (nsIDOMNode::DOCUMENT_POSITION_CONTAINS |
-             nsIDOMNode::DOCUMENT_POSITION_PRECEDING);
+    mask |= (nsIDOM3Node::DOCUMENT_POSITION_CONTAINS |
+             nsIDOM3Node::DOCUMENT_POSITION_PRECEDING);
 
     *aReturn = mask;
     return NS_OK;
@@ -612,7 +592,7 @@ nsDOMAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
   // We already established earlier that the node is not contained
   // by this attribute.  So if it is contained by our owner element,
   // unset the flag.
-  mask |= parentMask & ~nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED;
+  mask |= parentMask & ~nsIDOM3Node::DOCUMENT_POSITION_CONTAINED_BY;
 
   *aReturn = mask;
   return NS_OK;
@@ -643,7 +623,7 @@ nsDOMAttribute::IsSameNode(nsIDOMNode* aOther,
       // Check to see if we're in HTML.
       if (content->IsContentOfType(nsIContent::eHTML)) {
         nsCOMPtr<nsINodeInfo> ni;
-        content->GetNodeInfo(*getter_AddRefs(ni));
+        content->GetNodeInfo(getter_AddRefs(ni));
         if (ni) {
           // If there is no namespace, we're in HTML (as opposed to XHTML)
           // and we'll need to compare node names case insensitively.
@@ -666,19 +646,82 @@ nsDOMAttribute::IsSameNode(nsIDOMNode* aOther,
   return NS_OK;
 }
 
-NS_IMETHODIMP    
-nsDOMAttribute::LookupNamespacePrefix(const nsAString& aNamespaceURI,
-                                      nsAString& aPrefix) 
+NS_IMETHODIMP
+nsDOMAttribute::IsEqualNode(nsIDOMNode* aOther,
+                            PRBool* aReturn)
 {
-  aPrefix.Truncate();
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(mContent));
-  if (node)
-    rv = node->LookupNamespacePrefix(aNamespaceURI, aPrefix);
-  return rv;
+  NS_NOTYETIMPLEMENTED("nsDocument::IsEqualNode()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMETHODIMP    
+NS_IMETHODIMP
+nsDOMAttribute::IsDefaultNamespace(const nsAString& aNamespaceURI,
+                                   PRBool* aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDOMAttribute::IsDefaultNamespace()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::GetTextContent(nsAString &aTextContent)
+{
+  return GetNodeValue(aTextContent);
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::SetTextContent(const nsAString& aTextContent)
+{
+  return SetNodeValue(aTextContent);
+}
+
+
+NS_IMETHODIMP
+nsDOMAttribute::GetFeature(const nsAString& aFeature,
+                           const nsAString& aVersion,
+                           nsISupports** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::GetFeature()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::SetUserData(const nsAString& aKey,
+                            nsIVariant* aData,
+                            nsIDOMUserDataHandler* aHandler,
+                            nsIVariant** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::SetUserData()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::GetUserData(const nsAString& aKey,
+                            nsIVariant** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::GetUserData()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::LookupPrefix(const nsAString& aNamespaceURI,
+                             nsAString& aPrefix) 
+{
+  aPrefix.Truncate();
+
+  nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(mContent));
+  if (node) {
+    return node->LookupPrefix(aNamespaceURI, aPrefix);
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsDOMAttribute::LookupNamespaceURI(const nsAString& aNamespacePrefix,
                                    nsAString& aNamespaceURI)
 {

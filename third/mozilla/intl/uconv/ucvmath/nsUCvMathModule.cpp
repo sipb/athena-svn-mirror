@@ -42,10 +42,11 @@
 #include "nsString.h"
 #include "nsCOMPtr.h"
 #include "nsIFactory.h"
-#include "nsIRegistry.h"
 #include "nsIGenericFactory.h"
 #include "nsIServiceManager.h"
 #include "nsICharsetConverterManager.h"
+#include "nsICategoryManager.h"
+#include "nsEncoderDecoderUtils.h"
 #include "nsIModule.h"
 #include "nsUCvMathCID.h"
 #include "nsUCvMathDll.h"
@@ -70,8 +71,6 @@
 
 //----------------------------------------------------------------------------
 // Global functions and data [declaration]
-
-static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 
 #define DECODER_NAME_BASE "Unicode Decoder-"
 #define ENCODER_NAME_BASE "Unicode Encoder-"
@@ -99,22 +98,22 @@ NS_CONVERTER_REGISTRY_END
 
 NS_IMPL_NSUCONVERTERREGSELF
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMRttf);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMMIttf);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMSYttf);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMEXttf);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMRttf)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMMIttf)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMSYttf)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMEXttf)
 #if !defined(XP_WIN) && !defined(XP_OS2) && !defined(XP_MAC) && !defined(XP_MACOSX)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMRt1);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMMIt1);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMSYt1);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMEXt1);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMRt1)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMMIt1)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMSYt1)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTeXCMEXt1)
 #endif
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica1);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica2);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica3);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica4);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica5);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMTExtra);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica1)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica2)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica3)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica4)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMathematica5)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMTExtra)
 
 static const nsModuleComponentInfo components[] = 
 {
@@ -193,5 +192,5 @@ static const nsModuleComponentInfo components[] =
   }
 };
 
-NS_IMPL_NSGETMODULE(nsUCvMathModule, components);
+NS_IMPL_NSGETMODULE(nsUCvMathModule, components)
 

@@ -556,16 +556,13 @@ char *nsIMAPGenericParser::CreateLiteral()
 				AdvanceToNextLine();
       if (ContinueParse())
       {
-			currentLineLength = strlen(terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder);
-			bytesToCopy = (currentLineLength > numberOfCharsInMessage - charsReadSoFar ?
-						   numberOfCharsInMessage - charsReadSoFar : currentLineLength);
-			NS_ASSERTION (bytesToCopy, "0 length literal?");
+        currentLineLength = strlen(terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder);
+        bytesToCopy = (currentLineLength > numberOfCharsInMessage - charsReadSoFar ?
+                 numberOfCharsInMessage - charsReadSoFar : currentLineLength);
+        NS_ASSERTION (bytesToCopy, "0 length literal?");
 
-			if (ContinueParse())
-			{
-				memcpy(returnString + charsReadSoFar, terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder, bytesToCopy); 
-				charsReadSoFar += bytesToCopy;
-			}
+        memcpy(returnString + charsReadSoFar, terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder, bytesToCopy); 
+        charsReadSoFar += bytesToCopy;
       }
 		}
 		

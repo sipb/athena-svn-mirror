@@ -818,10 +818,6 @@ nsWindow::~nsWindow()
 {
 #ifdef ACCESSIBILITY
   if (mRootAccessible) {
-    nsCOMPtr<nsIAccessibleDocument> accessDoc(do_QueryInterface(mRootAccessible));
-    if (accessDoc) {
-      accessDoc->Destroy();
-    }
     mRootAccessible->Release();
     mRootAccessible = nsnull;
   }
@@ -1384,7 +1380,8 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
 {
     nsIWidget *baseParent = aInitData &&
                  (aInitData->mWindowType == eWindowType_dialog ||
-                  aInitData->mWindowType == eWindowType_toplevel) ?
+                  aInitData->mWindowType == eWindowType_toplevel ||
+                  aInitData->mWindowType == eWindowType_invisible) ?
                   nsnull : aParent;
 
     mIsTopWidgetWindow = (nsnull == baseParent);
@@ -4121,8 +4118,12 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
         case WM_WINDOWPOSCHANGING: {
           LPWINDOWPOS info = (LPWINDOWPOS) lParam;
+          // enforce local z-order rules
           if (!(info->flags & SWP_NOZORDER))
             ConstrainZLevel(&info->hwndInsertAfter);
+          // prevent rude external programs from making hidden window visible
+          if (mWindowType == eWindowType_invisible)
+            info->flags &= ~SWP_SHOWWINDOW;
           break;
         }
 
@@ -4391,11 +4392,10 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
           else if (lParam == OBJID_CARET) {  // each root accessible owns a caret accessible
             nsCOMPtr<nsIAccessibleDocument> accDoc(do_QueryInterface(mRootAccessible));
             if (accDoc) { 
-              nsCOMPtr<nsIAccessibleCaret> accessibleCaret;
+              nsCOMPtr<nsIAccessible> accessibleCaret;
               accDoc->GetCaretAccessible(getter_AddRefs(accessibleCaret));
-              nsCOMPtr<nsIAccessible> xpAccessible(do_QueryInterface(accessibleCaret));
-              if (xpAccessible) {
-                xpAccessible->GetNativeInterface((void**)&msaaAccessible);
+              if (accessibleCaret) {
+                accessibleCaret->GetNativeInterface((void**)&msaaAccessible);
               }
             }
           }
@@ -4733,6 +4733,7 @@ DWORD nsWindow::WindowStyle()
       // fall through
 
     case eWindowType_toplevel:
+    case eWindowType_invisible:
       style = WS_OVERLAPPED | WS_BORDER | WS_DLGFRAME | WS_SYSMENU |
               WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
       break;
@@ -4797,6 +4798,7 @@ DWORD nsWindow::WindowExStyle()
       // fall through
 
     case eWindowType_toplevel:
+    case eWindowType_invisible:
       return WS_EX_WINDOWEDGE;
   }
 }
@@ -6997,7 +6999,6 @@ VOID CALLBACK nsWindow::HookTimerForPopups( HWND hwnd, UINT uMsg, UINT idEvent, 
     DealWithPopups(gRollupMsgId, 0, 0, &popupHandlingResult);
     gRollupMsgId = 0;
   }
-
 }
 
 

@@ -91,7 +91,7 @@ struct nsRuleNodeList
   void Destroy() {
     if (mNext)
       mNext->Destroy();
-    mRuleNode->PresContext()->FreeToShell(sizeof(nsRuleNodeList), this);
+    mRuleNode->GetPresContext()->FreeToShell(sizeof(nsRuleNodeList), this);
   };
 
   nsRuleNode* mRuleNode;
@@ -174,20 +174,6 @@ public:
   NS_IMETHOD Shutdown(nsIPresContext* aPresContext);
   NS_IMETHOD NotifyStyleContextDestroyed(nsIPresContext* aPresContext,
                                          nsStyleContext* aStyleContext);
-
-  // The following two methods can be used to tear down and reconstruct a rule tree.  The idea
-  // is to first call BeginRuleTreeReconstruct, which will set aside the old rule
-  // tree.  The entire frame tree should then have ReResolveStyleContext
-  // called on it.  With the old rule tree hidden from view, the newly resolved style contexts will
-  // resolve to rule nodes in a fresh rule tree, and the re-resolve system will properly compute
-  // the visual impact of the changes.
-  //
-  // After re-resolution, call EndRuleTreeReconstruct() to finally discard the old rule tree.
-  // This trick can be used in lieu of a full frame reconstruction when drastic style changes
-  // happen (e.g., stylesheets being added/removed in the DOM, theme switching in the Mozilla app,
-  // etc.
-  virtual nsresult BeginRuleTreeReconstruct();
-  virtual nsresult EndRuleTreeReconstruct();
   
   // For getting the cached default data in case we hit out-of-memory.
   // To be used only by nsRuleNode.
@@ -195,7 +181,7 @@ public:
 
   virtual nsresult GetRuleTree(nsRuleNode** aResult);
   
-  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule);
+  virtual nsresult ClearStyleData(nsIPresContext* aPresContext);
 
   virtual nsresult GetStyleFrameConstruction(nsIStyleFrameConstruction** aResult) {
     *aResult = mFrameConstructor;
@@ -251,22 +237,7 @@ public:
                               nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType, 
-                              nsChangeHint aHint); // See nsStyleConsts fot hint values
-
-  // xxx style rules enumeration
-
-  // Style change notifications
-  NS_IMETHOD StyleRuleChanged(nsIPresContext* aPresContext,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint); // See nsStyleConsts fot hint values
-  NS_IMETHOD StyleRuleAdded(nsIPresContext* aPresContext,
-                            nsIStyleSheet* aStyleSheet,
-                            nsIStyleRule* aStyleRule);
-  NS_IMETHOD StyleRuleRemoved(nsIPresContext* aPresContext,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule);
+                              PRInt32 aModType);
 
   // Notification that we were unable to render a replaced element.
   NS_IMETHOD CantRenderReplacedElement(nsIPresContext* aPresContext,
@@ -378,7 +349,6 @@ protected:
 
   nsRuleNode* mRuleTree; // This is the root of our rule tree.  It is a lexicographic tree of
                          // matched rules that style contexts use to look up properties.
-  nsRuleNode* mOldRuleTree; // Used during rule tree reconstruction.
   nsRuleWalker* mRuleWalker;   // This is an instance of a rule walker that can be used
                                // to navigate through our tree.
 
@@ -401,7 +371,6 @@ StyleSetImpl::StyleSetImpl()
   : mFrameConstructor(nsnull),
     mQuirkStyleSheet(nsnull),
     mRuleTree(nsnull),
-    mOldRuleTree(nsnull),
     mRuleWalker(nsnull),
     mInShutdown(PR_FALSE),
     mDestroyedCount(0)
@@ -1055,8 +1024,7 @@ StyleSetImpl::AddImportantRules(nsRuleNode* aCurrLevelNode,
 
   AddImportantRules(aCurrLevelNode->GetParent(), aLastPrevLevelNode);
 
-  nsCOMPtr<nsIStyleRule> rule;;
-  aCurrLevelNode->GetRule(getter_AddRefs(rule));
+  nsIStyleRule *rule = aCurrLevelNode->GetRule();
   nsCOMPtr<nsICSSStyleRule> cssRule(do_QueryInterface(rule));
   if (cssRule) {
     nsCOMPtr<nsIStyleRule> impRule = cssRule->GetImportantRule();
@@ -1477,26 +1445,6 @@ StyleSetImpl::GetRuleTree(nsRuleNode** aResult)
   return NS_OK;
 }
 
-nsresult
-StyleSetImpl::BeginRuleTreeReconstruct()
-{
-  delete mRuleWalker;
-  mRuleWalker = nsnull;
-  mOldRuleTree = mRuleTree;
-  mRuleTree = nsnull;
-  return NS_OK;
-}
-
-nsresult
-StyleSetImpl::EndRuleTreeReconstruct()
-{
-  if (mOldRuleTree) {
-    mOldRuleTree->Destroy();
-    mOldRuleTree = nsnull;
-  }
-  return NS_OK;
-}
-
 nsCachedStyleData*
 StyleSetImpl::GetDefaultStyleData()
 {
@@ -1504,30 +1452,13 @@ StyleSetImpl::GetDefaultStyleData()
 }
 
 nsresult
-StyleSetImpl::ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule)
+StyleSetImpl::ClearStyleData(nsIPresContext* aPresContext)
 {
-  // XXXdwh This is not terribly fast, but fortunately this case is rare (and often a full tree
-  // invalidation anyway).  Improving performance here would involve a footprint
-  // increase.  Mappings from rule nodes to their associated style contexts as well as
-  // mappings from rules to their associated rule nodes would enable us to avoid the two
-  // tree walks that occur here.
-  
-  // Crawl the entire rule tree and blow away all data for rule nodes (and their descendants)
-  // that have the given rule.
   if (mRuleTree)
-    mRuleTree->ClearCachedDataInSubtree(aRule);
-  
-  // We need to crawl the entire style context tree, and for each style context we need 
-  // to see if the specified rule is matched.  If so, that context and all its descendant
-  // contexts must have their data wiped.
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  nsIFrame* rootFrame;
-  shell->GetRootFrame(&rootFrame);
-  if (rootFrame) {
-    nsStyleContext* rootContext = rootFrame->GetStyleContext();
-    if (rootContext)
-      rootContext->ClearStyleData(aPresContext, aRule);
+    mRuleTree->ClearStyleData();
+
+  for (PRInt32 i = mRoots.Count() - 1; i >= 0; --i) {
+    NS_STATIC_CAST(nsStyleContext*,mRoots[i])->ClearStyleData(aPresContext);
   }
 
   return NS_OK;
@@ -1549,8 +1480,7 @@ StyleSetImpl::ReParentStyleContext(nsIPresContext* aPresContext,
     else {  // really a new parent
       nsCOMPtr<nsIAtom>  pseudoTag = aStyleContext->GetPseudoType();
 
-      nsRuleNode* ruleNode;
-      aStyleContext->GetRuleNode(&ruleNode);
+      nsRuleNode* ruleNode = aStyleContext->GetRuleNode();
       EnsureRuleWalker(aPresContext);
       NS_ENSURE_TRUE(mRuleWalker, nsnull);
       mRuleWalker->SetCurrentNode(ruleNode);
@@ -1754,38 +1684,11 @@ StyleSetImpl::AttributeChanged(nsIPresContext* aPresContext,
                                nsIContent* aContent,
                                PRInt32 aNameSpaceID,
                                nsIAtom* aAttribute,
-                               PRInt32 aModType, 
-                               nsChangeHint aHint)
+                               PRInt32 aModType)
 {
   return mFrameConstructor->AttributeChanged(aPresContext, aContent, 
-                                             aNameSpaceID, aAttribute, aModType, aHint);
-}
-
-
-// Style change notifications
-NS_IMETHODIMP
-StyleSetImpl::StyleRuleChanged(nsIPresContext* aPresContext,
-                               nsIStyleSheet* aStyleSheet,
-                               nsIStyleRule* aStyleRule,
-                               nsChangeHint aHint)
-{
-  return mFrameConstructor->StyleRuleChanged(aPresContext, aStyleSheet, aStyleRule, aHint);
-}
-
-NS_IMETHODIMP
-StyleSetImpl::StyleRuleAdded(nsIPresContext* aPresContext,
-                             nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule)
-{
-  return mFrameConstructor->StyleRuleAdded(aPresContext, aStyleSheet, aStyleRule);
-}
-
-NS_IMETHODIMP
-StyleSetImpl::StyleRuleRemoved(nsIPresContext* aPresContext,
-                               nsIStyleSheet* aStyleSheet,
-                               nsIStyleRule* aStyleRule)
-{
-  return mFrameConstructor->StyleRuleRemoved(aPresContext, aStyleSheet, aStyleRule);
+                                             aNameSpaceID, aAttribute,
+                                             aModType);
 }
 
 NS_IMETHODIMP

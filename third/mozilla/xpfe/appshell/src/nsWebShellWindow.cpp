@@ -217,8 +217,8 @@ nsWebShellWindow::~nsWebShellWindow()
   PR_DestroyLock(mSPTimerLock);
 }
 
-NS_IMPL_THREADSAFE_ADDREF(nsWebShellWindow);
-NS_IMPL_THREADSAFE_RELEASE(nsWebShellWindow);
+NS_IMPL_THREADSAFE_ADDREF(nsWebShellWindow)
+NS_IMPL_THREADSAFE_RELEASE(nsWebShellWindow)
 
 NS_INTERFACE_MAP_BEGIN(nsWebShellWindow)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIWebShellContainer)
@@ -272,7 +272,7 @@ nsresult nsWebShellWindow::Initialize(nsIXULWindow* aParent,
   nsCOMPtr<nsIBaseWindow> parentAsWin(do_QueryInterface(aParent));
   if (parentAsWin) {
     parentAsWin->GetMainWidget(getter_AddRefs(parentWidget));
-    mParentWindow = getter_AddRefs(NS_GetWeakReference(aParent));
+    mParentWindow = do_GetWeakReference(aParent);
   }
 
   mWindow->SetClientData(this);
@@ -722,7 +722,7 @@ NS_IMETHODIMP nsWebShellWindow::LoadMenuItem(
     // Try to find the key node.
     nsCOMPtr<nsIDocument> document;
     nsCOMPtr<nsIContent> content = do_QueryInterface(domElement);
-    if (NS_FAILED(rv = content->GetDocument(*getter_AddRefs(document)))) {
+    if (NS_FAILED(rv = content->GetDocument(getter_AddRefs(document)))) {
       NS_ERROR("Unable to retrieve the document.");
       return rv;
     }
@@ -957,7 +957,7 @@ void nsWebShellWindow::DynamicLoadMenus(nsIDOMDocument * aDOMDoc, nsIWidget * aP
       }
 
       nsCOMPtr<nsIPresContext> presContext;
-      if (NS_FAILED(rv = docViewer->GetPresContext(*getter_AddRefs(presContext)))) {
+      if (NS_FAILED(rv = docViewer->GetPresContext(getter_AddRefs(presContext)))) {
           NS_ERROR("Unable to retrieve the doc viewer's presentation context.");
           return;
       }
@@ -1169,6 +1169,7 @@ nsWebShellWindow::SetPersistenceTimer(PRBool aSize, PRBool aPosition, PRBool aMo
     nsresult rv;
     mSPTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
     if (NS_SUCCEEDED(rv)) {
+      NS_ADDREF_THIS(); // for the timer, which holds a reference to this window
       mSPTimer->InitWithFuncCallback(FirePersistenceTimer, this,
                                      SIZE_PERSISTENCE_TIMEOUT, nsITimer::TYPE_ONE_SHOT);
       mSPTimerSize = aSize;
@@ -1256,7 +1257,7 @@ nsWebShellWindow::OnStateChange(nsIWebProgress *aProgress,
       return NS_OK;
 
     nsCOMPtr<nsIDocument> doc;
-    docv->GetDocument(*getter_AddRefs(doc));
+    docv->GetDocument(getter_AddRefs(doc));
     if (!doc)
       return NS_OK;
 
@@ -1383,7 +1384,7 @@ nsCOMPtr<nsIDOMDocument> nsWebShellWindow::GetNamedDOMDoc(const nsAString & aWeb
     return domDoc;
 
   nsCOMPtr<nsIDocument> doc;
-  docv->GetDocument(*getter_AddRefs(doc));
+  docv->GetDocument(getter_AddRefs(doc));
   if (doc)
     return nsCOMPtr<nsIDOMDocument>(do_QueryInterface(doc));
 
@@ -1407,7 +1408,7 @@ void nsWebShellWindow::LoadContentAreas() {
     nsCOMPtr<nsIDocumentViewer> docViewer = do_QueryInterface(contentViewer);
     if (docViewer) {
       nsCOMPtr<nsIDocument> doc;
-      docViewer->GetDocument(*getter_AddRefs(doc));
+      docViewer->GetDocument(getter_AddRefs(doc));
       nsCOMPtr<nsIURI> mainURL;
       doc->GetDocumentURL(getter_AddRefs(mainURL));
       if (mainURL) {
@@ -1422,7 +1423,7 @@ void nsWebShellWindow::LoadContentAreas() {
 
   // content URLs are specified in the search part of the URL
   // as <contentareaID>=<escapedURL>[;(repeat)]
-  if (searchSpec.Length() > 0) {
+  if (!searchSpec.IsEmpty()) {
     PRInt32     begPos,
                 eqPos,
                 endPos;
@@ -1491,7 +1492,7 @@ PRBool nsWebShellWindow::ExecuteCloseHandler()
         nsCOMPtr<nsIDocumentViewer> docViewer;
         nsCOMPtr<nsIPresContext> presContext;
         docViewer = do_QueryInterface(contentViewer);
-        if (docViewer && NS_SUCCEEDED(docViewer->GetPresContext(*getter_AddRefs(presContext)))) {
+        if (docViewer && NS_SUCCEEDED(docViewer->GetPresContext(getter_AddRefs(presContext)))) {
           nsEventStatus status = nsEventStatus_eIgnore;
           nsMouseEvent event;
           event.eventStructType = NS_EVENT;
@@ -1534,8 +1535,7 @@ nsWebShellWindow::AttributeChanged(nsIDocument *aDocument,
                                    nsIContent*  aContent,
                                    PRInt32      aNameSpaceID,
                                    nsIAtom*     aAttribute,
-                                   PRInt32      aModType, 
-                                   nsChangeHint aHint)
+                                   PRInt32      aModType)
 {
 #if 0
   //printf("AttributeChanged\n");
@@ -1641,7 +1641,7 @@ NS_IMETHODIMP nsWebShellWindow::Destroy()
    if(docv)
       {
       nsCOMPtr<nsIDocument> doc;
-      docv->GetDocument(*getter_AddRefs(doc));
+      docv->GetDocument(getter_AddRefs(doc));
       if(doc)
          doc->RemoveObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
       }
@@ -1653,6 +1653,7 @@ NS_IMETHODIMP nsWebShellWindow::Destroy()
     mSPTimer->Cancel();
     mSPTimer = nsnull;
     PersistPositionAndSize(mSPTimerPosition, mSPTimerSize, mSPTimerMode);
+    NS_RELEASE_THIS(); // the timer held a reference to us
   }
   PR_Unlock(mSPTimerLock);
 

@@ -42,6 +42,8 @@
 #include "nsHTMLValue.h"
 #include "nsIHTMLContent.h"
 #include "nsINodeInfo.h"
+#include "nsIStyleRule.h"
+
 class nsIAtom;
 class nsISupportsArray;
 class nsIHTMLStyleSheet;
@@ -54,7 +56,7 @@ class nsHTMLMappedAttributes;
 {0x0fdd27a0, 0x2e7b, 0x11d3,            \
     {0x80, 0x60, 0x00, 0x60, 0x08, 0x15, 0x9b, 0x5a}}
 
-class nsIHTMLMappedAttributes : public nsISupports
+class nsIHTMLMappedAttributes : public nsIStyleRule
 {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHTML_MAPPED_ATTRIBUTES_IID);
@@ -214,18 +216,18 @@ public:
   NS_METHOD SetAttributeFor(nsINodeInfo* aAttrName,
                             const nsAString& aValue);
   NS_METHOD GetAttribute(nsIAtom* aAttrName, PRInt32 aNamespaceID,
-                         nsIAtom*& aPrefix,
+                         nsIAtom** aPrefix,
                          const nsHTMLValue** aValue) const;
 
 
   NS_METHOD GetAttributeNameAt(PRInt32 aIndex,
-                               PRInt32& aNamespaceID,
-                               nsIAtom*& aName,
-                               nsIAtom*& aPrefix) const;
+                               PRInt32* aNamespaceID,
+                               nsIAtom** aName,
+                               nsIAtom** aPrefix) const;
 
   NS_METHOD GetAttributeCount(PRInt32& aCount) const;
 
-  NS_METHOD GetID(nsIAtom*& aResult) const;
+  NS_METHOD GetID(nsIAtom** aResult) const;
   NS_METHOD GetClasses(nsVoidArray& aArray) const;
   NS_METHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
 

@@ -34,7 +34,7 @@
 /*
  * Test program for client-side OCSP.
  *
- * $Id: ocspclnt.c,v 1.1.1.1.2.1 2003-07-14 19:06:08 ghudson Exp $
+ * $Id: ocspclnt.c,v 1.1.1.1.2.2 2004-01-02 19:58:18 ghudson Exp $
  */
 
 #include "secutil.h"

@@ -78,7 +78,7 @@ static void PrintImageDecoders()
 
       NS_NAMED_LITERAL_CSTRING(decoderContract, "@mozilla.org/image/decoder;2?type=");
 
-      if (Substring(xcs, 0, decoderContract.Length()).Equals(decoderContract)) {
+      if (StringBeginsWith(xcs, decoderContract)) {
         printf("Have decoder for mime type: %s\n", xcs.get()+decoderContract.Length());
       }
     }
@@ -197,7 +197,7 @@ static nsresult NewImageChannel(nsIChannel **aResult,
   newHttpChannel = do_QueryInterface(*aResult);
   if (newHttpChannel) {
     newHttpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
-                                     NS_LITERAL_CSTRING("video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"),
+                                     NS_LITERAL_CSTRING("image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"),
                                      PR_FALSE);
 
     nsCOMPtr<nsIHttpChannelInternal> httpChannelInternal = do_QueryInterface(newHttpChannel);
@@ -414,8 +414,13 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
             newChannel->SetLoadFlags(loadFlags | nsICachingChannel::LOAD_ONLY_IF_MODIFIED);
 
       }
+      nsCOMPtr<imgIRequest> req;
       rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
-                                    requestFlags, aRequest, _retval);
+                                    requestFlags, aRequest, getter_AddRefs(req));
+      if (NS_FAILED(rv)) {
+        NS_RELEASE(request);
+        return rv;
+      }
 
       imgCacheValidator *hvc = new imgCacheValidator(request, aCX);
       if (!hvc) {
@@ -426,16 +431,18 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
       NS_ADDREF(hvc);
       request->mValidator = hvc;
 
-      hvc->AddProxy(NS_STATIC_CAST(imgRequestProxy*, *_retval));
+      hvc->AddProxy(NS_STATIC_CAST(imgRequestProxy*,
+                                   NS_STATIC_CAST(imgIRequest*, req.get())));
 
-      nsresult openRes;
-      openRes = newChannel->AsyncOpen(NS_STATIC_CAST(nsIStreamListener *, hvc), nsnull);
+      rv = newChannel->AsyncOpen(NS_STATIC_CAST(nsIStreamListener *, hvc), nsnull);
+      if (NS_SUCCEEDED(rv))
+        NS_ADDREF(*_retval = req.get());
 
       NS_RELEASE(hvc);
 
       NS_RELEASE(request);
 
-      return openRes;
+      return rv;
     }
   } else if (!request) {
     /* Case #1: no request from the cache.  do a new load */
@@ -764,41 +771,8 @@ nsresult imgLoader::GetMimeTypeFromContent(const char* aContents, PRUint32 aLeng
     *aContentType = nsCRT::strndup("image/x-icon", 12);
   }
 
-  else if (aLength >= 4 && ((unsigned char)aContents[0]==0x8A &&
-                   (unsigned char)aContents[1]==0x4D &&
-                   (unsigned char)aContents[2]==0x4E &&
-                   (unsigned char)aContents[3]==0x47))
-  { 
-    *aContentType = nsCRT::strndup("video/x-mng", 11);
-  }
-
-  else if (aLength >= 4 && ((unsigned char)aContents[0]==0x8B &&
-                   (unsigned char)aContents[1]==0x4A &&
-                   (unsigned char)aContents[2]==0x4E &&
-                   (unsigned char)aContents[3]==0x47))
-  { 
-    *aContentType = nsCRT::strndup("image/x-jng", 11);
-  }
-
   else if (aLength >= 8 && !nsCRT::strncmp(aContents, "#define ", 8)) {
     *aContentType = nsCRT::strndup("image/x-xbitmap", 15);
-  }
-  /* PBM, PGM or PPM? */
-  /* These start with the letter 'P' followed by a digit from 1 through 6
-   * followed by a whitespace character.
-   */
-  else if (aLength >= 3 && ((unsigned char)aContents[0]==0x50 &&
-                            ((unsigned char)aContents[2]==0x9 || (unsigned char)aContents[2]==0xa ||
-                             (unsigned char)aContents[2]==0xd || (unsigned char)aContents[2]==0x20)))
-  {
-    unsigned char c = (unsigned char)aContents[1];
-    if (c == '1' || c == '4') {
-      *aContentType = nsCRT::strndup("image/x-portable-bitmap", 23);
-    } else if (c == '2' || c == '5') {
-      *aContentType = nsCRT::strndup("image/x-portable-graymap", 24);
-    } else if (c == '3' || c == '6') {
-      *aContentType = nsCRT::strndup("image/x-portable-pixmap", 23);
-    }
   }
   else {
     /* none of the above?  I give up */

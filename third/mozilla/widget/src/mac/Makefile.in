@@ -30,7 +30,7 @@ MODULE_NAME	= nsWidgetMacModule
 XPIDL_MODULE	= widget_mac
 GRE_MODULE	= 1
 
-REQUIRES = xpcom \
+REQUIRES	= xpcom \
 		  gfx \
 		  string \
 		  uconv \
@@ -46,7 +46,6 @@ REQUIRES = xpcom \
 		  nkcache \
 		  locale \
 		  pref \
-		  appshell \
 		  intl \
 		  mimetype \
 		  unicharutil \
@@ -59,7 +58,6 @@ endif
 
 GFX_LCPPSRCS = \
 		nsRepeater.cpp \
-		nsRegionMac.cpp \
 		nsWatchTask.cpp \
 		$(NULL)
 
@@ -90,7 +88,6 @@ CPPSRCS			= nsAppShell.cpp \
 		nsTSMStrategy.cpp \
 		nsToolkit.cpp \
 		nsWidgetFactory.cpp \
-		nsWidgetSupport.cpp \
 		nsWindow.cpp \
 		nsMacNativeUnicodeConverter.cpp \
 		nsStylClipboardUtils.cpp \

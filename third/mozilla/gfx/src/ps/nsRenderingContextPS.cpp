@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
+ *   Leon Sha <leon.sha@sun.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -1287,6 +1288,7 @@ NS_IMETHODIMP nsRenderingContextPS::DrawImage(imgIContainer *aImage, const nsRec
   // img->Draw(*this, surface, sr.x, sr.y, sr.width, sr.height,
   //           pt.x + sr.x, pt.y + sr.y, sr.width, sr.height);
   mPSObj->colorimage(img,
+                     sr.x, sr.y, sr.width, sr.height,
                      NS_PIXELS_TO_POINTS(pt.x),
                      NS_PIXELS_TO_POINTS(pt.y), 
                      NS_PIXELS_TO_POINTS(sr.width),
@@ -1299,20 +1301,17 @@ NS_IMETHODIMP nsRenderingContextPS::DrawImage(imgIContainer *aImage, const nsRec
 NS_IMETHODIMP nsRenderingContextPS::DrawScaledImage(imgIContainer *aImage, const nsRect * aSrcRect, const nsRect * aDestRect)
 {
   nsRect dr;
+  nsRect sr;
 
   dr = *aDestRect;
   mTranMatrix->TransformCoord(&dr.x, &dr.y, &dr.width, &dr.height);
 
-#if 0
-  nsRect sr;
-  // need to do this if we fix the comments below
   sr = *aSrcRect;
   mTranMatrix->TransformCoord(&sr.x, &sr.y, &sr.width, &sr.height);
 
   sr.x = aSrcRect->x;
   sr.y = aSrcRect->y;
   mTranMatrix->TransformNoXLateCoord(&sr.x, &sr.y);
-#endif
 
   nsCOMPtr<gfxIImageFrame> iframe;
   aImage->GetCurrentFrame(getter_AddRefs(iframe));
@@ -1324,6 +1323,7 @@ NS_IMETHODIMP nsRenderingContextPS::DrawScaledImage(imgIContainer *aImage, const
   // doesn't it seem like we should use more of the params here?  see comments in bug 76993
   // img->Draw(*this, surface, sr.x, sr.y, sr.width, sr.height, dr.x, dr.y, dr.width, dr.height);
   mPSObj->colorimage(img,
+                     sr.x, sr.y, sr.width, sr.height,
                      NS_PIXELS_TO_POINTS(dr.x),
                      NS_PIXELS_TO_POINTS(dr.y), 
                      NS_PIXELS_TO_POINTS(dr.width),
@@ -1419,7 +1419,16 @@ const nsFont    *font;
   }
 }
 
+NS_IMETHODIMP nsRenderingContextPS::RenderPostScriptDataFragment(const unsigned char *aData, unsigned long aDatalen)
+{
+  nsPostScriptObj *postscriptobj = GetPostScriptObj();
 
+  fprintf(postscriptobj->mPrintSetup->tmpBody, "1 -1 scale\n");
+  fprintf(postscriptobj->mPrintSetup->tmpBody, "0 %d translate\n", -(postscriptobj->mPrintSetup->height));
+  fwrite(aData, aDatalen, 1, postscriptobj->mPrintSetup->tmpBody);
+
+  return NS_OK;
+}
 
 #ifdef NOTNOW
 HPEN nsRenderingContextPS :: SetupSolidPen(void)

@@ -34,7 +34,7 @@
 /*
  * p7content -- A command to display pkcs7 content.
  *
- * $Id: p7content.c,v 1.1.1.1.2.1 2003-07-14 19:06:08 ghudson Exp $
+ * $Id: p7content.c,v 1.1.1.1.2.2 2004-01-02 19:58:20 ghudson Exp $
  */
 
 #include "nspr.h"

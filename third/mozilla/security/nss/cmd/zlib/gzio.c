@@ -4,7 +4,7 @@
  */
 /* This file was modified since it was taken from the zlib distribution */
 
-/* $Id: gzio.c,v 1.1.1.1.2.1 2003-07-14 19:06:18 ghudson Exp $ */
+/* $Id: gzio.c,v 1.1.1.1.2.2 2004-01-02 19:58:31 ghudson Exp $ */
 
 #include <stdio.h>
 

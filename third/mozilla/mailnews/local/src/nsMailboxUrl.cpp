@@ -62,7 +62,6 @@
 // we need this because of an egcs 1.0 (and possibly gcc) compiler bug
 // that doesn't allow you to call ::nsISupports::GetIID() inside of a class
 // that multiply inherits from nsISupports
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
 
 // this is totally lame and MUST be removed by M6
@@ -174,7 +173,7 @@ NS_INTERFACE_MAP_END_INHERITING(nsMsgMailNewsUrl)
 nsresult nsMailboxUrl::SetMailboxParser(nsIStreamListener * aMailboxParser)
 {
 	if (aMailboxParser)
-		m_mailboxParser = dont_QueryInterface(aMailboxParser);
+		m_mailboxParser = aMailboxParser;
 	return NS_OK;
 }
 
@@ -190,7 +189,7 @@ nsresult nsMailboxUrl::GetMailboxParser(nsIStreamListener ** aConsumer)
 nsresult nsMailboxUrl::SetMailboxCopyHandler(nsIStreamListener * aMailboxCopyHandler)
 {
 	if (aMailboxCopyHandler)
-		m_mailboxCopyHandler = dont_QueryInterface(aMailboxCopyHandler);
+		m_mailboxCopyHandler = aMailboxCopyHandler;
 	return NS_OK;
 }
 
@@ -304,8 +303,8 @@ NS_IMETHODIMP nsMailboxUrl::GetMessageHeader(nsIMsgDBHdr ** aMsgHdr)
   return GetMsgHdrForKey(m_messageKey, aMsgHdr);
 }
 
-NS_IMPL_GETSET(nsMailboxUrl, AddDummyEnvelope, PRBool, m_addDummyEnvelope);
-NS_IMPL_GETSET(nsMailboxUrl, CanonicalLineEnding, PRBool, m_canonicalLineEnding);
+NS_IMPL_GETSET(nsMailboxUrl, AddDummyEnvelope, PRBool, m_addDummyEnvelope)
+NS_IMPL_GETSET(nsMailboxUrl, CanonicalLineEnding, PRBool, m_canonicalLineEnding)
 
 NS_IMETHODIMP
 nsMailboxUrl::GetOriginalSpec(char **aSpec)
@@ -324,7 +323,7 @@ nsMailboxUrl::SetOriginalSpec(const char *aSpec)
 
 NS_IMETHODIMP nsMailboxUrl::SetMessageFile(nsIFileSpec * aFileSpec)
 {
-	m_messageFileSpec = dont_QueryInterface(aFileSpec);
+	m_messageFileSpec = aFileSpec;
 	return NS_OK;
 }
 
@@ -486,7 +485,7 @@ nsresult nsMailboxUrl::GetFolder(nsIMsgFolder **msgFolder)
   return NS_OK;
 }
 
-NS_IMETHODIMP nsMailboxUrl::GetFolderCharset(PRUnichar ** aCharacterSet)
+NS_IMETHODIMP nsMailboxUrl::GetFolderCharset(char ** aCharacterSet)
 {
   nsCOMPtr<nsIMsgFolder> folder;
   nsresult rv = GetFolder(getter_AddRefs(folder));
@@ -507,16 +506,16 @@ NS_IMETHODIMP nsMailboxUrl::GetFolderCharsetOverride(PRBool * aCharacterSetOverr
   return NS_OK;
 }
 
-NS_IMETHODIMP nsMailboxUrl::GetCharsetOverRide(PRUnichar ** aCharacterSet)
+NS_IMETHODIMP nsMailboxUrl::GetCharsetOverRide(char ** aCharacterSet)
 {
   if (!mCharsetOverride.IsEmpty())
-    *aCharacterSet = ToNewUnicode(mCharsetOverride); 
+    *aCharacterSet = ToNewCString(mCharsetOverride); 
   else
     *aCharacterSet = nsnull;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsMailboxUrl::SetCharsetOverRide(const PRUnichar * aCharacterSet)
+NS_IMETHODIMP nsMailboxUrl::SetCharsetOverRide(const char * aCharacterSet)
 {
   mCharsetOverride = aCharacterSet;
   return NS_OK;

@@ -203,13 +203,9 @@ nsXMLPrettyPrinter::PrettyPrint(nsIDocument* aDocument)
 void
 nsXMLPrettyPrinter::MaybeUnhook(nsIContent* aContent)
 {
-    nsCOMPtr<nsIContent> bindingParent;
-    if (aContent) {
-        aContent->GetBindingParent(getter_AddRefs(bindingParent));
-    }
     // If there either aContent is null (the document-node was modified) or
     // there isn't a binding parent we know it's non-anonymous content.
-    if (!bindingParent) {
+    if (!aContent || !aContent->GetBindingParent()) {
         mUnhookPending = PR_TRUE;
     }
 }
@@ -266,8 +262,7 @@ nsXMLPrettyPrinter::AttributeChanged(nsIDocument* aDocument,
                                      nsIContent* aContent,
                                      PRInt32 aNameSpaceID,
                                      nsIAtom* aAttribute,
-                                     PRInt32 aModType,
-                                     nsChangeHint aHint)
+                                     PRInt32 aModType)
 {
     MaybeUnhook(aContent);
     return NS_OK;

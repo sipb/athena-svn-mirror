@@ -44,7 +44,6 @@
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsDocument.h"
-#include "nsIArena.h"
 #include "nsUnicharUtils.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIEventStateManager.h"
@@ -322,8 +321,8 @@ NS_INTERFACE_MAP_BEGIN(nsDOMImplementation)
 NS_INTERFACE_MAP_END
 
 
-NS_IMPL_ADDREF(nsDOMImplementation);
-NS_IMPL_RELEASE(nsDOMImplementation);
+NS_IMPL_ADDREF(nsDOMImplementation)
+NS_IMPL_RELEASE(nsDOMImplementation)
 
 
 NS_IMETHODIMP
@@ -431,7 +430,7 @@ nsDocumentChildNodes::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
 
   if (mDocument) {
     nsCOMPtr<nsIContent> content;
-    mDocument->ChildAt(aIndex, *getter_AddRefs(content));
+    mDocument->ChildAt(aIndex, getter_AddRefs(content));
     if (content) {
       return CallQueryInterface(content, aReturn);
     }
@@ -483,7 +482,7 @@ NS_IMPL_RELEASE_USING_AGGREGATOR(nsXPathDocumentTearoff, mDocument)
   // bother initializing members to 0.
 
 nsDocument::nsDocument()
-  : mCharacterSet(NS_LITERAL_STRING("ISO-8859-1")),
+  : mCharacterSet(NS_LITERAL_CSTRING("ISO-8859-1")),
     mNextContentID(NS_CONTENT_ID_COUNTER_BASE)
 {
 
@@ -533,11 +532,7 @@ nsDocument::~nsDocument()
   }
 
   if (mRootContent) {
-    nsCOMPtr<nsIDocument> doc;
-
-    mRootContent->GetDocument(*getter_AddRefs(doc));
-
-    if (doc) {
+    if (mRootContent->GetDocument()) {
       // The root content still has a pointer back to the document,
       // clear the document pointer in all children.
 
@@ -602,6 +597,7 @@ NS_INTERFACE_MAP_BEGIN(nsDocument)
   NS_INTERFACE_MAP_ENTRY(nsIDOM3EventTarget)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
   NS_INTERFACE_MAP_ENTRY(nsIDOM3Node)
+  NS_INTERFACE_MAP_ENTRY(nsIDOM3Document)
   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY(nsIRadioGroupContainer)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDocument)
@@ -638,28 +634,14 @@ NS_IMPL_RELEASE(nsDocument)
 nsresult
 nsDocument::Init()
 {
-  if (mArena) {
+  if (mNodeInfoManager) {
     return NS_ERROR_ALREADY_INITIALIZED;
   }
-
-  nsresult rv = NS_NewHeapArena(getter_AddRefs(mArena), nsnull);
-  NS_ENSURE_SUCCESS(rv, rv);
 
   mNodeInfoManager = new nsNodeInfoManager();
   NS_ENSURE_TRUE(mNodeInfoManager, NS_ERROR_OUT_OF_MEMORY);
 
-  mNodeInfoManager->Init(this);
-
-  return rv;
-}
-
-NS_IMETHODIMP
-nsDocument::GetArena(nsIArena** aArena)
-{
-  *aArena = mArena;
-  NS_IF_ADDREF(*aArena);
-
-  return NS_OK;
+  return mNodeInfoManager->Init(this);
 }
 
 NS_IMETHODIMP
@@ -745,7 +727,7 @@ nsDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup)
   mDocumentBaseURL = mDocumentURL;
 
   if (aLoadGroup) {
-    mDocumentLoadGroup = getter_AddRefs(NS_GetWeakReference(aLoadGroup));
+    mDocumentLoadGroup = do_GetWeakReference(aLoadGroup);
     // there was an assertion here that aLoadGroup was not null.  This
     // is no longer valid nsWebShell::SetDocument does not create a
     // load group, and it works just fine.
@@ -882,7 +864,7 @@ nsDocument::AddPrincipal(nsIPrincipal *aNewPrincipal)
 NS_IMETHODIMP
 nsDocument::GetContentType(nsAString& aContentType)
 {
-  aContentType = NS_ConvertUTF8toUCS2(mContentType);
+  CopyUTF8toUTF16(mContentType, aContentType);
 
   return NS_OK;
 }
@@ -894,7 +876,7 @@ nsDocument::SetContentType(const nsAString& aContentType)
                mContentType.Equals(NS_ConvertUCS2toUTF8(aContentType)),
                "Do you really want to change the content-type?");
 
-  mContentType = NS_ConvertUCS2toUTF8(aContentType);
+  CopyUTF16toUTF8(aContentType, mContentType);
 
   return NS_OK;
 }
@@ -919,15 +901,15 @@ nsDocument::GetDocumentLoadGroup(nsILoadGroup **aGroup) const
 }
 
 NS_IMETHODIMP
-nsDocument::GetBaseURL(nsIURI*& aURL) const
+nsDocument::GetBaseURL(nsIURI** aURL) const
 {
-  aURL = mDocumentBaseURL;
+  *aURL = mDocumentBaseURL;
 
-  if (!aURL) {
-    aURL = mDocumentURL;
+  if (!*aURL) {
+    *aURL = mDocumentURL;
   }
 
-  NS_IF_ADDREF(aURL);
+  NS_IF_ADDREF(*aURL);
 
   return NS_OK;
 }
@@ -969,7 +951,7 @@ nsDocument::SetBaseTarget(const nsAString &aBaseTarget)
 }
 
 NS_IMETHODIMP
-nsDocument::GetDocumentCharacterSet(nsAString& aCharSetID)
+nsDocument::GetDocumentCharacterSet(nsACString& aCharSetID)
 {
   aCharSetID = mCharacterSet;
 
@@ -977,7 +959,7 @@ nsDocument::GetDocumentCharacterSet(nsAString& aCharSetID)
 }
 
 NS_IMETHODIMP
-nsDocument::SetDocumentCharacterSet(const nsAString& aCharSetID)
+nsDocument::SetDocumentCharacterSet(const nsACString& aCharSetID)
 {
   if (!mCharacterSet.Equals(aCharSetID)) {
     mCharacterSet = aCharSetID;
@@ -989,7 +971,7 @@ nsDocument::SetDocumentCharacterSet(const nsAString& aCharSetID)
         NS_STATIC_CAST(nsIObserver *, mCharSetObservers.ElementAt(i));
 
       observer->Observe(NS_STATIC_CAST(nsIDocument *, this), "charset",
-                        PromiseFlatString(aCharSetID).get());
+                        NS_ConvertASCIItoUCS2(aCharSetID).get());
     }
   }
 
@@ -1255,7 +1237,7 @@ SubDocClearEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
   NS_IF_RELEASE(e->mSubDocument);
 }
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 SubDocInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry, const void *key)
 {
   SubDocMapEntry *e =
@@ -1267,6 +1249,7 @@ SubDocInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry, const void *key)
   NS_ADDREF(e->mKey);
 
   e->mSubDocument = nsnull;
+  return PR_TRUE;
 }
 
 NS_IMETHODIMP
@@ -1283,7 +1266,7 @@ nsDocument::SetSubDocumentFor(nsIContent *aContent, nsIDocument* aSubDoc)
                        PL_DHashTableOperate(mSubDocuments, aContent,
                                             PL_DHASH_LOOKUP));
 
-      if (PL_DHASH_ENTRY_IS_LIVE(entry)) {
+      if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
         entry->mSubDocument->SetParentDocument(nsnull);
 
         PL_DHashTableRawRemove(mSubDocuments, entry);
@@ -1350,7 +1333,7 @@ nsDocument::GetSubDocumentFor(nsIContent *aContent, nsIDocument** aSubDoc)
                      PL_DHashTableOperate(mSubDocuments, aContent,
                                           PL_DHASH_LOOKUP));
 
-    if (PL_DHASH_ENTRY_IS_LIVE(entry)) {
+    if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
       *aSubDoc = entry->mSubDocument;
       NS_ADDREF(*aSubDoc);
     }
@@ -1424,13 +1407,13 @@ nsDocument::SetRootContent(nsIContent* aRoot)
 }
 
 NS_IMETHODIMP
-nsDocument::ChildAt(PRInt32 aIndex, nsIContent*& aResult) const
+nsDocument::ChildAt(PRInt32 aIndex, nsIContent** aResult) const
 {
   NS_PRECONDITION(aIndex >= 0, "Negative indices are bad");
   if (aIndex < 0 || aIndex >= mChildren.Count()) {
-    aResult = nsnull;
+    *aResult = nsnull;
   } else {
-    NS_IF_ADDREF(aResult = mChildren[aIndex]);
+    NS_IF_ADDREF(*aResult = mChildren[aIndex]);
   }
   return NS_OK;
 }
@@ -1802,16 +1785,14 @@ nsDocument::GetScriptLoader(nsIScriptLoader** aScriptLoader)
   NS_ENSURE_ARG_POINTER(aScriptLoader);
 
   if (!mScriptLoader) {
-    nsScriptLoader* loader = new nsScriptLoader();
-    if (!loader) {
+    mScriptLoader = new nsScriptLoader();
+    if (!mScriptLoader) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-    mScriptLoader = loader;
     mScriptLoader->Init(this);
   }
 
-  *aScriptLoader = mScriptLoader;
-  NS_IF_ADDREF(*aScriptLoader);
+  NS_ADDREF(*aScriptLoader = mScriptLoader);
 
   return NS_OK;
 }
@@ -2063,9 +2044,6 @@ nsDocument::ContentAppended(nsIContent* aContainer,
 {
   NS_ABORT_IF_FALSE(aContainer, "Null container!");
 
-#ifdef XP_OS2_VACPP
-  volatile
-#endif
   PRInt32 i;
 
   // XXXdwh There is a hacky ordering dependency between the binding
@@ -2162,8 +2140,7 @@ nsDocument::AttributeWillChange(nsIContent* aChild, PRInt32 aNameSpaceID,
 
 NS_IMETHODIMP
 nsDocument::AttributeChanged(nsIContent* aChild, PRInt32 aNameSpaceID,
-                             nsIAtom* aAttribute, PRInt32 aModType,
-                             nsChangeHint aHint)
+                             nsIAtom* aAttribute, PRInt32 aModType)
 {
   NS_ABORT_IF_FALSE(aChild, "Null child!");
 
@@ -2174,7 +2151,7 @@ nsDocument::AttributeChanged(nsIContent* aChild, PRInt32 aNameSpaceID,
       NS_STATIC_CAST(nsIDocumentObserver *, mObservers.ElementAt(i));
 
     nsresult rv2 = observer->AttributeChanged(this, aChild, aNameSpaceID,
-                                              aAttribute, aModType, aHint);
+                                              aAttribute, aModType);
     if (NS_FAILED(rv2) && NS_SUCCEEDED(rv))
       rv = rv2;
   }
@@ -2185,7 +2162,8 @@ nsDocument::AttributeChanged(nsIContent* aChild, PRInt32 aNameSpaceID,
 
 NS_IMETHODIMP
 nsDocument::StyleRuleChanged(nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule, nsChangeHint aHint)
+                             nsIStyleRule* aOldStyleRule,
+                             nsIStyleRule* aNewStyleRule)
 {
   PRInt32 i;
 
@@ -2198,7 +2176,7 @@ nsDocument::StyleRuleChanged(nsIStyleSheet* aStyleSheet,
     // XXXbz We should _not_ be calling BeginUpdate from in here! The
     // caller of StyleRuleChanged should do that!
     observer->BeginUpdate(this);
-    observer->StyleRuleChanged(this, aStyleSheet, aStyleRule, aHint);
+    observer->StyleRuleChanged(this, aStyleSheet, aOldStyleRule, aNewStyleRule);
 
     // Make sure that the observer didn't remove itself during the
     // notification. If it did, update our index and count.
@@ -2431,7 +2409,7 @@ nsDocument::CreateAttribute(const nsAString& aName,
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   nsresult rv = mNodeInfoManager->GetNodeInfo(aName, nsnull, kNameSpaceID_None,
-                                              *getter_AddRefs(nodeInfo));
+                                              getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   attribute = new nsDOMAttribute(nsnull, nodeInfo, value);
@@ -2450,7 +2428,7 @@ nsDocument::CreateAttributeNS(const nsAString & aNamespaceURI,
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   nsresult rv = mNodeInfoManager->GetNodeInfo(aQualifiedName, aNamespaceURI,
-                                              *getter_AddRefs(nodeInfo));
+                                              getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsAutoString value;
@@ -2494,7 +2472,7 @@ nsDocument::GetElementsByTagNameNS(const nsAString& aNamespaceURI,
 
   if (!aNamespaceURI.Equals(NS_LITERAL_STRING("*"))) {
     nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
-                                                          nameSpaceId);
+                                                          &nameSpaceId);
 
     if (nameSpaceId == kNameSpaceID_Unknown) {
       // Unknown namespace means no matches, we create an empty list...
@@ -2584,7 +2562,11 @@ nsDocument::GetStyleSheets(nsIDOMStyleSheetList** aStyleSheets)
 NS_IMETHODIMP
 nsDocument::GetCharacterSet(nsAString& aCharacterSet)
 {
-  return GetDocumentCharacterSet(aCharacterSet);
+  nsCAutoString charset;
+  nsresult rv = GetDocumentCharacterSet(charset);
+  if (NS_SUCCEEDED(rv))
+    CopyASCIItoUCS2(charset, aCharacterSet);
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -2660,11 +2642,8 @@ nsDocument::GetBindingParent(nsIDOMNode* aNode, nsIDOMElement** aResult)
   if (!content)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIContent> result;
-  content->GetBindingParent(getter_AddRefs(result));
-  nsCOMPtr<nsIDOMElement> elt(do_QueryInterface(result));
-  *aResult = elt;
-  NS_IF_ADDREF(*aResult);
+  nsCOMPtr<nsIDOMElement> elt(do_QueryInterface(content->GetBindingParent()));
+  NS_IF_ADDREF(*aResult = elt);
   return NS_OK;
 }
 
@@ -2685,7 +2664,7 @@ GetElementByAttribute(nsIContent* aContent, nsIAtom* aAttrName,
 
   for (PRInt32 i = 0; i < childCount; ++i) {
     nsCOMPtr<nsIContent> current;
-    aContent->ChildAt(i, *getter_AddRefs(current));
+    aContent->ChildAt(i, getter_AddRefs(current));
 
     GetElementByAttribute(current, aAttrName, aAttrValue, aUniversalMatch,
                           aResult);
@@ -3390,13 +3369,12 @@ nsDocument::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMETHODIMP
 nsDocument::Normalize()
 {
-  // XXX Not completely correct, since you can still have unnormalized
-  // text nodes as immediate children of the document.
-  if (mRootContent) {
-    nsCOMPtr<nsIDOMNode> node(do_QueryInterface(mRootContent));
+  PRInt32 count = mChildren.Count();
+  for (PRInt32 i = 0; i < count; ++i) {
+    nsCOMPtr<nsIDOMNode> node(do_QueryInterface(mChildren[i]));
 
     if (node) {
-      return node->Normalize();
+      node->Normalize();
     }
   }
 
@@ -3413,15 +3391,30 @@ nsDocument::IsSupported(const nsAString& aFeature, const nsAString& aVersion,
 NS_IMETHODIMP
 nsDocument::GetBaseURI(nsAString &aURI)
 {
-  aURI.Truncate();
+  nsCAutoString spec;
   if (mDocumentBaseURL) {
-    nsCAutoString spec;
     mDocumentBaseURL->GetSpec(spec);
-    aURI = NS_ConvertUTF8toUCS2(spec);
   }
+
+  CopyUTF8toUTF16(spec, aURI);
 
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsDocument::GetTextContent(nsAString &aTextContent)
+{
+  SetDOMStringToNull(aTextContent);
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetTextContent(const nsAString& aTextContent)
+{
+  return NS_OK;
+}
+
 
 NS_IMETHODIMP
 nsDocument::CompareDocumentPosition(nsIDOMNode* aOther, PRUint16* aReturn)
@@ -3466,28 +3459,26 @@ nsDocument::CompareDocumentPosition(nsIDOMNode* aOther, PRUint16* aReturn)
     // is based upon order between the root container of each
     // node that is in no container. In this case, the result
     // is disconnected and implementation-dependent.
-    mask |= (nsIDOMNode::DOCUMENT_POSITION_DISCONNECTED |
-             nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
+    mask |= (nsIDOM3Node::DOCUMENT_POSITION_DISCONNECTED |
+             nsIDOM3Node::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
 
     *aReturn = mask;
     return NS_OK;
   }
 
-  nsCOMPtr<nsIDocument> otherDoc;
-  otherContent->GetDocument(*getter_AddRefs(otherDoc));
-  if (this == otherDoc) {
+  if (this == otherContent->GetDocument()) {
     // If the node being compared is contained by our node,
     // then it follows it.
-    mask |= (nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED |
-             nsIDOMNode::DOCUMENT_POSITION_FOLLOWING);
+    mask |= (nsIDOM3Node::DOCUMENT_POSITION_CONTAINED_BY |
+             nsIDOM3Node::DOCUMENT_POSITION_FOLLOWING);
   }
   else {
     // If there is no common container node, then the order
     // is based upon order between the root container of each
     // node that is in no container. In this case, the result
     // is disconnected and implementation-dependent.
-    mask |= (nsIDOMNode::DOCUMENT_POSITION_DISCONNECTED |
-             nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
+    mask |= (nsIDOM3Node::DOCUMENT_POSITION_DISCONNECTED |
+             nsIDOM3Node::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
   }
 
   *aReturn = mask;
@@ -3510,8 +3501,56 @@ nsDocument::IsSameNode(nsIDOMNode* aOther, PRBool* aReturn)
 }
 
 NS_IMETHODIMP
-nsDocument::LookupNamespacePrefix(const nsAString& aNamespaceURI,
-                                  nsAString& aPrefix)
+nsDocument::IsEqualNode(nsIDOMNode* aOther, PRBool* aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::IsEqualNode()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::IsDefaultNamespace(const nsAString& aNamespaceURI,
+                               PRBool* aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::IsDefaultNamespace()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::GetFeature(const nsAString& aFeature,
+                       const nsAString& aVersion,
+                       nsISupports** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::GetFeature()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::SetUserData(const nsAString& aKey,
+                        nsIVariant* aData,
+                        nsIDOMUserDataHandler* aHandler,
+                        nsIVariant** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::SetUserData()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::GetUserData(const nsAString& aKey,
+                        nsIVariant** aReturn)
+{
+  NS_NOTYETIMPLEMENTED("nsDocument::GetUserData()");
+
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+
+NS_IMETHODIMP
+nsDocument::LookupPrefix(const nsAString& aNamespaceURI,
+                         nsAString& aPrefix)
 {
   aPrefix.Truncate();
 
@@ -3526,6 +3565,144 @@ nsDocument::LookupNamespaceURI(const nsAString& aNamespacePrefix,
 
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsDocument::GetActualEncoding(nsAString& aActualEncoding)
+{
+  return GetCharacterSet(aActualEncoding);
+}
+
+NS_IMETHODIMP
+nsDocument::GetXmlEncoding(nsAString& aXmlEncoding)
+{
+  if (mXMLDeclarationBits & XML_DECLARATION_BITS_DECLARATION_EXISTS &&
+      mXMLDeclarationBits & XML_DECLARATION_BITS_ENCODING_EXISTS) {
+    // XXX We don't store the encoding given in the xml declaration.
+    // For now, just output the actualEncoding which we do store.
+    GetActualEncoding(aXmlEncoding);
+  } else {
+    SetDOMStringToNull(aXmlEncoding);
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetXmlEncoding(const nsAString& aXmlEncoding)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::GetXmlStandalone(PRBool *aXmlStandalone)
+{
+  *aXmlStandalone = 
+    mXMLDeclarationBits & XML_DECLARATION_BITS_DECLARATION_EXISTS &&
+    mXMLDeclarationBits & XML_DECLARATION_BITS_STANDALONE_EXISTS &&
+    mXMLDeclarationBits & XML_DECLARATION_BITS_STANDALONE_YES;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetXmlStandalone(PRBool aXmlStandalone)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::GetXmlVersion(nsAString& aXmlVersion)
+{
+  // If there is no declaration, the value is "1.0".
+
+  // XXX We only support "1.0", so always output "1.0" until that changes.
+  aXmlVersion.Assign(NS_LITERAL_STRING("1.0"));
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetXmlVersion(const nsAString& aXmlVersion)
+{
+  return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
+}
+
+NS_IMETHODIMP
+nsDocument::GetStrictErrorChecking(PRBool *aStrictErrorChecking)
+{
+  // This attribute is true by default, and we don't really support it being false.
+  *aStrictErrorChecking = PR_TRUE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetStrictErrorChecking(PRBool aStrictErrorChecking)
+{
+  // We don't really support non-strict error checking, so just no-op for now.
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::GetDocumentURI(nsAString& aDocumentURI)
+{
+  if (mDocumentURL) {
+    nsCAutoString uri;
+    mDocumentURL->GetSpec(uri);
+    CopyUTF8toUTF16(uri, aDocumentURI);
+  } else {
+    SetDOMStringToNull(aDocumentURI);
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocument::SetDocumentURI(const nsAString& aDocumentURI)
+{
+  // Not allowing this yet, need to think about security ramifications first.
+  // We use mDocumentURL to get principals for this document.
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::AdoptNode(nsIDOMNode *source, nsIDOMNode **aReturn)
+{
+  // Not allowing this yet, need to think about the security ramifications
+  // of giving a node a brand new node info.
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::GetConfig(nsIDOMDOMConfiguration **aConfig)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocument::NormalizeDocument()
+{
+  // We don't support DOMConfigurations yet, so this just
+  // does a straight shot of normalization.
+  return Normalize();
+}
+
+NS_IMETHODIMP
+nsDocument::RenameNode(nsIDOMNode *aNode,
+                       const nsAString& namespaceURI,
+                       const nsAString& qualifiedName,
+                       nsIDOMNode **aReturn)
+{
+  PRUint16 nodeType;
+  aNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::ELEMENT_NODE ||
+      nodeType == nsIDOMNode::ATTRIBUTE_NODE) {
+    // XXXcaa Write me - Coming soon to a document near you!
+    return NS_ERROR_NOT_IMPLEMENTED;
+  }
+
+  return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
+}
+
 
 NS_IMETHODIMP
 nsDocument::GetOwnerDocument(nsIDOMDocument** aOwnerDocument)
@@ -3879,12 +4056,11 @@ nsDocument::GetBindingManager(nsIBindingManager** aResult)
 
 
 NS_IMETHODIMP
-nsDocument::GetNodeInfoManager(nsINodeInfoManager*& aNodeInfoManager)
+nsDocument::GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager)
 {
   NS_ENSURE_TRUE(mNodeInfoManager, NS_ERROR_NOT_INITIALIZED);
 
-  aNodeInfoManager = mNodeInfoManager;
-  NS_ADDREF(aNodeInfoManager);
+  NS_ADDREF(*aNodeInfoManager = mNodeInfoManager);
 
   return NS_OK;
 }
@@ -3914,7 +4090,7 @@ nsDocument::RemoveReference(void *aKey, nsISupports **aOldReference)
 NS_IMETHODIMP
 nsDocument::SetContainer(nsISupports *aContainer)
 {
-  mDocumentContainer = dont_AddRef(NS_GetWeakReference(aContainer));
+  mDocumentContainer = do_GetWeakReference(aContainer);
 
   return NS_OK;
 }
@@ -3988,7 +4164,7 @@ nsDocument::GetXMLDeclaration(nsAString& aVersion, nsAString& aEncoding,
   if (mXMLDeclarationBits & XML_DECLARATION_BITS_ENCODING_EXISTS) {
     // This is what we have stored, not necessarily what was written
     // in the original
-    GetDocumentCharacterSet(aEncoding);
+    GetCharacterSet(aEncoding);
   }
 
   if (mXMLDeclarationBits & XML_DECLARATION_BITS_STANDALONE_EXISTS) {
@@ -4006,6 +4182,33 @@ NS_IMETHODIMP_(PRBool)
 nsDocument::IsCaseSensitive()
 {
   return PR_TRUE;
+}
+
+NS_IMETHODIMP_(PRBool)
+nsDocument::IsScriptEnabled()
+{
+  nsCOMPtr<nsIScriptSecurityManager> sm(do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID));
+  NS_ENSURE_TRUE(sm, PR_TRUE);
+
+  nsCOMPtr<nsIPrincipal> principal;
+  GetPrincipal(getter_AddRefs(principal));
+  NS_ENSURE_TRUE(principal, PR_TRUE);
+
+  nsCOMPtr<nsIScriptGlobalObject> globalObject;
+  GetScriptGlobalObject(getter_AddRefs(globalObject));
+  NS_ENSURE_TRUE(globalObject, PR_TRUE);
+
+  nsCOMPtr<nsIScriptContext> scriptContext;
+  globalObject->GetContext(getter_AddRefs(scriptContext));
+  NS_ENSURE_TRUE(scriptContext, PR_TRUE);
+
+  JSContext* cx = (JSContext *) scriptContext->GetNativeContext();
+  NS_ENSURE_TRUE(cx, PR_TRUE);
+
+  PRBool enabled;
+  nsresult rv = sm->CanExecuteScripts(cx, principal, &enabled);
+  NS_ENSURE_SUCCESS(rv, PR_TRUE);
+  return enabled;
 }
 
 nsresult

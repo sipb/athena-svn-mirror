@@ -146,7 +146,6 @@
 #include "nsISimpleEnumerator.h"
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
-static NS_DEFINE_IID(kPrinterEnumeratorCID, NS_PRINTER_ENUMERATOR_CID);
 
 // PrintOptions is now implemented by PrintSettingsService
 static const char sPrintSettingsServiceContractID[] = "@mozilla.org/gfx/printsettings-service;1";
@@ -195,9 +194,7 @@ static const char sPrintOptionsContractID[]         = "@mozilla.org/gfx/printset
 
 #include "nsBidiUtils.h"
 
-static NS_DEFINE_CID(kPresShellCID, NS_PRESSHELL_CID);
 static NS_DEFINE_CID(kGalleyContextCID,  NS_GALLEYCONTEXT_CID);
-static NS_DEFINE_CID(kPrintContextCID,  NS_PRINTCONTEXT_CID);
 static NS_DEFINE_CID(kStyleSetCID,  NS_STYLESET_CID);
 
 #ifdef NS_DEBUG
@@ -339,11 +336,11 @@ public:
 
   // nsIDocumentViewer interface...
   NS_IMETHOD SetUAStyleSheet(nsIStyleSheet* aUAStyleSheet);
-  NS_IMETHOD GetDocument(nsIDocument*& aResult);
-  NS_IMETHOD GetPresShell(nsIPresShell*& aResult);
-  NS_IMETHOD GetPresContext(nsIPresContext*& aResult);
+  NS_IMETHOD GetDocument(nsIDocument** aResult);
+  NS_IMETHOD GetPresShell(nsIPresShell** aResult);
+  NS_IMETHOD GetPresContext(nsIPresContext** aResult);
   NS_IMETHOD CreateDocumentViewerUsing(nsIPresContext* aPresContext,
-                                       nsIDocumentViewer*& aResult);
+                                       nsIDocumentViewer** aResult);
 
   // nsIContentViewerEdit
   NS_DECL_NSICONTENTVIEWEREDIT
@@ -447,18 +444,19 @@ protected:
 #endif // NS_DEBUG
 #endif // NS_PRINTING
 
+  /* character set member data */
+  PRInt32 mHintCharsetSource;
+  nsCString mHintCharset;
+  nsCString mDefaultCharacterSet;
+  nsCString mForceCharacterSet;
+  nsCString mPrevDocCharacterSet;
+  
   // document management data
   //   these items are specific to markup documents (html and xml)
   //   may consider splitting these out into a subclass
   PRPackedBool mAllowPlugins;
   PRPackedBool mIsSticky;
 
-  /* character set member data */
-  nsString mDefaultCharacterSet;
-  nsString mHintCharset;
-  PRInt32 mHintCharsetSource;
-  nsString mForceCharacterSet;
-  nsString mPrevDocCharacterSet;
 };
 
 //------------------------------------------------------------------
@@ -514,9 +512,9 @@ void DocumentViewerImpl::PrepareToStartLoad()
 // Note: operator new zeros our memory, so no need to init things to null.
 DocumentViewerImpl::DocumentViewerImpl(nsIPresContext* aPresContext)
   : mPresContext(aPresContext),
+    mHintCharsetSource(kCharsetUninitialized),
     mAllowPlugins(PR_TRUE),
-    mIsSticky(PR_TRUE),
-    mHintCharsetSource(kCharsetUninitialized)
+    mIsSticky(PR_TRUE)
 {
   PrepareToStartLoad();
 }
@@ -802,7 +800,7 @@ DocumentViewerImpl::InitInternal(nsIWidget* aParentWidget,
   nsresult rv = NS_OK;
   NS_ENSURE_TRUE(mDocument, NS_ERROR_NULL_POINTER);
 
-  mDeviceContext = dont_QueryInterface(aDeviceContext);
+  mDeviceContext = aDeviceContext;
 
 #if defined(NS_PRINTING) && defined(NS_PRINT_PREVIEW)
   // Clear PrintPreview Alternate Device
@@ -972,7 +970,7 @@ DocumentViewerImpl::LoadComplete(nsresult aStatus)
 NS_IMETHODIMP
 DocumentViewerImpl::Unload()
 {
-  nsresult rv;
+  mEnableRendering = PR_FALSE;
 
   if (!mDocument) {
     return NS_ERROR_NULL_POINTER;
@@ -981,7 +979,7 @@ DocumentViewerImpl::Unload()
   // First, get the script global object from the document...
   nsCOMPtr<nsIScriptGlobalObject> global;
 
-  rv = mDocument->GetScriptGlobalObject(getter_AddRefs(global));
+  nsresult rv = mDocument->GetScriptGlobalObject(getter_AddRefs(global));
   if (!global) {
     // Fail if no ScriptGlobalObject is available...
     NS_ASSERTION(0, "nsIScriptGlobalObject not set for document!");
@@ -1146,6 +1144,9 @@ DocumentViewerImpl::Stop(void)
     mDocument->StopDocumentLoad();
   }
 
+  if (mEnableRendering && (mLoaded || mStopped) && mPresContext)
+    mPresContext->SetImageAnimationMode(imgIContainer::kDontAnimMode);
+
   mStopped = PR_TRUE;
 
   if (!mLoaded && mPresShell) {
@@ -1252,26 +1253,26 @@ DocumentViewerImpl::SetUAStyleSheet(nsIStyleSheet* aUAStyleSheet)
 }
 
 NS_IMETHODIMP
-DocumentViewerImpl::GetDocument(nsIDocument*& aResult)
+DocumentViewerImpl::GetDocument(nsIDocument** aResult)
 {
-  aResult = mDocument;
-  NS_IF_ADDREF(aResult);
+  NS_IF_ADDREF(*aResult = mDocument);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
-DocumentViewerImpl::GetPresShell(nsIPresShell*& aResult)
+DocumentViewerImpl::GetPresShell(nsIPresShell** aResult)
 {
-  aResult = mPresShell;
-  NS_IF_ADDREF(aResult);
+  NS_IF_ADDREF(*aResult = mPresShell);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP
-DocumentViewerImpl::GetPresContext(nsIPresContext*& aResult)
+DocumentViewerImpl::GetPresContext(nsIPresContext** aResult)
 {
-  aResult = mPresContext;
-  NS_IF_ADDREF(aResult);
+  NS_IF_ADDREF(*aResult = mPresContext);
+
   return NS_OK;
 }
 
@@ -1729,7 +1730,7 @@ DocumentViewerImpl::FindFrameSetWithIID(nsIContent * aParentContent,
   PRInt32 inx;
   for (inx = 0; inx < numChildren; ++inx) {
     nsCOMPtr<nsIContent> child;
-    if (NS_SUCCEEDED(aParentContent->ChildAt(inx, *getter_AddRefs(child))) && child) {
+    if (NS_SUCCEEDED(aParentContent->ChildAt(inx, getter_AddRefs(child))) && child) {
       nsCOMPtr<nsISupports> temp;
       if (NS_SUCCEEDED(child->QueryInterface(aIID, (void**)getter_AddRefs(temp)))) {
         return NS_OK;
@@ -1815,14 +1816,11 @@ DocumentViewerImpl::MakeWindow(nsIWidget* aParentWidget,
   if (containerView) {
     // see if the containerView has already been hooked into a foreign view manager hierarchy
     // if it has, then we have to hook into the hierarchy too otherwise bad things will happen.
-    nsCOMPtr<nsIViewManager> containerVM;
-    containerView->GetViewManager(*getter_AddRefs(containerVM));
-    nsCOMPtr<nsIViewManager> checkVM;
+    nsIViewManager* containerVM = containerView->GetViewManager();
     nsIView* pView = containerView;
     do {
-      pView->GetParent(pView);
-    } while (pView != nsnull
-             && NS_SUCCEEDED(pView->GetViewManager(*getter_AddRefs(checkVM))) && checkVM == containerVM);
+      pView = pView->GetParent();
+    } while (pView && pView->GetViewManager() == containerVM);
 
     if (!pView) {
       // OK, so the container is not already hooked up into a foreign view manager hierarchy.
@@ -1881,7 +1879,7 @@ DocumentViewerImpl::MakeWindow(nsIWidget* aParentWidget,
   // Setup hierarchical relationship in view manager
   mViewManager->SetRootView(view);
 
-  view->GetWidget(*getter_AddRefs(mWindow));
+  mWindow = view->GetWidget();
 
   // This SetFocus is necessary so the Arrow Key and Page Key events
   // go to the scrolled view as soon as the Window is created instead of going to
@@ -1915,7 +1913,7 @@ nsresult DocumentViewerImpl::GetDocumentSelection(nsISelection **aSelection,
 
 NS_IMETHODIMP
 DocumentViewerImpl::CreateDocumentViewerUsing(nsIPresContext* aPresContext,
-                                              nsIDocumentViewer*& aResult)
+                                              nsIDocumentViewer** aResult)
 {
   if (!mDocument) {
     // XXX better error
@@ -1939,7 +1937,7 @@ DocumentViewerImpl::CreateDocumentViewerUsing(nsIPresContext* aPresContext,
   // Bind the new viewer to the old document
   nsresult rv = viewer->LoadStart(mDocument);
 
-  aResult = viewer;
+  *aResult = viewer;
 
   return rv;
 }
@@ -2132,8 +2130,6 @@ NS_IMETHODIMP DocumentViewerImpl::GetCanGetContents(PRBool *aCanGetContents)
 #pragma mark -
 #endif
 
-static NS_DEFINE_IID(kDeviceContextSpecFactoryCID, NS_DEVICE_CONTEXT_SPEC_FACTORY_CID);
-
 /* ========================================================================================
  * nsIContentViewerFile
  * ======================================================================================== */
@@ -2207,7 +2203,7 @@ NS_IMETHODIMP DocumentViewerImpl::ScrollToNode(nsIDOMNode* aNode)
    NS_ENSURE_ARG(aNode);
    NS_ENSURE_TRUE(mDocument, NS_ERROR_NOT_AVAILABLE);
    nsCOMPtr<nsIPresShell> presShell;
-   NS_ENSURE_SUCCESS(GetPresShell(*(getter_AddRefs(presShell))), NS_ERROR_FAILURE);
+   NS_ENSURE_SUCCESS(GetPresShell(getter_AddRefs(presShell)), NS_ERROR_FAILURE);
 
    // Get the nsIContent interface, because that's what we need to
    // get the primary frame
@@ -2322,9 +2318,8 @@ NS_IMETHODIMP DocumentViewerImpl::GetTextZoom(float* aTextZoom)
 // XXX: SEMANTIC CHANGE!
 //      returns a copy of the string.  Caller is responsible for freeing result
 //      using Recycle(aDefaultCharacterSet)
-NS_IMETHODIMP DocumentViewerImpl::GetDefaultCharacterSet(PRUnichar** aDefaultCharacterSet)
+NS_IMETHODIMP DocumentViewerImpl::GetDefaultCharacterSet(nsACString& aDefaultCharacterSet)
 {
-  NS_ENSURE_ARG_POINTER(aDefaultCharacterSet);
   NS_ENSURE_STATE(mContainer);
 
   if (mDefaultCharacterSet.IsEmpty())
@@ -2348,69 +2343,64 @@ NS_IMETHODIMP DocumentViewerImpl::GetDefaultCharacterSet(PRUnichar** aDefaultCha
     }
 
     if (!defCharset.IsEmpty())
-      mDefaultCharacterSet.Assign(defCharset.get());
+      CopyUCS2toASCII(defCharset, mDefaultCharacterSet);
     else
-      mDefaultCharacterSet.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+      mDefaultCharacterSet.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
   }
-  *aDefaultCharacterSet = ToNewUnicode(mDefaultCharacterSet);
+  aDefaultCharacterSet = mDefaultCharacterSet;
   return NS_OK;
 }
 
 static void
 SetChildDefaultCharacterSet(nsIMarkupDocumentViewer* aChild, void* aClosure)
 {
-  aChild->SetDefaultCharacterSet((PRUnichar*) aClosure);
+  const nsACString* charset = NS_STATIC_CAST(nsACString*, aClosure);
+  aChild->SetDefaultCharacterSet(*charset);
 }
 
-NS_IMETHODIMP DocumentViewerImpl::SetDefaultCharacterSet(const PRUnichar* aDefaultCharacterSet)
+NS_IMETHODIMP
+DocumentViewerImpl::SetDefaultCharacterSet(const nsACString& aDefaultCharacterSet)
 {
   mDefaultCharacterSet = aDefaultCharacterSet;  // this does a copy of aDefaultCharacterSet
   // now set the default char set on all children of mContainer
   return CallChildren(SetChildDefaultCharacterSet,
-                      (void*) aDefaultCharacterSet);
+                      (void*) &aDefaultCharacterSet);
 }
 
 // XXX: SEMANTIC CHANGE!
 //      returns a copy of the string.  Caller is responsible for freeing result
 //      using Recycle(aForceCharacterSet)
-NS_IMETHODIMP DocumentViewerImpl::GetForceCharacterSet(PRUnichar** aForceCharacterSet)
+NS_IMETHODIMP DocumentViewerImpl::GetForceCharacterSet(nsACString& aForceCharacterSet)
 {
-  NS_ENSURE_ARG_POINTER(aForceCharacterSet);
-
-  nsAutoString emptyStr;
-  if (mForceCharacterSet.Equals(emptyStr)) {
-    *aForceCharacterSet = nsnull;
-  }
-  else {
-    *aForceCharacterSet = ToNewUnicode(mForceCharacterSet);
-  }
+  aForceCharacterSet = mForceCharacterSet;
   return NS_OK;
 }
 
 static void
 SetChildForceCharacterSet(nsIMarkupDocumentViewer* aChild, void* aClosure)
 {
-  aChild->SetForceCharacterSet((PRUnichar*) aClosure);
+  const nsACString* charset = NS_STATIC_CAST(nsACString*, aClosure);
+  aChild->SetForceCharacterSet(*charset);
 }
 
-NS_IMETHODIMP DocumentViewerImpl::SetForceCharacterSet(const PRUnichar* aForceCharacterSet)
+NS_IMETHODIMP
+DocumentViewerImpl::SetForceCharacterSet(const nsACString& aForceCharacterSet)
 {
   mForceCharacterSet = aForceCharacterSet;
   // now set the force char set on all children of mContainer
-  return CallChildren(SetChildForceCharacterSet, (void*) aForceCharacterSet);
+  return CallChildren(SetChildForceCharacterSet, (void*) &aForceCharacterSet);
 }
 
 // XXX: SEMANTIC CHANGE!
 //      returns a copy of the string.  Caller is responsible for freeing result
 //      using Recycle(aHintCharacterSet)
-NS_IMETHODIMP DocumentViewerImpl::GetHintCharacterSet(PRUnichar * *aHintCharacterSet)
+NS_IMETHODIMP DocumentViewerImpl::GetHintCharacterSet(nsACString& aHintCharacterSet)
 {
-  NS_ENSURE_ARG_POINTER(aHintCharacterSet);
 
   if(kCharsetUninitialized == mHintCharsetSource) {
-    *aHintCharacterSet = nsnull;
+    aHintCharacterSet.Truncate();
   } else {
-    *aHintCharacterSet = ToNewUnicode(mHintCharset);
+    aHintCharacterSet = mHintCharset;
     // this can't possibly be right.  we can't set a value just because somebody got a related value!
     //mHintCharsetSource = kCharsetUninitialized;
   }
@@ -2426,11 +2416,9 @@ NS_IMETHODIMP DocumentViewerImpl::GetHintCharacterSetSource(PRInt32 *aHintCharac
 }
 
 
-NS_IMETHODIMP DocumentViewerImpl::GetPrevDocCharacterSet(PRUnichar * *aPrevDocCharacterSet)
+NS_IMETHODIMP DocumentViewerImpl::GetPrevDocCharacterSet(nsACString& aPrevDocCharacterSet)
 {
-  NS_ENSURE_ARG_POINTER(aPrevDocCharacterSet);
-
-  *aPrevDocCharacterSet = ToNewUnicode(mPrevDocCharacterSet);
+  aPrevDocCharacterSet = mPrevDocCharacterSet;
 
   return NS_OK;
 }
@@ -2438,15 +2426,17 @@ NS_IMETHODIMP DocumentViewerImpl::GetPrevDocCharacterSet(PRUnichar * *aPrevDocCh
 static void
 SetChildPrevDocCharacterSet(nsIMarkupDocumentViewer* aChild, void* aClosure)
 {
-  aChild->SetPrevDocCharacterSet((PRUnichar*) aClosure);
+  const nsACString* charset = NS_STATIC_CAST(nsACString*, aClosure);
+  aChild->SetPrevDocCharacterSet(*charset);
 }
 
 
-NS_IMETHODIMP DocumentViewerImpl::SetPrevDocCharacterSet(const PRUnichar* aPrevDocCharacterSet)
+NS_IMETHODIMP
+DocumentViewerImpl::SetPrevDocCharacterSet(const nsACString& aPrevDocCharacterSet)
 {
   mPrevDocCharacterSet = aPrevDocCharacterSet;  
   return CallChildren(SetChildPrevDocCharacterSet,
-                      (void*) aPrevDocCharacterSet);
+                      (void*) &aPrevDocCharacterSet);
 }
 
 
@@ -2456,7 +2446,8 @@ SetChildHintCharacterSetSource(nsIMarkupDocumentViewer* aChild, void* aClosure)
   aChild->SetHintCharacterSetSource(NS_PTR_TO_INT32(aClosure));
 }
 
-NS_IMETHODIMP DocumentViewerImpl::SetHintCharacterSetSource(PRInt32 aHintCharacterSetSource)
+NS_IMETHODIMP
+DocumentViewerImpl::SetHintCharacterSetSource(PRInt32 aHintCharacterSetSource)
 {
   mHintCharsetSource = aHintCharacterSetSource;
   // now set the hint char set source on all children of mContainer
@@ -2467,14 +2458,16 @@ NS_IMETHODIMP DocumentViewerImpl::SetHintCharacterSetSource(PRInt32 aHintCharact
 static void
 SetChildHintCharacterSet(nsIMarkupDocumentViewer* aChild, void* aClosure)
 {
-  aChild->SetHintCharacterSet((PRUnichar*) aClosure);
+  const nsACString* charset = NS_STATIC_CAST(nsACString*, aClosure);
+  aChild->SetHintCharacterSet(*charset);
 }
 
-NS_IMETHODIMP DocumentViewerImpl::SetHintCharacterSet(const PRUnichar* aHintCharacterSet)
+NS_IMETHODIMP
+DocumentViewerImpl::SetHintCharacterSet(const nsACString& aHintCharacterSet)
 {
   mHintCharset = aHintCharacterSet;
   // now set the hint char set on all children of mContainer
-  return CallChildren(SetChildHintCharacterSet, (void*) aHintCharacterSet);
+  return CallChildren(SetChildHintCharacterSet, (void*) &aHintCharacterSet);
 }
 
 static void
@@ -2673,14 +2666,14 @@ NS_IMETHODIMP DocumentViewerImpl::SizeToContent()
    NS_ENSURE_TRUE(!docShellParent, NS_ERROR_FAILURE);
 
    nsCOMPtr<nsIPresShell> presShell;
-   GetPresShell(*getter_AddRefs(presShell));
+   GetPresShell(getter_AddRefs(presShell));
    NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
    NS_ENSURE_SUCCESS(presShell->ResizeReflow(NS_UNCONSTRAINEDSIZE,
       NS_UNCONSTRAINEDSIZE), NS_ERROR_FAILURE);
 
    nsCOMPtr<nsIPresContext> presContext;
-   GetPresContext(*getter_AddRefs(presContext));
+   GetPresContext(getter_AddRefs(presContext));
    NS_ENSURE_TRUE(presContext, NS_ERROR_FAILURE);
 
    nsRect  shellArea;
@@ -2718,7 +2711,7 @@ NS_IMETHODIMP DocumentViewerImpl::SizeToContent()
 #pragma mark -
 #endif
 
-NS_IMPL_ISUPPORTS1(nsDocViewerSelectionListener, nsISelectionListener);
+NS_IMPL_ISUPPORTS1(nsDocViewerSelectionListener, nsISelectionListener)
 
 nsresult nsDocViewerSelectionListener::Init(DocumentViewerImpl *aDocViewer)
 {
@@ -2744,7 +2737,7 @@ DocumentViewerImpl::GetPopupNode(nsIDOMNode** aNode)
 
   // get the document
   nsCOMPtr<nsIDocument> document;
-  rv = GetDocument(*getter_AddRefs(document));
+  rv = GetDocument(getter_AddRefs(document));
   NS_ENSURE_SUCCESS(rv, rv);
   NS_ENSURE_TRUE(document, NS_ERROR_FAILURE);
 
@@ -2939,7 +2932,7 @@ NS_IMETHODIMP nsDocViewerSelectionListener::NotifySelectionChanged(nsIDOMDocumen
   if (!mGotSelectionState || mSelectionWasCollapsed != selectionCollapsed)
   {
     nsCOMPtr<nsIDocument> theDoc;
-    mDocViewer->GetDocument(*getter_AddRefs(theDoc));
+    mDocViewer->GetDocument(getter_AddRefs(theDoc));
     if (!theDoc) return NS_ERROR_FAILURE;
 
     nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
@@ -2957,7 +2950,7 @@ NS_IMETHODIMP nsDocViewerSelectionListener::NotifySelectionChanged(nsIDOMDocumen
 }
 
 //nsDocViewerFocusListener
-NS_IMPL_ISUPPORTS1(nsDocViewerFocusListener, nsIDOMFocusListener);
+NS_IMPL_ISUPPORTS1(nsDocViewerFocusListener, nsIDOMFocusListener)
 
 nsDocViewerFocusListener::nsDocViewerFocusListener()
 :mDocViewer(nsnull)
@@ -2979,7 +2972,7 @@ nsDocViewerFocusListener::Focus(nsIDOMEvent* aEvent)
   if(!mDocViewer)
     return NS_ERROR_FAILURE;
 
-  nsresult result = mDocViewer->GetPresShell(*getter_AddRefs(shell));//deref once cause it take a ptr ref
+  nsresult result = mDocViewer->GetPresShell(getter_AddRefs(shell));
   if(NS_FAILED(result) || !shell)
     return result?result:NS_ERROR_FAILURE;
   nsCOMPtr<nsISelectionController> selCon;
@@ -3005,7 +2998,7 @@ nsDocViewerFocusListener::Blur(nsIDOMEvent* aEvent)
   if(!mDocViewer)
     return NS_ERROR_FAILURE;
 
-  nsresult result = mDocViewer->GetPresShell(*getter_AddRefs(shell));//deref once cause it take a ptr ref
+  nsresult result = mDocViewer->GetPresShell(getter_AddRefs(shell));
   if(NS_FAILED(result) || !shell)
     return result?result:NS_ERROR_FAILURE;
   nsCOMPtr<nsISelectionController> selCon;
@@ -3206,12 +3199,10 @@ DocumentViewerImpl::PrintPreviewNavigate(PRInt16 aType, PRInt32 aPageNum)
   nsIFrame * pageFrame;
   seqFrame->FirstChild(mPresContext, nsnull, &pageFrame);
   while (pageFrame != nsnull) {
-    nsRect pageRect;
-    pageFrame->GetRect(pageRect);
+    nsRect pageRect = pageFrame->GetRect();
     if (pageNum == 1) {
       gap = pageRect.y;
     }
-    pageRect.y -= gap;
     if (pageRect.Contains(pageRect.x, y)) {
       currentPage = pageFrame;
     }
@@ -3220,7 +3211,7 @@ DocumentViewerImpl::PrintPreviewNavigate(PRInt16 aType, PRInt32 aPageNum)
       break;
     }
     pageNum++;
-    pageFrame->GetNextSibling(&pageFrame);
+    pageFrame = pageFrame->GetNextSibling();
   }
 
   if (aType == nsIWebBrowserPrint::PRINTPREVIEW_PREV_PAGE) {
@@ -3248,9 +3239,6 @@ DocumentViewerImpl::PrintPreviewNavigate(PRInt16 aType, PRInt32 aPageNum)
   }
 
   if (fndPageFrame && scrollableView) {
-    // get the child rect
-    nsRect fRect;
-    fndPageFrame->GetRect(fRect);
     // find offset from view
     nsPoint pnt;
     nsIView * view;
@@ -3263,7 +3251,7 @@ DocumentViewerImpl::PrintPreviewNavigate(PRInt16 aType, PRInt32 aPageNum)
     }
 
     // scroll so that top of page (plus the gray area) is at the top of the scroll area
-    scrollableView->ScrollTo(0, fRect.y-deadSpaceGap, PR_TRUE);
+    scrollableView->ScrollTo(0, fndPageFrame->GetPosition().y-deadSpaceGap, PR_TRUE);
   }
   return NS_OK;
 #else

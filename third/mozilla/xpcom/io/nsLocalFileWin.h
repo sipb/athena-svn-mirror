@@ -30,9 +30,7 @@
 #include "nsString.h"
 #include "nsCRT.h"
 #include "nsIFile.h"
-#include "nsILocalFile.h"
 #include "nsIFactory.h"
-#include "nsLocalFile.h"
 
 #include "windows.h"
 
@@ -70,6 +68,7 @@ public:
     static void GlobalShutdown();
 
 private:
+    nsLocalFile(const nsLocalFile& other);
 
     // this is the flag which indicates if I can used cached information about the file
     PRPackedBool mDirty;
@@ -87,7 +86,7 @@ private:
 
     static PRBool mFSCharsetIsUTF8;
 
-    void MakeDirty();
+    void MakeDirty() { mDirty = PR_TRUE; }
     nsresult ResolveAndStat(PRBool resolveTerminal);
     nsresult ResolvePath(const char* workingPath, PRBool resolveTerminal, char** resolvedPath);
     
