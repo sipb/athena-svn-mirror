@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.45 1991-04-14 17:21:46 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.46 1991-09-22 12:05:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.45 1991-04-14 17:21:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.46 1991-09-22 12:05:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -902,7 +902,7 @@ olc_ask(fd, request)
   target->title = target->user->title1;
 
   if (!isme(request)) {
-    sprintf(msgbuf,"Question asked on users behalf by %s@%s [%d].",
+    sprintf(msgbuf,"Question asked on user's behalf by %s@%s [%d].",
 	    requester->user->username, requester->user->machine,
 	    requester->instance);
     log_daemon(target,msgbuf);
