@@ -15,8 +15,12 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.13 1998-12-31 23:53:20 ghudson Exp $
+ * $Id: auth-passwd.c,v 1.14 1999-03-08 18:20:01 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  1998/12/31 23:53:20  ghudson
+ * Revert 1.11.  We have a krb5 master KDC now, so we don't need to
+ * prefer krb4 reuslts.
+ *
  * Revision 1.12  1998/08/03 21:49:57  danw
  * don't free saved_pw_name and saved_pw_passwd until krb4 auth has
  * succeeded.
@@ -65,7 +69,25 @@ the password is valid for the user.
  * Revision 1.1.1.3  1998/05/13 19:11:11  danw
  * Import of ssh 1.2.23
  *
- * Revision 1.15  1998/05/11 21:27:47  kivinen
+ * Revision 1.1.1.4  1999/03/08 17:43:03  danw
+ * Import of ssh 1.2.26
+ *
+ * Revision 1.19  1998/07/08 01:44:46  kivinen
+ * 	Added one missing space.
+ *
+ * Revision 1.18  1998/07/08 00:36:44  kivinen
+ * 	Changed to use PASSWD_PATH. Better HPUX TCB AUTH support.
+ *
+ * Revision 1.17  1998/06/11 00:03:38  kivinen
+ * 	Added username to /bin/password commands.
+ *
+ * Revision 1.16  1998/05/23  20:19:40  kivinen
+ * 	Removed #define uint32 rpc_unt32, because md5 uint32 is now
+ * 	md5_uint32. Changed () -> (void). Changed osf1c2_getprpwent
+ * 	function to return true/false. Added
+ * 	forced_empty_passwd_change support.
+ *
+ * Revision 1.15  1998/05/11  21:27:47  kivinen
  * 	Set correct_passwd to contain 255...255 so even if some
  * 	function doesn't set it, it cannot contain empty password.
  *
@@ -193,7 +215,6 @@ extern int al_local_acct;
 static uid_t uid_keylogged = 0;
 
 #ifdef SECURE_NFS
-#define uint32 rpc_uint32       /* conflicts with md5.h */
 #include <nfs/export.h>
 #include <nfs/nfs.h>
 #include <nfs/nfssys.h>
@@ -206,12 +227,11 @@ void nfs_revauth(uid_t uid)
   _nfssysarg.uid      = uid;
   _nfssys (NFS_REVAUTH,&_nfssysarg);
 }
-#undef uint32 /* conflicted with md5.h */
 #endif /* SECURE_NFS */
 
 /* do /usr/bin/keylogout's job */
 /* caller sets effective uid!  */
-void keylogout()
+void keylogout(void)
 {
   char secret [HEXKEYBYTES];
   
@@ -231,7 +251,7 @@ void keylogout()
   uid_keylogged = 0;
 }
 
-void keylogout_atexit ()
+void keylogout_atexit (void)
 {
   if (!uid_keylogged || seteuid(uid_keylogged))
     return;
@@ -780,21 +800,21 @@ int auth_password(const char *server_user, const char *password)
 #endif /* SECURE_RPC */
 
 #ifdef HAVE_OSF1_C2_SECURITY
-  switch (osf1c2_getprpwent(correct_passwd, saved_pw_name,
-			    sizeof(correct_passwd)))
-    {    /* jcastro@ist.utl.pt Sep 1997 */
-    case 0: /* All ok */ break;
-    case 1:
-      packet_disconnect("\n\tYour account is locked ...\n");
-      return 0;
-      break;
-    case 2:
-      {
-	extern char *forced_command;
-	forced_command = "/bin/passwd";
-	packet_send_debug("Password expired, forcing it to be changed.");
-	break;
-      }
+  if (osf1c2_getprpwent(correct_passwd, saved_pw_name,
+			sizeof(correct_passwd)))
+    {
+      if (options.forced_passwd_change)
+	{
+	  extern char *forced_command;
+	  forced_command = xmalloc(sizeof(PASSWD_PATH) +
+				   strlen(server_user) + 1);
+	  sprintf(forced_command, "%s %s", PASSWD_PATH, server_user);
+	  packet_send_debug("Password expired, forcing it to be changed.");
+	}
+      else
+	{
+	  packet_send_debug("\n\tYour password has expired.");
+	}
     }
 #else /* HAVE_OSF1_C2_SECURITY */
   /* If we have shadow passwords, lookup the real encrypted password from
@@ -805,8 +825,24 @@ int auth_password(const char *server_user, const char *password)
     struct pr_passwd *pr = getprpwnam(saved_pw_name);
     pr = getprpwnam(saved_pw_name);
     if (pr)
-      strncpy(correct_passwd, pr->ufld.fd_encrypt, sizeof(correct_passwd));
-    endprpwent();
+      {
+        strncpy(correct_passwd, pr->ufld.fd_encrypt, sizeof(correct_passwd));
+        endprpwent();
+        if ( (!pr->uflg.fg_nullpw || !pr->ufld.fd_nullpw)
+	     && !pr->uflg.fg_pw_admin_num
+	     && strcmp(correct_passwd,"")==0 )
+          {
+	    debug("User %.100s not permitted to login with null passwd",
+                  saved_pw_name);
+	    packet_send_debug("\n\tNot permitted null passwd.");
+	    return 0;
+          }
+      }
+    else
+      {       
+	endprpwent();
+	return 0;
+      }
   }
 #else /* defined(HAVE_SCO_ETC_SHADOW) || defined(HAVE_HPUX_TCB_AUTH) */
 #ifdef HAVE_ETC_SHADOW
@@ -878,10 +914,12 @@ int auth_password(const char *server_user, const char *password)
   /* Check for users with no password. */
   if (strcmp(password, "") == 0 && strcmp(correct_passwd, "") == 0)
     {
-      if (options.forced_passwd_change)
+      if (options.forced_empty_passwd_change)
 	{
 	  extern char *forced_command;
-          forced_command = "/bin/passwd";
+	  forced_command = xmalloc(sizeof(PASSWD_PATH) +
+				   strlen(server_user) + 1);
+	  sprintf(forced_command, "%s %s", PASSWD_PATH, server_user);
           packet_send_debug("Password if forced to be set at first login.");
 	}
       else

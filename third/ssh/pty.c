@@ -14,10 +14,17 @@ Allocating a pseudo-terminal, and making it the controlling tty.
 */
 
 /*
- * $Id: pty.c,v 1.2 1997-11-15 00:04:18 danw Exp $
+ * $Id: pty.c,v 1.3 1999-03-08 18:20:08 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1997/11/15 00:04:18  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
  * Revision 1.1.1.1  1997/10/17 22:26:02  danw
  * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1999/03/08 17:43:05  danw
+ * Import of ssh 1.2.26
  *
  * Revision 1.11  1997/03/26 07:09:31  kivinen
  * 	Changed uid 0 to UID_ROOT.

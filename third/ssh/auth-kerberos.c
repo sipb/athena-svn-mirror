@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.10 1998-11-09 16:25:21 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.11 1999-03-08 18:20:00 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  1998/11/09 16:25:21  ghudson
+ * Close some possible buffer overflows.
+ *
  * Revision 1.9  1998/08/01 18:38:49  danw
  * from amu: malloc enough space to store the full ticket file name
  *
@@ -43,6 +46,9 @@
  *
  * Revision 1.1.1.2  1998/01/24 01:25:35  danw
  * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:32  danw
+ * Import of ssh 1.2.26
  *
  * Revision 1.3  1998/01/02 06:13:56  kivinen
  * 	Fixed kerberos ticket allocation.

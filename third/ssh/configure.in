@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.9 1998-05-13 20:18:54 danw Exp $
+# $Id: configure.in,v 1.10 1999-03-08 18:20:04 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.9  1998/05/13 20:18:54  danw
+# merge in changes from 1.2.23
+#
 # Revision 1.8  1998/03/11 20:27:39  ghudson
 # Install ssh mode 755, not 711.
 #
@@ -468,12 +471,16 @@ case "$host" in
     # if they do so, don't let sshd down:-) appro@fy.chalmers.se
     AC_DEFINE(HAVE_ETC_SHADOW)
     no_shadows_password_checking=yes
+    # We want support for <proj.h> eivind@ii.uib.no
+    AC_TRY_COMPILE([#include <proj.h>],
+		[int foo = MAXPROJNAMELEN; ],
+		AC_DEFINE(HAVE_SGI_PROJ_H))
     ;;
   *-ibm-aix3.2|*-ibm-aix3.2.0|*-ibm-aix3.2.1|*-ibm-aix3.2.2|*-ibm-aix3.2.3|*-ibm-aix3.2.4)
     os_aix=yes
     AC_CHECK_LIB(s, getuserattr)
     ;;
-  *-ibm-aix4.2|*-ibm-aix4.2.*)
+  *-ibm-aix4.2|*-ibm-aix4.2.*|*-ibm-aix4.3*|*-ibm-aix4.4*)
     no_utmpx=yes
     os_aix=yes
     AC_CHECK_LIB(s, getuserattr)
@@ -510,6 +517,7 @@ case "$host" in
     if test -z "$GCC"; then
       CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
     fi
+    AC_DEFINE(NONSTANDARD_IP_ADDRESS_X11_KLUDGE)
     AC_DEFINE(HPSUX_NONSTANDARD_X11_KLUDGE)
     ;;
   *-*-hpux*)
@@ -533,20 +541,26 @@ case "$host" in
     else
       AC_MSG_RESULT(no)
     fi
+    AC_DEFINE(NONSTANDARD_IP_ADDRESS_X11_KLUDGE)
     AC_DEFINE(HPSUX_NONSTANDARD_X11_KLUDGE)
     no_utmpx=yes
     ;;
   alpha-dec-osf*)
     AC_DEFINE(TTY_GROUP, "terminal")
+    # The man page says that we need -lsecurity -ldb -laud -lm to quickstart
+    # programs using enchanced security. 
     AC_CHECK_LIB(security, set_auth_parameters)
-    AC_CHECK_FUNCS(setluid getespwnam)
+    AC_CHECK_LIB(aud, audgen)
+    AC_CHECK_LIB(db, dbopen)
+    AC_CHECK_LIB(m, sin)
+    AC_CHECK_FUNCS(setluid getespwnam locked_out_es time_lock)
     no_utmpx=yes
     AC_MSG_CHECKING(for OSF/1 C2 security package)
     osfc2sec=`/usr/sbin/setld -i | grep '^OSFC2SEC' | grep 'installed'`
     if test -n "$osfc2sec"; then
       AC_MSG_RESULT(yes)
       AC_DEFINE(HAVE_OSF1_C2_SECURITY)
-      CONFOBJS="$CONFOBJS osfc2.o"
+      SSHDCONFOBJS="$SSHDCONFOBJS osfc2.o"
       OLD_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -I."
       AC_TRY_COMPILE([#include <sys/types.h>
@@ -636,6 +650,10 @@ Making a local copy of prot.h and patching it.])
   *-cray-unicos*)
     CFLAGS="$CFLAGS -DCRAY_STACKSEG_END=_getb67"
     LIBS="$LIBS -lrsc"
+    ;;
+  i386-sni-sysv4*)
+    AC_DEFINE(NONSTANDARD_IP_ADDRESS_X11_KLUDGE)
+    AC_CHECK_LIB(gen, openlog)
     ;;
   *-*-sysv4*)
     AC_CHECK_LIB(gen, openlog)
@@ -741,6 +759,9 @@ fi
 
 if test -z "$no_utmpx"; then
   AC_CHECK_HEADERS(utmpx.h)
+  AC_MSG_CHECKING([whether utmpx have ut_syslen field])
+  AC_EGREP_HEADER(ut_syslen, utmpx.h, [ AC_DEFINE(HAVE_SYSLEN_IN_UTMPX)
+    AC_MSG_RESULT(yes)], AC_MSG_RESULT(no))
 fi
 
 AC_HEADER_STDC
@@ -753,6 +774,7 @@ AC_CHECK_HEADERS(sys/resource.h login_cap.h)
 AC_HEADER_TIME
 AC_HEADER_DIRENT
 AC_HEADER_STAT
+AC_HEADER_MAJOR
 AC_MSG_CHECKING([whether utmp have ut_pid field])
 AC_EGREP_HEADER(ut_pid, utmp.h, [ AC_DEFINE(HAVE_PID_IN_UTMP)
   AC_MSG_RESULT(yes)], AC_MSG_RESULT(no))
@@ -823,6 +845,11 @@ AC_PROGRAMS_CHECK(MAKEDEP, makedepend makedep, makedepend)
 
 AC_PATH_XTRA
 
+AC_PATH_PROG(PASSWD_PATH, passwd)
+if test -n "$PASSWD_PATH"; then
+  AC_DEFINE_UNQUOTED(PASSWD_PATH, "$PASSWD_PATH")
+fi
+
 AC_PATH_PROG(XAUTH_PATH, xauth)
 if test -n "$XAUTH_PATH"; then
   AC_DEFINE_UNQUOTED(XAUTH_PATH, "$XAUTH_PATH")
@@ -836,17 +863,22 @@ else
   fi
   X_PROGRAMS="ssh-askpass"
 fi
+AC_MSG_CHECKING(for X11 unix domain socket directory)
 AC_SUBST(X_PROGRAMS)
 if test '!' -d /tmp/.X11-unix; then
   if test -d /var/X/.X11-unix; then
-    X11_DIR="/var/X/.X11-unix"
-    AC_SUBST(X11_DIR)
+    AC_DEFINE(X11_DIR, "/var/X/.X11-unix")
+    AC_MSG_RESULT(/var/X/.X11-unix)
   else
     if test -d /tmp/.X11-pipe; then
-      X11_DIR="/tmp/.X11-pipe"
-      AC_SUBST(X11_DIR)
+      AC_DEFINE(X11_DIR, "/tmp/.X11-pipe")
+      AC_MSG_RESULT(/tmp/.X11-pipe)
+    else
+      AC_MSG_RESULT(/tmp/.X11-unix)
     fi
   fi
+else
+  AC_MSG_RESULT(/tmp/.X11-unix)
 fi
 
 AC_PATH_PROGS(PERL, perl5 perl, not found)
@@ -1270,6 +1302,8 @@ AC_ARG_WITH(tis,
     AC_DEFINE(HAVE_TIS)
     CFLAGS="$CFLAGS -I$withval -DHAVE_TIS"
     LIBS="-L$withval -lauth -lfwall $LIBS"
+    AC_MSG_WARN(Remember to read README.TIS. The connection between sshd and TIS authentication
+server is clear text!)
     ;;
   esac ],
   AC_MSG_RESULT(no)
@@ -1466,7 +1500,7 @@ fi
 if test "x$socks" = "x5"; then
     AC_DEFINE(SOCKS)
     AC_DEFINE(SOCKS5)
-    AC_CHECK_HEADER(socks.h)
+    AC_CHECK_HEADERS(socks.h)
     if test "x$ac_cv_header_socks_h" != "xyes"; then
       AC_DEFINE(Rconnect,SOCKSconnect)
       AC_DEFINE(Rgetsockname,SOCKSgetsockname)
@@ -1606,17 +1640,76 @@ AC_ARG_ENABLE(suid-ssh,
 
 AC_MSG_CHECKING(whether to enable TCP_NODELAY)
 AC_ARG_ENABLE(tcp-nodelay,
-[  --enable-tcp-nodelay    Enable TCP_NODELAY socket option],
+[  --disable-tcp-nodelay   Disable TCP_NODELAY socket option],
+[ case "$enableval" in
+  no)
+       AC_MSG_RESULT(no)
+       ;;
+  *)
+       AC_DEFINE(ENABLE_TCP_NODELAY)
+       AC_MSG_RESULT(yes)
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(ENABLE_TCP_NODELAY)
+)
+
+AC_MSG_CHECKING(whether to enable SO_LINGER)
+AC_ARG_ENABLE(so-linger,
+[  --enable-so-linger      Enable setting SO_LINGER socket option],
 [ case "$enableval" in
   yes)
        AC_MSG_RESULT(yes)
-       AC_DEFINE(ENABLE_TCP_NODELAY)
+       AC_DEFINE(ENABLE_SO_LINGER)
        ;;
   *)
        AC_MSG_RESULT(no)
   esac ],
+  AC_MSG_RESULT(no)
+)
+
+AC_MSG_CHECKING(whether to include scp statistics at all)
+AC_ARG_WITH(scp-stats,
+[  --without-scp-stats     Without scp statistics code],
+[ case "withvalval" in
+  no)
+       AC_MSG_RESULT(no)
+       ;;
+  *)
+       AC_DEFINE(WITH_SCP_STATS)
+       AC_MSG_RESULT(yes)
+  esac ],
   AC_MSG_RESULT(yes)
-  AC_DEFINE(ENABLE_TCP_NODELAY)
+  AC_DEFINE(WITH_SCP_STATS)
+)
+
+AC_MSG_CHECKING(whether to enable scp statistics)
+AC_ARG_ENABLE(scp-stats,
+[  --disable-scp-stats     Disable scp statistics display],
+[ case "$enableval" in
+  no)
+       AC_MSG_RESULT(no)
+       ;;
+  *)
+       AC_DEFINE(SCP_STATISTICS_ENABLED)
+       AC_MSG_RESULT(yes)
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(SCP_STATISTICS_ENABLED)
+)
+
+AC_MSG_CHECKING(whether to enable scp statistics for all files)
+AC_ARG_ENABLE(all-scp-stats,
+[  --disable-all-scp-stats Disable all files scp statistics display],
+[ case "$enableval" in
+  no)
+       AC_MSG_RESULT(no)
+       ;;
+  *)
+       AC_DEFINE(SCP_ALL_STATISTICS_ENABLED)
+       AC_MSG_RESULT(yes)
+  esac ],
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(SCP_ALL_STATISTICS_ENABLED)
 )
 
 # We include this here only to make it visible in --help; this is only used
@@ -1640,6 +1733,8 @@ AC_SUBST(ETCDIR)
 AC_SUBST(PIDDIR)
 AC_SUBST(RSAREFDEP)
 AC_SUBST(CONFOBJS)
+AC_SUBST(SSHCONFOBJS)
+AC_SUBST(SSHDCONFOBJS)
 AC_SUBST(SSHINSTALLMODE)
 
 ATHENA_LIBS=

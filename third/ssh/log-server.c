@@ -15,8 +15,11 @@ output to the system log.
 */
 
 /*
- * $Id: log-server.c,v 1.3 1998-01-24 01:47:25 danw Exp $
+ * $Id: log-server.c,v 1.4 1999-03-08 18:20:06 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/01/24 01:47:25  danw
+ * merge in changes for 1.2.22
+ *
  * Revision 1.2  1997/11/12 21:16:16  danw
  * Athena-login changes (including some krb4 stuff)
  *
@@ -26,7 +29,13 @@ output to the system log.
  * Revision 1.1.1.2  1998/01/24 01:25:21  danw
  * Import of ssh 1.2.22
  *
- * Revision 1.5  1998/01/02 06:18:49  kivinen
+ * Revision 1.1.1.3  1999/03/08 17:43:06  danw
+ * Import of ssh 1.2.26
+ *
+ * Revision 1.6  1998/05/23  20:21:43  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.5  1998/01/02  06:18:49  kivinen
  * 	Fixed kerberos ticket name handling.
  *
  * Revision 1.4  1997/04/17 04:05:51  kivinen
@@ -266,7 +275,7 @@ void fatal_remove_cleanup(void (*proc)(void *context), void *context)
 	(unsigned long)proc, (unsigned long)context);
 }
 
-static void do_fatal_cleanups()
+static void do_fatal_cleanups(void)
 {
   struct fatal_cleanup *cu, *next_cu;
   static int fatal_called = 0;

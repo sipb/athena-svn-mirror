@@ -14,12 +14,21 @@ Server main loop for handling the interactive session.
 */
 
 /*
- * $Id: serverloop.c,v 1.2 1999-01-21 23:10:47 ghudson Exp $
+ * $Id: serverloop.c,v 1.3 1999-03-08 18:20:08 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1999/01/21 23:10:47  ghudson
+ * From amu: if possible, wait specifically for child_pid.  And don't block.
+ *
  * Revision 1.1.1.2  1998/05/13 19:11:16  danw
  * Import of ssh 1.2.23
  *
- * Revision 1.16  1998/05/04 13:36:28  kivinen
+ * Revision 1.1.1.3  1999/03/08 17:43:09  danw
+ * Import of ssh 1.2.26
+ *
+ * Revision 1.17  1998/05/23  20:37:21  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.16  1998/05/04  13:36:28  kivinen
  * 	Fixed no_port_forwarding_flag so that it will also disable
  * 	local port forwardings from the server side. Moved
  * 	packet_get_all after reading the the remote_channel number
@@ -141,7 +150,7 @@ RETSIGTYPE sigchld_handler(int sig)
 
 /* Process any buffered packets that have been received from the client. */
 
-void process_buffered_input_packets()
+void process_buffered_input_packets(void)
 {
   int type;
   char *data;
@@ -262,7 +271,7 @@ void process_buffered_input_packets()
 /* Make packets from buffered stderr data, and buffer it for sending
    to the client. */
 
-void make_packets_from_stderr_data()
+void make_packets_from_stderr_data(void)
 {
   int len;
 
@@ -294,7 +303,7 @@ void make_packets_from_stderr_data()
 /* Make packets from buffered stdout data, and buffer it for sending to the
    client. */
 
-void make_packets_from_stdout_data()
+void make_packets_from_stdout_data(void)
 {
   int len;
 
@@ -557,7 +566,7 @@ void process_output(fd_set *writeset)
 /* Wait until all buffered output has been sent to the client.
    This is used when the program terminates. */
 
-void drain_output()
+void drain_output(void)
 {
   /* Send any buffered stdout data to the client. */
   if (buffer_len(&stdout_buffer) > 0)

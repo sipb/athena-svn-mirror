@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.10 1998-06-17 17:29:36 ghudson Exp $
+# $Id: Makefile.in,v 1.11 1999-03-08 18:19:59 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.10  1998/06/17 17:29:36  ghudson
+# Add code from a CORE SDI advisory to prevent connection hijacking.
+#
 # Revision 1.9  1998/05/30 16:03:39  danw
 # ssh 1.2.23 by default installs files as "foo1" with a "foo" -> "foo1"
 # symlink. This reverts back to the old (not "foo1") behavior
@@ -45,7 +48,26 @@
 # Revision 1.1.1.3  1998/05/13 19:10:56  danw
 # Import of ssh 1.2.23
 #
-# Revision 1.44  1998/05/11 17:21:27  kivinen
+# Revision 1.1.1.4  1999/03/08 17:42:51  danw
+# Import of ssh 1.2.26
+#
+# Revision 1.49  1998/07/08 01:20:28  kivinen
+# 	Changed SSH_PROGRAM to be ssh1.
+#
+# Revision 1.48  1998/06/12 08:04:37  kivinen
+# 	Moved removing of suid bit in the beginnin of the installation
+# 	process.
+#
+# Revision 1.47  1998/06/11 14:00:37  kivinen
+# 	Added README.DEATTACK to DISTFILES.
+#
+# Revision 1.46  1998/06/11 00:02:59  kivinen
+# 	Added deattack.{o,h}
+#
+# Revision 1.45  1998/05/23  20:17:11  kivinen
+# 	Rerun autoheader/automake/autoconf.
+#
+# Revision 1.44  1998/05/11  17:21:27  kivinen
 # 	Fixed removing of suid bit from ssh.old.
 #
 # Revision 1.43  1998/04/30 03:59:42  kivinen
@@ -279,6 +301,8 @@ DEFS 		= @DEFS@ $(COMMERCIAL)
 LIBS		= @LIBS@
 LIBOBJS		= @LIBOBJS@
 CONFOBJS	= @CONFOBJS@
+SSHCONFOBJS	= @SSHCONFOBJS@
+SSHDCONFOBJS	= @SSHDCONFOBJS@
 
 MAKEDEP		= @MAKEDEP@
 LN_S		= @LN_S@
@@ -339,9 +363,9 @@ COMMON_OBJS = $(LIBOBJS) $(CONFOBJS) \
 	userfile.o signals.o blowfish.o deattack.o
 SSHD_OBJS = sshd.o auth-rhosts.o auth-passwd.o auth-rsa.o auth-rh-rsa.o pty.o \
 	log-server.o login.o hostfile.o canohost.o servconf.o tildexpand.o \
-	serverloop.o $(COMMON_OBJS) $(KERBEROS_OBJS)
+	serverloop.o $(COMMON_OBJS) $(KERBEROS_OBJS) $(SSHDCONFOBJS)
 SSH_OBJS = ssh.o sshconnect.o log-client.o readconf.o hostfile.o readpass.o \
-	tildexpand.o clientloop.o canohost.o $(COMMON_OBJS)
+	tildexpand.o clientloop.o canohost.o $(COMMON_OBJS) $(SSHCONFOBJS)
 KEYGEN_OBJS = ssh-keygen.o log-client.o readpass.o rsa.o randoms.o md5.o \
 	buffer.o xmalloc.o authfile.o cipher.o des.o arcfour.o mpaux.o \
 	bufaux.o userfile.o signals.o blowfish.o $(LIBOBJS) $(CONFOBJS)
@@ -379,11 +403,12 @@ MAN8SOURCES = sshd.8.in
 HEADERS = cipher.h getput.h pty.h arcfour.h compress.h idea.h \
 	randoms.h ttymodes.h authfd.h crc32.h includes.h \
 	readconf.h userfile.h blowfish.h des.h md5.h rsa.h version.h bufaux.h \
-	mpaux.h servconf.h xmalloc.h buffer.h emulate.h packet.h ssh.h 
+	mpaux.h servconf.h xmalloc.h buffer.h emulate.h packet.h ssh.h \
+	deattack.h
 
 DISTFILES = $(srcdir)/COPYING $(srcdir)/README $(srcdir)/README.SECURID \
 	$(srcdir)/README.TIS $(srcdir)/README.SECURERPC \
-	$(srcdir)/README.CIPHERS \
+	$(srcdir)/README.CIPHERS $(srcdir)/README.DEATTACK \
 	$(srcdir)/INSTALL $(srcdir)/TODO $(srcdir)/libdes-README \
 	$(srcdir)/libdes-COPYING $(srcdir)/libdes-ARTISTIC \
 	$(srcdir)/gnu-COPYING-GPL $(srcdir)/OVERVIEW \

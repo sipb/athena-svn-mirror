@@ -1,5 +1,5 @@
 /*
- * $Id: deattack.c,v 1.2 1998-07-15 18:40:01 ghudson Exp $ Cryptographic attack
+ * Id: deattack.c,v 1.9 1998/06/27 00:02:22 futo Exp  Cryptographic attack
  * detector for ssh - source code (C)1998 CORE-SDI, Buenos Aires Argentina
  * Ariel Futoransky(futo@core-sdi.com) <http://www.core-sdi.com>
  */
