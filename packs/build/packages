@@ -1,4 +1,4 @@
-# $Id: packages,v 1.102 2000-03-17 21:46:44 ghudson Exp $
+# $Id: packages,v 1.103 2000-03-25 19:05:12 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -48,6 +48,7 @@ athena/bin/access
 athena/bin/aklog		requires krb5,afsbin,et
 athena/bin/athdir		requires athena/lib/athdir
 athena/bin/athinfo
+athena/bin/athrun
 athena/bin/attach		requires locker
 athena/bin/bugme		requires Xj
 athena/bin/config_console
@@ -151,8 +152,8 @@ third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
-third/tetex/texmf
-third/tetex/src			requires texmf
+third/tetex/texmf		package tetex-texmf
+third/tetex/src			package tetex-progs requires texmf
 third/top			except irix,linux
 third/traceroute		on solaris
 third/transcript		requires perl
