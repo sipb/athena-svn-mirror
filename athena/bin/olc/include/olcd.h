@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: raeburn $
- *      $Id: olcd.h,v 1.10 1990-01-10 15:12:50 raeburn Exp $
+ *      $Id: olcd.h,v 1.11 1990-01-16 05:32:39 raeburn Exp $
  */
 
 #ifndef __olcd_h
@@ -53,8 +53,8 @@ extern char *SRVTAB_FILE;
 #define MAX_CACHE_SIZE         500
 
 #ifdef SYSLOG
-#define SYSLOG_LEVEL LOG_LOCAL8
-#endif SYSLOG
+#define SYSLOG_LEVEL LOG_LOCAL6
+#endif
 
 /* for notifications */
 
@@ -380,6 +380,8 @@ extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
 extern void	log_mail (const KNUCKLE *, const KNUCKLE *, const char *);
 extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
 extern int	init_question (KNUCKLE *, char *, char *);
+
+extern int	errno;
 
 #if is_cplusplus
 extern "C" {
