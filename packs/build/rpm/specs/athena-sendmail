@@ -42,7 +42,7 @@ echo "%dir /var/spool/mqueue" >> rpm.filelist
 
 
 %post
-grep -q SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q ^SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
 EOF
 
