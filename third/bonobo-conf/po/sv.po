@@ -2,12 +2,12 @@
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001.
 #
-# $Id: sv.po,v 1.1.1.1 2001-11-02 18:40:08 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-03-15 15:30:35 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-conf\n"
-"POT-Creation-Date: 2001-10-23 23:32+0100\n"
+"POT-Creation-Date: 2002-04-15 18:29-0400\n"
 "PO-Revision-Date: 2001-04-18 03:43+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"

@@ -1,3 +1,72 @@
+2002-09-01  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* configure.in: Added pt_BR to ALL_LINGUAS.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (real_sync): Don't leak if mktemp
+	fails.
+
+2002-08-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: bumped version to 0.16
+
+	* monikers/bonobo-config-xmldb.c (real_sync): Don't use
+	xmlSaveFile anymore, it was the cause of many truncation problems
+	when the drive was full. Instead write our own replacement for
+	xmlSaveFile which does proper error handling and makes sure to not
+	overwrite the config.xmldb file unless we successfully save the
+	content first in a tmp file.
+
+2002-07-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (real_sync): Don't use a '\n'
+	character in the tmp filename. *smack*.
+
+2002-04-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Generate the po/Makefile and po/POTFILES files.
+
+2002-04-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* monikers/bonobo-config-xmldb.c (real_sync): If xmlSaveFile
+	fails, we can't assume that it's safe to set db->writeable to
+	FALSE. It's possible that it's only a temporary failure. Also, if
+	rename() fails, don't blindly assume that we can mark the db as
+	read-only either - only mark it as read-only if it's due to a
+	permissions problem and also unlink the tmp file.
+
+2002-02-14  Richard Hestilow  <hestilow@ximian.com>
+
+	* monikers/bonobo-config-gconfdb (real_list_dirs): Fix indexing
+	problem; ::length should be initialized to 0.
+	(real_list_keys): Ditto. Also, return each key as g_basename of
+	the gconf key, as it lists the absolute path.
+
+2002-01-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added 'sk" to ALL_LINGUAS.
+
+2002-01-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* bonobo-conf/bonobo-config-utils.c (DO_ENCODE): Fix to work
+	around a bug in the AIX preprocessor that would replace "value"
+	with "v" due to the fact that there is a macro parameter named
+	'value' and the variable passed in to the macro is named 'v'. I've
+	renamed the macro parameter to 'corbaval' to prevent conflicts.
+
+2001-12-27  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added portuguese to ALL_LINGUAS
+
+2001-12-07  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added "hu" in ALL_LINGUAS.
+
+2001-12-03  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added "el" in ALL_LINGUAS.
+
 2001-11-01  Michael Meeks  <michael@ximian.com>
 
 	* Version 0.14

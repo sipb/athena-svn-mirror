@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 #include <bonobo/bonobo-arg.h>
 #include <bonobo/bonobo-property-bag-xml.h>
 #include <bonobo/bonobo-moniker-util.h>
@@ -205,34 +206,326 @@ real_get_value (BonoboConfigDatabase *db,
 	return value;
 }
 
+
+static void xmlNodeDump (xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level, int format);
+
+
+static void
+xmlAttrDump (xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur)
+{
+	xmlChar *value;
+	
+	if (cur == NULL) {
+#ifdef DEBUG_TREE
+		fprintf(stderr, "xmlAttrDump : property == NULL\n");
+#endif
+		return;
+	}
+	
+	xmlBufferWriteChar (buf, " ");
+	if ((cur->ns != NULL) && (cur->ns->prefix != NULL)) {
+		xmlBufferWriteCHAR (buf, cur->ns->prefix);
+		xmlBufferWriteChar (buf, ":");
+	}
+	
+	xmlBufferWriteCHAR (buf, cur->name);
+	value = xmlNodeListGetString (doc, cur->val, 0);
+	if (value) {
+		xmlBufferWriteChar (buf, "=");
+		xmlBufferWriteQuotedString (buf, value);
+		xmlFree (value);
+	} else  {
+		xmlBufferWriteChar (buf, "=\"\"");
+	}
+}
+
+static void
+xmlAttrListDump (xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur)
+{
+	if (cur == NULL) {
+#ifdef DEBUG_TREE
+		fprintf(stderr, "xmlAttrListDump : property == NULL\n");
+#endif
+		return;
+	}
+	
+	while (cur != NULL) {
+		xmlAttrDump (buf, doc, cur);
+		cur = cur->next;
+	}
+}
+
+static void
+xmlNodeListDump (xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level, int format)
+{
+	int i;
+	
+	if (cur == NULL) {
+#ifdef DEBUG_TREE
+		fprintf(stderr, "xmlNodeListDump : node == NULL\n");
+#endif
+		return;
+	}
+	
+	while (cur != NULL) {
+		if ((format) && (xmlIndentTreeOutput) &&
+		    (cur->type == XML_ELEMENT_NODE))
+			for (i = 0; i < level; i++)
+				xmlBufferWriteChar (buf, "  ");
+		xmlNodeDump (buf, doc, cur, level, format);
+		if (format) {
+			xmlBufferWriteChar (buf, "\n");
+		}
+		cur = cur->next;
+	}
+}
+
+static void
+xmlNodeDump (xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int level, int format)
+{
+	int i;
+	xmlNodePtr tmp;
+	
+	if (cur == NULL) {
+#ifdef DEBUG_TREE
+		fprintf(stderr, "xmlNodeDump : node == NULL\n");
+#endif
+		return;
+	}
+	
+	if (cur->type == XML_TEXT_NODE) {
+		if (cur->content != NULL) {
+			xmlChar *buffer;
+			
+#ifndef XML_USE_BUFFER_CONTENT
+			buffer = xmlEncodeEntitiesReentrant (doc, cur->content);
+#else
+			buffer = xmlEncodeEntitiesReentrant (doc, xmlBufferContent (cur->content));
+#endif
+			if (buffer != NULL) {
+				xmlBufferWriteCHAR (buf, buffer);
+				xmlFree (buffer);
+			}
+		}
+		return;
+	}
+	
+	if (cur->type == XML_PI_NODE) {
+		if (cur->content != NULL) {
+			xmlBufferWriteChar (buf, "<?");
+			xmlBufferWriteCHAR (buf, cur->name);
+			if (cur->content != NULL) {
+				xmlBufferWriteChar (buf, " ");
+#ifndef XML_USE_BUFFER_CONTENT
+				xmlBufferWriteCHAR (buf, cur->content);
+#else
+				xmlBufferWriteCHAR (buf, xmlBufferContent (cur->content));
+#endif
+			}
+			xmlBufferWriteChar (buf, "?>");
+		}
+		return;
+	}
+	
+	if (cur->type == XML_COMMENT_NODE) {
+		if (cur->content != NULL) {
+			xmlBufferWriteChar (buf, "<!--");
+#ifndef XML_USE_BUFFER_CONTENT
+			xmlBufferWriteCHAR (buf, cur->content);
+#else
+			xmlBufferWriteCHAR (buf, xmlBufferContent (cur->content));
+#endif
+			xmlBufferWriteChar (buf, "-->");
+		}
+		return;
+	}
+	
+	if (cur->type == XML_ENTITY_REF_NODE) {
+		xmlBufferWriteChar (buf, "&");
+		xmlBufferWriteCHAR (buf, cur->name);
+		xmlBufferWriteChar (buf, ";");
+		return;
+	}
+	
+	if (cur->type == XML_CDATA_SECTION_NODE) {
+		xmlBufferWriteChar (buf, "<![CDATA[");
+		if (cur->content != NULL)
+#ifndef XML_USE_BUFFER_CONTENT
+			xmlBufferWriteCHAR (buf, cur->content);
+#else
+		xmlBufferWriteCHAR (buf, xmlBufferContent(cur->content));
+#endif
+		xmlBufferWriteChar (buf, "]]>");
+		return;
+	}
+	
+	if (format == 1) {
+		tmp = cur->childs;
+		while (tmp != NULL) {
+			if ((tmp->type == XML_TEXT_NODE) || 
+			    (tmp->type == XML_ENTITY_REF_NODE)) {
+				format = 0;
+				break;
+			}
+			tmp = tmp->next;
+		}
+	}
+	
+	xmlBufferWriteChar (buf, "<");
+	if ((cur->ns != NULL) && (cur->ns->prefix != NULL)) {
+		xmlBufferWriteCHAR (buf, cur->ns->prefix);
+		xmlBufferWriteChar (buf, ":");
+	}
+	
+	xmlBufferWriteCHAR (buf, cur->name);
+	
+	if (cur->properties != NULL)
+		xmlAttrListDump (buf, doc, cur->properties);
+	
+	if ((cur->content == NULL) && (cur->childs == NULL) &&
+	    (!xmlSaveNoEmptyTags)) {
+		xmlBufferWriteChar (buf, "/>");
+		return;
+	}
+	
+	xmlBufferWriteChar (buf, ">");
+	if (cur->content != NULL) {
+		xmlChar *buffer;
+		
+#ifndef XML_USE_BUFFER_CONTENT
+		buffer = xmlEncodeEntitiesReentrant (doc, cur->content);
+#else
+		buffer = xmlEncodeEntitiesReentrant (doc, xmlBufferContent (cur->content));
+#endif
+		if (buffer != NULL) {
+			xmlBufferWriteCHAR (buf, buffer);
+			xmlFree (buffer);
+		}
+	}
+	
+	if (cur->childs != NULL) {
+		if (format)
+			xmlBufferWriteChar (buf, "\n");
+		
+		xmlNodeListDump (buf, doc, cur->childs, (level >= 0 ? level + 1 : -1), format);
+		if ((xmlIndentTreeOutput) && (format))
+			for (i = 0; i < level; i++)
+				xmlBufferWriteChar (buf, "  ");
+	}
+	
+	xmlBufferWriteChar (buf, "</");
+	if ((cur->ns != NULL) && (cur->ns->prefix != NULL)) {
+		xmlBufferWriteCHAR (buf, cur->ns->prefix);
+		xmlBufferWriteChar (buf, ":");
+	}
+	
+	xmlBufferWriteCHAR (buf, cur->name);
+	xmlBufferWriteChar (buf, ">");
+}
+
+static void
+xmlDocContentDump (xmlBufferPtr buf, xmlDocPtr cur)
+{
+	xmlBufferWriteChar (buf, "<?xml version=");
+	
+	if (cur->version != NULL)
+		xmlBufferWriteQuotedString (buf, cur->version);
+	else
+		xmlBufferWriteChar (buf, "\"1.0\"");
+	
+	if ((cur->encoding != NULL) &&
+	    (strcasecmp (cur->encoding, "UTF-8") != 0)) {
+		xmlBufferWriteChar (buf, " encoding=");
+		xmlBufferWriteQuotedString (buf, cur->encoding);
+	}
+	
+	switch (cur->standalone) {
+        case 1:
+		xmlBufferWriteChar (buf, " standalone=\"yes\"");
+		break;
+	}
+	
+	xmlBufferWriteChar (buf, "?>\n");
+	if (cur->root != NULL) {
+		xmlNodePtr child = cur->root;
+		
+		while (child != NULL) {
+			xmlNodeDump (buf, cur, child, 0, 1);
+			xmlBufferWriteChar (buf, "\n");
+			child = child->next;
+		}
+	}
+}
+
 static void
 real_sync (BonoboConfigDatabase *db, 
-	   CORBA_Environment    *ev)
+	   CORBA_Environment *ev)
 {
 	BonoboConfigXMLDB *xmldb = BONOBO_CONFIG_XMLDB (db);
+	size_t n, written = 0;
+	xmlBufferPtr buf;
 	char *tmp_name;
-
+	ssize_t w;
+	int fd;
+	
 	if (!db->writeable)
 		return;
-
-	tmp_name = g_strdup_printf ("%s.tmp.%d\n", xmldb->filename, getpid ());
-
-	if (xmlSaveFile(tmp_name, xmldb->doc) < 0) {
+	
+ retry_open:
+	tmp_name = g_strdup_printf ("%s.tmp.%d.XXXXXX", xmldb->filename, getpid ());
+	if (!mktemp (tmp_name)) {
 		g_free (tmp_name);
-		db->writeable = FALSE;
 		return;
 	}
-
-	/* chmod (tmp_name, 0664); */
-
+	
+	fd = open (tmp_name, O_WRONLY | O_CREAT | O_EXCL, 0600);
+	if (fd == -1) {
+		g_free (tmp_name);
+		if (errno == EEXIST)
+			goto retry_open;
+		
+		return;
+	}
+	
+	if (!(buf = xmlBufferCreate ())) {
+		close (fd);
+		unlink (tmp_name);
+		g_free (tmp_name);
+		return;
+	}
+	
+	xmlDocContentDump (buf, xmldb->doc);
+	
+	n = buf->use;
+	do {
+		do {
+			w = write (fd, buf->content + written, n - written);
+		} while (w == -1 && errno == EINTR);
+		
+		if (w > 0)
+			written += w;
+	} while (w != -1 && written < n);
+	
+	xmlBufferFree (buf);
+	
+	if (written < n || fsync (fd) == -1) {
+		close (fd);
+		unlink (tmp_name);
+		g_free (tmp_name);
+		return;
+	}
+	
+	close (fd);
+	
 	if (rename (tmp_name, xmldb->filename) < 0) {
-		g_free (tmp_name);
-		db->writeable = FALSE;
-		return;
+		/* if we don't have permissions then we can assume the db is read-only */
+		if (errno == EACCES || errno == EPERM)
+			db->writeable = FALSE;
+		
+		unlink (tmp_name);
 	}
-
+	
 	g_free (tmp_name);
-	return;
 }
 
 static gint
@@ -323,7 +616,7 @@ real_set_value (BonoboConfigDatabase *db,
 	de->node = (xmlNodePtr) bonobo_config_xml_encode_any (value, name, ev);
 	
 	g_free (name);
-       
+	
 	bonobo_ui_node_add_child ((BonoboUINode *)de->dir->node, 
 				  (BonoboUINode *)de->node);
 
@@ -544,7 +837,7 @@ bonobo_config_xmldb_class_init (BonoboConfigDatabaseClass *class)
 static void
 bonobo_config_xmldb_init (BonoboConfigXMLDB *xmldb)
 {
-	xmldb->dir = g_new0 (DirData, 1);	
+	xmldb->dir = g_new0 (DirData, 1);
 }
 
 BONOBO_X_TYPE_FUNC (BonoboConfigXMLDB, PARENT_TYPE, bonobo_config_xmldb);

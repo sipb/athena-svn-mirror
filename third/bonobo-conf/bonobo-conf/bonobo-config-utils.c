@@ -277,10 +277,10 @@ is_simple (CORBA_TCKind my_kind)
 	}
 }
 
-#define DO_ENCODE(tckind,format,corbatype,value)			\
+#define DO_ENCODE(tckind,format,corbatype,corbaval)			\
 	case tckind:							\
 		snprintf (scratch, 127, format,				\
-			  * (corbatype *) value);			\
+			  * (corbatype *) corbaval);			\
 		bonobo_ui_node_set_attr (node, "value", scratch);       \
 		break;
 

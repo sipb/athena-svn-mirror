@@ -1,5 +1,5 @@
 %define name		bonobo-conf
-%define ver		0.14
+%define ver		0.16
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 
 Name:		%name

@@ -6,7 +6,7 @@ dnl Some day this can be fixed by xml-i18n-tools.
 AM_PROG_XML_I18N_TOOLS
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(bonobo-conf, 0.14)
+AM_INIT_AUTOMAKE(bonobo-conf, 0.16)
 
 AM_MAINTAINER_MODE
 
@@ -135,7 +135,7 @@ AC_CHECK_ALIGNOF(CORBA_struct)
 AC_CHECK_ALIGNOF(CORBA_pointer)
 CPPFLAGS=$orig_CPPFLAGS 
 
-ALL_LINGUAS="da de es fr it nn no pl sv tr zh_TW"
+ALL_LINGUAS="az da de el es fr hu it nn no pl pt pt_BR sk sv tr zh_TW"
 
 AM_GNU_GETTEXT
 	
@@ -153,5 +153,4 @@ idl/Makefile
 doc/Makefile
 tests/Makefile
 bonobo-conf.spec
-])
-
+],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
