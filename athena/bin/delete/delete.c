@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.19 1989-11-06 19:52:51 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.20 1989-11-22 21:32:51 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -68,7 +68,6 @@
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 int emulate_rm;
-extern char *malloc();
 extern int errno;
 
 main(argc, argv)
