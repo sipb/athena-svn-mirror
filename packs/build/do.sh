@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.18 1998-03-03 21:04:42 ghudson Exp $
+# $Id: do.sh,v 1.19 1998-04-18 16:57:50 danw Exp $
 
 source="/mit/source"
 srvd="/srvd"
@@ -48,12 +48,30 @@ CONFIG_SITE=$source/packs/build/config.site
 
 # Determine proper ATHENA_SYS value.
 case "`uname -srm`" in
-SunOS*5.6*sun4*)	ATHENA_SYS=sun4x_56	;;
-SunOS*5.5*sun4*)	ATHENA_SYS=sun4x_55	;;
-SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
-IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
-IRIX*6.2*)		ATHENA_SYS=sgi_62	;;
-IRIX*6.3*)		ATHENA_SYS=sgi_63	;;
+SunOS*5.6*sun4*)
+	ATHENA_SYS=sun4x_56
+	ATHENA_SYS_COMPAT=sun4x_55:sun4m_54:sun4m_53:sun4m_412
+	;;
+SunOS*5.5*sun4*)
+	ATHENA_SYS=sun4x_55
+	ATHENA_SYS_COMPAT=sun4m_54:sun4m_53:sun4m_412
+	;;
+SunOS*5.4*sun4*)
+	ATHENA_SYS=sun4m_54
+	ATHENA_SYS_COMPAT=sun4m_53:sun4m_412
+	;;
+IRIX*5.3*)
+	ATHENA_SYS=sgi_53
+	ATHENA_SYS_COMPAT=sgi_52
+	;;
+IRIX*6.2*)
+	ATHENA_SYS=sgi_62
+	ATHENA_SYS_COMPAT=sgi_53:sgi_52
+	;;
+IRIX*6.3*)
+	ATHENA_SYS=sgi_63
+	ATHENA_SYS_COMPAT=sgi_62:sgi_53:sgi_52
+	;;
 esac
 
 # Determine platform type, appropriate path, and compiler for use with plain
