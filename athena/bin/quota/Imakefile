@@ -12,7 +12,8 @@ AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx -llwp
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 #ifdef SOLARIS
-LIBS = $(MACHLIBS) $(AFSLIBS) -lbsd
+LIBS = $(MACHLIBS) $(AFSLIBS) 
+LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
 #else
 LIBS = $(MACHLIBS) $(AFSLIBS)
 #endif
