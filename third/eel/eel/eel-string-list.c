@@ -566,19 +566,47 @@ eel_string_list_equals (const EelStringList *a,
 GSList *
 eel_string_list_as_g_slist (const EelStringList *string_list)
 {
-	guint i;
 	GSList *gslist;
+	GSList *l;
 	
 	if (string_list == NULL) {
 		return NULL;
 	}
 
 	gslist = NULL;
-	for (i = 0; i < eel_string_list_get_length (string_list); i++) {
-		gslist = g_slist_append (gslist, eel_string_list_nth (string_list, i));
+	for (l = string_list->strings; l != NULL; l = l->next) {
+		gslist = g_slist_prepend (gslist, g_strdup (l->data));
 	}
+	gslist = g_slist_reverse (gslist);
 
 	return gslist;
+}
+
+/**
+ * eel_string_list_as_g_list:
+ *
+ * @string_list: A EelStringList
+ *
+ * Return value: A GList of strings that must deep free the result with
+ * eel_g_list_free_deep()
+ */
+GList *
+eel_string_list_as_g_list (const EelStringList *string_list)
+{
+	GList *glist;
+	GSList *l;
+	
+	if (string_list == NULL) {
+		return NULL;
+	}
+
+	glist = NULL;
+	for (l = string_list->strings; l != NULL; l = l->next) {
+		glist = g_list_prepend (glist, g_strdup (l->data));
+	}
+	glist = g_list_reverse (glist);
+
+	return glist;
 }
 
 /**

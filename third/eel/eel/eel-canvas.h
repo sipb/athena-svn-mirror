@@ -92,13 +92,13 @@ enum {
 	EEL_CANVAS_ITEM_ALWAYS_REDRAW    = 1 << 6,
 	EEL_CANVAS_ITEM_VISIBLE          = 1 << 7,
 	EEL_CANVAS_ITEM_NEED_UPDATE      = 1 << 8,
-	EEL_CANVAS_ITEM_NEED_DEEP_UPDATE = 1 << 9,
+	EEL_CANVAS_ITEM_NEED_DEEP_UPDATE = 1 << 9
 };
 
 /* Update flags for items */
 enum {
 	EEL_CANVAS_UPDATE_REQUESTED  = 1 << 0,
-	EEL_CANVAS_UPDATE_DEEP       = 1 << 1,
+	EEL_CANVAS_UPDATE_DEEP       = 1 << 1
 };
 
 #define EEL_TYPE_CANVAS_ITEM            (eel_canvas_item_get_type ())
@@ -397,6 +397,9 @@ struct _EelCanvas {
 
 	/* Whether items need update at next idle loop iteration */
 	unsigned int need_update : 1;
+
+	/* Are we in the midst of an update */
+	unsigned int doing_update : 1;
 
 	/* Whether the canvas needs redrawing at the next idle loop iteration */
 	unsigned int need_redraw : 1;

@@ -59,6 +59,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
 AWK = @AWK@
@@ -66,6 +67,8 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -76,9 +79,13 @@ EEL_MICRO_VERSION = @EEL_MICRO_VERSION@
 EEL_MINOR_VERSION = @EEL_MINOR_VERSION@
 EEL_VERSION = @EEL_VERSION@
 EEL_VERSION_INFO = @EEL_VERSION_INFO@
+EGREP = @EGREP@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 EXEEXT = @EXEEXT@
+F77 = @F77@
 GAIL_REQUIRED = @GAIL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONF_REQUIRED = @GCONF_REQUIRED@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
@@ -90,11 +97,14 @@ GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTK_REQUIRED = @GTK_REQUIRED@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
+LIB = @LIB@
 LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -110,23 +120,20 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 RENDER_LIBS = @RENDER_LIBS@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_REQUIRED = @XML_REQUIRED@
+X_LIBS = @X_LIBS@
 gnomelocaledir = @gnomelocaledir@
 
 NULL = 
 
 SUBDIRS = eel test po
 
-EXTRA_DIST = \
-	COPYING.LIB				\
-	HACKING					\
-	MAINTAINERS				\
-	eel.spec.in				\
-	$(NULL)
+EXTRA_DIST =  	COPYING.LIB					HACKING						MAINTAINERS					eel.spec.in					eel-2.0-uninstalled.pc.in			$(NULL)
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -134,13 +141,14 @@ pkgconfig_DATA = eel-2.0.pc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  eel-2.0.pc eel.spec
+CONFIG_CLEAN_FILES =  eel-2.0.pc eel-2.0-uninstalled.pc eel.spec
 DATA =  $(pkgconfig_DATA)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in \
-eel-2.0.pc.in eel.spec.in install-sh ltmain.sh missing mkinstalldirs
+eel-2.0-uninstalled.pc.in eel-2.0.pc.in eel.spec.in install-sh \
+ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -192,6 +200,8 @@ distclean-hdr:
 
 maintainer-clean-hdr:
 eel-2.0.pc: $(top_builddir)/config.status eel-2.0.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+eel-2.0-uninstalled.pc: $(top_builddir)/config.status eel-2.0-uninstalled.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 eel.spec: $(top_builddir)/config.status eel.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status

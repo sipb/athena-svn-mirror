@@ -69,7 +69,7 @@ enum
 	PROP_X_ALIGNMENT,
 	PROP_X_PADDING,
 	PROP_Y_ALIGNMENT,
-	PROP_Y_PADDING,
+	PROP_Y_PADDING
 };
 
 /* Detail member struct */

@@ -41,6 +41,7 @@
 /* Legal conversion specifiers, as specified in the C standard. */
 #define C_STANDARD_STRFTIME_CHARACTERS "aAbBcdHIjmMpSUwWxXyYZ"
 #define C_STANDARD_NUMERIC_STRFTIME_CHARACTERS "dHIjmMSUwWyY"
+#define SUS_EXTENDED_STRFTIME_MODIFIERS "EO"
 
 #define SAFE_SHELL_CHARACTERS "-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
@@ -53,7 +54,7 @@ typedef struct {
 static GList *hash_tables_to_free_at_exit;
 
 /* We will need this for eel_unsetenv if there is no unsetenv. */
-#if !defined (HAVE_SETENV)
+#if !defined (HAVE_UNSETENV)
 extern char **environ;
 #endif
 
@@ -95,7 +96,7 @@ eel_setenv (const char *name, const char *value, gboolean overwrite)
 void
 eel_unsetenv (const char *name)
 {
-#if defined (HAVE_SETENV)
+#if defined (HAVE_UNSETENV)
 	unsetenv (name);
 #else
 	int i, len;
@@ -167,10 +168,12 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 {
 	GString *string;
 	const char *remainder, *percent;
-	char code[3], buffer[512];
+	char code[4], buffer[512];
 	char *piece, *result, *converted;
 	size_t string_length;
 	gboolean strip_leading_zeros, turn_leading_zeros_to_spaces;
+	char modifier;
+	int i;
 
 	/* Format could be translated, and contain UTF-8 chars,
 	 * so convert to locale encoding which strftime uses */
@@ -216,6 +219,17 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 			turn_leading_zeros_to_spaces = FALSE;
 			break;
 		}
+
+		modifier = 0;
+		if (strchr (SUS_EXTENDED_STRFTIME_MODIFIERS, *remainder) != NULL) {
+			modifier = *remainder;
+			remainder++;
+
+			if (*remainder == 0) {
+				g_warning ("Unfinished %%%c modifier passed to eel_strdup_strftime", modifier);
+				break;
+			}
+		} 
 		
 		if (strchr (C_STANDARD_STRFTIME_CHARACTERS, *remainder) == NULL) {
 			g_warning ("eel_strdup_strftime does not support "
@@ -228,9 +242,15 @@ eel_strdup_strftime (const char *format, struct tm *time_pieces)
 		 * of 512 bytes, which is probably OK. There's no
 		 * limit on the total size of the result string.
 		 */
-		code[0] = '%';
-		code[1] = *remainder;
-		code[2] = '\0';
+		i = 0;
+		code[i++] = '%';
+		if (modifier != 0) {
+#ifdef HAVE_STRFTIME_EXTENSION
+			code[i++] = modifier;
+#endif
+		}
+		code[i++] = *remainder;
+		code[i++] = '\0';
 		string_length = strftime (buffer, sizeof (buffer),
 					  code, time_pieces);
 		if (string_length == 0) {
@@ -382,6 +402,20 @@ GList *
 eel_g_str_list_alphabetize (GList *list)
 {
 	return g_list_sort (list, (GCompareFunc) eel_strcoll);
+}
+
+int
+eel_g_str_list_index (GList *str_list,
+		      const char *str)
+{
+	int i;
+	GList *l;
+	for (i = 0, l = str_list; l != NULL; l = l->next, i++) {
+		if (!strcmp (str, (const char*)l->data)) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 /**

@@ -44,7 +44,8 @@ typedef enum {
 	PREFERENCE_BOOLEAN = 1,
 	PREFERENCE_INTEGER,
 	PREFERENCE_STRING,
-	PREFERENCE_STRING_LIST
+	PREFERENCE_STRING_LIST,
+	PREFERENCE_STRING_GLIST
 } PreferenceType;
 
 /*
@@ -434,6 +435,7 @@ eel_preferences_set (const char *name,
 		eel_gconf_set_string (key, string_value);
 	}
 	g_free (key);
+	g_free (old_value);
 }
 
 char *
@@ -531,6 +533,62 @@ eel_preferences_get_string_list (const char *name)
 	return result;
 }
 
+GList *
+eel_preferences_get_string_glist (const char *name)
+{
+	EelStringList *string_list;
+	GList *ret;
+	
+	string_list = eel_preferences_get_string_list (name);
+	ret = eel_string_list_as_g_list (string_list);
+	eel_string_list_free (string_list);
+
+	return ret;
+}
+
+void           
+eel_preferences_set_string_glist (const char *name,
+				  const GList *string_list_value)
+{
+	EelStringList *string_list;
+	
+	string_list = eel_string_list_new_from_g_list (string_list_value,
+						       TRUE);
+	eel_preferences_set_string_list (name, string_list);
+	eel_string_list_free (string_list);
+}
+
+void
+eel_preferences_unset (const char *name)
+{
+	char *key;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	key = preferences_key_make (name);
+	
+	eel_gconf_unset (key);
+
+	g_free (key);
+}
+
+gboolean
+eel_preferences_key_is_writable (const char *name)
+{
+	gboolean result;
+	char *key;
+	
+	g_return_val_if_fail (name != NULL, 0);
+	g_return_val_if_fail (preferences_is_initialized (), 0);
+
+	key = preferences_key_make (name);
+	result = eel_gconf_key_is_writable (key);
+	g_free (key);
+
+	return result;
+}
+
 /**
  * preferences_callback_entry_invoke_function
  *
@@ -555,11 +613,7 @@ preferences_callback_entry_invoke_function (gpointer data,
 static void
 preferences_entry_invoke_callbacks (PreferencesEntry *entry)
 {
-	GConfValue *new_value;
-	
 	g_return_if_fail (entry != NULL);
-
-	new_value = preferences_get_value (entry->name);
 
 	/* Update the auto storage preferences */
 	if (entry->auto_storage_list != NULL) {
@@ -607,6 +661,22 @@ update_auto_string_list (gpointer data, gpointer callback_data)
 }
 
 static void
+update_auto_string_glist (gpointer data, gpointer callback_data)
+{
+	GList **storage;
+	GList *value;
+	
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	storage = (GList **)data;
+	value = (GList *)callback_data;
+	
+	eel_g_list_free_deep (*storage);
+	*(GList **)storage = eel_g_str_list_copy (value);
+}
+
+static void
 update_auto_integer_or_boolean (gpointer data, gpointer callback_data)
 {
 	g_return_if_fail (data != NULL);
@@ -619,6 +689,7 @@ preferences_entry_update_auto_storage (PreferencesEntry *entry)
 {
 	char *new_string_value;
 	EelStringList *new_string_list_value;
+	GList *new_string_glist_value;
 	int new_int_value;
 	gboolean new_boolean_value;
 
@@ -643,6 +714,13 @@ preferences_entry_update_auto_storage (PreferencesEntry *entry)
 				update_auto_string_list,
 				new_string_list_value);
 		eel_string_list_free (new_string_list_value);
+		break;
+	case PREFERENCE_STRING_GLIST:
+		new_string_glist_value = eel_preferences_get_string_glist (entry->name);
+		g_list_foreach (entry->auto_storage_list,
+				update_auto_string_glist,
+				new_string_glist_value);
+		eel_g_list_free_deep (new_string_glist_value);
 		break;
 	case PREFERENCE_INTEGER:
 		new_int_value = eel_preferences_get_integer (entry->name);
@@ -1086,6 +1164,27 @@ eel_preferences_add_auto_string_list (const char *name,
 	value = eel_preferences_get_string_list (entry->name);
 	update_auto_string_list (storage, value);
 	eel_string_list_free (value);
+}
+
+void
+eel_preferences_add_auto_string_glist (const char *name,
+				       const GList **storage)
+{
+	PreferencesEntry *entry;
+	GList *value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_STRING_GLIST);
+
+	value = eel_preferences_get_string_glist (entry->name);
+	update_auto_string_glist (storage, value);
+	eel_g_list_free_deep (value);
 }
 
 void

@@ -48,6 +48,8 @@ void         eel_gconf_set_string            (const char             *key,
 GSList *     eel_gconf_get_string_list       (const char             *key);
 void         eel_gconf_set_string_list       (const char             *key,
 					      const GSList           *string_list_value);
+void         eel_gconf_unset                 (const char             *key);
+gboolean     eel_gconf_key_is_writable       (const char             *key);
 gboolean     eel_gconf_is_default            (const char             *key);
 gboolean     eel_gconf_monitor_add           (const char             *directory);
 gboolean     eel_gconf_monitor_remove        (const char             *directory);

@@ -1,77 +1,113 @@
 # Italian translation for EEL
 # Christopher R. Gabriel <cgabriel@pluto.linux.it>, 2000
+# Luca Ferretti <elle.uca@infinito.it>, 2003-2004
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: EEL 0.1\n"
-"POT-Creation-Date: 2003-05-07 13:26-0400\n"
-"PO-Revision-Date: 2002-07-07 00:54+0200\n"
-"Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Project-Id-Version: eel\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"PO-Revision-Date: 2004-07-24 15:20+0200\n"
+"Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
+#: eel/eel-alert-dialog.c:114
+msgid "Image/label border"
+msgstr "Bordo dell'immagine/etichetta"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Width of border around the label and image in the alert dialog"
+msgstr ""
+"Larghezza del bordo intorno all'etichetta e all'immagine nella finestra di "
+"dialogo di avviso"
+
+#: eel/eel-alert-dialog.c:124
+msgid "Alert Type"
+msgstr "Tipo di avviso"
+
+#: eel/eel-alert-dialog.c:125
+msgid "The type of alert"
+msgstr "Il tipo di avviso"
+
+#: eel/eel-alert-dialog.c:133
+msgid "Alert Buttons"
+msgstr "Pulsanti di avviso"
+
+#: eel/eel-alert-dialog.c:134
+msgid "The buttons shown in the alert dialog"
+msgstr "I pulsanti mostrati nella finestra di dialogo di avviso"
+
+#: eel/eel-alert-dialog.c:198
+msgid "Show more _details"
+msgstr "Mostra maggiori _dettagli"
+
+#: eel/eel-canvas.c:1226 eel/eel-canvas.c:1227
 msgid "X"
-msgstr ""
+msgstr "X"
 
-#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
+#: eel/eel-canvas.c:1233 eel/eel-canvas.c:1234
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
-#: eel/eel-editable-label.c:360
+#: eel/eel-editable-label.c:365
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
-#: eel/eel-editable-label.c:361
+#: eel/eel-editable-label.c:366
 msgid "The text of the label."
-msgstr ""
+msgstr "Il testo dell'etichetta."
 
-#: eel/eel-editable-label.c:367
+#: eel/eel-editable-label.c:372
 msgid "Justification"
-msgstr ""
+msgstr "Giustificazione"
 
-#: eel/eel-editable-label.c:368
+#: eel/eel-editable-label.c:373
 msgid ""
 "The alignment of the lines in the text of the label relative to each other. "
 "This does NOT affect the alignment of the label within its allocation. See "
 "GtkMisc::xalign for that."
 msgstr ""
+"L'allineamento reciproco delle righe nel testo dell'etichetta. NON influisce "
+"sull'allineamento dell'etichetta. Si veda GtkMisc::xalign per questo."
 
-#: eel/eel-editable-label.c:376
+# Se il messaggio successivo, come in ogni libreria del progetto GNOME è la spiegazione lunga....
+#: eel/eel-editable-label.c:381
 msgid "Line wrap"
-msgstr ""
+msgstr "A capo automatico"
 
-#: eel/eel-editable-label.c:377
+#: eel/eel-editable-label.c:382
 msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
+msgstr "Se impostato, va a capo se il testo diventa troppo lungo."
 
-#: eel/eel-editable-label.c:384
+#: eel/eel-editable-label.c:389
 msgid "Cursor Position"
-msgstr ""
+msgstr "Posizione cursore"
 
-#: eel/eel-editable-label.c:385
+#: eel/eel-editable-label.c:390
 msgid "The current position of the insertion cursor in chars."
-msgstr ""
+msgstr "La posizione attuale, in caratteri, del cursore di inserimento."
 
-#: eel/eel-editable-label.c:394
-#, fuzzy
+#: eel/eel-editable-label.c:399
 msgid "Selection Bound"
-msgstr "Nessuna selezione"
+msgstr "Limite della selezione"
 
-#: eel/eel-editable-label.c:395
+#: eel/eel-editable-label.c:400
 msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
 msgstr ""
+"La posizione, in caratteri, del lato opposto della selezione rispetto al "
+"cursore."
 
 #: eel/eel-editable-label.c:3069
 msgid "Select All"
-msgstr ""
+msgstr "Seleziona tutto"
 
 #: eel/eel-editable-label.c:3080
 msgid "Input Methods"
-msgstr ""
+msgstr "Metodi di input"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -84,16 +120,14 @@ msgstr ""
 
 #: eel/eel-gconf-extensions.c:87
 #, c-format
-msgid ""
-"GConf error:\n"
-"  %s\n"
-"All further errors shown only on terminal"
-msgstr ""
-"Errore GConf:\n"
-"  %s\n"
-"Tutti gli errori successivi verranno mostrati solo nel terminale"
+msgid "GConf error: %s"
+msgstr "Errore GConf: %s"
 
-#: eel/eel-gconf-extensions.c:91
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "Tutti gli ulteriori errori sono mostrati solo su terminale."
+
+#: eel/eel-gconf-extensions.c:92
 msgid "GConf Error"
 msgstr "Errore GConf"
 
@@ -101,61 +135,139 @@ msgstr "Errore GConf"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1128
+#: eel/eel-glib-extensions.c:1162
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00 AM"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1130
+#: eel/eel-glib-extensions.c:1164
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00 AM"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1132
+#: eel/eel-glib-extensions.c:1166
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 AM"
 
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "Non è stata selezionata alcuna immagine."
+
 #: eel/eel-gnome-extensions.c:285
-msgid "No image was selected.  You must click on an image to select it."
-msgstr ""
-"Nessuna immagine selezionata. Cliccate su una immaginare per selezionarla."
+msgid "You must click on an image to select it."
+msgstr "Fare clic su un'immagine per selezionarla."
 
 #: eel/eel-gnome-extensions.c:286
-msgid "No selection made"
+msgid "No Selection Made"
 msgstr "Nessuna selezione"
 
-#: eel/eel-password-dialog.c:203
-msgid "_Username:"
-msgstr "_Nome utente:"
+# credo applicazione, verifico una volta compilato
+#: eel/eel-mime-application-chooser.c:224
+msgid "Default"
+msgstr "Predefinita"
 
-#: eel/eel-password-dialog.c:210
-msgid "_Password:"
-msgstr "_Password:"
+#: eel/eel-mime-application-chooser.c:233
+msgid "Name"
+msgstr "Nome"
 
-#: eel/eel-password-dialog.c:237
-msgid "Remember this password"
-msgstr "Ricorda questa password"
+#: eel/eel-mime-application-chooser.c:425
+msgid "<i>No applications selected</i>"
+msgstr "<i>Nessuna applicazione selezionata</i>"
 
-#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
+# credo che %s sia il tipo MIME, verifico una volta compilato
+#: eel/eel-mime-application-chooser.c:469 eel/eel-open-with-dialog.c:581
+#, c-format
+msgid "%s document"
+msgstr "Documento %s"
+
+# O "Sconosciuta" se intende applicazione.... magari dare un'occhiata al codice sorgente
+#: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
+#, fuzzy
+msgid "Unknown"
+msgstr "Sconosciuto"
+
+#: eel/eel-mime-application-chooser.c:485
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr "Seleziona un'applicazione per aprire <i>%s</i> altri file di tipo «%s»"
+
+#: eel/eel-open-with-dialog.c:125 eel/eel-open-with-dialog.c:127
+#: eel/eel-open-with-dialog.c:193 eel/eel-open-with-dialog.c:195
+msgid "Could not run application"
+msgstr "Impossibile eseguire l'applicazione"
+
+#: eel/eel-open-with-dialog.c:144
+#, c-format
+msgid "The application '%s' is not a valid executable"
+msgstr "L'applicazione «%s» non è un eseguibile valido"
+
+#: eel/eel-open-with-dialog.c:147 eel/eel-open-with-dialog.c:149
+msgid "Could not open application"
+msgstr "Impossibile aprire l'applicazione"
+
+#: eel/eel-open-with-dialog.c:161
+#, c-format
+msgid "Could not find '%s'"
+msgstr "Non è possibile trovare «%s»"
+
+#: eel/eel-open-with-dialog.c:164 eel/eel-open-with-dialog.c:166
+msgid "Could not find application"
+msgstr "Non è possibile trovare l'applicazione"
+
+#: eel/eel-open-with-dialog.c:251 eel/eel-open-with-dialog.c:253
+msgid "Could not add application"
+msgstr "Non è possibile aggiungere l'applicazione"
+
+#: eel/eel-open-with-dialog.c:252
+msgid "Could not add application to the application database"
+msgstr ""
+"Non è possibile aggiungere l'applicazione al database delle applicazioni"
+
+#: eel/eel-open-with-dialog.c:366
+msgid "Select an Application"
+msgstr "Selezionare un'applicazione"
+
+#: eel/eel-open-with-dialog.c:438
+msgid "Open With"
+msgstr "Apri con"
+
+#: eel/eel-open-with-dialog.c:481
+msgid "_Browse..."
+msgstr "S_foglia..."
+
+#: eel/eel-open-with-dialog.c:600
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "Apri <i>%s</i> ed altri file di tipo «%s» con:"
+
+#: eel/eel-open-with-dialog.c:631
+msgid "_Add"
+msgstr "A_ggiungi"
+
+#: eel/eel-open-with-dialog.c:636
+msgid "Add Application"
+msgstr "Aggiunta applicazione"
+
+#: eel/eel-stock-dialogs.c:216
+msgid "You can stop this operation by clicking cancel."
+msgstr "È possibile fermare questa operazione facendo clic su «Annulla»."
+
+#: eel/eel-stock-dialogs.c:462 eel/eel-stock-dialogs.c:482
 msgid "Info"
-msgstr "Info"
+msgstr "Informazioni"
 
-#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
-msgid "Details"
-msgstr "Dettagli"
-
-#: eel/eel-stock-dialogs.c:526
+#: eel/eel-stock-dialogs.c:501
 msgid "Warning"
 msgstr "Attenzione"
 
-#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
+#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:537
 msgid "Error"
 msgstr "Errore"
 
-#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
+#: eel/eel-stock-dialogs.c:567 eel/eel-stock-dialogs.c:602
 msgid "Question"
 msgstr "Domanda"
 
-#: eel/eel-vfs-extensions.c:687
+#: eel/eel-vfs-extensions.c:693
 msgid " (invalid Unicode)"
-msgstr "(Unicode non valido)"
+msgstr " (Unicode non valido)"

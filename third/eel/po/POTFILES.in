@@ -1,10 +1,12 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
+eel/eel-alert-dialog.c
 eel/eel-canvas.c
 eel/eel-editable-label.c
 eel/eel-gconf-extensions.c
 eel/eel-glib-extensions.c
 eel/eel-gnome-extensions.c
-eel/eel-password-dialog.c
+eel/eel-mime-application-chooser.c
+eel/eel-open-with-dialog.c
 eel/eel-stock-dialogs.c
 eel/eel-vfs-extensions.c

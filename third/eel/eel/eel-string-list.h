@@ -128,8 +128,11 @@ int            eel_string_list_get_index_for_string      (const EelStringList   
 /* Does the string list a equal string list b ? */
 gboolean       eel_string_list_equals                    (const EelStringList          *a,
 							  const EelStringList          *b);
-/* Return the string list in a GList.  Must deep free the result with eel_g_list_free_deep() */
+/* Return the string list in a GSList.  Must deep free the result with eel_g_slist_free_deep() */
 GSList *       eel_string_list_as_g_slist                (const EelStringList          *string_list);
+
+/* Return the string list in a GList.  Must deep free the result with eel_g_list_free_deep() */
+GList *        eel_string_list_as_g_list                 (const EelStringList          *string_list);
 
 /* Return the string list as a concatenation of all the items delimited by delimiter. */
 char *         eel_string_list_as_string                 (const EelStringList          *string_list,

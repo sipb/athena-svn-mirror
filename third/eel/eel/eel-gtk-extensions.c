@@ -67,11 +67,6 @@
 #define MINIMUM_ON_SCREEN_WIDTH		100
 #define MINIMUM_ON_SCREEN_HEIGHT	100
 
-/* How far down the window tree will we search when looking for top-level
- * windows? Some window managers doubly-reparent the client, so account
- * for that, and add some slop.
- */
-#define MAXIMUM_WM_REPARENTING_DEPTH 4
 
 /**
  * eel_gtk_button_new_with_stock_icon:
@@ -261,9 +256,6 @@ eel_gtk_window_event_is_close_accelerator (GtkWindow *window, GdkEventKey *event
 		}
 	}
 
-	if (event->keyval == GDK_Escape) {
-		return TRUE;
-	}
 
 	return FALSE;	
 }

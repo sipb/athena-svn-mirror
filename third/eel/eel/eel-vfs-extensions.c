@@ -652,6 +652,12 @@ eel_uri_is_in_trash (const char *uri)
 	return result;
 }
 
+gboolean
+eel_uri_is_desktop (const char *uri)
+{
+	return eel_istr_has_prefix (uri, EEL_DESKTOP_URI);
+}
+
 char *
 eel_make_valid_utf8 (const char *name)
 {

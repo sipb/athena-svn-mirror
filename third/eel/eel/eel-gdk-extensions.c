@@ -642,7 +642,7 @@ eel_gdk_window_focus (GdkWindow *window, guint32 timestamp)
 	gdk_error_trap_push ();
 	XSetInputFocus (GDK_DISPLAY (),
 			GDK_WINDOW_XWINDOW (window),
-			RevertToNone,
+			RevertToParent,
 			timestamp);
 	gdk_flush();
 	gdk_error_trap_pop ();
@@ -691,7 +691,7 @@ eel_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
 	}
 
 	wm_hints->flags |= InputHint;
-	wm_hints->input = status;
+	wm_hints->input = (status == FALSE) ? False : True;
 
 	XSetWMHints (dpy, id, wm_hints);
 	XFree (wm_hints);

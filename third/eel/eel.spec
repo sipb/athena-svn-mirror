@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             eel2
 Summary:          Eazel Extensions Library.
-Version:          2.2.4
+Version:          2.8.0
 Release:          1
 License:          GPL
 Group:            System Environment/Libraries
@@ -11,21 +11,21 @@ URL:              http://nautilus.eazel.com/
 BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
 Requires:         GConf2 >= 1.1.11
-Requires:         gtk2 >= 2.1.0
+Requires:         gtk2 >= 2.3.0
 Requires:         glib2 >= 2
-Requires:         gnome-vfs2 >= 1.9
+Requires:         gnome-vfs2 >= 2.7.91
 Requires:         libart_lgpl >= 2.3.8
 Requires:         libgnome >= 2.0
-Requires:         libgnomeui >= 2.0
+Requires:         libgnomeui >= 2.7.92
 Requires:         libxml2 >= 2.4.7
 Prereq:           GConf2
 BuildRequires:    GConf2-devel >= 1.1.11
-BuildRequires:    gtk2-devel >= 2.1.0
+BuildRequires:    gtk2-devel >= 2.3.0
 BuildRequires:    glib2-devel >= 2
-BuildRequires:    gnome-vfs2-devel >= 1.9
+BuildRequires:    gnome-vfs2-devel >= 2.7.91
 BuildRequires:    libart_lgpl-devel >= 2.3.8
 BuildRequires:    libgnome-devel >= 2.0
-BuildRequires:    libgnomeui-devel >= 2.0
+BuildRequires:    libgnomeui-devel >= 2.7.92
 BuildRequires:    libxml2-devel >= 2.4.7
 
 
@@ -40,18 +40,18 @@ Requires:         %{name} = %{version}
 Requires:         pkgconfig >= 0.8
 Requires:         GConf2 >= 1.1.11
 Requires:         GConf2-devel >= 1.1.11
-Requires:         gtk2 >= 2.1.0
-Requires:         gtk2-devel >= 2.1.0
+Requires:         gtk2 >= 2.3.0
+Requires:         gtk2-devel >= 2.3.0
 Requires:         glib2 >= 2
 Requires:         glib2-devel >= 2
-Requires:         gnome-vfs2 >= 1.9
-Requires:         gnome-vfs2-devel >= 1.9
+Requires:         gnome-vfs2 >= 2.7.91
+Requires:         gnome-vfs2-devel >= 2.7.91
 Requires:         libart_lgpl >= 2.3.8
 Requires:         libart_lgpl-devel >= 2.3.8
 Requires:         libgnome >= 2.0
 Requires:         libgnome-devel >= 2.0
-Requires:         libgnomeui >= 2.0
-Requires:         libgnomeui-devel >= 2.0
+Requires:         libgnomeui >= 2.7.92
+Requires:         libgnomeui-devel >= 2.7.92
 Requires:         libxml2 >= 2.4.7
 Requires:         libxml2-devel >= 2.4.7
 

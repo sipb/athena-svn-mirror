@@ -62,6 +62,21 @@ eel_preferences_glade_option_menu_update (GtkOptionMenu *option_menu,
 	g_signal_handlers_unblock_by_func (option_menu, change_callback, key);
 }
 
+static void
+eel_preference_glade_never_sensitive (GtkWidget *widget, GtkStateType state)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (widget), FALSE);
+}
+
+static void
+eel_preferences_glade_set_never_sensitive (GtkWidget *widget)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (widget), FALSE);
+	g_signal_connect (G_OBJECT (widget), "state_changed",
+			  G_CALLBACK (eel_preference_glade_never_sensitive),
+			  NULL);
+}
+
 /* bool preference */
 
 static void
@@ -103,6 +118,10 @@ eel_preferences_glade_connect_bool (GladeXML *dialog,
 	eel_preferences_add_callback_while_alive (key,
 				      		  (EelPreferencesCallback) eel_preferences_glade_bool_update,
 				      		  toggle_button, G_OBJECT (toggle_button));
+
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_glade_set_never_sensitive (GTK_WIDGET (toggle_button));
+	}
 	
 	g_signal_connect (G_OBJECT (toggle_button), "toggled",
 			  G_CALLBACK (eel_preferences_glade_bool_toggled),
@@ -124,6 +143,10 @@ eel_preferences_glade_connect_bool_slave (GladeXML *dialog,
 	g_return_if_fail (key != NULL);
 
 	toggle_button = GTK_TOGGLE_BUTTON (glade_xml_get_widget (dialog, component));
+
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_glade_set_never_sensitive (GTK_WIDGET (toggle_button));
+	}
 	
 	g_signal_connect_data (G_OBJECT (toggle_button), "toggled",
 			       G_CALLBACK (eel_preferences_glade_bool_toggled),
@@ -202,6 +225,10 @@ eel_preferences_glade_connect_string_enum_option_menu (GladeXML *dialog,
 				 		  (EelPreferencesCallback) eel_preferences_glade_string_enum_option_menu_update,
 						  option_menu, G_OBJECT (option_menu));
 
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_glade_set_never_sensitive (GTK_WIDGET (option_menu));
+	}
+
 	g_signal_connect (G_OBJECT (option_menu), "changed",
 			  G_CALLBACK (eel_preferences_glade_string_enum_option_menu_changed),
 			  g_object_get_data (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_KEY));
@@ -223,6 +250,10 @@ eel_preferences_glade_connect_string_enum_option_menu_slave (GladeXML *dialog,
 	option_menu = glade_xml_get_widget (dialog, component);
 
 	g_assert (g_object_get_data (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_MAP) != NULL);
+
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_glade_set_never_sensitive (GTK_WIDGET (option_menu));
+	}
 
 	g_signal_connect_data (G_OBJECT (option_menu), "changed",
 			       G_CALLBACK (eel_preferences_glade_string_enum_option_menu_changed),
@@ -303,6 +334,10 @@ eel_preferences_glade_connect_int_enum (GladeXML *dialog,
 	g_object_set_data_full (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_KEY,
 				g_strdup (key), (GDestroyNotify) g_free);
 
+	if (!eel_preferences_key_is_writable (key)) {
+		eel_preferences_glade_set_never_sensitive (GTK_WIDGET (option_menu));
+	}
+
 	g_signal_connect (G_OBJECT (option_menu), "changed",
 			  G_CALLBACK (eel_preferences_glade_int_enum_changed),
 			  g_object_get_data (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_KEY));
@@ -364,6 +399,7 @@ eel_preferences_glade_connect_string_enum_radio_button (GladeXML *dialog,
 	GHashTable *map;
 	int i;
 	GtkWidget *widget;
+	gboolean writable;
 
 	g_return_if_fail (dialog != NULL);
 	g_return_if_fail (components != NULL);
@@ -371,6 +407,8 @@ eel_preferences_glade_connect_string_enum_radio_button (GladeXML *dialog,
 	g_return_if_fail (values != NULL);
 
 	map = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+
+	writable = eel_preferences_key_is_writable (key);
 
 	widget = NULL;
 	for (i = 0; components[i] != NULL && values[i] != NULL; i++) {
@@ -390,6 +428,10 @@ eel_preferences_glade_connect_string_enum_radio_button (GladeXML *dialog,
 		g_object_set_data_full (G_OBJECT (widget),
 					EEL_PREFERENCES_GLADE_DATA_KEY, g_strdup (key),
 					(GDestroyNotify) g_free);
+
+		if (!writable) {
+			eel_preferences_glade_set_never_sensitive (widget);
+		}
 
 		g_signal_connect (G_OBJECT (widget), "toggled",
 				  G_CALLBACK (eel_preferences_glade_string_enum_radio_button_toggled),
@@ -472,6 +514,7 @@ eel_preferences_glade_connect_list_enum (GladeXML *dialog,
 	GHashTable *map;
 	int i;
 	GSList *widgets;
+	gboolean writable;
 
  	g_return_if_fail (dialog != NULL);
 	g_return_if_fail (components != NULL);
@@ -483,6 +526,8 @@ eel_preferences_glade_connect_list_enum (GladeXML *dialog,
 	for (i = 0; values[i] != NULL; i++) {
 		g_hash_table_insert (map, g_strdup (values[i]), GINT_TO_POINTER (i));
 	}
+
+	writable = eel_preferences_key_is_writable (key);
 
 	option_menu = NULL;
 	widgets = NULL;
@@ -507,6 +552,10 @@ eel_preferences_glade_connect_list_enum (GladeXML *dialog,
 		g_object_set_data_full (G_OBJECT (option_menu),
 				        EEL_PREFERENCES_GLADE_DATA_KEY, g_strdup (key),
 					(GDestroyNotify) g_free);
+
+		if (!writable) {
+			eel_preferences_glade_set_never_sensitive (option_menu);
+		}
 
 		g_signal_connect (G_OBJECT (option_menu), "changed",
 			  	  G_CALLBACK (eel_preferences_glade_list_enum_changed),

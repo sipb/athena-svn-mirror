@@ -53,6 +53,9 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
+/* Define if strftime supports %E and %O modifiers. */
+#undef HAVE_STRFTIME_EXTENSION
+
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
@@ -98,6 +101,9 @@
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

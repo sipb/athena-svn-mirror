@@ -74,7 +74,7 @@ GtkWidget *      eel_wrap_table_find_child_at_event_point (const EelWrapTable *w
 							   int                 x,
 							   int                 y);
 void             eel_wrap_table_set_x_justification       (EelWrapTable       *wrap_table,
-							   GtkJustification    justification);
+							   EelJustification    justification);
 EelJustification eel_wrap_table_get_x_justification       (const EelWrapTable *wrap_table);
 void             eel_wrap_table_set_y_justification       (EelWrapTable       *wrap_table,
 							   EelJustification    justification);

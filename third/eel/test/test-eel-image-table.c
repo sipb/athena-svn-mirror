@@ -64,7 +64,7 @@ labeled_image_new (const char *text,
 	GdkPixbuf *pixbuf = NULL;
 	
 	if (icon_name) {
-		const float sizes[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+		float sizes[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
 					1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0 };
 		pixbuf = test_pixbuf_new_named (icon_name, sizes[random () % G_N_ELEMENTS (sizes)]);
 	}
@@ -89,7 +89,7 @@ image_table_child_enter_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-//	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
+/*	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text); */
 }
 
 static void
@@ -104,7 +104,7 @@ image_table_child_leave_callback (GtkWidget *image_table,
 
 	text = eel_labeled_image_get_text (EEL_LABELED_IMAGE (item));
 
-//	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text);
+/*	g_print ("%s(%s)\n", G_GNUC_FUNCTION, text); */
 }
 
 static void
@@ -183,7 +183,7 @@ image_table_size_allocate (GtkWidget *image_table,
 
 	if (0) g_timeout_add (0, foo_timeout, callback_data);
 
-	//gtk_widget_queue_resize (GTK_WIDGET (callback_data));
+	/*gtk_widget_queue_resize (GTK_WIDGET (callback_data));*/
 
 	if (0) gtk_widget_size_allocate (GTK_WIDGET (image_table),
 					 &GTK_WIDGET (image_table)->allocation);

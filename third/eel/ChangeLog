@@ -1,18 +1,769 @@
-2003-05-07  Dave Camp  <dave@ximian.com>
+2004-09-13  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in: 
+	Update for 2.8.0
+
+2004-09-11  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "ang" to ALL_LINGUAS.
+
+2004-09-06  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-mime-extensions.c: (eel_mime_set_default_application):
+	Create ~/.local/share/applications as needed.
+
+2004-08-31  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-mime-application-chooser.c:
+	(mime_monitor_data_changed_cb):
+	Refresh model when mime db changes
+		
+	* eel/eel-mime-extensions.c: (mime_update_program_done):
+	Remove spew
+
+2004-08-30  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
+	Post release version bump
+
+=== eel 2.7.92 ===
+
+2004-08-30  Alexander Larsson  <alexl@redhat.com>
+
 	* NEWS: 
-	Bumped version to 2.2.4
+	Update for 2.7.92
+	
+	* configure.in:
+	Require new libgnomeui
+
+2004-08-25  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-stock-dialogs.c (timed_wait_callback):
+	Don't pop up cancel dialog if password dialog is visible.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-16  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release bump to 2.7.92
+
+=== eel 2.7.4 ===
+
+2004-08-16  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.7.4
+
+	* eel/eel-canvas.c:
+	Update from foocanvas.
+
+	* configure.in:
+	Require new gnome-vfs (for default application file
+	type change).
+
+2004-08-12  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas-rect-ellipse.c:
+	* eel/eel-canvas.c: (eel_canvas_key):
+	Update to latest foocanvas.
+
+2004-08-12  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-mime-extensions.c (eel_mime_set_default_application):
+	Use new name for default.list toplevel section.
+
+2004-08-09  Ray Strode  <rstrode@redhat.com>
+
+	* eel/eel-mime-extensions.c (eel_mime_add_application),
+	(eel_mime_set_default_application): free strings
+	when done with them (Spotted by Kjartan Maraas, bug 149718).
+
+2004-07-23  Christian Neumair  <chris@gnome-de.org>
+
+	* eel/eel-mime-application-chooser.c:
+	* eel/eel-open-with-dialog.c: Include gi18n-lib.h instead of gi18n.h.
+
+2004-07-23  Christian Neumair  <chris@gnome-de.org>
+	
+	* configure.in: Require GNOME-VFS 2.7.5 (HEAD).
+
+2004-07-23  Tomasz KÅ‚oczko <kloczek@pld.org.pl>
+
+	* configure.in: better looking PKG_CHECK_MODULES() output.
+
+2004-07-22  Dave Camp  <dave@novell.com>
+
+	* configure.in: Post-release version bump
+
+=== eel 2.7.3 ===
+
+2004-07-22  Dave Camp  <dave@novell.com>
+
+	* configure.in: 
+	* NEWS: 2.7.3
+
+2004-07-21  Dave Camp  <dave@novell.com>
+
+	* Merged the eel-new-mime branch.
+
+2004-07-21  Dave Camp  <dave@novell.com>
+
+	* configure.in:
+	* eel/Makefile.am:
+	* eel/eel-mime-extensions.c: (write_desktop_file),
+	(mime_update_program_done), (eel_mime_add_glob_type),
+	(open_temp_cache_file), (line_is_for_mime_type),
+	(eel_mime_set_default_application),
+	(eel_mime_application_is_user_owned),
+	(eel_mime_application_remove):
+	* eel/eel-mime-extensions.h:
+	* eel/eel-mime-application-chooser.c:
+	* eel/eel-mime-application-chooser.h:
+	* eel/eel-open-with-dialog.c: (eel_open_with_dialog_instance_init),
+	(eel_open_with_dialog_new), (eel_add_application_dialog_new):
+	* eel/eel-open-with-dialog.h: Add the eel-mime-application-chooser
+	dialog.
+
+Wed Jul 21 18:30:25 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* eel/eel-mime-extensions.c: (arg_is_exec_param),
+	(eel_mime_check_for_duplicates): Make fit eel coding guidelines.
+
+	* eel/eel-open-with-dialog.c (get_run_dialog_image): Get the image
+	from stock.
+	(eel_open_with_dialog_instance_init): Use the panel gnome-run
+	stock image.
+
+Wed Jul 21 02:54:32 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* eel/eel-mime-extensions.h: New public function:
+	eel_mime_check_for_duplicates()
+
+	* eel/eel-mime-extensions.c: (mime_update_program_done),
+	(run_update_command), (eel_mime_add_application),
+	(eel_mime_add_glob_type), (arg_is_exec_param),
+	(eel_mime_check_for_duplicates): New function that will check a
+	command line to see if another application with that name already
+	exists.  Also, the post-mime-update stuff has been modified
+	slightly.
+	
+	* eel/eel-open-with-dialog.c: (eel_open_with_dialog_finalize),
+	(eel_open_with_dialog_destroy), (check_application),
+	(get_app_name), (add_or_find_application), (response_cb),
+	(eel_open_with_dialog_class_init), (chooser_response_cb),
+	(browse_clicked_cb), (entry_changed_cb),
+	(eel_open_with_dialog_instance_init), (get_extension),
+	(set_uri_and_mime_type), (eel_open_with_dialog_get_type): Some
+	whitespace 'cleanups'.  Dialog packing cleanup and behavior
+	changes.  Better error handling is included as well.
+
+Mon Jul 19 22:10:59 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* eel/eel-open-with-dialog.c (eel_open_with_dialog_new): make
+	function have no return value.
+
+2004-07-19  Dave Camp  <dave@novell.com>
+
+	* eel/Makefile.am:
+	* eel/eel-mime-extensions.c: (recursive_mkdir), (get_user_dir),
+	(ensure_mime_dir), (ensure_application_dir), (write_desktop_file),
+	(update_application_database), (eel_mime_add_application),
+	(get_override_filename), (get_override), (write_override),
+	(create_type_node), (get_type_node), (get_comment_node),
+	(add_glob_node), (update_mime_database), (eel_mime_add_glob_type):
+	* eel/eel-mime-extensions.h:
+	* eel/eel-open-with-dialog.c: (eel_open_with_dialog_finalize),
+	(eel_open_with_dialog_destroy), (check_application),
+	(get_app_name), (add_application), (emit_application_selected),
+	(response_cb), (entry_activate_cb),
+	(eel_open_with_dialog_class_init), (chooser_response_cb),
+	(browse_clicked_cb), (eel_open_with_dialog_instance_init),
+	(get_extension), (set_uri_and_mime_type),
+	(eel_open_with_dialog_new), (eel_open_with_dialog_get_type):
+	* eel/eel-open-with-dialog.h:
+	* eel/eel-preferences.c: (eel_preferences_remove_callback):
+	Add an Open With dialog that adds mime types and application 
+	mappings.
+
+2004-07-05  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.7.2
+
+2004-06-01  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release bump
+
+=== eel 2.7.1 ===
+	
+	* NEWS:
+	Update for 2.7.1
+
+2004-05-14  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in (LIBGLADE_REQUIRED):
+	Bump to 2.7.1 on HEAD, 2.6.3 is on gnome-2-6 branch
+
+2004-05-13  Dave Camp  <dave@novell.com>
+
+	* configure.in: Post-release version bump.
+
+=== eel 2.6.2 ===
+
+2004-05-13  Dave Camp  <dave@novell.com>
+
+	* NEWS: Updated for 2.6.2.
+
+2004-04-19  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump
+
+=== eel 2.6.1 ===
+
+2004-04-19  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Updates for 2.6.1
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-22  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Bump version to 2.6.1
+
+=== eel 2.6.0 ===
+
+2004-03-22  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Update to 2.6.0
+
+2004-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+=== eel 2.5.91.1 ===
+
+2004-03-16  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Update to 2.5.91.1
+
+	* eel/eel-editable-label.c (eel_editable_label_retrieve_surrounding_cb):
+	Use correct index in gtk_im_context_set_surrounding. (#133464)
+	Patch from Theppitak Karoonboonyanan 
+
+=== eel 2.5.91 ===
+
+2004-03-15  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Update to 2.5.91
+
+=== eel 2.5.90 ===
+
+2004-03-08  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Update to 2.5.90
+
+2004-03-02  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-gnome-extensions.c (eel_gnome_shell_execute_on_screen):
+	* eel/Makefile.am:
+	* eel/egg-screen-exec.[c]:
+	Remove egg-screen-exec. Use gdk_spawn instead.
+
+2004-03-02  Carlos Garnacho Parro  <garnacho@tuxerver.net>
+
+	* eel/eel-gnome-extensions.c: (eel_gnome_icon_selector_new)
+	made it to use the new GtkFileChooser
+
+2004-03-02  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.h:
+	* eel/eel-cell-renderer-pixbuf-list.c:
+	* eel/eel-editable-label.c: (eel_editable_label_key_press),
+	(popup_position_func):
+	* eel/eel-gdk-extensions.h:
+	* eel/eel-glib-extensions.c: (eel_unsetenv):
+	* eel/eel-labeled-image.c:
+	* eel/eel-wrap-table.c:
+	* eel/eel-wrap-table.h:
+	* test/test-eel-image-table.c: (image_table_child_enter_callback),
+	(image_table_child_leave_callback), (image_table_size_allocate):
+	* test/test.c: (test_quit):
+	* test/test.h:
+	Portability fixes. Patch from bugzilla-gnome@thewrittenword.com.
+	Fixes #131647.
+
+2004-03-01  Alexander Larsson  <alexl@redhat.com>
+
+	Patches from sun.
+	
+	* test/test-eel-image-table.c: (labeled_image_new):
+	Fix forte compiler issue
+	
+	* Makefile.am:
+	* configure.in:
+	* eel-2.0-uninstalled.pc.in:
+	Add uninstalled pkg-config file.
+		
+=== eel 2.5.8 ===
+
+2004-02-23  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.5.8
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+=== eel 2.5.7 ===
+
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.5.7
+
+2004-02-06  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-glib-extensions.c (eel_strdup_strftime):
+	Fix check
+
+2004-02-06  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: 
+	* eel/eel-glib-extensions.c (eel_strdup_strftime):
+	Check for and support SUS modifiers.
+
+2004-02-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* eel/eel-alert-dialog.c (eel_alert_dialog_new): Set role of AtkObject
+	to ATK_ROLE_ALERT. Fixes bug #133273.
+
+2004-02-05  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* eel/Makefile.am:
+	* test/Makefile.am: trivaial fix errors for automake 1.8.x - blank
+	  line following trailing backslash. Fixes are backward compatible with
+	  older automake.
+
+=== eel 2.5.6===
+
+2004-01-30  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.5.6
+
+2004-01-27  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas-util.c: (eel_canvas_get_miter_points):
+	* eel/eel-canvas.c: (emit_event):
+	Update from foocanvas. May fix nautilus event crash.
+
+2004-01-19  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* eel/eel-editable-label.c (eel_editable_label_style_set), 
+	(eel_editable_label_expose): Change the background, foreground,
+	cursor and outer rectangle colors according to the theme
+	selected. Fixes bugzilla bug#123207
+
+=== eel 2.5.5 ===
+
+2004-01-12  Dave Camp  <dave@ximian.com>
+
+	* NEWS: 
+	* configure.in: 2.5.5
+
+2004-01-11  Dave Camp  <dave@ximian.com>
+
+	* eel/eel-glib-extensions.h:
+	* eel/eel-glib-extensions.c: (eel_g_str_list_index): New function.
+	* eel/eel-gconf-extensions.h:
+	* eel/eel-gconf-extensions.c: (eel_gconf_unset): New function.
+	* eel/eel-preferences.h:
+	* eel/eel-preferences.c:  (eel_preferences_unset): New functions.
+	(eel_preferences_get_string_glist),
+	(eel_preferences_set_string_glist)
+	(update_auto_string_glist),
+	(preferences_entry_update_auto_storage),
+	(eel_preferences_add_auto_string_glist): Added a GList * 
+	interface to string list properties.
+	* eel/eel-string-list.h:
+	* eel/eel-string-list.c: (eel_string_list_as_g_slist): 
+	Implemented differently.
+	(eel_string_list_as_g_list): New function.
+
+2004-01-03  Anders Carlsson  <andersca@gnome.org>
+
+	* eel/eel-input-event-box.c:
+	* eel/eel-input-event-box.h:
+	Remove these too.
+	
+2004-01-03  Anders Carlsson  <andersca@gnome.org>
+
+	* test/Makefile.am: Remove test-eel-image-chooser.c
+
+	* eel/eel.h: Remove references to removed headers.
+
+	* eel/Makefile.am:
+	* eel/eel-caption.c:
+	* eel/eel-caption.h:
+	* eel/eel-generous-bin.c:
+	* eel/eel-generous-bin.h:
+	* eel/eel-image-chooser.c:
+	* eel/eel-image-chooser.h:
+	* eel/eel-radio-button-group.c:
+	* eel/eel-radio-button-group.h:
+	* eel/eel-string-picker.c:
+	* eel/eel-string-picker.h:
+	* test/Makefile.am:
+	Remove unused eel stuff.
+	
+2004-01-02  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+=== eel 2.5.4 ===
+	
+2003-12-29  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	2.5.4
+
+2003-12-11  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-stock-dialogs.c (show_message_dialog):
+	Connect to response in the right place
+	
+2003-12-11  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require gtk+ 2.3.0
+	
+	* eel/Makefile.am:
+	* eel/eel-alert-dialog.[ch]:
+	New hig suporting dialog 
+
+	* eel/eel-stock-dialogs.[ch]:
+	Use new dialog, split up message
+	in primary and secondary string.
+	
+	* eel/eel-gconf-extensions.c:
+	* eel/eel-gnome-extensions.c:
+	* test/test-eel-widgets.c:
+	Use new API
+
+	Patch from dennis_cranston@yahoo.com (with some changes)
+	
+=== eel 2.5.3 ===
+	
+2003-12-08  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	2.5.3
+
+2003-11-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	eel/eel-accessibility.c 
+	(eel_accessibility_set_up_label_widget_relation): Call g_object_unref
+	on AtkRelationSet to avoid memory leak. Fixes bug #127899.
+
+=== eel 2.5.2 ===
+	
+2003-11-24  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.5.2
+
+2003-11-21  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.c:
+	Accessibility support, and better support
+	for GtkEditable signals.
+	Patch by padraig o'briain <Padraig.Obriain@Sun.COM>
+
+=== eel 2.5.1 ===
+	
+2003-11-10  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	2.5.1
+
+2003-10-27  Gregory Merchan  <merchan@phys.lsu.edu>
+
+	* eel/eel-gdk-extensions.c (eel_gdk_window_focus):
+	Use RevertToParent as specified in the ICCCM.
+	(eel_gdk_window_set_wm_hints_input):
+	Guard against changes to C booleans.
+	* eel/eel-gnome-extensions.c (eel_gnome_icon_selector_new)
+	* eel/eel-stock-dialogs.c (timed_wait_callback)
+	* eel/eel-stock-dialogs.c (eel_run_simple_dialog)
+	* eel/eel-stock-dialogs.c (create_message_dialog)
+	Don't set WM_CLASS. It should match the application.
+	* eel/eel-gtk-extensions.c:
+	Remove comment and unused #define from bad old algorithm.
+	(eel_gtk_window_event_is_close_accelerator):
+	Remove Escape from close accelerators; it's not HIG compliant.
+	This reverts change from 2001-04-30.
+
+2003-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/Makefile.am: 
+	* test/Makefile.am:
+	Disable GNOME_DISABLE_DEPRECATED for now
+
+2003-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-preferences.c:
+	Fix leaks.
+	Patch from Martin Wehner <martin.wehner@epost.de>
+
+=== eel 2.5.0 ===
+	
+2003-10-20  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.5.0
+
+2003-10-15  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/Makefile.am: 
+	* test/Makefile.am:
+	Disable GTK_DISABLE_DEPRECATED for now, since gtk 2.4
+	deprecated various widgets.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-10-02  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	Merge from foo-canvas.c:
+
+        * eel/eeel-canvas.c 
+	(eel_canvas_item_accessible_ref_state_set):
+        Do not refer to item->canvas if item can be NULL. (bug #123179)
+
+        (eel_canvas_set_pixels_per_unit) : round
+          when mapping back to integer coordinates to guard against inadverent
+          decrement due to lack of precision.
+          eg zoom of 0.85 == 0.849999999 would lose a pixel
+	Fix from Jody Goldberg <jody@gnome.org>
+
+       (do_update):
+        Loop do_update if picking caused need_update to be set again.
+        (Thanks to George <jirka@5z.com> for noticing this)
+	Fix from  Alexander Larsson  <alexl@redhat.com>
+
+2003-09-24  Dave Camp  <dave@ximian.com>
+
+	* eel/eelmarshal.list: Added VOID:STRING,LONG,LONG,POINTER.
+
+2003-09-19  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "br" to ALL_LINGUAS.
+
+=== eel 2.4.0 ===
+	
+2003-09-08  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	2.4.0
+
+2003-09-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-gdk-extensions.c (eel_gdk_window_focus):
+	Don't use RevertToNone
+
+=== eel 2.3.90 ===
+	
+2003-09-02  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in: 2.3.90
+
+2003-08-28  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+=== eel 2.3.9 ===
+	
+2003-08-25  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	2.3.9
+
+=== eel 2.3.8 ===
+	
+2003-08-08  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:  2.3.8
+
+Tue Jul 22 16:18:26 2003  George Lebl <jirka@5z.com>
+
+	* eel/eel-gconf-extensions.[ch]: add eel_gconf_key_is_writable,
+	  which calls gconf_client_key_is_writable 
+
+	* eel/eel-preferences.[ch]: add eel_preferences_key_is_writable,
+	  which in turn calls eel_gconf_key_is_writable on the full key
+
+	* eel/eel-preferences-glade.c: When the key is not writable on
+	  setup, then make the widget insensitive and then monitor the
+	  state to make sure it can't be ever made sensitive (since it can't
+	  be ever written)
+
+2003-07-21  Dave Camp  <dave@ximian.com>
+
+	* NEWS:
+	* configure.in:
+	Bumped to 2.3.7.
+
+2003-07-08  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* configure.in: Checking for X Development libraries explicitly.
+	* eel/Makefile.am: Added X_LIBS to libeel_2_la_LDFLAGS
+
+2003-07-07  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas-rect-ellipse.c (render_rect_alpha):
+	Update from foocanvas, fixes #116752
+
+=== eel 2.3.6 ===
+	
+2003-06-27  Dave Camp  <dave@ximian.com>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 2.3.6.
+
+=== eel 2.3.5 ===
+	
+2003-06-23  Dave Camp  <dave@ximian.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.3.5.
+
+2003-06-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in:
+	Remove -Wsign-promo and add -Wno-strict-aliasing to the list
+        of options to test for. Fixes the gcc 3.3 aliasing warnings.
+
+2003-06-13  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas-rect-ellipse.c: (get_color_value),
+	(set_colors_and_stipples), (eel_canvas_re_update_shared),
+	(eel_canvas_re_realize), (eel_canvas_ellipse_update):
+	* eel/eel-canvas.c: (eel_canvas_item_dispose),
+	(eel_canvas_item_unrealize), (eel_canvas_item_invoke_update),
+	(eel_canvas_item_ungrab), (eel_canvas_item_request_update),
+	(eel_canvas_group_unrealize), (eel_canvas_group_map),
+	(eel_canvas_init), (shutdown_transients), (eel_canvas_expose),
+	(do_update):
+	* eel/eel-canvas.h:
+	Update to latest foo-canvas.
+
+=== eel 2.3.4 ===
+	
+2003-06-10  Dave Camp  <dave@ximian.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.3.4.
+
+2003-06-05 Kenneth Rohde Christiansen <kenneth@gnu.org>
+
+	* configure.in: Added li to ALL_LINGUAS.
+
+2003-06-04  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.3.3.
+
+2003-05-26  Anders Carlsson  <andersca@codefactory.se>
+
+	* eel/Makefile.am:
+	* eel/eel-caption-table.c:
+	* eel/eel-caption-table.h:
+	* eel/eel-password-dialog.c:
+	* eel/eel-password-dialog.h:
+	* eel/eel.h:
+	* test/Makefile.am:
+	* test/test-eel-password-dialog.c:
+	* test/test-eel-widgets.c: (main), (test_radio_changed_callback):
+	Remove EelCaptionTable and EelPasswordDialog since they're not 
+	used anymore.
+	
+=== eel 2.3.2 ===
+
+2003-05-19  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump to 2.3.2.
+
+2003-05-15  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-vfs-extensions.[ch]:
+	New define EEL_DESKTOP_URI and function eel_uri_is_desktop.
+
+=== eel 2.3.1 ===
+
+2003-05-05  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+       * configure.in: Added cy to ALL_LINGUAS
+       * po/cy.po: Added
+	
+2003-05-05  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update
+
+	* configure.in:
+	Bump version
 
 2003-05-04  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
 
-=== eel 2.2.3.1 ===
+2003-04-23  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
 
-2003-03-31  Dave Camp  <dave@ximian.com>
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+	* eel/Makefile.am (libeel_2_la_LDFLAGS): add -no-undefined.
 
-	* configure.in: 2.2.3.1
+	These are necessary for building DLL on win32 platform.
+
+2003-04-07  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.c:
+	Update foocanvas.
 
 === eel 2.2.3 ===
 	
@@ -6549,3 +7300,7 @@ Wed Aug 15 16:32:56 2001  Jonathan Blandford  <jrb@redhat.com>
 2001-03-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Started ChangeLog
+
+# Local Variables:
+# coding: utf-8
+# End:

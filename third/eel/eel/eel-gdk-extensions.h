@@ -67,7 +67,7 @@ typedef enum {
 	EEL_GDK_HEIGHT_VALUE = 0x08,
 	EEL_GDK_ALL_VALUES   = 0x0f,
 	EEL_GDK_X_NEGATIVE   = 0x10,
-	EEL_GDK_Y_NEGATIVE   = 0x20,
+	EEL_GDK_Y_NEGATIVE   = 0x20
 } EelGdkGeometryFlags;
 
 /* A gradient spec. is a string that contains a specifier for either a

@@ -1,81 +1,109 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# zh_CN translation of eel2.
+# Copyright (C) 2003 Free Software Foundation, Inc.
 # Wang Jian <lark@linux.net.cn>, 2001
+# Funda Wang <fundawang@linux.net.cn>, 2003, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eel2\n"
-"POT-Creation-Date: 2003-05-07 13:26-0400\n"
-"PO-Revision-Date: 2002-02-17 23:00+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 10:25+0200\n"
+"PO-Revision-Date: 2004-08-06 10:43+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
+#: eel/eel-alert-dialog.c:114
+msgid "Image/label border"
+msgstr "图像/标签边框"
+
+#: eel/eel-alert-dialog.c:115
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "警告提示对话框中的图像和标签的边框宽度"
+
+#: eel/eel-alert-dialog.c:124
+msgid "Alert Type"
+msgstr "警告类型"
+
+#: eel/eel-alert-dialog.c:125
+msgid "The type of alert"
+msgstr "警告类型"
+
+#: eel/eel-alert-dialog.c:133
+msgid "Alert Buttons"
+msgstr "警告按钮"
+
+#: eel/eel-alert-dialog.c:134
+msgid "The buttons shown in the alert dialog"
+msgstr "显示在警告提示对话框中的按钮"
+
+#: eel/eel-alert-dialog.c:198
+msgid "Show more _details"
+msgstr "显示更多的详细信息(_d)"
+
+#: eel/eel-canvas.c:1226 eel/eel-canvas.c:1227
 msgid "X"
-msgstr ""
+msgstr "X"
 
-#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
+#: eel/eel-canvas.c:1233 eel/eel-canvas.c:1234
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
-#: eel/eel-editable-label.c:360
+#: eel/eel-editable-label.c:365
 msgid "Text"
-msgstr ""
+msgstr "文字"
 
-#: eel/eel-editable-label.c:361
-#, fuzzy
+#: eel/eel-editable-label.c:366
 msgid "The text of the label."
-msgstr "是否显示标签"
+msgstr "标签上的文字。"
 
-#: eel/eel-editable-label.c:367
-#, fuzzy
+#: eel/eel-editable-label.c:372
 msgid "Justification"
-msgstr "垂直调整"
+msgstr "调整"
 
-#: eel/eel-editable-label.c:368
+#: eel/eel-editable-label.c:373
 msgid ""
 "The alignment of the lines in the text of the label relative to each other. "
 "This does NOT affect the alignment of the label within its allocation. See "
 "GtkMisc::xalign for that."
 msgstr ""
+"标签上的文字行之间的对齐方式。此设置并不影响标签自身的对齐。参看 GtkMisc::"
+"xalign 中的说明。"
 
-#: eel/eel-editable-label.c:376
+#: eel/eel-editable-label.c:381
 msgid "Line wrap"
-msgstr ""
+msgstr "自动换行"
 
-#: eel/eel-editable-label.c:377
+#: eel/eel-editable-label.c:382
 msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
+msgstr "如果设定了此选项，当文本太宽时就自动折行。"
 
-#: eel/eel-editable-label.c:384
-#, fuzzy
+#: eel/eel-editable-label.c:389
 msgid "Cursor Position"
-msgstr "位置"
+msgstr "光标位置"
 
-#: eel/eel-editable-label.c:385
+#: eel/eel-editable-label.c:390
 msgid "The current position of the insertion cursor in chars."
-msgstr ""
+msgstr "插入点光标的当前位置，以字符数计。"
 
-#: eel/eel-editable-label.c:394
-#, fuzzy
+#: eel/eel-editable-label.c:399
 msgid "Selection Bound"
-msgstr "没有选择"
+msgstr "选择范围"
 
-#: eel/eel-editable-label.c:395
+#: eel/eel-editable-label.c:400
 msgid ""
 "The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
+msgstr "选择区另一端的位置，从光标处以字符数计。"
 
 #: eel/eel-editable-label.c:3069
 msgid "Select All"
-msgstr ""
+msgstr "全选"
 
 #: eel/eel-editable-label.c:3080
 msgid "Input Methods"
-msgstr ""
+msgstr "输入法"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -88,16 +116,14 @@ msgstr ""
 
 #: eel/eel-gconf-extensions.c:87
 #, c-format
-msgid ""
-"GConf error:\n"
-"  %s\n"
-"All further errors shown only on terminal"
-msgstr ""
-"GConf 错误：\n"
-"  %s\n"
-"以后的错误仅显示在终端中"
+msgid "GConf error: %s"
+msgstr "GConf 错误：%s"
 
-#: eel/eel-gconf-extensions.c:91
+#: eel/eel-gconf-extensions.c:90
+msgid "All further errors shown only on terminal."
+msgstr "以后的错误仅显示在终端中。"
+
+#: eel/eel-gconf-extensions.c:92
 msgid "GConf Error"
 msgstr "GConf 错误"
 
@@ -105,217 +131,134 @@ msgstr "GConf 错误"
 #. * self-check code and must be changed to match what strtfime
 #. * yields. The first one is "%m/%d/%y, %I:%M %p".
 #.
-#: eel/eel-glib-extensions.c:1128
+#: eel/eel-glib-extensions.c:1162
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00，01:00"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
-#: eel/eel-glib-extensions.c:1130
+#: eel/eel-glib-extensions.c:1164
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00，1:00"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
-#: eel/eel-glib-extensions.c:1132
+#: eel/eel-glib-extensions.c:1166
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00， 1:00"
 
+#: eel/eel-gnome-extensions.c:284
+msgid "No image was selected."
+msgstr "没有选择图像"
+
 #: eel/eel-gnome-extensions.c:285
-msgid "No image was selected.  You must click on an image to select it."
-msgstr "没有选择图片。您必须点击图片以选择它。"
+msgid "You must click on an image to select it."
+msgstr "您必须点击图片以选择它。"
 
 #: eel/eel-gnome-extensions.c:286
-msgid "No selection made"
+msgid "No Selection Made"
 msgstr "没有选择"
 
-#: eel/eel-password-dialog.c:203
-msgid "_Username:"
-msgstr "用户名(_U)："
+#: eel/eel-mime-application-chooser.c:224
+msgid "Default"
+msgstr "默认"
 
-#: eel/eel-password-dialog.c:210
-msgid "_Password:"
-msgstr "口令(_P)："
+#: eel/eel-mime-application-chooser.c:233
+msgid "Name"
+msgstr "名称"
 
-#: eel/eel-password-dialog.c:237
-msgid "Remember this password"
-msgstr "记住口令"
+#: eel/eel-mime-application-chooser.c:425
+msgid "<i>No applications selected</i>"
+msgstr "<i>没有选择应用程序</i>"
 
-#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
+#: eel/eel-mime-application-chooser.c:469 eel/eel-open-with-dialog.c:581
+#, c-format
+msgid "%s document"
+msgstr "%s 文档"
+
+#: eel/eel-mime-application-chooser.c:479 eel/eel-open-with-dialog.c:594
+msgid "Unknown"
+msgstr "未知"
+
+#: eel/eel-mime-application-chooser.c:485
+#, c-format
+msgid "Select an application to open <i>%s</i> and others of type \"%s\""
+msgstr "选择打开 <i>%s</i> 和类型为“%s”的其它文件的应用程序"
+
+#: eel/eel-open-with-dialog.c:125 eel/eel-open-with-dialog.c:127
+#: eel/eel-open-with-dialog.c:193 eel/eel-open-with-dialog.c:195
+msgid "Could not run application"
+msgstr "无法运行应用程序"
+
+#: eel/eel-open-with-dialog.c:144
+#, c-format
+msgid "The application '%s' is not a valid executable"
+msgstr "应用程序“%s”不是有效的可执行文件"
+
+#: eel/eel-open-with-dialog.c:147 eel/eel-open-with-dialog.c:149
+msgid "Could not open application"
+msgstr "无法打开应用程序"
+
+#: eel/eel-open-with-dialog.c:161
+#, c-format
+msgid "Could not find '%s'"
+msgstr "找不到“%s”"
+
+#: eel/eel-open-with-dialog.c:164 eel/eel-open-with-dialog.c:166
+msgid "Could not find application"
+msgstr "找不到应用程序"
+
+#: eel/eel-open-with-dialog.c:251 eel/eel-open-with-dialog.c:253
+msgid "Could not add application"
+msgstr "无法添加应用程序"
+
+#: eel/eel-open-with-dialog.c:252
+msgid "Could not add application to the application database"
+msgstr "无法将应用程序添加到应用程序数据库"
+
+#: eel/eel-open-with-dialog.c:366
+msgid "Select an Application"
+msgstr "选择应用程序"
+
+#: eel/eel-open-with-dialog.c:438
+msgid "Open With"
+msgstr "打开方式"
+
+#: eel/eel-open-with-dialog.c:481
+msgid "_Browse..."
+msgstr "浏览(_B)..."
+
+#: eel/eel-open-with-dialog.c:600
+#, c-format
+msgid "Open <i>%s</i> and other files of type \"%s\" with:"
+msgstr "打开 <i>%s</i> 及类型为“%s”的其它文件的方式："
+
+#: eel/eel-open-with-dialog.c:631
+msgid "_Add"
+msgstr "添加(_A)"
+
+#: eel/eel-open-with-dialog.c:636
+msgid "Add Application"
+msgstr "添加应用程序"
+
+#: eel/eel-stock-dialogs.c:216
+msgid "You can stop this operation by clicking cancel."
+msgstr "你可以点击取消停止这个操作"
+
+#: eel/eel-stock-dialogs.c:462 eel/eel-stock-dialogs.c:482
 msgid "Info"
 msgstr "信息"
 
-#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
-msgid "Details"
-msgstr "细节"
-
-#: eel/eel-stock-dialogs.c:526
+#: eel/eel-stock-dialogs.c:501
 msgid "Warning"
 msgstr "警告"
 
-#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
+#: eel/eel-stock-dialogs.c:514 eel/eel-stock-dialogs.c:537
 msgid "Error"
 msgstr "错误"
 
-#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
+#: eel/eel-stock-dialogs.c:567 eel/eel-stock-dialogs.c:602
 msgid "Question"
 msgstr "问题"
 
-#: eel/eel-vfs-extensions.c:687
+#: eel/eel-vfs-extensions.c:693
 msgid " (invalid Unicode)"
-msgstr ""
-
-#~ msgid "Pixbuf objects"
-#~ msgstr "Pixbuf 对象"
-
-#~ msgid "The pixbuf list to render."
-#~ msgstr "要绘制的 pixbuf 列表。"
-
-#~ msgid "pixbuf"
-#~ msgstr "pixbuf"
-
-#~ msgid "the image"
-#~ msgstr "图像"
-
-#~ msgid "label"
-#~ msgstr "标签"
-
-#~ msgid "the label"
-#~ msgstr "标签"
-
-#~ msgid "the label position"
-#~ msgstr "标签位置"
-
-#~ msgid "label visible"
-#~ msgstr "标签可见"
-
-#~ msgid "image visible"
-#~ msgstr "图像可见"
-
-#~ msgid "whether to show the image"
-#~ msgstr "是否显示图像"
-
-#~ msgid "Spacing"
-#~ msgstr "间隔"
-
-#~ msgid "The amount of space between the items."
-#~ msgstr "项之间的间隔量。"
-
-#~ msgid "X padding"
-#~ msgstr "X 填充"
-
-#~ msgid "the amount of horizontal padding space."
-#~ msgstr "水平填充量。"
-
-#~ msgid "Y padding"
-#~ msgstr "Y 填充"
-
-#~ msgid "the amount of vertical padding space"
-#~ msgstr "垂直填充量"
-
-#~ msgid "Horizontal alignment"
-#~ msgstr "水平对齐"
-
-#~ msgid ""
-#~ "Horizontal position of child in available space. 0.0 is left aligned, 1.0 "
-#~ "is right aligned"
-#~ msgstr "在可用空间里子部件的水平位置。0.0 是左对齐，1.0 是右对齐"
-
-#~ msgid "Vertical alignment"
-#~ msgstr "垂直对齐"
-
-#~ msgid ""
-#~ "Vertical position of child in available space. 0.0 is top aligned, 1.0 is "
-#~ "bottom aligned"
-#~ msgstr "在可用空间里子部件的垂直位置。0.0 是上对齐，1.0 是下对齐"
-
-#~ msgid "fill"
-#~ msgstr "填充"
-
-#~ msgid "expand to fill allocation"
-#~ msgstr "扩展以填充空间"
-
-#~ msgid "horizontal spacing"
-#~ msgstr "水平间距"
-
-#~ msgid "The amount of horizontal spacing."
-#~ msgstr "水平间隔量。"
-
-#~ msgid "vertical spacing"
-#~ msgstr "垂直间距"
-
-#~ msgid "The amount of vertical spacing."
-#~ msgstr "垂直间隔量。"
-
-#~ msgid "horizontal justification"
-#~ msgstr "水平调整"
-
-#~ msgid "Left, right, or center justification"
-#~ msgstr "左、右或中间调整"
-
-#~ msgid "Top, bottom, or middle justification"
-#~ msgstr "上、下或中间调整"
-
-#~ msgid "homogenous"
-#~ msgstr "单一"
-
-#~ msgid "homogeneous layout"
-#~ msgstr "单一布局"
-
-#~ msgid "_Move here"
-#~ msgstr "移到这里(_M)"
-
-#~ msgid "_Copy here"
-#~ msgstr "复制到这里(_C)"
-
-#~ msgid "_Link here"
-#~ msgstr "链接到这里(_L)"
-
-#~ msgid "Cancel"
-#~ msgstr "取消"
-
-#~ msgid "Normal"
-#~ msgstr "普通"
-
-#~ msgid "Unknown"
-#~ msgstr "未知"
-
-#~ msgid "Bold"
-#~ msgstr "粗体"
-
-#~ msgid "Book"
-#~ msgstr "Book"
-
-#~ msgid "Black"
-#~ msgstr "黑体"
-
-#~ msgid "Demibold"
-#~ msgstr "较粗体"
-
-#~ msgid "Light"
-#~ msgstr "细体"
-
-#~ msgid "Italic"
-#~ msgstr "斜体"
-
-#~ msgid "Reverse Italic"
-#~ msgstr "反斜体"
-
-#~ msgid "Other"
-#~ msgstr "其它"
-
-#~ msgid "Condensed"
-#~ msgstr "窄体"
-
-#~ msgid "Semicondensed"
-#~ msgstr "较窄体"
-
-#~ msgid "More..."
-#~ msgstr "更多..."
-
-#~ msgid "Beginner"
-#~ msgstr "初级"
-
-#~ msgid "Intermediate"
-#~ msgstr "中级"
-
-#~ msgid "Advanced"
-#~ msgstr "高级"
+msgstr " (无效的 Unicode)"

@@ -84,11 +84,13 @@ eel_gconf_handle_error (GError **error)
 		if (! shown_dialog) {
 			shown_dialog = TRUE;
 
-			message = g_strdup_printf (_("GConf error:\n  %s\n"
-						     "All further errors shown "
-						     "only on terminal"),
+			message = g_strdup_printf (_("GConf error: %s"),
 						   (*error)->message);
-			eel_show_error_dialog (message, _("GConf Error"), NULL);
+			eel_show_error_dialog (message, 
+			                       _("All further errors shown "
+			                       "only on terminal."),
+					       _("GConf Error"), 
+			                       NULL);
 			g_free (message);
 		}
 		g_error_free (*error);
@@ -252,6 +254,22 @@ eel_gconf_get_string_list (const char *key)
 	return slist;
 }
 
+void
+eel_gconf_unset (const char *key)
+{
+	GConfClient *client;
+	GError *error;
+	
+	g_return_if_fail (key != NULL);
+	
+	client = eel_gconf_client_get_global ();
+	g_return_if_fail (client != NULL);
+	
+	error = NULL;
+	gconf_client_unset (client, key, &error);
+	eel_gconf_handle_error (&error);
+}
+
 gboolean
 eel_gconf_is_default (const char *key)
 {
@@ -272,6 +290,23 @@ eel_gconf_is_default (const char *key)
 
 	result = (value == NULL);
 	eel_gconf_value_free (value);
+	return result;
+}
+
+gboolean
+eel_gconf_key_is_writable (const char *key)
+{
+	gboolean result;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, FALSE);
+	
+	result = gconf_client_key_is_writable  (eel_gconf_client_get_global (), key, &error);
+
+	if (eel_gconf_handle_error (&error)) {
+		return result;
+	}
+
 	return result;
 }
 

@@ -33,7 +33,6 @@
 #include "eel-gtk-extensions.h"
 #include "eel-stock-dialogs.h"
 #include "eel-i18n.h"
-#include "egg-screen-exec.h"
 #include <X11/Xatom.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -80,7 +79,7 @@ eel_gnome_shell_execute_on_screen (const char *command,
 		screen = gdk_screen_get_default ();
 	}
 
-	if (!egg_screen_execute_command_line_async (screen, command, &error)) {
+	if (!gdk_spawn_command_line_on_screen (screen, command, &error)) {
 		g_warning ("Error starting command '%s': %s\n", command, error->message);
 		g_error_free (error);
 	}
@@ -282,8 +281,9 @@ icon_selected (IconSelectionData *selection_data)
 	 */
 	stat (icon_path, &buf);
 	if (S_ISDIR (buf.st_mode)) {
-		eel_show_error_dialog (_("No image was selected.  You must click on an image to select it."),
-				       _("No selection made"),
+		eel_show_error_dialog (_("No image was selected."),
+		                       _("You must click on an image to select it."),
+				       _("No Selection Made"),
 				       selection_data->owning_window);
 	} else {	 
 		/* invoke the callback to inform it of the file path */
@@ -395,6 +395,8 @@ eel_gnome_icon_selector_new (const char *title,
 	icon_selection = gnome_icon_selection_new ();
 
 	file_entry = gnome_file_entry_new (NULL,NULL);
+
+	g_object_set (G_OBJECT (file_entry), "use_filechooser", TRUE, NULL);
 	
 	selection_data = g_new0 (IconSelectionData, 1);
 	selection_data->dialog = dialog;
@@ -414,7 +416,6 @@ eel_gnome_icon_selector_new (const char *title,
 	if (owner != NULL) {
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), owner);
  	}
- 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "file_selector", "Eel");
 	gtk_widget_show_all (dialog);
 	
 	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (file_entry));
