@@ -1,4 +1,4 @@
-# $Id: packages,v 1.114 2000-12-27 23:14:14 ghudson Exp $
+# $Id: packages,v 1.115 2000-12-28 01:35:43 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -123,7 +123,7 @@ third/audiofile			except linux
 third/bash
 third/bind
 third/db			except linux
-third/control-center		requires gnome-libs,libxml,libglade,esound
+third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf
 third/emacs			requires hesiod,krb5
 third/esound			except linux requires audiofile
 third/gdbm			except linux
