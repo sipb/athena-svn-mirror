@@ -81,16 +81,49 @@ set add_bin = arch/$ATHENA_SYS/bin
 
 foreach add_i ($add_dirs)
   unset add_item
-  if (-e $add_i/$add_bin) then
+  if ( -d $add_i/$add_bin ) then
     set add_item = $add_i/$add_bin
   else
-    if ( -e $bindir ) then
+    if ( -d $add_i/$bindir ) then
       set add_item = $bindir
     endif
   endif
 
-  if ( ! $?add_item && $?add_warn ) then
-    echo add: warning: $add_i has no binaries
+  if ( $?add_item ) then
+     switch ($?add_env$?add_front)
+
+       case 00:
+         if ( "$PATH" !~ *"$add_item"* ) then
+           if ($?add_verbose) echo $add_item added to end of $PATH
+           setenv PATH $PATH:$add_item
+         endif
+         breaksw
+
+       case 01:
+         if ( "$PATH" !~ *"$add_item"* ) then
+           if ($?add_verbose) echo $add_item added to front of $PATH
+           setenv PATH $add_item:$PATH
+         endif
+         breaksw
+
+       case 10:
+         if ( "$athena_path" !~ *"$add_item"* ) then
+           if ($?add_verbose) echo $add_item added to end of $athena_path
+           set athena_path ($athena_path $add_item)
+         endif
+         breaksw
+
+       case 11:
+         if ( "$athena_path" !~ *"$add_item"* ) then
+           if ($?add_verbose) echo $add_item added to front of $athena_path
+           set athena_path ($add_item $athena_path)
+         endif
+         breaksw
+     endsw
+  else
+    if ( $?add_warn ) then
+      echo add: warning: $add_i has no binaries
+    endif
   endif
 end
 
