@@ -61,14 +61,20 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ALL_LINGUAS = @ALL_LINGUAS@
+ALL_MOFILES = @ALL_MOFILES@
+ALL_POFILES = @ALL_POFILES@
 AR = @AR@
 CC = @CC@
 CPP = @CPP@
 GETCONF = @GETCONF@
+GLOBDIR = @GLOBDIR@
+GLOBINC = @GLOBINC@
 GLOBLIB = @GLOBLIB@
 LIBOBJS = @LIBOBJS@
 MAKEINFO = @MAKEINFO@
 MAKE_HOST = @MAKE_HOST@
+MOFILES = @MOFILES@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 RANLIB = @RANLIB@
@@ -191,9 +197,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-fnmatch.o: fnmatch.c ../config.h fnmatch.h
-glob.o: glob.c ../config.h fnmatch.h glob.h
-
 info-am:
 info: info-am
 dvi-am:

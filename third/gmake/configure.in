@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION([$Id: configure.in,v 1.2 2001-02-19 04:46:10 ghudson Exp $])
+AC_REVISION([$Id: configure.in,v 1.3 2001-04-03 23:50:15 ghudson Exp $])
 AC_PREREQ(2.13)dnl		dnl Minimum Autoconf version required.
 AC_INIT(vpath.c)dnl		dnl A distinctive file to look for in srcdir.
 
-AM_INIT_AUTOMAKE(make, 3.78.1)
+AM_INIT_AUTOMAKE(make, 3.79.1)
 AM_CONFIG_HEADER(config.h)
 
 dnl Regular configure stuff
@@ -21,7 +21,6 @@ AC_MINIX
 
 AC_CHECK_PROG(PERL, perl, perl, perl)	dnl Needed for the test suite (only)
 
-
 dnl This test must come as early as possible after the compiler configuration
 dnl tests, because the choice of the file model can (in principle) affect
 dnl whether functions and headers are available, whether they work, etc.
@@ -33,13 +32,30 @@ AC_TYPE_UID_T			dnl Also does gid_t.
 AC_TYPE_PID_T
 AC_TYPE_SIGNAL
 AC_CHECK_HEADERS(stdlib.h unistd.h limits.h sys/param.h fcntl.h string.h \
-		 memory.h sys/timeb.h)
+		 memory.h sys/time.h sys/timeb.h)
 AC_PROG_CC_C_O
 AM_PROG_CC_STDC
 AC_C_CONST			dnl getopt needs this.
+AC_C_INLINE			dnl gettext needs this.
 AC_HEADER_STAT
+AC_HEADER_TIME
 
-AC_STRUCT_ST_MTIM_NSEC
+dnl Handle internationalization
+
+ALL_LINGUAS="de es fr ja ko nl pl pt_BR ru"
+pds_WITH_GETTEXT
+
+
+dnl See if the user wants nsec timestamps
+
+AC_ARG_ENABLE(nsec-timestamps,
+  [  --disable-nsec-timestamps disable use of sub-second timestamps],
+  [make_cv_nsec_timestamps="$enableval"],
+  [make_cv_nsec_timestamps="yes"])
+
+if test "x$make_cv_nsec_timestamps" != xno; then
+  AC_STRUCT_ST_MTIM_NSEC
+fi
 jm_AC_TYPE_UINTMAX_T
 
 AC_SUBST(LIBOBJS)
@@ -57,13 +73,38 @@ changequote([,])dnl
 fi
 AC_MSG_RESULT($ac_cv_check_symbol_$1)])dnl
 
-# clock_gettime is in -lposix4 in Solaris 2.6.
-AC_CHECK_LIB(posix4, clock_gettime)
+# Solaris 2.5.1 needs -lposix4 to get the clock_gettime function.
+# Solaris 7 prefers the library name -lrt to the obsolescent name -lposix4.
+AC_SEARCH_LIBS(clock_gettime, [rt posix4])
+if test "$ac_cv_search_clock_gettime" != no; then
+  AC_DEFINE(HAVE_CLOCK_GETTIME, 1,
+            [Define if you have the clock_gettime function.])
+fi
 
-AC_CHECK_FUNCS(memmove strdup psignal mktemp pstat_getdynamic \
-	       clock_gettime dup2 getcwd sigsetmask sigaction getgroups \
-	       setlinebuf seteuid setegid setreuid setregid pipe \
-	       strerror strsignal)
+# See if we have a standard version of gettimeofday().  Since actual
+# implementations can differ, just make sure we have the most common
+# one.
+AC_CACHE_CHECK([for standard gettimeofday], ac_cv_func_gettimeofday,
+  [ac_cv_func_gettimeofday=no
+   AC_TRY_RUN([#include <sys/time.h>
+	       int main ()
+	       {
+		 struct timeval t; t.tv_sec = -1; t.tv_usec = -1;
+		 exit (gettimeofday (&t, 0) != 0
+		       || t.tv_sec < 0 || t.tv_usec < 0);
+	       }],
+	      ac_cv_func_gettimeofday=yes,
+	      ac_cv_func_gettimeofday=no,
+	      ac_cv_func_gettimeofday="no (cross-compiling)")])
+if test $ac_cv_func_gettimeofday = yes; then
+  AC_DEFINE(HAVE_GETTIMEOFDAY, 1,
+	    [Define if you have a standard gettimeofday function])
+fi
+
+AC_CHECK_FUNCS(	memmove memcpy strchr strdup psignal mkstemp mktemp fdopen \
+		dup2 getcwd sigsetmask sigaction getgroups setlinebuf \
+		seteuid setegid setreuid setregid pipe strerror strsignal)
+
 AC_CHECK_SYMBOL(sys_siglist)
 AC_FUNC_ALLOCA
 AC_FUNC_VFORK
@@ -71,9 +112,9 @@ AC_FUNC_VPRINTF
 AC_FUNC_STRCOLL
 AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_SETVBUF_REVERSED
-AC_FUNC_SELECT
 
 AC_CHECK_LIB(kstat, kstat_open) dnl _Must_ come before AC_FUNC_GETLOADAVG.
+AC_CHECK_FUNCS(pstat_getdynamic) dnl Supposedly in AC_FUNC_GETLOADAVG, but...?
 AC_FUNC_GETLOADAVG
 
 # Check out the wait reality.
@@ -101,7 +142,7 @@ pid = waitpid (-1, &status, 0);
 ],
 	    [make_cv_union_wait=yes], [make_cv_union_wait=no])])
 if test "$make_cv_union_wait" = yes; then
-  AC_DEFINE(HAVE_UNION_WAIT)
+  AC_DEFINE(HAVE_UNION_WAIT, 1, [Define this if you have the \`union wait' type in <sys/wait.h>.])
 fi
 AC_MSG_RESULT($make_cv_union_wait)
 
@@ -109,7 +150,7 @@ AC_DECL_SYS_SIGLIST
 
 # The presence of the following is not meant to imply
 # that make necessarily works on those systems.
-AC_CHECK_LIB(sun, getpwnam)
+AC_SEARCH_LIBS(getpwnam, sun)
 
 AC_SUBST(REMOTE) REMOTE=stub
 make_try_customs=no
@@ -145,7 +186,8 @@ case "$ac_cv_func_waitpid/$ac_cv_func_wait3" in
 esac
 
 case "$ac_cv_func_pipe/$ac_cv_func_sigaction/$has_wait_nohang/$make_cv_job_server" in
-  yes/yes/yes/yes) AC_DEFINE(MAKE_JOBSERVER) ;;
+  yes/yes/yes/yes) AC_DEFINE(MAKE_JOBSERVER, 1,
+                     [Define this to enable job server support in GNU make.]);;
 esac
 
 dnl Allow building with dmalloc
@@ -181,7 +223,8 @@ if ( /usr/sccs/admin -n s.conftest || admin -n s.conftest ) >/dev/null 2>&1 &&
        make_cv_sys_get_minus_G=no
     fi])
   case "$make_cv_sys_get_minus_G" in
-    yes) AC_DEFINE(SCCS_GET_MINUS_G);;
+    yes) AC_DEFINE(SCCS_GET_MINUS_G, 1,
+           [Define this if the SCCS \`get' command understands the \`-G<file>' option.]);;
   esac
 fi
 rm -f s.conftest conftoast
@@ -209,7 +252,8 @@ case "$make_cv_sys_gnu_glob" in
        AC_SUBST(GLOBLIB) GLOBLIB=glob/libglob.a
        ;;
   no)  AC_MSG_RESULT([no; using local copy])
-       CPPFLAGS="$CPPFLAGS -I$srcdir/glob"
+       AC_SUBST(GLOBDIR) GLOBDIR=glob
+       AC_SUBST(GLOBINC) GLOBINC='-I$(srcdir)/glob'
        AC_SUBST(GLOBLIB) GLOBLIB=glob/libglob.a
        ;;
 esac
@@ -224,7 +268,7 @@ if test -r "$srcdir/maintMakefile"; then
 fi
 AC_SUBST_FILE(MAINT_MAKEFILE)
 
-AC_OUTPUT(build.sh Makefile glob/Makefile)
+AC_OUTPUT(build.sh Makefile glob/Makefile i18n/Makefile)
 
 dnl If we don't yet have build.sh.in, build.sh is a bogus 0-length file
 dnl so remove it.
