@@ -1,31 +1,34 @@
 DEFINES=-DUW $(MACHDEFS) \
 	-I. -I../../athena.bin/attach -I../../bin.athena/attach -I/usr/local/include
+
+BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
+AFSLIBS= /usr/local/lib/afs/libsys.a
 
 OBJS = quota.o attachtab.o afsquota.o $(MACHOBJS)
-LIBS = $(MACHLIBS) /usr/local/lib/afs/libsys.a
+LIBS = $(MACHLIBS) $(AFSLIBS)
 
 #if defined(vax) || defined(ibm032)
+BINDIR=/usr/ucb
 MACHLIBS= -lrpcsvc
 #endif
-#if defined(_AIX) && !defined(_IBMR2)
+
+#if defined(i386)
 MACHLIBS= -lrpclib
 #endif
 
 #if defined(_IBMR2)
 /* Need to use the local header files and sources */
-MACHDEFS=-I./include
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 INSTOPT=-o root -m 0755
 #endif
 
 #if defined(ultrix) || defined(i386)
 /* Need to use the local header files and sources */
-MACHDEFS=-I./include
 MACHOBJS=rcquotaxdr.o
 #endif
 
 build_program(quota,$(OBJS),,$(LIBS))
-install_program(quota,$(INSTOPT),$(ATHBINDIR))
+install_program(quota,$(INSTOPT),$(BINDIR))
 install_man(quota.1,quota.1)
 
