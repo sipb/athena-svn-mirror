@@ -1,0 +1,1669 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeMDIGenericChild</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GNOME UI Library (libgnomeui)"
+HREF="c4.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeApp"
+HREF="libgnomeui-gnomeapp.html"><LINK
+REL="NEXT"
+TITLE="GnomeMDI"
+HREF="libgnomeui-gnomemdi.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeapp.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomemdi.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="LIBGNOMEUI-GNOMEMDIGENERICCHILD"
+>GnomeMDIGenericChild</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN6035"
+></A
+><H2
+>Name</H2
+>GnomeMDIGenericChild&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN6038"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+GnomeMDIGenericChild* <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-NEW"
+>gnome_mdi_generic_child_new</A
+>
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *name);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-VIEW-CREATOR"
+>gnome_mdi_generic_child_set_view_creator</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDVIEWCREATOR"
+>GnomeMDIChildViewCreator</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-VIEW-CREATOR-FULL"
+>gnome_mdi_generic_child_set_view_creator_full</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDVIEWCREATOR"
+>GnomeMDIChildViewCreator</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-MENU-CREATOR"
+>gnome_mdi_generic_child_set_menu_creator</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDMENUCREATOR"
+>GnomeMDIChildMenuCreator</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-MENU-CREATOR-FULL"
+>gnome_mdi_generic_child_set_menu_creator_full</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDMENUCREATOR"
+>GnomeMDIChildMenuCreator</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-CONFIG-FUNC"
+>gnome_mdi_generic_child_set_config_func</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDCONFIGFUNC"
+>GnomeMDIChildConfigFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-CONFIG-FUNC-FULL"
+>gnome_mdi_generic_child_set_config_func_full</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDCONFIGFUNC"
+>GnomeMDIChildConfigFunc</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-LABEL-FUNC"
+>gnome_mdi_generic_child_set_label_func</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDLABELFUNC"
+>GnomeMDIChildLabelFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+void        <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-LABEL-FUNC-FULL"
+>gnome_mdi_generic_child_set_label_func_full</A
+>
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDLABELFUNC"
+>GnomeMDIChildLabelFunc</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6084"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN6087"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6089"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-NEW"
+></A
+>gnome_mdi_generic_child_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeMDIGenericChild* gnome_mdi_generic_child_new
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new mdi child, which has the ability to set view creators, etc
+on an instance basis (rather than on a class basis like &amp;GnomeMDIChild).</P
+><P
+>After creation, you will need to set, at a minimum, the view creator
+function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6098"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the name of this MDI child.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A newly created &amp;GnomeMDIGenericChild object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6111"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-VIEW-CREATOR"
+></A
+>gnome_mdi_generic_child_set_view_creator ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_view_creator
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDVIEWCREATOR"
+>GnomeMDIChildViewCreator</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the function that is used to create new views for this
+particular mdi child object.  The function should return a newly created
+widget (the view).</P
+><P
+>A &amp;GnomeMDIGenericChild must have a view creator.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6121"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function used to create views</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6138"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-VIEW-CREATOR-FULL"
+></A
+>gnome_mdi_generic_child_set_view_creator_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_view_creator_full
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDVIEWCREATOR"
+>GnomeMDIChildViewCreator</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Similar to <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-VIEW-CREATOR"
+>gnome_mdi_generic_child_set_view_creator</A
+>(), except that it gives
+more control to the programmer.  If <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> is not <TT
+CLASS="LITERAL"
+>NULL</TT
+>, then it will
+be called instead of <TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>.</P
+><P
+>The &amp;GtkArg array passed to <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> will be of length 2.  The first
+element will be <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>, and the second is the return value (a pointer to
+a &amp;GtkWidget).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6156"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function to create views (not used if <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> != <TT
+CLASS="LITERAL"
+>NULL</TT
+>)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a callback marshaller</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function used to free the user data.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6183"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-MENU-CREATOR"
+></A
+>gnome_mdi_generic_child_set_menu_creator ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_menu_creator
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDMENUCREATOR"
+>GnomeMDIChildMenuCreator</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the function used to create child specific menus.  The function
+should return a &amp;GList of the menus created.</P
+><P
+>A &amp;GnomeMDIGenericChild doesn't require a menu creator.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6193"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function to create a list of child specific menus</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6210"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-MENU-CREATOR-FULL"
+></A
+>gnome_mdi_generic_child_set_menu_creator_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_menu_creator_full
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDMENUCREATOR"
+>GnomeMDIChildMenuCreator</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is similar to <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-MENU-CREATOR"
+>gnome_mdi_generic_child_set_menu_creator</A
+>(),
+but gives extra flexibility to the programmer, in the form of a a
+destroy notify for the user data, and a callback marshaller.</P
+><P
+>The &amp;GtkArg array passed to <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> is of length 3.  The first element
+will be <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>, the second will be a view of <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>, and the third is the
+return value (a pointer to the returned GList).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6226"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a menu creator function (not used if <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> != <TT
+CLASS="LITERAL"
+>NULL</TT
+>)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a callback marshaller</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a destroy notify for the data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6253"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-CONFIG-FUNC"
+></A
+>gnome_mdi_generic_child_set_config_func ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_config_func
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDCONFIGFUNC"
+>GnomeMDIChildConfigFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the function used to get the config key used for session saves.</P
+><P
+>A &amp;GnomeMDIGenericChild doesn't require a config func.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6263"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function to set the config key for session saves</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6280"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-CONFIG-FUNC-FULL"
+></A
+>gnome_mdi_generic_child_set_config_func_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_config_func_full
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDCONFIGFUNC"
+>GnomeMDIChildConfigFunc</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>A function similar to <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-CONFIG-FUNC"
+>gnome_mdi_generic_child_set_config_func</A
+>(), except
+it gives more control to the programmer.</P
+><P
+>The &amp;GtkArg array passed to <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> is of length 2.  The first element is
+<TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>, and the second is the return value (a pointer to a string).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6295"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function (not used if <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> != <TT
+CLASS="LITERAL"
+>NULL</TT
+>)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a callback marshaller</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a destroy notify for the user data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6322"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-LABEL-FUNC"
+></A
+>gnome_mdi_generic_child_set_label_func ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_label_func
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDLABELFUNC"
+>GnomeMDIChildLabelFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the function used to set (or modify) the label for <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>.  The
+first argument to <TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+> is <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>.  If a label exists, it will be passed
+to <TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+> as the second argument, otherwise, <TT
+CLASS="LITERAL"
+>NULL</TT
+> is passed.  The
+function should return the modified label.</P
+><P
+>A &amp;GnomeMDIGenericChild doesn't require a label function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6337"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN6354"
+></A
+><H3
+><A
+NAME="GNOME-MDI-GENERIC-CHILD-SET-LABEL-FUNC-FULL"
+></A
+>gnome_mdi_generic_child_set_label_func_full ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_mdi_generic_child_set_label_func_full
+                                            (GnomeMDIGenericChild *child,
+                                             <A
+HREF="libgnomeui-gnomemdichild.html#GNOMEMDICHILDLABELFUNC"
+>GnomeMDIChildLabelFunc</A
+> func,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKCALLBACKMARSHAL
+>GtkCallbackMarshal</A> marshal,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../gtk/gtk-types.html#GTKDESTROYNOTIFY
+>GtkDestroyNotify</A> notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Similar to <A
+HREF="libgnomeui-gnomemdigenericchild.html#GNOME-MDI-GENERIC-CHILD-SET-LABEL-FUNC"
+>gnome_mdi_generic_child_set_label_func</A
+>(), except it gives more
+flexibility to the programmer.</P
+><P
+>The &amp;GtkArg array passed to <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> is of length 3.  The first argument
+is <TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>, the second is the old widget (or <TT
+CLASS="LITERAL"
+>NULL</TT
+>), and the third is the
+return value (a pointer to a &amp;GtkWidget).</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN6370"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>child</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mdi child object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a function (not used if <TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+> != <TT
+CLASS="LITERAL"
+>NULL</TT
+>)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>marshal</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a callback marshaller</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> optional user data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a destroy notify for the data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeapp.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomemdi.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeApp</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeMDI</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

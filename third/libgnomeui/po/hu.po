@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 2.0\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-07-28 21:20+0100\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-12-04 15:47+0100\n"
 "Last-Translator: Szabolcs Ban <shooby@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -19,16 +19,16 @@ msgid "Credits"
 msgstr "Köszönet"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "Ír_ta"
+msgid "Written by"
+msgstr "Írta"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentáció"
+msgid "Documented by"
+msgstr "Dokumentáció"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Fordította"
+msgid "Translated by"
+msgstr "Fordította"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -397,11 +397,12 @@ msgstr "Ez a gomb a rajta található URL-re visz."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Hiba történt a URL-kezelő indításakor.\n"
-"Ellenőrizd a beállításokat a Vezérlőpulton."
+"Hiba történt az alapértelmezett webböngésző indításakor.\n"
+"Ellenőrizd a beállításokat a Vezérlőpult 'Alapértelmezett alkalmazások' "
+"részében."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -416,13 +417,13 @@ msgid "GNOME GUI Library"
 msgstr "GNOME GUI programkönyvtár"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Többszörös szegmentációs hiba; hiba-párbeszédpanel megjelenítése sikertelen\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"

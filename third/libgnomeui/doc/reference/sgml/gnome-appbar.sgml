@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -62,6 +63,14 @@ void        <link linkend="gnome-appbar-clear-prompt">gnome_appbar_clear_prompt<
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeAppBar implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
@@ -107,38 +116,30 @@ bars and use proper editable widgets instead.
 </programlisting>
 <para>
 Whether or not the application bar contains a status box.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><literal>TRUE</literal> is a status box is contained in the appbar.
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> is a status box is contained in the appbar.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-APPBAR-HAS-PROGRESS-CAPS">GNOME_APPBAR_HAS_PROGRESS()</title>
 <programlisting>#define GNOME_APPBAR_HAS_PROGRESS(appbar) (gnome_appbar_get_progress(GNOME_APPBAR(appbar)) != NULL)
 </programlisting>
 <para>
 Whether or not the application bar contains a status box.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><literal>TRUE</literal> is a status box is contained in the appbar.
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> is a status box is contained in the appbar.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-APPBAR-INTERACTIVE-CAPS">GNOME_APPBAR_INTERACTIVE()</title>
 <programlisting>#define GNOME_APPBAR_INTERACTIVE(ab) ((ab) ? (ab)-&gt;interactive : FALSE)
@@ -146,19 +147,15 @@ Whether or not the application bar contains a status box.
 <para>
 Whether or not the user can edit the text in the statusbar portion of a
 <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>ab</parameter>&nbsp;:</entry>
-<entry>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><literal>TRUE</literal> if the user can edit the statusbar text.
+</para><variablelist role="params">
+<varlistentry><term><parameter>ab</parameter>&nbsp;:</term>
+<listitem><simpara>A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if the user can edit the statusbar text.
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeAppBar-struct">struct GnomeAppBar</title>
 <programlisting>struct GnomeAppBar;</programlisting>
@@ -194,23 +191,19 @@ GtkEntry is inadequate and so a custom widget will be written
 eventually.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>has_progress</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if appbar needs progress bar widget, <literal>FALSE</literal> if not.
-</entry></row>
-<row><entry align="right"><parameter>has_status</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if appbar needs status bar widget, <literal>FALSE</literal> if not.
-</entry></row>
-<row><entry align="right"><parameter>interactivity</parameter>&nbsp;:</entry>
-<entry> Level of user activity required.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  Pointer to new <link linkend="GnomeAppBar">GnomeAppBar</link> widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>has_progress</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if appbar needs progress bar widget, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>has_status</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if appbar needs status bar widget, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>interactivity</parameter>&nbsp;:</term>
+<listitem><simpara> Level of user activity required.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new <link linkend="GnomeAppBar">GnomeAppBar</link> widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-set-status">gnome_appbar_set_status ()</title>
 <programlisting>void        gnome_appbar_set_status         (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar,
@@ -221,18 +214,14 @@ Sets the status label without changing widget state; next call to
 permanently.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>status</parameter>&nbsp;:</entry>
-<entry> Text to which status label will be set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara> Text to which status label will be set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-get-status">gnome_appbar_get_status ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_appbar_get_status         (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -240,18 +229,14 @@ permanently.</para>
 Retrieves the statusbar widget.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 A pointer to the statusbar widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-set-default">gnome_appbar_set_default ()</title>
 <programlisting>void        gnome_appbar_set_default        (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar,
@@ -261,18 +246,14 @@ What to show when showing nothing else is on the stack; defaults to the
 empty string.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>default_status</parameter>&nbsp;:</entry>
-<entry> Text for status label.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>default_status</parameter>&nbsp;:</term>
+<listitem><simpara> Text for status label.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-push">gnome_appbar_push ()</title>
 <programlisting>void        gnome_appbar_push               (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar,
@@ -281,18 +262,14 @@ empty string.</para>
 Push a new status message onto the status bar stack and display it.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>status</parameter>&nbsp;:</entry>
-<entry> Text of status message.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status</parameter>&nbsp;:</term>
+<listitem><simpara> Text of status message.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-pop">gnome_appbar_pop ()</title>
 <programlisting>void        gnome_appbar_pop                (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -301,15 +278,11 @@ Remove current status message, and display previous status
 message, if any.  It is fine to call this with an empty stack.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-clear-stack">gnome_appbar_clear_stack ()</title>
 <programlisting>void        gnome_appbar_clear_stack        (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -318,15 +291,11 @@ Remove all status messages from <parameter>appbar</parameter>, and display defau
 message (if present).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-set-progress-percentage">gnome_appbar_set_progress_percentage ()</title>
 <programlisting>void        gnome_appbar_set_progress_percentage
@@ -336,18 +305,14 @@ message (if present).</para>
 Sets progress bar to <parameter>percentage</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>percentage</parameter>&nbsp;:</entry>
-<entry> Percentage to which progress bar should be set.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>percentage</parameter>&nbsp;:</term>
+<listitem><simpara> Percentage to which progress bar should be set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-get-progress">gnome_appbar_get_progress ()</title>
 <programlisting><link linkend="GtkProgressBar">GtkProgressBar</link>* gnome_appbar_get_progress   (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -355,18 +320,14 @@ Sets progress bar to <parameter>percentage</parameter>.</para>
 Retrieves the progress bar widget for further manipulation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A <link linkend="GtkProgressBar">GtkProgressBar</link> widget which is <parameter>appbar</parameter>'s progress bar, or <literal>NULL</literal>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GtkProgressBar">GtkProgressBar</link> widget which is <parameter>appbar</parameter>'s progress bar, or <literal>NULL</literal>
 if <parameter>appbar</parameter> has no progress bar.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-refresh">gnome_appbar_refresh ()</title>
 <programlisting>void        gnome_appbar_refresh            (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -376,15 +337,11 @@ stack, or the default value if the stack is empty.. Useful to force the
 message from a previous call to <link linkend="gnome-appbar-set-status">gnome_appbar_set_status</link>() to disappear.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-set-prompt">gnome_appbar_set_prompt ()</title>
 <programlisting>void        gnome_appbar_set_prompt         (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar,
@@ -395,21 +352,17 @@ Put a prompt in the appbar and wait for a response. When the
 user responds or cancels, a 'user_response' signal is emitted.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><parameter>prompt</parameter>&nbsp;:</entry>
-<entry> Text of the prompt message.
-</entry></row>
-<row><entry align="right"><parameter>modal</parameter>&nbsp;:</entry>
-<entry> If <literal>TRUE</literal>, grabs input.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara> Text of the prompt message.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>modal</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, grabs input.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-clear-prompt">gnome_appbar_clear_prompt ()</title>
 <programlisting>void        gnome_appbar_clear_prompt       (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -417,15 +370,11 @@ user responds or cancels, a 'user_response' signal is emitted.</para>
 Remove any prompt from the status message bar.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-appbar-get-response">gnome_appbar_get_response ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_appbar_get_response       (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar);</programlisting>
@@ -433,19 +382,15 @@ Remove any prompt from the status message bar.</para>
 Get the response to the prompt, if any.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeAppBar">GnomeAppBar</link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 Text from <parameter>appbar</parameter> entry widget, as entered by user. This string should be
 freed by the caller (using <link linkend="gfree">gfree</link>()) when no longer required.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
@@ -453,15 +398,21 @@ freed by the caller (using <link linkend="gfree">gfree</link>()) when no longer 
 <variablelist>
 <varlistentry><term><anchor id="GnomeAppBar--has-progress">&quot;<literal>has-progress</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write / Construct)</term>
 <listitem>
-<para>Create a progress widget.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeAppBar--has-status">&quot;<literal>has-status</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write / Construct)</term>
 <listitem>
-<para>Create a status widget.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeAppBar--interactivity">&quot;<literal>interactivity</literal>&quot; (<link linkend="GnomePreferencesType">GnomePreferencesType</link> : Read / Write / Construct)</term>
 <listitem>
-<para>Level of user activity required.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>
@@ -474,34 +425,26 @@ freed by the caller (using <link linkend="gfree">gfree</link>()) when no longer 
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeAppBar-user-response">The &quot;user-response&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeAppBar-user-response">The &quot;user-response&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeAppBar">GnomeAppBar</link> *appbar,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>appbar</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>appbar</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

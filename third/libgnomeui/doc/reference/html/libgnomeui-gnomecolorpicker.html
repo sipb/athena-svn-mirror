@@ -1,0 +1,1912 @@
+<HTML
+><HEAD
+><TITLE
+>GnomeColorPicker</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GNOME UI Library Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GNOME UI Library (libgnomeui)"
+HREF="c4.html"><LINK
+REL="PREVIOUS"
+TITLE="GnomeClient"
+HREF="libgnomeui-gnomeclient.html"><LINK
+REL="NEXT"
+TITLE="GnomeDateEdit"
+HREF="libgnomeui-gnomedateedit.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GNOME UI Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeclient.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomedateedit.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="LIBGNOMEUI-GNOMECOLORPICKER"
+>GnomeColorPicker</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1327"
+></A
+><H2
+>Name</H2
+>GnomeColorPicker&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1330"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOMECOLORPICKERPRIVATE"
+>GnomeColorPickerPrivate</A
+>;
+<A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-NEW"
+>gnome_color_picker_new</A
+>          (void);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-D"
+>gnome_color_picker_set_d</A
+>        (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-D"
+>gnome_color_picker_get_d</A
+>        (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-I8"
+>gnome_color_picker_set_i8</A
+>       (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-I8"
+>gnome_color_picker_get_i8</A
+>       (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-I16"
+>gnome_color_picker_set_i16</A
+>      (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-I16"
+>gnome_color_picker_get_i16</A
+>      (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *a);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-DITHER"
+>gnome_color_picker_set_dither</A
+>   (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> dither);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-DITHER"
+>gnome_color_picker_get_dither</A
+>   (GnomeColorPicker *cp);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-USE-ALPHA"
+>gnome_color_picker_set_use_alpha</A
+>
+                                            (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_alpha);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-USE-ALPHA"
+>gnome_color_picker_get_use_alpha</A
+>
+                                            (GnomeColorPicker *cp);
+void        <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-SET-TITLE"
+>gnome_color_picker_set_title</A
+>    (GnomeColorPicker *cp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);
+const char* <A
+HREF="libgnomeui-gnomecolorpicker.html#GNOME-COLOR-PICKER-GET-TITLE"
+>gnome_color_picker_get_title</A
+>    (GnomeColorPicker *cp);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1389"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1392"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1394"
+></A
+><H3
+><A
+NAME="GNOMECOLORPICKERPRIVATE"
+></A
+>struct GnomeColorPickerPrivate</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeColorPickerPrivate;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1399"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-NEW"
+></A
+>gnome_color_picker_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../gtk/gtkwidget.html
+>GtkWidget</A>*  gnome_color_picker_new          (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new GNOME color picker widget. This returns a widget in the form of a small button
+containing a swatch representing the current selected color. When the button is clicked,
+a color-selection dialog will open, allowing the user to select a color. The swatch will be
+updated to reflect the new color when the user finishes.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1406"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Pointer to new GNOME color picker widget.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1415"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-D"
+></A
+>gnome_color_picker_set_d ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_d        (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set color shown in the color picker widget using floating point values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1426"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Red color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Green color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Blue color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Alpha component, values are in [0.0, 1.0]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1451"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-D"
+></A
+>gnome_color_picker_get_d ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_get_d        (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> *a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve color currently selected in the color picker widget in the form of floating point values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1462"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of red color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of green color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of blue color component, values are in [0.0, 1.0]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of alpha color component, values are in [0.0, 1.0]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1487"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-I8"
+></A
+>gnome_color_picker_set_i8 ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_i8       (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set color shown in the color picker widget using 8-bit integer values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1498"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Red color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Green color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Blue color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Alpha component, values are in [0, 255]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1523"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-I8"
+></A
+>gnome_color_picker_get_i8 ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_get_i8       (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT8
+>guint8</A> *a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve color currently selected in the color picker widget in the form of 8-bit integer values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1534"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of red color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of green color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of blue color component, values are in [0, 255]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of alpha color component, values are in [0, 255]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1559"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-I16"
+></A
+>gnome_color_picker_set_i16 ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_i16      (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set color shown in the color picker widget using 16-bit integer values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1570"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Red color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Green color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Blue color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Alpha component, values are in [0, 65535]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1595"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-I16"
+></A
+>gnome_color_picker_get_i16 ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_get_i16      (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *r,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *g,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *b,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUSHORT
+>gushort</A> *a);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Retrieve color currently selected in the color picker widget in the form of 16-bit integer values.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1606"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>r</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of red color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>g</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of green color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>b</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of blue color component, values are in [0, 65535]</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>a</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Output location of alpha color component, values are in [0, 65535]</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1631"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-DITHER"
+></A
+>gnome_color_picker_set_dither ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_dither   (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> dither);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets whether the picker should dither the color sample or just paint
+a solid rectangle.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1639"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dither</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if color sample should be dithered, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1654"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-DITHER"
+></A
+>gnome_color_picker_get_dither ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_color_picker_get_dither   (GnomeColorPicker *cp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Does the picker dither the color sample or just paint
+a solid rectangle.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1662"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if color sample is dithered, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1677"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-USE-ALPHA"
+></A
+>gnome_color_picker_set_use_alpha ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_use_alpha
+                                            (GnomeColorPicker *cp,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_alpha);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets whether or not the picker should use the alpha channel.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1685"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>use_alpha</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if color sample should use alpha channel, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1700"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-USE-ALPHA"
+></A
+>gnome_color_picker_get_use_alpha ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_color_picker_get_use_alpha
+                                            (GnomeColorPicker *cp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Does the picker use the alpha channel?</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1708"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if color sample uses alpha channel, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> if not.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1723"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-SET-TITLE"
+></A
+>gnome_color_picker_set_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_color_picker_set_title    (GnomeColorPicker *cp,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *title);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the title for the color selection dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1731"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>title</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> String containing new window title.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1744"
+></A
+><H3
+><A
+NAME="GNOME-COLOR-PICKER-GET-TITLE"
+></A
+>gnome_color_picker_get_title ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gnome_color_picker_get_title    (GnomeColorPicker *cp);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the title of the color selection dialog.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1751"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cp</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to GNOME color picker widget.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  An internal string, do not free the return value</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="libgnomeui-gnomeclient.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c4.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="libgnomeui-gnomedateedit.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeClient</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GnomeDateEdit</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

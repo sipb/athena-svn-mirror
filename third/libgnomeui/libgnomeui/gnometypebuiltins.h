@@ -61,9 +61,22 @@ GType gnome_font_picker_mode_get_type (void);
 GType gnome_icon_list_mode_get_type (void);
 
 
+/* --- gnome-icon-lookup.h --- */
+#define GNOME_TYPE_ICON_LOOKUP_FLAGS gnome_icon_lookup_flags_get_type()
+GType gnome_icon_lookup_flags_get_type (void);
+
+#define GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS gnome_icon_lookup_result_flags_get_type()
+GType gnome_icon_lookup_result_flags_get_type (void);
+
+
 /* --- gnome-mdi.h --- */
 #define GNOME_TYPE_MDI_MODE gnome_mdi_mode_get_type()
 GType gnome_mdi_mode_get_type (void);
+
+
+/* --- gnome-thumbnail.h --- */
+#define GNOME_TYPE_THUMBNAIL_SIZE gnome_thumbnail_size_get_type()
+GType gnome_thumbnail_size_get_type (void);
 
 
 /* --- gnome-types.h --- */

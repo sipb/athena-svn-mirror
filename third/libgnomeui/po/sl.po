@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
 "PO-Revision-Date: 2001-07-29 12:32+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -18,16 +18,16 @@ msgid "Credits"
 msgstr "Zasluge"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Pisci"
+msgid "Written by"
+msgstr "Pisci programa"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumentatorji"
+msgid "Documented by"
+msgstr "Pisci dokumentacije"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Prevajalci"
+msgid "Translated by"
+msgstr "Prevajalci"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -395,11 +395,11 @@ msgstr "Ta gumb vas bo pripeljal na URI, ki ga kaže."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Zgodila se je napaka ob poskusu zagona URL upravljalnika.\n"
-"Prosim preglejte pravilnost nastavitev v Kontrolnem centru."
+"Ob poskusu zagona privzetega spletnega brskalnika, se je zgodila napaka.\n"
+"Prosim preglejte svoje nastavitve v nastavitvah Zaželjenih programov."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -414,14 +414,14 @@ msgid "GNOME GUI Library"
 msgstr "Knjižnjica grafičnega vmesnika Gnome"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Zgodilo se je več segmentacijskih napak; ne morem prikazati dialoga z "
 "napako\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -743,9 +743,8 @@ msgstr "Zamenjaj niz"
 
 #. Properties
 #: libgnomeui/gnome-app-helper.c:202
-#, fuzzy
 msgid "_Properties"
-msgstr "_Lastnosti..."
+msgstr "_Lastnosti"
 
 #: libgnomeui/gnome-app-helper.c:203
 msgid "Modify the file's properties"
@@ -756,9 +755,8 @@ msgstr "Spremeni lastnosti datoteke"
 #.
 #. Settings
 #: libgnomeui/gnome-app-helper.c:211
-#, fuzzy
 msgid "Prefere_nces"
-msgstr "_Nastavitve..."
+msgstr "_Nastavitve"
 
 #: libgnomeui/gnome-app-helper.c:212
 msgid "Configure the application"

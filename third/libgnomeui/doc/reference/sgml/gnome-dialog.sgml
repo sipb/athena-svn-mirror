@@ -6,10 +6,11 @@
 </refmeta>
 
 <refnamediv>
-<refname>GnomeDialog</refname><refpurpose></refpurpose>
+<refname>GnomeDialog</refname><refpurpose>Create generic dialog boxes.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -103,6 +104,14 @@ void        <link linkend="gnome-dialog-constructv">gnome_dialog_constructv</lin
 
 </refsect1>
 
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeDialog implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
 
 <refsect1>
 <title>Signal Prototypes</title>
@@ -132,23 +141,23 @@ void        <link linkend="gnome-dialog-constructv">gnome_dialog_constructv</lin
   GtkWidget * vbox;
 };
 </programlisting>
-<warning>
+<warning><para><literal>GnomeDialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GnomeDialog</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+Client code can pack widgets (for example, text or images) into <parameter>vbox</parameter>.</para>
 <para>
 
-</para></refsect2>
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GtkWidget">GtkWidget</link> *<structfield>vbox</structfield></term>
+<listitem><simpara> The middle portion of the dialog box.
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-new">gnome_dialog_new ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_dialog_new                (const <link linkend="gchar">gchar</link> *title,
                                              ...);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_new</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates a new <link linkend="GnomeDialog">GnomeDialog</link>, with the given title, and any button names
 in the arg list. Buttons can be simple names, such as _("My Button"),
@@ -162,57 +171,41 @@ then button 1, etc.  These numbers are used throughout the
 <link linkend="GnomeDialog">GnomeDialog</link> API.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> The title of the dialog; appears in window titlebar.
-</entry></row>
-<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry> NULL-terminated varargs list of button names or GNOME_STOCK_BUTTON_* defines.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The new <link linkend="GnomeDialog">GnomeDialog</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> The title of the dialog; appears in window titlebar.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated varargs list of button names or GNOME_STOCK_BUTTON_* defines.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new <link linkend="GnomeDialog">GnomeDialog</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-newv">gnome_dialog_newv ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_dialog_newv               (const <link linkend="gchar">gchar</link> *title,
                                              const <link linkend="gchar">gchar</link> **buttons);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_newv</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_newv</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 See <link linkend="gnome-dialog-new">gnome_dialog_new</link>(), this function is identical but does not use
 varargs.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Title of the dialog.
-</entry></row>
-<row><entry align="right"><parameter>buttons</parameter>&nbsp;:</entry>
-<entry> NULL-terminated vector of buttons names.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The new <link linkend="GnomeDialog">GnomeDialog</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the dialog.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buttons</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated vector of buttons names.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new <link linkend="GnomeDialog">GnomeDialog</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-set-parent">gnome_dialog_set_parent ()</title>
 <programlisting>void        gnome_dialog_set_parent         (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_set_parent</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_set_parent</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Dialogs have "parents," usually the main application window which spawned
 them. This function will let the window manager know about the parent-child
@@ -222,51 +215,39 @@ request dialog placement above the parent window (vs. at the mouse position,
 or at a default window manger location).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to set the parent of.
-</entry></row>
-<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry> Parent <link linkend="GtkWindow">GtkWindow</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to set the parent of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent <link linkend="GtkWindow">GtkWindow</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-button-connect">gnome_dialog_button_connect ()</title>
 <programlisting>void        gnome_dialog_button_connect     (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gint">gint</link> button,
                                              <link linkend="GCallback">GCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_button_connect</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_button_connect</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Simply <link linkend="g-signal-connect">g_signal_connect</link>() to the "clicked" signal of the specified button.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Button number.
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry> A standard Gtk callback.
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry> Callback data.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Button number.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> A standard Gtk callback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Callback data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-button-connect-object">gnome_dialog_button_connect_object ()</title>
 <programlisting>void        gnome_dialog_button_connect_object
@@ -274,41 +255,29 @@ Simply <link linkend="g-signal-connect">g_signal_connect</link>() to the "clicke
                                              <link linkend="gint">gint</link> button,
                                              <link linkend="GCallback">GCallback</link> callback,
                                              <link linkend="GtkObject">GtkObject</link> *obj);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_button_connect_object</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_button_connect_object</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 <link linkend="g-signal-connect-swapped">g_signal_connect_swapped</link>() to the "clicked" signal of the given button.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Button to connect to.
-</entry></row>
-<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
-<entry> Callback.
-</entry></row>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> As for <link linkend="g-signal-connect-swapped">g_signal_connect_swapped</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Button to connect to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> As for <link linkend="g-signal-connect-swapped">g_signal_connect_swapped</link>().
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-run">gnome_dialog_run ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_dialog_run                (<link linkend="GnomeDialog">GnomeDialog</link> *dialog);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_run</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_run</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Blocks until the user clicks a button, or closes the dialog with the
 window manager's close decoration (or by pressing Escape).
@@ -330,165 +299,117 @@ change the <link linkend="gnome-dialog-close">gnome_dialog_close</link>() behavi
 destroy. You can do this with <link linkend="gnome-dialog-close-hides">gnome_dialog_close_hides</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to use.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  If a button was pressed, the button number is returned. If not, -1 is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to use.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  If a button was pressed, the button number is returned. If not, -1 is returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-run-and-close">gnome_dialog_run_and_close ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_dialog_run_and_close      (<link linkend="GnomeDialog">GnomeDialog</link> *dialog);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_run_and_close</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_run_and_close</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 See <link linkend="gnome-dialog-run">gnome_dialog_run</link>(). The only difference is that this function calls
 <link linkend="gnome-dialog-close">gnome_dialog_close</link>() before returning, if the dialog was not already closed.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to use.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> If a button was pressed, the button number. Otherwise -1.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to use.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> If a button was pressed, the button number. Otherwise -1.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-set-default">gnome_dialog_set_default ()</title>
 <programlisting>void        gnome_dialog_set_default        (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gint">gint</link> button);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_set_default</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_set_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 The default button will be activated if the user just presses return.
 Usually you should make the least-destructive button the default.
 Otherwise, the most commonly-used button.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Number of the default button.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the default button.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-grab-focus">gnome_dialog_grab_focus ()</title>
 <programlisting>void        gnome_dialog_grab_focus         (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gint">gint</link> button);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_grab_focus</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_grab_focus</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 The button <parameter>button</parameter> will grab the focus.  Use this for dialogs
 Where only buttons are displayed and you want to change the
 default button.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Number of the default button.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the default button.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-set-sensitive">gnome_dialog_set_sensitive ()</title>
 <programlisting>void        gnome_dialog_set_sensitive      (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gint">gint</link> button,
                                              <link linkend="gboolean">gboolean</link> setting);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_set_sensitive</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_set_sensitive</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Calls <link linkend="gtk-widget-set-sensitive">gtk_widget_set_sensitive</link>() on the specified button number.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Which button to affect.
-</entry></row>
-<row><entry align="right"><parameter>setting</parameter>&nbsp;:</entry>
-<entry> TRUE means it's sensitive.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Which button to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>setting</parameter>&nbsp;:</term>
+<listitem><simpara> TRUE means it's sensitive.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-set-accelerator">gnome_dialog_set_accelerator ()</title>
 <programlisting>void        gnome_dialog_set_accelerator    (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gint">gint</link> button,
                                              const <link linkend="guchar">guchar</link> accelerator_key,
                                              <link linkend="guint8">guint8</link> accelerator_mods);</programlisting>
-<warning>
+<warning><para><literal>gnome_dialog_set_accelerator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>gnome_dialog_set_accelerator</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-</para>
+Set an accelerator key for a button.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry> Button number.
-</entry></row>
-<row><entry align="right"><parameter>accelerator_key</parameter>&nbsp;:</entry>
-<entry> Key for the accelerator.
-</entry></row>
-<row><entry align="right"><parameter>accelerator_mods</parameter>&nbsp;:</entry>
-<entry> Modifier.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara> Button number.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accelerator_key</parameter>&nbsp;:</term>
+<listitem><simpara> Key for the accelerator.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accelerator_mods</parameter>&nbsp;:</term>
+<listitem><simpara> Modifier.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-close">gnome_dialog_close ()</title>
 <programlisting>void        gnome_dialog_close              (<link linkend="GnomeDialog">GnomeDialog</link> *dialog);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_close</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_close</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 See also <link linkend="gnome-dialog-close-hides">gnome_dialog_close_hides</link>(). This function emits the
 "close" signal, which either hides or destroys the dialog (destroy
@@ -504,24 +425,16 @@ dialog closure, including delete_event and button clicks, and
 handle them in a central location.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to close.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to close.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-close-hides">gnome_dialog_close_hides ()</title>
 <programlisting>void        gnome_dialog_close_hides        (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gboolean">gboolean</link> just_hide);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_close_hides</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_close_hides</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Some dialogs are expensive to create, so you want to keep them around and just
 <link linkend="gtk-widget-show">gtk_widget_show</link>() them when they are opened, and <link linkend="gtk-widget-hide">gtk_widget_hide</link>() them when
@@ -530,27 +443,19 @@ they're closed. Other dialogs are expensive to keep around, so you want to
 will need to make for each dialog.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>just_hide</parameter>&nbsp;:</entry>
-<entry> If TRUE, <link linkend="gnome-dialog-close">gnome_dialog_close</link>() calls <link linkend="gtk-widget-hide">gtk_widget_hide</link>() instead of <link linkend="gtk-widget-destroy">gtk_widget_destroy</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>just_hide</parameter>&nbsp;:</term>
+<listitem><simpara> If TRUE, <link linkend="gnome-dialog-close">gnome_dialog_close</link>() calls <link linkend="gtk-widget-hide">gtk_widget_hide</link>() instead of <link linkend="gtk-widget-destroy">gtk_widget_destroy</link>().
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-set-close">gnome_dialog_set_close ()</title>
 <programlisting>void        gnome_dialog_set_close          (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="gboolean">gboolean</link> click_closes);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_set_close</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_set_close</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This is a convenience function so you don't have to connect callbacks
 to each button just to close the dialog. By default, <link linkend="GnomeDialog">GnomeDialog</link>
@@ -560,27 +465,19 @@ such as <link linkend="GnomeMessageBox">GnomeMessageBox</link> and <link linkend
 TRUE by default.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>click_closes</parameter>&nbsp;:</entry>
-<entry> TRUE if clicking any button should call <link linkend="gnome-dialog-close">gnome_dialog_close</link>().
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>click_closes</parameter>&nbsp;:</term>
+<listitem><simpara> TRUE if clicking any button should call <link linkend="gnome-dialog-close">gnome_dialog_close</link>().
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-editable-enters">gnome_dialog_editable_enters ()</title>
 <programlisting>void        gnome_dialog_editable_enters    (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              <link linkend="GtkEditable">GtkEditable</link> *editable);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_editable_enters</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_editable_enters</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Normally if there's an editable widget (such as <link linkend="GtkEntry">GtkEntry</link>) in your
 dialog, pressing Enter will activate the editable rather than the
@@ -589,58 +486,42 @@ type something in and then press enter to close the dialog. This
 function enables that behavior.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
-</entry></row>
-<row><entry align="right"><parameter>editable</parameter>&nbsp;:</entry>
-<entry> Editable to affect.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to affect.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>editable</parameter>&nbsp;:</term>
+<listitem><simpara> Editable to affect.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-append-buttons">gnome_dialog_append_buttons ()</title>
 <programlisting>void        gnome_dialog_append_buttons     (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> *first,
                                              ...);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_append_buttons</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_append_buttons</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This function is mostly for internal library use. You should use
 <link linkend="gnome-dialog-new">gnome_dialog_new</link>() instead. See that function for a description of
 the button arguments.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to add buttons to.
-</entry></row>
-<row><entry align="right"><parameter>first</parameter>&nbsp;:</entry>
-<entry> First button to add.
-</entry></row>
-<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry> varargs list of additional buttons, NULL-terminated.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to add buttons to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first</parameter>&nbsp;:</term>
+<listitem><simpara> First button to add.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> varargs list of additional buttons, NULL-terminated.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-append-button">gnome_dialog_append_button ()</title>
 <programlisting>void        gnome_dialog_append_button      (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> *button_name);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_append_button</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_append_button</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Add a button to a dialog after its initial construction.
 This function is mostly for internal library use. You should use
@@ -648,306 +529,214 @@ This function is mostly for internal library use. You should use
 the button argument.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to add button to.
-</entry></row>
-<row><entry align="right"><parameter>button_name</parameter>&nbsp;:</entry>
-<entry> Button to add.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to add button to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button_name</parameter>&nbsp;:</term>
+<listitem><simpara> Button to add.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-append-buttonsv">gnome_dialog_append_buttonsv ()</title>
 <programlisting>void        gnome_dialog_append_buttonsv    (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> **buttons);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_append_buttonsv</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_append_buttonsv</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 For internal use, language bindings, etc. Use <link linkend="gnome-dialog-new">gnome_dialog_new</link>() instead.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to append to.
-</entry></row>
-<row><entry align="right"><parameter>buttons</parameter>&nbsp;:</entry>
-<entry> NULL-terminated vector of buttons to append.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to append to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buttons</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated vector of buttons to append.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-append-button-with-pixmap">gnome_dialog_append_button_with_pixmap ()</title>
 <programlisting>void        gnome_dialog_append_button_with_pixmap
                                             (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> *button_name,
                                              const <link linkend="gchar">gchar</link> *pixmap_name);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_append_button_with_pixmap</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_append_button_with_pixmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Add a pixmap button to a dialog.
 <link linkend="gnome-dialog-new">gnome_dialog_new</link>() does not permit custom buttons with pixmaps, so if you
 want one of those you need to use this function.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to add the button to.
-</entry></row>
-<row><entry align="right"><parameter>button_name</parameter>&nbsp;:</entry>
-<entry> Name of the button, or stock button <link linkend="define">define</link>.
-</entry></row>
-<row><entry align="right"><parameter>pixmap_name</parameter>&nbsp;:</entry>
-<entry> Stock pixmap name.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to add the button to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>button_name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the button, or stock button <link linkend="define">define</link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixmap_name</parameter>&nbsp;:</term>
+<listitem><simpara> Stock pixmap name.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-append-buttons-with-pixmaps">gnome_dialog_append_buttons_with_pixmaps ()</title>
 <programlisting>void        gnome_dialog_append_buttons_with_pixmaps
                                             (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> **names,
                                              const <link linkend="gchar">gchar</link> **pixmaps);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_append_buttons_with_pixmaps</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_append_buttons_with_pixmaps</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Simply calls <link linkend="gnome-dialog-append-button-with-pixmap">gnome_dialog_append_button_with_pixmap</link>() repeatedly.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeDialog">GnomeDialog</link> to append to.
-</entry></row>
-<row><entry align="right"><parameter>names</parameter>&nbsp;:</entry>
-<entry> NULL-terminated vector of button names.
-</entry></row>
-<row><entry align="right"><parameter>pixmaps</parameter>&nbsp;:</entry>
-<entry> NULL-terminated vector of pixmap names.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeDialog">GnomeDialog</link> to append to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>names</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated vector of button names.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixmaps</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated vector of pixmap names.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-construct">gnome_dialog_construct ()</title>
 <programlisting>void        gnome_dialog_construct          (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> *title,
                                              va_list ap);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_construct</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_construct</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> Dialog to construct.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Title of the dialog.
-</entry></row>
-<row><entry align="right"><parameter>ap</parameter>&nbsp;:</entry>
-<entry> va_list of buttons, NULL-terminated.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Dialog to construct.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the dialog.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ap</parameter>&nbsp;:</term>
+<listitem><simpara> va_list of buttons, NULL-terminated.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-dialog-constructv">gnome_dialog_constructv ()</title>
 <programlisting>void        gnome_dialog_constructv         (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                              const <link linkend="gchar">gchar</link> *title,
                                              const <link linkend="gchar">gchar</link> **buttons);</programlisting>
-<warning>
-<para>
-<literal>gnome_dialog_constructv</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_dialog_constructv</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry> Dialog to construct.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> Title of the dialog.
-</entry></row>
-<row><entry align="right"><parameter>buttons</parameter>&nbsp;:</entry>
-<entry> NULL-terminated array of buttons.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Dialog to construct.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the dialog.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buttons</parameter>&nbsp;:</term>
+<listitem><simpara> NULL-terminated array of buttons.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-OK-CAPS">GNOME_STOCK_BUTTON_OK</title>
 <programlisting>#define GNOME_STOCK_BUTTON_OK     GTK_STOCK_OK
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_OK</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_OK</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-CANCEL-CAPS">GNOME_STOCK_BUTTON_CANCEL</title>
 <programlisting>#define GNOME_STOCK_BUTTON_CANCEL GTK_STOCK_CANCEL
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_CANCEL</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_CANCEL</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-YES-CAPS">GNOME_STOCK_BUTTON_YES</title>
 <programlisting>#define GNOME_STOCK_BUTTON_YES    GTK_STOCK_YES
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_YES</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_YES</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-NO-CAPS">GNOME_STOCK_BUTTON_NO</title>
 <programlisting>#define GNOME_STOCK_BUTTON_NO     GTK_STOCK_NO
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_NO</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_NO</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-CLOSE-CAPS">GNOME_STOCK_BUTTON_CLOSE</title>
 <programlisting>#define GNOME_STOCK_BUTTON_CLOSE  GTK_STOCK_CLOSE
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_CLOSE</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_CLOSE</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-APPLY-CAPS">GNOME_STOCK_BUTTON_APPLY</title>
 <programlisting>#define GNOME_STOCK_BUTTON_APPLY  GTK_STOCK_APPLY
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_APPLY</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_APPLY</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-HELP-CAPS">GNOME_STOCK_BUTTON_HELP</title>
 <programlisting>#define GNOME_STOCK_BUTTON_HELP   GTK_STOCK_HELP
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_HELP</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_HELP</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-NEXT-CAPS">GNOME_STOCK_BUTTON_NEXT</title>
 <programlisting>#define GNOME_STOCK_BUTTON_NEXT   GTK_STOCK_GO_FORWARD
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_NEXT</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_NEXT</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-PREV-CAPS">GNOME_STOCK_BUTTON_PREV</title>
 <programlisting>#define GNOME_STOCK_BUTTON_PREV   GTK_STOCK_GO_BACK
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_PREV</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_PREV</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-UP-CAPS">GNOME_STOCK_BUTTON_UP</title>
 <programlisting>#define GNOME_STOCK_BUTTON_UP     GTK_STOCK_GO_UP
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_UP</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_UP</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-DOWN-CAPS">GNOME_STOCK_BUTTON_DOWN</title>
 <programlisting>#define GNOME_STOCK_BUTTON_DOWN   GTK_STOCK_GO_DOWN
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_DOWN</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_DOWN</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-STOCK-BUTTON-FONT-CAPS">GNOME_STOCK_BUTTON_FONT</title>
 <programlisting>#define GNOME_STOCK_BUTTON_FONT   GTK_STOCK_SELECT_FONT
 </programlisting>
-<warning>
+<warning><para><literal>GNOME_STOCK_BUTTON_FONT</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-<literal>GNOME_STOCK_BUTTON_FONT</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
-<para>
-
+This button has been replaced by one in GTK+ and new code should use that.
 </para></refsect2>
 
 </refsect1>
@@ -960,39 +749,31 @@ See <link linkend="gnome-dialog-new">gnome_dialog_new</link>().</para>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeDialog-close">The &quot;close&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeDialog-close">The &quot;close&quot; signal</title>
 <programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="GnomeDialog">GnomeDialog</link> *dialog,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

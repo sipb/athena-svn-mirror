@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -79,16 +80,24 @@ const char* <link linkend="gnome-color-picker-get-title">gnome_color_picker_get_
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeColorPicker implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GnomeColorPicker--dither">dither</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GnomeColorPicker--use-alpha">use-alpha</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GnomeColorPicker--title">title</link>&quot;                <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GnomeColorPicker--red">red</link>&quot;                  <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GnomeColorPicker--green">green</link>&quot;                <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GnomeColorPicker--blue">blue</link>&quot;                 <link linkend="guint">guint</link>                : Read / Write
   &quot;<link linkend="GnomeColorPicker--alpha">alpha</link>&quot;                <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeColorPicker--blue">blue</link>&quot;                 <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeColorPicker--dither">dither</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeColorPicker--green">green</link>&quot;                <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeColorPicker--red">red</link>&quot;                  <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeColorPicker--title">title</link>&quot;                <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeColorPicker--use-alpha">use-alpha</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -131,15 +140,11 @@ a color-selection dialog will open, allowing the user to select a color. The swa
 updated to reflect the new color when the user finishes.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 Pointer to new GNOME color picker widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-d">gnome_color_picker_set_d ()</title>
 <programlisting>void        gnome_color_picker_set_d        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -151,27 +156,23 @@ Pointer to new GNOME color picker widget.
 Set color shown in the color picker widget using floating point values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Red color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Green color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Blue color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Alpha component, values are in [0.0, 1.0]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-d">gnome_color_picker_get_d ()</title>
 <programlisting>void        gnome_color_picker_get_d        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -183,27 +184,23 @@ Set color shown in the color picker widget using floating point values.</para>
 Retrieve color currently selected in the color picker widget in the form of floating point values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Output location of red color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Output location of green color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Output location of blue color component, values are in [0.0, 1.0]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Output location of alpha color component, values are in [0.0, 1.0]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-i8">gnome_color_picker_set_i8 ()</title>
 <programlisting>void        gnome_color_picker_set_i8       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -215,27 +212,23 @@ Retrieve color currently selected in the color picker widget in the form of floa
 Set color shown in the color picker widget using 8-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Red color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Green color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Blue color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Alpha component, values are in [0, 255]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-i8">gnome_color_picker_get_i8 ()</title>
 <programlisting>void        gnome_color_picker_get_i8       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -247,27 +240,23 @@ Set color shown in the color picker widget using 8-bit integer values.</para>
 Retrieve color currently selected in the color picker widget in the form of 8-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Output location of red color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Output location of green color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Output location of blue color component, values are in [0, 255]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Output location of alpha color component, values are in [0, 255]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-i16">gnome_color_picker_set_i16 ()</title>
 <programlisting>void        gnome_color_picker_set_i16      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -279,27 +268,23 @@ Retrieve color currently selected in the color picker widget in the form of 8-bi
 Set color shown in the color picker widget using 16-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Red color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Green color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Blue color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Alpha component, values are in [0, 65535]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-i16">gnome_color_picker_get_i16 ()</title>
 <programlisting>void        gnome_color_picker_get_i16      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -311,27 +296,23 @@ Set color shown in the color picker widget using 16-bit integer values.</para>
 Retrieve color currently selected in the color picker widget in the form of 16-bit integer values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
-<entry> Output location of red color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
-<entry> Output location of green color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
-<entry> Output location of blue color component, values are in [0, 65535]
-</entry></row>
-<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
-<entry> Output location of alpha color component, values are in [0, 65535]
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-dither">gnome_color_picker_set_dither ()</title>
 <programlisting>void        gnome_color_picker_set_dither   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -341,18 +322,14 @@ Sets whether the picker should dither the color sample or just paint
 a solid rectangle.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>dither</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if color sample should be dithered, <literal>FALSE</literal> if not.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dither</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if color sample should be dithered, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-dither">gnome_color_picker_get_dither ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_color_picker_get_dither   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);</programlisting>
@@ -361,17 +338,13 @@ Does the picker dither the color sample or just paint
 a solid rectangle.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <literal>TRUE</literal> if color sample is dithered, <literal>FALSE</literal> if not.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if color sample is dithered, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-use-alpha">gnome_color_picker_set_use_alpha ()</title>
 <programlisting>void        gnome_color_picker_set_use_alpha
@@ -381,18 +354,14 @@ a solid rectangle.</para>
 Sets whether or not the picker should use the alpha channel.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>use_alpha</parameter>&nbsp;:</entry>
-<entry> <literal>TRUE</literal> if color sample should use alpha channel, <literal>FALSE</literal> if not.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_alpha</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if color sample should use alpha channel, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-use-alpha">gnome_color_picker_get_use_alpha ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_color_picker_get_use_alpha
@@ -401,17 +370,13 @@ Sets whether or not the picker should use the alpha channel.</para>
 Does the picker use the alpha channel?</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  <literal>TRUE</literal> if color sample uses alpha channel, <literal>FALSE</literal> if not.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  <literal>TRUE</literal> if color sample uses alpha channel, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-set-title">gnome_color_picker_set_title ()</title>
 <programlisting>void        gnome_color_picker_set_title    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
@@ -420,18 +385,14 @@ Does the picker use the alpha channel?</para>
 Sets the title for the color selection dialog.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry> String containing new window title.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> String containing new window title.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-color-picker-get-title">gnome_color_picker_get_title ()</title>
 <programlisting>const char* gnome_color_picker_get_title    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);</programlisting>
@@ -439,49 +400,59 @@ Sets the title for the color selection dialog.</para>
 Gets the title of the color selection dialog.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>cp</parameter>&nbsp;:</entry>
-<entry> Pointer to GNOME color picker widget.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  An internal string, do not free the return value
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  An internal string, do not free the return value
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="GnomeColorPicker--dither">&quot;<literal>dither</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeColorPicker--alpha">&quot;<literal>alpha</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
 <listitem>
-<para>Whether or not to dither to color.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeColorPicker--use-alpha">&quot;<literal>use-alpha</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>Whether or not to give the color an alpha value.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeColorPicker--title">&quot;<literal>title</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>The title to give to the color picker.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeColorPicker--red">&quot;<literal>red</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>The amount of red in the chosen color.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeColorPicker--green">&quot;<literal>green</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>The amount of green in the chosen color.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeColorPicker--blue">&quot;<literal>blue</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
 <listitem>
-<para>The amount of blue in the chosen color.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeColorPicker--alpha">&quot;<literal>alpha</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<varlistentry><term><anchor id="GnomeColorPicker--dither">&quot;<literal>dither</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
 <listitem>
-<para>The alpha value of the chosen color.</para>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeColorPicker--green">&quot;<literal>green</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeColorPicker--red">&quot;<literal>red</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeColorPicker--title">&quot;<literal>title</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeColorPicker--use-alpha">&quot;<literal>use-alpha</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>
@@ -498,30 +469,26 @@ Gets the title of the color selection dialog.</para>
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>colorpicker</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg4</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>colorpicker</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

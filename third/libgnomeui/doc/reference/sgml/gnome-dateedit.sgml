@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -58,14 +59,22 @@ int         <link linkend="gnome-date-edit-get-flags">gnome_date_edit_get_flags<
 </refsect1>
 
 <refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeDateEdit implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+<refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GnomeDateEdit--time">time</link>&quot;                 <link linkend="gulong">gulong</link>               : Read / Write
   &quot;<link linkend="GnomeDateEdit--dateedit-flags">dateedit-flags</link>&quot;       <link linkend="GnomeDateEditFlags">GnomeDateEditFlags</link>   : Read / Write
-  &quot;<link linkend="GnomeDateEdit--lower-hour">lower-hour</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="GnomeDateEdit--upper-hour">upper-hour</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
   &quot;<link linkend="GnomeDateEdit--initial-time">initial-time</link>&quot;         <link linkend="gulong">gulong</link>               : Read / Write
+  &quot;<link linkend="GnomeDateEdit--lower-hour">lower-hour</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="GnomeDateEdit--time">time</link>&quot;                 <link linkend="gulong">gulong</link>               : Read / Write
+  &quot;<link linkend="GnomeDateEdit--upper-hour">upper-hour</link>&quot;           <link linkend="gint">gint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 
@@ -120,23 +129,19 @@ to provide an easy to use way for entering dates and times.
 If <parameter>the_time</parameter> is 0 then current time is used.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>the_time</parameter>&nbsp;:</entry>
-<entry> date and time to be displayed on the widget
-</entry></row>
-<row><entry align="right"><parameter>show_time</parameter>&nbsp;:</entry>
-<entry> whether time should be displayed
-</entry></row>
-<row><entry align="right"><parameter>use_24_format</parameter>&nbsp;:</entry>
-<entry> whether 24-hour format is desired for the time display.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new <link linkend="GnomeDateEdit">GnomeDateEdit</link> widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>the_time</parameter>&nbsp;:</term>
+<listitem><simpara> date and time to be displayed on the widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>show_time</parameter>&nbsp;:</term>
+<listitem><simpara> whether time should be displayed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_24_format</parameter>&nbsp;:</term>
+<listitem><simpara> whether 24-hour format is desired for the time display.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GnomeDateEdit">GnomeDateEdit</link> widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-new-flags">gnome_date_edit_new_flags ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_date_edit_new_flags       (<link linkend="time-t">time_t</link> the_time,
@@ -146,20 +151,16 @@ Creates a new <link linkend="GnomeDateEdit">GnomeDateEdit</link> widget with the
 specified flags. If <parameter>the_time</parameter> is 0 then current time is used.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>the_time</parameter>&nbsp;:</entry>
-<entry> The initial time for the date editor.
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> A bitmask of GnomeDateEditFlags values.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the newly-created date editor widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>the_time</parameter>&nbsp;:</term>
+<listitem><simpara> The initial time for the date editor.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> A bitmask of GnomeDateEditFlags values.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly-created date editor widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-construct">gnome_date_edit_construct ()</title>
 <programlisting>void        gnome_date_edit_construct       (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde,
@@ -169,21 +170,17 @@ specified flags. If <parameter>the_time</parameter> is 0 then current time is us
 For language bindings and subclassing only</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GnomeDateEdit">GnomeDateEdit</link> object to construct
-</entry></row>
-<row><entry align="right"><parameter>the_time</parameter>&nbsp;:</entry>
-<entry> The initial time for the date editor.
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> A bitmask of GnomeDateEditFlags values.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="GnomeDateEdit">GnomeDateEdit</link> object to construct
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_time</parameter>&nbsp;:</term>
+<listitem><simpara> The initial time for the date editor.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> A bitmask of GnomeDateEditFlags values.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-set-time">gnome_date_edit_set_time ()</title>
 <programlisting>void        gnome_date_edit_set_time        (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde,
@@ -194,18 +191,14 @@ widget to be the one represented by <parameter>the_time</parameter>.  If <parame
 then current time is used.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> the GnomeDateEdit widget
-</entry></row>
-<row><entry align="right"><parameter>the_time</parameter>&nbsp;:</entry>
-<entry> The time and date that should be set on the widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> the GnomeDateEdit widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>the_time</parameter>&nbsp;:</term>
+<listitem><simpara> The time and date that should be set on the widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-get-time">gnome_date_edit_get_time ()</title>
 <programlisting><link linkend="time-t">time_t</link>      gnome_date_edit_get_time        (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde);</programlisting>
@@ -213,17 +206,13 @@ then current time is used.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The GnomeDateEdit widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the time entered in the GnomeDateEdit widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeDateEdit widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the time entered in the GnomeDateEdit widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-set-popup-range">gnome_date_edit_set_popup_range ()</title>
 <programlisting>void        gnome_date_edit_set_popup_range (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde,
@@ -234,21 +223,17 @@ Sets the range of times that will be provide by the time popup
 selectors.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The GnomeDateEdit widget
-</entry></row>
-<row><entry align="right"><parameter>low_hour</parameter>&nbsp;:</entry>
-<entry> low boundary for the time-range display popup.
-</entry></row>
-<row><entry align="right"><parameter>up_hour</parameter>&nbsp;:</entry>
-<entry>  upper boundary for the time-range display popup.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeDateEdit widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>low_hour</parameter>&nbsp;:</term>
+<listitem><simpara> low boundary for the time-range display popup.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>up_hour</parameter>&nbsp;:</term>
+<listitem><simpara>  upper boundary for the time-range display popup.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-set-flags">gnome_date_edit_set_flags ()</title>
 <programlisting>void        gnome_date_edit_set_flags       (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde,
@@ -257,18 +242,14 @@ selectors.</para>
 Changes the display flags on an existing date editor widget.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The date editor widget whose flags should be changed.
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> The new bitmask of GnomeDateEditFlags values.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The date editor widget whose flags should be changed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> The new bitmask of GnomeDateEditFlags values.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-get-flags">gnome_date_edit_get_flags ()</title>
 <programlisting>int         gnome_date_edit_get_flags       (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde);</programlisting>
@@ -276,17 +257,13 @@ Changes the display flags on an existing date editor widget.</para>
 Queries the display flags on a date editor widget.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The date editor whose flags should be queried.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The current display flags for the specified date editor widget.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The date editor whose flags should be queried.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The current display flags for the specified date editor widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-get-initial-time">gnome_date_edit_get_initial_time ()</title>
 <programlisting><link linkend="time-t">time_t</link>      gnome_date_edit_get_initial_time
@@ -296,64 +273,62 @@ Queries the initial time that was set using the
 <link linkend="gnome-date-edit-set-time">gnome_date_edit_set_time</link> or during creation</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The date editor whose initial time should be queried
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  The initial time in seconds (standard time_t format)
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The date editor whose initial time should be queried
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  The initial time in seconds (standard time_t format)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-date-edit-get-date">gnome_date_edit_get_date ()</title>
 <programlisting><link linkend="time-t">time_t</link>      gnome_date_edit_get_date        (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *gde);</programlisting>
-<warning>
-<para>
-<literal>gnome_date_edit_get_date</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_date_edit_get_date</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Deprecated, use <link linkend="gnome-date-edit-get-time">gnome_date_edit_get_time</link></para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gde</parameter>&nbsp;:</entry>
-<entry> The GnomeDateEdit widget
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gde</parameter>&nbsp;:</term>
+<listitem><simpara> The GnomeDateEdit widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="GnomeDateEdit--time">&quot;<literal>time</literal>&quot; (<link linkend="gulong">gulong</link> : Read / Write)</term>
-<listitem>
-<para>The time currently selected.</para>
-</listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeDateEdit--dateedit-flags">&quot;<literal>dateedit-flags</literal>&quot; (<link linkend="GnomeDateEditFlags">GnomeDateEditFlags</link> : Read / Write)</term>
 <listitem>
-<para>Flags for how DateEdit looks.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeDateEdit--lower-hour">&quot;<literal>lower-hour</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
-<listitem>
-<para>Lower hour in the time popup selector.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeDateEdit--upper-hour">&quot;<literal>upper-hour</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
-<listitem>
-<para>Upper hour in the time popup selector.</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="GnomeDateEdit--initial-time">&quot;<literal>initial-time</literal>&quot; (<link linkend="gulong">gulong</link> : Read / Write)</term>
 <listitem>
-<para>The initial time.</para>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeDateEdit--lower-hour">&quot;<literal>lower-hour</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeDateEdit--time">&quot;<literal>time</literal>&quot; (<link linkend="gulong">gulong</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeDateEdit--upper-hour">&quot;<literal>upper-hour</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>
@@ -366,34 +341,26 @@ Deprecated, use <link linkend="gnome-date-edit-get-time">gnome_date_edit_get_tim
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dateedit</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>dateedit</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeDateEdit-time-changed">The &quot;time-changed&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeDateEdit-time-changed">The &quot;time-changed&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeDateEdit">GnomeDateEdit</link> *dateedit,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dateedit</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>dateedit</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

@@ -10,12 +10,12 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-struct      <link linkend="GnomeIconListPrivate">GnomeIconListPrivate</link>;
 enum        <link linkend="GnomeIconListMode">GnomeIconListMode</link>;
 struct      <link linkend="GnomeIconList-struct">GnomeIconList</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-icon-list-new">gnome_icon_list_new</link>             (<link linkend="guint">guint</link> icon_width,
@@ -114,6 +114,7 @@ int         <link linkend="gnome-icon-list-get-items-per-line">gnome_icon_list_g
                                             (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
                                              int idx);
 
+
 </synopsis>
 </refsynopsisdiv>
 
@@ -131,6 +132,14 @@ int         <link linkend="gnome-icon-list-get-items-per-line">gnome_icon_list_g
 </synopsis>
 
 </refsect1>
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeIconList implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
 
 
 <refsect1>
@@ -178,12 +187,6 @@ int         <link linkend="gnome-icon-list-get-items-per-line">gnome_icon_list_g
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeIconListPrivate">struct GnomeIconListPrivate</title>
-<programlisting>struct GnomeIconListPrivate;</programlisting>
-<para>
-
-</para></refsect2>
-<refsect2>
 <title><anchor id="GnomeIconListMode">enum GnomeIconListMode</title>
 <programlisting>typedef enum {
 	GNOME_ICON_LIST_ICONS,
@@ -223,24 +226,20 @@ This is intended to save memory.  If this flag is not set, then the text
 strings will be copied and managed internally.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>icon_width</parameter>&nbsp;:</entry>
-<entry> Width for the icon columns.
-</entry></row>
-<row><entry align="right"><parameter>adj</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> A combination of <literal>GNOME_ICON_LIST_IS_EDITABLE</literal> and
+</para><variablelist role="params">
+<varlistentry><term><parameter>icon_width</parameter>&nbsp;:</term>
+<listitem><simpara> Width for the icon columns.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>adj</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> A combination of <literal>GNOME_ICON_LIST_IS_EDITABLE</literal> and
 <literal>GNOME_ICON_LIST_STATIC_TEXT</literal>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a newly-created icon list widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly-created icon list widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-construct">gnome_icon_list_construct ()</title>
 <programlisting>void        gnome_icon_list_construct       (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -251,24 +250,20 @@ strings will be copied and managed internally.</para>
 Constructor for the icon list, to be used by derived classes.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>icon_width</parameter>&nbsp;:</entry>
-<entry> Width for the icon columns.
-</entry></row>
-<row><entry align="right"><parameter>adj</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> A combination of <literal>GNOME_ICON_LIST_IS_EDITABLE</literal> and <literal>GNOME_ICON_LIST_STATIC_TEXT</literal>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_width</parameter>&nbsp;:</term>
+<listitem><simpara> Width for the icon columns.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>adj</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> A combination of <literal>GNOME_ICON_LIST_IS_EDITABLE</literal> and <literal>GNOME_ICON_LIST_STATIC_TEXT</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-hadjustment">gnome_icon_list_set_hadjustment ()</title>
 <programlisting>void        gnome_icon_list_set_hadjustment (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -279,18 +274,14 @@ not required, as the icon list can be simply inserted in a &amp;GtkScrolledWindo
 and scrolling will be handled automatically.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>hadj</parameter>&nbsp;:</entry>
-<entry> Adjustment to be used for horizontal scrolling.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>hadj</parameter>&nbsp;:</term>
+<listitem><simpara> Adjustment to be used for horizontal scrolling.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-vadjustment">gnome_icon_list_set_vadjustment ()</title>
 <programlisting>void        gnome_icon_list_set_vadjustment (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -301,18 +292,14 @@ required, as the icon list can be simply inserted in a &amp;GtkScrolledWindow an
 scrolling will be handled automatically.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>vadj</parameter>&nbsp;:</entry>
-<entry> Adjustment to be used for horizontal scrolling.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>vadj</parameter>&nbsp;:</term>
+<listitem><simpara> Adjustment to be used for horizontal scrolling.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-freeze">gnome_icon_list_freeze ()</title>
 <programlisting>void        gnome_icon_list_freeze          (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -329,15 +316,11 @@ same number of calls to <link linkend="gnome-icon-list-thaw">gnome_icon_list_tha
 effect.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>  An icon list.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>  An icon list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-thaw">gnome_icon_list_thaw ()</title>
 <programlisting>void        gnome_icon_list_thaw            (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -346,15 +329,11 @@ Thaws the icon list and performs any pending layout operations.  This
 is to be used in conjunction with <link linkend="gnome-icon-list-freeze">gnome_icon_list_freeze</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>  An icon list.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>  An icon list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-insert">gnome_icon_list_insert ()</title>
 <programlisting>void        gnome_icon_list_insert          (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -366,24 +345,20 @@ Inserts an icon in the specified icon list.  The icon's image is loaded
 from the specified file, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>           An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry>           Position at which the new icon should be inserted.
-</entry></row>
-<row><entry align="right"><parameter>icon_filename</parameter>&nbsp;:</entry>
-<entry> Name of the file that holds the icon's image.
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>          Text to be used for the icon's caption.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>           An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara>           Position at which the new icon should be inserted.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_filename</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the file that holds the icon's image.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>          Text to be used for the icon's caption.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-insert-pixbuf">gnome_icon_list_insert_pixbuf ()</title>
 <programlisting>void        gnome_icon_list_insert_pixbuf   (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -396,27 +371,23 @@ Inserts an icon in the specified icon list.  The icon is created from the
 specified Imlib image, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>      An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry>      Position at which the new icon should be inserted.
-</entry></row>
-<row><entry align="right"><parameter>im</parameter>&nbsp;:</entry>
-<entry>       Pixbuf image with the icon image.
-</entry></row>
-<row><entry align="right"><parameter>icon_filename</parameter>&nbsp;:</entry>
-<entry> Filename of the image file.
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>     Text to be used for the icon's caption.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>      An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara>      Position at which the new icon should be inserted.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>im</parameter>&nbsp;:</term>
+<listitem><simpara>       Pixbuf image with the icon image.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_filename</parameter>&nbsp;:</term>
+<listitem><simpara> Filename of the image file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>     Text to be used for the icon's caption.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-append">gnome_icon_list_append ()</title>
 <programlisting>int         gnome_icon_list_append          (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -427,23 +398,19 @@ Appends an icon to the specified icon list.  The icon's image is loaded from
 the specified file, and it is inserted at the <parameter>pos</parameter> index.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>           An icon list.
-</entry></row>
-<row><entry align="right"><parameter>icon_filename</parameter>&nbsp;:</entry>
-<entry> Name of the file that holds the icon's image.
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>          Text to be used for the icon's caption.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>           An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_filename</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the file that holds the icon's image.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>          Text to be used for the icon's caption.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-append-pixbuf">gnome_icon_list_append_pixbuf ()</title>
 <programlisting>int         gnome_icon_list_append_pixbuf   (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -455,26 +422,22 @@ Appends an icon to the specified icon list.  The icon is created from
 the specified Imlib image.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>      An icon list.
-</entry></row>
-<row><entry align="right"><parameter>im</parameter>&nbsp;:</entry>
-<entry>       Pixbuf image with the icon image.
-</entry></row>
-<row><entry align="right"><parameter>icon_filename</parameter>&nbsp;:</entry>
-<entry> Filename of the image file.
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>     Text to be used for the icon's caption.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>      An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>im</parameter>&nbsp;:</term>
+<listitem><simpara>       Pixbuf image with the icon image.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_filename</parameter>&nbsp;:</term>
+<listitem><simpara> Filename of the image file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>     Text to be used for the icon's caption.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-clear">gnome_icon_list_clear ()</title>
 <programlisting>void        gnome_icon_list_clear           (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -484,15 +447,11 @@ handlers were specified for any of the icons, they will be called with the
 appropriate data.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-remove">gnome_icon_list_remove ()</title>
 <programlisting>void        gnome_icon_list_remove          (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -502,18 +461,14 @@ Removes the icon at index position <parameter>pos</parameter>.  If a destroy han
 for that icon, it will be called with the appropriate data.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Index of the icon that should be removed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Index of the icon that should be removed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-num-icons">gnome_icon_list_get_num_icons ()</title>
 <programlisting><link linkend="guint">guint</link>       gnome_icon_list_get_num_icons   (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -521,17 +476,13 @@ for that icon, it will be called with the appropriate data.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the number of icons in the icon list.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the number of icons in the icon list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-selection-mode">gnome_icon_list_get_selection_mode ()</title>
 <programlisting><link linkend="GtkSelectionMode">GtkSelectionMode</link> gnome_icon_list_get_selection_mode
@@ -540,17 +491,13 @@ for that icon, it will be called with the appropriate data.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>  An icon list.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the current selection mode for an icon list.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>  An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the current selection mode for an icon list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-selection-mode">gnome_icon_list_set_selection_mode ()</title>
 <programlisting>void        gnome_icon_list_set_selection_mode
@@ -561,18 +508,14 @@ Sets the selection mode for an icon list.  The <literal>GTK_SELECTION_MULTIPLE</
 <literal>GTK_SELECTION_EXTENDED</literal> modes are considered equivalent.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>  An icon list.
-</entry></row>
-<row><entry align="right"><parameter>mode</parameter>&nbsp;:</entry>
-<entry> New selection mode.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>  An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mode</parameter>&nbsp;:</term>
+<listitem><simpara> New selection mode.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-select-icon">gnome_icon_list_select_icon ()</title>
 <programlisting>void        gnome_icon_list_select_icon     (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -581,18 +524,14 @@ Sets the selection mode for an icon list.  The <literal>GTK_SELECTION_MULTIPLE</
 Selects the icon at the index specified by <parameter>pos</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Index of the icon to be selected.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Index of the icon to be selected.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-unselect-icon">gnome_icon_list_unselect_icon ()</title>
 <programlisting>void        gnome_icon_list_unselect_icon   (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -601,18 +540,14 @@ Selects the icon at the index specified by <parameter>pos</parameter>.</para>
 Unselects the icon at the index specified by <parameter>pos</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Index of the icon to be unselected.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Index of the icon to be unselected.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-unselect-all">gnome_icon_list_unselect_all ()</title>
 <programlisting>int         gnome_icon_list_unselect_all    (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -620,17 +555,13 @@ Unselects the icon at the index specified by <parameter>pos</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>   An icon list.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of icons in the icon list
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>   An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of icons in the icon list
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-selection">gnome_icon_list_get_selection ()</title>
 <programlisting><link linkend="GList">GList</link>*      gnome_icon_list_get_selection   (<link linkend="GnomeIconList">GnomeIconList</link> *gil);</programlisting>
@@ -638,37 +569,29 @@ Unselects the icon at the index specified by <parameter>pos</parameter>.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a list of integers with the indices of the currently selected icons.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a list of integers with the indices of the currently selected icons.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-focus-icon">gnome_icon_list_focus_icon ()</title>
 <programlisting>void        gnome_icon_list_focus_icon      (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
                                              <link linkend="gint">gint</link> idx);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-icon-width">gnome_icon_list_set_icon_width ()</title>
 <programlisting>void        gnome_icon_list_set_icon_width  (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -678,18 +601,14 @@ Sets the amount of horizontal space allocated to the icons, i.e. the column
 width of the icon list.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry>   New width for the icon columns.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara>   New width for the icon columns.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-row-spacing">gnome_icon_list_set_row_spacing ()</title>
 <programlisting>void        gnome_icon_list_set_row_spacing (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -698,18 +617,14 @@ width of the icon list.</para>
 Sets the spacing to be used between rows of icons.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pixels</parameter>&nbsp;:</entry>
-<entry> Number of pixels for inter-row spacing.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixels</parameter>&nbsp;:</term>
+<listitem><simpara> Number of pixels for inter-row spacing.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-col-spacing">gnome_icon_list_set_col_spacing ()</title>
 <programlisting>void        gnome_icon_list_set_col_spacing (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -718,18 +633,14 @@ Sets the spacing to be used between rows of icons.</para>
 Sets the spacing to be used between columns of icons.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pixels</parameter>&nbsp;:</entry>
-<entry> Number of pixels for inter-column spacing.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixels</parameter>&nbsp;:</term>
+<listitem><simpara> Number of pixels for inter-column spacing.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-text-spacing">gnome_icon_list_set_text_spacing ()</title>
 <programlisting>void        gnome_icon_list_set_text_spacing
@@ -739,18 +650,14 @@ Sets the spacing to be used between columns of icons.</para>
 Sets the spacing to be used between an icon's image and its text caption.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pixels</parameter>&nbsp;:</entry>
-<entry> Number of pixels between an icon's image and its caption.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixels</parameter>&nbsp;:</term>
+<listitem><simpara> Number of pixels between an icon's image and its caption.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-icon-border">gnome_icon_list_set_icon_border ()</title>
 <programlisting>void        gnome_icon_list_set_icon_border (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -760,18 +667,14 @@ Sets the width of the border to be displayed around an icon's image.  This is
 currently not implemented.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pixels</parameter>&nbsp;:</entry>
-<entry> Number of border pixels to be used around an icon's image.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixels</parameter>&nbsp;:</term>
+<listitem><simpara> Number of border pixels to be used around an icon's image.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-separators">gnome_icon_list_set_separators ()</title>
 <programlisting>void        gnome_icon_list_set_separators  (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -781,18 +684,14 @@ Sets the characters that can be used as word separators when doing
 word-wrapping in the icon text captions.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>sep</parameter>&nbsp;:</entry>
-<entry> String with characters to be used as word separators.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sep</parameter>&nbsp;:</term>
+<listitem><simpara> String with characters to be used as word separators.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-icon-filename">gnome_icon_list_get_icon_filename ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_icon_list_get_icon_filename
@@ -802,20 +701,16 @@ word-wrapping in the icon text captions.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry> Index of an <parameter>icon</parameter>.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the filename of the icon with index <parameter>idx</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara> Index of an <parameter>icon</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the filename of the icon with index <parameter>idx</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-find-icon-from-filename">gnome_icon_list_find_icon_from_filename ()</title>
 <programlisting>int         gnome_icon_list_find_icon_from_filename
@@ -825,21 +720,17 @@ word-wrapping in the icon text captions.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>       An icon list.
-</entry></row>
-<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
-<entry>  Filename of an icon.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the index of the icon whose filename is <parameter>filename</parameter> or -1 if
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>       An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>  Filename of an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the index of the icon whose filename is <parameter>filename</parameter> or -1 if
 there is no icon with this filename.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-icon-data">gnome_icon_list_set_icon_data ()</title>
 <programlisting>void        gnome_icon_list_set_icon_data   (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -847,23 +738,19 @@ there is no icon with this filename.
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-set-icon-data-full">gnome_icon_list_set_icon_data_full ()</title>
 <programlisting>void        gnome_icon_list_set_icon_data_full
@@ -877,24 +764,20 @@ Associates the <parameter>data</parameter> pointer to the icon at the index spec
 destroyed, or NULL if no function is to be called when this happens.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>     An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry>     Index of an icon.
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>    User data to set on the icon.
-</entry></row>
-<row><entry align="right"><parameter>destroy</parameter>&nbsp;:</entry>
-<entry> Destroy notification handler for the icon.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>     An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara>     Index of an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>    User data to set on the icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> Destroy notification handler for the icon.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-find-icon-from-data">gnome_icon_list_find_icon_from_data ()</title>
 <programlisting>int         gnome_icon_list_find_icon_from_data
@@ -904,21 +787,17 @@ destroyed, or NULL if no function is to be called when this happens.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
-<entry>   Data pointer associated to an icon.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the index of the icon whose user data has been set to <parameter>data</parameter>,
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>   Data pointer associated to an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the index of the icon whose user data has been set to <parameter>data</parameter>,
 or -1 if no icon has this data associated to it.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-icon-data">gnome_icon_list_get_icon_data ()</title>
 <programlisting><link linkend="gpointer">gpointer</link>    gnome_icon_list_get_icon_data   (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -927,21 +806,17 @@ or -1 if no icon has this data associated to it.
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Index of an icon.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the user data pointer associated to the icon at the index specified
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Index of an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the user data pointer associated to the icon at the index specified
 by <parameter>pos</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-moveto">gnome_icon_list_moveto ()</title>
 <programlisting>void        gnome_icon_list_moveto          (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -954,21 +829,17 @@ the top of the visible part of the icon list, and 1.0 represents the bottom.
 An icon can be centered on the icon list.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>    An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry>    Index of an icon.
-</entry></row>
-<row><entry align="right"><parameter>yalign</parameter>&nbsp;:</entry>
-<entry> Vertical alignment of the icon.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>    An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara>    Index of an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>yalign</parameter>&nbsp;:</term>
+<listitem><simpara> Vertical alignment of the icon.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-icon-is-visible">gnome_icon_list_icon_is_visible ()</title>
 <programlisting><link linkend="GtkVisibility">GtkVisibility</link> gnome_icon_list_icon_is_visible
@@ -978,23 +849,19 @@ An icon can be centered on the icon list.</para>
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Index of an icon.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>whether the icon at the index specified by <parameter>pos</parameter> is visible.  This
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Index of an icon.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>whether the icon at the index specified by <parameter>pos</parameter> is visible.  This
 will be <literal>GTK_VISIBILITY_NONE</literal> if the icon is not visible at all,
 <literal>GTK_VISIBILITY_PARTIAL</literal> if the icon is at least partially shown, and
 <literal>GTK_VISIBILITY_FULL</literal> if the icon is fully visible.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-icon-at">gnome_icon_list_get_icon_at ()</title>
 <programlisting>int         gnome_icon_list_get_icon_at     (<link linkend="GnomeIconList">GnomeIconList</link> *gil,
@@ -1004,25 +871,21 @@ will be <literal>GTK_VISIBILITY_NONE</literal> if the icon is not visible at all
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry>   X position in the icon list window.
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry>   Y position in the icon list window.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the index of the icon that is under the specified coordinates, which
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>   X position in the icon list window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>   Y position in the icon list window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the index of the icon that is under the specified coordinates, which
 are relative to the icon list's window.  If there is no icon in that
 position, -1 is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-items-per-line">gnome_icon_list_get_items_per_line ()</title>
 <programlisting>int         gnome_icon_list_get_items_per_line
@@ -1031,17 +894,13 @@ position, -1 is returned.
 </para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry> An icon list.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>the number of icons that fit in a line or row.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara> An icon list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the number of icons that fit in a line or row.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-icon-text-item">gnome_icon_list_get_icon_text_item ()</title>
 <programlisting><link linkend="GnomeIconTextItem">GnomeIconTextItem</link>* gnome_icon_list_get_icon_text_item
@@ -1049,22 +908,18 @@ position, -1 is returned.
                                              int idx);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-icon-list-get-icon-pixbuf-item">gnome_icon_list_get_icon_pixbuf_item ()</title>
 <programlisting><link linkend="GnomeCanvasPixbuf">GnomeCanvasPixbuf</link>* gnome_icon_list_get_icon_pixbuf_item
@@ -1072,22 +927,18 @@ position, -1 is returned.
                                              int idx);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gil</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
@@ -1099,135 +950,111 @@ position, -1 is returned.
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeIconList-move-cursor">The &quot;move-cursor&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeIconList-move-cursor">The &quot;move-cursor&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeIconList">GnomeIconList</link> *iconlist,
                                             <link linkend="GtkDirectionType">GtkDirectionType</link> arg1,
                                             <link linkend="gboolean">gboolean</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeIconList-select-icon">The &quot;select-icon&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeIconList-select-icon">The &quot;select-icon&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeIconList">GnomeIconList</link> *iconlist,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="GdkEvent">GdkEvent</link> *event,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeIconList-text-changed">The &quot;text-changed&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeIconList-text-changed">The &quot;text-changed&quot; signal</title>
 <programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="GnomeIconList">GnomeIconList</link> *iconlist,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gchar">gchar</link> *arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeIconList-toggle-cursor-selection">The &quot;toggle-cursor-selection&quot; signal</title>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeIconList-toggle-cursor-selection">The &quot;toggle-cursor-selection&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeIconList">GnomeIconList</link> *iconlist,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeIconList-unselect-icon">The &quot;unselect-icon&quot; signal</title>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeIconList-unselect-icon">The &quot;unselect-icon&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="GnomeIconList">GnomeIconList</link> *iconlist,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="GdkEvent">GdkEvent</link> *event,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>iconlist</parameter>&nbsp;:</entry>
-<entry>the object which received the signal.
-</entry></row>
-<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>event</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>iconlist</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>
 
-</entry></row>
-<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry>user data set when the signal handler was connected.</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 </refsect1>
 
 

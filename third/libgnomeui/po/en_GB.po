@@ -1,12 +1,11 @@
 # British translation for libgnomeui
 # Abigail Brady <morwen@evilmagic.org>, 2002.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui HEAD\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-04-14 14:53+0100\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-11-18 17:45+0000\n"
 "Last-Translator: Abigail Brady <morwen@evilmagic.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,15 +17,15 @@ msgid "Credits"
 msgstr ""
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
+msgid "Written by"
 msgstr ""
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
+msgid "Documented by"
 msgstr ""
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
+msgid "Translated by"
 msgstr ""
 
 #. Add the credits button
@@ -178,11 +177,11 @@ msgstr "Received invalid colour data\n"
 
 #: libgnomeui/gnome-color-picker.c:464
 msgid "Color Selector"
-msgstr ""
+msgstr "Colour Selector"
 
 #: libgnomeui/gnome-color-picker.c:465
 msgid "Open a dialog to specify the color"
-msgstr ""
+msgstr "Open a dialog to specify the colour"
 
 #: libgnomeui/gnome-color-picker.c:487
 msgid "Pick a color"
@@ -393,9 +392,10 @@ msgid "This button will take you to the URI that it displays."
 msgstr ""
 
 #: libgnomeui/gnome-href.c:393
+#, fuzzy
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
 "Error occured while trying to launch the URL handler.\n"
 "Please check the settings in the Control Centre if they are correct."
@@ -413,12 +413,12 @@ msgid "GNOME GUI Library"
 msgstr ""
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -1050,9 +1050,8 @@ msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr ""
 
 #: libgnomeui/gnome-font-picker.c:68
-#, fuzzy
 msgid "Pick a Font"
-msgstr "Pick a colour"
+msgstr ""
 
 #: libgnomeui/gnome-font-picker.c:156
 msgid "The title of the selection dialog box"

@@ -1,13 +1,14 @@
 # Romanian translation for libgnomeui-2.0.1
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # Mugurel Tudor <mugurelu@go.ro>, 2002.
+# Marius Andreiana <marius galuna.ro>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.0.1\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-09-02 20:30+0300\n"
-"Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-22 21:22+0300\n"
+"Last-Translator: Marius Andreiana <marius galuna.ro>\n"
 "Language-Team: română <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,16 +20,16 @@ msgid "Credits"
 msgstr "Echipa"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Scris de"
+msgid "Written by"
+msgstr "Scris de"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Documentat de"
+msgid "Documented by"
+msgstr "Documentat de"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Tradus de"
+msgid "Translated by"
+msgstr "Tradus de"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -396,11 +397,11 @@ msgstr "Acest buton te va duce către URI afişat."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Eroare la lansarea descriptorului URL.\n"
-"Vă rugăm verificaţi corectitudinea setărilor din Centrul de Control."
+"Eroare la lansarea navigatorului web implicit.\n"
+"Vă rugăm verificaţi corectitudinea setărilor din 'Aplicaţii preferate'."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -415,14 +416,14 @@ msgid "GNOME GUI Library"
 msgstr "Librăria GNOME GUI"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Mai multe erori de segmentare au intervenit; nu pot afişa dialogul de "
 "eroare\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -626,16 +627,16 @@ msgstr "Restaurează la o versiune anterioară salvată a fişierului"
 #. Print
 #: libgnomeui/gnome-app-helper.c:131
 msgid "_Print..."
-msgstr "_Printează..."
+msgstr "_Tipăreşte..."
 
 #: libgnomeui/gnome-app-helper.c:131
 msgid "Print the current file"
-msgstr "Printează fişierul curent"
+msgstr "Tipăreşte fişierul curent"
 
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:136
 msgid "Print S_etup..."
-msgstr "S_etează printarea..."
+msgstr "S_etează tipărirea..."
 
 #: libgnomeui/gnome-app-helper.c:137
 msgid "Setup the page settings for your current printer"
@@ -746,9 +747,8 @@ msgstr "Înlocuieşte un text"
 
 #. Properties
 #: libgnomeui/gnome-app-helper.c:202
-#, fuzzy
 msgid "_Properties"
-msgstr "_Proprietăţi..."
+msgstr "_Proprietăţi"
 
 #: libgnomeui/gnome-app-helper.c:203
 msgid "Modify the file's properties"
@@ -759,9 +759,8 @@ msgstr "Modifică proprietăţile fişierului"
 #.
 #. Settings
 #: libgnomeui/gnome-app-helper.c:211
-#, fuzzy
 msgid "Prefere_nces"
-msgstr "Preferi_nţe..."
+msgstr "Preferi_nţe"
 
 #: libgnomeui/gnome-app-helper.c:212
 msgid "Configure the application"
@@ -877,7 +876,7 @@ msgstr "Termină jocul curent"
 
 #: libgnomeui/gnome-app-helper.c:1143
 msgid "_Contents"
-msgstr ""
+msgstr "_Cuprins"
 
 #: libgnomeui/gnome-app-helper.c:1146
 msgid "View help for this application"
@@ -885,15 +884,15 @@ msgstr "Citeşte ajutorul pentru această aplicaţie"
 
 #: libgnomeui/gnome-app-helper.c:2566
 msgid "Text Below Icons"
-msgstr "Text sub iconiţe"
+msgstr "Text sub iconuri"
 
 #: libgnomeui/gnome-app-helper.c:2567
 msgid "Priority Text Beside Icons"
-msgstr "Prioritate la text sub iconiţe"
+msgstr "Prioritate la text sub iconuri"
 
 #: libgnomeui/gnome-app-helper.c:2568
 msgid "Icons Only"
-msgstr "Doar iconiţe"
+msgstr "Doar iconuri"
 
 #: libgnomeui/gnome-app-helper.c:2569
 msgid "Text Only"
@@ -1176,12 +1175,12 @@ msgid ""
 "Unique identifier for the icon entry.  This will be used to save the history "
 "list."
 msgstr ""
-"Identificator unic pentru intrarea iconiţei. Acesta va fi folosit pentru a "
+"Identificator unic pentru intrarea iconurilor. Acesta va fi folosit pentru a "
 "salva istoricul."
 
 #: libgnomeui/gnome-icon-entry.c:186
 msgid "Title for the Browse icon dialog."
-msgstr "Titlu pentru dialogul de Selectare iconiţe."
+msgstr "Titlu pentru dialogul de Selectare iconuri."
 
 #: libgnomeui/gnome-icon-entry.c:193
 msgid "Pixmap Directory"
@@ -1189,11 +1188,11 @@ msgstr "Director pixmap"
 
 #: libgnomeui/gnome-icon-entry.c:194
 msgid "Directory that will be searched for icons."
-msgstr "Directorul în care vor fi căutate iconiţele."
+msgstr "Dosarul în care vor fi căutate iconurile."
 
 #: libgnomeui/gnome-icon-entry.c:202
 msgid "Filename that should be displayed in the icon entry."
-msgstr "Numele fişierului care ar trebui să fie afişat în intrarea iconiţei."
+msgstr "Numele fişierului care ar trebui să fie afişat în intrarea iconurilor."
 
 #: libgnomeui/gnome-icon-entry.c:210
 msgid "Picker dialog"
@@ -1204,13 +1203,13 @@ msgid ""
 "Icon picker dialog.  You can use this property to get the GtkDialog if you "
 "need to modify or query any of its properties."
 msgstr ""
-"Dialogul de selectare al iconiţei. Puteţi folosi această proprietate pentru "
+"Dialogul de selectare al iconului. Puteţi folosi această proprietate pentru "
 "a obţine GtkDialog dacă aveţi nevoie de modificarea sau interogarea "
 "oricăreia dintre proprietăţile sale."
 
 #: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:979
 msgid "No Icon"
-msgstr "Nici o iconiţă"
+msgstr "Fără icon"
 
 #: libgnomeui/gnome-icon-entry.c:531 libgnomeui/gnome-pixmap-entry.c:386
 msgid "Can't find an hbox, using a normal file selection"
@@ -1222,27 +1221,27 @@ msgstr "Previzualizare"
 
 #: libgnomeui/gnome-icon-entry.c:750
 msgid "Icon selection dialog"
-msgstr "Dialogul de selectare al iconiţei"
+msgstr "Dialogul de selectare al iconului"
 
 #: libgnomeui/gnome-icon-entry.c:751
 msgid "This dialog box lets you select an icon."
-msgstr "Acest dialog vă oferă posibilitatea de a selecta o iconiţă."
+msgstr "Acest dialog vă oferă posibilitatea de a selecta un icon."
 
 #: libgnomeui/gnome-icon-entry.c:757
 msgid "Icon selector"
-msgstr "Selector iconiţă"
+msgstr "Selector icon"
 
 #: libgnomeui/gnome-icon-entry.c:758
 msgid "Please pick the icon you want."
-msgstr "Vă rugăm alegeţi iconiţa dorită."
+msgstr "Vă rugăm alegeţi iconul dorit."
 
 #: libgnomeui/gnome-icon-entry.c:982
 msgid "Icon Selector"
-msgstr "Selector iconiţă"
+msgstr "Selector icon"
 
 #: libgnomeui/gnome-icon-entry.c:983
 msgid "This button will open a window to let you select an icon."
-msgstr "Acest buton va deschide o fereastră pentru a selecta o iconiţă."
+msgstr "Acest buton va deschide o fereastră pentru a selecta un icon."
 
 #: libgnomeui/gnome-icon-entry.c:1006
 msgid "Browse"
@@ -1250,15 +1249,14 @@ msgstr "Navighează"
 
 #: libgnomeui/gnome-icon-entry.c:1008
 msgid "Icon path"
-msgstr "Cale iconiţă"
+msgstr "Cale icon"
 
 #: libgnomeui/gnome-icon-entry.c:1009
 msgid ""
 "Here you should enter the name of the directory where icon images are "
 "located."
 msgstr ""
-"Aici ar trebui să introduceţi numele directorului care conţine imaginile "
-"iconiţelor."
+"Aici ar trebui să introduceţi numele dosarului care conţine imaginile icon."
 
 #: libgnomeui/gnome-icon-sel.c:293
 #, c-format
@@ -1272,7 +1270,7 @@ msgstr "GnomeIconSelection: nu am putut deschide directorul '%s'"
 
 #: libgnomeui/gnome-icon-sel.c:401
 msgid "Loading Icons..."
-msgstr "Încarc iconiţele..."
+msgstr "Încarc iconuri..."
 
 #: libgnomeui/gnome-messagebox.c:108
 msgid "Information"
@@ -1336,3 +1334,6 @@ msgstr "%a %b %d %T %Y"
 #: libgnomeui/gnome-scores.c:395
 msgid "Sans 14"
 msgstr "Sans 14"
+
+#~ msgid "Exit the test"
+#~ msgstr "Ieşi din test"

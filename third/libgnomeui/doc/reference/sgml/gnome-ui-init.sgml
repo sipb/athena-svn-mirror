@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -30,6 +31,8 @@ int         <link linkend="gnome-init-with-popt-table">gnome_init_with_popt_tabl
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -98,11 +101,7 @@ the application.
                                              const struct <link linkend="poptOption">poptOption</link> *options,
                                              int flags,
                                              <link linkend="poptContext">poptContext</link> *return_ctx);</programlisting>
-<warning>
-<para>
-<literal>gnome_init_with_popt_table</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_init_with_popt_table</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Initializes the application.  This sets up all of the GNOME
 internals and prepares them (imlib, gdk, session-management, triggers,
@@ -117,66 +116,54 @@ library).
 Deprecated, use <link linkend="gnome-program-init">gnome_program_init</link> with the LIBGNOMEUI_MODULE.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app_id</parameter>&nbsp;:</entry>
-<entry> Application id.
-</entry></row>
-<row><entry align="right"><parameter>app_version</parameter>&nbsp;:</entry>
-<entry> Application version.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry> argument count (for example argc as received by main)
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry> argument vector (for example argv as received by main)
-</entry></row>
-<row><entry align="right"><parameter>options</parameter>&nbsp;:</entry>
-<entry> poptOption table with options to parse
-</entry></row>
-<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
-<entry> popt flags.
-</entry></row>
-<row><entry align="right"><parameter>return_ctx</parameter>&nbsp;:</entry>
-<entry> if non-NULL, the popt context is returned here.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 (always)
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>app_id</parameter>&nbsp;:</term>
+<listitem><simpara> Application id.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_version</parameter>&nbsp;:</term>
+<listitem><simpara> Application version.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> argument count (for example argc as received by main)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> argument vector (for example argv as received by main)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
+<listitem><simpara> poptOption table with options to parse
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> popt flags.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>return_ctx</parameter>&nbsp;:</term>
+<listitem><simpara> if non-NULL, the popt context is returned here.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 (always)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-init">gnome_init()</title>
 <programlisting>#define     gnome_init(app_id,app_version,argc,argv)</programlisting>
-<warning>
-<para>
-<literal>gnome_init</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_init</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This is identical to a call to gnome_init_with_popt_table with <literal>NULL</literal> passed in
 as the poptOption table.
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>app_id</parameter>&nbsp;:</entry>
-<entry>Application id.
-</entry></row>
-<row><entry align="right"><parameter>app_version</parameter>&nbsp;:</entry>
-<entry>Application version.
-</entry></row>
-<row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry>Argument count (for example, argc as received by the main function).
-</entry></row>
-<row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
-<entry>Argument vector (for example, argv as received by the main function).
+</para><variablelist role="params">
+<varlistentry><term><parameter>app_id</parameter>&nbsp;:</term>
+<listitem><simpara>Application id.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_version</parameter>&nbsp;:</term>
+<listitem><simpara>Application version.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara>Argument count (for example, argc as received by the main function).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara>Argument vector (for example, argv as received by the main function).
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

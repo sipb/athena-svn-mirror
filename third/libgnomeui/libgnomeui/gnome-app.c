@@ -154,7 +154,8 @@ gnome_app_class_init (GnomeAppClass *class)
 							   _("The application ID string"),
 							   g_get_prgname (),
 							   (G_PARAM_READABLE |
-							    G_PARAM_WRITABLE)));
+							    G_PARAM_WRITABLE |
+							    G_PARAM_CONSTRUCT)));
 }
 
 static void
@@ -713,7 +714,7 @@ gnome_app_set_toolbar (GnomeApp *app,
 
 /**
  * gnome_app_add_dock_item:
- * @app: A &GnomeApp widget.
+ * @app: A #GnomeApp widget.
  * @item: Dock item to be added to @app's dock.
  * @placement: Placement for the dock item.
  * @band_num: Number of the band where the dock item should be placed.

@@ -5,17 +5,22 @@
 <colspec colwidth="1*">
 <tbody>
 <row>
+<entry><link linkend="AtkImplementorIface">AtkImplementorIface</link></entry>
+<entry><link linkend="GInterface">GInterface</link></entry>
 <entry><link linkend="GObject">GObject</link></entry>
+</row>
+<row>
 <entry><link linkend="GdkDragContext">GdkDragContext</link></entry>
 <entry><link linkend="GdkDrawable">GdkDrawable</link></entry>
+<entry><link linkend="GdkImage">GdkImage</link></entry>
 </row>
 <row>
-<entry><link linkend="GdkImage">GdkImage</link></entry>
 <entry><link linkend="GdkPixbuf">GdkPixbuf</link></entry>
 <entry><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link></entry>
+<entry><link linkend="GdkPixmap">GdkPixmap</link></entry>
 </row>
 <row>
-<entry><link linkend="GdkPixmap">GdkPixmap</link></entry>
+<entry><link linkend="GdkScreen">GdkScreen</link></entry>
 <entry><link linkend="GnomeAbout">GnomeAbout</link></entry>
 <entry><link linkend="GnomeApp">GnomeApp</link></entry>
 </row>
@@ -71,25 +76,29 @@
 </row>
 <row>
 <entry><link linkend="GtkButton">GtkButton</link></entry>
+<entry><link linkend="GtkCellEditable">GtkCellEditable</link></entry>
 <entry><link linkend="GtkCombo">GtkCombo</link></entry>
-<entry><link linkend="GtkContainer">GtkContainer</link></entry>
 </row>
 <row>
+<entry><link linkend="GtkContainer">GtkContainer</link></entry>
 <entry><link linkend="GtkDialog">GtkDialog</link></entry>
+<entry><link linkend="GtkEditable">GtkEditable</link></entry>
+</row>
+<row>
 <entry><link linkend="GtkEntry">GtkEntry</link></entry>
 <entry><link linkend="GtkHBox">GtkHBox</link></entry>
+<entry><link linkend="GtkImage">GtkImage</link></entry>
 </row>
 <row>
-<entry><link linkend="GtkImage">GtkImage</link></entry>
 <entry><link linkend="GtkLayout">GtkLayout</link></entry>
 <entry><link linkend="GtkMisc">GtkMisc</link></entry>
+<entry><link linkend="GtkObject">GtkObject</link></entry>
 </row>
 <row>
-<entry><link linkend="GtkObject">GtkObject</link></entry>
 <entry><link linkend="GtkStyle">GtkStyle</link></entry>
 <entry><link linkend="GtkVBox">GtkVBox</link></entry>
+<entry><link linkend="GtkWidget">GtkWidget</link></entry>
 </row>
 <row>
-<entry><link linkend="GtkWidget">GtkWidget</link></entry>
 <entry><link linkend="GtkWindow">GtkWindow</link></entry>
 </tbody></tgroup></informaltable>

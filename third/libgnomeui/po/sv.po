@@ -3,13 +3,13 @@
 # Christian Rose <menthos@menthos.com>, 2001, 2002.
 # Mikael Hallendal <micke@codefactory.se>, 2002.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-04 19:43:48 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-01-29 20:16:51 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-03 15:36+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2002-12-02 16:31+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,17 +22,17 @@ msgstr "Tack"
 
 # SUN CHANGED MESSAGE
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Skrivet av"
+msgid "Written by"
+msgstr "Skrivet av"
 
 # SUN CHANGED MESSAGE
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "_Dokumenterat av"
+msgid "Documented by"
+msgstr "Dokumenterat av"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Översatt av"
+msgid "Translated by"
+msgstr "Översatt av"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -403,11 +403,12 @@ msgstr "Denna knapp kommer att ta dig till URI:n som den visar."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Fel uppstod vid körning av URL-hanteraren.\n"
-"Kontrollera att inställningarna i kontrollpanelen är korrekta."
+"Ett fel inträffade vid försök att starta standardwebbläsaren.\n"
+"Kontrollera dina inställningar i inställningsverktyget \"Föredragna program"
+"\"."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -422,12 +423,12 @@ msgid "GNOME GUI Library"
 msgstr "GNOME-bibliotek för grafiska användargränssnitt"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Flera segmenteringsfel har inträffat; kan inte visa felmeddelande\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -1340,8 +1341,35 @@ msgstr "%a %d %b %H.%M %Y"
 msgid "Sans 14"
 msgstr "Sans 14"
 
+#~ msgid ""
+#~ "An error has occured while trying to launch the default web browser\n"
+#~ "Please check your settings in the \n"
+#~ "'Preferred Applications' preference tool."
+#~ msgstr ""
+#~ "Ett fel inträffade vid försök att starta standardwebbläsaren.\n"
+#~ "Kontrollera dina inställningar i inställningsverktyget \"Föredragna "
+#~ "program\"."
+
 #~ msgid "Exit the test"
 #~ msgstr "Avsluta testet"
+
+#~ msgid ""
+#~ "An error has occured while trying to launch the default web browser.\n"
+#~ "Please check your settings in the \n"
+#~ "'Preferred Applications' preference tool."
+#~ msgstr ""
+#~ "Ett fel inträffade vid försök att starta standardwebbläsaren.\n"
+#~ "Kontrollera dina inställningar i inställningsverktyget \"Föredragna "
+#~ "program\"."
+
+#~ msgid "_Written by"
+#~ msgstr "_Skrivet av"
+
+#~ msgid "_Documented by"
+#~ msgstr "_Dokumenterat av"
+
+#~ msgid "_Translated by"
+#~ msgstr "_Översatt av"
 
 #~ msgid "Contents"
 #~ msgstr "Innehåll"

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -52,6 +53,8 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -65,137 +68,97 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 <title><anchor id="GnomeMDIChildViewCreator">GnomeMDIChildViewCreator ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  (*GnomeMDIChildViewCreator)     (<link linkend="GnomeMDIChild">GnomeMDIChild</link>*,
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
-<warning>
-<para>
-<literal>GnomeMDIChildViewCreator</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomeMDIChildViewCreator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeMDIChildMenuCreator">GnomeMDIChildMenuCreator ()</title>
 <programlisting><link linkend="GList">GList</link>*      (*GnomeMDIChildMenuCreator)     (<link linkend="GnomeMDIChild">GnomeMDIChild</link>*,
                                              <link linkend="GtkWidget">GtkWidget</link>*,
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
-<warning>
-<para>
-<literal>GnomeMDIChildMenuCreator</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomeMDIChildMenuCreator</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeMDIChildConfigFunc">GnomeMDIChildConfigFunc ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      (*GnomeMDIChildConfigFunc)      (<link linkend="GnomeMDIChild">GnomeMDIChild</link>*,
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
-<warning>
-<para>
-<literal>GnomeMDIChildConfigFunc</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomeMDIChildConfigFunc</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeMDIChildLabelFunc">GnomeMDIChildLabelFunc ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  (*GnomeMDIChildLabelFunc)       (<link linkend="GnomeMDIChild">GnomeMDIChild</link>*,
                                              <link linkend="GtkWidget">GtkWidget</link>*,
                                              <link linkend="gpointer">gpointer</link>);</programlisting>
-<warning>
-<para>
-<literal>GnomeMDIChildLabelFunc</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomeMDIChildLabelFunc</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeMDIChild-struct">struct GnomeMDIChild</title>
 <programlisting>struct GnomeMDIChild;</programlisting>
-<warning>
-<para>
-<literal>GnomeMDIChild</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>GnomeMDIChild</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-mdi-child-add-view">gnome_mdi_child_add_view ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_mdi_child_add_view        (<link linkend="GnomeMDIChild">GnomeMDIChild</link> *mdi_child);</programlisting>
-<warning>
-<para>
-<literal>gnome_mdi_child_add_view</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_mdi_child_add_view</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Creates a new view of a child (a GtkWidget) adds it to the list
 of the views and returns a pointer to it. Virtual function
@@ -203,81 +166,57 @@ that has to be specified for classes derived from GnomeMDIChild
 is used to create the new view.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mdi_child</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeMDIChild object.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>mdi_child</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeMDIChild object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 A pointer to the new view.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-mdi-child-remove-view">gnome_mdi_child_remove_view ()</title>
 <programlisting>void        gnome_mdi_child_remove_view     (<link linkend="GnomeMDIChild">GnomeMDIChild</link> *mdi_child,
                                              <link linkend="GtkWidget">GtkWidget</link> *view);</programlisting>
-<warning>
-<para>
-<literal>gnome_mdi_child_remove_view</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_mdi_child_remove_view</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Removes view <parameter>view</parameter> from the list of <parameter>mdi_child</parameter>'s views and
 unrefs it.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mdi_child</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeMDIChild object.
-</entry></row>
-<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
-<entry> View to be removed.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>mdi_child</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeMDIChild object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>view</parameter>&nbsp;:</term>
+<listitem><simpara> View to be removed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-mdi-child-set-name">gnome_mdi_child_set_name ()</title>
 <programlisting>void        gnome_mdi_child_set_name        (<link linkend="GnomeMDIChild">GnomeMDIChild</link> *mdi_child,
                                              const <link linkend="gchar">gchar</link> *name);</programlisting>
-<warning>
-<para>
-<literal>gnome_mdi_child_set_name</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_mdi_child_set_name</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Changes name of <parameter>mdi_child</parameter> to <parameter>name</parameter>. <parameter>name</parameter> is duplicated and stored
 in <parameter>mdi_child</parameter>. If <parameter>mdi_child</parameter> has already been added to GnomeMDI,
 it also takes care of updating it.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mdi_child</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeMDIChild object.
-</entry></row>
-<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
-<entry> String containing the new name for the child.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>mdi_child</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeMDIChild object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> String containing the new name for the child.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-mdi-child-set-menu-template">gnome_mdi_child_set_menu_template ()</title>
 <programlisting>void        gnome_mdi_child_set_menu_template
                                             (<link linkend="GnomeMDIChild">GnomeMDIChild</link> *mdi_child,
                                              <link linkend="GnomeUIInfo">GnomeUIInfo</link> *menu_tmpl);</programlisting>
-<warning>
-<para>
-<literal>gnome_mdi_child_set_menu_template</literal> is deprecated and should not be used in newly-written code.
-</para>
-</warning>
+<warning><para><literal>gnome_mdi_child_set_menu_template</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Sets the template for menus that are added and removed when differrent
 children get activated. This way, each child can modify the MDI menubar
@@ -287,18 +226,14 @@ GList of menu items). If no such function is specified, the menubar will
 be unchanged by MDI children.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>mdi_child</parameter>&nbsp;:</entry>
-<entry> A pointer to a GnomeMDIChild object.
-</entry></row>
-<row><entry align="right"><parameter>menu_tmpl</parameter>&nbsp;:</entry>
-<entry> A GnomeUIInfo array describing the child specific menus.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>mdi_child</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a GnomeMDIChild object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>menu_tmpl</parameter>&nbsp;:</term>
+<listitem><simpara> A GnomeUIInfo array describing the child specific menus.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

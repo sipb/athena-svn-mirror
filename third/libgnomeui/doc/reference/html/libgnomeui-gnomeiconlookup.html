@@ -1,0 +1,76 @@
+<HTML><HEAD><TITLE>GnomeIconLookup</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="FIXME" HREF="fixme.html"><LINK REL="PREVIOUS" TITLE="GnomeIconList" HREF="gnomeiconlist.html"><LINK REL="NEXT" TITLE="GnomeIconTheme" HREF="libgnomeui-gnomeicontheme.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="gnomeiconlist.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="fixme.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="libgnomeui-gnomeicontheme.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOMEICONLOOKUP"></A>GnomeIconLookup</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN12880"></A><H2>Name</H2>GnomeIconLookup&nbsp;--&nbsp;</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN12883"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+enum        <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPFLAGS">GnomeIconLookupFlags</A>;
+enum        <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPRESULTFLAGS">GnomeIconLookupResultFlags</A>;
+char*       <A HREF="libgnomeui-gnomeiconlookup.html#GNOME-ICON-LOOKUP">gnome_icon_lookup</A>               (<A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A> *icon_theme,
+                                             <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> *thumbnail_factory,
+                                             const char *file_uri,
+                                             const char *custom_icon,
+                                             GnomeVFSFileInfo *file_info,
+                                             const char *mime_type,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPFLAGS">GnomeIconLookupFlags</A> flags,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPRESULTFLAGS">GnomeIconLookupResultFlags</A> *result);
+char*       <A HREF="libgnomeui-gnomeiconlookup.html#GNOME-ICON-LOOKUP-SYNC">gnome_icon_lookup_sync</A>          (<A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A> *icon_theme,
+                                             <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> *thumbnail_factory,
+                                             const char *file_uri,
+                                             const char *custom_icon,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPFLAGS">GnomeIconLookupFlags</A> flags,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPRESULTFLAGS">GnomeIconLookupResultFlags</A> *result);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN12899"></A><H2>Description</H2><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN12902"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN12904"></A><H3><A NAME="GNOMEICONLOOKUPFLAGS"></A>enum GnomeIconLookupFlags</H3><PRE CLASS="PROGRAMLISTING">typedef enum {
+  GNOME_ICON_LOOKUP_FLAGS_NONE = 0,
+  GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT = 1&lt;&lt;0,
+  GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES = 1&lt;&lt;1
+} GnomeIconLookupFlags;</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN12909"></A><H3><A NAME="GNOMEICONLOOKUPRESULTFLAGS"></A>enum GnomeIconLookupResultFlags</H3><PRE CLASS="PROGRAMLISTING">typedef enum {
+  GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE = 0,
+  GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL = 1&lt;&lt;0
+} GnomeIconLookupResultFlags;</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN12914"></A><H3><A NAME="GNOME-ICON-LOOKUP"></A>gnome_icon_lookup ()</H3><PRE CLASS="PROGRAMLISTING">char*       gnome_icon_lookup               (<A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A> *icon_theme,
+                                             <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> *thumbnail_factory,
+                                             const char *file_uri,
+                                             const char *custom_icon,
+                                             GnomeVFSFileInfo *file_info,
+                                             const char *mime_type,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPFLAGS">GnomeIconLookupFlags</A> flags,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPRESULTFLAGS">GnomeIconLookupResultFlags</A> *result);</PRE><P>This function tries to locate an icon in <TT CLASS="PARAMETER"><I>icon_theme</I></TT> that can be used
+to represent the file passed. It can optionally also look for existing
+thumbnails. It does no I/O, so the lookup should be relatively fast.</P><P>If you don't know any information about the file already you can use
+<A HREF="libgnomeui-gnomeiconlookup.html#GNOME-ICON-LOOKUP-SYNC">gnome_icon_lookup_sync</A>() which gets this information using gnome-vfs.</P><P>The following <TT CLASS="PARAMETER"><I>flags</I></TT> are valid:</P><P>GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT - Return the text icon for scripts.
+This is useful if you do text embedding in the icons.</P><P>GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES - Return the
+filename of the filename itself for small images. Only availible if you
+pass a thumbnail_factory.</P><P>Possible <TT CLASS="PARAMETER"><I>result</I></TT> flags:</P><P>GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL - The returned file is a thumbnail.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12936"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>icon_theme</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> a <A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A></P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12942"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>thumbnail_factory</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> an optional <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> used to look up thumbnails</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12948"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>file_uri</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the uri of the file</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12953"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>custom_icon</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> optionally the name of a custom icon to try</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12958"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>file_info</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> information about the file from gnome_vfs_get_file_info()</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12964"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>mime_type</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the mime type of the icon</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12969"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>flags</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> flags that affect the result of the lookup</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12974"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>result</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> optionally result flags of the lookups are stored here</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12979"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The name of an icon or an absolute filename of an image to
+         use for the file.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN12984"></A><H3><A NAME="GNOME-ICON-LOOKUP-SYNC"></A>gnome_icon_lookup_sync ()</H3><PRE CLASS="PROGRAMLISTING">char*       gnome_icon_lookup_sync          (<A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A> *icon_theme,
+                                             <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> *thumbnail_factory,
+                                             const char *file_uri,
+                                             const char *custom_icon,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPFLAGS">GnomeIconLookupFlags</A> flags,
+                                             <A HREF="libgnomeui-gnomeiconlookup.html#GNOMEICONLOOKUPRESULTFLAGS">GnomeIconLookupResultFlags</A> *result);</PRE><P>This function tries to locate an icon in <TT CLASS="PARAMETER"><I>icon_theme</I></TT> that can be used
+to represent the file passed. See <A HREF="libgnomeui-gnomeiconlookup.html#GNOME-ICON-LOOKUP">gnome_icon_lookup</A>() for more information.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN12997"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>icon_theme</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> a <A HREF="libgnomeui-gnomeicontheme.html#GNOMEICONTHEME">GnomeIconTheme</A></P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13003"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>thumbnail_factory</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> an optional <A HREF="libgnomeui-gnomethumbnail.html#GNOMETHUMBNAILFACTORY">GnomeThumbnailFactory</A> used to look up thumbnails</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13009"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>file_uri</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the uri of the file</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13014"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>custom_icon</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> optionally the name of a custom icon to try</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13019"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>flags</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> flags that affect the result of the lookup</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13024"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>result</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> optionally result flags of the lookups are stored here</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN13029"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The name of an icon or an absolute filename of an image to
+         use for the file.</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="gnomeiconlist.html"><B>&lt;&lt;&lt;&nbsp;GnomeIconList</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="libgnomeui-gnomeicontheme.html"><B>GnomeIconTheme&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>

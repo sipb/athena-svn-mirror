@@ -84,19 +84,21 @@ HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LIBGLADE_CONVERT = @LIBGLADE_CONVERT@
+LIBGNOMEUI_AGE = @LIBGNOMEUI_AGE@
 LIBGNOMEUI_CFLAGS = @LIBGNOMEUI_CFLAGS@
 LIBGNOMEUI_COMPONENTS_CFLAGS = @LIBGNOMEUI_COMPONENTS_CFLAGS@
 LIBGNOMEUI_COMPONENTS_LIBS = @LIBGNOMEUI_COMPONENTS_LIBS@
+LIBGNOMEUI_CURRENT = @LIBGNOMEUI_CURRENT@
 LIBGNOMEUI_DEMOS_CFLAGS = @LIBGNOMEUI_DEMOS_CFLAGS@
 LIBGNOMEUI_DEMOS_LIBS = @LIBGNOMEUI_DEMOS_LIBS@
 LIBGNOMEUI_GLADE_CFLAGS = @LIBGNOMEUI_GLADE_CFLAGS@
 LIBGNOMEUI_GLADE_LIBS = @LIBGNOMEUI_GLADE_LIBS@
 LIBGNOMEUI_LIBS = @LIBGNOMEUI_LIBS@
+LIBGNOMEUI_REVISION = @LIBGNOMEUI_REVISION@
+LIBJPEG = @LIBJPEG@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -110,6 +112,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 SM_LIBS = @SM_LIBS@
@@ -122,9 +126,6 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
 SUBDIRS = pixmaps
-
-LIB_VERSION = 0:0:0
-LIB_VERSION_NUM = 0.0.0
 
 #
 # The targets
@@ -140,18 +141,138 @@ gnomeh_HEADERS = gnome.h
 #
 libgnomeuiincludedir = $(includedir)/libgnomeui-2.0/libgnomeui
 
-INCLUDES =  	-I$(top_builddir)					-I$(top_srcdir)					        -DG_DISABLE_DEPRECATED				        -DGDK_DISABLE_DEPRECATED			        -DGDK_PIXBUF_DISABLE_DEPRECATED			        -DGNOMEUILIBDIR=\""$(libdir)"\" 		        -DGNOMEUIDATADIR=\""$(datadir)"\" 		        -DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"	        -DGNOMEUISERVERDIR=\""$(libexecdir)"\" 			-DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\" 	        -DGNOMEUILOCALEDIR=\""$(gnomelocaledir)"\"		-DG_LOG_DOMAIN=\"GnomeUI\"				$(WARN_CFLAGS)						$(LIBGNOMEUI_CFLAGS)
+INCLUDES = \
+	-I$(top_builddir)				\
+	-I$(top_srcdir)					\
+        -DG_DISABLE_DEPRECATED				\
+        -DGDK_DISABLE_DEPRECATED			\
+        -DGDK_PIXBUF_DISABLE_DEPRECATED			\
+        -DGNOMEUILIBDIR=\""$(libdir)"\" 		\
+        -DGNOMEUIDATADIR=\""$(datadir)"\" 		\
+        -DGNOMEUIPIXMAPDIR=\""$(datadir)/pixmaps"\"	\
+        -DGNOMEUIICONDIR=\""$(datadir)/icons"\"	\
+        -DGNOMEUISERVERDIR=\""$(libexecdir)"\" 		\
+	-DGNOMEUILOCALSTATEDIR=\""$(localstatedir)"\" 	\
+        -DGNOMEUILOCALEDIR=\""$(gnomelocaledir)"\"	\
+	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
+	-DG_LOG_DOMAIN=\"GnomeUI\"			\
+	$(WARN_CFLAGS)					\
+	$(LIBGNOMEUI_CFLAGS)
 
 
 EXTRA_HEADERS = 
 
-libgnomeui_2_la_SOURCES =  	libgnomeui-access.c			libgnomeui-access.h			gnometypebuiltins.h			gnometypebuiltins.c			gnome-about.c				gnome-app.c				gnome-app-helper.c			gnome-app-util.c			gnome-appbar.c				gnome-stock-icons.c			gnome-color-picker.c			gnome-dateedit.c			gnome-dialog.c				gnome-dialog-util.c			gnome-druid.c				gnome-druid-page.c			gnome-druid-page-edge.c			gnome-druid-page-standard.c		gnome-entry.c				gnome-file-entry.c			gnome-font-picker.c			gnome-gconf-ui.c			gnome-href.c				gnome-ice.c				gnome-marshal-main.c			gnome-messagebox.c			gnome-mdi.c				gnome-mdi-child.c			gnome-mdi-generic-child.c		gnome-mdi-session.c			gnome-pixmap.c				gnome-pixmap-entry.c			gnome-popup-menu.c			gnome-propertybox.c			gnome-scores.c				gnome-ui-init.c				gnometypes.c				gnome-icon-entry.c			gnome-icon-item.c			gnome-icon-list.c			gnome-icon-sel.c			gnome-vfs-util.c			gnome-window.c				gnome-window-icon.c			gnome-i18nP.h				gnome-gconf-ui.h			libgnomeuiP.h				gnome-client.c
+libgnomeui_2_la_SOURCES = \
+	libgnomeui-access.c		\
+	libgnomeui-access.h		\
+	gnometypebuiltins.h		\
+	gnometypebuiltins.c		\
+	gnome-about.c			\
+	gnome-app.c			\
+	gnome-app-helper.c		\
+	gnome-app-util.c		\
+	gnome-appbar.c			\
+	gnome-stock-icons.c		\
+	gnome-color-picker.c		\
+	gnome-dateedit.c		\
+	gnome-dialog.c			\
+	gnome-dialog-util.c		\
+	gnome-druid.c			\
+	gnome-druid-page.c		\
+	gnome-druid-page-edge.c		\
+	gnome-druid-page-standard.c	\
+	gnome-entry.c			\
+	gnome-file-entry.c		\
+	gnome-font-picker.c		\
+	gnome-gconf-ui.c		\
+	gnome-href.c			\
+	gnome-ice.c			\
+	gnome-marshal-main.c		\
+	gnome-messagebox.c		\
+	gnome-mdi.c			\
+	gnome-mdi-child.c		\
+	gnome-mdi-generic-child.c	\
+	gnome-mdi-session.c		\
+	gnome-pixmap.c			\
+	gnome-pixmap-entry.c		\
+	gnome-popup-menu.c		\
+	gnome-propertybox.c		\
+	gnome-scores.c			\
+	gnome-theme-parser.c		\
+	gnome-thumbnail.c		\
+	gnome-thumbnail-pixbuf-utils.c	\
+	gnome-ui-init.c			\
+	gnometypes.c			\
+	gnome-icon-entry.c		\
+	gnome-icon-item.c		\
+	gnome-icon-list.c		\
+	gnome-icon-lookup.c		\
+	gnome-icon-sel.c		\
+	gnome-icon-theme.c		\
+	gnome-vfs-util.c		\
+	gnome-window.c			\
+	gnome-window-icon.c		\
+	gnome-i18nP.h			\
+	gnome-gconf-ui.h		\
+	libgnomeuiP.h			\
+	gnome-client.c
 
 
-gnome_headers =  	gnome-about.h				gnome-app.h				gnome-app-helper.h			gnome-app-util.h			gnome-appbar.h				gnome-client.h				gnome-color-picker.h			gnome-dateedit.h			gnome-dialog.h				gnome-dialog-util.h			gnome-druid.h				gnome-druid-page.h			gnome-druid-page-edge.h			gnome-druid-page-standard.h		gnome-entry.h				gnome-file-entry.h			gnome-font-picker.h			gnome-href.h				gnome-ice.h				gnome-icon-entry.h			gnome-icon-item.h			gnome-icon-list.h			gnome-icon-sel.h			gnome-messagebox.h			gnome-mdi.h				gnome-mdi-child.h			gnome-mdi-generic-child.h		gnome-mdi-session.h			gnome-pixmap.h				gnome-pixmap-entry.h			gnome-popup-menu.h			gnome-propertybox.h			gnome-scores.h				gnome-ui-init.h				gnome-stock-icons.h			gnome-types.h				gnome-uidefs.h				gnome-vfs-util.h			gnome-window.h				gnome-window-icon.h			libgnomeui.h
+gnome_headers = \
+	gnome-about.h			\
+	gnome-app.h			\
+	gnome-app-helper.h		\
+	gnome-app-util.h		\
+	gnome-appbar.h			\
+	gnome-client.h			\
+	gnome-color-picker.h		\
+	gnome-dateedit.h		\
+	gnome-dialog.h			\
+	gnome-dialog-util.h		\
+	gnome-druid.h			\
+	gnome-druid-page.h		\
+	gnome-druid-page-edge.h		\
+	gnome-druid-page-standard.h	\
+	gnome-entry.h			\
+	gnome-file-entry.h		\
+	gnome-font-picker.h		\
+	gnome-href.h			\
+	gnome-ice.h			\
+	gnome-icon-entry.h		\
+	gnome-icon-item.h		\
+	gnome-icon-list.h		\
+	gnome-icon-lookup.h		\
+	gnome-icon-sel.h		\
+	gnome-icon-theme.h		\
+	gnome-messagebox.h		\
+	gnome-mdi.h			\
+	gnome-mdi-child.h		\
+	gnome-mdi-generic-child.h	\
+	gnome-mdi-session.h		\
+	gnome-pixmap.h			\
+	gnome-pixmap-entry.h		\
+	gnome-popup-menu.h		\
+	gnome-propertybox.h		\
+	gnome-scores.h			\
+	gnome-ui-init.h			\
+	gnome-stock-icons.h		\
+	gnome-thumbnail.h		\
+	gnome-types.h			\
+	gnome-uidefs.h			\
+	gnome-vfs-util.h		\
+	gnome-window.h			\
+	gnome-window-icon.h		\
+	libgnomeui.h
 
 
-libgnomeuiinclude_HEADERS =  	$(gnome_headers)			gnometypebuiltins.h
+gnome_private_headers = \
+	gnome-theme-parser.h
+
+
+libgnomeuiinclude_HEADERS = \
+	$(gnome_headers)		\
+	$(gnome_private_headers)	\
+	gnometypebuiltins.h
 
 
 #######################
@@ -160,19 +281,34 @@ gnome_segv2_SOURCES = gnome_segv.c
 
 # do not use BUILT_SOURCES because of weird semantics
 # i *think* these should actually be stamp-* files
-built_sources =  	gnome-marshal.h			gnome-marshal.c			gnometype_inits.c		gnometypebuiltins.h		gnometypebuiltins.c
+built_sources = \
+	gnome-marshal.h		\
+	gnome-marshal.c		\
+	gnometype_inits.c	\
+	gnometypebuiltins.h	\
+	gnometypebuiltins.c
 
 
-EXTRA_DIST =  	AUTHORS						gnome-marshal.list				gnome-boxed.defs				gnometype_inits.c				libgnomeui-2.0.pc.in
+EXTRA_DIST = \
+	AUTHORS					\
+	gnome-marshal.list			\
+	gnome-boxed.defs			\
+	gnometype_inits.c			\
+	libgnomeui-2.0.pc.in
 
 
-libgnomeui_2_la_LDFLAGS =  	-version-info $(LIB_VERSION)			-export-symbols-regex "^[^_].*"
+libgnomeui_2_la_LDFLAGS = \
+	-version-info $(LIBGNOMEUI_CURRENT):$(LIBGNOMEUI_REVISION):$(LIBGNOMEUI_AGE) \
+	-export-symbols-regex "^[^_].*"
 
 
-libgnomeui_2_la_LIBADD =  	$(LIBGNOMEUI_LIBS)				$(SM_LIBS)
+libgnomeui_2_la_LIBADD = \
+	$(LIBGNOMEUI_LIBS)			\
+	$(SM_LIBS)
 
 
-LDADD =  	libgnomeui-2.la
+LDADD = \
+	libgnomeui-2.la
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -200,10 +336,11 @@ gnome-font-picker.lo gnome-gconf-ui.lo gnome-href.lo gnome-ice.lo \
 gnome-marshal-main.lo gnome-messagebox.lo gnome-mdi.lo \
 gnome-mdi-child.lo gnome-mdi-generic-child.lo gnome-mdi-session.lo \
 gnome-pixmap.lo gnome-pixmap-entry.lo gnome-popup-menu.lo \
-gnome-propertybox.lo gnome-scores.lo gnome-ui-init.lo gnometypes.lo \
-gnome-icon-entry.lo gnome-icon-item.lo gnome-icon-list.lo \
-gnome-icon-sel.lo gnome-vfs-util.lo gnome-window.lo \
-gnome-window-icon.lo gnome-client.lo
+gnome-propertybox.lo gnome-scores.lo gnome-theme-parser.lo \
+gnome-thumbnail.lo gnome-thumbnail-pixbuf-utils.lo gnome-ui-init.lo \
+gnometypes.lo gnome-icon-entry.lo gnome-icon-item.lo gnome-icon-list.lo \
+gnome-icon-lookup.lo gnome-icon-sel.lo gnome-icon-theme.lo \
+gnome-vfs-util.lo gnome-window.lo gnome-window-icon.lo gnome-client.lo
 libexec_PROGRAMS =  gnome_segv2$(EXEEXT)
 PROGRAMS =  $(libexec_PROGRAMS)
 
@@ -224,7 +361,7 @@ DIST_COMMON =  AUTHORS Makefile.am Makefile.in libgnomeui-2.0.pc.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgnomeui_2_la_SOURCES) $(gnome_segv2_SOURCES)
 OBJECTS = $(libgnomeui_2_la_OBJECTS) $(gnome_segv2_OBJECTS)
@@ -576,9 +713,13 @@ gnome-icon-list.lo gnome-icon-list.o : gnome-icon-list.c ../config.h \
 	gnome-icon-list.h gnome-icon-item.h gnome-icon-item.h \
 	gnome-marshal.h libgnomeuiP.h gnometypebuiltins.h \
 	gnome-gconf-ui.h libgnomeui-access.h
+gnome-icon-lookup.lo gnome-icon-lookup.o : gnome-icon-lookup.c \
+	gnome-icon-lookup.h gnome-icon-theme.h gnome-thumbnail.h
 gnome-icon-sel.lo gnome-icon-sel.o : gnome-icon-sel.c ../config.h \
 	gnome-i18nP.h gnome-icon-list.h gnome-icon-item.h \
 	gnome-uidefs.h gnome-icon-sel.h libgnomeui-access.h
+gnome-icon-theme.lo gnome-icon-theme.o : gnome-icon-theme.c \
+	gnome-icon-theme.h gnome-theme-parser.h
 gnome-marshal-main.lo gnome-marshal-main.o : gnome-marshal-main.c \
 	gnome-marshal.h gnome-marshal.c
 gnome-mdi-child.lo gnome-mdi-child.o : gnome-mdi-child.c ../config.h \
@@ -616,6 +757,12 @@ gnome-scores.lo gnome-scores.o : gnome-scores.c ../config.h \
 gnome-stock-icons.lo gnome-stock-icons.o : gnome-stock-icons.c \
 	../config.h gnome-i18nP.h gnome-stock-icons.h \
 	pixmaps/gnome-stock-pixbufs.h
+gnome-theme-parser.lo gnome-theme-parser.o : gnome-theme-parser.c \
+	gnome-theme-parser.h
+gnome-thumbnail-pixbuf-utils.lo gnome-thumbnail-pixbuf-utils.o : \
+	gnome-thumbnail-pixbuf-utils.c ../config.h gnome-thumbnail.h
+gnome-thumbnail.lo gnome-thumbnail.o : gnome-thumbnail.c ../config.h \
+	gnome-vfs-util.h gnome-thumbnail.h gnome-gconf-ui.h
 gnome-ui-init.lo gnome-ui-init.o : gnome-ui-init.c ../config.h \
 	gnome-i18nP.h gnome-client.h gnome-gconf-ui.h gnome-ui-init.h \
 	gnome-stock-icons.h libgnomeuiP.h gnometypebuiltins.h
@@ -630,7 +777,8 @@ gnome_segv.o: gnome_segv.c ../config.h libgnomeui.h gnome-uidefs.h \
 	gnome-types.h gnome-app-util.h gnome-color-picker.h \
 	gnome-entry.h gnome-file-entry.h gnome-font-picker.h \
 	gnome-icon-entry.h gnome-icon-item.h gnome-icon-list.h \
-	gnome-icon-sel.h gnome-ui-init.h gnome-stock-icons.h \
+	gnome-icon-sel.h gnome-ui-init.h gnome-icon-theme.h \
+	gnome-thumbnail.h gnome-icon-lookup.h gnome-stock-icons.h \
 	gnome-scores.h gnome-client.h gnome-dateedit.h \
 	gnometypebuiltins.h gnome-href.h gnome-dialog.h \
 	gnome-dialog-util.h gnome-druid.h gnome-druid-page.h \
@@ -645,7 +793,8 @@ gnometypebuiltins.lo gnometypebuiltins.o : gnometypebuiltins.c \
 	gnome-app-util.h gnome-color-picker.h gnome-entry.h \
 	gnome-file-entry.h gnome-font-picker.h gnome-icon-entry.h \
 	gnome-icon-item.h gnome-icon-list.h gnome-icon-sel.h \
-	gnome-ui-init.h gnome-stock-icons.h gnome-scores.h \
+	gnome-ui-init.h gnome-icon-theme.h gnome-thumbnail.h \
+	gnome-icon-lookup.h gnome-stock-icons.h gnome-scores.h \
 	gnome-client.h gnome-dateedit.h gnometypebuiltins.h \
 	gnome-href.h gnome-dialog.h gnome-dialog-util.h gnome-druid.h \
 	gnome-druid-page.h gnome-druid-page-edge.h \
@@ -660,6 +809,7 @@ gnometypes.lo gnometypes.o : gnometypes.c ../config.h libgnomeui.h \
 	gnome-color-picker.h gnome-entry.h gnome-file-entry.h \
 	gnome-font-picker.h gnome-icon-entry.h gnome-icon-item.h \
 	gnome-icon-list.h gnome-icon-sel.h gnome-ui-init.h \
+	gnome-icon-theme.h gnome-thumbnail.h gnome-icon-lookup.h \
 	gnome-stock-icons.h gnome-scores.h gnome-client.h \
 	gnome-dateedit.h gnometypebuiltins.h gnome-href.h \
 	gnome-dialog.h gnome-dialog-util.h gnome-druid.h \

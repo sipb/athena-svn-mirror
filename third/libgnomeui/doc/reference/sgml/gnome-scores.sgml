@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomeui/libgnomeui.h&gt;
@@ -73,6 +74,14 @@ void        <link linkend="gnome-scores-set-current-player">gnome_scores_set_cur
 
 </refsect1>
 
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeScores implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
 
 
 
@@ -104,27 +113,23 @@ It calls gnome_score_get_notables to retrieve the info, creates the window,
 and show it.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>pixmap_logo</parameter>&nbsp;:</entry>
-<entry> Filename of a logo pixmap to display
-</entry></row>
-<row><entry align="right"><parameter>app_name</parameter>&nbsp;:</entry>
-<entry> Name of the application, as in gnome_score_init.
-</entry></row>
-<row><entry align="right"><parameter>level</parameter>&nbsp;:</entry>
-<entry> Level of the game or <literal>NULL</literal>.
-</entry></row>
-<row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry> Position in the top ten of the current player, as returned by gnome_score_log.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  If a dialog is displayed return it's pointer.  It can also
+</para><variablelist role="params">
+<varlistentry><term><parameter>pixmap_logo</parameter>&nbsp;:</term>
+<listitem><simpara> Filename of a logo pixmap to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>app_name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the application, as in gnome_score_init.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>level</parameter>&nbsp;:</term>
+<listitem><simpara> Level of the game or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara> Position in the top ten of the current player, as returned by gnome_score_log.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  If a dialog is displayed return it's pointer.  It can also
 be <literal>NULL</literal> if no dialog is displayed
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-new">gnome_scores_new ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_scores_new                (<link linkend="guint">guint</link> n_scores,
@@ -136,29 +141,25 @@ be <literal>NULL</literal> if no dialog is displayed
 Creates the high-scores window.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>n_scores</parameter>&nbsp;:</entry>
-<entry> Number of positions.
-</entry></row>
-<row><entry align="right"><parameter>names</parameter>&nbsp;:</entry>
-<entry> Names of the players.
-</entry></row>
-<row><entry align="right"><parameter>scores</parameter>&nbsp;:</entry>
-<entry> Scores
-</entry></row>
-<row><entry align="right"><parameter>times</parameter>&nbsp;:</entry>
-<entry> Time in which the scores were done
-</entry></row>
-<row><entry align="right"><parameter>clear</parameter>&nbsp;:</entry>
-<entry> Add a "Clear" Button?
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>n_scores</parameter>&nbsp;:</term>
+<listitem><simpara> Number of positions.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>names</parameter>&nbsp;:</term>
+<listitem><simpara> Names of the players.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>scores</parameter>&nbsp;:</term>
+<listitem><simpara> Scores
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>times</parameter>&nbsp;:</term>
+<listitem><simpara> Time in which the scores were done
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>clear</parameter>&nbsp;:</term>
+<listitem><simpara> Add a "Clear" Button?
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-construct">gnome_scores_construct ()</title>
 <programlisting>void        gnome_scores_construct          (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -172,30 +173,26 @@ useful for language bindings and subclassing, not to be used by
 itself, see <link linkend="gnome-scores-new">gnome_scores_new</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>n_scores</parameter>&nbsp;:</entry>
-<entry> Number of positions.
-</entry></row>
-<row><entry align="right"><parameter>names</parameter>&nbsp;:</entry>
-<entry> Names of the players.
-</entry></row>
-<row><entry align="right"><parameter>scores</parameter>&nbsp;:</entry>
-<entry> Scores
-</entry></row>
-<row><entry align="right"><parameter>times</parameter>&nbsp;:</entry>
-<entry> Time in which the scores were done
-</entry></row>
-<row><entry align="right"><parameter>clear</parameter>&nbsp;:</entry>
-<entry> Add a "Clear" Button?
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_scores</parameter>&nbsp;:</term>
+<listitem><simpara> Number of positions.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>names</parameter>&nbsp;:</term>
+<listitem><simpara> Names of the players.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>scores</parameter>&nbsp;:</term>
+<listitem><simpara> Scores
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>times</parameter>&nbsp;:</term>
+<listitem><simpara> Time in which the scores were done
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>clear</parameter>&nbsp;:</term>
+<listitem><simpara> Add a "Clear" Button?
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-logo-label">gnome_scores_set_logo_label ()</title>
 <programlisting>void        gnome_scores_set_logo_label     (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -206,24 +203,20 @@ itself, see <link linkend="gnome-scores-new">gnome_scores_new</link>.</para>
 Creates a label to be the logo</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>txt</parameter>&nbsp;:</entry>
-<entry> Text in the label.
-</entry></row>
-<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
-<entry> Font to use in the label.
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry> Color to use in the label.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>txt</parameter>&nbsp;:</term>
+<listitem><simpara> Text in the label.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
+<listitem><simpara> Font to use in the label.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> Color to use in the label.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-logo-pixmap">gnome_scores_set_logo_pixmap ()</title>
 <programlisting>void        gnome_scores_set_logo_pixmap    (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -232,18 +225,14 @@ Creates a label to be the logo</para>
 Sets the logo on the scores dialog box to a pixmap</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>pix_name</parameter>&nbsp;:</entry>
-<entry> filename of a pixmap
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pix_name</parameter>&nbsp;:</term>
+<listitem><simpara> filename of a pixmap
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-logo-widget">gnome_scores_set_logo_widget ()</title>
 <programlisting>void        gnome_scores_set_logo_widget    (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -252,18 +241,14 @@ Sets the logo on the scores dialog box to a pixmap</para>
 Set an arbitrary widget to be the logo.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>w</parameter>&nbsp;:</entry>
-<entry> Widget to be used as logo.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>w</parameter>&nbsp;:</term>
+<listitem><simpara> Widget to be used as logo.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-color">gnome_scores_set_color ()</title>
 <programlisting>void        gnome_scores_set_color          (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -273,21 +258,17 @@ Set an arbitrary widget to be the logo.</para>
 Set the color of one entry.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>n</parameter>&nbsp;:</entry>
-<entry> Entry to be changed.
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry> Color.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n</parameter>&nbsp;:</term>
+<listitem><simpara> Entry to be changed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> Color.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-def-color">gnome_scores_set_def_color ()</title>
 <programlisting>void        gnome_scores_set_def_color      (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -296,18 +277,14 @@ Set the color of one entry.</para>
 Set the default color of the entries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry> Color
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> Color
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-colors">gnome_scores_set_colors ()</title>
 <programlisting>void        gnome_scores_set_colors         (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -316,18 +293,14 @@ Set the default color of the entries.</para>
 Set the color of all the entries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
-<entry> Array of colors.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>col</parameter>&nbsp;:</term>
+<listitem><simpara> Array of colors.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-logo-label-title">gnome_scores_set_logo_label_title ()</title>
 <programlisting>void        gnome_scores_set_logo_label_title
@@ -337,18 +310,14 @@ Set the color of all the entries.</para>
 Creates a label to be the logo</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>txt</parameter>&nbsp;:</entry>
-<entry> Name of the logo.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>txt</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the logo.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-scores-set-current-player">gnome_scores_set_current_player ()</title>
 <programlisting>void        gnome_scores_set_current_player (<link linkend="GnomeScores">GnomeScores</link> *gs,
@@ -357,18 +326,14 @@ Creates a label to be the logo</para>
 Set the index of the current player in top ten.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>gs</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GnomeScores">GnomeScores</link> widget
-</entry></row>
-<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
-<entry> Index of the current(from 0 to 9).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>gs</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeScores">GnomeScores</link> widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>i</parameter>&nbsp;:</term>
+<listitem><simpara> Index of the current(from 0 to 9).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

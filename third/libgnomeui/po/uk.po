@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-06-13 17:57+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-21 10:12--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: libgnomeui/gnome-about.c:194
@@ -18,15 +18,15 @@ msgid "Credits"
 msgstr "Інформація про авторів"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
+msgid "Written by"
 msgstr "Автори"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
+msgid "Documented by"
 msgstr "Автори документації"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
+msgid "Translated by"
 msgstr "Перекладачі"
 
 #. Add the credits button
@@ -397,11 +397,11 @@ msgstr "Ця кнопка перенаправить вас до URI, який �
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Сталася помилка під час спроби запустити обробника URL.\n"
-"Будь ласка, переконайтесь, що в Центр Керування вірно налаштувано."
+"Сталася помилка під час спроби запустити типового переглядача веб.\n"
+"Будь ласка, перевірте ваші налаштування в утиліті \"Вподобані програми\"."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -416,13 +416,13 @@ msgid "GNOME GUI Library"
 msgstr "Бібліотека ГІК GNOME"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Множинний збій сеґментації; неможливо відобразити повідомлення про помилку\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
@@ -746,9 +746,8 @@ msgstr "Замінити рядок"
 
 #. Properties
 #: libgnomeui/gnome-app-helper.c:202
-#, fuzzy
 msgid "_Properties"
-msgstr "_Властивості..."
+msgstr "_Властивості"
 
 #: libgnomeui/gnome-app-helper.c:203
 msgid "Modify the file's properties"
@@ -759,9 +758,8 @@ msgstr "Змінити властивості файлу"
 #.
 #. Settings
 #: libgnomeui/gnome-app-helper.c:211
-#, fuzzy
 msgid "Prefere_nces"
-msgstr "В_подобання..."
+msgstr "В_подобання"
 
 #: libgnomeui/gnome-app-helper.c:212
 msgid "Configure the application"
@@ -877,7 +875,7 @@ msgstr "Завершити поточну гру"
 
 #: libgnomeui/gnome-app-helper.c:1143
 msgid "_Contents"
-msgstr ""
+msgstr "_Зміст"
 
 #: libgnomeui/gnome-app-helper.c:1146
 msgid "View help for this application"
@@ -1074,7 +1072,7 @@ msgstr "Sans 12"
 
 #: libgnomeui/gnome-font-picker.c:67
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgstr "АаБбВвГгҐґДдЕеЄєЖжЗзИиІіЇїЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЬьЮюЯя"
 
 #: libgnomeui/gnome-font-picker.c:68
 msgid "Pick a Font"
@@ -1334,3 +1332,6 @@ msgstr "%a %d %b %T %Y"
 #: libgnomeui/gnome-scores.c:395
 msgid "Sans 14"
 msgstr "Sans 12"
+
+#~ msgid "Exit the test"
+#~ msgstr "Вийти з тесту"

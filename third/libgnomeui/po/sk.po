@@ -1,12 +1,12 @@
 # libgnomeui sk.po
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Marcel Telka <marcel@telka.sk>, 2002.
+# Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+# Marcel Telka <marcel@telka.sk>, 2002, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui\n"
-"POT-Creation-Date: 2002-11-20 16:19+0000\n"
-"PO-Revision-Date: 2002-08-17 21:28+0200\n"
+"POT-Creation-Date: 2003-01-23 15:33+0100\n"
+"PO-Revision-Date: 2003-01-13 00:05+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,16 @@ msgid "Credits"
 msgstr "Poďakovanie"
 
 #: libgnomeui/gnome-about.c:223
-msgid "_Written by"
-msgstr "_Napísal"
+msgid "Written by"
+msgstr "Napísal"
 
 #: libgnomeui/gnome-about.c:238
-msgid "_Documented by"
-msgstr "Autor _dokumentácie"
+msgid "Documented by"
+msgstr "Autor dokumentácie"
 
 #: libgnomeui/gnome-about.c:253
-msgid "_Translated by"
-msgstr "_Prekladateľ"
+msgid "Translated by"
+msgstr "Prekladateľ"
 
 #. Add the credits button
 #: libgnomeui/gnome-about.c:310
@@ -396,11 +396,11 @@ msgstr "Toto tlačítko vás presunie na URI, ktoré je na ňom uvedené."
 
 #: libgnomeui/gnome-href.c:393
 msgid ""
-"Error occured while trying to launch the URL handler.\n"
-"Please check the settings in the Control Center if they are correct."
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
 msgstr ""
-"Vyskytla sa chyba pri pokuse o spustenie ovládača URL.\n"
-"Prosím skontrolujte či sú správne nastavenia v Ovládacom centre."
+"Vyskytla sa chyba pri pokuse o spustenie predvoleného www prehliadača.\n"
+"Prosím skontrolujte vaše nastavenia v nástroji 'Predvolené aplikácie'."
 
 #: libgnomeui/gnome-ui-init.c:113
 msgid "X display to use"
@@ -415,14 +415,14 @@ msgid "GNOME GUI Library"
 msgstr "Knižnica GNOME GUI"
 
 #. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:618
+#: libgnomeui/gnome-ui-init.c:617
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Vyskytli sa viacnásobné chyby segmentácie; nemôžem zobraziť dialógové okno s "
 "chybou\n"
 
 #. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:632
+#: libgnomeui/gnome-ui-init.c:631
 msgid ""
 "Segmentation fault!\n"
 "Cannot display crash dialog\n"
