@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.13 1995-11-28 23:07:30 cfields Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.14 1997-06-28 05:48:19 ghudson Exp $";
 #endif
 
 /*
@@ -103,6 +103,17 @@ recvjob()
 		SD = DEFSPOOL;
 	if ((LO = pgetstr("lo", &bp)) == NULL)
 		LO = DEFLOCK;
+
+	if (((RM = pgetstr("rm", &bp)) != NULL) && strcasecmp(RM, host)) {
+#ifdef KERBEROS
+	        if (require_kerberos(printer) > 0)
+		       /* They are not for you */
+		       frecverr("%s: cannot forward to kerberized spooler", 
+				printer);
+#endif KERBEROS
+		SD = DEFSPOOL;
+	}
+
 #ifdef PQUOTA
 	RQ = pgetstr("rq", &bp);
 	QS = pgetstr("qs", &bp);
