@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.74.2.1 1998-09-24 14:14:37 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.74.2.2 1998-10-02 17:57:43 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -256,6 +256,9 @@ void main(argc, argv)
   int i;
   unsigned acc = 0;
   int pid;
+#ifdef sgi
+  int fdflags;
+#endif
 
   sigemptyset(&sig_zero);
 
@@ -275,12 +278,21 @@ void main(argc, argv)
   if (xdmfd != -1)
     {
       xdmstream = fdopen(xdmfd, "w");
-      if (NULL == freopen(athconsole, "w", stdout))
+      if (xdmstream == NULL)
+	{
+	  close(xdmfd);
+	  xdmstream = stdout;
+	}
+      else if (NULL == freopen(athconsole, "w", stdout))
 	(void)freopen("/dev/console", "w", stdout);
     }
   else
     xdmstream = stdout; /* Some stuff will break, but better than losing. */
   /* Actually, losing gracefully might be wise... */
+
+  fdflags = fcntl(fileno(xdmstream), F_GETFD);
+  if (fdflags != -1)
+    fcntl(fileno(xdmstream), F_SETFD, fdflags | FD_CLOEXEC);
 
   if (NULL == freopen(athconsole, "w", stderr))
     (void)freopen("/dev/console", "w", stderr);
@@ -933,8 +945,10 @@ void loginACT(w, event, p, n)
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, 300, 300);
       XFlush(dpy);
+      larv_set_busy(1);
       tb.ptr = dologin(login, passwd, mode, script, resources.tty,
 		       resources.session, DisplayString(dpy));
+      larv_set_busy(0);
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0, WidthOfScreen(DefaultScreenOfDisplay(dpy))/2,
 		   HeightOfScreen(DefaultScreenOfDisplay(dpy))/2);
