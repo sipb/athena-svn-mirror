@@ -17,13 +17,14 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.2 1997-10-30 23:58:54 ghudson Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.3 1997-11-13 22:11:29 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <hesiod.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -49,6 +50,7 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
 static void free_hesgroups(struct hesgroup *hesgroups, int ngroups);
 static gid_t *retrieve_local_gids(int *nlocal);
 static int in_local_gids(gid_t *local, int nlocal, gid_t gid);
+static int parse_to_gid(char *s, char **p, gid_t *gid);
 static FILE *lock_group(int *fd);
 static int update_group(FILE *fp, int fd);
 static void discard_group_lockfile(FILE *fp, int fd);
@@ -56,15 +58,14 @@ static void discard_group_lockfile(FILE *fp, int fd);
 int al__add_to_group(const char *username, struct al_record *record)
 {
   FILE *in, *out;
-  char *line;
-  int len = strlen(username);
-  int linesize = 0, nentries, i, ngroups, have_primary, lockfd;
-  const char *p, *q;
-  gid_t gid, primary_gid;
+  char *line, *p;
+  int len = strlen(username), linesize = 0, nentries, i, nhesgroups;
+  int have_primary, lockfd, status, ngroups;
+  gid_t gid, primary_gid, *groups;
   struct hesgroup *hesgroups;
 
   /* Retrieve the hesiod groups. */
-  hesgroups = retrieve_hesgroups(username, &ngroups, &have_primary,
+  hesgroups = retrieve_hesgroups(username, &nhesgroups, &have_primary,
 				 &primary_gid);
   if (!hesgroups)
     return AL_WGROUP;
@@ -73,42 +74,34 @@ int al__add_to_group(const char *username, struct al_record *record)
   out = lock_group(&lockfd);
   if (!out)
     {
-      free_hesgroups(hesgroups, ngroups);
+      free_hesgroups(hesgroups, nhesgroups);
       return AL_WGROUP;
     }
   in = fopen(PATH_GROUP, "r");
   if (!in)
     {
-      free_hesgroups(hesgroups, ngroups);
+      free_hesgroups(hesgroups, nhesgroups);
       discard_group_lockfile(out, lockfd);
       return AL_WGROUP;
     }
 
   /* Set up the groups array in the session record. */
-  record->groups = malloc(ngroups * sizeof(gid_t));
-  if (!record->groups)
+  groups = malloc(nhesgroups * sizeof(gid_t));
+  if (!groups)
     {
-      free_hesgroups(hesgroups, ngroups);
+      free_hesgroups(hesgroups, nhesgroups);
       discard_group_lockfile(out, lockfd);
       fclose(in);
       return AL_ENOMEM;
     }
-  record->ngroups = 0;
+  ngroups = 0;
 
   /* Count the number of groups the user already belongs to. */
   nentries = 0;
-  while (al__read_line(in, &line, &linesize) == 0)
+  while ((status = al__read_line(in, &line, &linesize)) == 0)
     {
       /* Skip the group name, group password, and gid; record the gid. */
-      p = strchr(line, ':');
-      if (!p)
-	continue;
-      p = strchr(p + 1, ':');
-      if (!p)
-	continue;
-      gid = atoi(p + 1);
-      p = strchr(p + 1, ':');
-      if (!p)
+      if (parse_to_gid(line, &p, &gid) != 0)
 	continue;
 
       /* Don't include the primary gid in the count. */
@@ -119,7 +112,7 @@ int al__add_to_group(const char *username, struct al_record *record)
       while (p)
 	{
 	  p++;
-	  if (memcmp(p, username, len) == 0
+	  if (strncmp(p, username, len) == 0
 	      && (*(p + len) == ',' || *(p + len) == 0))
 	    {
 	      nentries++;
@@ -128,39 +121,39 @@ int al__add_to_group(const char *username, struct al_record *record)
 	  p = strchr(p, ',');
 	}
     }
+  if (status == -1)
+    {
+      free(groups);
+      free_hesgroups(hesgroups, nhesgroups);
+      discard_group_lockfile(out, lockfd);
+      fclose(in);
+      return AL_ENOMEM;
+    }
 
   /* Copy in to out, adding the user to groups as we go.  We choose to skip
    * malformed group lines because it's a little easier; you could justify
    * either skipping or preserving them.  Hopefully we won't find any. */
   rewind(in);
-  while (al__read_line(in, &line, &linesize) == 0)
+  while ((status = al__read_line(in, &line, &linesize)) == 0)
     {
-      /* Skip over the group name, group password, and gid; record the gid. */
-      p = strchr(line, ':');
-      if (!p)
-	continue;
-      p = strchr(p + 1, ':');
-      if (!p)
-	continue;
-      gid = atoi(p + 1);
-      p = strchr(p + 1, ':');
-      if (!p)
+      /* Skip the group name, group password, and gid; record the gid. */
+      if (parse_to_gid(line, &p, &gid) != 0)
 	continue;
 
       /* Write out the output line, without a newline for now. */
       fputs(line, out);
 
       /* Check if Hesiod has the user in this group. */
-      for (i = 0; i < ngroups; i++)
+      for (i = 0; i < nhesgroups; i++)
 	{
 	  if (hesgroups[i].gid == gid)
 	    break;
 	}
-      if (i < ngroups)
+      if (i < nhesgroups)
 	{
 	  /* Just for safety, if we've seen this group entry before, don't
 	   * do anything with it.  Otherwise we might overflow
-	   * record->groups on a bad group file. */
+	   * groups on a bad group file. */
 	  if (hesgroups[i].present)
 	    {
 	      putc('\n', out);
@@ -174,7 +167,7 @@ int al__add_to_group(const char *username, struct al_record *record)
 	  while (p)
 	    {
 	      p++;
-	      if (memcmp(p, username, len) == 0
+	      if (strncmp(p, username, len) == 0
 		  && (*(p + len) == ',' || *(p + len) == 0))
 		break;
 	      p = strchr(p, ',');
@@ -194,28 +187,35 @@ int al__add_to_group(const char *username, struct al_record *record)
 	      fputs(username, out);
 	      if (!have_primary || gid != primary_gid)
 		nentries++;
-	      record->groups[record->ngroups] = gid;
-	      record->ngroups++;
+	      groups[ngroups++] = gid;
 	    }
 	}
 
       /* finish up the output line. */
       putc('\n', out);
     }
+  if (status == -1)
+    {
+      free(groups);
+      free_hesgroups(hesgroups, nhesgroups);
+      discard_group_lockfile(out, lockfd);
+      fclose(in);
+      return AL_ENOMEM;
+    }
 
   /* Write out group lines which had no listings before. */
-  for (i = 0; i < ngroups; i++)
+  for (i = 0; i < nhesgroups; i++)
     {
       gid = hesgroups[i].gid;
       if (hesgroups[i].present)
 	continue;
       if (nentries < MAX_GROUPS || (have_primary && gid == primary_gid))
 	{
-	  fprintf(out, "%s:*:%d:%s\n", hesgroups[i].name, gid, username);
+	  fprintf(out, "%s:*:%lu:%s\n", hesgroups[i].name,
+		  (unsigned long) gid, username);
 	  if (!have_primary || gid != primary_gid)
 	    nentries++;
-	  record->groups[record->ngroups] = gid;
-	  record->ngroups++;
+	  groups[ngroups++] = gid;
 	}
     }
 
@@ -223,10 +223,17 @@ int al__add_to_group(const char *username, struct al_record *record)
   fclose(in);
   if (linesize)
     free(line);
-  free_hesgroups(hesgroups, ngroups);
-  if (update_group(out, lockfd) < 0)
-    return AL_WGROUP;
+  free_hesgroups(hesgroups, nhesgroups);
 
+  /* Update the group file from what we wrote out. */
+  if (update_group(out, lockfd) < 0)
+    {
+      free(groups);
+      return AL_WGROUP;
+    }
+
+  record->groups = groups;
+  record->ngroups = ngroups;
   return AL_SUCCESS;
 }
 
@@ -234,7 +241,7 @@ int al__remove_from_group(const char *username, struct al_record *record)
 {
   FILE *in, *out;
   char *line, *p;
-  int i, lockfd, linesize = 0, nlocal, len = strlen(username);
+  int i, lockfd, linesize = 0, nlocal, status, len = strlen(username);
   gid_t gid, *local;
 
   local = retrieve_local_gids(&nlocal);
@@ -256,18 +263,10 @@ int al__remove_from_group(const char *username, struct al_record *record)
     }
 
   /* Copy in to out, eliminating the user from groups in record->groups. */
-  while (al__read_line(in, &line, &linesize) == 0)
+  while ((status = al__read_line(in, &line, &linesize)) == 0)
     {
       /* Skip the group name, group password, and gid; record the gid. */
-      p = strchr(line, ':');
-      if (!p)
-	continue;
-      p = strchr(p + 1, ':');
-      if (!p)
-	continue;
-      gid = atoi(p + 1);
-      p = strchr(p + 1, ':');
-      if (!p)
+      if (parse_to_gid(line, &p, &gid) != 0)
 	continue;
 
       for (i = 0; i < record->ngroups; i++)
@@ -281,7 +280,7 @@ int al__remove_from_group(const char *username, struct al_record *record)
 	  while (p)
 	    {
 	      p++;
-	      if (memcmp(p, username, len) == 0
+	      if (strncmp(p, username, len) == 0
 		  && (*(p + len) == ',' || *(p + len) == 0))
 		{
 		  /* Found it; now remove it. */
@@ -294,8 +293,8 @@ int al__remove_from_group(const char *username, struct al_record *record)
 	    }
 	}
 
-      /* Write out the edited line, unless it's an empty group not in the
-       * local gid list. */
+      /* If the edited line has a non-empty user list or is in the local
+       * gid list, write it out. */
       if (line[strlen(line) - 1] != ':' || in_local_gids(local, nlocal, gid))
 	{
 	  fputs(line, out);
@@ -309,16 +308,22 @@ int al__remove_from_group(const char *username, struct al_record *record)
   if (local)
     free(local);
 
+  if (status == -1)
+    {
+      discard_group_lockfile(out, lockfd);
+      return AL_ENOMEM;
+    }
+
   if (update_group(out, lockfd) < 0)
     return AL_EPERM;
+  return AL_SUCCESS;
 }
 
 static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
 					   int *have_primary,
 					   gid_t *primary_gid)
 {
-  char **grplistvec, **primarygidvec, buf[64];
-  const char *p, *q;
+  char **grplistvec, **primarygidvec, buf[64], *p, *q;
   int n, len;
   struct hesgroup *hesgroups;
   struct passwd *pwd;
@@ -331,6 +336,8 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
   grplistvec = hesiod_resolve(hescontext, username, "grplist");
   if (!grplistvec || !*grplistvec)
     {
+      if (grplistvec)
+	hesiod_free_list(hescontext, grplistvec);
       hesiod_end(hescontext);
       return NULL;
     }
@@ -367,16 +374,19 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
 	{
 	  p = strchr(*primarygidvec, ':');
 	  len = (p) ? p - *primarygidvec : strlen(*primarygidvec);
-	  hesgroups[n].name = malloc(len + 1);
-	  if (hesgroups[n].name)
+	  if (len > 0)
 	    {
-	      memcpy(hesgroups[n].name, *primarygidvec, len);
-	      hesgroups[n].name[len] = 0;
-	      hesgroups[n].gid = pwd->pw_gid;
-	      hesgroups[n].present = 0;
-	      n++;
-	      *have_primary = 1;
-	      *primary_gid = pwd->pw_gid;
+	      hesgroups[n].name = malloc(len + 1);
+	      if (hesgroups[n].name)
+		{
+		  memcpy(hesgroups[n].name, *primarygidvec, len);
+		  hesgroups[n].name[len] = 0;
+		  hesgroups[n].gid = pwd->pw_gid;
+		  hesgroups[n].present = 0;
+		  n++;
+		  *have_primary = 1;
+		  *primary_gid = pwd->pw_gid;
+		}
 	    }
 	}
       if (primarygidvec)
@@ -388,9 +398,12 @@ static struct hesgroup *retrieve_hesgroups(const char *username, int *ngroups,
   p = *grplistvec;
   while (p)
     {
+      /* Find the end of the group name.  Stop if we hit the end, if we
+       * have a zero-length group name, or if we have a non-numeric gid. */
       q = strchr(p, ':');
-      if (!q || !*(q + 1))
+      if (!q || q == p || !isdigit(*(q + 1)))
 	break;
+
       hesgroups[n].name = malloc(q - p + 1);
       if (!hesgroups[n].name)
 	{
@@ -428,10 +441,9 @@ static void free_hesgroups(struct hesgroup *hesgroups, int ngroups)
 static gid_t *retrieve_local_gids(int *nlocal)
 {
   FILE *fp;
-  char *line;
-  int linesize = 0, lines, n;
-  gid_t *gids;
-  const char *p;
+  char *line, *p;
+  int linesize = 0, lines, n, status;
+  gid_t *gids, gid;
 
   /* Open the local group file.  If it doesn't exist, we have no local
    * gid list. */
@@ -447,39 +459,34 @@ static gid_t *retrieve_local_gids(int *nlocal)
   if (!gids)
     {
       fclose(fp);
+      if (linesize)
+	free(line);
       return NULL;
     }
 
   /* Make another pass over the file reading gids. */
   rewind(fp);
   n = 0;
-  while (al__read_line(fp, &line, &linesize) == 0)
+  while ((status = al__read_line(fp, &line, &linesize)) == 0)
     {
-      /* Paranoia: don't exceed the amount of allocated memory if
-       * group.local increases in size since the first pass.  In that
-       * case, return NULL ("be conservative"), since we wouldn't get
-       * a complete list if we just broke out and returned. */
+      /* Avoid overrunning the bounds of the array. */
       if (n >= lines)
-	{
-	  free(line);
-	  free(gids);
-	  fclose(fp);
-	  return NULL;
-	}
+	break;
 
-      /* Find and record the gid. */
-      p = strchr(line, ':');
-      if (!p)
-	continue;
-      p = strchr(p + 1, ':');
-      if (!p)
-	continue;
-      gids[n++] = atoi(p + 1);
+      /* Retrieve and store the gid. */
+      if (parse_to_gid(line, &p, &gid) == 0)
+	gids[n++] = gid;
     }
 
   fclose(fp);
   if (linesize)
     free(line);
+
+  if (status != 1)
+    {
+      free(gids);
+      return NULL;
+    }
   *nlocal = n;
   return gids;
 }
@@ -499,6 +506,34 @@ static int in_local_gids(gid_t *local, int nlocal, gid_t gid)
 	return 1;
     }
 
+  return 0;
+}
+
+/* Given a group line in s, record the gid in *gid and put a pointer to
+ * the colon after the gid field into *p.  Return 0 on success, -1 on
+ * failure. */
+static int parse_to_gid(char *s, char **p, gid_t *gid)
+{
+  /* The format of the group line is:
+   *   groupname:grouppassword:groupgid:username,username,...
+   * Skip to the gid field. */
+  s = strchr(s, ':');
+  if (!s)
+    return -1;
+  s = strchr(s + 1, ':');
+  if (!s)
+    return -1;
+
+  /* Advance one character and store the numeric value into *gid. */
+  s++;
+  *gid = atoi(s);
+
+  /* Now advance to the next colon, makig sure that everything is a digit. */
+  while (isdigit(*s))
+    s++;
+  if (*s != ':')
+    return -1;
+  *p = s;
   return 0;
 }
 
@@ -533,9 +568,13 @@ static int update_group(FILE *fp, int fd)
   struct flock fl;
   int status;
 
-  /* Move the group temp file into place. */
-  fclose(fp);
-  status = rename(PATH_GROUP_TMP, PATH_GROUP);
+  /* Close fp, checking for errors.  If everything is okay, move the temp
+   * file into place. */
+  status = ferror(fp);
+  if (fclose(fp) == 0 && !status)
+    status = rename(PATH_GROUP_TMP, PATH_GROUP);
+  else
+    status = -1;
 
   /* Unlock and close the group lock file. */
   fl.l_type = F_UNLCK;
@@ -544,7 +583,7 @@ static int update_group(FILE *fp, int fd)
   fl.l_len = 0;
   fcntl(fd, F_SETLKW, &fl);
   close(fd);
-  return (status < 0) ? AL_WGROUP : AL_SUCCESS;
+  return (status == -1) ? AL_WGROUP : AL_SUCCESS;
 }
 
 static void discard_group_lockfile(FILE *fp, int fd)
