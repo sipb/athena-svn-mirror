@@ -76,6 +76,8 @@
 		       value="LDIF f&#225;jlok import&#225;l&#225;sa az Evolutionbe."/>
 	<oaf_attribute name="description-it" type="string"
 		       value="Importa file LDIF in Evolution."/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="LDIF&#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lv" type="string"
 		       value="Import&#231; LDIF failus Evolution."/>
 	<oaf_attribute name="description-nl" type="string"

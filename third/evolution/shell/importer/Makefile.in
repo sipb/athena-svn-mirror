@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -441,30 +443,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-evolution-importer-client.lo evolution-importer-client.o : \
-	evolution-importer-client.c ../../config.h \
-	evolution-importer-client.h evolution-importer.h \
-	GNOME_Evolution_Importer.h evolution-importer-listener.h \
-	GNOME_Evolution_Importer.h
-evolution-importer-listener.lo evolution-importer-listener.o : \
-	evolution-importer-listener.c ../../config.h \
-	evolution-importer-listener.h GNOME_Evolution_Importer.h \
-	evolution-importer.h GNOME_Evolution_Importer.h
-evolution-importer.lo evolution-importer.o : evolution-importer.c \
-	../../config.h evolution-importer.h GNOME_Evolution_Importer.h \
-	GNOME_Evolution_Importer.h
-evolution-intelligent-importer.lo evolution-intelligent-importer.o : \
-	evolution-intelligent-importer.c ../../config.h \
-	evolution-intelligent-importer.h GNOME_Evolution_Importer.h \
-	GNOME_Evolution_Importer.h
-GNOME_Evolution_Importer-common.lo GNOME_Evolution_Importer-common.o : \
-	GNOME_Evolution_Importer-common.c GNOME_Evolution_Importer.h
-GNOME_Evolution_Importer-skels.lo GNOME_Evolution_Importer-skels.o : \
-	GNOME_Evolution_Importer-skels.c GNOME_Evolution_Importer.h
-GNOME_Evolution_Importer-stubs.lo GNOME_Evolution_Importer-stubs.o : \
-	GNOME_Evolution_Importer-stubs.c GNOME_Evolution_Importer.h
-intelligent.lo intelligent.o : intelligent.c ../../config.h \
-	intelligent.h GNOME_Evolution_Importer.h
 
 info-am:
 info: info-am

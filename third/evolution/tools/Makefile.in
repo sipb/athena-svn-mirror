@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -444,39 +446,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-evolution-addressbook-abuse.o: evolution-addressbook-abuse.c ../config.h \
-	../addressbook/backend/ebook/e-book-util.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
-evolution-addressbook-export.o: evolution-addressbook-export.c \
-	../config.h ../addressbook/backend/ebook/e-book-util.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
-evolution-addressbook-import.o: evolution-addressbook-import.c \
-	../config.h ../addressbook/backend/ebook/e-book-util.h \
-	../addressbook/backend/ebook/e-book.h \
-	../addressbook/backend/ebook/e-card.h \
-	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
-	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
-	../addressbook/backend/ebook/e-card-cursor.h \
-	../addressbook/backend/ebook/addressbook.h \
-	../addressbook/backend/ebook/e-book-view.h \
-	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
 
 info-am:
 info: info-am

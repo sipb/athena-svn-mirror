@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -394,18 +396,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-icalendar-importer.o: icalendar-importer.c \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h ../../config.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	../../shell/importer/evolution-importer.h \
-	../../shell/importer/GNOME_Evolution_Importer.h \
-	evolution-calendar-importer.h
-main.o: main.c ../../config.h evolution-calendar-importer.h
 
 info-am:
 info: info-am

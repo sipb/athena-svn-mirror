@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -433,16 +435,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-cal-component.lo cal-component.o : cal-component.c ../../config.h \
-	cal-component.h ../../libical/src/libical/ical.h timeutil.h
-cal-recur.lo cal-recur.o : cal-recur.c ../../config.h cal-recur.h \
-	cal-component.h ../../libical/src/libical/ical.h timeutil.h
-cal-util.lo cal-util.o : cal-util.c ../../config.h cal-util.h \
-	../../libical/src/libical/ical.h cal-component.h cal-recur.h
-test-recur.o: test-recur.c ../../config.h cal-recur.h cal-component.h \
-	../../libical/src/libical/ical.h
-timeutil.lo timeutil.o : timeutil.c ../../libical/src/libical/ical.h \
-	../../config.h timeutil.h
 
 info-am:
 info: info-am

@@ -96,6 +96,8 @@
 		       value="Importa i file VCard in Evolution."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; VCard &#165;&#213;&#165;&#161;&#165;&#164;&#165;&#235;&#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="VCard &#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Importuoja VCard bylas &#225; Evolution."/>
 	<oaf_attribute name="description-lv" type="string"

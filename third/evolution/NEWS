@@ -1,4 +1,100 @@
-Evolution 1.0.3, 19-03-2002
+Evolution 1.0.5, 05-06-2002
+---------------------------
+
+Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Mailer
+
+    #24140 -- Crash when downloading a message with invalid header.
+              (Jeff)
+
+    #17174 -- Mail spools appear to be unread forever.  (Michael)
+
+  * Shell
+
+    #23538 -- Intermittent bug when moving folders around.  (Michael)
+
+Other fixes:
+
+  * Calendar
+
+    - Make reminders work with remote backends.  (Rodrigo)
+
+  * Misc
+
+    - Added support for adding an Evolution icon to the CDE
+      Application Manager.  (Ettore)
+
+Updated translations:
+
+  - bg (Borislav Aleksandrov)
+  - pl (GNOME PL Team)
+
+
+Evolution 1.0.4, 04-18-2002
+---------------------------
+
+Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+
+    #22965 -- Comply with RFC 2739 for calCalURI and calFBURL.  (Toshok)
+
+  * Calendar
+
+    #22624 -- Unable to accept meeting request that doesn't list user
+              as attendee.  (JP)
+
+  * Startup Wizard
+
+    #22047 -- Crash after closing the start-up wizard.  (Ettore)
+
+  * Mailer
+
+     #8214 -- "Error Synchronizing Folder" on incoming mail spool.
+              (Michael)
+    #18929 -- If we get multiple Content-Type header values, change
+              subsequent headers to X-Invalid-Content-Type so it doesn't 
+              wreck processing.  (Michael)
+    #22363 -- Problems resyncing IMAP folders when going Online.  (Jeff)
+    #21716 -- Fixes to decoding illegally rfc2047 encoded words.  (Michael)
+    #22657 -- Fixes printing for some localizations (Radek)
+    
+
+Other fixes:
+
+  * Calendar
+
+    - Use default tasks folder in calendar view.  (Rodrigo)
+    - Added getQuery method to CalBackend to allow custom queries for
+      each calendar backend.  (Rodrigo)
+
+  * Mailer
+
+    - Fixed Daylight-Savings-Time calculations on systems that use 
+      tm.tm_gmtoff rather than 'timezone' (affects BSD systems).  (Jeff)
+    - Fixed the annoying EINPROGRESS error dialogs when connecting 
+      to IMAP/SMTP/POP via SSL.  (Jeff)
+    - Changed the date format used in From-lines in mbox spools to be 
+      the same as those used by Pine to fix interoperability issues.
+      (Michael)
+    - Fixed some filtertypes.xml typos.  (Michael)
+
+  * Summary
+
+    - Change the dot.kde.org url.
+
+Updated translations:
+
+  - fi (Sami Pesonen)
+  - fr (Christophe Merlet, Frederic Riss)
+  - ko (Young-Ho Cha)
+  - nl (Tino Meinen)
+  - no (Kjartan Maraas)
+  - pt_BR (Gustavo Maciel Dias Vieira)
+
+
+Evolution 1.0.3, 03-19-2002
 ---------------------------
 
 Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):

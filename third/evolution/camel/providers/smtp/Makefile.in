@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -405,44 +407,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-camel-smtp-provider.lo camel-smtp-provider.o : camel-smtp-provider.c \
-	../../../config.h camel-smtp-transport.h \
-	../../../camel/camel-transport.h ../../../camel/camel-service.h \
-	../../../camel/camel-object.h ../../../camel/camel-types.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../camel/camel-session.h \
-	../../../e-util/e-msgport.h ../../../camel/camel-sasl.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def
-camel-smtp-transport.lo camel-smtp-transport.o : camel-smtp-transport.c \
-	../../../config.h ../../../camel/camel-mime-filter-crlf.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-object.h ../../../camel/camel-types.h \
-	../../../camel/camel-mime-filter-linewrap.h \
-	../../../camel/camel-stream-filter.h \
-	../../../camel/camel-stream.h camel-smtp-transport.h \
-	../../../camel/camel-transport.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h \
-	../../../camel/camel-mime-message.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
-	../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-internet-address.h \
-	../../../camel/camel-address.h \
-	../../../camel/camel-mime-filter-bestenc.h \
-	../../../camel/camel-charset-map.h \
-	../../../camel/camel-multipart.h \
-	../../../camel/camel-stream-buffer.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-tcp-stream.h \
-	../../../camel/camel-tcp-stream-raw.h \
-	../../../camel/camel-tcp-stream-ssl.h \
-	../../../camel/camel-session.h ../../../e-util/e-msgport.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	../../../camel/camel-sasl.h ../../../camel/string-utils.h
 
 info-am:
 info: info-am

@@ -1,3 +1,28 @@
+2002-05-06  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-nognome.in: No bin part in GNOME_PATH.
+
+2002-04-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-nognome.in: New script to run Evolution under a
+	non-GNOME session when using a non-default GNOME prefix and a
+	non-default Evolution prefix.
+
+2002-04-22  Not Zed  <NotZed@Ximian.com>
+
+	* evolution-storage.c (evolution_storage_update_folder,
+	evolution_storage_removed_folder): We are successful when ev.major
+	== CORBA_NO_EXCEPTION, not the other way around.  For 'the shell
+	code is solid' #23538.
+
+2002-04-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #22047, Crash after running the start-up wizard.]
+
+	* e-shell-startup-wizard.c (startup_wizard_cancel): Unref the
+	ETimezoneDialog.
+	(finish_func): Likewise.
+
 2002-03-04  Ettore Perazzoli  <ettore@ximian.com>
 
 	[Fix #20234, Deleting Folder gratuitiously causes /local to open.]

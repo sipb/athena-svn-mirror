@@ -30,6 +30,7 @@
 #include "evolution-calendar.h"
 #include "cal-common.h"
 #include "cal.h"
+#include "query.h"
 
 BEGIN_GNOME_DECLS
 

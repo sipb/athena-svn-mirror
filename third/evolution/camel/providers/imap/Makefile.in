@@ -81,6 +81,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -104,6 +105,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -408,178 +410,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-camel-imap-command.lo camel-imap-command.o : camel-imap-command.c \
-	../../../config.h camel-imap-command.h camel-imap-types.h \
-	../../../camel/camel-types.h camel-imap-utils.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-object.h ../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	camel-imap-folder.h ../../../camel/camel-disco-folder.h \
-	../../../camel/camel-folder.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	camel-imap-store.h ../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../e-util/e-msgport.h \
-	camel-imap-private.h ../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def
-camel-imap-folder.lo camel-imap-folder.o : camel-imap-folder.c \
-	../../../config.h ../../../e-util/e-path.h camel-imap-folder.h \
-	camel-imap-types.h ../../../camel/camel-types.h \
-	../../../camel/camel-disco-folder.h \
-	../../../camel/camel-folder.h ../../../camel/camel-object.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	camel-imap-command.h camel-imap-message-cache.h \
-	camel-imap-private.h ../../../e-util/e-msgport.h \
-	camel-imap-search.h camel-imap-store.h \
-	../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h camel-imap-summary.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def camel-imap-utils.h \
-	camel-imap-wrapper.h ../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-disco-diary.h \
-	../../../camel/camel-mime-filter-crlf.h \
-	../../../camel/camel-mime-filter-from.h \
-	../../../camel/camel-mime-message.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
-	../../../camel/camel-internet-address.h \
-	../../../camel/camel-address.h \
-	../../../camel/camel-mime-filter-bestenc.h \
-	../../../camel/camel-charset-map.h \
-	../../../camel/camel-multipart.h ../../../camel/camel-session.h \
-	../../../camel/camel-stream-buffer.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-stream-filter.h \
-	../../../camel/camel-stream-mem.h ../../../camel/string-utils.h
-camel-imap-message-cache.lo camel-imap-message-cache.o : \
-	camel-imap-message-cache.c ../../../config.h \
-	camel-imap-message-cache.h camel-imap-types.h \
-	../../../camel/camel-types.h ../../../camel/camel-folder.h \
-	../../../camel/camel-object.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	../../../camel/camel-stream-fs.h \
-	../../../camel/camel-seekable-stream.h
-camel-imap-provider.lo camel-imap-provider.o : camel-imap-provider.c \
-	../../../config.h camel-imap-store.h camel-imap-types.h \
-	../../../camel/camel-types.h ../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-object.h \
-	../../../camel/camel-service.h ../../../camel/camel-url.h \
-	../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../e-util/e-msgport.h \
-	../../../camel/camel-session.h ../../../camel/camel-sasl.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def
-camel-imap-search.lo camel-imap-search.o : camel-imap-search.c \
-	../../../config.h camel-imap-command.h camel-imap-types.h \
-	../../../camel/camel-types.h camel-imap-folder.h \
-	../../../camel/camel-disco-folder.h \
-	../../../camel/camel-folder.h ../../../camel/camel-object.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	camel-imap-store.h ../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../e-util/e-msgport.h \
-	camel-imap-search.h camel-imap-private.h camel-imap-utils.h
-camel-imap-store.lo camel-imap-store.o : camel-imap-store.c \
-	../../../config.h ../../../e-util/e-path.h camel-imap-store.h \
-	camel-imap-types.h ../../../camel/camel-types.h \
-	../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-object.h \
-	../../../camel/camel-service.h ../../../camel/camel-url.h \
-	../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../e-util/e-msgport.h \
-	camel-imap-folder.h ../../../camel/camel-disco-folder.h \
-	../../../camel/camel-folder.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	camel-imap-utils.h camel-imap-command.h camel-imap-summary.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	camel-imap-message-cache.h ../../../camel/camel-disco-diary.h \
-	../../../camel/camel-file-utils.h \
-	../../../camel/camel-session.h \
-	../../../camel/camel-stream-buffer.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-stream-fs.h ../../../camel/camel-sasl.h \
-	../../../camel/string-utils.h camel-imap-private.h \
-	../../../camel/camel-private.h
-camel-imap-summary.lo camel-imap-summary.o : camel-imap-summary.c \
-	camel-imap-summary.h camel-imap-types.h \
-	../../../camel/camel-types.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-object.h ../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	../../../camel/camel-file-utils.h
-camel-imap-utils.lo camel-imap-utils.o : camel-imap-utils.c \
-	camel-imap-utils.h ../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-object.h ../../../camel/camel-types.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	camel-imap-types.h camel-imap-summary.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def camel-imap-store.h \
-	../../../camel/camel-disco-store.h \
-	../../../camel/camel-remote-store.h \
-	../../../camel/camel-store.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h ../../../camel/camel-folder.h
-camel-imap-wrapper.lo camel-imap-wrapper.o : camel-imap-wrapper.c \
-	../../../config.h camel-imap-folder.h camel-imap-types.h \
-	../../../camel/camel-types.h \
-	../../../camel/camel-disco-folder.h \
-	../../../camel/camel-folder.h ../../../camel/camel-object.h \
-	../../../camel/camel-folder-summary.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h ../../../libibex/ibex.h \
-	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
-	camel-imap-wrapper.h ../../../camel/camel-data-wrapper.h \
-	camel-imap-private.h ../../../e-util/e-msgport.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def \
-	../../../camel/camel-stream-filter.h \
-	../../../camel/camel-mime-filter-basic.h \
-	../../../camel/camel-mime-filter-crlf.h \
-	../../../camel/camel-mime-filter-charset.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h
 
 info-am:
 info: info-am

@@ -84,6 +84,7 @@ DATADIRNAME = @DATADIRNAME@
 DB3_CFLAGS = @DB3_CFLAGS@
 DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
+DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EXEEXT = @EXEEXT@
@@ -107,6 +108,7 @@ GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PREFIX = @GNOME_PREFIX@
 GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
 GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
@@ -429,35 +431,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-bonobo-widget.o: e-bonobo-widget.c ../../config.h e-bonobo-widget.h
-e-calendar-item.o: e-calendar-item.c ../../config.h e-calendar-item.h
-e-calendar.o: e-calendar.c ../../config.h e-calendar.h e-calendar-item.h
-e-cell-date-edit.o: e-cell-date-edit.c ../../config.h e-cell-date-edit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-cell-percent.o: e-cell-percent.c ../../config.h e-cell-percent.h
-e-charset-picker.o: e-charset-picker.c ../../config.h e-charset-picker.h
-e-clipped-label.o: e-clipped-label.c ../../config.h e-clipped-label.h
-e-dateedit.o: e-dateedit.c ../../config.h e-dateedit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-dropdown-button.o: e-dropdown-button.c ../../config.h \
-	e-dropdown-button.h
-e-filter-bar.o: e-filter-bar.c ../../config.h e-dropdown-button.h \
-	e-filter-bar.h e-search-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h \
-	../../filter/rule-editor.h
-e-map.o: e-map.c ../../config.h e-map.h
-e-messagebox.o: e-messagebox.c ../../config.h e-messagebox.h
-e-search-bar.o: e-search-bar.c ../../config.h e-search-bar.h \
-	e-dropdown-button.h
-e-title-bar.o: e-title-bar.c ../../config.h e-clipped-label.h \
-	e-title-bar.h
-test-calendar.o: test-calendar.c ../../config.h e-calendar.h \
-	e-calendar-item.h
-test-dateedit.o: test-dateedit.c ../../config.h e-dateedit.h
-test-dropdown-button.o: test-dropdown-button.c ../../config.h \
-	e-dropdown-button.h
-test-title-bar.o: test-title-bar.c ../../config.h e-title-bar.h
 
 info-am:
 info: info-am
