@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.53 1992-07-20 10:38:36 miki Exp $
+ * $Id: login.c,v 1.54 1992-07-31 17:49:30 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.53 1992-07-20 10:38:36 miki Exp $";
+static char *rcsid = "$Id: login.c,v 1.54 1992-07-31 17:49:30 epeisach Exp $";
 #endif
 
 /*
@@ -469,7 +469,7 @@ main(argc, argv)
 	    strncat(tkfile, rindex(ttyn, '/')+1,
 		    sizeof(tkfile) - strlen(tkfile));
 	    (void) unlink (tkfile);
-	    setenv(KRB_ENVIRON, tkfile);
+	    setenv(KRB_ENVIRON, tkfile, 1);
 	    
 	    setpriority(PRIO_PROCESS, 0, -4);
 	    pp = getlongpass("Password:");
@@ -856,7 +856,7 @@ leavethis:
 	strncpy(term, stypeof(tty), sizeof(term));
     setenv("TERM", term, 0);
     setenv("USER", pwd->pw_name, 1);
-    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 0);
+    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
 #if defined(ultrix) && defined(mips)
     setenv("hosttype", "decmips", 1);
 #endif
