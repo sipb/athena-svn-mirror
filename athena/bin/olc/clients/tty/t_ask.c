@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.16 1991-04-08 14:53:27 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.17 1991-10-31 14:55:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.16 1991-04-08 14:53:27 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.17 1991-10-31 14:55:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -50,7 +50,7 @@ t_ask(Request,topic,q_file)
   
   instance = Request->requester.instance;
   set_option(Request->options,VERIFY);
-  status = OAsk(Request,topic,NULL);
+  status = OAsk_buffer(Request,topic,NULL);
   unset_option(Request->options, VERIFY);
 
   switch(status)
@@ -161,11 +161,11 @@ t_ask(Request,topic,q_file)
 	  exit(1);
 	return(SUCCESS);
       }
-    status = OAsk(Request,topic,file);
+    status = OAsk_file(Request,topic,file);
     (void) unlink(file);
   }
   else {
-    status = OAsk(Request,topic,q_file);
+    status = OAsk_file(Request,topic,q_file);
     (void) unlink(file);
   }
 
