@@ -8,7 +8,7 @@ Toolchest*sgiMode: False
 #cosmetic resources, may be overridden by schemes
 
 *fontList:			-adobe-helvetica-bold-o-normal--14-*
-*geometry:		+10+35
+*geometry:			+10+58
 #make sure geometry resource doesn't affect tear offs
 Toolchest*TransientShell*geometry:
 toolchest*TransientShell*geometry:
