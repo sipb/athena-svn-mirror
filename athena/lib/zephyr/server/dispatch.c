@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.9 1987-07-17 09:53:54 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.10 1987-07-17 10:16:31 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -134,7 +134,8 @@ struct sockaddr_in *who;
 	register ZClientList_t *clientlist, *ptr;
 
 	if ((acl = class_get_acl(notice->z_class)) &&
-	    (!auth || !access_check(notice, acl, TRANSMIT))) {
+	    (!auth || !access_check(notice, acl, TRANSMIT) ||
+	     strcmp(notice->z_class_inst, notice->z_sender))) {
 		syslog(LOG_WARNING, "sendit unauthorized %s", notice->z_class);
 		clt_ack(notice, who, AUTH_FAILED);
 		return;
