@@ -1,11 +1,11 @@
 /*
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v $
- *	$Author: probe $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.6 1991-07-01 09:47:19 probe Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.7 1994-08-24 02:46:50 cfields Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -161,11 +161,12 @@ char **nfs_explicit(name)
     char newmntpt[BUFSIZ];
     extern char *exp_hesptr[2];
 
+    filsys_type = "NFS";
     strcpy(host, name);
     dir = index(host, ':');
     if (!dir) {
 	fprintf(stderr, "%s: Illegal explicit definition \"%s\" for type %s\n",
-		progname, name, filsys_type);
+		progname, name, filsys_type); 
 	return (0);
     }
     *dir = '\0';
@@ -175,6 +176,7 @@ char **nfs_explicit(name)
 		progname, name, filsys_type);
 	return (0);
     }
+
     if (!nfs_mount_dir)
 	    nfs_mount_dir = strdup("");
     if (!mntpt) {
