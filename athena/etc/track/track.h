@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.13 1998-02-08 22:26:59 ghudson Exp $
+ * $Id: track.h,v 4.14 1998-02-18 21:57:47 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -120,6 +120,7 @@ typedef struct Tbl {
 } Table;
 
 typedef struct entry {
+	int islink;
 	char sortkey[ LINELEN];
 	int keylen;
 	char *fromfile;

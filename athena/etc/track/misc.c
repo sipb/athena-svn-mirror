@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.4 1998-02-08 22:26:56 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.5 1998-02-18 21:57:41 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.4  1998/02/08 22:26:56  ghudson
+ *	Remove the unsupported and incomplete followlinks features.
+ *
  *	Revision 4.3  1991/02/28 11:28:42  epeisach
  *	Changes to be more portable between operating systems basing files
  *	on their type and not knowing the order in sys/stat.h of the
@@ -60,7 +63,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.4 1998-02-08 22:26:56 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.5 1998-02-18 21:57:41 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -172,6 +175,7 @@ clear_ent()
 	Entry* e = &entries[ entrycnt];
 	struct currentness *c = &e->currency;
 
+	e->islink	=	  0;
        *e->sortkey	=	'\0';
 	e->keylen	=	  0;
 	e->fromfile	= (char*) 0;

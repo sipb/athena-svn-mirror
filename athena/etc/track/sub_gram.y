@@ -56,7 +56,14 @@ header	:
 entrylist :
 	  |	entrylist entry opt_space
 	;
-entry: fromname COLON toname COLON cmpname COLON except COLON shellcmd
+entry	: ARROW opt_space fromname COLON toname COLON shellcmd
+	{
+	    savestr( &e->cmpfile, writeflag ? e->fromfile : e->tofile);
+	    e->islink = 1;
+	    entrycnt++;
+	    e = clear_ent();
+	}
+	| fromname COLON toname COLON cmpname COLON except COLON shellcmd
 	{
 	    if ( e->names.table) list2hashtable( &e->names);
 	    entrycnt++;

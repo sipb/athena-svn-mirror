@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.17 1998-02-08 22:26:58 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.18 1998-02-18 21:57:46 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.17  1998/02/08 22:26:58  ghudson
+ *	Remove the unsupported and incomplete followlinks features.
+ *
  *	Revision 4.16  1996/09/20 04:12:35  ghudson
  *	BSD -> ANSI string and memory functions
  *
@@ -163,7 +166,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.17 1998-02-08 22:26:58 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.18 1998-02-18 21:57:46 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -632,6 +635,12 @@ writestat()
 		 */
 		entry_currency = dec_entry( entnum, from, dummy, cmp, NULL);
 
+		if (entries[entnum].islink) {
+			fake_link( "", from[ NAME], entry_currency);
+			write_statline( from, entry_currency);
+			break;
+		}
+
 		/* write_statline returns fromfile's true type,
 		 * regardless of cmpfile's type:
 		 */
@@ -815,8 +824,9 @@ justshow()
 		e = &entries[ i];
 		if ( ! e->fromfile) break;
 		fprintf(stderr,
-			"entry %d:\n\tfromfile-- %s\n",
+			"entry %d:\n\tislink-- %d\tfromfile-- %s\n",
 			i,
+			e->islink,
 			e->fromfile);
 		fprintf(stderr,
 			"\tcmpfile-- %s\n\ttofile-- %s\n\tpatterns--\n",
