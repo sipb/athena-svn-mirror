@@ -1,4 +1,4 @@
-# $Id: packages,v 1.248 2003-08-25 04:13:12 ghudson Exp $
+# $Id: packages,v 1.249 2003-09-15 17:22:13 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -142,7 +142,7 @@ third/audiofile			except linux
 third/bash
 third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
-third/bonobo-activation		except linux requires gettext,glib2,ORBit2,linc,libxml2
+third/bonobo-activation		requires gettext,glib2,ORBit2,linc,libxml2
 third/bonobo-conf		requires bonobo
 third/bug-buddy			except linux requires gettext,intltool,gtk2,glib2,gnome-vfs2,libgnome,libgnomecanvas,libgnomeui,libglade2,libxml2,gnome-desktop
 third/bzip2			except linux
