@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.3 1992-04-18 19:19:57 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.0 1992-04-22 01:49:35 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  92/04/18  19:19:57  tom
+ * *** empty log message ***
+ * 
  * Revision 1.2  90/05/26  13:35:06  tom
  * release 7.0e
  * 
@@ -30,7 +33,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 1.3 1992-04-18 19:19:57 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.0 1992-04-22 01:49:35 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -86,6 +89,7 @@ parse_config(fd)
 	strcpy(afs_cellserv_file, AFS_CELLSRV_FILE);
 	strcpy(login_file,        LOGIN_FILE);
 	strcpy(version_file,      VERSION_FILE);
+	strcpy(syspack_file,      SYSPACK_FILE);
 	strcpy(srv_file,          SRV_FILE);
 	strcpy(dns_stat_file,     DNS_STAT_FILE);
 	strcpy(user,              USER);
@@ -248,6 +252,15 @@ parse_config(fd)
 			else
 		       strncpy(version_file, name, sizeof(version_file));
 	        }
+		else if (strcmp(keyword, "syspackfile") == 0) {
+		        if (sscanf(buf, "%*s %s", name) != 1) {
+			        syslog(LOG_ERR, "config syntax error, line %d",
+				               line);
+				error = TRUE;
+			}
+			else
+		       strncpy(syspack_file, name, sizeof(syspack_file));
+	        }
 		else if (strcmp(keyword, "srvfile") == 0) {
 		        if (sscanf(buf, "%*s %s", name) != 1) {
 			        syslog(LOG_ERR, "config syntax error, line %d",
@@ -392,11 +405,27 @@ add_sess(nam, saddr, flgs)
 	struct in_addr haddr;
 	int founduser = 0;
 	struct inaddrlst *adlist;
+#ifdef MIT
+	struct hostent *hp = (struct hostent *) NULL;
+	unsigned long laddr = 0;
+#endif /* MIT */
 
 	if (debuglevel > 1) {
 		(void) printf("community %s with %s, flags: %s\n", nam, saddr, flgs);
 		(void) fflush(stdout);
 	}
+
+#ifdef MIT
+	/*
+	 * Allow domain name service for community addresses.
+	 * For simplicity we'll assume that hostnames begin
+	 * with a non digit.
+	 */
+	haddr.s_addr = 0;
+	if(!isdigit(*saddr))
+	  if(hp = gethostbyname(saddr))
+	    bcopy(hp->h_addr, &(haddr.s_addr), hp->h_length);
+#endif /* MIT */
 
 	/*
 	 *  see if the community has been defined already.  If so,
@@ -413,8 +442,12 @@ add_sess(nam, saddr, flgs)
 		tmp1 = tmp1->next;
 
 	if (tmp1 != (struct snmp_session *)NULL) {  /* defined already! */
+#ifdef MIT
+	    if(!haddr.s_addr)
+#endif /* MIT */
 		if ((haddr.s_addr = inet_addr(saddr)) < (u_long)0) {
-			syslog(LOG_ERR,"add_sess: malformed address: %s",saddr);
+			syslog(LOG_ERR,"add_sess: malformed address: %s", 
+			       saddr);
 			return(GEN_ERR);
 		}
 		/*
@@ -481,6 +514,11 @@ add_sess(nam, saddr, flgs)
 		}
 		tmp->next = (struct snmp_session *)NULL;
 		(void) strcpy(tmp->name, nam);
+#ifdef MIT
+		if(haddr.s_addr)
+		      tmp->userlst->sess_addr.s_addr = haddr.s_addr;
+		else
+#endif /* MIT */	
 		if ((tmp->userlst->sess_addr.s_addr = inet_addr(saddr)) < (u_long)0) {
 			syslog(LOG_ERR,"add_sess: malformed address: %s",saddr);
 			(void) free((char *)tmp->userlst);
