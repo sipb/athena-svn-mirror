@@ -1,5 +1,5 @@
 # modified from /mit/source/athena/bin/panel-wrapper
-# $Id: Makefile.in,v 1.1 2001-07-11 18:36:58 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-07-11 18:54:14 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -18,7 +18,7 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS=@KRB5_LIBS@ @KRB4_LIBS@ @LIBS@
-ALL_CFLAGS=`gtk-config --cflags` -Wall ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_CFLAGS=`gtk-config --cflags` ${CPPFLAGS} ${CFLAGS} ${DEFS}
 ALL_LIBS=`gtk-config --libs` -lkrb524 ${LIBS}
 
 all: grenew 
