@@ -51,6 +51,9 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <sys/resource.h>
+#ifdef POSIX
+#include <sys/utsname.h>
+#endif
 #ifdef SOLARIS
 #include <sys/rusage.h>
 #endif
@@ -110,7 +113,20 @@ int nl;
    /* get the current wall clock time, mix in process id */
    gettimeofday(&tv,&tz);
    rng.seed.longwords[0] = tv.tv_sec + getpid() + (long) &tz ;
-   rng.seed.longwords[1] = tv.tv_usec + clock() + gethostid();
+   rng.seed.longwords[1] = tv.tv_usec + clock();
+#ifdef POSIX
+   {
+       struct utsname name;
+       int i, sum = 0;
+
+       (void) uname(&name);
+       for (i = 0; name.nodename[i]; i++)
+	 sum = (sum<<1) + name.nodename[i];
+       rng.seed.longwords[1] += sum;
+   }
+#else
+   rng.seed.longwords[1] += gethostid();
+#endif
 
    DES_load_key_local( &rng.key, &random_key_schedule);
    DESencrypt_local(&rng.seed, &rng.key, &random_key_schedule);
