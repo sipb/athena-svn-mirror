@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,51 +60,64 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BONOBO_ACTIVATION_IDL_DIR = @BONOBO_ACTIVATION_IDL_DIR@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
+CONFIG_ARCHIVER_INCLUDEDIR = @CONFIG_ARCHIVER_INCLUDEDIR@
+CONFIG_ARCHIVER_LIBDIR = @CONFIG_ARCHIVER_LIBDIR@
+CONFIG_ARCHIVER_LIBS = @CONFIG_ARCHIVER_LIBS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-DL_LIB = @DL_LIB@
 ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
-GDK_IMLIB_CFLAGS = @GDK_IMLIB_CFLAGS@
-GDK_IMLIB_LIBS = @GDK_IMLIB_LIBS@
-GENCAT = @GENCAT@
+GCONFTOOL = @GCONFTOOL@
+GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-IMLIB_CFLAGS = @IMLIB_CFLAGS@
-IMLIB_CONFIG = @IMLIB_CONFIG@
-IMLIB_LIBS = @IMLIB_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+GNOMECC_CAPPLETS_CFLAGS = @GNOMECC_CAPPLETS_CFLAGS@
+GNOMECC_CAPPLETS_CLEANFILES = @GNOMECC_CAPPLETS_CLEANFILES@
+GNOMECC_CAPPLETS_EXTRA_DIST = @GNOMECC_CAPPLETS_EXTRA_DIST@
+GNOMECC_CAPPLETS_LIBS = @GNOMECC_CAPPLETS_LIBS@
+GNOMECC_CFLAGS = @GNOMECC_CFLAGS@
+GNOMECC_DESKTOP_DIR = @GNOMECC_DESKTOP_DIR@
+GNOMECC_GLADE_DIR = @GNOMECC_GLADE_DIR@
+GNOMECC_ICONS_DIR = @GNOMECC_ICONS_DIR@
+GNOMECC_LIBS = @GNOMECC_LIBS@
+GNOMECC_PIXMAPS_DIR = @GNOMECC_PIXMAPS_DIR@
+GNOME_SETTINGS_DAEMON_CFLAGS = @GNOME_SETTINGS_DAEMON_CFLAGS@
+GNOME_SETTINGS_DAEMON_LIBS = @GNOME_SETTINGS_DAEMON_LIBS@
+INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
-LDFLAGS = @LDFLAGS@
-LEX = @LEX@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBBONOBO_IDL_DIR = @LIBBONOBO_IDL_DIR@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -112,102 +125,78 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
-ORB_CFLAGS = @ORB_CFLAGS@
-ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
-PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
-PIXBUF_LIBS = @PIXBUF_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+SOUND_CAPPLET_CFLAGS = @SOUND_CAPPLET_CFLAGS@
+SOUND_CAPPLET_LIBS = @SOUND_CAPPLET_LIBS@
 STRIP = @STRIP@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-VFS_CFLAGS = @VFS_CFLAGS@
-VFS_LIBS = @VFS_LIBS@
+VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
+VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
+WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
-YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
-cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
-l = @l@
 
-INCLUDES = -I. -I$(srcdir) 				\
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(srcdir)/../../control-center		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(includedir) $(GNOME_INCLUDEDIR)		\
-	-DGNOMESYSCONFDIR=\""$(sysconfdir)"\"
+bin_PROGRAMS = gnome-ui-properties
+
+gnome_ui_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS)
+gnome_ui_properties_SOURCES =  	gnome-ui-properties.c
 
 
-bin_PROGRAMS = ui-properties
+iconsdir = $(GNOMECC_ICONS_DIR)
+icons_DATA = behavior-capplet.png
 
-ui_properties_SOURCES = ui-properties.c
+desktop_iconsdir = $(datadir)/pixmaps
+desktop_icons_DATA = behavior-capplet.png
 
-ui_properties_LDADD = ../../control-center/libcapplet.la \
-		     $(GNOME_LIBDIR) $(ORB_LIBS) \
-		     $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba
-
-
-sysdir = $(datadir)/control-center/UIOptions
-sys_in_files = \
-	application.desktop.in			\
-	dialogs.desktop.in			\
-	mdi.desktop.in 
-
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
-
-directory_in_files = ui-properties.directory.in
-noinst_DATA = $(directory_in_files:.directory.in=.directory)
-
-EXTRA_DIST = $(sys_in_files) $(sys_DATA) $(directory_in_files) $(noinst_DATA)
+desktopdir = $(GNOMECC_DESKTOP_DIR)
+Desktop_in_files = behavior.desktop.in
+desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
+Gladedir = $(GNOMECC_GLADE_DIR)
+Glade_DATA = gnome-ui-properties.glade
+INCLUDES = $(GNOMECC_CAPPLETS_CFLAGS)
+CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
+EXTRA_DIST = $(Glade_DATA) $(icons_DATA) $(Desktop_in_files)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  ui-properties$(EXEEXT)
+bin_PROGRAMS =  gnome-ui-properties$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-ui_properties_OBJECTS =  ui-properties.$(OBJEXT)
-ui_properties_DEPENDENCIES =  ../../control-center/libcapplet.la
-ui_properties_LDFLAGS = 
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+gnome_ui_properties_OBJECTS =  gnome-ui-properties.$(OBJEXT)
+gnome_ui_properties_DEPENDENCIES = 
+gnome_ui_properties_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(noinst_DATA) $(sys_DATA)
+DATA =  $(Glade_DATA) $(desktop_DATA) $(desktop_icons_DATA) \
+$(icons_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
-SOURCES = $(ui_properties_SOURCES)
-OBJECTS = $(ui_properties_OBJECTS)
+SOURCES = $(gnome_ui_properties_SOURCES)
+OBJECTS = $(gnome_ui_properties_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -289,27 +278,84 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-ui-properties$(EXEEXT): $(ui_properties_OBJECTS) $(ui_properties_DEPENDENCIES)
-	@rm -f ui-properties$(EXEEXT)
-	$(LINK) $(ui_properties_LDFLAGS) $(ui_properties_OBJECTS) $(ui_properties_LDADD) $(LIBS)
+gnome-ui-properties$(EXEEXT): $(gnome_ui_properties_OBJECTS) $(gnome_ui_properties_DEPENDENCIES)
+	@rm -f gnome-ui-properties$(EXEEXT)
+	$(LINK) $(gnome_ui_properties_LDFLAGS) $(gnome_ui_properties_OBJECTS) $(gnome_ui_properties_LDADD) $(LIBS)
 
-install-sysDATA: $(sys_DATA)
+install-GladeDATA: $(Glade_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(Gladedir)
+	@list='$(Glade_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Gladedir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(Gladedir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-sysDATA:
+uninstall-GladeDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
+	list='$(Glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(Gladedir)/$$p; \
+	done
+
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
+install-desktop_iconsDATA: $(desktop_icons_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktop_iconsdir)
+	@list='$(desktop_icons_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktop_iconsdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktop_iconsdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktop_iconsdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktop_iconsdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktop_iconsDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_icons_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktop_iconsdir)/$$p; \
+	done
+
+install-iconsDATA: $(icons_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(iconsdir)
+	@list='$(icons_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(iconsdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(iconsdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(iconsdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(iconsdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-iconsDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(icons_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(iconsdir)/$$p; \
 	done
 
 tags: TAGS
@@ -330,7 +376,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -356,8 +402,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-ui-properties.o: ui-properties.c ../../config.h \
-	../../control-center/capplet-widget.h
+gnome-ui-properties.o: gnome-ui-properties.c ../../config.h \
+	../../capplets/common/capplet-util.h \
+	../../capplets/common/gconf-property-editor.h
 
 info-am:
 info: info-am
@@ -370,25 +417,31 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-sysDATA install-data-local
+install-data-am: install-GladeDATA install-desktopDATA \
+		install-desktop_iconsDATA install-iconsDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS uninstall-sysDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-GladeDATA \
+		uninstall-desktopDATA uninstall-desktop_iconsDATA \
+		uninstall-iconsDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(sysdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Gladedir) \
+		$(DESTDIR)$(desktopdir) $(DESTDIR)$(desktop_iconsdir) \
+		$(DESTDIR)$(iconsdir)
 
 
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -425,21 +478,19 @@ maintainer-clean: maintainer-clean-am
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-sysDATA \
-install-sysDATA tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-local install-data-am install-data install-am install \
+clean-libtool maintainer-clean-libtool uninstall-GladeDATA \
+install-GladeDATA uninstall-desktopDATA install-desktopDATA \
+uninstall-desktop_iconsDATA install-desktop_iconsDATA \
+uninstall-iconsDATA install-iconsDATA tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
 uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-@XML_I18N_MERGE_DESKTOP_RULE@
 
-@XML_I18N_MERGE_DIRECTORY_RULE@
-
-install-data-local:
-	$(INSTALL_DATA) $(srcdir)/ui-properties.directory $(DESTDIR)$(sysdir)/.directory
+@INTLTOOL_DESKTOP_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,0 +1,152 @@
+2002-12-19  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.3.2
+
+2002-12-19  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.3.1
+
+2002-11-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.3
+
+2002-09-24  Jody Goldber <jody@gnome.org>
+
+	* Release 2.0.2.91
+
+2002-09-09  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=76437
+	* sound-view.c (foreach_cb) : dunno why this doesn't work, but it
+	  doesn't and I'm unwilling to waste much time tracking down why.
+
+	* sound-view.c (sound_view_init) : 90936 patch from padraig
+
+2002-08-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.1.1
+
+2002-08-06  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.1
+
+2002-07-31  Federico Mena Quintero  <federico@ximian.com>
+
+	* sound-view.c (sound_view_init): Make the file entry modal.
+
+2002-06-18  jacob berkman  <jacob@ximian.com>
+
+	* sound-properties.c (sound_properties_add_defaults): don't have
+	// in the file name
+
+2002-06-17  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.0
+
+2002-05-07  Jody Goldberg <jody@gnome.org>
+
+	* sound-event.c (sound_event_free) : rename from sound_event_unref.
+	(sound_event_ref) : delete.  There is no need to ref count this.
+
+	* sound-properties.c (sound_properties_destroy) : handle multiple calls
+	(sound_properties_remove_event) : use sound_event_free.
+
+2002-04-27  Jody Goldberg <jody@gnome.org>
+
+	* sound-view.c (sound_view_destroy) : Handle multiple calls.
+
+2002-04-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* sound-view.c (sound_view_init): Mark a string for translation.
+	
+2002-03-28  jacob berkman  <jacob@ximian.com>
+
+	* sound-properties.c (signals): this should be static
+
+2002-03-27  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-properties.c (sound_properties_add_file): Filter out
+	gnome and gtk-events 1.x events, since they're duplicates.
+	(sound_properties_save): Propogate some changes to the GNOME1
+	duplicates.
+
+	* sound-view.c (compare_func): Move gnome check elsewhere.
+	(sound_view_init): set sort_func, not default_sort_func (seems
+	to make it work), and add mnemonics.
+	(foreach_cb): Don't add the subtree unless it has children.
+
+2002-03-06  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-view.c, sound-properties.c: Remove debugging g_prints.
+
+2002-03-05  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-view.c (entry_changed_cb): Remove double semicolons.
+
+2002-03-05  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-view.c: Lauris rewrote this to use TreeView.
+
+2002-02-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* sound-view.c: #include <config.h> at the top.
+	
+2002-02-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* sound-view.c (play_cb): Destroy dialog here
+
+	* sound-properties.c (sound_properties_get_type): Use new glib syntax
+	(sound_properties_new): Use g_object_new
+	(sound_properties_thaw): Use g_signal_emit
+	(sound_properties_add_directory): Use g_build_filename
+	(sound_properties_add_event): Ditto
+	(sound_properties_add_defaults): Use gnome_program_locate_file
+	(sound_properties_event_changed): Use g_signal_emit
+	(sound_properties_changed): Ditto
+	(sound_properties_remove_event): Ditto
+
+	* sound-view.c (play_cb): Use g_file_test, use gnome_program_locate_file
+	(sound_view_init): Use GNOME_STOCK_VOLUME, gnome_program_locate_file
+	(sound_view_reload): Kill warning
+
+	* sound-properties.c (sound_properties_class_init): Use g_signal_new
+
+2002-02-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* sound-view.c (compare_func): Replace deprecated method
+	(play_cb): Use gtk_message_dialog methods
+	(entry_changed_cb): Kill warning
+	(sound_view_init): Use g_signal_connect directly
+	(sound_view_new): Ditto
+	(select_row_cb): Replace deprecated methods
+
+	* sound-properties.c (strip_ext): Replace deprecated method
+	(sound_properties_add_file): Ditto
+
+2002-01-07  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-view.c (sound_properties_class_init):
+	s/gtk_marshal_NONE__OBJECT/gtk_marshal_NONE__POINTER/g
+
+	* sound-view.c (sound_view_init): Set hint on "play"
+	button to not trigger gtk+ sound event.
+
+2002-01-04  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-properties.c (sound_properties_class_init): Remove
+	call to gtk_object_class_add_signals.
+
+2001-11-18  Richard Hestilow  <hestilow@ximian.com>
+
+	* sound-properties.c (sound_properties_add_defaults): Remove
+	nonsensical precondition.
+
+	* sound-view.c (entry_changed_cb, event_changed_cb): Added.
+	(sound_view_init): Create a hash table mapping events to row data.
+	Also, mess with the clist sizing a little, and connect to the
+	changed signals on the file entry and the sound properties.
+	(foreach_cb): Insert event into hash table, and set ignore_changed
+	to TRUE while updating the file entry.
+	(sound_view_destroy): Destroy the hash table.
+
+	* README, ChangeLog: Added.

@@ -1,37 +1,22 @@
-INCLUDES = -I. -I$(srcdir) 				\
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(srcdir)/../../control-center		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(includedir) $(GNOME_INCLUDEDIR)
+bin_PROGRAMS = gnome-theme-properties
 
-bin_PROGRAMS = theme-selector-capplet
+gnome_theme_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS)
+gnome_theme_properties_SOURCES = \
+	theme-switcher.c
+gnome_theme_properties_LDFLAGS = -export-dynamic
 
-theme_selector_capplet_SOURCES = \
-        da.h		\
-	file.c		\
-	globals.c	\
-	lister.c        \
-	main.c          \
-	signals.c       \
-	demo.c          \
-	gui.c           \
-	install.c
+@INTLTOOL_DESKTOP_RULE@
 
-theme_selector_capplet_LDFLAGS = ../../control-center/libcapplet.la `imlib-config --libs`
+desktopdir = $(GNOMECC_DESKTOP_DIR)
+Desktop_in_files = gtk-theme-selector.desktop.in
+desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 
-theme_selector_capplet_LDADD = ../../control-center/libcapplet.la \
-	$(GNOME_LIBDIR) $(ORB_LIBS) \
-	$(GNOMEUI_LIBS) $(INTLLIBS) \
-	-lImlib  $(GTKXMHTML_LIBS) -lgnorba
+gladedir = $(GNOMECC_GLADE_DIR)
+glade_DATA = theme-properties.glade theme-install.glade
 
-EXTRA_DIST =					\
-	theme-selector.desktop.in		\
-	theme-selector.desktop
+INCLUDES   = \
+	$(GNOMECC_CAPPLETS_CFLAGS)	\
+	-DGLADEDIR=\""$(gladedir)"\"
 
-sysdir = $(datadir)/control-center/Desktop
-sys_in_files = theme-selector.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
-
-install-data-local:
-	$(INSTALL_DATA) $(srcdir)/theme-selector.desktop $(DESTDIR)$(datadir)/gnome/apps/Settings/Desktop/theme-selector.desktop
+CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
+EXTRA_DIST = $(Desktop_in_files) $(glade_DATA)

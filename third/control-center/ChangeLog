@@ -1,449 +1,1621 @@
-2002-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+2002-12-19  Jody Goldberg <jody@gnome.org>
 
-	* capplets/theme-switcher/lister.c: Apply patch from Owen Taylor
-	<otaylor@redhat.com> to make this work with empty gtkrc files.
-	Based on a patch from Nils Nordman <nino@nforced.com>. Fixes #64183.
+	* Release 2.0.3.2
+
+2002-12-19  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-12-19  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.3.1
+
+2002-11-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added Tamil ("ta") to ALL_LINGUAS.
+
+2002-11-23  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-11-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.3
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-09-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump.
+
+2002-09-24  Jody Goldber <jody@gnome.org>
+
+	* Release 2.0.2.91
+
+2002-09-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump again since we missed 2.0.2 and do a release
+
+2002-09-16  Alex Graveley  <alex@ximian.com>
+
+	* configure.in (GNOMECC_ICONS_DIR): Make the icons dir
+	'$(datadir)/pixmaps', so .desktop icons can be found without
+	explicit paths (also required by accessibility).
+
+2002-09-11  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : bump release number in preparation.
+
+2002-08-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.1.1
+
+2002-08-07  Jody Goldberg <jody@gnome.org>
+
+	* po/POTFILES.in : remove bogus file.
+
+2002-08-06  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-08-06  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.1
+
+2002-07-10  Jody Goldberg <jody@gnome.org>
+	patch from Brian Cameron
+
+	* configure.in : look for path to esound
+
+2002-06-25  James Henstridge  <james@daa.com.au>
+
+	* gnome-settings-daemon/Makefile.am: commented lines ending in a
+	trailing backslash are not a good idea.
+
+2002-06-18  jacob berkman  <jacob@ximian.com>
+
+	* configure.in:
+	* archiver/Makefile.am:
+	* capplets/common/Makefile.am:
+	* control-center/Makefile.am:
+	* libbackground/Makefile.am:
+	* libwindow-settings/Makefile.am:
+	* root-manager/Makefile.am: fixup localedir to work with solaris
+	gettext (fixes bug #83616)
+
+2002-06-17  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.0.0
+
+2002-06-04  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-02  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Create the .pc file for the window manager settings library.
+
+2002-05-29  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: Jody forgot to remove help from the top-level
+	Makefile.am as well, removed here
+
+2002-05-29  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Remove help and help/C
+
+2002-05-16  jacob berkman  <jacob@ximian.com>
+
+	* schemas/apps_gnome_settings_daemon_default_editor.schemas: add a
+	key to turn off some behaviour
+
+	* capplets/Makefile.am (always_built_SUBDIRS): 
+	* configure.in: re-add default-applications
+
+	fixes #78037
+
+2002-05-14  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* configure.in:
+
+	Move the window setting code into a seperate directory, libwindow-settings
+	so it can be shared between the capplet and the settings daemon, and
+	potentially, external window managers.
 	
-2002-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+2002-05-12  Anders Carlsson  <andersca@gnu.org>
 
-	* capplets/screensaver-properties/callbacks.c: Apply patch from Juha 
-	Ylitalo <juha.ylitalo@iki.fi> to only support *.desktop files in the
-	data directory (not *desktop*). Fixes #68679.
+	* configure.in: Require a new libglade.
+
+2002-05-11  Jacob Berkman  <jacob@ximian.com>
+
+	* capplets/Makefile.am (DIST_SUBDIRS): add windows
+
+2002-05-11  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Create the windows preference page makefile, and add gnome-desktop 
+	to the generic module flags.
+
+Wed May  8 17:54:57 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* capplets/network/gnome-network-preferences.c: update schema keys
+	to reflect the installed file.
+
+2002-05-06  Rachel Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Bump version to 1.99.10
+
+	* RELEASE: 1.99.10
 	
-2002-02-05  Abel Cheung  <maddog@linux.org.hk>
+2002-05-06  Anders Carlsson  <andersca@gnu.org>
 
-	* configure.in (ALL_LINGUAS): zh_CN.GB2312 -> zh_CN
+	* schemas/Makefile.am: Doh! Remove the file from automake.
 
-2002-01-20  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in, man/Makefile.am: Hook up man pages.
-	* man/*.1: Add man-pages.
-	* capplets/file-type/Makefile.am: Use $(PIXBUF_[CFLAGS|LIBS]).
-	* capplets/theme-switcher/lister.c: When specified user-font by 
-	theme-selector-capplet, theme-selector-capplet have generated 'font' 
-	in .gtkrc. but GTK+ already has 'fontset' in /etc/gtk/gtkrc*, and GTK+ 
-	gives priority to 'fontset' over 'font'. so that GTK+ has ignored 
-	user-font in .gtkrc. (Akira TAGOH) Fixes bug #66556
-		
-2002-01-19  Roy-Magne Mo <rmo@sunnmore.net>
-
-	* configure.in: Added nn to ALL_LINGUAS
-
-2001-12-01  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in: Up version.
-	* capplets/file-types/file-types-capplet.c: s/font/fontset/g
-	* capplets/theme-switcher/lister.c: Apply a patch from
-	Laszlo PETER <Laszlo.Peter@ireland.sun.com> to fix a crash
-	on Solaris.
+	* schemas/apps_gnome_keybinding_properties.schemas:
+	We now hard-code the key list, so this isn't neede anymore.
 	
-2001-11-09  Bradford Hovinen  <hovinen@ximian.com>
+2002-04-30  Anders Carlsson  <andersca@gnu.org>
 
-	Courtesy of Gregory Leblanc <gleblanc@linuxweasel.com>
-	* configure.in: Make sure gdk_pixbuf compile flags get included in
-	compile command line. Fixes #64082
+	* capplets/network/gnome-network-preferences.desktop.in:
+	Use a snazzier icon here.
+	
+2002-04-29  Rachel Hestilow  <hestilow@ximian.com>
 
-2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+	* configure.in: Bump version to 1.99.9
+
+	* RELEASE: 1.99.9
+	
+2002-04-29  Rachel Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Bump version to 1.99.8
+
+	* RELEASE: 1.99.8
+	
+2002-04-29  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in (ALL_LINGUAS): Added Vietnamese (vi)
+
+2002-04-26  Seth Nickell  <snickell@stanford.edu>
+
+	* capplets/Makefile.am:
+	* configure.in:
+
+	Re-enable building of font capplet.
+
+2002-04-25  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-daemon/gnome-settings-keyboard.c
+	(xfree86_set_keyboard_autorepeat_rate) : new.
+	(xkb_set_keyboard_autorepeat_rate) : new.
+	(apply_settings) : use them here.
+
+2002-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* capplets/Makefile.am, configure.in: add
+	capplets/gnome-network-preferences.
+
+2002-04-21  Rachel Hestilow  <hestilow@ximian.com>
+
+	* *.c: s/Richard/Rachel
+
+	* configure.in: Bump version to 1.99.7
+
+	* RELEASE: 1.99.7
+	
+2002-04-19  jacob berkman  <jacob@ximian.com>
+
+	* COPYING: add
+
+2002-04-17  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in (GNOMECC_DATA_DIR): rearrange quoting of these dirs
+	so that "make bindir=/foo" works
+
+2002-04-14  Rachel Hestilow  <hestilow@ximian.com>
+
+	* capplets/ui-properties/behavior.desktop.in,
+	  control-center/gnomecc.desktop.in: s/gnome2/gnome
+
+2002-04-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* schemas/apps_gnome_keybinding_properties.schemas: change the
+	panel keybindings keys to the new hyphen-less versions.
+
+2002-04-11  jacob berkman  <jacob@ximian.com>
+
+	* (various files): fix improper use of guint as GType
+
+2002-04-10  Kevin Breit  <mrproper@ximian.com>
+
+	* configure.in: Added the help/Makefile.am and help/C/Makefile.am.
+	If the build breaks, look at this stuff.  It's not the first time
+	I've killed the build.
+	
+	* Makefile.am: Made sure that help was in the SUBDIRS.  I don't
+	want to break the build again. :/
+
+2002-04-10  Rachel Hestilow  <hestilow@ximian.com>
+
+	* configure.in:
+	* capplets/Makefile.am (always_built_SUBDIRS): remove font
+
+2002-04-10  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AC_OUTPUT): remove
+	capplets/theme-switcher/control/Makefile
+
+Tue Apr  9 11:43:08 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* capplets/accessibility/keyboard/Makefile.am: Change gnome2-* to
+	gnome-*
+	* capplets/default-applications/Makefile.am: ditto
+	* capplets/file-types/Makefile.am: ditto
+	* capplets/font/Makefile.am: ditto
+	* capplets/keyboard/Makefile.am: ditto
+	* capplets/mouse/Makefile.am: ditto
+	* capplets/sound/Makefile.am: ditto
+	* capplets/theme-switcher/Makefile.am: ditto
+	* capplets/ui-properties/Makefile.am: ditto
+	* control-center/Makefile.am: ditto
+	* gnome-settings-daemon/Makefile.am: ditto
+
+2002-04-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.ion (AC_OUTPUT): revert kevin's patch until help stuff
+	actually builds
+
+2002-04-05  Kevin Breit  <mrproper@ximian.com>
+
+	* configure.in (dnl): Added help to the Makefile list.
+
+2002-04-04  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AC_OUTPUT): remove sawfish Makefile
+
+2002-04-02  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: 
+	* capplets/Makefile.am (always_built_SUBDIRS): remove
+	default-applications
+
+2002-03-28  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: add X libraries to link lines for things that make
+	X calls (since pango/gtk don't pull those in for us)
+
+Thu Mar 28 14:35:12 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in (RELEASE): 1.99.6
+
+2002-03-26  jacob berkman  <jacob@ximian.com>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): remove screensaver
+
+	* capplets/screensaver/: remove as xscreensaver provides these
+	things
+
+	* configure.in: remove xscreensaver check again as xscreensaver
+	supplies the .desktop file for itself
+	(AC_OUTPUT): remove capplets/screensaver/Makefile
+
+2002-03-26  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: The check for xscreensaver got removed, add it back
+	in.
+
+2002-03-26  jacob berkman  <jacob@ximian.com>
+
+	* schemas/Makefile.am (schema_DATA): add new .schemas file
+
+	* schemas/apps_gnome_settings_daemon_screensaver.schemas: settings
+	for starting screensaver
+
+Mon Mar 25 00:51:06 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in (RELEASE): 1.99.5
+
+Mon Mar 25 00:04:37 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* capplets/keybindings/gnome-keybinding-properties.glade: Clean up
+	UI a little.
+
+2002-03-19  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in (COMMON_LIBS): Link to common.la and not common.a.
+
+Sun Mar 17 23:26:02 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* capplets/keybindings/eggcellrendererkeys.[ch]: sync to CVS.
+
+2002-03-17  jacob berkman  <jacob@ximian.com>
+
+	* capplets/keybindings/Makefile.am
+	(gnome_keybinding_properties_SOURCES): add eggcellrendererkeys.h
+
+2002-03-18  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* capplets/common/activate-settings-daemon.c (popup_error_message):
+	Fixed compilation error.
+
+Sun Mar 17 16:30:48 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* capplets/keybindings/gnome-keybinding-properties.c
+	(create_dialog): fix typo.
+
+2002-03-17  Jonathan Blandford  <jrb@redhat.com>
+
+	* Makefile.am: Add new Makefiles
+	* configure.in: ditto
+	* capplets/Makefile.am: Add keybindings dialog
+
+	* capplets/keybindings/.cvsignore: shut up CVS
+
+	* capplets/keybindings/Makefile.am:
+	* capplets/keybindings/eggcellrendererkeys.c:
+	* capplets/keybindings/eggcellrendererkeys.h:
+	* capplets/keybindings/gnome-keybinding-properties.c: 
+	* capplets/keybindings/gnome-keybinding-properties.glade: 
+	* capplets/keybindings/keybinding.desktop.in:
+	New properties dialog.  Seems to work
+
+	* schemas/.cvsignore: shut up CVS
+
+	* schemas/Makefile.am:
+	* schemas/apps_gnome_keybinding_properties.schemas: New schemas
+	file for configuring the keybinding schemas.
+	* schemas/background.schemas: Remove unneeded schemas files
+	* schemas/peripherals.schemas:
+	* schemas/screensaver.schemas:
+
+2002-03-11  Richard Hestilow <hestilow@ximian.com>
+
+	* Committed patches by Lauris Kaplinski for bugs 73571, 73587,
+	and 71613.
+	
+2002-03-11  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AC_OUTPUT): 
+	* Makefile.am (SUBDIRS): add idl/
+
+2002-03-10  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in (ORBIT_IDL): define ORBIT_IDL and IDL flags so
+	gnome-settings-daemon will build
+
+2002-03-08  Richard Hestilow <hestilow@ximian.com>
+
+	* RELEASE: 1.99.4
+
+2002-03-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (EXTRA_CFLAGS): remove -I intl
+
+2002-03-05  Richard Hestilow <hestilow@ximian.com>
+
+	* configure.in: AC_SUBST GNOMECC_CFLAGS and GNOMECC_LIBS.
+
+2002-03-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: using $GETTEXT_PACKAGE-2 is redundant
+
+2002-02-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* root-manager/root-manager-helper.c: s/PACKAGE/GETTEXT_PACKAGE/g
+	* configure.in: Add missing AC_DEFINE_UNQUOTED so that GETTEXT_PACKAGE
+	ends up in config.h. Also s/PACKAGE/GETTEXT_PACKAGE/g
+	
+2002-02-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/default-applications/gnome-default-applications-properties.glade:
+	Remove translatable="yes" from icon labels. Remnant of a bug in
+	libglade-convert. (Thanks to James).
+	* capplets/file-types/file-types-properties.glade: Same
+	* capplets/keyboard/gnome-keyboard-properties.glade: Same
+	* capplets/mouse/gnome-mouse-properties.glade: Same.
+	* capplets/ui-properties/gnome2-ui-properties.glade: Same
+	* control-center/gnomecc.glade: Same
+						
+2002-02-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* root-manager/root-manager-wrap.c: Remove calls to deprecated
+	functions gtk_visual_push|pop_visual().
+	
+2002-02-17  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: remove deprecated GNOME_COMMON_INIT,
+	GNOME_PLATFORM_GNOME_2, fix warnings macros.
+
+2002-02-14  Richard Hestilow  <hestilow@ximian.com>
+
+	* Committed slackware compilation patch from
+	fflewddur@dropline.net.
+
+2002-02-11  Richard Hestilow  <hestilow@ximian.com>
+
+	* Committed instant-apply patch sans background.
+
+2002-02-11  Richard Hestilow  <hestilow@ximian.com>
+
+	* control-center/Makefile.am: Move splashdir to gnomecc-2.
+
+	* Makefile.am: Remove idl from subdirs.
+
+	* configure.in: Bump version to 0.9.3.
+
+	* RELEASE - 0.9.3
+	
+2002-02-10  Richard Hestilow  <hestilow@ximian.com>
+
+	* Added font capplet.
+
+2002-02-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): Added "ko" back, after converting
+	it to UTF-8 encoding.
+
+Thu Feb  7 00:20:38 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in (GETTEXT_PACKAGE): remove ko from ALL_LINGUAS as it
+	seems to be broken.
+
+2002-02-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (GETTEXT_PACKAGE): change to be parallel
+	installable
+
+	* control-center2.png:
+	* Makefile.am (pixmap_DATA): rename to be parallel installable
+
+2002-01-28  Richard Hestilow <hestilow@ximian.com>
+
+	* po/POTFILES.in: Remove panel.desktop.in.in.
+
+2002-01-28  Seth Nickell  <snickell@stanford.edu>
+
+	* control-center/capplet-dir.c: (capplet_new), (capplet_dir_new),
+	(capplet_dir_entry_destroy), (read_entries),
+	(get_root_capplet_dir):
+	* control-center/capplet-dir.h:
+
+	Read control center directory structure out of GnomeVFS instead of
+	directly off the disk.
+
+	Also deal with pixmaps more uniformly, and properly load them
+	out of PREFIX/share/pixmaps when they aren't an absolute path.
+	
+	* capplets/desktop-links/Sawfish/appearance-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/bindings-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/focus-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/match-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/maximize-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/meta-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/misc-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/move-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/placement-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/sound-properties.desktop.in:
+	* capplets/desktop-links/Sawfish/workspace-properties.desktop.in:
+	* capplets/ui-properties/behavior.desktop.in.in:
+
+	Add a Categories Field.
+
+	* capplets/desktop-links/Makefile.am:
+	* capplets/desktop-links/Sawfish/Makefile.am:
+	* capplets/file-types/Makefile.am:
+	* capplets/theme-switcher/Makefile.am:
+	* capplets/ui-properties/Makefile.am:
+	* control-center/Gnome.directory.in.in:
+	* control-center/Makefile.am:
+
+	Install directory files into PREFIX/share/gnome/vfolders, the standard
+	vfolder description location.
+	
+2002-01-28  Richard Hestilow <hestilow@ximian.com>
+
+	* configure.in: Bump version to 1.99.2.
+
+	* RELEASE: 1.99.2
+
+2002-01-28  Laszlo Peter  <laca@ireland.sun.com>
+
+	* archiver/location.c: s/__FUNCTION__/G_GNUC_FUNCTION/
+	* capplets/common/capplet-util.c: ditto
+	* capplets/common/capplet-util.h: ditto
+	* libbackground/preferences.c: ditto
+	* applets/common/wrapper-script.in: change "test $x == y" to
+	  "test $x = y" for portability
+
+2002-01-27  Richard Hestilow <hestilow@ximian.com>
+
+	* Makefile.am (CLEANFILES): Rename as MAINTAINERCLEANFILES.
+	
+Tue Jan 22 16:20:21 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Keep ACLOCAL_FLAGS around, and actually use the
+	gnome-vfs cflags/libs.
+
+2002-01-21  Richard Hestilow <hestilow@ximian.com>
+
+	* Remerge control-center-plus.
+
+2002-01-21  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.ini: Added Malay (ms)to ALL_LINGUAS.
+	* po/ms.po: Added Malay Translation.
+
+2002-01-21  Anders Carlsson  <andersca@gnu.org>
+
+	* schemas/peripherals.schemas: motion_threshold is supposed
+	to be an int.
+
+2002-01-17  Jakub Steiner <jimmac@ximian.com>
+
+	* control-center.png: fixed the anti-aliasing of the wrench
+
+2002-01-16  Kevin Breit  <mrproper@ximian.com>
+
+	* help/C/gnome-control-center.sgml: Removed this file
+	
+	* help/C/control-center.sgml: Added this file
+
+2002-01-15  Richard Hestilow <hestilow@ximian.com>
+
+	* (Many "make distcheck" fixes).
+
+2002-01-14  Bradford Hovinen  <hovinen@ximian.com>
+
+	* Makefile.am (CLEANFILES): Add this line
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Compile common first
+
+	* configure.in (INSTALL_GCONF_CONFIG_SOURCE): Use control-center-2
+	for data directory
+
+Tue Jan  8 15:00:27 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in (XF86MISC_LIBS): we now depend on esound.
+
+2002-01-07  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Whoops, delete those invalid-dnl'ed lines. This
+	is part of my use-xscreensaver-demo patch.
+
+2002-01-04  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Add libgnomeui dependency to daemon
+	(it needs gnome-client).
+
+2002-01-04  Mikael Hallendal  <micke@codefactory.se>
+
+	* configure.in: added
+	capplets/default-applications/default-applications.desktop.in to
+	AC_OUTPUT.
+
+2002-01-03  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in (AC_OUTPUT): Remove schemas/Makefile
+
+	* Makefile.am (SUBDIRS): Remove schemas
+
+2001-12-20  Bradford Hovinen  <hovinen@ximian.com>
+
+	* schemas/Makefile.am (schema_DATA): Add background, screensaver
+	files
+	(install-data-local): Allow specification of multiple schema files
+
+	* configure.in (GNOMECC_DESKTOP_DIR): Define
+	(GNOMECC_DATA_DIR): Define
+	Remove AC_DEFINE_UNQUOTED for the rest of the directories
+
+	* schemas/Makefile.am (EXTRA_DIST): Add
+
+	* configure.in: Removed capplets/sound/Makefile
+
+	* Makefile.am (SUBDIRS): Put gnome-settings-daemon after
+	libbackgrounds
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Add common,
+	background, keyboard, mouse back in
+
+	* configure.in (PKG_CHECK_MODULES): Remove lines pertaining to the
+	archiver, add line for gnome settings daemon
+
+Sun Dec  9 19:24:47 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: use gconf macros.
+
+Sat Dec  8 21:33:10 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-daemon/gnome-settings-daemon.c (main): Import
+	from gconf-xsettings module.  Cleaned up a bunch, and made to work
+	with mouse properties too.
+
+	* schemas/peripherals.schemas: New location for schemas.  Need to
+	write many more.
+
+2001-12-09  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* *.c (main): retrieve translation in utf-8 codeset. Do not
+	setlocale ().
+	* some Makefile.am (INCLUDES): remove intl.
+	(..._LDADD): remove INTLLIBS
+
+2001-12-08  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in (COMMON_MODULES): add gnome-desktop-2.0 to CFLAGS,
+	add AC_PROG_INTLTOOL
+
+2001-12-08  Richard Hestilow  <hestilow@ximian.com>
+
+	* capplets/Makefile.am: Remove bonobo subdirs so people
+	stop yelling at us.
+
+2001-12-08  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Add special gconf defines (gconftool, etc).
+	
+2001-12-01  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Add libsounds stuff.
+	* Makefile.am (SUBDIRS): Add libsounds.
+
+Fri Nov 30 15:35:39 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Added AM_GLIB_GNU_GETTEXT and
+	setting of GETTEXT_PACKAGE.
+
+	* Makefile.am: Change from xml-i18n-extract (etc.)
+	to intltool-extract (etc.)
+
+2001-11-29  Miles Lane <miles@megapathdsl.net>
+
+	* configure.in: Removed intl/Makefile from AC_OUTPUT
+	since there is no intl subdirectory in the repository.
+
+2001-11-29  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Disabled archiver
+
+	* Makefile.am (SUBDIRS): Disabled archiver
+
+2001-11-28  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in: Remove gtkhtml-2.0 check since we no longer
+	depend on it.
+
+2001-10-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Bump version to 1.99.0
+
+2001-10-26  Bradford Hovinen  <hovinen@ximian.com>
+
+	* Makefile.am: Remove intl from SUBDIRS
+
+	* */Makefile.am: s/XML_I18N_MERGE/INTLTOOL/g
+
+	* capplets/Makefile.am: Remove screensaver from
+	always_built_SUBDIRS and add $(SCREENSAVER) to SUBDIRS
+
+	* capplets/{background|keyboard|mouse|sound}/Makefile.am:
+	Fix so that automake does not choke on these files
+
+	* README: Updated to reflect current status porting to GNOME 2
+
+	* configure.in: Cleanup for GNOME 2 port
+	Allow disabling of screensaver capplet compile if xscreensaver
+	is not found
+	(AC_OUTPUT): Removed dnl capplets/rollback/Makefile as it caused
+	some difficulties
+
+2001-10-23  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Added zh_CN for Simplified Chinese.
+
+2001-10-18  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Put common in
+	always_built_SUBDIRS
+
+	* configure.in (dnl): Remove --enable-bonobo-conf option
+
+2001-10-11  Israel Escalante  <israel@ximian.com>
+
+	* configure.in: Bump version to 1.5.10
+
+2001-10-11  Israel Escalante  <israel@ximian.com>
+
+	* configure.in (gnome_cv_use_gnome): Bump requirement for
+	gtkhtml >=0.15.0 and version to 1.5.9. Committed patch
+	from peter@ximian.com to fix some build issues.
+
+2001-10-07  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in (ALL_LINGUAS): added lv
+
+2001-10-02  Jakub Steiner <jimmac@ximian.com>
+
+	* control-center.png: new application icon
+
+2001-09-28  Israel Escalante  <israel@ximian.com>
+
+	* configure.in: Bump requirements to bonobo-conf 0.12
+
+2001-09-28  Richard Hestilow  <hestilow@ximian.com>
+
+	* control-center/capplet-dir-view-html.c:
+	Committed patch from Carlos Perelló Marín <carlos@gnome-db.org>
+	to handle UTF-8 correctly. Sorry it took so long; it got lost in
+	my mailbox.
+
+2001-09-27  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (capplet_modules): bum the requirements for gal >= 0.12
+	and version to 1.5.8
+
+2001-09-10  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GNOMECC_PIXMAPS_DIR): substite ${prefix}/share with {datadir}
+	thanks peter@ximian.com
+
+2001-09-09  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Removed zh_CN.GB2312.
+
+2001-09-07  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Added rollback
+
+2001-09-04  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Use ${real_prefix}/share rather than ${datadir},
+	etc.
+
+	* acconfig.h: Add GNOMECC_DEFAULTS_DIR
+
+	* configure.in (GNOMECC_DEFAULTS_DIR): Define this here
+
+2001-08-29  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.7
+
+2001-08-23  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.6
+
+2001-08-22  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Bump version to 1.5.6
+
+2000-08-22  Pablo Saratxaga <pablo@mandrakesoft.com>
 
 	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
 
-2001-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+2001-08-21  Bradford Hovinen  <hovinen@ximian.com>
 
-	* capplets/theme-switcher/main.c: Fix warnings.
-	* capplets/wm-properties/wm-exec.c: Fix warnings
-	* capplets/wm-properties/wm-list.c: Same here.
+	* idl/ConfigArchiver.idl: Added exception RollbackDataNotFound
+	Added exception LocationNotFound
+
+2000-08-18  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in (ALL_LINGUAS): Added Nynorsk (nn) and Walloon (wa)
+
+2001-08-13  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (Configuration): remove (XST)
+
+2001-08-10  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.5
+
+2001-08-10  Aaron Weber  <aaron@ximian.com>
+
+	* help/: New directory: help and documentation.
+	* help/C/: New directory: English help and documentation.
+	* help/C/figures: New directory: figures for English help and docs.
+	* help/C/gnome-control-center.sgml: New file. Empty SGML skeleton.
 	
-2001-07-24  Stanislav Brabec  <utx@penguin.cz>
+2001-08-09  Richard Hestilow  <hestilow@ximian.com>
 
-	* capplets/sound-properties/sound-properties.c: Allow to restore
-	gmix mixer levels on startup. Does not depend on esd (but
-	compiles only if esd is present), does not checks for gmix (you
-	can install it later).
+	* configure.in: Check for xscreensaver and perl, and
+	generate capplets/screensaver/magic.pl.
 
-2001-07-16  Marius Andreiana  <mandreiana@yahoo.com>
+2001-08-07  Bradford Hovinen  <hovinen@ximian.com>
 
-        * capplets/theme-switcher/gui.c: new theme is selected after being 
-        installed (#1945) (patch from <geor@ihug.co.nz>)
+	* configure.in: Corect behavior when prefix is not explicitly
+	specified
 
-2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+2001-08-02  Jason Leach  <jleach@ximian.com>
 
-	* capplets/wm-properties/wm-properties-capplet.c:
-	Remove const to make things compile on AIX.
-	* capplets/background-capplet/render-background.h: Remove
-	commas after the last enum entry.
-	* capplets/background-capplet/property-background.c: Include
-	<math.h> and remove trailing comma in enum.
+	* configure.in: Give a better URL for pkgconfig.
+
+2001-07-30  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.4
+
+	* configure.in: Bump libcapplet dependency to 1.5.4
+
+2001-07-30  Richard Hestilow  <hestilow@ximian.com>
+
+	* control-center.png: Added.
 	
-2001-05-31  Marius Andreiana  <mandreiana@yahoo.com>
+	* Makefile.am: install control-center.png
 
-	* capplets/screensaver-properties/callbacks.c,
-	capplets/screensaver-properties/callbacks.h,
-	capplets/screensaver-properties/screensaver-properties-capplet.c:
-	added Preview button for all screensavers
-	* capplets/theme-switcher/gui.c: theme selector capplet sorts 
-	themes case-insensitively now (bug #13539)
+2001-07-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.3
+
+	* configure.in: Bump version to 1.5.3
+
+2001-07-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* RELEASE : 1.5.2
+
+2001-07-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in (capplet_modules): Update version dependency for
+	libcapplet to 1.5.2
+
+2001-07-26  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in (AC_ARG_ENABLE): Fix problem where meaning of
+	--enable-bonobo-conf was the opposite of what it should have been
+	(CC_USE_BONOBO_CONF): Stupid, stupid autoconf
+
+2001-07-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (PKG_BONOBO_CONF_CHECK): update the requirements for
+	bonobo_conf to 0.9 since we now depend on it
+ 
+2001-07-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (BONOBO_CHECK): remove the --enable-bonobo-conf and replace with
+	--disable-bonobo-conf. The default is now with bonobo-conf
+
+2001-07-25  Chema Celorio  <chema@celorio.com>
+
+	(capplet_modules): add bonobo_conf back. 
+
+2001-07-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GNOMECC_CAPPLETS_OAF_FILE_IN_RULE): scape correctly the
+	OAF_FILE_IN_RULE, it was not escaped before but for some reason it didn't
+	generated and error
+
+	* capplets/Makefile.am (SUBDIRS): we need to build LIBCOMMON_DIR
+	before the capplets cause the capplets link with ../common/libcommon.a
+
+2001-07-25  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Remove IMLIB check
+	(GNOMECC_CAPPLETS_DESKTOP_IN_RULE): Add sed expression to cover
+	macro DESKTOP_EXEC_LINE
+	(LIBCOMMON_DIR): Add option --enable-bonobo-conf
+
+	* all: Added support for optionally compiling without bonobo-conf enabled
+
+2001-07-25  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (dnl): remove the sawfish dir
+
+2001-07-24  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (dnl): add a new sed line that adds the full path to the Exec line
+	in the .desktop files. It is commented out for now cause gnoemcc is not apreciating
+	full paths.
+
+2001-07-20  Chema Celorio  <chema@celorio.com>
+
+	* RELEASE : 1.5.0
+
+2001-07-19  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: make distcheck love
+
+2001-07-19  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Bump to version 1.5.0
+
+2001-07-19  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am: remove Gnome.directory from here
+
+2001-07-18  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (capplet_modules): gtkhtml 0.9 is enough
+
+2001-07-18  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GNOMECC_SCREENSAVERS_DIR): define GNOMECC_SCREENSAVERS_DIR
+	(dnl): remove the check for bonobo-conf and check in the PKG_CONFIG macro
+	(capplet_modules): add versions that we require
+
+2001-07-17  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: define the directories
+
+	* capplets/background/Makefile.am (SUBDIRS): clean
+
+	* configure.in (gnome_cv_use_gnome): clean the macro
+
+2001-07-17  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in (AC_OUTPUT): Disabled rollback capplet
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Disabled rollback
+	capplet compile
+
+2001-07-17  Chema Celorio  <chema@celorio.com>
+
+	* acconfig.h: define GNOMECC_ICONS_DIR
+
+	* configure.in (vers): requre pkg-config 0.8.0
+	(GNOME_CONTROL_CENTER_ICONS_DIR): add
+	(GNOMECC_CAPPLETS_CFLAGS): define
+
+2001-07-16  Richard Hestilow  <hestilow@ximian.com>
 	
-2001-04-22  Jason Leach  <jasonleach@usa.net>
+	* configure.in: Create Makefile in capplets/desktop-links/Sawfish.
 
-	* configure.in: Correct a typo.
+2001-07-16  Richard Hestilow  <hestilow@ximian.com>
 
-2001-03-28  Dan Mueth  <dan@eazel.com>
+	* configure.in: Create Makefiles in capplets/desktop-links and
+	capplets/default-applications.
 
-	Fixing every capplet in control-center, since none of them
-	actually used the ghelp URL handler as they should - instead
-	they were pulling up help as a normal URL ie. in Netscape.
-	Now they should load in the ghelp handler.
-	It is cute how almost every one has a different help callback 
-	function name, although the contents are pretty much identical.
+	* capplets/desktop-links: Added.
 
-	* capplets/background-properties/property-background.c:
-	(background_help):
-	* capplets/bell-properties/bell-properties.c: (bell_help):
-	* capplets/file-types/file-types-capplet.c: (help_callback),
-	(init_mime_capplet):
+	* capplets/default-applications: Added.
+
+2001-07-14  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* *.directory: Renamed to *.directory.in to be used with
+	xml-i18n-tools.
+	* *.desktop: Renamed to *.desktop to be used with xml-i18n-tools.
+	* *.glade: Modified to not generate the glade.h files.
+	* *.glade.h: Removed.
+	* Makefile.am: Modify to use xml-i18n-tools
+	* configure.in: ditto.
+	* autogen.sh: ditto, now we use the macros/autogen.sh
+
+2001-07-13  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (capplet_modules): wait, we don't need gnome-vfs
+
+	* autogen.sh (PKG_NAME): check for capplets/common/capplet-util.h
+
+	* configure.in (capplet_modules): pkgconfig 0.8.0 now handles
+	gnome-vfs. No need to call gnome-vfs-config.
+
+2001-07-13  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Add common
+
+	* configure.in (AC_OUTPUT): Add capplets/common/Makefile
+
+2001-07-12  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (vers): bump pkg-confi to version 0.8.0. Version
+	7 was doing strange things.
+
+2001-07-12  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Add check for the correct version of bonobo-conf 
+	Bump version number to 1.3.10
+
+2001-07-12  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (CONFIG_ARCHIVER_INCLUDEDIR): the root manager is
+	disabled for now
+
+2001-07-11  Richard Hestilow  <hestilow@ximian.com>
+
+	* configure.in (capplet_modules): Look for libcapplet, not
+	libcapplet2.
+
+2001-07-10  Chema Celorio  <chema@celorio.com>
+
+	* capplets/Makefile.am (EXTRA_DIST): remove ChangeLog as
+	we have now one ChangeLog per capplet
+
+2001-07-09  Bradford Hovinen  <hovinen@ximian.com>
+
+	* Makefile.am: Added Gnome.directory and installation routine
+
+2001-07-07  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (capplet_modules): add bonobo and bonobox
+	
+2001-07-07  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (vers): require pkg-config 0.7.0 since
+	0.6.0 is brOKeN
+
+2001-07-05  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in (GNOMECC): Remove libcapplet
+	Add XIMIAN_ARCHIVER_{LIBDIR|LIBS|INCLUDEDIR}
+	Bump version number to 1.3.2
+	(capplet_modules): Use libglade-gnome rather than libglade
+
+	* Makefile.am (SUBDIRS): Put po after capplets so that the build
+	doesn't screw up
+
+	* capplets/Makefile.am: Removed rules pertaining to
+	sound-properties
+
+	* capplets/sound-properties-capplet.c (set_moniker_cb): Change
+	BonoboPropertyEditor to BonoboPEditor
+
+	* configure.in: Update AC_INIT to use correct directory name
+	(AC_OUTPUT): Update to current directory structure
+
+	* Makefile.am (SUBDIRS): Update to current directory structure
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Updated to current
+	directory structure
+
+2001-07-03  Bradford Hovinen  <hovinen@ximian.com>
+
+	* archiver/Makefile.am (bonobo_moniker_archiver_LDADD): Use @...@
+	rather than $(...) for pkg-config's sake
+
+	* capplets/Makefile.am (INCLUDES): Use correct location for Glade
+	data
+	Added sound-properties.glade, sound-properties.desktop
+
+2001-07-03  Richard Hestilow  <hestilow@ximian.com>
+	
+	* configure.in: Add PKG_CHECK_MODULES for SCREENSAVER_CAPPLET.
+
+2001-06-29  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/Makefile.am (bin_PROGRAMS): Add target for
+	sound-properties-capplet
+	(INCLUDES): Install from new-sound-properties
+
+	* configure.in (CAPPLET_{CFLAGS|LIBS}): Add bonobo_conf to each
+
+2001-06-27  Richard Hestilow  <hestilow@ximian.com>
+	
+	* configure.in: Check for pkg-config >= 0.6.0 without the use of
+	a macro -- people were having issues with older versions with
+	no macros.
+
+2001-06-21  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: switch to using pkg-config to find things
+
+	* capplets/*/Makefile.am: clean up crufty flags, adapt to
+	configure.in changes
+
+2001-06-21  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-*/main.c (main): Abort if prefs structure is NULL
+	when editing outside the current location. Fixes crash when bad
+	XML data are supplied.
+
+	* capplets/new-*/main.c (do_set_xml): Fix to use correct
+	termination condition and g_string API
+
+2001-06-20  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-*/main.c (do_set_xml): Don't save unless
+	apply_settings is set
+
+2001-06-20  Richard Hestilow  <hestilow@ximian.com>
+
+	* capplets/new-background-properties/applicer.c
+	(get_geometry): Handle properly the case where centered/tiled
+	image is larger than the screen/preview.
+
+2001-06-20  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-background-properties/applier.c
+	(is_nautilus_running): Fixed nitems check
+	(set_root_pixmap): Passing -1 makes the function just set the
+	pixmap to what it was
+
+2001-06-18  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-*/main.c (do_set_xml): Use read () rather than
+	fread () to make sure to catch end-of-file. Gracefully handle
+	no-data case.
+
+2001-06-12  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-mouse-properties/main.c (ok_cb):
+	(cancel_cb): Add #ifdef HAVE_XIMIAN_ARCHIVER around some parts
+	missing it
+
+2001-06-07  Christian Rose  <menthos@menthos.com>
+
+	* capplets/desktop-links/Appearances.directory,
+	capplets/desktop-links/Multimedia.directory,
+	capplets/desktop-links/Peripherals.directory,
+	capplets/desktop-links/UIOptions.directory,
+	capplets/gnome-edit-properties/gnome-edit-properties.desktop,
+	capplets/mime-type/mime-type.desktop,
+	capplets/new-ui-properties/behavior.desktop,
+	capplets/screensaver-properties/screensaver-desktops/
+	screensaver-properties.desktop,
+	capplets/sound-properties/sound-properties.desktop,
+	capplets/theme-switcher/theme-selector.desktop:
+	Modified Swedish entry.
+
+2001-05-05  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Add check for libximian_archiver; try include
+	cflags and libs only if the archiver is present *
+	capplets/*/main.c: Add #ifdef's around anything that uses the
+	Ximian archiver so that the capplets can compile without it
+
+2001-05-03  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/*/main.c (main): Handle --get-defaults
+	(do_restore_from_defaults): Implement
+
+	* capplets/*/preferences.c (preferences_init): Load default values
+
+2001-04-27  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/wm-properties/wm-list.c (wm_read_from_xml): Make
+	desktop-entry an attribute rather than a child node
+
+	* capplets/*/main.c: Do not try to load preferences from XML if
+	there was not XML data
+
+2001-04-24  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/*/main.c:
+	* capplets/*/preferences.c: Support --location
+
+2001-04-24  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Compile in
+	new-screensaver-properties
+
+2001-04-24  Anna Marie Dirks <anna@ximian.com> 
+	* capplets/interfaces/control-center.glade: This is the initial mockup of my reorganization of control center's menus; I'm committing it to garner input. This file includes separate menus for simple, intermediate and advanced modes; it does not include any graphics (yet).  
+
+2001-04-14  Bradford Hovinen <hovinen@ximian.com>
+
+	* capplets/*/main.c: Don't apply settings if editing settings
+	outside the current location
+
+2001-04-13  Bradford Hovinen <hovinen@ximian.com>
+
+	* capplets/*/main.c: Read XML from stdin if --location is passed
+
+2001-04-12  Bradford Hovinen <hovinen@ximian.com>
+
+	* capplets/*/main.c: Support --location command line option to
+	edit settings in a location different from the current one
+
+	* capplets/*/preferences.[ch]: Support multi-level freezing and
+	thawing, so that we can permanently disable applying changes
+
+2001-03-29  Anna Marie Dirks <anna@ximian.com> 
+	* capplets/interfaces: added this directory to store gladed mockups of new capplets. 
+	* capplets/pixmaps: added this directory to store the supporting images for the capplet mockups. 
+
+	* capplets/interfaces/background-capplet-mockup.glade: initial version of the new and improved background capplet. i still need to figure out exactly which labels to use where (ie, "alignment" is not really correct). 
+
+	* capplets/pixmaps/athens-bg.png: graphic used to demonstrate how/where the preview should go in the new background capplet. 
+
+
+2001-03-18  Ravi Pratap  <ravi@che.iitm.ac.in>
+
+	* control-center/capplet-widget.h (CAPPLET_WIDGET_CLASS): Correct
+	to cast to CappletWidgetClass
+
+	* capplets/wm-properties.c (store_archive_data): add
+	(ok_callback): Modify to store settings using wm_list_save 
+
+	* capplets/gnome-edit-properties.c (edit_apply): Modify to call
+	store_archive_data before exiting.
+	(current_info): Add new global variable to hold current state.
+
+2001-03-15  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-*/main.c: Added code to store archive data with the
+	ximian archiver
+
+2001-03-13  Chema Celorio  <chema@celorio.com>
+
 	* capplets/gnome-edit-properties/gnome-edit-properties.c:
-	(edit_help):
-	* capplets/keyboard-properties/keyboard-properties.c:
-	(keyboard_help):
-	* capplets/mouse-properties/mouse-properties.c: (mouse_help):
-	* capplets/screensaver-properties/callbacks.c: (help_callback):
-	* capplets/session-properties/session-properties.c: (help):
-	* capplets/sound-properties/sound-properties.c: (ui_do_help):
-	* capplets/theme-switcher/gui.c: (click_help):
-	* capplets/ui-properties/ui-properties.c: (help):
-	* capplets/url-properties/url-properties.c: (url_capplet_help):
-	* capplets/wm-properties/wm-properties-capplet.c: (help_callback):
+	s/gEdit/gedit
 
-2001-03-27  Dan Mueth  <dan@eazel.com>
+2001-01-29  Fatih Demir	<kabalak@gmx.net>
 
-	Fixed screenshot links.
+	* idl/.cvsignore & libcapplet/.cvsignore: Added these
+		files.
 
-	* doc/C/control-center.sgml:
+2001-01-27  Bradford Hovinen  <hovinen@ximian.com>
 
-2001-03-27  Dan Mueth  <dan@eazel.com>
+	* capplets/new-background-properties/applier.c
+	(applier_apply_prefs): Disable wallpaper in new_prefs structure,
+	not structure passed to function
 
-	We moved a few files around to make things work properly with
-	the help system, including the OMF/SK stuff.  I have also 
-	done some more work with SK integration.
+2001-01-26  Bradford Hovinen  <hovinen@ximian.com>
 
-	* Makefile.am:
-	* doc/C/Makefile.am:
-	* doc/C/control-center-C.omf:
-	* doc/C/figs/bg-capplet.png:
-	* doc/C/figs/gccalf.png:
-	* doc/C/figs/gccappdef.png:
-	* doc/C/figs/gccdialog.png:
-	* doc/C/figs/gccedit.png:
-	* doc/C/figs/gcchints.png:
-	* doc/C/figs/gccmdi.png:
-	* doc/C/figs/gccmime.png:
-	* doc/C/figs/gccsession-props.png:
-	* doc/C/figs/gccsessopt.png:
-	* doc/C/figs/gccsound1.png:
-	* doc/C/figs/gccsound2.png:
-	* doc/C/figs/gccstartup.png:
-	* doc/C/figs/gccurl.png:
-	* doc/C/figs/glob_pref_anim.png:
-	* doc/C/figs/keyboard-capplet.png:
-	* doc/C/figs/mouse-capplet.png:
-	* doc/C/figs/screensave-capplet.png:
-	* doc/C/figs/theme-select.png:
-	* doc/C/figs/wm-add.png:
-	* doc/C/figs/wm-main.png:
-	* doc/C/gnomecc-C.omf:
-	* doc/C/gnomecc.sgml:
-	* omf-install/Makefile.am:
+	* capplets/new-background-properties/main.c
+	(do_restore_from_defaults): Implement. Creates a preferences
+	object with factory defaults and saves and applies those changes.
 
-2001-03-26  Darin Adler  <darin@eazel.com>
+2001-01-26  Marius Andreiana  <mandreiana@yahoo.com>
 
-	* omf-install/.cvsignore: Oops, missed something.
-
-2001-03-23  Darin Adler  <darin@eazel.com>
-
-	* omf-install/.cvsignore: One other little thing to ignore.
-
-2001-03-23  Darin Adler  <darin@eazel.com>
-
-	* doc/C/Makefile.am: Fix typo to fix build.
-
-	* .cvsignore: Ignore some generated files.
-	* doc/C/.cvsignore: Ignore some generated files.
-
-	* capplets/sound-properties/sound-properties.desktop: Remove this
-	generated file from cvs. I think someone put some translations
-	here instead of putting them in the po file and then checked it in.
-
-2001-03-22 John Fleck <jfleck@swcp.com>
-
-	* adding omf/ScrollKeeper support, updating appropriate makefiles,
-	fixing bug in gnomecc.sgml
-	add omf-install/Makefile.am, sgmldocs.make
-	updated doc/C/Makefile.am, configure.in, gnomecc.sgml
-
-2001-03-12  Pablo Saratxaga  <pablo@mandrakesoft.com>
-
-	* capplets/screensaver-properties/screensaver-desktops/*.desktop.in:
-	  manually fixed some errors still there
-	* configure.in: synched ALL_LINGUAS to show the list of available
-	  languages
-
-2001-03-11  Martin Norbäck  <d95mback@dtek.chalmers.se>
-
-	* capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in,
-	capplets/screensaver-properties/screensaver-desktops/Epicycle.desktop.in:
-	changed three descriptions which was in Bulgarian or something...
-
-2001-03-11  Martin Norbäck  <d95mback@dtek.chalmers.se>
-
-	* capplets/screensaver-properties/screensaver-desktops/*.desktop.in
-	  capplets/screensaver-properties/screensaver-desktops/Makefile.am:
-	fixed the recently introduced xml-i18n-tools problem.
-	Hopefully all keywords are marked properly and all translations
-	properly added to respective po files.
-
-2001-03-10  Maciej Stachowiak  <mjs@eazel.com>
-
-	* configure.in: Update to 1.3.90
-
-2001-03-09  Christophe Merlet  <redfox@eikonex.org>
-
-	* capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in,
-	capplets/screensaver-properties/screensaver-desktops/Coral.desktop.in:
-	Removed \r escape sequence.
-
-2001-03-09  Maciej Stachowiak  <mjs@eazel.com>
-
-	* po/POTFILES.in: Remove .desktop.in files for .desktop files that
-	are not installed or distributed.
-
-2001-03-09  Maciej Stachowiak  <mjs@eazel.com>
-
-	* capplets/gnome-edit-properties/Makefile.am,
-	capplets/keyboard-properties/Makefile.am,
-	capplets/mouse-properties/Makefile.am,
-	capplets/sound-properties/Makefile.am,
-	capplets/theme-switcher/Makefile.am,
-	capplets/url-properties/Makefile.am: Fix distcheck lossage.
-
-2001-03-09  Maciej Stachowiak  <mjs@eazel.com>
-
-	xml-i18n-toolized everything. Bye bye .desktop and .directory
-	files, hello .desktop.in and .directory.in files. Updated
-	Makefile.am's as needed and POTFILES.in, as well as all po files.
-
-	* *.desktop --> *.desktop.in
-	* *.directory --> *.directory.in
+	* *.desktop, *.directory : Added ro (Romanian) translation
 	
-	* All Makefile.am: Fix to generate .directory from .directory.in
-	and .desktop from .desktop.in.
+2001-01-25  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in ([BG_]CAPPLET_{CFLAGS|LIBS}): Add ximian_archiver
+
+	* capplets/new-background-properties/main.c (store_archive_data):
+	Implement
+	(ok_cb): Call store_archive_data
+
+2001-01-25  jacob berkman  <jacob@ximian.com>
+
+	* root-manager/root-manager.c (main): add a \n to the usage
+	message
+
+	* root-manager/root-manager-wrap.c: change some g_print's to
+	fprintf to stderr
+
+2001-01-24  Bradford Hovinen  <hovinen@ximian.com>
+
+	* capplets/new-background-properties/preferences.c
+	(preferences_read_xml): Fix typo in adjust-opacity part
+
+	* capplets/new-background-properties/main.c (do_set_xml): Apply
+	preferences as well as saving them
+
+2001-01-24  jacob berkman  <jacob@ximian.com>
+
+	* new-control-center/*.[ch]: new (temporary) html view and bug
+	fixication
 	
-	* po/POTFILES.in: Added all the new .in files.
+	* root-manager/*.[ch]: gnomeify dialogs and other cleanups
 
-	* po/*.po: Translations pulled from .desktop files should be added.
+	* configure.in: flags for root-manager-helper
+
+2001-01-17  jacob berkman  <jacob@ximian.com>
+
+	* root-manager/Makefile.am
+	* root-manager/root-manager.h: fix finding the root-manager
+
+2001-01-24  Bradford Hovinen  <hovinen@ximian.com>
+
+	* configure.in: Added ROLLBACK_CAPPLET_{CFLAGS|LIBS} for the
+	rollback capplet
+	(ROLLBACK_CAPPLET_LIBS): Typo fix
+	(AC_OUTPUT): Added capplets/rollback/Makefile
+
+2000-12-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* capplets/new-background-properties/background-properties.glade:
+	Fix typo.
 	
-2001-03-08  Christophe Merlet  <redfox@eikonex.org>
+2000-12-26  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
-	* capplets/*/*.desktop: Updated and added French translations..
+	* root-manager/root-manager.c: tool based on usermode /
+	consolehelper to launch setup tools with root privaleges
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+	* capplets/new-ui-properties/ui-properties.glade: merged the 3
+	capplets into one
 
-	* control-center.spec.in: Don't list stuff twice.
+	* capplets/new-background-properties/background-properties.glade:
+	re-did the UI a bit.  The code doesn't yet work correctly.
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+	* configure.in: add checks for libcapplet and fixup directories
 
-	* Makefile.am: Add xml-i18n-tools stuff to EXTRA_DIST.
+	* Makefile.am: remove libcapplet and add root-manager
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+2000-12-22  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* po/POTFILES.in: Fix again.
+	* capplets/new-background-properties/applier.c
+	(renderer_render_wallpaper): Prescale the pixbuf before a tiled
+	composite
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+2000-12-21  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* po/POTFILES.in: Fix.
+	* capplets/new-background-properties/applier.c (set_root_pixmap):
+	Check if nitems is 1, not 4
+	(set_root_pixmap): Do a sanity check on the old pixmap before
+	freeing it
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+2000-12-18  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* configure.in: Fix gnome-vfs version check to make tinderbox
-	happy.
+	* capplets/new-background-properties/applier.c
+	(renderer_render_wallpaper): Change the meaning of brightness to
+	mean opacity
+	(tile_composite): Implement
+	(render_gradient_p): Return TRUE if the opacity should be adjusted
 
-2001-03-07  Maciej Stachowiak  <mjs@eazel.com>
+	* capplets/new-background-properties/prefs-widget.c: Change
+	instances of brightness to refer to opacity
 
-	Part of the fix for bugzilla.eazel.com bug 588 (Remove old "MIME
-	types" capplet from control center)
+	* capplets/new-background-properties/preferences.c: Ditto
 
-	* autogen.sh: xml-i18n-toolize
-	* configure.in: Check for gnome-vfs, generate Makefiles for capplet/file-types
-	* control-center.spec.in: Depend on gnome-vfs, newer ORBit.
+2000-12-17  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* capplets/Makefile.am: Add file-types capplet to build, remove
-	mime-type capplet.
-	
-	* capplets/file-types/Makefile.am,
-	capplets/file-types/file-types-capplet-dialogs.c,
-	capplets/file-types/file-types-capplet.c,
-	capplets/file-types/file-types-icon-entry.c,
-	capplets/file-types/file-types-capplet-dialogs.h,
-	capplets/file-types/file-types-capplet.h,
-	capplets/file-types/file-types-icon-entry.h: New MIME capplet
-	moved here from gnome-vfs.
+	* capplets/new-background-properties/applier.c
+	(renderer_render_wallpaper): Add support for adjusting wallpaper
+	brightness
 
-	* capplets/mime-type/*: removed.
+	* capplets/new-background-properties/main.c (ok_cb):
+	(cancel_cb): Disconnect ok, cancel handler signals before
+	destroying preferences widget
+	(setup_capplet_widget): Set signal handler ids for ok, cancel
+	signals
 
-	* po/POTFILES.in: Removed old mime-type capplet files, added
-	file-types capplet files.
+	* capplets/new-background-properties/prefs-widget.c
+	(prefs_widget_init): Connect signals for adjusting brightness
+	(adjust_brightness_toggled_cb): 
+	(brightness_adjust_changed_cb):
+	(set_brightness_controls_sensitive): Implement
 
-2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
+	* capplets/new-background-properties/preferences.h (struct
+	_Preferences): Add adjust_brightness, brightness_value
 
-	reviewed by: Jacob Berkman <jacob@ximian.com>
-	
-	Added a new interface so that capplets that do direct manipulation
-	of parameters can work in the control center environment.  Without
-	this interface, the control-center assumes that changes made
-	are lost when the control-center is closed.  The control center
-	also enables the Try and Revert button which do not apply
-	to an immediate change capplet that has no rollback state.
-	
-	* idl/control-center.idl:
-	Add new changes_are_imediate interface
+	* capplets/new-background-properties/preferences.c (preferences_load): 
+	(preferences_save): 
+	(preferences_read_xml): 
+	(preferences_write_xml): Support adjust_brightness, brightness_value
 
-	* control-center/capplet-widget-libs.c: (do_quit),
-	(capplet_corba_gtk_main_quit),
-	(capplet_corba_changes_are_immediate), (capplet_widget_corba_init):
-	New interface implementation.
-	
-	* control-center/capplet-widget-libs.h:
-	* control-center/capplet-widget.c:
-	* control-center/capplet-widget.h:
-	(capplet_widget_init),
-	(capplet_widget_changes_are_immediate):
-	New interface implementation.
-	
-	* control-center/corba-glue.c: (server_state_changed),
-	(server_changes_are_immediate):
-	New interface implementation.
-	
-2001-02-05  Simos Xenitellis  <simos@hellug.gr>
+	* capplets/new-background-properties/prefs-widget.c
+	(wallpaper_entry_changed_cb): Don't fail if prefs is NULL, just
+	return
 
-	* */*/*.desktop, */*/*.directory: Added Greek
-	translations.
+	* capplets/new-background-properties/main.c (ok_cb): 
+	(cancel_cb): Properly destroy the preferences widget
 
-2001-1-16  Mike Engber  <engber@eazel.com> 
+	* capplets/new-background-properties/prefs-widget.c
+	(prefs_widget_destroy): Implement
 
-	* capplets/background-properties/render-background.c: We were
-	leaking x-server memory. The test before the call to XKillClient,
-	nitems == 4, always failed. It should have been nitems == 1. Also,
-	we now free the ptr returned by XGetWindowProperty whenever it's
-	not NULL - previously we were never freeing it because of the
-	aforementioned problem, but in general, it needs to always be
-	freed. Also, we now examine the return value from XGetWindowProperty
-	before using its results.
+	* capplets/new-background-properties/preferences.c
+	(preferences_changed): Increased delay before autoapply
+	(preferences_load):
+	(preferences_save): Use string rather than bool for auto_apply
 
-Wed Jan 03 04:15:04 2001  George Lebl <jirka@5z.com>
+	* capplets/new-background-properties/prefs-widget.c
+	(auto_apply_toggled_cb): Implement
+	(read_preferences): 
+	(prefs_widget_init): Support auto_apply
 
-	* capplets/background-properties/render-background.c: Do what the
-	  comment says and create a new display connection.  Otherwise all
-	  resources get leaked to the root, and not just the root pixmap
-	  as intended.  Imlib pixmap cache should make leaking all resources
-	  even a more memorable experience.
+	* capplets/new-background-properties/preferences.h (struct
+	_Preferences): Add auto_apply 
+	* capplets/new-background-properties/preferences.c
+	(preferences_write_xml):
+	(preferences_read_xml):
+	(preferences_load):
+	(preferences_save): Support auto_apply
+ 	
+	* capplets/new-background-properties/applier.c (struct _Renderer):
+	Added srcx, srcy to clip wallpaper when it is too big
+	(get_geometry): Set srcx and srcy
+	(renderer_render_to_screen): Tweak rendering geometry to stay
+	within the wallpaper area on the drawable
 
-2000-11-23  Stanislav Brabec  <utx@penguin.cz> 
+	* capplets/new-background-properties/prefs-widget.c
+	(wallpaper_entry_changed_cb): Make sure the file specified is
+	actually a file
+
+	* capplets/new-background-properties/main.c (do_set_xml): Default
+	NULL for buffer
+
+	* capplets/new-background-properties/applier.c
+	(is_nautilus_running): Return if there is no Nautilus window
+	property
+
+2000-11-23  Stanislav Brabec  <utx@penguin.cz>
 
 	* */*/*.desktop, */*/*.directory: Remove trailing dot in english
 	strings containing menu name or tooltip (discussed in gnome-i18n
 	list). Updated cs.
 
-2000-11-21  Bradford Hovinen  <hovinen@helixcode.com>
-
-	Courtesy of Flavio Bruno Leitner <flavio@conectiva.com>:
-	* capplets/desktop-links/*.desktop:
-	* capplets/screensaver-properties/screensaver-properties.desktop:
-	* capplets/screensaver-properties/screensaver-desktops/screensaver-properties.desktop:
-	Add Brazilian Portugese translations to desktop files
-
-2000-11-08  Eskil Heyn Olsen  <eskil@eazel.com>
-
-	* capplets/background-properties/app-background.c:
-	* capplets/gnome-edit-properties/gnome-edit-properties.c:
-	* capplets/keyboard-properties/keyboard-properties.c:
-	* capplets/mime-type/mime-type-capplet.c:
-	* capplets/mouse-properties/mouse-properties.c:
-	* capplets/screensaver-properties/screensaver-properties-capplet.c:
-	* capplets/session-properties/session-properties.c:
-	* capplets/sound-properties/sound-properties.c:
-	* capplets/theme-switcher/main.c:
-	* capplets/ui-properties/ui-properties.c:
-	* capplets/url-properties/url-properties.c:
-	* capplets/wm-properties/wm-properties-capplet.c:
-	#include <locale.h> for setlocale
-
-2000-11-08  Robert Brady  <robert@suse.co.uk>
-
-	* capplets/screensaver-properties/screensaver-desktops: *.desktop
-	Added some Bulgarian translations from Dilian Palauzov 
-	<dido@bulgaria.com>
-
-2000-11-04  Bradford Hovinen  <hovinen@helixcode.com>
-
-	* capplets/screensaver-properties/parser.c (write_field):
-	Include break statement after default label to keep Digital Unix
-	cc happy
-
-2000-11-02  Yukihiro Nakai  <nakai@gnome.gr.jp>
-
-	* configure.in: Add Slovak(sk) to ALL_LINGUAS.
-
 2000-10-21  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* capplets/background-properties/render-background.c
-	(set_root_pixmap): Delete ESETROOT_PMAP_ID and _XROOTPMAP_ID
-	properties when pixmap is NULL, rather than changing to integer 0
+	* capplets/new-background-properties/applier.c (set_root_pixmap):
+	If the passed pixmap is None, delete the root pixmap properties
+	and don't try to set the background on the root window
+	(is_nautilus_running): Implement. Return TRUE iff Nautilus is
+	running, FALSE otherwise
+	(applier_apply_prefs): If Nautilus is running and we are rendering
+	to the root pixmap, just remove the root pixmap window property
+	(renderer_render_to_screen): Set root pixmap to None (i.e.,
+	destroy root pixmap) if we're rendering a solid background to the
+	root window
+	(is_nautilus_running): Fix only_if_exists parameters for XInternAtom
 
-2000-10-20  Christian Marillat  <marillat@debian.org>
- 
- 	* capplets/*: Add setlocale() call for all capplets.
+2000-10-16  Stanislav Brabec  <utx@penguin.cz>
+
+	* capplets/new-screensaver-properties/screensavers/Makefile.am:
+	Created noinst_DATA, to not fail in po.
 
 2000-10-14  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* capplets/background-properties/render-background.c 
-	(set_root_pixmap): Set ESETROOT_PMAP_ID and _XROOTPMAP_ID to
-	integer 0 if the pixmap passed was NULL
+	Courtesy John B Tunison <jtunison@andrew.cmu.edu>:
+	* capplets/*/Makefile.am (INCLUDES): Put
+	-I$(top_srcdir)/libcapplet before everything else
+
+2000-10-11  Stanislav Brabec  <utx@penguin.cz>
+
+	* */*/*.desktop: Remove trailing dot in english strings containing
+	menu name or tooltip (discussed in gnome-i18n list).
+	Updated cs.
+
+2000-10-09  Christophe Merlet  <christophe@merlet.net>
+
+	* capplets/*/*.desktop: Updated exec entry when necessary.
+	Updated french strings.
+
+2000-10-08  Bradford Hovinen  <hovinen@helixcode.com>
+
+	* configure.in: Bumped version no to 1.3.1
+
+	* capplets/new-mouse-properties/Makefile.am (EXTRA_DIST): Remove
+	erroneous ChangeLog entry
+
+	* capplets/new-background-properties/Makefile.am (EXTRA_DIST): Add
+ 	translation file
+
+	* capplets/new-bell-properties/Makefile.am (EXTRA_DIST): ditto
+
+	* capplets/new-mouse-properties/Makefile.am (EXTRA_DIST): ditto
+
+	* capplets/new-ui-properties/Makefile.am (EXTRA_DIST): ditto
+
+	* capplets/new-mouse-properties/preferences.c
+ 	(preferences_apply_now): Apply change by Eric Dorland
+ 	<dorland@lords.com> to use XGetPointerMapping
+
+	* configure.in (CFLAGS): Update list of Makefiles
+
+	* capplets/Makefile.am (always_built_SUBDIRS): Build new
+	sound-properties-capplet rather than old one
 
 2000-10-06  Bradford Hovinen  <hovinen@helixcode.com>
 
-	* capplets/background-properties/property-background.c
-	(fill_monitor): Set the root pixmap to NULL when optimizing for
- 	the no wallpaper case
+	* configure.in (AC_OUTPUT): Update list of Makefiles
 
-	* capplets/mime-type/mime-type-capplet.c (help_callback): Remove
- 	reference to GNOME User's Guide, replace with Control Center
- 	Documentation
+2000-09-24  Bradford Hovinen  <hovinen@helixcode.com>
 
-	From Mike Engber <engber@eazel.com>:
-	(background_try):
-	(background_cancel):
-	(background_revert):
-	(background_ok): Write settings before applying
-	(fill_monitor): Set last argument on make_background to FALSE if
-	there is no image
+	* capplets/new-ui-properties/preferences.c
+ 	(preferences_clone): Copy dialog_use_icons field
 
-2000-09-11  Bradford Hovinen  <hovinen@helixcode.com>
+	* capplets/new-ui-properties/prefs-widget-dialogs.c: Use standard
+	macro for dialog_icons
 
-	* configure.in: Bump version to 1.2.2
+	* capplets/new-ui-properties/prefs-widget.h
+ 	(struct _widget_desc_t): Remove field prefs_offset
 
-Sun Aug 13 19:55:20 2000  Owen Taylor  <otaylor@redhat.com>
+	* capplets/new-ui-properties/preferences.c
+ 	(preferences_get_dialog_icons): 
+	(preferences_set_dialog_icons): Implement
 
-	* capplets/background-properties/render-background.[ch]:
-	Fix problems with color matching for solid colors.
+	* capplets/new-ui-properties/prefs-widget.c (read_preferences): 
+	(register_callbacks): 
+	(toggled_cb): 
+	(selected_cb): Remove support for direct struct offset manipulation
 
-Mon Aug  7 14:11:16 2000  Owen Taylor  <otaylor@redhat.com>
+	* capplets/Makefile.am (always_built_SUBDIRS): Change
+	ui-properties to new-ui-properties
 
-	* capplets/background-properties/render-background.c: Fix
-	problems with backgrounds bigger than the screen.
+2000-09-12  Bradford Hovinen  <hovinen@helixcode.com>
 
-2000-08-11  Bradford Hovinen  <hovinen@helixcode.com>
+	* configure.in (CFLAGS): Set CFLAGS to -O2 -g -Wall by default
 
-	* capplets/mime-type/mime-info.c (write_mime_foreach): Check if
-	context is NULL before using it
+2000-09-10  Bradford Hovinen  <hovinen@helixcode.com>
+
+	* libcapplet/capplet-widget.h (struct _CappletWidget):
+	(struct _CappletWidgetClass): Add buffer to make sure class is
+ 	binary compatible with older library
+
+	* libcapplet/capplet-widget.c (capplet_widget_class_init): Attach
+ 	capplet_widget_realize (renamed capplet_widget_show) to "show"
+ 	method
+	(capplet_widget_destroy): Accept a GtkObject
+	(capplet_widget_show): Accept a GtkWidget
+	(capplet_widget_destroy): 
+	(capplet_widget_state_changed): 
+	(capplet_widget_show): 
+	(ok_cb): 
+	(cancel_cb): 
+	(set_controls_sensitive): Add assertion checks on preconditions
+	(capplet_widget_init): Removed unused variables
+	Removed undo_cb, about_cb, id_list
+
+	* capplets/new-background-properties/prefs-widget.c 
+	(read_preferences): Set gradient/wallpaper/background controls'
+	sensitivity depending on whether they are enabled
+
+	* capplets/new-background-properties/applier.c 
+	(renderer_render_to_screen): Fixed solid, no wallpaper case to
+	work correctly with preview window; don't set root pixmap if
+	neither wallpaper nor gradient enabled
+
+	* all: Chnaged #include "config.h" to #ifdef HAVE_CONFIG_H ...
+	* *.desktop, *.directory: Updated French translations
+	* po/POTFILES.in: Added screensaver XML files
+
+	Courtesy of Christophe Merlet <c.merlet@agglo-pau.fr>
+
+2000-08-23  Bradford Hovinen  <hovinen@helixcode.com>
+
+	* capplets/wm-properties/Makefile.am (INCLUDES): 
+	(wm_properties_capplet_LDADD): Add XML cflags/libs
+	
+	* capplets/wm-properties/wm-properties-capplet.c (do_get_xml): 
+	(do_set_xml): Implement
+	(main): Call do_{get|set}_xml() on --get and --set
+
+	* capplets/wm-properties/wm-list.c (wm_read_from_xml): 
+	(wm_list_read_from_xml): 
+	(wm_write_to_xml): 
+	(wm_list_write_to_xml): Implement
+
+2000-08-18  Bradford Hovinen  <hovinen@helixcode.com>
+
+	* capplets/keyboard-properties/Makefile.am (INCLUDES): 
+	(keyboard_properties_LDADD): Add XML cflags/libs
+
+	* capplets/keyboard-properties/keyboard-properties.c 
+	(keyboard_read_from_xml): 
+	(keyboard_write_to_xml): 
+	(do_get_xml): 
+	(do_set_xml): Implement
+	(main): Invoke do_get_xml() and do_set_xml() on --get and --set
+
+	* capplets/gnome-edit-properties/gnome-edit-properties.c
+	(edit_read): Only do combo box stuff if no_gui flag is not set
+	(edit_read): If no_gui flag set, search through possible_editors
+	manually and set original_info.name that way
+
+	* capplets/gnome-edit-properties/Makefile.am (INCLUDES): 
+	(gnome_edit_properties_capplet_LDADD): Add XML cflags/libs
+
+	* capplets/gnome-edit-properties/gnome-edit-properties.c 
+	(edit_read_from_xml): 
+	(edit_write_to_xml): 
+	(do_get_xml): 
+	(do_set_xml): Implement
+	(main): Call do_get_xml/do_set_xml when --get and --set passed
+
+	* capplets/bell-properties/bell-properties.c (read_from_xml):
+	Check if root node is correct before reading
+
+	* capplets/bell-properties/Makefile.am (INCLUDES): 
+	(bell_properties_capplet_LDADD): Added XML cflags/libs
+
+	* capplets/bell-properties/bell-properties.c (do_get_xml): 
+	(do_set_xml): Implement.
+	(main): Call above functions on --get and --set
+	(read_from_xml): 
+	(write_to_xml): Implement
+
+	* configure.in: Check for putenv and setenv and set appropriate
+	macros in config.h
+
+	* capplets/background-properties/app-background.c (main): Call
+	do_set_xml and do_get_xml when --get or --set detected
+
+	* capplets/background-properties/property-background.c 
+	(background_read_from_xml): 
+	(background_write_to_xml): Implement. Read/write XML snapshot of
+	the system's current state
+	(get_color): Implement. Read a color represented as a string and
+	fill in a GdkColor structure
+	(do_get_xml): 
+	(do_set_xml): Implement. Do operations required for a --get and
+	--set, respectively
+
+	* capplets/background-properties/Makefile.am (INCLUDES): Add XML_CFLAGS
+	(background_properties_capplet_LDADD): Add GNOME_XML_LIB
 
 Tue Aug  8 10:11:40 2000  Bradford Hovinen  <hovinen@helixcode.com>
 
@@ -451,204 +1623,91 @@ Tue Aug  8 10:11:40 2000  Bradford Hovinen  <hovinen@helixcode.com>
 	(keyboard_apply): Make sure XFree86 keyboard extension is present
 	before using it to read and apply settings
 
-Sat Aug  5 16:24:33 2000  Owen Taylor  <otaylor@redhat.com>
-
-	* configure.in capplets/theme-selector/lister.c: Fix portability
-	problems with use of getline on non-glibc with a simple
-	portable version.
-
-2000-08-04  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in: Added "sl" to ALL_LINGUAS.
-	
-2000-08-01  Jonathan Blandford  <jrb@redhat.com>
-
-	* configure.in: version upped in preperation for release.
-	
-	* capplets/background-properties: Patch from Owen Taylor to add
-	embossing-logo support to backgrounds.  It's pretty neat.
-
-	* control-center/callbacks.c: Use the right help file
-	
-	* doc/C/*: Update the docs.  Now the dist actually installs the
-	HTML files instead of the sgml files.
-
-	* capplets/theme-selector/*: Massize cleanup of ugly code. (TM)
-
-2000-07-20  Jonathan Blandford  <jrb@redhat.com>
-
-	* capplets/screensaver-properties/callbacks.c: fix bug where
-	changing screens with 'No Screensaver' selected caused things to
-	crash.
-	
-2000-07-11  Robin * Slomkowski <rslomkow@eazel.com>
-
-	* control-center.spec.in: temporary hack to make rpms
-
 2000-06-16  Karl Eichwalder  <ke@suse.de>
 
 	* capplets/gnome-edit-properties/gnome-edit-properties.desktop:
 	Improve `de'.
 
-2000-06-08  Fatih Demir	<kabalak@gmx.net>
+2000-06-12 Pauli Virtanen <pauli.virtanen@saunalahti.fi>
 
-	* capplets/*/*.desktop & capplets/*/*.directory :
-		Added the Turkish entries.
+	* finnish translation update: 
+	capplets/desktop-links/Documents.directory
+	capplets/desktop-links/Session.directory
+	capplets/desktop-links/UIOptions.directory
+	capplets/gnome-edit-properties/gnome-edit-properties.desktop
+	capplets/screensaver-properties/screensaver-desktops/screensaver-properties.desktop
+	capplets/screensaver-properties/screensaver-properties.desktop
+	capplets/session-properties/session-properties.desktop
+	capplets/sound-properties/sound-properties.desktop
+	capplets/ui-properties/dialogs.desktop
+	capplets/ui-properties/mdi.desktop
+	capplets/ui-properties/ui-properties.directory
+	capplets/url-properties/url-properties.desktop
+	capplets/wm-properties/wm-properties.desktop
+	control-center/gnomecc.desktop
 
-2000-05-25  Jonathan Blandford  <jrb@redhat.com>
+2000-04-15  Fatih Demir	<kabalak@gmx.net>
+
+	* configure.in : Added tr to ALL_LINGUAS .
+
+2000-04-10  Fatih Demir	<kabalak@gmx.net>
+
+	* *.desktop : Added [tr] ...
+	
+	* capplets/desktop-links/*.directory : Added [tr] ..
+
+2000-04-08  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* *.desktop: added Lithuanian strings from Gediminas Paulauskas
+
+2000-03-29  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in (ALL_LINGUAS): Add Lithuanian (lt)
+
+2000-03-27  Karl EICHWALDER  <ke@suse.de.de>
+
+	* capplets/mime-type/mime-info.c: Add some more dots to messages.
+
+2000-03-27  Karl EICHWALDER  <ke@suse.de>
+
+	* configure.in (ALL_LINGUAS): Add ca, el, hr, and uk. Sort
+	alphabetically.
+
+2000-02-06  Iain Holmes  <ih@csd.abdn.ac.uk>
+
+	* configure.in: Add check for Libglade.
+
+2000-01-31  Yuan-Chung Cheng <platin@linux.org.tw>
+
+        * /po/zh_CN.GB2312.po: Added po file from TLCDT
+        * configure.in: Added zh_CN.GB2312 po entry
+
+2000-01-13  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Massive changes to build system to permit
+	gnome-2.0 compilation.  From here on out, you need gnome-2.0 or
+	greater installed.
+
+2000-01-07  Mikael Djurfeldt  <mdj@thalamus.nada.kth.se>
 
 	* capplets/background-properties/property-background.c
-	(make_root_pixmap): added patch from miguel to fix on Solaris.
+	(fill_monitor): Corrected centering of image so that it works also
+	for images larger than the root window.
 
-2000-05-22  Jacob Berkman  <jacob@helixcode.com>
+1999-12-23  Matthias Warkus  <mawa@iname.com>
 
-	* capplets/theme-switcher/main.c (main): 
+	* capplets/desktop-links/Multimedia.directory: use right icon
 
-	* capplets/theme-switcher/gui.c (install_theme_callback): 
+1999-11-10  Jonathan Blandford  <jrb@redhat.com>
 
-	* capplets/sound-properties/sound-properties.c (main): 
+	*
+	capplets/screensaver-properties/screensaver-desktops/Makefile.am:
+	new desktop entries.
 
-	* capplets/screensaver-properties/screensaver-properties-capplet.c (main): 
+1999-10-24  Ruben Lopez  <ryu@mundivia.es>
 
-	* capplets/mime-type/mime-type-capplet.c (main): 
-
-	* capplets/background-properties/app-background.c (main): set the
-	window icon
-
-	* configure.in: check for new gnome-libs
-
-2000-05-20  Kjartan Maraas  <kmaraas@online.no>
-
-	* capplets/mime-type/edit-window.c: Added #include <config.h>
-	and initialized a string in an array to make it work.
-	
-2000-05-20  Kjartan Maraas  <kmaraas@online.no>
-
-	* capplets/mime-type/new-mime-window.c: Moved #include <config.h>
-	to the top to make the translations work.
-	
-2000-05-18  Szabolcs BAN <shooby@gnome.hu>
-
-	* po/hu.po, capplets/*/*.desktop: Added/updated Hungarian
-	  translations.
-
-2000-05-15  Pablo Saratxaga <pablo@mandrakesoft.com>
-
-	* configure.in,po/tr.po: Added Turkish po file from HEAD
-
-2000-05-14  Andreas Hyden  <a.hyden@cyberpoint.se>
-
-	* capplets/desktop-links/Documents.directory,
-	* capplets/desktop-links/Session.directory:
-	  Added Danish translation from Kenneth.
-	
-2000-05-13  James M. Cape  <jcape@jcinteractive.com>
-
-	* capplets/sound-properties/sound-properties.c: Changed double IN
-	border around the CList to a single IN border.
-
-2000-05-13  Karl Eichwalder  <ke@suse.de>
-
-	* capplets/desktop-links/Appearances.directory: Sort alphabetically.
-
-2000-05-11  Andreas Hyden  <a.hyden@cyberpoint.se>
-
-	* capplets/desktop-links/Documets.directory: Updated Swedish translation.
-
-2000-05-11  Andreas Hyden  <a.hyden@cyberpoint.se>
-
-	* capplets/desktop-links/Documents.directory: Added Swedish translation.
-	* capplets/desktop-links/Session.directory: Added Swedish translation.
-
-2000-05-05  Jacob Berkman  <jacob@helixcode.com>
-
-	* capplets/background-properties/property-background.c (set_enabled): 
-	(background_apply): 
-	(background_write): 
-	(background_read): 
-	(background_setup): replace some broken and stupid code with something
-	that works and is a bit more intelligent
-
-2000-05-04  Yukihiro Nakai <nakai@gnome.gr.jp>
-
-	* capplets/desktop-links/Documents.directory: Add 'ja'.
-
-2000-05-03  Yukihiro Nakai <nakai@gnome.gr.jp>
-
-	* capplets/desktop-links/Sessoin.directory: Add 'ja'.
-
-2000-04-16  Karl EICHWALDER  <ke@suse.de>
-
-	* capplets/desktop-links/Desktop.directory: Revive entries from
-	revision 1.26.
-
-2000-04-15  Karl EICHWALDER  <ke@suse.de>
-
-	* capplets/desktop-links/Gnome.directory,
-	capplets/desktop-links/Desktop.directory,
-	capplets/desktop-links/Peripherals.directory (Comment): Improve `de'.
-	* capplets/desktop-links/Session.directory,
-	capplets/desktop-links/Documents.directory: Add `de'.
-
-2000-04-11  Pablo Saratxaga <pablo@mandrakesoft.com>
-
-	* configure.in (ALL_LINGUAS): merged with HEAD languages
-
-2000-04-11  Jesus Bravo Alvarez  <jba@pobox.com>
-
-	* configure.in (ALL_LINGUAS): Added Galician (gl)
-
-	* *.desktop: Added Galician entries to some of these files
-                     from Rubén López <ryu@mundivia.es>
-
-2000-03-30  Jonathan Blandford  <jrb@redhat.com>
-
-	* configure.in: 1.0.53 released.
-
-2000-03-30  Jacob Berkman  <jacob@helixcode.com>
-
-	* configure.in: remove bell-properties' Makefile
-
-2000-03-29  Jonathan Blandford  <jrb@redhat.com>
-
-	* configure.in: move to version 1.0.52
-
-	* capplets/background-properties/property-background.c
-	(color_setup): add _() where appropriate.
-
-	* capplets/keyboard-properties/keyboard-properties.c: Merge bell
-	properties in with keyboard properties.
-
-	* capplets/theme-switcher/gui.c (make_main): moved things around a
-	little.
-
-	* capplets/background-properties/property-background.c: UI clean
-	up.  Based on loosley on code by <justin@helixcode.com>, but greatly
-	rewritten.
-
-2000-03-23  Jacob Berkman  <jacob@helixcode.com>
-
-	* capplets/desktop-links/Multimedia.directory: use the
-	multimedia icon
-
-	* capplets/desktop-links/Makefile.am: add a Session directory
-
-2000-03-09  Peter Hawkins  <peterhawkins@ozemail.com.au>
-
-	* capplets/wm-properties/wm-properties-capplet.c (cancel_callback):
-	preliminary fix to stop capplet from killing window manager if there are
-	no window managers in its list on a cancel.
-
-1999-11-01  Jonathan Blandford  <jrb@redhat.com>
-
-	* capplets/wm-properties/wm-properties-capplet.c (restart): patch
-	from Dan Winship <danw@MIT.EDU> to fix "non-constant initializer"
-	warning.
-
-1999-10-20  Martin Norbäck  <norpan@bigfoot.com>
-
-	* capplets/screensaver-properties/screensaver-desktops/*.desktop:
-	added some translations (many left to do)
+	* Added Galician language (gl.po)
+	* Updated configure.in to support this language
 
 1999-10-05  Jonathan Blandford  <jrb@redhat.com>
 

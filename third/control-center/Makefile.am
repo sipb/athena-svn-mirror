@@ -1,23 +1,27 @@
+SUBDIRS = po libsounds libbackground libwindow-settings gnome-settings-daemon capplets control-center idl schemas
 
-always_built_SUBDIRS = control-center capplets idl doc omf-install man
+#I removed the root-manager for now
+#
+# it generated this error :
+# root-manager.c:55:31: security/pam_appl.h: No such file or directory
+# while compiling. I guess we need to check for pam or something
+# in the configure.in file. Since we are not using it now, i will
+# remove it from the default build. Chema
 
-SUBDIRS = intl po macros \
-	 $(always_built_SUBDIRS)
-
-#DIST_SUBDIRS = intl po macros $(always_built_SUBDIRS)
-
-
-EXTRA_DIST = \
-	sgmldocs.make		\
-	control-center.spec.in	\
-	xml-i18n-extract.in	\
-	xml-i18n-merge.in	\
-	xml-i18n-update.in
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = control-center2.png
 
 dist-hook: control-center.spec
 	cp control-center.spec $(distdir)
 
-## to automatically rebuild aclocal.m4 if any of the macros in `macros/' change
-@MAINT@include macros/macros.dep
-@MAINT@macros/macros.dep: macros/Makefile.am
-@MAINT@	cd macros && $(MAKE) macros.dep
+#MAINTAINERCLEANFILES = \
+#	intltool-extract \
+#	intltool-merge \
+#	intltool-update
+
+EXTRA_DIST = \
+	control-center.spec.in	\
+	intltool-extract.in \
+	intltool-merge.in \
+	intltool-update.in \
+	control-center2.png
