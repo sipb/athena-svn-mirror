@@ -8,18 +8,26 @@ XSGI=/usr/bin/X11/Xsgi
 
 case "$1" in
   'start')
-		if $IS_ON windowsystem && test -x $XSGI || $IS_ON xdm; then
-			/etc/athena/nanny DEBUG=5 MODE=X
-		fi
+	if $IS_ON windowsystem && test -x $XSGI || $IS_ON xdm; then
+		rm -rf /tmp/.nanny
+		mkdir /tmp/.nanny
+		chmod 755 /tmp/.nanny
+		/etc/athena/nanny DEBUG=5 MODE=X
 	fi
         ;;
 
   'stop')
-	/etc/athena/nanny die
+	if [ `/etc/athena/nanny ping` != "MODE=DEAD" ]; then
+	  /etc/athena/nanny MODE=NONE		# Shut down X
+	  /etc/athena/nanny die			# Shut down nanny
+	fi
+
+	/sbin/killall -k 10 -TERM axdm		# Shut down xdm
+	/sbin/killall -k 10 -TERM Xsgi		# Usually redundant
         ;;
 
   *)
-        echo "usage: /etc/init.d/xdm {start|stop}"
+        echo "usage: /etc/init.d/axdm {start|stop}"
         ;;
 esac
 
