@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2003-05-03 15:29:16 ghudson Exp $
+# $Id: Makefile,v 1.15 2003-07-24 18:46:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -51,7 +51,7 @@ install:
 	chgrp 0 ${DESTDIR}${ATHLIBDIR}/stats/*
 	(cd ${DESTDIR} && find . -print | sort) > FILES
 	install -c -m 444 -o 0 -g 0 FILES ${DESTDIR}${UPDATE}/FILES
-	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
+	install -c -m 444 -o 0 -g 0 rvdinfo ${DESTDIR}/.rvdinfo
 
 clean:
 	rm -f fix_owners.o fix_owners rvdinfo FILES
