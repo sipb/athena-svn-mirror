@@ -1,6 +1,9 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.8 1990-12-02 23:10:25 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.9 1990-12-31 21:25:37 lwvanels Exp $
  */
+
+#include "requests.h"
+#include "system.h"
 
 #include <sys/types.h>
 #include <sys/file.h>
@@ -35,8 +38,9 @@ struct 	entry {
   struct entry *prev;	/* prev entry in the chain */
 };
 
-#define VERSION 	0
 #define SYSLOG_FACILITY LOG_LOCAL6
+#define LOG_DIRECTORY "/usr/spool/olc"
+
 
 #ifdef __STDC__
 # define        P(s) s
@@ -50,49 +54,20 @@ struct 	entry {
 
 #define MONITOR_ACL "/usr/lib/olc/acls/monitor.acl"
 
+/* system */
+char *inet_ntoa P((struct in_addr in));
+int accept P((int s, struct sockaddr *addr, int *addrlen));
+int bind P((int s, struct sockaddr *name, int namelen));
+int connect P((int s, struct sockaddr *name, int namelen));
+int fstat P((int fd, struct stat *buf));
+int stat P((char *path, struct stat *buf));
+
+
 /* Acl Library */
 int acl_check P((char *acl, char *principal));
 void acl_canonicalize_principal P((char *principal , char *canon ));
 int acl_exact_match P((char *acl , char *principal ));
 #endif /* KERBEROS */
-
-
-/* system */
-int accept P((int s, struct sockaddr *addr, int *addrlen));
-int bind P((int s, struct sockaddr *name, int namelen));
-int bzero P((void *b, int length));
-void *calloc P((unsigned nelem, unsigned elsize));
-int close P((int d));
-int exit P((int status));
-int free P((void *ptr));
-int fstat P((int fd, struct stat *buf));
-int getdtablesize P(());
-struct servent *getservbyname P((char *name, char *proto));
-char *index P((char *s, int c));
-char *inet_ntoa P((struct in_addr in));
-void ioctl P((int d, unsigned int request, char *argp));
-int listen P((int s, int backlog));
-off_t lseek P((int d, off_t offset, int whence));
-void *malloc P((unsigned size));
-int open P((char *path, int flags, int mode));
-void openlog P((char *ident, int logopt, int facility));
-#ifdef aix
-void perror P((char *s));
-#else
-int perror P((char *s));
-#endif
-int psignal P((unsigned sig, char *s));
-int read P((int d, void *buf, int nbytes));
-int setsockopt P((int s, int level, int optname, void *optval, int optlen));
-int shutdown P((int s, int how));
-int socket P((int domain, int type, int protocol));
-int stat P((char *path, struct stat *buf));
-int strcmp P((char *s1, char *s2));
-char *strcpy P((char *s1, char *s2));
-int strlen P((char *s));
-char *strncpy P((char *s1, char *s2, int n));
-void syslog P((int priority, char *message, ...));
-int write P((int d, void *buf, int nbytes));
 
 /* rpd.c */
 int clean_up P((int signal));
@@ -103,6 +78,9 @@ char *get_log P((char *username , int instance , int *result ));
 int get_bucket_index P((char *username , int instance ));
 int allocate_entry P((void ));
 void delete_entry P((struct entry *ent ));
+
+/* get_nm.c */
+char *get_nm P((char *username , int instance , int *result , int nuke ));
 
 /* handle_request.c */
 void handle_request P((int fd, struct sockaddr_in from));
