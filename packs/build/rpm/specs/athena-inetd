@@ -47,7 +47,7 @@ EOF
 
 chkconfig --add athena-inetd
 
-%triggerin -- netkit-base
+%triggerin -- inetd
 cp /etc/inetd.conf.minimal /etc/inetd.conf
 
 %triggerin -- setup
