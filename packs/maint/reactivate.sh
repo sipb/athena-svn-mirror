@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.17 1994-06-09 12:54:13 cfields Exp $
+# $Id: reactivate.sh,v 1.18 1994-06-29 11:10:26 vrt Exp $
 
 trap "" 1 15
 
@@ -54,6 +54,14 @@ fi
 if [ -f /etc/athena/zhm.pid ] ; then 
 	/bin/kill -HUP `/bin/cat /etc/athena/zhm.pid`
 fi
+
+case "${MACHINE}" in
+RSAIX)
+	chmod 666 /dev/hft
+	;;
+*)
+	;;
+esac
 
 if [ $full ]; then		# START tmp clean
 # Clean temporary areas (including temporary home directories)
