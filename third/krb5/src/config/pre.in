@@ -298,7 +298,7 @@ COMPILE_ET_C= $(AWK) -f $(SRCTOP)/util/et/et_c.awk outfile=$@
 
 # ss command table rules
 #
-MAKE_COMMANDS= $(BUILDTOP)/util/ss/mk_cmds
+MAKE_COMMANDS= mk_cmds
 
 .ct.c:
 	$(MAKE_COMMANDS) $<
