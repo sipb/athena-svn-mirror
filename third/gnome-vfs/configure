@@ -1338,7 +1338,7 @@ else
   fi
 fi
 
-for ac_prog in gawk mawk nawk awk
+for ac_prog in mawk gawk nawk awk
 do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -2185,19 +2185,19 @@ echo "configure:2168: checking extra library \"$i\"" >&5
 	fi
 
 
-  VFS_GNOME_CFLAGS="`gnome-config --cflags gnome`"
-  VFS_GNOMEUI_CFLAGS="`gnome-config --cflags gnome gnomeui`"
-  VFS_CAPPLET_CFLAGS="`gnome-config --cflags gnome gnomeui capplet`"
-  VFS_GNOME_LIBS="`gnome-config --libs gnome`"
-  VFS_GNOMEUI_LIBS="`gnome-config --libs gnome gnomeui`"
-  VFS_CAPPLET_LIBS="`gnome-config --libs gnome gnomeui capplet`"
+  VFS_GNOME_CFLAGS="\`gnome-config --cflags gnome\`"
+  VFS_GNOMEUI_CFLAGS="\`gnome-config --cflags gnome gnomeui\`"
+  VFS_CAPPLET_CFLAGS="\`gnome-config --cflags gnome gnomeui capplet\`"
+  VFS_GNOME_LIBS="\`gnome-config --libs gnome\`"
+  VFS_GNOMEUI_LIBS="\`gnome-config --libs gnome gnomeui\`"
+  VFS_CAPPLET_LIBS="\`gnome-config --libs gnome gnomeui capplet\`"
   VFS_GLIB_CONFIG="glib-config"
 else
-  VFS_GNOME_CFLAGS="`glib-config-2.0 --cflags`"
-  VFS_GNOMEUI_CFLAGS="`glib-config-2.0 --cflags`"
+  VFS_GNOME_CFLAGS="\`glib-config-2.0 --cflags\`"
+  VFS_GNOMEUI_CFLAGS="\`glib-config-2.0 --cflags\`"
   VFS_CAPPLET_CFLAGS=
-  VFS_GNOME_LIBS="`glib-config-2.0 --libs`"
-  VFS_GNOMEUI_LIBS="`glib-config-2.0 --libs`"
+  VFS_GNOME_LIBS="\`glib-config-2.0 --libs\`"
+  VFS_GNOMEUI_LIBS="\`glib-config-2.0 --libs\`"
   VFS_CAPPLET_LIBS=
   VFS_GLIB_CONFIG="glib-config-2.0"
 fi
@@ -6291,18 +6291,18 @@ else
   INSIDE_GNOME_DOCU_FALSE=
 fi
 
-VFSCORBA_LIBDIR='-L${libdir}'
-VFSCORBA_INCLUDEDIR='-I${includedir} -I${libdir}/vfs/include'
-VFSCORBA_INCLUDEDIR="$VFSCORBA_INCLUDEDIR $VFS_GNOMEUI_CFLAGS `orbit-config --cflags server`"
-VFSCORBA_LIBS="-lgnomevfs -lgnomevfs-corba $VFS_GNOMEUI_LIBS `orbit-config --libs server`"
+VFSCORBA_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+VFSCORBA_INCLUDEDIR='-I$$ATHTOOLROOT${includedir} -I$$ATHTOOLROOT${libdir}/vfs/include'
+VFSCORBA_INCLUDEDIR="$VFSCORBA_INCLUDEDIR $VFS_GNOMEUI_CFLAGS \`orbit-config --cflags server\`"
+VFSCORBA_LIBS="-lgnomevfs -lgnomevfs-corba $VFS_GNOMEUI_LIBS \`orbit-config --libs server\`"
 
 
 
 
-VFSPTHREAD_LIBDIR='-L${libdir}'
-VFSPTHREAD_INCLUDEDIR='-I${includedir} -I${libdir}/vfs/include'
+VFSPTHREAD_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+VFSPTHREAD_INCLUDEDIR='-I$$ATHTOOLROOT${includedir} -I$$ATHTOOLROOT${libdir}/vfs/include'
 VFSPTHREAD_INCLUDEDIR="$VFSPTHREAD_INCLUDEDIR $VFS_GNOME_CFLAGS"
-VFSPTHREAD_LIBS="-lgnomevfs -lgnomevfs-pthread $VFS_GNOME_LIBS `$VFS_GLIB_CONFIG --libs gthread`"
+VFSPTHREAD_LIBS="-lgnomevfs -lgnomevfs-pthread $VFS_GNOME_LIBS \`$VFS_GLIB_CONFIG --libs gthread\`"
 
 
 
@@ -6315,9 +6315,9 @@ cat >> confdefs.h <<EOF
 EOF
 
 
-VFS_LIBS="-lgnomevfs `$VFS_GLIB_CONFIG --libs gthread gmodule`"
-VFS_LIBDIR='-L${libdir}'
-VFS_INCLUDEDIR='-I${includedir} -I${libdir}/vfs/include'" `$VFS_GLIB_CONFIG --cflags gthread gmodule`"
+VFS_LIBS="-lgnomevfs \`$VFS_GLIB_CONFIG --libs gthread gmodule\`"
+VFS_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+VFS_INCLUDEDIR='-I$$ATHTOOLROOT${includedir} -I$$ATHTOOLROOT${libdir}/vfs/include'" \`$VFS_GLIB_CONFIG --cflags gthread gmodule\`"
 
 
 
