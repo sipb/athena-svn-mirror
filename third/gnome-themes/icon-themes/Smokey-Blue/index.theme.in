@@ -1,0 +1,16 @@
+[Icon Theme]
+_Name=Smokey-Blue
+_Comment=Smokey-Blue
+Inherits=gnome
+Directories=48x48/filesystems,48x48/emblems
+
+[48x48/filesystems]
+Size=48
+Context=FileSystems
+Type=Scaled
+
+[48x48/emblems]
+Size=48
+Context=Emblems
+Type=Scaled
+

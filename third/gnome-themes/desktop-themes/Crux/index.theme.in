@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Crux
+Type=X-GNOME-Metatheme
+_Comment=Smooth gradients with teal highlights
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Crux
+MetacityTheme=Crux
+IconTheme=Crux

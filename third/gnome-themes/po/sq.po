@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-13 16:46+0100\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-02-02 14:13+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -70,3 +70,87 @@ msgstr "Tekst dhe ikona të mëdha pa volum"
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
 msgstr "Paraqitje e zmadhuar me kontrast të ulët"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Crux"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Smooth gradients with teal highlights"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Pamje ngjyrë portokalli e pluhrëzuar"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Grand Canyon"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Një paraqitje minimale"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Grimca"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Ocean Dream"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "Ngjyrat e bregdetit"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "E thjeshtë"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "Paraqitje jo shumë e ngarkuar, rendiment i lartë"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "Një paraqitje e embël e xhamtë"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "Smokey Blu"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "Tradicionale"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "Paraqitja 3D tradicionale hard-edged"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "Flat-Blue"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "Sandy"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "Smokey-Blu"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "Smokey-i kuq"
+
+#~ msgid "Default"
+#~ msgstr "Prezgjedhur"
+
+#~ msgid "Plain"
+#~ msgstr "Plain"
+
+#~ msgid "Default Gnome Theme"
+#~ msgstr "Tema e Prezgjedhur e Gnome"
+
+#~ msgid "Gnome"
+#~ msgstr "Gnome"

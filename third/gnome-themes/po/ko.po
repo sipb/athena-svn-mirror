@@ -3,13 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 0.6\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-05 18:43+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Project-Id-Version: gnome-themes 1.0\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-01-25 14:46+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -70,3 +69,88 @@ msgstr "옅고 큰 글씨와 아이콘"
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
 msgstr "저대비 확대"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "남십자성"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "부드럽게 점점 밝아지는 검둥오리색"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+#, fuzzy
+msgid "Dusty orange appearance"
+msgstr "부드럽고 잔잔한 모양새"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr ""
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "간단주의자를 위한 모양새"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "흐림"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "바다의 꿈"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "바닷가의 빛깔"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr ""
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "가벼운 모양새, 높은 성능"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "부드럽고 잔잔한 모양새"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "푸르스름"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr ""
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "전통적인 딱딱한 삼차원 모양새"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "단조로운 푸른빛"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "모래 투성이"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "푸르스름"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "붉으스름"
+
+#~ msgid "Default"
+#~ msgstr "기본 테마"
+
+#~ msgid "Plain"
+#~ msgstr "단순"
+
+#~ msgid "Default Gnome Theme"
+#~ msgstr "기본 그놈 테마"
+
+#~ msgid "Gnome"
+#~ msgstr "그놈"

@@ -1,14 +1,16 @@
 # French Tranlation of gnome-themes.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
-# Baptiste Mille-Mathias <bmm80@ifrance.com>, 2002.
+# Copyright (C) 2002-2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-themes package.
+# maintainer: Baptiste Mille-Mathias <bmm80@ifrance.com>, 2002.
+# Christophe Fergeau <teuf@users.sourceforge.net>, 2003.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 0.4\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2002-11-26 20:56+0100\n"
-"Last-Translator: Baptiste MILLE-MATHIAS <bmm80@ifrance.com>\n"
+"Project-Id-Version: gnome-themes 2.1.99\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-02-01 20:25+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,60 +22,136 @@ msgstr "Texte et icônes noir sur blanc"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
-msgstr "Grand contraste"
+msgstr "Grand fort"
 
 #: HighContrastInverse/index.theme.in.h:1
 msgid "High Contrast Inverse"
-msgstr "Grand contraste inversé"
+msgstr "Contraste fort inversé"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
 msgstr "Texte et icônes blanc sur noir"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-#, fuzzy
 msgid "High Contrast Large"
-msgstr "Grand contraste"
+msgstr "Contraste élevé, grande taille"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large black-on-white text and icons"
-msgstr "Texte et icônes noir sur blanc"
+msgstr "Grand texte et grandes icônes en noir sur fond blanc"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
-#, fuzzy
 msgid "High Contrast Large Print Inverse"
-msgstr "Grand contraste inversé"
+msgstr "Contraste élevé inversé, grande taille"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large white-on-black text and icons"
-msgstr "Texte et icônes blanc sur noir"
+msgstr "Grand texte et grandes icônes en blanc sur fond noir"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
-msgstr ""
+msgstr "Grande taille"
 
 #: LargePrint/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large text and icons"
-msgstr "Texte et icônes noir sur blanc"
+msgstr "Grand texte et grandes icônes"
 
 #: LowContrast/index.theme.in.h:1
-#, fuzzy
 msgid "Low Contrast"
-msgstr "Grand contraste"
+msgstr "Contraste faible"
 
 #: LowContrast/index.theme.in.h:2
-#, fuzzy
 msgid "Muted text and icons"
-msgstr "Texte et icônes blanc sur noir"
+msgstr "Texte et icônes utilisant des couleurs sombres"
 
 #: LowContrastLargePrint/index.theme.in.in.h:1
-#, fuzzy
 msgid "Large muted text and icons"
-msgstr "Texte et icônes noir sur blanc"
+msgstr "Texte et icônes utilisant des couleurs sombres, grande taille"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
-msgstr ""
+msgstr "Contraste faible, grande taille"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Crux"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Aspect arrondi avec des reflets pourpres"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Une apparence orange cendrée"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Grand Canyon"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Une apparence minimaliste"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Mist"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Ocean Dream"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "Les couleurs de l'océan"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "Simple"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "Apparence sobre, performances élevées"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "Une douce apparence glacée"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "Smokey-Blue"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "Traditionnel"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "Apparence 3D traditionnelle"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "Flat-Blue"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "Sandy"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "Smokey-Blue"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "Smokey-Red"
+
+#~ msgid "Default"
+#~ msgstr "Défaut"
+
+#~ msgid "Plain"
+#~ msgstr "Classique"
+
+#~ msgid "Default Gnome Theme"
+#~ msgstr "Thème Gnome par défaut"
+
+#~ msgid "Gnome"
+#~ msgstr "Gnome"

@@ -1,3 +1,148 @@
+2003-02-03  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+	* gtk-themes/Simple/gtkrc:
+
+	Argh! No haxoring themes. ThinIce we can depend
+	on released.
+	
+2003-02-03  Calum Benson  <calum.benson@sun.com>
+
+	* HighContrastLargePrint/Makefile.am:
+	* HighContrastLargePrint/icons/Makefile.am:
+	* HighContrastLargePrintInverse/Makefile.am:
+	* LowContrast/Makefile.am:
+	* LowContrastLargePrint/Makefile.am:
+	* README:
+	* configure.in:
+	* gtk-themes/Simple/gtkrc:
+
+	As per Bill's request, move the non-core a11y themes' 
+	index.theme files aside after installation unless the
+	build has been configured with --enable-all-themes.
+	Remove dependency on thinice engine from Simple theme.
+
+2003-02-01  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added "pt" to ALL_LINGUAS.
+
+2003-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* gtk-themes/Simple/Makefile.am:
+
+	Install Simple theme into Simple directory.
+
+2003-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+	* desktop-themes/Default/Makefile.am:
+	* desktop-themes/Default/index.theme.in:
+	* desktop-themes/Makefile.am:
+	* desktop-themes/Plain/Makefile.am:
+	* desktop-themes/Plain/index.theme.in:
+	* desktop-themes/Simple/Makefile.am:
+	* desktop-themes/Simple/index.theme.in:
+	* desktop-themes/Traditional/Makefile.am:
+	* desktop-themes/Traditional/index.theme.in:
+	* po/POTFILES.in:
+
+	Do name changes... Default->Simple, Plain->Traditional
+	
+2003-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* po/POTFILES.in:
+
+	Remove gnome icon theme from translation.	
+
+2003-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* HighContrastLargePrint/Makefile.am:
+	* HighContrastLargePrintInverse/Makefile.am:
+	* LowContrast/Makefile.am:
+	* LowContrastLargePrint/Makefile.am:
+
+	Don't install these desktop themes.
+	
+	* configure.in:
+	* gtk-themes/Makefile.am:
+	* metacity-themes/Makefile.am:
+
+	Handle CVS rename of "gnome" theme to "Simple".
+	
+2003-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* COPYING:
+
+	GPL license.
+	
+	* gtk-themes/Grand-Canyon/gtkrc:
+
+	Fix so it doesn't generate a bunch of warnings.
+	
+	* po/POTFILES.in:
+
+	Add desktop-themes/Grand-Canyon/index.theme.in
+	
+2003-01-27  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added ja into ALL_LINGUAS
+
+2003-01-26  Yanko Kaneti  <yaneti@declera.com>
+
+	* gnome-themes.spec.in: Remove some mysterious duplication.
+	Add ChangeLog and NEWS to %doc.
+
+2003-01-25  Seth Nickell  <snickell@stanford.edu>
+
+	* gtk-themes/Crux/Makefile.am:
+
+	More dist fixes. Now builds tarballs. Huzzah!
+	
+2003-01-25  Seth Nickell  <snickell@stanford.edu>
+
+	* desktop-themes/Grand-Canyon/index.theme.in:
+
+	Make translatable.
+
+2003-01-25  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* configure.in:
+	* gnome-themes.spec.in:
+
+	Patch from Yanko Kaneti <yaneti@declera.com> to
+	make RPMs / dist work.
+	
+2003-01-23  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* autogen.sh:
+	* configure.in:
+
+	Make it build icon themes.
+	
+2003-01-23  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added "sk" to ALL_LINGUAS.
+
+2003-01-22  Seth Nickell  <snickell@stanford.edu>
+
+	* AUTHORS:
+	* MAINTAINERS:
+	* Makefile.am:
+	* configure.in:
+
+	Merge stuff with gnome-desktop-themes.
+	
+2003-01-22  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), Macedonian (mk)
+	and Dutch (nl) to ALL_LINGUAS
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2003-01-20  Calum Benson  <calum.benson@sun.com>
 
 	Added final icons and spec file for first GNOME 2.2

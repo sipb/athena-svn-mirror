@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Ocean Dream
+Type=X-GNOME-Metatheme
+_Comment=The colours of the seashore
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=LighthouseBlue
+MetacityTheme=Sandwish
+IconTheme=Sandy

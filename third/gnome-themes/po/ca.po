@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 0.7\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-17 11:56+0100\n"
+"Project-Id-Version: gnome-themes 2.1.99\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-01-31 12:37+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,3 +69,75 @@ msgstr "Text i icones grans en mat"
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
 msgstr "Contrast baix per a impressió gran"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Crux"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Gradients suaus amb resaltats blau verdós"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Una aparença ataronjada"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Gran Canyó"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Una aparença minimalista"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Boira"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Somni oceànic"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "Els colors del cavall marí"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "Simple"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "Aparença plana, alt rendiment"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "Una aparença suau i cristalina"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "Blau fumejant"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "Tradicional"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "Aparença tradicional amb cantons 3D durs"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "Blau pla"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "Arenós"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "Blau fumejant"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "Roig fumejant"

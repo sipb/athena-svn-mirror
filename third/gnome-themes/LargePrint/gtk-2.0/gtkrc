@@ -8,9 +8,9 @@
 #
 # email: bill.haneman@sun.com
 
-pixmap_path "/gnome/head/INSTALL/share/themes/LargePrint/pixmaps"
+pixmap_path "/gnome/share/themes/LargePrint/pixmaps"
 
-gtk-icon-sizes = "gtk-dnd=48,48:gtk-menu=32,32:panel-menu=48,48:panel-button=32,32:gtk-large-toolbar=48,48:gtk-small-toolbar=32,32:gtk-button=32,32:gtk-dialog=64,64"
+gtk-icon-sizes = "gtk-dnd=48,48:gtk-menu=32,32:panel-menu=48,48:gtk-large-toolbar=48,48:gtk-small-toolbar=32,32:gtk-button=32,32:gtk-dialog=64,64"
 
 style "default"
 {

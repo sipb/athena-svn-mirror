@@ -1,6 +1,6 @@
 Summary: Themes collection for GNOME
 Name: gnome-themes
-Version: 1.0
+Version: 2.2
 Release: 0
 License: GPL
 Group: User Interface/Desktop
@@ -20,17 +20,27 @@ make
 %install
 rm -rf ${RPM_BUILD_ROOT}
 %makeinstall
-%find_lang %{name}
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 
-%files -f %{name}.lang
+%files
 %defattr(-, root, root)
+%{_libdir}/gtk-2.0/2.2.0/engines/*.so*
+%{_datadir}/eazel-engine
 %{_datadir}/icons/*
 %{_datadir}/themes/*
-%doc AUTHORS COPYING README
+%doc AUTHORS ChangeLog COPYING NEWS README
 
 %changelog
+* Sun Jan 26 2003 Yanko Kaneti <yaneti@declera.com>
+- Dont package the message catalogs, they are not used at runtime.
+
+* Sun Jan 26 2003 Yanko Kaneti <yaneti@declera.com>
+- Add Changelog and NEWS to docs
+
+* Fri Jan 24 2003 Yanko Kaneti <yaneti@declera.com>
+- Accomodate for the gnome-desktop-themes merge
+
 * Fri Jan 17 2003 Yanko Kaneti <yaneti@declera.com>
 - First spec

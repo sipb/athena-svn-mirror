@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes CVS\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-03 12:31+0100\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-01-31 07:44+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -69,3 +69,87 @@ msgstr "Halvány nagy szöveg és ikonok"
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
 msgstr "Kis kontraszt és nagy szöveg"
+
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Crux"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Finom színátmenetek kékeszöld kiemelésekkel"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Poros narancssárga megjelenés"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Grand Canyon"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Minimalisztikus megjelenés"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Ködös"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Óceánparti álom"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "A tengerpart színei"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "Egyszerű"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "Egyszerű megjelenés, nagy teljesítmény"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "Puha üveges megjelenés"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "Füstös kék"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "Hagyományos"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "A hagyományos éles szélű három dimenziós megjelenés"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "Egyszerű kék"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "Homok"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "Füstös kék"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "Füstös piros"
+
+#~ msgid "Default"
+#~ msgstr "Alapértelmezett"
+
+#~ msgid "Plain"
+#~ msgstr "Egyszerű"
+
+#~ msgid "Default Gnome Theme"
+#~ msgstr "Alapértelmezett GNOME-téma"
+
+#~ msgid "Gnome"
+#~ msgstr "Gnome"

@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the gnome-themes package.
 # Christian Rose <menthos@menthos.com>, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-29 21:58:56 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-02-12 07:08:30 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-01-20 20:11+0000\n"
-"PO-Revision-Date: 2003-01-03 19:24+0100\n"
+"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"PO-Revision-Date: 2003-01-31 00:05+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: HighContrast/index.theme.in.h:1
 msgid "Black-on-white text and icons"
-msgstr "Svart text och ikoner på vit botten"
+msgstr "Text och ikoner i svart på vitt"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
@@ -30,7 +30,7 @@ msgstr "Inverterad hög kontrast"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
-msgstr "Vit text och ikoner på svart botten"
+msgstr "Text och ikoner i vitt på svart"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
 msgid "High Contrast Large"
@@ -38,7 +38,7 @@ msgstr "Stor text med hög kontrast"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
-msgstr "Stor svart text och ikoner på vit botten"
+msgstr "Stor text och stora ikoner i svart på vitt"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
@@ -46,7 +46,7 @@ msgstr "Inverterad stor text med hög kontrast"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
-msgstr "Stor vit text och ikoner på svart botten"
+msgstr "Stor text och stora ikoner i vitt på svart"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
@@ -72,5 +72,188 @@ msgstr "Stor dämpad text och ikoner"
 msgid "Low Contrast Large Print"
 msgstr "Stor text med låg kontrast"
 
+#: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
+msgid "Crux"
+msgstr "Crux"
+
+#: desktop-themes/Crux/index.theme.in.h:2
+msgid "Smooth gradients with teal highlights"
+msgstr "Mjuka gradienter med blågröna framtoningar"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:1
+msgid "Dusty orange appearance"
+msgstr "Dammigt orange utseende"
+
+#: desktop-themes/Grand-Canyon/index.theme.in.h:2
+msgid "Grand Canyon"
+msgstr "Grand Canyon"
+
+#: desktop-themes/Mist/index.theme.in.h:1
+msgid "A minimalistic appearance"
+msgstr "Minimalistiskt utseende"
+
+#: desktop-themes/Mist/index.theme.in.h:2
+msgid "Mist"
+msgstr "Dimma"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:1
+msgid "Ocean Dream"
+msgstr "Havsdröm"
+
+#: desktop-themes/Ocean-Dream/index.theme.in.h:2
+msgid "The colours of the seashore"
+msgstr "Kustens färger"
+
+#: desktop-themes/Simple/index.theme.in.h:1
+msgid "Simple"
+msgstr "Enkel"
+
+#: desktop-themes/Simple/index.theme.in.h:2
+msgid "Thin appearance, high performance"
+msgstr "Tunnt utseende, hög prestanda"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:1
+msgid "A soft glassy appearance"
+msgstr "Ett mjukt glaslikt utseende"
+
+#: desktop-themes/Smokey-Blue/index.theme.in.h:2
+msgid "Smokey Blue"
+msgstr "Rökig blå"
+
+#: desktop-themes/Traditional/index.theme.in.h:1
+msgid "Traditional"
+msgstr "Traditionell"
+
+#: desktop-themes/Traditional/index.theme.in.h:2
+msgid "Traditional hard-edged 3D appearance"
+msgstr "Traditionellt hårdkantat 3D-utseende"
+
+#: icon-themes/Flat-Blue/index.theme.in.h:1
+msgid "Flat-Blue"
+msgstr "Platt-blå"
+
+#: icon-themes/Sandy/index.theme.in.h:1
+msgid "Sandy"
+msgstr "Sandig"
+
+#: icon-themes/Smokey-Blue/index.theme.in.h:1
+msgid "Smokey-Blue"
+msgstr "Rökig-blå"
+
+#: icon-themes/Smokey-Red/index.theme.in.h:1
+msgid "Smokey-Red"
+msgstr "Rökig-röd"
+
+#~ msgid "Default"
+#~ msgstr "Standard"
+
+#~ msgid "Plain"
+#~ msgstr "Enkel"
+
+#~ msgid "Default Gnome Theme"
+#~ msgstr "Gnome-standardtema"
+
+#~ msgid "Gnome"
+#~ msgstr "Gnome"
+
 #~ msgid "High Contrast Large Print"
 #~ msgstr "Stor text med hög kontrast"
+
+#~ msgid "%P %%"
+#~ msgstr "%P %%"
+
+#~ msgid "Bar"
+#~ msgstr "Apa"
+
+#~ msgid "Foo"
+#~ msgstr "Apa"
+
+#~ msgid "New"
+#~ msgstr "Ny"
+
+#~ msgid "New File"
+#~ msgstr "Ny fil"
+
+#~ msgid "Open"
+#~ msgstr "Öppna"
+
+#~ msgid "Open File"
+#~ msgstr "Öppna fil"
+
+#~ msgid "Pick a color"
+#~ msgstr "Välj en färg"
+
+#~ msgid "Project1"
+#~ msgstr "Projekt1"
+
+#~ msgid "Radio 1"
+#~ msgstr "Radio 1"
+
+#~ msgid "Radio 2"
+#~ msgstr "Radio 2"
+
+#~ msgid "Radio 3"
+#~ msgstr "Radio 3"
+
+#~ msgid "Sample Button"
+#~ msgstr "Exempelknapp"
+
+#~ msgid "Sample check button"
+#~ msgstr "Exempelkryssruta"
+
+#~ msgid "Save"
+#~ msgstr "Spara"
+
+#~ msgid "Save File"
+#~ msgstr "Spara fil"
+
+#~ msgid "Sub 1"
+#~ msgstr "Under 1"
+
+#~ msgid "Sub 2"
+#~ msgstr "Under 2"
+
+#~ msgid "Test one"
+#~ msgstr "Test ett"
+
+#~ msgid "Test three"
+#~ msgstr "Test tre"
+
+#~ msgid "Test two"
+#~ msgstr "Test två"
+
+#~ msgid "Text entry field"
+#~ msgstr "Textinmatningsfält"
+
+#~ msgid "This is a test."
+#~ msgstr "Detta är ett test."
+
+#~ msgid "_New File"
+#~ msgstr "_Ny fil"
+
+#~ msgid "button2"
+#~ msgstr "button2"
+
+#~ msgid "button3"
+#~ msgstr "button3"
+
+#~ msgid "button4"
+#~ msgstr "button4"
+
+#~ msgid "gtk-ok"
+#~ msgstr "gtk-ok"
+
+#~ msgid "radiobutton2"
+#~ msgstr "radioknapp2"
+
+#~ msgid "toggle"
+#~ msgstr "växla"
+
+#~ msgid "www.eazel.com"
+#~ msgstr "www.eazel.com"
+
+#~ msgid "Default GNOME Theme"
+#~ msgstr "GNOME-standardtema"
+
+#~ msgid "GNOME"
+#~ msgstr "GNOME"

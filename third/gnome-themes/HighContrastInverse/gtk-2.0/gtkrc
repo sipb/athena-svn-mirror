@@ -9,7 +9,7 @@
 #Note: we just use the LargePrint icons for now, they will be scaled
 #to the correct size
 
-pixmap_path "/gnome/head/INSTALL/share/themes/HighContrastLargePrintInverse/pixmaps"
+pixmap_path "/gnome/share/themes/HighContrastLargePrintInverse/pixmaps"
 
 style "default"   
 { 

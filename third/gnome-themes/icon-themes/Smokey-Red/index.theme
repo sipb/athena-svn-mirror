@@ -1,0 +1,66 @@
+[Icon Theme]
+Name=Smokey-Red
+Name[ca]=Roig fumejant
+Name[cs]=Kouřová červená
+Name[da]=Røgrød
+Name[de]=Roter Rauch
+Name[es]=Rojo humeante
+Name[fi]=Savunpunainen
+Name[fr]=Smokey-Red
+Name[he]=עשן אדום
+Name[hu]=Füstös piros
+Name[it]=Smokey rosso
+Name[ja]=スモーキー・レッド
+Name[ko]=붉으스름
+Name[lv]=Dūmakaini Sarkans
+Name[mn]=Утаан-улаан
+Name[nl]=Rokerig rood
+Name[no]=Rødrøyk
+Name[pt]=Vermelho-Fumo
+Name[pt_BR]=Smokey-Red
+Name[ru]=Дымчато-красная
+Name[sk]=Červený dym
+Name[sl]=Dimno-rdeča
+Name[sq]=Smokey-i kuq
+Name[sv]=Rökig-röd
+Name[uk]=Туманно-червона
+Name[zh_TW]=紅色輕煙
+Comment=Smokey-Red
+Comment[ca]=Roig fumejant
+Comment[cs]=Kouřová červená
+Comment[da]=Røgrød
+Comment[de]=Roter Rauch
+Comment[es]=Rojo humeante
+Comment[fi]=Savunpunainen
+Comment[fr]=Smokey-Red
+Comment[he]=עשן אדום
+Comment[hu]=Füstös piros
+Comment[it]=Smokey rosso
+Comment[ja]=スモーキー・レッド
+Comment[ko]=붉으스름
+Comment[lv]=Dūmakaini Sarkans
+Comment[mn]=Утаан-улаан
+Comment[nl]=Rokerig rood
+Comment[no]=Rødrøyk
+Comment[pt]=Vermelho-Fumo
+Comment[pt_BR]=Smokey-Red
+Comment[ru]=Дымчато-красная
+Comment[sk]=Červený dym
+Comment[sl]=Dimno-rdeča
+Comment[sq]=Smokey-i kuq
+Comment[sv]=Rökig-röd
+Comment[uk]=Туманно-червона
+Comment[zh_TW]=紅色輕煙
+Inherits=gnome
+Directories=48x48/filesystems,48x48/emblems
+
+[48x48/filesystems]
+Size=48
+Context=FileSystems
+Type=Scaled
+
+[48x48/emblems]
+Size=48
+Context=Emblems
+Type=Scaled
+
