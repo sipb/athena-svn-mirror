@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.10 1991-01-21 01:29:10 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.11 1991-01-25 13:38:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -90,7 +90,7 @@ main(argc, argv)
     
     for(fd = 0;fd<max_fd;fd++)
       close(fd);
-    fd = open("/",O_RDONLY,S_IREAD);
+    fd = open("/",O_RDONLY,0);
     if (fd < 0) {
       syslog(LOG_ERR,"Can't open /: %m");
       exit(1);
@@ -128,6 +128,7 @@ main(argc, argv)
   sin.sin_addr.s_addr = INADDR_ANY;
   sin.sin_port = sent->s_port;
 
+  onoff = 1;
   if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &onoff, sizeof(int)) < 0) {
     syslog(LOG_ERR,"setsockopt: %m");
     exit(1);
