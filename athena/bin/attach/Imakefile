@@ -34,8 +34,10 @@ install::
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/detach
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/fsid
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/nfsid
+	$(RM) $(DESTDIR)$(ATHRBINDIR)/zinit
 	$(RM) $(DESTDIR)$(ATHRETCDIR)/zinit
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/detach
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/fsid
 	ln -s attach $(DESTDIR)$(ATHRBINDIR)/nfsid
+	ln -s attach $(DESTDIR)$(ATHRBINDIR)/zinit
 	ln -s $(ATHRBINDIR)/attach $(DESTDIR)$(ATHRETCDIR)/zinit
