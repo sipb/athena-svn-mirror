@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.9 1990-02-23 16:48:41 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.10 1990-03-01 18:07:34 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -195,45 +195,41 @@ t_show_message(Request, file, display, connected, noflush)
 t_check_messages(Request)
      REQUEST *Request;
 {
-  int status;
-  char file[NAME_SIZE];
-  char buf[BUF_SIZE];
+    int status;
+    char file[NAME_SIZE];
+    char prompt[BUF_SIZE];
 
-  make_temp_name(file);
-  status = OShowMessageIntoFile(Request,file);
-  if(status == SUCCESS)
-    {
-      if(isme(Request))
-	printf("You have ");
-      else
-	printf("%s has ", Request->target.username);
+    make_temp_name(file);
+    status = OShowMessageIntoFile(Request,file);
+    if (status == SUCCESS) {
+	if(isme(Request))
+	    strcpy (prompt, "You have");
+	else {
+	    strcpy (prompt, Request->target.username);
+	    strcat (prompt, " has");
+	}
+	strcat (prompt, " unread message.  Display?  ");
 
-      *buf = '\0';
-      get_prompted_input("unread messages. Display? ", buf);
-      if(*buf == 'y')
-	display_file(file, TRUE);
+	if (get_yn (prompt))
+	    display_file (file, TRUE);
     }
 
-  return(status);
+    return status;
 }
 
 t_check_connected_messages(Request)
      REQUEST *Request;
 {
-  int status;
-  char file[NAME_SIZE];
-  char buf[BUF_SIZE];
+    int status;
+    char file[NAME_SIZE];
 
-  make_temp_name(file);
-  set_option(Request->options,CONNECTED_OPT);
-  status = OShowMessageIntoFile(Request,file);
-  if(status == SUCCESS)
-    {
-      *buf = '\0';
-      get_prompted_input("User has unread messages. Display? ", buf);
-      if(*buf == 'y')
-	display_file(file, TRUE);
+    make_temp_name(file);
+    set_option(Request->options,CONNECTED_OPT);
+    status = OShowMessageIntoFile(Request,file);
+    if(status == SUCCESS) {
+	if (get_yn ("User has unread message.  Display?  "))
+	    display_file (file, TRUE);
     }
-  unset_option(Request->options,CONNECTED_OPT);
-  return(status);
+    unset_option(Request->options,CONNECTED_OPT);
+    return status;
 }
