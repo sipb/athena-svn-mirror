@@ -4,7 +4,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.10 1991-04-15 15:53:35 lwvanels Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.11 1991-04-16 09:30:43 lwvanels Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
@@ -386,11 +386,7 @@ AnsiIDef VforkDef
 #define PreProcessCmd CcCmd -E
 #endif
 #ifndef InstallCmd
-#if SystemV
-#define InstallCmd bsdinstall
-#else
 #define InstallCmd install
-#endif
 #endif
 #ifndef LdCmd
 #define LdCmd ld
