@@ -3,12 +3,12 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.23 1994-06-03 18:55:07 cfields Exp $
+ * $Id: finger.c,v 1.24 1994-08-24 03:31:01 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.23 1994-06-03 18:55:07 cfields Exp $";
-#endif lint
+static char *rcsid_finger_c = "$Id: finger.c,v 1.24 1994-08-24 03:31:01 cfields Exp $";
+#endif /*lint*/
 
 /*
  * Copyright (c) 1980 Regents of the University of California.
@@ -21,12 +21,12 @@ char copyright[] =
 "@(#) Copyright (c) 1980 Regents of the University of California.\n\
  All rights reserved.\n";
 
-#endif not lint
+#endif /*not lint*/
 
 #ifndef lint
 static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 
-#endif not lint
+#endif /*not lint */
 
 /*
  * This is a finger program.  It prints out useful information about
@@ -133,9 +133,14 @@ struct person {			/* one for each person fingered */
 	char tty[LMAX + 1];	/* null terminated tty line */
 	char host[BUFSIZ];	/* null terminated remote host name */
 	int loginout;		/* 0 means login time, 1 logout */
+#ifdef POSIX
+	time_t loginat;
+	time_t idletime;
+#else
 	long loginat;		/* time of (last) login/out */
-	char *logintime;	/* pointer to string showing logintime */
 	long idletime;		/* how long idle (if logged in) */
+#endif
+	char *logintime;	/* pointer to string showing logintime */
 	char *realname;		/* pointer to full name */
 	char *nickname;		/* pointer to nickname */
 	char *office;		/* pointer to office name */
@@ -153,10 +158,12 @@ struct person {			/* one for each person fingered */
 char LASTLOG[] = "/usr/adm/lastlog";	/* last login info */
 #ifdef SOLARIS
 char USERLOG[] = "/etc/utmpx";	/* who is logged in */
+char ACCTLOG[] = "/usr/adm/wtmpx";	/* Accounting file */
 #else
 char USERLOG[] = "/etc/utmp";	/* who is logged in */
-#endif
 char ACCTLOG[] = "/usr/adm/wtmp";	/* Accounting file */
+#endif
+
 char PLAN[] = "/.plan";		/* what plan file is */
 char PROJ[] = "/.project";	/* what project file */
 char MM[] = "%MENTION-MAIL%\n";	/* if present, check for mail */
@@ -184,7 +191,11 @@ int lw = -1;			/* ACCTLOG file descriptor */
 /* !#$%!@#$! Bezerkeley non-initializations !!! */
 struct person *person1 = (struct person *) NULL;	/* list of people */
 struct person *person2 = (struct person *) NULL;	/* 2nd list of people */
-long tloc;			/* current time */
+#ifdef POSIX
+time_t tloc;
+#else
+long tloc;
+#endif
 
 char ttnames[MAXTTYS][LMAX];	/* TTY names */
 long logouts[MAXTTYS];		/* Logout times */
@@ -202,7 +213,9 @@ char *malloc();
 char *ctime();
 #endif
 
+#ifndef POSIX
 long time();
+#endif
 
 /*ARGSUSED*/
 main(argc, argv)
@@ -318,6 +331,8 @@ doall()
 		p->loginout = 0;
 #ifndef SOLARIS
 		p->loginat = user.ut_time;
+#else
+		p->loginat = user.ut_tv.tv_sec;
 #endif
 		p->pwd = 0;
 		p->loggedin = 1;
@@ -375,9 +390,7 @@ donames(argv)
 		p->tty[0] = q->tty[0] = '\0';
 		p->host[0] = q->host[0] = '\0';
 		p->loginout = q->loginout = 0;
-#ifndef SOLARIS
 		p->loginat = q->loginat = 0;
-#endif
 		p->logintime = q->logintime = (char *) NULL;
 		p->idletime = q->idletime = 0;
 		p->realname = q->realname = (char *) NULL;
@@ -475,6 +488,8 @@ donames(argv)
 				p->host[HMAX] = 0;
 #ifndef SOLARIS
 				p->loginat = user.ut_time;
+#else
+				p->loginat = user.ut_tv.tv_sec;
 #endif
 				p->loggedin = 1;
 			}
@@ -489,6 +504,8 @@ donames(argv)
 				new->host[HMAX] = 0;
 #ifndef SOLARIS
 				new->loginat = user.ut_time;
+#else
+				p->loginat = user.ut_tv.tv_sec;
 #endif
 				new->pwd = p->pwd;
 				new->loggedin = 1;
@@ -566,9 +583,17 @@ print(personn)
 		if (unquick) {
 			if (!unshort)
 				if (wide)
+#ifdef SOLARIS
+					printf("Login       Name              TTY  Idle    When     Office\n");
+#else
 					printf("Login       Name              TTY Idle    When            Office\n");
+#endif
 				else
+#ifdef SOLARIS
+					printf("Login    TTY Idle    When     Office\n");
+#else
 					printf("Login    TTY Idle    When            Office\n");
+#endif
 		}
 		else {
 			printf("Login      TTY            When");
@@ -729,32 +754,57 @@ shortprint(pers)
 	char dialup;
 
 	if (pers->pwd == 0) {
+#ifdef SOLARIS
+		printf("%-8s       ???\n", pers->name);
+#else
 		printf("%-15s       ???\n", pers->name);
+#endif
 		return;
 	}
+#ifdef SOLARIS
+	printf("%-8s",  pers->pwd->pw_name);
+#else
 	printf("%-*s", NMAX, pers->pwd->pw_name);
+#endif
 	dialup = 0;
 	if (wide) {
 		if (pers->realname)
-			printf(" %-20.20s", pers->realname);
+			printf(" %-20.20s", pers->realname); 
+
 		else
 			printf("        ???          ");
 	}
-	(void) putchar(' ');
+#ifndef SOLARIS
+	(void) putchar(' ');  
+#endif
 	if (pers->loggedin && !pers->writable)
 		(void) putchar('*');
+#ifndef SOLARIS
 	else
-		(void) putchar(' ');
+		(void) putchar(' '); 
+#endif
 	if (*pers->tty) {
 		if (!strncmp(pers->tty, "tty", 3)) {
 			if (pers->tty[3] == 'd' && pers->loggedin)
 				dialup = 1;
+#ifdef SOLARIS
+			printf("%-5.5s ", pers->tty );
+#else
 			printf("%-2.2s ", pers->tty + 3);
+#endif
 		} else
 		if (!strncmp(pers->tty, "pts/", 4)) {
+#ifdef SOLARIS
+			printf("%-5.5s ", pers->tty );
+#else
 			printf("p%-1.1s ", pers->tty + 4);
+#endif
 		} else
+#ifdef SOLARIS
+			printf("%-5.5s ", pers->tty);
+#else
 			printf("%-2.2s ", pers->tty);
+#endif
 	}
 	else
 		printf("   ");
@@ -772,6 +822,9 @@ shortprint(pers)
 	if (dialup && pers->homephone)
 		printf(" %20s", pers->homephone);
 	else {
+#ifdef SOLARIS
+		(void) putchar(' '); 
+#endif
 		if (pers->office)
 			printf(" %-12.12s", pers->office);
 		else if (pers->officephone || pers->homephone)
@@ -1146,6 +1199,8 @@ findwhen(pers)
 							sizeof(bp->ut_line));
 #ifndef SOLARIS
 							logouts[i] = bp->ut_time;
+#else
+							logouts[i] = bp->ut_tv.tv_sec;
 #endif
 							break;
 						}
@@ -1154,6 +1209,8 @@ findwhen(pers)
 						     sizeof(bp->ut_line))) {
 #ifndef SOLARIS
 							logouts[i] = bp->ut_time;
+#else
+							logouts[i] = bp->ut_tv.tv_sec;
 #endif
 							break;
 						}
@@ -1214,7 +1271,11 @@ findidle(pers)
 {
 	struct stat ttystatus;
 	static char buffer[20] = "/dev/";
+#ifdef POSIX
+	time_t t;
+#else
 	long t;
+#endif
 
 #define TTYLEN 5
 
@@ -1247,7 +1308,11 @@ findidle(pers)
  * if the idle time is zero, it prints 4 blanks.
  */
 stimeprint(dt)
+#ifdef POSIX
+	time_t *dt;
+#else
 	long *dt;
+#endif
 {
 	register struct tm *delta;
 
