@@ -1376,8 +1376,12 @@ start_login(host, autologin, name)
 
 	if (decrypt_input)
 		printf("What you type is protected by encryption.\r\n");
-	else
+	else {
+		extern char remote_host_name[256];
 		printf("Warning: this session is NOT encrypted!\r\n");
+		syslog(LOG_NOTICE, "unencrypted connection from %s",
+		       remote_host_name);
+	}
 
 	execv(login_program, argv);
 
