@@ -118,6 +118,8 @@ int	auth_krb5_password(Authctxt *authctxt, const char *password);
 void	krb5_cleanup_proc(void *authctxt);
 #endif /* KRB5 */
 
+void session_cleanup(void);
+
 #include "auth-pam.h"
 #include "auth2-pam.h"
 

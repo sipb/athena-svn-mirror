@@ -53,10 +53,15 @@ RCSID("$OpenBSD: auth2.c,v 1.70 2001/09/20 13:46:48 markus Exp $");
 #include "tildexpand.h"
 #include "match.h"
 
+#include <al.h>
+extern char *session_username;
+extern int is_local_acct;
+
 /* import */
 extern ServerOptions options;
 extern u_char *session_id2;
 extern int session_id2_len;
+extern int debug_flag;
 
 #ifdef WITH_AIXAUTHENTICATE
 extern char *aixloginmsg;
@@ -183,7 +188,9 @@ input_userauth_request(int type, int plen, void *ctxt)
 	Authctxt *authctxt = ctxt;
 	Authmethod *m = NULL;
 	char *user, *service, *method, *style = NULL;
-	int authenticated = 0;
+	int authenticated = 0, status;
+	char *filetext, *errmem;
+	const char *err;
 
 	if (authctxt == NULL)
 		fatal("input_userauth_request: no authctxt");
@@ -214,6 +221,49 @@ input_userauth_request(int type, int plen, void *ctxt)
 			start_pam("NOUSER");
 #endif
 		}
+		
+		status = al_login_allowed(user, 1, &is_local_acct, &filetext);
+		if (status != AL_SUCCESS)
+		  {
+		    char *buf;
+
+		    err = al_strerror(status, &errmem);
+		    if (filetext && *filetext)
+		      {
+			buf = xmalloc(40 + strlen(err) + strlen(filetext));
+			sprintf(buf, "You are not allowed to log in here: "
+				"%s\n%s", err, filetext);
+		      }
+		    else
+		      {
+			buf = xmalloc(40 + strlen(err));
+			sprintf(buf, "You are not allowed to log in here: "
+				"%s\n", err);
+		      }
+		    packet_start(SSH2_MSG_DISCONNECT);
+		    packet_put_int(SSH2_DISCONNECT_ILLEGAL_USER_NAME);
+		    packet_put_cstring(buf);
+		    packet_put_cstring("");
+		    packet_send();
+		    packet_write_wait();
+
+		    fatal("Login denied: %s", err);
+		  }
+		  if (!is_local_acct)
+		    {
+		      status = al_acct_create(user, NULL, getpid(), 0, 0, 
+					      NULL);
+		      if (status != AL_SUCCESS && debug_flag)
+			{
+			  err = al_strerror(status, &errmem);
+			  debug("al_acct_create failed for user %s: %s", user,
+				err);
+			  al_free_errmem(errmem);
+			}
+		      session_username = xstrdup(user);
+		      atexit(session_cleanup);
+		    }
+
 		setproctitle("%s", pw ? user : "unknown");
 		authctxt->user = xstrdup(user);
 		authctxt->service = xstrdup(service);

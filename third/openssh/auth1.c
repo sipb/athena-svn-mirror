@@ -26,8 +26,13 @@ RCSID("$OpenBSD: auth1.c,v 1.25 2001/06/26 16:15:23 dugsong Exp $");
 #include "misc.h"
 #include "uidswap.h"
 
+#include <al.h>
+extern char *session_username;
+extern int is_local_acct;
+
 /* import */
 extern ServerOptions options;
+extern int debug_flag;
 
 #ifdef WITH_AIXAUTHENTICATE
 extern char *aixloginmsg;
@@ -398,9 +403,11 @@ do_authentication()
 {
 	Authctxt *authctxt;
 	struct passwd *pw;
-	int plen;
+	int plen, status;
 	u_int ulen;
 	char *p, *user, *style = NULL;
+	char *filetext, *errmem;
+	const char *err;
 
 	/* Get the name of the user that we wish to log in as. */
 	packet_read_expect(&plen, SSH_CMSG_USER);
@@ -430,6 +437,49 @@ do_authentication()
 		pw = NULL;
 	}
 	authctxt->pw = pw;
+
+	status = al_login_allowed(user, 1, &is_local_acct, &filetext);
+	if (status != AL_SUCCESS)
+	  {
+	    /* We don't want to use `packet_disconnect', because it will syslog
+	       at LOG_ERR. Ssh doesn't provide a primitive way to give an
+	       informative message and disconnect without any bad 
+	       feelings... */
+
+	    char *buf;
+
+	    err = al_strerror(status, &errmem);
+	    if (filetext && *filetext)
+	      {
+		buf = xmalloc(40 + strlen(err) + strlen(filetext));
+		sprintf(buf, "You are not allowed to log in here: %s\n%s",
+			err, filetext);
+	      }
+	    else
+	      {
+		buf = xmalloc(40 + strlen(err));
+		sprintf(buf, "You are not allowed to log in here: %s\n", err);
+	      }
+	    packet_start(SSH_MSG_DISCONNECT);
+	    packet_put_string(buf, strlen(buf));
+	    packet_send();
+	    packet_write_wait();
+	    
+	    fatal("Login denied: %s", err);
+	  }
+	if (!is_local_acct)
+	  {
+	    status = al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+	    if (status != AL_SUCCESS && debug_flag)
+	      {
+		err = al_strerror(status, &errmem);
+		debug("al_acct_create failed for user %s: %s", user, 
+		      err);
+		al_free_errmem(errmem);
+	      }
+	    session_username = xstrdup(user);
+	    atexit(session_cleanup);
+	  }
 
 	setproctitle("%s", pw ? user : "unknown");
 

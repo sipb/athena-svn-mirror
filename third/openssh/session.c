@@ -77,9 +77,6 @@ RCSID("$OpenBSD: session.c,v 1.102 2001/09/16 14:46:54 markus Exp $");
 #define is_winnt       (GetVersion() < 0x80000000)
 #endif
 
-#include <al.h>
-extern int setpag();
-
 /* AIX limits */
 #if defined(HAVE_GETUSERATTR) && !defined(S_UFSIZE_HARD) && defined(S_UFSIZE)
 # define S_UFSIZE_HARD  S_UFSIZE "_hard"
@@ -102,6 +99,13 @@ extern int setpag();
 #define krb5_get_err_text(context,code) error_message(code)
 #endif /* !HEIMDAL */
 #endif
+
+#include <al.h>
+extern int setpag(), ktc_ForgetAllTokens();
+void try_afscall(int (*func)(void));
+void krb_cleanup(void);
+int *session_warnings = NULL;
+extern int is_local_acct;
 
 /* types */
 
@@ -174,23 +178,6 @@ char *aixloginmsg;
 #ifdef HAVE_LOGIN_CAP
 static login_cap_t *lc;
 #endif
-
-void try_afscall(int (*func)(void))
-{
-#ifdef SIGSYS
-  struct sigaction sa, osa;
-
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = 0;
-  sa.sa_handler = SIG_IGN;
-  sigaction(SIGSYS, &sa, &osa);
-#endif
-  func();
-#ifdef SIGSYS
-  sigaction(SIGSYS, &osa, NULL);
-#endif
-}
-
 
 void
 do_authenticated(Authctxt *authctxt)
@@ -704,6 +691,11 @@ do_pre_login(Session *s)
 void
 do_exec(Session *s, const char *command)
 {
+  int status;
+  char *filetext, *errmem;
+  const char *err;
+  int havecred = 0;
+
 #if KRB5
   if (s->authctxt->krb5_ticket_file)
     {
@@ -761,7 +753,7 @@ do_exec(Session *s, const char *command)
 
 				chown(tkt_string(), s->authctxt->pw->pw_uid,
 				      s->authctxt->pw->pw_gid);
-
+				havecred = 1;
 			out:
 				if (problem) {
 					debug("krb524 failed: %s",
@@ -773,14 +765,16 @@ do_exec(Session *s, const char *command)
 			}
     }
 #endif
-  /*
-   * This must be the wrong place for this, and it's really just a kludge
-   * for Angie's requirement...
-   * XXX
-   */
-			try_afscall(setpag);
-			al_acct_create(s->authctxt->user, NULL, getpid(), 1,
-				       0, NULL);
+     	try_afscall(setpag);
+	atexit(krb_cleanup);
+
+	if (!is_local_acct)
+	  {
+	    status = al_acct_create(s->authctxt->user, NULL, getpid(),
+				    havecred, 1, &session_warnings);
+	    if (status != AL_SUCCESS && status != AL_WARNINGS)
+	      packet_disconnect("%s\n", al_strerror(status, &errmem));
+	  }
 
 	if (forced_command) {
 		original_command = command;
@@ -1174,6 +1168,21 @@ do_child(Session *s, const char *command)
 	/* login(1) is only called if we execute the login shell */
 	if (options.use_login && command != NULL)
 		options.use_login = 0;
+
+	/* Print any leftover libAL warnings */
+	if (session_warnings)
+	  {
+	    int i;
+	    char *errmem;
+
+	    for (i = 0; session_warnings[i]; i++)
+	      {
+		fprintf(stderr, "Warning: %s\n", 
+			al_strerror(session_warnings[i], &errmem));
+		al_free_errmem(errmem);
+	      }
+	    free(session_warnings);
+	  }
 
 #if !defined(HAVE_OSF_SIA)
 	if (!options.use_login) {
@@ -2201,3 +2210,26 @@ do_authenticated2(Authctxt *authctxt)
 {
 	server_loop2(authctxt);
 }
+
+void try_afscall(int (*func)(void))
+{
+#ifdef SIGSYS
+	struct sigaction sa, osa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGSYS, &sa, &osa);
+#endif
+	func();
+#ifdef SIGSYS
+	sigaction(SIGSYS, &osa, NULL);
+#endif
+}
+
+void krb_cleanup(void)
+{
+	dest_tkt();
+  	try_afscall(ktc_ForgetAllTokens);
+}
+
