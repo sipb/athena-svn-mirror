@@ -6,3 +6,23 @@ Group: System Environment/Shells
 %description
 user template and system standard shell dotfiles for Athena
 
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+find $RPM_BUILD_ROOT -type f -or -type l | 
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/root/.cshrc$|%config \0|" \
+      -e "s|^/root/.login$|%config \0|" \
+      -e "s|^/root/.profile$|%config \0|" \
+      -e "s|^/root/.xsession$|%config \0|" | 
+  sort > rpm.filelist
