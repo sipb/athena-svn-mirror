@@ -2,7 +2,7 @@
 #    Instructions to Make, for compilation of MH processes
 #
 #	@(MHWARNING)
-# @(#)$Id: uip,v 1.1.1.1 1996-10-07 07:12:46 ghudson Exp $
+# @(#)$Id: uip,v 1.2 1996-10-13 18:43:40 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -132,7 +132,7 @@ LDFLAGS	=	$(LDOPTIONS)
 @BEGIN: STDLIB
 LIBES	=	../config/config.o ../sbr/libmh.a ../mts/libmts.a \
 		../zotnet/libzot.a
-LDLIBS	=	$(LIBES) ../config/version.o $(LDOPTLIB)
+LDLIBS	=	$(LIBES) ../config/version.o $(KRBLIB) $(HESLIB) $(LDOPTLIB)
 @END: STDLIB
 @BEGIN: SUN4SHLIB
 SLIBVER	=	.@(SLIBVER)
