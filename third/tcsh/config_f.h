@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.2 1996-10-03 04:32:35 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/config_f.h,v 1.3 1998-10-04 01:39:27 danw Exp $ */
 /*
  * config_f.h -- configure various defines for tcsh
  *
@@ -59,6 +59,15 @@
 #define NLS
 
 /*
+ * NLS_CATALOGS:Use Native Language System catalogs for
+ *		international messages.
+ *		Routines like catopen() are needed
+ *		if you don't have <nl_types.h>, you don't want
+ *		to define this.
+ */
+#undef NLS_CATALOGS
+
+/*
  * LOGINFIRST   Source ~/.login before ~/.cshrc
  */
 #undef LOGINFIRST
@@ -86,6 +95,11 @@
 #define DOTLAST
 
 /*
+ * NODOT	Don't put "." in the default path, for security reasons
+ */
+#undef NODOT
+
+/*
  * AUTOLOGOUT	tries to determine if it should set autologout depending
  *		on the name of the tty, and environment.
  *		Does not make sense in the modern window systems!
@@ -106,25 +120,64 @@
 #undef KANJI
 
 /*
+ * DSPMBYTE	add variable "dspmbyte" and display multi-byte string at
+ *		only output, when "dspmbyte" is set.
+ */
+#undef DSPMBYTE
+
+/*
+ * MBYTEDEBUG	when "dspmbyte" is changed, set multi-byte checktable to
+ *		variable "mbytemap".
+ *		(use for multi-byte table check)
+ */
+#undef MBYTEDEBUG
+
+/*
+ * NEWGRP	Provide a newgrp builtin.
+ */
+#undef NEWGRP
+
+/*
  * SYSMALLOC	Use the system provided version of malloc and friends.
  *		This can be much slower and no memory statistics will be
  *		provided.
  */
-#if defined(PURIFY) || defined(MALLOC_TRACE)
+#if defined(__MACHTEN__) || defined(PURIFY) || defined(MALLOC_TRACE) || defined(_OSD_POSIX)
 # define SYSMALLOC
 #else
 # undef SYSMALLOC
 #endif
 
 /*
+ * USE_ACCESS	Use access(2) rather than stat(2) when POSIX is defined.
+ *		POSIX says to use stat, but stat(2) is less accurate
+ *		than access(2) for determining file access.
+ */
+#undef USE_ACCESS
+
+/*
+ * REMOTEHOST	Try to determine the remote host that we logged in from
+ *		using first getpeername, and then the utmp file. If
+ *		successful, set $REMOTEHOST to the name or address of the
+ *		host
+ */
+#define REMOTEHOST
+
+/*
+ * COLOR_LS_F Do you want to use builtin color ls-F ?
+ *
+ */
+#define COLOR_LS_F
+
+/*
  * RCSID	This defines if we want rcs strings in the binary or not
  *
  */
-#if !defined(lint) && !defined(SABER)
+#if !defined(lint) && !defined(SABER) && !defined(__CLCC__)
 # ifndef __GNUC__
 #  define RCSID(id) static char *rcsid = (id);
 # else
-#  define RCSID(id) static char *rcsid() { return rcsid(id); }
+#  define RCSID(id) static char *rcsid(const char *a) { return rcsid(a = id); }
 # endif /* !__GNUC__ */
 #else
 # define RCSID(id)	/* Nothing */
