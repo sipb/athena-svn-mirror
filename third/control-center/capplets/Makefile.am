@@ -1,9 +1,12 @@
-always_built_SUBDIRS = desktop-links mouse-properties \
-	background-properties \
-        theme-switcher sound-properties \
-	ui-properties url-properties gnome-edit-properties \
-	keyboard-properties\
-	file-types
+always_built_SUBDIRS =					\
+	common accessibility				\
+	default-applications desktop-links font		\
+	background keyboard mouse sound			\
+	file-types theme-switcher ui-properties		\
+	keybindings network
 
-SUBDIRS = $(always_built_SUBDIRS)
+SUBDIRS =  $(always_built_SUBDIRS)
 
+DIST_SUBDIRS = \
+	$(always_built_SUBDIRS)	\
+	windows
