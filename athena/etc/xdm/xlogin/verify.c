@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.57 1994-06-23 09:08:11 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.58 1994-07-13 07:30:23 vrt Exp $
  */
 
 #include <stdio.h>
@@ -66,7 +66,7 @@
 #ifdef SOLARIS
 #define NGROUPS 16
 #endif
-#ifdef _IBMR@
+#ifdef _IBMR2
 #define NGROUPS 16
 #endif
 
