@@ -7,7 +7,7 @@ export SHELL
 
 attach -q -n -h lucydev
 
-/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /mit/lucydev/.xlogin
+/mit/lucydev/.xlogin
 
 detach -q lucydev
 
