@@ -14,11 +14,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.7 1990-01-09 16:08:54 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.8 1990-01-10 11:30:49 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -77,7 +77,7 @@ read_msgs(fd)
 
 static int
 #ifdef __STDC__
-write_msgs(int fd, char *msg)
+write_msgs(int fd, const char *msg)
 #else
 write_msgs(fd, msg)
      int fd;
@@ -102,7 +102,7 @@ write_msgs(fd, msg)
 
 static int
 #ifdef __STDC__
-write_knuckle_info(int fd, KNUCKLE *knuckle)
+write_knuckle_info(int fd, const KNUCKLE *knuckle)
 #else
 write_knuckle_info(fd, knuckle)
      int fd;
@@ -232,7 +232,7 @@ read_knuckle_info(fd, knuckle)
 
 static int
 #ifdef __STDC__
-write_user_info(int fd, USER *user)
+write_user_info(int fd, const USER *user)
 #else
 write_user_info(fd, user)
      int fd;
@@ -285,9 +285,10 @@ read_user_info(fd, user)
 static jmp_buf trap;
 
 #ifdef __STDC__
-oops(void)
+oops(int a)			/* signal number */
 #else
-oops()
+oops(a)
+    int a;			/* signal number */
 #endif
 {
   longjmp(trap, 1);
@@ -295,7 +296,7 @@ oops()
 
 static int
 #ifdef __STDC__
-verify_string(char *str)
+verify_string(const char *str)
 #else
 verify_string(str)
      char *str;
@@ -322,11 +323,7 @@ verify_string(str)
 }
 
 static void
-#ifdef __STDC__
-ensure_consistent_state(void)
-#else
 ensure_consistent_state()
-#endif
 {
   register KNUCKLE **k_ptr, *k;
   KNUCKLE *foo;
@@ -406,12 +403,8 @@ ensure_consistent_state()
     }
 }
 
-
-#ifdef __STDC__
-reconnect_knuckles(void)
-#else
+void
 reconnect_knuckles()
-#endif
 {
   KNUCKLE **k_ptr;
   KNUCKLE *k;
@@ -454,13 +447,9 @@ int needs_backup = 0;
  */
 
 void
-#ifdef __STDC__
-backup_data(void)
-#else
 backup_data()
-#endif
 {
-  KNUCKLE **k_ptr, **k_again;	           /* Current user. */
+  KNUCKLE **k_ptr, **k_again; /* Current user. */
   int no_knuckles=0;
   int fd;			   /* Backup file descriptor. */
   int i;
@@ -519,11 +508,7 @@ backup_data()
  */
 
 void
-#ifdef __STDC__
-load_data(void)
-#else
 load_data()
-#endif
 {
   int no_knuckles=0;
   int fd, i,j,nk;		
@@ -659,7 +644,7 @@ load_data()
 
 static void
 #ifdef __STDC__
-type_error(int fd, char *string)
+type_error(int fd, const char *string)
 #else
 type_error(fd,string)
      int fd;
@@ -700,14 +685,14 @@ type_error(fd,string)
 
 void
 #ifdef __STDC__
-dump_data(char *file)
+dump_data(const char *file)
 #else
 dump_data(file)
      char *file;
 #endif
 {
   FILE *fp;
-  KNUCKLE **k_ptr, **k_again;	           /* Current user. */
+  KNUCKLE **k_ptr, **k_again;	/* Current user. */
   int no_knuckles=0;
   int i;
 
