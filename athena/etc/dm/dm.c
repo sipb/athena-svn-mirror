@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.25 2003-04-06 22:28:01 ghudson Exp $
+/* $Id: dm.c,v 1.26 2003-04-30 20:08:04 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -7,8 +7,6 @@
  * This is the top-level of the display manager and console control
  * for Athena's xlogin.
  */
-
-#include <mit-copyright.h>
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -67,7 +65,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.25 2003-04-06 22:28:01 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.26 2003-04-30 20:08:04 ghudson Exp $";
 #endif
 
 /* Process states */
