@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.25 1991-02-18 16:42:27 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.26 1991-02-22 07:10:30 jik Exp $
 #
 
 DESTDIR=
@@ -14,6 +14,7 @@ INSTALLDIR= 	/bin/athena
 MANDIR=		/usr/man
 MANSECT=	1
 CC= 		cc
+DEPEND=		/usr/bin/X11/makedepend
 COMPILE_ET= 	compile_et
 LINT= 		lint
 DEFINES=	$(AFSDEFINES)
@@ -173,7 +174,7 @@ clean::
 		delete_errs.h delete_errs.c
 
 depend: $(SRCS) $(INCS) $(ETS)
-	/usr/athena/makedepend -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
+	$(DEPEND) -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
 
 $(DELETEOBJS): delete_errs.h
 $(EXPUNGEOBJS): delete_errs.h
