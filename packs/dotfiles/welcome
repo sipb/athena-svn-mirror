@@ -1,3 +1,4 @@
+******* NEEDS REVISION *******
 
 Welcome to Project Athena
 --------------------------
@@ -10,7 +11,7 @@ Welcome to Project Athena
   population as possible in a campus-wide distributed service networked 
   workstation environment.
 
-- The Project has prepared a set of files, containing information on many
+- Project Athena has prepared a set of files, containing information on many
   Athena topics.  The files provide up to date status information on the
   Athena system, summaries of Athena features, as well as instructions
   for learning more about them.  This set of files is kept in a directory
@@ -31,10 +32,9 @@ Welcome to Project Athena
   Centers: 11-004 and W20-028.  Start with the "Essential" series and the
   documentation catalog.
 
-- To access on-line documentation, first attach the athenadoc locker by
-  typing:  attach athenadoc  followed by a carriage return. Instructions
-  on how to view the documentation are in a file that can be examined by
-  typing: more /mit/athenadoc/README 
+- To access on-line documentation, just type:  help  followed by a carriage
+  return.  The On-Line Help system incorporates lots of information about
+  Athena in a menu-based hierarchy that is easy to browse.
  
 - Type:  man <program name>  followed by a carriage return to view online
   manual pages for commands.  For example, type:    man ls   to find out 

@@ -1,13 +1,41 @@
 #!/bin/csh -f
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
-# $Author: ilham $
+# $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.2 1989-08-09 03:37:50 ilham Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.3 1989-08-09 18:41:01 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
 set initdir=/usr/athena/lib/init
+
+# Determine whether to use user customizations:  use no customization files
+# ONLY if the single argument "nocalls" was provided to xsession (e.g., if
+# the user selected the SYSTEM option from the initial xlogin menu).
+
+switch ($#argv)
+    case 0:
+        unsetenv NOCALLS
+        breaksw
+    case 1:
+        if (($1 == nocalls) || ($1 == -nocalls)) then
+            echo -n "xsession: Running standard xsession "
+            echo "with NO user configuration files..."
+            setenv NOCALLS
+        else
+            set bad_args
+        endif
+        breaksw
+    default:
+        set bad_args
+endsw
+
+if ($?bad_args) then
+        echo "xsession: Arguments ($argv) not recognized."
+        echo "Running standard xsession with user configuration files..."
+        unsetenv NOCALLS
+        unset bad_args
+endif
 
 
 # *******************   ENVIRONMENT SETUP   *******************
@@ -26,7 +54,11 @@ echo "Setting up environment..."
 if ($?NOCALLS) then
 	if (-r ${initdir}/cshrc) source ${initdir}/cshrc
 else
-	if (-r ~/.cshrc) source ~/.cshrc
+	if (-r ~/.cshrc) then
+		source ~/.cshrc
+	else 
+		if (-r ${initdir}/cshrc) source ${initdir}/cshrc
+	endif
 endif
 
 
@@ -54,26 +86,33 @@ echo "Starting $WINDOW_MANAGER window manager..."
 
 
 # Start default initial xterm window.  To skip this, put the command
-# "setenv SKIP_INITIAL_XTERM" in your ~/.environment file.
+# "set skip_initial_xterm" in your ~/.environment file.
 
 # BE CAREFUL:  If you skip this, make sure that your ~/.startup.X file
 # provides a way for you to exit your session (e.g., an xterm from which
 # you can type "logout"). 
 
-if (! $?SKIP_INITIAL_XTERM) then
+if (! $?skip_initial_xterm) then
 	echo "Creating initial xterm window..."
 	(xterm -geometry 80x56+0+0 &)
 endif
 
+# Start the xlogout window.  To skip this, put the command
+# "set skip_xlogout" in your .environment file.
+
+if (! $?skip_xlogout) then
+	(/usr/athena/xlogout &)
+endif
+
 
 # Run default system startup activities.  To skip these, put the command
-# "setenv SKIP_X_STARTUP" in your ~/.environment file.
+# "set skip_x_startup" in your ~/.environment file.
 
-if (! $?SKIP_X_STARTUP) then
+if (! $?skip_x_startup) then
 	echo "Running standard startup activities..."
-	/usr/new/mh/bin/msgchk -nonotify nomail	# Check for mail
 	/usr/etc/zwgc				# Start Zephyr client
 	/bin/athena/get_message -new -zephyr	# Get message of the day
+	/usr/new/mh/bin/msgchk -nonotify nomail	# Check for mail
 	(/usr/athena/olc who &) >& /dev/null	# Ping the OLC server
 endif
 
@@ -96,9 +135,7 @@ echo "Session initialization completed."
 # To terminate this process, type the "logout" command in an xterm window
 # or invoke the "end_session" program.
 
-#/usr/athena/session_gate				# Wait for logout
-
-/usr/athena/xlogout
+/usr/athena/session_gate				# Wait for logout
 
 
 # Run any user-specified shutdown activities

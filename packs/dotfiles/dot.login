@@ -1,7 +1,7 @@
 # Prototype user .login file
-# $Author: ilham $
+# $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.11 1989-08-09 01:14:46 ilham Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.12 1989-08-09 18:44:18 probe Exp $
 
 
 # This file sources a system-wide .login file, which:
@@ -15,8 +15,17 @@ set initdir=/usr/athena/lib/init
 if (-r $initdir/login) then
         source $initdir/login
 else
-	echo "Warning: System-wide initialization files not found."
-        echo "Login initialization has not been performed."
+	if (-r /usr/prototype_user/.login) then
+		echo "If this is a workstation in a public cluster, you should"
+		echo "be getting the 6.3 upgrade within a few days."
+                echo "If this is a private workstation, please contact the"
+		echo "Athena Hotline at x3-1410 (by email: hotline@ATHENA),"
+		echo "in order to arrange to have your workstation ungraded."
+		source /usr/prototype_user/.login
+	else
+		echo "Warning: System-wide initialization files not found."
+        	echo "Login initialization has not been performed."
+	endif
 endif
 
 
