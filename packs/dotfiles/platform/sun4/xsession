@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: epeisach $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.5 1989-08-14 17:38:27 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.6 1989-08-14 21:11:09 epeisach Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -42,7 +42,7 @@ endif
 # started using the xlogin "SYSTEM" option.
 
 if ($?prompt) then
-	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose
+	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose_login
 endif
 
 
@@ -57,7 +57,7 @@ setenv XSESSION
 # The ~/.cshrc file sets environment variables, attaches lockers, and sets
 # the command search path.
 
-if ($?verbose) echo "Setting up environment..."
+if ($?verbose_login) echo "Setting up environment..."
 
 if ($?NOCALLS) then
 	if (-r ${initdir}/cshrc) source ${initdir}/cshrc
@@ -83,7 +83,7 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
 # WINDOW_MANAGER environment variable in your ~/.environment file.
 
 if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER uwm
-if ($?verbose) echo "Starting $WINDOW_MANAGER window manager..."
+if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 ($WINDOW_MANAGER &)
 
 
@@ -101,7 +101,7 @@ if ($?verbose) echo "Starting $WINDOW_MANAGER window manager..."
 # you can type "logout"). 
 
 if (! $?skip_initial_xterm) then
-	if ($?verbose) echo "Creating initial xterm window..."
+	if ($?verbose_login) echo "Creating initial xterm window..."
 	(xterm -geometry 80x56+0+0 &)
 endif
 
@@ -109,7 +109,7 @@ endif
 # "set skip_x_startup" in your ~/.environment file.
 
 if (! $?skip_x_startup) then
-	if ($?verbose) echo "Running standard startup activities..."
+	if ($?verbose_login) echo "Running standard startup activities..."
 	/usr/etc/zwgc					# Start Zephyr client
 	# If zephyr started okay, send message of the day as windowgram
 	if ($status == 0) /bin/athena/get_message -new -zephyr
@@ -121,7 +121,7 @@ endif
 # Run the window-session customizing commands in your ~/.startup.X file.
 
 if ((! $?NOCALLS) && (-r ~/.startup.X)) then
-	if ($?verbose) then
+	if ($?verbose_login) then
 	  echo "Running custom startup activities listed in ~/.startup.X..."
 	endif
 	source ~/.startup.X
@@ -136,7 +136,7 @@ if (! $?skip_xlogout) then
 endif
 
 
-if ($?verbose) echo "Session initialization completed."
+if ($?verbose_login) echo "Session initialization completed."
 
 
 # Gate the session.
