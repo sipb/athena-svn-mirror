@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.9 1992-07-31 13:24:57 probe Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.10 1994-03-25 15:59:13 miki Exp $";
 #endif
 
 #include "attach.h"
@@ -55,7 +55,6 @@ static int zephyr_op(func)
 #ifdef POSIX
     newsig.sa_handler = zephyr_timeout;
     sigemptyset(&newsig.sa_mask);
-    sigaddset(&newsig.sa_mask, SIGALRM);
     newsig.sa_flags = 0;
     sigaction(SIGALRM, &newsig, &oldsig);
 #else
