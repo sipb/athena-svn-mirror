@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.10 1989-11-06 19:54:14 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.11 1989-11-06 21:56:17 jik Exp $";
 #endif
 
 #ifdef AFS_MOUNTPOINTS
@@ -38,7 +38,7 @@
  * information, but once again, I can't find it, so this is the best I
  * can do.  Sigh.
  */
-#include "/afs/athena.mit.edu/astaff/project/afsdev/src/venus/uvenus.h"
+#include <venus/uvenus.h>
 #endif
 #include "delete_errs.h"
 #include "directories.h"
