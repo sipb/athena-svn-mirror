@@ -1,14 +1,14 @@
 #
 # Makefile to install NYSERNet snmp distribution
 #
-DIRS=		lib server/src 
+DIRS=		lib man server/src 
 
 DESTDIR=
 # customize these to your local configuration
-BIN=		${DESTDIR}/${MACHTYPE}bin
-MAN1=		${DESTDIR}/man/man1
-MAN3=		${DESTDIR}/man/man3
-MAN8=		${DESTDIR}/man/man8
+BIN=		${DESTDIR}/${MACHINE}bin
+MAN1=		${DESTDIR}/usr/man/man1
+MAN3=		${DESTDIR}/usr/man/man3
+MAN8=		${DESTDIR}/usr/man/man8
 LIB=		${DESTDIR}/${MACHTYPE}lib
 #
 # If you want 'cc' to search for the include files and libraries in some
@@ -20,7 +20,6 @@ LIB=		${DESTDIR}/${MACHTYPE}lib
 #
 # See manual for 'cc' for more detail
 #
-CFLAGS=-L../../lib/obj
 
 all:
 	@-for i in $(DIRS) ; do \
