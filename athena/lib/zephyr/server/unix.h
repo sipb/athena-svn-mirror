@@ -6,7 +6,7 @@
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/unix.h,v $
  * $Author: raeburn $
- * $Id: unix.h,v 1.2 1990-11-16 10:48:20 raeburn Exp $
+ * $Id: unix.h,v 1.3 1991-01-28 15:12:57 raeburn Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -23,6 +23,8 @@ extern "C" {
     void *malloc(unsigned), *realloc(void *, unsigned), free (void *);
 #endif
     long random(void);
+    void srandom (int);
+    int getpid (void);
 
     /*
      * Queue-handling functions.  This structure is basically a dummy;
@@ -113,6 +115,11 @@ extern "C" void * alloca (unsigned int);
 #define LOCAL_ALLOC(X)	malloc(X)
 #define LOCAL_FREE(X)	free(X)
 #endif
+
+/*
+ * Miscellaneous casts, so we don't have to insert these all over the
+ * source files...
+ */
 
 #define	xfree(foo)	free((caddr_t) (foo))
 #define	xinsque(a,b)	insque((struct qelem *)(a), (struct qelem *)(b))
