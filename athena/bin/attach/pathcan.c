@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v $
  *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.2 1991-01-22 16:21:29 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.3 1992-01-06 15:55:00 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.2 1991-01-22 16:21:29 probe Exp $";
-#endif lint
+static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.3 1992-01-06 15:55:00 probe Exp $";
+#endif
 
 #include <stdio.h>
 #include <errno.h>
