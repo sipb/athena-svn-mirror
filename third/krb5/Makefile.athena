@@ -1,12 +1,14 @@
-# $Id: Makefile.athena,v 1.21 2000-03-29 19:54:06 ghudson Exp $
+# $Id: Makefile.athena,v 1.22 2000-03-31 14:59:37 ghudson Exp $
 
 SHELL=/bin/sh
 
 dist:
+	cp "$CONFIG_SITE" config.site.athena
 
 prepare:
 	rm -f src/config.cache
-	cd src && CPPFLAGS=" " ./configure --without-hesiod \
+	cd src && CONFIG_SITE=`pwd`/config.site.athena CPPFLAGS=" " \
+		./configure --without-hesiod \
 		--with-ccopts=-I${ATHTOOLROOT}/usr/athena/include \
 		--with-ldopts=-L${ATHTOOLROOT}/usr/athena/lib
 

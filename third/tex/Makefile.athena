@@ -1,12 +1,14 @@
-# $Id: Makefile.athena,v 1.9 2000-03-29 19:54:57 ghudson Exp $
+# $Id: Makefile.athena,v 1.10 2000-03-31 14:59:59 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
 
 dist:
+	cp "$$CONFIG_SITE" config.site.athena
 
 prepare:
-	cd web2c && CC="$$COMPILER" ./configure --prefix=/usr/athena
+	cd web2c && CONFIG_SITE=`pwd`/../config.site.athena CC="$$COMPILER" \
+		./configure --prefix=/usr/athena
 	cd xdvi && imake "-I$$XCONFIGDIR" -DUseInstalled \
 		"-DXCONFIGDIR=$$XCONFIGDIR"
 	cd xdvi && ${MAKE} Makefiles
