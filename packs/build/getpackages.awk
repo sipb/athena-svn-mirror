@@ -13,13 +13,15 @@ function die(msg) {
 {
     packages[$1] = 1;
     n = 2;
-  
+
     nparts = split($1, parts, /\//);
     if (expand[parts[nparts]])
 	expand[parts[nparts]] = "AMBIGUOUS";
     else
 	expand[parts[nparts]] = $1;
     expand[$1] = $1;
+
+    package_names[$1] = "athena-"parts[nparts];
 
     while (n <= NF) {
 	if ($n == "early")
@@ -36,7 +38,9 @@ function die(msg) {
 		    built[$1] = $n == "except";
 	    }
 	    n++;
-	} else
+	} else if ($n == "package")
+	    package_names[$1] = "athena-"$++n;
+	else
 	    die("Bad packages line: " $0);
 	n++;
     }
@@ -71,8 +75,12 @@ function build(pkg) {
 	start = "";
 
     # If we're not still waiting to see the start package, output name.
-    if (!start)
+    if (!start) {
+      if (pkgnames)
+	print pkg " " package_names[pkg]
+      else
 	print pkg;
+    }
 
     # If that was the end package, we're done.
     if (end == pkg)
