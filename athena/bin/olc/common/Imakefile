@@ -6,14 +6,9 @@
 # For copying and distribution information, see the file "mit-copyright.h."
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/Imakefile,v $
-#	$Id: Imakefile,v 1.1 1990-05-25 10:52:07 vanharen Exp $
+#	$Id: Imakefile,v 1.2 1990-05-25 11:23:49 vanharen Exp $
 #	$Author: vanharen $
 #
-
-static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/Imakefile,v 1.1 1990-05-25 10:52:07 vanharen Exp $";
-
-#include <mit-copyright.h>
 
 SRCS=	string_utils.c io.c
 OBJS=	string_utils.o io.o
