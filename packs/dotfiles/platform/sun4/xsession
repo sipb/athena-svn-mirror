@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: epeisach $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.6 1989-08-14 21:11:09 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.7 1989-08-14 21:44:20 epeisach Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -41,9 +41,7 @@ endif
 # echo messages unless user has ~/.hushlogin file AND the session was not 
 # started using the xlogin "SYSTEM" option.
 
-if ($?prompt) then
 	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose_login
-endif
 
 
 # *******************   ENVIRONMENT SETUP   *******************
