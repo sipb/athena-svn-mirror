@@ -1,4 +1,4 @@
-# $Id: packages,v 1.151 2002-02-12 04:59:44 zacheiss Exp $
+# $Id: packages,v 1.152 2002-02-17 19:35:04 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -34,7 +34,7 @@
 # These tools are critical to the build process and need to be built
 # first, even before the packs are set up.  They have build systems
 # which don't assume that much of anything is ready.
-third/gmake			early
+third/gmake			early except linux
 third/gcc			on solaris,irix early
 third/binutils			on solaris early
 third/m4			early
@@ -140,7 +140,8 @@ third/emacs			requires hesiod,krb5
 third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper
 third/flex			on solaris
-third/GConf			requires gtk,oaf,ORBit
+third/freetype			except linux
+third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
 third/gal			requires gnome-vfs,libglade
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
@@ -149,7 +150,7 @@ third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf,scrollkeeper
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
-third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf
+third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype
 third/gnome-utils		requires gnome-libs,gnome-core,libxml,libglade
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2
 third/gtk			requires glib
@@ -171,7 +172,8 @@ third/libiconv			except linux
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
 third/libungif			except linux
-third/libxml
+third/libxml			except linux
+third/libxml2			except linux
 third/look			on irix
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp
