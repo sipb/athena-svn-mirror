@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.1,v $
 .\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.1,v 1.7 1989-05-10 18:02:55 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.1,v 1.8 1989-05-11 14:07:26 jtkohl Exp $
 .\"
 .\" Copyright (c) 1980 Regents of the University of California.
 .\" All rights reserved.  The Berkeley software License Agreement
@@ -61,15 +61,13 @@ set.  The process id is stored in the file /tmp/zleave.\fIuid\fR, where
 .PP
 If the
 .I -m
-argument is specified, the next argument is taken to be a message that
-is sent to the user as the second field of every Zephyr message sent
-by
-.I zleave 
-(The first field is a sentence describing how much time remains until
-the appointed hour.).
-If you want a multiple-word message, you normally must quote it with
+argument is specified, the next argument
+is appended to the standard message 
+(a sentence describing how much time remains until the appointed hour)
+sent at appropriate times.
+If you want to append a multiple-word message, you normally must quote it with
 double quotes (") (This is necessary for users of
-.IR csh(1)
+.IR csh (1)
 and
 .IR sh (1).)
 .PP
