@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.18 1987-08-01 15:30:41 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.19 1987-10-31 19:07:59 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.18 1987-08-01 15:30:41 rfrench Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.19 1987-10-31 19:07:59 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -50,7 +50,7 @@ Code_t ZSendPacket(packet,len)
 
 	if (notice.z_kind == UNSAFE || notice.z_kind == HMACK ||
 	    notice.z_kind == SERVACK || notice.z_kind == CLIENTACK ||
-	    __Zephyr_server || __HM_set)
+	    notice.z_kind == HMCTL || __Zephyr_server || __HM_set)
 		return (ZERR_NONE);
 	
 	tv.tv_sec = 0;
