@@ -1052,19 +1052,6 @@ stamp-crtS:	crtstuff.c $(GCC_PASSES) $(CONFIG_H) gbl-ctors.h
 c-parse.o : $(srcdir)/c-parse.c $(CONFIG_H) $(TREE_H) c-lex.h \
     $(srcdir)/c-parse.h c-tree.h input.h flags.h
 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) -c $(srcdir)/c-parse.c
-$(srcdir)/c-parse.h: $(srcdir)/c-parse.c
-$(srcdir)/c-parse.c: $(srcdir)/c-parse.y
-	cd $(srcdir); $(BISON) $(BISONFLAGS) -d c-parse.y -o c-parse.c
-$(srcdir)/c-parse.y: c-parse.in
-	sed -e "/^ifobjc$$/,/^end ifobjc$$/d" \
-	  -e "/^ifc$$/d" -e "/^end ifc$$/d" \
-	  $(srcdir)/c-parse.in >tmp-c-parse.y
-	$(srcdir)/move-if-change tmp-c-parse.y $(srcdir)/c-parse.y
-
-$(srcdir)/c-gperf.h: c-parse.gperf
-	gperf -p -j1 -i 1 -g -o -t -G -N is_reserved_word -k1,3,$$ \
-	   $(srcdir)/c-parse.gperf >tmp-gperf.h
-	 $(srcdir)/move-if-change tmp-gperf.h $(srcdir)/c-gperf.h
 
 c-decl.o : c-decl.c $(CONFIG_H) $(TREE_H) c-tree.h c-lex.h flags.h output.h
 c-typeck.o : c-typeck.c $(CONFIG_H) $(TREE_H) c-tree.h flags.h output.h
@@ -1115,13 +1102,6 @@ stamp-under: $(GCC_PASSES)
 objc-parse.o : $(srcdir)/objc-parse.c $(CONFIG_H) $(TREE_H) c-lex.h \
    c-tree.h input.h flags.h objc-act.h
 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) -c $(srcdir)/objc-parse.c
-$(srcdir)/objc-parse.c : $(srcdir)/objc-parse.y
-	cd $(srcdir); $(BISON) $(BISONFLAGS) objc-parse.y -o objc-parse.c
-$(srcdir)/objc-parse.y: $(srcdir)/c-parse.in
-	sed -e "/^ifc$$/,/^end ifc$$/d" \
-	  -e "/^ifobjc$$/d" -e "/^end ifobjc$$/d" \
-	  $(srcdir)/c-parse.in >tmp-objc-prs.y
-	$(srcdir)/move-if-change tmp-objc-prs.y $(srcdir)/objc-parse.y
 
 objc-act.o : objc-act.c $(CONFIG_H) $(TREE_H) $(RTL_H) c-tree.h c-lex.h \
    flags.h objc-act.h input.h function.h $(srcdir)/c-parse.h
@@ -1550,10 +1530,6 @@ bi-opname: bi-opname.o $(BI_OBJ) $(HOST_LIBDEPS)
 	$(HOST_CC) $(HOST_CFLAGS) $(HOST_LDFLAGS) -o $@ \
 	 bi-opname.o $(BI_OBJ) $(HOST_LIBS)
 
-$(srcdir)/bi-parser.h: $(srcdir)/bi-parser.c
-$(srcdir)/bi-parser.c: $(srcdir)/bi-parser.y
-	cd $(srcdir); $(BISON) $(BISONFLAGS) -d bi-parser.y -o bi-parser.c
-
 bi-parser.o: $(srcdir)/bi-parser.c bi-defs.h $(build_xm_file)
 	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) \
 	   $(srcdir)/bi-parser.c
@@ -1613,8 +1589,6 @@ cccp: cccp.o cexp.o version.o $(LIBDEPS)
 	  version.o $(LIBS)
 cexp.o: $(srcdir)/cexp.c $(CONFIG_H)
 	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) -c $(srcdir)/cexp.c
-$(srcdir)/cexp.c: $(srcdir)/cexp.y
-	cd $(srcdir); $(BISON) -o cexp.c cexp.y
 
 cccp.o: cccp.c $(CONFIG_H) pcp.h version.c config.status
 # The reason we use $(libdir)/g++-include rather than using libsubdir
@@ -1867,27 +1841,8 @@ stmp-fixproto: fixhdr.ready fixproto stmp-headers
 doc: info
 info: $(srcdir)/cpp.info $(srcdir)/gcc.info lang.info
 
-$(srcdir)/cpp.info: cpp.texi
-	cd $(srcdir); $(MAKEINFO) cpp.texi
-
-$(srcdir)/gcc.info: gcc.texi extend.texi install.texi invoke.texi \
-		md.texi rtl.texi tm.texi 
-	cd $(srcdir); $(MAKEINFO) gcc.texi
-
 dvi: $(srcdir)/gcc.dvi $(srcdir)/cpp.dvi lang.dvi
 
-# This works with GNU Make's default rule.
-$(srcdir)/gcc.dvi: gcc.texi extend.texi install.texi invoke.texi \
-		md.texi rtl.texi tm.texi 
-	$(TEXI2DVI) $<
-
-# This works with GNU Make's default rule.
-$(srcdir)/cpp.dvi: cpp.texi
-	$(TEXI2DVI) $<
-
-$(srcdir)/INSTALL: install1.texi install.texi
-	$(MAKEINFO) -D INSTALLONLY --no-header --no-split \
-	  `echo $(srcdir)/install1.texi | sed 's,^\./,,'`
 
 # Deletion of files made during compilation.
 # There are four levels of this:
