@@ -4,7 +4,8 @@
 >GdkPixbufLoader</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="The gdk-pixbuf Library"
 HREF="index.html"><LINK
@@ -125,7 +126,7 @@ NAME="GDKPIXBUFLOADER"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1963"
+NAME="AEN1992"
 ></A
 ><H2
 >Name</H2
@@ -133,7 +134,7 @@ NAME="AEN1963"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1966"
+NAME="AEN1995"
 ></A
 ><H2
 >Synopsis</H2
@@ -199,7 +200,7 @@ HREF="gdkpixbufloader.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1985"
+NAME="AEN2014"
 ></A
 ><H2
 >Object Hierarchy</H2
@@ -221,7 +222,7 @@ CLASS="SYNOPSIS"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1989"
+NAME="AEN2018"
 ></A
 ><H2
 >Signal Prototypes</H2
@@ -290,7 +291,7 @@ HREF="gdkpixbufloader.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2012"
+NAME="AEN2041"
 ></A
 ><H2
 >Description</H2
@@ -359,7 +360,7 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-AREA-UPDATED"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2026"
+NAME="AEN2055"
 ></A
 ><H3
 >Loading an animation</H3
@@ -404,14 +405,14 @@ HREF="gdkpixbufloader.html#GDKPIXBUFLOADER-ANIMATION-DONE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2038"
+NAME="AEN2067"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2040"
+NAME="AEN2069"
 ></A
 ><H3
 ><A
@@ -439,6 +440,9 @@ HREF="gdkpixbufloader.html"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2076"
+></A
 ><P
 ></P
 ><TABLE
@@ -476,7 +480,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2056"
+NAME="AEN2085"
 ></A
 ><H3
 ><A
@@ -505,6 +509,9 @@ HREF="gdkpixbufloader.html"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2092"
+></A
 ><P
 ></P
 ><TABLE
@@ -539,7 +546,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2072"
+NAME="AEN2101"
 ></A
 ><H3
 ><A
@@ -578,6 +585,9 @@ accept further writes.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2112"
+></A
 ><P
 ></P
 ><TABLE
@@ -669,7 +679,7 @@ cannot parse the buffer.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2107"
+NAME="AEN2136"
 ></A
 ><H3
 ><A
@@ -700,7 +710,10 @@ the size of the image that will be allocated.  If the loader has not received
 enough data via <A
 HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-WRITE"
 >gdk_pixbuf_loader_write</A
->(), then this function returns NULL.
+>(), then this function returns <TT
+CLASS="LITERAL"
+>NULL</TT
+>.
 The returned pixbuf will be the same in all future calls to the loader, so
 simply calling <A
 HREF="gdk-pixbuf-refcounting.html#GDK-PIXBUF-REF"
@@ -711,6 +724,9 @@ if the loader is an animation, it will return the first frame of the animation.<
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2147"
+></A
 ><P
 ></P
 ><TABLE
@@ -751,7 +767,10 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The GdkPixbuf that the loader is creating, or NULL if not
+> The GdkPixbuf that the loader is creating, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if not
 enough data has been read to determine how to create the image buffer.</TD
 ></TR
 ></TBODY
@@ -763,7 +782,7 @@ enough data has been read to determine how to create the image buffer.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2130"
+NAME="AEN2161"
 ></A
 ><H3
 ><A
@@ -791,11 +810,17 @@ HREF="gdkpixbufloader.html"
 >Queries the GdkPixbufAnimation that a pixbuf loader is currently creating.
 In general it only makes sense to call this function afer the "area_prepared"
 signal has been emitted by the loader.  If the image is not an animation,
-then it will return NULL.</P
+then it will return <TT
+CLASS="LITERAL"
+>NULL</TT
+>.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2170"
+></A
 ><P
 ></P
 ><TABLE
@@ -836,8 +861,11 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The GdkPixbufAnimation that the loader is loading, or NULL if
- not enough data has been read to determine the information.</TD
+> The GdkPixbufAnimation that the loader is loading, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if
+not enough data has been read to determine the information.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -848,7 +876,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2151"
+NAME="AEN2184"
 ></A
 ><H3
 ><A
@@ -878,6 +906,9 @@ will occur, so that it can free its internal loading structures.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2192"
+></A
 ><P
 ></P
 ><TABLE
@@ -915,14 +946,14 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2168"
+NAME="AEN2201"
 ></A
 ><H2
 >Signals</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2170"
+NAME="AEN2203"
 ></A
 ><H3
 ><A
@@ -959,6 +990,9 @@ HREF="gdkpixbufloader.html"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2214"
+></A
 ><P
 ></P
 ><TABLE
@@ -1080,7 +1114,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2210"
+NAME="AEN2243"
 ></A
 ><H3
 ><A
@@ -1116,6 +1150,9 @@ HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-GET-PIXBUF"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2251"
+></A
 ><P
 ></P
 ><TABLE
@@ -1169,7 +1206,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2231"
+NAME="AEN2264"
 ></A
 ><H3
 ><A
@@ -1200,6 +1237,9 @@ HREF="gdkpixbufloader.html"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2272"
+></A
 ><P
 ></P
 ><TABLE
@@ -1270,7 +1310,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2256"
+NAME="AEN2289"
 ></A
 ><H3
 ><A
@@ -1299,6 +1339,9 @@ HREF="gdkpixbufloader.html"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2296"
+></A
 ><P
 ></P
 ><TABLE
@@ -1352,7 +1395,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2276"
+NAME="AEN2309"
 ></A
 ><H3
 ><A
@@ -1387,6 +1430,9 @@ HREF="gdkpixbufloader.html#GDK-PIXBUF-LOADER-CLOSE"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN2317"
+></A
 ><P
 ></P
 ><TABLE
@@ -1441,7 +1487,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2297"
+NAME="AEN2330"
 ></A
 ><H2
 >See Also</H2

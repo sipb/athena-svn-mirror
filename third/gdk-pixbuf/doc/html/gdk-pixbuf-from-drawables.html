@@ -4,7 +4,8 @@
 >Drawables to Pixbufs</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="The gdk-pixbuf Library"
 HREF="index.html"><LINK
@@ -125,7 +126,7 @@ NAME="GDK-PIXBUF-FROM-DRAWABLES"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1412"
+NAME="AEN1434"
 ></A
 ><H2
 >Name</H2
@@ -133,7 +134,7 @@ NAME="AEN1412"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1415"
+NAME="AEN1437"
 ></A
 ><H2
 >Synopsis</H2
@@ -168,7 +169,7 @@ HREF="gdk-pixbuf-from-drawables.html#GDK-PIXBUF-GET-FROM-DRAWABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1423"
+NAME="AEN1445"
 ></A
 ><H2
 >Description</H2
@@ -183,14 +184,14 @@ NAME="AEN1423"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1427"
+NAME="AEN1449"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1429"
+NAME="AEN1451"
 ></A
 ><H3
 ><A
@@ -242,7 +243,10 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
-> is NULL, then this function will
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <TT
 CLASS="PARAMETER"
@@ -266,12 +270,21 @@ CLASS="PARAMETER"
 >dest_y</I
 ></TT
 > arguments must be specified as 0, otherwise the function will return
-NULL.  If the specified destination pixbuf is not NULL and it contains alpha
+<TT
+CLASS="LITERAL"
+>NULL</TT
+>.  If the specified destination pixbuf is not <TT
+CLASS="LITERAL"
+>NULL</TT
+> and it contains alpha
 information, then the filled pixels will be set to full opacity.</P
 ><P
 >If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return NULL.</P
+return <TT
+CLASS="LITERAL"
+>NULL</TT
+>.</P
 ><P
 >If the specified drawable is a window, then it must be viewable, i.e. all of
 its ancestors up to the root window must be mapped.  Also, the specified
@@ -284,6 +297,9 @@ be undefined.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1476"
+></A
 ><P
 ></P
 ><TABLE
@@ -309,7 +325,10 @@ CLASS="PARAMETER"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Destination pixbuf, or NULL if a new pixbuf should be created.</TD
+> Destination pixbuf, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if a new pixbuf should be created.</TD
 ></TR
 ><TR
 ><TD
@@ -405,7 +424,10 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
-> is NULL.</TD
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>.</TD
 ></TR
 ><TR
 ><TD
@@ -427,7 +449,10 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
-> is NULL.</TD
+> is <TT
+CLASS="LITERAL"
+>NULL</TT
+>.</TD
 ></TR
 ><TR
 ><TD
@@ -481,9 +506,15 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
-> if it was non-NULL, or a newly-created
+> if it was non-<TT
+CLASS="LITERAL"
+>NULL</TT
+>, or a newly-created
 pixbuf with a reference count of 1 if no destination pixbuf was specified; in
-the latter case, NULL will be returned if not enough memory could be
+the latter case, <TT
+CLASS="LITERAL"
+>NULL</TT
+> will be returned if not enough memory could be
 allocated for the pixbuf to be created or if the image data could not be
 retrieved from the drawable.</TD
 ></TR
@@ -497,7 +528,7 @@ retrieved from the drawable.</TD
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1502"
+NAME="AEN1530"
 ></A
 ><H2
 >See Also</H2

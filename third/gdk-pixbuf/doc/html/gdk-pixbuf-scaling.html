@@ -4,7 +4,8 @@
 >Scaling</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="The gdk-pixbuf Library"
 HREF="index.html"><LINK
@@ -125,7 +126,7 @@ NAME="GDK-PIXBUF-SCALING"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN965"
+NAME="AEN970"
 ></A
 ><H2
 >Name</H2
@@ -133,7 +134,7 @@ NAME="AEN965"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN968"
+NAME="AEN973"
 ></A
 ><H2
 >Synopsis</H2
@@ -243,7 +244,7 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1008"
+NAME="AEN1013"
 ></A
 ><H2
 >Description</H2
@@ -340,14 +341,14 @@ expose_cb (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1022"
+NAME="AEN1027"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1024"
+NAME="AEN1029"
 ></A
 ><H3
 ><A
@@ -392,6 +393,9 @@ CLASS="NOTE"
   </P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1036"
+></A
 ><P
 ></P
 ><TABLE
@@ -483,7 +487,7 @@ image (the filter is designed to be idempotent for 1:1 pixel mapping).&#13;</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1052"
+NAME="AEN1057"
 ></A
 ><H3
 ><A
@@ -517,7 +521,13 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Transforms the image by source image by scaling by <TT
+>Creates a transformation of the source image <TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+> by scaling by
+<TT
 CLASS="PARAMETER"
 ><I
 >scale_x</I
@@ -527,8 +537,7 @@ CLASS="PARAMETER"
 ><I
 >scale_y</I
 ></TT
-> then
-translating by <TT
+> then translating by <TT
 CLASS="PARAMETER"
 ><I
 >offset_x</I
@@ -538,33 +547,47 @@ CLASS="PARAMETER"
 ><I
 >offset_y</I
 ></TT
->, then renders the rectangle
-(<TT
+>,
+then renders the rectangle (<TT
 CLASS="PARAMETER"
 ><I
->dest</I
+>dest_x</I
 ></TT
->,<TT
+>, <TT
 CLASS="PARAMETER"
 ><I
 >dest_y</I
 ></TT
->,<TT
+>, <TT
 CLASS="PARAMETER"
 ><I
 >dest_width</I
 ></TT
->,<TT
+>,
+<TT
 CLASS="PARAMETER"
 ><I
 >dest_height</I
 ></TT
->) of the resulting image onto the
-destination drawable replacing the previous contents.</P
+>) of the resulting image onto the destination image
+replacing the previous contents.</P
+><P
+>Try to use <A
+HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-SCALE-SIMPLE"
+>gdk_pixbuf_scale_simple</A
+>() first, this function is
+the industrial-strength power tool you can fall back to if
+<A
+HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-SCALE-SIMPLE"
+>gdk_pixbuf_scale_simple</A
+>() isn't powerful enough.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1082"
+></A
 ><P
 ></P
 ><TABLE
@@ -771,7 +794,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1124"
+NAME="AEN1133"
 ></A
 ><H3
 ><A
@@ -806,7 +829,13 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Transforms the image by source image by scaling by <TT
+>Creates a transformation of the source image <TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+> by scaling by
+<TT
 CLASS="PARAMETER"
 ><I
 >scale_x</I
@@ -816,8 +845,7 @@ CLASS="PARAMETER"
 ><I
 >scale_y</I
 ></TT
-> then
-translating by <TT
+> then translating by <TT
 CLASS="PARAMETER"
 ><I
 >offset_x</I
@@ -827,33 +855,36 @@ CLASS="PARAMETER"
 ><I
 >offset_y</I
 ></TT
->, then composites the rectangle
-(<TT
+>,
+then composites the rectangle (<TT
 CLASS="PARAMETER"
 ><I
->dest</I
+>dest_x</I
 ></TT
->,<TT
+>, <TT
 CLASS="PARAMETER"
 ><I
 >dest_y</I
 ></TT
->,<TT
+>, <TT
 CLASS="PARAMETER"
 ><I
 >dest_width</I
 ></TT
->,<TT
+>,
+<TT
 CLASS="PARAMETER"
 ><I
 >dest_height</I
 ></TT
->) of the resulting image onto the
-destination drawable.</P
+>) of the resulting image onto the destination image.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1155"
+></A
 ><P
 ></P
 ><TABLE
@@ -1077,7 +1108,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1200"
+NAME="AEN1210"
 ></A
 ><H3
 ><A
@@ -1117,7 +1148,13 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Transforms the image by source image by scaling by <TT
+>Creates a transformation of the source image <TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+> by scaling by
+<TT
 CLASS="PARAMETER"
 ><I
 >scale_x</I
@@ -1127,8 +1164,7 @@ CLASS="PARAMETER"
 ><I
 >scale_y</I
 ></TT
-> then
-translating by <TT
+> then translating by <TT
 CLASS="PARAMETER"
 ><I
 >offset_x</I
@@ -1138,29 +1174,30 @@ CLASS="PARAMETER"
 ><I
 >offset_y</I
 ></TT
->, then composites the rectangle
-(<TT
+>,
+then composites the rectangle (<TT
 CLASS="PARAMETER"
 ><I
->dest</I
+>dest_x</I
 ></TT
->,<TT
+> ,<TT
 CLASS="PARAMETER"
 ><I
 >dest_y</I
 ></TT
->,<TT
+>, <TT
 CLASS="PARAMETER"
 ><I
 >dest_width</I
 ></TT
->,<TT
+>,
+<TT
 CLASS="PARAMETER"
 ><I
 >dest_height</I
 ></TT
->) of the resulting image with
-a checkboard of the colors <TT
+>) of the resulting image with a checkboard of the
+colors <TT
 CLASS="PARAMETER"
 ><I
 >color1</I
@@ -1170,12 +1207,21 @@ CLASS="PARAMETER"
 ><I
 >color2</I
 ></TT
-> and renders it onto the
-destination drawable.</P
+> and renders it onto the destination
+image.</P
+><P
+>See <A
+HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-COMPOSITE-COLOR-SIMPLE"
+>gdk_pixbuf_composite_color_simple</A
+>() for a simpler variant of this
+function suitable for many tasks.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1238"
+></A
 ><P
 ></P
 ><TABLE
@@ -1494,7 +1540,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1302"
+NAME="AEN1315"
 ></A
 ><H3
 ><A
@@ -1521,12 +1567,13 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Scale the GdkPixbuf <TT
+>Create a new GdkPixbuf containing a copy of <TT
 CLASS="PARAMETER"
 ><I
 >src</I
 ></TT
-> to <TT
+> scaled to
+<TT
 CLASS="PARAMETER"
 ><I
 >dest_width</I
@@ -1536,12 +1583,42 @@ CLASS="PARAMETER"
 ><I
 >dest_height</I
 ></TT
-> and render the result into
-a new GdkPixbuf.</P
+>. Leaves <TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+> unaffected.  <TT
+CLASS="PARAMETER"
+><I
+>interp_type</I
+></TT
+>
+should be GDK_INTERP_NEAREST if you want maximum speed (but when
+scaling down GDK_INTERP_NEAREST is usually unusably ugly).  The
+default <TT
+CLASS="PARAMETER"
+><I
+>interp_type</I
+></TT
+> should be GDK_INTERP_BILINEAR which offers
+reasonable quality and speed.</P
+><P
+>For more complicated scaling/compositing see <A
+HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-SCALE"
+>gdk_pixbuf_scale</A
+>()
+and <A
+HREF="gdk-pixbuf-scaling.html#GDK-PIXBUF-COMPOSITE"
+>gdk_pixbuf_composite</A
+>().</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1337"
+></A
 ><P
 ></P
 ><TABLE
@@ -1633,7 +1710,10 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the new GdkPixbuf, or NULL if not enough memory could be
+> the new GdkPixbuf, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if not enough memory could be
 allocated for it.</TD
 ></TR
 ></TBODY
@@ -1645,7 +1725,7 @@ allocated for it.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1343"
+NAME="AEN1365"
 ></A
 ><H3
 ><A
@@ -1677,7 +1757,7 @@ HREF="gdk-pixbuf-scaling.html#GDKINTERPTYPE"
 ></TR
 ></TABLE
 ><P
->Scale the GdkPixbuf <TT
+>Creates a new GdkPixbuf by scaling <TT
 CLASS="PARAMETER"
 ><I
 >src</I
@@ -1687,13 +1767,14 @@ CLASS="PARAMETER"
 ><I
 >dest_width</I
 ></TT
-> x <TT
+> x
+<TT
 CLASS="PARAMETER"
 ><I
 >dest_height</I
 ></TT
-> composite the result with
-a checkboard of colors <TT
+> and compositing the result with a checkboard of colors
+<TT
 CLASS="PARAMETER"
 ><I
 >color1</I
@@ -1703,12 +1784,14 @@ CLASS="PARAMETER"
 ><I
 >color2</I
 ></TT
-> and render the result into
-a new GdkPixbuf.</P
+>.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN1382"
+></A
 ><P
 ></P
 ><TABLE
@@ -1868,7 +1951,10 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the new GdkPixbuf, or NULL if not enough memory could be
+> the new GdkPixbuf, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> if not enough memory could be
 allocated for it.</TD
 ></TR
 ></TBODY
@@ -1881,7 +1967,7 @@ allocated for it.</TD
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1404"
+NAME="AEN1426"
 ></A
 ><H2
 >See Also</H2

@@ -1,7 +1,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Compiling the gdk-pixbuf library</TITLE
+>Porting applications from Imlib to gdk-pixbuf</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.64
@@ -10,11 +10,11 @@ REL="HOME"
 TITLE="The gdk-pixbuf Library"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Converting Applications to gdk-pixbuf"
-HREF="x3767.html"><LINK
+TITLE="XlibRGB"
+HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html"><LINK
 REL="NEXT"
-TITLE="Extra Configuration Options"
-HREF="extra-configuration-options.html"></HEAD
+TITLE="Differences between Imlib and gdk-pixbuf"
+HREF="x3715.html"></HEAD
 ><BODY
 CLASS="APPENDIX"
 BGCOLOR="#FFFFFF"
@@ -49,7 +49,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-HREF="x3767.html"
+HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -94,7 +94,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="extra-configuration-options.html"
+HREF="x3715.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -110,11 +110,14 @@ SIZE="3"
 CLASS="APPENDIX"
 ><H1
 ><A
-NAME="COMPILING"
->Compiling the <SPAN
+NAME="AEN3696"
+>Porting applications from <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> to <SPAN
 CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
-> library</A
+></A
 ></H1
 ><DIV
 CLASS="TOC"
@@ -125,99 +128,98 @@ CLASS="TOC"
 ></DT
 ><DT
 ><A
-HREF="compiling.html#BUILDING"
->Building the Library</A
+HREF="a3696.html#AEN3706"
+>Introduction</A
 ></DT
 ><DT
 ><A
-HREF="extra-configuration-options.html"
->Extra Configuration Options</A
+HREF="x3715.html"
+>Differences between <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> and <SPAN
+CLASS="APPLICATION"
+>gdk-pixbuf</SPAN
+></A
+></DT
+><DT
+><A
+HREF="x3767.html"
+>Converting Applications to <SPAN
+CLASS="APPLICATION"
+>gdk-pixbuf</SPAN
+></A
 ></DT
 ></DL
 ></DIV
 ><P
->      This appendix describes the special options you can use while
-      compiling the <SPAN
+>      This appendix contains the basic steps needed to port an
+      application that uses the <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> library to use <SPAN
 CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
-> library.
+>
+      instead.
     </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	This appendix refers to version 1 of the <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> library; this
+	discussion is not relevant to Imlib 2.  Also, we discuss the
+	gdk_imlib API instead of the Xlib-based API.
+      </P
+></BLOCKQUOTE
+></DIV
 ><BR
 CLEAR="all"><DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="BUILDING"
->Building the Library</A
+NAME="AEN3706"
+>Introduction</A
 ></H1
+><P
+>	Prior to the GNOME 1.2 platform, the <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> library was the
+	preferred way of loading and rendering images in GNOME
+	applications.  Unfortunately, <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> has important design
+	limitations that make it hard to write efficient and highly
+	modular applications.
+      </P
 ><P
 >	The <SPAN
 CLASS="APPLICATION"
 >gdk-pixbuf</SPAN
-> library uses the standard GNU build system,
-	using <SPAN
-CLASS="APPLICATION"
->autoconf</SPAN
-> for package
-	configuration and resolving portability issues,
+> library was designed as a solution to
 	<SPAN
 CLASS="APPLICATION"
->automake</SPAN
-> for building makefiles
-	that comply with the GNU Coding Standards, and
-	<SPAN
+>Imlib</SPAN
+>'s shortcomings.  It provides a simple, orthogonal API
+	and convenience functions for the most common operations.  In
+	addition, it supports full transparency information for
+	images, or alpha channel.  More importantly, it has
+	well-defined semantics for memory management through the use
+	of reference counting; <SPAN
 CLASS="APPLICATION"
->libtool</SPAN
-> for building shared
-	libraries on multiple platforms.  The normal sequence for
-	compiling and installing the <SPAN
-CLASS="APPLICATION"
->gdk-pixbuf</SPAN
-> library is thus:
-
-	<P
-CLASS="LITERALLAYOUT"
->	&nbsp;&nbsp;<TT
-CLASS="USERINPUT"
-><B
->./configure</B
-></TT
-><br>
-	&nbsp;&nbsp;<TT
-CLASS="USERINPUT"
-><B
->make</B
-></TT
-><br>
-	&nbsp;&nbsp;<TT
-CLASS="USERINPUT"
-><B
->make install</B
-></TT
-><br>
-	</P
->
-      </P
-><P
->	The standard options provided by <SPAN
-CLASS="APPLICATION"
->GNU
-	autoconf</SPAN
-> may be passed to the
-	<B
-CLASS="COMMAND"
->configure</B
-> script.  Please see the
-	<SPAN
-CLASS="APPLICATION"
->autoconf</SPAN
-> documentation or run
-	<B
-CLASS="COMMAND"
->./configure --help</B
-> for information about
-	the standard options.
+>Imlib</SPAN
+> has an intractably complex
+	memory management mechanism and cache that will make your head
+	spin.
       </P
 ></DIV
 ></DIV
@@ -236,7 +238,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="left"
 ><A
-HREF="x3767.html"
+HREF="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -281,7 +283,7 @@ WIDTH="25%"
 BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="extra-configuration-options.html"
+HREF="x3715.html"
 ><FONT
 COLOR="#FFFFFF"
 SIZE="3"
@@ -299,10 +301,7 @@ ALIGN="left"
 COLOR="#FFFFFF"
 SIZE="3"
 ><B
->Converting Applications to <SPAN
-CLASS="APPLICATION"
->gdk-pixbuf</SPAN
-></B
+>XlibRGB</B
 ></FONT
 ></TD
 ><TD
@@ -312,7 +311,13 @@ ALIGN="right"
 COLOR="#FFFFFF"
 SIZE="3"
 ><B
->Extra Configuration Options</B
+>Differences between <SPAN
+CLASS="APPLICATION"
+>Imlib</SPAN
+> and <SPAN
+CLASS="APPLICATION"
+>gdk-pixbuf</SPAN
+></B
 ></FONT
 ></TD
 ></TR

@@ -1,4 +1,4 @@
-<!doctype book PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+<!doctype book PUBLIC "-//OASIS//DTD DocBook V4.1//EN"[
 
 <!entity gdk-pixbuf-gdk-pixbuf SYSTEM "sgml/gdk-pixbuf.sgml">
 <!entity gdk-pixbuf-refcounting SYSTEM "sgml/refcounting.sgml">

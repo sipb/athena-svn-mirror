@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -284,12 +284,6 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libgdk_pixbuf_la_DEPENDENCIES =  pixops/libpixops.la
-@BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_la_OBJECTS =  gdk-pixbuf.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-drawable.lo gdk-pixbuf-io.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-loader.lo gdk-pixbuf-render.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 @BUILD_DYNAMIC_MODULES_FALSE@libgdk_pixbuf_la_OBJECTS =  gdk-pixbuf.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-drawable.lo gdk-pixbuf-io.lo \
@@ -299,16 +293,14 @@ libgdk_pixbuf_la_DEPENDENCIES =  pixops/libpixops.la
 @BUILD_DYNAMIC_MODULES_FALSE@io-jpeg.lo io-xpm.lo io-gif.lo io-ico.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-ras.lo io-tiff.lo io-pnm.lo io-bmp.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-xbm.lo
+@BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_la_OBJECTS =  gdk-pixbuf.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-drawable.lo gdk-pixbuf-io.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-loader.lo gdk-pixbuf-render.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 libgdk_pixbuf_xlib_la_DEPENDENCIES =  pixops/libpixops.la \
 libgdk_pixbuf.la
-@BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_xlib_la_OBJECTS =  \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-io.lo gdk-pixbuf-xlib-render.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlib-drawable.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlibrgb.lo \
-@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 @BUILD_DYNAMIC_MODULES_FALSE@libgdk_pixbuf_xlib_la_OBJECTS =  \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
@@ -320,6 +312,14 @@ libgdk_pixbuf.la
 @BUILD_DYNAMIC_MODULES_FALSE@io-jpeg.lo io-xpm.lo io-gif.lo io-ico.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-ras.lo io-tiff.lo io-pnm.lo io-bmp.lo \
 @BUILD_DYNAMIC_MODULES_FALSE@io-xbm.lo
+@BUILD_DYNAMIC_MODULES_TRUE@libgdk_pixbuf_xlib_la_OBJECTS =  \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf.lo gdk-pixbuf-xlib.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-animation.lo gdk-pixbuf-data.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-io.lo gdk-pixbuf-xlib-render.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlib-drawable.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-scale.lo gdk-pixbuf-util.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-xlibrgb.lo \
+@BUILD_DYNAMIC_MODULES_TRUE@gdk-pixbuf-parse-color.lo
 libgnomecanvaspixbuf_la_LIBADD = 
 @BUILD_CANVAS_ITEM_TRUE@libgnomecanvaspixbuf_la_OBJECTS =  \
 @BUILD_CANVAS_ITEM_TRUE@gnome-canvas-pixbuf.lo
@@ -611,7 +611,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -704,8 +704,6 @@ gdk-pixbuf-loader.lo gdk-pixbuf-loader.o : gdk-pixbuf-loader.c \
 	../config.h gdk-pixbuf-private.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h \
 	gdk-pixbuf-io.h
-gdk-pixbuf.lo gdk-pixbuf.o : gdk-pixbuf.c ../config.h gdk-pixbuf.h \
-	gdk-pixbuf-features.h gdk-pixbuf-private.h
 gdk-pixbuf-parse-color.lo gdk-pixbuf-parse-color.o : \
 	gdk-pixbuf-parse-color.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-private.h
@@ -721,16 +719,18 @@ gdk-pixbuf-xlib-drawable.lo gdk-pixbuf-xlib-drawable.o : \
 	gdk-pixbuf-xlib-drawable.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-xlib-private.h \
 	gdk-pixbuf-xlib.h gdk-pixbuf-xlibrgb.h
-gdk-pixbuf-xlib.lo gdk-pixbuf-xlib.o : gdk-pixbuf-xlib.c ../config.h \
-	gdk-pixbuf-private.h gdk-pixbuf.h gdk-pixbuf-features.h \
-	gdk-pixbuf-xlib-private.h gdk-pixbuf-xlib.h \
-	gdk-pixbuf-xlibrgb.h
 gdk-pixbuf-xlib-render.lo gdk-pixbuf-xlib-render.o : \
 	gdk-pixbuf-xlib-render.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-xlib-private.h \
 	gdk-pixbuf-xlib.h gdk-pixbuf-xlibrgb.h
+gdk-pixbuf-xlib.lo gdk-pixbuf-xlib.o : gdk-pixbuf-xlib.c ../config.h \
+	gdk-pixbuf-private.h gdk-pixbuf.h gdk-pixbuf-features.h \
+	gdk-pixbuf-xlib-private.h gdk-pixbuf-xlib.h \
+	gdk-pixbuf-xlibrgb.h
 gdk-pixbuf-xlibrgb.lo gdk-pixbuf-xlibrgb.o : gdk-pixbuf-xlibrgb.c \
 	../config.h gdk-pixbuf-xlibrgb.h
+gdk-pixbuf.lo gdk-pixbuf.o : gdk-pixbuf.c ../config.h gdk-pixbuf.h \
+	gdk-pixbuf-features.h gdk-pixbuf-private.h
 gnome-canvas-pixbuf.lo gnome-canvas-pixbuf.o : gnome-canvas-pixbuf.c \
 	../config.h gdk-pixbuf-private.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gnome-canvas-pixbuf.h
@@ -756,16 +756,16 @@ io-xpm.lo io-xpm.o : io-xpm.c ../config.h gdk-pixbuf-private.h \
 	gdk-pixbuf.h gdk-pixbuf-features.h gdk-pixbuf-io.h \
 	gdk-pixbuf-xlib-private.h gdk-pixbuf-xlib.h \
 	gdk-pixbuf-xlibrgb.h
-testanimation.o: testanimation.c ../config.h gdk-pixbuf.h \
-	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h
 test-gdk-pixbuf.o: test-gdk-pixbuf.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h
+testanimation.o: testanimation.c ../config.h gdk-pixbuf.h \
+	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h
 testpixbuf-drawable.o: testpixbuf-drawable.c ../config.h gdk-pixbuf.h \
+	gdk-pixbuf-features.h
+testpixbuf-scale.o: testpixbuf-scale.c gdk-pixbuf.h \
 	gdk-pixbuf-features.h
 testpixbuf.o: testpixbuf.c ../config.h gdk-pixbuf.h \
 	gdk-pixbuf-features.h gdk-pixbuf-loader.h gdk-pixbuf.h
-testpixbuf-scale.o: testpixbuf-scale.c gdk-pixbuf.h \
-	gdk-pixbuf-features.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

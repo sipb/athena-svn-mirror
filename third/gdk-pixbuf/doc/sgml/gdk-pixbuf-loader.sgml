@@ -206,7 +206,7 @@ Queries the GdkPixbuf that a pixbuf loader is currently creating.  In general
 it only makes sense to call this function afer the "area_prepared" signal has
 been emitted by the loader; this means that enough data has been read to know
 the size of the image that will be allocated.  If the loader has not received
-enough data via <link linkend="gdk-pixbuf-loader-write">gdk_pixbuf_loader_write</link>(), then this function returns NULL.
+enough data via <link linkend="gdk-pixbuf-loader-write">gdk_pixbuf_loader_write</link>(), then this function returns <literal>NULL</literal>.
 The returned pixbuf will be the same in all future calls to the loader, so
 simply calling <link linkend="gdk-pixbuf-ref">gdk_pixbuf_ref</link>() should be sufficient to continue using it.  Additionally,
 if the loader is an animation, it will return the first frame of the animation.</para>
@@ -220,7 +220,7 @@ if the loader is an animation, it will return the first frame of the animation.<
 <row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
 <entry> A pixbuf loader.
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The GdkPixbuf that the loader is creating, or NULL if not
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The GdkPixbuf that the loader is creating, or <literal>NULL</literal> if not
 enough data has been read to determine how to create the image buffer.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -232,7 +232,7 @@ enough data has been read to determine how to create the image buffer.
 Queries the GdkPixbufAnimation that a pixbuf loader is currently creating.
 In general it only makes sense to call this function afer the "area_prepared"
 signal has been emitted by the loader.  If the image is not an animation,
-then it will return NULL.</para>
+then it will return <literal>NULL</literal>.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -243,8 +243,8 @@ then it will return NULL.</para>
 <row><entry align="right"><parameter>loader</parameter>&nbsp;:</entry>
 <entry> A pixbuf loader
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The GdkPixbufAnimation that the loader is loading, or NULL if
- not enough data has been read to determine the information.
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The GdkPixbufAnimation that the loader is loading, or <literal>NULL</literal> if
+not enough data has been read to determine the information.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>

@@ -1,3 +1,11 @@
+Version 0.17.0 "Your Wise Men Don't Know How It Feels"
+------------------------------------------------------
+
+* Merged fixes in GTK+ 2.0 to pixops again.  This fixes the egregious
+  bilinear scaling weights bug.
+
+* Merged fixes in GTK+ 2.0 to the BMP loader.
+
 Version 0.16.0 "Deadly Yellow Snow"
 -----------------------------------
 
