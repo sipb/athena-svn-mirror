@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.22 1997-10-21 02:05:12 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.23 1997-11-02 23:39:50 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -41,6 +41,19 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.22 1997-10-21 02:05:12 ghudson E
 #define PATH_PINFO "/proc/pinfo"
 #endif
 
+#ifdef NETBSD
+#include <fcntl.h>
+#include <kvm.h>
+#include <sys/param.h>
+#include <sys/time.h>
+#include <sys/proc.h>
+#include <sys/sysctl.h>
+#endif
+
+#ifdef LINUX
+#include <ctype.h>
+#endif
+
 #ifdef HAVE_MASTER_PASSWD
 #define PATH_PASSWD "/etc/master.passwd"
 #else
@@ -53,6 +66,7 @@ struct process {
 };
 
 static struct process *get_processes(int *nprocs);
+static void check_plist(int n, struct process **plist, int *psize);
 static uid_t *get_passwd_uids(int *nuids);
 static uid_t *cleanup_sessions(int *nuids);
 static void kill_processes(struct process *plist, int nprocs,
@@ -125,11 +139,7 @@ static struct process *get_processes(int *nprocs)
 	       sizeof(struct cred));
       if (pid_buf.pid_id != 0)
 	{
-	  if (n == psize)
-	    {
-	      psize *= 2;
-	      plist = erealloc(plist, psize * sizeof(struct process));
-	    }
+	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pid_buf.pid_id;
 	  plist[n].uid = cred_buf.cr_uid;
 	  n++;
@@ -172,11 +182,7 @@ static struct process *get_processes(int *nprocs)
       /* Get the process information and record the pid and uid. */
       if (ioctl(fd, PIOCPSINFO, &pbuf) != -1 && pbuf.pr_pid != 0)
 	{
-	  if (n == psize)
-	    {
-	      psize *= 2;
-	      plist = erealloc(plist, psize * sizeof(struct process));
-	    }
+	  check_plist(n, &plist, &psize);
 	  plist[n].pid = pbuf.pr_pid;
 	  plist[n].uid = pbuf.pr_uid;
 	  n++;
@@ -186,8 +192,84 @@ static struct process *get_processes(int *nprocs)
   closedir(procdir);
 #endif
 
+#ifdef NETBSD
+  kvm_t *kd;
+  struct kinfo_proc *kprocs;
+  int count, i;
+
+  /* Open the kernel kvm and read the process list. */
+  kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "cleanup");
+  if (!kd)
+    exit(1);
+  kprocs = kvm_getprocs(kd, KERN_PROC_ALL, 0, &count);
+  if (!kprocs)
+    {
+      fprintf(stderr, "cleanup: can't read process: %s\n", kvm_geterr(kd));
+      exit(1);
+    }
+
+  /* Read out the process pids and uids into plist. */
+  for (i = 0; i < count; i++)
+    {
+      if (kprocs[i].kp_proc.p_pid != 0)
+	{
+	  check_plist(n, &plist, &psize);
+	  plist[n].pid = kprocs[i].kp_proc.p_pid;
+	  plist[n].uid = kprocs[i].kp_eproc.e_pcred.p_ruid;
+	}
+    }
+
+  kvm_close(kd);
+#endif
+
+#ifdef LINUX
+  DIR *dir;
+  struct dirent *entry;
+  char *filename;
+  struct stat statbuf;
+  int result;
+
+  /* Open the procfs directory. */
+  dir = opendir("/proc");
+  if (!dir)
+    {
+      perror("cleanup: can't open /proc");
+      exit(1);
+    }
+
+  /* Read through the directory and stat /proc/<number>/cmdline files. */
+  while ((entry = readdir(dir)) != NULL)
+    {
+      /* Skip non-numeric entries. */
+      if (!isdigit(*entry->d_name))
+	continue;
+
+      /* Stat the process file. */
+      filename = emalloc(strlen(entry->d_name) + 15);
+      sprintf(filename, "/proc/%s/cmdline", entry->d_name);
+      result = stat(filename, &statbuf);
+      free(filename);
+      if (result == 0 && atoi(entry->d_name) != 0)
+	{
+	  check_plist(n, &plist, &psize);
+	  plist[n].pid = atoi(entry->d_name);
+	  plist[n].uid = statbuf.st_uid;
+	  n++;
+	}
+    }
+#endif
+
   *nprocs = n;
   return plist;
+}
+
+static void check_plist(int n, struct process **plist, int *psize)
+{
+  if (n == *psize)
+    {
+      *psize *= 2;
+      *plist = erealloc(*plist, *psize * sizeof(struct process));
+    }
 }
 
 static uid_t *get_passwd_uids(int *nuids)

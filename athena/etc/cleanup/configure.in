@@ -17,6 +17,13 @@ solaris*)
 irix*)
 	CPPFLAGS="$CPPFLAGS -DIRIX"
 	;;
+netbsd*)
+	CPPFLAGS="$CPPFLAGS -DNETBSD"
+	AC_CHECK_LIB(kvm, kvm_open)
+	;;
+linux*)
+	CPPFLAGS="$CPPFLAGS -DLINUX"
+	;;
 esac
 
 AC_MSG_CHECKING(for /etc/master.passwd)
