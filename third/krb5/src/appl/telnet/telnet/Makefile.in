@@ -26,7 +26,7 @@ LOCALINCLUDES=-I.. -I$(srcdir)/..
 CFLAGS = $(CCOPTS) $(AUTH_DEF) $(OTHERDEFS) $(DEFS) $(LOCALINCLUDES)
 ARPA_TELNET= $(srcdir)/../arpa/telnet.h
 EXTRALIBS=@EXTRALIBS@
-LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
+LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 
 SRCS=	authenc.c commands.c main.c network.c ring.c \
 	sys_bsd.c telnet.c terminal.c \

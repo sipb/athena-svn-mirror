@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.18 1999-01-29 17:53:47 ghudson Exp $
+# $Id: Imakefile,v 1.19 1999-03-11 04:19:14 danw Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -8,7 +8,8 @@ OSDEFS= -U_BSD -U_BSD_INCLUDES
 OSDEFS= -DSVR4
 #endif
 DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM -DSETPAG $(OSDEFS)
-AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad \
+	-lubik $(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys
 
 #ifdef sun
 OSLIBS = -lm -lbsd
@@ -26,8 +27,9 @@ OSLIBS = -lcrypt -lutil -lcompat
 OSLIBS = -lcrypt -lresolv
 #endif
 
-LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lhesiod -lal -lkrb4 \
-	-ldes425 -lkrb5 -lcrypto -lcom_err $(AFSLIBS) $(OSLIBS)
+LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lal -llocker \
+	-lhesiod -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err \
+	$(AFSLIBS) $(OSLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
 	greet.o netaddr.o reset.o resource.o protodpy.o policy.o \

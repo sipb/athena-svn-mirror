@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 1999-03-04 16:41:29 danw Exp $
+# $Id: Makefile.athena,v 1.2 1999-03-11 04:11:46 danw Exp $
 
 SHELL=/bin/sh
 
@@ -9,7 +9,7 @@ clean:
 	${MAKE} clean
 
 all:
-	${MAKE} depend all
+	${MAKE} all
 
 check:
 

@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.11 1999-03-08 18:19:59 danw Exp $
+# $Id: Makefile.in,v 1.12 1999-03-11 04:10:30 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.11  1999/03/08 18:19:59  danw
+# merge changes
+#
 # Revision 1.10  1998/06/17 17:29:36  ghudson
 # Add code from a CORE SDI advisory to prevent connection hijacking.
 #
@@ -323,7 +326,8 @@ RSAREFDEP	= @RSAREFDEP@
 
 WRAPLIBS	= @WRAPLIBS@
 
-ATHENA_LIBS	= -L${ATHTOOLROOT}/usr/athena/lib -lal -lhesiod @ATHENA_LIBS@
+ATHENA_LIBS	= -L${ATHTOOLROOT}/usr/athena/lib -lal -llocker -lzephyr \
+			-lhesiod @ATHENA_LIBS@
 ATHENA_INCS	= -I${ATHTOOLROOT}/usr/athena/include \
 	-I${ATHTOOLROOT}/usr/athena/include/kerberosIV
 

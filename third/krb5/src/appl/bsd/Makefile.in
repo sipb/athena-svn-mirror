@@ -3,7 +3,7 @@ LOCALINCLUDE=-I$(SRCTOP)/include/kerberosIV -I$(ATHTOOLROOT)/usr/athena/include
 SETENVSRC=@SETENVSRC@
 SETENVOBJ=@SETENVOBJ@
 
-LOGINLIBS =-L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod @LOGINLIBS@
+LOGINLIBS =-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod @LOGINLIBS@
 LIBOBJS=@LIBOBJS@
 V4RCP=@V4RCP@
 V4RCPO=@V4RCPO@

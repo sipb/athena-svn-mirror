@@ -7774,7 +7774,7 @@ else
   with_afs=no
 fi
 if test $with_afs != no; then
-	ATHENA_LIBS="$ATHENA_LIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
+	ATHENA_LIBS="$ATHENA_LIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
 	echo $ac_n "checking for sigvec""... $ac_c" 1>&6
 echo "configure:7780: checking for sigvec" >&5
 if eval "test \"`echo '$''{'ac_cv_func_sigvec'+set}'`\" = set"; then
