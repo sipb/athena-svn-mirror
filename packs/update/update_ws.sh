@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.17 1997-03-28 10:32:02 ghudson Exp $
+# $Id: update_ws.sh,v 1.18 1997-04-01 00:59:28 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -81,8 +81,8 @@ fi
 # we can just run /etc/athena/save_cluster_info like we used to before
 # version 1.9 of this file.
 AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$NEWVERS" > \
-	/tmp/clusterinfo.bsh
-if [ $? -ne 0 -o ! -s /tmp/clusterinfo.bsh ]; then
+	/var/athena/clusterinfo.bsh.update
+if [ $? -ne 0 -o ! -s /var/athena/clusterinfo.bsh.update ]; then
 	# No updates for machines without cluster info.
 	if [ "$AUTO" = false ]; then
 		echo "Cannot find Hesiod information for this machine;"
@@ -90,7 +90,8 @@ if [ $? -ne 0 -o ! -s /tmp/clusterinfo.bsh ]; then
 	fi
 	exit 1
 fi
-. /tmp/clusterinfo.bsh
+. /var/athena/clusterinfo.bsh.update
+rm -f /var/athena/clusterinfo.bsh.update
 
 # Check if we're already in the middle of an update.
 if [ "$VERSION" = Update ]; then
@@ -229,6 +230,10 @@ esac
 
 # Tell dm to shut down everything and sleep forever during the update.
 if [ "$AUTO" = true -a "$1" = reactivate ]; then
+	if [ -f /var/athena/dm.pid ]; then
+		kill -FPE `cat /etc/athena/dm.pid`
+	fi
+	# 8.0 and prior machines still have /etc/athena/dm.pid.
 	if [ -f /etc/athena/dm.pid ]; then
 		kill -FPE `cat /etc/athena/dm.pid`
 	fi
