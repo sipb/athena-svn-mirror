@@ -58,13 +58,6 @@ XCOMM operating system:		OSName
 #define NeedConstPrototypes		YES
 #define NeedWidePrototypes		NO
 
-#ifndef UseInstalled
-/*
- * All SGI internal rules are confined to this non-shipped .cf file.
- */
-#include <sgiInternal.cf>
-#endif
-
 #if OSMajorVersion <= 4
 
 # define OSDefines	-DIRIX4 -DSYSV
@@ -90,21 +83,6 @@ XCOMM operating system:		OSName
 #endif
 
 #define StandardDefines IntlDefines OSDefines
-
-#undef StandardIncludes
-#if OSMajorVersion > 4
-#define StandardIncludes -nostdinc -I$(ROOT)/usr/include
-#else
-#define StandardIncludes -I$(ROOT)/usr/include -I
-#endif
-
-#if OSMajorVersion > 4
-#define ExtraLibraries \
-	-nostdlib -L$(ROOT)/lib -L$(ROOT)$(USRLIBDIR)
-#else
-#define ExtraLibraries \
-	-L -L$(ROOT)/lib -L$(ROOT)$(USRLIBDIR) -lsun -lmalloc -lc_s
-#endif
 
 /* SGI Specific "make" Variables -- Same as would come from "commondefs" */
         OPTIMIZER = -O2
@@ -177,112 +155,3 @@ XCOMM operating system:		OSName
 
 #define ManSuffix	1
 #define LibManSuffix	3
-
-#undef ManDir
-#undef LibmanDir
-#define ManDir $(CATMAN1DIR)$(MANPACKAGE)
-#define LibmanDir $(CATMAN3DIR)$(MANPACKAGE)
-#define NroffManDir $(MAN1DIR)$(MANPACKAGE)
-#define NroffLibmanDir $(MAN3DIR)$(MANPACKAGE)
-
-#ifdef UseInstalled
-           MANUSR = /usr/share/local
-#else
-           MANUSR = /usr/share
-#endif
-
-       CATMAN1DIR = $(MANUSR)/catman/u_man/cat1
-       CATMAN3DIR = $(MANUSR)/catman/p_man/cat3
-          MAN1DIR = $(MANUSR)/man/u_man/man1
-          MAN3DIR = $(MANUSR)/man/p_man/man3
-
-/*
- * MANPACKAGE is the directory inside of cat? or man? that man pages should
- * be placed.  The prefixed / is important because of the way MANPACKAGE
- * will be concatted with *MANDIR.
- */
-       MANPACKAGE = /X11
-
-/*
- * InstallManPageLong - misc changes for sgi.
- */
-#define InstallManPageLong(file,destdir,dest)				@@\
-file.nr.z : file.man							@@\
-	@if [ -f file.man ]; then \					@@\
-		$(RM) file.nr file.nr.z && \				@@\
-		tbl file.man | eqn | nroff -man - > file.nr && \	@@\
-		pack -f file.nr; \					@@\
-	fi								@@\
-									@@\
-install.man:: file.nr.z							@@\
-	MakeDir($(DESTDIR)destdir); \					@@\
-	if [ -f file.man ]; then \					@@\
-		$(INSTALL) -c $(INSTMANFLAGS) \				@@\
-			file.nr.z $(DESTDIR)destdir/dest.z; \		@@\
-	fi								@@\
-									@@\
-clean::									@@\
-	$(RM) file.nr file.nr.z
-
-/*
- * InstallManPageAliases - generate rules to install manual page aliases.
- */
-#ifndef InstallManPageAliases
-#define InstallManPageAliases(file,destdir,aliases)			@@\
-install.man::								@@\
-	@case '$(MFLAGS) $(MAKEFLAGS)' in *[i]*) set +e;; esac && \	@@\
-	@echo cd $(DESTDIR)destdir && cd $(DESTDIR)destdir && \		@@\
-	for i in aliases; do \						@@\
-		(set -x && $(RM) $$i.z && $(LN) file.z $$i.z); \	@@\
-	done;
-#endif /* InstallManPageAliases */
-
-/*
- * Define the following to use a single shell command.
- * Doing so isn't required by sgi make or smake,
- * but the speedup is very significant.
- */
-
-/* ObjectCompile - used by NormalLibObjCompile */
-#ifndef ObjectCompile(options)
-#define ObjectCompile(options) $(RM) $@ && \				@@\
-	$(CC) -c $(CFLAGS) options $*.c
-#endif
-
-/* LibObjCompile */
-#define	LibObjCompile(dir,options) $(RM) $@ dir/$@ \			@@\
-	&& $(CC) -c $(CCOPTIONS) $(ALLDEFINES) options $*.c \		@@\
-	&& $(MV) $@ dir/$@
-
-/* LinkSourceFile */
-#define LinkSourceFile(src,dir)						@@\
-src:  dir/src								@@\
-	$(RM) $@ && $(LN) $? $@
-
-/* LinkFile */
-#define LinkFile(tofile,fromfile)					@@\
-tofile:: fromfile							@@\
-	$(RM) $@ && $(LN) $? $@
-
-/* ObjectFromSpecialSource */
-#define ObjectFromSpecialSource(dst,src,flags)				@@\
-dst.c:  src.c								@@\
-	$(RM) $@ && $(LN) $? $@						@@\
-									@@\
-dst.o:  dst.c								@@\
-	ObjectCompile(flags)						@@\
-									@@\
-depend::  dst.c								@@\
-									@@\
-clean::									@@\
-	$(RM) dst.c
-
-/* LinkFileList */
-#define LinkFileList(step,list,dir,sub)					@@\
-step:: list								@@\
-	@case '$(MFLAGS) $(MAKEFLAGS)' in *[i]*) set +e;; esac && \	@@\
-	echo "	cd" dir && cd dir && \					@@\
-	for i in list; do \						@@\
-		(set -x && $(RM) $$i && $(LN) sub/$$i .); done
-
-#include <sgiLib.rules>
