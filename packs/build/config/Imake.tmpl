@@ -105,7 +105,7 @@ IRULESRC = $(CONFIGSRC)
 IMAKE= imake
 IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
 #else
-IMAKE= $(IRULESRC)/imake
+IMAKE= $(TOP)/imake/imake
 IFLAGS= -I$(IRULESRC)
 #endif
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
