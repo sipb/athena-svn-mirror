@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.50 1992-01-10 20:03:38 lwvanels Exp $
+ *	$Id: olcd.c,v 1.51 1992-01-30 15:03:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.50 1992-01-10 20:03:38 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.51 1992-01-30 15:03:29 lwvanels Exp $";
 #endif
 #endif
 
@@ -159,7 +159,6 @@ main (argc, argv)
     int hostset = 0;			/* Flag if host was passed as arg */
     int nofork = 0;			/* Flag if you don't want to fork */
     int port_num = 0;			/* Port number explicitly requested */
-    int i;
 #ifdef ZEPHYR
     int ret;				/* return value from ZInitialize. */
 #endif
@@ -297,35 +296,6 @@ main (argc, argv)
     /*
      * allocate lists
      */
-
-    if ((Knuckle_free = (KNUCKLE *) calloc(KNUC_ALLOC_SZ,sizeof(KNUCKLE)))
-	== NULL) {
-      log_error("olcd: can't allocate initial Knucles");
-      exit(ERROR);
-    }
-    /* Link up allocated knuckles into a free list */
-    for(i=0;i<KNUC_ALLOC_SZ-1;i++)
-      Knuckle_free[i].next = &Knuckle_free[i+1];
-    Knuckle_free[KNUC_ALLOC_SZ-1].next = NULL;
-
-    if ((User_free = (USER *) calloc(USER_ALLOC_SZ,sizeof(USER)))
-	== NULL) {
-      log_error("olcd: can't allocate initial User list");
-      exit(ERROR);
-    }
-    for(i=0;i<USER_ALLOC_SZ-1;i++)
-      User_free[i].next = &User_free[i+1];
-    User_free[KNUC_ALLOC_SZ-1].next = NULL;
-
-    if ((Question_free = (QUESTION *) calloc(QUES_ALLOC_SZ,sizeof(QUESTION)))
-	== NULL) {
-      log_error("olcd: can't allocate initial Knucles");
-      exit(ERROR);
-    }
-    for(i=0;i<QUES_ALLOC_SZ-1;i++)
-      Question_free[i].next = &Question_free[i+1];
-    Question_free[KNUC_ALLOC_SZ-1].next = NULL;
-
 
     Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
     if (Knuckle_List == (KNUCKLE **) NULL)
