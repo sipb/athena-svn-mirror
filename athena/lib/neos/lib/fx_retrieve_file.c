@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.1 1992-04-27 13:00:37 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.2 1992-04-27 13:01:04 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_retrieve_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.1 1992-04-27 13:00:37 epeisach Exp $";
+static char rcsid_fx_retrieve_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve_file.c,v 1.2 1992-04-27 13:01:04 epeisach Exp $";
 #endif /* lint */
 
 #include <errno.h>
@@ -38,7 +38,7 @@ fx_retrieve_file(fxp, p, filename)
 
   if ((fp = fopen(filename, "w")) == NULL) return((long) errno);
   code = fx_retrieve(fxp, p, fp);
-  (void) fclose(fp);
+  if (fclose(fp) == EOF && !code) code = (long) errno;
 
   /* If there's an error, don't leave a zero-length file. */
   if (code) {
