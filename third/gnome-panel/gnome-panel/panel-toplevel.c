@@ -140,9 +140,6 @@ struct _PanelToplevelPrivate {
 	gulong                  attach_widget_signals [N_ATTACH_WIDGET_SIGNALS];
 	gint			n_autohide_disablers;
 
-	/* Auto-hide blocking */
-	guint                   block_auto_hide;
-
 	guint                   auto_hide : 1;
 	guint                   animate : 1;
 	guint                   buttons_enabled : 1;
@@ -1020,22 +1017,23 @@ panel_toplevel_calc_floating (PanelToplevel *toplevel)
 			(x > SNAP_TOLERANCE) && (x < (screen_width - toplevel->priv->geometry.width - SNAP_TOLERANCE));
 }
 
-static void 
+void 
 panel_toplevel_push_autohide_disabler (PanelToplevel *toplevel)
 {
 	g_return_if_fail (toplevel != NULL);
 
-	toplevel->priv->n_autohide_disablers++;
+	if (!toplevel->priv->n_autohide_disablers++)
+		panel_toplevel_queue_auto_hide (toplevel);
 }
 
-static void
+void
 panel_toplevel_pop_autohide_disabler (PanelToplevel *toplevel)
 {
 	g_return_if_fail (toplevel != NULL);
-
 	g_return_if_fail (toplevel->priv->n_autohide_disablers > 0);
 
-	toplevel->priv->n_autohide_disablers--;		
+	if (!--toplevel->priv->n_autohide_disablers)
+		panel_toplevel_queue_auto_hide (toplevel);
 }
 
 static gboolean
@@ -1742,6 +1740,18 @@ panel_toplevel_update_auto_hide_position (PanelToplevel *toplevel,
 	default:
 		g_assert_not_reached ();
 		break;
+	}
+
+	if (toplevel->priv->orientation & PANEL_HORIZONTAL_MASK) {
+		if (*x <= SNAP_TOLERANCE)
+			*x = 0;
+		else if ((*x + width) >= (monitor_width - SNAP_TOLERANCE))
+			*x = monitor_width - width;
+	} else /* if (toplevel->priv->orientation & PANEL_VERTICAL_MASK) */ {
+		if (*y <= SNAP_TOLERANCE)
+			*y = 0;
+		else if ((*y + height) >= (monitor_height - SNAP_TOLERANCE))
+			*y = monitor_height - height;
 	}
 }
 
@@ -3148,8 +3158,8 @@ panel_toplevel_auto_hide_timeout_handler (PanelToplevel *toplevel)
 {
 	g_return_val_if_fail (PANEL_IS_TOPLEVEL (toplevel), FALSE);
 
-	if (toplevel->priv->block_auto_hide)
-		return TRUE;
+	if (panel_toplevel_get_autohide_disabled (toplevel))
+		return FALSE;
 
 	/* keep coming back until the animation has finished.
 	 * FIXME: we should really remove the timeout/idle
@@ -3160,6 +3170,8 @@ panel_toplevel_auto_hide_timeout_handler (PanelToplevel *toplevel)
 		return TRUE;
 
 	panel_toplevel_hide (toplevel, TRUE, -1);
+
+	toplevel->priv->hide_timeout = 0;
 
 	return FALSE;
 }
@@ -3211,26 +3223,9 @@ panel_toplevel_auto_unhide_timeout_handler (PanelToplevel *toplevel)
 
 	panel_toplevel_unhide (toplevel);
 
+	toplevel->priv->unhide_timeout = 0;
+
 	return FALSE;
-}
-
-void
-panel_toplevel_block_auto_hide (PanelToplevel *toplevel)
-{
-	g_return_if_fail (PANEL_IS_TOPLEVEL (toplevel));
-
-	toplevel->priv->block_auto_hide++;
-}
-
-void
-panel_toplevel_unblock_auto_hide (PanelToplevel *toplevel)
-{
-	g_return_if_fail (PANEL_IS_TOPLEVEL (toplevel));
-	g_return_if_fail (toplevel->priv->block_auto_hide > 0);
-
-	toplevel->priv->block_auto_hide--;
-
-	panel_toplevel_queue_auto_hide (toplevel);
 }
 
 void
@@ -3250,18 +3245,6 @@ panel_toplevel_queue_auto_hide (PanelToplevel *toplevel)
 	if (toplevel->priv->hide_timeout ||
 	    toplevel->priv->state != PANEL_STATE_NORMAL)
 		return;
-
-	if (toplevel->priv->block_auto_hide) {
-		/* Since this will continue to be called until
-		 * its unblocked again, we choose a sensible
-	         * timeout.
-		 */
-		toplevel->priv->hide_timeout = 
-			g_timeout_add (DEFAULT_HIDE_DELAY,
-				       (GSourceFunc) panel_toplevel_auto_hide_timeout_handler,
-				       toplevel);
-		return;
-	}
 
 	if (toplevel->priv->hide_delay > 0)
 		toplevel->priv->hide_timeout = 
@@ -4049,7 +4032,6 @@ panel_toplevel_instance_init (PanelToplevel      *toplevel,
 	for (i = 0; i < N_ATTACH_WIDGET_SIGNALS; i++)
 		toplevel->priv->attach_widget_signals [i] = 0;
 
-	toplevel->priv->block_auto_hide   = 0;
 	toplevel->priv->auto_hide         = FALSE;
 	toplevel->priv->buttons_enabled   = TRUE;
 	toplevel->priv->arrows_enabled    = TRUE;
@@ -4073,6 +4055,14 @@ panel_toplevel_instance_init (PanelToplevel      *toplevel,
 	panel_toplevel_update_description (toplevel);
 	
 	toplevel_list = g_slist_prepend (toplevel_list, toplevel);
+
+	/* Prevent the window from being deleted via Alt+F4 by accident.  This
+	 * happens with "alternative" window managers such as Sawfish or XFWM4.
+	 */
+	g_signal_connect (GTK_WIDGET (toplevel),
+	                  "delete-event",
+	                  G_CALLBACK (gtk_true),
+	                  NULL);
 }
 
 GType
@@ -4215,6 +4205,8 @@ panel_toplevel_set_orientation (PanelToplevel    *toplevel,
 {
 	GtkWidget *widget;
 	gboolean   rotate;
+	int        monitor_width;
+	int        monitor_height;
 
 	g_return_if_fail (PANEL_IS_TOPLEVEL (toplevel));
 
@@ -4222,6 +4214,28 @@ panel_toplevel_set_orientation (PanelToplevel    *toplevel,
 		return;
 
 	widget = GTK_WIDGET (toplevel);
+
+	g_object_freeze_notify (G_OBJECT (toplevel));
+
+	panel_toplevel_get_monitor_geometry (
+		toplevel, NULL, NULL, &monitor_width, &monitor_height);
+
+	/* Un-snap from center if no longer along screen edge */
+	if (toplevel->priv->x_centered &&
+	    (orientation & PANEL_VERTICAL_MASK)) {
+		toplevel->priv->x_centered = FALSE;
+		toplevel->priv->x += (monitor_width - toplevel->priv->geometry.width) / 2;
+		g_object_notify (G_OBJECT (toplevel), "x");
+		g_object_notify (G_OBJECT (toplevel), "x-centered");
+	}
+
+	if (toplevel->priv->y_centered &&
+	    (orientation & PANEL_HORIZONTAL_MASK)) {
+		toplevel->priv->y_centered = FALSE;
+		toplevel->priv->y += (monitor_height - toplevel->priv->geometry.height) / 2;
+		g_object_notify (G_OBJECT (toplevel), "y");
+		g_object_notify (G_OBJECT (toplevel), "y-centered");
+	}
 
 	rotate = FALSE;
 	if ((orientation & PANEL_HORIZONTAL_MASK) &&
@@ -4236,8 +4250,6 @@ panel_toplevel_set_orientation (PanelToplevel    *toplevel,
 	    toplevel->priv->updated_geometry_initial) {
 		toplevel->priv->position_centered = TRUE;
 
-		g_object_freeze_notify (G_OBJECT (toplevel));
-
 		if (!toplevel->priv->x_centered) {
 			toplevel->priv->x += toplevel->priv->geometry.width  / 2;
 			g_object_notify (G_OBJECT (toplevel), "x");
@@ -4248,7 +4260,6 @@ panel_toplevel_set_orientation (PanelToplevel    *toplevel,
 			g_object_notify (G_OBJECT (toplevel), "y");
 		}
 
-		g_object_thaw_notify (G_OBJECT (toplevel));
 	}
 
 	toplevel->priv->orientation = orientation;
@@ -4264,6 +4275,8 @@ panel_toplevel_set_orientation (PanelToplevel    *toplevel,
 	gtk_widget_queue_resize (GTK_WIDGET (toplevel));
 
 	g_object_notify (G_OBJECT (toplevel), "orientation");
+
+	g_object_thaw_notify (G_OBJECT (toplevel));
 }
 
 PanelOrientation

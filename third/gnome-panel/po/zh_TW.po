@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-panel 2.7.93\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-31 09:29+0100\n"
+"POT-Creation-Date: 2004-12-05 17:53+0100\n"
 "PO-Revision-Date: 2004-09-14 04:55+0800\n"
 "Last-Translator: Abel Cheung <maddog@linuxhall.org>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -52,9 +52,9 @@ msgstr "關於(_A)"
 #: applets/wncklet/GNOME_WindowListApplet.xml.h:2
 #: applets/wncklet/GNOME_WindowMenuApplet.xml.h:2
 #: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:2
-#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2370
+#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2364
 #: gnome-panel/panel-action-button.c:678 gnome-panel/panel-menu-bar.c:325
-#: gnome-panel/panel-menu-button.c:620
+#: gnome-panel/panel-menu-button.c:613
 msgid "_Help"
 msgstr "求助(_H)"
 
@@ -66,7 +66,7 @@ msgid "_Preferences"
 msgstr "偏好設定(_P)"
 
 #: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:1
-#: applets/clock/clock.c:2544
+#: applets/clock/clock.c:2553
 msgid "Clock"
 msgstr "時鐘"
 
@@ -82,20 +82,20 @@ msgstr "產生時鐘面板程式的工廠"
 msgid "Get the current time and date"
 msgstr "獲取目前的時間及日期"
 
-#: applets/clock/clock.c:277
+#: applets/clock/clock.c:265
 msgid "%l:%M:%S %p"
 msgstr "%p %l:%M:%S"
 
-#: applets/clock/clock.c:277 applets/clock/clock.c:608
+#: applets/clock/clock.c:265 applets/clock/clock.c:581
 msgid "%l:%M %p"
 msgstr "%p %l:%M"
 
-#: applets/clock/clock.c:279 applets/clock/clock.c:1655
+#: applets/clock/clock.c:267 applets/clock/clock.c:1664
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
-#: applets/clock/clock.c:279 applets/clock/clock.c:610
-#: applets/clock/clock.c:1657
+#: applets/clock/clock.c:267 applets/clock/clock.c:583
+#: applets/clock/clock.c:1666
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -104,7 +104,7 @@ msgstr "%H:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: applets/clock/clock.c:290
+#: applets/clock/clock.c:278
 msgid "%a %b %e"
 msgstr "%-m月%-d日(%a)"
 
@@ -112,7 +112,7 @@ msgstr "%-m月%-d日(%a)"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:297
+#: applets/clock/clock.c:285
 #, c-format
 msgid ""
 "%1$s\n"
@@ -125,35 +125,35 @@ msgstr ""
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:304
+#: applets/clock/clock.c:292
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s %2$s"
 
 #. Show date in tooltip
-#: applets/clock/clock.c:388
+#: applets/clock/clock.c:376
 msgid "%A %B %d"
 msgstr "%-m月%-d日(%A)"
 
 #. Translators: If the event did not start on the current day
 #. we will display the start date in the most abbreviated way possible.
-#: applets/clock/clock.c:615
+#: applets/clock/clock.c:588
 msgid "%b %d"
 msgstr "%-d/%-m"
 
-#: applets/clock/clock.c:911
+#: applets/clock/clock.c:888
 msgid "Tasks"
 msgstr "工作"
 
-#: applets/clock/clock.c:1055
+#: applets/clock/clock.c:1032
 msgid "All Day"
 msgstr "整天"
 
-#: applets/clock/clock.c:1096
+#: applets/clock/clock.c:1073
 msgid "Appointments"
 msgstr "約會"
 
-#: applets/clock/clock.c:1328
+#: applets/clock/clock.c:1305
 msgid "Calendar"
 msgstr "日曆"
 
@@ -161,34 +161,34 @@ msgstr "日曆"
 msgid "Computer Clock"
 msgstr "電腦時鐘"
 
-#: applets/clock/clock.c:1650
+#: applets/clock/clock.c:1659
 msgid "%I:%M:%S %p"
 msgstr "%p %I:%M:%S"
 
-#: applets/clock/clock.c:1652
+#: applets/clock/clock.c:1661
 msgid "%I:%M %p"
 msgstr "%p %I:%M"
 
-#: applets/clock/clock.c:1694
+#: applets/clock/clock.c:1703
 msgid "%A, %B %d %Y"
 msgstr "%x(%A)"
 
-#: applets/clock/clock.c:1738
+#: applets/clock/clock.c:1747
 #, c-format
 msgid "Failed to launch time configuration tool: %s"
 msgstr "無法啟動時間設定工具：%s"
 
-#: applets/clock/clock.c:1777
+#: applets/clock/clock.c:1786
 msgid ""
 "Failed to locate a program for configuring the date and time. Perhaps none "
 "is installed?"
 msgstr "找不到任何可以設定日期及時間的程式。或許根本沒有安裝到？"
 
-#: applets/clock/clock.c:2179
+#: applets/clock/clock.c:2188
 msgid "Custom format"
 msgstr "自選格式"
 
-#: applets/clock/clock.c:2300 applets/clock/clock.c:2490
+#: applets/clock/clock.c:2309 applets/clock/clock.c:2499
 #: applets/fish/fish.c:127 applets/notification_area/main.c:84
 #: applets/wncklet/showdesktop.c:426 applets/wncklet/window-list.c:115
 #: applets/wncklet/window-list.c:772 applets/wncklet/window-menu.c:100
@@ -198,48 +198,48 @@ msgstr "自選格式"
 msgid "There was an error displaying help: %s"
 msgstr "顯示說明文件時出現錯誤：%s"
 
-#: applets/clock/clock.c:2336
+#: applets/clock/clock.c:2345
 msgid "Clock Preferences"
 msgstr "時鐘偏好設定"
 
-#: applets/clock/clock.c:2372
+#: applets/clock/clock.c:2381
 msgid "Clock _type:"
 msgstr "時鐘類型(_T)："
 
-#: applets/clock/clock.c:2382
+#: applets/clock/clock.c:2391
 msgid "12 hour"
 msgstr "12 小時制"
 
-#: applets/clock/clock.c:2383
+#: applets/clock/clock.c:2392
 msgid "24 hour"
 msgstr "24 小時制"
 
-#: applets/clock/clock.c:2384
+#: applets/clock/clock.c:2393
 msgid "UNIX time"
 msgstr "UNIX 時間"
 
-#: applets/clock/clock.c:2385
+#: applets/clock/clock.c:2394
 msgid "Internet time"
 msgstr "Internet 時間"
 
-#: applets/clock/clock.c:2393
+#: applets/clock/clock.c:2402
 msgid "Custom _format:"
 msgstr "自選格式(_F)："
 
-#: applets/clock/clock.c:2412
+#: applets/clock/clock.c:2421
 msgid "Show _seconds"
 msgstr "顯示秒數(_S)"
 
-#: applets/clock/clock.c:2421
+#: applets/clock/clock.c:2430
 msgid "Show _date"
 msgstr "顯示日期(_D)"
 
-#: applets/clock/clock.c:2430
+#: applets/clock/clock.c:2439
 msgid "Use _UTC"
 msgstr "使用 _UTC 時間"
 
 #. Translator credits
-#: applets/clock/clock.c:2525 applets/notification_area/main.c:120
+#: applets/clock/clock.c:2534 applets/notification_area/main.c:120
 #: applets/wncklet/showdesktop.c:456 applets/wncklet/window-list.c:804
 #: applets/wncklet/window-menu.c:130 applets/wncklet/workspace-switcher.c:506
 #: gnome-panel/menu.c:201
@@ -254,7 +254,7 @@ msgstr ""
 "Jing-Jong Shyue <shyue@sonoma.com.tw>, 2000\n"
 "Yuan-Chung Cheng <platin@linux.org.tw>, 1999"
 
-#: applets/clock/clock.c:2546
+#: applets/clock/clock.c:2555
 msgid "The Clock displays the current time and date"
 msgstr "時鐘程式可顯示目前的時間及日期"
 
@@ -961,11 +961,11 @@ msgstr "沒有空位"
 msgid "Failed to load image %s"
 msgstr "無法載入圖片 %s"
 
-#: gnome-panel/button-widget.c:403
+#: gnome-panel/button-widget.c:408
 msgid "none"
 msgstr "無"
 
-#: gnome-panel/button-widget.c:408
+#: gnome-panel/button-widget.c:413
 msgid "file not found"
 msgstr "找不到檔案"
 
@@ -999,7 +999,7 @@ msgid "Drawer"
 msgstr "抽屜"
 
 #: gnome-panel/drawer.c:614 gnome-panel/launcher.c:824 gnome-panel/menu.c:1376
-#: gnome-panel/menu.c:2320 gnome-panel/panel-action-button.c:132
+#: gnome-panel/menu.c:2314 gnome-panel/panel-action-button.c:132
 msgid "_Properties"
 msgstr "屬性(_P)"
 
@@ -1007,7 +1007,7 @@ msgstr "屬性(_P)"
 msgid "Create new file in the given directory"
 msgstr "在指定的目錄中新增檔案"
 
-#: gnome-panel/gnome-panel-screenshot.c:121
+#: gnome-panel/gnome-panel-screenshot.c:122
 msgid ""
 "Unable to initialize png structure.\n"
 "You probably have a bad version of libpng on your system"
@@ -1015,7 +1015,7 @@ msgstr ""
 "無法初始化 png 結構。\n"
 "系統裡的 libpng 版本可能不適合使用"
 
-#: gnome-panel/gnome-panel-screenshot.c:129
+#: gnome-panel/gnome-panel-screenshot.c:130
 msgid ""
 "Unable to create png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1023,7 +1023,7 @@ msgstr ""
 "無法建立 png 資料結構。\n"
 "系統裡的 libpng 版本可能不適合使用"
 
-#: gnome-panel/gnome-panel-screenshot.c:136
+#: gnome-panel/gnome-panel-screenshot.c:137
 msgid ""
 "Unable to set png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1031,7 +1031,7 @@ msgstr ""
 "無法設定 png 資料結構。\n"
 "系統裡的 libpng 版本可能不適合使用"
 
-#: gnome-panel/gnome-panel-screenshot.c:154
+#: gnome-panel/gnome-panel-screenshot.c:155
 msgid ""
 "Insufficient memory to save the screenshot.\n"
 "Please free up some resources and try again."
@@ -1039,13 +1039,13 @@ msgstr ""
 "記憶體不足以儲存畫面快照。\n"
 "請釋放一些資源並再嘗試。"
 
-#: gnome-panel/gnome-panel-screenshot.c:212
+#: gnome-panel/gnome-panel-screenshot.c:213
 #, c-format
 msgid "File %s already exists. Overwrite?"
 msgstr "檔案 %s 已存在。是否覆寫？"
 
-#: gnome-panel/gnome-panel-screenshot.c:233
-#: gnome-panel/gnome-panel-screenshot.c:584
+#: gnome-panel/gnome-panel-screenshot.c:234
+#: gnome-panel/gnome-panel-screenshot.c:587
 #, c-format
 msgid ""
 "Unable to create the file:\n"
@@ -1058,21 +1058,21 @@ msgstr ""
 
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:420
+#: gnome-panel/gnome-panel-screenshot.c:421
 #, c-format
 msgid "Screenshot-%s.png"
 msgstr "Screenshot-%s.png"
 
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:424
+#: gnome-panel/gnome-panel-screenshot.c:425
 msgid "Screenshot.png"
 msgstr "Screenshot.png"
 
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if a specific window is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:445
+#: gnome-panel/gnome-panel-screenshot.c:447
 #, c-format
 msgid "Screenshot-%s-%d.png"
 msgstr "Screenshot-%s-%d.png"
@@ -1080,17 +1080,17 @@ msgstr "Screenshot-%s-%d.png"
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if the entire screen is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:452
+#: gnome-panel/gnome-panel-screenshot.c:454
 #, c-format
 msgid "Screenshot-%d.png"
 msgstr "Screenshot-%d.png"
 
-#: gnome-panel/gnome-panel-screenshot.c:607
+#: gnome-panel/gnome-panel-screenshot.c:610
 #, c-format
 msgid "Not enough room to write file %s"
 msgstr "磁碟空間不夠寫入檔案 %s"
 
-#: gnome-panel/gnome-panel-screenshot.c:708
+#: gnome-panel/gnome-panel-screenshot.c:711
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -1099,7 +1099,7 @@ msgstr ""
 "顯示說明文件時出現錯誤：\n"
 "%s"
 
-#: gnome-panel/gnome-panel-screenshot.c:1189
+#: gnome-panel/gnome-panel-screenshot.c:1306
 msgid ""
 "Glade file for the screenshot program is missing.\n"
 "Please check your installation of gnome-panel"
@@ -1107,20 +1107,20 @@ msgstr ""
 "找不到擷取畫面的程式所需的 glade 檔案。\n"
 "請檢查 gnome-panel 是否已正確安裝"
 
-#: gnome-panel/gnome-panel-screenshot.c:1205
+#: gnome-panel/gnome-panel-screenshot.c:1322
 msgid "Unable to take a screenshot of the current desktop."
 msgstr "無法擷取目前桌面的畫面快照。"
 
-#: gnome-panel/gnome-panel-screenshot.c:1265
+#: gnome-panel/gnome-panel-screenshot.c:1382
 #, c-format
 msgid "Save screenshot to _web page (save in %s)"
 msgstr "將畫面快照儲存到網頁資料夾 [即 %s] (_W)"
 
-#: gnome-panel/gnome-panel-screenshot.c:1321
+#: gnome-panel/gnome-panel-screenshot.c:1438
 msgid "Grab a window instead of the entire screen"
 msgstr "只擷取一個視窗而非整個螢幕"
 
-#: gnome-panel/gnome-panel-screenshot.c:1322
+#: gnome-panel/gnome-panel-screenshot.c:1439
 msgid "Take screenshot after specified delay [in seconds]"
 msgstr "在指定秒數之後擷取畫面"
 
@@ -1300,60 +1300,60 @@ msgstr "將這個啟動圖示加入面板"
 msgid "Remove this item"
 msgstr "移除這個項目"
 
-#: gnome-panel/menu.c:1398
+#: gnome-panel/menu.c:1397
 msgid "Entire menu"
 msgstr "整個選單"
 
-#: gnome-panel/menu.c:1406
+#: gnome-panel/menu.c:1405
 msgid "Add this as drawer to panel"
 msgstr "以抽屜方式加入面板"
 
-#: gnome-panel/menu.c:1417
+#: gnome-panel/menu.c:1414
 msgid "Add this as menu to panel"
 msgstr "以選單方式加入面板"
 
-#: gnome-panel/menu.c:1429
+#: gnome-panel/menu.c:1424
 msgid "Add new item to this menu"
 msgstr "在這個選單中新增項目"
 
-#: gnome-panel/menu.c:1456
+#: gnome-panel/menu.c:1451
 msgid "Properties"
 msgstr "屬性"
 
-#: gnome-panel/menu.c:2169 gnome-panel/menu.c:2173 gnome-panel/menu.c:2561
+#: gnome-panel/menu.c:2164 gnome-panel/menu.c:2168 gnome-panel/menu.c:2555
 #: gnome-panel/panel-menu-bar.c:202
 msgid "Applications"
 msgstr "應用程式"
 
-#: gnome-panel/menu.c:2213
+#: gnome-panel/menu.c:2208
 msgid "You cannot remove your last panel."
 msgstr "不可以移除最後一個面板。"
 
-#: gnome-panel/menu.c:2273
+#: gnome-panel/menu.c:2268
 msgid "_Delete This Panel..."
 msgstr "刪除本面板(_D)..."
 
-#: gnome-panel/menu.c:2276 gnome-panel/menu.c:2305
+#: gnome-panel/menu.c:2271 gnome-panel/menu.c:2299
 msgid "_Delete This Panel"
 msgstr "刪除本面板(_D)"
 
-#: gnome-panel/menu.c:2289
+#: gnome-panel/menu.c:2284
 msgid "_Add to Panel..."
 msgstr "加入至面板(_A)..."
 
-#: gnome-panel/menu.c:2334
+#: gnome-panel/menu.c:2328
 msgid "_New Panel"
 msgstr "新增面板(_N)"
 
-#: gnome-panel/menu.c:2381
+#: gnome-panel/menu.c:2375
 msgid "A_bout Panels"
 msgstr "關於面板(_B)"
 
-#: gnome-panel/menu.c:2395
+#: gnome-panel/menu.c:2389
 msgid "About _GNOME"
 msgstr "關於 _GNOME"
 
-#: gnome-panel/menu.c:2642
+#: gnome-panel/menu.c:2636
 msgid "Desktop"
 msgstr "桌面"
 
@@ -1459,26 +1459,26 @@ msgstr "可隨時彈出來的抽屉，用來儲存其它圖示"
 msgid "(empty)"
 msgstr "(空白)"
 
-#: gnome-panel/panel-addto.c:352 libpanel-applet/panel-test-applets.c:156
+#: gnome-panel/panel-addto.c:376 libpanel-applet/panel-test-applets.c:156
 #, c-format
 msgid "query returned exception %s\n"
 msgstr "詢問時回傳了例外情況 %s\n"
 
-#: gnome-panel/panel-addto.c:766
+#: gnome-panel/panel-addto.c:787
 #, c-format
 msgid "Add to %s"
 msgstr "加入至 %s"
 
-#: gnome-panel/panel-addto.c:768
+#: gnome-panel/panel-addto.c:789
 msgid "Add to the panel"
 msgstr "加入至面板"
 
-#: gnome-panel/panel-addto.c:774
+#: gnome-panel/panel-addto.c:795
 #, c-format
 msgid "Select an _item to add to %s:"
 msgstr "選擇準備加入至 %s 的東西(_I):"
 
-#: gnome-panel/panel-addto.c:777
+#: gnome-panel/panel-addto.c:798
 msgid "Select an _item to add to the panel:"
 msgstr "選擇準備加入至面板的東西(_I):"
 
@@ -1943,25 +1943,25 @@ msgid "Use custom path for menu contents"
 msgstr "使用自選的路徑作為選單內容"
 
 #: gnome-panel/panel-profile.c:768 gnome-panel/panel-profile.c:799
-#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1606
+#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1641
 #, c-format
 msgid "Error reading GConf string value '%s': %s"
 msgstr "讀取 GConf 字串值‘%s’時發生錯誤：%s"
 
-#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1504
-#: gnome-panel/panel-profile.c:1575 gnome-panel/panel-profile.c:1638
+#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1539
+#: gnome-panel/panel-profile.c:1610 gnome-panel/panel-profile.c:1673
 #, c-format
 msgid "Error reading GConf integer value '%s': %s"
 msgstr "讀取 GConf 整數值‘%s’時發生錯誤：%s"
 
-#: gnome-panel/panel-profile.c:1514
+#: gnome-panel/panel-profile.c:1549
 #, c-format
 msgid ""
 "Panel '%s' is set to be displayed on screen %d which is not currently "
 "available. Not loading this panel."
 msgstr "面板‘%s’被指定在第 %d 個螢幕中顯示，但該螢幕不存在，因此不會載入面板。"
 
-#: gnome-panel/panel-profile.c:1590
+#: gnome-panel/panel-profile.c:1625
 #, c-format
 msgid "Error reading GConf boolean value '%s': %s"
 msgstr "讀取 GConf 布林值‘%s’時發生錯誤：%s"
@@ -2241,73 +2241,73 @@ msgstr "強行結束(_F)"
 msgid "C_lear"
 msgstr "清除(_L)"
 
-#: gnome-panel/panel-toplevel.c:1111
+#: gnome-panel/panel-toplevel.c:1109
 msgid "Hide Panel"
 msgstr "隱藏本面板"
 
 #. translators: these string will be shown in MetaCity's switch window
 #. * popup when you pass the focus to a panel
-#: gnome-panel/panel-toplevel.c:1472
+#: gnome-panel/panel-toplevel.c:1470
 msgid "Top Expanded Edge Panel"
 msgstr "頂部擴大邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1473
+#: gnome-panel/panel-toplevel.c:1471
 msgid "Top Centered Panel"
 msgstr "頂部置中面板"
 
-#: gnome-panel/panel-toplevel.c:1474
+#: gnome-panel/panel-toplevel.c:1472
 msgid "Top Floating Panel"
 msgstr "頂部浮動面板"
 
-#: gnome-panel/panel-toplevel.c:1475
+#: gnome-panel/panel-toplevel.c:1473
 msgid "Top Edge Panel"
 msgstr "頂部邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1479
+#: gnome-panel/panel-toplevel.c:1477
 msgid "Bottom Expanded Edge Panel"
 msgstr "底部擴大邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1480
+#: gnome-panel/panel-toplevel.c:1478
 msgid "Bottom Centered Panel"
 msgstr "底部置中面板"
 
-#: gnome-panel/panel-toplevel.c:1481
+#: gnome-panel/panel-toplevel.c:1479
 msgid "Bottom Floating Panel"
 msgstr "底部浮動面板"
 
-#: gnome-panel/panel-toplevel.c:1482
+#: gnome-panel/panel-toplevel.c:1480
 msgid "Bottom Edge Panel"
 msgstr "底部邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1486
+#: gnome-panel/panel-toplevel.c:1484
 msgid "Left Expanded Edge Panel"
 msgstr "左邊擴大邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1487
+#: gnome-panel/panel-toplevel.c:1485
 msgid "Left Centered Panel"
 msgstr "左邊置中面板"
 
-#: gnome-panel/panel-toplevel.c:1488
+#: gnome-panel/panel-toplevel.c:1486
 msgid "Left Floating Panel"
 msgstr "左邊浮動面板"
 
-#: gnome-panel/panel-toplevel.c:1489
+#: gnome-panel/panel-toplevel.c:1487
 msgid "Left Edge Panel"
 msgstr "左邊邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1493
+#: gnome-panel/panel-toplevel.c:1491
 msgid "Right Expanded Edge Panel"
 msgstr "右邊擴大邊界面板"
 
-#: gnome-panel/panel-toplevel.c:1494
+#: gnome-panel/panel-toplevel.c:1492
 msgid "Right Centered Panel"
 msgstr "右邊置中面板"
 
-#: gnome-panel/panel-toplevel.c:1495
+#: gnome-panel/panel-toplevel.c:1493
 msgid "Right Floating Panel"
 msgstr "右邊浮動面板"
 
-#: gnome-panel/panel-toplevel.c:1496
+#: gnome-panel/panel-toplevel.c:1494
 msgid "Right Edge Panel"
 msgstr "右邊邊界面板"
 
@@ -2628,12 +2628,12 @@ msgstr "面板的垂直座標"
 msgid "Cannot display help document"
 msgstr "無法顯示說明文件"
 
-#: gnome-panel/panel.c:446
+#: gnome-panel/panel.c:458
 #, c-format
 msgid "Open URL: %s"
 msgstr "開啟 URL：%s"
 
-#: gnome-panel/panel.c:1245
+#: gnome-panel/panel.c:1272
 msgid ""
 "When a panel is deleted, the panel and its\n"
 " settings are lost. Delete this panel?"
@@ -2641,7 +2641,7 @@ msgstr ""
 "當刪除面板後，面板及其設定都會\n"
 "消失。是否要刪除這個面板？"
 
-#: gnome-panel/panel.c:1254
+#: gnome-panel/panel.c:1281
 msgid "Delete Panel"
 msgstr "刪除面板"
 

@@ -230,7 +230,7 @@ menu_deactivate(GtkWidget *w, PanelData *pd)
 	if (pd->deactivate_idle == 0)
 		pd->deactivate_idle = g_idle_add (deactivate_idle, pd);
 
-	panel_toplevel_unblock_auto_hide (PANEL_TOPLEVEL (pd->panel));
+	panel_toplevel_pop_autohide_disabler (PANEL_TOPLEVEL (pd->panel));
 }
 
 static void
@@ -339,7 +339,7 @@ panel_popup_menu (PanelToplevel *toplevel,
 	
 	menu = make_popup_panel_menu (panel_widget);
 
-	panel_toplevel_block_auto_hide (toplevel);
+	panel_toplevel_push_autohide_disabler (toplevel);
 
 	gtk_menu_set_screen (GTK_MENU (menu),
 			     gtk_window_get_screen (GTK_WINDOW (toplevel)));
@@ -436,19 +436,39 @@ drop_url (PanelWidget *panel,
 	  int          position,
 	  const char  *url)
 {
-	char *comment;
+	enum {
+		NETSCAPE_URL_URL,
+		NETSCAPE_URL_NAME
+	};
+	char **netscape_url;
+	char  *name;
+	char  *comment;
 
 	g_return_val_if_fail (url != NULL, FALSE);
 
-	if ( ! panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+	if (!panel_profile_id_lists_are_writable ())
 		return FALSE;
 
-	comment = g_strdup_printf (_("Open URL: %s"), url);
+	netscape_url = g_strsplit (url, "\n", 2);
+	if (!netscape_url || string_empty (netscape_url[NETSCAPE_URL_URL])) {
+		g_strfreev (netscape_url);
+		return FALSE;
+	}
+	
+	comment = g_strdup_printf (_("Open URL: %s"),
+				   netscape_url[NETSCAPE_URL_URL]);
 
-	panel_launcher_create_from_info (
-		panel->toplevel, position, FALSE, url, url, comment, "gnome-globe.png");
+	if (string_empty (netscape_url[NETSCAPE_URL_NAME]))
+		name = netscape_url[NETSCAPE_URL_URL];
+	else
+		name = netscape_url[NETSCAPE_URL_NAME];
+
+	panel_launcher_create_from_info (panel->toplevel, position, FALSE,
+					 netscape_url[NETSCAPE_URL_URL],
+					 name, comment, "gnome-globe.png");
 
 	g_free (comment);
+	g_strfreev (netscape_url);
 
 	return TRUE;
 }
@@ -458,7 +478,7 @@ drop_menu (PanelWidget *panel,
 	   int          position,
 	   const char  *menu_path)
 {
-	if ( ! panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+	if (!panel_profile_id_lists_are_writable ())
 		return FALSE;
 
 	panel_menu_button_create (panel->toplevel, position, menu_path,
@@ -476,14 +496,22 @@ drop_nautilus_uri (PanelWidget *panel,
 	char *quoted;
 	char *exec;
 	char *base;
+	char **split;
 
-	if ( ! panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+	if (!panel_profile_id_lists_are_writable ())
 		return FALSE;
+
+	quoted = g_shell_quote (uri);
+
+	/* Escape any "%" as "%%" */
+	split = g_strsplit (quoted, "%", -1);
+	g_free (quoted);
+	quoted = g_strjoinv ("%%", split);
+	g_strfreev (split);
 
 	/* Add -- to avoid the possibility of filenames which would
 	 * be interpreted as command line arguments
 	 */
-	quoted = g_shell_quote (uri);
 	exec = g_strdup_printf ("nautilus -- %s", quoted);
 	g_free (quoted);
 
@@ -587,7 +615,7 @@ drop_urilist (PanelWidget *panel, int pos, char *urilist)
 			   (strcmp(mimetype, "application/x-gnome-app-info") == 0 ||
 			    strcmp(mimetype, "application/x-desktop") == 0 ||
 			    strcmp(mimetype, "application/x-kde-app-info") == 0)) {
-			if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+			if (panel_profile_id_lists_are_writable ())
 				panel_launcher_create (panel->toplevel, pos, uri);
 			else
 				success = FALSE;
@@ -602,7 +630,7 @@ drop_urilist (PanelWidget *panel, int pos, char *urilist)
 			      GNOME_VFS_PERM_GROUP_EXEC |
 			      GNOME_VFS_PERM_OTHER_EXEC) &&
 			   (filename = g_filename_from_uri (uri, NULL, NULL)) != NULL) {
-			if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+			if (panel_profile_id_lists_are_writable ())
 				/* executable and local, so add a launcher with
 				 * it */
 				ask_about_launcher (filename, panel, pos, TRUE);
@@ -645,7 +673,7 @@ drop_internal_icon (PanelWidget *panel,
 	if (!icon_name)
 		return FALSE;
 
-	if ( ! panel_profile_list_is_writable (PANEL_GCONF_OBJECTS))
+	if (!panel_profile_id_lists_are_writable ())
 		return FALSE;
 
 	if (action == GDK_ACTION_MOVE)
@@ -723,8 +751,7 @@ drop_internal_applet (PanelWidget *panel, int pos, const char *applet_type,
 			success = drop_menu (panel, pos, menu);
 
 	} else if (!strcmp (applet_type, "DRAWER:NEW")) {
-		if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS) &&
-		    panel_profile_list_is_writable (PANEL_GCONF_TOPLEVELS)) {
+		if (panel_profile_id_lists_are_writable ()) {
 			panel_drawer_create (panel->toplevel, pos, NULL, FALSE, NULL);
 			success = TRUE;
 		} else {
@@ -732,7 +759,7 @@ drop_internal_applet (PanelWidget *panel, int pos, const char *applet_type,
 		}
 
 	} else if (!strncmp (applet_type, "ACTION:", strlen ("ACTION:"))) {
-		if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS)) {
+		if (panel_profile_id_lists_are_writable ()) {
 			remove_applet = panel_action_button_load_from_drag (
 							panel->toplevel,
 							pos,
@@ -744,7 +771,7 @@ drop_internal_applet (PanelWidget *panel, int pos, const char *applet_type,
 		}
 
 	} else if (!strcmp (applet_type, "MENUBAR:NEW")) {
-		if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS)) {
+		if (panel_profile_id_lists_are_writable ()) {
 			panel_menu_bar_create (panel->toplevel, pos);
 			success = TRUE;
 		} else {
@@ -752,7 +779,7 @@ drop_internal_applet (PanelWidget *panel, int pos, const char *applet_type,
 		}
 
 	} else if (!strcmp(applet_type,"LAUNCHER:ASK")) {
-		if (panel_profile_list_is_writable (PANEL_GCONF_OBJECTS)) {
+		if (panel_profile_id_lists_are_writable ()) {
 			ask_about_launcher (NULL, panel, pos, TRUE);
 			success = TRUE;
 		} else {
@@ -1010,7 +1037,7 @@ panel_receive_dnd_data (PanelWidget      *panel,
 			gtk_drag_finish (context, FALSE, FALSE, time_);
 			return;
 		}
-		if (panel_profile_list_is_writable (PANEL_GCONF_APPLETS)) {
+		if (panel_profile_id_lists_are_writable ()) {
 			panel_applet_frame_create (panel->toplevel, pos, (char *) selection_data->data);
 			success = TRUE;
 		} else {
@@ -1227,7 +1254,7 @@ static void
 panel_deletion_destroy_dialog (GtkWidget *widget,
 			       PanelToplevel *toplevel)
 {
-	panel_toplevel_unblock_auto_hide (toplevel);
+	panel_toplevel_pop_autohide_disabler (toplevel);
 	g_object_set_data (G_OBJECT (toplevel), "panel-delete-dialog", NULL);
 }
 
@@ -1309,7 +1336,7 @@ panel_delete (PanelToplevel *toplevel)
 		return;
 	}
 
-	panel_toplevel_block_auto_hide (toplevel);
+	panel_toplevel_push_autohide_disabler (toplevel);
 
 	panel_query_deletion (toplevel);
 }

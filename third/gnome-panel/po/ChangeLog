@@ -1,3 +1,113 @@
+2005-01-31  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2005-01-29  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2004-12-13  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* zu.po: Added Zulu translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+==================== 2.8.2 ====================
+
+2004-11-30  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Updated Northern Sotho translation.
+
+2004-11-29  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Added Northern Sotho translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-11-23  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-11-13  Christophe Merlet <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-11-08  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Vladimir Petkov <vpetkov@i-space.org>
+
+2004-11-02  Leonid Kanter <leon@asplinux.ru>
+
+	* ru.po: fix Russian translation
+
+2004-10-26  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+	* or.po: Updated Oriya translation.
+
+2004-10-17  Christophe Merlet <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-15  Leonid Kanter <leon@asplinux.ru>
+
+	* ru.po: fix Russian translation
+
+2004-10-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Fix an embarrassing typo. Noticed by
+	Sindre Pedersen Bjørdal <foolish at guezz net>
+	Closes bug #155210.
+
+==================== 2.8.1 ====================
+
+2004-10-10  Christophe Merlet <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-06  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Fixed two typos.
+
+==================== 2.8.0.1 ====================
+
+2004-09-25  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-19  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2004-09-18  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2004-09-17  Nikos Charonitakis  <charosn@her.forthent.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-09-16  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation by Gabor Kelemen.
+
+2004-09-16  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-16  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* gl.po: Updated Galician translation.
+
+2004-09-15  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
+2004-09-14  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Fixed strange space bug.
+
+==================== 2.8.0 ====================
+
 2004-09-13  Abel Cheung  <maddog@linuxhall.org>
 
 	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team

@@ -1,4 +1,119 @@
 =============
+Version 2.8.3
+=============
+
+  Panel
+
+	* Fix crasher when the recent documents list has changed (Vincent)
+	* Fix custom .desktop files not appearing in the menu (Debian people)
+
+  Translators
+
+	* Elian Myftiu (sq)
+	* Zuza Software Foundation (zu)
+
+=============
+Version 2.8.2
+=============
+
+  Panel
+
+	* Ignore the delete event (so you don't accidentally close the panel
+	  in XFCE, eg) (Sebastian Kapfer)
+	* Show drawer help in the drawer properties dialog (Vincent)
+	* Make pixmap backgrounds work for the applets (James Henstridge)
+	* Fix drag and drop of folders with special caracters (Matthias Clasen)
+	* Fix startup notification animation to not leave artifact
+	  (Matthias Clasen)
+	* Fix drag and drop for URL (Romain Baffet)
+
+  Clock
+
+	* Update the clock when the time has changed (Marco Pesenti Gritti)
+	* Accept percentage and spaces when entering percentages for actions
+	  (Vincent Noel)
+	* Better panel background support (Vincent)
+
+  Misc
+
+	* Updated italian docs (Luca Ferreti)
+	* Fix 100% cpu usage by screenshoter (Anders Carlsson)
+
+  Translators
+
+	* Vladimir Petkov (bg)
+	* Miloslav Trmac (cs)
+	* Martin Willemoes Hansen (da)
+	* Hendrik Richter (de)
+	* Adam Weinberger (en_CA)
+	* David Lodge (en_GB)
+	* Francisco Javier F. Serrador (es)
+	* Meelad Zakaria (fa)
+	* Mohammad DAMT (id)
+	* Takeshi AIHANA (ja)
+	* Žygimantas Beručka (lt)
+	* Hasbullah Bin Pit (ms)
+	* Kjartan Maraas (nb)
+	* Kjartan Maraas (no)
+	* Zuza Software Foundation (nso)
+	* Gora Mohanty (or)
+	* Elian Myftiu (sq)
+	* Данило Шеган (sr)
+	* Funda Wang (zh_CN)
+
+=============
+Version 2.8.1
+=============
+
+  Panel
+
+	* Prevent against future config breakage when changing
+	  the default setup (Mark)
+	* De-sensitize addto button when nothing is selected (Vincent Noel)
+	* Fix icon scaling issue in the run dialog (Vincent Noel)
+
+  Translators
+
+	* Christophe Merlet (fr)
+	* Alessio Frusciante (it)
+
+===============
+Version 2.8.0.1
+===============
+
+  Panel
+
+	* Fix icon scaling in recent-files, "Add to Panel" and buttons (James Henstridge)
+	* Plug a leak (Kjartan Maraas)
+	* Don't crash if $HOME=/ (Mark)
+	* Make 2.2 -> 2.4/6/8 migration work again (Mark)
+	* Fix issue where lazily creating the main menu broke a11y (Padraig, Mark)
+	* Make dragging a locked applet not break autohide (Mark)
+	* Fix freakiness with autohiding and snap-to-screen-edge (Mark)
+	* Fix panel not autohiding sometimes after closing drawer (Mark, Arvind)
+	* Consolidate a bunch of autohide code (Mark)
+	* Fix autohiding after changed orientation with unexpanded panels (Mark)
+	* Fix potential buglet with panel hiding timeouts (Mark, Arvind)
+
+  Clock Applet
+
+	* Ignore focus padding so we fit nicely on a 24px panel (Mark)
+
+  Misc
+
+	* Some new icons (Jakub Steiner)
+
+  Translators
+
+	* Nikos Charonitakis (el)
+	* Adam Weinberger (en_CA)
+	* Francisco Javier F. Serrador (es)
+	* Jesús Bravo Álvarez (gl)
+	* Gabor Kelemen (hu)
+	* Luca Ferretti (it)
+	* Christian Rose (sv)
+
+=============
 Version 2.8.0
 =============
 

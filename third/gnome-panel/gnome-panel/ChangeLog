@@ -1,3 +1,274 @@
+2005-02-14  Vincent Untz  <vincent@vuntz.net>
+
+	* panel-recent.c: (panel_recent_append_documents_menu): make it
+	compile
+
+2005-01-31  Vincent Untz  <vincent@vuntz.net>
+
+	* quick-desktop-reader.c: (is_key): do not return "" as value for the
+	key if there is no value.
+	(is_i18n_key): ditto
+	Fix bug #165799. Thanks to Debian people for the fix.
+
+2005-01-14  Vincent Untz  <vincent@vuntz.net>
+
+	* panel-recent.c: (panel_recent_append_documents_menu): connect to the
+	"changed" signal only while the model is alive.
+	Fix crash #150809.
+
+==================== 2.8.2 ====================
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	* panel.c: (drop_nautilus_uri): fix bad patch
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Patch from Romain Baffet <rbaffert0-pub@yahoo.fr> in bug #152098.
+
+	* panel.c: (drop_url): split the dropped data in URL and name so we
+	can have a launcher that works, use a nice Name for the launcher if
+	possible
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Patch from Matthias Clasen <mclasen@redhat.com> in
+	bug #156162
+
+	* xstuff.c: (draw_zoom_animation): round the integer
+	co-ords only once since we seem to sometimes get
+	different results.
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Backport patch from HEAD
+
+	* panel.c: (drop_nautilus_uri): fix quoting issue that
+	prevented some dropped folders from working. Fix from
+	Matthias Clasen in bug #155725.
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Backport patch by James Henstridge <james@jamesh.id.au> from HEAD
+
+	* panel-background.c (panel_background_prepare): call
+	gdk_display_sync() after drawing the panel background.  Since
+	applets will be looking up the background pixmap using a different
+	display connection, we need to make sure all drawing has occurred
+	first.  Fixes bug #157303.
+
+2004-12-05  Vincent Untz  <vincent@vuntz.net>
+
+	Backport patch from HEAD
+
+	* panel-properties-dialog.c: (panel_properties_dialog_response): show
+	the help for drawer properties if the user is editing the properties of
+	a drawer. Fix bug #143034
+
+2004-11-21  Vincent Untz  <vincent@vuntz.net>
+
+	* panel-toplevel.c: (panel_toplevel_instance_init): ignore the delete
+	event. Patch from Sebastian Kapfer <sebastian_kapfer web de>
+	Fix bug #139633
+
+2004-10-21  Anders Carlsson  <andersca@gnome.org>
+
+	* gnome-panel-screenshot.c: (add_file_to_path),
+	(text_property_to_utf8), (get_text_property), (get_utf8_property),
+	(get_window_title), (take_window_shot), (main):
+	Fix window title handling. Should fix the 100% cpu bug.
+
+==================== 2.8.1 ====================
+
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	When saving any of toplevel_id_list, applet_id_list or
+	object_id_list, always save the other two id lists two.
+	Prevents the situation where when you change the default
+	setup, people may see bits of the new configuration leaking
+	through even though they've changed some of their panel
+	configuratoin.
+
+	* panel-profile.[ch]:
+	(panel_profile_save_id_list),
+	(panel_profile_save_other_id_lists),
+	(panel_profile_add_to_list),
+	(panel_profile_remove_from_list): when saving a list,
+	save the other lists too.
+	(panel_profile_id_list_is_writable),
+	(panel_profile_id_lists_are_writable): no longer check
+	whether an individual list is writable but whether all
+	lists are writable.
+
+	* applet.c, menu.c, panel-addto.c, panel-applet-frame.c,
+	  panel.c: use id_lists_are_writable() rather than
+	list_is_writable().
+	
+2004-10-11  Vincent Untz  <vincent@vuntz.net>
+
+	* panel-addto.c: revert the "2004-10-04  Vincent Noel  <vnoel@cox.net>"
+	change: we did not branch for 2.10 and so we can't depend on GTK+ 2.5.
+
+2004-09-30  Vincent Noel  <vnoel@cox.net>
+
+	* panel-addto.c (panel_addto_selection_changed): In the "Add to
+	panel" dialog, make the "add" button unsensitive when nothing is selected.
+
+2004-10-04  Vincent Noel  <vnoel@cox.net>
+
+	* panel-addto.c: Split the "application launcher" items out of
+	internal_addto_items into their own array.
+	(panel_addto_append_item): extracted from panel_addto_make_applet_model.
+	(panel_addto_append_special_applets): new.
+	(panel_addto_make_applet_model): Move the "application launchers"
+	at the top of the list. Add a separator before the other applets.
+
+2004-09-29  Vincent Noel  <vnoel@cox.net>
+
+	* panel-run-dialog.c (panel_run_dialog_set_icon): scale down the
+	app icon in the "Run application" dialog. Fixes bug #153564.
+
+==================== 2.8.0.1 ====================
+
+2004-09-28  James Henstridge  <james@jamesh.id.au>
+
+	Fixes bug #153619 and Ubuntu bug #1587.
+
+	* menu.c (panel_make_menu_icon): same here.
+
+	* button-widget.c (get_missing): use
+	gdk_pixbuf_new_from_file_at_size() to load image, so that backends
+	such as the SVG one can render the image at an appropriate size.
+	(load_pixbuf): same here.
+
+2004-09-27  Mark McLoughlin  <mark@skynet.ie>
+
+	Contains fix for icon scaling code from jamesh.
+
+	* egg-recent-util.c: sync with libegg.
+
+2004-09-24  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Kjartan Maraas in bug #153450
+
+	* panel-compatibility.c:
+	(panel_compatibility_detect_needs_migration): don't
+	leak source path.
+
+2004-09-21  James Henstridge  <james@jamesh.id.au>
+
+	* panel-addto.c (panel_addto_make_pixbuf): use
+	gdk_pixbuf_new_from_file_at_size() to give the loader a hint about
+	the size we want to load the image at.  If the image is still too
+	large, scale it down to fit.
+	(panel_addto_make_applet_model): update to pass in the desired
+	GtkIconSize for the icon rather than a pixel size.
+	(panel_addto_make_application_model_r): same here.
+	Fixes bug #153135.
+
+2004-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Sync with libegg:
+
+	* libegg/recent-files/egg-recent-model.c:
+	(egg_recent_model_monitor): don't pass a local
+	path as a URI - otherwise we crash when people
+	use $HOME=/ and we pass "//.recently-used" to
+	gnome-vfs. Bug 152832
+
+2004-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes to make 2.2 -> 2.4/6/8 migration work again - it broken
+	when I installed the default setup into /apps/panel/profiles/default
+	as well as /apps/panel/default_setup
+
+	* panel-compatibility.c:
+	(panel_compatibility_migrate_panel_id): migrate toplevel_id
+	whether its already set or not.
+	(panel_compatibility_detect_needs_migration): nice bug ugly
+	hack to check if toplevel_id_list is set in the user's
+	source.
+
+2004-09-15  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Padraig O'Briain <padraig.obriain@sun.com>
+	in bug #138535
+	
+	* panel-menu-button.c:
+	(panel_menu_button_menu_detacher): remove workaround for bug #113112
+	(panel_menu_button_create_menu): re-create the menu here if needs be.
+	(panel_menu_button_accessible_*): add an AtkObject implementation
+	so we can create the menu when get_n_children() is called.
+	
+	* panel-a11y.[ch]:
+	(panel_a11y_get_is_a11y_enabled): rename from is_gail_loaded()
+	and make public.
+	(panel_a11y_query_accessible_parent_type): implement standard
+	ugly hack to inherit from an object in gail without linking
+	against	gail.
+	
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=131868
+	where trying to drag a locked applet caused autohide to stop working.
+
+	* panel-widget.c: (panel_widget_applet_drag_start): pop the autohide
+	disabler if we fail to start the drag. 
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #148672 - freakiness with auto-hide and snap-to.
+
+	* panel-toplevel.c: (panel_toplevel_update_auto_hide_position):
+	When auto-hidden, snap to the screen edge too.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #144281 - auto-hide panel sometimes not hiding
+	when a drawer closes. Based on a patch from Arvind.
+
+	* panel-toplevel.c:
+	(panel_toplevel_push_autohide_disabler): queue an unhide if this
+	is the first one pushed.
+	(panel_toplevel_pop_autohide_disabler): queue a hide if this is
+	the last one popped.
+	
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Consolidate some code - we don't need two ways to temporarily
+	disable auto-hiding.
+	
+	* panel-toplevel.[ch]:
+	(panel_toplevel_unblock_auto_hide),
+	(panel_toplevel_unblock_auto_hide): remove this and use the disabler
+	stack for everything.
+	(panel_toplevel_auto_hide_timeout_handler):
+	(panel_toplevel_queue_auto_hide),
+	(panel_toplevel_instance_init): update to use the disabler stack.
+	
+	* applet.c, panel-action-protocol.c, panel-addto.c,
+	  panel-menu-button.c, panel-properties-dialog.c, panel-widget.c,
+	  panel.c: update to use the disabler stack.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #136074 - weird autohiding behaviour when
+	you change the orientation of an unexpanded panel.
+
+	* panel-toplevel.c: (panel_toplevel_set_orientation): un-snap
+	from the center of the screen if we rotate the panel.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Arvind in bug #128412.
+
+	* panel-toplevel.c:
+	(panel_toplevel_auto_hide_timeout_handler),
+	(panel_toplevel_auto_unhide_timeout_handler): clear the source
+	ids when running the handler for the last time.
+
+==================== 2.8.0 ====================
+
 ==================== 2.7.92.1 ====================
 
 ==================== 2.7.92 ====================

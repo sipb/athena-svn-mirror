@@ -15,6 +15,10 @@
   padding: 4px;
   margin-left: 3em;
 }
+.variablelist td:first-child
+{
+  vertical-align: top;
+}
 table.navigation 
 {
   background: #ffeeee;
@@ -33,3 +37,30 @@ table.navigation
 .navigation .title 
 {
   font-size: 200%;
+}
+div.refnamediv 
+{
+  margin-top: 2em;
+}
+div.gallery-float 
+{
+  float: left;
+  padding: 10px;
+}
+div.gallery-float img 
+{
+  border-style: none;
+}
+div.gallery-spacer 
+{
+  clear: both;
+}
+a
+{
+  text-decoration: none;
+}
+a:hover
+{
+  text-decoration: underline;
+  color: #FF0000;
+}

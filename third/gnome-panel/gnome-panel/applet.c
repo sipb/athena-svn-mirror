@@ -241,7 +241,7 @@ applet_menu_deactivate (GtkWidget *w, AppletInfo *info)
 
 	panel_widget = PANEL_WIDGET (info->widget->parent);
 
-	panel_toplevel_unblock_auto_hide (panel_widget->toplevel);
+	panel_toplevel_pop_autohide_disabler (panel_widget->toplevel);
 }
 
 AppletUserMenu *
@@ -438,7 +438,7 @@ panel_applet_create_menu (AppletInfo  *info,
 
 		lockable = panel_applet_lockable (info);
 		movable = panel_applet_can_freely_move (info);
-		removable = panel_profile_list_is_writable (PANEL_GCONF_OBJECTS);
+		removable = panel_profile_id_lists_are_writable ();
 
 		locked = panel_widget_get_applet_locked (panel_widget, info->widget);
 
@@ -529,7 +529,7 @@ applet_show_menu (AppletInfo     *info,
 	if (info->menu == NULL)
 		return;
 
-	panel_toplevel_block_auto_hide (panel_widget->toplevel);
+	panel_toplevel_push_autohide_disabler (panel_widget->toplevel);
 
 	panel_applet_menu_set_recurse (GTK_MENU (info->menu),
 				       "menu_panel",

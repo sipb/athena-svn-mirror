@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-31 09:29+0100\n"
+"POT-Creation-Date: 2004-12-05 17:53+0100\n"
 "PO-Revision-Date: 2004-09-05 18:39+0000\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -61,9 +61,9 @@ msgstr "_Om"
 #: applets/wncklet/GNOME_WindowListApplet.xml.h:2
 #: applets/wncklet/GNOME_WindowMenuApplet.xml.h:2
 #: applets/wncklet/GNOME_WorkspaceSwitcherApplet.xml.h:2
-#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2370
+#: gnome-panel/drawer.c:620 gnome-panel/menu.c:2364
 #: gnome-panel/panel-action-button.c:678 gnome-panel/panel-menu-bar.c:325
-#: gnome-panel/panel-menu-button.c:620
+#: gnome-panel/panel-menu-button.c:613
 msgid "_Help"
 msgstr "_Hjelp"
 
@@ -77,7 +77,7 @@ msgstr "_Brukarval"
 
 # applets/gen_util/clock.c:927
 #: applets/clock/GNOME_ClockApplet_Factory.server.in.in.h:1
-#: applets/clock/clock.c:2544
+#: applets/clock/clock.c:2553
 msgid "Clock"
 msgstr "Klokke"
 
@@ -94,24 +94,24 @@ msgid "Get the current time and date"
 msgstr "Hent aktiv tid og dato"
 
 # panel/foobar-widget.c:566
-#: applets/clock/clock.c:277
+#: applets/clock/clock.c:265
 msgid "%l:%M:%S %p"
 msgstr "%H:%M:%S"
 
 # panel/foobar-widget.c:565
-#: applets/clock/clock.c:277 applets/clock/clock.c:608
+#: applets/clock/clock.c:265 applets/clock/clock.c:581
 msgid "%l:%M %p"
 msgstr "%k:%M"
 
 # panel/foobar-widget.c:564
-#: applets/clock/clock.c:279 applets/clock/clock.c:1655
+#: applets/clock/clock.c:267 applets/clock/clock.c:1664
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
 # applets/gen_util/clock.c:198 applets/gen_util/clock.c:400
 # panel/foobar-widget.c:563 panel/foobar-widget.c:1011
-#: applets/clock/clock.c:279 applets/clock/clock.c:610
-#: applets/clock/clock.c:1657
+#: applets/clock/clock.c:267 applets/clock/clock.c:583
+#: applets/clock/clock.c:1666
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -121,7 +121,7 @@ msgstr "%H:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: applets/clock/clock.c:290
+#: applets/clock/clock.c:278
 msgid "%a %b %e"
 msgstr "%a %d. %b"
 
@@ -129,7 +129,7 @@ msgstr "%a %d. %b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:297
+#: applets/clock/clock.c:285
 #, c-format
 msgid ""
 "%1$s\n"
@@ -142,40 +142,40 @@ msgstr ""
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: applets/clock/clock.c:304
+#: applets/clock/clock.c:292
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
 # panel/foobar-widget.c:464
 #. Show date in tooltip
-#: applets/clock/clock.c:388
+#: applets/clock/clock.c:376
 msgid "%A %B %d"
 msgstr "%A %B %d"
 
 # applets/gen_util/clock.c:209
 #. Translators: If the event did not start on the current day
 #. we will display the start date in the most abbreviated way possible.
-#: applets/clock/clock.c:615
+#: applets/clock/clock.c:588
 msgid "%b %d"
 msgstr "%d. %b"
 
 # applets/desk-guide/deskguide_applet.c:101
-#: applets/clock/clock.c:911
+#: applets/clock/clock.c:888
 msgid "Tasks"
 msgstr "Oppgåver"
 
-#: applets/clock/clock.c:1055
+#: applets/clock/clock.c:1032
 msgid "All Day"
 msgstr "Heile dagen"
 
 # panel/foobar-widget.c:573
-#: applets/clock/clock.c:1096
+#: applets/clock/clock.c:1073
 msgid "Appointments"
 msgstr "Avtalar"
 
 # panel/menu.c:4751 panel/panel_config.c:1566
-#: applets/clock/clock.c:1328
+#: applets/clock/clock.c:1305
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -184,27 +184,27 @@ msgid "Computer Clock"
 msgstr "Datamaskinklokke"
 
 # panel/menu.c:3522 panel/session.c:1541
-#: applets/clock/clock.c:1650
+#: applets/clock/clock.c:1659
 msgid "%I:%M:%S %p"
 msgstr "%H:%M:%S"
 
 # applets/gen_util/clock.c:191 applets/gen_util/clock.c:395
-#: applets/clock/clock.c:1652
+#: applets/clock/clock.c:1661
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 # applets/gen_util/clock.c:425
-#: applets/clock/clock.c:1694
+#: applets/clock/clock.c:1703
 msgid "%A, %B %d %Y"
 msgstr "%A, %d. %B %Y"
 
 # panel/gnome-run.c:233
-#: applets/clock/clock.c:1738
+#: applets/clock/clock.c:1747
 #, c-format
 msgid "Failed to launch time configuration tool: %s"
 msgstr "Klarte ikkje å køyra oppsettprogrammet til klokka: %s"
 
-#: applets/clock/clock.c:1777
+#: applets/clock/clock.c:1786
 msgid ""
 "Failed to locate a program for configuring the date and time. Perhaps none "
 "is installed?"
@@ -213,12 +213,12 @@ msgstr ""
 "Kanskje ingen er installert?"
 
 # gnome-terminal/gnome-terminal.c:990
-#: applets/clock/clock.c:2179
+#: applets/clock/clock.c:2188
 msgid "Custom format"
 msgstr "Sjølvvald format"
 
 # gnome-terminal/gnome-terminal.c:2060
-#: applets/clock/clock.c:2300 applets/clock/clock.c:2490
+#: applets/clock/clock.c:2309 applets/clock/clock.c:2499
 #: applets/fish/fish.c:127 applets/notification_area/main.c:84
 #: applets/wncklet/showdesktop.c:426 applets/wncklet/window-list.c:115
 #: applets/wncklet/window-list.c:772 applets/wncklet/window-menu.c:100
@@ -229,57 +229,57 @@ msgid "There was an error displaying help: %s"
 msgstr "Ein feil oppstod ved vising av hjelp: %s"
 
 # panel/logout.c:195
-#: applets/clock/clock.c:2336
+#: applets/clock/clock.c:2345
 msgid "Clock Preferences"
 msgstr "Brukarval for klokke"
 
 # applets/gen_util/clock.c:974
-#: applets/clock/clock.c:2372
+#: applets/clock/clock.c:2381
 msgid "Clock _type:"
 msgstr "Klokke_type:"
 
 # applets/gen_util/clock.c:779
-#: applets/clock/clock.c:2382
+#: applets/clock/clock.c:2391
 msgid "12 hour"
 msgstr "12 timar"
 
 # applets/gen_util/clock.c:788
-#: applets/clock/clock.c:2383
+#: applets/clock/clock.c:2392
 msgid "24 hour"
 msgstr "24 timar"
 
 # applets/gen_util/clock.c:865
-#: applets/clock/clock.c:2384
+#: applets/clock/clock.c:2393
 msgid "UNIX time"
 msgstr "UNIX-tid"
 
 # applets/gen_util/clock.c:869
-#: applets/clock/clock.c:2385
+#: applets/clock/clock.c:2394
 msgid "Internet time"
 msgstr "Internett-tid"
 
 # applets/gen_util/clock.c:521
-#: applets/clock/clock.c:2393
+#: applets/clock/clock.c:2402
 msgid "Custom _format:"
 msgstr "Sjølvvald _format:"
 
 # applets/gen_util/mailcheck.c:1230
-#: applets/clock/clock.c:2412
+#: applets/clock/clock.c:2421
 msgid "Show _seconds"
 msgstr "Vis _sekund"
 
 # applets/gen_util/clock.c:596
-#: applets/clock/clock.c:2421
+#: applets/clock/clock.c:2430
 msgid "Show _date"
 msgstr "Vis _dato"
 
 # applets/gen_util/clock.c:851
-#: applets/clock/clock.c:2430
+#: applets/clock/clock.c:2439
 msgid "Use _UTC"
 msgstr "Bruk _UTC"
 
 #. Translator credits
-#: applets/clock/clock.c:2525 applets/notification_area/main.c:120
+#: applets/clock/clock.c:2534 applets/notification_area/main.c:120
 #: applets/wncklet/showdesktop.c:456 applets/wncklet/window-list.c:804
 #: applets/wncklet/window-menu.c:130 applets/wncklet/workspace-switcher.c:506
 #: gnome-panel/menu.c:201
@@ -291,7 +291,7 @@ msgstr ""
 "Kjartan Maraas  <kmaraas@gnome.org>\n"
 "Monica Gausen <monica@gausen.net>"
 
-#: applets/clock/clock.c:2546
+#: applets/clock/clock.c:2555
 msgid "The Clock displays the current time and date"
 msgstr "Klokka viser noverande tid og dato"
 
@@ -1097,11 +1097,11 @@ msgstr "Kunne ikkje finne ein tom plass"
 msgid "Failed to load image %s"
 msgstr "Klarte ikkje å lasta biletet «%s»"
 
-#: gnome-panel/button-widget.c:403
+#: gnome-panel/button-widget.c:408
 msgid "none"
 msgstr "ingen"
 
-#: gnome-panel/button-widget.c:408
+#: gnome-panel/button-widget.c:413
 msgid "file not found"
 msgstr "fann ikkje fila"
 
@@ -1144,7 +1144,7 @@ msgstr "Skuff"
 
 # panel/menu.c:5102
 #: gnome-panel/drawer.c:614 gnome-panel/launcher.c:824 gnome-panel/menu.c:1376
-#: gnome-panel/menu.c:2320 gnome-panel/panel-action-button.c:132
+#: gnome-panel/menu.c:2314 gnome-panel/panel-action-button.c:132
 msgid "_Properties"
 msgstr "_Eigenskapar"
 
@@ -1154,7 +1154,7 @@ msgid "Create new file in the given directory"
 msgstr "Opprett ei ny fil i gitt katalog"
 
 # panel/gnome-panel-screenshot.c:126
-#: gnome-panel/gnome-panel-screenshot.c:121
+#: gnome-panel/gnome-panel-screenshot.c:122
 msgid ""
 "Unable to initialize png structure.\n"
 "You probably have a bad version of libpng on your system"
@@ -1163,7 +1163,7 @@ msgstr ""
 "Du har sannsynlegvis feil versjon av libpng-biblioteket på systemet ditt."
 
 # panel/gnome-panel-screenshot.c:134
-#: gnome-panel/gnome-panel-screenshot.c:129
+#: gnome-panel/gnome-panel-screenshot.c:130
 msgid ""
 "Unable to create png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1172,7 +1172,7 @@ msgstr ""
 "Du har sannsynlegvis feil versjon av libpng-biblioteket på systemet ditt"
 
 # panel/gnome-panel-screenshot.c:141
-#: gnome-panel/gnome-panel-screenshot.c:136
+#: gnome-panel/gnome-panel-screenshot.c:137
 msgid ""
 "Unable to set png info.\n"
 "You probably have a bad version of libpng on your system"
@@ -1181,7 +1181,7 @@ msgstr ""
 "Du har sannsynlegvis feil versjon av libpng biblioteket på systemet ditt"
 
 # panel/gnome-panel-screenshot.c:155
-#: gnome-panel/gnome-panel-screenshot.c:154
+#: gnome-panel/gnome-panel-screenshot.c:155
 msgid ""
 "Insufficient memory to save the screenshot.\n"
 "Please free up some resources and try again."
@@ -1190,14 +1190,14 @@ msgstr ""
 "Frigjer ressursar og prøv igjen."
 
 # panel/gnome-panel-screenshot.c:199
-#: gnome-panel/gnome-panel-screenshot.c:212
+#: gnome-panel/gnome-panel-screenshot.c:213
 #, c-format
 msgid "File %s already exists. Overwrite?"
 msgstr "Fila %s eksisterer allereie. Overskriv?"
 
 # panel/gnome-panel-screenshot.c:213 panel/gnome-panel-screenshot.c:693
-#: gnome-panel/gnome-panel-screenshot.c:233
-#: gnome-panel/gnome-panel-screenshot.c:584
+#: gnome-panel/gnome-panel-screenshot.c:234
+#: gnome-panel/gnome-panel-screenshot.c:587
 #, c-format
 msgid ""
 "Unable to create the file:\n"
@@ -1211,7 +1211,7 @@ msgstr ""
 # panel/gnome-panel-screenshot.c:545
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if a specific window is taken
-#: gnome-panel/gnome-panel-screenshot.c:420
+#: gnome-panel/gnome-panel-screenshot.c:421
 #, c-format
 msgid "Screenshot-%s.png"
 msgstr "Skjermbilete-%s.png"
@@ -1219,7 +1219,7 @@ msgstr "Skjermbilete-%s.png"
 # panel/gnome-panel-screenshot.c:550
 #. translators: this is the name of the file that gets made up
 #. * with the screenshot if the entire screen is taken
-#: gnome-panel/gnome-panel-screenshot.c:424
+#: gnome-panel/gnome-panel-screenshot.c:425
 msgid "Screenshot.png"
 msgstr "Skjermbilete.png"
 
@@ -1227,7 +1227,7 @@ msgstr "Skjermbilete.png"
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if a specific window is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:445
+#: gnome-panel/gnome-panel-screenshot.c:447
 #, c-format
 msgid "Screenshot-%s-%d.png"
 msgstr "Skjermbilete-%s-%d.png"
@@ -1236,19 +1236,19 @@ msgstr "Skjermbilete-%s-%d.png"
 #. translators: this is the name of the file that gets
 #. * made up with the screenshot if the entire screen is
 #. * taken
-#: gnome-panel/gnome-panel-screenshot.c:452
+#: gnome-panel/gnome-panel-screenshot.c:454
 #, c-format
 msgid "Screenshot-%d.png"
 msgstr "Skjermbilete-%d.png"
 
 # panel/gnome-panel-screenshot.c:712
-#: gnome-panel/gnome-panel-screenshot.c:607
+#: gnome-panel/gnome-panel-screenshot.c:610
 #, c-format
 msgid "Not enough room to write file %s"
 msgstr "Ikkje nok plass til å skrive fila %s"
 
 # gnome-terminal/gnome-terminal.c:2060
-#: gnome-panel/gnome-panel-screenshot.c:708
+#: gnome-panel/gnome-panel-screenshot.c:711
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -1258,7 +1258,7 @@ msgstr ""
 "%s"
 
 # panel/gnome-panel-screenshot.c:1040
-#: gnome-panel/gnome-panel-screenshot.c:1189
+#: gnome-panel/gnome-panel-screenshot.c:1306
 msgid ""
 "Glade file for the screenshot program is missing.\n"
 "Please check your installation of gnome-panel"
@@ -1267,22 +1267,22 @@ msgstr ""
 "Kontrollert gnome-panel-installasjonen din"
 
 # panel/gnome-panel-screenshot.c:1057
-#: gnome-panel/gnome-panel-screenshot.c:1205
+#: gnome-panel/gnome-panel-screenshot.c:1322
 msgid "Unable to take a screenshot of the current desktop."
 msgstr "Ikkje i stand til å ta skjermbilete av det gjeldande skrivebordet"
 
 # panel/gnome-panel-screenshot.glade.h:12
-#: gnome-panel/gnome-panel-screenshot.c:1265
+#: gnome-panel/gnome-panel-screenshot.c:1382
 #, c-format
 msgid "Save screenshot to _web page (save in %s)"
 msgstr "Lag _nettside av skjermbilete (lagra i %s)"
 
 # panel/gnome-panel-screenshot.c:1012
-#: gnome-panel/gnome-panel-screenshot.c:1321
+#: gnome-panel/gnome-panel-screenshot.c:1438
 msgid "Grab a window instead of the entire screen"
 msgstr "Ta tak i eit vindauge i staden for heile skjermen"
 
-#: gnome-panel/gnome-panel-screenshot.c:1322
+#: gnome-panel/gnome-panel-screenshot.c:1439
 msgid "Take screenshot after specified delay [in seconds]"
 msgstr "Ta skjermbilete etter eit visst tal på sekund"
 
@@ -1497,72 +1497,72 @@ msgid "Remove this item"
 msgstr "Fjern denne oppføringa"
 
 # panel/menu.c:1765
-#: gnome-panel/menu.c:1398
+#: gnome-panel/menu.c:1397
 msgid "Entire menu"
 msgstr "Heile menyen"
 
 # panel/menu.c:1775
-#: gnome-panel/menu.c:1406
+#: gnome-panel/menu.c:1405
 msgid "Add this as drawer to panel"
 msgstr "Legg til som skuff på panelet"
 
 # panel/menu.c:1784
-#: gnome-panel/menu.c:1417
+#: gnome-panel/menu.c:1414
 msgid "Add this as menu to panel"
 msgstr "Legg til som meny på panelet"
 
 # panel/menu.c:1804
-#: gnome-panel/menu.c:1429
+#: gnome-panel/menu.c:1424
 msgid "Add new item to this menu"
 msgstr "Legg til ny oppføring i denne menyen"
 
 # panel/menu.c:5102
-#: gnome-panel/menu.c:1456
+#: gnome-panel/menu.c:1451
 msgid "Properties"
 msgstr "Eigenskapar"
 
-#: gnome-panel/menu.c:2169 gnome-panel/menu.c:2173 gnome-panel/menu.c:2561
+#: gnome-panel/menu.c:2164 gnome-panel/menu.c:2168 gnome-panel/menu.c:2555
 #: gnome-panel/panel-menu-bar.c:202
 msgid "Applications"
 msgstr "Program"
 
 # panel/menu.c:3920
-#: gnome-panel/menu.c:2213
+#: gnome-panel/menu.c:2208
 msgid "You cannot remove your last panel."
 msgstr "Du kan ikkje fjerne det siste panelet:"
 
 # panel/menu.c:5020
-#: gnome-panel/menu.c:2273
+#: gnome-panel/menu.c:2268
 msgid "_Delete This Panel..."
 msgstr "_Slett dette panelet..."
 
 # panel/menu.c:5022 panel/menu.c:5085
-#: gnome-panel/menu.c:2276 gnome-panel/menu.c:2305
+#: gnome-panel/menu.c:2271 gnome-panel/menu.c:2299
 msgid "_Delete This Panel"
 msgstr "_Slett dette panelet"
 
 # panel/menu.c:4960 panel/menu.c:4965 panel/menu.c:5050
-#: gnome-panel/menu.c:2289
+#: gnome-panel/menu.c:2284
 msgid "_Add to Panel..."
 msgstr "_Legg til på panelet ..."
 
 # gsm/splash.c:65
-#: gnome-panel/menu.c:2334
+#: gnome-panel/menu.c:2328
 msgid "_New Panel"
 msgstr "_Nytt panel"
 
 # panel/menu.c:5266
-#: gnome-panel/menu.c:2381
+#: gnome-panel/menu.c:2375
 msgid "A_bout Panels"
 msgstr "_Om panel"
 
 # gnome-about/gnome-about.c:465 panel/foobar-widget.c:242
-#: gnome-panel/menu.c:2395
+#: gnome-panel/menu.c:2389
 msgid "About _GNOME"
 msgstr "Om _GNOME"
 
 # gsm/splash.c:68 panel/menu.c:5224 panel/menu.c:5229 panel/menu.c:5599
-#: gnome-panel/menu.c:2642
+#: gnome-panel/menu.c:2636
 msgid "Desktop"
 msgstr "Skrivebord"
 
@@ -1685,28 +1685,28 @@ msgstr "Ei sprettopp-skuff å lagra andre ting i"
 msgid "(empty)"
 msgstr "(tom)"
 
-#: gnome-panel/panel-addto.c:352 libpanel-applet/panel-test-applets.c:156
+#: gnome-panel/panel-addto.c:376 libpanel-applet/panel-test-applets.c:156
 #, c-format
 msgid "query returned exception %s\n"
 msgstr "spørjinga returnerte unntak %s\n"
 
 # panel/menu.c:4960 panel/menu.c:4965 panel/menu.c:5050
-#: gnome-panel/panel-addto.c:766
+#: gnome-panel/panel-addto.c:787
 #, c-format
 msgid "Add to %s"
 msgstr "Legg til på %s"
 
 # panel/menu.c:4960 panel/menu.c:4965 panel/menu.c:5050
-#: gnome-panel/panel-addto.c:768
+#: gnome-panel/panel-addto.c:789
 msgid "Add to the panel"
 msgstr "Legg til på panelet"
 
-#: gnome-panel/panel-addto.c:774
+#: gnome-panel/panel-addto.c:795
 #, c-format
 msgid "Select an _item to add to %s:"
 msgstr "Vel eit _element å leggja til på %s:"
 
-#: gnome-panel/panel-addto.c:777
+#: gnome-panel/panel-addto.c:798
 msgid "Select an _item to add to the panel:"
 msgstr "Vel eit _element å leggja til på panelet:"
 
@@ -2228,18 +2228,18 @@ msgid "Use custom path for menu contents"
 msgstr "Bruk sjølvvalt sti til menyinnhaldet"
 
 #: gnome-panel/panel-profile.c:768 gnome-panel/panel-profile.c:799
-#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1606
+#: gnome-panel/panel-profile.c:835 gnome-panel/panel-profile.c:1641
 #, c-format
 msgid "Error reading GConf string value '%s': %s"
 msgstr "Feil under lesing av strengverdien «%s» frå GConf: %s"
 
-#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1504
-#: gnome-panel/panel-profile.c:1575 gnome-panel/panel-profile.c:1638
+#: gnome-panel/panel-profile.c:814 gnome-panel/panel-profile.c:1539
+#: gnome-panel/panel-profile.c:1610 gnome-panel/panel-profile.c:1673
 #, c-format
 msgid "Error reading GConf integer value '%s': %s"
 msgstr "Feil under lesing av heiltalsverdien «%s» frå GConf: %s"
 
-#: gnome-panel/panel-profile.c:1514
+#: gnome-panel/panel-profile.c:1549
 #, c-format
 msgid ""
 "Panel '%s' is set to be displayed on screen %d which is not currently "
@@ -2248,7 +2248,7 @@ msgstr ""
 "Panel «%s» er stilt til å visast på skjerm %d, som ikkje er tilgjengeleg no. "
 "Lastar ikkje dette panelet."
 
-#: gnome-panel/panel-profile.c:1590
+#: gnome-panel/panel-profile.c:1625
 #, c-format
 msgid "Error reading GConf boolean value '%s': %s"
 msgstr "Feil under lesing av boolsk verdi «%s» frå GConf: %s"
@@ -2586,99 +2586,99 @@ msgstr "T_øm"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1111
+#: gnome-panel/panel-toplevel.c:1109
 msgid "Hide Panel"
 msgstr "Gøym panelet"
 
 # panel/menu.c:235
 #. translators: these string will be shown in MetaCity's switch window
 #. * popup when you pass the focus to a panel
-#: gnome-panel/panel-toplevel.c:1472
+#: gnome-panel/panel-toplevel.c:1470
 msgid "Top Expanded Edge Panel"
 msgstr "Øvre utvida kantpanel"
 
 # panel/menu.c:3569 panel/menu.c:3574 panel/menu.c:5074
-#: gnome-panel/panel-toplevel.c:1473
+#: gnome-panel/panel-toplevel.c:1471
 msgid "Top Centered Panel"
 msgstr "Øvre midtstilt panel"
 
 # panel/menu.c:3634 panel/menu.c:4716 panel/panel_config.c:1769
 # panel/panel_config.c:1900
-#: gnome-panel/panel-toplevel.c:1474
+#: gnome-panel/panel-toplevel.c:1472
 msgid "Top Floating Panel"
 msgstr "Øvre flytande panel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1475
+#: gnome-panel/panel-toplevel.c:1473
 msgid "Top Edge Panel"
 msgstr "Øvre kantpanel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1479
+#: gnome-panel/panel-toplevel.c:1477
 msgid "Bottom Expanded Edge Panel"
 msgstr "Nedre utvida kantpanel"
 
 # panel/menu.c:3569 panel/menu.c:3574 panel/menu.c:5074
-#: gnome-panel/panel-toplevel.c:1480
+#: gnome-panel/panel-toplevel.c:1478
 msgid "Bottom Centered Panel"
 msgstr "Nedre midtstilte panel"
 
 # panel/menu.c:3634 panel/menu.c:4716 panel/panel_config.c:1769
 # panel/panel_config.c:1900
-#: gnome-panel/panel-toplevel.c:1481
+#: gnome-panel/panel-toplevel.c:1479
 msgid "Bottom Floating Panel"
 msgstr "Nedre flytande panel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1482
+#: gnome-panel/panel-toplevel.c:1480
 msgid "Bottom Edge Panel"
 msgstr "Nedre kantpanel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1486
+#: gnome-panel/panel-toplevel.c:1484
 msgid "Left Expanded Edge Panel"
 msgstr "Venstre utvida kantpanel"
 
 # panel/menu.c:3569 panel/menu.c:3574 panel/menu.c:5074
-#: gnome-panel/panel-toplevel.c:1487
+#: gnome-panel/panel-toplevel.c:1485
 msgid "Left Centered Panel"
 msgstr "Venstre midtstilt panel"
 
 # panel/menu.c:3634 panel/menu.c:4716 panel/panel_config.c:1769
 # panel/panel_config.c:1900
-#: gnome-panel/panel-toplevel.c:1488
+#: gnome-panel/panel-toplevel.c:1486
 msgid "Left Floating Panel"
 msgstr "Venstre flytande panel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1489
+#: gnome-panel/panel-toplevel.c:1487
 msgid "Left Edge Panel"
 msgstr "Venstre kantpanel"
 
-#: gnome-panel/panel-toplevel.c:1493
+#: gnome-panel/panel-toplevel.c:1491
 msgid "Right Expanded Edge Panel"
 msgstr "Høgre utvida kantpanel"
 
 # panel/menu.c:3618 panel/menu.c:4714 panel/panel_config.c:1757
 # panel/panel_config.c:1880
-#: gnome-panel/panel-toplevel.c:1494
+#: gnome-panel/panel-toplevel.c:1492
 msgid "Right Centered Panel"
 msgstr "Høgre midtstilt panel"
 
 # panel/menu.c:3634 panel/menu.c:4716 panel/panel_config.c:1769
 # panel/panel_config.c:1900
-#: gnome-panel/panel-toplevel.c:1495
+#: gnome-panel/panel-toplevel.c:1493
 msgid "Right Floating Panel"
 msgstr "Høgre flytande panel"
 
 # panel/menu.c:3610 panel/menu.c:4713 panel/panel_config.c:1750
 # panel/panel_config.c:1870
-#: gnome-panel/panel-toplevel.c:1496
+#: gnome-panel/panel-toplevel.c:1494
 msgid "Right Edge Panel"
 msgstr "Høgre kantpanel"
 
@@ -3043,13 +3043,13 @@ msgid "Cannot display help document"
 msgstr "Kan ikkje visa hjelpedokument"
 
 # panel/panel.c:953
-#: gnome-panel/panel.c:446
+#: gnome-panel/panel.c:458
 #, c-format
 msgid "Open URL: %s"
 msgstr "Opne URL: %s"
 
 # panel/menu.c:3930
-#: gnome-panel/panel.c:1245
+#: gnome-panel/panel.c:1272
 msgid ""
 "When a panel is deleted, the panel and its\n"
 " settings are lost. Delete this panel?"
@@ -3058,7 +3058,7 @@ msgstr ""
 "innstillingane det har tapt. Fjern dette panelet?"
 
 # panel/menu.c:5022 panel/menu.c:5085
-#: gnome-panel/panel.c:1254
+#: gnome-panel/panel.c:1281
 msgid "Delete Panel"
 msgstr "Fjern dette panelet"
 

@@ -16,12 +16,12 @@
     </sub>
   </chapters>
   <functions>
-    <function name="struct PanelApplet" link="PanelApplet.html#PanelApplet-struct"/>
+    <function name="PanelApplet" link="PanelApplet.html#PanelApplet-struct"/>
     <function name="PanelAppletOrient" link="PanelApplet.html#PanelAppletOrient"/>
-    <function name="PANEL_APPLET_ORIENT_UP" link="PanelApplet.html#PANEL-APPLET-ORIENT-UP-CAPS"/>
-    <function name="PANEL_APPLET_ORIENT_DOWN" link="PanelApplet.html#PANEL-APPLET-ORIENT-DOWN-CAPS"/>
-    <function name="PANEL_APPLET_ORIENT_LEFT" link="PanelApplet.html#PANEL-APPLET-ORIENT-LEFT-CAPS"/>
-    <function name="PANEL_APPLET_ORIENT_RIGHT" link="PanelApplet.html#PANEL-APPLET-ORIENT-RIGHT-CAPS"/>
+    <function name="PANEL_APPLET_ORIENT_UP" link="PanelApplet.html#PANEL-APPLET-ORIENT-UP:CAPS"/>
+    <function name="PANEL_APPLET_ORIENT_DOWN" link="PanelApplet.html#PANEL-APPLET-ORIENT-DOWN:CAPS"/>
+    <function name="PANEL_APPLET_ORIENT_LEFT" link="PanelApplet.html#PANEL-APPLET-ORIENT-LEFT:CAPS"/>
+    <function name="PANEL_APPLET_ORIENT_RIGHT" link="PanelApplet.html#PANEL-APPLET-ORIENT-RIGHT:CAPS"/>
     <function name="enum PanelAppletBackgroundType" link="PanelApplet.html#PanelAppletBackgroundType"/>
     <function name="enum PanelAppletFlags" link="PanelApplet.html#PanelAppletFlags"/>
     <function name="PanelAppletFactoryCallback ()" link="PanelApplet.html#PanelAppletFactoryCallback"/>
@@ -40,10 +40,10 @@
     <function name="panel_applet_setup_menu_from_file ()" link="PanelApplet.html#panel-applet-setup-menu-from-file"/>
     <function name="panel_applet_factory_main ()" link="PanelApplet.html#panel-applet-factory-main"/>
     <function name="panel_applet_factory_main_closure ()" link="PanelApplet.html#panel-applet-factory-main-closure"/>
-    <function name="PANEL_APPLET_BONOBO_FACTORY()" link="PanelApplet.html#PANEL-APPLET-BONOBO-FACTORY-CAPS"/>
+    <function name="PANEL_APPLET_BONOBO_FACTORY()" link="PanelApplet.html#PANEL-APPLET-BONOBO-FACTORY:CAPS"/>
     <function name="panel_applet_shlib_factory ()" link="PanelApplet.html#panel-applet-shlib-factory"/>
     <function name="panel_applet_shlib_factory_closure ()" link="PanelApplet.html#panel-applet-shlib-factory-closure"/>
-    <function name="PANEL_APPLET_BONOBO_SHLIB_FACTORY()" link="PanelApplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY-CAPS"/>
+    <function name="PANEL_APPLET_BONOBO_SHLIB_FACTORY()" link="PanelApplet.html#PANEL-APPLET-BONOBO-SHLIB-FACTORY:CAPS"/>
     <function name="The &quot;change-background&quot; signal" link="PanelApplet.html#PanelApplet-change-background"/>
     <function name="The &quot;change-orient&quot; signal" link="PanelApplet.html#PanelApplet-change-orient"/>
     <function name="The &quot;change-size&quot; signal" link="PanelApplet.html#PanelApplet-change-size"/>
