@@ -1,4 +1,14 @@
 #!/bin/sh
 
-/bin/athena/attach -n -h -q -f register
+PATH=/etc:/usr/ucb:/bin:/usr/bin:.:/etc/athena:/bin/athena:/usr/athena
+export PATH
+SHELL=/bin/echo
+export SHELL
+
+attach -n -h -q -f register
+
 /mit/register/xregister
+
+detach -q register
+
+exit 0
