@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.3 1989-11-22 21:26:27 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.4 1989-12-10 15:45:31 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -46,10 +46,12 @@ int op, bytes;
 	  }
 	  return 0;
      case STACK_PUSH:
+	  if (bytes == 0)
+	       return 0;
 	  if (size - count < bytes) {
-	       size += size - count + bytes;
-	       if (size % STACK_INC)
-		    size += STACK_INC - size % STACK_INC;
+	       do
+		    size += STACK_INC;
+	       while (size - count < bytes);
 	       stack = (caddr_t) (stack ? realloc((char *) stack,
 						  (unsigned) size) :
 				  Malloc((unsigned) size));
@@ -64,6 +66,8 @@ int op, bytes;
 	  count += bytes;
 	  return 0;
      case STACK_POP:
+	  if (bytes == 0)
+	       return 0;
 	  if (count == 0) {
 	       set_status(STACK_EMPTY);
 	       return error_code;
