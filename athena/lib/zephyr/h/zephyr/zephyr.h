@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.18 1987-11-03 13:20:38 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.19 1987-11-07 15:15:54 rfrench Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -171,7 +171,6 @@ extern int ZMakeAuthentication();
 #define CLIENT_UNSUBSCRIBE	"UNSUBSCRIBE"	/* Opcode: Unsubsubscribe */
 #define CLIENT_CANCELSUB	"CLEARSUB"	/* Opcode: Clear all subs */
 #define CLIENT_GIMMESUBS	"GIMME"		/* Opcode: Give me subs */
-#define CLIENT_INCOMPSUBS	"INCOMP"	/* Opcode: ret - didn't fit */
 
 #define ZEPHYR_CTL_HM		"HM"		/* Inst: From HM */
 #define HM_BOOT			"BOOT"		/* Opcode: Boot msg */
