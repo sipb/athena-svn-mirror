@@ -70,7 +70,7 @@ CACHE=${CACHEDIR:-/usr/vice/cache}
 AFS=${AFSDIR:-/afs}
 # Athena additions
 if [ "${OPTIONS+set}" != set ]; then
-	OPTIONS="-stat 2000 -dcache 800 -daemons 4 -volumes 70 -afsdb -dynroot"
+	OPTIONS="-stat 10000 -daemons 4 -volumes 200 -afsdb -dynroot -fakestat"
 fi
 AFS_POST_INIT=/etc/athena/config_afs
 athena_afsadjust () {
@@ -248,7 +248,9 @@ choose_afsdoptions() {
 case "$1" in 
   start)
     if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
-	on_network || exit 1
+	if [ `echo "$OPTIONS" | grep -c dynroot` = 0 ]; then
+	    on_network || exit 1
+	fi
 
 	athena_afsadjust
 	choose_afsdoptions
