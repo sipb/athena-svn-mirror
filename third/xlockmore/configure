@@ -6389,8 +6389,8 @@ if test "$kerberos5" = yes; then
 #define HAVE_KRB5 1
 EOF
 
-  XLOCKINC="${XLOCKINC} -I/opt/krb5/include"
-  XLOCKLIBS="${XLOCKLIBS} -L/opt/krb5/lib -lkrb5 -lcrypto -lcom_err"
+  XLOCKINC="${XLOCKINC} -I/usr/athena/include"
+  XLOCKLIBS="${XLOCKLIBS} -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err"
 fi
 
 # Check whether --enable-dce_passwd or --disable-dce_passwd was given.

@@ -2838,8 +2838,8 @@ AC_ARG_ENABLE(kerberos5, [  --enable-kerberos5      enable Kerberos 5],kerberos5
 if test "$kerberos5" = yes; then
   AC_MSG_RESULT([defining option HAVE_KRB5])
   AC_DEFINE(HAVE_KRB5)
-  XLOCKINC="${XLOCKINC} -I/opt/krb5/include"
-  XLOCKLIBS="${XLOCKLIBS} -L/opt/krb5/lib -lkrb5 -lcrypto -lcom_err"
+  XLOCKINC="${XLOCKINC} -I/usr/athena/include"
+  XLOCKLIBS="${XLOCKLIBS} -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err"
 fi
 
 AC_ARG_ENABLE(dce_passwd, [  --enable-dce-passwd     enable DCE passwording],dce_passwd=$enableval,dce_passwd=no)
