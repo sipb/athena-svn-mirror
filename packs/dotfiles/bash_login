@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.7 2002-07-17 16:46:31 ghudson Exp $
+# $Id: bash_login,v 1.8 2003-02-19 23:55:27 rbasch Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -15,6 +15,14 @@ initdir=/usr/athena/lib/init
 # Remember the pid of the login shell; used by dustbuster.
 ATHENA_LOGIN_SESSION=$$
 export ATHENA_LOGIN_SESSION
+
+# Create a unique temporary directory for the session, and remember
+# the directory name in the environment.
+sessiondir="`$initdir/mksessiondir -s $$`"
+if [ -n "$sessiondir" ]; then
+  ATHENA_SESSION_TMPDIR="$sessiondir"
+  export ATHENA_SESSION_TMPDIR
+fi
 
 if [ ! -r ~/.hushlogin ]; then
 	verbose_login=t		# Echo messages unless user has ~/.hushlogin.

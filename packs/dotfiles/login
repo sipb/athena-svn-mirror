@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.10 2002-05-06 14:46:18 ghudson Exp $
+# $Id: login,v 1.11 2003-02-19 23:55:27 rbasch Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -13,6 +13,12 @@ setenv ATHENA_LOGIN_SESSION $$
 
 set initdir=/usr/athena/lib/init
 
+# Create a unique temporary directory for the session, and remember
+# the directory name in the environment.
+set sessiondir = "`$initdir/mksessiondir -s $$`"
+if ("$sessiondir" != "") then
+  setenv ATHENA_SESSION_TMPDIR "$sessiondir"
+endif
 
 if (! -r ~/.hushlogin) then
 	set verbose_login	# Echo messages unless user has ~/.hushlogin.
