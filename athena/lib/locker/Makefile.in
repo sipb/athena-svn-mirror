@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-02-26 19:04:45 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-03-08 14:50:10 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -18,8 +18,7 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 DEFS=@DEFS@ -DMOUNT_CMD=\"@MOUNT_CMD@\" -DUMOUNT_CMD=\"@UMOUNT_CMD@\"
 LDFLAGS=@LDFLAGS@
-MOST_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} ${MOST_CFLAGS}
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 OBJS=	afs.o attach.o attachtab.o conf.o detach.o misc.o miscfs.o \
 	mount.o mountpoint.o mul.o nfs.o util.o zephyr.o
@@ -31,10 +30,6 @@ liblocker.a: ${OBJS}
 	${RANLIB} $@
 
 ${OBJS}: locker.h locker_private.h
-
-# AFS includes (3.4a at least) won't survive WARN_CFLAGS
-afs.o: afs.c
-	${CC} -c ${MOST_CFLAGS} $<
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
