@@ -20,13 +20,13 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.10 1993-11-21 04:34:30 probe Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.11 1994-08-18 15:07:44 probe Exp $";
 #endif
 
 /*** Routines for manipulating access control list files ***/
 
 #include <zephyr/zephyr.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/file.h>
 #include <fcntl.h>
 #include <sys/stat.h>

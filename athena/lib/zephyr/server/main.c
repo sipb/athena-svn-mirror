@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.59 1994-08-01 08:43:45 probe Exp $";
+    "$Id: main.c,v 1.60 1994-08-18 15:07:36 probe Exp $";
 #endif
 #endif
 
@@ -57,7 +57,7 @@ static char rcsid_main_c[] =
    <stdio.h>
    <sys/file.h>
    <syslog.h>
-   <strings.h>
+   <string.h>
    <signal.h>
    timer.h
    zsrv_err.h

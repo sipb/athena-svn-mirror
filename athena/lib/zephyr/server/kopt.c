@@ -19,7 +19,7 @@
 #ifndef lint
 #ifndef SABER
 static char *rcsid_rd_req_c =
-    "$Id: kopt.c,v 1.8 1993-11-19 16:06:03 probe Exp $";
+    "$Id: kopt.c,v 1.9 1994-08-18 15:07:40 probe Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -65,7 +65,7 @@ extern int krbONE;
 #define		KERB_ERR_NULL_KEY			10
 
 #include <sys/time.h>
-#include <strings.h>
+#include <string.h>
 
 extern int krb_ap_req_debug;
 

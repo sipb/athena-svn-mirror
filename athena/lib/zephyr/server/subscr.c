@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.49 1994-08-01 08:42:17 probe Exp $";
+static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.50 1994-08-18 15:07:29 probe Exp $";
 #endif
 #endif
 
@@ -62,7 +62,7 @@ static char rcsid_subscr_c[] = "$Id: subscr.c,v 1.49 1994-08-01 08:42:17 probe E
 
 #include "zserver.h"
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/stat.h>
 
 #ifdef __STDC__

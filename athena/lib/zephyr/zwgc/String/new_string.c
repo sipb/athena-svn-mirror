@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_new_string_c[] = "$Id: new_string.c,v 1.2 1993-11-19 16:10:00 probe Exp $";
+static char rcsid_new_string_c[] = "$Id: new_string.c,v 1.3 1994-08-18 15:07:54 probe Exp $";
 #endif
 
 /*
@@ -43,7 +43,7 @@ static char rcsid_new_string_c[] = "$Id: new_string.c,v 1.2 1993-11-19 16:10:00 
 #include <ctype.h>
 #include "new_memory.h"
 
-#include <strings.h>
+#include <string.h>
 
 #define string_Length(s) strlen(s)
 typedef char *string;
