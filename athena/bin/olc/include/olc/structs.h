@@ -18,20 +18,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.9 1991-03-07 13:23:23 lwvanels Exp $
+ *	$Id: structs.h,v 1.10 1991-03-28 13:24:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
-
-/* Structure describing a principal. */
-
-typedef struct tPRINCIPAL
-{
-  char	pname[ANAME_SZ];
-  char	pinst[INST_SZ];
-  char	prealm[REALM_SZ];
-} PRINCIPAL;
 
 /* Structure describing a person. */
 
@@ -41,14 +32,13 @@ typedef struct tPERSON
   int     instance;                  /* the user's instance id */
   char    username[LOGIN_SIZE+1];    /* Person's username. */
   char    realname[TITLE_SIZE];      /* Person's real name. */
+#ifdef KERBEROS
   char    realm[REALM_SZ];           /* current realm */
   char    inst[INST_SZ];             /* oh well */
+#endif /* KERBEROS */
   char    nickname[STRING_SIZE];     /* Person's first name. */
   char    title[TITLE_SIZE];         /* Person's title */
   char    machine[TITLE_SIZE];       /* Person's current machine. */
-#ifdef m68k
-  char    pad[2];
-#endif  
 } PERSON;
 
 /* Structure describing the list */
