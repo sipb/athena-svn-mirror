@@ -2,7 +2,7 @@
 
 Summary:    ScrollKeeper is a cataloging system for documentation on open systems.
 Name:       scrollkeeper
-Version:    0.3.9
+Version:    0.3.11
 Release:    1
 Source0:    http://download.sourceforge.net/scrollkeeper/%{name}-%{version}.tar.gz
 Copyright:  LGPL
