@@ -13,7 +13,12 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.52 1993-11-19 15:10:01 probe Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.53 1994-02-22 15:28:38 probe Exp $";
+
+#ifdef POSIX
+#include <unistd.h>
+#include <stdlib.h>
+#endif
 
 #include <ctype.h>
 #include <signal.h>
@@ -52,9 +57,6 @@ struct hostent *hp;
 char **clust_info;
 char hostname[MAXHOSTNAMELEN], loopback[4];
 char *PidFile = PIDFILE;
-
-extern char *sbrk();
-extern long time();
 
 void choose_server(), init_hm(), detach(),
     handle_timeout(), resend_notices(), die_gracefully();
