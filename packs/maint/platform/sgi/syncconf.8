@@ -1,0 +1,37 @@
+.TH SYNCCONF 8 "31 May 1996"
+.ds ]W MIT Athena
+.SH NAME
+syncconf \- synchronize system configuration files with rc.conf
+.SH SYNOPSIS
+.nf
+syncconf [-q] [-n]
+.fi
+.SH DESCRIPTION
+The \fIsyncconf\fR script is used to propagate the state of
+\fIrc.conf\fR to vendor specific configuration files. This provides
+the possibility of a uniform interface for changing common machine
+configuration information across many operating systems, and frees
+system administrators from the need of remembering esoteric machine
+specific procedures.
+
+If \fISYNCCONFIG\fR is set to true in \fIrc.conf\fR, \fIsyncconf\fR is
+run automatically early in the boot process; \fIsyncconf\fR should not
+normally need to be run by the user. \fIrc.conf\fR specifies which
+configuration variables are synchronized by \fIsyncconf\fR.
+.SH OPTIONS
+\fIsyncconf\fR provides two options:
+.TP 8
+.B \-q
+This option causes \fIsyncconf\fR not to give output on what, if
+anything, it is synchronizing.
+.TP 8
+.B \-n
+This option causes \fIsyncconf\fR to echo the shell commands it would
+use to synchronize, but does not actually execute them.
+.SH FILES
+/etc/athena/rc.conf             Athena configuration file
+/etc/athena/.rc.conf.sync       synchronization state file
+.SH AUTHOR
+Craig Fields, MIT Information Systems
+.br
+Copyright (c) 1996, Massachusetts Institute of Technology
