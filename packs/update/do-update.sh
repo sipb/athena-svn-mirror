@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.5 1997-01-27 13:16:22 ghudson Exp $
+# $Id: do-update.sh,v 1.6 1997-02-05 00:02:44 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -181,31 +181,22 @@ if [ -s "$DEADFILES" ]; then
 fi
 
 echo "Tracking changes"
-case "$HOSTTYPE" in
-sun4)
-	echo "Removing /usr/openwin/bin/Xsun temporarily"
-	rm -f /usr/openwin/bin/Xsun
-	ln -s /os/usr/openwin/bin/Xsun /usr/openwin/bin/Xsun
-
-	if [ "$TRACKOS" = true ]; then
-		track -c -v -F /os -T / -d -W /srvd/usr/athena/lib \
-			-s stats/os_rvd slists/os_rvd
-	fi
-	track -c -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-
-	echo "Replacing /usr/openwin/bin/Xsun"
-	rm -f /usr/openwin/bin/Xsun
-	cp -p /os/usr/openwin/bin/Xsun /usr/openwin/bin/Xsun
-	;;
-sgi)
-	if [ "$TRACKOS" = true ] ; then
+if [ "$TRACKOS" = true ]; then
+	case "$HOSTTYPE" in
+	sgi)
 		/install/install/track -v -F /install -T / -d \
 			-W /install/install/lib
 		rm -f /etc/athena/.rc.conf.sync
-	fi
-	track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-	;;
-esac
+		;;
+	sun4)
+		# Sun ships multiple revisions of OS config files
+		# with the same timestamp, so we must use -c.
+		track -c -v -F /os -T / -d -W /srvd/usr/athena/lib \
+			-s stats/os_rvd slists/os_rvd
+		;;
+	esac
+fi
+track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
 
 if [ "$NEWOS" = true ]; then
 	case "$HOSTTYPE" in
