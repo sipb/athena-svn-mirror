@@ -1,4 +1,4 @@
-# $Id: packages,v 1.194 2003-01-25 19:04:38 ghudson Exp $
+# $Id: packages,v 1.195 2003-01-25 19:06:55 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -239,7 +239,7 @@ third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
 third/ORBit2			requires glib2,linc,libIDL,popt
-third/pango			requires freetype,glib2
+third/pango			requires freetype,glib2,Xft
 third/patch			on solaris
 third/perl			requires db,gdbm,libiconv
 third/pine			requires krb5,hesiod
@@ -249,7 +249,7 @@ third/read-edid			on linux
 third/readline			except linux
 third/rep-gtk			requires librep,glib2,gtk2,libgnome,libgnomeui,libgnomecanvas,libglade2
 third/rs
-third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center
+third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center,Xft
 third/scrollkeeper		except linux requires intltool,libxml2,libxslt
 third/sendmail			requires hesiod,tcp_wrappers
 third/soup			requires glib,libxml,popt,openssl
