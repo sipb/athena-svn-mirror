@@ -3,7 +3,7 @@ CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
 all::
 
 klist: klist.o $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) -o klist klist.o $(LIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) -o klist klist.o -lkrb4 -ldes425 $(LIBS)
 
 klist.o:	$(srcdir)/klist.c
 
