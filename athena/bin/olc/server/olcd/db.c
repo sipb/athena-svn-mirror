@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.15 1991-04-11 13:33:44 lwvanels Exp $
+ *	$Id: db.c,v 1.16 1991-11-05 13:53:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.15 1991-04-11 13:33:44 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.16 1991-11-05 13:53:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -155,6 +155,10 @@ load_db()
     }
 
   fclose(fp);
+
+#ifdef ZEPHYR
+  unlink (ZEPHYR_DOWN_FILE);
+#endif
   return(SUCCESS);
 }
 
