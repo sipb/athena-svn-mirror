@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.19 1991-04-08 21:14:43 lwvanels Exp $
+ * $Id: Imakefile,v 1.20 1991-04-10 14:52:17 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -36,8 +36,6 @@ SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib) $(misc)
 #else
 SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(misc)
 #endif
-
-INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
