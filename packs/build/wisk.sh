@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.55 $
+# $Revision: 1.56 $
 
 umask 2
 
@@ -93,10 +93,10 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 
 set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/lert athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota"
 
-set machbin=""
+set machbins=""
 switch ( $machine )
   case sun4
-    set machbin="athena/bin/xquota"
+    set machbins="athena/bin/xquota"
     breaksw
 endsw
 
