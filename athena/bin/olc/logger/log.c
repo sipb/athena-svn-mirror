@@ -3,14 +3,14 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.4 1991-04-14 17:22:26 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.5 1991-04-14 20:40:43 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.4 1991-04-14 17:22:26 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.5 1991-04-14 20:40:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -18,7 +18,9 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
+#ifdef _AUX_SOURCE
 #include <time.h>
+#endif
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
