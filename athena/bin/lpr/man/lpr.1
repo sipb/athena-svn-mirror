@@ -15,6 +15,9 @@ lpr \- off line print
 ] [
 .BI \-# num
 ] [
+.B \-a
+.I account
+] [
 .B \-C
 .I class
 ] [
@@ -106,6 +109,11 @@ Disable sending of kerberos authentication to print server.
 Send kerberos authentication to print server. This option should never
 be necessary, as the printcap information will be used to determine if
 the option needs to be used.
+.PP
+The
+.B \-a
+option allows the specification of an optional account number to bill to
+if you are so authorized.
 .PP 
 The
 .B \-C
