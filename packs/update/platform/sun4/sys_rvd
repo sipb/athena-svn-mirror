@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.13 1994-06-17 12:05:30 vrt Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.14 1994-06-29 15:54:21 miki Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -79,6 +79,9 @@ GLOBAL : *.CKP *.local *.pid :
 		-> shells
 		-> uucp
 		:
+	/etc/mail:::
+		aliases
+		sendmail.cf
 	/etc/athena:::
 		attach.conf
 		clusterinfo
