@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.5 2003-05-28 22:17:44 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.5.2.1 2003-08-20 16:53:09 ghudson Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -26,10 +26,8 @@ lockers="infoagents acro java"
 # Plugins (other than the default "null" plugin) live in infoagents.
 plugin_dir=/mit/infoagents/arch/@sys/lib/mozilla/plugins
 
-# Set LD_LIBRARY_PATH
+# Set up mozilla's runtime library path.
 moz_lib_path=$MOZILLA_FIVE_HOME:$MOZILLA_FIVE_HOME/plugins
-LD_LIBRARY_PATH=$moz_lib_path${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
-export LD_LIBRARY_PATH
 
 case `uname` in
 SunOS)
@@ -40,6 +38,8 @@ SunOS)
     XSUNSMESIZE=512
     export XSUNTRANSPORT XSUNSMESIZE
   fi
+  # Ensure that we use the Sun gtk libraries.
+  moz_lib_path=$moz_lib_path:/usr/sfw/lib
   ;;
 Linux)
   # Set LD_ASSUME_KERNEL to avoid a java crash upon exit.
@@ -47,6 +47,9 @@ Linux)
   export LD_ASSUME_KERNEL
   ;;
 esac
+
+LD_LIBRARY_PATH=$moz_lib_path${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
+export LD_LIBRARY_PATH
 
 # Append our plugins directory to the plugin path.
 MOZ_PLUGIN_PATH=${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}$plugin_dir
@@ -188,6 +191,17 @@ if [ $found_running = false ]; then
         # The profile is locked.  Ask the user how to deal with it.
         dispose_lock $lock
         break
+      fi
+    done
+
+    # Fix up any search engine preference still pointing at infoagents.
+    for prefs in $profdir/????????.slt/prefs.js ; do
+      if grep 'engine:///.*/infoagents/.*/mozilla/searchplugins/' $prefs \
+          > /dev/null 2>&1 ; then
+        rm -f $prefs.new
+        sed -e 's|engine:///.*/infoagents/.*/mozilla/searchplugins/|engine:///usr/athena/lib/mozilla/searchplugins/|' \
+          $prefs > $prefs.new \
+        && mv $prefs.new $prefs
       fi
     done
   fi
