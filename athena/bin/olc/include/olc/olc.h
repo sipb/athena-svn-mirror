@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.17 1990-12-05 21:52:55 lwvanels Exp $
+ *	$Id: olc.h,v 1.18 1991-02-24 11:46:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -30,6 +30,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#ifdef m68k
+#include <strings.h>
+#endif
 
 #include <olc/lang.h>
 
