@@ -1851,8 +1851,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	if (term[0])
 		(void)setenv("TERM", term, 0);
 #ifdef KRB4_GET_TICKETS
-	/* tkfile[0] is only set if we got tickets above */
-	if (login_krb4_get_tickets && tkfile[0])
+	if (got_v4_tickets)
 	    (void) setenv(KRB_ENVIRON, tkfile, 1);
 #endif /* KRB4_GET_TICKETS */
 #ifdef KRB5_GET_TICKETS
