@@ -4,17 +4,17 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZClosePort.c,v $
- *	$Author: rfrench $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZClosePort.c,v 1.5 1988-05-13 14:46:05 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZClosePort.c,v 1.6 1991-06-18 13:18:04 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZClosePort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZClosePort.c,v 1.5 1988-05-13 14:46:05 rfrench Exp $";
-#endif lint
+static char rcsid_ZClosePort_c[] = "$Id: ZClosePort.c,v 1.6 1991-06-18 13:18:04 jfc Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
