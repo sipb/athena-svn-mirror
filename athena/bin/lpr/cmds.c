@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.4 1991-03-01 11:49:54 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.5 1991-06-28 13:20:56 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.4 1991-03-01 11:49:54 epeisach Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.5 1991-06-28 13:20:56 epeisach Exp $";
 #endif lint
 
 /*
@@ -187,18 +187,14 @@ clean(argc, argv)
 }
 
 
-/*
- * An example of brain death at its best: until very recently, this was
- * a global function.  This error was not detected until the name
- * server shows up.  The nameserver library calls select(2)... 
- * unless some other "select" function like this one is defined........
- *
- * Send this one to Berkeley.
- */
 
 static
-select(d)
+cselect(d)
+#ifdef POSIX
+struct dirent *d;
+#else
 struct direct *d;
+#endif
 {
 	int c = d->d_name[0];
 
@@ -212,7 +208,11 @@ struct direct *d;
  * by `cf', `tf', or `df', then by the sequence letter A-Z, a-z.
  */
 sortq(d1, d2)
+#ifdef POSIX
+struct dirent **d1, **d2;
+#else
 struct direct **d1, **d2;
+#endif
 {
 	int c1, c2;
 
@@ -236,7 +236,11 @@ cleanpr()
 {
 	register int i, n;
 	register char *cp, *cp1, *lp;
+#ifdef POSIX
+	struct dirent **queue;
+#else
 	struct direct **queue;
+#endif
 	int nitems;
 
 	bp = pbuf;
@@ -248,7 +252,7 @@ cleanpr()
 		;
 	lp[-1] = '/';
 
-	nitems = scandir(SD, &queue, select, sortq);
+	nitems = scandir(SD, &queue, cselect, sortq);
 	if (nitems < 0) {
 		printf("\tcannot examine spool directory\n");
 		return;
@@ -759,7 +763,7 @@ prstat()
 {
 	struct stat stbuf;
 	register int fd, i;
-#ifdef _IBMR2
+#ifdef POSIX
 	register struct dirent *dp;
 #else
 	register struct direct *dp;
@@ -1259,7 +1263,7 @@ flushpr()
 {
 	register int c;
 	register DIR *dirp;
-#ifdef _IBMR2
+#ifdef POSIX
 	register struct dirent *dp;
 #else
 	register struct direct *dp;
