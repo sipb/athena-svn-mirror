@@ -36,7 +36,7 @@
 #define _PKCS11N_H_
 
 #ifdef DEBUG
-static const char CKT_CVS_ID[] = "@(#) $RCSfile: pkcs11n.h,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:50:43 $ $Name: not supported by cvs2svn $";
+static const char CKT_CVS_ID[] = "@(#) $RCSfile: pkcs11n.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 15:33:04 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
