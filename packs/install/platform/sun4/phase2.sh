@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.3 1994-01-05 12:15:03 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.4 1994-01-07 14:38:22 miki Exp $
 ### $Locker:  $
 
 
@@ -31,7 +31,20 @@ rvardrive=/dev/rdsk/c0t3d0s6
 
 
 echo "formatting  "
-cat /util/format.input | /usr/sbin/format >/dev/null 2>&1
+if [ ${MACH}X = 4cX ]
+then
+        echo "formatting for 4c "
+        cat /util/format.input | format >/dev/null 2>&1
+else
+        cat /util/format.inq | format | grep SUN0535
+        if [ $? -ne 0 ] ; then
+                echo "formatting SUN0424"
+                cat /util/format.input.SUN0424 | /usr/sbin/format >/dev/null 2>&1
+        else
+                echo "formatting SUN0535"
+                cat /util/format.input.SUN0535 | /usr/sbin/format >/dev/null 2>&1
+        fi
+fi
 
 echo "Making the filesystems..."
 echo ""
@@ -51,7 +64,7 @@ echo "y" | /usr/sbin/newfs -v $rvardrive
 echo "Adding AFS filesystem"
 echo "Making an AFS cache available"
 mkdir /var/usr
-mkdir /var/usr/vice;
+mkdir /var/usr/vice; 
 mount $cachedrive  /var/usr/vice
 cd /var/usr/vice
 mkdir etc; mkdir cache;
@@ -87,7 +100,7 @@ echo "Mount var, usr , var/usr/vice..."
 chmod 1777 /root/tmp
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
-
+#/sbin/mount  $cachedrive /root/var/usr/vice
 
 echo "Copying file system from installation srvd to new filesys..."
 echo "Running 'track'..."
@@ -124,7 +137,7 @@ fi
 
 cd /root
 echo "Creating other files/directories on the pack's root..."
-mkdir afs mit mnt
+mkdir afs mit mnt 
 ln -s /var/usr/vice usr/vice
 ln -s /var/adm usr/adm
 ln -s /var/spool usr/spool
@@ -151,8 +164,9 @@ echo $hostname >etc/nodename
 echo $hostname >etc/hostname.le0
 echo $gateway >etc/defaultrouter
 cp -p /srvd/etc/inet/hosts etc/inet/hosts
-echo "$netaddr  $hostname" >>etc/inet/hosts
+echo "$netaddr	$hostname" >>etc/inet/hosts
 cd /root/etc
+#ln -s inet/hosts hosts
 cd /root
 cp -p /srvd/etc/passwd.std etc/passwd
 cp -p /srvd/etc/shadow.std etc/shadow
@@ -166,9 +180,9 @@ cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
 echo "Editing rc.conf and version"
-sed -e  "s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
-        s/^ADDR=MITADDR/ADDR=$netaddr/" \
-        < /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
+sed -e 	"s/^HOST=MITHOST.MIT.EDU/HOST=$hostname/
+	s/^ADDR=MITADDR/ADDR=$netaddr/" \
+	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
 echo installed on `date` > /root/etc/athena/version
 sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
@@ -185,7 +199,9 @@ cpio -idm </srvd/install/var.cpio
 ln -s /srvd/var/sadm sadm
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
-
+#cd /root/var/usr/vice
+#mkdir cache
+#mkdir etc
 
 echo "Initializing var/adm and spool files "
 cp /dev/null /root/var/adm/lastlog
