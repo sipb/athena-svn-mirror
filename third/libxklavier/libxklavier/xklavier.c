@@ -448,7 +448,8 @@ Bool _XklLoadWindowTree(  )
 
   XGetInputFocus( _xklDpy, &focused, &revert );
 
-  XklDebug( 160, "initially focused: " WINID_FORMAT ", '%s'\n", focused );
+  XklDebug( 160, "initially focused: " WINID_FORMAT ", '%s'\n", 
+            focused, _XklGetDebugWindowTitle( focused ) );
 
   haveAppWindow = _XklGetAppWindow( focused, &_xklCurClient );
 

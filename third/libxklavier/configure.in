@@ -2,7 +2,7 @@ AC_INIT(libxklavier/xklavier.c)
 
 PACKAGE=libxklavier
 MAJOR_VERSION=1
-MINOR_VERSION=02
+MINOR_VERSION=04
 VERSION=$MAJOR_VERSION.$MINOR_VERSION
 VERSION_INFO=8:0:0
 
@@ -64,6 +64,13 @@ fi
 
 AC_DEFINE_UNQUOTED(XKB_BASE,"${xkb_base}",Base for XKB configuration)
 
+AC_ARG_WITH( xkb_default_ruleset,
+             [  --with-xkb-default-ruleset=RULES        XKB default set of rules (by default it is base)],
+             xkb_default_ruleset="$withval", 
+             xkb_default_ruleset="base" )
+
+AC_DEFINE_UNQUOTED(XKB_DEFAULT_RULESET,"${xkb_default_ruleset}",Default XKB set of rules)
+
 ac_xkblib_include="\
 #include <stdio.h>
 #include <X11/Xlib.h>
@@ -98,6 +105,7 @@ libxklavier.spec
 Doxyfile
 doc/Makefile
 doc/html/Makefile
+tests/Makefile
 libxklavier.pc
 ])
 

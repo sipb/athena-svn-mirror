@@ -1,4 +1,4 @@
-SUBDIRS = libxklavier doc
+SUBDIRS = libxklavier doc tests
 
 config_xml_DATA = xfree86.xml
 config_xmldir = $(datadir)/$(PACKAGE)

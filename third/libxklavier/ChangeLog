@@ -1,3 +1,149 @@
+2004-10-01 21:51  svu
+
+	* Changelog, Makefile.am, configure.in,
+	  libxklavier/xklavier_config.c, libxklavier/xklavier_config_xkb.c,
+	  libxklavier/xklavier_props.c, tests/.cvsignore,
+	  tests/Makefile.am, tests/test_config.c, tests/test_monitor.c:
+	  Syncing with HEAD. Major leaks nailed. Default ruleset introduced
+	  (well, it does not help much)
+
+2004-09-30 02:17  svu
+
+	* tests/test_config.c: now, test_config can set debug level as well
+
+2004-09-30 02:15  svu
+
+	* libxklavier/xklavier_config_xkb.c: dumping low-level components
+	  before calling XkbGetKeyboardByName
+
+2004-09-26 03:57  svu
+
+	* tests/: test_config.c, test_monitor.c: monitor is working
+	  somehow, more when needed
+
+2004-09-25 02:40  svu
+
+	* libxklavier/xklavier_config_xkb.c: bit of code polish
+
+2004-09-25 02:25  svu
+
+	* tests/: .cvsignore, Makefile.am, test_config.c, test_monitor.c:
+	  printing the usage, adding the monitor app
+
+2004-09-25 01:57  svu
+
+	* libxklavier/: xklavier_config.c, xklavier_config_xkb.c: found and
+	  fixed some leaks. hurray
+
+2004-09-25 00:43  svu
+
+	* tests/Makefile.am: added -lX11
+
+2004-09-24 01:18  svu
+
+	* tests/test_config.c: command line options give use some
+	  flexibility in testing
+
+2004-09-23 23:29  svu
+
+	* tests/test_config.c: a bit deeper
+
+2004-09-23 01:09  svu
+
+	* Makefile.am, configure.in, tests/.cvsignore, tests/Makefile.am,
+	  tests/test_config.c: starting the tests writing - I just had to
+	  do it, so at least now...
+
+2004-09-23 00:08  svu
+
+	* libxklavier/: xklavier_config_xkb.c, xklavier_props.c: Thanks to
+	  kmaraas for pointing me to the leak. I hope this will fix it
+
+2004-09-18 00:47  svu
+
+	* ChangeLog: Just to make people happy. Though it makes me unhappy
+	  enough
+
+2004-09-18 00:42  svu
+
+	* configure.in, libxklavier/xklavier_config_xkb.c,
+	  libxklavier/xklavier_props.c: The default value for the root
+	  window property is introduced. I help it will help to the poor
+	  people with broken XKB - just a little...
+
+2004-08-09 23:24  svu
+
+	* libxklavier/: xklavier_config_xkb.c, xklavier_evt.c,
+	  xklavier_private.h, xklavier_util.c: syncing with b_1_00
+
+2004-08-09 23:06  svu
+
+	* libxklavier/xklavier_evt.c: fixing 126200
+
+2004-07-26 20:05  svu
+
+	* libxklavier/xklavier_config_xkb.c: fixing non-compilation error
+	  on non-xkb systems, reported by Albert Chin-A-Young
+
+2004-06-26 02:26  svu
+
+	* RELEASE_NOTES_1_03: preparing 1.03
+
+2004-06-13 13:26  svu
+
+	* libxklavier/: xklavier_evt.c, xklavier_private.h,
+	  xklavier_util.c: a bit improved debugging
+
+2004-06-09 01:58  svu
+
+	* libxklavier/: xklavier_evt.c, xklavier_private.h,
+	  xklavier_util.c: forward-porting of the bugfixes from b_1_00
+	  branch
+
+2004-06-08 02:44  svu
+
+	* libxklavier/xklavier_evt.c: some improvement in the last fix -
+	  really update the current state only when LockGroup is planned
+
+2004-06-08 02:20  svu
+
+	* libxklavier/: xklavier_evt.c, xklavier_private.h,
+	  xklavier_util.c: Some little restructuring, more debugging - AND
+	  BIG FIX for global mode - we should not read current state from
+	  the window focus switched to.
+
+2004-05-27 23:41  svu
+
+	* libxklavier/: xklavier.c: VERY VERY BAD BUG. ETERNAL SHAME ON ME
+
+2004-04-30 01:02  svu
+
+	* configure.in, libxklavier/xklavier_config_xkb.c,
+	  libxklavier/xklavier_evt.c: syncing with b_1_0
+
+2004-04-30 00:55  svu
+
+	* configure.in, libxklavier/xklavier_config_xkb.c: hopefully now
+	  libxklavier better detects multiple layouts support
+
+2004-04-29 22:21  svu
+
+	* libxklavier/xklavier_evt.c: more correct handling of transparent
+	  windows in the global switching mode
+
+2004-04-19 21:04  svu
+
+	* RELEASE_NOTES_1_02, configure.in,
+	  libxklavier/xklavier_config_xkb.c,
+	  libxklavier/xklavier_private.h, libxklavier/xklavier_props.c:
+	  syncing with b_1_00 - do not want to get jhbuild problems any
+	  more
+
+2004-04-19 20:41  svu
+
+	* libxklavier/xklavier_config_xkb.c: compilation fix for non-xkb
+	  arches
+
 2004-04-13 22:33  svu
 
 	* RELEASE_NOTES_1_02: preparing one more release - without
