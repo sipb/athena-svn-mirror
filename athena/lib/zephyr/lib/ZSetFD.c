@@ -4,21 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v $
- *	$Author: jfc $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.6 1991-06-18 13:45:16 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.7 1997-09-14 21:53:00 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSetFD_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.6 1991-06-18 13:45:16 jfc Exp $";
+static char rcsid_ZSetFD_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.7 1997-09-14 21:53:00 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 Code_t ZSetFD(fd)
 	int	fd;

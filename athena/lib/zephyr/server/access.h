@@ -7,8 +7,8 @@
  * Created by Ken Raeburn.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.h,v $
- * $Author: lwvanels $
- * $Id: access.h,v 1.3 1991-12-04 13:26:02 lwvanels Exp $
+ * $Author: ghudson $
+ * $Id: access.h,v 1.4 1997-09-14 21:54:05 ghudson Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -17,36 +17,28 @@
 
 #include <zephyr/mit-copyright.h>
 
-#include <zephyr/acl.h>
+#include "acl.h"
 #include "zstring.h"
-#include "unix.h"
 
-typedef	enum _ZAccess_t {
-	TRANSMIT,			/* use transmission acl */
-	SUBSCRIBE,			/* use subscription acl */
-	INSTWILD,			/* use instance wildcard acl */
-	INSTUID				/* use instance UID identity acl */
-} ZAccess_t;
+typedef	enum _Access {
+    TRANSMIT,			/* use transmission acl */
+    SUBSCRIBE,			/* use subscription acl */
+    INSTWILD,			/* use instance wildcard acl */
+    INSTUID				/* use instance UID identity acl */
+} Access;
 
-typedef struct _ZAcl_t {
-  char *acl_filename;
-  int	acl_types;	/* Flag field indcating which acls
-			   are present.  Used ONLY in access.c */
-} ZAcl_t;
-
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
+typedef struct _Acl {
+    char *acl_filename;
+    int	acl_types;		/* Internal; access fields present. */
+} Acl;
 
 /* found in access.c */
-extern void access_init P((void)), access_reinit P((void));
+void access_init __P((void));
+void access_reinit __P((void));
 
 /* found in acl_files.c */
-extern int acl_load P((char *));
-
-#undef P
+int acl_load __P((char *));
 
 /* external data relevant */
 extern int zdebug;
+

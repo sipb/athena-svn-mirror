@@ -4,21 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.12 1993-11-19 15:25:44 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.13 1997-09-14 21:52:47 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.12 1993-11-19 15:25:44 probe Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.13 1997-09-14 21:52:47 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 Code_t ZPeekIfNotice(notice, from, predicate, args)
     ZNotice_t *notice;

@@ -6,8 +6,8 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zserver.h,v $
- *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zserver.h,v 1.31 1990-11-16 11:19:11 raeburn Exp $
+ *	$Author: ghudson $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zserver.h,v 1.32 1997-09-14 21:51:55 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -24,9 +24,5 @@
 #define	ADMIN_LOST_CLT	"LOST_CLIENT"	/* Opcode: client not ack'ing */
 #define	ADMIN_KILL_CLT	"KILL_CLIENT"	/* Opcode: client is dead, remove */
 #define	ADMIN_STATUS	"STATUS"	/* Opcode: please send status */
-
-#define	ADMIN_LIMBO	"LIMBO"		/* Class inst: please send limbo info*/
-#define	ADMIN_YOU	"YOUR_STATE"	/* Class inst: please send your state*/
-#define	ADMIN_ME	"MY_STATE"	/* Class inst: please send my info */
 
 #endif /* !__ZSERVER_H__ */

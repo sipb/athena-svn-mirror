@@ -4,20 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.9 1993-11-21 04:45:35 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.10 1997-09-14 21:52:39 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.9 1993-11-21 04:45:35 probe Exp $";
+static char rcsid_ZGetWGPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetWGPort.c,v 1.10 1997-09-14 21:52:39 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 int ZGetWGPort()
 {

@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v $
-.\"	$Author: raeburn $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v 1.18 1990-11-13 17:31:18 raeburn Exp $
+.\"	$Author: ghudson $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v 1.19 1997-09-14 21:52:01 ghudson Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -163,6 +163,9 @@ the members subscribe to messages of class "MESSAGE", the specified instance,
 and recipient "*".
 .br
 This argument may not be used in conjunction with the -f option.
+.TP
+.B \-F \fIformat\fR
+Allows a user to specify a different default format for the message.
 .TP
 .B \-O \fIopcode\fR
 Allows a user to specify a different opcode for the message.

@@ -1,6 +1,6 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v $
-#	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.5 1988-07-01 12:16:14 jtkohl Exp $
+#	$Author: ghudson $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl_cmds.ct,v 1.6 1997-09-14 21:51:13 ghudson Exp $
 #
 	command_table	zctl_cmds;
 
@@ -62,6 +62,9 @@
 
 	request		wgc_control, "Tell the WindowGram to react to incoming notices.",
 			wg_startup;
+
+	request		wgc_control, "Tell the WindowGram to exit completely.",
+			wg_exit;
 
 	request		hm_control, "Tell the server to flush information about this host.",
 			hm_flush;

@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/version.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -13,26 +13,22 @@
 
 #include <zephyr/mit-copyright.h>
 
-#include <string.h>
-#include <zephyr/zephyr.h>
+#include "zserver.h"
 #include "version.h"
 
+const char zephyr_version[] = "Zephyr system version 2.0";
+
 #ifdef DEBUG
-Zconst char version[] = "Zephyr Server (DEBUG) $Revision: 3.22 $";
+const char version[] = "Zephyr server (DEBUG) $Revision: 3.23 $";
 #else
-Zconst char version[] = "Zephyr Server $Revision: 3.22 $";
+const char version[] = "Zephyr server $Revision: 3.23 $";
 #endif
 
 #if !defined (lint) && !defined (SABER)
-Zconst char rcsid_version_c[] =
-    "$Id: version.c,v 3.22 1991-12-04 13:25:31 lwvanels Exp $";
-Zconst char copyright[] =
+static const char rcsid_version_c[] =
+    "$Id: version.c,v 3.23 1997-09-14 21:54:36 ghudson Exp $";
+static const char copyright[] =
     "Copyright (c) 1987,1988,1989,1990 Massachusetts Institute of Technology.\n";
-#ifdef CONCURRENT
-Zconst char concurrent[] = "Brain-dump concurrency enabled";
-#else
-Zconst char concurrent[] = "no brain-dump concurrency";
-#endif
 #endif
 
 char *
@@ -42,10 +38,10 @@ get_version()
 
   if (vers_buf[0] == '\0') {
 #ifdef DEBUG
-    sprintf(vers_buf,"Zephyr Server (DEBUG) $Revision: 3.22 $: %s",
+    sprintf(vers_buf,"Zephyr Server (DEBUG) $Revision: 3.23 $: %s",
 	    ZSERVER_VERSION_STRING);
 #else
-    sprintf(vers_buf,"Zephyr Server $Revision: 3.22 $: %s",
+    sprintf(vers_buf,"Zephyr Server $Revision: 3.23 $: %s",
 	    ZSERVER_VERSION_STRING);
 #endif /* DEBUG */
 

@@ -5,11 +5,12 @@
  *      Derived from timer_manager_.h by Ken Raeburn
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v $
- *      $Author: cfields $
- *      $Header: /mit/zephyr/src/server/RCS/timer.h,v 1.9 94/03/15 12:44:40 prob
-e Exp $
+ *      $Author: ghudson $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.11 1997-09-14 21:54:33 ghudson Exp $
  *
  */
+
+#ifndef __TIMER_H
 
 /*
  * timer_manager_ -- routines for handling timers in login_shell
@@ -36,31 +37,20 @@ without express or implied warranty.
 
  */
 
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
+typedef void (*timer_proc) __P((void *));
 
-typedef struct _timer {
-        int heap_pos;
-        /* time for timer to go off, absolute time */
-        long    time;
-        /* procedure to call when timer goes off */
-        void    (*func)P((void*));
-        /* argument for that procedure */
-        void *  arg;
-} *timer;
+typedef struct _Timer {
+        int		heap_pos;	/* Position in timer heap */
+        long    	abstime;
+        timer_proc	func;
+        void		*arg;
+} Timer;
 
-#define NOW t_local.tv_sec
-typedef void (*timer_proc) P((void *));
-extern timer timer_set_rel P((long, timer_proc, void*));
-extern timer timer_set_abs P((long, timer_proc, void*));
-extern void timer_reset P((timer)), timer_process P((void));
+Timer *timer_set_rel __P((long, timer_proc, void *));
+Timer *timer_set_abs __P((long, timer_proc, void *));
+void timer_reset __P((Timer *));
+void timer_process __P((void));
+struct timeval *timer_timeout __P((struct timeval *tvbuf));
 
-#undef P
+#endif /* __TIMER_H */
 
-#define timer_when(x)   ALARM_TIME(x)
-
-extern struct timeval t_local;
-extern long nexttimo;                   /* Unix time of next timout */

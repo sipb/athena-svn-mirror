@@ -10,15 +10,13 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.7 1994-11-01 17:51:59 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.8 1997-09-14 21:52:35 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.7 1994-11-01 17:51:59 ghudson Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.8 1997-09-14 21:52:35 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 Code_t ZFormatSmallRawNoticeList(notice, list, nitems, buffer, ret_len)
     ZNotice_t *notice;

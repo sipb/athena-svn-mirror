@@ -4,21 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetLocs.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetLocs.c,v 1.5 1991-12-04 13:48:27 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetLocs.c,v 1.6 1997-09-14 21:52:37 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetLocs.c,v 1.5 1991-12-04 13:48:27 lwvanels Exp $";
+static char rcsid_ZGetLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetLocs.c,v 1.6 1997-09-14 21:52:37 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 #define min(a,b) ((a)<(b)?(a):(b))
 	

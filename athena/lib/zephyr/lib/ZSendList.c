@@ -10,15 +10,13 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.11 1994-11-01 17:51:59 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.12 1997-09-14 21:52:55 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.11 1994-11-01 17:51:59 ghudson Exp $";
+static char rcsid_ZSendList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.12 1997-09-14 21:52:55 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 Code_t ZSendList(notice, list, nitems, cert_routine)
     ZNotice_t *notice;
@@ -33,8 +31,8 @@ Code_t ZSrvSendList(notice, list, nitems, cert_routine, send_routine)
     ZNotice_t *notice;
     char *list[];
     int nitems;
-    int (*cert_routine)();
-    int (*send_routine)();
+    Z_AuthProc cert_routine;
+    Code_t (*send_routine)();
 {
     Code_t retval;
     ZNotice_t newnotice;

@@ -4,22 +4,20 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.30 1992-08-08 23:44:14 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.31 1997-09-14 21:52:57 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZSendPacket_c[] =
     "$Zephyr: /mit/zephyr/src/lib/RCS/ZSendPacket.c,v 1.29 91/03/21 11:57:08 raeburn Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 #include <sys/socket.h>
 
 static int wait_for_hmack();

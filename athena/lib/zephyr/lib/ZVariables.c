@@ -5,27 +5,26 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.13 1993-11-21 04:45:47 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.14 1997-09-14 21:53:03 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.13 1993-11-21 04:45:47 probe Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.14 1997-09-14 21:53:03 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 #include <ctype.h>
 #include <pwd.h>
 
-static int get_localvarfile();
-static char *get_varval();
-static int varline();
+static int get_localvarfile __P((char *bfr));
+static char *get_varval __P((char *fn, char *val));
+static int varline __P((char *bfr, char *var));
 
 char *ZGetVariable(var)
     char *var;
@@ -36,10 +35,11 @@ char *ZGetVariable(var)
     if (get_localvarfile(varfile))
 	return ((char *)0);
 
-    if (ret = get_varval(varfile, var))
+    if ((ret = get_varval(varfile, var)) != ZERR_NONE)
 	return (ret);
 
-    return (get_varval(DEFAULT_VARS_FILE, var));
+    sprintf(varfile, "%s/zephyr.vars", CONFDIR);
+    return (get_varval(varfile, var));
 }
 
 Code_t ZSetVariable(var, value)
@@ -60,7 +60,7 @@ Code_t ZSetVariable(var, value)
 	
     if (!(fpout = fopen(varfilebackup, "w")))
 	return (errno);
-    if (fpin = fopen(varfile, "r")) {
+    if ((fpin = fopen(varfile, "r")) != NULL) {
 	while (fgets(varbfr, sizeof varbfr, fpin) != (char *) 0) {
 	    if (varbfr[strlen(varbfr)-1] < ' ')
 		varbfr[strlen(varbfr)-1] = '\0';
@@ -96,7 +96,7 @@ Code_t ZUnsetVariable(var)
 	
     if (!(fpout = fopen(varfilebackup, "w")))
 	return (errno);
-    if (fpin = fopen(varfile, "r")) {
+    if ((fpin = fopen(varfile, "r")) != NULL) {
 	while (fgets(varbfr, sizeof varbfr, fpin) != (char *) 0) {
 	    if (varbfr[strlen(varbfr)-1] < ' ')
 		varbfr[strlen(varbfr)-1] = '\0';
@@ -112,7 +112,7 @@ Code_t ZUnsetVariable(var)
     return (ZERR_NONE);
 }	
 
-static get_localvarfile(bfr)
+static int get_localvarfile(bfr)
     char *bfr;
 {
     char *envptr;
@@ -123,7 +123,7 @@ static get_localvarfile(bfr)
 	(void) strcpy(bfr, envptr);
     else {
 	if (!(pwd = getpwuid((int) getuid()))) {
-	    fprintf(stderr, "Zephyr internal failure: Can't find your entry in /etc/passwd\n");
+	    fprintf(stderr, "Zephyr internal failure: Can't determine your home directory.\n");
 	    return (1);
 	}
 	(void) strcpy(bfr, pwd->pw_dir);

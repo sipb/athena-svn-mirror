@@ -4,23 +4,21 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: cfields $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
 
+#include <sysdep.h>
 #include <zephyr/mit-copyright.h>
-
 #include <zephyr/zephyr.h>
-#include <string.h>
 #include <netdb.h>
 #include <pwd.h>
-#include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.44 1995-01-20 07:44:06 cfields Exp $";
+static const char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.45 1997-09-14 21:52:02 ghudson Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -32,8 +30,8 @@ static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.44 1995-01-20 07:44:06 cfields
 #define MAXRECIPS 100
 
 int nrecips, msgarg, verbose, quiet, nodot;
-char *whoami, *inst, *class, *opcode, *recips[MAXRECIPS];
-int (*auth)();
+char *whoami, *inst, *class, *opcode, *realm, *recips[MAXRECIPS];
+Z_AuthProc auth;
 void un_tabify();
 
 char *fix_filsrv_inst();
@@ -43,7 +41,7 @@ main(argc, argv)
     char *argv[];
 {
     int retval, arg, nocheck, nchars, msgsize, filsys, tabexpand;
-    char *message, *signature = NULL;
+    char *message, *signature = NULL, *format = NULL;
     static char bfr[BUFSIZ], classbfr[BUFSIZ], instbfr[BUFSIZ], sigbfr[BUFSIZ];
     static char opbfr[BUFSIZ];
     static ZNotice_t notice;
@@ -166,6 +164,18 @@ main(argc, argv)
 	case 'l':			/* literal */
 	    nodot = 1;
 	    break;
+	case 'F':
+	    if (arg == argc-1)
+		usage(whoami);
+	    arg++;
+	    format = argv[arg];
+	    break;
+	case 'r':
+	    if (arg == argc-1)
+		usage(whoami);
+	    arg++;
+	    realm = argv[arg];
+	    break;
 	default:
 	    usage(whoami);
 	}
@@ -211,7 +221,9 @@ main(argc, argv)
     notice.z_sender = 0;
     notice.z_message_len = 0;
     notice.z_recipient = "";
-    if (filsys == 1)
+    if (format)
+	    notice.z_default_format = format;
+    else if (filsys == 1)
 	    notice.z_default_format = "@bold(Filesystem Operation Message for $instance:)\nFrom: @bold($sender) at $time $date\n$message";
     else if (auth == ZAUTH) {
 	if (signature)
@@ -307,13 +319,18 @@ send_off(notice, real)
     int real;
 {
     int i, success, retval;
-    char bfr[BUFSIZ];
+    char bfr[BUFSIZ], realm_recip[BUFSIZ], *cp;
     ZNotice_t retnotice;
 
     success = 0;
 	
     for (i=0;i<nrecips || !nrecips;i++) {
-	notice->z_recipient = nrecips?recips[i]:"";
+	if (realm) {
+	    sprintf(realm_recip, "%s@%s", (nrecips) ? recips[i] : "", realm);
+	    notice->z_recipient = realm_recip;
+	} else {
+	    notice->z_recipient = (nrecips) ? recips[i] : "";
+	}
 	if (verbose && real)
 	    printf("Sending %smessage, class %s, instance %s, to %s\n", 
 		   auth?"authenticated ":"", 
@@ -362,23 +379,27 @@ send_off(notice, real)
 	    }
 	} else if (!strcmp(retnotice.z_message, ZSRVACK_NOTSENT)) {
 	    if (verbose && real && !quiet) {
-		if (strcmp(class, DEFAULT_CLASS))
-		    printf("Not logged in or not subscribing to class %s, instance %s\n", 
+		if (strcmp(class, DEFAULT_CLASS)) {
+		    fprintf(stderr, "Not logged in or not subscribing to class %s, instance %s\n", 
 			   class, inst);
-		else
-		    printf("Not logged in or not subscribing to messages\n");
+		} else {
+		    fprintf(stderr,
+			    "Not logged in or not subscribing to messages\n");
+		}
 	    } 
 	    else if (!quiet) {
-		if (!nrecips)
-		    printf("No one subscribing to class %s, instance %s\n", 
-			   class, inst);
-		else {
-		    if (strcmp(class, DEFAULT_CLASS))
-			printf("%s: Not logged in or not subscribing to class %s, instance %s\n", 
+		if (!nrecips) {
+		    fprintf(stderr,
+			    "No one subscribing to class %s, instance %s\n", 
+			    class, inst);
+		} else {
+		    if (strcmp(class, DEFAULT_CLASS)) {
+			fprintf(stderr, "%s: Not logged in or not subscribing to class %s, instance %s\n", 
 			       notice->z_recipient, class, inst);
-		    else
-			printf("%s: Not logged in or not subscribing to messages\n", 
+		    } else {
+			fprintf(stderr, "%s: Not logged in or not subscribing to messages\n", 
 			       notice->z_recipient);
+		    }
 		}
 	    }
 	} 
@@ -398,7 +419,7 @@ usage(s)
     fprintf(stderr,
 	    "Usage: %s [-a] [-o] [-d] [-v] [-q] [-n] [-t] [-u] [-l]\n\
 \t[-c class] [-i inst] [-O opcode] [-f fsname] [-s signature]\n\
-\t[user ...] [-m message]\n", s);
+\t[user ...] [-F format] [-r realm] [-m message]\n", s);
     fprintf(stderr,"\t-f and -c are mutually exclusive\n\
 \t-f and -i are mutually exclusive\n\
 \trecipients must be specified unless -c or -f specifies a class\n\

@@ -10,16 +10,15 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.17 1994-11-01 20:51:57 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.18 1997-09-14 21:52:31 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.17 1994-11-01 20:51:57 ghudson Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.18 1997-09-14 21:52:31 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
-#ifdef Z_HaveKerberos
+#ifdef ZEPHYR_USES_KERBEROS
 Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     ZNotice_t *notice;
     register char *buffer;

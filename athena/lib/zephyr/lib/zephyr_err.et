@@ -4,8 +4,8 @@
 #	"mit-copyright.h".
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/zephyr_err.et,v $
-#	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/zephyr_err.et,v 1.8 1988-08-02 09:35:08 jtkohl Exp $
+#	$Author: ghudson $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/zephyr_err.et,v 1.9 1997-09-14 21:53:13 ghudson Exp $
 #
 	et	zeph
 

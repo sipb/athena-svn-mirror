@@ -4,8 +4,8 @@
 #	"mit-copyright.h".
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v $
-#	$Author: jtkohl $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.8 1990-01-09 17:26:13 jtkohl Exp $
+#	$Author: ghudson $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.9 1997-09-14 21:54:48 ghudson Exp $
 	et	zsrv
 
 ec ZSRV_BADASSOC,
@@ -35,7 +35,11 @@ ec ZSRV_UNKNOWNOPCODE,
 ec ZSRV_REQUEUE,
 	"Requeue for later processing"
 ec ZSRV_RCSID,
-	"$Id: zsrv_err.et,v 1.8 1990-01-09 17:26:13 jtkohl Exp $"
+	"$Id: zsrv_err.et,v 1.9 1997-09-14 21:54:48 ghudson Exp $"
 ec ZSRV_BADSUBPORT,
 	"Illegal port specified in subscription"
+ec ZSRV_NORLM,
+	"No such realm"
+ec ZSRV_EMPTYCLASS,
+	"Class is now empty"
 	end

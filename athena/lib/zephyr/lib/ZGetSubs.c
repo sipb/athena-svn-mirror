@@ -4,21 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSubs.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSubs.c,v 1.4 1991-12-04 13:51:00 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSubs.c,v 1.5 1997-09-14 21:52:38 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSubs.c,v 1.4 1991-12-04 13:51:00 lwvanels Exp $";
+static char rcsid_ZGetSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSubs.c,v 1.5 1997-09-14 21:52:38 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 
 #define min(a,b) ((a)<(b)?(a):(b))
 	

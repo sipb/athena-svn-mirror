@@ -4,21 +4,19 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.12 1991-12-04 13:47:30 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.13 1997-09-14 21:52:45 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.12 1991-12-04 13:47:30 lwvanels Exp $";
+static char rcsid_ZOpenPort_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.13 1997-09-14 21:52:45 ghudson Exp $";
 #endif
 
-#include <zephyr/mit-copyright.h>
-
-#include <zephyr/zephyr_internal.h>
+#include <internal.h>
 #include <sys/socket.h>
 
 Code_t ZOpenPort(port)

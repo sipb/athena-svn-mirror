@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.1,v $
-.\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.1,v 1.10 1988-12-12 17:04:41 jtkohl Exp $
+.\"	$Author: ghudson $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.1,v 1.11 1997-09-14 21:51:11 ghudson Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -153,6 +153,11 @@ Delete the definitions of the specified Zephyr variables.
 Unsubscribe to \fIclass, instance, recipient\fR, but don't remove this triplet
 from the subscriptions file.
 .TP
+.B wg_exit
+Tell the WindowGram client,
+.I zwgc(1),
+to exit.
+.TP
 .B wg_read
 Tell the WindowGram client,
 .I zwgc(1),
@@ -269,10 +274,6 @@ Save all current subscriptions to the default subscriptions file.
 .TP
 .B zctl set exposure none
 Set your exposure level to `none', effectively turning off Zephyr.
-.SH BUGS
-The current implementation of the Zephyr server (\fIzephyrd(8)\fR) makes
-no distinction between realm-announced, net-visible and net-announced
-exposure levels.
 .SH SEE ALSO
 zephyr(1), zwgc(1), zhm(8), zephyrd(8)
 gethostbyname(3)

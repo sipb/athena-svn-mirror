@@ -4,19 +4,22 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v $
- *	$Author: jfc $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.11 1991-06-20 14:25:50 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.12 1997-09-14 21:52:43 ghudson Exp $ */
+
+#include <internal.h>
+#include <assert.h>
 
 #ifndef lint
-static char rcsid_ZMakeAscii_c[] = "$Id: ZMakeAscii.c,v 1.11 1991-06-20 14:25:50 jfc Exp $";
+static const char rcsid_ZMakeAscii_c[] = "$Id: ZMakeAscii.c,v 1.12 1997-09-14 21:52:43 ghudson Exp $";
 #endif
 
-#include <zephyr/zephyr_internal.h>
+static char *itox_chars = "0123456789ABCDEF";
 
 Code_t ZMakeAscii(ptr, len, field, num)
     register char *ptr;
@@ -25,7 +28,6 @@ Code_t ZMakeAscii(ptr, len, field, num)
     int num;
 {
     int i;
-    register char *itox_chars = "0123456789ABCDEF";
 
     for (i=0;i<num;i++) {
 	/* we need to add "0x" if we are between 4 byte pieces */
@@ -51,3 +53,42 @@ Code_t ZMakeAscii(ptr, len, field, num)
     *ptr = '\0';
     return ZERR_NONE;
 }
+
+Code_t ZMakeAscii32(ptr, len, value)
+    register char *ptr;
+    int len;
+    unsigned long value;
+{
+    if (len < 11)
+	return ZERR_FIELDLEN;
+    *ptr++ = '0';
+    *ptr++ = 'x';
+    *ptr++ = itox_chars[(value >> 28) & 0xf];
+    *ptr++ = itox_chars[(value >> 24) & 0xf];
+    *ptr++ = itox_chars[(value >> 20) & 0xf];
+    *ptr++ = itox_chars[(value >> 16) & 0xf];
+    *ptr++ = itox_chars[(value >> 12) & 0xf];
+    *ptr++ = itox_chars[(value >>  8) & 0xf];
+    *ptr++ = itox_chars[(value >>  4) & 0xf];
+    *ptr++ = itox_chars[(value >>  0) & 0xf];
+    *ptr = 0;
+    return ZERR_NONE;
+}
+
+Code_t ZMakeAscii16(ptr, len, value)
+    register char *ptr;
+    int len;
+    unsigned int value;
+{
+    if (len < 7)
+	return ZERR_FIELDLEN;
+    *ptr++ = '0';
+    *ptr++ = 'x';
+    *ptr++ = itox_chars[(value >> 12) & 0xf];
+    *ptr++ = itox_chars[(value >>  8) & 0xf];
+    *ptr++ = itox_chars[(value >>  4) & 0xf];
+    *ptr++ = itox_chars[(value >>  0) & 0xf];
+    *ptr = 0;
+    return ZERR_NONE;
+}
+

@@ -4,28 +4,27 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.11 1993-11-21 03:19:19 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.12 1997-09-14 21:52:38 ghudson Exp $ */
+
+#include <internal.h>
 
 #ifndef lint
-static char rcsid_ZGetSender_c[] =
-    "$Id: ZGetSender.c,v 1.11 1993-11-21 03:19:19 probe Exp $";
+static const char rcsid_ZGetSender_c[] =
+    "$Id: ZGetSender.c,v 1.12 1997-09-14 21:52:38 ghudson Exp $";
 #endif
-
-#include <zephyr/mit-copyright.h>
-#include <zephyr/zephyr_internal.h>
 
 #include <pwd.h>
 
 char *ZGetSender()
 {
     struct passwd *pw;
-#ifdef Z_HaveKerberos
+#ifdef ZEPHYR_USES_KERBEROS
     char pname[ANAME_SZ], pinst[INST_SZ], prealm[REALM_SZ];
     static char sender[ANAME_SZ+INST_SZ+REALM_SZ+3] = "";
 #else
@@ -36,7 +35,7 @@ char *ZGetSender()
     if (*sender)
 	return (sender);
 
-#ifdef Z_HaveKerberos
+#ifdef ZEPHYR_USES_KERBEROS
     if (krb_get_tf_fullname((char *)TKT_FILE, pname, pinst, prealm) == KSUCCESS)
     {
 	(void) sprintf(sender, "%s%s%s@%s", pname, (pinst[0]?".":""),

@@ -4,23 +4,26 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
 
-#include <zephyr/mit-copyright.h>
 
+#include <sysdep.h>
+#include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr.h>
+#include <stdio.h>
 #include <netdb.h>
 #include <string.h>
 #include <sys/param.h>			/* for MAXHOSTNAMELEN */
 #include <com_err.h>
+#include <errno.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.10 1993-11-19 15:34:39 probe Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.11 1997-09-14 21:51:44 ghudson Exp $";
 #endif /* lint */
 
 #define MAIL_CLASS "MAIL"
