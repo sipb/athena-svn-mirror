@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.9 1993-05-10 13:36:28 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.10 1993-06-30 17:38:37 vrt Exp $
  */
 
 /*
@@ -38,7 +38,13 @@
 #include <pwd.h>
 #include <syslog.h>
 #include <signal.h>
+#ifdef _AIX
+#undef _BSD
+#endif
 #include <sys/wait.h>
+#ifdef _AIX
+#define _BSD 44
+#endif
 #ifdef POSIX
 #include <termios.h>
 #else
