@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.3 1996-05-15 20:39:37 cfields Exp $
+# $Id: update_ws.sh,v 1.4 1996-05-16 21:35:17 cfields Exp $
 #
 
 trap "" 1 15
@@ -163,6 +163,26 @@ if [ -d ${SITE}/server ] ; then
 		fi
 	else
 		echo "Update cannot be performed as mkserv binary not available"
+		exit 1
+	fi
+fi
+
+if [ `/bin/athena/machtype` = sgi ]; then
+	if [ ! -f /etc/athena/clusterinfo.bsh ]; then
+		echo "Cannot find Hesiod information for this machine, aborting update."
+		exit 1
+	fi
+
+	. /etc/athena/clusterinfo.bsh
+	if [ ! -n "$INSTLIB" ]; then
+		echo "No installation library set in Hesiod information, aborting update."
+		exit 1
+	fi
+
+	/bin/athena/attach -q -h -n -o hard $INSTLIB
+	if [ ! -d /install/install ]; then
+		echo "Installation directory can't be found, aborting update."
+		exit 1
 	fi
 fi
 
@@ -176,9 +196,8 @@ if [ "${AUTO}" = "true" -a "$1" = "reactivate" ]; then
 		ln ${ROOT}/etc/athena/dm ${ROOT}/.deleted/
 	fi
 
-	if [ -f /etc/athena/nanny ]; then
-		/etc/athena/nanny MODE=NONE	# Shut down X
-		/etc/athena/nanny die		# Shut down nanny
+	if [ -f /etc/init.d/axdm ]; then
+		/etc/init.d/axdm stop
 	fi
 
 	sleep 2
