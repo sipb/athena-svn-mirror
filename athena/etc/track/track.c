@@ -1,8 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.6 1987-12-07 18:25:49 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.7 1987-12-09 15:40:45 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.6  87/12/07  18:25:49  don
+ * removed SIGCHLD trap: signal( SIGCHLD, wait) can't work,
+ * because wait() requires a pointer or NULL as an argument.
+ * this signal call would pass the integer SIGCHLD to wait();
+ * this is not good; further, it's unnecessary, as only
+ * do_cmds() spawns children, and its pclose() call will call
+ * wait() for those children.
+ * 
  * Revision 2.5  87/12/07  17:16:18  shanzer
  * commented out do_cmds call; parser was leaving white-space in
  * some entries' command-fields, which do_cmds handled poorly (bus error).
@@ -62,7 +70,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.6 1987-12-07 18:25:49 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.7 1987-12-09 15:40:45 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -168,7 +176,7 @@ char **argv;
 			break;
 		/* -d dirname
 		 *    Specify the working directory for
-		 *    the destination root system.
+		 *    accessing the subscription-list and statfile.
 		 */
 		case 'd':
 			get_arg(workdir,argv,&i);
@@ -258,8 +266,7 @@ char **argv;
 	 * where the subscription-list & statfile are.
 	 */
 	if ( ! *workdir)
-		sprintf( workdir, "%s%s",
-			writeflag? fromroot : toroot, DEF_WORKDIR);
+		sprintf( workdir, "%s%s", fromroot, DEF_WORKDIR);
 
         if ( ! *subfilepath)
 		sprintf( subfilepath, "%s/%s/%s",
