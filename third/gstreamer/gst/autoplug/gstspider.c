@@ -73,6 +73,11 @@ enum
 };
 
 /* generic templates */
+static GstStaticPadTemplate spider_sink_factory =
+GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
 static GstStaticPadTemplate spider_src_factory =
 GST_STATIC_PAD_TEMPLATE ("src_%d",
     GST_PAD_SRC,
@@ -171,6 +176,8 @@ gst_spider_class_init (GstSpiderClass * klass)
   gobject_class->dispose = gst_spider_dispose;
 
   gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&spider_sink_factory));
+  gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&spider_src_factory));
   gst_element_class_set_details (gstelement_class, &gst_spider_details);
 
@@ -183,6 +190,7 @@ gst_spider_init (GstSpider * spider)
   /* use only elements which have sources and sinks and where the sinks have caps */
   /* FIXME: How do we handle factories that are added after the spider was constructed? */
   GList *list = gst_registry_pool_feature_list (GST_TYPE_ELEMENT_FACTORY);
+
   spider->factories = gst_autoplug_factories_filters_with_sink_caps (list);
   g_list_free (list);
 
@@ -205,9 +213,9 @@ gst_spider_dispose (GObject * object)
   g_list_free (spider->factories);
   spider->factories = NULL;
 
-  for (list = spider->links; list; list = list->next)
-  {
+  for (list = spider->links; list; list = list->next) {
     GstSpiderConnection *conn = list->data;
+
     g_list_free (conn->path);
     g_free (conn);
   }
@@ -741,8 +749,7 @@ plugin_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (gst_spider_debug, "spider", 0,
       "spider autoplugging element");
 
-  if (!gst_element_register (plugin, "spider", GST_RANK_SECONDARY,
-          GST_TYPE_SPIDER))
+  if (!gst_element_register (plugin, "spider", GST_RANK_NONE, GST_TYPE_SPIDER))
     return FALSE;
   if (!gst_element_register (plugin, "spideridentity", GST_RANK_NONE,
           GST_TYPE_SPIDER_IDENTITY))

@@ -17,13 +17,15 @@ plugin_LTLIBRARIES = \
 	libgstbasicgthreadscheduler.la \
 	libgstentrygthreadscheduler.la \
 	libgstoptscheduler.la \
-	libgstoptgthreadscheduler.la
+	libgstoptgthreadscheduler.la \
+	libgstfairgthreadscheduler.la
 AS_LIBTOOL_LIBS = \
 	$(omegaschedulers_nola) \
 	libgstbasicgthreadscheduler \
 	libgstentrygthreadscheduler \
 	libgstoptscheduler \
-	libgstoptgthreadscheduler
+	libgstoptgthreadscheduler \
+	libgstfairgthreadscheduler 
 
 if GST_DISABLE_OMEGA_COTHREADS
 else
@@ -69,7 +71,12 @@ libgstoptgthreadscheduler_la_CFLAGS = $(GST_OBJ_CFLAGS) -D_COTHREADS_GTHREAD -DU
 libgstoptgthreadscheduler_la_LIBADD = $(GST_OBJ_LIBS)
 libgstoptgthreadscheduler_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(as_libtool_LDFLAGS)
 
-noinst_HEADERS = cothreads_compat.h gthread-cothreads.h
+libgstfairgthreadscheduler_la_SOURCES = fairscheduler.c faircothreads.c
+libgstfairgthreadscheduler_la_CFLAGS = $(GST_OBJ_CFLAGS) -D_COTHREADS_GTHREAD
+libgstfairgthreadscheduler_la_LIBADD = $(GST_OBJ_LIBS)
+libgstfairgthreadscheduler_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) $(as_libtool_LDFLAGS)
+
+noinst_HEADERS = cothreads_compat.h gthread-cothreads.h faircothreads.h
 
 if AS_LIBTOOL_WIN32
 

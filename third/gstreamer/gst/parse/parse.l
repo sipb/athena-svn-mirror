@@ -29,8 +29,8 @@ PRINT (const char *format, ...)
 #define YY_DECL int _gst_parse_yylex (YYSTYPE *lvalp)
 %}
 
-_operator [(){}.:!,;=]
-_identifier [[:alpha:]][[:alnum:]\-_%]*
+_operator [(){}.!,;=]
+_identifier [[:alpha:]][[:alnum:]\-_%:]*
 
 _char ("\\".)|([^[:space:]])
 _string {_char}+|("\""([^\"]|"\\\"")*"\"")|("'"([^']|"\\\"")*"'")
@@ -39,7 +39,7 @@ _comma [[:space:]]*","[[:space:]]*
 _assign [[:space:]]*"="[[:space:]]*
 
 _protocol [[:alpha:]][[:alnum:]+-\.]*
-_url {_protocol}"://"{_string}|["."{_identifier}]?"/"{_string}
+_url ({_protocol}"://"{_string}|["."{_identifier}]?"/"{_string})|({_protocol}"://")
 
 /* we must do this here, because nearly everything matches a {_string} */ 
 _assignment {_identifier}{_assign}{_string}

@@ -57,13 +57,6 @@ Unset the given flag
 @flag: The flag to unset
 
 
-<!-- ##### MACRO GST_TYPE_DATA ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### STRUCT GstData ##### -->
 <para>
 The base structure
@@ -74,7 +67,7 @@ The base structure
 @flags: The flags of this GstData
 @free: A pointer to a custom free function
 @copy: A pointer to a custom copy function
-@_gst_reserved: 
+@_gst_reserved: for future extensions
 
 <!-- ##### USER_FUNCTION GstDataFreeFunction ##### -->
 <para>

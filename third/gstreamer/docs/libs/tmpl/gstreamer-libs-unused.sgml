@@ -1,3 +1,23 @@
+<!-- ##### SECTION ./tmpl/gstputbits.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gstputbits.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gstputbits.sgml:Short_Description ##### -->
+Accelerated routines for putting bits into a data stream
+
+
+<!-- ##### SECTION ./tmpl/gstputbits.sgml:Title ##### -->
+gstputbits
+
+
 <!-- ##### MACRO gst_getbits32 ##### -->
 <para>
 

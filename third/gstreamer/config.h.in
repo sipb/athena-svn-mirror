@@ -95,9 +95,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define if libmmx is available */
-#undef HAVE_LIBMMX
-
 /* Define if libxml2 is available */
 #undef HAVE_LIBXML2
 
@@ -154,6 +151,9 @@
 
 /* Defined if compiling for Windows */
 #undef HAVE_WIN32
+
+/* library dir */
+#undef LIBDIR
 
 /* gettext locale dir */
 #undef LOCALEDIR

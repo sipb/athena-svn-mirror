@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstElement</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstData.html" title="GstData"><link rel="next" href="gstreamer-GstElementDetails.html" title="GstElementDetails"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstElement</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstData.html" title="GstData"><link rel="next" href="gstreamer-GstElementDetails.html" title="GstElementDetails"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,12 +28,12 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstData.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstElementDetails.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstElement"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstElement</span></h2><p>GstElement &#8212; Abstract base class for all pipeline elements</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstData.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstElementDetails.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstElement"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstElement</span></h2><p>GstElement &#8212; Abstract base class for all pipeline elements</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="GstElement.html#GstElement-struct">GstElement</a>;
-#define     <a href="GstElement.html#GST-TYPE-ELEMENT-CAPS">GST_TYPE_ELEMENT</a>
 #define     <a href="GstElement.html#GST-NUM-STATES-CAPS">GST_NUM_STATES</a>
 #define     <a href="GstElement.html#GST-STATE-CAPS">GST_STATE</a>                       (obj)
 #define     <a href="GstElement.html#GST-STATE-PENDING-CAPS">GST_STATE_PENDING</a>               (obj)
@@ -247,537 +247,44 @@ G_CONST_RETURN gchar* <a href="GstElement.html#gst-element-state-get-name">gst_e
 void        <a href="GstElement.html#gst-element-no-more-pads">gst_element_no_more_pads</a>        (<a href="GstElement.html" title="GstElement">GstElement</a> *element);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2798707"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2593579"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstObject.html" title="GstObject">GstObject</a>
          +----GstElement
                +----<a href="GstBin.html" title="GstBin">GstBin</a>
                +----<a href="GstQueue.html" title="GstQueue">GstQueue</a>
-               +----GstAudioDec
-               +----GstPluginTemplate
-               +----VCDSrc
-               +----GstQCamSrc
-               +----GstMultiFileSink
-               +----GstVideorate
-               +----GstVideoMixer
-               +----GstVideoBox
-               +----GstMultipartDemux
-               +----GstMultipartMux
-               +----GstFFMpegColorspace
-               +----GstY4mEncode
-               +----GstWavEnc
-               +----GstVolume
-               +----GstVolEnv
-               +----GstVideotestsrc
-               +----GstVideoscale
-               +----GstVideoflip
-               +----GstVideodrop
-               +----GstVideoCrop
-               +----GstVBIDec
-               +----GstUDPSink
-               +----GstUDPSrc
-               +----GstVorbisTag
-               +----GstSynaesthesia
-               +----GstSwitch
-               +----GstAudiorate
-               +----GstStereo
-               +----GstSpeed
-               +----GstSpectrum
-               +----GstSMPTE
-               +----GstAlphaColor
-               +----GstAlpha
-               +----GstSmooth
-               +----GstSineSrc
-               +----GstSilence
-               +----GstRtpL16Enc
-               +----GstRtpL16Parse
-               +----GstRtpGSMEnc
-               +----GstRtpGSMParse
-               +----GstRTJpegEnc
-               +----GstRTJpegDec
-               +----GstPlayOnDemand
-               +----GstPassthrough
-               +----GstOverlay
-               +----GstInterleave
-               +----GstDeinterleave
-               +----GstMPEGAudioParse
-               +----GstMpegAudio
-               +----GstMpeg2Subt
-               +----Mp1VideoParse
-               +----GstMonoscope
-               +----GstMedian
-               +----GstLevel
-               +----GstMuLawEnc
-               +----GstMuLawDec
-               +----GstALawEnc
-               +----GstALawDec
-               +----GstGOOM
-               +----GstIIR
-               +----GstLPWSinc
-               +----GstBPWSinc
-               +----GstFestival
-               +----GstVideofilter
-               +----GstQuarkTV
-               +----GstDeInterlace
-               +----GstBreakMyData
-               +----GstNegotiation
-               +----GstNavSeek
-               +----GstProgressReport
-               +----GstTest
-               +----GstEFence
-               +----GstCutter
-               +----GstColorspace
-               +----GstChart
-               +----GstAuParse
-               +----Audioscale
-               +----GstAudioConvert
-               +----GstBufferFramesConvert
-               +----GstAc3Parse
-               +----GstXvidEnc
-               +----GstXvidDec
-               +----GstTheoraDec
-               +----GstTheoraEnc
-               +----GstSwfdec
-               +----GstSpeexEnc
-               +----GstSpeexDec
-               +----GstSF
-               +----GstSnapshot
-               +----GstSmoothWave
-               +----GstSidDec
-               +----GstIcecastSend
-               +----GstVideoSink
-               +----DV1394Src
-               +----GstTextOverlay
-               +----GstMusicBrainz
-               +----GstMpeg2dec
-               +----GstMikmod
-               +----GstMad
-               +----GstID3TagBase
-               +----GstPngDec
-               +----GstPngEnc
-               +----GstFameEnc
-               +----GstLame
-               +----ladspa-delay-5s
-               +----ladspa-amp-mono
-               +----ladspa-amp-stereo
-               +----ladspa-alias
-               +----ladspa-lpf
-               +----ladspa-hpf
-               +----ladspa-noise-white
-               +----ladspa-sine-faaa
-               +----ladspa-sine-faac
-               +----ladspa-sine-fcaa
-               +----ladspa-sine-fcac
-               +----ladspa-amPitchshift
-               +----ladspa-allpass-n
-               +----ladspa-allpass-l
-               +----ladspa-allpass-c
-               +----ladspa-analogueOsc
-               +----ladspa-amp
-               +----ladspa-fastLookaheadLimiter
-               +----ladspa-bandpass-a-iir
-               +----ladspa-bandpass-iir
-               +----ladspa-bodeShifter
-               +----ladspa-bodeShifterCV
-               +----ladspa-bwxover-iir
-               +----ladspa-buttlow-iir
-               +----ladspa-butthigh-iir
-               +----ladspa-chebstortion
-               +----ladspa-comb
-               +----ladspa-comb-n
-               +----ladspa-comb-l
-               +----ladspa-comb-c
-               +----ladspa-combSplitter
-               +----ladspa-const
-               +----ladspa-crossoverDist
-               +----ladspa-dcRemove
-               +----ladspa-decay
-               +----ladspa-decimator
-               +----ladspa-declip
-               +----ladspa-delay-n
-               +----ladspa-delay-l
-               +----ladspa-delay-c
-               +----ladspa-delayorama
-               +----ladspa-diode
-               +----ladspa-divider
-               +----ladspa-dj-eq-mono
-               +----ladspa-dj-eq
-               +----ladspa-djFlanger
-               +----ladspa-dysonCompress
-               +----ladspa-fadDelay
-               +----ladspa-foldover
-               +----ladspa-flanger
-               +----ladspa-fmOsc
-               +----ladspa-freqTracker
-               +----ladspa-foverdrive
-               +----ladspa-giantFlange
-               +----ladspa-gate
-               +----ladspa-gongBeater
-               +----ladspa-gong
-               +----ladspa-gverb
-               +----ladspa-gsm
-               +----ladspa-matrixSpatialiser
-               +----ladspa-hardLimiter
-               +----ladspa-harmonicGen
-               +----ladspa-hermesFilter
-               +----ladspa-highpass-iir
-               +----ladspa-hilbert
-               +----ladspa-imp
-               +----ladspa-impulse-fc
-               +----ladspa-inv
-               +----ladspa-karaoke
-               +----ladspa-lcrDelay
-               +----ladspa-lowpass-iir
-               +----ladspa-lsFilter
-               +----ladspa-matrixMSSt
-               +----ladspa-multivoiceChorus
-               +----ladspa-matrixStMS
-               +----ladspa-mbeq
-               +----ladspa-modDelay
-               +----ladspa-pointerCastDistortion
-               +----ladspa-notch-iir
-               +----ladspa-lfoPhaser
-               +----ladspa-fourByFourPole
-               +----ladspa-autoPhaser
-               +----ladspa-pitchScale
-               +----ladspa-pitchScaleHQ
-               +----ladspa-plate
-               +----ladspa-sinusWavewrapper
-               +----ladspa-rateShifter
-               +----ladspa-retroFlange
-               +----ladspa-revdelay
-               +----ladspa-ringmod-2i1o
-               +----ladspa-ringmod-1i1o1l
-               +----ladspa-satanMaximiser
-               +----ladspa-sc1
-               +----ladspa-sc2
-               +----ladspa-sc3
-               +----ladspa-sc4
-               +----ladspa-se4
-               +----ladspa-shaper
-               +----ladspa-sifter
-               +----ladspa-sinCos
-               +----ladspa-singlePara
-               +----ladspa-surroundEncoder
-               +----ladspa-smoothDecimate
-               +----ladspa-split
-               +----ladspa-stepMuxer
-               +----ladspa-tapeDelay
-               +----ladspa-svf
-               +----ladspa-waveTerrain
-               +----ladspa-transient
-               +----ladspa-triplePara
-               +----ladspa-valve
-               +----ladspa-valveRect
-               +----ladspa-vynil
-               +----ladspa-adsr
-               +----ladspa-zm1
-               +----ladspa-adsr-g+t
-               +----ladspa-amp-gaia-oa
-               +----ladspa-amp-gcia-oa
-               +----ladspa-difference-iama-oa
-               +----ladspa-difference-iamc-oa
-               +----ladspa-difference-icma-oa
-               +----ladspa-difference-icmc-oc
-               +----ladspa-branch-ia-oaoa
-               +----ladspa-branch-ic-ococ
-               +----ladspa-dahdsr-g+t-audio
-               +----ladspa-dahdsr-g+t-control
-               +----ladspa-dahdsr-cg+t-control
-               +----ladspa-interpolator
-               +----ladspa-fmod-fama-oa
-               +----ladspa-fmod-famc-oa
-               +----ladspa-fmod-fcma-oa
-               +----ladspa-fmod-fcmc-oc
-               +----ladspa-quantiser100
-               +----ladspa-lp4pole-faraia-oa
-               +----ladspa-lp4pole-fcrcia-oa
-               +----ladspa-product-iaia-oa
-               +----ladspa-product-iaic-oa
-               +----ladspa-product-icic-oc
-               +----ladspa-pulse-fapa-oa
-               +----ladspa-pulse-fapc-oa
-               +----ladspa-pulse-fcpa-oa
-               +----ladspa-pulse-fcpc-oa
-               +----ladspa-quantiser20
-               +----ladspa-quantiser50
-               +----ladspa-random-fasa-oa
-               +----ladspa-random-fasc-oa
-               +----ladspa-random-fcsa-oa
-               +----ladspa-random-fcsc-oa
-               +----ladspa-ratio-nada-oa
-               +----ladspa-ratio-nadc-oa
-               +----ladspa-ratio-ncda-oa
-               +----ladspa-ratio-ncdc-oc
-               +----ladspa-sawtooth-fa-oa
-               +----ladspa-sawtooth-fc-oa
-               +----ladspa-sequencer16
-               +----ladspa-sequencer32
-               +----ladspa-sequencer64
-               +----ladspa-square-fa-oa
-               +----ladspa-square-fc-oa
-               +----ladspa-sum-iaia-oa
-               +----ladspa-sum-iaic-oa
-               +----ladspa-sum-icic-oc
-               +----ladspa-syncpulse-fapaga-oa
-               +----ladspa-syncpulse-fcpcga-oa
-               +----ladspa-syncsquare-faga-oa
-               +----ladspa-syncsquare-fcga-oa
-               +----ladspa-tracker-gaaadaia-oa
-               +----ladspa-tracker-gaacdcia-oa
-               +----ladspa-triangle-fasa-oa
-               +----ladspa-triangle-fasc-oa
-               +----ladspa-triangle-fcsa-oa
-               +----ladspa-triangle-fcsc-oa
-               +----GstJpegEnc
-               +----GstJpegDec
-               +----GstSmokeEnc
-               +----GstSmokeDec
-               +----GstHermesColorspace
-               +----GstGSMEnc
-               +----GstGSMDec
-               +----GstGnomeVFSSrc
-               +----GstGnomeVFSSink
-               +----GstGdkPixbuf
-               +----GstPixbufScale
-               +----GstFaad
-               +----GstEsdsink
-               +----GstEsdmon
-               +----DVDReadSrc
-               +----DVDNavSrc
-               +----GstDivxDec
-               +----GstDivxEnc
-               +----CDParanoia
-               +----GstArtsdsink
-               +----GstArts
-               +----GstAASink
-               +----GstAlsa
-               +----GstAggregator
-               +----GstFakeSrc
-               +----GstFakeSink
-               +----GstFdSink
-               +----GstFdSrc
-               +----GstFileSrc
-               +----GstFileSink
-               +----GstIdentity
-               +----GstMD5Sink
-               +----GstMultiFileSrc
-               +----GstPipefilter
-               +----GstShaper
-               +----GstStatistics
-               +----GstTee
-               +----GstTypeFindElement
-               +----GstSpiderIdentity
-               +----GstExample
-               +----GstMonkeysDec
-               +----ffenc_ac3
-               +----ffenc_mp2
-               +----ffenc_mpeg1video
-               +----ffenc_mpeg2video
-               +----ffenc_h263
-               +----ffenc_h263p
-               +----ffenc_flv
-               +----ffenc_rv10
-               +----ffenc_mpeg4
-               +----ffenc_msmpeg4v1
-               +----ffenc_msmpeg4v2
-               +----ffenc_msmpeg4
-               +----ffenc_wmv1
-               +----ffenc_wmv2
-               +----ffenc_mjpeg
-               +----ffenc_ljpeg
-               +----ffenc_huffyuv
-               +----ffenc_asv1
-               +----ffenc_asv2
-               +----ffenc_ffv1
-               +----ffenc_zlib
-               +----ffenc_dvvideo
-               +----ffenc_adpcm_ima_qt
-               +----ffenc_adpcm_ima_wav
-               +----ffenc_adpcm_ima_dk3
-               +----ffenc_adpcm_ima_dk4
-               +----ffenc_adpcm_ima_ws
-               +----ffenc_adpcm_ima_smjpeg
-               +----ffenc_adpcm_ms
-               +----ffenc_adpcm_4xm
-               +----ffenc_adpcm_xa
-               +----ffenc_adpcm_adx
-               +----ffenc_adpcm_ea
-               +----ffenc_g726
-               +----ffdec_h263
-               +----ffdec_mpeg4
-               +----ffdec_msmpeg4v1
-               +----ffdec_msmpeg4v2
-               +----ffdec_msmpeg4
-               +----ffdec_wmv1
-               +----ffdec_wmv2
-               +----ffdec_h263i
-               +----ffdec_flv
-               +----ffdec_rv10
-               +----ffdec_rv20
-               +----ffdec_svq1
-               +----ffdec_svq3
-               +----ffdec_wmav1
-               +----ffdec_wmav2
-               +----ffdec_indeo3
-               +----ffdec_mpeg2video
-               +----ffdec_mpegvideo
-               +----ffdec_dvvideo
-               +----ffdec_mjpeg
-               +----ffdec_mjpegb
-               +----ffdec_sp5x
-               +----ffdec_mp3
-               +----ffdec_mace3
-               +----ffdec_mace6
-               +----ffdec_huffyuv
-               +----ffdec_ffv1
-               +----ffdec_cyuv
-               +----ffdec_h264
-               +----ffdec_vp3
-               +----ffdec_theora
-               +----ffdec_asv1
-               +----ffdec_asv2
-               +----ffdec_vcr1
-               +----ffdec_cljr
-               +----ffdec_4xm
-               +----ffdec_mdec
-               +----ffdec_roqvideo
-               +----ffdec_interplayvideo
-               +----ffdec_xan_wc3
-               +----ffdec_rpza
-               +----ffdec_cinepak
-               +----ffdec_msrle
-               +----ffdec_msvideo1
-               +----ffdec_vqavideo
-               +----ffdec_idcinvideo
-               +----ffdec_8bps
-               +----ffdec_smc
-               +----ffdec_flic
-               +----ffdec_truemotion1
-               +----ffdec_vmdvideo
-               +----ffdec_vmdaudio
-               +----ffdec_mszh
-               +----ffdec_zlib
-               +----ffdec_real_144
-               +----ffdec_real_288
-               +----ffdec_roq_dpcm
-               +----ffdec_interplay_dpcm
-               +----ffdec_xan_dpcm
-               +----ffdec_qtrle
-               +----ffdec_flac
-               +----ffdec_adpcm_ima_qt
-               +----ffdec_adpcm_ima_wav
-               +----ffdec_adpcm_ima_dk3
-               +----ffdec_adpcm_ima_dk4
-               +----ffdec_adpcm_ima_ws
-               +----ffdec_adpcm_ima_smjpeg
-               +----ffdec_adpcm_ms
-               +----ffdec_adpcm_4xm
-               +----ffdec_adpcm_xa
-               +----ffdec_adpcm_adx
-               +----ffdec_adpcm_ea
-               +----ffdec_g726
-               +----ffdemux_mpeg
-               +----ffdemux_mpegts
-               +----ffdemux_mp3
-               +----ffdemux_rm
-               +----ffdemux_asf
-               +----ffdemux_avi
-               +----ffdemux_wav
-               +----ffdemux_swf
-               +----ffdemux_au
-               +----ffdemux_gif
-               +----ffdemux_mov_mp4_m4a_3gp
-               +----ffdemux_dv
-               +----ffdemux_4xm
-               +----ffdemux_flv
-               +----ffdemux_psxstr
-               +----ffdemux_RoQ
-               +----ffdemux_ipmovie
-               +----ffdemux_wc3movie
-               +----ffdemux_wsaud
-               +----ffdemux_wsvqa
-               +----ffdemux_film_cpk
-               +----ffdemux_idcin
-               +----ffdemux_flic
-               +----ffdemux_vmd
-               +----ffdemux_yuv4mpegpipe
-               +----ffdemux_ffm
-               +----ffdemux_nut
-               +----ffdemux_matroska
-               +----ffdemux_rtsp
-               +----ffdemux_redir
-               +----ffdemux_sdp
-               +----GstFFMpegCsp
-               +----GstV4lElement
-               +----GstOssElement
-               +----GstRiffRead
-               +----GstTCPSink
-               +----GstTCPSrc
-               +----GstTCPClientSink
-               +----GstTCPClientSrc
-               +----GstMultiFdSink
-               +----GstTCPServerSrc
-               +----GstRMDemux
-               +----GstQTDemux
-               +----GstMPEGParse
-               +----GstRFC2250Enc
-               +----GstMPEG1SystemEncode
-               +----GstModPlug
-               +----GstMixMatrix
-               +----GstEbmlRead
-               +----GstEbmlWrite
-               +----GstFlxDec
-               +----GstAviMux
-               +----GstASFDemux
-               +----GstAsfMux
-               +----GstAdder
-               +----OggVorbisEnc
-               +----VorbisEnc
-               +----GstVorbisDec
-               +----GstVorbisParse
-               +----GstOggDemux
-               +----GstOggMux
-               +----FlacEnc
-               +----FlacDec
-               +----GstFlacTag
-               +----GstDVDec
-               +----GstAFSink
-               +----GstAFSrc
-               +----GstAFParse
-               +----GstA52Dec
-</pre></div><div class="refsect1" lang="en"><a name="id2803126"></a><h2>Known Derived Interfaces</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2593621"></a><h2>Known Derived Interfaces</h2><p>
 GstElement is required by
- GstColorBalance,  GstTuner,  GstMixer,  <a href="GstImplementsInterface.html" title="GstImplementsInterface">GstImplementsInterface</a>,  GstXOverlay and  <a href="GstTagSetter.html" title="GstTagSetter">GstTagSetter</a>.</p></div><div class="refsect1" lang="en"><a name="id2803188"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+ <a href="GstImplementsInterface.html" title="GstImplementsInterface">GstImplementsInterface</a> and  <a href="GstTagSetter.html" title="GstTagSetter">GstTagSetter</a>.</p></div><div class="refsect1" lang="en"><a name="id2593649"></a><h2>Signal Prototypes</h2><pre class="synopsis">
 
 "<a href="GstElement.html#GstElement-eos">eos</a>"       void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-error">error</a>"     void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
-                                            GstGError *arg2,
-                                            gchar *arg3,
+                                            <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                            GstGError *error,
+                                            gchar *message,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-found-tag">found-tag</a>" void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
-                                            <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *arg2,
+                                            <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                            <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *tags,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-new-pad">new-pad</a>"   void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            GObject *arg1,
+                                            GObject *object,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-no-more-pads">no-more-pads</a>"
             void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-pad-removed">pad-removed</a>"
             void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            GObject *arg1,
+                                            GObject *object,
                                             gpointer user_data);
 "<a href="GstElement.html#GstElement-state-change">state-change</a>"
             void        user_function      (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            gint arg1,
-                                            gint arg2,
+                                            gint int,
+                                            gint int,
                                             gpointer user_data);
-</pre></div><div class="refsect1" lang="en"><a name="id2803492"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2593953"></a><h2>Description</h2><p>
 GstElement is the base class needed to construct an element that can be
 used in a GStreamer pipeline.  As such, it is not a functional entity, and
 cannot do anything when placed in a pipeline.
@@ -818,69 +325,66 @@ To get a string representation of a <a href="gstreamer-GstTypes.html#GstElementS
 You can get and set a <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> on an element using <a href="GstElement.html#gst-element-get-clock"><tt class="function">gst_element_get_clock()</tt></a>
 and <a href="GstElement.html#gst-element-set-clock"><tt class="function">gst_element_set_clock()</tt></a>.  You can wait for the clock to reach a given
 <a href="GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> using <a href="GstElement.html#gst-element-clock-wait"><tt class="function">gst_element_clock_wait()</tt></a>.
-</p></div><div class="refsect1" lang="en"><a name="id2803829"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2803834"></a><h3><a name="GstElement-struct"></a>struct GstElement</h3><a class="indexterm" name="id2803845"></a><pre class="programlisting">struct GstElement;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2594290"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2594295"></a><h3><a name="GstElement-struct"></a>struct GstElement</h3><a class="indexterm" name="id2594306"></a><pre class="programlisting">struct GstElement;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2803860"></a><h3><a name="GST-TYPE-ELEMENT-CAPS"></a>GST_TYPE_ELEMENT</h3><a class="indexterm" name="id2803872"></a><pre class="programlisting">#define GST_TYPE_ELEMENT		(_gst_element_type)
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2803887"></a><h3><a name="GST-NUM-STATES-CAPS"></a>GST_NUM_STATES</h3><a class="indexterm" name="id2803898"></a><pre class="programlisting">#define GST_NUM_STATES 4
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594321"></a><h3><a name="GST-NUM-STATES-CAPS"></a>GST_NUM_STATES</h3><a class="indexterm" name="id2594332"></a><pre class="programlisting">#define GST_NUM_STATES 4
 </pre><p>
 The maximun number of states.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2803914"></a><h3><a name="GST-STATE-CAPS"></a>GST_STATE()</h3><a class="indexterm" name="id2803925"></a><pre class="programlisting">#define GST_STATE(obj)			(GST_ELEMENT(obj)-&gt;current_state)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594348"></a><h3><a name="GST-STATE-CAPS"></a>GST_STATE()</h3><a class="indexterm" name="id2594359"></a><pre class="programlisting">#define GST_STATE(obj)			(GST_ELEMENT(obj)-&gt;current_state)
 </pre><p>
 This macro returns the current state of the element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>Element to return state for.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2803960"></a><h3><a name="GST-STATE-PENDING-CAPS"></a>GST_STATE_PENDING()</h3><a class="indexterm" name="id2803972"></a><pre class="programlisting">#define GST_STATE_PENDING(obj)		(GST_ELEMENT(obj)-&gt;pending_state)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594394"></a><h3><a name="GST-STATE-PENDING-CAPS"></a>GST_STATE_PENDING()</h3><a class="indexterm" name="id2594406"></a><pre class="programlisting">#define GST_STATE_PENDING(obj)		(GST_ELEMENT(obj)-&gt;pending_state)
 </pre><p>
 This macro returns the currently pending state of the element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>Element to return the pending state for.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804008"></a><h3><a name="GST-STATE-TRANSITION-CAPS"></a>GST_STATE_TRANSITION()</h3><a class="indexterm" name="id2804019"></a><pre class="programlisting">#define GST_STATE_TRANSITION(obj)	((GST_STATE(obj)&lt;&lt;8) | GST_STATE_PENDING(obj))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594442"></a><h3><a name="GST-STATE-TRANSITION-CAPS"></a>GST_STATE_TRANSITION()</h3><a class="indexterm" name="id2594453"></a><pre class="programlisting">#define GST_STATE_TRANSITION(obj)	((GST_STATE(obj)&lt;&lt;8) | GST_STATE_PENDING(obj))
 </pre><p>
 Returns the state transition this object is going through.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>the Element to return the state transition for
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804055"></a><h3><a name="GST-STATE-NULL-TO-READY-CAPS"></a>GST_STATE_NULL_TO_READY</h3><a class="indexterm" name="id2804067"></a><pre class="programlisting">#define GST_STATE_NULL_TO_READY		((GST_STATE_NULL&lt;&lt;8) | GST_STATE_READY)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594489"></a><h3><a name="GST-STATE-NULL-TO-READY-CAPS"></a>GST_STATE_NULL_TO_READY</h3><a class="indexterm" name="id2594501"></a><pre class="programlisting">#define GST_STATE_NULL_TO_READY		((GST_STATE_NULL&lt;&lt;8) | GST_STATE_READY)
 </pre><p>
 The Element is going from the NULL state to the READY state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804085"></a><h3><a name="GST-STATE-READY-TO-PAUSED-CAPS"></a>GST_STATE_READY_TO_PAUSED</h3><a class="indexterm" name="id2804097"></a><pre class="programlisting">#define GST_STATE_READY_TO_PAUSED	((GST_STATE_READY&lt;&lt;8) | GST_STATE_PAUSED)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594519"></a><h3><a name="GST-STATE-READY-TO-PAUSED-CAPS"></a>GST_STATE_READY_TO_PAUSED</h3><a class="indexterm" name="id2594531"></a><pre class="programlisting">#define GST_STATE_READY_TO_PAUSED	((GST_STATE_READY&lt;&lt;8) | GST_STATE_PAUSED)
 </pre><p>
 The Element is going from the READY state to the PAUSED state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804115"></a><h3><a name="GST-STATE-PAUSED-TO-PLAYING-CAPS"></a>GST_STATE_PAUSED_TO_PLAYING</h3><a class="indexterm" name="id2804127"></a><pre class="programlisting">#define GST_STATE_PAUSED_TO_PLAYING	((GST_STATE_PAUSED&lt;&lt;8) | GST_STATE_PLAYING)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594549"></a><h3><a name="GST-STATE-PAUSED-TO-PLAYING-CAPS"></a>GST_STATE_PAUSED_TO_PLAYING</h3><a class="indexterm" name="id2594561"></a><pre class="programlisting">#define GST_STATE_PAUSED_TO_PLAYING	((GST_STATE_PAUSED&lt;&lt;8) | GST_STATE_PLAYING)
 </pre><p>
 The Element is going from the PAUSED state to the PLAYING state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804145"></a><h3><a name="GST-STATE-PLAYING-TO-PAUSED-CAPS"></a>GST_STATE_PLAYING_TO_PAUSED</h3><a class="indexterm" name="id2804157"></a><pre class="programlisting">#define GST_STATE_PLAYING_TO_PAUSED	((GST_STATE_PLAYING&lt;&lt;8) | GST_STATE_PAUSED)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594579"></a><h3><a name="GST-STATE-PLAYING-TO-PAUSED-CAPS"></a>GST_STATE_PLAYING_TO_PAUSED</h3><a class="indexterm" name="id2594591"></a><pre class="programlisting">#define GST_STATE_PLAYING_TO_PAUSED	((GST_STATE_PLAYING&lt;&lt;8) | GST_STATE_PAUSED)
 </pre><p>
 The Element is going from the PLAYING state to the PAUSED state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804175"></a><h3><a name="GST-STATE-PAUSED-TO-READY-CAPS"></a>GST_STATE_PAUSED_TO_READY</h3><a class="indexterm" name="id2804186"></a><pre class="programlisting">#define GST_STATE_PAUSED_TO_READY	((GST_STATE_PAUSED&lt;&lt;8) | GST_STATE_READY)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594609"></a><h3><a name="GST-STATE-PAUSED-TO-READY-CAPS"></a>GST_STATE_PAUSED_TO_READY</h3><a class="indexterm" name="id2594621"></a><pre class="programlisting">#define GST_STATE_PAUSED_TO_READY	((GST_STATE_PAUSED&lt;&lt;8) | GST_STATE_READY)
 </pre><p>
 The Element is going from the PAUSED state to the READY state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804204"></a><h3><a name="GST-STATE-READY-TO-NULL-CAPS"></a>GST_STATE_READY_TO_NULL</h3><a class="indexterm" name="id2804216"></a><pre class="programlisting">#define GST_STATE_READY_TO_NULL		((GST_STATE_READY&lt;&lt;8) | GST_STATE_NULL)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594638"></a><h3><a name="GST-STATE-READY-TO-NULL-CAPS"></a>GST_STATE_READY_TO_NULL</h3><a class="indexterm" name="id2594650"></a><pre class="programlisting">#define GST_STATE_READY_TO_NULL		((GST_STATE_READY&lt;&lt;8) | GST_STATE_NULL)
 </pre><p>
 The Element is going from the READY state to the NULL state.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804234"></a><h3><a name="GST-ELEMENT-QUERY-TYPE-FUNCTION-CAPS"></a>GST_ELEMENT_QUERY_TYPE_FUNCTION()</h3><a class="indexterm" name="id2804247"></a><pre class="programlisting">#define     GST_ELEMENT_QUERY_TYPE_FUNCTION(functionname, ...)</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594668"></a><h3><a name="GST-ELEMENT-QUERY-TYPE-FUNCTION-CAPS"></a>GST_ELEMENT_QUERY_TYPE_FUNCTION()</h3><a class="indexterm" name="id2594681"></a><pre class="programlisting">#define     GST_ELEMENT_QUERY_TYPE_FUNCTION(functionname, ...)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GST_ELEMENT_QUERY_TYPE_FUNCTION</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Helper macro to create query type functions
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>functionname</tt></i> :</span></td><td>The function name
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>list of query types.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804296"></a><h3><a name="GST-ELEMENT-FORMATS-FUNCTION-CAPS"></a>GST_ELEMENT_FORMATS_FUNCTION()</h3><a class="indexterm" name="id2804308"></a><pre class="programlisting">#define     GST_ELEMENT_FORMATS_FUNCTION(functionname, ...)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594741"></a><h3><a name="GST-ELEMENT-FORMATS-FUNCTION-CAPS"></a>GST_ELEMENT_FORMATS_FUNCTION()</h3><a class="indexterm" name="id2594753"></a><pre class="programlisting">#define     GST_ELEMENT_FORMATS_FUNCTION(functionname, ...)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GST_ELEMENT_FORMATS_FUNCTION</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Halper macro to create element format functions
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>functionname</tt></i> :</span></td><td>The function name
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>formats
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804356"></a><h3><a name="GST-ELEMENT-EVENT-MASK-FUNCTION-CAPS"></a>GST_ELEMENT_EVENT_MASK_FUNCTION()</h3><a class="indexterm" name="id2804369"></a><pre class="programlisting">#define     GST_ELEMENT_EVENT_MASK_FUNCTION(functionname, ...)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594812"></a><h3><a name="GST-ELEMENT-EVENT-MASK-FUNCTION-CAPS"></a>GST_ELEMENT_EVENT_MASK_FUNCTION()</h3><a class="indexterm" name="id2594824"></a><pre class="programlisting">#define     GST_ELEMENT_EVENT_MASK_FUNCTION(functionname, ...)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GST_ELEMENT_EVENT_MASK_FUNCTION</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 A helper macro to create a mask function
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>functionname</tt></i> :</span></td><td>the name of the mask function
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>Masks
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804417"></a><h3><a name="GstElementFlags"></a>enum GstElementFlags</h3><a class="indexterm" name="id2804429"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594883"></a><h3><a name="GstElementFlags"></a>enum GstElementFlags</h3><a class="indexterm" name="id2594895"></a><pre class="programlisting">typedef enum {
   /* element is complex (for some def.) and generally require a cothread */
   GST_ELEMENT_COMPLEX		= GST_OBJECT_FLAG_LAST,
   /* input and output pads aren't directly coupled to each other
@@ -913,83 +417,84 @@ A helper macro to create a mask function
 } GstElementFlags;
 </pre><p>
 This enum defines the standard flags that an element may have.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2804464"></a><h3><a name="GST-ELEMENT-IS-THREAD-SUGGESTED-CAPS"></a>GST_ELEMENT_IS_THREAD_SUGGESTED()</h3><a class="indexterm" name="id2804477"></a><pre class="programlisting">#define GST_ELEMENT_IS_THREAD_SUGGESTED(obj)	(GST_FLAG_IS_SET(obj,GST_ELEMENT_THREAD_SUGGESTED))
+</p></div><hr><div class="refsect2" lang="en"><a name="id2594930"></a><h3><a name="GST-ELEMENT-IS-THREAD-SUGGESTED-CAPS"></a>GST_ELEMENT_IS_THREAD_SUGGESTED()</h3><a class="indexterm" name="id2594942"></a><pre class="programlisting">#define GST_ELEMENT_IS_THREAD_SUGGESTED(obj)	(GST_FLAG_IS_SET(obj,GST_ELEMENT_THREAD_SUGGESTED))
 </pre><p>
 Queries whether the Element should be placed in a thread.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804520"></a><h3><a name="GST-ELEMENT-IS-EVENT-AWARE-CAPS"></a>GST_ELEMENT_IS_EVENT_AWARE()</h3><a class="indexterm" name="id2804532"></a><pre class="programlisting">#define GST_ELEMENT_IS_EVENT_AWARE(obj)		(GST_FLAG_IS_SET(obj,GST_ELEMENT_EVENT_AWARE))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594986"></a><h3><a name="GST-ELEMENT-IS-EVENT-AWARE-CAPS"></a>GST_ELEMENT_IS_EVENT_AWARE()</h3><a class="indexterm" name="id2594998"></a><pre class="programlisting">#define GST_ELEMENT_IS_EVENT_AWARE(obj)		(GST_FLAG_IS_SET(obj,GST_ELEMENT_EVENT_AWARE))
 </pre><p>
 Query wether this element can handle events.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804575"></a><h3><a name="GST-ELEMENT-IS-DECOUPLED-CAPS"></a>GST_ELEMENT_IS_DECOUPLED()</h3><a class="indexterm" name="id2804588"></a><pre class="programlisting">#define GST_ELEMENT_IS_DECOUPLED(obj)		(GST_FLAG_IS_SET(obj,GST_ELEMENT_DECOUPLED))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595041"></a><h3><a name="GST-ELEMENT-IS-DECOUPLED-CAPS"></a>GST_ELEMENT_IS_DECOUPLED()</h3><a class="indexterm" name="id2595053"></a><pre class="programlisting">#define GST_ELEMENT_IS_DECOUPLED(obj)		(GST_FLAG_IS_SET(obj,GST_ELEMENT_DECOUPLED))
 </pre><p>
 Queries if the Element is decoupled.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804630"></a><h3><a name="GST-ELEMENT-NAME-CAPS"></a>GST_ELEMENT_NAME()</h3><a class="indexterm" name="id2804642"></a><pre class="programlisting">#define GST_ELEMENT_NAME(obj)			(GST_OBJECT_NAME(obj))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595095"></a><h3><a name="GST-ELEMENT-NAME-CAPS"></a>GST_ELEMENT_NAME()</h3><a class="indexterm" name="id2595107"></a><pre class="programlisting">#define GST_ELEMENT_NAME(obj)			(GST_OBJECT_NAME(obj))
 </pre><p>
 Gets the name of this element.  Used in the core.  Not ABI-compatible.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>A <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804684"></a><h3><a name="GST-ELEMENT-PARENT-CAPS"></a>GST_ELEMENT_PARENT()</h3><a class="indexterm" name="id2804696"></a><pre class="programlisting">#define GST_ELEMENT_PARENT(obj)			(GST_OBJECT_PARENT(obj))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595150"></a><h3><a name="GST-ELEMENT-PARENT-CAPS"></a>GST_ELEMENT_PARENT()</h3><a class="indexterm" name="id2595161"></a><pre class="programlisting">#define GST_ELEMENT_PARENT(obj)			(GST_OBJECT_PARENT(obj))
 </pre><p>
 Get the parent object of this element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804738"></a><h3><a name="GST-ELEMENT-SCHED-CAPS"></a>GST_ELEMENT_SCHED()</h3><a class="indexterm" name="id2804750"></a><pre class="programlisting">#define GST_ELEMENT_SCHED(obj)			(((GstElement*)(obj))-&gt;sched)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595203"></a><h3><a name="GST-ELEMENT-SCHED-CAPS"></a>GST_ELEMENT_SCHED()</h3><a class="indexterm" name="id2595215"></a><pre class="programlisting">#define GST_ELEMENT_SCHED(obj)			(((GstElement*)(obj))-&gt;sched)
 </pre><p>
 Get the scheduler of this element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804793"></a><h3><a name="GST-ELEMENT-CLOCK-CAPS"></a>GST_ELEMENT_CLOCK()</h3><a class="indexterm" name="id2804804"></a><pre class="programlisting">#define GST_ELEMENT_CLOCK(obj)			(((GstElement*)(obj))-&gt;clock)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595258"></a><h3><a name="GST-ELEMENT-CLOCK-CAPS"></a>GST_ELEMENT_CLOCK()</h3><a class="indexterm" name="id2595270"></a><pre class="programlisting">#define GST_ELEMENT_CLOCK(obj)			(((GstElement*)(obj))-&gt;clock)
 </pre><p>
 Get the clock of this element
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804847"></a><h3><a name="GST-ELEMENT-PADS-CAPS"></a>GST_ELEMENT_PADS()</h3><a class="indexterm" name="id2804858"></a><pre class="programlisting">#define GST_ELEMENT_PADS(obj)			((obj)-&gt;pads)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595313"></a><h3><a name="GST-ELEMENT-PADS-CAPS"></a>GST_ELEMENT_PADS()</h3><a class="indexterm" name="id2595324"></a><pre class="programlisting">#define GST_ELEMENT_PADS(obj)			((obj)-&gt;pads)
 </pre><p>
 Get the pads of this elements.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804901"></a><h3><a name="GST-ELEMENT-ERROR-CAPS"></a>GST_ELEMENT_ERROR()</h3><a class="indexterm" name="id2804912"></a><pre class="programlisting">#define     GST_ELEMENT_ERROR(el, domain, code, message, debug)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595367"></a><h3><a name="GST-ELEMENT-ERROR-CAPS"></a>GST_ELEMENT_ERROR()</h3><a class="indexterm" name="id2595378"></a><pre class="programlisting">#define     GST_ELEMENT_ERROR(el, domain, code, message, debug)</pre><p>
+Utility function that elements can use in case they encountered a fatal
+data processing error. The pipeline will throw an error signal and the
+application will be requested to stop further media processing.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>el</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>domain</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>code</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>debug</tt></i> :</span></td><td>
-
-
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805000"></a><h3><a name="GstElementLoopFunction"></a>GstElementLoopFunction ()</h3><a class="indexterm" name="id2805011"></a><pre class="programlisting">void        (*GstElementLoopFunction)       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>el</tt></i> :</span></td><td> the element that throws the error
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>domain</tt></i> :</span></td><td> like CORE, LIBRARY, RESOURCE or STREAM (see <span class="type">GstError</span>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>code</tt></i> :</span></td><td> error code defined for that domain (see <span class="type">GstError</span>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td> the message to display (format string and args enclosed in round brackets)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>debug</tt></i> :</span></td><td> debugging information for the message (format string and args enclosed in round brackets)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595493"></a><h3><a name="GstElementLoopFunction"></a>GstElementLoopFunction ()</h3><a class="indexterm" name="id2595505"></a><pre class="programlisting">void        (*GstElementLoopFunction)       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 This function type is used to specify a loop function for the element.  It
 is passed the element in question, and is expect to return only in error
 circumstances.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td>The element in question.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805060"></a><h3><a name="GstElementPreRunFunction"></a>GstElementPreRunFunction ()</h3><a class="indexterm" name="id2805072"></a><pre class="programlisting">void        (*GstElementPreRunFunction)     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595554"></a><h3><a name="GstElementPreRunFunction"></a>GstElementPreRunFunction ()</h3><a class="indexterm" name="id2595566"></a><pre class="programlisting">void        (*GstElementPreRunFunction)     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 The signature of the function to execute after this element
 is scheduled.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td>The element
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805119"></a><h3><a name="GstElementPostRunFunction"></a>GstElementPostRunFunction ()</h3><a class="indexterm" name="id2805131"></a><pre class="programlisting">void        (*GstElementPostRunFunction)    (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595614"></a><h3><a name="GstElementPostRunFunction"></a>GstElementPostRunFunction ()</h3><a class="indexterm" name="id2595626"></a><pre class="programlisting">void        (*GstElementPostRunFunction)    (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 The signature of the function to execute before this element
 is scheduled.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td>The element
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805178"></a><h3><a name="gst-element-class-add-pad-template"></a>gst_element_class_add_pad_template ()</h3><a class="indexterm" name="id2805191"></a><pre class="programlisting">void        gst_element_class_add_pad_template
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595673"></a><h3><a name="gst-element-class-add-pad-template"></a>gst_element_class_add_pad_template ()</h3><a class="indexterm" name="id2595686"></a><pre class="programlisting">void        gst_element_class_add_pad_template
                                             (GstElementClass *klass,
                                              <a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *templ);</pre><p>
 Adds a padtemplate to an element class. This is mainly used in the _base_init
@@ -997,7 +502,7 @@ functions of classes.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>klass</tt></i> :</span></td><td> the <span class="type">GstElementClass</span> to add the pad template to.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>templ</tt></i> :</span></td><td> a <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> to add to the element class.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805283"></a><h3><a name="gst-element-class-install-std-props"></a>gst_element_class_install_std_props ()</h3><a class="indexterm" name="id2805296"></a><pre class="programlisting">void        gst_element_class_install_std_props
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595777"></a><h3><a name="gst-element-class-install-std-props"></a>gst_element_class_install_std_props ()</h3><a class="indexterm" name="id2595790"></a><pre class="programlisting">void        gst_element_class_install_std_props
                                             (GstElementClass *klass,
                                              const gchar *first_name,
                                              ...);</pre><p>
@@ -1010,18 +515,18 @@ the flags determine readability / writeability.</p><p>
 in a NULL terminated
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> the id and flags of the first property, followed by
 further 'name', 'id', 'flags' triplets and terminated by NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805402"></a><h3><a name="gst-element-class-set-details"></a>gst_element_class_set_details ()</h3><a class="indexterm" name="id2805413"></a><pre class="programlisting">void        gst_element_class_set_details   (GstElementClass *klass,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595896"></a><h3><a name="gst-element-class-set-details"></a>gst_element_class_set_details ()</h3><a class="indexterm" name="id2595908"></a><pre class="programlisting">void        gst_element_class_set_details   (GstElementClass *klass,
                                              const <a href="gstreamer-GstElementDetails.html#GstElementDetails">GstElementDetails</a> *details);</pre><p>
 Sets the detailed information for a <span class="type">GstElementClass</span>.
 </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>This function is for use in _base_init functions only.</div><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>klass</tt></i> :</span></td><td> class to set details for
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>details</tt></i> :</span></td><td> details to set
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805498"></a><h3><a name="gst-element-default-deep-notify"></a>gst_element_default_deep_notify</h3><a class="indexterm" name="id2805510"></a><pre class="programlisting">#define 		gst_element_default_deep_notify 	gst_object_default_deep_notify
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2595992"></a><h3><a name="gst-element-default-deep-notify"></a>gst_element_default_deep_notify</h3><a class="indexterm" name="id2596004"></a><pre class="programlisting">#define 		gst_element_default_deep_notify 	gst_object_default_deep_notify
 </pre><p>
 The default deep notify handler that prints out the property change
 notifications to stdout.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2805528"></a><h3><a name="gst-element-default-error"></a>gst_element_default_error ()</h3><a class="indexterm" name="id2805540"></a><pre class="programlisting">void        gst_element_default_error       (GObject *object,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596022"></a><h3><a name="gst-element-default-error"></a>gst_element_default_error ()</h3><a class="indexterm" name="id2596034"></a><pre class="programlisting">void        gst_element_default_error       (GObject *object,
                                              <a href="GstObject.html" title="GstObject">GstObject</a> *orig,
                                              GError *error,
                                              gchar *debug);</pre><p>
@@ -1034,7 +539,7 @@ The default handler will simply print the error string using g_print.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>orig</tt></i> :</span></td><td> the <a href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> that initiated the error.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> the GError.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>debug</tt></i> :</span></td><td> an additional debug information string, or NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805677"></a><h3><a name="gst-element-set-loop-function"></a>gst_element_set_loop_function ()</h3><a class="indexterm" name="id2805688"></a><pre class="programlisting">void        gst_element_set_loop_function   (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596171"></a><h3><a name="gst-element-set-loop-function"></a>gst_element_set_loop_function ()</h3><a class="indexterm" name="id2596183"></a><pre class="programlisting">void        gst_element_set_loop_function   (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstElement.html#GstElementLoopFunction">GstElementLoopFunction</a> loop);</pre><p>
 This sets the loop function for the element.  The function pointed to
 can deviate from the GstElementLoopFunction definition in type of
@@ -1046,7 +551,7 @@ a new loopfunc to be assigned, this should be no problem.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the loop function of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>loop</tt></i> :</span></td><td> Pointer to <a href="GstElement.html#GstElementLoopFunction"><span class="type">GstElementLoopFunction</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805786"></a><h3><a name="gst-element-get-name"></a>gst_element_get_name()</h3><a class="indexterm" name="id2805798"></a><pre class="programlisting">#define			gst_element_get_name(elem)	gst_object_get_name(GST_OBJECT(elem))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596281"></a><h3><a name="gst-element-get-name"></a>gst_element_get_name()</h3><a class="indexterm" name="id2596292"></a><pre class="programlisting">#define			gst_element_get_name(elem)	gst_object_get_name(GST_OBJECT(elem))
 </pre><p>
 Gets the name of the element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>elem</tt></i> :</span></td><td>
@@ -1056,28 +561,28 @@ Gets the name of the element.
 
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805846"></a><h3><a name="gst-element-set-name"></a>gst_element_set_name()</h3><a class="indexterm" name="id2805857"></a><pre class="programlisting">#define			gst_element_set_name(elem,name)	gst_object_set_name(GST_OBJECT(elem),name)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596340"></a><h3><a name="gst-element-set-name"></a>gst_element_set_name()</h3><a class="indexterm" name="id2596352"></a><pre class="programlisting">#define			gst_element_set_name(elem,name)	gst_object_set_name(GST_OBJECT(elem),name)
 </pre><p>
 Sets the name of the element, getting rid of the old name if there was one.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>elem</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the name of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>the new name of the element.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805915"></a><h3><a name="gst-element-get-parent"></a>gst_element_get_parent()</h3><a class="indexterm" name="id2805927"></a><pre class="programlisting">#define			gst_element_get_parent(elem)	gst_object_get_parent(GST_OBJECT(elem))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596410"></a><h3><a name="gst-element-get-parent"></a>gst_element_get_parent()</h3><a class="indexterm" name="id2596421"></a><pre class="programlisting">#define			gst_element_get_parent(elem)	gst_object_get_parent(GST_OBJECT(elem))
 </pre><p>
 Gets the parent of an element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>elem</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get the parent of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the <a href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> parent of the element.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2805988"></a><h3><a name="gst-element-set-parent"></a>gst_element_set_parent()</h3><a class="indexterm" name="id2806000"></a><pre class="programlisting">#define			gst_element_set_parent(elem,parent)	gst_object_set_parent(GST_OBJECT(elem),parent)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596483"></a><h3><a name="gst-element-set-parent"></a>gst_element_set_parent()</h3><a class="indexterm" name="id2596494"></a><pre class="programlisting">#define			gst_element_set_parent(elem,parent)	gst_object_set_parent(GST_OBJECT(elem),parent)
 </pre><p>
 Sets the parent of an element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>elem</tt></i> :</span></td><td>a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the parent of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the new <a href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> parent of the object.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806065"></a><h3><a name="gst-element-set"></a>gst_element_set ()</h3><a class="indexterm" name="id2806076"></a><pre class="programlisting">void        gst_element_set                 (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596560"></a><h3><a name="gst-element-set"></a>gst_element_set ()</h3><a class="indexterm" name="id2596571"></a><pre class="programlisting">void        gst_element_set                 (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *first_property_name,
                                              ...);</pre><p>
 Sets properties on an element. If the element uses threadsafe properties,
@@ -1087,7 +592,7 @@ they will be queued and set on the object when it is scheduled again.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>first_property_name</tt></i> :</span></td><td> the first property to set.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> value of the first property, and more properties to set, ending
       with NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806174"></a><h3><a name="gst-element-get"></a>gst_element_get ()</h3><a class="indexterm" name="id2806185"></a><pre class="programlisting">void        gst_element_get                 (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596668"></a><h3><a name="gst-element-get"></a>gst_element_get ()</h3><a class="indexterm" name="id2596680"></a><pre class="programlisting">void        gst_element_get                 (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *first_property_name,
                                              ...);</pre><p>
 Gets properties from an element. If the element uses threadsafe properties,
@@ -1097,7 +602,7 @@ the element will be locked before getting the given properties.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>first_property_name</tt></i> :</span></td><td> the first property to get.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> pointer to a variable to store the first property in, as well as
 more properties to get, ending with NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806283"></a><h3><a name="gst-element-set-valist"></a>gst_element_set_valist ()</h3><a class="indexterm" name="id2806295"></a><pre class="programlisting">void        gst_element_set_valist          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596778"></a><h3><a name="gst-element-set-valist"></a>gst_element_set_valist ()</h3><a class="indexterm" name="id2596789"></a><pre class="programlisting">void        gst_element_set_valist          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *first_property_name,
                                              va_list var_args);</pre><p>
 Sets properties on an element. If the element uses threadsafe properties,
@@ -1106,7 +611,7 @@ the property change will be put on the async queue.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set properties on.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>first_property_name</tt></i> :</span></td><td> the first property to set.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> the var_args list of other properties to get.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806399"></a><h3><a name="gst-element-get-valist"></a>gst_element_get_valist ()</h3><a class="indexterm" name="id2806411"></a><pre class="programlisting">void        gst_element_get_valist          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596894"></a><h3><a name="gst-element-get-valist"></a>gst_element_get_valist ()</h3><a class="indexterm" name="id2596905"></a><pre class="programlisting">void        gst_element_get_valist          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *first_property_name,
                                              va_list var_args);</pre><p>
 Gets properties from an element. If the element uses threadsafe properties,
@@ -1115,7 +620,7 @@ the element will be locked before getting the given properties.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get properties of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>first_property_name</tt></i> :</span></td><td> the first property to get.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> the var_args list of other properties to get.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806515"></a><h3><a name="gst-element-set-property"></a>gst_element_set_property ()</h3><a class="indexterm" name="id2806527"></a><pre class="programlisting">void        gst_element_set_property        (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597010"></a><h3><a name="gst-element-set-property"></a>gst_element_set_property ()</h3><a class="indexterm" name="id2597021"></a><pre class="programlisting">void        gst_element_set_property        (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *property_name,
                                              const GValue *value);</pre><p>
 Sets a property on an element. If the element uses threadsafe properties,
@@ -1124,7 +629,7 @@ the property will be put on the async queue.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set properties on.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>property_name</tt></i> :</span></td><td> the first property to get.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the <span class="type">GValue</span> that holds the value to set.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806639"></a><h3><a name="gst-element-get-property"></a>gst_element_get_property ()</h3><a class="indexterm" name="id2806650"></a><pre class="programlisting">void        gst_element_get_property        (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597133"></a><h3><a name="gst-element-get-property"></a>gst_element_get_property ()</h3><a class="indexterm" name="id2597145"></a><pre class="programlisting">void        gst_element_get_property        (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *property_name,
                                              GValue *value);</pre><p>
 Gets a property from an element. If the element uses threadsafe properties,
@@ -1133,47 +638,47 @@ the element will be locked before getting the given property.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get properties of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>property_name</tt></i> :</span></td><td> the first property to get.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the <span class="type">GValue</span> to store the property value in.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806762"></a><h3><a name="gst-element-enable-threadsafe-properties"></a>gst_element_enable_threadsafe_properties ()</h3><a class="indexterm" name="id2806775"></a><pre class="programlisting">void        gst_element_enable_threadsafe_properties
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597257"></a><h3><a name="gst-element-enable-threadsafe-properties"></a>gst_element_enable_threadsafe_properties ()</h3><a class="indexterm" name="id2597270"></a><pre class="programlisting">void        gst_element_enable_threadsafe_properties
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Installs an asynchronous queue, a mutex and pre- and post-run functions on
 this element so that properties on the element can be set in a
 threadsafe way.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to enable threadsafe properties on.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806837"></a><h3><a name="gst-element-disable-threadsafe-properties"></a>gst_element_disable_threadsafe_properties ()</h3><a class="indexterm" name="id2806850"></a><pre class="programlisting">void        gst_element_disable_threadsafe_properties
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597331"></a><h3><a name="gst-element-disable-threadsafe-properties"></a>gst_element_disable_threadsafe_properties ()</h3><a class="indexterm" name="id2597345"></a><pre class="programlisting">void        gst_element_disable_threadsafe_properties
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Removes the threadsafe properties, post- and pre-run locks from
 this element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to disable threadsafe properties on.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806910"></a><h3><a name="gst-element-set-pending-properties"></a>gst_element_set_pending_properties ()</h3><a class="indexterm" name="id2806922"></a><pre class="programlisting">void        gst_element_set_pending_properties
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597404"></a><h3><a name="gst-element-set-pending-properties"></a>gst_element_set_pending_properties ()</h3><a class="indexterm" name="id2597417"></a><pre class="programlisting">void        gst_element_set_pending_properties
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Sets all pending properties on the threadsafe properties enabled
 element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the pending properties on.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2806982"></a><h3><a name="gst-element-requires-clock"></a>gst_element_requires_clock ()</h3><a class="indexterm" name="id2806993"></a><pre class="programlisting">gboolean    gst_element_requires_clock      (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597476"></a><h3><a name="gst-element-requires-clock"></a>gst_element_requires_clock ()</h3><a class="indexterm" name="id2597488"></a><pre class="programlisting">gboolean    gst_element_requires_clock      (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Query if the element requiresd a clock</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element requires a clock
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807061"></a><h3><a name="gst-element-provides-clock"></a>gst_element_provides_clock ()</h3><a class="indexterm" name="id2807074"></a><pre class="programlisting">gboolean    gst_element_provides_clock      (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597556"></a><h3><a name="gst-element-provides-clock"></a>gst_element_provides_clock ()</h3><a class="indexterm" name="id2597568"></a><pre class="programlisting">gboolean    gst_element_provides_clock      (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Query if the element provides a clock</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element provides a clock
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807142"></a><h3><a name="gst-element-get-clock"></a>gst_element_get_clock ()</h3><a class="indexterm" name="id2807153"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*   gst_element_get_clock           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597636"></a><h3><a name="gst-element-get-clock"></a>gst_element_get_clock ()</h3><a class="indexterm" name="id2597648"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*   gst_element_get_clock           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Gets the clock of the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get the clock of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> of the element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807230"></a><h3><a name="gst-element-set-clock"></a>gst_element_set_clock ()</h3><a class="indexterm" name="id2807241"></a><pre class="programlisting">void        gst_element_set_clock           (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597724"></a><h3><a name="gst-element-set-clock"></a>gst_element_set_clock ()</h3><a class="indexterm" name="id2597735"></a><pre class="programlisting">void        gst_element_set_clock           (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre><p>
 Sets the clock for the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the clock for.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>clock</tt></i> :</span></td><td> the <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> to set for the element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807329"></a><h3><a name="gst-element-clock-wait"></a>gst_element_clock_wait ()</h3><a class="indexterm" name="id2807340"></a><pre class="programlisting"><a href="GstClock.html#GstClockReturn">GstClockReturn</a> gst_element_clock_wait       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597823"></a><h3><a name="gst-element-clock-wait"></a>gst_element_clock_wait ()</h3><a class="indexterm" name="id2597834"></a><pre class="programlisting"><a href="GstClock.html#GstClockReturn">GstClockReturn</a> gst_element_clock_wait       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html#GstClockID">GstClockID</a> id,
                                              <a href="GstClock.html#GstClockTimeDiff">GstClockTimeDiff</a> *jitter);</pre><p>
 Waits for a specific time on the clock.</p><p>
@@ -1182,14 +687,14 @@ Waits for a specific time on the clock.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td> the <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> to use.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>jitter</tt></i> :</span></td><td> the difference between requested time and actual time.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstClock.html#GstClockReturn"><span class="type">GstClockReturn</span></a> result of the wait operation.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807468"></a><h3><a name="gst-element-get-time"></a>gst_element_get_time ()</h3><a class="indexterm" name="id2807480"></a><pre class="programlisting"><a href="GstClock.html#GstClockTime">GstClockTime</a> gst_element_get_time           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597963"></a><h3><a name="gst-element-get-time"></a>gst_element_get_time ()</h3><a class="indexterm" name="id2597974"></a><pre class="programlisting"><a href="GstClock.html#GstClockTime">GstClockTime</a> gst_element_get_time           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Query the element's time. FIXME: The element must use</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> element to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current stream time in <span class="type">GST_STATE_PLAYING</span>,
          the element base time in <span class="type">GST_STATE_PAUSED</span>,
          or <a href="GstClock.html#GST-CLOCK-TIME-NONE-CAPS"><span class="type">GST_CLOCK_TIME_NONE</span></a> otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807572"></a><h3><a name="gst-element-wait"></a>gst_element_wait ()</h3><a class="indexterm" name="id2807583"></a><pre class="programlisting">gboolean    gst_element_wait                (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598066"></a><h3><a name="gst-element-wait"></a>gst_element_wait ()</h3><a class="indexterm" name="id2598077"></a><pre class="programlisting">gboolean    gst_element_wait                (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html#GstClockTime">GstClockTime</a> timestamp);</pre><p>
 Waits until the given relative time stamp for the element has arrived.
 When this function returns successfully, the relative time point specified
@@ -1200,7 +705,7 @@ in the timestamp has passed for this element.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> element that should wait
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>timestamp</tt></i> :</span></td><td> what timestamp to wait on
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807678"></a><h3><a name="gst-element-set-time"></a>gst_element_set_time ()</h3><a class="indexterm" name="id2807690"></a><pre class="programlisting">void        gst_element_set_time            (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598173"></a><h3><a name="gst-element-set-time"></a>gst_element_set_time ()</h3><a class="indexterm" name="id2598184"></a><pre class="programlisting">void        gst_element_set_time            (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html#GstClockTime">GstClockTime</a> time);</pre><p>
 Sets the current time of the element. This function can be used when handling
 discont events. You can only call this function on an element with a clock in
@@ -1210,7 +715,7 @@ more accurate.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> element to set time on
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>time</tt></i> :</span></td><td> time to set
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807794"></a><h3><a name="gst-element-set-time-delay"></a>gst_element_set_time_delay ()</h3><a class="indexterm" name="id2807806"></a><pre class="programlisting">void        gst_element_set_time_delay      (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598288"></a><h3><a name="gst-element-set-time-delay"></a>gst_element_set_time_delay ()</h3><a class="indexterm" name="id2598300"></a><pre class="programlisting">void        gst_element_set_time_delay      (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html#GstClockTime">GstClockTime</a> time,
                                              <a href="GstClock.html#GstClockTime">GstClockTime</a> delay);</pre><p>
 Sets the current time of the element to time - delay. This function can be
@@ -1226,7 +731,7 @@ more accurate.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> element to set time on
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>time</tt></i> :</span></td><td> time to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>delay</tt></i> :</span></td><td> a delay to discount from the given time
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2807939"></a><h3><a name="gst-element-adjust-time"></a>gst_element_adjust_time ()</h3><a class="indexterm" name="id2807950"></a><pre class="programlisting">void        gst_element_adjust_time         (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598433"></a><h3><a name="gst-element-adjust-time"></a>gst_element_adjust_time ()</h3><a class="indexterm" name="id2598445"></a><pre class="programlisting">void        gst_element_adjust_time         (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstClock.html#GstClockTimeDiff">GstClockTimeDiff</a> diff);</pre><p>
 Adjusts the current time of the element by the specified difference. This
 function can be used when handling discont events. You can only call this
@@ -1235,54 +740,54 @@ function on an element with a clock in <span class="type">GST_STATE_PAUSED</span
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> element to adjust time on
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>diff</tt></i> :</span></td><td> difference to adjust
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808054"></a><h3><a name="gst-element-is-indexable"></a>gst_element_is_indexable ()</h3><a class="indexterm" name="id2808066"></a><pre class="programlisting">gboolean    gst_element_is_indexable        (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598548"></a><h3><a name="gst-element-is-indexable"></a>gst_element_is_indexable ()</h3><a class="indexterm" name="id2598560"></a><pre class="programlisting">gboolean    gst_element_is_indexable        (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Queries if the element can be indexed.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element can be indexed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808134"></a><h3><a name="gst-element-set-index"></a>gst_element_set_index ()</h3><a class="indexterm" name="id2808145"></a><pre class="programlisting">void        gst_element_set_index           (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598628"></a><h3><a name="gst-element-set-index"></a>gst_element_set_index ()</h3><a class="indexterm" name="id2598640"></a><pre class="programlisting">void        gst_element_set_index           (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstIndex.html" title="GstIndex">GstIndex</a> *index);</pre><p>
 Set the specified GstIndex on the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>index</tt></i> :</span></td><td> a <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808232"></a><h3><a name="gst-element-get-index"></a>gst_element_get_index ()</h3><a class="indexterm" name="id2808243"></a><pre class="programlisting"><a href="GstIndex.html" title="GstIndex">GstIndex</a>*   gst_element_get_index           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598726"></a><h3><a name="gst-element-get-index"></a>gst_element_get_index ()</h3><a class="indexterm" name="id2598738"></a><pre class="programlisting"><a href="GstIndex.html" title="GstIndex">GstIndex</a>*   gst_element_get_index           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Gets the index from the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <a href="GstIndex.html" title="GstIndex"><span class="type">GstIndex</span></a> or NULL when no index was set on the
 element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808320"></a><h3><a name="gst-element-release-locks"></a>gst_element_release_locks ()</h3><a class="indexterm" name="id2808332"></a><pre class="programlisting">gboolean    gst_element_release_locks       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598814"></a><h3><a name="gst-element-release-locks"></a>gst_element_release_locks ()</h3><a class="indexterm" name="id2598826"></a><pre class="programlisting">gboolean    gst_element_release_locks       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Instruct the element to release all the locks it is holding, such as
 blocking reads, waiting for the clock, ...</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to release all locks on.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the locks could be released.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808401"></a><h3><a name="gst-element-yield"></a>gst_element_yield ()</h3><a class="indexterm" name="id2808412"></a><pre class="programlisting">void        gst_element_yield               (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598896"></a><h3><a name="gst-element-yield"></a>gst_element_yield ()</h3><a class="indexterm" name="id2598907"></a><pre class="programlisting">void        gst_element_yield               (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Requests a yield operation for the element. The scheduler will typically
 give control to another element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to yield.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808471"></a><h3><a name="gst-element-interrupt"></a>gst_element_interrupt ()</h3><a class="indexterm" name="id2808482"></a><pre class="programlisting">gboolean    gst_element_interrupt           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2598965"></a><h3><a name="gst-element-interrupt"></a>gst_element_interrupt ()</h3><a class="indexterm" name="id2598976"></a><pre class="programlisting">gboolean    gst_element_interrupt           (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Requests the scheduler of this element to interrupt the execution of
 this element and scheduler another one.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to interrupt.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element should exit its chain/loop/get
 function ASAP, depending on the scheduler implementation.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808553"></a><h3><a name="gst-element-set-scheduler"></a>gst_element_set_scheduler ()</h3><a class="indexterm" name="id2808566"></a><pre class="programlisting">void        gst_element_set_scheduler       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599048"></a><h3><a name="gst-element-set-scheduler"></a>gst_element_set_scheduler ()</h3><a class="indexterm" name="id2599060"></a><pre class="programlisting">void        gst_element_set_scheduler       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
 Sets the scheduler of the element.  For internal use only, unless you're
 writing a new bin subclass.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set the scheduler of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> to set.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808655"></a><h3><a name="gst-element-get-scheduler"></a>gst_element_get_scheduler ()</h3><a class="indexterm" name="id2808667"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_element_get_scheduler     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599149"></a><h3><a name="gst-element-get-scheduler"></a>gst_element_get_scheduler ()</h3><a class="indexterm" name="id2599161"></a><pre class="programlisting"><a href="GstScheduler.html" title="GstScheduler">GstScheduler</a>* gst_element_get_scheduler     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Returns the scheduler of the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get the scheduler of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the element's <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808743"></a><h3><a name="gst-element-add-pad"></a>gst_element_add_pad ()</h3><a class="indexterm" name="id2808754"></a><pre class="programlisting">void        gst_element_add_pad             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599238"></a><h3><a name="gst-element-add-pad"></a>gst_element_add_pad ()</h3><a class="indexterm" name="id2599249"></a><pre class="programlisting">void        gst_element_add_pad             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
 Adds a pad (link point) to <i class="parameter"><tt>element</tt></i>. <i class="parameter"><tt>pad</tt></i>'s parent will be set to <i class="parameter"><tt>element</tt></i>;
 see <a href="GstObject.html#gst-object-set-parent"><tt class="function">gst_object_set_parent()</tt></a> for refcounting information.
@@ -1291,14 +796,14 @@ Pads are automatically activated when the element is in state PLAYING.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to add the pad to.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to add to the element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808877"></a><h3><a name="gst-element-remove-pad"></a>gst_element_remove_pad ()</h3><a class="indexterm" name="id2808889"></a><pre class="programlisting">void        gst_element_remove_pad          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599372"></a><h3><a name="gst-element-remove-pad"></a>gst_element_remove_pad ()</h3><a class="indexterm" name="id2599383"></a><pre class="programlisting">void        gst_element_remove_pad          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
 Removes <i class="parameter"><tt>pad</tt></i> from <i class="parameter"><tt>element</tt></i>. <i class="parameter"><tt>pad</tt></i> will be destroyed if it has not been
 referenced elsewhere.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to remove pad from.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to remove from the element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2808994"></a><h3><a name="gst-element-add-ghost-pad"></a>gst_element_add_ghost_pad ()</h3><a class="indexterm" name="id2809006"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_add_ghost_pad       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599488"></a><h3><a name="gst-element-add-ghost-pad"></a>gst_element_add_ghost_pad ()</h3><a class="indexterm" name="id2599501"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_add_ghost_pad       (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                              const gchar *name);</pre><p>
 Creates a ghost pad from <i class="parameter"><tt>pad</tt></i>, and adds it to <i class="parameter"><tt>element</tt></i> via
@@ -1309,14 +814,14 @@ Creates a ghost pad from <i class="parameter"><tt>pad</tt></i>, and adds it to <
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the new ghost pad, or NULL to assign a unique name
 automatically.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the added ghost <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or NULL on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809157"></a><h3><a name="gst-element-remove-ghost-pad"></a>gst_element_remove_ghost_pad ()</h3><a class="indexterm" name="id2809169"></a><pre class="programlisting">void        gst_element_remove_ghost_pad    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
-                                             <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599652"></a><h3><a name="gst-element-remove-ghost-pad"></a>gst_element_remove_ghost_pad ()</h3><a class="indexterm" name="id2599664"></a><pre class="programlisting">void        gst_element_remove_ghost_pad    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gst_element_remove_ghost_pad</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Removes a ghost pad from an element. Deprecated, use <a href="GstElement.html#gst-element-remove-pad"><tt class="function">gst_element_remove_pad()</tt></a>
 instead.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to remove the ghost pad from.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> ghost <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to remove.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809269"></a><h3><a name="gst-element-get-pad"></a>gst_element_get_pad ()</h3><a class="indexterm" name="id2809280"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_pad             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599774"></a><h3><a name="gst-element-get-pad"></a>gst_element_get_pad ()</h3><a class="indexterm" name="id2599785"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_pad             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *name);</pre><p>
 Retrieves a pad from <i class="parameter"><tt>element</tt></i> by name. Tries <a href="GstElement.html#gst-element-get-static-pad"><tt class="function">gst_element_get_static_pad()</tt></a>
 first, then <a href="GstElement.html#gst-element-get-request-pad"><tt class="function">gst_element_get_request_pad()</tt></a>.</p><p>
@@ -1324,7 +829,7 @@ first, then <a href="GstElement.html#gst-element-get-request-pad"><tt class="fun
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the pad to retrieve.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> if found, otherwise <tt class="literal">NULL</tt>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809411"></a><h3><a name="gst-element-get-static-pad"></a>gst_element_get_static_pad ()</h3><a class="indexterm" name="id2809423"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_static_pad      (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599916"></a><h3><a name="gst-element-get-static-pad"></a>gst_element_get_static_pad ()</h3><a class="indexterm" name="id2599928"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_static_pad      (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *name);</pre><p>
 Retrieves a pad from <i class="parameter"><tt>element</tt></i> by name. This version only retrieves
 already-existing (i.e. 'static') pads.</p><p>
@@ -1332,7 +837,7 @@ already-existing (i.e. 'static') pads.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to find a static pad of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the static <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to retrieve.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the requested <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> if found, otherwise NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809536"></a><h3><a name="gst-element-get-request-pad"></a>gst_element_get_request_pad ()</h3><a class="indexterm" name="id2809548"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_request_pad     (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600041"></a><h3><a name="gst-element-get-request-pad"></a>gst_element_get_request_pad ()</h3><a class="indexterm" name="id2600053"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_request_pad     (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *name);</pre><p>
 Retrieves a pad from the element by name. This version only retrieves
 request pads.</p><p>
@@ -1340,21 +845,21 @@ request pads.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to find a request pad of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the request <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to retrieve.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> requested <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> if found, otherwise NULL.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809655"></a><h3><a name="gst-element-release-request-pad"></a>gst_element_release_request_pad ()</h3><a class="indexterm" name="id2809667"></a><pre class="programlisting">void        gst_element_release_request_pad (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600160"></a><h3><a name="gst-element-release-request-pad"></a>gst_element_release_request_pad ()</h3><a class="indexterm" name="id2600172"></a><pre class="programlisting">void        gst_element_release_request_pad (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
 Makes the element free the previously requested pad as obtained
 with <a href="GstElement.html#gst-element-get-request-pad"><tt class="function">gst_element_get_request_pad()</tt></a>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to release the request pad of.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to release.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809767"></a><h3><a name="gst-element-get-pad-list"></a>gst_element_get_pad_list ()</h3><a class="indexterm" name="id2809778"></a><pre class="programlisting">G_CONST_RETURN GList* gst_element_get_pad_list
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600272"></a><h3><a name="gst-element-get-pad-list"></a>gst_element_get_pad_list ()</h3><a class="indexterm" name="id2600283"></a><pre class="programlisting">G_CONST_RETURN GList* gst_element_get_pad_list
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Retrieves a list of <i class="parameter"><tt>element</tt></i>'s pads. The list must not be modified by the
 calling code.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get pads of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GList</span> of pads.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809863"></a><h3><a name="gst-element-get-compatible-pad"></a>gst_element_get_compatible_pad ()</h3><a class="indexterm" name="id2809874"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_compatible_pad  (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600368"></a><h3><a name="gst-element-get-compatible-pad"></a>gst_element_get_compatible_pad ()</h3><a class="indexterm" name="id2600379"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_compatible_pad  (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
 Looks for an unlinked pad to which the given pad can link to.
 It is not guaranteed that linking the pads will work, though
@@ -1364,7 +869,7 @@ it should work in most cases.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to find a compatible one for.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to which a link can be made, or <tt class="literal">NULL</tt> if one
 could not be found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2809989"></a><h3><a name="gst-element-get-compatible-pad-filtered"></a>gst_element_get_compatible_pad_filtered ()</h3><a class="indexterm" name="id2810001"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_compatible_pad_filtered
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600494"></a><h3><a name="gst-element-get-compatible-pad-filtered"></a>gst_element_get_compatible_pad_filtered ()</h3><a class="indexterm" name="id2600506"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_element_get_compatible_pad_filtered
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                              const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *filtercaps);</pre><p>
@@ -1377,7 +882,7 @@ cases.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>filtercaps</tt></i> :</span></td><td> the <a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> to use as a filter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to which a link can be made, or <tt class="literal">NULL</tt> if one cannot be
 found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810147"></a><h3><a name="gst-element-class-get-pad-template"></a>gst_element_class_get_pad_template ()</h3><a class="indexterm" name="id2810160"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_class_get_pad_template
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600652"></a><h3><a name="gst-element-class-get-pad-template"></a>gst_element_class_get_pad_template ()</h3><a class="indexterm" name="id2600665"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_class_get_pad_template
                                             (GstElementClass *element_class,
                                              const gchar *name);</pre><p>
 Retrieves a padtemplate from <i class="parameter"><tt>element_class</tt></i> with the given name.
@@ -1389,7 +894,7 @@ that has subclasses, make sure to pass the g_class parameter of the
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> to get.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> with the given name, or NULL if none was found.
 No unreferencing is necessary.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810298"></a><h3><a name="gst-element-class-get-pad-template-list"></a>gst_element_class_get_pad_template_list ()</h3><a class="indexterm" name="id2810310"></a><pre class="programlisting">GList*      gst_element_class_get_pad_template_list
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600803"></a><h3><a name="gst-element-class-get-pad-template-list"></a>gst_element_class_get_pad_template_list ()</h3><a class="indexterm" name="id2600815"></a><pre class="programlisting">GList*      gst_element_class_get_pad_template_list
                                             (GstElementClass *element_class);</pre><p>
 Retrieves a list of the pad templates associated with <i class="parameter"><tt>element_class</tt></i>. The
 list must not be modified by the calling code.
@@ -1399,7 +904,7 @@ that has subclasses, make sure to pass the g_class parameter of the
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element_class</tt></i> :</span></td><td> a <span class="type">GstElementClass</span> to get pad templates of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GList</span> of padtemplates.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810417"></a><h3><a name="gst-element-get-pad-template"></a>gst_element_get_pad_template ()</h3><a class="indexterm" name="id2810430"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_get_pad_template
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600922"></a><h3><a name="gst-element-get-pad-template"></a>gst_element_get_pad_template ()</h3><a class="indexterm" name="id2600934"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_get_pad_template
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const gchar *name);</pre><p>
 Retrieves a padtemplate from this element with the
@@ -1410,7 +915,7 @@ given name.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> to get.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> with the given name, or NULL if none was found.
 No unreferencing is necessary.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810541"></a><h3><a name="gst-element-get-pad-template-list"></a>gst_element_get_pad_template_list ()</h3><a class="indexterm" name="id2810553"></a><pre class="programlisting">GList*      gst_element_get_pad_template_list
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601046"></a><h3><a name="gst-element-get-pad-template-list"></a>gst_element_get_pad_template_list ()</h3><a class="indexterm" name="id2601058"></a><pre class="programlisting">GList*      gst_element_get_pad_template_list
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Retrieves a list of the pad templates associated with the element.
 (FIXME: Should be deprecated in favor of
@@ -1418,7 +923,7 @@ Retrieves a list of the pad templates associated with the element.
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get pad templates of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GList</span> of padtemplates.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810632"></a><h3><a name="gst-element-get-compatible-pad-template"></a>gst_element_get_compatible_pad_template ()</h3><a class="indexterm" name="id2810644"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_get_compatible_pad_template
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601137"></a><h3><a name="gst-element-get-compatible-pad-template"></a>gst_element_get_compatible_pad_template ()</h3><a class="indexterm" name="id2601149"></a><pre class="programlisting"><a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a>* gst_element_get_compatible_pad_template
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPadTemplate.html" title="GstPadTemplate">GstPadTemplate</a> *compattempl);</pre><p>
 Retrieves a pad template from <i class="parameter"><tt>element</tt></i> that is compatible with <i class="parameter"><tt>compattempl</tt></i>.
@@ -1428,7 +933,7 @@ Pads from compatible templates can be linked together.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>compattempl</tt></i> :</span></td><td> the <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> to find a compatible template for.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a compatible <a href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a>, or NULL if none was found. No
 unreferencing is necessary.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810768"></a><h3><a name="gst-element-link"></a>gst_element_link ()</h3><a class="indexterm" name="id2810778"></a><pre class="programlisting">gboolean    gst_element_link                (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601273"></a><h3><a name="gst-element-link"></a>gst_element_link ()</h3><a class="indexterm" name="id2601283"></a><pre class="programlisting">gboolean    gst_element_link                (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest);</pre><p>
 Links <i class="parameter"><tt>src</tt></i> to <i class="parameter"><tt>dest</tt></i> with no filter caps. See <a href="GstElement.html#gst-element-link-filtered"><tt class="function">gst_element_link_filtered()</tt></a> for
 more information.</p><p>
@@ -1436,7 +941,7 @@ more information.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>src</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> containing the source pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td> the <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> containing the destination pad.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the elements could be linked, FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2810900"></a><h3><a name="gst-element-link-many"></a>gst_element_link_many ()</h3><a class="indexterm" name="id2810912"></a><pre class="programlisting">gboolean    gst_element_link_many           (<a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601405"></a><h3><a name="gst-element-link-many"></a>gst_element_link_many ()</h3><a class="indexterm" name="id2601417"></a><pre class="programlisting">gboolean    gst_element_link_many           (<a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element_2,
                                              ...);</pre><p>
 Chain together a series of elements. Uses <a href="GstElement.html#gst-element-link"><tt class="function">gst_element_link()</tt></a>.</p><p>
@@ -1445,7 +950,7 @@ Chain together a series of elements. Uses <a href="GstElement.html#gst-element-l
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element_2</tt></i> :</span></td><td> the second <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> in the link chain.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> the NULL-terminated list of elements to link in order.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success, FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811036"></a><h3><a name="gst-element-link-filtered"></a>gst_element_link_filtered ()</h3><a class="indexterm" name="id2811048"></a><pre class="programlisting">gboolean    gst_element_link_filtered       (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601541"></a><h3><a name="gst-element-link-filtered"></a>gst_element_link_filtered ()</h3><a class="indexterm" name="id2601553"></a><pre class="programlisting">gboolean    gst_element_link_filtered       (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest,
                                              const <a href="gstreamer-GstCaps.html#GstCaps">GstCaps</a> *filtercaps);</pre><p>
 Links <i class="parameter"><tt>src</tt></i> to <i class="parameter"><tt>dest</tt></i>, filtered by <i class="parameter"><tt>filtercaps</tt></i>. The link must be from source to
@@ -1457,14 +962,14 @@ If multiple links are possible, only one is established.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td> the <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> containing the destination pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>filtercaps</tt></i> :</span></td><td> the <a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> to use as a filter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the elements could be linked, FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811197"></a><h3><a name="gst-element-unlink"></a>gst_element_unlink ()</h3><a class="indexterm" name="id2811209"></a><pre class="programlisting">void        gst_element_unlink              (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601702"></a><h3><a name="gst-element-unlink"></a>gst_element_unlink ()</h3><a class="indexterm" name="id2601714"></a><pre class="programlisting">void        gst_element_unlink              (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest);</pre><p>
 Unlinks all source pads of the source element with all sink pads
 of the sink element to which they are linked.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>src</tt></i> :</span></td><td> the source <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to unlink.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td> the sink <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to unlink.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811298"></a><h3><a name="gst-element-unlink-many"></a>gst_element_unlink_many ()</h3><a class="indexterm" name="id2811309"></a><pre class="programlisting">void        gst_element_unlink_many         (<a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601802"></a><h3><a name="gst-element-unlink-many"></a>gst_element_unlink_many ()</h3><a class="indexterm" name="id2601814"></a><pre class="programlisting">void        gst_element_unlink_many         (<a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element_2,
                                              ...);</pre><p>
 Unlinks a series of elements. Uses <a href="GstElement.html#gst-element-unlink"><tt class="function">gst_element_unlink()</tt></a>.</p><p>
@@ -1472,7 +977,7 @@ Unlinks a series of elements. Uses <a href="GstElement.html#gst-element-unlink">
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element_1</tt></i> :</span></td><td> the first <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> in the link chain.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element_2</tt></i> :</span></td><td> the second <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> in the link chain.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> the NULL-terminated list of elements to unlink in order.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811423"></a><h3><a name="gst-element-link-pads"></a>gst_element_link_pads ()</h3><a class="indexterm" name="id2811435"></a><pre class="programlisting">gboolean    gst_element_link_pads           (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601928"></a><h3><a name="gst-element-link-pads"></a>gst_element_link_pads ()</h3><a class="indexterm" name="id2601940"></a><pre class="programlisting">gboolean    gst_element_link_pads           (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              const gchar *srcpadname,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest,
                                              const gchar *destpadname);</pre><p>
@@ -1486,7 +991,7 @@ parents, the link fails.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td> the <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> containing the destination pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>destpadname</tt></i> :</span></td><td> the name of the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> in destination element.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the pads could be linked, FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811597"></a><h3><a name="gst-element-link-pads-filtered"></a>gst_element_link_pads_filtered ()</h3><a class="indexterm" name="id2811608"></a><pre class="programlisting">gboolean    gst_element_link_pads_filtered  (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602102"></a><h3><a name="gst-element-link-pads-filtered"></a>gst_element_link_pads_filtered ()</h3><a class="indexterm" name="id2602113"></a><pre class="programlisting">gboolean    gst_element_link_pads_filtered  (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              const gchar *srcpadname,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest,
                                              const gchar *destpadname,
@@ -1502,7 +1007,7 @@ parents, the link fails.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>destpadname</tt></i> :</span></td><td> the name of the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> in destination element or NULL for any pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>filtercaps</tt></i> :</span></td><td> the <a href="gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> to use as a filter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the pads could be linked, FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811801"></a><h3><a name="gst-element-unlink-pads"></a>gst_element_unlink_pads ()</h3><a class="indexterm" name="id2811812"></a><pre class="programlisting">void        gst_element_unlink_pads         (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602306"></a><h3><a name="gst-element-unlink-pads"></a>gst_element_unlink_pads ()</h3><a class="indexterm" name="id2602317"></a><pre class="programlisting">void        gst_element_unlink_pads         (<a href="GstElement.html" title="GstElement">GstElement</a> *src,
                                              const gchar *srcpadname,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *dest,
                                              const gchar *destpadname);</pre><p>
@@ -1512,7 +1017,7 @@ Unlinks the two named pads of the source and destination elements.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>srcpadname</tt></i> :</span></td><td> the name of the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> in source element.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> containing the destination pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>destpadname</tt></i> :</span></td><td> the name of the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> in destination element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2811960"></a><h3><a name="gst-element-get-event-masks"></a>gst_element_get_event_masks ()</h3><a class="indexterm" name="id2811972"></a><pre class="programlisting">G_CONST_RETURN GstEventMask* gst_element_get_event_masks
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602465"></a><h3><a name="gst-element-get-event-masks"></a>gst_element_get_event_masks ()</h3><a class="indexterm" name="id2602477"></a><pre class="programlisting">G_CONST_RETURN GstEventMask* gst_element_get_event_masks
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Get an array of event masks from the element.
 If the element doesn't implement an event masks function,
@@ -1520,7 +1025,7 @@ the query will be forwarded to a random linked sink pad.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An array of <span class="type">GstEventMask</span> elements.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812052"></a><h3><a name="gst-element-send-event"></a>gst_element_send_event ()</h3><a class="indexterm" name="id2812064"></a><pre class="programlisting">gboolean    gst_element_send_event          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602557"></a><h3><a name="gst-element-send-event"></a>gst_element_send_event ()</h3><a class="indexterm" name="id2602569"></a><pre class="programlisting">gboolean    gst_element_send_event          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a> *event);</pre><p>
 Sends an event to an element. If the element doesn't
 implement an event handler, the event will be forwarded
@@ -1529,7 +1034,7 @@ to a random sink pad.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to send the event to.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td> the <a href="gstreamer-GstEvent.html#GstEvent"><span class="type">GstEvent</span></a> to send to the element.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the event was handled.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812164"></a><h3><a name="gst-element-seek"></a>gst_element_seek ()</h3><a class="indexterm" name="id2812175"></a><pre class="programlisting">gboolean    gst_element_seek                (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602669"></a><h3><a name="gst-element-seek"></a>gst_element_seek ()</h3><a class="indexterm" name="id2602680"></a><pre class="programlisting">gboolean    gst_element_seek                (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> seek_type,
                                              guint64 offset);</pre><p>
 Sends a seek event to an element.</p><p>
@@ -1538,7 +1043,7 @@ Sends a seek event to an element.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>seek_type</tt></i> :</span></td><td> the method to use for seeking.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> the offset to seek to.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the event was handled.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812287"></a><h3><a name="gst-element-get-query-types"></a>gst_element_get_query_types ()</h3><a class="indexterm" name="id2812299"></a><pre class="programlisting">G_CONST_RETURN <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a>* gst_element_get_query_types
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602792"></a><h3><a name="gst-element-get-query-types"></a>gst_element_get_query_types ()</h3><a class="indexterm" name="id2602804"></a><pre class="programlisting">G_CONST_RETURN <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a>* gst_element_get_query_types
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Get an array of query types from the element.
 If the element doesn't implement a query types function,
@@ -1546,7 +1051,7 @@ the query will be forwarded to a random sink pad.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An array of <a href="gstreamer-GstQuery.html#GstQueryType"><span class="type">GstQueryType</span></a> elements.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812380"></a><h3><a name="gst-element-query"></a>gst_element_query ()</h3><a class="indexterm" name="id2812391"></a><pre class="programlisting">gboolean    gst_element_query               (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2602885"></a><h3><a name="gst-element-query"></a>gst_element_query ()</h3><a class="indexterm" name="id2602896"></a><pre class="programlisting">gboolean    gst_element_query               (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> type,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *format,
                                              gint64 *value);</pre><p>
@@ -1561,7 +1066,7 @@ forwards the query to a random usable sinkpad of this element.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>format</tt></i> :</span></td><td> the <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a> pointer to hold the format of the result.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the pointer to the value of the result.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the query could be performed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812546"></a><h3><a name="gst-element-get-formats"></a>gst_element_get_formats ()</h3><a class="indexterm" name="id2812557"></a><pre class="programlisting">G_CONST_RETURN <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>* gst_element_get_formats
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603051"></a><h3><a name="gst-element-get-formats"></a>gst_element_get_formats ()</h3><a class="indexterm" name="id2603062"></a><pre class="programlisting">G_CONST_RETURN <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a>* gst_element_get_formats
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Get an array of formats from the element.
 If the element doesn't implement a formats function,
@@ -1569,7 +1074,7 @@ the query will be forwarded to a random sink pad.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to query
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An array of <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a> elements.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812637"></a><h3><a name="gst-element-convert"></a>gst_element_convert ()</h3><a class="indexterm" name="id2812648"></a><pre class="programlisting">gboolean    gst_element_convert             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603142"></a><h3><a name="gst-element-convert"></a>gst_element_convert ()</h3><a class="indexterm" name="id2603153"></a><pre class="programlisting">gboolean    gst_element_convert             (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> src_format,
                                              gint64 src_value,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> *dest_format,
@@ -1584,7 +1089,7 @@ the query will be forwarded to a random sink pad.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest_format</tt></i> :</span></td><td> a pointer to the destination <a href="gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a>.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dest_value</tt></i> :</span></td><td> a pointer to the destination value.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the conversion could be performed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812822"></a><h3><a name="gst-element-found-tags"></a>gst_element_found_tags ()</h3><a class="indexterm" name="id2812833"></a><pre class="programlisting">void        gst_element_found_tags          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603327"></a><h3><a name="gst-element-found-tags"></a>gst_element_found_tags ()</h3><a class="indexterm" name="id2603338"></a><pre class="programlisting">void        gst_element_found_tags          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              const <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *tag_list);</pre><p>
 This function emits the found_tags signal. This is a recursive signal, so
 every parent will emit that signal, too, before this function returns.
@@ -1593,7 +1098,7 @@ not when you handle an event.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element that found the tags
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>tag_list</tt></i> :</span></td><td> the found tags
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2812909"></a><h3><a name="gst-element-found-tags-for-pad"></a>gst_element_found_tags_for_pad ()</h3><a class="indexterm" name="id2812921"></a><pre class="programlisting">void        gst_element_found_tags_for_pad  (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603414"></a><h3><a name="gst-element-found-tags-for-pad"></a>gst_element_found_tags_for_pad ()</h3><a class="indexterm" name="id2603426"></a><pre class="programlisting">void        gst_element_found_tags_for_pad  (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                              <a href="GstClock.html#GstClockTime">GstClockTime</a> timestamp,
                                              <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *list);</pre><p>
@@ -1610,11 +1115,11 @@ tag event with <a href="gstreamer-GstTagList.html#gst-event-new-tag"><tt class="
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> src pad the tags correspond to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>timestamp</tt></i> :</span></td><td> time the tags were found
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> the taglist
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813096"></a><h3><a name="gst-element-set-eos"></a>gst_element_set_eos ()</h3><a class="indexterm" name="id2813107"></a><pre class="programlisting">void        gst_element_set_eos             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603601"></a><h3><a name="gst-element-set-eos"></a>gst_element_set_eos ()</h3><a class="indexterm" name="id2603612"></a><pre class="programlisting">void        gst_element_set_eos             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Perform the actions needed to bring the element in the EOS state.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to set to the EOS state.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813166"></a><h3><a name="gst-element-error-full"></a>gst_element_error_full ()</h3><a class="indexterm" name="id2813177"></a><pre class="programlisting">void        gst_element_error_full          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603670"></a><h3><a name="gst-element-error-full"></a>gst_element_error_full ()</h3><a class="indexterm" name="id2603682"></a><pre class="programlisting">void        gst_element_error_full          (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              GQuark domain,
                                              gint code,
                                              gchar *message,
@@ -1636,7 +1141,7 @@ It results in the "error" signal.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>file</tt></i> :</span></td><td> the source code file where the error was generated
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>function</tt></i> :</span></td><td> the source code function where the error was generated
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>line</tt></i> :</span></td><td> the source code line where the error was generated
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813394"></a><h3><a name="gst-element-is-locked-state"></a>gst_element_is_locked_state ()</h3><a class="indexterm" name="id2813406"></a><pre class="programlisting">gboolean    gst_element_is_locked_state     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603898"></a><h3><a name="gst-element-is-locked-state"></a>gst_element_is_locked_state ()</h3><a class="indexterm" name="id2603910"></a><pre class="programlisting">gboolean    gst_element_is_locked_state     (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Checks if the state of an element is locked.
 If the state of an element is locked, state changes of the parent don't
 affect the element.
@@ -1645,26 +1150,26 @@ state before changing the state from <span class="type">GST_STATE_NULL</span>.</
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE, if the element's state is locked.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813487"></a><h3><a name="gst-element-set-locked-state"></a>gst_element_set_locked_state ()</h3><a class="indexterm" name="id2813499"></a><pre class="programlisting">void        gst_element_set_locked_state    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2603991"></a><h3><a name="gst-element-set-locked-state"></a>gst_element_set_locked_state ()</h3><a class="indexterm" name="id2604003"></a><pre class="programlisting">void        gst_element_set_locked_state    (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              gboolean locked_state);</pre><p>
 Locks the state of an element, so state changes of the parent don't affect
 this element anymore.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>locked_state</tt></i> :</span></td><td> TRUE to lock the element's state
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813580"></a><h3><a name="gst-element-sync-state-with-parent"></a>gst_element_sync_state_with_parent ()</h3><a class="indexterm" name="id2813593"></a><pre class="programlisting">gboolean    gst_element_sync_state_with_parent
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604084"></a><h3><a name="gst-element-sync-state-with-parent"></a>gst_element_sync_state_with_parent ()</h3><a class="indexterm" name="id2604097"></a><pre class="programlisting">gboolean    gst_element_sync_state_with_parent
                                             (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Tries to change the state of the element to the same as its parent.
 If this function returns FALSE, the state of element is undefined.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE, if the element's state could be synced to the parent's state.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813664"></a><h3><a name="gst-element-get-state"></a>gst_element_get_state ()</h3><a class="indexterm" name="id2813675"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> gst_element_get_state       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604168"></a><h3><a name="gst-element-get-state"></a>gst_element_get_state ()</h3><a class="indexterm" name="id2604179"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> gst_element_get_state       (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Gets the state of the element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get the state of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="gstreamer-GstTypes.html#GstElementState"><span class="type">GstElementState</span></a> of the element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813752"></a><h3><a name="gst-element-set-state"></a>gst_element_set_state ()</h3><a class="indexterm" name="id2813764"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> gst_element_set_state (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604256"></a><h3><a name="gst-element-set-state"></a>gst_element_set_state ()</h3><a class="indexterm" name="id2604268"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> gst_element_set_state (<a href="GstElement.html" title="GstElement">GstElement</a> *element,
                                              <a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> state);</pre><p>
 Sets the state of the element. This function will try to set the
 requested state by going through all the intermediary states and calling
@@ -1674,27 +1179,27 @@ the class's state change function for each.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>state</tt></i> :</span></td><td> the element's new <a href="gstreamer-GstTypes.html#GstElementState"><span class="type">GstElementState</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the state was successfully set.
 (using <a href="gstreamer-GstTypes.html#GstElementStateReturn"><span class="type">GstElementStateReturn</span></a>).
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813875"></a><h3><a name="gst-element-wait-state-change"></a>gst_element_wait_state_change ()</h3><a class="indexterm" name="id2813886"></a><pre class="programlisting">void        gst_element_wait_state_change   (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604378"></a><h3><a name="gst-element-wait-state-change"></a>gst_element_wait_state_change ()</h3><a class="indexterm" name="id2604390"></a><pre class="programlisting">void        gst_element_wait_state_change   (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Waits and blocks until the element changed its state.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to wait for a state change on.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2813945"></a><h3><a name="gst-element-state-get-name"></a>gst_element_state_get_name ()</h3><a class="indexterm" name="id2813957"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_state_get_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604449"></a><h3><a name="gst-element-state-get-name"></a>gst_element_state_get_name ()</h3><a class="indexterm" name="id2604461"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_element_state_get_name
                                             (<a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> state);</pre><p>
 Gets a string representing the given state.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>state</tt></i> :</span></td><td> a <a href="gstreamer-GstTypes.html#GstElementState"><span class="type">GstElementState</span></a> to get the name of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a string with the name of the state.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814028"></a><h3><a name="gst-element-get-factory"></a>gst_element_get_factory ()</h3><a class="indexterm" name="id2814040"></a><pre class="programlisting"><a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>* gst_element_get_factory  (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604532"></a><h3><a name="gst-element-get-factory"></a>gst_element_get_factory ()</h3><a class="indexterm" name="id2604544"></a><pre class="programlisting"><a href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>* gst_element_get_factory  (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Retrieves the factory that was used to create this element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to request the element factory of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a> used for creating this element.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814118"></a><h3><a name="gst-element-get-managing-bin"></a>gst_element_get_managing_bin ()</h3><a class="indexterm" name="id2814130"></a><pre class="programlisting"><a href="GstBin.html" title="GstBin">GstBin</a>*     gst_element_get_managing_bin    (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604622"></a><h3><a name="gst-element-get-managing-bin"></a>gst_element_get_managing_bin ()</h3><a class="indexterm" name="id2604634"></a><pre class="programlisting"><a href="GstBin.html" title="GstBin">GstBin</a>*     gst_element_get_managing_bin    (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Gets the managing bin (a pipeline or a thread, for example) of an element.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to get the managing bin of.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a>, or NULL on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814207"></a><h3><a name="gst-element-no-more-pads"></a>gst_element_no_more_pads ()</h3><a class="indexterm" name="id2814219"></a><pre class="programlisting">void        gst_element_no_more_pads        (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604711"></a><h3><a name="gst-element-no-more-pads"></a>gst_element_no_more_pads ()</h3><a class="indexterm" name="id2604723"></a><pre class="programlisting">void        gst_element_no_more_pads        (<a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Use this function to signal that the element does not expect any more pads
 to show up in the current pipeline. This function should be called whenever
 pads have been added by the element itself. Elements with GST_PAD_SOMETIMES
@@ -1702,82 +1207,59 @@ pad templates use this in combination with autopluggers to figure out that
 the element is done initializing its pads.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2814283"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2814288"></a><h3><a name="GstElement-eos"></a>The "eos" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2604787"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2604792"></a><h3><a name="GstElement-eos"></a>The "eos" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
                                             gpointer user_data);</pre><p>
+the end of the stream has been reached</p><p>
 
-</p>
-
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814362"></a><h3><a name="GstElement-error"></a>The "error" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
-                                            GstGError *arg2,
-                                            gchar *arg3,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2604869"></a><h3><a name="GstElement-error"></a>The "error" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+                                            <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                            GstGError *error,
+                                            gchar *message,
                                             gpointer user_data);</pre><p>
+a <span class="type">GstError</span> has occured during data processing</p><p>
 
-</p>
-
-@: 
-@: 
-@: 
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg3</tt></i> :</span></td><td>
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814500"></a><h3><a name="GstElement-found-tag"></a>The "found-tag" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
-                                            <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *arg2,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2605017"></a><h3><a name="GstElement-found-tag"></a>The "found-tag" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+                                            <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                            <a href="gstreamer-GstTagList.html#GstTagList">GstTagList</a> *tags,
                                             gpointer user_data);</pre><p>
+tags for the incomming stream have been received</p><p>
 
-</p>
-
-@: 
-@: 
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814617"></a><h3><a name="GstElement-new-pad"></a>The "new-pad" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            GObject *arg1,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>tags</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2605137"></a><h3><a name="GstElement-new-pad"></a>The "new-pad" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+                                            GObject *object,
                                             gpointer user_data);</pre><p>
+a new <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> has been added to the element</p><p>
 
-</p>
-
-@: 
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814712"></a><h3><a name="GstElement-no-more-pads"></a>The "no-more-pads" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2605242"></a><h3><a name="GstElement-no-more-pads"></a>The "no-more-pads" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
                                             gpointer user_data);</pre><p>
+?</p><p>
 
-</p>
-
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814787"></a><h3><a name="GstElement-pad-removed"></a>The "pad-removed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            GObject *arg1,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2605318"></a><h3><a name="GstElement-pad-removed"></a>The "pad-removed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+                                            GObject *object,
                                             gpointer user_data);</pre><p>
+a <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> has been removed from the element</p><p>
 
-</p>
-
-@: 
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2814882"></a><h3><a name="GstElement-state-change"></a>The "state-change" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
-                                            gint arg1,
-                                            gint arg2,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2605424"></a><h3><a name="GstElement-state-change"></a>The "state-change" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstElement.html" title="GstElement">GstElement</a> *gstelement,
+                                            gint int,
+                                            gint int,
                                             gpointer user_data);</pre><p>
+the <a href="gstreamer-GstTypes.html#GstElementState"><span class="type">GstElementState</span></a> of the element has been changed</p><p>
 
-</p>
-
-@: 
-@: 
-@:<div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td>the object which received the signal.
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>
-
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2815001"></a><h2>See Also</h2><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstelement</tt></i> :</span></td><td> the object which received the signal
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>int</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>int</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2605553"></a><h2>See Also</h2><p>
 <a href="GstElementFactory.html" title="GstElementFactory"><span class="type">GstElementFactory</span></a>, <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>
 </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstData.html"><b>&lt;&lt; GstData</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstElementDetails.html"><b>GstElementDetails &gt;&gt;</b></a></td></tr></table></body></html>

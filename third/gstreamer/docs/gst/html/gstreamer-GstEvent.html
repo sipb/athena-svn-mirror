@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstEvent</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstGError.html" title="GstError"><link rel="next" href="gstreamer-GstFilter.html" title="GstFilter"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstEvent</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstGError.html" title="GstError"><link rel="next" href="gstreamer-GstFilter.html" title="GstFilter"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,11 +28,11 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstGError.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstFilter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstEvent"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstEvent</span></h2><p>GstEvent &#8212; Structure describing events that are passed up and down a pipeline</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstGError.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstFilter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstEvent"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstEvent</span></h2><p>GstEvent &#8212; Structure describing events that are passed up and down a pipeline</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
 
 
-
-#define     <a href="gstreamer-GstEvent.html#GST-TYPE-EVENT-CAPS">GST_TYPE_EVENT</a>
 struct      <a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>;
 enum        <a href="gstreamer-GstEvent.html#GstEventType">GstEventType</a>;
 #define     <a href="gstreamer-GstEvent.html#GST-EVENT-ANY-CAPS">GST_EVENT_ANY</a>
@@ -89,10 +89,13 @@ gboolean    <a href="gstreamer-GstEvent.html#gst-event-discont-get-value">gst_ev
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
                                              gint64 *value);
 #define     <a href="gstreamer-GstEvent.html#gst-event-new-filler">gst_event_new_filler</a>            ()
+<a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   <a href="gstreamer-GstEvent.html#gst-event-new-filler-stamped">gst_event_new_filler_stamped</a>    (guint64 time,
+                                             guint64 duration);
+guint64     <a href="gstreamer-GstEvent.html#gst-event-filler-get-duration">gst_event_filler_get_duration</a>   (<a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a> *event);
 #define     <a href="gstreamer-GstEvent.html#gst-event-new-flush">gst_event_new_flush</a>             ()
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2844456"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2627663"></a><h2>Description</h2><p>
 The event classes are used to construct and query events.
 </p><p>
 Events are usually created with <a href="gstreamer-GstEvent.html#gst-event-new"><tt class="function">gst_event_new()</tt></a> which takes the event type as an argument.
@@ -103,10 +106,7 @@ The event should be unreferenced with <a href="gstreamer-GstEvent.html#gst-event
 needed parameters for a seek event. 
 </p><p>
 <a href="gstreamer-GstEvent.html#gst-event-new-flush"><tt class="function">gst_event_new_flush()</tt></a> creates a new flush event.
-</p></div><div class="refsect1" lang="en"><a name="id2844525"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2844531"></a><h3><a name="GST-TYPE-EVENT-CAPS"></a>GST_TYPE_EVENT</h3><a class="indexterm" name="id2844541"></a><pre class="programlisting">#define GST_TYPE_EVENT		(_gst_event_type)
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2844557"></a><h3><a name="GstEvent"></a>struct GstEvent</h3><a class="indexterm" name="id2844568"></a><pre class="programlisting">struct GstEvent {
+</p></div><div class="refsect1" lang="en"><a name="id2627732"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2627738"></a><h3><a name="GstEvent"></a>struct GstEvent</h3><a class="indexterm" name="id2627748"></a><pre class="programlisting">struct GstEvent {
 
   GstData data;
 
@@ -139,7 +139,7 @@ needed parameters for a seek event.
   } event_data;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2844600"></a><h3><a name="GstEventType"></a>enum GstEventType</h3><a class="indexterm" name="id2844611"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2627780"></a><h3><a name="GstEventType"></a>enum GstEventType</h3><a class="indexterm" name="id2627791"></a><pre class="programlisting">typedef enum {
   GST_EVENT_UNKNOWN		= 0,
   GST_EVENT_EOS			= 1,
   GST_EVENT_FLUSH		= 2,
@@ -178,55 +178,55 @@ The different major types of events.
 </td></tr><tr><td><span class="term"><tt class="literal">GST_EVENT_NAVIGATION</tt></span></td><td>
 </td></tr><tr><td><span class="term"><tt class="literal">GST_EVENT_TAG</tt></span></td><td>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2844895"></a><h3><a name="GST-EVENT-ANY-CAPS"></a>GST_EVENT_ANY</h3><a class="indexterm" name="id2844906"></a><pre class="programlisting">#define GST_EVENT_ANY GST_EVENT_NAVIGATION
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628075"></a><h3><a name="GST-EVENT-ANY-CAPS"></a>GST_EVENT_ANY</h3><a class="indexterm" name="id2628086"></a><pre class="programlisting">#define GST_EVENT_ANY GST_EVENT_NAVIGATION
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2844922"></a><h3><a name="GST-EVENT-TRACE-NAME-CAPS"></a>GST_EVENT_TRACE_NAME</h3><a class="indexterm" name="id2844933"></a><pre class="programlisting">#define GST_EVENT_TRACE_NAME	"GstEvent"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628102"></a><h3><a name="GST-EVENT-TRACE-NAME-CAPS"></a>GST_EVENT_TRACE_NAME</h3><a class="indexterm" name="id2628113"></a><pre class="programlisting">#define GST_EVENT_TRACE_NAME	"GstEvent"
 </pre><p>
 The name used for memory allocation tracing
-</p></div><hr><div class="refsect2" lang="en"><a name="id2844950"></a><h3><a name="GST-EVENT-TYPE-CAPS"></a>GST_EVENT_TYPE()</h3><a class="indexterm" name="id2844960"></a><pre class="programlisting">#define GST_EVENT_TYPE(event)		(GST_EVENT(event)-&gt;type)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628130"></a><h3><a name="GST-EVENT-TYPE-CAPS"></a>GST_EVENT_TYPE()</h3><a class="indexterm" name="id2628140"></a><pre class="programlisting">#define GST_EVENT_TYPE(event)		(GST_EVENT(event)-&gt;type)
 </pre><p>
 Get the event type.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2844996"></a><h3><a name="GST-EVENT-TIMESTAMP-CAPS"></a>GST_EVENT_TIMESTAMP()</h3><a class="indexterm" name="id2845007"></a><pre class="programlisting">#define GST_EVENT_TIMESTAMP(event)	(GST_EVENT(event)-&gt;timestamp)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628176"></a><h3><a name="GST-EVENT-TIMESTAMP-CAPS"></a>GST_EVENT_TIMESTAMP()</h3><a class="indexterm" name="id2628187"></a><pre class="programlisting">#define GST_EVENT_TIMESTAMP(event)	(GST_EVENT(event)-&gt;timestamp)
 </pre><p>
 Get the timestamp of the event.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845043"></a><h3><a name="GST-EVENT-SRC-CAPS"></a>GST_EVENT_SRC()</h3><a class="indexterm" name="id2845054"></a><pre class="programlisting">#define GST_EVENT_SRC(event)		(GST_EVENT(event)-&gt;src)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628223"></a><h3><a name="GST-EVENT-SRC-CAPS"></a>GST_EVENT_SRC()</h3><a class="indexterm" name="id2628234"></a><pre class="programlisting">#define GST_EVENT_SRC(event)		(GST_EVENT(event)-&gt;src)
 </pre><p>
 The source object that generated this event
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845090"></a><h3><a name="GST-EVENT-IS-INTERRUPT-CAPS"></a>GST_EVENT_IS_INTERRUPT()</h3><a class="indexterm" name="id2845101"></a><pre class="programlisting">#define GST_EVENT_IS_INTERRUPT(event) (GST_EVENT_TYPE (event) == GST_EVENT_INTERRUPT)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628269"></a><h3><a name="GST-EVENT-IS-INTERRUPT-CAPS"></a>GST_EVENT_IS_INTERRUPT()</h3><a class="indexterm" name="id2628280"></a><pre class="programlisting">#define GST_EVENT_IS_INTERRUPT(event) (GST_EVENT_TYPE (event) == GST_EVENT_INTERRUPT)
 </pre><p>
 Check if the event is an interrupt event
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to check
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845137"></a><h3><a name="GST-SEEK-FORMAT-SHIFT-CAPS"></a>GST_SEEK_FORMAT_SHIFT</h3><a class="indexterm" name="id2845148"></a><pre class="programlisting">#define GST_SEEK_FORMAT_SHIFT	0
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628316"></a><h3><a name="GST-SEEK-FORMAT-SHIFT-CAPS"></a>GST_SEEK_FORMAT_SHIFT</h3><a class="indexterm" name="id2628328"></a><pre class="programlisting">#define GST_SEEK_FORMAT_SHIFT	0
 </pre><p>
 Shift for the format in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845164"></a><h3><a name="GST-SEEK-METHOD-SHIFT-CAPS"></a>GST_SEEK_METHOD_SHIFT</h3><a class="indexterm" name="id2845176"></a><pre class="programlisting">#define GST_SEEK_METHOD_SHIFT	16
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628344"></a><h3><a name="GST-SEEK-METHOD-SHIFT-CAPS"></a>GST_SEEK_METHOD_SHIFT</h3><a class="indexterm" name="id2628356"></a><pre class="programlisting">#define GST_SEEK_METHOD_SHIFT	16
 </pre><p>
 Shift for the method in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845192"></a><h3><a name="GST-SEEK-FLAGS-SHIFT-CAPS"></a>GST_SEEK_FLAGS_SHIFT</h3><a class="indexterm" name="id2845203"></a><pre class="programlisting">#define GST_SEEK_FLAGS_SHIFT	20
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628372"></a><h3><a name="GST-SEEK-FLAGS-SHIFT-CAPS"></a>GST_SEEK_FLAGS_SHIFT</h3><a class="indexterm" name="id2628383"></a><pre class="programlisting">#define GST_SEEK_FLAGS_SHIFT	20
 </pre><p>
 Shift for the flags in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845220"></a><h3><a name="GST-SEEK-FORMAT-MASK-CAPS"></a>GST_SEEK_FORMAT_MASK</h3><a class="indexterm" name="id2845231"></a><pre class="programlisting">#define GST_SEEK_FORMAT_MASK	0x0000ffff
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628399"></a><h3><a name="GST-SEEK-FORMAT-MASK-CAPS"></a>GST_SEEK_FORMAT_MASK</h3><a class="indexterm" name="id2628411"></a><pre class="programlisting">#define GST_SEEK_FORMAT_MASK	0x0000ffff
 </pre><p>
 Mask for the format in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845248"></a><h3><a name="GST-SEEK-METHOD-MASK-CAPS"></a>GST_SEEK_METHOD_MASK</h3><a class="indexterm" name="id2845259"></a><pre class="programlisting">#define GST_SEEK_METHOD_MASK	0x000f0000
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628427"></a><h3><a name="GST-SEEK-METHOD-MASK-CAPS"></a>GST_SEEK_METHOD_MASK</h3><a class="indexterm" name="id2628439"></a><pre class="programlisting">#define GST_SEEK_METHOD_MASK	0x000f0000
 </pre><p>
 Mask for the method in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845276"></a><h3><a name="GST-SEEK-FLAGS-MASK-CAPS"></a>GST_SEEK_FLAGS_MASK</h3><a class="indexterm" name="id2845288"></a><pre class="programlisting">#define GST_SEEK_FLAGS_MASK	0xfff00000
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628455"></a><h3><a name="GST-SEEK-FLAGS-MASK-CAPS"></a>GST_SEEK_FLAGS_MASK</h3><a class="indexterm" name="id2628467"></a><pre class="programlisting">#define GST_SEEK_FLAGS_MASK	0xfff00000
 </pre><p>
 Mask for the flags in the GstSeekType
-</p></div><hr><div class="refsect2" lang="en"><a name="id2845304"></a><h3><a name="GstEventFlag"></a>enum GstEventFlag</h3><a class="indexterm" name="id2845314"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2628483"></a><h3><a name="GstEventFlag"></a>enum GstEventFlag</h3><a class="indexterm" name="id2628493"></a><pre class="programlisting">typedef enum {
   GST_EVENT_FLAG_NONE		= 0,
 
   /* indicates negative rates are supported */
@@ -237,14 +237,14 @@ Event flags are used when querying for supported events
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_EVENT_FLAG_NONE</tt></span></td><td>no value
 </td></tr><tr><td><span class="term"><tt class="literal">GST_RATE_FLAG_NEGATIVE</tt></span></td><td>indicates negative rates are supported
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845369"></a><h3><a name="GST-EVENT-MASK-FUNCTION-CAPS"></a>GST_EVENT_MASK_FUNCTION()</h3><a class="indexterm" name="id2845381"></a><pre class="programlisting">#define     GST_EVENT_MASK_FUNCTION(type,functionname, ...)</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628548"></a><h3><a name="GST-EVENT-MASK-FUNCTION-CAPS"></a>GST_EVENT_MASK_FUNCTION()</h3><a class="indexterm" name="id2628560"></a><pre class="programlisting">#define     GST_EVENT_MASK_FUNCTION(type,functionname, ...)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GST_EVENT_MASK_FUNCTION</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 A convenience macro to create event mask functions
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>The type of the first argument of the function
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>functionname</tt></i> :</span></td><td>the name of the function
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>event masks, the last element is marked with 0
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845445"></a><h3><a name="GstSeekType"></a>enum GstSeekType</h3><a class="indexterm" name="id2845456"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628634"></a><h3><a name="GstSeekType"></a>enum GstSeekType</h3><a class="indexterm" name="id2628645"></a><pre class="programlisting">typedef enum {
   /* | with some format */
   /* | with one of these */
   GST_SEEK_METHOD_CUR		= (1 &lt;&lt; (GST_SEEK_METHOD_SHIFT + 0)),
@@ -266,7 +266,7 @@ inserted into the graph with #<a href="GstPad.html#gst-pad-send-event"><tt class
 
 Following example illustrates how to insert a seek event (1 second in the stream)
 in a pipeline.
-</p><div class="example"><a name="id2845517"></a><p class="title"><b>Example 5. Insertion of a seek event into a pipeline</b></p><pre class="programlisting">
+</p><div class="example"><a name="id2628706"></a><p class="title"><b>Example 5. Insertion of a seek event into a pipeline</b></p><pre class="programlisting">
   gboolean res;
   GstEvent *event;
 
@@ -289,66 +289,66 @@ in a pipeline.
 </td></tr><tr><td><span class="term"><tt class="literal">GST_SEEK_FLAG_KEY_UNIT</tt></span></td><td>Seek to a nearby key unit
 </td></tr><tr><td><span class="term"><tt class="literal">GST_SEEK_FLAG_SEGMENT_LOOP</tt></span></td><td>Loop between start and stop in a segmented seek
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845647"></a><h3><a name="GstSeekAccuracy"></a>enum GstSeekAccuracy</h3><a class="indexterm" name="id2845659"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628837"></a><h3><a name="GstSeekAccuracy"></a>enum GstSeekAccuracy</h3><a class="indexterm" name="id2628848"></a><pre class="programlisting">typedef enum {
   GST_SEEK_CERTAIN,
   GST_SEEK_FUZZY
 } GstSeekAccuracy;
 </pre><p>
-The seekaccuracy gives more information of how the seek was performed,
-if the seek was accurate or fuzzy.
+The accuracy about a seek operation gives more information of how the seek was
+performed, namly if the seek was accurate or fuzzy.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_SEEK_CERTAIN</tt></span></td><td>The seek was exact
 </td></tr><tr><td><span class="term"><tt class="literal">GST_SEEK_FUZZY</tt></span></td><td>The seek was fuzzy, exact position can not be guaranteed
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845711"></a><h3><a name="GST-EVENT-SEEK-TYPE-CAPS"></a>GST_EVENT_SEEK_TYPE()</h3><a class="indexterm" name="id2845723"></a><pre class="programlisting">#define GST_EVENT_SEEK_TYPE(event)		(GST_EVENT(event)-&gt;event_data.seek.type)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628901"></a><h3><a name="GST-EVENT-SEEK-TYPE-CAPS"></a>GST_EVENT_SEEK_TYPE()</h3><a class="indexterm" name="id2628913"></a><pre class="programlisting">#define GST_EVENT_SEEK_TYPE(event)		(GST_EVENT(event)-&gt;event_data.seek.type)
 </pre><p>
 Get the seektype of the GST_EVENT_SEEK.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845759"></a><h3><a name="GST-EVENT-SEEK-FORMAT-CAPS"></a>GST_EVENT_SEEK_FORMAT()</h3><a class="indexterm" name="id2845770"></a><pre class="programlisting">#define GST_EVENT_SEEK_FORMAT(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_FORMAT_MASK)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628948"></a><h3><a name="GST-EVENT-SEEK-FORMAT-CAPS"></a>GST_EVENT_SEEK_FORMAT()</h3><a class="indexterm" name="id2628960"></a><pre class="programlisting">#define GST_EVENT_SEEK_FORMAT(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_FORMAT_MASK)
 </pre><p>
 The format of the seek value
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event operate on
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845806"></a><h3><a name="GST-EVENT-SEEK-METHOD-CAPS"></a>GST_EVENT_SEEK_METHOD()</h3><a class="indexterm" name="id2845818"></a><pre class="programlisting">#define GST_EVENT_SEEK_METHOD(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_METHOD_MASK)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2628996"></a><h3><a name="GST-EVENT-SEEK-METHOD-CAPS"></a>GST_EVENT_SEEK_METHOD()</h3><a class="indexterm" name="id2629008"></a><pre class="programlisting">#define GST_EVENT_SEEK_METHOD(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_METHOD_MASK)
 </pre><p>
 The seek method to use as one of <a href="gstreamer-GstEvent.html#GstSeekType"><span class="type">GstSeekType</span></a>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event operate on
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845862"></a><h3><a name="GST-EVENT-SEEK-FLAGS-CAPS"></a>GST_EVENT_SEEK_FLAGS()</h3><a class="indexterm" name="id2845874"></a><pre class="programlisting">#define GST_EVENT_SEEK_FLAGS(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_FLAGS_MASK)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629052"></a><h3><a name="GST-EVENT-SEEK-FLAGS-CAPS"></a>GST_EVENT_SEEK_FLAGS()</h3><a class="indexterm" name="id2629064"></a><pre class="programlisting">#define GST_EVENT_SEEK_FLAGS(event)		(GST_EVENT_SEEK_TYPE(event) &amp; GST_SEEK_FLAGS_MASK)
 </pre><p>
 The optional seek flags
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event operate on
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845910"></a><h3><a name="GST-EVENT-SEEK-OFFSET-CAPS"></a>GST_EVENT_SEEK_OFFSET()</h3><a class="indexterm" name="id2845921"></a><pre class="programlisting">#define GST_EVENT_SEEK_OFFSET(event)		(GST_EVENT(event)-&gt;event_data.seek.offset)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629100"></a><h3><a name="GST-EVENT-SEEK-OFFSET-CAPS"></a>GST_EVENT_SEEK_OFFSET()</h3><a class="indexterm" name="id2629111"></a><pre class="programlisting">#define GST_EVENT_SEEK_OFFSET(event)		(GST_EVENT(event)-&gt;event_data.seek.offset)
 </pre><p>
 Get the offset of the seek event.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2845957"></a><h3><a name="GST-EVENT-SEEK-ENDOFFSET-CAPS"></a>GST_EVENT_SEEK_ENDOFFSET()</h3><a class="indexterm" name="id2845969"></a><pre class="programlisting">#define GST_EVENT_SEEK_ENDOFFSET(event)		(GST_EVENT(event)-&gt;event_data.seek.endoffset)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629147"></a><h3><a name="GST-EVENT-SEEK-ENDOFFSET-CAPS"></a>GST_EVENT_SEEK_ENDOFFSET()</h3><a class="indexterm" name="id2629159"></a><pre class="programlisting">#define GST_EVENT_SEEK_ENDOFFSET(event)		(GST_EVENT(event)-&gt;event_data.seek.endoffset)
 </pre><p>
 The event stop position for a segment seek
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846006"></a><h3><a name="GST-EVENT-SEEK-ACCURACY-CAPS"></a>GST_EVENT_SEEK_ACCURACY()</h3><a class="indexterm" name="id2846018"></a><pre class="programlisting">#define GST_EVENT_SEEK_ACCURACY(event)		(GST_EVENT(event)-&gt;event_data.seek.accuracy)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629196"></a><h3><a name="GST-EVENT-SEEK-ACCURACY-CAPS"></a>GST_EVENT_SEEK_ACCURACY()</h3><a class="indexterm" name="id2629208"></a><pre class="programlisting">#define GST_EVENT_SEEK_ACCURACY(event)		(GST_EVENT(event)-&gt;event_data.seek.accuracy)
 </pre><p>
 Indicates how accurate the event was performed.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846054"></a><h3><a name="GST-EVENT-DISCONT-NEW-MEDIA-CAPS"></a>GST_EVENT_DISCONT_NEW_MEDIA()</h3><a class="indexterm" name="id2846065"></a><pre class="programlisting">#define GST_EVENT_DISCONT_NEW_MEDIA(event)	(GST_EVENT(event)-&gt;event_data.discont.new_media)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629244"></a><h3><a name="GST-EVENT-DISCONT-NEW-MEDIA-CAPS"></a>GST_EVENT_DISCONT_NEW_MEDIA()</h3><a class="indexterm" name="id2629255"></a><pre class="programlisting">#define GST_EVENT_DISCONT_NEW_MEDIA(event)	(GST_EVENT(event)-&gt;event_data.discont.new_media)
 </pre><p>
 Flag that indicates the discont event was because of a new media
 type.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to operate on
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846102"></a><h3><a name="GST-EVENT-DISCONT-OFFSET-CAPS"></a>GST_EVENT_DISCONT_OFFSET()</h3><a class="indexterm" name="id2846115"></a><pre class="programlisting">#define GST_EVENT_DISCONT_OFFSET(event,i)	(GST_EVENT(event)-&gt;event_data.discont.offsets[i])
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629292"></a><h3><a name="GST-EVENT-DISCONT-OFFSET-CAPS"></a>GST_EVENT_DISCONT_OFFSET()</h3><a class="indexterm" name="id2629305"></a><pre class="programlisting">#define GST_EVENT_DISCONT_OFFSET(event,i)	(GST_EVENT(event)-&gt;event_data.discont.offsets[i])
 </pre><p>
 The offset of the discont event. A discont event can hold up to 8 different
 format/value pairs.
@@ -356,76 +356,76 @@ format/value pairs.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td>The offset/value pair.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846166"></a><h3><a name="GST-EVENT-DISCONT-OFFSET-LEN-CAPS"></a>GST_EVENT_DISCONT_OFFSET_LEN()</h3><a class="indexterm" name="id2846177"></a><pre class="programlisting">#define GST_EVENT_DISCONT_OFFSET_LEN(event)	(GST_EVENT(event)-&gt;event_data.discont.noffsets)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629356"></a><h3><a name="GST-EVENT-DISCONT-OFFSET-LEN-CAPS"></a>GST_EVENT_DISCONT_OFFSET_LEN()</h3><a class="indexterm" name="id2629367"></a><pre class="programlisting">#define GST_EVENT_DISCONT_OFFSET_LEN(event)	(GST_EVENT(event)-&gt;event_data.discont.noffsets)
 </pre><p>
 Get the number of offset/value pairs this event has.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846214"></a><h3><a name="GST-EVENT-SIZE-FORMAT-CAPS"></a>GST_EVENT_SIZE_FORMAT()</h3><a class="indexterm" name="id2846226"></a><pre class="programlisting">#define GST_EVENT_SIZE_FORMAT(event)		(GST_EVENT(event)-&gt;event_data.size.format)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629404"></a><h3><a name="GST-EVENT-SIZE-FORMAT-CAPS"></a>GST_EVENT_SIZE_FORMAT()</h3><a class="indexterm" name="id2629416"></a><pre class="programlisting">#define GST_EVENT_SIZE_FORMAT(event)		(GST_EVENT(event)-&gt;event_data.size.format)
 </pre><p>
 The format of the size event.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846262"></a><h3><a name="GST-EVENT-SIZE-VALUE-CAPS"></a>GST_EVENT_SIZE_VALUE()</h3><a class="indexterm" name="id2846273"></a><pre class="programlisting">#define GST_EVENT_SIZE_VALUE(event)		(GST_EVENT(event)-&gt;event_data.size.value)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629451"></a><h3><a name="GST-EVENT-SIZE-VALUE-CAPS"></a>GST_EVENT_SIZE_VALUE()</h3><a class="indexterm" name="id2629462"></a><pre class="programlisting">#define GST_EVENT_SIZE_VALUE(event)		(GST_EVENT(event)-&gt;event_data.size.value)
 </pre><p>
 The value of the size event
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846308"></a><h3><a name="GST-EVENT-RATE-VALUE-CAPS"></a>GST_EVENT_RATE_VALUE()</h3><a class="indexterm" name="id2846320"></a><pre class="programlisting">#define GST_EVENT_RATE_VALUE(event)		(GST_EVENT(event)-&gt;event_data.rate.value)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629498"></a><h3><a name="GST-EVENT-RATE-VALUE-CAPS"></a>GST_EVENT_RATE_VALUE()</h3><a class="indexterm" name="id2629510"></a><pre class="programlisting">#define GST_EVENT_RATE_VALUE(event)		(GST_EVENT(event)-&gt;event_data.rate.value)
 </pre><p>
 Get access to the rate vale field
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td>The event to query
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846356"></a><h3><a name="gst-event-new"></a>gst_event_new ()</h3><a class="indexterm" name="id2846366"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new                   (<a href="gstreamer-GstEvent.html#GstEventType">GstEventType</a> type);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629546"></a><h3><a name="gst-event-new"></a>gst_event_new ()</h3><a class="indexterm" name="id2629556"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new                   (<a href="gstreamer-GstEvent.html#GstEventType">GstEventType</a> type);</pre><p>
 Allocate a new event of the given type.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> The type of the new event
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846428"></a><h3><a name="gst-event-ref"></a>gst_event_ref()</h3><a class="indexterm" name="id2846438"></a><pre class="programlisting">#define         gst_event_ref(ev)		GST_EVENT (gst_data_ref (GST_DATA (ev)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629617"></a><h3><a name="gst-event-ref"></a>gst_event_ref()</h3><a class="indexterm" name="id2629628"></a><pre class="programlisting">#define         gst_event_ref(ev)		GST_EVENT (gst_data_ref (GST_DATA (ev)))
 </pre><p>
 Increase the refcount of this event
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The event to refcount
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846473"></a><h3><a name="gst-event-ref-by-count"></a>gst_event_ref_by_count()</h3><a class="indexterm" name="id2846485"></a><pre class="programlisting">#define         gst_event_ref_by_count(ev,c)	GST_EVENT (gst_data_ref_by_count (GST_DATA (ev), c))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629663"></a><h3><a name="gst-event-ref-by-count"></a>gst_event_ref_by_count()</h3><a class="indexterm" name="id2629675"></a><pre class="programlisting">#define         gst_event_ref_by_count(ev,c)	GST_EVENT (gst_data_ref_by_count (GST_DATA (ev), c))
 </pre><p>
 Increase the refcount of the event with the given value
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The event to refcount
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>c</tt></i> :</span></td><td>The value to add to the refcount
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846534"></a><h3><a name="gst-event-unref"></a>gst_event_unref()</h3><a class="indexterm" name="id2846545"></a><pre class="programlisting">#define         gst_event_unref(ev)		gst_data_unref (GST_DATA (ev))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629724"></a><h3><a name="gst-event-unref"></a>gst_event_unref()</h3><a class="indexterm" name="id2629735"></a><pre class="programlisting">#define         gst_event_unref(ev)		gst_data_unref (GST_DATA (ev))
 </pre><p>
 Decrease the refcount of an event, freeing it if the refcount reaches 0
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The event to unref
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846581"></a><h3><a name="gst-event-copy"></a>gst_event_copy()</h3><a class="indexterm" name="id2846592"></a><pre class="programlisting">#define         gst_event_copy(ev)		GST_EVENT (gst_data_copy (GST_DATA (ev)))
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629771"></a><h3><a name="gst-event-copy"></a>gst_event_copy()</h3><a class="indexterm" name="id2629782"></a><pre class="programlisting">#define         gst_event_copy(ev)		GST_EVENT (gst_data_copy (GST_DATA (ev)))
 </pre><p>
 Copy the event using the event specific copy function
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>The event to copy
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>A new event that is a copy of the given input event
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846638"></a><h3><a name="gst-event-masks-contains"></a>gst_event_masks_contains ()</h3><a class="indexterm" name="id2846650"></a><pre class="programlisting">gboolean    gst_event_masks_contains        (const GstEventMask *masks,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629828"></a><h3><a name="gst-event-masks-contains"></a>gst_event_masks_contains ()</h3><a class="indexterm" name="id2629840"></a><pre class="programlisting">gboolean    gst_event_masks_contains        (const GstEventMask *masks,
                                              GstEventMask *mask);</pre><p>
 See if the given eventmask is inside the eventmask array.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>masks</tt></i> :</span></td><td> The eventmask array to search
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mask</tt></i> :</span></td><td> the event mask to find
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the eventmask is found inside the array
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846734"></a><h3><a name="gst-event-new-seek"></a>gst_event_new_seek ()</h3><a class="indexterm" name="id2846746"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_seek              (<a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629924"></a><h3><a name="gst-event-new-seek"></a>gst_event_new_seek ()</h3><a class="indexterm" name="id2629935"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_seek              (<a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> type,
                                              gint64 offset);</pre><p>
 Allocate a new seek event with the given parameters.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> The type of the seek event
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> The offset of the seek
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new seek event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846828"></a><h3><a name="gst-event-new-segment-seek"></a>gst_event_new_segment_seek ()</h3><a class="indexterm" name="id2846840"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_segment_seek      (<a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> type,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630017"></a><h3><a name="gst-event-new-segment-seek"></a>gst_event_new_segment_seek ()</h3><a class="indexterm" name="id2630030"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_segment_seek      (<a href="gstreamer-GstEvent.html#GstSeekType">GstSeekType</a> type,
                                              gint64 start,
                                              gint64 stop);</pre><p>
 Allocate a new segment seek event with the given parameters.</p><p>
@@ -434,14 +434,14 @@ Allocate a new segment seek event with the given parameters.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>start</tt></i> :</span></td><td> The start offset of the seek
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>stop</tt></i> :</span></td><td> The stop offset of the seek
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new segment seek event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2846945"></a><h3><a name="gst-event-new-size"></a>gst_event_new_size ()</h3><a class="indexterm" name="id2846956"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_size              (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630134"></a><h3><a name="gst-event-new-size"></a>gst_event_new_size ()</h3><a class="indexterm" name="id2630146"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_size              (<a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
                                              gint64 value);</pre><p>
 Create a new size event with the given values.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>format</tt></i> :</span></td><td> The format of the size value
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> The value of the size event
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new size event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2847039"></a><h3><a name="gst-event-new-discontinuous"></a>gst_event_new_discontinuous ()</h3><a class="indexterm" name="id2847051"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_discontinuous     (gboolean new_media,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630228"></a><h3><a name="gst-event-new-discontinuous"></a>gst_event_new_discontinuous ()</h3><a class="indexterm" name="id2630240"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_discontinuous     (gboolean new_media,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format1,
                                              ...);</pre><p>
 Allocate a new discontinuous event with the given format/value pairs. Note
@@ -453,7 +453,7 @@ Terminate the list with <span class="type">GST_FORMAT_UNDEFINED</span>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>format1</tt></i> :</span></td><td> The format of the discont value
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> more discont values and formats
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new discontinuous event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2847162"></a><h3><a name="gst-event-new-discontinuous-valist"></a>gst_event_new_discontinuous_valist ()</h3><a class="indexterm" name="id2847175"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_discontinuous_valist
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630351"></a><h3><a name="gst-event-new-discontinuous-valist"></a>gst_event_new_discontinuous_valist ()</h3><a class="indexterm" name="id2630364"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_discontinuous_valist
                                             (gboolean new_media,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format1,
                                              va_list var_args);</pre><p>
@@ -466,7 +466,7 @@ Terminate the list with <span class="type">GST_FORMAT_UNDEFINED</span>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>format1</tt></i> :</span></td><td> The format of the discont value
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> more discont values and formats
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new discontinuous event.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2847292"></a><h3><a name="gst-event-discont-get-value"></a>gst_event_discont_get_value ()</h3><a class="indexterm" name="id2847304"></a><pre class="programlisting">gboolean    gst_event_discont_get_value     (<a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a> *event,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630481"></a><h3><a name="gst-event-discont-get-value"></a>gst_event_discont_get_value ()</h3><a class="indexterm" name="id2630494"></a><pre class="programlisting">gboolean    gst_event_discont_get_value     (<a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a> *event,
                                              <a href="gstreamer-GstFormat.html#GstFormat">GstFormat</a> format,
                                              gint64 *value);</pre><p>
 Get the value for the given format in the discontinous event.</p><p>
@@ -476,12 +476,30 @@ Get the value for the given format in the discontinous event.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> A pointer to the value
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the discontinuous event carries the specified
 format/value pair.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2847410"></a><h3><a name="gst-event-new-filler"></a>gst_event_new_filler()</h3><a class="indexterm" name="id2847421"></a><pre class="programlisting">#define		gst_event_new_filler()		gst_event_new(GST_EVENT_FILLER)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630599"></a><h3><a name="gst-event-new-filler"></a>gst_event_new_filler()</h3><a class="indexterm" name="id2630611"></a><pre class="programlisting">#define		gst_event_new_filler()		gst_event_new(GST_EVENT_FILLER)
 </pre><p>
 Create a new dummy event that should be ignored
-</p></div><hr><div class="refsect2" lang="en"><a name="id2847438"></a><h3><a name="gst-event-new-flush"></a>gst_event_new_flush()</h3><a class="indexterm" name="id2847449"></a><pre class="programlisting">#define		gst_event_new_flush()		gst_event_new(GST_EVENT_FLUSH)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2630628"></a><h3><a name="gst-event-new-filler-stamped"></a>gst_event_new_filler_stamped ()</h3><a class="indexterm" name="id2630639"></a><pre class="programlisting"><a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a>*   gst_event_new_filler_stamped    (guint64 time,
+                                             guint64 duration);</pre><p>
+Creates "filler" data, which is basically empty data that is used to
+synchronize streams if one stream has no data for a while. This is
+used to prevent deadlocks.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>time</tt></i> :</span></td><td> timestamp of the filler, in nanoseconds.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>duration</tt></i> :</span></td><td> duration of the filler, in nanoseconds.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the newly created event.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630724"></a><h3><a name="gst-event-filler-get-duration"></a>gst_event_filler_get_duration ()</h3><a class="indexterm" name="id2630737"></a><pre class="programlisting">guint64     gst_event_filler_get_duration   (<a href="gstreamer-GstEvent.html#GstEvent">GstEvent</a> *event);</pre><p>
+Filler events are used to synchronize streams (and thereby prevent
+application deadlocks) if one stream receives no data for a while.
+This function gets the duration of a filler event, which is the
+amount of time from the start of this event (see <a href="gstreamer-GstEvent.html#GST-EVENT-TIMESTAMP-CAPS"><tt class="function">GST_EVENT_TIMESTAMP()</tt></a>)
+that no data is available.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td> the event to get the duration from.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> duration of the lack of data, or GST_CLOCK_TIME_NONE.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630813"></a><h3><a name="gst-event-new-flush"></a>gst_event_new_flush()</h3><a class="indexterm" name="id2630824"></a><pre class="programlisting">#define		gst_event_new_flush()		gst_event_new(GST_EVENT_FLUSH)
 </pre><p>
 Create a new flush event.
-</p></div></div><div class="refsect1" lang="en"><a name="id2847466"></a><h2>See Also</h2><p>
+</p></div></div><div class="refsect1" lang="en"><a name="id2630842"></a><h2>See Also</h2><p>
 <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
 </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstGError.html"><b>&lt;&lt; GstError</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstFilter.html"><b>GstFilter &gt;&gt;</b></a></td></tr></table></body></html>

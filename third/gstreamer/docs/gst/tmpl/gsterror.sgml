@@ -84,7 +84,7 @@ Categorized error messages
 @GST_STREAM_ERROR_FORMAT: 
 @GST_STREAM_ERROR_NUM_ERRORS: 
 
-<!-- ##### MACRO GST_TYPE_G_ERROR ##### -->
+<!-- ##### MACRO GST_CORE_ERROR ##### -->
 <para>
 
 </para>
@@ -105,13 +105,6 @@ Categorized error messages
 
 
 
-<!-- ##### MACRO GST_CORE_ERROR ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO GST_STREAM_ERROR ##### -->
 <para>
 
@@ -121,7 +114,7 @@ Categorized error messages
 
 <!-- ##### MACRO GST_ERROR_SYSTEM ##### -->
 <para>
-
+Generates an human readable error message out of an errno number.
 </para>
 
 

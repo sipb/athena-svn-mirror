@@ -1,0 +1,63 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstDParamSmooth</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library Reference Manual"><link rel="up" href="gstreamer-control.html" title="gstcontrol"><link rel="previous" href="GstDParam.html" title="GstDParam"><link rel="next" href="GstDParamLinInterp.html" title="GstDParamLinInterp"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstDParam.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-control.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library Reference Manual</th><td><a accesskey="n" href="GstDParamLinInterp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstDParamSmooth"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstDParamSmooth</span></h2><p>GstDParamSmooth &#8212; realtime smoothed dynamic parameter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libs/control/control.h&gt;
+
+
+struct      <a href="GstDParamSmooth.html#GstDParamSmooth-struct">GstDParamSmooth</a>;
+<a href="GstDParam.html" title="GstDParam">GstDParam</a>*  <a href="GstDParamSmooth.html#gst-dpsmooth-new">gst_dpsmooth_new</a>                (GType type);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2767634"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gstreamer/GstObject.html"
+>GstObject</a>
+         +----<a href="GstDParam.html" title="GstDParam">GstDParam</a>
+               +----GstDParamSmooth
+</pre></div><div class="refsect1" lang="en"><a name="id2767668"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GstDParamSmooth.html#GstDParamSmooth--slope-delta-double">slope-delta-double</a>"   gdouble              : Read / Write
+  "<a href="GstDParamSmooth.html#GstDParamSmooth--slope-delta-float">slope-delta-float</a>"    gfloat               : Read / Write
+  "<a href="GstDParamSmooth.html#GstDParamSmooth--slope-time">slope-time</a>"           gint64               : Read / Write
+  "<a href="GstDParamSmooth.html#GstDParamSmooth--update-period">update-period</a>"        gint64               : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2767749"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2767759"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2767765"></a><h3><a name="GstDParamSmooth-struct"></a>struct GstDParamSmooth</h3><a class="indexterm" name="id2767775"></a><pre class="programlisting">struct GstDParamSmooth;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2767790"></a><h3><a name="gst-dpsmooth-new"></a>gst_dpsmooth_new ()</h3><a class="indexterm" name="id2767802"></a><pre class="programlisting"><a href="GstDParam.html" title="GstDParam">GstDParam</a>*  gst_dpsmooth_new                (GType type);</pre><p>
+Create a new dynamic parameter controller which smoothes control changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type that this dparam will store
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new instance of GstDParam
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2767864"></a><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a name="GstDParamSmooth--slope-delta-double"></a>"<tt class="literal">slope-delta-double</tt>" (gdouble : Read / Write)</span></td><td><p>The amount a double value can change for a given slope_time.</p></td></tr><tr><td><span class="term"><a name="GstDParamSmooth--slope-delta-float"></a>"<tt class="literal">slope-delta-float</tt>" (gfloat : Read / Write)</span></td><td><p>The amount a float value can change for a given slope_time.</p></td></tr><tr><td><span class="term"><a name="GstDParamSmooth--slope-time"></a>"<tt class="literal">slope-time</tt>" (gint64 : Read / Write)</span></td><td><p>The time period to define slope_delta by.</p></td></tr><tr><td><span class="term"><a name="GstDParamSmooth--update-period"></a>"<tt class="literal">update-period</tt>" (gint64 : Read / Write)</span></td><td><p>Number of nanoseconds between updates.</p></td></tr></tbody></table></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstDParam.html"><b>&lt;&lt; GstDParam</b></a></td><td align="right"><a accesskey="n" href="GstDParamLinInterp.html"><b>GstDParamLinInterp &gt;&gt;</b></a></td></tr></table></body></html>

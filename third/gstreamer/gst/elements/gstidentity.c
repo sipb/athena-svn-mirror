@@ -31,6 +31,16 @@
 #include "gstidentity.h"
 #include <gst/gstmarshal.h>
 
+static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
+
+static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
+
 GST_DEBUG_CATEGORY_STATIC (gst_identity_debug);
 #define GST_CAT_DEFAULT gst_identity_debug
 
@@ -48,6 +58,17 @@ enum
   LAST_SIGNAL
 };
 
+#define DEFAULT_LOOP_BASED		FALSE
+#define DEFAULT_SLEEP_TIME		0
+#define DEFAULT_DUPLICATE		1
+#define DEFAULT_ERROR_AFTER		-1
+#define DEFAULT_DROP_PROBABILITY	0.0
+#define DEFAULT_DATARATE		0
+#define DEFAULT_SILENT			FALSE
+#define DEFAULT_DUMP			FALSE
+#define DEFAULT_SYNC			FALSE
+#define DEFAULT_CHECK_PERFECT		FALSE
+
 enum
 {
   ARG_0,
@@ -56,6 +77,7 @@ enum
   ARG_DUPLICATE,
   ARG_ERROR_AFTER,
   ARG_DROP_PROBABILITY,
+  ARG_DATARATE,
   ARG_SILENT,
   ARG_LAST_MESSAGE,
   ARG_DUMP,
@@ -75,6 +97,7 @@ static void gst_identity_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_identity_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
+static GstElementStateReturn gst_identity_change_state (GstElement * element);
 
 static void gst_identity_chain (GstPad * pad, GstData * _data);
 static void gst_identity_set_clock (GstElement * element, GstClock * clock);
@@ -87,6 +110,10 @@ gst_identity_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&srctemplate));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
   gst_element_class_set_details (gstelement_class, &gst_identity_details);
 }
 
@@ -114,78 +141,88 @@ gst_identity_class_init (GstIdentityClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LOOP_BASED,
       g_param_spec_boolean ("loop-based", "Loop-based",
           "Set to TRUE to use loop-based rather than chain-based scheduling",
-          TRUE, G_PARAM_READWRITE));
+          DEFAULT_LOOP_BASED, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SLEEP_TIME,
       g_param_spec_uint ("sleep-time", "Sleep time",
-          "Microseconds to sleep between processing", 0, G_MAXUINT, 0,
-          G_PARAM_READWRITE));
+          "Microseconds to sleep between processing", 0, G_MAXUINT,
+          DEFAULT_SLEEP_TIME, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DUPLICATE,
       g_param_spec_uint ("duplicate", "Duplicate Buffers",
-          "Push the buffers N times", 0, G_MAXUINT, 1, G_PARAM_READWRITE));
+          "Push the buffers N times", 0, G_MAXUINT, DEFAULT_DUPLICATE,
+          G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ERROR_AFTER,
       g_param_spec_int ("error_after", "Error After", "Error after N buffers",
-          G_MININT, G_MAXINT, -1, G_PARAM_READWRITE));
+          G_MININT, G_MAXINT, DEFAULT_ERROR_AFTER, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DROP_PROBABILITY,
       g_param_spec_float ("drop_probability", "Drop Probability",
-          "The Probability a buffer is dropped", 0.0, 1.0, 0.0,
-          G_PARAM_READWRITE));
+          "The Probability a buffer is dropped", 0.0, 1.0,
+          DEFAULT_DROP_PROBABILITY, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DATARATE,
+      g_param_spec_int ("datarate", "Datarate",
+          "(Re)timestamps buffers with number of bytes per second (0 = inactive)",
+          0, G_MAXINT, DEFAULT_DATARATE, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SILENT,
-      g_param_spec_boolean ("silent", "silent", "silent", FALSE,
+      g_param_spec_boolean ("silent", "silent", "silent", DEFAULT_SILENT,
           G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LAST_MESSAGE,
       g_param_spec_string ("last-message", "last-message", "last-message", NULL,
           G_PARAM_READABLE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DUMP,
-      g_param_spec_boolean ("dump", "Dump", "Dump buffer contents", FALSE,
-          G_PARAM_READWRITE));
+      g_param_spec_boolean ("dump", "Dump", "Dump buffer contents",
+          DEFAULT_DUMP, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SYNC,
-      g_param_spec_boolean ("sync", "Synchronize", "Synchronize to pipeline clock", FALSE,
-          G_PARAM_READWRITE));
+      g_param_spec_boolean ("sync", "Synchronize",
+          "Synchronize to pipeline clock", DEFAULT_SYNC, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_CHECK_PERFECT,
       g_param_spec_boolean ("check-perfect", "Check For Perfect Stream",
-          "Verify that the stream is time- and data-contiguous", FALSE,
-          G_PARAM_READWRITE));
+          "Verify that the stream is time- and data-contiguous",
+          DEFAULT_CHECK_PERFECT, G_PARAM_READWRITE));
 
   gst_identity_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstIdentityClass, handoff), NULL, NULL,
-      gst_marshal_VOID__POINTER, G_TYPE_NONE, 1, GST_TYPE_BUFFER);
+      gst_marshal_VOID__BOXED, G_TYPE_NONE, 1,
+      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE);
 
   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_identity_finalize);
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_identity_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_identity_get_property);
 
   gstelement_class->set_clock = GST_DEBUG_FUNCPTR (gst_identity_set_clock);
+  gstelement_class->change_state =
+      GST_DEBUG_FUNCPTR (gst_identity_change_state);
 
 }
 
 static void
 gst_identity_init (GstIdentity * identity)
 {
-  identity->sinkpad = gst_pad_new ("sink", GST_PAD_SINK);
+  identity->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&sinktemplate),
+      "sink");
   gst_element_add_pad (GST_ELEMENT (identity), identity->sinkpad);
   gst_pad_set_chain_function (identity->sinkpad,
       GST_DEBUG_FUNCPTR (gst_identity_chain));
   gst_pad_set_link_function (identity->sinkpad, gst_pad_proxy_pad_link);
   gst_pad_set_getcaps_function (identity->sinkpad, gst_pad_proxy_getcaps);
 
-  identity->srcpad = gst_pad_new ("src", GST_PAD_SRC);
+  identity->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&srctemplate),
+      "src");
   gst_element_add_pad (GST_ELEMENT (identity), identity->srcpad);
   gst_pad_set_link_function (identity->srcpad, gst_pad_proxy_pad_link);
   gst_pad_set_getcaps_function (identity->srcpad, gst_pad_proxy_getcaps);
 
-  identity->loop_based = FALSE;
-  identity->sleep_time = 0;
-  identity->duplicate = 1;
-  identity->error_after = -1;
-  identity->drop_probability = 0.0;
-  identity->silent = FALSE;
-  identity->sync = FALSE;
-  identity->check_perfect = FALSE;
-  identity->prev_timestamp = GST_CLOCK_TIME_NONE;
-  identity->prev_duration = GST_CLOCK_TIME_NONE;
-  identity->prev_offset_end = -1;
-  identity->dump = FALSE;
+  identity->loop_based = DEFAULT_LOOP_BASED;
+  identity->sleep_time = DEFAULT_SLEEP_TIME;
+  identity->duplicate = DEFAULT_DUPLICATE;
+  identity->error_after = DEFAULT_ERROR_AFTER;
+  identity->drop_probability = DEFAULT_DROP_PROBABILITY;
+  identity->datarate = DEFAULT_DATARATE;
+  identity->silent = DEFAULT_SILENT;
+  identity->sync = DEFAULT_SYNC;
+  identity->check_perfect = DEFAULT_CHECK_PERFECT;
+  identity->dump = DEFAULT_DUMP;
   identity->last_message = NULL;
   identity->srccaps = NULL;
 
@@ -231,26 +268,26 @@ gst_identity_chain (GstPad * pad, GstData * _data)
   }
 
   /* see if we need to do perfect stream checking */
-    /* invalid timestamp drops us out of check.  FIXME: maybe warn ? */
+  /* invalid timestamp drops us out of check.  FIXME: maybe warn ? */
   if (identity->check_perfect &&
-      GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE)
-  {
+      GST_BUFFER_TIMESTAMP (buf) != GST_CLOCK_TIME_NONE) {
     /* check if we had a previous buffer to compare to */
     if (identity->prev_timestamp != GST_CLOCK_TIME_NONE) {
-      if (identity->prev_timestamp + identity->prev_duration != GST_BUFFER_TIMESTAMP (buf)) {
+      if (identity->prev_timestamp + identity->prev_duration !=
+          GST_BUFFER_TIMESTAMP (buf)) {
         GST_WARNING_OBJECT (identity,
-            "Buffer not time-contiguous with previous one: "
-            "prev ts %" GST_TIME_FORMAT ", prev dur %" GST_TIME_FORMAT
-            ", new ts %" GST_TIME_FORMAT,
-            GST_TIME_ARGS (identity->prev_timestamp),
+            "Buffer not time-contiguous with previous one: " "prev ts %"
+            GST_TIME_FORMAT ", prev dur %" GST_TIME_FORMAT ", new ts %"
+            GST_TIME_FORMAT, GST_TIME_ARGS (identity->prev_timestamp),
             GST_TIME_ARGS (identity->prev_duration),
             GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)));
       }
       if (identity->prev_offset_end != GST_BUFFER_OFFSET (buf)) {
         GST_WARNING_OBJECT (identity,
             "Buffer not data-contiguous with previous one: "
-            "prev offset_end %" G_GINT64_FORMAT ", new offset %" G_GINT64_FORMAT,
-            identity->prev_offset_end, GST_BUFFER_OFFSET (buf));
+            "prev offset_end %" G_GINT64_FORMAT ", new offset %"
+            G_GINT64_FORMAT, identity->prev_offset_end,
+            GST_BUFFER_OFFSET (buf));
       }
     }
     /* update prev values */
@@ -290,6 +327,8 @@ gst_identity_chain (GstPad * pad, GstData * _data)
   }
 
   for (i = identity->duplicate; i; i--) {
+    GstClockTime time;
+
     if (!identity->silent) {
       g_free (identity->last_message);
       identity->last_message =
@@ -303,6 +342,16 @@ gst_identity_chain (GstPad * pad, GstData * _data)
       g_object_notify (G_OBJECT (identity), "last-message");
     }
 
+    time = GST_BUFFER_TIMESTAMP (buf);
+
+    if (identity->datarate > 0) {
+      time = identity->bytes_handled * GST_SECOND / identity->datarate;
+
+      GST_BUFFER_TIMESTAMP (buf) = time;
+      GST_BUFFER_DURATION (buf) =
+          GST_BUFFER_SIZE (buf) * GST_SECOND / identity->datarate;
+    }
+
     g_signal_emit (G_OBJECT (identity), gst_identity_signals[SIGNAL_HANDOFF], 0,
         buf);
 
@@ -311,9 +360,11 @@ gst_identity_chain (GstPad * pad, GstData * _data)
 
     if (identity->sync) {
       if (identity->clock) {
-        gst_element_wait (GST_ELEMENT (identity), GST_BUFFER_TIMESTAMP (buf));
+        gst_element_wait (GST_ELEMENT (identity), time);
       }
     }
+
+    identity->bytes_handled += GST_BUFFER_SIZE (buf);
     gst_pad_push (identity->srcpad, GST_DATA (buf));
 
     if (identity->sleep_time)
@@ -387,6 +438,9 @@ gst_identity_set_property (GObject * object, guint prop_id,
     case ARG_DROP_PROBABILITY:
       identity->drop_probability = g_value_get_float (value);
       break;
+    case ARG_DATARATE:
+      identity->datarate = g_value_get_int (value);
+      break;
     case ARG_SYNC:
       identity->sync = g_value_get_boolean (value);
       break;
@@ -426,6 +480,9 @@ gst_identity_get_property (GObject * object, guint prop_id, GValue * value,
     case ARG_DROP_PROBABILITY:
       g_value_set_float (value, identity->drop_probability);
       break;
+    case ARG_DATARATE:
+      g_value_set_int (value, identity->datarate);
+      break;
     case ARG_SILENT:
       g_value_set_boolean (value, identity->silent);
       break;
@@ -445,4 +502,41 @@ gst_identity_get_property (GObject * object, guint prop_id, GValue * value,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static GstElementStateReturn
+gst_identity_change_state (GstElement * element)
+{
+  GstIdentity *identity;
+
+  g_return_val_if_fail (GST_IS_IDENTITY (element), GST_STATE_FAILURE);
+
+  identity = GST_IDENTITY (element);
+
+  switch (GST_STATE_TRANSITION (element)) {
+    case GST_STATE_NULL_TO_READY:
+      break;
+    case GST_STATE_READY_TO_PAUSED:
+      identity->bytes_handled = 0;
+      identity->prev_timestamp = GST_CLOCK_TIME_NONE;
+      identity->prev_duration = GST_CLOCK_TIME_NONE;
+      identity->prev_offset_end = -1;
+      break;
+    case GST_STATE_PAUSED_TO_PLAYING:
+    case GST_STATE_PLAYING_TO_PAUSED:
+      break;
+    case GST_STATE_PAUSED_TO_READY:
+      g_free (identity->last_message);
+      identity->last_message = NULL;
+      break;
+    case GST_STATE_READY_TO_NULL:
+      break;
+    default:
+      break;
+  }
+
+  if (GST_ELEMENT_CLASS (parent_class)->change_state)
+    return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+
+  return GST_STATE_SUCCESS;
 }

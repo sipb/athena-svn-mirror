@@ -39,11 +39,13 @@ static GstAllocTrace *_gst_buffer_trace;
 
 static GstMemChunk *chunk;
 
+static GstBuffer *gst_buffer_alloc_chunk (void);
+static void gst_buffer_free_chunk (GstBuffer * buffer);
+
 void
 _gst_buffer_initialize (void)
 {
-  _gst_buffer_type = g_boxed_type_register_static ("GstBuffer",
-      (GBoxedCopyFunc) gst_data_ref, (GBoxedFreeFunc) gst_data_unref);
+  gst_buffer_get_type ();
 
 #ifndef GST_DISABLE_TRACE
   _gst_buffer_trace = gst_alloc_trace_register (GST_BUFFER_TRACE_NAME);
@@ -52,12 +54,16 @@ _gst_buffer_initialize (void)
   chunk = gst_mem_chunk_new ("GstBufferChunk", sizeof (GstBuffer),
       sizeof (GstBuffer) * 200, 0);
 
-  GST_CAT_INFO (GST_CAT_BUFFER, "Buffers are initialized now");
+  GST_CAT_LOG (GST_CAT_BUFFER, "Buffers are initialized now");
 }
 
 GType
 gst_buffer_get_type (void)
 {
+  if (_gst_buffer_type == 0) {
+    _gst_buffer_type = g_boxed_type_register_static ("GstBuffer",
+        (GBoxedCopyFunc) gst_data_copy, (GBoxedFreeFunc) gst_data_unref);
+  }
   return _gst_buffer_type;
 }
 
@@ -71,10 +77,7 @@ _gst_buffer_sub_free (GstBuffer * buffer)
 
   _GST_DATA_DISPOSE (GST_DATA (buffer));
 
-  gst_mem_chunk_free (chunk, GST_DATA (buffer));
-#ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_free (_gst_buffer_trace, buffer);
-#endif
+  gst_buffer_free_chunk (buffer);
 }
 
 /**
@@ -102,10 +105,7 @@ gst_buffer_default_free (GstBuffer * buffer)
 
   _GST_DATA_DISPOSE (GST_DATA (buffer));
 
-  gst_mem_chunk_free (chunk, GST_DATA (buffer));
-#ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_free (_gst_buffer_trace, buffer);
-#endif
+  gst_buffer_free_chunk (buffer);
 }
 
 /**
@@ -140,18 +140,22 @@ GstBuffer *
 gst_buffer_default_copy (GstBuffer * buffer)
 {
   GstBuffer *copy;
+  guint16 flags;
 
   g_return_val_if_fail (buffer != NULL, NULL);
 
   /* create a fresh new buffer */
-  copy = gst_mem_chunk_alloc (chunk);
-#ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_new (_gst_buffer_trace, copy);
-#endif
+  copy = gst_buffer_alloc_chunk ();
+
+  /* copy relevant flags */
+  flags = GST_DATA_FLAG_SHIFT (GST_BUFFER_KEY_UNIT) |
+      GST_DATA_FLAG_SHIFT (GST_BUFFER_IN_CAPS) |
+      GST_DATA_FLAG_SHIFT (GST_BUFFER_DELTA_UNIT);
+  flags = GST_BUFFER_FLAGS (buffer) & flags;
 
   _GST_DATA_INIT (GST_DATA (copy),
       _gst_buffer_type,
-      0,
+      flags,
       (GstDataFreeFunction) gst_buffer_default_free,
       (GstDataCopyFunction) gst_buffer_default_copy);
 
@@ -168,6 +172,28 @@ gst_buffer_default_copy (GstBuffer * buffer)
   return copy;
 }
 
+static GstBuffer *
+gst_buffer_alloc_chunk (void)
+{
+  GstBuffer *newbuf;
+
+  newbuf = gst_mem_chunk_alloc (chunk);
+#ifndef GST_DISABLE_TRACE
+  gst_alloc_trace_new (_gst_buffer_trace, newbuf);
+#endif
+
+  return newbuf;
+}
+
+static void
+gst_buffer_free_chunk (GstBuffer * buffer)
+{
+  gst_mem_chunk_free (chunk, GST_DATA (buffer));
+#ifndef GST_DISABLE_TRACE
+  gst_alloc_trace_free (_gst_buffer_trace, buffer);
+#endif
+}
+
 /**
  * gst_buffer_new:
  *
@@ -180,10 +206,7 @@ gst_buffer_new (void)
 {
   GstBuffer *newbuf;
 
-  newbuf = gst_mem_chunk_alloc (chunk);
-#ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_new (_gst_buffer_trace, newbuf);
-#endif
+  newbuf = gst_buffer_alloc_chunk ();
 
   GST_CAT_LOG (GST_CAT_BUFFER, "new %p", newbuf);
 
@@ -263,12 +286,9 @@ gst_buffer_create_sub (GstBuffer * parent, guint offset, guint size)
   gst_data_ref (GST_DATA (parent));
 
   /* create the new buffer */
-  buffer = gst_mem_chunk_alloc (chunk);
-#ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_new (_gst_buffer_trace, buffer);
-#endif
+  buffer = gst_buffer_alloc_chunk ();
 
-  GST_CAT_LOG (GST_CAT_BUFFER, "new subbuffer %p", buffer);
+  GST_CAT_LOG (GST_CAT_BUFFER, "new subbuffer %p (parent %p)", buffer, parent);
 
   /* make sure nobody overwrites data in the new buffer 
    * by setting the READONLY flag */
@@ -318,8 +338,11 @@ gst_buffer_create_sub (GstBuffer * parent, guint offset, guint size)
  * buffers.  The original source buffers will not be modified or
  * unref'd.
  *
- * Internally is nothing more than a specialized gst_buffer_span(),
- * so the same optimizations can occur.
+ * WARNING: Incorrect use of this function can lead to memory leaks.
+ * It is recommended to use gst_buffer_join() instead of this function.
+ *
+ * If the buffers point to contiguous areas of memory, the buffer
+ * is created without copying the data.
  *
  * Returns: the new #GstBuffer that's the concatenation of the source buffers.
  */
@@ -335,12 +358,39 @@ gst_buffer_merge (GstBuffer * buf1, GstBuffer * buf2)
 }
 
 /**
+ * gst_buffer_join:
+ * @buf1: a first source #GstBuffer to merge.
+ * @buf2: the second source #GstBuffer to merge.
+ *
+ * Create a new buffer that is the concatenation of the two source
+ * buffers.  The original buffers are unreferenced.
+ *
+ * If the buffers point to contiguous areas of memory, the buffer
+ * is created without copying the data.
+ *
+ * Returns: the new #GstBuffer that's the concatenation of the source buffers.
+ */
+GstBuffer *
+gst_buffer_join (GstBuffer * buf1, GstBuffer * buf2)
+{
+  GstBuffer *result;
+
+  /* we're just a specific case of the more general gst_buffer_span() */
+  result = gst_buffer_span (buf1, 0, buf2, buf1->size + buf2->size);
+
+  gst_buffer_unref (buf1);
+  gst_buffer_unref (buf2);
+
+  return result;
+}
+
+/**
  * gst_buffer_is_span_fast:
  * @buf1: a first source #GstBuffer.
  * @buf2: the second source #GstBuffer.
  *
- * Determines whether a gst_buffer_span() is free (as in free beer), 
- * or requires a memcpy. 
+ * Determines whether a gst_buffer_span() can be done without copying
+ * the contents, that is, whether the data areas are contiguous.
  *
  * Returns: TRUE if the buffers are contiguous, 
  * FALSE if a copy would be required.
@@ -385,7 +435,7 @@ gst_buffer_span (GstBuffer * buf1, guint32 offset, GstBuffer * buf2,
 {
   GstBuffer *newbuf;
 
-  g_return_val_if_fail (buf1 != NULL && buf2 != NULL, FALSE);
+  g_return_val_if_fail (buf1 != NULL && buf2 != NULL, NULL);
   g_return_val_if_fail (GST_BUFFER_REFCOUNT_VALUE (buf1) > 0, NULL);
   g_return_val_if_fail (GST_BUFFER_REFCOUNT_VALUE (buf2) > 0, NULL);
   g_return_val_if_fail (len > 0, NULL);

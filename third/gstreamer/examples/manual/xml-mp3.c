@@ -1,4 +1,5 @@
-/* example-begin xml-mp3.c */
+
+/*** block  from ../../docs/manual/highlevel-xml.xml ***/
 #include <stdlib.h>
 #include <gst/gst.h>
 
@@ -62,4 +63,3 @@ main (int argc, char *argv[])
 
   exit (0);
 }
-/* example-end xml-mp3.c */

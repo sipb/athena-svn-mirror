@@ -1,3 +1,1617 @@
+=== release 0.8.9 ===
+
+2005-02-08  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	  releasing 0.8.9, "Like Eating Glass"
+
+2005-02-08  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	submitted by: Clytie Siddall
+
+	* po/vi.po: Added Vietnamese translation
+
+2005-02-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Tim Philipp-Müller
+
+	* configure.ac:
+	* gst/gstpad.c:
+	  unref data when probe function returns FALSE.  Fixes #166362
+
+2005-02-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gst.c: (gst_init_get_popt_table):
+	  Fix typo (#166269).
+
+2005-02-04  Andy Wingo  <wingo@pobox.com>
+
+	* gst/gstelement.c (gst_element_get_compatible_pad_template): Fix
+	the debugging on whether the caps are compatible.
+
+2005-02-03  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/basics-elements.xml:
+	  Fix two typos.
+
+2005-02-02  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c: (remove_decoupled),
+	(schedule_chain), (get_invalid_call), (chain_invalid_call),
+	(loop_group_schedule_function), (gst_opt_scheduler_iterate):
+	Remove some FIXMEs after analysing and commenting why they
+	are not issues.
+
+2005-02-02  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c:
+	(gst_opt_scheduler_class_init), (gst_opt_scheduler_init),
+	(gst_opt_scheduler_finalize), (remove_decoupled), (schedule_chain),
+	(get_invalid_call), (chain_invalid_call),
+	(get_group_schedule_function), (loop_group_schedule_function),
+	(gst_opt_scheduler_loop_wrapper), (gst_opt_scheduler_get_wrapper),
+	(gst_opt_scheduler_state_transition),
+	(gst_opt_scheduler_add_element),
+	(gst_opt_scheduler_remove_element), (gst_opt_scheduler_interrupt),
+	(gst_opt_scheduler_error), (gst_opt_scheduler_pad_link),
+	(gst_opt_scheduler_pad_unlink), (gst_opt_scheduler_iterate),
+	(gst_opt_scheduler_show):
+	Added lock to protect scheduler data structures.
+
+2005-02-01  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* testsuite/threads/threadi.c: (cb_data):
+	  Fix buglet in test.
+
+2005-02-01  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* testsuite/threads/Makefile.am:
+	* testsuite/threads/threadi.c: (cb_data), (cb_play), (main):
+	  On Wim's request, split the test in three separately-compiled
+	  tests that each test a very specific bug. Two of them still fail,
+	  will create bugs for those. threadi.c indicates why they fail.
+
+2005-02-01  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/schedulers/gstoptimalscheduler.c:
+	(get_group_schedule_function):
+	  Try to work with the threading mess that queue_link is.
+
+2005-02-01  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstbin.c: (gst_bin_remove_func):
+	  Explicitely make an element release locks in a group when being
+	  remove from a bin.
+	* gst/gstqueue.c: (gst_queue_chain), (gst_queue_get):
+	  If there's no scheduler, always return immediately (similar to
+	  gst_element_interrupt).
+
+2005-01-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstbin.c: (gst_bin_child_state_change_func):
+	  Remove a piece of code that could never be reached.
+	* docs/gst/gstreamer-sections.txt:
+	* gst/gstpad.c: (gst_pad_push), (gst_pad_pull),
+	(gst_pad_call_get_function):
+	* gst/gstpad.h:
+	* testsuite/pad/Makefile.am:
+	  Fix #150546, enable tests.
+
+2005-01-31  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/advanced-types.xml:
+	  Fix description for buffer-frames=0.
+	* docs/gst/tmpl/gstbin.sgml:
+	* gst/gstbin.c: (gst_bin_child_state_change_func),
+	(gst_bin_change_state), (gst_bin_change_state_norecurse):
+	* gst/gstbin.h:
+	* testsuite/threads/Makefile.am:
+	* testsuite/threads/threadi.c: (cb_timeout), (cb_quit), (cb_eos),
+	(cb_state), (cb_play), (main):
+	  Fix non-recursive state changes to *really* change the state
+	  of the object, and not just call parent_class->state_change.
+	  Fix a lot of lockups caused by this. Fixes #132775. Add test
+	  for the problem. Also enable test to show #142588 (fixed).
+	* gst/gstthread.c: (gst_thread_change_state),
+	(gst_thread_child_state_change):
+	  Don't exit the thread if we go to NULL and are inside thread
+	  context. Instead, return control to the main thread context
+	  and exit from there.
+	* gst/gstelement.c: (gst_element_disable_threadsafe_properties):
+	  Don't unset virtual functions, since those may still be used.
+	  That's not necessarily correct, but suffices for now.
+	* configure.ac:
+	* testsuite/Makefile.am:
+	* testsuite/pad/Makefile.am:
+	* testsuite/pad/chainnopull.c: (gst_test_sink_class_init),
+	(gst_test_sink_base_init), (gst_test_sink_chain),
+	(gst_test_sink_init), (main):
+	* testsuite/pad/getnopush.c: (gst_test_src_class_init),
+	(gst_test_src_base_init), (gst_test_src_get), (gst_test_src_init),
+	(main):
+	* testsuite/pad/link.c: (gst_test_element_class_init),
+	(gst_test_element_base_init), (gst_test_src_get),
+	(gst_test_src_loop), (gst_test_src_init), (gst_test_filter_chain),
+	(gst_test_filter_loop), (gst_test_filter_init),
+	(gst_test_sink_chain), (gst_test_sink_loop), (gst_test_sink_init),
+	(cb_error), (main):
+	  Add tests to show #150546. Pass, but should fail (currently
+	  disabled from the testsuite).
+	* gst/gstscheduler.c: (gst_scheduler_dispose):
+	  Dereference child schedulers on dispose (#94464).
+	* testsuite/bytestream/filepadsink.c: (gst_fp_sink_init):
+	  Fix typo.
+	* testsuite/threads/thread.c: (main):
+	  Add more debug.
+
+2005-01-29  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstpad.c: (gst_pad_push):
+	  Oops, revert previous commit, broke testsuite...
+
+2005-01-29  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstpad.c: (gst_pad_push):
+	  Add check that the pad on which the push is performed is not a
+	  get-based pad (#150546).
+
+2005-01-28  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/elements/gsttypefindelement.c:
+	(gst_type_find_element_handle_event):
+	  Fix buffer pushing if stream EOSes during typefinding.
+
+2005-01-28  Edward Hervey  <bilboed@bilboed.com>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstvalue.c: (gst_string_wrap):
+	  Allow NULL-strings as argument (#165365).
+
+2005-01-27  Stephane Wirtel  <stephane.wirtel@belgacom.net>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/schedulers/faircothreads.c:
+	(gst_fair_scheduler_cothread_queue_show):
+	  Fix build without debug enabled.
+
+2005-01-26  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/libs/gstreamer-libs-docs.sgml:
+	* docs/libs/gstreamer-libs-sections.txt:
+	* docs/libs/tmpl/gstcontrol.sgml:
+	* docs/libs/tmpl/gstdparam.sgml:
+	* docs/libs/tmpl/gstdplinint.sgml:
+	* docs/libs/tmpl/gstdpman.sgml:
+	* docs/libs/tmpl/gstdpsmooth.sgml:
+	* docs/libs/tmpl/gstputbits.sgml:
+	* docs/libs/tmpl/gstunitconvert.sgml:
+	* libs/gst/control/dparam.c:
+	* libs/gst/control/dparam.h:
+	* libs/gst/control/dparammanager.c:
+	(gst_dpman_add_required_dparam_callback),
+	(gst_dpman_add_required_dparam_direct),
+	(gst_dpman_add_required_dparam_array),
+	(gst_dpman_remove_required_dparam), (gst_dpman_attach_dparam),
+	(gst_dpman_get_dparam), (gst_dpman_get_dparam_type),
+	(gst_dpman_get_manager)
+	  restructured DParam docs
+
+2005-01-25  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* gst-element-check.m4:
+	  Only check for gst-inspect if we haven't already
+	  found it in previous element check runs
+
+2005-01-25  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/Makefile.am:
+	* docs/libs/Makefile.am:
+	  fixed install rules to treat style.css as optional
+
+2005-01-24  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/Makefile.am:
+	* docs/libs/Makefile.am:
+	  install style.css along with docs
+	* docs/gst/tmpl/gstbin.sgml:
+	* docs/gst/tmpl/gstclock.sgml:
+	* docs/gst/tmpl/gstdata.sgml:
+	* docs/gst/tmpl/gstelement.sgml:
+	* gst/gstbin.h:
+	* gst/gstelement.c: (gst_element_class_init):
+	* gst/gstelement.h:
+	  fixing incomplete docs
+
+2005-01-24  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* gst/elements/gstfilesink.c: (gst_filesink_handle_event):
+	  Don't unref seek event twice when fflush() fails
+	  
+2005-01-22  David Schleef  <ds@schleef.org>
+
+	* configure.ac: Add --disable-valgrind. (partial fix for #164890)
+
+2005-01-21  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/Makefile.am:
+	* docs/libs/Makefile.am:
+	  added params for deprecation guards
+	* gst/gst.c:
+	* gst/gst.h:
+	* gst/gsterror.c: (_gst_resource_errors_init),
+	(_gst_stream_errors_init):
+	* gst/gsterror.h:
+	  documented some more enums
+
+2005-01-19  Jan Schmidt  <thaytan@mad.scientist.com>
+	* gst/autoplug/gstspideridentity.c:
+	Cosmetic fix - spider_find_peek should be static
+	* gst/parse/parse.l:
+	Applying fix for #164261
+
+2005-01-18  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstplugin.sgml:
+	* docs/libs/gstreamer-libs-sections.txt:
+	* docs/libs/tmpl/gstcontrol.sgml:
+	* gst/gstbuffer.h:
+	* gst/gsttag.h:
+	* gst/gstvalue.c:
+	  added docs for the TAG defines
+
+2005-01-18  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/schedulers/gstoptimalscheduler.c: (schedule_group):
+	  Only unref entry if there is an entry.
+
+2005-01-17  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(remove_from_group), (schedule_group), (normalize_group),
+	(gst_opt_scheduler_iterate):
+	Also ref/unref decoupled elements before iterating the
+	group since they are not added to the list of elements.
+
+2005-01-17  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/highlevel-components.xml:
+	  Add subtitle/streamselection as new features to playbin.
+
+2005-01-17  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/manual.xml:
+	  Re-enable dataaccess docs (oops).
+
+2005-01-17  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/advanced-types.xml:
+	* docs/random/mimetypes:
+	  Add documentation on libsndfile types (#163309), by Steve Baker
+	  <steve@stevebaker.org>.
+	* gst/gstelement.c: (gst_element_release_request_pad):
+	  If an element has no explicit function, just remove the pad.
+
+2005-01-17  Luca Ognibene  <luogni@tin.it>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/registries/gstxmlregistry.c: (gst_xml_registry_load):
+	  Fix memleak (#163801).
+
+2005-01-17  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/elements/gsttee.c: (gst_tee_getcaps), (gst_tee_link):
+	  I think this is actually more correct...
+
+2005-01-16  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstprobe.c: (gst_probe_dispatcher_dispatch):
+	  Another workaround for memory access while destroyed in callback.
+	  Please, someone with refcount knowledge, have a look at this.
+
+2005-01-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/faq/faq.xml:
+	* docs/faq/legal.xml:
+	  move the legal Q&A here
+
+2005-01-14  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/elements/gsttee.c: (gst_tee_getcaps), (gst_tee_link),
+	(gst_tee_request_new_pad):
+	  Fix negotiation.
+
+2005-01-14  Stephane LOEUILLET  <stephane.loeuillet@tiscali.fr>
+
+	* docs/random/omega/caps2:
+	* testsuite/caps/caps_strings:
+	  replace framerate aproximations by their real value
+	  (24000/1001, 30000/1001, 60000/1001)
+	  Partially fixes bug #164049
+
+2005-01-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/gst/Makefile.am:
+	  don't fail on the stupid GstPoptOption
+
+2005-01-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gst/gstpad.h:
+	* gst/gstprobe.c:
+	  allow probes to work on ghost pads by realizing the pad
+	  probe debugging
+
+2005-01-11  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstpad.sgml:
+	* gst/gstpad.c: (gst_pad_set_active_recursive):
+	* gst/gstpad.h:
+	  Add gst_pad_set_active_recursive().
+
+2005-01-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/random/release:
+	  updates
+	* gst/gst_private.h:
+	* gst/gstinfo.c:
+	* gst/gstobject.c:
+	  move deep_notify logging to a new category
+	* gst/gstprobe.c:
+	* gst/gstprobe.h:
+	  add stuff so bindings can wrap probes
+
+2005-01-09  Stephane LOEUILLET  <stephane.loeuillet@tiscali.fr>
+
+	* gst/gstplugin.c: (gst_plugin_load):
+	  Fix plugin loading if plugin/lib was already loaded. Fixes
+	  #163383
+
+2005-01-09  Sebastien Cote  <sc5@hermes.usherb.ca>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstpluginfeature.c: (gst_plugin_feature_ensure_loaded):
+	  Protect plugin loading by a mutex so it's threadsafe. Fixes
+	  #163234.
+
+2005-01-08  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstevent.c: (_gst_event_copy):
+	  Reference source object when copying events, since it'll be
+	  dereferenced on event dereferencing as well.
+
+2005-01-08  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstevent.sgml:
+	* gst/gstevent.c: (gst_event_new_filler_stamped),
+	(gst_event_filler_get_duration):
+	* gst/gstevent.h:
+	  Add two new functions for filler events (which are used to
+	  synchronize streams if one of them is not having any data
+	  for a while) without interrupting the actual data-stream.
+	  Basically a no-op.
+	* gst/gstqueue.c: (gst_queue_init), (gst_queue_getcaps),
+	(gst_queue_link_sink), (gst_queue_link_src),
+	(gst_queue_change_state):
+	  Allow for renegotiation while filled. Required for stream
+	  switching while playing.
+
+2005-01-08  Benjamin Otte  <otte@gnome.org>
+
+	* gst/gstelement.c: (gst_element_link_many):
+	  fix up g_return_if_fail's
+	* po/LINGUAS:
+	* po/de.po:
+	  add German translation, that was somehow not included
+
+2005-01-08  Stephane LOEUILLET  <stephane.loeuillet@tiscali.fr>
+
+	* docs/random/mimetypes:
+	  add 2 more 4CC code for DV (HDTV and SDTV-LongPlay profiles)
+	  do not add them to riff-lib as they are not common
+
+2005-01-07  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstprobe.c: (gst_probe_dispatcher_dispatch):
+	  Check for existence of probe after performing the probe before
+	  re-accessing it to prevent segfaults caused by removal of the
+	  probe in the callback.
+
+2005-01-05  David Schleef  <ds@schleef.org>
+
+	* testsuite/registry/Makefile.am:
+	* testsuite/registry/gst-print-formats.c:
+	(print_pad_templates_info), (print_element_list),
+	(print_typefind_list), (list_sort_func), (get_typefind_mime_list),
+	(g_list_uniqify), (get_pad_templates_info),
+	(get_element_mime_list), (print_mime_list), (main): A little
+	program that looks through the registry to find elements of
+	a given type.  Not particularly interesting as a test, except
+	that there's no other test covering the same area.
+
+2005-01-05  David Schleef  <ds@schleef.org>
+
+	* tools/gst-launch.c: (idle_func), (fault_handler_sighandler),
+	(fault_handler_sigaction), (fault_spin),
+	(sigint_handler_sighandler), (play_handler), (main): Fix deadlocks
+	in signal.h-type signal handlers by not calling forbidden functions,
+	including gst_element_set_state().
+
+2005-01-05  David Schleef  <ds@schleef.org>
+
+	* gst/gstvalue.h: Mark _gst_reserved[] as private
+
+2005-01-05  David Schleef  <ds@schleef.org>
+
+	* gst/gstvalue.c: Fix doc build problem.
+
+2005-01-05  David Schleef  <ds@schleef.org>
+
+	* gst/gstvalue.c: Add some documentation
+
+2005-01-05  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/README:
+	  another shell oneliner for empty return value docs
+	* gst/gstcaps.c:
+	* gst/gstvalue.c:
+	* libs/gst/control/dparam.c:
+	  more doc fixes (parameters and return values)
+
+2005-01-05  Vincent Torri  <torri@iecn.u-nancy.fr>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstregistry.h:
+	* gst/registries/gstxmlregistry.c:
+	  Fix macro's for Mingw (fixes #162276).
+
+2005-01-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/README:
+	  quick shell oneliner to find undocumented members
+	* docs/gst/tmpl/gstplugin.sgml:
+	* docs/gst/tmpl/gstscheduler.sgml:
+	* docs/gst/tmpl/gstthread.sgml:
+	  more enumtypes cleanup
+	* gst/gsterror.h:
+	  activated documentation comments, now someone needs to document
+	  the enums :(
+
+2005-01-03  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/manual.xml:
+	  Add dataaccess part (doh!).
+
+2005-01-03  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-autoplugging.xml:
+	  Fix typo (intiate -> initiate).
+
+2005-01-02  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/random/bbb/streamselection:
+	  Add some notes on how to handle multi-subtitle/-audio streams.
+
+2004-12-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/gstreamer-docs.sgml:
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstenumtypes.sgml:
+	* docs/gst/tmpl/gsterror.sgml:
+	* docs/gst/tmpl/gstevent.sgml:
+	* docs/gst/tmpl/gstpad.sgml:
+	* docs/gst/tmpl/gstpadtemplate.sgml:
+	* docs/gst/tmpl/gstthread.sgml:
+	  removed gstenumtypes section from docs and put all the enums into
+	  their sections
+
+2004-12-27  Stephane Loeuillet  <stephane.loeuillet@tiscali.fr>
+
+	* gst/gstplugin.c:
+	  document gst_library_load a bit more (riff special case + return
+	  value if already loaded)
+	* testsuite/bytestream/filepadsink.c:
+	  plugin name is 'gstbytestream', not 'bytestream'
+
+2004-12-25  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/random/bbb/subtitles:
+	  Add some first mind rumblings on proper subtitle support.
+
+2004-12-24  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* po/ca.po:
+	* po/sv.po:
+	  updated translations
+
+2004-12-23  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-dataaccess.xml:
+	  Add section on how to use fakesrc/fakesink/identity in your
+	  application, plus section on how to embed plugins. Also mention
+	  probes.
+	* docs/manual/appendix-checklist.xml:
+	* docs/manual/appendix-debugging.xml:
+	* docs/manual/appendix-gnome.xml:
+	* docs/manual/appendix-integration.xml:
+	  Debug -> checklist, GNOME -> integration, add sections on Linux,
+	  KDE integration and add other things useful for application
+	  development.
+	* docs/manual/manual.xml:
+	  Remove some fixmes, update some file pointers.
+	* docs/pwg/appendix-checklist.xml:
+	  Fix typo.
+	* docs/pwg/building-boiler.xml:
+	  Remove ugly header and add commented fixme.
+	* docs/pwg/pwg.xml:
+	  Add fixme.
+	* examples/manual/Makefile.am:
+	  Add example for added docs.
+
+2004-12-23  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  back to HEAD
+
+=== release 0.8.8 ===
+
+2004-12-23  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	  Releasing 0.8.8, "I'll Take Care Of You"
+
+2004-12-21  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  second prerelease
+
+2004-12-21  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Wim Taymans
+
+	* gst/gstbin.c:
+	  Fix for #159852 - make iterate emission threadsafe
+
+2004-12-21  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/faq/cvs.xml:
+	  notes about new fdo account request
+
+2004-12-20  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/gstreamer-docs.sgml:
+	* docs/gst/tmpl/gstenumtypes.sgml:
+	* docs/gst/tmpl/gstplugin.sgml:
+	* docs/libs/gstreamer-libs-docs.sgml:
+	  Added missing short docs. Added ids for navigation.
+
+2004-12-19  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-autoplugging.xml:
+	* docs/manual/advanced-schedulers.xml:
+	* docs/manual/advanced-threads.xml:
+	  Rewrites. Remove cothreads, go a bit into opt specifically,
+	  document threads and their gotchas, and do some technical stuff
+	  on autoplugging plus add some working examples. Fixes #157395.
+	* examples/manual/Makefile.am:
+	  Add typefind/autoplugger example (one that actually works).
+	  Remove queue example since it's a duplicate of the thread one.
+
+2004-12-17  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/gstvalue.c: (gst_value_deserialize_string):
+	  use deprecated g_value_set_string_take_ownership to keep compatible
+	  with glib 2.2
+
+2004-12-17  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/gstvalue.c: (gst_value_deserialize_string):
+	  revert last patch, only dom a g_utf8_validate now before accepting
+	  the string - caps parsing strips " from strings so we can't rely on
+	  them
+	* testsuite/caps/value_serialize.c: (test_string_deserialization):
+	  disable a test that tested the above and comment it
+
+2004-12-16  Steve Lhomme <steve.lhomme@free.fr>
+
+	Patch reviewed by David Schleef  <ds@schleef.org>
+
+	* win32/gstenumtypes.c: Update from gst/gstenumtypes.c (See
+	bug #153882)
+	* win32/gstenumtypes.h: same
+
+2004-12-17  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstpad.c: (gst_pad_query):
+	  Do query on realized pad, similar to how convert/send_event handle
+	  this. Also makes sense, since this pad belongs to the function to
+	  which this query will be sent. Fixes #158163.
+
+2004-12-16  Christian Fredrik Kalager Schaller  <uraeus@gnome.org>
+
+	* docs/manual/appendix-programs.xml: fix pipeline to actually work
+
+2004-12-16  Christian Fredrik Kalager Schaller  <christian@fluendo.com>
+
+	* docs/faq/general.xml: fix pipeline to actually work
+
+2004-12-16  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/gstvalue.c: (gst_value_deserialize_string):
+	  check that a simple string that gets deserialized does not contain
+	  invalid characters
+	* testsuite/caps/value_serialize.c: (test_string_deserialization):
+	  remove a test that tested a wring behaviour
+
+2004-12-16  Matt Kraai  <kraai@alumni.cmu.edu>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/intro-motivation.xml:
+	  Fix typos.
+
+2004-12-16  Edward Hervey  <bilboed@bilboed.com>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/gst/tmpl/gstprobe.sgml:
+	  Fix documentation of probe callback - it is supposed to return
+	  FALSE, not TRUE, to remove data from the stream (#159087).
+
+2004-12-16  Daniel Gazard  <dany42@free.fr>
+
+	Reviewed by:  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstelementfactory.c: (gst_element_factory_create):
+	  Fix compile failure if compiling without libxml2 support (#149936).
+
+2004-12-15  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-autoplugging.xml:
+	* docs/manual/highlevel-components.xml:
+	  Move spider from autoplugging to components. Autoplugging is for
+	  internals, not for solutions. ;-).
+
+2004-12-15  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/random/ds/0.9-suggested-changes:
+	  Make note on device/location/uri property names.
+
+2004-12-15  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-autoplugging.xml:
+	* docs/manual/advanced-clocks.xml:
+	* docs/manual/advanced-interfaces.xml:
+	* docs/manual/advanced-metadata.xml:
+	* docs/manual/advanced-position.xml:
+	* docs/manual/advanced-schedulers.xml:
+	* docs/manual/advanced-threads.xml:
+	* docs/manual/appendix-gnome.xml:
+	* docs/manual/appendix-programs.xml:
+	* docs/manual/appendix-quotes.xml:
+	* docs/manual/autoplugging.xml:
+	* docs/manual/basics-bins.xml:
+	* docs/manual/basics-data.xml:
+	* docs/manual/basics-elements.xml:
+	* docs/manual/basics-helloworld.xml:
+	* docs/manual/basics-init.xml:
+	* docs/manual/basics-pads.xml:
+	* docs/manual/basics-plugins.xml:
+	* docs/manual/bins-api.xml:
+	* docs/manual/bins.xml:
+	* docs/manual/buffers-api.xml:
+	* docs/manual/buffers.xml:
+	* docs/manual/clocks.xml:
+	* docs/manual/components.xml:
+	* docs/manual/cothreads.xml:
+	* docs/manual/debugging.xml:
+	* docs/manual/dparams-app.xml:
+	* docs/manual/dynamic.xml:
+	* docs/manual/elements-api.xml:
+	* docs/manual/elements.xml:
+	* docs/manual/factories.xml:
+	* docs/manual/gnome.xml:
+	* docs/manual/goals.xml:
+	* docs/manual/helloworld.xml:
+	* docs/manual/helloworld2.xml:
+	* docs/manual/highlevel-components.xml:
+	* docs/manual/highlevel-xml.xml:
+	* docs/manual/init-api.xml:
+	* docs/manual/intro-basics.xml:
+	* docs/manual/intro-motivation.xml:
+	* docs/manual/intro-preface.xml:
+	* docs/manual/intro.xml:
+	* docs/manual/links-api.xml:
+	* docs/manual/links.xml:
+	* docs/manual/manual.xml:
+	* docs/manual/motivation.xml:
+	* docs/manual/pads-api.xml:
+	* docs/manual/pads.xml:
+	* docs/manual/plugins-api.xml:
+	* docs/manual/plugins.xml:
+	* docs/manual/programs.xml:
+	* docs/manual/queues.xml:
+	* docs/manual/quotes.xml:
+	* docs/manual/schedulers.xml:
+	* docs/manual/states-api.xml:
+	* docs/manual/states.xml:
+	* docs/manual/threads.xml:
+	* docs/manual/typedetection.xml:
+	* docs/manual/win32.xml:
+	* docs/manual/xml.xml:
+	  Try 2. This time, include a short preface as a "general
+	  introduction", also add code blocks around all code samples
+	  so they get compiled. We still need a way to tell readers
+	  the filename of the code sample. In some cases, don't show
+	  all code in the documentation, but do include it in the generated
+	  code. This allows for focussing on specific bits in the docs,
+	  while still having a full test application available.
+	* examples/manual/Makefile.am:
+	  Fix up examples for new ADM. Add several of the new examples that
+	  were either added or were missing from the build system.
+	* examples/manual/extract.pl:
+	  Allow nameless blocks.
+
+2004-12-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/manual/elements-api.xml:
+	* docs/manual/helloworld.xml:
+	* examples/manual/extract.pl:
+	  fix last example.  Add example of adding code blocks that are not
+	  shown in docbook output.
+
+2004-12-15  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/manual/dynamic.xml:
+	* docs/manual/elements-api.xml:
+	* docs/manual/gnome.xml:
+	* docs/manual/helloworld2.xml:
+	* docs/manual/init-api.xml:
+	* docs/manual/queues.xml:
+	* docs/manual/threads.xml:
+	* docs/manual/xml.xml:
+	* examples/manual/extract.pl:
+	  Make it possible to extract example code from separate blocks.
+	  Should make Ronald happy.
+
+2004-12-15  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(remove_from_group), (group_elements_set_visited),
+	(normalize_group), (gst_opt_scheduler_iterate):
+	Fix bug where a flag was not updated on a decoupled entry point 
+	because we were just checking the group element list and decoupled
+	elements are not in that list..
+
+2004-12-15  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/manual/advanced-autoplugging.xml:
+	* docs/manual/advanced-clocks.xml:
+	* docs/manual/advanced-dparams.xml:
+	* docs/manual/advanced-interfaces.xml:
+	* docs/manual/advanced-metadata.xml:
+	* docs/manual/advanced-position.xml:
+	* docs/manual/advanced-schedulers.xml:
+	* docs/manual/advanced-threads.xml:
+	* docs/manual/appendix-debugging.xml:
+	* docs/manual/appendix-gnome.xml:
+	* docs/manual/appendix-programs.xml:
+	* docs/manual/appendix-quotes.xml:
+	* docs/manual/appendix-win32.xml:
+	* docs/manual/autoplugging.xml:
+	* docs/manual/basics-bins.xml:
+	* docs/manual/basics-data.xml:
+	* docs/manual/basics-elements.xml:
+	* docs/manual/basics-helloworld.xml:
+	* docs/manual/basics-init.xml:
+	* docs/manual/basics-pads.xml:
+	* docs/manual/basics-plugins.xml:
+	* docs/manual/bins-api.xml:
+	* docs/manual/bins.xml:
+	* docs/manual/buffers-api.xml:
+	* docs/manual/buffers.xml:
+	* docs/manual/clocks.xml:
+	* docs/manual/components.xml:
+	* docs/manual/cothreads.xml:
+	* docs/manual/debugging.xml:
+	* docs/manual/dparams-app.xml:
+	* docs/manual/dynamic.xml:
+	* docs/manual/elements-api.xml:
+	* docs/manual/elements.xml:
+	* docs/manual/factories.xml:
+	* docs/manual/gnome.xml:
+	* docs/manual/goals.xml:
+	* docs/manual/helloworld.xml:
+	* docs/manual/helloworld2.xml:
+	* docs/manual/highlevel-components.xml:
+	* docs/manual/highlevel-xml.xml:
+	* docs/manual/init-api.xml:
+	* docs/manual/intro-motivation.xml:
+	* docs/manual/intro-preface.xml:
+	* docs/manual/intro.xml:
+	* docs/manual/links-api.xml:
+	* docs/manual/links.xml:
+	* docs/manual/manual.xml:
+	* docs/manual/motivation.xml:
+	* docs/manual/pads-api.xml:
+	* docs/manual/pads.xml:
+	* docs/manual/plugins-api.xml:
+	* docs/manual/plugins.xml:
+	* docs/manual/programs.xml:
+	* docs/manual/queues.xml:
+	* docs/manual/quotes.xml:
+	* docs/manual/schedulers.xml:
+	* docs/manual/states-api.xml:
+	* docs/manual/states.xml:
+	* docs/manual/threads.xml:
+	* docs/manual/typedetection.xml:
+	* docs/manual/win32.xml:
+	* docs/manual/xml.xml:
+	  First try at rewriting the ADM. Needs lotsamore work, but some
+	  parts might already be somewhat useful.
+	* docs/pwg/advanced-interfaces.xml:
+	  Remove properties interface, it never actually existed (except for
+	  on my HD...).
+
+2004-12-13  David Schleef  <ds@schleef.org>
+
+	* gst/gstpad.c: (gst_pad_set_explicit_caps): Allow caps to
+	be NULL (bug #160220).
+
+2004-12-13  David Schleef  <ds@schleef.org>
+
+	* configure.ac: remove all mmx stuff, because it's not used.
+	* docs/random/ds/0.9-suggested-changes: additional notes
+	* include/Makefile.am: we don't use these anymore
+	* include/mmx.h: remove
+	* include/sse.h: remove
+
+2004-12-13  Stephane Loeuillet  <stephane.loeuillet@tiscali.fr>
+
+	* docs/random/mimetypes:
+	  Add FOURCC code for h264 codec (VSSH)
+	  Add alternate FOURCC codes for h263 related codecs
+
+2004-12-10  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/manual/programs.xml:
+	  Added more gst-launch examples.
+
+2004-12-09  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstqueue.c: (gst_queue_handle_src_query):
+	  Check for availability again.
+
+2004-12-09  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstcaps.c: (gst_caps_compare_structures):
+	  Simple caps go first. This has the nice side-effect of fixing an
+	  obscure warning.
+
+2004-12-09  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstversion.h.in:
+	  Protect header.
+
+2004-12-09  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/schedulers/gstoptimalscheduler.c:
+	(gst_opt_scheduler_schedule_run_queue), (schedule_chain),
+	(gst_opt_scheduler_get_wrapper):
+	  When we're recursing into a chain run, only run the directly
+	  related group, not all queued ones. This will fix a possible
+	  deadlock in chains with more than two groups.
+
+2004-12-08  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* autogen.sh:
+	  remove patch if autopoint fails
+
+2004-12-08  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	  Document Thomas' addition, fix build, make Luis the sheriff happy.
+
+2004-12-07  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* gst/gstplugin.c:
+	* gst/gstplugin.h:
+	  add accessor for version field
+
+2004-12-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	submitted by: Luca Ferretti <elle.uca@infinito.it>
+
+	* po/LINGUAS:
+	* po/it.po:
+	  New tranlation added: Italian
+
+2004-12-03  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstpad.c: (gst_pad_is_negotiated),
+	(gst_pad_get_negotiated_caps):
+	  GST_RPAD_* will only operate on a RealPad (it casts the pointer,
+	  it doesn't actually check the contents), so be sure to hand it
+	  a RealPad else we'll crash.
+
+2004-12-03  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gstqueue.c: (gst_queue_init), (gst_queue_getcaps),
+	(gst_queue_link), (gst_queue_handle_src_query):
+	Reverted to 1.110 until this makes the testsuite and various
+	apps work.
+
+2004-12-01  Christian Fredrik Kalager Schaller <christian@fluendo.com>
+
+	* docs/upload.mak: fix included CVS conflict strings
+
+2004-12-01  William Jon McCann  <mccann@jhu.edu>
+
+	Reviewed by: Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstelement.c: (gst_element_error_full):
+	  Use g_error_new_literal because error text may have
+	  percentage signs in it. Fixes #160019.
+
+2004-12-01  Benjamin Otte  <otte@gnome.org>
+
+	* gst/elements/gstbufferstore.c:
+	(gst_buffer_store_add_buffer_func):
+	  don't try to make subbuffers bigger than they can be. (fixes
+	  #159970)
+
+2004-11-29  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstvalue.sgml:
+	  Add new function to docs to fix build.
+
+2004-11-29  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstcaps.c: (gst_caps_is_fixed_foreach):
+	* gst/gstpad.c: (_gst_pad_default_fixate_value),
+	(_gst_pad_default_fixate_foreach):
+	* gst/gstvalue.c: (gst_type_is_fixed), (gst_value_is_fixed):
+	* gst/gstvalue.h:
+	  Deprecate _type_is_fixed, use _value_is_fixed instead, since
+	  in some cases (arrays), the fixedness depends on the content.
+	* gst/gstqueue.c: (gst_queue_handle_src_query):
+	  Check for availability before doing something.
+
+2004-11-29  Wim Taymans  <wim@fluendo.com>
+
+	* testsuite/threads/Makefile.am:
+	* testsuite/threads/signals.c: (gst_test_get_type),
+	(gst_test_class_init), (gst_test_init), (gst_test_dispose),
+	(gst_test_set_property), (gst_test_get_property),
+	(gst_test_do_signal1), (signal2_handler), (gst_test_do_signal2),
+	(gst_test_do_prop), (run_thread), (main):
+	Added a bunch of testcases that show threadsafety bugs in glib.
+
+2004-11-29  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/manual/programs.xml:
+	  Added a first batch of gst-launch examples, as provided by Ronald
+	  and others from the devel-mlist
+
+2004-11-28  Benjamin Otte  <otte@gnome.org>
+
+	* gst/gstelement.c: (gst_element_negotiate_pads):
+	  simplify
+	* gst/gstvalue.c: (gst_string_wrap), (gst_string_unwrap),
+	(gst_value_serialize_string), (gst_value_deserialize_string):
+	  add unwrapping of previously wrapped strings. Fix bug in wrapping
+	  while at it.
+	* testsuite/caps/value_serialize.c: (test1),
+	(test_string_serialization), (test_string_deserialization), (main):
+	  add tests for string (de)serialization
+
+2004-11-26  Wim Taymans  <wim@fluendo.com>
+
+	* testsuite/threads/159566.c: (object_deep_notify), (main):
+	* testsuite/threads/Makefile.am:
+	Added testsuite to show bug #159566
+
+2004-11-25  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gstthread.c: (gst_thread_dispose), (gst_thread_change_state),
+	(gst_thread_child_state_change), (gst_thread_main_loop):
+	Ref the thread object in the GThread mainloop. Break out of the
+	thread mainloop if it holds the last ref. This properly exits
+	the threads when disposing the thread from its own context. It
+	also avoids possible deadlocks in the dispose function.
+
+2004-11-24  Martin Soto  <martinsoto@users.sourceforge.net>
+
+	* gst/gstqueue.c (gst_queue_link_sink): Grab the lock only when
+	it is necessary to wait.
+
+2004-11-24  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/building-boiler.xml:
+	  Make description somewhat clearer.
+
+2004-11-23  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/upload.mak:
+	  Apparently docs changed location on FDO's server.
+
+2004-11-23  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/appendix-checklist.xml:
+	  Add some random notes on things to check when writing an element.
+	  This list can be extended as people see fit.
+
+2004-11-23  Martin Soto  <martinsoto@users.sourceforge.net>
+
+	* gst/gstqueue.c (gst_queue_init, gst_queue_link_sink)
+	(gst_queue_link_src): Allow for renegotiating the caps of the sink
+	pad. The queue will now wait until it is empty and forward the new
+	caps to the source.
+	* gst/gstbin.c (gst_bin_set_element_sched)
+	(gst_bin_unset_element_sched): Make sure that all elements and
+	links are registered and unregistered with the scheduler exactly
+	once. This elaborates on a fix by Benjamin Otte, but
+	guarantees that decoupled elements are also registered.
+
+2004-11-11  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/manual/quotes.xml:
+	  add a quote
+	* configure.ac:
+	* gst/gst.c:
+	* gst/gstinfo.c:
+	  add LIBDIR and move init message higher up so it's at the start
+
+2004-11-08  Christian Fredrik Kalager Schaller  <christian@fluendo.com>
+
+	* gst/schedulers/Makefile.am: fix disted build fair by including .h file
+	* gstreamer.spec.in: add fair
+
+2004-11-08  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/elements/gstfakesink.c: (gst_fakesink_class_init):
+	* gst/elements/gstidentity.c: (gst_identity_class_init):
+	  Use G_SIGNAL_TYPE_STATIC_SCOPE, patch by Christophe Fergeau
+	  <teuf@gnome.org> (#157263).
+	* gst/elements/gsttypefindelement.c: (gst_type_find_element_init),
+	(gst_type_find_handle_src_query):
+	  Subtract size of internally stored data from position queries.
+
+2004-11-07  Martin Soto  <martinsoto@users.sourceforge.net>
+
+	* gst/schedulers/fairscheduler.c:
+	* gst/schedulers/faircothreads.c:
+	* gst/schedulers/faircothreads.h:
+	New cothread based scheduler: Fair scheduler.
+	* gst/schedulers/gthread-cothreads.h: 
+	Add the standard #if around the whole file.
+	Defining symbol GTHREAD_COTHREADS_NO_DEFINITIONS will now prevent
+	compilation of the functions defined in this file. This is
+	necessary to be able to use this file as a normal header.
+	* gst/schedulers/Makefile.am: Add compiling support for fair
+	scheduler.
+	* docs/gst/Makefile.am (IGNORE_HFILES): Exclude internal fair
+	scheduler cothreads layer from documentation generation.
+
+2004-11-07  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/autoplug/gstspideridentity.c:
+	(gst_spider_identity_sink_loop_type_finding):
+	  Don't crash if that function is not implemented.
+
+2004-11-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/advanced-types.xml:
+	  Another typo.
+
+2004-11-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/intro-preface.xml:
+	  Hm, ok, so the brackets weren't really useful...
+	* docs/pwg/other-ntoone.xml:
+	  Fix embarassing typo.
+
+2004-11-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/intro-preface.xml:
+	  Rewrite preface.
+
+2004-11-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* docs/pwg/advanced-scheduling.xml:
+	* docs/pwg/advanced-tagging.xml:
+	* docs/pwg/advanced-types.xml:
+	* docs/pwg/building-boiler.xml:
+	* docs/pwg/building-chainfn.xml:
+	* docs/pwg/building-signals.xml:
+	* docs/pwg/building-state.xml:
+	* docs/pwg/building-testapp.xml:
+	* docs/pwg/intro-basics.xml:
+	* docs/pwg/other-manager.xml:
+	* docs/pwg/other-source.xml:
+	  Typo fixes.
+	* docs/pwg/other-manager.xml:
+	  Add some first content. No example code yet.
+	* gst/elements/gstfilesink.c: (gst_filesink_handle_event):
+	  Remove double newlines.
+
+2004-11-04  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(remove_from_group), (normalize_group), (group_migrate_connected),
+	(gst_opt_scheduler_iterate):
+	* testsuite/schedulers/.cvsignore:
+	* testsuite/schedulers/Makefile.am:
+	* testsuite/schedulers/queue_link.c: (main):
+	Added testcase for scheduler segfault.
+	Fix scheduler segfault when removing a decoupled
+	entry point as the last element from a group.
+
+2004-11-03  Christophe Fergeau  <teuf@gnome.org>
+
+	* gst/gstmarshal.list: add missing marshaller, fixes build
+
+2004-11-03  Christophe Fergeau  <teuf@gnome.org>
+
+	* docs/random/signal: added notes about using BOXED for GstBuffer
+	signal marshallers, not POINTER
+
+2004-11-03  Christophe Fergeau  <teuf@gnome.org>
+
+	* gst/elements/gstfakesink.c: (gst_fakesink_class_init):
+	* gst/elements/gstfakesrc.c: (gst_fakesrc_class_init): more
+	POINTER=>BOXED changes to marshal GstBuffers
+
+2004-11-03  Christophe Fergeau  <teuf@gnome.org>
+
+	* gst/elements/gstidentity.c: (gst_identity_class_init): GstBuffer is 
+	a boxed type, marshal the signal with VOID__BOXED, not VOID__POINTER
+
+2004-11-03  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/gstreamer-sections.txt:
+	* docs/gst/tmpl/gstcaps.sgml:
+	* docs/gst/tmpl/gsterror.sgml:
+	* docs/gst/tmpl/gstinfo.sgml:
+	* docs/gst/tmpl/gstmacros.sgml:
+	* docs/gst/tmpl/gstutils.sgml:
+	* docs/random/ensonic/interfaces.txt:
+	* gst/gstinfo.h:
+	  added some more docs, removed two obsolete defines
+
+2004-11-02  Kjartan Maraas <as at gnome.org>
+
+	reviewed by: Wim Taymans, Ronald Bultje.
+
+	* gst/cothreads.c: (cothread_create):
+	* gst/gstbin.c: (gst_bin_add_func), (gst_bin_remove_func),
+	(gst_bin_child_state_change_func):
+	* gst/gstbuffer.c: (gst_buffer_span):
+	* gst/gstelement.c: (gst_element_get_index),
+	(gst_element_get_event_masks), (gst_element_get_query_types),
+	(gst_element_get_formats):
+	* gst/gsterror.c: (_gst_core_errors_init),
+	(_gst_library_errors_init), (_gst_resource_errors_init),
+	(_gst_stream_errors_init):
+	* gst/gstobject.c: (gst_object_default_deep_notify):
+	* gst/gstpad.c: (gst_pad_get_event_masks),
+	(gst_pad_get_internal_links_default):
+	* gst/gstplugin.c: (gst_plugin_register_func),
+	(gst_plugin_get_module):
+	* gst/gststructure.c: (gst_structure_get_string),
+	(gst_structure_get_abbrs), (gst_structure_from_abbr),
+	(gst_structure_to_abbr):
+	* gst/gstutils.c: (gst_print_element_args):
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(setup_group_scheduler), (gst_opt_scheduler_iterate):
+	Aplied part of patch #157127: Cleanup of issues reported by 
+	sparse.
+	Also do not try to use cothreads when there is no cothread
+	context yet.
+
+2004-11-02  Sebastien Cote <sc5 at hermes.usherb.ca>
+
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(gst_opt_scheduler_iterate):
+	Applied patch #154061. Running a pipeline in which an element 
+	calls GST_ELEMENT_ERROR in the chain function, the opt 
+	scheduler doesn't unref the chain so it never gets freed.
+
+2004-11-02  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gststructure.c: (gst_structure_get_abbrs),
+	(gst_structure_from_abbr), (gst_structure_to_abbr):
+	Remove that ugly if-then thing in the code that converts
+	between strings and types.
+
+2004-11-02  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gstscheduler.c: (gst_scheduler_add_element),
+	(gst_scheduler_remove_element), (gst_scheduler_state_transition):
+	Aplied clock distribution patch, this should fix bug
+	#148787.
+
+2004-10-27  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	Submitted by: Kjartan Maraas <kmaraas@broadpark.no>
+
+	* po/LINGUAS:
+	* po/nb.po:
+	  Added Norwegian Bokmaal translation
+
+2004-10-22  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* tools/gst-inspect.c: (print_signal_info):
+	  print signal arguments as pointers if they are
+
+2004-10-22  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/pwg/building-boiler.xml:
+	  exchanged GTK_ macros with G_TYPE macros (as pointed out by mathrick)
+
+2004-10-19  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/parse/parse.l:
+	* testsuite/parse/parse1.c: (main):
+	Since parse can do 'element name=a:b' make 'a:b.' work as
+	well. 
+	Added testcase to verify fix.
+
+2004-10-19  Wim Taymans  <wim at fluendo dot com>
+
+	* tools/gst-inspect.c: (print_pad_info), (print_plugin_features):
+	Use the realpad when printing the direction.
+	Add extra \n when printing extensions of typefind factories.
+
+2004-10-13  David Schleef  <ds@schleef.org>
+
+	* examples/manual/Makefile.am: $< isn't portable in Makefile
+	rules.
+
+2004-10-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/gst/tmpl/gstobject.sgml:
+	* docs/gst/tmpl/gstplugin.sgml:
+	* docs/gst/tmpl/gstpluginfeature.sgml:
+	* docs/gst/tmpl/gstregistry.sgml:
+	* docs/gst/tmpl/gstversion.sgml:
+	* gst/gstbin.c:
+	  more api documentation
+	* gst/gstplugin.c: (gst_plugin_register_func),
+	(gst_plugin_check_file), (gst_plugin_load_file):
+	  better error signaling and logging
+
+2004-10-11  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstqueue.c: (gst_queue_init), (gst_queue_handle_src_query):
+	  Subtract current queue contents from position queries.
+
+2004-10-11  Johan Dahlin  <johan@gnome.org>
+
+	* gst/gsturi.c (gst_uri_get_location): unescape string
+	(gst_uri_construct): escape string.
+
+2004-10-11  Benjamin Otte  <otte@gnome.org>
+
+	* gst/gstpad.c: (gst_pad_renegotiate), (gst_pad_try_set_caps),
+	(gst_pad_try_set_caps_nonfixed):
+	  allow renegotiation of unconnected pads (as inside spider). Simply
+	  return OK if unconnected - mimic try_set_caps there.
+
+2004-10-09  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstbin.c: (gst_bin_sync_children_state):
+	  Add missing break.
+
+2004-10-09  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
+
+	* gst/elements/gstfakesrc.c: (gst_fakesrc_get):
+	Set element to EOS before sending EOS event
+
+2004-10-08  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/elements/gsttypefindelement.c:
+	(gst_type_find_element_handle_event):
+	Handle EOS events when doing the transition from
+	typefind to data passing. This should fix the
+	infinite loops in short files.
+
+2004-10-07  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/gstthread.c: (gst_thread_change_state),
+	(gst_thread_child_state_change):
+	Make sure no iteration happens while performing
+	the state change as it could mess up the internal
+	consistency of the thread state.
+
+2004-10-07  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/gstthread.c: (gst_thread_dispose), (gst_thread_sync),
+	(gst_thread_change_state), (gst_thread_child_state_change):
+	Do not try to grab the iterate lock in the state change method
+	when we are in the same thread as the iterate or else we
+	could deadlock. Some other cleanups.
+
+2004-10-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  bump nano to cvs
+
+=== release 0.8.7 ===
+
+2004-10-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	  releasing 0.8.7, "A Cruise"
+
+2004-10-06  Stephane Loeuillet  <stephane.loeuillet@tiscali.fr>
+
+	* docs/random/mimetypes:
+	Add an entry for Sony ATRAC3 audio format with mime-type
+	used by rmdemux et riff-read
+
+2004-10-06  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/elements/gsttypefindelement.c: (stop_typefinding):
+	Push the buffer store instead of clearing it in case that
+	the stream is not seekable.
+
+2004-10-06  Wim Taymans  <wim at fluendo dot com>
+
+	* gst/gstthread.c: (gst_thread_init), (gst_thread_change_state),
+	(gst_thread_main_loop):
+	Lock the iteration and the state change so that automatic
+	negotiation and fixation does not happen at the same time
+	as the in stream negotiation.
+
+2004-10-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  bump nano to cvs
+
+=== release 0.8.6 ===
+
+2004-10-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	  releasing 0.8.6, "Narc"
+
+2004-10-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  prerel bump
+
+2004-10-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Steve Lhomme
+
+	* gst/elements/gstfakesrc.c:
+	* gst/elements/gstidentity.c:
+	* gst/gstthread.c:
+	  Fix for #153881
+
+2004-10-01  Wim Taymans  <wim at fluendo dot com>
+
+	* libs/gst/dataprotocol/dataprotocol.c: (gst_dp_crc):
+	Fix threadsafety of the crc checking function.
+
+2004-09-26  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Ronald Bultje
+
+	* gst/elements/gsttypefindelement.c: (stop_typefinding),
+	(gst_type_find_element_handle_event),
+	(gst_type_find_element_chain):
+	* gst/elements/gsttypefindelement.h:
+	 #153657.
+	 Filter out discont event from seekable sources when typefind
+	 asks them to seek.  Fixes typefind with demuxers for
+	 avi, asf and matroska.
+
+2004-09-26  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/gst/gstreamer-sections.txt:
+	* gst/gstcaps.c:
+	* gst/gstcaps.h:
+	* gst/gstpad.c:
+	  Revert preferred caps: (#147789)
+
+2004-09-19  Steve Lhomme  <steve.lhomme@free.fr>
+
+	* win32/dirent.c:
+	  fix a memory leak
+
+2004-09-10  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac:
+	  bump for prerelease
+
+2004-09-09  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/Makefile.am:
+	* docs/manual/elements-api.xml:
+	  restructure so that common stuff is shown first
+	* docs/manual/init-api.xml:
+	  convert to examples
+	* docs/manual/manual.xml:
+	* docs/manuals.mak:
+	* docs/url.entities:
+	  link to API on the website, possibly override later in build
+	* examples/manual/.cvsignore:
+	  ignore more
+	* examples/manual/Makefile.am:
+	  add more examples
+	* examples/manual/extract.pl:
+	  error out on failure
+
+2004-09-08  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* docs/gst/tmpl/gstthread.sgml:
+	* docs/manual/init-api.xml:
+	* examples/manual/Makefile.am:
+	  convert two code bits to examples
+
+2004-09-06  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* gst/gstelement.c: (gst_element_change_state):
+	  Well, actually, I was about to remove this insane assert when
+	  I noticed Wim already did that. A warning is nice so we can
+	  fix actual ugs (using --g-fatal-warnings and backtraces), so
+	  I added that instead.
+
+2004-09-06  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gstelement.c: (gst_element_threadsafe_properties_pre_run),
+	(gst_element_threadsafe_properties_post_run),
+	(gst_element_set_state), (gst_element_change_state):
+	Added extra refcounting around various places. 
+
+2004-09-06  Wim Taymans  <wim@fluendo.com>
+
+	* gst/gstpad.c: (gst_pad_link_call_link_functions):
+	Fix debug info.
+
+2004-09-06  Wim Taymans  <wim@fluendo.com>
+
+	* gst/schedulers/gstoptimalscheduler.c: (add_to_group),
+	(remove_from_group):
+	Some more debug info.
+
+2004-09-03  Wim Taymans  <wim@fluendo.com>
+
+	* gst/elements/gstfakesrc.c: (gst_fakesrc_class_init),
+	(gst_fakesrc_init), (gst_fakesrc_set_clock),
+	(gst_fakesrc_set_property), (gst_fakesrc_get_property),
+	(gst_fakesrc_get), (gst_fakesrc_change_state):
+	* gst/elements/gstfakesrc.h:
+	* gst/elements/gstidentity.c: (gst_identity_class_init),
+	(gst_identity_init), (gst_identity_chain),
+	(gst_identity_set_property), (gst_identity_get_property),
+	(gst_identity_change_state):
+	* gst/elements/gstidentity.h:
+	Added datarate properties to limit the datarate.
+
+>>>>>>> 1.808
+2004-08-25  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/autoplug/gstspider.c: (plugin_init):
+	  don't set a rank. We don't want to autoplug by inserting spiders.
+
+2004-08-22  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/autoplug/gstspider.c: (gst_spider_class_init),
+	(gst_spider_identity_plug):
+	  add a template for spider's sink
+	* gst/gst.c: (gst_register_core_elements):
+	  queue's rank should be NULL, we don't want spider to add it.
+
+2004-08-18  David Schleef  <ds@schleef.org>
+
+	* docs/gst/Makefile.am: Remove --ignore-fail-on-non-empty (#150331)
+	* docs/libs/Makefile.am: same
+	* docs/gst/tmpl/gstxml.sgml: Remove GstXMLNs
+	* docs/random/ds/0.9-planning: random additions
+	* docs/random/ds/0.9-suggested-changes: same
+	* gst/gstxml.h: remove vestigal GstXMLNs definition
+
+	Preferred caps: (#147789)
+	* docs/gst/gstreamer-sections.txt: Add symbols
+	* docs/gst/tmpl/gstcaps.sgml: Add symbols
+	* gst/gstcaps.c: (gst_caps_copy), (gst_caps_free),
+	(gst_caps_append), (gst_caps_copy_1), (gst_caps_intersect),
+	(gst_caps_union), (gst_caps_save_thyself), (gst_caps_load_thyself),
+	(gst_caps_get_preferred), (gst_caps_set_preferred),
+	(gst_caps_get_structure_by_id), (gst_caps_prefer_foreach),
+	(gst_caps_use_preferred): Handle caps preferences
+	* gst/gstcaps.h: Add caps preferences
+	* gst/gstpad.c: (gst_pad_link_get_preferred),
+	(gst_pad_link_fixate), (gst_pad_link_call_link_functions),
+	(gst_pad_renegotiate), (gst_pad_guess_preferred),
+	(gst_pad_get_caps), (gst_pad_push):  Use caps preferences for
+	negotiation.
+
+2004-08-17  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* gst/autoplug/gstspideridentity.c:
+	(gst_spider_identity_request_new_pad):
+	* gst/elements/gstaggregator.c: (gst_aggregator_base_init),
+	(gst_aggregator_init):
+	* gst/elements/gstfakesink.c: (gst_fakesink_base_init),
+	(gst_fakesink_init):
+	* gst/elements/gstfakesrc.c: (gst_fakesrc_base_init),
+	(gst_fakesrc_init):
+	* gst/elements/gstfdsink.c: (gst_fdsink_base_init),
+	(gst_fdsink_init):
+	* gst/elements/gstfdsrc.c: (gst_fdsrc_base_init), (gst_fdsrc_init):
+	* gst/elements/gstfilesink.c: (gst_filesink_base_init),
+	(gst_filesink_init):
+	* gst/elements/gstfilesrc.c: (gst_filesrc_base_init),
+	(gst_filesrc_init):
+	* gst/elements/gstidentity.c: (gst_identity_base_init),
+	(gst_identity_init):
+	* gst/elements/gstmultifilesrc.c: (gst_multifilesrc_base_init),
+	(gst_multifilesrc_init):
+	* gst/elements/gstpipefilter.c: (gst_pipefilter_base_init),
+	(gst_pipefilter_init):
+	* gst/elements/gststatistics.c: (gst_statistics_base_init),
+	(gst_statistics_init):
+	* gst/elements/gsttee.c: (gst_tee_base_init), (gst_tee_init):
+	* gst/gstqueue.c: (gst_queue_base_init), (gst_queue_init):
+	  s/gst_pad_new/&_from_template/
+	  register pad templates in the base_init function
+	  add static pad template definitions
+
+2004-08-17  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* testsuite/bytestream/gstbstest.c: (gst_bstest_init):
+	* testsuite/dynparams/dparamstest.c: (gst_dptest_init):
+	* testsuite/refcounting/pad.c: (main):
+	* testsuite/refcounting/thread.c: (create_thread_ghostpads):
+	  s/gst_pad_new/&_from_template/
+	  prepare deprecation of gst_pad_new
+
+2004-08-17  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	patch by: Luca Ognibene <skaboy81@virgilio.it>
+
+	* gst/gstcaps.c:
+	* gst/gstelement.c:
+	* gst/gstpad.c:
+	* gst/gstxml.c:
+	  fix memleaks.  Fixes #150001
+
+2004-08-17  Benjamin Otte  <in7y118@public.uni-hamburg.de>
+
+	* docs/random/ds/0.9-suggested-changes:
+	  add notes - mostly about pad templates
+
+2004-08-16  Steve Lhomme  <steve.lhomme@free.fr>
+
+	* win32/GStreamer.vcproj:
+	  temporary locale files are .gmo not .mo
+
+2004-08-16  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac: bump nano to cvs
+
 === release 0.8.5 ===
 
 2004-08-16  Thomas Vander Stichele  <thomas at apestaart dot org>
@@ -815,7 +2429,7 @@
 	* docs/manual/links-api.xml: 
           fixes for out of date info, incorrect info and grammar
 
-2004-07-15  Zaheer Abbas Merali  <zaheerabbas at merali dot>
+2004-07-15  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
 
 	* docs/manual/pads.xml:
 	* docs/manual/pads-api.xml: grammar fix
@@ -894,7 +2508,7 @@
 	* docs/manual/motivation.xml:
 	Bonobo is no longer "emerging" and added sentence regarding tcp plugins
 
-2004-07-15  Zaheer Abbas Merali  <zaheerabbas at merali.org>
+2004-07-15  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
 
 	* docs/manual/motivation.xml: Fix spelling
 
@@ -1465,7 +3079,7 @@
 	* libs/gst/bytestream/filepad.h:
 	  add 2 new functions
 
-2004-06-22  Zaheer Abbas Merali  <zaheerabbas at merali.org>
+2004-06-22  Zaheer Abbas Merali  <zaheerabbas at merali dot org>
 
 	* docs/gst/gstreamer-sections.txt:
 	remove from docs, the define that Benjamin removed from gstelement.h

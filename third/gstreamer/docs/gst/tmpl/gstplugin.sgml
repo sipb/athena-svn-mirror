@@ -6,21 +6,22 @@ Container for features loaded from a shared object module
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-GStreamer is extensible so <classname>GstElements</classname> can be loaded at runtime. A plugin
-system can provide one or more of the basic <application>GStreamer</application> 
+GStreamer is extensible, so <classname>GstElements</classname> can be loaded at runtime.
+A plugin system can provide one or more of the basic <application>GStreamer</application>
 #GstPluginFeature subclasses.
 </para>
 <para>
-A plugin should export a symbol plugin_desc that is a struct of type #GstPluginDesc. 
+A plugin should export a symbol <symbol>plugin_desc</symbol> that is a struct of type #GstPluginDesc.
 the plugin loader will check the version of the core library the plugin was linked against
 and will create a new #GstPlugin. It will then call the #GstPluginInitFunc function
 that was provided in the plugin_desc.
 </para>
 <para>
-Once you have a handle to a #GstPlugin, you can add any object that subclasses #GstPluginFeature.
+Once you have a handle to a #GstPlugin (e.g. from the #GstRegistryPool), you can
+add any object that subclasses #GstPluginFeature.
 </para>
 <para>
-use gst_plugin_find_feature() and gst_plugin_get_feature_list() to find features in a plugin.
+Use gst_plugin_find_feature() and gst_plugin_get_feature_list() to find features in a plugin.
 </para>
 <para>
 Usually plugins are always automaticlly loaded so you don't need to call gst_plugin_load() explicitly 
@@ -56,7 +57,7 @@ The plugin loading errors
 
 @GST_PLUGIN_ERROR_MODULE: The plugin could not be loaded
 @GST_PLUGIN_ERROR_DEPENDENCIES: The plugin has unresolved dependencies
-@GST_PLUGIN_ERROR_NAME_MISMATCH: 
+@GST_PLUGIN_ERROR_NAME_MISMATCH: The plugin has already be loaded from a different file
 
 <!-- ##### STRUCT GstPlugin ##### -->
 <para>
@@ -77,16 +78,16 @@ A plugins should export a variable of this type called plugin_desc. This plugin
 loaded will use this variable to initialize the plugin.
 </para>
 
-@major_version: The minor version of the gstreamer library this plugin was created with
-@minor_version: The minor version of the gstreamer library this plugin was created with
-@name: The name of the plugin
+@major_version: the major version number of core that plugin was compiled for
+@minor_version: the minor version number of core that plugin was compiled for
+@name: a unique name of the plugin
 @description: 
 @plugin_init: The init function of this plugin.
 @plugin_exit: 
-@version: 
-@license: 
-@package: 
-@origin: 
+@version: version of the plugin
+@license: effective license of plugin
+@package: package plugin belongs to
+@origin: URL to provider of plugin
 @_gst_reserved: 
 
 <!-- ##### USER_FUNCTION GstPluginInitFunc ##### -->
@@ -103,42 +104,44 @@ It will be called by the loader at statup.
 
 <!-- ##### USER_FUNCTION GstPluginExitFunc ##### -->
 <para>
-
+Exiting function when plugin is unloaded.
 </para>
 
-@plugin: 
+@plugin: The plugin object that can be used to unregister stuff for this plugin.
 
 
 <!-- ##### MACRO GST_PLUGIN_DEFINE ##### -->
 <para>
-
+This macro needs to be used to define the entry point and meta data of a plugin.
+One would use this macro to export a plugin, so that it can be used by other applications
 </para>
 
-@major: 
-@minor: 
-@name: 
-@description: 
-@init: 
-@version: 
-@license: 
-@package: 
-@origin: 
+@major: major version number of the gstreamer-core that plugin was compiled for
+@minor: minor version number of the gstreamer-core that plugin was compiled for
+@name: short, but unique name of the plugin
+@description: information about the purpose of the plugin
+@init: function pointer to the plugin_init method with the signature of <code>static gboolean plugin_init (GstPlugin * plugin)</code>.
+@version: full version string (e.g. VERSION from config.h)
+@license: under which licence the package has been released, e.g. GPL, LGPL.
+@package: the package-name (e.g. PACKAGE_NAME from config.h)
+@origin: a description from where the package comes from (e.g. the homepage URL)
 
 
 <!-- ##### MACRO GST_PLUGIN_DEFINE_STATIC ##### -->
 <para>
-
+This macro needs to be used to define the entry point and meta data of a local plugin.
+One would use this macro to define a local plugin that can only be used by the own application.
 </para>
 
-@major: 
-@minor: 
-@name: 
-@description: 
-@init: 
-@version: 
-@license: 
-@package: 
-@origin: 
+@major: major version number of the gstreamer-core that plugin was compiled for
+@minor: minor version number of the gstreamer-core that plugin was compiled for
+@name: short, but unique name of the plugin
+@description: information about the purpose of the plugin
+@init: function pointer to the plugin_init method with the signature of <code>static gboolean plugin_init (GstPlugin * plugin)</code>.
+@version: full version string (e.g. VERSION from config.h)
+@license: under which licence the package has been released, e.g. GPL, LGPL.
+@package: the package-name (e.g. PACKAGE_NAME from config.h)
+@origin: a description from where the package comes from (e.g. the homepage URL)
 
 
 <!-- ##### MACRO GST_LICENSE_UNKNOWN ##### -->
@@ -150,19 +153,13 @@ It will be called by the loader at statup.
 
 <!-- ##### USER_FUNCTION GstPluginFilter ##### -->
 <para>
-
+A function that can be used with e.g. gst_registry_plugin_filter()
+to get a list of plugins that match certain criteria.
 </para>
 
-@plugin: 
-@user_data: 
-@Returns: 
-
-
-<!-- ##### MACRO GST_TYPE_PLUGIN ##### -->
-<para>
-
-</para>
-
+@plugin: the plugin to check
+@user_data: the user_data that has been passed on e.g. gst_registry_plugin_filter()
+@Returns: TRUE for a positive match, FALSE otherwise
 
 
 <!-- ##### FUNCTION gst_plugin_get_name ##### -->
@@ -220,6 +217,15 @@ It will be called by the loader at statup.
 
 
 <!-- ##### FUNCTION gst_plugin_get_module ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_plugin_get_version ##### -->
 <para>
 
 </para>

@@ -84,7 +84,7 @@ gst_fp_sink_init (GstFpSink * fp)
 
   fp->sinkpad =
       GST_FILE_PAD (gst_file_pad_new (gst_static_pad_template_get (&template),
-          "src"));
+          "sink"));
   gst_file_pad_set_iterate_function (fp->sinkpad, do_tests);
   gst_element_add_pad (GST_ELEMENT (fp), GST_PAD (fp->sinkpad));
 }
@@ -247,7 +247,7 @@ main (gint argc, gchar ** argv)
   long size;
 
   gst_init (&argc, &argv);
-  gst_library_load ("bytestream");
+  gst_library_load ("gstbytestream");
 
   pipeline = gst_element_factory_make ("pipeline", NULL);
   g_assert (pipeline);

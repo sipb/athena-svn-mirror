@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstGhostPad</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstFormat.html" title="GstFormat"><link rel="next" href="GstImplementsInterface.html" title="GstImplementsInterface"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstGhostPad</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstFormat.html" title="GstFormat"><link rel="next" href="GstImplementsInterface.html" title="GstImplementsInterface"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,8 +28,9 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstFormat.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="GstImplementsInterface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstGhostPad"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstGhostPad</span></h2><p>GstGhostPad &#8212; Pseudo link pads</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstFormat.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="GstImplementsInterface.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstGhostPad"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstGhostPad</span></h2><p>GstGhostPad &#8212; Pseudo link pads</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="GstGhostPad.html#GstGhostPad-struct">GstGhostPad</a>;
@@ -40,26 +41,26 @@ xmlNodePtr  <a href="GstGhostPad.html#gst-ghost-pad-save-thyself">gst_ghost_pad_
                                              xmlNodePtr parent);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2854441"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2637517"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstObject.html" title="GstObject">GstObject</a>
          +----<a href="GstPad.html" title="GstPad">GstPad</a>
                +----GstGhostPad
-</pre></div><div class="refsect1" lang="en"><a name="id2854475"></a><h2>Properties</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2637550"></a><h2>Properties</h2><pre class="synopsis">
 
   "<a href="GstGhostPad.html#GstGhostPad--real-pad">real-pad</a>"             <a href="GstPad.html" title="GstPad">GstPad</a>               : Read / Write
-</pre></div><div class="refsect1" lang="en"><a name="id2854505"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2637580"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2854515"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2854520"></a><h3><a name="GstGhostPad-struct"></a>struct GstGhostPad</h3><a class="indexterm" name="id2854531"></a><pre class="programlisting">struct GstGhostPad;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2637590"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2637596"></a><h3><a name="GstGhostPad-struct"></a>struct GstGhostPad</h3><a class="indexterm" name="id2637606"></a><pre class="programlisting">struct GstGhostPad;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2854546"></a><h3><a name="GST-GPAD-REALPAD-CAPS"></a>GST_GPAD_REALPAD()</h3><a class="indexterm" name="id2854557"></a><pre class="programlisting">#define GST_GPAD_REALPAD(pad)		(((GstGhostPad *)(pad))-&gt;realpad)
+</p></div><hr><div class="refsect2" lang="en"><a name="id2637621"></a><h3><a name="GST-GPAD-REALPAD-CAPS"></a>GST_GPAD_REALPAD()</h3><a class="indexterm" name="id2637633"></a><pre class="programlisting">#define GST_GPAD_REALPAD(pad)		(((GstGhostPad *)(pad))-&gt;realpad)
 </pre><p>
 Get the real pad of this ghost pad.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td>the real pad to query.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2854592"></a><h3><a name="gst-ghost-pad-new"></a>gst_ghost_pad_new ()</h3><a class="indexterm" name="id2854604"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_ghost_pad_new               (const gchar *name,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637668"></a><h3><a name="gst-ghost-pad-new"></a>gst_ghost_pad_new ()</h3><a class="indexterm" name="id2637679"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_ghost_pad_new               (const gchar *name,
                                              <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
 Creates a new ghost pad associated with <i class="parameter"><tt>pad</tt></i>, and named <i class="parameter"><tt>name</tt></i>. If <i class="parameter"><tt>name</tt></i> is
 <tt class="literal">NULL</tt>, a guaranteed unique name (across all ghost pads) will be assigned.</p><p>
@@ -67,11 +68,11 @@ Creates a new ghost pad associated with <i class="parameter"><tt>pad</tt></i>, a
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the new ghost pad.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to create a ghost pad for.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new ghost <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or <tt class="literal">NULL</tt> in case of an error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2854733"></a><h3><a name="gst-ghost-pad-save-thyself"></a>gst_ghost_pad_save_thyself ()</h3><a class="indexterm" name="id2854745"></a><pre class="programlisting">xmlNodePtr  gst_ghost_pad_save_thyself      (<a href="GstPad.html" title="GstPad">GstPad</a> *pad,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637808"></a><h3><a name="gst-ghost-pad-save-thyself"></a>gst_ghost_pad_save_thyself ()</h3><a class="indexterm" name="id2637820"></a><pre class="programlisting">xmlNodePtr  gst_ghost_pad_save_thyself      (<a href="GstPad.html" title="GstPad">GstPad</a> *pad,
                                              xmlNodePtr parent);</pre><p>
 Saves the ghost pad into an xml representation.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> a ghost <a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> to save.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the parent <span class="type">xmlNodePtr</span> to save the description in.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">xmlNodePtr</span> representation of the pad.
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2854852"></a><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a name="GstGhostPad--real-pad"></a>"<tt class="literal">real-pad</tt>" (<a href="GstPad.html" title="GstPad">GstPad</a> : Read / Write)</span></td><td><p>The real pad for the ghost pad.</p></td></tr></tbody></table></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstFormat.html"><b>&lt;&lt; GstFormat</b></a></td><td align="right"><a accesskey="n" href="GstImplementsInterface.html"><b>GstImplementsInterface &gt;&gt;</b></a></td></tr></table></body></html>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2637927"></a><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a name="GstGhostPad--real-pad"></a>"<tt class="literal">real-pad</tt>" (<a href="GstPad.html" title="GstPad">GstPad</a> : Read / Write)</span></td><td><p>The real pad for the ghost pad.</p></td></tr></tbody></table></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstFormat.html"><b>&lt;&lt; GstFormat</b></a></td><td align="right"><a accesskey="n" href="GstImplementsInterface.html"><b>GstImplementsInterface &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstPipeline</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstParse.html" title="GstParse"><link rel="next" href="gstreamer-GstPlugin.html" title="GstPlugin"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstPipeline</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstParse.html" title="GstParse"><link rel="next" href="gstreamer-GstPlugin.html" title="GstPlugin"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,22 +28,23 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstParse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstPlugin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstPipeline"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstPipeline</span></h2><p>GstPipeline &#8212; Top-level bin with scheduling and pipeline management functionality.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstParse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstPlugin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstPipeline"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstPipeline</span></h2><p>GstPipeline &#8212; Top-level bin with scheduling and pipeline management functionality.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="GstPipeline.html#GstPipeline-struct">GstPipeline</a>;
 <a href="GstElement.html" title="GstElement">GstElement</a>* <a href="GstPipeline.html#gst-pipeline-new">gst_pipeline_new</a>                (const gchar *name);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2929623"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2708056"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstObject.html" title="GstObject">GstObject</a>
          +----<a href="GstElement.html" title="GstElement">GstElement</a>
                +----<a href="GstBin.html" title="GstBin">GstBin</a>
                      +----GstPipeline
-</pre></div><div class="refsect1" lang="en"><a name="id2929664"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2708097"></a><h2>Description</h2><p>
 In almost all cases, you'll want to use a GstPipeline when creating a
 filter graph.  The GstPipeline will manage all the scheduling issues,
 including threading, as well as provide simple interfaces to common
@@ -51,13 +52,13 @@ functions, like 'Play'.
 </p><p>
 <a href="GstPipeline.html#gst-pipeline-new"><tt class="function">gst_pipeline_new()</tt></a> is used to create a pipeline. when you are done with 
 the pipeline, use <a href="GstObject.html#gst-object-unref"><tt class="function">gst_object_unref()</tt></a> to free its resources.
-</p></div><div class="refsect1" lang="en"><a name="id2929704"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2929710"></a><h3><a name="GstPipeline-struct"></a>struct GstPipeline</h3><a class="indexterm" name="id2929721"></a><pre class="programlisting">struct GstPipeline;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2708136"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2708142"></a><h3><a name="GstPipeline-struct"></a>struct GstPipeline</h3><a class="indexterm" name="id2708153"></a><pre class="programlisting">struct GstPipeline;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2929736"></a><h3><a name="gst-pipeline-new"></a>gst_pipeline_new ()</h3><a class="indexterm" name="id2929747"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_pipeline_new                (const gchar *name);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2708168"></a><h3><a name="gst-pipeline-new"></a>gst_pipeline_new ()</h3><a class="indexterm" name="id2708179"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_pipeline_new                (const gchar *name);</pre><p>
 Create a new pipeline with the given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new pipeline
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> newly created GstPipeline
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2929809"></a><h2>See Also</h2><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2708241"></a><h2>See Also</h2><p>
 <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a>
 </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstParse.html"><b>&lt;&lt; GstParse</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstPlugin.html"><b>GstPlugin &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstMemChunk</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer-support.html" title="GStreamer Core Support"><link rel="previous" href="gstreamer-GstMacros.html" title="GstMacros"><link rel="next" href="gstreamer-compat.html" title="GStreamer Core Compatibility"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstMemChunk</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer-support.html" title="GStreamer Core Support"><link rel="previous" href="gstreamer-GstMacros.html" title="GstMacros"><link rel="next" href="gstreamer-compat.html" title="GStreamer Core Compatibility"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,8 +28,9 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstMacros.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-support.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-compat.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstMemChunk"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstMemChunk</span></h2><p>GstMemChunk &#8212; Atomic chunk allocator</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstMacros.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-support.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-compat.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstMemChunk"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstMemChunk</span></h2><p>GstMemChunk &#8212; Atomic chunk allocator</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a>;
@@ -42,16 +43,16 @@ gpointer    <a href="gstreamer-GstMemChunk.html#gst-mem-chunk-alloc">gst_mem_chu
 gpointer    <a href="gstreamer-GstMemChunk.html#gst-mem-chunk-alloc0">gst_mem_chunk_alloc0</a>            (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);
 void        <a href="gstreamer-GstMemChunk.html#gst-mem-chunk-free">gst_mem_chunk_free</a>              (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk,
                                              gpointer mem);
-</pre></div><div class="refsect1" lang="en"><a name="id3029678"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2804304"></a><h2>Description</h2><p>
 GstMemChunk is an atomic chunk allocator. It uses atomic operations
 to allocate fixed size memory regions and is therefore thread safe
 without the overhead of mutexes or other heavyweight locking mechanisms.
 </p><p>
 The GstMemChunk is used to allocate critical resources for <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a> and
 <a href="gstreamer-GstEvent.html#GstEvent"><span class="type">GstEvent</span></a>.
-</p></div><div class="refsect1" lang="en"><a name="id3029711"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3029717"></a><h3><a name="GstMemChunk"></a>struct GstMemChunk</h3><a class="indexterm" name="id3029728"></a><pre class="programlisting">struct GstMemChunk;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2804338"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2804344"></a><h3><a name="GstMemChunk"></a>struct GstMemChunk</h3><a class="indexterm" name="id2804355"></a><pre class="programlisting">struct GstMemChunk;</pre><p>
 The memchunk structure
-</p></div><hr><div class="refsect2" lang="en"><a name="id3029743"></a><h3><a name="gst-mem-chunk-new"></a>gst_mem_chunk_new ()</h3><a class="indexterm" name="id3029755"></a><pre class="programlisting"><a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a>* gst_mem_chunk_new              (gchar *name,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2804370"></a><h3><a name="gst-mem-chunk-new"></a>gst_mem_chunk_new ()</h3><a class="indexterm" name="id2804381"></a><pre class="programlisting"><a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a>* gst_mem_chunk_new              (gchar *name,
                                              gint atom_size,
                                              gulong area_size,
                                              gint type);</pre><p>
@@ -64,30 +65,30 @@ when it is too small (with a small overhead when that happens)</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>area_size</tt></i> :</span></td><td> the initial size of the memory area
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the allocation strategy to use
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-GstMemChunk.html#GstMemChunk"><span class="type">GstMemChunk</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3029891"></a><h3><a name="gst-mem-chunk-destroy"></a>gst_mem_chunk_destroy ()</h3><a class="indexterm" name="id3029902"></a><pre class="programlisting">void        gst_mem_chunk_destroy           (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804517"></a><h3><a name="gst-mem-chunk-destroy"></a>gst_mem_chunk_destroy ()</h3><a class="indexterm" name="id2804528"></a><pre class="programlisting">void        gst_mem_chunk_destroy           (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
 Free the memory allocated by the memchunk</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mem_chunk</tt></i> :</span></td><td> the GstMemChunk to destroy
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3029952"></a><h3><a name="gst-mem-chunk-alloc"></a>gst_mem_chunk_alloc ()</h3><a class="indexterm" name="id3029964"></a><pre class="programlisting">gpointer    gst_mem_chunk_alloc             (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804579"></a><h3><a name="gst-mem-chunk-alloc"></a>gst_mem_chunk_alloc ()</h3><a class="indexterm" name="id2804590"></a><pre class="programlisting">gpointer    gst_mem_chunk_alloc             (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
 Allocate a new memory region from the chunk. The size
 of the allocated memory was specified when the memchunk
 was created.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mem_chunk</tt></i> :</span></td><td> the mem chunk to use
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to the allocated memory region.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3030026"></a><h3><a name="gst-mem-chunk-alloc0"></a>gst_mem_chunk_alloc0 ()</h3><a class="indexterm" name="id3030037"></a><pre class="programlisting">gpointer    gst_mem_chunk_alloc0            (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804652"></a><h3><a name="gst-mem-chunk-alloc0"></a>gst_mem_chunk_alloc0 ()</h3><a class="indexterm" name="id2804664"></a><pre class="programlisting">gpointer    gst_mem_chunk_alloc0            (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk);</pre><p>
 Allocate a new memory region from the chunk. The size
 of the allocated memory was specified when the memchunk
 was created. The memory will be set to all zeroes.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mem_chunk</tt></i> :</span></td><td> the mem chunk to use
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to the allocated memory region.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3030100"></a><h3><a name="gst-mem-chunk-free"></a>gst_mem_chunk_free ()</h3><a class="indexterm" name="id3030111"></a><pre class="programlisting">void        gst_mem_chunk_free              (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2804727"></a><h3><a name="gst-mem-chunk-free"></a>gst_mem_chunk_free ()</h3><a class="indexterm" name="id2804738"></a><pre class="programlisting">void        gst_mem_chunk_free              (<a href="gstreamer-GstMemChunk.html#GstMemChunk">GstMemChunk</a> *mem_chunk,
                                              gpointer mem);</pre><p>
 Free the memeory region allocated from the chunk.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mem_chunk</tt></i> :</span></td><td> the mem chunk to use
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mem</tt></i> :</span></td><td> the memory region to hand back to the chunk
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3030184"></a><h2>See Also</h2><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2804811"></a><h2>See Also</h2><p>
 <span class="type">GstAtomic</span>, <a href="gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a>, <a href="gstreamer-GstEvent.html#GstEvent"><span class="type">GstEvent</span></a>, <a href="gstreamer-GstData.html#GstData"><span class="type">GstData</span></a>
 </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstMacros.html"><b>&lt;&lt; GstMacros</b></a></td><td align="right"><a accesskey="n" href="gstreamer-compat.html"><b>GStreamer Core Compatibility &gt;&gt;</b></a></td></tr></table></body></html>

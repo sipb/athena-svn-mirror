@@ -1241,6 +1241,8 @@ gst_string_wrap (const char *s)
 
   len = 0;
   t = s;
+  if (!s)
+    return g_strdup ("");
   while (*t) {
     if (GST_ASCII_IS_STRING (*t)) {
       len++;
@@ -1266,7 +1268,7 @@ gst_string_wrap (const char *s)
       *e++ = *t++;
     } else if (*t < 0x20 || *t >= 0x7f) {
       *e++ = '\\';
-      *e++ = '0' + ((*t) >> 6);
+      *e++ = '0' + ((*(guchar *) t) >> 6);
       *e++ = '0' + (((*t) >> 3) & 0x7);
       *e++ = '0' + ((*t++) & 0x7);
     } else {
@@ -1281,6 +1283,48 @@ gst_string_wrap (const char *s)
 }
 
 static char *
+gst_string_unwrap (const gchar * s)
+{
+  /* FIXME: do better memory management? */
+  gchar *ret = g_strdup (s);
+  gchar *read = ret, *write = ret;
+
+  if (*read++ != '"') {
+    g_free (ret);
+    return NULL;
+  }
+  while (*read) {
+    if (GST_ASCII_IS_STRING (*read)) {
+      *write++ = *read++;
+    } else if (*read == '"') {
+      break;
+    } else if (*read == '\\') {
+      read++;
+      if (*read >= '0' && *read <= '7') {
+        if (read[1] < '0' || read[1] > '7' || read[2] < '0' || read[2] > '7') {
+          g_free (ret);
+          return NULL;
+        }
+        *write++ = ((read[0] - '0') << 6) +
+            ((read[1] - '0') << 3) + (read[2] - '0');
+        read += 3;
+      } else {
+        *write++ = *read++;
+      }
+    } else {
+      g_free (ret);
+      return NULL;
+    }
+  }
+  if (*read != '"' || read[1] != '\0') {
+    g_free (ret);
+    return NULL;
+  }
+  *write++ = '\0';
+  return ret;
+}
+
+static char *
 gst_value_serialize_string (const GValue * value)
 {
   return gst_string_wrap (value->data[0].v_pointer);
@@ -1289,7 +1333,18 @@ gst_value_serialize_string (const GValue * value)
 static gboolean
 gst_value_deserialize_string (GValue * dest, const char *s)
 {
-  g_value_set_string (dest, s);
+  if (*s != '"') {
+    if (!g_utf8_validate (s, -1, NULL))
+      return FALSE;
+    g_value_set_string (dest, s);
+    return TRUE;
+  } else {
+    gchar *str = gst_string_unwrap (s);
+
+    if (!str)
+      return FALSE;
+    g_value_set_string_take_ownership (dest, str);
+  }
 
   return TRUE;
 }
@@ -1974,12 +2029,17 @@ gst_value_register_union_func (GType type1, GType type2, GstValueUnionFunc func)
 
 /* intersection */
 
-/*
+/**
  * gst_value_can_intersect:
- * @value1:
- * @value2:
+ * @value1: a value to intersect
+ * @value2: another value to intersect
  *
- * Returns:
+ * Determines if intersecting two values will produce a valid result.
+ * Two values will produce a valid intersection if they have the same
+ * type, or if there is a method (registered by
+ * #gst_value_register_intersection_func) to calculate the intersection.
+ *
+ * Returns: TRUE if the values can intersect
  */
 gboolean
 gst_value_can_intersect (const GValue * value1, const GValue * value2)
@@ -2006,11 +2066,15 @@ gst_value_can_intersect (const GValue * value1, const GValue * value2)
 
 /**
  * gst_value_intersect:
- * @dest: the destination value for intersection
+ * @dest: a uninitialized #GValue that will hold the calculated
+ * intersection value
  * @value1: a value to intersect
  * @value2: another value to intersect
  *
- * Calculates the intersection of the two values.
+ * Calculates the intersection of two values.  If the values have
+ * a non-empty intersection, the value representing the intersection
+ * is placed in @dest.  If the intersection is non-empty, @dest is
+ * not modified.
  *
  * Returns: TRUE if the intersection is non-empty
  */
@@ -2053,10 +2117,26 @@ gst_value_intersect (GValue * dest, const GValue * value1,
 
 /**
  * gst_value_register_intersection_func:
- * @type1:
- * @type2:
- * @func:
+ * @type1: the first type to intersect
+ * @type2: the second type to intersect
+ * @func: the intersection function
  *
+ * Registers a function that is called to calculate the intersection
+ * of the values having the types @type1 and @type2.
+ */
+/**
+ * GstValueIntersectFunc:
+ * @dest: a uninitialized #GValue that will hold the calculated
+ * intersection value
+ * @value1: a value to intersect
+ * @value2: another value to intersect
+ *
+ * Functions having this type calculate the intersection of @value1
+ * and @value2.  If the intersection is non-empty, the result is
+ * placed in @dest and TRUE is returned.  If the intersection is
+ * empty, @dest is unmodified and FALSE is returned.
+ *
+ * Returns: TRUE if the intersection is non-empty, FALSE otherwise
  */
 void
 gst_value_register_intersect_func (GType type1, GType type2,
@@ -2183,10 +2263,24 @@ gst_value_register_subtract_func (GType minuend_type, GType subtrahend_type,
   g_array_append_val (gst_value_subtract_funcs, info);
 }
 
-/*
+/**
  * gst_value_register:
- * @table:
+ * @table: structure containing functions to register
  *
+ * Registers functions to perform calculations on #GValues of a given
+ * type.
+ */
+/**
+ * GstValueTable:
+ * @type: GType that the functions operate on.
+ * @compare: A function that compares two values of this type.
+ * @serialize: A function that transforms a value of this type to a
+ * string.  Strings created by this function must be unique and should
+ * be human readable.
+ * @deserialize: A function that transforms a string to a value of
+ * this type.  This function must transform strings created by the
+ * serialize function back to the original value.  This function may
+ * optionally transform other strings into values.
  */
 void
 gst_value_register (const GstValueTable * table)
@@ -2194,11 +2288,13 @@ gst_value_register (const GstValueTable * table)
   g_array_append_val (gst_value_table, *table);
 }
 
-/*
+/**
  * gst_value_init_and_copy:
- * @dest:
- * @src:
+ * @dest: the target value
+ * @src: the source value
  *
+ * Initialises the target value to be of the same type as source and then copies
+ * the contents from source to target.
  */
 void
 gst_value_init_and_copy (GValue * dest, const GValue * src)
@@ -2207,7 +2303,7 @@ gst_value_init_and_copy (GValue * dest, const GValue * src)
   g_value_copy (src, dest);
 }
 
-/*
+/**
  * gst_value_serialize:
  * @value: a #GValue to serialize
  *
@@ -2253,7 +2349,7 @@ gst_value_serialize (const GValue * value)
   return s;
 }
 
-/*
+/**
  * gst_value_deserialize:
  * @dest: #GValue to fill with contents of deserialization
  * @src: string to deserialize
@@ -2291,11 +2387,16 @@ gst_value_deserialize (GValue * dest, const gchar * src)
   return FALSE;
 }
 
-/*
+/**
  * gst_type_is_fixed:
- * @type:
+ * @type: the #GType to check
  *
- * Returns:
+ * Tests if the given GType, if available in a GstStructure (or any other
+ * container) will contain a "fixed" (which means: one possible value) or
+ * an "unfixed" (which means: multiple possible values, such as data lists
+ * or data ranges) value.
+ *
+ * Returns: true if the type is "fixed".
  */
 gboolean
 gst_type_is_fixed (GType type)
@@ -2304,8 +2405,8 @@ gst_type_is_fixed (GType type)
       type == GST_TYPE_LIST) {
     return FALSE;
   }
-  if (G_TYPE_IS_FUNDAMENTAL (type) &&
-      type < G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
+  if (G_TYPE_FUNDAMENTAL (type) <=
+      G_TYPE_MAKE_FUNDAMENTAL (G_TYPE_RESERVED_GLIB_LAST)) {
     return TRUE;
   }
   if (type == GST_TYPE_BUFFER || type == GST_TYPE_FOURCC
@@ -2314,6 +2415,41 @@ gst_type_is_fixed (GType type)
   }
 
   return FALSE;
+}
+
+/**
+ * gst_value_is_fixed:
+ * @value: the #GValue to check
+ *
+ * Tests if the given GValue, if available in a GstStructure (or any other
+ * container) contains a "fixed" (which means: one value) or an "unfixed"
+ * (which means: multiple possible values, such as data lists or data
+ * ranges) value.
+ *
+ * Returns: true if the value is "fixed".
+ */
+
+gboolean
+gst_value_is_fixed (const GValue * value)
+{
+  GType type = G_VALUE_TYPE (value);
+
+  if (type == GST_TYPE_FIXED_LIST) {
+    gboolean fixed = TRUE;
+    gint size, n;
+    const GValue *kid;
+
+    /* check recursively */
+    size = gst_value_list_get_size (value);
+    for (n = 0; n < size; n++) {
+      kid = gst_value_list_get_value (value, n);
+      fixed &= gst_value_is_fixed (kid);
+    }
+
+    return fixed;
+  }
+
+  return gst_type_is_fixed (type);
 }
 
 /************

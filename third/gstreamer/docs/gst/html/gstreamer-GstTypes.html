@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstTypes</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstTypeFindFactory.html" title="GstTypeFindFactory"><link rel="next" href="gstreamer-GstUriHandler.html" title="GstUriHandler"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstTypes</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstTypeFindFactory.html" title="GstTypeFindFactory"><link rel="next" href="gstreamer-GstUriHandler.html" title="GstUriHandler"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,23 +28,22 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstTypeFindFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstUriHandler.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstTypes"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstTypes</span></h2><p>GstTypes &#8212; various global enums and constants</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstTypeFindFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstUriHandler.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstTypes"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstTypes</span></h2><p>GstTypes &#8212; various global enums and constants</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 enum        <a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a>;
 enum        <a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a>;
 enum        <a href="gstreamer-GstTypes.html#GstResult">GstResult</a>;
-#define     <a href="gstreamer-GstTypes.html#GST-RANK-PRIMARY-CAPS">GST_RANK_PRIMARY</a>
-#define     <a href="gstreamer-GstTypes.html#GST-RANK-SECONDARY-CAPS">GST_RANK_SECONDARY</a>
-#define     <a href="gstreamer-GstTypes.html#GST-RANK-MARGINAL-CAPS">GST_RANK_MARGINAL</a>
-#define     <a href="gstreamer-GstTypes.html#GST-RANK-NONE-CAPS">GST_RANK_NONE</a>
+enum        <a href="gstreamer-GstTypes.html#GstRank">GstRank</a>;
 #define     <a href="gstreamer-GstTypes.html#GST-PADDING-CAPS">GST_PADDING</a>
 #define     <a href="gstreamer-GstTypes.html#GST-PADDING-INIT-CAPS">GST_PADDING_INIT</a>
 
-</pre></div><div class="refsect1" lang="en"><a name="id3002315"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id3002325"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3002331"></a><h3><a name="GstElementState"></a>enum GstElementState</h3><a class="indexterm" name="id3002341"></a><pre class="programlisting">typedef enum {
+</pre></div><div class="refsect1" lang="en"><a name="id2777366"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2777376"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2777381"></a><h3><a name="GstElementState"></a>enum GstElementState</h3><a class="indexterm" name="id2777392"></a><pre class="programlisting">typedef enum {
   GST_STATE_VOID_PENDING        = 0,
   GST_STATE_NULL                = (1 &lt;&lt; 0),
   GST_STATE_READY               = (1 &lt;&lt; 1),
@@ -52,37 +51,55 @@ enum        <a href="gstreamer-GstTypes.html#GstResult">GstResult</a>;
   GST_STATE_PLAYING             = (1 &lt;&lt; 3)
 } GstElementState;
 </pre><p>
+These contants describe the state a <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> is in and transition scheduled for the <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> (the pending state).
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_STATE_VOID_PENDING</tt></span></td><td>no transition is schedules for this element
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_NULL</tt></span></td><td>this is the default state all elements are in, after they have been created and are doing nothing
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_READY</tt></span></td><td>the element is ready to start doing something
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_PAUSED</tt></span></td><td>the element is paused for a period of time
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_PLAYING</tt></span></td><td>the element is doing something
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002363"></a><h3><a name="GstElementStateReturn"></a>enum GstElementStateReturn</h3><a class="indexterm" name="id3002375"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2777514"></a><h3><a name="GstElementStateReturn"></a>enum GstElementStateReturn</h3><a class="indexterm" name="id2777525"></a><pre class="programlisting">typedef enum {
   GST_STATE_FAILURE             = 0,
   GST_STATE_SUCCESS             = 1,
   GST_STATE_ASYNC               = 2
 } GstElementStateReturn;
 </pre><p>
+One of these values is returned from a <a href="GstElement.html#gst-element-set-state"><tt class="function">gst_element_set_state()</tt></a> call.
+As GST_STATE_FAILURE is equal to 0, one can use a boolean comparission
+against the GstElementStateReturn value.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_STATE_FAILURE</tt></span></td><td>the state of the element could not be changed
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_SUCCESS</tt></span></td><td>the state of the element has already be changed
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STATE_ASYNC</tt></span></td><td>the state of the element will change in the near future
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002392"></a><h3><a name="GstResult"></a>enum GstResult</h3><a class="indexterm" name="id3002403"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2777607"></a><h3><a name="GstResult"></a>enum GstResult</h3><a class="indexterm" name="id2777618"></a><pre class="programlisting">typedef enum {
   GST_RESULT_OK,
   GST_RESULT_NOK,
   GST_RESULT_NOT_IMPL
 } GstResult;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002419"></a><h3><a name="GST-RANK-PRIMARY-CAPS"></a>GST_RANK_PRIMARY</h3><a class="indexterm" name="id3002431"></a><pre class="programlisting">#define GST_RANK_PRIMARY    256
+</p></div><hr><div class="refsect2" lang="en"><a name="id2777634"></a><h3><a name="GstRank"></a>enum GstRank</h3><a class="indexterm" name="id2777645"></a><pre class="programlisting">typedef enum {
+  GST_RANK_NONE                 = 0,
+  GST_RANK_MARGINAL             = 64,
+  GST_RANK_SECONDARY            = 128,
+  GST_RANK_PRIMARY              = 256
+} GstRank;
+</pre><p>
+Element priority ranks. Defines the order in which the autoplugger (or similar
+rank-picking mechanisms) will choose this element over an alternative one
+with the same function.
+The rank is a unsigned integer ranging from 0 (GST_RANK_NONE) to 256 (GST_RANK_PRIMARY).
+These constants serve as a rough guidiance for defining the rank of a <a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a> using
+<a href="GstPluginFeature.html#gst-plugin-feature-set-rank"><tt class="function">gst_plugin_feature_set_rank()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_RANK_NONE</tt></span></td><td>will be chosen last or not at all
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RANK_MARGINAL</tt></span></td><td>unlikly to be chosen
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RANK_SECONDARY</tt></span></td><td>likely to be chosen
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RANK_PRIMARY</tt></span></td><td>will be chosen first
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2777751"></a><h3><a name="GST-PADDING-CAPS"></a>GST_PADDING</h3><a class="indexterm" name="id2777762"></a><pre class="programlisting">#define GST_PADDING 4
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002446"></a><h3><a name="GST-RANK-SECONDARY-CAPS"></a>GST_RANK_SECONDARY</h3><a class="indexterm" name="id3002457"></a><pre class="programlisting">#define GST_RANK_SECONDARY  128
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002473"></a><h3><a name="GST-RANK-MARGINAL-CAPS"></a>GST_RANK_MARGINAL</h3><a class="indexterm" name="id3002484"></a><pre class="programlisting">#define GST_RANK_MARGINAL   64
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002499"></a><h3><a name="GST-RANK-NONE-CAPS"></a>GST_RANK_NONE</h3><a class="indexterm" name="id3002509"></a><pre class="programlisting">#define GST_RANK_NONE       0
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002524"></a><h3><a name="GST-PADDING-CAPS"></a>GST_PADDING</h3><a class="indexterm" name="id3002535"></a><pre class="programlisting">#define GST_PADDING 4
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id3002550"></a><h3><a name="GST-PADDING-INIT-CAPS"></a>GST_PADDING_INIT</h3><a class="indexterm" name="id3002561"></a><pre class="programlisting">#define GST_PADDING_INIT	{ 0 }
+</p></div><hr><div class="refsect2" lang="en"><a name="id2777777"></a><h3><a name="GST-PADDING-INIT-CAPS"></a>GST_PADDING_INIT</h3><a class="indexterm" name="id2777789"></a><pre class="programlisting">#define GST_PADDING_INIT	{ 0 }
 </pre><p>
 
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstTypeFindFactory.html"><b>&lt;&lt; GstTypeFindFactory</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstUriHandler.html"><b>GstUriHandler &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstConfig</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstClock.html" title="GstClock"><link rel="next" href="gstreamer-GstCPU.html" title="GstCpu"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstConfig</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstClock.html" title="GstClock"><link rel="next" href="gstreamer-GstCPU.html" title="GstCpu"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,8 +28,9 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstClock.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstCPU.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-gstconfig"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstConfig</span></h2><p>GstConfig &#8212; Configuration options</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstClock.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstCPU.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-gstconfig"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstConfig</span></h2><p>GstConfig &#8212; Configuration options</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 #define     <a href="gstreamer-gstconfig.html#GST-DISABLE-LOADSAVE-REGISTRY-CAPS">GST_DISABLE_LOADSAVE_REGISTRY</a>
@@ -46,7 +47,7 @@
 #define     <a href="gstreamer-gstconfig.html#GST-PTR-FORMAT-CAPS">GST_PTR_FORMAT</a>
 #define     <a href="gstreamer-gstconfig.html#GST-EXPORT-CAPS">GST_EXPORT</a>
 #define     <a href="gstreamer-gstconfig.html#GST-PLUGIN-EXPORT-CAPS">GST_PLUGIN_EXPORT</a>
-</pre></div><div class="refsect1" lang="en"><a name="id2789666"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2584915"></a><h2>Description</h2><p>
 This describes the configuration options for GStreamer. When building 
 GStreamer there are a lot of parts (known internally as "subsystems" ) that can 
 be disabled for various reasons. The most common reasons are speed and size, 
@@ -59,49 +60,49 @@ rebuild all programs depending on GStreamer, too.
 </p><p>
 If a subsystem is disabled in GStreamer, a value is defined in 
 &lt;gst/gst.h&gt;. You can check this if you do subsystem-specific stuff.
-</p><div class="example"><a name="id2789692"></a><p class="title"><b>Example 4. Doing subsystem specific things</b></p><pre class="programlisting">
+</p><div class="example"><a name="id2584942"></a><p class="title"><b>Example 4. Doing subsystem specific things</b></p><pre class="programlisting">
 #ifndef GST_DISABLE_GST_DEBUG
 /* do stuff specific to the debugging subsystem */
 #endif /* GST_DISABLE_GST_DEBUG */
 </pre></div><p>
-</p></div><div class="refsect1" lang="en"><a name="id2789706"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2789715"></a><h3><a name="GST-DISABLE-LOADSAVE-REGISTRY-CAPS"></a>GST_DISABLE_LOADSAVE_REGISTRY</h3><a class="indexterm" name="id2789726"></a><pre class="programlisting">#define     GST_DISABLE_LOADSAVE_REGISTRY</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2584956"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2584965"></a><h3><a name="GST-DISABLE-LOADSAVE-REGISTRY-CAPS"></a>GST_DISABLE_LOADSAVE_REGISTRY</h3><a class="indexterm" name="id2584976"></a><pre class="programlisting">#define     GST_DISABLE_LOADSAVE_REGISTRY</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789740"></a><h3><a name="GST-DISABLE-GST-DEBUG-CAPS"></a>GST_DISABLE_GST_DEBUG</h3><a class="indexterm" name="id2789755"></a><pre class="programlisting">#define GST_DISABLE_GST_DEBUG 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2584990"></a><h3><a name="GST-DISABLE-GST-DEBUG-CAPS"></a>GST_DISABLE_GST_DEBUG</h3><a class="indexterm" name="id2585005"></a><pre class="programlisting">#define GST_DISABLE_GST_DEBUG 1
 </pre><p>
 If this is defined, the <GTKDOCLINK HREF="gstreamer-gstinfo">debugging subsystem
 </GTKDOCLINK> is disabled and debugging messages are not output.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789781"></a><h3><a name="GST-DISABLE-LOADSAVE-CAPS"></a>GST_DISABLE_LOADSAVE</h3><a class="indexterm" name="id2789792"></a><pre class="programlisting">#define GST_DISABLE_LOADSAVE 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585031"></a><h3><a name="GST-DISABLE-LOADSAVE-CAPS"></a>GST_DISABLE_LOADSAVE</h3><a class="indexterm" name="id2585042"></a><pre class="programlisting">#define GST_DISABLE_LOADSAVE 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789807"></a><h3><a name="GST-DISABLE-PARSE-CAPS"></a>GST_DISABLE_PARSE</h3><a class="indexterm" name="id2789819"></a><pre class="programlisting">#define GST_DISABLE_PARSE 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585057"></a><h3><a name="GST-DISABLE-PARSE-CAPS"></a>GST_DISABLE_PARSE</h3><a class="indexterm" name="id2585069"></a><pre class="programlisting">#define GST_DISABLE_PARSE 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789834"></a><h3><a name="GST-DISABLE-TRACE-CAPS"></a>GST_DISABLE_TRACE</h3><a class="indexterm" name="id2789846"></a><pre class="programlisting">#define GST_DISABLE_TRACE 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585084"></a><h3><a name="GST-DISABLE-TRACE-CAPS"></a>GST_DISABLE_TRACE</h3><a class="indexterm" name="id2585096"></a><pre class="programlisting">#define GST_DISABLE_TRACE 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789861"></a><h3><a name="GST-DISABLE-ALLOC-TRACE-CAPS"></a>GST_DISABLE_ALLOC_TRACE</h3><a class="indexterm" name="id2789873"></a><pre class="programlisting">#define GST_DISABLE_ALLOC_TRACE 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585111"></a><h3><a name="GST-DISABLE-ALLOC-TRACE-CAPS"></a>GST_DISABLE_ALLOC_TRACE</h3><a class="indexterm" name="id2585122"></a><pre class="programlisting">#define GST_DISABLE_ALLOC_TRACE 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789889"></a><h3><a name="GST-DISABLE-REGISTRY-CAPS"></a>GST_DISABLE_REGISTRY</h3><a class="indexterm" name="id2789900"></a><pre class="programlisting">#define GST_DISABLE_REGISTRY 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585138"></a><h3><a name="GST-DISABLE-REGISTRY-CAPS"></a>GST_DISABLE_REGISTRY</h3><a class="indexterm" name="id2585149"></a><pre class="programlisting">#define GST_DISABLE_REGISTRY 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789916"></a><h3><a name="GST-DISABLE-ENUMTYPES-CAPS"></a>GST_DISABLE_ENUMTYPES</h3><a class="indexterm" name="id2789927"></a><pre class="programlisting">#define GST_DISABLE_ENUMTYPES 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585165"></a><h3><a name="GST-DISABLE-ENUMTYPES-CAPS"></a>GST_DISABLE_ENUMTYPES</h3><a class="indexterm" name="id2585176"></a><pre class="programlisting">#define GST_DISABLE_ENUMTYPES 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789942"></a><h3><a name="GST-DISABLE-INDEX-CAPS"></a>GST_DISABLE_INDEX</h3><a class="indexterm" name="id2789954"></a><pre class="programlisting">#define GST_DISABLE_INDEX 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585191"></a><h3><a name="GST-DISABLE-INDEX-CAPS"></a>GST_DISABLE_INDEX</h3><a class="indexterm" name="id2585203"></a><pre class="programlisting">#define GST_DISABLE_INDEX 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789969"></a><h3><a name="GST-DISABLE-PLUGIN-CAPS"></a>GST_DISABLE_PLUGIN</h3><a class="indexterm" name="id2789980"></a><pre class="programlisting">#define GST_DISABLE_PLUGIN 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585218"></a><h3><a name="GST-DISABLE-PLUGIN-CAPS"></a>GST_DISABLE_PLUGIN</h3><a class="indexterm" name="id2585229"></a><pre class="programlisting">#define GST_DISABLE_PLUGIN 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2789995"></a><h3><a name="GST-DISABLE-URI-CAPS"></a>GST_DISABLE_URI</h3><a class="indexterm" name="id2790006"></a><pre class="programlisting">#define GST_DISABLE_URI 1
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585244"></a><h3><a name="GST-DISABLE-URI-CAPS"></a>GST_DISABLE_URI</h3><a class="indexterm" name="id2585255"></a><pre class="programlisting">#define GST_DISABLE_URI 1
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2790021"></a><h3><a name="GST-PTR-FORMAT-CAPS"></a>GST_PTR_FORMAT</h3><a class="indexterm" name="id2790031"></a><pre class="programlisting">#define GST_PTR_FORMAT "P"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585270"></a><h3><a name="GST-PTR-FORMAT-CAPS"></a>GST_PTR_FORMAT</h3><a class="indexterm" name="id2585280"></a><pre class="programlisting">#define GST_PTR_FORMAT "P"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2790046"></a><h3><a name="GST-EXPORT-CAPS"></a>GST_EXPORT</h3><a class="indexterm" name="id2790057"></a><pre class="programlisting">#define     GST_EXPORT</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585296"></a><h3><a name="GST-EXPORT-CAPS"></a>GST_EXPORT</h3><a class="indexterm" name="id2585306"></a><pre class="programlisting">#define     GST_EXPORT</pre><p>
 Under Windows it permits to export variables from a DLL, otherwise it just means extern.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2790074"></a><h3><a name="GST-PLUGIN-EXPORT-CAPS"></a>GST_PLUGIN_EXPORT</h3><a class="indexterm" name="id2790086"></a><pre class="programlisting">#define     GST_PLUGIN_EXPORT</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2585323"></a><h3><a name="GST-PLUGIN-EXPORT-CAPS"></a>GST_PLUGIN_EXPORT</h3><a class="indexterm" name="id2585335"></a><pre class="programlisting">#define     GST_PLUGIN_EXPORT</pre><p>
 Under Windows it permits to automatically export the plugin definition, otherwise it just defines as nothing.
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstClock.html"><b>&lt;&lt; GstClock</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstCPU.html"><b>GstCpu &gt;&gt;</b></a></td></tr></table></body></html>

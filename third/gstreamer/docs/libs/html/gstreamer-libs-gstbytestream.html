@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gstbytestream</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library API Reference"><link rel="up" href="gstreamer-libs.html" title="GStreamer Libraries"><link rel="previous" href="gstreamer-libs.html" title="GStreamer Libraries"><link rel="next" href="gstreamer-libs-gstcontrol.html" title="gstcontrol"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gstbytestream</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library Reference Manual"><link rel="up" href="gstreamer-libs.html" title="Part I. GStreamer Libraries"><link rel="previous" href="gstreamer-libs.html" title="Part I. GStreamer Libraries"><link rel="next" href="gstreamer-libs-gstdataprotocol.html" title="gstdataprotocol"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,7 +28,7 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-libs.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-libs.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library API Reference</th><td><a accesskey="n" href="gstreamer-libs-gstcontrol.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-libs-gstbytestream"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gstbytestream</span></h2><p>gstbytestream &#8212; exposes a stream interface on pads.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-libs.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-libs.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library Reference Manual</th><td><a accesskey="n" href="gstreamer-libs-gstdataprotocol.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-libs-gstbytestream"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gstbytestream</span></h2><p>gstbytestream &#8212; exposes a stream interface on pads.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;libs/bytestream/bytestream.h&gt;
 
@@ -73,9 +73,9 @@ gboolean    <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-size-hint"
                                              guint32 size);
 guint64     <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-tell">gst_bytestream_tell</a>             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2996380"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2745002"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2996390"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2996396"></a><h3><a name="GstByteStream"></a>struct GstByteStream</h3><a class="indexterm" name="id2996407"></a><pre class="programlisting">struct GstByteStream {
+</p></div><div class="refsect1" lang="en"><a name="id2745012"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2745017"></a><h3><a name="GstByteStream"></a>struct GstByteStream</h3><a class="indexterm" name="id2745028"></a><pre class="programlisting">struct GstByteStream {
 
   GstPad 	*pad;
 
@@ -100,11 +100,11 @@ guint64     <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-tell">gst_
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2996429"></a><h3><a name="gst-bytestream-destroy"></a>gst_bytestream_destroy ()</h3><a class="indexterm" name="id2996440"></a><pre class="programlisting">void        gst_bytestream_destroy          (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2745050"></a><h3><a name="gst-bytestream-destroy"></a>gst_bytestream_destroy ()</h3><a class="indexterm" name="id2745062"></a><pre class="programlisting">void        gst_bytestream_destroy          (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 destroy the bytestream object and free its resources.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> the bytestream object to destroy
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996489"></a><h3><a name="gst-bytestream-flush"></a>gst_bytestream_flush ()</h3><a class="indexterm" name="id2996502"></a><pre class="programlisting">gboolean    gst_bytestream_flush            (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745110"></a><h3><a name="gst-bytestream-flush"></a>gst_bytestream_flush ()</h3><a class="indexterm" name="id2745124"></a><pre class="programlisting">gboolean    gst_bytestream_flush            (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              guint32 len);</pre><p>
 Flush len bytes from the bytestream.
 This function can return FALSE when the number of
@@ -115,7 +115,7 @@ with <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-get-status"><tt c
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> the bytestream to flush
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> the number of bytes to flush
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the number of bytes could be flushed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996602"></a><h3><a name="gst-bytestream-flush-fast"></a>gst_bytestream_flush_fast ()</h3><a class="indexterm" name="id2996613"></a><pre class="programlisting">void        gst_bytestream_flush_fast       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745224"></a><h3><a name="gst-bytestream-flush-fast"></a>gst_bytestream_flush_fast ()</h3><a class="indexterm" name="id2745235"></a><pre class="programlisting">void        gst_bytestream_flush_fast       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              guint32 len);</pre><p>
 Flushes len bytes from the bytestream. This function
 is faster than <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-flush"><tt class="function">gst_bytestream_flush()</tt></a> but only works
@@ -124,7 +124,7 @@ with <a href="gstreamer-libs-gstbytestream.html#gst-bytestream-peek"><tt class="
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> the bytestream to flush
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> the number of bytes to flush
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996720"></a><h3><a name="gst-bytestream-get-status"></a>gst_bytestream_get_status ()</h3><a class="indexterm" name="id2996731"></a><pre class="programlisting">void        gst_bytestream_get_status       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745341"></a><h3><a name="gst-bytestream-get-status"></a>gst_bytestream_get_status ()</h3><a class="indexterm" name="id2745353"></a><pre class="programlisting">void        gst_bytestream_get_status       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              guint32 *avail_out,
                                              <a
 href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
@@ -136,7 +136,7 @@ before reading more bytes from the stream.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>avail_out</tt></i> :</span></td><td> total number of bytes buffered
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>event_out</tt></i> :</span></td><td> an event
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996826"></a><h3><a name="gst-bytestream-get-timestamp"></a>gst_bytestream_get_timestamp ()</h3><a class="indexterm" name="id2996838"></a><pre class="programlisting">guint64     gst_bytestream_get_timestamp    (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745448"></a><h3><a name="gst-bytestream-get-timestamp"></a>gst_bytestream_get_timestamp ()</h3><a class="indexterm" name="id2745459"></a><pre class="programlisting">guint64     gst_bytestream_get_timestamp    (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 Get the timestamp of the first data in the bytestream.  If no data
 exists 1 byte is read to load a new buffer.
 </p><p>
@@ -146,19 +146,19 @@ timestamps.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a timestamp.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996906"></a><h3><a name="gst-bytestream-length"></a>gst_bytestream_length ()</h3><a class="indexterm" name="id2996917"></a><pre class="programlisting">guint64     gst_bytestream_length           (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745527"></a><h3><a name="gst-bytestream-length"></a>gst_bytestream_length ()</h3><a class="indexterm" name="id2745538"></a><pre class="programlisting">guint64     gst_bytestream_length           (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 Get the total length of the bytestream.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the total length or -1 on error.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2996978"></a><h3><a name="gst-bytestream-new"></a>gst_bytestream_new ()</h3><a class="indexterm" name="id2996989"></a><pre class="programlisting"><a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a>* gst_bytestream_new           (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745599"></a><h3><a name="gst-bytestream-new"></a>gst_bytestream_new ()</h3><a class="indexterm" name="id2745610"></a><pre class="programlisting"><a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a>* gst_bytestream_new           (<a
 href="../gstreamer/GstPad.html"
 >GstPad</a> *pad);</pre><p>
 creates a bytestream from the given pad</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the pad to attach the bytestream to
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-libs-gstbytestream.html#GstByteStream"><span class="type">GstByteStream</span></a> object.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997058"></a><h3><a name="gst-bytestream-peek"></a>gst_bytestream_peek ()</h3><a class="indexterm" name="id2997069"></a><pre class="programlisting">guint32     gst_bytestream_peek             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745680"></a><h3><a name="gst-bytestream-peek"></a>gst_bytestream_peek ()</h3><a class="indexterm" name="id2745691"></a><pre class="programlisting">guint32     gst_bytestream_peek             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              <a
 href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
 >GstBuffer</a> **buf,
@@ -175,7 +175,7 @@ an event might have happened which you can retrieve with
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>buf</tt></i> :</span></td><td> pointer to a variable that can hold a buffer pointer.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> the number of bytes to peek
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of bytes successfully peeked.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997195"></a><h3><a name="gst-bytestream-peek-bytes"></a>gst_bytestream_peek_bytes ()</h3><a class="indexterm" name="id2997207"></a><pre class="programlisting">guint32     gst_bytestream_peek_bytes       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745816"></a><h3><a name="gst-bytestream-peek-bytes"></a>gst_bytestream_peek_bytes ()</h3><a class="indexterm" name="id2745828"></a><pre class="programlisting">guint32     gst_bytestream_peek_bytes       (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              guint8 **data,
                                              guint32 len);</pre><p>
 Peeks len bytes into the bytestream, the result is returned as
@@ -190,12 +190,12 @@ an event might have happened which you can retrieve with
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> pointer to a variable that can hold a guint8 pointer.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> the number of bytes to peek
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of bytes successfully peeked.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997327"></a><h3><a name="gst-bytestream-print-status"></a>gst_bytestream_print_status ()</h3><a class="indexterm" name="id2997339"></a><pre class="programlisting">void        gst_bytestream_print_status     (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745948"></a><h3><a name="gst-bytestream-print-status"></a>gst_bytestream_print_status ()</h3><a class="indexterm" name="id2745960"></a><pre class="programlisting">void        gst_bytestream_print_status     (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 Print the current status of the bytestream object. mainly
 used for debugging purposes.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997390"></a><h3><a name="gst-bytestream-read"></a>gst_bytestream_read ()</h3><a class="indexterm" name="id2997401"></a><pre class="programlisting">guint32     gst_bytestream_read             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746011"></a><h3><a name="gst-bytestream-read"></a>gst_bytestream_read ()</h3><a class="indexterm" name="id2746022"></a><pre class="programlisting">guint32     gst_bytestream_read             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              <a
 href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
 >GstBuffer</a> **buf,
@@ -212,12 +212,12 @@ an event might have happened which you can retrieve with
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>buf</tt></i> :</span></td><td> pointer to a variable that can hold a buffer pointer.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> the number of bytes to read
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of bytes successfully read.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997526"></a><h3><a name="gst-bytestream-reset"></a>gst_bytestream_reset ()</h3><a class="indexterm" name="id2997538"></a><pre class="programlisting">void        gst_bytestream_reset            (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746148"></a><h3><a name="gst-bytestream-reset"></a>gst_bytestream_reset ()</h3><a class="indexterm" name="id2746159"></a><pre class="programlisting">void        gst_bytestream_reset            (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997584"></a><h3><a name="gst-bytestream-seek"></a>gst_bytestream_seek ()</h3><a class="indexterm" name="id2997595"></a><pre class="programlisting">gboolean    gst_bytestream_seek             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746205"></a><h3><a name="gst-bytestream-seek"></a>gst_bytestream_seek ()</h3><a class="indexterm" name="id2746216"></a><pre class="programlisting">gboolean    gst_bytestream_seek             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              gint64 offset,
                                              <a
 href="../gstreamer/gstreamer-GstEvent.html#GstSeekType"
@@ -232,7 +232,7 @@ peer elements.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> the byte offset to seek to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>method</tt></i> :</span></td><td> the seek method.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE when the seek succeeded.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997702"></a><h3><a name="gst-bytestream-size-hint"></a>gst_bytestream_size_hint ()</h3><a class="indexterm" name="id2997713"></a><pre class="programlisting">gboolean    gst_bytestream_size_hint        (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746323"></a><h3><a name="gst-bytestream-size-hint"></a>gst_bytestream_size_hint ()</h3><a class="indexterm" name="id2746334"></a><pre class="programlisting">gboolean    gst_bytestream_size_hint        (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs,
                                              guint32 size);</pre><p>
 Give a hint that we are going to read chunks of the given size.
 Giving size hints to the peer element might improve performance
@@ -241,9 +241,9 @@ since less buffers need to be merged.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td> the size to hint
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the hint was accepted.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997798"></a><h3><a name="gst-bytestream-tell"></a>gst_bytestream_tell ()</h3><a class="indexterm" name="id2997809"></a><pre class="programlisting">guint64     gst_bytestream_tell             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746419"></a><h3><a name="gst-bytestream-tell"></a>gst_bytestream_tell ()</h3><a class="indexterm" name="id2746430"></a><pre class="programlisting">guint64     gst_bytestream_tell             (<a href="gstreamer-libs-gstbytestream.html#GstByteStream">GstByteStream</a> *bs);</pre><p>
 Get the current byteoffset in the bytestream.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bs</tt></i> :</span></td><td> a bytestream
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the offset or -1 on error.
-</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-libs.html"><b>&lt;&lt; GStreamer Libraries</b></a></td><td align="right"><a accesskey="n" href="gstreamer-libs-gstcontrol.html"><b>gstcontrol &gt;&gt;</b></a></td></tr></table></body></html>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-libs.html"><b>&lt;&lt; Part I. GStreamer Libraries</b></a></td><td align="right"><a accesskey="n" href="gstreamer-libs-gstdataprotocol.html"><b>gstdataprotocol &gt;&gt;</b></a></td></tr></table></body></html>

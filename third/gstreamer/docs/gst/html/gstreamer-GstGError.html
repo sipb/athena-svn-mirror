@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstError</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstEnumTypes.html" title="GstEnumTypes"><link rel="next" href="gstreamer-GstEvent.html" title="GstEvent"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstError</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstElementFactory.html" title="GstElementFactory"><link rel="next" href="gstreamer-GstEvent.html" title="GstEvent"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,18 +28,18 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstEnumTypes.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstEvent.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstGError"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstError</span></h2><p>GstError &#8212; Categorized error messages</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstElementFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstEvent.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstGError"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstError</span></h2><p>GstError &#8212; Categorized error messages</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 enum        <a href="gstreamer-GstGError.html#GstCoreError">GstCoreError</a>;
 enum        <a href="gstreamer-GstGError.html#GstLibraryError">GstLibraryError</a>;
 enum        <a href="gstreamer-GstGError.html#GstResourceError">GstResourceError</a>;
 enum        <a href="gstreamer-GstGError.html#GstStreamError">GstStreamError</a>;
-#define     <a href="gstreamer-GstGError.html#GST-TYPE-G-ERROR-CAPS">GST_TYPE_G_ERROR</a>
+#define     <a href="gstreamer-GstGError.html#GST-CORE-ERROR-CAPS">GST_CORE_ERROR</a>
 #define     <a href="gstreamer-GstGError.html#GST-LIBRARY-ERROR-CAPS">GST_LIBRARY_ERROR</a>
 #define     <a href="gstreamer-GstGError.html#GST-RESOURCE-ERROR-CAPS">GST_RESOURCE_ERROR</a>
-#define     <a href="gstreamer-GstGError.html#GST-CORE-ERROR-CAPS">GST_CORE_ERROR</a>
 #define     <a href="gstreamer-GstGError.html#GST-STREAM-ERROR-CAPS">GST_STREAM_ERROR</a>
 #define     <a href="gstreamer-GstGError.html#GST-ERROR-SYSTEM-CAPS">GST_ERROR_SYSTEM</a>
 gchar*      <a href="gstreamer-GstGError.html#gst-error-get-message">gst_error_get_message</a>           (GQuark domain,
@@ -49,9 +49,10 @@ GQuark      <a href="gstreamer-GstGError.html#gst-core-error-quark">gst_core_err
 GQuark      <a href="gstreamer-GstGError.html#gst-resource-error-quark">gst_resource_error_quark</a>        (void);
 GQuark      <a href="gstreamer-GstGError.html#gst-library-error-quark">gst_library_error_quark</a>         (void);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2842346"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2842356"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2842362"></a><h3><a name="GstCoreError"></a>enum GstCoreError</h3><a class="indexterm" name="id2842373"></a><pre class="programlisting">typedef enum
+</pre></div><div class="refsect1" lang="en"><a name="id2624100"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2624110"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2624116"></a><h3><a name="GstCoreError"></a>enum GstCoreError</h3><a class="indexterm" name="id2624127"></a><pre class="programlisting">typedef enum
 {
   GST_CORE_ERROR_FAILED = 1,
   GST_CORE_ERROR_TOO_LAZY,
@@ -66,11 +67,25 @@ GQuark      <a href="gstreamer-GstGError.html#gst-library-error-quark">gst_libra
   GST_CORE_ERROR_CAPS,
   GST_CORE_ERROR_TAG,
   GST_CORE_ERROR_NUM_ERRORS
-}
-GstCoreError;
+} GstCoreError;
 </pre><p>
+Core errors are anything that can go wrong in or using
+the core GStreamer library</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842394"></a><h3><a name="GstLibraryError"></a>enum GstLibraryError</h3><a class="indexterm" name="id2842405"></a><pre class="programlisting">typedef enum
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_FAILED</tt></span></td><td> GStreamer encountered a general core library error.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_TOO_LAZY</tt></span></td><td> GStreamer developers were too lazy to assign an error code to this error.  Please file a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_NOT_IMPLEMENTED</tt></span></td><td> Internal GStreamer error: code not implemented.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_STATE_CHANGE</tt></span></td><td> Internal GStreamer error: state change failed.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_PAD</tt></span></td><td> Internal GStreamer error: pad problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_THREAD</tt></span></td><td> Internal GStreamer error: thread problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_SCHEDULER</tt></span></td><td> Internal GStreamer error: scheduler problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_NEGOTIATION</tt></span></td><td> Internal GStreamer error: negotiation problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_EVENT</tt></span></td><td> Internal GStreamer error: event problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_SEEK</tt></span></td><td> Internal GStreamer error: seek problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_CAPS</tt></span></td><td> Internal GStreamer error: caps problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_TAG</tt></span></td><td> Internal GStreamer error: tag problem.  File a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CORE_ERROR_NUM_ERRORS</tt></span></td><td> the error count
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624360"></a><h3><a name="GstLibraryError"></a>enum GstLibraryError</h3><a class="indexterm" name="id2624371"></a><pre class="programlisting">typedef enum
 {
   GST_LIBRARY_ERROR_FAILED = 1,
   GST_LIBRARY_ERROR_TOO_LAZY,
@@ -79,11 +94,19 @@ GstCoreError;
   GST_LIBRARY_ERROR_SETTINGS,
   GST_LIBRARY_ERROR_ENCODE,
   GST_LIBRARY_ERROR_NUM_ERRORS
-}
-GstLibraryError;
+} GstLibraryError;
 </pre><p>
+Library errors are for errors from the library being used by elements
+initializing, closing, ...</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842424"></a><h3><a name="GstResourceError"></a>enum GstResourceError</h3><a class="indexterm" name="id2842435"></a><pre class="programlisting">typedef enum
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_FAILED</tt></span></td><td> GStreamer encountered a general supporting library error.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_TOO_LAZY</tt></span></td><td> GStreamer developers were too lazy to assign an error code to this error.  Please file a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_INIT</tt></span></td><td> Could not initialize supporting library.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_SHUTDOWN</tt></span></td><td> Could not close supporting library.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_SETTINGS</tt></span></td><td> Could not close supporting library.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_ENCODE</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GST_LIBRARY_ERROR_NUM_ERRORS</tt></span></td><td> the error count
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624506"></a><h3><a name="GstResourceError"></a>enum GstResourceError</h3><a class="indexterm" name="id2624517"></a><pre class="programlisting">typedef enum
 {
   GST_RESOURCE_ERROR_FAILED = 1,
   GST_RESOURCE_ERROR_TOO_LAZY,
@@ -99,11 +122,27 @@ GstLibraryError;
   GST_RESOURCE_ERROR_SYNC,
   GST_RESOURCE_ERROR_SETTINGS,
   GST_RESOURCE_ERROR_NUM_ERRORS
-}
-GstResourceError;
+} GstResourceError;
 </pre><p>
+Resource errors are for anything external used by an element:
+memory, files, network connections, process space, ...
+They're typically used by source and sink elements</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842457"></a><h3><a name="GstStreamError"></a>enum GstStreamError</h3><a class="indexterm" name="id2842468"></a><pre class="programlisting">typedef enum
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_FAILED</tt></span></td><td> GStreamer encountered a general resource error
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_TOO_LAZY</tt></span></td><td> GStreamer developers were too lazy to assign an error code to this error.  Please file a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_NOT_FOUND</tt></span></td><td> Resource not found
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_BUSY</tt></span></td><td> Resource busy or not available
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_OPEN_READ</tt></span></td><td> Could not open resource for reading
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_OPEN_WRITE</tt></span></td><td> Could not open resource for writing
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_OPEN_READ_WRITE</tt></span></td><td> Could not open resource for reading and writing
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_CLOSE</tt></span></td><td> Could not close resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_READ</tt></span></td><td> Could not read from resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_WRITE</tt></span></td><td> Could not write to resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_SEEK</tt></span></td><td> Could not perform seek on resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_SYNC</tt></span></td><td> Could not synchronize on resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_SETTINGS</tt></span></td><td> Could not get/set settings from/on resource
+</td></tr><tr><td><span class="term"><tt class="literal">GST_RESOURCE_ERROR_NUM_ERRORS</tt></span></td><td> the error count
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624765"></a><h3><a name="GstStreamError"></a>enum GstStreamError</h3><a class="indexterm" name="id2624776"></a><pre class="programlisting">typedef enum
 {
   GST_STREAM_ERROR_FAILED = 1,
   GST_STREAM_ERROR_TOO_LAZY,
@@ -117,29 +156,40 @@ GstResourceError;
   GST_STREAM_ERROR_MUX,
   GST_STREAM_ERROR_FORMAT,
   GST_STREAM_ERROR_NUM_ERRORS
-}
-GstStreamError;
+} GstStreamError;
+</pre><p>
+Stream errors are for anything related to the stream being processed:
+format errors, media type errors, ...
+They're typically used by decoders, demuxers, converters, ...</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_FAILED</tt></span></td><td> GStreamer encountered a general stream error
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_TOO_LAZY</tt></span></td><td> GStreamer developers were too lazy to assign an error code to this error.  Please file a bug
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_NOT_IMPLEMENTED</tt></span></td><td> Element doesn't implement handling of this stream. Please file a bug.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_TYPE_NOT_FOUND</tt></span></td><td> Could not determine type of stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_WRONG_TYPE</tt></span></td><td> The stream is of a different type than handled by this element
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_CODEC_NOT_FOUND</tt></span></td><td> There is no codec present that can handle the stream's type
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_DECODE</tt></span></td><td> Could not decode stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_ENCODE</tt></span></td><td> Could not encode stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_DEMUX</tt></span></td><td> Could not demultiplex stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_MUX</tt></span></td><td> Could not multiplex stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_FORMAT</tt></span></td><td> Stream is of the wrong format
+</td></tr><tr><td><span class="term"><tt class="literal">GST_STREAM_ERROR_NUM_ERRORS</tt></span></td><td> the error count
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624994"></a><h3><a name="GST-CORE-ERROR-CAPS"></a>GST_CORE_ERROR</h3><a class="indexterm" name="id2625005"></a><pre class="programlisting">#define GST_CORE_ERROR      gst_core_error_quark ()
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842496"></a><h3><a name="GST-TYPE-G-ERROR-CAPS"></a>GST_TYPE_G_ERROR</h3><a class="indexterm" name="id2842508"></a><pre class="programlisting">#define GST_TYPE_G_ERROR    (gst_g_error_get_type ())
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625020"></a><h3><a name="GST-LIBRARY-ERROR-CAPS"></a>GST_LIBRARY_ERROR</h3><a class="indexterm" name="id2625032"></a><pre class="programlisting">#define GST_LIBRARY_ERROR   gst_library_error_quark ()
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842524"></a><h3><a name="GST-LIBRARY-ERROR-CAPS"></a>GST_LIBRARY_ERROR</h3><a class="indexterm" name="id2842535"></a><pre class="programlisting">#define GST_LIBRARY_ERROR   gst_library_error_quark ()
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625048"></a><h3><a name="GST-RESOURCE-ERROR-CAPS"></a>GST_RESOURCE_ERROR</h3><a class="indexterm" name="id2625060"></a><pre class="programlisting">#define GST_RESOURCE_ERROR  gst_resource_error_quark ()
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842551"></a><h3><a name="GST-RESOURCE-ERROR-CAPS"></a>GST_RESOURCE_ERROR</h3><a class="indexterm" name="id2842562"></a><pre class="programlisting">#define GST_RESOURCE_ERROR  gst_resource_error_quark ()
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625075"></a><h3><a name="GST-STREAM-ERROR-CAPS"></a>GST_STREAM_ERROR</h3><a class="indexterm" name="id2625087"></a><pre class="programlisting">#define GST_STREAM_ERROR    gst_stream_error_quark ()
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842578"></a><h3><a name="GST-CORE-ERROR-CAPS"></a>GST_CORE_ERROR</h3><a class="indexterm" name="id2842589"></a><pre class="programlisting">#define GST_CORE_ERROR      gst_core_error_quark ()
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625103"></a><h3><a name="GST-ERROR-SYSTEM-CAPS"></a>GST_ERROR_SYSTEM</h3><a class="indexterm" name="id2625114"></a><pre class="programlisting">#define GST_ERROR_SYSTEM    ("system error: %s", g_strerror (errno))
 </pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842604"></a><h3><a name="GST-STREAM-ERROR-CAPS"></a>GST_STREAM_ERROR</h3><a class="indexterm" name="id2842616"></a><pre class="programlisting">#define GST_STREAM_ERROR    gst_stream_error_quark ()
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842632"></a><h3><a name="GST-ERROR-SYSTEM-CAPS"></a>GST_ERROR_SYSTEM</h3><a class="indexterm" name="id2842644"></a><pre class="programlisting">#define GST_ERROR_SYSTEM    ("system error: %s", g_strerror (errno))
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2842660"></a><h3><a name="gst-error-get-message"></a>gst_error_get_message ()</h3><a class="indexterm" name="id2842671"></a><pre class="programlisting">gchar*      gst_error_get_message           (GQuark domain,
+Generates an human readable error message out of an errno number.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625131"></a><h3><a name="gst-error-get-message"></a>gst_error_get_message ()</h3><a class="indexterm" name="id2625142"></a><pre class="programlisting">gchar*      gst_error_get_message           (GQuark domain,
                                              gint code);</pre><p>
 </p><p>
 
@@ -147,24 +197,24 @@ GstStreamError;
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>code</tt></i> :</span></td><td> the error code belonging to the domain.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string describing the error message in the
 current locale.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2842754"></a><h3><a name="gst-stream-error-quark"></a>gst_stream_error_quark ()</h3><a class="indexterm" name="id2842766"></a><pre class="programlisting">GQuark      gst_stream_error_quark          (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625226"></a><h3><a name="gst-stream-error-quark"></a>gst_stream_error_quark ()</h3><a class="indexterm" name="id2625237"></a><pre class="programlisting">GQuark      gst_stream_error_quark          (void);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2842801"></a><h3><a name="gst-core-error-quark"></a>gst_core_error_quark ()</h3><a class="indexterm" name="id2842813"></a><pre class="programlisting">GQuark      gst_core_error_quark            (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625273"></a><h3><a name="gst-core-error-quark"></a>gst_core_error_quark ()</h3><a class="indexterm" name="id2625285"></a><pre class="programlisting">GQuark      gst_core_error_quark            (void);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2842848"></a><h3><a name="gst-resource-error-quark"></a>gst_resource_error_quark ()</h3><a class="indexterm" name="id2842860"></a><pre class="programlisting">GQuark      gst_resource_error_quark        (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625320"></a><h3><a name="gst-resource-error-quark"></a>gst_resource_error_quark ()</h3><a class="indexterm" name="id2625332"></a><pre class="programlisting">GQuark      gst_resource_error_quark        (void);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2842896"></a><h3><a name="gst-library-error-quark"></a>gst_library_error_quark ()</h3><a class="indexterm" name="id2842907"></a><pre class="programlisting">GQuark      gst_library_error_quark         (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625367"></a><h3><a name="gst-library-error-quark"></a>gst_library_error_quark ()</h3><a class="indexterm" name="id2625379"></a><pre class="programlisting">GQuark      gst_library_error_quark         (void);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstEnumTypes.html"><b>&lt;&lt; GstEnumTypes</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstEvent.html"><b>GstEvent &gt;&gt;</b></a></td></tr></table></body></html>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstElementFactory.html"><b>&lt;&lt; GstElementFactory</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstEvent.html"><b>GstEvent &gt;&gt;</b></a></td></tr></table></body></html>

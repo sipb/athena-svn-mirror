@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<book xmlns="http://www.devhelp.net/book" title="GStreamer 0.8 Library API Reference" link="index.html" author="" name="gstreamer-libs">
+<book xmlns="http://www.devhelp.net/book" title="GStreamer 0.8 Library Reference Manual" link="index.html" author="" name="gstreamer-libs">
   <chapters>
     <sub name="GStreamer Libraries" link="gstreamer-libs.html">
       <sub name="gstbytestream" link="gstreamer-libs-gstbytestream.html"/>
-      <sub name="gstcontrol" link="gstreamer-libs-gstcontrol.html"/>
       <sub name="gstdataprotocol" link="gstreamer-libs-gstdataprotocol.html"/>
       <sub name="gstgetbits" link="gstreamer-libs-gstgetbits.html"/>
+      <sub name="gstcontrol" link="gstreamer-control.html">
+        <sub name="gstcontrol" link="gstreamer-libs-GstControl.html"/>
+        <sub name="GstDParamManager" link="GstDParamManager.html"/>
+        <sub name="GstDParam" link="GstDParam.html"/>
+        <sub name="GstDParamSmooth" link="GstDParamSmooth.html"/>
+        <sub name="GstDParamLinInterp" link="GstDParamLinInterp.html"/>
+        <sub name="GstUnitConvert" link="GstUnitConvert.html"/>
+      </sub>
     </sub>
     <sub name="Object Hierarchy" link="gstreamer-libs-hierarchy.html"/>
     <sub name="API Index" link="api-index.html"/>
@@ -27,29 +34,6 @@
     <function name="gst_bytestream_seek ()" link="gstreamer-libs-gstbytestream.html#gst-bytestream-seek"/>
     <function name="gst_bytestream_size_hint ()" link="gstreamer-libs-gstbytestream.html#gst-bytestream-size-hint"/>
     <function name="gst_bytestream_tell ()" link="gstreamer-libs-gstbytestream.html#gst-bytestream-tell"/>
-    <function name="gst_control_init ()" link="gstreamer-libs-gstcontrol.html#gst-control-init"/>
-    <function name="gst_dpman_new ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-new"/>
-    <function name="gst_dpman_add_required_dparam_callback ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-callback"/>
-    <function name="gst_dpman_add_required_dparam_direct ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-direct"/>
-    <function name="gst_dpman_add_required_dparam_array ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-array"/>
-    <function name="gst_dpman_remove_required_dparam ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-remove-required-dparam"/>
-    <function name="gst_dpman_attach_dparam ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-attach-dparam"/>
-    <function name="gst_dpman_detach_dparam ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-detach-dparam"/>
-    <function name="gst_dpman_get_dparam ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-get-dparam"/>
-    <function name="gst_dpman_get_dparam_type ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-get-dparam-type"/>
-    <function name="gst_dpman_list_dparam_specs ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-list-dparam-specs"/>
-    <function name="gst_dpman_get_param_spec ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-get-param-spec"/>
-    <function name="gst_dpman_set_rate ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-set-rate"/>
-    <function name="gst_dpman_register_mode ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-register-mode"/>
-    <function name="gst_dpman_set_mode ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-set-mode"/>
-    <function name="gst_dpman_set_parent ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-set-parent"/>
-    <function name="gst_dpman_get_manager ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-get-manager"/>
-    <function name="gst_dpman_bypass_dparam ()" link="gstreamer-libs-gstcontrol.html#gst-dpman-bypass-dparam"/>
-    <function name="gst_dparam_new ()" link="gstreamer-libs-gstcontrol.html#gst-dparam-new"/>
-    <function name="gst_dparam_attach ()" link="gstreamer-libs-gstcontrol.html#gst-dparam-attach"/>
-    <function name="gst_dparam_detach ()" link="gstreamer-libs-gstcontrol.html#gst-dparam-detach"/>
-    <function name="gst_dparam_do_update_default ()" link="gstreamer-libs-gstcontrol.html#gst-dparam-do-update-default"/>
-    <function name="gst_dpsmooth_new ()" link="gstreamer-libs-gstcontrol.html#gst-dpsmooth-new"/>
     <function name="enum GstDPHeaderFlag" link="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag"/>
     <function name="enum GstDPPayloadType" link="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType"/>
     <function name="gst_dp_header_payload_length ()" link="gstreamer-libs-gstdataprotocol.html#gst-dp-header-payload-length"/>
@@ -128,5 +112,45 @@
     <function name="gst_flushbits32()" link="gstreamer-libs-gstgetbits.html#gst-flushbits32"/>
     <function name="gst_backbitsn()" link="gstreamer-libs-gstgetbits.html#gst-backbitsn"/>
     <function name="gst_backbits24()" link="gstreamer-libs-gstgetbits.html#gst-backbits24"/>
+    <function name="gst_control_init ()" link="gstreamer-libs-GstControl.html#gst-control-init"/>
+    <function name="struct GstDParamManager" link="GstDParamManager.html#GstDParamManager-struct"/>
+    <function name="gst_dpman_new ()" link="GstDParamManager.html#gst-dpman-new"/>
+    <function name="gst_dpman_add_required_dparam_callback ()" link="GstDParamManager.html#gst-dpman-add-required-dparam-callback"/>
+    <function name="gst_dpman_add_required_dparam_direct ()" link="GstDParamManager.html#gst-dpman-add-required-dparam-direct"/>
+    <function name="gst_dpman_add_required_dparam_array ()" link="GstDParamManager.html#gst-dpman-add-required-dparam-array"/>
+    <function name="gst_dpman_remove_required_dparam ()" link="GstDParamManager.html#gst-dpman-remove-required-dparam"/>
+    <function name="gst_dpman_attach_dparam ()" link="GstDParamManager.html#gst-dpman-attach-dparam"/>
+    <function name="gst_dpman_detach_dparam ()" link="GstDParamManager.html#gst-dpman-detach-dparam"/>
+    <function name="gst_dpman_get_dparam ()" link="GstDParamManager.html#gst-dpman-get-dparam"/>
+    <function name="gst_dpman_get_dparam_type ()" link="GstDParamManager.html#gst-dpman-get-dparam-type"/>
+    <function name="gst_dpman_list_dparam_specs ()" link="GstDParamManager.html#gst-dpman-list-dparam-specs"/>
+    <function name="gst_dpman_get_param_spec ()" link="GstDParamManager.html#gst-dpman-get-param-spec"/>
+    <function name="gst_dpman_set_rate ()" link="GstDParamManager.html#gst-dpman-set-rate"/>
+    <function name="gst_dpman_register_mode ()" link="GstDParamManager.html#gst-dpman-register-mode"/>
+    <function name="gst_dpman_set_mode ()" link="GstDParamManager.html#gst-dpman-set-mode"/>
+    <function name="gst_dpman_set_parent ()" link="GstDParamManager.html#gst-dpman-set-parent"/>
+    <function name="gst_dpman_get_manager ()" link="GstDParamManager.html#gst-dpman-get-manager"/>
+    <function name="gst_dpman_bypass_dparam ()" link="GstDParamManager.html#gst-dpman-bypass-dparam"/>
+    <function name="The &quot;new-required-dparam&quot; signal" link="GstDParamManager.html#GstDParamManager-new-required-dparam"/>
+    <function name="struct GstDParam" link="GstDParam.html#GstDParam-struct"/>
+    <function name="gst_dparam_new ()" link="GstDParam.html#gst-dparam-new"/>
+    <function name="gst_dparam_attach ()" link="GstDParam.html#gst-dparam-attach"/>
+    <function name="gst_dparam_detach ()" link="GstDParam.html#gst-dparam-detach"/>
+    <function name="gst_dparam_do_update_default ()" link="GstDParam.html#gst-dparam-do-update-default"/>
+    <function name="The &quot;value-changed&quot; signal" link="GstDParam.html#GstDParam-value-changed"/>
+    <function name="struct GstDParamSmooth" link="GstDParamSmooth.html#GstDParamSmooth-struct"/>
+    <function name="gst_dpsmooth_new ()" link="GstDParamSmooth.html#gst-dpsmooth-new"/>
+    <function name="struct GstDParamLinInterp" link="GstDParamLinInterp.html#GstDParamLinInterp-struct"/>
+    <function name="gst_dp_linint_new ()" link="GstDParamLinInterp.html#gst-dp-linint-new"/>
+    <function name="struct GstUnitConvert" link="GstUnitConvert.html#GstUnitConvert-struct"/>
+    <function name="gst_unitconv_new ()" link="GstUnitConvert.html#gst-unitconv-new"/>
+    <function name="gst_unitconv_set_convert_units ()" link="GstUnitConvert.html#gst-unitconv-set-convert-units"/>
+    <function name="gst_unitconv_convert_value ()" link="GstUnitConvert.html#gst-unitconv-convert-value"/>
+    <function name="gst_unitconv_unit_spec ()" link="GstUnitConvert.html#gst-unitconv-unit-spec"/>
+    <function name="gst_unitconv_unit_exists ()" link="GstUnitConvert.html#gst-unitconv-unit-exists"/>
+    <function name="gst_unitconv_unit_is_logarithmic ()" link="GstUnitConvert.html#gst-unitconv-unit-is-logarithmic"/>
+    <function name="gst_unitconv_register_unit ()" link="GstUnitConvert.html#gst-unitconv-register-unit"/>
+    <function name="gst_unitconv_register_convert_func ()" link="GstUnitConvert.html#gst-unitconv-register-convert-func"/>
+    <function name="gst_unitconv_register_convert_property ()" link="GstUnitConvert.html#gst-unitconv-register-convert-property"/>
   </functions>
 </book>

@@ -98,6 +98,12 @@ gst_scheduler_dispose (GObject * object)
   gst_object_replace ((GstObject **) & sched->current_clock, NULL);
   gst_object_replace ((GstObject **) & sched->clock, NULL);
 
+  /* kids are held reference to, so dereference here. */
+  while (sched->schedulers != NULL) {
+    gst_scheduler_remove_scheduler (sched,
+        GST_SCHEDULER (sched->schedulers->data));
+  }
+
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -215,6 +221,7 @@ void
 gst_scheduler_add_element (GstScheduler * sched, GstElement * element)
 {
   GstSchedulerClass *sclass;
+  gboolean redistribute_clock = FALSE;
 
   g_return_if_fail (GST_IS_SCHEDULER (sched));
   g_return_if_fail (GST_IS_ELEMENT (element));
@@ -233,14 +240,23 @@ gst_scheduler_add_element (GstScheduler * sched, GstElement * element)
     sched->clock_providers = g_list_prepend (sched->clock_providers, element);
     GST_CAT_DEBUG (GST_CAT_CLOCK, "added clock provider %s",
         GST_ELEMENT_NAME (element));
+    redistribute_clock = TRUE;
   }
   if (gst_element_requires_clock (element)) {
     sched->clock_receivers = g_list_prepend (sched->clock_receivers, element);
     GST_CAT_DEBUG (GST_CAT_CLOCK, "added clock receiver %s",
         GST_ELEMENT_NAME (element));
+    redistribute_clock = TRUE;
   }
 
   gst_element_set_scheduler (element, sched);
+
+  if (redistribute_clock) {
+    GstClock *clock;
+
+    clock = gst_scheduler_get_clock (sched);
+    gst_scheduler_set_clock (sched, clock);
+  }
 
   sclass = GST_SCHEDULER_GET_CLASS (sched);
 
@@ -259,12 +275,33 @@ void
 gst_scheduler_remove_element (GstScheduler * sched, GstElement * element)
 {
   GstSchedulerClass *sclass;
+  GList *link;
+  gboolean redistribute_clock = FALSE;
 
   g_return_if_fail (GST_IS_SCHEDULER (sched));
   g_return_if_fail (GST_IS_ELEMENT (element));
 
-  sched->clock_providers = g_list_remove (sched->clock_providers, element);
-  sched->clock_receivers = g_list_remove (sched->clock_receivers, element);
+  link = g_list_find (sched->clock_providers, element);
+  if (link) {
+    sched->clock_providers = g_list_delete_link (sched->clock_providers, link);
+    GST_CAT_DEBUG (GST_CAT_CLOCK, "removed clock provider %s",
+        GST_ELEMENT_NAME (element));
+    redistribute_clock = TRUE;
+  }
+  link = g_list_find (sched->clock_receivers, element);
+  if (link) {
+    sched->clock_receivers = g_list_delete_link (sched->clock_receivers, link);
+    GST_CAT_DEBUG (GST_CAT_CLOCK, "removed clock receiver %s",
+        GST_ELEMENT_NAME (element));
+    redistribute_clock = TRUE;
+  }
+
+  if (redistribute_clock) {
+    GstClock *clock;
+
+    clock = gst_scheduler_get_clock (sched);
+    gst_scheduler_set_clock (sched, clock);
+  }
 
   sclass = GST_SCHEDULER_GET_CLASS (sched);
 
@@ -295,6 +332,8 @@ gst_scheduler_state_transition (GstScheduler * sched, GstElement * element,
   g_return_val_if_fail (GST_IS_ELEMENT (element), GST_STATE_FAILURE);
 
   if (element == sched->parent && sched->parent_sched == NULL) {
+    /* FIXME is distributing the clock in the state change still needed
+     * when we distribute as soon as we add/remove elements? I think not.*/
     switch (transition) {
       case GST_STATE_READY_TO_PAUSED:
       {

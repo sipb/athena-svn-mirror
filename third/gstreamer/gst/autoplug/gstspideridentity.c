@@ -224,6 +224,7 @@ gst_spider_identity_chain (GstPad * pad, GstBuffer * buf)
     gst_buffer_unref (buf);
   }
 }
+
 GstSpiderIdentity *
 gst_spider_identity_new_src (gchar * name)
 {
@@ -319,7 +320,9 @@ gst_spider_identity_request_new_pad (GstElement * element,
         break;
       /* sink */
       GST_DEBUG ("element %s requests new sink pad", GST_ELEMENT_NAME (ident));
-      ident->sink = gst_pad_new ("sink", GST_PAD_SINK);
+      ident->sink =
+          gst_pad_new_from_template (gst_static_pad_template_get
+          (&spider_sink_factory), "sink");
       gst_element_add_pad (GST_ELEMENT (ident), ident->sink);
       gst_pad_set_link_function (ident->sink,
           GST_DEBUG_FUNCPTR (gst_spider_identity_link));
@@ -331,7 +334,9 @@ gst_spider_identity_request_new_pad (GstElement * element,
       if (ident->src != NULL)
         break;
       GST_DEBUG ("element %s requests new src pad", GST_ELEMENT_NAME (ident));
-      ident->src = gst_pad_new ("src", GST_PAD_SRC);
+      ident->src =
+          gst_pad_new_from_template (gst_static_pad_template_get
+          (&spider_src_factory), "src");
       gst_element_add_pad (GST_ELEMENT (ident), ident->src);
       gst_pad_set_link_function (ident->src,
           GST_DEBUG_FUNCPTR (gst_spider_identity_link));
@@ -474,7 +479,7 @@ typedef struct
   GstCaps *caps;
 }
 SpiderTypeFind;
-guint8 *
+static guint8 *
 spider_find_peek (gpointer data, gint64 offset, guint size)
 {
   SpiderTypeFind *find = (SpiderTypeFind *) data;
@@ -533,6 +538,7 @@ gst_spider_identity_sink_loop_type_finding (GstSpiderIdentity * ident)
   find.best_probability = 0;
   find.caps = NULL;
   gst_find.data = &find;
+  gst_find.get_length = NULL;
   gst_find.peek = spider_find_peek;
   gst_find.suggest = spider_find_suggest;
   while (walk) {

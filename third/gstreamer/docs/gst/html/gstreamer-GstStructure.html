@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstStructure</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstSchedulerFactory.html" title="GstSchedulerFactory"><link rel="next" href="gstreamer-GstSystemClock.html" title="GstSystemClock"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstStructure</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstSchedulerFactory.html" title="GstSchedulerFactory"><link rel="next" href="gstreamer-GstSystemClock.html" title="GstSystemClock"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,11 +28,11 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstSchedulerFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstSystemClock.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstStructure"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstStructure</span></h2><p>GstStructure &#8212; Generic structure containing fields of names and values</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstSchedulerFactory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstSystemClock.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstStructure"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstStructure</span></h2><p>GstStructure &#8212; Generic structure containing fields of names and values</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gst/gst.h&gt;
 
 
-
-#define     <a href="gstreamer-GstStructure.html#GST-TYPE-STRUCTURE-CAPS">GST_TYPE_STRUCTURE</a>
 struct      <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>;
 gboolean    (<a href="gstreamer-GstStructure.html#GstStructureForeachFunc">*GstStructureForeachFunc</a>)      (GQuark field_id,
                                              GValue *value,
@@ -111,12 +111,9 @@ gchar*      <a href="gstreamer-GstStructure.html#gst-structure-to-string">gst_st
                                              gchar **end);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2965940"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2491303"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2965950"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2965955"></a><h3><a name="GST-TYPE-STRUCTURE-CAPS"></a>GST_TYPE_STRUCTURE</h3><a class="indexterm" name="id2965967"></a><pre class="programlisting">#define GST_TYPE_STRUCTURE             (gst_structure_get_type ())
-</pre><p>
-
-</p></div><hr><div class="refsect2" lang="en"><a name="id2965983"></a><h3><a name="GstStructure"></a>struct GstStructure</h3><a class="indexterm" name="id2965994"></a><pre class="programlisting">struct GstStructure {
+</p></div><div class="refsect1" lang="en"><a name="id2491313"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2491319"></a><h3><a name="GstStructure"></a>struct GstStructure</h3><a class="indexterm" name="id2491329"></a><pre class="programlisting">struct GstStructure {
 
   GType type;
 
@@ -128,7 +125,7 @@ gchar*      <a href="gstreamer-GstStructure.html#gst-structure-to-string">gst_st
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2966010"></a><h3><a name="GstStructureForeachFunc"></a>GstStructureForeachFunc ()</h3><a class="indexterm" name="id2966022"></a><pre class="programlisting">gboolean    (*GstStructureForeachFunc)      (GQuark field_id,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2491346"></a><h3><a name="GstStructureForeachFunc"></a>GstStructureForeachFunc ()</h3><a class="indexterm" name="id2491354"></a><pre class="programlisting">gboolean    (*GstStructureForeachFunc)      (GQuark field_id,
                                              GValue *value,
                                              gpointer user_data);</pre><p>
 
@@ -138,17 +135,17 @@ gchar*      <a href="gstreamer-GstStructure.html#gst-structure-to-string">gst_st
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966120"></a><h3><a name="gst-structure-empty-new"></a>gst_structure_empty_new ()</h3><a class="indexterm" name="id2966132"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_empty_new       (const gchar *name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2743862"></a><h3><a name="gst-structure-empty-new"></a>gst_structure_empty_new ()</h3><a class="indexterm" name="id2743870"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_empty_new       (const gchar *name);</pre><p>
 Creates a new, empty <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> with the given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new structure
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new, empty <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966210"></a><h3><a name="gst-structure-id-empty-new"></a>gst_structure_id_empty_new ()</h3><a class="indexterm" name="id2966222"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_id_empty_new    (GQuark quark);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2743946"></a><h3><a name="gst-structure-id-empty-new"></a>gst_structure_id_empty_new ()</h3><a class="indexterm" name="id2743954"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_id_empty_new    (GQuark quark);</pre><p>
 Creates a new, empty <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> with the given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>quark</tt></i> :</span></td><td> name of new structure
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new, empty <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966299"></a><h3><a name="gst-structure-new"></a>gst_structure_new ()</h3><a class="indexterm" name="id2966311"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_new             (const gchar *name,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744030"></a><h3><a name="gst-structure-new"></a>gst_structure_new ()</h3><a class="indexterm" name="id2744040"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_new             (const gchar *name,
                                              const gchar *firstfield,
                                              ...);</pre><p>
 Creates a new <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> with the given name.  Parses the
@@ -160,7 +157,7 @@ and value.  Last variable argument should be NULL.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>firstfield</tt></i> :</span></td><td> name of first field to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> additional arguments
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966427"></a><h3><a name="gst-structure-new-valist"></a>gst_structure_new_valist ()</h3><a class="indexterm" name="id2966439"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_new_valist      (const gchar *name,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744143"></a><h3><a name="gst-structure-new-valist"></a>gst_structure_new_valist ()</h3><a class="indexterm" name="id2744152"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_new_valist      (const gchar *name,
                                              const gchar *firstfield,
                                              va_list varargs);</pre><p>
 Creates a new <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> with the given name.  Structure fields
@@ -171,35 +168,35 @@ are set according to the varargs in a manner similar to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>firstfield</tt></i> :</span></td><td> name of first field to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>varargs</tt></i> :</span></td><td> variable argument list
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966567"></a><h3><a name="gst-structure-copy"></a>gst_structure_copy ()</h3><a class="indexterm" name="id2966579"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_copy            (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744263"></a><h3><a name="gst-structure-copy"></a>gst_structure_copy ()</h3><a class="indexterm" name="id2744271"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_copy            (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Duplicates a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> and all its fields and values.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> to duplicate
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966664"></a><h3><a name="gst-structure-free"></a>gst_structure_free ()</h3><a class="indexterm" name="id2966676"></a><pre class="programlisting">void        gst_structure_free              (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744344"></a><h3><a name="gst-structure-free"></a>gst_structure_free ()</h3><a class="indexterm" name="id2744352"></a><pre class="programlisting">void        gst_structure_free              (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Frees a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> and all its fields and values.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> the <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> to free
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966743"></a><h3><a name="gst-structure-get-name"></a>gst_structure_get_name ()</h3><a class="indexterm" name="id2966754"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_structure_get_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744409"></a><h3><a name="gst-structure-get-name"></a>gst_structure_get_name ()</h3><a class="indexterm" name="id2744418"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_structure_get_name
                                             (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Accessor fuction.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the quark representing the name of the structure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966826"></a><h3><a name="gst-structure-set-name"></a>gst_structure_set_name ()</h3><a class="indexterm" name="id2966837"></a><pre class="programlisting">void        gst_structure_set_name          (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744480"></a><h3><a name="gst-structure-set-name"></a>gst_structure_set_name ()</h3><a class="indexterm" name="id2744488"></a><pre class="programlisting">void        gst_structure_set_name          (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *name);</pre><p>
 Sets the name of the structure to the given name.  The string
 provided is copied before being used.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the new name of the structure
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966919"></a><h3><a name="gst-structure-get-name-id"></a>gst_structure_get_name_id ()</h3><a class="indexterm" name="id2966931"></a><pre class="programlisting">GQuark      gst_structure_get_name_id       (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744560"></a><h3><a name="gst-structure-get-name-id"></a>gst_structure_get_name_id ()</h3><a class="indexterm" name="id2744569"></a><pre class="programlisting">GQuark      gst_structure_get_name_id       (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966987"></a><h3><a name="gst-structure-id-get-value"></a>gst_structure_id_get_value ()</h3><a class="indexterm" name="id2966999"></a><pre class="programlisting">G_CONST_RETURN GValue* gst_structure_id_get_value
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744619"></a><h3><a name="gst-structure-id-get-value"></a>gst_structure_id_get_value ()</h3><a class="indexterm" name="id2744628"></a><pre class="programlisting">G_CONST_RETURN GValue* gst_structure_id_get_value
                                             (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              GQuark field);</pre><p>
 Accessor function.</p><p>
@@ -208,7 +205,7 @@ Accessor function.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>field</tt></i> :</span></td><td> the <span class="type">GQuark</span> of the field to get
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GValue</span> corresponding to the field with the given name 
          identifier.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967108"></a><h3><a name="gst-structure-id-set-value"></a>gst_structure_id_set_value ()</h3><a class="indexterm" name="id2967120"></a><pre class="programlisting">void        gst_structure_id_set_value      (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744723"></a><h3><a name="gst-structure-id-set-value"></a>gst_structure_id_set_value ()</h3><a class="indexterm" name="id2744732"></a><pre class="programlisting">void        gst_structure_id_set_value      (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              GQuark field,
                                              const GValue *value);</pre><p>
 Sets the field with the given ID to the provided value.  If the field
@@ -218,7 +215,7 @@ value is freed.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>field</tt></i> :</span></td><td> a <span class="type">GQuark</span> representing a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value of the field
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967232"></a><h3><a name="gst-structure-get-value"></a>gst_structure_get_value ()</h3><a class="indexterm" name="id2967243"></a><pre class="programlisting">G_CONST_RETURN GValue* gst_structure_get_value
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744829"></a><h3><a name="gst-structure-get-value"></a>gst_structure_get_value ()</h3><a class="indexterm" name="id2744838"></a><pre class="programlisting">G_CONST_RETURN GValue* gst_structure_get_value
                                             (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname);</pre><p>
 Accessor function.</p><p>
@@ -226,7 +223,7 @@ Accessor function.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to get
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GValue</span> corresponding to the field with the given name.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967344"></a><h3><a name="gst-structure-set-value"></a>gst_structure_set_value ()</h3><a class="indexterm" name="id2967356"></a><pre class="programlisting">void        gst_structure_set_value         (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744926"></a><h3><a name="gst-structure-set-value"></a>gst_structure_set_value ()</h3><a class="indexterm" name="id2744934"></a><pre class="programlisting">void        gst_structure_set_value         (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              const GValue *value);</pre><p>
 Sets the field with the given name to the provided value.  If the field
@@ -236,7 +233,7 @@ value is freed.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value of the field
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967460"></a><h3><a name="gst-structure-set"></a>gst_structure_set ()</h3><a class="indexterm" name="id2967472"></a><pre class="programlisting">void        gst_structure_set               (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745026"></a><h3><a name="gst-structure-set"></a>gst_structure_set ()</h3><a class="indexterm" name="id2745035"></a><pre class="programlisting">void        gst_structure_set               (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              ...);</pre><p>
 Parses the variable arguments and sets fields accordingly.
@@ -246,7 +243,7 @@ Variable arguments should be in the form field name, field type
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> variable arguments
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967569"></a><h3><a name="gst-structure-set-valist"></a>gst_structure_set_valist ()</h3><a class="indexterm" name="id2967581"></a><pre class="programlisting">void        gst_structure_set_valist        (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745122"></a><h3><a name="gst-structure-set-valist"></a>gst_structure_set_valist ()</h3><a class="indexterm" name="id2745130"></a><pre class="programlisting">void        gst_structure_set_valist        (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              va_list varargs);</pre><p>
 va_list form of <a href="gstreamer-GstStructure.html#gst-structure-set"><span class="type">gst_structure_set</span></a>.</p><p>
@@ -254,14 +251,14 @@ va_list form of <a href="gstreamer-GstStructure.html#gst-structure-set"><span cl
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>varargs</tt></i> :</span></td><td> variable arguments
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967691"></a><h3><a name="gst-structure-remove-field"></a>gst_structure_remove_field ()</h3><a class="indexterm" name="id2967703"></a><pre class="programlisting">void        gst_structure_remove_field      (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745225"></a><h3><a name="gst-structure-remove-field"></a>gst_structure_remove_field ()</h3><a class="indexterm" name="id2745234"></a><pre class="programlisting">void        gst_structure_remove_field      (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname);</pre><p>
 Removes the field with the given name.  If the field with the given
 name does not exist, the structure is unchanged.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to remove
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967784"></a><h3><a name="gst-structure-remove-fields"></a>gst_structure_remove_fields ()</h3><a class="indexterm" name="id2967797"></a><pre class="programlisting">void        gst_structure_remove_fields     (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745306"></a><h3><a name="gst-structure-remove-fields"></a>gst_structure_remove_fields ()</h3><a class="indexterm" name="id2745315"></a><pre class="programlisting">void        gst_structure_remove_fields     (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              ...);</pre><p>
 Removes the field with the given names. If a field does not exist, the
@@ -270,7 +267,7 @@ argument is ignored.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to remove
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> NULL-terminated list of more fieldnames to remove
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967893"></a><h3><a name="gst-structure-remove-fields-valist"></a>gst_structure_remove_fields_valist ()</h3><a class="indexterm" name="id2967906"></a><pre class="programlisting">void        gst_structure_remove_fields_valist
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745401"></a><h3><a name="gst-structure-remove-fields-valist"></a>gst_structure_remove_fields_valist ()</h3><a class="indexterm" name="id2745413"></a><pre class="programlisting">void        gst_structure_remove_fields_valist
                                             (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              va_list varargs);</pre><p>
@@ -280,11 +277,11 @@ argument is ignored.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field to remove
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>varargs</tt></i> :</span></td><td> NULL-terminated list of more fieldnames to remove
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968010"></a><h3><a name="gst-structure-remove-all-fields"></a>gst_structure_remove_all_fields ()</h3><a class="indexterm" name="id2968022"></a><pre class="programlisting">void        gst_structure_remove_all_fields (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745505"></a><h3><a name="gst-structure-remove-all-fields"></a>gst_structure_remove_all_fields ()</h3><a class="indexterm" name="id2745516"></a><pre class="programlisting">void        gst_structure_remove_all_fields (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Removes all fields in a GstStructure.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968080"></a><h3><a name="gst-structure-get-field-type"></a>gst_structure_get_field_type ()</h3><a class="indexterm" name="id2968093"></a><pre class="programlisting">GType       gst_structure_get_field_type    (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745573"></a><h3><a name="gst-structure-get-field-type"></a>gst_structure_get_field_type ()</h3><a class="indexterm" name="id2745585"></a><pre class="programlisting">GType       gst_structure_get_field_type    (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname);</pre><p>
 Finds the field with the given name, and returns the type of the
 value it contains.  If the field is not found, G_TYPE_INVALID is
@@ -293,7 +290,7 @@ returned.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of the field
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GValue</span> of the field
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968193"></a><h3><a name="gst-structure-foreach"></a>gst_structure_foreach ()</h3><a class="indexterm" name="id2968205"></a><pre class="programlisting">gboolean    gst_structure_foreach           (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745686"></a><h3><a name="gst-structure-foreach"></a>gst_structure_foreach ()</h3><a class="indexterm" name="id2745698"></a><pre class="programlisting">gboolean    gst_structure_foreach           (<a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              <a href="gstreamer-GstStructure.html#GstStructureForeachFunc">GstStructureForeachFunc</a> func,
                                              gpointer user_data);</pre><p>
 Calls the provided function once for each field in the <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>.</p><p>
@@ -303,19 +300,19 @@ Calls the provided function once for each field in the <a href="gstreamer-GstStr
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> private data
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the supplied function returns TRUE For each of the fields,
 FALSE otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968328"></a><h3><a name="gst-structure-n-fields"></a>gst_structure_n_fields ()</h3><a class="indexterm" name="id2968339"></a><pre class="programlisting">gint        gst_structure_n_fields          (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745821"></a><h3><a name="gst-structure-n-fields"></a>gst_structure_n_fields ()</h3><a class="indexterm" name="id2745832"></a><pre class="programlisting">gint        gst_structure_n_fields          (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Accessor function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the number of fields in the structure
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968408"></a><h3><a name="gst-structure-has-field"></a>gst_structure_has_field ()</h3><a class="indexterm" name="id2968420"></a><pre class="programlisting">gboolean    gst_structure_has_field         (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745901"></a><h3><a name="gst-structure-has-field"></a>gst_structure_has_field ()</h3><a class="indexterm" name="id2745913"></a><pre class="programlisting">gboolean    gst_structure_has_field         (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname);</pre><p>
 Accessor function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the structure contains a field with the given name
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968511"></a><h3><a name="gst-structure-has-field-typed"></a>gst_structure_has_field_typed ()</h3><a class="indexterm" name="id2968523"></a><pre class="programlisting">gboolean    gst_structure_has_field_typed   (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746004"></a><h3><a name="gst-structure-has-field-typed"></a>gst_structure_has_field_typed ()</h3><a class="indexterm" name="id2746016"></a><pre class="programlisting">gboolean    gst_structure_has_field_typed   (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              GType type);</pre><p>
 Accessor function.</p><p>
@@ -324,7 +321,7 @@ Accessor function.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type of a value
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the structure contains a field with the given name and type
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968636"></a><h3><a name="gst-structure-get-boolean"></a>gst_structure_get_boolean ()</h3><a class="indexterm" name="id2968649"></a><pre class="programlisting">gboolean    gst_structure_get_boolean       (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746129"></a><h3><a name="gst-structure-get-boolean"></a>gst_structure_get_boolean ()</h3><a class="indexterm" name="id2746142"></a><pre class="programlisting">gboolean    gst_structure_get_boolean       (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              gboolean *value);</pre><p>
 Sets the boolean pointed to by <i class="parameter"><tt>value</tt></i> corresponding to the value of the
@@ -335,7 +332,7 @@ and has the correct type.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> a pointer to a <span class="type">gboolean</span> to set
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the value could be set correctly
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968777"></a><h3><a name="gst-structure-get-int"></a>gst_structure_get_int ()</h3><a class="indexterm" name="id2968788"></a><pre class="programlisting">gboolean    gst_structure_get_int           (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746270"></a><h3><a name="gst-structure-get-int"></a>gst_structure_get_int ()</h3><a class="indexterm" name="id2746281"></a><pre class="programlisting">gboolean    gst_structure_get_int           (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              gint *value);</pre><p>
 Sets the int pointed to by <i class="parameter"><tt>value</tt></i> corresponding to the value of the
@@ -346,7 +343,7 @@ and has the correct type.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> a pointer to an int to set
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the value could be set correctly
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968909"></a><h3><a name="gst-structure-get-fourcc"></a>gst_structure_get_fourcc ()</h3><a class="indexterm" name="id2968921"></a><pre class="programlisting">gboolean    gst_structure_get_fourcc        (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746402"></a><h3><a name="gst-structure-get-fourcc"></a>gst_structure_get_fourcc ()</h3><a class="indexterm" name="id2746414"></a><pre class="programlisting">gboolean    gst_structure_get_fourcc        (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              guint32 *value);</pre><p>
 Sets the <span class="type">GstFourcc</span> pointed to by <i class="parameter"><tt>value</tt></i> corresponding to the value of the
@@ -357,7 +354,7 @@ and has the correct type.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> a pointer to a <span class="type">GstFourcc</span> to set
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the value could be set correctly
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2969058"></a><h3><a name="gst-structure-get-double"></a>gst_structure_get_double ()</h3><a class="indexterm" name="id2969069"></a><pre class="programlisting">gboolean    gst_structure_get_double        (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746551"></a><h3><a name="gst-structure-get-double"></a>gst_structure_get_double ()</h3><a class="indexterm" name="id2746562"></a><pre class="programlisting">gboolean    gst_structure_get_double        (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname,
                                              gdouble *value);</pre><p>
 Sets the double pointed to by <i class="parameter"><tt>value</tt></i> corresponding to the value of the
@@ -368,7 +365,7 @@ and has the correct type.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> a pointer to a <span class="type">GstFourcc</span> to set
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the value could be set correctly
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2969198"></a><h3><a name="gst-structure-get-string"></a>gst_structure_get_string ()</h3><a class="indexterm" name="id2969210"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_structure_get_string
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746691"></a><h3><a name="gst-structure-get-string"></a>gst_structure_get_string ()</h3><a class="indexterm" name="id2746702"></a><pre class="programlisting">G_CONST_RETURN gchar* gst_structure_get_string
                                             (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure,
                                              const gchar *fieldname);</pre><p>
 Finds the field corresponding to <i class="parameter"><tt>fieldname</tt></i>, and returns the string
@@ -381,12 +378,12 @@ call to a gst_structure_*() function with the given structure.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>fieldname</tt></i> :</span></td><td> the name of a field
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to the string
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2969316"></a><h3><a name="gst-structure-to-string"></a>gst_structure_to_string ()</h3><a class="indexterm" name="id2969328"></a><pre class="programlisting">gchar*      gst_structure_to_string         (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746809"></a><h3><a name="gst-structure-to-string"></a>gst_structure_to_string ()</h3><a class="indexterm" name="id2746820"></a><pre class="programlisting">gchar*      gst_structure_to_string         (const <a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a> *structure);</pre><p>
 Converts <i class="parameter"><tt>structure</tt></i> to a human-readable representation.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>structure</tt></i> :</span></td><td> a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to string allocated by <tt class="function">g_malloc()</tt>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2969414"></a><h3><a name="gst-structure-from-string"></a>gst_structure_from_string ()</h3><a class="indexterm" name="id2969427"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_from_string     (const gchar *string,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746907"></a><h3><a name="gst-structure-from-string"></a>gst_structure_from_string ()</h3><a class="indexterm" name="id2746919"></a><pre class="programlisting"><a href="gstreamer-GstStructure.html#GstStructure">GstStructure</a>* gst_structure_from_string     (const gchar *string,
                                              gchar **end);</pre><p>
 Creates a <a href="gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> from a string representation.</p><p>
 

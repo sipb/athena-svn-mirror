@@ -326,41 +326,41 @@ gst_bin_set_element_sched (GstElement * element, GstScheduler * sched)
     /* set the children's schedule */
     g_list_foreach (GST_BIN (element)->children,
         (GFunc) gst_bin_set_element_sched, sched);
-  }
-  /* otherwise, if it's just a regular old element */
-  else if (!GST_FLAG_IS_SET (element, GST_ELEMENT_DECOUPLED)) {
+  } else {
+    /* otherwise, if it's just a regular old element */
     GList *pads;
 
     gst_scheduler_add_element (sched, element);
 
-    /* set the sched pointer in all the pads */
-    pads = element->pads;
-    while (pads) {
-      GstPad *pad;
+    if (!GST_FLAG_IS_SET (element, GST_ELEMENT_DECOUPLED)) {
+      /* set the sched pointer in all the pads */
+      pads = element->pads;
+      while (pads) {
+        GstPad *pad;
 
-      pad = GST_PAD (pads->data);
-      pads = g_list_next (pads);
+        pad = GST_PAD (pads->data);
+        pads = g_list_next (pads);
 
-      /* we only operate on real pads */
-      if (!GST_IS_REAL_PAD (pad))
-        continue;
+        /* we only operate on real pads */
+        if (!GST_IS_REAL_PAD (pad))
+          continue;
 
-      /* if the peer element exists and is a candidate */
-      if (GST_PAD_PEER (pad)) {
-        if (gst_pad_get_scheduler (GST_PAD_PEER (pad)) == sched) {
-          GST_CAT_LOG (GST_CAT_SCHEDULING,
-              "peer is in same scheduler, telling scheduler");
+        /* if the peer element exists and is a candidate */
+        if (GST_PAD_PEER (pad)) {
+          if (gst_pad_get_scheduler (GST_PAD_PEER (pad)) == sched) {
+            GST_CAT_LOG (GST_CAT_SCHEDULING,
+                "peer is in same scheduler, telling scheduler");
 
-          if (GST_PAD_IS_SRC (pad))
-            gst_scheduler_pad_link (sched, pad, GST_PAD_PEER (pad));
-          else
-            gst_scheduler_pad_link (sched, GST_PAD_PEER (pad), pad);
+            if (GST_PAD_IS_SRC (pad))
+              gst_scheduler_pad_link (sched, pad, GST_PAD_PEER (pad));
+            else
+              gst_scheduler_pad_link (sched, GST_PAD_PEER (pad), pad);
+          }
         }
       }
     }
   }
 }
-
 
 static void
 gst_bin_unset_element_sched (GstElement * element, GstScheduler * sched)
@@ -391,35 +391,38 @@ gst_bin_unset_element_sched (GstElement * element, GstScheduler * sched)
         (GFunc) gst_bin_unset_element_sched, sched);
 
     gst_scheduler_remove_element (GST_ELEMENT_SCHED (element), element);
-  } else if (!GST_FLAG_IS_SET (element, GST_ELEMENT_DECOUPLED)) {
+  } else {
     /* otherwise, if it's just a regular old element */
     GList *pads;
 
-    /* set the sched pointer in all the pads */
-    pads = element->pads;
-    while (pads) {
-      GstPad *pad;
+    if (!GST_FLAG_IS_SET (element, GST_ELEMENT_DECOUPLED)) {
+      /* unset the sched pointer in all the pads */
+      pads = element->pads;
+      while (pads) {
+        GstPad *pad;
 
-      pad = GST_PAD (pads->data);
-      pads = g_list_next (pads);
+        pad = GST_PAD (pads->data);
+        pads = g_list_next (pads);
 
-      /* we only operate on real pads */
-      if (!GST_IS_REAL_PAD (pad))
-        continue;
+        /* we only operate on real pads */
+        if (!GST_IS_REAL_PAD (pad))
+          continue;
 
-      /* if the peer element exists and is a candidate */
-      if (GST_PAD_PEER (pad)) {
-        if (gst_pad_get_scheduler (GST_PAD_PEER (pad)) == sched) {
-          GST_CAT_LOG (GST_CAT_SCHEDULING,
-              "peer is in same scheduler, telling scheduler");
+        /* if the peer element exists and is a candidate */
+        if (GST_PAD_PEER (pad)) {
+          if (gst_pad_get_scheduler (GST_PAD_PEER (pad)) == sched) {
+            GST_CAT_LOG (GST_CAT_SCHEDULING,
+                "peer is in same scheduler, telling scheduler");
 
-          if (GST_PAD_IS_SRC (pad))
-            gst_scheduler_pad_unlink (sched, pad, GST_PAD_PEER (pad));
-          else
-            gst_scheduler_pad_unlink (sched, GST_PAD_PEER (pad), pad);
+            if (GST_PAD_IS_SRC (pad))
+              gst_scheduler_pad_unlink (sched, pad, GST_PAD_PEER (pad));
+            else
+              gst_scheduler_pad_unlink (sched, GST_PAD_PEER (pad), pad);
+          }
         }
       }
     }
+
     gst_scheduler_remove_element (GST_ELEMENT_SCHED (element), element);
   }
 }
@@ -485,7 +488,7 @@ gst_bin_add_func (GstBin * bin, GstElement * element)
 
   /* bump our internal state counter */
   state = GST_STATE (element);
-  while (state >>= 1)
+  while ((state >>= 1) != 0)
     state_idx++;
   bin->child_states[state_idx]++;
 
@@ -509,7 +512,7 @@ gst_bin_add_func (GstBin * bin, GstElement * element)
  * @element: #GstElement to add to bin
  *
  * Adds the given element to the bin.  Sets the element's parent, and thus
- * adds a reference.
+ * takes ownership of the element. An element can only be added to one bin.
  */
 void
 gst_bin_add (GstBin * bin, GstElement * element)
@@ -552,13 +555,16 @@ gst_bin_remove_func (GstBin * bin, GstElement * element)
   /* remove this element from the list of managed elements */
   gst_bin_unset_element_sched (element, GST_ELEMENT_SCHED (bin));
 
+  /* if it is still iterating, make it stop */
+  gst_element_release_locks (element);
+
   /* now remove the element from the list of elements */
   bin->children = g_list_remove (bin->children, element);
   bin->numchildren--;
 
   /* bump our internal state counter */
   state = GST_STATE (element);
-  while (state >>= 1)
+  while ((state >>= 1) != 0)
     state_idx++;
   bin->child_states[state_idx]--;
 
@@ -691,9 +697,9 @@ gst_bin_child_state_change_func (GstBin * bin, GstElementState oldstate,
 
   old = oldstate;
   new = newstate;
-  while (old >>= 1)
+  while ((old >>= 1) != 0)
     old_idx++;
-  while (new >>= 1)
+  while ((new >>= 1) != 0)
     new_idx++;
 
   GST_LOCK (bin);
@@ -705,7 +711,11 @@ gst_bin_child_state_change_func (GstBin * bin, GstElementState oldstate,
     if (bin->child_states[i] != 0) {
       gint state = (1 << i);
 
-      if (GST_STATE (bin) != state) {
+      /* We only change state on the parent if the state is not locked.
+       * State locking can occur if the bin itself set state on children,
+       * which should not recurse since it leads to infinite loops. */
+      if (GST_STATE (bin) != state &&
+          !GST_FLAG_IS_SET (bin, GST_BIN_STATE_LOCKED)) {
         GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, bin,
             "highest child state is %s, changing bin state accordingly",
             gst_element_state_get_name (state));
@@ -829,7 +839,6 @@ gst_bin_change_state (GstElement * element)
   GstBin *bin;
   GstElementStateReturn ret;
   GstElementState old_state, pending;
-  SetKidStateData data;
 
   g_return_val_if_fail (GST_IS_BIN (element), GST_STATE_FAILURE);
 
@@ -846,27 +855,43 @@ gst_bin_change_state (GstElement * element)
   if (pending == GST_STATE_VOID_PENDING)
     return GST_STATE_SUCCESS;
 
-  data.pending = pending;
-  data.result = GST_STATE_SUCCESS;
-  if (!gst_bin_foreach (bin, set_kid_state_func, &data)) {
-    GST_STATE_PENDING (element) = old_state;
-    return GST_STATE_FAILURE;
+  /* If we're changing state non-recursively (see _norecurse()),
+   * this flag is already set and we should not set children states. */
+  if (!GST_FLAG_IS_SET (bin, GST_BIN_STATE_LOCKED)) {
+    SetKidStateData data;
+
+    /* So now we use this flag to make sure that kids don't re-set our
+     * state, which would lead to infinite loops. */
+    GST_FLAG_SET (bin, GST_BIN_STATE_LOCKED);
+    data.pending = pending;
+    data.result = GST_STATE_SUCCESS;
+    if (!gst_bin_foreach (bin, set_kid_state_func, &data)) {
+      GST_FLAG_UNSET (bin, GST_BIN_STATE_LOCKED);
+      GST_STATE_PENDING (element) = old_state;
+      return GST_STATE_FAILURE;
+    }
+    GST_FLAG_UNSET (bin, GST_BIN_STATE_LOCKED);
+
+    GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
+        "done changing bin's state from %s to %s, now in %s",
+        gst_element_state_get_name (old_state),
+        gst_element_state_get_name (pending),
+        gst_element_state_get_name (GST_STATE (element)));
+
+    /* if we're async, the kids will change state later (when the
+     * lock-state flag is no longer held) and all will be fine. */
+    if (data.result == GST_STATE_ASYNC)
+      return GST_STATE_ASYNC;
+  } else {
+    GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
+        "Not recursing state change onto children");
   }
 
-  GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
-      "done changing bin's state from %s to %s, now in %s",
-      gst_element_state_get_name (old_state),
-      gst_element_state_get_name (pending),
-      gst_element_state_get_name (GST_STATE (element)));
-
-  if (data.result == GST_STATE_ASYNC)
-    ret = GST_STATE_ASYNC;
-  else {
-    /* FIXME: this should have been done by the children already, no? */
-    if (parent_class->change_state) {
-      ret = parent_class->change_state (element);
-    } else
-      ret = GST_STATE_SUCCESS;
+  /* FIXME: this should have been done by the children already, no? */
+  if (parent_class->change_state) {
+    ret = parent_class->change_state (element);
+  } else {
+    ret = GST_STATE_SUCCESS;
   }
   return ret;
 }
@@ -897,9 +922,13 @@ gst_bin_change_state_norecurse (GstBin * bin)
 {
   GstElementStateReturn ret;
 
-  if (parent_class->change_state) {
+  if (GST_ELEMENT_GET_CLASS (bin)->change_state) {
     GST_CAT_LOG_OBJECT (GST_CAT_STATES, bin, "setting bin's own state");
-    ret = parent_class->change_state (GST_ELEMENT (bin));
+
+    /* Non-recursive state change flag */
+    GST_FLAG_SET (bin, GST_BIN_STATE_LOCKED);
+    ret = GST_ELEMENT_GET_CLASS (bin)->change_state (GST_ELEMENT (bin));
+    GST_FLAG_UNSET (bin, GST_BIN_STATE_LOCKED);
 
     return ret;
   } else
@@ -1128,6 +1157,7 @@ gst_bin_sync_children_state (GstBin * bin)
           break;
         case GST_STATE_FAILURE:
           ret = GST_STATE_FAILURE;
+          break;
         default:
           /* make sure gst_element_set_state never returns this */
           g_assert_not_reached ();
@@ -1200,10 +1230,14 @@ gst_bin_restore_thyself (GstObject * object, xmlNodePtr self)
 }
 #endif /* GST_DISABLE_LOADSAVE */
 
+static GStaticRecMutex iterate_lock = G_STATIC_REC_MUTEX_INIT;
+
 static gboolean
 gst_bin_iterate_func (GstBin * bin)
 {
   GstScheduler *sched = GST_ELEMENT_SCHED (bin);
+
+  g_static_rec_mutex_unlock (&iterate_lock);
 
   /* only iterate if this is the manager bin */
   if (sched && sched->parent == GST_ELEMENT (bin)) {
@@ -1212,7 +1246,7 @@ gst_bin_iterate_func (GstBin * bin)
     state = gst_scheduler_iterate (sched);
 
     if (state == GST_SCHEDULER_STATE_RUNNING) {
-      return TRUE;
+      goto done;
     } else if (state == GST_SCHEDULER_STATE_ERROR) {
       gst_element_set_state (GST_ELEMENT (bin), GST_STATE_PAUSED);
     } else if (state == GST_SCHEDULER_STATE_STOPPED) {
@@ -1229,7 +1263,7 @@ gst_bin_iterate_func (GstBin * bin)
               "current bin is not iterating, but children are, "
               "so returning TRUE anyway...");
           g_usleep (1);
-          return TRUE;
+          goto done;
         }
       }
     }
@@ -1238,7 +1272,13 @@ gst_bin_iterate_func (GstBin * bin)
         GST_ELEMENT_NAME (bin));
   }
 
+  g_static_rec_mutex_lock (&iterate_lock);
+
   return FALSE;
+
+done:
+  g_static_rec_mutex_lock (&iterate_lock);
+  return TRUE;
 }
 
 /**
@@ -1261,8 +1301,10 @@ gst_bin_iterate (GstBin * bin)
   GST_CAT_LOG_OBJECT (GST_CAT_SCHEDULING, bin, "starting iteration");
   gst_object_ref (GST_OBJECT (bin));
 
+  g_static_rec_mutex_lock (&iterate_lock);
   running = FALSE;
   g_signal_emit (G_OBJECT (bin), gst_bin_signals[ITERATE], 0, &running);
+  g_static_rec_mutex_unlock (&iterate_lock);
 
   gst_object_unref (GST_OBJECT (bin));
   GST_CAT_LOG_OBJECT (GST_CAT_SCHEDULING, bin, "finished iteration");

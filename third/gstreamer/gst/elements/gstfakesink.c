@@ -28,6 +28,11 @@
 #include "gstfakesink.h"
 #include <gst/gstmarshal.h>
 
+static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
+
 GST_DEBUG_CATEGORY_STATIC (gst_fakesink_debug);
 #define GST_CAT_DEFAULT gst_fakesink_debug
 
@@ -117,6 +122,8 @@ gst_fakesink_base_init (gpointer g_class)
 {
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
 
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sinktemplate));
   gst_element_class_set_details (gstelement_class, &gst_fakesink_details);
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&fakesink_sink_template));
@@ -159,8 +166,8 @@ gst_fakesink_class_init (GstFakeSinkClass * klass)
   gst_fakesink_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstFakeSinkClass, handoff), NULL, NULL,
-      gst_marshal_VOID__POINTER_OBJECT, G_TYPE_NONE, 2,
-      GST_TYPE_BUFFER, GST_TYPE_PAD);
+      gst_marshal_VOID__BOXED_OBJECT, G_TYPE_NONE, 2,
+      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE, GST_TYPE_PAD);
 
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_fakesink_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_fakesink_get_property);
@@ -177,7 +184,9 @@ gst_fakesink_init (GstFakeSink * fakesink)
 {
   GstPad *pad;
 
-  pad = gst_pad_new ("sink", GST_PAD_SINK);
+  pad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&sinktemplate),
+      "sink");
   gst_element_add_pad (GST_ELEMENT (fakesink), pad);
   gst_pad_set_chain_function (pad, GST_DEBUG_FUNCPTR (gst_fakesink_chain));
 

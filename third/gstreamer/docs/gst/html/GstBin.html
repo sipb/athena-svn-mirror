@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstBin</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-Gst.html" title="GStreamer"><link rel="next" href="gstreamer-GstBuffer.html" title="GstBuffer"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstBin</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core Reference Manual"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-Gst.html" title="GStreamer"><link rel="next" href="gstreamer-GstBuffer.html" title="GstBuffer"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -28,8 +28,9 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-Gst.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstBuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstBin"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstBin</span></h2><p>GstBin &#8212; Base class for elements that contain other elements</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-Gst.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core Reference Manual</th><td><a accesskey="n" href="gstreamer-GstBuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstBin"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstBin</span></h2><p>GstBin &#8212; Base class for elements that contain other elements</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
+#include &lt;gst/gst.h&gt;
 
 
 struct      <a href="GstBin.html#GstBin-struct">GstBin</a>;
@@ -67,7 +68,7 @@ void        <a href="GstBin.html#gst-bin-child-state-change">gst_bin_child_state
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *child);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id2755245"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2551544"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
   GObject
    +----<a href="GstObject.html" title="GstObject">GstObject</a>
@@ -75,11 +76,7 @@ void        <a href="GstBin.html#gst-bin-child-state-change">gst_bin_child_state
                +----GstBin
                      +----<a href="GstPipeline.html" title="GstPipeline">GstPipeline</a>
                      +----<a href="GstThread.html" title="GstThread">GstThread</a>
-                     +----CDPlayer
-                     +----GstDecodeBin
-                     +----GstPlayBaseBin
-                     +----GstSpider
-</pre></div><div class="refsect1" lang="en"><a name="id2755330"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2551596"></a><h2>Signal Prototypes</h2><pre class="synopsis">
 
 "<a href="GstBin.html#GstBin-element-added">element-added</a>"
             void        user_function      (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
@@ -91,7 +88,7 @@ void        <a href="GstBin.html#gst-bin-child-state-change">gst_bin_child_state
                                             gpointer user_data);
 "<a href="GstBin.html#GstBin-iterate">iterate</a>"   gboolean    user_function      (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
                                             gpointer user_data);
-</pre></div><div class="refsect1" lang="en"><a name="id2755452"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2551718"></a><h2>Description</h2><p>
 GstBin is the simplest of the container elements, allowing elements to
 become children of itself.  Pads from the child elements can be ghosted to
 the bin, making the bin itself look transparently like any other element,
@@ -125,44 +122,47 @@ To control the selection of the clock in a bin, you can use the following method
 get the current clock of the bin and <a href="GstBin.html#gst-bin-use-clock"><tt class="function">gst_bin_use_clock()</tt></a> to specify a clock explicitly.
 Note that the default behaviour is to automatically select a clock from one of the
 clock providers in the bin.
-</p></div><div class="refsect1" lang="en"><a name="id2755653"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2755658"></a><h3><a name="GstBin-struct"></a>struct GstBin</h3><a class="indexterm" name="id2755669"></a><pre class="programlisting">struct GstBin;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2551918"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2551924"></a><h3><a name="GstBin-struct"></a>struct GstBin</h3><a class="indexterm" name="id2551934"></a><pre class="programlisting">struct GstBin;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2755684"></a><h3><a name="GstBinFlags"></a>enum GstBinFlags</h3><a class="indexterm" name="id2755694"></a><pre class="programlisting">typedef enum {
-  /* this bin is a manager of child elements, i.e. a pipeline or thread */
+</p></div><hr><div class="refsect2" lang="en"><a name="id2551949"></a><h3><a name="GstBinFlags"></a>enum GstBinFlags</h3><a class="indexterm" name="id2551960"></a><pre class="programlisting">typedef enum {
   GST_BIN_FLAG_MANAGER		= GST_ELEMENT_FLAG_LAST,
-
-  /* this bin iterates itself */
   GST_BIN_SELF_SCHEDULABLE,
-
-  /* we prefer to have cothreads when its an option, over chain-based */
   GST_BIN_FLAG_PREFER_COTHREADS,
-
   GST_BIN_FLAG_FIXED_CLOCK,
-
-  /* padding */
+  GST_BIN_STATE_LOCKED,
   GST_BIN_FLAG_LAST		= GST_ELEMENT_FLAG_LAST + 5
 } GstBinFlags;
 </pre><p>
-Flags for a bin.
-</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_MANAGER</tt></span></td><td>This bin has a scheduler and can be used as a toplevel bin.
-</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_SELF_SCHEDULABLE</tt></span></td><td>This bin iterates itself, so no calls to <a href="GstBin.html#gst-bin-iterate"><tt class="function">gst_bin_iterate()</tt></a> should be made.
-</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_PREFER_COTHREADS</tt></span></td><td>This bin preferes to have its elements scheduled with cothreads
-</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_FIXED_CLOCK</tt></span></td><td>This bin uses a fixed clock, possibly the one set with <a href="GstBin.html#gst-bin-use-clock"><tt class="function">gst_bin_use_clock()</tt></a>.
-</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_LAST</tt></span></td><td>
+GstBinFlags are a set of flags specific to bins. Most are set/used
+internally. They can be checked using the <a href="GstObject.html#GST-FLAG-IS-SET-CAPS"><tt class="function">GST_FLAG_IS_SET()</tt></a> macro,
+and (un)set using <a href="GstObject.html#GST-FLAG-SET-CAPS"><tt class="function">GST_FLAG_SET()</tt></a> and <a href="GstObject.html#GST-FLAG-UNSET-CAPS"><tt class="function">GST_FLAG_UNSET()</tt></a>.</p><p>
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2755818"></a><h3><a name="gst-bin-new"></a>gst_bin_new ()</h3><a class="indexterm" name="id2755829"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_new                     (const gchar *name);</pre><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_MANAGER</tt></span></td><td> this bin is a manager of child elements, i.e.
+a pipeline or thread.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_SELF_SCHEDULABLE</tt></span></td><td> the bin iterates itself.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_PREFER_COTHREADS</tt></span></td><td> we prefer to have cothreads when its
+an option, over chain-based.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_FIXED_CLOCK</tt></span></td><td> bin has one clock that cannot be changed.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_STATE_LOCKED</tt></span></td><td> indicator that we are in a non-recursive
+state-change on the bin, or that kids should not change parent state.
+Both are internally used to prevent infinitely recursive loops of
+state changes. Since they are mutually exclusive and serve the same
+purpose, we use the same flag for them.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_BIN_FLAG_LAST</tt></span></td><td> the last enum in the series of flags in a bin,
+derived classes can use this as first value in a list of flags.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552122"></a><h3><a name="gst-bin-new"></a>gst_bin_new ()</h3><a class="indexterm" name="id2552132"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_new                     (const gchar *name);</pre><p>
 Create a new bin with given name.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of new bin
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> new bin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2755889"></a><h3><a name="gst-bin-add"></a>gst_bin_add ()</h3><a class="indexterm" name="id2755899"></a><pre class="programlisting">void        gst_bin_add                     (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552192"></a><h3><a name="gst-bin-add"></a>gst_bin_add ()</h3><a class="indexterm" name="id2552202"></a><pre class="programlisting">void        gst_bin_add                     (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Adds the given element to the bin.  Sets the element's parent, and thus
-adds a reference.</p><p>
+takes ownership of the element. An element can only be added to one bin.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> to add element to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to add to bin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2755986"></a><h3><a name="gst-bin-add-many"></a>gst_bin_add_many ()</h3><a class="indexterm" name="id2755997"></a><pre class="programlisting">void        gst_bin_add_many                (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552291"></a><h3><a name="gst-bin-add-many"></a>gst_bin_add_many ()</h3><a class="indexterm" name="id2552301"></a><pre class="programlisting">void        gst_bin_add_many                (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
                                              ...);</pre><p>
 Adds a NULL-terminated list of elements to a bin.  This function is
@@ -171,7 +171,7 @@ equivalent to calling #<a href="GstBin.html#gst-bin-add"><tt class="function">gs
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> the bin to add the elements to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element_1</tt></i> :</span></td><td> the first element to add to the bin
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> additional elements to add to the bin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756096"></a><h3><a name="gst-bin-remove"></a>gst_bin_remove ()</h3><a class="indexterm" name="id2756106"></a><pre class="programlisting">void        gst_bin_remove                  (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552400"></a><h3><a name="gst-bin-remove"></a>gst_bin_remove ()</h3><a class="indexterm" name="id2552411"></a><pre class="programlisting">void        gst_bin_remove                  (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
 Remove the element from its associated bin, unparenting it as well.
 Unparenting the element means that the element will be dereferenced,
@@ -182,7 +182,7 @@ want the element to still exist after removing, you need to call
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> to remove element from
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> to remove
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756208"></a><h3><a name="gst-bin-remove-many"></a>gst_bin_remove_many ()</h3><a class="indexterm" name="id2756219"></a><pre class="programlisting">void        gst_bin_remove_many             (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552512"></a><h3><a name="gst-bin-remove-many"></a>gst_bin_remove_many ()</h3><a class="indexterm" name="id2552523"></a><pre class="programlisting">void        gst_bin_remove_many             (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *element_1,
                                              ...);</pre><p>
 Remove a list of elements from a bin. This function is equivalent
@@ -191,14 +191,14 @@ to calling <a href="GstBin.html#gst-bin-remove"><span class="type">gst_bin_remov
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> the bin to remove the elements from
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>element_1</tt></i> :</span></td><td> the first element to remove from the bin
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> NULL-terminated list of elements to remove from the bin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756316"></a><h3><a name="gst-bin-get-by-name"></a>gst_bin_get_by_name ()</h3><a class="indexterm" name="id2756327"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_name             (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552620"></a><h3><a name="gst-bin-get-by-name"></a>gst_bin_get_by_name ()</h3><a class="indexterm" name="id2552631"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_name             (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              const gchar *name);</pre><p>
 Get the element with the given name from this bin.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <span class="type">Gstbin</span> to search
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the element name to search for
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the element with the given name
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756418"></a><h3><a name="gst-bin-get-by-name-recurse-up"></a>gst_bin_get_by_name_recurse_up ()</h3><a class="indexterm" name="id2756430"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_name_recurse_up  (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552722"></a><h3><a name="gst-bin-get-by-name-recurse-up"></a>gst_bin_get_by_name_recurse_up ()</h3><a class="indexterm" name="id2552734"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_name_recurse_up  (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              const gchar *name);</pre><p>
 Get the element with the given name from this bin. If the
 element is not found, a recursion is performed on the parent bin.</p><p>
@@ -206,12 +206,12 @@ element is not found, a recursion is performed on the parent bin.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <span class="type">Gstbin</span> to search
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the element name to search for
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the element with the given name
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756522"></a><h3><a name="gst-bin-get-list"></a>gst_bin_get_list ()</h3><a class="indexterm" name="id2756532"></a><pre class="programlisting">G_CONST_RETURN GList* gst_bin_get_list      (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552826"></a><h3><a name="gst-bin-get-list"></a>gst_bin_get_list ()</h3><a class="indexterm" name="id2552836"></a><pre class="programlisting">G_CONST_RETURN GList* gst_bin_get_list      (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
 Get the list of elements in this bin.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <span class="type">Gstbin</span> to get the list from
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of elements
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756602"></a><h3><a name="gst-bin-get-by-interface"></a>gst_bin_get_by_interface ()</h3><a class="indexterm" name="id2756613"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_interface        (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552906"></a><h3><a name="gst-bin-get-by-interface"></a>gst_bin_get_by_interface ()</h3><a class="indexterm" name="id2552917"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_bin_get_by_interface        (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              GType interface);</pre><p>
 Looks for the first element inside the bin that implements the given
 interface. If such an element is found, it returns the element. You can
@@ -222,7 +222,7 @@ If you want all elements that implement the interface, use
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> bin to find element in
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>interface</tt></i> :</span></td><td> interface to be implemented by interface
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An element inside the bin implementing the interface.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756712"></a><h3><a name="gst-bin-get-all-by-interface"></a>gst_bin_get_all_by_interface ()</h3><a class="indexterm" name="id2756723"></a><pre class="programlisting">GList*      gst_bin_get_all_by_interface    (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553016"></a><h3><a name="gst-bin-get-all-by-interface"></a>gst_bin_get_all_by_interface ()</h3><a class="indexterm" name="id2553027"></a><pre class="programlisting">GList*      gst_bin_get_all_by_interface    (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              GType interface);</pre><p>
 Looks for all elements inside the bin that implements the given
 interface. You can safely cast all returned elements to the given interface.
@@ -232,29 +232,29 @@ The function recurses bins inside bins. You need to free the list using
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> bin to find elements in
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>interface</tt></i> :</span></td><td> interface to be implemented by interface
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An element inside the bin implementing the interface.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756821"></a><h3><a name="gst-bin-iterate"></a>gst_bin_iterate ()</h3><a class="indexterm" name="id2756831"></a><pre class="programlisting">gboolean    gst_bin_iterate                 (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553125"></a><h3><a name="gst-bin-iterate"></a>gst_bin_iterate ()</h3><a class="indexterm" name="id2553135"></a><pre class="programlisting">gboolean    gst_bin_iterate                 (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
 Iterates over the elements in this bin.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> a<a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> to iterate.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the bin did something useful. This value
          can be used to determine it the bin is in EOS.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756901"></a><h3><a name="gst-bin-use-clock"></a>gst_bin_use_clock ()</h3><a class="indexterm" name="id2756912"></a><pre class="programlisting">void        gst_bin_use_clock               (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553205"></a><h3><a name="gst-bin-use-clock"></a>gst_bin_use_clock ()</h3><a class="indexterm" name="id2553216"></a><pre class="programlisting">void        gst_bin_use_clock               (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre><p>
 Force the bin to use the given clock. Use NULL to 
 force it to use no clock at all.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> the bin to set the clock for
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>clock</tt></i> :</span></td><td> the clock to use.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2756984"></a><h3><a name="gst-bin-get-clock"></a>gst_bin_get_clock ()</h3><a class="indexterm" name="id2756995"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*   gst_bin_get_clock               (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553288"></a><h3><a name="gst-bin-get-clock"></a>gst_bin_get_clock ()</h3><a class="indexterm" name="id2553299"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*   gst_bin_get_clock               (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
 Gets the current clock of the (scheduler of the) bin.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> a <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> to get the clock of
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GstClock.html" title="GstClock"><span class="type">GstClock</span></a> of the bin
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2757071"></a><h3><a name="gst-bin-auto-clock"></a>gst_bin_auto_clock ()</h3><a class="indexterm" name="id2757083"></a><pre class="programlisting">void        gst_bin_auto_clock              (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553375"></a><h3><a name="gst-bin-auto-clock"></a>gst_bin_auto_clock ()</h3><a class="indexterm" name="id2553387"></a><pre class="programlisting">void        gst_bin_auto_clock              (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
 Let the bin select a clock automatically.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> the bin to autoclock
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2757132"></a><h3><a name="gst-bin-sync-children-state"></a>gst_bin_sync_children_state ()</h3><a class="indexterm" name="id2757144"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> gst_bin_sync_children_state
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553437"></a><h3><a name="gst-bin-sync-children-state"></a>gst_bin_sync_children_state ()</h3><a class="indexterm" name="id2553448"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> gst_bin_sync_children_state
                                             (<a href="GstBin.html" title="GstBin">GstBin</a> *bin);</pre><p>
 Tries to set the state of the children of this bin to the same state of the
 bin by calling gst_element_set_state for each child not already having a
@@ -265,7 +265,7 @@ Returns: The worst return value of any gst_element_set_state. So if one child</p
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bin</tt></i> :</span></td><td> <span class="type">Gstbin</span> to sync state
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="type">GST_STATE_FAILURE</span> while all others return <span class="type">GST_STATE_SUCCESS</span>
          this function returns <span class="type">GST_STATE_FAILURE</span>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2757248"></a><h3><a name="gst-bin-child-state-change"></a>gst_bin_child_state_change ()</h3><a class="indexterm" name="id2757259"></a><pre class="programlisting">void        gst_bin_child_state_change      (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553552"></a><h3><a name="gst-bin-child-state-change"></a>gst_bin_child_state_change ()</h3><a class="indexterm" name="id2553563"></a><pre class="programlisting">void        gst_bin_child_state_change      (<a href="GstBin.html" title="GstBin">GstBin</a> *bin,
                                              <a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> oldstate,
                                              <a href="gstreamer-GstTypes.html#GstElementState">GstElementState</a> newstate,
                                              <a href="GstElement.html" title="GstElement">GstElement</a> *child);</pre><p>
@@ -276,21 +276,21 @@ of a child.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>oldstate</tt></i> :</span></td><td> The old child state
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>newstate</tt></i> :</span></td><td> The new child state
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a> that signaled an changed state
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2757392"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2757397"></a><h3><a name="GstBin-element-added"></a>The "element-added" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2553696"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2553701"></a><h3><a name="GstBin-element-added"></a>The "element-added" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
                                             <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
                                             gpointer user_data);</pre><p>
-
+Will be emmited if a new element was removed/added to this bin.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstbin</tt></i> :</span></td><td>the object which received the signal.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>the element that was added to the bin
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2757493"></a><h3><a name="GstBin-element-removed"></a>The "element-removed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553798"></a><h3><a name="GstBin-element-removed"></a>The "element-removed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
                                             <a href="GstElement.html" title="GstElement">GstElement</a> *arg1,
                                             gpointer user_data);</pre><p>
-
+Will be emmited if an element was removed from this bin.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstbin</tt></i> :</span></td><td>the object which received the signal.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>the element that was removed from the bin
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2757588"></a><h3><a name="GstBin-iterate"></a>The "iterate" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553894"></a><h3><a name="GstBin-iterate"></a>The "iterate" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GstBin.html" title="GstBin">GstBin</a> *gstbin,
                                             gpointer user_data);</pre><p>
 This signal is emitted when a bin iterates, either automatically or
 due to a #<a href="GstBin.html#gst-bin-iterate"><tt class="function">gst_bin_iterate()</tt></a> call.  The return value is used to

@@ -98,20 +98,6 @@ template.
 @presence: 
 @static_caps: 
 
-<!-- ##### MACRO GST_TYPE_PAD ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO GST_TYPE_GHOST_PAD ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO GST_IS_GHOST_PAD_FAST ##### -->
 <para>
 
@@ -173,7 +159,7 @@ Check if the properties of the padtemplate are fixed
 Flags for the padtemplate
 </para>
 
-@GST_PAD_TEMPLATE_FIXED: The padtemplate has no variable properties
+@GST_PAD_TEMPLATE_FIXED: the padtemplate has no variable properties
 @GST_PAD_TEMPLATE_FLAG_LAST: first flag that can be used by subclasses.
 
 <!-- ##### FUNCTION gst_pad_template_new ##### -->
