@@ -45,8 +45,12 @@ Linux)
 	os=linux
 	awk=awk
 	;;
+SunOS)
+	os=solaris
+	awk=nawk
+	;;
 *)
-	echo "This script is only for Linux."
+	echo "Unrecognized system type, aborting." >&2
 	exit 1
 	;;
 esac

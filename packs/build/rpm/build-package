@@ -48,8 +48,21 @@ fi
 
 source_name=$package_name-$version
 
-# Set a consistent path.
-export PATH=/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
+# Determine appropriate path and RPM target.
+case `uname -s` in
+Linux)
+  PATH=/usr/bin:/bin:/usr/X11R6/bin
+  target=i386-athena-linux
+  rpmlib=/usr/lib/rpm
+  ;;
+SunOS)
+  PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin:/usr/gcc/bin
+  target=sun4u-athena-solaris
+  rpmlib=/usr/athena/lib/rpm
+  ;;
+esac
+PATH=/usr/athena/bin:$PATH
+export PATH
 
 ## STEP 0: Prepare the "topdir" area.
 
@@ -71,7 +84,7 @@ EOF
 
 rm -f $destdir/rpmrc
 cat > $destdir/rpmrc <<EOF
-macrofiles:	/usr/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros:/etc/rpm/%{_target}/macros:$destdir/rpmmacros
+macrofiles:	$rpmlib/macros:$rpmlib/%{_target}/macros:/etc/rpm/macros:/etc/rpm/%{_target}/macros:$destdir/rpmmacros
 EOF
 
 
@@ -86,7 +99,7 @@ cd $destdir/SOURCES
 (cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
 
 # Run the prep script, if any.
-if [ -a $sourcedir/packs/build/rpm/prep/$package_name ]; then
+if [ -f $sourcedir/packs/build/rpm/prep/$package_name ]; then
     $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
       || exit 1
 fi
@@ -97,7 +110,7 @@ cp $sourcedir/packs/build/do.sh $source_name/do.sh
 (cd $source_name && ./do.sh -s $sourcedir -d $destdir/INSTALL dist) || exit 1
 
 # Generate the sources file, and remove what we don't need any more.
-(cd $destdir/SOURCES && tar cfz $source_name.tar.gz $source_name)
+(cd $destdir/SOURCES && tar cf - $source_name | gzip -c > $source_name.tar.gz)
 rm -rf $source_name
 
 
@@ -114,7 +127,7 @@ touch $destdir/SPECS/$source_name
 # and brp-strip-comment-note as well as brp-compress; we don't want
 # those scripts to run because we prefer to install debugging
 # binaries.)
-echo '%define __spec_install_post /usr/lib/rpm/brp-compress || :' \
+echo "%define __spec_install_post $rpmlib/brp-compress || :" \
   >> $destdir/SPECS/$source_name
 
 # Necessary preamble fields; fill them in if we need to.
@@ -205,7 +218,8 @@ fi
 
 echo "==== build package"
 
-rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=i386-athena-linux --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name
+rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=$target \
+ --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name
 if [ $? -ne 0 ]; then
     exit 1
 fi
