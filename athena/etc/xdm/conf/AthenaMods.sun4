@@ -1,0 +1,6 @@
+! As of Solaris 2.3, our good friends at Sun seem to have broken
+! something in the parsing of /usr/openwin/share/etc/keytables so
+! that only the first two entries on a modifier can work. This file
+! should be removed as soon as it's no longer required.
+
+add mod1 = Alt_L Multi_key

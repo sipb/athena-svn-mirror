@@ -1,0 +1,5 @@
+! This is a workaround to an xterm bug disallowing proper functioning
+! of the mod1 modifier when it isn't named Meta*. Should be removed if
+! xterm is ever fixed.
+
+keysym Alt_L = Meta_L
