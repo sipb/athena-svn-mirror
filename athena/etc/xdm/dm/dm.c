@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.2 1990-10-19 18:51:05 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.3 1990-10-22 19:41:20 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -10,16 +10,18 @@
 
 #include <mit-copyright.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <sys/file.h>
+#include <sys/stat.h>
 #include <utmp.h>
 #include <ctype.h>
 #include <strings.h>
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.2 1990-10-19 18:51:05 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.3 1990-10-22 19:41:20 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -32,46 +34,57 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #define STARTUP		2
 #define CONSOLELOGIN	3
 
+#define FALSE		0
+#define TRUE		(!FALSE)
+
 /* flags used by signal handlers */
 int alarm_running = NONEXISTANT;
 int xpid, x_running = NONEXISTANT;
 int consolepid, console_running = NONEXISTANT;
 int loginpid, login_running = NONEXISTANT;
+int clflag;
 
+/* Programs */
 char deactivate[] ="/etc/athena/deactivate";
 #ifdef ultrix
 char login_prog[]="/etc/athena/console-getty";
 #else
 char login_prog[]="/bin/login";
 #endif ultrix
+
+/* Files */
 char utmpf[]="/etc/utmp";
 char wtmpf[]="/usr/adm/wtmp";
+char passwdf[]="/etc/passwd";
+char passwdtf[]="/etc/ptmp";
 char xpidf[]="/usr/tmp/X0.pid";
-char consolepidf[]="/usr/tmp/console.pid";
+char consolepidf[]="/etc/console.pid";
 char consolef[] ="/dev/console";
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
+#define BUFSIZ		1024
 
 
 main(argc, argv)
 int argc;
 char **argv;
 {
-    void die(), child(), alarm(), xready();
-    char *tty, *conf, *p, *number(), *getconf();
+    void die(), child(), alarm(), xready(), setclflag();
+    char *logintty, *consoletty, *conf, *p, *number(), *getconf();
     char **xargv, **consoleargv, **loginargv, **parseargs();
     char line[16];
     int pgrp, file;
     struct sgttyb mode;
 
-    if (argc != 3) {
+    if (argc != 4) {
 	message("usage: ");
 	message(argv[0]);
-	message(" configfile tty\n");
+	message(" configfile logintty consoletty\n");
 	exit(1);
     }
     conf = argv[1];
-    tty = argv[2];
+    logintty = argv[2];
+    consoletty = argv[3];
     p = getconf(conf, "X");
     if (p == NULL) {
 	message("Can't find X command line\n");
@@ -89,7 +102,7 @@ char **argv;
 	message("Can't find login command line\n");
 	exit(1);
     }
-    loginargv = parseargs(p, tty);
+    loginargv = parseargs(p, logintty);
 
     /* Signal Setup */
     signal(SIGTSTP, SIG_IGN);
@@ -101,12 +114,13 @@ char **argv;
     signal(SIGTERM, die);
     signal(SIGCHLD, child);
     signal(SIGALRM, alarm);
+    signal(SIGUSR2, setclflag);
 
     close(0);
     close(1);
     close(2);
     strcpy(line, "/dev/");
-    strcat(line, tty);
+    strcat(line, consoletty);
     open(line, O_RDWR, 0622);
     dup2(0, 1);
     dup2(1, 2);
@@ -164,12 +178,15 @@ char **argv;
 	signal(SIGUSR1, SIG_IGN);
     }
 
-    start_console(consoleargv);
+    strcpy(line, "/dev/");
+    strcat(line, logintty);
+    start_console(line, consoleargv);
 
     /* Fire up the X login */
 #ifdef DEBUG
     message("Starting X Login\n");
 #endif
+    clflag = FALSE;
     loginpid = fork();
     switch (loginpid) {
     case 0:
@@ -209,21 +226,25 @@ char **argv;
 	    message("Unable to start console login\n");
 	}
 	if (console_running == NONEXISTANT)
-	  start_console(consoleargv);
+	  start_console(line, consoleargv);
 	if (login_running == NONEXISTANT || x_running == NONEXISTANT) {
-	    cleanup(tty);
+	    cleanup(logintty);
 	    exit(0);
 	}
     }
 }
 
 
-/* start the console program */
+/* start the console program.  It will have stdin set to the controling
+ * side of the console pty, and stdout set to the slave side.
+ */
 
-start_console(argv)
+start_console(line, argv)
+char *line;
 char **argv;
 {
     int file;
+    char *number();
 
 #ifdef DEBUG
     message("Starting Console\n");
@@ -231,8 +252,16 @@ char **argv;
     consolepid = fork();
     switch (consolepid) {
     case 0:
-        if(fcntl(2, F_SETFD, 1) == -1)
-	  close(2);
+	/* Close all file descriptors */
+	for (file = 0; file < getdtablesize(); file++)
+	  close(file);
+	/* Open master side of pty */
+	line[5] = 'p';
+	open(line, O_RDONLY, 0);
+	/* Open slave side of pty */
+	line[5] = 't';
+	open(line, O_WRONLY, 0);
+	dup2(1, 2);
 	sigsetmask(0);
 	execv(argv[0], argv);
 	message("Failed to exec console\n");
@@ -257,6 +286,8 @@ char *tty;
 {
     int in_use, file, found;
     struct utmp utmp;    
+    char login[9];
+    char tkt_file[64];
 
     if (login_running == RUNNING)
       kill(loginpid, SIGHUP);
@@ -265,10 +296,16 @@ char *tty;
     if (x_running == RUNNING)
       kill(xpid, SIGKILL);
 
+    strcpy(tkt_file, "/tmp/tkt_");
+    strcat(tkt_file, tty);
+    kdestroy(tkt_file);
+
     found = in_use = 0;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (!strncmp(utmp.ut_line, tty)) {
+		strncpy(login, utmp.ut_name, 8);
+		login[8] = 0;
 		utmp.ut_name[0] = 0;
 		lseek(file, (long) -sizeof(utmp), L_INCR);
 		write(file, (char *) &utmp, sizeof(utmp));
@@ -286,6 +323,11 @@ char *tty;
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
 	}
+    }
+
+    if (clflag) {
+	/* Clean up password file */
+	removepwent(login);
     }
 
     if (!in_use)
@@ -340,6 +382,14 @@ void xready()
     x_running = RUNNING;
 }
 
+void setclflag()
+{
+#ifdef DEBUG
+    message("Received Cear Login Flag signal\n");
+#endif
+    clflag = TRUE;
+}
+
 
 /* When an alarm happens, just note it and return */
 
@@ -366,6 +416,78 @@ void die()
     if (x_running == RUNNING)
       kill(xpid, SIGKILL);
     exit(0);
+}
+
+
+kdestroy(file)
+char *file;
+{
+    int i, fd;
+    struct stat statb;
+    char buf[BUFSIZ];
+
+    if (lstat(file,&statb) < 0) return;
+    if (!(statb.st_mode & S_IFREG)) return;
+    bzero(buf, BUFSIZ);
+
+    if ((fd = open(file, O_RDWR, 0)) < 0) return;
+
+    for (i = 0; i < statb.st_size; i += BUFSIZ)
+	if (write(fd, buf, BUFSIZ) != BUFSIZ) {
+	    (void) fsync(fd);
+	    (void) close(fd);
+	    return;
+	}
+
+    (void) fsync(fd);
+    (void) close(fd);
+    (void) unlink(file);
+}
+
+
+/* Remove a password entry.  Scans the password file for the specified
+ * entry, and if found removes it.
+ */
+
+removepwent(login)
+char *login;
+{
+    int count = 10;
+    int newfile, oldfile, cc;
+    char buf[BUFSIZ], *p, *start;
+
+    if (!strcmp(login, "root")) return;
+
+    while ((access(passwdtf, F_OK) == 0) && --count) sleep(1);
+    if (count == 0) unlink(passwdtf);
+
+    oldfile = open(passwdf, O_RDONLY, 0);
+    if (oldfile < 0) return;
+    newfile = open(passwdtf, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+    if (newfile < 0) {
+	close(oldfile);
+	return;
+    }
+
+    /* process each line of file */
+    cc = read(oldfile, buf, BUFSIZ);
+    while (1) {
+	start = index(buf, '\n');
+	if (start == NULL || start > &buf[cc]) break;
+	start++; /* pointing at start of next line */
+	if (strncmp(buf, login, strlen(login)) ||
+	    buf[strlen(login)] != ':') {
+	    write(newfile, buf, start - buf);
+	}
+	cc -= start - buf;
+	/* don't use lib routine to make sure it works with overlapping copy */
+	/* bcopy(buf, start, cc); */
+	for (p = buf; p != &buf[cc]; p++) *p = p[start - buf];
+	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
+    }
+    close(newfile);
+    close(oldfile);
+    rename(passwdtf, passwdf);
 }
 
 
@@ -441,13 +563,19 @@ int x;
 }
 
 
+/* Find a named field in the config file.  Config file contains 
+ * comment lines starting with #, and lines with a field name,
+ * whitespace, then field value.  This routine returns the field
+ * value, or NULL on error.
+ */
+
 char *getconf(file, name)
 char *file;
 char *name;
 {
     static char buf[1024];
     static int inited = 0;
-    char *p, *ret;
+    char *p, *ret, *malloc();
     int i;
 
     if (!inited) {
