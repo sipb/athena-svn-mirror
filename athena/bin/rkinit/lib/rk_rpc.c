@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_rpc.c,v 1.8 1997-12-03 22:01:22 ghudson Exp $
+ * $Id: rk_rpc.c,v 1.9 1998-05-07 16:58:18 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
  * $Author: ghudson $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_rpc.c,v 1.8 1997-12-03 22:01:22 ghudson Exp $";
+static char *rcsid = "$Id: rk_rpc.c,v 1.9 1998-05-07 16:58:18 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -86,72 +86,64 @@ int rki_get_packet(sock, type, length, data)
   char *data;
 #endif /* __STDC__ */
 {
-    int len;
-    int len_sofar = 0;
-    u_long expected_length = 0;
-    int got_full_packet = FALSE;
-    u_char *packet;
+    u_char header[PKT_DATA];
+    int packet_length, data_length, count, len;
 
-    u_long max_pkt_len;
-
-    max_pkt_len = *length + PKT_DATA;
-
-    if ((packet = (u_char *)calloc(max_pkt_len, sizeof(u_char))) == NULL) {
-	sprintf(errbuf, "rki_get_packet: failure allocating %d bytes",
-		max_pkt_len * sizeof(u_char));
-	rkinit_errmsg(errbuf);
-	return(RKINIT_MEMORY);
-    }
-
-    while (! got_full_packet) {
-	if ((len = read(sock, packet + len_sofar, 
-			max_pkt_len - len_sofar)) < 0) {
+    /* Read in the packet header. */
+    len = 0;
+    while (len < PKT_DATA) {
+	count = read(sock, header + len, PKT_DATA - len);
+	if (count < 0) {
 	    sprintf(errbuf, "read: %s", strerror(errno));
 	    rkinit_errmsg(errbuf);
+	}
+	if (count <= 0)
 	    return(RKINIT_READ);
-	}
-	len_sofar += len;
-	if (len_sofar >= PKT_DATA) {
-	    memcpy(&expected_length, packet + PKT_LEN, sizeof(u_long));
-	    expected_length = ntohl(expected_length);
-	    if (expected_length == len_sofar)
-		got_full_packet = TRUE;
-	    else if (expected_length < len_sofar) {
-		sprintf(errbuf, 
-			"read: expected to receive only %d bytes; received %d",
-			expected_length, len_sofar);
-		rkinit_errmsg(errbuf);
-		return(RKINIT_PACKET);
-	    }
-	    else if (expected_length > max_pkt_len) {
-		sprintf(errbuf, "%s %d %s %d",
-			"read: expected to receive", expected_length,
-			"bytes, but only had room for", max_pkt_len);
-		rkinit_errmsg(errbuf);
-		return(RKINIT_PACKET);
-	    }
-	}
+	len += count;
     }
 
-    if (packet[PKT_TYPE] == MT_DROP) {
+    /* Unmarshal the packet length (which includes the length of the
+     * packet header as well as the data length) and make sure we have
+     * enough room to hold the packet data. */
+    packet_length = header[PKT_LEN] << 24 | header[PKT_LEN + 1] << 16
+	| header[PKT_LEN + 2] << 8 | header[PKT_LEN + 3];
+    data_length = packet_length - PKT_DATA;
+    if (data_length > *length) {
+	sprintf(errbuf, "%s %d %s %d",
+		"read: expected to receive", data_length,
+		"bytes, but only had room for", *length);
+	rkinit_errmsg(errbuf);
+	return(RKINIT_PACKET);
+    }
+
+    /* Read the packet data into the caller's buffer. */
+    len = 0;
+    while (len < data_length) {
+	count = read(sock, data + len, data_length - len);
+	if (count < 0) {
+	    sprintf(errbuf, "read: %s", strerror(errno));
+	    rkinit_errmsg(errbuf);
+	}
+	if (count <= 0)
+	    return(RKINIT_READ);
+	len += count;
+    }
+
+    /* Check the packet type, possibly dropping the packet. */
+    if (header[PKT_TYPE] == MT_DROP) {
 	BCLEAR(errbuf);
 	rkinit_errmsg(errbuf);
 	return(RKINIT_DROPPED);
     }
-
-    if (packet[PKT_TYPE] != type) {
+    if (header[PKT_TYPE] != type) {
 	sprintf(errbuf, "Expected packet type of %s; got %s",
-		rki_mt_to_string(type), 
-		rki_mt_to_string(packet[PKT_TYPE]));
+		rki_mt_to_string(type), rki_mt_to_string(header[PKT_TYPE]));
 	rkinit_errmsg(errbuf);
-	return(RKINIT_PACKET); 
+	return(RKINIT_PACKET);
     }
 
-    *length = len_sofar - PKT_DATA;
-    memcpy(data, packet + PKT_DATA, *length);
-
-    free(packet);
-
+    /* Everything looks okay. */
+    *length = data_length;
     return(RKINIT_SUCCESS);
 }
 
