@@ -35,7 +35,7 @@ have a problem, scan through FAQ; there are lots of interesting answers there.
 Updates to x3270 are available on ftp.x.org and several X11R6 mirror sites,
 usually in the /contrib/applications/x3270 directory. Fixes are often
 distributed as patch files (you will need gnu patch to apply them) under the
-name fix.nn, e.g., the next fix to version 3.1.0 will be x3270-3.1.1.fix04.
+name fix.nn, e.g., the next fix to version 3.1.1 will be x3270-3.1.1.fix07.
 
 Feel free to send comments, criticism, suggestions, complaints, etc., to Paul
 Mattes, x3270@cnt.com. Requests will be addressed as time and resources permit.

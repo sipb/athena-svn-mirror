@@ -60,6 +60,7 @@ typedef struct sms {
 		SS_RUNNING,	/* command executing */
 		SS_KBWAIT,	/* command awaiting keyboard unlock */
 		SS_CONNECT_WAIT,/* command awaiting connection to complete */
+		SS_PAUSED,	/* stopped in PauseScript action */
 		SS_WAIT,	/* awaiting completion of Wait() */
 		SS_EXPECTING,	/* awaiting completion of Expect() */
 		SS_CLOSING	/* awaiting completion of Close() */
@@ -89,7 +90,6 @@ static int      ansi_save_cnt = 0;
 static int      ansi_save_ix = 0;
 static char    *expect_text = CN;
 int		expect_len = 0;
-static Boolean	hotwire = False;
 static char *st_name[] = { "String", "Macro", "ChildScript", "PeerScript" };
 #define ST_sNAME(s)	st_name[(int)(s)->type]
 #define ST_NAME		ST_sNAME(sms)
@@ -239,14 +239,6 @@ enum sms_type type;
 
 	/* Preempt any running sms. */
 	if (sms != SN) {
-		/* User-generated nesting is illegal. */
-		if (sms->state != SS_RUNNING) {
-			hotwire = True;
-			popup_an_error("Can't start a second script, macro or string");
-			hotwire = False;
-			return False;
-		}
-
 		/* Remove the running sms's input. */
 		script_disable();
 	}
@@ -341,22 +333,19 @@ Boolean can_exit;
 	XtFree((char *)s);
 	sms_depth--;
 
-	/*
-	 * If this was the last thing on the stack, disable the "Abort Script"
-	 * menu option and update the status line.
-	 *
-	 * Otherwise, see if the new top-of-stack should be blocked because
-	 * its child locked the keyboard.
-	 */
-	/* Update the menu option. */
 	if (sms == SN) {
+		/* Turn off the menu option. */
 		menubar_as_set(False);
 		status_script(False);
-	} else if (KBWAIT) {
+	} else if (KBWAIT && (int)sms->state < (int)SS_KBWAIT) {
+		/* The child implicitly blocked the parent. */
 		sms->state = SS_KBWAIT;
 		if (toggled(DS_TRACE))
 			(void) fprintf(tracef, "%s[%d] implicitly paused %d\n",
 			    ST_NAME, sms_depth, sms->state);
+	} else if (sms->state == SS_IDLE) {
+		/* The parent needs to be restarted. */
+		script_enable();
 	}
 }
 
@@ -984,6 +973,9 @@ sms_continue()
 				return;
 			break;
 
+		    case SS_PAUSED:
+			return;
+
 		    case SS_EXPECTING:
 			return;
 
@@ -1334,9 +1326,9 @@ sms_connect_wait()
 Boolean
 sms_redirect()
 {
-	return !hotwire &&
-	       sms != SN &&
-	       (sms->type == ST_CHILD || sms->type == ST_PEER);
+	return sms != SN &&
+	       (sms->type == ST_CHILD || sms->type == ST_PEER) &&
+	       sms->state == SS_RUNNING;
 }
 
 /* Return whether any scripts are active. */
@@ -1529,6 +1521,54 @@ Cardinal *num_params;
 	(void) putc('\n', sms->outfile);
 	ansi_save_cnt = 0;
 	ansi_save_ix = 0;
+}
+
+/* Pause a script. */
+/*ARGSUSED*/
+void
+PauseScript_action(w, event, params, num_params)
+Widget w;
+XEvent *event;
+String *params;
+Cardinal *num_params;
+{
+	if (sms == SN || (sms->type != ST_PEER && sms->type != ST_CHILD)) {
+		popup_an_error("%s can only be called from a script",
+		    action_name(PauseScript_action));
+		return;
+	}
+	sms->state = SS_PAUSED;
+}
+
+/* Continue a script. */
+/*ARGSUSED*/
+void
+ContinueScript_action(w, event, params, num_params)
+Widget w;
+XEvent *event;
+String *params;
+Cardinal *num_params;
+{
+	if (check_usage(ContinueScript_action, *num_params, 1, 1) < 0)
+		return;
+
+	/*
+	 * If this is a nested script, this action aborts the current script,
+	 * then applies to the previous one.
+	 */
+	if (w == (Widget)NULL && sms_depth > 1)
+		sms_pop(False);
+
+	/* Continue the previous script. */
+	if (sms == SN || sms->state != SS_PAUSED) {
+		popup_an_error("%s: No script waiting",
+		    action_name(ContinueScript_action));
+		sms_continue();
+		return;
+	}
+	(void) fprintf(sms->outfile, "data: %s\n", params[0]);
+	sms->state = SS_RUNNING;
+	sms_continue();
 }
 
 /* Stop listening to stdin. */
@@ -1773,6 +1813,28 @@ Cardinal *num_params;
 
 	/* Set up to reap the child's exit status. */
 	++children;
+}
+
+/* "Macro" action, explicitly invokes a named macro. */
+/*ARGSUSED*/
+void
+Macro_action(w, event, params, num_params)
+Widget w;
+XEvent *event;
+String *params;
+Cardinal *num_params;
+{
+	struct macro_def *m;
+
+	if (check_usage(Script_action, *num_params, 1, 1) < 0)
+		return;
+	for (m = macro_defs; m != (struct macro_def *)NULL; m = m->next) {
+		if (!strcmp(m->name, params[0])) {
+			push_macro(m->action, False);
+			return;
+		}
+	}
+	popup_an_error("no such macro: '%s'", params[0]);
 }
 
 /* Abort all running scripts. */

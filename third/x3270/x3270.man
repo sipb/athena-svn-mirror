@@ -1,5 +1,5 @@
 '\" t
-.TH X3270 1 "23 August 1996"
+.TH X3270 1 "13 February 1997"
 .SH NAME
 x3270 \-
 .SM IBM
@@ -520,7 +520,7 @@ Erase previous word	x3270.werase	^W
 Redisplay line	x3270.rprnt	^R
 Ignore special meaning of next character	x3270.lnext	^V
 Interrupt	x3270.intr	^C
-Quit	x3270.quit	^\\\\
+Quit	x3270.quit	^\\\\ 
 End of file	x3270.eof	^D
 .TE
 .SH MENUS
@@ -1051,6 +1051,7 @@ Key(\fIkeysym\fP)	insert key \fIkeysym\fP
 Keymap(\fIkeymap\fP)	toggle alternate \fIkeymap\fP (or remove with \fBNone\fP)
 Left	move cursor left
 Left2	move cursor left 2 positions
+Macro(\fImacro\fP)	run a macro
 MoveCursor	move cursor to mouse position
 MonoCase	toggle uppercase-only mode
 Newline	move cursor to first field on next line (or send ASCII LF)
@@ -1365,7 +1366,7 @@ S underbar	62	apl_Sunderbar	Alt-S	S + underbar
 semicolon	5E*	apl_semicolon	;
 slash	61*	apl_slash	/
 slash bar	EA	apl_slashbar		slash + bar
-slope	B7	apl_slope	Alt-\
+slope	B7	apl_slope	Alt-\\\\ 
 slope bar	EB	apl_slopebar		slope + bar
 squad	CC	apl_squad		quad + quad
 star	5C*	apl_star	*
@@ -1477,7 +1478,7 @@ Data Stream Programmer's Reference, IBM GA23\-0059
 Character Set Reference, IBM GA27\-3831
 .SH COPYRIGHTS
 .LP
-Modifications Copyright 1993, 1994, 1995, 1996 by Paul Mattes.
+Modifications Copyright 1993, 1994, 1995, 1996, 1997 by Paul Mattes.
 .br
 Original X11 Port Copyright 1990 by Jeff Sparkes.
 .RS
@@ -1494,4 +1495,4 @@ Derivative works based on this software must incorporate this copyright
 notice.
 .RE
 .SH VERSION
-x3270 3.1.1.3
+x3270 3.1.1.6

@@ -149,12 +149,15 @@ struct ea {
 	unsigned char fg;	/* foreground color (0x00 or 0xf<n>) */
 	unsigned char bg;	/* background color (0x00 or 0xf<n>) */
 	unsigned char gr;	/* ANSI graphics rendition bits */
-	unsigned char cs;	/* character set (0 or 1) */
+	unsigned char cs;	/* character set (GE flag, or 0..2) */
 };
 #define GR_BLINK	0x01
 #define GR_REVERSE	0x02
 #define GR_UNDERLINE	0x04
 #define GR_INTENSIFY	0x08
+
+#define CS_MASK		0x03	/* mask for specific character sets */
+#define CS_GE		0x04	/* cs flag for Graphic Escape */
 
 /*   translation lists */
 struct trans_list {

@@ -1,4 +1,4 @@
-.TH X3270-SCRIPT 1 "18 July 1996"
+.TH X3270-SCRIPT 1 "14 October 1996"
 .SH NAME
 Scripting Facilities for x3270
 .SH SYNOPSIS
@@ -47,11 +47,16 @@ facility, invoked by the
 action.
 This runs a script as a child process of
 .B x3270.
-The child's standard input and output are redirected to pipes connected
-to
+The child has access to pipes connected to
 .B x3270;
 .B x3270
 looks for commands on one pipe, and places the responses on the other.
+(The file descriptor of the pipe for commands to
+.B x3270
+is passed in the environment variable X3270INPUT; the file descriptor
+of the pipe for responses from
+.B x3270
+is passed in the environment variable X3270OUTPUT.)
 .PP
 (It is possible to mix the two methods: A script can invoke another script
 with the
@@ -173,17 +178,31 @@ the
 .B Script()
 action to complete.
 .PP
-The Quit() action always causes
+The
+.B Quit()
+action always causes
 .B x3270
 to exit.
 (When called from the keyboard, it will exit only if not connected to a host.)
 .PP
-The Clear(), Enter(), PF(), and PA() actions will not complete until the host
+The
+.BR Clear() ,
+.BR Enter() ,
+.BR PF() ,
+and
+.B PA()
+actions will not complete until the host
 unlocks the keyboard.
-If the parameter to a String() action includes a code for one these actions,
+If the parameter to a
+.B String()
+action includes a code for one these actions,
 it will also wait for the keyboard to unlock before completing.
-Similarly, the Script() action does not complete until end-of-file is
-detected on the pipe or the CloseScript() action is called by the child
+Similarly, the
+.B Script()
+action does not complete until end-of-file is
+detected on the pipe or the
+.B CloseScript()
+action is called by the child
 process.
 .SH "NEW ACTIONS"
 The following actions have been defined or modified for use with scripts.
@@ -197,7 +216,9 @@ coordinates used in these actions use [0,0] as their origin, not [1,1]).
 Outputs whatever data that has been output by the host in
 .SM ANSI
 mode
-since the last time that AnsiText() was called.
+since the last time that
+.B AnsiText()
+was called.
 The data is preceded by the string "data:\ ", and has had all control characters
 expanded into C backslash sequences.
 .IP
@@ -267,6 +288,16 @@ login through the
 .B ibm_hosts
 file, the connection will be broken.
 .TP
+.BI ContinueScript( param )
+Allows a script that is waiting in a
+.B PauseScript()
+action, below, to continue.
+The
+.I param
+given is output by the
+.B PauseScript()
+action.
+.TP
 .B Disconnect()
 Disconnects from the host.
 .TP
@@ -277,7 +308,9 @@ Disconnects from the host.
 .BI Ebcdic( len )
 .TP
 .B Ebcdic()
-The same function as Ascii() above, except that rather than generating
+The same function as
+.B Ascii()
+above, except that rather than generating
 .SM ASCII
 text, each character is output as a hexadecimal
 .SM EBCDIC
@@ -285,7 +318,9 @@ code, preceded by
 .BR 0x .
 .TP
 .B EbcdicField()
-The same function as AsciiField() above, except that it generates hexadecimal
+The same function as
+.B AsciiField()
+above, except that it generates hexadecimal
 .SM EBCDIC
 codes.
 .TP
@@ -313,6 +348,14 @@ mode.
 .TP
 .BI MoveCursor( row,col )
 Moves the cursor to the specified coordinates.
+.TP
+.B PauseScript()
+Stops a script until the
+.B ContinueScript()
+action, above, is executed.
+This allows a script to wait for user input and continue.
+Outputs the single parameter to
+.B ContinueScript().
 .TP
 .B Wait()
 A useful utility for use at the beginning of scripts and after the Connect()

@@ -230,7 +230,8 @@ static Dimension pa_width;
 static Dimension key_width;
 static Dimension large_key_width;
 
-static Dimension sm_x, sm_y, sm_w, sm_h;
+static Position sm_x, sm_y;
+static Dimension sm_w, sm_h;
 
 static Widget keypad_container = (Widget) NULL;
 static XtTranslations keypad_t00 = (XtTranslations) NULL;
@@ -574,6 +575,10 @@ keypad_shift()
 Widget keypad_shell = NULL;
 Boolean keypad_popped = False;
 Boolean up_once = False;
+static Position kset_x, kset_y;
+static Position kmove_x, kmove_y;
+static Dimension decor_width, decor_height;
+enum { WA_UNKNOWN, WA_ALL, WA_PARTIAL, WA_NONE } wa_mode = WA_UNKNOWN;
 
 /*
  * Called when the main screen is first exposed, to pop up the keypad the
@@ -600,6 +605,8 @@ XtPointer call_data;
 	if (keypad_popped) {
 		up_once = True;
 		toplevel_geometry(&sm_x, &sm_y, &sm_w, &sm_h);
+		XtVaGetValues(keypad_shell, XtNx, &kset_x, XtNy, &kset_y, NULL);
+		wa_mode = WA_UNKNOWN;
 	}
 	menubar_keypad_changed();
 }
@@ -608,6 +615,7 @@ static Boolean TrueD = True;
 static Boolean *TrueP = &TrueD;
 static Boolean FalseD = False;
 static Boolean *FalseP = &FalseD;
+static enum placement *pp;
 
 /* Create the pop-up keypad */
 void
@@ -616,7 +624,6 @@ keypad_popup_init()
 	Widget w;
 	Dimension height, width, border;
 	Boolean vert;
-	enum placement *pp;
 
 	if (keypad_shell != NULL)
 		return;
@@ -718,4 +725,157 @@ keypad_set_keymap()
 		return;
 	XtUninstallTranslations(keypad_container);
 	set_translations(keypad_container, &keypad_t00, &keypad_t0);
+}
+
+static void
+measure_move(closure, id)
+XtPointer closure;
+XtIntervalId *id;
+{
+	Position x, y;
+
+	XtVaGetValues(keypad_shell, XtNx, &x, XtNy, &y, NULL);
+	if (x != kmove_x || y != kmove_y) {
+		if (kmove_x - x < 0 && kmove_y - y < 0) {
+			/*
+			 * The window manager shifts by exactly the decoration
+			 * size (mwm, olwm).
+			 */
+			wa_mode = WA_ALL;
+		} else {
+			/*
+			 * The window manager shifts by something less than the
+			 * decoration size (twm).
+			 */
+			wa_mode = WA_PARTIAL;
+			XtVaSetValues(keypad_shell,
+			    XtNx,
+				x + decor_width + (decor_width - (kmove_x - x)),
+			    XtNy,
+				y + decor_height + (decor_height - (kmove_y - y)),
+			    NULL);
+		}
+	} else {
+		/*
+		 * The window manager leaves the window exactly where we
+		 * asked (fvwm).
+		 */
+		XtVaSetValues(keypad_shell,
+		    XtNx, x + decor_width,
+		    XtNy, y + decor_height,
+		    NULL);
+		wa_mode = WA_NONE;
+	}
+}
+
+/* Move the keypad. */
+void
+keypad_move()
+{
+	Position x, y;
+	Dimension w, h;
+	Position x0, y0;
+	Dimension w0, h0;
+	Dimension kw0;
+
+	if (!keypad_popped)
+		return;
+
+	toplevel_geometry(&x, &y, &w, &h);
+	if (x == sm_x && y == sm_y && w == sm_w && h == sm_h)
+		return;
+
+	XtVaGetValues(toplevel,
+	    XtNx, &x0,
+	    XtNy, &y0,
+	    XtNwidth, &w0,
+	    XtNheight, &h0,
+	    NULL);
+	switch (kp_placement) {
+	    case kp_left:
+		XtVaGetValues(keypad_shell, XtNwidth, &kw0, NULL);
+		switch (wa_mode) {
+		    case WA_NONE:
+			kmove_x = x0 - kw0 - 2 - (w - w0);
+			kmove_y = y0;
+			break;
+		    case WA_PARTIAL:
+			kmove_x = x - kw0 - 2 - (w - w0) + decor_width;
+			kmove_y = y + decor_height;
+			break;
+		    case WA_ALL:
+		    case WA_UNKNOWN:
+			kmove_x = x - kw0 - 2 - (w - w0);
+			kmove_y = y;
+			break;
+		}
+		break;
+	    case kp_right:
+		switch (wa_mode) {
+		    case WA_NONE:
+			kmove_x = x0 + w + 2;
+			kmove_y = y0;
+			break;
+		    case WA_PARTIAL:
+			kmove_x = x + w + 2 + decor_width;
+			kmove_y = y + decor_height;
+			break;
+		    case WA_ALL:
+		    case WA_UNKNOWN:
+			kmove_x = x + w + 2;
+			kmove_y = y;
+			break;
+		}
+		break;
+	    case kp_bottom:
+		switch (wa_mode) {
+		    case WA_NONE:
+			kmove_x = x0;
+			kmove_y = y0 + h + 2;
+			break;
+		    case WA_PARTIAL:
+			kmove_x = x + decor_width;
+			kmove_y = y + h + 2 + decor_height;
+			break;
+		    case WA_ALL:
+		    case WA_UNKNOWN:
+			kmove_x = x;
+			kmove_y = y + h + 2;
+			break;
+		}
+		break;
+	    case kp_integral:	/* can't happen */
+		return;
+	}
+	XtVaSetValues(keypad_shell,
+	    XtNx, kmove_x,
+	    XtNy, kmove_y,
+	    NULL);
+	if (wa_mode == WA_UNKNOWN)
+		XtAppAddTimeOut(appcontext, 250, measure_move, 0);
+}
+
+/*
+ * Handler for ReparentNotify events on the keypad.  If the event is a
+ * reparent (as opposed to an un-reparent), measures the dimensions of the
+ * window manager decorations and stores them in decor_width and decor_height.
+ */
+void
+ReparentNotify_action(w, event, params, num_params)
+Widget w;
+XEvent *event;
+String *params;
+Cardinal *num_params;
+{
+	XReparentEvent *e = (XReparentEvent *)event;
+
+	if (e->parent != root_window) {
+		Position x, y;
+
+		XtVaGetValues(keypad_shell, XtNx, &x, XtNy, &y, NULL);
+		if (x > kset_x && y > kset_y) {
+			decor_width = x - kset_x;
+			decor_height = y - kset_y;
+		}
+	}
 }

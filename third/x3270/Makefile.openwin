@@ -42,9 +42,11 @@ right_os:
 # the second "AD_OPTS=" line below.
 AD_OPTS=-DCOLOR
 # AD_OPTS=-UCOLOR
-X3270.ad: X3270.xad
-	$(CC) $(AD_OPTS) -E X3270.xad | \
-	 sed -e '/^#/d' -e '/^[ 	]*$$/d' >X3270.ad
+X3270.ad: X3270.xad qcpp
+	$(RM) $@
+	qcpp $(AD_OPTS) X3270.xad >$@
+qcpp: qcpp.c
+	$(CC) -o $@ qcpp.c
 
 CFLAGS = $(OPTFLAGS) $(EXTRA_DEFINES) -I$(OPENWINHOME)/include -I./owinc \
 	$(XSVR4:sh) $(DEFINES)

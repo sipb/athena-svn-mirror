@@ -69,7 +69,7 @@ Widget          toplevel;
 Widget          icon_shell;
 XtAppContext    appcontext;
 Atom            a_delete_me, a_save_yourself, a_3270, a_registry, a_iso8859,
-		a_encoding, a_1, a_state;
+		a_ISO8859, a_encoding, a_1, a_state;
 char           *current_host;
 char           *full_current_host;
 unsigned short  current_port;
@@ -282,6 +282,8 @@ static XtResource resources[] = {
 	  offset(color_scheme), XtRString, "default" },
 	{ ResFtCommand, ClsFtCommand, XtRString, sizeof(String),
 	  offset(ft_command), XtRString, "ind$file" },
+	{ ResModifiedSelColor, ClsModifiedSelColor, XtRInt, sizeof(int),
+	  offset(modified_sel_color), XtRString, "10" },
 	{ ResMonoCase, ClsMonoCase, XtRBoolean, sizeof(Boolean),
 	  toggle_offset(MONOCASE), XtRString, ResFalse },
 	{ ResAltCursor, ClsAltCursor, XtRBoolean, sizeof(Boolean),
@@ -532,7 +534,8 @@ char	*argv[];
 	a_save_yourself = XInternAtom(display, "WM_SAVE_YOURSELF", False);
 	a_3270 = XInternAtom(display, "3270", False);
 	a_registry = XInternAtom(display, "CHARSET_REGISTRY", False);
-	a_iso8859 = XInternAtom(display, "ISO8859", False);
+	a_ISO8859 = XInternAtom(display, "ISO8859", False);
+	a_iso8859 = XInternAtom(display, "iso8859", False);
 	a_encoding = XInternAtom(display, "CHARSET_ENCODING", False);
 	a_1 = XInternAtom(display, "1", False);
 	a_state = XInternAtom(display, "WM_STATE", False);

@@ -178,19 +178,20 @@ run_ta()
 {
 	struct ta *ta;
 
-	if (kybdlock || !(ta = ta_head))
+	if (kybdlock || (ta = ta_head) == (struct ta *)NULL)
 		return False;
 
-	if (!(ta_head = ta->next)) {
+	if ((ta_head = ta->next) == (struct ta *)NULL) {
 		ta_tail = (struct ta *) NULL;
 		status_typeahead(False);
 	}
 
 	action_internal(ta->fn, IA_TYPEAHEAD, ta->parm1, ta->parm2);
-	if (ta->parm1)
+	if (ta->parm1 != CN)
 		XtFree(ta->parm1);
-	if (ta->parm2)
+	if (ta->parm2 != CN)
 		XtFree(ta->parm2);
+	XtFree((XtPointer)ta);
 
 	return True;
 }
@@ -644,7 +645,7 @@ Boolean	with_ge;
 		} while (!IS_FA(screen_buf[baddr]));
 	} else {
 		ctlr_add(baddr, (unsigned char)cgcode,
-		    (unsigned char)(with_ge ? 1 : 0));
+		    (unsigned char)(with_ge ? CS_GE : 0));
 		ctlr_add_fg(baddr, 0);
 		ctlr_add_gr(baddr, 0);
 		if (!reverse)
@@ -652,13 +653,16 @@ Boolean	with_ge;
 	}
 
 	/* Implement auto-skip, and don't land on attribute bytes. */
-	if (IS_FA(screen_buf[baddr]) &&
-	    FA_IS_SKIP(screen_buf[baddr]))
-		baddr = next_unprotected(baddr);
-	else while (IS_FA(screen_buf[baddr]))
-		INC_BA(baddr);
+	if (cgcode != CG_dup) {
+		if (IS_FA(screen_buf[baddr]) &&
+		    FA_IS_SKIP(screen_buf[baddr]))
+			baddr = next_unprotected(baddr);
+		else while (IS_FA(screen_buf[baddr]))
+			INC_BA(baddr);
 
-	cursor_move(baddr);
+		cursor_move(baddr);
+	}
+
 	mdt_set(fa);
 	return True;
 }
@@ -1649,9 +1653,11 @@ Cardinal *num_params;
 		break;
 	    case CG_space:		/* space */
 	    case CG_null:		/* null */
+		mdt_set(fa);
 		key_AID(AID_SELECT);
 		break;
 	    case CG_ampersand:		/* & */
+		mdt_set(fa);
 		key_AID(AID_ENTER);
 		break;
 	    default:
@@ -2282,14 +2288,66 @@ Cardinal *num_params;
 
 	action_debug(Default_action, event, params, num_params);
 	ll = XLookupString(kevent, buf, 32, &ks, (XComposeStatus *) 0);
-	if (ll != 1) {
-		if (toggled(EVENT_TRACE))
-			(void) fprintf(tracef, " %s: Unknown keysym\n",
-			    action_name(Default_action));
+	if (ll == 1) {
+		/* Remap certain control characters. */
+		switch (buf[0]) {
+		    case '\t':
+			action_internal(Tab_action, IA_DEFAULT, CN, CN);
+			break;
+		    case '\177':
+			action_internal(Delete_action, IA_DEFAULT, CN, CN);
+			break;
+		    case '\b':
+			action_internal(BackSpace_action, IA_DEFAULT, CN, CN);
+			break;
+		    case '\r':
+			action_internal(Enter_action, IA_DEFAULT, CN, CN);
+			break;
+		    case '\n':
+			action_internal(Newline_action, IA_DEFAULT, CN, CN);
+			break;
+		    default:
+			key_ACharacter((unsigned char) buf[0], KT_STD,
+			    IA_DEFAULT);
+		}
 		return;
 	}
 
-	key_ACharacter((unsigned char) buf[0], KT_STD, IA_DEFAULT);
+	/* Pick some other reasonable defaults. */
+	switch (ks) {
+	    case XK_Up:
+		action_internal(Up_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Down:
+		action_internal(Down_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Left:
+		action_internal(Left_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Right:
+		action_internal(Right_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Insert:
+#if defined(XK_KP_Insert) /*[*/
+	    case XK_KP_Insert:
+#endif /*]*/
+		action_internal(Insert_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Delete:
+		action_internal(Delete_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Home:
+		action_internal(Home_action, IA_DEFAULT, CN, CN);
+		break;
+	    case XK_Tab:
+		action_internal(Tab_action, IA_DEFAULT, CN, CN);
+		break;
+	    default:
+		if (toggled(EVENT_TRACE))
+			(void) fprintf(tracef, " %s: Unknown keysym\n",
+			    action_name(Default_action));
+		break;
+	}
 }
 
 
