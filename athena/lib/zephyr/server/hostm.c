@@ -15,11 +15,12 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.23 1988-06-15 22:50:58 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.24 1988-06-15 23:13:02 jtkohl Exp $";
 #endif SABER
 #endif lint
 
 #include "zserver.h"
+#include <sys/socket.h>			/* for AF_INET */
 
 /*
  *
