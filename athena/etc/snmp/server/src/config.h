@@ -1,9 +1,16 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.3 1990-04-26 15:45:25 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.4 1990-05-26 13:42:02 tom Exp $
  *  $Author: tom $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ * Revision 1.3  90/04/26  15:45:25  tom
+ * defined SYS_DESCR to slinky- I'd rather have it be totally bogus
+ * than subtly wrong.
+ * 
+ * disabled built in defines for platforms- makefile or compiler should
+ * do this
+ * 
  * 
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -35,6 +42,7 @@
 /*#define SUN3_3PLUS		/* Sun OS 3.3 or greater, but < 4.0 */
 /*#define BSD43			/* 4.3 BSD */
 /*#define ULTRIX2_2		/* Ultrix 2.2 or 2.0 */
+/*#define ULTRIX3               /* Ultrix 3.X */
 /*#define SUN40			/* Sun OS 4.0 */
 
 /*
@@ -105,7 +113,7 @@
  */
 #endif MIT
 
-#ifdef SUN40
+#if defined(SUN40) || defined(ULTRIX3)
 #ifndef BSD43
 #define BSD43
 #endif

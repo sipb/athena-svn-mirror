@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.2 1990-04-26 18:02:01 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.3 1990-05-26 13:42:27 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/04/26  18:02:01  tom
+ * *** empty log message ***
+ * 
  * Revision 1.1  90/04/26  16:35:06  tom
  * Initial revision
  * 
@@ -29,7 +32,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.2 1990-04-26 18:02:01 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.3 1990-05-26 13:42:27 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -159,7 +162,11 @@ extern int	kmem;			/* file descriptor fpr kmem */
 extern int	debuglevel;		/* snmpd debug level */
 extern struct	intf_info *iilst;	/* interface info list */
 extern struct	snmp_session *sessions;	/* snmp session list */
+#ifdef ULTRIX3
+extern struct rtentry *rtnet[RTHASHSIZ];/* buffer for net routing tables */
+#else
 extern struct	mbuf *rtnet[RTHASHSIZ]; /* buffer for net routing tables */
+#endif
 extern int	newpacket;		/* are we processing a new packet? */
 extern struct	snmp_stats s_stat;	/* SNMPD stats kept here */
 extern int	send_authen_traps;	/* do we send authen traps? */
