@@ -6,126 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2003-01-24 21:57+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2004-03-01 00:45+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0\n"
-
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "The quick brown fox jumps over the lazy dog. 中文测试"
-
-#. FIXME: fill in all papers and units. (Lauris)
-#. FIXME: load papers from file (Lauris)
-#. FIXME: use some fancy unit program (Lauris)
-#.
-#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
-#.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
-msgid "A4"
-msgstr "A4"
-
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "单位"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "单位"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "磅"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pt"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "磅"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Pts"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "自选单位"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "自选"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "自选单位"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "像素"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "像素"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "百分比"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "百分比"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "毫米"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "毫米"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "厘米"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "厘米"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "英寸"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "in"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "英寸"
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
@@ -174,6 +63,16 @@ msgstr "A2"
 #: data/globals.xml.in.h:12
 msgid "A3"
 msgstr "A3"
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
@@ -296,9 +195,8 @@ msgid "DL Envelope"
 msgstr "DL 信封"
 
 #: data/globals.xml.in.h:44
-#, fuzzy
 msgid "Divided"
-msgstr "分栏的"
+msgstr "分栏"
 
 #: data/globals.xml.in.h:45
 msgid "Envelope 6x9"
@@ -309,9 +207,8 @@ msgid "Envelope No10"
 msgstr "10 号信封"
 
 #: data/globals.xml.in.h:47
-#, fuzzy
 msgid "Folded"
-msgstr "折叠的"
+msgstr "折叠"
 
 #: data/globals.xml.in.h:48
 msgid "Landscape"
@@ -369,126 +266,146 @@ msgstr "普通 Postscript"
 msgid "Create a PDF document"
 msgstr "创建 PDF 文档"
 
-#~ msgid "Print out debugging information"
-#~ msgstr "打印调试信息"
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "明日复明日·万事成蹉跎。"
 
-#~ msgid "Tries to do everything automatically"
-#~ msgstr "尝试自动完成所有事"
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr "任务配置"
 
-#~ msgid "Search directories recursively for font files"
-#~ msgstr "递归搜索目录查找字体文件"
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr "打印任务的配置"
 
-#~ msgid "Start from zero fontmap, instead of parsing old one"
-#~ msgstr "从空的字体表开始，而不是分析旧的"
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "单位"
 
-#~ msgid "Reverifies all font files, even for fontmaps of same version"
-#~ msgstr "重新确认所有字体文件，即使字体映射是同一版本"
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "单位"
 
-#~ msgid "Include font notice field (Copyright data) into fontmap"
-#~ msgstr "包括字体注意事项(版权数据)到字体表"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "磅"
 
-#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-#~ msgstr "创建 $HOME/.gnome/fonts/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pt"
 
-#~ msgid "Create "
-#~ msgstr "创建"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "磅"
 
-#~ msgid "/gnome-print.fontmap"
-#~ msgstr "/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Pts"
 
-#~ msgid "Write output fontmap to specified file (- for stdout)"
-#~ msgstr "将输出的字体表写入到指定文件(- 输出到标准输出)"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "自选单位"
 
-#~ msgid ""
-#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-#~ "print installation)"
-#~ msgstr "返回该 gnome-print 使用的 $FONTMAPDIR_STATIC 和 $FONTMAPDIR_DYNAMIC"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "自选"
 
-#~ msgid "File describing known aliases"
-#~ msgstr "描述已知别名的文件"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "自选单位"
 
-#~ msgid "PATH"
-#~ msgstr "路径"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "像素"
 
-#~ msgid "Specify default font(s) for any locale"
-#~ msgstr "指定任意区域设置的默认字体"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
 
-#~ msgid "[LOCALE[,LOCALE]:fontname]"
-#~ msgstr "[LOCALE[,LOCALE]:fontname]"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "像素"
 
-#~ msgid "Print Paper database"
-#~ msgstr "打印纸数据库"
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "百分比"
 
-#~ msgid "Describe GPA Tree"
-#~ msgstr "描述 GPA 树"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
 
-#~ msgid "Print text file"
-#~ msgstr "打印文本文件"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "百分比"
 
-#, fuzzy
-#~ msgid "Use GnomePrintJob for printing"
-#~ msgstr "使用 GnomePrintMaster 进行打印"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "毫米"
 
-#~ msgid "Dump printout to metafile ('-' for stdout)"
-#~ msgstr "将打印输出至文件(- 表示标准输出)"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "Split job between bonobo"
-#~ msgstr "在 bonobo 之间划分任务"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "毫米"
 
-#~ msgid "Gnome-print test page, rotated"
-#~ msgstr "Gnome-print 测试页，旋转"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "厘米"
 
-#~ msgid "Gnome-print test page, slanted"
-#~ msgstr "Gnome-print 测试页，斜体"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
 
-#~ msgid "Gnome-print test page, slanted. Small"
-#~ msgstr "Gnome-print 测试页，斜体、小"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "厘米"
 
-#~ msgid "Meter"
-#~ msgstr "米"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "英寸"
 
-#~ msgid "m"
-#~ msgstr "m"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "in"
 
-#, fuzzy
-#~ msgid "Meters"
-#~ msgstr "米"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "英寸"
 
-#~ msgid "meters"
-#~ msgstr "米"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr "周末"
 
-#~ msgid "Default Key"
-#~ msgstr "默认键"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr "介于午夜和早上八点。"
 
-#~ msgid "Printer is active"
-#~ msgstr "打印机是活动的"
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr "介于晚六点至早六点。"
 
-#~ msgid "Printer is ready to print"
-#~ msgstr "打印机就绪"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr "介于晚四点至午夜"
 
-#~ msgid "Printer is off-line"
-#~ msgstr "打印机不在线"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr "介于早六点至晚六点。"
 
-#~ msgid "Can not communicate with printer"
-#~ msgstr "无法同打印机通信"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr "手动选择"
 
-#~ msgid "Unknown status"
-#~ msgstr "位置状态"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr "立即"
 
-#~ msgid "Default Settings"
-#~ msgstr "默认设置"
-
-#~ msgid "Do not try to read existing fontmaps"
-#~ msgstr "不读取已有的字体表"
-
-#~ msgid "Output file name"
-#~ msgstr "输出文件名"
-
-#~ msgid "Load aliases from given file"
-#~ msgstr "从指定文件中装载别名"
-
-#~ msgid "Search list of well-known font paths"
-#~ msgstr "周知的字体路径搜索列表"
-
-#~ msgid "status loading %s = %d\n"
-#~ msgstr "状态正在载入 %s = %d\n"
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr "%s (通过 lpr)"

@@ -34,9 +34,69 @@
 #include "gpa-root.h"
 
 /* Global variables */
-GPAList    *printers_list  = NULL;
-GHashTable *models_dict    = NULL;
-GPANode    *gpa_root; /* The parent of global_options */
+GPARoot * gpa_root = NULL;
+static gboolean initializing = FALSE;
+
+static GPANodeClass *parent_class;
+
+typedef struct _GPARootClass GPARootClass;
+struct _GPARootClass {
+	GPANodeClass node_class;
+};
+
+static void gpa_root_class_init (GPARootClass *klass);
+static void gpa_root_init (GPARoot *root);
+static void gpa_root_finalize (GObject *object);
+
+GType
+gpa_root_get_type (void)
+{
+	static GType type = 0;
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (GPARootClass),
+			NULL, NULL,
+			(GClassInitFunc) gpa_root_class_init,
+			NULL, NULL,
+			sizeof (GPARoot),
+			0,
+			(GInstanceInitFunc) gpa_root_init
+		};
+		type = g_type_register_static (GPA_TYPE_NODE, "GPARoot", &info, 0);
+	}
+	return type;
+}
+
+static void
+gpa_root_class_init (GPARootClass *klass)
+{
+	GObjectClass *object_class;
+	GPANodeClass *node_class;
+
+	object_class = (GObjectClass*) klass;
+	node_class = (GPANodeClass *) klass;
+
+	parent_class = g_type_class_peek_parent (klass);
+
+	object_class->finalize = gpa_root_finalize;
+}
+
+
+static void
+gpa_root_init (GPARoot *root)
+{
+	/* Empty */
+}
+
+static void
+gpa_root_finalize (GObject *object)
+{
+	GPARoot *root;
+
+	root = (GPARoot *) object;
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
 
 /**
  * gpa_get_printers:
@@ -48,13 +108,17 @@ GPANode    *gpa_root; /* The parent of global_options */
 GPAList *
 gpa_get_printers (void)
 {
-	if (!printers_list) {
-		g_warning ("Could not get printers list. gpa_init not called or "
-			   "could not load any printers");
+	if (!gpa_root) {
+		g_warning ("gpa_init not called, gpa_get_printers failed");
+		return NULL;
+	}
+	
+	if (!gpa_root->printers) {
+		g_warning ("Could not get printers list, gpa_root->printers is empty");
 		return NULL;
 	}
 
-	return gpa_list_ref (printers_list);
+	return gpa_list_ref (gpa_root->printers);
 }
 
 void
@@ -74,9 +138,15 @@ gpa_shutdown (void)
 gboolean
 gpa_initialized (void)
 {
-	if (printers_list || models_dict) {
+	if (initializing) {
+		/* Not yet initialized but in the process of */
 		return TRUE;
 	}
+
+	if (gpa_root) {
+		return TRUE;
+	}
+
 	return FALSE;
 }
 
@@ -86,10 +156,13 @@ gpa_init (void)
 	xmlNodePtr node;
 	xmlDocPtr doc;
 	gchar *file = NULL;
-	GPANode *global_options;
+	GPANode *globals = NULL;
+	GPAList *printers_list = NULL;
 
 	if (gpa_initialized ())
 		return TRUE;
+
+	initializing = TRUE;
 
 	file = g_build_filename (GPA_DATA_DIR, "globals.xml", NULL);
 	doc = xmlParseFile (file);
@@ -105,23 +178,31 @@ gpa_init (void)
 		goto init_done;
 	}
 
-	gpa_root = gpa_node_new (GPA_TYPE_OPTION, "Globals");
-	GPA_OPTION (gpa_root)->type = GPA_OPTION_TYPE_ROOT;
-	global_options = gpa_option_new_from_tree (node, gpa_root);
-	if (!global_options) {
+	gpa_root = (GPARoot*) gpa_node_new (GPA_TYPE_ROOT, "GpaRootNode");
+	globals = gpa_option_new_from_tree (node, GPA_NODE (gpa_root));
+	if (!globals) {
 		g_warning ("Error while reading \"%s\"", file);
 		goto init_done;
 	}
+	/* gpa_option_new_from_tree does gpa_node_attach for us */
 
 	printers_list = gpa_printer_list_load ();
 	if (!printers_list) {
 		g_warning ("Could not load printers list");
 		goto init_done;
 	}
+	gpa_root->printers = gpa_node_attach (GPA_NODE (gpa_root), GPA_NODE (printers_list));
 	
 init_done:
+	initializing = FALSE;
 	g_free (file);
 	my_xmlFreeDoc (doc);
 
-	return printers_list ? TRUE : FALSE;
+	if ((!globals || !printers_list) && gpa_root) {
+		gpa_node_unref (GPA_NODE (gpa_root));
+		gpa_root = NULL;
+		return FALSE;
+	}
+	
+	return TRUE;
 }

@@ -34,6 +34,7 @@
 #include "gpa-reference.h"
 #include "gpa-list.h"
 #include "gpa-key.h"
+#include "gpa-state.h"
 #include "gpa-option.h"
 
 xmlChar *
@@ -115,6 +116,8 @@ gpa_utils_dump_tree_with_level (GPANode *node, gint level, gint follow_reference
 
 	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAKey") == 0)
 		g_print (" {%s}", ((GPAKey *) node)->value);
+	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAState") == 0)
+		g_print (" state: [%s]", ((GPAState *) node)->value);
 	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAOption") == 0) {
 		GPAOption *option;
 		option = GPA_OPTION (node);
@@ -133,7 +136,7 @@ gpa_utils_dump_tree_with_level (GPANode *node, gint level, gint follow_reference
 			g_print ("node");
 			break;
 		case GPA_OPTION_TYPE_ITEM:
-			g_print ("item");
+			g_print ("item [%s]", option->value);
 			break;
 		case GPA_OPTION_TYPE_ROOT:
 			g_print ("root");

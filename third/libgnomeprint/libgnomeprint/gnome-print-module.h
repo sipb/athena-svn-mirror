@@ -36,12 +36,13 @@ struct _GnomePrintModule {
 typedef enum {
 	   GNOME_PRINT_MODULE_TRANSPORT      = 1 >> 0,
 	   GNOME_PRINT_MODULE_PRINTER_SOURCE = 1 >> 1,
-	   GNOME_PRINT_MODULE_QUEUE          = 1 >> 2,
+	   GNOME_PRINT_MODULE_QUEUE          = 1 >> 2
 } GnomePrintModuleFlags;
 
 typedef struct _GpaModuleInfo GpaModuleInfo;
 struct _GpaModuleInfo {
-	void (*printer_list_append) (gpointer printers);
+	void (*printer_list_append) (gpointer printers, const gchar *path);
+	void (*polling_state) (gboolean poll);
 };
 
 void gnome_print_module_init (void);

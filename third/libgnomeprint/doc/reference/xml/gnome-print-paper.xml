@@ -1,0 +1,174 @@
+<refentry id="libgnomeprint-gnome-print-paper">
+<refmeta>
+<refentrytitle>gnome-print-paper</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEPRINT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-print-paper</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GnomePrintPaper">GnomePrintPaper</link>;
+const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-default">gnome_print_paper_get_default</link>
+                                            (void);
+const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-by-name">gnome_print_paper_get_by_name</link>
+                                            (const <link linkend="guchar">guchar</link> *name);
+const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-by-size">gnome_print_paper_get_by_size</link>
+                                            (<link linkend="gdouble">gdouble</link> width,
+                                             <link linkend="gdouble">gdouble</link> height);
+const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* <link linkend="gnome-print-paper-get-closest-by-size">gnome_print_paper_get_closest_by_size</link>
+                                            (<link linkend="gdouble">gdouble</link> width,
+                                             <link linkend="gdouble">gdouble</link> height,
+                                             <link linkend="gboolean">gboolean</link> mustfit);
+<link linkend="GList">GList</link>*      <link linkend="gnome-print-paper-get-list">gnome_print_paper_get_list</link>      (void);
+<link linkend="void">void</link>        <link linkend="gnome-print-paper-free-list">gnome_print_paper_free_list</link>     (<link linkend="GList">GList</link> *papers);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePrintPaper"/>struct GnomePrintPaper</title>
+<indexterm><primary>GnomePrintPaper</primary></indexterm><programlisting>struct GnomePrintPaper {
+
+	   guint version : 8; /* Has to be 0 at moment */
+	   guchar *name;      /* Name such as A4 */
+	   gdouble width, height;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-get-default"/>gnome_print_paper_get_default ()</title>
+<indexterm><primary>gnome_print_paper_get_default</primary></indexterm><programlisting>const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* gnome_print_paper_get_default
+                                            (void);</programlisting>
+<para>
+Get a pointer to the default paper for the system.  The returned
+pointer should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the default <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-get-by-name"/>gnome_print_paper_get_by_name ()</title>
+<indexterm><primary>gnome_print_paper_get_by_name</primary></indexterm><programlisting>const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* gnome_print_paper_get_by_name
+                                            (const <link linkend="guchar">guchar</link> *name);</programlisting>
+<para>
+Gets a pointer the paper represented by name <parameter>name</parameter>, for example: "A4".
+The returned pointer should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the paper to get
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-get-by-size"/>gnome_print_paper_get_by_size ()</title>
+<indexterm><primary>gnome_print_paper_get_by_size</primary></indexterm><programlisting>const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* gnome_print_paper_get_by_size
+                                            (<link linkend="gdouble">gdouble</link> width,
+                                             <link linkend="gdouble">gdouble</link> height);</programlisting>
+<para>
+Gets a pointer the paper with width <parameter>width</parameter> and height <parameter>height</parameter>.
+The returned pointer should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> The width of the paper
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> The height of the paper
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-get-closest-by-size"/>gnome_print_paper_get_closest_by_size ()</title>
+<indexterm><primary>gnome_print_paper_get_closest_by_size</primary></indexterm><programlisting>const <link linkend="GnomePrintPaper">GnomePrintPaper</link>* gnome_print_paper_get_closest_by_size
+                                            (<link linkend="gdouble">gdouble</link> width,
+                                             <link linkend="gdouble">gdouble</link> height,
+                                             <link linkend="gboolean">gboolean</link> mustfit);</programlisting>
+<para>
+Gets a pointer the paper with dimensions closest to width <parameter>width</parameter> and 
+height <parameter>height</parameter>.  If <parameter>mustfit</parameter> is <literal>TRUE</literal> then <parameter>width</parameter> and <parameter>height</parameter> must fit
+within the dimensions of the returned paper.  The returned pointer 
+should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> The width of the paper
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> The height of the paper
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mustfit</parameter>&nbsp;:</term>
+<listitem><simpara> Should <parameter>width</parameter> and <parameter>height</parameter> fit within paper
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintPaper"><type>GnomePrintPaper</type></link>, <literal>NULL</literal> if not found.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-get-list"/>gnome_print_paper_get_list ()</title>
+<indexterm><primary>gnome_print_paper_get_list</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_print_paper_get_list      (void);</programlisting>
+<para>
+Get a <link linkend="GList"><type>GList</type></link> of all the papers available on the system.  The list returned
+must be freed with <link linkend="gnome-print-paper-free-list"><type>gnome_print_paper_free_list</type></link> when you are finished.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the list of papers.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-paper-free-list"/>gnome_print_paper_free_list ()</title>
+<indexterm><primary>gnome_print_paper_free_list</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_print_paper_free_list     (<link linkend="GList">GList</link> *papers);</programlisting>
+<para>
+Used to free the list created using <link linkend="gnome-print-paper-get-list"><type>gnome_print_paper_get_list</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>papers</parameter>&nbsp;:</term>
+<listitem><simpara> A pointer to a <link linkend="GList"><type>GList</type></link> of papers to free
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

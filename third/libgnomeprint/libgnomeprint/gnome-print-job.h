@@ -41,11 +41,19 @@ typedef struct _GnomePrintJob      GnomePrintJob;
 GType gnome_print_job_get_type (void);
 
 GnomePrintJob *      gnome_print_job_new (GnomePrintConfig *config);
+
+/* Note: Remember to unref the GnomePrintConfig returned by: */
 GnomePrintConfig *   gnome_print_job_get_config  (GnomePrintJob *job);
+
+/* Note: Remember to unref the GnomePrintContext returned by: */
 GnomePrintContext *  gnome_print_job_get_context (GnomePrintJob *job);
 
 gint     gnome_print_job_close (GnomePrintJob *job);
 gint     gnome_print_job_print (GnomePrintJob *job);
+
+#ifdef GNOME_PRINT_UNSTABLE_API
+void     gnome_print_job_set_file (GnomePrintJob *job, gchar *input);
+#endif
 
 gint     gnome_print_job_render      (GnomePrintJob *job, GnomePrintContext *ctx);
 gint     gnome_print_job_render_page (GnomePrintJob *job, GnomePrintContext *ctx, gint page, gboolean pageops);

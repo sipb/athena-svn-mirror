@@ -46,6 +46,9 @@ static gboolean  gpa_model_verify    (GPANode *node);
 
 static GPANodeClass *parent_class = NULL;
 
+/* Globals */
+GHashTable *gpa_models_dict = NULL;
+
 GType
 gpa_model_get_type (void)
 {
@@ -95,7 +98,7 @@ gpa_model_finalize (GObject *object)
 
 	model = GPA_MODEL (object);
 
-	g_hash_table_remove (models_dict, GPA_NODE_ID (model));
+	g_hash_table_remove (gpa_models_dict, GPA_NODE_ID (model));
 
 	my_g_free (model->name);
 	model->name    = NULL;
@@ -130,12 +133,12 @@ gpa_model_hash_lookup (const gchar *id)
 {
 	GPANode *model;
 	
-	if (!models_dict) {
-		models_dict = g_hash_table_new (g_str_hash, g_str_equal);
+	if (!gpa_models_dict) {
+		gpa_models_dict = g_hash_table_new (g_str_hash, g_str_equal);
 		return NULL;
 	}
 
-	model = g_hash_table_lookup (models_dict, id);
+	model = g_hash_table_lookup (gpa_models_dict, id);
 	if (model)
 		gpa_node_ref (model);
 
@@ -154,8 +157,8 @@ gpa_model_hash_insert (GPAModel *model)
 	GPANode *check;
 	const gchar *id = GPA_NODE_ID (model);
 		
-	if (!models_dict)
-		models_dict = g_hash_table_new (g_str_hash, g_str_equal);
+	if (!gpa_models_dict)
+		gpa_models_dict = g_hash_table_new (g_str_hash, g_str_equal);
 
 	check = gpa_model_hash_lookup (id);
 	if (check) {
@@ -163,7 +166,7 @@ gpa_model_hash_insert (GPAModel *model)
 		gpa_node_unref (check);
 	}
 
-	g_hash_table_insert (models_dict, g_strdup (id), model);
+	g_hash_table_insert (gpa_models_dict, g_strdup (id), model);
 }
 
 /**
@@ -217,7 +220,9 @@ gpa_model_new_from_tree (xmlNodePtr tree)
 		if (!strcmp (node->name, "Name")) {
 			xmlChar *name;
 			name = xmlNodeGetContent (node);
-			model->name = g_strdup (node->name);
+			if (model->name != NULL)
+				g_free (model->name);
+			model->name = g_strdup (name);
 			xmlFree (name);
 			continue;
 		}
@@ -227,6 +232,8 @@ gpa_model_new_from_tree (xmlNodePtr tree)
 			options = gpa_option_node_new_from_tree (node,
 								 GPA_NODE (model),
 								 "Options");
+			if (model->options != NULL)
+				gpa_node_unref(model->options);
 			model->options = options;
 			continue;
 		}
@@ -248,6 +255,35 @@ new_from_tree_done:
 	my_xmlFree (version);
 
 	return (GPANode *) model;
+}
+
+/**
+ * gpa_model_new_from_xml_str:
+ * @tree: 
+ * 
+ * Load a GPAModel from an string with an xml format
+ * 
+ * Return Value: 
+ **/
+GPANode *
+gpa_model_new_from_xml_str (char const *string)
+{
+	GPANode *model;
+	xmlNodePtr root;
+	xmlDocPtr doc;
+
+	doc = xmlParseDoc ((char *)string);
+	if (!doc) {
+		g_warning ("Could not parse model xml");
+		return NULL;
+	}
+
+	root = doc->xmlRootNode;
+	model = gpa_model_new_from_tree (root);
+
+	xmlFreeDoc (doc);
+
+	return model;
 }
 
 /**

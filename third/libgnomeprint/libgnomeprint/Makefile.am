@@ -1,4 +1,4 @@
-SUBDIRS = gpa . transports modules
+SUBDIRS = gpa ttsubset . transports modules
 
 temp_sources = \
 	art_rgb_affine_private.h \
@@ -8,13 +8,11 @@ temp_sources = \
 	art_rgba_svp.h
 
 font_sources = \
-	gnome-fontmap.c gnome-fontmap.h \
+	gnome-fontmap.c \
 	gnome-font.c \
 	gnome-font-face.c \
 	gnome-rfont.c \
-	gnome-font-family.c gnome-font-family.h \
-	gp-truetype-utils.c gp-truetype-utils.h \
-	gp-tt-t1.c gp-tt-t1.h
+	gnome-font-family.c gnome-font-family.h
 
 font_headers = \
 	gnome-font.h \
@@ -22,7 +20,8 @@ font_headers = \
 	gnome-rfont.h
 
 font_private_headers = \
-	gnome-font-private.h 
+	gnome-font-private.h \
+	gnome-fontmap.h
 
 nox_sources = \
 	gnome-print-private.h	\
@@ -36,6 +35,7 @@ nox_sources = \
 	gnome-print-pdf.c       gnome-print-pdf.h 	gnome-print-pdf-private.h \
 	gnome-print-pdf-t1.c	\
 	gnome-print-pdf-tt.c	\
+	gnome-print-pango.c	\
 	\
 	gnome-print-module.h \
 	\
@@ -59,6 +59,7 @@ nox_headers = \
 	gnome-print.h \
 	gp-gc.h \
 	gnome-print-job.h \
+	gnome-print-pango.h	\
 	gnome-glyphlist.h \
 	gnome-pgl.h \
 	gnome-print-paper.h \
@@ -72,7 +73,7 @@ nox_private_headers = \
 
 lib_LTLIBRARIES = libgnomeprint-2-2.la
 
-#LDFLAGS = -version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
+AM_LDFLAGS = -version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -81,13 +82,7 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
-     -DGNOME_PRINT_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\" \
-	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
-	-DGNOME_DISABLE_DEPRECATED
+        -DGNOME_PRINT_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\"
 
 marshal_sources = \
 	libgnomeprint-marshal.c		\
@@ -101,7 +96,11 @@ $(libgnomeprint_2_2_la_OBJECTS): $(marshal_sources) $(enum_sources)
 
 libgnomeprint_2_2_la_LIBADD = \
 	gpa/libgpa.la \
+	ttsubset/libttsubset.la \
 	$(LIBGNOMEPRINT_LIBS)
+
+libgnomeprint_2_2_la_LDFLAGS = \
+	-no-undefined
 
 libgnomeprint_2_2_la_SOURCES = \
 	$(nox_sources) \
@@ -121,7 +120,10 @@ libgnomeprintprivateinc_HEADERS = \
 
 EXTRA_DIST = \
 	libgnomeprint-2.2.pc.in \
-	libgnomeprint-marshal.list
+	libgnomeprint-2.2-uninstalled.pc.in \
+	libgnomeprint-marshal.list \
+	gnome-print-svg.c	\
+	gnome-print-svg.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libgnomeprint-2.2.pc

@@ -44,15 +44,16 @@ typedef enum {
 	GP_FONT_ENTRY_UNKNOWN,
 	GP_FONT_ENTRY_TYPE1,
 	GP_FONT_ENTRY_TRUETYPE,
-	GP_FONT_ENTRY_ALIAS,
+	GP_FONT_ENTRY_ALIAS
 } GPFontEntryType;
 
 struct _GPFontMap {
 	gint refcount;
 	gint num_fonts;
 
-	GHashTable *fontdict;	/* Name -> FontEntry */
-	GHashTable *familydict;	/* Family name -> FamilyEntry */
+	GHashTable *fontdict;	  /* Name -> FontEntry */
+	GHashTable *familydict;	  /* Family name -> FamilyEntry */
+	GHashTable *filenamedict; /* File/index -> FontEntry */
 
 	GSList *fonts;	        /* List of FontEntries, sorted A-Z */
 	GSList *families;	/* List of FamilyEntries, sorted A-Z */
@@ -72,7 +73,8 @@ struct _GPFontEntry {
 	gchar *familyname;
 	gchar *speciesname;
 	gchar *file;
-	gchar *weight;  /* FIXME (Lauris) */
+	gint   index;
+	gchar *unused;
 	gint   italic_angle; /* italic < 0 */
 	GnomeFontWeight Weight;
 
@@ -83,6 +85,8 @@ struct _GPFamilyEntry {
 	gint refcount;
 	gchar *name;
 	GSList *fonts; /* List with GPFontEntry childs */
+
+	gboolean is_alias;
 };
 
 struct _GPFontEntryAlias {

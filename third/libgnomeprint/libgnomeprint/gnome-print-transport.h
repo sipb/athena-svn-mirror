@@ -46,16 +46,18 @@ typedef struct _GnomePrintTransportClass GnomePrintTransportClass;
 struct _GnomePrintTransport {
 	   GObject object;
 	   GnomePrintConfig *config;
-	   guint opened : 1;        /* TRUE if it has not been _closed */
+	   guint opened : 1;	/* TRUE if it has not been _closed */
+	   GError	*err;	/* Contains the first error that can not be handled */
 };
 
 struct _GnomePrintTransportClass {
 	   GObjectClass parent_class;
 	   
-	   gint (* construct) (GnomePrintTransport *transport);
-	   gint (* open)      (GnomePrintTransport *transport);
-	   gint (* close)     (GnomePrintTransport *transport);
-	   gint (* write)     (GnomePrintTransport *transport, const guchar *buf, gint len);
+	   gint (* construct)  (GnomePrintTransport *transport);
+	   gint (* open)       (GnomePrintTransport *transport);
+	   gint (* close)      (GnomePrintTransport *transport);
+	   gint (* write)      (GnomePrintTransport *transport, const guchar *buf, gint len);
+	   gint (* print_file) (GnomePrintTransport *transport, const guchar *file_name);
 };
 
 GType                 gnome_print_transport_get_type (void);
@@ -66,6 +68,11 @@ gint gnome_print_transport_open      (GnomePrintTransport *transport);
 gint gnome_print_transport_close     (GnomePrintTransport *transport);
 gint gnome_print_transport_write     (GnomePrintTransport *transport, const guchar *buf, gint len);
 gint gnome_print_transport_printf    (GnomePrintTransport *pc, const char *fmt, ...);
+gint gnome_print_transport_set_error (GnomePrintTransport *transport, GError *err);
+
+#ifdef GNOME_PRINT_UNSTABLE_API
+gint gnome_print_transport_print_file (GnomePrintTransport *transport, const guchar *file_name);
+#endif
 
 G_END_DECLS
 

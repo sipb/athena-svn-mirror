@@ -38,8 +38,8 @@ typedef struct _GnomePrintPdfFont   GnomePrintPdfFont;
 struct _GnomePrintPdfFont {
 	GnomeFontFace *face;
 	GnomeFontPsObject *pso;
-	gboolean is_basic_14 : 1;
-	gboolean is_type_1 : 1; /* FALSE == TrueType */
+	guint is_basic_14 : 1;
+	guint is_type_1 : 1; /* FALSE == TrueType */
 
 	gint nglyphs;
 	gint object_number;
@@ -58,14 +58,17 @@ struct _GnomePrintPdfFont {
 
 gint gnome_print_pdf_print_sized (GnomePrintPdf *pdf, const char *content, gint len);
 gint gnome_print_pdf_fprintf     (GnomePrintPdf *pdf, const char *format, ...);
+gint gnome_print_pdf_print_double (GnomePrintPdf *pdf, const gchar *format, gdouble x);
 
 gint gnome_print_pdf_object_new   (GnomePrintPdf *pdf);
 gint gnome_print_pdf_object_start (GnomePrintPdf *pdf, gint object_number, gboolean dont_print);
 gint gnome_print_pdf_object_end   (GnomePrintPdf *pdf, gint object_number, gboolean dont_print);
 
 /* Type 1 & TrueType embed */
+void gnome_print_embed_pdf_font  (GnomePrintPdf *pdf, GnomePrintPdfFont *font);
 gint gnome_print_pdf_t1_embed (GnomePrintPdf *pdf, const guchar *file_name, gint *object_number);
 gint gnome_print_pdf_tt_embed (GnomePrintPdf *pdf, const guchar *file_name, gint *object_number);
+gint gnome_print_pdf_tt_subset_embed (GnomePrintPdf *pdf, GnomePrintPdfFont *font, const guchar *file_name, gint *object_number);
 
 
 G_END_DECLS

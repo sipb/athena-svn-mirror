@@ -39,6 +39,8 @@ struct _GnomePrintJob {
 	
 	GnomePrintConfig *config;
 	GnomePrintContext *meta;
+	guchar *input_file;
+
 	gpointer priv;
 };
 

@@ -1,132 +1,26 @@
+# translation of es.po to Spanish
+# translation of libgnomeprint.HEAD.po to Spanish
 # Spanish translations for libgnomeprint.
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2002, 2003, 2004 Free Software Foundation, Inc.
 # Hector Garcia Alvarez <hector@scouts-es.org>, 2001-2002.
-# Carlos Perelló Marín <carlos@gnome-db.org>, 2002
-# Fco. Javier Fernandez <serrador@arrakis.es>, 2003
+# Carlos Perelló Marín <carlos@gnome-db.org>, 2002.
+# Fco. Javier Fernandez <serrador@arrakis.es>, 2003.
+# Francisco Javier F. Serrador <serrador@arrakis.es>, 2003.
+# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 1.115.0\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2003-01-07 17:41GMT\n"
-"Last-Translator: Carlos Perelló Marín <carlos@gnome-db.org>\n"
+"Project-Id-Version: es\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2004-08-01 13:38+0200\n"
+"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
-
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "El rápido zorro marrón salta sobre el perro perezoso."
-
-#. FIXME: fill in all papers and units. (Lauris)
-#. FIXME: load papers from file (Lauris)
-#. FIXME: use some fancy unit program (Lauris)
-#.
-#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
-#.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
-msgid "A4"
-msgstr "A4"
-
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Unidad"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Unidades"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Punto"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pto"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Puntos"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Ptos"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "Unidad del espacio de usuario"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Usuario"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "Unidades del espacio de usuario"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Pixel"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Pixels"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "Porcentaje"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "Porcentajes"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Milímetro"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "Milímetros"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "Centímetro"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "Centímetros"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "Pulgada"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "pl"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "Pulgadas"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
@@ -175,6 +69,16 @@ msgstr "A2"
 #: data/globals.xml.in.h:12
 msgid "A3"
 msgstr "A3"
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
@@ -362,8 +266,154 @@ msgstr "Vertical boca abajo"
 
 #: data/printers/GENERIC.xml.in.h:1
 msgid "Generic Postscript"
-msgstr "Postscript genérico"
+msgstr "PostScript genérico"
 
 #: data/printers/PDF-WRITER.xml.in.h:1
 msgid "Create a PDF document"
 msgstr "Crear un documento PDF"
+
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr ""
+" El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el "
+"saxofón detrás del palenque de paja."
+
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr "Configuración de trabajos"
+
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr "La configuración del trabajo de impresión"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "Unidad"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "Unidades"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Punto"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pto"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Puntos"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Ptos"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "Unidad del espacio de usuario"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Usuario"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "Unidades del espacio de usuario"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Píxel"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Píxeles"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Porcentaje"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Porcentajes"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Milímetro"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "Milímetros"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "Centímetro"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "Centímetros"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "Pulgada"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "pl"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "Pulgadas"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr "el fin de semana"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr "entre medianoche y 8:00"
+
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr "entre las 18:00 y las 6:00"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr "entre las 16:00 y medianoche"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr "entre las 6:00 y las 18:00"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr "cuando sea liberado manualmente"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr "inmediatamente"
+
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr "%s (vía lpr)"

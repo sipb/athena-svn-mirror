@@ -133,15 +133,26 @@ gp_transport_lpr_construct (GnomePrintTransport *transport)
 static gint
 gp_transport_lpr_open (GnomePrintTransport *transport)
 {
-	GPTransportLPR *tlpr;
-	guchar *command;
+	GPTransportLPR *tlpr = GP_TRANSPORT_LPR (transport);
+	gchar *exec = g_find_program_in_path ("lpr");
+	gchar *command;
+	const gchar *candidate;
 
-	tlpr = GP_TRANSPORT_LPR (transport);
+	/* This is the Solaris location, possibly not in PATH.  */
+	candidate = "/usr/ucb/lpr";
+	if (exec == NULL && g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE))
+		exec = g_strdup (candidate);
+
+	if (exec == NULL)
+		return GNOME_PRINT_ERROR_UNKNOWN;
 
 	if (tlpr->printer) {
-		command = g_strdup_printf ("lpr -P%s", tlpr->printer);
+		/* FIXME: verify printer name?  */
+		command = g_strdup_printf ("%s '-P%s'", exec, tlpr->printer);
+		g_free (exec);
 	} else {
-		command = g_strdup ("lpr");
+		command = exec;
+		exec = NULL;
 	}
 
 	tlpr->pipe = popen (command, "w");
@@ -188,7 +199,7 @@ gp_transport_lpr_write (GnomePrintTransport *transport, const guchar *buf, gint 
 
 	written = fwrite (buf, sizeof (guchar), len, tlpr->pipe);
 
-	if (written < 0) {
+	if (written < len) {
 		g_warning ("Writing output pipe failed");
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}

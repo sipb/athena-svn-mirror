@@ -33,9 +33,20 @@ G_BEGIN_DECLS
 
 #include "gpa-list.h"
 
-extern GPAList    *printers_list;
-extern GHashTable *models_dict;
-extern GPANode    *gpa_root;
+#define GPA_TYPE_ROOT         (gpa_root_get_type ())
+#define GPA_ROOT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GPA_TYPE_ROOT, GPARoot))
+#define GPA_IS_ROOT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GPA_TYPE_ROOT))
+
+typedef struct _GPARoot      GPARoot;
+struct _GPARoot {
+	GPANode node;
+	GPANode *globals;
+	GPANode *printers;
+};
+
+GType     gpa_root_get_type (void);
+
+extern GPARoot *gpa_root;
 
 GPAList * gpa_get_printers (void);
 gboolean  gpa_init (void);

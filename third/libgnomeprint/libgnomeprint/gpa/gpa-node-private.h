@@ -44,7 +44,7 @@ G_BEGIN_DECLS
 #define GPA_NODE_PARENT(n)       (GPA_NODE (n)->parent)
 
 typedef enum {
-	FLAGS_NOT_USED_YET,
+	NODE_FLAG_LOCKED = 1 << 4 /* Used for options when an option can't change from the default */
 } GPANodeFlags;
 
 struct _GPANode {
@@ -67,8 +67,10 @@ struct _GPANodeClass {
 	GPANode * (* duplicate) (GPANode *node);
 	gboolean  (* verify)    (GPANode *node);
 	
-	/* Signal that node or its children have been modified */
-	void     (* modified)   (GPANode *node);
+	/* Signal that the node value has changed */
+	void     (* modified)   (GPANode *node, gint flags);
+	void     (* child_added)(GPANode *parent, GPANode *child);
+	void     (* child_removed)(GPANode *parent, GPANode *child);
 };
 
 GType     gpa_node_get_type (void);

@@ -106,7 +106,10 @@ gpa_config_printer_modified (GPANode *node)
 	config = GPA_CONFIG (node->parent);
 	printer = GPA_REFERENCE_REFERENCE (config->printer);
 	
-	if (printer == GPA_REFERENCE_REFERENCE (GPA_SETTINGS (GPA_REFERENCE_REFERENCE (config->settings))->printer)) {
+	if (config->settings != NULL && 
+	    GPA_REFERENCE_REFERENCE (config->settings) != NULL &&
+	    GPA_SETTINGS (GPA_REFERENCE_REFERENCE (config->settings))->printer != NULL &&
+	    printer == GPA_REFERENCE_REFERENCE (GPA_SETTINGS (GPA_REFERENCE_REFERENCE (config->settings))->printer)) {
 		return;
 	}
 
@@ -183,7 +186,6 @@ gpa_config_new (void)
 	GPAConfig *config = NULL;
 	GPANode *printer;
 	GPANode *settings = NULL;
-	GPANode *def;
 
 	gpa_init ();
 	
@@ -193,18 +195,7 @@ gpa_config_new (void)
 		goto gpa_config_new_error;
 	}
 
-	def = gpa_printer_get_default_settings (GPA_PRINTER (printer));
-	if (def == NULL) {
-		g_warning ("Could not get default settings for %s\n",
-			   gpa_node_id (printer));
-		goto gpa_config_new_error;
-	}
-
-	settings = gpa_node_duplicate (def);
-	if (!settings) {
-		g_warning ("Could not duplicate default settings");
-		goto gpa_config_new_error;
-	}
+	settings = gpa_printer_get_default_settings (GPA_PRINTER (printer));
 
 	config = gpa_config_new_full (GPA_PRINTER (printer), GPA_SETTINGS (settings));
 
@@ -218,18 +209,17 @@ gpa_config_new_error:
 static GPANode *
 gpa_config_duplicate (GPANode *node)
 {
-	GPAConfig *config, *new;
+	GPAConfig *config = NULL, *new;
+	GPANode *settings = NULL;
 
 	config = GPA_CONFIG (node);
 
-	new = (GPAConfig *) gpa_node_new (GPA_TYPE_CONFIG, gpa_node_id (node));
+	settings = gpa_node_duplicate 
+		(GPA_REFERENCE_REFERENCE(config->settings));
 
-	if (config->printer)
-		new->printer = gpa_node_attach (GPA_NODE (new), 
-						gpa_node_duplicate (config->printer));
-	if (config->settings)
-		new->settings = gpa_node_attach (GPA_NODE (new), 
-						 gpa_node_duplicate (config->settings));
+	new = gpa_config_new_full 
+		(GPA_PRINTER (GPA_REFERENCE_REFERENCE(config->printer)), 
+		 GPA_SETTINGS (settings));
 
 	return GPA_NODE (new);
 }
@@ -345,7 +335,7 @@ gpa_config_from_string (const gchar *str, guint flags)
 		break;
 	}
 	if (!node) {
-		g_print ("not node\n");
+		g_warning ("Could not find the selected settings in the settings list");
 		goto config_from_string_done;
 	}
 
@@ -378,7 +368,7 @@ gpa_config_from_string (const gchar *str, guint flags)
 	
 	new_settings = (GPASettings *) gpa_settings_new_from_model_and_tree (GPA_NODE (model), node);
 	if (!new_settings) {
-		g_print ("Could not create settings\n");
+		g_warning ("Could not create settings from model and tree\n");
 		goto config_from_string_done;
 	}
 

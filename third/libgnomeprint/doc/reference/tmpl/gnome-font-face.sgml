@@ -87,6 +87,16 @@ gnome-font-face
 @Returns: 
 
 
+<!-- ##### FUNCTION gnome_font_face_find_from_filename ##### -->
+<para>
+
+</para>
+
+@filename: 
+@index_: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gnome_font_face_get_font ##### -->
 <para>
 

@@ -89,6 +89,8 @@ gp_fontmap_unref (GPFontMap * map)
 			g_hash_table_destroy (map->familydict);
 		if (map->fontdict)
 			g_hash_table_destroy (map->fontdict);
+		if (map->filenamedict)
+			g_hash_table_destroy (map->filenamedict);
 		if (map->familylist) {
 			g_hash_table_remove (familylist2map, map->familylist);
 			g_list_free (map->familylist);
@@ -151,8 +153,8 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 	GPFontEntryType font_type = GP_FONT_ENTRY_UNKNOWN;
 	GPFontEntry *e = NULL;
 	FcResult result;
-	FcChar8 *fc_family, *fc_style, *fc_file;
-	int italic_angle, weight;
+	FcChar8 *fc_family, *fc_style, *dup_fc_style = NULL, *fc_file;
+	int italic_angle, weight, face_index;
 	gboolean outline;
 	gchar *c;
 
@@ -168,15 +170,40 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 
 	result = FcPatternGetString (font, FC_STYLE, 0, &fc_style);
 	if (result != FcResultMatch || fc_style == NULL) {
-		g_warning ("Can't create GPFontEntry for %s, FC_STYLE not found\n", fc_family);
-		return NULL;
+		int fc_slant, fc_weight;	
+		int res_slant = FcPatternGetInteger (font, FC_SLANT, 0, &fc_slant);
+		int res_weight = FcPatternGetInteger (font, FC_WEIGHT, 0, &fc_weight);
+		if (res_slant == FcResultMatch && res_weight == FcResultMatch) {
+			switch (fc_slant) {
+				case FC_SLANT_ITALIC: 
+						if (fc_weight >= FC_WEIGHT_BOLD)
+							dup_fc_style = (FcChar8*) g_strdup ("Bold Italic");
+						else
+							dup_fc_style = (FcChar8*) g_strdup ("Italic");
+						break;	
+				case FC_SLANT_OBLIQUE:
+						dup_fc_style = (FcChar8*) g_strdup ("Bold Italic");
+						break;	
+				default:
+						if (fc_weight >= FC_WEIGHT_BOLD)
+							dup_fc_style = (FcChar8*) g_strdup ("Bold");
+						else
+							dup_fc_style = (FcChar8*) g_strdup ("Regular");
+						
+			}
+		} else {
+			dup_fc_style = (FcChar8*) g_strdup ("Regular");
+		}
 	}
 
 	result = FcPatternGetString (font, FC_FILE, 0, &fc_file);
 	if (result != FcResultMatch || fc_file == NULL) {
-		g_warning ("Can't create GPFontEntry for %s-%s, FC_FILE not found\n", fc_family, fc_style);
+		g_warning ("Can't create GPFontEntry for %s-%s, FC_FILE not found\n", fc_family, dup_fc_style ? dup_fc_style : fc_style);
 		return NULL;
 	}
+
+	face_index = 0;
+	result = FcPatternGetInteger (font, FC_INDEX, 0, &face_index);
 
 	italic_angle = 0;
 	FcPatternGetInteger (font, FC_SLANT, 0, &italic_angle);
@@ -185,7 +212,7 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 	 *     strcmp (FT_MODULE_CLASS (face->driver)->module_name, "truetype") == 0;
 	 * which isn't prety either (Chema)
  	 */
-	c = rindex (fc_file, '.');
+	c = strrchr ((gchar *) fc_file, '.');
 	if (!c)
 		return NULL;
 	else if (strcasecmp (c, ".pfb") == 0)
@@ -193,6 +220,8 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 	else if (strcasecmp (c, ".pfa") == 0)
 		font_type = GP_FONT_ENTRY_TYPE1;
 	else if (strcasecmp (c, ".ttf") == 0)
+		font_type = GP_FONT_ENTRY_TRUETYPE;
+	else if (strcasecmp (c, ".ttc") == 0)
 		font_type = GP_FONT_ENTRY_TRUETYPE;
 	else if (strcasecmp (c, ".font") == 0) /* See #102400 */
 		font_type = GP_FONT_ENTRY_TRUETYPE;
@@ -202,15 +231,16 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 
 	e = g_new0 (GPFontEntry, 1);
 	e->type         = font_type;
-	e->file         = g_strdup (fc_file);
+	e->file         = g_strdup ((gchar *) fc_file);
+	e->index        = face_index;
 	e->refcount     = 1;
 	e->face         = NULL;
-	e->speciesname  = g_strdup (fc_style);
-	e->weight       = g_strdup (fc_style);
-	e->familyname   = g_strdup (fc_family);
-	e->name         = g_strdup_printf ("%s %s", e->familyname, e->weight);
+	e->speciesname  = dup_fc_style ? (gchar *) dup_fc_style : g_strdup ((gchar *) fc_style);
+	e->familyname   = g_strdup ((gchar *) fc_family);
+	e->name         = g_strdup_printf ("%s %s", e->familyname, e->speciesname);
 	e->italic_angle = italic_angle;
 	e->is_alias     = FALSE;
+	e->unused       = NULL;
 	
 	result = FcPatternGetInteger (font, FC_WEIGHT, 0, &weight);
 	if (result == FcResultMatch)
@@ -225,26 +255,20 @@ static GPFontEntry *
 fcpattern_to_gp_font_entry_alias (FcPattern *font, const gchar *name)
 {
 	GPFontEntry *e;
-#if 0
 	gint len;
-#endif
 
 	e = fcpattern_to_gp_font_entry (font);
 	if (e == NULL)
 		return NULL;
 
 	g_free (e->name);
-#if 0
 	g_free (e->familyname);
 
 	len = strchr (name, ' ') - (char *) name;
 
-#endif
 	e->is_alias   = TRUE;
 	e->name       = g_strdup (name);
-#if 0
 	e->familyname = g_strndup (name, len);
-#endif
 
 	return e;
 }
@@ -337,6 +361,7 @@ gp_fontmap_load_fontconfig (GPFontMap *map)
 		e = fcpattern_to_gp_font_entry (font);
 		if (e) {
 			g_hash_table_insert (map->fontdict, e->name, e);
+			g_hash_table_insert (map->filenamedict, e, e);
 			map->num_fonts++;
 			map->fonts = g_slist_prepend (map->fonts, e);
 		}
@@ -360,11 +385,16 @@ gp_fontmap_sort (GPFontMap *map)
 		if (!f) {
 			f = g_new0 (GPFamilyEntry, 1);
 			gp_family_entry_ref (f);
-			f->name = g_strdup (e->familyname);
-			f->fonts = g_slist_prepend (f->fonts, e);
+			f->name     = g_strdup (e->familyname);
+			f->fonts    = g_slist_prepend (f->fonts, e);
+			f->is_alias = e->is_alias;
 			g_hash_table_insert (map->familydict, f->name, f);
 			map->families = g_slist_prepend (map->families, f);
 		} else {
+			if (f->is_alias != e->is_alias) {
+				g_warning ("Family %s contains alias and "
+					   "non-alias entries",  f->name);
+			}
 			f->fonts = g_slist_prepend (f->fonts, e);
 		}
 	}
@@ -380,6 +410,23 @@ gp_fontmap_sort (GPFontMap *map)
 	}
 }
 
+static guint
+filename_hash (gconstpointer v)
+{
+	const GPFontEntry *e = v;
+
+	return g_str_hash (e->file) ^ (e->index << 16);
+}
+
+static gboolean
+filename_equal (gconstpointer v1,
+		gconstpointer v2)
+{
+	const GPFontEntry *e1 = v1;
+	const GPFontEntry *e2 = v2;
+
+	return (e1->index == e2->index) && strcmp (e1->file, e2->file) == 0;
+}
 
 static GPFontMap *
 gp_fontmap_load (void)
@@ -390,6 +437,7 @@ gp_fontmap_load (void)
 	map->refcount  = 1;
 	map->num_fonts = 0;
 	map->fontdict   = g_hash_table_new (g_str_hash, g_str_equal);
+	map->filenamedict = g_hash_table_new (filename_hash, filename_equal);
 	map->familydict = g_hash_table_new (g_str_hash, g_str_equal);
 
 	gp_fontmap_load_fontconfig (map);
@@ -429,7 +477,6 @@ gp_font_entry_unref (GPFontEntry * entry)
 		my_g_free (entry->name);
 		my_g_free (entry->familyname);
 		my_g_free (entry->speciesname);
-		my_g_free (entry->weight);
 		my_g_free (entry->file);
 		g_free (entry);
 	}
@@ -444,7 +491,7 @@ gp_font_entry_unref (GPFontEntry * entry)
  */
 
 GList *
-gnome_font_list ()
+gnome_font_list (void)
 {
 	GPFontMap * map;
 	GSList * l;
@@ -480,7 +527,7 @@ gnome_font_list_free (GList * fontlist)
 }
 
 GList *
-gnome_font_family_list ()
+gnome_font_family_list (void)
 {
 	GPFontMap * map;
 	GSList * l;
@@ -491,6 +538,8 @@ gnome_font_family_list ()
 		for (l = map->families; l != NULL; l = l->next) {
 			GPFamilyEntry * f;
 			f = (GPFamilyEntry *) l->data;
+			if (f->is_alias)
+				continue;
 			map->familylist = g_list_prepend (map->familylist, f->name);
 		}
 		map->familylist = g_list_reverse (map->familylist);

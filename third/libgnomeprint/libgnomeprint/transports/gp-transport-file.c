@@ -123,7 +123,7 @@ gp_transport_file_construct (GnomePrintTransport *transport)
 
 	tf = GP_TRANSPORT_FILE (transport);
 
-	value = gnome_print_config_get (transport->config, "Settings.Transport.Backend.FileName");
+	value = gnome_print_config_get (transport->config, "Settings.Output.Job.FileName");
 
 	if (!value) {
 		g_warning ("Configuration does not specify filename");
@@ -144,7 +144,11 @@ gp_transport_file_open (GnomePrintTransport *transport)
 
 	g_return_val_if_fail (tf->name != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+#if defined(G_OS_WIN32) && defined(__MINGW32__)
+	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY);
+#else
+	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+#endif
 
 	if (tf->fd < 0) {
 		g_warning ("Opening file %s for output failed", tf->name);

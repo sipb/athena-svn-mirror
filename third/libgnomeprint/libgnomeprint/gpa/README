@@ -25,8 +25,8 @@ paper_width = gpa_node_lookup (root_node, "Settings.Output.Media.PhysicalSize.Wi
 width = gpa_node_get_value (paper_width);
 gpa_node_unref (paper_width);
 gpa_node_unref (root_node);
-g_print ("The paper width is %s\n", paper_width);
-g_free (paper_width);
+g_print ("The paper width is %s\n", width);
+g_free (width);
 
 This method is abstracted on the gnome-print layer by gnome-print-config calls
 and a set of defined keys for it, so if an application was interested in the

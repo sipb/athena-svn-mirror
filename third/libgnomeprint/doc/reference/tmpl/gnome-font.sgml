@@ -293,6 +293,17 @@ gnome-font
 @Returns: 
 
 
+<!-- ##### FUNCTION gnome_font_find_from_filename ##### -->
+<para>
+
+</para>
+
+@filename: 
+@index_: 
+@size: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gnome_font_find_closest_from_full_name ##### -->
 <para>
 

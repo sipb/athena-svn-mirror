@@ -10,5 +10,5 @@ INCLUDES = \
 plugin_LTLIBRARIES = libgnomeprintcups.la
 
 libgnomeprintcups_la_SOURCES = gnome-print-cups.c gnome-print-cups-transport.c
-libgnomeprintcups_la_LDFLAGS = $(PLUGIN_LIBTOOL_FLAGS) $(CUPS_LIBS)
+libgnomeprintcups_la_LDFLAGS = $(CUPS_LIBS) $(TOOLS_LIBS) -avoid-version -module -no-undefined
 libgnomeprintcups_la_LIBADD  = ../../libgnomeprint-2-2.la

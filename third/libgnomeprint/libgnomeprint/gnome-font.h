@@ -123,8 +123,10 @@ gdouble   gnome_font_get_underline_thickness (GnomeFont *font);
 GnomeFont *gnome_font_find                           (const guchar *name, gdouble size);
 GnomeFont *gnome_font_find_closest                   (const guchar *name, gdouble size);
 GnomeFont *gnome_font_find_from_full_name            (const guchar *string);
+GnomeFont *gnome_font_find_from_filename             (const guchar *filename, gint index_, gdouble size);
 GnomeFont *gnome_font_find_closest_from_full_name    (const guchar *string);
 GnomeFont *gnome_font_find_closest_from_weight_slant (const guchar *family, GnomeFontWeight weight, gboolean italic, gdouble size);
+
 
 /* Lists */
 GList  *gnome_font_list (void);

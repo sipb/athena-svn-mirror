@@ -1,0 +1,59 @@
+2004-09-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.8.0
+
+2004-09-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.90
+
+2004-07-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.1
+
+2004-07-21  Jody Goldberg <jody@gnome.org>
+
+	* list.c (listSetElementDtor) : Use GDestroyNotify to get a typedef
+	  for the handler.
+
+	* ttcr.c (StreamToMemory) : init head to NULL then pray that is just
+	  being anal because things will crash.
+	(TrueTypeCreatorNewEmpty) : cast to GDestroyNotify to placate compiler
+
+	* sft.c (GlyphOffsetsNew) : init indexToLocFormat to 1, because that
+	  seems reasonable.  Init loca to the byte after the table, an init
+	  locaLen to 0 for lack of a more obvious value.
+
+2004-07-20  Jody Goldberg <jody@gnome.org>
+
+	* sft.h : Add a GnomePrintBuffer to the end of TrueTypeFont
+	* sft.c (FUnitBBox) : removed unused var to suppress warning
+	(OpenTTFFont) : use GnomePrintBuffer in place of direct mmap
+	(CloseTTFont) : ditto
+
+2004-06-29  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.7.0
+
+2004-06-07 Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+	* Added crc32.c/crc32.h files for type 42 subsetting support.
+
+	* sft.c: Changed the inclusion condition of crc32.h from #ifndef NO_TYPE3 to
+	  #if ! (defined(NO_TYPE3) && defined(NO_TYPE42)), was needed for 
+	  CreateT42FromTTGlyphs support.
+
+	* gnome-print-tt-subset.h: Added gnome_print_ps_tt_create_subfont.
+
+	* gnome-print-tt-subset.c: Calls CreateT42FromTTGlyphs, which creates
+	  type 42 subfont from tt glyph list, encoding array and a master tt font.
+
+2004-05-21 Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+	* Created this ttsubset directory and copied unmodified sources from
+	  ST-0.4/stsflib for creating ttf subfont.
+
+	  Files taken: sft.c sft.h list.c list.h ttcr.c ttcr.h
+
+	  Created gnome-print-tt-subset.c/gnome-print-tt-subset.h which contains the 
+	  function definition/declaration for gnome_print_pdf_tt_create_subfont, 
+	  which's called by libgnomeprint/gnome-print-pdf-tt.c

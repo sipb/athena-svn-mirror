@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<Globals>
+  <Option Id="Globals">
+    <Option Id="Document">
+      <Option Id="Name" Type="String" Default=""/>
+      <Option Id="PreferedUnit" Type="String" Default="cm"/>
+      <Option Id="Page">
+        <Option Id="LogicalOrientation" Type="List" Default="R0">
+          <Item Id="R0">
+            <_Name>Portrait</_Name>
+            <Key Id="Page2LayoutTransform" Value="matrix(1 0 0 1 0 0)"/>
+          </Item>
+          <Item Id="R90">
+            <_Name>Landscape</_Name>
+            <Key Id="Page2LayoutTransform" Value="matrix(0 1 -1 0 0 1)"/>
+          </Item>
+          <Item Id="R180">
+            <_Name>Upside down portrait</_Name>
+            <Key Id="Page2LayoutTransform" Value="matrix(-1 0 0 -1 1 1)"/>
+          </Item>
+          <Item Id="R270">
+            <_Name>Upside down landscape</_Name>
+            <Key Id="Page2LayoutTransform" Value="matrix(0 -1 1 0 1 0)"/>
+          </Item>
+        </Option>
+        <Option Id="Margins">
+          <Option Id="Bottom" Type="String" Default="3 cm"/>
+          <Option Id="Top" Type="String" Default="3 cm"/>
+          <Option Id="Right" Type="String" Default="2 cm"/>
+          <Option Id="Left" Type="String" Default="2 cm"/>
+        </Option>
+        <Option Id="Layout" Type="List" Default="Plain">
+          <Item Id="Plain">
+            <_Name>Plain</_Name>
+            <Key Id="ValidPhysicalSizes" Value="All"/>
+            <Key Id="LogicalPages" Value="1"/>
+            <Key Id="PhysicalPages" Value="1"/>
+            <Key Id="Width" Value="1"/>
+            <Key Id="Height" Value="1"/>
+            <Key Id="Pages" Value="LP0">
+              <Key Id="LP0" Value="transform(1 0 0 1 0 0)"/>
+            </Key>
+          </Item>
+          <Item Id="2_1">
+            <_Name>2 pages to 1</_Name>
+            <Key Id="ValidPhysicalSizes" Value="All"/>
+            <Key Id="LogicalPages" Value="2"/>
+            <Key Id="PhysicalPages" Value="1"/>
+            <Key Id="Width" Value="0.5"/>
+            <Key Id="Height" Value="1"/>
+            <Key Id="Pages" Value="LP0">
+              <Key Id="LP0" Value="transform(0 -SQRT1_2 SQRT1_2 0 0 1)"/>
+              <Key Id="LP1" Value="transform(0 -SQRT1_2 SQRT1_2 0 0 0.5)"/>
+            </Key>
+          </Item>
+          <Item Id="4_1">
+            <_Name>4 pages to 1</_Name>
+            <Key Id="ValidPhysicalSizes" Value="All"/>
+            <Key Id="LogicalPages" Value="4"/>
+            <Key Id="PhysicalPages" Value="1"/>
+            <Key Id="Width" Value="0.5"/>
+            <Key Id="Height" Value="0.5"/>
+            <Key Id="Pages" Value="LP0">
+              <Key Id="LP0" Value="transform(0.5 0 0 0.5 0 0.5)"/>
+              <Key Id="LP1" Value="transform(0.5 0 0 0.5 0.5 0.5)"/>
+              <Key Id="LP2" Value="transform(0.5 0 0 0.5 0 0)"/>
+              <Key Id="LP3" Value="transform(0.5 0 0 0.5 0.5 0)"/>
+            </Key>
+          </Item>
+          <Item Id="I2_1">
+            <_Name>Divided</_Name>
+            <Key Id="ValidPhysicalSizes" Value="All"/>
+            <Key Id="LogicalPages" Value="2"/>
+            <Key Id="PhysicalPages" Value="1"/>
+            <Key Id="Width" Value="0.5"/>
+            <Key Id="Height" Value="1"/>
+            <Key Id="Pages" Value="LP0">
+              <Key Id="LP0" Value="transform(0 -1 1 0 0 1)"/>
+              <Key Id="LP1" Value="transform(0 -1 1 0 0 0.5)"/>
+            </Key>
+          </Item>
+          <Item Id="IM2_1">
+            <_Name>Folded</_Name>
+            <Key Id="ValidPhysicalSizes" Value="All"/>
+            <Key Id="LogicalPages" Value="2"/>
+            <Key Id="PhysicalPages" Value="1"/>
+            <Key Id="Width" Value="0.5"/>
+            <Key Id="Height" Value="1"/>
+            <Key Id="Pages" Value="LP0">
+              <Key Id="LP0" Value="transform(0 -1 1 0 0 0.5)"/>
+              <Key Id="LP1" Value="transform(0 1 -1 0 1 0.5)"/>
+            </Key>
+          </Item>
+        </Option>
+      </Option>
+    </Option>
+    <Option Id="Media">
+      <Option Id="PhysicalSize" Type="List" Default="A4">
+        <Item Id="A4">
+          <_Name>A4</_Name>
+		<Key Id="Width" Value="210mm"/>
+		<Key Id="Height" Value="297mm"/>
+        </Item>
+        <Item Id="USLetter">
+          <_Name>US Letter</_Name>
+          <Key Id="Width" Value="8.5in"/>
+          <Key Id="Height" Value="11in"/>
+        </Item>
+        <Item Id="USLegal">
+          <_Name>US Legal</_Name>
+		<Key Id="Width" Value="8.5in"/>
+		<Key Id="Height" Value="14in"/>
+        </Item>
+        <Item Id="Executive">
+          <_Name>US Executive</_Name>
+		<Key Id="Width" Value="7.5in"/>
+		<Key Id="Height" Value="10in"/>
+        </Item>
+        <Item Id="Custom">
+          <_Name>Custom</_Name>
+          <Option Id="Width" Type="String" Default="210mm"/>
+          <Option Id="Height" Type="String" Default="297mm"/>
+        </Item>
+<!-- ISO A Series -->
+        <Item Id="A0">
+          <_Name>A0</_Name>
+		<Key Id="Width" Value="841mm"/>
+		<Key Id="Height" Value="1189mm"/>
+        </Item>
+        <Item Id="A1">
+          <_Name>A1</_Name>
+		<Key Id="Width" Value="594mm"/>
+		<Key Id="Height" Value="841mm"/>
+        </Item>
+        <Item Id="A2">
+          <_Name>A2</_Name>
+		<Key Id="Width" Value="420mm"/>
+		<Key Id="Height" Value="594mm"/>
+        </Item>
+        <Item Id="A3">
+          <_Name>A3</_Name>
+		<Key Id="Width" Value="297mm"/>
+		<Key Id="Height" Value="420mm"/>
+        </Item>
+        <Item Id="A5">
+          <_Name>A5</_Name>
+		<Key Id="Width" Value="148mm"/>
+		<Key Id="Height" Value="210mm"/>
+        </Item>
+        <Item Id="A6">
+          <_Name>A6</_Name>
+		<Key Id="Width" Value="105mm"/>
+		<Key Id="Height" Value="148mm"/>
+        </Item>
+        <Item Id="A7">
+          <_Name>A7</_Name>
+		<Key Id="Width" Value="74mm"/>
+		<Key Id="Height" Value="105mm"/>
+        </Item>
+        <Item Id="A8">
+          <_Name>A8</_Name>
+		<Key Id="Width" Value="52mm"/>
+		<Key Id="Height" Value="74mm"/>
+        </Item>
+        <Item Id="A9">
+          <_Name>A9</_Name>
+		<Key Id="Width" Value="37mm"/>
+		<Key Id="Height" Value="52mm"/>
+        </Item>
+        <Item Id="A10">
+          <_Name>A10</_Name>
+		<Key Id="Width" Value="26mm"/>
+		<Key Id="Height" Value="37mm"/>
+        </Item>
+<!-- ISO B Series -->
+        <Item Id="B0">
+          <_Name>B0</_Name>
+		<Key Id="Width" Value="1000mm"/>
+		<Key Id="Height" Value="1414mm"/>
+        </Item>
+        <Item Id="B1">
+          <_Name>B1</_Name>
+		<Key Id="Width" Value="707mm"/>
+		<Key Id="Height" Value="1000mm"/>
+        </Item>
+        <Item Id="B2">
+          <_Name>B2</_Name>
+		<Key Id="Width" Value="500mm"/>
+		<Key Id="Height" Value="707mm"/>
+        </Item>
+        <Item Id="B3">
+          <_Name>B3</_Name>
+		<Key Id="Width" Value="353mm"/>
+		<Key Id="Height" Value="500mm"/>
+        </Item>
+        <Item Id="B4">
+          <_Name>B4</_Name>
+		<Key Id="Width" Value="250mm"/>
+		<Key Id="Height" Value="353mm"/>
+        </Item>
+        <Item Id="B5">
+          <_Name>B5</_Name>
+		<Key Id="Width" Value="176mm"/>
+		<Key Id="Height" Value="250mm"/>
+        </Item>
+        <Item Id="B6">
+          <_Name>B6</_Name>
+		<Key Id="Width" Value="125mm"/>
+		<Key Id="Height" Value="176mm"/>
+        </Item>
+        <Item Id="B7">
+          <_Name>B7</_Name>
+		<Key Id="Width" Value="88mm"/>
+		<Key Id="Height" Value="125mm"/>
+        </Item>
+        <Item Id="B8">
+          <_Name>B8</_Name>
+		<Key Id="Width" Value="62mm"/>
+		<Key Id="Height" Value="88mm"/>
+        </Item>
+        <Item Id="B9">
+          <_Name>B9</_Name>
+		<Key Id="Width" Value="44mm"/>
+		<Key Id="Height" Value="62mm"/>
+        </Item>
+        <Item Id="B10">
+          <_Name>B10</_Name>
+		<Key Id="Width" Value="31mm"/>
+		<Key Id="Height" Value="44mm"/>
+        </Item>
+<!-- ISO C Series -->
+        <Item Id="C0">
+          <_Name>C0</_Name>
+		<Key Id="Width" Value="917mm"/>
+		<Key Id="Height" Value="1297mm"/>
+        </Item>
+        <Item Id="C1">
+          <_Name>C1</_Name>
+		<Key Id="Width" Value="648mm"/>
+		<Key Id="Height" Value="917mm"/>
+        </Item>
+        <Item Id="C2">
+          <_Name>C2</_Name>
+		<Key Id="Width" Value="458mm"/>
+		<Key Id="Height" Value="648mm"/>
+        </Item>
+        <Item Id="C3">
+          <_Name>C3</_Name>
+		<Key Id="Width" Value="324mm"/>
+		<Key Id="Height" Value="458mm"/>
+        </Item>
+        <Item Id="C4">
+          <_Name>C4</_Name>
+		<Key Id="Width" Value="229mm"/>
+		<Key Id="Height" Value="324mm"/>
+        </Item>
+        <Item Id="C5">
+          <_Name>C5</_Name>
+		<Key Id="Width" Value="162mm"/>
+		<Key Id="Height" Value="229mm"/>
+        </Item>
+        <Item Id="C6">
+          <_Name>C6</_Name>
+		<Key Id="Width" Value="114mm"/>
+		<Key Id="Height" Value="162mm"/>
+        </Item>
+        <Item Id="C7">
+          <_Name>C7</_Name>
+		<Key Id="Width" Value="81mm"/>
+		<Key Id="Height" Value="114mm"/>
+        </Item>
+        <Item Id="C8">
+          <_Name>C8</_Name>
+		<Key Id="Width" Value="57mm"/>
+		<Key Id="Height" Value="81mm"/>
+        </Item>
+        <Item Id="C9">
+          <_Name>C9</_Name>
+		<Key Id="Width" Value="40mm"/>
+		<Key Id="Height" Value="57mm"/>
+        </Item>
+        <Item Id="C10">
+          <_Name>C10</_Name>
+		<Key Id="Width" Value="28mm"/>
+		<Key Id="Height" Value="40mm"/>
+        </Item>
+<!-- ISO Tickets -->
+        <Item Id="A4_3">
+          <_Name>1/3 A4</_Name>
+		<Key Id="Width" Value="99mm"/>
+		<Key Id="Height" Value="210mm"/>
+	   </Item>
+        <Item Id="A4_4">
+          <_Name>1/4 A4</_Name>
+		<Key Id="Width" Value="74mm" />
+		<Key Id="Height" Value="210mm"/>
+	   </Item>
+        <Item Id="A4_8">
+          <_Name>1/8 A4</_Name>
+		<Key Id="Width" Value="37mm" />
+		<Key Id="Height" Value="210mm"/>
+	   </Item>
+        <Item Id="A3_4">
+          <_Name>1/4 A3</_Name>
+		<Key Id="Width" Value="105mm" />
+		<Key Id="Height" Value="297mm"/>
+	   </Item>
+        <Item Id="A5_3">
+          <_Name>1/3 A5</_Name>
+		<Key Id="Width" Value="70mm" />
+		<Key Id="Height" Value="148mm"/>
+	   </Item>
+<!-- ISO Special Envelopes -->
+        <Item Id="DL">
+          <_Name>DL Envelope</_Name>
+		<Key Id="Width" Value="110mm" />
+		<Key Id="Height" Value="220mm"/>
+	   </Item>
+        <Item Id="C6_C5">
+          <_Name>C6/C5 Envelope</_Name>
+		<Key Id="Width" Value="114mm" />
+		<Key Id="Height" Value="229mm"/>
+	   </Item>
+        <Item Id="Envelope_No10">
+          <_Name>Envelope No10</_Name>
+		<Key Id="Width" Value="297" />
+		<Key Id="Height" Value="684"/>
+	   </Item>
+        <Item Id="Envelope_6x9">
+          <_Name>Envelope 6x9</_Name>
+		<Key Id="Width" Value="432" />
+		<Key Id="Height" Value="648"/>
+	   </Item>
+        <!-- See http://www.twics.com/~eds/paper/env.html or
+             http://mydesignprimer.com/printing/50024.html
+             for more envelope sizes.
+         -->
+      </Option>
+      <Option Id="PhysicalOrientation" Type="List" Default="R0">
+        <Item Id="R0">
+          <_Name>Straight</_Name>
+          <Key Id="Paper2PrinterTransform" Value="matrix(1 0 0 1 0 0)"/>
+        </Item>
+        <Item Id="R90">
+          <_Name>Rotated 90 degrees</_Name>
+           <Key Id="Paper2PrinterTransform" Value="matrix(0 -1 1 0 0 1)"/>
+        </Item>
+        <Item Id="R180">
+          <_Name>Rotated 180 degrees</_Name>
+          <Key Id="Paper2PrinterTransform" Value="matrix(-1 0 0 -1 1 1)"/>
+        </Item>
+        <Item Id="R270">
+          <_Name>Rotated 270 degrees</_Name>
+          <Key Id="Paper2PrinterTransform" Value="matrix(0 1 -1 0 0 1 0)"/>
+        </Item>
+      </Option>
+    </Option>
+  </Option>
+</Globals>

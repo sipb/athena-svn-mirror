@@ -65,13 +65,13 @@ typedef enum {
 
 typedef enum {
 	PDF_GRAPHIC_MODE_GRAPHICS,
-	PDF_GRAPHIC_MODE_TEXT,
+	PDF_GRAPHIC_MODE_TEXT
 } PdfGraphicMode;
 
 typedef enum {
 	PDF_COLOR_MODE_DEVICEGRAY,
 	PDF_COLOR_MODE_DEVICERGB,
-	PDF_COLOR_MODE_DEVICECMYK,
+	PDF_COLOR_MODE_DEVICECMYK
 }PdfColorModes;
 
 typedef enum {
@@ -127,11 +127,11 @@ struct _GnomePrintPdfPage {
 	gchar *name;
 	gint number;
 	
-	gboolean shown : 1;
-	gboolean used_grayscale_images : 1;
-	gboolean used_color_images : 1;
-	gboolean used_text : 1;
-	gboolean gs_set : 1;
+	guint shown : 1;
+	guint used_grayscale_images : 1;
+	guint used_color_images : 1;
+	guint used_text : 1;
+	guint gs_set : 1;
 
 	/* Resources */
 	GList *images;
@@ -167,7 +167,7 @@ static gint gnome_print_pdf_set_dash (GnomePrintPdf *pdf);
 static gint gnome_print_pdf_set_color_real (GnomePrintPdf *pdf, PdfColorGroup color_group,
 					    gdouble r, gdouble g, gdouble b);
 
-static gint gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *font);
+static gint gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *font, gboolean subfont_flag, gint page);
 static void gnome_print_pdf_font_print_encoding (GnomePrintPdf *pdf, GnomePrintPdfFont *font);
 static void gnome_print_pdf_font_print_widths (GnomePrintPdf *pdf, GnomePrintPdfFont *font);
 static void gnome_print_pdf_font_print_lastchar (GnomePrintPdf *pdf, GnomePrintPdfFont *font);
@@ -179,6 +179,7 @@ static gchar *gnome_print_pdf_id_new (GnomePrintPdf *pdf);
 
 static gint  gnome_print_pdf_graphic_mode_set (GnomePrintPdf *pdf, PdfGraphicMode mode);
 static gint  gnome_print_pdf_page_fprintf (GnomePrintPdf *pdf, const char *format, ...);
+static gint  gnome_print_pdf_page_print_double (GnomePrintPdf *pdf, const gchar *format, gdouble x);
 
 static GnomePrintContextClass *parent_class;
 
@@ -385,9 +386,9 @@ gnome_print_pdf_clip (GnomePrintContext *ctx, const ArtBpath *bpath, ArtWindRule
 	gnome_print_pdf_print_bpath (pdf, bpath);
 
 	if (rule == ART_WIND_RULE_NONZERO) {
-		gnome_print_pdf_page_fprintf (pdf, "W" EOL);
+		gnome_print_pdf_page_fprintf (pdf, "W n" EOL);
 	} else {
-		gnome_print_pdf_page_fprintf (pdf, "W*" EOL);
+		gnome_print_pdf_page_fprintf (pdf, "W* n" EOL);
 	}
 
 	return GNOME_PRINT_OK;
@@ -516,8 +517,24 @@ gnome_print_pdf_image (GnomePrintContext *pc, const gdouble *ctm, const guchar *
 	else
 		page->used_color_images = TRUE;
 	gnome_print_pdf_page_fprintf (pdf, "q" EOL);
-	gnome_print_pdf_page_fprintf (pdf, "%g %g %g %g %g %g cm" EOL,
-				      ctm[0], ctm[1], ctm[2], ctm[3], ctm[4], ctm[5]);
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[0]);
+	gnome_print_pdf_page_fprintf (pdf, " ");
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[1]);
+	gnome_print_pdf_page_fprintf (pdf, " ");
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[2]);
+	gnome_print_pdf_page_fprintf (pdf, " ");
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[3]);
+	gnome_print_pdf_page_fprintf (pdf, " ");
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[4]);
+	gnome_print_pdf_page_fprintf (pdf, " ");
+	gnome_print_pdf_page_print_double (pdf, "%g",
+				      ctm[5]);
+	gnome_print_pdf_page_fprintf (pdf, " cm" EOL);
 	gnome_print_pdf_page_fprintf (pdf, "0 0 m" EOL);
 	gnome_print_pdf_page_fprintf (pdf, "/Im%d Do" EOL, object_num);
 	gnome_print_pdf_page_fprintf (pdf, "Q" EOL);
@@ -549,8 +566,6 @@ gnome_print_pdf_assign_code_to_glyph (GnomePrintPdf *pdf, gint glyph)
 	return code;
 }
 
-#define EPSILON 1e-9
-
 static gint
 gnome_print_pdf_glyphlist (GnomePrintContext *pc, const gdouble *ctm, GnomeGlyphList *gl)
 {
@@ -560,6 +575,7 @@ gnome_print_pdf_glyphlist (GnomePrintContext *pc, const gdouble *ctm, GnomeGlyph
 	GnomePosGlyphList *pgl;
 	gint ret, s;
 	gdouble dx, dy;
+	gdouble Tm [6], scale [6];
 
 	pdf = GNOME_PRINT_PDF (pc);
 
@@ -576,12 +592,16 @@ gnome_print_pdf_glyphlist (GnomePrintContext *pc, const gdouble *ctm, GnomeGlyph
 	for (s = 0; s < pgl->num_strings; s++) {
 		GnomePosString *ps;
 		GnomeFont *font;
-		gint i;
-		gdouble Tm [6];
+		gint i, current_page = -1;
 
 		ps = pgl->strings + s;
 		font = gnome_rfont_get_font (ps->rfont);
-		gnome_print_pdf_set_font_real (pdf, font);
+
+		/* Currently only truetype subsetting supported */
+
+		if (!NEEDED_SUBSETTING(font)) {
+			gnome_print_pdf_set_font_real (pdf, font, FALSE, 0);
+		}
 		
 		ret = gnome_print_pdf_set_color_real (pdf,
 						      PDF_COLOR_GROUP_FILL,
@@ -589,24 +609,82 @@ gnome_print_pdf_glyphlist (GnomePrintContext *pc, const gdouble *ctm, GnomeGlyph
 						      ((ps->color >> 16) & 0xff) / 255.0,
 						      ((ps->color >>  8) & 0xff) / 255.0);
 
-		memcpy (Tm, ctm, 6 * sizeof (gdouble));
-		art_affine_scale (Tm, font->size, font->size);
-		gnome_print_pdf_page_fprintf (pdf,
-					      "%f %f %f %f %f %f Tm" EOL,
-					      Tm [0], Tm [1], Tm [2], Tm [3],
-					      dx + pgl->glyphs[ps->start].x,
-					      dy + pgl->glyphs[ps->start].y);
+		art_affine_scale (scale, font->size, font->size);
+		art_affine_multiply (Tm, scale, ctm);
+		
+		gnome_print_pdf_page_print_double (pdf, "%g", Tm [0]);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", Tm [1]);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", Tm [2]);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", Tm [3]);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", dx + pgl->glyphs[ps->start].x);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", dy + pgl->glyphs[ps->start].y);
+		gnome_print_pdf_page_fprintf (pdf, " Tm" EOL);
+
 		/* Build string */
-		ret = gnome_print_pdf_page_fprintf (pdf, "(");
-		
-		for (i = ps->start; i < ps->start + ps->length; i++) {
-			gint glyph;
-			glyph = pgl->glyphs[i].glyph;
-			glyph = gnome_print_pdf_assign_code_to_glyph (pdf, glyph);
-			ret = gnome_print_pdf_page_fprintf (pdf, "\\%o", glyph);
-			g_return_val_if_fail (ret >= 0, ret);
-		}
-		
+		if (!NEEDED_SUBSETTING(font)) {
+			ret = gnome_print_pdf_page_fprintf (pdf, "(");
+			for (i = ps->start; i < ps->start + ps->length; i++) {
+				gint glyph;
+				glyph = pgl->glyphs[i].glyph;
+				glyph = gnome_print_pdf_assign_code_to_glyph (pdf, glyph);
+				ret = gnome_print_pdf_page_fprintf (pdf, "\\%o", glyph);
+				g_return_val_if_fail (ret >= 0, ret);
+			}
+		} else {
+			for (i = ps->start; i < ps->start + ps->length; i++) {
+
+				/* Glyph position in parent font */
+
+				gint master_glyph;
+
+				/* Glyph in subfont */
+
+				gint glyph;
+
+				/* Pages of 256 glyphs, including starting */
+				/* null glyph				   */ 
+
+				gint page;
+				
+				master_glyph = (gint)(pgl->glyphs[i].glyph);
+				page  = master_glyph / 255;
+
+				/* Initially */
+
+				if (i==ps->start) {
+					current_page = page;
+					gnome_print_pdf_set_font_real (pdf, font, TRUE, page);
+					ret = gnome_print_pdf_page_fprintf (pdf, "(");
+
+				/* There's a ttf subfont to be set*/
+
+				} else if (current_page != page) {
+					current_page = page;
+					(void)gnome_print_pdf_page_fprintf (pdf, ") Tj" EOL);
+					gnome_print_pdf_set_font_real (pdf, font, TRUE, page);
+					ret = gnome_print_pdf_page_fprintf (pdf, "(");
+				}
+
+				gnome_font_face_pso_mark_glyph (pdf->selected_font->pso, master_glyph);
+
+				/* For each sub ttf font the first glyph is  */
+				/* null and 255th one is a valid glyph, also */
+				/* 1 needed to be added to each subglyph     */
+				/* for taking into account first null glyph  */
+				/* added to every subfont	             */	
+
+				glyph = master_glyph ? master_glyph % 255 + 1 : master_glyph;
+
+				ret = gnome_print_pdf_page_fprintf (pdf, "\\%o", glyph);
+				g_return_val_if_fail (ret >= 0, ret);
+			}
+		}	
+
 		ret = gnome_print_pdf_page_fprintf (pdf, ") Tj" EOL);
 
 /* FIXME: We are not honoring xy movements of a glyphlist right now. But rather
@@ -618,9 +696,15 @@ gnome_print_pdf_glyphlist (GnomePrintContext *pc, const gdouble *ctm, GnomeGlyph
 		ret = gnome_print_pdf_page_fprintf (pdf, "[");
 		g_return_val_if_fail (ret >= 0, ret);
 		for (i = ps->start + 1; i < ps->start + ps->length; i++) {
-			ret = gnome_print_pdf_page_fprintf (pdf, "%g %g ",
-							    pgl->glyphs[i].x - pgl->glyphs[i-1].x,
-							    pgl->glyphs[i].y - pgl->glyphs[i-1].y);
+			ret = gnome_print_pdf_page_print_double (pdf, "%g",
+				     pgl->glyphs[i].x - pgl->glyphs[i-1].x);
+			g_return_val_if_fail (ret >= 0, ret);
+			ret = gnome_print_pdf_page_fprintf (pdf, " ");
+			g_return_val_if_fail (ret >= 0, ret);
+			ret = gnome_print_pdf_page_print_double (pdf, "%g",
+				     pgl->glyphs[i].y - pgl->glyphs[i-1].y);
+			g_return_val_if_fail (ret >= 0, ret);
+			ret = gnome_print_pdf_page_fprintf (pdf, " ");
 			g_return_val_if_fail (ret >= 0, ret);
 		}
 		ret = gnome_print_pdf_page_fprintf (pdf, "0 0] ");
@@ -907,8 +991,7 @@ gnome_print_pdf_object_end (GnomePrintPdf *pdf, gint object_number, gboolean don
 	if (!dont_print)
 		gnome_print_pdf_fprintf (pdf,
 					 ">>" EOL
-					 "endobj" EOL,
-					 object_number);
+					 "endobj" EOL);
 	return ret;
 }
 
@@ -1011,7 +1094,9 @@ gnome_print_pdf_write_fonts (GnomePrintPdf *pdf)
 	while (list) {
 		font = list->data;
 		gnome_print_pdf_font_print_widths   (pdf, font);
-		gnome_print_pdf_font_print_encoding (pdf, font);
+		/* '/Encoding' not needed when the font is symbolic */
+		if (!NEEDED_SUBSETTING(font))
+			gnome_print_pdf_font_print_encoding (pdf, font);
 		gnome_print_pdf_font_print_lastchar (pdf, font);
 		list = list->next;
 	}
@@ -1133,6 +1218,22 @@ gnome_print_pdf_close_write_last_objects (GnomePrintPdf *pdf)
 	return ret;
 }
 
+static void
+gnome_print_embed_all_pdf_fonts (GnomePrintPdf *pdf)
+{
+	GList *list;
+
+	g_return_if_fail (pdf != NULL);
+
+	list = pdf->fonts;
+	while (list) {
+		GnomePrintPdfFont *font;
+		font = list->data;
+		gnome_print_embed_pdf_font (pdf, font);
+		list = list->next;
+	}
+}
+
 
 static gint
 gnome_print_pdf_close (GnomePrintContext *pc)
@@ -1144,6 +1245,8 @@ gnome_print_pdf_close (GnomePrintContext *pc)
 	pdf = GNOME_PRINT_PDF (pc);
 
 	g_return_val_if_fail (pc->transport != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+
+	gnome_print_embed_all_pdf_fonts (pdf);
 
 	page = pdf->pages ? pdf->pages->data : NULL;
 	if (!pdf->pages || !page || !page->shown) {
@@ -1187,12 +1290,15 @@ gnome_print_pdf_set_line (GnomePrintPdf *pdf)
 
 	if (gp_gc_get_line_flag (ctx->gc) == GP_GC_FLAG_CLEAR)
 		return GNOME_PRINT_OK;
-
-	gnome_print_pdf_page_fprintf (pdf, "%g w %d J %d j %g M" EOL,
-				      gp_gc_get_linewidth (ctx->gc),
+	gnome_print_pdf_page_print_double (pdf, "%g", 
+					   gp_gc_get_linewidth (ctx->gc));
+	gnome_print_pdf_page_fprintf (pdf, " w %d J %d j ",
 				      gp_gc_get_linecap (ctx->gc),
 				      gp_gc_get_linejoin (ctx->gc),
 				      gp_gc_get_miterlimit (ctx->gc));
+	gnome_print_pdf_page_print_double (pdf, "%g", 
+					   gp_gc_get_miterlimit (ctx->gc));
+	gnome_print_pdf_page_fprintf (pdf, " M" EOL);
 	gp_gc_set_line_flag (ctx->gc, GP_GC_FLAG_CLEAR);
 
 	return GNOME_PRINT_OK;
@@ -1212,9 +1318,14 @@ gnome_print_pdf_set_dash (GnomePrintPdf *pdf)
 
 	dash = gp_gc_get_dash (ctx->gc);
 	gnome_print_pdf_page_fprintf (pdf, "[");
-	for (i = 0; i < dash->n_dash; i++)
-		gnome_print_pdf_page_fprintf (pdf, " %g", dash->dash[i]);
-	gnome_print_pdf_page_fprintf (pdf, "]%g d" EOL, dash->n_dash > 0 ? dash->offset : 0.0);
+	for (i = 0; i < dash->n_dash; i++) {
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%g", dash->dash[i]);
+	}
+	gnome_print_pdf_page_fprintf (pdf, "]");
+	gnome_print_pdf_page_print_double (pdf, "%g", 
+				 dash->n_dash > 0 ? dash->offset : 0.0);
+	gnome_print_pdf_page_fprintf (pdf, " d" EOL);
 	gp_gc_set_dash_flag (ctx->gc, GP_GC_FLAG_CLEAR);
 
 	return GNOME_PRINT_OK;
@@ -1236,7 +1347,12 @@ gnome_print_pdf_set_color_real (GnomePrintPdf *pdf,
 	if (fill) {
 		if (pdf->color_set_fill && (r == pdf->r) && (g == pdf->g) && (b == pdf->b))
 			goto gnome_print_pdf_set_color_stroke;
-		gnome_print_pdf_page_fprintf (pdf, "%.3g %.3g %.3g rg" EOL, r, g, b);
+		gnome_print_pdf_page_print_double (pdf, "%.3g", r);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%.3g", g);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%.3g", b);
+		gnome_print_pdf_page_fprintf (pdf, " rg" EOL);
 		pdf->r = r;
 		pdf->g = g;
 		pdf->b = b;
@@ -1247,7 +1363,12 @@ gnome_print_pdf_set_color_stroke:
 	if (stroke) {
 		if (pdf->color_set_stroke && (r == pdf->r_) && (g == pdf->g_) && (b == pdf->b_))
 			return GNOME_PRINT_OK;
-		gnome_print_pdf_page_fprintf (pdf, "%.3g %.3g %.3g RG" EOL, r, g, b);
+		gnome_print_pdf_page_print_double (pdf, "%.3g", r);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%.3g", g);
+		gnome_print_pdf_page_fprintf (pdf, " ");
+		gnome_print_pdf_page_print_double (pdf, "%.3g", b);
+		gnome_print_pdf_page_fprintf (pdf, " RG" EOL);
 		pdf->r_ = r;
 		pdf->g_ = g;
 		pdf->b_ = b;
@@ -1294,7 +1415,8 @@ gnome_print_pdf_font_print_widths (GnomePrintPdf *pdf, GnomePrintPdfFont *font)
 			gnome_print_pdf_fprintf (pdf, EOL);
 			col = 0;
 		}
-		col += gnome_print_pdf_fprintf (pdf, "%g ", point.x);
+		col += gnome_print_pdf_print_double (pdf, "%g", point.x);
+		col += gnome_print_pdf_fprintf (pdf, " ");
 		i++;
 	}
 	
@@ -1428,7 +1550,8 @@ gnome_print_pdf_font_print_descriptor (GnomePrintPdf *pdf, GnomePrintPdfFont *fo
 	if (font->is_type_1) {
 		embed_result = gnome_print_pdf_t1_embed (pdf, file_name, &fontfile_object_number);
 	} else {
-		embed_result = gnome_print_pdf_tt_embed (pdf, file_name, &fontfile_object_number);
+		/* We always subset tt fonts */
+		embed_result = gnome_print_pdf_tt_subset_embed (pdf, font, file_name, &fontfile_object_number);
 	}
 
 	if (embed_result != GNOME_PRINT_OK) {
@@ -1438,7 +1561,12 @@ gnome_print_pdf_font_print_descriptor (GnomePrintPdf *pdf, GnomePrintPdfFont *fo
 
 	ascent  = (gint) gnome_font_face_get_ascender (face);
 	descent = (gint) gnome_font_face_get_descender (face);
-	flags = gnome_font_face_get_pdf_flags (face);
+	if (NEEDED_SUBSETTING(font)) {
+		/* Symbol encoding for subsetted ttf fonts */
+		flags = 4;
+	} else { 
+		flags = gnome_font_face_get_pdf_flags (face);
+	}
 #ifdef GET_STEMS
 	gnome_print_pdf_type1_get_stems (face, &stemv, &stemh);
 #else
@@ -1465,15 +1593,23 @@ gnome_print_pdf_font_print_descriptor (GnomePrintPdf *pdf, GnomePrintPdfFont *fo
 				 "/CapHeight %d" EOL
 				 "/Descent %d" EOL
 				 "/Flags %d" EOL
-				 "/FontBBox [%g %g %g %g]" EOL
+				 "/FontBBox [",
+				 ascent, capheight,
+				 descent * -1, flags);
+	gnome_print_pdf_print_double (pdf, "%g", new_rect.x0);
+	gnome_print_pdf_fprintf (pdf, " ");
+	gnome_print_pdf_print_double (pdf, "%g", new_rect.y0);
+	gnome_print_pdf_fprintf (pdf, " ");
+	gnome_print_pdf_print_double (pdf, "%g", new_rect.x1);
+	gnome_print_pdf_fprintf (pdf, " ");
+	gnome_print_pdf_print_double (pdf, "%g", new_rect.y1);
+	gnome_print_pdf_fprintf (pdf,
+				 "]" EOL
 				 "/FontName /%s" EOL
 				 "/ItalicAngle %d" EOL
 				 "/StemV %d" EOL
 				 "/XHeight %d" EOL,
-				 ascent, capheight,
-				 descent * -1, flags,
-				 new_rect.x0, new_rect.y0, new_rect.x1, new_rect.y1,
-				 gnome_font_face_get_ps_name (font->face),
+				 font->pso->encodedname,
 				 italic_angle, stemv, xheight);
 
 
@@ -1488,69 +1624,10 @@ gnome_print_pdf_font_print_descriptor (GnomePrintPdf *pdf, GnomePrintPdfFont *fo
 	return GNOME_PRINT_OK;
 }
 		
-static gint
-gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *gnome_font)
-{
-	GnomePrintPdfPage *page;
-	GnomePrintPdfFont *font = NULL;
-	GnomeFontFace *face;
-	GList *needle;
+void
+gnome_print_embed_pdf_font (GnomePrintPdf *pdf, GnomePrintPdfFont *font) {
 	gint object_number_descriptor = 0;
-	gint i;
 	gboolean plan_b = FALSE; /* TRUE if we could not embed the font */
-
-	face = gnome_font->face;
-	
-	/* Check if the font is aready in Memory  */
-	needle = pdf->fonts;
-	while (needle) {
-		font = needle->data;
-		if (font->face == face)
-			break;
-		needle = needle->next;
-	}
-	/* If we already created this font, just set the font */
-	if (needle != NULL)
-		goto gnome_print_pdf_set_font_real_page_stuff;
-
-	/* Create a new GnomePrintPdfFont */
-	font = g_new (GnomePrintPdfFont, 1);
-	font->face = gnome_font_get_face (gnome_font);
-	g_object_ref (font->face);
-	font->pso  = gnome_font_face_pso_new (font->face, NULL, 0);
-	font->is_basic_14 = FALSE;
-	font->nglyphs = gnome_font_face_get_num_glyphs (face);
-	font->glyph_to_code = g_hash_table_new (NULL, NULL);
-	font->code_to_glyph = g_new (gint, 0xff);
-	for (i = 0; i < 0xff; i++) {
-		font->code_to_glyph [i] = -1;
-	}
-	font->code_assigned = 0;
-	
-	/* Get object numbers for the font */
-	if (font->is_basic_14) {
-		font->object_number_encoding = -1;
-		font->object_number_widths   = -1;
-		font->object_number_lastchar = -1;
-	} else {
-		font->object_number_encoding = gnome_print_pdf_object_new (pdf);
-		font->object_number_widths   = gnome_print_pdf_object_new (pdf);
-		font->object_number_lastchar = gnome_print_pdf_object_new (pdf);
-	}
-	font->object_number = gnome_print_pdf_object_new (pdf);
-
-	/* Make sure this backend can handle this font type */
-	if (face->entry->type == GP_FONT_ENTRY_TYPE1)
-		font->is_type_1 = TRUE;
-	else if (face->entry->type == GP_FONT_ENTRY_TRUETYPE)
-		font->is_type_1 = FALSE;
-	else {
-		g_warning ("We only support True Type and Type 1 fonts for now");
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
-
-	/* Add it to the list of fonts of this job */
-	pdf->fonts = g_list_prepend (pdf->fonts, font);
 
 	if (!font->is_basic_14) {
 		GnomePrintReturnCode retval;
@@ -1579,12 +1656,14 @@ gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *gnome_font)
 		gnome_print_pdf_fprintf  (pdf,
 					  "/FirstChar %d" EOL
 					  "/LastChar %d 0 R" EOL
-					  "/Encoding %i 0 R" EOL
 					  "/Widths %d 0 R" EOL,
 					  0,
 					  font->object_number_lastchar,
-					  font->object_number_encoding,
 					  font->object_number_widths);
+		if (!NEEDED_SUBSETTING(font))
+			gnome_print_pdf_fprintf  (pdf,
+					  "/Encoding %i 0 R" EOL,
+					  font->object_number_encoding);
 	}
 	if (!plan_b) {
 		gnome_print_pdf_fprintf (pdf,
@@ -1593,7 +1672,89 @@ gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *gnome_font)
 	}
 	
 	gnome_print_pdf_object_end   (pdf, font->object_number, FALSE);
+}
 
+static gint
+gnome_print_pdf_set_font_real (GnomePrintPdf *pdf, const GnomeFont *gnome_font, gboolean subfont_flag, gint subfont_number)
+{
+	GnomePrintPdfPage *page;
+	GnomePrintPdfFont *font = NULL;
+	GnomeFontFace *face;
+	GList *needle;
+	guchar *encodedname = NULL;
+	gint i;
+
+	face = gnome_font->face;
+	
+	if (subfont_flag) {
+		if (subfont_number == 0)
+			encodedname = g_strdup_printf ("GnomeUni-%s", face->psname);
+		else
+			encodedname = g_strdup_printf ("GnomeUni-%s_%03d", face->psname, subfont_number);
+	}
+
+	/* Check if the font is aready in Memory  */
+	needle = pdf->fonts;
+	while (needle) {
+		font = needle->data;
+		if (subfont_flag) {
+			if  (!strcmp(font->pso->encodedname, encodedname))
+				break;
+		} else if (font->face == face)
+			break;
+			
+		needle = needle->next;
+	}
+	/* If we already created this font, just set the font */
+	g_free (encodedname);
+	if (needle != NULL)
+		goto gnome_print_pdf_set_font_real_page_stuff;
+
+	/* Create a new GnomePrintPdfFont */
+	font = g_new (GnomePrintPdfFont, 1);
+	font->face = gnome_font_get_face (gnome_font);
+	g_object_ref (font->face);
+	font->pso  = gnome_font_face_pso_new (font->face, NULL, subfont_number);
+	font->is_basic_14 = FALSE;
+	font->nglyphs = gnome_font_face_get_num_glyphs (face);
+	font->glyph_to_code = g_hash_table_new (NULL, NULL);
+
+	/* All 256 charaters can have glyphs
+	 * ie, 0-255, we need 256th postion to be -1
+	 */
+
+	font->code_to_glyph = g_new (gint, 257);
+	for (i = 0; i < 257; i++) {
+		font->code_to_glyph [i] = -1;
+	}
+	font->code_assigned = 0;
+	
+	/* Get object numbers for the font */
+	if (font->is_basic_14) {
+		font->object_number_encoding = -1;
+		font->object_number_widths   = -1;
+		font->object_number_lastchar = -1;
+	} else {
+		if (!subfont_flag)
+                	font->object_number_encoding = gnome_print_pdf_object_new (pdf);
+		font->object_number_widths   = gnome_print_pdf_object_new (pdf);
+		font->object_number_lastchar = gnome_print_pdf_object_new (pdf);
+	}
+	font->object_number = gnome_print_pdf_object_new (pdf);
+
+	/* Make sure this backend can handle this font type */
+	if (face->entry->type == GP_FONT_ENTRY_TYPE1)
+		font->is_type_1 = TRUE;
+	else if (face->entry->type == GP_FONT_ENTRY_TRUETYPE)
+		font->is_type_1 = FALSE;
+	else {
+		g_warning ("We only support True Type and Type 1 fonts for now");
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
+
+
+	/* Add it to the list of fonts of this job */
+	pdf->fonts = g_list_prepend (pdf->fonts, font);
 gnome_print_pdf_set_font_real_page_stuff:
 	/* Is the font alraedy set? If it is just return */
 	if (pdf->selected_font == font)
@@ -1639,8 +1800,6 @@ gnome_print_pdf_print_bpath (GnomePrintPdf *pdf, const ArtBpath *bpath)
 {
 	gboolean started, closed;
 	
-	gnome_print_pdf_page_fprintf (pdf, "n" EOL);
-
 	started = FALSE;
 	closed = FALSE;
 	while (bpath->code != ART_END) {
@@ -1650,23 +1809,40 @@ gnome_print_pdf_print_bpath (GnomePrintPdf *pdf, const ArtBpath *bpath)
 				gnome_print_pdf_page_fprintf (pdf, "h" EOL);
 			closed = FALSE;
 			started = FALSE;
-			gnome_print_pdf_page_fprintf (pdf, "%g %g m" EOL, bpath->x3, bpath->y3);
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x3);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y3);
+			gnome_print_pdf_page_fprintf (pdf, " m" EOL);
 			break;
 		case ART_MOVETO:
 			if (started && closed)
 				gnome_print_pdf_page_fprintf (pdf, "h" EOL);
 			closed = TRUE;
 			started = TRUE;
-			gnome_print_pdf_page_fprintf (pdf, "%g %g m" EOL, bpath->x3, bpath->y3);
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x3);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y3);
+			gnome_print_pdf_page_fprintf (pdf, " m" EOL);
 			break;
 		case ART_LINETO:
-			gnome_print_pdf_page_fprintf (pdf, "%g %g l" EOL, bpath->x3, bpath->y3);
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x3);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y3);
+			gnome_print_pdf_page_fprintf (pdf, " l" EOL);
 			break;
 		case ART_CURVETO:
-			gnome_print_pdf_page_fprintf (pdf, "%g %g %g %g %g %g c" EOL,
-						      bpath->x1, bpath->y1,
-						      bpath->x2, bpath->y2,
-						      bpath->x3, bpath->y3);
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x1);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y1);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x2);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y2);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->x3);
+			gnome_print_pdf_page_fprintf (pdf, " ");
+			gnome_print_pdf_page_print_double (pdf, "%g", bpath->y3);
+			gnome_print_pdf_page_fprintf (pdf, " c" EOL);
 			break;
 		default:
 			g_warning ("Path structure is corrupted");
@@ -1741,16 +1917,11 @@ gnome_print_pdf_fprintf (GnomePrintPdf *pdf, const char *format, ...)
 {
  	va_list arguments;
  	gchar *text;
-	gchar *oldlocale;
 	gint len;
 
-	oldlocale = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
  	va_start (arguments, format);
  	text = g_strdup_vprintf (format, arguments);
  	va_end (arguments);
-	setlocale (LC_NUMERIC, oldlocale);
-	g_free (oldlocale);
 
 	len = strlen (text);
 	gnome_print_transport_write (GNOME_PRINT_CONTEXT (pdf)->transport, text, len);
@@ -1759,6 +1930,24 @@ gnome_print_pdf_fprintf (GnomePrintPdf *pdf, const char *format, ...)
 
 	return len;
 }
+
+gint 
+gnome_print_pdf_print_double (GnomePrintPdf *pdf, const gchar *format, gdouble x)
+{
+ 	gchar *text;
+	gint len;
+
+	text = g_new (gchar, G_ASCII_DTOSTR_BUF_SIZE);
+	g_ascii_formatd (text, G_ASCII_DTOSTR_BUF_SIZE, format, x);
+
+	len = strlen (text);
+	gnome_print_transport_write (GNOME_PRINT_CONTEXT (pdf)->transport, text, len);
+	pdf->offset += len;
+	g_free (text);
+
+	return len;
+}
+
 
 gint
 gnome_print_pdf_print_sized (GnomePrintPdf *pdf, const char *content, gint len)
@@ -1770,29 +1959,16 @@ gnome_print_pdf_print_sized (GnomePrintPdf *pdf, const char *content, gint len)
 }
 
 static gint
-gnome_print_pdf_page_fprintf (GnomePrintPdf *pdf, const char *format, ...)
+gnome_print_pdf_page_write (GnomePrintPdf *pdf, gchar *text)
 {
-	gint grow_size = GNOME_PRINT_PDF_INITIAL_BUFFER_SIZE;
-	GnomePrintPdfPage *page;
- 	va_list arguments;
- 	gchar *text;
-	gchar *oldlocale;
 	gint len;
+	GnomePrintPdfPage *page;
+	gint grow_size = GNOME_PRINT_PDF_INITIAL_BUFFER_SIZE;
 
-	/* Compose the text */
-	oldlocale = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
- 	va_start (arguments, format);
- 	text = g_strdup_vprintf (format, arguments);
- 	va_end (arguments);
-	setlocale (LC_NUMERIC, oldlocale);
-	g_free (oldlocale);
-	
-	/* Write it */
 	len = strlen (text);
 	page = pdf->pages->data;
 	if ((pdf->stream_used + len + 1) > pdf->stream_allocated) {
-		while ((pdf->stream_used + len) > pdf->stream_allocated) {
+		while ((pdf->stream_used + len + 1) > pdf->stream_allocated) {
 			pdf->stream_allocated += grow_size;
 			grow_size <<= 1;
 		}
@@ -1802,8 +1978,47 @@ gnome_print_pdf_page_fprintf (GnomePrintPdf *pdf, const char *format, ...)
 	memcpy (pdf->stream + pdf->stream_used, text, len * sizeof (gchar));
 	pdf->stream_used += len;
 	pdf->stream [pdf->stream_used] = 0;
+
+	return len;
+}
+
+
+/* Note "format" should be locale independent, so it should not use %g */
+/* and friends */
+static gint
+gnome_print_pdf_page_fprintf (GnomePrintPdf *pdf, const char *format, ...)
+{
+ 	va_list arguments;
+	gint len;
+ 	gchar *text;
+
+	/* Compose the text */
+ 	va_start (arguments, format);
+ 	text = g_strdup_vprintf (format, arguments);
+ 	va_end (arguments);
+	
+	/* Write it */
+	len = gnome_print_pdf_page_write (pdf, text);
+
 	g_free (text);
 	
+	return len;
+}
+
+/* Allowed conversion specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. */
+static gint   
+gnome_print_pdf_page_print_double (GnomePrintPdf *pdf, 
+				   const gchar *format, gdouble x)
+{
+ 	gchar *text;
+	gint len;
+
+	text = g_new (gchar, G_ASCII_DTOSTR_BUF_SIZE);
+	g_ascii_formatd (text, G_ASCII_DTOSTR_BUF_SIZE, format, x);
+
+	len = gnome_print_pdf_page_write (pdf, text);
+	g_free (text);
+
 	return len;
 }
 

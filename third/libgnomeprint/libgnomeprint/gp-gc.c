@@ -371,9 +371,10 @@ gp_gc_set_linewidth (GPGC * gc, gdouble width)
 
 	ctx = (GPCtx *) gc->ctx->data;
 
+	width = (fabs (width * ctx->ctm[0]) + fabs (width * ctx->ctm[1]) +
+		 fabs (width * ctx->ctm[2]) + fabs (width * ctx->ctm[3])) / 2;
 	if (!GP_GC_EQ (width, ctx->linewidth)) {
-		ctx->linewidth = (fabs (width * ctx->ctm[0]) + fabs (width * ctx->ctm[1]) +
-				  fabs (width * ctx->ctm[2]) + fabs (width * ctx->ctm[3])) / 2;
+		ctx->linewidth = width;
 		ctx->line_flag = GP_GC_FLAG_CHANGED;
 	}
 
@@ -496,6 +497,7 @@ gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble offse
 	ctx->dash.n_dash = num_values;
 	ctx->dash.offset = offset;
 	if (values != NULL) {
+		/* FIXME: Shouldn't this set ctx->privatedash?  */
 		ctx->dash.dash = g_new (gdouble, num_values);
 		memcpy (ctx->dash.dash, values, num_values * sizeof (gdouble));
 	} else {

@@ -41,10 +41,11 @@ typedef struct _GnomeFontFamilyClass GnomeFontFamilyClass;
 typedef struct _GFFGlyphInfo GFFGlyphInfo;
 
 #include <glib-object.h>
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "gnome-fontmap.h"
-#include "gnome-font.h"
-#include "gnome-rfont.h"
+#include <libgnomeprint/gnome-font.h>
+#include <libgnomeprint/gnome-rfont.h>
 
 /* Glyph info slot */
 struct _GFFGlyphInfo {
@@ -119,9 +120,9 @@ void gnome_font_face_ps_embed (GnomeFontPsObject *pso);
 
 /* Private face loader */
 
-gboolean gff_load (GnomeFontFace *face);
+gboolean gnome_font_face_load (GnomeFontFace *face);
 
-#define GFF_LOADED(f) ((f)->ft_face || gff_load ((GnomeFontFace *) f))
+#define GFF_LOADED(f) ((f)->ft_face || gnome_font_face_load ((GnomeFontFace *) f))
 
 
 /*

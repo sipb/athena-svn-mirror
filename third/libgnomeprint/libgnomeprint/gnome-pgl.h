@@ -48,7 +48,7 @@ typedef struct _GnomePosGlyphList GnomePosGlyphList;
 
 enum {
 	GNOME_PGL_RENDER_DEFAULT = 0,
-	GNOME_PGL_RENDER_EXACT = (1 << 8),
+	GNOME_PGL_RENDER_EXACT = (1 << 8)
 };
 
 /* Constructor */

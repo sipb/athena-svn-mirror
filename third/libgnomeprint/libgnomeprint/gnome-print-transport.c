@@ -25,6 +25,8 @@
  *  Copyright 2000-2003 Ximian, Inc. and authors
  */
 
+#define GNOME_PRINT_UNSTABLE_API
+
 #include <config.h>
 #include <string.h>
 #include <locale.h>
@@ -32,10 +34,12 @@
 #include <gmodule.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-transport.h>
+#include <stdio.h>
 
 static void gnome_print_transport_class_init (GnomePrintTransportClass *klass);
 static void gnome_print_transport_init (GnomePrintTransport *transport);
 static void gnome_print_transport_finalize (GObject *object);
+static gint gnome_print_transport_real_print_file (GnomePrintTransport *transport, const guchar *file_name);
 
 static GnomePrintTransport *gnome_print_transport_create (gpointer get_type, GnomePrintConfig *config);
 
@@ -66,11 +70,13 @@ gnome_print_transport_class_init (GnomePrintTransportClass *klass)
 {
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass*) klass;
+	object_class           = (GObjectClass*) klass;
 
-	parent_class = g_type_class_peek_parent (klass);
+	parent_class           = g_type_class_peek_parent (klass);
 
 	object_class->finalize = gnome_print_transport_finalize;
+
+	klass->print_file      = gnome_print_transport_real_print_file;
 }
 
 static void
@@ -129,7 +135,7 @@ gnome_print_transport_open (GnomePrintTransport *transport)
 	ret = GNOME_PRINT_OK;
 
 	if (GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->open)
-		GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->open (transport);
+		ret = GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->open (transport);
 
 	if (ret == GNOME_PRINT_OK) {
 		transport->opened = TRUE;
@@ -150,7 +156,7 @@ gnome_print_transport_close (GnomePrintTransport *transport)
 	ret = GNOME_PRINT_OK;
 
 	if (GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->close)
-		GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->close (transport);
+		ret = GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->close (transport);
 
 	if (ret == GNOME_PRINT_OK) {
 		transport->opened = FALSE;
@@ -174,11 +180,12 @@ gnome_print_transport_write (GnomePrintTransport *transport, const guchar *buf, 
 	return 0;
 }
 
+/* Note "format" should be locale independent, so it should not use %g */
+/* and friends */
 gint
 gnome_print_transport_printf (GnomePrintTransport *transport, const char *format, ...)
 {
 	va_list arguments;
-	char *loc;
 	gchar *buf;
 	gint ret;
 
@@ -186,9 +193,6 @@ gnome_print_transport_printf (GnomePrintTransport *transport, const char *format
 	g_return_val_if_fail (GNOME_IS_PRINT_TRANSPORT (transport), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (format != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (transport->opened, GNOME_PRINT_ERROR_UNKNOWN);
-
-	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
 
 	va_start (arguments, format);
 	buf = g_strdup_vprintf (format, arguments);
@@ -200,8 +204,25 @@ gnome_print_transport_printf (GnomePrintTransport *transport, const char *format
 
 	g_free (buf);
 
-	setlocale (LC_NUMERIC, loc);
-	g_free (loc);
+	return ret;
+}
+
+
+gint
+gnome_print_transport_print_file (GnomePrintTransport *transport, const guchar *file_name)
+{
+	int ret;
+	
+	g_return_val_if_fail (transport != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (file_name != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (GNOME_IS_PRINT_TRANSPORT (transport), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (transport->config != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (!transport->opened, GNOME_PRINT_ERROR_UNKNOWN);
+
+	ret = GNOME_PRINT_OK;
+
+	if (GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->print_file)
+		ret = GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->print_file (transport, file_name);
 
 	return ret;
 }
@@ -270,16 +291,23 @@ GnomePrintTransport *
 gnome_print_transport_new (GnomePrintConfig *config)
 {
 	GnomePrintTransport *transport = NULL;
-	guchar *module_name;
+	guchar *module_name = NULL;
+	gint print_to_file = FALSE;
 
 	g_return_val_if_fail (config != NULL, NULL);
 
-	module_name = gnome_print_config_get (config, "Settings.Transport.Backend.Module");
-	if (!module_name) {
-		g_warning ("Could not find \"Settings.Transport.Backend.Module\" using default");
-		module_name = g_strdup ("libgnomeprint-lpr.so");
-	}
-	
+	gnome_print_config_get_boolean (config, "Settings.Output.Job.PrintToFile", &print_to_file);
+
+	if (print_to_file) {
+		module_name = g_strdup ("libgnomeprint-file.so");
+	} else {
+		module_name = gnome_print_config_get (config, "Settings.Transport.Backend.Module");
+		if (!module_name) {
+			g_warning ("Could not find \"Settings.Transport.Backend.Module\" using default");
+			module_name = g_strdup ("libgnomeprint-lpr.so");
+		}
+	} 
+
 	transport = gnome_print_transport_new_from_module_name (module_name, config);
 
 	g_free (module_name);
@@ -310,4 +338,37 @@ gnome_print_transport_create (gpointer get_type, GnomePrintConfig *config)
 	}
 
 	return transport;
+}
+
+
+#define BLOCK_SIZE (1024)
+
+static gint
+gnome_print_transport_real_print_file (GnomePrintTransport *transport, const guchar *file_name)
+{
+	FILE *input;
+	char buffer[1024];
+	int retval;
+
+	input = fopen (file_name, "rb");
+
+	if (input) {
+		int count;
+
+		gnome_print_transport_open (transport);
+
+		while ((count = fread (buffer, 1, BLOCK_SIZE, input))) {
+			retval = gnome_print_transport_write (transport, buffer, count);
+
+			if (retval != count) {
+				fclose(input);
+				return retval;
+			}
+		}
+	}
+
+	fclose(input);
+	retval = gnome_print_transport_close (transport);
+	
+	return retval;
 }

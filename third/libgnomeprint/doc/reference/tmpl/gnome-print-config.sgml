@@ -176,28 +176,31 @@ gnome-print-config
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_SIZE ##### -->
 <para>
-
+Convenience macro for key that contains the paper size, eg: A4, Letter.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_WIDTH ##### -->
 <para>
-
+Convenience macro for key that contains the width of the paper.  Units are
+arbitrary so use #gnome_print_config_get_length and #gnome_print_set_length.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_HEIGHT ##### -->
 <para>
-
+Convenience macro for key that contains the height of the paper.  Units are
+arbitrary so use #gnome_print_config_get_length and #gnome_print_set_length.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_ORIENTATION ##### -->
 <para>
-
+Convenience macro for key that contains the orientation of the paper in terms 
+of degrees of rotation, eg: R0, R90, R180, and R270.
 </para>
 
 
@@ -211,7 +214,8 @@ gnome-print-config
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAGE_ORIENTATION ##### -->
 <para>
-
+Convenience macro for the key that contains the orientation of the logical 
+page in terms of degrees of rotation, eg: R0, R90, R180, and R270.
 </para>
 
 
@@ -225,147 +229,167 @@ gnome-print-config
 
 <!-- ##### MACRO GNOME_PRINT_KEY_ORIENTATION ##### -->
 <para>
-
+See #GNOME_PRINT_KEY_PAGE_ORIENTATION.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_LAYOUT ##### -->
 <para>
-
+Convenience macro for key that contains the name for the logical layout
+being used, eg: Plain.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_LAYOUT_WIDTH ##### -->
 <para>
-
+Convenience macro for key that contains the logical width of the page
+as used by the application.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_LAYOUT_HEIGHT ##### -->
 <para>
-
+Convenience macro for key that contains the logical height of the page
+as used by the application.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_RESOLUTION ##### -->
 <para>
-
+Convenience macro for key that contains a string representing the 
+resolution of the printer, eg: 300x300 or 300dpi. 
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_RESOLUTION_DPI ##### -->
 <para>
-
+Convenience macro for key that contains a numeric representation of
+the resolution, eg: 300.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_RESOLUTION_DPI_X ##### -->
 <para>
-
+Convenience macro for key that contains a numeric representation of
+the X resolution, eg: 300.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_RESOLUTION_DPI_Y ##### -->
 <para>
-
+Convenience macro for key that contains a numeric representation of
+the Y resolution, eg: 300.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_NUM_COPIES ##### -->
 <para>
-
+Convenience macro for key that contains the number of copies to
+output. 
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_COLLATE ##### -->
 <para>
-
+Convenience macro for key that contains a boolean value indicating whether
+to collate the copies as they are output.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAGE_MARGIN_LEFT ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAGE_MARGIN_TOP ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_MARGIN_LEFT ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_MARGIN_TOP ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM ##### -->
 <para>
-
+Ignored by libgnomeprint, but used by libgnomeprintui when populating 
+margin symbols.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_OUTPUT_FILENAME ##### -->
 <para>
-
+Convenience macro for the key that contains the name of the file
+being used when printing to a file.
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_DOCUMENT_NAME ##### -->
 <para>
-
+Convenience macro for the key that contains the name of the document
+being printed. 
 </para>
 
 
 
 <!-- ##### MACRO GNOME_PRINT_KEY_PREFERED_UNIT ##### -->
 <para>
-
+Convenience macro for the key that contains the abbreviation for the units
+used, eg: cm, in.
 </para>
 
 

@@ -6,5 +6,6 @@ globals_DATA=$(globals_in_files:.xml.in=.xml)
 
 @INTLTOOL_XML_RULE@
 
-EXTRA_DIST = $(globals_DATA)
+EXTRA_DIST = $(globals_in_files) $(globals_DATA)
 
+CLEANFILES = $(globals_DATA)

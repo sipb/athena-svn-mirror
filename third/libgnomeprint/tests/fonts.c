@@ -115,7 +115,7 @@ print_font_info (GPFontEntry *entry, GnomePrintContext *gpc)
 {
 	GnomeFont *font;
 	gdouble x, y, row_size;
-	gchar *c;
+	gchar *c, *d;
 
 	font = gnome_font_find (entry->name, FONT_SAMPLE_SIZE);
 	if (!font || (strcmp (gnome_font_get_name (font), entry->name) != 0)) {
@@ -157,7 +157,8 @@ print_font_info (GPFontEntry *entry, GnomePrintContext *gpc)
 	x = x + 100;
 
 	c = g_strdup_printf ("%d", entry->italic_angle);
-	
+	d = g_strdup_printf ("%d", entry->Weight);
+
 	gnome_print_moveto (gpc, x, y);
 	gnome_print_show (gpc, entry->name);
 	y -= row_size;
@@ -168,7 +169,7 @@ print_font_info (GPFontEntry *entry, GnomePrintContext *gpc)
 	gnome_print_show (gpc, entry->speciesname);
 	y -= row_size;
 	gnome_print_moveto (gpc, x, y);
-	gnome_print_show (gpc, entry->weight);
+	gnome_print_show (gpc, d);
 	y -= row_size;
 	gnome_print_moveto (gpc, x, y);
 	gnome_print_show (gpc, c);
@@ -189,6 +190,7 @@ print_font_info (GPFontEntry *entry, GnomePrintContext *gpc)
 	y -= row_size;
 
 	g_free (c);
+	g_free (d);
 
 	gnome_print_showpage (gpc);
 	g_object_unref (G_OBJECT (font));
@@ -489,7 +491,7 @@ dump_font_info (GPFontEntry *entry, gint num)
 	g_print ("Name:\t\t%s\n",       entry->name);
 	g_print ("Family Name:\t%s\n",  entry->familyname);
 	g_print ("Speciesname:\t%s\n",  entry->speciesname);
-	g_print ("Weight:\t\t%s\n",     entry->weight);
+	g_print ("Weight:\t\t%d\n",     entry->Weight);
 	g_print ("Italic Angle:\t%d\n", entry->italic_angle);
 
 	switch (entry->type) {
@@ -622,7 +624,7 @@ check_options (int argc, const char *argv[])
 		usage (4);
 	} else if ((options_generate == -1) &&
 		   (options_catalog == FALSE) &&
-		   (options_pdf == TRUE)) {
+		   (options_pdf)) {
 		usage (5);
 	} else {
 		poptFreeContext (popt);

@@ -29,13 +29,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <locale.h>
+#include <errno.h>
 #include "gpa-root.h"
 #include "gpa-utils.h"
 #include "gpa-config.h"
 #include "gpa-node-private.h"
 
-enum {MODIFIED, LAST_SIGNAL};
+extern int errno;
+
+enum {MODIFIED, CHILD_ADDED, CHILD_REMOVED, LAST_SIGNAL};
 static GObjectClass *parent_class;
 static guint node_signals [LAST_SIGNAL] = {0};
 
@@ -78,7 +80,21 @@ gpa_node_class_init (GPANodeClass *klass)
 					       NULL, NULL,
 					       g_cclosure_marshal_VOID__UINT,
 					       G_TYPE_NONE, 1, G_TYPE_UINT);
+	node_signals[CHILD_ADDED] = g_signal_new ("child-added",
+					       G_OBJECT_CLASS_TYPE (object_class),
+					       G_SIGNAL_RUN_FIRST,
+					       G_STRUCT_OFFSET (GPANodeClass, child_added),
+					       NULL, NULL,
+					       g_cclosure_marshal_VOID__OBJECT,
+					       G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
+	node_signals[CHILD_REMOVED] = g_signal_new ("child-removed",
+						    G_OBJECT_CLASS_TYPE (object_class),
+						    G_SIGNAL_RUN_FIRST,
+						    G_STRUCT_OFFSET (GPANodeClass, child_removed),
+						    NULL, NULL,
+						    g_cclosure_marshal_VOID__OBJECT,
+						    G_TYPE_NONE, 1, G_TYPE_OBJECT);
 	object_class->finalize = gpa_node_finalize;
 }
 
@@ -137,6 +153,10 @@ gpa_node_duplicate (GPANode *node)
 		g_warning ("Can't duplicate the \"%s\" node because the \"%s\" Class does not have a "
 			   "duplicate method.", gpa_node_id (node), G_OBJECT_TYPE_NAME (node));
 
+	/* FIXME: copy the flags from the src to the destination
+	 * based on a flags_to_copy mask (Chema)
+	 */
+
 	return NULL;
 }
 
@@ -175,11 +195,17 @@ gpa_node_get_value (GPANode *node)
 }
 
 GPANode *
+gpa_node_get_parent (GPANode *node)
+{
+	return node->parent;
+}
+
+GPANode *
 gpa_node_get_child (GPANode *node, GPANode *previous_child)
 {
 	GPANode *child;
 
-	/* FIXME: Handle GPAReference */
+	/* FIXME: Handle GPAReference ? (Chema) */
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
 	g_return_val_if_fail (!previous_child || GPA_IS_NODE (previous_child), NULL);
@@ -239,18 +265,23 @@ gpa_node_lookup (GPANode *node, const guchar *path)
 {
 	GPANode *ret;
 	gchar *p;
-	
+
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (*path != '\0', NULL);
 
 	if (node == NULL) {
-		node = gpa_root;
+		node = GPA_NODE (gpa_root);
 	}
+
+	g_return_val_if_fail (GPA_IS_NODE(node), NULL);
+
 	if (GPA_IS_REFERENCE (node)) {
 		node = GPA_REFERENCE_REFERENCE (node);
 	}
 
-	g_return_val_if_fail (node != NULL, NULL);
+	if (node == NULL)
+		return NULL;
+
 	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
 
 	p = g_strdup (path);
@@ -402,7 +433,7 @@ gpa_node_get_int_path_value (GPANode *node, const guchar *path, gint *value)
 gboolean
 gpa_node_get_length_path_value (GPANode *node, const guchar *path, gdouble *value)
 {
-	gchar *loc, *e;
+	gchar *e;
 	guchar *v;
 	
 	g_return_val_if_fail (node != NULL, FALSE);
@@ -416,22 +447,19 @@ gpa_node_get_length_path_value (GPANode *node, const guchar *path, gdouble *valu
 	if (v == NULL)
 		return FALSE;
 	
-	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
-	*value = strtod (v, &e);
+	*value = g_ascii_strtod (v, &e);
+	/* Should we be skipping spaces between the digits and the unit? */
 	if (e) {
-		if (!strcmp (e, "mm")) {
+		if (!g_ascii_strncasecmp (e, "mm", 2)) {
 			*value *= MM2PT;
-		} else if (!strcmp (e, "cm")) {
+		} else if (!g_ascii_strncasecmp (e, "cm", 2)) {
 			*value *= CM2PT;
-		} else if (!strcmp (e, "in")) {
+		} else if (!g_ascii_strncasecmp (e, "in", 2)) {
 			*value *= IN2PT;
 		}
 	}
 
 	g_free (v);
-	setlocale (LC_NUMERIC, loc);
-	g_free (loc);
 	
 	return TRUE;
 }
@@ -472,6 +500,9 @@ gpa_node_attach (GPANode *parent, GPANode *child)
 	child->parent = parent;
 	child->next = parent->children;
 	parent->children = child;
+
+	g_signal_emit (G_OBJECT (parent), node_signals[CHILD_ADDED], 0,
+		       child);
 	
 	return child;
 }
@@ -519,9 +550,11 @@ gpa_node_detach (GPANode *node)
 		g_assert (prev);
 		prev->next = node->next;
 	}
-	
+
 	node->parent = NULL;
 	node->next = NULL;		
+
+	g_signal_emit (G_OBJECT (parent), node_signals[CHILD_REMOVED], 0, node);
 }
 
 GPANode *

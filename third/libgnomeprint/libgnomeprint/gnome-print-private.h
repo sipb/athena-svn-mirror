@@ -46,6 +46,8 @@ G_BEGIN_DECLS
 #define GNOME_IS_PRINT_CONTEXT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),   GNOME_TYPE_PRINT_CONTEXT))
 #define GNOME_PRINT_CONTEXT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GNOME_TYPE_PRINT_CONTEXT, GnomePrintContextClass))
 
+#define NEEDED_SUBSETTING(font) ((font)->face->entry->type == GP_FONT_ENTRY_TRUETYPE)
+
 typedef struct _GnomePrintContextClass GnomePrintContextClass;
 typedef struct _GnomePrintTransport      GnomePrintTransport;
 
@@ -67,6 +69,7 @@ struct _GnomePrintContextClass {
 
 	gint (* beginpage) (GnomePrintContext *pc, const guchar *name);
 	gint (* showpage)  (GnomePrintContext *pc);
+	gint (* end_doc)  (GnomePrintContext *pc);
 
 	gint (* gsave)     (GnomePrintContext *pc);
 	gint (* grestore)  (GnomePrintContext *pc);
@@ -133,9 +136,6 @@ void gnome_print_layout_data_free (GnomePrintLayoutData *layoutdata);
 GnomePrintLayout *gnome_print_layout_new_from_data (const GnomePrintLayoutData *layoutdata);
 void gnome_print_layout_free (GnomePrintLayout *layout);
 
-/* This method first appeared in 1.109 CVS */
-gboolean gnome_print_config_get_transform (GnomePrintConfig *config, const guchar *key, gdouble *transform);
-
 
 
 /* I'm putting this util funcs here for the mean time, find
@@ -144,9 +144,13 @@ typedef struct _GnomePrintBuffer GnomePrintBuffer;
 struct _GnomePrintBuffer {
 	   guchar *buf;
 	   gint buf_size;
+
+	int fd;
+	gboolean was_mmaped;
 };
 void gnome_print_buffer_munmap (GnomePrintBuffer *b);
 gint gnome_print_buffer_mmap   (GnomePrintBuffer *b, const guchar *file_name);
+gboolean gnome_print_parse_transform (guchar *str, gdouble *transform);
 /* End */
 
 G_END_DECLS

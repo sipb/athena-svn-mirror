@@ -35,10 +35,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <locale.h>
 
 #include <cups/cups.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-transport.h>
+#include <libgnomeprint/gnome-print-config.h>
 
 #define GP_TYPE_TRANSPORT_CUPS         (gp_transport_cups_get_type ())
 #define GP_TRANSPORT_CUPS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GP_TYPE_TRANSPORT_CUPS, GPTransportCups))
@@ -74,6 +76,8 @@ static gint gp_transport_cups_open (GnomePrintTransport *transport);
 static gint gp_transport_cups_close (GnomePrintTransport *transport);
 static gint gp_transport_cups_write (GnomePrintTransport *transport, const guchar *buf, gint len);
 
+static gint gp_transport_cups_print_file (GnomePrintTransport *transport, const guchar *filename);
+
 GType gnome_print__transport_get_type (void);
 
 static GnomePrintTransportClass *parent_class = NULL;
@@ -103,17 +107,19 @@ gp_transport_cups_class_init (GPTransportCupsClass *klass)
 	GnomePrintTransportClass *transport_class;
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass *) klass;
-	transport_class = (GnomePrintTransportClass *) klass;
+	object_class                = (GObjectClass *) klass;
+	transport_class             = (GnomePrintTransportClass *) klass;
 
-	parent_class = g_type_class_peek_parent (klass);
+	parent_class                = g_type_class_peek_parent (klass);
 
-	object_class->finalize = gp_transport_cups_finalize;
+	object_class->finalize      = gp_transport_cups_finalize;
 
-	transport_class->construct = gp_transport_cups_construct;
-	transport_class->open      = gp_transport_cups_open;
-	transport_class->close     = gp_transport_cups_close;
-	transport_class->write     = gp_transport_cups_write;
+	transport_class->construct  = gp_transport_cups_construct;
+	transport_class->open       = gp_transport_cups_open;
+	transport_class->close      = gp_transport_cups_close;
+	transport_class->write      = gp_transport_cups_write;
+
+	transport_class->print_file = gp_transport_cups_print_file;
 }
 
 static void
@@ -163,7 +169,9 @@ gp_transport_cups_construct (GnomePrintTransport *gp_transport)
 	}
 	
 	transport->printer = printer;
-	transport->temp_file = g_strdup ("/tmp/gnome-print-cups-XXXXXX");
+	transport->temp_file = g_build_filename(g_get_tmp_dir (), 
+						"gnome-print-cups-XXXXXX", 
+						NULL);
 
 	return GNOME_PRINT_OK;
 }
@@ -186,7 +194,7 @@ gp_transport_cups_open (GnomePrintTransport *gp_transport)
 
 	transport->file = fdopen (fd, "r+");
 
-	if (transport->file < 0) {
+	if (transport->file == NULL) {
 		g_warning ("Opening file %s for output failed", transport->temp_file);
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
@@ -200,9 +208,19 @@ get_job_options (GnomePrintConfig *config, cups_option_t **options)
 	gchar *value;
 	gint num = 0;
 
-	value = gnome_print_config_get (config, "Settings.Output.PaperSource");
-	num = cupsAddOption ("InputSlot", value, num, options);
-	g_free (value);
+	value = gnome_print_config_get (config, GNOME_PRINT_KEY_PAPER_SOURCE);
+
+	if (value != NULL) {
+		num = cupsAddOption ("InputSlot", value, num, options);
+		g_free (value);
+	}
+	
+	value = gnome_print_config_get (config, GNOME_PRINT_KEY_HOLD);
+
+	if (value != NULL) {
+		num = cupsAddOption ("job-hold-until", value, num, options);
+		g_free (value);
+	}
 	
 	return num;
 }
@@ -218,7 +236,8 @@ gp_transport_cups_close (GnomePrintTransport *gp_transport)
 
 	transport = GP_TRANSPORT_CUPS (gp_transport);
 
-	g_return_val_if_fail (transport->file >= 0, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (transport->file != NULL,
+			      GNOME_PRINT_ERROR_UNKNOWN);
 
 	if (fclose (transport->file) < 0) {
 		g_warning ("Closing output file failed");
@@ -230,9 +249,11 @@ gp_transport_cups_close (GnomePrintTransport *gp_transport)
 					GNOME_PRINT_KEY_DOCUMENT_NAME);
 	num_options = get_job_options (gp_transport->config, &options);
 	
-	cupsPrintFile (transport->printer, transport->temp_file, title, num_options, options);
-
+	cupsPrintFile (transport->printer, 
+		       transport->temp_file, 
+		       title, num_options, options);
 	cupsFreeOptions (num_options, options);
+
 	unlink (transport->temp_file);
 	g_free (title);
 	
@@ -247,7 +268,8 @@ gp_transport_cups_write (GnomePrintTransport *gp_transport, const guchar *buf, g
 
 	transport = GP_TRANSPORT_CUPS (gp_transport);
 
-	g_return_val_if_fail (transport->file >= 0, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (transport->file != NULL,
+			      GNOME_PRINT_ERROR_UNKNOWN);
 
 	l = len;
 	while (l > 0) {
@@ -262,6 +284,31 @@ gp_transport_cups_write (GnomePrintTransport *gp_transport, const guchar *buf, g
 	}
 
 	return len;
+}
+
+
+static gint
+gp_transport_cups_print_file (GnomePrintTransport *gp_transport, const guchar *filename)
+{
+	GPTransportCups *transport;
+	cups_option_t *options;
+	gint num_options;
+	char *title;
+
+	transport = GP_TRANSPORT_CUPS (gp_transport);
+
+	title = gnome_print_config_get (gp_transport->config, 
+					GNOME_PRINT_KEY_DOCUMENT_NAME);
+	num_options = get_job_options (gp_transport->config, &options);
+	
+	cupsPrintFile (transport->printer, 
+		       filename, title, 
+		       num_options, options);
+	cupsFreeOptions (num_options, options);
+
+	g_free (title);
+	
+	return GNOME_PRINT_OK;
 }
 
 GType

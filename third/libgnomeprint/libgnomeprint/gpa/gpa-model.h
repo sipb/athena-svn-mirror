@@ -55,7 +55,8 @@ struct _GPAModelClass {
 GType     gpa_model_get_type (void);
 
 GPANode * gpa_model_get_by_id (const guchar *id, gboolean quiet);
-GPANode * gpa_model_new_from_tree (xmlNodePtr tree);
+GPANode * gpa_model_new_from_tree    (xmlNodePtr tree);
+GPANode * gpa_model_new_from_xml_str (char const *string);
 
 void      gpa_model_hash_insert (GPAModel *model);
 GPANode * gpa_model_hash_lookup (const gchar *id);

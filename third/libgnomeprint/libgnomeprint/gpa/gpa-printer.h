@@ -28,6 +28,7 @@
 #define __GPA_PRINTER_H__
 
 #include <glib.h>
+#include <gmodule.h>
 
 G_BEGIN_DECLS
 
@@ -43,8 +44,17 @@ struct _GPAPrinter {
 	GPANode node;
 
 	gchar *name;
+
+	/* is_complete indicates whether the model and settings are set.   */
+	gboolean is_complete;
+	GModule *module_handle;
+	gchar *module_path;
+
 	GPANode *model;    /* of type GPAReference which points to a GPAModel */
 	GPANode *settings; /* of type GPAList, with childs of type GPASettings */
+	GPANode *state; /* of type GPAList, with childs of type GPANode */
+
+	gboolean polling;
 };
 
 
@@ -52,14 +62,22 @@ GType     gpa_printer_get_type (void);
 
 GPANode * gpa_printer_new (const gchar *id, const gchar *name,
 			   GPAModel *model, GPASettings *settings);
+GPANode * gpa_printer_new_stub (const gchar *id, const gchar *name,
+				const gchar *);
+gboolean  gpa_printer_complete_stub (GPAPrinter *printer, 
+				     GPAModel *model, GPASettings *settings);
 
 GPAList * gpa_printer_list_load (void);
 
 GPANode * gpa_printer_get_default (void);
 GPANode * gpa_printer_get_by_id (const guchar *id);
 
+void      gpa_printer_set_polling (GPAPrinter *printer, gboolean poll);
+
 GPANode * gpa_printer_get_default_settings (GPAPrinter *printer);
 GPANode * gpa_printer_get_settings_by_id (GPAPrinter *printer, const guchar *id);
+GPANode * gpa_printer_get_state (GPAPrinter *printer);
+GPANode * gpa_printer_get_state_by_id (GPAPrinter *printer, const guchar *id);
 
 G_END_DECLS
 

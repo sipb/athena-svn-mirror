@@ -9,8 +9,6 @@
  * Authors: Chema Celoiro <chema@ximian.com>
  */
 
-#include <unistd.h>
-#include <sys/mman.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <popt.h>
@@ -19,6 +17,12 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+#ifdef HAVE_MMAP
+#include <sys/mman.h>
+#endif
 
 static gint debug;
 
@@ -392,7 +396,7 @@ my_check_object (gint num, gint offset, guchar *real_in, GList *offsets, gint in
 		if (strcmp (token, "/Length") == 0) {
 			g_free (token);
 			token = my_get_next_token (&in);
-//			g_print ("Size %s\n", token);
+/*			g_print ("Size %s\n", token); */
 			stream_len = atoi (token);
 			g_free (token);
 			token = my_get_next_token (&in);
@@ -404,7 +408,7 @@ my_check_object (gint num, gint offset, guchar *real_in, GList *offsets, gint in
 				/* steram_len contains the object num */
 				stream_len = my_get_size_from_object (real_in, stream_len, offsets);
 			}
-//			g_print ("Stream len is %d\n", stream_len);
+/*			g_print ("Stream len is %d\n", stream_len); */
 		}
 		/* We should recurse but i am lazy. Bah */
 		if (strncmp (token, "<<", 2) == 0) {
@@ -416,7 +420,7 @@ my_check_object (gint num, gint offset, guchar *real_in, GList *offsets, gint in
 			token = my_get_next_token (&in);
 		}
 		if (token [0] == '[') {
-//			g_print ("This is an array! -->%s<--\n", token);
+/*			g_print ("This is an array! -->%s<--\n", token); */
 			my_parse_array (token, &in);
 			token = g_strdup ("Dont' crash cause token was freed in parse array");
 		}
@@ -501,7 +505,12 @@ my_read_file (gchar *filename, gint *size)
 		my_error ("Could not stat %s", filename);
 	}
 	*size = s.st_size;
+#ifndef HAVE_MMAP
+	my_error ("mmap unsupported on this platform");
+	buf = NULL;
+#else
 	buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
+#endif
 	close (fh);
 	if ((buf == NULL) || (buf == (void *) -1)) {
 		my_error ("Buff is NULL after mmaping");

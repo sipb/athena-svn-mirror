@@ -32,6 +32,7 @@
 #include <dirent.h>
 
 #include <gmodule.h>
+#include <glibconfig.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 
@@ -45,6 +46,13 @@
 typedef struct _GPAPrinterClass GPAPrinterClass;
 struct _GPAPrinterClass {
 	GPANodeClass node_class;
+};
+
+typedef struct _GpaModuleInfo GpaModuleInfo;
+struct _GpaModuleInfo {
+	GPAList *  (*printer_list_append) 
+	(GPAList *printers, const gchar* path);
+	GPAList *printers;
 };
 
 static void gpa_printer_class_init (GPAPrinterClass *klass);
@@ -99,6 +107,8 @@ gpa_printer_init (GPAPrinter *printer)
 	printer->name     = NULL;
 	printer->model    = NULL;
 	printer->settings = NULL;
+	printer->is_complete = FALSE;
+	printer->module_path = NULL;
 }
 
 static void
@@ -114,9 +124,42 @@ gpa_printer_finalize (GObject *object)
 	printer->name     = NULL;
 	printer->settings = NULL;
 	printer->model    = NULL;
+	printer->is_complete = FALSE;
+	my_g_free (printer->module_path);
+	printer->module_path = NULL;
+	
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
+
+static void
+gpa_printer_load_data (GPAPrinter *printer)
+{
+	GpaModuleInfo info;
+	GModule *handle  = NULL;
+	gboolean (*init) (GpaModuleInfo *info);
+	void (*load_data) (GPAPrinter *printer);
+
+	if (printer->is_complete)
+		return;
+
+	g_return_if_fail (printer->module_path != NULL);
+
+	if ((handle = printer->module_handle) != NULL &&
+	     g_module_symbol (handle, "gpa_module_init", 
+			      (gpointer*) &init) &&
+	     g_module_symbol (handle, "gpa_module_load_data", 
+			      (gpointer*) &load_data)) {
+		if (init (&info))
+			load_data (printer);
+		printer->module_handle = handle;
+	} else
+		g_warning ("gpa_module_load_data cannot be retrieved from "
+			   "module %s", printer->module_path);
+
+	return;
+}
+
 
 static gboolean
 gpa_printer_verify (GPANode *node)
@@ -126,6 +169,10 @@ gpa_printer_verify (GPANode *node)
 	printer = GPA_PRINTER (node);
 
 	gpa_return_false_if_fail (printer->name);
+
+	if (!printer->is_complete)
+		return TRUE;
+
 	gpa_return_false_if_fail (printer->settings);
 	gpa_return_false_if_fail (gpa_node_verify (printer->settings));
 	gpa_return_false_if_fail (printer->model);
@@ -183,7 +230,9 @@ gpa_printer_new_from_tree (xmlNodePtr tree)
 		goto gpa_printer_new_from_tree_error;
 	}
 
+#ifdef HAVE_LC_MESSAGES
 	lang = setlocale (LC_MESSAGES, NULL);
+#endif
 	node = tree->xmlChildrenNode;
 	for (; node != NULL; node = node->next) {
 
@@ -282,11 +331,6 @@ gpa_printer_new_from_file (const gchar *file)
 	return printer;
 }
 
-typedef struct _GpaModuleInfo GpaModuleInfo;
-struct _GpaModuleInfo {
-	GPAList *  (*printer_list_append) (GPAList *printers);
-};
-
 /**
  * gpa_printer_list_load_from_module:
  * @path: 
@@ -304,7 +348,7 @@ gpa_printer_list_load_from_module (GPAList *printers, const gchar *path)
 	handle = g_module_open (path, G_MODULE_BIND_LAZY);
 	if (!handle) {
 		g_warning ("Can't g_module_open %s\n", path);
-		goto module_error;
+	        return retval;
 	}
 
 	if (!g_module_symbol (handle, "gpa_module_init", (gpointer*) &init)) {
@@ -317,7 +361,7 @@ gpa_printer_list_load_from_module (GPAList *printers, const gchar *path)
 		goto module_error;
 	}
 
-	(info.printer_list_append) (printers);
+	(info.printer_list_append) (printers, path);
 	retval = TRUE;
 	
 module_error:
@@ -343,7 +387,7 @@ gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
 {
 	struct dirent *entry;
 	DIR *dir;
-	gint ext_len = strlen (LTDL_SHLIB_EXT);
+	gint ext_len = strlen (G_MODULE_SUFFIX);
 	g_assert (ext_len > 0);
 
 	if (!g_module_supported ()) {
@@ -363,11 +407,12 @@ gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
 		gint len;
 
 		len = strlen (entry->d_name);
-		
+
 		if (len < ext_len + 2) /* 2 = one char + 1 for '.'*/
 			continue;
 
-		if (strcmp (entry->d_name + len - ext_len, LTDL_SHLIB_EXT))
+		if (*(entry->d_name + len - ext_len - 1) != '.' || 
+		    strcmp (entry->d_name + len - ext_len, G_MODULE_SUFFIX))
 			continue;
 		
 		path = g_build_filename (dir_path, entry->d_name, NULL);
@@ -441,8 +486,9 @@ GPAList *
 gpa_printer_list_load (void)
 {
 	GPAList *printers;
+	GPANode *p;
 
-	if (printers_list != NULL) {
+	if (gpa_root && gpa_root->printers != NULL) {
 		g_warning ("gpa_printer_list_load should only be called once");
 		return NULL;
 	}
@@ -458,8 +504,12 @@ gpa_printer_list_load (void)
 		return NULL;
 	}
 
+	p = gpa_node_get_child (GPA_NODE (printers), NULL);
+	while (p) {
+		gpa_printer_get_default_settings (GPA_PRINTER (p));
+		p = gpa_node_get_child (GPA_NODE (printers), p);
+	}
 	gpa_list_reverse (printers);
-	printers_list = printers;
 
 	return printers;
 }
@@ -478,12 +528,14 @@ gpa_printer_list_load (void)
 GPANode *
 gpa_printer_get_default (void)
 {
-	if (!printers_list || !GPA_NODE (printers_list)->children) {
+	if (!gpa_root ||
+	    !gpa_root->printers ||
+	    !gpa_root->printers->children) {
 		g_warning ("Global printer list not loaded");
 		return NULL;
 	}
 
-	return gpa_list_get_default (printers_list);
+	return gpa_list_get_default (GPA_LIST (gpa_root->printers));
 }
 
 /**
@@ -503,10 +555,10 @@ gpa_printer_get_by_id (const guchar *id)
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (*id != '\0', NULL);
 
-	if (!printers_list)
+	if (!gpa_root || !gpa_root->printers)
 		return NULL;
 
-	child = GPA_NODE (printers_list)->children;
+	child = GPA_NODE (gpa_root->printers)->children;
 	for (; child != NULL; child = child->next) {
 		if (GPA_NODE_ID_COMPARE (child, id))
 			break;
@@ -516,6 +568,24 @@ gpa_printer_get_by_id (const guchar *id)
 		gpa_node_ref (child);
 
 	return child;
+}
+
+void
+gpa_printer_set_polling (GPAPrinter *printer, gboolean poll)
+{
+	void (*set_polling) (GPAPrinter *printer, gboolean poll);
+	
+	if (!printer->module_handle)
+		return;
+
+	if (printer->polling == poll)
+		return;
+	
+	if (!g_module_symbol (printer->module_handle, "gpa_module_polling", 
+			      (gpointer*) &set_polling))
+		return;
+	set_polling (printer, poll);
+	printer->polling = poll;
 }
 
 /**
@@ -529,15 +599,100 @@ gpa_printer_get_by_id (const guchar *id)
 GPANode *
 gpa_printer_get_default_settings (GPAPrinter *printer)
 {
-	GPANode *child;
+	GPANode *child = NULL;
 	
 	g_return_val_if_fail (printer != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
 
-	child = gpa_list_get_default (GPA_LIST (printer->settings));
+	gpa_printer_load_data (printer);
+
+	if (printer->is_complete)
+		child = gpa_list_get_default (GPA_LIST (printer->settings));
 
 	return child;
 }
+
+/**
+ * gpa_printer_new_stub:
+ * @id: 
+ * @name: 
+ *
+ * Create a new printer node and set it up
+ * 
+ * Return Value: the newly created printer, NULL on error
+ **/
+GPANode *
+gpa_printer_new_stub (const gchar *id, const gchar *name, 
+		      const gchar *path)
+{
+	GPAPrinter *printer;
+	GPANode *check;
+
+	g_return_val_if_fail (id && id[0], NULL);
+	g_return_val_if_fail (name && name[0], NULL);
+	g_return_val_if_fail (gpa_initialized (), NULL);
+
+	check = gpa_printer_get_by_id (id);
+	if (check) {
+		g_warning ("Can't create printer \"%s\" because the id \"%s\" is already used", name, id);
+		gpa_node_unref (check);
+		return NULL;
+	}
+
+
+	printer = (GPAPrinter *) gpa_node_new (GPA_TYPE_PRINTER, id);
+	printer->name     = g_strdup (name);
+
+	if (path != NULL) {
+		printer->module_path = g_strdup (path);
+		printer->module_handle = g_module_open (path, G_MODULE_BIND_LAZY);
+	}
+	printer->is_complete = FALSE;
+
+	return (GPANode *) printer;	
+}
+
+gboolean  
+gpa_printer_complete_stub (GPAPrinter *printer, 
+			   GPAModel *model, GPASettings *settings)
+{
+	GPAList *list;
+	GPAList *state;
+
+	g_return_val_if_fail (printer->is_complete != TRUE, FALSE);
+	g_return_val_if_fail (model != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_MODEL (model), FALSE);
+	g_return_val_if_fail (settings != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_SETTINGS (settings), FALSE);
+	g_return_val_if_fail (gpa_initialized (), FALSE);
+
+	list = gpa_list_new (GPA_TYPE_SETTINGS, "Settings", TRUE);
+	state = gpa_list_new (GPA_TYPE_NODE, "State", TRUE);
+	
+	printer->model    = gpa_node_attach (GPA_NODE (printer),
+					     GPA_NODE (gpa_reference_new (GPA_NODE (model), "Model")));
+	printer->settings = gpa_node_attach (GPA_NODE (printer),
+					     GPA_NODE (list));
+	printer->state = gpa_node_attach (GPA_NODE (printer),
+					  GPA_NODE (state));
+
+	printer->is_complete = TRUE;
+
+	gpa_node_reverse_children (GPA_NODE (printer));
+
+	gpa_list_prepend     (list, GPA_NODE (settings));
+	gpa_list_set_default (list, GPA_NODE (settings));
+
+	settings->printer = gpa_reference_new (GPA_NODE (printer), "Printer");
+	/* We sink the model reference because we have a GPAReference to it
+	 * we take ownership of the settings, so we don't unref them
+	 */
+	gpa_node_unref (GPA_NODE (model));
+
+	return TRUE;
+}
+
+
 
 /**
  * gpa_printer_new:
@@ -556,43 +711,16 @@ GPANode *
 gpa_printer_new (const gchar *id, const gchar *name, GPAModel *model, GPASettings *settings)
 {
 	GPAPrinter *printer;
-	GPANode *check;
-	GPAList *list;
 
-	g_return_val_if_fail (id && id[0], NULL);
-	g_return_val_if_fail (name && name[0], NULL);
-	g_return_val_if_fail (model != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_MODEL (model), NULL);
-	g_return_val_if_fail (settings != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_SETTINGS (settings), NULL);
-	g_return_val_if_fail (gpa_initialized, NULL);
-
-	check = gpa_printer_get_by_id (id);
-	if (check) {
-		g_warning ("Can't create printer \"%s\" because the id \"%s\" is already used", name, id);
-		gpa_node_unref (check);
+	printer = GPA_PRINTER (gpa_printer_new_stub (id, name, NULL));
+	if (printer == NULL)
+		return NULL;
+	
+	if (!gpa_printer_complete_stub (printer, model, settings)) {
+		gpa_node_unref ((GPANode *) printer);
+		printer = NULL;
 		return NULL;
 	}
-
-	list = gpa_list_new (GPA_TYPE_SETTINGS, "Settings", TRUE);
-
-	printer = (GPAPrinter *) gpa_node_new (GPA_TYPE_PRINTER, id);
-	printer->name     = g_strdup (name);
-	printer->model    = gpa_node_attach (GPA_NODE (printer),
-					     GPA_NODE (gpa_reference_new (GPA_NODE (model), "Model")));
-	printer->settings = gpa_node_attach (GPA_NODE (printer),
-					     GPA_NODE (list));
-
-	gpa_node_reverse_children (GPA_NODE (printer));
-
-	gpa_list_prepend     (list, GPA_NODE (settings));
-	gpa_list_set_default (list, GPA_NODE (settings));
-
-	settings->printer = gpa_reference_new (GPA_NODE (printer), "Printer");
-	/* We sink the model reference because we have a GPAReference to it
-	 * we take ownership of the settings, so we don't unref them
-	 */
-	gpa_node_unref (GPA_NODE (model));
 
 	if (!gpa_printer_verify ((GPANode *) printer)) {
 		g_warning ("The newly created printer %s could not be verified", id);
@@ -614,12 +742,44 @@ gpa_printer_get_settings_by_id (GPAPrinter *printer, const guchar *id)
 	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
 	g_return_val_if_fail (id && id[0], NULL);
 
+	gpa_printer_load_data (printer);
+
 	g_assert (printer->settings);
 	child = printer->settings->children;
 	while (child) {
 		if (GPA_NODE_ID_COMPARE (child, id))
 			break;
-		child = gpa_node_get_child (child, NULL);
+		child = gpa_node_get_child (printer->settings, child);
+	}
+	if (child)
+		gpa_node_ref (child);
+	
+	return child;
+}
+
+GPANode *
+gpa_printer_get_state (GPAPrinter *printer)
+{
+	return printer->state;
+}
+
+GPANode *
+gpa_printer_get_state_by_id (GPAPrinter *printer, const guchar *id)
+{
+	GPANode *child;
+
+	g_return_val_if_fail (printer != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
+	g_return_val_if_fail (id && id[0], NULL);
+
+	gpa_printer_load_data (printer);
+
+	g_assert (printer->state);
+	child = gpa_node_get_child (printer->state, NULL);
+	while (child) {
+		if (GPA_NODE_ID_COMPARE (child, id))
+			break;
+		child = gpa_node_get_child (printer->state, child);
 	}
 	if (child)
 		gpa_node_ref (child);

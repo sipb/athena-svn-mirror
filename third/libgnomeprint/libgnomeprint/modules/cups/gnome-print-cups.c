@@ -17,8 +17,8 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors:
- *    Dave Camp <dave@ximian.com>
  *    Chema Celorio <chema@celorio.com>
+ *    Dave Camp <dave@ximian.com>
  *
  *  Copyright 2002  Ximian, Inc. and authors
  *
@@ -27,15 +27,22 @@
 #include <config.h>
 #include <glib.h>
 #include <gmodule.h>
+#include <locale.h>
 
 #include <libgnomeprint/gnome-print-module.h>
 #include <libgnomeprint/gpa/gpa-model.h>
 #include <libgnomeprint/gpa/gpa-printer.h>
 #include <libgnomeprint/gpa/gpa-option.h>
 #include <libgnomeprint/gpa/gpa-settings.h>
+#include <libgnomeprint/gpa/gpa-state.h>
+#include <libgnomeprint/gpa/gpa-utils.h>
 
-#include <cups/cups.h>
 #include <cups/ppd.h>
+
+#include <libgnomecups/gnome-cups-init.h>
+#include <libgnomecups/gnome-cups-printer.h>
+
+#include "libgnomeprint/gnome-print-i18n.h"
 
 /* Argument order: id, name */
 
@@ -67,26 +74,14 @@ xmlChar *model_xml_template =
 "      </Option>"
 "      <Option Id=\"Job\">"
 "        <Option Id=\"NumCopies\" Type=\"String\" Default=\"1\"/>"
+"        <Option Id=\"NonCollatedCopiesHW\" Type=\"String\" Default=\"true\"/>"
+"        <Option Id=\"CollatedCopiesHW\" Type=\"String\" Default=\"false\"/>"
 "        <Option Id=\"Collate\" Type=\"String\" Default=\"false\"/>"
+"        <Option Id=\"Duplex\" Type=\"String\" Default=\"true\"/>"
+"        <Option Id=\"Tumble\" Type=\"String\" Default=\"false\"/>"
+"        <Option Id=\"PrintToFile\" Type=\"String\" Default=\"false\" Locked=\"true\"/>"
+"        <Option Id=\"FileName\" Type=\"String\" Default=\"output.ps\"/>"
 "      </Option>"
-"    </Option>"
-"    <Option Id=\"Document\">"
-"      <Option Id=\"Page\">"
-"        <Option Id=\"Layout\" Type=\"List\" Default=\"Plain\">"
-"          <Fill Ref=\"Globals.Document.Page.Layout\"/>"
-"        </Option>"
-"        <Option Id=\"LogicalOrientation\" Type=\"List\" Default=\"R0\">"
-"          <Fill Ref=\"Globals.Document.Page.LogicalOrientation\"/>"
-"        </Option>"
-"        <Option Id=\"Margins\">"
-"          <Option Id=\"Left\" Type=\"String\" Default=\"2 cm\"/>"
-"          <Option Id=\"Right\" Type=\"String\" Default=\"2 cm\"/>"
-"          <Option Id=\"Top\" Type=\"String\" Default=\"3 cm\"/>"
-"          <Option Id=\"Bottom\" Type=\"String\" Default=\"3 cm\"/>"
-"        </Option>"
-"      </Option>"
-"      <Option Id=\"PreferedUnit\" Type=\"String\" Default=\"cm\"/>"
-"      <Option Id=\"Name\" Type=\"String\" Default=\"\"/>"
 "    </Option>"
 #if 0
 "    <Option Id=\"Icon\">"
@@ -96,33 +91,74 @@ xmlChar *model_xml_template =
 "  </Options>"
 "</Model>";
 
-static GPANode *
-gpa_model_new_from_xml (char *string)
+/* Argument order: id */
+
+xmlChar *model_unknown_xml_template = 
+"<?xml version=\"1.0\"?>"
+"<Model Id=\"%s\" Version=\"1.0\">"
+"  <Name>Unavailable PPD File</Name>"
+"  <ModelVersion>0.0.1</ModelVersion>"
+"  <Options>"
+"    <Option Id=\"Transport\">"
+"      <Option Id=\"Backend\" Type=\"List\" Default=\"CUPS\">"
+"        <Item Id=\"CUPS\">"
+"          <Name>CUPS</Name>"
+"          <Key Id=\"Module\" Value=\"libgnomeprintcups.so\"/>"
+"        </Item>"
+"      </Option>"
+"    </Option>"
+"    <Option Id=\"Output\">"
+"      <Option Id=\"Media\">"
+"        <Option Id=\"PhysicalSize\" Type=\"List\" Default=\"USLetter\">"
+"          <Fill Ref=\"Globals.Media.PhysicalSize\"/>"
+"        </Option>"
+"        <Option Id=\"PhysicalOrientation\" Type=\"List\" Default=\"R0\">"
+"          <Fill Ref=\"Globals.Media.PhysicalOrientation\"/>"
+"        </Option>"
+"        <Key Id=\"Margins\">"
+"          <Key Id=\"Left\" Value=\"0\"/>"
+"          <Key Id=\"Right\" Value=\"0\"/>"
+"          <Key Id=\"Top\" Value=\"0\"/>"
+"          <Key Id=\"Bottom\" Value=\"0\"/>"
+"        </Key>"
+"      </Option>"
+"      <Option Id=\"Job\">"
+"        <Option Id=\"NumCopies\" Type=\"String\" Default=\"1\"/>"
+"        <Option Id=\"NonCollatedCopiesHW\" Type=\"String\" Default=\"true\"/>"
+"        <Option Id=\"CollatedCopiesHW\" Type=\"String\" Default=\"false\"/>"
+"        <Option Id=\"Collate\" Type=\"String\" Default=\"false\"/>"
+"        <Option Id=\"Duplex\" Type=\"String\" Default=\"true\"/>"
+"        <Option Id=\"Tumble\" Type=\"String\" Default=\"false\"/>"
+"        <Option Id=\"PrintToFile\" Type=\"String\" Default=\"false\" Locked=\"true\"/>"
+"        <Option Id=\"FileName\" Type=\"String\" Default=\"output.ps\"/>"
+"      </Option>"
+"    </Option>"
+#if 0
+"    <Option Id=\"Icon\">"
+"      <Option Id=\"Filename\" Type=\"String\" Default=\"" DATADIR "/pixmaps/nautilus/default/i-printer.png\"/>"
+"    </Option>"
+#endif
+"  </Options>"
+"</Model>";
+
+struct GnomePrintCupsNewPrinterCbData
 {
-	GPANode *model;
-	xmlNodePtr root;
-	xmlDocPtr doc;
-	
-	doc = xmlParseDoc (string);
-	if (!doc) {
-		g_warning ("Could not parse model xml");
-		return NULL;
-	}
-	
-	root = doc->xmlRootNode;
-	model = gpa_model_new_from_tree (root);
-	
-	xmlFreeDoc (doc);
-	
-	return model;
-}
+	GPAList *list;
+	char *path;
+};
+
+G_MODULE_EXPORT void gpa_module_load_data (GPAPrinter *printer);
+static void printer_added_cb (const char *name, struct GnomePrintCupsNewPrinterCbData *data);
+static void printer_gone_cb (GnomeCupsPrinter *printer, GPAList *list);
 
 static char *
 get_paper_text (ppd_file_t *ppd, ppd_size_t *size)
 {
 	/* This is dumb and slow and ugly and crappy and I hate myself. (Dave)*/
 	int i;
-	
+	char *result;
+	static gboolean warn = FALSE;
+
 	for (i = 0; i < ppd->num_groups; i++) {
 		ppd_group_t *group = &ppd->groups[i];
 		int j;
@@ -133,13 +169,77 @@ get_paper_text (ppd_file_t *ppd, ppd_size_t *size)
 				for (k = 0; k < option->num_choices; k++) {
 					if (!strcmp (option->choices[k].choice,
 						     size->name)) {
-						return g_strdup (option->choices[k].text);
+						result = g_convert (option->choices[k].text, 
+								    strlen (option->choices[k].text), 
+								    "UTF8", 
+								    ppd->lang_encoding, 
+								    NULL, NULL, NULL);
+						if (result != NULL)
+							return result;
+						if (!warn) {
+							warn = TRUE;
+							g_warning ("iconv does not support ppd "
+								   "character encoding: %s, trying "
+								   "CSISOLatin1", 
+								   ppd->lang_encoding);
+						}
+						return g_convert (option->choices[k].text, 
+									  strlen (option->choices[k].text),
+									  "UTF8", 
+									  "CSISOLatin1", 
+									  NULL, NULL, NULL);
 					}
 				}
 			}
 		}
 	}
-	return g_strdup (size->name);
+	
+	result = g_convert (size->name, 
+			    strlen (size->name), 
+			    "UTF8", 
+			    ppd->lang_encoding, 
+			    NULL, NULL, NULL);
+	if (result != NULL)
+		return result;
+	if (!warn) {
+		warn = TRUE;
+		g_warning ("iconv does not support ppd character encoding:"
+			   " %s, trying CSISOLatin1", ppd->lang_encoding);
+	}
+	return g_convert (size->name, 
+			  strlen (size->name), 
+			  "UTF8", 
+			  "CSISOLatin1", 
+			  NULL, NULL, NULL);
+}
+
+static GPANode *
+option_list_new_with_default (GPANode      *parent,
+			      const         guchar *id,
+			      ppd_option_t *option)
+{
+	char *defchoice = g_strdup (option->defchoice);
+	char *p = defchoice + strlen (defchoice);
+	ppd_choice_t *choice;
+
+	/* Strip trailing spaces and tabs since CUPS doesn't does this
+	 */
+	while (p > defchoice &&
+	       (*(p - 1) == ' ' || *(p - 1) == '\t')) {
+		*(p - 1) = '\0';
+		p--;
+	}
+
+	choice = ppdFindChoice (option, defchoice);
+	g_free (defchoice);
+	
+	if (!choice && option->num_choices > 0)
+		choice = &option->choices[0];
+		
+	if (!choice)
+		return NULL;
+
+	return gpa_option_list_new (parent, id, choice->choice);
 }
 
 static GPANode *
@@ -157,27 +257,36 @@ load_paper_sizes (ppd_file_t *ppd, GPANode *parent)
 		 */
 		return NULL;
 	
-	node = gpa_option_list_new (parent, "PhysicalSize",
-				    option->defchoice);
+	node = option_list_new_with_default (parent, "PhysicalSize",
+					     option);
+	if (!node)
+		return NULL;
 			
 	for (i = 0; i < ppd->num_sizes; i++) {
-		GPANode *size;
-		gchar *height;
-		gchar *width;
 		gchar *paper_name;
 
 		paper_name = get_paper_text (ppd, &ppd->sizes[i]);
-		size = gpa_option_item_new (node, ppd->sizes[i].name, paper_name);
-		g_free (paper_name);
 
-		width  = g_strdup_printf ("%d", (int)ppd->sizes[i].width);
-		height = g_strdup_printf ("%d", (int)ppd->sizes[i].length);
+		if (paper_name != NULL) {
+			GPANode *size;
+			gchar *height;
+			gchar *width;
+			size = gpa_option_item_new (node, 
+						    ppd->sizes[i].name, 
+						    paper_name);
+			g_free (paper_name);
+			
+			width  = g_strdup_printf ("%d", 
+						  (int)ppd->sizes[i].width);
+			height = g_strdup_printf ("%d", 
+						  (int)ppd->sizes[i].length);
 
-		gpa_option_key_new (size, "Width",  width);
-		gpa_option_key_new (size, "Height", height);
-
-		g_free (width);
-		g_free (height);
+			gpa_option_key_new (size, "Width",  width);
+			gpa_option_key_new (size, "Height", height);
+			
+			g_free (width);
+			g_free (height);
+		}
 	}
 
 	gpa_node_reverse_children (node);
@@ -196,13 +305,42 @@ load_paper_sources (ppd_file_t *ppd, GPANode *parent)
 	if (!option)
 		return;
 	
-	node = gpa_option_list_new (parent, "PaperSource",
-				    option->defchoice);
+	node = option_list_new_with_default (parent, "PaperSource",
+					     option);
+	if (!node)
+		return;
 	
 	for (i = 0; i < option->num_choices; i++)
 		gpa_option_item_new (node,
 				     option->choices[i].choice,
-				     option->choices[i].choice);
+				     option->choices[i].text);
+}
+
+/* load_cups_hold_types */
+/* we could either make an ipp request for job-hold-until-supported */
+/* or list here the cups supported values */
+/* Sicne these values are in fact not printer specific but cups specific, */
+/* We'll just list them here. */
+static void
+load_cups_hold_types (GPANode *parent)
+{
+	GPANode *node;
+	
+	node = gpa_option_list_new (parent, "Hold", "no-hold");
+
+	if (!node)
+		return;
+	
+	gpa_option_item_new (node,"weekend",_("on the weekend"));
+	gpa_option_item_new (node,"third-shift",
+			     _("between midnight and 8 a.m."));
+/* 	gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m.")); */
+	gpa_option_item_new (node,"evening",_("between 6 p.m. and 6 a.m."));
+	gpa_option_item_new (node,"second-shift",
+			     _("between 4 p.m. and midnight"));
+	gpa_option_item_new (node,"day-time",_("between 6 a.m. and 6 p.m."));
+	gpa_option_item_new (node,"indefinite",_("when manually released"));
+	gpa_option_item_new (node,"no-hold",_("immediately"));
 }
 
 static GPAModel *
@@ -211,6 +349,7 @@ get_model (const gchar *printer, ppd_file_t *ppd)
 	GPANode *media;
 	GPANode *model;
 	GPANode *output;
+	GPANode *job;
 	char *xml;
 	char *id;
 
@@ -224,104 +363,370 @@ get_model (const gchar *printer, ppd_file_t *ppd)
 	}
 
 	xml = g_strdup_printf (model_xml_template, id, ppd->nickname);
-	model = gpa_model_new_from_xml (xml);
+	model = gpa_model_new_from_xml_str (xml);
 	g_free (xml);
 
 	output = gpa_node_lookup (model, "Options.Output");
 	media  = gpa_node_lookup (model, "Options.Output.Media");
+	job  = gpa_node_lookup (model, "Options.Output.Job");
 
 	load_paper_sizes   (ppd, media);
 	load_paper_sources (ppd, output);
+	load_cups_hold_types (job);
 
 	gpa_node_unref (output);
 	gpa_node_unref (media);
+	gpa_node_unref (job);
 
 	g_free (id);
 	
 	return (GPAModel *)model;
 }
 
-static gboolean
-append_printer (GPAList *printers_list, const char *name, gboolean is_default)
+static GPAModel *
+get_model_no_ppd (const gchar *printer)
 {
-	GPANode *settings = NULL;
-	GPANode *printer  = NULL;
-	GPAModel *model    = NULL;
-	const char *filename;
-	ppd_file_t *ppd;
+	GPANode *media;
+	GPANode *model;
+	GPANode *job;
+	char *xml;
+
+	model = gpa_model_get_by_id ("Cups-unknown-unknown", TRUE);
+	
+	if (model)
+		return GPA_MODEL (model);
+
+	xml = g_strdup_printf (model_unknown_xml_template, "Cups-unknown-unknown");
+	model = gpa_model_new_from_xml_str (xml);
+	g_free (xml);
+
+	media  = gpa_node_lookup (model, "Options.Output.Media");
+	job  = gpa_node_lookup (model, "Options.Output.Job");
+
+/* 	load_paper_sizes   (ppd, media); */
+	load_cups_hold_types (job);
+
+	gpa_node_unref (media);
+	gpa_node_unref (job);
+
+	return (GPAModel *)model;
+}
+
+static gboolean
+append_printer (GPAList *printers_list, GnomeCupsPrinter *cupsprinter,
+		gboolean is_default, const gchar *path)
+{
 	gboolean retval = FALSE;
+	const char *name = gnome_cups_printer_get_name (cupsprinter);
+	GPANode *printer  = gpa_printer_new_stub (name, name, path);
 
-	filename = cupsGetPPD (name);
-	ppd = ppdOpenFile (filename);
-	if (ppd == NULL)
-		/* See bug#: 102938 */
-		return FALSE;
-
-	model = get_model (name, ppd);
-	if (model == NULL)
-		goto append_printer_exit;
-
-	settings = gpa_settings_new (model, "Default", "SettIdFromCups");
-	if (settings == NULL)
-		goto append_printer_exit;
-
-	printer = gpa_printer_new (name, name, model, GPA_SETTINGS (settings));
-	if (printer == NULL)
-		goto append_printer_exit;
-
-	if (gpa_node_verify (printer)) {
+	if (printer != NULL && gpa_node_verify (printer)) {
 		gpa_list_prepend (printers_list, printer);
-		if (is_default)
+		if (is_default) {
 			gpa_list_set_default (printers_list, printer);
+			gpa_module_load_data (GPA_PRINTER (printer));
+		}
 		retval = TRUE;
+		g_signal_connect (cupsprinter, "gone",
+				  G_CALLBACK (printer_gone_cb),
+				  printers_list);
 	}
 
- append_printer_exit:
 	if (retval == FALSE) {
 		g_warning ("The CUPS printer %s could not be created\n", name);
-
 		my_gpa_node_unref (printer);
-		my_gpa_node_unref (GPA_NODE (model));
-		my_gpa_node_unref (settings);
+	}
+
+	return retval;
+}
+
+static 	GModule *handle = NULL;
+
+static void
+gnome_print_cups_printer_list_append (gpointer printers_list, 
+				      const gchar *path)
+{
+	/* const gchar *def = cupsGetDefault(); 
+	   not reliable, dests[i].is_default used instead */
+        GList *printers = NULL;
+	GList *link;
+	struct GnomePrintCupsNewPrinterCbData *data;
+
+	g_return_if_fail (printers_list != NULL);
+	g_return_if_fail (GPA_IS_LIST (printers_list));
+
+	/* make ourselves resident */
+	if (!handle) 
+		handle = g_module_open (path, G_MODULE_BIND_LAZY);
+
+	gnome_cups_init (NULL);
+	data = g_new0 (struct GnomePrintCupsNewPrinterCbData, 1);
+	data->list = printers_list;
+	data->path = g_strdup (path);
+	gnome_cups_printer_new_printer_notify_add ((GnomeCupsPrinterAddedCallback) printer_added_cb, data);
+	
+	printers = gnome_cups_get_printers ();
+	
+	for (link = printers; link; link = link->next) {
+		const char *name;
+		GnomeCupsPrinter *printer;
+
+		name = link->data;
+		printer = gnome_cups_printer_get (name);
+
+		if (printer) {
+			append_printer (GPA_LIST (printers_list),
+					printer,
+					gnome_cups_printer_get_is_default (printer),					
+					path);
+			g_object_unref (G_OBJECT (printer));
+		}
+	}
+
+	gnome_cups_printer_list_free (printers);
+	
+	return;
+}
+
+static void
+gnome_print_cups_adjust_settings (GPASettings * settings,
+				  GnomeCupsPrinter *printer)
+{
+	char *value;
+	
+	value = gnome_cups_printer_get_option_value (printer, "PageSize");
+	if (value != NULL) {
+		gpa_node_set_path_value (GPA_NODE (settings),
+					 "Output.Media.PhysicalSize", 
+					 value);
+	}
+	g_free (value);
+
+	value = gnome_cups_printer_get_option_value (printer, "PageSize");
+	if (value != NULL) {
+		if (strcmp("two-sided-long-edge", value) == 0) {
+			gpa_node_set_path_value (GPA_NODE (settings),
+						 "Output.Job.Duplex", 
+						 "true");
+			gpa_node_set_path_value (GPA_NODE (settings),
+						 "Output.Job.Tumble", 
+						 "false");
+		}
+		if (strcmp("two-sided-short-edge", value) == 0) {
+			gpa_node_set_path_value (GPA_NODE (settings),
+						 "Output.Job.Duplex", 
+						 "true");
+			gpa_node_set_path_value (GPA_NODE (settings),
+						 "Output.Job.Tumble", 
+						 "true");
+		}
+		if (strcmp("one-sided", value) == 0) {
+			gpa_node_set_path_value (GPA_NODE (settings),
+						 "Output.Job.Duplex", 
+						 "false");
+		}
+	}
+	g_free (value);
+/* 	for (i=0; i < num_options; i++) { */
+/* 		g_print ("Option %s = %s\n", options[i].name, options[i].value); */
+/* 	} */
+}
+
+static void
+attributes_changed_cb (GnomeCupsPrinter *cupsprinter,
+		       GPAPrinter     *printer)
+{
+	GPANode *state;
+	GPANode *printerstate;
+	GPANode *jobcount;
+	const char *str;
+	char *len_str;
+
+	state = gpa_printer_get_state (printer);
+	printerstate = gpa_node_get_child_from_path (state, "PrinterState");
+	if (printerstate == NULL) {
+		printerstate = GPA_NODE (gpa_state_new ("PrinterState"));
+		gpa_node_attach (state, printerstate);
+	}
+	str = gnome_cups_printer_get_state_name (cupsprinter);
+	gpa_node_set_value (printerstate, str);
+
+	jobcount = gpa_node_get_child_from_path (state, "QueueLength");
+	if (jobcount == NULL) {
+		jobcount = GPA_NODE (gpa_state_new ("QueueLength"));
+		gpa_node_attach (state, jobcount);
+	}
+	len_str = g_strdup_printf ("%d", gnome_cups_printer_get_job_count (cupsprinter));
+	gpa_node_set_value (jobcount, str);
+	g_free (len_str);
+}
+
+static void
+add_printer_location (GnomeCupsPrinter *cupsprinter,
+		      GPAPrinter       *printer)
+{
+	GPANode *state;
+	GPANode *location;
+	const char *str;
+
+	state = gpa_printer_get_state (printer);
+	location = gpa_node_get_child_from_path (state, "Location");
+	if (location == NULL) {
+		location = GPA_NODE (gpa_state_new ("Location"));
+		gpa_node_attach (state, location);
+	}
+	str = gnome_cups_printer_get_location (cupsprinter);
+	gpa_node_set_value (location, str);
+}
+
+static void
+printer_added_cb (const char *name, struct GnomePrintCupsNewPrinterCbData *data)
+{
+	GPANode *node;
+	GnomeCupsPrinter *printer;
+
+	if ((node = gpa_printer_get_by_id (name)) != NULL) {
+		gpa_node_unref (node);
+		return;
+	}
+
+	printer = gnome_cups_printer_get (name);
+	if (printer != NULL) {
+		append_printer (data->list, printer, FALSE, data->path);
+		g_object_unref (printer);
+	}
+	else
+		g_warning ("Printer %s does not exist!", name);
+	
+}
+
+static void
+printer_gone_cb (GnomeCupsPrinter *printer, GPAList *list)
+{
+	const char *name = gnome_cups_printer_get_name (printer);
+	GPANode *child;
+	child = gpa_node_get_child (GPA_NODE (list), NULL);
+	while (child) {
+		if (GPA_NODE_ID_COMPARE (child, name))
+			break;
+		child = gpa_node_get_child (GPA_NODE (list), child);
+	}
+	g_return_if_fail (child != NULL);
+	gpa_node_detach (child);
+}
+
+static void
+start_polling (GPAPrinter *printer)
+{
+	GnomeCupsPrinter *cupsprinter;
+
+	cupsprinter = gnome_cups_printer_get (printer->name);
+	attributes_changed_cb (cupsprinter, printer);
+	g_signal_connect_object (cupsprinter, "attributes-changed", 
+				 G_CALLBACK (attributes_changed_cb), printer, 0);
+}
+
+static void
+stop_polling (GPAPrinter *printer)
+{
+	GnomeCupsPrinter *cupsprinter;
+
+	cupsprinter = gnome_cups_printer_get (printer->name);
+	g_signal_handlers_disconnect_by_func (cupsprinter,
+					      G_CALLBACK (attributes_changed_cb),
+					      printer);
+	/* Unref twice since _get refs itself */
+	g_object_unref (G_OBJECT (cupsprinter));
+	g_object_unref (G_OBJECT (cupsprinter));
+}
+
+void gpa_module_polling (GPAPrinter *printer, gboolean polling);
+G_MODULE_EXPORT void gpa_module_polling (GPAPrinter *printer,
+					 gboolean polling)
+{
+	if (polling)
+		start_polling (printer);
+	else
+		stop_polling (printer);
+}
+
+
+/*  ------------- GPA load_data ------------- */
+
+G_MODULE_EXPORT void gpa_module_load_data (GPAPrinter *printer)
+{
+	GPANode *settings = NULL;
+	GPAModel *model    = NULL;
+	const char *name   = printer->name;
+	ppd_file_t *ppd    = NULL;
+	gboolean success   = FALSE;
+	GnomeCupsPrinter *cupsprinter;
+	
+	if (printer->is_complete)
+		return;
+
+	cupsprinter = gnome_cups_printer_get (printer->name);
+
+	if (cupsprinter) {
+		ppd = gnome_cups_printer_get_ppd (cupsprinter);
+		if (ppd) {
+			model = get_model (name, ppd);
+		}
+	}
+	if (!ppd) {
+		g_warning ("The ppd file for the CUPS printer %s "
+			   "could not be loaded.", name);
+		model = get_model_no_ppd (name);
+	}
+	if (model == NULL)
+		goto gpa_module_load_data_exit;
+
+	settings = gpa_settings_new (model, "Default", "SetIdFromCups");
+	if (settings == NULL)
+		goto gpa_module_load_data_exit;
+
+	gnome_print_cups_adjust_settings (GPA_SETTINGS (settings), cupsprinter);
+
+	success = gpa_printer_complete_stub (printer, model, 
+					     GPA_SETTINGS (settings));
+
+	add_printer_location (cupsprinter, printer);
+	attributes_changed_cb (cupsprinter, printer);
+
+	/* Do we have to add any further instances */
+	/* FIXME - punt on instance bits for now */
+/* 	{ */
+/* 		char *id = g_strdup_printf ("SetIdFromCups-%s", name); */
+/* 		settings = gpa_settings_new (model, name, id); */
+/* 		g_free (id); */
+/* 		id = NULL; */
+/* 		if (settings != NULL) { */
+/* 			gnome_print_cups_adjust_settings (GPA_SETTINGS (settings), */
+/* 							  cupsprinter); */
+/* 			gpa_list_prepend (GPA_NODE (printer->settings), */
+/* 					  GPA_NODE (settings)); */
+/* 			GPA_SETTINGS (settings)->printer */
+/* 				= gpa_reference_new (GPA_NODE (printer), "Printer"); */
+/* 		} */
+/* 	} */
+
+ gpa_module_load_data_exit:
+	g_object_unref (cupsprinter);
+	if (success == FALSE) {
+		g_warning ("The data for the CUPS printer %s "
+			   "could not be loaded.", name);
+
+		if (model != NULL)
+			my_gpa_node_unref (GPA_NODE (model));
+		if (settings != NULL)
+			my_gpa_node_unref (settings);
 	}
 
 	if (ppd) {
 		ppdClose (ppd);
-		unlink (filename);
 	}
-	
-	return retval;
-}
 
-static void
-gnome_print_cups_printer_list_append (gpointer printers_list)
-{
-	gboolean is_default;
-	const gchar *def;
-	gchar **printers;
-	gint num_printers;
-	gint i;
-
-	g_return_if_fail (printers_list != NULL);
-	g_return_if_fail (GPA_IS_LIST (printers_list));
-	
-	num_printers = cupsGetPrinters (&printers);
-	if (num_printers < 1)
-		return;
-
-	def = cupsGetDefault ();
-	
-	for (i = 0; i < num_printers; i ++) {
-		is_default = (def && !strcmp (printers [i], def));
-		append_printer (GPA_LIST (printers_list),
-				printers [i], is_default);
-	}
-	
-	for (i = 0; i < num_printers; i ++)
-		free (printers[i]);
-
-	free (printers);
-	
+/* 	gpa_utils_dump_tree (GPA_NODE (printer),5); */
 	return;
 }
 

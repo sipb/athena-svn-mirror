@@ -23,6 +23,8 @@
  *  Copyright (C) 2000-2003 Ximian Inc.
  */
 
+#define GNOME_PRINT_UNSTABLE_API
+
 #include <config.h>
 #include <math.h>
 #include <string.h>
@@ -34,9 +36,11 @@
 #include <libgnomeprint/gpa/gpa-node.h>
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-print-meta.h>
+#include <libgnomeprint/gnome-print-transport.h>
 #include <libgnomeprint/gnome-print-multipage.h>
 #include <libgnomeprint/gnome-print-job-private.h>
 #include <libgnomeprint/gnome-print-config-private.h>
+#include <libgnomeprint/gnome-print-i18n.h>
 
 typedef struct _JOBPrivate JOBPrivate;
 
@@ -62,6 +66,13 @@ struct _JOBPrivate {
 	GList *LY_LIST;
 };
 
+enum
+{
+  PROP_0,
+  PROP_CONFIG
+};
+ 
+
 #define GNOME_PRINT_JOB_CLOSED(m) (((JOBPrivate *) (m)->priv)->closed)
 
 static void gnome_print_job_class_init (GnomePrintJobClass *klass);
@@ -71,9 +82,18 @@ static void gnome_print_job_finalize (GObject *object);
 static void job_update_layout_data (GnomePrintJob *job);
 static void job_parse_config_data (GnomePrintJob *job);
 static void job_clear_config_data (GnomePrintJob *job);
-static gboolean job_parse_transform (guchar *str, gdouble *transform);
+
+static void gnome_print_job_get_property (GObject      *object,
+                                          guint         prop_id,
+                                          GValue       *value,
+                                          GParamSpec   *pspec);
+static void gnome_print_job_set_property (GObject      *object,
+                                          guint         prop_id,
+                                          const GValue *value,
+                                          GParamSpec   *pspec);
 
 static GObjectClass *parent_class;
+
 
 GType
 gnome_print_job_get_type (void)
@@ -100,6 +120,18 @@ gnome_print_job_class_init (GnomePrintJobClass *klass)
 	GObjectClass *object_class;
 	
 	object_class = (GObjectClass *) klass;
+
+	object_class->set_property = gnome_print_job_set_property;
+	object_class->get_property = gnome_print_job_get_property;
+
+	g_object_class_install_property (object_class,
+                                   PROP_CONFIG,
+                                   g_param_spec_object ("config",
+                                                        _("Job Configuration"),
+                                                        _("The configuration for the print job"),
+                                                        GNOME_TYPE_PRINT_CONFIG,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+  
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = gnome_print_job_finalize;
@@ -110,7 +142,9 @@ gnome_print_job_init (GnomePrintJob *job)
 {
 	job->config = NULL;
 
-	job->meta = gnome_print_meta_new ();
+	job->meta = NULL;
+
+	job->input_file = NULL;
 
 	job->priv = g_new0 (JOBPrivate, 1);
 	job_clear_config_data (job);
@@ -125,11 +159,16 @@ gnome_print_job_finalize (GObject *object)
 
 	if (job->config) {
 		g_object_unref (G_OBJECT (job->config));
+		job->config = NULL;
 	}
 
 	if (job->meta != NULL) {
 		g_object_unref (G_OBJECT (job->meta));
+		job->meta = NULL;
 	}
+
+	g_free (job->input_file);
+	job->input_file = NULL;
 
 	if (job->priv) {
 		job_clear_config_data (job);
@@ -139,6 +178,55 @@ gnome_print_job_finalize (GObject *object)
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
+
+static void
+gnome_print_job_get_property (GObject *object, guint prop_id, GValue *value,
+	                     GParamSpec *pspec)
+{
+  GnomePrintJob *job = GNOME_PRINT_JOB (object);
+
+  switch (prop_id)
+    {
+    case PROP_CONFIG:
+      g_value_set_object (value, gnome_print_job_get_config (job));
+      break;
+  
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void
+gnome_print_job_set_property (GObject * object, guint prop_id,
+	                     const GValue * value, GParamSpec * pspec)
+{
+  GnomePrintJob *job = GNOME_PRINT_JOB (object);
+  GnomePrintConfig *config = NULL;
+
+  switch (prop_id)
+    {
+    case PROP_CONFIG:
+	    config = GNOME_PRINT_CONFIG (g_value_get_object (value));
+	    if (job->config) {
+		    gnome_print_config_unref (job->config);
+		    job->config = NULL;
+	    }
+	    
+	    if(config) {
+		    gnome_print_config_ref (config);
+		    job->config = config;
+	    } else {
+		    /* Use the default: */
+		    job->config = gnome_print_config_default ();
+	    }
+	    break;
+    default:
+	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	    break;
+    }
+}
+
 
 /**
  * gnome_print_job_new:
@@ -154,12 +242,7 @@ gnome_print_job_new (GnomePrintConfig *config)
 {
 	GnomePrintJob *job;
 	
-	job = g_object_new (GNOME_TYPE_PRINT_JOB, NULL);
-
-	if (config)
-		job->config = gnome_print_config_ref (config);
-	else
-		job->config = gnome_print_config_default ();
+	job = g_object_new (GNOME_TYPE_PRINT_JOB, "config", config, NULL);
 
 	return job;
 }
@@ -190,6 +273,8 @@ gnome_print_job_get_config (GnomePrintJob *job)
  * 
  * Retrieve the GnomePrintContext which applications
  * print to.
+ *
+ * The caller is responsible to unref the context when s/he is done with it.
  * 
  * Return value: The printing context, NULL on error
  **/
@@ -198,11 +283,37 @@ gnome_print_job_get_context (GnomePrintJob *job)
 {
 	g_return_val_if_fail (job != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINT_JOB (job), NULL);
+	g_return_val_if_fail (job->input_file == NULL, NULL);
 
-	if (job->meta)
-		g_object_ref (G_OBJECT (job->meta));
+	if (job->meta == NULL)
+		job->meta = gnome_print_meta_new ();
+
+	g_object_ref (G_OBJECT (job->meta));
 
 	return job->meta;
+}
+
+/**
+ * gnome_print_job_set_file:
+ * @job: An initialised GnomePrintJob.
+ * @input_file: The file to input from.
+ * 
+ * Set the file to print from. This allows applications to use
+ * gnome-print without using the drawing API by providing the
+ * postscipt output.
+ * 
+ * Return value: None
+ **/
+void
+gnome_print_job_set_file (GnomePrintJob *job, gchar *input_file)
+{
+	g_return_if_fail (job != NULL);
+	g_return_if_fail (GNOME_IS_PRINT_JOB (job));
+	g_return_if_fail (input_file != NULL);
+	g_return_if_fail (job->input_file == NULL);
+	g_return_if_fail (job->meta == NULL);
+
+	job->input_file = g_strdup (input_file);
 }
 
 /**
@@ -224,9 +335,8 @@ gnome_print_job_get_pages (GnomePrintJob *job)
 
 	g_return_val_if_fail (job != NULL, 0);
 	g_return_val_if_fail (GNOME_IS_PRINT_JOB (job), 0);
-
-	if (!GNOME_PRINT_JOB_CLOSED (job))
-		return 0;
+	g_return_val_if_fail (job->meta, 0);
+	g_return_val_if_fail (GNOME_PRINT_JOB_CLOSED (job), 0);
 
 	job_update_layout_data (job);
 
@@ -313,6 +423,10 @@ gnome_print_job_close (GnomePrintJob *job)
 
 	g_return_val_if_fail (job != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_JOB (job), GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (job->input_file == NULL, 0);
+
+	if (!job->meta)
+		job->meta = gnome_print_meta_new ();
 
 	pp = job->priv;
 
@@ -324,6 +438,69 @@ gnome_print_job_close (GnomePrintJob *job)
 	g_warning ("gnome_print_job_close can only be called once\n");
 
 	return GNOME_PRINT_ERROR_UNKNOWN;
+}
+
+/**
+ * gnome_print_job_metadata_printer:
+ * @job: 
+ * @retval: 
+ * 
+ * We have to special case the Metadata printer where we want to create a file on
+ * disk with the drawing commands to later play them. libgnomeprint needs to be
+ * configured with --with-metadata-printer for it to show up in the printers list
+ * this is used to create streams of drawing commands for example for the regression
+ * test suite.
+ * 
+ * Return Value: TRUE if this job is using the Metadata (to file) printer
+ **/
+static gboolean
+gnome_print_job_metadata_printer (GnomePrintJob *job, gint *retval)
+{
+	GnomePrintTransport *transport;
+	gchar *drivername;
+	gboolean print_to_file = FALSE;
+	const guchar *buf;
+	gint blen;
+
+	drivername = gnome_print_config_get (job->config, "Settings.Engine.Backend.Driver");
+
+	if (drivername == NULL)
+		return FALSE;
+
+	if (strcmp (drivername, "gnome-print-meta") != 0) {
+		g_free (drivername);
+		return FALSE;
+	}
+
+	*retval = GNOME_PRINT_ERROR_UNKNOWN;
+	
+	gnome_print_config_get_boolean (job->config, "Settings.Output.Job.PrintToFile", &print_to_file);
+	if (!print_to_file) {
+		g_warning ("Metadata printer should always be print to file");
+		goto metadata_printer_done;
+	}
+
+	transport = gnome_print_transport_new (job->config);
+	if (!transport) {
+		g_warning ("Could not create transport for metadata printer");
+		goto metadata_printer_done;
+	}
+
+	buf  = gnome_print_meta_get_buffer (GNOME_PRINT_META (job->meta));
+	blen = gnome_print_meta_get_length (GNOME_PRINT_META (job->meta));
+
+	gnome_print_transport_open  (transport);
+	gnome_print_transport_write (transport, buf, blen);
+	gnome_print_transport_write (transport, "GNOME_METAFILE_END", strlen ("GNOME_METAFILE_END"));
+	gnome_print_transport_close (transport);
+	
+	*retval = GNOME_PRINT_OK;
+
+metadata_printer_done:
+
+	g_free (drivername);
+
+	return TRUE;
 }
 
 /**
@@ -341,7 +518,7 @@ gnome_print_job_print (GnomePrintJob *job)
 	JOBPrivate *pp;
 	GnomePrintContext *ctx;
 	gint lpages, copies, nstacks, npages, nsheets;
-	gboolean collate, is_multipage;
+	gboolean collate, is_multipage, hwcopies;
 	gint stack;
 	const guchar *buf;
 	gint blen;
@@ -351,6 +528,11 @@ gnome_print_job_print (GnomePrintJob *job)
 	g_return_val_if_fail (GNOME_IS_PRINT_JOB (job), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (job->priv, GNOME_PRINT_ERROR_UNKNOWN);
 
+	if (job->input_file) {
+		GnomePrintTransport *transport = gnome_print_transport_new (job->config);
+		return gnome_print_transport_print_file (transport, job->input_file);
+	}
+
 	pp = job->priv;
 
 	if (!pp->closed) {
@@ -358,9 +540,6 @@ gnome_print_job_print (GnomePrintJob *job)
 			   "gnome_print_job_print\n");
 		gnome_print_job_close (job);
 	}
-	
-	ctx = gnome_print_context_new (job->config);
-	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	/* Get number of pages in metafile */
 	lpages = gnome_print_meta_get_pages (GNOME_PRINT_META (job->meta));
@@ -368,7 +547,15 @@ gnome_print_job_print (GnomePrintJob *job)
 		return GNOME_PRINT_OK;
 	npages = lpages;
 
-	/* Update layout data */
+	/* Special case where printer is a Metadata print to file */
+	if (gnome_print_job_metadata_printer (job, &ret))
+		return ret;
+
+	/* Create the "real" context */
+	ctx = gnome_print_context_new (job->config);
+	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+
+	/* Update the layout data */
 	is_multipage = FALSE;
 	job_update_layout_data (job);
 	if (pp->LY_LIST) {
@@ -386,6 +573,15 @@ gnome_print_job_print (GnomePrintJob *job)
 	gnome_print_config_get_boolean (job->config, GNOME_PRINT_KEY_COLLATE, &collate);
 	copies = 1;
 	gnome_print_config_get_int (job->config, GNOME_PRINT_KEY_NUM_COPIES, &copies);
+	hwcopies = FALSE;
+	gnome_print_config_get_boolean (job->config, 
+					collate 
+					? GNOME_PRINT_KEY_COLLATED_COPIES_IN_HW
+					: GNOME_PRINT_KEY_NONCOLLATED_COPIES_IN_HW, 
+					&hwcopies);
+
+	if (hwcopies)
+		copies = 1;
 
 	if (collate) {
 		nstacks = copies;
@@ -415,6 +611,10 @@ gnome_print_job_print (GnomePrintJob *job)
 					gnome_print_multipage_finish_page (GNOME_PRINT_MULTIPAGE (ctx));
 				}
 			}
+		}
+		if (stack + 1 < nstacks) {
+			ret = gnome_print_end_doc (ctx);
+			g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
 		}
 	}
 
@@ -448,6 +648,7 @@ gnome_print_job_render (GnomePrintJob *job, GnomePrintContext *ctx)
 	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (ctx), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (job->priv, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (job->meta, GNOME_PRINT_ERROR_UNKNOWN);
 
 	pp = job->priv;
 
@@ -494,6 +695,7 @@ gnome_print_job_render_page (GnomePrintJob *job, GnomePrintContext *ctx, gint pa
 	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (ctx), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (job->priv, GNOME_PRINT_ERROR_UNKNOWN);
+	g_return_val_if_fail (job->meta, GNOME_PRINT_ERROR_UNKNOWN);
 
 	pp = job->priv;
 
@@ -678,7 +880,6 @@ job_parse_config_data (GnomePrintJob *job)
 	JOBPrivate *pp;
 	const GnomePrintUnit *unit;
 	GPANode *layout;
-	gchar *loc;
 
 	g_return_if_fail (job->priv);
 
@@ -690,8 +891,6 @@ job_parse_config_data (GnomePrintJob *job)
 
 	/* Now the fun part */
 
-	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
 
 	/* Physical size */
 	if (gnome_print_config_get_length (job->config, GNOME_PRINT_KEY_PAPER_WIDTH, &pp->pw, &unit)) {
@@ -722,17 +921,22 @@ job_parse_config_data (GnomePrintJob *job)
 				gint pagenum;
 				affines = g_new (gdouble, 6 * numlp);
 				pagenum = 0;
-				for (page = gpa_node_get_child (pages, NULL); page != NULL; page = gpa_node_get_child (pages, page)) {
+
+				while (pagenum < numlp) {
 					guchar *transform;
+					guchar *child_id;
+					child_id = g_strdup_printf ("LP%d", pagenum);
+					page = gpa_node_get_child_from_path (pages, child_id);
 					transform = gpa_node_get_value (page);
 					gpa_node_unref (page);
-					if (!transform)
+					if (!transform) {
+						g_warning ("Could not fetch transfrom from %s\n", child_id);
 						break;
-					job_parse_transform (transform, affines + 6 * pagenum);
+					}
+					gnome_print_parse_transform (transform, affines + 6 * pagenum);
 					g_free (transform);
+					g_free (child_id);
 					pagenum += 1;
-					if (pagenum >= numlp)
-						break;
 				}
 				gpa_node_unref (pages);
 				if (pagenum == numlp) {
@@ -749,9 +953,6 @@ job_parse_config_data (GnomePrintJob *job)
 		art_affine_identity (pp->affines);
 		pp->num_affines = 1;
 	}
-
-	setlocale (LC_NUMERIC, loc);
-	g_free (loc);
 }
 
 #define A4_WIDTH (210 * 72 / 25.4)
@@ -789,139 +990,6 @@ job_clear_config_data (GnomePrintJob *job)
 
 
 /* FIXME: This function should not be here, we should not be including gpa-private.h too */
-
-/* All keys can be NULL */
-GnomePrintLayoutData *
-gnome_print_config_get_layout_data (GnomePrintConfig *config,
-				    const guchar *pagekey,
-				    const guchar *porientkey,
-				    const guchar *lorientkey,
-				    const guchar *layoutkey)
-{
-	GnomePrintLayoutData *lyd;
-	guchar key[1024];
-	const GnomePrintUnit *unit;
-	GPANode *layout;
-	gchar *loc;
-	/* Local data */
-	GnomePrintLayoutPageData *pages;
-	gdouble porient[6], lorient[6];
-	gdouble pw, ph, lyw, lyh;
-	gint num_pages;
-	gint numlp;
-	
-	g_return_val_if_fail (config != NULL, NULL);
-
-	if (!pagekey)
-		pagekey = GNOME_PRINT_KEY_PAPER_SIZE;
-	if (!porientkey)
-		porientkey = GNOME_PRINT_KEY_PAPER_ORIENTATION;
-	if (!lorientkey)
-		lorientkey = GNOME_PRINT_KEY_PAGE_ORIENTATION;
-	if (!layoutkey)
-		layoutkey = GNOME_PRINT_KEY_LAYOUT;
-
-
-	/* Initialize */
-	pw = 210 * 72.0 / 25.4;
-	ph = 297 * 72.0 / 25.4;
-	art_affine_identity (porient);
-	art_affine_identity (lorient);
-	lyw = 1.0;
-	lyh = 1.0;
-	num_pages = 0;
-	pages = NULL;
-
-	/* Now the fun part */
-
-	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
-
-	/* Physical size */
-	g_snprintf (key, 1024, "%s.Width", pagekey);
-	if (gnome_print_config_get_length (config, key, &pw, &unit)) {
-		gnome_print_convert_distance (&pw, unit, GNOME_PRINT_PS_UNIT);
-	}
-	g_snprintf (key, 1024, "%s.Height", pagekey);
-	if (gnome_print_config_get_length (config, key, &ph, &unit)) {
-		gnome_print_convert_distance (&ph, unit, GNOME_PRINT_PS_UNIT);
-	}
-	/* Physical orientation */
-	g_snprintf (key, 1024, "%s.Paper2PrinterTransform", porientkey);
-	gnome_print_config_get_transform (config, key, porient);
-	/* Logical orientation */
-	g_snprintf (key, 1024, "%s.Page2LayoutTransform", lorientkey);
-	gnome_print_config_get_transform (config, key, lorient);
-	/* Layout size */
-	g_snprintf (key, 1024, "%s.Width", layoutkey);
-	gnome_print_config_get_double (config, key, &lyw);
-	g_snprintf (key, 1024, "%s.Height", layoutkey);
-	gnome_print_config_get_double (config, key, &lyh);
-
-	/* Get the layout tree from the config database */
-	layout = gpa_node_get_child_from_path (GNOME_PRINT_CONFIG_NODE (config), layoutkey);
-	if (!layout) {
-		layout = gpa_node_get_child_from_path (NULL, "Globals.Document.Page.Layout.Plain");
-		if (!layout) {
-			g_warning ("Could not get Globals.Document.Page.Layout.Plain");
-			return NULL;
-		}
-	}
-
-	/* Now come the affines */
-	numlp = 0;
-	if (gpa_node_get_int_path_value (layout, "LogicalPages", &numlp) && (numlp > 0)) {
-		GPANode *pnodes;
-		pnodes = gpa_node_get_child_from_path (layout, "Pages");
-		if (pnodes) {
-			GPANode *page;
-			gint pagenum;
-			pages = g_new (GnomePrintLayoutPageData, numlp);
-			pagenum = 0;
-			for (page = gpa_node_get_child (pnodes, NULL); page != NULL; page = gpa_node_get_child (pnodes, page)) {
-				guchar *transform;
-				transform = gpa_node_get_value (page);
-				gpa_node_unref (page);
-				if (!transform)
-					break;
-				job_parse_transform (transform, pages[pagenum].matrix);
-				g_free (transform);
-				pagenum += 1;
-				if (pagenum >= numlp)
-					break;
-			}
-			gpa_node_unref (pnodes);
-			if (pagenum == numlp) {
-				num_pages = numlp;
-			} else {
-				g_free (pages);
-			}
-		}
-	}
-	gpa_node_unref (layout);
-
-	setlocale (LC_NUMERIC, loc);
-	g_free (loc);
-	
-	if (num_pages == 0) {
-		g_warning ("Could not get_layout_data\n");
-		return NULL;
-	}
-
-	/* Success */
-
-	lyd = g_new (GnomePrintLayoutData, 1);
-	lyd->pw = pw;
-	lyd->ph = ph;
-	memcpy (lyd->porient, porient, 6 * sizeof (gdouble));
-	memcpy (lyd->lorient, lorient, 6 * sizeof (gdouble));
-	lyd->lyw = lyw;
-	lyd->lyh = lyh;
-	lyd->num_pages = num_pages;
-	lyd->pages = pages;
-
-	return lyd;
-}
 
 void
 gnome_print_layout_data_free (GnomePrintLayoutData *lyd)
@@ -1053,8 +1121,8 @@ gnome_print_layout_free (GnomePrintLayout *layout)
 	g_free (layout);
 }
 
-static gboolean
-job_parse_transform (guchar *str, gdouble *transform)
+gboolean
+gnome_print_parse_transform (guchar *str, gdouble *transform)
 {
 	gdouble t[6];
 	guchar *p;
@@ -1085,7 +1153,7 @@ job_parse_transform (guchar *str, gdouble *transform)
 			t[i] = -M_SQRT1_2;
 			e = p + 8;
 		} else {
-			t[i] = strtod (p, &e);
+			t[i] = g_ascii_strtod (p, &e);
 		}
 		if (e == (gchar *) p)
 			return FALSE;
@@ -1121,40 +1189,5 @@ gnome_print_job_print_to_file (GnomePrintJob *job, gchar *output)
 	}
 	
 	return GNOME_PRINT_OK;
-}
-
-/* fixme: Move this (and previous) to gnome-print-config.c (Lauris) */
-
-gboolean
-gnome_print_config_get_transform (GnomePrintConfig *config, const guchar *key, gdouble *transform)
-{
-	guchar *v;
-	gdouble t[6];
-	gboolean ret;
-	gchar *loc;
-
-	g_return_val_if_fail (config != NULL, FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (*key != '\0', FALSE);
-	g_return_val_if_fail (config != NULL, FALSE);
-
-	v = gnome_print_config_get (config, key);
-	if (!v) {
-		return FALSE;
-	}
-
-	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
-
-	ret = job_parse_transform (v, t);
-	g_free (v);
-	if (ret) {
-		memcpy (transform, t, 6 * sizeof (gdouble));
-	}
-
-	setlocale (LC_NUMERIC, loc);
-	g_free (loc);
-
-	return ret;
 }
 

@@ -8,6 +8,7 @@ gnome_font_face_find_closest_from_weight_slant
 gnome_font_face_find_closest_from_pango_font
 gnome_font_face_find_closest_from_pango_description
 gnome_font_face_find_from_family_and_style
+gnome_font_face_find_from_filename
 gnome_font_face_get_font
 gnome_font_face_get_font_default
 gnome_font_face_get_name
@@ -70,6 +71,7 @@ gnome_font_find_closest_from_weight_slant
 gnome_font_find
 gnome_font_find_closest
 gnome_font_find_from_full_name
+gnome_font_find_from_filename
 gnome_font_find_closest_from_full_name
 gnome_font_list
 gnome_font_list_free
@@ -183,6 +185,20 @@ GNOME_PRINT_CONTEXT
 GNOME_IS_PRINT_CONTEXT
 GNOME_TYPE_PRINT_CONTEXT
 gnome_print_context_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gnome-print-pango</FILE>
+<TITLE>Pango Integration</TITLE>
+gnome_print_pango_font_map_new
+gnome_print_pango_get_default_font_map
+gnome_print_pango_create_context
+gnome_print_pango_update_context
+gnome_print_pango_create_layout
+gnome_print_pango_glyph_string
+gnome_print_pango_layout_line
+gnome_print_pango_layout
+gnome_print_pango_layout_print
 </SECTION>
 
 <SECTION>
