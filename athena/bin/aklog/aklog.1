@@ -1,5 +1,5 @@
 .\" 
-.\" $Id: aklog.1,v 1.4 1992-02-03 09:30:13 probe Exp $
+.\" $Id: aklog.1,v 1.5 2000-10-18 19:00:52 ghudson Exp $
 .\"
 .\" Copyright 1990,1991 by the Massachusetts Institute of Technology
 .\" For distribution and copying rights, see the file "mit-copyright.h"
@@ -13,6 +13,8 @@ aklog \- Obtain tokens for authentication to AFS
 .B aklog 
 [ 
 .B \-d 
+] [ 
+.B \-force
 ] [ 
 .B \-hosts
 ] [ 
@@ -122,6 +124,13 @@ anyway.
 .B \-d
 Turns on printing of debugging information.  This option is not
 intended for general users.
+
+.TP
+.B \-force
+Forces aklog to obtain new tokens even if the user already appears to
+have tokens identical to the new ones they would get.  This option is
+most often required when the user has recently been added to an AFS
+group.
 
 .SH EXIT CODES
 The exit status of
