@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /bin/athena/attachandrun infoagents htmlview htmlview -c http://student.mit.edu/
+exec htmlview -c http://student.mit.edu/
