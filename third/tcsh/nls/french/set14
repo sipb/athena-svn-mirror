@@ -1,6 +1,0 @@
-$ $Id: set14,v 1.1.1.1 1998-10-03 21:10:26 danw Exp $
-$ sh.file.c
-$set 14 
-1 \nTrop de %s !!\n
-2 noms dans le fichier des mots de passe
-3 fichiers
