@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.28 1991-08-16 16:11:40 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.29 1992-01-06 15:54:40 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -794,8 +794,15 @@ detachcmd(argc, argv)
 		clean_detach = 1;
 		break;
 	case 'L':
-		lint_attachtab();
-		gotname = 1;
+		if (!trusted_user(real_uid)) {
+		    fprintf(stderr,
+			    "%s: You are not authorized to use the -lint option\n",
+			    progname);
+		    return(ERR_BADARGS);
+		} else {
+		    lint_attachtab();
+		    gotname = 1;
+		}
 		break;
 	default:
 		fprintf(stderr, "%s: Unknown switch %s\n", progname, argv[i]);
