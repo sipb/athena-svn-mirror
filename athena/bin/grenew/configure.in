@@ -1,4 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
+dnl $Id: configure.in,v 1.2 2002-06-03 18:27:55 mwhitson Exp $
+
 AC_INIT(grenew.c)
 
 AC_PROG_CC
