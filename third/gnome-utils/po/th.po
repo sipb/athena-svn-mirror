@@ -1,7 +1,3 @@
-# translation of gnome-utils.po to Thai
-# translation of gnom-utils.po to
-# translation of gnom-utils.po to
-# translation of gnom-utils.po to
 # Thai translation for gnome-utils.
 # Copyright (C) 2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-utils package.
@@ -13,10 +9,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-utils\n"
-"POT-Creation-Date: 2004-08-30 15:48+1200\n"
-"PO-Revision-Date: 2004-09-12 17:01+0700\n"
-"Last-Translator: Supranee Thirawatthanasuk <supranee@opentle.org>\n"
-"Language-Team: Thai <l10n>\n"
+"POT-Creation-Date: 2004-10-12 12:03+1300\n"
+"PO-Revision-Date: 2004-09-13 01:32-0500\n"
+"Last-Translator: Paisa Seeluangsawat <paisa@users.sf.net>\n"
+"Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -185,12 +181,12 @@ msgstr "ค้น_หา"
 
 #: gdictsrc/gdict-applet.c:148
 msgid "Dictionary word entry"
-msgstr "รายการคำพจนานุกรม"
+msgstr "ช่องรับคำสำหรับค้นหาในพจนานุกรม"
 
 #: gdictsrc/gdict-defbox.c:665 gdictsrc/gdict-speller.c:477
 #, c-format
 msgid "Error invoking query: %s"
-msgstr ""
+msgstr "ผิดพลาดขณะเรียกสอบถาม: %s"
 
 #: gdictsrc/gdict-pref-dialog.c:158
 msgid "Dictionary Preferences"
@@ -355,6 +351,8 @@ msgid ""
 "the dictionary server supports. The default strategy is 'lev' - Match words "
 "within Levenshtein distance one"
 msgstr ""
+"วิธีการค้นหาที่ใช้  นี่ขึ้นอยู่กับว่าเซิร์ฟเวอร์พจนานุกรมรองรับวิธีไหนบ้าง  วิธีปริยายคือ 'lev' "
+"ซึ่งหาคำที่ต่างกับคำที่ป้อนภายในหนึ่งหน่วย Levenshtein"
 
 #: gdictsrc/gdict.schemas.in.h:10
 msgid "Use smart lookup"
@@ -393,6 +391,8 @@ msgid ""
 "TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
 "mtools as the preferred FAT formatting backend."
 msgstr ""
+"ตั้งเป็น TRUE แล้วจะใช้ mkdosfs ในการฟอร์แมต FAT  ถ้าไม่มีโปรแกรมนี้จรึงใช้ mtools  "
+"ถ้าตั้งเป็น FALSE แล้วจะลองใช้ mtools ก่อน"
 
 #: gfloppy/gfloppy.schemas.in.h:6
 msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
@@ -534,7 +534,6 @@ msgstr ""
 
 # FIXME: what is the geometry of a floppy?
 #: gfloppy/src/fdformat.c:214
-#, fuzzy
 msgid "Could not determine current floppy geometry."
 msgstr "ไม่รู้ตำแหน่งรูปแบบของฟลอปปี้"
 
@@ -547,7 +546,7 @@ msgid "Error while filling the bad blocks list file."
 msgstr "เกิดข้อผิดพลาดขณะเขียนลงแฟ้มเก็บรายการบล็อกเสีย"
 
 #: gfloppy/src/gfloppy.c:305
-#, fuzzy, c-format
+#, c-format
 msgid "Error while spawning the (%s) command: %s."
 msgstr "เกิดข้อผิดพลาดขณะเรียกคำสั่ง (%s): %s"
 
@@ -568,7 +567,6 @@ msgstr ""
 
 # Here, program is a good enough subtitution for "process"
 #: gfloppy/src/gfloppy.c:362
-#, fuzzy
 msgid "Abnormal child process termination."
 msgstr "โปรแกรมลูกหยุดทำงานอย่างไม่ได้คาดหมาย"
 
@@ -587,7 +585,6 @@ msgstr ""
 "%s"
 
 #: gfloppy/src/gfloppy.c:442
-#, fuzzy
 msgid "Abnormal mbadblocks child process termination."
 msgstr "โปรแกรมลูก mbadblocks หยุดทำงานอย่างไม่ได้คาดหมาย"
 
@@ -640,7 +637,7 @@ msgstr "<span weight=\"bold\">โหมดการฟอร์แมต</span>"
 # This is for choosing device, disk density.  อุปกรณ์ would do.
 #: gfloppy/src/gfloppy2.glade.h:6
 msgid "<span weight=\"bold\">Physical Settings</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">ค่าตั้งอุปกรณ์</span>"
 
 # Try to be user friendly.  People hardly use ดอส these days.
 #: gfloppy/src/gfloppy2.glade.h:7
@@ -790,7 +787,7 @@ msgstr "ความก้าวหน้าการฟอร์แมต"
 
 #: gsearchtool/gnome-search-tool.desktop.in.h:1
 msgid "Find files, folders, and documents on your computer"
-msgstr "ค้นหาแฟ้ม โฟลเดอร์ และเอกสารที่คอมพิวเตอร์ของคุณ"
+msgstr "ค้นหาแฟ้ม โฟลเดอร์ หรือเอกสาร ในคอมพิวเตอร์เครื่องนี้"
 
 #: gsearchtool/gnome-search-tool.desktop.in.h:2 gsearchtool/gsearchtool.c:600
 #: gsearchtool/gsearchtool.c:858 gsearchtool/gsearchtool.c:942
@@ -877,7 +874,6 @@ msgstr "เอกสารไม่มีอยู่จริง"
 
 #: gsearchtool/gsearchtool-callbacks.c:421
 #: gsearchtool/gsearchtool-callbacks.c:1004
-#, fuzzy
 msgid "There is no installed viewer capable of displaying the document."
 msgstr "ไม่มีตัวแสดงเอกสารนี้ติดตั้งอยู่"
 
@@ -985,23 +981,23 @@ msgstr ""
 #. on age of a file.  Please modify the format of the timestamp to match
 #. your locale.  For example, to display 24 hour time replace the '%-I'
 #. with '%-H' and remove the '%p'.  (See bugzilla report #120434.)
-#: gsearchtool/gsearchtool-support.c:510
+#: gsearchtool/gsearchtool-support.c:511
 msgid "today at %-I:%M %p"
 msgstr "วันนี้ที่ %-I:%M %p"
 
-#: gsearchtool/gsearchtool-support.c:512
+#: gsearchtool/gsearchtool-support.c:513
 msgid "yesterday at %-I:%M %p"
 msgstr "เมื่อวานที่ %-I:%M %p"
 
-#: gsearchtool/gsearchtool-support.c:514 gsearchtool/gsearchtool-support.c:516
+#: gsearchtool/gsearchtool-support.c:515 gsearchtool/gsearchtool-support.c:517
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%A %-d %B %Ey, %H:%M:%S น."
 
-#: gsearchtool/gsearchtool-support.c:687
+#: gsearchtool/gsearchtool-support.c:688
 msgid "link (broken)"
 msgstr "จุดเชื่อม (ขาด)"
 
-#: gsearchtool/gsearchtool-support.c:692
+#: gsearchtool/gsearchtool-support.c:693
 #, c-format
 msgid "link to %s"
 msgstr "เชื่อมไปยัง %s"
@@ -1011,22 +1007,20 @@ msgid "Contains the _text"
 msgstr "_บรรจุข้อความ"
 
 #: gsearchtool/gsearchtool.c:76
-#, fuzzy
 msgid "_Date modified less than"
-msgstr "แก้ไขครั้งล่าสุด_ภายใน (วันที่ผ่านมา)"
+msgstr "แก้ไขครั้งล่าสุด_ภายใน"
 
 #: gsearchtool/gsearchtool.c:76 gsearchtool/gsearchtool.c:77
 msgid "days"
 msgstr "วัน"
 
 #: gsearchtool/gsearchtool.c:77
-#, fuzzy
 msgid "Date modified more than"
-msgstr "แก้ไขครั้งล่าสุด_ก่อน (วันที่ผ่านมา)"
+msgstr "แก้ไขครั้งล่าสุด_ก่อน"
 
 #: gsearchtool/gsearchtool.c:79
 msgid "S_ize at least"
-msgstr "ขนาดอ_ย่างน้อย "
+msgstr "ขนาดอ_ย่างน้อย"
 
 #: gsearchtool/gsearchtool.c:79 gsearchtool/gsearchtool.c:80
 msgid "kilobytes"
@@ -1034,7 +1028,7 @@ msgstr "กิโลไบต์"
 
 #: gsearchtool/gsearchtool.c:80
 msgid "Si_ze at most"
-msgstr "ขนาดไ_ม่เกิน "
+msgstr "ขนาดไ_ม่เกิน"
 
 #: gsearchtool/gsearchtool.c:81
 msgid "File is empty"
@@ -1058,7 +1052,7 @@ msgstr "ชื่อไม่มี_คำว่า"
 
 #: gsearchtool/gsearchtool.c:88
 msgid "Name matches regular e_xpression"
-msgstr ""
+msgstr "ชื่อที่ตร_ง regular expression"
 
 #: gsearchtool/gsearchtool.c:90
 msgid "Show hidden and backup files"
@@ -1068,7 +1062,7 @@ msgstr "แสดงแฟ้มสำรอง และแฟ้มที่�
 # จุดเชื่อม here unambiguously means symbolic link.
 #: gsearchtool/gsearchtool.c:91
 msgid "Follow symbolic links"
-msgstr ""
+msgstr "ติดตามลิงก์สัญลักษณ์"
 
 #: gsearchtool/gsearchtool.c:92
 msgid "Include other filesystems"
@@ -1135,7 +1129,7 @@ msgstr "เลือกข้อจำกัด '%s'"
 
 #: gsearchtool/gsearchtool.c:1078
 msgid "Invalid option passed to sortby command line argument."
-msgstr ""
+msgstr "คำสั่ง sortby ได้รับตัวเลือกที่ใช้ไม่ได้"
 
 #: gsearchtool/gsearchtool.c:1350
 msgid ""
@@ -1149,17 +1143,17 @@ msgstr ""
 msgid ""
 "The search results may be invalid.  There were errors while performing this "
 "search."
-msgstr "อาจจะไม่ได้ผลการค้นหา เกิดข้อผิดพลาดขณะทำการค้นหา"
+msgstr "ผลการค้นหาอาจไม่ถูกต้อง  เกิดข้อผิดพลาดขณะค้นหา"
 
 #: gsearchtool/gsearchtool.c:1380
 msgid ""
 "The search results may be invalid.  Do you want to disable the quick search "
 "feature?"
-msgstr "อาจจะไม่ได้ผลการค้นหา คุณต้องการยกเลิกการค้นหาอย่างรวดเร็วหรือไม่ ?"
+msgstr "ผลการค้นหาอาจไม่ถูกต้อง  คุณต้องการปิดการค้นหาแบบเร็วหรือไม่ ?"
 
 #: gsearchtool/gsearchtool.c:1388
 msgid "Disable _Quick Search"
-msgstr "ไม่สามารถใช้งานการค้นหาอย่าง_รวดเร็ว"
+msgstr "ปิดการค้นหาแบบเ_ร็ว"
 
 #: gsearchtool/gsearchtool.c:1432
 msgid "Error parsing the search command."
@@ -1172,7 +1166,7 @@ msgstr "เกิดข้อผิดพลาดขณะเรียกใช
 #: gsearchtool/gsearchtool.c:1572
 #, c-format
 msgid "'%s' entry"
-msgstr "%s' รายการ"
+msgstr "'%s' รายการ"
 
 #: gsearchtool/gsearchtool.c:1573
 msgid "Enter a value for search rule"
@@ -1333,7 +1327,7 @@ msgstr "ไม่สามารถเขียนลงฐานข้อมู
 #: logview/actions.c:487
 #, c-format
 msgid "Error while executing specified action: %s"
-msgstr "เกิดข้อผิดพลาดขณะเรียกใช้การปฏิบัติการที่กำหนด: %s"
+msgstr "เกิดข้อผิดพลาดขณะเรียกใช้ปฏิบัติการที่กำหนด: %s"
 
 #: logview/actions.c:510
 msgid "<empty>"
@@ -1353,7 +1347,7 @@ msgstr "regexp ข้อความ"
 
 #: logview/actions.c:514
 msgid "action to execute when regexps are TRUE"
-msgstr ""
+msgstr "ปฏิบัติการที่จะเรียกใช้ถ้า regexps เป็น TRUE"
 
 #: logview/actions.c:515
 msgid "description"
@@ -1378,7 +1372,7 @@ msgstr "_ชื่อบันทึกการปฏิบัติการ:"
 
 #: logview/actions.c:714
 msgid "Regular expression that will match the log name."
-msgstr ""
+msgstr "regular expression ที่จะตรงชื่อ log"
 
 #: logview/actions.c:724
 msgid "_Process:"
@@ -1394,7 +1388,7 @@ msgstr "_ข้อความ:"
 
 #: logview/actions.c:752
 msgid "Regular expression that will match the message."
-msgstr ""
+msgstr "regular expression ที่จะตรงข้อความ"
 
 #: logview/actions.c:762
 msgid "_Action:"

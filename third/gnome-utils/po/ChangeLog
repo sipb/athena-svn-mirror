@@ -1,3 +1,33 @@
+2004-10-12  Glynn Foster  <glynn.foster@sun.com>
+
+	* 2.8.1 version marker
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-09  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
+2004-09-29  Abel Cheung  <maddog@linuxhall.org>
+
+	* ms.po, ne.po: Marked plural entries as fuzzy since no valid
+	  Plural-Form header is present.
+
+2004-09-29  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation from GNOME HK Team
+
+2004-09-25  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-13  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* th.po: Updated Thai translation.
+
 2004-09-13  Glynn Foster  <glynn.foster@sun.com>
 
 	* 2.8.0 version marker.
@@ -48,9 +78,9 @@
 	Vladimir Petkov <vpetkov@i-space.org>
 
 2004-09-07  David Lodge <dave@cirt.net>
-                                                                                
-        * en_GB.po: Updated British translation.
-                                                                                
+
+	* en_GB.po: Updated British translation.
+
 2004-09-06  Kostas Papadimas <pkst@gnome.org>
 
 	* el.po: Updated  Greek translation.
@@ -65,7 +95,7 @@
 	
 2004-09-03  Hendrik Richter <hendrik@gnome-de.org>
 
-        * de.po: Updated German translation
+	* de.po: Updated German translation
 	
 2004-09-02  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
 
@@ -100,9 +130,9 @@
 	* hu.po: Updated Hungarian translation.
 
 2004-08-25  David Lodge <dave@cirt.net>
-                                                                                
-        * en_GB.po: Updated British translation.
-                                                                                
+
+	* en_GB.po: Updated British translation.
+
 2004-08-25  Maxim Dziumanenko <mvd@mylinux.com.ua>
 
 	* uk.po: Updated Ukrainian translation.
@@ -254,13 +284,13 @@
 	* en_CA.po: Updated Canadian English translation.
 
 2004-08-01  David Lodge <dave@cirt.net>
-                                                                                
-        * en_GB.po: Updated British translation.
-                                                                                
+
+	* en_GB.po: Updated British translation.
+	
 2004-07-31  David Lodge <dave@cirt.net>
-                                                                                
-        * en_GB.po: Updated British translation.
-                                                                                
+
+	* en_GB.po: Updated British translation.
+
 2004-07-31  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian translation.
@@ -283,7 +313,7 @@
 
 2004-07-21  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-        * hi.po: Updated Hindi translation.
+	* hi.po: Updated Hindi translation.
 
 2004-07-20  Miloslav Trmac  <mitr@volny.cz>
 
