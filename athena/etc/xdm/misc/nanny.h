@@ -11,10 +11,11 @@
 #define N_DEBUG		"DEBUG"
 #define N_ENV		"ENV["
 #define N_XSESSARGS	"XSESSION_ARGS["
-#define N_MODE		"NANNY_MODE"
-#define N_CONSMODE	"CONSOLE_MODE"
+#define N_MODE		"MODE"
+#define N_FMODE		"FMODE"
 #define N_RETRY		"RETRY"
 
+#define N_BADVALUE	"BADVALUE"
 #define N_OK		"OK"
 #define N_TRUE		"TRUE"
 #define N_FALSE		"FALSE"
