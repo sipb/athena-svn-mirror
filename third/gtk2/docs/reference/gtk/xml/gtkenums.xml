@@ -729,8 +729,43 @@ Indicated the relief to be drawn around a <link linkend="GtkButton"><type>GtkBut
 } GtkSelectionMode;
 </programlisting>
 <para>
+Used to control what selections users are allowed to make.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GTK_SELECTION_NONE</literal></term>
+<listitem><simpara>No selection is possible.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_SELECTION_SINGLE</literal></term>
+<listitem><simpara>Zero or one element may be selected.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_SELECTION_BROWSE</literal></term>
+<listitem><simpara>Exactly one element is selected. In some circumstances,
+  such as initially or during a search operation, it's possible for no element 
+  to be selected with <literal>GTK_SELECTION_BROWSE</literal>. What is really enforced is that 
+  the user can't deselect a currently selected element except by selecting 
+  another element.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_SELECTION_MULTIPLE</literal></term>
+<listitem><simpara>Any number of elements may be selected. 
+   Clicks toggle the state of an item. Any number of elements may be selected. 
+   Click-drag selects a range of elements; the Ctrl key may be used to enlarge 
+   the selection, and Shift key to select between the focus and the child 
+   pointed to.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_SELECTION_EXTENDED</literal></term>
+<listitem><simpara>Deprecated, behaves identical to <literal>GTK_SELECTION_MULTIPLE</literal>.
 
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="GtkShadowType"/>enum GtkShadowType</title>
 <indexterm><primary>GtkShadowType</primary></indexterm><programlisting>typedef enum

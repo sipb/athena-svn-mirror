@@ -1,16 +1,744 @@
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.14 ===
+
+	* NEWS: Updates
+
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (gtk_file_chooser_default_should_respond):
+	Reinstate the previous behavior for clicking Ok after
+	activating a bookmark or path bar button in folder 
+	modes.  (#160044, Dennis Cranston)
+
+2004-12-02  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #159656:
+
+	* gtk/gtkfilechooserdefault.c (PendingOp): New enumeration for the
+	pending operation to perform when finishing loading a folder.
+	(struct _GtkFileChooserDefault): New fields 'pending_op' and
+	'pending_select_path'.
+	(pending_op_queue): New utility function.
+	(pending_op_process): New utility function.
+	(gtk_file_chooser_default_select_path): Don't select the path
+	immediately; delay it until the folder is finished loading.
+	(browse_files_model_finished_loading_cb): Process the pending
+	operation.
+	(browse_files_select_first_row): New utility function.
+	(gtk_file_chooser_default_initial_focus): Use
+	browse_files_select_first_row().
+	(gtk_file_chooser_default_should_respond): Queue an operation to
+	select the first row once we load the child folder.
+	(up_folder_handler): Queue an operation to select the current
+	folder once we load the parent folder.
+	(gtk_file_chooser_default_finalize): Free the pending_select_path.
+
+2004-12-02  Sven Neumann  <sven@gimp.org>
+
+	* gtk/gtkaccelmap.c (_gtk_accel_path_is_valid): added parentheses
+	around && within ||.
+
+2004-11-30  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2004-11-29  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtkfilechooserdefault.c (trap_activate_cb): Don't handle
+	Enter if we are in SELECT_FOLDER or CREATE_FOLDER actions.  This
+	lets us navigate thei file system more easily.
+	(gtk_file_chooser_default_should_respond): If we are in
+	SELECT_FOLDER or CREATE_FOLDER modes, return TRUE if something is
+	selected.
+
+2004-11-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdk/x11/gdkselection-x11.c (gdk_text_property_to_utf8_list_for_display): 
+	Don't crash if Xlib fails to return UTF-8. (#159373, Kristian Høgsberg) 
+
+2004-11-20  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtkfilechooserdefault.c (list_icon_data_func): Set an empty
+	icon if we are on the editable row:  if we don't set the cell
+	renderer at all, it will reuse the last thing it painted.
+
+2004-11-19  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #158475:
+
+	* gtk/gtkpathbar.c (make_directory_button): Make the button a drag
+	source.
+	(button_drag_data_get_cb): New callback to let us drag the
+	button's path as a text/uri-list.
+
+2004-11-19  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #141077.  Based on a patch by Christian Neumair <chris@gnome-de.org>:
+
+	* gtk/gtkfilechooserdefault.c (new_folder_button_clicked):
+	Desensitize the "new folder" button.
+	(edited_idle_cb): Sensitize the button back.
+
+2004-11-19  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #158477:
+
+	* gtk/gtkfilechooserdefault.c (struct _GtkFileChooserDefault):
+	Remove the "save_extra_align" and "browse_extra_align" fields; use
+	a single "extra_align" field.
+	(save_widgets_create): Don't create the save_extra_align.
+	(browse_widgets_create): Don't create the browse_extra_align.
+	(gtk_file_chooser_default_constructor): Create the extra_align
+	here.
+	(set_extra_widget): Add the extra widget to the alignment here,
+	and remove the old one if necessary.
+	(update_appearance): No need to frob the extra widget's alignments
+	anymore.
+	(gtk_file_chooser_default_set_property): No need to call
+	update_appearance() anymore when we set the extra widget.
+
+2004-11-19  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtkfilechooserdefault.c
+	(gtk_file_chooser_default_initial_focus): Don't set the cursor if
+	we are still loading.
+
+2004-11-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes #155744:
+
+	Try to load the whole file system model within a specified time.
+
+	* gtk/gtkfilechooserdefault.c (set_list_model): Don't create and
+	set the sort model here.  Instead, set up a timer in which we'll
+	try to load the file system model.
+	(load_set_model): Create and set the sort model here.
+	(load_setup_timer): New function to set up a timer and switch to
+	the LOAD_LOADING state.
+	(load_remove_timer): New function to unset the timer and switch to
+	the LOAD_FINISHED state.
+	(browse_files_model_finished_loading_cb): Remove the timer if
+	needed and set the file system and sort model; switch to the
+	LOAD_FINISHED state.
+	(gtk_file_chooser_default_finalize): Remove the load timer.
+	(gtk_file_chooser_default_init): Start in the LOAD_FINISHED state.
+
+2004-11-17  Sven Neumann  <sven@gimp.org>
+
+	* gtk/gtktreeselection.c: include <string.h> for memset().
+
+	* gtk/gtkmenu.c (menu_change_screen): added missing casts.
+
+	Merged from HEAD branch:
+
+	* gtk/gtkcellrenderertext.c (get_layout): Don't use the foreground
+	color for selected cells, Don't use the background color
+	in unfocused selected cells. Also avoid creating two PangoLayouts
+	per render call.  (#154615, #154611, Billy Biggs)
+
+2004-11-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkbutton.c: 
+	* gtk/gtkimagemenuitem.c: Don't use one signal handler per
+	instance to track changes to the gtk-menu-images and
+	gtk-button-images settings. Instead use a single handler which 
+	iterates over the widget hierarchy. (#143668)
+
+Mon Nov 15 14:25:21 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* gtk/gtktreeviewcolumn.c (_gtk_tree_view_column_cell_set_dirty):
+	Patch from Gavin Romig-Koch <gavin@redhat.com> to no longer reset
+	the resized_width when marking a column dirty.
+
+2004-11-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtktreemodel.c (gtk_tree_path_prev): Return FALSE
+	if depth is 0 (noticed by Tim Janik)
+
+Thu Nov 11 17:22:45 2004  Manish Singh  <yosh@gimp.org>
+
+	* gtk/gtkuimanager.c: gtkalias.h doesn't exist on this branch. Remove
+	reference.
+
+2004-11-11  Tor Lillqvist  <tml@iki.fi>
+
+	Fix for #137551, by Robert Ögren:
+
+	* gdk/win32/gdkevents-win32.c (generate_focus_event): New function.
+
+	(gdk_keyboard_grab, gdk_keyboard_ungrab): Generate focus change
+	events.
+	
+	(gdk_event_translate): Check for keyboard grabs and not pointer
+	grabs when handling WM_{SET,KILL}FOCUS. Use generate_focus_event().
+
+2004-11-11  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkuimanager.c (update_node): Remove two more places
+	where we were unconditionally setting "visible", causing
+	unnecessary notifications.
+	(update_node): Fix some C99isms.
+
+2004-11-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Considerably speed up GtkUIManager, by changing the semantics
+	of the dirty flag. It is now propagated up the tree, and
+	update_node() doesn't descend into clean subtrees.  (#143668,
+	Dave Neary, Michael Natterer, Sven Neumann, fix proposed
+	by Soeren Sandmann)
+	
+	* gtk/gtkuimanager.c (node_prepend_ui_reference): Only prepend 
+	a new node reference if the merge_id is different. Take a GNode,
+	so we can walk up the tree, adjust all callers. 
+	(node_remove_ui_reference): Only mark a node dirty if the first 
+	ui reference is removed. Take a GNode here as well for 
+	consistency. 
+	(update_node): Don't descend into clean subtrees.
+	(mark_node_dirty): New function to mark a node and its 
+	predecessors dirty.
+
+2004-11-10  Tor Lillqvist  <tml@iki.fi>
+
+	* gdk/win32/gdkevents-win32.c (_gdk_win32_get_next_tick): 
+	Event timestamps don't have to be unique. As long as they are
+	nondecreasing we should be fine. Solves problems with for instance
+	long menus not staying up on first click. (#152035, Robert Ögren)
+
+2004-11-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkaction.c (_gtk_action_sync_menu_visible): Use 
+	gtk_widget_{hide,show} instead of g_object_set (..."visible"...).
+
+2004-11-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkcombobox.c (gtk_combo_box_cell_layout_pack_end): 
+	Add the ComboCellInfo to the list.  (#157528, Carlos Garnacho
+	Parro)
+
+2004-11-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (new_folder_button_clicked): 
+	Don't leak the path.  (#157301, Carlos Garnacho Parro)
+
+	* gtk/gtkliststore.c (gtk_list_store_move): Take into account
+	that a can be NULL even if position is not. This fixes the 
+	inability of gtk_list_store_move() to move rows to the very
+	beginning.  (#155545, John Finlay)
+
+2004-11-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdk/x11/gdkevents-x11.c (gdk_wm_protocols_filter): Don't crash on
+	broken ClientMessage events.  (#157056, Owen Taylor)
+
+2004-10-31  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkentrycompletion.c (_gtk_entry_completion_resize_popup): 
+	Don't force the height of the action area, we don't scroll 
+	it anyway, and the current way of calculating the height can lead
+	to broken display.  (#156573, Christian Persch)
+
+2004-10-29  Robert Ögren  <gtk@roboros.com>
+
+	* gdk/win32/gdkwindow-win32.c (gdk_window_begin_resize_drag),
+	(gdk_window_begin_move_drag): Implement these on win32, currently
+	only for button 1. Fixes the resize grip of GtkStatusbar on 
+	win32. (#143285)
+
+2004-10-29  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkcellrendererpixbuf.c (gtk_cell_renderer_pixbuf_finalize): 
+	Drop the reference to the pixbuf, regardless whether it is
+	a stock pixbuf.  (#156863, Philip Langdale)
+
+2004-10-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtktreeview.c (gtk_tree_view_size_allocate): Invalidate 
+	the window if the tree is empty, to avoid resizing artifacts
+	from the focus rectangle.  (#155881, Vincent Noel, patch by
+	Billy Biggs)	
+
+2004-10-22  Anders Carlsson  <andersca@gnome.org>
+
+	* gtk/gtktexttag.c: (gtk_text_tag_get_property):
+	GdkBitmap is a GObject, not a boxed type.
+
+2004-10-18  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix #155658, Sebastien Bacher:
+	
+	* gdk/x11/gdkwindow-x11.h (struct _GdkToplevelX11): Add a new 
+	is_leader flag.
+
+	* gdk/x11/gdkwindow-x11.c (update_wm_hints): Set wm hints on
+	leader windows even if they are withdrawn.
+	(gdk_window_set_group): Mark the new leader window as such. We 
+	never remove the flag again, but that should a) be vanishingly
+	rare and b) not a problem, since the flag just turns off an
+	optimization.
+
+	* gdk/x11/gdkdisplay-x11.c (gdk_display_open): Mark the default
+	leader window as such.
+
+2004-10-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkcellview.c (gtk_cell_view_get_size_of_row): Restore 
+	the size info for the current row after measuring another 
+	row.  (#154945, William Jon McCann)
+
+2004-10-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (shortcuts_add_current_folder): 
+	Don't leak volume. (#155400, Morten Welinder)
+
+2004-10-13  Crispin Flowerday  <gnome@flowerday.cx>
+
+	* NEWS: Fix a typo in my name (it's Crispin, not Chrispin)
+
+2004-10-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version.
+
+	* === Released 2.4.13 ===
+
+	* configure.in: Bump version.
+
+	* gtk/gtkcontainer.c (_gtk_container_queue_resize): Acknowledge 
+	the fact that invariants are broken and loop all the way up to 
+	the resize container.
+
+	* === Released 2.4.12 ===
+
+Tue Oct 12 17:11:02 2004    <timj@birnet.org>
+	
+	* gtk/gtkwidget.c (gtk_widget_set_usize_internal): don't queue the
+	widget for resize or emit change notification if the usize didn't 
+	change. this works around a buggy signal connection in #155139.
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version.
+
+	* === Released 2.4.11 ===
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtktreeview.c (gtk_tree_view_grab_notify): Don't start a 
+	drag if we loose the grab.
+
+	* gtk/gtkfilechooserdefault.c (renderer_edited_cb): Set the cell 
+	renderer to inert mode to avoid bug #154921.  This fixes a crash
+	which would otherwise occur if the editing is stopped for the second
+	time.  (#154767, Manuel Baena García)
+
+	* NEWS: Updates
+
+	* gtk/gtktreeview.c (gtk_tree_view_button_press): Set cell data
+	unconditionally.  (#152562, Federico Mena Quintero)
+
+	* gtk/gtklayout.c (gtk_layout_add): Implement the GtkContainer::add 
+	vfunc. (#154444, Lorenzo Gil Sanchez)
+
+	* gtk/gtkuimanager.c (update_node): Also update smart separators 
+	if the visibility of a  menuitem with a submenu changes.  (#153791,
+	Christian Persch)
+
+2004-10-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (check_is_folder): Don't free
+	info too early.  (#154703, Morten Welinder)
+
+2004-10-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (location_entry_create): Backport 
+	the change from HEAD to not fill the entry with the currently
+	selected file or folder.
+
+	* gtk/gtkpaned.c (gtk_paned_compute_position): Reduce rounding 
+	error.  (#154658, John Cupitt)
+
+	* gtk/gtktreeselection.c (gtk_tree_selection_get_selected): Clear
+	the iter instead of returning it unmodified. (#154186, Jonathan Blandford)
+
+	* gtk/gtkfilechooserentry.c (gtk_file_chooser_entry_focus): Pop up
+	the completions again after tab.  (#147700, Jens Bech Madsen)
+
+	* gtk/gtktreeview.c (gtk_tree_view_search_iter): Set the cursor
+	before changing the selection to make the file chooser preview
+	update work better.  (#143826, Tommi Komulainen)
+
+2004-10-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Update
+
+Wed Oct  6 00:45:04 2004    <timj@birnet.org>
+
+	* gdk/gdkwindow.c (gdk_window_is_viewable): check the iteration window
+	variable, not just the window passed in. fixes #145270.
+
+Tue Oct  5 21:00:54 2004  Tim Janik  <timj@gtk.org>
+
+	* gtk/gtkwidget.c (gtk_widget_size_allocate): applied owen's patch
+	for conditional ALLOC_NEEDED flag updates to preserve resizing
+	flag invariants.
+
+2004-10-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkuimanager.c (gtk_ui_manager_add_ui): Set 
+	action_name.  (#154526, John Finlay)
+
+	* gdk/x11/gdkwindow-x11.c (gdk_window_foreign_new_for_display): 
+	Warn if the window is not foreign after all.  (#151378, 
+	Gustavo Carneiro)
+
+2004-10-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkicontheme.c (icon_info_ensure_scale_and_pixbuf): 
+	Make the code work as intended for unthemed icons; don't scale
+	them up too much. Allow to scale them down, and do so 
+	exactly.  (#154142, Ross Burton)
+	(gtk_icon_info_load_icon): Amend docs.
+
+	* gtk/gtkcelllayout.c (gtk_cell_layout_clear): Improve 
+	docs.  (#154504, Dave Cook)
+
+	* gtk/gtkwindow.c (gtk_window_set_icon_list): 
+	(gtk_window_set_default_icon_list): Ref the new
+	icons before unreffing the old ones.  (#154468, Morten Welinder)
+
+2004-10-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtktreeviewcolumn.c 
+	(gtk_tree_view_column_setup_sort_column_id_callback): 
+	Set sort_indicator to FALSE when appropriate.  (#153714, 
+	Reinout van Schouwen)
+
+	* gtk/gtktreeview.c (gtk_tree_view_search_position_func): 
+	Fix positioning near the monitor boundaries.  (#154341,
+	Ken Harris)
+
+2004-10-01  Tor Lillqvist  <tml@iki.fi>
+
+	* gdk/win32/gdkglobals-win32.c: Enable wintab (tablets) by
+	default.
+
+2004-10-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkcombobox.c (gtk_combo_box_set_model): Add a comment regarding
+	cell renderers to the docs.
+
+	* gtk/gtkcellview.c (gtk_cell_view_cell_layout_clear_attributes): 
+	* gtk/gtktreeviewcolumn.c (gtk_tree_view_column_cell_layout_clear_attributes): 
+	Silently ignore info being NULL. This is unavoidable with the 
+	current design where we have every implementation of layout_clear
+	call layout_clear_attributes, and also delegate calls to dependent
+	cell layouts.  (#154191, Martyn Russell)
+	
+2004-10-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserentry.c (gtk_file_chooser_entry_finalize): 
+	Prevent a crash if the entry is finalized before the sorting
+	idle is removed, noticed by Frederic Crozat.
+
+2004-09-29  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "ang" to ALL_LINGUAS.
+
+2004-09-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserentry.c (update_current_folder_files): Turn
+	off sorting while inserting batches of new files, since sorting
+	is slow with the current list store implementation. The sorting
+	is turned back on in an idle since the gnome-vfs backend returns
+	directory contents in chunks of 100 files, and we don't want to
+	turn sorting back on until the whole directory is read.
+
+2004-09-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkliststore.c: Allow to disable sorting. This is meant
+	to be internal functionality in 2.4. The new API necessary to
+	use this functionality appears in 2.6. 
+
+2004-09-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilesystemunix.c (gtk_file_folder_unix_list_children): 
+	Emit GtkFileFolder::finished-loading.
+
+2004-09-27  Roozbeh Pournader  <roozbeh@farsiweb.info>
+
+	* configure.in: Added Iranian Azerbaijani (az_IR) to ALL_LINUGAS.
+
+2004-09-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtknotebook.c (gtk_notebook_class_init): Add a missing _
+	to the name of the has_secondary_backward_stepper property.
+	Noticed by Michèle Garoche.
+
+2004-09-25  Robert Ögren  <gtk@roboros.com>
+
+	* gdk/win32/gdkinput-win32.c (gdk_input_wintab_init): Set
+	lcSysOrgX and lcSysOrgY from device instead of hardcoding to 0,
+	a further fix for bug #145467.
+
+2004-09-25  Matthias Clasen  <mclasen@x1-6-00-50-fc-70-9f-e0>
+
+	* gtk/gtktextiter.c (inside_word_func): Don't access 
+	attr[-1].  (#153628, Padraig O'Briain)
+
+2004-09-22  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (selection_check_foreach_cb): Don't use
+	bitops on booleans.
+	(gtk_file_chooser_default_should_respond): Make it easier to 
+	select folders in SELECT_FOLDER mode.
+
+Wed Sep 22 00:52:44 2004  Matthias Clasen  <mclasen@redhat.com>
+
+	* demos/gtk-demo/pixbufs.c (do_pixbufs): Don't leak the frame
+	pixbuf.
+
+2004-09-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (gtk_file_chooser_default_should_respond): 
+	Don't assert that current_focus != NULL, just return FALSE.
+
+	* gtk/gtkpathbar.c (gtk_path_bar_size_request): Give the path
+	bar arrow buttons some more room.
+
+	* gtk/gtkactiongroup.c: Fix typos in signal docs.  (#153224,
+	John Finlay)
+
+Mon Sep 20 19:27:48 2004  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkfilechooserdefault.c (shortcuts_activate_iter): Don't
+	return FALSE from a void function.  (#153185, Joel Fredrikson)
+
+2004-09-18  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtkfilesystem.h: Removed the GTK_FILE_PATH() and
+	GTK_IS_FILE_PATH() macros.  They are not supposed to exist, as
+	GtkFilePath is not an object.  And they never worked, anyway.
+
+2004-09-18  Matthias Clasen  <mclasen@redhat.com>
+	
+	* configure.in: Bump version.
+	
+	* === Released 2.4.10 ===
+
+2004-09-18  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* gtk/gtkentry.c: (gtk_entry_completion_key_press):
+
+	Make numeric pad enter activate the selected completion
+	entry. Fix bug 143486 reported by Edd Dumbill.
+
+2004-09-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: More updates.
+
+	* gtk/gtkfilechooserdefault.c (select_func): Scroll to the selected
+	row.  (#143868, Christian Persch)
+
+2004-09-17  Matthias Clasen  <mclasen@redhat.com>
+
+	Improve the behaviour of the file chooser in save mode. Fixes bugs
+	#151031, #151608, #151994 reported by Owen Taylor and Alexander 
+	Larsson.
+	
+	* gtk/gtkfilechooserdefault.c (gtk_file_chooser_default_set_property): 
+	(location_entry_create): Propagate the action to the file 
+	chooser entries.
+	(gtk_file_chooser_default_should_respond): Switch folders if 
+	the user enters a directory name in the entry and clear the entry
+	after switching folders.
+	(gtk_file_chooser_default_should_respond, shortcuts_row_activated_cb): 
+	Move focus to the file list when activating a shortcut.
+	(gtk_file_chooser_default_should_respond): Handle the case where the
+	user clicks on "Save" after selecting a folder in the file list.
+
+	* gtk/gtkfilechooserentry.h: 
+	* gtk/gtkfilechooserentry.c (_gtk_file_chooser_entry_set_action): 
+	(_gtk_file_chooser_entry_get_action): New functions to propagate
+	the GtkFileChooserAction of the file chooser to the file chooser 
+	entry.
+	(check_completion_callback): If we are in save mode, only do 
+	inline completion for directories. 
+
+Thu Sep 16 23:10:37 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/x11/gdkselection-x11.c (make_list): Warn if a UTF8_STRING
+	property contains invalid UTF-8. (#152845, Owen Taylor)
+
+2004-09-15  Tor Lillqvist  <tml@iki.fi>
+
+	* gdk/win32/gdkwindow-win32.c (gdk_window_get_frame_extents):
+	Remove bogus code that tried to do what the X11 backend does in
+	its version of this function. There are no "frame windows" (for
+	toplevel window decoration) on Windows. The desktop ("root")
+	window is not the parent of a toplevel window. (#152481)
+
+2004-09-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2004-09-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/queryimmodules.c (escape_string): Copy code from queryloaders.c
+	which turns backslashes in slashes on win32.  (#152608, Kazuki IWAMOTO)
+
+	* gtk/gtktreeview.c (gtk_tree_view_focus_to_cursor): Set the cursor
+	to the first selected row instead of always to the first row if there
+	is no cursor.  (#143270, Jean Bréfort)
+
+	* tests/testfilechooser.c (main): Fix a few typos.
+
+2004-09-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkexpander.c: 
+	* gtk/gtktreeview.c: Change the default expander size to 12 to compensate 
+	for the recent change to gtk_default_draw_expander().
+
+	* gtk/gtkstyle.c (gtk_default_draw_expander): Use a linewidth of one
+	for expander sizes up to 16.
+
+	* gtk/gtkentrycompletion.c (gtk_entry_completion_set_model): Resize the
+	popup if the model is replaced.  (#152333)
+	(_gtk_entry_completion_resize_popup): 
+	Improve positioning of entry completion popup.
+
+2004-09-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/testfilechooser.c (main): Update sensitivity of the
+	"Select all" button.
+
+2004-09-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkstyle.c (gtk_default_draw_expander): Draw expanders a bit 
+	better.
+
+2004-09-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtkuimanager.c (gtk_ui_manager_add_ui): Use the proper node type
+	for placeholders in toolbars.  (#151963, Olivier Andrieu)
+
+2004-09-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	gtk/gtkfilesystemmodel.c (do_files_added): Use the correct
+	function to free stuff. Avoids a leak and a warning.
+	Closes bug #151985
+
+Sat Sep  4 23:42:09 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* configure.in: Fix the Solaris Xinerama checks.  (#151754) 
+
+Fri Sep  3 22:45:03 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtkuimanager.c (print_node): Don't print out attributes
+	for the <ui> root node.  (#151752, Lorenzo Gil Sánchez)
+
+2004-09-03  Tor Lillqvist  <tml@iki.fi>
+
+	* gtk-zip.sh.in: List the three theme gtkrc files separately, zip
+	doesn't do anything if one of the files on its command line
+	doesn't exist.
+
+	Handle changes of screen resolution on Win32. (#151581, reported by
+	Arjohn Kampman)
+	
+	* gdk/win32/gdkwindow-win32.c (_gdk_windowing_window_init,
+	_gdk_root_window_size_init): Factor out setting the root window's
+	size (as the size of the union of all monitors) to a new function.
+
+	* gdk/win32/gdkdisplay-win32.c (gdk_display_open,
+	_gdk_monitor_init): Factor out the monitor query to a new
+	function.
+
+	* gdk/win32/gdkprivate-win32.h: Declare above new functions.
+
+	* gdk/win32/gdkevents-win32.c (gdk_event_translate,
+	handle_display_change): Handle WM_DISPLAYCHANGE by calling the
+	above two functions, and emitting the "size_changed" signal on our
+	(only) GdkScreen.
+
+Wed Sep  1 19:11:44 2004  Søren Sandmann  <sandmann@redhat.com>
+
+	* gtk/gtktoolbar.c (gtk_toolbar_size_allocate): Make sure
+	children of the toolbar are given positive dimensions. (149540,
+	Felipe Heidrich).
+
+Wed Sep  1 01:16:22 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtktreeviewcolumn.c (gtk_tree_view_column_class_init): Fix
+	the default value of ::sizing.
+
+Wed Sep  1 00:55:56 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtkimage.c (gtk_image_clear): Don't leak the iter
+	of a running animation.  (#151542)
+
+Tue Aug 31 23:24:49 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtkcalendar.c (gtk_calendar_main_button): Only start  
+	a drag if the left button is pressed.  (#151490, Frederic Croszat)
+
+2004-08-28  Robert Ögren  <gtk@roboros.com>
+
+	On Win32, do not produce tablet motion or button events while a
+	window is being moved or resized. (#151090, reported by	Shaneyfelt)
+
+	* gdk/win32/gdkprivate-win32.h
+	* gdk/win32/gdkglobals-win32.c
+	* gdk/win32/gdkevents-win32.c: Rename the variable resizing to
+	_sizemove_in_progress and make it extern.
+
+	* gdk/win32/gdkinput-win32.c (_gdk_input_other_event): Ignore
+	motion and button events if _sizemove_in_progress is true.
+
+2004-08-26  Bill Haneman <billh@gnome.org>
+
+	* gtk/gtktreeview:
+	(gtk_tree_view_move_cursor_up_down):
+	If a multi-selection list contains only one item,
+	select it on cursor_up or cursor_down.
+	Fixes bug #131226.
+	[patch from Padraig O'Briain]
+
+2004-08-22  Robert Ögren  <gtk@roboros.com>
+
+	On Win32, make graphical tablets work on multi-monitor systems.
+	(#145467, reported by buttknock1@ya...)
+
+	* gdk/win32/gdkinput-win32.c (gdk_input_translate_coordinates):
+	Use dimensions of _gdk_parent_root as screen size.
+	(gdk_input_get_root_relative_geometry): Get coordinates relative
+	to GDK root window instead of Win32 coordinates.
+	(_gdk_input_other_event): Updated accordingly.
+
 2004-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtksizegroup.c (gtk_size_group_add_widget): Fix
+	a typo, noticed by Tim Janik.
+
+	* configure.in: Post-release version bump.
 
 	* === Released 2.4.9 ===
 
 2004-08-25  Matthias Clasen  <mclasen@redhat.com>
 
+	* configure.in: Post-release version bump.
+
 	* === Released 2.4.8 ===
 
 2004-08-25  Matthias Clasen  <mclasen@redhat.com>
 
-	* gtk/gtkfilechooserdefault.c (check_is_folder): Use get_file_info() rather 
-	than trying get_folder() and checking for an error directly because older 
-	versions of the gnome-vfs backend don't return an error 
+	* gtk/gtkfilechooserdefault.c (check_is_folder): Use 
+	get_file_info() rather than trying get_folder() and 
+	checking for an error directly because older versions 
+	of the gnome-vfs backend don't return an error 
 	immediately.  (#150852, Zack Cerza )
 
 2004-08-24  Matthias Clasen  <mclasen@redhat.com>

@@ -236,7 +236,8 @@ into <parameter>cell_layout</parameter> for this to function properly.</para>
 <title><anchor id="gtk-cell-layout-clear"/>gtk_cell_layout_clear ()</title>
 <indexterm role="2.4"><primary>gtk_cell_layout_clear</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_layout_clear           (<link linkend="GtkCellLayout">GtkCellLayout</link> *cell_layout);</programlisting>
 <para>
-Unsets all the mappings on all renderers on <parameter>cell_layout</parameter>.</para>
+Unsets all the mappings on all renderers on <parameter>cell_layout</parameter> and
+removes all renderers from <parameter>cell_layout</parameter>.</para>
 <para>
 
 </para><variablelist role="params">

@@ -1,3 +1,78 @@
+Overview of Changes from GTK+ 2.4.13 to GTK+ 2.4.14
+===================================================
+* GtkFileChooser
+  - Improve keybindings [Federico Mena Quintero]
+  - Speed up loading of large directories [Federico]
+  - Move "Browse for other folders" expander up [Federico]
+  - Support DND from the path bar [Federico]
+* GtkUIManager
+  - Speed up [Dave Neary, Michael Natterer, Sven Neumann,
+    Soeren Sandmann]
+* GtkTreeView
+  - Fix resizing artifacts in empty, focused 
+    treeviews  [Billy Biggs, Vincent Noel]
+* GtkSettings
+  - Handle changes to gtk-menu-images and gtk-button-images
+    much more efficiently [Matthias Clasen]
+* GDK
+  - Allow to set wm hints on leader windows [Sebastien Bacher]
+* Win32
+  - Implement resize grips  [Robert Ögren]
+  - Bug fixes [Robert, Tor Lillqvist]
+* Bug fixes [Morten Welinder, William Jon McCann, 
+  Anders Carlsson, Philip Langdale, Christian Persch,
+  John Finlay, Carlos Garnacho Parro, Tim Janik, Gavin Romig-Koch,
+  Jonathan Blandford, Billy Biggs, Federico, Christian Neumair,
+  Kristian Høgsberg, Sven, Dennis Cranston]
+Updated translations (ca,id,nb,no,nso,pa,zh_CN)
+
+Overview of Changes from GTK+ 2.4.11 to GTK+ 2.4.13
+===================================================
+* Fix size allocation problems. [Crispin Flowerday, Tim Janik, Tommi Komulainen, Owen Taylor]
+* New and updated translations (fr,ta)
+
+Overview of Changes from GTK+ 2.4.10 to GTK+ 2.4.11
+===================================================
+* GtkFileChooser
+ - Make path bar arrows larger [Matthias Clasen]
+ - Make SELECT_FOLDER mode work [Matthias]
+ - Speed up the completion popup [Matthias]
+ - Update the preview when searching [Tommi Komulainen]
+ - Pop up completions again when tab is pressed [Jon Bech Madsen]
+ - Don't prepopulate the location entry [Matthias]
+* Win32 bug fixes [Robert Ögren]
+* Other bug fixes [Federico Mena Quintero, Joel Fredrikson, Matthias,
+ Padraig O'Briain, Michèle Garoche. Frederic Crozat, 
+ Jonathan Blandford, John Cupitt, Morten Welinder, Christian Persch,
+ Lorenzo Gil Sanchez, Federico]
+ Martyn Russell]
+* Documentation improvements [John Finlay, Billy Biggs, Jonathan, 
+  Owen Taylor]
+* New and updated translations (az_IR,ang,en_CA,gl,hu,it,nl)
+
+Overview of Changes from GTK+ 2.4.9 to GTK+ 2.4.10
+==================================================
+* GtkFileChooser
+ - Fix some memory leaks [Kjartan Maraas]
+ - Make autocompletion less annoying in save mode [Owen Taylor]
+* Default theme
+ - Improve drawing of expanders [Matthias Clasen]
+* GtkEntryCompletion
+ - Improve positioning of popups [Matthias]
+* Make selection handling robust against invalid UTF-8 [Owen Taylor]
+* gdk-pixbuf
+ - Fix saving of pixbufs with alpha-channel as jpeg [Emmanuel Pacaud]
+ - Security fixes [Chris Evans]
+* Win32 bug fixes 
+ - Improve tablet handling [Robert Ögren]
+ - Handle screen resolution changes [Arjohn Kampman, Tor Lillqvist]
+ - Fix loading of input modules on Win32 [Kazuki IWAMOTO]
+* Other bug fixes [Tim Janik, Bill Haneman, Padraig O'Briain,
+  Frederic Croszat, Matthias, Felipe Heidrich, Lorenzo Gil
+  Sanchez, Olivier Andrieu, Jean Bréfort, Christian Persch,
+  Edd Dumbhill, Marco Pesenti Gritti]
+* Updated translations (ang,bn,cs,cy,de,en_CA,hu,ne,nn,ro,tr,uk)
+
 Overview of Changes from GTK+ 2.4.7 to GTK+ 2.4.8
 =================================================
 * GtkFileChooser

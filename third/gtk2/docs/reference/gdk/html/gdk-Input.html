@@ -1,62 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Input</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="previous" href="gdk-Threads.html" title="Threads"><link rel="next" href="gdk-Input-Devices.html" title="Input Devices"><link rel="reference" href="reference.html" title="API Reference"><link rel="refentry" href="gdk-General.html" title="General"><link rel="refentry" href="multihead.html" title="Multi-head Support Overview"><link rel="refentry" href="GdkDisplay.html" title="GdkDisplay"><link rel="refentry" href="GdkDisplayManager.html" title="GdkDisplayManager"><link rel="refentry" href="GdkScreen.html" title="GdkScreen"><link rel="refentry" href="gdk-Points-Rectangles-and-Regions.html" title="Points, Rectangles and Regions"><link rel="refentry" href="gdk-Graphics-Contexts.html" title="Graphics Contexts"><link rel="refentry" href="gdk-Drawing-Primitives.html" title="Drawing Primitives"><link rel="refentry" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="refentry" href="gdk-GdkRGB.html" title="GdkRGB"><link rel="refentry" href="gdk-Images.html" title="Images"><link rel="refentry" href="gdk-Pixbufs.html" title="Pixbufs"><link rel="refentry" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="refentry" href="gdk-Visuals.html" title="Visuals"><link rel="refentry" href="gdk-Fonts.html" title="Fonts"><link rel="refentry" href="gdk-Cursors.html" title="Cursors"><link rel="refentry" href="gdk-Windows.html" title="Windows"><link rel="refentry" href="gdk-Events.html" title="Events"><link rel="refentry" href="gdk-Event-Structures.html" title="Event Structures"><link rel="refentry" href="gdk-Keyboard-Handling.html" title="Key Values"><link rel="refentry" href="gdk-Selections.html" title="Selections"><link rel="refentry" href="gdk-Drag-and-Drop.html" title="Drag and Drop"><link rel="refentry" href="gdk-Properties-and-Atoms.html" title="Properties and Atoms"><link rel="refentry" href="gdk-Threads.html" title="Threads"><link rel="refentry" href="gdk-Input.html" title="Input"><link rel="refentry" href="gdk-Input-Devices.html" title="Input Devices"><link rel="refentry" href="gdk-Pango-Interaction.html" title="Pango Interaction"><link rel="refentry" href="gdk-X-Window-System-Interaction.html" title="X Window System Interaction"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gdk-Input.html#id3108265" title="Description"><link rel="section" href="gdk-Input.html#id3108286" title="Details"><link rel="section" href="gdk-Input.html#id3109046" title="See Also"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Threads.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Input-Devices.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Input"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Input</span></h2><p>Input &#8212; Callbacks on file descriptors</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Input</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="prev" href="gdk-Threads.html" title="Threads"><link rel="next" href="gdk-Input-Devices.html" title="Input Devices"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="reference.html" title="API Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Threads.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Input-Devices.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Input"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">Input</span></h2><p>Input &#8212; Callbacks on file descriptors</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gdk/gdk.h&gt;
 
 
-<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        <a href="gdk-Input.html#gdk-input-add-full">gdk_input_add_full</a>              (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+gint        <a href="gdk-Input.html#gdk-input-add-full">gdk_input_add_full</a>              (gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition,
                                              <a href="gdk-Input.html#GdkInputFunction">GdkInputFunction</a> function,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
+                                             gpointer data,
                                              <a href="gdk-Input.html#GdkDestroyNotify">GdkDestroyNotify</a> destroy);
 enum        <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a>;
-void        (<a href="gdk-Input.html#GdkInputFunction">*GdkInputFunction</a>)             (<a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+void        (<a href="gdk-Input.html#GdkInputFunction">*GdkInputFunction</a>)             (gpointer data,
+                                             gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition);
-void        (<a href="gdk-Input.html#GdkDestroyNotify">*GdkDestroyNotify</a>)             (<a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
-<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        <a href="gdk-Input.html#gdk-input-add">gdk_input_add</a>                   (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+void        (<a href="gdk-Input.html#GdkDestroyNotify">*GdkDestroyNotify</a>)             (gpointer data);
+gint        <a href="gdk-Input.html#gdk-input-add">gdk_input_add</a>                   (gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition,
                                              <a href="gdk-Input.html#GdkInputFunction">GdkInputFunction</a> function,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
-void        <a href="gdk-Input.html#gdk-input-remove">gdk_input_remove</a>                (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> tag);
+                                             gpointer data);
+void        <a href="gdk-Input.html#gdk-input-remove">gdk_input_remove</a>                (gint tag);
 
-</pre></div><div class="refsect1" lang="en"><a name="id3108265"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id3282703"></a><h2>Description</h2><p>
 The functions in this section are used to establish
 callbacks when some condition becomes true for
 a file descriptor. They are currently just wrappers around
-the <a
-href="../glib/glib-IO-Channels.html"
->IO Channel</a>
+the IO Channel
 facility.
-</p></div><div class="refsect1" lang="en"><a name="id3108286"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3108292"></a><h3><a name="gdk-input-add-full"></a>gdk_input_add_full ()</h3><a class="indexterm" name="id3108303"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        gdk_input_add_full              (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+</p></div><div class="refsect1" lang="en"><a name="id3282725"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3282730"></a><h3><a name="gdk-input-add-full"></a>gdk_input_add_full ()</h3><a class="indexterm" name="id3282742"></a><pre class="programlisting">gint        gdk_input_add_full              (gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition,
                                              <a href="gdk-Input.html#GdkInputFunction">GdkInputFunction</a> function,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
+                                             gpointer data,
                                              <a href="gdk-Input.html#GdkDestroyNotify">GdkDestroyNotify</a> destroy);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_input_add_full</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Establish a callback when a condition becomes true on
 a file descriptor.
@@ -70,7 +42,7 @@ a file descriptor.
  <a href="gdk-Input.html#gdk-input-remove"><tt class="function">gdk_input_remove()</tt></a>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3108485"></a><h3><a name="GdkInputCondition"></a>enum GdkInputCondition</h3><a class="indexterm" name="id3108496"></a><pre class="programlisting">typedef enum
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3282923"></a><h3><a name="GdkInputCondition"></a>enum GdkInputCondition</h3><a class="indexterm" name="id3282935"></a><pre class="programlisting">typedef enum
 {
   GDK_INPUT_READ       = 1 &lt;&lt; 0,
   GDK_INPUT_WRITE      = 1 &lt;&lt; 1,
@@ -87,12 +59,8 @@ of this enumeration correspond to the <i class="parameter"><tt>readfds</tt></i>,
 (Or, as is standard in Unix, a socket or pipe was closed
 at the other end; this is the case if a subsequent read
 on the file descriptor returns a count of zero.)</td></tr><tr><td>GDK_INPUT_WRITE</td><td>the file descriptor has become available for writing.</td></tr><tr><td>GDK_INPUT_EXCEPTION</td><td>an exception was raised on the file descriptor.</td></tr></tbody></table></div><p>
-</p></div><hr><div class="refsect2" lang="en"><a name="id3108599"></a><h3><a name="GdkInputFunction"></a>GdkInputFunction ()</h3><a class="indexterm" name="id3108610"></a><pre class="programlisting">void        (*GdkInputFunction)             (<a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+</p></div><hr><div class="refsect2" lang="en"><a name="id3283038"></a><h3><a name="GdkInputFunction"></a>GdkInputFunction ()</h3><a class="indexterm" name="id3283048"></a><pre class="programlisting">void        (*GdkInputFunction)             (gpointer data,
+                                             gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition);</pre><p>
 A callback function that will be called when some condition
 occurs.
@@ -101,25 +69,17 @@ occurs.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>condition</tt></i> :</span></td><td>the triggering condition.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3108724"></a><h3><a name="GdkDestroyNotify"></a>GdkDestroyNotify ()</h3><a class="indexterm" name="id3108734"></a><pre class="programlisting">void        (*GdkDestroyNotify)             (<a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3283162"></a><h3><a name="GdkDestroyNotify"></a>GdkDestroyNotify ()</h3><a class="indexterm" name="id3283173"></a><pre class="programlisting">void        (*GdkDestroyNotify)             (gpointer data);</pre><p>
 A callback function called when a piece of user data is 
 no longer being stored by GDK. Will typically free the
 structure or object that <i class="parameter"><tt>data</tt></i> points to.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>the user data.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3108789"></a><h3><a name="gdk-input-add"></a>gdk_input_add ()</h3><a class="indexterm" name="id3108800"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        gdk_input_add                   (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> source,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3283228"></a><h3><a name="gdk-input-add"></a>gdk_input_add ()</h3><a class="indexterm" name="id3283239"></a><pre class="programlisting">gint        gdk_input_add                   (gint source,
                                              <a href="gdk-Input.html#GdkInputCondition">GdkInputCondition</a> condition,
                                              <a href="gdk-Input.html#GdkInputFunction">GdkInputFunction</a> function,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_input_add</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_input_add</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Establish a callback when a condition becomes true on
 a file descriptor.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>source</tt></i> :</span></td><td>a file descriptor.
@@ -130,19 +90,13 @@ a file descriptor.
  <a href="gdk-Input.html#gdk-input-remove"><tt class="function">gdk_input_remove()</tt></a>.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3108953"></a><h3><a name="gdk-input-remove"></a>gdk_input_remove ()</h3><a class="indexterm" name="id3108964"></a><pre class="programlisting">void        gdk_input_remove                (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> tag);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_input_remove</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3283392"></a><h3><a name="gdk-input-remove"></a>gdk_input_remove ()</h3><a class="indexterm" name="id3283402"></a><pre class="programlisting">void        gdk_input_remove                (gint tag);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_input_remove</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Remove a callback added with <a href="gdk-Input.html#gdk-input-add"><tt class="function">gdk_input_add()</tt></a> or 
 <a href="gdk-Input.html#gdk-input-add-full"><tt class="function">gdk_input_add_full()</tt></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>tag</tt></i> :</span></td><td>the tag returned when the callback was set up.
 
 
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3109046"></a><h2>See Also</h2><p>
-</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a
-href="../glib/glib-The-Main-Event-Loop.html"
->GLib Main Loop</a></span></td><td><p>The main loop in which input callbacks run.</p></td></tr><tr><td><span class="term"><a
-href="../glib/glib-IO-Channels.html"
->IO Channels</a></span></td><td><p>A newer and more flexible way of doing IO
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3283485"></a><h2>See Also</h2><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term">GLib Main Loop</span></td><td><p>The main loop in which input callbacks run.</p></td></tr><tr><td><span class="term">IO Channels</span></td><td><p>A newer and more flexible way of doing IO
 callbacks.</p></td></tr></tbody></table></div><p>
 </p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gdk-Threads.html"><b>&lt;&lt; Threads</b></a></td><td align="right"><a accesskey="n" href="gdk-Input-Devices.html"><b>Input Devices &gt;&gt;</b></a></td></tr></table></body></html>

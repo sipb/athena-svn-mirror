@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Cursors</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="previous" href="gdk-Fonts.html" title="Fonts"><link rel="next" href="gdk-Windows.html" title="Windows"><link rel="reference" href="reference.html" title="API Reference"><link rel="refentry" href="gdk-General.html" title="General"><link rel="refentry" href="multihead.html" title="Multi-head Support Overview"><link rel="refentry" href="GdkDisplay.html" title="GdkDisplay"><link rel="refentry" href="GdkDisplayManager.html" title="GdkDisplayManager"><link rel="refentry" href="GdkScreen.html" title="GdkScreen"><link rel="refentry" href="gdk-Points-Rectangles-and-Regions.html" title="Points, Rectangles and Regions"><link rel="refentry" href="gdk-Graphics-Contexts.html" title="Graphics Contexts"><link rel="refentry" href="gdk-Drawing-Primitives.html" title="Drawing Primitives"><link rel="refentry" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="refentry" href="gdk-GdkRGB.html" title="GdkRGB"><link rel="refentry" href="gdk-Images.html" title="Images"><link rel="refentry" href="gdk-Pixbufs.html" title="Pixbufs"><link rel="refentry" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="refentry" href="gdk-Visuals.html" title="Visuals"><link rel="refentry" href="gdk-Fonts.html" title="Fonts"><link rel="refentry" href="gdk-Cursors.html" title="Cursors"><link rel="refentry" href="gdk-Windows.html" title="Windows"><link rel="refentry" href="gdk-Events.html" title="Events"><link rel="refentry" href="gdk-Event-Structures.html" title="Event Structures"><link rel="refentry" href="gdk-Keyboard-Handling.html" title="Key Values"><link rel="refentry" href="gdk-Selections.html" title="Selections"><link rel="refentry" href="gdk-Drag-and-Drop.html" title="Drag and Drop"><link rel="refentry" href="gdk-Properties-and-Atoms.html" title="Properties and Atoms"><link rel="refentry" href="gdk-Threads.html" title="Threads"><link rel="refentry" href="gdk-Input.html" title="Input"><link rel="refentry" href="gdk-Input-Devices.html" title="Input Devices"><link rel="refentry" href="gdk-Pango-Interaction.html" title="Pango Interaction"><link rel="refentry" href="gdk-X-Window-System-Interaction.html" title="X Window System Interaction"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gdk-Cursors.html#id3009283" title="Description"><link rel="section" href="gdk-Cursors.html#id3009292" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Fonts.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Windows.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Cursors"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Cursors</span></h2><p>Cursors &#8212; Standard and pixmap cursors</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Cursors</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="prev" href="gdk-Fonts.html" title="Fonts"><link rel="next" href="gdk-Windows.html" title="Windows"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="reference.html" title="API Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Fonts.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Windows.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Cursors"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">Cursors</span></h2><p>Cursors &#8212; Standard and pixmap cursors</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gdk/gdk.h&gt;
 
@@ -10,22 +10,14 @@ enum        <a href="gdk-Cursors.html#GdkCursorType">GdkCursorType</a>;
                                              <a href="gdk-Bitmaps-and-Pixmaps.html#GdkPixmap">GdkPixmap</a> *mask,
                                              const <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *fg,
                                              const <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *bg,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y);
+                                             gint x,
+                                             gint y);
 <a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  <a href="gdk-Cursors.html#gdk-cursor-new-from-pixbuf">gdk_cursor_new_from_pixbuf</a>      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
                                              <a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y);
+                                             gint x,
+                                             gint y);
 <a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  <a href="gdk-Cursors.html#gdk-cursor-new-for-display">gdk_cursor_new_for_display</a>      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
                                              <a href="gdk-Cursors.html#GdkCursorType">GdkCursorType</a> cursor_type);
 <a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a>* <a href="gdk-Cursors.html#gdk-cursor-get-display">gdk_cursor_get_display</a>          (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);
@@ -34,16 +26,16 @@ void        <a href="gdk-Cursors.html#gdk-cursor-unref">gdk_cursor_unref</a>    
 #define     <a href="gdk-Cursors.html#gdk-cursor-destroy">gdk_cursor_destroy</a>
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id3009283"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id3183721"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id3009292"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3009298"></a><h3><a name="GdkCursor"></a>struct GdkCursor</h3><a class="indexterm" name="id3009309"></a><pre class="programlisting">struct GdkCursor {
+</p></div><div class="refsect1" lang="en"><a name="id3183731"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3183736"></a><h3><a name="GdkCursor"></a>struct GdkCursor</h3><a class="indexterm" name="id3183747"></a><pre class="programlisting">struct GdkCursor {
 
   GdkCursorType type;
   guint ref_count;
 };
 </pre><p>
 A <span class="type">GdkCursor</span> structure represents a cursor.
-</p></div><hr><div class="refsect2" lang="en"><a name="id3009329"></a><h3><a name="GdkCursorType"></a>enum GdkCursorType</h3><a class="indexterm" name="id3009340"></a><pre class="programlisting">typedef enum
+</p></div><hr><div class="refsect2" lang="en"><a name="id3183767"></a><h3><a name="GdkCursorType"></a>enum GdkCursorType</h3><a class="indexterm" name="id3183778"></a><pre class="programlisting">typedef enum
 {
   GDK_X_CURSOR 		  = 0,
   GDK_ARROW 		  = 2,
@@ -208,7 +200,7 @@ The standard cursors available.
 </td></tr><tr><td><span class="term"><tt class="literal">GDK_CURSOR_IS_PIXMAP</tt></span></td><td>type of cursors constructed with 
     <a href="gdk-Cursors.html#gdk-cursor-new-from-pixmap"><tt class="function">gdk_cursor_new_from_pixmap()</tt></a>.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3010962"></a><h3><a name="gdk-cursor-new"></a>gdk_cursor_new ()</h3><a class="indexterm" name="id3010972"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new                  (<a href="gdk-Cursors.html#GdkCursorType">GdkCursorType</a> cursor_type);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3185400"></a><h3><a name="gdk-cursor-new"></a>gdk_cursor_new ()</h3><a class="indexterm" name="id3185410"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new                  (<a href="gdk-Cursors.html#GdkCursorType">GdkCursorType</a> cursor_type);</pre><p>
 Creates a new cursor from the set of builtin cursors for the default display.
 See <a href="gdk-Cursors.html#gdk-cursor-new-for-display"><tt class="function">gdk_cursor_new_for_display()</tt></a>.
 </p><p>
@@ -217,22 +209,18 @@ a cursor with no pixels in it.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cursor_type</tt></i> :</span></td><td> cursor to create
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3011068"></a><h3><a name="gdk-cursor-new-from-pixmap"></a>gdk_cursor_new_from_pixmap ()</h3><a class="indexterm" name="id3011080"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_from_pixmap      (<a href="gdk-Bitmaps-and-Pixmaps.html#GdkPixmap">GdkPixmap</a> *source,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3185506"></a><h3><a name="gdk-cursor-new-from-pixmap"></a>gdk_cursor_new_from_pixmap ()</h3><a class="indexterm" name="id3185518"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_from_pixmap      (<a href="gdk-Bitmaps-and-Pixmaps.html#GdkPixmap">GdkPixmap</a> *source,
                                              <a href="gdk-Bitmaps-and-Pixmaps.html#GdkPixmap">GdkPixmap</a> *mask,
                                              const <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *fg,
                                              const <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *bg,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y);</pre><p>
+                                             gint x,
+                                             gint y);</pre><p>
 Creates a new cursor from a given pixmap and mask. Both the pixmap and mask
 must have a depth of 1 (i.e. each pixel has only 2 values - on or off).
 The standard cursor size is 16 by 16 pixels. You can create a bitmap 
 from inline data as in the below example.
 </p><p>
-</p><div class="example"><a name="id3011152"></a><p class="title"><b>Example 6. Creating a custom cursor</b></p><pre class="programlisting">
+</p><div class="example"><a name="id3185591"></a><p class="title"><b>Example 6. Creating a custom cursor</b></p><pre class="programlisting">
 /* This data is in X bitmap format, and can be created with the 'bitmap'
    utility. */
 #define cursor1_width 16
@@ -275,16 +263,12 @@ static unsigned char cursor1mask_bits[] = {
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> the horizontal offset of the 'hotspot' of the cursor. 
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> the vertical offset of the 'hotspot' of the cursor.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3011323"></a><h3><a name="gdk-cursor-new-from-pixbuf"></a>gdk_cursor_new_from_pixbuf ()</h3><a class="indexterm" name="id3011335"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_from_pixbuf      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3185761"></a><h3><a name="gdk-cursor-new-from-pixbuf"></a>gdk_cursor_new_from_pixbuf ()</h3><a class="indexterm" name="id3185774"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_from_pixbuf      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
                                              <a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y);</pre><p>
+                                             gint x,
+                                             gint y);</pre><p>
 Creates a new cursor from a pixbuf. 
 </p><p>
 Not all GDK backends support RGBA cursors. If they are not 
@@ -308,7 +292,7 @@ href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>.
 
 </td></tr></tbody></table></div><p>Since  2.4
-</p></div><hr><div class="refsect2" lang="en"><a name="id3011548"></a><h3><a name="gdk-cursor-new-for-display"></a>gdk_cursor_new_for_display ()</h3><a class="indexterm" name="id3011560"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_for_display      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
+</p></div><hr><div class="refsect2" lang="en"><a name="id3185986"></a><h3><a name="gdk-cursor-new-for-display"></a>gdk_cursor_new_for_display ()</h3><a class="indexterm" name="id3185998"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_new_for_display      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display,
                                              <a href="gdk-Cursors.html#GdkCursorType">GdkCursorType</a> cursor_type);</pre><p>
 Creates a new cursor from the set of builtin cursors.
 Some useful ones are:
@@ -356,24 +340,24 @@ a cursor with no pixels in it.</p><p>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>
 
 </td></tr></tbody></table></div><p>Since  2.2
-</p></div><hr><div class="refsect2" lang="en"><a name="id3012040"></a><h3><a name="gdk-cursor-get-display"></a>gdk_cursor_get_display ()</h3><a class="indexterm" name="id3012051"></a><pre class="programlisting"><a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a>* gdk_cursor_get_display          (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3186478"></a><h3><a name="gdk-cursor-get-display"></a>gdk_cursor_get_display ()</h3><a class="indexterm" name="id3186489"></a><pre class="programlisting"><a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a>* gdk_cursor_get_display          (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
 Returns the display on which the <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a> is defined.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cursor</tt></i> :</span></td><td> a <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GdkDisplay.html" title="GdkDisplay"><span class="type">GdkDisplay</span></a> associated to <i class="parameter"><tt>cursor</tt></i>
 
 </td></tr></tbody></table></div><p>Since  2.2
-</p></div><hr><div class="refsect2" lang="en"><a name="id3012145"></a><h3><a name="gdk-cursor-ref"></a>gdk_cursor_ref ()</h3><a class="indexterm" name="id3012156"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_ref                  (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3186583"></a><h3><a name="gdk-cursor-ref"></a>gdk_cursor_ref ()</h3><a class="indexterm" name="id3186594"></a><pre class="programlisting"><a href="gdk-Cursors.html#GdkCursor">GdkCursor</a>*  gdk_cursor_ref                  (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
 Adds a reference to <i class="parameter"><tt>cursor</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cursor</tt></i> :</span></td><td> a <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Same <i class="parameter"><tt>cursor</tt></i> that was passed in
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3012235"></a><h3><a name="gdk-cursor-unref"></a>gdk_cursor_unref ()</h3><a class="indexterm" name="id3012246"></a><pre class="programlisting">void        gdk_cursor_unref                (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3186673"></a><h3><a name="gdk-cursor-unref"></a>gdk_cursor_unref ()</h3><a class="indexterm" name="id3186684"></a><pre class="programlisting">void        gdk_cursor_unref                (<a href="gdk-Cursors.html#GdkCursor">GdkCursor</a> *cursor);</pre><p>
 Removes a reference from <i class="parameter"><tt>cursor</tt></i>, deallocating the cursor
 if no references remain.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cursor</tt></i> :</span></td><td> a <a href="gdk-Cursors.html#GdkCursor"><span class="type">GdkCursor</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3012310"></a><h3><a name="gdk-cursor-destroy"></a>gdk_cursor_destroy</h3><a class="indexterm" name="id3012321"></a><pre class="programlisting">#define gdk_cursor_destroy             gdk_cursor_unref
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3186748"></a><h3><a name="gdk-cursor-destroy"></a>gdk_cursor_destroy</h3><a class="indexterm" name="id3186760"></a><pre class="programlisting">#define gdk_cursor_destroy             gdk_cursor_unref
 </pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_cursor_destroy</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Destroys a cursor, freeing any resources allocated for it.
 </p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gdk-Fonts.html"><b>&lt;&lt; Fonts</b></a></td><td align="right"><a accesskey="n" href="gdk-Windows.html"><b>Windows &gt;&gt;</b></a></td></tr></table></body></html>

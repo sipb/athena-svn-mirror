@@ -792,7 +792,8 @@ pssed to <link linkend="gtk-icon-theme-lookup-icon"><function>gtk_icon_theme_loo
 pixbuf may not be exactly this size; an icon theme may have icons
 that differ slightly from their nominal sizes, and in addition GTK+
 will avoid scaling icons that it considers sufficiently close to the
-requested size. (This maintains sharpness.)</para>
+requested size or for which the source image would have to be scaled
+up too far. (This maintains sharpness.)</para>
 <para>
 
 </para><variablelist role="params">

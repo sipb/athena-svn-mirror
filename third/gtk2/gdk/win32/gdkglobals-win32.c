@@ -34,7 +34,7 @@ GdkScreen	 *_gdk_screen = NULL;
 GdkWindow	 *_gdk_parent_root = NULL;
 
 gint		  _gdk_num_monitors;
-GdkRectangle     *_gdk_monitors;
+GdkRectangle     *_gdk_monitors = NULL;
 
 gint		 _gdk_offset_x, _gdk_offset_y;
 
@@ -64,5 +64,7 @@ GdkAtom	          _wm_transient_for;
 
 DWORD		  _windows_version;
 
-gint		  _gdk_input_ignore_wintab = TRUE;
+gint		  _gdk_input_ignore_wintab = FALSE;
 gint		  _gdk_max_colors = 0;
+
+gboolean	  _sizemove_in_progress = FALSE;

@@ -807,6 +807,9 @@ gdk_window_foreign_new_for_display (GdkDisplay     *display,
 
   display_x11 = GDK_DISPLAY_X11 (display);
   
+  if (gdk_xid_table_lookup_for_display (display, anid) != NULL)
+    g_warning ("XID %#lx already known", anid);
+    
   gdk_error_trap_push ();
   result = XGetWindowAttributes (display_x11->xdisplay, anid, &attrs);
   if (gdk_error_trap_pop () || !result)
@@ -1026,6 +1029,7 @@ update_wm_hints (GdkWindow *window,
   XWMHints wm_hints;
 
   if (!force &&
+      !toplevel->is_leader &&
       private->state & GDK_WINDOW_STATE_WITHDRAWN)
     return;
 
@@ -4116,6 +4120,7 @@ gdk_window_set_group (GdkWindow *window,
       if (toplevel->group_leader)
 	g_object_unref (toplevel->group_leader);
       toplevel->group_leader = g_object_ref (leader);
+      (_gdk_x11_window_get_toplevel (leader))->is_leader = TRUE;      
     }
 
   update_wm_hints (window, FALSE);

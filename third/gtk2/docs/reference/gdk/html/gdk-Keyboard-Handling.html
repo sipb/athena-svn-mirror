@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Key Values</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="previous" href="gdk-Event-Structures.html" title="Event Structures"><link rel="next" href="gdk-Selections.html" title="Selections"><link rel="reference" href="reference.html" title="API Reference"><link rel="refentry" href="gdk-General.html" title="General"><link rel="refentry" href="multihead.html" title="Multi-head Support Overview"><link rel="refentry" href="GdkDisplay.html" title="GdkDisplay"><link rel="refentry" href="GdkDisplayManager.html" title="GdkDisplayManager"><link rel="refentry" href="GdkScreen.html" title="GdkScreen"><link rel="refentry" href="gdk-Points-Rectangles-and-Regions.html" title="Points, Rectangles and Regions"><link rel="refentry" href="gdk-Graphics-Contexts.html" title="Graphics Contexts"><link rel="refentry" href="gdk-Drawing-Primitives.html" title="Drawing Primitives"><link rel="refentry" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="refentry" href="gdk-GdkRGB.html" title="GdkRGB"><link rel="refentry" href="gdk-Images.html" title="Images"><link rel="refentry" href="gdk-Pixbufs.html" title="Pixbufs"><link rel="refentry" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="refentry" href="gdk-Visuals.html" title="Visuals"><link rel="refentry" href="gdk-Fonts.html" title="Fonts"><link rel="refentry" href="gdk-Cursors.html" title="Cursors"><link rel="refentry" href="gdk-Windows.html" title="Windows"><link rel="refentry" href="gdk-Events.html" title="Events"><link rel="refentry" href="gdk-Event-Structures.html" title="Event Structures"><link rel="refentry" href="gdk-Keyboard-Handling.html" title="Key Values"><link rel="refentry" href="gdk-Selections.html" title="Selections"><link rel="refentry" href="gdk-Drag-and-Drop.html" title="Drag and Drop"><link rel="refentry" href="gdk-Properties-and-Atoms.html" title="Properties and Atoms"><link rel="refentry" href="gdk-Threads.html" title="Threads"><link rel="refentry" href="gdk-Input.html" title="Input"><link rel="refentry" href="gdk-Input-Devices.html" title="Input Devices"><link rel="refentry" href="gdk-Pango-Interaction.html" title="Pango Interaction"><link rel="refentry" href="gdk-X-Window-System-Interaction.html" title="X Window System Interaction"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gdk-Keyboard-Handling.html#id3078954" title="Object Hierarchy"><link rel="section" href="gdk-Keyboard-Handling.html#id3078974" title="Signal Prototypes"><link rel="section" href="gdk-Keyboard-Handling.html#id3079050" title="Description"><link rel="section" href="gdk-Keyboard-Handling.html#id3079357" title="Details"><link rel="section" href="gdk-Keyboard-Handling.html#id3081646" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Event-Structures.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Selections.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Keyboard-Handling"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Key Values</span></h2><p>Key Values &#8212; Functions for manipulating keyboard codes</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GdkKeymap"></a><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Key Values</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="prev" href="gdk-Event-Structures.html" title="Event Structures"><link rel="next" href="gdk-Selections.html" title="Selections"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="reference.html" title="API Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Event-Structures.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Selections.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Keyboard-Handling"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">Key Values</span></h2><p>Key Values &#8212; Functions for manipulating keyboard codes</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GdkKeymap"></a><pre class="synopsis">
 
 #include &lt;gdk/gdk.h&gt;
 
@@ -7,132 +7,58 @@ struct      <a href="gdk-Keyboard-Handling.html#GdkKeymap-struct">GdkKeymap</a>;
 struct      <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a>;
 <a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-default">gdk_keymap_get_default</a>          (void);
 <a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-for-display">gdk_keymap_get_for_display</a>      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gdk-Keyboard-Handling.html#gdk-keymap-lookup-key">gdk_keymap_lookup_key</a>           (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
+guint       <a href="gdk-Keyboard-Handling.html#gdk-keymap-lookup-key">gdk_keymap_lookup_key</a>           (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
                                              const <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> *key);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-Keyboard-Handling.html#gdk-keymap-translate-keyboard-state">gdk_keymap_translate_keyboard_state</a>
+gboolean    <a href="gdk-Keyboard-Handling.html#gdk-keymap-translate-keyboard-state">gdk_keymap_translate_keyboard_state</a>
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> hardware_keycode,
+                                             guint hardware_keycode,
                                              <a href="gdk-Windows.html#GdkModifierType">GdkModifierType</a> state,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> group,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *keyval,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *effective_group,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *level,
+                                             gint group,
+                                             guint *keyval,
+                                             gint *effective_group,
+                                             gint *level,
                                              <a href="gdk-Windows.html#GdkModifierType">GdkModifierType</a> *consumed_modifiers);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-entries-for-keyval">gdk_keymap_get_entries_for_keyval</a>
+gboolean    <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-entries-for-keyval">gdk_keymap_get_entries_for_keyval</a>
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval,
+                                             guint keyval,
                                              <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> **keys,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *n_keys);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-entries-for-keycode">gdk_keymap_get_entries_for_keycode</a>
+                                             gint *n_keys);
+gboolean    <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-entries-for-keycode">gdk_keymap_get_entries_for_keycode</a>
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> hardware_keycode,
+                                             guint hardware_keycode,
                                              <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> **keys,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> **keyvals,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *n_entries);
-<a
-href="../pango/pango-Text-Processing.html#PangoDirection"
->PangoDirection</a> <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-direction">gdk_keymap_get_direction</a>     (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap);
+                                             guint **keyvals,
+                                             gint *n_entries);
+PangoDirection <a href="gdk-Keyboard-Handling.html#gdk-keymap-get-direction">gdk_keymap_get_direction</a>     (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap);
 
-<a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      <a href="gdk-Keyboard-Handling.html#gdk-keyval-name">gdk_keyval_name</a>                 (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gdk-Keyboard-Handling.html#gdk-keyval-from-name">gdk_keyval_from_name</a>            (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *keyval_name);
+gchar*      <a href="gdk-Keyboard-Handling.html#gdk-keyval-name">gdk_keyval_name</a>                 (guint keyval);
+guint       <a href="gdk-Keyboard-Handling.html#gdk-keyval-from-name">gdk_keyval_from_name</a>            (const gchar *keyval_name);
 
-void        <a href="gdk-Keyboard-Handling.html#gdk-keyval-convert-case">gdk_keyval_convert_case</a>         (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> symbol,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *lower,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *upper);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-upper">gdk_keyval_to_upper</a>             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-lower">gdk_keyval_to_lower</a>             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-Keyboard-Handling.html#gdk-keyval-is-upper">gdk_keyval_is_upper</a>             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-Keyboard-Handling.html#gdk-keyval-is-lower">gdk_keyval_is_lower</a>             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
+void        <a href="gdk-Keyboard-Handling.html#gdk-keyval-convert-case">gdk_keyval_convert_case</a>         (guint symbol,
+                                             guint *lower,
+                                             guint *upper);
+guint       <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-upper">gdk_keyval_to_upper</a>             (guint keyval);
+guint       <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-lower">gdk_keyval_to_lower</a>             (guint keyval);
+gboolean    <a href="gdk-Keyboard-Handling.html#gdk-keyval-is-upper">gdk_keyval_is_upper</a>             (guint keyval);
+gboolean    <a href="gdk-Keyboard-Handling.html#gdk-keyval-is-lower">gdk_keyval_is_lower</a>             (guint keyval);
 
-<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a>     <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-unicode">gdk_keyval_to_unicode</a>           (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gdk-Keyboard-Handling.html#gdk-unicode-to-keyval">gdk_unicode_to_keyval</a>           (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);
+guint32     <a href="gdk-Keyboard-Handling.html#gdk-keyval-to-unicode">gdk_keyval_to_unicode</a>           (guint keyval);
+guint       <a href="gdk-Keyboard-Handling.html#gdk-unicode-to-keyval">gdk_unicode_to_keyval</a>           (guint32 wc);
 
 
-</pre></div><div class="refsect1" lang="en"><a name="id3078954"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id3253392"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
-  <a
-href="../gobject/gobject-The-Base-Object-Type.html#GObject"
->GObject</a>
+  GObject
    +----GdkKeymap
-</pre></div><div class="refsect1" lang="en"><a name="id3078974"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id3253412"></a><h2>Signal Prototypes</h2><pre class="synopsis">
 
 "<a href="gdk-Keyboard-Handling.html#GdkKeymap-direction-changed">direction-changed</a>"
             void        user_function      (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
+                                            gpointer user_data);
 "<a href="gdk-Keyboard-Handling.html#GdkKeymap-keys-changed">keys-changed</a>"
             void        user_function      (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);
-</pre></div><div class="refsect1" lang="en"><a name="id3079050"></a><h2>Description</h2><p>
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id3253489"></a><h2>Description</h2><p>
 Key values are the codes which are sent whenever a key is pressed or released.
 They appear in the <i class="structfield"><tt>keyval</tt></i> field of the
 <a href="gdk-Event-Structures.html#GdkEventKey"><span class="type">GdkEventKey</span></a> structure, which is passed to signal handlers for the
@@ -191,14 +117,14 @@ effective group/level values were used for the lookup.  <a href="gdk-Event-Struc
 contains this keyval, however, so you don't normally need to call
 <a href="gdk-Keyboard-Handling.html#gdk-keymap-translate-keyboard-state"><tt class="function">gdk_keymap_translate_keyboard_state()</tt></a> just to get the keyval.
 
-</p></div><div class="refsect1" lang="en"><a name="id3079357"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3079362"></a><h3><a name="GdkKeymap-struct"></a>struct GdkKeymap</h3><a class="indexterm" name="id3079374"></a><pre class="programlisting">struct GdkKeymap;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id3253795"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3253801"></a><h3><a name="GdkKeymap-struct"></a>struct GdkKeymap</h3><a class="indexterm" name="id3253812"></a><pre class="programlisting">struct GdkKeymap;</pre><p>
 A <span class="structname">GdkKeymap</span> defines the translation from keyboard state
 (including a hardware key, a modifier mask, and active keyboard group)
 to a keyval. This translation has two phases. The first phase is
 to determine the effective keyboard group and level for the keyboard
 state; the second phase is to look up the keycode/group/level triplet
 in the keymap and see what keyval it corresponds to.
-</p></div><hr><div class="refsect2" lang="en"><a name="id3079398"></a><h3><a name="GdkKeymapKey"></a>struct GdkKeymapKey</h3><a class="indexterm" name="id3079409"></a><pre class="programlisting">struct GdkKeymapKey {
+</p></div><hr><div class="refsect2" lang="en"><a name="id3253836"></a><h3><a name="GdkKeymapKey"></a>struct GdkKeymapKey</h3><a class="indexterm" name="id3253848"></a><pre class="programlisting">struct GdkKeymapKey {
 
   guint keycode;
   gint  group;
@@ -207,37 +133,29 @@ in the keymap and see what keyval it corresponds to.
 </pre><p>
 A <span class="structname">GdkKeymapKey</span> is a hardware key that can 
 be mapped to a keyval.
-</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> <i class="structfield"><tt>keycode</tt></i></span></td><td>the hardware keycode. This is an identifying number for a 
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term">guint <i class="structfield"><tt>keycode</tt></i></span></td><td>the hardware keycode. This is an identifying number for a 
   physical key.
-</td></tr><tr><td><span class="term"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> <i class="structfield"><tt>group</tt></i></span></td><td>indicates movement in a horizontal direction. Usually groups are used 
+</td></tr><tr><td><span class="term">gint <i class="structfield"><tt>group</tt></i></span></td><td>indicates movement in a horizontal direction. Usually groups are used 
   for two different languages. In group 0, a key might have two English 
   characters, and in group 1 it might have two Hebrew characters. The Hebrew 
   characters will be printed on the key next to the English characters.
-</td></tr><tr><td><span class="term"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> <i class="structfield"><tt>level</tt></i></span></td><td>indicates which symbol on the key will be used, in a vertical direction.  So on a standard US keyboard, the key with the number "1" on it also has the 
+</td></tr><tr><td><span class="term">gint <i class="structfield"><tt>level</tt></i></span></td><td>indicates which symbol on the key will be used, in a vertical direction.  So on a standard US keyboard, the key with the number "1" on it also has the 
   exclamation point ("!") character on it. The level indicates whether to use 
   the "1" or the "!" symbol. The letter keys are considered to have a lowercase
   letter at level 0, and an uppercase letter at level 1, though only the 
   uppercase letter is printed.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3079504"></a><h3><a name="gdk-keymap-get-default"></a>gdk_keymap_get_default ()</h3><a class="indexterm" name="id3079516"></a><pre class="programlisting"><a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  gdk_keymap_get_default          (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3253942"></a><h3><a name="gdk-keymap-get-default"></a>gdk_keymap_get_default ()</h3><a class="indexterm" name="id3253954"></a><pre class="programlisting"><a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  gdk_keymap_get_default          (void);</pre><p>
 Returns the <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> attached to the default display.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> attached to the default display.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3079571"></a><h3><a name="gdk-keymap-get-for-display"></a>gdk_keymap_get_for_display ()</h3><a class="indexterm" name="id3079583"></a><pre class="programlisting"><a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  gdk_keymap_get_for_display      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3254009"></a><h3><a name="gdk-keymap-get-for-display"></a>gdk_keymap_get_for_display ()</h3><a class="indexterm" name="id3254021"></a><pre class="programlisting"><a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a>*  gdk_keymap_get_for_display      (<a href="GdkDisplay.html" title="GdkDisplay">GdkDisplay</a> *display);</pre><p>
 Returns the <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> attached to <i class="parameter"><tt>display</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>display</tt></i> :</span></td><td> the <a href="GdkDisplay.html" title="GdkDisplay"><span class="type">GdkDisplay</span></a>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> attached to <i class="parameter"><tt>display</tt></i>.
 </td></tr></tbody></table></div><p>Since  2.2
-</p></div><hr><div class="refsect2" lang="en"><a name="id3079683"></a><h3><a name="gdk-keymap-lookup-key"></a>gdk_keymap_lookup_key ()</h3><a class="indexterm" name="id3079694"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gdk_keymap_lookup_key           (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
+</p></div><hr><div class="refsect2" lang="en"><a name="id3254121"></a><h3><a name="gdk-keymap-lookup-key"></a>gdk_keymap_lookup_key ()</h3><a class="indexterm" name="id3254132"></a><pre class="programlisting">guint       gdk_keymap_lookup_key           (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
                                              const <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> *key);</pre><p>
 Looks up the keyval mapped to a keycode/group/level triplet.
 If no keyval is bound to <i class="parameter"><tt>key</tt></i>, returns 0. For normal user input,
@@ -248,26 +166,14 @@ the same as the current keyboard state.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keymap</tt></i> :</span></td><td> a <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> or <tt class="literal">NULL</tt> to use the default keymap
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> a <a href="gdk-Keyboard-Handling.html#GdkKeymapKey"><span class="type">GdkKeymapKey</span></a> with keycode, group, and level initialized
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a keyval, or 0 if none was mapped to the given <i class="parameter"><tt>key</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3079827"></a><h3><a name="gdk-keymap-translate-keyboard-state"></a>gdk_keymap_translate_keyboard_state ()</h3><a class="indexterm" name="id3079839"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_keymap_translate_keyboard_state
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3254265"></a><h3><a name="gdk-keymap-translate-keyboard-state"></a>gdk_keymap_translate_keyboard_state ()</h3><a class="indexterm" name="id3254277"></a><pre class="programlisting">gboolean    gdk_keymap_translate_keyboard_state
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> hardware_keycode,
+                                             guint hardware_keycode,
                                              <a href="gdk-Windows.html#GdkModifierType">GdkModifierType</a> state,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> group,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *keyval,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *effective_group,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *level,
+                                             gint group,
+                                             guint *keyval,
+                                             gint *effective_group,
+                                             gint *level,
                                              <a href="gdk-Windows.html#GdkModifierType">GdkModifierType</a> *consumed_modifiers);</pre><p>
 Translates the contents of a <a href="gdk-Event-Structures.html#GdkEventKey"><span class="type">GdkEventKey</span></a> into a keyval, effective
 group, and level. Modifiers that affected the translation and
@@ -327,17 +233,11 @@ not <tt class="literal">&lt;Control&gt;&lt;Shift&gt;plus</tt>,
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>level</tt></i> :</span></td><td> return location for level
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>consumed_modifiers</tt></i> :</span></td><td> return location for modifiers that were used to determine the group or level
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if there was a keyval bound to the keycode/state/group
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080258"></a><h3><a name="gdk-keymap-get-entries-for-keyval"></a>gdk_keymap_get_entries_for_keyval ()</h3><a class="indexterm" name="id3080271"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_keymap_get_entries_for_keyval
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3254696"></a><h3><a name="gdk-keymap-get-entries-for-keyval"></a>gdk_keymap_get_entries_for_keyval ()</h3><a class="indexterm" name="id3254709"></a><pre class="programlisting">gboolean    gdk_keymap_get_entries_for_keyval
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval,
+                                             guint keyval,
                                              <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> **keys,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *n_keys);</pre><p>
+                                             gint *n_keys);</pre><p>
 Obtains a list of keycode/group/level combinations that will
 generate <i class="parameter"><tt>keyval</tt></i>. Groups and levels are two kinds of keyboard mode;
 in general, the level determines whether the top or bottom symbol
@@ -348,34 +248,22 @@ convert a keyboard between Hebrew to English modes, for example.
 <a href="gdk-Event-Structures.html#GdkEventKey"><span class="type">GdkEventKey</span></a> contains a <tt class="literal">group</tt> field that indicates the active
 keyboard group. The level is computed from the modifier mask.
 The returned array should be freed
-with <a
-href="../glib/glib-Memory-Allocation.html#g-free"
-><tt class="function">g_free()</tt></a>.</p><p>
+with <tt class="function">g_free()</tt>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keymap</tt></i> :</span></td><td> a <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a>, or <tt class="literal">NULL</tt> to use the default keymap
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td> a keyval, such as <tt class="literal">GDK_a</tt>, <tt class="literal">GDK_Up</tt>, <tt class="literal">GDK_Return</tt>, etc.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>keys</tt></i> :</span></td><td> return location for an array of <a href="gdk-Keyboard-Handling.html#GdkKeymapKey"><span class="type">GdkKeymapKey</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>n_keys</tt></i> :</span></td><td> return location for number of elements in returned array
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if keys were found and returned
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080483"></a><h3><a name="gdk-keymap-get-entries-for-keycode"></a>gdk_keymap_get_entries_for_keycode ()</h3><a class="indexterm" name="id3080496"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_keymap_get_entries_for_keycode
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3254921"></a><h3><a name="gdk-keymap-get-entries-for-keycode"></a>gdk_keymap_get_entries_for_keycode ()</h3><a class="indexterm" name="id3254934"></a><pre class="programlisting">gboolean    gdk_keymap_get_entries_for_keycode
                                             (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> hardware_keycode,
+                                             guint hardware_keycode,
                                              <a href="gdk-Keyboard-Handling.html#GdkKeymapKey">GdkKeymapKey</a> **keys,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> **keyvals,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> *n_entries);</pre><p>
+                                             guint **keyvals,
+                                             gint *n_entries);</pre><p>
 Returns the keyvals bound to <i class="parameter"><tt>hardware_keycode</tt></i>.
 The Nth <a href="gdk-Keyboard-Handling.html#GdkKeymapKey"><span class="type">GdkKeymapKey</span></a> in <i class="parameter"><tt>keys</tt></i> is bound to the Nth
-keyval in <i class="parameter"><tt>keyvals</tt></i>. Free the returned arrays with <a
-href="../glib/glib-Memory-Allocation.html#g-free"
-><tt class="function">g_free()</tt></a>.
+keyval in <i class="parameter"><tt>keyvals</tt></i>. Free the returned arrays with <tt class="function">g_free()</tt>.
 When a keycode is pressed by the user, the keyval from
 this list of entries is selected by considering the effective
 keyboard group and level. See <a href="gdk-Keyboard-Handling.html#gdk-keymap-translate-keyboard-state"><tt class="function">gdk_keymap_translate_keyboard_state()</tt></a>.</p><p>
@@ -386,20 +274,14 @@ keyboard group and level. See <a href="gdk-Keyboard-Handling.html#gdk-keymap-tra
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>keyvals</tt></i> :</span></td><td> return location for array of keyvals, or NULL
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>n_entries</tt></i> :</span></td><td> length of <i class="parameter"><tt>keys</tt></i> and <i class="parameter"><tt>keyvals</tt></i>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if there were any entries
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080735"></a><h3><a name="gdk-keymap-get-direction"></a>gdk_keymap_get_direction ()</h3><a class="indexterm" name="id3080747"></a><pre class="programlisting"><a
-href="../pango/pango-Text-Processing.html#PangoDirection"
->PangoDirection</a> gdk_keymap_get_direction     (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255173"></a><h3><a name="gdk-keymap-get-direction"></a>gdk_keymap_get_direction ()</h3><a class="indexterm" name="id3255185"></a><pre class="programlisting">PangoDirection gdk_keymap_get_direction     (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap);</pre><p>
 Returns the direction of the keymap. 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keymap</tt></i> :</span></td><td>a <a href="gdk-Keyboard-Handling.html#GdkKeymap"><span class="type">GdkKeymap</span></a> or <tt class="literal">NULL</tt> to use the default keymap.
 Returns: <tt class="literal">PANGO_DIRECTION_LTR</tt> or <tt class="literal">PANGO_DIRECTION_RTL</tt>.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the direction of the keymap.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080831"></a><h3><a name="gdk-keyval-name"></a>gdk_keyval_name ()</h3><a class="indexterm" name="id3080842"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      gdk_keyval_name                 (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255269"></a><h3><a name="gdk-keyval-name"></a>gdk_keyval_name ()</h3><a class="indexterm" name="id3255280"></a><pre class="programlisting">gchar*      gdk_keyval_name                 (guint keyval);</pre><p>
 Converts a key value into a symbolic name.
 The names are the same as those in the <tt class="filename">&lt;gdk/gdkkeysyms.h&gt;</tt> header file
 but without the leading "GDK_".
@@ -408,111 +290,73 @@ but without the leading "GDK_".
 a valid key. The string should not be modified.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080921"></a><h3><a name="gdk-keyval-from-name"></a>gdk_keyval_from_name ()</h3><a class="indexterm" name="id3080932"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gdk_keyval_from_name            (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *keyval_name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255359"></a><h3><a name="gdk-keyval-from-name"></a>gdk_keyval_from_name ()</h3><a class="indexterm" name="id3255370"></a><pre class="programlisting">guint       gdk_keyval_from_name            (const gchar *keyval_name);</pre><p>
 Converts a key name to a key value.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval_name</tt></i> :</span></td><td>a key name.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the corresponding key value, or <tt class="literal">GDK_VoidSymbol</tt> if the key name is
 not a valid key.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3080997"></a><h3><a name="gdk-keyval-convert-case"></a>gdk_keyval_convert_case ()</h3><a class="indexterm" name="id3081008"></a><pre class="programlisting">void        gdk_keyval_convert_case         (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> symbol,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *lower,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> *upper);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255435"></a><h3><a name="gdk-keyval-convert-case"></a>gdk_keyval_convert_case ()</h3><a class="indexterm" name="id3255446"></a><pre class="programlisting">void        gdk_keyval_convert_case         (guint symbol,
+                                             guint *lower,
+                                             guint *upper);</pre><p>
 Obtains the upper- and lower-case versions of the keyval <i class="parameter"><tt>symbol</tt></i>.
 Examples of keyvals are <span class="type">GDK_a</span>, <span class="type">GDK_Enter</span>, <span class="type">GDK_F1</span>, etc.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>symbol</tt></i> :</span></td><td> a keyval
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>lower</tt></i> :</span></td><td> return location for lowercase version of <i class="parameter"><tt>symbol</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>upper</tt></i> :</span></td><td> return location for uppercase version of <i class="parameter"><tt>symbol</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081148"></a><h3><a name="gdk-keyval-to-upper"></a>gdk_keyval_to_upper ()</h3><a class="indexterm" name="id3081159"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gdk_keyval_to_upper             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255586"></a><h3><a name="gdk-keyval-to-upper"></a>gdk_keyval_to_upper ()</h3><a class="indexterm" name="id3255597"></a><pre class="programlisting">guint       gdk_keyval_to_upper             (guint keyval);</pre><p>
 Converts a key value to upper case, if applicable.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td>a key value.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the upper case form of <i class="parameter"><tt>keyval</tt></i>, or <i class="parameter"><tt>keyval</tt></i> itself if it is already
 in upper case or it is not subject to case conversion.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081230"></a><h3><a name="gdk-keyval-to-lower"></a>gdk_keyval_to_lower ()</h3><a class="indexterm" name="id3081241"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gdk_keyval_to_lower             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255668"></a><h3><a name="gdk-keyval-to-lower"></a>gdk_keyval_to_lower ()</h3><a class="indexterm" name="id3255679"></a><pre class="programlisting">guint       gdk_keyval_to_lower             (guint keyval);</pre><p>
 Converts a key value to lower case, if applicable.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td>a key value.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the lower case form of <i class="parameter"><tt>keyval</tt></i>, or <i class="parameter"><tt>keyval</tt></i> itself if it is already
 in lower case or it is not subject to case conversion.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081312"></a><h3><a name="gdk-keyval-is-upper"></a>gdk_keyval_is_upper ()</h3><a class="indexterm" name="id3081324"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_keyval_is_upper             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255750"></a><h3><a name="gdk-keyval-is-upper"></a>gdk_keyval_is_upper ()</h3><a class="indexterm" name="id3255762"></a><pre class="programlisting">gboolean    gdk_keyval_is_upper             (guint keyval);</pre><p>
 Returns <tt class="literal">TRUE</tt> if the given key value is in upper case.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td>a key value.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>keyval</tt></i> is in upper case, or if <i class="parameter"><tt>keyval</tt></i> is not subject to
 case conversion.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081404"></a><h3><a name="gdk-keyval-is-lower"></a>gdk_keyval_is_lower ()</h3><a class="indexterm" name="id3081415"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_keyval_is_lower             (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255842"></a><h3><a name="gdk-keyval-is-lower"></a>gdk_keyval_is_lower ()</h3><a class="indexterm" name="id3255853"></a><pre class="programlisting">gboolean    gdk_keyval_is_lower             (guint keyval);</pre><p>
 Returns <tt class="literal">TRUE</tt> if the given key value is in lower case.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td>a key value.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>keyval</tt></i> is in lower case, or if <i class="parameter"><tt>keyval</tt></i> is not subject to
 case conversion.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081496"></a><h3><a name="gdk-keyval-to-unicode"></a>gdk_keyval_to_unicode ()</h3><a class="indexterm" name="id3081507"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a>     gdk_keyval_to_unicode           (<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> keyval);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3255934"></a><h3><a name="gdk-keyval-to-unicode"></a>gdk_keyval_to_unicode ()</h3><a class="indexterm" name="id3255945"></a><pre class="programlisting">guint32     gdk_keyval_to_unicode           (guint keyval);</pre><p>
 Convert from a GDK key symbol to the corresponding ISO10646 (Unicode)
 character.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keyval</tt></i> :</span></td><td> a GDK key symbol 
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the corresponding unicode character, or 0 if there
               is no corresponding character.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3081570"></a><h3><a name="gdk-unicode-to-keyval"></a>gdk_unicode_to_keyval ()</h3><a class="indexterm" name="id3081582"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gdk_unicode_to_keyval           (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> wc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3256008"></a><h3><a name="gdk-unicode-to-keyval"></a>gdk_unicode_to_keyval ()</h3><a class="indexterm" name="id3256020"></a><pre class="programlisting">guint       gdk_unicode_to_keyval           (guint32 wc);</pre><p>
 Convert from a ISO10646 character to a key symbol.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>wc</tt></i> :</span></td><td> a ISO10646 encoded character
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the corresponding GDK key symbol, if one exists.
               or, if there is no corresponding symbol, 
               wc | 0x01000000
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3081646"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id3081651"></a><h3><a name="GdkKeymap-direction-changed"></a>The "direction-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3256084"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id3256089"></a><h3><a name="GdkKeymap-direction-changed"></a>The "direction-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
+                                            gpointer user_data);</pre><p>
 The ::direction_changed signal gets emitted when the direction of
 the keymap changes.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>keymap</tt></i> :</span></td><td> the object on which the signal is emitted
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div><p>Since  2.0
-</p></div><hr><div class="refsect2" lang="en"><a name="id3081732"></a><h3><a name="GdkKeymap-keys-changed"></a>The "keys-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
-                                            <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> user_data);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3256170"></a><h3><a name="GdkKeymap-keys-changed"></a>The "keys-changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="gdk-Keyboard-Handling.html#GdkKeymap">GdkKeymap</a> *keymap,
+                                            gpointer user_data);</pre><p>
 The ::keys_changed signal is emitted when the mapping represented by
 <i class="parameter"><tt>keymap</tt></i> changes.</p><p>
 

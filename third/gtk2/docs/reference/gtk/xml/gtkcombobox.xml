@@ -307,9 +307,13 @@ Returns the <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link> which 
 <indexterm role="2.4"><primary>gtk_combo_box_set_model</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_combo_box_set_model         (<link linkend="GtkComboBox">GtkComboBox</link> *combo_box,
                                              <link linkend="GtkTreeModel">GtkTreeModel</link> *model);</programlisting>
 <para>
-Sets the model used by <parameter>combo_box</parameter> to be <parameter>model</parameter>. Will unset a
-previously set model (if applicable).
-If <parameter>model</parameter> is <literal>NULL</literal>, then it will unset the model.</para>
+Sets the model used by <parameter>combo_box</parameter> to be <parameter>model</parameter>. Will unset a previously set 
+model (if applicable). If <parameter>model</parameter> is <literal>NULL</literal>, then it will unset the model.
+</para>
+<para>
+Note that this function does not clear the cell renderers, you have to 
+call <link linkend="gtk-combo-box-cell-layout-clear"><function>gtk_combo_box_cell_layout_clear()</function></link> yourself if you need to set up 
+different cell renderers for the new model.</para>
 <para>
 
 </para><variablelist role="params">

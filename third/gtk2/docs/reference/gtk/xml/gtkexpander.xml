@@ -461,7 +461,7 @@ Retrieves the label widget for the frame. See
 <refsect2><title><anchor id="GtkExpander--expander-size"/>The &quot;<literal>expander-size</literal>&quot; style property</title>
 <programlisting>  &quot;expander-size&quot;        <link linkend="gint">gint</link>                  : Read</programlisting>
 <para>Size of the expander arrow.</para><para>Allowed values: &gt;= 0</para>
-<para>Default value: 10</para>
+<para>Default value: 12</para>
 </refsect2>
 <refsect2><title><anchor id="GtkExpander--expander-spacing"/>The &quot;<literal>expander-spacing</literal>&quot; style property</title>
 <programlisting>  &quot;expander-spacing&quot;     <link linkend="gint">gint</link>                  : Read</programlisting>

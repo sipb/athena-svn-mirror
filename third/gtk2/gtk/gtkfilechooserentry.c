@@ -42,6 +42,8 @@ struct _GtkFileChooserEntry
 {
   GtkEntry parent_instance;
 
+  GtkFileChooserAction action;
+
   GtkFileSystem *file_system;
   GtkFilePath *base_folder;
   GtkFilePath *current_folder_path;
@@ -56,6 +58,8 @@ struct _GtkFileChooserEntry
 
   guint has_completion : 1;
   guint in_change      : 1;
+
+  guint sorting_idle;
 };
 
 enum
@@ -173,6 +177,7 @@ gtk_file_chooser_entry_init (GtkFileChooserEntry *chooser_entry)
   GtkCellRenderer *cell;
 
   comp = gtk_entry_completion_new ();
+
   gtk_entry_completion_set_match_func (comp,
 				       completion_match_func,
 				       chooser_entry,
@@ -201,6 +206,9 @@ static void
 gtk_file_chooser_entry_finalize (GObject *object)
 {
   GtkFileChooserEntry *chooser_entry = GTK_FILE_CHOOSER_ENTRY (object);
+
+  if (chooser_entry->sorting_idle)
+    g_source_remove (chooser_entry->sorting_idle);
 
   if (chooser_entry->completion_store)
     g_object_unref (chooser_entry->completion_store);
@@ -449,6 +457,19 @@ check_completion_callback (GtkFileChooserEntry *chooser_entry)
       gtk_file_path_free (unique_path);
     }
 
+  switch (chooser_entry->action)
+    {
+    case GTK_FILE_CHOOSER_ACTION_SAVE:
+    case GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
+      if (common_prefix && !g_str_has_suffix (common_prefix, "/"))
+	{
+	  g_free (common_prefix);
+	  common_prefix = NULL;
+	}
+      break;
+    default: ;
+    }
+
   if (common_prefix)
     {
       gint file_part_len;
@@ -497,6 +518,17 @@ add_completion_idle (GtkFileChooserEntry *chooser_entry)
     }
 }
 
+static gboolean
+sorting_idle (GtkFileChooserEntry *chooser_entry)
+{
+  chooser_entry->sorting_idle = 0;
+
+  /* Turn sorting back on */
+  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (chooser_entry->completion_store),
+					DISPLAY_NAME_COLUMN, GTK_SORT_ASCENDING);
+
+  return FALSE;
+}
 
 static void
 update_current_folder_files (GtkFileChooserEntry *chooser_entry,
@@ -506,7 +538,14 @@ update_current_folder_files (GtkFileChooserEntry *chooser_entry,
 
   g_assert (chooser_entry->completion_store != NULL);
 
-  /* Bah.  Need to turn off sorting */
+  if (chooser_entry->sorting_idle == 0)
+    {
+      /* Turn off sorting, since it is slow with the default list store implementation */
+      gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (chooser_entry->completion_store),
+					    -2, GTK_SORT_ASCENDING);
+      chooser_entry->sorting_idle = g_idle_add (sorting_idle, chooser_entry);
+    }
+
   for (tmp_list = added_uris; tmp_list; tmp_list = tmp_list->next)
     {
       GtkFileInfo *info;
@@ -519,22 +558,19 @@ update_current_folder_files (GtkFileChooserEntry *chooser_entry,
 				       NULL); /* NULL-GError */
       if (info)
 	{
-	  const gchar *display_name = gtk_file_info_get_display_name (info);
+	  const gchar *display_name;
 	  GtkTreeIter iter;
+
+	  display_name = gtk_file_info_get_display_name (info);
 
 	  gtk_list_store_append (chooser_entry->completion_store, &iter);
 	  gtk_list_store_set (chooser_entry->completion_store, &iter,
 			      DISPLAY_NAME_COLUMN, display_name,
 			      PATH_COLUMN, path,
 			      -1);
-
 	  gtk_file_info_free (info);
 	}
     }
-
-  /* FIXME: we want to turn off sorting temporarily.  I suck... */
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (chooser_entry->completion_store),
-					DISPLAY_NAME_COLUMN, GTK_SORT_ASCENDING);
 
   add_completion_idle (chooser_entry);
 }
@@ -644,11 +680,16 @@ gtk_file_chooser_entry_focus (GtkWidget        *widget,
       (GTK_WIDGET_HAS_FOCUS (widget)) &&
       (! control_pressed))
     {
+      gint pos = 0;
+
       if (chooser_entry->has_completion)
-	{
-	  gtk_editable_set_position (GTK_EDITABLE (widget),
-				     GTK_ENTRY (widget)->text_length);
-	}
+	gtk_editable_set_position (GTK_EDITABLE (widget),
+				   GTK_ENTRY (widget)->text_length);
+      /* Trigger the completion window to pop up again by a 
+       * zero-length insertion, a bit of a hack.
+       */
+      gtk_editable_insert_text (GTK_EDITABLE (widget), "", -1, &pos);
+
       return TRUE;
     }
   else
@@ -863,6 +904,11 @@ _gtk_file_chooser_entry_set_base_folder (GtkFileChooserEntry *chooser_entry,
 const GtkFilePath *
 _gtk_file_chooser_entry_get_current_folder (GtkFileChooserEntry *chooser_entry)
 {
+  if (chooser_entry->has_completion)
+    {
+      gtk_editable_set_position (GTK_EDITABLE (chooser_entry),
+				 GTK_ENTRY (chooser_entry)->text_length);
+    }
   return chooser_entry->current_folder_path;
 }
 
@@ -881,6 +927,11 @@ _gtk_file_chooser_entry_get_current_folder (GtkFileChooserEntry *chooser_entry)
 const gchar *
 _gtk_file_chooser_entry_get_file_part (GtkFileChooserEntry *chooser_entry)
 {
+  if (chooser_entry->has_completion)
+    {
+      gtk_editable_set_position (GTK_EDITABLE (chooser_entry),
+				 GTK_ENTRY (chooser_entry)->text_length);
+    }
   return chooser_entry->file_part;
 }
 
@@ -898,4 +949,44 @@ _gtk_file_chooser_entry_set_file_part (GtkFileChooserEntry *chooser_entry,
   g_return_if_fail (GTK_IS_FILE_CHOOSER_ENTRY (chooser_entry));
 
   gtk_entry_set_text (GTK_ENTRY (chooser_entry), file_part);
+}
+
+
+/**
+ * _gtk_file_chooser_entry_set_action:
+ * @chooser_entry: a #GtkFileChooserEntry
+ * @action: the action which is performed by the file selector using this entry
+ *
+ * Sets action which is performed by the file selector using this entry. 
+ * The #GtkFileChooserEntry will use different completion strategies for 
+ * different actions.
+ **/
+void
+_gtk_file_chooser_entry_set_action (GtkFileChooserEntry *chooser_entry,
+				    GtkFileChooserAction action)
+{
+  g_return_if_fail (GTK_IS_FILE_CHOOSER_ENTRY (chooser_entry));
+  
+  if (  chooser_entry->action != action)
+    {
+      chooser_entry->action = action;
+    }
+}
+
+
+/**
+ * _gtk_file_chooser_entry_get_action:
+ * @chooser_entry: a #GtkFileChooserEntry
+ *
+ * Gets the action for this entry. 
+ *
+ * Returns: the action
+ **/
+GtkFileChooserAction
+_gtk_file_chooser_entry_get_action (GtkFileChooserEntry *chooser_entry)
+{
+  g_return_val_if_fail (GTK_IS_FILE_CHOOSER_ENTRY (chooser_entry),
+			GTK_FILE_CHOOSER_ACTION_OPEN);
+  
+  return chooser_entry->action;
 }

@@ -1,3 +1,171 @@
+2004-12-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.14 ===
+
+2004-11-30  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Added Northern Sotho translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-11-22  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-11-22  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-11-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nb.po: Fix conflicting mnemonics.
+	* no.po: Update.
+
+2004-10-25  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-12  Matthias Clasen  <mclasen@redhat.com> 
+
+	* pa.po: Fix a problem with the translation
+	of default:LTR.
+
+2004-10-12  Matthias Clasen  <mclasen@redhat.com> 
+
+	* === Released 2.4.13 ===
+
+2004-10-12  Matthias Clasen  <mclasen@redhat.com> 
+
+	* === Released 2.4.12 ===
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-08  Matthias Clasen  <mclasen@redhat.com> 
+
+	* === Released 2.4.11 ===
+
+2004-10-06  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Fixed an incorrect string.
+
+2004-10-03  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* gl.po: Updated Galician translation.
+
+2004-09-27  Roozbeh Pournader  <roozbeh@farsiweb.info>
+
+	* az_IR.po: Added Iranian Azerbaijani translation by Amir Hedayaty
+	<amir@bamdad.org>.
+
+2004-09-27  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated by Tino Meinen.
+
+2004-09-25  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation by Gabor Kelemen.
+
+2004-09-19  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.10 ===
+
+2004-09-17  Raphael Higino  <raphaelh@cvs.gnome.org>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2004-09-17  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2004-09-17  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-09-16  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2004-09-16  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-09-15  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-08  David Lodge <dave@cirt.net>
+
+	* en_GB.po: Updated British translation.
+
+2004-09-15  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Alessio Dess <alessiodessi@tiscali.it>.
+
+2004-09-15  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team
+
+2004-09-12  Dafydd Harries  <daf@muse.19inch.net>
+
+	* cy.po: Updated Welsh translation.
+
+2004-09-09  Baris Cicek <baris@teamforce.name.tr>
+
+	* tr.po: Updated Turkish Translation
+
+2004-09-09  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation by Gabor Kelemen.
+
+2004-09-08  David Lodge <dave@cirt.net>
+
+	* ang.po: Updated Olde Englisc translation.
+
+2004-09-06  Åsmund Skjæveland <aasmunds@fys.uio.no>
+
+	* nn.po: Updated Norwegian Nynorsk translation.
+
+2004-09-05  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2004-09-05  Marius Andreiana <marius galuna.ro>
+
+        * ro.po: updated
+
+2004-09-04  Hendrik Richter <hendrik@gnome-de.org>
+
+	* de.po: Updated German translation
+
+2004-09-01  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-01  Runa Bhattacharjee	<runab@redhat.com>
+	* bn.po: Updated Bengali (bn) Translation
+
+2004-08-31  Nikos Charonitakis  <charosn@her.forthne.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-08-31  Runa Bhattacharjee	<runab@redhat.com>
+	* bn.po: Updated Bengali (bn) Translation
+
+2004-08-29  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* ne.po: Updated Nepali Translation
+
+2004-08-27  Maxim Dziuamenko <mvd@mylinux.com.ua>
+
+	* Updated Ukrainian translation.
+
 2004-08-25  Matthias Clasen  <mclasen@redhat.com>
 
 	* === Released 2.4.9 ===
