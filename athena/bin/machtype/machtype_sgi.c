@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.5 1996-08-20 19:26:07 cfields Exp $
+ *	$Id: machtype_sgi.c,v 1.5.2.1 1997-11-07 18:16:46 ghudson Exp $
  *	$Locker:  $
  */
 
@@ -324,6 +324,11 @@ if (i->inv_type == INV_CPUBOARD )  {
 	case INV_IP26BOARD:
                 puts(verbose ? "SGI IP26": "IP26");
                 break;
+#ifdef INV_IP32BOARD
+	case INV_IP32BOARD:
+		puts(verbose ? "SGI IP32": "IP32");
+		break;
+#endif
          default:
            if(verbose)
                 printf("Unknown SGI type %d\n", i->inv_state);
@@ -410,24 +415,38 @@ int done=0;
 
 void do_INV_GRAPHICS(inventory_t *i)
 {
-        if (i->inv_type == INV_NEWPORT ) {
-                if (i->inv_state == INV_NEWPORT_24 ) {
-                        fprintf(stdout,"XL-24\n");
-                } else if (i->inv_state == INV_NEWPORT_XL ) {
-                        fprintf(stdout,"XL\n");
-                } else {
-                        fprintf(stdout,"NG1\n");
-                }
-        } else if (i->inv_type == INV_GR2 ) {
-		if ((i->inv_state & ~INV_GR2_INDY) == INV_GR2_ELAN ) {
-			/* an EXPRESS is an EXPRESS of course of course
-			   except when you are a GR3-XZ */
-			fprintf(stdout,"GR3-XZ\n");
-		} else 
-			fprintf(stdout,"UNKNOWN video\n");
-	} else {
-                fprintf(stdout,"UNKNOWN video\n");
-        }
+  switch(i->inv_type)
+    {
+    case INV_NEWPORT:
+      switch(i->inv_state)
+	{
+	case INV_NEWPORT_24:
+	  fprintf(stdout,"XL-24\n");
+	  break;
+	case INV_NEWPORT_XL:
+	  fprintf(stdout,"XL\n");
+	  break;
+	default:
+	  fprintf(stdout,"NG1\n");
+	  break;
+	}
+      break;
+    case INV_GR2:
+      /* an EXPRESS is an EXPRESS of course of course
+	 except when you are a GR3-XZ */
+      if ((i->inv_state & ~INV_GR2_INDY) == INV_GR2_ELAN )
+	fprintf(stdout,"GR3-XZ\n");
+      else
+	fprintf(stdout,"UNKNOWN video\n");
+      break;
+#ifdef INV_CRIME
+    case INV_CRIME:
+      fprintf(stdout, "CRM\n");
+      break;
+#endif
+    default:
+      fprintf(stdout,"UNKNOWN video\n");
+    }
 }
 
 void do_INV_CAM(inventory_t *i)
