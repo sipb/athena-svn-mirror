@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.46 1999-01-23 17:25:14 ghudson Exp $
+# $Id: Imakefile,v 1.47 1999-01-29 17:56:01 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -8,6 +8,14 @@ MACHLIBS=-lbsd
 #ifdef sgi
 /* AFS 3.4a rx depends on sys now; sys already depended on rx */
 MACHLIBS = ../misc/libnanny.a
+#endif
+
+#ifdef __NetBSD__
+MACHLIBS = -lcrypt -lcompat -lutil
+#endif
+
+#ifdef linux
+MACHLIBS = -lcrypt -lresolv
 #endif
 
 KRB5_DEFS = -DKRB5
@@ -26,6 +34,9 @@ PRESOURCES=Xlogin.sun4.presed
 #endif
 #ifdef sgi
 PRESOURCES=Xlogin.s/**/gi.presed
+#endif
+#ifdef linux
+PRESOURCES=Xlogin.l/**/inux.presed
 #endif
 
 create_dir(/etc/athena/login)
