@@ -5,4 +5,11 @@ AC_PROG_CC
 AC_PATH_PROG(STRIP, strip, strip)
 AC_SUBST(STRIP)
 
+# Solaris 2.6 only declares utimes if you define _XPG4_2, but there
+# doesn't seem to be any way to define that and not get lots of
+# header warnings.
+AC_PROG_CPP
+AC_MSG_CHECKING(if sys/time.h declares utimes)
+AC_EGREP_HEADER(utimes, sys/time.h, [AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no); AC_DEFINE(NEED_UTIMES_PROTO)])
+
 AC_OUTPUT(Makefile)

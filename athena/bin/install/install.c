@@ -30,12 +30,13 @@
  * without express or implied warranty.
  */
 
-static char rcsid[] = "$Id: install.c,v 1.5 1996-12-16 08:29:02 ghudson Exp $";
+static const char rcsid[] = "$Id: install.c,v 1.6 1999-11-22 15:59:33 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <errno.h>
 #include <fcntl.h> 
 #include <grp.h>
@@ -45,6 +46,11 @@ static char rcsid[] = "$Id: install.c,v 1.5 1996-12-16 08:29:02 ghudson Exp $";
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include <unistd.h>
+
+#ifdef NEED_UTIMES_PROTO
+int utimes(const char *path, const struct timeval *times);
+#endif
 
 #define MAXARGS 1024
 
@@ -63,7 +69,6 @@ static int docopy = 0;
 static int dostrip = 0;
 static int domove = 0;
 static int dotime = 0;
-static int multiple = 0;
 static mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 
 static char *group;
@@ -96,16 +101,16 @@ int main(int cmdline_argc, char **cmdline_argv)
   inst_env = getenv("INSTOPT");
   if (inst_env)
     {
-      while (isspace(*inst_env))
+      while (isspace((unsigned char)*inst_env))
 	inst_env++;
       while (*inst_env)
 	{
 	  argv[argc++] = inst_env;
-	  while (*inst_env && !isspace(*inst_env))
+	  while (*inst_env && !isspace((unsigned char)*inst_env))
 	    inst_env++;
 	  if (*inst_env)
 	    *inst_env++ = 0;
-	  while (isspace(*inst_env))
+	  while (isspace((unsigned char)*inst_env))
 	    inst_env++;
 	}
     }
@@ -380,7 +385,7 @@ static int isnumber(const char *s)
 {
   while(*s)
     {
-      if (!isdigit(*s))
+      if (!isdigit((unsigned char)*s))
 	return 0;
       else
 	s++;
@@ -393,7 +398,7 @@ static int atoo(const char *str)
 {
   int val;
 
-  for (val = 0; isdigit(*str); ++str)
+  for (val = 0; isdigit((unsigned char)*str); ++str)
     val = val * 8 + *str - '0';
   return val;
 }
@@ -407,7 +412,7 @@ static void bad(const char *head, const char *str)
 }
 
 /* usage -- print a usage message and die */
-static void usage()
+static void usage(void)
 {
   fputs("usage: install [-cds] [-g group] [-m mode] [-o owner]"
 	" file1 file2;\n\tor file1 ... fileN directory\n", stderr);

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1997-01-04 06:07:11 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1999-11-22 15:59:30 danw Exp $
 
 SHELL=/bin/sh
 STRIP=@STRIP@
@@ -12,10 +12,11 @@ mandir=@mandir@
 
 CC=@CC@
 CPPFLAGS=@CPPFLAGS@
-CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
-ALL_CFLAGS=-DSTRIP=\"${STRIP}\" ${CPPFLAGS} ${CFLAGS}
+ALL_CFLAGS=-DSTRIP=\"${STRIP}\" ${DEFS} ${CPPFLAGS} ${CFLAGS}
 
 all: xinstall
 
