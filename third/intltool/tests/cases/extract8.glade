@@ -21,7 +21,7 @@
 
         <child>
           <widget class="GtkLabel" id="label1">
-            <property name="label" translatable="yes">A label</property>
+            <property name="label" translatable="yes" comments="Comment on &lt;property&gt; tag">A label</property>
             <property name="visible">yes</property>
             <accessibility>
               <atkproperty name="AtkObject::accessible-name">A label</atkproperty>
@@ -53,7 +53,8 @@ does nothing interesting."/>
 
             <child>
               <widget class="GtkLabel" id="label2">
-                <property name="label" translatable="yes">_Push me</property>
+                <property name="label" translatable="yes" comments="Multiline comments
+should be supported as well">_Push me</property>
                 <property name="use_underline">yes</property>
                 <property name="visible">yes</property>
               </widget>

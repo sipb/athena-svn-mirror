@@ -1,14 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = tests doc doc-i18n-tool
+SUBDIRS = tests doc
 
 NULL = 
 
-aclocal_macros = intltool.m4 xml-i18n-tools.m4
+aclocal_macros = intltool.m4
 
 CLEANFILES =					\
 	intltoolize				\
-	xml-i18n-toolize			\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
@@ -16,25 +15,14 @@ CLEANFILES =					\
 	intltool-merge				\
 	intltool-prepare			\
 	intltool-update				\
-	*.gz					\
 	$(NULL)
 
-# These are required by intltoolize and xml-i18n-toolize.
+# These are required by intltoolize and
 pkgdata_DATA =					\
+	Makefile.in.in				\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
-	intltool-po-Makefile.in.in-patch-1	\
-	intltool-po-Makefile.in.in-patch-2	\
-	intltool-po-Makefile.in.in-patch-3	\
-	intltool-po-Makefile.in.in-patch-4	\
-	intltool-po-Makefile.in.in-patch-5	\
-	intltool-po-Makefile.in.in-patch-6	\
-	intltool-po-Makefile.in.in-patch-7	\
-	intltool-po-Makefile.in.in-patch-8	\
-	xml-i18n-po-Makefile.in.in-patch-1	\
-	xml-i18n-po-Makefile.in.in-patch-2	\
-	xml-i18n-po-Makefile.in.in-patch-5	\
 	$(NULL)
 
 
@@ -45,7 +33,6 @@ aclocal_DATA = $(aclocal_macros)
 
 bin_SCRIPTS =					\
 	intltoolize				\
-	xml-i18n-toolize			\
 	intltool-update				\
 	intltool-merge				\
 	intltool-extract			\
@@ -55,17 +42,20 @@ bin_SCRIPTS =					\
 EXTRA_DIST =					\
 	$(aclocal_macros)			\
 	intltoolize.in				\
-	xml-i18n-toolize.in			\
 	intltool-extract.in.in			\
 	intltool-merge.in.in			\
 	intltool-update.in.in			\
 	intltool-prepare.in			\
 	intltool.spec.in			\
+	intltool.spec				\
 	$(pkgdata_DATA)				\
 	$(NULL)
 
-dist-hook:
-	cp intltool.spec $(distdir)
-
 %: %.in Makefile
-	sed -e "s:@INTLTOOL_PERL@:$(PERL):;" < $< > $@
+	sed -e "s#@INTLTOOL_PERL@#$(PERL)#g" \
+	    -e "s#@INTLTOOL_ICONV@#$(INTLTOOL_ICONV)#g" \
+	    -e "s#@INTLTOOL_MSGFMT@#$(INTLTOOL_MSGFMT)#g" \
+	    -e "s#@INTLTOOL_MSGMERGE@#$(INTLTOOL_MSGMERGE)#g" \
+	    -e "s#@INTLTOOL_XGETTEXT@#$(INTLTOOL_XGETTEXT)#g" \
+	    -e "s#@INTLTOOL_EXTRACT@#$(bindir)/intltool-extract#g" \
+	    < $< > $@

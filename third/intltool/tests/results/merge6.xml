@@ -3,5 +3,5 @@
   <bar>This is a &quot; test</bar>
   <bar xml:lang="merge6">This is a " test --> is this a success ?</bar>
   <bar>This is another ' test</bar>
-  <bar xml:lang="merge6">This is ' another \ test, and a \0123uccess.</bar>
+  <bar xml:lang="merge6">This is ' another \ test, and a Success.</bar>
 </foo>

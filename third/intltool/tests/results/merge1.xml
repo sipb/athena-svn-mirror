@@ -9,7 +9,7 @@
 	<str name="MSG_SaveFailedExport"
 	    value="Error while attempting to save %s: could not construct exporter"/>
 	<str name="MSG_SaveFailedExport-test"
-	    value="Kunne ikke skrive til &#38; filen &#34;%s&#34; -- \."/>
+	    value="Kunne ikke skrive til &amp; filen &quot;%s&quot; -- \."/>
     </strings>
 
     <commands>
@@ -96,7 +96,7 @@
 	    verb="EditCopy"/>
 	<toolitem name="Copy-test"
 	    pixtype="stock" pixname="Copy"
-	    label="Kopi&#233;r"
+	    label="Kopiér"
 	    tip="Copy the current selection to the clipboard"
 	    verb="EditCopy"/>
 

@@ -1,3 +1,441 @@
+2005-01-23  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS:
+	* configure.in: Up version to 0.33 for release
+
+2005-01-23  Rodney Dawes  <dobey@novell.com>
+
+	* INSTALL: Remove this automake generated file from CVS
+
+	* Makefile.am (SUBDIRS): Remove doc-i18n-tool
+	(CLEANFILES): Remove the *.gz glob
+	(EXTRA_DIST): Put intltool.spec in here (for now) and get rid of
+	the dist-hook rule
+
+	* configure.in: Remove the large dnl section for doc-i18n-tool
+	Remove doc-i18n-tool/Makefile from AC_OUTPUT
+
+	* tests/selftest.pl.in: Fix the spacing for test 24
+	Clean up after ourselves so we pass distcheck
+
+	* tests/cases/Makefile.am (EXTRA_DIST): Add extract12.xml.in
+	(CLEANFILES): Add the list of generated files here, so that we
+	clean up after ourselves when builddir == srcdir
+
+	* tests/results/Makefile.am (EXTRA_DIST): Add extract12.xml.in.h
+
+2005-01-23  Rodney Dawes  <dobey@novell.com>
+
+	* HACKING: Update to have the right info for the Mailing List
+
+	* README: Update the Mailing List info and URL
+
+	* TODO: Update to not say "fix bugs", and remove some completed items
+
+	* USED: Removed this as per the TODO
+
+2005-01-20  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.in.in (MSGMERGE, GENPOT): Set srcdir for these two scripts
+	(DISTFILES): Remove $(GETTEXT_PACKAGE).pot from here
+	(.po.pox): Use $(top_builddir)/po/$(GETTEXT_PACKAGE).pot
+	(.po.gmo): Don't prepend $(srcdir)/ to $$file here
+	($(srcdir)/$(GETTEXT_PACKAGE).pot): Change this rule to not have the
+	$(srcdir)/ prepended to it
+	(mostlyclean): Fix a bug and remove $(GETTEXT_PACKAGE).pot instead of
+	$(GETTEXT_PACKAGE).po, since this is actually the file
+	(dist distdir): Don't depend on the update-po rule
+	(update-po): Don't cd to $(srcdir) to update the po files
+	Use the $(MSGMERGE) variable for building, instead of using a busted
+	path to $(INTLTOOL_UPDATE)
+	
+	* intltool-update.in.in: Replace $lang.po with $SRCDIR/$lang.po in
+	all the locations we use $lang.po
+	(GeneratePOTemplate): Use ../$_.h\n for the
+	OUTFILE when generating the headers for xml/ini support
+	Use ../$_\n for regular files when SRCDIR == "."
+	Use . as the directory argument for xgettext instead of ..
+	
+	Fixes #159846
+
+2005-01-20  Miloslav Trmac <mitr@volny.cz>
+
+	* intltool-extract.in.in (type_xml): Ignore empty strings that are
+	marked for translation in XML files
+
+	* test/selftest.pl.in: Add test 24 to ignore empty strings in XML
+	files that are marked for translation
+	* test/cases/extract12.xml.in: Test case for emptry strings in XML
+	* test/results/extract12.xml.in.h: Test case results for empty strings
+	in XML files that are marked for translation
+
+	Fixes #163689
+
+2005-01-20  James Henstridge  <james@jamesh.id.au>
+
+	* intltoolize.in: if AC_CONFIG_MACRO_DIR is used in the
+	configure.in file, install intltool.m4 to that macro directory.
+
+	Fixes #160943
+
+2005-01-20  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in (echo_n): Add new method to implement the
+	echo -n functionality which is not available on all platforms
+	(SubstituteVariable): Use echo_n () instead of `echo -n`
+
+	Fixes #162027
+	
+2005-01-13  Jeremy Katz  <katzj@redhat.com>
+
+	* intltool-extract.in.in (place_local): Fix local mode (#163981)
+
+2004-12-02  Danilo Šegan  <dsegan@gmx.net>
+
+	Fix #159511.
+	
+	* tests/selftest.pl.in (check_multimerge_result): Added
+	merge-deepattr.xml test case as test 23. 
+	* tests/cases/Makefile.am (EXTRA_DIST): Added merge-deepattr.xml.in.
+	* tests/results/Makefile.am (EXTRA_DIST): Added merge-deepattr.xml.
+	* tests/results/merge-deepattr.xml: Added.
+	* tests/cases/merge-deepattr.xml.in: Added.
+
+	* intltool-merge.in.in (translate_subnodes): Added.
+	(traverse): Use translate_subnodes where appropriate.
+	(getAttributeString): $$translate == 2 if attributes need translation.
+
+2004-11-25  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am: Fix sed rule for intltool scripts to use # as the
+	separator, and prefix the gettext program name variables with INTLTOOL
+
+	* NEWS: Document bug fix, and previous commit
+	
+	* configure.in: Prefix gettext program name variables with INTLTOOL
+
+	* intltool-po-Makefile.in.in-patch-?: These patches are no longer used
+
+	* intltool.m4: Fix sed rule for intltool script creation to use # as
+	the separator, and prefix the gettext program name variables with
+	INTLTOOL
+
+	Fixes #156454
+	
+2004-11-21  Rodney Dawes  <dobey@novell.com>
+
+	* intltool.m4: Update serial for IT_PROG_INTLTOOL to 2
+
+	* intltoolize.in: Update serial check to check for IT_PROG_INTLTOOL
+	instead of AC_PROG_INTLTOOL
+	
+2004-11-12  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes bug #157718.
+
+	* NEWS: Document changes.
+
+	* intltool-merge.in.in (intltool_tree_cdatastart): Added.
+	(intltool_tree_cdataend): Added.
+	(traverse): Simple style fix.
+	(readXml): Set CDATA handlers.
+
+	* tests/selftest.pl.in: Add test 22 to test CDATA merging.
+	* tests/results/Makefile.am (EXTRA_DIST): Add merge-cdata.xml, sorted.
+	* tests/cases/Makefile.am (EXTRA_DIST): Add merge-cdata.xml.in, sorted.
+	* tests/results/merge-cdata.xml: Added.
+	* tests/cases/merge-cdata.xml.in: Added.
+
+2004-11-06  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS:
+	* configure.in: Up version to 0.32.1 for release
+
+2004-11-06  Danilo Šegan  <dsegan@gmx.net>
+ 
+	Fixes #145017.
+	
+	* NEWS: Document changes.
+
+	* tests/selftest.pl.in (check_multimerge_result): Removed "-p" and
+	"-u" options.
+
+	* tests/results/merge1.xml: Updated test result.
+	
+	* intltool-merge.in.in (print_help): modify -p, -u help messages.
+	(utf8_sanity_check): default to UTF-8.
+	(entity_encode): only minimalistic encoding.
+	(entity_encode_int_even_high_bit): removed.
+	Added utf8_sanity_check for all styles except RFC822.
+	(traverse): s/"<$nodename$outattr"/"<$nodename", $outattr/.
+
+2004-11-05  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for bug fix
+
+	* intltool-update.in.in ($ini_support): Add support for .icon files
+	Original patch from Takao Fujiwara <Takao.Fujiwara@Sun.COM>
+
+	ChangeLog: Fix date for previous entry (doh)
+
+	Fixes #157412
+
+2004-11-05  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-merge.in.in (getAttributeString): I missed some parts
+	of the patch during commit of #155843 fix (2004-10-23).
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS:
+	* configure.in: Update for 0.32
+	(AC_OUTPUT): Remove xml-i18n-toolize
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for bug fix
+
+	* intltool-update.in.in (isNotValidMissing): Add this function to
+	intltool-update so we can check for special directories and avoid
+	complaining that files with translations are missing from them
+	(FindLeftoutFiles): Add calls to check isNotValidMissing before pushing
+	files onto the stack of missing files, so that we don't include files
+	in special directories that shouldn't be in POTFILES.in
+
+	Fixes #157278
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for bug fix
+
+	* intltool.m4: Rename AC_PROG_INTLTOOL to IT_PROG_INTLTOOL and add a
+	definition for AC_PROG_INTLTOOL to just call IT_PROG_INTLTOOL as a
+	means of deprecation (this is what libtool does for AM_PROG_LIBTOOL)
+
+	Fixes #151508
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for bug fix
+
+	* intltool.m4: Add INTLTOOL_XML_NOMERGE_RULE so that people can pull
+	strings from XML files, but not merge the translations back in
+
+	Fixes #155842
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am: Remove all of the xml-i18n-tools bits as they are no
+	longer used, and looking at the code, don't work anyway
+
+	* xml-i18n-po-Makefile.in.in-patch-?:
+	* xml-i18n-toolize.in:
+	* xml-i18n-tools.m4:
+	Remove all these files from CVS as they are no longer used and didn't
+	work anyway, since they used scripts that no longer existed
+
+2004-11-04  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for fixes
+
+	* Makefile.in.in: Fix mkinstalldirs stuff to match what automake
+	generates elsewhere more closely, and to work with automake 1.4
+
+	* intltool.m4: Add the m4 stuff from AM_PROG_MKDIR_P, so that we
+	can AC_SUBST mkdir_p, to work with automake 1.4
+
+	Fixes #157298
+
+2004-11-03  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Update for Makefile.in.in usage changes
+	
+	* doc/I18N-HOWTO: Update for the new Makefile.in.in behavior from
+	the fix for bug #144715
+	Fix a typo (s/og/or/)
+
+	Fixes #79598
+
+2004-11-03  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am (pkgdata_DATA): Add new Makefile.in.in and remove
+	all of the patches that we used to maintain for Makefile.in.in from
+	glib-gettextize
+
+	* Makefile.in.in: Add our own Makefile.in.in to install into the po
+	directory that already includes the patches we had for it, and does
+	not require mkinstalldirs in the local tree to install
+	
+	* intltoolize.in: Add po/Makefile.in.in to the files to copy list
+	Fix the file linking/copying to use basename for the file, so that
+	we can store Makefile.in.in without its own special subdir
+
+	Fixes #144715
+
+2004-10-23  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #48489.
+	
+	* NEWS: Update.
+
+	* intltool-merge.in.in (unescape_po_string): Catch \xDD and \ddd
+	sequences as well.
+	(unescape_one_sequence): Add support for \r, \t, \b, \f, \a, \v,
+	\xDD, \ddd.
+
+	* tests/cases/merge6.po: s/\0123/\123/.
+
+	* tests/results/merge6.xml: Update result.
+	* tests/results/multi.merge6.xml: Update result.
+
+2004-10-23  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #137029.
+
+	* NEWS: Updated.
+	
+	* intltool-extract.in.in (type_scheme): Rewrite.
+
+	* tests/results/Makefile.am: Add test.scm.h to EXTRA_DIST.
+	* tests/cases/Makefile.am: Add test.scm to EXTRA_DIST.
+	* tests/selftest.pl.in: Add test.scm as test 21.
+	* tests/cases/test.scm: Added Scheme test case.
+	* tests/results/test.scm.h: Added Scheme test result.
+
+2004-10-23  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #155843.
+	
+	* NEWS: Updated.
+
+	* intltool-merge (getXMLstring): Use @{$content}[0] instead of
+	top-level $attrs for each tag.
+	(traverse): Add \$translate to getAttributeString calls. Use
+	untranslated text for tag content if only attributes need
+	translation.
+	(getAttributeString): Set $translate = 2 if some attribute is
+	translated, otherwise $translate = 1 if translation might be
+	needed.
+
+2004-10-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-extract.in.in (type_glade): Ignore "dialog[0-9]+"
+	messages as well, as suggested by Rodney in #155294.
+
+	* NEWS: Document fix for #155294.
+
+2004-10-14  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #155294.
+	
+	* tests/cases/extract8.glade: Update Glade test.
+	* tests/results/extract8.glade.h: Update test result.
+
+	* intltool-extract.in.in (type_glade): Support "comments"
+	attribute on property and atkproperty tags.
+
+2004-10-12  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Document fixes for #154717
+
+2004-10-07  Rodney Dawes  <dobey@novell.com>
+
+	* intltool.m4: Use `pwd`/intltool-extract for the substitution of
+	@INTLTOOL_EXTRACT@ in the intltool perl scripts, which get ouptut
+	to the current working directory
+	This fixes #154717 completely
+
+	Fixes #154717
+
+2004-10-07  James Henstridge  <james@jamesh.id.au>
+
+	Fixes bug #154717:
+
+	* intltool.m4: quote the variables so that the shell doesn't try
+	to interpret the $() in $INTLTOOL_EXTRACT.
+	Use the AC_CONFIG_COMMNANDS() macro instead of the deprecated
+	AC_OUTPUT_COMMANDS() macro.
+
+2004-10-07  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/cases/Makefile.am (EXTRA_DIST): 
+	* tests/results/Makefile.am (EXTRA_DIST): 
+	Update with new and changed extract9.* files.
+
+2004-10-07  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-merge.in.in (traverse): Add missing "{".
+
+	* tests/selftest.pl.in: Add more spaces to align test 18 better.
+
+2004-10-07  Danilo Šegan  <dsegan@gmx.net>
+
+	Fixes #151017.
+	
+	* NEWS: Document bugfix.
+
+	* intltool-merge.in.in (getXMLstring, traverse): Remove spacing
+	only for non xml:space=preserve tags in $content, $lookup.
+
+	* tests/selftest.pl.in: Add new testcase.
+	* tests/results/extract9.xml: Added.
+	* tests/results/extract9.xml.in.h: Renamed from extract9.xml.h and
+	updated.
+	* tests/cases/extract9.po: Added.
+	* tests/cases/extract9.xml.in: Renamed from extract9.xml.
+	Move xml declaration to the top (to make it valid).
+	Change one message.
+
+2004-09-29  Danilo Šegan  <dsegan@gmx.net>
+
+	* NEWS: Document bug fix.
+
+	* intltool-update.in.in (FindPOTKeywords): Use "Q_" xgettext
+	keywords (fixes #154063).
+
+2004-09-29  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Document bug fix for #152020
+
+	* Makefile.am: Update script creation rule to sed in the
+	various hardcoded gettext script paths
+
+	* configure.in: Update version to 0.31.3
+	Add AC_PATH_PROG checks for various gettext scripts
+
+	* intltool-merge.in.in: Update to use $ICONV, $INTLTOOL_ICONV, or the
+	hardcoded path that we replace @INTLTOOL_ICONV@ with
+
+	* intltool-update.in.in (GenerateHeaders): Use @INTLTOOL_EXTRACT@ path
+	(GeneratePOTemplate): Use @INTLTOOL_XGETTEXT@ or $XGETTEXT for path
+	(POFile_Update): Use $MSGMERGE or @INTLTOOL_MSGMERGE@ for the path
+	(Console_Write_TranslationStatus): Use $MSGFMT or @INTLTOOL_MSGFMT@
+	(Console_Write_CoverageReport): Use $MSGFMT or @INTLTOOL_MSGFMT@ path
+
+	* intltool.m4 (AC_PROG_INTLTOOL):
+	Add AC_PATH_PROG checks for various gettext scripts we use
+	Replace the variables we get with AC_PATH_PROG in AC_OUTPUT_COMMANDS
+
+	Fixes #152020
+
+2004-09-24  Danilo Šegan  <dsegan@gmx.net>
+
+	* NEWS: Document anything significant in this patch.
+
+	* intltool-update.in.in (GeneratePOTemplate): Bork out if we
+	cannot write POTFILES.in.temp.
+
+	* intltool-update.in.in (SubstituteVariable): Fix typo in re: s/$1)/$1/
+	(variables with quotes got ")" attached previously); use shell
+	escaping (`echo -n "$str"`)--fixes #152448.
+
+2004-09-24  Rodney Dawes  <dobey@novell.com>
+
+	* intltool.m4: Fix typo in front of comment
+	* NEWS: Document fix
+
+	Fixes #153630
+
 2004-08-22  Rodney Dawes  <dobey@novell.com>
 
 	* configure.in: Update version to 0.31.2

@@ -99,7 +99,7 @@ check_extract_result($case);
 
 print " 2. Merge translations into a Bonobo UI style file:                  ";
 $case = "merge1.xml";
-system("$INTLTOOL_MERGE -o -p --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -o --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print " 3. Extract messages from a multi-line XML file:                     ";
@@ -109,7 +109,7 @@ check_extract_result($case);
 
 print " 4. Merge translations into a multi-line XML file:                   ";
 $case = "merge7.xml";
-system("$INTLTOOL_MERGE -x -p --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print " 5. Extract messages with unusual characters in the XML tag:         ";
@@ -119,7 +119,7 @@ check_extract_result($case);
 
 print " 6. Merge translations into a pong style XML file:                   ";
 $case = "merge4.xml";
-system("$INTLTOOL_MERGE -x -p --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print " 7. Extract messages from a glade style XML file:                    ";
@@ -129,22 +129,22 @@ check_extract_result($case);
 
 print " 8. Merge translations into a dia sheet style XML file:              ";
 $case = "merge5u.sheet";
-system("$INTLTOOL_MERGE -x -u --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print " 9. Merge translations into a dia sheet style XML file [broken XML]: ";
 $case = "merge5p.sheet";
-system("$INTLTOOL_MERGE -x -u -p --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print "10. Merge translations that include escaped .po strings:             ";
 $case = "merge6.xml";
-system("$INTLTOOL_MERGE -x -u --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print "11. Merge translations into a .keys file:                            ";
 $case = "merge8.keys";
-system("$INTLTOOL_MERGE -k -u --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+system("$INTLTOOL_MERGE -k --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
 check_merge_result($case);
 
 print "12. Extract messages from a glade 2.0 style XML file:                ";
@@ -173,18 +173,46 @@ system("$INTLTOOL_MERGE -s --quiet cases cases/$case.in cases/$case") == 0 or $f
 check_merge_result($case);
 
 print "17. Extract messages from a xml file using the xml:space attribute:  ";
-$case = "extract9.xml";
+$case = "extract9.xml.in";
 system("$INTLTOOL_EXTRACT --type=gettext/xml --quiet --update cases/$case") == 0 or $failed = 1;
 check_extract_result($case);
 
-print "18. Merge translations into multiple files:                          ";
+print "18. Merge messages into xml file using the xml:space attribute:      ";
+$case = "extract9.xml";
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+check_merge_result($case);
+
+print "19. Merge translations into multiple files:                          ";
 $case = "merge6.xml";
 system("$INTLTOOL_MERGE -x -s --quiet --multiple-output cases cases/$case.in $case") == 0 or $failed = 1;
 check_multimerge_result($case, "merge6");
 
-print "19. Extract comments for translators from XML file:                  ";
+print "20. Extract comments for translators from XML file:                  ";
 $case = "extract-comments.xml";
 system("$INTLTOOL_EXTRACT --type=gettext/xml --quiet --update cases/$case") == 0 or $failed = 1;
 check_extract_result($case);
+
+print "21. Extract messages from Scheme file:                               ";
+$case = "test.scm";
+system("$INTLTOOL_EXTRACT --type=gettext/scheme --quiet --update cases/$case") == 0 or $failed = 1;
+check_extract_result($case);
+
+print "22. Merge into file with CDATA sections:                             ";
+$case = "merge-cdata.xml";
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+check_merge_result($case);
+
+print "23. Merge into XML file with deep translation/attribute nesting:     ";
+$case = "merge-deepattr.xml";
+system("$INTLTOOL_MERGE -x --quiet cases cases/$case.in cases/$case") == 0 or $failed = 1;
+check_merge_result($case);
+
+print "24. Ignore empty strings from XML file                               ";
+$case = "extract12.xml.in";
+system("$INTLTOOL_EXTRACT --type=gettext/xml --quiet --update cases/$case") == 0 or $failed = 1;
+check_extract_result($case);
+
+system("rm -f cases/*.*") if $srcdir ne ".";
+system("rm -rf az extract9 fr fr_BE fr_FR merge6 schemasmerge1 schemasmerge2 test merge6.xml");
 
 exit $failed;
