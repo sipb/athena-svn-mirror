@@ -107,7 +107,7 @@ if [ "${PUBLIC}" = "true" ]; then
 	$ECHO "Public workstation cleanup... \c"
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
-	for i in `cat /srvd/usr/athena/lib/update/configfiles`
+	for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
 		if [ -f /srvd$i ]; then
 			cp -p /srvd$i $i
 		else
