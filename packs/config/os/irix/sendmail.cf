@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.9.2.1 1999-06-28 19:31:53 ghudson Exp $
+# $Id: sendmail.cf,v 1.9.2.2 1999-10-15 18:25:01 ghudson Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -217,7 +217,7 @@ R$*			$#error $: "550 Relaying Denied"
 
 Mlocal,		P=/bin/mail, F=lsDFMAw5:/|@qnE9, S=10, R=20, A=mail -d $u
 Mprog,		P=/bin/sh, F=lsDFMoqeu9, S=10, R=20, A=sh -c $u
-Msmtp,		P=[IPC], F=mDFMuCX, S=11, R=21, E=\r\n, A=IPC $h
+Msmtp,		P=[IPC], F=gmDFMuCX, S=11, R=21, E=\r\n, A=IPC $h
 
 S10
 
