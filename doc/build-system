@@ -71,7 +71,7 @@ to it) which does the following:
 	  with AC_PATH_X.
 
 	* Sets the appropriate value of with_motif for use with
-	  AC_WITH_MOTIF, which should be used as follows if you need
+	  AC_WITH_MOTIF, which should be used as follows if you want
 	  to use the Motif library:
 
 		# Near the beginning.
@@ -93,7 +93,16 @@ to it) which does the following:
 			AC_DEFINE(WITH_MOTIF)
 		fi
 
-	* Sets the prefix to /usr/athena.
+	  (Omit the `if test "$motif" != "no"' test if you cannot
+	  build without Motif.  Also omit the AC_DEFINE(WITH_MOTIF).)
+
+	* Sets prefix to /usr/athena, datadir to '${prefix}/lib', and
+	  sbindir to '${prefix}/etc'.  You do not need to take these
+	  into account in configure.in; just put in your Makefile.in:
+
+		prefix=@prefix@
+		datadir=@datadir@
+		sbindir=@sbindir@
 
 	* Sets shell variables lbindir and lsbindir to /bin/athena and
 	  /etc/athena respectively.  If your build system needs to
@@ -101,10 +110,16 @@ to it) which does the following:
 	  the Athena environment, use the following in your
 	  configure.in:
 
-		lbindir=${lbindir-'$(bindir)'}
-		lsbindir=${lsbindir-'$(sbindir)'}
+		lbindir=${lbindir-'${bindir}'}
+		lsbindir=${lsbindir-'${sbindir}'}
 		AC_SUBST(lbindir)
 		AC_SUBST(lsbindir)
+
+	  And then in your Makefile.in:
+
+		prefix=@prefix@
+		lbindir=@lbindir@
+		lsbindir=@lsbindir@
 
 The build environment will ensure that the following things are true:
 
@@ -135,7 +150,7 @@ The subdirectories "platform/$HOSTTYPE" or "arch/$ATHENA_SYS" should
 be used for platform or system-dependent components of a package using
 a straight Makefile.
 
-Start each Makefile with "# $Id: $" and "SHELL=/bin/sh".  The latter
+Start each Makefile with "# $Id: build-system,v 1.4 1996/09/20 04:48:32 ghudson Exp $" and "SHELL=/bin/sh".  The latter
 is to work around a bug in the Irix make where it runs commands under
 ${SHELL} rather than /bin/sh.  Also necessary for Irix is using
 "-mkdir -p" instead of "mkdir -p", since mkdir -p under Irix gives an
