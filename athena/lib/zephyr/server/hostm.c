@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.18 1987-12-14 19:28:24 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.19 1987-12-18 11:45:31 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -216,8 +216,8 @@ ZServerDesc_t *server;
 	if ((clist = host->zh_clients))
 		for (clt = clist->q_forw; clt != clist; clt = clist->q_forw)
 			/* client_deregister frees this client & subscriptions
-			   and remque()s the client */
-			client_deregister(clt->zclt_client, host);
+			   & locations and remque()s the client */
+			client_deregister(clt->zclt_client, host, 1);
 
 	uloc_hflush(&host->zh_addr.sin_addr);
 	host_detach(&host->zh_addr.sin_addr, server);
