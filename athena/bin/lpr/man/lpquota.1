@@ -1,6 +1,6 @@
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v $
-.\"     $Author: ilham $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.4 1990-07-10 02:49:12 ilham Exp $
+.\"     $Author: epeisach $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.5 1990-11-15 14:48:33 epeisach Exp $
 .\"
 .\" Copyright 1990 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -20,7 +20,7 @@ lpquota \- enquire about print quota
 ] [
 .BI \-S service
 ] [
-.B \-g group
+.B \-a account
 ] [
 .B \-c
 ] [
@@ -37,7 +37,7 @@ lpquota \- enquire about print quota
 ] [
 .BI \-s amount 
 ] [
-.BI \-a amount
+.BI \-k amount
 ] [
 .BI \+A
 ] [
@@ -74,7 +74,7 @@ can be used to explicitly specify the machine that the
 quota server is running on.
 .PP
 The
-.B \-ggroup
+.B \-aaccount
 is used to specify an operation on a group account number instead of a
 user. Only account administrators and the group's administrators can 
 display the group's usage.
@@ -95,7 +95,7 @@ Increases the users/groups quota limit
 Decrease the users/groups quota limit
 .IP \fB\-s\fP 5
 Sets the users/groups quota limit
-.IP \fB\-a\fP 5
+.IP \fB\-k\fP 5
 Adjusts the users/groups actual usage. This is to be used in giving a
 user/group credit for poor quality printouts.
 .PP
