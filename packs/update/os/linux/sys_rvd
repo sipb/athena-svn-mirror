@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-# $Id: sys_rvd,v 1.1.2.1 1999-06-18 22:02:33 ghudson Exp $
+# $Id: sys_rvd,v 1.1.2.2 1999-06-28 19:32:08 ghudson Exp $
 	/core::::
 	/etc:::
 		aliases
@@ -33,5 +33,6 @@ GLOBAL : *.CKP *.local *.pid :
 	/usr:::
 		-> afsws
 		-> athena
+		-> prototype_usr
 		:
 	/var::::
