@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: db.c,v 1.1 1999-09-28 22:13:00 danw Exp $
+ * $Id: db.c,v 1.2 1999-11-07 22:21:01 tb Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,13 +16,22 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Id: db.c,v 1.1 1999-09-28 22:13:00 danw Exp $";
+static char rcsid_commands_c[] = "$Id: db.c,v 1.2 1999-11-07 22:21:01 tb Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
 #include <sys/file.h>
 #include <sys/types.h>
+
+#if defined (HAVE_DB_H) && !defined (HAVE_NDBM_H)
+#define DB_DBM_HSEARCH 1
+#include <db.h>
+#elif defined (HAVE_NDBM_H)
 #include <ndbm.h>
+#else
+#error Cannot find a suitable database header
+#endif
+
 #include <string.h>
 
 datum *make_dbm_key(), *make_dbm_contents();
@@ -102,12 +111,12 @@ void db_init()
  * the reference count and return the appropriate index.
  */
 
-int db_open(name)
+int fxdb_open(name)
      char *name;
 {
   int idx;
 
-  DebugDB(("db_open: %s\n", name));
+  DebugDB(("fxdb_open: %s\n", name));
   
   for (idx=0; idx<MAX_NUM_DBS; idx++) {
     if (!strcmp(dblist[idx].path, name)) {

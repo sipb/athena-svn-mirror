@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: multi.c,v 1.1 1999-09-28 22:13:00 danw Exp $
+ * $Id: multi.c,v 1.2 1999-11-07 22:21:01 tb Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Id: multi.c,v 1.1 1999-09-28 22:13:00 danw Exp $";
+static char rcsid_multi_c[] = "$Id: multi.c,v 1.2 1999-11-07 22:21:01 tb Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -557,7 +557,7 @@ multi_update_server(num)
       }
       sprintf(fnbuf, "%s/%s/%s", root_dir, coursename, INDEX_FILE);
       curconn = &connfoo;
-      connfoo.index = dbidx = db_open(fnbuf); /* XXX */
+      connfoo.index = dbidx = fxdb_open(fnbuf); /* XXX */
       for (cont = db_firstcontents(); cont; cont = db_nextcontents()) {
 	res = server_store_1(cont, servers[num].cl);
 	if (!res || *res) {

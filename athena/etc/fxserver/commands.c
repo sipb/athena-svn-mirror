@@ -1,7 +1,7 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Id: commands.c,v 1.1 1999-09-28 22:12:59 danw Exp $
+ * $Id: commands.c,v 1.2 1999-11-07 22:21:01 tb Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Id: commands.c,v 1.1 1999-09-28 22:12:59 danw Exp $";
+static char rcsid_commands_c[] = "$Id: commands.c,v 1.2 1999-11-07 22:21:01 tb Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -77,7 +77,7 @@ init_res *init_1_svc(params, rqstp)
       sprintf(indexpath, "%s%s%s", curconn->coursepath, INDEX_FILE,
 	      UPDATING_EXTENSION);
       Debug(("Opening index file %s\n", indexpath));
-      curconn->index = db_open(indexpath);
+      curconn->index = fxdb_open(indexpath);
       if (!curconn->index) {
 	res.local_errno = ERR_COURSE_NOT_FOUND;
 	Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
