@@ -1,4 +1,4 @@
-/* $Id: al_private.h,v 1.3 1997-10-31 00:03:21 ghudson Exp $ */
+/* $Id: al_private.h,v 1.4 1997-11-20 22:18:17 ghudson Exp $ */
 
 /* Copyright 1997 by the Massachusetts Institute of Technology.
  *
@@ -65,6 +65,7 @@ struct al_record {
 };
 
 /* session.c */
+int al__record_exists(const char *username);
 int al__get_session_record(const char *username, struct al_record *record);
 int al__put_session_record(struct al_record *record);
 
@@ -90,5 +91,6 @@ struct passwd *al__getpwnam(const char *username);
 struct passwd *al__getpwuid(uid_t uid);
 void al__free_passwd(struct passwd *pwd);
 int al__read_line(FILE *fp, char **buf, int *bufsize);
+int al__username_valid(const char *username);
 
 #endif
