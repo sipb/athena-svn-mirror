@@ -1,0 +1,14 @@
+#!/bin/sh -
+# Version-specific update script for 7.6H
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+VS2*)	;;
+DS*)
+	;;
+RSAIX)
+	chque -qbsh -a"up = FALSE"
+	;;
+SUN*)
+esac
