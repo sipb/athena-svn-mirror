@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
 .\"	$Author: raeburn $
-.\"	$Id: zwgc.1,v 1.15 1990-11-07 19:06:29 raeburn Exp $
+.\"	$Id: zwgc.1,v 1.16 1990-11-08 19:27:54 raeburn Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -538,7 +538,8 @@ Bold letters.  If not available, reverse video, else underline.
 Italic letters (underlining, if available).
 .TQ
 @beep
-"bl" termcap entry, else "^G" (beep the terminal)
+"bl" termcap entry, else "^G" (beep the terminal); limited to once per
+message.
 .\" .TQ
 .\" @blink
 .\" "mb"/"me" termcap entry, else nothing.
@@ -595,7 +596,7 @@ medium type size
 small type size
 .TQ
 @beep
-Ring the X bell once
+Ring the X bell (limited to once per message)
 .TP
 @font
 sets the current font to the font specified in the contents of the
