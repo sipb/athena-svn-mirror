@@ -1,11 +1,12 @@
-/* -*- Mode: C; c-basic-offset: 8 -*- */
-/* libglade - a library for building interfaces from XML files at runtime
+/* -*- Mode: C; c-basic-offset: 8 -*-
+ * libglade - a library for building interfaces from XML files at runtime
+ * Copyright (C) 1998-2001  James Henstridge <james@daa.com.au>
+ *
+ * glade-bonobo.c: support for bonobo widgets in libglade.
  * Copyright (C) 2000 Helix Code, Inc.
  *
  * Author:
  *      Michael Meeks (michael@helixcode.com)
- *
- * glade-bonobo.c: support for bonobo widgets in libglade.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,7 +46,8 @@
 #undef _
 #define _(msgid) (glade_xml_gettext(xml, msgid))
 
-static GtkWidget *gnome_control_new (GladeXML *xml, GladeWidgetInfo *info, char **err)
+static GtkWidget *
+gnome_control_new (GladeXML *xml, GladeWidgetInfo *info, char **err)
 {
 	GtkWidget               *widget;
 	BonoboControlFrame      *cf;
@@ -65,7 +67,7 @@ static GtkWidget *gnome_control_new (GladeXML *xml, GladeWidgetInfo *info, char 
 
 	if (!cf) {
 		*err = g_strdup_printf ("control '%s' has no frame", info->class);
-		gtk_widget_destroy (widget);
+		gtk_widget_unref (widget);
 		return NULL;
 	}
 
@@ -123,7 +125,8 @@ static GtkWidget *gnome_control_new (GladeXML *xml, GladeWidgetInfo *info, char 
  * also link with the libglade-gnome and libglade-bonobo libraries, which
  * contains all the GNOME, Bonobo libglade stuff.
  */
-void glade_bonobo_init(void)
+void
+glade_bonobo_init(void)
 {
 	static gboolean initialised = FALSE;
 

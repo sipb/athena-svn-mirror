@@ -1,4 +1,4 @@
-<refentry id="libglade-Libglade-SAX-Parser" revision="8 Nov 2000">
+<refentry id="libglade-Libglade-SAX-Parser">
 <refmeta>
 <refentrytitle>Libglade SAX Parser</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -155,7 +155,7 @@ This routine will parse a file containing Glade XML, and produce a
 GladeWidgetTree structure containing the information in this file.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -177,7 +177,7 @@ produce a GladeWidgetTree structure containing the information in this
 buffer.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -198,7 +198,7 @@ buffer.</para>
 Increment the reference count of a GladeWidgetTree structure.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -216,7 +216,7 @@ Increment the reference count of a GladeWidgetTree structure.</para>
 Decrement the reference count of a GladeWidgetTree structure.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -234,7 +234,7 @@ This is mainly for debugging to make sure that the parser is producing
 correct output.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

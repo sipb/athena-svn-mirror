@@ -1,3 +1,47 @@
+2001-04-16  Jaka Mocnik  <jaka@gnu.org>
+
+	* gnome-print-check.m4: change $(cmd) to `cmd` in order to make it
+	usable in non-bash bourne shells.
+
+2001-03-01  JP Rosevear  <jpr@ximian.com>
+
+	* gnome-pilot.m4: quote a test and make sure incdir is always set
+	so 'cat' works
+
+2001-02-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-check.m4: Replaced the awk alchemy with sed alchemy.
+	I seems to work now as long as gnome-config is working - but that is
+	the whole point of gnome-config, isn't it?
+
+2001-02-19  JP Rosevear  <jpr@ximian.com>
+
+	* gnome-pilot.m4: Revert my previous patch now that gnome-pim and
+	evolution are fixed to accomodate the change
+	
+2001-02-19  JP Rosevear  <jpr@ximian.com>
+
+	* gnome-pilot.m4: AC_SUBST the PISOCK_LIBDIR var
+
+2001-02-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-check.m4: Remove most of stuff here, but now
+	it at least WORKS
+
+2001-02-07  Kenneth Christiansen  <kenneth@gnu.org>
+
+	* autogen.sh: Added test for xml-i18n-tools if 
+	AM_PROG_XML_I18N_TOOLS is found.
+
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	* autogen.sh: Added missing PROG.
+
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	* autogen.sh: xml-i18n-toolize if AM_PROG_XML_I18N_TOOLS is found
+	in configure.in.
+
 2000-11-05  Martin Baulig  <baulig@suse.de>
 
 	* gnome-bonobo-check.m4 (BONOBO_CFLAGS, BONOBO_LIBS): Added

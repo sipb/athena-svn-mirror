@@ -9,4 +9,4 @@ Version: @VERSION@
 # this should also require libxml, but there isn't a .pc file for it
 Requires: gtk+
 Libs: -L${libdir} -lglade @XML_LIBS@
-Cflags: -I${includedir} @XML_CFLAGS@
+Cflags: -I${includedir}/libglade-1.0 @XML_CFLAGS@

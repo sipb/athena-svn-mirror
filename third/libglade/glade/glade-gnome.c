@@ -1,6 +1,6 @@
-/* -*- Mode: C; c-basic-offset: 8 -*- */
-/* libglade - a library for building interfaces from XML files at runtime
- * Copyright (C) 1998, 1999, 2000  James Henstridge <james@daa.com.au>
+/* -*- Mode: C; c-basic-offset: 8 -*-
+ * libglade - a library for building interfaces from XML files at runtime
+ * Copyright (C) 1998-2001  James Henstridge <james@daa.com.au>
  * Copyright (C) 1999 Miguel de Icaza (miguel@gnu.org)
  *
  * glade-gnome.c: support for gnome widgets in libglade.
@@ -147,7 +147,7 @@ gnomedialog_build_children(GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 					
 				}
 				if (!string)
-					stock = label;
+					stock = _(label);
 				else {
 					stock = get_stock_name(string);
 					if (!stock) stock = string;
@@ -371,6 +371,7 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 		}
 		if (is_button) {
 			char *label = NULL, *icon = NULL, *stock = NULL;
+			gboolean active = FALSE;
 			GtkWidget *iconw = NULL;
 
 			for (tmp2 = cinfo->attributes; tmp2; tmp2=tmp2->next) {
@@ -387,6 +388,8 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 					if (icon) g_free(icon);
 					icon = NULL;
 					stock = attr->value;
+				} else if (!strcmp(attr->name, "active")) {
+					active = (attr->value[0] == 'T');
 				}
 			}
 			if (stock) {
@@ -407,13 +410,15 @@ toolbar_build_children (GladeXML *xml, GtkWidget *w, GladeWidgetInfo *info,
 				if (pix) gdk_pixmap_unref(pix);
 				if (mask) gdk_bitmap_unref(mask);
 			}
-			if (!strcmp(cinfo->class, "GtkToggleButton"))
+			if (!strcmp(cinfo->class, "GtkToggleButton")) {
 				child = gtk_toolbar_append_element(
 					GTK_TOOLBAR(w),
 					GTK_TOOLBAR_CHILD_TOGGLEBUTTON, NULL,
 					_(label), NULL, NULL, iconw, NULL,
 					NULL);
-			else if (!strcmp(cinfo->class, "GtkRadioButton")) {
+				gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(child), active);
+			} else if (!strcmp(cinfo->class, "GtkRadioButton")) {
 				child = gtk_toolbar_append_element(
 					GTK_TOOLBAR(w),
 					GTK_TOOLBAR_CHILD_RADIOBUTTON, NULL,
@@ -1691,6 +1696,7 @@ pixmapmenuitem_new(GladeXML *xml, GladeWidgetInfo *info)
 		gchar *iconfile = glade_xml_relative_file(xml, user_icon);
 		GtkWidget *iconw = gnome_pixmap_new_from_file(iconfile);
 
+		g_free(iconfile);
 		gtk_pixmap_menu_item_set_pixmap(GTK_PIXMAP_MENU_ITEM(wid),
 						iconw);
 		gtk_widget_show(iconw);

@@ -1,4 +1,4 @@
-<refentry id="libglade-Libglade-Build" revision="8 Nov 2000">
+<refentry id="libglade-Libglade-Build">
 <refmeta>
 <refentrytitle>Libglade Build</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -86,7 +86,7 @@ standard widget parameters (ie. don't set visibility, size, etc), as
 this is handled by glade_xml_build_widget, which calls these functions.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -112,7 +112,7 @@ for adding children to a container widget.  To create each child widget,
 glade_xml_build_widget should be called.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -149,7 +149,7 @@ build routine, which will create the children with this function and add
 them to the widget in the appropriate way.  Finally it returns the widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -180,7 +180,7 @@ by glade_xml_build_widget, but is exposed for difficult cases, such as
 setting up toolbar buttons and the like.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -225,7 +225,7 @@ This function is mainly useful for addon widget modules for libglade
 (it would get called from the glade_init_module function).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -244,7 +244,7 @@ XML file as a base.  If the pathname is absolute, then the original
 filename is returned.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -269,7 +269,7 @@ XML descriptions to the integer values that can be used to configure
 the widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -291,7 +291,7 @@ found.
 This utility routine is used to create an adjustment object for a widget.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -313,7 +313,7 @@ set the title or the window type, as these may need special handling
 in some widgets.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -338,7 +338,7 @@ implemented here, as it should be useful to many GTK+ based widget
 sets.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -367,7 +367,7 @@ been specified.  This should be used for translatable strings in all
 widget building routines.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -391,7 +391,7 @@ is currently being built.  It is mainly used to enable GtkAccelGroup's to
 be bound to the correct window, but could have other uses.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -412,7 +412,7 @@ one, a new one is created and bound to the current toplevel window (if
 a toplevel has been set).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -432,7 +432,7 @@ Push a new uline accel group onto the stack.  This is intended for use
 by GtkMenu so that GtkMenuItem's can set up underline accelerators.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -448,31 +448,36 @@ by GtkMenu so that GtkMenuItem's can set up underline accelerators.</para>
 <title><anchor id="glade-xml-pop-uline-accel">glade_xml_pop_uline_accel ()</title>
 <programlisting>void        glade_xml_pop_uline_accel       (<link linkend="GladeXML">GladeXML</link> *xml);</programlisting>
 <para>
+Pops the uline accel group.  This will usually be called after a GtkMenu
+has built all its children.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>xml</parameter>&nbsp;:</entry>
-<entry>
-
+<entry> the GladeXML object.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="glade-xml-get-uline-accel">glade_xml_get_uline_accel ()</title>
 <programlisting><link linkend="GtkAccelGroup">GtkAccelGroup</link>* glade_xml_get_uline_accel    (<link linkend="GladeXML">GladeXML</link> *xml);</programlisting>
 <para>
+This function is intended for use in menu items when setting up underline
+accelerators.</para>
+<para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>xml</parameter>&nbsp;:</entry>
-<entry></entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
-
+<entry> the GladeXML object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the current uline accel group, or NULL if there is none.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -490,7 +495,7 @@ If <parameter>target</parameter> is <literal>NULL</literal>, then the accelerato
 the parents of this widget (typically a GtkButton).</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -515,7 +520,7 @@ this function is called twice in a row, the second call will always return
 0.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

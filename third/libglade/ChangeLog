@@ -1,3 +1,130 @@
+2001-09-07  James Henstridge  <james@daa.com.au>
+
+	* configure.in: update configure script for autoconf 2.52
+
+	* NEWS: add news items.
+
+	* glade/glade-xml.c: fix up doc comments for
+	glade_xml_{get,pop}_uline_accel so that they actually get
+	extracted correctly.
+
+2001-09-05  James Henstridge  <james@daa.com.au>
+
+	* configure.in: increment version number.
+
+	* doc/Makefile.am: copy build stuff from head branch, as it works
+	better.  Also, get rid of the "if GNOME_SUPPORT" stuff.  The
+	object scanning code doesn't need gnome support.
+
+	* doc/libglade-docs.sgml: update the copyright years to reflect
+	that it has had updates since 1999.  Also change documentation
+	licence to GFDL.
+
+	* glade/glade-xml.c (remove_data_func): we don't need the GladeXML
+	object here.
+
+	* glade/glade-gtk.c (clist_build_children): special case GtkLabel
+	column titles, using gtk_clist_set_column_title so that the title
+	gets aligned appropriately.
+
+2001-09-01  James Henstridge  <james@daa.com.au>
+
+	* glade/glade-xml.c (remove_data_func): don't remove the signal
+	handler here.
+	(glade_xml_set_common_params): use connect_while_alive variant to
+	connect up glade_xml_widget_destroy instead.
+
+	* libgladeConf.sh.in (LIBGLADE_INCLUDEDIR): change include dir.
+
+	* libglade-config.in: change -I flag for --cflags
+
+	* libglade*.pc.in (Cflags): adjust cflags for new header location.
+
+	* glade/Makefile.am (gladeincludedir): install headers under a
+	versioned directory.
+
+	* glade/glade-xml.c (glade_xml_init): use g_new0 to allocate
+	private structure.
+	(*): use GQuarks when setting/getting data for a marginal speed
+	improvement.
+	(glade_xml_widget_destroy): function that cleans up dangling
+	pointers inside the GladeXML object when a widget is destroyed.
+	(glade_xml_set_common_params): connect up glade_xml_widget_destroy
+	to each widget that gets constructed.
+	(remove_data_func): function that removes data from a widget in
+	the long name hash, and disconnects the destroy signal handler.
+	(glade_xml_destroy): iterate through longname_hash with
+	remove_data_func, to clean up signals.
+
+2001-04-04  John Gotts  <jgotts@linuxsavvy.com>
+
+	* libglade.spec.in: Fixed the Group:'s.  Also cleaned up the build
+	process a bit.
+
+2001-03-26  Darin Adler  <darin@eazel.com>
+
+	* doc/.cvsignore: Ignore some more generated files.
+
+2001-02-13  James Henstridge  <james@daa.com.au>
+
+	* glade/glade.h: add prototype for glade_gnome_db_init.
+
+	* glade/glade-gnomedb.c (glade_gnome_db_init): accidentally forgot
+	to initialise the gnome-db widgets :( -- cut and paste error.
+
+2001-02-12  James Henstridge  <james@daa.com.au>
+
+	* NEWS: added news items.
+
+	* glade/glade-gnomedb.c: changed copyright notice for this file at
+	author's request.
+
+	* glade/glade-gtk.c (toolbar_build_children): interpret active
+	attribute.
+
+	* glade/glade-gnome.c (gnomedialog_build_children): translate the
+	label if it is not a stock button.
+	(toolbar_build_children): interpret the "active" attribute of
+	toolbar toggle button children.  Based on patch from Byron
+	Ellacott.
+
+2001-02-10  James Henstridge  <james@daa.com.au>
+
+	* libglade.m4 (module_args): recognise "gnomedb" addon library.
+
+	* libglade-config.in (lib_gnomedb): add in rules to show gnomedb
+	flags.
+
+	* libglade-gnome.pc.in (Requires): libglade-gnome requires gnomeui
+	-- this should correct the problem with this file.
+
+	* libglade-gnomedb.pc.in: the pkg-config script for libglade-gnomedb.
+
+	* Makefile.am (pkgconfig_DATA): install a gnomedb pkg-config data
+	file if building gnome-db support.
+
+	* glade/Makefile.am: add rules for gnomedb library and increment
+	libtool version number.
+
+	* configure.in: add gnome-db tests and update version number.
+
+	* glade/glade-gnomedb.c: new file based on the gnomedb support
+	contributed by David Marín Carreño <davefx@bigfoot.com>.
+
+2000-11-29  James Henstridge  <james@daa.com.au>
+
+	A couple of memory leaks found by Morten:
+	* glade/glade-bonobo.c (gnome_control_new): unref the control
+	frame on error rather than destroying it.  Destroy doesn't unref,
+	so we get a leak.
+
+	* glade/glade-gnome.c (pixmapmenuitem_new): free the filename of
+	the icon file here.
+
+2000-11-28  Jody Goldberg <jgoldberg@home.com>
+
+	* configure.in : Use AM_PROG_LIBTOOL rather than AC_PROG_LIBTOOL
+
 2000-11-22  James Henstridge  <james@daa.com.au>
 
 	* NEWS: new news items.

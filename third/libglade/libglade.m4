@@ -21,6 +21,9 @@ for module in . $3; do
     bonobo)
       module_args="$module_args bonobo"
       ;;
+    gnomedb)
+      module_args="$module_args gnomedb"
+      ;;
   esac
 done
 

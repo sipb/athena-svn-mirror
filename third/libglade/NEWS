@@ -1,3 +1,21 @@
+libglade-0.17: 7-September-2001
+	- use gtk_clist_set_column_title to set clist column titles
+	  when possible so that they get the alignment of the column.
+	- Backport code that cleans up widget hash table in the
+	  GladeXML object on widget destruction.  This means that
+	  glade_xml_get_widget() should always return a valid widget
+	  or NULL.
+	- Move headers to a a libglade-1.0/ subdirectory.  This is to
+	  allow parallel installation of stable and development
+	  versions of libglade.  Libraries depending on libglade will
+	  probably need to be rebuilt so that their *-config scripts
+	  contain the correct CPP flags.
+
+libglade-0.16: 13-February-2001
+	- GNOME-DB support contributed by David Marin Carreno.
+	- various other bug fixes and a few memory leaks plugged.  See
+	  changelog for details.
+
 libglade-0.15: 22-November-2000
 	- many bug fixes and memory leak plugs (me, Morten, Federico, others)
 	- libglade now does `visible accel group' handling for

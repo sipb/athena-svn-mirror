@@ -1,6 +1,6 @@
-/* -*- Mode: C; c-basic-offset: 8 -*- */
-/* libglade - a library for building interfaces from XML files at runtime
- * Copyright (C) 1998, 1999, 2000  James Henstridge <james@daa.com.au>
+/* -*- Mode: C; c-basic-offset: 8 -*-
+ * libglade - a library for building interfaces from XML files at runtime
+ * Copyright (C) 1998-2001  James Henstridge <james@daa.com.au>
  *
  * glade.h: the main include file for libglade.
  *
@@ -37,6 +37,11 @@ void glade_gnome_init(void);
  * glade_init() if you want to use the GNOME widget set with included
  * Bonobo controls with libglade */
 void glade_bonobo_init(void);
+
+/* this is defined in libglade-gnomedb -- it should be used instead of
+ * glade_init() if you want to use the GNOME widget set along with
+ * GNOME-DB widgets */
+void glade_gnome_db_init(void);
 
 /* Load the named dynamic module.  Basically it is loaded, and the
  * glade_init_module function is called.  This function should

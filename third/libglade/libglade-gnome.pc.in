@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: Libglade gnome module
 Description: A library providing support for GNOME widgets in libglade
 Version: @VERSION@
-Requires: libglade
+Requires: libglade, gnomeui
 Libs: -L${libdir} -lglade-gnome
-Cflags: -I${includedir}
+Cflags: -I${includedir}/libglade-1.0
