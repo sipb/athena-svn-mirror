@@ -18,7 +18,7 @@
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: olc.h,v 1.31 1999-07-30 17:53:55 ghudson Exp $
+ *	$Id: olc.h,v 1.31.6.1 2002-07-18 18:04:08 ghudson Exp $
  */
 
 #include <mit-copyright.h>
@@ -97,5 +97,6 @@ extern char DaemonHost[];
  */
 
 #define CLIENT_TIME_OUT 300     
+#define OLC_MAIL_REPLY_ADDRESS	"olc@mit.edu"
 
 #endif /* __olc_olc_h */
