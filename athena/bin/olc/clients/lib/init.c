@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: init.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $
+ *	$Id: init.c,v 1.27 2000-07-27 19:16:23 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: init.c,v 1.26 1999-06-28 22:51:49 ghudson Exp $";
+static char rcsid[] ="$Id: init.c,v 1.27 2000-07-27 19:16:23 zacheiss Exp $";
 #endif
 #endif
 
@@ -76,10 +76,11 @@ OInitialize()
       
 	  h = client_hardcoded_server();
       }
-      else
+      else {
 	  need_to_free = 1;
 	  h = *hp;
-    }
+      }
+  }
 #else
   if (!h) {
     h = client_hardcoded_server();
