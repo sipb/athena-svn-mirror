@@ -92,42 +92,45 @@ Distribution sites for software under third
 -------------------------------------------
 
 	afsbin		See below.
-	ammonite	ftp.gnome.org:pub/GNOME/unstable/sources/ammonite
-	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
+	ammonite	ftp.gnome.org:pub/GNOME/sources/ammonite
+	aspell		ftp.gnu.org:pub/gnu/aspell
+	aspell-dict	ftp.gnu.org:pub/gnu/aspell
+	audiofile	ftp.gnome.org:pub/GNOME/sources/audiofile
 	bash		ftp.gnu.org:pub/gnu/bash
 	bind		ftp.isc.org:isc/bind/src
 	binutils	ftp.gnu.org:pub/gnu/binutils
-	bonobo		ftp.gnome.org:pub/GNOME/stable/sources/bonobo
-	bonobo-conf	ftp.gnome.org:pub/GNOME/unstable/sources/bonobo
+	bonobo		ftp.gnome.org:pub/GNOME/sources/bonobo
+	bonobo-conf	ftp.gnome.org:pub/GNOME/sources/bonobo
 	bzip2		sources.redhat.com:pub/bzip2
-	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
+	control-center	ftp.gnome.org:pub/GNOME/sources/control-center
 	cyrus-imapd	ftp.andrew.cmu.edu:pub/cyrus-mail
 	cyrus-sasl	ftp.andrew.cmu.edu:pub/cyrus-mail
 	db		http://www.sleepycat.com/download.html
 	diffutils	ftp.gnu.org:pub/gnu/diffutils
-	eel		ftp.gnome.org:pub/GNOME/stable/sources/eel
+	eel		ftp.gnome.org:pub/GNOME/sources/eel
 	emacs		ftp.gnu.org:pub/gnu/emacs; see below
-	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
-	evolution	ftp.gnome.org:pub/GNOME/unstable/sources/evolution
+	esound		ftp.gnome.org:pub/GNOME/sources/esound
+	evolution	ftp.gnome.org:pub/GNOME/sources/evolution
 	expat		http://sourceforge.net/projects/expat/
 	fcpackage	http://fontconfig.org/
 	flex		ftp.gnu.org:pub/gnu/non-gnu/flex
 	freetype	ftp.freetype.org:pub/freetype2
 	gcc		ftp.gnu.org:pub/gnu/gcc
-	GConf		ftp.gnome.org:pub/GNOME/unstable/sources/GConf
-	gal		ftp.gnome.org:pub/GNOME/unstable/sources/gal
+	GConf		ftp.gnome.org:pub/GNOME/sources/GConf
+	gal		ftp.gnome.org:pub/GNOME/sources/gal
 	gdbm		ftp.gnu.org:pub/gnu/gdbm
-	gdk-pixbuf	ftp.gnome.org:pub/GNOME/unstable/sources/gdk-pixbuf
+	gdk-pixbuf	ftp.gnome.org:pub/GNOME/sources/gdk-pixbuf
 	gettext		ftp.gnu.org:pub/gnu/gettext
 	glib		ftp.gtk.org:pub/gtk
 	gtk		ftp.gtk.org:pub/gtk
-	gtkhtml		ftp.gnome.org:pub/GNOME/unstable/sources/gtkhtml
+	gtkhtml		ftp.gnome.org:pub/GNOME/sources/gtkhtml
 	gmake		ftp.gnu.org:pub/gnu/make
 	gmp		ftp.gnu.org:pub/gnu/gmp
-	gnome-core	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-core
-	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
-	gnome-print	ftp.gnome.org:pub/GNOME/stable/sources/gnome-print
-	gnome-vfs	ftp.gnome.org:pub/GNOME/unstable/sources/gnome-vfs
+	gnome-core	ftp.gnome.org:pub/GNOME/sources/gnome-core
+	gnome-libs	ftp.gnome.org:pub/GNOME/sources/gnome-libs
+	gnome-print	ftp.gnome.org:pub/GNOME/sources/gnome-print
+	gnome-spell	ftp.gnome.org:pub/GNOME/sources/gnome-spell
+	gnome-vfs	ftp.gnome.org:pub/GNOME/sources/gnome-vfs
 	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	intlfonts	ftp.gnu.org:pub/gnu/intlfonts
@@ -137,26 +140,26 @@ Distribution sites for software under third
 	kermit		http://www.columbia.edu/kermit
 	krb5*		http://web.mit.edu/network/kerberos-form.html
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
-	libghttp	ftp.gnome.org:pub/GNOME/stable/sources/libghttp
-	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
+	libghttp	ftp.gnome.org:pub/GNOME/sources/libghttp
+	libglade	ftp.gnome.org:pub/GNOME/sources/libglade
 	libpng		swrinde.nde.swri.edu:pub/png/src
 	librep		librep.sourceforge.net:pub/librep
-	librsvg		ftp.gnome.org:pub/GNOME/stable/sources/librsvg
+	librsvg		ftp.gnome.org:pub/GNOME/sources/librsvg
 	libungif	prtr-13.ucsc.edu:pub/libungif
-	libxml		ftp.gnome.org:pub/GNOME/stable/sources/libxml
-	libxml2		ftp.gnome.org:pub/GNOME/stable/sources/libxml
+	libxml		ftp.gnome.org:pub/GNOME/sources/libxml
+	libxml2		ftp.gnome.org:pub/GNOME/sources/libxml
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
-	medusa		ftp.gnome.org:pub/GNOME/unstable/sources/medusa
+	medusa		ftp.gnome.org:pub/GNOME/sources/medusa
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
-	nautilus	ftp.gnome.org:pub/GNOME/stable/sources/nautilus
+	nautilus	ftp.gnome.org:pub/GNOME/sources/nautilus
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
-	oaf		ftp.gnome.org:pub/GNOME/stable/sources/oaf
+	oaf		ftp.gnome.org:pub/GNOME/sources/oaf
 	openafs		http://www.openafs.org/release
 	openssh		ftp.openbsd.org:pub/OpenBSD/OpenSSH
 	openssl		ftp.openssl.org:source
-	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
+	ORBit		ftp.gnome.org:pub/GNOME/sources/ORBit
 	patch		ftp.gnu.org:pub/gnu/patch
 	pcre		ftp.sourceforge.net:pub/sourceforge/pcre
 	perl		ftp.cpan.org:pub/CPAN/src
@@ -195,7 +198,7 @@ Distribution sites for software under third
 	x3270		ftp.x.org:contrib/applications
 	xalf		http://www.lysator.liu.se/~astrand/projects/xalf/
 	xmh		From X11R5
-	xml-i18n-tools	ftp.gnome.org:pub/GNOME/stable/sources/xml-18n-tools
+	xml-i18n-tools	ftp.gnome.org:pub/GNOME/sources/xml-18n-tools
 	xntp		ftp.udel.edu:pub/ntp/ntp4
 	xpm		ftp.x.org:contrib/libraries
 	xscreensaver	http://www.jwz.org/xscreensaver/
