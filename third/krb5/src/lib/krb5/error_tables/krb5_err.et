@@ -16,7 +16,10 @@
 # this permission notice appear in supporting documentation, and that
 # the name of M.I.T. not be used in advertising or publicity pertaining
 # to distribution of the software without specific, written prior
-# permission.  M.I.T. makes no representations about the suitability of
+# permission.  Furthermore if you modify this software you must label
+# your software as modified software and not distribute it in such a
+# fashion that it might be confused with the original M.I.T. software.
+# M.I.T. makes no representations about the suitability of
 # this software for any purpose.  It is provided "as is" without express
 # or implied warranty.
 # 
@@ -26,6 +29,13 @@
 # code number; other error codes start at ERROR_TABLE_BASE_krb5 + 128.
 #
 error_table krb5
+
+
+#
+# Note: the first 128 error codes are hard-coded and must match the error
+# numbers defined in the Kerberos protocol specification, RFC-1510 or
+# its successors.
+#
 
 # vv 0
 error_code KRB5KDC_ERR_NONE,		"No error"
@@ -160,7 +170,7 @@ error_code KRB5PLACEHOLD_125,	"KRB5 error code 125"
 error_code KRB5PLACEHOLD_126,	"KRB5 error code 126"
 error_code KRB5PLACEHOLD_127,	"KRB5 error code 127"
 
-error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.2 1997-01-21 09:30:23 ghudson Exp $"
+error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.3 1999-10-05 16:14:27 ghudson Exp $"
 
 error_code KRB5_LIBOS_BADLOCKFLAG,	"Invalid flag for file lock mode"
 error_code KRB5_LIBOS_CANTREADPWD,	"Cannot read password"
@@ -255,6 +265,7 @@ error_code KRB5_FCC_INTERNAL,		"Internal file credentials cache error"
 error_code KRB5_CC_WRITE,		"Error writing to credentials cache file"
 error_code KRB5_CC_NOMEM,		"No more memory to allocate (in credentials cache code)"
 error_code KRB5_CC_FORMAT,		"Bad format in credentials cache"
+error_code KRB5_CC_NOT_KTYPE,		"No credentials found with supported encryption types"
 
 # errors for dual tgt library calls
 error_code KRB5_INVALID_FLAGS,		"Invalid KDC option combination (library internal error)"
@@ -291,7 +302,7 @@ error_code KRB5_ERR_HOST_REALM_UNKNOWN,	"Cannot determine realm for host"
 error_code KRB5_SNAME_UNSUPP_NAMETYPE,	"Conversion to service principal undefined for name type"
 
 error_code KRB5KRB_AP_ERR_V4_REPLY, "Initial Ticket response appears to be Version 4 error"
-error_code KRB5_REALM_CANT_RESOLVE,	"Cannot resolve KDC for requested realm"
+error_code KRB5_REALM_CANT_RESOLVE,	"Cannot resolve network address for KDC in requested realm"
 error_code KRB5_TKT_NOT_FORWARDABLE,	"Requesting ticket can't get forwardable tickets"
 error_code KRB5_FWD_BAD_PRINCIPAL, "Bad principal name while trying to forward credentials"
 
@@ -301,5 +312,13 @@ error_code KRB5_CONFIG_NODEFREALM,	"Configuration file does not specify default 
 error_code KRB5_SAM_UNSUPPORTED,  "Bad SAM flags in obtain_sam_padata"
 error_code KRB5_KT_NAME_TOOLONG,	"Keytab name too long"
 error_code KRB5_KT_KVNONOTFOUND,	"Key version number for principal in key table is incorrect"
+error_code KRB5_APPL_EXPIRED,	"This application has expired"
+error_code KRB5_LIB_EXPIRED,	"This Krb5 library has expired"
+
+error_code KRB5_CHPW_PWDNULL,		"New password cannot be zero length"
+error_code KRB5_CHPW_FAIL,		"Password change failed"
+error_code KRB5_KT_FORMAT,		"Bad format in keytab"
+
+error_code KRB5_NOPERM_ETYPE,	"Encryption type not permitted"
 
 end

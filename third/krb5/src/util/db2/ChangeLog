@@ -1,3 +1,78 @@
+1999-08-15  Tom Yu  <tlyu@mit.edu>
+
+	* README.NOT.SLEEPYCAT.DB: New file; pointer to README to
+	hopefully unconfuse people.
+
+	* README: Add notice to the effect that this is not Berkeley or
+	Sleepycat DB.
+
+	* README.db2: Renamed from README.
+
+Fri Feb 13 14:37:47 1998  Tom Yu  <tlyu@mit.edu>
+
+	* recno/extern.h: Additional renaming.
+
+	* hash/extern.h: Additional renaming.
+
+	* hash/hash_page.c (page_to_oaddr): 
+	(is_bitmap_pgno): Declare static to avoid leaking symbols.
+
+	* hash/search.h: Additional renaming.
+
+	* hash/hash_log2.c (__log2): Rename explicitly.
+
+	* mpool/mpool.h: Additional renaming.
+
+	* btree/extern.h: Additional renaming.
+
+	* hash/hash.c (__kdb2_hash_open): Rename to avoid potential
+ 	collision with NetBSD libc.
+
+	* hash/dbm.c: Rename lots of functions to avoid colliding with
+	native dbm implementations.
+
+	* db/db.c (kdb2_dbopen): Rename to avoid colliding with NetBSD
+	libc.
+
+Wed Jan 21 10:17:34 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* btree/bt_open.c: Added O_BINARY for __CYGWIN32__.
+	* clib/mkstemp.c: Added O_BINARY for __CYGWIN32__.
+	* db/db.c: Added O_BINARY for __CYGWIN32__.
+	* hash/dbm.c: Added O_BINARY for __CYGWIN32__.
+	* hash/hash.c: Added O_BINARY for __CYGWIN32__.
+	* hash/hsearch.c: Added O_BINARY for __CYGWIN32__.
+	* include/db-int.h: Added O_BINARY for __CYGWIN32__.
+	* recno/rec_open.c: Added O_BINARY for __CYGWIN32__.
+	* test/dbtest.c: Added O_BINARY for __CYGWIN32__.
+	* test/SEQ_TEST/t.c: Added O_BINARY for __CYGWIN32__.
+	* test/btree.tests/main.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/driver2.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/tcreat3.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/tdel.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/thash4.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/tread2.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/tseq.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash1.tests/tverify.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash2.tests/bigtest.c: Added O_BINARY for __CYGWIN32__.
+	* test/hash2.tests/passtest.c: Added O_BINARY for __CYGWIN32__.
+	Changes originally by Jeremy Allison (jra@cygnus.com)
+
+Thu Jan 15 11:34:13 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* hash/hash_bigkey.c (collect_key, collect_data): Cast malloc
+	return value to correct types. (raeburn@cygnus.com)
+
+	* obj/Makefile.in (check): Set srcdir in environment.
+	(raeburn@cygnus.com)
+
+	* configure.in (AC_COMPILE_TYPE): replacment for AC_CHECK_TYPE
+	that uses AC_TRY_COMPILE instead of AC_EGREP_CPP.  For now, only
+	use it for the int32 types (where AC_CHECK_TYPE gets the wrong
+	result on __CYGWIN32__) and plan that AC_CHECK_TYPE itself gets
+	repaired. (Fix by eichin@cygnus.com)
+
+
 Sun Dec 21 18:33:14 1997  Tom Yu  <tlyu@mit.edu>
 
 	* hash/dbm.c: Rename the errno member of HTAB.
@@ -40,7 +115,7 @@ Wed Aug 28 17:25:10 1996  Tom Yu  <tlyu@mit.edu>
 	* include/db.h: Check SIZEOF_INT rather than UINT_MAX; it's broken
 		under Ultrix.
 
-Thu Aug 22 23:13:32 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+Thu Aug 22 23:13:32 1996  Ezra Peisach  <epeisach@mit.edu>
 
 	* Makefile.in: Add dummy rule for Makefiles.
 
@@ -61,7 +136,7 @@ Fri Jul 26 00:41:45 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 	* Makefile.in (install): Add a blank install target to keep the
 		top-level "make install" happy.
 
-Tue Jul 23 16:08:43 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+Tue Jul 23 16:08:43 1996  Ezra Peisach  <epeisach@mit.edu>
 
 	* hash/dbm.c: Copy elements from the datum to an internal
 	DBT. Handles case of differences in size of size fields.

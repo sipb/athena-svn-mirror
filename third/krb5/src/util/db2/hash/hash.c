@@ -94,7 +94,7 @@ u_int32_t hash_accesses, hash_collisions, hash_expansions, hash_overflows,
 /* OPEN/CLOSE */
 
 extern DB *
-__hash_open(file, flags, mode, info, dflags)
+__kdb2_hash_open(file, flags, mode, info, dflags)
 	const char *file;
 	int32_t flags, mode, dflags;
 	const HASHINFO *info;	/* Special directives for create */
@@ -140,7 +140,7 @@ __hash_open(file, flags, mode, info, dflags)
 		new_table = 1;
 	}
 	if (file) {
-		if ((hashp->fp = open(file, flags, mode)) == -1)
+		if ((hashp->fp = open(file, flags|O_BINARY, mode)) == -1)
 			RETURN_ERROR(errno, error0);
 		(void)fcntl(hashp->fp, F_SETFD, 1);
 	}

@@ -12,11 +12,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "krb.h"
-#include <sys/file.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #ifdef TKT_SHMEM
 #include <sys/param.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 extern int krb_debug;
@@ -28,13 +30,17 @@ extern int krb_debug;
  * success, or KFAILURE if something goes wrong.
  */
 
-#ifndef HAVE_SETREUID
-#ifdef HAVE_SETRESUID
-/* for hpux */
-#define setreuid(r,e) setresuid(r,e,-1)
+#ifdef HAVE_SETEUID
+#define do_seteuid(e) seteuid((e))
 #else
-/* for svr4 */
-#define setreuid(r,e) setuid(r)
+#ifdef HAVE_SETRESUID
+#define do_seteuid(e) setresuid(getuid(), (e), geteuid())
+#else
+#ifdef HAVE_SETREUID
+#define do_seteuid(e) setreuid(geteuid(), (e))
+#else
+#define do_seteuid(e) (errno = EPERM, -1)
+#endif
 #endif
 #endif
 
@@ -42,6 +48,7 @@ extern int krb_debug;
 #define O_SYNC 0
 #endif
 
+KRB5_DLLIMP int KRB5_CALLCONV
 in_tkt(pname,pinst)
     char *pname;
     char *pinst;
@@ -98,10 +105,10 @@ in_tkt(pname,pinst)
        This isn't a security problem, since the ticket file, if it already
        exists, has the right uid (== ruid) and mode. */
     if (me != metoo) {
-	if (setreuid(metoo, me) < 0) {
+	if (do_seteuid(me) < 0) {
 	    /* can't switch??? barf! */
 	    if (krb_debug)
-		perror("in_tkt: setreuid");
+		perror("in_tkt: seteuid");
 	    return(KFAILURE);
 	} else
 	    if (krb_debug)
@@ -118,10 +125,10 @@ in_tkt(pname,pinst)
     }
     umask(mask);
     if (me != metoo) {
-	if (setreuid(me, metoo) < 0) {
+	if (do_seteuid(metoo) < 0) {
 	    /* can't switch??? barf! */
 	    if (krb_debug)
-		perror("in_tkt: setreuid2");
+		perror("in_tkt: seteuid2");
 	    return(KFAILURE);
 	} else
 	    if (krb_debug)

@@ -1,3 +1,99 @@
+Mon May 10 15:16:18 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Sun Jul 19 12:00:00 1998  Marc Horowitz <marc@mit.edu>
+
+	* *.c: replace the crypto layer.
+
+Wed Feb 18 16:06:23 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Fri Feb 13 15:20:54 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (thisconfigdir), configure.in: Point the
+ 		configuration directory at our parent, and remove our
+		local configure.in
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Dec 25 20:57:53 1997  Tom Yu  <chaoself@mit.edu>
+
+	* init_rkey.c (mit_des_init_random_key): Punt the struct; use
+	explicit variables instead because we're no longer doing a
+	memcpy.  In addition, fill p_state->sequence.data a byte at a
+	time. [krb5-libs/492]
+
+Mon Oct 27 01:06:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* d3_cbc.c, des.h, des_int.h, f_cbc.c, f_cksum.c, f_ecb.c,
+	f_pcbc.c, f_sched.c, f_tables.c, f_tables.h: Change KRB_INT32 to
+	DES_INT32 to avoid temptation to misuse.
+
+	* d3_cbc.c, d3_ecb.c, f_cbc.c, f_cksum.c, f_ecb.c, f_parity.c,
+ 	f_pcbc.c, f_sched.c, f_tables.c: Don't include des.h; it's broken
+ 	in ways.  Use only des_int.h instead.
+
+Tue Oct 21 13:22:23 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (RUN_SETUP): Set KRB5_CONFIG.
+
+Tue Oct 14 15:35:53 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* des_int.h: Use better logic to find an appropriate type for
+ 	KRB_INT32; also don't assume that a key schedule element is
+	exactly 64 bits wide... use instead 2 * KRB_INT32, since that is
+	what the code uses internally.
+
+	* des.h: Use better logic to find an appropriate type for
+ 	KRB_INT32.
+
+Mon Oct  6 11:32:51 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* destest.c (main): Initialize context to 0 so it will not be
+	        treated as unset by purify.
+
+	* t_verify.c (main): Use krb5_free_context to release memory in use.
+
+
+Sat Feb 22 18:50:35 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Fri Feb  7 07:12:52 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in (all-unix, all-mac): Create shared directory
+		before trying to build the object files
+
+Thu Jan 30 21:43:19 1997  Richard Basch  <basch@lehman.com>
+
+	* cbc_cksum.c
+		Change functions to take const args where possible
+
+Thu Nov 21 00:58:04 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: Win32 build
+
+Sat Feb  8 18:49:39 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Sun Dec 29 21:53:49 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to use new library building procedure.
+
 Sat Jun 15 03:51:19 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
 
 	* Makefile.in (clean): Add space before \

@@ -23,7 +23,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: delete_sec_context.c,v 1.1.1.3 1999-02-09 20:59:32 danw Exp $
+ * $Id: delete_sec_context.c,v 1.1.1.4 1999-10-05 16:12:14 ghudson Exp $
  */
 
 OM_uint32
@@ -80,17 +80,18 @@ krb5_gss_delete_sec_context(minor_status, context_handle, output_token)
    if (ctx->seqstate)
       g_order_free(&(ctx->seqstate));
 
-   if (ctx->enc.processed)
-      krb5_finish_key(context, &ctx->enc.eblock);
-   krb5_free_keyblock(context, ctx->enc.key);
+   if (ctx->enc)
+      krb5_free_keyblock(context, ctx->enc);
 
-   if (ctx->seq.processed)
-      krb5_finish_key(context, &ctx->seq.eblock);
-   krb5_free_keyblock(context, ctx->seq.key);
+   if (ctx->seq)
+      krb5_free_keyblock(context, ctx->seq);
 
-   krb5_free_principal(context, ctx->here);
-   krb5_free_principal(context, ctx->there);
-   krb5_free_keyblock(context, ctx->subkey);
+   if (ctx->here)
+      krb5_free_principal(context, ctx->here);
+   if (ctx->there)
+      krb5_free_principal(context, ctx->there);
+   if (ctx->subkey)
+      krb5_free_keyblock(context, ctx->subkey);
 
    if (ctx->auth_context) {
        (void)krb5_auth_con_setrcache(context, ctx->auth_context, NULL);
@@ -100,6 +101,9 @@ krb5_gss_delete_sec_context(minor_status, context_handle, output_token)
    if (ctx->mech_used)
        gss_release_oid(minor_status, &ctx->mech_used);
    
+   if (ctx->ctypes)
+       xfree(ctx->ctypes);
+
    /* Zero out context */
    memset(ctx, 0, sizeof(*ctx));
    xfree(ctx);

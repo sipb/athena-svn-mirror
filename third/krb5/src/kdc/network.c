@@ -15,7 +15,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -30,7 +33,7 @@
 #include "kdc5_err.h"
 
 #include <ctype.h>
-#ifdef KRB5_USE_INET
+#ifdef HAVE_NETINET_IN_H
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -208,6 +211,10 @@ const char *prog;
 	return KDC5_NONET;
     
     while (!signal_requests_exit) {
+	if (signal_requests_hup) {
+	    krb5_klog_reopen();
+	    signal_requests_hup = 0;
+	}
 	readfds = select_fds;
 	nfound = select(select_nfds, &readfds, 0, 0, 0);
 	if (nfound == -1) {

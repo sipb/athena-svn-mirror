@@ -15,20 +15,12 @@
 #include "krb.h"
 #include <string.h>
 
-#ifdef HAS_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #else
 extern char *malloc(), *calloc(), *realloc();
 #endif
 
-/* Define a couple of function types including parameters.  These
-   are needed on MS-Windows to convert arguments of the function pointers
-   to the proper FAR types during calls.  These definitions are found in
-   <krb-sed.h> but the code is too opaque unless they are also here.  */
-#ifndef	KEY_PROC_TYPE_DEFINED
-typedef int (*key_proc_type) PROTOTYPE ((char *, char *, char *,
-					     char *, C_Block));
-#endif
 
 int
 krb_mk_preauth(preauth_p, preauth_len,

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -38,16 +41,15 @@
  *  returns system errors, encryption errors, replay errors
  */
 
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_rd_rep(context, auth_context, inbuf, repl)
     krb5_context 	  context;
     krb5_auth_context	  auth_context;
-    const krb5_data 	* inbuf;
-    krb5_ap_rep_enc_part **repl;
+    const krb5_data 	FAR * inbuf;
+    krb5_ap_rep_enc_part FAR * FAR *repl;
 {
     krb5_error_code 	  retval;
     krb5_ap_rep 	* reply;
-    krb5_encrypt_block 	  eblock;
     krb5_data 	 	  scratch;
 
     if (!krb5_is_ap_rep(inbuf))
@@ -60,35 +62,15 @@ krb5_rd_rep(context, auth_context, inbuf, repl)
 
     /* put together an eblock for this encryption */
 
-    if (!valid_enctype(reply->enc_part.enctype)) {
-	krb5_free_ap_rep(context, reply);
-	return KRB5_PROG_ETYPE_NOSUPP;
-    }
-    krb5_use_enctype(context, &eblock, reply->enc_part.enctype);
-
     scratch.length = reply->enc_part.ciphertext.length;
     if (!(scratch.data = malloc(scratch.length))) {
 	krb5_free_ap_rep(context, reply);
 	return(ENOMEM);
     }
 
-    /* do any necessary key pre-processing */
-    if ((retval = krb5_process_key(context, &eblock,
-				   auth_context->keyblock))) {
-	goto errout;
-    }
-
-    /* call the encryption routine */
-    if ((retval = krb5_decrypt(context, 
-			       (krb5_pointer) reply->enc_part.ciphertext.data,
-			       (krb5_pointer) scratch.data,
-			       scratch.length, &eblock, 0))) {
-	(void) krb5_finish_key(context, &eblock);
-	goto errout;
-    }
-
-    /* finished with the top-level encoding of the ap_rep */
-    if ((retval = krb5_finish_key(context, &eblock)))
+    if ((retval = krb5_c_decrypt(context, auth_context->keyblock,
+				 KRB5_KEYUSAGE_AP_REP_ENCPART, 0,
+				 &reply->enc_part, &scratch)))
 	goto clean_scratch;
 
     /* now decode the decrypted stuff */

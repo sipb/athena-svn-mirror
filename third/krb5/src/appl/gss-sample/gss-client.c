@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-client.c,v 1.1.1.3 1999-02-09 21:02:09 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-client.c,v 1.1.1.4 1999-10-05 16:09:59 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -132,7 +132,7 @@ int client_establish_context(s, service_name, deleg_flag, oid,
 {
      gss_buffer_desc send_tok, recv_tok, *token_ptr;
      gss_name_t target_name;
-     OM_uint32 maj_stat, min_stat;
+     OM_uint32 maj_stat, min_stat, init_sec_min_stat;
 
      /*
       * Import the name into target_name.  Use send_tok to save
@@ -168,7 +168,7 @@ int client_establish_context(s, service_name, deleg_flag, oid,
 
      do {
 	  maj_stat =
-	       gss_init_sec_context(&min_stat,
+	       gss_init_sec_context(&init_sec_min_stat,
 				    GSS_C_NO_CREDENTIAL,
 				    gss_context,
 				    target_name,
@@ -186,12 +186,6 @@ int client_establish_context(s, service_name, deleg_flag, oid,
 	  if (token_ptr != GSS_C_NO_BUFFER)
 	       (void) gss_release_buffer(&min_stat, &recv_tok);
 
-	  if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED) {
-	       display_status("initializing context", maj_stat, min_stat);
-	       (void) gss_release_name(&min_stat, &target_name);
-	       return -1;
-	  }
-
 	  if (send_tok.length != 0) {
 	       printf("Sending init_sec_context token (size=%d)...",
 		     send_tok.length);
@@ -202,6 +196,16 @@ int client_establish_context(s, service_name, deleg_flag, oid,
 	       }
 	  }
 	  (void) gss_release_buffer(&min_stat, &send_tok);
+
+	  if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED) {
+	       display_status("initializing context", maj_stat,
+			      init_sec_min_stat);
+	       (void) gss_release_name(&min_stat, &target_name);
+	       if (*gss_context == GSS_C_NO_CONTEXT)
+		       gss_delete_sec_context(&min_stat, gss_context,
+					      GSS_C_NO_BUFFER);
+	       return -1;
+	  }
 	  
 	  if (maj_stat == GSS_S_CONTINUE_NEEDED) {
 	       printf("continue needed...");
@@ -235,25 +239,29 @@ void read_file(file_name, in_buf)
 	exit(1);
     }
     in_buf->length = stat_buf.st_size;
-    in_buf->value = malloc(in_buf->length);
-    if (in_buf->value == 0) {
+
+    if (in_buf->length == 0) {
+	in_buf->value = NULL;
+	return;
+    }
+
+    if ((in_buf->value = malloc(in_buf->length)) == 0) {
 	fprintf(stderr, "Couldn't allocate %d byte buffer for reading file\n",
 		in_buf->length);
 	exit(1);
     }
-    memset(in_buf->value, 0, in_buf->length);
-    for (bytes_in = 0; bytes_in < in_buf->length; bytes_in += count) {
-	count = read(fd, in_buf->value, in_buf->length);
-	if (count < 0) {
-	    perror("read");
-	    exit(1);
-	}
-	if (count == 0)
-	    break;
+
+    /* this code used to check for incomplete reads, but you can't get
+       an incomplete read on any file for which fstat() is meaningful */
+
+    count = read(fd, in_buf->value, in_buf->length);
+    if (count < 0) {
+	perror("read");
+	exit(1);
     }
-    if (bytes_in != count)
+    if (count < in_buf->length)
 	fprintf(stderr, "Warning, only read in %d bytes, expected %d\n",
-		bytes_in, count);
+		count, in_buf->length);
 }
 
 /*
@@ -277,8 +285,7 @@ void read_file(file_name, in_buf)
  * seals msg in a GSS-API token with gss_seal, sends it to the server,
  * reads back a GSS-API signature block for msg from the server, and
  * verifies it with gss_verify.  -1 is returned if any step fails,
- * otherwise 0 is returned.
- */
+ * otherwise 0 is returned.  */
 int call_server(host, port, oid, service_name, deleg_flag, msg, use_file)
      char *host;
      u_short port;
@@ -406,7 +413,7 @@ int call_server(host, port, oid, service_name, deleg_flag, msg, use_file)
      } else {
 	 /* Seal the message */
 	 in_buf.value = msg;
-	 in_buf.length = strlen(msg) + 1;
+	 in_buf.length = strlen(msg);
      }
 
      maj_stat = gss_wrap(&min_stat, context, 1, GSS_C_QOP_DEFAULT,

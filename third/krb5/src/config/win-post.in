@@ -1,16 +1,67 @@
-# config/post.in
+#
+# Start of Win32 post-config lines (config/win-post.in)
+#
+
+!if defined(NO_OUTPRE) || defined(NO_OUTDIR)
+outpre-dir::
+!else
+outpre-dir:: $(OUTPRE3)
+!endif
+
+#
 # put all:: first just in case no other rules occur here
 #
 all::
 
-.c.obj:
-	$(CC) $(CFLAGS) /c $*.c
+#
+# Set the #define to indicate that we are compiling a DLL.  We default to 
+# compiling the Kerberos library
+#
+!if defined(DLL_EXP_TYPE)
+DLL_FILE_DEF=/D$(DLL_EXP_TYPE)_DLL_FILE
+!else
+DLL_FILE_DEF=/DKRB5_DLL_FILE
+!endif
+
+# Build the Makefile unless we are in the top-level
+#(where there is already an explicit rule).
+!if !defined(ZIP) && !defined(WINFILES)
+Makefile: Makefile.in $(BUILDTOP)\config\win-pre.in $(BUILDTOP)\config\win-post.in
+	$(WCONFIG) $(BUILDTOP)\config < Makefile.in > Makefile
+!endif
+
+
 !if defined(LIBNAME)
-!if "$(LIBCMD)"!="rem"
-##WIN16##	$(LIBCMD) $(PAGESIZE) /nologo $(LIBNAME) -+$@;
-##WIN32##	$(LIBCMD) /out:$(LIBNAME) /nologo $@
+
+!if !defined(OBJFILELIST)
+OBJFILELIST=@$(OBJFILE)
 !endif
+!if !defined(OBJFILEDEP)
+OBJFILEDEP=$(OBJFILE)
 !endif
+
+all-windows:: $(LIBNAME)
+$(LIBNAME): $(OBJFILEDEP)
+	$(LIBCMD) /out:$(LIBNAME) /nologo $(OBJFILELIST)
+
+!endif # LIBNAME
+
+
+!if defined(OBJFILE)
+all-windows:: $(OBJFILE)
+clean-windows::
+	$(RM) $(OBJFILE)
+!if defined(LIBOBJS)
+$(OBJFILE): $(LIBOBJS)
+	$(RM) $(OBJFILE)
+!if defined(PREFIXDIR)
+	$(LIBECHO) -p $(PREFIXDIR)\ $** > $(OBJFILE)
+!else
+	$(LIBECHO) $** > $(OBJFILE)
+!endif # !PREFIXDIR
+!endif # LIBOBJS
+!endif # OBJFILE
+
 
 check::
 check-windows::
@@ -41,6 +92,22 @@ clean-unix::
 	if test -n "$(OBJS)" ; then $(RM) $(OBJS); else :; fi
 	$(RM) .depend
 
+!if defined(LIBNAME)
 clean-windows::
-	$(RM) *.$(OBJEXT)
-	$(RM) msvc.pdb *.err
+	$(RM) $(LIBNAME)
+!endif
+!if defined(OBJFILE)
+clean-windows::
+	$(RM) $(OBJFILE)
+!endif
+
+clean-windows:: clean-windows-files clean-windows-dir
+
+# This needs to be in the post because we need RM to be defined in terms
+# of BUILDTOP
+clean-windows-files::
+	$(RM) .\$(OUTPRE)*.obj .\$(OUTPRE)*.res
+	$(RM) .\$(OUTPRE)*.exe .\$(OUTPRE)*.dll
+	$(RM) .\$(OUTPRE)*.lib .\$(OUTPRE)*.pdb
+	$(RM) .\$(OUTPRE)*.exp .\$(OUTPRE)*.map
+	$(RM) .\$(OUTPRE)*.idb .\$(OUTPRE)*.ilk

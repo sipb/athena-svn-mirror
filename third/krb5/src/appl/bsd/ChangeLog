@@ -1,3 +1,53 @@
+1999-08-24  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (kshd): Remove $(LOGINLIBS) from kshd dependencies.
+
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogin.c (main): Error out if -D isn't followed by another
+	argument.  Based on patch from Brad Thompson.
+
+	* krshd.c (v4_kdata, v4_ticket): Don't define if KRB5_KRB4_COMPAT
+	is not defined.  Patch from Brad Thompson.
+
+	* kcmd.c (kcmd): If krb5_get_credentials returns a nonzero error
+	code, print an error message before returning.
+
+1999-08-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* krlogin.c (main): If ospeed is outside of compiled-in table
+	index range but not high enough to be a baud rate, use the highest
+	rate in the table.
+
+1999-08-02  Ken Raeburn  <raeburn@mit.edu>
+	and Brad Thompson  <yak@mit.edu>
+
+	Patches from Brad Thompson for building without krb4
+	compatibility:
+	* krshd.c: Include sys/socket.h and netdb.h if KRB5_KRB4_COMPAT
+	isn't defined.
+	(doit): Cast pointer argument to getsockname.
+	(recvauth): Do krb4 stuff only if KRB5_KRB4_COMPAT is defined;
+	otherwise, skip it and call krb5_recvauth.
+	* kcmd.c (do_lencheck): Define even if !KRB5_KRB4_COMPAT.
+
+1999-07-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* login.c (main): Fix typo in computing strncpy length for shell
+	name.
+
+Sat Jul 24 08:50:39 1999  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (kshd): Add $(LOGINLIBS).
+
+1999-07-09  Ken Raeburn  <raeburn@mit.edu>
+
+	AIX 4.3.2 changes based on bug report from Joshua Lackey,
+	lackeyj@austin.ibm.com:
+	* configure.in: Check for rmufile function.
+	* login.c (update_ref_count) [! HAVE_RMUFILE]: Call putgroupattr
+	with SEC_DELETE before SEC_COMMIT; don't call rmufile.
+
 Fri Mar 12 19:01:35 1999  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in (kshd): Add $(LOGINLIBS).
@@ -20,6 +70,9 @@ Mon Feb 22 22:26:32 1999  Tom Yu  <tlyu@mit.edu>
 	all the addresses in hp have been iterated through to avoid
 	smashing. [krb5-appl/516]
 
+	* kcmd.c (k4cmd): Move call to krb_realmofhost() to avoid smashing
+	hp.
+
 Wed Feb 17 17:24:11 1999  Tom Yu  <tlyu@mit.edu>
 
 	* klogind.M: Document things a little better, including new
@@ -32,12 +85,6 @@ Wed Feb 17 17:24:11 1999  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Add arpa/nameser.h to CHECK_HEADERS.
 
-Fri Feb 12 10:20:20 1999  Theodore Y. Ts'o  <tytso@mit.edu>
-
-	* login.c (read_env_vars_from_file): Fix so that it uses
-		passed-in filename instead of the hard-coded to
-		/etc/environment.  [krb5-appl/691]
-
 Wed Jan 20 21:42:41 1999  Tom Yu  <tlyu@mit.edu>
 
 	* login.c (main): Call setluid().
@@ -46,6 +93,39 @@ Wed Jan 20 21:42:41 1999  Tom Yu  <tlyu@mit.edu>
 
 	* configure.in: Check for setluid() rather than main() in
 	libsecurity.
+
+1998-11-28  Sam Hartman  <hartmans@mesas.com>
+
+	* krshd.c krsh.c:  Use RCMD_BUFSIZ not RSH_BUFSIZE [krb5-appl/678]
+
+	* kcmd.c: Move RCMD_BUFSIZ into defines.h
+
+1998-11-16  Geoffrey King  <gjking@mit.edu>
+
+	* login.c (login_get_kconf): Also test whether *kconf_val is null
+ 		rather than just kconf_val before passing *kconf_val to
+ 		conf_affirmative (where strcasecmp will choke on it
+		if it is in fact null).
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+
+1998-10-24  Marc Horowitz  <marc@mit.edu>
+
+	* login.c: update to new get_creds API
+	
+	* krlogin.c (main, oob, server_message, control), krlogind.c
+		(sendoob, protocol, recvauth): If the enctype is not
+		similar to DES, use an inband signalling protocol instead
+		of MSG_OOB data to indicate status changes.
+
+	* kcmd.c (rcmd_stream_init_krb5, v5_des_read, v5_des_write):
+		update to new crypto API.  Add ivec chaining to
+		encryption when the enctype is not similar to DES as part
+		of the new protocol.
 
 1998-10-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
@@ -57,6 +137,10 @@ Wed Jan 20 21:42:41 1999  Tom Yu  <tlyu@mit.edu>
 		the foreign and local ports so that encrypted rcp for the
 		same machine.  [krb5-appl/638]
 
+Tue Aug 18 16:48:02 1998  Tom Yu  <tlyu@mit.edu>
+
+	* krlogin.c: Add <sys/filio.h> for FIONREAD.
+
 Sat Aug 15 00:01:15 1998  Geoffrey King  <gjking@mit.edu>
 
 	* krcp.c (error): Don't call rcmd_stream_write if iamremote is not
@@ -67,6 +151,11 @@ Mon Jul 27 00:06:20 1998  Geoffrey King  <gjking@mit.edu>
 
 	* krlogin.c (main): Apply ghudson's patch so that rlogin -a
 	no longer dumps core. [krb5-appl/612]
+
+Sun Jul 26 23:46:36 1998  Sam Hartman  <hartmans@utwig.mesas.com>
+
+	* login.c (main): Allow krb524 conversion for forwarded tickets
+	(try_convert524): Don't check to see if we have tickets here; caller  does that and actually gets it right.
 
 1998-05-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
@@ -91,10 +180,83 @@ Sat May 16 16:07:42 1998  Tom Yu  <tlyu@mit.edu>
 	* login.c: Replace strcpy with strncpy in places.  Add nul
 	termination to some existing invocations of strncpy.
 
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Add a check for the header file krb4-proto.h.
+		Replace file existence tests for /etc/environment and
+		/etc/TIMEZONE with K5_AC_CHECK_FILES.
+
+	* login.c (main): 
+	* krshd.c (main): 
+	* krlogind.c (main): POSIX states that getopt returns -1 when it
+		is done parsing options, not EOF.
+
+Sat Feb 28 10:44:46 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Clean up configure script.  Check $cross_compiling
+		instead of (no longer correct) cache variable; remove
+		obsolete AC_C_CROSS.  Use AC_CHECK_FUNCS instead of
+		individual AC_FUNC_CHECK calls for speed.  Change checks
+		for strsave and utimes to use AC_CHECK_FUNCS
+
+	* krcp.c, v4rcp.c: Change usages of HAS_STRSAVE and HAS_UTIMES to
+	 	HAVE_*.
+
+Tue Feb 24 14:52:33 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kcmd.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+	
+	* krcp.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+
+	* krlogin.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+
+	* krlogind.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+
+	* krsh.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+
+	* krshd.c: Integrate ghudson's changes for client-side krb4
+	compatibility. [krb5-appl/483]
+
+Sun Feb 22 19:16:12 1998  Tom Yu  <tlyu@mit.edu>
+
+	* v4rcp.c: Punt nastiness to redefine setreuid, as we don't use
+	it.
+
+	* krcp.c: Use krb5_seteuid(). [krb5-libs/505]  Fix up inclusions
+	to use <> rather than "".
+
+Wed Feb 18 15:26:52 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
 Tue Jan 20 21:42:06 1998  Tom Yu  <tlyu@mit.edu>
 
 	* krlogind.c (protocol): Declare pibuf and fibuf as being BUFSIZ
 	bytes long, rather than 1024.  Fixes an Irix bug. [krb5-appl/527]
+
+Fri Dec 19 18:19:42 1997  Dan Winship  <danw@mit.edu>
+
+	* login.c (try_afscall): try_afscall doesn't work / isn't needed
+	on systems without SIGSYS
+
+Thu Dec 11 23:20:20 1997  Tom Yu  <tlyu@mit.edu>
+
+	* krlogind.c:
+	* krshd.c:
+	* login.c:
+	* v4rcp.c: Don't include netdb.h or sys/socket.h if krb.h is
+	included; this works around an Ultrix bug where those headers
+	aren't protected against multiple inclusion.
 
 Thu Nov 20 16:42:54 1997  Tom Yu  <tlyu@mit.edu>
 
@@ -128,19 +290,82 @@ Mon Nov  3 15:25:48 1997  Tom Yu  <tlyu@mit.edu>
 	* krlogind.c (doit): Fix up potential buffer overrun.
 	[krb5-appl/488]
 
+	* krlogin.c (main): Fix up potential buffer overrun.
+
+	* krcp.c (hosteq): Fix up potential buffer overrun.
+
+Tue Oct  7 18:01:15 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* v4rcp.M: Removed useless .so to a non-existent macro file.
+
+Tue Sep  2 19:44:21 1997  Tom Yu  <tlyu@mit.edu>
+
+	* krlogind.c (main): Changes to allow for standalone daemon
+	operation.  Use the "-f" flag to enable.  This automagically
+	figures out which port to bind to if you don't specify it.
+
+Mon Jun 30 13:21:34 1997  Kevin L Mitchell  <klmitch@mit.edu>
+
+	* login.c (dofork): Solaris 2.4 puts killpg in the bsd compatibility
+		libraries.  Autoconf correctly determined that it wasn't
+		available, but it wasn't conditionalized out.  Added the
+		conditional, using kill(-child, SIGHUP) as a replacement,
+		as suggested by tlyu
+
+Thu Jun  5 15:56:54 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* login.c: Always use the new tty line discpline.  [krb5-appl/428]
+
+	* login.c: If a hangup signal is received, pass it onto the child.
+		[krb5-appl/432]
+
+Fri Mar 28 01:05:27 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* login.c (NO_MOTD): If we're on an SGI machine, don't do the MOTD
+		or MAILCHECK thing, since it's done by /etc/cshrc magic.
+		(SGI's don't define __SVR4, even though it's SVR4
+		derived).  [krb5-appl/158]
+
+	* krlogin.c (try_normal): When falling back to the normal rlogin,
+		clear the signal mask, so that the child rlogin handles
+		SIGUSR1 (which is used for window size changes) correctly.
+		[krb5-appl/335]
+
 Tue Mar 18 12:34:03 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
 
  [326]	* login.c(doit):  Preserve terminal even without -p.
+
+Thu Feb 27 10:58:07 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* krshd.c: Allow user to login with / as home directory if homedir
+ 	not found. [167]
+
+Sat Feb 22 00:54:06 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* krlogin.c (mode): Clean up Posix terminal handling for NetBSD.
+
+Tue Feb 18 18:03:55 1997  Richard Basch  <basch@lehman.com>
+
+	* krcp.c: Replace krb5_xfree with krb5_free_data_contents
+	* kcmd.c krlogind.c krshd.c: Use free instead of internal krb5_xfree
+	* krlogin.c: Fixed 8bit character flow under Solaris
+	* kcmd.c: getport() lets the OS pick the port rather than scanning
+	* krshd.c: Don't bother to set lport before calling getport(&lport)
 
 Sat Dec 28 21:06:43 1996  Sam Hartman  <hartmans@luminous.MIT.EDU>
 
 	* login.c: Force environment variables like HOME to be set even if
  	-p given.
 
-Thu Feb 27 10:58:07 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+Wed Feb  5 20:56:03 1997  Tom Yu  <tlyu@mit.edu>
 
-	* krshd.c: Allow user to login with / as home directory if homedir
- 	not found. [167]
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Tue Dec 24 16:08:41 1996  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Fix up "test $ac_cv_c_cross" to deal with
+	autoconf-2.12, since that variable can be set to a null string.
 
 Fri Dec  6 00:53:08 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 
@@ -430,6 +655,11 @@ Mon Jun  3 21:26:34 1996  Tom Yu  <tlyu@mit.edu>
 Sun May 19 15:22:06 1996  Sam Hartman  <hartmans@mit.edu>
 
 	* login.c (destroy_tickets main):  Use a secure context
+
+Wed May 22 22:46:40 1996  Richard Basch  <basch@lehman.com>
+
+	* login.c (k_init): Set the default KRB5CCNAME environment variable
+	consistently with other applications - FILE:/tmp/krb5cc_p<pid>
 
 Thu May  9 00:09:14 1996  Richard Basch  <basch@lehman.com>
 

@@ -16,7 +16,10 @@
 # this permission notice appear in supporting documentation, and that
 # the name of M.I.T. not be used in advertising or publicity pertaining
 # to distribution of the software without specific, written prior
-# permission.  M.I.T. makes no representations about the suitability of
+# permission.  Furthermore if you modify this software you must label
+# your software as modified software and not distribute it in such a
+# fashion that it might be confused with the original M.I.T. software.
+# M.I.T. makes no representations about the suitability of
 # this software for any purpose.  It is provided "as is" without express
 # or implied warranty.
 # 
@@ -25,7 +28,7 @@
 #
 error_table kdb5
 
-ec KRB5_KDB_RCSID,	"$Id: kdb5_err.et,v 1.1.1.1 1996-09-12 04:44:51 ghudson Exp $"
+ec KRB5_KDB_RCSID,	"$Id: kdb5_err.et,v 1.1.1.2 1999-10-05 16:14:26 ghudson Exp $"
 # /* From the server side routines */
 ec KRB5_KDB_INUSE,		"Entry already exists in database"
 ec KRB5_KDB_UK_SERROR,		"Database store error"
@@ -62,4 +65,5 @@ ec KRB5_KDB_BAD_VERSION,	"Unsupported version in database entry"
 
 ec KRB5_KDB_BAD_SALTTYPE,	"Unsupported salt type"
 ec KRB5_KDB_BAD_ENCTYPE,	"Unsupported encryption type"
+ec KRB5_KDB_BAD_CREATEFLAGS,	"Bad database creation flags"
 end

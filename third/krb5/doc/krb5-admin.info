@@ -1,81 +1,81 @@
-This is Info file krb5-admin.info, produced by Makeinfo-1.55 from the
-input file admin.texinfo.
+This is Info file krb5-admin.info, produced by Makeinfo version 1.68
+from the input file admin.texinfo.
 
 
 Indirect:
-krb5-admin.info-1: 97
-krb5-admin.info-2: 47549
-krb5-admin.info-3: 89003
+krb5-admin.info-1: 105
+krb5-admin.info-2: 48995
+krb5-admin.info-3: 90690
 
 Tag Table:
 (Indirect)
-Node: Top97
-Node: Copyright467
-Node: Introduction5349
-Node: Why Should I use Kerberos?5579
-Node: Documentation for Kerberos V56192
-Node: Overview of This Guide7385
-Node: How Kerberos Works8074
-Node: Network Services and Their Client Programs9094
-Node: Kerberos Tickets9678
-Node: The Kerberos Database10490
-Node: Kerberos Realms10974
-Node: The Ticket-Granting Ticket11879
-Node: Network Services and the Master Database12784
-Node: The Keytab File14180
-Node: The User--Kerberos Interaction15019
-Node: Definitions17785
-Node: Configuration Files20177
-Node: krb5.conf20394
-Node: libdefaults22558
-Node: appdefaults24404
-Node: realms (krb5.conf)25134
-Node: domain_realm26060
-Node: logging27299
-Node: capaths29820
-Node: Sample krb5.conf File32840
-Node: kdc.conf33710
-Node: kdcdefaults34732
-Node: realms (kdc.conf)35253
-Node: Sample kdc.conf File38087
-Node: Administrating Kerberos Database Entries38712
-Node: Kadmin Options41268
-Node: Date Format42839
-Node: Principals44473
-Node: Retrieving Information About a Principal44954
-Node: Attributes45227
-Node: Retrieving a List of Principals46764
-Node: Privileges47549
-Node: Adding or Modifying Principals50099
-Node: Deleting Principals58213
-Node: Changing Passwords58982
-Node: Renaming Principals60222
-Node: Policies60987
-Node: Retrieving Policies61526
-Node: Retrieving the List of Policies62514
-Node: Adding or Modifying Policies63279
-Node: Deleting Policies64382
-Node: Dumping a Kerberos Database to a File65107
-Node: Restoring a Kerberos Database from a Dump File66909
-Node: Creating a Stash File68241
-Node: Creating and Destroying a Kerberos Database69122
-Node: Application Servers70228
-Node: Keytabs70962
-Node: Adding Principals to Keytabs71787
-Node: Removing Principals from Keytabs73482
-Node: Clock Skew74666
-Node: Getting DNS Information Correct75726
-Node: Configuring Your Firewall to Work With Kerberos V577468
-Node: Backups of Secure Hosts81846
-Node: Backing Up the Kerberos Database82675
-Node: Bug Reporting83870
-Node: Appendix88542
-Node: Errors88678
-Node: Kerberos V5 Library Error Codes89003
-Node: Kerberos V5 Database Library Error Codes102722
-Node: Kerberos V5 Magic Numbers Error Codes104678
-Node: ASN.1 Error Codes108659
-Node: GSSAPI Error Codes109424
-Node: kadmin Time Zones110847
+Node: Top105
+Node: Copyright475
+Node: Introduction5516
+Node: Why Should I use Kerberos?5746
+Node: Documentation for Kerberos V56359
+Node: Overview of This Guide7552
+Node: How Kerberos Works8241
+Node: Network Services and Their Client Programs9261
+Node: Kerberos Tickets9845
+Node: The Kerberos Database10657
+Node: Kerberos Realms11141
+Node: The Ticket-Granting Ticket12046
+Node: Network Services and the Master Database12951
+Node: The Keytab File14346
+Node: The User/Kerberos Interaction15184
+Node: Definitions17949
+Node: Configuration Files20340
+Node: krb5.conf20557
+Node: libdefaults22721
+Node: appdefaults24567
+Node: realms (krb5.conf)25297
+Node: domain_realm26223
+Node: logging27462
+Node: capaths29983
+Node: Sample krb5.conf File33003
+Node: kdc.conf33873
+Node: kdcdefaults34895
+Node: realms (kdc.conf)35416
+Node: Sample kdc.conf File38857
+Node: Administrating Kerberos Database Entries39569
+Node: Kadmin Options42125
+Node: Date Format44197
+Node: Principals45919
+Node: Retrieving Information About a Principal46400
+Node: Attributes46673
+Node: Retrieving a List of Principals48210
+Node: Privileges48995
+Node: Adding or Modifying Principals51545
+Node: Deleting Principals59900
+Node: Changing Passwords60669
+Node: Renaming Principals61909
+Node: Policies62674
+Node: Retrieving Policies63213
+Node: Retrieving the List of Policies64201
+Node: Adding or Modifying Policies64966
+Node: Deleting Policies66069
+Node: Dumping a Kerberos Database to a File66794
+Node: Restoring a Kerberos Database from a Dump File68596
+Node: Creating a Stash File69928
+Node: Creating and Destroying a Kerberos Database70809
+Node: Application Servers71915
+Node: Keytabs72649
+Node: Adding Principals to Keytabs73474
+Node: Removing Principals from Keytabs75169
+Node: Clock Skew76353
+Node: Getting DNS Information Correct77413
+Node: Configuring Your Firewall to Work With Kerberos V579155
+Node: Backups of Secure Hosts83533
+Node: Backing Up the Kerberos Database84362
+Node: Bug Reporting85557
+Node: Appendix90229
+Node: Errors90365
+Node: Kerberos V5 Library Error Codes90690
+Node: Kerberos V5 Database Library Error Codes104413
+Node: Kerberos V5 Magic Numbers Error Codes106373
+Node: ASN.1 Error Codes110354
+Node: GSSAPI Error Codes111119
+Node: kadmin Time Zones112542
 
 End Tag Table

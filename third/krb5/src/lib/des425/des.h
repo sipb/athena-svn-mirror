@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -31,8 +34,7 @@
 #ifndef DES_DEFS
 #define DES_DEFS
 
-#include "k5-int.h"
-#include "des_int.h"
+#include <des_int.h>
 
 typedef mit_des_cblock des_cblock;	/* crypto-block size */
 
@@ -67,21 +69,21 @@ typedef struct des_ks_struct bit_64;
  * Windows needs everything prototyped because we're exporting all the fuctions.
  */
 void des_cbc_cksum();
-int des_ecb_encrypt();
+KRB5_DLLIMP int KRB5_CALLCONV des_ecb_encrypt();
 int des_cbc_encrypt();
 void des_fixup_key_parity();
 int des_check_key_parity();
-int des_key_sched();
-int des_new_random_key();
+KRB5_DLLIMP int KRB5_CALLCONV des_key_sched();
+KRB5_DLLIMP int KRB5_CALLCONV des_new_random_key();
 void des_init_random_number_generator();
-void des_set_random_generator_seed();
+KRB5_DLLIMP void KRB5_CALLCONV des_set_random_generator_seed();
 void des_set_sequence_number();
 void des_generate_random_block();
-int des_pcbc_encrypt();
-unsigned long des_quad_cksum();
+KRB5_DLLIMP int KRB5_CALLCONV des_pcbc_encrypt();
+KRB5_DLLIMP unsigned long KRB5_CALLCONV des_quad_cksum();
 int des_random_key();
 krb5_error_code des_read_password();
-int des_string_to_key();
+KRB5_DLLIMP int KRB5_CALLCONV des_string_to_key();
 int des_is_weak_key();
 
 #endif	/* DES_DEFS */

@@ -54,7 +54,10 @@ extern int	interactive;	/* interactively prompt on m* cmds */
 extern int	debug;		/* debugging level */
 extern int	bell;		/* ring bell on cmd completion */
 extern int	doglob;		/* glob local file names */
+extern int autoauth;		/* Do authentication on connect */
 extern int	autologin;	/* establish user account on connection */
+extern int	autoencrypt;	/* negotiate encryption on connection */
+extern int	forward;	/* forward credentials */
 extern int	proxy;		/* proxy server connection active */
 extern int	proxflag;	/* proxy connection exists */
 extern int	sunique;	/* store files on server with unique name */
@@ -74,7 +77,8 @@ extern char	ntout[17];	/* output translation table */
 #include <sys/param.h>
 extern char	mapin[MAXPATHLEN];	/* input map template */
 extern char	mapout[MAXPATHLEN];	/* output map template */
-extern int	level;		/* protection level */
+extern int	clevel;		/* command channel protection level */
+extern int	dlevel;		/* data channel protection level */
 extern int	type;		/* requested file transfer type */
 extern int	curtype;	/* current file transfer type */
 extern int	stru;		/* file transfer structure */

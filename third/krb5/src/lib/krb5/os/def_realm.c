@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,6 +29,26 @@
 
 #include "k5-int.h"
 #include <stdio.h>
+
+#ifdef KRB5_DNS_LOOKUP	     
+#ifdef WSHELPER
+#include <wshelper.h>
+#else /* WSHELPER */
+#include <arpa/inet.h>
+#include <arpa/nameser.h>
+#include <resolv.h>
+#include <netdb.h>
+#endif /* WSHELPER */
+
+/* for old Unixes and friends ... */
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 64
+#endif
+
+#define MAX_DNS_NAMELEN (15*(MAXHOSTNAMELEN + 1)+1)
+
+extern int krb5_try_realm_txt_rr(char *,char *, char **);
+#endif /* KRB5_DNS_LOOKUP */
 
 /*
  * Retrieves the default realm to be used if no user-specified realm is
@@ -41,15 +64,12 @@
  * the default local realm name.
  */
 
-extern char *krb5_config_file;		/* extern so can be set at
-					   load/runtime */
-
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_get_default_realm(context, lrealm)
     krb5_context context;
-    char **lrealm;
+    char FAR * FAR *lrealm;
 {
-    char *realm;
+    char *realm = 0;
     char *cp;
     krb5_error_code retval;
 
@@ -57,29 +77,103 @@ krb5_get_default_realm(context, lrealm)
 	    return KV5M_CONTEXT;
 
     if (!context->default_realm) {
-	    /*
-	     * XXX should try to figure out a reasonable default based
-	     * on the host's DNS domain.
-	     */
-	    context->default_realm = 0;
-	    if (context->profile == 0)
-		    return KRB5_CONFIG_CANTOPEN;
-	    retval = profile_get_string(context->profile, "libdefaults",
-					"default_realm", 0, 0,
-					&context->default_realm);
-	    if (context->default_realm == 0)
-		return(KRB5_CONFIG_NODEFREALM);
-    }
-    
-    realm = context->default_realm;
+        /*
+         * XXX should try to figure out a reasonable default based
+         * on the host's DNS domain.
+         */
+        context->default_realm = 0;
+        if (context->profile == 0)
+            return KRB5_CONFIG_CANTOPEN;
+        retval = profile_get_string(context->profile, "libdefaults",
+                                     "default_realm", 0, 0,
+                                     &realm);
 
+        if (!retval && realm) {
+            context->default_realm = malloc(strlen(realm) + 1);
+            if (!context->default_realm) {
+                profile_release_string(realm);
+                return ENOMEM;
+            }
+            strcpy(context->default_realm, realm);
+            profile_release_string(realm);
+        }
+
+#ifdef KRB5_DNS_LOOKUP
+        if (context->default_realm == 0) {
+            int use_dns =  _krb5_use_dns(context);
+            if ( use_dns ) {
+		/*
+		 * Since this didn't appear in our config file, try looking
+		 * it up via DNS.  Look for a TXT records of the form:
+		 *
+		 * _kerberos.<localhost>
+		 * _kerberos.<domainname>
+		 * _kerberos.<searchlist>
+		 *
+		 */
+		char localhost[MAX_DNS_NAMELEN+1];
+		char * p;
+		struct hostent * h;
+
+		localhost[0] = 0;
+		gethostname(localhost, sizeof(localhost));
+		localhost[sizeof(localhost) - 1] = 0;
+
+		if ( localhost[0] ) {
+		    /*
+		     * Try to make sure that we have a fully qualified
+		     * name if possible.  We want to be able to handle
+		     * the case where gethostname returns a partial
+		     * name (i.e., it has a dot, but it is not a
+		     * FQDN).
+		     */
+		    h = gethostbyname(localhost);
+		    if (h) {
+			strncpy(localhost, h->h_name, sizeof(localhost));
+			localhost[sizeof(localhost) - 1] = '\0';
+		    }
+
+		    p = localhost;
+		    do {
+			retval = krb5_try_realm_txt_rr("_kerberos", p, 
+						       &context->default_realm);
+			p = strchr(p,'.');
+			if (p)
+			    p++;
+		    } while (retval && p && p[0]);
+		    
+		    if (retval)
+			retval = krb5_try_realm_txt_rr("_kerberos", "", 
+						       &context->default_realm);
+		} else {
+		    retval = krb5_try_realm_txt_rr("_kerberos", "", 
+						   &context->default_realm);
+		}
+		if (retval) {
+		    return(KRB5_CONFIG_NODEFREALM);
+		}
+            }
+        }
+#endif /* KRB5_DNS_LOOKUP */
+    }
+
+    if (context->default_realm == 0)
+	return(KRB5_CONFIG_NODEFREALM);
+    if (context->default_realm[0] == 0) {
+        free (context->default_realm);
+        context->default_realm = 0;
+        return KRB5_CONFIG_NODEFREALM;
+    }
+
+    realm = context->default_realm;
+    
     if (!(*lrealm = cp = malloc((unsigned int) strlen(realm) + 1)))
-	    return ENOMEM;
+        return ENOMEM;
     strcpy(cp, realm);
     return(0);
 }
 
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_set_default_realm(context, lrealm)
     krb5_context context;
     const char *lrealm;

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  */
@@ -29,24 +32,24 @@
 #define flags2options(flags) (flags & KDC_TKT_COMMON_MASK)
 
 /* Get a TGT for use at the remote host */
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
 		   forwardable, outbuf)
     krb5_context context;
     krb5_auth_context auth_context;
-    char *rhost;
+    char FAR *rhost;
     krb5_principal client;
     krb5_principal server;
     krb5_ccache cc;
     int forwardable;      /* Should forwarded TGT also be forwardable? */
-    krb5_data *outbuf;
+    krb5_data FAR *outbuf;
 {
     krb5_replay_data replaydata;
-    krb5_data * scratch = 0;
-    krb5_address **addrs = 0;
+    krb5_data FAR * scratch = 0;
+    krb5_address FAR * FAR *addrs = 0;
     krb5_error_code retval;
     krb5_creds creds, tgt;
-    krb5_creds *pcreds;
+    krb5_creds FAR *pcreds;
     krb5_flags kdcoptions;
     int close_cc = 0;
     int free_rhost = 0;
@@ -93,7 +96,8 @@ krb5_fwd_tgt_creds(context, auth_context, rhost, client, server, cc,
     }
 
     /* fetch tgt directly from cache */
-    retval = krb5_cc_retrieve_cred (context, cc, 0, &creds, &tgt);
+    retval = krb5_cc_retrieve_cred (context, cc, KRB5_TC_SUPPORTED_KTYPES,
+				    &creds, &tgt);
     if (retval)
 	goto errout;
 
@@ -142,6 +146,3 @@ errout:
     krb5_free_cred_contents(context, &tgt);
     return retval;
 }
-
-
-

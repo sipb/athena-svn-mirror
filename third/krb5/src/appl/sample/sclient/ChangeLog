@@ -1,3 +1,29 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+		Add a MY_SUBDIRS macro set to '.' to indicate that there
+		are no subdirectories to be processed by the Makefile.
+
+Wed Feb 18 15:32:24 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Dec 16 09:43:15 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* sclient.c (main): Free client principal and krb5_ap_rep_enc_part
+	    returned from krb5_sendauth when done using.
+
+Tue Feb  4 20:44:24 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Thu Nov  7 15:25:03 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* sclient.c (argv): Check the error return from

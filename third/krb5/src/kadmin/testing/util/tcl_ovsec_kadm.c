@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+#if HAVE_TCL_H
 #include <tcl.h>
+#elif HAVE_TCL_TCL_H
+#include <tcl/tcl.h>
+#endif
 #define USE_KADM5_API_VERSION 1
 #include <kadm5/admin.h>
 #include <com_err.h>
@@ -1852,7 +1856,7 @@ int tcl_ovsec_kadm_free_principal_ent(ClientData clientData,
 	       return TCL_ERROR;
 	  }
 
-	  ent = Tcl_GetHashValue(entry);
+	  ent = (ovsec_kadm_principal_ent_t) Tcl_GetHashValue(entry);
 
 	  if (ret = ovsec_kadm_free_principal_ent(server_handle, ent)) {
 	      stash_error(interp, ret);
@@ -1908,7 +1912,7 @@ int tcl_ovsec_kadm_free_policy_ent(ClientData clientData,
 	       return TCL_ERROR;
 	  }
 
-	  ent = Tcl_GetHashValue(entry);
+	  ent = (ovsec_kadm_policy_ent_t) Tcl_GetHashValue(entry);
 
 	  if (ret = ovsec_kadm_free_policy_ent(server_handle, ent)) {
 	      stash_error(interp, ret);

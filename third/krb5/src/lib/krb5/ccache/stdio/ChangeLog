@@ -1,3 +1,48 @@
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* scc_retrv.c (krb5_scc_retrieve): Replace with a version that
+	calls krb5_cc_retrieve_cred_default.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Fri Feb 27 18:03:33 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/krb5
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel lib/krb5 configure.in
+
+Wed Feb 18 16:20:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Oct 29 15:57:31 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* scc_maybe.c: Added kludge for the Macintosh, since fopen()
+		doesn't set errno, although open() does.
+
+Thu Sep 25 21:04:47 1997  Tom Yu  <tlyu@mit.edu>
+
+	* scc_maybe.c (krb5_scc_open_file): Replace HAS_SETVBUF with
+	something more sane.
+
+Mon Sep 15 15:15:33 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* scc-proto.h, scc_reslv.c (krb5_scc_resolve): Incoming name
+	        is const char *.
+
+Thu Jan  2 17:03:44 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
+
 Thu Aug 15 16:44:32 1996  Tom Yu  <tlyu@mit.edu>
 
 	* scc_retrv.c: Fix def'n of flags_match to be properly

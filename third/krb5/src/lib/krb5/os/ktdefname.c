@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -30,29 +33,37 @@
 
 extern char *krb5_defkeyname;
 
-krb5_error_code
+/* this is a an exceedinly gross thing. */
+char *krb5_overridekeyname = NULL;
+
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_kt_default_name(context, name, namesize)
     krb5_context context;
-    char *name;
+    char FAR *name;
     int namesize;
 {
     char *cp = 0;
     krb5_error_code code;
     char *retval;
 
-    if ((context->profile_secure == FALSE) &&
-	(cp = getenv("KRB5_KTNAME"))) {
-	strncpy(name, cp, namesize);
-	if (strlen(cp) >= (size_t) namesize)
+    if (krb5_overridekeyname) {
+	if ((size_t) namesize < (strlen(krb5_overridekeyname)+1))
 	    return KRB5_CONFIG_NOTENUFSPACE;
+	strcpy(name, krb5_overridekeyname);
+    } else if ((context->profile_secure == FALSE) &&
+	(cp = getenv("KRB5_KTNAME"))) {
+	if ((size_t) namesize < (strlen(cp)+1))
+	    return KRB5_CONFIG_NOTENUFSPACE;
+	strcpy(name, cp);
     } else if (((code = profile_get_string(context->profile,
 					   "libdefaults",
 					   "default_keytab_name", NULL, 
 					   NULL, &retval)) == 0) &&
 	       retval) {
-	strncpy(name, retval, namesize);
-	if ((size_t) namesize < strlen(retval))
+	if ((size_t) namesize < (strlen(retval)+1))
 	    return KRB5_CONFIG_NOTENUFSPACE;
+	strcpy(name, retval);
+	profile_release_string(retval);
     } else {
 #if defined (_MSDOS) || defined(_WIN32)
 	{
@@ -66,9 +77,9 @@ krb5_kt_default_name(context, name, namesize)
 	    sprintf(name, krb5_defkeyname, defname);
 	}
 #else
-	strncpy(name, krb5_defkeyname, namesize);
-	if ((size_t) namesize < strlen(krb5_defkeyname))
+	if ((size_t) namesize < (strlen(krb5_defkeyname)+1))
 	    return KRB5_CONFIG_NOTENUFSPACE;
+	strcpy(name, krb5_defkeyname);
 #endif
     }
     return 0;

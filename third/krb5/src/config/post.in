@@ -1,9 +1,5 @@
 # config/post.in
-# put all:: first just in case no other rules occur here
-#
-all::
 
-check::
 check-windows::
 
 .depend: $(SRCS) $(SRCTOP)/util/depfix.sed
@@ -26,7 +22,6 @@ depend:: .depend
 	else :; fi
 
 clean:: clean-$(WHAT)
-	$(RM) config.log pre.out post.out Makefile.out
 
 clean-unix::
 	if test -n "$(OBJS)" ; then $(RM) $(OBJS); else :; fi
@@ -36,8 +31,15 @@ clean-windows::
 	$(RM) *.$(OBJEXT)
 	$(RM) msvc.pdb *.err
 
-Makefiles:: Makefile
-Makefiles:: $(MAKEFILES_RECURSE)
+distclean:: distclean-$(WHAT)
+
+distclean-prerecurse::
+	$(MAKE) NORECURSE=true clean
+
+distclean-postrecurse::
+	$(RM) config.log config.cache config.status Makefile
+
+Makefiles-prerecurse:: Makefile
 
 Makefile: $(srcdir)/Makefile.in $(thisconfigdir)/config.status \
 		$(SRCTOP)/config/pre.in $(SRCTOP)/config/post.in
@@ -47,21 +49,33 @@ $(thisconfigdir)/config.status: $(srcdir)/$(thisconfigdir)/configure
 $(srcdir)/$(thisconfigdir)/configure: $(srcdir)/$(thisconfigdir)/configure.in \
 		$(SRCTOP)/aclocal.m4
 	cd $(srcdir)/$(thisconfigdir) && \
-		$(SHELL) $(SRCTOP)/util/autoconf/autoconf \
-			--localdir=$(BUILDTOP) \
-			--macrodir=$(BUILDTOP)/util/autoconf
+		$(AUTOCONF) --localdir=$(CONFIG_RELTOPDIR) \
+			--macrodir=$(CONFIG_RELTOPDIR)/util/autoconf
 
-all-recurse clean-recurse install-recurse check-recurse Makefiles-recurse:
-	@case "`echo '$(MFLAGS)'|sed -e 's/ --.*$$//'`" in \
-		*[ik]*) e=:;; *) e="exit 1";; esac; \
-	for i in $(SUBDIRS) ; do \
+all-recurse clean-recurse distclean-recurse install-recurse check-recurse Makefiles-recurse:
+	@case "`echo 'x$(MFLAGS)'|sed -e 's/^x//' -e 's/ --.*$$//'`" \
+		in *[ik]*) e="status=1" ;; *) e="exit 1";; esac; \
+	if test -z "$(MY_SUBDIRS)" ; then \
+		do_subdirs="$(SUBDIRS)" ; \
+	else \
+		do_subdirs="$(MY_SUBDIRS)" ; \
+	fi; \
+	status=0; \
+	if test -n "$$do_subdirs" && test -z "$(NORECURSE)"; then \
+	for i in $$do_subdirs ; do \
 		if test -d $$i ; then \
+		case $$i in .);; *) \
 			target=`echo $@|sed s/-recurse//`; \
 			echo "making $$target in $(CURRENT_DIR)$$i..."; \
 			if (cd $$i ; $(MAKE) CC="$(CC)" CCOPTS="$(CCOPTS)" \
 			    CURRENT_DIR=$(CURRENT_DIR)$$i/ $$target) then :; \
-			else $$e; fi; \
+			else eval $$e; fi; \
+			;; \
+		esac; \
 		else \
 			echo "Skipping missing directory $(CURRENT_DIR)$$i" ; \
 		fi; \
-	done
+	done; \
+	else :; \
+	fi;\
+	exit $$status

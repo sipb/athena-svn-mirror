@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: gssapi_generic.c,v 1.1.1.2 1999-05-03 21:54:09 danw Exp $
+ * $Id: gssapi_generic.c,v 1.1.1.3 1999-10-05 16:12:08 ghudson Exp $
  */
 
 #include "gssapiP_generic.h"
@@ -61,9 +61,9 @@ static gss_OID_desc oids[] = {
    { 6, "\053\006\001\005\006\002"},
 };
 
-gss_OID gss_nt_user_name = oids+0;
-gss_OID gss_nt_machine_uid_name = oids+1;
-gss_OID gss_nt_string_uid_name = oids+2;
-gss_OID gss_nt_service_name = oids+3;
-gss_OID gss_nt_exported_name = oids+4;
-gss_OID gss_nt_service_name_v2 = oids+5;
+GSS_DLLIMP gss_OID gss_nt_user_name = oids+0;
+GSS_DLLIMP gss_OID gss_nt_machine_uid_name = oids+1;
+GSS_DLLIMP gss_OID gss_nt_string_uid_name = oids+2;
+GSS_DLLIMP gss_OID gss_nt_service_name = oids+3;
+GSS_DLLIMP gss_OID gss_nt_exported_name = oids+4;
+GSS_DLLIMP gss_OID gss_nt_service_name_v2 = oids+5;

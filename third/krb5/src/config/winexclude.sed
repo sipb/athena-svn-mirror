@@ -6,10 +6,15 @@
 /\.orig$/d
 /\.rej/d
 /\.ico$/d
+/\.doc$/d
+/\.hlp$/d
+/\.hpj$/d
 /\.o$/d
 /\.a$/d
 /\.zip$/d
 /\.tar$/d
+/\.lib$/d
+/\.dll$/d
 /~$/d
 /winfile.list$/d
 /macfile.list$/d

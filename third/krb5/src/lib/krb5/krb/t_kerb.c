@@ -93,12 +93,46 @@ fail:
 		krb5_free_principal(ctx, princ2);
 }
 
+void test_set_realm(ctx, name, realm)
+	krb5_context ctx;
+	const char *name;
+	const char *realm;
+{
+	krb5_error_code	retval;
+	krb5_principal	princ = 0;
+	char		*outname = 0;
+
+	retval = krb5_parse_name(ctx, name, &princ);
+	if (retval) {
+		com_err("krb5_parse_name", retval, 0);
+		goto fail;
+	}
+	retval = krb5_set_principal_realm(ctx, princ, realm);
+	if (retval) {
+		com_err("krb5_set_principal_realm", retval, 0);
+		goto fail;
+	}
+	retval = krb5_unparse_name(ctx, princ, &outname);
+	if (retval) {
+		com_err("krb5_unparse_name", retval, 0);
+		goto fail;
+	}
+	printf("old principal: %s, modified principal: %s\n", name,
+	       outname);
+fail:
+	if (outname)
+		free(outname);
+	if (princ)
+		krb5_free_principal(ctx, princ);
+}
+
 void usage(progname)
 	char	*progname;
 {
 	fprintf(stderr, "%s: Usage: %s 425_conv_principal <name> <inst> <realm\n",
 		progname, progname);
 	fprintf(stderr, "\t%s parse_name <name>\n", progname);
+	fprintf(stderr, "\t%s set_realm <name> <realm>\n", progname);
 	fprintf(stderr, "\t%s string_to_timestamp <time>\n", progname);
 	exit(1);
 }
@@ -119,7 +153,6 @@ main(argc, argv)
 		retval);
 	exit(1);
     }
-    krb5_init_ets(ctx);
     progname = argv[0];
 
      /* Parse arguments. */
@@ -141,6 +174,14 @@ main(argc, argv)
 		  if (!argc) usage(progname);
 		  name = *argv;
 		  test_parse_name(ctx, name);
+	  } else if (strcmp(*argv, "set_realm") == 0) {
+		  argc--; argv++;
+		  if (!argc) usage(progname);
+		  name = *argv;
+		  argc--; argv++;
+		  if (!argc) usage(progname);
+		  realm = *argv;
+		  test_set_realm(ctx, name, realm);
 	  } else if (strcmp(*argv, "string_to_timestamp") == 0) {
 		  argc--; argv++;
 		  if (!argc) usage(progname);

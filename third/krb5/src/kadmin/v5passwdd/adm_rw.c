@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -68,7 +71,7 @@ kadm_copyout_int32(outint, cp)
 /*
  * krb5_free_adm_data()	- Free data blocks allocated by read_adm... routines.
  */
-void INTERFACE
+void KRB5_CALLCONV
 krb5_free_adm_data(kcontext, ncomp, datap)
     krb5_context	kcontext;
     krb5_int32		ncomp;
@@ -96,7 +99,7 @@ krb5_free_adm_data(kcontext, ncomp, datap)
  *		.
  *		.
  */
-krb5_error_code INTERFACE
+krb5_error_code KRB5_CALLCONV
 krb5_send_adm_cmd(kcontext, sock, ctx, nargs, arglist)
     krb5_context	kcontext;	/* Context handle	(In ) */
     krb5_pointer	sock;		/* Socket to write to	(In ) */
@@ -412,7 +415,7 @@ krb5_read_adm_cmd(kcontext, sock, ctx, nargs, arglist)
  * It is the caller's responsibility to free the memory allocated for
  * the read in component list.
  */
-krb5_error_code INTERFACE
+krb5_error_code KRB5_CALLCONV
 krb5_read_adm_reply(kcontext, sock, ctx, cmd_stat, ncomps, complist)
     krb5_context	kcontext;	/* Context handle	(In ) */
     krb5_pointer	sock;		/* Socket to read from	(In ) */

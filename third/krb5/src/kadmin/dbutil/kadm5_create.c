@@ -1,12 +1,38 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: kadm5_create.c,v 1.1.1.3 1999-02-09 21:04:18 danw Exp $
+ * $Id: kadm5_create.c,v 1.1.1.4 1999-10-05 16:11:26 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/kadm5_create.c,v $
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/kadm5_create.c,v 1.1.1.3 1999-02-09 21:04:18 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/kadm5_create.c,v 1.1.1.4 1999-10-05 16:11:26 ghudson Exp $";
 #endif
 
 #include "string_table.h"
@@ -31,7 +57,6 @@ int add_admin_princ(void *handle, krb5_context context,
 
 extern char *progname;
 
-extern krb5_encrypt_block master_encblock;
 extern krb5_keyblock master_keyblock;
 extern krb5_db_entry master_db;
 
@@ -53,6 +78,7 @@ int kadm5_create(kadm5_config_params *params)
      krb5_context context;
      FILE *f;
 
+     kadm5_config_params lparams;
 
      if (retval = krb5_init_context(&context))
 	  exit(ERR);
@@ -62,18 +88,19 @@ int kadm5_create(kadm5_config_params *params)
       * params->admin_lockfile may not be set yet...
       */
      if (retval = kadm5_get_config_params(context, NULL, NULL,
-					  params, params)) {
+					  params, &lparams)) {
 	  com_err(progname, retval, str_INITING_KCONTEXT);
 	  return 1;
      }
 
-     if (retval = osa_adb_create_policy_db(params)) {
+     if (retval = osa_adb_create_policy_db(&lparams)) {
 	  com_err(progname, retval, str_CREATING_POLICY_DB);
 	  return 1;
      }
 
-     retval = kadm5_create_magic_princs(params, context);
+     retval = kadm5_create_magic_princs(&lparams, context);
 
+     kadm5_free_config_params(context, &lparams);
      krb5_free_context(context);
 
      return retval;

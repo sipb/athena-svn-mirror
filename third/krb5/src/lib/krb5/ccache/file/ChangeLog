@@ -1,3 +1,77 @@
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* fcc_retrv.c (krb5_fcc_retrieve): Replace with a version that
+	calls krb5_cc_retrieve_cred_default.
+
+1999-06-10  Danilo Almeida  <dalmeida@mit.edu>
+
+	* fcc_ops.c (krb5_cache_change): Use PostMessage instead of 
+		SendMessage so that we don't block.
+
+Mon May 10 15:24:49 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-31  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* fcc_maybe.c (fcc_lock_file): Removed all of the
+		filesystem-dependent mess for file locking, which has been
+		now properly moved to krb5_lock_file(), where it belongs.
+
+Fri Feb 27 18:03:33 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/krb5
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel lib/krb5 configure.in
+
+Wed Feb 18 16:19:40 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Sep 25 21:23:11 1997  Tom Yu  <tlyu@mit.edu>
+
+	* fcc_maybe.c: Replace KRB5_USE_INET with something more sane.
+
+	* fcc_gennew.c: Replace KRB5_USE_INET with something more sane.
+
+Mon Sep 15 15:15:33 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* fcc-proto.h, fcc_reslv.c (krb5_fcc_resolve): Incoming name
+	        is const char *
+
+Sat Feb 22 22:25:09 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+
+	* configure.in: Test for chmod and fchmod (not on Windows)
+
+	* fcc-proto.h, fcc_close.c, fcc_destry.c, fcc_eseq.c, fcc_gennew.c,
+	fcc_getnam.c, fcc_gprin.c, fcc_init.c, fcc_nseq.c, fcc_ops.c,
+	fcc_reslv.c, fcc_retrv.c, fcc_sflags.c, fcc_sseq.c, fcc_store.c:
+		Changed the calling conventions of the internal ccache
+		functions to comply with the new function calling
+		conventions of the ccache dispatch functions (win16/win32)
+
+Thu Jan  2 16:59:19 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new lib build procedure.
+
 Thu Aug 15 16:46:00 1996  Tom Yu  <tlyu@mit.edu>
 
 	* fcc_retrv.c (flags_match): Add parens to def'n of flags_match to

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,23 +29,26 @@
 
 #include "k5-int.h"
 
-extern krb5_cc_ops *krb5_cc_dfl_ops;
 struct krb5_cc_typelist
  {
   krb5_cc_ops *ops;
   struct krb5_cc_typelist *next;
  };
-static struct krb5_cc_typelist *cc_typehead = 0;
+extern krb5_cc_ops krb5_mcc_ops;
+
+static struct krb5_cc_typelist cc_entry = { &krb5_mcc_ops, NULL };
+
+static struct krb5_cc_typelist *cc_typehead = &cc_entry;
 
 /*
  * Register a new credentials cache type
  * If override is set, replace any existing ccache with that type tag
  */
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_cc_register(context, ops, override)
    krb5_context context;
-   krb5_cc_ops *ops;
+   krb5_cc_ops FAR *ops;
    krb5_boolean override;
 {
     struct krb5_cc_typelist *t;
@@ -73,14 +79,15 @@ krb5_cc_register(context, ops, override)
  * particular cache type.
  */
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_cc_resolve (context, name, cache)
    krb5_context context;
-   char *name;
+   const char *name;
    krb5_ccache *cache;
 {
     struct krb5_cc_typelist *tlist;
-    char *pfx, *resid, *cp;
+    char *pfx, *cp;
+    const char *resid;
     int pfxlen;
     
     cp = strchr (name, ':');

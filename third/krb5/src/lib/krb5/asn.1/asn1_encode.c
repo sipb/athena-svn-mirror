@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  */
@@ -183,8 +186,8 @@ asn1_error_code asn1_encode_ia5string(buf, len, val, retlen)
   return 0;
 }
 
-#ifdef _MACINTOSH
-#define EPOCH ((66 * 365 * 24 * 60 * 60) + (17 *  24 * 60 * 60) + (getTimeZoneOffset() * 60 * 60))
+#ifdef macintosh
+#define EPOCH ((70 * 365 * 24 * 60 * 60) + (17 *  24 * 60 * 60) + (getTimeZoneOffset() * 60 * 60))
 #else
 #define EPOCH (0)
 #endif
@@ -210,7 +213,7 @@ asn1_error_code asn1_encode_generaltime(buf, val, retlen)
    * and some bogus implementations might overrun on the sprintf.
    */
   if (gtime == NULL ||
-      gtime->tm_year > 9999 || gtime->tm_mon > 11 ||
+      gtime->tm_year > 8099 || gtime->tm_mon > 11 ||
       gtime->tm_mday > 31 || gtime->tm_hour > 23 ||
       gtime->tm_min > 59 || gtime->tm_sec > 59)
     return ASN1_BAD_GMTIME;

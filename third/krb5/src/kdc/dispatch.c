@@ -15,7 +15,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -42,12 +45,14 @@ dispatch(pkt, from, portnum, response)
 
     /* decode incoming packet, and dispatch */
 
+#ifndef NOCACHE
     /* try the replay lookaside buffer */
     if (kdc_check_lookaside(pkt, from, response)) {
 	/* a hit! */
 	krb5_klog_syslog(LOG_INFO, "DISPATCH: replay found and re-transmitted");
 	return 0;
     }
+#endif
     /* try TGS_REQ first; they are more common! */
 
     if (krb5_is_tgs_req(pkt)) {
@@ -70,9 +75,11 @@ dispatch(pkt, from, portnum, response)
 #endif
     else
 	retval = KRB5KRB_AP_ERR_MSG_TYPE;
+#ifndef NOCACHE
     /* put the response into the lookaside buffer */
     if (!retval)
 	kdc_insert_lookaside(pkt, from, *response);
+#endif
 
     return retval;
 }

@@ -1,3 +1,39 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+	* configure.in: Use K5_AC_OUTPUT instead of K5_OUTPUT_FILES.
+
+Fri Feb 13 21:28:18 1998  Tom Yu  <tlyu@mit.edu>
+
+	* client.c: Update header locations.  Rename of xdr_free.
+
+	* rpc_test.h: Update header locations.
+
+	* server.c: Update header locations.
+
+Thu Feb 12 16:39:38 1998  Tom Yu  <tlyu@mit.edu>
+
+	* client.c (main): Tweak the kludge variable
+	krb5_gss_dbg_clietn_expcreds so we can send expired creds to the
+	server.
+
+Mon Feb  2 16:59:48 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Oct  9 20:58:35 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in, Makefile.in: Add test to disable udp test under
+ 	Solaris 2.0 thru 2.5; a getsockname() bug prevents channel
+	bindings from working.
+
+Thu Feb  6 15:58:52 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Wed Nov 20 16:00:21 1996  Barry Jaspan  <bjaspan@mit.edu>
 
 	* Makefile.in (unit-test-): warn more loudly about unrun tests

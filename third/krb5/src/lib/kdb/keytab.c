@@ -16,18 +16,21 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
  */
 
 #include "k5-int.h"
-#include "kdb_dbc.h"
+#include "kdb_kt.h"
 
 krb5_error_code krb5_ktkdb_close KRB5_PROTOTYPE((krb5_context, krb5_keytab));
 
-krb5_error_code krb5_ktkdb_get_entry KRB5_PROTOTYPE((krb5_context, krb5_keytab, krb5_principal,
+krb5_error_code krb5_ktkdb_get_entry KRB5_PROTOTYPE((krb5_context, krb5_keytab, krb5_const_principal,
 		   krb5_kvno, krb5_enctype, krb5_keytab_entry *));
 
 krb5_kt_ops krb5_kt_kdb_ops = {
@@ -50,23 +53,12 @@ typedef struct krb5_ktkdb_data {
 } krb5_ktkdb_data;
 
 krb5_error_code
-krb5_ktkdb_resolve(context, kdb, id)
+krb5_ktkdb_resolve(context, id)
     krb5_context  	  context;
-    krb5_db_context 	* kdb;
     krb5_keytab		* id;
 {
-    krb5_db_context 	* data;
-
     if ((*id = (krb5_keytab) malloc(sizeof(**id))) == NULL)
         return(ENOMEM);
-
-    if ((data = (krb5_db_context *)malloc(sizeof(krb5_db_context))) == NULL) {
-        krb5_xfree(*id);
-        return(ENOMEM);
-    }
-
-    memcpy(data, kdb, sizeof(krb5_db_context)); 
-    (*id)->data = (krb5_pointer)data;
     (*id)->ops = &krb5_kt_kdb_ops;
     (*id)->magic = KV5M_KEYTAB;
     return(0);
@@ -85,8 +77,7 @@ krb5_ktkdb_close(context, kt)
    * This routine should undo anything done by krb5_ktkdb_resolve().
    */
 
-  krb5_xfree(kt->data);
-  kt->ops = 0;
+  kt->ops = NULL;
   krb5_xfree(kt);
 
   return 0;
@@ -96,12 +87,12 @@ krb5_error_code
 krb5_ktkdb_get_entry(context, id, principal, kvno, enctype, entry)
     krb5_context 	  context;
     krb5_keytab 	  id;
-    krb5_principal 	  principal;
+    krb5_const_principal  principal;
     krb5_kvno 	 	  kvno;
     krb5_enctype 	  enctype;
     krb5_keytab_entry 	* entry;
 {
-    krb5_encrypt_block  * master_key;
+    krb5_keyblock       * master_key;
     krb5_error_code 	  kerror = 0;
     krb5_key_data 	* key_data;
     krb5_db_entry 	  db_entry;
@@ -109,25 +100,24 @@ krb5_ktkdb_get_entry(context, id, principal, kvno, enctype, entry)
     int 	 	  n = 0;
 
     /* Open database */
-    /* krb5_dbm_db_init(context); */
-    if ((kerror = krb5_dbm_db_open_database(context)))
+    /* krb5_db_init(context); */
+    if ((kerror = krb5_db_open_database(context)))
         return(kerror);
 
     /* get_principal */
-    kerror = krb5_dbm_db_get_principal(context, principal, &
+    kerror = krb5_db_get_principal(context, principal, &
 				       db_entry, &n, &more);
     if (kerror) {
-        krb5_dbm_db_close_database(context);
+        krb5_db_close_database(context);
         return(kerror);
     }
     if (n != 1) {
-	krb5_dbm_db_close_database(context);
+	krb5_db_close_database(context);
 	return KRB5_KT_NOTFOUND;
     }
 
     /* match key */
-    /* WTF??? 2nd arg to dbm_db_get_mkey appears to be unused! -tlyu */
-    kerror = krb5_dbm_db_get_mkey(context, id->ops, &master_key);
+    kerror = krb5_db_get_mkey(context, &master_key);
     if (kerror)
 	goto error;
 
@@ -148,6 +138,6 @@ krb5_ktkdb_get_entry(context, id, principal, kvno, enctype, entry)
     /* Close database */
   error:
     krb5_dbe_free_contents(context, &db_entry);
-    krb5_dbm_db_close_database(context);
+    krb5_db_close_database(context);
     return(kerror);
 }

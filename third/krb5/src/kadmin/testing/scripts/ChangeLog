@@ -1,3 +1,57 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Sun Mar  1 21:13:06 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (env-setup.stmp): If env-setup.stamp needs to be
+ 		rebuilt, set CONFIG_FILES so that we only regenerate that
+ 		one file.
+
+	* env-setup.shin: Rename SRCTOPDIR to S_TOP, which has been
+		fixed to deal with absolute source paths.
+
+Sat Feb 28 18:54:42 1998  Tom Yu  <tlyu@mit.edu>
+
+	* env-setup.shin (STOP): SRCTOP -> SRCTOPDIR.
+
+	* Makefile.in (env-setup.stamp): Fix up to use $(thisconfigdir).
+
+Fri Feb 27 23:32:38 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the kadmin
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel kadmin configure.in
+
+Wed Feb 18 15:59:31 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Thu Feb 12 16:16:22 1998  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Add commented out AC_OUTPUT to allow autoreconf to
+	rebuild the configure script.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Sun Feb  9 01:07:37 1997  Tom Yu  <tlyu@mit.edu>
+
+	* env-setup.shin: Fix to deal with multiple variables in
+	KRB5_RUN_ENV.
+
+Sat Feb  8 22:12:32 1997  Tom Yu  <tlyu@mit.edu>
+
+	* env-setup.shin: Hack to deal with new usage of KRB5_RUN_ENV.
+
+Tue Dec  3 15:28:53 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* init_db: be verbose when $SRVTCL doesn't exist, instead of just
+ 	failing [krb5-admin/245]
+
 Thu Dec  5 19:34:09 1996  Tom Yu  <tlyu@mit.edu>
 
 	* save_files.sh (files): Also save /etc/krb5.keytab. [PR 278]

@@ -1,4 +1,67 @@
+Sat Jul 10 10:21:40 1999  Tom Yu  <chaoself@mit.edu>
+
+	* asn1_decode.c (asn1_decode_integer): Fix to deal with overflows
+ 	and negative integers.
+	(asn1_decode_unsigned_integer): Fix to deal with overflows and to
+ 	return errors on encountering negative integers.
+
+1999-07-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* KRB5-asn.py (PA-SAM-RESPONSE): Fix syntax error -- comma
+	separating sequence components doesn't belong buried in a
+	comment.
+
+1999-07-03  Tom Yu  <tlyu@mit.edu>
+
+	* asn1buf.c (asn1buf_sync): Add length parameter to disambiguate
+	constructed-indefinite encoding from constructed-definite encoding
+	which happens to end at the same place as the enclosing buf.
+
+	* asn1buf.h: Update to match definition.
+
+	* krb5_decode.c (end_structure): Update to deal with additional
+	length parameter to asn1buf_sync().
+
+	* asn1_k_decode.c (end_sequence_of, end_structure): Update to deal
+	with additional length parameter to asn1buf_sync().
+
+	* asn1buf.h: New prototpyes for asn1buf_sync() and
+	asn1buf_skiptail().
+
+	* asn1buf.c (asn1buf_sync): Fix to deal with
+	constructed-indefinite encodings with trailing fields.  As a
+	result, this requires that the most recently read tag number be
+	passed in.
+	(asn1buf_skiptail): New helper function to skip trailing fields in
+	a constructed-indefinite encoding.
+
+	* krb5_decode.c (end_structure): Hack to deal with changed
+	asn1buf_sync().
+
+	* asn1_k_decode.c (end_structure, end_sequence_of): Hack to deal
+	with changed asn1buf_sync().
+
+1999-06-30  Tom Yu  <tlyu@mit.edu>
+
+	* asn1buf.c (asn1buf_sync): Interim fix for DCE compat problem
+	with indefinite length encodings.
+
+1999-06-15  Tom Yu  <tlyu@mit.edu>
+
+	* asn1_encode.c (asn1_encode_generaltime): Fix minor bug in
+	bounds-checking for tm_year: 1900 + 8099 = 9999.
+
+Mon May 10 15:23:51 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
 Thu Dec  3 19:41:06 1998  Tom Yu  <tlyu@mit.edu>
+
 
 	* asn1_k_decode.c (asn1_decode_krb5_flags): Fix previous to
 	properly left-justify bit strings less than 32 bits.
@@ -15,15 +78,96 @@ Thu Dec  3 19:41:06 1998  Tom Yu  <tlyu@mit.edu>
 	are not ignored and skipped.  This caused the decoder to get out
 	of sync.
 
+Thu Jul  2 15:30:25 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* asn1_encode.c: Make the magic Macintosh EPOCH offset be 70 years
+ 		instead of 66 years, since CodeWarrior Pro 2 now bases
+ 		everything off of 1900.
+
 Thu Apr 16 17:01:27 1998  Tom Yu  <tlyu@mit.edu>
 
 	* asn1_encode.c (asn1_encode_generaltime): Sanity check the return
 	from gmtime() to avoid overruns.
 
-Wed Jan 14 20:57:33 1998  Tom Yu  <tlyu@mit.edu>
+Fri Feb 27 18:03:33 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/krb5
+ 		directory, since we've moved the configure.in tests in
+ 		this directory to the toplevel lib/krb5 configure.in
+
+Wed Feb 18 16:18:46 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Fri Feb 13 22:32:06 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* asn1buf.h (asn1buf_insert_octet): Use static inline function to
+		define asn1_insert_octet, since the GCC specific hack
+		we're using doesn't work on GCC compilers that also have 
+		Objective C enabled.
+
+	* asn1buf.c: define ASN1BUF_OMIT_INLINE_FUNCS before including
+		asn1buf.h, since we don't want inline functions declared
+		when we're defining the linkable version of the functions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Fri Jan  2 21:18:30 1998  Tom Yu  <tlyu@mit.edu>
 
 	* asn1buf.c (asn12krb5_buf): Check return value of
-	calloc. [krb5-libs/518]
+	malloc. [krb5-libs/518]
+
+Tue Sep 30 19:03:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* krbasn1.h: Replace HAS_STDLIB_H with something more sane.
+
+Thu Jul 31 15:38:10 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+        * asn1buf.h (asn1buf_remove_octet, asn1buf_size, asn1buf_free,
+        asn1buf_ensure_space, asn1buf_len): Add macro versions.
+        (asn1buf_insert_octet) [__GNUC__ >= 2]: Ditto, using a GNU C
+        extension.
+        * asn1buf.c (asn1buf_remove_octet, asn1buf_size, asn1buf_free,
+        asn1buf_ensure_space, asn1buf_len, asn1buf_insert_octet): Undef
+        macros before defining as functions.
+	[Kerbnet changes made by raeburn@cygnus.com]
+
+Thu Jul 31 12:34:43 1997  Ezra Peisach  <epeisach@mit.edu>
+
+        * asn1buf.h (asn1buf_expand): Remove "const" from int arg in
+        prototype.
+
+        * asn1buf.c (asn1buf_remove_charstring, asn1buf_create,
+        asn1buf_remove_octetstring, asn12krb5_buf): Call malloc instead of
+        calloc.
+        (asn1buf_unparse, asn1buf_hex_unparse): Ditto.  Also don't
+        allocate extra byte, since sizeof(STRING) does count the trailing
+        null.
+        (asn1buf_expand): Adjust bound based on increment 
+        value used, not value specified by caller.
+
+	[Kerbnet changes made by raeburn@cygnus.com]
+
+Thu Jul 31 11:17:06 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add / after $(srcdir) in SRCS line.
+
+Sat Feb 22 22:13:35 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+
+Thu Jan  2 16:56:10 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
 
 Thu Nov 14 20:57:55 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 

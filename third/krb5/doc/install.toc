@@ -58,16 +58,15 @@
 \secentry {Installing and Configuring UNIX Client Machines}{4}{2}{26}
 \subsecentry {Client Programs}{4}{2}{1}{26}
 \subsecentry {Client Machine Configuration Files}{4}{2}{2}{27}
-\secentry {UNIX Application Servers}{4}{3}{27}
-\subsecentry {Server Programs}{4}{3}{1}{28}
-\subsecentry {Server Configuration Files}{4}{3}{2}{28}
-\subsecentry {The Keytab File}{4}{3}{3}{29}
-\subsecentry {Some Advice about Secure Hosts}{4}{3}{4}{29}
-\chapentry {Upgrading Existing Kerberos V5 Installations}{5}{31}
-\secentry {Upgrading existing Master and Slave KDCs to the current release}{5}{1}{31}
-\secentry {Upgrading the application servers}{5}{2}{32}
-\chapentry {Bug Reports for Kerberos V5}{6}{33}
-\chapentry {Files}{Appendix{} \char65}{37}
-\secentry {krb5.conf}{\char65}{1}{37}
-\secentry {kdc.conf}{\char65}{2}{38}
-\subsecentry {Encryption Types and Salt Types}{\char65}{2}{1}{38}
+\subsubsecentry {Mac OS X Configuration} {4}{2}{2}{1} {27}
+\secentry {UNIX Application Servers}{4}{3}{29}
+\subsecentry {Server Programs}{4}{3}{1}{29}
+\subsecentry {Server Configuration Files}{4}{3}{2}{29}
+\subsecentry {The Keytab File}{4}{3}{3}{30}
+\subsecentry {Some Advice about Secure Hosts}{4}{3}{4}{31}
+\chapentry {Upgrading Existing Kerberos V5 Installations}{5}{33}
+\chapentry {Bug Reports for Kerberos V5}{6}{35}
+\chapentry {Files}{Appendix{} \char65}{39}
+\secentry {krb5.conf}{\char65}{1}{39}
+\secentry {kdc.conf}{\char65}{2}{40}
+\subsecentry {Encryption Types and Salt Types}{\char65}{2}{1}{40}

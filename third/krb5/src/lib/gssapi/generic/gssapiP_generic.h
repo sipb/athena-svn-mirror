@@ -24,10 +24,10 @@
 #define _GSSAPIP_GENERIC_H_
 
 /*
- * $Id: gssapiP_generic.h,v 1.1.1.2 1997-01-21 09:24:40 ghudson Exp $
+ * $Id: gssapiP_generic.h,v 1.1.1.3 1999-10-05 16:12:07 ghudson Exp $
  */
 
-#if (defined(_MSDOS) || defined(_WIN32) || defined(_MACINTOSH))
+#if (defined(_MSDOS) || defined(_WIN32) || defined(macintosh))
 #include <k5-int.h>
 #else
 #ifdef HAVE_STDLIB_H

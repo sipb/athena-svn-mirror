@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -32,6 +35,10 @@
 
 
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -41,6 +48,10 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <signal.h>
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include "com_err.h"
 
@@ -54,6 +65,7 @@ static void usage()
 	exit(1);
 }
 
+int
 main(argc, argv)
     int argc;
     char **argv;

@@ -1,18 +1,583 @@
+1999-09-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* changepw.c: Changes from Jeffrey Altman to look up kpasswd
+	server using DNS.  Placed entirely under #ifdef KRB5_DNS_LOOKUP so
+	currently-MIT-supported functionality (i.e., no DNS) can't be
+	impacted; without KRB5_DNS_LOOKUP defined, old code is used
+	unchanged.
+	(krb5_locate_kpasswd): New function, split out from
+	krb5_change_password.  Calls krb5_locate_srv_dns if use of DNS is
+	desired, and krb5_locate_srv_conf to check config file.
+	(krb5_change_password): Call it to find the server.
+	* locate_kdc.c (krb5_locate_srv_conf): No longer static.  Choose
+	default port numbers based on service name rather than a single
+	hard-coded value.
+	(krb5_locate_srv_dns): No longer static.
+
+1999-09-17  Tom Yu  <tlyu@mit.edu>
+
+	* def_realm.c: Patch from jaltman@columbia.edu to allow compiling
+	under non-Windows platforms with DNS lookup enabled.
+
+1999-08-26  Danilo Almeida  <dalmeida@mit.edu>
+
+	* kuserok.c (krb5_kuserok): Fix improper negation in
+	non-Unix localname check.  Also fix calling convention
+	before this function is exported by the Windows DLL.
+
+	* localaddr.c (krb5_os_localaddr): Fix memset to clear
+	right address list.  (Thanks to jaltman@columbia.edu).
+
+1999-08-21  Danilo Almeida  <dalmeida@mit.edu>
+
+	* localaddr.c (krb5_os_localaddr): Use multiple addresses, if
+	present, on Mac and Windows.
+
+1999-08-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* get_krbhst.c (krb5_get_krbhst): Fix double-indirection
+	confusion.  Do actually copy string contents to newly allocated
+	storage.
+
+1999-08-10	Alexandra Ellwood	<lxs@mit.edu>
+
+	* changepw.c (krb5_change_password):
+		Reorganized code so that krb5_change_password actually frees
+		everything it allocated on error.  Also fixed some memory 
+		leaks which happened even without an error occurring.
+
+1999-08-09  Danilo Almeida  <dalmeida@mit.edu>
+
+	* prompter.c (krb5_prompter_posix): Provide Win32 implementation
+	so that kinit and such work under Win32.
+
+1999-08-06  Danilo Almeida  <dalmeida@mit.edu>
+
+	* def_realm.c (krb5_get_default_realm): 
+	* hst_realm.c (krb5_get_host_realm): Make sure we have FQDN
+	in the case where we use gethostname.
+
+	* def_realm.c (krb5_get_default_realm): Check that we have
+	a realm before trying to copy it (since profile_get_string
+	may return no error but not get anything).
+
+	* init_os_ctx.c (krb5_get_profile): Fix calling convention.
+
+1999-08-05  Danilo Almeida  <dalmeida@mit.edu>
+
+	* t_std_conf.c (test_get_krbhst): Use krb5_free_krbhst to
+	free buffers allocated by krb5_get_krbhst.
+
+	* locate_kdc.c (_krb5_use_dns): Add _krb_use_dns to abstract
+	away looking up of whether we use DNS or not in the profile.
+
+	* ktdefname.c (krb5_kt_default_name): Use profile_release_string
+	instead of free to free string allocated by profile_get_string.
+
+	* get_krbhst.c (krb5_get_krbhst): Copy results from profile_get_values
+	into malloc'ed buffers so we can safely free them later.  Also call
+	profile_free_list on the original values.
+
+	* locate_kdc.c (krb5_locate_kdc): 
+	* hst_realm.c (krb5_get_host_realm): 
+	* def_realm.c (krb5_get_default_realm): Use _krb5_use_dns to figure
+	out whether to use DNS or not instead of directly reading the 
+	profile in this routine.
+
+	* realm_dom.c (krb5_get_realm_domain): 
+	* hst_realm.c (krb5_get_host_realm): 
+	* def_realm.c (krb5_get_default_realm): Copy results of 
+	profile_get_string into malloc'ed buffer so it can safely be free'd
+	later.
+
+	* locate_kdc.c (krb5_locate_srv_conf):
+	* def_realm.c (krb5_get_default_realm): 
+	* changepw.c (krb5_change_password): 
+	* an_to_ln.c (krb5_aname_to_localname): Use profile_free_list
+	to free values allocated by profile_get_values.
+
+1999-08-04  Danilo Almeida  <dalmeida@mit.edu>
+
+	* init_os_ctx.c (os_init_paths): Wrap use of ctx->profile_in_memory
+	with KRB5_DNS_LOOKUP.  Use pointer value to determine whether to free 
+	files by checking the files value rather than depending on the 
+	return value.
+
+1999-07-27  Miro Jurisic  <meeroh@mit.edu>
+
+	* init_os_ctx.c (GetMacProfileFileSpec): removed bogus string conversion
+
+1999-07-26  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (krb5_crypto_us_timeofday): Merged in changes from the
+	Mac_V2_0_derivatives branch -- microseconds support and guaranteed 
+	monotonically increasing microseconds on MacOS
+
+	* init_os_ctx.c (os_get_default_config_files): Merged in changes from the
+	Mac_V2_0_derivatives branch -- NRL config file name
+
+	* init_os_ctx.c (krb5_get_profile): added krb5_get_profile
+
+1999-07-22 Jeffrey Altman <jaltman@columbia.edu>
+
+        * init_os_ctx.c (os_init_paths)
+          If profile_init() is unable to open a profile and returns ENOENT,
+          remember in the context that the profile_in_memory and then 
+          call profile_init() with a NULL filespec.
+
+        * def_realm.c (krb5_get_default_realm)
+        * hst_realm.c (krb5_get_host_realm)
+        * locate_kdc.c (krb5_locate_kdc)
+          Use the profile entry [libdefaults] dns_fallback to determine
+          if DNS SRV and TXT records should be used to find realms and
+          servers if they are not found in the profile.
+   
+
+1999-07-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* init_os_ctx.c (os_get_default_config_files): Fix some typos and
+	missed name changes in the patch Miro just checked in but forgot
+	to mention here, in which Mac filespecs are used instead of
+	filenames.
+	(krb5_free_config_files): Ditto.
+
+1999-06-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* locate_kdc.c (krb5_locate_kdc): Kerberos admin service name is
+	"kerberos-adm", not "kadmin", so look up "_kerberos-adm._tcp" in
+	DNS.
+
+1999-06-21  Ken Raeburn  <raeburn@mit.edu>
+	and Jeffrey Altman and Ken Hornstein
+
+	* def_realm.c (MAXHOSTNAMELEN) [KRB5_DNS_LOOKUP]: Define if not
+	already defined.
+	(MAX_DNS_NAMELEN) [KRB5_DNS_LOOKUP]: New macro.
+	(krb5_get_default_realm): Return an error if an empty realm name
+	is found.
+	(krb5_get_default_realm) [KRB5_DNS_LOOKUP]: Use
+	krb5_try_realm_txt_rr to determine the realm of the local host or
+	domain.
+
+	* hst_realm.c [KRB5_DNS_LOOKUP]: Pull in some extra header files
+	for resolver functionality.
+	(MAX_DNS_NAMELEN): New macro.
+	(krb5_try_realm_txt_rr) [KRB5_DNS_LOOKUP]: New function; looks up
+	a TXT record.
+	(krb5_get_host_realm): Use MAX_DNS_NAMELEN for buffer size.
+	(krb5_get_host_realm) [KRB5_DNS_LOOKUP]: Use DNS lookup if config
+	file doesn't contain a match.
+
+	* locate_kdc.c [KRB5_DNS_LOOKUP]: Pull in some extra header files
+	for resolver functionality.
+	(MAXHOSTNAMELEN) [KRB5_DNS_LOOKUP]: Define if not already
+	defined.
+	(MAX_DNS_NAMELEN) [KRB5_DNS_LOOKUP]: New macro.
+	(krb5_locate_srv_conf): Renamed from krb5_locate_kdc; now static;
+	extra char* argument replaces fixed "kdc" in array of names to
+	look up in profile.
+	(krb5_locate_srv_dns) [KRB5_DNS_LOOKUP]: New function; looks up
+	SRV records, and returns addresses sorted by priority.
+	(krb5_locate_kdc): New function, calls above routines.
+
+1999-06-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* ccdefname.c (get_from_registry_indirect, try_dir, get_from_os): 
+		Extra robustness to win32 code.
+
+	* init_os_ctx.c (krb5_get_config_files, krb5_free_config_files):
+		Add function to get config files being used for current 
+		context with corresponding free function.
+
+1999-06-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* init_os_ctx.c (os_init_paths): Enhance win32 heuristics to use 
+		environment variable (like Unix) and to use the registry
+		too.  Will try executable's dir before windows dir if 
+		not secure.
+
+	* ccdefname.c (get_from_os): Enhance win32 heuristics to use 
+		registry properly, default to API: properly,
+		and to use temp dirs before the windows dir.
+
+1999-06-11  Miro Jurisic  <meeroh@mit.edu>
+
+	* init_os_ctx.c (os_init_paths): added NRL config file name correctly
+		(thanks dalmeida)
+
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (krb5_crypto_us_timeofday): fixed Mac PPC #ifdef
+
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (krb5_crypto_us_timeofday): #ifdefed microseconds on Mac to be
+		PPC-only
+
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (AbsoluteToSecsNanosecs): Fixed the UInt64 division
+	* c_ustime.c (krb5_crypto_us_timeofday): now returning the correct value
+
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (AbsoluteToSecsNanosecs): Fixed the UInt64 comparison
+
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* net_read.c, net_write.c: now setting errno on Mac too
+	
+1999-06-09  Miro Jurisic  <meeroh@mit.edu>
+
+	* c_ustime.c (krb5_crypto_us_timeofday, HaveAccurateTime,
+		AbsoluteToSecsNanosecs): Added support for microseconds or
+		better timers on the Mac when available
+
+	* c_ustime.c (krb5_crypto_us_timeofday): fixed usecs counting bug
+		(From Chas Williams)
+
+	* init_os_ctx.c (GetMacProfilePathname): removed hardcoded config file name
+		(From Chas Williams)
+	
+	* init_os_ctx.c (os_init_paths): added NRL config file name
+		(From Chas Williams)
+
+Tue Jun  8 15:26:21 1999  Alexandra Ellwood  <lxs@mit.edu>
+
+	* changepw.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+	
+	* hst_realm.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+	
+	* localaddr.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+	
+	* net_read.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+	
+	* net_write.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+	
+	* sn2princ.c: Changed errno to SOCKET_ERRNO/SOCKET_SET_ERRNO
+	    after socket operations to work with new Mac OT SocketsLib.
+
+Mon May 10 15:26:20 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Fri May  7 18:04:48 1999  Danilo D Almeida  <dalmeida@mit.edu>
+
+	* locate_kdc.c (krb5_locate_kdc): Fixed typo.
+
+Fri May  7 14:39:08 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* locate_kdc.c (krb5_locate_kdc): Return KRB5_REALM_UNKNOWN if
+ 		profile_get_values returns PROF_NO_RELATION or
+ 		PROF_NO_SECTION.
+
+1999-04-01  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* prompter.c (krb5_prompter_posix): Update to use new prompter
+		prototype which takes an extra argument for the window
+		titlebar name.  (From Frank Cusack) [krb5-kdc/662]
+
 Thu Mar 25 18:45:48 1999  Tom Yu  <tlyu@mit.edu>
 
 	* promptusr.c (krb5_os_get_tty_uio): getchar() returns int, not
 	char.
 
-Wed Jan 14 21:12:20 1998  Tom Yu  <tlyu@mit.edu>
+1999-03-12  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* init_os_ctx.c (krb5_os_init_context, krb5_os_free_context):
+		Sample the ccdefault name at the time when we create the
+		context.  Free the ccdefault name when we free the os
+		context.
+
+	* ccdefname.c (krb5_cc_default_name, krb5_cc_set_default_name):
+		Check to make sure the context is valid and return an
+		error if it isn't.
+
+1999-03-11  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* ccdefname.c (get_from_os): Add missing call to get_from_registry
+		under windows.
+
+Fri Feb 19 20:49:18 1999  Tom Yu  <tlyu@mit.edu>
+
+	* ccdefname.c (get_from_os): Add missing close-paren; also replace
+	#elif just in case.
+
+Fri Feb  5 01:05:43 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* ccdefname.c (get_from_os): On the Windows platform,
+		automatically generate the correct default cache name
+		based on what krb5_cc_dfl_ops is set to.
+
+	* realm_dom.c (krb5_get_realm_domain): Add modifiers so that this
+		function can get exported in a Windows DLL.
+
+Tue Feb  2 16:01:58 1999  Tom Yu  <tlyu@mit.edu>
+
+	* read_pwd.c: Remove reference to CPP symbol "unix".
+
+1999-01-29  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* ccdefname.c: Add a new function krb5_cc_set_default_name(),
+		which is used set the default ccname stored in the
+		krb5_context.  All of the OS-specific functions to
+		determine the default ccname is moved to this function.
+		The krb5_cc_default_name() function now just reads the
+		default ccname from the os_context, and will call
+		krb5_cc_set_default_name() to set the default ccname if
+		necessary.
+
+	* t_std_conf: Added functions to test krb5_cc_default_name and
+		krb5_cc_set_default_name().  Fixed the call to
+		krb5_locate_kdc to support the new variables added by
+		the Cygnus initial ticket API merge.
+
+1999-01-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* localaddr.c: On the macintosh, check to see if getmyipaddr
+		returns NULL, and return an error in that case.
+
+Tue Jan  5 00:11:49 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* sn2princ.c (krb5_sname_to_principal): Windows NT5's broken
+ 	 	 resolver gratuitously tacks on a trailing period to the
+ 	 	 hostname (at least it does in Beta2).  Deal with this
+ 	 	 brain-damage.
+
+Tue Dec 22 01:22:24 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* changepw.c: Add a test for _WIN16 as well as _WIN32 for sockets
+ 		workaround (in case we do want to build the 16 bit library
+ 		again someday)
+
+Sat Dec  5 01:12:25 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* localaddr.c: Added missing KRB5_DLLIMP and KRB5_CALLCONF macros
+		from the function definition.
+
+1998-12-04  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* realm_iter.c: New function which iterators over the realms in
+		the krb5.conf file.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+	* lock_file.c (krb5_lock_file): Fix bug where if the fcntl-style
+		lock succeeded, we should return immediately instead of
+		trying to do flock-style locking.  Also check for
+		HAVE_FCNTL_H and defined(F_SETLKW) and
+		defined(F_RDLCK) instead of POSIX_FILE_LOCKS (so we
+		can get rid of a non-standard autoconf symbol.)
+
+1998-10-31  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* lock_file.c (krb5_lock_file): Move the flock() fallback code
+		from fcc_maybe.c into krb5_lock_file().  This works around
+		the bug that certain lossy operating systems (mainly from
+		our good friends at SunSoft) do not support
+		POSIX_FILE_LOCKS on all filesystems (namely tmpfs) but do
+		support flock on those filesystems.
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* c_ustime.c, localaddr.c: moved here from lib/crypto
+
+	* ktdefname.c (krb5_kt_default_name): there is code in the tree
+	(notably, the admin server code) which uses globals to set the
+	keytab which will be used by gssapi.  this is gross, and we need a
+	better answer.  However, even that didn't work if there was an env
+	var or krb5.conf variable, since those override krb5_defkeyname.
+	Add a new global, krb5_overridekeyname, which really does override
+	all the other keytab locators.  While I'm at it, make the buffer
+	overflow checks sane.
+
+Fri Sep 25 22:32:16 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* ccdefname.c: We shouldn't try to use the CCache API on Unix
+		systems.  (The maze of #ifdef's was confusing.)
+
+Tue Sep  1 15:44:11 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* ccdefname.c (krb5_cc_default_name): Changed the PC version to
+ 		use the CCache API by default.  Removed the old Macintosh
+ 		code that had been commented out.  (If we need to
+ 		ressurect it, we'll get it from CVS.)
+
+Fri Aug 21 17:37:00 1998  Miro Jurisic  <meeroh@mit.edu>
+
+	* ccdefname.c.c (krb5_cc_default_name): Changed the Mac
+			version to use CCache API by default.
+
+Thu Jul 16 09:59:34 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* changepw.c (krb5_change_password): Changes casts from char * to
+         	krb5_octet * to match krb5_address structure elements.
+
+Wed Jul  1 17:54:56 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* macsock.c(inet_ntoa): Fix obvious bug where we were returning a
+ 		pointer to an automatic variable which should have been a
+ 		static.  Fortunately nothing in the Mac tree was using
+ 		inet_ntoa()....
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* t_std_conf.c (main): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Wed Sep 24 12:10:29 1997 Marshall Vale <mjv@mit.edu> (Checked in 1/13/98)
+
+	* init_os_ctx.c: Changed all PBGetCatInfo to PBGetCatInfoSync for new
+		Universal Headers.
+		
+	* ccdefname.c: Changed all PBGetCatInfo to PBGetCatInfoSync for new
+		Universal Headers.
+
+Fri Feb 27 18:03:33 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/krb5
+ 		directory, since we've moved the configure.in tests in
+ 		this directory to the toplevel lib/krb5 configure.in
+
+Wed Feb 18 16:24:39 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:19 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Fri Jan 30 15:56:15 1998  Tom Yu  <tlyu@mit.edu>
+
+	* changepw.c (krb5_change_password): KRB5_USE_INET ->
+	HAVE_NETINET_IN_H.
+
+Fri Jan  2 21:28:56 1998  Tom Yu  <tlyu@mit.edu>
 
 	* locate_kdc.c (krb5_locate_kdc): Check return of
 	malloc. [krb5-libs/518]
 
+	* changepw.c (krb5_change_password): Check return of
+	malloc. [krb5-libs/518]
+
+Tue Dec 16 11:00:18 1997  Ezra Peisach  <epeisach@mit.edu>
+
 	* locate_kdc.c (krb5_locate_kdc): Free hostlist array elements
-	when finished with them.
+		when finished with them.
+
+Sat Dec  6 23:12:23 1997  Ezra Peisach  <epeisach@mit.edu>
 
 	* locate_kdc.c (krb5_locate_kdc): Get rid of extra krb5_xfree
 	which caused freeing of memory twice.
+
+Sat Dec  6 02:34:50 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Add changepw.c, prompter.c.
+
+	* changepw.c: New file; Cygnus password changing protocol.
+
+	* locate_kdc.c: Add parameter to indicate master KDC.
+
+	* os-proto.h: Reflect changes to locate_kdc.
+
+	* prompter.c: New file; Cygnus initial creds.
+
+	* sendto_kdc.c: Add parameter to indicate master KDC.
+
+Mon Oct  6 11:40:11 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* t_std_conf.c (main): Call krb5_free_context when done.
+
+Wed Oct  1 04:58:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Punt some things that are otherwise gotten from
+	include/krb5/configure.in.
+
+	* gmt_mktime.c: Get k5-int.h to get some autoconf symbols.
+
+Tue Sep 30 19:57:27 1997  Tom Yu  <tlyu@mit.edu>
+
+	* timeofday.c: Replaace erroneously named POSIX_TYPES and timetype
+	with plain old time_t, since we're using AC_CHECK_TYPE now to
+	handle it.
+
+Thu Sep 25 21:24:54 1997  Tom Yu  <tlyu@mit.edu>
+
+	* mk_faddr.c: Replace KRB5_USE_INET with something more sane.
+
+	* port2ip.c: Replace KRB5_USE_INET with something more sane.
+
+	* os-proto.h: Replace KRB5_USE_INET with something more sane.
+
+	* locate_kdc.c: Replace KRB5_USE_INET with something more sane.
+
+	* genaddrs.c (krb5_auth_con_genaddrs): Replace KRB5_USE_INET with
+	something more sane.
+
+	* gen_port.c (krb5_gen_portaddr): Replace KRB5_USE_INET with
+	something more sane.
+
+	* full_ipadr.c: Replace KRB5_USE_INET with something more sane.
+
+Thu Sep 18 17:56:00 1997  Tom Yu  <tlyu@mit.edu>
+
+	* hst_realm.c: Replace USE_STRING_H with something more sane.
+
+Mon Sep 15 15:21:12 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* ccdefname.c (krb5_cc_default_name): Returns a const char *.
+
+Sat Aug 16 10:11:20 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* gmt_mktime.c (days_in_month): Now const.
+	  Originally by raeburn@cygnus.com from the Kerbnet release
+
+Tue Feb 25 00:29:33 1997  Richard Basch  <basch@lehman.com>
+
+	* read_pwd.c: Define Windows interface for krb5_read_password
+	* win-pwd.rc: Resource file for Windows password dialog box
+	* win-pwd.h: Support definitions for Windows krb5_read_password
+
+Sat Feb 22 22:41:02 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Fri Feb 21 20:06:55 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* def_realm.c: Remove extern declaration of un-used krb5_config_file.
+
+Fri Feb  7 11:11:18 1997  Richard Basch  <basch@lehman.com>
+
+	* mk_faddr.c (krb5_make_fulladdr): Add FAR declarations (win16)
+
+Thu Nov 21 11:55:16 EST 1996	Richard Basch	<basch@lehman.com>
+
+	* Makefile.in: win32 build
+
+	* ccdefname.c, def_realm.c, free_hstrl.c, genaddrs.c, hst_realm.c,
+	init_os_ctx.c, ktdefname.c, localaddr.c, sn2princ.c, timeofday.c,
+	ustime.c
+		DLL export several more common functions (see lib/krb5.def
+		for the full list of functions exported)
+
+Thu Feb  6 15:46:24 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Thu Jan  2 17:19:11 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Update to new library build procedure.
 
 Wed Nov 13 02:53:31 1996  Tom Yu  <tlyu@mit.edu>
 

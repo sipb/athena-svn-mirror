@@ -1,3 +1,76 @@
+1999-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (RESOLVE): New variable.
+	(get_hostname): New proc, taken from tests/dejagnu.
+	(test101): Use get_hostname, set a variable in the target process
+	to hold the result, and use that variable in the other commands
+	passed.
+
+	* Makefile.in (unit-test-client-body): Pass $(RUNTESTFLAGS) to
+	runtest, so the user can run subsets of the test suite.
+	(unit-test-server-body): Likewise.
+
+1999-08-26  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (test101): Use local host name instead of
+	"localhost", since address 127.0.0.1 probably won't be listed in
+	credentials.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Fri Feb 27 22:32:54 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/kadm5
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel lib/kadm5 configure.in
+
+Wed Feb 18 16:15:53 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Nov 19 10:55:20 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (clean): Remove server-setkey-test
+	 	client-setkey-test setkey-test.o
+
+Fri Jul 25 15:38:35 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove test-randkey since it was breaking the
+	server-side tests; api.2/getprinc-v2.exp wants *two* keys, while
+	randkey results in only one.
+
+Mon May  5 17:11:44 1997  Barry Jaspan  <bjaspan@mit.edu>
+
+	* setkey-test.c, configure.in: add rules to test for correct
+ 	random()-equivlant function
+
+Mon Mar 31 17:39:52 1997  Barry Jaspan  <bjaspan@mit.edu>
+
+	* Makefile.in, setkey-test.c: add support for setkey
+
+Wed Mar 12 15:49:46 1997  Barry Jaspan  <bjaspan@mit.edu>
+
+	* Makefile.in (unit-test-server-body): depend on test-randkey, not
+ 	randkey-test, so the test gets run
+
+Wed Feb  5 23:10:56 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Mon Dec  9 15:57:55 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* api.0/init.exp, api.2/init.exp: use spawn/expect instead of exec
+ 	so tests don't fail when kadmin.local produces output
+	
 Wed Nov 20 15:59:34 1996  Barry Jaspan  <bjaspan@mit.edu>
 
 	* Makefile.in (check-): warn more loudly about unrun tests

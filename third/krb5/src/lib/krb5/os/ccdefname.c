@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -28,101 +31,233 @@
 #include "k5-int.h"
 #include <stdio.h>
 
-#ifdef _MACINTOSH
-static CInfoPBRec	theCatInfo;
-static	char		*FileBuffer;
-static	int			indexCount;
-static FSSpec		theWorkingFile;
+#ifdef macintosh
+#include "Krb5Globals.h"
+#endif
 
-static char*
-GetDirName(short vrefnum, long dirid, char *dststr)
+#if defined(_WIN32)
+static int get_from_registry_indirect(char *name_buf, int name_size)
 {
-CInfoPBRec	theCatInfo;
-FSSpec		theParDir;
-char		str[37];
-char		*curstr;
-OSErr		err;
-	// Get info on the directory itself, it's name and it's parent
-	theCatInfo.dirInfo.ioCompletion		= NULL;
-	theCatInfo.dirInfo.ioNamePtr		= (StringPtr) str;
-	theCatInfo.dirInfo.ioVRefNum		= vrefnum;
-	theCatInfo.dirInfo.ioFDirIndex		= -1;
-	theCatInfo.dirInfo.ioDrDirID		= dirid;
-	err = PBGetCatInfo(&theCatInfo, FALSE);
+	/* If the RegKRB5CCNAME variable is set, it will point to
+	 * the registry key that has the name of the cache to use.
+	 * The Gradient PC-DCE sets the registry key
+	 * [HKEY_CURRENT_USER\Software\Gradient\DCE\Default\KRB5CCNAME]
+	 * to point at the cache file name (including the FILE: prefix).
+	 * By indirecting with the RegKRB5CCNAME entry in kerberos.ini,
+	 * we can accomodate other versions that might set a registry
+	 * variable.
+	 */
+	char newkey[256];
+	    
+	LONG name_buf_size;
+	HKEY hkey;
+	int found = 0;
+	char *cp;
 
-	// If I'm looking at the root directory and I've tried going up once
-	// start returning down the call chain
-	if (err != noErr || (dirid == 2 && theCatInfo.hFileInfo.ioFlParID == 2))
-		return dststr;
-
-	// Construct a file spec for the parent
-	curstr = GetDirName(theCatInfo.dirInfo.ioVRefNum, theCatInfo.hFileInfo.ioFlParID, dststr);
-
-	// Copy the pascal string to the end of a C string
-	BlockMoveData(&str[1], curstr, str[0]);
-	curstr += str[0];
-	*curstr++ = ':';
+        newkey[0] = 0;
+	GetPrivateProfileString(INI_FILES, "RegKRB5CCNAME", "", 
+				newkey, sizeof(newkey), KERBEROS_INI);
+	if (!newkey[0])
+		return 0;
 	
-	// return a pointer to the end of the string (for someone below to append to)
-	return curstr;
+        newkey[sizeof(newkey)-1] = 0;
+	cp = strrchr(newkey,'\\');
+	if (cp) {
+		*cp = '\0'; /* split the string */
+		cp++;
+	} else
+		cp = "";
+	
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, newkey, 0,
+			 KEY_QUERY_VALUE, &hkey) != ERROR_SUCCESS)
+		return 0;
+	
+	name_buf_size = name_size;
+	if (RegQueryValueEx(hkey, cp, 0, 0, 
+			    name_buf, &name_buf_size) != ERROR_SUCCESS)
+	{
+		RegCloseKey(hkey);
+		return 0;
+	}
+
+	RegCloseKey(hkey);
+	return 1;
 }
 
-static void
-GetPathname(FSSpec *theFile, char *dststr)
-{
-FSSpec		theParDir;
-char		*curstr;
-OSErr		err;
+/*
+ * get_from_registry
+ *
+ * This will find the ccname in the registry.  Returns 0 on error, non-zero
+ * on success.
+ */
 
-	// Start crawling up the directory path recursivly
-	curstr = GetDirName(theFile->vRefNum, theFile->parID, dststr);
-	BlockMoveData(&theFile->name[1], curstr, theFile->name[0]);
-	curstr += theFile->name[0];
-	*curstr = 0;
+static int
+get_from_registry(
+    HKEY hBaseKey,
+    char *name_buf, 
+    int name_size
+    )
+{
+    HKEY hKey;
+    DWORD name_buf_size = (DWORD)name_size;
+    const char *key_path = "Software\\MIT\\Kerberos5";
+    const char *value_name = "ccname";
+
+    if (RegOpenKeyEx(hBaseKey, key_path, 0, KEY_QUERY_VALUE, 
+                     &hKey) != ERROR_SUCCESS)
+        return 0;
+    if (RegQueryValueEx(hKey, value_name, 0, 0, 
+                        name_buf, &name_buf_size) != ERROR_SUCCESS)
+    {
+        RegCloseKey(hKey);
+        return 0;
+    }
+    RegCloseKey(hKey);
+    return 1;
+}
+
+#define APPEND_KRB5CC "\\krb5cc"
+
+static int
+try_dir(
+    char* dir,
+    char* buffer,
+    int buf_len
+    )
+{
+    struct _stat s;
+    if (!dir)
+        return 0;
+    if (_stat(dir, &s))
+        return 0;
+    if (!(s.st_mode & _S_IFDIR))
+        return 0;
+    if (buffer != dir) {
+        strncpy(buffer, dir, buf_len);
+        buffer[buf_len-1]='\0';
+    }
+    strncat(buffer, APPEND_KRB5CC, buf_len-strlen(buffer));
+    buffer[buf_len-1] = '\0';
+    return 1;
 }
 #endif
 
+#if defined(_MSDOS) || defined(_WIN32)
+static krb5_error_code get_from_os(char *name_buf, int name_size)
+{
+	char *prefix = krb5_cc_dfl_ops->prefix;
+        int size;
+        char *p;
 
-char *
+	if (get_from_registry(HKEY_CURRENT_USER,
+                              name_buf, name_size) != 0)
+		return 0;
+
+	if (get_from_registry(HKEY_LOCAL_MACHINE,
+                              name_buf, name_size) != 0)
+		return 0;
+
+	if (get_from_registry_indirect(name_buf, name_size) != 0)
+		return 0;
+
+        strncpy(name_buf, prefix, name_size);       
+        name_buf[name_size - 1] = 0;
+        size = name_size - strlen(prefix);
+        if (size > 0)
+            strcat(name_buf, ":");
+        size--;
+        p = name_buf + name_size - size;
+	if (!strcmp(prefix, "API")) {
+		strncpy(p, "krb5cc", size);
+	} else if (!strcmp(prefix, "FILE") || !strcmp(prefix, "STDIO")) {
+		if (!try_dir(getenv("TEMP"), p, size) &&
+		    !try_dir(getenv("TMP"), p, size))
+		{
+                    int len = GetWindowsDirectory(p, size);
+                    name_buf[name_size - 1] = 0;
+                    if (len < size - sizeof(APPEND_KRB5CC))
+			strcat(p, APPEND_KRB5CC);
+		}
+	} else {
+		strncpy(p, "default_cache_name", size);
+	}
+	name_buf[name_size - 1] = 0;
+	return 0;
+}
+#endif
+
+#if defined (macintosh)
+
+static krb5_error_code get_from_os(char *name_buf, int name_size)
+{
+	if (name_size < 4)
+		return ENOMEM;
+	Krb5GlobalsGetDefaultCacheName (name_buf + 4, name_size - 4);
+	memcpy (name_buf, "API:", 4);
+	return 0;
+}
+
+#else
+#if !(defined(_MSDOS) || defined(_WIN32))
+static krb5_error_code get_from_os(char *name_buf, int name_size)
+{
+	sprintf(name_buf, "FILE:/tmp/krb5cc_%d", getuid());
+	return 0;
+}
+#endif
+#endif
+
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
+krb5_cc_set_default_name(context, name)
+	krb5_context context;
+	const char *name;
+{
+	char name_buf[1024];
+	char *new_name;
+	krb5_error_code retval;
+	krb5_os_context os_ctx;
+
+	if (!context || context->magic != KV5M_CONTEXT)
+		return KV5M_CONTEXT;
+
+	os_ctx = context->os_context;
+	
+	if (!name)
+		name = getenv(KRB5_ENV_CCNAME);
+
+	if (name) {
+		strncpy(name_buf, name, sizeof(name_buf));
+		name_buf[sizeof(name_buf)-1] = 0;
+	} else {
+		retval = get_from_os(name_buf, sizeof(name_buf));
+		if (retval)
+			return retval;
+	}
+	new_name = malloc(strlen(name_buf)+1);
+	if (!new_name)
+		return ENOMEM;
+	strcpy(new_name, name_buf);
+	
+	if (os_ctx->default_ccname)
+		free(os_ctx->default_ccname);
+
+	os_ctx->default_ccname = new_name;
+	return 0;
+}
+
+	
+KRB5_DLLIMP const char FAR * KRB5_CALLCONV
 krb5_cc_default_name(context)
     krb5_context context;
 {
-    char *name = getenv(KRB5_ENV_CCNAME);
-    static char name_buf[160];
-    
-    if (name == 0) {
+	krb5_os_context os_ctx;
 
-#ifdef HAVE_MACSOCK_H
-{
-short	vRefnum;
-long	parID;
-OSErr	theErr;
-FSSpec	krbccSpec;
-char	pathbuf[255];
+	if (!context || context->magic != KV5M_CONTEXT)
+		return NULL;
 
-	theErr = FindFolder(kOnSystemDisk, kPreferencesFolderType, kDontCreateFolder, &vRefnum, &parID);
-	FSMakeFSSpec(vRefnum, parID, "\pkrb5cc", &krbccSpec);
-	GetPathname(&krbccSpec, &pathbuf);
-	sprintf(name_buf, "STDIO:%s", pathbuf);
-//	strcpy (name_buf, "STDIO:krb5cc");
+	os_ctx = context->os_context;
+	if (!os_ctx->default_ccname)
+		krb5_cc_set_default_name(context, NULL);
+
+	return(os_ctx->default_ccname);
 }
-#else
-#if defined(_MSDOS) || defined(_WIN32)
-        {
-            char defname[160];                  /* Default value */
-
-            GetWindowsDirectory (defname, sizeof(defname)-7);
-            strcat (defname, "\\krb5cc");
-            strcpy (name_buf, "FILE:");
-            GetPrivateProfileString(INI_FILES, INI_KRB_CCACHE, defname,
-                name_buf+5, sizeof(name_buf)-5, KERBEROS_INI);
-        }
-#else
-	sprintf(name_buf, "FILE:/tmp/krb5cc_%d", getuid());
-#endif
-#endif
-	name = name_buf;
-    }
-    return name;
-}
-    

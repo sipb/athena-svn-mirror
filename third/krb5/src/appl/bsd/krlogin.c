@@ -19,6 +19,32 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #ifndef lint
 char copyright[] =
   "@(#) Copyright (c) 1983 The Regents of the University of California.\n\
@@ -61,6 +87,11 @@ char copyright[] =
 #include <setjmp.h>
 #include <netdb.h>
      
+#ifdef HAVE_SYS_FILIO_H
+/* Solaris needs <sys/filio.h> for FIONREAD */
+#include <sys/filio.h>
+#endif
+
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -129,29 +160,15 @@ char copyright[] =
 #endif
 
 
-#ifndef roundup
-#define roundup(x,y) ((((x)+(y)-1)/(y))*(y))
-#endif
-
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
 #include "defines.h"
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
      
 #define RLOGIN_BUFSIZ 5120
-     /*
- * Note that the encrypted rlogin packets take the form of a four-byte
- *length followed by encrypted data.  On writing the data out, a significant
- * performance penalty is suffered (at least one RTT per character, two if we
- * are waiting for a shell to echo) by writing the data separately from the 
- * length.  So, unlike the input buffer, which just contains the output
- * data, the output buffer represents the entire packet.
- */
-
-char des_inbuf[2*RLOGIN_BUFSIZ];       /* needs to be > largest read size */
-char des_outpkt[2*RLOGIN_BUFSIZ+4];      /* needs to be > largest write size */
-krb5_data desinbuf,desoutbuf;
-krb5_encrypt_block eblock;      /* eblock for encrypt/decrypt */
 
 void try_normal();
 char *krb_realm = (char *)0;
@@ -161,14 +178,16 @@ krb5_creds *cred;
 struct sockaddr_in local, foreign;
 krb5_context bsd_context;
 
+#ifdef KRB5_KRB4_COMPAT
+Key_schedule v4_schedule;
+CREDENTIALS v4_cred;
+#endif
+
 #ifndef UCB_RLOGIN
 #define UCB_RLOGIN      "/usr/ucb/rlogin"
 #endif
 
 #include "rpaths.h"
-#else /* !KERBEROS */
-#define des_read read
-#define des_write write
 #endif /* KERBEROS */
 
 # ifndef TIOCPKT_WINDOW
@@ -187,6 +206,7 @@ char	*getenv();
 
 char	*name;
 int 	rem = -1;		/* Remote socket fd */
+int	do_inband = 0;
 char	cmdchar = '~';
 int	eight = 1;		/* Default to 8 bit transmission */
 int	no_local_escape = 0;
@@ -231,6 +251,7 @@ char	*host=0;			/* external, so it can be
 					   reached from confirm_death() */
 
 krb5_sigtype	sigwinch KRB5_PROTOTYPE((int));
+int server_message KRB5_PROTOTYPE((int));
 void oob KRB5_PROTOTYPE((void));
 krb5_sigtype	lostpeer KRB5_PROTOTYPE((int));
 #if __STDC__
@@ -338,6 +359,10 @@ main(argc, argv)
     int sock;
     krb5_flags authopts;
     krb5_error_code status;
+#ifdef KRB5_KRB4_COMPAT
+    KTEXT_ST v4_ticket;
+    MSG_DAT v4_msg_data;
+#endif
 #endif
     int debug_port = 0;
    
@@ -358,11 +383,15 @@ main(argc, argv)
 
     if (argc > 0 && !strcmp(*argv, "-D")) {
 	argv++; argc--;
+	if (*argv == NULL) {
+	    fprintf (stderr,
+		     "rlogin: -D flag must be followed by the debug port.\n");
+	    exit (1);
+	}
 	debug_port = htons(atoi(*argv));
 	argv++; argc--;
 	goto another;
     }
-
     if (argc > 0 && !strcmp(*argv, "-d")) {
 	argv++, argc--;
 	options |= SO_DEBUG;
@@ -477,8 +506,6 @@ main(argc, argv)
 	    com_err(argv[0], status, "while initializing krb5");
 	    exit(1);
     }
-    desinbuf.data = des_inbuf;
-    desoutbuf.data = des_outpkt+4;	/* Set up des buffers */
 #endif
 
 
@@ -510,8 +537,10 @@ main(argc, argv)
 
 
     if (cp == (char *) NULL) cp = getenv("TERM");
-    if (cp)
-      (void) strcpy(term, cp);
+    if (cp) {
+      (void) strncpy(term, cp, sizeof (term));
+      term[sizeof (term) - 1] = '\0';
+    }
 #ifdef POSIX_TERMIOS
 	if (tcgetattr(0, &ttyb) == 0) {
 		int ospeed = cfgetospeed (&ttyb);
@@ -521,16 +550,12 @@ main(argc, argv)
 			/* On some systems, ospeed is the baud rate itself,
 			   not a table index.  */
 			sprintf (term + strlen (term), "%d", ospeed);
+		else if (ospeed >= sizeof(speeds)/sizeof(char*))
+			/* Past end of table, but not high enough to
+			   look like a real speed.  */
+			(void) strcat (term, speeds[sizeof(speeds)/sizeof(char*) - 1]);
 		else {
 			(void) strcat(term, speeds[ospeed]);
-#if 0
-			/* XXX - Not used, since the above code was
-			 * not ifdef'd and it relied on cfget... */
-
-			/* some "posix" systems don't have cfget...
-			 * so used CBAUD if it's there */
-			(void) strcat(term, speeds[ttyb.c_cflag & CBAUD]);
-#endif
 		}
 	}
 #else
@@ -593,25 +618,41 @@ main(argc, argv)
 		  0,		/* No need for server seq # */
 		  &local, &foreign,
 		  authopts,
-		  0);		/* Not any port # */
+		  0,		/* Not any port # */
+		  0);
     if (status) {
-	/* should check for KDC_PR_UNKNOWN, NO_TKT_FILE here -- XXX */
-	 if (status != -1) 
-	      fprintf(stderr,
-		      "%s: kcmd to host %s failed - %s\n",orig_argv[0], host,
-		      error_message(status));
-	 try_normal(orig_argv);
+#ifdef KRB5_KRB4_COMPAT
+	fprintf(stderr, "Trying krb4 rlogin...\n");
+	status = k4cmd(&sock, &host, debug_port,
+		       null_local_username ? "" : pwd->pw_name,
+		       name ? name : pwd->pw_name, term,
+		       0, &v4_ticket, "rcmd", krb_realm,
+		       &v4_cred, v4_schedule, &v4_msg_data, &local, &foreign,
+		       (encrypt_flag) ? KOPT_DO_MUTUAL : 0L, 0);
+	if (status)
+	    try_normal(orig_argv);
+	rcmd_stream_init_krb4(v4_cred.session, encrypt_flag, 1, 1);
+#else
+	try_normal(orig_argv);
+#endif
+    } else {
+	krb5_boolean similar;
+
+	rcmd_stream_init_krb5(&cred->keyblock, encrypt_flag, 1);
+
+	if (status = krb5_c_enctype_compare(bsd_context, ENCTYPE_DES_CBC_CRC,
+					    cred->keyblock.enctype, &similar))
+	    try_normal(orig_argv); /* doesn't return */
+
+	if (!similar) {
+	    do_inband = 1;
+	    if (debug_port)
+		fprintf(stderr, "DEBUG: setting do_inband\n");
+	}
     }
+	
     rem = sock;
     
-    /* setup eblock for des_read and write */
-    krb5_use_enctype(bsd_context, &eblock,cred->keyblock.enctype);
-    if ( status = krb5_process_key(bsd_context, &eblock,&cred->keyblock)) {
-	fprintf(stderr,
-		"%s: Cannot process session key : %s.\n",
-		orig_argv[0], error_message(status));
-	exit(1);
-    }
 #else
     rem = rcmd(&host, debug_port,
 	       null_local_username ? "" : pwd->pw_name,
@@ -980,7 +1021,7 @@ int signo;
  */
 writer()
 {
-    char c;
+    unsigned char c;
     register n;
     register bol = 1;               /* beginning of line */
     register local = 0;
@@ -1067,9 +1108,9 @@ writer()
 #endif
 
 	    if (c != cmdchar)
-	      (void) des_write(rem, &cmdchar, 1);
+	      (void) rcmd_stream_write(rem, &cmdchar, 1);
 	}
-	if (des_write(rem, &c, 1) == 0) {
+	if (rcmd_stream_write(rem, &c, 1) == 0) {
 	    prf("line gone");
 	    break;
 	}
@@ -1184,7 +1225,7 @@ sendwindow()
     wp->ws_col = htons(winsize.ws_col);
     wp->ws_xpixel = htons(winsize.ws_xpixel);
     wp->ws_ypixel = htons(winsize.ws_ypixel);
-    (void) des_write(rem, obuf, sizeof(obuf));
+    (void) rcmd_stream_write(rem, obuf, sizeof(obuf));
 }
 
 
@@ -1200,15 +1241,16 @@ int	rcvcnt;
 int	rcvstate;
 int	ppid;
 
+/* returns 1 if flush, 0 otherwise */
 
-void oob()
+int server_message(mark)
+     int mark;
 {
 #ifndef POSIX_TERMIOS
     int out = FWRITE;
 #endif
-    int atmark, n;
+    int n;
     int rcvd = 0;
-    char waste[RLOGIN_BUFSIZ], mark;
 #ifdef POSIX_TERMIOS
     struct termios tty;
 #else
@@ -1218,9 +1260,7 @@ void oob()
     struct sgttyb sb;
 #endif
 #endif
-    mark = 0;
-    
-     recv(rem, &mark, 1, MSG_OOB);
+
     if (mark & TIOCPKT_WINDOW) {
 	/*
 	 * Let server know about window size changes
@@ -1278,27 +1318,62 @@ void oob()
 	(void) ioctl(1, TCFLSH, 1);
 #endif
 #endif
-	for (;;) {
-	    if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
-		perror("ioctl");
-		break;
-	    }
-	    if (atmark)
-	      break;
-	    n = read(rem, waste, sizeof (waste));
-	    if (n <= 0)
-	      break;
-return;
-	}
+	return(1);
     }
-    
-    
+
+    return(0);
 }
 
+void oob()
+{
+    char mark;
+    char waste[RLOGIN_BUFSIZ];
+    int atmark;
 
+    mark = 0;
+    
+    recv(rem, &mark, 1, MSG_OOB);
+
+    if (server_message(mark)) {
+	if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
+	    perror("ioctl");
+	    return;
+	}
+	if (!atmark)
+	    read(rem, waste, sizeof (waste));
+    }
+}
+
+/* two control messages are defined:
+
+   a double flag byte of 'o' indicates a one-byte message which is
+   identical to what was once carried out of band.  
+
+   a double flag byte of 'q' indicates a zero-byte message.  This
+   message is interpreted as two \377 data bytes.  This is just a
+   quote rule so that binary data from the server does not confuse the
+   client.  */
+
+int control(cp, n)
+     unsigned char *cp;
+     int n;
+{
+    if ((n >= 5) && (cp[2] == 'o') && (cp[3] == 'o')) {
+	if (server_message(cp[4]))
+	    return(-5);
+	return(5);
+    } else if ((n >= 4) && (cp[2] == 'q') && (cp[3] == 'q')) {
+	/* this is somewhat of a hack */
+	cp[2] = '\377';
+	cp[3] = '\377';
+	return(2);
+    }
+
+    return(0);
+}
 
 /*
- * reader: read from remote: line -> 1
+ * reader: read from remote: line -> 1 
  */
 reader(oldmask)
 #ifdef POSIX_SIGNALS
@@ -1313,8 +1388,9 @@ reader(oldmask)
     int pid = -getpid();
 #endif
 fd_set readset, excset, writeset;
-    int n, remaining;
+    int n, remaining, left;
     char *bufp = rcvbuf;
+    char *cp;
 
 #ifdef POSIX_SIGNALS
     struct sigaction sa;
@@ -1329,7 +1405,7 @@ fd_set readset, excset, writeset;
 #endif
     
     ppid = getppid();
-FD_ZERO(&readset);
+    FD_ZERO(&readset);
     FD_ZERO(&excset);
     FD_ZERO(&writeset);
 #ifdef POSIX_SIGNALS
@@ -1341,42 +1417,66 @@ FD_ZERO(&readset);
 #endif /* POSIX_SIGNALS */
 
     for (;;) {
-	if ((remaining = rcvcnt - (bufp - rcvbuf)) > 0)
-	{
+	if ((remaining = rcvcnt - (bufp - rcvbuf)) > 0) {
 	    FD_SET(1,&writeset);
 	    rcvstate = WRITING;
 	    FD_CLR(rem, &readset);
+	} else {
+	    bufp = rcvbuf;
+	    rcvcnt = 0;
+	    rcvstate = READING;
+	    FD_SET(rem,&readset);
+	    FD_CLR(1,&writeset);
 	}
-	else {
-	    
-	bufp = rcvbuf;
-	rcvcnt = 0;
-	 rcvstate = READING;
-FD_SET(rem,&readset);
-	FD_CLR(1,&writeset);
-	}
-	FD_SET(rem,&excset);
+	if (!do_inband)
+	    FD_SET(rem,&excset);
 	if (select(rem+1, &readset, &writeset, &excset, 0) > 0 ) {
-	    if (FD_ISSET(rem, &excset))
-  oob();
+	    if (!do_inband)
+		if (FD_ISSET(rem, &excset))
+		    oob();
 	    if (FD_ISSET(1,&writeset)) {
-    	    n = write(1, bufp, remaining);
-	    if (n < 0) {
-		if (errno != EINTR)
-		  return (-1);
-		continue;
+		n = write(1, bufp, remaining);
+		if (n < 0) {
+		    if (errno != EINTR)
+			return (-1);
+		    continue;
+		}
+		bufp += n;
 	    }
-	    bufp += n;
-}
-if (FD_ISSET(rem, &readset)) {
-	  	rcvcnt = des_read(rem, rcvbuf, sizeof (rcvbuf));
-	if (rcvcnt == 0)
-	  return (0);
-	if (rcvcnt < 0)
-	  goto error;
-}
+	    if (FD_ISSET(rem, &readset)) {
+	  	rcvcnt = rcmd_stream_read(rem, rcvbuf, sizeof (rcvbuf));
+		if (rcvcnt == 0)
+		    return (0);
+		if (rcvcnt < 0)
+		    goto error;
+
+		if (do_inband) {
+		    for (cp = rcvbuf; cp < rcvbuf+rcvcnt-1; cp++) {
+			if (cp[0] == '\377' &&
+			    cp[1] == '\377') {
+			    left = (rcvbuf+rcvcnt) - cp;
+			    n = control(cp, left);
+			    if (n < 0) {
+				left -= (-n);
+				rcvcnt = 0;
+				/* flush before, and (-n) bytes */
+				if (left > 0)
+				    memmove(rcvbuf, cp+(-n), left);
+				cp = rcvbuf-1;
+			    } else if (n) {
+				left -= n;
+				rcvcnt -= n;
+				if (left > 0)
+				    memmove(cp, cp+n, left);
+				cp--;
+			    }
+			}
+		    }
+		}
+	    }
 	} else
-		  error: {
+error:
+	{
 	    if (errno == EINTR)
 	      continue;
 	    perror("read");
@@ -1390,67 +1490,70 @@ if (FD_ISSET(rem, &readset)) {
 mode(f)
 {
 #ifdef POSIX_TERMIOS
-	struct termios newtty;
+    struct termios newtty;
+#ifndef IEXTEN
+#define IEXTEN 0 /* No effect*/
+#endif
+#ifndef _POSIX_VDISABLE
+#define _POSIX_VDISABLE 0 /*A good guess at the disable-this-character character*/
+#endif
 
-	switch(f) {
-	case 0:
+    switch(f) {
+    case 0:
 #ifdef TIOCGLTC
-#ifndef solaris20
-		(void) ioctl(0, TIOCSLTC, (char *)&defltc);
+#if !defined(sun)
+	(void) ioctl(0, TIOCSLTC, (char *)&defltc);
 #endif
 #endif
-		(void) tcsetattr(0, TCSADRAIN, &deftty);
-		break;
-	case 1:
-		(void) tcgetattr(0, &newtty);
-/* was __svr4__ */
+	(void) tcsetattr(0, TCSADRAIN, &deftty);
+	break;
+    case 1:
+	(void) tcgetattr(0, &newtty);
+	/* was __svr4__ */
 #ifdef VLNEXT
 	/* there's a POSIX way of doing this, but do we need it general? */
-		newtty.c_cc[VLNEXT] = 0;
+	newtty.c_cc[VLNEXT] = _POSIX_VDISABLE;
 #endif
 		
-		newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-		if (!flow)
-		{
-			newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-			newtty.c_iflag &= ~(BRKINT|INLCR|ICRNL|ISTRIP);
-			/* newtty.c_iflag |=  (IXON|IXANY); */
-			newtty.c_iflag &= ~(IXON|IXANY);
-			newtty.c_oflag &= ~(OPOST);
-		} else {
-			newtty.c_lflag &= ~(ICANON|ISIG|ECHO);
-			newtty.c_iflag &= ~(INLCR|ICRNL);
-			/* newtty.c_iflag |=  (BRKINT|ISTRIP|IXON|IXANY); */
-			newtty.c_iflag &= ~(IXON|IXANY);
-			newtty.c_iflag |=  (BRKINT|ISTRIP);
-			newtty.c_oflag &= ~(ONLCR|ONOCR);
-			newtty.c_oflag |=  (OPOST);
-		}
-#ifdef TABDLY
-		/* preserve tab delays, but turn off XTABS */
-		if ((newtty.c_oflag & TABDLY) == TAB3)
-			newtty.c_oflag &= ~TABDLY;
-#endif
+	newtty.c_lflag &= ~(ICANON|ISIG|ECHO|IEXTEN);
+	newtty.c_iflag &= ~(ISTRIP|INLCR|ICRNL);
 
-		if (litout)
-			newtty.c_oflag &= ~OPOST;
-
-		newtty.c_cc[VMIN] = 1;
-		newtty.c_cc[VTIME] = 0;
-		(void) tcsetattr(0, TCSADRAIN, &newtty);
-#ifdef TIOCGLTC
-		/* Do this after the tcsetattr() in case this version
-		 * of termio supports the VSUSP or VDSUSP characters */
-#ifndef solaris20
-		/* this forces ICRNL under Solaris... */
-		(void) ioctl(0, TIOCSLTC, (char *)&noltc);
-#endif
-#endif
-		break;
-	default:
-		return;
-		/* NOTREACHED */
+	if (!flow) {
+	    newtty.c_iflag &= ~(BRKINT|IXON|IXANY);
+	    newtty.c_oflag &= ~(OPOST);
+	} else {
+	    /* XXX - should we set ixon ? */
+	    newtty.c_iflag &= ~(IXON|IXANY);
+	    newtty.c_iflag |=  (BRKINT);
+	    newtty.c_oflag &= ~(ONLCR|ONOCR);
+	    newtty.c_oflag |=  (OPOST);
 	}
+#ifdef TABDLY
+	/* preserve tab delays, but turn off XTABS */
+	if ((newtty.c_oflag & TABDLY) == TAB3)
+	    newtty.c_oflag &= ~TABDLY;
+#endif
+	if (!eight)
+	    newtty.c_iflag |= ISTRIP;
+	if (litout)
+	    newtty.c_oflag &= ~OPOST;
+
+	newtty.c_cc[VMIN] = 1;
+	newtty.c_cc[VTIME] = 0;
+	(void) tcsetattr(0, TCSADRAIN, &newtty);
+#ifdef TIOCGLTC
+	/* Do this after the tcsetattr() in case this version
+	 * of termio supports the VSUSP or VDSUSP characters */
+#if !defined(sun)
+	/* this forces ICRNL under Solaris... */
+	(void) ioctl(0, TIOCSLTC, (char *)&noltc);
+#endif
+#endif
+	break;
+    default:
+	return;
+	/* NOTREACHED */
+    }
 #else
     struct ltchars *ltc;
 #ifdef USE_TERMIO
@@ -1465,17 +1568,17 @@ mode(f)
     (void) ioctl(0, TIOCGETP, (char *)&sb);
     switch (f) {
 	
-      case 0:
+    case 0:
 #ifdef USE_TERMIO
 	/*
-	 **      remember whether IXON was set, so it can be restored
-	 **      when mode(1) is next done
-	 */
+	**      remember whether IXON was set, so it can be restored
+	**      when mode(1) is next done
+	*/
 	(void) ioctl(fileno(stdin), TIOCGETP, &ixon_state);
 	/*
-	 **      copy the initial modes we saved into sb; this is
-	 **      for restoring to the initial state
-	 */
+	**      copy the initial modes we saved into sb; this is
+	**      for restoring to the initial state
+	*/
 	(void)memcpy(&sb, &defmodes, sizeof(defmodes));
 	
 #else
@@ -1489,30 +1592,30 @@ mode(f)
 	ltc = &defltc;
 	break;
 	
-      case 1:
+    case 1:
 #ifdef USE_TERMIO
 	/*
-	 **      turn off output mappings
-	 */
+	**      turn off output mappings
+	*/
 	sb.c_oflag &= ~(ONLCR|OCRNL);
 	/*
-	 **      turn off canonical processing and character echo;
-	 **      also turn off signal checking -- ICANON might be
-	 **      enough to do this, but we're being careful
-	 */
+	**      turn off canonical processing and character echo;
+	**      also turn off signal checking -- ICANON might be
+	**      enough to do this, but we're being careful
+	*/
 	sb.c_lflag &= ~(ECHO|ICANON|ISIG);
 	sb.c_cc[VTIME] = 1;
 	sb.c_cc[VMIN] = 1;
 	if (eight)
-	  sb.c_iflag &= ~(ISTRIP);
+	    sb.c_iflag &= ~(ISTRIP);
 #ifdef TABDLY
 	/* preserve tab delays, but turn off tab-to-space expansion */
 	if ((sb.c_oflag & TABDLY) == TAB3)
-	  sb.c_oflag &= ~TAB3;
+	    sb.c_oflag &= ~TAB3;
 #endif
 	/*
-	 **  restore current flow control state
-	 */
+	**  restore current flow control state
+	*/
 	if ((ixon_state.c_iflag & IXON) && flow ) {
 	    sb.c_iflag |= IXON;
 	} else {
@@ -1523,15 +1626,15 @@ mode(f)
 	sb.sg_flags |= (!flow ? RAW : CBREAK);
 	/* preserve tab delays, but turn off XTABS */
 	if ((sb.sg_flags & TBDELAY) == XTABS)
-	  sb.sg_flags &= ~TBDELAY;
+	    sb.sg_flags &= ~TBDELAY;
 	sb.sg_kill = sb.sg_erase = -1;
 #ifdef LLITOUT
 	if (litout)
-	  lflags |= LLITOUT;
+	    lflags |= LLITOUT;
 #endif
 #ifdef LPASS8
 	if (eight)
-	  lflags |= LPASS8;
+	    lflags |= LPASS8;
 #endif /* LPASS8 */
 	tc = &notc;
 	sb.sg_flags &= ~defflags;
@@ -1540,7 +1643,7 @@ mode(f)
 	ltc = &noltc;
 	break;
 	
-      default:
+    default:
 	return;
     }
     (void) ioctl(0, TIOCSLTC, (char *)ltc);
@@ -1570,6 +1673,10 @@ void try_normal(argv)
      char **argv;
 {
     register char *host;
+#ifdef POSIX_SIGNALS
+    struct sigaction sa;
+    sigset_t mask;
+#endif
     
 #ifndef KRB5_ATHENA_COMPAT
     if (encrypt_flag)
@@ -1587,311 +1694,16 @@ void try_normal(argv)
     if (!strcmp(host, "rlogin"))
       argv++;
     
+#ifdef POSIX_SIGNALS
+    sigemptyset(&mask);
+    sigprocmask(SIG_SETMASK, &mask, NULL);
+#endif
+
     execv(UCB_RLOGIN, argv);
     perror("exec");
     exit(1);
 }
-
-
-
-char storage[2*RLOGIN_BUFSIZ];		/* storage for the decryption */
-int nstored = 0;
-char *store_ptr = storage;
-
-#ifndef OLD_VERSION
-
-int des_read(fd, buf, len)
-     int fd;
-     register char *buf;
-     int len;
-{
-    int nreturned = 0;
-    long net_len,rd_len;
-    int cc;
-    unsigned char len_buf[4];
-    
-    if (!encrypt_flag)
-      return(read(fd, buf, len));
-    
-    if (nstored >= len) {
-	memcpy(buf, store_ptr, len);
-	store_ptr += len;
-	nstored -= len;
-	return(len);
-    } else if (nstored) {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	buf += nstored;
-	len -= nstored;
-	nstored = 0;
-    }
-    
-#if 0
-    if ((cc = krb5_net_read(bsd_context, fd, (char *)&len_buf, 4)) != 4) {
-	/* XXX can't read enough, pipe must have closed */
-	return(0);
-    }
-    rd_len =
-	((len_buf[0]<<24) | (len_buf[1]<<16) | (len_buf[2]<<8) | len_buf[3]);
-#else
-	{
-	    unsigned char c;
-	    int gotzero = 0;
-
-	    /* See the comment in v4_des_read. */
-	    do {
-		cc = krb5_net_read(bsd_context, fd, &c, 1);
-		/* we should check for non-blocking here, but we'd have
-		   to make it save partial reads as well. */
-		if (cc <= 0) return cc; /* read error */
-		if (cc == 1) {
-		    if (c == 0) gotzero = 1;
-		}
-	    } while (!gotzero);
-
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    rd_len = c;
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    rd_len = (rd_len << 8) | c;
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    rd_len = (rd_len << 8) | c;
-	}
-
 #endif
-    net_len = krb5_encrypt_size(rd_len,eblock.crypto_entry);
-    if ((net_len <= 0) || (net_len > sizeof(des_inbuf))) {
-	/* preposterous length; assume out-of-sync; only
-	   recourse is to close connection, so return 0 */
-	fprintf(stderr,"Read size problem.\n");
-	return(0);
-    }
-    if ((cc = krb5_net_read(bsd_context, fd, desinbuf.data, net_len)) != net_len) {
-	/* pipe must have closed, return 0 */
-	fprintf(stderr,
-		"Read error: length received %d != expected %d.\n",
-		cc,net_len);
-	return(0);
-    }
-    /* decrypt info */
-    if ((krb5_decrypt(bsd_context, desinbuf.data,
-		      (krb5_pointer) storage,
-		      net_len,
-		      &eblock, 0))) {
-	fprintf(stderr,"Cannot decrypt data from network.\n");
-	return(0);
-    }
-    store_ptr = storage;
-    nstored = rd_len;
-    if (nstored > len) {
-	memcpy(buf, store_ptr, len);
-	nreturned += len;
-	store_ptr += len;
-	nstored -= len;
-    } else {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	nstored = 0;
-    }
-    
-    return(nreturned);
-}
-
-
-
-int des_write(fd, buf, len)
-     int fd;
-     char *buf;
-     int len;
-{
-  unsigned char *len_buf = (unsigned char *) des_outpkt;
-    
-  if (!encrypt_flag)
-      return(write(fd, buf, len));
-    
-    
-    desoutbuf.length = krb5_encrypt_size(len,eblock.crypto_entry);
-    if (desoutbuf.length > sizeof(des_outpkt)-4){
-      	fprintf(stderr,"Write size problem.\n");
-	return(-1);
-    }
-    if ((krb5_encrypt(bsd_context, (krb5_pointer)buf,
-		      desoutbuf.data,
-		      len,
-		      &eblock,
-		      0))){
-      	fprintf(stderr,"Write encrypt problem.\n");
-	return(-1);
-    }
-
-    len_buf[0] = (len & 0xff000000) >> 24;
-    len_buf[1] = (len & 0xff0000) >> 16;
-    len_buf[2] = (len & 0xff00) >> 8;
-    len_buf[3] = (len & 0xff);
-
-    if (write(fd, des_outpkt,desoutbuf.length+4) != desoutbuf.length+4){
-      fprintf(stderr,"Could not write out all data\n");
-	return(-1);
-    }
-    else return(len);
-}
-
-
-
-#else /* Original version  placed here so that testing could be done
-	 to determine why rlogin with encryption on is slower with
-	 version 5 as compared to version 4. */
-
-#define ENCRYPT 1
-#define DECRYPT 0
-
-
-
-int des_read(fd, buf, len)
-     int fd;
-     register char *buf;
-     int len;
-{
-    int nreturned = 0;
-    long net_len, rd_len;
-    int cc;
-    unsigned char len_buf[4];
-    
-    if (!encrypt_flag)
-      return(read(fd, buf, len));
-    
-    if (nstored >= len) {
-	memcpy(buf, store_ptr, len);
-	store_ptr += len;
-	nstored -= len;
-	return(len);
-    } else if (nstored) {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	buf += nstored;
-	len -= nstored;
-	nstored = 0;
-    }
-#if 0
-    if ((cc = krb5_net_read(bsd_context, fd, len_buf, 4)) != 4) {
-	/* XXX can't read enough, pipe must have closed */
-	return(0);
-    }
-    net_len =
-	((len_buf[0]<<24) | (len_buf[1]<<16) | (len_buf[2]<<8) | len_buf[3]);
-#else
-	{
-	    unsigned char c;
-	    int gotzero = 0;
-
-	    /* See the comment in v4_des_read. */
-	    do {
-		cc = krb5_net_read(bsd_context, fd, &c, 1);
-		/* we should check for non-blocking here, but we'd have
-		   to make it save partial reads as well. */
-		if (cc < 0) return 0; /* read error */
-		if (cc == 1) {
-		    if (c == 0) gotzero = 1;
-		}
-	    } while (!gotzero);
-
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    net_len = c;
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    net_len = (net_len << 8) | c;
-	    if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
-	    net_len = (net_len << 8) | c;
-	}
-#endif
-    if (net_len < 0 || net_len > sizeof(des_inbuf)) {
-	/* XXX preposterous length, probably out of sync.
-	   act as if pipe closed */
-	return(0);
-    }
-    /* the writer tells us how much real data we are getting, but
-       we need to read the pad bytes (8-byte boundary) */
-#ifdef NOROUNDUP
-    rd_len = ((((net_len)+((8)-1))/(8))*(8));
-#else
-    rd_len = roundup(net_len, 8);
-#endif
-    if ((cc = krb5_net_read(bsd_context, fd, des_inbuf, rd_len)) != rd_len) {
-	/* pipe must have closed, return 0 */
-	return(0);
-    }
-    (void) mit_des_cbc_encrypt(
-			       des_inbuf,
-			       storage,
-			       (net_len < 8) ? 8 : net_len,
-			       eblock.priv,
-			       eblock.key->contents,
-			       DECRYPT);
-    /*
-     * when the cleartext block is < 8 bytes, it is "right-justified"
-     * in the block, so we need to adjust the pointer to the data
-     */
-    if (net_len < 8)
-      store_ptr = storage + 8 - net_len;
-    else
-      store_ptr = storage;
-    nstored = net_len;
-    if (nstored > len) {
-	memcpy(buf, store_ptr, len);
-	nreturned += len;
-	store_ptr += len;
-	nstored -= len;
-    } else {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	nstored = 0;
-    }
-    return(nreturned);
-}
-
-
-
-int des_write(fd, buf, len)
-     int fd;
-     char *buf;
-     int len;
-{
-    static char garbage_buf[8];
-    unsigned char len_buf[4];
-    
-    if (!encrypt_flag)
-      return(write(fd, buf, len));
-    
-#define min(a,b) ((a < b) ? a : b)
-    
-    if (len < 8) {
-	krb5_random_confounder(bsd_context, 8 - len, &garbage_buf);
-	/* this "right-justifies" the data in the buffer */
-	(void) memcpy(garbage_buf + 8 - len, buf, len);
-    }
-    
-    (void) mit_des_cbc_encrypt((len < 8) ? garbage_buf : buf,
-			       des_outbuf,
-			       (len < 8) ? 8 : len,
-			       eblock.priv,
-			       eblock.key->contents,
-			       ENCRYPT);
-    
-    /* tell the other end the real amount, but send an 8-byte padded
-       packet */
-    len_buf[0] = (len & 0xff000000) >> 24;
-    len_buf[1] = (len & 0xff0000) >> 16;
-    len_buf[2] = (len & 0xff00) >> 8;
-    len_buf[3] = (len & 0xff);
-    (void) write(fd, len_buf, 4);
-#ifdef NOROUNDUP
-    (void) write(fd, des_outbuf, ((((len)+((8)-1))/(8))*(8)));
-#else
-    (void) write(fd, des_outbuf, roundup(len,8));
-#endif
-    return(len);
-}
-
-#endif /* OLD_VERSION */
-#endif /* KERBEROS */
 
 
 

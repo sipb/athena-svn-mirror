@@ -1,11 +1,13 @@
+thisconfigdir=./../..
+myfulldir=util/dyn
+mydir=util/dyn
+MY_SUBDIRS=.
+BUILDTOP=$(REL)$(U)$(S)$(U)
+RELDIR=../util/dyn
 CFLAGS = $(CCOPTS) $(DEFS)
 
 ##DOSBUILDTOP = ..\..
 ##DOSLIBNAME=libdyn.lib
-
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
 
 SRCS = $(srcdir)/dyn_create.c \
 	$(srcdir)/dyn_put.c \
@@ -29,37 +31,34 @@ OBJS = dyn_create.$(OBJEXT) \
 	dyn_insert.$(OBJEXT) \
 	dyn_initzero.$(OBJEXT)
 
-LIB_SUBDIRS= .
-LIBDONE= DONE
+STLIBOBJS=$(OBJS)
+STOBJLISTS=OBJS.ST
+LIB=dyn
+LIBMAJOR=1
+LIBMINOR=0
 
-all-unix:: shared includes $(OBJS)
+
+all-unix:: all-liblinks
+clean-unix:: clean-liblinks clean-libs clean-libobjs
+install-unix:: install-libs
 all-mac:: $(OBJS)
 all-windows:: $(OBJS)
 
-shared:
-	mkdir shared
+all-unix:: includes
 
-check-windows::
+includes:: dyn.h
+	if cmp $(srcdir)/dyn.h \
+	$(BUILDTOP)/include/dyn.h >/dev/null 2>&1; then :; \
+	else \
+		(set -x; $(RM) $(BUILDTOP)/include/dyn.h; \
+		 $(CP) $(srcdir)/dyn.h \
+			$(BUILDTOP)/include/dyn.h) ; \
+	fi
 
 clean-unix::
-	$(RM) shared/*
+	$(RM) $(BUILDTOP)/include/dyn.h
 
+check-windows::
 clean-mac::
 clean-windows::
-
-DONE:: $(OBJS)
-	 $(RM) DONE
-	 echo $(OBJS) >DONE
-
-libdyn.$(STEXT): $(OBJS)
-	$(RM) $@
-	$(ARADD) $@ $(OBJS)
-	$(RANLIB) $@
-
-install:: libdyn.a
-	$(INSTALL_DATA) libdyn.a $(DESTDIR)$(KRB5_LIBDIR)/libdyn.a
-	$(RANLIB) $(DESTDIR)$(KRB5_LIBDIR)/libdyn.a
-
-clean::
-	$(RM) libdyn.$(LIBEXT) libdyn.bak DONE
 

@@ -1,3 +1,91 @@
+1999-08-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* kinit.c (optind, optarg) [sun]: Declare on SunOS 4.  Maybe
+	declare unconditionally, in the future.
+
+1999-08-12  Ken Raeburn  <raeburn@mit.edu>
+
+	* kinit.c (main): Initialize cache_name to null, in case it's not
+	set.
+
+1999-08-09  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Use standard windows exe link flags.
+
+Mon May 10 15:13:37 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Mon Feb  8 22:10:36 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kinit.c: If unistd.h is not available, use manual definitions
+		for getopt, optarg, and optind.  (For Windows).
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-26  Marc Horowitz  <marc@mit.edu>
+
+	* kinit.c: convert to new init_creds api
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kinit.c (main): POSIX states that getopt returns -1 when it
+		is done parsing options, not EOF.
+
+Wed Feb 18 15:42:14 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.  Remove extraneous whitespace.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Jan 21 15:10:37 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* kinit.c (main): returns int, not void. ANSI X3.159-1989
+	2.1.2.2.1 says so, and gcc now warns about it. (eichin@cygnus.com)
+
+Thu May 29 19:39:08 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kinit.c (main): Fix bug where kinit would core dump if given a
+		really long principal name.
+
+Tue Feb 25 00:29:46 1997  Richard Basch  <basch@lehman.com>
+
+	* kinit.c: Moved krb5_read_password back into the library (win32)
+
+Sat Feb 15 12:24:32 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Link in ComErr library $(CLIB)
+	* kinit.c: Winsock initialization/teardown is now done by krb5 lib
+
+Thu Feb 13 14:27:41 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in:
+		Link wsock32 library (win32)
+
+	* kinit.c:
+		Added krb5_read_password implementation for win32 console.
+		Initialize Winsock library (win32)
+
+Sat Feb  8 15:37:39 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in:
+		Build kinit.exe (win32 console app)
+
+	* kinit.c:
+		Removed unused local variables
+		Created prototypes for internal functions (win32)
+
+Mon Jan 27 16:44:20 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Thu Dec  5 21:59:08 1996  Tom Yu  <tlyu@mit.edu>
 
 	* kinit.M: v5srvtab -> krb5.keytab [279]

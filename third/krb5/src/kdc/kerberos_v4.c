@@ -17,7 +17,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -38,15 +41,9 @@
 
 #include <stdio.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
 #include <signal.h>
-#ifndef POSIX_TERMIOS
-#include <sgtty.h>
-#endif
-#include <sys/ioctl.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #ifdef TIME_WITH_SYS_TIME
@@ -63,7 +60,6 @@
 /* v4 include files:
  */
 #include <krb.h>
-#include <krb4-proto.h>
 #include <des.h>
 #include <klog.h>
 #include <prot.h>
@@ -72,10 +68,12 @@
 
 extern int errno;
 
-int compat_decrypt_key PROTOTYPE((krb5_key_data *, C_Block));
-int kerb_get_principal PROTOTYPE((char *, char *, Principal *, int,
-				  int *));
-int check_princ PROTOTYPE((char *, char *, unsigned, Principal *));
+static int compat_decrypt_key PROTOTYPE((krb5_key_data *, C_Block,
+					 krb5_keyblock *, int));
+static int kerb_get_principal PROTOTYPE((char *, char *, Principal *, int,
+				  int *, krb5_keyblock *, krb5_kvno, int));
+static int check_princ PROTOTYPE((char *, char *, unsigned, Principal *,
+			   krb5_keyblock *, int));
 
 #ifdef HAVE_STDARG_H
 char * v4_klog KRB5_PROTOTYPE((int, const char *, ...));
@@ -87,9 +85,6 @@ char * v4_klog KRB5_PROTOTYPE((int, char *, va_dcl));
 /* take this out when we don't need it anymore */
 int krbONE = 1;
 
-#ifdef notdef
-static struct sockaddr_in sin = {AF_INET};
-#endif
 int     f;
 
 /* XXX several files in libkdb know about this */
@@ -154,8 +149,67 @@ static krb5_data *response;
 
 void kerberos_v4 PROTOTYPE((struct sockaddr_in *, KTEXT));
 void kerb_err_reply PROTOTYPE((struct sockaddr_in *, KTEXT, long, char *));
-int set_tgtkey PROTOTYPE((char *));
- 
+static int set_tgtkey PROTOTYPE((char *, krb5_kvno));
+
+/* Attributes converted from V5 to V4 - internal representation */
+#define V4_KDB_REQUIRES_PREAUTH  0x1
+#define V4_KDB_DISALLOW_ALL_TIX  0x2
+#define V4_KDB_REQUIRES_PWCHANGE 0x4
+
+
+/* v4 compatibitly mode switch */
+#define KDC_V4_NONE		0	/* Don't even respond to packets */
+#define KDC_V4_DISABLE		1	/* V4 requests return an error */
+#define	KDC_V4_FULL		2	/* Preauth required go through */
+#define KDC_V4_NOPREAUTH	3	/* Preauth required disallowed */
+
+#define KDC_V4_DEFAULT_MODE KDC_V4_NOPREAUTH
+/* Flag on how to handle v4 */
+static int		kdc_v4;
+
+struct v4mode_lookup_entry {
+    int                 mode;                   /* Mode setting */
+    const char *	v4_specifier;		/* How to recognize it	*/
+};
+
+static const struct v4mode_lookup_entry  v4mode_table[] = {
+/*  mode                input specifier */
+{ KDC_V4_NONE,          "none"          },
+{ KDC_V4_DISABLE,       "disable"       }, 
+{ KDC_V4_FULL,          "full"          },
+{ KDC_V4_NOPREAUTH,     "nopreauth"     }
+};
+
+static const int v4mode_table_nents = sizeof(v4mode_table)/
+				      sizeof(v4mode_table[0]);
+
+void process_v4_mode(progname, string)
+    const char          *progname;
+    const char          *string;
+{
+    int i, found;
+
+    found = 0;
+    kdc_v4 = KDC_V4_DEFAULT_MODE;
+
+    if(!string) return;  /* Set to default mode */
+    
+    for (i=0; i<v4mode_table_nents; i++) {
+	if (!strcasecmp(string, v4mode_table[i].v4_specifier)) {
+	    found = 1;
+	    kdc_v4 = v4mode_table[i].mode;
+	    break;
+	}
+    }
+
+    if(!found) {
+      /* It is considered fatal if we request a mode that is not found */
+	com_err(progname, 0, "invalid v4_mode %s", string);
+	exit(1);
+    }
+    return;
+}
+
 krb5_error_code
 process_v4( pkt, client_fulladdr, is_secondary, resp)
 const krb5_data *pkt;
@@ -168,6 +222,12 @@ krb5_data **resp;
     krb5_error_code retval;
     KTEXT_ST v4_pkt;
     char *lrealm;
+
+    /* Check if disabled completely */
+    if (kdc_v4 == KDC_V4_NONE) {
+	(void) klog(L_KRB_PERR, "Disabled KRB V4 request");
+	return KRB5KDC_ERR_BAD_PVNO;
+    }
 
     if ((retval = krb5_timeofday(kdc_context, (krb5_timestamp *) &kerb_time.tv_sec)))
         return(retval);
@@ -188,7 +248,7 @@ krb5_data **resp;
 		     sizeof client_sockaddr.sin_addr);
     memset( client_sockaddr.sin_zero, 0, sizeof client_sockaddr.sin_zero);
 
-    /* convert v5 packet structure to v5's.
+    /* convert v5 packet structure to v4's.
      * this copy is gross, but necessary:
      */
     if (pkt->length > MAX_KTXT_LEN) {
@@ -202,27 +262,7 @@ krb5_data **resp;
     *resp = response;
     return(retval);
 }
-#if 0
-/* convert k4's klog() levels into corresponding errors for v5: */
-int type_2_v5err[] = { 0,	/* 		0 No error		     */
-    KDC_ERR_NONE,		/* L_NET_ERR	1 Error in network code      */
-    KDC_ERR_NONE,		/* L_NET_INFO	2 Info on network activity   */
-    KRB_AP_ERR_BADVERSION,	/* L_KRB_PERR	3 Kerberos protocol errors   */
-    KDC_ERR_NONE,		/* L_KRB_PINFO	4 Kerberos protocol info     */
-    KDC_ERR_NONE,		/* L_INI_REQ	5 Request for initial ticket */
-    KRB_AP_ERR_BADVERSION,	/* L_NTGT_INTK	6 Initial request not for TGT*/
-    KDC_ERR_NONE,		/* L_DEATH_REQ	7 Request for server death   */
-    KDC_ERR_NONE,		/* L_TKT_REQ	8 All ticket requests w/ tgt */
-    KDC_ERR_SERVICE_EXP,	/* L_ERR_SEXP	9 Service expired	     */
-    KDC_ERR_C_OLD_MAST_KVNO,	/* L_ERR_MKV	10 Master key version old    */
-    KDC_ERR_NULL_KEY,		/* L_ERR_NKY    11 User's key is null        */
-    KDC_ERR_PRINCIPAL_NOT_UNIQUE, /* L_ERR_NUN	12 Principal not unique      */
-    KDC_ERR_C_PRINCIPAL_UNKNOWN,  /* L_ERR_UNK	13 Principal Unknown         */
-    KDC_ERR_NONE,		/* L_ALL_REQ    14 All requests	     	     */
-    KDC_ERR_NONE,		/* L_APPL_REQ   15 Application requests w/tgt*/
-    KRB_AP_ERR_BADVERSION	/* L_KRB_PWARN  16 Protocol warning messages */
-};
-#endif
+
 #ifdef HAVE_STDARG_H
 char * v4_klog( int type, const char *format, ...)
 #else
@@ -299,37 +339,59 @@ hang()
 }
 #define kdb_encrypt_key( in, out, mk, mks, e_d_flag)
 #define LONGLEN 4
+#define K4KDC_ENCTYPE_OK(e)			\
+((e) == ENCTYPE_DES_CBC_CRC			\
+ || (e) == ENCTYPE_DES_CBC_MD4			\
+ || (e) == ENCTYPE_DES_CBC_MD5			\
+ || (e) == ENCTYPE_DES_CBC_RAW)
 
 /* take a v5 keyblock, masquerading as a v4 key,
  * decrypt it, and convert the resulting v5 keyblock
  * to a real v4 key.
  * this is ugly, but it saves changing more v4 code.
+ *
+ * Also, keep old krb5_keyblock around in case we want to use it later.
  */
-int compat_decrypt_key (in5, out4)
-     krb5_key_data *in5;
-     C_Block out4;
+static int
+compat_decrypt_key (in5, out4, out5, issrv)
+    krb5_key_data *in5;
+    C_Block out4;
+    krb5_keyblock *out5;
+    int issrv;			/* whether it's a server key */
 {
-    krb5_keyblock out5;
-    int retval = -1;
+    krb5_error_code retval;
 
-    out5.contents = NULL;
-    if (krb5_dbekd_decrypt_key_data(kdc_context,&master_encblock,in5,&out5,NULL)){
+    out5->contents = NULL;
+    memset(out4, 0, sizeof(out4));
+    retval = krb5_dbekd_decrypt_key_data(kdc_context, &master_keyblock,
+					 in5, out5, NULL);
+    if (retval) {
 	lt = klog(L_DEATH_REQ, "KDC can't decrypt principal's key.");
+	out5->contents = NULL;
 	return(retval);
     }
-    if (out5.length != KRB5_MIT_DES_KEYSIZE)
-	lt = klog(L_DEATH_REQ, "internal keysize error in kdc");
-    else if ((out5.enctype != ENCTYPE_DES_CBC_CRC) &&
-	     (out5.enctype != ENCTYPE_DES_CBC_MD4) &&
-	     (out5.enctype != ENCTYPE_DES_CBC_MD5) &&
-	     (out5.enctype != ENCTYPE_DES_CBC_RAW))
-	lt = klog(L_DEATH_REQ, "incompatible principal key type.");
-    else {
-	memcpy(out4, out5.contents, out5.length);
-	retval = 0;
+    if (K4KDC_ENCTYPE_OK(out5->enctype)) {
+	if (out5->length == KRB5_MIT_DES_KEYSIZE) 
+	    memcpy(out4, out5->contents, out5->length);
+	else {
+	    lt = klog(L_DEATH_REQ, "internal keysize error in kdc");
+	    krb5_free_keyblock_contents(kdc_context, out5);
+	    out5->contents = NULL;
+	    retval = -1;
+	}
+    } else {
+	if (!issrv) {
+	    lt = klog(L_DEATH_REQ, "incompatible principal key type.");
+	    krb5_free_keyblock_contents(kdc_context, out5);
+	    out5->contents = NULL;
+	    retval = -1;
+	} else {
+	    /* KLUDGE! If it's a non-raw des3 key, bash its enctype */
+	    if (out5->enctype == ENCTYPE_DES3_CBC_SHA1 ||
+		out5->enctype == ENCTYPE_LOCAL_DES3_HMAC_SHA1)
+		out5->enctype = ENCTYPE_DES3_CBC_RAW;
+	}
     }
-    memset(out5.contents, 0, out5.length);
-    krb5_xfree(out5.contents);
     return(retval);
 }
 
@@ -338,13 +400,16 @@ int compat_decrypt_key (in5, out4)
 #define MIN5 300
 #define HR21 255
 
-int
-kerb_get_principal(name, inst, principal, maxn, more)
+static int
+kerb_get_principal(name, inst, principal, maxn, more, k5key, kvno, issrv)
     char   *name;               /* could have wild card */
     char   *inst;               /* could have wild card */
     Principal *principal;
     int maxn;          /* max number of name structs to return */
     int    *more;               /* more tuples than room for */
+    krb5_keyblock *k5key;
+    krb5_kvno kvno;
+    int issrv;			/* true if retrieving a service key */
 {
     /* Note that this structure should not be passed to the
        krb5_free* functions, because the pointers within it point
@@ -396,27 +461,52 @@ kerb_get_principal(name, inst, principal, maxn, more)
         return(nprinc);
     } 
 
-    if (krb5_dbe_find_enctype(kdc_context,
-			       &entries,
-			       ENCTYPE_DES_CBC_CRC,
-			       KRB5_KDB_SALTTYPE_V4,
-			       -1,
-			       &pkey) &&
-	krb5_dbe_find_enctype(kdc_context,
-			       &entries,
-			       ENCTYPE_DES_CBC_CRC,
-			       -1,
-			       -1,
-			       &pkey))
-    {
-	lt = klog(L_KRB_PERR, "KDC V4: principal %s.%s isn't V4 compatible",
-		  name, inst);
-	krb5_db_free_principal(kdc_context, &entries, nprinc);
-	return(0);
+    if (!issrv) {
+	if (krb5_dbe_find_enctype(kdc_context,
+				  &entries,
+				  ENCTYPE_DES_CBC_CRC,
+				  KRB5_KDB_SALTTYPE_V4,
+				  kvno,
+				  &pkey) &&
+	    krb5_dbe_find_enctype(kdc_context,
+				  &entries,
+				  ENCTYPE_DES_CBC_CRC,
+				  -1,
+				  kvno,
+				  &pkey)) {
+	    lt = klog(L_KRB_PERR,
+		      "KDC V4: principal %s.%s isn't V4 compatible",
+		      name, inst);
+	    krb5_db_free_principal(kdc_context, &entries, nprinc);
+	    return(0);
+	}
+    } else {
+	/* XXX yes I know this is a hardcoded search order */
+	if (krb5_dbe_find_enctype(kdc_context, &entries,
+				  ENCTYPE_DES3_CBC_RAW,
+				  -1, kvno, &pkey) &&
+	    krb5_dbe_find_enctype(kdc_context, &entries,
+				  ENCTYPE_LOCAL_DES3_HMAC_SHA1,
+				  -1, kvno, &pkey) &&
+	    krb5_dbe_find_enctype(kdc_context, &entries,
+				  ENCTYPE_DES3_CBC_SHA1,
+				  -1, kvno, &pkey) &&
+	    krb5_dbe_find_enctype(kdc_context, &entries,
+				  ENCTYPE_DES_CBC_CRC,
+				  KRB5_KDB_SALTTYPE_V4, kvno, &pkey) &&
+	    krb5_dbe_find_enctype(kdc_context, &entries,
+				  ENCTYPE_DES_CBC_CRC,
+				  -1, kvno, &pkey)) {
+	    lt = klog(L_KRB_PERR,
+		      "KDC V4: failed to find key for %s.%s",
+		      name, inst);
+	    krb5_db_free_principal(kdc_context, &entries, nprinc);
+	    return(0);
+	}
     }
 
-    if (! compat_decrypt_key( pkey, k)) {
- 	memcpy( &principal->key_low,           k,     LONGLEN);
+    if (!compat_decrypt_key(pkey, k, k5key, issrv)) {
+ 	memcpy( &principal->key_low, k, LONGLEN);
        	memcpy( &principal->key_high, (krb5_ui_4 *) k + 1, LONGLEN);
     }
     /* convert v5's entries struct to v4's Principal struct:
@@ -424,15 +514,36 @@ kerb_get_principal(name, inst, principal, maxn, more)
      */
     v4_time = (entries.max_life + MIN5 - 1) / MIN5;
     principal->max_life = v4_time > HR21 ? HR21 : (unsigned char) v4_time;
-    principal->exp_date = (unsigned long) entries.expiration;
+    /*
+     * This is weird, but the intent is that the expiration is the minimum
+     * of the principal expiration and key expiration
+     */
+    principal->exp_date = (unsigned long) 
+        entries.expiration && entries.pw_expiration ?
+        min(entries.expiration, entries.pw_expiration) :
+        (entries.pw_expiration ? entries.pw_expiration :
+        entries.expiration);
 /*    principal->mod_date = (unsigned long) entries.mod_date; */
 /* Set the master key version to 1. It's not really useful because all keys
  * will be encrypted in the same master key version, and digging out the 
- * actuall key version will be harder than it's worth --proven */
+ * actual key version will be harder than it's worth --proven */
 /*    principal->kdc_key_ver = entries.mkvno; */
     principal->kdc_key_ver = 1;
     principal->key_version = pkey->key_data_kvno;
+    /* We overload the attributes with the relevant v5 ones */
     principal->attributes = 0;
+    if (isflagset(entries.attributes,  KRB5_KDB_REQUIRES_HW_AUTH) ||
+	isflagset(entries.attributes,  KRB5_KDB_REQUIRES_PRE_AUTH)) {
+          principal->attributes |= V4_KDB_REQUIRES_PREAUTH;
+    }
+    if (isflagset(entries.attributes,  KRB5_KDB_DISALLOW_ALL_TIX)) {
+          principal->attributes |= V4_KDB_DISALLOW_ALL_TIX;
+    }
+    if (isflagset(entries.attributes,  KRB5_KDB_REQUIRES_PWCHANGE)) {
+          principal->attributes |= V4_KDB_REQUIRES_PWCHANGE;
+    }
+
+
 
     /* set up v4 format of each date's text: */
     for ( date = &principal->exp_date, text = principal->exp_date_txt;
@@ -495,7 +606,11 @@ kerberos_v4(client, pkt)
     Key_schedule key_s;
     char   *ptr;
 
+    krb5_keyblock k5key;
+    krb5_kvno kvno;
 
+
+    k5key.contents = NULL;	/* in case we have to free it */
 
     ciph->length = 0;
 
@@ -506,6 +621,17 @@ kerberos_v4(client, pkt)
     req_msg_type = pkt_msg_type(pkt);	/* 1 byte, Kerberos msg type */
 
     req_act_vno = req_version;
+
+    /* check if disabled, but we tell client */
+    if (kdc_v4 == KDC_V4_DISABLE) {
+	lt = klog(L_KRB_PERR,
+	"KRB will not handle v4 request from %s",
+		  inet_ntoa(client_host));
+	/* send an error reply */
+	req_name_ptr = req_inst_ptr = req_realm_ptr = "";
+	kerb_err_reply(client, pkt, KERB_ERR_PKT_VER, lt);
+	return;
+    }
 
     /* check packet version */
     if (req_version != KRB_PROT_VERSION) {
@@ -573,11 +699,14 @@ kerberos_v4(client, pkt)
 	       inet_ntoa(client_host), req_name_ptr, req_inst_ptr, 0);
 
 	    if ((i = check_princ(req_name_ptr, req_inst_ptr, 0,
-				 &a_name_data))) {
+				 &a_name_data, &k5key, 0))) {
 		kerb_err_reply(client, pkt, i, lt);
 		a_name_data.key_low = a_name_data.key_high = 0;
+		krb5_free_keyblock_contents(kdc_context, &k5key);
 		return;
 	    }
+	    /* don't use k5key for client */
+	    krb5_free_keyblock_contents(kdc_context, &k5key);
 	    tk->length = 0;	/* init */
 	    if (strcmp(service, "krbtgt"))
 		klog(L_NTGT_INTK,
@@ -585,10 +714,11 @@ kerberos_v4(client, pkt)
 		    req_inst_ptr, service, instance, 0);
 	    /* this does all the checking */
 	    if ((i = check_princ(service, instance, lifetime,
-				 &s_name_data))) {
+				 &s_name_data, &k5key, 1))) {
 		kerb_err_reply(client, pkt, i, lt);
 		a_name_data.key_high = a_name_data.key_low = 0;
 		s_name_data.key_high = s_name_data.key_low = 0;
+		krb5_free_keyblock_contents(kdc_context, &k5key);
 		return;
 	    }
 	    /* Bound requested lifetime with service and user */
@@ -609,10 +739,22 @@ kerberos_v4(client, pkt)
 	    kdb_encrypt_key(key, key, master_key,
 			    master_key_schedule, DECRYPT);
 	    /* construct and seal the ticket */
-	    krb_create_ticket(tk, k_flags, a_name_data.name,
-		a_name_data.instance, local_realm,
-		 client_host.s_addr, (char *) session_key, lifetime, kerb_time.tv_sec,
-			 s_name_data.name, s_name_data.instance, key);
+	    if (K4KDC_ENCTYPE_OK(k5key.enctype)) {
+		krb_create_ticket(tk, k_flags, a_name_data.name,
+				  a_name_data.instance, local_realm,
+				  client_host.s_addr, (char *) session_key,
+				  lifetime, kerb_time.tv_sec,
+				  s_name_data.name, s_name_data.instance,
+				  key);
+	    } else {
+		krb_cr_tkt_krb5(tk, k_flags, a_name_data.name,
+				a_name_data.instance, local_realm,
+				client_host.s_addr, (char *) session_key,
+				lifetime, kerb_time.tv_sec,
+				s_name_data.name, s_name_data.instance,
+				&k5key);
+	    }
+	    krb5_free_keyblock_contents(kdc_context, &k5key);
 	    memset(key, 0, sizeof(key));
 	    memset(key_s, 0, sizeof(key_s));
 
@@ -671,14 +813,15 @@ kerberos_v4(client, pkt)
 	    memcpy(auth->dat, pkt->dat, auth->length);
 
 	    strncpy(tktrlm, (char *)auth->dat + 3, REALM_SZ);
-	    if (set_tgtkey(tktrlm)) {
+	    kvno = (krb5_kvno)auth->dat[2];
+	    if (set_tgtkey(tktrlm, kvno)) {
 		lt = klog(L_ERR_UNK,
-		    "FAILED realm %s unknown. Host: %s ",
-			  tktrlm, inet_ntoa(client_host));
+			  "FAILED set_tgtkey realm %s, kvno %d. Host: %s ",
+			  tktrlm, kvno, inet_ntoa(client_host));
 		kerb_err_reply(client, pkt, kerno, lt);
 		return;
 	    }
-	    kerno = krb_rd_req(auth, "ktbtgt", tktrlm, client_host.s_addr,
+	    kerno = krb_rd_req(auth, "krbtgt", tktrlm, client_host.s_addr,
 		ad, 0);
 
 	    if (kerno) {
@@ -718,9 +861,11 @@ kerberos_v4(client, pkt)
 		return;
 	    }
 	    kerno = check_princ(service, instance, req_life,
-		&s_name_data);
+				&s_name_data, &k5key, 1);
 	    if (kerno) {
 		kerb_err_reply(client, pkt, kerno, lt);
+		s_name_data.key_high = s_name_data.key_low = 0;
+		krb5_free_keyblock_contents(kdc_context, &k5key);
 		return;
 	    }
 	    /* Bound requested lifetime with service and user */
@@ -743,11 +888,22 @@ kerberos_v4(client, pkt)
 	    des_new_random_key(session_key);
 #endif
 
-	    krb_create_ticket(tk, k_flags, ad->pname, ad->pinst,
-			      ad->prealm, client_host.s_addr,
-			      (char *) session_key, lifetime, kerb_time.tv_sec,
-			      s_name_data.name, s_name_data.instance,
-			      key);
+	    if (K4KDC_ENCTYPE_OK(k5key.enctype)) {
+		krb_create_ticket(tk, k_flags, ad->pname, ad->pinst,
+				  ad->prealm, client_host.s_addr,
+				  (char *) session_key, lifetime,
+				  kerb_time.tv_sec,
+				  s_name_data.name, s_name_data.instance,
+				  key);
+	    } else {
+		krb_cr_tkt_krb5(tk, k_flags, ad->pname, ad->pinst,
+				ad->prealm, client_host.s_addr,
+				(char *) session_key, lifetime,
+				kerb_time.tv_sec,
+				s_name_data.name, s_name_data.instance,
+				&k5key);
+	    }
+	    krb5_free_keyblock_contents(kdc_context, &k5key);
 	    memset(key, 0, sizeof(key));
 	    memset(key_s, 0, sizeof(key_s));
 
@@ -793,38 +949,6 @@ kerberos_v4(client, pkt)
 }
 
 
-#ifndef BACKWARD_COMPAT
-/*
- * setup_disc 
- *
- * disconnect all descriptors, remove ourself from the process
- * group that spawned us. 
- */
-
-setup_disc()
-{
-
-    int     s;
-
-    for (s = 0; s < 3; s++) {
-	(void) close(s);
-    }
-
-    (void) open("/dev/null", 0);
-    (void) dup2(0, 1);
-    (void) dup2(0, 2);
-
-    s = open("/dev/tty", 2);
-
-    if (s >= 0) {
-	ioctl(s, TIOCNOTTY, (struct sgttyb *) 0);
-	(void) close(s);
-    }
-    (void) chdir("/tmp");
-    return;
-}
-#endif /* BACKWARD_COMPAT */
-
 
 /*
  * kerb_er_reply creates an error reply packet and sends it to the
@@ -852,34 +976,6 @@ kerb_err_reply(client, pkt, err, string)
 
 }
 
-#ifndef BACKWARD_COMPAT
-/*
- * Make sure that database isn't stale.
- *
- * Exit if it is; we don't want to tell lies.
- */
-
-static void check_db_age()
-{
-    long age;
-    
-    if (max_age != -1) {
-	/* Requires existance of kerb_get_db_age() */
-	gettimeofday(&kerb_time, 0);
-	age = kerb_get_db_age();
-	if (age == 0) {
-	    klog(L_KRB_PERR, "Database currently being updated!");
-	    hang();
-	}
-	if ((age + max_age) < kerb_time.tv_sec) {
-	    klog(L_KRB_PERR, "Database out of date!");
-	    hang();
-	    /* NOTREACHED */
-	}
-    }
-}
-#endif /* BACKWARD_COMPAT */
-
 /*
  * Given a pointer to a long containing the number of seconds
  * since the beginning of time (midnight 1 Jan 1970 GMT), return
@@ -904,18 +1000,21 @@ static char *krb4_stime(t)
     return st;
 }
 
-int check_princ(p_name, instance, lifetime, p)
+static int
+check_princ(p_name, instance, lifetime, p, k5key, issrv)
     char   *p_name;
     char   *instance;
     unsigned lifetime;
 
     Principal *p;
+    krb5_keyblock *k5key;
+    int issrv;			/* whether this is a server key */
 {
     static int n;
     static int more;
  /* long trans; */
 
-    n = kerb_get_principal(p_name, instance, p, 1, &more);
+    n = kerb_get_principal(p_name, instance, p, 1, &more, k5key, 0, issrv);
     klog(L_ALL_REQ,
 	 "Principal: \"%s\", Instance: \"%s\" Lifetime = %d n = %d",
 	 p_name, instance, lifetime, n, 0);
@@ -943,12 +1042,50 @@ int check_princ(p_name, instance, lifetime, p)
 		  p_name, instance, 0);
 	return KERB_ERR_PRINCIPAL_NOT_UNIQUE;
     }
+
+    /*
+     * Check our V5 stuff first.
+     */
+
+    /*
+     * Does the principal have REQUIRES_PWCHANGE set?
+     */
+    if (isflagset(p->attributes, V4_KDB_REQUIRES_PWCHANGE)) {
+	lt = klog(L_ERR_SEXP, "V5 REQUIRES_PWCHANGE set "
+		  "\"%s\" \"%s\"", p_name, instance);
+	return KERB_ERR_NAME_EXP;
+    }
+
+    /*
+     * Does the principal have DISALLOW_ALL_TIX set?
+     */
+    if (isflagset(p->attributes, V4_KDB_DISALLOW_ALL_TIX)) {
+	lt = klog(L_ERR_SEXP, "V5 DISALLOW_ALL_TIX set: "
+		  "\"%s\" \"%s\"", p_name, instance);
+	/* Not sure of a better error to return */
+	return KERB_ERR_NAME_EXP;
+    }
+
+    /*
+     * Does the principal require preauthentication?
+     */
+    if ((kdc_v4 == KDC_V4_NOPREAUTH) &&
+	isflagset(p->attributes, V4_KDB_REQUIRES_PREAUTH)) {
+        lt = klog(L_ERR_SEXP, "V5 REQUIRES_PREAUTH set: "
+		  "\"%s\" \"%s\"", p_name, instance);
+	/* Not sure of a better error to return */
+	return KERB_ERR_AUTH_EXP;
+/*	return KERB_ERR_NAME_EXP;*/
+    }
+
     /* If the user's key is null, we want to return an error */
-    if ((p->key_low == 0) && (p->key_high == 0)) {
-	/* User has a null key */
-	lt = klog(L_ERR_NKY, "Null key \"%s\" \"%s\"", p_name,
-	    instance, 0);
-	return KERB_ERR_NULL_KEY;
+    if (k5key->contents != NULL && K4KDC_ENCTYPE_OK(k5key->enctype)) {
+	if ((p->key_low == 0) && (p->key_high == 0)) {
+	    /* User has a null key */
+	    lt = klog(L_ERR_NKY, "Null key \"%s\" \"%s\"", p_name,
+		      instance, 0);
+	    return KERB_ERR_NULL_KEY;
+	}
     }
     /* make sure the service hasn't expired */
     if (((u_long) p->exp_date != 0)&&
@@ -965,52 +1102,47 @@ int check_princ(p_name, instance, lifetime, p)
 
 
 /* Set the key for krb_rd_req so we can check tgt */
-int set_tgtkey(r)
+static int
+set_tgtkey(r, kvno)
     char   *r;			/* Realm for desired key */
+    krb5_kvno kvno;
 {
     int     n;
     static char lastrealm[REALM_SZ] = "";
+    static int last_kvno = 0;
     Principal p_st;
     Principal *p = &p_st;
     C_Block key;
+    krb5_keyblock k5key;
 
-    if (!strcmp(lastrealm, r))
+    k5key.contents = NULL;
+    if (!strcmp(lastrealm, r) && last_kvno == kvno)
 	return (KSUCCESS);
 
 /*  log("Getting key for %s", r); */
 
-    n = kerb_get_principal("krbtgt", r, p, 1, &more);
+    n = kerb_get_principal("krbtgt", r, p, 1, &more, &k5key, kvno, 1);
     if (n == 0)
 	return (KFAILURE);
 
-    /* unseal tgt key from master key */
-    memcpy(key,                &p->key_low,  4);
-    memcpy(((krb5_ui_4 *) key) + 1, &p->key_high, 4);
-    kdb_encrypt_key(key, key, master_key,
-		    master_key_schedule, DECRYPT);
-    krb_set_key((char *) key, 0);
-    strcpy(lastrealm, r);
+    if (!K4KDC_ENCTYPE_OK(k5key.enctype)) {
+	krb_set_key_krb5(kdc_context, &k5key);
+	strcpy(lastrealm, r);
+	last_kvno = kvno;
+    } else {
+	/* unseal tgt key from master key */
+	memcpy(key,                &p->key_low,  4);
+	memcpy(((krb5_ui_4 *) key) + 1, &p->key_high, 4);
+	kdb_encrypt_key(key, key, master_key,
+			master_key_schedule, DECRYPT);
+	krb_set_key((char *) key, 0);
+	strcpy(lastrealm, r);
+	last_kvno = kvno;
+    }
+    krb5_free_keyblock_contents(kdc_context, &k5key);
     return (KSUCCESS);
 }
 
-#ifndef BACKWARD_COMPAT
-static void
-hang()
-{
-    if (pause_int == -1) {
-	klog(L_KRB_PERR, "Kerberos will pause so as not to loop init");
-	for (;;)
-	    pause();
-    } else {
-	char buf[256];
-	sprintf(buf,  "Kerberos will wait %d seconds before dying so as not to loop init", pause_int);
-	klog(L_KRB_PERR, buf);
-	sleep(pause_int);
-	klog(L_KRB_PERR, "Do svedania....\n");
-	exit(1);
-    }
-}
-#endif /* BACKWARD_COMPAT */
 #else	/* KRB5_KRB4_COMPAT */
 #include "k5-int.h"
 #endif /* KRB5_KRB4_COMPAT */

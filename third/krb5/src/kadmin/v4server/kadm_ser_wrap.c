@@ -28,9 +28,8 @@ unwraps wrapped packets and calls the appropriate server subroutine
 #include <krb_err.h>
 #include <syslog.h>
 
-#ifdef OVSEC_KADM
+#ifdef KADM5
 #include <kadm5/admin.h>
-extern void *ovsec_handle;
 #endif
 
 Kadm_Server server_parm;
@@ -39,7 +38,7 @@ Kadm_Server server_parm;
 kadm_ser_init
 set up the server_parm structure
 */
-#ifdef OVSEC_KADM
+#ifdef KADM5
 kadm_ser_init(inter, realm, params)
     int inter;			/* interactive or from file */
     char realm[];
@@ -66,12 +65,9 @@ kadm_ser_init(inter, realm)
     (void) strcpy(server_parm.sname, PWSERV_NAME);
     (void) strcpy(server_parm.sinst, KRB_MASTER);
     (void) strcpy(server_parm.krbrlm, realm);
-    if (krb5_build_principal(kadm_context,
-			     &server_parm.sprinc,
-			     strlen(realm),
-			     realm,
-			     PWSERV_NAME,
-			     KRB_MASTER, 0))
+    if (krb5_425_conv_principal(kadm_context, server_parm.sname,
+				server_parm.sinst, server_parm.krbrlm,
+				&server_parm.sprinc))
 	return KADM_NO_MAST;
     server_parm.admin_fd = -1;
     /* setting up the addrs */
@@ -87,18 +83,7 @@ kadm_ser_init(inter, realm)
     /* setting up the database */
     mkey_name = KRB5_KDB_M_NAME;
 
-#ifdef OVSEC_KADM
     server_parm.master_keyblock.enctype = params->enctype;
-    krb5_use_enctype(kadm_context, &server_parm.master_encblock, 
-		     server_parm.master_keyblock.enctype);
-#else
-    if (inter == 1) {
-	server_parm.master_keyblock.enctype = ENCTYPE_DES_CBC_MD5;
-	krb5_use_enctype(kadm_context, &server_parm.master_encblock, 
-			 server_parm.master_keyblock.enctype);
-    } else
-	server_parm.master_keyblock.enctype = ENCTYPE_UNKNOWN;
-#endif
     
     retval = krb5_db_setup_mkey_name(kadm_context, mkey_name, realm,
 				     (char **) 0,
@@ -106,24 +91,15 @@ kadm_ser_init(inter, realm)
     if (retval)
 	return KADM_NO_MAST;
     krb5_db_fetch_mkey(kadm_context, server_parm.master_princ,
-		       &server_parm.master_encblock,
+		       server_parm.master_keyblock.enctype,
 		       (inter == 1), FALSE,
-#ifdef OVSEC_KADM
 		       params->stash_file,
-#else
-		       (char *) NULL,
-#endif
 		       NULL,
 		       &server_parm.master_keyblock);
     if (retval)
 	return KADM_NO_MAST;
     retval = krb5_db_verify_master_key(kadm_context, server_parm.master_princ,
-				       &server_parm.master_keyblock,
-				       &server_parm.master_encblock);
-    if (retval)
-	return KADM_NO_VERI;
-    retval = krb5_process_key(kadm_context, &server_parm.master_encblock,
-			      &server_parm.master_keyblock);
+				       &server_parm.master_keyblock);
     if (retval)
 	return KADM_NO_VERI;
     retval = krb5_db_get_principal(kadm_context, server_parm.master_princ,
@@ -240,17 +216,8 @@ int *dat_len;
 	retval = kadm_ser_cpw(msg_st.app_data+1,(int) msg_st.app_length,&ad,
 			      &retdat, &retlen);
 	break;
-#ifndef OVSEC_KADM
     case ADD_ENT:
 	retval = kadm_ser_add(msg_st.app_data+1,(int) msg_st.app_length,&ad,
-			      &retdat, &retlen);
-	break;
-    case DEL_ENT:
-	retval = kadm_ser_del(msg_st.app_data+1,(int) msg_st.app_length,&ad,
-			      &retdat, &retlen);
-	break;
-    case GET_ENT:
-	retval = kadm_ser_get(msg_st.app_data+1,(int) msg_st.app_length,&ad,
 			      &retdat, &retlen);
 	break;
     case MOD_ENT:
@@ -261,11 +228,20 @@ int *dat_len;
 	retval = kadm_ser_ckpw(msg_st.app_data+1,(int) msg_st.app_length,&ad,
 			       &retdat, &retlen);
 	break;
+#ifndef KADM5
+    case DEL_ENT:
+	retval = kadm_ser_del(msg_st.app_data+1,(int) msg_st.app_length,&ad,
+			      &retdat, &retlen);
+	break;
+#endif /* KADM5 */
+    case GET_ENT:
+	retval = kadm_ser_get(msg_st.app_data+1,(int) msg_st.app_length,&ad,
+			      &retdat, &retlen);
+	break;
     case CHG_STAB:
 	retval = kadm_ser_stab(msg_st.app_data+1,(int) msg_st.app_length,&ad,
 			       &retdat, &retlen);
 	break;
-#endif /* OVSEC_KADM */
     default:
 	clr_cli_secrets();
 	errpkt(dat, dat_len, KADM_NO_OPCODE);

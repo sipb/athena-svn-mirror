@@ -1,3 +1,41 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kdc5_hammer.c (main): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Mon Mar 30 16:48:17 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* kdc5_hammer.c (usage): Change usage to refelect reality
+	Add parenthesis around assignements in conditionals.
+
+Wed Feb 18 16:29:34 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 16:45:05 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Sun Aug 17 14:26:57 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add $(SRCS) line.
+
+Tue Feb 18 18:21:16 1997  Richard Basch  <basch@lehman.com>
+
+	* kdc5_hammer.c (verify_cs_pair):
+		Use krb5_free_data_contents instead of krb5_xfree
+
+Sun Feb  9 01:45:03 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Fri Jan 19 23:00:37 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
 
 	* kdc5_hammer.c: Remove krb5_kdc_default_options.

@@ -8,9 +8,12 @@
 
 #include "debug.h"
 
+extern int current_appl_type;
+
 krb5_context test_context;
 int error_count = 0;
 int do_trval = 0;
+int trval2();
 
 void encoder_print_results(code, typestring, description)
 	krb5_data *code;
@@ -34,6 +37,7 @@ void encoder_print_results(code, typestring, description)
 			printf("Error: Return from trval2 is %d.\n", r);
 			exit(1);
 		}
+		current_appl_type = -1;	/* Reset type */
 	} else {
 		retval = asn1_krb5_data_unparse(code,&(code_string));
 		if(retval) {
@@ -58,7 +62,7 @@ void PRS(argc, argv)
 		print_constructed_length, print_skip_context,
 		print_skip_tagnum, print_context_shortcut;
 
-	while ((optchar = getopt(argc, argv, "tp:")) != EOF) {
+	while ((optchar = getopt(argc, argv, "tp:")) != -1) {
 		switch(optchar) {
 		case 't':
 			do_trval = 1;
@@ -82,7 +86,8 @@ void PRS(argc, argv)
 	print_context_shortcut = 1;
 }
 
-void main(argc, argv)
+int
+main(argc, argv)
 	int	argc;
 	char	**argv;
 {
@@ -143,6 +148,7 @@ void main(argc, argv)
   {
     krb5_keyblock keyblk;
     setup(keyblk,keyblock,"keyblock",ktest_make_sample_keyblock);
+    current_appl_type = 1005;
     encode_run(keyblk,keyblock,"keyblock","",encode_krb5_encryption_key);
   }  
   
@@ -316,6 +322,7 @@ void main(argc, argv)
     krb5_kdc_req kdcrb;
     setup(kdcrb,kdc_req_body,"kdc_req_body",ktest_make_sample_kdc_req_body);
     kdcrb.kdc_options &= ~KDC_OPT_ENC_TKT_IN_SKEY;
+    current_appl_type = 1007;	/* Force interpretation as kdc-req-body */
     encode_run(kdcrb,kdc_req_body,"kdc_req_body","",encode_krb5_kdc_req_body);
 
     ktest_destroy_principal(&(kdcrb.client));
@@ -327,6 +334,7 @@ void main(argc, argv)
     kdcrb.rtime = 0;
     ktest_destroy_addresses(&(kdcrb.addresses));
     ktest_destroy_enc_data(&(kdcrb.authorization_data));
+    current_appl_type = 1007;	/* Force interpretation as kdc-req-body */
     encode_run(kdcrb,kdc_req_body,"kdc_req_body","(optionals NULL except second_ticket)",encode_krb5_kdc_req_body);
 
     ktest_destroy_sequence_of_ticket(&(kdcrb.second_ticket));
@@ -334,6 +342,7 @@ void main(argc, argv)
     ktest_make_sample_principal(&(kdcrb.server));
 #endif
     kdcrb.kdc_options &= ~KDC_OPT_ENC_TKT_IN_SKEY;
+    current_appl_type = 1007;	/* Force interpretation as kdc-req-body */
     encode_run(kdcrb,kdc_req_body,"kdc_req_body","(optionals NULL except server)",encode_krb5_kdc_req_body);
   }
   
@@ -428,6 +437,7 @@ void main(argc, argv)
 	com_err("encoding authorization_data",retval,"");
 	exit(1);
     }
+    current_appl_type = 1004;	/* Force type to be authdata */
     encoder_print_results(code, "authorization_data", "");
   }
   
@@ -537,6 +547,7 @@ void main(argc, argv)
   {
     krb5_enc_data enc_data;
     setup(enc_data,krb5_enc_data,"enc_data",ktest_make_sample_enc_data);
+    current_appl_type = 1001;
     encode_run(enc_data,krb5_enc_data,"enc_data","",encode_krb5_enc_data);
   }
   /****************************************************************/
@@ -588,6 +599,7 @@ void main(argc, argv)
 #endif
 
   exit(error_count);
+  return(error_count);
 }
 
 

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -32,7 +35,7 @@
 extern int optind;
 extern char *optarg;
 
-void
+int
 main(argc, argv)
     int argc;
     char **argv;
@@ -55,7 +58,7 @@ main(argc, argv)
     if (strrchr(argv[0], '/'))
 	argv[0] = strrchr(argv[0], '/')+1;
 
-    while ((c = getopt(argc, argv, "qc:")) != EOF) {
+    while ((c = getopt(argc, argv, "qc:")) != -1) {
 	switch (c) {
 	case 'q':
 	    quiet = 1;

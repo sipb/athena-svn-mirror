@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -55,21 +58,15 @@ krb5_send_tgs_basic(context, in_data, in_cred, outbuf)
     krb5_checksum         checksum;
     krb5_authenticator 	  authent;
     krb5_ap_req 	  request;
-    krb5_encrypt_block 	  eblock;
     krb5_data		* scratch;
     krb5_data           * toutbuf;
 
     /* Generate checksum */
-    checksum.length = krb5_checksum_size(context, context->kdc_req_sumtype);
-    if ((checksum.contents = (krb5_octet *) malloc(checksum.length)) == NULL)
-        return(ENOMEM);
-
-    if ((retval = krb5_calculate_checksum(context, context->kdc_req_sumtype,
-					  in_data->data, in_data->length,
-					  (krb5_pointer) in_cred->keyblock.contents,
-					  in_cred->keyblock.length,
-					  &checksum))) {
-        free(checksum.contents);
+    if ((retval = krb5_c_make_checksum(context, context->kdc_req_sumtype,
+				       &in_cred->keyblock,
+				       KRB5_KEYUSAGE_TGS_REQ_AUTH_CKSUM,
+				       in_data, &checksum))) {
+	free(checksum.contents);
 	return(retval);
     }
 
@@ -102,43 +99,11 @@ krb5_send_tgs_basic(context, in_data, in_cred, outbuf)
 	/* Cleanup scratch and scratch data */
         goto cleanup_data;
 
-    /* put together an eblock for this encryption */
-    krb5_use_enctype(context, &eblock, in_cred->keyblock.enctype);
-    request.authenticator.enctype = in_cred->keyblock.enctype;
-    request.authenticator.ciphertext.length =
-        krb5_encrypt_size(scratch->length, eblock.crypto_entry);
-
-    /* add padding area, and zero it */
-    if (!(scratch->data = realloc(scratch->data,
-                                  request.authenticator.ciphertext.length))) {
-        /* may destroy scratch->data */ 
-        krb5_free_ticket(context, request.ticket);
-        retval = ENOMEM;
-        goto cleanup_scratch;
-    }
-    memset(scratch->data + scratch->length, 0,
-          request.authenticator.ciphertext.length - scratch->length);
-
-    if (!(request.authenticator.ciphertext.data =
-          malloc(request.authenticator.ciphertext.length))) {
-        retval = ENOMEM;
-        goto cleanup_ticket;
-    }
-
-    /* do any necessary key pre-processing */
-    if ((retval = krb5_process_key(context, &eblock, &(in_cred)->keyblock)))
-        goto cleanup;
-
     /* call the encryption routine */ 
-    if ((retval=krb5_encrypt(context, (krb5_pointer) scratch->data,
-			     (krb5_pointer)request.authenticator.ciphertext.data,
-			     scratch->length, &eblock, 0))) {
-        krb5_finish_key(context, &eblock);
-        goto cleanup;
-    }
-    
-    if ((retval = krb5_finish_key(context, &eblock)))
-        goto cleanup;
+    if ((retval = krb5_encrypt_helper(context, &in_cred->keyblock,
+				      KRB5_KEYUSAGE_TGS_REQ_AUTH,
+				      scratch, &request.authenticator)))
+	goto cleanup_ticket;
 
     retval = encode_krb5_ap_req(&request, &toutbuf);
     *outbuf = *toutbuf;
@@ -185,6 +150,7 @@ krb5_send_tgs(context, kdcoptions, timestruct, ktypes, sname, addrs,
     krb5_timestamp time_now;
     krb5_pa_data **combined_padata;
     krb5_pa_data ap_req_padata;
+    size_t enclen;
 
     /* 
      * in_creds MUST be a valid credential NOT just a partially filled in
@@ -212,50 +178,21 @@ krb5_send_tgs(context, kdcoptions, timestruct, ktypes, sname, addrs,
 
     if (authorization_data) {
 	/* need to encrypt it in the request */
-	krb5_encrypt_block eblock;
 
 	if ((retval = encode_krb5_authdata((const krb5_authdata**)authorization_data,
 					   &scratch)))
 	    return(retval);
-	krb5_use_enctype(context, &eblock, in_cred->keyblock.enctype);
-	tgsreq.authorization_data.enctype = in_cred->keyblock.enctype;
-	tgsreq.authorization_data.kvno = 0; /* ticket session key has */
-					    /* no version */
-	tgsreq.authorization_data.ciphertext.length =
-	    krb5_encrypt_size(scratch->length, eblock.crypto_entry);
-	/* add padding area, and zero it */
-	if (!(scratch->data = realloc(scratch->data,
-			      tgsreq.authorization_data.ciphertext.length))) {
-	    /* may destroy scratch->data */
-	    krb5_xfree(scratch);
-	    return ENOMEM;
-	}
-	memset(scratch->data + scratch->length, 0,
-	       tgsreq.authorization_data.ciphertext.length - scratch->length);
-	if (!(tgsreq.authorization_data.ciphertext.data =
-	      malloc(tgsreq.authorization_data.ciphertext.length))) {
-	    krb5_free_data(context, scratch);
-	    return ENOMEM;
-	}
-	if ((retval = krb5_process_key(context, &eblock,
-				       &in_cred->keyblock))) {
-	    krb5_free_data(context, scratch);
-	    return retval;
-	}
-	/* call the encryption routine */
-	if ((retval = krb5_encrypt(context, (krb5_pointer) scratch->data,
-		   (krb5_pointer) tgsreq.authorization_data.ciphertext.data,
-				   scratch->length, &eblock, 0))) {
-	    (void) krb5_finish_key(context, &eblock);
+
+	if ((retval = krb5_encrypt_helper(context, &in_cred->keyblock,
+					  KRB5_KEYUSAGE_TGS_REQ_AD_SESSKEY,
+					  scratch,
+					  &tgsreq.authorization_data))) {
 	    krb5_xfree(tgsreq.authorization_data.ciphertext.data);
 	    krb5_free_data(context, scratch);
 	    return retval;
-	}	    
+	}
+
 	krb5_free_data(context, scratch);
-	if ((retval = krb5_finish_key(context, &eblock))) {
-	    krb5_xfree(tgsreq.authorization_data.ciphertext.data);
-	    return retval;
-	}
     }
 
     /* Get the encryption types list */
@@ -337,7 +274,7 @@ krb5_send_tgs(context, kdcoptions, timestruct, ktypes, sname, addrs,
     /* now send request & get response from KDC */
     retval = krb5_sendto_kdc(context, scratch, 
 			     krb5_princ_realm(context, sname),
-			     &rep->response);
+			     &rep->response, NULL);
     krb5_free_data(context, scratch);
 
     if (retval == 0) {

@@ -21,9 +21,10 @@
  */
 
 #include "gssapiP_generic.h"
+#include "string.h"
 
 /*
- * $Id: util_oid.c,v 1.1.1.2 1999-05-03 21:54:06 danw Exp $
+ * $Id: util_oid.c,v 1.1.1.3 1999-10-05 16:12:10 ghudson Exp $
  */
 
 int

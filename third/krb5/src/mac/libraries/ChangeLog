@@ -1,3 +1,31 @@
+Wed Oct  21 17:40:00 1998  Miro Jurisic <meeroh@mit.edu>
+
+	* Metrowerks: Added CodeWarrior Pro4 projects and docs
+	* CodeWarrior Dependencies: Added CodeWarrior Pro4 deps
+
+Wed Jul  1 19:13:25 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* KerberosHeaders.h: Removed #endif with no matching initial #if
+		statement.  (How did this compile before?)
+
+Tue Sep 30 19:04:20 1997  Tom Yu  <tlyu@mit.edu>
+
+	* autoconf.h: Replace HAS_STDLIB_H with something more sane.  Punt
+	POSIX_TYPES.
+
+Thu Sep 25 21:05:23 1997  Tom Yu  <tlyu@mit.edu>
+
+	* autoconf.h: Change HAS_SETVBUF, KRB5_USE_INET to something more
+ 	sane.
+
+Thu Sep 18 17:59:05 1997  Tom Yu  <tlyu@mit.edu>
+
+	* autoconf.h: Replace USE_STRING_H with something more sane.
+
+Tue Jul 15 12:36:05 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* KerberosHeaders.h: Remove (probably unneeded) size_t definition.
+
 Sat Nov 23 00:18:20 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* KerberosHeaders.h: Remove DES3 and SHA support for 1.0, since

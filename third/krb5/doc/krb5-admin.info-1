@@ -1,5 +1,5 @@
-This is Info file krb5-admin.info, produced by Makeinfo-1.55 from the
-input file admin.texinfo.
+This is Info file krb5-admin.info, produced by Makeinfo version 1.68
+from the input file admin.texinfo.
 
 
 File: krb5-admin.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
@@ -24,8 +24,7 @@ File: krb5-admin.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: T
 Copyright
 *********
 
-Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996 by the
-Massachusetts Institute of Technology.
+Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -38,9 +37,12 @@ hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
 appear in supporting documentation, and that the name of M.I.T. not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  M.I.T. makes no
-representations about the suitability of this software for any purpose.
-It is provided "as is" without express or implied warranty.
+software without specific, written prior permission.  Furthermore if you
+modify this software you must label your software as modified software
+and not distribute it in such a fashion that it might be confused with
+the original MIT software.  M.I.T. makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
 
 The following copyright and permission notice applies to the OpenVision
 Kerberos Administration system located in kadmin/create, kadmin/dbutil,
@@ -217,7 +219,7 @@ Service for Open Network Systems, a paper presented at Winter USENIX
 * Kerberos Realms::
 * The Ticket-Granting Ticket::
 * Network Services and the Master Database::
-* The User-Kerberos Interaction::
+* The User/Kerberos Interaction::
 * Definitions::
 
 
@@ -303,7 +305,7 @@ just a file in `/tmp'.  The credentials cache is also called the
 that a credentials cache does not have to be stored in a file.
 
 
-File: krb5-admin.info,  Node: Network Services and the Master Database,  Next: The User--Kerberos Interaction,  Prev: The Ticket-Granting Ticket,  Up: How Kerberos Works
+File: krb5-admin.info,  Node: Network Services and the Master Database,  Next: The User/Kerberos Interaction,  Prev: The Ticket-Granting Ticket,  Up: How Kerberos Works
 
 Network Services and the Master Database
 ========================================
@@ -353,12 +355,12 @@ read only by the service is encrypted using this key.
 
 ---------- Footnotes ----------
 
-(1)  Keytabs were called "srvtabs" in Kerberos V4.
+(1) Keytabs were called "srvtabs" in Kerberos V4.
 
 
-File: krb5-admin.info,  Node: The User--Kerberos Interaction,  Next: Definitions,  Prev: Network Services and the Master Database,  Up: How Kerberos Works
+File: krb5-admin.info,  Node: The User/Kerberos Interaction,  Next: Definitions,  Prev: Network Services and the Master Database,  Up: How Kerberos Works
 
-The User-Kerberos Interaction
+The User/Kerberos Interaction
 =============================
 
 Suppose that you walk up to a host intending to login to it, and then
@@ -411,7 +413,7 @@ Suppose that you walk up to a host intending to login to it, and then
           file), `klogind' will let you login.
 
 
-File: krb5-admin.info,  Node: Definitions,  Prev: The User--Kerberos Interaction,  Up: How Kerberos Works
+File: krb5-admin.info,  Node: Definitions,  Prev: The User/Kerberos Interaction,  Up: How Kerberos Works
 
 Definitions
 ===========
@@ -967,10 +969,6 @@ dict_file
      are not allowed as passwords.  The default is
      `/usr/local/var/krb5kdc/kadm5.dict'.
 
-encryption_type
-     (Encryption type string.)  Specifies the encryption type used for
-     this realm.  Only "des-cbc-crc" is supported at this time.
-
 kadmind_port
      (Port number.)  Specifies the port that the kadmind daemon is to
      listen for this realm.  The assigned port for kadmind is 749.
@@ -1003,9 +1001,23 @@ max_renewable_life
 
 supported_enctypes
      List of key:salt strings.  Specifies the default key/salt
-     combinations of principals for this realm.  Since only the
+     combinations of principals for this realm.  Any principals created
+     through `kadmin' will have keys of these types.  Since only the
      encryption type "des-cbc-crc" is supported, you should set this
-     tag to `des-cbc-crc:normal'.
+     tag to `des-cbc-crc:normal des-cbc-crc:v4'.
+
+kdc_supported_enctypes
+     List of key:salt strings.  Specifies the permitted key/salt
+     combinations of principals for this realm.  You should set this
+     tag to `des-cbc-crc:normal des-cbc-crc:v4'.
+
+     Note: You may also use `des3-cbc-sha1:normal' before
+     `des-cbc-crc:normal' if you wish to support triple-DES service keys
+     in addition to DES service keys.  In order to create such service
+     keys, you must use the `-e' option to `kadmin.local', running on
+     the KDC system itself; the remote `kadmin' client does not allow
+     this option.  We do not currently support the use of triple-DES
+     keys anywhere other than for service keys.
 
 
 File: krb5-admin.info,  Node: Sample kdc.conf File,  Prev: realms (kdc.conf),  Up: kdc.conf
@@ -1024,7 +1036,8 @@ Here's an example of a `kdc.conf' file:
              max_life = 10h 0m 0s
              max_renewable_life = 7d 0h 0m 0s
              master_key_type = des-cbc-crc
-             supported_enctypes = des-cbc-crc:normal
+             supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
+             kdc_supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
          }
      
      [logging]
@@ -1123,6 +1136,15 @@ You can invoke `kadmin' with any of the following options:
      Pass query directly to `kadmin'.  This is useful for writing
      scripts that pass specific queries to `kadmin'.
 
+-e "enctypes ..."
+     (For `kadmin.local' only.)  Sets the list of cryptosystem and salt
+     types to be used for any new keys created.  Available types
+     include `des3-cbc-sha1:normal', `des-cbc-crc:normal', and
+     `des-cbc-crc:v4'.  In this release, the `des3-cbc-sha1:normal'
+     type should only be used when registering service principals; for
+     any services that may request tickets themselves to initiate some
+     action, it should be combined with one or more of the other types.
+
 
 File: krb5-admin.info,  Node: Date Format,  Next: Principals,  Prev: Kadmin Options,  Up: Administrating Kerberos Database Entries
 
@@ -1145,13 +1167,16 @@ The date can appear in a wide variety of formats, such as:
      now
      "second Monday"
      fortnight
-     "3/31/92 10:00:07 PST"
-     "January 23, 1987 10:05pm"
+     "3/31/1992 10:00:07 PST"
+     "January 23, 2007 10:05pm"
      "22:00 GMT"
+
+Two-digit years are allowed in places, but the use of this form is not
+recommended.
 
 Note that if the date specification contains spaces, you must enclose it
 in double quotes.  Note also that you cannot use a number without a
-unit.  (I.e., ""60 seconds"" is correct, but "60" is incorrect.) All
+unit.  (I.e., ""60 seconds"" is correct, but "60" is incorrect.)  All
 keywords are case-insensitive.  The following is a list of all of the
 allowable keywords.
 

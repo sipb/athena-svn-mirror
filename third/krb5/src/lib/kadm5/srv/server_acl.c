@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -26,11 +29,13 @@
  * srv_acl.c - Handle Kerberos ACL related functions.
  */
 #include <stdio.h>
+#include <syslog.h>
 #include <sys/param.h>
 #include <gssapi/gssapi_generic.h>
 #include "k5-int.h"
 #include "server_acl.h"
 #include <kadm5/server_internal.h>
+#include <ctype.h>
 
 typedef struct _acl_op_table {
     char	ao_op;
@@ -55,6 +60,7 @@ static const aop_t acl_op_table[] = {
     { 'c',	ACL_CHANGEPW },
     { 'i',	ACL_INQUIRE },
     { 'l',	ACL_LIST },
+    { 's',	ACL_SETKEY },
     { 'x',	ACL_ALL_MASK },
     { '*',	ACL_ALL_MASK },
     { '\0',	0 }
@@ -73,10 +79,11 @@ static int acl_debug_level = 0;
  */
 static const char *acl_catchall_entry = NULL;
 
-static const char *acl_line2long_msg = "%s: line %d too long, truncated\n";
-static const char *acl_op_bad_msg = "Unrecognized ACL operation '%c' in %s\n";
-static const char *acl_syn_err_msg = "%s: syntax error at line %d <%10s...>\n";
-static const char *acl_cantopen_msg = "\007cannot open ACL file";
+static const char *acl_line2long_msg = "%s: line %d too long, truncated";
+static const char *acl_op_bad_msg = "Unrecognized ACL operation '%c' in %s";
+static const char *acl_syn_err_msg = "%s: syntax error at line %d <%10s...>";
+static const char *acl_cantopen_msg = "%s while opening ACL file %s";
+
 
 /*
  * acl_get_line()	- Get a line from the ACL file.
@@ -99,8 +106,9 @@ acl_get_line(fp, lnp)
 
 	/* Check if we exceeded our buffer size */
 	if ((i == BUFSIZ) && (!feof(fp)) && (acl_buf[i] != '\n')) {
-	    fprintf(stderr, acl_line2long_msg, acl_acl_file, *lnp);
+	    krb5_klog_syslog(LOG_ERR, acl_line2long_msg, acl_acl_file, *lnp);
 	    while (fgetc(fp) != '\n');
+	    i--;
 	}
 		acl_buf[i] = '\0';
 	if (acl_buf[0] == (char) EOF)	/* ptooey */
@@ -165,7 +173,7 @@ acl_parse_line(lp)
 		    }
 		}
 		if (!found) {
-		    fprintf(stderr, acl_op_bad_msg, *op, lp);
+		    krb5_klog_syslog(LOG_ERR, acl_op_bad_msg, *op, lp);
 		    opok = 0;
 		}
 	    }
@@ -251,7 +259,7 @@ char tmpbuf[10];
 	    *aentpp = acl_parse_line(alinep);
 	    /* If syntax error, then fall out */
 	    if (!*aentpp) {
-		fprintf(stderr, acl_syn_err_msg,
+		krb5_klog_syslog(LOG_ERR, acl_syn_err_msg,
 			acl_acl_file, alineno, alinep);
 		retval = 0;
 		break;
@@ -259,6 +267,8 @@ char tmpbuf[10];
 	    acl_list_tail = *aentpp;
 	    aentpp = &(*aentpp)->ae_next;
 	}
+
+	fclose(afp);
 
 	if (acl_catchall_entry) {
 	     strcpy(tmpbuf, acl_catchall_entry);
@@ -271,11 +281,11 @@ char tmpbuf[10];
 			 ("> catchall acl entry (%s) load failed\n",
 			  acl_catchall_entry));
 	     }
-	     fclose(afp);
 	}
     }
     else {
-	com_err(acl_acl_file, errno, acl_cantopen_msg);
+	krb5_klog_syslog(LOG_ERR, acl_cantopen_msg,
+			 error_message(errno), acl_acl_file);
 	if (acl_catchall_entry &&
 	    (acl_list_head = acl_parse_line(acl_catchall_entry))) {
 	    acl_list_tail = acl_list_head;

@@ -1,8 +1,158 @@
+1999-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_kdb.c (add_principal): Free only contents of a generated key,
+	since the keyblock structure itself is on the stack.
+
+1999-08-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* t_kdb.c (add_principal): Update for new calling sequence to
+	krb5_dbekd_encrypt_key_data.
+	(do_testing): Update calls.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Tue Nov 17 18:19:41 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_cpw.c (krb5_dbe_crk): 
+	(krb5_dbe_cpw): Add "keepold" boolean argument to indicate whether
+	to retain old keys.
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* kdb_xdr.c, kdb_cpw.c: remove the special knowledge of ENCTYPE
+	string-to-key equivalances.  the crypto api has a function for
+	this now.
+
+	* decrypt_key.c, encrypt_key.c, fetch_mkey.c, kdb_cpw.c,
+	kdb_db2.c, kdb_db2.h, kdb_dbm.c, keytab.c, verify_mky.c: change or
+	remove all the places krb5_encrypt_block was used
+	(this is mostly relevant to kdb manipulations).  It was usually
+	used to specify an enctype (which is now implied by the keyblock),
+	or to store or pass in a processed key (now the api just takes a
+	key directly, so these structures and functions do, too).  The kdb
+	key manuipulation functions also need to be made to use the new
+	api.
+
+Fri Sep 25 19:42:10 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_xdr.c (krb5_dbe_search_enctype): Re-order booleans so that
+	similar doesn't get checked unless (ktype >= 0) to avoid it being
+	stack garbage.
+
+Sun Aug 16 16:52:10 1998  Sam Hartman  <hartmans@utwig.mesas.com>
+
+	* Makefile.in (SHLIB_EXPLIBS): Include $(LIBS) so building on AIX works
+
+Sun Jul 26 18:12:22 1998  Sam Hartman  <hartmans@utwig.mesas.com>
+
+	* Makefile.in (LIBMAJOR): bump libmajor
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* t_kdb.c (main): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Wed Apr 15 18:06:34 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (SHLIB_EXPDEPS): 
+	(SHLIB_EXPLIBS): Rename libcrypto -> libk5crypto.
+
+Fri Feb 27 21:21:03 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Remove check for the regular expression functions,
+		since they aren't used in lib/kdb.
+
+Wed Feb 18 16:16:35 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+ 	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Oct 28 10:18:10 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb_cpw.c (add_key_pwd): For KRB5_KDB_SALTTYPE_AFS3, the salt
+	 	key for afs_mit_string_to_key mut be null terminated. 
+
+Mon Oct 13 10:18:19 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* t_kdb.c (do_testing): Add krb5_free_context.
+
+Mon Sep 15 15:05:30 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* keytab.c: (krb5_ktkdb_get_entry): Incoming principal is const.
+
+	* kdb_dbm.c (krb5_dbm_db_get_principal, krb5_dbm_db_delete_principal):
+	        Incoming principal is const.
+
+	* kdb_xdr.c (krb5_dbe_update_mod_princ_data, krb5_encode_princ_dbkey): 
+	        Incoming principal is const.
+
+	* kdb_db2.h (krb5_db2_db_get_principal): Change prototype to const
+                principal.
+
+	* kdb_db2.c (krb5_db2_db_get_principal, krb5_db2_db_delete_principal):
+	        The search for principal is const.
+
+Thu Jul 31 14:54:10 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb_db2.c (krb5_db2_db_delete_principal): Fix switch statement
+	        so that all cases have one statement.
+
+Tue Jul 29 02:35:09 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_db2.c (krb5_db2_db_set_hashfirst): Don't cast a
+	krb5_context * to a krb5_db2_context *.
+
+Fri Jul 25 15:29:03 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_db2.c: Fix typo; also, tweak page size in attempt to speed
+	things up.
+
+	* kdb_db2.h: Fix typo.
+
+	* t_kdb.c: Reflect changes in the API, mostly db_create.
+
+	* Makefile.in: Bump version due to major reworking.
+
+	* kdb_db2.h:
+	* kdb_db2.c: Add Berkely DB backend.
+
+	* keytab.c: Add support for new kdb API; delete dead arguments.
+
+	* kdb_xdr.c: Remove dependencies on dbm; encode things to
+	krb5_datas rather than datums.
+
+Mon Mar 24 12:19:03 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* t_kdb.c (do_testing): Clean up error handling for krb5_init_context.
+
+	* Makefile.in (check): Define and use KRB5_CONFIG_SETUP which sets
+ 		up the environment variables appropriately.
+
 Sun Mar 16 21:20:00 1997  Tom Yu  <tlyu@mit.edu>
 
 	* keytab.c: Don't assume dbm_db_get_mkey() and dbe_find_enctype
 	won't error out.  Also, some gcc -Wall warning
 	cleanups. [krb5-kdc/361]
+
+Sat Feb 22 01:15:30 1997  Sam Hartman  <hartmans@tertius.mit.edu>
+
+	* Makefile.in (SHLIB_EXPLIBS): depend on -lcrypto
+
+Thu Feb  6 15:33:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Wed Jan  8 01:59:15 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in, configure.in: Convert to new build procedure for libs.
 
 Mon Nov 18 20:40:12 1996  Ezra Peisach  <epeisach@mit.edu>
 

@@ -28,12 +28,10 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <sys/socket.h>
 #include <sys/signal.h>
 #include <netinet/in.h>
 
 #include <krb.h>
-#include <krb4-proto.h>
 #include "krb524.h"
 
 extern int optind;
@@ -61,7 +59,7 @@ int main(argc, argv)
 	     exit(1);
      }
 
-     while(((option =  getopt(argc, argv, "p:n")) != EOF)) {
+     while(((option =  getopt(argc, argv, "p:n")) != -1)) {
 	 switch(option) {
 	   case 'p':
 	     princ = optarg;

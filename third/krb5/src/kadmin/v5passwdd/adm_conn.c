@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -332,7 +335,7 @@ kadm_contact_server(kcontext, realmp, sockp, local, remote)
     /*
      * XXX - only know ADDRTYPE_INET.
      */
-#ifdef	KRB5_USE_INET
+#ifdef	HAVE_NETINET_IN_H
     *local = (krb5_address *) malloc(sizeof(krb5_address));
     *remote = (krb5_address *) malloc(sizeof(krb5_address));
     realm_name = (char *) malloc((size_t) realmp->length + 1);
@@ -539,9 +542,9 @@ kadm_contact_server(kcontext, realmp, sockp, local, remote)
 	if (!found)
 	    kret = KRB5_SERVICE_UNKNOWN;
     }
-#else	/* KRB5_USE_INET */
+#else	/* HAVE_NETINET_IN_H */
     kret = ENOENT;
-#endif	/* KRB5_USE_INET */
+#endif	/* HAVE_NETINET_IN_H */
 
  cleanup:
     if (kret) {
@@ -602,7 +605,7 @@ kadm_get_auth(kcontext, ctxp, local, remote)
  *	free auth_context
  *	close socket.
  */
-krb5_error_code INTERFACE
+krb5_error_code KRB5_CALLCONV
 krb5_adm_connect(kcontext, user, prompt, opassword, sockp, ctxp,
 		 ccachep, ccname, tlife)
     krb5_context	kcontext;	/* Context handle	(In ) */
@@ -745,7 +748,7 @@ krb5_adm_connect(kcontext, user, prompt, opassword, sockp, ctxp,
  * If ccache is supplied, then it is destroyed.  Otherwise, the ccache is
  * the caller's responsibility to close.
  */
-void INTERFACE
+void KRB5_CALLCONV
 krb5_adm_disconnect(kcontext, socketp, auth_context, ccache)
     krb5_context	kcontext;
     int			*socketp;

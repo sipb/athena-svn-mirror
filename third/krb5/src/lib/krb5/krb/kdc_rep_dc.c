@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -41,12 +44,15 @@ krb5_kdc_rep_decrypt_proc(context, key, decryptarg, dec_rep)
     krb5_kdc_rep * dec_rep;
 {
     krb5_error_code retval;
-    krb5_encrypt_block eblock;
     krb5_data scratch;
     krb5_enc_kdc_rep_part *local_encpart;
+    krb5_keyusage usage;
 
-    if (!valid_enctype(dec_rep->enc_part.enctype))
-	return KRB5_PROG_ETYPE_NOSUPP;
+    if (decryptarg) {
+	usage = *(const krb5_keyusage *) decryptarg;
+    } else {
+	usage = KRB5_KEYUSAGE_AS_REP_ENCPART;
+    }
 
     /* set up scratch decrypt/decode area */
 
@@ -55,30 +61,16 @@ krb5_kdc_rep_decrypt_proc(context, key, decryptarg, dec_rep)
 	return(ENOMEM);
     }
 
-    /* put together an eblock for this encryption */
+    dec_rep->enc_part.enctype;
 
-    krb5_use_enctype(context, &eblock, dec_rep->enc_part.enctype);
-
-    /* do any necessary key pre-processing */
-    if ((retval = krb5_process_key(context, &eblock, key))) {
+    if ((retval = krb5_c_decrypt(context, key, usage, 0, &dec_rep->enc_part,
+				 &scratch))) {
 	free(scratch.data);
 	return(retval);
     }
 
-    /* call the decryption routine */
-    if ((retval = krb5_decrypt(context, (krb5_pointer) dec_rep->enc_part.ciphertext.data,
-			       (krb5_pointer) scratch.data,
-			       scratch.length, &eblock, 0))) {
-	(void) krb5_finish_key(context, &eblock);
-	free(scratch.data);
-	return retval;
-    }
 #define clean_scratch() {memset(scratch.data, 0, scratch.length); \
 free(scratch.data);}
-    if ((retval = krb5_finish_key(context, &eblock))) {
-	clean_scratch();
-	return retval;
-    }
 
     /* and do the decode */
     retval = decode_krb5_enc_kdc_rep_part(&scratch, &local_encpart);

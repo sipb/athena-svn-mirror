@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,18 +29,20 @@
 
 #include "k5-int.h"
 
-void INTERFACE
+static int et_init = 0;
+
+void
 krb5_init_ets (context)
      krb5_context context;
 {
-    static int initialized = 0;
-
-    if (initialized)
-	    return;
-    
-    initialized++;
     initialize_krb5_error_table();
     initialize_kv5m_error_table();
     initialize_kdb5_error_table();
     initialize_asn1_error_table();
+}
+
+void
+krb5_free_ets (context)
+    krb5_context context;
+{
 }

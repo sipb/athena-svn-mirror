@@ -1,14 +1,14 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.3 1999-02-09 21:00:23 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.3 1999-02-09 21:00:23 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_principal.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $";
 #endif
 
-#include    <rpc/rpc.h>
+#include    <gssrpc/rpc.h>
 #include    <kadm5/admin.h>
 #include    <kadm5/kadm_rpc.h>
 #include    <memory.h>
@@ -256,6 +256,54 @@ kadm5_chpass_principal(void *server_handle,
     if(princ == NULL)
 	return EINVAL;
     r = chpass_principal_1(&arg, handle->clnt);
+    if(r == NULL)
+	return KADM5_RPC_ERROR;        
+    return r->code;
+}
+
+kadm5_ret_t
+kadm5_setv4key_principal(void *server_handle,
+			 krb5_principal princ,
+			 krb5_keyblock *keyblock)
+{
+    setv4key_arg	arg;
+    generic_ret		*r;
+    kadm5_server_handle_t handle = server_handle;
+
+    CHECK_HANDLE(server_handle);
+
+    arg.princ = princ;
+    arg.keyblock = keyblock;
+    arg.api_version = handle->api_version;
+
+    if(princ == NULL || keyblock == NULL)
+	return EINVAL;
+    r = setv4key_principal_1(&arg, handle->clnt);
+    if(r == NULL)
+	return KADM5_RPC_ERROR;        
+    return r->code;
+}
+
+kadm5_ret_t
+kadm5_setkey_principal(void *server_handle,
+		       krb5_principal princ,
+		       krb5_keyblock *keyblocks,
+		       int n_keys)
+{
+    setkey_arg		arg;
+    generic_ret		*r;
+    kadm5_server_handle_t handle = server_handle;
+
+    CHECK_HANDLE(server_handle);
+
+    arg.princ = princ;
+    arg.keyblocks = keyblocks;
+    arg.n_keys = n_keys;
+    arg.api_version = handle->api_version;
+
+    if(princ == NULL || keyblocks == NULL)
+	return EINVAL;
+    r = setkey_principal_1(&arg, handle->clnt);
     if(r == NULL)
 	return KADM5_RPC_ERROR;        
     return r->code;

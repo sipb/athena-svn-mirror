@@ -97,7 +97,7 @@ int	registerd_host_only = 0;
 #ifdef HAVE_SYS_TTY_H
 # include "/usr/include/sys/tty.h"
 #endif
-#ifdef  HAS_PTYVAR
+#ifdef  HAVE_SYS_PTYVAR_H
 # include <sys/ptyvar.h>
 #endif
 
@@ -184,6 +184,28 @@ char valid_opts[] = {
 	'\0'
 };
 
+#include <sys/utsname.h>
+static char *
+get_default_IM()
+{
+	struct utsname name;
+	static char banner[1024];
+	
+	if (uname(&name) < 0)
+		sprintf(banner, "\r\nError getting hostname: %s\r\n",
+		    strerror(errno));
+        else {
+#if defined(_AIX)
+		sprintf(banner, "\r\n    %%h (%s release %s.%s) (%%t)\r\n\r\n",
+		    name.sysname, name.version, name.release);
+#else
+		sprintf(banner, "\r\n    %%h (%s release %s %s) (%%t)\r\n\r\n",
+		    name.sysname, name.release, name.version);
+#endif
+	}
+	return banner;
+}
+
 main(argc, argv)
 	int argc;
 	char *argv[];
@@ -214,7 +236,7 @@ main(argc, argv)
 	highpty = getnpty();
 #endif /* CRAY */
 
-	while ((ch = getopt(argc, argv, valid_opts)) != EOF) {
+	while ((ch = getopt(argc, argv, valid_opts)) != -1) {
 		switch(ch) {
 
 #ifdef	AUTHENTICATION
@@ -387,7 +409,7 @@ main(argc, argv)
 			break;
 #endif	/* SecurID */
 		case 'S':
-#ifdef	HAS_GETTOS
+#ifdef	HAVE_GETTOSBYNAME
 			if ((tos = parsetos(optarg, "tcp")) < 0)
 				fprintf(stderr, "%s%s%s\n",
 					"telnetd: Bad TOS argument '", optarg,
@@ -598,7 +620,7 @@ main(argc, argv)
 
 #if	defined(IPPROTO_IP) && defined(IP_TOS)
 	{
-# if	defined(HAS_GETTOS)
+# if	defined(HAVE_GETTOSBYNAME)
 		struct tosent *tp;
 		if (tos < 0 && (tp = gettosbyname("telnet", "tcp")))
 			tos = tp->t_tos;
@@ -654,7 +676,7 @@ usage()
 #ifdef	SecurID
 	fprintf(stderr, " [-s]");
 #endif
-#ifdef	HAS_GETTOS
+#ifdef	HAVE_GETTOSBYNAME
 	fprintf(stderr, " [-S tos]");
 #endif
 #ifdef	AUTHENTICATION
@@ -1242,7 +1264,7 @@ telnet(f, p, host)
 		if (IM == 0)
 			IM = "";
 	} else {
-		IM = DEFAULT_IM;
+		IM = get_default_IM();
 		HEstr = 0;
 	}
 	edithost(HEstr, host_name);
@@ -1511,6 +1533,7 @@ telnet(f, p, host)
 		if (FD_ISSET(p, &obits) && (pfrontp - pbackp) > 0)
 			ptyflush();
 	}
+	(void) signal(SIGCHLD, SIG_DFL);
 	cleanup(0);
 }  /* end of telnet */
 	

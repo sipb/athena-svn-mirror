@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -35,7 +38,7 @@
 
 static char *sendauth_version = "KRB5_SENDAUTH_V1.0";
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_sendauth(context, auth_context,
 	      /* IN */
 	      fd, appl_version, client, server, ap_req_options, in_data,
@@ -45,23 +48,23 @@ krb5_sendauth(context, auth_context,
 	      /* OUT */
 	      error, rep_result, out_creds)
     	krb5_context 		  context;
-    	krb5_auth_context       * auth_context;
+    	krb5_auth_context       FAR * auth_context;
 	krb5_pointer		  fd;
-	char			* appl_version;
+	char			FAR * appl_version;
 	krb5_principal		  client;
 	krb5_principal		  server;
 	krb5_flags		  ap_req_options;
-	krb5_data		* in_data;
-	krb5_creds		* in_creds;
+	krb5_data		FAR * in_data;
+	krb5_creds		FAR * in_creds;
 	krb5_ccache	  	  ccache;
-	krb5_error             ** error;
-	krb5_ap_rep_enc_part   ** rep_result;
-	krb5_creds	       ** out_creds;
+	krb5_error             FAR * FAR * error;
+	krb5_ap_rep_enc_part   FAR * FAR * rep_result;
+	krb5_creds	       FAR * FAR * out_creds;
 {
 	krb5_octet		result;
 	krb5_creds 		creds;
-	krb5_creds * 		credsp = NULL;
-	krb5_creds * 		credspout = NULL;
+	krb5_creds		FAR * credsp = NULL;
+	krb5_creds		FAR * credspout = NULL;
 	krb5_error_code		retval = 0;
 	krb5_data		inbuf, outbuf;
 	int			len;

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -94,18 +97,18 @@ skey_keyproc(context, type, salt, keyseed, key)
  returns system errors, encryption errors
 
  */
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_get_in_tkt_with_skey(context, options, addrs, ktypes, pre_auth_types, 
 			  key, ccache, creds, ret_as_reply)
     krb5_context context;
     const krb5_flags options;
-    krb5_address * const * addrs;
-    krb5_enctype * ktypes;
-    krb5_preauthtype * pre_auth_types;
-    const krb5_keyblock * key;
+    krb5_address FAR * const FAR * addrs;
+    krb5_enctype FAR * ktypes;
+    krb5_preauthtype FAR * pre_auth_types;
+    const krb5_keyblock FAR * key;
     krb5_ccache ccache;
-    krb5_creds * creds;
-    krb5_kdc_rep ** ret_as_reply;
+    krb5_creds FAR * creds;
+    krb5_kdc_rep FAR * FAR * ret_as_reply;
 
 {
     if (key) 

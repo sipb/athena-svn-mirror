@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)clnt_udp.c 1.39 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #if defined(sun)
@@ -46,7 +46,7 @@ static char sccsid[] = "@(#)clnt_udp.c 1.39 87/08/11 Copyr 1984 Sun Micro";
 #endif
 #include <netdb.h>
 #include <errno.h>
-#include <rpc/pmap_clnt.h>
+#include <gssrpc/pmap_clnt.h>
 
 extern int errno;
 
@@ -77,6 +77,8 @@ struct cu_data {
 	bool_t		   cu_closeit;
 	struct sockaddr_in cu_raddr;
 	int		   cu_rlen;
+	struct sockaddr_in cu_laddr;
+	int		   cu_llen;
 	struct timeval	   cu_wait;
 	struct timeval     cu_total;
 	struct rpc_err	   cu_error;
@@ -176,13 +178,19 @@ clntudp_bufcreate(raddr, program, version, wait, sockp, sendsz, recvsz)
 			goto fooy;
 		}
 		/* attempt to bind to prov port */
-		(void)bindresvport(*sockp, (struct sockaddr_in *)0);
+		(void)gssrpc_bindresvport(*sockp, (struct sockaddr_in *)0);
 		/* the sockets rpc controls are non-blocking */
 		(void)ioctl(*sockp, FIONBIO, (char *) &dontblock);
 		cu->cu_closeit = TRUE;
 	} else {
 		cu->cu_closeit = FALSE;
 	}
+	if (connect(*sockp, raddr, sizeof(*raddr)) < 0)
+	     goto fooy;
+	     cu->cu_llen = sizeof(cu->cu_laddr);
+	if (getsockname(*sockp, &cu->cu_laddr, &cu->cu_llen) < 0)
+	     goto fooy;
+	
 	cu->cu_sock = *sockp;
 	cl->cl_auth = authnone_create();
 	return (cl);
@@ -261,9 +269,7 @@ call_again:
 	outlen = (int)XDR_GETPOS(xdrs);
 
 send_again:
-	if (sendto(cu->cu_sock, cu->cu_outbuf, outlen, 0,
-	    (struct sockaddr *)&(cu->cu_raddr), cu->cu_rlen)
-	    != outlen) {
+	if (send(cu->cu_sock, cu->cu_outbuf, outlen, 0) != outlen) {
 		cu->cu_error.re_errno = errno;
 		return (cu->cu_error.re_status = RPC_CANTSEND);
 	}
@@ -290,7 +296,7 @@ send_again:
 #endif /* def FD_SETSIZE */
 	for (;;) {
 		readfds = mask;
-		switch (select(_rpc_dtablesize(), &readfds, (fd_set *)NULL, 
+		switch (select(_gssrpc_rpc_dtablesize(), &readfds, (fd_set *)NULL, 
 			       (fd_set *)NULL, &(cu->cu_wait))) {
 
 		case 0:
@@ -368,7 +374,7 @@ send_again:
 		if ((reply_msg.rm_reply.rp_stat == MSG_ACCEPTED) &&
 		    (reply_msg.acpted_rply.ar_verf.oa_base != NULL)) {
 		    xdrs->x_op = XDR_FREE;
-		    (void)xdr_opaque_auth(xdrs,
+		    (void)gssrpc_xdr_opaque_auth(xdrs,
 					  &(reply_msg.acpted_rply.ar_verf));
 		} 
 	}  /* end of valid reply message */
@@ -434,11 +440,8 @@ clntudp_control(cl, request, info)
 		*(struct sockaddr_in *)info = cu->cu_raddr;
 		break;
 	case CLGET_LOCAL_ADDR:
-		len = sizeof(struct sockaddr);
-		if (getsockname(cu->cu_sock, (struct sockaddr*)info, &len) < 0)
-		     return FALSE;
-		else
-		     return TRUE;
+		*(struct sockaddr_in *)info = cu->cu_laddr;
+		break;
 	default:
 		return (FALSE);
 	}

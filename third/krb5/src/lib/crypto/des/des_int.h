@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -24,10 +27,37 @@
  * Private include file for the Data Encryption Standard library.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 /* only do the whole thing once	 */
 #ifndef DES_INTERNAL_DEFS
 #define DES_INTERNAL_DEFS
 
+#include <k5-int.h>
 /*
  * Begin "mit-des.h"
  */
@@ -44,9 +74,26 @@
 
 typedef krb5_octet mit_des_cblock[8];		/* crypto-block size */
 
+#ifndef DES_INT32
+#ifdef SIZEOF_INT
+#if SIZEOF_INT >= 4
+#define DES_INT32 int
+#else
+#define DES_INT32 long
+#endif
+#else /* !defined(SIZEOF_INT) */
+#include <limits.h>
+#if (UINT_MAX >= 0xffffffff)
+#define DES_INT32 int
+#else
+#define DES_INT32 long
+#endif
+#endif /* !defined(SIZEOF_INT) */
+#endif /* !defined(DES_INT32) */
+
 /* Key schedule--used internally by DES routines to gain some speed */
 typedef struct mit_des_ks_struct {
-    mit_des_cblock _;
+    DES_INT32 _[2];
 } mit_des_key_schedule[16];
 
 /* Triple-DES structures */
@@ -94,8 +141,7 @@ error(MIT_DES_KEYSIZE does not equal KRB5_MIT_DES_KEYSIZE)
 
 /* afsstring2key.c */
 extern krb5_error_code mit_afs_string_to_key
-	PROTOTYPE((const krb5_encrypt_block FAR *eblock,
-		   krb5_keyblock FAR *keyblock,
+	PROTOTYPE((krb5_keyblock FAR *keyblock,
 		   const krb5_data FAR *data,
 		   const krb5_data FAR *salt));
 

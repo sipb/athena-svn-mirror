@@ -1,3 +1,132 @@
+1999-08-26  Tom Yu  <tlyu@mit.edu>
+
+	* etypes.c: Add aliases "des" for "des-cbc-md5", "des3-hmac-sha1"
+	and "des3-cbc-sha1-kd" for "des3-cbc-sha1".
+
+	* cksumtypes.c: Add alias "hmac-sha1-des3-kd".
+
+1999-08-18  Tom Yu  <tlyu@mit.edu>
+
+	* etypes.c: Update des3-cbc-sha1 to alignt with new number
+	assignments.
+
+	* cksumtypes.c: Update hmac-sha1-des3 to align with new number
+	assignments.
+
+Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove - from recursive Win32 make invocation.
+
+Mon May 10 15:15:00 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Tue Jan  5 00:06:02 1999  Tom Yu  <tlyu@mit.edu>
+
+	* make_checksum.c (krb5_c_make_checksum): Note the fact that we're
+	punting on dealing with backwards compat with length-included
+	checksums.
+
+	* etypes.c: Add ENCTYPE_LOCAL_DES3_HMAC_SHA1 as a temporary
+	kludge.  Note that this is added to the end of the array so other
+	code can lop off the last member of the array and the right thing
+	will happen so that it is possible to disable des3-marc-hmac-sha1
+	from the KDC command line, for instance.
+
+	* configure.in: Conditionalize ATHENA_DES3_KLUDGE on
+	--enable-athena.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Thu Dec  3 23:37:28 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Added missing "cd .." necessary for making this
+ 		compile under Windows.  Also added missing *.lst files to
+ 		OBJFILELIST.
+
+Fri Nov  6 10:23:32 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* keyhash_provider/Makefile.in: Fix to allow building out of the
+ 	source tree.
+
+Tue Sep 22 21:19:01 1998  Tom Yu  <tlyu@mit.edu>
+
+	* prng.c (krb5_c_random_make_octets): Fix to nfold into 15 bytes,
+	not one byte.
+
+Mon Sep 21 15:23:19 1998  Tom Yu  <tlyu@mit.edu>
+
+	* prng.c (krb5_c_random_seed): Fix memory leak.
+
+Mon Sep 14 23:21:17 1998  Tom Yu  <tlyu@mit.edu>
+
+	* old/decrypt.c (krb5_old_decrypt): Fix memory leak.
+
+Tue Sep  1 19:33:38 1998  Tom Yu  <tlyu@mit.edu>
+
+	* etypes.c: Add ETYPE_LOCAL_DES3_HMAC_SHA1 to deal with marc's
+	des3 code.  ETYPE_DES3_HMAC_SHA1 remains the same for now.
+
+Mon Aug 17 23:40:11 1998  Tom Yu  <tlyu@mit.edu>
+
+	* keyhash_provider/k5_md4des.c (k5_md4des_verify): Add
+	compatibility for krb5-beta5 checksums.
+
+	* keyhash_provider/k5_md5des.c (k5_md5des_verify): Add
+	compatibility for krb5-beta5 checksums.  Fix typos similar to
+	those corrected in k5_md4des.c.
+
+Sun Jul 19 12:00:00 1998  Marc Horowitz <marc@mit.edu>
+
+	* *.c: replace the crypto layer.
+
+Wed Apr 15 18:02:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (LIB): Rename to k5crypto.
+
+Wed Feb 18 16:05:11 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Fri Feb 13 15:19:37 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define LOCAL_SUBDIRS to recurse into the
+		subdirectories (crc32, md5, os, etc.)
+
+	* configure.in: Create the makefiles for all of the subdirectories
+		and move all of the configure.in tests from the
+		subdirectories into this configure.in.
+	
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Oct 14 15:34:44 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* Makefile.in: Bump major version due to possible size changes.
+
+Fri Feb 21 18:40:13 1997  Sam Hartman  <hartmans@tertius.mit.edu>
+
+	* Makefile.in (OBJS): Move in crypto_glue.c as krb5_glue.c; avoid
+        libcrypto depending on libkrb5
+     
+
+Sat Feb 22 01:37:23 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* Makefile.in (LIBMINOR): Bump minor version
+
+Sun Dec 29 21:52:44 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to use new library build procedure.
+
 Sat Nov 23 00:22:20 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* cryptoconf.c: Also zero out the entries in cryptoconf, to make

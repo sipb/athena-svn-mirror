@@ -1,3 +1,114 @@
+Wed May 19 11:35:18 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Create build rules for windows instead of blindly
+		copying files.  Wrap Unix build rules with !if 0/!endif
+		that get used only in windows build.  People need to
+		remember to keep this !if/!endif in the proper place when
+		they modify this file.
+
+Mon May 17 12:33:58 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add NO_OUTPRE flag to prevent creation of output
+		directory under win32.
+
+Fri May  7 15:26:44 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* adm_proto.h: Fix the existing kludge to deal with the fact that
+		krb5_realm_params is defined in two, count them two,
+		header files.  There's real ugliness here that needs
+		cleaning up eventually, but I don't have the time now to
+		deal with it.
+
+Fri Apr 16 17:07:47 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in (all-windows): Don't constantly recreate autoconf.h
+		with #include "win-mac.h"
+
+1999-04-09  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kdb.h: Add new TL types provided by Frank Cusack's preauth patch
+		(PR# [krb5-kdc/662])
+
+Tue Nov 17 15:39:32 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdb.h: Update dbe_crk and dbe_cpw to take a boolean to indicate
+	whether old keys should be retained.
+
+	* Makefile.in (autoconf.stamp): Fix up to deal with config.status
+	not being in the current directory anymore.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+		Add a MY_SUBDIRS macro set to '.' to indicate that there
+		are no subdirectories to be processed by the Makefile.
+
+	* configure.in: Removed and tests moved to parent directory.
+
+1998-10-26  Marc Horowitz  <marc@mit.edu>
+
+	* kdb_dbc.h, kdb.h: update kdb api to be compatible with the new
+	crypto api.
+
+Wed Jul  8 04:30:22 1998  Geoffrey King  <gjking@mit.edu>
+
+	* adm_proto.h: Added prototype for new function krb5_klog_reopen()
+
+Thu Apr 16 23:50:08 1998  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Search for /var/tmp first when determining rcache
+	directory. [krb5-libs/548]
+
+Wed Feb 18 15:52:36 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Sep 30 17:19:16 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Remove references to dbm and ndbm.  Replace
+	HAS_STDLIB_H and NO_STDLIB_H with something more sane.  Replace
+	AC_TIME_WITH_SYS_TIME with more a recent form.  Use AC_CHECK_TYPE
+	to check for time_t instead of erroneously named POSIX_TYPES.
+
+Thu Sep 25 21:50:44 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Replace KRB5_USE_INET, HAS_UNISTD_H, HAS_SETVBUF.
+
+Thu Sep 18 20:42:03 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Replace USE_STRING_H, HAS_STRDUP, HAS_LABS
+
+Mon Sep 15 15:01:49 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb_dbm.h: Add const to argument of krb5_dbm_db_get_principal.
+	    Add prototype for krb5_dbm_db_delete_principal.
+
+	* kdb.h: Prototypes for krb5_db_get_principal,
+            krb5_db_delete_principal, krb5_dbe_update_mod_princ_data,
+            krb5_encode_princ_dbkey modified to use const krb5_principals.
+
+Fri Jul 25 15:18:25 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kdb_kt.h: Move support for "kdb" keytab here.
+
+	* kdb.h: Add support for modified kdb API; remove extra arguments
+	for db_set_mkey and db_get_mkey.  Remove all (hopefully) mentions
+	of any particular backend database implementation.  Add flags
+	argument for db_create, allowing caller to specify whether btree
+	or hash methods are to be used in the backend.
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in:
+		all-windows needed :: not :
+		clean up various generated files on all platforms, not just unix
+
 Wed Oct 30 18:55:21 1996  Sam Hartman  <hartmans@mit.edu>
 
 	* Makefile.in (LOCALSTATEDIR): Add localstatedir a and sysconfidr

@@ -1,3 +1,47 @@
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* mcc_retrv.c (krb5_mcc_retrieve): Replace with a version that
+	calls krb5_cc_retrieve_cred_default.
+
+Mon May 10 15:25:06 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-05-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Update Makefile so that it can be built under
+		Windows
+
+Fri Feb 27 18:03:33 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the lib/krb5
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel lib/krb5 configure.in
+
+Wed Feb 18 16:20:15 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Mon Sep 15 15:15:33 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* mcc-proto.h, mcc_reslv.c (krb5_mcc_resolve): Incoming name
+	        is const char *
+
+Thu Jan  2 17:02:00 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
+
 Thu Aug 15 16:48:22 1996  Tom Yu  <tlyu@mit.edu>
 
 	* mcc_retrv.c: Add parens to def'n of flags_match because == has

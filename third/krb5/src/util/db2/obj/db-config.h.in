@@ -27,20 +27,6 @@
 #undef int32_t
 #undef u_int32_t
 
-#undef ssize_t
-
-#undef u_char
-#undef u_short
-#undef u_int
-#undef u_long
-
-#undef int8_t
-#undef u_int8_t
-#undef int16_t
-#undef u_int16_t
-#undef int32_t
-#undef u_int32_t
-
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
 

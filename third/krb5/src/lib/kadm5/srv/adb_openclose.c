@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.3 1999-02-09 21:00:18 danw Exp $ 
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.4 1999-10-05 16:12:41 ghudson Exp $ 
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.3 1999-02-09 21:00:18 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_openclose.c,v 1.1.1.4 1999-10-05 16:12:41 ghudson Exp $";
 #endif
 
 #include	<sys/file.h>
@@ -232,7 +232,8 @@ osa_adb_ret_t osa_adb_fini_db(osa_adb_db_t db, int magic)
 	   * after trashing it.  This has to be allowed, so don't
 	   * generate an error.
 	   */
-	  (void) fclose(db->lock->lockfile);
+	  if (db->lock->lockmode != OSA_ADB_PERMANENT)
+	       (void) fclose(db->lock->lockfile);
 	  db->lock->lockfile = NULL;
 	  krb5_free_context(db->lock->context);
      }

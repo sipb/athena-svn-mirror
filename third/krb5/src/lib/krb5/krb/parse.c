@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -60,11 +63,11 @@
  * May the fleas of a thousand camels infest the ISO, they who think
  * that arbitrarily large multi-component names are a Good Thing.....
  */
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_parse_name(context, name, nprincipal)
     	krb5_context context;
-	const char	*name;
-	krb5_principal	*nprincipal;
+	const char	FAR *name;
+	krb5_principal	FAR *nprincipal;
 {
 	register const char	*cp;
 	register char	*q;
@@ -185,7 +188,7 @@ krb5_parse_name(context, name, nprincipal)
 		else
 			krb5_princ_component(context, principal, i)->length = size;
 		if (i + 1 != components) {
-#if !defined(_MSDOS) && !defined(_WIN32) && !defined(_MACINTOSH)
+#if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh)
 			fprintf(stderr,
 				"Programming error in krb5_parse_name!");
 			exit(1);

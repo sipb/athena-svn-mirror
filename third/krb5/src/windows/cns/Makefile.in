@@ -1,11 +1,11 @@
-# makefile: Constructs the Kerberos for Windows ticket manager
+# Makefile for the Kerberos for Windows ticket manager
 # Works for both k4 and k5 releases.
 #
 NAME 	 = krb5
-OBJS 	 = cns.obj tktlist.obj
+OBJS 	 = $(OUTPRE)cns.obj $(OUTPRE)tktlist.obj $(OUTPRE)password.obj $(OUTPRE)options.obj
 
 ##### Options
-DEBUG 	 = 1
+# Set NODEBUG if building release instead of debug
 !IF ! defined(KVERSION)
 KVERSION = 5
 !endif
@@ -15,67 +15,61 @@ KRB 	 = KRB$(KVERSION)
 BUILDTOP = ..
 LIBDIR 	 = $(BUILDTOP)\lib\krb
 KLIB 	 = $(LIBDIR)\kerberos.lib 
-WLIB 	 = $(LIBDIR)\winsock.lib
 INCLUDES = /I$(BUILDTOP)\include
-XOBJS    = 
+RESFILE  = $(OUTPRE)cnsres4.res
+XOBJS    = $(RESFILE)
 !endif
 
 !if $(KVERSION) == 5
 BUILDTOP =..\..
 LIBDIR	 = $(BUILDTOP)\lib
-KLIB	 = $(LIBDIR)\krb5_16.lib
-WLIB	 = $(LIBDIR)\winsock.lib
 INCLUDES = /I$(BUILDTOP)\include /I$(BUILDTOP)\include\krb5
-XOBJS    = kpasswd.obj
+RESFILE  = $(OUTPRE)cnsres5.res
+XOBJS    = $(RESFILE) $(OUTPRE)kpasswd.obj $(OUTPRE)cns_reg.obj
 !endif
 
 ##### C Compiler
-CC 	 = cl
-CFLAGS_RELEASE = /nologo /W3 /AL /GAs /G2 /Zp /O2 /DNDEBUG=1
-CFLAGS_DEBUG   = /nologo /W3 /AL /GAs /G2 /Zp /O2 /Od /Zi
-!if $(DEBUG)
-CFLAGS 	 = $(CFLAGS_DEBUG) $(INCLUDES) /D$(KRB)=1
+#CC 	 = cl
+!ifdef NODEBUG
+CFLAGS 	 = $(CCOPTS2) $(INCLUDES) /D$(KRB)=1
 !else
-CFLAGS 	 = $(CFLAGS_RELEASE) $(INCLUDES) /D$(KRB)=1
+CFLAGS 	 = $(CCOPTS2) $(INCLUDES) /D$(KRB)=1 /DDEBUG
 !endif
 
 ##### RC Compiler
-RC 	 = rc
-##WIN16##RFLAGS 	 = /nologo /D$(KRB)=1 $(INCLUDES)
-##WIN32##RFLAGS 	 = /D$(KRB)=1 $(INCLUDES)
+#RC 	 = rc
+RFLAGS 	 = /D$(KRB)=1 $(INCLUDES)
+RCFLAGS  = $(RFLAGS) -DKRB5_APP
+
+##### CVSRES -- .res -> .obj converter
+CVTRES = cvtres
 
 ##### Linker
 LINK 	 = link
-LIBS 	 = $(KLIB) $(WLIB)
-SYSLIBS  = libw llibcew
-!if $(DEBUG)
-LFLAGS 	 = /co /nologo /nod /nopackcode /map:full
-!else
-LFLAGS 	 = /nologo /nod /nopackcode
-!endif
+LIBS 	 = $(KLIB) $(CLIB) $(WLIB) ../lib/$(OUTPRE)libwin.lib
+SYSLIBS = kernel32.lib wsock32.lib user32.lib gdi32.lib advapi32.lib
+LFLAGS = /nologo $(LOPTS)
 
-all:: makefile $(NAME).exe
+all:: Makefile $(OUTPRE)$(NAME).exe
 
-$(NAME).exe: $*.def cns.res $(OBJS) $(XOBJS) $(LIBS)
-	$(LINK) $(LFLAGS) $(OBJS) $(XOBJS), $@, $*.map, \
-	  $(LIBS) $(SYSLIBS), $*.def
-	$(RC) $(RFLAGS) /k cns.res $@
+$(OUTPRE)$(NAME).exe: $(NAME).def $(OBJS) $(XOBJS) $(LIBS)
+	$(LINK) $(LFLAGS) /map:$*.map /out:$@ $(OBJS) $(XOBJS) \
+	  $(LIBS) $(SYSLIBS)
 
-install:
-	copy $(NAME).exe ..\floppy
+install::
+	$(CP) $(OUTPRE)$(NAME).exe $(DESTDIR)
+	$(CP) krb5.hlp $(DESTDIR)
 
 clean:: 
-	if exist *.obj del *.obj
-	if exist *.exe del *.exe
-	if exist *.res del *.res
-	if exist *.map del *.map
-	if exist *.pdb del *.pdb
-	if exist *.err del *.err
-	if exist ..\floppy\$(NAME).exe del ..\floppy\$(NAME).exe
+	$(RM) $(OUTPRE)*.exe
+	$(RM) $(OUTPRE)*.res
+	$(RM) $(OUTPRE)*.map
 
-$(OBJS) cns.res: cns.h tktlist.h
+$(OBJS): cns.h tktlist.h
 
-cns.res: clock00.ico clock05.ico clock10.ico clock15.ico clock20.ico \
-	     clock25.ico clock30.ico clock35.ico clock40.ico clock45.ico \
-	     clock50.ico clock55.ico clock60.ico clockexp.ico clocktkt.ico \
-	     cns.ico
+$(RESFILE): cns.h ..\version.rc
+
+$(RESFILE): clock00.ico clock05.ico clock10.ico clock15.ico clock20.ico \
+	 clock25.ico clock30.ico clock35.ico clock40.ico clock45.ico \
+	 clock50.ico clock55.ico clock60.ico clockexp.ico clocktkt.ico \
+	 cns.ico

@@ -1,12 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server_init.c,v 1.1.1.3 1999-02-09 21:00:17 danw Exp $
+ * $Id: server_init.c,v 1.1.1.4 1999-10-05 16:12:42 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v 1.1.1.3 1999-02-09 21:00:17 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/server_init.c,v 1.1.1.4 1999-10-05 16:12:42 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -116,11 +116,10 @@ kadm5_ret_t kadm5_init(char *client_name, char *pass,
 	 free(handle);
 	 return(ret);
     }
-     
+
     initialize_ovk_error_table();
     initialize_adb_error_table();
     initialize_ovku_error_table();
-    krb5_init_ets(handle->context);
 
     handle->magic_number = KADM5_SERVER_HANDLE_MAGIC;
     handle->struct_version = struct_version;
@@ -185,7 +184,7 @@ kadm5_ret_t kadm5_init(char *client_name, char *pass,
      * Set the db_name based on configuration before calling
      * krb5_db_init, so it will get used.
      */
-    if (ret = krb5_dbm_db_set_name(handle->context,
+    if (ret = krb5_db_set_name(handle->context,
 				   handle->params.dbname)) {
 	 free(handle);
 	 return(ret);
@@ -292,6 +291,7 @@ kadm5_ret_t kadm5_destroy(void *server_handle)
     adb_policy_close(handle);
     krb5_db_fini(handle->context);
     krb5_free_principal(handle->context, handle->current_caller);
+    kadm5_free_config_params(handle->context, &handle->params);
     krb5_free_context(handle->context);
     handle->magic_number = 0;
     free(handle->lhandle);
@@ -312,7 +312,7 @@ kadm5_ret_t kadm5_flush(void *server_handle)
 	  * Set the db_name based on configuration before calling
 	  * krb5_db_init, so it will get used.
 	  */
-	 (ret = krb5_dbm_db_set_name(handle->context,
+	 (ret = krb5_db_set_name(handle->context,
 				     handle->params.dbname)) ||
 	 (ret = krb5_db_init(handle->context)) ||
 	 (ret = adb_policy_close(handle)) ||

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,23 +29,33 @@
 
 #include "k5-int.h"
 
-struct krb5_kt_typelist
- {
-  krb5_kt_ops *ops;
-  struct krb5_kt_typelist *next;
- };
-static struct krb5_kt_typelist krb5_kt_typelist_dfl = { &krb5_kt_dfl_ops, 0 };
-static struct krb5_kt_typelist *kt_typehead = &krb5_kt_typelist_dfl;
+extern krb5_kt_ops krb5_ktf_ops;
+extern krb5_kt_ops krb5_kts_ops;
+
+struct krb5_kt_typelist {
+    krb5_kt_ops *ops;
+    struct krb5_kt_typelist *next;
+};
+static struct krb5_kt_typelist krb5_kt_typelist_file  = {
+    &krb5_ktf_ops,
+    0
+};
+static struct krb5_kt_typelist krb5_kt_typelist_srvtab = {
+    &krb5_kts_ops,
+    &krb5_kt_typelist_file
+};
+static struct krb5_kt_typelist *kt_typehead = &krb5_kt_typelist_srvtab;
+
 
 /*
  * Register a new key table type
  * don't replace if it already exists; return an error instead.
  */
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_kt_register(context, ops)
     krb5_context context;
-    krb5_kt_ops *ops;
+    krb5_kt_ops FAR *ops;
 {
     struct krb5_kt_typelist *t;
     for (t = kt_typehead;t && strcmp(t->ops->prefix,ops->prefix);t = t->next)
@@ -68,11 +81,11 @@ krb5_kt_register(context, ops)
  * particular keytab type.
  */
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_kt_resolve (context, name, ktid)
     krb5_context context;
-    const char *name;
-    krb5_keytab *ktid;
+    const char FAR *name;
+    krb5_keytab FAR *ktid;
 {
     struct krb5_kt_typelist *tlist;
     char *pfx, *resid, *cp;
@@ -184,7 +197,7 @@ krb5_keytab_internalize(kcontext, argp, buffer, lenremain)
     return(kret);
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_ser_keytab_init(kcontext)
     krb5_context	kcontext;
 {

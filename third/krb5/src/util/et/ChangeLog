@@ -1,3 +1,180 @@
+1999-08-18  Miro Jurisic  <meeroh@mit.edu>
+
+	* et.exp: Added et.exp, MacOS export file for com_err library
+
+1999-06-15  Danilo Almeida  <dalmeida@mit.edu>
+
+	* texinfo.tex: Get rid of control characters in text file.
+
+Wed May 19 11:44:31 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add windows build rules for putting header files in
+		include dir.  Do cleanup of header for windows clean.
+
+Mon May 10 15:27:07 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Mon Mar 15 16:01:56 1999  Tom Yu  <tlyu@mit.edu>
+
+	* com_err.h: Fix GSS_DLLIMP.
+
+Mon Feb  1 19:42:45 1999  Tom Yu  <tlyu@mit.edu>
+
+	* et_c.awk: Fix to not depend on CPP symbol "unix".
+
+	* et_h.awk: Fix to not depend on CPP symbol "unix".
+
+1998-12-01  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* com_err.h, error_table.h, error_message.c: Use "#if
+	        defined(MSDOS) || ..." instead of "#if
+	        !defined(unix)", since not all Unix compilers define
+		"unix".
+
+1998-07-02  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* com_err.c (MacMessageBox): Change TextBox to TETextBox to match
+		up with CodeWarrior changes.
+
+Wed Feb 18 16:33:07 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Wed Jan 28 17:54:57 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in, Makefile.in: Remove CopySrcHeader from
+		configure.in, and move functionality to Makefile.in
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Oct  7 07:43:05 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add $(srcdir) as prefix to srcs.
+
+Mon Jul 21 12:00:24 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* error_message.c (error_message): Mask error code with
+		ERRCODE_MASK to handle case where 32bit ints are zero
+		filed in the gssapi layer.
+
+	* error_table.h: Define ERRCODE_MAX, the maximum allowed error
+		code (32bits).  
+
+Tue Mar 18 15:07:40 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* com_err.h: Add 'extern "C"' for C++ compatibility; also check for
+		__cplusplus since some C++ compilers don't set __STDC__
+
+Mon Mar  3 14:57:35 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* error_message.c: Don't declare sys_nerr on Macintosh.
+
+	* com_err.c: Fix MacMessageBox prototype.
+
+Sat Mar  1 11:54:02 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* com_err.h: Do not declare com_err_hook extern if you want it
+ 	static in the source file. [383]
+	
+
+Sat Feb 22 12:18:47 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Move list file construction to win-post.in
+
+	* et_c.awk et_h.awk error_message.c com_err.c:
+		Put back #ifdef unix, and also based it on AIX.
+		We do NOT want the compatibility interface on any new
+		architectures.  Since we have distributed Kerberos on
+		AIX before, we need it there.  If newer Unix systems
+		lack the #define, so be it... it doesn't matter.
+
+Sat Feb 22 02:18:47 1997  Sam Hartman  <hartmans@tertius.mit.edu>
+
+	* et_h.awk (char_shift): Avoid #ifdef unix
+	* error_message.c: Remove #ifdef unix
+	* com_err.c: Remove #ifdef unix
+
+Sat Feb 22 00:34:05 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* Makefile.in (LIBMAJOR):  Bump to 3 so that the krb5 lib is preferred to the NetBSD system library.
+
+Fri Feb 14 13:55:45 1997  Richard Basch  <basch@lehman.com>
+
+	* com_err.c com_err.h error_message.c error_table.h et_c.awk et_h.awk:
+		Removed experimental V2 API
+		Added table register/deregister functions
+		Only make the com_err_hook vars/funcs available on Unix
+		Only expose _et_list on Unix
+
+Tue Feb 11 13:31:49 1997  Richard Basch  <basch@lehman.com>
+
+	* com_err.c: If the application is a console application, simply
+		display the message to stderr. (win32)
+
+Mon Feb 10 21:30:41 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* com_err.c, com_err.h (com_err_va): Fix broken Windows 16
+		declaration.  (Should be KRB5_CALLCONV, and using ET_P)
+
+Fri Feb  7 22:10:23 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* compile_et.c: Change the emitted name of the struct error_table
+ 		to be et_XXX_error_table, instead of it being a static
+ 		variable named "et".  (This change has already been made
+		in the awk versions of compile_et.)
+
+	* com_err.h, com_err.c: Remove the void *priv argument from
+ 		com_err_va() and et_com_err() experimental API's.  (That
+ 		was a braino; the private data pointer should come from
+ 		the hook_func_data field.)
+
+Fri Feb  7 19:03:07 1997  Richard Basch  <basch@lehman.com>
+
+	* com_err.c com_err.h: Added old interface function com_err_va
+
+Tue Feb  4 15:59:01 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in com_err.h error_table.h et_c.awk error_message.c
+		Corrected various declarations for Windows build
+
+Wed Jan 29 17:32:23 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Add rules to build test_et (for testing!)
+
+	* com_err.h, error_table.h: Fixed up varargs/stdargs declarations
+		Move definition of struct error_table into com_err.h, and 
+		define first draft of the V2 API.  Removed the Windows
+		specific declarations from error_table.h, since it's now
+		safe to 
+
+	* com_err.c, error_message.c, init_et.c, et_name.c: Added new
+		V2 API's.  Cleaned up C code.  
+
+	* test_et.c: Added new test case for error code 0
+
+	* et_c.awk: Added __far for Windows 16 pointer.
+
+	* internal.h: File removed, no longer used.
+
+	* error_table.y: Add #include the header file "com_err.h"
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+	* com_err.h error_table.h init_et.c internal.h
+		Win32 support
+
+Tue Dec 31 12:54:54 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (RELDIR): Add for new procedure.
+
+Mon Dec 30 17:30:43 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to use new library build procedure.
+
 Mon Nov 18 20:37:19 1996  Ezra Peisach  <epeisach@mit.edu>
 
 	* configure.in: Set shared library version to 1.0. [krb5-libs/201]

@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.3 1999-02-09 21:00:12 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.4 1999-10-05 16:12:32 ghudson Exp $
  */
 
 #ifndef __KADM5_ADMIN_H__
@@ -12,7 +12,7 @@
 #endif
      
 #include	<sys/types.h>
-#include	<rpc/rpc.h>
+#include	<gssrpc/rpc.h>
 #include	<krb5.h>
 #include	<k5-int.h>
 #include	<com_err.h>
@@ -94,7 +94,8 @@ typedef long		kadm5_ret_t;
 #define KADM5_CONFIG_ADMIN_SERVER	0x010000
 #define KADM5_CONFIG_DICT_FILE		0x020000
 #define KADM5_CONFIG_MKEY_FROM_KBD	0x040000
-   
+#define KADM5_CONFIG_KPASSWD_PORT	0x080000
+    
 /*
  * permission bits
  */
@@ -187,6 +188,7 @@ typedef struct _kadm5_config_params {
      char *		realm;
      char *		profile;
      int		kadmind_port;
+     int		kpasswd_port;
 
      char *		admin_server;
 
@@ -301,6 +303,12 @@ kadm5_ret_t    kadm5_destroy(void *server_handle);
 kadm5_ret_t    kadm5_create_principal(void *server_handle,
 				      kadm5_principal_ent_t ent,
 				      long mask, char *pass);
+kadm5_ret_t    kadm5_create_principal_3(void *server_handle,
+					kadm5_principal_ent_t ent,
+					long mask, krb5_boolean keepold,
+					int n_ks_tuple,
+					krb5_key_salt_tuple *ks_tuple,
+					char *pass);
 kadm5_ret_t    kadm5_delete_principal(void *server_handle,
 				      krb5_principal principal);
 kadm5_ret_t    kadm5_modify_principal(void *server_handle,
@@ -321,6 +329,12 @@ kadm5_ret_t    kadm5_get_principal(void *server_handle,
 kadm5_ret_t    kadm5_chpass_principal(void *server_handle,
 				      krb5_principal principal,
 				      char *pass);
+kadm5_ret_t    kadm5_chpass_principal_3(void *server_handle,
+					krb5_principal principal,
+					krb5_boolean keepold,
+					int n_ks_tuple,
+					krb5_key_salt_tuple *ks_tuple,
+					char *pass);
 #if USE_KADM5_API_VERSION == 1
 kadm5_ret_t    kadm5_randkey_principal(void *server_handle,
 				       krb5_principal principal,
@@ -330,7 +344,23 @@ kadm5_ret_t    kadm5_randkey_principal(void *server_handle,
 				       krb5_principal principal,
 				       krb5_keyblock **keyblocks,
 				       int *n_keys);
+kadm5_ret_t    kadm5_randkey_principal_3(void *server_handle,
+					 krb5_principal principal,
+					 krb5_boolean keepold,
+					 int n_ks_tuple,
+					 krb5_key_salt_tuple *ks_tuple,
+					 krb5_keyblock **keyblocks,
+					 int *n_keys);
 #endif
+kadm5_ret_t    kadm5_setv4key_principal(void *server_handle,
+					krb5_principal principal,
+					krb5_keyblock *keyblock);
+
+kadm5_ret_t    kadm5_setkey_principal(void *server_handle,
+				      krb5_principal principal,
+				      krb5_keyblock *keyblocks,
+				      int n_keys);
+
 kadm5_ret_t    kadm5_create_policy(void *server_handle,
 				   kadm5_policy_ent_t ent,
 				   long mask);

@@ -1,3 +1,31 @@
+1999-08-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* update_utmp.c (pty_update_utmp): Use "co" instead of "cons" for
+	console line on Solaris.  Patch from Larry Schwimmer
+	(schwim@whatmore.Stanford.EDU).
+
+	* Makefile.in (dump-utmp): Add a rule for building, never
+	automatically done.
+	(dump-utmp.o): Depends on dump-utmp.c.
+
+	Updates from Cygnus KerbNet:
+
+	* dump-utmp.c (ut_typename): Only define if
+	HAVE_STRUCT_UTMP_UT_TYPE is defined.
+	(main): Dump more info, and conditionalize it better.
+
+	* dump-utmp.c (ctime): Declare, to prevent crashes on Alpha.
+
+	* dump-utmp.c (UTMPX): Define if not defined but HAVE_UTMPX_H is
+	defined.
+	(ut_typename): Return shorter forms for some symbols.
+	(main): Require `-x' flag for [uw]tmpx file instead of guessing
+	from the name.  Reject unknown `-' arguments.  Print a message if
+	an error occurs while reading from utmpx file.  Break up output
+	statements into smaller pieces.  Conditionalize output of some
+	utmp fields on whether those fields are present.  Print out exit
+	status fields and timestamp.
+
 Fri Apr 23 23:13:57 1999  Tom Yu  <tlyu@mit.edu>
 
 	* update_utmp.c (pty_update_utmp): utx.ut_pid is a pid_t, and
@@ -11,11 +39,6 @@ Fri Apr 23 23:13:57 1999  Tom Yu  <tlyu@mit.edu>
 		2.1, since it's the same as updwtmp(), and glibc doesn't
 		define PATH_WTMPX.  updwtmpx() is not part of the XPG
 		standard anyway.  (Needed for RedHat 6.0.)
-
-Wed Mar 31 17:12:14 1999  Tom Yu  <tlyu@mit.edu>
-
-	* cleanup.c (pty_cleanup): Temporary hack to not call revoke()
-	under AIX.
 
 Sun Mar 28 17:50:57 1999  Tom Yu  <tlyu@mit.edu>
 
@@ -37,12 +60,21 @@ Thu Feb 11 22:24:03 1999  Tom Yu  <tlyu@mit.edu>
 	* sane_hostname.c: Force maxlen to be 16 if it's less than 16,
 	since otherwise a numeric IP address won't fit.
 
-	* Makefile.in: Add sane_hostname.{o,c}
+	* Makefile.in: Add sane_hostname.{o,c}; bump minor version.
 
 	* libpty.h: Add prototype for make_sane_hostname.
 
 	* sane_hostname.c: New file; add function to "sanitize" hostname
 	for logging purposes.
+
+1999-01-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Remove test CHECK_WAIT_TYPE since nothing is using
+		the results of that test (WAIT_USES_INT).
+
+1998-08-16    <hartmans@fundsxpress.com>
+
+	* Makefile.in (SHLIB_EXPDEPS): Depend on lib_comerr
 
 1998-07-05    <hartmans@fundsxpress.com>
 
@@ -61,6 +93,19 @@ Thu Mar 12 18:09:25 1998  Tom Yu  <tlyu@mit.edu>
 	* update_utmp.c (pty_update_utmp): Fix bogus entry of
 	PTY_LOGIN_PROCESS types on BSD-ish systems. [pty/531]
 
+Wed Feb 18 16:33:58 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 16:18:08 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+	* configure.in, Makefile.in: Remove CopySrcHeader and CopyHeader 
+		from configure.in and move equivalent functionality to
+		Makefile.in 
+
 Sun Dec  7 00:05:28 1997  Tom Yu  <tlyu@mit.edu>
 
 	* getpty.c (pty_getpty): Fix goof in previous, which introduced
@@ -78,9 +123,50 @@ Wed Dec  3 17:16:44 1997  Tom Yu  <tlyu@mit.edu>
 	* open_slave.c (pty_open_slave): Check to ensure that the slave
 	name is not NULL or zero-length.
 
+Tue Oct 28 13:28:54 1997  Ezra Peisach  <epeisach@.mit.edu>
+
+	* pty-int.h: Do not prototype initialize_pty_error_table as
+	        pty-err.h does as well.
+
+Fri Oct 24 09:12:43 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (CFILES): Add $(srcdir).
+
+Wed Oct  1 04:53:30 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Default to a long rather than an int for a time_t
+	for paranoia reasons.
+
 Tue Jun  3 23:05:07 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* getpty.c (pty_getpty): Remove erroneous space from the HPUX open().
+
+Fri Apr 25 19:14:48 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* configure.in: Check for openpty() in -lutil.  It's there on
+		FreeBSD and BSDI systems.
+
+Fri Feb 21 18:25:47 1997  Sam Hartman  <hartmans@tertius.mit.edu>
+
+	* pty-int.h: No longer prototype error table init function.
+
+Thu Jan 16 18:47:12 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Cause "clean" to dtrt.
+	
+	* configure.in: Punt spurious call to KRB5_LIB_PARAMS.
+
+Sun Dec 29 21:32:41 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Update to set STLIBOBJS instead of LIBSRCS; also
+	clean up a little bit.
+
+Fri Dec 27 17:09:46 1996  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix to use OBJS.ST rather than ./OBJS.ST.
+
+	* Makefile.in:
+	* configure.in: Changes to use new library build system.
 
 Thu Dec  5 22:43:35 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 

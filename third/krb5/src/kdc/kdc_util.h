@@ -15,7 +15,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -93,6 +96,8 @@ krb5_error_code
 get_salt_from_key PROTOTYPE((krb5_context, krb5_principal,
 			     krb5_key_data *, krb5_data *));
 
+void limit_string PROTOTYPE((char *name));
+
 /* do_as_req.c */
 krb5_error_code process_as_req PROTOTYPE((krb5_kdc_req *,
 					  const krb5_fulladdr *,
@@ -112,6 +117,8 @@ krb5_error_code dispatch PROTOTYPE((krb5_data *,
 
 /* main.c */
 krb5_error_code kdc_initialize_rcache PROTOTYPE((krb5_context, char *));
+
+krb5_error_code setup_server_realm PROTOTYPE((krb5_principal));
 
 /* network.c */
 krb5_error_code listen_and_process PROTOTYPE((const char *));

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.3 1999-02-09 21:00:20 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.4 1999-10-05 16:12:44 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.3 1999-02-09 21:00:20 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.4 1999-10-05 16:12:44 ghudson Exp $";
 #endif
 
 #include	<sys/types.h>
@@ -22,8 +22,6 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 
 extern	krb5_principal	    master_princ;
 extern	krb5_principal	    hist_princ;
-extern	krb5_encrypt_block  master_encblock;
-extern	krb5_encrypt_block  hist_encblock;
 extern	krb5_keyblock	    master_keyblock;
 extern	krb5_keyblock	    hist_key;
 extern	krb5_db_entry	    master_db;
@@ -86,10 +84,36 @@ static krb5_tl_data *dup_tl_data(krb5_tl_data *tl)
      return n;
 }
 
+/* This is in lib/kdb/kdb_cpw.c, but is static */
+static void cleanup_key_data(context, count, data)
+   krb5_context	  context;
+   int			  count;
+   krb5_key_data	* data;
+{
+     int i, j;
+     
+     for (i = 0; i < count; i++)
+	  for (j = 0; j < data[i].key_data_ver; j++)
+	       if (data[i].key_data_length[j])
+		    free(data[i].key_data_contents[j]);
+     free(data);
+}
+
 kadm5_ret_t
 kadm5_create_principal(void *server_handle,
 			    kadm5_principal_ent_t entry, long mask,
 			    char *password)
+{
+    return
+	kadm5_create_principal_3(server_handle, entry, mask,
+				 FALSE, 0, NULL, password);
+}
+kadm5_ret_t
+kadm5_create_principal_3(void *server_handle,
+			 kadm5_principal_ent_t entry, long mask,
+			 krb5_boolean keepold,
+			 int n_ks_tuple, krb5_key_salt_tuple *ks_tuple,
+			 char *password)
 {
     krb5_db_entry		kdb;
     osa_princ_ent_rec		adb;
@@ -221,11 +245,12 @@ kadm5_create_principal(void *server_handle,
 
     /* initialize the keys */
 
-    if (ret = krb5_dbe_cpw(handle->context, &master_encblock,
-			   handle->params.keysalts,
-			   handle->params.num_keysalts,
+    if (ret = krb5_dbe_cpw(handle->context, &master_keyblock,
+			   n_ks_tuple?ks_tuple:handle->params.keysalts,
+			   n_ks_tuple?n_ks_tuple:handle->params.num_keysalts,
 			   password,
-			   (mask & KADM5_KVNO)?entry->kvno:1, &kdb)) {
+			   (mask & KADM5_KVNO)?entry->kvno:1,
+			   keepold, &kdb)) {
 	krb5_dbe_free_contents(handle->context, &kdb);
 	if (mask & KADM5_POLICY)
 	     (void) kadm5_free_policy_ent(handle->lhandle, &polent);
@@ -801,20 +826,20 @@ done:
  * Arguments:
  *
  *	context			(r) the krb5 context
- *	histkey_encblock	(r) the encblock that hist_key_data is
+ *	hist_keyblock		(r) the key that hist_key_data is
  *				encrypted in
  *	n_new_key_data		(r) length of new_key_data
  *	new_key_data		(r) keys to check against
- *				pw_hist_data, encrypted in histkey_encblock
+ *				pw_hist_data, encrypted in hist_keyblock
  *	n_pw_hist_data		(r) length of pw_hist_data
  *	pw_hist_data		(r) passwords to check new_key_data against
  *
  * Effects:
  * For each new_key in new_key_data:
- * 	decrypt new_key with the master_encblock
+ * 	decrypt new_key with the master_keyblock
  * 	for each password in pw_hist_data:
  *		for each hist_key in password:
- *			decrypt hist_key with histkey_encblock
+ *			decrypt hist_key with hist_keyblock
  *			compare the new_key and hist_key
  *
  * Returns krb5 errors, KADM5_PASS_RESUSE if a key in
@@ -822,7 +847,7 @@ done:
  */
 static kadm5_ret_t
 check_pw_reuse(krb5_context context,
-	       krb5_encrypt_block *histkey_encblock,
+	       krb5_keyblock *hist_keyblock,
 	       int n_new_key_data, krb5_key_data *new_key_data,
 	       int n_pw_hist_data, osa_pw_hist_ent *pw_hist_data)
 {
@@ -832,7 +857,7 @@ check_pw_reuse(krb5_context context,
 
     for (x = 0; x < n_new_key_data; x++) {
 	 if (ret = krb5_dbekd_decrypt_key_data(context,
-					       &master_encblock,
+					       &master_keyblock,
 					       &(new_key_data[x]),
 					       &newkey, NULL))
 	    return(ret);
@@ -840,7 +865,7 @@ check_pw_reuse(krb5_context context,
 	     for (z = 0; z < pw_hist_data[y].n_key_data; z++) {
 		  if (ret =
 		      krb5_dbekd_decrypt_key_data(context,
-						  histkey_encblock,
+						  hist_keyblock,
 						  &pw_hist_data[y].key_data[z],
 						  &histkey, NULL))
 		       return(ret);		
@@ -879,8 +904,8 @@ check_pw_reuse(krb5_context context,
  * Effects:
  *
  * hist->key_data is allocated to store n_key_data key_datas.  Each
- * element of key_data is decrypted with master_encblock, re-encrypted
- * in hist_encblock, and added to hist->key_data.  hist->n_key_data is
+ * element of key_data is decrypted with master_keyblock, re-encrypted
+ * in hist_key, and added to hist->key_data.  hist->n_key_data is
  * set to n_key_data.
  */
 int create_history_entry(krb5_context context, int n_key_data,
@@ -897,12 +922,12 @@ int create_history_entry(krb5_context context, int n_key_data,
 
      for (i = 0; i < n_key_data; i++) {
 	  if (ret = krb5_dbekd_decrypt_key_data(context,
-						&master_encblock,
+						&master_keyblock,
 						&key_data[i],
 						&key, &salt))
 	       return ret;
 	  if (ret = krb5_dbekd_encrypt_key_data(context,
-						&hist_encblock,
+						&hist_key,
 						&key, &salt,
 						key_data[i].key_data_kvno,
 						&hist->key_data[i]))
@@ -998,6 +1023,17 @@ kadm5_ret_t
 kadm5_chpass_principal(void *server_handle,
 			    krb5_principal principal, char *password)
 {
+    return
+	kadm5_chpass_principal_3(server_handle, principal, FALSE,
+				 0, NULL, password);
+}
+
+kadm5_ret_t
+kadm5_chpass_principal_3(void *server_handle,
+			 krb5_principal principal, krb5_boolean keepold,
+			 int n_ks_tuple, krb5_key_salt_tuple *ks_tuple,
+			 char *password)
+{
     krb5_int32			now;
     kadm5_policy_ent_rec	pol;
     osa_princ_ent_rec		adb;
@@ -1037,10 +1073,11 @@ kadm5_chpass_principal(void *server_handle,
 			    KADM5_POLICY, &pol, principal)))
 	 goto done;
 
-    if (ret = krb5_dbe_cpw(handle->context, &master_encblock,
-			   handle->params.keysalts,
-			   handle->params.num_keysalts,
-			   password, 0 /* increment kvno */, &kdb))
+    if (ret = krb5_dbe_cpw(handle->context, &master_keyblock,
+			   n_ks_tuple?ks_tuple:handle->params.keysalts,
+			   n_ks_tuple?n_ks_tuple:handle->params.num_keysalts,
+			   password, 0 /* increment kvno */,
+			   keepold, &kdb))
 	goto done;
 
     kdb.attributes &= ~KRB5_KDB_REQUIRES_PWCHANGE;
@@ -1075,7 +1112,7 @@ kadm5_chpass_principal(void *server_handle,
 	     goto done;
 
 	if (ret = check_pw_reuse(handle->context,
-				 &hist_encblock,
+				 &hist_key,
 				 kdb.n_key_data, kdb.key_data,
 				 1, &hist))
 	     goto done;
@@ -1087,7 +1124,7 @@ kadm5_chpass_principal(void *server_handle,
 	    }
 
 	    if (ret = check_pw_reuse(handle->context,
-				     &hist_encblock,
+				     &hist_key,
 				     kdb.n_key_data, kdb.key_data,
 				     adb.old_key_len, adb.old_keys))
 		goto done;
@@ -1132,6 +1169,19 @@ kadm5_randkey_principal(void *server_handle,
 			krb5_keyblock **keyblocks,
 			int *n_keys)
 {
+    return
+	kadm5_randkey_principal_3(server_handle, principal,
+				  FALSE, 0, NULL,
+				  keyblocks, n_keys);
+}
+kadm5_ret_t
+kadm5_randkey_principal_3(void *server_handle,
+			krb5_principal principal,
+			krb5_boolean keepold,
+			int n_ks_tuple, krb5_key_salt_tuple *ks_tuple,
+			krb5_keyblock **keyblocks,
+			int *n_keys)
+{
     krb5_db_entry		kdb;
     osa_princ_ent_rec		adb;
     krb5_int32			now;
@@ -1156,9 +1206,10 @@ kadm5_randkey_principal(void *server_handle,
     if ((ret = kdb_get_entry(handle, principal, &kdb, &adb)))
        return(ret);
 
-    if (ret = krb5_dbe_crk(handle->context, &master_encblock,
-			   handle->params.keysalts,
-			   handle->params.num_keysalts,
+    if (ret = krb5_dbe_crk(handle->context, &master_keyblock,
+			   n_ks_tuple?ks_tuple:handle->params.keysalts,
+			   n_ks_tuple?n_ks_tuple:handle->params.num_keysalts,
+			   keepold,
 			   &kdb))
        goto done;
 
@@ -1198,7 +1249,7 @@ kadm5_randkey_principal(void *server_handle,
 	    }
 
 	    if (ret = check_pw_reuse(handle->context,
-				     &hist_encblock,
+				     &hist_key,
 				     kdb.n_key_data, kdb.key_data,
 				     adb.old_key_len, adb.old_keys))
 		goto done;
@@ -1247,9 +1298,268 @@ done:
 }
 
 /*
+ * kadm5_setv4key_principal:
+ *
+ * Set only ONE key of the principal, removing all others.  This key
+ * must have the DES_CBC_CRC enctype and is entered as having the
+ * krb4 salttype.  This is to enable things like kadmind4 to work.
+ */
+kadm5_ret_t
+kadm5_setv4key_principal(void *server_handle,
+		       krb5_principal principal,
+		       krb5_keyblock *keyblock)
+{
+    krb5_db_entry		kdb;
+    osa_princ_ent_rec		adb;
+    krb5_int32			now;
+    kadm5_policy_ent_rec	pol;
+    krb5_key_data		*key_data;
+    krb5_keysalt		keysalt;
+    int				i, kvno, ret, last_pwd, have_pol = 0;
+    int				deskeys;
+    kadm5_server_handle_t	handle = server_handle;
+
+    CHECK_HANDLE(server_handle);
+
+    if (principal == NULL || keyblock == NULL)
+	return EINVAL;
+    if (hist_princ && /* this will be NULL when initializing the databse */
+	((krb5_principal_compare(handle->context,
+				 principal, hist_princ)) == TRUE))
+	return KADM5_PROTECT_PRINCIPAL;
+
+    if (keyblock->enctype != ENCTYPE_DES_CBC_CRC)
+	return KADM5_SETV4KEY_INVAL_ENCTYPE;
+    
+    if ((ret = kdb_get_entry(handle, principal, &kdb, &adb)))
+       return(ret);
+
+    for (kvno = 0, i=0; i<kdb.n_key_data; i++)
+	 if (kdb.key_data[i].key_data_kvno > kvno)
+	      kvno = kdb.key_data[i].key_data_kvno;
+
+    if (kdb.key_data != NULL)
+	 cleanup_key_data(handle->context, kdb.n_key_data, kdb.key_data);
+    
+    kdb.key_data = (krb5_key_data*)malloc(sizeof(krb5_key_data));
+    if (kdb.key_data == NULL)
+	 return ENOMEM;
+    memset(kdb.key_data, 0, sizeof(krb5_key_data));
+    kdb.n_key_data = 1;
+    keysalt.type = KRB5_KDB_SALTTYPE_V4;
+    /* XXX data.magic? */
+    keysalt.data.length = 0;
+    keysalt.data.data = NULL;
+
+    if (ret = krb5_dbekd_encrypt_key_data(handle->context,
+					  &master_keyblock,
+					  keyblock, &keysalt,
+					  kvno + 1,
+					  kdb.key_data)) {
+	goto done;
+    }
+
+    kdb.attributes &= ~KRB5_KDB_REQUIRES_PWCHANGE;
+
+    if (ret = krb5_timeofday(handle->context, &now))
+	goto done;
+
+    if ((adb.aux_attributes & KADM5_POLICY)) {
+	if ((ret = kadm5_get_policy(handle->lhandle, adb.policy,
+				    &pol)) != KADM5_OK) 
+	   goto done;
+	have_pol = 1;
+
+#if 0
+	/*
+	  * The spec says this check is overridden if the caller has
+	  * modify privilege.  The admin server therefore makes this
+	  * check itself (in chpass_principal_wrapper, misc.c).  A
+	  * local caller implicitly has all authorization bits.
+	  */
+	if (ret = krb5_dbe_lookup_last_pwd_change(handle->context,
+						  &kdb, &last_pwd))
+	     goto done;
+	if((now - last_pwd) < pol.pw_min_life &&
+	   !(kdb.attributes & KRB5_KDB_REQUIRES_PWCHANGE)) {
+	     ret = KADM5_PASS_TOOSOON;
+	     goto done;
+	}
+#endif
+#if 0
+	/*
+	 * Should we be checking/updating pw history here?
+	 */
+	if(pol.pw_history_num > 1) {
+	    if(adb.admin_history_kvno != hist_kvno) {
+		ret = KADM5_BAD_HIST_KEY;
+		goto done;
+	    }
+
+	    if (ret = check_pw_reuse(handle->context,
+				     &hist_key,
+				     kdb.n_key_data, kdb.key_data,
+				     adb.old_key_len, adb.old_keys))
+		goto done;
+	}
+#endif
+	
+	if (pol.pw_max_life)
+	   kdb.pw_expiration = now + pol.pw_max_life;
+	else
+	   kdb.pw_expiration = 0;
+    } else {
+	kdb.pw_expiration = 0;
+    }
+
+    if (ret = krb5_dbe_update_last_pwd_change(handle->context, &kdb, now))
+	 goto done;
+
+    if ((ret = kdb_put_entry(handle, &kdb, &adb)))
+	goto done;
+
+    ret = KADM5_OK;
+done:
+    kdb_free_entry(handle, &kdb, &adb);
+    if (have_pol)
+	 kadm5_free_policy_ent(handle->lhandle, &pol);
+
+    return ret;
+}
+
+kadm5_ret_t
+kadm5_setkey_principal(void *server_handle,
+		       krb5_principal principal,
+		       krb5_keyblock *keyblocks,
+		       int n_keys)
+{
+    krb5_db_entry		kdb;
+    osa_princ_ent_rec		adb;
+    krb5_int32			now;
+    kadm5_policy_ent_rec	pol;
+    krb5_key_data		*key_data;
+    int				i, j, kvno, ret, last_pwd, have_pol = 0;
+    kadm5_server_handle_t	handle = server_handle;
+    krb5_boolean		similar;
+
+    CHECK_HANDLE(server_handle);
+
+    if (principal == NULL || keyblocks == NULL)
+	return EINVAL;
+    if (hist_princ && /* this will be NULL when initializing the databse */
+	((krb5_principal_compare(handle->context,
+				 principal, hist_princ)) == TRUE))
+	return KADM5_PROTECT_PRINCIPAL;
+
+    for (i = 0; i < n_keys; i++) {
+	for (j = i+1; j < n_keys; j++) {
+	    if (ret = krb5_c_enctype_compare(handle->context,
+					     keyblocks[i].enctype,
+					     keyblocks[j].enctype,
+					     &similar))
+		return(ret);
+	    if (similar)
+		return KADM5_SETKEY_DUP_ENCTYPES;
+	}
+    }
+
+    if ((ret = kdb_get_entry(handle, principal, &kdb, &adb)))
+       return(ret);
+    
+    for (kvno = 0, i=0; i<kdb.n_key_data; i++)
+	 if (kdb.key_data[i].key_data_kvno > kvno)
+	      kvno = kdb.key_data[i].key_data_kvno;
+
+    if (kdb.key_data != NULL)
+	 cleanup_key_data(handle->context, kdb.n_key_data, kdb.key_data);
+    
+    kdb.key_data = (krb5_key_data*)malloc(n_keys*sizeof(krb5_key_data));
+    if (kdb.key_data == NULL)
+	 return ENOMEM;
+    memset(kdb.key_data, 0, n_keys*sizeof(krb5_key_data));
+    kdb.n_key_data = n_keys;
+
+    for (i = 0; i < n_keys; i++) {
+	 if (ret = krb5_dbekd_encrypt_key_data(handle->context,
+					       &master_keyblock,
+					       &keyblocks[i], NULL,
+					       kvno + 1,
+					       &kdb.key_data[i]))
+	      return ret;
+    }
+
+    kdb.attributes &= ~KRB5_KDB_REQUIRES_PWCHANGE;
+
+    if (ret = krb5_timeofday(handle->context, &now))
+	goto done;
+
+    if ((adb.aux_attributes & KADM5_POLICY)) {
+	if ((ret = kadm5_get_policy(handle->lhandle, adb.policy,
+				    &pol)) != KADM5_OK) 
+	   goto done;
+	have_pol = 1;
+
+#if 0
+	/*
+	  * The spec says this check is overridden if the caller has
+	  * modify privilege.  The admin server therefore makes this
+	  * check itself (in chpass_principal_wrapper, misc.c).  A
+	  * local caller implicitly has all authorization bits.
+	  */
+	if (ret = krb5_dbe_lookup_last_pwd_change(handle->context,
+						  &kdb, &last_pwd))
+	     goto done;
+	if((now - last_pwd) < pol.pw_min_life &&
+	   !(kdb.attributes & KRB5_KDB_REQUIRES_PWCHANGE)) {
+	     ret = KADM5_PASS_TOOSOON;
+	     goto done;
+	}
+#endif
+#if 0
+	/*
+	 * Should we be checking/updating pw history here?
+	 */
+	if(pol.pw_history_num > 1) {
+	    if(adb.admin_history_kvno != hist_kvno) {
+		ret = KADM5_BAD_HIST_KEY;
+		goto done;
+	    }
+
+	    if (ret = check_pw_reuse(handle->context,
+				     &hist_key,
+				     kdb.n_key_data, kdb.key_data,
+				     adb.old_key_len, adb.old_keys))
+		goto done;
+	}
+#endif
+	
+	if (pol.pw_max_life)
+	   kdb.pw_expiration = now + pol.pw_max_life;
+	else
+	   kdb.pw_expiration = 0;
+    } else {
+	kdb.pw_expiration = 0;
+    }
+
+    if (ret = krb5_dbe_update_last_pwd_change(handle->context, &kdb, now))
+	 goto done;
+
+    if ((ret = kdb_put_entry(handle, &kdb, &adb)))
+	goto done;
+
+    ret = KADM5_OK;
+done:
+    kdb_free_entry(handle, &kdb, &adb);
+    if (have_pol)
+	 kadm5_free_policy_ent(handle->lhandle, &pol);
+
+    return ret;
+}
+
+/*
  * Allocate an array of n_key_data krb5_keyblocks, fill in each
  * element with the results of decrypting the nth key in key_data with
- * master_encblock, and if n_keys is not NULL fill it in with the
+ * master_keyblock, and if n_keys is not NULL fill it in with the
  * number of keys decrypted.
  */
 static int decrypt_key_data(krb5_context context,
@@ -1266,7 +1576,7 @@ static int decrypt_key_data(krb5_context context,
 
      for (i = 0; i < n_key_data; i++) {
 	  if (ret = krb5_dbekd_decrypt_key_data(context,
-						&master_encblock,
+						&master_keyblock,
 						&key_data[i], 
 						&keys[i], NULL)) {
 
@@ -1337,7 +1647,7 @@ kadm5_ret_t kadm5_decrypt_key(void *server_handle,
 	 return ret;
 
     if (ret = krb5_dbekd_decrypt_key_data(handle->context,
-					  &master_encblock, key_data,
+					  &master_keyblock, key_data,
 					  keyblock, keysalt))
 	 return ret;
 

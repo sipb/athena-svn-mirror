@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -43,12 +46,12 @@ krb5_error_code ktutil_free_kt_list(context, list)
 
     for (lp = list; lp;) {
 	retval = krb5_kt_free_entry(context, lp->entry);
-	krb5_xfree(lp->entry);
+	free((char *)lp->entry);
 	if (retval)
 	    break;
 	prev = lp;
 	lp = lp->next;
-	krb5_xfree(prev);
+	free((char *)prev);
     }
     return retval;
 }
@@ -135,7 +138,7 @@ krb5_error_code ktutil_read_keytab(context, name, list)
 	lp->entry = entry;
     }
     if (entry)
-	krb5_xfree(entry);
+	free((char *)entry);
     if (retval)
 	if (retval == KRB5_KT_END)
 	    retval = 0;
@@ -182,16 +185,16 @@ krb5_error_code ktutil_write_keytab(context, list, name)
 
 #ifdef KRB5_KRB4_COMPAT
 /*
- * getst() takes a file pointer, a string and a count.  It reads from
+ * getstr() takes a file pointer, a string and a count.  It reads from
  * the file until either it has read "count" characters, or until it
  * reads a null byte.  When finished, what has been read exists in the
  * given string "s".  If "count" characters were actually read, the
  * last is changed to a null, so the returned string is always null-
- * terminated.  getst() returns the number of characters read,
+ * terminated.  getstr() returns the number of characters read,
  * including the null terminator.
  */
 
-int getst(fp, s, n)
+int getstr(fp, s, n)
     FILE *fp;
     register char *s;
     int n;
@@ -241,9 +244,9 @@ krb5_error_code ktutil_read_srvtab(context, name, list)
 	memset(sname, 0, sizeof (sname));
 	memset(sinst, 0, sizeof (sinst));
 	memset(srealm, 0, sizeof (srealm));
-	if (!(getst(fp, sname, SNAME_SZ) > 0 &&
-	      getst(fp, sinst, INST_SZ) > 0 &&
-	      getst(fp, srealm, REALM_SZ) > 0 &&
+	if (!(getstr(fp, sname, SNAME_SZ) > 0 &&
+	      getstr(fp, sinst, INST_SZ) > 0 &&
+	      getstr(fp, srealm, REALM_SZ) > 0 &&
 	      fread(&kvno, 1, 1, fp) > 0 &&
 	      fread((char *)key, sizeof (key), 1, fp) > 0))
 	    break;
@@ -286,7 +289,7 @@ krb5_error_code ktutil_read_srvtab(context, name, list)
     if (entry) {
 	if (entry->magic == KV5M_KEYTAB_ENTRY)
 	    krb5_kt_free_entry(context, entry);
-	krb5_xfree(entry);
+	free((char *)entry);
     }
     if (retval) {
 	ktutil_free_kt_list(context, tail);
@@ -383,7 +386,7 @@ krb5_error_code ktutil_write_srvtab(context, list, name)
     for (lp = pruned; lp;) {
 	prev = lp;
 	lp = lp->next;
-	krb5_xfree(prev);
+	free((char *)prev);
     }
     return retval;
 }

@@ -1,6 +1,52 @@
-Fri Mar 12 15:29:17 1999  Tom Yu  <tlyu@mit.edu>
+1999-08-16  Tom Yu  <tlyu@mit.edu>
 
-	* mkrel: Update from trunk.
+	* mkrel (reldate): Fix to deal with release branch snapshots.
+
+Wed May 19 11:43:36 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add all and cleanup rules for windows for windows,
+		et, and profile subdirectories.
+
+Sat May 15 19:48:31 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* makeshlib.sh (library): Add -bnoentry to the AIX shared library
+ 		link line so that the shared libraries can be dynamically
+ 		loaded.  Also make the library file executable, which is
+ 		apparently also necessary.  (Patch from Duke, needed for
+ 		SAP.  Note: I didn't take their addition of -lbsd, since I
+ 		don't think that's needed or a good idea).
+
+1999-01-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in, configure.in: Move the responsibility for
+		generating the Makefile in this directory to the top-level
+		configure script.  The local configure.in script has been
+		deleted.
+
+Thu Sep 24 20:05:33 1998  Tom Yu  <tlyu@mit.edu>
+
+	* mkrel: Add fixes to deal with "tails" on release directories,
+	e.g. for beta releases.
+
+Wed Feb 18 16:31:21 1998  Tom Yu  <tlyu@mit.edu>
+
+	* send-pr/Makefile.in: Remove trialing slash from thisconfigdir.
+	Fix up BUILDTOP for new conventions.
+
+	* Makefile.in (thisconfigdir): Remove trailing slash.
+
+Mon Feb  2 16:16:45 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Jan 28 17:26:46 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in, Makefile.in: Remove conditional AppendRule only
+		for AIX, and make it happen all the time in Makefile.in
+
+Wed Nov 19 10:52:38 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (clean-unix): Remove db lib symlinks.
 
 Thu Nov 13 20:28:31 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
@@ -12,6 +58,18 @@ Wed Oct  8 16:19:49 1997  Tom Yu  <tlyu@mit.edu>
 	* mkrel: Allow for edits of relevant files that should be changed
 	each time a release is cut.  Some snapshot support.  Add "-9" flag
 	to gzip.
+
+Fri Feb 21 15:58:19 1997  Sam Hartman  <hartmans@mit.edu>
+
+	* makeshlib.sh : Remove non AIX stuff; rewrite AIX stuff to work
+ 	with new build system.
+
+Fri Dec  6 10:59:32 1996  Tom Yu  <tlyu@mit.edu>
+
+	* getsyms: Don't echo filename if there are no bad symbols.
+
+	* getsyms.sed: Fixup to handle long comments somewhat more
+	gracefully.
 
 Mon Nov 25 21:00:24 1996  Tom Yu  <tlyu@mit.edu>
 

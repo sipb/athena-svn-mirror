@@ -1,5 +1,5 @@
-This is Info file krb5-admin.info, produced by Makeinfo-1.55 from the
-input file admin.texinfo.
+This is Info file krb5-admin.info, produced by Makeinfo version 1.68
+from the input file admin.texinfo.
 
 
 File: krb5-admin.info,  Node: Privileges,  Next: Adding or Modifying Principals,  Prev: Retrieving Information About a Principal,  Up: Principals
@@ -229,7 +229,11 @@ switches:
 
 -randkey
      Sets the key for the principal to a random value (`add_principal'
-     only).  MIT recommends using this option for host keys.
+     only).  MIT recommends using this option for host keys.  You may
+     also wish to use the kadmin.local command-line options -e
+     "des3-cbc-sha1:normal des-cbc-crc:normal"*Note Kadmin Options:: on
+     the KDC machine itself for host keys and other service keys that
+     are security-critical.
 
 -pw password
      Sets the key of the principal to the specified string and does not
@@ -272,7 +276,7 @@ explicitly setting the kvno with the `-kvno' option.
 
 ---------- Footnotes ----------
 
-(1)  `ank' was the short form of the equivalent command using the
+(1) `ank' was the short form of the equivalent command using the
 deprecated `kadmin5' database administrative tool.  It has been kept
 
 

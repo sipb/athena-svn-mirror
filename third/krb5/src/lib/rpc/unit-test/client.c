@@ -1,10 +1,22 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: client.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $
+ * $Id: client.c,v 1.1.1.4 1999-10-05 16:15:19 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  1998/02/14 02:29:42  tlyu
+ * 	* client.c: Update header locations.  Rename of xdr_free.
+ *
+ * 	* rpc_test.h: Update header locations.
+ *
+ * 	* server.c: Update header locations.
+ *
+ * Revision 1.15  1998/02/12 21:40:16  tlyu
+ * 	* client.c (main): Tweak the kludge variable
+ * 	krb5_gss_dbg_clietn_expcreds so we can send expired creds to the
+ * 	server.
+ *
  * Revision 1.14  1996/11/12 21:29:54  bjaspan
  * 	* lib/helpers.exp, client.c, server.c, config/unix.exp,
  *  	Makefile.in: test GSS-RPC with both TCP and UDP transport layers
@@ -79,14 +91,14 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/client.c,v 1.1.1.4 1999-10-05 16:15:19 ghudson Exp $";
 #endif
 
 #include <stdio.h>
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <gssapi/gssapi.h>
-#include <rpc/rpc.h>
-#include <rpc/auth_gssapi.h>
+#include <gssrpc/rpc.h>
+#include <gssrpc/auth_gssapi.h>
 #include "rpc_test.h"
 
 #define BIG_BUF 4096
@@ -122,6 +134,9 @@ main(argc, argv)
      extern char *optarg;
      extern int svc_debug_gssapi, misc_debug_gssapi, auth_debug_gssapi;
      int c;
+
+     extern int krb5_gss_dbg_client_expcreds;
+     krb5_gss_dbg_client_expcreds = 1;
 
      whoami = argv[0];
      count = 1026;
@@ -203,7 +218,7 @@ main(argc, argv)
 	      strcmp(echo_arg, (*echo_resp) + 6) != 0)
 	       fprintf(stderr, "RPC_TEST_ECHO call %d response wrong: "
 		       "arg = %s, resp = %s\n", echo_arg, *echo_resp);
-	  xdr_free(xdr_wrapstring, echo_resp);
+	  gssrpc_xdr_free(xdr_wrapstring, echo_resp);
      }
 
      /*
@@ -309,7 +324,7 @@ main(argc, argv)
 		   strcmp(echo_arg, (*echo_resp) + 6) != 0)
 		    fprintf(stderr,
 			    "RPC_TEST_LENGTHS call %d response wrong\n");
-	       xdr_free(xdr_wrapstring, echo_resp);
+	       gssrpc_xdr_free(xdr_wrapstring, echo_resp);
 	  }
 	  
 	  /* cycle from 1 to 255 */

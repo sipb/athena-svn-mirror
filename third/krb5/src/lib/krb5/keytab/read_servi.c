@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -40,14 +43,14 @@
  * returns: Either KSUCCESS or error code.
  * errors: error code if not found or keyprocarg is invalid.
  */
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_kt_read_service_key(context, keyprocarg, principal, vno, enctype, key)
     krb5_context context;
     krb5_pointer keyprocarg;
     krb5_principal principal;
     krb5_kvno vno;
     krb5_enctype enctype;
-    krb5_keyblock ** key;
+    krb5_keyblock FAR * FAR * key;
 {
     krb5_error_code kerror = KSUCCESS;
     char keytabname[MAX_KEYTAB_NAME_LEN + 1]; /* + 1 for NULL termination */

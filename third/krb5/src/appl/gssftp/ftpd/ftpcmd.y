@@ -78,13 +78,13 @@ extern lreply(int, char *, ...);
 #endif
 
 static int kerror;	/* XXX needed for all auth types */
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 extern	struct sockaddr_in his_addr, ctrl_addr;
 #include <krb.h>
 extern AUTH_DAT kdata;
 extern Key_schedule schedule;
 extern MSG_DAT msg_data;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
@@ -120,7 +120,12 @@ extern	int guest;
 extern	int logging;
 extern	int type;
 extern	int form;
+extern	int clevel;
 extern	int debug;
+
+
+extern	int allow_ccc;
+extern	int ccc_ok;
 extern	int timeout;
 extern	int maxtimeout;
 extern  int pdata;
@@ -188,7 +193,7 @@ struct tab sitetab[];
 
 %type <num> NUMBER
 %type <num> form_code prot_code struct_code mode_code octal_number
-%type <num> check_login byte_size
+%type <num> check_login byte_size nonguest
 
 %type <str> STRING
 %type <str> password pathname username pathstring
@@ -243,13 +248,23 @@ cmd:		USER SP username CRLF
 	|	PROT SP prot_code CRLF
 		= {
 		    if (maxbuf)
-			setlevel ($3);
+			setdlevel ($3);
 		    else
 			reply(503, "Must first set PBSZ");
 		}
 	|	CCC CRLF
 		= {
-			reply(534, "CCC not supported");
+			if (!allow_ccc) {
+			    reply(534, "CCC not supported");
+			}
+			else {
+			    if(clevel == PROT_C && !ccc_ok) {
+			        reply(533, "CCC command must be integrity protected");
+			    } else {
+			        reply(200, "CCC command successful.");
+				ccc_ok = 1;
+			    }
+			}
 		}
 	|	PBSZ SP STRING CRLF
 		= {
@@ -455,14 +470,14 @@ cmd:		USER SP username CRLF
 		= {
 			reply(200, "NOOP command successful.");
 		}
-	|	MKD check_login SP pathname CRLF
+	|	MKD nonguest SP pathname CRLF
 		= {
 			if ($2 && $4 != NULL)
 				makedir((char *) $4);
 			if ($4 != NULL)
 				free((char *) $4);
 		}
-	|	RMD check_login SP pathname CRLF
+	|	RMD nonguest SP pathname CRLF
 		= {
 			if ($2 && $4 != NULL)
 				removedir((char *) $4);
@@ -497,7 +512,7 @@ cmd:		USER SP username CRLF
 				reply(200, "Current UMASK is %03o", oldmask);
 			}
 		}
-	|	SITE SP UMASK check_login SP octal_number CRLF
+	|	SITE SP UMASK nonguest SP octal_number CRLF
 		= {
 			int oldmask;
 
@@ -512,7 +527,7 @@ cmd:		USER SP username CRLF
 				}
 			}
 		}
-	|	SITE SP CHMOD check_login SP octal_number SP pathname CRLF
+	|	SITE SP CHMOD nonguest SP octal_number SP pathname CRLF
 		= {
 			if ($4 && ($8 != NULL)) {
 				if ($6 > 0777)
@@ -843,6 +858,16 @@ check_login:	/* empty */
 	}
 	;
 
+nonguest: check_login
+	= {
+		if (guest) {
+			reply(550, "Operation prohibited for anonymous users.");
+			$$ = 0;
+		}
+		else
+			$$ = 1;
+	}
+	;
 %%
 
 struct tab cmdtab[] = {		/* In order defined in RFC 765 */
@@ -1007,9 +1032,29 @@ getline(s, n, iop)
 	    char out[sizeof(cbuf)], *cp;
 	    int len, mic;
 
-	    if ((cs = strpbrk(s, " \r\n")))
-	    	*cs++ = '\0';
+
+	    /* Check to see if we have a protected command. */
+	    if (!((mic = strncmp(s, "ENC", 3)) && strncmp(s, "MIC", 3)
+#ifndef NOCONFIDENTIAL
+	        && strncmp(s, "CONF", 4)
+#endif
+	        ) && (cs = strpbrk(s, " \r\n"))) {
+	    	    *cs++ = '\0'; /* If so, split it into s and cs. */
+	    } else { /* If not, check if unprotected commands are allowed. */
+		if(ccc_ok) {
+		    clevel = PROT_C;
+		    upper(s);
+		    return(s);
+		} else {
+		    reply(533, "All commands must be protected.");
+		    syslog(LOG_ERR, "Unprotected command received");
+		    *s = '\0';
+		    return(s);
+		}
+	    }
 	    upper(s);
+	    if (debug)
+	        syslog(LOG_INFO, "command %s received (mic=%d)", s, mic);
 #ifdef NOCONFIDENTIAL
 	    if (!strcmp(s, "CONF")) {
 		reply(537, "CONF protected commands not supported.");
@@ -1017,17 +1062,6 @@ getline(s, n, iop)
 		return(s);
 	    }
 #endif
-	    if ((mic = strcmp(s, "ENC")) && strcmp(s, "MIC")
-#ifndef NOCONFIDENTIAL
-		&& strcmp(s, "CONF")
-#endif
-					) {
-		reply(533, "All commands must be protected.");
-		syslog(LOG_ERR, "Unprotected command received");
-		*s = '\0';
-		return(s);
-	    } else if (debug)
-		syslog(LOG_INFO, "command %s received (mic=%d)", s, mic);
 /* Some paranoid sites may want to require that commands be encrypted. */
 #ifdef PARANOID
 	    if (mic) {
@@ -1053,7 +1087,8 @@ getline(s, n, iop)
 	    }
 	    if (debug) syslog(LOG_DEBUG, "getline got %d from %s <%s>\n", 
 			      len, cs, mic?"MIC":"ENC");
-#ifdef KERBEROS
+	    clevel = mic ? PROT_S : PROT_P;
+#ifdef KRB5_KRB4_COMPAT
 	    if (strcmp(auth_type, "KERBEROS_V4") == 0) {
 		if ((kerror = mic ?
 		    krb_rd_safe((unsigned char *)out, len, &kdata.session,
@@ -1073,7 +1108,7 @@ getline(s, n, iop)
 		(void) memcpy(s, msg_data.app_data, msg_data.app_length);
 		(void) strcpy(s+msg_data.app_length, "\r\n");
 	    }
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
 /* we know this is a MIC or ENC already, and out/len already has the bits */
 	    if (strcmp(auth_type, "GSSAPI") == 0) {
@@ -1109,7 +1144,7 @@ getline(s, n, iop)
 #endif /* GSSAPI */
 	    /* Other auth types go here ... */
 	}
-#if defined KERBEROS || defined GSSAPI	/* or other auth types */
+#if defined KRB5_KRB4_COMPAT || defined GSSAPI	/* or other auth types */
 	else {	/* !auth_type */
 	    if ( (!(strncmp(s, "ENC", 3))) || (!(strncmp(s, "MIC", 3)))
 #ifndef NOCONFIDENTIAL
@@ -1121,7 +1156,7 @@ getline(s, n, iop)
                 return(s);
 	    }
 	}
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT || GSSAPI */
 
 	if (debug) {
 		if (!strncmp(s, "PASS ", 5) && !guest)

@@ -31,6 +31,32 @@
  * SUCH DAMAGE.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #ifndef lint
 static char sccsid[] = "@(#)ftp.c	5.38 (Berkeley) 4/22/91";
 #endif /* not lint */
@@ -41,7 +67,10 @@ static char sccsid[] = "@(#)ftp.c	5.38 (Berkeley) 4/22/91";
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
+#ifndef KRB5_KRB4_COMPAT
+/* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
 #include <sys/socket.h>
+#endif
 #include <sys/time.h>
 #include <sys/file.h>
 #ifdef HAVE_SYS_SELECT_H
@@ -58,7 +87,10 @@ static char sccsid[] = "@(#)ftp.c	5.38 (Berkeley) 4/22/91";
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
+#ifndef KRB5_KRB4_COMPAT
+/* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
 #include <netdb.h>
+#endif
 #include <fcntl.h>
 #include <pwd.h>
 #ifndef STDARG
@@ -79,20 +111,23 @@ static char sccsid[] = "@(#)ftp.c	5.38 (Berkeley) 4/22/91";
 #define L_INCR 1
 #endif
 
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 #include <krb.h>
 
 KTEXT_ST ticket;
 CREDENTIALS cred;
 Key_schedule schedule;
 MSG_DAT msg_data;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
 #include <gssapi/gssapi.h>
+/* need to include the krb5 file, because we're doing manual fallback
+   from the v2 mech to the v2 mech.  Once there's real negotiation,
+   we can be generic again. */
 #include <gssapi/gssapi_generic.h>
+#include <gssapi/gssapi_krb5.h>
 gss_ctx_id_t gcontext;
 #endif /* GSSAPI */
-
 
 static int kerror;	/* XXX needed for all auth types */
 
@@ -283,22 +318,32 @@ login(host)
 			user = tmp;
 	}
 	n = command("USER %s", user);
-	if (n == COMPLETE)
-		n = command("PASS dummy");
+	if (n == COMPLETE) {
+	        /* determine if we need to send a dummy password */
+		int oldverbose = verbose;
+
+		verbose = 0;
+		if (command("PWD") != COMPLETE) {
+			verbose = oldverbose;
+			command("PASS dummy");
+		} else {
+			verbose = oldverbose;
+		}
+	}
 	else if (n == CONTINUE) {
 #ifndef NOENCRYPTION
-		int oldlevel;
+		int oldclevel;
 #endif
 		if (pass == NULL)
 			pass = mygetpass("Password:");
 #ifndef NOENCRYPTION
-		oldlevel = level;
-		level = PROT_P;
+		oldclevel = clevel;
+		clevel = PROT_P;
 #endif
 		n = command("PASS %s", pass);
 #ifndef NOENCRYPTION
 		/* level may have changed */
-		if (level == PROT_P) level = oldlevel;
+		if (clevel == PROT_P) clevel = oldclevel;
 #endif
 	}
 	if (n == CONTINUE) {
@@ -344,14 +389,10 @@ secure_command(cmd)
 	char in[FTP_BUFSIZ], out[FTP_BUFSIZ];
 	int length;
 
-	if (auth_type) {
-		/*
-		 * File protection level also determines whether
-		 * commands are MIC or ENC.  Should be independent ...
-		 */
-#ifdef KERBEROS
+	if (auth_type && clevel != PROT_C) {
+#ifdef KRB5_KRB4_COMPAT
 		if (strcmp(auth_type, "KERBEROS_V4") == 0)
-		    if ((length = level == PROT_P ?
+		    if ((length = clevel == PROT_P ?
 			krb_mk_priv((unsigned char *)cmd, (unsigned char *)out,
 				strlen(cmd), schedule,
 				&cred.session, &myctladdr, &hisctladdr)
@@ -359,37 +400,37 @@ secure_command(cmd)
 				strlen(cmd), &cred.session,
 				&myctladdr, &hisctladdr)) == -1) {
 			fprintf(stderr, "krb_mk_%s failed for KERBEROS_V4\n",
-					level == PROT_P ? "priv" : "safe");
+					clevel == PROT_P ? "priv" : "safe");
 			return(0);
 		    }
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
 		/* secure_command (based on level) */
 		if (strcmp(auth_type, "GSSAPI") == 0) {
 			gss_buffer_desc in_buf, out_buf;
 			OM_uint32 maj_stat, min_stat;
 			int conf_state;
-/* level = PROT_P; */
+/* clevel = PROT_P; */
 			in_buf.value = cmd;
 			in_buf.length = strlen(cmd) + 1;
 			maj_stat = gss_seal(&min_stat, gcontext,
-					    (level==PROT_P), /* confidential */
+					    (clevel==PROT_P), /* private */
 					    GSS_C_QOP_DEFAULT,
 					    &in_buf, &conf_state,
 					    &out_buf);
 			if (maj_stat != GSS_S_COMPLETE) {
 				/* generally need to deal */
 				user_gss_error(maj_stat, min_stat,
-					       (level==PROT_P)?
+					       (clevel==PROT_P)?
 						 "gss_seal ENC didn't complete":
 						 "gss_seal MIC didn't complete");
-			} else if ((level == PROT_P) && !conf_state) {
+			} else if ((clevel == PROT_P) && !conf_state) {
 				fprintf(stderr, 
 					"GSSAPI didn't encrypt message");
 			} else {
 				if (debug)
 				  fprintf(stderr, "sealed (%s) %d bytes\n",
-					  level==PROT_P?"ENC":"MIC", 
+					  clevel==PROT_P?"ENC":"MIC", 
 					  out_buf.length);
 				memcpy(out, out_buf.value, 
 				       length=out_buf.length);
@@ -403,10 +444,10 @@ secure_command(cmd)
 					radix_error(kerror));
 			return(0);
 		}
-		fprintf(cout, "%s %s", level == PROT_P ? "ENC" : "MIC", in);
+		fprintf(cout, "%s %s", clevel == PROT_P ? "ENC" : "MIC", in);
 		if(debug) 
 		  fprintf(stderr, "secure_command(%s)\nencoding %d bytes %s %s\n",
-			  cmd, length, level==PROT_P ? "ENC" : "MIC", in);
+			  cmd, length, clevel==PROT_P ? "ENC" : "MIC", in);
 	} else	fputs(cmd, cout);
 	fprintf(cout, "\r\n");
 	(void) fflush(cout);
@@ -467,10 +508,10 @@ again:	if (secure_command(in) == 0)
 	cpend = 1;
 	r = getreply(!strcmp(fmt, "QUIT"));
 #ifndef NOENCRYPTION
-	if (r == 533 && level == PROT_P) {
+	if (r == 533 && clevel == PROT_P) {
 		fprintf(stderr,
 			"ENC command not supported at server; retrying under MIC...\n");
-		level = PROT_S;
+		clevel = PROT_S;
 		goto again;
 	}
 #endif
@@ -500,7 +541,12 @@ getreply(expecteof)
 	sigtype cmdabort();
 	char ibuf[FTP_BUFSIZ], obuf[FTP_BUFSIZ];
 	int safe = 0;
-	extern char *strpbrk(), *strstr();
+#ifndef strpbrk
+	extern char *strpbrk();
+#endif
+#ifndef strstr
+	extern char *strstr();
+#endif
 
 	ibuf[0] = '\0';
 	if (reply_parse) reply_ptr = reply_buf;
@@ -617,7 +663,7 @@ getreply(expecteof)
 					code, radix_error(kerror), obuf);
 			    n = '5';
 			}
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 			else if (strcmp(auth_type, "KERBEROS_V4") == 0)
 				if ((kerror = safe ?
 				  krb_rd_safe((unsigned char *)ibuf, len,
@@ -633,7 +679,7 @@ getreply(expecteof)
 					krb_get_err_text(kerror));
 				  n = '5';
 				} else {
-				  if (verbose) printf("%c:", safe ? 'S' : 'P');
+				  if (debug) printf("%c:", safe ? 'S' : 'P');
 				  memcpy(ibuf, msg_data.app_data,
 					msg_data.app_length);
 				  strcpy(&ibuf[msg_data.app_length], "\r\n");
@@ -1536,11 +1582,12 @@ pswitch(flag)
 		char mi[MAXPATHLEN];
 		char mo[MAXPATHLEN];
 		char *authtype;
-		int lvl;
-#ifdef KERBEROS
+		int clvl;
+	        int dlvl;
+#ifdef KRB5_KRB4_COMPAT
 		C_Block session;
 		Key_schedule schedule;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 	} proxstruct, tmpstruct;
 	struct comvars *ip, *op;
 
@@ -1605,16 +1652,20 @@ pswitch(flag)
 	(void) strcpy(mapout, op->mo);
 	ip->authtype = auth_type;
 	auth_type = op->authtype;
-	ip->lvl = level;
-	level = op->lvl;
-	if (!level)
-		level = 1;
-#ifdef KERBEROS
+	ip->clvl = clevel;
+	clevel = op->clvl;
+	ip->dlvl = dlevel;
+	dlevel = op->dlvl;
+	if (!clevel)
+	     clevel = PROT_C;
+	if (!dlevel)
+	     dlevel = PROT_C;
+#ifdef KRB5_KRB4_COMPAT
 	memcpy(ip->session, cred.session, sizeof(cred.session));
 	memcpy(cred.session, op->session, sizeof(cred.session));
 	memcpy(ip->schedule, schedule, sizeof(schedule));
 	memcpy(schedule, op->schedule, sizeof(schedule));
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 	(void) signal(SIGINT, oldintr);
 	if (abrtflag) {
 		abrtflag = 0;
@@ -1822,33 +1873,182 @@ gunique(local)
 	return(new);
 }
 
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 char realm[REALM_SZ + 1];
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 
 #ifdef GSSAPI
-/* for testing, we don't have an ftp key yet */
-char* gss_services[] = { "ftp", "host", 0 };
+struct {
+    const gss_OID_desc * const * mech_type;
+    char *service_name;
+} gss_trials[] = {
+    { &gss_mech_krb5, "ftp" },
+    { &gss_mech_krb5, "host" },
+};
+int n_gss_trials = sizeof(gss_trials)/sizeof(gss_trials[0]);
 #endif /* GSSAPI */
 
 do_auth()
 {
 	extern int setsafe();
-	int oldverbose;
-#ifdef KERBEROS
+	int oldverbose = verbose;
+#ifdef KRB5_KRB4_COMPAT
 	char *service, inst[INST_SZ];
 	u_long cksum, checksum = (u_long) getpid();
-#endif /* KERBEROS */
-#if defined(KERBEROS) || defined(GSSAPI)
+#endif /* KRB5_KRB4_COMPAT */
+#if defined(KRB5_KRB4_COMPAT) || defined(GSSAPI)
 	u_char out_buf[FTP_BUFSIZ];
 	int i;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 
 	if (auth_type) return(1);	/* auth already succeeded */
 
 	/* Other auth types go here ... */
 
-#ifdef KERBEROS
+#ifdef GSSAPI
+	if (command("AUTH %s", "GSSAPI") == CONTINUE) {
+	  OM_uint32 maj_stat, min_stat;
+	  gss_name_t target_name;
+	  gss_buffer_desc send_tok, recv_tok, *token_ptr;
+	  char stbuf[FTP_BUFSIZ];
+	  int comcode, trial;
+	  struct gss_channel_bindings_struct chan;
+	  chan.initiator_addrtype = GSS_C_AF_INET; /* OM_uint32  */ 
+	  chan.initiator_address.length = 4;
+	  chan.initiator_address.value = &myctladdr.sin_addr.s_addr;
+	  chan.acceptor_addrtype = GSS_C_AF_INET; /* OM_uint32 */
+	  chan.acceptor_address.length = 4;
+	  chan.acceptor_address.value = &hisctladdr.sin_addr.s_addr;
+	  chan.application_data.length = 0;
+	  chan.application_data.value = 0;
+
+	  if (verbose)
+	    printf("GSSAPI accepted as authentication type\n");
+	  
+	  /* blob from gss-client */
+	  
+	  for (trial = 0; trial < n_gss_trials; trial++) {
+	    /* ftp@hostname first, the host@hostname */
+	    /* the V5 GSSAPI binding canonicalizes this for us... */
+	    sprintf(stbuf, "%s@%s", gss_trials[trial].service_name, hostname);
+	    if (debug)
+	      fprintf(stderr, "Trying to authenticate to <%s>\n", stbuf);
+
+	    send_tok.value = stbuf;
+	    send_tok.length = strlen(stbuf) + 1;
+	    maj_stat = gss_import_name(&min_stat, &send_tok,
+				       gss_nt_service_name, &target_name);
+	    
+	    if (maj_stat != GSS_S_COMPLETE) {
+		    user_gss_error(maj_stat, min_stat, "parsing name");
+		    secure_error("name parsed <%s>\n", stbuf);
+		    continue;
+	    }
+
+	    token_ptr = GSS_C_NO_BUFFER;
+	    gcontext = GSS_C_NO_CONTEXT; /* structure copy */
+	    
+	    do {
+	      if (debug)
+		fprintf(stderr, "calling gss_init_sec_context\n");
+	      maj_stat =
+		gss_init_sec_context(&min_stat,
+				     GSS_C_NO_CREDENTIAL,
+				     &gcontext,
+				     target_name,
+				     *gss_trials[trial].mech_type,
+				     GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG |
+				     (forward ? GSS_C_DELEG_FLAG : 0),
+				     0,
+				     &chan,	/* channel bindings */
+				     token_ptr,
+				     NULL,	/* ignore mech type */
+				     &send_tok,
+				     NULL,	/* ignore ret_flags */
+				     NULL);	/* ignore time_rec */
+	      
+
+	      if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED){
+		if (trial == n_gss_trials-1)
+		  user_gss_error(maj_stat, min_stat, "initializing context");
+		(void) gss_release_name(&min_stat, &target_name);
+		/* could just be that we missed on the service name */
+		goto outer_loop;
+	      }
+	    
+	      if (send_tok.length != 0) {
+		int len = send_tok.length;
+		reply_parse = "ADAT="; /* for command() later */
+		oldverbose = verbose;
+		verbose = (trial == n_gss_trials-1)?0:-1;
+		kerror = radix_encode(send_tok.value, out_buf, &len, 0);
+		if (kerror)  {
+		  fprintf(stderr, "Base 64 encoding failed: %s\n",
+			  radix_error(kerror));
+		} else if ((comcode = command("ADAT %s", out_buf))!=COMPLETE
+			   /* && comcode != 3 (335)*/) {
+		    if (trial == n_gss_trials-1) {
+			fprintf(stderr, "GSSAPI ADAT failed\n");
+			/* force out of loop */
+			maj_stat = GSS_S_FAILURE;
+		    }
+		    /* backoff to the v1 gssapi is still possible.  Send
+		       a new AUTH command.  If that fails, terminate the
+		       loop */
+		    if (command("AUTH %s", "GSSAPI") != CONTINUE) {
+			fprintf(stderr,
+				"GSSAPI ADAT failed, AUTH restart failed\n");
+			/* force out of loop */
+			maj_stat = GSS_S_FAILURE;
+		    }
+		    goto outer_loop;
+		} else if (!reply_parse) {
+		  fprintf(stderr,
+			  "No authentication data received from server\n");
+		  if (maj_stat == GSS_S_COMPLETE) {
+		    fprintf(stderr, "...but no more was needed\n");
+		    goto gss_complete_loop;
+		  } else {
+		    user_gss_error(maj_stat, min_stat, "no reply, huh?");
+		    goto gss_complete_loop;
+		  }
+		} else if (kerror = radix_encode(reply_parse,out_buf,&i,1)) {
+		  fprintf(stderr, "Base 64 decoding failed: %s\n",
+			  radix_error(kerror));
+		} else {
+		  /* everything worked */
+		  token_ptr = &recv_tok;
+		  recv_tok.value = out_buf;
+		  recv_tok.length = i;
+		  continue;
+		}
+
+		/* get out of loop clean */
+	      gss_complete_loop:
+		trial = n_gss_trials-1;
+		gss_release_buffer(&min_stat, &send_tok);
+		gss_release_name(&min_stat, &target_name);
+		goto outer_loop;
+	      }
+	    } while (maj_stat == GSS_S_CONTINUE_NEEDED);
+    outer_loop:
+	    if (maj_stat == GSS_S_COMPLETE)
+	        break;
+	  }
+	  verbose = oldverbose;
+	  if (maj_stat == GSS_S_COMPLETE) {
+	    printf("GSSAPI authentication succeeded\n");
+	    reply_parse = NULL;
+	    auth_type = "GSSAPI";
+	    return(1);
+	  } else {
+	    fprintf(stderr, "GSSAPI authentication failed\n");
+	    verbose = oldverbose;
+	    reply_parse = NULL;
+	  }
+	}
+#endif /* GSSAPI */
+#ifdef KRB5_KRB4_COMPAT
 	if (command("AUTH %s", "KERBEROS_V4") == CONTINUE) {
 	    if (verbose)
 		printf("%s accepted as authentication type\n", "KERBEROS_V4");
@@ -1905,144 +2105,7 @@ do_auth()
 	    }
 	} else	fprintf(stderr, "%s rejected as an authentication type\n",
 				"KERBEROS_V4");
-#endif /* KERBEROS */
-#ifdef GSSAPI
-	if (command("AUTH %s", "GSSAPI") == CONTINUE) {
-	  OM_uint32 maj_stat, min_stat;
-	  gss_name_t target_name;
-	  gss_buffer_desc send_tok, recv_tok, *token_ptr;
-	  char stbuf[FTP_BUFSIZ];
-	  char **service_name, **end_service_name;
-	  int comcode;
-	  struct gss_channel_bindings_struct chan;
-	  chan.initiator_addrtype = GSS_C_AF_INET; /* OM_uint32  */ 
-	  chan.initiator_address.length = 4;
-	  chan.initiator_address.value = &myctladdr.sin_addr.s_addr;
-	  chan.acceptor_addrtype = GSS_C_AF_INET; /* OM_uint32 */
-	  chan.acceptor_address.length = 4;
-	  chan.acceptor_address.value = &hisctladdr.sin_addr.s_addr;
-	  chan.application_data.length = 0;
-	  chan.application_data.value = 0;
-
-	  for (end_service_name = gss_services; *end_service_name; )
-	    end_service_name++;
-	  end_service_name--;
-
-	  if (verbose)
-	    printf("%s accepted as authentication type\n", "GSSAPI");
-	  
-	  /* blob from gss-client */
-	    
-	  
-	  for (service_name = gss_services; *service_name; service_name++) {
-	    
-	    /* ftp@hostname first, the host@hostname */
-	    /* the V5 GSSAPI binding canonicalizes this for us... */
-	    sprintf(stbuf, "%s@%s", *service_name, hostname);
-	    if (debug)
-	      fprintf(stderr, "Trying to authenticate to <%s>\n", stbuf);
-
-	    send_tok.value = stbuf;
-	    send_tok.length = strlen(stbuf) + 1;
-	    maj_stat = gss_import_name(&min_stat, &send_tok,
-				       gss_nt_service_name, &target_name);
-	    
-	    if (maj_stat != GSS_S_COMPLETE) {
-		    user_gss_error(maj_stat, min_stat, "parsing name");
-		    secure_error("name parsed <%s>\n", stbuf);
-		    continue;
-	    }
-
-	    token_ptr = GSS_C_NO_BUFFER;
-	    gcontext = GSS_C_NO_CONTEXT; /* structure copy */
-	    
-	    do {
-	      if (debug)
-		fprintf(stderr, "calling gss_init_sec_context\n");
-	      maj_stat =
-		gss_init_sec_context(&min_stat,
-				     GSS_C_NO_CREDENTIAL,
-				     &gcontext,
-				     target_name,
-				     GSS_C_NULL_OID,
-				     GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG,
-				     0,
-				     &chan,	/* channel bindings */
-				     token_ptr,
-				     NULL,	/* ignore mech type */
-				     &send_tok,
-				     NULL,	/* ignore ret_flags */
-				     NULL);	/* ignore time_rec */
-	      
-
-	      if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED){
-		user_gss_error(maj_stat, min_stat, "initializing context");
-		(void) gss_release_name(&min_stat, &target_name);
-		/* could just be that we missed on the service name */
-		goto outer_loop;
-	      }
-	    
-	      if (send_tok.length != 0) {
-		int len = send_tok.length;
-		reply_parse = "ADAT="; /* for command() later */
-		oldverbose = verbose;
-		verbose = 0;
-		kerror = radix_encode(send_tok.value, out_buf, &len, 0);
-		if (kerror)  {
-		  fprintf(stderr, "Base 64 encoding failed: %s\n",
-			  radix_error(kerror));
-		} else if ((comcode = command("ADAT %s", out_buf))!=COMPLETE
-			   /* && comcode != 3 (335)*/) {
-		  fprintf(stderr, "GSSAPI ADAT failed\n");
-		  /* force out of loop */
-		  maj_stat = GSS_S_FAILURE;
-		} else if (!reply_parse) {
-		  fprintf(stderr,
-			  "No authentication data received from server\n");
-		  if (maj_stat == GSS_S_COMPLETE) {
-		    fprintf(stderr, "...but no more was needed\n");
-		    goto gss_complete_loop;
-		  } else {
-		    user_gss_error(maj_stat, min_stat, "no reply, huh?");
-		    goto gss_complete_loop;
-		  }
-		} else if (kerror = radix_encode(reply_parse,out_buf,&i,1)) {
-		  fprintf(stderr, "Base 64 decoding failed: %s\n",
-			  radix_error(kerror));
-		} else {
-		  /* everything worked */
-		  token_ptr = &recv_tok;
-		  recv_tok.value = out_buf;
-		  recv_tok.length = i;
-		  continue;
-		}
-
-		/* get out of loop clean */
-	      gss_complete_loop:
-		service_name = end_service_name;
-		gss_release_buffer(&min_stat, &send_tok);
-		gss_release_name(&min_stat, &target_name);
-		goto outer_loop;
-	      }
-	    } while (maj_stat == GSS_S_CONTINUE_NEEDED);
-    outer_loop:
-	    if (maj_stat == GSS_S_COMPLETE)
-	        break;
-	  }
-	  verbose = oldverbose;
-	  if (maj_stat == GSS_S_COMPLETE) {
-	    if (verbose)
-	      printf("GSSAPI authentication succeeded\n");
-	    reply_parse = NULL;
-	    auth_type = "GSSAPI";
-	    return(1);
-	  } else {
-	    fprintf(stderr, "GSSAPI authentication failed\n");
-	    verbose = oldverbose;
-	    reply_parse = NULL;
-	  }
-	}
-#endif /* GSSAPI */
+#endif /* KRB5_KRB4_COMPAT */
 
 	/* Other auth types go here ... */
 

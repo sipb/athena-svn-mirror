@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,11 +29,11 @@
 
 #include "k5-int.h"
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_kt_remove_entry (context, id, entry)
     krb5_context context;
     krb5_keytab id;
-    krb5_keytab_entry *entry;
+    krb5_keytab_entry FAR *entry;
 {
     if (id->ops->remove)
 	return (*id->ops->remove)(context, id, entry);

@@ -1,14 +1,8 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
- *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/kadm_rpc_xdr.c,v 1.1.1.3 1999-02-09 21:00:08 danw Exp $
  */
 
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/kadm_rpc_xdr.c,v 1.1.1.3 1999-02-09 21:00:08 danw Exp $";
-#endif
-
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <krb5.h>
 #include <k5-int.h>
 #include <kadm5/admin.h>
@@ -581,6 +575,42 @@ xdr_chpass_arg(XDR *xdrs, chpass_arg *objp)
 	}
 	if (!xdr_nullstring(xdrs, &objp->pass)) {
 		return (FALSE);
+	}
+	return (TRUE);
+}
+
+bool_t
+xdr_setv4key_arg(XDR *xdrs, setv4key_arg *objp)
+{
+	unsigned int n_keys = 1;
+
+	if (!xdr_ui_4(xdrs, &objp->api_version)) {
+		return (FALSE);
+	}
+	if (!xdr_krb5_principal(xdrs, &objp->princ)) {
+		return (FALSE);
+	}
+	if (!xdr_array(xdrs, (caddr_t *) &objp->keyblock,
+		       &n_keys, ~0,
+		       sizeof(krb5_keyblock), xdr_krb5_keyblock)) {
+	        return (FALSE);
+	}
+	return (TRUE);
+}
+
+bool_t
+xdr_setkey_arg(XDR *xdrs, setkey_arg *objp)
+{
+	if (!xdr_ui_4(xdrs, &objp->api_version)) {
+		return (FALSE);
+	}
+	if (!xdr_krb5_principal(xdrs, &objp->princ)) {
+		return (FALSE);
+	}
+	if (!xdr_array(xdrs, (caddr_t *) &objp->keyblocks,
+		       (unsigned int *) &objp->n_keys, ~0,
+		       sizeof(krb5_keyblock), xdr_krb5_keyblock)) {
+	        return (FALSE);
 	}
 	return (TRUE);
 }

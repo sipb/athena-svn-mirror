@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -29,29 +32,23 @@
 
 #include <time.h>
 
-#ifdef POSIX_TYPES
-#define timetype time_t
-#else
-#define timetype long
-#endif
-
 #ifndef HAVE_ERRNO
 extern int errno;
 #endif
 
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_timeofday(context, timeret)
     krb5_context context;
-    register krb5_int32 *timeret;
+    register krb5_int32 FAR *timeret;
 {
     krb5_os_context os_ctx = context->os_context;
-    timetype tval;
+    time_t tval;
 
     if (os_ctx->os_flags & KRB5_OS_TOFFSET_TIME) {
 	    *timeret = os_ctx->time_offset;
 	    return 0;
     }
-#ifdef _MACINTOSH
+#ifdef macintosh
 {
 	long usecs;
 	krb5_error_code	kret;
@@ -62,7 +59,7 @@ krb5_timeofday(context, timeret)
 #else
     tval = time(0);
 #endif
-    if (tval == (timetype) -1)
+    if (tval == (time_t) -1)
 	return (krb5_error_code) errno;
     if (os_ctx->os_flags & KRB5_OS_TOFFSET_VALID)
 	    tval += os_ctx->time_offset;

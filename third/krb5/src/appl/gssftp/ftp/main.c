@@ -46,7 +46,10 @@ static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 3/1/91";
  */
 #include <stdio.h>
 #include "ftp_var.h"
+#ifndef KRB5_KRB4_COMPAT
+/* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
 #include <sys/socket.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/types.h>
 
@@ -56,7 +59,10 @@ static char sccsid[] = "@(#)main.c	5.18 (Berkeley) 3/1/91";
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
+#ifndef KRB5_KRB4_COMPAT
+/* krb.h gets this, and Ultrix doesn't protect vs multiple inclusion */
 #include <netdb.h>
+#endif
 #include <pwd.h>
 
 #define sig_t my_sig_t
@@ -67,11 +73,11 @@ uid_t	getuid();
 sigtype	intr(), lostpeer();
 extern	char *home;
 char	*getlogin();
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 #include <krb.h>
 struct servent staticsp;
 extern char realm[];
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 
 main(argc, argv)
 	char *argv[];
@@ -80,21 +86,25 @@ main(argc, argv)
 	int top;
 	struct passwd *pw = NULL;
 	char homedir[MAXPATHLEN];
+	char *progname = argv[0];
 
 	sp = getservbyname("ftp", "tcp");
 	if (sp == 0) {
 		fprintf(stderr, "ftp: ftp/tcp: unknown service\n");
 		exit(1);
 	}
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 /* GDM need to static sp so that the information is not lost
    when kerberos calls getservbyname */
 	memcpy(&staticsp,sp,sizeof(struct servent));
 	sp = &staticsp;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 	doglob = 1;
 	interactive = 1;
+	autoauth = 1;
 	autologin = 1;
+	forward = 0;
+	autoencrypt = 0;
 	argc--, argv++;
 	while (argc > 0 && **argv == '-') {
 		for (cp = *argv + 1; *cp; cp++)
@@ -105,7 +115,7 @@ main(argc, argv)
 				debug++;
 				break;
 
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 			case 'k':
 				if (*++cp != '\0')
 					strncpy(realm, ++cp, REALM_SZ);
@@ -138,10 +148,25 @@ main(argc, argv)
 				doglob = 0;
 				break;
 
+			case 'u':
+				autoauth = 0;
+				break;
+
+			case 'f':
+				forward = 1;
+				break;
+
+			case 'x':
+				autoencrypt = 1;
+				break;
+
 			default:
-				fprintf(stdout,
+			  fprintf(stderr,
 				  "ftp: %c: unknown option\n", *cp);
-				exit(1);
+			  fprintf(stderr, "Usage: %s [-v] [-d] [-i] [-n] [-g] "
+				  "[-k realm] [-f] [-x] [-u] [-t] [host]\n",
+				  progname);
+			  exit(1);
 			}
 	nextopt:
 		argc--, argv++;
@@ -152,7 +177,7 @@ main(argc, argv)
 	cpend = 0;	/* no pending replies */
 	proxy = 0;	/* proxy not active */
 #ifndef NO_PASSIVE_MODE
-	passivemode = 1; /* passive mode active */
+	passivemode = 0; /* passive mode not active */
 #endif
 	crflag = 1;	/* strip c.r. on ascii gets */
 	sendport = -1;	/* not using ports */
@@ -202,7 +227,8 @@ lostpeer(sig)
 	extern FILE *cout;
 	extern int data;
 	extern char *auth_type;
-	extern int level;
+	extern int clevel;
+	extern int dlevel;
 
 	if (connected) {
 		if (cout != NULL) {
@@ -217,7 +243,7 @@ lostpeer(sig)
 		}
 		connected = 0;
 		auth_type = NULL;
-		level = PROT_C;
+		clevel = dlevel = PROT_C;
 	}
 	pswitch(1);
 	if (connected) {
@@ -228,7 +254,7 @@ lostpeer(sig)
 		}
 		connected = 0;
 		auth_type = NULL;
-		level = PROT_C;
+		clevel = dlevel = PROT_C;
 	}
 	proxflag = 0;
 	pswitch(0);

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,6 +29,20 @@
  */
 
 #include "k5-int.h"
+
+#if defined(macintosh) 
+
+/*
+ * Macs use the shared, memory based credentials cache
+ * Windows may also use the ccapi cache, but only if the Krbcc32.dll
+ * can be found; otherwise it falls back to using the old 
+ * file-based ccache.
+ */
+#include "stdcc.h" /* from ccapi subdir */
+
+krb5_cc_ops *krb5_cc_dfl_ops = &krb5_cc_stdcc_ops;
+
+#else
 
 #ifdef HAVE_SYS_TYPES_H
 /* Systems that have <sys/types.h> probably have Unix-like files (off_t,
@@ -39,5 +56,7 @@ krb5_cc_ops *krb5_cc_dfl_ops = &krb5_cc_file_ops;
 
 #include "scc.h"		/* From stdio subdir */
 krb5_cc_ops *krb5_cc_dfl_ops = &krb5_scc_ops;
+
+#endif
 
 #endif

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -273,16 +276,16 @@ principal_found(nvalid, pname)
  * Add a principal to the database.
  */
 static krb5_error_code
-add_principal(kcontext, principal, eblock, key, rseed)
+add_principal(kcontext, principal, mkey, key, rseed)
     krb5_context	  kcontext;
     krb5_principal	  principal;
-    krb5_encrypt_block	* eblock;
+    krb5_keyblock	* mkey;
     krb5_keyblock	* key;
     krb5_pointer	  rseed;
 {
     krb5_error_code	  kret;
     krb5_db_entry	  dbent;
-    krb5_keyblock	* rkey = NULL;
+    krb5_keyblock	* rkey = NULL, lkey;
     krb5_timestamp	  timenow;
     int			  nentries = 1;
 
@@ -304,19 +307,21 @@ add_principal(kcontext, principal, eblock, key, rseed)
 	    goto out;
 
     if (!key) {
-	if ((kret = krb5_random_key(kcontext, eblock, rseed, &rkey)))
+	kret = krb5_c_make_random_key (kcontext, mkey->enctype, &lkey);
+	if (kret)
 	    goto out;
+	rkey = &lkey;
     } else
 	rkey = key;
 
     if ((kret = krb5_dbe_create_key_data(kcontext, &dbent)))
 	goto out;
-    if ((kret = krb5_dbekd_encrypt_key_data(kcontext, eblock, rkey, NULL, 1,
+    if ((kret = krb5_dbekd_encrypt_key_data(kcontext, mkey, rkey, NULL, 1,
 					    &dbent.key_data[0])))
 	goto out;
 
     if (!key)
-	krb5_free_keyblock(kcontext, rkey);
+	krb5_free_keyblock_contents(kcontext, rkey);
 
     kret = krb5_db_put_principal(kcontext, &dbent, &nentries);
     if ((!kret) && (nentries != 1))
@@ -445,7 +450,7 @@ delete_principal(kcontext, principal)
 
 static int
 do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
-	   ptest)
+	   ptest, hash)
     char	*db;
     int		passes;
     int		verbose;
@@ -455,6 +460,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
     int		save_db;
     int		dontclean;
     int		ptest;
+    int		hash;
 {
     krb5_error_code	kret;
     krb5_context	kcontext;
@@ -475,6 +481,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
     char		*pname;
     float		elapsed;
     krb5_keyblock	stat_kb;
+    krb5_int32		crflags;
 
     mkey_name = "master/key";
     realm = master_princ_data.realm.data;
@@ -485,13 +492,13 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
     db_created = 0;
     linkage = "";
     oparg = "";
+    crflags = hash ? KRB5_KDB_CREATE_HASH : KRB5_KDB_CREATE_BTREE;
 
     /* Set up some initial context */
+    op = "initializing krb5";
     kret = krb5_init_context(&kcontext);
-    if (kret) {
-	    com_err(programname, kret, "while initializing krb5");
-	    exit(1);
-    }
+    if (kret)
+	    goto goodbye;
 
     /* 
      * The database had better not exist.
@@ -543,7 +550,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 
     /* Create database */
     op = "creating database";
-    if ((kret = krb5_db_create(kcontext, db)))
+    if ((kret = krb5_db_create(kcontext, db, crflags)))
 	goto goodbye;
 
     db_created = 1;
@@ -562,7 +569,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
     op = "adding master principal";
     if ((kret = add_principal(kcontext,
 			      master_princ,
-			      &master_encblock,
+			      &master_keyblock,
 			      &master_keyblock,
 			      rseed)))
 	goto goodbye;
@@ -626,7 +633,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 		swatch_on();
 	    }
 	    if ((kret = add_principal(kcontext, playback_principal(passno),
-				      &master_encblock, kbp, rseed))) {
+				      &master_keyblock, kbp, rseed))) {
 		linkage = "initially ";
 		oparg = playback_name(passno);
 		goto cya;
@@ -657,7 +664,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 		}
 		if ((kret = add_principal(kcontext,
 					  playback_principal(nvalid),
-					  &master_encblock,
+					  &master_keyblock,
 					  kbp, rseed))) {
 		    oparg = playback_name(nvalid);
 		    goto cya;
@@ -787,7 +794,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 	for (passno=0; passno<passes; passno++) {
 	    op = "adding principal";
 	    if ((kret = add_principal(kcontext, playback_principal(passno),
-				     &master_encblock, &stat_kb, rseed)))
+				     &master_keyblock, &stat_kb, rseed)))
 		goto goodbye;
 	    if (verbose > 4)
 		fprintf(stderr, "*A(%s)\n", playback_name(passno));
@@ -883,7 +890,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 		for (j=0; j<nper; j++) {
 		    if ((kret = add_principal(ccontext,
 					      playback_principal(base+j),
-					      &master_encblock,
+					      &master_keyblock,
 					      &stat_kb,
 					      rseed))) {
 			fprintf(stderr,
@@ -957,7 +964,7 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 	(void) krb5_db_fini(kcontext);
     if (db_created) {
 	if (!kret && !save_db) {
-	    kdb5_db_destroy(kcontext, db);
+	    krb5_db_destroy(kcontext, db);
 	    krb5_db_fini(kcontext);
 	} else {
 	    if (kret && verbose)
@@ -965,6 +972,9 @@ do_testing(db, passes, verbose, timing, rcases, check, save_db, dontclean,
 			programname);
 	}
     }
+
+    krb5_free_context(kcontext);
+
     return((kret) ? 1 : 0);
 }
 
@@ -988,7 +998,7 @@ main(argc, argv)
     extern char	*optarg;
 
     int		do_time, do_random, num_passes, check_cont, verbose, error;
-    int		save_db, dont_clean, do_ptest;
+    int		save_db, dont_clean, do_ptest, hash;
     char	*db_name;
 
     programname = argv[0];
@@ -1007,9 +1017,10 @@ main(argc, argv)
     dont_clean = 0;
     error = 0;
     do_ptest = 0;
+    hash = 0;
 
     /* Parse argument list */
-    while ((option = getopt(argc, argv, "cd:n:prstvD")) != EOF) {
+    while ((option = getopt(argc, argv, "cd:n:prstvDh")) != -1) {
 	switch (option) {
 	case 'c':
 	    check_cont = 1;
@@ -1042,6 +1053,9 @@ main(argc, argv)
 	case 'D':
 	    dont_clean = 1;
 	    break;
+	case 'h':
+	    hash = 1;
+	    break;
 	default:
 	    error++;
 	    break;
@@ -1059,7 +1073,8 @@ main(argc, argv)
 			   check_cont,
 			   save_db,
 			   dont_clean,
-			   do_ptest);
+			   do_ptest,
+			   hash);
     return(error);
 }
 

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -50,10 +53,10 @@ krb5_net_read(context, fd, buf, len)
 	if (cc < 0) {
 	    if (SOCKET_ERRNO == SOCKET_EINTR)
 		continue;
-#if defined(_MSDOS) || (_WIN32)
-            /* XXX this interface sucks! */
-            errno = SOCKET_ERRNO;
-#endif            
+		
+		/* XXX this interface sucks! */
+        errno = SOCKET_ERRNO;    
+               
 	    return(cc);		 /* errno is already set */
 	}		
 	else if (cc == 0) {

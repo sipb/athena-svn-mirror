@@ -36,6 +36,80 @@ Wed Feb  3 22:57:52 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 	* state.c: Increase size of subbufer so that we don't truncate
 		mongo-gram tickets from Microsoft.  [telnet/688]
 
+1998-11-14  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Add check for <sys/utsname.h>.
+
+	* utility.c (putf): Add support for %s, %m, %r, %v using
+		information from the uname() system call.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Wed Aug 12 00:17:09 1998  Matthew D Hancher  <mdh@mit.edu>
+
+	* Makefile.in (AUTH_DEF): Undefine LOGIN_CAP_F so that telnetd
+	runs login with -f rather than -F for preauthenticated login, 
+	following the changes in appl/bsd/.
+
+1998-05-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* sys_term.c: #include utmp.h if present, and use _PATH_WTMP and
+		_PATH_UTMP if defined to determine location of the wtmp
+		and utmp files.
+
+	* configure.in: Add check for utmp.h
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* telnetd.c (main): 
+	* telnetd-ktd.c (main): POSIX states that getopt returns -1 when it
+		is done parsing options, not EOF.
+
+Tue Mar  3 14:26:04 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Rename HAS_* to HAVE_* for the following tests:
+ 		sac.h, sys/ptyvar.h, sys/filio.h, sys/stream.h,
+ 		gettosbyname(), and make appropriate adjustments in the
+ 		rest of the .c files.  Remove tests which aren't being
+ 		used anymore: vhangup, utmpx.h, utmp.h, etc.
+
+	* defs.h: Use HAVE_SYS_FILIO_H instead of FILIO_H
+
+	* sys_term.c: Use HAVE_SAC_H and HAVE_SYS_STREAM_H instead of
+		HAS_SAC and STREAMS.
+
+	* telnetd.c, telnetd-ktd.c: Use HAVE_GETTOSBYNAME instead of
+		HAS_GETTOS
+
+	* telnetd.c: Use HAVE_SYS_PTYVAR_H instead of HAS_PTYVAR.
+
+Mon Feb 23 22:58:22 1998  Tom Yu  <tlyu@mit.edu>
+
+	* utility.c (ptyflush, netflush): Explicitly reset SIGCHLD handler
+ 	before calling cleanup(). [telnet/546]
+
+	* telnetd.c (telnet):  Explicitly reset SIGCHLD handler before
+	calling cleanup(). [telnet/546]
+
+	* state.c (dooption): Explicitly reset SIGCHLD handler before
+	calling cleanup(). [telnet/546]
+
+Wed Feb 18 15:38:31 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Sat Feb 14 10:35:36 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* configure.in: Remove USE_ANAME.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
 Wed Jan 28 17:21:08 1998  Dan Winship  <danw@mit.edu>
 
 	* telnetd.c (doit): additional fix for previous terminaltype change
@@ -50,6 +124,14 @@ Tue Jan 27 18:27:16 1998  Dan Winship  <danw@mit.edu>
 
 	* state.c (suboption): redo handling of terminaltype
 
+Fri Jan 23 22:13:02 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* telnetd.c (telnet, get_default_IM): Instead of using a hardcoded
+		IM variable, use one which is dynamically generated from
+		the uname() system call.
+
+	* ext.h: Remove definition of DEFAULT_IM, since it's no longer used.
+
 Thu Dec  4 21:32:37 1997  Tom Yu  <tlyu@mit.edu>
 
 	* telnetd.c (doit): Fix up slave buffer length.
@@ -58,12 +140,21 @@ Thu Oct 23 13:59:32 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* state.c (envvarok): Prohibit the passing of TERMCAP, TERMPATH,
 		TERMINFO, and HOME, since they can be used to exploit a
-		security in tgetent.
+		security hole in tgetent.
 
 Wed Apr  9 23:46:40 1997  Tom Yu  <tlyu@mit.edu>
 
 	* sys_term.c (start_login): Bounds check the constructed "speed"
 	passed in to login.
+
+Wed Feb 12 15:22:53 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* configure.in: Fix DES425_DEPLIB
+
+Wed Feb  5 22:08:58 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
 
 Thu Nov  7 15:32:06 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

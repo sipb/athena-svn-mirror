@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -69,7 +72,7 @@ krb5_authdata ***output;
 	    *retdata[i] = **ptr;
 	    if (!(retdata[i]->contents =
 		  (krb5_octet *)malloc(retdata[i]->length))) {
-		krb5_xfree(retdata[i]);
+		free((char *)retdata[i]);
 		retdata[i] = 0;
 		krb5_free_authdata(kdc_context, retdata);
 		return ENOMEM;
@@ -124,6 +127,7 @@ comp_cksum(kcontext, source, ticket, his_cksum)
     krb5_checksum 	* his_cksum;
 {
     krb5_error_code 	  retval;
+    krb5_boolean	  valid;
 
     if (!valid_cksumtype(his_cksum->checksum_type)) 
 	return KRB5KDC_ERR_SUMTYPE_NOSUPP;
@@ -133,14 +137,15 @@ comp_cksum(kcontext, source, ticket, his_cksum)
 	return KRB5KRB_AP_ERR_INAPP_CKSUM;
 
     /* verify checksum */
-    if ((retval = krb5_verify_checksum(kcontext, his_cksum->checksum_type,
-				       his_cksum,
-				       source->data, source->length, 
-				       ticket->enc_part2->session->contents, 
-				       ticket->enc_part2->session->length))) {
-	retval = KRB5KRB_AP_ERR_BAD_INTEGRITY;
-    }
-    return retval;
+    if ((retval = krb5_c_verify_checksum(kcontext, ticket->enc_part2->session,
+					 KRB5_KEYUSAGE_TGS_REQ_AUTH_CKSUM,
+					 source, his_cksum, &valid)))
+	return(retval);
+
+    if (!valid)
+	return(KRB5KRB_AP_ERR_BAD_INTEGRITY);
+
+    return(0);
 }
 
 krb5_error_code 
@@ -333,12 +338,15 @@ cleanup:
 /* XXX This function should no longer be necessary. 
  * The KDC should take the keytab associated with the realm and pass that to 
  * the krb5_rd_req_decode(). --proven
+ *
+ * It's actually still used by do_tgs_req() for u2u auth, and not too
+ * much else. -- tlyu
  */
 krb5_error_code
 kdc_get_server_key(ticket, key, kvno)
     krb5_ticket 	* ticket;
     krb5_keyblock      ** key;
-    krb5_kvno 		* kvno;
+    krb5_kvno 		* kvno;	/* XXX nothing uses this */
 {
     krb5_error_code 	  retval;
     krb5_db_entry 	  server;
@@ -347,64 +355,46 @@ kdc_get_server_key(ticket, key, kvno)
     krb5_key_data	* server_key;
     int			  i;
 
-    if (krb5_principal_compare(kdc_context, tgs_server, ticket->server)) {
-	retval = krb5_copy_keyblock(kdc_context, &tgs_key, key);
-	*kvno = tgs_kvno;
-	return retval;
-    } else {
-	nprincs = 1;
+    nprincs = 1;
 
-	if ((retval = krb5_db_get_principal(kdc_context, ticket->server,
-					    &server, &nprincs,
-					    &more))) {
-	    return(retval);
-	}
-	if (more) {
-	    krb5_db_free_principal(kdc_context, &server, nprincs);
-	    return(KRB5KDC_ERR_PRINCIPAL_NOT_UNIQUE);
-	} else if (nprincs != 1) {
-	    char *sname;
-
-	    krb5_db_free_principal(kdc_context, &server, nprincs);
-	    if (!krb5_unparse_name(kdc_context, ticket->server, &sname)) {
-		krb5_klog_syslog(LOG_ERR,"TGS_REQ: UNKNOWN SERVER: server='%s'",
-		       sname);
-		free(sname);
-	    }
-	    return(KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN);
-	}
-	/* 
-	 * Get the latest version of the server key_data and
-	 * convert the key into a real key (it may be encrypted in the database)
-	 *
-	 * Search the key list in the order specified by the key/salt list.
-	 */
-	server_key = (krb5_key_data *) NULL;
-	for (i=0; i<kdc_active_realm->realm_nkstypes; i++) {
-	    krb5_key_salt_tuple *kslist;
-
-	    kslist = (krb5_key_salt_tuple *) kdc_active_realm->realm_kstypes;
-	    if (!krb5_dbe_find_enctype(kdc_context,
-				       &server,
-				       kslist[i].ks_enctype,
-				       -1,
-				       -1,
-				       &server_key))
-		break;
-	}
-	if (!server_key)
-	    return(KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN);
-				  
-	*kvno = server_key->key_data_kvno;
-	if ((*key = (krb5_keyblock *)malloc(sizeof **key))) {
-	    retval = krb5_dbekd_decrypt_key_data(kdc_context, &master_encblock,
-					         server_key,
-					         *key, NULL);
-	} else
-	    retval = ENOMEM;
-	krb5_db_free_principal(kdc_context, &server, nprincs);
-	return retval;
+    if ((retval = krb5_db_get_principal(kdc_context, ticket->server,
+					&server, &nprincs,
+					&more))) {
+	return(retval);
     }
+    if (more) {
+	krb5_db_free_principal(kdc_context, &server, nprincs);
+	return(KRB5KDC_ERR_PRINCIPAL_NOT_UNIQUE);
+    } else if (nprincs != 1) {
+	char *sname;
+
+	krb5_db_free_principal(kdc_context, &server, nprincs);
+	if (!krb5_unparse_name(kdc_context, ticket->server, &sname)) {
+	    krb5_klog_syslog(LOG_ERR,"TGS_REQ: UNKNOWN SERVER: server='%s'",
+			     sname);
+	    free(sname);
+	}
+	return(KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN);
+    }
+    retval = krb5_dbe_find_enctype(kdc_context, &server,
+				   ticket->enc_part.enctype, -1,
+				   ticket->enc_part.kvno, &server_key);
+    if (retval)
+	goto errout;
+    if (!server_key) {
+	retval = KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN;
+	goto errout;
+    }
+    *kvno = server_key->key_data_kvno;
+    if ((*key = (krb5_keyblock *)malloc(sizeof **key))) {
+	retval = krb5_dbekd_decrypt_key_data(kdc_context, &master_keyblock,
+					     server_key,
+					     *key, NULL);
+    } else
+	retval = ENOMEM;
+errout:
+    krb5_db_free_principal(kdc_context, &server, nprincs);
+    return retval;
 }
 
 /* This probably wants to be updated if you support last_req stuff */
@@ -1402,15 +1392,39 @@ select_session_keytype(context, server, nktypes, ktype)
     krb5_enctype	*ktype;
 {
     int		i;
+    krb5_enctype dfl = 0;
     
     for (i = 0; i < nktypes; i++) {
 	if (!valid_enctype(ktype[i]))
 	    continue;
 
-	if (dbentry_supports_enctype(context, server, ktype[i]))
-	    return (ktype[i]);
+	if (dbentry_supports_enctype(context, server, ktype[i])) {
+	    switch (ktype[i]) {
+	    case ENCTYPE_NULL:
+	    case ENCTYPE_DES_CBC_CRC:
+	    case ENCTYPE_DES_CBC_MD4:
+	    case ENCTYPE_DES_CBC_MD5:
+	    case ENCTYPE_DES_CBC_RAW:
+	    case ENCTYPE_DES_HMAC_SHA1:
+		return ktype[i];
+
+	    default:
+		/* For now, too much of our code supports only
+		   single-DES.  For example, the GSSAPI Kerberos
+		   mechanism needs to be modified.  If someone tries
+		   using other key types, force single-DES for the
+		   session key.
+
+		   This weird way of setting it here is so that a
+		   requested single-DES enctype listed after DES3 can
+		   be used, and this fallback enctype will be used
+		   only if *no* single-DES enctypes were requested.  */
+		dfl = ENCTYPE_DES_CBC_CRC;
+		break;
+	    }
+	}
     }
-    return 0;
+    return dfl;
 }
 
 /*

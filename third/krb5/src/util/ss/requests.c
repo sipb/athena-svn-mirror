@@ -6,11 +6,10 @@
  * For copyright information, see mit-sipb-copyright.h.
  */
 
-#include "mit-sipb-copyright.h"
 #include <stdio.h>
 #include "ss_internal.h"
 
-#define	DECLARE(name)	name(argc,argv,sci_idx)int argc,sci_idx;char **argv;
+#define	DECLARE(name)	void name(argc,argv,sci_idx)int argc,sci_idx;char **argv;
 
 /*
  * ss_self_identify -- assigned by default to the "." request

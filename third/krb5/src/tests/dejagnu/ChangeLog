@@ -1,3 +1,42 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Mon Mar 30 13:57:07 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* t_inetd.c: Include stdlib.h (if present) for atoi() prototype, 
+	Include unistd.h (if present) for dup() prototype.
+
+
+Wed Feb 18 16:28:37 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 16:45:49 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Oct  7 08:02:13 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (runenv.vars): Use tr to remove newlines in multiple
+	        lines of variables.
+
+Fri Oct  3 02:26:45 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix up site.exp generation to reduce the quoting
+	lossage somewhat.
+
+Sun Aug 17 14:26:57 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add $(SRCS) line.
+
+Sun Feb  9 01:38:26 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Wed Nov 20 16:01:34 1996  Barry Jaspan  <bjaspan@mit.edu>
 
 	* Makefile.in (check-): warn more loudly about unrun tests

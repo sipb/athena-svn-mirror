@@ -1,43 +1,50 @@
+thisconfigdir=./../..
+myfulldir=lib/krb5/keytab/srvtab
+mydir=keytab/srvtab
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)$(S)$(U)
+
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..\..
-##DOSLIBNAME=..\..\krb5.lib
+##DOS##BUILDTOP = ..\..\..\..
+##DOS##PREFIXDIR=keytab\srvtab
+##DOS##OBJFILE=$(OUTPRE)srvtab.lst
+##WIN16##LIBNAME=..\..\krb5.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+STLIBOBJS= \
+	kts_close.o	\
+	kts_endget.o	\
+	kts_g_ent.o	\
+	kts_g_name.o	\
+	kts_next.o	\
+	kts_ops.o	\
+	kts_resolv.o	\
+	kts_ssget.o	\
+	kts_util.o
 
-SRCS= \
-	$(srcdir)/kts_close.c \
-	$(srcdir)/kts_endget.c \
-	$(srcdir)/kts_g_ent.c \
-	$(srcdir)/kts_g_name.c \
-	$(srcdir)/kts_next.c \
-	$(srcdir)/kts_ops.c \
-	$(srcdir)/kts_resolv.c \
-	$(srcdir)/kts_ssget.c \
+OBJS=	\
+	$(OUTPRE)kts_close.$(OBJEXT)	\
+	$(OUTPRE)kts_endget.$(OBJEXT)	\
+	$(OUTPRE)kts_g_ent.$(OBJEXT)	\
+	$(OUTPRE)kts_g_name.$(OBJEXT)	\
+	$(OUTPRE)kts_next.$(OBJEXT)	\
+	$(OUTPRE)kts_ops.$(OBJEXT)	\
+	$(OUTPRE)kts_resolv.$(OBJEXT)	\
+	$(OUTPRE)kts_ssget.$(OBJEXT)	\
+	$(OUTPRE)kts_util.$(OBJEXT)
+
+
+SRCS=	\
+	$(srcdir)/kts_close.c	\
+	$(srcdir)/kts_endget.c	\
+	$(srcdir)/kts_g_ent.c	\
+	$(srcdir)/kts_g_name.c	\
+	$(srcdir)/kts_next.c	\
+	$(srcdir)/kts_ops.c	\
+	$(srcdir)/kts_resolv.c	\
+	$(srcdir)/kts_ssget.c	\
 	$(srcdir)/kts_util.c
 
-OBJS = \
-	kts_close.$(OBJEXT)	\
-	kts_endget.$(OBJEXT)	\
-	kts_g_ent.$(OBJEXT)	\
-	kts_g_name.$(OBJEXT)	\
-	kts_next.$(OBJEXT)	\
-	kts_ops.$(OBJEXT)	\
-	kts_resolv.$(OBJEXT)	\
-	kts_ssget.$(OBJEXT)	\
-	kts_util.$(OBJEXT)
+##DOS##LIBOBJS = $(OBJS)
 
-all-unix:: shared $(OBJS)
-all-mac:: $(OBJS)
-all-windows:: $(OBJS)
-
-shared:
-	mkdir shared
-
-clean-unix::
-	$(RM) shared/*
-
-clean-mac::
-clean-windows::
+all-unix:: all-libobjs
+clean-unix:: clean-libobjs

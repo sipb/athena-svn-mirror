@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -34,20 +37,20 @@
 
 static char *sendauth_version = "KRB5_SENDAUTH_V1.0";
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_recvauth(context, auth_context,
 	      /* IN */
 	      fd, appl_version, server, flags, keytab,
 	      /* OUT */
 	      ticket)
     krb5_context 	  context;
-    krb5_auth_context   * auth_context;
+    krb5_auth_context   FAR * auth_context;
     krb5_pointer	  fd;
-    char		* appl_version;
+    char		FAR * appl_version;
     krb5_principal	  server;
     krb5_int32		  flags;
     krb5_keytab		  keytab;
-    krb5_ticket	       ** ticket;
+    krb5_ticket	       FAR * FAR * ticket;
 {
     krb5_auth_context	  new_auth_context;
     krb5_flags		  ap_option;

@@ -1,3 +1,50 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* kdb5_mkdums.c: update to new crypto api
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kdb5_mkdums.c (argv): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Mon Mar 30 16:57:43 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_mkdums.c: Add parenthesis about assignements in conditionals.
+
+
+Wed Feb 18 16:28:15 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 16:46:04 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Sun Aug 17 14:26:57 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add $(SRCS) line.
+
+Wed Jul 30 18:27:36 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kdb5_mkdums.c: Update to match reality of libkdb, so that it
+	actually works.
+
+Tue Feb 18 18:20:14 1997  Richard Basch  <basch@lehman.com>
+
+	* kdb5_mkdums.c (add_princ): 
+		Replace krb5_xfree with krb5_free_data_contents
+
+Sun Feb  9 01:35:19 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Tue Sep 10 14:20:09 1996  Tom Yu  <tlyu@mit.edu>
 
 	* kdb5_mkdums.M: remove ".so man1/header.doc"

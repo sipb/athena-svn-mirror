@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -90,18 +93,11 @@ krb5_mk_safe_basic(context, userdata, keyblock, replaydata, local_addr,
     if ((retval = encode_krb5_safe(&safemsg, &scratch1)))
 	return retval;
 
-    safe_checksum.length = krb5_checksum_size(context, sumtype);
-    if (!(safe_checksum.contents = (krb5_octet *) malloc(safe_checksum.length))) {
-
-	retval = ENOMEM;
-	goto cleanup_scratch;
-    }
-    if ((retval = krb5_calculate_checksum(context, sumtype, scratch1->data,
-					  scratch1->length,
-					  (krb5_pointer) keyblock->contents,
-					  keyblock->length, &safe_checksum))) {
+    if ((retval = krb5_c_make_checksum(context, sumtype, keyblock,
+				       KRB5_KEYUSAGE_KRB_SAFE_CKSUM,
+				       scratch1, &safe_checksum)))
 	goto cleanup_checksum;
-    }
+
     safemsg.checksum = &safe_checksum;
     if ((retval = encode_krb5_safe(&safemsg, &scratch2))) {
 	goto cleanup_checksum;
@@ -119,13 +115,13 @@ cleanup_scratch:
     return retval;
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_mk_safe(context, auth_context, userdata, outbuf, outdata)
     krb5_context 	  context;
     krb5_auth_context 	  auth_context;
-    const krb5_data   	* userdata;
-    krb5_data         	* outbuf;
-    krb5_replay_data  	* outdata;
+    const krb5_data   	FAR * userdata;
+    krb5_data         	FAR * outbuf;
+    krb5_replay_data  	FAR * outdata;
 {
     krb5_error_code 	  retval;
     krb5_keyblock       * keyblock;

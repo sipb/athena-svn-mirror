@@ -1,3 +1,134 @@
+1999-08-18  Tom Yu  <tlyu@mit.edu>
+
+	* krb524d.c (do_connection): Convert to using new symbol for
+	DES3.
+
+	* cnv_tkt_skey.c (krb524_convert_tkt_skey): Convert to using new
+	symbol for DES3.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Tue Sep  1 19:35:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* cnv_tkt_skey.c (krb524_convert_tkt_skey): Add
+	ENCTYPE_LOCAL_DES3_HMAC_SHA1 to the list of enctypes to bash.
+
+	* krb524d.c (do_connection): Add ENCTYPE_LOCAL_DES3_HMAC_SHA1 to
+	the list of enctypes to search.
+
+Wed Aug 19 13:40:28 1998  Tom Yu  <tlyu@mit.edu>
+
+	* cnv_tkt_skey.c (krb524_convert_tkt_skey): Call krb_cr_tkt_krb5
+	if necessary, depending on th enctype.  Force enctype to be raw
+	DES3 if it's another DES3 type.
+
+	* krb524d.c (kdc_get_server_key): Add integer kvno argument,
+ 	rename previous kvno arg as kvnop, to distinguish returned (found)
+	kvno from the input kvno.
+	(lookup_service_key): Add kvnop argument to allow for returned
+	kvno.
+	(do_connection): Search for DES3 keys as well as DES.  Get the
+	found kvno as well, and use that instead of the kvno of the
+	incoming ticket.
+
+Fri Jul 24 19:38:58 1998  Geoffrey King  <gjking@mit.edu>
+
+	* krb524d.c (main): Fork into the background by default, also
+	add a -nofork command line option.
+
+Sat Jul 18 22:10:29 1998  Geoffrey King  <gjking@mit.edu>
+
+	* krb524d.c (main): Remove the variable use_other_realm.
+	It is not actually necessary for the new -r realm code.
+
+Fri Jul 17 04:11:47 1998  Geoffrey King  <gjking@mit.edu>
+
+	* krb524d.c (main): Accept a -r command line option to specify
+	a realm other than the default one.
+
+Wed Jun 17 16:35:37 1998  Tom Yu  <tlyu@mit.edu>
+
+	* cnv_tkt_skey.c (krb524_convert_tkt_skey): Handle null address
+	fields; actually use saddr (the address from the UDP header) to
+	generate the ticket address rather than just checking against it.
+
+	* conv_creds.c (krb524_convert_creds_plain): Punt address checks.
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* k524init.c (main): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Wed Feb 18 16:04:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (thisconfigdir): Remove trailing slash.
+
+Thu Feb 12 21:58:56 1998  Tom Yu  <tlyu@mit.edu>
+
+	* sendmsg.c: Explicitly include k5-int.h in order to get proper
+	prototype of krb5_locate_kdc().
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Dec 11 23:30:30 1997  Tom Yu  <tlyu@mit.edu>
+
+	* cnv_tkt_skey.c:
+	* conv_creds.c:
+	* conv_princ.c:
+	* encode.c:
+	* k524init.c:
+	* krb524d.c:
+	* misc.c:
+	* test.c: Don't include netdb.h or sys/socket.h if krb.h is
+	included; this works around an Ultrix bug where those headers
+	aren't protected against multiple inclusion.
+
+Mon Aug 18 13:02:31 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* configure.in: Add AC_PROG_INSTALL as we do install here.
+
+Mon Aug 11 21:12:11 1997  Tom Yu  <tlyu@mit.edu>
+
+	* convt_tkt.c: Delete; it's not needed anymore.
+
+	* test.c: Remove reference to krb524_convert_creds_addr, as that
+	doesn't exist anymore.
+
+	* conv_creds.c: Clean up substantially to be less convoluted.
+
+	* sendmsg.c: Fix to not do a full series of timeouts on each
+	server; loop over the whole list before increasing the timeout.
+
+	* configure.in: Update to use the new library build system to
+	build libkrb524.
+
+	* Makefile.in: Update to reflect changes in the library.  Also,
+	use the new library build system to build libkrb524.
+
+Thu Aug  7 17:34:59 1997  Tom Yu  <tlyu@mit.edu>
+
+	* cnv_tkt_skey.c:
+	* krb524.h:
+	* krb524d.c: Add jik's patches for multihomed hosts.  Fixes
+	krb5-misc/275.
+
+Tue Feb 18 09:53:10 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* k524init.c, test.c, cnv_tkt_skey.c: Remove include of krb4-proto.h
+
+Tue Feb  4 20:13:37 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix up krb4 library handling properly (hopefully).
+
+Sun Feb  2 10:06:22 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in, Makefile.in: Update to new build system rules
+
 Thu Dec  5 23:27:00 1996  Tom Yu  <tlyu@mit.edu>
 
 	* krb524d.c (main): Ignore SIGHUP for now. [27]

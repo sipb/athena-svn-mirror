@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -29,6 +32,22 @@
 #include <kadm5/admin.h>
 #include <stdio.h>
 #include <ctype.h>
+
+
+static krb5_key_salt_tuple *copy_key_salt_tuple(ksalt, len)
+krb5_key_salt_tuple *ksalt;
+krb5_int32 len;
+{
+    int i;
+    krb5_key_salt_tuple *knew;    
+
+    if((knew = (krb5_key_salt_tuple *)
+		malloc((len ) * sizeof(krb5_key_salt_tuple)))) {
+         memcpy(knew, ksalt, len * sizeof(krb5_key_salt_tuple));
+	 return knew;
+    }
+    return 0;
+}
 
 /*
  * krb5_aprof_init()	- Initialize alternate profile context.
@@ -455,6 +474,23 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
 	 }
     }
     
+    /* Get the value for the kpasswd port */
+    if (! (params.mask & KADM5_CONFIG_KPASSWD_PORT)) {
+	hierarchy[2] = "kpasswd_port";
+	if (params_in->mask & KADM5_CONFIG_KPASSWD_PORT) {
+	    params.mask |= KADM5_CONFIG_KPASSWD_PORT;
+	    params.kpasswd_port = params_in->kpasswd_port;
+	} else if (aprofile &&
+		   !krb5_aprof_get_int32(aprofile, hierarchy, TRUE,
+					 &ivalue)) { 
+	    params.kpasswd_port = ivalue;
+	    params.mask |= KADM5_CONFIG_KPASSWD_PORT;
+	} else {
+	    params.kpasswd_port = DEFAULT_KPASSWD_PORT;
+	    params.mask |= KADM5_CONFIG_KPASSWD_PORT;
+	}
+    }
+    
     /* Get the value for the master key name */
 	 hierarchy[2] = "master_key_name";
     if (params_in->mask & KADM5_CONFIG_MKEY_NAME) {
@@ -590,9 +626,19 @@ krb5_error_code kadm5_get_config_params(context, kdcprofile, kdcenv,
     /* Get the value for the supported enctype/salttype matrix */
     hierarchy[2] = "supported_enctypes";
     if (params_in->mask & KADM5_CONFIG_ENCTYPES) {
-	 params.mask |= KADM5_CONFIG_ENCTYPES;
-	 params.keysalts = params_in->keysalts;
-	 params.num_keysalts = params_in->num_keysalts;
+         /* The following scenario is when the input keysalts are !NULL */
+         if(params_in->keysalts) {
+	       params.keysalts = copy_key_salt_tuple(params_in->keysalts, 
+						     params_in->num_keysalts);
+	       if(params.keysalts) {
+		 params.mask |= KADM5_CONFIG_ENCTYPES;
+		 params.num_keysalts = params_in->num_keysalts;
+	       }
+	 } else {
+		 params.mask |= KADM5_CONFIG_ENCTYPES;
+		 params.keysalts = 0;
+		 params.num_keysalts = params_in->num_keysalts;
+	 }
     } else {
 	 svalue = NULL;
 	 if (aprofile)
@@ -645,6 +691,8 @@ kadm5_free_config_params(context, params)
 	    krb5_xfree(params->stash_file);
 	if (params->keysalts)
 	    krb5_xfree(params->keysalts);
+	if (params->admin_server)
+	     free(params->admin_server);
 	if (params->admin_keytab)
 	     free(params->admin_keytab);
 	if (params->dict_file)
@@ -655,6 +703,9 @@ kadm5_free_config_params(context, params)
 	     free(params->realm);
 	if (params->admin_dbname)
 	     free(params->admin_dbname);
+	if (params->admin_lockfile)
+	     free(params->admin_lockfile);
+
     }
     return(0);
 }
@@ -818,8 +869,15 @@ krb5_read_realm_params(kcontext, realm, kdcprofile, kdcenv, rparamp)
     }
 
     /* Get the value for the supported enctype/salttype matrix */
-    hierarchy[2] = "supported_enctypes";
-    if (!krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue)) {
+    /* XXX This is so that the kdc will search a different
+       enctype list than kadmind */
+    hierarchy[2] = "kdc_supported_enctypes";
+    kret = krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue);
+    if (kret) {
+	hierarchy[2] = "supported_enctypes";
+	kret = krb5_aprof_get_string(aprofile, hierarchy, TRUE, &svalue);
+    }
+    if (!kret) {
 	krb5_string_to_keysalts(svalue,
 				", \t",	/* Tuple separators	*/
 				":.-",	/* Key/salt separators	*/
@@ -864,6 +922,8 @@ krb5_free_realm_params(kcontext, rparams)
 	    krb5_xfree(rparams->realm_keysalts);
 	if (rparams->realm_kdc_ports)
 	    krb5_xfree(rparams->realm_kdc_ports);
+	if (rparams->realm_acl_file)
+	    krb5_xfree(rparams->realm_acl_file);
 	krb5_xfree(rparams);
     }
     return(0);

@@ -1,12 +1,38 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: keytab.c,v 1.1.1.3 1999-02-09 21:04:03 danw Exp $
+ * $Id: keytab.c,v 1.1.1.4 1999-10-05 16:11:22 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v $
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v 1.1.1.3 1999-02-09 21:04:03 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/keytab.c,v 1.1.1.4 1999-10-05 16:11:22 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -399,26 +425,11 @@ int remove_principal(char *keytab_str, krb5_keytab keytab, char
 static char *etype_string(enctype)
     krb5_enctype enctype;
 {
-    static char buf[12];
-    
-    switch (enctype) {
-    case ENCTYPE_DES_CBC_CRC:
-	return "DES-CBC-CRC";
-	break;
-    case ENCTYPE_DES_CBC_MD4:
-	return "DES-CBC-MD4";
-	break;
-    case ENCTYPE_DES_CBC_MD5:
-	return "DES-CBC-MD5";
-	break;
-#if 0
-    case ENCTYPE_DES3_CBC_MD5:
-	return "DES3-CBC-MD5";
-	break;
-#endif
-    default:
+    static char buf[100];
+    krb5_error_code ret;
+
+    if (ret = krb5_enctype_to_string(enctype, buf, sizeof(buf)))
 	sprintf(buf, "etype %d", enctype);
-	return buf;
-	break;
-    }
+
+    return buf;
 }

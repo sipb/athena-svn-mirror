@@ -1,3 +1,258 @@
+1999-09-09  Danilo Almeida  <dalmeida@mit.edu>
+
+	* winsock.def, comerr16.def, gssapi16.def, krb4_16.def,
+	krb5_16.def, sapgss16.def, sapkrb16.def, xpprof16.def: Remove
+	obsolete DEF files.
+
+1999-09-08  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove dependence of mit directory for version
+	server support.  Remove references to SAP.  Remove DNS defines.
+
+1999-08-26  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Export krb5_kuserok.
+
+1999-07-22  Jeffrey Altman <jaltman@columbia.edu>
+
+        * krb5_32.def
+          add additional exports:
+
+          krb5_address_search
+ 	  krb5_auth_con_getrcache
+ 	  krb5_c_enctype_compare
+
+1999-06-30  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix jaltman's changes so they don't break the unix
+	build.
+
+1999-06-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5_32.def: Add krb5_get_default_config_files and 
+		krb5_free_config_files.
+
+1999-06-08  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win_glue.c (krb5_vercheck): Only do version checking once per
+		use of the DLL.
+
+Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove - from recursive Win32 make invocation.
+
+Mon May 17 19:50:53 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Use only one resource file per binary.
+
+	* krb5.rc: Remove silly _MSDOS #ifdef.
+
+Mon May 17 12:37:25 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Get rid of win16 support/clutter.  Build separate
+		resource files for each library.  Link resource files
+		directly instead of excplicitly converting to object
+		files.
+
+Wed May 12 00:27:37 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* gssapi32.def: Add krb5-specific extensions so they are exported
+		from the DLL.
+
+Mon May 10 15:14:34 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Fri May  7 18:27:08 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* xpprof32.def, krb4_32.def, gssapi32.def, comerr32.del: Remove
+		Win16 directives to get rid of warnings.
+
+Fri May  7 12:10:50 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* xpprof32.def: Add profile_abandon to the list of exported
+	 	functions.
+
+Sat Apr 17 01:21:15 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5_32.def: Add krb5_cc_set_default_name to the list of
+		exported functions.
+
+	* gssapi32.def: Add krb5 specific extension functions:
+		gss_krb5_get_tkt_flags, gss_krb5_copy_ccache, and 
+		gss_krb5_ccache_name... to the list of exported functions
+		in the DLL.
+
+1999-03-31  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* win_glue.c (control): Call krb5_stdcc_shutdown when detaching
+		the krb5 library.
+
+	* Makefile.in: Remove reference to the windows Krbcc32.dll
+		library, since this is now dynamically loaded.
+
+Mon Feb  8 22:08:22 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Link in the ccapi import library under windows.
+
+	* krb5_16.def, krb5_32.def: Added a number of miscellaneous
+ 		functions to the DLL exports list so that things build
+ 		under Windows again.
+
+1999-01-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in, configure.in: Move the responsibility for
+		generating the Makefile in this directory to the top-level
+		configure script.  The local configure.in script has been
+		deleted.
+
+Sat Dec  5 01:11:00 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5_32.def: Fixed exports file to reflect new crypto library
+		and related changes.
+
+1998-05-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5_32.def: Change the DLL export list to include
+		krb5_auth_con_setrcache, krb5_get_server_rcache,
+		krb5_cc_default_name, krb5_change_password,
+		krb5_mcc_ops, and all of the Cygnus
+		krb5_get_init_creds functions.  Remove the old libkadm
+		functions, as they are no longer available.
+
+Sun May 24 22:31:39 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in (CLEANLIBS): Remove lib/kadm from the list of
+		directories built in the windows build.
+
+Wed Feb 18 16:04:58 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (thisconfigdir): Remove trailing slash.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Nov 19 10:33:19 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (clean-unix): Do not remove libraries here as the
+	 	Makefile that created the symlink now removes it.
+
+Tue Oct 21 23:29:18 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* win_glue.c: Add checks so that code doesn't bomb out if the
+		version resource is missing a Title or Version record.
+
+Fri Aug  1 22:03:24 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in, krb5.rc, version.rc: Add support for adding a
+		Windows Version resource to all of the DLL files.
+
+Tue Jul 29 23:09:31 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Remove msvcrt.lib from the explicit WINLIBS link
+ 		line since we're now using /MD and have removed the
+ 		/nodefaultlibs switch.  For now, build debug versions of
+		the libraries.
+
+	* krb5_16.def, krb5_32.def, sapkrb16.def: Add decode_krb5_ap_req
+ 		to the exported functions list, since the GSSAPI krb5
+ 		mechanism routine needs access to this internal routine.
+		
+Thu May  1 22:56:04 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in, win_glue.c, sapkrb16.def, sapkrb32.def: Write
+		special case hack for the SAP kerberos libraries since we
+		can't make the version server code correctly read out the
+		version resource from SAPGUI.EXE for some reason....
+
+Tue Apr 29 06:22:03 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* win_glue.c (CallVersionServer): Add code to get the version
+		resource from the calling application and use that to call
+		the Version server.
+
+Fri Mar 28 01:51:09 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* gssapi16.def, gssapi32.def: Added the V2 calls
+ 		gss_canonicalize_name(), gss_export_name(),
+ 		gss_duplicate_name() to the list of calls exported by the
+ 		DLL.
+
+Wed Mar 19 14:15:42 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Fix up name of the SAP Kerberos glue library to be
+		platform dependent (sapkrb16.dll, sapkrb32.dll).  Fix
+		makefile rules to work correctly after NT port.
+
+Mon Mar  3 14:52:58 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (MAC_SUBDIRS): Change KRB5 to krb5 for Mac subdirs.
+
+Tue Feb 25 01:03:41 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: krb5_32.lib now also depends on gdi32.lib
+
+Thu Feb 20 23:30:32 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Build krb4 dll; it built all the objs (win16/32)
+
+Mon Feb 17 19:40:55 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Build krb4 library under Win16/Win32
+	* krb4_16.def krb4_32.def: DLL definition files for krb4 library
+	* krb5_16.def krb5_32.def: Export various des routines (krb4 dll)
+	* win_glue.c: krb4 library support added
+
+Fri Feb 14 16:40:03 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Build separate ComErr DLL
+	* comerr16.def comerr32.def: ComErr exported API
+	* krb5_16.def krb5_32.def: Removed ComErr/Win16 entries
+	* no_glue.c: Dummy stub for ComErr (win16/win32)
+	* win_glue.c: Win32 DLL startup/exit code added
+
+Sat Feb  8 12:21:53 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5_16.def krb5_32.def:
+		Export krb5_get_credentials_renew,krb5_get_credentials_validate
+
+	* Makefile.in:
+		Use WLIB definition in config/windows.in
+		Attempt at making a functional SAP library build
+
+Tue Feb  4 15:52:34 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5_16.def krb5_32.def: New ComErr interface definitions
+
+	* gssapi32.def krb5_32.def:
+		Remove unsupported statements (EXETYPE, RESIDENTNAME)
+
+	* gssapi16.def krb5_16.def: Need to declare the library name (win16)
+
+Thu Jan 30 21:27:07 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5_16.def krb5_32.def: 
+		Export krb5_decrypt, krb5_encrypt,
+		krb5_string_to_key, krb5_process_key, krb5_finish_key,
+		krb5_init_random_key, krb5_finish_random_key,
+		krb5_random_key, krb5_eblock_enctype
+	* Makefile.in
+		Win32 - Link against MSVCRT.LIB (runtime library)
+
+Sat Dec 21 01:23:48 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* win_glue.c: Change the timebomb to be June 1, 1997.  Make the
+		timebomb exit the application more gracefully.
+
+Fri Dec 20 18:20:32 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5_16.def: Change name of library in file to be krb5_16.def
+	 	[PR#302]
+
 Sat Nov 23 00:25:25 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 	
 	* libkrb5.def: Renamed to krb5_16.def [PR#204]

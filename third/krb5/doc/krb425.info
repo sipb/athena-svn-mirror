@@ -1,5 +1,5 @@
-This is Info file krb425.info, produced by Makeinfo-1.55 from the input
-file krb425.texinfo.
+This is Info file krb425.info, produced by Makeinfo version 1.68 from
+the input file krb425.texinfo.
 
 
 File: krb425.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
@@ -22,8 +22,7 @@ File: krb425.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: Top
 Copyright
 *********
 
-Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996 by the
-Massachusetts Institute of Technology.
+Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -36,9 +35,12 @@ hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
 appear in supporting documentation, and that the name of M.I.T. not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  M.I.T. makes no
-representations about the suitability of this software for any purpose.
-It is provided "as is" without express or implied warranty.
+software without specific, written prior permission.  Furthermore if you
+modify this software you must label your software as modified software
+and not distribute it in such a fashion that it might be confused with
+the original MIT software.  M.I.T. makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
 
 The following copyright and permission notice applies to the OpenVision
 Kerberos Administration system located in kadmin/create, kadmin/dbutil,
@@ -370,17 +372,17 @@ KDCs.
 
 
 Tag Table:
-Node: Top94
-Node: Copyright420
-Node: Introduction5298
-Node: Configuration Files6319
-Node: krb5.conf6618
-Node: libdefaults7025
-Node: realms (krb5.conf)7575
-Node: kdc.conf8317
-Node: Upgrading KDCs8697
-Node: Upgrading Application Servers10417
-Node: Upgrading Client machines12909
-Node: Firewall Considerations13792
+Node: Top102
+Node: Copyright428
+Node: Introduction5465
+Node: Configuration Files6486
+Node: krb5.conf6785
+Node: libdefaults7192
+Node: realms (krb5.conf)7742
+Node: kdc.conf8484
+Node: Upgrading KDCs8864
+Node: Upgrading Application Servers10584
+Node: Upgrading Client machines13076
+Node: Firewall Considerations13959
 
 End Tag Table

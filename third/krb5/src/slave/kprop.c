@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -92,7 +95,7 @@ static void usage()
 	exit(1);
 }
 
-void
+int
 main(argc, argv)
 	int	argc;
 	char	**argv;
@@ -546,11 +549,11 @@ xmit_database(context, auth_context, my_creds, fd, database_fd, database_size)
 		exit(1);
 	}
 	if (retval = krb5_write_message(context, (void *) &fd, &outbuf)) {
-		krb5_xfree(outbuf.data);
+		krb5_free_data_contents(context, &outbuf);
 		com_err(progname, retval, "while sending database size");
 		exit(1);
 	}
-	krb5_xfree(outbuf.data);
+	krb5_free_data_contents(context, &outbuf);
     /*
      * Initialize the initial vector.
      */
@@ -577,13 +580,13 @@ xmit_database(context, auth_context, my_creds, fd, database_fd, database_size)
 			exit(1);
 		}
 		if (retval = krb5_write_message(context, (void *)&fd,&outbuf)) {
-			krb5_xfree(outbuf.data);
+			krb5_free_data_contents(context, &outbuf);
 			com_err(progname, retval,
 				"while sending database block starting at %d",
 				sent_size);
 			exit(1);
 		}
-		krb5_xfree(outbuf.data);
+		krb5_free_data_contents(context, &outbuf);
 		sent_size += n;
 		if (debug)
 			printf("%d bytes sent.\n", sent_size);
@@ -674,7 +677,7 @@ send_error(context, my_creds, fd, err_text, err_code)
 		strcpy(error.text.data, text);
 		if (!krb5_mk_error(context, &error, &outbuf)) {
 			(void) krb5_write_message(context, (void *)&fd,&outbuf);
-			krb5_xfree(outbuf.data);
+			krb5_free_data_contents(context, &outbuf);
 		}
 		free(error.text.data);
 	}

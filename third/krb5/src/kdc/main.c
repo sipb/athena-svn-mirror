@@ -15,7 +15,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -36,18 +39,17 @@
 #include "kdc_util.h"
 #include "extern.h"
 #include "kdc5_err.h"
-#include "kdb_dbc.h"
-#ifdef KRB5_USE_INET
+#include "kdb_kt.h"
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
 kdc_realm_t *find_realm_data PROTOTYPE((char *, krb5_ui_4));
 
-krb5_error_code setup_server_realm PROTOTYPE((krb5_principal));
-
 void usage PROTOTYPE((char *));
 
 krb5_sigtype request_exit PROTOTYPE((int));
+krb5_sigtype request_hup  PROTOTYPE((int));
 
 void setup_signal_handlers PROTOTYPE((void));
 
@@ -59,118 +61,13 @@ static int nofork = 0;
 static char *kdc_current_rcname = (char *) NULL;
 static int rkey_init_done = 0;
 
+#ifdef POSIX_SIGNALS
+static struct sigaction s_action;
+#endif /* POSIX_SIGNALS */
+
 #define	KRB5_KDC_MAX_REALMS	32
 
-/*
- * Get port information for a realm.  The precedence is:
- *	[realms]-><realm>-><name> in profile (if our hostname and has a port)
- *	defport
- *	/etc/services entry matching <service>
- */
-static krb5_int32
-get_realm_port(ctx, realm, name, defport, service)
-    krb5_context	ctx;
-    char		*realm;
-    char		*name;
-    krb5_int32		defport;
-    char		*service;
-{
-    krb5_error_code	kret;
-    char		our_host_name[MAXHOSTNAMELEN];
-    struct hostent	*our_hostent;
-    struct servent	*our_servent;
-    krb5_int32		retval;
-    krb5_boolean	found;
-
-    /*
-     * Some preliminaries here.  Get our hostname and our host entry.
-     */
-    found = 0;
-    retval = -1;
-    if (!gethostname(our_host_name, sizeof(our_host_name)) &&
-	(our_hostent = gethostbyname(our_host_name))) {
-	const char	*hierarchy[4];
-	char		**hostlist;
-
-	hostlist = (char **) NULL;
-	hierarchy[0] = "realms";
-	hierarchy[1] = realm;
-	hierarchy[2] = name;
-	hierarchy[3] = (char *) NULL;
-	if (!(kret = profile_get_values(ctx->profile, hierarchy, &hostlist))) {
-	    int		hi;
-	    char	*cport;
-	    char	*cp;
-	    int		ai;
-	    krb5_int32	pport;
-
-	    cport = (char *) NULL;
-	    for (hi=0; hostlist[hi]; hi++) {
-		/*
-		 * This knows a little too much about the format of profile
-		 * entries.  Shouldn't it just be some sort of tuple?
-		 *
-		 * The form is assumed to be:
-		 *	<name> = <hostname>[:<portname>[<whitespace>]]
-		 */
-		pport = -1;
-		cp = strchr(hostlist[hi], ' ');
-		if (cp)
-		    *cp = '\0';
-		cp = strchr(hostlist[hi], '\t');
-		if (cp)
-		    *cp = '\0';
-		cport = strchr(hostlist[hi], ':');
-		if (cport) {
-		    *cport = '\0';
-		    cport++;
-		    if (sscanf(cport, "%d", &pport) == 1) {
-			pport = -1;
-		    }
-		}
-		/*
-		 * We've stripped away the crud.  Now check to see if the
-		 * profile entry matches our hostname.  If so, then this
-		 * is the one to use.  Additionally, check the host alias
-		 * list.
-		 */
-		if (!strcmp(hostlist[hi], our_hostent->h_name)) {
-		    if (pport != -1) {
-			retval = pport;
-			found = 1;
-		    }
-		}
-		else {
-		    for (ai=0; our_hostent->h_aliases[ai]; ai++) {
-			if (!strcmp(hostlist[hi],
-				    our_hostent->h_aliases[ai])) {
-			    if (pport != -1) {
-				retval = pport;
-				found = 1;
-			    }
-			    break;
-			}
-		    }
-		}
-	    }
-	    krb5_xfree(hostlist);
-	}
-    }
-    /*
-     * If we didn't find an entry in the profile, then use the default.
-     * If it's no good, then attempt to find it in /etc/services.
-     */
-    if (!found) {
-	retval = defport;
-	/* Get the service entry out of /etc/services */
-	if (retval <= 0) {
-	    if ((our_servent = getservbyname(service, "udp")))
-		retval = ntohs(our_servent->s_port);
-	}
-    }
-    return(retval);
-}
-
+#ifdef USE_RCACHE
 /*
  * initialize the replay cache.
  */
@@ -206,6 +103,7 @@ kdc_initialize_rcache(kcontext, rcache_name)
     }
     return(retval);
 }
+#endif
 
 /*
  * Find the realm entry for a given realm.
@@ -271,8 +169,6 @@ finish_realm(rdp)
 	    memset(rdp->realm_tgskey.contents, 0, rdp->realm_tgskey.length);
 	    free(rdp->realm_tgskey.contents);
 	}
-	if (rdp->realm_encblock.crypto_entry)
-		krb5_finish_key(rdp->realm_context, &rdp->realm_encblock);
 	krb5_db_fini(rdp->realm_context);
 	if (rdp->realm_tgsprinc)
 	    krb5_free_principal(rdp->realm_context, rdp->realm_tgsprinc);
@@ -300,7 +196,6 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
     char		*def_ports;
     krb5_boolean	def_manual;
 {
-    krb5_db_context	db_context;
     krb5_error_code	kret;
     krb5_boolean	manual;
     krb5_db_entry	db_entry;
@@ -432,17 +327,11 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
 	goto whoops;
     }
 
-    /* Select the specified encryption type */
-    /* krb5_db_fetch_mkey will setup the encblock for stashed keys */
-    if (manual)
-	krb5_use_enctype(rdp->realm_context, &rdp->realm_encblock, 
-			 rdp->realm_mkey.enctype);
-    
     /*
      * Get the master key.
      */
     if ((kret = krb5_db_fetch_mkey(rdp->realm_context, rdp->realm_mprinc,
-				   &rdp->realm_encblock, manual,
+				   rdp->realm_mkey.enctype, manual,
 				   FALSE, rdp->realm_stash,
 				   0, &rdp->realm_mkey))) {
 	com_err(progname, kret,
@@ -469,8 +358,7 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
     /* Verify the master key */
     if ((kret = krb5_db_verify_master_key(rdp->realm_context,
 					  rdp->realm_mprinc,
-					  &rdp->realm_mkey,
-					  &rdp->realm_encblock))) {
+					  &rdp->realm_mkey))) {
 	com_err(progname, kret,
 		"while verifying master key for realm %s", realm);
 	goto whoops;
@@ -521,25 +409,14 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
     rdp->realm_mkvno = kdata->key_data_kvno;
     krb5_db_free_principal(rdp->realm_context, &db_entry, num2get);
 
-    /* Now preprocess the master key */
-    if ((kret = krb5_process_key(rdp->realm_context,
-				 &rdp->realm_encblock,
-				 &rdp->realm_mkey))) {
-	com_err(progname, kret,
-		"while processing master key for realm %s", realm);
-	goto whoops;
-    }
-
-    /* Set master encblock with db_context */
-    if ((kret = krb5_dbm_db_set_mkey(rdp->realm_context, &db_context, 
-				     &rdp->realm_encblock))) {
+    if ((kret = krb5_db_set_mkey(rdp->realm_context, &rdp->realm_mkey))) {
 	com_err(progname, kret,
 		"while setting master key for realm %s", realm);
 	goto whoops;
     }
 
     /* Set up the keytab */
-    if ((kret = krb5_ktkdb_resolve(rdp->realm_context, &db_context, 
+    if ((kret = krb5_ktkdb_resolve(rdp->realm_context, 
 				   &rdp->realm_keytab))) {
 	com_err(progname, kret,
 		"while resolving kdb keytab for realm %s", realm);
@@ -598,7 +475,7 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
 	goto whoops;
     }
     if (!(kret = krb5_dbekd_decrypt_key_data(rdp->realm_context,
-					     &rdp->realm_encblock,
+					     &rdp->realm_mkey,
 					     kdata,
 					     &rdp->realm_tgskey, NULL))){
 	rdp->realm_tgskvno = kdata->key_data_kvno;
@@ -613,45 +490,40 @@ init_realm(progname, rdp, realm, def_dbname, def_mpname,
     }
 
     if (!rkey_init_done) {
-	krb5_enctype enctype;
-	krb5_encrypt_block temp_eblock;
+	krb5_timestamp now;
+	krb5_data seed;
 #ifdef KRB5_KRB4_COMPAT
-	krb5_keyblock *temp_key;
+	krb5_keyblock temp_key;
 #endif
 	/*
 	 * If all that worked, then initialize the random key
 	 * generators.
 	 */
-	for (enctype = 0; enctype <= krb5_max_enctype; enctype++) {
-	    if (krb5_enctype_array[enctype] &&
-		!krb5_enctype_array[enctype]->random_sequence) {
-		krb5_use_enctype(rdp->realm_context, &temp_eblock, enctype);
-		if ((kret = krb5_init_random_key(
-			 rdp->realm_context, &temp_eblock,
-			 &rdp->realm_mkey,
-			&krb5_enctype_array[enctype]->random_sequence))) {
-		    com_err(progname, kret, 
-			    "while setting up random key generator for enctype %d--enctype disabled",
-			    enctype);
-		    krb5_enctype_array[enctype] = 0;
-		} else {
+
+	if ((kret = krb5_timeofday(rdp->realm_context, &now)))
+	    goto whoops;
+	seed.length = sizeof(now);
+	seed.data = (char *) &now;
+	if ((kret = krb5_c_random_seed(rdp->realm_context, &seed)))
+	    goto whoops;
+
+	seed.length = rdp->realm_mkey.length;
+	seed.data = rdp->realm_mkey.contents;
+
+	if ((kret = krb5_c_random_seed(rdp->realm_context, &seed)))
+	    goto whoops;
+
 #ifdef KRB5_KRB4_COMPAT
-		    if (enctype == ENCTYPE_DES_CBC_CRC) {
-			if ((kret = krb5_random_key(
-			    rdp->realm_context, &temp_eblock,
-				krb5_enctype_array[enctype]->random_sequence,
-				&temp_key)))
-			    com_err(progname, kret,
-				    "while initializing V4 random key generator");
-			else {
-			    (void) des_init_random_number_generator(temp_key->contents);
-			    krb5_free_keyblock(rdp->realm_context, temp_key);
-			}
-		    }
-#endif
-		}
-	    }
+	if ((kret = krb5_c_make_random_key(rdp->realm_context,
+					   ENCTYPE_DES_CBC_CRC, &temp_key))) {
+	    com_err(progname, kret,
+		    "while initializing V4 random key generator");
+	    goto whoops;
 	}
+
+	(void) des_init_random_number_generator(temp_key.contents);
+	krb5_free_keyblock_contents(rdp->realm_context, &temp_key);
+#endif
 	rkey_init_done = 1;
     }
  whoops:
@@ -677,12 +549,35 @@ request_exit(signo)
 #endif
 }
 
+krb5_sigtype
+request_hup(signo)
+    int signo;
+{
+    signal_requests_hup = 1;
+
+#ifdef POSIX_SIGTYPE
+    return;
+#else
+    return(0);
+#endif
+}
+
 void
 setup_signal_handlers()
 {
+#ifdef POSIX_SIGNALS
+    (void) sigemptyset(&s_action.sa_mask);
+    s_action.sa_flags = 0;
+    s_action.sa_handler = request_exit;
+    (void) sigaction(SIGINT, &s_action, (struct sigaction *) NULL);
+    (void) sigaction(SIGTERM, &s_action, (struct sigaction *) NULL);
+    s_action.sa_handler = request_hup;
+    (void) sigaction(SIGHUP, &s_action, (struct sigaction *) NULL);
+#else  /* POSIX_SIGNALS */
     signal(SIGINT, request_exit);
-    signal(SIGHUP, request_exit);
     signal(SIGTERM, request_exit);
+    signal(SIGHUP, request_hup);
+#endif /* POSIX_SIGNALS */
 
     return;
 }
@@ -691,7 +586,7 @@ void
 usage(name)
 char *name;
 {
-    fprintf(stderr, "usage: %s [-d dbpathname] [-r dbrealmname] [-R replaycachename ]\n\t[-m] [-k masterenctype] [-M masterkeyname] [-p port] [-n]\n", name);
+    fprintf(stderr, "usage: %s [-d dbpathname] [-r dbrealmname] [-R replaycachename ]\n\t[-m] [-k masterenctype] [-M masterkeyname] [-p port] [-4 v4mode] [-n]\n", name);
     return;
 }
 
@@ -713,7 +608,14 @@ initialize_realms(kcontext, argc, argv)
     char		*default_ports = 0;
     krb5_pointer	aprof;
     const char		*hierarchy[3];
+#ifdef KRB5_KRB4_COMPAT
+    char                *v4mode = 0;
+#endif
     extern char *optarg;
+#ifdef ATHENA_DES3_KLUDGE
+    extern struct krb5_keytypes krb5_enctypes_list[];
+    extern int krb5_enctypes_length;
+#endif
 
     if (!krb5_aprof_init(DEFAULT_KDC_PROFILE, KDC_PROFILE_ENV, &aprof)) {
 	hierarchy[0] = "kdcdefaults";
@@ -721,18 +623,22 @@ initialize_realms(kcontext, argc, argv)
 	hierarchy[2] = (char *) NULL;
 	if (krb5_aprof_get_string(aprof, hierarchy, TRUE, &default_ports))
 	    default_ports = 0;
+#ifdef KRB5_KRB4_COMPAT
+	hierarchy[1] = "v4_mode";
+	if (krb5_aprof_get_string(aprof, hierarchy, TRUE, &v4mode))
+	    v4mode = 0;
+#endif
 	/* aprof_init can return 0 with aprof == NULL */
 	if (aprof)
 	     krb5_aprof_finish(aprof);
     }
     if (default_ports == 0)
 	default_ports = strdup(DEFAULT_KDC_PORTLIST);
-    
     /*
      * Loop through the option list.  Each time we encounter a realm name,
      * use the previously scanned options to fill in for defaults.
      */
-    while ((c = getopt(argc, argv, "r:d:mM:k:R:e:p:s:n")) != EOF) {
+    while ((c = getopt(argc, argv, "r:d:mM:k:R:e:p:s:n4:3")) != -1) {
 	switch(c) {
 	case 'r':			/* realm name for db */
 	    if (!find_realm_data(optarg, (krb5_ui_4) strlen(optarg))) {
@@ -775,12 +681,39 @@ initialize_realms(kcontext, argc, argv)
 		free(default_ports);
 	    default_ports = strdup(optarg);
 	    break;
+	case '4':
+#ifdef KRB5_KRB4_COMPAT
+	    if (v4mode)
+		free(v4mode);
+	    v4mode = strdup(optarg);
+#endif
+	    break;
+	case '3':
+#ifdef ATHENA_DES3_KLUDGE
+	    if (krb5_enctypes_list[krb5_enctypes_length-1].etype
+		!= ENCTYPE_LOCAL_DES3_HMAC_SHA1) {
+		fprintf(stderr,
+			"internal inconsistency in enctypes_list"
+			" while disabling\n"
+			"des3-marc-hmac-sha1 enctype\n");
+		exit(1);
+	    }
+	    krb5_enctypes_length--;
+	    break;
+#endif
 	case '?':
 	default:
 	    usage(argv[0]);
 	    exit(1);
 	}
     }
+
+#ifdef KRB5_KRB4_COMPAT
+    /*
+     * Setup the v4 mode 
+     */
+    process_v4_mode(argv[0], v4mode);
+#endif
 
     /*
      * Check to see if we processed any realms.
@@ -892,6 +825,7 @@ char *argv[];
 	    exit(1);
     }
     krb5_klog_init(kcontext, "kdc", argv[0], 1);
+    initialize_kdc5_error_table();
 
     /*
      * Scan through the argument list
@@ -925,4 +859,7 @@ char *argv[];
     krb5_free_context(kcontext);
     return errout;
 }
+
+
+
 

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -28,6 +31,8 @@
 #include "k5-int.h"
 #include "kdc_util.h"
 #include "extern.h"
+
+#ifndef NOCACHE
 
 typedef struct _krb5_kdc_replay_ent {
     struct _krb5_kdc_replay_ent *next;
@@ -54,7 +59,8 @@ static int num_entries = 0;
 		    !memcmp((ptr)->req_packet->data, inpkt->data,	\
 			    inpkt->length) &&				\
 		    ((ptr)->addr->length == from->address->length) &&	\
-		    !memcmp((ptr)->addr->contents, from->address,	\
+		    !memcmp((ptr)->addr->contents,			\
+			    from->address->contents,			\
 			    from->address->length)&&			\
 		    ((ptr)->db_age == db_age))
 /* XXX
@@ -107,7 +113,7 @@ kdc_check_lookaside(inpkt, from, outpkt)
 		hold = eptr;
 		last->next = eptr->next;
 		eptr = last;
-		krb5_xfree(hold);
+		free(hold);
 	    } else {
 		/* this isn't it, just move along */
 		last = eptr;
@@ -146,12 +152,12 @@ kdc_insert_lookaside(inpkt, from, outpkt)
      * ARGH!
      */
     if (krb5_copy_data(kdc_context, inpkt, &eptr->req_packet)) {
-	krb5_xfree(eptr);
+	free(eptr);
 	return;
     }
     if (krb5_copy_data(kdc_context, outpkt, &eptr->reply_packet)) {
 	krb5_free_data(kdc_context, eptr->req_packet);
-	krb5_xfree(eptr);
+	free(eptr);
 	return;
     }
     if (krb5_copy_addr(kdc_context, from->address, &eptr->addr)) {
@@ -165,3 +171,5 @@ kdc_insert_lookaside(inpkt, from, outpkt)
     num_entries++;
     return;
 }
+
+#endif /* NOCACHE */

@@ -36,8 +36,9 @@ static char sccsid[] = "@(#)rcp.c	5.10 (Berkeley) 9/20/88";
  * rcp
  */
 #ifdef KERBEROS
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
+#include <k5-util.h>
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -49,7 +50,10 @@ static char sccsid[] = "@(#)rcp.c	5.10 (Berkeley) 9/20/88";
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/file.h>
+#ifndef KERBEROS
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <sys/socket.h>
+#endif
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/ioctl.h>
@@ -64,7 +68,10 @@ static char sccsid[] = "@(#)rcp.c	5.10 (Berkeley) 9/20/88";
 #include <signal.h>
 #include <pwd.h>
 #include <ctype.h>
+#ifndef KERBEROS
+/* Ultrix doesn't protect it vs multiple inclusion, and krb.h includes it */
 #include <netdb.h>
+#endif
 #include <errno.h>
 #ifdef KERBEROS
 #include <krb.h>
@@ -75,7 +82,7 @@ void sink(), source(), rsource(), usage();
 /*VARARGS*/
 void	error();
 int	response();
-#if !defined(HAS_UTIMES)
+#if !defined(HAVE_UTIMES)
 int	utimes();
 #endif
 
@@ -280,12 +287,6 @@ int kstream_write(krem, buf, len)
 #define vfork fork
 #endif
 
-#ifdef hpux
-#define setreuid(r,e) setresuid(r,e,-1)
-#endif
-#ifdef __svr4__
-#define setreuid(r,e) setuid(r)
-#endif
 #ifndef roundup
 #define roundup(x,y) ((((x)+(y)-1)/(y))*(y))
 #endif
@@ -653,7 +654,7 @@ krb5_sigtype lostconn()
 	exit(1);
 }
 
-#if !defined(HAS_UTIMES)
+#if !defined(HAVE_UTIMES)
 #include <utime.h>
 #include <sys/time.h>
 

@@ -2312,7 +2312,7 @@ telnet(user)
 	send_will(TELOPT_ENCRYPT, 1);
 	while (1) {
 	    if (my_want_state_is_wont(TELOPT_AUTHENTICATION)) {
-		printf("\nServer refused to negotiation authentication, which is required\n");
+		printf("\nServer refused to negotiate authentication, which is required\n");
 		printf("for encryption.  Good bye.\n\r");
 		Exit(1);
 	    }
@@ -2334,7 +2334,7 @@ telnet(user)
 	    }
 	    if (printed_encrypt == 0) {
 		    printed_encrypt = 1;
-		    printf("Waiting for encryption to be negotiated...");
+		    printf("Waiting for encryption to be negotiated...\n");
 		    /*
 		     * Turn on MODE_TRAPSIG and then turn off localchars 
 		     * so that ^C will cause telnet to exit.

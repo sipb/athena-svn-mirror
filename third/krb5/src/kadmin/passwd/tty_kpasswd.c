@@ -1,19 +1,18 @@
 /*
  * Copyright 1993-1994 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/tty_kpasswd.c,v 1.1.1.3 1999-02-09 21:04:09 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/tty_kpasswd.c,v 1.1.1.4 1999-10-05 16:11:36 ghudson Exp $
  *
  *
  */
 
-static char rcsid[] = "$Id: tty_kpasswd.c,v 1.1.1.3 1999-02-09 21:04:09 danw Exp $";
+static char rcsid[] = "$Id: tty_kpasswd.c,v 1.1.1.4 1999-10-05 16:11:36 ghudson Exp $";
 
 #include <kadm5/admin.h>
 #include <krb5.h>
 
 #include "kpasswd_strings.h"
 #define string_text error_message
-#define initialize_kpasswd_strings initialize_kpws_error_table
 
 #include <stdio.h>
 #include <pwd.h>
@@ -63,14 +62,14 @@ main(argc, argv)
   krb5_context context;
   int retval;
 
-  initialize_kpasswd_strings();
-
   whoami = (whoami = strrchr(argv[0], '/')) ? whoami + 1 : argv[0];
 
   if (retval = krb5_init_context(&context)) {
        com_err(whoami, retval, "initializing krb5 context");
        exit(retval);
   }
+  initialize_kpws_error_table();
+
   retval = kpasswd(context, argc, argv);
 
   if (!retval)

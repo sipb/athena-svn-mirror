@@ -28,11 +28,7 @@ encrypt_credencpart(context, pcredpart, pkeyblock, pencdata)
     krb5_enc_data 	* pencdata;
 {
     krb5_error_code 	  retval;
-    krb5_encrypt_block 	  eblock;
     krb5_data 		* scratch;
-
-    if (pkeyblock && !valid_enctype(pkeyblock->enctype))
-    	return KRB5_PROG_ETYPE_NOSUPP;
 
     /* start by encoding to-be-encrypted part of the message */
     if ((retval = encode_krb5_enc_cred_part(pcredpart, &scratch)))
@@ -49,47 +45,11 @@ encrypt_credencpart(context, pcredpart, pkeyblock, pencdata)
 	    return 0;
     }
 
-    /* put together an eblock for this encryption */
-
-    pencdata->kvno = 0;
-    pencdata->enctype = pkeyblock->enctype;
-
-    krb5_use_enctype(context, &eblock, pkeyblock->enctype);
-    pencdata->ciphertext.length = krb5_encrypt_size(scratch->length, 
-						    eblock.crypto_entry);
-
-    /* add padding area, and zero it */
-    if (!(scratch->data = (char *)realloc(scratch->data,
-                                          pencdata->ciphertext.length))) {
-    	/* may destroy scratch->data */
-    	krb5_xfree(scratch);
-    	return ENOMEM;
-    }
-
-    memset(scratch->data + scratch->length, 0,
-           pencdata->ciphertext.length - scratch->length);
-    if (!(pencdata->ciphertext.data =
-          (char *)malloc(pencdata->ciphertext.length))) {
-    	retval = ENOMEM;
-    	goto clean_scratch;
-    }
-
-    /* do any necessary key pre-processing */
-    if ((retval = krb5_process_key(context, &eblock, pkeyblock))) {
-    	goto clean_encpart;
-    }
-
     /* call the encryption routine */
-    if ((retval = krb5_encrypt(context, (krb5_pointer)scratch->data,
-			       (krb5_pointer)pencdata->ciphertext.data, 
-			       scratch->length, &eblock, 0))) {
-	krb5_finish_key(context, &eblock);
-	goto clean_encpart;
-    }
-    
-    retval = krb5_finish_key(context, &eblock);
+    retval = krb5_encrypt_helper(context, pkeyblock,
+				 KRB5_KEYUSAGE_KRB_CRED_ENCPART,
+				 scratch, pencdata);
 
-clean_encpart:
     if (retval) {
     	memset(pencdata->ciphertext.data, 0, pencdata->ciphertext.length);
         free(pencdata->ciphertext.data);
@@ -97,7 +57,6 @@ clean_encpart:
         pencdata->ciphertext.data = 0;
     }
 
-clean_scratch:
     memset(scratch->data, 0, scratch->length); 
     krb5_free_data(context, scratch);
 
@@ -109,14 +68,14 @@ clean_scratch:
 static krb5_error_code
 krb5_mk_ncred_basic(context, ppcreds, nppcreds, keyblock,                 
 		    replaydata, local_addr, remote_addr, pcred)
-    krb5_context 	  context;
-    krb5_creds 	       ** ppcreds;
-    krb5_int32 		  nppcreds;
-    krb5_keyblock 	* keyblock;
-    krb5_replay_data    * replaydata;
-    krb5_address  	* local_addr;
-    krb5_address  	* remote_addr;
-    krb5_cred 		* pcred;
+    krb5_context 	context;
+    krb5_creds 	        FAR * FAR * ppcreds;
+    krb5_int32 		nppcreds;
+    krb5_keyblock 	FAR * keyblock;
+    krb5_replay_data    FAR * replaydata;
+    krb5_address  	FAR * local_addr;
+    krb5_address  	FAR * remote_addr;
+    krb5_cred 		FAR * pcred;
 {
     krb5_cred_enc_part 	  credenc;
     krb5_error_code	  retval;
@@ -135,8 +94,8 @@ krb5_mk_ncred_basic(context, ppcreds, nppcreds, keyblock,
     credenc.timestamp = replaydata->timestamp;
 
     /* Get memory for creds and initialize it */
-    size = sizeof(krb5_cred_info *) * (nppcreds + 1);
-    credenc.ticket_info = (krb5_cred_info **) malloc(size);
+    size = sizeof(krb5_cred_info FAR *) * (nppcreds + 1);
+    credenc.ticket_info = (krb5_cred_info FAR * FAR *) malloc(size);
     if (credenc.ticket_info == NULL)
 	return ENOMEM;
     memset(credenc.ticket_info, 0, size);
@@ -198,24 +157,24 @@ cleanup:
  * This functions takes as input an array of krb5_credentials, and
  * outputs an encoded KRB_CRED message suitable for krb5_rd_cred
  */
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_mk_ncred(context, auth_context, ppcreds, ppdata, outdata)
 
     krb5_context 	  context;
     krb5_auth_context	  auth_context;
-    krb5_creds 	       ** ppcreds;
-    krb5_data 	       ** ppdata;
-    krb5_replay_data  	* outdata;
+    krb5_creds 	       FAR * FAR * ppcreds;
+    krb5_data 	       FAR * FAR * ppdata;
+    krb5_replay_data  	FAR * outdata;
 {
-    krb5_address * premote_fulladdr = NULL;
-    krb5_address * plocal_fulladdr = NULL;
+    krb5_address FAR * premote_fulladdr = NULL;
+    krb5_address FAR * plocal_fulladdr = NULL;
     krb5_address remote_fulladdr;
     krb5_address local_fulladdr;
-    krb5_error_code 	  retval;
-    krb5_keyblock	* keyblock;
-    krb5_replay_data      replaydata;
-    krb5_cred 		* pcred;
-    int			  ncred;
+    krb5_error_code 	retval;
+    krb5_keyblock	FAR * keyblock;
+    krb5_replay_data    replaydata;
+    krb5_cred 		FAR * pcred;
+    krb5_int32		ncred;
 
     local_fulladdr.contents = 0;
     remote_fulladdr.contents = 0;
@@ -235,11 +194,11 @@ krb5_mk_ncred(context, auth_context, ppcreds, ppdata, outdata)
     memset(pcred, 0, sizeof(krb5_cred));
 
     if ((pcred->tickets 
-      = (krb5_ticket **)malloc(sizeof(krb5_ticket *) * (ncred + 1))) == NULL) {
+      = (krb5_ticket FAR * FAR *)malloc(sizeof(krb5_ticket FAR *) * (ncred + 1))) == NULL) {
 	retval = ENOMEM;
 	free(pcred);
     }
-    memset(pcred->tickets, 0, sizeof(krb5_ticket *) * (ncred +1));
+    memset(pcred->tickets, 0, sizeof(krb5_ticket FAR *) * (ncred +1));
 
     /* Get keyblock */
     if ((keyblock = auth_context->local_subkey) == NULL) 
@@ -346,18 +305,18 @@ error:
 /*
  * A convenience function that calls krb5_mk_ncred.
  */
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_mk_1cred(context, auth_context, pcreds, ppdata, outdata)
     krb5_context 	  context;
     krb5_auth_context	  auth_context;
-    krb5_creds 		* pcreds;
-    krb5_data 	       ** ppdata;
-    krb5_replay_data  	* outdata;
+    krb5_creds 		FAR * pcreds;
+    krb5_data 	       FAR * FAR * ppdata;
+    krb5_replay_data  	FAR * outdata;
 {
     krb5_error_code retval;
-    krb5_creds **ppcreds;
+    krb5_creds FAR * FAR *ppcreds;
 
-    if ((ppcreds = (krb5_creds **)malloc(sizeof(*ppcreds) * 2)) == NULL) {
+    if ((ppcreds = (krb5_creds FAR * FAR *)malloc(sizeof(*ppcreds) * 2)) == NULL) {
 	return ENOMEM;
     }
 
