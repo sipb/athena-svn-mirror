@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.19 1991-02-26 19:54:04 lwvanels Exp $
+ *	$Id: s_io.c,v 1.20 1991-03-07 13:27:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.19 1991-02-26 19:54:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.20 1991-03-07 13:27:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -75,33 +75,58 @@ read_request(fd, request)
      int fd;
      REQUEST *request;
 {
-  static IO_REQUEST io_req;
+  IO_REQUEST net_req;
   char msgbuf[BUF_SIZE];
-  int ltr;
+  int len,size;
 
-  if (sread(fd, (char *) &io_req, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
-    return(ERROR);
-  request->requester          = io_req.requester;
-  request->target             = io_req.target;
-  request->request_type       = ntohl((u_long) io_req.request_type);
-  request->options            = ntohl((u_long) io_req.options);
-  request->target.uid         = ntohl((u_long) io_req.target.uid);
-  request->requester.uid      = ntohl((u_long) io_req.requester.uid);
-  request->target.instance    = ntohl((u_long) io_req.target.instance);
-  request->requester.instance = ntohl((u_long) io_req.requester.instance);
-  request->version            = ntohl((u_long) io_req.version);
+  len = 0;
+  while (len < sizeof(IO_REQUEST)) {
+    size = sread(fd, (char *) &net_req, sizeof(IO_REQUEST)-len);
+    if (size == -1) {
+      log_error("read_request: error reading io_request: %s");
+      return(ERROR);
+    }
+    len += size;
+  }
 
-#if 0
-  printf("%d %d\n",request->requester.uid,request->version);
-#endif /* TEST */
+  /* build up struct from buffer sent over */
+
+  request->version = (ntohl(*((u_long *) net_req.data)));
+  request->request_type = (ntohl(*((u_long *) (net_req.data+4))));
+
+  request->options = (ntohl(*((u_long *) (net_req.data+8))));
+
+/* options unset */
+
+  request->requester.uid = (ntohl(*((u_long *) (net_req.data+16))));
+  request->requester.instance = (ntohl(*((u_long *) (net_req.data+20))));
+  
+  strncpy(request->requester.username, (char *) (net_req.data+24), 10);
+  strncpy(request->requester.realname, (char *) (net_req.data+34), 32);
+  strncpy(request->requester.realm, (char *) (net_req.data+66), 40);
+  strncpy(request->requester.inst, (char *) (net_req.data+106), 40);
+  strncpy(request->requester.nickname, (char *) (net_req.data+146), 16);
+  strncpy(request->requester.title, (char *) (net_req.data+162), 32);
+  strncpy(request->requester.machine, (char *) (net_req.data+194), 32);
+
+  request->target.uid = (ntohl(*((u_long *) (net_req.data+227))));
+
+  request->target.instance = (ntohl(*((u_long *) (net_req.data+232))));
+
+  strncpy(request->target.username, (char *) (net_req.data+236), 10);
+  strncpy(request->target.realname, (char *) (net_req.data+246), 32);
+  strncpy(request->target.realm, (char *) (net_req.data+278), 40);
+  strncpy(request->target.inst, (char *) (net_req.data+318), 40);
+  strncpy(request->target.nickname, (char *) (net_req.data+358), 16);
+  strncpy(request->target.title, (char *) (net_req.data+374), 32);
+  strncpy(request->target.machine, (char *) (net_req.data+406), 32);
 
   if ((request->version != VERSION_5)  &&
-      (request->version != VERSION_4)  &&
-      (request->version != VERSION_3))
+      (request->version != VERSION_4))
     {
       sprintf(msgbuf,
 	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
-	      io_req.requester.username, io_req.requester.machine,
+	      request->requester.username, request->requester.machine,
 	      CURRENT_VERSION, request->version);
       log_error(msgbuf);
       return(ERROR);
@@ -111,107 +136,106 @@ read_request(fd, request)
   if (sread(fd, (char *) &(request->kticket.length), sizeof(int)) != 
       sizeof(int)) 
     {
-      log_error("error on read: klength failure");
+      log_error("error on read: klength failure: %s");
       return(ERROR);
     }
   
   request->kticket.length  = ntohl((u_long) request->kticket.length);
 
-#if 0
-  printf("klength: %d\n",request->kticket.length);
-#endif /* TEST */
-
-  ltr = MIN(sizeof(unsigned char)*request->kticket.length,
-	    sizeof(request->kticket.dat));
-  if (sread(fd, (char *) request->kticket.dat,ltr) != ltr) 
+  if (sread(fd, (char *) request->kticket.dat,request->kticket.length) !=
+      request->kticket.length)
     {
-      log_error("error on read: kdata failure");
+      log_error("error on read: kdata failure: %s");
       return(ERROR);
     }
-
 #endif /* KERBEROS */
 
-return(SUCCESS);  
+  return(SUCCESS);  
 }
 
 
 
-int
+ERRCODE
 send_list(fd, request, list)
      int fd;
      REQUEST *request;
      LIST *list;
 {
-  LIST list_rq;
-  OLDLIST frep;
+  IO_LIST net_req;
   int response;
+  int len,size;
+  long i;
 
-  if(request->version >= VERSION_4)
-    {
-      list_rq = *list;
-      list_rq.nseen              = htonl((u_long) list->nseen);
-      list_rq.umessage           = htonl((u_long) list->umessage);
-      list_rq.cmessage           = htonl((u_long) list->cmessage);
-      list_rq.utime              = htonl((u_long) list->utime);
-      list_rq.ctime              = htonl((u_long) list->ctime);
-      list_rq.ustatus            = htonl((u_long) list->ustatus);
-      list_rq.cstatus            = htonl((u_long) list->cstatus);
-      list_rq.ukstatus           = htonl((u_long) list->ukstatus);
-      list_rq.ckstatus           = htonl((u_long) list->ckstatus);
-      list_rq.user.instance      = htonl((u_long) list->user.instance);
-      list_rq.user.uid           = htonl((u_long) list->user.uid);
-      list_rq.connected.instance = htonl((u_long) list->connected.instance);
-      list_rq.connected.uid      = htonl((u_long) list->connected.uid);
-      
-      if (swrite(fd, (char *) &list_rq, sizeof(LIST)) != sizeof(LIST))
-	{
-	  perror("error in size");
-	}
+  bzero((char *) &net_req, sizeof(IO_LIST));
+
+  i = htonl((u_long) list->ustatus);
+  bcopy((char *) &i, (char *) net_req.data, sizeof(i));
+
+  i = htonl((u_long) list->cstatus);
+  bcopy((char *) &i, (char *) (net_req.data+4), sizeof(i));
+
+  i = htonl((u_long) list->ukstatus);
+  bcopy((char *) &i, (char *) (net_req.data+8), sizeof(i));
+
+  i = htonl((u_long) list->ckstatus);
+  bcopy((char *) &i, (char *) (net_req.data+12), sizeof(i));
+
+  i = htonl((u_long) list->utime);
+  bcopy((char *) &i, (char *) (net_req.data+16), sizeof(i));
+
+  i = htonl((u_long) list->ctime);
+  bcopy((char *) &i, (char *) (net_req.data+20), sizeof(i));
+
+  i = htonl((u_long) list->umessage);
+  bcopy((char *) &i, (char *) (net_req.data+24), sizeof(i));
+
+  i = htonl((u_long) list->cmessage);
+  bcopy((char *) &i, (char *) (net_req.data+28), sizeof(i));
+
+  i = htonl((u_long) list->nseen);
+  bcopy((char *) &i, (char *) (net_req.data+32), sizeof(i));
+
+  strncpy((char *)(net_req.data+36),list->topic, TOPIC_SIZE);
+  strncpy((char *)(net_req.data+60), list->note, NOTE_SIZE);
+
+  i = htonl((u_long) list->user.uid);
+  bcopy((char *) &i, (char *) (net_req.data+124), sizeof(i));
+
+  i = htonl((u_long) list->user.instance);
+  bcopy((char *) &i, (char *) (net_req.data+128), sizeof(i));
+  
+  strncpy((char *)(net_req.data+132), list->user.username, LOGIN_SIZE+1);
+  strncpy((char *)(net_req.data+142), list->user.realname, TITLE_SIZE);
+  strncpy((char *)(net_req.data+174), list->user.realm, REALM_SZ);
+  strncpy((char *)(net_req.data+214), list->user.inst, INST_SZ);
+  strncpy((char *)(net_req.data+254), list->user.nickname, STRING_SIZE);
+  strncpy((char *)(net_req.data+270), list->user.title, TITLE_SIZE);
+  strncpy((char *)(net_req.data+302), list->user.machine, TITLE_SIZE);
+
+  i = htonl((u_long) list->connected.uid);
+  bcopy((char *) &i, (char *) (net_req.data+336), sizeof(i));
+
+  i = htonl((u_long) list->connected.instance);
+  bcopy((char *) &i, (char *) (net_req.data+340), sizeof(i));
+  
+  strncpy((char *)(net_req.data+344), list->connected.username, LOGIN_SIZE+1);
+  strncpy((char *)(net_req.data+354), list->connected.realname, TITLE_SIZE);
+  strncpy((char *)(net_req.data+386), list->connected.realm, REALM_SZ);
+  strncpy((char *)(net_req.data+426), list->connected.inst, INST_SZ);
+  strncpy((char *)(net_req.data+466), list->connected.nickname, STRING_SIZE);
+  strncpy((char *)(net_req.data+482), list->connected.title, TITLE_SIZE);
+  strncpy((char *)(net_req.data+514), list->connected.machine, TITLE_SIZE);
+  
+  len = 0;
+  while (len < sizeof(IO_LIST)) {
+    size = swrite(fd, (char *) &net_req, sizeof(IO_LIST));
+    if (size == -1) {
+      log_error("read_list: error writing io_list: %s");
+      return(ERROR);
     }
-  else
-    {
-      frep.user = list->user;
-      frep.connected = list->connected;
-      strncpy(frep.topic, list->topic, TOPIC_SIZE);
-      list->topic[TOPIC_SIZE-1] = 0;
-      strncpy(frep.note, list->note, NOTE_SIZE);
-      list->note[NOTE_SIZE-1] = 0;
-      frep.nseen              = htonl((u_long) list->nseen);
-      frep.ustatus            = htonl((u_long) list->ustatus);
-      frep.cstatus            = htonl((u_long) list->cstatus);
-      frep.ukstatus           = htonl((u_long) list->ukstatus);
-      frep.ckstatus           = htonl((u_long) list->ckstatus);
-      frep.user.instance      = htonl((u_long) list->user.instance);
-      frep.user.uid           = htonl((u_long) list->user.uid);
-      frep.connected.instance = htonl((u_long) list->connected.instance);
-      frep.connected.uid      = htonl((u_long) list->connected.uid);
-      
-      if (swrite(fd, (char *) &frep, sizeof(OLDLIST)) != sizeof(OLDLIST))
-	{
-	  perror("error in size");
-	}
-    }
+    len += size;
+  }
 
   read_response(fd,&response);
   return(response);
 }
-  
-
-ERRCODE
-send_person(fd, person)
-     int fd;
-     PERSON *person;
-{
-  PERSON person_rq;
-
-  person_rq = *person;
-  person_rq.instance =  htonl((u_long) person->instance);
-  person_rq.uid      =  htonl((u_long) person->uid);
-
-  if (swrite(fd, (char *) &person_rq, sizeof(PERSON)) != sizeof(PERSON))
-    return(ERROR);
-
-  else
-    return(SUCCESS);
-}
-
