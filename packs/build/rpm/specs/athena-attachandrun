@@ -1,0 +1,10 @@
+Name: athena-attachandrun
+Summary: An Athena utility for scripts to run a program from a locker
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-attach
+
+%description
+The athrun utility allows a script to robustly run a program from a
+specified locker.
