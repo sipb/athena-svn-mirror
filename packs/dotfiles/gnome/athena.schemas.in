@@ -10,11 +10,109 @@
 # strings can be split across multiple lines for clarity.
 
 # screensaver defaults
-[schemas/apps/gnome_settings_daemon/screensaver]
+[apps/gnome_settings_daemon/screensaver]
  start_screensaver = false
 
-# gnome-panel defaults
-[schemas/apps/panel/default_profiles/medium]
+# gnome-panel 2.8 defaults.
+[apps/panel/default_setup]
+ [general]
+  toplevel_id_list = [athena-edge]
+  object_id_list = [athena-menu,athena-mail,athena-browser,athena-terminal,
+                    athena-editor,athena-logout]
+  applet_id_list = [athena-tasklist,athena-clock]
+
+ [toplevels/athena-edge]
+  animation_speed = "medium"
+  auto_hide = false
+  auto_hide_size = 6
+  enable_animations = true
+  enable_arrows = false
+  enable_buttons = false
+  expand = true
+  hide_delay = 500
+  monitor = 0
+  name = "Athena Panel"
+  orientation = "bottom"
+  screen = 0
+  size = 48
+  unhide_delay = 500
+  x = 0
+  x_centered = false
+  y = 1000
+  y_centered = false
+  [background]
+   color = "#ffffff"
+   fit = true
+   image = ""
+   opacity = 65535
+   rotate = true
+   stretch = false
+   type = "gtk"
+
+ [objects/athena-menu]
+  custom_icon = "/usr/athena/share/gnome/athena/menu-icon"
+  global-main = false
+  menu_path = "file:///var/athena/menus"
+  object_type = "menu-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = false
+  position = 3
+  use_custom_icon = true
+  use_menu_path = true
+
+ [objects/athena-mail]
+  launcher_location = "file:///usr/athena/share/gnome/athena/mail.desktop"
+  object_type = "launcher-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = false
+  position = 54
+
+ [objects/athena-browser]
+  launcher_location = "file:///usr/athena/share/gnome/athena/browser.desktop"
+  object_type = "launcher-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = false
+  position = 105
+
+ [objects/athena-terminal]
+  launcher_location = "file:///usr/athena/share/gnome/athena/terminal.desktop"
+  object_type = "launcher-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = false
+  position = 156
+
+ [objects/athena-editor]
+  launcher_location = "file:///usr/athena/share/gnome/athena/editor.desktop"
+  object_type = "launcher-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = false
+  position = 207
+
+ [applets/athena-tasklist]
+  bonobo_iid = "OAFIID:GNOME_TasklistApplet"
+  object_type = "bonobo-applet"
+  toplevel_id = "athena-edge"
+  panel_right_stick = true
+  position = 636
+
+ [objects/athena-logout]
+  launcher_location = "file:///usr/athena/share/gnome/athena/logout.desktop"
+  object_type = "launcher-object"
+  toplevel_id = "athena-edge"
+  panel_right_stick = true
+  position = 124
+
+ [applets/athena-clock]
+  bonobo_iid = "OAFIID:GNOME_ClockApplet"
+  object_type = "bonobo-applet"
+  toplevel_id = "athena-edge"
+  panel_right_stick = true
+  position = 73
+
+# gnome-panel 2.2 defaults.  We need to preserve these so that we can
+# read the user's gnome-panel 2.2 settings when migrating to
+# gnome-panel 2.8 settings.
+[apps/panel/default_profiles/medium]
  [general]
   panel_id_list = [athena-edge]
   object_id_list = [athena-menu,athena-mail,athena-browser,athena-terminal,
