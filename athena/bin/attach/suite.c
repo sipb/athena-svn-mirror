@@ -15,7 +15,7 @@
 
 /* main() for the attach suite */
 
-static const char rcsid[] = "$Id: suite.c,v 1.1 1999-03-23 18:24:40 danw Exp $";
+static const char rcsid[] = "$Id: suite.c,v 1.2 1999-05-11 21:13:01 danw Exp $";
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
   else if (!strcmp(whoami, "attach"))
     exit(attach_main(argc, argv));
   else if (!strcmp(whoami, "attachandrun"))
-    exit(attachandrun_main(argc, argv));
+    exit(attachandrun_main(argc - 1, argv + 1)); /* doesn't use getopt */
   else if (!strcmp(whoami, "detach"))
     exit(detach_main(argc, argv));
   else if (!strcmp(whoami, "fsid") || !strcmp(whoami, "nfsid"))
