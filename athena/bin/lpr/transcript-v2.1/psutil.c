@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.3 1995-07-11 21:19:47 miki Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.4 1998-12-22 21:22:08 rbasch Exp $";
 #endif
 /* psutil.c
  *
@@ -15,6 +15,10 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1995/07/11 21:19:47  miki
+ * for POSIX include fcntl.h, string.h and unistd.h
+ * for Solaris , although a SYSV system, gethostname is defined
+ *
  * Revision 1.2  90/08/25  16:52:40  epeisach
  * Under _AUX include sys/types.h
  * 
@@ -128,25 +132,3 @@ char *var;
     	return ((char *) NULL);
     else return (val);
 }
-
-
-/* System V specific compatibility stuff */
-
-#ifdef SYSV
-
-#include <sys/types.h>
-#include <sys/utsname.h>
-
-#define SYSVNAMELIMIT 9
-#ifndef SOLARIS
-gethostname(name, namelen)
-char *name;
-int namelen;
-{
-    struct utsname uts;
-    uname(&uts);
-    VOIDC strncpy(name,uts.sysname,SYSVNAMELIMIT);
-    return(0);
-}
-#endif
-#endif

@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: jweiss $
+ *	$Author: rbasch $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.18 1998-04-15 04:10:56 jweiss Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.19 1998-12-22 21:21:56 rbasch Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.18 1998-04-15 04:10:56 jweiss Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.19 1998-12-22 21:21:56 rbasch Exp $";
 #endif lint
 
 /*
@@ -138,7 +138,6 @@ short	SC;			/* suppress multiple copies */
 char	*getenv();
 char	*linked();
 void	cleanup();
-extern char *malloc();
 
 /*ARGSUSED*/
 main(argc, argv)

@@ -14,7 +14,7 @@ static char sccsid[] = "@(#)cmdtab.c	5.1 (Berkeley) 6/6/85";
 
 #include "lpc.h"
 
-int	abort(), clean(), enable(), disable(), down(), flushq_(), help();
+int	cmd_abort(), clean(), enable(), disable(), down(), flushq_(), help();
 int	quit(), restart(), start(), status(), stop(), topq(), up(), lookat();
 
 char	aborthelp[] =	"terminate a spooling daemon immediately and disable printing";
@@ -33,7 +33,7 @@ char	uphelp[] =	"enable everything and restart spooling daemon";
 char    flushhelp[] =   "remove all data, control, and temporary files";
 char    lookathelp[]=   "examine printer queue using /usr/ucb/lpq";
 struct cmd cmdtab[] = {
-	{ "abort",	aborthelp,	abort,		1 },
+	{ "abort",	aborthelp,	cmd_abort,	1 },
 	{ "clean",	cleanhelp,	clean,		1 },
 	{ "enable",	enablehelp,	enable,		1 },
 	{ "exit",	quithelp,	quit,		0 },

@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: cfields $
+ *	$Author: rbasch $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.10 1997-06-29 00:39:44 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.11 1998-12-22 21:21:54 rbasch Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.10 1997-06-29 00:39:44 cfields Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.11 1998-12-22 21:21:54 rbasch Exp $";
 #endif lint
 
 /*
@@ -42,7 +42,7 @@ int	requests;			/* # of spool requests */
 /*
  * kill an existing daemon and disable printing.
  */
-abort(argc, argv)
+cmd_abort(argc, argv)
 	char *argv[];
 {
 	register int c, status;

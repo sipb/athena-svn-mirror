@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.11 1998-09-29 19:52:04 danw Exp $
+ * $Id: attachtab.c,v 1.12 1998-12-22 21:28:24 rbasch Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,10 +7,11 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.11 1998-09-29 19:52:04 danw Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.12 1998-12-22 21:28:24 rbasch Exp $";
 #endif lint
 
 #include "attach.h"
+#include <stdlib.h>
 #include <fcntl.h>
 #include <sys/file.h>
 #include <pwd.h>
@@ -342,7 +343,7 @@ static int parse_attach(bfr, at, lintflag)
     for (i=0; cp; i++) {
 	register char *dp;
 
-	if (dp = index(cp, ','))
+	if (dp = strchr(cp, ','))
 	    *dp++ = '\0';
 	at->hostaddr[i].s_addr = inet_addr(cp);
 	cp = dp;
@@ -368,7 +369,7 @@ static int parse_attach(bfr, at, lintflag)
     while (cp) {
 	register char *dp;
 	    
-	if (dp = index(cp, ','))
+	if (dp = strchr(cp, ','))
 	    *dp++ = '\0';
 	at->owners[at->nowners++] = atoi(cp);
 	cp = dp;
