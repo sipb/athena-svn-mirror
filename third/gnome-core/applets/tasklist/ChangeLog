@@ -1,3 +1,43 @@
+Tue May 08 12:35:47 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_config.c, tasklist_properties.c:
+	  Apply patch from Cory Lueninghoener <cluening@cse.unl.edu> to fix
+	  bug #28149 which adds the option of the sunken border which a bunch
+	  of people preferred over the flat look.
+
+2001-04-26  Anders Carlsson  <andersca@codefactory.se>
+
+	* tasklist_applet.c (cb_motion_timeout): Don't try to show
+	tasks that are actually task groups in the timeout.
+	This fixes #53647.
+
+Sun Apr 22 16:42:52 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_menu.c, tasklist_config.c,
+	  tasklist_properties.c:  Add tooltips to tasks.  The code
+	  does some pretty evil things with GtkTooltips, take a look
+	  if you enjoy this kind of stuff.
+
+	* tasklist_menu.c:  The maximum length of labels on group menus
+	  is third of screen width.  The problem was that if you had
+	  many things on your tasklist the menu became useless (or on
+	  a vertical panel).
+
+Sun Apr 22 00:25:04 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c, tasklist_icon.c:  Avoid races by properly
+	  pushing the error trap and add a gdk_flush before a pop in the
+	  icon code.  This fixes issues with XView windows.
+
+Tue Apr 17 13:59:01 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c: fix a crash that could possibly happen when
+	  the get_label is called on an empty group or a task with no
+	  class.  Plus fixup some whacky mem management by "oh horrors" doing
+	  one g_strdup/g_free extra.  Also when the name is NULL, use "???"
+	  and always do the full deal on the label rather then returning
+	  before we set the iconified [] things or whatnot.
+
 Mon Mar 12 15:07:40 2001  George Lebl <jirka@5z.com>
 
 	* tasklist_applet.gnorba: make it exe not shlib, so that it loads

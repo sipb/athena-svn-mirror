@@ -13,6 +13,13 @@ cb_apply (GtkWidget *widget, gint page, gpointer data)
 	/* Redraw everything */
 	tasklist_redo_vtasks (tasklist);
 	tasklist_change_size (tasklist, TRUE, -1);
+
+	/* setup tooltips */
+	if (tasklist->config.enable_tooltips)
+		gtk_tooltips_enable (tasklist->tooltips);
+	else
+		gtk_tooltips_disable (tasklist->tooltips);
+
 }
 
 /* Callback for radio buttons */
@@ -341,6 +348,13 @@ create_display_page (Tasklist *tasklist)
 			_("Move iconified tasks to current workspace when restoring"),
 			&tasklist->PropsConfig.move_to_current),
 		FALSE, TRUE, 0);
+	gtk_box_pack_start (
+		GTK_BOX (miscbox),
+		create_check_button (
+			tasklist,
+			_("Display tooltips with full task names"),
+			&tasklist->PropsConfig.enable_tooltips),
+		FALSE, TRUE, 0);
 
 	gtk_box_pack_start (
 		GTK_BOX (miscbox),
@@ -357,6 +371,14 @@ create_display_page (Tasklist *tasklist)
 			_("Number of tasks before grouping occurs"),
 			&tasklist->PropsConfig.grouping_min,
 			1, 10, 3),
+		FALSE, TRUE, 0);
+
+	gtk_box_pack_start (
+                GTK_BOX (miscbox),
+		create_check_button (
+                        tasklist,
+                        _("Sink tasklist into panel"), 
+			&tasklist->PropsConfig.sunken),
 		FALSE, TRUE, 0);
 
 	gnome_property_box_append_page (GNOME_PROPERTY_BOX (tasklist->prop), vbox,

@@ -1,19 +1,19 @@
 <HTML
 ><HEAD
 ><TITLE
->Launchers</TITLE
+>Pulsanti di avvio</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.61
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 "><LINK
 REL="HOME"
 TITLE="Il pannello di GNOME"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Menus"
+TITLE="Menu"
 HREF="menus.html"><LINK
 REL="NEXT"
-TITLE="Applets"
+TITLE="Applet"
 HREF="applets.html"></HEAD
 ><BODY
 CLASS="SECT1"
@@ -68,40 +68,43 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="LAUNCHERS"
->Launchers</A
+>Pulsanti di avvio</A
 ></H1
 ><P
->   Launchers are essentially buttons which reside in your panel and
-   start an application or execute a command when clicked.  A launcher
-   can use any icon and has a customized tooltip to display a message
-   when the cursor is passed over the Launcher.
+>   I pulsanti di avvio sono essenzialmente pulsanti che risiedono nel vostro
+   pannello e che avviano applicazioni o eseguono un comando quando vengono
+   premuti. Un pulsante di avvio può usare qualunque icona e ha un suggerimento
+   personalizzabile per mostrare un messaggio quando il cursore passa sopra di
+   questo.
   </P
 ><P
->  You can change a launcher properties, such as the icon it
-      uses and its name, by right-clicking on a launcher and selecting
-      <B
+>  
+   È possibile cambiare le proprietà di un pulsante di avvio, come l'icona che
+   utilizza o il suo nome, cliccandoci sopra con il tasto destro del mouse e
+   selezionando <B
 CLASS="GUIMENUITEM"
->Properties</B
-> from the pop-up menu. This
-      brings up the <SPAN
+>Proprietà</B
+> dal menu
+   contestuale. Questa operazione mostrerà la finestra di dialogo
+   <SPAN
 CLASS="INTERFACE"
->Launcher properties dialog</SPAN
->
-      shown in <A
+>Proprietà pulsante di avvio</SPAN
+>, mostrato in <A
 HREF="launchers.html#LAUNCHERPROPSFIG"
 >Figura 7</A
->. The same dialog is
-      used when you create a new launcher (see <A
+>. La stessa finestra di dialogo viene utilizzata
+    quando create un nuovo pulsante (vedi <A
 HREF="appletadd.html#ADD"
 >la sezione <I
 >Adding objects to the panel</I
 ></A
->). Also, internally GNOME makes no distinction
-      between menu items and launchers: these are just different
-      presentations of the same thing. You can place any menu item on
-      the panel, and it will show as a launcher. Therefore, all the
-      information below applies equally to launchers and menu items.
-      </P
+>). Inoltre GNOME,
+     internamente, non fa alcuna differenza tra voci del menu e pulsanti di avvio:
+     questi sono semplicemente una differente rappresentazione dello stesso
+     oggetto. Potete posizionare sul pannello qualsiasi voce del menu, e verrà
+     mostrata come pulsante di avvio. Quindi, tutte le informazioni qui sotto si
+     applicano equivalentemente sia ai pulsanti di avvio che alle voce del menu.
+  </P
 ><DIV
 CLASS="FIGURE"
 ><A
@@ -112,132 +115,131 @@ NAME="LAUNCHERPROPSFIG"
 SRC="./figures/launcher_properties_basic.png"></P
 ><P
 ><B
->Figura 7. Create Launcher/Launcher Properties Dialog</B
+>Figura 7. Dialogo Crea/Proprietà pulsante di avvio</B
 ></P
 ></DIV
 ><P
-> This dialog has two tabs: <TT
+> 
+   Questa finestra di dialogo ha due linguette: <TT
 CLASS="GUILABEL"
 ><B
->Basic</B
+>Base</B
 ></TT
-> and
-    <TT
+> e
+   <TT
 CLASS="GUILABEL"
 ><B
->Advanced</B
+>Avanzato</B
 ></TT
->. In the <TT
+>. Nella sezione <TT
 CLASS="GUILABEL"
 ><B
->Basic</B
+>Base</B
 ></TT
->
-    tab, you can set:
-    </P
+> è
+   possibile impostare:
+  </P
 ><P
 ></P
 ><UL
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Name</B
+>Nome</B
 ></TT
-> &#8212; this is the application
-	  name, for example, <TT
+> &#8212; questo è il nome dell'applicazione, ad
+     esempio <TT
 CLASS="USERINPUT"
 ><B
->GNOME
-	  terminal</B
+>GNOME terminal</B
 ></TT
->. This name will be used if you later
-	  put this launcher in a menu.
-	</P
+>. Questo nome verrà utilizzato
+     se metterete questo pulsante in un menu.
+    </P
 ></LI
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Comment</B
+>Commento</B
 ></TT
-> &#8212; this is a brief
-	  explanation of what this application does, for example,
-	  <TT
+> &#8212; questa è una breve descrizione di
+     cosa fa l'applicazione, ad esempio <TT
 CLASS="USERINPUT"
 ><B
->Terminal emulation program</B
+>Emulatore di
+      terminale</B
 ></TT
->. This will
-	  be used for tooltips.
-	</P
+>. Questo commento viene utilizzato per i suggerimenti.
+    </P
 ></LI
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Command</B
+>Comando</B
 ></TT
-> &#8212; the actual command that
-	  runs the application, for example,
-	  <TT
+> &#8212; il comando che esegue l'applicazione,
+     ad esempio <TT
 CLASS="USERINPUT"
 ><B
 >gnome-terminal</B
 ></TT
 >.
-	</P
+    </P
 ></LI
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Type</B
+>Tipo</B
 ></TT
-> &#8212; should be
-	  <TT
+> &#8212; deve essere
+     <TT
 CLASS="GUILABEL"
 ><B
 >Application</B
 ></TT
->; do not change it unless
-	  you want to create something other than application launcher.
-	</P
+>; non cambiatelo a meno che non vogliate
+     creare qualcosa di diverso da un pulsante di avvio.
+    </P
 ></LI
 ></UL
 ><P
->      The <TT
+>   La sezione <TT
 CLASS="GUILABEL"
 ><B
->Basic</B
+>Base</B
 ></TT
-> tab also shows the icon to be
-      used for the launcher; if no icon is specified, a default icon
-      will be used. To change the icon, just click on it to launch the
-      icon browser.  </P
+> mostra inoltre l'icona da utilizzare per
+   il pulsante. Se nessuna icona viene specificata, ne verrà mostrata una
+   predefinita. Per cambiarla, cliccate su questa e selezionatene una nuova
+   dalla lista.
+  </P
 ><P
->      Finally, if the application can only run inside a terminal
-      &#8212; that is, if it doesn't create any windows on its own
-      &#8212; you should also check <B
+>   Infine, se l'applicazione può essere eseguita soltanto all'interno di un
+   terminale &#8212; cioè se l'applicazione non crea nessuna finestra &#8212; è
+   necessario inoltre selezionare l'opzione <B
 CLASS="GUIBUTTON"
->Run in
-      terminal</B
-> button. If unsure, leave it unchecked.
-    </P
+>Esegui in un
+    terminale</B
+>. Se non siete sicuri, non selezionate questa opzione.
+  </P
 ><P
->      <TT
+>   La sezione <TT
 CLASS="GUILABEL"
 ><B
->Advanced</B
+>Avanzato</B
 ></TT
-> tab is shown below. It is intended
-      for advanced users; most of the time, you do not need to change
-      any of the settings here.
-    </P
+> è mostrata qui sotto. È dedicata
+   agli utenti avanzati; nella maggior parte dei casi non è necessario cambiare
+   alcuna impostazione qui.
+  </P
 ><DIV
 CLASS="FIGURE"
 ><A
@@ -248,173 +250,164 @@ NAME="LAUNCHERADVPROPSFIG"
 SRC="./figures/launcher_properties_advanced.png"></P
 ><P
 ><B
->Figura 8. Launcher Advanced Properties Dialog</B
+>Figura 8. Proprietà avanzata del pulsante di avvio</B
 ></P
 ></DIV
 ><P
-> In this tab, you can set:
-    </P
+> 
+   In questa sezione è possibile impostare:
+  </P
 ><P
 ></P
 ><UL
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Try this before using</B
+>Prova questo prima di lanciare</B
 ></TT
-> &#8212; you can
-	  enter here a command, and GNOME will check if this command
-	  can be executed. If not, the launcher (or menu item) will
-	  not be shown even if you added it to the panel or menu. It
-	  is mostly used by people preparing GNOME distributions: for
-	  example, default GNOME <B
+> &#8212; è possibile
+     inserire qui un comando, e GNOME controllerà se questo comando può essere
+     eseguito. Se non è possibile, il pulsante (o la voce del menu) non verrà
+     visualizzata anche se aggiunta al pannello o ad un menu. Viene utilizzato
+     per lo più dalle persone che preparano le distribuzioni di GNOME; ad
+     esempio, il <B
 CLASS="GUIMENU"
->Main Menu</B
-> contains
-	  an item for <TT
+>Menu Principale</B
+> di GNOME predefinito
+     contiene un oggetto per il programma di posta elettronica
+     <TT
 CLASS="APPLICATION"
 >TkRat</TT
-> e-mail program,
-	  but you will not see it unless you have
-	  <TT
+>, ma non lo vedrete fino a che non avrete
+     <TT
 CLASS="APPLICATION"
 >TkRat</TT
-> installed on your system.
-	</P
+> iinstallato sul vostro sistema.
+    </P
 ></LI
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Documentation</B
+>Documentazione</B
 ></TT
-> &#8212; currently not
-	  used.
-	</P
+> &#8212; correntemente non utilizzato.
+    </P
 ></LI
 ><LI
 ><P
->	  <TT
+>     <TT
 CLASS="GUILABEL"
 ><B
->Name/comment translations</B
+>Traduzioni nomi/commenti</B
 ></TT
-> &#8212; here
-	  you can set translation of the <TT
+> &#8212; qui è possibile
+     impostare le traduzioni del <TT
 CLASS="GUILABEL"
 ><B
->Name</B
+>Nome</B
 ></TT
-> and
-	  <TT
+> e del
+     <TT
 CLASS="GUILABEL"
 ><B
->Comment</B
+>Commento</B
 ></TT
-> to other languages. For
-	  example, for <TT
+> in altre linghe. Ad esempio, per il
+     <TT
 CLASS="APPLICATION"
->GNOME Terminal</TT
->, the
-	  translations to Spanish (es) are name:  <TT
+>Terminale Gnome</TT
+>, le traduzioni in Spagnolo (es)
+     sono per il nome <TT
 CLASS="USERINPUT"
 ><B
->Terminal
-	  UNIX de GNOME</B
+>Terminal UNIX de GNOME</B
 ></TT
-> and comment: <TT
+> e per il
+     commento: <TT
 CLASS="USERINPUT"
 ><B
->Emulador
-	  de terminal GNOME</B
+>Emulador de terminal GNOME</B
 ></TT
->. This means that if a user
-	  sets his language to Spanish during login (it can be done by
-	  selecting appropriate language from
-	  <B
+>. Questo
+     significa che se un utente imposta la propria lingua come Spagnolo al
+     momento del login (può essere fatto selezionando la lingua appropriata dal
+     menu <B
 CLASS="GUIMENU"
 >Languages</B
-> menu of GNOME login manager
-	  (GDM)), he will see <B
+> del Gnome login managere (GDM)), vedrà
+     <B
 CLASS="GUIMENUITEM"
->Terminal UNIX de
-	  GNOME</B
-> in the menu and <TT
+>Terminal UNIX de GNOME</B
+> nel menu e
+     <TT
 CLASS="USERINPUT"
 ><B
->Emulador de
-	  terminal GNOME</B
+>Emulador de terminal GNOME</B
 ></TT
-> in the tooltips. Of course, the
-	  actual command that runs the terminal is unchanged.
-	</P
+> nel suggerimento del
+     pulsante di avvio. Ovviamente, il comando che esegue il terminale rimane
+     invariato.
+    </P
 ><P
->	  To add a new translation, enter the language 2-letter code
-	  and translations of <TT
+>     Per aggiungere una nuova traduzione, inserite il codice di 2 lettere della
+     lingua e le traduzioni dei campi <TT
 CLASS="GUILABEL"
 ><B
->Name</B
+>Nome</B
 ></TT
-> and
-	  <TT
+> e
+     <TT
 CLASS="GUILABEL"
 ><B
->Comment</B
+>Commento</B
 ></TT
->  fields in the empty fields
-	  under the list of current translations, and  press
-	  <B
+> nei campi vuoti sotto la lista delle
+     traduzioni già presenti, e premete il pulsante
+     <B
 CLASS="GUIBUTTON"
->Add/Set</B
-> button.  To change one of
-	  existing translations, select it in the list, edit the
-	  fields you want, and press <B
+>Aggiungi/imposta</B
+>. Per cambiare una traduzione
+     esistente selezionatela dalla lista, modificate i campi che desiderata
+     cambiare, e premete <B
 CLASS="GUIBUTTON"
->Add/Set</B
->
-	  button. To remove one of existing translations, select it
-	  and press <B
+>Aggiungi/imposta</B
+>. Per rimuovere
+     una traduzione, selezionatela e premete il pulsante
+     <B
 CLASS="GUIBUTTON"
->Remove</B
-> button.
-	</P
-><P
->  You can find the list of all languages supported by
-	  GNOME along with their 2-letter codes  in  <A
-HREF="http://www.gnome.org/gnomefaq/html/x867.html"
-TARGET="_top"
->GNOME
-	  Frequently Asked Questions</A
+>Rimuovi</B
 >.
-	</P
+    </P
+><P
+>     È possibile trovare la lista di tutte le lingue supportate da GNOME assieme
+     al codice di 2 lettere nelle <A
+HREF="http://www.it.gnome.org/gnomefaq/1-0/i18n.html"
+TARGET="_top"
+>FAQ di GNOME</A
+>.
+    </P
 ></LI
 ></UL
 ><P
->      All the changes you made in <SPAN
+>   Tutte le modifiche che avete effettuato nella finestra di dialogo
+   <SPAN
 CLASS="INTERFACE"
->Launcher
-      Properties</SPAN
-> dialog will take effect when you press
-      <B
+>Proprietà pulsante di avvio</SPAN
+> avranno effetto quando
+   premerete il pulsante <B
 CLASS="GUIBUTTON"
->Apply</B
-> or
-      <B
+>Chiudi</B
+>. Premendo il tasto
+   <B
 CLASS="GUIBUTTON"
->OK</B
->. Pressing <B
-CLASS="GUIBUTTON"
->OK</B
->
-      closes this dialog; pressing <B
-CLASS="GUIBUTTON"
->Apply</B
-> will
-      allow you to continue editing.
-    </P
+>Ripristina</B
+> tutte le modifiche effettuate verranno
+   annullate.
+  </P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -456,7 +449,7 @@ HREF="applets.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Menus</TD
+>Menu</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -466,7 +459,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Applets</TD
+>Applet</TD
 ></TR
 ></TABLE
 ></DIV

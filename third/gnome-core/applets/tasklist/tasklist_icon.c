@@ -23,7 +23,11 @@ tasklist_icon_get_pixmap (TasklistTask *task)
 	if (task == NULL)
 		return 0;
 	
+	gdk_error_trap_push ();
 	wmhints = XGetWMHints (GDK_DISPLAY (), task->gwmh_task->xwin);
+	gdk_flush ();
+	if (gdk_error_trap_pop ())
+		return 0;
 
 	if (!wmhints)
 		return 0;
@@ -212,6 +216,7 @@ tasklist_icon_check_mini (TasklistTask *task)
 		gdk_pixmap_unref (mask);
 	}
 
+	gdk_flush ();
 	gdk_error_trap_pop ();
 
 	g_free (atomdata);

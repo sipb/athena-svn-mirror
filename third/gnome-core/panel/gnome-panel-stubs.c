@@ -2694,6 +2694,7 @@ GNOME_PanelSpot__get_rgb_background(GNOME_PanelSpot _obj,
 	 (*((guint32 *) & ((*_ORBIT_retval).data._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval).data._maximum = (*_ORBIT_retval).data._length;
 	 (*_ORBIT_retval).data._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf((*_ORBIT_retval).data.
 						_length);
@@ -2720,6 +2721,7 @@ GNOME_PanelSpot__get_rgb_background(GNOME_PanelSpot _obj,
 	 (*_ORBIT_retval).data._length =
 	    *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 (*_ORBIT_retval).data._maximum = (*_ORBIT_retval).data._length;
 	 (*_ORBIT_retval).data._buffer =
 	    CORBA_sequence_CORBA_octet_allocbuf((*_ORBIT_retval).data.
 						_length);

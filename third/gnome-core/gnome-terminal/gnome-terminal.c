@@ -100,12 +100,15 @@ struct terminal_config {
 	int blink            :1; 		/* Do we want blinking cursor? */
 	int scroll_key       :1;       		/* Scroll on input? */
 	int scroll_out       :1;       		/* Scroll on output? */
-	int swap_keys        :1;       		/* Swap DEL/Backspace? */
+	int swap_keys        :1;       		/* Swap Delete/Backspace? */
 	int login_by_default :1;                /* do --login as default */
 #ifdef ZVT_BACKGROUND_SCROLL
 	int scroll_background:1; 		/* background will scroll */
 #endif
 	int use_bold         :1;		/* Use bold on bright colours */
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	int del_is_del       :1; 		/* Generates Delete DEL/^H? */
+#endif
 	enum palette_enum color_type; 			/* The color mode */
 	enum color_set_enum color_set;
 	char *font; 				/* Font used by the terminals */
@@ -157,6 +160,9 @@ typedef struct {
 	GtkWidget *scroll_kbd_checkbox;
 	GtkWidget *scroll_out_checkbox;
 	GtkWidget *swapkeys_checkbox;
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	GtkWidget *del_is_del_checkbox;
+#endif
 	GtkWidget *login_by_default_checkbox;
 	GtkWidget *use_bold_checkbox;
 	GtkWidget *wordclass_entry;
@@ -516,6 +522,9 @@ load_config (char *class)
 	cfg->bell              = gnome_config_get_bool ("bell_silenced=0");
 	cfg->blink             = gnome_config_get_bool ("blinking=0");
 	cfg->swap_keys         = gnome_config_get_bool ("swap_del_and_backspace=0");
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	cfg->del_is_del        = gnome_config_get_bool ("del_is_del=0");
+#endif
 
 	cfg->login_by_default  = gnome_config_get_bool ("login_by_default=0");
 	cfg->use_bold          = gnome_config_get_bool ("use_bold=true");
@@ -584,6 +593,9 @@ gather_changes (ZvtTerm *term)
 	newcfg->bell           = GTK_TOGGLE_BUTTON (prefs->bell_checkbox)->active;
 	newcfg->blink          = GTK_TOGGLE_BUTTON (prefs->blink_checkbox)->active;
 	newcfg->swap_keys      = GTK_TOGGLE_BUTTON (prefs->swapkeys_checkbox)->active;
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	newcfg->del_is_del     = GTK_TOGGLE_BUTTON (prefs->del_is_del_checkbox)->active;
+#endif
 	newcfg->menubar_hidden = GTK_TOGGLE_BUTTON (prefs->menubar_checkbox)->active;
 	newcfg->scroll_out     = GTK_TOGGLE_BUTTON (prefs->scroll_out_checkbox)->active;
 	newcfg->scroll_key     = GTK_TOGGLE_BUTTON (prefs->scroll_kbd_checkbox)->active;
@@ -674,6 +686,9 @@ apply_changes (ZvtTerm *term, struct terminal_config *newcfg)
 	zvt_term_set_scroll_on_output (term, cfg->scroll_out);
 	zvt_term_set_scrollback (term, cfg->scrollback);
 	zvt_term_set_del_key_swap (term, cfg->swap_keys);
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	zvt_term_set_del_is_del (term, cfg->del_is_del);
+#endif
 
 	if (zvt_pixmap_support && cfg->background_pixmap) {
 		int flags;
@@ -985,29 +1000,6 @@ char *scrollbar_position_list [] = {
 	NULL
 };
 
-enum {
-	COLORPAL_ROW    = 1,
-	FOREBACK_ROW    = 2,
-	FORECOLOR_ROW   = 3,
-	BACKCOLOR_ROW   = 4,
-	CLASS_ROW       = 1,
-	FONT_ROW        = 2,
-	BOLDTOGGLE_ROW  = 3,
-	BLINK_ROW       = 3,
-	MENUBAR_ROW     = 4,
-	BELL_ROW        = 4,
-	SWAPKEYS_ROW    = 5,
-	LOGIN_ROW       = 5,
-	WORDCLASS_ROW	= 6,
-	BACKGROUND_ROW	= 1,
-	PIXMAP_FILE_ROW	= 2,
-	SHADED_ROW      = 4,
-	SCROLL_ROW      = 1,
-	SCROLLBACK_ROW  = 2,
-	KBDSCROLL_ROW   = 3,
-	OUTSCROLL_ROW   = 4
-};
-
 /* called back to free the ColorSelector */
 static void
 free_cs (GtkWidget *widget, GnomeColorPicker *cp)
@@ -1033,6 +1025,9 @@ save_preferences (GtkWidget *widget, ZvtTerm *term,
 	gnome_config_set_bool   ("bell_silenced", cfg->bell);
 	gnome_config_set_bool   ("blinking", cfg->blink);
 	gnome_config_set_bool   ("swap_del_and_backspace", cfg->swap_keys);
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	gnome_config_set_bool   ("del_is_del", cfg->del_is_del);
+#endif
 	gnome_config_set_bool   ("login_by_default", cfg->login_by_default);
 	gnome_config_set_bool   ("use_bold", cfg->use_bold);
 	gnome_config_set_int    ("scrollbacklines", cfg->scrollback);
@@ -1098,6 +1093,7 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	char *some_class;
 	struct terminal_config *cfg;
 	int i;
+	GtkWidget *transient_parent;
 	GladeXML *gui;
 	gchar *glade_file;
 	
@@ -1105,8 +1101,14 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 	if (gtk_object_get_data (GTK_OBJECT (term), "newcfg"))
 		return;
 	
+        transient_parent = gtk_widget_get_toplevel (GTK_WIDGET (term));
+
 	prefs = gtk_object_get_data (GTK_OBJECT (term), "prefs");
+        
 	if (prefs) {
+		if (transient_parent)
+			gtk_window_set_transient_for (GTK_WINDOW (prefs->prop_win),
+						      GTK_WINDOW (transient_parent));
 		/* Raise and possibly uniconify the property box */
 		gdk_window_show (prefs->prop_win->window);
 		return;
@@ -1129,6 +1131,9 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 
 	prefs->prop_win = glade_xml_get_widget (gui, "prefs");
 	gtk_object_set_data (GTK_OBJECT (term), "prefs", prefs);
+	if (transient_parent)
+		gtk_window_set_transient_for (GTK_WINDOW (prefs->prop_win),
+					      GTK_WINDOW (transient_parent));
 
 	prefs->font_entry = glade_xml_get_widget (gui, "font-entry");
 	gtk_entry_set_text (GTK_ENTRY (prefs->font_entry),
@@ -1219,6 +1224,15 @@ preferences_cmd (GtkWidget *widget, ZvtTerm *term)
 				      cfg->swap_keys ? 1 : 0);
 	gtk_signal_connect (GTK_OBJECT (prefs->swapkeys_checkbox), "toggled",
 			    GTK_SIGNAL_FUNC (prop_changed), prefs);
+	
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	/* Delete key: Send DEL/^H or kdch1 (Esc[3~) */
+	prefs->del_is_del_checkbox = glade_xml_get_widget (gui, "del-is-del-checkbox");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs->del_is_del_checkbox),
+				      cfg->del_is_del ? 1 : 0);
+	gtk_signal_connect (GTK_OBJECT (prefs->del_is_del_checkbox), "toggled",
+			    GTK_SIGNAL_FUNC (prop_changed), prefs);
+#endif
 	
 	/* --login by default */
 	prefs->login_by_default_checkbox = glade_xml_get_widget (gui, "login-by-default-checkbox");
@@ -2176,7 +2190,10 @@ new_terminal_cmd (char **cmd, struct terminal_config *cfg_in, const gchar *geome
 	zvt_term_set_scroll_on_keystroke (term, cfg->scroll_key);
 	zvt_term_set_scroll_on_output (term, cfg->scroll_out);
 	zvt_term_set_del_key_swap (term, cfg->swap_keys);
-		
+#ifdef HAVE_ZVT_DEL_IS_DEL
+	zvt_term_set_del_is_del (term, cfg->del_is_del);
+#endif
+
 	gtk_signal_connect (GTK_OBJECT (term), "child_died",
 			    GTK_SIGNAL_FUNC (terminal_kill), term);
 
@@ -2515,7 +2532,7 @@ save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style,
 
 		gnome_config_set_string ("window_title",
 					 cfg->window_title != NULL ?
-					   cfg->window_title : "Terminal");
+					   cfg->window_title : _("Terminal"));
 		gnome_config_set_string ("window_icon",
 					 cfg->window_icon != NULL ?
 					   cfg->window_icon : GNOME_ICONDIR"/gnome-terminal.png");

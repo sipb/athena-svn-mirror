@@ -175,6 +175,8 @@ extern "C"
       CORBA_boolean _release;
    }
    CORBA_sequence_CORBA_octet;
+   CORBA_octet *CORBA_sequence_CORBA_octet_allocbuf(CORBA_unsigned_long len);
+#endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'g'
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'n'
@@ -193,8 +195,6 @@ extern "C"
 #endif
    extern CORBA_sequence_CORBA_octet *CORBA_sequence_CORBA_octet__alloc(void);
    extern gpointer CORBA_sequence_CORBA_octet__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-   CORBA_octet *CORBA_sequence_CORBA_octet_allocbuf(CORBA_unsigned_long len);
-#endif
 #if !defined(_GNOME_Panel_RgbData_defined)
 #define _GNOME_Panel_RgbData_defined 1
    typedef CORBA_sequence_CORBA_octet GNOME_Panel_RgbData;

@@ -77,7 +77,7 @@ panel_kde_help_path (const char *docpath)
 	     li = li->next) {
 		char *fullpath = g_strdup_printf ("%s/HTML/%s/%s",
 						  KDE_DOCDIR,
-						  li->data,
+						  (char *)li->data,
 						  docpath);
 		if (panel_file_exists (fullpath)) {
 			char *uri = g_strconcat ("ghelp:", fullpath, NULL);
@@ -191,9 +191,10 @@ create_icon_entry(GtkWidget *table,
 
 	entry = gnome_icon_entry_new(history_id,_("Browse"));
 	hack_icon_entry (GNOME_ICON_ENTRY (entry));
+
 	gnome_icon_entry_set_pixmap_subdir(GNOME_ICON_ENTRY(entry), subdir);
 	if (text)
-		gnome_icon_entry_set_icon(GNOME_ICON_ENTRY(entry),text);
+		hack_icon_entry_set_icon(GNOME_ICON_ENTRY(entry),text);
 
 	t = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (entry));
 	gtk_table_attach(GTK_TABLE(table), entry,
@@ -821,9 +822,14 @@ panel_error_dialog (const char *format, ...)
 	char *s;
 	va_list ap;
 
-	va_start (ap, format);
-	s = g_strdup_vprintf (format, ap);
-	va_end (ap);
+	if (format == NULL) {
+		g_warning ("NULL error dialog");
+		s = g_strdup ("(null)");
+	} else {
+		va_start (ap, format);
+		s = g_strdup_vprintf (format, ap);
+		va_end (ap);
+	}
 
 	w = gnome_error_dialog (s);
 	g_free (s);

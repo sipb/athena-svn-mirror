@@ -79,8 +79,8 @@ launch (Launcher *launcher, int argc, char *argv[])
 
 		if (goad_id != NULL) {
 			load_extern_applet (goad_id, NULL,
-					    panels->data,
-					    0, FALSE, FALSE);
+					    NULL, -1,
+					    FALSE, FALSE);
 		} else {
 			g_warning (_("Can't get goad_id from desktop entry!"));
 		}
@@ -472,7 +472,9 @@ properties_apply (Launcher *launcher)
 		g_free (docpath);
 
 		title = g_strdup_printf (_("Help on %s"),
-					 launcher->dentry->name);
+					 launcher->dentry->name != NULL ?
+					 launcher->dentry->name :
+					 _("Application"));
 
 		applet_add_callback (launcher->info, "help_on_app",
 				     GNOME_STOCK_PIXMAP_HELP,
@@ -502,7 +504,7 @@ window_clicked (GtkWidget *w, int button, gpointer data)
 	Launcher *launcher = data;
 
 	if (button == HELP_BUTTON) {
-		panel_show_help ("launcher.html");
+		panel_show_help ("launchers.html");
 	} else if (button == REVERT_BUTTON) { /* revert */
 		gnome_dentry_edit_set_dentry (GNOME_DENTRY_EDIT (launcher->dedit),
 					      launcher->revert_dentry);
@@ -663,7 +665,9 @@ load_launcher_applet_full (const char *params, GnomeDesktopEntry *dentry,
 		g_free (docpath);
 
 		title = g_strdup_printf (_("Help on %s"),
-					 launcher->dentry->name);
+					 launcher->dentry->name != NULL ?
+					 launcher->dentry->name :
+					 _("Application"));
 
 		applet_add_callback (applets_last->data, "help_on_app",
 				     GNOME_STOCK_PIXMAP_HELP,
@@ -688,13 +692,13 @@ really_add_launcher(GtkWidget *dialog, int button, gpointer data)
 
 		dentry = gnome_dentry_get_dentry(dedit);
 
-		if(!dentry->name || !(*(dentry->name))) {
-			g_free(dentry->name);
-			dentry->name=g_strdup("???");
+		if (string_empty (dentry->name)) {
+			g_free (dentry->name);
+			dentry->name = g_strdup ("???");
 		}
 		launcher = load_launcher_applet_full (NULL, dentry, panel, pos, exactpos);
 		if (launcher != NULL)
-			launcher_save (launcher);
+			launcher_hoard (launcher);
 
 		panel_config_sync_schedule ();
 	} else if(button == 2/*help*/) {
@@ -703,7 +707,7 @@ really_add_launcher(GtkWidget *dialog, int button, gpointer data)
 		return;
 	}
 
-	gtk_widget_destroy(dialog);
+	gtk_widget_destroy (dialog);
 }
 
 void
@@ -863,9 +867,10 @@ convert_dentry_to_gnome (GnomeDesktopEntry *dentry)
 		if (strcmp (dentry->exec[i], "\"%c\"") == 0 ||
 		    strcmp (dentry->exec[i], "%c") == 0) {
 			g_free (dentry->exec[i]);
-			dentry->exec[i] = g_strdup_printf ("'%s'", dentry->name);
+			dentry->exec[i] = g_strdup_printf ("'%s'",
+							   sure_string (dentry->name));
 		} else if (dentry->exec[i][0] == '%' &&
-		    strlen(dentry->exec[i]) == 2) {
+			   strlen(dentry->exec[i]) == 2) {
 			g_free (dentry->exec[i]);
 			dentry->exec[i] = g_strdup ("");
 		}
@@ -921,6 +926,7 @@ launcher_file_name (const char *base)
 #warning FIXME: per session config must be done for launchers
 #endif
 #else
+	g_return_val_if_fail (base != NULL, NULL);
 	return g_strdup_printf ("%s/.gnome/panel.d/default/launchers/%s",
 				g_get_home_dir (),
 				base);
@@ -935,12 +941,12 @@ launcher_save (Launcher *launcher)
 	g_return_if_fail (launcher->dentry != NULL);
 
 	if (launcher->dentry->is_kde)
-		convert_dentry_to_gnome(launcher->dentry);
+		convert_dentry_to_gnome (launcher->dentry);
 
 	if (launcher->dentry->location == NULL)
 		launcher->dentry->location = launcher_get_unique_file ();
 
-	gnome_desktop_entry_save(launcher->dentry);
+	gnome_desktop_entry_save (launcher->dentry);
 }
 
 void

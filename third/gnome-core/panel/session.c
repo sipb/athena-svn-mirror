@@ -100,20 +100,21 @@ apply_global_config (void)
 	static int old_avoid_collisions = -1;
 	GSList *li;
 
-	panel_widget_change_global(global_config.explicit_hide_step_size,
-				   global_config.auto_hide_step_size,
-				   global_config.drawer_step_size,
-				   global_config.minimized_size,
-				   global_config.minimize_delay,
-				   global_config.movement_type,
-				   global_config.disable_animations,
-				   global_config.applet_padding,
-				   global_config.applet_border_padding);
+	panel_widget_change_global (global_config.explicit_hide_step_size,
+				    global_config.auto_hide_step_size,
+				    global_config.drawer_step_size,
+				    global_config.minimized_size,
+				    global_config.minimize_delay,
+				    global_config.maximize_delay,
+				    global_config.movement_type,
+				    global_config.disable_animations,
+				    global_config.applet_padding,
+				    global_config.applet_border_padding);
 
-	if(global_config.tooltips_enabled)
-		gtk_tooltips_enable(panel_tooltips);
+	if (global_config.tooltips_enabled)
+		gtk_tooltips_enable (panel_tooltips);
 	else
-		gtk_tooltips_disable(panel_tooltips);
+		gtk_tooltips_disable (panel_tooltips);
 	/* not incredibly efficent way to do this, we just make
 	 * sure that all directories are reread */
 	if (old_merge_menus != global_config.merge_menus ||
@@ -348,7 +349,7 @@ send_applet_session_save (AppletInfo *info,
 
 /*returns TRUE if the save was completed, FALSE if we need to wait
   for the applet to respond*/
-static int
+static gboolean
 save_applet_configuration(AppletInfo *info)
 {
 	GString       *buf;
@@ -836,6 +837,9 @@ panel_session_die (GnomeClient *client,
 		AppletInfo *info = li->data;
 		if(info->type == APPLET_EXTERN) {
 			Extern *ext = info->data;
+			/* save but don't sync, we do that after
+			 * for everything */
+			extern_save_last_position (ext, FALSE /* sync */);
 			ext->clean_remove = TRUE;
 			gtk_widget_destroy (info->widget);
 		} else if(info->type == APPLET_SWALLOW) {
@@ -846,6 +850,8 @@ panel_session_die (GnomeClient *client,
 					    GDK_WINDOW_XWINDOW(GTK_SOCKET(swallow->socket)->plug_window));
 		}
 	}
+
+	gnome_config_sync ();
 
 	xstuff_unsetup_desktop_area ();
 			
@@ -877,6 +883,25 @@ load_default_applets1(PanelWidget *panel)
 	char *p;
 	int sz;
 
+	/* if we find a mozilla .desktop use that in place of
+	 * the "Netscape" one (which would launch mozilla by
+	 * default anyway though :) */
+	if (panel_file_exists ("/etc/X11/applnk/Internet/mozilla.desktop")) {
+		def_launchers[3] = "/etc/X11/applnk/Internet/mozilla.desktop";
+	} else {
+		p = gnome_datadir_file ("gnome/apps/Internet/mozilla.desktop");
+		if (p != NULL) {
+			def_launchers[3] = "gnome/apps/Internet/mozilla.desktop";
+			g_free (p);
+		} else {
+			p = gnome_datadir_file ("gnome/apps/Internet/Mozilla.desktop");
+			if (p != NULL) {
+				def_launchers[3] = "gnome/apps/Internet/Mozilla.desktop";
+				g_free (p);
+			}
+		}
+	}
+
 	if(gdk_screen_width() <= 320)
 		sz = SIZE_ULTRA_TINY;
 	else if(gdk_screen_width() < 800)
@@ -892,16 +917,18 @@ load_default_applets1(PanelWidget *panel)
 
 	/*load up some buttons, but only if screen larger then 639*/
 	if(gdk_screen_width() >= 640) {
-		load_logout_applet(panel, sz, TRUE);
-		load_lock_applet(panel, sz*2, TRUE);
-
 		for(i=0;def_launchers[i]!=NULL;i++) {
-			p = gnome_datadir_file (def_launchers[i]);
+
+			if (def_launchers[i][0] == '/') {
+				p = g_strdup (def_launchers[i]);
+			} else {
+				p = gnome_datadir_file (def_launchers[i]);
+			}
 			/*int center = gdk_screen_width()/2;*/
 			if(p) {
 				Launcher *launcher;
 				launcher = load_launcher_applet(p, panel,
-								sz*4+i*sz, TRUE);
+								sz*2+i*sz, TRUE);
 				g_free(p);
 
 				/* suck these into our own directories now */
@@ -915,8 +942,15 @@ load_default_applets1(PanelWidget *panel)
 			   panel, G_MAXINT/2 /*flush right*/,
 			   TRUE, TRUE);
 
+	/*load up the fish, but only if screen larger then 639*/
+	if(gdk_screen_width() >= 640) {
+		load_extern_applet ("fish_applet", NULL,
+				    panel, G_MAXINT/2 + 4000/*flush right*/,
+				    TRUE, TRUE);
+	}
+
 	load_status_applet(panel,
-			   G_MAXINT/2 + 4000/*flush right*/, TRUE);
+			   G_MAXINT/2 + 8000/*flush right*/, TRUE);
 }
 
 static gboolean
@@ -1664,6 +1698,9 @@ load_up_globals (void)
 		
 	g_string_sprintf(buf,"minimize_delay=%d", DEFAULT_MINIMIZE_DELAY);
 	global_config.minimize_delay=gnome_config_get_int(buf->str);
+
+	g_string_sprintf(buf,"maximize_delay=%d", DEFAULT_MAXIMIZE_DELAY);
+	global_config.maximize_delay=gnome_config_get_int(buf->str);
 		
 	g_string_sprintf(buf,"minimized_size=%d", DEFAULT_MINIMIZED_SIZE);
 	global_config.minimized_size=gnome_config_get_int(buf->str);
@@ -1774,6 +1811,8 @@ write_global_config (void)
 			     global_config.minimized_size);
 	gnome_config_set_int("minimize_delay",
 			     global_config.minimize_delay);
+	gnome_config_set_int("maximize_delay",
+			     global_config.maximize_delay);
 	gnome_config_set_int("movement_type",
 			     (int)global_config.movement_type);
 	gnome_config_set_bool("tooltips_enabled",

@@ -116,6 +116,9 @@ get_presorted_from(GSList *list, const char *dir, gboolean merged)
 gboolean
 fr_is_subdir (const char *dir, const char *superdir, int superdir_len)
 {
+	if (superdir == NULL || superdir_len == 0)
+		return FALSE;
+
 	if (strncmp (dir, superdir, superdir_len-1) == 0 &&
 	    (dir[superdir_len-1] == '/' ||
 	     dir[superdir_len-1] == '\0')) {
@@ -429,7 +432,12 @@ fr_fill_dir(FileRec *fr, int sublevels)
 			}
 			if (dentry != NULL) {
 				ffr = g_chunk_new0 (FileRec, file_chunk);
-				ffr->type = FILE_REC_FILE;
+				if (dentry->type != NULL &&
+				    strcasecmp_no_locale (dentry->type,
+							  "separator") == 0)
+					ffr->type = FILE_REC_SEP;
+				else
+					ffr->type = FILE_REC_FILE;
 				ffr->merged = merged;
 				ffr->name = name;
 				ffr->mtime = s.st_mtime;

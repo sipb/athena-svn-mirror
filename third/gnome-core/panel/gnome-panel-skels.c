@@ -127,7 +127,7 @@ _ORBIT_skel_GNOME_Panel_add_applet(POA_GNOME_Panel * _ORBIT_servant,
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
-      CORBA_Object_release(panel_applet, ev);
+      CORBA_Object_release((CORBA_Object) panel_applet, ev);
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_free(cfgpath);
       if (ev->_major == CORBA_NO_EXCEPTION)
@@ -271,7 +271,7 @@ _ORBIT_skel_GNOME_Panel_add_applet_full(POA_GNOME_Panel * _ORBIT_servant,
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
-      CORBA_Object_release(panel_applet, ev);
+      CORBA_Object_release((CORBA_Object) panel_applet, ev);
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_free(cfgpath);
       if (ev->_major == CORBA_NO_EXCEPTION)
@@ -802,7 +802,7 @@ _ORBIT_skel_GNOME_Panel2_launch_an_applet(POA_GNOME_Panel2 * _ORBIT_servant,
       }
    }
    _impl_launch_an_applet(_ORBIT_servant, goad_id, booter, ev);
-   CORBA_Object_release(booter, ev);
+   CORBA_Object_release((CORBA_Object) booter, ev);
 }
 
 void
@@ -932,7 +932,7 @@ _ORBIT_skel_GNOME_PanelAppletBooter_add_applet(POA_GNOME_PanelAppletBooter *
       }
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_Object_release(_ORBIT_retval, ev);
-      CORBA_Object_release(panel_applet, ev);
+      CORBA_Object_release((CORBA_Object) panel_applet, ev);
       if (ev->_major == CORBA_NO_EXCEPTION)
 	 CORBA_free(cfgpath);
       if (ev->_major == CORBA_NO_EXCEPTION)

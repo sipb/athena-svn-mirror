@@ -20,6 +20,7 @@
 #include "edge-widget.h"
 #include "aligned-widget.h"
 #include "xstuff.h"
+#include "multiscreen-stuff.h"
 
 extern gboolean panel_applet_in_drag;
 extern GSList *panel_list;
@@ -34,8 +35,11 @@ extern int pw_drawer_step;
 extern int pw_auto_step;
 extern int pw_minimized_size;
 extern int pw_minimize_delay;
+extern int pw_maximize_delay;
 extern gboolean pw_disable_animations;
 extern PanelMovementType pw_movement_type;
+
+extern GtkTooltips *panel_tooltips;
 
 extern GlobalConfig global_config;
 
@@ -85,6 +89,7 @@ enum {
 	/*TYPE_CHANGE_SIGNAL,*/
 	MODE_CHANGE_SIGNAL,
 	STATE_CHANGE_SIGNAL,
+	SCREEN_CHANGE_SIGNAL,
 	WIDGET_LAST_SIGNAL
 };
 
@@ -132,23 +137,6 @@ basep_widget_realize (GtkWidget *w)
 	g_return_if_fail (klass);
 	if (klass->realize != NULL)
 		klass->realize (w);
-}
-
-static gboolean
-basep_widget_configure_event (GtkWidget *w, GdkEventConfigure *event)
-{
-	g_return_val_if_fail (IS_BASEP_WIDGET (w), FALSE);
-
-	if (event->x != w->allocation.x ||
-	    event->y != w->allocation.y ||
-	    event->width != w->allocation.width ||
-	    event->height != w->allocation.height)
-		gtk_widget_queue_resize (w);
-
-	if (GTK_WIDGET_CLASS (basep_widget_parent_class)->configure_event != NULL)
-		return GTK_WIDGET_CLASS (basep_widget_parent_class)->configure_event (w, event);
-	else
-		return FALSE;
 }
 
 static void
@@ -267,12 +255,26 @@ basep_widget_size_allocate (GtkWidget *widget,
 	}
 
 	if (basep->keep_in_screen) {
-		gint16 max = gdk_screen_width () - allocation->width;
-		allocation->x = CLAMP (allocation->x, 0, max);
+		gint16 max;
 
-		max = gdk_screen_height () - allocation->height;
-		allocation->y = CLAMP (allocation->y, 
-				       foobar_widget_get_height (), max);
+		max = multiscreen_width (basep->screen) -
+			allocation->width +
+			multiscreen_x (basep->screen);
+
+		if (allocation->x < multiscreen_x (basep->screen))
+			allocation->x = multiscreen_x (basep->screen);
+		else if (allocation->x > max)
+			allocation->x = max;
+
+
+		max = multiscreen_height (basep->screen) -
+			allocation->height +
+			multiscreen_y (basep->screen);
+
+		if (allocation->y < multiscreen_y (basep->screen))
+			allocation->y = multiscreen_y (basep->screen);
+		else if (allocation->y > max)
+			allocation->y = max;
 				       
 	}
 	widget->allocation = *allocation;
@@ -304,6 +306,12 @@ basep_widget_state_change (BasePWidget *basep, BasePState state)
 {
 	if (IS_BORDER_WIDGET (basep))
 		basep_border_queue_recalc ();
+}
+
+static void
+basep_widget_screen_change (BasePWidget *basep, int screen)
+{
+	/* FIXME: do multiscreen kind of stuff here */
 }
 
 static void
@@ -344,17 +352,28 @@ basep_widget_class_init (BasePWidgetClass *klass)
 			       GTK_TYPE_NONE,
 			       1, GTK_TYPE_ENUM);
 
+	basep_widget_signals[SCREEN_CHANGE_SIGNAL] = 
+		gtk_signal_new("screen_change",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET(BasePWidgetClass,
+						 state_change),
+			       gtk_marshal_NONE__INT,
+			       GTK_TYPE_NONE,
+			       1,
+			       GTK_TYPE_INT);
+
 	gtk_object_class_add_signals(object_class, 
 				     basep_widget_signals,
 				     WIDGET_LAST_SIGNAL);
 
 	klass->mode_change = basep_widget_mode_change;
 	klass->state_change = basep_widget_state_change;
+	klass->screen_change = basep_widget_screen_change;
 
 	widget_class->size_request = basep_widget_size_request;
 	widget_class->size_allocate = basep_widget_size_allocate;
 	widget_class->realize = basep_widget_realize;
-	widget_class->configure_event = basep_widget_configure_event;
 	widget_class->enter_notify_event = basep_enter_notify;
 	widget_class->leave_notify_event = basep_leave_notify;
 	widget_class->style_set = basep_style_set;
@@ -500,7 +519,7 @@ basep_enter_notify (GtkWidget *widget,
 			basep->leave_notify_timer_tag = 0;
 		}
 
-		basep_widget_autoshow (basep);
+		basep_widget_queue_autoshow (basep);
 	}  
 
 	if (global_config.autoraise)
@@ -513,8 +532,8 @@ basep_enter_notify (GtkWidget *widget,
 }
 
 void
-basep_widget_get_position(BasePWidget *basep, PanelOrientType hide_orient,
-			  int *x, int *y, int w, int h)
+basep_widget_get_position (BasePWidget *basep, PanelOrientType hide_orient,
+			   int *x, int *y, int w, int h)
 {
 	*x = *y = 0;
 	switch(hide_orient) {
@@ -850,6 +869,10 @@ make_hidebutton(BasePWidget *basep,
 	gtk_object_set_user_data(GTK_OBJECT(w), pixmap);
 	gtk_object_set_data(GTK_OBJECT(w), "gnome_disable_sound_events",
 			    GINT_TO_POINTER(1));
+
+	gtk_tooltips_set_tip (panel_tooltips, w,
+			      _("Hide this panel"), NULL);
+
 	return w;
 }
 
@@ -976,6 +999,8 @@ basep_widget_redo_window(BasePWidget *basep)
 static void
 basep_widget_init (BasePWidget *basep)
 {
+	basep->screen = 0;
+
 	/*if we set the gnomewm hints it will have to be changed to TOPLEVEL*/
 	basep->compliant_wm = xstuff_is_compliant_wm();
 	if(basep->compliant_wm)
@@ -1632,23 +1657,24 @@ basep_widget_explicit_show (BasePWidget *basep)
 	panels_to_sync = TRUE;
 }
 
-void
-basep_widget_autoshow (BasePWidget *basep)
+gboolean
+basep_widget_autoshow (gpointer data)
 {
+	BasePWidget *basep = data;
 	static const char *supinfo[] = {"panel", "expand", NULL};
 
-	g_return_if_fail (IS_BASEP_WIDGET(basep));
+	g_return_val_if_fail (IS_BASEP_WIDGET(basep), FALSE);
 
 	if (basep->state == BASEP_MOVING) {
 #ifdef PANEL_DEBUG
 		g_warning ("autoshow whilst moving");
 #endif
-		return;
+		return TRUE;
 	}
 	
 	if ( (basep->mode != BASEP_AUTO_HIDE) ||
 	     (basep->state != BASEP_AUTO_HIDDEN))
-		return;
+		return TRUE;
 
 	if (GTK_WIDGET_REALIZED(basep)) {
 		BasePPosClass *klass = basep_widget_get_pos_class (basep);
@@ -1681,9 +1707,54 @@ basep_widget_autoshow (BasePWidget *basep)
 	gtk_signal_emit (GTK_OBJECT(basep),
 			 basep_widget_signals[STATE_CHANGE_SIGNAL],
 			 BASEP_SHOWN);
+
+	basep->enter_notify_timer_tag = 0;
+	return FALSE;
 }
 
-int
+void
+basep_widget_queue_autoshow (BasePWidget *basep)
+{
+        /* check if there's already a timeout set, and delete it if 
+         * there was */
+	if (basep->state == BASEP_MOVING) {
+#ifdef PANEL_DEBUG
+		g_print ("return 2");
+#endif
+		return; 
+	}
+
+        if (basep->leave_notify_timer_tag != 0) {
+                gtk_timeout_remove (basep->leave_notify_timer_tag);
+                basep->leave_notify_timer_tag = 0;
+	}
+
+        if (basep->enter_notify_timer_tag != 0) {
+                gtk_timeout_remove (basep->enter_notify_timer_tag);
+#ifdef PANEL_DEBUG
+		g_print ("<timeout removed>\n");
+#endif
+	}
+
+        if ((basep->mode != BASEP_AUTO_HIDE) ||
+            (basep->state == BASEP_SHOWN)) {
+#ifdef PANEL_DEBUG
+		g_print ("return 1\n");
+#endif
+                return;
+	}
+
+	if (pw_minimize_delay == 0) {
+		basep_widget_autoshow (basep);
+	} else {
+		/* set up our delay for popup. */
+		basep->enter_notify_timer_tag =
+			gtk_timeout_add (pw_maximize_delay,
+					 basep_widget_autoshow, basep);
+	}
+}
+
+gboolean
 basep_widget_autohide (gpointer data)
 {
 	static const char *supinfo[] = {"panel", "collapse", NULL};
@@ -1767,8 +1838,15 @@ basep_widget_queue_autohide(BasePWidget *basep)
         /* check if there's already a timeout set, and delete it if 
          * there was */
 	if (basep->state == BASEP_MOVING) {
+#ifdef PANEL_DEBUG
 		g_print ("return 2");
+#endif
 		return; 
+	}
+
+        if (basep->enter_notify_timer_tag != 0) {
+                gtk_timeout_remove (basep->enter_notify_timer_tag);
+                basep->enter_notify_timer_tag = 0;
 	}
 
         if (basep->leave_notify_timer_tag != 0) {
@@ -1810,13 +1888,15 @@ basep_widget_get_menu_pos (BasePWidget *basep,
 			     x, y, wx, wy, 
 			     ww, wh);
 
-	if(*x + mreq.width > gdk_screen_width())
-		*x=gdk_screen_width() - mreq.width;
-	if(*x < 0) *x =0;
+	if (*x + mreq.width > multiscreen_width (basep->screen))
+		*x = multiscreen_width (basep->screen) - mreq.width;
+	if (*x < multiscreen_x (basep->screen))
+		*x = multiscreen_x (basep->screen);
 
-	if(*y + mreq.height > gdk_screen_height())
-		*y=gdk_screen_height() - mreq.height;
-	if(*y < 0) *y = 0;
+	if (*y + mreq.height > multiscreen_height (basep->screen))
+		*y = multiscreen_height (basep->screen) - mreq.height;
+	if (*y < multiscreen_y (basep->screen))
+		*y = multiscreen_y (basep->screen);
 }
 
 PanelOrientType
@@ -2077,6 +2157,9 @@ basep_border_recalc (void)
 	GSList *li;
 	Border old[4];
 
+	/* FIXME! */
+	/* SHIT!, this needs to be kept per screen! */
+
 	memcpy (old, borders, 4 * sizeof (Border));
 
 	for (i = 0; i < 4; i++) {
@@ -2108,7 +2191,7 @@ basep_border_recalc (void)
 	xstuff_setup_desktop_area (border_max (BORDER_LEFT),
 				   border_max (BORDER_RIGHT),
 				   border_max (BORDER_TOP) +
-				     foobar_widget_get_height (),
+				     foobar_widget_get_height (0 /* FIXME */),
 				   border_max (BORDER_BOTTOM));
 }
 

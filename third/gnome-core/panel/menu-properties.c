@@ -635,8 +635,8 @@ create_properties_dialog(Menu *menu)
 	hack_icon_entry (GNOME_ICON_ENTRY (w));
 	menu->dialog_info->custom_icon_entry = w;
 	if (menu->custom_icon_file != NULL) {
-		gnome_icon_entry_set_icon(GNOME_ICON_ENTRY(w),
-					  menu->custom_icon_file);
+		hack_icon_entry_set_icon(GNOME_ICON_ENTRY(w),
+					 menu->custom_icon_file);
 	}
 	if ( ! menu->custom_icon) {
 		gtk_widget_set_sensitive (w, FALSE);

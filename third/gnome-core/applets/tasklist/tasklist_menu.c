@@ -572,7 +572,8 @@ create_task_item (TasklistTask *task, TasklistTask *group)
 	GtkWidget *pixmap, *label;
 	GdkPixmap *pix;
 	GdkBitmap *bit;
-	gchar *s;
+	gchar *label_string, *tooltip;
+	int width;
 
 	static GwmhDesk *desk = NULL;
 
@@ -591,10 +592,21 @@ create_task_item (TasklistTask *task, TasklistTask *group)
 	task->menuitem = gtk_pixmap_menu_item_new ();
 	gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (task->menuitem), pixmap);
 
-	s = tasklist_task_get_label (task, group->width, FALSE);
-	label = gtk_label_new (s);
-	g_free (s);
+	tooltip = tasklist_task_get_label (task, 0, FALSE);
+
+	width = gdk_screen_width () / 3;
+	if (group->width > width)
+		width = group->width;
+	label_string = tasklist_task_get_label (task, width, FALSE);
+	label = gtk_label_new (label_string);
 	gtk_container_add (GTK_CONTAINER (task->menuitem), label);
+
+	/* only set a tip if the label didn't fit properly */
+	if (strcmp (tooltip, label_string) != 0)
+		gtk_tooltips_set_tip (task->tasklist->tooltips, task->menuitem,
+				      tooltip, NULL);
+	g_free (tooltip);
+	g_free (label_string);
 
 	if (!desk)
 		desk = gwmh_desk_get_config ();
