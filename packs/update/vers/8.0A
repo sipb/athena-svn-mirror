@@ -1,10 +1,10 @@
 #!/bin/sh -
 # Version-specific update script for 8.0A
 
-echo "NEWTTYS=true"			>> ${CONFVARS}
-
 case ${MACH} in
 SUN*)
+	echo "NEWTTYS=true"			>> ${CONFVARS}
+
 	# Remove obsolete files.
 	rm -rf /etc/*.sun /etc/TIMEZONE.temp /etc/athena/*old
 	rm -rf /etc/athena/login/fonts /etc/init.d/* /etc/lib/*old
@@ -81,6 +81,11 @@ INDY)
 	echo "/.login"				>> ${CONFCHG}
 	echo "/.profile"			>> ${CONFCHG}
 	echo "/.xsession"			>> ${CONFCHG}
+
+	echo "/sbin/find"			>> ${OLDBINS}
+	echo "/sbin/rm"				>> ${OLDBINS}
+	echo "/sbin/devnm"			>> ${OLDBINS}
+	echo "/sbin/ls"				>> ${OLDBINS}
 
 	echo "NEWOS=true"			>> ${CONFVARS}
 	echo "TRACKNEWOS=true"			>> ${CONFVARS}
