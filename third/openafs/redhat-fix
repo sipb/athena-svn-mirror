@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# $Id: redhat-fix,v 1.1 2002-02-07 20:58:52 zacheiss Exp $
+
+function PrintDefine() {
+    case $3 in
+    *ifn*)
+	echo "#ifndef $1" >> $4
+	;;
+    esac
+    case $3 in
+    *und*)
+	echo "#undef $1" >> $4
+	;;
+    esac
+    case $3 in
+    *def*)
+	echo "#define $1 $2" >> $4
+	;;
+    esac
+    case $3 in
+    *end*)
+	echo "#endif" >> $4
+	;;
+    esac
+    case $3 in
+    *inc*)
+	echo "#include $1" >> $4
+	;;
+    esac
+
+
+    case $3 in
+    *nl*)
+	echo "" >> $4
+	;;
+    esac
+}
+
+# PrintRedhatKernelFix arch mp file
+function PrintRedhatKernelFix() {
+    archlist="i386 i586 i686"
+    arch="$1"
+    if [ "$2" = "MP" ]; then
+	ent=0
+	smp=1
+	up=0
+    elif [ "$2" = "EP" ]; then
+	ent=1
+	smp=0
+	up=0
+    else
+	ent=0
+	smp=0
+	up=1
+    fi
+    file="$3"
+
+    rm -f $file
+    touch $file
+
+    PrintDefine "REDHAT_FIX_H" "" ifn,def,nl $file
+
+    PrintDefine "__BOOT_KERNEL_ENTERPRISE" $ent und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_SMP" $smp und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_UP" $up und,def,nl $file
+
+    PrintDefine \"/boot/kernel.h\" "" inc,nl $file	# include file
+
+    for ar in $archlist ; do
+	if [ "$ar" = "$arch" ]; then
+	    PrintDefine "__MODULE_KERNEL_$ar" "1" ifn,def,end $file
+	else
+	    PrintDefine "__MODULE_KERNEL_$ar" "" und $file	# undef
+        fi
+    done
+    echo "" >> $file
+
+    PrintDefine "" "" end $file
+}
+
+PrintRedhatKernelFix $1 $2 $3
+exit 0

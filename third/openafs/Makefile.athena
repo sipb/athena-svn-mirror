@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2002-02-05 17:47:32 zacheiss Exp $
+# $Id: Makefile.athena,v 1.2 2002-02-07 20:58:49 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -13,9 +13,10 @@ prepare:
 	rm -f config.cache
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
+	   LINUX_VERS=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'` ; \
 	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
-	   ./configure --enable-transarc-paths \
-	   --with-linux-kernel-headers=/lib/modules/`uname -r`/build \
+	   ./configure --enable-transarc-paths --enable-redhat-buildsys \
+	   --with-linux-kernel-headers=/lib/modules/$${LINUX_VERS}/build \
 	   ;; \
 	*) \
 	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
@@ -27,7 +28,22 @@ clean:
 	${MAKE} clean
 
 all:
-	. ./compiler && ${MAKE} dest CC=$$cc MT_CC=$$cc
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	   ${MAKE} dest_nolibafs ; \
+	   ${MAKE} only_libafs_tree ; \
+	   for mp in SP MP; do \
+		for arch in i386 i586 i686; do \
+			./redhat-fix $$arch $$mp src/config/redhat-fix.h ; \
+			${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
+				LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
+		done ; \
+	   done \
+	   ;; \
+	*) \
+	   . ./compiler && ${MAKE} dest CC=$$cc MT_CC=$$cc \
+	   ;; \
+	esac
 
 check:
 
@@ -267,7 +283,7 @@ install:
 	# Platform specific grot.
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
-	   LINUX_VERS="`uname -r | sed -e 's/smp//'`"; export LINUX_VERS ; \
+	   LINUX_VERS=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'` ; \
 	   mkdir -p $$SRVD${VICE}/modload ; \
 	   mkdir -p $$SRVD/etc/sysconfig ; \
 	   mkdir -p $$SRVD/usr/vice/cache ; \
@@ -276,14 +292,20 @@ install:
 		$$SRVD${WS}/include/afs ; \
 	   install -c -m 555 $$ATHENA_SYS/dest/etc/kdump-$${LINUX_VERS} \
 		$$SRVD${ATHBINDIR} ; \
-	   install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.o \
-	   	$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.`uname -m`.o ; \
-	   install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.mp.o \
-	   	$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.`uname -m`.mp.o ; \
 	   install -c -m 555 $$ATHENA_SYS/dest/root.client${VICE}/afs.rc \
 		$$SRVD/etc/rc.d/init.d/afs ; \
 	   install -c -m 555 $$ATHENA_SYS/dest/root.client${VICE}/afs.conf \
-		$$SRVD/etc/sysconfig/afs \
+		$$SRVD/etc/sysconfig/afs ; \
+	   for arch in i386 i586 i686; do \
+		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.o $$SRVD${VICE}/modload ; \
+		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.$${arch}.mp.o ; \
+	   done ; \
+	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
+	   ln -s libafs-$${LINUX_VERS}.i386.o \
+		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
+	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.i486.mp.o ; \
+	   ln -s libafs-$${LINUX_VERS}smp.i386.mp.o \
+		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.i486.mp.o \
 	   ;; \
 	sun4) \
 	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
