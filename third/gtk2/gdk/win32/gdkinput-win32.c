@@ -306,7 +306,8 @@ gdk_input_wintab_init (void)
 	      WTInfo (WTI_DDCTXS + devix, CTX_SENSY, &lc.lcSensY);
 	      WTInfo (WTI_DDCTXS + devix, CTX_SENSZ, &lc.lcSensZ);
 	      WTInfo (WTI_DDCTXS + devix, CTX_SYSMODE, &lc.lcSysMode);
-	      lc.lcSysOrgX = lc.lcSysOrgY = 0;
+	      WTInfo (WTI_DDCTXS + devix, CTX_SYSORGX, &lc.lcSysOrgX);
+	      WTInfo (WTI_DDCTXS + devix, CTX_SYSORGY, &lc.lcSysOrgY);
 	      WTInfo (WTI_DDCTXS + devix, CTX_SYSEXTX, &lc.lcSysExtX);
 	      WTInfo (WTI_DDCTXS + devix, CTX_SYSEXTY, &lc.lcSysExtY);
 	      WTInfo (WTI_DDCTXS + devix, CTX_SYSSENSX, &lc.lcSysSensX);
@@ -557,7 +558,7 @@ gdk_input_translate_coordinates (GdkDevicePrivate *gdkdev,
 				 gdouble          *x_out,
 				 gdouble          *y_out)
 {
-  GdkWindowImplWin32 *impl;
+  GdkWindowImplWin32 *impl, *root_impl;
 
   int i;
   int x_axis = 0;
@@ -590,8 +591,9 @@ gdk_input_translate_coordinates (GdkDevicePrivate *gdkdev,
 
   if (gdkdev->info.mode == GDK_MODE_SCREEN) 
     {
-      x_scale = GetSystemMetrics (SM_CXSCREEN) / device_width;
-      y_scale = GetSystemMetrics (SM_CYSCREEN) / device_height;
+      root_impl = GDK_WINDOW_IMPL_WIN32 (GDK_WINDOW_OBJECT (_gdk_parent_root)->impl);
+      x_scale = root_impl->width / device_width;
+      y_scale = root_impl->height / device_height;
 
       x_offset = - input_window->root_x;
       y_offset = - input_window->root_y;
@@ -658,9 +660,9 @@ gdk_input_get_root_relative_geometry (HWND w,
   GetWindowRect (w, &rect);
 
   if (x_ret)
-    *x_ret = rect.left;
+    *x_ret = rect.left + _gdk_offset_x;
   if (y_ret)
-    *y_ret = rect.top;
+    *y_ret = rect.top + _gdk_offset_y;
 }
 
 void
@@ -694,7 +696,7 @@ _gdk_input_enter_event (GdkWindow        *window)
   input_window->root_y = root_y;
 }
 
-/**
+/*
  * Get the currently active keyboard modifiers (ignoring the mouse buttons)
  * We could use gdk_window_get_pointer but that function does a lot of other
  * expensive things besides getting the modifiers. This code is somewhat based
@@ -780,6 +782,13 @@ _gdk_input_other_event (GdkEvent  *event,
   switch (msg->message)
     {
     case WT_PACKET:
+      /* Don't produce any button or motion events while a window is being
+       * moved or resized, see bug #151090. */
+      if (_sizemove_in_progress)
+	{
+	  GDK_NOTE (EVENTS_OR_INPUT, g_print ("...ignored when moving/sizing\n"));
+	  return FALSE;
+	}
       if (window == _gdk_parent_root && x_grab_window == NULL)
 	{
 	  GDK_NOTE (EVENTS_OR_INPUT, g_print ("...is root\n"));
@@ -927,11 +936,9 @@ _gdk_input_other_event (GdkEvent  *event,
 					   &event->button.y);
 
 	  /* Also calculate root coordinates. Note that input_window->root_x
-	     is in Win32 screen coordinates. */
-	  event->button.x_root = event->button.x + input_window->root_x
-				 + _gdk_offset_x;
-	  event->button.y_root = event->button.y + input_window->root_y
-				 + _gdk_offset_y;
+	     is in GDK root coordinates. */
+	  event->button.x_root = event->button.x + input_window->root_x;
+	  event->button.y_root = event->button.y + input_window->root_y;
 
 	  event->button.state = ((gdkdev->button_state << 8)
 				 & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK
@@ -960,11 +967,9 @@ _gdk_input_other_event (GdkEvent  *event,
 					   &event->motion.y);
 
 	  /* Also calculate root coordinates. Note that input_window->root_x
-	     is in Win32 screen coordinates. */
-	  event->motion.x_root = event->motion.x + input_window->root_x
-				 + _gdk_offset_x;
-	  event->motion.y_root = event->motion.y + input_window->root_y
-				 + _gdk_offset_y;
+	     is in GDK root coordinates. */
+	  event->motion.x_root = event->motion.x + input_window->root_x;
+	  event->motion.y_root = event->motion.y + input_window->root_y;
 
 	  event->motion.state = ((gdkdev->button_state << 8)
 				 & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK

@@ -2656,6 +2656,8 @@ gtk_combo_box_cell_layout_pack_end (GtkCellLayout   *layout,
   info->expand = expand;
   info->pack = GTK_PACK_END;
 
+  combo_box->priv->cells = g_slist_append (combo_box->priv->cells, info);
+
   if (combo_box->priv->cell_view)
     gtk_cell_layout_pack_end (GTK_CELL_LAYOUT (combo_box->priv->cell_view),
                               cell, expand);
@@ -2863,16 +2865,17 @@ gtk_combo_box_cell_layout_clear_attributes (GtkCellLayout   *layout,
   combo_box = GTK_COMBO_BOX (layout);
 
   info = gtk_combo_box_get_cell_info (combo_box, cell);
-  g_return_if_fail (info != NULL);
-
-  list = info->attributes;
-  while (list && list->next)
+  if (info)
     {
-      g_free (list->data);
-      list = list->next->next;
+      list = info->attributes;
+      while (list && list->next)
+	{
+	  g_free (list->data);
+	  list = list->next->next;
+	}
+      g_slist_free (info->attributes);
+      info->attributes = NULL;
     }
-  g_slist_free (info->attributes);
-  info->attributes = NULL;
 
   if (combo_box->priv->cell_view)
     gtk_cell_layout_clear_attributes (GTK_CELL_LAYOUT (combo_box->priv->cell_view), cell);
@@ -3253,9 +3256,12 @@ gtk_combo_box_set_active_iter (GtkComboBox     *combo_box,
  * @combo_box: A #GtkComboBox.
  * @model: A #GtkTreeModel.
  *
- * Sets the model used by @combo_box to be @model. Will unset a
- * previously set model (if applicable).
- * If @model is %NULL, then it will unset the model.
+ * Sets the model used by @combo_box to be @model. Will unset a previously set 
+ * model (if applicable). If @model is %NULL, then it will unset the model.
+ * 
+ * Note that this function does not clear the cell renderers, you have to 
+ * call gtk_combo_box_cell_layout_clear() yourself if you need to set up 
+ * different cell renderers for the new model.
  *
  * Since: 2.4
  */

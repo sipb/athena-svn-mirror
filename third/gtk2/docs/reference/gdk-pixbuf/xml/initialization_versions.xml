@@ -54,7 +54,7 @@ This is the version currently in use by a running program.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-PIXBUF-VERSION-CAPS"/>GDK_PIXBUF_VERSION</title>
-<indexterm><primary>GDK_PIXBUF_VERSION</primary></indexterm><programlisting>#define GDK_PIXBUF_VERSION "2.4.8"
+<indexterm><primary>GDK_PIXBUF_VERSION</primary></indexterm><programlisting>#define GDK_PIXBUF_VERSION "2.4.14"
 </programlisting>
 <para>
 Contains the full version of the &gdk-pixbuf; header as a string.
@@ -79,7 +79,7 @@ Minor version of &gdk-pixbuf; library, that is the "8" in
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-PIXBUF-MICRO-CAPS"/>GDK_PIXBUF_MICRO</title>
-<indexterm><primary>GDK_PIXBUF_MICRO</primary></indexterm><programlisting>#define GDK_PIXBUF_MICRO (8)
+<indexterm><primary>GDK_PIXBUF_MICRO</primary></indexterm><programlisting>#define GDK_PIXBUF_MICRO (14)
 </programlisting>
 <para>
 Micro version of &gdk-pixbuf; library, that is the last "0" in

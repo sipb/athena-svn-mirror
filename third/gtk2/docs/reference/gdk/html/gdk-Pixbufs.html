@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Pixbufs</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="previous" href="gdk-Images.html" title="Images"><link rel="next" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="reference" href="reference.html" title="API Reference"><link rel="refentry" href="gdk-General.html" title="General"><link rel="refentry" href="multihead.html" title="Multi-head Support Overview"><link rel="refentry" href="GdkDisplay.html" title="GdkDisplay"><link rel="refentry" href="GdkDisplayManager.html" title="GdkDisplayManager"><link rel="refentry" href="GdkScreen.html" title="GdkScreen"><link rel="refentry" href="gdk-Points-Rectangles-and-Regions.html" title="Points, Rectangles and Regions"><link rel="refentry" href="gdk-Graphics-Contexts.html" title="Graphics Contexts"><link rel="refentry" href="gdk-Drawing-Primitives.html" title="Drawing Primitives"><link rel="refentry" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="refentry" href="gdk-GdkRGB.html" title="GdkRGB"><link rel="refentry" href="gdk-Images.html" title="Images"><link rel="refentry" href="gdk-Pixbufs.html" title="Pixbufs"><link rel="refentry" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="refentry" href="gdk-Visuals.html" title="Visuals"><link rel="refentry" href="gdk-Fonts.html" title="Fonts"><link rel="refentry" href="gdk-Cursors.html" title="Cursors"><link rel="refentry" href="gdk-Windows.html" title="Windows"><link rel="refentry" href="gdk-Events.html" title="Events"><link rel="refentry" href="gdk-Event-Structures.html" title="Event Structures"><link rel="refentry" href="gdk-Keyboard-Handling.html" title="Key Values"><link rel="refentry" href="gdk-Selections.html" title="Selections"><link rel="refentry" href="gdk-Drag-and-Drop.html" title="Drag and Drop"><link rel="refentry" href="gdk-Properties-and-Atoms.html" title="Properties and Atoms"><link rel="refentry" href="gdk-Threads.html" title="Threads"><link rel="refentry" href="gdk-Input.html" title="Input"><link rel="refentry" href="gdk-Input-Devices.html" title="Input Devices"><link rel="refentry" href="gdk-Pango-Interaction.html" title="Pango Interaction"><link rel="refentry" href="gdk-X-Window-System-Interaction.html" title="X Window System Interaction"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gdk-Pixbufs.html#id2978948" title="Description"><link rel="section" href="gdk-Pixbufs.html#id2978958" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Images.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Colormaps-and-Colors.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Pixbufs"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Pixbufs</span></h2><p>Pixbufs &#8212; Functions for rendering pixbufs on drawables</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Pixbufs</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="prev" href="gdk-Images.html" title="Images"><link rel="next" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="reference.html" title="API Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Images.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Colormaps-and-Colors.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-Pixbufs"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">Pixbufs</span></h2><p>Pixbufs &#8212; Functions for rendering pixbufs on drawables</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gdk/gdk.h&gt;
 
@@ -88,9 +88,9 @@ href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
                                              int dest_y,
                                              int width,
                                              int height);
-</pre></div><div class="refsect1" lang="en"><a name="id2978948"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id3153386"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2978958"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2978964"></a><h3><a name="gdk-pixbuf-render-threshold-alpha"></a>gdk_pixbuf_render_threshold_alpha ()</h3><a class="indexterm" name="id2978976"></a><pre class="programlisting">void        gdk_pixbuf_render_threshold_alpha
+</p></div><div class="refsect1" lang="en"><a name="id3153396"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3153402"></a><h3><a name="gdk-pixbuf-render-threshold-alpha"></a>gdk_pixbuf_render_threshold_alpha ()</h3><a class="indexterm" name="id3153415"></a><pre class="programlisting">void        gdk_pixbuf_render_threshold_alpha
                                             (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
@@ -116,7 +116,7 @@ a drawable.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Height of region to threshold, or -1 to use pixbuf height
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>alpha_threshold</tt></i> :</span></td><td> Opacity values below this will be painted as zero; all
 other values will be painted as one.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2979202"></a><h3><a name="gdk-pixbuf-render-to-drawable"></a>gdk_pixbuf_render_to_drawable ()</h3><a class="indexterm" name="id2979214"></a><pre class="programlisting">void        gdk_pixbuf_render_to_drawable   (<a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3153640"></a><h3><a name="gdk-pixbuf-render-to-drawable"></a>gdk_pixbuf_render_to_drawable ()</h3><a class="indexterm" name="id3153653"></a><pre class="programlisting">void        gdk_pixbuf_render_to_drawable   (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
                                              <a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
@@ -155,7 +155,7 @@ dither offsets can be both zero.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dither</tt></i> :</span></td><td> Dithering mode for GdkRGB.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x_dither</tt></i> :</span></td><td> X offset for dither.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y_dither</tt></i> :</span></td><td> Y offset for dither.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2979542"></a><h3><a name="gdk-pixbuf-render-to-drawable-alpha"></a>gdk_pixbuf_render_to_drawable_alpha ()</h3><a class="indexterm" name="id2979554"></a><pre class="programlisting">void        gdk_pixbuf_render_to_drawable_alpha
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3153980"></a><h3><a name="gdk-pixbuf-render-to-drawable-alpha"></a>gdk_pixbuf_render_to_drawable_alpha ()</h3><a class="indexterm" name="id3153992"></a><pre class="programlisting">void        gdk_pixbuf_render_to_drawable_alpha
                                             (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
@@ -194,7 +194,7 @@ to the X server, and may be somewhat slow.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dither</tt></i> :</span></td><td> Dithering mode for GdkRGB.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x_dither</tt></i> :</span></td><td> X offset for dither.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y_dither</tt></i> :</span></td><td> Y offset for dither.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2979904"></a><h3><a name="gdk-pixbuf-render-pixmap-and-mask"></a>gdk_pixbuf_render_pixmap_and_mask ()</h3><a class="indexterm" name="id2979917"></a><pre class="programlisting">void        gdk_pixbuf_render_pixmap_and_mask
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3154343"></a><h3><a name="gdk-pixbuf-render-pixmap-and-mask"></a>gdk_pixbuf_render_pixmap_and_mask ()</h3><a class="indexterm" name="id3154355"></a><pre class="programlisting">void        gdk_pixbuf_render_pixmap_and_mask
                                             (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
@@ -221,7 +221,7 @@ to NULL.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mask_return</tt></i> :</span></td><td> Location to store a pointer to the created mask,
   or <tt class="literal">NULL</tt> if the mask is not needed.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>alpha_threshold</tt></i> :</span></td><td> Threshold value for opacity values.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2980113"></a><h3><a name="gdk-pixbuf-render-pixmap-and-mask-for-colormap"></a>gdk_pixbuf_render_pixmap_and_mask_for_colormap ()</h3><a class="indexterm" name="id2980126"></a><pre class="programlisting">void        gdk_pixbuf_render_pixmap_and_mask_for_colormap
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3154551"></a><h3><a name="gdk-pixbuf-render-pixmap-and-mask-for-colormap"></a>gdk_pixbuf_render_pixmap_and_mask_for_colormap ()</h3><a class="indexterm" name="id3154564"></a><pre class="programlisting">void        gdk_pixbuf_render_pixmap_and_mask_for_colormap
                                             (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a> *pixbuf,
@@ -249,7 +249,7 @@ to NULL.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>mask_return</tt></i> :</span></td><td> Location to store a pointer to the created mask,
   or <tt class="literal">NULL</tt> if the mask is not needed.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>alpha_threshold</tt></i> :</span></td><td> Threshold value for opacity values.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2980354"></a><h3><a name="gdk-pixbuf-get-from-drawable"></a>gdk_pixbuf_get_from_drawable ()</h3><a class="indexterm" name="id2980367"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3154793"></a><h3><a name="gdk-pixbuf-get-from-drawable"></a>gdk_pixbuf_get_from_drawable ()</h3><a class="indexterm" name="id3154805"></a><pre class="programlisting"><a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a>*  gdk_pixbuf_get_from_drawable    (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
@@ -330,7 +330,7 @@ documentation for <a href="gdk-Drawing-Primitives.html#gdk-drawable-get-image"><
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Height in pixels of region to get.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The same pixbuf as <i class="parameter"><tt>dest</tt></i> if it was non-<tt class="literal">NULL</tt>, or a newly-created
 pixbuf with a reference count of 1 if no destination pixbuf was specified, or <tt class="literal">NULL</tt> on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2980889"></a><h3><a name="gdk-pixbuf-get-from-image"></a>gdk_pixbuf_get_from_image ()</h3><a class="indexterm" name="id2980901"></a><pre class="programlisting"><a
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3155327"></a><h3><a name="gdk-pixbuf-get-from-image"></a>gdk_pixbuf_get_from_image ()</h3><a class="indexterm" name="id3155340"></a><pre class="programlisting"><a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
 >GdkPixbuf</a>*  gdk_pixbuf_get_from_image       (<a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"

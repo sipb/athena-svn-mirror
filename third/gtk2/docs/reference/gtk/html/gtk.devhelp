@@ -246,15 +246,15 @@
     <sub name="" link="ix01.html"/>
   </chapters>
   <functions>
-    <function name="Common commandline options" link="gtk-running.html#id2539039"/>
-    <function name="Environment variables" link="gtk-running.html#id2540093"/>
-    <function name="Build requirements" link="gtk-framebuffer.html#id2541285"/>
-    <function name="Hardware requirements" link="gtk-framebuffer.html#id2541744"/>
-    <function name="Building and installing" link="gtk-framebuffer.html#id2541915"/>
-    <function name="Fonts" link="gtk-framebuffer.html#id2541950"/>
-    <function name="Running" link="gtk-framebuffer.html#id2541969"/>
-    <function name="Debug features" link="gtk-framebuffer.html#id2542086"/>
-    <function name="Server, client, window manager" link="gtk-x11.html#id2542532"/>
+    <function name="Common commandline options" link="gtk-running.html#id3065691"/>
+    <function name="Environment variables" link="gtk-running.html#id3066746"/>
+    <function name="Build requirements" link="gtk-framebuffer.html#id3067939"/>
+    <function name="Hardware requirements" link="gtk-framebuffer.html#id3068404"/>
+    <function name="Building and installing" link="gtk-framebuffer.html#id3068567"/>
+    <function name="Fonts" link="gtk-framebuffer.html#id3068603"/>
+    <function name="Running" link="gtk-framebuffer.html#id3068621"/>
+    <function name="Debug features" link="gtk-framebuffer.html#id3068738"/>
+    <function name="Server, client, window manager" link="gtk-x11.html#id3069184"/>
     <function name="gtk_set_locale ()" link="gtk-General.html#gtk-set-locale"/>
     <function name="gtk_disable_setlocale ()" link="gtk-General.html#gtk-disable-setlocale"/>
     <function name="gtk_get_default_language ()" link="gtk-General.html#gtk-get-default-language"/>
@@ -558,11 +558,11 @@
     <function name="gtk_icon_source_set_size_wildcarded ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-size-wildcarded"/>
     <function name="gtk_icon_source_set_state ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-state"/>
     <function name="gtk_icon_source_set_state_wildcarded ()" link="gtk-Themeable-Stock-Images.html#gtk-icon-source-set-state-wildcarded"/>
-    <function name="Default files" link="gtk-Resource-Files.html#id2626222"/>
-    <function name="Pathnames and patterns" link="gtk-Resource-Files.html#id2626389"/>
-    <function name="Toplevel declarations" link="gtk-Resource-Files.html#id2626660"/>
-    <function name="Styles" link="gtk-Resource-Files.html#id2626903"/>
-    <function name="Key bindings" link="gtk-Resource-Files.html#id2627758"/>
+    <function name="Default files" link="gtk-Resource-Files.html#id3152876"/>
+    <function name="Pathnames and patterns" link="gtk-Resource-Files.html#id3153044"/>
+    <function name="Toplevel declarations" link="gtk-Resource-Files.html#id3153315"/>
+    <function name="Styles" link="gtk-Resource-Files.html#id3153558"/>
+    <function name="Key bindings" link="gtk-Resource-Files.html#id3154413"/>
     <function name="struct GtkRcStyle" link="gtk-Resource-Files.html#GtkRcStyle-struct"/>
     <function name="enum GtkRcFlags" link="gtk-Resource-Files.html#GtkRcFlags"/>
     <function name="enum GtkRcTokenType" link="gtk-Resource-Files.html#GtkRcTokenType"/>
@@ -795,10 +795,10 @@
     <function name="GTK_BINARY_AGE" link="gtk-Feature-Test-Macros.html#GTK-BINARY-AGE-CAPS"/>
     <function name="GTK_INTERFACE_AGE" link="gtk-Feature-Test-Macros.html#GTK-INTERFACE-AGE-CAPS"/>
     <function name="GTK_CHECK_VERSION()" link="gtk-Feature-Test-Macros.html#GTK-CHECK-VERSION-CAPS"/>
-    <function name="What are signals?" link="gtk-Signals.html#id2704927"/>
-    <function name="How are signals used?" link="gtk-Signals.html#id2705007"/>
-    <function name="Basic Terminology" link="gtk-Signals.html#id2705035"/>
-    <function name="A brief note on how they work." link="gtk-Signals.html#id2705156"/>
+    <function name="What are signals?" link="gtk-Signals.html#id3231803"/>
+    <function name="How are signals used?" link="gtk-Signals.html#id3231883"/>
+    <function name="Basic Terminology" link="gtk-Signals.html#id3231911"/>
+    <function name="A brief note on how they work." link="gtk-Signals.html#id3232032"/>
     <function name="GTK_SIGNAL_OFFSET" link="gtk-Signals.html#GTK-SIGNAL-OFFSET-CAPS"/>
     <function name="enum GtkSignalRunType" link="gtk-Signals.html#GtkSignalRunType"/>
     <function name="gtk_signal_new ()" link="gtk-Signals.html#gtk-signal-new"/>
@@ -1102,10 +1102,10 @@
     <function name="The &quot;pixmap&quot; property" link="GtkImage.html#GtkImage--pixmap"/>
     <function name="The &quot;stock&quot; property" link="GtkImage.html#GtkImage--stock"/>
     <function name="The &quot;storage-type&quot; property" link="GtkImage.html#GtkImage--storage-type"/>
-    <function name="Mnemonics" link="GtkLabel.html#id2791120"/>
-    <function name="Markup (styled text)" link="GtkLabel.html#id2791256"/>
-    <function name="Selectable labels" link="GtkLabel.html#id2791383"/>
-    <function name="Text layout" link="GtkLabel.html#id2791403"/>
+    <function name="Mnemonics" link="GtkLabel.html#id3318000"/>
+    <function name="Markup (styled text)" link="GtkLabel.html#id3318135"/>
+    <function name="Selectable labels" link="GtkLabel.html#id3318262"/>
+    <function name="Text layout" link="GtkLabel.html#id3318282"/>
     <function name="struct GtkLabel" link="GtkLabel.html#GtkLabel-struct"/>
     <function name="gtk_label_new ()" link="GtkLabel.html#gtk-label-new"/>
     <function name="gtk_label_set_text ()" link="GtkLabel.html#gtk-label-set-text"/>
@@ -1743,8 +1743,8 @@
     <function name="The &quot;set-anchor&quot; signal" link="GtkTextView.html#GtkTextView-set-anchor"/>
     <function name="The &quot;set-scroll-adjustments&quot; signal" link="GtkTextView.html#GtkTextView-set-scroll-adjustments"/>
     <function name="The &quot;toggle-overwrite&quot; signal" link="GtkTextView.html#GtkTextView-toggle-overwrite"/>
-    <function name="Columns and cell renderers" link="TreeWidget.html#id2961530"/>
-    <function name="Selection handling" link="TreeWidget.html#id2961606"/>
+    <function name="Columns and cell renderers" link="TreeWidget.html#id3488411"/>
+    <function name="Selection handling" link="TreeWidget.html#id3488487"/>
     <function name="struct GtkTreeModel" link="GtkTreeModel.html#GtkTreeModel-struct"/>
     <function name="struct GtkTreeIter" link="GtkTreeModel.html#GtkTreeIter"/>
     <function name="struct GtkTreePath" link="GtkTreeModel.html#GtkTreePath"/>
@@ -2158,7 +2158,7 @@
     <function name="The &quot;inconsistent&quot; property" link="GtkCellRendererToggle.html#GtkCellRendererToggle--inconsistent"/>
     <function name="The &quot;radio&quot; property" link="GtkCellRendererToggle.html#GtkCellRendererToggle--radio"/>
     <function name="The &quot;toggled&quot; signal" link="GtkCellRendererToggle.html#GtkCellRendererToggle-toggled"/>
-    <function name="Performance Considerations" link="GtkListStore.html#id3081656"/>
+    <function name="Performance Considerations" link="GtkListStore.html#id3608551"/>
     <function name="struct GtkListStore" link="GtkListStore.html#GtkListStore-struct"/>
     <function name="gtk_list_store_new ()" link="GtkListStore.html#gtk-list-store-new"/>
     <function name="gtk_list_store_newv ()" link="GtkListStore.html#gtk-list-store-newv"/>
@@ -2477,9 +2477,9 @@
     <function name="The &quot;group&quot; property" link="GtkRadioToolButton.html#GtkRadioToolButton--group"/>
     <function name="UI Definitions" link="GtkUIManager.html#XML-UI"/>
     <function name="UI Merging" link="GtkUIManager.html#UI-Merging"/>
-    <function name="Accelerators" link="GtkUIManager.html#id3178782"/>
+    <function name="Accelerators" link="GtkUIManager.html#id3705718"/>
     <function name="Smart Separators" link="GtkUIManager.html#Smart-Separators"/>
-    <function name="Empty Menus" link="GtkUIManager.html#id3178827"/>
+    <function name="Empty Menus" link="GtkUIManager.html#id3705763"/>
     <function name="struct GtkUIManager" link="GtkUIManager.html#GtkUIManager-struct"/>
     <function name="gtk_ui_manager_new ()" link="GtkUIManager.html#gtk-ui-manager-new"/>
     <function name="gtk_ui_manager_set_add_tearoffs ()" link="GtkUIManager.html#gtk-ui-manager-set-add-tearoffs"/>
@@ -3229,7 +3229,7 @@
     <function name="The &quot;xpad&quot; property" link="GtkMisc.html#GtkMisc--xpad"/>
     <function name="The &quot;yalign&quot; property" link="GtkMisc.html#GtkMisc--yalign"/>
     <function name="The &quot;ypad&quot; property" link="GtkMisc.html#GtkMisc--ypad"/>
-    <function name="Description" link="GtkObject.html#id3385701"/>
+    <function name="Description" link="GtkObject.html#id3912743"/>
     <function name="struct GtkObject" link="GtkObject.html#GtkObject-struct"/>
     <function name="GTK_OBJECT_TYPE()" link="GtkObject.html#GTK-OBJECT-TYPE-CAPS"/>
     <function name="GTK_OBJECT_TYPE_NAME()" link="GtkObject.html#GTK-OBJECT-TYPE-NAME-CAPS"/>

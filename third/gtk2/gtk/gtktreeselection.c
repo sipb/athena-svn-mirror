@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include "gtktreeselection.h"
 #include "gtktreeprivate.h"
 #include "gtkrbtree.h"
@@ -362,6 +363,10 @@ gtk_tree_selection_get_selected (GtkTreeSelection  *selection,
   g_return_val_if_fail (GTK_IS_TREE_SELECTION (selection), FALSE);
   g_return_val_if_fail (selection->type != GTK_SELECTION_MULTIPLE, FALSE);
   g_return_val_if_fail (selection->tree_view != NULL, FALSE);
+
+  /* Clear the iter */
+  if (iter)
+    memset (iter, 0, sizeof (GtkTreeIter));
 
   if (model)
     *model = selection->tree_view->priv->model;

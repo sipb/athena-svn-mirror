@@ -12,10 +12,10 @@ AC_PREREQ(2.54)
 
 m4_define([gtk_major_version], [2])
 m4_define([gtk_minor_version], [4])
-m4_define([gtk_micro_version], [9])
+m4_define([gtk_micro_version], [14])
 m4_define([gtk_version],
           [gtk_major_version.gtk_minor_version.gtk_micro_version])
-m4_define([gtk_interface_age], [9])
+m4_define([gtk_interface_age], [14])
 m4_define([gtk_binary_age],
           [m4_eval(100 * gtk_minor_version + gtk_micro_version)])
 # This is the X.Y used in -lgtk-FOO-X.Y
@@ -401,7 +401,7 @@ fi
 # sure that both po/ and po-properties/ have .po files that correspond
 # to your language.  If you only add one to po/, the build will break
 # in po-properties/.
-ALL_LINGUAS="af am ar az be bg bn br bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu ia id is it ja ko li lt lv mi mk ml mn mr ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta th tk tr uk uz uz@Latn vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="af am ang ar az az_IR be bg bn br bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu ia id is it ja ko li lt lv mi mk ml mn mr ms nb ne nl nn no nso pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sr@ije sv ta th tk tr uk uz uz@Latn vi wa yi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 LIBS="$LIBS $INTLLIBS"
 AC_OUTPUT_COMMANDS([case "$CONFIG_FILES" in *po-properties/Makefile.in*)
@@ -1099,12 +1099,15 @@ if test "x$gdktarget" = "xx11"; then
           # Check for solaris
 	  use_solaris_xinerama=yes
 	  AC_CHECK_LIB(Xext, XineramaGetInfo,
-			use_solaris_xinerama=yes, use_solaris_xinerama=no)
+			use_solaris_xinerama=yes, 
+			use_solaris_xinerama=no,
+			, -lXext $x_libs_for_checks)
 	  if test "x$use_solaris_xinerama" = "xyes"; then
 	      AC_CHECK_HEADER(X11/extensions/xinerama.h,
 	        [GTK_ADD_LIB(x_extra_libs,Xext)
 		AC_DEFINE(HAVE_SOLARIS_XINERAMA)
-		AC_DEFINE(HAVE_XINERAMA)], use_solaris_xinerama=no, -lXext $x_libs_for_checks)
+		AC_DEFINE(HAVE_XINERAMA)], 
+		use_solaris_xinerama=no,[#include <X11/Xlib.h>])
 	  fi	
 	  AC_MSG_CHECKING(for Xinerama support on Solaris)
 	  AC_MSG_RESULT($use_solaris_xinerama);

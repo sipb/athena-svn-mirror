@@ -280,19 +280,31 @@ gdk_window_impl_win32_get_visible_region (GdkDrawable *drawable)
 }
 
 void
+_gdk_root_window_size_init (void)
+{
+  GdkWindowImplWin32 *impl;
+  GdkRectangle rect;
+  int i;
+
+  impl = GDK_WINDOW_IMPL_WIN32 (((GdkWindowObject *) _gdk_parent_root)->impl);
+  rect = _gdk_monitors[0];
+  for (i = 1; i < _gdk_num_monitors; i++)
+    gdk_rectangle_union (&rect, _gdk_monitors+i, &rect);
+
+  impl->width = rect.width;
+  impl->height = rect.height;
+}
+
+void
 _gdk_windowing_window_init (void)
 {
   GdkWindowObject *private;
-  GdkWindowImplWin32 *impl;
   GdkDrawableImplWin32 *draw_impl;
-  GdkRectangle rect;
-  gint i;
 
   g_assert (_gdk_parent_root == NULL);
   
   _gdk_parent_root = g_object_new (GDK_TYPE_WINDOW, NULL);
   private = (GdkWindowObject *)_gdk_parent_root;
-  impl = GDK_WINDOW_IMPL_WIN32 (private->impl);
   draw_impl = GDK_DRAWABLE_IMPL_WIN32 (private->impl);
   
   draw_impl->handle = _gdk_root_window;
@@ -303,13 +315,8 @@ _gdk_windowing_window_init (void)
   private->window_type = GDK_WINDOW_ROOT;
   private->depth = gdk_visual_get_system ()->depth;
 
-  rect = _gdk_monitors[0];
-  for (i = 1; i < _gdk_num_monitors; i++)
-    gdk_rectangle_union (&rect, _gdk_monitors+i, &rect);
-
-  impl->width = rect.width;
-  impl->height = rect.height;
-
+  _gdk_root_window_size_init ();
+ 
   _gdk_window_init_position (GDK_WINDOW (private));
 
   gdk_win32_handle_table_insert (&_gdk_root_window, _gdk_parent_root);
@@ -2001,14 +2008,6 @@ gdk_window_get_frame_extents (GdkWindow    *window,
     private = (GdkWindowObject*) private->parent;
 
   hwnd = GDK_WINDOW_HWND (window);
-
-  /* find the frame window */
-  while (HWND_DESKTOP != GetParent (hwnd))
-    {
-      hwnd = GetParent (hwnd);
-      g_return_if_fail (NULL != hwnd);
-    }
-
   API_CALL (GetWindowRect, (hwnd, &r));
 
   rect->x = r.left + _gdk_offset_x;
@@ -3199,12 +3198,63 @@ gdk_window_begin_resize_drag (GdkWindow     *window,
                               gint           root_y,
                               guint32        timestamp)
 {
+  WPARAM winedge;
+  
   g_return_if_fail (GDK_IS_WINDOW (window));
   
   if (GDK_WINDOW_DESTROYED (window))
     return;
 
-  /* XXX: isn't all this default on win32 ... */  
+  /* Tell Windows to start interactively resizing the window by pretending that
+   * the left pointer button was clicked in the suitable edge or corner. This
+   * will only work if the button is down when this function is called, and
+   * will only work with button 1 (left), since Windows only allows window
+   * dragging using the left mouse button */
+  if (button != 1)
+    return;
+  
+  /* Must break the automatic grab that occured when the button was pressed,
+   * otherwise it won't work */
+  gdk_display_pointer_ungrab (gdk_display_get_default (), 0);
+
+  switch (edge)
+    {
+    case GDK_WINDOW_EDGE_NORTH_WEST:
+      winedge = HTTOPLEFT;
+      break;
+
+    case GDK_WINDOW_EDGE_NORTH:
+      winedge = HTTOP;
+      break;
+
+    case GDK_WINDOW_EDGE_NORTH_EAST:
+      winedge = HTTOPRIGHT;
+      break;
+
+    case GDK_WINDOW_EDGE_WEST:
+      winedge = HTLEFT;
+      break;
+
+    case GDK_WINDOW_EDGE_EAST:
+      winedge = HTRIGHT;
+      break;
+
+    case GDK_WINDOW_EDGE_SOUTH_WEST:
+      winedge = HTBOTTOMLEFT;
+      break;
+
+    case GDK_WINDOW_EDGE_SOUTH:
+      winedge = HTBOTTOM;
+      break;
+
+    case GDK_WINDOW_EDGE_SOUTH_EAST:
+    default:
+      winedge = HTBOTTOMRIGHT;
+      break;
+    }
+
+  DefWindowProc (GDK_WINDOW_HWND (window), WM_NCLBUTTONDOWN, winedge,
+      MAKELPARAM (root_x - _gdk_offset_x, root_y - _gdk_offset_y));
 }
 
 void
@@ -3219,7 +3269,20 @@ gdk_window_begin_move_drag (GdkWindow *window,
   if (GDK_WINDOW_DESTROYED (window))
     return;
 
-  /* XXX: isn't all this default on win32 ... */  
+  /* Tell Windows to start interactively moving the window by pretending that
+   * the left pointer button was clicked in the titlebar. This will only work
+   * if the button is down when this function is called, and will only work
+   * with button 1 (left), since Windows only allows window dragging using the
+   * left mouse button */
+  if (button != 1)
+    return;
+  
+  /* Must break the automatic grab that occured when the button was pressed,
+   * otherwise it won't work */
+  gdk_display_pointer_ungrab (gdk_display_get_default (), 0);
+
+  DefWindowProc (GDK_WINDOW_HWND (window), WM_NCLBUTTONDOWN, HTCAPTION,
+      MAKELPARAM (root_x - _gdk_offset_x, root_y - _gdk_offset_y));
 }
 
 GdkWindow *

@@ -178,6 +178,8 @@ static gint     gtk_tree_view_focus                (GtkWidget        *widget,
 static void     gtk_tree_view_grab_focus           (GtkWidget        *widget);
 static void     gtk_tree_view_style_set            (GtkWidget        *widget,
 						    GtkStyle         *previous_style);
+static void     gtk_tree_view_grab_notify          (GtkWidget        *widget,
+						    gboolean          was_grabbed);
 
 /* container signals */
 static void     gtk_tree_view_remove               (GtkContainer     *container,
@@ -274,7 +276,7 @@ static void     install_presize_handler  (GtkTreeView *tree_view);
 static void     install_scroll_sync_handler (GtkTreeView *tree_view);
 static void	gtk_tree_view_dy_to_top_row (GtkTreeView *tree_view);
 static void     gtk_tree_view_top_row_to_dy (GtkTreeView *tree_view);
-
+static void     invalidate_empty_focus      (GtkTreeView *tree_view);
 
 /* Internal functions */
 static gboolean gtk_tree_view_is_expander_column             (GtkTreeView       *tree_view,
@@ -513,6 +515,7 @@ gtk_tree_view_class_init (GtkTreeViewClass *class)
   widget_class->focus = gtk_tree_view_focus;
   widget_class->grab_focus = gtk_tree_view_grab_focus;
   widget_class->style_set = gtk_tree_view_style_set;
+  widget_class->grab_notify = gtk_tree_view_grab_notify;
 
   /* GtkContainer signals */
   container_class->remove = gtk_tree_view_remove;
@@ -633,7 +636,7 @@ gtk_tree_view_class_init (GtkTreeViewClass *class)
                                                            G_PARAM_READWRITE));
     
   /* Style properties */
-#define _TREE_VIEW_EXPANDER_SIZE 10
+#define _TREE_VIEW_EXPANDER_SIZE 12
 #define _TREE_VIEW_VERTICAL_SEPARATOR 2
 #define _TREE_VIEW_HORIZONTAL_SEPARATOR 2
     
@@ -2022,6 +2025,9 @@ gtk_tree_view_size_allocate (GtkWidget     *widget,
 
   gtk_tree_view_size_allocate_columns (widget);
 
+  if (tree_view->priv->tree == NULL)
+    invalidate_empty_focus (tree_view);
+
   if (GTK_WIDGET_REALIZED (widget))
     {
       gboolean has_expand_column = FALSE;
@@ -2203,16 +2209,15 @@ gtk_tree_view_button_press (GtkWidget      *widget,
 	  GtkTreePath *anchor;
 	  GtkTreeIter iter;
 
+	  gtk_tree_model_get_iter (tree_view->priv->model, &iter, path);
+	  gtk_tree_view_column_cell_set_cell_data (column,
+						   tree_view->priv->model,
+						   &iter,
+						   GTK_RBNODE_FLAG_SET (node, GTK_RBNODE_IS_PARENT),
+						   node->children?TRUE:FALSE);
+
 	  if (tree_view->priv->anchor)
-	    {
-	      anchor = gtk_tree_row_reference_get_path (tree_view->priv->anchor);
-	      gtk_tree_model_get_iter (tree_view->priv->model, &iter, path);
-	      gtk_tree_view_column_cell_set_cell_data (column,
-						       tree_view->priv->model,
-						       &iter,
-						       GTK_RBNODE_FLAG_SET (node, GTK_RBNODE_IS_PARENT),
-						       node->children?TRUE:FALSE);
-	    }
+	    anchor = gtk_tree_row_reference_get_path (tree_view->priv->anchor);
 	  else
 	    anchor = NULL;
 
@@ -3220,11 +3225,29 @@ gtk_tree_view_motion (GtkWidget      *widget,
   return FALSE;
 }
 
+/* Invalidate the focus rectangle near the edge of the bin_window; used when
+ * the tree is empty.
+ */
+static void
+invalidate_empty_focus (GtkTreeView *tree_view)
+{
+  GdkRectangle area;
+
+  if (!GTK_WIDGET_HAS_FOCUS (tree_view))
+    return;
+
+  area.x = 0;
+  area.y = 0;
+  gdk_drawable_get_size (tree_view->priv->bin_window, &area.width, &area.height);
+  gdk_window_invalidate_rect (tree_view->priv->bin_window, &area, FALSE);
+}
+
 /* Draws a focus rectangle near the edge of the bin_window; used when the tree
  * is empty.
  */
 static void
-draw_empty_focus (GtkTreeView *tree_view, GdkRectangle *clip_area)
+draw_empty_focus (GtkTreeView  *tree_view, 
+		  GdkRectangle *clip_area)
 {
   gint w, h;
 
@@ -8057,7 +8080,22 @@ gtk_tree_view_focus_to_cursor (GtkTreeView *tree_view)
 
   if (cursor_path == NULL)
     {
-      cursor_path = gtk_tree_path_new_first ();
+      /* Consult the selection before defaulting to the first element */
+      GtkTreeSelection *selection;
+      GtkTreeModel     *model;
+      GList            *selected_rows;
+
+      selection = gtk_tree_view_get_selection (tree_view);
+      selected_rows = gtk_tree_selection_get_selected_rows (selection, &model);
+      if (selected_rows)
+	{
+          cursor_path = gtk_tree_path_copy((const GtkTreePath *)(selected_rows->data));
+	  g_list_foreach (selected_rows, (GFunc)gtk_tree_path_free, NULL);
+	  g_list_free (selected_rows);
+        }
+      else
+	cursor_path = gtk_tree_path_new_first ();
+
       gtk_tree_row_reference_free (tree_view->priv->cursor);
       tree_view->priv->cursor = NULL;
 
@@ -8115,6 +8153,31 @@ gtk_tree_view_move_cursor_up_down (GtkTreeView *tree_view,
   else
     _gtk_rbtree_next_full (cursor_tree, cursor_node,
 			   &new_cursor_tree, &new_cursor_node);
+
+  /*
+   * If the list has only one item and multi-selection is set then select
+   * the row.
+   */
+  if (tree_view->priv->selection->type == GTK_SELECTION_MULTIPLE &&
+      new_cursor_node == NULL)
+    {
+      if (count == -1)
+        _gtk_rbtree_next_full (cursor_tree, cursor_node,
+    			       &new_cursor_tree, &new_cursor_node);
+      else
+        _gtk_rbtree_prev_full (cursor_tree, cursor_node,
+			       &new_cursor_tree, &new_cursor_node);
+
+      if (new_cursor_node == NULL)
+        {
+          new_cursor_node = cursor_node;
+          new_cursor_tree = cursor_tree;
+        }
+      else
+        {
+          new_cursor_node = NULL;
+        }
+    }
 
   if (new_cursor_node)
     {
@@ -11743,6 +11806,11 @@ gtk_tree_view_search_position_func (GtkTreeView *tree_view,
   GdkWindow *tree_window = GTK_WIDGET (tree_view)->window;
   GdkScreen *screen = gdk_drawable_get_screen (tree_window);
   GtkRequisition requisition;
+  gint monitor_num;
+  GdkRectangle monitor;
+
+  monitor_num = gdk_screen_get_monitor_at_window (screen, tree_window);
+  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
 
   gtk_widget_realize (search_dialog);
 
@@ -11993,8 +12061,8 @@ gtk_tree_view_search_iter (GtkTreeModel     *model,
             {
               gtk_tree_view_scroll_to_cell (tree_view, path, NULL,
 					    TRUE, 0.5, 0.0);
-              gtk_tree_selection_select_iter (selection, iter);
 	      gtk_tree_view_real_set_cursor (tree_view, path, FALSE, TRUE);
+              gtk_tree_selection_select_iter (selection, iter);
 
 	      if (path)
 		gtk_tree_path_free (path);
@@ -12284,3 +12352,13 @@ _gtk_tree_view_set_hover_selection (GtkTreeView *tree_view,
   tree_view->priv->hover_selection = hover;
 }
 
+
+static void
+gtk_tree_view_grab_notify (GtkWidget *widget,
+			   gboolean   was_grabbed)
+{
+  GtkTreeView *tree_view = GTK_TREE_VIEW (widget);
+
+  if (!was_grabbed)
+    tree_view->priv->pressed_button = -1;
+}

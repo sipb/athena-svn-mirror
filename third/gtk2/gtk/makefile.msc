@@ -518,6 +518,6 @@ $(EXAMPLE).exe : $(EXAMPLE).obj
 makefile.msc: makefile.msc.in
 	sed -e s,@GTK[_]MAJOR_VERSION@,2, \
 	    -e s,@GTK[_]MINOR_VERSION@,4, \
-	    -e 's,@GTK[_]VERSION@,2.4.9,' \
+	    -e 's,@GTK[_]VERSION@,2.4.14,' \
 	    -e 's,@GDK_PIXBUF[_]MAJOR@,2,' \
 	    -e 's,@GDK_PIXBUF[_]MINOR@,4,'  <makefile.msc.in >$@

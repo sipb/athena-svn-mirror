@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>X Drawables to Pixbufs</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="rn01.html" title="API Reference"><link rel="previous" href="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html" title="Xlib Rendering"><link rel="next" href="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html" title="XlibRGB"><link rel="reference" href="rn01.html" title="API Reference"><link rel="refentry" href="gdk-pixbuf-Versioning.html" title="Initialization and Versions"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf.html" title="The GdkPixbuf Structure"><link rel="refentry" href="gdk-pixbuf-refcounting.html" title="Reference Counting and Memory Mangement"><link rel="refentry" href="gdk-pixbuf-file-loading.html" title="File Loading"><link rel="refentry" href="gdk-pixbuf-file-saving.html" title="File saving"><link rel="refentry" href="gdk-pixbuf-creating.html" title="Image Data in Memory"><link rel="refentry" href="gdk-pixbuf-inline.html" title="Inline data"><link rel="refentry" href="gdk-pixbuf-scaling.html" title="Scaling"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-rendering.html" title="Rendering"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-from-drawables.html" title="Drawables to Pixbufs"><link rel="refentry" href="gdk-pixbuf-util.html" title="Utilities"><link rel="refentry" href="gdk-pixbuf-animation.html" title="Animations"><link rel="refentry" href="GdkPixbufLoader.html" title="GdkPixbufLoader"><link rel="refentry" href="gdk-pixbuf-Module-Interface.html" title="Module Interface"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-xlib-init.html" title="gdk-pixbuf Xlib initialization"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html" title="Xlib Rendering"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html" title="X Drawables to Pixbufs"><link rel="refentry" href="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html" title="XlibRGB"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="refentry" href="gdk-pixbuf-csource.html" title="gdk-pixbuf-csource"><link rel="refentry" href="gdk-pixbuf-query-loaders.html" title="gdk-pixbuf-query-loaders"><link rel="index" href="ix01.html" title="Index"><link rel="appendix" href="apa.html" title="Appendix A. Porting applications from Imlib to gdk-pixbuf"><link rel="appendix" href="license.html" title="Appendix B. License"><link rel="section" href="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id3000416" title="Description"><link rel="section" href="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables.html#id3000451" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The gdk-pixbuf Library</th><td><a accesskey="n" href="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">X Drawables to Pixbufs</span></h2><p>X Drawables to Pixbufs &#8212; Getting parts of an X drawable's image data into a pixbuf.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>X Drawables to Pixbufs</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="The gdk-pixbuf Library"><link rel="up" href="rn01.html" title="API Reference"><link rel="prev" href="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html" title="Xlib Rendering"><link rel="next" href="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html" title="XlibRGB"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="rn01.html" title="API Reference"><link rel="reference" href="rn02.html" title="Tools Reference"><link rel="index" href="ix01.html" title="Index"><link rel="appendix" href="apa.html" title="Appendix A. Porting applications from Imlib to gdk-pixbuf"><link rel="appendix" href="license.html" title="Appendix B. License"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-pixbuf-gdk-pixbuf-xlib-rendering.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">The <span class="application">gdk-pixbuf</span> Library</th><td><a accesskey="n" href="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-pixbuf-gdk-pixbuf-xlib-from-drawables"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">X Drawables to Pixbufs</span></h2><p>X Drawables to Pixbufs &#8212; Getting parts of an X drawable's image data into a pixbuf.</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
@@ -14,7 +14,7 @@
                                              int dest_y,
                                              int width,
                                              int height);
-</pre></div><div class="refsect1" lang="en"><a name="id3000416"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2972388"></a><h2>Description</h2><p>
     The functions in this section allow you to take the image data
     from an X drawable and dump it into a <a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a>.  This can be
     used for screenshots and other special effects.  Note that these
@@ -23,7 +23,7 @@
   </p><p>
     These functions are analogous to those for the GDK version of
     <span class="application">gdk-pixbuf</span>.
-  </p></div><div class="refsect1" lang="en"><a name="id3000451"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3000456"></a><h3><a name="gdk-pixbuf-xlib-get-from-drawable"></a>gdk_pixbuf_xlib_get_from_drawable ()</h3><a class="indexterm" name="id3000468"></a><pre class="programlisting"><a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>*  gdk_pixbuf_xlib_get_from_drawable
+  </p></div><div class="refsect1" lang="en"><a name="id2972422"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2972428"></a><h3><a name="gdk-pixbuf-xlib-get-from-drawable"></a>gdk_pixbuf_xlib_get_from_drawable ()</h3><a class="indexterm" name="id2972439"></a><pre class="programlisting"><a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a>*  gdk_pixbuf_xlib_get_from_drawable
                                             (<a href="gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf">GdkPixbuf</a> *dest,
                                              Drawable src,
                                              Colormap cmap,
@@ -42,22 +42,16 @@ since pixmaps are just blocks of pixel data without an associated colormap.
 If the drawable is a window, the <i class="parameter"><tt>cmap</tt></i> argument will be ignored and the
 window's own colormap will be used instead.
 </p><p>
-If the specified destination pixbuf <i class="parameter"><tt>dest</tt></i> is <a
-href="../glib/glib-Standard-Macros.html#NULL-CAPS"
-><span class="type">NULL</span></a>, then this function will
+If the specified destination pixbuf <i class="parameter"><tt>dest</tt></i> is <span class="type">NULL</span>, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <i class="parameter"><tt>width</tt></i> and <i class="parameter"><tt>height</tt></i> arguments.  In this case, the <i class="parameter"><tt>dest_x</tt></i> and
 <i class="parameter"><tt>dest_y</tt></i> arguments must be specified as 0, otherwise the function will return
-<a
-href="../glib/glib-Standard-Macros.html#NULL-CAPS"
-><span class="type">NULL</span></a>.  If the specified destination pixbuf is not NULL and it contains alpha
+<span class="type">NULL</span>.  If the specified destination pixbuf is not NULL and it contains alpha
 information, then the filled pixels will be set to full opacity.
 </p><p>
 If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return <a
-href="../glib/glib-Standard-Macros.html#NULL-CAPS"
-><span class="type">NULL</span></a>.
+return <span class="type">NULL</span>.
 </p><p>
 If the specified drawable is a window, then it must be viewable, i.e. all of
 its ancestors up to the root window must be mapped.  Also, the specified

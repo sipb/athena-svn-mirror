@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GdkRGB</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="previous" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="next" href="gdk-Images.html" title="Images"><link rel="reference" href="reference.html" title="API Reference"><link rel="refentry" href="gdk-General.html" title="General"><link rel="refentry" href="multihead.html" title="Multi-head Support Overview"><link rel="refentry" href="GdkDisplay.html" title="GdkDisplay"><link rel="refentry" href="GdkDisplayManager.html" title="GdkDisplayManager"><link rel="refentry" href="GdkScreen.html" title="GdkScreen"><link rel="refentry" href="gdk-Points-Rectangles-and-Regions.html" title="Points, Rectangles and Regions"><link rel="refentry" href="gdk-Graphics-Contexts.html" title="Graphics Contexts"><link rel="refentry" href="gdk-Drawing-Primitives.html" title="Drawing Primitives"><link rel="refentry" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="refentry" href="gdk-GdkRGB.html" title="GdkRGB"><link rel="refentry" href="gdk-Images.html" title="Images"><link rel="refentry" href="gdk-Pixbufs.html" title="Pixbufs"><link rel="refentry" href="gdk-Colormaps-and-Colors.html" title="Colormaps and Colors"><link rel="refentry" href="gdk-Visuals.html" title="Visuals"><link rel="refentry" href="gdk-Fonts.html" title="Fonts"><link rel="refentry" href="gdk-Cursors.html" title="Cursors"><link rel="refentry" href="gdk-Windows.html" title="Windows"><link rel="refentry" href="gdk-Events.html" title="Events"><link rel="refentry" href="gdk-Event-Structures.html" title="Event Structures"><link rel="refentry" href="gdk-Keyboard-Handling.html" title="Key Values"><link rel="refentry" href="gdk-Selections.html" title="Selections"><link rel="refentry" href="gdk-Drag-and-Drop.html" title="Drag and Drop"><link rel="refentry" href="gdk-Properties-and-Atoms.html" title="Properties and Atoms"><link rel="refentry" href="gdk-Threads.html" title="Threads"><link rel="refentry" href="gdk-Input.html" title="Input"><link rel="refentry" href="gdk-Input-Devices.html" title="Input Devices"><link rel="refentry" href="gdk-Pango-Interaction.html" title="Pango Interaction"><link rel="refentry" href="gdk-X-Window-System-Interaction.html" title="X Window System Interaction"><link rel="index" href="ix01.html" title="Index"><link rel="section" href="gdk-GdkRGB.html#id2965399" title="Description"><link rel="section" href="gdk-GdkRGB.html#id2964377" title="Details"><link rel="section" href="gdk-GdkRGB.html#id2968921" title="See Also"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Bitmaps-and-Pixmaps.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Images.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-GdkRGB"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GdkRGB</span></h2><p>GdkRGB &#8212; Renders RGB, grayscale, or indexed image data to a GdkDrawable</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GdkRGB</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.0"><link rel="start" href="index.html" title="GDK Reference Manual"><link rel="up" href="reference.html" title="API Reference"><link rel="prev" href="gdk-Bitmaps-and-Pixmaps.html" title="Bitmaps and Pixmaps"><link rel="next" href="gdk-Images.html" title="Images"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="reference" href="reference.html" title="API Reference"><link rel="index" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gdk-Bitmaps-and-Pixmaps.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GDK Reference Manual</th><td><a accesskey="n" href="gdk-Images.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gdk-GdkRGB"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">GdkRGB</span></h2><p>GdkRGB &#8212; Renders RGB, grayscale, or indexed image data to a GdkDrawable</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 #include &lt;gdk/gdk.h&gt;
 
@@ -7,187 +7,87 @@ void        <a href="gdk-GdkRGB.html#gdk-rgb-init">gdk_rgb_init</a>             
 
 void        <a href="gdk-GdkRGB.html#gdk-draw-rgb-image">gdk_draw_rgb_image</a>              (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *rgb_buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);
+                                             guchar *rgb_buf,
+                                             gint rowstride);
 void        <a href="gdk-GdkRGB.html#gdk-draw-rgb-image-dithalign">gdk_draw_rgb_image_dithalign</a>    (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *rgb_buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> xdith,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> ydith);
+                                             guchar *rgb_buf,
+                                             gint rowstride,
+                                             gint xdith,
+                                             gint ydith);
 void        <a href="gdk-GdkRGB.html#gdk-draw-indexed-image">gdk_draw_indexed_image</a>          (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
+                                             guchar *buf,
+                                             gint rowstride,
                                              <a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a> *cmap);
 void        <a href="gdk-GdkRGB.html#gdk-draw-gray-image">gdk_draw_gray_image</a>             (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);
+                                             guchar *buf,
+                                             gint rowstride);
 void        <a href="gdk-GdkRGB.html#gdk-draw-rgb-32-image">gdk_draw_rgb_32_image</a>           (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);
+                                             guchar *buf,
+                                             gint rowstride);
 void        <a href="gdk-GdkRGB.html#gdk-draw-rgb-32-image-dithalign">gdk_draw_rgb_32_image_dithalign</a> (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> xdith,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> ydith);
+                                             guchar *buf,
+                                             gint rowstride,
+                                             gint xdith,
+                                             gint ydith);
 enum        <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a>;
 
-<a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a>* <a href="gdk-GdkRGB.html#gdk-rgb-cmap-new">gdk_rgb_cmap_new</a>                (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *colors,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> n_colors);
+<a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a>* <a href="gdk-GdkRGB.html#gdk-rgb-cmap-new">gdk_rgb_cmap_new</a>                (guint32 *colors,
+                                             gint n_colors);
 void        <a href="gdk-GdkRGB.html#gdk-rgb-cmap-free">gdk_rgb_cmap_free</a>               (<a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a> *cmap);
 struct      <a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a>;
 
 void        <a href="gdk-GdkRGB.html#gdk-rgb-gc-set-foreground">gdk_rgb_gc_set_foreground</a>       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);
+                                             guint32 rgb);
 void        <a href="gdk-GdkRGB.html#gdk-rgb-gc-set-background">gdk_rgb_gc_set_background</a>       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);
-<a
-href="../glib/glib-Basic-Types.html#gulong"
->gulong</a>      <a href="gdk-GdkRGB.html#gdk-rgb-xpixel-from-rgb">gdk_rgb_xpixel_from_rgb</a>         (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);
+                                             guint32 rgb);
+gulong      <a href="gdk-GdkRGB.html#gdk-rgb-xpixel-from-rgb">gdk_rgb_xpixel_from_rgb</a>         (guint32 rgb);
 void        <a href="gdk-GdkRGB.html#gdk-rgb-find-color">gdk_rgb_find_color</a>              (<a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a> *colormap,
                                              <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *color);
 
-void        <a href="gdk-GdkRGB.html#gdk-rgb-set-install">gdk_rgb_set_install</a>             (<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> install);
-void        <a href="gdk-GdkRGB.html#gdk-rgb-set-min-colors">gdk_rgb_set_min_colors</a>          (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> min_colors);
+void        <a href="gdk-GdkRGB.html#gdk-rgb-set-install">gdk_rgb_set_install</a>             (gboolean install);
+void        <a href="gdk-GdkRGB.html#gdk-rgb-set-min-colors">gdk_rgb_set_min_colors</a>          (gint min_colors);
 <a href="gdk-Visuals.html#GdkVisual">GdkVisual</a>*  <a href="gdk-GdkRGB.html#gdk-rgb-get-visual">gdk_rgb_get_visual</a>              (void);
 <a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a>* <a href="gdk-GdkRGB.html#gdk-rgb-get-colormap">gdk_rgb_get_colormap</a>           (void);
 #define     <a href="gdk-GdkRGB.html#gdk-rgb-get-cmap">gdk_rgb_get_cmap</a>
-<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    <a href="gdk-GdkRGB.html#gdk-rgb-ditherable">gdk_rgb_ditherable</a>              (void);
-void        <a href="gdk-GdkRGB.html#gdk-rgb-set-verbose">gdk_rgb_set_verbose</a>             (<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> verbose);
+gboolean    <a href="gdk-GdkRGB.html#gdk-rgb-ditherable">gdk_rgb_ditherable</a>              (void);
+void        <a href="gdk-GdkRGB.html#gdk-rgb-set-verbose">gdk_rgb_set_verbose</a>             (gboolean verbose);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2965399"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id3139838"></a><h2>Description</h2><p>
 GdkRGB is a low-level module which renders RGB, grayscale, and indexed
 colormap images to a <a href="gdk-Drawing-Primitives.html#GdkDrawable"><span class="type">GdkDrawable</span></a>. It does this as efficiently as
 possible, handling issues such as colormaps, visuals, dithering,
@@ -213,7 +113,7 @@ of GdkRGB. Note, however, that setting it to 0 doesn't let you get
 away with ignoring the colormap and visual - a colormap is always
 created in grayscale and direct color modes, and the visual is changed
 in cases where a "better" visual than the default is available.
-</p><div class="example"><a name="id2965479"></a><p class="title"><b>Example 4. A simple example program using GdkRGB</b></p><pre class="programlisting">
+</p><div class="example"><a name="id3139917"></a><p class="title"><b>Example 4. A simple example program using GdkRGB</b></p><pre class="programlisting">
 #include &lt;gtk/gtk.h&gt;
 
 #define IMAGE_WIDTH	256
@@ -270,30 +170,18 @@ on_darea_expose (GtkWidget *widget,
 
   return TRUE;
 }
-</pre></div></div><div class="refsect1" lang="en"><a name="id2964377"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2964383"></a><h3><a name="gdk-rgb-init"></a>gdk_rgb_init ()</h3><a class="indexterm" name="id2964393"></a><pre class="programlisting">void        gdk_rgb_init                    (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_init</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</pre></div></div><div class="refsect1" lang="en"><a name="id3138815"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3138820"></a><h3><a name="gdk-rgb-init"></a>gdk_rgb_init ()</h3><a class="indexterm" name="id3138831"></a><pre class="programlisting">void        gdk_rgb_init                    (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_init</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 This function no longer does anything at all. It's completely useless
 (and harmless).
-</p></div><hr><div class="refsect2" lang="en"><a name="id2964428"></a><h3><a name="gdk-draw-rgb-image"></a>gdk_draw_rgb_image ()</h3><a class="indexterm" name="id2964439"></a><pre class="programlisting">void        gdk_draw_rgb_image              (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</p></div><hr><div class="refsect2" lang="en"><a name="id3138866"></a><h3><a name="gdk-draw-rgb-image"></a>gdk_draw_rgb_image ()</h3><a class="indexterm" name="id3138877"></a><pre class="programlisting">void        gdk_draw_rgb_image              (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *rgb_buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);</pre><p>
+                                             guchar *rgb_buf,
+                                             gint rowstride);</pre><p>
 Draws an RGB image in the drawable. This is the core GdkRGB
 function, and likely the only one you will need to use.
 </p><p>
@@ -321,33 +209,17 @@ contents are ignored).
 start of the next.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966083"></a><h3><a name="gdk-draw-rgb-image-dithalign"></a>gdk_draw_rgb_image_dithalign ()</h3><a class="indexterm" name="id2966095"></a><pre class="programlisting">void        gdk_draw_rgb_image_dithalign    (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3140521"></a><h3><a name="gdk-draw-rgb-image-dithalign"></a>gdk_draw_rgb_image_dithalign ()</h3><a class="indexterm" name="id3140534"></a><pre class="programlisting">void        gdk_draw_rgb_image_dithalign    (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *rgb_buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> xdith,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> ydith);</pre><p>
+                                             guchar *rgb_buf,
+                                             gint rowstride,
+                                             gint xdith,
+                                             gint ydith);</pre><p>
 Draws an RGB image in the drawable, with an adjustment for dither alignment.
 </p><p>
 This function is useful when drawing dithered images into a window
@@ -373,27 +245,15 @@ start of the next.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ydith</tt></i> :</span></td><td>A y offset for dither alignment.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966425"></a><h3><a name="gdk-draw-indexed-image"></a>gdk_draw_indexed_image ()</h3><a class="indexterm" name="id2966437"></a><pre class="programlisting">void        gdk_draw_indexed_image          (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3140863"></a><h3><a name="gdk-draw-indexed-image"></a>gdk_draw_indexed_image ()</h3><a class="indexterm" name="id3140875"></a><pre class="programlisting">void        gdk_draw_indexed_image          (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
+                                             guchar *buf,
+                                             gint rowstride,
                                              <a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a> *cmap);</pre><p>
 Draws an indexed image in the drawable, using a <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a> to assign
 actual colors to the color indices.
@@ -410,27 +270,15 @@ start of the next.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>cmap</tt></i> :</span></td><td>The <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a> used to assign colors to the color indices.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966728"></a><h3><a name="gdk-draw-gray-image"></a>gdk_draw_gray_image ()</h3><a class="indexterm" name="id2966739"></a><pre class="programlisting">void        gdk_draw_gray_image             (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3141167"></a><h3><a name="gdk-draw-gray-image"></a>gdk_draw_gray_image ()</h3><a class="indexterm" name="id3141178"></a><pre class="programlisting">void        gdk_draw_gray_image             (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);</pre><p>
+                                             guchar *buf,
+                                             gint rowstride);</pre><p>
 Draws a grayscale image in the drawable.
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>drawable</tt></i> :</span></td><td>The <a href="gdk-Drawing-Primitives.html#GdkDrawable"><span class="type">GdkDrawable</span></a> to draw in (usually a <a href="gdk-Windows.html#GdkWindow"><span class="type">GdkWindow</span></a>).
@@ -445,27 +293,15 @@ Draws a grayscale image in the drawable.
 start of the next.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2966992"></a><h3><a name="gdk-draw-rgb-32-image"></a>gdk_draw_rgb_32_image ()</h3><a class="indexterm" name="id2967003"></a><pre class="programlisting">void        gdk_draw_rgb_32_image           (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3141430"></a><h3><a name="gdk-draw-rgb-32-image"></a>gdk_draw_rgb_32_image ()</h3><a class="indexterm" name="id3141442"></a><pre class="programlisting">void        gdk_draw_rgb_32_image           (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride);</pre><p>
+                                             guchar *buf,
+                                             gint rowstride);</pre><p>
 Draws a padded RGB image in the drawable. The image is stored as one
 pixel per 32-bit word. It is laid out as a red byte, a green byte, a
 blue byte, and a padding byte.
@@ -486,33 +322,17 @@ memory bandwidth.
 start of the next.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967266"></a><h3><a name="gdk-draw-rgb-32-image-dithalign"></a>gdk_draw_rgb_32_image_dithalign ()</h3><a class="indexterm" name="id2967278"></a><pre class="programlisting">void        gdk_draw_rgb_32_image_dithalign (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3141704"></a><h3><a name="gdk-draw-rgb-32-image-dithalign"></a>gdk_draw_rgb_32_image_dithalign ()</h3><a class="indexterm" name="id3141716"></a><pre class="programlisting">void        gdk_draw_rgb_32_image_dithalign (<a href="gdk-Drawing-Primitives.html#GdkDrawable">GdkDrawable</a> *drawable,
                                              <a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> x,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> y,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> width,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> height,
+                                             gint x,
+                                             gint y,
+                                             gint width,
+                                             gint height,
                                              <a href="gdk-GdkRGB.html#GdkRgbDither">GdkRgbDither</a> dith,
-                                             <a
-href="../glib/glib-Basic-Types.html#guchar"
->guchar</a> *buf,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> rowstride,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> xdith,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> ydith);</pre><p>
+                                             guchar *buf,
+                                             gint rowstride,
+                                             gint xdith,
+                                             gint ydith);</pre><p>
 Like <a href="gdk-GdkRGB.html#gdk-draw-rgb-32-image"><tt class="function">gdk_draw_rgb_32_image()</tt></a>, but allows you to specify the dither
 offsets. See <a href="gdk-GdkRGB.html#gdk-draw-rgb-image-dithalign"><tt class="function">gdk_draw_rgb_image_dithalign()</tt></a> for more details.</p><p>
 
@@ -527,7 +347,7 @@ offsets. See <a href="gdk-GdkRGB.html#gdk-draw-rgb-image-dithalign"><tt class="f
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rowstride</tt></i> :</span></td><td> rowstride of RGB image data
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>xdith</tt></i> :</span></td><td> X dither offset
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ydith</tt></i> :</span></td><td> Y dither offset
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967594"></a><h3><a name="GdkRgbDither"></a>enum GdkRgbDither</h3><a class="indexterm" name="id2967605"></a><pre class="programlisting">typedef enum
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142032"></a><h3><a name="GdkRgbDither"></a>enum GdkRgbDither</h3><a class="indexterm" name="id3142043"></a><pre class="programlisting">typedef enum
 {
   GDK_RGB_DITHER_NONE,
   GDK_RGB_DITHER_NORMAL,
@@ -546,12 +366,8 @@ only.
 </p></li></ul></div><p>
 Since GdkRGB currently only handles images with 8 bits per component,
 dithering on 24 bit per pixel displays is a moot point.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2967671"></a><h3><a name="gdk-rgb-cmap-new"></a>gdk_rgb_cmap_new ()</h3><a class="indexterm" name="id2967682"></a><pre class="programlisting"><a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a>* gdk_rgb_cmap_new                (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> *colors,
-                                             <a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> n_colors);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3142109"></a><h3><a name="gdk-rgb-cmap-new"></a>gdk_rgb_cmap_new ()</h3><a class="indexterm" name="id3142120"></a><pre class="programlisting"><a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a>* gdk_rgb_cmap_new                (guint32 *colors,
+                                             gint n_colors);</pre><p>
 Creates a new <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a> structure. The cmap maps color indexes to
 RGB colors. If <i class="parameter"><tt>n_colors</tt></i> is less than 256, then images containing
 color values greater than or equal to <i class="parameter"><tt>n_colors</tt></i> will produce undefined
@@ -561,12 +377,12 @@ results, including possibly segfaults.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The newly created <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967792"></a><h3><a name="gdk-rgb-cmap-free"></a>gdk_rgb_cmap_free ()</h3><a class="indexterm" name="id2967804"></a><pre class="programlisting">void        gdk_rgb_cmap_free               (<a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a> *cmap);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142230"></a><h3><a name="gdk-rgb-cmap-free"></a>gdk_rgb_cmap_free ()</h3><a class="indexterm" name="id3142242"></a><pre class="programlisting">void        gdk_rgb_cmap_free               (<a href="gdk-GdkRGB.html#GdkRgbCmap">GdkRgbCmap</a> *cmap);</pre><p>
 Frees the memory associated with a <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a> created by <a href="gdk-GdkRGB.html#gdk-rgb-cmap-new"><tt class="function">gdk_rgb_cmap_new()</tt></a>.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cmap</tt></i> :</span></td><td>The <a href="gdk-GdkRGB.html#GdkRgbCmap"><span class="type">GdkRgbCmap</span></a> to free.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2967877"></a><h3><a name="GdkRgbCmap"></a>struct GdkRgbCmap</h3><a class="indexterm" name="id2967888"></a><pre class="programlisting">struct GdkRgbCmap {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142315"></a><h3><a name="GdkRgbCmap"></a>struct GdkRgbCmap</h3><a class="indexterm" name="id3142326"></a><pre class="programlisting">struct GdkRgbCmap {
 
   guint32 colors[256];
   gint n_colors;
@@ -575,31 +391,23 @@ Frees the memory associated with a <a href="gdk-GdkRGB.html#GdkRgbCmap"><span cl
 </pre><p>
 A private data structure which maps color indices to actual RGB
 colors. This is used only for <a href="gdk-GdkRGB.html#gdk-draw-indexed-image"><tt class="function">gdk_draw_indexed_image()</tt></a>.
-</p></div><hr><div class="refsect2" lang="en"><a name="id2967916"></a><h3><a name="gdk-rgb-gc-set-foreground"></a>gdk_rgb_gc_set_foreground ()</h3><a class="indexterm" name="id2967928"></a><pre class="programlisting">void        gdk_rgb_gc_set_foreground       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_gc_set_foreground</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id3142354"></a><h3><a name="gdk-rgb-gc-set-foreground"></a>gdk_rgb_gc_set_foreground ()</h3><a class="indexterm" name="id3142366"></a><pre class="programlisting">void        gdk_rgb_gc_set_foreground       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
+                                             guint32 rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_gc_set_foreground</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Sets the foreground color in <i class="parameter"><tt>gc</tt></i> to the specified color (or the
 closest approximation, in the case of limited visuals).
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gc</tt></i> :</span></td><td>The <a href="gdk-Graphics-Contexts.html#GdkGC"><span class="type">GdkGC</span></a> to modify.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rgb</tt></i> :</span></td><td>The color, represented as a 0xRRGGBB integer value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968024"></a><h3><a name="gdk-rgb-gc-set-background"></a>gdk_rgb_gc_set_background ()</h3><a class="indexterm" name="id2968036"></a><pre class="programlisting">void        gdk_rgb_gc_set_background       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_gc_set_background</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142463"></a><h3><a name="gdk-rgb-gc-set-background"></a>gdk_rgb_gc_set_background ()</h3><a class="indexterm" name="id3142474"></a><pre class="programlisting">void        gdk_rgb_gc_set_background       (<a href="gdk-Graphics-Contexts.html#GdkGC">GdkGC</a> *gc,
+                                             guint32 rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_gc_set_background</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Sets the background color in <i class="parameter"><tt>gc</tt></i> to the specified color (or the
 closest approximation, in the case of limited visuals).
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gc</tt></i> :</span></td><td>The <a href="gdk-Graphics-Contexts.html#GdkGC"><span class="type">GdkGC</span></a> to modify.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rgb</tt></i> :</span></td><td>The color, represented as a 0xRRGGBB integer value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968132"></a><h3><a name="gdk-rgb-xpixel-from-rgb"></a>gdk_rgb_xpixel_from_rgb ()</h3><a class="indexterm" name="id2968144"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gulong"
->gulong</a>      gdk_rgb_xpixel_from_rgb         (<a
-href="../glib/glib-Basic-Types.html#guint32"
->guint32</a> rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_xpixel_from_rgb</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142570"></a><h3><a name="gdk-rgb-xpixel-from-rgb"></a>gdk_rgb_xpixel_from_rgb ()</h3><a class="indexterm" name="id3142582"></a><pre class="programlisting">gulong      gdk_rgb_xpixel_from_rgb         (guint32 rgb);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_xpixel_from_rgb</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Finds the X pixel closest in color to the <i class="parameter"><tt>rgb</tt></i> color specified. This
 value may be used to set the <i class="structfield"><tt>pixel</tt></i> field of
 a <a href="gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</span></a> struct.
@@ -607,15 +415,11 @@ a <a href="gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The X pixel value.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968233"></a><h3><a name="gdk-rgb-find-color"></a>gdk_rgb_find_color ()</h3><a class="indexterm" name="id2968244"></a><pre class="programlisting">void        gdk_rgb_find_color              (<a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a> *colormap,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142671"></a><h3><a name="gdk-rgb-find-color"></a>gdk_rgb_find_color ()</h3><a class="indexterm" name="id3142683"></a><pre class="programlisting">void        gdk_rgb_find_color              (<a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a> *colormap,
                                              <a href="gdk-Colormaps-and-Colors.html#GdkColor">GdkColor</a> *color);</pre><p>
 <i class="parameter"><tt>colormap</tt></i> should be the colormap for the graphics context and
-drawable you're using to draw. If you're drawing to a <a
-href="../gtk/GtkWidget.html"
-><span class="type">GtkWidget</span></a>,
-call <a
-href="../gtk/GtkWidget.html#gtk-widget-get-colormap"
-><tt class="function">gtk_widget_get_colormap()</tt></a>.
+drawable you're using to draw. If you're drawing to a <span class="type">GtkWidget</span>,
+call <tt class="function">gtk_widget_get_colormap()</tt>.
 </p><p>
 <i class="parameter"><tt>color</tt></i> should have its <tt class="literal">red</tt>, <tt class="literal">green</tt>, and <tt class="literal">blue</tt> fields initialized;
 <a href="gdk-GdkRGB.html#gdk-rgb-find-color"><tt class="function">gdk_rgb_find_color()</tt></a> will fill in the <tt class="literal">pixel</tt> field with the best
@@ -630,9 +434,7 @@ functions, there's no need for <a href="gdk-GdkRGB.html#gdk-rgb-find-color"><tt 
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>colormap</tt></i> :</span></td><td> a <a href="gdk-Colormaps-and-Colors.html#GdkColormap"><span class="type">GdkColormap</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>color</tt></i> :</span></td><td> a <a href="gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968467"></a><h3><a name="gdk-rgb-set-install"></a>gdk_rgb_set_install ()</h3><a class="indexterm" name="id2968478"></a><pre class="programlisting">void        gdk_rgb_set_install             (<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> install);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142905"></a><h3><a name="gdk-rgb-set-install"></a>gdk_rgb_set_install ()</h3><a class="indexterm" name="id3142916"></a><pre class="programlisting">void        gdk_rgb_set_install             (gboolean install);</pre><p>
 If <i class="parameter"><tt>install</tt></i> is <tt class="literal">TRUE</tt>, directs GdkRGB to always install a new "private"
 colormap rather than trying to find a best fit with the colors already
 allocated. Ordinarily, GdkRGB will install a colormap only if a
@@ -643,9 +445,7 @@ but also leads to the dreaded "colormap flashing" effect.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>install</tt></i> :</span></td><td><tt class="literal">TRUE</tt> to set install mode.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968550"></a><h3><a name="gdk-rgb-set-min-colors"></a>gdk_rgb_set_min_colors ()</h3><a class="indexterm" name="id2968561"></a><pre class="programlisting">void        gdk_rgb_set_min_colors          (<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a> min_colors);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3142988"></a><h3><a name="gdk-rgb-set-min-colors"></a>gdk_rgb_set_min_colors ()</h3><a class="indexterm" name="id3143000"></a><pre class="programlisting">void        gdk_rgb_set_min_colors          (gint min_colors);</pre><p>
 Sets the minimum number of colors for the color cube. Generally,
 GdkRGB tries to allocate the largest color cube it can. If it can't
 allocate a color cube at least as large as <i class="parameter"><tt>min_colors</tt></i>, it installs a
@@ -653,7 +453,7 @@ private colormap.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>min_colors</tt></i> :</span></td><td>The minimum number of colors accepted.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968618"></a><h3><a name="gdk-rgb-get-visual"></a>gdk_rgb_get_visual ()</h3><a class="indexterm" name="id2968629"></a><pre class="programlisting"><a href="gdk-Visuals.html#GdkVisual">GdkVisual</a>*  gdk_rgb_get_visual              (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3143056"></a><h3><a name="gdk-rgb-get-visual"></a>gdk_rgb_get_visual ()</h3><a class="indexterm" name="id3143067"></a><pre class="programlisting"><a href="gdk-Visuals.html#GdkVisual">GdkVisual</a>*  gdk_rgb_get_visual              (void);</pre><p>
 Gets a "preferred visual" chosen by GdkRGB for rendering image data
 on the default screen. In previous versions of GDK, this was the
 only visual GdkRGB could use for rendering. In current versions,
@@ -661,7 +461,7 @@ it's simply the visual GdkRGB would have chosen as the optimal one
 in those previous versions. GdkRGB can now render to drawables with
 any visual.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The <a href="gdk-Visuals.html#GdkVisual"><span class="type">GdkVisual</span></a> chosen by GdkRGB.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968681"></a><h3><a name="gdk-rgb-get-colormap"></a>gdk_rgb_get_colormap ()</h3><a class="indexterm" name="id2968692"></a><pre class="programlisting"><a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a>* gdk_rgb_get_colormap           (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3143119"></a><h3><a name="gdk-rgb-get-colormap"></a>gdk_rgb_get_colormap ()</h3><a class="indexterm" name="id3143130"></a><pre class="programlisting"><a href="gdk-Colormaps-and-Colors.html#GdkColormap">GdkColormap</a>* gdk_rgb_get_colormap           (void);</pre><p>
 Get the preferred colormap for rendering image data.  Not a
 very useful function; historically, GDK could only render RGB image
 data to one colormap and visual, but in the current version it can
@@ -669,16 +469,14 @@ render to any colormap and visual. So there's no need to call this
 function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the preferred colormap
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968736"></a><h3><a name="gdk-rgb-get-cmap"></a>gdk_rgb_get_cmap</h3><a class="indexterm" name="id2968747"></a><pre class="programlisting">#define gdk_rgb_get_cmap               gdk_rgb_get_colormap
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3143174"></a><h3><a name="gdk-rgb-get-cmap"></a>gdk_rgb_get_cmap</h3><a class="indexterm" name="id3143185"></a><pre class="programlisting">#define gdk_rgb_get_cmap               gdk_rgb_get_colormap
 </pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gdk_rgb_get_cmap</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 Gets the colormap set by GdkRGB. This colormap and the corresponding
 visual should be used when creating windows that will be drawn in by GdkRGB.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>The <a href="gdk-Colormaps-and-Colors.html#GdkColormap"><span class="type">GdkColormap</span></a> set by GdkRGB.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968800"></a><h3><a name="gdk-rgb-ditherable"></a>gdk_rgb_ditherable ()</h3><a class="indexterm" name="id2968811"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a>    gdk_rgb_ditherable              (void);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3143238"></a><h3><a name="gdk-rgb-ditherable"></a>gdk_rgb_ditherable ()</h3><a class="indexterm" name="id3143250"></a><pre class="programlisting">gboolean    gdk_rgb_ditherable              (void);</pre><p>
 Determines whether the visual is ditherable. This function may be
 useful for presenting a user interface choice to the user about which
 dither mode is desired; if the display is not ditherable, it may make
@@ -686,14 +484,12 @@ sense to gray out or hide the corresponding UI widget.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the visual is ditherable.
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2968856"></a><h3><a name="gdk-rgb-set-verbose"></a>gdk_rgb_set_verbose ()</h3><a class="indexterm" name="id2968868"></a><pre class="programlisting">void        gdk_rgb_set_verbose             (<a
-href="../glib/glib-Basic-Types.html#gboolean"
->gboolean</a> verbose);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3143294"></a><h3><a name="gdk-rgb-set-verbose"></a>gdk_rgb_set_verbose ()</h3><a class="indexterm" name="id3143306"></a><pre class="programlisting">void        gdk_rgb_set_verbose             (gboolean verbose);</pre><p>
 Sets the "verbose" flag. This is generally only useful for debugging.
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>verbose</tt></i> :</span></td><td><tt class="literal">TRUE</tt> if verbose messages are desired.
 
 
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2968921"></a><h2>See Also</h2><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3143359"></a><h2>See Also</h2><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a href="gdk-Colormaps-and-Colors.html#GdkColor"><span class="type">GdkColor</span></a></span></td><td><p>The underlying GDK mechanism for allocating
 colors.</p></td></tr><tr><td><span class="term"><a
 href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"

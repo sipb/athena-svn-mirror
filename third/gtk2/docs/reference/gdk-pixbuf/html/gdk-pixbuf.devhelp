@@ -27,7 +27,7 @@
     </sub>
     <sub name="" link="ix01.html"/>
     <sub name="Porting applications from Imlib to gdk-pixbuf" link="apa.html">
-      <sub name="Introduction" link="apa.html#id3009566"/>
+      <sub name="Introduction" link="apa.html#id2981538"/>
       <sub name="Differences between Imlib and gdk-pixbuf" link="apas02.html"/>
       <sub name="Converting Applications to gdk-pixbuf" link="apas03.html"/>
     </sub>
@@ -114,7 +114,7 @@
     <function name="gdk_pixbuf_animation_iter_get_delay_time ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-get-delay-time"/>
     <function name="gdk_pixbuf_animation_iter_on_currently_loading_frame ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-on-currently-loading-frame"/>
     <function name="gdk_pixbuf_animation_iter_get_pixbuf ()" link="gdk-pixbuf-animation.html#gdk-pixbuf-animation-iter-get-pixbuf"/>
-    <function name="Loading an animation" link="GdkPixbufLoader.html#id2985142"/>
+    <function name="Loading an animation" link="GdkPixbufLoader.html#id2957114"/>
     <function name="struct GdkPixbufLoader" link="GdkPixbufLoader.html#GdkPixbufLoader-struct"/>
     <function name="gdk_pixbuf_loader_new ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new"/>
     <function name="gdk_pixbuf_loader_new_with_type ()" link="GdkPixbufLoader.html#gdk-pixbuf-loader-new-with-type"/>
@@ -177,6 +177,6 @@
     <function name="xlib_rgb_get_depth ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-get-depth"/>
     <function name="xlib_rgb_get_display ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-get-display"/>
     <function name="xlib_rgb_get_screen ()" link="gdk-pixbuf-gdk-pixbuf-xlib-rgb.html#xlib-rgb-get-screen"/>
-    <function name="Options" link="gdk-pixbuf-csource.html#id3008807"/>
+    <function name="Options" link="gdk-pixbuf-csource.html#id2980778"/>
   </functions>
 </book>

@@ -834,6 +834,9 @@ gtk_entry_completion_set_model (GtkEntryCompletion *completion,
   gtk_tree_view_set_model (GTK_TREE_VIEW (completion->priv->tree_view),
                            GTK_TREE_MODEL (completion->priv->filter_model));
   g_object_unref (G_OBJECT (completion->priv->filter_model));
+
+  if (GTK_WIDGET_VISIBLE (completion->priv->popup_window))
+    _gtk_entry_completion_resize_popup (completion);
 }
 
 /**
@@ -1158,9 +1161,6 @@ _gtk_entry_completion_resize_popup (GtkEntryCompletion *completion)
   gdk_window_get_origin (completion->priv->entry->window, &x, &y);
   get_borders (GTK_ENTRY (completion->priv->entry), &x_border, &y_border);
 
-  x += x_border;
-  y += 2 * y_border;
-
   matches = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (completion->priv->filter_model), NULL);
 
   items = MIN (matches, 15);
@@ -1178,9 +1178,8 @@ _gtk_entry_completion_resize_popup (GtkEntryCompletion *completion)
 						  GTK_WIDGET (completion->priv->entry)->window);
   gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
 
-  width = MIN (completion->priv->entry->allocation.width, monitor.width);
-  gtk_widget_set_size_request (completion->priv->tree_view,
-                               width - 2 * x_border, items * height);
+  width = MIN (completion->priv->entry->allocation.width, monitor.width) - 2 * x_border;
+  gtk_widget_set_size_request (completion->priv->tree_view, width, items * height);
 
   /* default on no match */
   completion->priv->current_selected = -1;
@@ -1190,13 +1189,7 @@ _gtk_entry_completion_resize_popup (GtkEntryCompletion *completion)
   if (items)
     {
       gtk_widget_show (completion->priv->action_view);
-
-      gtk_tree_view_column_cell_get_size (gtk_tree_view_get_column (GTK_TREE_VIEW (completion->priv->action_view), 0),
-                                          NULL, NULL, NULL, NULL,
-                                          &height);
-
-      gtk_widget_set_size_request (completion->priv->action_view,
-                                   width - 2 * x_border, items * height);
+      gtk_widget_set_size_request (completion->priv->action_view, width, -1);
     }
   else
     gtk_widget_hide (completion->priv->action_view);

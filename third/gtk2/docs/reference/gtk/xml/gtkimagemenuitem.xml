@@ -94,7 +94,9 @@ fill in the text label.
 <indexterm><primary>gtk_image_menu_item_set_image</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_image_menu_item_set_image   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item,
                                              <link linkend="GtkWidget">GtkWidget</link> *image);</programlisting>
 <para>
-Sets the image of <parameter>image_menu_item</parameter> to the given widget.</para>
+Sets the image of <parameter>image_menu_item</parameter> to the given widget.
+Note that it depends on the show-menu-images setting whether
+the image will be displayed or not.</para>
 <para>
 
 </para><variablelist role="params">

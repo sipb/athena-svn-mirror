@@ -117,14 +117,14 @@ struct      <link linkend="GtkRadioActionEntry">GtkRadioActionEntry</link>;
 <synopsis>
 
 &quot;<link linkend="GtkActionGroup-connect-proxy">connect-proxy</link>&quot;
-            <link linkend="void">void</link>        user_function      (<link linkend="GtkActionGroup">GtkActionGroup</link> *actiongroup,
-                                            <link linkend="GtkAction">GtkAction</link> *arg1,
-                                            <link linkend="GtkWidget">GtkWidget</link> *widget,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
+                                            <link linkend="GtkAction">GtkAction</link> *action,
+                                            <link linkend="GtkWidget">GtkWidget</link> *proxy,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkActionGroup-disconnect-proxy">disconnect-proxy</link>&quot;
-            <link linkend="void">void</link>        user_function      (<link linkend="GtkActionGroup">GtkActionGroup</link> *actiongroup,
-                                            <link linkend="GtkAction">GtkAction</link> *arg1,
-                                            <link linkend="GtkWidget">GtkWidget</link> *widget,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
+                                            <link linkend="GtkAction">GtkAction</link> *action,
+                                            <link linkend="GtkWidget">GtkWidget</link> *proxy,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkActionGroup-post-activate">post-activate</link>&quot;
             <link linkend="void">void</link>        user_function      (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
@@ -829,46 +829,68 @@ If you're not using <link linkend="gettext"><function>gettext()</function></link
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkActionGroup-connect-proxy"/>The &quot;connect-proxy&quot; signal</title>
-<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkActionGroup">GtkActionGroup</link> *actiongroup,
-                                            <link linkend="GtkAction">GtkAction</link> *arg1,
-                                            <link linkend="GtkWidget">GtkWidget</link> *widget,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
+                                            <link linkend="GtkAction">GtkAction</link> *action,
+                                            <link linkend="GtkWidget">GtkWidget</link> *proxy,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+The connect_proxy signal is emitted after connecting a proxy to 
+an action in the group. Note that the proxy may have been connected 
+to a different action before.
+</para>
+<para>
+This is intended for simple customizations for which a custom action
+class would be too clumsy, e.g. showing tooltips for menuitems in the
+statusbar.
+</para>
+<para>
+<link linkend="GtkUIManager"><type>GtkUIManager</type></link> proxies the signal and provides global notification 
+just before any action is connected to a proxy, which is probably more
+convenient to use.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><parameter>actiongroup</parameter>&nbsp;:</term>
-<listitem><simpara>the object which received the signal.
+<varlistentry><term><parameter>action_group</parameter>&nbsp;:</term>
+<listitem><simpara> the group
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
-<listitem><simpara>
-
+<varlistentry><term><parameter>proxy</parameter>&nbsp;:</term>
+<listitem><simpara> the proxy
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="GtkActionGroup-disconnect-proxy"/>The &quot;disconnect-proxy&quot; signal</title>
-<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkActionGroup">GtkActionGroup</link> *actiongroup,
-                                            <link linkend="GtkAction">GtkAction</link> *arg1,
-                                            <link linkend="GtkWidget">GtkWidget</link> *widget,
+</variablelist><para>Since  2.4
+</para></refsect2><refsect2><title><anchor id="GtkActionGroup-disconnect-proxy"/>The &quot;disconnect-proxy&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
+                                            <link linkend="GtkAction">GtkAction</link> *action,
+                                            <link linkend="GtkWidget">GtkWidget</link> *proxy,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+The disconnect_proxy signal is emitted after disconnecting a proxy 
+from an action in the group. 
+</para>
+<para>
+<link linkend="GtkUIManager"><type>GtkUIManager</type></link> proxies the signal and provides global notification 
+just before any action is connected to a proxy, which is probably more
+convenient to use.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><parameter>actiongroup</parameter>&nbsp;:</term>
-<listitem><simpara>the object which received the signal.
+<varlistentry><term><parameter>action_group</parameter>&nbsp;:</term>
+<listitem><simpara> the group
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
-<listitem><simpara>
-
+<varlistentry><term><parameter>proxy</parameter>&nbsp;:</term>
+<listitem><simpara> the proxy
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2><title><anchor id="GtkActionGroup-post-activate"/>The &quot;post-activate&quot; signal</title>
+</variablelist><para>Since  2.4
+</para></refsect2><refsect2><title><anchor id="GtkActionGroup-post-activate"/>The &quot;post-activate&quot; signal</title>
 <programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkActionGroup">GtkActionGroup</link> *action_group,
                                             <link linkend="GtkAction">GtkAction</link> *action,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>

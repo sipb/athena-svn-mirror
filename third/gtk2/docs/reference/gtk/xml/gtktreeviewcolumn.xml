@@ -1278,7 +1278,7 @@ Sets the current keyboard focus to be at <parameter>cell</parameter>, if the col
 </refsect2>
 <refsect2><title><anchor id="GtkTreeViewColumn--sizing"/>The &quot;<literal>sizing</literal>&quot; property</title>
 <programlisting>  &quot;sizing&quot;               <link linkend="GtkTreeViewColumnSizing">GtkTreeViewColumnSizing</link>  : Read / Write</programlisting>
-<para>Resize mode of the column.</para><para>Default value: GTK_TREE_VIEW_COLUMN_AUTOSIZE</para>
+<para>Resize mode of the column.</para><para>Default value: GTK_TREE_VIEW_COLUMN_GROW_ONLY</para>
 </refsect2>
 <refsect2><title><anchor id="GtkTreeViewColumn--sort-indicator"/>The &quot;<literal>sort-indicator</literal>&quot; property</title>
 <programlisting>  &quot;sort-indicator&quot;       <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>

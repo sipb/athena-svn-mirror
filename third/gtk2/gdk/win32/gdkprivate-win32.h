@@ -497,8 +497,13 @@ extern gint		 _gdk_max_colors;
 
 #define GDK_WIN32_COLORMAP_DATA(cmap) ((GdkColormapPrivateWin32 *) GDK_COLORMAP (cmap)->windowing_data)
 
+/* TRUE while a user-initiated window move or resize operation is in progress */
+extern gboolean		 _sizemove_in_progress;
+
 /* Initialization */
 void _gdk_windowing_window_init (void);
+void _gdk_root_window_size_init (void);
+void _gdk_monitor_init(void);
 void _gdk_visual_init (void);
 void _gdk_dnd_init    (void);
 void _gdk_windowing_image_init  (void);

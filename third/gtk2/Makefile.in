@@ -418,7 +418,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure AUTHORS \
 	COPYING ChangeLog INSTALL Makefile.am NEWS acconfig.h \
 	acinclude.m4 aclocal.m4 config.guess config.h.in \
-	config.h.win32.in config.sub configure configure.in depcomp \
+	config.h.win32.in config.sub configure.in depcomp \
 	gdk-2.0-uninstalled.pc.in gdk-2.0.pc.in \
 	gdk-pixbuf-2.0-uninstalled.pc.in gdk-pixbuf-2.0.pc.in \
 	gtk+-2.0-uninstalled.pc.in gtk+-2.0.pc.in gtk-zip.sh.in \
