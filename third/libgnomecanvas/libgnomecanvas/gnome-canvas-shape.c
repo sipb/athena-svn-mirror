@@ -238,6 +238,8 @@ gnome_canvas_shape_init (GnomeCanvasShape *shape)
 
 	shape->priv->path = NULL;
 
+	shape->priv->scale = 1.0;
+
 	shape->priv->fill_set = FALSE;
 	shape->priv->outline_set = FALSE;
 	shape->priv->width_pixels = FALSE;

@@ -92,6 +92,10 @@
 #include "gnome-canvas-marshal.c"
 
 
+/* We must run our idle update handler *before* GDK wants to redraw. */
+#define CANVAS_IDLE_PRIORITY (GDK_PRIORITY_REDRAW - 5)
+
+
 static void gnome_canvas_request_update (GnomeCanvas      *canvas);
 static void group_add                   (GnomeCanvasGroup *group,
 					 GnomeCanvasItem  *item);
@@ -2084,6 +2088,11 @@ gnome_canvas_init (GnomeCanvas *canvas)
 {
 	GTK_WIDGET_SET_FLAGS (canvas, GTK_CAN_FOCUS);
 
+	canvas->need_update = FALSE;
+	canvas->need_redraw = FALSE;
+	canvas->redraw_area = NULL;
+	canvas->idle_id = 0;
+
 	canvas->scroll_x1 = 0.0;
 	canvas->scroll_y1 = 0.0;
 	canvas->scroll_x2 = canvas->layout.width;
@@ -3022,33 +3031,46 @@ static gint
 gnome_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	GnomeCanvas *canvas;
-	ArtIRect rect;
+	GdkRectangle *rects;
+	gint n_rects;
+	int i;
 
 	canvas = GNOME_CANVAS (widget);
 
-	if (!GTK_WIDGET_DRAWABLE (widget) || (event->window != canvas->layout.bin_window)) return FALSE;
+	if (!GTK_WIDGET_DRAWABLE (widget) || (event->window != canvas->layout.bin_window))
+		return FALSE;
 
 #ifdef VERBOSE
 	g_print ("Expose\n");
 #endif
-	rect.x0 = event->area.x - canvas->zoom_xofs;
-	rect.y0 = event->area.y - canvas->zoom_yofs;
-	rect.x1 = event->area.x + event->area.width - canvas->zoom_xofs;
-	rect.y1 = event->area.y + event->area.height - canvas->zoom_yofs;
 
-	if (canvas->need_update || canvas->need_redraw) {
-		ArtUta *uta;
-		/* Update or drawing is scheduled, so just mark exposed area as dirty */
-		uta = art_uta_from_irect (&rect);
-		gnome_canvas_request_redraw_uta (canvas, uta);
-	} else {
-		/* No pending updates, draw exposed area immediately */
-		gnome_canvas_paint_rect (canvas, rect.x0, rect.y0, rect.x1, rect.y1);
+	gdk_region_get_rectangles (event->region, &rects, &n_rects);
 
-		/* And call expose on parent container class */
-		if (GTK_WIDGET_CLASS (canvas_parent_class)->expose_event)
-			return (* GTK_WIDGET_CLASS (canvas_parent_class)->expose_event) (widget, event);
+	for (i = 0; i < n_rects; i++) {
+		ArtIRect rect;
+
+		rect.x0 = rects[i].x - canvas->zoom_xofs;
+		rect.y0 = rects[i].y - canvas->zoom_yofs;
+		rect.x1 = rects[i].x + rects[i].width - canvas->zoom_xofs;
+		rect.y1 = rects[i].y + rects[i].height - canvas->zoom_yofs;
+
+		if (canvas->need_update || canvas->need_redraw) {
+			ArtUta *uta;
+			/* Update or drawing is scheduled, so just mark exposed area as dirty */
+			uta = art_uta_from_irect (&rect);
+			gnome_canvas_request_redraw_uta (canvas, uta);
+		} else {
+			/* No pending updates, draw exposed area immediately */
+			gnome_canvas_paint_rect (canvas, rect.x0, rect.y0, rect.x1, rect.y1);
+
+			/* And call expose on parent container class */
+			if (GTK_WIDGET_CLASS (canvas_parent_class)->expose_event)
+				(* GTK_WIDGET_CLASS (canvas_parent_class)->expose_event) (
+					widget, event);
+		}
 	}
+
+	g_free (rects);
 
 	return FALSE;
 }
@@ -3063,33 +3085,14 @@ paint (GnomeCanvas *canvas)
 
 	widget = GTK_WIDGET (canvas);
 
-	if (canvas->need_update) {
-		gdouble w2cpx[6];
-
-		/* We start updating root with w2cpx affine */
-		w2cpx[0] = canvas->pixels_per_unit;
-		w2cpx[1] = 0.0;
-		w2cpx[2] = 0.0;
-		w2cpx[3] = canvas->pixels_per_unit;
-		w2cpx[4] = -canvas->scroll_x1 * canvas->pixels_per_unit;
-		w2cpx[5] = -canvas->scroll_y1 * canvas->pixels_per_unit;
-
-		gnome_canvas_item_invoke_update (canvas->root, w2cpx, NULL, 0);
-
-		canvas->need_update = FALSE;
-	}
-
-	if (!canvas->need_redraw) return;
-
-#ifdef VERBOSE
-	g_print ("Scheduled redraw\n");
-#endif
-	
-	if (canvas->aa) {
-		rects = art_rect_list_from_uta (canvas->redraw_area, IMAGE_WIDTH_AA, IMAGE_HEIGHT_AA, &n_rects);
-	} else {
-		rects = art_rect_list_from_uta (canvas->redraw_area, IMAGE_WIDTH, IMAGE_HEIGHT, &n_rects);
-	}
+	if (canvas->aa)
+		rects = art_rect_list_from_uta (canvas->redraw_area,
+						IMAGE_WIDTH_AA, IMAGE_HEIGHT_AA,
+						&n_rects);
+	else
+		rects = art_rect_list_from_uta (canvas->redraw_area,
+						IMAGE_WIDTH, IMAGE_HEIGHT,
+						&n_rects);
 
 	art_uta_free (canvas->redraw_area);
 	canvas->redraw_area = NULL;
@@ -3173,12 +3176,12 @@ do_update (GnomeCanvas *canvas)
 
 	/* Paint if able to */
 
-	if (GTK_WIDGET_DRAWABLE (canvas))
+	if (GTK_WIDGET_DRAWABLE (canvas) && canvas->need_redraw)
 		paint (canvas);
 }
 
 /* Idle handler for the canvas.  It deals with pending updates and redraws. */
-static gint
+static gboolean
 idle_handler (gpointer data)
 {
 	GnomeCanvas *canvas;
@@ -3200,9 +3203,15 @@ idle_handler (gpointer data)
 static void
 add_idle (GnomeCanvas *canvas)
 {
-	if (!canvas->idle_id) {
-		canvas->idle_id = gtk_idle_add (idle_handler, canvas);
-	}
+	g_assert (canvas->need_update || canvas->need_redraw);
+
+	if (!canvas->idle_id)
+		canvas->idle_id = g_idle_add_full (CANVAS_IDLE_PRIORITY,
+						   idle_handler,
+						   canvas,
+						   NULL);
+
+/*  	canvas->idle_id = gtk_idle_add (idle_handler, canvas); */
 }
 
 /**
@@ -3446,8 +3455,12 @@ gnome_canvas_update_now (GnomeCanvas *canvas)
 {
 	g_return_if_fail (GNOME_IS_CANVAS (canvas));
 
-	if (!(canvas->need_update || canvas->need_redraw))
+	if (!(canvas->need_update || canvas->need_redraw)) {
+		g_assert (canvas->idle_id == 0);
+		g_assert (canvas->redraw_area == NULL);
 		return;
+	}
+
 	remove_idle (canvas);
 	do_update (canvas);
 }
@@ -3492,6 +3505,11 @@ gnome_canvas_request_update (GnomeCanvas *canvas)
 static void
 gnome_canvas_request_update_real (GnomeCanvas *canvas)
 {
+	if (canvas->need_update) {
+		g_assert (canvas->idle_id != 0);
+		return;
+	}
+
 	canvas->need_update = TRUE;
 	add_idle (canvas);
 }
@@ -3654,6 +3672,11 @@ gnome_canvas_request_redraw_uta (GnomeCanvas *canvas,
 		ArtUta *new_uta;
 
 		g_assert (canvas->redraw_area != NULL);
+		/* ALEX: This can fail if e.g. redraw_uta is called by an item
+		   update function and we're called from update_now -> do_update
+		   because update_now sets idle_id == 0. There is also some way
+		   to get it from the expose handler (see bug #102811).
+		   g_assert (canvas->idle_id != 0);  */
 
 		new_uta = uta_union_clip (canvas->redraw_area, uta, &visible);
 		art_uta_free (canvas->redraw_area);
@@ -3667,10 +3690,10 @@ gnome_canvas_request_redraw_uta (GnomeCanvas *canvas,
 		new_uta = uta_union_clip (uta, NULL, &visible);
 		art_uta_free (uta);
 		canvas->redraw_area = new_uta;
-		canvas->need_redraw = TRUE;
-	}
 
-	add_idle (canvas);
+		canvas->need_redraw = TRUE;
+		add_idle (canvas);
+	}
 }
 
 
@@ -3697,7 +3720,8 @@ gnome_canvas_request_redraw (GnomeCanvas *canvas, int x1, int y1, int x2, int y2
 
 	g_return_if_fail (GNOME_IS_CANVAS (canvas));
 
-	if (!GTK_WIDGET_DRAWABLE (canvas) || (x1 >= x2) || (y1 >= y2)) return;
+	if (!GTK_WIDGET_DRAWABLE (canvas) || (x1 >= x2) || (y1 >= y2))
+		return;
 
 	bbox.x0 = x1;
 	bbox.y0 = y1;

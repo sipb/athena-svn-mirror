@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -92,6 +93,8 @@ void        <link linkend="gnome-canvas-path-def-currentpoint">gnome_canvas_path
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -115,14 +118,10 @@ void        <link linkend="gnome-canvas-path-def-currentpoint">gnome_canvas_path
 This function creates a new empty <link linkend="gnome-canvas-path-def">gnome_canvas_path_def</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new canvas path definition. 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-new-sized">gnome_canvas_path_def_new_sized ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_sized
@@ -134,17 +133,13 @@ number of points in path, so you can avoid automatic point
 array reallocation.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
-<entry> number of points to allocate for the path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new canvas path definition
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara> number of points to allocate for the path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-new-from-bpath">gnome_canvas_path_def_new_from_bpath ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_bpath
@@ -160,18 +155,14 @@ from (non-modifiable) bpath use
 <link linkend="gnome-canvas-path-def-new-from-static-bpath">gnome_canvas_path_def_new_from_static_bpath</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>bpath</parameter>&nbsp;:</entry>
-<entry> libart bezier path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new canvas path definition that is populated with the
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition that is populated with the
 passed bezier path, if the <parameter>bpath</parameter> is bad NULL is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-new-from-static-bpath">gnome_canvas_path_def_new_from_static_bpath ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_static_bpath
@@ -185,18 +176,14 @@ path from what you passed in <parameter>bpath</parameter>). The bpath will not b
 if path will be destroyed, so use it with caution.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>bpath</parameter>&nbsp;:</entry>
-<entry> libart bezier path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new canvas path definition that references the passed
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new canvas path definition that references the passed
 <parameter>bpath</parameter>, or if the path is bad NULL is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-new-from-foreign-bpath">gnome_canvas_path_def_new_from_foreign_bpath ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_new_from_foreign_bpath
@@ -206,18 +193,14 @@ This function constructs a new <link linkend="gnome-canvas-path-def">gnome_canva
 duplicates the contents of the passed <parameter>bpath</parameter> in the definition.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>bpath</parameter>&nbsp;:</entry>
-<entry> libart bezier path
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the newly created <link linkend="gnome-canvas-path-def">gnome_canvas_path_def</link> or NULL if the
+</para><variablelist role="params">
+<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
+<listitem><simpara> libart bezier path
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="gnome-canvas-path-def">gnome_canvas_path_def</link> or NULL if the
 path is invalid.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-ref">gnome_canvas_path_def_ref ()</title>
 <programlisting>void        gnome_canvas_path_def_ref       (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -225,15 +208,11 @@ path is invalid.
 Increment the reference count of the GnomeCanvasPathDef.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-finish">gnome_canvas_path_def_finish ()</title>
 <programlisting>void        gnome_canvas_path_def_finish    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -241,15 +220,11 @@ Increment the reference count of the GnomeCanvasPathDef.</para>
 Trims dynamic point array to exact length of path.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-ensure-space">gnome_canvas_path_def_ensure_space ()</title>
 <programlisting>void        gnome_canvas_path_def_ensure_space
@@ -260,19 +235,15 @@ This function ensures that enough space for <parameter>space</parameter> points 
 allocated at the end of the path.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>space</parameter>&nbsp;:</entry>
-<entry> number of points to guarantee are allocated at the end of
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> number of points to guarantee are allocated at the end of
 the path.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-copy">gnome_canvas_path_def_copy ()</title>
 <programlisting>void        gnome_canvas_path_def_copy      (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *dst,
@@ -283,18 +254,14 @@ array is freed and <parameter>dest</parameter> is marked as non-static (editable
 regardless of the status of <parameter>src</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>dst</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef where the contents of <parameter>src</parameter> will be stored.
-</entry></row>
-<row><entry align="right"><parameter>src</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef whose contents will be copied it <parameter>src</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>dst</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef where the contents of <parameter>src</parameter> will be stored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef whose contents will be copied it <parameter>src</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-duplicate">gnome_canvas_path_def_duplicate ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_duplicate
@@ -304,17 +271,13 @@ This function duplicates the passed <parameter>path</parameter>. The new path is
 marked as non-static regardless of the state of original.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef to duplicate
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a GnomeCanvasPathDef which is a duplicate of <parameter>path</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef to duplicate
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeCanvasPathDef which is a duplicate of <parameter>path</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-concat">gnome_canvas_path_def_concat ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_concat
@@ -324,18 +287,14 @@ This function concatenates a list of GnomeCanvasPathDefs into one
 newly created GnomeCanvasPathDef.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
-<entry> a GSList of GnomeCanvasPathDefs to concatenate into one new
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara> a GSList of GnomeCanvasPathDefs to concatenate into one new
 path.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-split">gnome_canvas_path_def_split ()</title>
 <programlisting><link linkend="GSList">GSList</link>*     gnome_canvas_path_def_split     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -347,17 +306,13 @@ is encountered. The closedness of resulting paths is set accordingly
 to closedness of corresponding segment.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a list of GnomeCanvasPathDef(s).
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a list of GnomeCanvasPathDef(s).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-open-parts">gnome_canvas_path_def_open_parts ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_open_parts
@@ -367,17 +322,13 @@ This function creates a new GnomeCanvasPathDef that contains all of
 the open segments on the passed <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new GnomeCanvasPathDef that contains all of the open segemtns in <parameter>path</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef that contains all of the open segemtns in <parameter>path</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-closed-parts">gnome_canvas_path_def_closed_parts ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_closed_parts
@@ -387,18 +338,14 @@ This function returns a new GnomeCanvasPathDef that contains the
 all of close parts of passed <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new GnomeCanvasPathDef that contains all of the closed
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new GnomeCanvasPathDef that contains all of the closed
 parts of passed <parameter>path</parameter>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-close-all">gnome_canvas_path_def_close_all ()</title>
 <programlisting><link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link>* gnome_canvas_path_def_close_all
@@ -408,18 +355,14 @@ This function closes all of the open segments in the passed path
 and returns a new GnomeCanvasPathDef.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a GnomeCanvasPathDef that contains the contents of <parameter>path</parameter>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeCanvasPathDef that contains the contents of <parameter>path</parameter>
 but has modified the path is fully closed
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-unref">gnome_canvas_path_def_unref ()</title>
 <programlisting>void        gnome_canvas_path_def_unref     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -428,15 +371,11 @@ Decrease the reference count of the passed <parameter>path</parameter>.  If the 
 count is &lt; 1 the path is deallocated.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-reset">gnome_canvas_path_def_reset ()</title>
 <programlisting>void        gnome_canvas_path_def_reset     (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -444,15 +383,11 @@ count is &lt; 1 the path is deallocated.</para>
 This function clears the contents of the passed <parameter>path</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-moveto">gnome_canvas_path_def_moveto ()</title>
 <programlisting>void        gnome_canvas_path_def_moveto    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
@@ -464,21 +399,17 @@ starting point to <parameter>x</parameter> and <parameter>y</parameter>. If curr
 simply changes its starting coordinates to new values.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> y coordinate
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-lineto">gnome_canvas_path_def_lineto ()</title>
 <programlisting>void        gnome_canvas_path_def_lineto    (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
@@ -489,21 +420,17 @@ This function add a line segment to the passed <parameter>path</parameter> with 
 specified <parameter>x</parameter> and <parameter>y</parameter> coordinates.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> y coordinate
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-lineto-moving">gnome_canvas_path_def_lineto_moving ()</title>
 <programlisting>void        gnome_canvas_path_def_lineto_moving
@@ -518,21 +445,17 @@ the last ones set will be fixed, if you continue line. This is useful
 for handling drawing with mouse.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> y coordinate
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-curveto">gnome_canvas_path_def_curveto ()</title>
 <programlisting>void        gnome_canvas_path_def_curveto   (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path,
@@ -546,33 +469,29 @@ for handling drawing with mouse.</para>
 This function adds a bezier curve segment to the path definition.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>x0</parameter>&nbsp;:</entry>
-<entry> first control point x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y0</parameter>&nbsp;:</entry>
-<entry> first control point y coordinate
-</entry></row>
-<row><entry align="right"><parameter>x1</parameter>&nbsp;:</entry>
-<entry> second control point x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y1</parameter>&nbsp;:</entry>
-<entry> second control point y coordinate
-</entry></row>
-<row><entry align="right"><parameter>x2</parameter>&nbsp;:</entry>
-<entry> end of curve x coordinate
-</entry></row>
-<row><entry align="right"><parameter>y2</parameter>&nbsp;:</entry>
-<entry> end of curve y coordinate
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x0</parameter>&nbsp;:</term>
+<listitem><simpara> first control point x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y0</parameter>&nbsp;:</term>
+<listitem><simpara> first control point y coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
+<listitem><simpara> second control point x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
+<listitem><simpara> second control point y coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
+<listitem><simpara> end of curve x coordinate
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
+<listitem><simpara> end of curve y coordinate
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-closepath">gnome_canvas_path_def_closepath ()</title>
 <programlisting>void        gnome_canvas_path_def_closepath (<link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -582,15 +501,11 @@ subpath starting point, if needed and changing starting pathcode to
 ART_MOVETO</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-closepath-current">gnome_canvas_path_def_closepath_current ()</title>
 <programlisting>void        gnome_canvas_path_def_closepath_current
@@ -600,15 +515,11 @@ This function closes the last subpath by setting the coordinates of
 the endpoint of the last segment (line or curve) to starting point.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-bpath">gnome_canvas_path_def_bpath ()</title>
 <programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_bpath     (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -617,17 +528,13 @@ This function returns a ArtBpath that consists of the path
 definition.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> ArtBpath
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-length">gnome_canvas_path_def_length ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_canvas_path_def_length    (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -637,17 +544,13 @@ Euclidian length of the path but rather the number of points on the
 path.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> integer, number of points on the path.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> integer, number of points on the path.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-is-empty">gnome_canvas_path_def_is_empty ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_is_empty  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -656,17 +559,13 @@ This function is a boolean test to see if the path is empty,
 meaning containing no line segments.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path is empty.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path is empty.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-has-currentpoint">gnome_canvas_path_def_has_currentpoint ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_has_currentpoint
@@ -677,17 +576,13 @@ current point defined. Current point will be set by line operators,
 and cleared by closing subpath.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathdef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path has a current point defined.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathdef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has a current point defined.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-currentpoint">gnome_canvas_path_def_currentpoint ()</title>
 <programlisting>void        gnome_canvas_path_def_currentpoint
@@ -697,18 +592,14 @@ and cleared by closing subpath.</para>
 Stores the current point of the path definition in the passed ArtPoint <parameter>p</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><parameter>p</parameter>&nbsp;:</entry>
-<entry> a ArtPoint where to store the current point
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>p</parameter>&nbsp;:</term>
+<listitem><simpara> a ArtPoint where to store the current point
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-last-bpath">gnome_canvas_path_def_last_bpath ()</title>
 <programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_last_bpath
@@ -718,18 +609,14 @@ This function returns pointer to the last ArtBpath segment in the path
 definition.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> ArtBpath, being the last segment in the path definition or
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath, being the last segment in the path definition or
 null if no line segments have been defined.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-first-bpath">gnome_canvas_path_def_first_bpath ()</title>
 <programlisting><link linkend="ArtBpath">ArtBpath</link>*   gnome_canvas_path_def_first_bpath
@@ -738,18 +625,14 @@ null if no line segments have been defined.
 This function returns the first ArtBpath point in the definition.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> ArtBpath being the first point in the path definition or
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> ArtBpath being the first point in the path definition or
 null if no points are defined
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-any-open">gnome_canvas_path_def_any_open ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_any_open  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -758,17 +641,13 @@ This function returns a boolean value indicating if the path has
 any open segments.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path has any open segments.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has any open segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-all-open">gnome_canvas_path_def_all_open ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_all_open  (const <link linkend="GnomeCanvasPathDef">GnomeCanvasPathDef</link> *path);</programlisting>
@@ -777,17 +656,13 @@ This function returns a boolean value indicating if the path only
 contains open segments.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path has all open segments.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has all open segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-any-closed">gnome_canvas_path_def_any_closed ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_any_closed
@@ -797,17 +672,13 @@ This function returns a boolean valid indicating if the path has
 any closed segements.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path has any closed segments.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has any closed segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-path-def-all-closed">gnome_canvas_path_def_all_closed ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_canvas_path_def_all_closed
@@ -817,17 +688,13 @@ This function returns a boolean value indicating if the path only
 contains closed segments.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry> a GnomeCanvasPathDef
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> boolean, indicating if the path has all closed segments.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a GnomeCanvasPathDef
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> boolean, indicating if the path has all closed segments.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

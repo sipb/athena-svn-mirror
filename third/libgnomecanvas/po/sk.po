@@ -5,34 +5,34 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas\n"
-"POT-Creation-Date: 2002-11-20 16:01+0000\n"
+"POT-Creation-Date: 2003-01-23 16:16+0100\n"
 "PO-Revision-Date: 2002-05-21 16:59+0200\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
-#: libgnomecanvas/gnome-canvas.c:1396 libgnomecanvas/gnome-canvas.c:1397
 msgid "X"
 msgstr "X"
 
+#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
-#: libgnomecanvas/gnome-canvas.c:1403 libgnomecanvas/gnome-canvas.c:1404
 msgid "Y"
 msgstr "Y"
 
-#: libgnomecanvas/gnome-canvas.c:2048
+#: libgnomecanvas/gnome-canvas.c:2052
 msgid "Antialiased"
-msgstr "Jemné hrany"
+msgstr "JemnÃ© hrany"
 
-#: libgnomecanvas/gnome-canvas.c:2049
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "The antialiasing mode of the canvas."
-msgstr "Mód plátna s jemnımi hranami."
+msgstr "MÃ³d plÃ¡tna s jemnÃ½mi hranami."
 
-#: libgnomecanvas/gnome-canvas-rich-text.c:209
 #: libgnomecanvas/gnome-canvas-text.c:206
+#: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
 msgstr "Text"
 
@@ -42,68 +42,68 @@ msgstr "Text na zobrazenie"
 
 #: libgnomecanvas/gnome-canvas-text.c:215
 msgid "Markup"
-msgstr "Oznaèi»"
+msgstr "OznaÄiÅ¥"
 
 #: libgnomecanvas/gnome-canvas-text.c:216
 msgid "Marked up text to render"
-msgstr "Oznaèenı text na zobrazenie"
+msgstr "OznaÄenÃ½ text na zobrazenie"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "Typ písma"
+msgstr "Typ pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr "Popis typu písma ako re»azec"
+msgstr "Popis typu pÃ­sma ako reÅ¥azec"
 
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr "Popis typu písma"
+msgstr "Popis typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr "Popis typu písma ako ¹truktúra PangoFontDescription"
+msgstr "Popis typu pÃ­sma ako Å¡truktÃºra PangoFontDescription"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "Rodina písma"
+msgstr "Rodina pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "Meno rodiny písma, napr. Sans, Helvetica, Times, Monospace"
+msgstr "Meno rodiny pÃ­sma, napr. Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "©tıl písma"
+msgstr "Å tÃ½l pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr "Varianta typu písma"
+msgstr "Varianta typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "Hrúbka písma"
+msgstr "HrÃºbka pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "Roztiahnutie písma"
+msgstr "Roztiahnutie pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "Veµkos» písma"
+msgstr "VeÄ¾kosÅ¥ pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "Body písma"
+msgstr "Body pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr "Veµkos» typu písma v bodoch"
+msgstr "VeÄ¾kosÅ¥ typu pÃ­sma v bodoch"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
@@ -113,24 +113,24 @@ msgstr "Vzostup"
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
 msgstr ""
-"Posunutie textu nad základnou èiarou (pod základnou èiarou, ak je vzostup "
-"negatívny)"
+"Posunutie textu nad zÃ¡kladnou Äiarou (pod zÃ¡kladnou Äiarou, ak je vzostup "
+"negatÃ­vny)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
-msgstr "Preèiarknuté"
+msgstr "PreÄiarknutÃ©"
 
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
-msgstr "Èi bude text preèiarknutı"
+msgstr "ÄŒi bude text preÄiarknutÃ½"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "Podèiarknuté"
+msgstr "PodÄiarknutÃ©"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr "©tıl podèiarknutia pre tento text"
+msgstr "Å tÃ½l podÄiarknutia pre tento text"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
@@ -138,7 +138,7 @@ msgstr "Mierka"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr "Veµkos» typu písma, relatívne k predvolenej veµkosti"
+msgstr "VeÄ¾kosÅ¥ typu pÃ­sma, relatÃ­vne k predvolenej veÄ¾kosti"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
@@ -148,7 +148,7 @@ msgstr "Farba"
 
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr "Farba textu (ako re»azec)"
+msgstr "Farba textu (ako reÅ¥azec)"
 
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
@@ -156,103 +156,103 @@ msgstr "Farba textu (ako GdkColor)"
 
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr "Farba textu (ako R/G/B/A kombinované èíslo)"
+msgstr "Farba textu (ako R/G/B/A kombinovanÃ© ÄÃ­slo)"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr "©írka textu"
+msgstr "Å Ã­rka textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr "©írka zobrazeného textu"
+msgstr "Å Ã­rka zobrazenÃ©ho textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr "Vı¹ka textu"
+msgstr "VÃ½Å¡ka textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr "Vı¹ka zobrazeného textu"
+msgstr "VÃ½Å¡ka zobrazenÃ©ho textu"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "Nastavi» rodinu typu písma"
+msgstr "NastaviÅ¥ rodinu typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr "Èi táto znaèka ovplyvní rodinu typu písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ rodinu typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "Nastavi» ¹tıl typu písma"
+msgstr "NastaviÅ¥ Å¡tÃ½l typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr "Èi táto znaèka ovplyvní ¹tıl typu písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ Å¡tÃ½l typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr "Nastavi» variant typu písma"
+msgstr "NastaviÅ¥ variant typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
-msgstr "Èi táto znaèka ovplyvní variant typu písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ variant typu pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "Nastavi» hrúbku písma"
+msgstr "NastaviÅ¥ hrÃºbku pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "Èi táto znaèka ovplyvní hrúbku písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ hrÃºbku pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "Nastavi» roztiahnutie písma"
+msgstr "NastaviÅ¥ roztiahnutie pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "Èi táto znaèka ovplyvní roztiahnutie písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ roztiahnutie pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr "Nastavi» veµkos» písma"
+msgstr "NastaviÅ¥ veÄ¾kosÅ¥ pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr "Èi táto znaèka ovplyvní veµkos» písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ veÄ¾kosÅ¥ pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr "Nastavi» vzostup"
+msgstr "NastaviÅ¥ vzostup"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
-msgstr "Èi táto znaèka ovplyvní vzostup"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ vzostup"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr "Nastavi» preèiarknutie"
+msgstr "NastaviÅ¥ preÄiarknutie"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
-msgstr "Èi táto znaèka ovplyvní preèiarknutie"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ preÄiarknutie"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr "Nastavi» podèiarknutie"
+msgstr "NastaviÅ¥ podÄiarknutie"
 
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
-msgstr "Èi táto znaèka ovplyvní podèiarknutie"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ podÄiarknutie"
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr "Nastavi» mierku"
+msgstr "NastaviÅ¥ mierku"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr "Èi táto znaèka ovplyvní zmenu veµkosti písma"
+msgstr "ÄŒi tÃ¡to znaÄka ovplyvnÃ­ zmenu veÄ¾kosti pÃ­sma"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
@@ -260,75 +260,75 @@ msgstr "Text na zobrazenie"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr "Pozícia X"
+msgstr "PozÃ­cia X"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr "Pozícia Y"
+msgstr "PozÃ­cia Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr "©írka"
+msgstr "Å Ã­rka"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr "©írka textového poµa"
+msgstr "Å Ã­rka textovÃ©ho poÄ¾a"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
-msgstr "Vı¹ka"
+msgstr "VÃ½Å¡ka"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr "Vı¹ka pre textové pole"
+msgstr "VÃ½Å¡ka pre textovÃ© pole"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr "Upravovateµné"
+msgstr "UpravovateÄ¾nÃ©"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr "Je toto textové pole rich upravovateµné?"
+msgstr "Je toto textovÃ© pole rich upravovateÄ¾nÃ©?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr "Viditeµnı"
+msgstr "ViditeÄ¾nÃ½"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr "Je toto textové pole rich viditeµné?"
+msgstr "Je toto textovÃ© pole rich viditeÄ¾nÃ©?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr "Viditeµnı kurzor"
+msgstr "ViditeÄ¾nÃ½ kurzor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
 msgid "Is the cursor visible in this this rich text item?"
-msgstr "Je kurzor viditeµnı v tomto textovom poli rich?"
+msgstr "Je kurzor viditeÄ¾nÃ½ v tomto textovom poli rich?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr "Blikajúci kurzor"
+msgstr "BlikajÃºci kurzor"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
 msgid "Does the cursor blink in this this rich text item?"
-msgstr "Kurzor bliká v tomto textovom poli rich?"
+msgstr "Kurzor blikÃ¡ v tomto textovom poli rich?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 msgid "Grow Height"
-msgstr "Zväè¹ova» do ¹írky"
+msgstr "ZvÃ¤ÄÅ¡ovaÅ¥ do Å¡Ã­rky"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
-msgstr "Má sa textové pole zväè¹ova» do ¹írky ak sa text doòho nezmestí?"
+msgstr "MÃ¡ sa textovÃ© pole zvÃ¤ÄÅ¡ovaÅ¥ do Å¡Ã­rky ak sa text doÅˆho nezmestÃ­?"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
-msgstr "Re¾im zalamovania"
+msgstr "ReÅ¾im zalamovania"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr "Re¾im zalamovania pre viacriadkovı text"
+msgstr "ReÅ¾im zalamovania pre viacriadkovÃ½ text"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
@@ -336,7 +336,7 @@ msgstr "Zarovnanie"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr "Re¾im zarovnania"
+msgstr "ReÅ¾im zarovnania"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
@@ -356,43 +356,43 @@ msgstr "Miesto ukotvenia pre text"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr "Body nad èiarami"
+msgstr "Body nad Äiarami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr "Poèet bodov, ktoré umiestni» nad èiarami"
+msgstr "PoÄet bodov, ktorÃ© umiestniÅ¥ nad Äiarami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr "Body pod èiarami"
+msgstr "Body pod Äiarami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr "Poèet bodov, ktoré umiestni» pod èiarami"
+msgstr "PoÄet bodov, ktorÃ© umiestniÅ¥ pod Äiarami"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
-msgstr "Bodov vnútri zalomenia"
+msgstr "Bodov vnÃºtri zalomenia"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
-msgstr "Poèet bodov, ktoré umiestni» vnútri zalomenia"
+msgstr "PoÄet bodov, ktorÃ© umiestniÅ¥ vnÃºtri zalomenia"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr "¥avı okraj"
+msgstr "Ä½avÃ½ okraj"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr "Poèet bodov na µavom okraji"
+msgstr "PoÄet bodov na Ä¾avom okraji"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr "Pravı okraj"
+msgstr "PravÃ½ okraj"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr "Poèet bodov na pravom okraji"
+msgstr "PoÄet bodov na pravom okraji"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
@@ -400,4 +400,4 @@ msgstr "Odsadzovanie"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr "Poèet bodov pre odsadzovanie"
+msgstr "PoÄet bodov pre odsadzovanie"

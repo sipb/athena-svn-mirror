@@ -1,5 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
+if PLATFORM_WIN32
+no_undefined = -no-undefined
+endif
+
 INCLUDES = \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)					\
@@ -14,7 +18,7 @@ libcanvas_la_LIBADD = \
 	$(CANVAS_GLADE_LIBS)
 
 libcanvas_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version
+	-export-dynamic -module -avoid-version $(no_undefined)
 
 libcanvas_la_SOURCES = \
 	glade-canvas.c

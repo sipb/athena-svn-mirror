@@ -146,28 +146,28 @@ gnome_canvas_get_miter_points (double x1, double y1, double x2, double y2, doubl
 	double dist;		/* distance of miter points from p2 */
 	double dx, dy;		/* x and y offsets corresponding to dist */
 
-#define ELEVEN_DEGREES (11.0 * M_PI / 180.0)
+#define ELEVEN_DEGREES (11.0 * G_PI / 180.0)
 
 	if (y2 == y1)
-		theta1 = (x2 < x1) ? 0.0 : M_PI;
+		theta1 = (x2 < x1) ? 0.0 : G_PI;
 	else if (x2 == x1)
-		theta1 = (y2 < y1) ? M_PI_2 : -M_PI_2;
+		theta1 = (y2 < y1) ? G_PI_2 : -G_PI_2;
 	else
 		theta1 = atan2 (y1 - y2, x1 - x2);
 
 	if (y3 == y2)
-		theta2 = (x3 > x2) ? 0 : M_PI;
+		theta2 = (x3 > x2) ? 0 : G_PI;
 	else if (x3 == x2)
-		theta2 = (y3 > y2) ? M_PI_2 : -M_PI_2;
+		theta2 = (y3 > y2) ? G_PI_2 : -G_PI_2;
 	else
 		theta2 = atan2 (y3 - y2, x3 - x2);
 
 	theta = theta1 - theta2;
 
-	if (theta > M_PI)
-		theta -= 2.0 * M_PI;
-	else if (theta < -M_PI)
-		theta += 2.0 * M_PI;
+	if (theta > G_PI)
+		theta -= 2.0 * G_PI;
+	else if (theta < -G_PI)
+		theta += 2.0 * G_PI;
 
 	if ((theta < ELEVEN_DEGREES) && (theta > -ELEVEN_DEGREES))
 		return FALSE;
@@ -177,8 +177,8 @@ gnome_canvas_get_miter_points (double x1, double y1, double x2, double y2, doubl
 		dist = -dist;
 
 	theta3 = (theta1 + theta2) / 2.0;
-	if (sin (theta3 - (theta1 + M_PI)) < 0.0)
-		theta3 += M_PI;
+	if (sin (theta3 - (theta1 + G_PI)) < 0.0)
+		theta3 += G_PI;
 
 	dx = dist * cos (theta3);
 	dy = dist * sin (theta3);

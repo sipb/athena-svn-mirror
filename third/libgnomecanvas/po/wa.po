@@ -1,8 +1,8 @@
 # Translation into the walloon language.
 #
-# Si vos voloz donner on côp di spale pol ratoûrnaedje di Gnome (ou des
-# ôtes libes programes) sicrijhoz-mu a l' adresse emile
-# <srtxg@chanae.alphanet.ch>; nos avans co bråmint di l' ovraedje a fé.
+# Si vos voloz donner on cÃ´p di spale pol ratoÃ»rnaedje di Gnome (ou des
+# Ã´tes libes programes) sicrijhoz-mu a l' adresse emile
+# <srtxg@chanae.alphanet.ch>; nos avans co brÃ¥mint di l' ovraedje a fÃ©.
 #
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Pablo Saratxaga <srtxg@chanae.alphanet.ch> 2001
@@ -10,40 +10,40 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas2 \n"
-"POT-Creation-Date: 2002-11-20 16:01+0000\n"
+"POT-Creation-Date: 2003-01-23 16:16+0100\n"
 "PO-Revision-Date: 2002-05-01 11:14MET\n"
 "Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
-#: libgnomecanvas/gnome-canvas.c:1396 libgnomecanvas/gnome-canvas.c:1397
 msgid "X"
 msgstr "X"
 
+#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
-#: libgnomecanvas/gnome-canvas.c:1403 libgnomecanvas/gnome-canvas.c:1404
 msgid "Y"
 msgstr "Y"
 
-#: libgnomecanvas/gnome-canvas.c:2048
+#: libgnomecanvas/gnome-canvas.c:2052
 msgid "Antialiased"
 msgstr ""
 
-#: libgnomecanvas/gnome-canvas.c:2049
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "The antialiasing mode of the canvas."
 msgstr ""
 
-#: libgnomecanvas/gnome-canvas-rich-text.c:209
 #: libgnomecanvas/gnome-canvas-text.c:206
+#: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
 msgstr "Tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
-msgstr "Tecse a håyner"
+msgstr "Tecse a hÃ¥yner"
 
 #: libgnomecanvas/gnome-canvas-text.c:215
 msgid "Markup"
@@ -51,7 +51,7 @@ msgstr "Sorbriyance"
 
 #: libgnomecanvas/gnome-canvas-text.c:216
 msgid "Marked up text to render"
-msgstr "Tecse a håyner e sorbriyance"
+msgstr "Tecse a hÃ¥yner e sorbriyance"
 
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
@@ -80,7 +80,7 @@ msgstr "No del famile del fonte, eg: Sans, Helvetica, Times, Monospace"
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "Stîle del fonte"
+msgstr "StÃ®le del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
@@ -90,12 +90,12 @@ msgstr "Variante del fonte"
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "Pwèds del fonte"
+msgstr "PwÃ¨ds del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "Lårdjeu del fonte"
+msgstr "LÃ¥rdjeu del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
@@ -112,38 +112,38 @@ msgstr "Grandeu del fonte, e ponts"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
-msgstr "Hôteu"
+msgstr "HÃ´teu"
 
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
 msgstr ""
-"Eplaeçmint e hôteu pa rapoirt al roye di båze pol tecse (å dzo del roye si "
+"EplaeÃ§mint e hÃ´teu pa rapoirt al roye di bÃ¥ze pol tecse (Ã¥ dzo del roye si "
 "l' valixhance est negative)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
-msgstr "Båré"
+msgstr "BÃ¥rÃ©"
 
 #: libgnomecanvas/gnome-canvas-text.c:352
 msgid "Whether to strike through the text"
-msgstr "Bårer li tecse d' ene roye å d' traviè"
+msgstr "BÃ¥rer li tecse d' ene roye Ã¥ d' traviÃ¨"
 
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "Sorligné"
+msgstr "SorlignÃ©"
 
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr "Stîle di sorlignaedje po ci tecse chal"
+msgstr "StÃ®le di sorlignaedje po ci tecse chal"
 
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr "Schåle"
+msgstr "SchÃ¥le"
 
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr "Grandeu del fonte, pa rapoirt al prémetowe grandeu"
+msgstr "Grandeu del fonte, pa rapoirt al prÃ©metowe grandeu"
 
 #: libgnomecanvas/gnome-canvas-text.c:425
 #: libgnomecanvas/gnome-canvas-text.c:433
@@ -165,19 +165,19 @@ msgstr "Coleur do tecse (come on nombe etir k' est ene valixhance R/V/B/A)"
 
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr "Lårdjeu do tecse"
+msgstr "LÃ¥rdjeu do tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr "Lårdjeu do tecse a håyner"
+msgstr "LÃ¥rdjeu do tecse a hÃ¥yner"
 
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr "Hôteu do tecse"
+msgstr "HÃ´teu do tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr "Hôteu do tecse a håyner"
+msgstr "HÃ´teu do tecse a hÃ¥yner"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
@@ -189,11 +189,11 @@ msgstr "Po decider si ciste etikete a on efet sol famile del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "Stîle del fonte en alaedje"
+msgstr "StÃ®le del fonte en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr "Po decider si ciste etikete a on efet sol stîle del fonte"
+msgstr "Po decider si ciste etikete a on efet sol stÃ®le del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
@@ -205,19 +205,19 @@ msgstr "Po decider si ciste etikete a on efet sol variante del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "Pwèds del fonte en alaedje"
+msgstr "PwÃ¨ds del fonte en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "Po decider si ciste etikete a on efet sol pwèds del fonte"
+msgstr "Po decider si ciste etikete a on efet sol pwÃ¨ds del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "Lårdjeu del fonte en alaedje"
+msgstr "LÃ¥rdjeu del fonte en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "Po decider si ciste etikete a on efet sol lårdjeu del fonte"
+msgstr "Po decider si ciste etikete a on efet sol lÃ¥rdjeu del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
@@ -229,19 +229,19 @@ msgstr "Po decider si ciste etikete a on efet sol grandeu del fonte"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr "Hôteu en alaedje"
+msgstr "HÃ´teu en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
-msgstr "Po decider si ciste etikete a on efet sol hôteu do tecse"
+msgstr "Po decider si ciste etikete a on efet sol hÃ´teu do tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr "Båraedje en alaedje"
+msgstr "BÃ¥raedje en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
-msgstr "Po decider si ciste etikete a on efet li båraedje do tecse"
+msgstr "Po decider si ciste etikete a on efet li bÃ¥raedje do tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
@@ -253,15 +253,15 @@ msgstr "Po decider si ciste etikete a on efet sol sorlignaedje do tecse"
 
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr "Schåle en alaedje"
+msgstr "SchÃ¥le en alaedje"
 
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr "Po decider si ciste etikete a on efet sol metowe e schåle do tecse"
+msgstr "Po decider si ciste etikete a on efet sol metowe e schÃ¥le do tecse"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 msgid "Text to display"
-msgstr "Tecse a håyner"
+msgstr "Tecse a hÃ¥yner"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
@@ -273,23 +273,23 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr "Lårdjeu"
+msgstr "LÃ¥rdjeu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr "Lårdjeu del boesse di tecse"
+msgstr "LÃ¥rdjeu del boesse di tecse"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
-msgstr "Hôteu"
+msgstr "HÃ´teu"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 msgid "Height for text box"
-msgstr "Hôteu del boesse di tecse"
+msgstr "HÃ´teu del boesse di tecse"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr "Aspougnåve"
+msgstr "AspougnÃ¥ve"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
@@ -297,7 +297,7 @@ msgstr ""
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr "Veyåve"
+msgstr "VeyÃ¥ve"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
@@ -322,7 +322,7 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 #, fuzzy
 msgid "Grow Height"
-msgstr "Pwèds del fonte"
+msgstr "PwÃ¨ds del fonte"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"

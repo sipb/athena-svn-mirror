@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -46,6 +47,8 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -58,6 +61,7 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
 <refsect2>
 <title><anchor id="GnomeCanvasRichText">struct GnomeCanvasRichText</title>
 <programlisting>struct GnomeCanvasRichText {
+
 	GnomeCanvasItem item;
 
     GnomeCanvasRichTextPrivate *_priv;
@@ -78,51 +82,39 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
                                             (<link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-copy-clipboard">gnome_canvas_rich_text_copy_clipboard ()</title>
 <programlisting>void        gnome_canvas_rich_text_copy_clipboard
                                             (<link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-paste-clipboard">gnome_canvas_rich_text_paste_clipboard ()</title>
 <programlisting>void        gnome_canvas_rich_text_paste_clipboard
                                             (<link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-set-buffer">gnome_canvas_rich_text_set_buffer ()</title>
 <programlisting>void        gnome_canvas_rich_text_set_buffer
@@ -130,39 +122,31 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
                                              <link linkend="GtkTextBuffer">GtkTextBuffer</link> *buffer);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-get-buffer">gnome_canvas_rich_text_get_buffer ()</title>
 <programlisting><link linkend="GtkTextBuffer">GtkTextBuffer</link>* gnome_canvas_rich_text_get_buffer
                                             (<link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link> *text);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-get-iter-location">gnome_canvas_rich_text_get_iter_location ()</title>
 <programlisting>void        gnome_canvas_rich_text_get_iter_location
@@ -171,23 +155,19 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
                                              <link linkend="GdkRectangle">GdkRectangle</link> *location);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>iter</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>location</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>location</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-rich-text-get-iter-at-location">gnome_canvas_rich_text_get_iter_at_location ()</title>
 <programlisting>void        gnome_canvas_rich_text_get_iter_at_location
@@ -197,26 +177,22 @@ void        <link linkend="gnome-canvas-rich-text-get-iter-at-location">gnome_ca
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>iter</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry>
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry>
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara>
 
 
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -19,6 +20,8 @@ struct      <link linkend="GnomeCanvasPolygon">GnomeCanvasPolygon</link>;
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -36,6 +39,7 @@ struct      <link linkend="GnomeCanvasPolygon">GnomeCanvasPolygon</link>;
 <refsect2>
 <title><anchor id="GnomeCanvasPolygon">struct GnomeCanvasPolygon</title>
 <programlisting>struct GnomeCanvasPolygon {
+
 	GnomeCanvasShape item;
 
 	GnomeCanvasPathDef *path_def;
